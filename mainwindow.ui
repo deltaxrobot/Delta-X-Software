@@ -14,7 +14,7 @@
    <string>Delta Softwareoftware</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QPushButton" name="pbConnectonnect">
+   <widget class="QPushButton" name="pbConnect">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -27,7 +27,7 @@
      <string>Connect</string>
     </property>
    </widget>
-   <widget class="QLabel" name="lbStatee">
+   <widget class="QLabel" name="lbState">
     <property name="geometry">
      <rect>
       <x>130</x>

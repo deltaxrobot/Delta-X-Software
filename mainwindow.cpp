@@ -6,6 +6,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    InitEvents();
 }
 
 MainWindow::~MainWindow()
@@ -13,12 +14,12 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::ConnectDeltaRobot()
+void MainWindow::InitEvents()
 {
-    ui->lbStatee->setText("Hello");
+    connect(ui->pbConnect, SIGNAL(clicked(bool)), this, SLOT(ConnectDeltaRobot()));
 }
 
-void MainWindow::on_pbConnectonnect_clicked()
+void MainWindow::ConnectDeltaRobot()
 {
-    ui->lbStatee->setText("Hello");
+    ui->lbState->setText("Hello");
 }

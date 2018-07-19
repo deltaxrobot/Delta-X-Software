@@ -15,10 +15,10 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+    void InitEvents();
+
 private slots:
     void ConnectDeltaRobot();
-
-    void on_pbConnectonnect_clicked();
 
 private:
     Ui::MainWindow *ui;
