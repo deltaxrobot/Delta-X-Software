@@ -279,11 +279,11 @@ void GLWidget::mouseMoveEvent(QMouseEvent *event)
     int dy = event->y() - m_lastPos.y();
 
     if (event->buttons() & Qt::LeftButton) {
-        setXRotation(m_xRot + 8 * dy);
-        setYRotation(m_yRot + 8 * dx);
+        setXRotation(m_xRot + 8 * -dy);
+        setYRotation(m_yRot + 8 * -dx);
     } else if (event->buttons() & Qt::RightButton) {
-        setXRotation(m_xRot + 8 * dy);
-        setZRotation(m_zRot + 8 * dx);
+        setXRotation(m_xRot + 8 * -dy);
+        setZRotation(m_zRot + 8 * -dx);
     }
     m_lastPos = event->pos();
 }
