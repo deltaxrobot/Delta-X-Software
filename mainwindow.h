@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include "ConnectionManager.h"
 
 namespace Ui {
 class MainWindow;
@@ -16,6 +17,9 @@ public:
     ~MainWindow();
 
     void InitEvents();
+    void InitVariables();
+
+    ConnectionManager* DeltaPort;
 
 private slots:
     void ConnectDeltaRobot();

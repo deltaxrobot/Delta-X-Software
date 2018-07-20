@@ -32,7 +32,7 @@
      <rect>
       <x>130</x>
       <y>30</y>
-      <width>171</width>
+      <width>201</width>
       <height>17</height>
      </rect>
     </property>
@@ -40,7 +40,7 @@
      <string>Delta is not available !</string>
     </property>
     <property name="alignment">
-     <set>Qt::AlignCenter</set>
+     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
     </property>
    </widget>
    <widget class="QScrollArea" name="scrollArea">
@@ -99,7 +99,7 @@
      </rect>
     </property>
    </widget>
-   <widget class="QLabel" name="label">
+   <widget class="QLabel" name="lbDebug">
     <property name="geometry">
      <rect>
       <x>10</x>

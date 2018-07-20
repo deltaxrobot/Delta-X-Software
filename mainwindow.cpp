@@ -6,6 +6,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    InitVariables();
     InitEvents();
 }
 
@@ -19,7 +21,16 @@ void MainWindow::InitEvents()
     connect(ui->pbConnect, SIGNAL(clicked(bool)), this, SLOT(ConnectDeltaRobot()));
 }
 
+void MainWindow::InitVariables()
+{
+    DeltaPort = new ConnectionManager(this);
+}
+
 void MainWindow::ConnectDeltaRobot()
 {
-    ui->lbState->setText("Hello");
+    if (DeltaPort->FindDeltaRobot() == true)
+    {
+        ui->lbState->setText("Delta Robot is connected !");
+        ui->lbDebug->setText(DeltaPort->SerialPort->portName());
+    }
 }
