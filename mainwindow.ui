@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1223</width>
-    <height>746</height>
+    <height>792</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -47,9 +47,9 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>110</y>
+      <y>150</y>
       <width>281</width>
-      <height>571</height>
+      <height>591</height>
      </rect>
     </property>
     <property name="styleSheet">
@@ -64,7 +64,7 @@
        <x>0</x>
        <y>0</y>
        <width>279</width>
-       <height>569</height>
+       <height>589</height>
       </rect>
      </property>
     </widget>
@@ -73,9 +73,9 @@
     <property name="geometry">
      <rect>
       <x>310</x>
-      <y>110</y>
+      <y>150</y>
       <width>361</width>
-      <height>571</height>
+      <height>591</height>
      </rect>
     </property>
    </widget>
@@ -89,21 +89,11 @@
      </rect>
     </property>
    </widget>
-   <widget class="QGraphicsView" name="graphicsView">
-    <property name="geometry">
-     <rect>
-      <x>810</x>
-      <y>450</y>
-      <width>391</width>
-      <height>231</height>
-     </rect>
-    </property>
-   </widget>
    <widget class="QLabel" name="lbDebug">
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>720</y>
+      <y>760</y>
       <width>1201</width>
       <height>17</height>
      </rect>
@@ -196,6 +186,51 @@ color:rgb(1, 251, 255)</string>
     </property>
     <property name="text">
      <string>Z</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="lbCameraArea">
+    <property name="geometry">
+     <rect>
+      <x>810</x>
+      <y>450</y>
+      <width>391</width>
+      <height>291</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color:rgb(255, 255, 255)</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="scaledContents">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_5">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>100</y>
+      <width>99</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>New</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_6">
+    <property name="geometry">
+     <rect>
+      <x>310</x>
+      <y>100</y>
+      <width>99</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Execute</string>
     </property>
    </widget>
   </widget>

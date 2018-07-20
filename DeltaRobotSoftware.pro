@@ -6,6 +6,9 @@
 
 QT       += core gui serialport opengl
 
+
+INCLUDEPATH +=  "usr/local/include/"
+
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = DeltaRobotSoftware
@@ -23,6 +26,9 @@ HEADERS  += mainwindow.h \
     ConnectionManager.h \
     DeltaVisualizer.h \
     glwidget.h \
-    logo.h
+    logo.h \
+    ImageUnity.h
+
+LIBS    += `pkg-config --libs opencv`
 
 FORMS    += mainwindow.ui

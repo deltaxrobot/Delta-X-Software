@@ -6,6 +6,13 @@
 #include "glwidget.h"
 #include <QVBoxLayout>
 #include <QHBoxLayout>
+#include <QTimer>
+#include <opencv2/opencv.hpp>
+#include <opencv2/highgui.hpp>
+#include <opencv2/core.hpp>
+#include <opencv2/imgproc.hpp>
+#include <ImageUnity.h>
+#include <stdio.h>
 
 namespace Ui {
 class MainWindow;
@@ -24,9 +31,12 @@ public:
 
     ConnectionManager* DeltaPort;
     GLWidget* VisualArea;
+    QTimer* Timer1;
+    cv::VideoCapture cap;
 
 private slots:
     void ConnectDeltaRobot();
+    void UpdateCameraScreen();
 
 private:
     Ui::MainWindow *ui;
