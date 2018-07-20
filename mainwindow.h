@@ -3,6 +3,9 @@
 
 #include <QMainWindow>
 #include "ConnectionManager.h"
+#include "glwidget.h"
+#include <QVBoxLayout>
+#include <QHBoxLayout>
 
 namespace Ui {
 class MainWindow;
@@ -20,6 +23,7 @@ public:
     void InitVariables();
 
     ConnectionManager* DeltaPort;
+    GLWidget* VisualArea;
 
 private slots:
     void ConnectDeltaRobot();

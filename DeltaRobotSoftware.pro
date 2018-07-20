@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui serialport
+QT       += core gui serialport opengl
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -14,9 +14,15 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    ConnectionManager.cpp
+    ConnectionManager.cpp \
+    DeltaVisualizer.cpp \
+    glwidget.cpp \
+    logo.cpp
 
 HEADERS  += mainwindow.h \
-    ConnectionManager.h
+    ConnectionManager.h \
+    DeltaVisualizer.h \
+    glwidget.h \
+    logo.h
 
 FORMS    += mainwindow.ui

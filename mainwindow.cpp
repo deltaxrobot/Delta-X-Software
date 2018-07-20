@@ -24,6 +24,13 @@ void MainWindow::InitEvents()
 void MainWindow::InitVariables()
 {
     DeltaPort = new ConnectionManager(this);
+    VisualArea = new GLWidget();
+
+    QHBoxLayout *container = new QHBoxLayout;
+
+    container->addWidget(VisualArea);
+
+    ui->wgOpenGl->setLayout(container);
 }
 
 void MainWindow::ConnectDeltaRobot()
