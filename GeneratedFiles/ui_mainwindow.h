@@ -34,7 +34,7 @@ public:
     QScrollArea *saProgramFiles;
     QWidget *scrollAreaWidgetContents;
     QTextEdit *textEdit;
-    QWidget *widget;
+    QWidget *wgOpenGl;
     QGraphicsView *graphicsView;
     QLabel *lbDebug;
     QPushButton *pushButton;
@@ -71,9 +71,9 @@ public:
         textEdit = new QTextEdit(centralWidget);
         textEdit->setObjectName(QStringLiteral("textEdit"));
         textEdit->setGeometry(QRect(310, 110, 361, 571));
-        widget = new QWidget(centralWidget);
-        widget->setObjectName(QStringLiteral("widget"));
-        widget->setGeometry(QRect(810, 110, 391, 331));
+        wgOpenGl = new QWidget(centralWidget);
+        wgOpenGl->setObjectName(QStringLiteral("wgOpenGl"));
+        wgOpenGl->setGeometry(QRect(810, 110, 391, 331));
         graphicsView = new QGraphicsView(centralWidget);
         graphicsView->setObjectName(QStringLiteral("graphicsView"));
         graphicsView->setGeometry(QRect(810, 450, 391, 231));
