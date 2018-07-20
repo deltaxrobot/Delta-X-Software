@@ -43,7 +43,7 @@
      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
     </property>
    </widget>
-   <widget class="QScrollArea" name="scrollArea">
+   <widget class="QScrollArea" name="saProgramFiles">
     <property name="geometry">
      <rect>
       <x>10</x>
