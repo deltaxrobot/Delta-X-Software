@@ -13,7 +13,6 @@
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
-#include <QtWidgets/QGraphicsView>
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QLineEdit>
@@ -35,7 +34,6 @@ public:
     QWidget *scrollAreaWidgetContents;
     QTextEdit *textEdit;
     QWidget *wgOpenGl;
-    QGraphicsView *graphicsView;
     QLabel *lbDebug;
     QPushButton *pushButton;
     QPushButton *pushButton_2;
@@ -44,12 +42,15 @@ public:
     QLineEdit *lineEdit_2;
     QLineEdit *lineEdit_3;
     QPushButton *pushButton_4;
+    QLabel *lbCameraArea;
+    QPushButton *pushButton_5;
+    QPushButton *pushButton_6;
 
     void setupUi(QMainWindow *MainWindow)
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QStringLiteral("MainWindow"));
-        MainWindow->resize(1223, 746);
+        MainWindow->resize(1223, 792);
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         pbConnect = new QPushButton(centralWidget);
@@ -61,25 +62,22 @@ public:
         lbState->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
         saProgramFiles = new QScrollArea(centralWidget);
         saProgramFiles->setObjectName(QStringLiteral("saProgramFiles"));
-        saProgramFiles->setGeometry(QRect(10, 110, 281, 571));
+        saProgramFiles->setGeometry(QRect(10, 150, 281, 591));
         saProgramFiles->setStyleSheet(QStringLiteral(""));
         saProgramFiles->setWidgetResizable(true);
         scrollAreaWidgetContents = new QWidget();
         scrollAreaWidgetContents->setObjectName(QStringLiteral("scrollAreaWidgetContents"));
-        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 279, 569));
+        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 279, 589));
         saProgramFiles->setWidget(scrollAreaWidgetContents);
         textEdit = new QTextEdit(centralWidget);
         textEdit->setObjectName(QStringLiteral("textEdit"));
-        textEdit->setGeometry(QRect(310, 110, 361, 571));
+        textEdit->setGeometry(QRect(310, 150, 361, 591));
         wgOpenGl = new QWidget(centralWidget);
         wgOpenGl->setObjectName(QStringLiteral("wgOpenGl"));
         wgOpenGl->setGeometry(QRect(810, 110, 391, 331));
-        graphicsView = new QGraphicsView(centralWidget);
-        graphicsView->setObjectName(QStringLiteral("graphicsView"));
-        graphicsView->setGeometry(QRect(810, 450, 391, 231));
         lbDebug = new QLabel(centralWidget);
         lbDebug->setObjectName(QStringLiteral("lbDebug"));
-        lbDebug->setGeometry(QRect(10, 720, 1201, 17));
+        lbDebug->setGeometry(QRect(10, 760, 1201, 17));
         lbDebug->setStyleSheet(QLatin1String("background-color:rgb(61, 61, 61);\n"
 "color:rgb(1, 251, 255)"));
         pushButton = new QPushButton(centralWidget);
@@ -103,6 +101,17 @@ public:
         pushButton_4 = new QPushButton(centralWidget);
         pushButton_4->setObjectName(QStringLiteral("pushButton_4"));
         pushButton_4->setGeometry(QRect(690, 230, 21, 27));
+        lbCameraArea = new QLabel(centralWidget);
+        lbCameraArea->setObjectName(QStringLiteral("lbCameraArea"));
+        lbCameraArea->setGeometry(QRect(810, 450, 391, 291));
+        lbCameraArea->setStyleSheet(QStringLiteral("background-color:rgb(255, 255, 255)"));
+        lbCameraArea->setScaledContents(true);
+        pushButton_5 = new QPushButton(centralWidget);
+        pushButton_5->setObjectName(QStringLiteral("pushButton_5"));
+        pushButton_5->setGeometry(QRect(10, 100, 99, 41));
+        pushButton_6 = new QPushButton(centralWidget);
+        pushButton_6->setObjectName(QStringLiteral("pushButton_6"));
+        pushButton_6->setGeometry(QRect(310, 100, 99, 41));
         MainWindow->setCentralWidget(centralWidget);
 
         retranslateUi(MainWindow);
@@ -120,6 +129,9 @@ public:
         pushButton_2->setText(QApplication::translate("MainWindow", "X", Q_NULLPTR));
         pushButton_3->setText(QApplication::translate("MainWindow", "Y", Q_NULLPTR));
         pushButton_4->setText(QApplication::translate("MainWindow", "Z", Q_NULLPTR));
+        lbCameraArea->setText(QString());
+        pushButton_5->setText(QApplication::translate("MainWindow", "New", Q_NULLPTR));
+        pushButton_6->setText(QApplication::translate("MainWindow", "Execute", Q_NULLPTR));
     } // retranslateUi
 
 };
