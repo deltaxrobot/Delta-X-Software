@@ -13,6 +13,7 @@
 #include <opencv2/imgproc.hpp>
 #include <ImageUnity.h>
 #include <stdio.h>
+#include <GcodeProgramManager.h>
 
 namespace Ui {
 class MainWindow;
@@ -30,6 +31,7 @@ public:
     void InitVariables();
 
     ConnectionManager* DeltaPort;
+	GcodeProgramManager* DeltaGcodeManager;
     GLWidget* VisualArea;
     QTimer* Timer1;
     cv::VideoCapture cap;
@@ -37,8 +39,11 @@ public:
 private slots:
     void ConnectDeltaRobot();
     void UpdateCameraScreen();
+	void AddNewProgram();
 
 private:
+	void HideExampleWidgets();
+
     Ui::MainWindow *ui;
 };
 

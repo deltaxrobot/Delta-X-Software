@@ -9,6 +9,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     InitVariables();
     InitEvents();
+
+	HideExampleWidgets();
 }
 
 MainWindow::~MainWindow()
@@ -19,18 +21,23 @@ MainWindow::~MainWindow()
 void MainWindow::InitEvents()
 {
     connect(ui->pbConnect, SIGNAL(clicked(bool)), this, SLOT(ConnectDeltaRobot()));
+	connect(ui->pbAddNewProgram, SIGNAL(clicked(bool)), this, SLOT(AddNewProgram()));
 }
 
 void MainWindow::InitVariables()
 {
     DeltaPort = new ConnectionManager(this);
-    VisualArea = new GLWidget();
 
+	DeltaGcodeManager = new GcodeProgramManager(ui->wgProgramContainer, ui->teGcodeArea);
+
+	//------------ OpenGl Init ----------
+	
+	VisualArea = new GLWidget();
     QHBoxLayout *container = new QHBoxLayout;
-
     container->addWidget(VisualArea);
-
     ui->wgOpenGl->setLayout(container);
+
+	//---------- OpenCV Init -------------
 
     cap = cv::VideoCapture(0);
     Timer1 = new QTimer(this);
@@ -82,4 +89,14 @@ void MainWindow::UpdateCameraScreen()
 
     QImage img = ImageTool::cvMatToQImage(drawing);
     ui->lbCameraArea->setPixmap(QPixmap::fromImage(img));
+}
+
+void MainWindow::AddNewProgram()
+{
+	DeltaGcodeManager->AddNewProgram();
+}
+
+void MainWindow::HideExampleWidgets()
+{
+	ui->frExProgram->setVisible(false);
 }

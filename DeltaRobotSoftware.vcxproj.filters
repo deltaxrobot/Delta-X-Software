@@ -55,6 +55,12 @@
     <ClCompile Include="DeltaVisualizer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="GcodeProgramManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GcodeProgram.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ConnectionManager.h">
@@ -88,6 +94,12 @@
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="glwidget.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="GcodeProgram.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="GcodeProgramManager.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>
