@@ -26,13 +26,17 @@ SOURCES += main.cpp\
     ConnectionManager.cpp \
     DeltaVisualizer.cpp \
     glwidget.cpp \
-    logo.cpp
+    logo.cpp \
+    GcodeProgramManager.cpp \
+    GcodeProgram.cpp
 
 HEADERS  += mainwindow.h \
     ConnectionManager.h \
     DeltaVisualizer.h \
     glwidget.h \
     logo.h \
-    ImageUnity.h
+    ImageUnity.h \
+    GcodeProgram.h \
+    GcodeProgramManager.h
 
 FORMS    += mainwindow.ui
