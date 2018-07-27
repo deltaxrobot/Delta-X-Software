@@ -18,14 +18,14 @@
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QMainWindow>
+#include <QtWidgets/QPlainTextEdit>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QScrollArea>
-#include <QtWidgets/QTextEdit>
 #include <QtWidgets/QWidget>
 
 QT_BEGIN_NAMESPACE
 
-class Ui_MainWindow 
+class Ui_MainWindow
 {
 public:
     QWidget *centralWidget;
@@ -37,7 +37,6 @@ public:
     QLineEdit *leExProgramName;
     QPushButton *pbExDeleteProgram;
     QLabel *lbExGCodeNumber;
-    QTextEdit *teGcodeArea;
     QWidget *wgOpenGl;
     QLabel *lbDebug;
     QPushButton *pushButton;
@@ -50,6 +49,8 @@ public:
     QLabel *lbCameraArea;
     QPushButton *pbAddNewProgram;
     QPushButton *pbExecuteGcodes;
+    QPushButton *pbSaveGcode;
+    QPlainTextEdit *pteGcodeArea;
 
     void setupUi(QMainWindow *MainWindow)
     {
@@ -67,7 +68,8 @@ public:
         lbState->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
         saProgramFiles = new QScrollArea(centralWidget);
         saProgramFiles->setObjectName(QStringLiteral("saProgramFiles"));
-        saProgramFiles->setGeometry(QRect(10, 150, 281, 591));
+        saProgramFiles->setEnabled(true);
+        saProgramFiles->setGeometry(QRect(10, 150, 291, 591));
         saProgramFiles->setStyleSheet(QStringLiteral(""));
         saProgramFiles->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
         saProgramFiles->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -84,6 +86,7 @@ public:
         frExProgram->setFrameShadow(QFrame::Raised);
         leExProgramName = new QLineEdit(frExProgram);
         leExProgramName->setObjectName(QStringLiteral("leExProgramName"));
+        leExProgramName->setEnabled(true);
         leExProgramName->setGeometry(QRect(10, 10, 181, 41));
         QFont font;
         font.setPointSize(12);
@@ -99,9 +102,6 @@ public:
         lbExGCodeNumber->setObjectName(QStringLiteral("lbExGCodeNumber"));
         lbExGCodeNumber->setGeometry(QRect(10, 60, 101, 16));
         saProgramFiles->setWidget(wgProgramContainer);
-        teGcodeArea = new QTextEdit(centralWidget);
-        teGcodeArea->setObjectName(QStringLiteral("teGcodeArea"));
-        teGcodeArea->setGeometry(QRect(310, 150, 361, 591));
         wgOpenGl = new QWidget(centralWidget);
         wgOpenGl->setObjectName(QStringLiteral("wgOpenGl"));
         wgOpenGl->setGeometry(QRect(810, 110, 391, 331));
@@ -141,7 +141,16 @@ public:
         pbAddNewProgram->setGeometry(QRect(10, 100, 99, 41));
         pbExecuteGcodes = new QPushButton(centralWidget);
         pbExecuteGcodes->setObjectName(QStringLiteral("pbExecuteGcodes"));
-        pbExecuteGcodes->setGeometry(QRect(310, 100, 99, 41));
+        pbExecuteGcodes->setGeometry(QRect(320, 100, 99, 41));
+        pbSaveGcode = new QPushButton(centralWidget);
+        pbSaveGcode->setObjectName(QStringLiteral("pbSaveGcode"));
+        pbSaveGcode->setGeometry(QRect(430, 100, 51, 41));
+        pteGcodeArea = new QPlainTextEdit(centralWidget);
+        pteGcodeArea->setObjectName(QStringLiteral("pteGcodeArea"));
+        pteGcodeArea->setGeometry(QRect(320, 150, 351, 591));
+        QFont font1;
+        font1.setPointSize(14);
+        pteGcodeArea->setFont(font1);
         MainWindow->setCentralWidget(centralWidget);
 
         retranslateUi(MainWindow);
@@ -160,39 +169,6 @@ public:
         leExProgramName->setText(QApplication::translate("MainWindow", "Program 1", Q_NULLPTR));
         pbExDeleteProgram->setText(QApplication::translate("MainWindow", "Delete", Q_NULLPTR));
         lbExGCodeNumber->setText(QApplication::translate("MainWindow", "100 Gcode Lines", Q_NULLPTR));
-        teGcodeArea->setHtml(QApplication::translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
-"p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:'MS Shell Dlg 2'; font-size:7.8pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;\">G01 X231 Y121 Z454 W90 U100</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;\">G01 X231 Y121 Z454</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;\">G01 X231 Y121 Z454</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-in"
-                        "dent:0px;\"><span style=\" font-size:12pt;\">G01 X231 Y121 Z454</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;\">G01 X231 Y121 Z454</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;\">G01 X231 Y121 Z454</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;\">G01 X231 Y121 Z454</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;\">G01 X231 Y121 Z454</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;\">G01 X231 Y121 Z454</span></p>\n"
-"<p sty"
-                        "le=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;\">G01 X231 Y121 Z454</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;\">G01 X231 Y121 Z454</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;\">G01 X231 Y121 Z454</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;\">G01 X231 Y121 Z454</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;\">G01 X231 Y121 Z454</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block"
-                        "-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;\">G01 X231 Y121 Z454</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;\">G01 X231 Y121 Z454</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;\">G02 X231 Y121 Z454</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;\">G02 X231 Y121 Z454</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;\">G02 X231 Y121 Z454</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;\">G02 X231 Y121 Z454</sp"
-                        "an></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;\">G02 X231 Y121 Z454</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;\">G02 X231 Y121 Z454</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;\">G02 X231 Y121 Z454</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;\">G02 X231 Y121 Z454</span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt;\"><br /></p></body></html>", Q_NULLPTR));
         lbDebug->setText(QApplication::translate("MainWindow", "Debug :", Q_NULLPTR));
         pushButton->setText(QApplication::translate("MainWindow", "Home", Q_NULLPTR));
         pushButton_2->setText(QApplication::translate("MainWindow", "X", Q_NULLPTR));
@@ -201,6 +177,8 @@ public:
         lbCameraArea->setText(QString());
         pbAddNewProgram->setText(QApplication::translate("MainWindow", "New", Q_NULLPTR));
         pbExecuteGcodes->setText(QApplication::translate("MainWindow", "Execute", Q_NULLPTR));
+        pbSaveGcode->setText(QApplication::translate("MainWindow", "Save", Q_NULLPTR));
+        pteGcodeArea->setPlainText(QApplication::translate("MainWindow", "G28", Q_NULLPTR));
     } // retranslateUi
 
 };

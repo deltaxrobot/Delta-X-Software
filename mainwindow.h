@@ -13,6 +13,7 @@
 #include <opencv2/imgproc.hpp>
 #include <ImageUnity.h>
 #include <stdio.h>
+#include <UnityTool.h>
 #include <GcodeProgramManager.h>
 
 namespace Ui {
@@ -40,6 +41,7 @@ private slots:
     void ConnectDeltaRobot();
     void UpdateCameraScreen();
 	void AddNewProgram();
+	void SaveProgram();
 
 private:
 	void HideExampleWidgets();

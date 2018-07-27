@@ -15,6 +15,11 @@ GcodeProgram::GcodeProgram(QWidget * parent) : GcodeProgram()
 	frPanel->setVisible(true);
 }
 
+GcodeProgram::~GcodeProgram()
+{
+	Destroy();
+}
+
 void GcodeProgram::InitWidget()
 {
 	frPanel = new QFrame();
@@ -48,6 +53,7 @@ void GcodeProgram::InitWidget()
 void GcodeProgram::InitEvents()
 {
 	connect(leProgramName, SIGNAL(selectionChanged()), this, SLOT(SelectNewProgram()));
+	connect(pbDelete, SIGNAL(clicked(bool)), this, SLOT(DeleteProgram()));
 }
 
 void GcodeProgram::SetPosition(int x, int y)
@@ -60,9 +66,19 @@ void GcodeProgram::SetName(QString name)
 	leProgramName->setText(name);
 }
 
+QString GcodeProgram::GetName()
+{
+	return leProgramName->text();
+}
+
 void GcodeProgram::SetLength(int length)
 {
 	lbGcodeNumber->setText(QString::number(length) + " Gcode Lines");
+}
+
+void GcodeProgram::CoutingGcodeLines()
+{
+	SetLength(GcodeData.count("G"));
 }
 
 void GcodeProgram::Destroy()
@@ -79,6 +95,11 @@ void GcodeProgram::SetColor(int color)
 		frPanel->setStyleSheet(QStringLiteral("background-color:rgb(209, 209, 209)"));
 	else if (color == SELECTED_COLOR)
 		frPanel->setStyleSheet(QStringLiteral("background-color:rgb(105, 199, 217)"));
+}
+
+void GcodeProgram::DeleteProgram()
+{
+	emit Deleted(this);
 }
 
 void GcodeProgram::SelectNewProgram()

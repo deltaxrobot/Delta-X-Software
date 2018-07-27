@@ -191,9 +191,11 @@
     <ClCompile Include="logo.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mainwindow.cpp" />
+    <ClCompile Include="UnityTool.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ConnectionManager.h" />
+    <ClInclude Include="UnityTool.h" />
     <QtMoc Include="mainwindow.h">
     </QtMoc>
   </ItemGroup>

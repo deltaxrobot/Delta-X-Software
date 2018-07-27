@@ -22,13 +22,18 @@ void MainWindow::InitEvents()
 {
     connect(ui->pbConnect, SIGNAL(clicked(bool)), this, SLOT(ConnectDeltaRobot()));
 	connect(ui->pbAddNewProgram, SIGNAL(clicked(bool)), this, SLOT(AddNewProgram()));
+	connect(ui->pbSaveGcode, SIGNAL(clicked(bool)), this, SLOT(SaveProgram()));
 }
 
 void MainWindow::InitVariables()
 {
     DeltaPort = new ConnectionManager(this);
 
-	DeltaGcodeManager = new GcodeProgramManager(ui->wgProgramContainer, ui->teGcodeArea);
+	DeltaGcodeManager = new GcodeProgramManager(ui->wgProgramContainer, ui->pteGcodeArea);
+
+	DebugLB = ui->lbDebug;
+
+	DeltaGcodeManager->LoadPrograms();
 
 	//------------ OpenGl Init ----------
 	
@@ -50,7 +55,7 @@ void MainWindow::ConnectDeltaRobot()
     if (DeltaPort->FindDeltaRobot() == true)
     {
         ui->lbState->setText("Delta Robot is connected !");
-        ui->lbDebug->setText(DeltaPort->SerialPort->portName());
+        Debug(DeltaPort->SerialPort->portName());
     }
 }
 
@@ -94,6 +99,11 @@ void MainWindow::UpdateCameraScreen()
 void MainWindow::AddNewProgram()
 {
 	DeltaGcodeManager->AddNewProgram();
+}
+
+void MainWindow::SaveProgram()
+{
+	DeltaGcodeManager->SaveGcodeIntoFile();
 }
 
 void MainWindow::HideExampleWidgets()

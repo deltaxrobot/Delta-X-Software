@@ -23,21 +23,27 @@ class GcodeProgram : public QObject
 public:
 	GcodeProgram();
 	GcodeProgram(QWidget *parent);
+	~GcodeProgram();
 	void InitWidget();
 	void InitEvents();
 	void SetPosition(int x, int y);
 	void SetName(QString name);
+	QString GetName();
 	void SetLength(int length);
+	void CoutingGcodeLines();
 	void Destroy();
 	void SetColor(int color);
 	
+	int ID;
 	QString GcodeData;
 
 public slots:
 	void SelectNewProgram();
+	void DeleteProgram();
 
 signals:
 	void Selected(GcodeProgram* ptr);
+	void Deleted(GcodeProgram* ptr);
 
 private:
 	QWidget* container;
