@@ -23,6 +23,7 @@ void MainWindow::InitEvents()
     connect(ui->pbConnect, SIGNAL(clicked(bool)), this, SLOT(ConnectDeltaRobot()));
 	connect(ui->pbAddNewProgram, SIGNAL(clicked(bool)), this, SLOT(AddNewProgram()));
 	connect(ui->pbSaveGcode, SIGNAL(clicked(bool)), this, SLOT(SaveProgram()));
+	connect(ui->pbExecuteGcodes, SIGNAL(clicked(bool)), this, SLOT(ExecuteProgram()));
 }
 
 void MainWindow::InitVariables()
@@ -52,11 +53,25 @@ void MainWindow::InitVariables()
 
 void MainWindow::ConnectDeltaRobot()
 {
-    if (DeltaPort->FindDeltaRobot() == true)
-    {
-        ui->lbState->setText("Delta Robot is connected !");
-        Debug(DeltaPort->SerialPort->portName());
-    }
+	if (ui->pbConnect->text() == "Connect" && !DeltaPort->IsConnect())
+	{
+		if (DeltaPort->FindDeltaRobot() == true)
+		{
+			ui->lbState->setText("Delta Robot is connected !");
+			Debug(DeltaPort->GetNamePort());
+
+			ui->pbConnect->setText("Disconnect");
+		}
+	}
+
+	else if (ui->pbConnect->text() == "Disconnect")
+	{
+		ui->pbConnect->setText("Connect");
+		ui->lbState->setText("Delta is not available !");
+
+		if (DeltaPort->IsConnect())
+			DeltaPort->Disconnect();
+	}
 }
 
 void MainWindow::UpdateCameraScreen()
@@ -104,6 +119,19 @@ void MainWindow::AddNewProgram()
 void MainWindow::SaveProgram()
 {
 	DeltaGcodeManager->SaveGcodeIntoFile();
+}
+
+void MainWindow::ExecuteProgram()
+{
+	if (DeltaPort->IsConnect())
+	{
+		QString exeGcodes = ui->pteGcodeArea->toPlainText();
+		DeltaPort->ExecuteGcode(exeGcodes);
+		Debug(QString("Sending ...") + exeGcodes);
+	}
+
+	else
+		Debug("Delta Robot is not connecting !");
 }
 
 void MainWindow::HideExampleWidgets()

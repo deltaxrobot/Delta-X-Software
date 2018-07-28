@@ -66,9 +66,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ConnectionManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <QtMoc Include="mainwindow.h">
       <Filter>Header Files</Filter>
     </QtMoc>
@@ -81,6 +78,9 @@
     <ClInclude Include="UnityTool.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <QtMoc Include="ConnectionManager.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="debug\moc_predefs.h.cbt">

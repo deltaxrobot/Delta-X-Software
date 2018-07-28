@@ -42,6 +42,7 @@ private slots:
     void UpdateCameraScreen();
 	void AddNewProgram();
 	void SaveProgram();
+	void ExecuteProgram();
 
 private:
 	void HideExampleWidgets();
