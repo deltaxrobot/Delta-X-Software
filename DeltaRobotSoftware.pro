@@ -28,7 +28,8 @@ SOURCES += main.cpp\
     glwidget.cpp \
     logo.cpp \
     GcodeProgramManager.cpp \
-    GcodeProgram.cpp
+    GcodeProgram.cpp \
+    UnityTool.cpp
 
 HEADERS  += mainwindow.h \
     ConnectionManager.h \

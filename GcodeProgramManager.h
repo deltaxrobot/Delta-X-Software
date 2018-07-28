@@ -14,9 +14,9 @@
 #include <qfile.h>
 #include <qtextstream.h>
 #include <qplaintextedit.h>
-#include <qdir>
 #include <qurl.h>
 #include <qvector.h>
+#include <qdir.h>
 #include <UnityTool.h>
 #include <GcodeProgram.h>
 
