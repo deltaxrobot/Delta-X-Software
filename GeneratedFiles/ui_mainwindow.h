@@ -107,7 +107,7 @@ public:
         wgOpenGl->setGeometry(QRect(810, 110, 391, 331));
         lbDebug = new QLabel(centralWidget);
         lbDebug->setObjectName(QStringLiteral("lbDebug"));
-        lbDebug->setGeometry(QRect(10, 760, 1201, 17));
+        lbDebug->setGeometry(QRect(10, 750, 1201, 31));
         lbDebug->setStyleSheet(QLatin1String("background-color:rgb(61, 61, 61);\n"
 "color:rgb(1, 251, 255)"));
         pushButton = new QPushButton(centralWidget);

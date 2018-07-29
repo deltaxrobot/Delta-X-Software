@@ -2,12 +2,16 @@
 
 ConnectionManager::ConnectionManager()
 {
-    serialPort = new QSerialPort();
+	timer = new QTimer();
+	connect(timer, SIGNAL(timeout()), this, SLOT(TransmitGcode()));
 }
 
-ConnectionManager::ConnectionManager(QObject* parent)
+ConnectionManager::ConnectionManager(QObject* parent) : ConnectionManager()
 {
-    serialPort = new QSerialPort(parent);
+	if (parent != NULL)
+		serialPort = new QSerialPort(parent);
+	else
+		serialPort = new QSerialPort();
 }
 
 bool ConnectionManager::IsConnect()
@@ -31,7 +35,32 @@ QString ConnectionManager::GetNamePort()
 
 void ConnectionManager::ExecuteGcode(QString gcodes)
 {
-	serialPort->write(gcodes.toStdString().c_str(), gcodes.size());
+	QList<QString> tempGcodeList = gcodes.split('\n');
+	for (int i = 0; i < tempGcodeList.size(); i++)
+	{
+		if (tempGcodeList.at(i) != "")
+		{
+			gcodeList.push_back(tempGcodeList.at(i));
+		}
+	}
+
+	tempGcodeList.clear();
+
+	timer->start(200);
+}
+
+void ConnectionManager::TransmitGcode()
+{
+	QString gcodeLine = gcodeList.at(gcodeOrder) + "\n";
+	serialPort->write(gcodeLine.toStdString().c_str(), gcodeLine.size());
+	Debug(gcodeLine);
+	gcodeOrder++;
+	if (gcodeOrder == gcodeList.size())
+	{
+		timer->stop();
+		gcodeOrder = 0;
+		gcodeList.clear();
+	}		
 }
 
 bool ConnectionManager::FindDeltaRobot()
@@ -53,7 +82,7 @@ bool ConnectionManager::FindDeltaRobot()
 			serialPort->write("IsDelta\n");
 
 			QByteArray receiveData = serialPort->readAll();
-			while (serialPort->waitForReadyRead(500))
+			while (serialPort->waitForReadyRead(300))
 			{
 				receiveData.append(serialPort->readAll());
 				if (receiveData.toStdString().compare("YesDelta"))

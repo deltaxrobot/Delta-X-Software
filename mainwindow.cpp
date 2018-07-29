@@ -127,7 +127,6 @@ void MainWindow::ExecuteProgram()
 	{
 		QString exeGcodes = ui->pteGcodeArea->toPlainText();
 		DeltaPort->ExecuteGcode(exeGcodes);
-		Debug(QString("Sending ...") + exeGcodes);
 	}
 
 	else

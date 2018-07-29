@@ -3,9 +3,11 @@
 
 #include <QtSerialPort/QSerialPort>
 #include <QtSerialPort/QSerialPortInfo>
+#include <qtimer.h>
 #include <qthread.h>
+#include <UnityTool.h>
 
-class ConnectionManager : public QThread
+class ConnectionManager : public QObject
 {
 	Q_OBJECT
 public:
@@ -18,8 +20,14 @@ public:
 
 	void ExecuteGcode(QString gcodes);
 
+public slots:
+	void TransmitGcode();
+
 private:
     QSerialPort* serialPort;
+	QTimer* timer;
+	QList<QString> gcodeList;
+	int gcodeOrder = 0;
 };
 
 #endif // CONNECTIONMANAGER_H
