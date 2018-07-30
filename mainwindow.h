@@ -15,6 +15,7 @@
 #include <stdio.h>
 #include <UnityTool.h>
 #include <GcodeProgramManager.h>
+#include <Dashboard.h>
 
 namespace Ui {
 class MainWindow;
@@ -33,6 +34,7 @@ public:
 
     ConnectionManager* DeltaPort;
 	GcodeProgramManager* DeltaGcodeManager;
+	Dashboard* DeltaDashboard;
     GLWidget* VisualArea;
     QTimer* Timer1;
     cv::VideoCapture cap;

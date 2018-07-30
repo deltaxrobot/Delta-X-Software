@@ -24,6 +24,10 @@ void MainWindow::InitEvents()
 	connect(ui->pbAddNewProgram, SIGNAL(clicked(bool)), this, SLOT(AddNewProgram()));
 	connect(ui->pbSaveGcode, SIGNAL(clicked(bool)), this, SLOT(SaveProgram()));
 	connect(ui->pbExecuteGcodes, SIGNAL(clicked(bool)), this, SLOT(ExecuteProgram()));
+	connect(ui->pbHome, SIGNAL(clicked(bool)), DeltaDashboard, SLOT(Home()));
+	connect(ui->pbZ, SIGNAL(clicked(bool)), DeltaDashboard, SLOT(UpdateZ()));
+	connect(ui->pbY, SIGNAL(clicked(bool)), DeltaDashboard, SLOT(UpdateY()));
+	connect(ui->pbX, SIGNAL(clicked(bool)), DeltaDashboard, SLOT(UpdateX()));
 }
 
 void MainWindow::InitVariables()
@@ -31,6 +35,8 @@ void MainWindow::InitVariables()
     DeltaPort = new ConnectionManager(this);
 
 	DeltaGcodeManager = new GcodeProgramManager(ui->wgProgramContainer, ui->pteGcodeArea);
+
+	DeltaDashboard = new Dashboard(DeltaPort, ui->leX, ui->leY, ui->leZ);
 
 	DebugLB = ui->lbDebug;
 
@@ -127,6 +133,7 @@ void MainWindow::ExecuteProgram()
 	{
 		QString exeGcodes = ui->pteGcodeArea->toPlainText();
 		DeltaPort->ExecuteGcode(exeGcodes);
+		DeltaDashboard->UpdatePosition(exeGcodes);
 	}
 
 	else
