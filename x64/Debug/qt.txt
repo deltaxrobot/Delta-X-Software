@@ -1,1 +1,0 @@
-Uic'ing mainwindow.ui...;C:\Qt\Qt5.8.0\5.8\msvc2015_64\bin\uic.exe;"F:\Git\DeltaRobot-Software\mainwindow.ui" -o ".\GeneratedFiles\ui_mainwindow.h"

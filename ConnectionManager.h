@@ -3,7 +3,7 @@
 
 #include <QtSerialPort/QSerialPort>
 #include <QtSerialPort/QSerialPortInfo>
-#include <qtimer.h>
+
 #include <qthread.h>
 #include <UnityTool.h>
 
@@ -17,17 +17,14 @@ public:
 	void Disconnect();
 	QString GetNamePort();
     bool FindDeltaRobot();
+	void Send(QString msg);
 
-	void ExecuteGcode(QString gcodes);
+	
 
 public slots:
-	void TransmitGcode();
 
 private:
     QSerialPort* serialPort;
-	QTimer* timer;
-	QList<QString> gcodeList;
-	int gcodeOrder = 0;
 };
 
 #endif // CONNECTIONMANAGER_H

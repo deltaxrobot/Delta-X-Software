@@ -2,8 +2,6 @@
 
 ConnectionManager::ConnectionManager()
 {
-	timer = new QTimer();
-	connect(timer, SIGNAL(timeout()), this, SLOT(TransmitGcode()));
 }
 
 ConnectionManager::ConnectionManager(QObject* parent) : ConnectionManager()
@@ -33,46 +31,18 @@ QString ConnectionManager::GetNamePort()
 	return serialPort->portName();
 }
 
-void ConnectionManager::ExecuteGcode(QString gcodes)
+void ConnectionManager::Send(QString msg)
 {
-	QList<QString> tempGcodeList = gcodes.split('\n');
-	for (int i = 0; i < tempGcodeList.size(); i++)
+	if (serialPort->isOpen())
 	{
-		if (tempGcodeList.at(i) != "")
-		{
-			gcodeList.push_back(tempGcodeList.at(i));
-		}
+		serialPort->write(msg.toStdString().c_str(), msg.size());
 	}
-
-	tempGcodeList.clear();
-
-	timer->start(200);
-}
-
-void ConnectionManager::TransmitGcode()
-{
-	QString gcodeLine = gcodeList.at(gcodeOrder) + "\n";
-	serialPort->write(gcodeLine.toStdString().c_str(), gcodeLine.size());
-	Debug(gcodeLine);
-	gcodeOrder++;
-	if (gcodeOrder == gcodeList.size())
-	{
-		timer->stop();
-		gcodeOrder = 0;
-		gcodeList.clear();
-	}		
+	else
+		Debug("Serial port is not available !");
 }
 
 bool ConnectionManager::FindDeltaRobot()
 {
-	/*serialPort->setPortName("COM10");
-	serialPort->setBaudRate(QSerialPort::Baud115200);
-	if (serialPort->open((QIODevice::ReadWrite)) == true)
-	{
-		return true;
-	}
-	return false;*/
-
 	Q_FOREACH(QSerialPortInfo portName, QSerialPortInfo::availablePorts())
 	{
 		serialPort->setPortName(portName.portName());
@@ -82,10 +52,12 @@ bool ConnectionManager::FindDeltaRobot()
 			serialPort->write("IsDelta\n");
 
 			QByteArray receiveData = serialPort->readAll();
-			while (serialPort->waitForReadyRead(300))
+			while (serialPort->waitForReadyRead(2000))
 			{
-				receiveData.append(serialPort->readAll());
-				if (receiveData.toStdString().compare("YesDelta"))
+				receiveData = serialPort->readAll();
+				//Debug(receiveData);
+				receiveData = receiveData.mid(0, QString("YesDelta").length());
+				if (receiveData == "YesDelta")
 					return true;
 			}
 

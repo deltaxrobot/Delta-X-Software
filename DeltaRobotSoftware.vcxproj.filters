@@ -64,9 +64,6 @@
     <ClCompile Include="UnityTool.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Dashboard.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="mainwindow.h">
@@ -75,16 +72,13 @@
     <ClInclude Include="logo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="DeltaVisualizer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="UnityTool.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <QtMoc Include="ConnectionManager.h">
       <Filter>Header Files</Filter>
     </QtMoc>
-    <QtMoc Include="Dashboard.h">
+    <QtMoc Include="DeltaVisualizer.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>

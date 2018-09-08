@@ -24,6 +24,7 @@
 #include <QtWidgets/QSlider>
 #include <QtWidgets/QTabWidget>
 #include <QtWidgets/QWidget>
+#include "glwidget.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -54,7 +55,7 @@ public:
     QPlainTextEdit *pteGcodeArea;
     QTabWidget *twDeltaGeometry;
     QWidget *t3D;
-    QWidget *wgOpenGl;
+    GLWidget *wgOpenGl;
     QWidget *t2D;
     QWidget *wg2D;
     QSlider *vsZAdjsution;
@@ -177,7 +178,7 @@ public:
         twDeltaGeometry->setGeometry(QRect(810, 90, 391, 341));
         t3D = new QWidget();
         t3D->setObjectName(QStringLiteral("t3D"));
-        wgOpenGl = new QWidget(t3D);
+        wgOpenGl = new GLWidget(t3D);
         wgOpenGl->setObjectName(QStringLiteral("wgOpenGl"));
         wgOpenGl->setGeometry(QRect(0, 10, 381, 301));
         twDeltaGeometry->addTab(t3D, QString());
@@ -185,10 +186,11 @@ public:
         t2D->setObjectName(QStringLiteral("t2D"));
         wg2D = new QWidget(t2D);
         wg2D->setObjectName(QStringLiteral("wg2D"));
-        wg2D->setGeometry(QRect(50, 10, 300, 301));
+        wg2D->setGeometry(QRect(50, 10, 300, 300));
         vsZAdjsution = new QSlider(t2D);
         vsZAdjsution->setObjectName(QStringLiteral("vsZAdjsution"));
         vsZAdjsution->setGeometry(QRect(10, 9, 22, 301));
+        vsZAdjsution->setMaximum(300);
         vsZAdjsution->setOrientation(Qt::Vertical);
         twDeltaGeometry->addTab(t2D, QString());
         tParameter = new QWidget();

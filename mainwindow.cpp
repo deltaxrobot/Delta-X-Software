@@ -11,6 +11,7 @@ MainWindow::MainWindow(QWidget *parent) :
     InitEvents();
 
 	HideExampleWidgets();
+	InterpolateCircle();
 }
 
 MainWindow::~MainWindow()
@@ -24,30 +25,38 @@ void MainWindow::InitEvents()
 	connect(ui->pbAddNewProgram, SIGNAL(clicked(bool)), this, SLOT(AddNewProgram()));
 	connect(ui->pbSaveGcode, SIGNAL(clicked(bool)), this, SLOT(SaveProgram()));
 	connect(ui->pbExecuteGcodes, SIGNAL(clicked(bool)), this, SLOT(ExecuteProgram()));
-	connect(ui->pbHome, SIGNAL(clicked(bool)), DeltaDashboard, SLOT(Home()));
-	connect(ui->pbZ, SIGNAL(clicked(bool)), DeltaDashboard, SLOT(UpdateZ()));
-	connect(ui->pbY, SIGNAL(clicked(bool)), DeltaDashboard, SLOT(UpdateY()));
-	connect(ui->pbX, SIGNAL(clicked(bool)), DeltaDashboard, SLOT(UpdateX()));
+
+	connect(ui->pbHome, SIGNAL(clicked(bool)), this, SLOT(Home()));
+	connect(ui->pbZ, SIGNAL(clicked(bool)), this, SLOT(UpdateDeltaPosition()));
+	connect(ui->pbY, SIGNAL(clicked(bool)), this, SLOT(UpdateDeltaPosition()));
+	connect(ui->pbX, SIGNAL(clicked(bool)), this, SLOT(UpdateDeltaPosition()));
+	connect(ui->vsZAdjsution, SIGNAL(valueChanged(int)), this, SLOT(UpdateZValue(int)));
+	connect(ui->vsZAdjsution, SIGNAL(sliderReleased()), this, SLOT(UpdateDeltaPosition()));
+
+	connect(DeltaParameter, SIGNAL(Moved(float, float, float)), this, SLOT(UpdatePositionValue(float, float, float)));
+	connect(DeltaParameter, SIGNAL(FinishMoving()), this, SLOT(UpdateDeltaPosition()));
 }
 
 void MainWindow::InitVariables()
 {
     DeltaPort = new ConnectionManager(this);
 
-	DeltaGcodeManager = new GcodeProgramManager(ui->wgProgramContainer, ui->pteGcodeArea);
-
-	DeltaDashboard = new Dashboard(DeltaPort, ui->leX, ui->leY, ui->leZ);
-
+	DeltaGcodeManager = new GcodeProgramManager(ui->wgProgramContainer, ui->pteGcodeArea, DeltaPort);
+	
 	DebugLB = ui->lbDebug;
 
 	DeltaGcodeManager->LoadPrograms();
+	
+	DeltaParameter = new DeltaVisualizer(ui->t2D);
+	DeltaParameter->setObjectName(QStringLiteral("wg2D"));
+	DeltaParameter->setGeometry(QRect(50, 10, 300, 300));
 
 	//------------ OpenGl Init ----------
 	
-	VisualArea = new GLWidget();
+	/*VisualArea = new GLWidget();
     QHBoxLayout *container = new QHBoxLayout;
     container->addWidget(VisualArea);
-    ui->wgOpenGl->setLayout(container);
+    ui->wgOpenGl->setLayout(container);*/
 
 	//---------- OpenCV Init -------------
 
@@ -132,15 +141,81 @@ void MainWindow::ExecuteProgram()
 	if (DeltaPort->IsConnect())
 	{
 		QString exeGcodes = ui->pteGcodeArea->toPlainText();
-		DeltaPort->ExecuteGcode(exeGcodes);
-		DeltaDashboard->UpdatePosition(exeGcodes);
+		DeltaGcodeManager->ExecuteGcode(exeGcodes);
 	}
 
 	else
 		Debug("Delta Robot is not connecting !");
 }
 
+void MainWindow::UpdateZValue(int z)
+{
+	ui->leZ->setText(QString::number(DeltaParameter->ZHome - z));
+}
+
+void MainWindow::UpdateDeltaPosition()
+{
+	DeltaParameter->X = ui->leX->text().toFloat();
+	DeltaParameter->Y = ui->leY->text().toFloat();
+	DeltaParameter->Z = ui->leZ->text().toFloat();
+
+	ui->vsZAdjsution->setValue(DeltaParameter->ZHome - DeltaParameter->Z);
+	DeltaParameter->ChangeXY(ui->leX->text().toFloat(), ui->leY->text().toFloat());
+
+	DeltaGcodeManager->ExecuteGcode(QString("G01 X") + ui->leX->text() + QString(" Y") + ui->leY->text() + QString(" Z") + ui->leZ->text());
+}
+
+void MainWindow::UpdatePositionValue(float x, float y, float z)
+{
+	ui->leX->setText(QString::number(x));
+	ui->leY->setText(QString::number(y));
+	ui->leZ->setText(QString::number(z));
+
+	//UpdateDeltaPosition();
+}
+
+void MainWindow::Home()
+{
+	DeltaGcodeManager->ExecuteGcode("G28");
+
+	ui->leX->setText(QString::number(DeltaParameter->XHome));
+	ui->leY->setText(QString::number(DeltaParameter->YHome));
+	ui->leZ->setText(QString::number(DeltaParameter->ZHome));
+
+	DeltaParameter->X = DeltaParameter->XHome;
+	DeltaParameter->Y = DeltaParameter->YHome;
+	DeltaParameter->Z = DeltaParameter->ZHome;
+
+	DeltaParameter->ChangeXY(0, 0);
+	ui->vsZAdjsution->setValue(0);
+}
+
 void MainWindow::HideExampleWidgets()
 {
 	ui->frExProgram->setVisible(false);
+}
+
+void MainWindow::InterpolateCircle()
+{
+	float r = 120;
+	int resolution = 120;
+	float raMinAngle;
+	int xO = 0;
+	int yO = 0;
+	int x;
+	int y;
+	float raAngle;
+	QString gcode;
+
+	raMinAngle = qDegreesToRadians(360.0f / resolution);
+
+	for (int i = 0; i < resolution; i++)
+	{
+		raAngle = raMinAngle * i;
+		x = xO + r * qCos(raAngle);
+		y = yO + r * qSin(raAngle);
+		gcode += QString("G01 X") + QString::number(x) + " Y" + QString::number(y) + "\n";
+	}
+
+	ui->pteGcodeArea->setPlainText(gcode);
 }

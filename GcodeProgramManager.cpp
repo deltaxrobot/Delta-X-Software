@@ -4,12 +4,17 @@
 GcodeProgramManager::GcodeProgramManager()
 {
 	ProgramList = new QVector<GcodeProgram*>();	
+
+	timer = new QTimer();
+
+	connect(timer, SIGNAL(timeout()), this, SLOT(TransmitGcode()));
 }
 
-GcodeProgramManager::GcodeProgramManager(QWidget* container, QPlainTextEdit * gcodeArea) : GcodeProgramManager()
+GcodeProgramManager::GcodeProgramManager(QWidget* container, QPlainTextEdit * gcodeArea, ConnectionManager* deltaPort) : GcodeProgramManager()
 {
 	wgProgramContainer = container;
 	pteGcodeArea = gcodeArea;
+	deltaConnection = deltaPort;
 }
 
 void GcodeProgramManager::AddNewProgram()
@@ -27,6 +32,22 @@ void GcodeProgramManager::AddNewProgram()
 	connect(newProgram, SIGNAL(Deleted(GcodeProgram*)), this, SLOT(DeleteProgram(GcodeProgram*)));
 
 	ProgramCounter++;
+}
+
+void GcodeProgramManager::ExecuteGcode(QString gcodes)
+{
+	QList<QString> tempGcodeList = gcodes.split('\n');
+	for (int i = 0; i < tempGcodeList.size(); i++)
+	{
+		if (tempGcodeList.at(i) != "")
+		{
+			gcodeList.push_back(tempGcodeList.at(i));
+		}
+	}
+
+	tempGcodeList.clear();
+
+	timer->start(200);
 }
 
 void GcodeProgramManager::LoadPrograms()
@@ -122,6 +143,20 @@ void GcodeProgramManager::DeleteProgram(GcodeProgram* ptr)
 	}
 
 	wgProgramContainer->setGeometry(QRect(0, 0, 279, 90 * ProgramCounter + 10));
+}
+
+void GcodeProgramManager::TransmitGcode()
+{
+	QString gcodeLine = gcodeList.at(gcodeOrder) + "\n";
+	deltaConnection->Send(gcodeLine);
+	Debug(gcodeLine);
+	gcodeOrder++;
+	if (gcodeOrder == gcodeList.size())
+	{
+		timer->stop();
+		gcodeOrder = 0;
+		gcodeList.clear();
+	}
 }
 
 void GcodeProgramManager::ChangeSelectingProgram(GcodeProgram * ptr)

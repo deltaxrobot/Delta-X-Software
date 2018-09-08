@@ -19,6 +19,8 @@
 #include <qdir.h>
 #include <UnityTool.h>
 #include <GcodeProgram.h>
+#include <qtimer.h>
+#include <ConnectionManager.h>
 
 class GcodeProgramManager : public QObject
 {
@@ -27,20 +29,29 @@ class GcodeProgramManager : public QObject
 public:
 	GcodeProgramManager();
 	~GcodeProgramManager();
-	GcodeProgramManager(QWidget* container, QPlainTextEdit* gcodeArea);
+	GcodeProgramManager(QWidget* container, QPlainTextEdit* gcodeArea, ConnectionManager* deltaPort = NULL );
 	void AddNewProgram();
 	void LoadPrograms();
+	void ExecuteGcode(QString gcodes);
 
 	QWidget* wgProgramContainer;
 	QPlainTextEdit* pteGcodeArea;
+	QTimer* timer;
 
 	GcodeProgram* SelectingProgram = NULL;
 	int ProgramCounter = 0;
 	QVector<GcodeProgram*>* ProgramList;
 
+	QList<QString> gcodeList;
+	int gcodeOrder = 0;
+
 public slots:
 	void ChangeSelectingProgram(GcodeProgram* ptr);
 	void SaveGcodeIntoFile();
 	void DeleteProgram(GcodeProgram* ptr);
+	void TransmitGcode();
+
+private:
+	ConnectionManager* deltaConnection;
 };
 

@@ -353,7 +353,7 @@ color:rgb(1, 251, 255)</string>
      <attribute name="title">
       <string>3D</string>
      </attribute>
-     <widget class="QWidget" name="wgOpenGl" native="true">
+     <widget class="GLWidget" name="wgOpenGl" native="true">
       <property name="geometry">
        <rect>
         <x>0</x>
@@ -374,7 +374,7 @@ color:rgb(1, 251, 255)</string>
         <x>50</x>
         <y>10</y>
         <width>300</width>
-        <height>301</height>
+        <height>300</height>
        </rect>
       </property>
      </widget>
@@ -386,6 +386,9 @@ color:rgb(1, 251, 255)</string>
         <width>22</width>
         <height>301</height>
        </rect>
+      </property>
+      <property name="maximum">
+       <number>300</number>
       </property>
       <property name="orientation">
        <enum>Qt::Vertical</enum>
@@ -686,6 +689,14 @@ color:rgb(1, 251, 255)</string>
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>GLWidget</class>
+   <extends>QWidget</extends>
+   <header>glwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
