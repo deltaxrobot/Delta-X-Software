@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1223</width>
+    <width>1401</width>
     <height>792</height>
    </rect>
   </property>
@@ -167,7 +167,7 @@
      <rect>
       <x>10</x>
       <y>750</y>
-      <width>1201</width>
+      <width>1381</width>
       <height>31</height>
      </rect>
     </property>
@@ -182,8 +182,8 @@ color:rgb(1, 251, 255)</string>
    <widget class="QPushButton" name="pbHome">
     <property name="geometry">
      <rect>
-      <x>690</x>
-      <y>110</y>
+      <x>1280</x>
+      <y>120</y>
       <width>101</width>
       <height>27</height>
      </rect>
@@ -195,8 +195,8 @@ color:rgb(1, 251, 255)</string>
    <widget class="QPushButton" name="pbX">
     <property name="geometry">
      <rect>
-      <x>690</x>
-      <y>150</y>
+      <x>1280</x>
+      <y>160</y>
       <width>21</width>
       <height>27</height>
      </rect>
@@ -208,8 +208,8 @@ color:rgb(1, 251, 255)</string>
    <widget class="QLineEdit" name="leX">
     <property name="geometry">
      <rect>
-      <x>720</x>
-      <y>150</y>
+      <x>1310</x>
+      <y>160</y>
       <width>71</width>
       <height>27</height>
      </rect>
@@ -218,8 +218,8 @@ color:rgb(1, 251, 255)</string>
    <widget class="QPushButton" name="pbY">
     <property name="geometry">
      <rect>
-      <x>690</x>
-      <y>190</y>
+      <x>1280</x>
+      <y>200</y>
       <width>21</width>
       <height>27</height>
      </rect>
@@ -231,8 +231,8 @@ color:rgb(1, 251, 255)</string>
    <widget class="QLineEdit" name="leY">
     <property name="geometry">
      <rect>
-      <x>720</x>
-      <y>190</y>
+      <x>1310</x>
+      <y>200</y>
       <width>71</width>
       <height>27</height>
      </rect>
@@ -241,8 +241,8 @@ color:rgb(1, 251, 255)</string>
    <widget class="QLineEdit" name="leZ">
     <property name="geometry">
      <rect>
-      <x>720</x>
-      <y>230</y>
+      <x>1310</x>
+      <y>240</y>
       <width>71</width>
       <height>27</height>
      </rect>
@@ -251,33 +251,14 @@ color:rgb(1, 251, 255)</string>
    <widget class="QPushButton" name="pbZ">
     <property name="geometry">
      <rect>
-      <x>690</x>
-      <y>230</y>
+      <x>1280</x>
+      <y>240</y>
       <width>21</width>
       <height>27</height>
      </rect>
     </property>
     <property name="text">
      <string>Z</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="lbCameraArea">
-    <property name="geometry">
-     <rect>
-      <x>810</x>
-      <y>450</y>
-      <width>391</width>
-      <height>291</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background-color:rgb(255, 255, 255)</string>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-    <property name="scaledContents">
-     <bool>true</bool>
     </property>
    </widget>
    <widget class="QPushButton" name="pbAddNewProgram">
@@ -340,7 +321,7 @@ color:rgb(1, 251, 255)</string>
    <widget class="QTabWidget" name="twDeltaGeometry">
     <property name="geometry">
      <rect>
-      <x>810</x>
+      <x>870</x>
       <y>90</y>
       <width>391</width>
       <height>341</height>
@@ -683,6 +664,100 @@ color:rgb(1, 251, 255)</string>
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
        </property>
       </widget>
+     </widget>
+    </widget>
+   </widget>
+   <widget class="QTabWidget" name="tabWidget">
+    <property name="geometry">
+     <rect>
+      <x>870</x>
+      <y>440</y>
+      <width>391</width>
+      <height>301</height>
+     </rect>
+    </property>
+    <property name="currentIndex">
+     <number>1</number>
+    </property>
+    <widget class="QWidget" name="tResultCameraArea">
+     <attribute name="title">
+      <string>Result</string>
+     </attribute>
+     <widget class="QLabel" name="lbCameraArea">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>10</y>
+        <width>371</width>
+        <height>251</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color:rgb(255, 255, 255)</string>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="scaledContents">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="tab_2">
+     <attribute name="title">
+      <string>Test Image</string>
+     </attribute>
+     <widget class="QLineEdit" name="leTestImageUrl">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>20</y>
+        <width>301</width>
+        <height>22</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QLabel" name="lbTestImage">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>50</y>
+        <width>301</width>
+        <height>211</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color:rgb(255, 255, 255)</string>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pbHSV">
+      <property name="geometry">
+       <rect>
+        <x>320</x>
+        <y>50</y>
+        <width>61</width>
+        <height>28</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>HSV</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pbLoadTestImage">
+      <property name="geometry">
+       <rect>
+        <x>320</x>
+        <y>20</y>
+        <width>61</width>
+        <height>28</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Load</string>
+      </property>
      </widget>
     </widget>
    </widget>

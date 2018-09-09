@@ -35,6 +35,8 @@ void MainWindow::InitEvents()
 
 	connect(DeltaParameter, SIGNAL(Moved(float, float, float)), this, SLOT(UpdatePositionValue(float, float, float)));
 	connect(DeltaParameter, SIGNAL(FinishMoving()), this, SLOT(UpdateDeltaPosition()));
+
+	connect(ui->pbHSV, SIGNAL(clicked(bool)), this, SLOT(OpenHSVPanel()));
 }
 
 void MainWindow::InitVariables()
@@ -218,4 +220,9 @@ void MainWindow::InterpolateCircle()
 	}
 
 	ui->pteGcodeArea->setPlainText(gcode);
+}
+
+void MainWindow::OpenHSVPanel()
+{
+	
 }

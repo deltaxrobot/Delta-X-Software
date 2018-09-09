@@ -52,6 +52,8 @@ private slots:
 	void UpdatePositionValue(float x, float y, float z);
 	void Home();
 
+	void OpenHSVPanel();
+
 private:
 	void HideExampleWidgets();
 	void InterpolateCircle();

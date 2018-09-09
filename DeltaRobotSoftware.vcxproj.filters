@@ -97,6 +97,9 @@
     <QtUic Include="mainwindow.ui">
       <Filter>Form Files</Filter>
     </QtUic>
+    <QtUic Include="HSVWindow.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="glwidget.h">

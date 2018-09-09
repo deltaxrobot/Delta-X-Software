@@ -47,16 +47,17 @@ bool ConnectionManager::FindDeltaRobot()
 	{
 		serialPort->setPortName(portName.portName());
 		serialPort->setBaudRate(9600);
+		Debug(serialPort->portName());
 		if (serialPort->open((QIODevice::ReadWrite)) == true)
 		{
 			serialPort->write("IsDelta\n");
 
 			QByteArray receiveData = serialPort->readAll();
-			while (serialPort->waitForReadyRead(2000))
+			while (serialPort->waitForReadyRead(200))
 			{
-				receiveData = serialPort->readAll();
+				receiveData.append(serialPort->readAll());
 				//Debug(receiveData);
-				receiveData = receiveData.mid(0, QString("YesDelta").length());
+				receiveData = receiveData.mid(0, 8);
 				if (receiveData == "YesDelta")
 					return true;
 			}

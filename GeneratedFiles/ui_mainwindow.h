@@ -48,7 +48,6 @@ public:
     QLineEdit *leY;
     QLineEdit *leZ;
     QPushButton *pbZ;
-    QLabel *lbCameraArea;
     QPushButton *pbAddNewProgram;
     QPushButton *pbExecuteGcodes;
     QPushButton *pbSaveGcode;
@@ -76,12 +75,20 @@ public:
     QLineEdit *lineEdit_8;
     QLineEdit *lineEdit_6;
     QLabel *label_7;
+    QTabWidget *tabWidget;
+    QWidget *tResultCameraArea;
+    QLabel *lbCameraArea;
+    QWidget *tab_2;
+    QLineEdit *leTestImageUrl;
+    QLabel *lbTestImage;
+    QPushButton *pbHSV;
+    QPushButton *pbLoadTestImage;
 
     void setupUi(QMainWindow *MainWindow)
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QStringLiteral("MainWindow"));
-        MainWindow->resize(1223, 792);
+        MainWindow->resize(1401, 792);
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         pbConnect = new QPushButton(centralWidget);
@@ -129,35 +136,30 @@ public:
         saProgramFiles->setWidget(wgProgramContainer);
         lbDebug = new QLabel(centralWidget);
         lbDebug->setObjectName(QStringLiteral("lbDebug"));
-        lbDebug->setGeometry(QRect(10, 750, 1201, 31));
+        lbDebug->setGeometry(QRect(10, 750, 1381, 31));
         lbDebug->setStyleSheet(QLatin1String("background-color:rgb(61, 61, 61);\n"
 "color:rgb(1, 251, 255)"));
         pbHome = new QPushButton(centralWidget);
         pbHome->setObjectName(QStringLiteral("pbHome"));
-        pbHome->setGeometry(QRect(690, 110, 101, 27));
+        pbHome->setGeometry(QRect(1280, 120, 101, 27));
         pbX = new QPushButton(centralWidget);
         pbX->setObjectName(QStringLiteral("pbX"));
-        pbX->setGeometry(QRect(690, 150, 21, 27));
+        pbX->setGeometry(QRect(1280, 160, 21, 27));
         leX = new QLineEdit(centralWidget);
         leX->setObjectName(QStringLiteral("leX"));
-        leX->setGeometry(QRect(720, 150, 71, 27));
+        leX->setGeometry(QRect(1310, 160, 71, 27));
         pbY = new QPushButton(centralWidget);
         pbY->setObjectName(QStringLiteral("pbY"));
-        pbY->setGeometry(QRect(690, 190, 21, 27));
+        pbY->setGeometry(QRect(1280, 200, 21, 27));
         leY = new QLineEdit(centralWidget);
         leY->setObjectName(QStringLiteral("leY"));
-        leY->setGeometry(QRect(720, 190, 71, 27));
+        leY->setGeometry(QRect(1310, 200, 71, 27));
         leZ = new QLineEdit(centralWidget);
         leZ->setObjectName(QStringLiteral("leZ"));
-        leZ->setGeometry(QRect(720, 230, 71, 27));
+        leZ->setGeometry(QRect(1310, 240, 71, 27));
         pbZ = new QPushButton(centralWidget);
         pbZ->setObjectName(QStringLiteral("pbZ"));
-        pbZ->setGeometry(QRect(690, 230, 21, 27));
-        lbCameraArea = new QLabel(centralWidget);
-        lbCameraArea->setObjectName(QStringLiteral("lbCameraArea"));
-        lbCameraArea->setGeometry(QRect(810, 450, 391, 291));
-        lbCameraArea->setStyleSheet(QStringLiteral("background-color:rgb(255, 255, 255)"));
-        lbCameraArea->setScaledContents(true);
+        pbZ->setGeometry(QRect(1280, 240, 21, 27));
         pbAddNewProgram = new QPushButton(centralWidget);
         pbAddNewProgram->setObjectName(QStringLiteral("pbAddNewProgram"));
         pbAddNewProgram->setGeometry(QRect(10, 100, 99, 41));
@@ -175,7 +177,7 @@ public:
         pteGcodeArea->setFont(font1);
         twDeltaGeometry = new QTabWidget(centralWidget);
         twDeltaGeometry->setObjectName(QStringLiteral("twDeltaGeometry"));
-        twDeltaGeometry->setGeometry(QRect(810, 90, 391, 341));
+        twDeltaGeometry->setGeometry(QRect(870, 90, 391, 341));
         t3D = new QWidget();
         t3D->setObjectName(QStringLiteral("t3D"));
         wgOpenGl = new GLWidget(t3D);
@@ -264,12 +266,40 @@ public:
         label_7->setFont(font);
         label_7->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
         twDeltaGeometry->addTab(tParameter, QString());
+        tabWidget = new QTabWidget(centralWidget);
+        tabWidget->setObjectName(QStringLiteral("tabWidget"));
+        tabWidget->setGeometry(QRect(870, 440, 391, 301));
+        tResultCameraArea = new QWidget();
+        tResultCameraArea->setObjectName(QStringLiteral("tResultCameraArea"));
+        lbCameraArea = new QLabel(tResultCameraArea);
+        lbCameraArea->setObjectName(QStringLiteral("lbCameraArea"));
+        lbCameraArea->setGeometry(QRect(10, 10, 371, 251));
+        lbCameraArea->setStyleSheet(QStringLiteral("background-color:rgb(255, 255, 255)"));
+        lbCameraArea->setScaledContents(true);
+        tabWidget->addTab(tResultCameraArea, QString());
+        tab_2 = new QWidget();
+        tab_2->setObjectName(QStringLiteral("tab_2"));
+        leTestImageUrl = new QLineEdit(tab_2);
+        leTestImageUrl->setObjectName(QStringLiteral("leTestImageUrl"));
+        leTestImageUrl->setGeometry(QRect(10, 20, 301, 22));
+        lbTestImage = new QLabel(tab_2);
+        lbTestImage->setObjectName(QStringLiteral("lbTestImage"));
+        lbTestImage->setGeometry(QRect(10, 50, 301, 211));
+        lbTestImage->setStyleSheet(QStringLiteral("background-color:rgb(255, 255, 255)"));
+        pbHSV = new QPushButton(tab_2);
+        pbHSV->setObjectName(QStringLiteral("pbHSV"));
+        pbHSV->setGeometry(QRect(320, 50, 61, 28));
+        pbLoadTestImage = new QPushButton(tab_2);
+        pbLoadTestImage->setObjectName(QStringLiteral("pbLoadTestImage"));
+        pbLoadTestImage->setGeometry(QRect(320, 20, 61, 28));
+        tabWidget->addTab(tab_2, QString());
         MainWindow->setCentralWidget(centralWidget);
 
         retranslateUi(MainWindow);
 
         pbExDeleteProgram->setDefault(true);
         twDeltaGeometry->setCurrentIndex(1);
+        tabWidget->setCurrentIndex(1);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -288,7 +318,6 @@ public:
         pbX->setText(QApplication::translate("MainWindow", "X", Q_NULLPTR));
         pbY->setText(QApplication::translate("MainWindow", "Y", Q_NULLPTR));
         pbZ->setText(QApplication::translate("MainWindow", "Z", Q_NULLPTR));
-        lbCameraArea->setText(QString());
         pbAddNewProgram->setText(QApplication::translate("MainWindow", "New", Q_NULLPTR));
         pbExecuteGcodes->setText(QApplication::translate("MainWindow", "Execute", Q_NULLPTR));
         pbSaveGcode->setText(QApplication::translate("MainWindow", "Save", Q_NULLPTR));
@@ -311,6 +340,12 @@ public:
         lineEdit_6->setText(QString());
         label_7->setText(QApplication::translate("MainWindow", "e", Q_NULLPTR));
         twDeltaGeometry->setTabText(twDeltaGeometry->indexOf(tParameter), QApplication::translate("MainWindow", "Parameter", Q_NULLPTR));
+        lbCameraArea->setText(QString());
+        tabWidget->setTabText(tabWidget->indexOf(tResultCameraArea), QApplication::translate("MainWindow", "Result", Q_NULLPTR));
+        lbTestImage->setText(QString());
+        pbHSV->setText(QApplication::translate("MainWindow", "HSV", Q_NULLPTR));
+        pbLoadTestImage->setText(QApplication::translate("MainWindow", "Load", Q_NULLPTR));
+        tabWidget->setTabText(tabWidget->indexOf(tab_2), QApplication::translate("MainWindow", "Test Image", Q_NULLPTR));
     } // retranslateUi
 
 };

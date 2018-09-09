@@ -249,6 +249,7 @@
     <ClInclude Include="ui_mainwindow.h" />
   </ItemGroup>
   <ItemGroup>
+    <QtUic Include="HSVWindow.ui" />
     <QtUic Include="mainwindow.ui">
     </QtUic>
   </ItemGroup>
