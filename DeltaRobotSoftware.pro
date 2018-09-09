@@ -29,7 +29,8 @@ SOURCES += main.cpp\
     logo.cpp \
     GcodeProgramManager.cpp \
     GcodeProgram.cpp \
-    UnityTool.cpp
+    UnityTool.cpp \
+    hsvwindow.cpp
 
 HEADERS  += mainwindow.h \
     ConnectionManager.h \
@@ -38,6 +39,8 @@ HEADERS  += mainwindow.h \
     logo.h \
     ImageUnity.h \
     GcodeProgram.h \
-    GcodeProgramManager.h
+    GcodeProgramManager.h \
+    hsvwindow.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    hsvwindow.ui
