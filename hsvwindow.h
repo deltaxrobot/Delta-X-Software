@@ -2,6 +2,8 @@
 #define HSVWINDOW_H
 
 #include <QDialog>
+#include <qslider.h>
+#include <qlabel.h>
 
 namespace Ui {
 class HSVWindow;
@@ -14,6 +16,17 @@ class HSVWindow : public QDialog
 public:
     explicit HSVWindow(QWidget *parent = 0);
     ~HSVWindow();
+
+	void InitEvents();
+	void InitVariables();
+
+	QSlider *sPara[6];
+	QLabel *lbPara[6];
+
+public slots:
+	void UpdateSliderValueToLabel();
+signals:
+	void ValueChanged(int minH, int maxH, int minS, int maxS, int minV, int maxV);
 
 private:
     Ui::HSVWindow *ui;

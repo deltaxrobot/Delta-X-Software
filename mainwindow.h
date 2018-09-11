@@ -17,6 +17,7 @@
 #include <GcodeProgramManager.h>
 #include <DeltaVisualizer.h>
 #include <qmath.h>
+#include <hsvwindow.h>
 
 namespace Ui {
 class MainWindow;
@@ -39,6 +40,7 @@ public:
 	DeltaVisualizer *DeltaParameter;
 
     QTimer* Timer1;
+	QTimer* EditorTimer;
     cv::VideoCapture cap;
 
 private slots:
@@ -52,7 +54,17 @@ private slots:
 	void UpdatePositionValue(float x, float y, float z);
 	void Home();
 
+	void AddGcodeLine();
+
+	void TerminalTransmit();
+	void PrintReceiveData(QString msg);
+
+	void NoticeConnected();
+
 	void OpenHSVPanel();
+
+	void RunSmartEditor();
+	void StandardFormatEditor();
 
 private:
 	void HideExampleWidgets();

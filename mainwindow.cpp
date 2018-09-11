@@ -37,11 +37,22 @@ void MainWindow::InitEvents()
 	connect(DeltaParameter, SIGNAL(FinishMoving()), this, SLOT(UpdateDeltaPosition()));
 
 	connect(ui->pbHSV, SIGNAL(clicked(bool)), this, SLOT(OpenHSVPanel()));
+	connect(ui->leTerminal, SIGNAL(returnPressed()), this, SLOT(TerminalTransmit()));
+	connect(DeltaPort, SIGNAL(FinishReadLine(QString)), this, SLOT(PrintReceiveData(QString)));
+
+	connect(DeltaPort, SIGNAL(DeltaResponeReady()), this, SLOT(NoticeConnected()));
+
+	connect(ui->pbG01, SIGNAL(clicked(bool)), this, SLOT(AddGcodeLine()));
+	connect(ui->pbG28, SIGNAL(clicked(bool)), this, SLOT(AddGcodeLine()));
+	connect(ui->pbM03, SIGNAL(clicked(bool)), this, SLOT(AddGcodeLine()));
+	connect(ui->pbM204, SIGNAL(clicked(bool)), this, SLOT(AddGcodeLine()));
+
+	connect(ui->pbFormat, SIGNAL(clicked(bool)), this, SLOT(StandardFormatEditor()));
 }
 
 void MainWindow::InitVariables()
 {
-    DeltaPort = new ConnectionManager(this);
+    DeltaPort = new ConnectionManager();
 
 	DeltaGcodeManager = new GcodeProgramManager(ui->wgProgramContainer, ui->pteGcodeArea, DeltaPort);
 	
@@ -53,6 +64,10 @@ void MainWindow::InitVariables()
 	DeltaParameter->setObjectName(QStringLiteral("wg2D"));
 	DeltaParameter->setGeometry(QRect(50, 10, 300, 300));
 
+	EditorTimer = new QTimer(this);
+	//connect(EditorTimer, SIGNAL(timeout()), this, SLOT(RunSmartEditor()));
+	//EditorTimer->start(500);
+
 	//------------ OpenGl Init ----------
 	
 	/*VisualArea = new GLWidget();
@@ -62,23 +77,17 @@ void MainWindow::InitVariables()
 
 	//---------- OpenCV Init -------------
 
-    cap = cv::VideoCapture(0);
+   /* cap = cv::VideoCapture(0);
     Timer1 = new QTimer(this);
     connect(Timer1, SIGNAL(timeout()), this, SLOT(UpdateCameraScreen()));
-    Timer1->start(50);
+    Timer1->start(50);*/
 }
 
 void MainWindow::ConnectDeltaRobot()
 {
 	if (ui->pbConnect->text() == "Connect" && !DeltaPort->IsConnect())
 	{
-		if (DeltaPort->FindDeltaRobot() == true)
-		{
-			ui->lbState->setText("Delta Robot is connected !");
-			Debug(DeltaPort->GetNamePort());
-
-			ui->pbConnect->setText("Disconnect");
-		}
+		DeltaPort->FindDeltaRobot();			
 	}
 
 	else if (ui->pbConnect->text() == "Disconnect")
@@ -126,6 +135,11 @@ void MainWindow::UpdateCameraScreen()
 
     QImage img = ImageTool::cvMatToQImage(drawing);
     ui->lbCameraArea->setPixmap(QPixmap::fromImage(img));
+}
+
+void MainWindow::RunSmartEditor()
+{
+	
 }
 
 void MainWindow::AddNewProgram()
@@ -192,6 +206,47 @@ void MainWindow::Home()
 	ui->vsZAdjsution->setValue(0);
 }
 
+void MainWindow::AddGcodeLine()
+{
+	QPushButton* bt = qobject_cast<QPushButton*>(sender());
+
+	if (bt->text() == "G01")
+	{
+		DeltaGcodeManager->AddG01(DeltaParameter->X, DeltaParameter->Y, DeltaParameter->Z);
+	}
+	if (bt->text() == "G28")
+	{
+		DeltaGcodeManager->AddG28();
+	}
+	if (bt->text() == "M03")
+	{
+		DeltaGcodeManager->AddM03(4000);
+	}
+	if (bt->text() == "M204")
+	{
+		DeltaGcodeManager->AddM204(8000);
+	}
+}
+
+void MainWindow::TerminalTransmit()
+{
+	DeltaPort->Send(ui->leTerminal->text());
+	ui->leTerminal->setText("");
+}
+
+void MainWindow::PrintReceiveData(QString msg)
+{
+	Debug(msg);
+}
+
+void MainWindow::NoticeConnected()
+{
+	ui->lbState->setText("Delta Robot is connected !");
+	Debug(DeltaPort->GetNamePort());
+
+	ui->pbConnect->setText("Disconnect");
+}
+
 void MainWindow::HideExampleWidgets()
 {
 	ui->frExProgram->setVisible(false);
@@ -224,5 +279,60 @@ void MainWindow::InterpolateCircle()
 
 void MainWindow::OpenHSVPanel()
 {
-	
+	HSVWindow hsvPanel;
+	hsvPanel.exec();
+}
+
+void MainWindow::StandardFormatEditor()
+{
+	QString editorText = ui->pteGcodeArea->toPlainText();
+	QList<QString> lines = editorText.split('\n');
+
+	editorText = "";
+
+	int i = 0;
+
+	foreach(QString line, lines)
+	{
+		while (1)
+		{
+			if (line[0] == ' ')
+			{
+				line.replace(" ", "");
+			}
+			else
+			{
+				break;
+			}
+		}
+
+		if (line[0] == 'N')
+		{
+			int spacePos = line.indexOf(' ');
+			QString mS = line.mid(0, spacePos + 1);
+			line.replace(mS, "");
+		}
+
+		while (1)
+		{
+			if (line[0] == ' ')
+			{
+				line.replace(" ", "");
+			}
+			else
+			{
+				break;
+			}
+		}
+
+		if (line[0] == 'G' || line[0] == 'M')
+		{
+			line = QString("N") + QString::number(i) + " " + line;
+		}
+		
+		editorText += line + "\n";
+		i += 5;
+	}
+
+	ui->pteGcodeArea->setPlainText(editorText);
 }

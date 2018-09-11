@@ -2,14 +2,15 @@
 
 ConnectionManager::ConnectionManager()
 {
+	init();
 }
 
-ConnectionManager::ConnectionManager(QObject* parent) : ConnectionManager()
+void ConnectionManager::init()
 {
-	if (parent != NULL)
-		serialPort = new QSerialPort(parent);
-	else
-		serialPort = new QSerialPort();
+	timer = new QTimer();
+	serialPort = new QSerialPort();
+	
+	connect(timer, SIGNAL(timeout()), this, SLOT(FindingTimeOut()));
 }
 
 bool ConnectionManager::IsConnect()
@@ -23,7 +24,10 @@ bool ConnectionManager::IsConnect()
 void ConnectionManager::Disconnect()
 {
 	if (serialPort->isOpen())
+	{
 		serialPort->close();
+		isDeltaPortConnected = false;
+	}
 }
 
 QString ConnectionManager::GetNamePort()
@@ -41,31 +45,78 @@ void ConnectionManager::Send(QString msg)
 		Debug("Serial port is not available !");
 }
 
-bool ConnectionManager::FindDeltaRobot()
+void ConnectionManager::ReadData()
 {
-	Q_FOREACH(QSerialPortInfo portName, QSerialPortInfo::availablePorts())
+	QSerialPort* sP = qobject_cast<QSerialPort*>(sender());
+
+	while (sP->canReadLine())
 	{
-		serialPort->setPortName(portName.portName());
-		serialPort->setBaudRate(9600);
-		Debug(serialPort->portName());
-		if (serialPort->open((QIODevice::ReadWrite)) == true)
+		receiveLine = sP->readLine();
+		emit FinishReadLine(receiveLine);
+
+		if (receiveLine.mid(0, 8) == "YesDelta")
 		{
-			serialPort->write("IsDelta\n");
+			delete serialPort;
+			serialPort = sP;
+			emit DeltaResponeReady();
 
-			QByteArray receiveData = serialPort->readAll();
-			while (serialPort->waitForReadyRead(200))
-			{
-				receiveData.append(serialPort->readAll());
-				//Debug(receiveData);
-				receiveData = receiveData.mid(0, 8);
-				if (receiveData == "YesDelta")
-					return true;
-			}
+			isDeltaPortConnected = true;
+		}			
+	}	
+}
 
-			serialPort->close();
-		}
-		
+void ConnectionManager::FindDeltaRobot()
+{
+	Q_FOREACH(QSerialPortInfo portInfo, QSerialPortInfo::availablePorts())
+	{
+		QSerialPort* sP = new QSerialPort();
+
+		QString portName = portInfo.portName();
+		sP->setPortName(portName);
+		sP->setBaudRate(9600);
+
+		portList.push_back(sP);				
+
+		if (sP->open((QIODevice::ReadWrite)) == true)
+		{
+			connect(sP, SIGNAL(readyRead()), this, SLOT(ReadData()));
+
+			sP->write("IsDelta\n");
+		}	
 	}
 
-	return false;
+	timer->start(200);
+}
+
+void ConnectionManager::FindingTimeOut()
+{
+	static int order = 0;
+	
+	order++;
+
+	QString waitS = "";
+
+	for (int i = 0; i < order; i++)
+	{
+		waitS += ".";
+	}
+
+	Debug(waitS);
+
+	if (order < 20 && isDeltaPortConnected == false)
+		return;
+
+	order = 0;
+
+	for(int i = 0; i < portList.length(); i++)
+	{
+		if (portList.at(i)->portName() != serialPort->portName())
+		{
+			portList.at(i)->close();
+			delete portList.at(i);
+		}
+	}
+	portList.clear();
+
+	timer->stop();
 }

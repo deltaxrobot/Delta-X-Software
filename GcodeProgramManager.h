@@ -30,6 +30,11 @@ public:
 	GcodeProgramManager();
 	~GcodeProgramManager();
 	GcodeProgramManager(QWidget* container, QPlainTextEdit* gcodeArea, ConnectionManager* deltaPort = NULL );
+	void AddGcodeLine(QString line);
+	void AddG01(int  x, int y, int z);
+	void AddG28();
+	void AddM03(int speed);
+	void AddM204(int accel);
 	void AddNewProgram();
 	void LoadPrograms();
 	void ExecuteGcode(QString gcodes);

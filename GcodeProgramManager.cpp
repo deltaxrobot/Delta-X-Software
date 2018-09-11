@@ -17,6 +17,54 @@ GcodeProgramManager::GcodeProgramManager(QWidget* container, QPlainTextEdit * gc
 	deltaConnection = deltaPort;
 }
 
+void GcodeProgramManager::AddGcodeLine(QString line)
+{
+	QString text = pteGcodeArea->toPlainText();
+	QTextCursor curPos = pteGcodeArea->textCursor();
+	int pos = curPos.position();
+	int i = 0;
+
+	for (i = pos; i > (pos - 500) && i > -1; i--)
+	{
+		if (text[i] == '\n')
+		{
+			curPos.setPosition(i + 1);
+			break;
+		}
+	}
+
+	if (i == -1)
+		curPos.setPosition(0);
+
+	pteGcodeArea->setTextCursor(curPos);
+	pteGcodeArea->insertPlainText(line + "\n");
+}
+
+void GcodeProgramManager::AddG01(int  x, int y, int z)
+{
+	QString g01 = QString("G01 X") + QString::number(x) + " Y" + QString::number(y) + " Z" + QString::number(z);
+	
+	AddGcodeLine(g01);
+}
+
+void GcodeProgramManager::AddG28()
+{
+	QString g28 =  "G28";
+	AddGcodeLine(g28);
+}
+
+void GcodeProgramManager::AddM03(int speed)
+{
+	QString m03 = QString("M03 S") + QString::number(speed);
+	AddGcodeLine(m03);
+}
+
+void GcodeProgramManager::AddM204(int accel)
+{
+	QString m204 = QString("M204 A") + QString::number(accel);
+	AddGcodeLine(m204);
+}
+
 void GcodeProgramManager::AddNewProgram()
 {
 	GcodeProgram* newProgram = new GcodeProgram(wgProgramContainer);

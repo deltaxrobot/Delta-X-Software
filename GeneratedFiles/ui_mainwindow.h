@@ -83,12 +83,18 @@ public:
     QLabel *lbTestImage;
     QPushButton *pbHSV;
     QPushButton *pbLoadTestImage;
+    QLineEdit *leTerminal;
+    QPushButton *pbG01;
+    QPushButton *pbG28;
+    QPushButton *pbM03;
+    QPushButton *pbM204;
+    QPushButton *pbFormat;
 
     void setupUi(QMainWindow *MainWindow)
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QStringLiteral("MainWindow"));
-        MainWindow->resize(1401, 792);
+        MainWindow->resize(1401, 822);
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         pbConnect = new QPushButton(centralWidget);
@@ -171,7 +177,7 @@ public:
         pbSaveGcode->setGeometry(QRect(430, 100, 51, 41));
         pteGcodeArea = new QPlainTextEdit(centralWidget);
         pteGcodeArea->setObjectName(QStringLiteral("pteGcodeArea"));
-        pteGcodeArea->setGeometry(QRect(320, 150, 351, 591));
+        pteGcodeArea->setGeometry(QRect(320, 150, 411, 591));
         QFont font1;
         font1.setPointSize(14);
         pteGcodeArea->setFont(font1);
@@ -293,6 +299,24 @@ public:
         pbLoadTestImage->setObjectName(QStringLiteral("pbLoadTestImage"));
         pbLoadTestImage->setGeometry(QRect(320, 20, 61, 28));
         tabWidget->addTab(tab_2, QString());
+        leTerminal = new QLineEdit(centralWidget);
+        leTerminal->setObjectName(QStringLiteral("leTerminal"));
+        leTerminal->setGeometry(QRect(10, 790, 1381, 22));
+        pbG01 = new QPushButton(centralWidget);
+        pbG01->setObjectName(QStringLiteral("pbG01"));
+        pbG01->setGeometry(QRect(740, 150, 41, 28));
+        pbG28 = new QPushButton(centralWidget);
+        pbG28->setObjectName(QStringLiteral("pbG28"));
+        pbG28->setGeometry(QRect(740, 190, 41, 28));
+        pbM03 = new QPushButton(centralWidget);
+        pbM03->setObjectName(QStringLiteral("pbM03"));
+        pbM03->setGeometry(QRect(740, 230, 41, 28));
+        pbM204 = new QPushButton(centralWidget);
+        pbM204->setObjectName(QStringLiteral("pbM204"));
+        pbM204->setGeometry(QRect(740, 270, 41, 28));
+        pbFormat = new QPushButton(centralWidget);
+        pbFormat->setObjectName(QStringLiteral("pbFormat"));
+        pbFormat->setGeometry(QRect(740, 710, 61, 28));
         MainWindow->setCentralWidget(centralWidget);
 
         retranslateUi(MainWindow);
@@ -307,7 +331,7 @@ public:
 
     void retranslateUi(QMainWindow *MainWindow)
     {
-        MainWindow->setWindowTitle(QApplication::translate("MainWindow", "Delta Softwareoftware", Q_NULLPTR));
+        MainWindow->setWindowTitle(QApplication::translate("MainWindow", "Delta Software", Q_NULLPTR));
         pbConnect->setText(QApplication::translate("MainWindow", "Connect", Q_NULLPTR));
         lbState->setText(QApplication::translate("MainWindow", "Delta is not available !", Q_NULLPTR));
         leExProgramName->setText(QApplication::translate("MainWindow", "Program 1", Q_NULLPTR));
@@ -321,7 +345,9 @@ public:
         pbAddNewProgram->setText(QApplication::translate("MainWindow", "New", Q_NULLPTR));
         pbExecuteGcodes->setText(QApplication::translate("MainWindow", "Execute", Q_NULLPTR));
         pbSaveGcode->setText(QApplication::translate("MainWindow", "Save", Q_NULLPTR));
-        pteGcodeArea->setPlainText(QApplication::translate("MainWindow", "G28", Q_NULLPTR));
+        pteGcodeArea->setPlainText(QApplication::translate("MainWindow", "G28\n"
+"M03 S2000\n"
+"M204 A4000", Q_NULLPTR));
         twDeltaGeometry->setTabText(twDeltaGeometry->indexOf(t3D), QApplication::translate("MainWindow", "3D", Q_NULLPTR));
         twDeltaGeometry->setTabText(twDeltaGeometry->indexOf(t2D), QApplication::translate("MainWindow", "2D", Q_NULLPTR));
         label_9->setText(QApplication::translate("MainWindow", "mm", Q_NULLPTR));
@@ -346,6 +372,11 @@ public:
         pbHSV->setText(QApplication::translate("MainWindow", "HSV", Q_NULLPTR));
         pbLoadTestImage->setText(QApplication::translate("MainWindow", "Load", Q_NULLPTR));
         tabWidget->setTabText(tabWidget->indexOf(tab_2), QApplication::translate("MainWindow", "Test Image", Q_NULLPTR));
+        pbG01->setText(QApplication::translate("MainWindow", "G01", Q_NULLPTR));
+        pbG28->setText(QApplication::translate("MainWindow", "G28", Q_NULLPTR));
+        pbM03->setText(QApplication::translate("MainWindow", "M03", Q_NULLPTR));
+        pbM204->setText(QApplication::translate("MainWindow", "M204", Q_NULLPTR));
+        pbFormat->setText(QApplication::translate("MainWindow", "Format", Q_NULLPTR));
     } // retranslateUi
 
 };
