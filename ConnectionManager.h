@@ -27,6 +27,7 @@ public slots:
 signals:
 	void FinishReadLine(QString msg);
 	void DeltaResponeReady();
+	void DeltaResponeGcodeDone();
 private:
 	void init();
 

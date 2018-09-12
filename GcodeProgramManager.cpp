@@ -3,11 +3,7 @@
 
 GcodeProgramManager::GcodeProgramManager()
 {
-	ProgramList = new QVector<GcodeProgram*>();	
-
-	timer = new QTimer();
-
-	connect(timer, SIGNAL(timeout()), this, SLOT(TransmitGcode()));
+	ProgramList = new QVector<GcodeProgram*>();
 }
 
 GcodeProgramManager::GcodeProgramManager(QWidget* container, QPlainTextEdit * gcodeArea, ConnectionManager* deltaPort) : GcodeProgramManager()
@@ -15,6 +11,8 @@ GcodeProgramManager::GcodeProgramManager(QWidget* container, QPlainTextEdit * gc
 	wgProgramContainer = container;
 	pteGcodeArea = gcodeArea;
 	deltaConnection = deltaPort;
+
+	connect(deltaConnection, SIGNAL(DeltaResponeGcodeDone()), this, SLOT(TransmitGcode()));
 }
 
 void GcodeProgramManager::AddGcodeLine(QString line)
@@ -85,6 +83,9 @@ void GcodeProgramManager::AddNewProgram()
 void GcodeProgramManager::ExecuteGcode(QString gcodes)
 {
 	QList<QString> tempGcodeList = gcodes.split('\n');
+
+	gcodeList.clear();
+
 	for (int i = 0; i < tempGcodeList.size(); i++)
 	{
 		if (tempGcodeList.at(i) != "")
@@ -95,7 +96,51 @@ void GcodeProgramManager::ExecuteGcode(QString gcodes)
 
 	tempGcodeList.clear();
 
-	timer->start(200);
+	TransmitGcode();
+}
+
+int GcodeProgramManager::NextOrder()
+{
+	QList<QString> valuePairs = gcodeList[gcodeOrder].split(' ');
+
+	for (int i = 0; i < valuePairs.size() - 1; i++)
+	{
+
+		//------------ GOTO -----------
+
+		if (valuePairs[i] == "GOTO")
+		{
+			bool isNumber;
+			int goID;
+
+			goID = valuePairs[i + 1].toInt(&isNumber, 10);
+
+			if (isNumber == true)
+			{
+				for (int order = 0; order < gcodeList.size(); order++)
+				{
+					QList<QString> pairs = gcodeList[order].split(' ');
+					if (pairs[0][0] == 'N')
+					{
+						int id = pairs[0].mid(1).toInt();
+
+						if (id == goID)
+						{
+							return order;
+						}
+					}
+				}
+			}
+		}
+
+		// --------------- IF ---------------------
+
+		// --------------- WHILE ------------------
+	}
+
+	gcodeOrder += 1;
+
+	return gcodeOrder;
 }
 
 void GcodeProgramManager::LoadPrograms()
@@ -195,13 +240,25 @@ void GcodeProgramManager::DeleteProgram(GcodeProgram* ptr)
 
 void GcodeProgramManager::TransmitGcode()
 {
+	if (gcodeList.empty())
+		return;
+
 	QString gcodeLine = gcodeList.at(gcodeOrder) + "\n";
+	QString firstPair = gcodeLine.split(' ')[0];
+
+	if (firstPair[0] == 'N')
+	{
+		gcodeLine.replace(firstPair + " ", "");
+	}
+
 	deltaConnection->Send(gcodeLine);
 	Debug(gcodeLine);
-	gcodeOrder++;
+
+	gcodeOrder = NextOrder();
+
 	if (gcodeOrder == gcodeList.size())
 	{
-		timer->stop();
+		//timer->stop();
 		gcodeOrder = 0;
 		gcodeList.clear();
 	}

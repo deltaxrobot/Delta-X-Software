@@ -21,8 +21,8 @@ QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_ConnectionManager_t {
-    QByteArrayData data[7];
-    char stringdata0[80];
+    QByteArrayData data[8];
+    char stringdata0[102];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -36,12 +36,14 @@ QT_MOC_LITERAL(1, 18, 14), // "FinishReadLine"
 QT_MOC_LITERAL(2, 33, 0), // ""
 QT_MOC_LITERAL(3, 34, 3), // "msg"
 QT_MOC_LITERAL(4, 38, 17), // "DeltaResponeReady"
-QT_MOC_LITERAL(5, 56, 8), // "ReadData"
-QT_MOC_LITERAL(6, 65, 14) // "FindingTimeOut"
+QT_MOC_LITERAL(5, 56, 21), // "DeltaResponeGcodeDone"
+QT_MOC_LITERAL(6, 78, 8), // "ReadData"
+QT_MOC_LITERAL(7, 87, 14) // "FindingTimeOut"
 
     },
     "ConnectionManager\0FinishReadLine\0\0msg\0"
-    "DeltaResponeReady\0ReadData\0FindingTimeOut"
+    "DeltaResponeReady\0DeltaResponeGcodeDone\0"
+    "ReadData\0FindingTimeOut"
 };
 #undef QT_MOC_LITERAL
 
@@ -51,23 +53,25 @@ static const uint qt_meta_data_ConnectionManager[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-       4,   14, // methods
+       5,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
        0,       // flags
-       2,       // signalCount
+       3,       // signalCount
 
  // signals: name, argc, parameters, tag, flags
-       1,    1,   34,    2, 0x06 /* Public */,
-       4,    0,   37,    2, 0x06 /* Public */,
+       1,    1,   39,    2, 0x06 /* Public */,
+       4,    0,   42,    2, 0x06 /* Public */,
+       5,    0,   43,    2, 0x06 /* Public */,
 
  // slots: name, argc, parameters, tag, flags
-       5,    0,   38,    2, 0x0a /* Public */,
-       6,    0,   39,    2, 0x0a /* Public */,
+       6,    0,   44,    2, 0x0a /* Public */,
+       7,    0,   45,    2, 0x0a /* Public */,
 
  // signals: parameters
     QMetaType::Void, QMetaType::QString,    3,
+    QMetaType::Void,
     QMetaType::Void,
 
  // slots: parameters
@@ -85,8 +89,9 @@ void ConnectionManager::qt_static_metacall(QObject *_o, QMetaObject::Call _c, in
         switch (_id) {
         case 0: _t->FinishReadLine((*reinterpret_cast< QString(*)>(_a[1]))); break;
         case 1: _t->DeltaResponeReady(); break;
-        case 2: _t->ReadData(); break;
-        case 3: _t->FindingTimeOut(); break;
+        case 2: _t->DeltaResponeGcodeDone(); break;
+        case 3: _t->ReadData(); break;
+        case 4: _t->FindingTimeOut(); break;
         default: ;
         }
     } else if (_c == QMetaObject::IndexOfMethod) {
@@ -103,6 +108,13 @@ void ConnectionManager::qt_static_metacall(QObject *_o, QMetaObject::Call _c, in
             typedef void (ConnectionManager::*_t)();
             if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&ConnectionManager::DeltaResponeReady)) {
                 *result = 1;
+                return;
+            }
+        }
+        {
+            typedef void (ConnectionManager::*_t)();
+            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&ConnectionManager::DeltaResponeGcodeDone)) {
+                *result = 2;
                 return;
             }
         }
@@ -134,13 +146,13 @@ int ConnectionManager::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 4)
+        if (_id < 5)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 4;
+        _id -= 5;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 4)
+        if (_id < 5)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 4;
+        _id -= 5;
     }
     return _id;
 }
@@ -156,6 +168,12 @@ void ConnectionManager::FinishReadLine(QString _t1)
 void ConnectionManager::DeltaResponeReady()
 {
     QMetaObject::activate(this, &staticMetaObject, 1, Q_NULLPTR);
+}
+
+// SIGNAL 2
+void ConnectionManager::DeltaResponeGcodeDone()
+{
+    QMetaObject::activate(this, &staticMetaObject, 2, Q_NULLPTR);
 }
 QT_WARNING_POP
 QT_END_MOC_NAMESPACE

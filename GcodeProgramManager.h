@@ -38,10 +38,10 @@ public:
 	void AddNewProgram();
 	void LoadPrograms();
 	void ExecuteGcode(QString gcodes);
+	int NextOrder();
 
 	QWidget* wgProgramContainer;
 	QPlainTextEdit* pteGcodeArea;
-	QTimer* timer;
 
 	GcodeProgram* SelectingProgram = NULL;
 	int ProgramCounter = 0;

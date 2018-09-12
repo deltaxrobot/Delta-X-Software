@@ -61,7 +61,11 @@ void ConnectionManager::ReadData()
 			emit DeltaResponeReady();
 
 			isDeltaPortConnected = true;
-		}			
+		}		
+		if (receiveLine.mid(0, 2) == "Ok")
+		{
+			emit DeltaResponeGcodeDone();
+		}
 	}	
 }
 
