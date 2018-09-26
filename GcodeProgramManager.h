@@ -22,6 +22,13 @@
 #include <qtimer.h>
 #include <ConnectionManager.h>
 
+class GcodeVariable
+{
+public:
+	QString Name;
+	int Value;
+};
+
 class GcodeProgramManager : public QObject
 {
 	Q_OBJECT
@@ -29,7 +36,7 @@ class GcodeProgramManager : public QObject
 public:
 	GcodeProgramManager();
 	~GcodeProgramManager();
-	GcodeProgramManager(QWidget* container, QPlainTextEdit* gcodeArea, ConnectionManager* deltaPort = NULL );
+	GcodeProgramManager(QWidget* container, QPlainTextEdit* gcodeArea, ConnectionManager* deltaPort = NULL);
 	void AddGcodeLine(QString line);
 	void AddG01(int  x, int y, int z);
 	void AddG28();
@@ -38,7 +45,7 @@ public:
 	void AddNewProgram();
 	void LoadPrograms();
 	void ExecuteGcode(QString gcodes);
-	int NextOrder();
+	void Stop();
 
 	QWidget* wgProgramContainer;
 	QPlainTextEdit* pteGcodeArea;
@@ -50,13 +57,22 @@ public:
 	QList<QString> gcodeList;
 	int gcodeOrder = 0;
 
-public slots:
+	public slots:
 	void ChangeSelectingProgram(GcodeProgram* ptr);
 	void SaveGcodeIntoFile();
 	void DeleteProgram(GcodeProgram* ptr);
-	void TransmitGcode();
+	void TransmitNextGcode();
 
 private:
 	ConnectionManager* deltaConnection;
+	QList<GcodeVariable> gcodeVariables;
+	QString currentLine;
+
+	void findExeGcodeAndTransmit();
+	int calculateExpressions(QString expression);
+	QString getLeftWord(QString s, int pos);
+	QString getRightWord(QString s, int pos);
+	QString deleteSpaces(QString s);
+	bool isNotNegative(QString s);
 };
 

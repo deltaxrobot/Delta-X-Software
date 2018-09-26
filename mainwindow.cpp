@@ -156,6 +156,19 @@ void MainWindow::ExecuteProgram()
 {
 	if (DeltaPort->IsConnect())
 	{
+		QPushButton* pbExe = qobject_cast<QPushButton*>(sender());
+
+		if (pbExe->text() == "Execute")
+		{
+			pbExe->setText("Stop");
+		}
+		else
+		{
+			pbExe->setText("Execute");
+			DeltaGcodeManager->Stop();
+			return;
+		}
+
 		QString exeGcodes = ui->pteGcodeArea->toPlainText();
 		DeltaGcodeManager->ExecuteGcode(exeGcodes);
 	}
@@ -325,10 +338,10 @@ void MainWindow::StandardFormatEditor()
 			}
 		}
 
-		if (line[0] == 'G' || line[0] == 'M')
+		if (line != "")
 		{
 			line = QString("N") + QString::number(i) + " " + line;
-		}
+		}		
 		
 		editorText += line + "\n";
 		i += 5;

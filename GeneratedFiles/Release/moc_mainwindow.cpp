@@ -21,8 +21,8 @@ QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_MainWindow_t {
-    QByteArrayData data[14];
-    char stringdata0[154];
+    QByteArrayData data[22];
+    char stringdata0[270];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -44,14 +44,25 @@ QT_MOC_LITERAL(9, 105, 19), // "UpdateDeltaPosition"
 QT_MOC_LITERAL(10, 125, 19), // "UpdatePositionValue"
 QT_MOC_LITERAL(11, 145, 1), // "x"
 QT_MOC_LITERAL(12, 147, 1), // "y"
-QT_MOC_LITERAL(13, 149, 4) // "Home"
+QT_MOC_LITERAL(13, 149, 4), // "Home"
+QT_MOC_LITERAL(14, 154, 12), // "AddGcodeLine"
+QT_MOC_LITERAL(15, 167, 16), // "TerminalTransmit"
+QT_MOC_LITERAL(16, 184, 16), // "PrintReceiveData"
+QT_MOC_LITERAL(17, 201, 3), // "msg"
+QT_MOC_LITERAL(18, 205, 15), // "NoticeConnected"
+QT_MOC_LITERAL(19, 221, 12), // "OpenHSVPanel"
+QT_MOC_LITERAL(20, 234, 14), // "RunSmartEditor"
+QT_MOC_LITERAL(21, 249, 20) // "StandardFormatEditor"
 
     },
     "MainWindow\0ConnectDeltaRobot\0\0"
     "UpdateCameraScreen\0AddNewProgram\0"
     "SaveProgram\0ExecuteProgram\0UpdateZValue\0"
     "z\0UpdateDeltaPosition\0UpdatePositionValue\0"
-    "x\0y\0Home"
+    "x\0y\0Home\0AddGcodeLine\0TerminalTransmit\0"
+    "PrintReceiveData\0msg\0NoticeConnected\0"
+    "OpenHSVPanel\0RunSmartEditor\0"
+    "StandardFormatEditor"
 };
 #undef QT_MOC_LITERAL
 
@@ -61,7 +72,7 @@ static const uint qt_meta_data_MainWindow[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-       9,   14, // methods
+      16,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -69,15 +80,22 @@ static const uint qt_meta_data_MainWindow[] = {
        0,       // signalCount
 
  // slots: name, argc, parameters, tag, flags
-       1,    0,   59,    2, 0x08 /* Private */,
-       3,    0,   60,    2, 0x08 /* Private */,
-       4,    0,   61,    2, 0x08 /* Private */,
-       5,    0,   62,    2, 0x08 /* Private */,
-       6,    0,   63,    2, 0x08 /* Private */,
-       7,    1,   64,    2, 0x08 /* Private */,
-       9,    0,   67,    2, 0x08 /* Private */,
-      10,    3,   68,    2, 0x08 /* Private */,
-      13,    0,   75,    2, 0x08 /* Private */,
+       1,    0,   94,    2, 0x08 /* Private */,
+       3,    0,   95,    2, 0x08 /* Private */,
+       4,    0,   96,    2, 0x08 /* Private */,
+       5,    0,   97,    2, 0x08 /* Private */,
+       6,    0,   98,    2, 0x08 /* Private */,
+       7,    1,   99,    2, 0x08 /* Private */,
+       9,    0,  102,    2, 0x08 /* Private */,
+      10,    3,  103,    2, 0x08 /* Private */,
+      13,    0,  110,    2, 0x08 /* Private */,
+      14,    0,  111,    2, 0x08 /* Private */,
+      15,    0,  112,    2, 0x08 /* Private */,
+      16,    1,  113,    2, 0x08 /* Private */,
+      18,    0,  116,    2, 0x08 /* Private */,
+      19,    0,  117,    2, 0x08 /* Private */,
+      20,    0,  118,    2, 0x08 /* Private */,
+      21,    0,  119,    2, 0x08 /* Private */,
 
  // slots: parameters
     QMetaType::Void,
@@ -88,6 +106,13 @@ static const uint qt_meta_data_MainWindow[] = {
     QMetaType::Void, QMetaType::Int,    8,
     QMetaType::Void,
     QMetaType::Void, QMetaType::Float, QMetaType::Float, QMetaType::Float,   11,   12,    8,
+    QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void, QMetaType::QString,   17,
+    QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void,
     QMetaType::Void,
 
        0        // eod
@@ -108,6 +133,13 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 6: _t->UpdateDeltaPosition(); break;
         case 7: _t->UpdatePositionValue((*reinterpret_cast< float(*)>(_a[1])),(*reinterpret_cast< float(*)>(_a[2])),(*reinterpret_cast< float(*)>(_a[3]))); break;
         case 8: _t->Home(); break;
+        case 9: _t->AddGcodeLine(); break;
+        case 10: _t->TerminalTransmit(); break;
+        case 11: _t->PrintReceiveData((*reinterpret_cast< QString(*)>(_a[1]))); break;
+        case 12: _t->NoticeConnected(); break;
+        case 13: _t->OpenHSVPanel(); break;
+        case 14: _t->RunSmartEditor(); break;
+        case 15: _t->StandardFormatEditor(); break;
         default: ;
         }
     }
@@ -138,13 +170,13 @@ int MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 9)
+        if (_id < 16)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 9;
+        _id -= 16;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 9)
+        if (_id < 16)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 9;
+        _id -= 16;
     }
     return _id;
 }

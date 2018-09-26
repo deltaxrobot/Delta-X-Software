@@ -22,7 +22,7 @@ QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_GcodeProgramManager_t {
     QByteArrayData data[8];
-    char stringdata0[108];
+    char stringdata0[112];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -38,12 +38,12 @@ QT_MOC_LITERAL(3, 44, 13), // "GcodeProgram*"
 QT_MOC_LITERAL(4, 58, 3), // "ptr"
 QT_MOC_LITERAL(5, 62, 17), // "SaveGcodeIntoFile"
 QT_MOC_LITERAL(6, 80, 13), // "DeleteProgram"
-QT_MOC_LITERAL(7, 94, 13) // "TransmitGcode"
+QT_MOC_LITERAL(7, 94, 17) // "TransmitNextGcode"
 
     },
     "GcodeProgramManager\0ChangeSelectingProgram\0"
     "\0GcodeProgram*\0ptr\0SaveGcodeIntoFile\0"
-    "DeleteProgram\0TransmitGcode"
+    "DeleteProgram\0TransmitNextGcode"
 };
 #undef QT_MOC_LITERAL
 
@@ -84,7 +84,7 @@ void GcodeProgramManager::qt_static_metacall(QObject *_o, QMetaObject::Call _c, 
         case 0: _t->ChangeSelectingProgram((*reinterpret_cast< GcodeProgram*(*)>(_a[1]))); break;
         case 1: _t->SaveGcodeIntoFile(); break;
         case 2: _t->DeleteProgram((*reinterpret_cast< GcodeProgram*(*)>(_a[1]))); break;
-        case 3: _t->TransmitGcode(); break;
+        case 3: _t->TransmitNextGcode(); break;
         default: ;
         }
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
