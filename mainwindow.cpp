@@ -10,8 +10,8 @@ MainWindow::MainWindow(QWidget *parent) :
     InitVariables();
     InitEvents();
 
-	HideExampleWidgets();
-	InterpolateCircle();
+	hideExampleWidgets();
+	//interpolateCircle();
 }
 
 MainWindow::~MainWindow()
@@ -27,16 +27,17 @@ void MainWindow::InitEvents()
 	connect(ui->pbExecuteGcodes, SIGNAL(clicked(bool)), this, SLOT(ExecuteProgram()));
 
 	connect(ui->pbHome, SIGNAL(clicked(bool)), this, SLOT(Home()));
+	connect(ui->pbW, SIGNAL(clicked(bool)), this, SLOT(UpdateDeltaPosition()));
 	connect(ui->pbZ, SIGNAL(clicked(bool)), this, SLOT(UpdateDeltaPosition()));
 	connect(ui->pbY, SIGNAL(clicked(bool)), this, SLOT(UpdateDeltaPosition()));
 	connect(ui->pbX, SIGNAL(clicked(bool)), this, SLOT(UpdateDeltaPosition()));
+	connect(ui->pbGrip, SIGNAL(clicked(bool)), this, SLOT(Grip()));
 	connect(ui->vsZAdjsution, SIGNAL(valueChanged(int)), this, SLOT(UpdateZValue(int)));
 	connect(ui->vsZAdjsution, SIGNAL(sliderReleased()), this, SLOT(UpdateDeltaPosition()));
 
 	connect(DeltaParameter, SIGNAL(Moved(float, float, float)), this, SLOT(UpdatePositionValue(float, float, float)));
 	connect(DeltaParameter, SIGNAL(FinishMoving()), this, SLOT(UpdateDeltaPosition()));
-
-	connect(ui->pbHSV, SIGNAL(clicked(bool)), this, SLOT(OpenHSVPanel()));
+	
 	connect(ui->leTerminal, SIGNAL(returnPressed()), this, SLOT(TerminalTransmit()));
 	connect(DeltaPort, SIGNAL(FinishReadLine(QString)), this, SLOT(PrintReceiveData(QString)));
 
@@ -48,6 +49,10 @@ void MainWindow::InitEvents()
 	connect(ui->pbM204, SIGNAL(clicked(bool)), this, SLOT(AddGcodeLine()));
 
 	connect(ui->pbFormat, SIGNAL(clicked(bool)), this, SLOT(StandardFormatEditor()));
+
+	connect(ui->pbHSV, SIGNAL(clicked(bool)), DeltaImageProcesser, SLOT(OpenHSVPanel()));
+	connect(ui->pbLoadTestImage, SIGNAL(clicked(bool)), DeltaImageProcesser, SLOT(LoadTestImage()));
+
 }
 
 void MainWindow::InitVariables()
@@ -77,10 +82,14 @@ void MainWindow::InitVariables()
 
 	//---------- OpenCV Init -------------
 
-   /* cap = cv::VideoCapture(0);
+    /*cap = cv::VideoCapture(0);
     Timer1 = new QTimer(this);
     connect(Timer1, SIGNAL(timeout()), this, SLOT(UpdateCameraScreen()));
     Timer1->start(50);*/
+
+	DeltaImageProcesser = new ImageProcesser(this);
+	DeltaImageProcesser->SetProcessScreenPointer(ui->lbTestImage);
+	DeltaImageProcesser->SetResultScreenPointer(ui->lbCameraArea);
 }
 
 void MainWindow::ConnectDeltaRobot()
@@ -102,7 +111,7 @@ void MainWindow::ConnectDeltaRobot()
 
 void MainWindow::UpdateCameraScreen()
 {
-    cv::Mat mat;
+    /*cv::Mat mat;
     cap.read(mat);
 
     cv::cvtColor( mat, mat, cv::COLOR_BGR2GRAY );
@@ -134,7 +143,7 @@ void MainWindow::UpdateCameraScreen()
     }
 
     QImage img = ImageTool::cvMatToQImage(drawing);
-    ui->lbCameraArea->setPixmap(QPixmap::fromImage(img));
+    ui->lbCameraArea->setPixmap(QPixmap::fromImage(img));*/
 }
 
 void MainWindow::RunSmartEditor()
@@ -187,11 +196,13 @@ void MainWindow::UpdateDeltaPosition()
 	DeltaParameter->X = ui->leX->text().toFloat();
 	DeltaParameter->Y = ui->leY->text().toFloat();
 	DeltaParameter->Z = ui->leZ->text().toFloat();
+	DeltaParameter->W = ui->leW->text().toFloat();
 
 	ui->vsZAdjsution->setValue(DeltaParameter->ZHome - DeltaParameter->Z);
 	DeltaParameter->ChangeXY(ui->leX->text().toFloat(), ui->leY->text().toFloat());
 
-	DeltaGcodeManager->ExecuteGcode(QString("G01 X") + ui->leX->text() + QString(" Y") + ui->leY->text() + QString(" Z") + ui->leZ->text());
+	//DeltaGcodeManager->ExecuteGcode(QString("G01 X") + ui->leX->text() + QString(" Y") + ui->leY->text() + QString(" Z") + ui->leZ->text());
+	DeltaPort->Send(QString("G01 X") + ui->leX->text() + QString(" Y") + ui->leY->text() + QString(" Z") + ui->leZ->text() + QString(" W") + ui->leW->text());
 }
 
 void MainWindow::UpdatePositionValue(float x, float y, float z)
@@ -203,6 +214,20 @@ void MainWindow::UpdatePositionValue(float x, float y, float z)
 	//UpdateDeltaPosition();
 }
 
+void MainWindow::Grip()
+{
+	if (ui->pbGrip->text() == "Grip")
+	{
+		ui->pbGrip->setText("Release");
+		DeltaPort->Send(QString("G41 P0"));
+	}
+	else
+	{
+		ui->pbGrip->setText("Grip");
+		DeltaPort->Send(QString("G41 P1"));
+	}
+}
+
 void MainWindow::Home()
 {
 	DeltaGcodeManager->ExecuteGcode("G28");
@@ -210,10 +235,12 @@ void MainWindow::Home()
 	ui->leX->setText(QString::number(DeltaParameter->XHome));
 	ui->leY->setText(QString::number(DeltaParameter->YHome));
 	ui->leZ->setText(QString::number(DeltaParameter->ZHome));
+	ui->leW->setText(QString::number(DeltaParameter->WHome));
 
 	DeltaParameter->X = DeltaParameter->XHome;
 	DeltaParameter->Y = DeltaParameter->YHome;
 	DeltaParameter->Z = DeltaParameter->ZHome;
+	DeltaParameter->W = DeltaParameter->WHome;
 
 	DeltaParameter->ChangeXY(0, 0);
 	ui->vsZAdjsution->setValue(0);
@@ -260,12 +287,12 @@ void MainWindow::NoticeConnected()
 	ui->pbConnect->setText("Disconnect");
 }
 
-void MainWindow::HideExampleWidgets()
+void MainWindow::hideExampleWidgets()
 {
 	ui->frExProgram->setVisible(false);
 }
 
-void MainWindow::InterpolateCircle()
+void MainWindow::interpolateCircle()
 {
 	float r = 120;
 	int resolution = 120;
@@ -288,12 +315,6 @@ void MainWindow::InterpolateCircle()
 	}
 
 	ui->pteGcodeArea->setPlainText(gcode);
-}
-
-void MainWindow::OpenHSVPanel()
-{
-	HSVWindow hsvPanel;
-	hsvPanel.exec();
 }
 
 void MainWindow::StandardFormatEditor()

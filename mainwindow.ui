@@ -689,9 +689,9 @@ M204 A4000</string>
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>10</y>
-        <width>371</width>
-        <height>251</height>
+        <y>60</y>
+        <width>368</width>
+        <height>207</height>
        </rect>
       </property>
       <property name="styleSheet">
@@ -709,23 +709,13 @@ M204 A4000</string>
      <attribute name="title">
       <string>Test Image</string>
      </attribute>
-     <widget class="QLineEdit" name="leTestImageUrl">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>20</y>
-        <width>301</width>
-        <height>22</height>
-       </rect>
-      </property>
-     </widget>
      <widget class="QLabel" name="lbTestImage">
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>50</y>
-        <width>301</width>
-        <height>211</height>
+        <y>60</y>
+        <width>368</width>
+        <height>207</height>
        </rect>
       </property>
       <property name="styleSheet">
@@ -734,24 +724,14 @@ M204 A4000</string>
       <property name="text">
        <string/>
       </property>
-     </widget>
-     <widget class="QPushButton" name="pbHSV">
-      <property name="geometry">
-       <rect>
-        <x>320</x>
-        <y>50</y>
-        <width>61</width>
-        <height>28</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>HSV</string>
+      <property name="scaledContents">
+       <bool>true</bool>
       </property>
      </widget>
      <widget class="QPushButton" name="pbLoadTestImage">
       <property name="geometry">
        <rect>
-        <x>320</x>
+        <x>10</x>
         <y>20</y>
         <width>61</width>
         <height>28</height>
@@ -759,6 +739,19 @@ M204 A4000</string>
       </property>
       <property name="text">
        <string>Load</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pbHSV">
+      <property name="geometry">
+       <rect>
+        <x>80</x>
+        <y>20</y>
+        <width>71</width>
+        <height>28</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>HSV</string>
       </property>
      </widget>
     </widget>
@@ -836,6 +829,42 @@ M204 A4000</string>
     </property>
     <property name="text">
      <string>Format</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pbW">
+    <property name="geometry">
+     <rect>
+      <x>1280</x>
+      <y>280</y>
+      <width>21</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>W</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="leW">
+    <property name="geometry">
+     <rect>
+      <x>1310</x>
+      <y>280</y>
+      <width>71</width>
+      <height>27</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pbGrip">
+    <property name="geometry">
+     <rect>
+      <x>1280</x>
+      <y>320</y>
+      <width>101</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Grip</string>
     </property>
    </widget>
   </widget>

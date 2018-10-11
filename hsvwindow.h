@@ -23,10 +23,13 @@ public:
 	QSlider *sPara[6];
 	QLabel *lbPara[6];
 
+	bool IsInvertBinary();
+
 public slots:
 	void UpdateSliderValueToLabel();
 signals:
 	void ValueChanged(int minH, int maxH, int minS, int maxS, int minV, int maxV);
+	void ValueChanged(int threshold);
 
 private:
     Ui::HSVWindow *ui;

@@ -79,16 +79,18 @@ public:
     QWidget *tResultCameraArea;
     QLabel *lbCameraArea;
     QWidget *tab_2;
-    QLineEdit *leTestImageUrl;
     QLabel *lbTestImage;
-    QPushButton *pbHSV;
     QPushButton *pbLoadTestImage;
+    QPushButton *pbHSV;
     QLineEdit *leTerminal;
     QPushButton *pbG01;
     QPushButton *pbG28;
     QPushButton *pbM03;
     QPushButton *pbM204;
     QPushButton *pbFormat;
+    QPushButton *pbW;
+    QLineEdit *leW;
+    QPushButton *pbGrip;
 
     void setupUi(QMainWindow *MainWindow)
     {
@@ -279,25 +281,23 @@ public:
         tResultCameraArea->setObjectName(QStringLiteral("tResultCameraArea"));
         lbCameraArea = new QLabel(tResultCameraArea);
         lbCameraArea->setObjectName(QStringLiteral("lbCameraArea"));
-        lbCameraArea->setGeometry(QRect(10, 10, 371, 251));
+        lbCameraArea->setGeometry(QRect(10, 60, 368, 207));
         lbCameraArea->setStyleSheet(QStringLiteral("background-color:rgb(255, 255, 255)"));
         lbCameraArea->setScaledContents(true);
         tabWidget->addTab(tResultCameraArea, QString());
         tab_2 = new QWidget();
         tab_2->setObjectName(QStringLiteral("tab_2"));
-        leTestImageUrl = new QLineEdit(tab_2);
-        leTestImageUrl->setObjectName(QStringLiteral("leTestImageUrl"));
-        leTestImageUrl->setGeometry(QRect(10, 20, 301, 22));
         lbTestImage = new QLabel(tab_2);
         lbTestImage->setObjectName(QStringLiteral("lbTestImage"));
-        lbTestImage->setGeometry(QRect(10, 50, 301, 211));
+        lbTestImage->setGeometry(QRect(10, 60, 368, 207));
         lbTestImage->setStyleSheet(QStringLiteral("background-color:rgb(255, 255, 255)"));
-        pbHSV = new QPushButton(tab_2);
-        pbHSV->setObjectName(QStringLiteral("pbHSV"));
-        pbHSV->setGeometry(QRect(320, 50, 61, 28));
+        lbTestImage->setScaledContents(true);
         pbLoadTestImage = new QPushButton(tab_2);
         pbLoadTestImage->setObjectName(QStringLiteral("pbLoadTestImage"));
-        pbLoadTestImage->setGeometry(QRect(320, 20, 61, 28));
+        pbLoadTestImage->setGeometry(QRect(10, 20, 61, 28));
+        pbHSV = new QPushButton(tab_2);
+        pbHSV->setObjectName(QStringLiteral("pbHSV"));
+        pbHSV->setGeometry(QRect(80, 20, 71, 28));
         tabWidget->addTab(tab_2, QString());
         leTerminal = new QLineEdit(centralWidget);
         leTerminal->setObjectName(QStringLiteral("leTerminal"));
@@ -317,6 +317,15 @@ public:
         pbFormat = new QPushButton(centralWidget);
         pbFormat->setObjectName(QStringLiteral("pbFormat"));
         pbFormat->setGeometry(QRect(740, 710, 61, 28));
+        pbW = new QPushButton(centralWidget);
+        pbW->setObjectName(QStringLiteral("pbW"));
+        pbW->setGeometry(QRect(1280, 280, 21, 27));
+        leW = new QLineEdit(centralWidget);
+        leW->setObjectName(QStringLiteral("leW"));
+        leW->setGeometry(QRect(1310, 280, 71, 27));
+        pbGrip = new QPushButton(centralWidget);
+        pbGrip->setObjectName(QStringLiteral("pbGrip"));
+        pbGrip->setGeometry(QRect(1280, 320, 101, 27));
         MainWindow->setCentralWidget(centralWidget);
 
         retranslateUi(MainWindow);
@@ -369,14 +378,16 @@ public:
         lbCameraArea->setText(QString());
         tabWidget->setTabText(tabWidget->indexOf(tResultCameraArea), QApplication::translate("MainWindow", "Result", Q_NULLPTR));
         lbTestImage->setText(QString());
-        pbHSV->setText(QApplication::translate("MainWindow", "HSV", Q_NULLPTR));
         pbLoadTestImage->setText(QApplication::translate("MainWindow", "Load", Q_NULLPTR));
+        pbHSV->setText(QApplication::translate("MainWindow", "HSV", Q_NULLPTR));
         tabWidget->setTabText(tabWidget->indexOf(tab_2), QApplication::translate("MainWindow", "Test Image", Q_NULLPTR));
         pbG01->setText(QApplication::translate("MainWindow", "G01", Q_NULLPTR));
         pbG28->setText(QApplication::translate("MainWindow", "G28", Q_NULLPTR));
         pbM03->setText(QApplication::translate("MainWindow", "M03", Q_NULLPTR));
         pbM204->setText(QApplication::translate("MainWindow", "M204", Q_NULLPTR));
         pbFormat->setText(QApplication::translate("MainWindow", "Format", Q_NULLPTR));
+        pbW->setText(QApplication::translate("MainWindow", "W", Q_NULLPTR));
+        pbGrip->setText(QApplication::translate("MainWindow", "Grip", Q_NULLPTR));
     } // retranslateUi
 
 };

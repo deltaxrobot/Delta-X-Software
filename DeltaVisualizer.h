@@ -26,10 +26,12 @@ public:
 	float XHome = 0;
 	float YHome = 0;
 	float ZHome = -230;
+	float WHome = 0;
 
 	float X = XHome;
 	float Y = YHome;
 	float Z = ZHome;
+	float W = WHome;
 
 public slots:
 	void ChangeXY(int x, int y);

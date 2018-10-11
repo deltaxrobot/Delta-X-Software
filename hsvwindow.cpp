@@ -33,12 +33,19 @@ void HSVWindow::InitVariables()
 	lbPara[5] = ui->lbmaxV;
 }
 
+bool HSVWindow::IsInvertBinary()
+{
+	return ui->cbInvert->isChecked();
+}
+
 void HSVWindow::InitEvents()
 {
 	for (int i = 0; i < 6; i++)
 	{
 		connect(sPara[i], SIGNAL(valueChanged(int)), this, SLOT(UpdateSliderValueToLabel()));
 	}
+
+	connect(ui->hsThreshold, SIGNAL(valueChanged(int)), this, SLOT(UpdateSliderValueToLabel()));
 }
 
 void HSVWindow::UpdateSliderValueToLabel()
@@ -48,5 +55,14 @@ void HSVWindow::UpdateSliderValueToLabel()
 		lbPara[i]->setText(QString::number(sPara[i]->value()));
 	}
 
-	emit ValueChanged(sPara[0]->value(), sPara[1]->value(), sPara[2]->value(), sPara[3]->value(), sPara[4]->value(), sPara[5]->value());
+	QSlider*  senderSlide = qobject_cast<QSlider*>(sender());
+
+	if (senderSlide->objectName() == "hsThreshold")
+	{
+		emit ValueChanged(ui->hsThreshold->value());
+	}
+	else
+	{
+		emit ValueChanged(sPara[0]->value(), sPara[1]->value(), sPara[2]->value(), sPara[3]->value(), sPara[4]->value(), sPara[5]->value());
+	}
 }
