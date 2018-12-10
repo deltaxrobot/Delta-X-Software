@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>567</width>
+    <width>1401</width>
     <height>506</height>
    </rect>
   </property>
@@ -365,6 +365,38 @@
    </property>
    <property name="text">
     <string>Invert</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="lbOriginImage">
+   <property name="geometry">
+    <rect>
+     <x>560</x>
+     <y>30</y>
+     <width>401</width>
+     <height>321</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color:rgb(226, 226, 226)</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QLabel" name="lbProcessImage">
+   <property name="geometry">
+    <rect>
+     <x>980</x>
+     <y>30</y>
+     <width>401</width>
+     <height>321</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color:rgb(226, 226, 226)</string>
+   </property>
+   <property name="text">
+    <string/>
    </property>
   </widget>
  </widget>

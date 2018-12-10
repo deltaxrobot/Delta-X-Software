@@ -32,6 +32,7 @@ void MainWindow::InitEvents()
 	connect(ui->pbY, SIGNAL(clicked(bool)), this, SLOT(UpdateDeltaPosition()));
 	connect(ui->pbX, SIGNAL(clicked(bool)), this, SLOT(UpdateDeltaPosition()));
 	connect(ui->pbGrip, SIGNAL(clicked(bool)), this, SLOT(Grip()));
+	connect(ui->cbPump, SIGNAL(stateChanged(int)), this, SLOT(SetPump(int)));
 	connect(ui->vsZAdjsution, SIGNAL(valueChanged(int)), this, SLOT(UpdateZValue(int)));
 	connect(ui->vsZAdjsution, SIGNAL(sliderReleased()), this, SLOT(UpdateDeltaPosition()));
 
@@ -50,9 +51,11 @@ void MainWindow::InitEvents()
 
 	connect(ui->pbFormat, SIGNAL(clicked(bool)), this, SLOT(StandardFormatEditor()));
 
-	connect(ui->pbHSV, SIGNAL(clicked(bool)), DeltaImageProcesser, SLOT(OpenHSVPanel()));
+	connect(ui->pbHSV, SIGNAL(clicked(bool)), DeltaImageProcesser, SLOT(OpenParameterPanel()));
 	connect(ui->pbLoadTestImage, SIGNAL(clicked(bool)), DeltaImageProcesser, SLOT(LoadTestImage()));
-
+	connect(ui->pbLoadCamera, SIGNAL(clicked(bool)), DeltaImageProcesser, SLOT(LoadCamera()));
+	connect(ui->pbObjectRect, SIGNAL(clicked(bool)), ui->lbScreenStreamer, SLOT(rectObject()));
+	connect(ui->pbObjectLine, SIGNAL(clicked(bool)), ui->lbScreenStreamer, SLOT(lineObject()));
 }
 
 void MainWindow::InitVariables()
@@ -80,16 +83,12 @@ void MainWindow::InitVariables()
     container->addWidget(VisualArea);
     ui->wgOpenGl->setLayout(container);*/
 
-	//---------- OpenCV Init -------------
-
-    /*cap = cv::VideoCapture(0);
-    Timer1 = new QTimer(this);
-    connect(Timer1, SIGNAL(timeout()), this, SLOT(UpdateCameraScreen()));
-    Timer1->start(50);*/
+	//---------- OpenCV Init -------------    
 
 	DeltaImageProcesser = new ImageProcesser(this);
 	DeltaImageProcesser->SetProcessScreenPointer(ui->lbTestImage);
-	DeltaImageProcesser->SetResultScreenPointer(ui->lbCameraArea);
+	DeltaImageProcesser->SetResultScreenPointer(ui->lbScreenStreamer);
+	DeltaImageProcesser->SetFPSInputBox(ui->leFPS);
 }
 
 void MainWindow::ConnectDeltaRobot()
@@ -107,43 +106,6 @@ void MainWindow::ConnectDeltaRobot()
 		if (DeltaPort->IsConnect())
 			DeltaPort->Disconnect();
 	}
-}
-
-void MainWindow::UpdateCameraScreen()
-{
-    /*cv::Mat mat;
-    cap.read(mat);
-
-    cv::cvtColor( mat, mat, cv::COLOR_BGR2GRAY );
-    cv::blur( mat, mat, cv::Size(3,3) );
-    cv::Canny( mat, mat, 100, 100 * 2 );
-    std::vector<std::vector<cv::Point> > contours;
-    cv::findContours( mat, contours, cv::RETR_TREE, cv::CHAIN_APPROX_SIMPLE );
-    std::vector<std::vector<cv::Point> > contours_poly( contours.size() );
-    std::vector<cv::Rect> boundRect( contours.size() );
-    std::vector<cv::Point2f>centers( contours.size() );
-    std::vector<float>radius( contours.size() );
-
-    for( size_t i = 0; i < contours.size(); i++ )
-    {
-        cv::approxPolyDP( contours[i], contours_poly[i], 3, true );
-        boundRect[i] = boundingRect( contours_poly[i] );
-        cv::minEnclosingCircle( contours_poly[i], centers[i], radius[i] );
-    }
-
-    cv::Mat drawing = cv::Mat::zeros( mat.size(), CV_8UC3);
-    cv::RNG rng(12345);
-
-    for( size_t i = 0; i< contours.size(); i++ )
-    {
-        cv::Scalar color = cv::Scalar( rng.uniform(0, 256), rng.uniform(0,256), rng.uniform(0,256) );
-        cv::drawContours( drawing, contours_poly, (int)i, color );
-        cv:: rectangle( drawing, boundRect[i].tl(), boundRect[i].br(), color, 2 );
-        cv::circle( drawing, centers[i], (int)radius[i], color, 2 );
-    }
-
-    QImage img = ImageTool::cvMatToQImage(drawing);
-    ui->lbCameraArea->setPixmap(QPixmap::fromImage(img));*/
 }
 
 void MainWindow::RunSmartEditor()
@@ -202,7 +164,7 @@ void MainWindow::UpdateDeltaPosition()
 	DeltaParameter->ChangeXY(ui->leX->text().toFloat(), ui->leY->text().toFloat());
 
 	//DeltaGcodeManager->ExecuteGcode(QString("G01 X") + ui->leX->text() + QString(" Y") + ui->leY->text() + QString(" Z") + ui->leZ->text());
-	DeltaPort->Send(QString("G01 X") + ui->leX->text() + QString(" Y") + ui->leY->text() + QString(" Z") + ui->leZ->text() + QString(" W") + ui->leW->text());
+	DeltaPort->Send(QString("G01 X") + ui->leX->text() + QString(" Y") + ui->leY->text() + QString(" Z") + ui->leZ->text() + QString(" W") + ui->leW->text() + "\n");
 }
 
 void MainWindow::UpdatePositionValue(float x, float y, float z)
@@ -219,11 +181,23 @@ void MainWindow::Grip()
 	if (ui->pbGrip->text() == "Grip")
 	{
 		ui->pbGrip->setText("Release");
-		DeltaPort->Send(QString("G41 P0"));
+		DeltaPort->Send(QString("G42 V0"));
 	}
 	else
 	{
 		ui->pbGrip->setText("Grip");
+		DeltaPort->Send(QString("G42 V1"));
+	}
+}
+
+void MainWindow::SetPump(int value)
+{
+	if (value == 0)
+	{
+		DeltaPort->Send(QString("G41 P0"));
+	}
+	else
+	{
 		DeltaPort->Send(QString("G41 P1"));
 	}
 }
@@ -361,7 +335,10 @@ void MainWindow::StandardFormatEditor()
 
 		if (line != "")
 		{
-			line = QString("N") + QString::number(i) + " " + line;
+			if (line[0] != ';')
+			{
+				line = QString("N") + QString::number(i) + " " + line;
+			}
 		}		
 		
 		editorText += line + "\n";

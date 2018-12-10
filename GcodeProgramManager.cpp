@@ -12,6 +12,13 @@ GcodeProgramManager::GcodeProgramManager(QWidget* container, QPlainTextEdit * gc
 	pteGcodeArea = gcodeArea;
 	deltaConnection = deltaPort;
 
+	UpdateSystemVariable("#1001", -1000);
+	UpdateSystemVariable("#1002", -1000);
+	UpdateSystemVariable("#1003", -1000);
+	UpdateSystemVariable("#X", 0);
+	UpdateSystemVariable("#Y", 0);
+	UpdateSystemVariable("#Z", 0);
+	UpdateSystemVariable("#W", 0);
 	connect(deltaConnection, SIGNAL(DeltaResponeGcodeDone()), this, SLOT(TransmitNextGcode()));
 }
 
@@ -89,10 +96,19 @@ void GcodeProgramManager::ExecuteGcode(QString gcodes)
 
 	for (int i = 0; i < tempGcodeList.size(); i++)
 	{
-		if (tempGcodeList.at(i) != "")
+		QString line = tempGcodeList.at(i);
+		
+		if (line == "")
 		{
-			gcodeList.push_back(tempGcodeList.at(i));
+			continue;
 		}
+
+		if (line[0] == ';')
+		{
+			continue;
+		}
+
+		gcodeList.push_back(line);
 	}
 
 	tempGcodeList.clear();
@@ -112,6 +128,8 @@ void GcodeProgramManager::findExeGcodeAndTransmit()
 	QString expressInBracket = "";
 	int resultInBracket;
 	int subBracNum = 0;
+
+	// ------------- Conlapse Gcode Line by calculating all expression in [ ... ] ---------------
 
 	while (openBracIndex > -1)
 	{
@@ -142,10 +160,12 @@ void GcodeProgramManager::findExeGcodeAndTransmit()
 		openBracIndex = currentLine.indexOf('[');
 	}
 
+	//-------------- Find programing statement ------------------------
+
 	QList<QString> valuePairs = currentLine.split(' ');
 	QString transmitGcode = currentLine;
 
-	for (int i = 0; i < valuePairs.size() - 1; i++)
+	for (int i = 0; i < valuePairs.size(); i++)
 	{
 		if (valuePairs[i] == "")
 			continue;
@@ -222,19 +242,7 @@ void GcodeProgramManager::findExeGcodeAndTransmit()
 				newVar.Name = varName;
 				newVar.Value = calculateExpressions(expression);
 
-				bool isNewVar = true;
-
-				for (int i = 0; i < gcodeVariables.length(); i++)
-				{
-					if (gcodeVariables[i].Name == newVar.Name)
-					{
-						gcodeVariables[i].Value = newVar.Value;
-						isNewVar = false;
-					}
-				}
-
-				if (isNewVar == true)
-					gcodeVariables.push_back(newVar);
+				SaveGcodeVariable(newVar);
 
 				gcodeOrder++;
 				TransmitNextGcode();
@@ -244,7 +252,73 @@ void GcodeProgramManager::findExeGcodeAndTransmit()
 		}
 		
 		// --------------- WHILE ------------------
+
+		// --------------- DEFINE SUBPROGRAM ------
+
+		// N15 O2000
+		// ....
+		// N45 M99
+
+		if (valuePairs[i].at(0) == 'O')
+		{
+			QString subProName = valuePairs[i].mid(1);
+
+			bool isNumber;
+			int subProID;
+
+			subProID = subProName.toInt(&isNumber, 10);
+
+			if (isNumber == true)
+			{
+				for (int order = gcodeOrder + 1; order < gcodeList.size(); order++)
+				{
+					if (gcodeList[order].indexOf("M99") > -1)
+					{
+						gcodeOrder = order + 1;
+						TransmitNextGcode();
+						return;
+					}	
+				}
+			}
+		}
+
+		// --------------- CALL SUBPROGRAM --------
+
+		// N50 M98 P2000
+		
+		if (valuePairs[i] == "M98" && valuePairs.size() > (i + 1))
+		{
+			if (valuePairs[i + 1].at(0) == 'P')
+			{
+				QString subProName = valuePairs[i + 1].mid(1);
+
+				for (int order = 0; order < gcodeList.size(); order++)
+				{
+					if (gcodeList[order].indexOf(QString("O") + subProName) > -1)
+					{
+						returnPointerOrder++;
+						returnSubProPointer[returnPointerOrder] = gcodeOrder;
+
+						gcodeOrder = order + 1;
+
+						TransmitNextGcode();
+
+						return;
+					}
+				}
+			}
+		}
+
+		if (valuePairs[i] == "M99")
+		{
+			gcodeOrder = returnSubProPointer[returnPointerOrder] + 1;
+			returnPointerOrder--;
+			TransmitNextGcode();
+			return;
+		}
 	}
+
+	updatePositionIntoSystemVariable(transmitGcode);
 
 	deltaConnection->Send(transmitGcode);
 	gcodeOrder += 1;
@@ -353,12 +427,13 @@ void GcodeProgramManager::TransmitNextGcode()
 	if (gcodeOrder >= gcodeList.size())
 		return;
 
-	currentLine = gcodeList.at(gcodeOrder) + "\n";
+	currentLine = gcodeList.at(gcodeOrder);
 	QString firstPair = currentLine.split(' ')[0];
 
 	if (firstPair[0] == 'N')
 	{
-		currentLine.replace(firstPair + " ", "");
+		QString line = currentLine;
+		currentLine = line.replace(firstPair + " ", "");
 	}
 
 	findExeGcodeAndTransmit();
@@ -371,6 +446,24 @@ void GcodeProgramManager::TransmitNextGcode()
 		gcodeOrder = 0;
 		gcodeList.clear();
 	}
+}
+
+void GcodeProgramManager::UpdateSystemVariable(QString name, int value)
+{
+	for (int i = 0; i < gcodeVariables.size(); i++)
+	{
+		if (name == gcodeVariables[i].Name)
+		{
+			gcodeVariables[i].Value = value;
+			return;
+		}
+	}
+
+	GcodeVariable var;
+	var.Name = name;
+	var.Value = value;
+
+	gcodeVariables.push_back(var);
 }
 
 int GcodeProgramManager::calculateExpressions(QString expression)
@@ -560,7 +653,7 @@ int GcodeProgramManager::calculateExpressions(QString expression)
 
 			foreach(GcodeVariable var, gcodeVariables)
 			{
-				if (var.Name == value)
+				if (var.Name == expression)
 				{
 					value = var.Value;
 				}
@@ -570,6 +663,51 @@ int GcodeProgramManager::calculateExpressions(QString expression)
 		}
 
 		return expression.toInt();
+	}
+}
+
+void GcodeProgramManager::SaveGcodeVariable(GcodeVariable gvar)
+{
+	bool isNewVar = true;
+
+	for (int i = 0; i < gcodeVariables.length(); i++)
+	{
+		if (gcodeVariables[i].Name == gvar.Name)
+		{
+			gcodeVariables[i].Value = gvar.Value;
+			isNewVar = false;
+		}
+	}
+
+	if (isNewVar == true)
+		gcodeVariables.push_back(gvar);
+}
+
+void GcodeProgramManager::updatePositionIntoSystemVariable(QString statement)
+{
+	QList<QString> pairs = statement.split(' ');
+
+	for each (QString pair in pairs)
+	{
+		QChar prefix = pair[0];
+		QString value = pair.mid(1);
+
+		if (pair[0] == 'X')
+		{
+			UpdateSystemVariable("#X", value.toInt());
+		}
+		else if (pair[0] == 'Y')
+		{
+			UpdateSystemVariable("#Y", value.toInt());
+		}
+		else if (pair[0] == 'Z')
+		{
+			UpdateSystemVariable("#Z", value.toInt());
+		}
+		else if (pair[0] == 'W')
+		{
+			UpdateSystemVariable("#W", value.toInt());
+		}
 	}
 }
 

@@ -49,12 +49,14 @@ public:
     QLabel *lbThreshold;
     QLabel *label_7;
     QCheckBox *cbInvert;
+    QLabel *lbOriginImage;
+    QLabel *lbProcessImage;
 
     void setupUi(QDialog *HSVWindow)
     {
         if (HSVWindow->objectName().isEmpty())
             HSVWindow->setObjectName(QStringLiteral("HSVWindow"));
-        HSVWindow->resize(567, 506);
+        HSVWindow->resize(1401, 506);
         groupBox = new QGroupBox(HSVWindow);
         groupBox->setObjectName(QStringLiteral("groupBox"));
         groupBox->setGeometry(QRect(30, 20, 511, 311));
@@ -148,6 +150,14 @@ public:
         cbInvert = new QCheckBox(HSVWindow);
         cbInvert->setObjectName(QStringLiteral("cbInvert"));
         cbInvert->setGeometry(QRect(450, 470, 81, 20));
+        lbOriginImage = new QLabel(HSVWindow);
+        lbOriginImage->setObjectName(QStringLiteral("lbOriginImage"));
+        lbOriginImage->setGeometry(QRect(560, 30, 401, 321));
+        lbOriginImage->setStyleSheet(QStringLiteral("background-color:rgb(226, 226, 226)"));
+        lbProcessImage = new QLabel(HSVWindow);
+        lbProcessImage->setObjectName(QStringLiteral("lbProcessImage"));
+        lbProcessImage->setGeometry(QRect(980, 30, 401, 321));
+        lbProcessImage->setStyleSheet(QStringLiteral("background-color:rgb(226, 226, 226)"));
 
         retranslateUi(HSVWindow);
 
@@ -174,6 +184,8 @@ public:
         lbThreshold->setText(QApplication::translate("HSVWindow", "100", Q_NULLPTR));
         label_7->setText(QApplication::translate("HSVWindow", "min", Q_NULLPTR));
         cbInvert->setText(QApplication::translate("HSVWindow", "Invert", Q_NULLPTR));
+        lbOriginImage->setText(QString());
+        lbProcessImage->setText(QString());
     } // retranslateUi
 
 };

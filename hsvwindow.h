@@ -22,6 +22,8 @@ public:
 
 	QSlider *sPara[6];
 	QLabel *lbPara[6];
+	QLabel *lbOriginImage;
+	QLabel *lbProcessImage;
 
 	bool IsInvertBinary();
 

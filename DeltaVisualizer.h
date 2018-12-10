@@ -25,7 +25,7 @@ public:
 
 	float XHome = 0;
 	float YHome = 0;
-	float ZHome = -230;
+	float ZHome = -290;
 	float WHome = 0;
 
 	float X = XHome;

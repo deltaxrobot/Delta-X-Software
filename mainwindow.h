@@ -42,13 +42,10 @@ public:
 	DeltaVisualizer *DeltaParameter;
 	ImageProcesser* DeltaImageProcesser;
 
-    QTimer* Timer1;
 	QTimer* EditorTimer;
-    cv::VideoCapture cap;
 
 private slots:
     void ConnectDeltaRobot();
-    void UpdateCameraScreen();
 	void AddNewProgram();
 	void SaveProgram();
 	void ExecuteProgram();
@@ -56,6 +53,7 @@ private slots:
 	void UpdateDeltaPosition();
 	void UpdatePositionValue(float x, float y, float z);
 	void Grip();
+	void SetPump(int value);
 	void Home();
 
 	void AddGcodeLine();

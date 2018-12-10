@@ -31,6 +31,9 @@ void HSVWindow::InitVariables()
 	lbPara[3] = ui->lbmaxS;
 	lbPara[4] = ui->lbminV;
 	lbPara[5] = ui->lbmaxV;
+
+	lbOriginImage = ui->lbOriginImage;
+	lbProcessImage = ui->lbProcessImage;
 }
 
 bool HSVWindow::IsInvertBinary()

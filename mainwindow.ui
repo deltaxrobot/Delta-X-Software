@@ -314,6 +314,9 @@ color:rgb(1, 251, 255)</string>
       <pointsize>14</pointsize>
      </font>
     </property>
+    <property name="horizontalScrollBarPolicy">
+     <enum>Qt::ScrollBarAsNeeded</enum>
+    </property>
     <property name="plainText">
      <string>G28
 M03 S2000
@@ -674,34 +677,144 @@ M204 A4000</string>
      <rect>
       <x>870</x>
       <y>440</y>
-      <width>391</width>
+      <width>511</width>
       <height>301</height>
      </rect>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>0</number>
     </property>
     <widget class="QWidget" name="tResultCameraArea">
      <attribute name="title">
       <string>Result</string>
      </attribute>
-     <widget class="QLabel" name="lbCameraArea">
+     <widget class="CameraWidget" name="lbScreenStreamer">
       <property name="geometry">
        <rect>
         <x>10</x>
         <y>60</y>
-        <width>368</width>
+        <width>311</width>
         <height>207</height>
        </rect>
       </property>
       <property name="styleSheet">
-       <string notr="true">background-color:rgb(255, 255, 255)</string>
+       <string notr="true">background-color:rgb(230, 230, 230)</string>
       </property>
       <property name="text">
        <string/>
       </property>
       <property name="scaledContents">
-       <bool>true</bool>
+       <bool>false</bool>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pbLoadCamera">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>10</y>
+        <width>91</width>
+        <height>28</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Load Camera</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pbLoadTestImage">
+      <property name="geometry">
+       <rect>
+        <x>110</x>
+        <y>10</y>
+        <width>91</width>
+        <height>28</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Load Image</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pbHSV">
+      <property name="geometry">
+       <rect>
+        <x>430</x>
+        <y>10</y>
+        <width>61</width>
+        <height>28</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Filter</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_11">
+      <property name="geometry">
+       <rect>
+        <x>400</x>
+        <y>70</y>
+        <width>55</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>FPS</string>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="leFPS">
+      <property name="geometry">
+       <rect>
+        <x>450</x>
+        <y>70</y>
+        <width>41</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>15</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="lbTrackingObject">
+      <property name="geometry">
+       <rect>
+        <x>390</x>
+        <y>140</y>
+        <width>101</width>
+        <height>121</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color:rgb(230, 230, 230)</string>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pbObjectRect">
+      <property name="geometry">
+       <rect>
+        <x>390</x>
+        <y>100</y>
+        <width>41</width>
+        <height>28</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Rect</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pbObjectLine">
+      <property name="geometry">
+       <rect>
+        <x>450</x>
+        <y>100</y>
+        <width>41</width>
+        <height>28</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Line</string>
       </property>
      </widget>
     </widget>
@@ -726,32 +839,6 @@ M204 A4000</string>
       </property>
       <property name="scaledContents">
        <bool>true</bool>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="pbLoadTestImage">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>20</y>
-        <width>61</width>
-        <height>28</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Load</string>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="pbHSV">
-      <property name="geometry">
-       <rect>
-        <x>80</x>
-        <y>20</y>
-        <width>71</width>
-        <height>28</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>HSV</string>
       </property>
      </widget>
     </widget>
@@ -867,6 +954,19 @@ M204 A4000</string>
      <string>Grip</string>
     </property>
    </widget>
+   <widget class="QCheckBox" name="cbPump">
+    <property name="geometry">
+     <rect>
+      <x>1300</x>
+      <y>360</y>
+      <width>81</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Pump</string>
+    </property>
+   </widget>
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
@@ -876,6 +976,11 @@ M204 A4000</string>
    <extends>QWidget</extends>
    <header>glwidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>CameraWidget</class>
+   <extends>QLabel</extends>
+   <header location="global">CameraWidget.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

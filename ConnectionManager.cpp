@@ -37,6 +37,7 @@ QString ConnectionManager::GetNamePort()
 
 void ConnectionManager::Send(QString msg)
 {
+	msg += "\n";
 	if (serialPort->isOpen())
 	{
 		serialPort->write(msg.toStdString().c_str(), msg.size());

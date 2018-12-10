@@ -54,22 +54,27 @@ public:
 	int ProgramCounter = 0;
 	QVector<GcodeProgram*>* ProgramList;
 
-	QList<QString> gcodeList;
-	int gcodeOrder = 0;
-
-	public slots:
+public slots:
 	void ChangeSelectingProgram(GcodeProgram* ptr);
 	void SaveGcodeIntoFile();
 	void DeleteProgram(GcodeProgram* ptr);
 	void TransmitNextGcode();
+	void UpdateSystemVariable(QString name, int value);
 
 private:
 	ConnectionManager* deltaConnection;
-	QList<GcodeVariable> gcodeVariables;
+	QList<GcodeVariable> gcodeVariables;	
+
+	QList<QString> gcodeList;
+	int gcodeOrder = 0;
+	int returnSubProPointer[20];
+	int returnPointerOrder = -1;
 	QString currentLine;
 
 	void findExeGcodeAndTransmit();
 	int calculateExpressions(QString expression);
+	void SaveGcodeVariable(GcodeVariable gvar);
+	void updatePositionIntoSystemVariable(QString statement);
 	QString getLeftWord(QString s, int pos);
 	QString getRightWord(QString s, int pos);
 	QString deleteSpaces(QString s);

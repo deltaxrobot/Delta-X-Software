@@ -9,10 +9,12 @@
 #ifndef UI_MAINWINDOW_H
 #define UI_MAINWINDOW_H
 
+#include <CameraWidget.h>
 #include <QtCore/QVariant>
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
+#include <QtWidgets/QCheckBox>
 #include <QtWidgets/QFrame>
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLabel>
@@ -77,11 +79,17 @@ public:
     QLabel *label_7;
     QTabWidget *tabWidget;
     QWidget *tResultCameraArea;
-    QLabel *lbCameraArea;
-    QWidget *tab_2;
-    QLabel *lbTestImage;
+    CameraWidget *lbScreenStreamer;
+    QPushButton *pbLoadCamera;
     QPushButton *pbLoadTestImage;
     QPushButton *pbHSV;
+    QLabel *label_11;
+    QLineEdit *leFPS;
+    QLabel *lbTrackingObject;
+    QPushButton *pbObjectRect;
+    QPushButton *pbObjectLine;
+    QWidget *tab_2;
+    QLabel *lbTestImage;
     QLineEdit *leTerminal;
     QPushButton *pbG01;
     QPushButton *pbG28;
@@ -91,6 +99,7 @@ public:
     QPushButton *pbW;
     QLineEdit *leW;
     QPushButton *pbGrip;
+    QCheckBox *cbPump;
 
     void setupUi(QMainWindow *MainWindow)
     {
@@ -183,6 +192,7 @@ public:
         QFont font1;
         font1.setPointSize(14);
         pteGcodeArea->setFont(font1);
+        pteGcodeArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
         twDeltaGeometry = new QTabWidget(centralWidget);
         twDeltaGeometry->setObjectName(QStringLiteral("twDeltaGeometry"));
         twDeltaGeometry->setGeometry(QRect(870, 90, 391, 341));
@@ -276,14 +286,40 @@ public:
         twDeltaGeometry->addTab(tParameter, QString());
         tabWidget = new QTabWidget(centralWidget);
         tabWidget->setObjectName(QStringLiteral("tabWidget"));
-        tabWidget->setGeometry(QRect(870, 440, 391, 301));
+        tabWidget->setGeometry(QRect(870, 440, 511, 301));
         tResultCameraArea = new QWidget();
         tResultCameraArea->setObjectName(QStringLiteral("tResultCameraArea"));
-        lbCameraArea = new QLabel(tResultCameraArea);
-        lbCameraArea->setObjectName(QStringLiteral("lbCameraArea"));
-        lbCameraArea->setGeometry(QRect(10, 60, 368, 207));
-        lbCameraArea->setStyleSheet(QStringLiteral("background-color:rgb(255, 255, 255)"));
-        lbCameraArea->setScaledContents(true);
+        lbScreenStreamer = new CameraWidget(tResultCameraArea);
+        lbScreenStreamer->setObjectName(QStringLiteral("lbScreenStreamer"));
+        lbScreenStreamer->setGeometry(QRect(10, 60, 311, 207));
+        lbScreenStreamer->setStyleSheet(QStringLiteral("background-color:rgb(230, 230, 230)"));
+        lbScreenStreamer->setScaledContents(false);
+        pbLoadCamera = new QPushButton(tResultCameraArea);
+        pbLoadCamera->setObjectName(QStringLiteral("pbLoadCamera"));
+        pbLoadCamera->setGeometry(QRect(10, 10, 91, 28));
+        pbLoadTestImage = new QPushButton(tResultCameraArea);
+        pbLoadTestImage->setObjectName(QStringLiteral("pbLoadTestImage"));
+        pbLoadTestImage->setGeometry(QRect(110, 10, 91, 28));
+        pbHSV = new QPushButton(tResultCameraArea);
+        pbHSV->setObjectName(QStringLiteral("pbHSV"));
+        pbHSV->setGeometry(QRect(430, 10, 61, 28));
+        label_11 = new QLabel(tResultCameraArea);
+        label_11->setObjectName(QStringLiteral("label_11"));
+        label_11->setGeometry(QRect(400, 70, 55, 16));
+        leFPS = new QLineEdit(tResultCameraArea);
+        leFPS->setObjectName(QStringLiteral("leFPS"));
+        leFPS->setGeometry(QRect(450, 70, 41, 22));
+        leFPS->setAlignment(Qt::AlignCenter);
+        lbTrackingObject = new QLabel(tResultCameraArea);
+        lbTrackingObject->setObjectName(QStringLiteral("lbTrackingObject"));
+        lbTrackingObject->setGeometry(QRect(390, 140, 101, 121));
+        lbTrackingObject->setStyleSheet(QStringLiteral("background-color:rgb(230, 230, 230)"));
+        pbObjectRect = new QPushButton(tResultCameraArea);
+        pbObjectRect->setObjectName(QStringLiteral("pbObjectRect"));
+        pbObjectRect->setGeometry(QRect(390, 100, 41, 28));
+        pbObjectLine = new QPushButton(tResultCameraArea);
+        pbObjectLine->setObjectName(QStringLiteral("pbObjectLine"));
+        pbObjectLine->setGeometry(QRect(450, 100, 41, 28));
         tabWidget->addTab(tResultCameraArea, QString());
         tab_2 = new QWidget();
         tab_2->setObjectName(QStringLiteral("tab_2"));
@@ -292,12 +328,6 @@ public:
         lbTestImage->setGeometry(QRect(10, 60, 368, 207));
         lbTestImage->setStyleSheet(QStringLiteral("background-color:rgb(255, 255, 255)"));
         lbTestImage->setScaledContents(true);
-        pbLoadTestImage = new QPushButton(tab_2);
-        pbLoadTestImage->setObjectName(QStringLiteral("pbLoadTestImage"));
-        pbLoadTestImage->setGeometry(QRect(10, 20, 61, 28));
-        pbHSV = new QPushButton(tab_2);
-        pbHSV->setObjectName(QStringLiteral("pbHSV"));
-        pbHSV->setGeometry(QRect(80, 20, 71, 28));
         tabWidget->addTab(tab_2, QString());
         leTerminal = new QLineEdit(centralWidget);
         leTerminal->setObjectName(QStringLiteral("leTerminal"));
@@ -326,13 +356,16 @@ public:
         pbGrip = new QPushButton(centralWidget);
         pbGrip->setObjectName(QStringLiteral("pbGrip"));
         pbGrip->setGeometry(QRect(1280, 320, 101, 27));
+        cbPump = new QCheckBox(centralWidget);
+        cbPump->setObjectName(QStringLiteral("cbPump"));
+        cbPump->setGeometry(QRect(1300, 360, 81, 20));
         MainWindow->setCentralWidget(centralWidget);
 
         retranslateUi(MainWindow);
 
         pbExDeleteProgram->setDefault(true);
         twDeltaGeometry->setCurrentIndex(1);
-        tabWidget->setCurrentIndex(1);
+        tabWidget->setCurrentIndex(0);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -375,11 +408,17 @@ public:
         lineEdit_6->setText(QString());
         label_7->setText(QApplication::translate("MainWindow", "e", Q_NULLPTR));
         twDeltaGeometry->setTabText(twDeltaGeometry->indexOf(tParameter), QApplication::translate("MainWindow", "Parameter", Q_NULLPTR));
-        lbCameraArea->setText(QString());
+        lbScreenStreamer->setText(QString());
+        pbLoadCamera->setText(QApplication::translate("MainWindow", "Load Camera", Q_NULLPTR));
+        pbLoadTestImage->setText(QApplication::translate("MainWindow", "Load Image", Q_NULLPTR));
+        pbHSV->setText(QApplication::translate("MainWindow", "Filter", Q_NULLPTR));
+        label_11->setText(QApplication::translate("MainWindow", "FPS", Q_NULLPTR));
+        leFPS->setText(QApplication::translate("MainWindow", "15", Q_NULLPTR));
+        lbTrackingObject->setText(QString());
+        pbObjectRect->setText(QApplication::translate("MainWindow", "Rect", Q_NULLPTR));
+        pbObjectLine->setText(QApplication::translate("MainWindow", "Line", Q_NULLPTR));
         tabWidget->setTabText(tabWidget->indexOf(tResultCameraArea), QApplication::translate("MainWindow", "Result", Q_NULLPTR));
         lbTestImage->setText(QString());
-        pbLoadTestImage->setText(QApplication::translate("MainWindow", "Load", Q_NULLPTR));
-        pbHSV->setText(QApplication::translate("MainWindow", "HSV", Q_NULLPTR));
         tabWidget->setTabText(tabWidget->indexOf(tab_2), QApplication::translate("MainWindow", "Test Image", Q_NULLPTR));
         pbG01->setText(QApplication::translate("MainWindow", "G01", Q_NULLPTR));
         pbG28->setText(QApplication::translate("MainWindow", "G28", Q_NULLPTR));
@@ -388,6 +427,7 @@ public:
         pbFormat->setText(QApplication::translate("MainWindow", "Format", Q_NULLPTR));
         pbW->setText(QApplication::translate("MainWindow", "W", Q_NULLPTR));
         pbGrip->setText(QApplication::translate("MainWindow", "Grip", Q_NULLPTR));
+        cbPump->setText(QApplication::translate("MainWindow", "Pump", Q_NULLPTR));
     } // retranslateUi
 
 };

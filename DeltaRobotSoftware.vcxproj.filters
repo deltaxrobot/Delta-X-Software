@@ -70,6 +70,18 @@
     <ClCompile Include="ImageProcesser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ObjectTracker.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Blob.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ITS.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraWidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="mainwindow.h">
@@ -87,10 +99,16 @@
     <QtMoc Include="DeltaVisualizer.h">
       <Filter>Header Files</Filter>
     </QtMoc>
+    <QtMoc Include="ImageProcesser.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
     <QtMoc Include="hsvwindow.h">
       <Filter>Header Files</Filter>
     </QtMoc>
-    <QtMoc Include="ImageProcesser.h">
+    <QtMoc Include="ObjectTracker.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="CameraWidget.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>
@@ -123,5 +141,13 @@
     <QtMoc Include="GcodeProgramManager.h">
       <Filter>Header Files</Filter>
     </QtMoc>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Blob.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ITS.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

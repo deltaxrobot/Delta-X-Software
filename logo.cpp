@@ -46,7 +46,7 @@ Logo::Logo()
 {
     m_data.resize(2500 * 6);
 
-    const GLfloat x1 = +0.06f;
+    /*const GLfloat x1 = +0.06f;
     const GLfloat y1 = -0.14f;
     const GLfloat x2 = +0.14f;
     const GLfloat y2 = -0.06f;
@@ -68,7 +68,8 @@ Logo::Logo()
 
     const int NumSectors = 100;
 
-    for (int i = 0; i < NumSectors; ++i) {
+    for (int i = 0; i < NumSectors; ++i) 
+	{
         GLfloat angle = (i * 2 * M_PI) / NumSectors;
         GLfloat angleSin = qSin(angle);
         GLfloat angleCos = qCos(angle);
@@ -89,7 +90,7 @@ Logo::Logo()
 
         extrude(x6, y6, x7, y7);
         extrude(x8, y8, x5, y5);
-    }
+    }*/
 }
 
 void Logo::add(const QVector3D &v, const QVector3D &n)
