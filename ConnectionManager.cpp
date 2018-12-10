@@ -35,6 +35,11 @@ QString ConnectionManager::GetNamePort()
 	return serialPort->portName();
 }
 
+void ConnectionManager::SetBaudrate(int baud)
+{
+	this->baudrate = baud;
+}
+
 void ConnectionManager::Send(QString msg)
 {
 	msg += "\n";
@@ -78,7 +83,7 @@ void ConnectionManager::FindDeltaRobot()
 
 		QString portName = portInfo.portName();
 		sP->setPortName(portName);
-		sP->setBaudRate(9600);
+		sP->setBaudRate(baudrate);
 
 		portList.push_back(sP);				
 

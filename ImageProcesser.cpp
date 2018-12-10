@@ -118,7 +118,7 @@ void ImageProcesser::SetThreshold(int value)
 void ImageProcesser::LoadCamera()
 {
 	QPushButton* loadBt = qobject_cast<QPushButton*>(sender());
-	if (loadBt->text() == "Load Camera")
+	if (loadBt->isChecked())
 	{
 		bool ok;
 		QString text = QInputDialog::getText(this, tr("QInputDialog::getText()"), tr("Camera ID:"), QLineEdit::Normal, "0", &ok);
@@ -130,12 +130,16 @@ void ImageProcesser::LoadCamera()
 			updateScreenTimer->start(50);
 
 
-			loadBt->setText("Stop");
+			//loadBt->setText("Stop");
+		}
+		else
+		{
+			loadBt->setChecked(false);
 		}
 	}
 	else
 	{
-		loadBt->setText("Load Camera");
+		//loadBt->setText("Load Camera");
 		updateScreenTimer->stop();
 		return;
 	}

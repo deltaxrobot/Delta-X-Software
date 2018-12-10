@@ -61,6 +61,7 @@ void MainWindow::InitEvents()
 void MainWindow::InitVariables()
 {
     DeltaPort = new ConnectionManager();
+	DeltaPort->SetBaudrate(115200);
 
 	DeltaGcodeManager = new GcodeProgramManager(ui->wgProgramContainer, ui->pteGcodeArea, DeltaPort);
 	
@@ -129,13 +130,12 @@ void MainWindow::ExecuteProgram()
 	{
 		QPushButton* pbExe = qobject_cast<QPushButton*>(sender());
 
-		if (pbExe->text() == "Execute")
+		if (pbExe->isChecked())
 		{
-			pbExe->setText("Stop");
+
 		}
 		else
 		{
-			pbExe->setText("Execute");
 			DeltaGcodeManager->Stop();
 			return;
 		}
@@ -173,7 +173,7 @@ void MainWindow::UpdatePositionValue(float x, float y, float z)
 	ui->leY->setText(QString::number(y));
 	ui->leZ->setText(QString::number(z));
 
-	//UpdateDeltaPosition();
+	UpdateDeltaPosition();
 }
 
 void MainWindow::Grip()
@@ -250,6 +250,7 @@ void MainWindow::TerminalTransmit()
 
 void MainWindow::PrintReceiveData(QString msg)
 {
+	msg.replace("\n", "");
 	Debug(msg);
 }
 

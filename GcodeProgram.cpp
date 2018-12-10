@@ -39,11 +39,14 @@ void GcodeProgram::InitWidget()
 	leProgramName->setStyleSheet(QStringLiteral(""));
 
 	pbDelete = new QPushButton(frPanel);
+	QIcon icon1;
+	icon1.addFile(QStringLiteral("icon/delete.png"), QSize(), QIcon::Normal, QIcon::Off);
+	pbDelete->setIcon(icon1);
+	pbDelete->setIconSize(QSize(30, 30));
 	pbDelete->setGeometry(QRect(190, 10, 50, 40));
 	pbDelete->setAutoDefault(false);
 	pbDelete->setFlat(true);
 	pbDelete->setDefault(true);
-	pbDelete->setText("Delete");
 
 	lbGcodeNumber = new QLabel(frPanel);
 	lbGcodeNumber->setGeometry(QRect(10, 60, 100, 15));
@@ -78,7 +81,18 @@ void GcodeProgram::SetLength(int length)
 
 void GcodeProgram::CoutingGcodeLines()
 {
-	SetLength(GcodeData.count("G"));
+	QList<QString> lines = GcodeData.split('\n');
+	long counter = 0;
+
+	for (long i = 0; i < lines.size(); i++)
+	{
+		if (lines[i] != "")
+		{
+			counter++;
+		}
+	}
+
+	SetLength(counter);
 }
 
 void GcodeProgram::Destroy()

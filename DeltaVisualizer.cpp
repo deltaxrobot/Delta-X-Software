@@ -141,3 +141,41 @@ void DeltaVisualizer::mouseMoveEvent(QMouseEvent *event)
 		emit Moved(X, Y, Z);
 	}
 }
+
+void DeltaVisualizer::wheelEvent(QWheelEvent *e)
+{
+	int n = 1;
+
+	if (timer.isValid() == false)
+	{
+		timer.start();
+	}
+	else
+	{
+		n = 200 - timer.elapsed();
+
+		if (n < 0)
+		{
+			n = 1;
+		}
+
+		n = log2(n) + 1;		
+	}
+
+	int delta = e->delta();
+	
+	Z -= (delta / 120) * n;
+
+	if (Z > ZHome)
+	{
+		Z = ZHome;
+	}
+
+	if (timer.elapsed() < 30)
+		return;
+
+	timer.restart();
+
+	emit Moved(X, Y, Z);
+	emit FinishMoving();
+}

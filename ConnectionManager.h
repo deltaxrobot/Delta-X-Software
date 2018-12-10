@@ -16,6 +16,7 @@ public:
 	bool IsConnect();
 	void Disconnect();
 	QString GetNamePort();
+	void SetBaudrate(int baud);
     void FindDeltaRobot();
 	void Send(QString msg);
 
@@ -37,6 +38,7 @@ private:
 	QList<QSerialPort*> portList;
 
 	bool isDeltaPortConnected = false;
+	int baudrate = 9600;
 };
 
 #endif // CONNECTIONMANAGER_H
