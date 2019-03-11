@@ -82,7 +82,7 @@ public:
     CameraWidget *lbScreenStreamer;
     QPushButton *pbLoadCamera;
     QPushButton *pbLoadTestImage;
-    QPushButton *pbHSV;
+    QPushButton *pbFilter;
     QLabel *label_11;
     QLineEdit *leFPS;
     QLabel *lbTrackingObject;
@@ -346,9 +346,9 @@ public:
         QIcon icon8;
         icon8.addFile(QStringLiteral("icon/image.png"), QSize(), QIcon::Normal, QIcon::Off);
         pbLoadTestImage->setIcon(icon8);
-        pbHSV = new QPushButton(tResultCameraArea);
-        pbHSV->setObjectName(QStringLiteral("pbHSV"));
-        pbHSV->setGeometry(QRect(190, 10, 51, 21));
+        pbFilter = new QPushButton(tResultCameraArea);
+        pbFilter->setObjectName(QStringLiteral("pbFilter"));
+        pbFilter->setGeometry(QRect(190, 10, 51, 21));
         label_11 = new QLabel(tResultCameraArea);
         label_11->setObjectName(QStringLiteral("label_11"));
         label_11->setGeometry(QRect(400, 40, 55, 16));
@@ -483,7 +483,7 @@ public:
         pbLoadTestImage->setToolTip(QApplication::translate("MainWindow", "Load Image", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
         pbLoadTestImage->setText(QString());
-        pbHSV->setText(QApplication::translate("MainWindow", "Filter", Q_NULLPTR));
+        pbFilter->setText(QApplication::translate("MainWindow", "Filter", Q_NULLPTR));
         label_11->setText(QApplication::translate("MainWindow", "FPS", Q_NULLPTR));
         leFPS->setText(QApplication::translate("MainWindow", "15", Q_NULLPTR));
         lbTrackingObject->setText(QString());

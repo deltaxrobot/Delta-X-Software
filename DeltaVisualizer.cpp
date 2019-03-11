@@ -164,7 +164,7 @@ void DeltaVisualizer::wheelEvent(QWheelEvent *e)
 
 	int delta = e->delta();
 	
-	Z -= (delta / 120) * n;
+	Z -= (delta / abs(delta)) * n;
 
 	if (Z > ZHome)
 	{

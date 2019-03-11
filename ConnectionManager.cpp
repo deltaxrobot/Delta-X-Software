@@ -42,6 +42,7 @@ void ConnectionManager::SetBaudrate(int baud)
 
 void ConnectionManager::Send(QString msg)
 {
+	transmitLine = msg;
 	msg += "\n";
 	if (serialPort->isOpen())
 	{
@@ -68,9 +69,23 @@ void ConnectionManager::ReadData()
 
 			isDeltaPortConnected = true;
 		}		
+
 		if (receiveLine.mid(0, 2) == "Ok")
 		{
+			if (transmitLine == "G28")
+			{
+				Send("Position");
+			}
+
 			emit DeltaResponeGcodeDone();
+		}
+
+		if (receiveLine.indexOf(" ,") > -1 && transmitLine == "Position")
+		{
+			QList<QString> nums = receiveLine.split(" ,");
+
+			if (nums.size() == 3)
+				emit InHomePosition(nums[0].toFloat(), nums[1].toFloat(), nums[2].toFloat());
 		}
 	}	
 }
@@ -91,6 +106,9 @@ void ConnectionManager::FindDeltaRobot()
 		{
 			connect(sP, SIGNAL(readyRead()), this, SLOT(ReadData()));
 
+			QString name = sP->portName();
+
+			sP->write("IsDelta\n");
 			sP->write("IsDelta\n");
 		}	
 	}

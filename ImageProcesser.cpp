@@ -115,6 +115,14 @@ void ImageProcesser::SetThreshold(int value)
 	postProcessing(processMat);
 }
 
+void ImageProcesser::GetObjectInfo(int x, int y, int h, int w)
+{
+	objectRec.x = x;
+	objectRec.y = y;
+	objectRec.width = w;
+	objectRec.height = h;
+}
+
 void ImageProcesser::LoadCamera()
 {
 	QPushButton* loadBt = qobject_cast<QPushButton*>(sender());
@@ -221,7 +229,6 @@ void ImageProcesser::paintInfo(cv::Mat input, cv::Mat output, cv::Scalar color)
 	//isFirstFrame = false;
 
 	//------------------------
-
 	for (size_t i = 0; i < contoursContainer.size(); i++)
 	{
 		cv::Rect rec = boundingRect(contoursContainer[i]);

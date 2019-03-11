@@ -52,6 +52,7 @@ private slots:
 	void UpdateZValue(int z);
 	void UpdateDeltaPosition();
 	void UpdatePositionValue(float x, float y, float z);
+	void UpdateHomePosition(float x, float y, float z);
 	void Grip();
 	void SetPump(int value);
 	void Home();

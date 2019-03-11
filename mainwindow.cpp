@@ -40,9 +40,10 @@ void MainWindow::InitEvents()
 	connect(DeltaParameter, SIGNAL(FinishMoving()), this, SLOT(UpdateDeltaPosition()));
 	
 	connect(ui->leTerminal, SIGNAL(returnPressed()), this, SLOT(TerminalTransmit()));
-	connect(DeltaPort, SIGNAL(FinishReadLine(QString)), this, SLOT(PrintReceiveData(QString)));
 
+	connect(DeltaPort, SIGNAL(FinishReadLine(QString)), this, SLOT(PrintReceiveData(QString)));
 	connect(DeltaPort, SIGNAL(DeltaResponeReady()), this, SLOT(NoticeConnected()));
+	connect(DeltaPort, SIGNAL(InHomePosition(float, float, float)), this, SLOT(UpdateHomePosition(float, float, float)));
 
 	connect(ui->pbG01, SIGNAL(clicked(bool)), this, SLOT(AddGcodeLine()));
 	connect(ui->pbG28, SIGNAL(clicked(bool)), this, SLOT(AddGcodeLine()));
@@ -51,7 +52,7 @@ void MainWindow::InitEvents()
 
 	connect(ui->pbFormat, SIGNAL(clicked(bool)), this, SLOT(StandardFormatEditor()));
 
-	connect(ui->pbHSV, SIGNAL(clicked(bool)), DeltaImageProcesser, SLOT(OpenParameterPanel()));
+	connect(ui->pbFilter, SIGNAL(clicked(bool)), DeltaImageProcesser, SLOT(OpenParameterPanel()));
 	connect(ui->pbLoadTestImage, SIGNAL(clicked(bool)), DeltaImageProcesser, SLOT(LoadTestImage()));
 	connect(ui->pbLoadCamera, SIGNAL(clicked(bool)), DeltaImageProcesser, SLOT(LoadCamera()));
 	connect(ui->pbObjectRect, SIGNAL(clicked(bool)), ui->lbScreenStreamer, SLOT(rectObject()));
@@ -61,7 +62,7 @@ void MainWindow::InitEvents()
 void MainWindow::InitVariables()
 {
     DeltaPort = new ConnectionManager();
-	DeltaPort->SetBaudrate(115200);
+	DeltaPort->SetBaudrate(9600);
 
 	DeltaGcodeManager = new GcodeProgramManager(ui->wgProgramContainer, ui->pteGcodeArea, DeltaPort);
 	
@@ -174,6 +175,15 @@ void MainWindow::UpdatePositionValue(float x, float y, float z)
 	ui->leZ->setText(QString::number(z));
 
 	UpdateDeltaPosition();
+}
+
+void MainWindow::UpdateHomePosition(float x, float y, float z)
+{
+	DeltaParameter->XHome = x;
+	DeltaParameter->YHome = y;
+	DeltaParameter->ZHome = z;
+
+	UpdatePositionValue(x, y, z);
 }
 
 void MainWindow::Grip()

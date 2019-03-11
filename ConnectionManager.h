@@ -29,11 +29,13 @@ signals:
 	void FinishReadLine(QString msg);
 	void DeltaResponeReady();
 	void DeltaResponeGcodeDone();
+	void InHomePosition(float x, float y, float z);
 private:
 	void init();
 
     QSerialPort* serialPort;
 	QString receiveLine;
+	QString transmitLine;
 	QTimer* timer;
 	QList<QSerialPort*> portList;
 

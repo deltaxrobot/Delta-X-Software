@@ -21,8 +21,8 @@ QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_MainWindow_t {
-    QByteArrayData data[23];
-    char stringdata0[257];
+    QByteArrayData data[24];
+    char stringdata0[276];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -43,26 +43,28 @@ QT_MOC_LITERAL(8, 86, 19), // "UpdateDeltaPosition"
 QT_MOC_LITERAL(9, 106, 19), // "UpdatePositionValue"
 QT_MOC_LITERAL(10, 126, 1), // "x"
 QT_MOC_LITERAL(11, 128, 1), // "y"
-QT_MOC_LITERAL(12, 130, 4), // "Grip"
-QT_MOC_LITERAL(13, 135, 7), // "SetPump"
-QT_MOC_LITERAL(14, 143, 5), // "value"
-QT_MOC_LITERAL(15, 149, 4), // "Home"
-QT_MOC_LITERAL(16, 154, 12), // "AddGcodeLine"
-QT_MOC_LITERAL(17, 167, 16), // "TerminalTransmit"
-QT_MOC_LITERAL(18, 184, 16), // "PrintReceiveData"
-QT_MOC_LITERAL(19, 201, 3), // "msg"
-QT_MOC_LITERAL(20, 205, 15), // "NoticeConnected"
-QT_MOC_LITERAL(21, 221, 14), // "RunSmartEditor"
-QT_MOC_LITERAL(22, 236, 20) // "StandardFormatEditor"
+QT_MOC_LITERAL(12, 130, 18), // "UpdateHomePosition"
+QT_MOC_LITERAL(13, 149, 4), // "Grip"
+QT_MOC_LITERAL(14, 154, 7), // "SetPump"
+QT_MOC_LITERAL(15, 162, 5), // "value"
+QT_MOC_LITERAL(16, 168, 4), // "Home"
+QT_MOC_LITERAL(17, 173, 12), // "AddGcodeLine"
+QT_MOC_LITERAL(18, 186, 16), // "TerminalTransmit"
+QT_MOC_LITERAL(19, 203, 16), // "PrintReceiveData"
+QT_MOC_LITERAL(20, 220, 3), // "msg"
+QT_MOC_LITERAL(21, 224, 15), // "NoticeConnected"
+QT_MOC_LITERAL(22, 240, 14), // "RunSmartEditor"
+QT_MOC_LITERAL(23, 255, 20) // "StandardFormatEditor"
 
     },
     "MainWindow\0ConnectDeltaRobot\0\0"
     "AddNewProgram\0SaveProgram\0ExecuteProgram\0"
     "UpdateZValue\0z\0UpdateDeltaPosition\0"
-    "UpdatePositionValue\0x\0y\0Grip\0SetPump\0"
-    "value\0Home\0AddGcodeLine\0TerminalTransmit\0"
-    "PrintReceiveData\0msg\0NoticeConnected\0"
-    "RunSmartEditor\0StandardFormatEditor"
+    "UpdatePositionValue\0x\0y\0UpdateHomePosition\0"
+    "Grip\0SetPump\0value\0Home\0AddGcodeLine\0"
+    "TerminalTransmit\0PrintReceiveData\0msg\0"
+    "NoticeConnected\0RunSmartEditor\0"
+    "StandardFormatEditor"
 };
 #undef QT_MOC_LITERAL
 
@@ -72,7 +74,7 @@ static const uint qt_meta_data_MainWindow[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-      16,   14, // methods
+      17,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -80,22 +82,23 @@ static const uint qt_meta_data_MainWindow[] = {
        0,       // signalCount
 
  // slots: name, argc, parameters, tag, flags
-       1,    0,   94,    2, 0x08 /* Private */,
-       3,    0,   95,    2, 0x08 /* Private */,
-       4,    0,   96,    2, 0x08 /* Private */,
-       5,    0,   97,    2, 0x08 /* Private */,
-       6,    1,   98,    2, 0x08 /* Private */,
-       8,    0,  101,    2, 0x08 /* Private */,
-       9,    3,  102,    2, 0x08 /* Private */,
-      12,    0,  109,    2, 0x08 /* Private */,
-      13,    1,  110,    2, 0x08 /* Private */,
-      15,    0,  113,    2, 0x08 /* Private */,
-      16,    0,  114,    2, 0x08 /* Private */,
-      17,    0,  115,    2, 0x08 /* Private */,
-      18,    1,  116,    2, 0x08 /* Private */,
-      20,    0,  119,    2, 0x08 /* Private */,
-      21,    0,  120,    2, 0x08 /* Private */,
-      22,    0,  121,    2, 0x08 /* Private */,
+       1,    0,   99,    2, 0x08 /* Private */,
+       3,    0,  100,    2, 0x08 /* Private */,
+       4,    0,  101,    2, 0x08 /* Private */,
+       5,    0,  102,    2, 0x08 /* Private */,
+       6,    1,  103,    2, 0x08 /* Private */,
+       8,    0,  106,    2, 0x08 /* Private */,
+       9,    3,  107,    2, 0x08 /* Private */,
+      12,    3,  114,    2, 0x08 /* Private */,
+      13,    0,  121,    2, 0x08 /* Private */,
+      14,    1,  122,    2, 0x08 /* Private */,
+      16,    0,  125,    2, 0x08 /* Private */,
+      17,    0,  126,    2, 0x08 /* Private */,
+      18,    0,  127,    2, 0x08 /* Private */,
+      19,    1,  128,    2, 0x08 /* Private */,
+      21,    0,  131,    2, 0x08 /* Private */,
+      22,    0,  132,    2, 0x08 /* Private */,
+      23,    0,  133,    2, 0x08 /* Private */,
 
  // slots: parameters
     QMetaType::Void,
@@ -105,12 +108,13 @@ static const uint qt_meta_data_MainWindow[] = {
     QMetaType::Void, QMetaType::Int,    7,
     QMetaType::Void,
     QMetaType::Void, QMetaType::Float, QMetaType::Float, QMetaType::Float,   10,   11,    7,
+    QMetaType::Void, QMetaType::Float, QMetaType::Float, QMetaType::Float,   10,   11,    7,
     QMetaType::Void,
-    QMetaType::Void, QMetaType::Int,   14,
+    QMetaType::Void, QMetaType::Int,   15,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
-    QMetaType::Void, QMetaType::QString,   19,
+    QMetaType::Void, QMetaType::QString,   20,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
@@ -131,15 +135,16 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 4: _t->UpdateZValue((*reinterpret_cast< int(*)>(_a[1]))); break;
         case 5: _t->UpdateDeltaPosition(); break;
         case 6: _t->UpdatePositionValue((*reinterpret_cast< float(*)>(_a[1])),(*reinterpret_cast< float(*)>(_a[2])),(*reinterpret_cast< float(*)>(_a[3]))); break;
-        case 7: _t->Grip(); break;
-        case 8: _t->SetPump((*reinterpret_cast< int(*)>(_a[1]))); break;
-        case 9: _t->Home(); break;
-        case 10: _t->AddGcodeLine(); break;
-        case 11: _t->TerminalTransmit(); break;
-        case 12: _t->PrintReceiveData((*reinterpret_cast< QString(*)>(_a[1]))); break;
-        case 13: _t->NoticeConnected(); break;
-        case 14: _t->RunSmartEditor(); break;
-        case 15: _t->StandardFormatEditor(); break;
+        case 7: _t->UpdateHomePosition((*reinterpret_cast< float(*)>(_a[1])),(*reinterpret_cast< float(*)>(_a[2])),(*reinterpret_cast< float(*)>(_a[3]))); break;
+        case 8: _t->Grip(); break;
+        case 9: _t->SetPump((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 10: _t->Home(); break;
+        case 11: _t->AddGcodeLine(); break;
+        case 12: _t->TerminalTransmit(); break;
+        case 13: _t->PrintReceiveData((*reinterpret_cast< QString(*)>(_a[1]))); break;
+        case 14: _t->NoticeConnected(); break;
+        case 15: _t->RunSmartEditor(); break;
+        case 16: _t->StandardFormatEditor(); break;
         default: ;
         }
     }
@@ -170,13 +175,13 @@ int MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 16)
+        if (_id < 17)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 16;
+        _id -= 17;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 16)
+        if (_id < 17)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 16;
+        _id -= 17;
     }
     return _id;
 }

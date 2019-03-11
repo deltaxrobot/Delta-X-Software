@@ -842,7 +842,7 @@ M204 A4000</string>
         <normaloff>icon/image.png</normaloff>icon/image.png</iconset>
       </property>
      </widget>
-     <widget class="QPushButton" name="pbHSV">
+     <widget class="QPushButton" name="pbFilter">
       <property name="geometry">
        <rect>
         <x>190</x>

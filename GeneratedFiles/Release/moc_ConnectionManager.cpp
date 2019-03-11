@@ -21,8 +21,8 @@ QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_ConnectionManager_t {
-    QByteArrayData data[8];
-    char stringdata0[102];
+    QByteArrayData data[12];
+    char stringdata0[123];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -37,13 +37,18 @@ QT_MOC_LITERAL(2, 33, 0), // ""
 QT_MOC_LITERAL(3, 34, 3), // "msg"
 QT_MOC_LITERAL(4, 38, 17), // "DeltaResponeReady"
 QT_MOC_LITERAL(5, 56, 21), // "DeltaResponeGcodeDone"
-QT_MOC_LITERAL(6, 78, 8), // "ReadData"
-QT_MOC_LITERAL(7, 87, 14) // "FindingTimeOut"
+QT_MOC_LITERAL(6, 78, 14), // "InHomePosition"
+QT_MOC_LITERAL(7, 93, 1), // "x"
+QT_MOC_LITERAL(8, 95, 1), // "y"
+QT_MOC_LITERAL(9, 97, 1), // "z"
+QT_MOC_LITERAL(10, 99, 8), // "ReadData"
+QT_MOC_LITERAL(11, 108, 14) // "FindingTimeOut"
 
     },
     "ConnectionManager\0FinishReadLine\0\0msg\0"
     "DeltaResponeReady\0DeltaResponeGcodeDone\0"
-    "ReadData\0FindingTimeOut"
+    "InHomePosition\0x\0y\0z\0ReadData\0"
+    "FindingTimeOut"
 };
 #undef QT_MOC_LITERAL
 
@@ -53,26 +58,28 @@ static const uint qt_meta_data_ConnectionManager[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-       5,   14, // methods
+       6,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
        0,       // flags
-       3,       // signalCount
+       4,       // signalCount
 
  // signals: name, argc, parameters, tag, flags
-       1,    1,   39,    2, 0x06 /* Public */,
-       4,    0,   42,    2, 0x06 /* Public */,
-       5,    0,   43,    2, 0x06 /* Public */,
+       1,    1,   44,    2, 0x06 /* Public */,
+       4,    0,   47,    2, 0x06 /* Public */,
+       5,    0,   48,    2, 0x06 /* Public */,
+       6,    3,   49,    2, 0x06 /* Public */,
 
  // slots: name, argc, parameters, tag, flags
-       6,    0,   44,    2, 0x0a /* Public */,
-       7,    0,   45,    2, 0x0a /* Public */,
+      10,    0,   56,    2, 0x0a /* Public */,
+      11,    0,   57,    2, 0x0a /* Public */,
 
  // signals: parameters
     QMetaType::Void, QMetaType::QString,    3,
     QMetaType::Void,
     QMetaType::Void,
+    QMetaType::Void, QMetaType::Float, QMetaType::Float, QMetaType::Float,    7,    8,    9,
 
  // slots: parameters
     QMetaType::Void,
@@ -90,8 +97,9 @@ void ConnectionManager::qt_static_metacall(QObject *_o, QMetaObject::Call _c, in
         case 0: _t->FinishReadLine((*reinterpret_cast< QString(*)>(_a[1]))); break;
         case 1: _t->DeltaResponeReady(); break;
         case 2: _t->DeltaResponeGcodeDone(); break;
-        case 3: _t->ReadData(); break;
-        case 4: _t->FindingTimeOut(); break;
+        case 3: _t->InHomePosition((*reinterpret_cast< float(*)>(_a[1])),(*reinterpret_cast< float(*)>(_a[2])),(*reinterpret_cast< float(*)>(_a[3]))); break;
+        case 4: _t->ReadData(); break;
+        case 5: _t->FindingTimeOut(); break;
         default: ;
         }
     } else if (_c == QMetaObject::IndexOfMethod) {
@@ -115,6 +123,13 @@ void ConnectionManager::qt_static_metacall(QObject *_o, QMetaObject::Call _c, in
             typedef void (ConnectionManager::*_t)();
             if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&ConnectionManager::DeltaResponeGcodeDone)) {
                 *result = 2;
+                return;
+            }
+        }
+        {
+            typedef void (ConnectionManager::*_t)(float , float , float );
+            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&ConnectionManager::InHomePosition)) {
+                *result = 3;
                 return;
             }
         }
@@ -146,13 +161,13 @@ int ConnectionManager::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 5)
+        if (_id < 6)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 5;
+        _id -= 6;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 5)
+        if (_id < 6)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 5;
+        _id -= 6;
     }
     return _id;
 }
@@ -174,6 +189,13 @@ void ConnectionManager::DeltaResponeReady()
 void ConnectionManager::DeltaResponeGcodeDone()
 {
     QMetaObject::activate(this, &staticMetaObject, 2, Q_NULLPTR);
+}
+
+// SIGNAL 3
+void ConnectionManager::InHomePosition(float _t1, float _t2, float _t3)
+{
+    void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)), const_cast<void*>(reinterpret_cast<const void*>(&_t2)), const_cast<void*>(reinterpret_cast<const void*>(&_t3)) };
+    QMetaObject::activate(this, &staticMetaObject, 3, _a);
 }
 QT_WARNING_POP
 QT_END_MOC_NAMESPACE

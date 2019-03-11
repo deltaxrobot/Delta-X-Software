@@ -50,6 +50,7 @@ public slots:
 	void OpenParameterPanel();
 	void SetHSV(int minH, int maxH, int minS, int maxS, int minV, int maxV);
 	void SetThreshold(int value);
+	void GetObjectInfo(int x, int y, int h, int w);
 private:
 
 	void postProcessing(cv::Mat processMat);
@@ -68,6 +69,8 @@ private:
 	int HSVValue[6] = {0, 100, 0, 255, 0, 255};
 	int thresholdValue = 100;
 	int filterMethod = THRESHOLD_SPACE;
+
+	cv::Rect objectRec;
 	
 	QTimer* updateScreenTimer;
 	cv::VideoCapture camera;

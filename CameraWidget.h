@@ -21,6 +21,11 @@ public:
 	// for efficient memory management
 	~CameraWidget();
 
+public slots:
+
+signals:
+	void FinishDrawObject(int x, int y, int h, int w);
+
 protected:
 	void mousePressEvent(QMouseEvent *event);
 	void mouseMoveEvent(QMouseEvent *event);
