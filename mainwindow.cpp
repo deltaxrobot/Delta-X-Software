@@ -32,7 +32,7 @@ void MainWindow::InitEvents()
 	connect(ui->pbY, SIGNAL(clicked(bool)), this, SLOT(UpdateDeltaPosition()));
 	connect(ui->pbX, SIGNAL(clicked(bool)), this, SLOT(UpdateDeltaPosition()));
 	connect(ui->pbGrip, SIGNAL(clicked(bool)), this, SLOT(Grip()));
-	connect(ui->cbPump, SIGNAL(stateChanged(int)), this, SLOT(SetPump(int)));
+	connect(ui->pbPump, SIGNAL(clicked(bool)), this, SLOT(SetPump(bool)));
 	connect(ui->vsZAdjsution, SIGNAL(valueChanged(int)), this, SLOT(UpdateZValue(int)));
 	connect(ui->vsZAdjsution, SIGNAL(sliderReleased()), this, SLOT(UpdateDeltaPosition()));
 
@@ -103,7 +103,6 @@ void MainWindow::ConnectDeltaRobot()
 	else if (ui->pbConnect->text() == "Disconnect")
 	{
 		ui->pbConnect->setText("Connect");
-		ui->lbState->setText("Delta is not available !");
 
 		if (DeltaPort->IsConnect())
 			DeltaPort->Disconnect();
@@ -200,9 +199,9 @@ void MainWindow::Grip()
 	}
 }
 
-void MainWindow::SetPump(int value)
+void MainWindow::SetPump(bool value)
 {
-	if (value == 0)
+	if (value == true)
 	{
 		DeltaPort->Send(QString("G41 P0"));
 	}
@@ -266,7 +265,6 @@ void MainWindow::PrintReceiveData(QString msg)
 
 void MainWindow::NoticeConnected()
 {
-	ui->lbState->setText("Delta Robot is connected !");
 	Debug(DeltaPort->GetNamePort());
 
 	ui->pbConnect->setText("Disconnect");

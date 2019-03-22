@@ -54,7 +54,7 @@ private slots:
 	void UpdatePositionValue(float x, float y, float z);
 	void UpdateHomePosition(float x, float y, float z);
 	void Grip();
-	void SetPump(int value);
+	void SetPump(bool value);
 	void Home();
 
 	void AddGcodeLine();

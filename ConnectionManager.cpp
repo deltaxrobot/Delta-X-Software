@@ -32,6 +32,8 @@ void ConnectionManager::Disconnect()
 
 QString ConnectionManager::GetNamePort()
 {
+	if (serialPort == NULL)
+		return QString("Null");
 	return serialPort->portName();
 }
 
@@ -109,7 +111,7 @@ void ConnectionManager::FindDeltaRobot()
 			QString name = sP->portName();
 
 			sP->write("IsDelta\n");
-			sP->write("IsDelta\n");
+			//sP->write("IsDelta\n");
 		}	
 	}
 

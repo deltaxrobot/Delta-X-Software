@@ -110,7 +110,7 @@ static const uint qt_meta_data_MainWindow[] = {
     QMetaType::Void, QMetaType::Float, QMetaType::Float, QMetaType::Float,   10,   11,    7,
     QMetaType::Void, QMetaType::Float, QMetaType::Float, QMetaType::Float,   10,   11,    7,
     QMetaType::Void,
-    QMetaType::Void, QMetaType::Int,   15,
+    QMetaType::Void, QMetaType::Bool,   15,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
@@ -137,7 +137,7 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 6: _t->UpdatePositionValue((*reinterpret_cast< float(*)>(_a[1])),(*reinterpret_cast< float(*)>(_a[2])),(*reinterpret_cast< float(*)>(_a[3]))); break;
         case 7: _t->UpdateHomePosition((*reinterpret_cast< float(*)>(_a[1])),(*reinterpret_cast< float(*)>(_a[2])),(*reinterpret_cast< float(*)>(_a[3]))); break;
         case 8: _t->Grip(); break;
-        case 9: _t->SetPump((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 9: _t->SetPump((*reinterpret_cast< bool(*)>(_a[1]))); break;
         case 10: _t->Home(); break;
         case 11: _t->AddGcodeLine(); break;
         case 12: _t->TerminalTransmit(); break;

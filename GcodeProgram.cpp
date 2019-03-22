@@ -23,13 +23,13 @@ GcodeProgram::~GcodeProgram()
 void GcodeProgram::InitWidget()
 {
 	frPanel = new QFrame();
-	frPanel->setGeometry(QRect(10, 10, 250, 80));
+	frPanel->setGeometry(QRect(10, 10, 221, 71));
 	frPanel->setStyleSheet(QStringLiteral("background-color:rgb(209, 209, 209)"));
 	frPanel->setFrameShape(QFrame::StyledPanel);
 	frPanel->setFrameShadow(QFrame::Raised);
 
 	leProgramName = new QLineEdit(frPanel);
-	leProgramName->setGeometry(QRect(10, 10, 170, 40));
+	leProgramName->setGeometry(QRect(10, 10, 160, 30));
 
 	QFont font;
 	font.setPointSize(12);
@@ -43,13 +43,13 @@ void GcodeProgram::InitWidget()
 	icon1.addFile(QStringLiteral("icon/delete.png"), QSize(), QIcon::Normal, QIcon::Off);
 	pbDelete->setIcon(icon1);
 	pbDelete->setIconSize(QSize(30, 30));
-	pbDelete->setGeometry(QRect(190, 10, 50, 40));
+	pbDelete->setGeometry(QRect(180, 10, 30, 31));
 	pbDelete->setAutoDefault(false);
 	pbDelete->setFlat(true);
 	pbDelete->setDefault(true);
 
 	lbGcodeNumber = new QLabel(frPanel);
-	lbGcodeNumber->setGeometry(QRect(10, 60, 100, 15));
+	lbGcodeNumber->setGeometry(QRect(10, 50, 100, 15));
 	lbGcodeNumber->setText("0 Gcode Lines");
 }
 

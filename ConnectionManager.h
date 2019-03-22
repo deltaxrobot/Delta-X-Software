@@ -19,9 +19,7 @@ public:
 	void SetBaudrate(int baud);
     void FindDeltaRobot();
 	void Send(QString msg);
-
 	
-
 public slots:
 	void ReadData();
 	void FindingTimeOut();
