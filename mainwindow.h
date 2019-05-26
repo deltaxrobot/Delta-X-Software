@@ -20,6 +20,7 @@
 #include <opencv2/imgproc.hpp>
 #include <ImageUnity.h>
 #include "ImageProcesser.h"
+#include <GcodeReference.h>
 
 namespace Ui {
 class MainWindow;
@@ -67,6 +68,7 @@ private slots:
 	void RunSmartEditor();
 	void StandardFormatEditor();
 
+	void OpenGcodeReference();
 private:
 
 	void hideExampleWidgets();

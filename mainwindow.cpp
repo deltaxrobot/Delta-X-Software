@@ -57,6 +57,9 @@ void MainWindow::InitEvents()
 	connect(ui->pbLoadCamera, SIGNAL(clicked(bool)), DeltaImageProcesser, SLOT(LoadCamera()));
 	connect(ui->pbObjectRect, SIGNAL(clicked(bool)), ui->lbScreenStreamer, SLOT(rectObject()));
 	connect(ui->pbObjectLine, SIGNAL(clicked(bool)), ui->lbScreenStreamer, SLOT(lineObject()));
+
+	connect(ui->actionGcode, SIGNAL(triggered()), this, SLOT(OpenGcodeReference()));
+	connect(ui->pbGcodeReference, SIGNAL(clicked(bool)), this, SLOT(OpenGcodeReference()));
 }
 
 void MainWindow::InitVariables()
@@ -80,10 +83,10 @@ void MainWindow::InitVariables()
 
 	//------------ OpenGl Init ----------
 	
-	/*VisualArea = new GLWidget();
+	VisualArea = new GLWidget();
     QHBoxLayout *container = new QHBoxLayout;
     container->addWidget(VisualArea);
-    ui->wgOpenGl->setLayout(container);*/
+    ui->wgOpenGl->setLayout(container);
 
 	//---------- OpenCV Init -------------    
 
@@ -112,6 +115,12 @@ void MainWindow::ConnectDeltaRobot()
 void MainWindow::RunSmartEditor()
 {
 	
+}
+
+void MainWindow::OpenGcodeReference()
+{
+	GcodeReference* gcodeReferenceWindow = new GcodeReference();
+	gcodeReferenceWindow->show();
 }
 
 void MainWindow::AddNewProgram()

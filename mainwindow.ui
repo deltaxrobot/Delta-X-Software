@@ -284,7 +284,7 @@ M204 A4000</string>
    <widget class="QPushButton" name="pbG01">
     <property name="geometry">
      <rect>
-      <x>1130</x>
+      <x>1100</x>
       <y>20</y>
       <width>41</width>
       <height>28</height>
@@ -306,7 +306,7 @@ M204 A4000</string>
    <widget class="QPushButton" name="pbG28">
     <property name="geometry">
      <rect>
-      <x>1170</x>
+      <x>1140</x>
       <y>20</y>
       <width>41</width>
       <height>28</height>
@@ -319,7 +319,7 @@ M204 A4000</string>
    <widget class="QPushButton" name="pbM03">
     <property name="geometry">
      <rect>
-      <x>1210</x>
+      <x>1180</x>
       <y>20</y>
       <width>41</width>
       <height>28</height>
@@ -335,7 +335,7 @@ M204 A4000</string>
    <widget class="QPushButton" name="pbM204">
     <property name="geometry">
      <rect>
-      <x>1250</x>
+      <x>1220</x>
       <y>20</y>
       <width>41</width>
       <height>28</height>
@@ -782,7 +782,7 @@ M204 A4000</string>
      <attribute name="title">
       <string>3D</string>
      </attribute>
-     <widget class="GLWidget" name="wgOpenGl" native="true">
+     <widget class="QWidget" name="wgOpenGl" native="true">
       <property name="geometry">
        <rect>
         <x>0</x>
@@ -1176,6 +1176,26 @@ color: rgb(255, 255, 255);</string>
      <string>Y</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="pbGcodeReference">
+    <property name="geometry">
+     <rect>
+      <x>1261</x>
+      <y>20</y>
+      <width>31</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="toolTip">
+     <string extracomment="Accel">Gcode Reference</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>icon/Help_16px.png</normaloff>icon/Help_16px.png</iconset>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
@@ -1206,7 +1226,14 @@ selection-background-color: rgb(0, 204, 204);</string>
     <property name="title">
      <string>Help</string>
     </property>
-    <addaction name="actionreferences"/>
+    <widget class="QMenu" name="menuReferences">
+     <property name="title">
+      <string>References</string>
+     </property>
+     <addaction name="actionGcode"/>
+     <addaction name="actionSoftware"/>
+    </widget>
+    <addaction name="menuReferences"/>
     <addaction name="actionAbout"/>
    </widget>
    <widget class="QMenu" name="menuEditor">
@@ -1228,25 +1255,24 @@ selection-background-color: rgb(0, 204, 204);</string>
     <string>Remove</string>
    </property>
   </action>
-  <action name="actionreferences">
-   <property name="text">
-    <string>References</string>
-   </property>
-  </action>
   <action name="actionAbout">
    <property name="text">
     <string>About</string>
    </property>
   </action>
+  <action name="actionGcode">
+   <property name="text">
+    <string>Gcode</string>
+   </property>
+  </action>
+  <action name="actionSoftware">
+   <property name="text">
+    <string>Software</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
-  <customwidget>
-   <class>GLWidget</class>
-   <extends>QWidget</extends>
-   <header>glwidget.h</header>
-   <container>1</container>
-  </customwidget>
   <customwidget>
    <class>CameraWidget</class>
    <extends>QLabel</extends>

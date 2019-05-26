@@ -21,8 +21,8 @@ QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_ImageProcesser_t {
-    QByteArrayData data[15];
-    char stringdata0[135];
+    QByteArrayData data[20];
+    char stringdata0[157];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -45,13 +45,19 @@ QT_MOC_LITERAL(10, 101, 4), // "maxS"
 QT_MOC_LITERAL(11, 106, 4), // "minV"
 QT_MOC_LITERAL(12, 111, 4), // "maxV"
 QT_MOC_LITERAL(13, 116, 12), // "SetThreshold"
-QT_MOC_LITERAL(14, 129, 5) // "value"
+QT_MOC_LITERAL(14, 129, 5), // "value"
+QT_MOC_LITERAL(15, 135, 13), // "GetObjectInfo"
+QT_MOC_LITERAL(16, 149, 1), // "x"
+QT_MOC_LITERAL(17, 151, 1), // "y"
+QT_MOC_LITERAL(18, 153, 1), // "h"
+QT_MOC_LITERAL(19, 155, 1) // "w"
 
     },
     "ImageProcesser\0LoadTestImage\0\0LoadCamera\0"
     "UpdateCameraScreen\0OpenParameterPanel\0"
     "SetHSV\0minH\0maxH\0minS\0maxS\0minV\0maxV\0"
-    "SetThreshold\0value"
+    "SetThreshold\0value\0GetObjectInfo\0x\0y\0"
+    "h\0w"
 };
 #undef QT_MOC_LITERAL
 
@@ -61,7 +67,7 @@ static const uint qt_meta_data_ImageProcesser[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-       6,   14, // methods
+       7,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -69,12 +75,13 @@ static const uint qt_meta_data_ImageProcesser[] = {
        0,       // signalCount
 
  // slots: name, argc, parameters, tag, flags
-       1,    0,   44,    2, 0x0a /* Public */,
-       3,    0,   45,    2, 0x0a /* Public */,
-       4,    0,   46,    2, 0x0a /* Public */,
-       5,    0,   47,    2, 0x0a /* Public */,
-       6,    6,   48,    2, 0x0a /* Public */,
-      13,    1,   61,    2, 0x0a /* Public */,
+       1,    0,   49,    2, 0x0a /* Public */,
+       3,    0,   50,    2, 0x0a /* Public */,
+       4,    0,   51,    2, 0x0a /* Public */,
+       5,    0,   52,    2, 0x0a /* Public */,
+       6,    6,   53,    2, 0x0a /* Public */,
+      13,    1,   66,    2, 0x0a /* Public */,
+      15,    4,   69,    2, 0x0a /* Public */,
 
  // slots: parameters
     QMetaType::Void,
@@ -83,6 +90,7 @@ static const uint qt_meta_data_ImageProcesser[] = {
     QMetaType::Void,
     QMetaType::Void, QMetaType::Int, QMetaType::Int, QMetaType::Int, QMetaType::Int, QMetaType::Int, QMetaType::Int,    7,    8,    9,   10,   11,   12,
     QMetaType::Void, QMetaType::Int,   14,
+    QMetaType::Void, QMetaType::Int, QMetaType::Int, QMetaType::Int, QMetaType::Int,   16,   17,   18,   19,
 
        0        // eod
 };
@@ -99,6 +107,7 @@ void ImageProcesser::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _
         case 3: _t->OpenParameterPanel(); break;
         case 4: _t->SetHSV((*reinterpret_cast< int(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2])),(*reinterpret_cast< int(*)>(_a[3])),(*reinterpret_cast< int(*)>(_a[4])),(*reinterpret_cast< int(*)>(_a[5])),(*reinterpret_cast< int(*)>(_a[6]))); break;
         case 5: _t->SetThreshold((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 6: _t->GetObjectInfo((*reinterpret_cast< int(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2])),(*reinterpret_cast< int(*)>(_a[3])),(*reinterpret_cast< int(*)>(_a[4]))); break;
         default: ;
         }
     }
@@ -129,13 +138,13 @@ int ImageProcesser::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 6)
+        if (_id < 7)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 6;
+        _id -= 7;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 6)
+        if (_id < 7)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 6;
+        _id -= 7;
     }
     return _id;
 }

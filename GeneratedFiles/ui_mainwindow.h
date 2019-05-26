@@ -27,7 +27,6 @@
 #include <QtWidgets/QSlider>
 #include <QtWidgets/QTabWidget>
 #include <QtWidgets/QWidget>
-#include "glwidget.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -36,8 +35,9 @@ class Ui_MainWindow
 public:
     QAction *actionAdd;
     QAction *actionRemove;
-    QAction *actionreferences;
     QAction *actionAbout;
+    QAction *actionGcode;
+    QAction *actionSoftware;
     QWidget *centralWidget;
     QScrollArea *saProgramFiles;
     QWidget *wgProgramContainer;
@@ -82,7 +82,7 @@ public:
     QPushButton *pbPump;
     QTabWidget *twDeltaGeometry;
     QWidget *t3D;
-    GLWidget *wgOpenGl;
+    QWidget *wgOpenGl;
     QWidget *t2D;
     QWidget *wg2D;
     QSlider *vsZAdjsution;
@@ -107,9 +107,11 @@ public:
     QLineEdit *leZ;
     QLineEdit *leW;
     QPushButton *pbY;
+    QPushButton *pbGcodeReference;
     QMenuBar *menuBar;
     QMenu *menuFile;
     QMenu *menuHelp;
+    QMenu *menuReferences;
     QMenu *menuEditor;
 
     void setupUi(QMainWindow *MainWindow)
@@ -130,10 +132,12 @@ public:
         actionAdd->setObjectName(QStringLiteral("actionAdd"));
         actionRemove = new QAction(MainWindow);
         actionRemove->setObjectName(QStringLiteral("actionRemove"));
-        actionreferences = new QAction(MainWindow);
-        actionreferences->setObjectName(QStringLiteral("actionreferences"));
         actionAbout = new QAction(MainWindow);
         actionAbout->setObjectName(QStringLiteral("actionAbout"));
+        actionGcode = new QAction(MainWindow);
+        actionGcode->setObjectName(QStringLiteral("actionGcode"));
+        actionSoftware = new QAction(MainWindow);
+        actionSoftware->setObjectName(QStringLiteral("actionSoftware"));
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         saProgramFiles = new QScrollArea(centralWidget);
@@ -214,18 +218,18 @@ public:
         leTerminal->setGeometry(QRect(10, 660, 1281, 22));
         pbG01 = new QPushButton(centralWidget);
         pbG01->setObjectName(QStringLiteral("pbG01"));
-        pbG01->setGeometry(QRect(1130, 20, 41, 28));
+        pbG01->setGeometry(QRect(1100, 20, 41, 28));
         pbG01->setAutoDefault(false);
         pbG01->setFlat(false);
         pbG28 = new QPushButton(centralWidget);
         pbG28->setObjectName(QStringLiteral("pbG28"));
-        pbG28->setGeometry(QRect(1170, 20, 41, 28));
+        pbG28->setGeometry(QRect(1140, 20, 41, 28));
         pbM03 = new QPushButton(centralWidget);
         pbM03->setObjectName(QStringLiteral("pbM03"));
-        pbM03->setGeometry(QRect(1210, 20, 41, 28));
+        pbM03->setGeometry(QRect(1180, 20, 41, 28));
         pbM204 = new QPushButton(centralWidget);
         pbM204->setObjectName(QStringLiteral("pbM204"));
-        pbM204->setGeometry(QRect(1250, 20, 41, 28));
+        pbM204->setGeometry(QRect(1220, 20, 41, 28));
         pbFormat = new QPushButton(centralWidget);
         pbFormat->setObjectName(QStringLiteral("pbFormat"));
         pbFormat->setGeometry(QRect(1050, 20, 35, 35));
@@ -351,7 +355,7 @@ public:
         twDeltaGeometry->setGeometry(QRect(0, 90, 521, 541));
         t3D = new QWidget();
         t3D->setObjectName(QStringLiteral("t3D"));
-        wgOpenGl = new GLWidget(t3D);
+        wgOpenGl = new QWidget(t3D);
         wgOpenGl->setObjectName(QStringLiteral("wgOpenGl"));
         wgOpenGl->setGeometry(QRect(0, 0, 500, 500));
         twDeltaGeometry->addTab(t3D, QString());
@@ -456,6 +460,12 @@ public:
         pbY = new QPushButton(centralWidget);
         pbY->setObjectName(QStringLiteral("pbY"));
         pbY->setGeometry(QRect(640, 110, 41, 27));
+        pbGcodeReference = new QPushButton(centralWidget);
+        pbGcodeReference->setObjectName(QStringLiteral("pbGcodeReference"));
+        pbGcodeReference->setGeometry(QRect(1261, 20, 31, 28));
+        QIcon icon11;
+        icon11.addFile(QStringLiteral("icon/Help_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbGcodeReference->setIcon(icon11);
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QStringLiteral("menuBar"));
@@ -469,6 +479,8 @@ public:
         menuFile->setStyleSheet(QStringLiteral(""));
         menuHelp = new QMenu(menuBar);
         menuHelp->setObjectName(QStringLiteral("menuHelp"));
+        menuReferences = new QMenu(menuHelp);
+        menuReferences->setObjectName(QStringLiteral("menuReferences"));
         menuEditor = new QMenu(menuBar);
         menuEditor->setObjectName(QStringLiteral("menuEditor"));
         MainWindow->setMenuBar(menuBar);
@@ -478,8 +490,10 @@ public:
         menuBar->addAction(menuHelp->menuAction());
         menuFile->addAction(actionAdd);
         menuFile->addAction(actionRemove);
-        menuHelp->addAction(actionreferences);
+        menuHelp->addAction(menuReferences->menuAction());
         menuHelp->addAction(actionAbout);
+        menuReferences->addAction(actionGcode);
+        menuReferences->addAction(actionSoftware);
 
         retranslateUi(MainWindow);
 
@@ -500,8 +514,9 @@ public:
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "IMWI - Delta X Software - Version 0.9", Q_NULLPTR));
         actionAdd->setText(QApplication::translate("MainWindow", "Add", Q_NULLPTR));
         actionRemove->setText(QApplication::translate("MainWindow", "Remove", Q_NULLPTR));
-        actionreferences->setText(QApplication::translate("MainWindow", "References", Q_NULLPTR));
         actionAbout->setText(QApplication::translate("MainWindow", "About", Q_NULLPTR));
+        actionGcode->setText(QApplication::translate("MainWindow", "Gcode", Q_NULLPTR));
+        actionSoftware->setText(QApplication::translate("MainWindow", "Software", Q_NULLPTR));
         leExProgramName->setText(QApplication::translate("MainWindow", "Program 1", Q_NULLPTR));
         pbExDeleteProgram->setText(QString());
         lbExGCodeNumber->setText(QApplication::translate("MainWindow", "100 Gcode Lines", Q_NULLPTR));
@@ -584,8 +599,13 @@ public:
         twDeltaGeometry->setTabText(twDeltaGeometry->indexOf(tParameter), QApplication::translate("MainWindow", "Parameter", Q_NULLPTR));
         pbConnect->setText(QApplication::translate("MainWindow", "Connect", Q_NULLPTR));
         pbY->setText(QApplication::translate("MainWindow", "Y", Q_NULLPTR));
+#ifndef QT_NO_TOOLTIP
+        pbGcodeReference->setToolTip(QApplication::translate("MainWindow", "Gcode Reference", Q_NULLPTR));
+#endif // QT_NO_TOOLTIP
+        pbGcodeReference->setText(QString());
         menuFile->setTitle(QApplication::translate("MainWindow", "File", Q_NULLPTR));
         menuHelp->setTitle(QApplication::translate("MainWindow", "Help", Q_NULLPTR));
+        menuReferences->setTitle(QApplication::translate("MainWindow", "References", Q_NULLPTR));
         menuEditor->setTitle(QApplication::translate("MainWindow", "Editor", Q_NULLPTR));
     } // retranslateUi
 

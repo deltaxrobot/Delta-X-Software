@@ -82,6 +82,9 @@
     <ClCompile Include="DeltaVisualizer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="GcodeReference.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="mainwindow.h">
@@ -111,6 +114,9 @@
     <QtMoc Include="DeltaVisualizer.h">
       <Filter>Header Files</Filter>
     </QtMoc>
+    <QtMoc Include="GcodeReference.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="debug\moc_predefs.h.cbt">
@@ -128,6 +134,9 @@
       <Filter>Form Files</Filter>
     </QtUic>
     <QtUic Include="HSVWindow.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="GcodeReference.ui">
       <Filter>Form Files</Filter>
     </QtUic>
   </ItemGroup>
