@@ -33,6 +33,8 @@ void MainWindow::InitEvents()
 	connect(ui->pbX, SIGNAL(clicked(bool)), this, SLOT(UpdateDeltaPosition()));
 	connect(ui->pbGrip, SIGNAL(clicked(bool)), this, SLOT(Grip()));
 	connect(ui->pbPump, SIGNAL(clicked(bool)), this, SLOT(SetPump(bool)));
+	connect(ui->pbSetSpeedConvenyor, SIGNAL(clicked(bool)), this, SLOT(SetConvenyorSpeed()));
+	connect(ui->pbGetPositionConvenyor, SIGNAL(clicked(bool)), this, SLOT(GetConvenyorPosition()));
 	connect(ui->vsZAdjsution, SIGNAL(valueChanged(int)), this, SLOT(UpdateZValue(int)));
 	connect(ui->vsZAdjsution, SIGNAL(sliderReleased()), this, SLOT(UpdateDeltaPosition()));
 
@@ -44,6 +46,8 @@ void MainWindow::InitEvents()
 	connect(DeltaPort, SIGNAL(FinishReadLine(QString)), this, SLOT(PrintReceiveData(QString)));
 	connect(DeltaPort, SIGNAL(DeltaResponeReady()), this, SLOT(NoticeConnected()));
 	connect(DeltaPort, SIGNAL(InHomePosition(float, float, float)), this, SLOT(UpdateHomePosition(float, float, float)));
+	connect(DeltaPort, SIGNAL(ReceiveConvenyorPosition(float, float)), this, SLOT(UpdateConvenyorPosition(float, float)));
+	connect(DeltaPort, SIGNAL(ReceiveConvenyorPosition(float, float)), DeltaImageProcesser->ConvenyorObjectManager, SLOT(UpdateNewPositionObjects(float, float)));
 
 	connect(ui->pbG01, SIGNAL(clicked(bool)), this, SLOT(AddGcodeLine()));
 	connect(ui->pbG28, SIGNAL(clicked(bool)), this, SLOT(AddGcodeLine()));
@@ -57,9 +61,26 @@ void MainWindow::InitEvents()
 	connect(ui->pbLoadCamera, SIGNAL(clicked(bool)), DeltaImageProcesser, SLOT(LoadCamera()));
 	connect(ui->pbObjectRect, SIGNAL(clicked(bool)), ui->lbScreenStreamer, SLOT(rectObject()));
 	connect(ui->pbObjectLine, SIGNAL(clicked(bool)), ui->lbScreenStreamer, SLOT(lineObject()));
+	connect(ui->pbObjectOrigin, SIGNAL(clicked(bool)), ui->lbScreenStreamer, SLOT(circleObject()));
+	connect(ui->pbSelection, SIGNAL(clicked(bool)), ui->lbScreenStreamer, SLOT(selectProcessRegion()));
+	connect(ui->pbSwitchWorkFlow, SIGNAL(clicked(bool)), DeltaImageProcesser, SLOT(SwitchLayer()));
+	connect(ui->pbChangeXAxis, SIGNAL(clicked(bool)), DeltaImageProcesser, SLOT(changeAxisDirection()));
+	connect(ui->pbClearDetectObjects, SIGNAL(clicked(bool)), DeltaImageProcesser->ConvenyorObjectManager, SLOT(RemoveAllDetectObjects()));
+
+	connect(ui->lbScreenStreamer, SIGNAL(FinishDrawObject(int, int, int, int)), DeltaImageProcesser, SLOT(GetObjectInfo(int, int, int, int)));
+	connect(ui->lbScreenStreamer, SIGNAL(FinishMeasureSpace(int)), DeltaImageProcesser, SLOT(GetDistance(int)));
+	connect(ui->lbScreenStreamer, SIGNAL(FinishSelectProcessRegion(QPoint, QPoint, QPoint, QPoint)), DeltaImageProcesser, SLOT(GetProcessRegion(QPoint, QPoint, QPoint, QPoint)));
+	connect(ui->lbScreenStreamer, SIGNAL(FinishSelectCalibPoint(int, int)), DeltaImageProcesser, SLOT(GetCalibPoint(int, int)));
 
 	connect(ui->actionGcode, SIGNAL(triggered()), this, SLOT(OpenGcodeReference()));
 	connect(ui->pbGcodeReference, SIGNAL(clicked(bool)), this, SLOT(OpenGcodeReference()));
+
+	connect(DeltaGcodeManager, SIGNAL(OutOfObjectVariable()), DeltaImageProcesser->ConvenyorObjectManager, SLOT(RemoveOldestObject()));
+	connect(DeltaGcodeManager, SIGNAL(JustUpdateVariable(QList<GcodeVariable>)), this, SLOT(DisplayGcodeVariable(QList<GcodeVariable>)));
+
+	connect(ui->cbEnoughGetConvenyorContinues, SIGNAL(clicked(bool)), this, SLOT(TurnEnoughConvenyorPositionGetting()));
+
+	connect(DeltaImageProcesser->ConvenyorObjectManager, SIGNAL(NewUpdateObjectPosition(QString, int)), DeltaGcodeManager, SLOT(UpdateSystemVariable(QString, int)));
 }
 
 void MainWindow::InitVariables()
@@ -81,6 +102,10 @@ void MainWindow::InitVariables()
 	//connect(EditorTimer, SIGNAL(timeout()), this, SLOT(RunSmartEditor()));
 	//EditorTimer->start(500);
 
+	ConvenyorTimer = new QTimer(this);
+	connect(ConvenyorTimer, SIGNAL(timeout()), this, SLOT(GetConvenyorPosition()));
+
+	//EditorTimer->start(500);
 	//------------ OpenGl Init ----------
 	
 	VisualArea = new GLWidget();
@@ -91,9 +116,10 @@ void MainWindow::InitVariables()
 	//---------- OpenCV Init -------------    
 
 	DeltaImageProcesser = new ImageProcesser(this);
-	DeltaImageProcesser->SetProcessScreenPointer(ui->lbTestImage);
 	DeltaImageProcesser->SetResultScreenPointer(ui->lbScreenStreamer);
+	DeltaImageProcesser->SetObjectScreenPointer(ui->lbTrackingObject);
 	DeltaImageProcesser->SetFPSInputBox(ui->leFPS);
+	DeltaImageProcesser->SetDetectParameterPointer(ui->leXRec, ui->leYRec, ui->leRealDistance, ui->leXCoordinate, ui->leYCoordinate);
 }
 
 void MainWindow::ConnectDeltaRobot()
@@ -236,6 +262,66 @@ void MainWindow::Home()
 
 	DeltaParameter->ChangeXY(0, 0);
 	ui->vsZAdjsution->setValue(0);
+}
+
+void MainWindow::UpdateConvenyorPosition(float x, float y)
+{
+	ui->leCurrentConvenyoPosition->setText(QString::number(x));
+}
+
+void MainWindow::DisplayGcodeVariable(QList<GcodeVariable> gcodeVariables)
+{
+	for each (GcodeVariable var in gcodeVariables)
+	{
+		if (var.Name == ui->leVariable1->text())
+		{
+			ui->lbVar1->setText(QString::number(var.Value));
+		}
+		if (var.Name == ui->leVariable2->text())
+		{
+			ui->lbVar2->setText(QString::number(var.Value));
+		}
+		if (var.Name == ui->leVariable3->text())
+		{
+			ui->lbVar3->setText(QString::number(var.Value));
+		}
+	}
+}
+
+void MainWindow::SetConvenyorSpeed()
+{
+	DeltaPort->Send(QString("M140 S") + ui->leConvenyorSpeed->text());
+
+	float interval = ui->leConvenPosInterval->text().toInt();
+	float vel = ui->leConvenyorSpeed->text().toInt();
+	if (interval > 0)
+	{
+		DeltaImageProcesser->ConvenyorObjectManager->SetApproximateValue(cv::Point3d((interval * vel) / 1000, 10, 10));
+	}
+}
+
+void MainWindow::GetConvenyorPosition()
+{
+	DeltaPort->Send(QString("M701"));
+
+	float interval = ui->leConvenPosInterval->text().toInt();
+	float vel = ui->leConvenyorSpeed->text().toInt();
+	if (interval > 0)
+	{
+		DeltaImageProcesser->ConvenyorObjectManager->SetApproximateValue(cv::Point3d((interval * vel) / 1000, 10, 10));
+	}
+}
+
+void MainWindow::TurnEnoughConvenyorPositionGetting()
+{
+	if (ui->cbEnoughGetConvenyorContinues->isChecked() == true)
+	{
+		ConvenyorTimer->start(ui->leConvenPosInterval->text().toInt());
+	}
+	else
+	{
+		ConvenyorTimer->stop();
+	}
 }
 
 void MainWindow::AddGcodeLine()

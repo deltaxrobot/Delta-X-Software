@@ -4,7 +4,7 @@
 #include <QPainter>
 #include <QPixmap>
 #include <QMouseEvent>
-
+#include <qmath.h>
 
 class CameraWidget : public QLabel
 {
@@ -25,6 +25,9 @@ public slots:
 
 signals:
 	void FinishDrawObject(int x, int y, int h, int w);
+	void FinishSelectProcessRegion(QPoint a, QPoint b, QPoint c, QPoint d);
+	void FinishMeasureSpace(int distance);
+	void FinishSelectCalibPoint(int x, int y);
 
 protected:
 	void mousePressEvent(QMouseEvent *event);
@@ -35,14 +38,24 @@ protected:
 public slots:
 	void rectObject();
 	void lineObject();
-
+	void circleObject();
+	void selectProcessRegion();
+	void changeAxisDirection();
 private:
+
+	int axisDirection = 1;
+	QLine xAxis;
+	QLine arrow1;
+	QLine arrow2;
 	QPainter painter;
 	QPainter painter2;
 	QPixmap overPix;
 	QPixmap mPix;
 	QLine mLine;
 	QRect mRect;
+	QPoint mPoint;
+	QPoint mPoints[4];
+	int pointOrder = -1;
 
 	QPixmap mergePixmap(QPixmap p1, QPixmap p2);
 };

@@ -44,6 +44,7 @@ public:
 	ImageProcesser* DeltaImageProcesser;
 
 	QTimer* EditorTimer;
+	QTimer* ConvenyorTimer;
 
 private slots:
     void ConnectDeltaRobot();
@@ -57,7 +58,11 @@ private slots:
 	void Grip();
 	void SetPump(bool value);
 	void Home();
-
+	void UpdateConvenyorPosition(float x, float y);
+	void DisplayGcodeVariable(QList<GcodeVariable> gcodeVariables);
+	void SetConvenyorSpeed();
+	void GetConvenyorPosition();
+	void TurnEnoughConvenyorPositionGetting();
 	void AddGcodeLine();
 
 	void TerminalTransmit();

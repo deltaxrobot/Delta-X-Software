@@ -61,9 +61,13 @@ public slots:
 	void TransmitNextGcode();
 	void UpdateSystemVariable(QString name, int value);
 
+signals:
+	void OutOfObjectVariable();
+	void JustUpdateVariable(QList<GcodeVariable> gcodeVariables);
+
 private:
 	ConnectionManager* deltaConnection;
-	QList<GcodeVariable> gcodeVariables;	
+	QList<GcodeVariable> gcodeVariables;
 
 	QList<QString> gcodeList;
 	int gcodeOrder = 0;
@@ -71,6 +75,7 @@ private:
 	int returnPointerOrder = -1;
 	QString currentLine;
 
+	int GetVariableValue(QString name);
 	void findExeGcodeAndTransmit();
 	int calculateExpressions(QString expression);
 	void SaveGcodeVariable(GcodeVariable gvar);

@@ -2,6 +2,8 @@
 
 QLabel* DebugLB;
 
+QString ConvenyorString;
+
 void Debug(QString msg)
 {
 	DebugLB->setText(msg);

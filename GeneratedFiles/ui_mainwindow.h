@@ -14,6 +14,7 @@
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
+#include <QtWidgets/QCheckBox>
 #include <QtWidgets/QFrame>
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLabel>
@@ -70,8 +71,18 @@ public:
     QLabel *lbTrackingObject;
     QPushButton *pbObjectRect;
     QPushButton *pbObjectLine;
+    QPushButton *pbSwitchWorkFlow;
+    QPushButton *pbObjectOrigin;
+    QLineEdit *leXRec;
+    QLineEdit *leYRec;
+    QLineEdit *leRealDistance;
+    QLineEdit *leXCoordinate;
+    QLineEdit *leYCoordinate;
+    QPushButton *pbSelection;
+    QLabel *label_12;
+    QPushButton *pbChangeXAxis;
+    QPushButton *pbClearDetectObjects;
     QWidget *tab_2;
-    QLabel *lbTestImage;
     QPushButton *pbHome;
     QPushButton *pbX;
     QPushButton *pbW;
@@ -108,6 +119,19 @@ public:
     QLineEdit *leW;
     QPushButton *pbY;
     QPushButton *pbGcodeReference;
+    QPushButton *pbSetSpeedConvenyor;
+    QLineEdit *leConvenyorSpeed;
+    QLineEdit *leCurrentConvenyoPosition;
+    QPushButton *pbGetPositionConvenyor;
+    QLineEdit *leConvenPosInterval;
+    QCheckBox *cbEnoughGetConvenyorContinues;
+    QLabel *lbVar1;
+    QLineEdit *leVariable1;
+    QLabel *lbVar2;
+    QLineEdit *leVariable2;
+    QLabel *lbVar3;
+    QLineEdit *leVariable3;
+    QLabel *lbVar1_2;
     QMenuBar *menuBar;
     QMenu *menuFile;
     QMenu *menuHelp;
@@ -260,17 +284,18 @@ public:
         twDeltaManager->addTab(tab_3, QString());
         tabWidget = new QTabWidget(centralWidget);
         tabWidget->setObjectName(QStringLiteral("tabWidget"));
-        tabWidget->setGeometry(QRect(530, 350, 421, 281));
+        tabWidget->setGeometry(QRect(530, 110, 431, 521));
         tResultCameraArea = new QWidget();
         tResultCameraArea->setObjectName(QStringLiteral("tResultCameraArea"));
         lbScreenStreamer = new CameraWidget(tResultCameraArea);
         lbScreenStreamer->setObjectName(QStringLiteral("lbScreenStreamer"));
-        lbScreenStreamer->setGeometry(QRect(20, 40, 291, 201));
+        lbScreenStreamer->setGeometry(QRect(10, 180, 401, 301));
         lbScreenStreamer->setStyleSheet(QStringLiteral("background-color:rgb(230, 230, 230)"));
         lbScreenStreamer->setScaledContents(false);
+        lbScreenStreamer->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop);
         pbLoadCamera = new QPushButton(tResultCameraArea);
         pbLoadCamera->setObjectName(QStringLiteral("pbLoadCamera"));
-        pbLoadCamera->setGeometry(QRect(20, 10, 31, 21));
+        pbLoadCamera->setGeometry(QRect(10, 10, 41, 21));
         QIcon icon6;
         icon6.addFile(QStringLiteral("icon/webcam.png"), QSize(), QIcon::Normal, QIcon::Off);
         icon6.addFile(QStringLiteral("icon/stop.png"), QSize(), QIcon::Normal, QIcon::On);
@@ -278,75 +303,130 @@ public:
         pbLoadCamera->setCheckable(true);
         pbLoadTestImage = new QPushButton(tResultCameraArea);
         pbLoadTestImage->setObjectName(QStringLiteral("pbLoadTestImage"));
-        pbLoadTestImage->setGeometry(QRect(60, 10, 31, 21));
+        pbLoadTestImage->setGeometry(QRect(60, 10, 41, 21));
         QIcon icon7;
         icon7.addFile(QStringLiteral("icon/image.png"), QSize(), QIcon::Normal, QIcon::Off);
         pbLoadTestImage->setIcon(icon7);
         pbFilter = new QPushButton(tResultCameraArea);
         pbFilter->setObjectName(QStringLiteral("pbFilter"));
-        pbFilter->setGeometry(QRect(200, 10, 51, 21));
+        pbFilter->setGeometry(QRect(10, 150, 41, 21));
+        QIcon icon8;
+        icon8.addFile(QStringLiteral("icon/Slider 2_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbFilter->setIcon(icon8);
         label_11 = new QLabel(tResultCameraArea);
         label_11->setObjectName(QStringLiteral("label_11"));
-        label_11->setGeometry(QRect(290, 10, 55, 16));
+        label_11->setGeometry(QRect(380, 140, 31, 16));
         leFPS = new QLineEdit(tResultCameraArea);
         leFPS->setObjectName(QStringLiteral("leFPS"));
-        leFPS->setGeometry(QRect(370, 10, 41, 22));
+        leFPS->setGeometry(QRect(300, 140, 71, 22));
         leFPS->setAlignment(Qt::AlignCenter);
         lbTrackingObject = new QLabel(tResultCameraArea);
         lbTrackingObject->setObjectName(QStringLiteral("lbTrackingObject"));
-        lbTrackingObject->setGeometry(QRect(350, 150, 61, 91));
+        lbTrackingObject->setGeometry(QRect(10, 40, 91, 101));
         lbTrackingObject->setStyleSheet(QStringLiteral("background-color:rgb(230, 230, 230)"));
         pbObjectRect = new QPushButton(tResultCameraArea);
         pbObjectRect->setObjectName(QStringLiteral("pbObjectRect"));
-        pbObjectRect->setGeometry(QRect(370, 40, 41, 28));
+        pbObjectRect->setGeometry(QRect(300, 50, 31, 28));
+        pbObjectRect->setStyleSheet(QStringLiteral(""));
+        QIcon icon9;
+        icon9.addFile(QStringLiteral("icon/Rectangle_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbObjectRect->setIcon(icon9);
         pbObjectLine = new QPushButton(tResultCameraArea);
         pbObjectLine->setObjectName(QStringLiteral("pbObjectLine"));
-        pbObjectLine->setGeometry(QRect(370, 70, 41, 28));
+        pbObjectLine->setGeometry(QRect(300, 80, 31, 28));
+        QIcon icon10;
+        icon10.addFile(QStringLiteral("icon/Width_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbObjectLine->setIcon(icon10);
+        pbSwitchWorkFlow = new QPushButton(tResultCameraArea);
+        pbSwitchWorkFlow->setObjectName(QStringLiteral("pbSwitchWorkFlow"));
+        pbSwitchWorkFlow->setGeometry(QRect(60, 150, 41, 21));
+        QIcon icon11;
+        icon11.addFile(QStringLiteral("icon/Workflow_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbSwitchWorkFlow->setIcon(icon11);
+        pbObjectOrigin = new QPushButton(tResultCameraArea);
+        pbObjectOrigin->setObjectName(QStringLiteral("pbObjectOrigin"));
+        pbObjectOrigin->setGeometry(QRect(300, 110, 31, 28));
+        QIcon icon12;
+        icon12.addFile(QStringLiteral("icon/Scatter Plot_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbObjectOrigin->setIcon(icon12);
+        leXRec = new QLineEdit(tResultCameraArea);
+        leXRec->setObjectName(QStringLiteral("leXRec"));
+        leXRec->setGeometry(QRect(340, 50, 31, 22));
+        leYRec = new QLineEdit(tResultCameraArea);
+        leYRec->setObjectName(QStringLiteral("leYRec"));
+        leYRec->setGeometry(QRect(380, 50, 31, 22));
+        leRealDistance = new QLineEdit(tResultCameraArea);
+        leRealDistance->setObjectName(QStringLiteral("leRealDistance"));
+        leRealDistance->setGeometry(QRect(340, 80, 31, 22));
+        leXCoordinate = new QLineEdit(tResultCameraArea);
+        leXCoordinate->setObjectName(QStringLiteral("leXCoordinate"));
+        leXCoordinate->setGeometry(QRect(340, 110, 31, 22));
+        leYCoordinate = new QLineEdit(tResultCameraArea);
+        leYCoordinate->setObjectName(QStringLiteral("leYCoordinate"));
+        leYCoordinate->setGeometry(QRect(380, 110, 31, 22));
+        pbSelection = new QPushButton(tResultCameraArea);
+        pbSelection->setObjectName(QStringLiteral("pbSelection"));
+        pbSelection->setGeometry(QRect(300, 20, 111, 28));
+        QIcon icon13;
+        icon13.addFile(QStringLiteral("icon/Cursor_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbSelection->setIcon(icon13);
+        label_12 = new QLabel(tResultCameraArea);
+        label_12->setObjectName(QStringLiteral("label_12"));
+        label_12->setGeometry(QRect(390, 80, 21, 16));
+        pbChangeXAxis = new QPushButton(tResultCameraArea);
+        pbChangeXAxis->setObjectName(QStringLiteral("pbChangeXAxis"));
+        pbChangeXAxis->setGeometry(QRect(110, 150, 41, 21));
+        QIcon icon14;
+        icon14.addFile(QStringLiteral("icon/Arrow Pointing Down_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        icon14.addFile(QStringLiteral("icon/Right Arrow_16px.png"), QSize(), QIcon::Normal, QIcon::On);
+        pbChangeXAxis->setIcon(icon14);
+        pbChangeXAxis->setCheckable(true);
+        pbClearDetectObjects = new QPushButton(tResultCameraArea);
+        pbClearDetectObjects->setObjectName(QStringLiteral("pbClearDetectObjects"));
+        pbClearDetectObjects->setGeometry(QRect(160, 150, 41, 21));
+        QIcon icon15;
+        icon15.addFile(QStringLiteral("icon/Eraser_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbClearDetectObjects->setIcon(icon15);
         tabWidget->addTab(tResultCameraArea, QString());
         tab_2 = new QWidget();
         tab_2->setObjectName(QStringLiteral("tab_2"));
-        lbTestImage = new QLabel(tab_2);
-        lbTestImage->setObjectName(QStringLiteral("lbTestImage"));
-        lbTestImage->setGeometry(QRect(10, 60, 368, 207));
-        lbTestImage->setStyleSheet(QStringLiteral("background-color:rgb(255, 255, 255)"));
-        lbTestImage->setScaledContents(true);
         tabWidget->addTab(tab_2, QString());
         pbHome = new QPushButton(centralWidget);
         pbHome->setObjectName(QStringLiteral("pbHome"));
-        pbHome->setGeometry(QRect(530, 110, 51, 51));
-        QIcon icon8;
-        icon8.addFile(QStringLiteral("icon/home.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbHome->setIcon(icon8);
+        pbHome->setGeometry(QRect(200, 40, 51, 61));
+        QIcon icon16;
+        icon16.addFile(QStringLiteral("icon/home.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbHome->setIcon(icon16);
         pbHome->setIconSize(QSize(30, 30));
         pbX = new QPushButton(centralWidget);
         pbX->setObjectName(QStringLiteral("pbX"));
-        pbX->setGeometry(QRect(590, 110, 41, 27));
+        pbX->setGeometry(QRect(260, 40, 41, 27));
         pbW = new QPushButton(centralWidget);
         pbW->setObjectName(QStringLiteral("pbW"));
-        pbW->setGeometry(QRect(740, 110, 41, 27));
+        pbW->setGeometry(QRect(410, 40, 41, 27));
         leX = new QLineEdit(centralWidget);
         leX->setObjectName(QStringLiteral("leX"));
-        leX->setGeometry(QRect(590, 140, 41, 27));
+        leX->setGeometry(QRect(260, 70, 41, 27));
         pbZ = new QPushButton(centralWidget);
         pbZ->setObjectName(QStringLiteral("pbZ"));
-        pbZ->setGeometry(QRect(690, 110, 41, 27));
+        pbZ->setGeometry(QRect(360, 40, 41, 27));
         leY = new QLineEdit(centralWidget);
         leY->setObjectName(QStringLiteral("leY"));
-        leY->setGeometry(QRect(640, 140, 41, 27));
+        leY->setGeometry(QRect(310, 70, 41, 27));
         pbGrip = new QPushButton(centralWidget);
         pbGrip->setObjectName(QStringLiteral("pbGrip"));
-        pbGrip->setGeometry(QRect(790, 110, 61, 27));
+        pbGrip->setGeometry(QRect(460, 40, 61, 27));
         pbGrip->setAutoFillBackground(false);
         pbGrip->setAutoDefault(false);
         pbGrip->setFlat(false);
         pbPump = new QPushButton(centralWidget);
         pbPump->setObjectName(QStringLiteral("pbPump"));
-        pbPump->setGeometry(QRect(790, 140, 61, 27));
+        pbPump->setGeometry(QRect(460, 70, 61, 27));
         pbPump->setAutoFillBackground(false);
-        QIcon icon9;
-        icon9.addFile(QStringLiteral("icon/Toggle Off_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
-        icon9.addFile(QStringLiteral("icon/Toggle On_16px.png"), QSize(), QIcon::Normal, QIcon::On);
-        pbPump->setIcon(icon9);
+        QIcon icon17;
+        icon17.addFile(QStringLiteral("icon/Toggle Off_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        icon17.addFile(QStringLiteral("icon/Toggle On_16px.png"), QSize(), QIcon::Normal, QIcon::On);
+        pbPump->setIcon(icon17);
         pbPump->setCheckable(true);
         pbPump->setAutoDefault(false);
         pbPump->setFlat(false);
@@ -446,26 +526,69 @@ public:
         pbConnect->setGeometry(QRect(0, 40, 101, 41));
         pbConnect->setStyleSheet(QLatin1String("background-color: rgb(30, 88, 180);\n"
 "color: rgb(255, 255, 255);"));
-        QIcon icon10;
-        icon10.addFile(QStringLiteral("icon/disconnected.png"), QSize(), QIcon::Normal, QIcon::Off);
-        icon10.addFile(QStringLiteral("icon/connected.png"), QSize(), QIcon::Normal, QIcon::On);
-        pbConnect->setIcon(icon10);
+        QIcon icon18;
+        icon18.addFile(QStringLiteral("icon/disconnected.png"), QSize(), QIcon::Normal, QIcon::Off);
+        icon18.addFile(QStringLiteral("icon/connected.png"), QSize(), QIcon::Normal, QIcon::On);
+        pbConnect->setIcon(icon18);
         pbConnect->setIconSize(QSize(30, 20));
         leZ = new QLineEdit(centralWidget);
         leZ->setObjectName(QStringLiteral("leZ"));
-        leZ->setGeometry(QRect(690, 140, 41, 27));
+        leZ->setGeometry(QRect(360, 70, 41, 27));
         leW = new QLineEdit(centralWidget);
         leW->setObjectName(QStringLiteral("leW"));
-        leW->setGeometry(QRect(740, 140, 41, 27));
+        leW->setGeometry(QRect(410, 70, 41, 27));
         pbY = new QPushButton(centralWidget);
         pbY->setObjectName(QStringLiteral("pbY"));
-        pbY->setGeometry(QRect(640, 110, 41, 27));
+        pbY->setGeometry(QRect(310, 40, 41, 27));
         pbGcodeReference = new QPushButton(centralWidget);
         pbGcodeReference->setObjectName(QStringLiteral("pbGcodeReference"));
         pbGcodeReference->setGeometry(QRect(1261, 20, 31, 28));
-        QIcon icon11;
-        icon11.addFile(QStringLiteral("icon/Help_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbGcodeReference->setIcon(icon11);
+        QIcon icon19;
+        icon19.addFile(QStringLiteral("icon/Help_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbGcodeReference->setIcon(icon19);
+        pbSetSpeedConvenyor = new QPushButton(centralWidget);
+        pbSetSpeedConvenyor->setObjectName(QStringLiteral("pbSetSpeedConvenyor"));
+        pbSetSpeedConvenyor->setGeometry(QRect(530, 40, 51, 27));
+        leConvenyorSpeed = new QLineEdit(centralWidget);
+        leConvenyorSpeed->setObjectName(QStringLiteral("leConvenyorSpeed"));
+        leConvenyorSpeed->setGeometry(QRect(530, 70, 51, 27));
+        leCurrentConvenyoPosition = new QLineEdit(centralWidget);
+        leCurrentConvenyoPosition->setObjectName(QStringLiteral("leCurrentConvenyoPosition"));
+        leCurrentConvenyoPosition->setGeometry(QRect(590, 70, 51, 27));
+        leCurrentConvenyoPosition->setReadOnly(true);
+        pbGetPositionConvenyor = new QPushButton(centralWidget);
+        pbGetPositionConvenyor->setObjectName(QStringLiteral("pbGetPositionConvenyor"));
+        pbGetPositionConvenyor->setGeometry(QRect(590, 40, 51, 27));
+        leConvenPosInterval = new QLineEdit(centralWidget);
+        leConvenPosInterval->setObjectName(QStringLiteral("leConvenPosInterval"));
+        leConvenPosInterval->setGeometry(QRect(650, 70, 51, 27));
+        leConvenPosInterval->setReadOnly(false);
+        cbEnoughGetConvenyorContinues = new QCheckBox(centralWidget);
+        cbEnoughGetConvenyorContinues->setObjectName(QStringLiteral("cbEnoughGetConvenyorContinues"));
+        cbEnoughGetConvenyorContinues->setGeometry(QRect(650, 40, 81, 20));
+        lbVar1 = new QLabel(centralWidget);
+        lbVar1->setObjectName(QStringLiteral("lbVar1"));
+        lbVar1->setGeometry(QRect(900, 40, 31, 20));
+        leVariable1 = new QLineEdit(centralWidget);
+        leVariable1->setObjectName(QStringLiteral("leVariable1"));
+        leVariable1->setGeometry(QRect(850, 40, 41, 22));
+        lbVar2 = new QLabel(centralWidget);
+        lbVar2->setObjectName(QStringLiteral("lbVar2"));
+        lbVar2->setGeometry(QRect(900, 70, 31, 20));
+        leVariable2 = new QLineEdit(centralWidget);
+        leVariable2->setObjectName(QStringLiteral("leVariable2"));
+        leVariable2->setGeometry(QRect(850, 70, 41, 22));
+        lbVar3 = new QLabel(centralWidget);
+        lbVar3->setObjectName(QStringLiteral("lbVar3"));
+        lbVar3->setGeometry(QRect(900, 100, 31, 20));
+        leVariable3 = new QLineEdit(centralWidget);
+        leVariable3->setObjectName(QStringLiteral("leVariable3"));
+        leVariable3->setGeometry(QRect(850, 100, 41, 22));
+        lbVar1_2 = new QLabel(centralWidget);
+        lbVar1_2->setObjectName(QStringLiteral("lbVar1_2"));
+        lbVar1_2->setGeometry(QRect(850, 10, 91, 20));
+        lbVar1_2->setStyleSheet(QLatin1String("background-color: rgb(255, 129, 26);\n"
+"color: rgb(255, 255, 255);"));
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QStringLiteral("menuBar"));
@@ -499,7 +622,7 @@ public:
 
         pbExDeleteProgram->setDefault(true);
         pbG01->setDefault(false);
-        twDeltaManager->setCurrentIndex(0);
+        twDeltaManager->setCurrentIndex(1);
         tabWidget->setCurrentIndex(0);
         pbGrip->setDefault(false);
         pbPump->setDefault(false);
@@ -564,15 +687,46 @@ public:
         pbLoadTestImage->setToolTip(QApplication::translate("MainWindow", "Load Image", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
         pbLoadTestImage->setText(QString());
-        pbFilter->setText(QApplication::translate("MainWindow", "Filter", Q_NULLPTR));
+#ifndef QT_NO_TOOLTIP
+        pbFilter->setToolTip(QString());
+#endif // QT_NO_TOOLTIP
+        pbFilter->setText(QString());
         label_11->setText(QApplication::translate("MainWindow", "FPS", Q_NULLPTR));
         leFPS->setText(QApplication::translate("MainWindow", "15", Q_NULLPTR));
         lbTrackingObject->setText(QString());
-        pbObjectRect->setText(QApplication::translate("MainWindow", "Rect", Q_NULLPTR));
-        pbObjectLine->setText(QApplication::translate("MainWindow", "Line", Q_NULLPTR));
-        tabWidget->setTabText(tabWidget->indexOf(tResultCameraArea), QApplication::translate("MainWindow", "Result", Q_NULLPTR));
-        lbTestImage->setText(QString());
-        tabWidget->setTabText(tabWidget->indexOf(tab_2), QApplication::translate("MainWindow", "Test Image", Q_NULLPTR));
+        pbObjectRect->setText(QString());
+        pbObjectLine->setText(QString());
+#ifndef QT_NO_TOOLTIP
+        pbSwitchWorkFlow->setToolTip(QString());
+#endif // QT_NO_TOOLTIP
+        pbSwitchWorkFlow->setText(QString());
+#ifndef QT_NO_TOOLTIP
+        pbObjectOrigin->setToolTip(QString());
+#endif // QT_NO_TOOLTIP
+        pbObjectOrigin->setText(QString());
+        leXRec->setText(QApplication::translate("MainWindow", "150", Q_NULLPTR));
+        leYRec->setText(QApplication::translate("MainWindow", "150", Q_NULLPTR));
+        leRealDistance->setText(QApplication::translate("MainWindow", "300", Q_NULLPTR));
+        leXCoordinate->setText(QApplication::translate("MainWindow", "-480", Q_NULLPTR));
+        leYCoordinate->setText(QApplication::translate("MainWindow", "98", Q_NULLPTR));
+#ifndef QT_NO_TOOLTIP
+        pbSelection->setToolTip(QString());
+#endif // QT_NO_TOOLTIP
+        pbSelection->setText(QApplication::translate("MainWindow", "Process Area", Q_NULLPTR));
+        label_12->setText(QApplication::translate("MainWindow", "mm", Q_NULLPTR));
+#ifndef QT_NO_TOOLTIP
+        pbChangeXAxis->setToolTip(QString());
+#endif // QT_NO_TOOLTIP
+        pbChangeXAxis->setText(QString());
+#ifndef QT_NO_TOOLTIP
+        pbClearDetectObjects->setToolTip(QString());
+#endif // QT_NO_TOOLTIP
+#ifndef QT_NO_STATUSTIP
+        pbClearDetectObjects->setStatusTip(QString());
+#endif // QT_NO_STATUSTIP
+        pbClearDetectObjects->setText(QString());
+        tabWidget->setTabText(tabWidget->indexOf(tResultCameraArea), QApplication::translate("MainWindow", "Object Detecting", Q_NULLPTR));
+        tabWidget->setTabText(tabWidget->indexOf(tab_2), QApplication::translate("MainWindow", "Drawing", Q_NULLPTR));
         pbHome->setText(QString());
         pbX->setText(QApplication::translate("MainWindow", "X", Q_NULLPTR));
         pbW->setText(QApplication::translate("MainWindow", "W", Q_NULLPTR));
@@ -603,6 +757,24 @@ public:
         pbGcodeReference->setToolTip(QApplication::translate("MainWindow", "Gcode Reference", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
         pbGcodeReference->setText(QString());
+#ifndef QT_NO_STATUSTIP
+        pbSetSpeedConvenyor->setStatusTip(QString());
+#endif // QT_NO_STATUSTIP
+        pbSetSpeedConvenyor->setText(QApplication::translate("MainWindow", "M140", Q_NULLPTR));
+        leConvenyorSpeed->setText(QApplication::translate("MainWindow", "10", Q_NULLPTR));
+#ifndef QT_NO_STATUSTIP
+        pbGetPositionConvenyor->setStatusTip(QString());
+#endif // QT_NO_STATUSTIP
+        pbGetPositionConvenyor->setText(QApplication::translate("MainWindow", "M701", Q_NULLPTR));
+        leConvenPosInterval->setText(QApplication::translate("MainWindow", "100", Q_NULLPTR));
+        cbEnoughGetConvenyorContinues->setText(QApplication::translate("MainWindow", "UCP", Q_NULLPTR));
+        lbVar1->setText(QApplication::translate("MainWindow", "0", Q_NULLPTR));
+        leVariable1->setText(QApplication::translate("MainWindow", "#1010", Q_NULLPTR));
+        lbVar2->setText(QApplication::translate("MainWindow", "0", Q_NULLPTR));
+        leVariable2->setText(QApplication::translate("MainWindow", "#1011", Q_NULLPTR));
+        lbVar3->setText(QApplication::translate("MainWindow", "0", Q_NULLPTR));
+        leVariable3->setText(QApplication::translate("MainWindow", "#1012", Q_NULLPTR));
+        lbVar1_2->setText(QApplication::translate("MainWindow", "Gcode Variable", Q_NULLPTR));
         menuFile->setTitle(QApplication::translate("MainWindow", "File", Q_NULLPTR));
         menuHelp->setTitle(QApplication::translate("MainWindow", "Help", Q_NULLPTR));
         menuReferences->setTitle(QApplication::translate("MainWindow", "References", Q_NULLPTR));

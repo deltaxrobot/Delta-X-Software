@@ -15,6 +15,11 @@ GcodeProgramManager::GcodeProgramManager(QWidget* container, QPlainTextEdit * gc
 	UpdateSystemVariable("#1001", -1000);
 	UpdateSystemVariable("#1002", -1000);
 	UpdateSystemVariable("#1003", -1000);
+
+	UpdateSystemVariable("#1010", NULL_NUMBER);
+	UpdateSystemVariable("#1011", NULL_NUMBER);
+	UpdateSystemVariable("#1012", NULL_NUMBER);
+
 	UpdateSystemVariable("#X", 0);
 	UpdateSystemVariable("#Y", 0);
 	UpdateSystemVariable("#Z", 0);
@@ -120,6 +125,17 @@ void GcodeProgramManager::Stop()
 {
 	gcodeList.clear();
 	gcodeOrder = 0;
+}
+
+int GcodeProgramManager::GetVariableValue(QString name)
+{
+	foreach(GcodeVariable var, gcodeVariables)
+	{
+		if (var.Name == name)
+		{
+			return var.Value;
+		}
+	}
 }
 
 void GcodeProgramManager::findExeGcodeAndTransmit()
@@ -244,6 +260,11 @@ void GcodeProgramManager::findExeGcodeAndTransmit()
 
 				SaveGcodeVariable(newVar);
 
+				if (GetVariableValue("#1010") == NULL_NUMBER && GetVariableValue("#1011") == NULL_NUMBER && GetVariableValue("#1012") == NULL_NUMBER)
+				{
+					emit OutOfObjectVariable();
+				}
+
 				gcodeOrder++;
 				TransmitNextGcode();
 				return;
@@ -261,7 +282,7 @@ void GcodeProgramManager::findExeGcodeAndTransmit()
 
 		if (valuePairs[i].at(0) == 'O')
 		{
-			QString subProName = valuePairs[i].mid(1);
+			/*QString subProName = valuePairs[i].mid(1);
 
 			bool isNumber;
 			int subProID;
@@ -269,7 +290,7 @@ void GcodeProgramManager::findExeGcodeAndTransmit()
 			subProID = subProName.toInt(&isNumber, 10);
 
 			if (isNumber == true)
-			{
+			{*/
 				for (int order = gcodeOrder + 1; order < gcodeList.size(); order++)
 				{
 					if (gcodeList[order].indexOf("M99") > -1)
@@ -279,7 +300,7 @@ void GcodeProgramManager::findExeGcodeAndTransmit()
 						return;
 					}	
 				}
-			}
+			/*}*/
 		}
 
 		// --------------- CALL SUBPROGRAM --------
@@ -455,6 +476,7 @@ void GcodeProgramManager::UpdateSystemVariable(QString name, int value)
 		if (name == gcodeVariables[i].Name)
 		{
 			gcodeVariables[i].Value = value;
+			emit JustUpdateVariable(gcodeVariables);
 			return;
 		}
 	}
@@ -464,6 +486,7 @@ void GcodeProgramManager::UpdateSystemVariable(QString name, int value)
 	var.Value = value;
 
 	gcodeVariables.push_back(var);
+	emit JustUpdateVariable(gcodeVariables);
 }
 
 int GcodeProgramManager::calculateExpressions(QString expression)
@@ -596,8 +619,23 @@ int GcodeProgramManager::calculateExpressions(QString expression)
 				value2S = getRightWord(expression, gtIndex);
 			}
 
-			value1 = value1S.toInt();
-			value2 = value2S.toInt();
+			if (value1S == "NULL")
+			{
+				value1 = NULL_NUMBER;
+			}
+			else
+			{
+				value1 = value1S.toInt();
+			}
+			
+			if (value2S == "NULL")
+			{
+				value2 = NULL_NUMBER;
+			}
+			else
+			{
+				value2 = value2S.toInt();
+			}
 
 			foreach(GcodeVariable var, gcodeVariables)
 			{
@@ -649,7 +687,13 @@ int GcodeProgramManager::calculateExpressions(QString expression)
 
 		else
 		{
+
 			int value = deleteSpaces(expression).toInt();
+
+			if (deleteSpaces(expression) == "NULL")
+			{
+				value = NULL_NUMBER;
+			}
 
 			foreach(GcodeVariable var, gcodeVariables)
 			{

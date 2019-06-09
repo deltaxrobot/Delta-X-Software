@@ -28,6 +28,7 @@ signals:
 	void DeltaResponeReady();
 	void DeltaResponeGcodeDone();
 	void InHomePosition(float x, float y, float z);
+	void ReceiveConvenyorPosition(float x, float y);
 private:
 	void init();
 

@@ -70,9 +70,9 @@ void ConnectionManager::ReadData()
 			emit DeltaResponeReady();
 
 			isDeltaPortConnected = true;
-		}		
+		}
 
-		if (receiveLine.mid(0, 2) == "Ok")
+		if (receiveLine.mid(0, 2) == "Ok" || (receiveLine.indexOf('k') > -1 && receiveLine.indexOf('O') > -1))
 		{
 			if (transmitLine == "G28")
 			{
@@ -88,6 +88,12 @@ void ConnectionManager::ReadData()
 
 			if (nums.size() == 3)
 				emit InHomePosition(nums[0].toFloat(), nums[1].toFloat(), nums[2].toFloat());
+		}
+		if (receiveLine.at(0) == 'P' && transmitLine == "M701")
+		{
+			QString convenyorPosS = receiveLine.mid(1);
+			float convenyorPos = convenyorPosS.toFloat();
+			emit ReceiveConvenyorPosition(convenyorPos, 0);
 		}
 	}	
 }
