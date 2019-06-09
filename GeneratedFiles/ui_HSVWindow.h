@@ -139,7 +139,7 @@ public:
         hsThreshold->setObjectName(QStringLiteral("hsThreshold"));
         hsThreshold->setGeometry(QRect(90, 50, 311, 22));
         hsThreshold->setMaximum(255);
-        hsThreshold->setValue(100);
+        hsThreshold->setValue(150);
         hsThreshold->setOrientation(Qt::Horizontal);
         lbThreshold = new QLabel(groupBox_2);
         lbThreshold->setObjectName(QStringLiteral("lbThreshold"));

@@ -50,6 +50,12 @@ void ImageProcesser::LoadTestImage()
 
 void ImageProcesser::UpdateCameraScreen()
 {
+	if (lbResultImage->pixmap() != nullptr && isFirstLoad == true)
+	{
+		lbResultImage->InitParameter();
+		isFirstLoad = false;
+	}
+
 	camera.read(captureImage);
 
 	if (!captureImage.data)
@@ -86,7 +92,7 @@ void ImageProcesser::SetDetectParameterPointer(QLineEdit * xRec, QLineEdit * yRe
 	leYCoor = yCoor;
 }
 
-void ImageProcesser::SetResultScreenPointer(QLabel * resultImage)
+void ImageProcesser::SetResultScreenPointer(CameraWidget * resultImage)
 {
 	lbResultImage = resultImage;
 
@@ -244,8 +250,7 @@ void ImageProcesser::LoadCamera()
 			camera.open(text.toInt());
 
 			updateScreenTimer->start(50);
-
-
+			
 			//loadBt->setText("Stop");
 		}
 		else
@@ -448,9 +453,16 @@ float ImageProcesser::drawMinRec(cv::Mat & mat, std::vector<cv::Point> contour, 
 	realObject.size.height = minRec.size.height * processAndRealRatio;
 	realObject.size.width = minRec.size.width * processAndRealRatio;
 
+	int angle = realObject.angle + 180;
+
+	if (realObject.size.width > realObject.size.height)
+	{
+		angle = realObject.angle + 90;
+	}
+
 	ConvenyorObjectManager->AddNewObject(realObject);
 
-	putText(mat, std::to_string((int)xRealObject) + "," + std::to_string((int)yRealObject) + "," + std::to_string((int)minRec.angle), cv::Point(minRec.center.x - 40, minRec.center.y), cv::FONT_HERSHEY_SIMPLEX, 0.6, BLUE_COLOR, 2);
+	putText(mat, std::to_string((int)xRealObject) + "," + std::to_string((int)yRealObject) + "," + std::to_string((int)angle), cv::Point(minRec.center.x - 40, minRec.center.y), cv::FONT_HERSHEY_SIMPLEX, 0.6, BLUE_COLOR, 2);
 
 	return minRec.angle;
 }

@@ -13,6 +13,29 @@ void ConnectionManager::init()
 	connect(timer, SIGNAL(timeout()), this, SLOT(FindingTimeOut()));
 }
 
+void ConnectionManager::sendQueue()
+{
+	if (transmitLines.size() == 0)
+		return; 
+
+	transmitLines.pop_front();
+
+	if (transmitLines.size() > 0)
+	{
+		transmitLine = transmitLines.at(0);
+
+		QString msg;
+		msg = transmitLine + "\n";
+
+		if (serialPort->isOpen())
+		{
+			serialPort->write(msg.toStdString().c_str(), msg.size());
+		}
+		else
+			Debug("Serial port is not available !");
+	}
+}
+
 bool ConnectionManager::IsConnect()
 {
 	if (serialPort->isOpen())
@@ -44,7 +67,32 @@ void ConnectionManager::SetBaudrate(int baud)
 
 void ConnectionManager::Send(QString msg)
 {
+	if (msg == "")
+		return;
+
+	if (msg == "M701" && transmitLines.size() > 0)
+	{
+		if (transmitLines.back() == "M701")
+		{
+			return;
+		}
+	}
+	/*
+	if (transmitLines.size() > 1)
+	{
+		transmitLines.clear();
+		emit DeltaResponeGcodeDone();
+	}	*/	
+
+	transmitLines.push_back(msg);
+
+	if (transmitLines.size() > 1)
+	{
+		return;
+	}
+
 	transmitLine = msg;
+
 	msg += "\n";
 	if (serialPort->isOpen())
 	{
@@ -74,26 +122,37 @@ void ConnectionManager::ReadData()
 
 		if (receiveLine.mid(0, 2) == "Ok" || (receiveLine.indexOf('k') > -1 && receiveLine.indexOf('O') > -1))
 		{
+			emit DeltaResponeGcodeDone();
+
+			sendQueue();
+
 			if (transmitLine == "G28")
 			{
 				Send("Position");
 			}
-
-			emit DeltaResponeGcodeDone();
 		}
 
-		if (receiveLine.indexOf(" ,") > -1 && transmitLine == "Position")
+		if (receiveLine.indexOf(",") > -1 && transmitLine == "Position")
 		{
-			QList<QString> nums = receiveLine.split(" ,");
-
+			QList<QString> nums = receiveLine.split(",");
+			
 			if (nums.size() == 3)
+			{
 				emit InHomePosition(nums[0].toFloat(), nums[1].toFloat(), nums[2].toFloat());
+			}
+
+			sendQueue();
+			
 		}
 		if (receiveLine.at(0) == 'P' && transmitLine == "M701")
 		{
 			QString convenyorPosS = receiveLine.mid(1);
 			float convenyorPos = convenyorPosS.toFloat();
+
 			emit ReceiveConvenyorPosition(convenyorPos, 0);
+
+			sendQueue();
+
 		}
 	}	
 }

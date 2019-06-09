@@ -294,7 +294,7 @@ void MainWindow::SetConvenyorSpeed()
 
 	float interval = ui->leConvenPosInterval->text().toInt();
 	float vel = ui->leConvenyorSpeed->text().toInt();
-	if (interval > 0)
+	if (interval > 0 && vel > 0)
 	{
 		DeltaImageProcesser->ConvenyorObjectManager->SetApproximateValue(cv::Point3d((interval * vel) / 1000, 10, 10));
 	}
@@ -306,7 +306,7 @@ void MainWindow::GetConvenyorPosition()
 
 	float interval = ui->leConvenPosInterval->text().toInt();
 	float vel = ui->leConvenyorSpeed->text().toInt();
-	if (interval > 0)
+	if (interval > 0 && vel > 0)
 	{
 		DeltaImageProcesser->ConvenyorObjectManager->SetApproximateValue(cv::Point3d((interval * vel) / 1000, 10, 10));
 	}

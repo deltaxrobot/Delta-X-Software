@@ -17,6 +17,7 @@
 #include "Blob.h"
 #include "BlobManager.h"
 #include "UnityTool.h"
+#include "CameraWidget.h"
 
 #define RED_COLOR       cv::Scalar(0, 0, 255)
 #define GREEN_COLOR     cv::Scalar(0, 255, 0)
@@ -52,7 +53,7 @@ public:
 	~ImageProcesser();
 	
 	void SetDetectParameterPointer(QLineEdit* xRec, QLineEdit* yRec, QLineEdit* distance, QLineEdit* xCoor, QLineEdit* yCoor);
-	void SetResultScreenPointer(QLabel* resultImage);
+	void SetResultScreenPointer(CameraWidget* resultImage);
 	void SetObjectScreenPointer(QLabel* objectImage);
 	void SetFPSInputBox(QLineEdit* fps);
 
@@ -92,7 +93,7 @@ private:
 	void drawCountedObjectDigit(int &carCount, cv::Mat &imgFrame2Copy);
 
 	int HSVValue[6] = {0, 100, 0, 255, 0, 255};
-	int thresholdValue = 100;
+	int thresholdValue = 150;
 	int filterMethod = THRESHOLD_SPACE;
 	int cameraLayer = RESULT;
 
@@ -116,7 +117,7 @@ private:
 	cv::Mat resizeImage;
 	cv::Mat resultImage;
 
-	QLabel* lbResultImage;
+	CameraWidget* lbResultImage;
 	QLabel* lbObjectImage;
 	QLineEdit* leFPS;
 
@@ -129,6 +130,8 @@ private:
 	bool isDetectedNewObject = false;
 	int countedObjectNumber = 0;
 	bool isFirstFrame = true;
+
+	bool isFirstLoad = true;
 
 	std::vector<Blob> appearedBlobs;
 	std::vector<Blob> currentFrameBlobs;

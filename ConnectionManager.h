@@ -31,10 +31,12 @@ signals:
 	void ReceiveConvenyorPosition(float x, float y);
 private:
 	void init();
+	void sendQueue();
 
     QSerialPort* serialPort;
 	QString receiveLine;
 	QString transmitLine;
+	QList<QString> transmitLines;
 	QTimer* timer;
 	QList<QSerialPort*> portList;
 

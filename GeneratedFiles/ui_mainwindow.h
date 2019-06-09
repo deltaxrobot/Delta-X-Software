@@ -676,7 +676,7 @@ public:
         twDeltaManager->setTabText(twDeltaManager->indexOf(tab), QApplication::translate("MainWindow", "DeltaX 1", Q_NULLPTR));
         twDeltaManager->setTabText(twDeltaManager->indexOf(tab_3), QApplication::translate("MainWindow", "+", Q_NULLPTR));
 #ifndef QT_NO_TOOLTIP
-        tabWidget->setToolTip(QApplication::translate("MainWindow", "Load Camera", Q_NULLPTR));
+        tabWidget->setToolTip(QString());
 #endif // QT_NO_TOOLTIP
         lbScreenStreamer->setText(QString());
 #ifndef QT_NO_TOOLTIP
@@ -704,8 +704,8 @@ public:
         pbObjectOrigin->setToolTip(QString());
 #endif // QT_NO_TOOLTIP
         pbObjectOrigin->setText(QString());
-        leXRec->setText(QApplication::translate("MainWindow", "150", Q_NULLPTR));
-        leYRec->setText(QApplication::translate("MainWindow", "150", Q_NULLPTR));
+        leXRec->setText(QApplication::translate("MainWindow", "57", Q_NULLPTR));
+        leYRec->setText(QApplication::translate("MainWindow", "127", Q_NULLPTR));
         leRealDistance->setText(QApplication::translate("MainWindow", "300", Q_NULLPTR));
         leXCoordinate->setText(QApplication::translate("MainWindow", "-480", Q_NULLPTR));
         leYCoordinate->setText(QApplication::translate("MainWindow", "98", Q_NULLPTR));

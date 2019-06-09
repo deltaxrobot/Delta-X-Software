@@ -15,6 +15,7 @@ CameraWidget::CameraWidget(QWidget *parent) :
 	painter.setPen(Qt::red);
 	painter.setBrush(Qt::Dense2Pattern);
 
+	//InitParameter();
 }
 
 
@@ -109,9 +110,29 @@ void CameraWidget::paintEvent(QPaintEvent *event)
 	QPainter tempPainter(&mPix);
 	tempPainter.setPen(Qt::red);
 
-	/*tempPainter.drawLine(xAxis);
-	tempPainter.drawLine(arrow1);
-	tempPainter.drawLine(arrow2);*/
+	if (pointOrder > 0)
+	{
+		tempPainter.setPen(Qt::green);
+
+		for (int i = 0; i < pointOrder; i++)
+		{
+			tempPainter.drawLine(mPoints[i], mPoints[i + 1]);
+		}
+
+		if (pointOrder == 3)
+			tempPainter.drawLine(mPoints[3], mPoints[0]);
+
+		tempPainter.setPen(Qt::red);
+	}
+
+	tempPainter.drawLine(mLine);
+	tempPainter.setPen(QPen(Qt::red, 3));
+	tempPainter.drawPoint(mPoint);
+	tempPainter.drawEllipse(mPoint, 10, 10);
+
+	painter.drawPixmap(0, 0, mPix);
+
+	tempPainter.setPen(QPen(Qt::blue, 1));
 
 	if (mousePressed) 
 	{
@@ -134,39 +155,8 @@ void CameraWidget::paintEvent(QPaintEvent *event)
 	}
 	else if (drawStarted)
 	{
-		if (pointOrder > 0)
-		{
-			tempPainter.setPen(Qt::green);
-
-			for (int i = 0; i < pointOrder; i++)
-			{
-				tempPainter.drawLine(mPoints[i], mPoints[i + 1]);
-			}
-
-			if (pointOrder == 3)
-				tempPainter.drawLine(mPoints[3], mPoints[0]);
-
-			tempPainter.setPen(Qt::red);
-		}
-
-		tempPainter.drawLine(mLine);
-		tempPainter.setPen(QPen(Qt::red, 3));
-		tempPainter.drawPoint(mPoint);
-		tempPainter.drawEllipse(mPoint, 10, 10);
-
-		painter.drawPixmap(0, 0, mPix);
+		
 	}
-	/*else if (drawStarted) 
-	{
-		QPainter tempPainter(&mPix);
-
-		if (selectedTool == 1)
-			tempPainter.drawRect(mRect);
-		else if (selectedTool == 2)
-			tempPainter.drawLine(mLine);
-
-		painter.drawPixmap(0, 0, mPix);
-	}*/
 
 	painter.end();	
 }
@@ -190,28 +180,28 @@ void CameraWidget::selectProcessRegion()
 	selectedTool = 4;
 }
 
-void CameraWidget::changeAxisDirection()
+void CameraWidget::InitParameter()
 {
-	if (axisDirection == 1)
-	{
-		axisDirection = 2;
-		xAxis.setP1(QPoint(20, 20));
-		xAxis.setP2(QPoint(20, 80));
-		arrow1.setP1(QPoint(25, 70));
-		arrow1.setP2(QPoint(20, 80));
-		arrow2.setP1(QPoint(15, 70));
-		arrow2.setP2(QPoint(20, 80));
-	}
-	else if (axisDirection == 2)
-	{
-		axisDirection = 1;
-		xAxis.setP1(QPoint(20, 20));
-		xAxis.setP2(QPoint(80, 20));
-		arrow1.setP1(QPoint(70, 25));
-		arrow1.setP2(QPoint(80, 20));
-		arrow2.setP1(QPoint(70, 15));
-		arrow2.setP2(QPoint(80, 20));
-	}
+	mLine.setP1(QPoint(34, 6));
+	mLine.setP2(QPoint(324, 8));
+
+	mRect.setTopLeft(QPoint(0, 0));
+	mRect.setBottomRight(QPoint(57, 127));
+
+	mPoint.setX(326);
+	mPoint.setY(64);
+
+	mPoints[0] = QPoint(34, 0);
+	mPoints[1] = QPoint(38, 300);
+	mPoints[2] = QPoint(330, 300);
+	mPoints[3] = QPoint(330, 0);
+
+	emit FinishMeasureSpace(sqrt(pow(mLine.x1() - mLine.x2(), 2) + pow(mLine.y1() - mLine.y2(), 2)));
+	emit FinishSelectCalibPoint(mPoint.x(), mPoint.y());
+	emit FinishDrawObject(mRect.x(), mRect.y(), mRect.height(), mRect.width());
+	emit FinishSelectProcessRegion(mPoints[0], mPoints[1], mPoints[2], mPoints[3]);
+
+	update();
 }
 
 QPixmap CameraWidget::mergePixmap(QPixmap p1, QPixmap p2)

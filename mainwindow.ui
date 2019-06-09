@@ -444,7 +444,7 @@ M204 A4000</string>
      </rect>
     </property>
     <property name="toolTip">
-     <string>Load Camera</string>
+     <string/>
     </property>
     <property name="currentIndex">
      <number>0</number>
@@ -671,7 +671,7 @@ M204 A4000</string>
        </rect>
       </property>
       <property name="text">
-       <string>150</string>
+       <string>57</string>
       </property>
      </widget>
      <widget class="QLineEdit" name="leYRec">
@@ -684,7 +684,7 @@ M204 A4000</string>
        </rect>
       </property>
       <property name="text">
-       <string>150</string>
+       <string>127</string>
       </property>
      </widget>
      <widget class="QLineEdit" name="leRealDistance">

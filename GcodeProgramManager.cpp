@@ -138,7 +138,7 @@ int GcodeProgramManager::GetVariableValue(QString name)
 	}
 }
 
-void GcodeProgramManager::findExeGcodeAndTransmit()
+bool GcodeProgramManager::findExeGcodeAndTransmit()
 {
 	int openBracIndex = currentLine.indexOf('[');
 	QString expressInBracket = "";
@@ -149,6 +149,11 @@ void GcodeProgramManager::findExeGcodeAndTransmit()
 
 	while (openBracIndex > -1)
 	{
+		/*int thenIndex = currentLine.indexOf("THEN");
+
+		if (thenIndex < -1)
+			thenIndex = currentLine.length();*/
+
 		for (int i = openBracIndex; i < currentLine.length(); i++)
 		{
 			expressInBracket += currentLine[i];
@@ -167,7 +172,7 @@ void GcodeProgramManager::findExeGcodeAndTransmit()
 				break;
 		}
 
-		resultInBracket = calculateExpressions(expressInBracket);
+		resultInBracket = calculateExpressions(expressInBracket);				
 
 		currentLine.replace(expressInBracket, QString::number(resultInBracket));
 
@@ -206,8 +211,8 @@ void GcodeProgramManager::findExeGcodeAndTransmit()
 						if (id == goID)
 						{
 							gcodeOrder = order;
-							TransmitNextGcode();
-							return;
+							//TransmitNextGcode();
+							return false;
 						}
 					}
 				}
@@ -231,12 +236,14 @@ void GcodeProgramManager::findExeGcodeAndTransmit()
 				if (result == true)
 				{
 					transmitGcode = statement;
+					currentLine = transmitGcode;
+					return findExeGcodeAndTransmit();		 
 				}
 				else
 				{
 					gcodeOrder++;
-					TransmitNextGcode();
-					return;
+					//TransmitNextGcode();
+					return false;
 				}
 			}
 		}
@@ -266,8 +273,8 @@ void GcodeProgramManager::findExeGcodeAndTransmit()
 				}
 
 				gcodeOrder++;
-				TransmitNextGcode();
-				return;
+				//TransmitNextGcode();
+				return false;
 			}
 
 		}
@@ -296,8 +303,8 @@ void GcodeProgramManager::findExeGcodeAndTransmit()
 					if (gcodeList[order].indexOf("M99") > -1)
 					{
 						gcodeOrder = order + 1;
-						TransmitNextGcode();
-						return;
+						//TransmitNextGcode();
+						return false;
 					}	
 				}
 			/*}*/
@@ -322,9 +329,9 @@ void GcodeProgramManager::findExeGcodeAndTransmit()
 
 						gcodeOrder = order + 1;
 
-						TransmitNextGcode();
+						//TransmitNextGcode();
 
-						return;
+						return false;
 					}
 				}
 			}
@@ -334,8 +341,8 @@ void GcodeProgramManager::findExeGcodeAndTransmit()
 		{
 			gcodeOrder = returnSubProPointer[returnPointerOrder] + 1;
 			returnPointerOrder--;
-			TransmitNextGcode();
-			return;
+			//TransmitNextGcode();
+			return false;
 		}
 	}
 
@@ -343,6 +350,7 @@ void GcodeProgramManager::findExeGcodeAndTransmit()
 
 	deltaConnection->Send(transmitGcode);
 	gcodeOrder += 1;
+	return true;
 }
 
 void GcodeProgramManager::LoadPrograms()
@@ -448,25 +456,33 @@ void GcodeProgramManager::TransmitNextGcode()
 	if (gcodeOrder >= gcodeList.size())
 		return;
 
-	currentLine = gcodeList.at(gcodeOrder);
-	QString firstPair = currentLine.split(' ')[0];
-
-	if (firstPair[0] == 'N')
+	while (true)
 	{
-		QString line = currentLine;
-		currentLine = line.replace(firstPair + " ", "");
+		currentLine = gcodeList.at(gcodeOrder);
+		QString firstPair = currentLine.split(' ')[0];
+
+		if (firstPair[0] == 'N')
+		{
+			QString line = currentLine;
+			currentLine = line.replace(firstPair + " ", "");
+		}
+
+		bool isGcode = findExeGcodeAndTransmit();
+
+		if (gcodeOrder == gcodeList.size())
+		{
+			//timer->stop();
+			gcodeOrder = 0;
+			gcodeList.clear();
+			break;
+		}
+
+		if (isGcode == true)
+		{
+			break;
+		}
 	}
-
-	findExeGcodeAndTransmit();
-
-	Debug(currentLine);
-
-	if (gcodeOrder == gcodeList.size())
-	{
-		//timer->stop();
-		gcodeOrder = 0;
-		gcodeList.clear();
-	}
+	//Debug(currentLine);
 }
 
 void GcodeProgramManager::UpdateSystemVariable(QString name, int value)
@@ -492,14 +508,14 @@ void GcodeProgramManager::UpdateSystemVariable(QString name, int value)
 int GcodeProgramManager::calculateExpressions(QString expression)
 {
 	int index = 0;
-
+	
 	while (1)
 	{
 		int openIndex = expression.lastIndexOf('[');
 		int multiplyIndex = expression.indexOf('*');
 		int divideIndex = expression.indexOf('/');
 		int plusIndex = expression.indexOf('+');
-		int subIndex = expression.indexOf('-');
+		int subIndex = expression.indexOf("- ");
 		int eqIndex = expression.indexOf("EQ");
 		int leIndex = expression.indexOf("LE");
 		int gtIndex = expression.indexOf("GT");

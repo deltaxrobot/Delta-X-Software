@@ -76,7 +76,7 @@ private:
 	QString currentLine;
 
 	int GetVariableValue(QString name);
-	void findExeGcodeAndTransmit();
+	bool findExeGcodeAndTransmit();
 	int calculateExpressions(QString expression);
 	void SaveGcodeVariable(GcodeVariable gvar);
 	void updatePositionIntoSystemVariable(QString statement);

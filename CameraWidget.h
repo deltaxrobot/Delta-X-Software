@@ -14,6 +14,8 @@ public:
 	//the constructor is marked explicit so that we don't get any 
 	// implicit conversion by passing the wrong parameter
 	explicit CameraWidget(QWidget *parent = 0); //also it has a default null pointer value, so a linewidget can be created with null parameter (i.e when we don't specify the constructor parenthesis at all!)
+	void InitParameter(); 
+	
 	bool mousePressed;
 	bool drawStarted;
 	int selectedTool;
@@ -40,10 +42,9 @@ public slots:
 	void lineObject();
 	void circleObject();
 	void selectProcessRegion();
-	void changeAxisDirection();
 private:
-
 	int axisDirection = 1;
+
 	QLine xAxis;
 	QLine arrow1;
 	QLine arrow2;
@@ -55,7 +56,7 @@ private:
 	QRect mRect;
 	QPoint mPoint;
 	QPoint mPoints[4];
-	int pointOrder = -1;
+	int pointOrder = 3;
 
 	QPixmap mergePixmap(QPixmap p1, QPixmap p2);
 };
