@@ -64,6 +64,7 @@ private slots:
 	void GetConvenyorPosition();
 	void TurnEnoughConvenyorPositionGetting();
 	void AddGcodeLine();
+	void ChangeGcodeParameter();
 
 	void TerminalTransmit();
 	void PrintReceiveData(QString msg);
@@ -78,6 +79,7 @@ private:
 
 	void hideExampleWidgets();
 	void interpolateCircle();
+	void makeEffectExample();
     Ui::MainWindow *ui;
 };
 

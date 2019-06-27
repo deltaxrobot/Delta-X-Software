@@ -63,12 +63,6 @@ void GcodeProgramManager::AddG28()
 	AddGcodeLine(g28);
 }
 
-void GcodeProgramManager::AddM03(int speed)
-{
-	QString m03 = QString("M03 S") + QString::number(speed);
-	AddGcodeLine(m03);
-}
-
 void GcodeProgramManager::AddM204(int accel)
 {
 	QString m204 = QString("M204 A") + QString::number(accel);
@@ -872,7 +866,7 @@ bool GcodeProgramManager::isNotNegative(QString s)
 
 void GcodeProgramManager::ChangeSelectingProgram(GcodeProgram * ptr)
 {
-	if (SelectingProgram != NULL)
+	if (SelectingProgram != NULL && ptr != SelectingProgram)
 	{
 		SelectingProgram->SetColor(DEFAULT_COLOR);
 	}

@@ -40,7 +40,6 @@ public:
 	void AddGcodeLine(QString line);
 	void AddG01(int  x, int y, int z);
 	void AddG28();
-	void AddM03(int speed);
 	void AddM204(int accel);
 	void AddNewProgram();
 	void LoadPrograms();

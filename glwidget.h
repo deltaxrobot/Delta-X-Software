@@ -78,6 +78,7 @@ protected:
     void resizeGL(int width, int height) Q_DECL_OVERRIDE;
     void mousePressEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
     void mouseMoveEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
+	void wheelEvent(QWheelEvent *e) Q_DECL_OVERRIDE;
 
 private:
     void setupVertexAttribs();
@@ -99,6 +100,8 @@ private:
     QMatrix4x4 m_camera;
     QMatrix4x4 m_world;
     bool m_transparent;
+
+	float zCamera = -1;
 };
 
 #endif

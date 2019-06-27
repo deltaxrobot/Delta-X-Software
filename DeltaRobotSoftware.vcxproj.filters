@@ -88,6 +88,15 @@
     <ClCompile Include="BlobManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Layer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TextLayer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DrawingWidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="mainwindow.h">
@@ -121,6 +130,15 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="BlobManager.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="Layer.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="TextLayer.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="DrawingWidget.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>

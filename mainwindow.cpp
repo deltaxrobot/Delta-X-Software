@@ -1,4 +1,4 @@
-#include "mainwindow.h"
+﻿#include "mainwindow.h"
 #include "ui_mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -12,6 +12,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	hideExampleWidgets();
 	//interpolateCircle();
+	makeEffectExample();
 }
 
 MainWindow::~MainWindow()
@@ -49,10 +50,8 @@ void MainWindow::InitEvents()
 	connect(DeltaPort, SIGNAL(ReceiveConvenyorPosition(float, float)), this, SLOT(UpdateConvenyorPosition(float, float)));
 	connect(DeltaPort, SIGNAL(ReceiveConvenyorPosition(float, float)), DeltaImageProcesser->ConvenyorObjectManager, SLOT(UpdateNewPositionObjects(float, float)));
 
-	connect(ui->pbG01, SIGNAL(clicked(bool)), this, SLOT(AddGcodeLine()));
-	connect(ui->pbG28, SIGNAL(clicked(bool)), this, SLOT(AddGcodeLine()));
-	connect(ui->pbM03, SIGNAL(clicked(bool)), this, SLOT(AddGcodeLine()));
-	connect(ui->pbM204, SIGNAL(clicked(bool)), this, SLOT(AddGcodeLine()));
+	connect(ui->pbAddGcode, SIGNAL(clicked(bool)), this, SLOT(AddGcodeLine()));
+	connect(ui->cbGcode, SIGNAL(currentIndexChanged(int)), this, SLOT(ChangeGcodeParameter()));
 
 	connect(ui->pbFormat, SIGNAL(clicked(bool)), this, SLOT(StandardFormatEditor()));
 
@@ -186,6 +185,11 @@ void MainWindow::ExecuteProgram()
 void MainWindow::UpdateZValue(int z)
 {
 	ui->leZ->setText(QString::number(DeltaParameter->ZHome - z));
+
+	if (ui->cbGcode->currentText() == "G01")
+	{
+		ui->leAg3->setText(QString::number(DeltaParameter->Z));
+	}
 }
 
 void MainWindow::UpdateDeltaPosition()
@@ -197,6 +201,13 @@ void MainWindow::UpdateDeltaPosition()
 
 	ui->vsZAdjsution->setValue(DeltaParameter->ZHome - DeltaParameter->Z);
 	DeltaParameter->ChangeXY(ui->leX->text().toFloat(), ui->leY->text().toFloat());
+
+	if (ui->cbGcode->currentText() == "G01")
+	{
+		ui->leAg1->setText(QString::number(DeltaParameter->X));
+		ui->leAg2->setText(QString::number(DeltaParameter->Y));
+		ui->leAg3->setText(QString::number(DeltaParameter->Z));
+	}
 
 	//DeltaGcodeManager->ExecuteGcode(QString("G01 X") + ui->leX->text() + QString(" Y") + ui->leY->text() + QString(" Z") + ui->leZ->text());
 	DeltaPort->Send(QString("G01 X") + ui->leX->text() + QString(" Y") + ui->leY->text() + QString(" Z") + ui->leZ->text() + QString(" W") + ui->leW->text() + "\n");
@@ -326,23 +337,72 @@ void MainWindow::TurnEnoughConvenyorPositionGetting()
 
 void MainWindow::AddGcodeLine()
 {
-	QPushButton* bt = qobject_cast<QPushButton*>(sender());
+	QString gcodeName = ui->cbGcode->currentText();
 
-	if (bt->text() == "G01")
+	QString ag1 = ui->leAg1->text() != "" ? (QString(" ") + ui->lbAg1->text() + ui->leAg1->text()) : "";
+	QString ag2 = ui->leAg2->text() != "" ? (QString(" ") + ui->lbAg2->text() + ui->leAg2->text()) : "";
+	QString ag3 = ui->leAg3->text() != "" ? (QString(" ") + ui->lbAg3->text() + ui->leAg3->text()) : "";
+	QString ag4 = ui->leAg4->text() != "" ? (QString(" ") + ui->lbAg4->text() + ui->leAg4->text()) : "";
+	QString ag5 = ui->leAg5->text() != "" ? (QString(" ") + ui->lbAg5->text() + ui->leAg5->text()) : "";
+	QString ag6 = ui->leAg6->text() != "" ? (QString(" ") + ui->lbAg6->text() + ui->leAg6->text()) : "";
+
+	DeltaGcodeManager->AddGcodeLine(gcodeName + ag1 + ag2 + ag3 + ag4 + ag5 + ag6);
+}
+
+void MainWindow::ChangeGcodeParameter()
+{
+	QString gcodeName = ui->cbGcode->currentText();
+
+	ui->lbAg1->setText("");
+	ui->lbAg2->setText("");
+	ui->lbAg3->setText("");
+	ui->lbAg4->setText("");
+	ui->lbAg5->setText("");
+	ui->lbAg6->setText("");
+
+	ui->leAg1->setText("");
+	ui->leAg2->setText("");
+	ui->leAg3->setText("");
+	ui->leAg4->setText("");
+	ui->leAg5->setText("");
+	ui->leAg6->setText("");
+
+	if (gcodeName == "G01")
 	{
-		DeltaGcodeManager->AddG01(DeltaParameter->X, DeltaParameter->Y, DeltaParameter->Z);
+		ui->lbAg1->setText("X");
+		ui->lbAg2->setText("Y");
+		ui->lbAg3->setText("Z");
+		ui->lbAg4->setText("W");
+		ui->lbAg5->setText("F");
+
+		ui->leAg1->setText(QString::number(DeltaParameter->X));
+		ui->leAg2->setText(QString::number(DeltaParameter->Y));
+		ui->leAg3->setText(QString::number(DeltaParameter->Z));
 	}
-	if (bt->text() == "G28")
+	else if (gcodeName == "G02" || gcodeName == "G03")
 	{
-		DeltaGcodeManager->AddG28();
+		ui->lbAg1->setText("F");
+		ui->lbAg2->setText("I");
+		ui->lbAg3->setText("J");
+		ui->lbAg4->setText("X");
+		ui->lbAg5->setText("Y");
 	}
-	if (bt->text() == "M03")
+	else if (gcodeName == "G05")
 	{
-		DeltaGcodeManager->AddM03(4000);
+		ui->lbAg1->setText("I");
+		ui->lbAg2->setText("J");
+		ui->lbAg3->setText("P");
+		ui->lbAg4->setText("Q");
+		ui->lbAg5->setText("X");
+		ui->lbAg6->setText("Y");
 	}
-	if (bt->text() == "M204")
+	else if (gcodeName == "M03" || gcodeName == "M04")
 	{
-		DeltaGcodeManager->AddM204(8000);
+		ui->lbAg1->setText("S");
+	}
+	else if (gcodeName == "M204")
+	{
+		ui->lbAg1->setText("A");
 	}
 }
 
@@ -393,6 +453,12 @@ void MainWindow::interpolateCircle()
 	}
 
 	ui->pteGcodeArea->setPlainText(gcode);
+}
+
+void MainWindow::makeEffectExample()
+{
+	QCursor cursorTarget = QCursor(QPixmap("icon/Zoom In_16px.png"));
+	ui->lbDrawingArea->setCursor(cursorTarget);
 }
 
 void MainWindow::StandardFormatEditor()

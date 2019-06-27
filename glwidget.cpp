@@ -285,5 +285,21 @@ void GLWidget::mouseMoveEvent(QMouseEvent *event)
         setXRotation(m_xRot + 8 * -dy);
         setZRotation(m_zRot + 8 * -dx);
     }
+	else if (event->buttons() & Qt::WheelFocus)
+	{
+		m_camera.rotate(dx, 0, 1);
+		m_camera.rotate(dy, 1, 0);
+		update();
+	}
+
     m_lastPos = event->pos();
+}
+
+void GLWidget::wheelEvent(QWheelEvent *e)
+{
+	int delta = e->delta();
+	zCamera = (float)delta / 1000;
+	m_camera.translate(0, 0, zCamera);
+
+	update();
 }

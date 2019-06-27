@@ -2,13 +2,15 @@
 
 GcodeProgram::GcodeProgram()
 {
-	InitWidget();
-	InitEvents();
+	
 }
 
 GcodeProgram::GcodeProgram(QWidget * parent) : GcodeProgram()
 {
 	container = parent;
+
+	InitWidget();
+	InitEvents();
 
 	frPanel->setParent(container);
 
@@ -22,13 +24,13 @@ GcodeProgram::~GcodeProgram()
 
 void GcodeProgram::InitWidget()
 {
-	frPanel = new QFrame();
+	frPanel = new Layer(container);
 	frPanel->setGeometry(QRect(10, 10, 221, 71));
 	frPanel->setStyleSheet(QStringLiteral("background-color:rgb(209, 209, 209)"));
 	frPanel->setFrameShape(QFrame::StyledPanel);
 	frPanel->setFrameShadow(QFrame::Raised);
 
-	leProgramName = new QLineEdit(frPanel);
+	leProgramName = new TextLayer(frPanel);
 	leProgramName->setGeometry(QRect(10, 10, 160, 30));
 
 	QFont font;
@@ -55,7 +57,8 @@ void GcodeProgram::InitWidget()
 
 void GcodeProgram::InitEvents()
 {
-	connect(leProgramName, SIGNAL(selectionChanged()), this, SLOT(SelectNewProgram()));
+	connect(leProgramName, SIGNAL(click()), this, SLOT(SelectNewProgram()));
+	connect(frPanel, SIGNAL(click()), this, SLOT(SelectNewProgram()));
 	connect(pbDelete, SIGNAL(clicked(bool)), this, SLOT(DeleteProgram()));
 }
 
@@ -106,9 +109,13 @@ void GcodeProgram::Destroy()
 void GcodeProgram::SetColor(int color)
 {
 	if (color == DEFAULT_COLOR)
+	{
 		frPanel->setStyleSheet(QStringLiteral("background-color:rgb(209, 209, 209)"));
+	}		
 	else if (color == SELECTED_COLOR)
+	{
 		frPanel->setStyleSheet(QStringLiteral("background-color:rgb(105, 199, 217)"));
+	}
 }
 
 void GcodeProgram::DeleteProgram()

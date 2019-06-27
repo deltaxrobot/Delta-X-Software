@@ -12,6 +12,8 @@
 #include <qlistwidget.h>
 #include <vector>
 #include <qlayout.h>
+#include "Layer.h"
+#include "TextLayer.h"
 
 #define DEFAULT_COLOR	0
 #define SELECTED_COLOR  1
@@ -47,8 +49,8 @@ signals:
 
 private:
 	QWidget* container;
-	QLineEdit* leProgramName;
-	QFrame* frPanel;
+	TextLayer* leProgramName;
+	Layer* frPanel;
 	QLabel* lbGcodeNumber;
 	QPushButton* pbDelete;	
 };

@@ -16,7 +16,7 @@ void BlobManager::AddNewObject(cv::RotatedRect object)
 		ObjectContainer.push_back(object);
 		ConvenyorString = QString("O") + ConvenyorString;
 		Debug(ConvenyorString);
-	}		
+	}
 }
 
 void BlobManager::SetApproximateValue(cv::Point3d approVal)
