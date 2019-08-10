@@ -27,7 +27,7 @@ signals:
 	void FinishReadLine(QString msg);
 	void DeltaResponeReady();
 	void DeltaResponeGcodeDone();
-	void InHomePosition(float x, float y, float z);
+	void InHomePosition(float x, float y, float z, float w);
 	void ReceiveConvenyorPosition(float x, float y);
 private:
 	void init();

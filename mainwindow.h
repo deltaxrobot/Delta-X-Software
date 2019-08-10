@@ -21,6 +21,7 @@
 #include <ImageUnity.h>
 #include "ImageProcesser.h"
 #include <GcodeReference.h>
+#include <DrawingExporter.h>
 
 namespace Ui {
 class MainWindow;
@@ -42,6 +43,9 @@ public:
     GLWidget* VisualArea;
 	DeltaVisualizer *DeltaParameter;
 	ImageProcesser* DeltaImageProcesser;
+	DrawingExporter* DeltaDrawingExporter;
+
+	ConnectionManager* CurrentDeltaPort;
 
 	QTimer* EditorTimer;
 	QTimer* ConvenyorTimer;
@@ -51,10 +55,13 @@ private slots:
 	void AddNewProgram();
 	void SaveProgram();
 	void ExecuteProgram();
-	void UpdateZValue(int z);
-	void UpdateDeltaPosition();
-	void UpdatePositionValue(float x, float y, float z);
-	void UpdateHomePosition(float x, float y, float z);
+	void ExecuteCurrentLine();
+	void UpdateZLineEditValue(int z);
+	void UpdateWLineEditValue(int w);
+	void UpdateDeltaPositionFromLineEditValue();
+	void UpdatePositionFrom2DControl(float x, float y, float z, float w);
+	void UpdatePositionControl(float x, float y, float z, float w);
+	void UpdateGlobalHomePositionValueAndControlValue(float x, float y, float z, float w);
 	void Grip();
 	void SetPump(bool value);
 	void Home();
@@ -75,6 +82,8 @@ private slots:
 	void StandardFormatEditor();
 
 	void OpenGcodeReference();
+
+	void ChangeDeltaDashboard(int index);
 private:
 
 	void hideExampleWidgets();

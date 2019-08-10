@@ -55,15 +55,15 @@ Logo::Logo()
     const GLfloat x4 = +0.30f;
     const GLfloat y4 = +0.22f;
 
-	const GLfloat x10 = -0.2f;
-	const GLfloat y10 = -0.2f;
+	const GLfloat x10 = -0.5f;
+	const GLfloat y10 = -0.5f;
 	const GLfloat x20 = +0.5f;
 	const GLfloat y20 = +0.5f;
 
 	//add(QVector3D(x10, y10, -0.5f), QVector3D(x11, y11, 0.5f));
 	//add(QVector3D(x4, y4, -0.05f), n);
 	//quad(x10, y10, x10, y20, y20, x20, y20, x10);
-	//extrude(x10, y10, x11, y11);
+	//extrude(x10, y10, x20, y20);
 
     quad(x1, y1, x2, y2, y2, x2, y1, x1);
     quad(x3, y3, x4, y4, y4, x4, y3, x3);

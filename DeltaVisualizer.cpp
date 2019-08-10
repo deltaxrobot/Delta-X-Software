@@ -1,28 +1,28 @@
 #include "DeltaVisualizer.h"
 
 static const char *vertexShaderSource =
-"#version 130\n"
+	"#version 130\n"
 
-"uniform mat4 mvpMatrix;\n"
+	"uniform mat4 mvpMatrix;\n"
 
-"in vec4 vertex;\n"
+	"in vec4 vertex;\n"
 
-"void main(void)\n"
-"{\n"
-	"gl_Position = mvpMatrix * vertex;\n"
-"}\n";
+	"void main(void)\n"
+	"{\n"
+		"gl_Position = mvpMatrix * vertex;\n"
+	"}\n";
 
 static const char *fragmentShaderSource =
-"#version 130\n"
+	"#version 130\n"
 
-"uniform vec4 color;\n"
+	"uniform vec4 color;\n"
 
-"out vec4 fragColor;\n"
+	"out vec4 fragColor;\n"
 
-"void main(void)\n"
-"{\n"
-	"fragColor = color;\n"
-"}\n";
+	"void main(void)\n"
+	"{\n"
+		"fragColor = color;\n"
+	"}\n";
 
 DeltaVisualizer::DeltaVisualizer(QWidget *parent) : QOpenGLWidget(parent)
 {
@@ -33,6 +33,12 @@ DeltaVisualizer::DeltaVisualizer(QWidget *parent) : QOpenGLWidget(parent)
 
 DeltaVisualizer::~DeltaVisualizer()
 {
+}
+
+void DeltaVisualizer::MoveToHome()
+{
+	emit Moved(XHome, YHome, ZHome, WHome);
+	emit FinishMoving();
 }
 
 QSize DeltaVisualizer::minimumSizeHint()
@@ -121,7 +127,7 @@ void DeltaVisualizer::mousePressEvent(QMouseEvent *event)
 
 	ChangeXY(x, y);
 
-	emit Moved(X, Y, Z);
+	emit Moved(X, Y, Z, W);
 }
 
 void DeltaVisualizer::mouseReleaseEvent(QMouseEvent *event)
@@ -138,7 +144,7 @@ void DeltaVisualizer::mouseMoveEvent(QMouseEvent *event)
 
 		ChangeXY(x, y);
 
-		emit Moved(X, Y, Z);
+		emit Moved(X, Y, Z, W);
 	}
 }
 
@@ -176,6 +182,6 @@ void DeltaVisualizer::wheelEvent(QWheelEvent *e)
 
 	timer.restart();
 
-	emit Moved(X, Y, Z);
+	emit Moved(X, Y, Z, W);
 	emit FinishMoving();
 }

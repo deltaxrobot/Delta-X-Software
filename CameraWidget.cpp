@@ -18,7 +18,6 @@ CameraWidget::CameraWidget(QWidget *parent) :
 	//InitParameter();
 }
 
-
 void CameraWidget::mousePressEvent(QMouseEvent* event) {
 	//Mouse is pressed for the first time
 	mousePressed = true;

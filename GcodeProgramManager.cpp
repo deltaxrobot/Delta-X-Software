@@ -6,11 +6,12 @@ GcodeProgramManager::GcodeProgramManager()
 	ProgramList = new QVector<GcodeProgram*>();
 }
 
-GcodeProgramManager::GcodeProgramManager(QWidget* container, QPlainTextEdit * gcodeArea, ConnectionManager* deltaPort) : GcodeProgramManager()
+GcodeProgramManager::GcodeProgramManager(QWidget* container, CodeEditor * gcodeArea, ConnectionManager* deltaPort, DeltaVisualizer* deltaVisualize) : GcodeProgramManager()
 {
 	wgProgramContainer = container;
 	pteGcodeArea = gcodeArea;
 	deltaConnection = deltaPort;
+	deltaParameter = deltaVisualize;
 
 	UpdateSystemVariable("#1001", -1000);
 	UpdateSystemVariable("#1002", -1000);
@@ -50,7 +51,7 @@ void GcodeProgramManager::AddGcodeLine(QString line)
 	pteGcodeArea->insertPlainText(line + "\n");
 }
 
-void GcodeProgramManager::AddG01(int  x, int y, int z)
+void GcodeProgramManager::AddG01(float  x, float y, float z)
 {
 	QString g01 = QString("G01 X") + QString::number(x) + " Y" + QString::number(y) + " Z" + QString::number(z);
 	
@@ -63,7 +64,7 @@ void GcodeProgramManager::AddG28()
 	AddGcodeLine(g28);
 }
 
-void GcodeProgramManager::AddM204(int accel)
+void GcodeProgramManager::AddM204(float accel)
 {
 	QString m204 = QString("M204 A") + QString::number(accel);
 	AddGcodeLine(m204);
@@ -91,21 +92,18 @@ void GcodeProgramManager::ExecuteGcode(QString gcodes)
 	QList<QString> tempGcodeList = gcodes.split('\n');
 
 	gcodeList.clear();
-	gcodeOrder = 0;
+	if (startingMode == "Begin")
+	{
+		gcodeOrder = 0;
+	}
+	else
+	{
+		gcodeOrder = currentGcodeEditorCursor;
+	}
 
 	for (int i = 0; i < tempGcodeList.size(); i++)
 	{
 		QString line = tempGcodeList.at(i);
-		
-		if (line == "")
-		{
-			continue;
-		}
-
-		if (line[0] == ';')
-		{
-			continue;
-		}
 
 		gcodeList.push_back(line);
 	}
@@ -121,7 +119,7 @@ void GcodeProgramManager::Stop()
 	gcodeOrder = 0;
 }
 
-int GcodeProgramManager::GetVariableValue(QString name)
+float GcodeProgramManager::GetVariableValue(QString name)
 {
 	foreach(GcodeVariable var, gcodeVariables)
 	{
@@ -134,9 +132,29 @@ int GcodeProgramManager::GetVariableValue(QString name)
 
 bool GcodeProgramManager::findExeGcodeAndTransmit()
 {
+	currentGcodeEditorCursor = gcodeOrder;
+	QTextCursor textCursor = pteGcodeArea->textCursor();
+	textCursor.movePosition(QTextCursor::Start);
+	textCursor.movePosition(QTextCursor::Down, QTextCursor::MoveAnchor, currentGcodeEditorCursor);
+	pteGcodeArea->setTextCursor(textCursor);
+	pteGcodeArea->highlightCurrentLine();
+
+	if (currentLine == "")
+	{
+		gcodeOrder += 1;
+		return false;
+	}
+
+	if (currentLine[0] == ';')
+	{
+		gcodeOrder += 1;
+		return false;
+	}
+
+	//-----------------------------------
 	int openBracIndex = currentLine.indexOf('[');
 	QString expressInBracket = "";
-	int resultInBracket;
+	float resultInBracket;
 	int subBracNum = 0;
 
 	// ------------- Conlapse Gcode Line by calculating all expression in [ ... ] ---------------
@@ -479,7 +497,7 @@ void GcodeProgramManager::TransmitNextGcode()
 	//Debug(currentLine);
 }
 
-void GcodeProgramManager::UpdateSystemVariable(QString name, int value)
+void GcodeProgramManager::UpdateSystemVariable(QString name, float value)
 {
 	for (int i = 0; i < gcodeVariables.size(); i++)
 	{
@@ -499,7 +517,13 @@ void GcodeProgramManager::UpdateSystemVariable(QString name, int value)
 	emit JustUpdateVariable(gcodeVariables);
 }
 
-int GcodeProgramManager::calculateExpressions(QString expression)
+void GcodeProgramManager::SetStartingGcodeEditorCursor(QString value)
+{
+	startingMode = value;
+}
+
+
+float GcodeProgramManager::calculateExpressions(QString expression)
 {
 	int index = 0;
 	
@@ -514,11 +538,24 @@ int GcodeProgramManager::calculateExpressions(QString expression)
 		int leIndex = expression.indexOf("LE");
 		int gtIndex = expression.indexOf("GT");
 
+		if (eqIndex == -1)
+		{
+			eqIndex = expression.indexOf("=");
+		}
+		if (leIndex == -1)
+		{
+			leIndex = expression.indexOf("<");
+		}
+		if (gtIndex == -1)
+		{
+			gtIndex = expression.indexOf(">");
+		}
+
 		if (openIndex > -1)
 		{
 			int closeIndex = expression.indexOf(']', openIndex);
 			QString subExpression = expression.mid(openIndex + 1, closeIndex - openIndex -1);
-			int result = calculateExpressions(subExpression);
+			float result = calculateExpressions(subExpression);
 
 			subExpression = QString("[") + subExpression + "]";
 
@@ -552,8 +589,8 @@ int GcodeProgramManager::calculateExpressions(QString expression)
 
 			}
 
-			int value1 = value1S.toInt();
-			int value2 = value2S.toInt();
+			float value1 = value1S.toFloat();
+			float value2 = value2S.toFloat();
 
 			foreach(GcodeVariable var, gcodeVariables)
 			{
@@ -568,7 +605,7 @@ int GcodeProgramManager::calculateExpressions(QString expression)
 				}
 			}
 
-			int result = value1 - value2;
+			float result = value1 - value2;
 			QString resultS = QString::number(result);
 
 			QString subExpression = value1S + " - " + value2S;
@@ -609,9 +646,9 @@ int GcodeProgramManager::calculateExpressions(QString expression)
 			QString opeS;
 			QString value2S;
 
-			int value1;
-			int value2;
-			int result;
+			float value1;
+			float value2;
+			float result;
 
 			if (eqIndex > -1)
 			{
@@ -635,7 +672,7 @@ int GcodeProgramManager::calculateExpressions(QString expression)
 			}
 			else
 			{
-				value1 = value1S.toInt();
+				value1 = value1S.toFloat();
 			}
 			
 			if (value2S == "NULL")
@@ -644,7 +681,7 @@ int GcodeProgramManager::calculateExpressions(QString expression)
 			}
 			else
 			{
-				value2 = value2S.toInt();
+				value2 = value2S.toFloat();
 			}
 
 			foreach(GcodeVariable var, gcodeVariables)
@@ -698,7 +735,7 @@ int GcodeProgramManager::calculateExpressions(QString expression)
 		else
 		{
 
-			int value = deleteSpaces(expression).toInt();
+			float value = deleteSpaces(expression).toFloat();
 
 			if (deleteSpaces(expression) == "NULL")
 			{
@@ -741,6 +778,24 @@ void GcodeProgramManager::updatePositionIntoSystemVariable(QString statement)
 {
 	QList<QString> pairs = statement.split(' ');
 
+	float x, y, z, w;
+
+	if (statement == "G28")
+	{
+		UpdateSystemVariable("#X", 0);
+		UpdateSystemVariable("#Y", 0);
+		UpdateSystemVariable("#Z", 0);
+		UpdateSystemVariable("#W", 0);
+
+		emit MoveToNewPosition(0, 0, 0, 0);
+		return;
+	}
+
+	x = GetVariableValue("#X");
+	y = GetVariableValue("#Y");
+	z = GetVariableValue("#Z");
+	w = GetVariableValue("#W");
+
 	for each (QString pair in pairs)
 	{
 		QChar prefix = pair[0];
@@ -748,21 +803,27 @@ void GcodeProgramManager::updatePositionIntoSystemVariable(QString statement)
 
 		if (pair[0] == 'X')
 		{
-			UpdateSystemVariable("#X", value.toInt());
+			x = value.toFloat();
+			UpdateSystemVariable("#X", x);
 		}
 		else if (pair[0] == 'Y')
 		{
-			UpdateSystemVariable("#Y", value.toInt());
+			y = value.toFloat();
+			UpdateSystemVariable("#Y", y);
 		}
 		else if (pair[0] == 'Z')
 		{
-			UpdateSystemVariable("#Z", value.toInt());
+			z = value.toFloat();
+			UpdateSystemVariable("#Z", z);
 		}
 		else if (pair[0] == 'W')
 		{
-			UpdateSystemVariable("#W", value.toInt());
+			w = value.toFloat();
+			UpdateSystemVariable("#W", w);
 		}
 	}
+
+	emit MoveToNewPosition(x, y, z, w);
 }
 
 QString GcodeProgramManager::getLeftWord(QString s, int pos)

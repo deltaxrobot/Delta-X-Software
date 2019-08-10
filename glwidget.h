@@ -41,12 +41,19 @@
 #ifndef GLWIDGET_H
 #define GLWIDGET_H
 
-#include <QOpenGLWidget>
+#include <qopenglwidget.h>
 #include <QOpenGLFunctions>
 #include <QOpenGLVertexArrayObject>
 #include <QOpenGLBuffer>
 #include <QMatrix4x4>
 #include "logo.h"
+
+#include <Qt3DCore/qentity.h>
+#include <Qt3DCore/qtransform.h>
+#include <Qt3DExtras/qphongmaterial.h>
+#include <Qt3DRender/qattribute.h>
+#include <Qt3DRender/qbuffer.h>
+#include <Qt3DRender/qgeometry.h>
 
 QT_FORWARD_DECLARE_CLASS(QOpenGLShaderProgram)
 
@@ -82,6 +89,7 @@ protected:
 
 private:
     void setupVertexAttribs();
+	void drawGrid();
 
     bool m_core;
     int m_xRot;
@@ -90,18 +98,24 @@ private:
     QPoint m_lastPos;
     Logo m_logo;
     QOpenGLVertexArrayObject m_vao;
+	QOpenGLVertexArrayObject m_vao2;
     QOpenGLBuffer m_logoVbo;
     QOpenGLShaderProgram *m_program;
+	QOpenGLShaderProgram *m_programGrid;
     int m_projMatrixLoc;
     int m_mvMatrixLoc;
     int m_normalMatrixLoc;
     int m_lightPosLoc;
     QMatrix4x4 m_proj;
     QMatrix4x4 m_camera;
+	QMatrix4x4 m_rotateCamera;
     QMatrix4x4 m_world;
     bool m_transparent;
 
 	float zCamera = -1;
+
+	QVector<QVector3D> verticesGrid;
+	QMatrix4x4 pMatrix;
 };
 
 #endif

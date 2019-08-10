@@ -97,6 +97,12 @@
     <ClCompile Include="DrawingWidget.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="DrawingExporter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="codeeditor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="mainwindow.h">
@@ -139,6 +145,12 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="DrawingWidget.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="DrawingExporter.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="codeeditor.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>

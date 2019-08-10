@@ -21,12 +21,14 @@
 #include <GcodeProgram.h>
 #include <qtimer.h>
 #include <ConnectionManager.h>
+#include <DeltaVisualizer.h>
+#include <codeeditor.h>
 
 class GcodeVariable
 {
 public:
 	QString Name;
-	int Value;
+	float Value;
 };
 
 class GcodeProgramManager : public QObject
@@ -36,18 +38,18 @@ class GcodeProgramManager : public QObject
 public:
 	GcodeProgramManager();
 	~GcodeProgramManager();
-	GcodeProgramManager(QWidget* container, QPlainTextEdit* gcodeArea, ConnectionManager* deltaPort = NULL);
+	GcodeProgramManager(QWidget* container, CodeEditor* gcodeArea, ConnectionManager* deltaPort = NULL, DeltaVisualizer* deltaVisualize = NULL);
 	void AddGcodeLine(QString line);
-	void AddG01(int  x, int y, int z);
+	void AddG01(float  x, float y, float z);
 	void AddG28();
-	void AddM204(int accel);
+	void AddM204(float accel);
 	void AddNewProgram();
 	void LoadPrograms();
 	void ExecuteGcode(QString gcodes);
 	void Stop();
 
 	QWidget* wgProgramContainer;
-	QPlainTextEdit* pteGcodeArea;
+	CodeEditor* pteGcodeArea;
 
 	GcodeProgram* SelectingProgram = NULL;
 	int ProgramCounter = 0;
@@ -58,25 +60,30 @@ public slots:
 	void SaveGcodeIntoFile();
 	void DeleteProgram(GcodeProgram* ptr);
 	void TransmitNextGcode();
-	void UpdateSystemVariable(QString name, int value);
+	void UpdateSystemVariable(QString name, float value);
+	void SetStartingGcodeEditorCursor(QString value);
 
 signals:
 	void OutOfObjectVariable();
 	void JustUpdateVariable(QList<GcodeVariable> gcodeVariables);
+	void MoveToNewPosition(float x, float y, float z, float w);
 
 private:
 	ConnectionManager* deltaConnection;
+	DeltaVisualizer* deltaParameter;
 	QList<GcodeVariable> gcodeVariables;
 
 	QList<QString> gcodeList;
 	int gcodeOrder = 0;
+	QString startingMode = "Begin";
+	int currentGcodeEditorCursor = 0;
 	int returnSubProPointer[20];
 	int returnPointerOrder = -1;
 	QString currentLine;
 
-	int GetVariableValue(QString name);
+	float GetVariableValue(QString name);
 	bool findExeGcodeAndTransmit();
-	int calculateExpressions(QString expression);
+	float calculateExpressions(QString expression);
 	void SaveGcodeVariable(GcodeVariable gvar);
 	void updatePositionIntoSystemVariable(QString statement);
 	QString getLeftWord(QString s, int pos);

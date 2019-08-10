@@ -70,6 +70,12 @@ void ConnectionManager::Send(QString msg)
 	if (msg == "")
 		return;
 
+	if (transmitLines.size() > 0)
+	{
+		if (transmitLines.at(transmitLines.size() - 1) == "Position")
+			return;
+	}
+
 	if (msg == "M701" && transmitLines.size() > 0)
 	{
 		if (transmitLines.back() == "M701")
@@ -82,7 +88,12 @@ void ConnectionManager::Send(QString msg)
 	{
 		transmitLines.clear();
 		emit DeltaResponeGcodeDone();
-	}	*/	
+	}	*/
+
+	if (msg == "G28")
+	{
+		transmitLines.clear();
+	}
 
 	transmitLines.push_back(msg);
 
@@ -138,7 +149,7 @@ void ConnectionManager::ReadData()
 			
 			if (nums.size() == 3)
 			{
-				emit InHomePosition(nums[0].toFloat(), nums[1].toFloat(), nums[2].toFloat());
+				emit InHomePosition(nums[0].toFloat(), nums[1].toFloat(), nums[2].toFloat(), 0);
 			}
 
 			sendQueue();

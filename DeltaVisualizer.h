@@ -20,6 +20,7 @@ class DeltaVisualizer : public QOpenGLWidget, QOpenGLFunctions
 public:
 	DeltaVisualizer(QWidget *parent = 0);
 	~DeltaVisualizer();
+	void MoveToHome();
 
 	QSize minimumSizeHint();
 	QSize sizeHint();	
@@ -37,7 +38,7 @@ public:
 public slots:
 	void ChangeXY(int x, int y);
 signals:
-	void Moved(float x, float y, float z);
+	void Moved(float x, float y, float z, float w);
 	void FinishMoving();
 
 protected:

@@ -85,8 +85,8 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>opencv_world400.lib;opencv_world400d.lib;$(QTDIR)\lib\qtmain.lib;shell32.lib;$(QTDIR)\lib\Qt5Widgets.lib;$(QTDIR)\lib\Qt5Gui.lib;$(QTDIR)\lib\Qt5SerialPort.lib;$(QTDIR)\lib\Qt5Core.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>F:\OpenCV\opencv-4.0\build\x64\vc15\lib;$(QTDIR)\lib;C:\utils\my_sql\my_sql\lib;C:\utils\postgresql\pgsql\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opencv_world400.lib;opencv_world400d.lib;OpenGL32.Lib;$(QTDIR)\lib\qtmain.lib;shell32.lib;$(QTDIR)\lib\Qt5Widgets.lib;$(QTDIR)\lib\Qt5Gui.lib;$(QTDIR)\lib\Qt5SerialPort.lib;$(QTDIR)\lib\Qt5Core.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Program Files (x86)\Windows Kits\8.1\Lib\winv6.3\um\x64;F:\OpenCV\opencv-4.0\build\x64\vc15\lib;$(QTDIR)\lib;C:\utils\my_sql\my_sql\lib;C:\utils\postgresql\pgsql\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>"/MANIFESTDEPENDENCY:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' publicKeyToken='6595b64144ccf1df' language='*' processorArchitecture='*'" %(AdditionalOptions)</AdditionalOptions>
       <DataExecutionPrevention>true</DataExecutionPrevention>
       <GenerateDebugInformation>false</GenerateDebugInformation>
@@ -145,8 +145,8 @@
       <ProgramDataBaseFileName>$(IntDir)vc$(PlatformToolsetVersion).pdb</ProgramDataBaseFileName>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>opencv_world400.lib;opencv_world400d.lib;$(QTDIR)\lib\qtmaind.lib;shell32.lib;$(QTDIR)\lib\Qt5Widgetsd.lib;$(QTDIR)\lib\Qt5Guid.lib;$(QTDIR)\lib\Qt5SerialPortd.lib;$(QTDIR)\lib\Qt5Cored.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>F:\OpenCV\opencv-4.0\build\x64\vc15\lib;$(QTDIR)\lib;C:\utils\my_sql\my_sql\lib;C:\utils\postgresql\pgsql\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opencv_world400.lib;opencv_world400d.lib;OpenGL32.Lib;$(QTDIR)\lib\qtmaind.lib;shell32.lib;$(QTDIR)\lib\Qt5Widgetsd.lib;$(QTDIR)\lib\Qt5Guid.lib;$(QTDIR)\lib\Qt5SerialPortd.lib;$(QTDIR)\lib\Qt5Cored.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Program Files (x86)\Windows Kits\8.1\Lib\winv6.3\um\x64;F:\OpenCV\opencv-4.0\build\x64\vc15\lib;$(QTDIR)\lib;C:\utils\my_sql\my_sql\lib;C:\utils\postgresql\pgsql\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>"/MANIFESTDEPENDENCY:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' publicKeyToken='6595b64144ccf1df' language='*' processorArchitecture='*'" %(AdditionalOptions)</AdditionalOptions>
       <DataExecutionPrevention>true</DataExecutionPrevention>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -186,8 +186,10 @@
     <ClCompile Include="Blob.cpp" />
     <ClCompile Include="BlobManager.cpp" />
     <ClCompile Include="CameraWidget.cpp" />
+    <ClCompile Include="codeeditor.cpp" />
     <ClCompile Include="ConnectionManager.cpp" />
     <ClCompile Include="DeltaVisualizer.cpp" />
+    <ClCompile Include="DrawingExporter.cpp" />
     <ClCompile Include="DrawingWidget.cpp" />
     <ClCompile Include="GcodeProgram.cpp" />
     <ClCompile Include="GcodeProgramManager.cpp" />
@@ -249,6 +251,18 @@
       <Define Condition="'$(Configuration)|$(Platform)'=='Release|x64'">_WINDOWS;UNICODE;WIN32;WIN64;QT_NO_DEBUG;QT_WIDGETS_LIB;QT_GUI_LIB;QT_SERIALPORT_LIB;QT_CORE_LIB;NDEBUG;%(PreprocessorDefinitions)</Define>
     </QtMoc>
     <QtMoc Include="DrawingWidget.h">
+      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">F:\OpenCV\opencv-4.0\build\include;.\GeneratedFiles\$(ConfigurationName);.\GeneratedFiles;.;$(QTDIR)\include;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtSerialPort;$(QTDIR)\include\QtCore;.\debug;$(QTDIR)\mkspecs\win32-msvc2015</IncludePath>
+      <Define Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">_WINDOWS;UNICODE;WIN32;WIN64;QT_WIDGETS_LIB;QT_GUI_LIB;QT_SERIALPORT_LIB;QT_CORE_LIB;%(PreprocessorDefinitions)</Define>
+      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">F:\OpenCV\opencv-4.0\build\include;.\GeneratedFiles\$(ConfigurationName);.\GeneratedFiles;.;$(QTDIR)\include;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtSerialPort;$(QTDIR)\include\QtCore;.\release;$(QTDIR)\mkspecs\win32-msvc2015</IncludePath>
+      <Define Condition="'$(Configuration)|$(Platform)'=='Release|x64'">_WINDOWS;UNICODE;WIN32;WIN64;QT_NO_DEBUG;QT_WIDGETS_LIB;QT_GUI_LIB;QT_SERIALPORT_LIB;QT_CORE_LIB;NDEBUG;%(PreprocessorDefinitions)</Define>
+    </QtMoc>
+    <QtMoc Include="DrawingExporter.h">
+      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">F:\OpenCV\opencv-4.0\build\include;.\GeneratedFiles\$(ConfigurationName);.\GeneratedFiles;.;$(QTDIR)\include;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtSerialPort;$(QTDIR)\include\QtCore;.\debug;$(QTDIR)\mkspecs\win32-msvc2015</IncludePath>
+      <Define Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">_WINDOWS;UNICODE;WIN32;WIN64;QT_WIDGETS_LIB;QT_GUI_LIB;QT_SERIALPORT_LIB;QT_CORE_LIB;%(PreprocessorDefinitions)</Define>
+      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">F:\OpenCV\opencv-4.0\build\include;.\GeneratedFiles\$(ConfigurationName);.\GeneratedFiles;.;$(QTDIR)\include;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtSerialPort;$(QTDIR)\include\QtCore;.\release;$(QTDIR)\mkspecs\win32-msvc2015</IncludePath>
+      <Define Condition="'$(Configuration)|$(Platform)'=='Release|x64'">_WINDOWS;UNICODE;WIN32;WIN64;QT_NO_DEBUG;QT_WIDGETS_LIB;QT_GUI_LIB;QT_SERIALPORT_LIB;QT_CORE_LIB;NDEBUG;%(PreprocessorDefinitions)</Define>
+    </QtMoc>
+    <QtMoc Include="codeeditor.h">
       <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">F:\OpenCV\opencv-4.0\build\include;.\GeneratedFiles\$(ConfigurationName);.\GeneratedFiles;.;$(QTDIR)\include;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtSerialPort;$(QTDIR)\include\QtCore;.\debug;$(QTDIR)\mkspecs\win32-msvc2015</IncludePath>
       <Define Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">_WINDOWS;UNICODE;WIN32;WIN64;QT_WIDGETS_LIB;QT_GUI_LIB;QT_SERIALPORT_LIB;QT_CORE_LIB;%(PreprocessorDefinitions)</Define>
       <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">F:\OpenCV\opencv-4.0\build\include;.\GeneratedFiles\$(ConfigurationName);.\GeneratedFiles;.;$(QTDIR)\include;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtSerialPort;$(QTDIR)\include\QtCore;.\release;$(QTDIR)\mkspecs\win32-msvc2015</IncludePath>

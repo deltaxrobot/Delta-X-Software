@@ -12,7 +12,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	hideExampleWidgets();
 	//interpolateCircle();
-	makeEffectExample();
+	//makeEffectExample();
 }
 
 MainWindow::~MainWindow()
@@ -26,27 +26,31 @@ void MainWindow::InitEvents()
 	connect(ui->pbAddNewProgram, SIGNAL(clicked(bool)), this, SLOT(AddNewProgram()));
 	connect(ui->pbSaveGcode, SIGNAL(clicked(bool)), this, SLOT(SaveProgram()));
 	connect(ui->pbExecuteGcodes, SIGNAL(clicked(bool)), this, SLOT(ExecuteProgram()));
+	connect(ui->pteGcodeArea, SIGNAL(cursorPositionChanged()), this, SLOT(ExecuteCurrentLine()));
+	connect(ui->cbPositionToExecuteGcode, SIGNAL(currentIndexChanged(const QString &)), DeltaGcodeManager, SLOT(SetStartingGcodeEditorCursor(QString)));
 
 	connect(ui->pbHome, SIGNAL(clicked(bool)), this, SLOT(Home()));
-	connect(ui->pbW, SIGNAL(clicked(bool)), this, SLOT(UpdateDeltaPosition()));
-	connect(ui->pbZ, SIGNAL(clicked(bool)), this, SLOT(UpdateDeltaPosition()));
-	connect(ui->pbY, SIGNAL(clicked(bool)), this, SLOT(UpdateDeltaPosition()));
-	connect(ui->pbX, SIGNAL(clicked(bool)), this, SLOT(UpdateDeltaPosition()));
+	connect(ui->pbW, SIGNAL(clicked(bool)), this, SLOT(UpdateDeltaPositionFromLineEditValue()));
+	connect(ui->pbZ, SIGNAL(clicked(bool)), this, SLOT(UpdateDeltaPositionFromLineEditValue()));
+	connect(ui->pbY, SIGNAL(clicked(bool)), this, SLOT(UpdateDeltaPositionFromLineEditValue()));
+	connect(ui->pbX, SIGNAL(clicked(bool)), this, SLOT(UpdateDeltaPositionFromLineEditValue()));
 	connect(ui->pbGrip, SIGNAL(clicked(bool)), this, SLOT(Grip()));
 	connect(ui->pbPump, SIGNAL(clicked(bool)), this, SLOT(SetPump(bool)));
 	connect(ui->pbSetSpeedConvenyor, SIGNAL(clicked(bool)), this, SLOT(SetConvenyorSpeed()));
 	connect(ui->pbGetPositionConvenyor, SIGNAL(clicked(bool)), this, SLOT(GetConvenyorPosition()));
-	connect(ui->vsZAdjsution, SIGNAL(valueChanged(int)), this, SLOT(UpdateZValue(int)));
-	connect(ui->vsZAdjsution, SIGNAL(sliderReleased()), this, SLOT(UpdateDeltaPosition()));
 
-	connect(DeltaParameter, SIGNAL(Moved(float, float, float)), this, SLOT(UpdatePositionValue(float, float, float)));
-	connect(DeltaParameter, SIGNAL(FinishMoving()), this, SLOT(UpdateDeltaPosition()));
+	connect(ui->vsZAdjsution, SIGNAL(valueChanged(int)), this, SLOT(UpdateZLineEditValue(int)));
+	connect(ui->vsZAdjsution, SIGNAL(sliderReleased()), this, SLOT(UpdateDeltaPositionFromLineEditValue()));
+	connect(ui->vsAngleAdjsution, SIGNAL(valueChanged(int)), this, SLOT(UpdateWLineEditValue(int)));
+	connect(ui->vsAngleAdjsution, SIGNAL(sliderReleased()), this, SLOT(UpdateDeltaPositionFromLineEditValue()));
+	connect(DeltaParameter, SIGNAL(Moved(float, float, float, float)), this, SLOT(UpdatePositionFrom2DControl(float, float, float, float)));
+	connect(DeltaParameter, SIGNAL(FinishMoving()), this, SLOT(UpdateDeltaPositionFromLineEditValue()));
 	
 	connect(ui->leTerminal, SIGNAL(returnPressed()), this, SLOT(TerminalTransmit()));
 
 	connect(DeltaPort, SIGNAL(FinishReadLine(QString)), this, SLOT(PrintReceiveData(QString)));
 	connect(DeltaPort, SIGNAL(DeltaResponeReady()), this, SLOT(NoticeConnected()));
-	connect(DeltaPort, SIGNAL(InHomePosition(float, float, float)), this, SLOT(UpdateHomePosition(float, float, float)));
+	connect(DeltaPort, SIGNAL(InHomePosition(float, float, float, float)), this, SLOT(UpdateGlobalHomePositionValueAndControlValue(float, float, float, float)));
 	connect(DeltaPort, SIGNAL(ReceiveConvenyorPosition(float, float)), this, SLOT(UpdateConvenyorPosition(float, float)));
 	connect(DeltaPort, SIGNAL(ReceiveConvenyorPosition(float, float)), DeltaImageProcesser->ConvenyorObjectManager, SLOT(UpdateNewPositionObjects(float, float)));
 
@@ -76,10 +80,26 @@ void MainWindow::InitEvents()
 
 	connect(DeltaGcodeManager, SIGNAL(OutOfObjectVariable()), DeltaImageProcesser->ConvenyorObjectManager, SLOT(RemoveOldestObject()));
 	connect(DeltaGcodeManager, SIGNAL(JustUpdateVariable(QList<GcodeVariable>)), this, SLOT(DisplayGcodeVariable(QList<GcodeVariable>)));
+	connect(DeltaGcodeManager, SIGNAL(MoveToNewPosition(float, float, float, float)), this, SLOT(UpdatePositionControl(float, float, float, float)));
 
 	connect(ui->cbEnoughGetConvenyorContinues, SIGNAL(clicked(bool)), this, SLOT(TurnEnoughConvenyorPositionGetting()));
 
 	connect(DeltaImageProcesser->ConvenyorObjectManager, SIGNAL(NewUpdateObjectPosition(QString, int)), DeltaGcodeManager, SLOT(UpdateSystemVariable(QString, int)));
+
+	connect(ui->pbOpenPicture, SIGNAL(clicked(bool)), DeltaDrawingExporter, SLOT(OpenImage()));
+	connect(ui->pbPainting, SIGNAL(clicked(bool)), DeltaDrawingExporter, SLOT(ConvertToDrawingArea()));
+
+	connect(ui->pbDrawLine, SIGNAL(clicked(bool)), ui->lbDrawingArea, SLOT(SelectLineTool()));
+	connect(ui->pbDrawRectangle, SIGNAL(clicked(bool)), ui->lbDrawingArea, SLOT(SelectRectangleTool()));
+	connect(ui->pbDrawCircle, SIGNAL(clicked(bool)), ui->lbDrawingArea, SLOT(SelectCircleTool()));
+	connect(ui->pbDrawArc, SIGNAL(clicked(bool)), ui->lbDrawingArea, SLOT(SelectArcTool()));
+	connect(ui->pbZoomIn, SIGNAL(clicked(bool)), ui->lbDrawingArea, SLOT(SelectZoomInTool()));
+	connect(ui->pbZoomOut, SIGNAL(clicked(bool)), ui->lbDrawingArea, SLOT(SelectZoomOutTool()));
+	connect(ui->pbCursor, SIGNAL(clicked(bool)), ui->lbDrawingArea, SLOT(SelectCursor()));
+
+	connect(ui->pbExportDrawingGcodes, SIGNAL(clicked(bool)), ui->lbDrawingArea, SLOT(ExportGcodes()));
+
+	connect(ui->twDeltaManager, SIGNAL(currentChanged(int)), this, SLOT(ChangeDeltaDashboard(int)));
 }
 
 void MainWindow::InitVariables()
@@ -87,7 +107,7 @@ void MainWindow::InitVariables()
     DeltaPort = new ConnectionManager();
 	DeltaPort->SetBaudrate(9600);
 
-	DeltaGcodeManager = new GcodeProgramManager(ui->wgProgramContainer, ui->pteGcodeArea, DeltaPort);
+	DeltaGcodeManager = new GcodeProgramManager(ui->wgProgramContainer, ui->pteGcodeArea, DeltaPort, DeltaParameter);
 	
 	DebugLB = ui->lbDebug;
 
@@ -96,6 +116,14 @@ void MainWindow::InitVariables()
 	DeltaParameter = new DeltaVisualizer(ui->t2D);
 	DeltaParameter->setObjectName(QStringLiteral("wg2D"));
 	DeltaParameter->setGeometry(QRect(50, 10, 300, 300));
+
+	DeltaDrawingExporter = new DrawingExporter(this);
+	DeltaDrawingExporter->SetDrawingParameterPointer(ui->lbImageForDrawing, ui->lbImageWidth, ui->lbImageHeight, ui->leHeightScale, ui->leWidthScale, ui->leSpace, ui->leDrawingThreshold, ui->hsDrawingThreshold, ui->cbDrawMethod, ui->cbConversionTool);
+	DeltaDrawingExporter->SetDrawingAreaWidget(ui->lbDrawingArea);
+
+	ui->lbDrawingArea->InitGrid();
+	ui->lbDrawingArea->SetGcodeEditor(ui->pteGcodeArea);
+	ui->lbDrawingArea->SetEffector(ui->cbDrawingEffector);
 
 	EditorTimer = new QTimer(this);
 	//connect(EditorTimer, SIGNAL(timeout()), this, SLOT(RunSmartEditor()));
@@ -119,6 +147,8 @@ void MainWindow::InitVariables()
 	DeltaImageProcesser->SetObjectScreenPointer(ui->lbTrackingObject);
 	DeltaImageProcesser->SetFPSInputBox(ui->leFPS);
 	DeltaImageProcesser->SetDetectParameterPointer(ui->leXRec, ui->leYRec, ui->leRealDistance, ui->leXCoordinate, ui->leYCoordinate);
+
+	// ---------------- Gcode Editor -----------------
 }
 
 void MainWindow::ConnectDeltaRobot()
@@ -146,6 +176,19 @@ void MainWindow::OpenGcodeReference()
 {
 	GcodeReference* gcodeReferenceWindow = new GcodeReference();
 	gcodeReferenceWindow->show();
+}
+
+void MainWindow::ChangeDeltaDashboard(int index)
+{
+	Debug(QString::number(index));
+
+	if (ui->twDeltaManager->count() == index + 1)
+	{
+		ui->twDeltaManager->setTabText(index, QString("Delta") + QString::number(index + 1));
+		QWidget *newDeltaTab = new QWidget();
+		ui->twDeltaManager->addTab(newDeltaTab, QString());
+		ui->twDeltaManager->setTabText(ui->twDeltaManager->indexOf(newDeltaTab), "+");
+	}
 }
 
 void MainWindow::AddNewProgram()
@@ -182,7 +225,25 @@ void MainWindow::ExecuteProgram()
 		Debug("Delta Robot is not connecting !");
 }
 
-void MainWindow::UpdateZValue(int z)
+void MainWindow::ExecuteCurrentLine()
+{
+	if (ui->cbLockGcodeEditor->isChecked() == false)
+	{
+		return;
+	}
+
+	QTextCursor cursor;
+	QString line;
+
+	cursor = ui->pteGcodeArea->textCursor();
+	cursor.movePosition(QTextCursor::StartOfBlock);
+	cursor.movePosition(QTextCursor::EndOfBlock, QTextCursor::KeepAnchor);
+	line = cursor.selectedText();
+
+	DeltaGcodeManager->ExecuteGcode(line);
+}
+
+void MainWindow::UpdateZLineEditValue(int z)
 {
 	ui->leZ->setText(QString::number(DeltaParameter->ZHome - z));
 
@@ -192,7 +253,17 @@ void MainWindow::UpdateZValue(int z)
 	}
 }
 
-void MainWindow::UpdateDeltaPosition()
+void MainWindow::UpdateWLineEditValue(int w)
+{
+	ui->leW->setText(QString::number(w));
+
+	if (ui->cbGcode->currentText() == "G01")
+	{
+		ui->leAg4->setText(QString::number(DeltaParameter->W));
+	}
+}
+
+void MainWindow::UpdateDeltaPositionFromLineEditValue()
 {
 	DeltaParameter->X = ui->leX->text().toFloat();
 	DeltaParameter->Y = ui->leY->text().toFloat();
@@ -207,28 +278,62 @@ void MainWindow::UpdateDeltaPosition()
 		ui->leAg1->setText(QString::number(DeltaParameter->X));
 		ui->leAg2->setText(QString::number(DeltaParameter->Y));
 		ui->leAg3->setText(QString::number(DeltaParameter->Z));
+		ui->leAg4->setText(QString::number(DeltaParameter->W));
 	}
 
 	//DeltaGcodeManager->ExecuteGcode(QString("G01 X") + ui->leX->text() + QString(" Y") + ui->leY->text() + QString(" Z") + ui->leZ->text());
 	DeltaPort->Send(QString("G01 X") + ui->leX->text() + QString(" Y") + ui->leY->text() + QString(" Z") + ui->leZ->text() + QString(" W") + ui->leW->text() + "\n");
 }
 
-void MainWindow::UpdatePositionValue(float x, float y, float z)
+void MainWindow::UpdatePositionFrom2DControl(float x, float y, float z, float w)
 {
 	ui->leX->setText(QString::number(x));
 	ui->leY->setText(QString::number(y));
 	ui->leZ->setText(QString::number(z));
-
-	UpdateDeltaPosition();
+	ui->leW->setText(QString::number(w));
 }
 
-void MainWindow::UpdateHomePosition(float x, float y, float z)
+void MainWindow::UpdatePositionControl(float x, float y, float z, float w)
+{
+	if (x == 0 && y == 0 && z == 0 && w == 0)
+	{
+		x = DeltaParameter->XHome;
+		y = DeltaParameter->YHome;
+		z = DeltaParameter->ZHome;
+		w = DeltaParameter->WHome;
+	}
+
+	ui->leX->setText(QString::number(x));
+	ui->leY->setText(QString::number(y));
+	ui->leZ->setText(QString::number(z));
+	ui->leW->setText(QString::number(w));
+
+	DeltaParameter->X = x;
+	DeltaParameter->Y = y;
+	DeltaParameter->Z = z;
+	DeltaParameter->W = w;
+
+	ui->vsZAdjsution->setValue(DeltaParameter->ZHome - DeltaParameter->Z);
+	DeltaParameter->ChangeXY(x, y);
+
+	if (ui->cbGcode->currentText() == "G01")
+	{
+		ui->leAg1->setText(QString::number(DeltaParameter->X));
+		ui->leAg2->setText(QString::number(DeltaParameter->Y));
+		ui->leAg3->setText(QString::number(DeltaParameter->Z));
+		ui->leAg4->setText(QString::number(DeltaParameter->W));
+	}
+}
+
+void MainWindow::UpdateGlobalHomePositionValueAndControlValue(float x, float y, float z, float w)
 {
 	DeltaParameter->XHome = x;
 	DeltaParameter->YHome = y;
 	DeltaParameter->ZHome = z;
+	DeltaParameter->WHome = w;
 
-	UpdatePositionValue(x, y, z);
+	UpdatePositionFrom2DControl(x, y, z, w);
+	UpdateDeltaPositionFromLineEditValue();
 }
 
 void MainWindow::Grip()
@@ -236,12 +341,12 @@ void MainWindow::Grip()
 	if (ui->pbGrip->text() == "Grip")
 	{
 		ui->pbGrip->setText("Release");
-		DeltaPort->Send(QString("G42 V0"));
+		DeltaPort->Send(QString("M03"));
 	}
 	else
 	{
 		ui->pbGrip->setText("Grip");
-		DeltaPort->Send(QString("G42 V1"));
+		DeltaPort->Send(QString("M05"));
 	}
 }
 
@@ -249,17 +354,17 @@ void MainWindow::SetPump(bool value)
 {
 	if (value == true)
 	{
-		DeltaPort->Send(QString("G41 P0"));
+		DeltaPort->Send(QString("M04"));
 	}
 	else
 	{
-		DeltaPort->Send(QString("G41 P1"));
+		DeltaPort->Send(QString("M05"));
 	}
 }
 
 void MainWindow::Home()
 {
-	DeltaGcodeManager->ExecuteGcode("G28");
+	DeltaPort->Send("G28");
 
 	ui->leX->setText(QString::number(DeltaParameter->XHome));
 	ui->leY->setText(QString::number(DeltaParameter->YHome));
@@ -295,6 +400,18 @@ void MainWindow::DisplayGcodeVariable(QList<GcodeVariable> gcodeVariables)
 		if (var.Name == ui->leVariable3->text())
 		{
 			ui->lbVar3->setText(QString::number(var.Value));
+		}
+		if (var.Name == ui->leVariable4->text())
+		{
+			ui->lbVar4->setText(QString::number(var.Value));
+		}
+		if (var.Name == ui->leVariable5->text())
+		{
+			ui->lbVar5->setText(QString::number(var.Value));
+		}
+		if (var.Name == ui->leVariable6->text())
+		{
+			ui->lbVar6->setText(QString::number(var.Value));
 		}
 	}
 }

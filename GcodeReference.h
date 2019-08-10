@@ -13,6 +13,7 @@ public:
 
 public slots:
 	void SelectGcodeItem(QListWidgetItem *item);
+	void SelectLineTextEdit();
 private:
 	Ui::GcodeReference ui;
 };

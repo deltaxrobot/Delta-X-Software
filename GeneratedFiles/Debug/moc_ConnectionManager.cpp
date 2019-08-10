@@ -21,8 +21,8 @@ QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_ConnectionManager_t {
-    QByteArrayData data[13];
-    char stringdata0[148];
+    QByteArrayData data[14];
+    char stringdata0[150];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -41,14 +41,15 @@ QT_MOC_LITERAL(6, 78, 14), // "InHomePosition"
 QT_MOC_LITERAL(7, 93, 1), // "x"
 QT_MOC_LITERAL(8, 95, 1), // "y"
 QT_MOC_LITERAL(9, 97, 1), // "z"
-QT_MOC_LITERAL(10, 99, 24), // "ReceiveConvenyorPosition"
-QT_MOC_LITERAL(11, 124, 8), // "ReadData"
-QT_MOC_LITERAL(12, 133, 14) // "FindingTimeOut"
+QT_MOC_LITERAL(10, 99, 1), // "w"
+QT_MOC_LITERAL(11, 101, 24), // "ReceiveConvenyorPosition"
+QT_MOC_LITERAL(12, 126, 8), // "ReadData"
+QT_MOC_LITERAL(13, 135, 14) // "FindingTimeOut"
 
     },
     "ConnectionManager\0FinishReadLine\0\0msg\0"
     "DeltaResponeReady\0DeltaResponeGcodeDone\0"
-    "InHomePosition\0x\0y\0z\0ReceiveConvenyorPosition\0"
+    "InHomePosition\0x\0y\0z\0w\0ReceiveConvenyorPosition\0"
     "ReadData\0FindingTimeOut"
 };
 #undef QT_MOC_LITERAL
@@ -70,18 +71,18 @@ static const uint qt_meta_data_ConnectionManager[] = {
        1,    1,   49,    2, 0x06 /* Public */,
        4,    0,   52,    2, 0x06 /* Public */,
        5,    0,   53,    2, 0x06 /* Public */,
-       6,    3,   54,    2, 0x06 /* Public */,
-      10,    2,   61,    2, 0x06 /* Public */,
+       6,    4,   54,    2, 0x06 /* Public */,
+      11,    2,   63,    2, 0x06 /* Public */,
 
  // slots: name, argc, parameters, tag, flags
-      11,    0,   66,    2, 0x0a /* Public */,
-      12,    0,   67,    2, 0x0a /* Public */,
+      12,    0,   68,    2, 0x0a /* Public */,
+      13,    0,   69,    2, 0x0a /* Public */,
 
  // signals: parameters
     QMetaType::Void, QMetaType::QString,    3,
     QMetaType::Void,
     QMetaType::Void,
-    QMetaType::Void, QMetaType::Float, QMetaType::Float, QMetaType::Float,    7,    8,    9,
+    QMetaType::Void, QMetaType::Float, QMetaType::Float, QMetaType::Float, QMetaType::Float,    7,    8,    9,   10,
     QMetaType::Void, QMetaType::Float, QMetaType::Float,    7,    8,
 
  // slots: parameters
@@ -100,7 +101,7 @@ void ConnectionManager::qt_static_metacall(QObject *_o, QMetaObject::Call _c, in
         case 0: _t->FinishReadLine((*reinterpret_cast< QString(*)>(_a[1]))); break;
         case 1: _t->DeltaResponeReady(); break;
         case 2: _t->DeltaResponeGcodeDone(); break;
-        case 3: _t->InHomePosition((*reinterpret_cast< float(*)>(_a[1])),(*reinterpret_cast< float(*)>(_a[2])),(*reinterpret_cast< float(*)>(_a[3]))); break;
+        case 3: _t->InHomePosition((*reinterpret_cast< float(*)>(_a[1])),(*reinterpret_cast< float(*)>(_a[2])),(*reinterpret_cast< float(*)>(_a[3])),(*reinterpret_cast< float(*)>(_a[4]))); break;
         case 4: _t->ReceiveConvenyorPosition((*reinterpret_cast< float(*)>(_a[1])),(*reinterpret_cast< float(*)>(_a[2]))); break;
         case 5: _t->ReadData(); break;
         case 6: _t->FindingTimeOut(); break;
@@ -131,7 +132,7 @@ void ConnectionManager::qt_static_metacall(QObject *_o, QMetaObject::Call _c, in
             }
         }
         {
-            typedef void (ConnectionManager::*_t)(float , float , float );
+            typedef void (ConnectionManager::*_t)(float , float , float , float );
             if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&ConnectionManager::InHomePosition)) {
                 *result = 3;
                 return;
@@ -203,9 +204,9 @@ void ConnectionManager::DeltaResponeGcodeDone()
 }
 
 // SIGNAL 3
-void ConnectionManager::InHomePosition(float _t1, float _t2, float _t3)
+void ConnectionManager::InHomePosition(float _t1, float _t2, float _t3, float _t4)
 {
-    void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)), const_cast<void*>(reinterpret_cast<const void*>(&_t2)), const_cast<void*>(reinterpret_cast<const void*>(&_t3)) };
+    void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)), const_cast<void*>(reinterpret_cast<const void*>(&_t2)), const_cast<void*>(reinterpret_cast<const void*>(&_t3)), const_cast<void*>(reinterpret_cast<const void*>(&_t4)) };
     QMetaObject::activate(this, &staticMetaObject, 3, _a);
 }
 
