@@ -21,8 +21,8 @@ QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_DeltaVisualizer_t {
-    QByteArrayData data[8];
-    char stringdata0[51];
+    QByteArrayData data[9];
+    char stringdata0[53];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -37,12 +37,13 @@ QT_MOC_LITERAL(2, 22, 0), // ""
 QT_MOC_LITERAL(3, 23, 1), // "x"
 QT_MOC_LITERAL(4, 25, 1), // "y"
 QT_MOC_LITERAL(5, 27, 1), // "z"
-QT_MOC_LITERAL(6, 29, 12), // "FinishMoving"
-QT_MOC_LITERAL(7, 42, 8) // "ChangeXY"
+QT_MOC_LITERAL(6, 29, 1), // "w"
+QT_MOC_LITERAL(7, 31, 12), // "FinishMoving"
+QT_MOC_LITERAL(8, 44, 8) // "ChangeXY"
 
     },
-    "DeltaVisualizer\0Moved\0\0x\0y\0z\0FinishMoving\0"
-    "ChangeXY"
+    "DeltaVisualizer\0Moved\0\0x\0y\0z\0w\0"
+    "FinishMoving\0ChangeXY"
 };
 #undef QT_MOC_LITERAL
 
@@ -60,14 +61,14 @@ static const uint qt_meta_data_DeltaVisualizer[] = {
        2,       // signalCount
 
  // signals: name, argc, parameters, tag, flags
-       1,    3,   29,    2, 0x06 /* Public */,
-       6,    0,   36,    2, 0x06 /* Public */,
+       1,    4,   29,    2, 0x06 /* Public */,
+       7,    0,   38,    2, 0x06 /* Public */,
 
  // slots: name, argc, parameters, tag, flags
-       7,    2,   37,    2, 0x0a /* Public */,
+       8,    2,   39,    2, 0x0a /* Public */,
 
  // signals: parameters
-    QMetaType::Void, QMetaType::Float, QMetaType::Float, QMetaType::Float,    3,    4,    5,
+    QMetaType::Void, QMetaType::Float, QMetaType::Float, QMetaType::Float, QMetaType::Float,    3,    4,    5,    6,
     QMetaType::Void,
 
  // slots: parameters
@@ -82,7 +83,7 @@ void DeltaVisualizer::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int 
         DeltaVisualizer *_t = static_cast<DeltaVisualizer *>(_o);
         Q_UNUSED(_t)
         switch (_id) {
-        case 0: _t->Moved((*reinterpret_cast< float(*)>(_a[1])),(*reinterpret_cast< float(*)>(_a[2])),(*reinterpret_cast< float(*)>(_a[3]))); break;
+        case 0: _t->Moved((*reinterpret_cast< float(*)>(_a[1])),(*reinterpret_cast< float(*)>(_a[2])),(*reinterpret_cast< float(*)>(_a[3])),(*reinterpret_cast< float(*)>(_a[4]))); break;
         case 1: _t->FinishMoving(); break;
         case 2: _t->ChangeXY((*reinterpret_cast< int(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2]))); break;
         default: ;
@@ -91,7 +92,7 @@ void DeltaVisualizer::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int 
         int *result = reinterpret_cast<int *>(_a[0]);
         void **func = reinterpret_cast<void **>(_a[1]);
         {
-            typedef void (DeltaVisualizer::*_t)(float , float , float );
+            typedef void (DeltaVisualizer::*_t)(float , float , float , float );
             if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&DeltaVisualizer::Moved)) {
                 *result = 0;
                 return;
@@ -146,9 +147,9 @@ int DeltaVisualizer::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
 }
 
 // SIGNAL 0
-void DeltaVisualizer::Moved(float _t1, float _t2, float _t3)
+void DeltaVisualizer::Moved(float _t1, float _t2, float _t3, float _t4)
 {
-    void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)), const_cast<void*>(reinterpret_cast<const void*>(&_t2)), const_cast<void*>(reinterpret_cast<const void*>(&_t3)) };
+    void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)), const_cast<void*>(reinterpret_cast<const void*>(&_t2)), const_cast<void*>(reinterpret_cast<const void*>(&_t3)), const_cast<void*>(reinterpret_cast<const void*>(&_t4)) };
     QMetaObject::activate(this, &staticMetaObject, 0, _a);
 }
 

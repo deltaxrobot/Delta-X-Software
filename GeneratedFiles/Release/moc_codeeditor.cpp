@@ -59,9 +59,9 @@ static const uint qt_meta_data_CodeEditor[] = {
        0,       // signalCount
 
  // slots: name, argc, parameters, tag, flags
-       1,    1,   29,    2, 0x08 /* Private */,
-       4,    0,   32,    2, 0x08 /* Private */,
-       5,    2,   33,    2, 0x08 /* Private */,
+       1,    1,   29,    2, 0x0a /* Public */,
+       4,    0,   32,    2, 0x0a /* Public */,
+       5,    2,   33,    2, 0x0a /* Public */,
 
  // slots: parameters
     QMetaType::Void, QMetaType::Int,    3,
@@ -86,7 +86,7 @@ void CodeEditor::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
 }
 
 const QMetaObject CodeEditor::staticMetaObject = {
-    { &QPlainTextEdit::staticMetaObject, qt_meta_stringdata_CodeEditor.data,
+    { &QTextEdit::staticMetaObject, qt_meta_stringdata_CodeEditor.data,
       qt_meta_data_CodeEditor,  qt_static_metacall, Q_NULLPTR, Q_NULLPTR}
 };
 
@@ -101,12 +101,12 @@ void *CodeEditor::qt_metacast(const char *_clname)
     if (!_clname) return Q_NULLPTR;
     if (!strcmp(_clname, qt_meta_stringdata_CodeEditor.stringdata0))
         return static_cast<void*>(const_cast< CodeEditor*>(this));
-    return QPlainTextEdit::qt_metacast(_clname);
+    return QTextEdit::qt_metacast(_clname);
 }
 
 int CodeEditor::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
 {
-    _id = QPlainTextEdit::qt_metacall(_c, _id, _a);
+    _id = QTextEdit::qt_metacall(_c, _id, _a);
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {

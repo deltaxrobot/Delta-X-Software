@@ -8,4 +8,6 @@ extern QString ConvenyorString;
 
 extern QLabel* DebugLB;
 
+extern QList<QLabel*> Debugs;
+
 void Debug(QString msg);

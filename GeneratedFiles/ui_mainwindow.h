@@ -43,6 +43,7 @@ public:
     QAction *actionSoftware;
     QAction *actionExecute_All;
     QAction *actionDelta_X_1;
+    QAction *actionExecute;
     QWidget *centralWidget;
     QScrollArea *saProgramFiles;
     QWidget *wgProgramContainer;
@@ -207,6 +208,10 @@ public:
     QCheckBox *cbLockGcodeEditor;
     QLineEdit *leVariable6;
     QLabel *lbVar6;
+    QPushButton *pbRefreshGcodeFiles;
+    QPushButton *pbFindGcodeFile;
+    QPushButton *pbSortGcodeFiles;
+    QLabel *lbID;
     QMenuBar *menuBar;
     QMenu *menuFile;
     QMenu *menuHelp;
@@ -243,7 +248,9 @@ public:
         actionDelta_X_1 = new QAction(MainWindow);
         actionDelta_X_1->setObjectName(QStringLiteral("actionDelta_X_1"));
         actionDelta_X_1->setCheckable(true);
-        actionDelta_X_1->setChecked(true);
+        actionDelta_X_1->setChecked(false);
+        actionExecute = new QAction(MainWindow);
+        actionExecute->setObjectName(QStringLiteral("actionExecute"));
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         saProgramFiles = new QScrollArea(centralWidget);
@@ -258,7 +265,7 @@ public:
         saProgramFiles->setWidgetResizable(false);
         wgProgramContainer = new QWidget();
         wgProgramContainer->setObjectName(QStringLiteral("wgProgramContainer"));
-        wgProgramContainer->setGeometry(QRect(0, -158, 279, 589));
+        wgProgramContainer->setGeometry(QRect(0, 0, 279, 589));
         frExProgram = new QFrame(wgProgramContainer);
         frExProgram->setObjectName(QStringLiteral("frExProgram"));
         frExProgram->setGeometry(QRect(10, 10, 221, 71));
@@ -313,8 +320,8 @@ public:
         pbSaveGcode->setIconSize(QSize(30, 30));
         pteGcodeArea = new CodeEditor(centralWidget);
         pteGcodeArea->setObjectName(QStringLiteral("pteGcodeArea"));
-        pteGcodeArea->setGeometry(QRect(918, 94, 373, 300));
-        pteGcodeArea->setMinimumSize(QSize(321, 300));
+        pteGcodeArea->setGeometry(QRect(918, 114, 373, 283));
+        pteGcodeArea->setMinimumSize(QSize(321, 250));
         QFont font1;
         font1.setPointSize(9);
         pteGcodeArea->setFont(font1);
@@ -324,7 +331,7 @@ public:
         leTerminal->setGeometry(QRect(10, 660, 1281, 22));
         pbAddGcode = new QPushButton(centralWidget);
         pbAddGcode->setObjectName(QStringLiteral("pbAddGcode"));
-        pbAddGcode->setGeometry(QRect(1180, 12, 73, 35));
+        pbAddGcode->setGeometry(QRect(1180, 36, 73, 35));
         pbAddGcode->setAutoDefault(false);
         pbAddGcode->setFlat(false);
         pbFormat = new QPushButton(centralWidget);
@@ -344,7 +351,7 @@ public:
         pbAddNewProgram->setFlat(false);
         twDeltaManager = new QTabWidget(centralWidget);
         twDeltaManager->setObjectName(QStringLiteral("twDeltaManager"));
-        twDeltaManager->setGeometry(QRect(6, 4, 873, 28));
+        twDeltaManager->setGeometry(QRect(4, 4, 871, 28));
         QFont font2;
         font2.setPointSize(12);
         twDeltaManager->setFont(font2);
@@ -839,7 +846,7 @@ public:
         pbY->setGeometry(QRect(310, 40, 41, 27));
         pbGcodeReference = new QPushButton(centralWidget);
         pbGcodeReference->setObjectName(QStringLiteral("pbGcodeReference"));
-        pbGcodeReference->setGeometry(QRect(1256, 12, 35, 35));
+        pbGcodeReference->setGeometry(QRect(1256, 36, 35, 35));
         QIcon icon28;
         icon28.addFile(QStringLiteral("icon/Help_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
         pbGcodeReference->setIcon(icon28);
@@ -865,59 +872,59 @@ public:
         cbEnoughGetConvenyorContinues->setGeometry(QRect(680, 40, 51, 20));
         cbGcode = new QComboBox(centralWidget);
         cbGcode->setObjectName(QStringLiteral("cbGcode"));
-        cbGcode->setGeometry(QRect(1130, 12, 47, 35));
+        cbGcode->setGeometry(QRect(1130, 36, 47, 35));
         leAg1 = new QLineEdit(centralWidget);
         leAg1->setObjectName(QStringLiteral("leAg1"));
-        leAg1->setGeometry(QRect(988, 55, 30, 27));
+        leAg1->setGeometry(QRect(988, 79, 30, 27));
         leAg1->setReadOnly(false);
         lbAg1 = new QLabel(centralWidget);
         lbAg1->setObjectName(QStringLiteral("lbAg1"));
-        lbAg1->setGeometry(QRect(972, 60, 16, 20));
+        lbAg1->setGeometry(QRect(972, 84, 16, 20));
         lbAg1->setStyleSheet(QStringLiteral("background-color: rgb(124, 221, 235);"));
         lbAg1->setAlignment(Qt::AlignCenter);
         leAg2 = new QLineEdit(centralWidget);
         leAg2->setObjectName(QStringLiteral("leAg2"));
-        leAg2->setGeometry(QRect(1041, 55, 30, 27));
+        leAg2->setGeometry(QRect(1041, 79, 30, 27));
         leAg2->setReadOnly(false);
         lbAg2 = new QLabel(centralWidget);
         lbAg2->setObjectName(QStringLiteral("lbAg2"));
-        lbAg2->setGeometry(QRect(1025, 60, 16, 20));
+        lbAg2->setGeometry(QRect(1025, 84, 16, 20));
         lbAg2->setStyleSheet(QStringLiteral("background-color: rgb(124, 221, 235);"));
         lbAg2->setAlignment(Qt::AlignCenter);
         lbAg3 = new QLabel(centralWidget);
         lbAg3->setObjectName(QStringLiteral("lbAg3"));
-        lbAg3->setGeometry(QRect(1079, 60, 16, 20));
+        lbAg3->setGeometry(QRect(1079, 84, 16, 20));
         lbAg3->setStyleSheet(QStringLiteral("background-color: rgb(124, 221, 235);"));
         lbAg3->setAlignment(Qt::AlignCenter);
         leAg3 = new QLineEdit(centralWidget);
         leAg3->setObjectName(QStringLiteral("leAg3"));
-        leAg3->setGeometry(QRect(1095, 55, 30, 27));
+        leAg3->setGeometry(QRect(1095, 79, 30, 27));
         leAg3->setReadOnly(false);
         lbAg4 = new QLabel(centralWidget);
         lbAg4->setObjectName(QStringLiteral("lbAg4"));
-        lbAg4->setGeometry(QRect(1133, 60, 16, 20));
+        lbAg4->setGeometry(QRect(1133, 84, 16, 20));
         lbAg4->setStyleSheet(QStringLiteral("background-color: rgb(124, 221, 235);"));
         lbAg4->setAlignment(Qt::AlignCenter);
         leAg4 = new QLineEdit(centralWidget);
         leAg4->setObjectName(QStringLiteral("leAg4"));
-        leAg4->setGeometry(QRect(1150, 55, 30, 27));
+        leAg4->setGeometry(QRect(1150, 79, 30, 27));
         leAg4->setReadOnly(false);
         lbAg5 = new QLabel(centralWidget);
         lbAg5->setObjectName(QStringLiteral("lbAg5"));
-        lbAg5->setGeometry(QRect(1188, 60, 16, 20));
+        lbAg5->setGeometry(QRect(1188, 84, 16, 20));
         lbAg5->setStyleSheet(QStringLiteral("background-color: rgb(124, 221, 235);"));
         lbAg5->setAlignment(Qt::AlignCenter);
         leAg5 = new QLineEdit(centralWidget);
         leAg5->setObjectName(QStringLiteral("leAg5"));
-        leAg5->setGeometry(QRect(1203, 55, 30, 27));
+        leAg5->setGeometry(QRect(1203, 79, 30, 27));
         leAg5->setReadOnly(false);
         leAg6 = new QLineEdit(centralWidget);
         leAg6->setObjectName(QStringLiteral("leAg6"));
-        leAg6->setGeometry(QRect(1258, 55, 30, 27));
+        leAg6->setGeometry(QRect(1258, 79, 30, 27));
         leAg6->setReadOnly(false);
         lbAg6 = new QLabel(centralWidget);
         lbAg6->setObjectName(QStringLiteral("lbAg6"));
-        lbAg6->setGeometry(QRect(1240, 60, 16, 20));
+        lbAg6->setGeometry(QRect(1240, 84, 16, 20));
         lbAg6->setStyleSheet(QStringLiteral("background-color: rgb(124, 221, 235);"));
         leVariable3 = new QLineEdit(centralWidget);
         leVariable3->setObjectName(QStringLiteral("leVariable3"));
@@ -981,6 +988,33 @@ public:
         lbVar6->setGeometry(QRect(1168, 436, 41, 20));
         lbVar6->setStyleSheet(QStringLiteral("background-color: rgb(225, 225, 225);"));
         lbVar6->setAlignment(Qt::AlignCenter);
+        pbRefreshGcodeFiles = new QPushButton(centralWidget);
+        pbRefreshGcodeFiles->setObjectName(QStringLiteral("pbRefreshGcodeFiles"));
+        pbRefreshGcodeFiles->setGeometry(QRect(918, 506, 55, 31));
+        QIcon icon29;
+        icon29.addFile(QStringLiteral("icon/Restart_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbRefreshGcodeFiles->setIcon(icon29);
+        pbRefreshGcodeFiles->setIconSize(QSize(16, 16));
+        pbRefreshGcodeFiles->setFlat(false);
+        pbFindGcodeFile = new QPushButton(centralWidget);
+        pbFindGcodeFile->setObjectName(QStringLiteral("pbFindGcodeFile"));
+        pbFindGcodeFile->setGeometry(QRect(918, 542, 55, 31));
+        QIcon icon30;
+        icon30.addFile(QStringLiteral("icon/Search_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbFindGcodeFile->setIcon(icon30);
+        pbFindGcodeFile->setIconSize(QSize(16, 16));
+        pbFindGcodeFile->setFlat(false);
+        pbSortGcodeFiles = new QPushButton(centralWidget);
+        pbSortGcodeFiles->setObjectName(QStringLiteral("pbSortGcodeFiles"));
+        pbSortGcodeFiles->setGeometry(QRect(918, 578, 55, 31));
+        QIcon icon31;
+        icon31.addFile(QStringLiteral("icon/Sort_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbSortGcodeFiles->setIcon(icon31);
+        pbSortGcodeFiles->setIconSize(QSize(16, 16));
+        pbSortGcodeFiles->setFlat(false);
+        lbID = new QLabel(centralWidget);
+        lbID->setObjectName(QStringLiteral("lbID"));
+        lbID->setGeometry(QRect(118, 54, 55, 16));
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QStringLiteral("menuBar"));
@@ -1013,6 +1047,7 @@ public:
         menuReferences->addAction(actionSoftware);
         menuEditor->addSeparator();
         menuEditor->addAction(menuExecute->menuAction());
+        menuExecute->addAction(actionExecute);
         menuExecute->addAction(actionExecute_All);
         menuExecute->addSeparator();
         menuExecute->addAction(actionDelta_X_1);
@@ -1022,7 +1057,7 @@ public:
         pbExDeleteProgram->setDefault(true);
         pbAddGcode->setDefault(false);
         twDeltaManager->setCurrentIndex(0);
-        tabWidget->setCurrentIndex(0);
+        tabWidget->setCurrentIndex(1);
         pbGrip->setDefault(false);
         pbPump->setDefault(false);
         twDeltaGeometry->setCurrentIndex(0);
@@ -1034,13 +1069,14 @@ public:
     void retranslateUi(QMainWindow *MainWindow)
     {
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "IMWI - Delta X Software - Version 0.9", Q_NULLPTR));
-        actionAdd->setText(QApplication::translate("MainWindow", "Add", Q_NULLPTR));
+        actionAdd->setText(QApplication::translate("MainWindow", "Add New", Q_NULLPTR));
         actionRemove->setText(QApplication::translate("MainWindow", "Remove", Q_NULLPTR));
         actionAbout->setText(QApplication::translate("MainWindow", "About", Q_NULLPTR));
         actionGcode->setText(QApplication::translate("MainWindow", "Gcode", Q_NULLPTR));
         actionSoftware->setText(QApplication::translate("MainWindow", "Software", Q_NULLPTR));
         actionExecute_All->setText(QApplication::translate("MainWindow", "Execute All", Q_NULLPTR));
         actionDelta_X_1->setText(QApplication::translate("MainWindow", "Delta X 1", Q_NULLPTR));
+        actionExecute->setText(QApplication::translate("MainWindow", "Execute", Q_NULLPTR));
         leExProgramName->setText(QApplication::translate("MainWindow", "Program 1", Q_NULLPTR));
         pbExDeleteProgram->setText(QString());
         lbExGCodeNumber->setText(QApplication::translate("MainWindow", "100 Gcode Lines", Q_NULLPTR));
@@ -1061,7 +1097,7 @@ public:
 #ifndef QT_NO_TOOLTIP
         pbAddNewProgram->setToolTip(QString());
 #endif // QT_NO_TOOLTIP
-        pbAddNewProgram->setText(QApplication::translate("MainWindow", "New", Q_NULLPTR));
+        pbAddNewProgram->setText(QApplication::translate("MainWindow", "New ", Q_NULLPTR));
         twDeltaManager->setTabText(twDeltaManager->indexOf(tabDefaultDelta), QApplication::translate("MainWindow", "DeltaX 1", Q_NULLPTR));
         twDeltaManager->setTabText(twDeltaManager->indexOf(tabAddNewDelta), QApplication::translate("MainWindow", "+", Q_NULLPTR));
 #ifndef QT_NO_TOOLTIP
@@ -1248,6 +1284,19 @@ public:
         cbLockGcodeEditor->setText(QApplication::translate("MainWindow", "Lock", Q_NULLPTR));
         leVariable6->setText(QApplication::translate("MainWindow", "#1011", Q_NULLPTR));
         lbVar6->setText(QApplication::translate("MainWindow", "0", Q_NULLPTR));
+#ifndef QT_NO_TOOLTIP
+        pbRefreshGcodeFiles->setToolTip(QString());
+#endif // QT_NO_TOOLTIP
+        pbRefreshGcodeFiles->setText(QApplication::translate("MainWindow", "F5   ", Q_NULLPTR));
+#ifndef QT_NO_TOOLTIP
+        pbFindGcodeFile->setToolTip(QString());
+#endif // QT_NO_TOOLTIP
+        pbFindGcodeFile->setText(QApplication::translate("MainWindow", "Find", Q_NULLPTR));
+#ifndef QT_NO_TOOLTIP
+        pbSortGcodeFiles->setToolTip(QString());
+#endif // QT_NO_TOOLTIP
+        pbSortGcodeFiles->setText(QApplication::translate("MainWindow", "Sort", Q_NULLPTR));
+        lbID->setText(QApplication::translate("MainWindow", "ID: 0", Q_NULLPTR));
         menuFile->setTitle(QApplication::translate("MainWindow", "Delta X", Q_NULLPTR));
         menuHelp->setTitle(QApplication::translate("MainWindow", "Help", Q_NULLPTR));
         menuReferences->setTitle(QApplication::translate("MainWindow", "References", Q_NULLPTR));

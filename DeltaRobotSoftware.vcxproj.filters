@@ -103,6 +103,9 @@
     <ClCompile Include="codeeditor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="RobotDashboard.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="mainwindow.h">
@@ -153,6 +156,9 @@
     <QtMoc Include="codeeditor.h">
       <Filter>Header Files</Filter>
     </QtMoc>
+    <QtMoc Include="RobotDashboard.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="debug\moc_predefs.h.cbt">
@@ -173,6 +179,9 @@
       <Filter>Form Files</Filter>
     </QtUic>
     <QtUic Include="GcodeReference.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="RobotDashboard.ui">
       <Filter>Form Files</Filter>
     </QtUic>
   </ItemGroup>

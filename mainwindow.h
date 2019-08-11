@@ -27,6 +27,28 @@ namespace Ui {
 class MainWindow;
 }
 
+class MainWindow;
+
+class DeltaXDashboard : public QObject
+{
+	Q_OBJECT
+public:
+	DeltaXDashboard(Ui::MainWindow *ui, MainWindow *parent = 0);
+	void InitVariable();
+	ConnectionManager* DeltaPort;
+	GcodeProgramManager* DeltaGcodeManager;
+	GLWidget* VisualArea;
+	DeltaVisualizer *DeltaParameter;
+	ImageProcesser* DeltaImageProcesser;
+	DrawingExporter* DeltaDrawingExporter;
+
+	QTimer* EditorTimer;
+	QTimer* ConvenyorTimer;
+
+	Ui::MainWindow *Ui;
+	MainWindow* Parent;
+};
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -37,6 +59,7 @@ public:
 
     void InitEvents();
     void InitVariables();
+	void AddInstance(QList<MainWindow*>* deltaXMainWindows = NULL);
 
     ConnectionManager* DeltaPort;
 	GcodeProgramManager* DeltaGcodeManager;
@@ -50,11 +73,17 @@ public:
 	QTimer* EditorTimer;
 	QTimer* ConvenyorTimer;
 
+	//QList<DeltaXDashboard*> DeltaXDashboards;
+	QList<MainWindow*>* DeltaXMainWindows = NULL;
+	QAction* SelectedAction = NULL;
+	int ID = 0;
+	QString Name = "Delta X 1";
 private slots:
     void ConnectDeltaRobot();
 	void AddNewProgram();
 	void SaveProgram();
 	void ExecuteProgram();
+	void ExecuteSelectPrograms();
 	void ExecuteCurrentLine();
 	void UpdateZLineEditValue(int z);
 	void UpdateWLineEditValue(int w);
@@ -84,11 +113,14 @@ private slots:
 	void OpenGcodeReference();
 
 	void ChangeDeltaDashboard(int index);
+	void SelectTrueTabName(int index);
 private:
 
+	void initTabs();
 	void hideExampleWidgets();
 	void interpolateCircle();
 	void makeEffectExample();
+public:
     Ui::MainWindow *ui;
 };
 

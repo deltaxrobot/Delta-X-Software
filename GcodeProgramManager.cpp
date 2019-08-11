@@ -6,8 +6,9 @@ GcodeProgramManager::GcodeProgramManager()
 	ProgramList = new QVector<GcodeProgram*>();
 }
 
-GcodeProgramManager::GcodeProgramManager(QWidget* container, CodeEditor * gcodeArea, ConnectionManager* deltaPort, DeltaVisualizer* deltaVisualize) : GcodeProgramManager()
+GcodeProgramManager::GcodeProgramManager(QScrollArea* scrolArea, QWidget* container, CodeEditor * gcodeArea, ConnectionManager* deltaPort, DeltaVisualizer* deltaVisualize) : GcodeProgramManager()
 {
+	saProgramFilesScrollArea = scrolArea;
 	wgProgramContainer = container;
 	pteGcodeArea = gcodeArea;
 	deltaConnection = deltaPort;
@@ -72,12 +73,18 @@ void GcodeProgramManager::AddM204(float accel)
 
 void GcodeProgramManager::AddNewProgram()
 {
+	for (int i = 0; i < ProgramList->size(); i++)
+	{
+		ProgramList->at(i)->SetPosition(10, 10 + 90 * (i + 1));
+		ProgramList->at(i)->ID = i + 1;
+	}
+
 	GcodeProgram* newProgram = new GcodeProgram(wgProgramContainer);
-	newProgram->SetPosition(10, 10 + 90 * ProgramCounter);
+	newProgram->SetPosition(10, 10);
 	newProgram->SetName(QString("program ") + QString::number(ProgramCounter + 1));
 	newProgram->GcodeData = "#" + QString::number(ProgramCounter);
-	newProgram->ID = ProgramCounter;
-	ProgramList->push_back(newProgram);
+	newProgram->ID = 0;
+	ProgramList->push_front(newProgram);
 
 	wgProgramContainer->setGeometry(QRect(0, 0, 279, 90 * (ProgramCounter + 1) + 10));
 
@@ -85,6 +92,73 @@ void GcodeProgramManager::AddNewProgram()
 	connect(newProgram, SIGNAL(Deleted(GcodeProgram*)), this, SLOT(DeleteProgram(GcodeProgram*)));
 
 	ProgramCounter++;
+
+
+	newProgram->SelectNewProgram();
+	saProgramFilesScrollArea->verticalScrollBar()->setValue(0);
+}
+
+void GcodeProgramManager::LoadPrograms()
+{
+	QDir directory(QDir::currentPath());
+	
+	QStringList deltaGcodeFiles;
+	
+	if (sortMethod == 0)
+	{
+		deltaGcodeFiles = directory.entryList(QStringList() << "*.dtgc" << "*.DTGC", QDir::Files, QDir::Time);
+	}
+	if (sortMethod == 1)
+	{
+		deltaGcodeFiles = directory.entryList(QStringList() << "*.dtgc" << "*.DTGC", QDir::Files, QDir::Time | QDir::Reversed);
+	}
+	if (sortMethod == 2)
+	{
+		deltaGcodeFiles = directory.entryList(QStringList() << "*.dtgc" << "*.DTGC", QDir::Files, QDir::Name);
+	}
+	if (sortMethod == 3)
+	{
+		deltaGcodeFiles = directory.entryList(QStringList() << "*.dtgc" << "*.DTGC", QDir::Files, QDir::Name | QDir::Reversed);
+	}
+
+	ProgramCounter = 0;
+
+	foreach(QString gcodeFile, deltaGcodeFiles)
+	{
+		QFile file(gcodeFile);
+
+		if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+		{
+			continue;
+		}
+
+		GcodeProgram* newProgram = new GcodeProgram(wgProgramContainer);
+
+		newProgram->SetPosition(10, 10 + 90 * ProgramCounter);
+
+		QString nameWithExtension = QUrl(gcodeFile).fileName();
+		newProgram->SetName(nameWithExtension.left(nameWithExtension.lastIndexOf(".")));
+		newProgram->ID = ProgramCounter;
+		ProgramList->push_back(newProgram);
+
+		wgProgramContainer->setGeometry(QRect(0, 0, 279, 90 * (ProgramCounter + 1) + 10));
+
+		connect(newProgram, SIGNAL(Selected(GcodeProgram*)), this, SLOT(ChangeSelectingProgram(GcodeProgram*)));
+		connect(newProgram, SIGNAL(Deleted(GcodeProgram*)), this, SLOT(DeleteProgram(GcodeProgram*)));
+
+		ProgramCounter++;
+
+		QTextStream in(&file);
+
+		while (!in.atEnd())
+		{
+			QString line = in.readLine();
+
+			newProgram->GcodeData += line + "\n";
+		}
+
+		newProgram->CoutingGcodeLines();
+	}
 }
 
 void GcodeProgramManager::ExecuteGcode(QString gcodes)
@@ -365,50 +439,6 @@ bool GcodeProgramManager::findExeGcodeAndTransmit()
 	return true;
 }
 
-void GcodeProgramManager::LoadPrograms()
-{
-	QDir directory(QDir::currentPath());
-	QStringList deltaGcodeFiles = directory.entryList(QStringList() << "*.dtgc" << "*.DTGC", QDir::Files);
-
-	ProgramCounter = 0;
-
-	foreach(QString gcodeFile, deltaGcodeFiles)
-	{
-		QFile file(gcodeFile);
-
-		if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
-		{
-			continue;
-		}
-
-		GcodeProgram* newProgram = new GcodeProgram(wgProgramContainer);
-
-		newProgram->SetPosition(10, 10 + 90 * ProgramCounter);
-
-		QString nameWithExtension = QUrl(gcodeFile).fileName();
-		newProgram->SetName(nameWithExtension.left(nameWithExtension.lastIndexOf(".")));
-		newProgram->ID = ProgramCounter;
-		ProgramList->push_back(newProgram);
-
-		wgProgramContainer->setGeometry(QRect(0, 0, 279, 90 * (ProgramCounter + 1) + 10));
-		
-		connect(newProgram, SIGNAL(Selected(GcodeProgram*)), this, SLOT(ChangeSelectingProgram(GcodeProgram*)));
-		connect(newProgram, SIGNAL(Deleted(GcodeProgram*)), this, SLOT(DeleteProgram(GcodeProgram*)));
-
-		ProgramCounter++;
-
-		QTextStream in(&file);
-
-		while (!in.atEnd())
-		{
-			QString line = in.readLine();
-
-			newProgram->GcodeData += line + "\n";
-		}
-
-		newProgram->CoutingGcodeLines();
-	}
-}
 
 void GcodeProgramManager::SaveGcodeIntoFile()
 {
@@ -458,6 +488,36 @@ void GcodeProgramManager::DeleteProgram(GcodeProgram* ptr)
 	}
 
 	wgProgramContainer->setGeometry(QRect(0, 0, 279, 90 * ProgramCounter + 10));
+}
+
+void GcodeProgramManager::EraserAllProgramItems()
+{
+	SelectingProgram = NULL;
+
+	for (int i = 0; i < ProgramList->size(); i++)
+	{
+		delete ProgramList->at(i);
+	}
+	ProgramList->clear();
+	wgProgramContainer->setGeometry(QRect(0, 0, 279, 10));
+}
+
+void GcodeProgramManager::SortProgramFiles()
+{
+	sortMethod++;
+	if (sortMethod == 4)
+	{
+		sortMethod = 0;
+	}
+
+	EraserAllProgramItems();
+	LoadPrograms();
+}
+
+void GcodeProgramManager::RefreshGcodeProgramList()
+{
+	EraserAllProgramItems();
+	LoadPrograms();
 }
 
 void GcodeProgramManager::TransmitNextGcode()

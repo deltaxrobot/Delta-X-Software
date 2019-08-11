@@ -222,6 +222,7 @@ void ConnectionManager::FindingTimeOut()
 			delete portList.at(i);
 		}
 	}
+
 	portList.clear();
 
 	timer->stop();

@@ -64,7 +64,7 @@
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>-158</y>
+       <y>0</y>
        <width>279</width>
        <height>589</height>
       </rect>
@@ -246,15 +246,15 @@ color:rgb(0, 235, 0);
     <property name="geometry">
      <rect>
       <x>918</x>
-      <y>94</y>
+      <y>114</y>
       <width>373</width>
-      <height>300</height>
+      <height>283</height>
      </rect>
     </property>
     <property name="minimumSize">
      <size>
       <width>321</width>
-      <height>300</height>
+      <height>250</height>
      </size>
     </property>
     <property name="font">
@@ -280,7 +280,7 @@ color:rgb(0, 235, 0);
     <property name="geometry">
      <rect>
       <x>1180</x>
-      <y>12</y>
+      <y>36</y>
       <width>73</width>
       <height>35</height>
      </rect>
@@ -337,7 +337,7 @@ color:rgb(0, 235, 0);
      <string extracomment="New gcode"/>
     </property>
     <property name="text">
-     <string>New</string>
+     <string>New </string>
     </property>
     <property name="icon">
      <iconset>
@@ -356,9 +356,9 @@ color:rgb(0, 235, 0);
    <widget class="QTabWidget" name="twDeltaManager">
     <property name="geometry">
      <rect>
-      <x>6</x>
+      <x>4</x>
       <y>4</y>
-      <width>873</width>
+      <width>871</width>
       <height>28</height>
      </rect>
     </property>
@@ -397,7 +397,7 @@ color:rgb(0, 235, 0);
      <string/>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="tResultCameraArea">
      <attribute name="title">
@@ -2137,7 +2137,7 @@ color: rgb(255, 255, 255);</string>
     <property name="geometry">
      <rect>
       <x>1256</x>
-      <y>12</y>
+      <y>36</y>
       <width>35</width>
       <height>35</height>
      </rect>
@@ -2244,7 +2244,7 @@ color: rgb(255, 255, 255);</string>
     <property name="geometry">
      <rect>
       <x>1130</x>
-      <y>12</y>
+      <y>36</y>
       <width>47</width>
       <height>35</height>
      </rect>
@@ -2299,7 +2299,7 @@ color: rgb(255, 255, 255);</string>
     <property name="geometry">
      <rect>
       <x>988</x>
-      <y>55</y>
+      <y>79</y>
       <width>30</width>
       <height>27</height>
      </rect>
@@ -2315,7 +2315,7 @@ color: rgb(255, 255, 255);</string>
     <property name="geometry">
      <rect>
       <x>972</x>
-      <y>60</y>
+      <y>84</y>
       <width>16</width>
       <height>20</height>
      </rect>
@@ -2334,7 +2334,7 @@ color: rgb(255, 255, 255);</string>
     <property name="geometry">
      <rect>
       <x>1041</x>
-      <y>55</y>
+      <y>79</y>
       <width>30</width>
       <height>27</height>
      </rect>
@@ -2350,7 +2350,7 @@ color: rgb(255, 255, 255);</string>
     <property name="geometry">
      <rect>
       <x>1025</x>
-      <y>60</y>
+      <y>84</y>
       <width>16</width>
       <height>20</height>
      </rect>
@@ -2369,7 +2369,7 @@ color: rgb(255, 255, 255);</string>
     <property name="geometry">
      <rect>
       <x>1079</x>
-      <y>60</y>
+      <y>84</y>
       <width>16</width>
       <height>20</height>
      </rect>
@@ -2388,7 +2388,7 @@ color: rgb(255, 255, 255);</string>
     <property name="geometry">
      <rect>
       <x>1095</x>
-      <y>55</y>
+      <y>79</y>
       <width>30</width>
       <height>27</height>
      </rect>
@@ -2404,7 +2404,7 @@ color: rgb(255, 255, 255);</string>
     <property name="geometry">
      <rect>
       <x>1133</x>
-      <y>60</y>
+      <y>84</y>
       <width>16</width>
       <height>20</height>
      </rect>
@@ -2423,7 +2423,7 @@ color: rgb(255, 255, 255);</string>
     <property name="geometry">
      <rect>
       <x>1150</x>
-      <y>55</y>
+      <y>79</y>
       <width>30</width>
       <height>27</height>
      </rect>
@@ -2439,7 +2439,7 @@ color: rgb(255, 255, 255);</string>
     <property name="geometry">
      <rect>
       <x>1188</x>
-      <y>60</y>
+      <y>84</y>
       <width>16</width>
       <height>20</height>
      </rect>
@@ -2458,7 +2458,7 @@ color: rgb(255, 255, 255);</string>
     <property name="geometry">
      <rect>
       <x>1203</x>
-      <y>55</y>
+      <y>79</y>
       <width>30</width>
       <height>27</height>
      </rect>
@@ -2474,7 +2474,7 @@ color: rgb(255, 255, 255);</string>
     <property name="geometry">
      <rect>
       <x>1258</x>
-      <y>55</y>
+      <y>79</y>
       <width>30</width>
       <height>27</height>
      </rect>
@@ -2490,7 +2490,7 @@ color: rgb(255, 255, 255);</string>
     <property name="geometry">
      <rect>
       <x>1240</x>
-      <y>60</y>
+      <y>84</y>
       <width>16</width>
       <height>20</height>
      </rect>
@@ -2757,6 +2757,106 @@ background-color: rgb(255, 90, 90);</string>
      <set>Qt::AlignCenter</set>
     </property>
    </widget>
+   <widget class="QPushButton" name="pbRefreshGcodeFiles">
+    <property name="geometry">
+     <rect>
+      <x>918</x>
+      <y>506</y>
+      <width>55</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="toolTip">
+     <string extracomment="New gcode"/>
+    </property>
+    <property name="text">
+     <string>F5   </string>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>icon/Restart_16px.png</normaloff>icon/Restart_16px.png</iconset>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>16</width>
+      <height>16</height>
+     </size>
+    </property>
+    <property name="flat">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pbFindGcodeFile">
+    <property name="geometry">
+     <rect>
+      <x>918</x>
+      <y>542</y>
+      <width>55</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="toolTip">
+     <string extracomment="New gcode"/>
+    </property>
+    <property name="text">
+     <string>Find</string>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>icon/Search_16px.png</normaloff>icon/Search_16px.png</iconset>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>16</width>
+      <height>16</height>
+     </size>
+    </property>
+    <property name="flat">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pbSortGcodeFiles">
+    <property name="geometry">
+     <rect>
+      <x>918</x>
+      <y>578</y>
+      <width>55</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="toolTip">
+     <string extracomment="New gcode"/>
+    </property>
+    <property name="text">
+     <string>Sort</string>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>icon/Sort_16px.png</normaloff>icon/Sort_16px.png</iconset>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>16</width>
+      <height>16</height>
+     </size>
+    </property>
+    <property name="flat">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QLabel" name="lbID">
+    <property name="geometry">
+     <rect>
+      <x>118</x>
+      <y>54</y>
+      <width>55</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>ID: 0</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
@@ -2805,6 +2905,7 @@ selection-background-color: rgb(0, 204, 204);</string>
      <property name="title">
       <string>Execute</string>
      </property>
+     <addaction name="actionExecute"/>
      <addaction name="actionExecute_All"/>
      <addaction name="separator"/>
      <addaction name="actionDelta_X_1"/>
@@ -2818,7 +2919,7 @@ selection-background-color: rgb(0, 204, 204);</string>
   </widget>
   <action name="actionAdd">
    <property name="text">
-    <string>Add</string>
+    <string>Add New</string>
    </property>
   </action>
   <action name="actionRemove">
@@ -2851,10 +2952,15 @@ selection-background-color: rgb(0, 204, 204);</string>
     <bool>true</bool>
    </property>
    <property name="checked">
-    <bool>true</bool>
+    <bool>false</bool>
    </property>
    <property name="text">
     <string>Delta X 1</string>
+   </property>
+  </action>
+  <action name="actionExecute">
+   <property name="text">
+    <string>Execute</string>
    </property>
   </action>
  </widget>

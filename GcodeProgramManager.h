@@ -23,6 +23,8 @@
 #include <ConnectionManager.h>
 #include <DeltaVisualizer.h>
 #include <codeeditor.h>
+#include <qscrollarea.h>
+#include <qscrollbar.h>
 
 class GcodeVariable
 {
@@ -38,7 +40,7 @@ class GcodeProgramManager : public QObject
 public:
 	GcodeProgramManager();
 	~GcodeProgramManager();
-	GcodeProgramManager(QWidget* container, CodeEditor* gcodeArea, ConnectionManager* deltaPort = NULL, DeltaVisualizer* deltaVisualize = NULL);
+	GcodeProgramManager(QScrollArea* scrolArea, QWidget* container, CodeEditor* gcodeArea, ConnectionManager* deltaPort = NULL, DeltaVisualizer* deltaVisualize = NULL);
 	void AddGcodeLine(QString line);
 	void AddG01(float  x, float y, float z);
 	void AddG28();
@@ -49,6 +51,7 @@ public:
 	void Stop();
 
 	QWidget* wgProgramContainer;
+	QScrollArea* saProgramFilesScrollArea;
 	CodeEditor* pteGcodeArea;
 
 	GcodeProgram* SelectingProgram = NULL;
@@ -59,6 +62,9 @@ public slots:
 	void ChangeSelectingProgram(GcodeProgram* ptr);
 	void SaveGcodeIntoFile();
 	void DeleteProgram(GcodeProgram* ptr);
+	void EraserAllProgramItems();
+	void SortProgramFiles();
+	void RefreshGcodeProgramList();
 	void TransmitNextGcode();
 	void UpdateSystemVariable(QString name, float value);
 	void SetStartingGcodeEditorCursor(QString value);
@@ -72,6 +78,8 @@ private:
 	ConnectionManager* deltaConnection;
 	DeltaVisualizer* deltaParameter;
 	QList<GcodeVariable> gcodeVariables;
+
+	int sortMethod = 0;
 
 	QList<QString> gcodeList;
 	int gcodeOrder = 0;

@@ -17,6 +17,30 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
+	for (int i = 0; i < DeltaXMainWindows->size(); i++)
+	{
+		DeltaXMainWindows->at(i)->ui->twDeltaManager->removeTab(ID);
+	}
+
+	for (int i = 0; i < DeltaXMainWindows->size(); i++)
+	{
+		DeltaXMainWindows->at(i)->ID = i;
+		DeltaXMainWindows->at(i)->ui->lbID->setText(QString("ID: ") + QString::number(i));
+	}
+
+	DeltaXMainWindows->removeAt(ID);
+	Debugs.removeAt(ID);
+
+	delete SelectedAction;
+
+	for (int i = 0; i < DeltaXMainWindows->size(); i++)
+	{
+		DeltaXMainWindows->at(i)->ID = i;
+		DeltaXMainWindows->at(i)->ui->lbID->setText(QString("ID: ") + QString::number(i));
+	}
+
+	SelectTrueTabName(0);
+
     delete ui;
 }
 
@@ -24,6 +48,8 @@ void MainWindow::InitEvents()
 {
     connect(ui->pbConnect, SIGNAL(clicked(bool)), this, SLOT(ConnectDeltaRobot()));
 	connect(ui->pbAddNewProgram, SIGNAL(clicked(bool)), this, SLOT(AddNewProgram()));
+	connect(ui->pbRefreshGcodeFiles, SIGNAL(clicked(bool)), DeltaGcodeManager, SLOT(RefreshGcodeProgramList()));
+	connect(ui->pbSortGcodeFiles, SIGNAL(clicked(bool)), DeltaGcodeManager, SLOT(SortProgramFiles()));
 	connect(ui->pbSaveGcode, SIGNAL(clicked(bool)), this, SLOT(SaveProgram()));
 	connect(ui->pbExecuteGcodes, SIGNAL(clicked(bool)), this, SLOT(ExecuteProgram()));
 	connect(ui->pteGcodeArea, SIGNAL(cursorPositionChanged()), this, SLOT(ExecuteCurrentLine()));
@@ -76,6 +102,7 @@ void MainWindow::InitEvents()
 	connect(ui->lbScreenStreamer, SIGNAL(FinishSelectCalibPoint(int, int)), DeltaImageProcesser, SLOT(GetCalibPoint(int, int)));
 
 	connect(ui->actionGcode, SIGNAL(triggered()), this, SLOT(OpenGcodeReference()));
+	connect(ui->actionExecute_All, SIGNAL(triggered()), this, SLOT(ExecuteSelectPrograms()));
 	connect(ui->pbGcodeReference, SIGNAL(clicked(bool)), this, SLOT(OpenGcodeReference()));
 
 	connect(DeltaGcodeManager, SIGNAL(OutOfObjectVariable()), DeltaImageProcesser->ConvenyorObjectManager, SLOT(RemoveOldestObject()));
@@ -99,7 +126,8 @@ void MainWindow::InitEvents()
 
 	connect(ui->pbExportDrawingGcodes, SIGNAL(clicked(bool)), ui->lbDrawingArea, SLOT(ExportGcodes()));
 
-	connect(ui->twDeltaManager, SIGNAL(currentChanged(int)), this, SLOT(ChangeDeltaDashboard(int)));
+	connect(ui->twDeltaManager, SIGNAL(tabBarClicked(int)), this, SLOT(ChangeDeltaDashboard(int)));
+	connect(ui->twDeltaManager, SIGNAL(currentChanged(int)), this, SLOT(SelectTrueTabName(int)));
 }
 
 void MainWindow::InitVariables()
@@ -107,9 +135,10 @@ void MainWindow::InitVariables()
     DeltaPort = new ConnectionManager();
 	DeltaPort->SetBaudrate(9600);
 
-	DeltaGcodeManager = new GcodeProgramManager(ui->wgProgramContainer, ui->pteGcodeArea, DeltaPort, DeltaParameter);
+	DeltaGcodeManager = new GcodeProgramManager(ui->saProgramFiles, ui->wgProgramContainer, ui->pteGcodeArea, DeltaPort, DeltaParameter);
 	
-	DebugLB = ui->lbDebug;
+	//DebugLB = ui->lbDebug;
+	Debugs.push_back(ui->lbDebug);
 
 	DeltaGcodeManager->LoadPrograms();
 	
@@ -148,7 +177,33 @@ void MainWindow::InitVariables()
 	DeltaImageProcesser->SetFPSInputBox(ui->leFPS);
 	DeltaImageProcesser->SetDetectParameterPointer(ui->leXRec, ui->leYRec, ui->leRealDistance, ui->leXCoordinate, ui->leYCoordinate);
 
-	// ---------------- Gcode Editor -----------------
+	// ---------------- Delta X tab -----------------
+	/*DeltaXDashboard* dashBoard = new DeltaXDashboard(ui, this);
+	dashBoard->DeltaPort = DeltaPort;
+	dashBoard->DeltaGcodeManager = DeltaGcodeManager;
+	dashBoard->VisualArea = VisualArea;
+	dashBoard->DeltaParameter = DeltaParameter;
+	dashBoard->DeltaImageProcesser = DeltaImageProcesser;
+	dashBoard->DeltaDrawingExporter = DeltaDrawingExporter;
+
+	DeltaXDashboards.push_back(dashBoard);*/	
+}
+
+void MainWindow::AddInstance(QList<MainWindow*>* deltaXMainWindows)
+{
+	if (deltaXMainWindows == NULL)
+	{
+		DeltaXMainWindows = new QList<MainWindow*>();
+		DeltaXMainWindows->push_back(this);
+	}
+	else
+	{
+		DeltaXMainWindows = deltaXMainWindows;
+		DeltaXMainWindows->push_back(this);
+		initTabs();
+	}
+
+	
 }
 
 void MainWindow::ConnectDeltaRobot()
@@ -180,14 +235,72 @@ void MainWindow::OpenGcodeReference()
 
 void MainWindow::ChangeDeltaDashboard(int index)
 {
-	Debug(QString::number(index));
-
 	if (ui->twDeltaManager->count() == index + 1)
 	{
-		ui->twDeltaManager->setTabText(index, QString("Delta") + QString::number(index + 1));
-		QWidget *newDeltaTab = new QWidget();
-		ui->twDeltaManager->addTab(newDeltaTab, QString());
-		ui->twDeltaManager->setTabText(ui->twDeltaManager->indexOf(newDeltaTab), "+");
+		if (ID == 0)
+		{
+			if (DeltaXMainWindows == NULL)
+			{
+				DeltaXMainWindows = new QList<MainWindow*>();
+				DeltaXMainWindows->push_back(this);
+			}
+		}
+
+		MainWindow* mainWindow = new MainWindow();
+		mainWindow->setAttribute(Qt::WA_DeleteOnClose);
+		mainWindow->ID = DeltaXMainWindows->size() - 1;
+		mainWindow->Name = QString("Delta X ") + QString::number(mainWindow->ID + 2);
+
+		QAction *actionNewDelta_X;
+		actionNewDelta_X = new QAction(mainWindow);
+
+		actionNewDelta_X->setCheckable(true);
+		actionNewDelta_X->setChecked(false);
+		actionNewDelta_X->setText(QString("Delta X ") + QString::number(mainWindow->ID + 2));
+		DeltaXMainWindows->at(0)->ui->menuExecute->addAction(actionNewDelta_X);
+
+		mainWindow->AddInstance(this->DeltaXMainWindows);
+		mainWindow->ui->lbID->setText(QString("ID: ") + QString::number(mainWindow->ID + 1));
+		mainWindow->SelectedAction = actionNewDelta_X;
+
+		mainWindow->show();
+
+		for (int i = 0; i < DeltaXMainWindows->size() - 1; i++)
+		{
+			DeltaXMainWindows->at(i)->ui->twDeltaManager->setTabText(index, QString("Delta") + QString::number(index + 1));
+			QWidget *newDeltaTab = new QWidget();
+			DeltaXMainWindows->at(i)->ui->twDeltaManager->addTab(newDeltaTab, QString());
+			DeltaXMainWindows->at(i)->ui->twDeltaManager->setTabText(DeltaXMainWindows->at(i)->ui->twDeltaManager->indexOf(newDeltaTab), "+");
+		}
+
+		/*DeltaXDashboard* dashBoard = new DeltaXDashboard(ui, this);
+		dashBoard->InitVariable();
+		DeltaXDashboards.push_back(dashBoard);*/
+	}
+	else
+	{
+		DeltaXMainWindows->at(index)->setWindowFlags(Qt::WindowStaysOnTopHint);
+		DeltaXMainWindows->at(index)->activateWindow();
+		DeltaXMainWindows->at(index)->show();
+		DeltaXMainWindows->at(index)->setFocus();
+	}
+	Debug(QString::number(index));
+}
+
+void MainWindow::SelectTrueTabName(int index)
+{
+	for (int i = 0; i < DeltaXMainWindows->size(); i++)
+	{
+		if (DeltaXMainWindows->at(i) != NULL)
+		{
+			if (DeltaXMainWindows->at(i)->ui != NULL)
+			{
+				if (DeltaXMainWindows->at(i)->ui->twDeltaManager != NULL)
+				{
+					DeltaXMainWindows->at(i)->ui->twDeltaManager->setCurrentIndex(i);
+				}
+			}
+		}
 	}
 }
 
@@ -223,6 +336,28 @@ void MainWindow::ExecuteProgram()
 
 	else
 		Debug("Delta Robot is not connecting !");
+}
+
+void MainWindow::ExecuteSelectPrograms()
+{
+	QList<QAction*> actions = ui->menuExecute->actions();
+	for (int i = 0; i < actions.size(); i++)
+	{
+		if (actions.at(i)->text().indexOf("Delta X") > -1)
+		{
+			QString actionName = actions.at(i)->text();
+			if (actions.at(i)->isChecked() == true)
+			{
+				for (int j = 0; j < DeltaXMainWindows->size(); j++)
+				{
+					if (DeltaXMainWindows->at(j)->Name == actionName)
+					{
+						DeltaXMainWindows->at(j)->ui->pbExecuteGcodes->click();
+					}
+				}
+			}
+		}
+	}
 }
 
 void MainWindow::ExecuteCurrentLine()
@@ -542,6 +677,28 @@ void MainWindow::NoticeConnected()
 	ui->pbConnect->setText("Disconnect");
 }
 
+void MainWindow::initTabs()
+{
+	ui->twDeltaManager->removeTab(1);
+
+	ui->menuExecute->clear();
+
+	delete ui->menuExecute;
+
+	ui->menuEditor->addMenu(DeltaXMainWindows->at(0)->ui->menuExecute);
+
+	for (int i = 1; i < DeltaXMainWindows->size(); i++)
+	{
+		QWidget *newDeltaTab = new QWidget();
+		ui->twDeltaManager->addTab(newDeltaTab, QString());
+		ui->twDeltaManager->setTabText(i, QString("Delta") + QString::number(i + 1));
+	}
+
+	QWidget *newDeltaTab = new QWidget();
+	ui->twDeltaManager->addTab(newDeltaTab, QString());
+	ui->twDeltaManager->setTabText(ui->twDeltaManager->indexOf(newDeltaTab), "+");
+}
+
 void MainWindow::hideExampleWidgets()
 {
 	ui->frExProgram->setVisible(false);
@@ -633,4 +790,47 @@ void MainWindow::StandardFormatEditor()
 	}
 
 	ui->pteGcodeArea->setPlainText(editorText);
+}
+
+DeltaXDashboard::DeltaXDashboard(Ui::MainWindow *ui, MainWindow *parent)
+{
+	Ui = ui;
+	Parent = parent;
+}
+
+void DeltaXDashboard::InitVariable()
+{
+	// Init variable
+
+	DeltaPort = new ConnectionManager();
+	DeltaPort->SetBaudrate(9600);
+
+	DeltaGcodeManager = new GcodeProgramManager(Ui->saProgramFiles, Ui->wgProgramContainer, Ui->pteGcodeArea, DeltaPort, DeltaParameter);
+
+	DeltaGcodeManager->LoadPrograms();
+
+	DeltaParameter = new DeltaVisualizer(Ui->t2D);
+	DeltaParameter->setObjectName(QStringLiteral("wg2D"));
+	DeltaParameter->setGeometry(QRect(50, 10, 300, 300));
+
+	DeltaDrawingExporter = new DrawingExporter(Parent);
+	DeltaDrawingExporter->SetDrawingParameterPointer(Ui->lbImageForDrawing, Ui->lbImageWidth, Ui->lbImageHeight, Ui->leHeightScale, Ui->leWidthScale, Ui->leSpace, Ui->leDrawingThreshold, Ui->hsDrawingThreshold, Ui->cbDrawMethod, Ui->cbConversionTool);
+	DeltaDrawingExporter->SetDrawingAreaWidget(Ui->lbDrawingArea);
+
+	EditorTimer = new QTimer(Parent);
+
+	ConvenyorTimer = new QTimer(Parent);
+	Parent->connect(ConvenyorTimer, SIGNAL(timeout()), Parent, SLOT(GetConvenyorPosition()));
+
+	VisualArea = new GLWidget();
+	QHBoxLayout *container = new QHBoxLayout;
+	container->addWidget(VisualArea);
+	Ui->wgOpenGl->setLayout(container);
+
+	DeltaImageProcesser = new ImageProcesser(Parent);
+	DeltaImageProcesser->SetResultScreenPointer(Ui->lbScreenStreamer);
+	DeltaImageProcesser->SetObjectScreenPointer(Ui->lbTrackingObject);
+	DeltaImageProcesser->SetFPSInputBox(Ui->leFPS);
+	DeltaImageProcesser->SetDetectParameterPointer(Ui->leXRec, Ui->leYRec, Ui->leRealDistance, Ui->leXCoordinate, Ui->leYCoordinate);
+	//------------
 }

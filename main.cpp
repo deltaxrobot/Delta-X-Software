@@ -1,4 +1,6 @@
 #include "mainwindow.h"
+#include "RobotDashboard.h"
+#include "qdesktopwidget.h"
 #include <QApplication>
 
 int main(int argc, char *argv[])
@@ -17,6 +19,16 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
     MainWindow w;
     w.show();
+
+	/*RobotDashboard *w = new RobotDashboard();
+	w->show();*/
+
+	/////////////////////////
+
+	/*QRect screenGeometry = QApplication::desktop()->availableGeometry();
+	w->resize(screenGeometry.width(), screenGeometry.height());
+	w->showNormal();*/
+
 
     return a.exec();
 }
