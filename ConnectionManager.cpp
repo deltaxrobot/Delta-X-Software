@@ -8,7 +8,7 @@ ConnectionManager::ConnectionManager()
 void ConnectionManager::init()
 {
 	timer = new QTimer();
-	serialPort = new QSerialPort();
+	robotPort = new QSerialPort();
 	
 	connect(timer, SIGNAL(timeout()), this, SLOT(FindingTimeOut()));
 }
@@ -27,9 +27,9 @@ void ConnectionManager::sendQueue()
 		QString msg;
 		msg = transmitLine + "\n";
 
-		if (serialPort->isOpen())
+		if (robotPort->isOpen())
 		{
-			serialPort->write(msg.toStdString().c_str(), msg.size());
+			robotPort->write(msg.toStdString().c_str(), msg.size());
 		}
 		else
 			Debug("Serial port is not available !");
@@ -38,7 +38,7 @@ void ConnectionManager::sendQueue()
 
 bool ConnectionManager::IsConnect()
 {
-	if (serialPort->isOpen())
+	if (robotPort->isOpen())
 		return true;
 
 	return false;
@@ -46,23 +46,55 @@ bool ConnectionManager::IsConnect()
 
 void ConnectionManager::Disconnect()
 {
-	if (serialPort->isOpen())
+	if (robotPort->isOpen())
 	{
-		serialPort->close();
+		robotPort->close();
 		isDeltaPortConnected = false;
 	}
 }
 
 QString ConnectionManager::GetNamePort()
 {
-	if (serialPort == NULL)
+	if (robotPort == NULL || robotPort == Q_NULLPTR)
 		return QString("Null");
-	return serialPort->portName();
+	
+	return robotPort->portName();
 }
 
 void ConnectionManager::SetBaudrate(int baud)
 {
 	this->baudrate = baud;
+}
+
+int ConnectionManager::GetBaudrate()
+{
+	return baudrate;
+}
+
+void ConnectionManager::FindDeltaRobot()
+{
+	Q_FOREACH(QSerialPortInfo portInfo, QSerialPortInfo::availablePorts())
+	{
+		QSerialPort* sP = new QSerialPort();
+
+		QString portName = portInfo.portName();
+		sP->setPortName(portName);
+		sP->setBaudRate(baudrate);
+
+		portList.push_back(sP);
+
+		if (sP->open((QIODevice::ReadWrite)) == true)
+		{
+			connect(sP, SIGNAL(readyRead()), this, SLOT(ReadData()));
+
+			QString name = sP->portName();
+
+			sP->write("IsDelta\n");
+			sP->write("IsDelta\n");
+		}
+	}
+
+	timer->start(200);
 }
 
 void ConnectionManager::Send(QString msg)
@@ -105,12 +137,30 @@ void ConnectionManager::Send(QString msg)
 	transmitLine = msg;
 
 	msg += "\n";
-	if (serialPort->isOpen())
+	if (robotPort->isOpen())
 	{
-		serialPort->write(msg.toStdString().c_str(), msg.size());
+		robotPort->write(msg.toStdString().c_str(), msg.size());
 	}
 	else
 		Debug("Serial port is not available !");
+}
+
+void ConnectionManager::ConveyorSend(QString msg)
+{
+	if (ConveyorPort == NULL || ConveyorPort->isOpen() == false)
+		return;
+
+	msg += "\n";
+	ConveyorPort->write(msg.toStdString().c_str(), msg.size());
+}
+
+void ConnectionManager::SlidingSend(QString msg)
+{
+	if (ConveyorPort == NULL || ConveyorPort->isOpen() == false)
+		return;
+
+	msg += "\n";
+	SlidingPort->write(msg.toStdString().c_str(), msg.size());
 }
 
 void ConnectionManager::ReadData()
@@ -120,15 +170,20 @@ void ConnectionManager::ReadData()
 	while (sP->canReadLine())
 	{
 		receiveLine = sP->readLine();
+		QString name = sP->portName();
 		emit FinishReadLine(receiveLine);
 
 		if (receiveLine.mid(0, 8) == "YesDelta")
 		{
-			delete serialPort;
-			serialPort = sP;
-			emit DeltaResponeReady();
+			if (isDeltaPortConnected != true)
+			{
+				delete robotPort;
+				robotPort = sP;
+				emit DeltaResponeReady();
 
-			isDeltaPortConnected = true;
+				isDeltaPortConnected = true;
+
+			}			
 		}
 
 		if (receiveLine.mid(0, 2) == "Ok" || (receiveLine.indexOf('k') > -1 && receiveLine.indexOf('O') > -1))
@@ -168,31 +223,7 @@ void ConnectionManager::ReadData()
 	}	
 }
 
-void ConnectionManager::FindDeltaRobot()
-{
-	Q_FOREACH(QSerialPortInfo portInfo, QSerialPortInfo::availablePorts())
-	{
-		QSerialPort* sP = new QSerialPort();
 
-		QString portName = portInfo.portName();
-		sP->setPortName(portName);
-		sP->setBaudRate(baudrate);
-
-		portList.push_back(sP);				
-
-		if (sP->open((QIODevice::ReadWrite)) == true)
-		{
-			connect(sP, SIGNAL(readyRead()), this, SLOT(ReadData()));
-
-			QString name = sP->portName();
-
-			sP->write("IsDelta\n");
-			//sP->write("IsDelta\n");
-		}	
-	}
-
-	timer->start(200);
-}
 
 void ConnectionManager::FindingTimeOut()
 {
@@ -216,7 +247,7 @@ void ConnectionManager::FindingTimeOut()
 
 	for(int i = 0; i < portList.length(); i++)
 	{
-		if (portList.at(i)->portName() != serialPort->portName())
+		if (portList.at(i)->portName() != robotPort->portName())
 		{
 			portList.at(i)->close();
 			delete portList.at(i);

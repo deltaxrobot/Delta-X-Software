@@ -51,6 +51,11 @@ QSize DeltaVisualizer::sizeHint()
 	return QSize(400, 400);
 }
 
+void DeltaVisualizer::SetDivisionComboBox(QComboBox* division)
+{
+	cbDivision = division;
+}
+
 void DeltaVisualizer::ChangeXY(int x, int y)
 {
 	float h = qSqrt(ePara * ePara * (1.0f - 1.0f / 4));
@@ -181,6 +186,100 @@ void DeltaVisualizer::wheelEvent(QWheelEvent *e)
 		return;
 
 	timer.restart();
+
+	emit Moved(X, Y, Z, W);
+	emit FinishMoving();
+}
+
+bool DeltaVisualizer::eventFilter(QObject *dist, QEvent *event)
+{
+	if (event->type() == QEvent::KeyPress)
+	{
+		QKeyEvent *keyEvent = static_cast<QKeyEvent*>(event);
+
+		float division = cbDivision->currentText().toFloat();
+
+		if (QString("1234567890").indexOf(keyEvent->text()) == -1) 
+			return true;
+
+		else if (keyEvent->key() == Qt::Key_Up) 
+		{ 
+			emit up_arrow();
+			Y += division;
+		}
+		else if (keyEvent->key() == Qt::Key_Down) 
+		{ 
+			emit down_arrow(); 
+			Y -= division;
+		}
+		else if (keyEvent->key() == Qt::Key_Left) 
+		{ 
+			emit left_arrow(); 
+			X += division;
+		}
+		else if (keyEvent->key() == Qt::Key_Right) 
+		{ 
+			emit right_arrow(); 
+			X -= division;
+		}
+
+		emit Moved(X, Y, Z, W);
+		emit FinishMoving();
+		return true;
+	}
+
+	return false;
+}
+
+void DeltaVisualizer::MoveUp()
+{
+	float division = cbDivision->currentText().toFloat();
+	Z += division;
+
+	emit Moved(X, Y, Z, W);
+	emit FinishMoving();
+}
+
+void DeltaVisualizer::MoveDown()
+{
+	float division = cbDivision->currentText().toFloat();
+	Z -= division;
+
+	emit Moved(X, Y, Z, W);
+	emit FinishMoving();
+}
+
+void DeltaVisualizer::MoveForward()
+{
+	float division = cbDivision->currentText().toFloat();
+	Y += division;
+
+	emit Moved(X, Y, Z, W);
+	emit FinishMoving();
+}
+
+void DeltaVisualizer::MoveBackward()
+{
+	float division = cbDivision->currentText().toFloat();
+	Y -= division;
+
+	emit Moved(X, Y, Z, W);
+	emit FinishMoving();
+}
+
+void DeltaVisualizer::MoveLeft()
+{
+	float division = cbDivision->currentText().toFloat();
+	X -= division;
+
+	emit Moved(X, Y, Z, W);
+	emit FinishMoving();
+}
+
+void DeltaVisualizer::MoveRight()
+{
+	float division = cbDivision->currentText().toFloat();
+	X += division;
 
 	emit Moved(X, Y, Z, W);
 	emit FinishMoving();

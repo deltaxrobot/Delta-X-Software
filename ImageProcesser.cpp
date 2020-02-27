@@ -1,11 +1,15 @@
 #include "ImageProcesser.h"
 
-ImageProcesser::ImageProcesser(QWidget *parent)
+ImageProcesser::ImageProcesser(MainWindow *parent)
 	: QWidget(parent)
 {
 	ParameterPanel = new HSVWindow(parent);
 	connect(ParameterPanel, SIGNAL(ValueChanged(int, int, int, int, int, int)), this, SLOT(SetHSV(int, int, int, int, int, int)));
 	connect(ParameterPanel, SIGNAL(ValueChanged(int)), this, SLOT(SetThreshold(int)));
+
+	mParent = parent;
+
+	Camera = new cv::VideoCapture();
 
 	updateScreenTimer = new QTimer(this);
 	connect(updateScreenTimer, SIGNAL(timeout()), this, SLOT(UpdateCameraScreen()));
@@ -19,6 +23,11 @@ ImageProcesser::ImageProcesser(QWidget *parent)
 
 	ConvenyorObjectManager = new BlobManager(parent);
 	ConvenyorObjectManager->SetApproximateValue(cv::Point3d(10, 10, 10));
+
+	CalculatedConvenyorTimer = new QTimer(this);
+	connect(CalculatedConvenyorTimer, SIGNAL(timeout()), this, SLOT(CalConvenyorPosition()));
+
+	CalculatedConvenyorTimer->setInterval(100);
 }
 
 ImageProcesser::~ImageProcesser()
@@ -56,7 +65,7 @@ void ImageProcesser::UpdateCameraScreen()
 		isFirstLoad = false;
 	}
 
-	camera.read(captureImage);
+	Camera->read(captureImage);
 
 	if (!captureImage.data)
 	{
@@ -155,6 +164,9 @@ void ImageProcesser::SetThreshold(int value)
 
 void ImageProcesser::GetObjectInfo(int x, int y, int h, int w)
 {
+	if (lbResultImage->pixmap() == NULL)
+		return;
+
 	float ratio = (float)DEFAULT_PROCESSING_SIZE / lbResultImage->width();
 	objectRec.x = x;
 	objectRec.y = y;
@@ -175,6 +187,8 @@ void ImageProcesser::GetObjectInfo(int x, int y, int h, int w)
 
 	leXRec->setText(QString::number(objectRec.width));
 	leYRec->setText(QString::number(objectRec.height));
+
+	ConvenyorObjectManager->SetApproximateValue(cv::Point3d((float)h * 0.8f, (float)w * 0.8f, 60));
 }
 
 void ImageProcesser::GetProcessRegion(QPoint a, QPoint b, QPoint c, QPoint d)
@@ -227,7 +241,7 @@ void ImageProcesser::changeAxisDirection()
 	}
 	else if (axisDirection == 2)
 	{
-		axisDirection = 1;
+		axisDirection = 3;
 		xAxis.setP1(QPoint(20, 20));
 		xAxis.setP2(QPoint(80, 20));
 		arrow1.setP1(QPoint(70, 25));
@@ -235,6 +249,22 @@ void ImageProcesser::changeAxisDirection()
 		arrow2.setP1(QPoint(70, 15));
 		arrow2.setP2(QPoint(80, 20));
 	}
+	else if (axisDirection == 3)
+	{
+		axisDirection = 1;
+		xAxis.setP1(QPoint(20, 80));
+		xAxis.setP2(QPoint(20, 20));
+		arrow1.setP1(QPoint(25, 30));
+		arrow1.setP2(QPoint(20, 20));
+		arrow2.setP1(QPoint(15, 30));
+		arrow2.setP2(QPoint(20, 20));
+	}
+}
+
+void ImageProcesser::CalConvenyorPosition()
+{
+	float delX = convenyorVel / 10;
+	ConvenyorObjectManager->UpdateNewPositionObjects(delX, 0);
 }
 
 void ImageProcesser::LoadCamera()
@@ -247,7 +277,23 @@ void ImageProcesser::LoadCamera()
 
 		if (ok && !text.isEmpty())
 		{
-			camera.open(text.toInt());
+			RunningCamera = text.toInt();
+
+			if (mParent->DeltaXMainWindows != NULL)
+			{
+				for (int i = 0; i < mParent->DeltaXMainWindows->size(); i++)
+				{
+					if (mParent->DeltaXMainWindows->at(i)->DeltaImageProcesser->RunningCamera == RunningCamera)
+					{
+						Camera = mParent->DeltaXMainWindows->at(i)->DeltaImageProcesser->Camera;
+						updateScreenTimer->start(50);
+						return;
+					}
+				}
+			}
+
+
+			Camera->open(text.toInt());
 
 			updateScreenTimer->start(50);
 			
@@ -256,12 +302,14 @@ void ImageProcesser::LoadCamera()
 		else
 		{
 			loadBt->setChecked(false);
+			RunningCamera = -1;
 		}
 	}
 	else
 	{
 		//loadBt->setText("Load Camera");
 		updateScreenTimer->stop();
+		RunningCamera = -1;
 		return;
 	}
 }
@@ -275,6 +323,21 @@ void ImageProcesser::UpdateLabelImage(cv::Mat mat, QLabel* label)
 {
 	QImage img = ImageTool::cvMatToQImage(mat);
 	label->setPixmap(QPixmap::fromImage(img).scaledToWidth(label->size().width()));
+}
+
+void ImageProcesser::SetConvenyorVelocity(float val)
+{
+	convenyorVel = val;
+
+	if (val != 0)
+	{
+		CalculatedConvenyorTimer->start(100);
+	}
+
+	else
+	{
+		CalculatedConvenyorTimer->stop();
+	}
 }
 
 void ImageProcesser::drawXAxis()
@@ -443,6 +506,12 @@ float ImageProcesser::drawMinRec(cv::Mat & mat, std::vector<cv::Point> contour, 
 	if (axisDirection == 2)
 	{
 		xRealObject = xRealCamOri + minRec.center.y * processAndRealRatio;
+		yRealObject = yRealCamOri + minRec.center.x * processAndRealRatio;
+	}
+
+	if (axisDirection == 3)
+	{
+		xRealObject = xRealCamOri - minRec.center.y * processAndRealRatio;
 		yRealObject = yRealCamOri + minRec.center.x * processAndRealRatio;
 	}
 

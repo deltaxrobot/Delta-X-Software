@@ -72,7 +72,7 @@ static const uint qt_meta_data_BlobManager[] = {
        9,    0,   45,    2, 0x0a /* Public */,
 
  // signals: parameters
-    QMetaType::Void, QMetaType::QString, QMetaType::Int,    3,    4,
+    QMetaType::Void, QMetaType::QString, QMetaType::Float,    3,    4,
 
  // slots: parameters
     QMetaType::Void, QMetaType::Float, QMetaType::Float,    6,    7,
@@ -88,7 +88,7 @@ void BlobManager::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id,
         BlobManager *_t = static_cast<BlobManager *>(_o);
         Q_UNUSED(_t)
         switch (_id) {
-        case 0: _t->NewUpdateObjectPosition((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2]))); break;
+        case 0: _t->NewUpdateObjectPosition((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< float(*)>(_a[2]))); break;
         case 1: _t->UpdateNewPositionObjects((*reinterpret_cast< float(*)>(_a[1])),(*reinterpret_cast< float(*)>(_a[2]))); break;
         case 2: _t->RemoveOldestObject(); break;
         case 3: _t->RemoveAllDetectObjects(); break;
@@ -98,7 +98,7 @@ void BlobManager::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id,
         int *result = reinterpret_cast<int *>(_a[0]);
         void **func = reinterpret_cast<void **>(_a[1]);
         {
-            typedef void (BlobManager::*_t)(QString , int );
+            typedef void (BlobManager::*_t)(QString , float );
             if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&BlobManager::NewUpdateObjectPosition)) {
                 *result = 0;
                 return;
@@ -144,7 +144,7 @@ int BlobManager::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
 }
 
 // SIGNAL 0
-void BlobManager::NewUpdateObjectPosition(QString _t1, int _t2)
+void BlobManager::NewUpdateObjectPosition(QString _t1, float _t2)
 {
     void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)), const_cast<void*>(reinterpret_cast<const void*>(&_t2)) };
     QMetaObject::activate(this, &staticMetaObject, 0, _a);

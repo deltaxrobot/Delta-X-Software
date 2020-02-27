@@ -6,12 +6,26 @@ GcodeReference::GcodeReference(QWidget *parent)
 	ui.setupUi(this);
 
 	connect(ui.listWidget, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(SelectGcodeItem(QListWidgetItem*)));	
-	connect(ui.textEdit, SIGNAL(cursorPositionChanged()), this, SLOT(SelectLineTextEdit()));
+	//connect(ui.textEdit, SIGNAL(cursorPositionChanged()), this, SLOT(SelectLineTextEdit()));
 }
 
 void GcodeReference::SelectGcodeItem(QListWidgetItem *item)
 {
-	ui.textEdit->scrollToAnchor(item->text());
+	QString itemText = item->text();
+	QString name = "other";
+
+	if (itemText.indexOf(".") > -1)
+	{
+		name = itemText.mid(0, itemText.indexOf("."));
+	}
+
+	if (itemText.indexOf(" -") > -1)
+	{
+		name = itemText.mid(0, itemText.indexOf(" -"));
+		name = name.replace(", ", "_");
+	}
+
+	ui.textEdit->scrollToAnchor(name);
 	QString s = ui.textEdit->toHtml();
 	QString ss = s;
 	QTextCursor textCursor(ui.textEdit->document());

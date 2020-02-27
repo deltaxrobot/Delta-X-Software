@@ -18,6 +18,7 @@
 #include "BlobManager.h"
 #include "UnityTool.h"
 #include "CameraWidget.h"
+#include "mainwindow.h"
 
 #define RED_COLOR       cv::Scalar(0, 0, 255)
 #define GREEN_COLOR     cv::Scalar(0, 255, 0)
@@ -44,12 +45,14 @@
 #define MIN_OBJECT_AREA			(DEFAULT_OBJECT_WIDTH - APPROXIMATE_RANGE)*(DEFAULT_OBJECT_HEIGHT - APPROXIMATE_RANGE)
 #define MAX_OBJECT_AREA			(DEFAULT_OBJECT_WIDTH + APPROXIMATE_RANGE)*(DEFAULT_OBJECT_HEIGHT + APPROXIMATE_RANGE)
 
+class MainWindow;
+
 class ImageProcesser : public QWidget
 {
 	Q_OBJECT
 
 public:
-	ImageProcesser(QWidget *parent);
+	ImageProcesser(MainWindow *parent);
 	~ImageProcesser();
 	
 	void SetDetectParameterPointer(QLineEdit* xRec, QLineEdit* yRec, QLineEdit* distance, QLineEdit* xCoor, QLineEdit* yCoor);
@@ -59,8 +62,16 @@ public:
 
 	void UpdateLabelImage(cv::Mat mat, QLabel* label);
 
+	void SetConvenyorVelocity(float val);
+
 	HSVWindow* ParameterPanel;
 	BlobManager* ConvenyorObjectManager;
+
+
+	QTimer* CalculatedConvenyorTimer;
+	int RunningCamera = -1;
+
+	cv::VideoCapture* Camera;
 
 public slots:
 	void LoadTestImage();
@@ -75,6 +86,8 @@ public slots:
 	void GetCalibPoint(int x, int y);
 	void SwitchLayer();
 	void changeAxisDirection();
+
+	void CalConvenyorPosition();
 private:
 
 	void drawXAxis();
@@ -91,6 +104,8 @@ private:
 	double getDistance(cv::Point point1, cv::Point point2);
 	int getObjectNumber(std::vector<Blob> &blobs);
 	void drawCountedObjectDigit(int &carCount, cv::Mat &imgFrame2Copy);
+
+	float convenyorVel = 0;
 
 	int HSVValue[6] = {0, 100, 0, 255, 0, 255};
 	int thresholdValue = 150;
@@ -112,7 +127,6 @@ private:
 	QLine arrow2;
 	
 	QTimer* updateScreenTimer;
-	cv::VideoCapture camera;
 	cv::Mat captureImage;
 	cv::Mat resizeImage;
 	cv::Mat resultImage;
@@ -135,4 +149,6 @@ private:
 
 	std::vector<Blob> appearedBlobs;
 	std::vector<Blob> currentFrameBlobs;
+
+	MainWindow* mParent;
 };

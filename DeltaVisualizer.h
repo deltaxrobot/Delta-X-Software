@@ -12,6 +12,7 @@
 #include <qmath.h>
 #include <qevent.h>
 #include <QElapsedTimer>
+#include <qcombobox.h>
 
 class DeltaVisualizer : public QOpenGLWidget, QOpenGLFunctions
 {
@@ -24,6 +25,7 @@ public:
 
 	QSize minimumSizeHint();
 	QSize sizeHint();	
+	void SetDivisionComboBox(QComboBox* division);
 
 	float XHome = 0;
 	float YHome = 0;
@@ -37,9 +39,20 @@ public:
 
 public slots:
 	void ChangeXY(int x, int y);
+	void MoveUp();
+	void MoveDown();
+	void MoveForward();
+	void MoveBackward();
+	void MoveLeft();
+	void MoveRight();
 signals:
 	void Moved(float x, float y, float z, float w);
 	void FinishMoving();
+
+	void up_arrow();
+	void down_arrow();
+	void left_arrow();
+	void right_arrow();
 
 protected:
 	void initializeGL() Q_DECL_OVERRIDE;
@@ -49,6 +62,7 @@ protected:
 	void mouseReleaseEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
 	void mouseMoveEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
 	void wheelEvent(QWheelEvent *e) Q_DECL_OVERRIDE;
+	bool eventFilter(QObject *dist, QEvent *event) Q_DECL_OVERRIDE;
 
 private:
 	QMatrix4x4 pMatrix;
@@ -56,6 +70,8 @@ private:
 	QVector<QVector3D> vertices;
 
 	QElapsedTimer timer;
+
+	QComboBox* cbDivision;
 
 	float fPara;
 	float rfPara;

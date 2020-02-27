@@ -51,7 +51,7 @@ bool BlobManager::isNewObject(cv::RotatedRect object)
 		float errY = abs(oldObj.center.y - object.center.y);
 		float errA = abs(oldObj.angle - object.angle);
 		
-		if (errX < (approValue.x * 8) && errY < (approValue.y * 4) && errA < (approValue.z * 4))
+		if (errX < (approValue.x) && errY < (approValue.y))
 		{
 			oldObj.angle = object.angle;
 			oldObj.center = object.center;
@@ -59,7 +59,17 @@ bool BlobManager::isNewObject(cv::RotatedRect object)
 
 			result = false;
 		}
+		else
+		{
+			cv::RotatedRect newObj = object;
+		}
 	}
+
+	if (result == true)
+	{
+		cv::RotatedRect newObj = object;
+	}
+
 	return result;
 }
 
@@ -88,7 +98,6 @@ void BlobManager::UpdateNewPositionObjects(float deltaX, float deltaY)
 	{
 		angle = oldestObj.angle + 90;
 	}
-
 	emit NewUpdateObjectPosition(QString("#1010"), oldestObj.center.x);
 	emit NewUpdateObjectPosition(QString("#1011"), oldestObj.center.y);
 	emit NewUpdateObjectPosition(QString("#1012"), angle);

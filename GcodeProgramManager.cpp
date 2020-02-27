@@ -1,18 +1,20 @@
 #include "GcodeProgramManager.h"
 
 
-GcodeProgramManager::GcodeProgramManager()
+GcodeProgramManager::GcodeProgramManager(MainWindow *parent)
 {
 	ProgramList = new QVector<GcodeProgram*>();
+	mParent = parent;
 }
 
-GcodeProgramManager::GcodeProgramManager(QScrollArea* scrolArea, QWidget* container, CodeEditor * gcodeArea, ConnectionManager* deltaPort, DeltaVisualizer* deltaVisualize) : GcodeProgramManager()
+GcodeProgramManager::GcodeProgramManager(MainWindow *parent, QScrollArea* scrolArea, QWidget* container, CodeEditor * gcodeArea, QPushButton* executeButton, ConnectionManager* deltaPort, DeltaVisualizer* deltaVisualize) : GcodeProgramManager(parent)
 {
 	saProgramFilesScrollArea = scrolArea;
 	wgProgramContainer = container;
 	pteGcodeArea = gcodeArea;
 	deltaConnection = deltaPort;
 	deltaParameter = deltaVisualize;
+	pbExecuteGcodes = executeButton;
 
 	UpdateSystemVariable("#1001", -1000);
 	UpdateSystemVariable("#1002", -1000);
@@ -26,6 +28,7 @@ GcodeProgramManager::GcodeProgramManager(QScrollArea* scrolArea, QWidget* contai
 	UpdateSystemVariable("#Y", 0);
 	UpdateSystemVariable("#Z", 0);
 	UpdateSystemVariable("#W", 0);
+
 	connect(deltaConnection, SIGNAL(DeltaResponeGcodeDone()), this, SLOT(TransmitNextGcode()));
 }
 
@@ -161,8 +164,10 @@ void GcodeProgramManager::LoadPrograms()
 	}
 }
 
-void GcodeProgramManager::ExecuteGcode(QString gcodes)
+void GcodeProgramManager::ExecuteGcode(QString gcodes, bool isFromGE)
 {
+	isFromGcodeEditor = isFromGE;
+
 	QList<QString> tempGcodeList = gcodes.split('\n');
 
 	gcodeList.clear();
@@ -188,13 +193,24 @@ void GcodeProgramManager::ExecuteGcode(QString gcodes)
 }
 
 void GcodeProgramManager::Stop()
-{
+{	
 	gcodeList.clear();
 	gcodeOrder = 0;
 }
 
 float GcodeProgramManager::GetVariableValue(QString name)
-{
+{	
+	if (mParent->DeltaXMainWindows != NULL)
+	{
+		if (mParent != mParent->DeltaXMainWindows->at(0))
+		{
+			if (isGlobalVariable(name))
+			{
+				return mParent->DeltaXMainWindows->at(0)->DeltaGcodeManager->GetVariableValue(name);				;
+			}
+		}
+	}
+
 	foreach(GcodeVariable var, gcodeVariables)
 	{
 		if (var.Name == name)
@@ -202,16 +218,52 @@ float GcodeProgramManager::GetVariableValue(QString name)
 			return var.Value;
 		}
 	}
+	return name.toFloat();
+}
+
+bool GcodeProgramManager::isGlobalVariable(QString name)
+{
+	if (name == NULL)
+		return false;
+
+	if (name.length() > 6)
+	{
+		if (name.indexOf("#GLOBAL") == 0)
+			return true;
+	}
+	
+	return false;
+}
+
+bool GcodeProgramManager::isConveyorGcode(QString gcode)
+{
+	QString conveyorGcodes = "M310 M311 M312 M313";
+	QString prefix = gcode.mid(0, gcode.indexOf(" "));
+	if (conveyorGcodes.indexOf(prefix) > -1)
+		return true;
+	return false;
+}
+
+bool GcodeProgramManager::isSlidingGcode(QString gcode)
+{
+	QString conveyorGcodes = "M320 M321 M322 M323";
+	QString prefix = gcode.mid(0, gcode.indexOf(" "));
+	if (conveyorGcodes.indexOf(prefix) > -1)
+		return true;
+	return false;
 }
 
 bool GcodeProgramManager::findExeGcodeAndTransmit()
 {
-	currentGcodeEditorCursor = gcodeOrder;
-	QTextCursor textCursor = pteGcodeArea->textCursor();
-	textCursor.movePosition(QTextCursor::Start);
-	textCursor.movePosition(QTextCursor::Down, QTextCursor::MoveAnchor, currentGcodeEditorCursor);
-	pteGcodeArea->setTextCursor(textCursor);
-	pteGcodeArea->highlightCurrentLine();
+	if (isFromGcodeEditor == true)
+	{
+		currentGcodeEditorCursor = gcodeOrder;
+		QTextCursor textCursor = pteGcodeArea->textCursor();
+		textCursor.movePosition(QTextCursor::Start);
+		textCursor.movePosition(QTextCursor::Down, QTextCursor::MoveAnchor, currentGcodeEditorCursor);
+		pteGcodeArea->setTextCursor(textCursor);
+		pteGcodeArea->highlightCurrentLine();
+	}
 
 	if (currentLine == "")
 	{
@@ -421,6 +473,35 @@ bool GcodeProgramManager::findExeGcodeAndTransmit()
 					}
 				}
 			}
+
+			if (valuePairs[i + 1].at(0) == 'F')
+			{
+				QString subProName = valuePairs[i + 1].mid(1);
+
+				for (int i = 0; i < ProgramList->size(); i++)
+				{
+					if (ProgramList->at(i)->GetName() == subProName)
+					{
+						disconnect(deltaConnection, SIGNAL(DeltaResponeGcodeDone()), this, SLOT(TransmitNextGcode()));
+
+						InsideGcodeProgramManager = new GcodeProgramManager(mParent, saProgramFilesScrollArea, wgProgramContainer, pteGcodeArea, pbExecuteGcodes, deltaConnection, deltaParameter);
+
+						connect(InsideGcodeProgramManager, SIGNAL(FinishExecuteGcodes()), this, SLOT(TransmitNextGcode()));
+						InsideGcodeProgramManager->IsFromOtherGcodeProgram = true;
+						InsideGcodeProgramManager->OutsideGcodeProgramManager = this;
+						isFileProgramRunning = true;
+						
+						QString exeGcodes = ProgramList->at(i)->GcodeData;
+
+						pteGcodeArea->setText(exeGcodes);
+
+						InsideGcodeProgramManager->ExecuteGcode(exeGcodes, true);
+
+						gcodeOrder++;
+						return true;
+					}
+				}
+			}
 		}
 
 		if (valuePairs[i] == "M99")
@@ -428,6 +509,20 @@ bool GcodeProgramManager::findExeGcodeAndTransmit()
 			gcodeOrder = returnSubProPointer[returnPointerOrder] + 1;
 			returnPointerOrder--;
 			//TransmitNextGcode();
+			return false;
+		}
+
+		if (isConveyorGcode(transmitGcode))
+		{
+			gcodeOrder++;
+			deltaConnection->ConveyorSend(transmitGcode);
+			return false;
+		}
+
+		if (isSlidingGcode(transmitGcode))
+		{
+			gcodeOrder++;
+			deltaConnection->SlidingSend(transmitGcode);
 			return false;
 		}
 	}
@@ -526,7 +621,11 @@ void GcodeProgramManager::TransmitNextGcode()
 		return;
 
 	if (gcodeOrder >= gcodeList.size())
+	{
+		if (pbExecuteGcodes->isChecked() == true)
+			pbExecuteGcodes->click();
 		return;
+	}		
 
 	while (true)
 	{
@@ -546,6 +645,19 @@ void GcodeProgramManager::TransmitNextGcode()
 			//timer->stop();
 			gcodeOrder = 0;
 			gcodeList.clear();
+
+			if (IsFromOtherGcodeProgram == true)
+			{
+				pteGcodeArea->setText(OutsideGcodeProgramManager->SelectingProgram->GcodeData);
+				emit FinishExecuteGcodes();
+				connect(deltaConnection, SIGNAL(DeltaResponeGcodeDone()), OutsideGcodeProgramManager, SLOT(TransmitNextGcode()));
+			}
+			else
+			{
+				if (pbExecuteGcodes->isChecked() == true)
+					pbExecuteGcodes->click();
+			}			
+
 			break;
 		}
 
@@ -559,21 +671,7 @@ void GcodeProgramManager::TransmitNextGcode()
 
 void GcodeProgramManager::UpdateSystemVariable(QString name, float value)
 {
-	for (int i = 0; i < gcodeVariables.size(); i++)
-	{
-		if (name == gcodeVariables[i].Name)
-		{
-			gcodeVariables[i].Value = value;
-			emit JustUpdateVariable(gcodeVariables);
-			return;
-		}
-	}
-
-	GcodeVariable var;
-	var.Name = name;
-	var.Value = value;
-
-	gcodeVariables.push_back(var);
+	SaveGcodeVariable(name, value);
 	emit JustUpdateVariable(gcodeVariables);
 }
 
@@ -590,25 +688,46 @@ float GcodeProgramManager::calculateExpressions(QString expression)
 	while (1)
 	{
 		int openIndex = expression.lastIndexOf('[');
+
 		int multiplyIndex = expression.indexOf('*');
 		int divideIndex = expression.indexOf('/');
 		int plusIndex = expression.indexOf('+');
 		int subIndex = expression.indexOf("- ");
+
+		int andIndex = expression.indexOf("AND");
+		int orIndex = expression.indexOf("OR");
+		int xorIndex = expression.indexOf("XOR");
+
 		int eqIndex = expression.indexOf("EQ");
+		int neIndex = expression.indexOf("NE");
+		int ltIndex = expression.indexOf("LT");
 		int leIndex = expression.indexOf("LE");
 		int gtIndex = expression.indexOf("GT");
+		int geIndex = expression.indexOf("GE");
 
 		if (eqIndex == -1)
 		{
-			eqIndex = expression.indexOf("=");
+			eqIndex = expression.indexOf("==");
+		}
+		if (neIndex == -1)
+		{
+			neIndex = expression.indexOf("!=");
+		}
+		if (ltIndex == -1)
+		{
+			ltIndex = expression.indexOf("<");
 		}
 		if (leIndex == -1)
 		{
-			leIndex = expression.indexOf("<");
+			leIndex = expression.indexOf("<=");
 		}
 		if (gtIndex == -1)
 		{
 			gtIndex = expression.indexOf(">");
+		}
+		if (geIndex == -1)
+		{
+			geIndex = expression.indexOf(">=");
 		}
 
 		if (openIndex > -1)
@@ -623,59 +742,36 @@ float GcodeProgramManager::calculateExpressions(QString expression)
 			 
 			continue;
 		}
-		else if ((multiplyIndex > -1 || divideIndex > -1 || plusIndex > -1 || subIndex > -1) && isNotNegative(expression))
+		else if ((multiplyIndex > -1 || divideIndex > -1 || plusIndex > -1 || subIndex > -1 || andIndex > -1 || orIndex > -1 || xorIndex > -1) && isNotNegative(expression))
 		{
-			// 3 + 2 * 5 - 4 / 2
-			QString value1S = getLeftWord(expression, subIndex);
-			QString value2S = getRightWord(expression, subIndex);
+			// 3 + 2 * 5 - 4 / 2			
 
-			if (multiplyIndex > -1)
-			{
-				value1S = getLeftWord(expression, multiplyIndex);
-				value2S = getRightWord(expression, multiplyIndex);
-			}
-			else if (divideIndex > -1)
-			{
-				value1S = getLeftWord(expression, divideIndex);
-				value2S = getRightWord(expression, divideIndex);
-			}
-			else if (plusIndex > -1)
-			{
-				value1S = getLeftWord(expression, plusIndex);
-				value2S = getRightWord(expression, plusIndex);
-			}
-			else
-			{
+			int operaIndex = subIndex;
 
-			}
+			operaIndex = (multiplyIndex > -1) ? multiplyIndex : operaIndex;
+			operaIndex = (divideIndex > -1) ? divideIndex : operaIndex;
+			operaIndex = (plusIndex > -1) ? plusIndex : operaIndex;
+			operaIndex = (andIndex > -1) ? andIndex : operaIndex;
+			operaIndex = (orIndex > -1) ? orIndex : operaIndex;
+			operaIndex = (xorIndex > -1) ? xorIndex : operaIndex;
 
-			float value1 = value1S.toFloat();
-			float value2 = value2S.toFloat();
+			QString value1S = getLeftWord(expression, operaIndex);
+			QString value2S = getRightWord(expression, operaIndex);
 
-			foreach(GcodeVariable var, gcodeVariables)
-			{
-				if (var.Name == value1S)
-				{
-					value1 = var.Value;
-				}
-
-				if (var.Name == value2S)
-				{
-					value2 = var.Value;
-				}
-			}
+			float value1 = GetVariableValue(value1S);
+			float value2 = GetVariableValue(value2S);
 
 			float result = value1 - value2;
 			QString resultS = QString::number(result);
 
-			QString subExpression = value1S + " - " + value2S;
+			QString operaExpression = value1S + " - " + value2S;
 
 			if (multiplyIndex > -1)
 			{
 				result = value1 * value2;
 				resultS = QString::number(result);
 
-				subExpression = value1S + " * " + value2S;
+				operaExpression = value1S + " * " + value2S;
 			}
 			else if (divideIndex > -1)
 			{
@@ -685,22 +781,49 @@ float GcodeProgramManager::calculateExpressions(QString expression)
 					result = 0;
 				resultS = QString::number(result);
 
-				subExpression = value1S + " / " + value2S;
+				operaExpression = value1S + " / " + value2S;
 			}
 			else if (plusIndex > -1)
 			{
 				result = value1 + value2;
 				resultS = QString::number(result);
 
-				subExpression = value1S + " + " + value2S;
+				operaExpression = value1S + " + " + value2S;
+			}
+			else if (andIndex > -1)
+			{
+				result = value1 * value2;
+				result = (result > 0) ? 1 : 0;
+				resultS = QString::number(result);
+
+				operaExpression = value1S + " AND " + value2S;
+			}
+			else if (orIndex > -1)
+			{
+				result = value1 + value2;
+				result = (result > 0) ? 1 : 0;
+				resultS = QString::number(result);
+
+				operaExpression = value1S + " OR " + value2S;
+			}
+
+			if (xorIndex > -1)
+			{
+				value1 = (value1 > 0) ? 1 : 0;
+				value2 = (value2 > 0) ? 1 : 0;
+				result = (value1 != value2) ? 1 : 0;
+
+				resultS = QString::number(result);
+
+				operaExpression = value1S + " XOR " + value2S;
 			}
 			
-			expression.replace(subExpression, QString::number(result));
+			expression.replace(operaExpression, QString::number(result));
 
 			continue;
 		}
 
-		else if (eqIndex > -1 || leIndex > -1 || gtIndex > -1)
+		else if (eqIndex > -1 || ltIndex > -1 || gtIndex > -1 || neIndex > -1 || leIndex > -1 || geIndex > -1)
 		{
 			QString value1S;
 			QString opeS;
@@ -710,21 +833,16 @@ float GcodeProgramManager::calculateExpressions(QString expression)
 			float value2;
 			float result;
 
-			if (eqIndex > -1)
-			{
-				value1S = getLeftWord(expression, eqIndex);
-				value2S = getRightWord(expression, eqIndex);
-			}
-			else if (leIndex > -1)
-			{
-				value1S = getLeftWord(expression, leIndex);
-				value2S = getRightWord(expression, leIndex);
-			}
-			else
-			{
-				value1S = getLeftWord(expression, gtIndex);
-				value2S = getRightWord(expression, gtIndex);
-			}
+			int operatorIndex = eqIndex;
+
+			operatorIndex = (neIndex > -1) ? neIndex : operatorIndex;
+			operatorIndex = (ltIndex > -1) ? ltIndex : operatorIndex;
+			operatorIndex = (leIndex > -1) ? leIndex : operatorIndex;
+			operatorIndex = (gtIndex > -1) ? gtIndex : operatorIndex;
+			operatorIndex = (geIndex > -1) ? geIndex : operatorIndex;
+
+			value1S = getLeftWord(expression, operatorIndex);
+			value2S = getRightWord(expression, operatorIndex);
 
 			if (value1S == "NULL")
 			{
@@ -744,81 +862,53 @@ float GcodeProgramManager::calculateExpressions(QString expression)
 				value2 = value2S.toFloat();
 			}
 
-			foreach(GcodeVariable var, gcodeVariables)
-			{
-				if (var.Name == value1S)
-				{
-					value1 = var.Value;
-				}
+			value1 = GetVariableValue(value1S);
+			value2 = GetVariableValue(value2S);
+			
+			int returnValue = -1;
 
-				if (var.Name == value2S)
-				{
-					value2 = var.Value;
-				}
-			}
+			returnValue = (eqIndex > -1) ? ((value1 == value2) ? 1 : 0 ) : returnValue;
+			returnValue = (neIndex > -1) ? ((value1 != value2) ? 1 : 0) : returnValue;
+			returnValue = (ltIndex > -1) ? ((value1 < value2) ? 1 : 0) : returnValue;
+			returnValue = (leIndex > -1) ? ((value1 <= value2) ? 1 : 0) : returnValue;
+			returnValue = (gtIndex > -1) ? ((value1 > value2) ? 1 : 0) : returnValue;
+			returnValue = (geIndex > -1) ? ((value1 >= value2) ? 1 : 0) : returnValue;
 
-			if (eqIndex > -1)
-			{
-				if (value1 == value2)
-				{
-					return 1;
-				}
-				else
-				{
-					return 0;
-				}
-			}
-			else if (leIndex > -1)
-			{
-				if (value1 < value2)
-				{
-					return 1;
-				}
-				else
-				{
-					return 0;
-				}
-			}
-			else
-			{
-				if (value1 > value2)
-				{
-					return 1;
-				}
-				else
-				{
-					return 0;
-				}
-			}
+			if (returnValue != -1)
+				return returnValue;
 		}
 
 		else
 		{
 
-			float value = deleteSpaces(expression).toFloat();
+			float value = GetVariableValue(deleteSpaces(expression));
 
 			if (deleteSpaces(expression) == "NULL")
 			{
 				value = NULL_NUMBER;
 			}
 
-			foreach(GcodeVariable var, gcodeVariables)
-			{
-				if (var.Name == expression)
-				{
-					value = var.Value;
-				}
-			}
-
 			return value;
 		}
 
-		return expression.toInt();
+		return expression.toFloat();
 	}
 }
 
 void GcodeProgramManager::SaveGcodeVariable(GcodeVariable gvar)
 {
+	if (mParent->DeltaXMainWindows != NULL)
+	{
+		if (mParent != mParent->DeltaXMainWindows->at(0))
+		{
+			if (isGlobalVariable(gvar.Name))
+			{				
+				mParent->DeltaXMainWindows->at(0)->DeltaGcodeManager->SaveGcodeVariable(gvar);
+				return;
+			}
+		}
+	}
+
 	bool isNewVar = true;
 
 	for (int i = 0; i < gcodeVariables.length(); i++)
@@ -832,6 +922,14 @@ void GcodeProgramManager::SaveGcodeVariable(GcodeVariable gvar)
 
 	if (isNewVar == true)
 		gcodeVariables.push_back(gvar);
+}
+
+void GcodeProgramManager::SaveGcodeVariable(QString name, float value)
+{
+	GcodeVariable gvar;
+	gvar.Name = name;
+	gvar.Value = value;
+	SaveGcodeVariable(gvar);
 }
 
 void GcodeProgramManager::updatePositionIntoSystemVariable(QString statement)

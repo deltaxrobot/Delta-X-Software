@@ -25,8 +25,7 @@ public slots:
 	void RemoveAllDetectObjects();
 
 signals:
-	void NewUpdateObjectPosition(QString name, int value);
-
+	void NewUpdateObjectPosition(QString name, float value);
 private:
 	bool isNewObject(cv::RotatedRect object);
 

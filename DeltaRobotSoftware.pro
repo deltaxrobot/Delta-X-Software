@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui serialport opengl
+QT       += core gui serialport opengl webview webenginewidgets
 
 
 #INCLUDEPATH +=  F:\OpenCV\opencv-3.3.0\include
@@ -40,7 +40,10 @@ HEADERS  += mainwindow.h \
     ImageUnity.h \
     GcodeProgram.h \
     GcodeProgramManager.h \
-    hsvwindow.h
+    hsvwindow.h \
+	GcodeReference.h \
 
 FORMS    += mainwindow.ui \
-    hsvwindow.ui
+    hsvwindow.ui \
+	GcodeReference.ui \
+	

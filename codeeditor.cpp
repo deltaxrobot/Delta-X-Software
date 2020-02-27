@@ -90,8 +90,8 @@ int CodeEditor::lineNumberAreaWidth()
 
 void CodeEditor::updateLineNumberAreaWidth(int newBlockCount )
 {
-	int lineNumber = newBlockCount;
-    setViewportMargins(lineNumberAreaWidth(), 0, 0, 0);
+	/*int lineNumber = newBlockCount;
+    setViewportMargins(lineNumberAreaWidth(), 0, 0, 0);*/
 }
 
 //![slotUpdateExtraAreaWidth]
@@ -100,13 +100,13 @@ void CodeEditor::updateLineNumberAreaWidth(int newBlockCount )
 
 void CodeEditor::updateLineNumberArea(const QRect &rect, int dy)
 {
-    if (dy)
+    /*if (dy)
         lineNumberArea->scroll(0, dy);
     else
         lineNumberArea->update(0, rect.y(), lineNumberArea->width(), rect.height());
 
     if (rect.contains(viewport()->rect()))
-        updateLineNumberAreaWidth(0);
+        updateLineNumberAreaWidth(0);*/
 }
 
 //![slotUpdateRequest]
@@ -117,8 +117,8 @@ void CodeEditor::resizeEvent(QResizeEvent *e)
 {
     QTextEdit::resizeEvent(e);
 
-    QRect cr = contentsRect();
-    lineNumberArea->setGeometry(QRect(cr.left(), cr.top(), lineNumberAreaWidth(), cr.height()));
+    /*QRect cr = contentsRect();
+    lineNumberArea->setGeometry(QRect(cr.left(), cr.top(), lineNumberAreaWidth(), cr.height()));*/
 }
 
 //![resizeEvent]

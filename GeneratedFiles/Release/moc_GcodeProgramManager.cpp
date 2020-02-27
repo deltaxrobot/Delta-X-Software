@@ -22,8 +22,8 @@ QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_GcodeProgramManager_t {
-    QByteArrayData data[24];
-    char stringdata0[337];
+    QByteArrayData data[25];
+    char stringdata0[357];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -43,30 +43,31 @@ QT_MOC_LITERAL(7, 114, 1), // "x"
 QT_MOC_LITERAL(8, 116, 1), // "y"
 QT_MOC_LITERAL(9, 118, 1), // "z"
 QT_MOC_LITERAL(10, 120, 1), // "w"
-QT_MOC_LITERAL(11, 122, 22), // "ChangeSelectingProgram"
-QT_MOC_LITERAL(12, 145, 13), // "GcodeProgram*"
-QT_MOC_LITERAL(13, 159, 3), // "ptr"
-QT_MOC_LITERAL(14, 163, 17), // "SaveGcodeIntoFile"
-QT_MOC_LITERAL(15, 181, 13), // "DeleteProgram"
-QT_MOC_LITERAL(16, 195, 21), // "EraserAllProgramItems"
-QT_MOC_LITERAL(17, 217, 16), // "SortProgramFiles"
-QT_MOC_LITERAL(18, 234, 23), // "RefreshGcodeProgramList"
-QT_MOC_LITERAL(19, 258, 17), // "TransmitNextGcode"
-QT_MOC_LITERAL(20, 276, 20), // "UpdateSystemVariable"
-QT_MOC_LITERAL(21, 297, 4), // "name"
-QT_MOC_LITERAL(22, 302, 5), // "value"
-QT_MOC_LITERAL(23, 308, 28) // "SetStartingGcodeEditorCursor"
+QT_MOC_LITERAL(11, 122, 19), // "FinishExecuteGcodes"
+QT_MOC_LITERAL(12, 142, 22), // "ChangeSelectingProgram"
+QT_MOC_LITERAL(13, 165, 13), // "GcodeProgram*"
+QT_MOC_LITERAL(14, 179, 3), // "ptr"
+QT_MOC_LITERAL(15, 183, 17), // "SaveGcodeIntoFile"
+QT_MOC_LITERAL(16, 201, 13), // "DeleteProgram"
+QT_MOC_LITERAL(17, 215, 21), // "EraserAllProgramItems"
+QT_MOC_LITERAL(18, 237, 16), // "SortProgramFiles"
+QT_MOC_LITERAL(19, 254, 23), // "RefreshGcodeProgramList"
+QT_MOC_LITERAL(20, 278, 17), // "TransmitNextGcode"
+QT_MOC_LITERAL(21, 296, 20), // "UpdateSystemVariable"
+QT_MOC_LITERAL(22, 317, 4), // "name"
+QT_MOC_LITERAL(23, 322, 5), // "value"
+QT_MOC_LITERAL(24, 328, 28) // "SetStartingGcodeEditorCursor"
 
     },
     "GcodeProgramManager\0OutOfObjectVariable\0"
     "\0JustUpdateVariable\0QList<GcodeVariable>\0"
     "gcodeVariables\0MoveToNewPosition\0x\0y\0"
-    "z\0w\0ChangeSelectingProgram\0GcodeProgram*\0"
-    "ptr\0SaveGcodeIntoFile\0DeleteProgram\0"
-    "EraserAllProgramItems\0SortProgramFiles\0"
-    "RefreshGcodeProgramList\0TransmitNextGcode\0"
-    "UpdateSystemVariable\0name\0value\0"
-    "SetStartingGcodeEditorCursor"
+    "z\0w\0FinishExecuteGcodes\0ChangeSelectingProgram\0"
+    "GcodeProgram*\0ptr\0SaveGcodeIntoFile\0"
+    "DeleteProgram\0EraserAllProgramItems\0"
+    "SortProgramFiles\0RefreshGcodeProgramList\0"
+    "TransmitNextGcode\0UpdateSystemVariable\0"
+    "name\0value\0SetStartingGcodeEditorCursor"
 };
 #undef QT_MOC_LITERAL
 
@@ -76,44 +77,46 @@ static const uint qt_meta_data_GcodeProgramManager[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-      12,   14, // methods
+      13,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
        0,       // flags
-       3,       // signalCount
+       4,       // signalCount
 
  // signals: name, argc, parameters, tag, flags
-       1,    0,   74,    2, 0x06 /* Public */,
-       3,    1,   75,    2, 0x06 /* Public */,
-       6,    4,   78,    2, 0x06 /* Public */,
+       1,    0,   79,    2, 0x06 /* Public */,
+       3,    1,   80,    2, 0x06 /* Public */,
+       6,    4,   83,    2, 0x06 /* Public */,
+      11,    0,   92,    2, 0x06 /* Public */,
 
  // slots: name, argc, parameters, tag, flags
-      11,    1,   87,    2, 0x0a /* Public */,
-      14,    0,   90,    2, 0x0a /* Public */,
-      15,    1,   91,    2, 0x0a /* Public */,
-      16,    0,   94,    2, 0x0a /* Public */,
-      17,    0,   95,    2, 0x0a /* Public */,
-      18,    0,   96,    2, 0x0a /* Public */,
-      19,    0,   97,    2, 0x0a /* Public */,
-      20,    2,   98,    2, 0x0a /* Public */,
-      23,    1,  103,    2, 0x0a /* Public */,
+      12,    1,   93,    2, 0x0a /* Public */,
+      15,    0,   96,    2, 0x0a /* Public */,
+      16,    1,   97,    2, 0x0a /* Public */,
+      17,    0,  100,    2, 0x0a /* Public */,
+      18,    0,  101,    2, 0x0a /* Public */,
+      19,    0,  102,    2, 0x0a /* Public */,
+      20,    0,  103,    2, 0x0a /* Public */,
+      21,    2,  104,    2, 0x0a /* Public */,
+      24,    1,  109,    2, 0x0a /* Public */,
 
  // signals: parameters
     QMetaType::Void,
     QMetaType::Void, 0x80000000 | 4,    5,
     QMetaType::Void, QMetaType::Float, QMetaType::Float, QMetaType::Float, QMetaType::Float,    7,    8,    9,   10,
+    QMetaType::Void,
 
  // slots: parameters
-    QMetaType::Void, 0x80000000 | 12,   13,
+    QMetaType::Void, 0x80000000 | 13,   14,
     QMetaType::Void,
-    QMetaType::Void, 0x80000000 | 12,   13,
-    QMetaType::Void,
-    QMetaType::Void,
+    QMetaType::Void, 0x80000000 | 13,   14,
     QMetaType::Void,
     QMetaType::Void,
-    QMetaType::Void, QMetaType::QString, QMetaType::Float,   21,   22,
-    QMetaType::Void, QMetaType::QString,   22,
+    QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void, QMetaType::QString, QMetaType::Float,   22,   23,
+    QMetaType::Void, QMetaType::QString,   23,
 
        0        // eod
 };
@@ -127,28 +130,29 @@ void GcodeProgramManager::qt_static_metacall(QObject *_o, QMetaObject::Call _c, 
         case 0: _t->OutOfObjectVariable(); break;
         case 1: _t->JustUpdateVariable((*reinterpret_cast< QList<GcodeVariable>(*)>(_a[1]))); break;
         case 2: _t->MoveToNewPosition((*reinterpret_cast< float(*)>(_a[1])),(*reinterpret_cast< float(*)>(_a[2])),(*reinterpret_cast< float(*)>(_a[3])),(*reinterpret_cast< float(*)>(_a[4]))); break;
-        case 3: _t->ChangeSelectingProgram((*reinterpret_cast< GcodeProgram*(*)>(_a[1]))); break;
-        case 4: _t->SaveGcodeIntoFile(); break;
-        case 5: _t->DeleteProgram((*reinterpret_cast< GcodeProgram*(*)>(_a[1]))); break;
-        case 6: _t->EraserAllProgramItems(); break;
-        case 7: _t->SortProgramFiles(); break;
-        case 8: _t->RefreshGcodeProgramList(); break;
-        case 9: _t->TransmitNextGcode(); break;
-        case 10: _t->UpdateSystemVariable((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< float(*)>(_a[2]))); break;
-        case 11: _t->SetStartingGcodeEditorCursor((*reinterpret_cast< QString(*)>(_a[1]))); break;
+        case 3: _t->FinishExecuteGcodes(); break;
+        case 4: _t->ChangeSelectingProgram((*reinterpret_cast< GcodeProgram*(*)>(_a[1]))); break;
+        case 5: _t->SaveGcodeIntoFile(); break;
+        case 6: _t->DeleteProgram((*reinterpret_cast< GcodeProgram*(*)>(_a[1]))); break;
+        case 7: _t->EraserAllProgramItems(); break;
+        case 8: _t->SortProgramFiles(); break;
+        case 9: _t->RefreshGcodeProgramList(); break;
+        case 10: _t->TransmitNextGcode(); break;
+        case 11: _t->UpdateSystemVariable((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< float(*)>(_a[2]))); break;
+        case 12: _t->SetStartingGcodeEditorCursor((*reinterpret_cast< QString(*)>(_a[1]))); break;
         default: ;
         }
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
         switch (_id) {
         default: *reinterpret_cast<int*>(_a[0]) = -1; break;
-        case 3:
+        case 4:
             switch (*reinterpret_cast<int*>(_a[1])) {
             default: *reinterpret_cast<int*>(_a[0]) = -1; break;
             case 0:
                 *reinterpret_cast<int*>(_a[0]) = qRegisterMetaType< GcodeProgram* >(); break;
             }
             break;
-        case 5:
+        case 6:
             switch (*reinterpret_cast<int*>(_a[1])) {
             default: *reinterpret_cast<int*>(_a[0]) = -1; break;
             case 0:
@@ -180,6 +184,13 @@ void GcodeProgramManager::qt_static_metacall(QObject *_o, QMetaObject::Call _c, 
                 return;
             }
         }
+        {
+            typedef void (GcodeProgramManager::*_t)();
+            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&GcodeProgramManager::FinishExecuteGcodes)) {
+                *result = 3;
+                return;
+            }
+        }
     }
 }
 
@@ -208,13 +219,13 @@ int GcodeProgramManager::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 12)
+        if (_id < 13)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 12;
+        _id -= 13;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 12)
+        if (_id < 13)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 12;
+        _id -= 13;
     }
     return _id;
 }
@@ -237,6 +248,12 @@ void GcodeProgramManager::MoveToNewPosition(float _t1, float _t2, float _t3, flo
 {
     void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)), const_cast<void*>(reinterpret_cast<const void*>(&_t2)), const_cast<void*>(reinterpret_cast<const void*>(&_t3)), const_cast<void*>(reinterpret_cast<const void*>(&_t4)) };
     QMetaObject::activate(this, &staticMetaObject, 2, _a);
+}
+
+// SIGNAL 3
+void GcodeProgramManager::FinishExecuteGcodes()
+{
+    QMetaObject::activate(this, &staticMetaObject, 3, Q_NULLPTR);
 }
 QT_WARNING_POP
 QT_END_MOC_NAMESPACE

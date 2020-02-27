@@ -17,9 +17,14 @@ public:
 	void Disconnect();
 	QString GetNamePort();
 	void SetBaudrate(int baud);
+	int GetBaudrate();
     void FindDeltaRobot();
 	void Send(QString msg);
-	
+	void ConveyorSend(QString msg);
+	void SlidingSend(QString msg);
+	QSerialPort* ConveyorPort;
+	QSerialPort* SlidingPort;
+
 public slots:
 	void ReadData();
 	void FindingTimeOut();
@@ -33,7 +38,8 @@ private:
 	void init();
 	void sendQueue();
 
-    QSerialPort* serialPort;
+    QSerialPort* robotPort;
+
 	QString receiveLine;
 	QString transmitLine;
 	QList<QString> transmitLines;

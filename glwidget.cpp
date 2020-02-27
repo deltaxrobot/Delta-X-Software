@@ -249,22 +249,22 @@ void GLWidget::paintGL()
 	QMatrix4x4 mMatrix;
 	QMatrix4x4 vMatrix;
 
-	m_programGrid->bind();
+	/*m_programGrid->bind();
 
 	m_programGrid->setUniformValue("mvpMatrix", m_camera);
 
 	m_programGrid->setUniformValue("color", QColor(Qt::green));
 
 	m_programGrid->setAttributeArray("vertex", verticesGrid.constData());
-	m_programGrid->enableAttributeArray("vertex");
+	m_programGrid->enableAttributeArray("vertex");*/
 
-	glLineWidth(2.0f);
+	/*glLineWidth(2.0f);
 
 	glDrawArrays(GL_QUADS, 0, verticesGrid.size());
 
 	m_programGrid->disableAttributeArray("vertex");
 
-	m_programGrid->release();
+	m_programGrid->release();*/
 
     QOpenGLVertexArrayObject::Binder vaoBinder(&m_vao);
     m_program->bind();

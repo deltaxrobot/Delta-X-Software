@@ -17,157 +17,22 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>IMWI - Delta X Software - Version 0.9</string>
+   <string>IMWI - Delta X Software - Version 0.9.1.2</string>
   </property>
   <property name="windowIcon">
    <iconset>
-    <normaloff>icon/logo.png</normaloff>icon/logo.png</iconset>
+    <normaloff>delta_x_logo_96x96.ico</normaloff>delta_x_logo_96x96.ico</iconset>
   </property>
   <property name="styleSheet">
    <string notr="true"/>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QScrollArea" name="saProgramFiles">
-    <property name="enabled">
-     <bool>true</bool>
-    </property>
-    <property name="geometry">
-     <rect>
-      <x>976</x>
-      <y>471</y>
-      <width>255</width>
-      <height>160</height>
-     </rect>
-    </property>
-    <property name="minimumSize">
-     <size>
-      <width>251</width>
-      <height>160</height>
-     </size>
-    </property>
-    <property name="styleSheet">
-     <string notr="true"/>
-    </property>
-    <property name="verticalScrollBarPolicy">
-     <enum>Qt::ScrollBarAlwaysOn</enum>
-    </property>
-    <property name="horizontalScrollBarPolicy">
-     <enum>Qt::ScrollBarAlwaysOff</enum>
-    </property>
-    <property name="sizeAdjustPolicy">
-     <enum>QAbstractScrollArea::AdjustToContents</enum>
-    </property>
-    <property name="widgetResizable">
-     <bool>false</bool>
-    </property>
-    <widget class="QWidget" name="wgProgramContainer">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>0</y>
-       <width>279</width>
-       <height>589</height>
-      </rect>
-     </property>
-     <widget class="QFrame" name="frExProgram">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>10</y>
-        <width>221</width>
-        <height>71</height>
-       </rect>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">background-color:rgb(209, 209, 209)</string>
-      </property>
-      <property name="frameShape">
-       <enum>QFrame::StyledPanel</enum>
-      </property>
-      <property name="frameShadow">
-       <enum>QFrame::Raised</enum>
-      </property>
-      <widget class="QLineEdit" name="leExProgramName">
-       <property name="enabled">
-        <bool>true</bool>
-       </property>
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>10</y>
-         <width>160</width>
-         <height>30</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="cursor">
-        <cursorShape>SizeHorCursor</cursorShape>
-       </property>
-       <property name="styleSheet">
-        <string notr="true"/>
-       </property>
-       <property name="text">
-        <string>Program 1</string>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="pbExDeleteProgram">
-       <property name="geometry">
-        <rect>
-         <x>180</x>
-         <y>10</y>
-         <width>30</width>
-         <height>31</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="icon">
-        <iconset>
-         <normaloff>icon/delete.png</normaloff>icon/delete.png</iconset>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>30</width>
-         <height>30</height>
-        </size>
-       </property>
-       <property name="autoDefault">
-        <bool>false</bool>
-       </property>
-       <property name="default">
-        <bool>true</bool>
-       </property>
-       <property name="flat">
-        <bool>true</bool>
-       </property>
-      </widget>
-      <widget class="QLabel" name="lbExGCodeNumber">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>50</y>
-         <width>101</width>
-         <height>16</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>100 Gcode Lines</string>
-       </property>
-      </widget>
-     </widget>
-    </widget>
-   </widget>
    <widget class="QLabel" name="lbDebug">
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>640</y>
-      <width>1281</width>
+      <y>635</y>
+      <width>411</width>
       <height>21</height>
      </rect>
     </property>
@@ -180,184 +45,21 @@ color:rgb(0, 235, 0);
      <string>Debug :</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pbExecuteGcodes">
-    <property name="geometry">
-     <rect>
-      <x>1239</x>
-      <y>404</y>
-      <width>53</width>
-      <height>53</height>
-     </rect>
-    </property>
-    <property name="toolTip">
-     <string>Execute Gcode</string>
-    </property>
-    <property name="autoFillBackground">
-     <bool>false</bool>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-    <property name="icon">
-     <iconset>
-      <normaloff>icon/Play_96px.png</normaloff>
-      <normalon>icon/Pause_96px.png</normalon>icon/Play_96px.png</iconset>
-    </property>
-    <property name="iconSize">
-     <size>
-      <width>70</width>
-      <height>70</height>
-     </size>
-    </property>
-    <property name="checkable">
-     <bool>true</bool>
-    </property>
-    <property name="flat">
-     <bool>false</bool>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pbSaveGcode">
-    <property name="geometry">
-     <rect>
-      <x>1240</x>
-      <y>520</y>
-      <width>53</width>
-      <height>53</height>
-     </rect>
-    </property>
-    <property name="toolTip">
-     <string>Save Gcode Into File</string>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-    <property name="icon">
-     <iconset>
-      <normaloff>icon/save.png</normaloff>icon/save.png</iconset>
-    </property>
-    <property name="iconSize">
-     <size>
-      <width>30</width>
-      <height>30</height>
-     </size>
-    </property>
-   </widget>
-   <widget class="CodeEditor" name="pteGcodeArea">
-    <property name="geometry">
-     <rect>
-      <x>918</x>
-      <y>114</y>
-      <width>373</width>
-      <height>283</height>
-     </rect>
-    </property>
-    <property name="minimumSize">
-     <size>
-      <width>321</width>
-      <height>250</height>
-     </size>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>9</pointsize>
-     </font>
-    </property>
-    <property name="horizontalScrollBarPolicy">
-     <enum>Qt::ScrollBarAsNeeded</enum>
-    </property>
-   </widget>
    <widget class="QLineEdit" name="leTerminal">
     <property name="geometry">
      <rect>
-      <x>10</x>
+      <x>75</x>
       <y>660</y>
-      <width>1281</width>
+      <width>346</width>
       <height>22</height>
      </rect>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pbAddGcode">
-    <property name="geometry">
-     <rect>
-      <x>1180</x>
-      <y>36</y>
-      <width>73</width>
-      <height>35</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Add Gcode</string>
-    </property>
-    <property name="autoDefault">
-     <bool>false</bool>
-    </property>
-    <property name="default">
-     <bool>false</bool>
-    </property>
-    <property name="flat">
-     <bool>false</bool>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pbFormat">
-    <property name="geometry">
-     <rect>
-      <x>1240</x>
-      <y>578</y>
-      <width>53</width>
-      <height>53</height>
-     </rect>
-    </property>
-    <property name="toolTip">
-     <string>Format Gcode Lines</string>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-    <property name="icon">
-     <iconset>
-      <normaloff>icon/index.png</normaloff>icon/index.png</iconset>
-    </property>
-    <property name="iconSize">
-     <size>
-      <width>30</width>
-      <height>30</height>
-     </size>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pbAddNewProgram">
-    <property name="geometry">
-     <rect>
-      <x>918</x>
-      <y>470</y>
-      <width>55</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="toolTip">
-     <string extracomment="New gcode"/>
-    </property>
-    <property name="text">
-     <string>New </string>
-    </property>
-    <property name="icon">
-     <iconset>
-      <normaloff>icon/new.png</normaloff>icon/new.png</iconset>
-    </property>
-    <property name="iconSize">
-     <size>
-      <width>16</width>
-      <height>16</height>
-     </size>
-    </property>
-    <property name="flat">
-     <bool>false</bool>
     </property>
    </widget>
    <widget class="QTabWidget" name="twDeltaManager">
     <property name="geometry">
      <rect>
-      <x>4</x>
-      <y>4</y>
+      <x>0</x>
+      <y>0</y>
       <width>871</width>
       <height>28</height>
      </rect>
@@ -384,21 +86,62 @@ color:rgb(0, 235, 0);
      </attribute>
     </widget>
    </widget>
-   <widget class="QTabWidget" name="tabWidget">
+   <widget class="QTabWidget" name="twModule">
     <property name="geometry">
      <rect>
-      <x>478</x>
-      <y>112</y>
-      <width>431</width>
-      <height>521</height>
+      <x>433</x>
+      <y>114</y>
+      <width>476</width>
+      <height>566</height>
      </rect>
     </property>
     <property name="toolTip">
      <string/>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>0</number>
     </property>
+    <widget class="QWidget" name="tBlockly">
+     <attribute name="title">
+      <string>Block Program</string>
+     </attribute>
+     <widget class="QWidget" name="wevBlockly" native="true">
+      <property name="geometry">
+       <rect>
+        <x>5</x>
+        <y>55</y>
+        <width>461</width>
+        <height>481</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pbExportBlocklyToGcode">
+      <property name="geometry">
+       <rect>
+        <x>365</x>
+        <y>12</y>
+        <width>101</width>
+        <height>36</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Export G-code</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton_4">
+      <property name="geometry">
+       <rect>
+        <x>5</x>
+        <y>12</y>
+        <width>111</width>
+        <height>36</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Execute Program</string>
+      </property>
+     </widget>
+    </widget>
     <widget class="QWidget" name="tResultCameraArea">
      <attribute name="title">
       <string>Object Detecting</string>
@@ -406,10 +149,10 @@ color:rgb(0, 235, 0);
      <widget class="CameraWidget" name="lbScreenStreamer">
       <property name="geometry">
        <rect>
-        <x>10</x>
-        <y>180</y>
-        <width>401</width>
-        <height>301</height>
+        <x>5</x>
+        <y>225</y>
+        <width>391</width>
+        <height>306</height>
        </rect>
       </property>
       <property name="styleSheet">
@@ -425,339 +168,636 @@ color:rgb(0, 235, 0);
        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
       </property>
      </widget>
-     <widget class="QPushButton" name="pbLoadCamera">
+     <widget class="QGroupBox" name="groupBox">
       <property name="geometry">
        <rect>
-        <x>10</x>
-        <y>10</y>
-        <width>41</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="toolTip">
-       <string extracomment="Load Camera"/>
-      </property>
-      <property name="text">
-       <string/>
-      </property>
-      <property name="icon">
-       <iconset>
-        <normaloff>icon/webcam.png</normaloff>
-        <normalon>icon/stop.png</normalon>icon/webcam.png</iconset>
-      </property>
-      <property name="checkable">
-       <bool>true</bool>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="pbLoadTestImage">
-      <property name="geometry">
-       <rect>
-        <x>60</x>
-        <y>10</y>
-        <width>41</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="toolTip">
-       <string extracomment="Load Image">Load Image</string>
-      </property>
-      <property name="text">
-       <string/>
-      </property>
-      <property name="icon">
-       <iconset>
-        <normaloff>icon/image.png</normaloff>icon/image.png</iconset>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="pbFilter">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>150</y>
-        <width>41</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="toolTip">
-       <string extracomment="Object Filter"/>
-      </property>
-      <property name="text">
-       <string/>
-      </property>
-      <property name="icon">
-       <iconset>
-        <normaloff>icon/Slider 2_16px.png</normaloff>icon/Slider 2_16px.png</iconset>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_11">
-      <property name="geometry">
-       <rect>
-        <x>380</x>
-        <y>140</y>
-        <width>31</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>FPS</string>
-      </property>
-     </widget>
-     <widget class="QLineEdit" name="leFPS">
-      <property name="geometry">
-       <rect>
-        <x>300</x>
-        <y>140</y>
-        <width>71</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>15</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignCenter</set>
-      </property>
-     </widget>
-     <widget class="QLabel" name="lbTrackingObject">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>40</y>
+        <x>375</x>
+        <y>15</y>
         <width>91</width>
-        <height>101</height>
+        <height>201</height>
        </rect>
       </property>
-      <property name="styleSheet">
-       <string notr="true">background-color:rgb(230, 230, 230)</string>
+      <property name="title">
+       <string>Object</string>
       </property>
-      <property name="text">
-       <string/>
-      </property>
+      <widget class="QLabel" name="lbTrackingObject">
+       <property name="geometry">
+        <rect>
+         <x>15</x>
+         <y>60</y>
+         <width>66</width>
+         <height>66</height>
+        </rect>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">background-color:rgb(230, 230, 230)</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="pbObjectRect">
+       <property name="geometry">
+        <rect>
+         <x>15</x>
+         <y>135</y>
+         <width>71</width>
+         <height>28</height>
+        </rect>
+       </property>
+       <property name="styleSheet">
+        <string notr="true"/>
+       </property>
+       <property name="text">
+        <string>Select</string>
+       </property>
+       <property name="icon">
+        <iconset>
+         <normaloff>icon/Rectangle_16px.png</normaloff>icon/Rectangle_16px.png</iconset>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="leYRec">
+       <property name="geometry">
+        <rect>
+         <x>55</x>
+         <y>30</y>
+         <width>31</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>127</string>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="leXRec">
+       <property name="geometry">
+        <rect>
+         <x>15</x>
+         <y>30</y>
+         <width>31</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>57</string>
+       </property>
+      </widget>
      </widget>
-     <widget class="QPushButton" name="pbObjectRect">
+     <widget class="QGroupBox" name="groupBox_6">
       <property name="geometry">
        <rect>
-        <x>300</x>
-        <y>50</y>
-        <width>31</width>
-        <height>28</height>
+        <x>5</x>
+        <y>105</y>
+        <width>131</width>
+        <height>116</height>
        </rect>
       </property>
-      <property name="styleSheet">
-       <string notr="true"/>
+      <property name="title">
+       <string>Filter</string>
       </property>
-      <property name="text">
-       <string/>
-      </property>
-      <property name="icon">
-       <iconset>
-        <normaloff>icon/Rectangle_16px.png</normaloff>icon/Rectangle_16px.png</iconset>
-      </property>
+      <widget class="QPushButton" name="pbFilter">
+       <property name="geometry">
+        <rect>
+         <x>5</x>
+         <y>20</y>
+         <width>121</width>
+         <height>26</height>
+        </rect>
+       </property>
+       <property name="toolTip">
+        <string extracomment="Object Filter"/>
+       </property>
+       <property name="text">
+        <string>Make Binary</string>
+       </property>
+       <property name="icon">
+        <iconset>
+         <normaloff>icon/Slider 2_16px.png</normaloff>icon/Slider 2_16px.png</iconset>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="pbSwitchWorkFlow">
+       <property name="geometry">
+        <rect>
+         <x>5</x>
+         <y>50</y>
+         <width>121</width>
+         <height>26</height>
+        </rect>
+       </property>
+       <property name="toolTip">
+        <string extracomment="Switch layers"/>
+       </property>
+       <property name="text">
+        <string>Windows</string>
+       </property>
+       <property name="icon">
+        <iconset>
+         <normaloff>icon/Workflow_16px.png</normaloff>icon/Workflow_16px.png</iconset>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="pbSelection">
+       <property name="geometry">
+        <rect>
+         <x>5</x>
+         <y>80</y>
+         <width>121</width>
+         <height>26</height>
+        </rect>
+       </property>
+       <property name="toolTip">
+        <string extracomment="Select Process Region"/>
+       </property>
+       <property name="text">
+        <string>Processing Area</string>
+       </property>
+       <property name="icon">
+        <iconset>
+         <normaloff>icon/Cursor_16px.png</normaloff>icon/Cursor_16px.png</iconset>
+       </property>
+      </widget>
      </widget>
-     <widget class="QPushButton" name="pbObjectLine">
+     <widget class="QGroupBox" name="groupBox_7">
       <property name="geometry">
        <rect>
-        <x>300</x>
-        <y>80</y>
-        <width>31</width>
-        <height>28</height>
+        <x>400</x>
+        <y>395</y>
+        <width>66</width>
+        <height>136</height>
        </rect>
       </property>
-      <property name="text">
-       <string/>
+      <property name="title">
+       <string>Conveyor</string>
       </property>
-      <property name="icon">
-       <iconset>
-        <normaloff>icon/Width_16px.png</normaloff>icon/Width_16px.png</iconset>
-      </property>
+      <widget class="QLineEdit" name="leConvenyorSpeed">
+       <property name="geometry">
+        <rect>
+         <x>15</x>
+         <y>45</y>
+         <width>41</width>
+         <height>27</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>0</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_45">
+       <property name="geometry">
+        <rect>
+         <x>15</x>
+         <y>20</y>
+         <width>46</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>8</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Speed</string>
+       </property>
+      </widget>
+      <widget class="QComboBox" name="cbConveyorDirection">
+       <property name="geometry">
+        <rect>
+         <x>15</x>
+         <y>105</y>
+         <width>41</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <item>
+        <property name="text">
+         <string>X</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Y</string>
+        </property>
+       </item>
+      </widget>
+      <widget class="QLabel" name="label_47">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>80</y>
+         <width>56</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>8</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Direction</string>
+       </property>
+      </widget>
      </widget>
-     <widget class="QPushButton" name="pbSwitchWorkFlow">
+     <widget class="QGroupBox" name="groupBox_8">
       <property name="geometry">
        <rect>
-        <x>60</x>
-        <y>150</y>
-        <width>41</width>
-        <height>21</height>
+        <x>145</x>
+        <y>15</y>
+        <width>221</width>
+        <height>111</height>
        </rect>
       </property>
-      <property name="toolTip">
-       <string extracomment="Switch layers"/>
+      <property name="title">
+       <string>Measurement</string>
       </property>
-      <property name="text">
-       <string/>
-      </property>
-      <property name="icon">
-       <iconset>
-        <normaloff>icon/Workflow_16px.png</normaloff>icon/Workflow_16px.png</iconset>
-      </property>
+      <widget class="QPushButton" name="pbObjectLine">
+       <property name="geometry">
+        <rect>
+         <x>5</x>
+         <y>40</y>
+         <width>96</width>
+         <height>28</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Length</string>
+       </property>
+       <property name="icon">
+        <iconset>
+         <normaloff>icon/Width_16px.png</normaloff>icon/Width_16px.png</iconset>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="leRealDistance">
+       <property name="geometry">
+        <rect>
+         <x>110</x>
+         <y>45</y>
+         <width>101</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>300</string>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="leYCoordinate">
+       <property name="geometry">
+        <rect>
+         <x>180</x>
+         <y>75</y>
+         <width>31</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>98</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="pbObjectOrigin">
+       <property name="geometry">
+        <rect>
+         <x>5</x>
+         <y>72</y>
+         <width>96</width>
+         <height>28</height>
+        </rect>
+       </property>
+       <property name="toolTip">
+        <string extracomment="Coordinate"/>
+       </property>
+       <property name="text">
+        <string>Point</string>
+       </property>
+       <property name="icon">
+        <iconset>
+         <normaloff>icon/Scatter Plot_16px.png</normaloff>icon/Scatter Plot_16px.png</iconset>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="leXCoordinate">
+       <property name="geometry">
+        <rect>
+         <x>125</x>
+         <y>75</y>
+         <width>31</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>-480</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_38">
+       <property name="geometry">
+        <rect>
+         <x>110</x>
+         <y>80</y>
+         <width>21</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>X</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_39">
+       <property name="geometry">
+        <rect>
+         <x>165</x>
+         <y>75</y>
+         <width>21</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Y</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_12">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>20</y>
+         <width>55</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Camera</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_40">
+       <property name="geometry">
+        <rect>
+         <x>125</x>
+         <y>20</y>
+         <width>86</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Reality (mm)</string>
+       </property>
+      </widget>
      </widget>
-     <widget class="QPushButton" name="pbObjectOrigin">
+     <widget class="QGroupBox" name="groupBox_9">
       <property name="geometry">
        <rect>
-        <x>300</x>
-        <y>110</y>
-        <width>31</width>
-        <height>28</height>
+        <x>5</x>
+        <y>15</y>
+        <width>131</width>
+        <height>86</height>
        </rect>
       </property>
-      <property name="toolTip">
-       <string extracomment="Coordinate"/>
+      <property name="title">
+       <string>Camera</string>
       </property>
-      <property name="text">
-       <string/>
-      </property>
-      <property name="icon">
-       <iconset>
-        <normaloff>icon/Scatter Plot_16px.png</normaloff>icon/Scatter Plot_16px.png</iconset>
-      </property>
+      <widget class="QPushButton" name="pbLoadCamera">
+       <property name="geometry">
+        <rect>
+         <x>5</x>
+         <y>25</y>
+         <width>46</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="toolTip">
+        <string extracomment="Load Camera"/>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset>
+         <normaloff>icon/webcam.png</normaloff>
+         <normalon>icon/stop.png</normalon>icon/webcam.png</iconset>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="pbLoadTestImage">
+       <property name="geometry">
+        <rect>
+         <x>60</x>
+         <y>25</y>
+         <width>41</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="toolTip">
+        <string extracomment="Load Image">Load Image</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset>
+         <normaloff>icon/image.png</normaloff>icon/image.png</iconset>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_11">
+       <property name="geometry">
+        <rect>
+         <x>90</x>
+         <y>55</y>
+         <width>31</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>FPS</string>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="leFPS">
+       <property name="geometry">
+        <rect>
+         <x>5</x>
+         <y>55</y>
+         <width>76</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>15</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
      </widget>
-     <widget class="QLineEdit" name="leXRec">
+     <widget class="QGroupBox" name="groupBox_10">
       <property name="geometry">
        <rect>
-        <x>340</x>
-        <y>50</y>
-        <width>31</width>
-        <height>22</height>
+        <x>145</x>
+        <y>130</y>
+        <width>221</width>
+        <height>91</height>
        </rect>
       </property>
-      <property name="text">
-       <string>57</string>
+      <property name="title">
+       <string>Variable</string>
       </property>
+      <widget class="QPushButton" name="pbClearDetectObjects">
+       <property name="geometry">
+        <rect>
+         <x>100</x>
+         <y>55</y>
+         <width>116</width>
+         <height>26</height>
+        </rect>
+       </property>
+       <property name="toolTip">
+        <string extracomment="Select Process Region"/>
+       </property>
+       <property name="statusTip">
+        <string extracomment="Clear All Detect Objects"/>
+       </property>
+       <property name="text">
+        <string>Clear Objects</string>
+       </property>
+       <property name="icon">
+        <iconset>
+         <normaloff>icon/Eraser_16px.png</normaloff>icon/Eraser_16px.png</iconset>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="pbChangeXAxis">
+       <property name="geometry">
+        <rect>
+         <x>5</x>
+         <y>55</y>
+         <width>91</width>
+         <height>26</height>
+        </rect>
+       </property>
+       <property name="toolTip">
+        <string extracomment="Switch layers"/>
+       </property>
+       <property name="text">
+        <string>X Direction</string>
+       </property>
+       <property name="icon">
+        <iconset>
+         <normaloff>icon/Arrow Pointing Down_16px.png</normaloff>
+         <normalon>icon/Right Arrow_16px.png</normalon>icon/Arrow Pointing Down_16px.png</iconset>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_41">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>25</y>
+         <width>81</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>#O_X1: 0 mm</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_42">
+       <property name="geometry">
+        <rect>
+         <x>105</x>
+         <y>25</y>
+         <width>86</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>#O_Y1: 0 mm</string>
+       </property>
+      </widget>
      </widget>
-     <widget class="QLineEdit" name="leYRec">
+     <widget class="QGroupBox" name="groupBox_13">
       <property name="geometry">
        <rect>
-        <x>380</x>
-        <y>50</y>
-        <width>31</width>
-        <height>22</height>
+        <x>400</x>
+        <y>225</y>
+        <width>66</width>
+        <height>126</height>
        </rect>
       </property>
-      <property name="text">
-       <string>127</string>
+      <property name="title">
+       <string>Counter</string>
       </property>
-     </widget>
-     <widget class="QLineEdit" name="leRealDistance">
-      <property name="geometry">
-       <rect>
-        <x>340</x>
-        <y>80</y>
-        <width>31</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>300</string>
-      </property>
-     </widget>
-     <widget class="QLineEdit" name="leXCoordinate">
-      <property name="geometry">
-       <rect>
-        <x>340</x>
-        <y>110</y>
-        <width>31</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>-480</string>
-      </property>
-     </widget>
-     <widget class="QLineEdit" name="leYCoordinate">
-      <property name="geometry">
-       <rect>
-        <x>380</x>
-        <y>110</y>
-        <width>31</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>98</string>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="pbSelection">
-      <property name="geometry">
-       <rect>
-        <x>300</x>
-        <y>20</y>
-        <width>111</width>
-        <height>28</height>
-       </rect>
-      </property>
-      <property name="toolTip">
-       <string extracomment="Select Process Region"/>
-      </property>
-      <property name="text">
-       <string>Process Area</string>
-      </property>
-      <property name="icon">
-       <iconset>
-        <normaloff>icon/Cursor_16px.png</normaloff>icon/Cursor_16px.png</iconset>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_12">
-      <property name="geometry">
-       <rect>
-        <x>386</x>
-        <y>82</y>
-        <width>21</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>mm</string>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="pbChangeXAxis">
-      <property name="geometry">
-       <rect>
-        <x>110</x>
-        <y>150</y>
-        <width>41</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="toolTip">
-       <string extracomment="Switch layers"/>
-      </property>
-      <property name="text">
-       <string/>
-      </property>
-      <property name="icon">
-       <iconset>
-        <normaloff>icon/Arrow Pointing Down_16px.png</normaloff>
-        <normalon>icon/Right Arrow_16px.png</normalon>icon/Arrow Pointing Down_16px.png</iconset>
-      </property>
-      <property name="checkable">
-       <bool>true</bool>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="pbClearDetectObjects">
-      <property name="geometry">
-       <rect>
-        <x>160</x>
-        <y>150</y>
-        <width>41</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="toolTip">
-       <string extracomment="Select Process Region"/>
-      </property>
-      <property name="statusTip">
-       <string extracomment="Clear All Detect Objects"/>
-      </property>
-      <property name="text">
-       <string/>
-      </property>
-      <property name="icon">
-       <iconset>
-        <normaloff>icon/Eraser_16px.png</normaloff>icon/Eraser_16px.png</iconset>
-      </property>
+      <widget class="QLabel" name="label_48">
+       <property name="geometry">
+        <rect>
+         <x>5</x>
+         <y>25</y>
+         <width>51</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>8</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Tracking</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="lbTrackingObjectNumber">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>50</y>
+         <width>31</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>0</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_50">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>75</y>
+         <width>51</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>8</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Visible</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="lbVisibleObjectNumber">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>100</y>
+         <width>31</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>0</string>
+       </property>
+      </widget>
      </widget>
     </widget>
-    <widget class="QWidget" name="tab_2">
+    <widget class="QWidget" name="tDrawing">
      <attribute name="title">
       <string>Drawing</string>
      </attribute>
@@ -766,8 +806,8 @@ color:rgb(0, 235, 0);
        <rect>
         <x>10</x>
         <y>10</y>
-        <width>208</width>
-        <height>117</height>
+        <width>246</width>
+        <height>131</height>
        </rect>
       </property>
       <property name="styleSheet">
@@ -781,9 +821,9 @@ color:rgb(0, 235, 0);
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>136</y>
-        <width>350</width>
-        <height>350</height>
+        <y>154</y>
+        <width>381</width>
+        <height>380</height>
        </rect>
       </property>
       <property name="styleSheet">
@@ -799,9 +839,9 @@ color:rgb(0, 235, 0);
      <widget class="QWidget" name="widget_2" native="true">
       <property name="geometry">
        <rect>
-        <x>257</x>
+        <x>310</x>
         <y>10</y>
-        <width>163</width>
+        <width>151</width>
         <height>21</height>
        </rect>
       </property>
@@ -811,7 +851,7 @@ color:rgb(0, 235, 0);
       <widget class="QLineEdit" name="leDrawingThreshold">
        <property name="geometry">
         <rect>
-         <x>133</x>
+         <x>125</x>
          <y>4</y>
          <width>23</width>
          <height>15</height>
@@ -829,9 +869,9 @@ color:rgb(0, 235, 0);
       <widget class="QSlider" name="hsDrawingThreshold">
        <property name="geometry">
         <rect>
-         <x>6</x>
+         <x>5</x>
          <y>4</y>
-         <width>121</width>
+         <width>111</width>
          <height>16</height>
         </rect>
        </property>
@@ -852,8 +892,8 @@ color:rgb(0, 235, 0);
      <widget class="QWidget" name="widget_3" native="true">
       <property name="geometry">
        <rect>
-        <x>178</x>
-        <y>92</y>
+        <x>215</x>
+        <y>105</y>
         <width>37</width>
         <height>31</height>
        </rect>
@@ -907,10 +947,10 @@ color:rgb(0, 235, 0);
      <widget class="QWidget" name="widget_4" native="true">
       <property name="geometry">
        <rect>
-        <x>224</x>
+        <x>265</x>
         <y>90</y>
         <width>43</width>
-        <height>37</height>
+        <height>51</height>
        </rect>
       </property>
       <property name="styleSheet">
@@ -920,7 +960,7 @@ color:rgb(0, 235, 0);
        <property name="geometry">
         <rect>
          <x>4</x>
-         <y>0</y>
+         <y>5</y>
          <width>37</width>
          <height>16</height>
         </rect>
@@ -938,7 +978,7 @@ color:rgb(0, 235, 0);
        <property name="geometry">
         <rect>
          <x>4</x>
-         <y>16</y>
+         <y>25</y>
          <width>35</width>
          <height>18</height>
         </rect>
@@ -951,10 +991,10 @@ color:rgb(0, 235, 0);
      <widget class="QWidget" name="widget_5" native="true">
       <property name="geometry">
        <rect>
-        <x>270</x>
+        <x>310</x>
         <y>90</y>
         <width>43</width>
-        <height>37</height>
+        <height>51</height>
        </rect>
       </property>
       <property name="styleSheet">
@@ -964,7 +1004,7 @@ color:rgb(0, 235, 0);
        <property name="geometry">
         <rect>
          <x>4</x>
-         <y>-1</y>
+         <y>5</y>
          <width>37</width>
          <height>16</height>
         </rect>
@@ -982,7 +1022,7 @@ color:rgb(0, 235, 0);
        <property name="geometry">
         <rect>
          <x>4</x>
-         <y>16</y>
+         <y>25</y>
          <width>35</width>
          <height>18</height>
         </rect>
@@ -995,10 +1035,10 @@ color:rgb(0, 235, 0);
      <widget class="QWidget" name="widget_6" native="true">
       <property name="geometry">
        <rect>
-        <x>316</x>
+        <x>355</x>
         <y>90</y>
         <width>39</width>
-        <height>37</height>
+        <height>51</height>
        </rect>
       </property>
       <property name="styleSheet">
@@ -1008,7 +1048,7 @@ color:rgb(0, 235, 0);
        <property name="geometry">
         <rect>
          <x>2</x>
-         <y>-1</y>
+         <y>5</y>
          <width>35</width>
          <height>16</height>
         </rect>
@@ -1029,7 +1069,7 @@ color:rgb(0, 235, 0);
        <property name="geometry">
         <rect>
          <x>4</x>
-         <y>16</y>
+         <y>25</y>
          <width>31</width>
          <height>18</height>
         </rect>
@@ -1042,8 +1082,8 @@ color:rgb(0, 235, 0);
      <widget class="QPushButton" name="pbDrawLine">
       <property name="geometry">
        <rect>
-        <x>364</x>
-        <y>306</y>
+        <x>400</x>
+        <y>326</y>
         <width>28</width>
         <height>28</height>
        </rect>
@@ -1059,8 +1099,8 @@ color:rgb(0, 235, 0);
      <widget class="QPushButton" name="pbDrawRectangle">
       <property name="geometry">
        <rect>
-        <x>394</x>
-        <y>306</y>
+        <x>430</x>
+        <y>326</y>
         <width>28</width>
         <height>28</height>
        </rect>
@@ -1076,8 +1116,8 @@ color:rgb(0, 235, 0);
      <widget class="QPushButton" name="pbDrawArc">
       <property name="geometry">
        <rect>
-        <x>364</x>
-        <y>336</y>
+        <x>400</x>
+        <y>356</y>
         <width>28</width>
         <height>28</height>
        </rect>
@@ -1093,8 +1133,8 @@ color:rgb(0, 235, 0);
      <widget class="QPushButton" name="pbDrawCircle">
       <property name="geometry">
        <rect>
-        <x>394</x>
-        <y>336</y>
+        <x>430</x>
+        <y>356</y>
         <width>28</width>
         <height>28</height>
        </rect>
@@ -1110,8 +1150,8 @@ color:rgb(0, 235, 0);
      <widget class="QWidget" name="widget_7" native="true">
       <property name="geometry">
        <rect>
-        <x>366</x>
-        <y>136</y>
+        <x>405</x>
+        <y>152</y>
         <width>53</width>
         <height>31</height>
        </rect>
@@ -1149,8 +1189,8 @@ color:rgb(0, 235, 0);
      <widget class="QWidget" name="widget_8" native="true">
       <property name="geometry">
        <rect>
-        <x>366</x>
-        <y>170</y>
+        <x>405</x>
+        <y>186</y>
         <width>53</width>
         <height>31</height>
        </rect>
@@ -1185,8 +1225,8 @@ color:rgb(0, 235, 0);
      <widget class="QWidget" name="widget_9" native="true">
       <property name="geometry">
        <rect>
-        <x>366</x>
-        <y>204</y>
+        <x>405</x>
+        <y>220</y>
         <width>53</width>
         <height>31</height>
        </rect>
@@ -1221,8 +1261,8 @@ color:rgb(0, 235, 0);
      <widget class="QWidget" name="widget_10" native="true">
       <property name="geometry">
        <rect>
-        <x>366</x>
-        <y>238</y>
+        <x>405</x>
+        <y>254</y>
         <width>53</width>
         <height>31</height>
        </rect>
@@ -1262,8 +1302,8 @@ color:rgb(0, 235, 0);
      <widget class="QWidget" name="widget_11" native="true">
       <property name="geometry">
        <rect>
-        <x>366</x>
-        <y>272</y>
+        <x>405</x>
+        <y>288</y>
         <width>53</width>
         <height>31</height>
        </rect>
@@ -1298,7 +1338,7 @@ color:rgb(0, 235, 0);
      <widget class="QPushButton" name="pbOpenPicture">
       <property name="geometry">
        <rect>
-        <x>224</x>
+        <x>265</x>
         <y>10</y>
         <width>29</width>
         <height>21</height>
@@ -1315,20 +1355,21 @@ color:rgb(0, 235, 0);
      <widget class="QPushButton" name="pbExportDrawingGcodes">
       <property name="geometry">
        <rect>
-        <x>364</x>
-        <y>454</y>
-        <width>59</width>
-        <height>33</height>
+        <x>399</x>
+        <y>485</y>
+        <width>61</width>
+        <height>46</height>
        </rect>
       </property>
       <property name="text">
-       <string>Export</string>
+       <string>Export
+G-code</string>
       </property>
      </widget>
      <widget class="QPushButton" name="pbPainting">
       <property name="geometry">
        <rect>
-        <x>359</x>
+        <x>400</x>
         <y>90</y>
         <width>61</width>
         <height>37</height>
@@ -1351,8 +1392,8 @@ color:rgb(0, 235, 0);
      <widget class="QPushButton" name="pbZoomIn">
       <property name="geometry">
        <rect>
-        <x>364</x>
-        <y>366</y>
+        <x>400</x>
+        <y>386</y>
         <width>28</width>
         <height>28</height>
        </rect>
@@ -1368,8 +1409,8 @@ color:rgb(0, 235, 0);
      <widget class="QPushButton" name="pbZoomOut">
       <property name="geometry">
        <rect>
-        <x>394</x>
-        <y>366</y>
+        <x>430</x>
+        <y>386</y>
         <width>28</width>
         <height>28</height>
        </rect>
@@ -1386,7 +1427,7 @@ color:rgb(0, 235, 0);
       <property name="geometry">
        <rect>
         <x>316</x>
-        <y>466</y>
+        <y>505</y>
         <width>39</width>
         <height>16</height>
        </rect>
@@ -1398,8 +1439,8 @@ color:rgb(0, 235, 0);
      <widget class="QPushButton" name="pbCursor">
       <property name="geometry">
        <rect>
-        <x>364</x>
-        <y>396</y>
+        <x>430</x>
+        <y>415</y>
         <width>28</width>
         <height>28</height>
        </rect>
@@ -1415,9 +1456,9 @@ color:rgb(0, 235, 0);
      <widget class="QComboBox" name="cbDrawingEffector">
       <property name="geometry">
        <rect>
-        <x>364</x>
-        <y>428</y>
-        <width>59</width>
+        <x>399</x>
+        <y>455</y>
+        <width>61</width>
         <height>22</height>
        </rect>
       </property>
@@ -1435,11 +1476,14 @@ color:rgb(0, 235, 0);
      <widget class="QWidget" name="widget_12" native="true">
       <property name="geometry">
        <rect>
-        <x>224</x>
+        <x>265</x>
         <y>36</y>
         <width>69</width>
         <height>48</height>
        </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(234, 234, 234);</string>
       </property>
       <widget class="QComboBox" name="cbDrawMethod">
        <property name="geometry">
@@ -1483,11 +1527,14 @@ color:rgb(0, 235, 0);
      <widget class="QWidget" name="widget_13" native="true">
       <property name="geometry">
        <rect>
-        <x>296</x>
+        <x>340</x>
         <y>36</y>
         <width>123</width>
         <height>48</height>
        </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(234, 234, 234);</string>
       </property>
       <widget class="QComboBox" name="cbConversionTool">
        <property name="geometry">
@@ -1535,153 +1582,13 @@ color:rgb(0, 235, 0);
      </widget>
     </widget>
    </widget>
-   <widget class="QPushButton" name="pbHome">
-    <property name="geometry">
-     <rect>
-      <x>200</x>
-      <y>40</y>
-      <width>51</width>
-      <height>61</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-    <property name="icon">
-     <iconset>
-      <normaloff>icon/home.png</normaloff>icon/home.png</iconset>
-    </property>
-    <property name="iconSize">
-     <size>
-      <width>30</width>
-      <height>30</height>
-     </size>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pbX">
-    <property name="geometry">
-     <rect>
-      <x>260</x>
-      <y>40</y>
-      <width>41</width>
-      <height>27</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>X</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pbW">
-    <property name="geometry">
-     <rect>
-      <x>410</x>
-      <y>40</y>
-      <width>41</width>
-      <height>27</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>W</string>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="leX">
-    <property name="geometry">
-     <rect>
-      <x>260</x>
-      <y>70</y>
-      <width>41</width>
-      <height>27</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pbZ">
-    <property name="geometry">
-     <rect>
-      <x>360</x>
-      <y>40</y>
-      <width>41</width>
-      <height>27</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Z</string>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="leY">
-    <property name="geometry">
-     <rect>
-      <x>310</x>
-      <y>70</y>
-      <width>41</width>
-      <height>27</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pbGrip">
-    <property name="geometry">
-     <rect>
-      <x>460</x>
-      <y>40</y>
-      <width>61</width>
-      <height>27</height>
-     </rect>
-    </property>
-    <property name="autoFillBackground">
-     <bool>false</bool>
-    </property>
-    <property name="text">
-     <string>Grip</string>
-    </property>
-    <property name="autoDefault">
-     <bool>false</bool>
-    </property>
-    <property name="default">
-     <bool>false</bool>
-    </property>
-    <property name="flat">
-     <bool>false</bool>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pbPump">
-    <property name="geometry">
-     <rect>
-      <x>460</x>
-      <y>70</y>
-      <width>61</width>
-      <height>27</height>
-     </rect>
-    </property>
-    <property name="autoFillBackground">
-     <bool>false</bool>
-    </property>
-    <property name="text">
-     <string>Pump</string>
-    </property>
-    <property name="icon">
-     <iconset>
-      <normaloff>icon/Toggle Off_16px.png</normaloff>
-      <normalon>icon/Toggle On_16px.png</normalon>icon/Toggle Off_16px.png</iconset>
-    </property>
-    <property name="checkable">
-     <bool>true</bool>
-    </property>
-    <property name="autoDefault">
-     <bool>false</bool>
-    </property>
-    <property name="default">
-     <bool>false</bool>
-    </property>
-    <property name="flat">
-     <bool>false</bool>
-    </property>
-   </widget>
    <widget class="QTabWidget" name="twDeltaGeometry">
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>90</y>
-      <width>473</width>
-      <height>541</height>
+      <y>112</y>
+      <width>426</width>
+      <height>521</height>
      </rect>
     </property>
     <property name="currentIndex">
@@ -1696,13 +1603,64 @@ color:rgb(0, 235, 0);
        <rect>
         <x>10</x>
         <y>10</y>
-        <width>450</width>
-        <height>450</height>
+        <width>401</width>
+        <height>406</height>
        </rect>
       </property>
       <property name="styleSheet">
        <string notr="true">background-color: rgb(209, 209, 209);</string>
       </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>425</y>
+        <width>93</width>
+        <height>28</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Add Conveyor</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton_2">
+      <property name="geometry">
+       <rect>
+        <x>115</x>
+        <y>425</y>
+        <width>93</width>
+        <height>28</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Add Object</string>
+      </property>
+     </widget>
+     <widget class="QComboBox" name="comboBox">
+      <property name="geometry">
+       <rect>
+        <x>335</x>
+        <y>430</y>
+        <width>73</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <item>
+       <property name="text">
+        <string>All</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Robot</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Objects</string>
+       </property>
+      </item>
      </widget>
     </widget>
     <widget class="QWidget" name="t2D">
@@ -1742,7 +1700,7 @@ color:rgb(0, 235, 0);
       <property name="geometry">
        <rect>
         <x>95</x>
-        <y>340</y>
+        <y>326</y>
         <width>253</width>
         <height>22</height>
        </rect>
@@ -1771,7 +1729,7 @@ color:rgb(0, 235, 0);
       <property name="geometry">
        <rect>
         <x>54</x>
-        <y>342</y>
+        <y>328</y>
         <width>55</width>
         <height>16</height>
        </rect>
@@ -1779,6 +1737,241 @@ color:rgb(0, 235, 0);
       <property name="text">
        <string>Angle</string>
       </property>
+     </widget>
+     <widget class="QGroupBox" name="groupBox_5">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>362</y>
+        <width>363</width>
+        <height>127</height>
+       </rect>
+      </property>
+      <property name="title">
+       <string>Movement</string>
+      </property>
+      <widget class="QLabel" name="label_28">
+       <property name="geometry">
+        <rect>
+         <x>312</x>
+         <y>36</y>
+         <width>31</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>mm</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="pbRight">
+       <property name="geometry">
+        <rect>
+         <x>82</x>
+         <y>54</y>
+         <width>37</width>
+         <height>28</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>R</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="pbBackward">
+       <property name="geometry">
+        <rect>
+         <x>46</x>
+         <y>80</y>
+         <width>37</width>
+         <height>28</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>B</string>
+       </property>
+      </widget>
+      <widget class="QComboBox" name="cbDivision">
+       <property name="geometry">
+        <rect>
+         <x>250</x>
+         <y>32</y>
+         <width>51</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <item>
+        <property name="text">
+         <string>0.5</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>1</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>5</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>10</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>50</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>100</string>
+        </property>
+       </item>
+      </widget>
+      <widget class="QPushButton" name="pbForward">
+       <property name="geometry">
+        <rect>
+         <x>46</x>
+         <y>28</y>
+         <width>37</width>
+         <height>28</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>F</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="pbLeft">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>54</y>
+         <width>37</width>
+         <height>28</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>L</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="pbUp">
+       <property name="geometry">
+        <rect>
+         <x>130</x>
+         <y>28</y>
+         <width>37</width>
+         <height>28</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>U</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="pbDown">
+       <property name="geometry">
+        <rect>
+         <x>130</x>
+         <y>80</y>
+         <width>37</width>
+         <height>28</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>D</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_29">
+       <property name="geometry">
+        <rect>
+         <x>190</x>
+         <y>66</y>
+         <width>55</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Velocity</string>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="leVelocity">
+       <property name="geometry">
+        <rect>
+         <x>250</x>
+         <y>66</y>
+         <width>53</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>200</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_30">
+       <property name="geometry">
+        <rect>
+         <x>312</x>
+         <y>72</y>
+         <width>41</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>mm/s</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_31">
+       <property name="geometry">
+        <rect>
+         <x>190</x>
+         <y>98</y>
+         <width>55</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Accel</string>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="leAccel">
+       <property name="geometry">
+        <rect>
+         <x>250</x>
+         <y>98</y>
+         <width>53</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>1200</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_32">
+       <property name="geometry">
+        <rect>
+         <x>312</x>
+         <y>102</y>
+         <width>55</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>mm/s2</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_33">
+       <property name="geometry">
+        <rect>
+         <x>190</x>
+         <y>34</y>
+         <width>55</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Division</string>
+       </property>
+      </widget>
      </widget>
     </widget>
     <widget class="QWidget" name="tParameter">
@@ -1788,7 +1981,7 @@ color:rgb(0, 235, 0);
      <widget class="QWidget" name="widget" native="true">
       <property name="geometry">
        <rect>
-        <x>0</x>
+        <x>20</x>
         <y>10</y>
         <width>381</width>
         <height>301</height>
@@ -2075,7 +2268,7 @@ color:rgb(0, 235, 0);
    <widget class="QPushButton" name="pbConnect">
     <property name="geometry">
      <rect>
-      <x>0</x>
+      <x>5</x>
       <y>40</y>
       <width>101</width>
       <height>41</height>
@@ -2100,595 +2293,1085 @@ color: rgb(255, 255, 255);</string>
      </size>
     </property>
    </widget>
-   <widget class="QLineEdit" name="leZ">
+   <widget class="QLabel" name="lbID">
     <property name="geometry">
      <rect>
-      <x>360</x>
-      <y>70</y>
-      <width>41</width>
-      <height>27</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="leW">
-    <property name="geometry">
-     <rect>
-      <x>410</x>
-      <y>70</y>
-      <width>41</width>
-      <height>27</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pbY">
-    <property name="geometry">
-     <rect>
-      <x>310</x>
-      <y>40</y>
-      <width>41</width>
-      <height>27</height>
+      <x>120</x>
+      <y>54</y>
+      <width>55</width>
+      <height>16</height>
      </rect>
     </property>
     <property name="text">
-     <string>Y</string>
+     <string>ID: 0</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pbGcodeReference">
-    <property name="geometry">
-     <rect>
-      <x>1256</x>
-      <y>36</y>
-      <width>35</width>
-      <height>35</height>
-     </rect>
-    </property>
-    <property name="toolTip">
-     <string extracomment="Accel">Gcode Reference</string>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-    <property name="icon">
-     <iconset>
-      <normaloff>icon/Help_16px.png</normaloff>icon/Help_16px.png</iconset>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pbSetSpeedConvenyor">
+   <widget class="QGroupBox" name="gbGripper">
     <property name="geometry">
      <rect>
       <x>530</x>
-      <y>40</y>
-      <width>61</width>
-      <height>27</height>
+      <y>28</y>
+      <width>131</width>
+      <height>80</height>
      </rect>
     </property>
-    <property name="statusTip">
-     <string extracomment="Set convenyor speed"/>
+    <property name="title">
+     <string>Gripper</string>
     </property>
-    <property name="text">
-     <string>C speed</string>
-    </property>
+    <widget class="QPushButton" name="pbGrip">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>20</y>
+       <width>45</width>
+       <height>33</height>
+      </rect>
+     </property>
+     <property name="autoFillBackground">
+      <bool>false</bool>
+     </property>
+     <property name="text">
+      <string>Grip</string>
+     </property>
+     <property name="autoDefault">
+      <bool>false</bool>
+     </property>
+     <property name="default">
+      <bool>false</bool>
+     </property>
+     <property name="flat">
+      <bool>false</bool>
+     </property>
+    </widget>
+    <widget class="QSlider" name="hsGripperAngle">
+     <property name="geometry">
+      <rect>
+       <x>6</x>
+       <y>60</y>
+       <width>119</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="maximum">
+      <number>20</number>
+     </property>
+     <property name="singleStep">
+      <number>5</number>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="leGripperMin">
+     <property name="geometry">
+      <rect>
+       <x>60</x>
+       <y>34</y>
+       <width>29</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>0</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="leGripperMax">
+     <property name="geometry">
+      <rect>
+       <x>94</x>
+       <y>34</y>
+       <width>29</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>100</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_17">
+     <property name="geometry">
+      <rect>
+       <x>66</x>
+       <y>18</y>
+       <width>25</width>
+       <height>13</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>6</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>min</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_27">
+     <property name="geometry">
+      <rect>
+       <x>100</x>
+       <y>18</y>
+       <width>25</width>
+       <height>13</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>6</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>max</string>
+     </property>
+    </widget>
    </widget>
-   <widget class="QLineEdit" name="leConvenyorSpeed">
+   <widget class="QGroupBox" name="gbRelay">
     <property name="geometry">
      <rect>
-      <x>530</x>
-      <y>70</y>
-      <width>61</width>
-      <height>27</height>
+      <x>430</x>
+      <y>28</y>
+      <width>91</width>
+      <height>80</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>Relay</string>
+    </property>
+    <widget class="QPushButton" name="pbPump">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>50</y>
+       <width>31</width>
+       <height>27</height>
+      </rect>
+     </property>
+     <property name="autoFillBackground">
+      <bool>false</bool>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset>
+       <normaloff>icon/Toggle Off_16px.png</normaloff>
+       <normalon>icon/Toggle On_16px.png</normalon>icon/Toggle Off_16px.png</iconset>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+     <property name="autoDefault">
+      <bool>false</bool>
+     </property>
+     <property name="default">
+      <bool>false</bool>
+     </property>
+     <property name="flat">
+      <bool>false</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_34">
+     <property name="geometry">
+      <rect>
+       <x>5</x>
+       <y>20</y>
+       <width>51</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>6</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Vacuum</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pbLaser">
+     <property name="geometry">
+      <rect>
+       <x>50</x>
+       <y>50</y>
+       <width>31</width>
+       <height>27</height>
+      </rect>
+     </property>
+     <property name="autoFillBackground">
+      <bool>false</bool>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset>
+       <normaloff>icon/Toggle Off_16px.png</normaloff>
+       <normalon>icon/Toggle On_16px.png</normalon>icon/Toggle Off_16px.png</iconset>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+     <property name="autoDefault">
+      <bool>false</bool>
+     </property>
+     <property name="default">
+      <bool>false</bool>
+     </property>
+     <property name="flat">
+      <bool>false</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_35">
+     <property name="geometry">
+      <rect>
+       <x>50</x>
+       <y>20</y>
+       <width>51</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>6</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Laser</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QGroupBox" name="gbMovement1">
+    <property name="geometry">
+     <rect>
+      <x>185</x>
+      <y>28</y>
+      <width>236</width>
+      <height>80</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>Movement</string>
+    </property>
+    <widget class="QLineEdit" name="leY">
+     <property name="geometry">
+      <rect>
+       <x>110</x>
+       <y>52</y>
+       <width>36</width>
+       <height>21</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="leZ">
+     <property name="geometry">
+      <rect>
+       <x>150</x>
+       <y>52</y>
+       <width>36</width>
+       <height>21</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pbY">
+     <property name="geometry">
+      <rect>
+       <x>110</x>
+       <y>22</y>
+       <width>36</width>
+       <height>27</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>Update X Position Value</string>
+     </property>
+     <property name="text">
+      <string>Y</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pbX">
+     <property name="geometry">
+      <rect>
+       <x>70</x>
+       <y>22</y>
+       <width>36</width>
+       <height>27</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>Update X Position Value</string>
+     </property>
+     <property name="text">
+      <string>X</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="leX">
+     <property name="geometry">
+      <rect>
+       <x>70</x>
+       <y>52</y>
+       <width>36</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="leW">
+     <property name="geometry">
+      <rect>
+       <x>190</x>
+       <y>52</y>
+       <width>36</width>
+       <height>21</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pbZ">
+     <property name="geometry">
+      <rect>
+       <x>150</x>
+       <y>22</y>
+       <width>36</width>
+       <height>27</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>Update X Position Value</string>
+     </property>
+     <property name="text">
+      <string>Z</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pbW">
+     <property name="geometry">
+      <rect>
+       <x>190</x>
+       <y>22</y>
+       <width>36</width>
+       <height>27</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>Update X Position Value</string>
+     </property>
+     <property name="text">
+      <string>W</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pbHome">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>22</y>
+       <width>51</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset>
+       <normaloff>icon/home.png</normaloff>icon/home.png</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>30</width>
+       <height>30</height>
+      </size>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QTabWidget" name="twConveyor">
+    <property name="geometry">
+     <rect>
+      <x>670</x>
+      <y>20</y>
+      <width>236</width>
+      <height>91</height>
+     </rect>
+    </property>
+    <property name="currentIndex">
+     <number>0</number>
+    </property>
+    <widget class="QWidget" name="tConveyor">
+     <attribute name="title">
+      <string>Conveyor X</string>
+     </attribute>
+     <widget class="QComboBox" name="cbConveyorMode">
+      <property name="geometry">
+       <rect>
+        <x>95</x>
+        <y>5</y>
+        <width>71</width>
+        <height>24</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>7</pointsize>
+       </font>
+      </property>
+      <item>
+       <property name="text">
+        <string>Manual</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>UART</string>
+       </property>
+      </item>
+     </widget>
+     <widget class="QComboBox" name="cbConveyorValueType">
+      <property name="geometry">
+       <rect>
+        <x>110</x>
+        <y>35</y>
+        <width>56</width>
+        <height>25</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>7</pointsize>
+       </font>
+      </property>
+      <item>
+       <property name="text">
+        <string>mm/s</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>mm</string>
+       </property>
+      </item>
+     </widget>
+     <widget class="QLineEdit" name="leConveyorvMovingValue">
+      <property name="geometry">
+       <rect>
+        <x>53</x>
+        <y>35</y>
+        <width>46</width>
+        <height>25</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>-100</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pbConveyorMove">
+      <property name="geometry">
+       <rect>
+        <x>5</x>
+        <y>35</y>
+        <width>41</width>
+        <height>25</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Move</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pbConveyorConnect">
+      <property name="geometry">
+       <rect>
+        <x>5</x>
+        <y>5</y>
+        <width>81</width>
+        <height>25</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Connect</string>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="sSlidingRail">
+     <attribute name="title">
+      <string>Sliding Rail X</string>
+     </attribute>
+     <widget class="QPushButton" name="pbSlidingConnect">
+      <property name="geometry">
+       <rect>
+        <x>5</x>
+        <y>5</y>
+        <width>96</width>
+        <height>26</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Connect</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pbSlidingHome">
+      <property name="geometry">
+       <rect>
+        <x>5</x>
+        <y>35</y>
+        <width>51</width>
+        <height>26</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string extracomment="Go home"/>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>icon/icons8-home-32.png</normaloff>icon/icons8-home-32.png</iconset>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="leSlidingSpeed">
+      <property name="geometry">
+       <rect>
+        <x>110</x>
+        <y>35</y>
+        <width>36</width>
+        <height>21</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="leSlidingPosition">
+      <property name="geometry">
+       <rect>
+        <x>170</x>
+        <y>35</y>
+        <width>41</width>
+        <height>21</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pbSlidingDisable">
+      <property name="geometry">
+       <rect>
+        <x>60</x>
+        <y>35</y>
+        <width>41</width>
+        <height>26</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string extracomment="Disable Stepper Motor"/>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>icon/icons8-sleeping-in-bed-32.png</normaloff>icon/icons8-sleeping-in-bed-32.png</iconset>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_36">
+      <property name="geometry">
+       <rect>
+        <x>110</x>
+        <y>10</y>
+        <width>46</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Speed</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_37">
+      <property name="geometry">
+       <rect>
+        <x>170</x>
+        <y>10</y>
+        <width>51</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Position</string>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="tExConveyor">
+     <attribute name="title">
+      <string>External Conveyor</string>
+     </attribute>
+     <widget class="QCheckBox" name="cbEnoughGetConvenyorContinues">
+      <property name="geometry">
+       <rect>
+        <x>130</x>
+        <y>10</y>
+        <width>91</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string>Enough Send Signals That Require Velocity Continuous</string>
+      </property>
+      <property name="text">
+       <string>Timer</string>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>icon/Forward Button_16px.png</normaloff>icon/Forward Button_16px.png</iconset>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="leConvenPosInterval">
+      <property name="geometry">
+       <rect>
+        <x>130</x>
+        <y>35</y>
+        <width>41</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>100</string>
+      </property>
+      <property name="readOnly">
+       <bool>false</bool>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="leCurrentConvenyoPosition">
+      <property name="geometry">
+       <rect>
+        <x>15</x>
+        <y>36</y>
+        <width>41</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="readOnly">
+       <bool>true</bool>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pbGetPositionConvenyor">
+      <property name="geometry">
+       <rect>
+        <x>12</x>
+        <y>5</y>
+        <width>101</width>
+        <height>27</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string>Get Current Convenyor Position</string>
+      </property>
+      <property name="statusTip">
+       <string extracomment="Get convenyor speed"/>
+      </property>
+      <property name="text">
+       <string>Get position</string>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>icon/Ruler2_16px.png</normaloff>icon/Ruler2_16px.png</iconset>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_43">
+      <property name="geometry">
+       <rect>
+        <x>180</x>
+        <y>35</y>
+        <width>31</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>ms</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_44">
+      <property name="geometry">
+       <rect>
+        <x>70</x>
+        <y>40</y>
+        <width>31</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>mm</string>
+      </property>
+     </widget>
+    </widget>
+   </widget>
+   <widget class="QCheckBox" name="checkBox">
+    <property name="geometry">
+     <rect>
+      <x>5</x>
+      <y>85</y>
+      <width>81</width>
+      <height>20</height>
      </rect>
     </property>
     <property name="text">
-     <string>10</string>
+     <string>Auto</string>
     </property>
-   </widget>
-   <widget class="QLineEdit" name="leCurrentConvenyoPosition">
-    <property name="geometry">
-     <rect>
-      <x>600</x>
-      <y>70</y>
-      <width>71</width>
-      <height>27</height>
-     </rect>
-    </property>
-    <property name="readOnly">
+    <property name="checked">
      <bool>true</bool>
     </property>
    </widget>
-   <widget class="QPushButton" name="pbGetPositionConvenyor">
+   <widget class="QLabel" name="label_52">
     <property name="geometry">
      <rect>
-      <x>600</x>
-      <y>40</y>
-      <width>71</width>
-      <height>27</height>
-     </rect>
-    </property>
-    <property name="statusTip">
-     <string extracomment="Get convenyor speed"/>
-    </property>
-    <property name="text">
-     <string>C position</string>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="leConvenPosInterval">
-    <property name="geometry">
-     <rect>
-      <x>680</x>
-      <y>70</y>
-      <width>51</width>
-      <height>27</height>
+      <x>10</x>
+      <y>665</y>
+      <width>55</width>
+      <height>16</height>
      </rect>
     </property>
     <property name="text">
-     <string>100</string>
-    </property>
-    <property name="readOnly">
-     <bool>false</bool>
+     <string>Terminal</string>
     </property>
    </widget>
-   <widget class="QCheckBox" name="cbEnoughGetConvenyorContinues">
-    <property name="geometry">
-     <rect>
-      <x>680</x>
-      <y>40</y>
-      <width>51</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>UCP</string>
-    </property>
-   </widget>
-   <widget class="QComboBox" name="cbGcode">
-    <property name="geometry">
-     <rect>
-      <x>1130</x>
-      <y>36</y>
-      <width>47</width>
-      <height>35</height>
-     </rect>
-    </property>
-    <item>
-     <property name="text">
-      <string>G01</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>G02</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>G03</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>G05</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>G28</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>M03</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>M04</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>M05</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>M204</string>
-     </property>
-    </item>
-   </widget>
-   <widget class="QLineEdit" name="leAg1">
-    <property name="geometry">
-     <rect>
-      <x>988</x>
-      <y>79</y>
-      <width>30</width>
-      <height>27</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-    <property name="readOnly">
-     <bool>false</bool>
-    </property>
-   </widget>
-   <widget class="QLabel" name="lbAg1">
-    <property name="geometry">
-     <rect>
-      <x>972</x>
-      <y>84</y>
-      <width>16</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background-color: rgb(124, 221, 235);</string>
-    </property>
-    <property name="text">
-     <string>X</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="leAg2">
-    <property name="geometry">
-     <rect>
-      <x>1041</x>
-      <y>79</y>
-      <width>30</width>
-      <height>27</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-    <property name="readOnly">
-     <bool>false</bool>
-    </property>
-   </widget>
-   <widget class="QLabel" name="lbAg2">
-    <property name="geometry">
-     <rect>
-      <x>1025</x>
-      <y>84</y>
-      <width>16</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background-color: rgb(124, 221, 235);</string>
-    </property>
-    <property name="text">
-     <string>Y</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
-   <widget class="QLabel" name="lbAg3">
-    <property name="geometry">
-     <rect>
-      <x>1079</x>
-      <y>84</y>
-      <width>16</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background-color: rgb(124, 221, 235);</string>
-    </property>
-    <property name="text">
-     <string>Z</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="leAg3">
-    <property name="geometry">
-     <rect>
-      <x>1095</x>
-      <y>79</y>
-      <width>30</width>
-      <height>27</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-    <property name="readOnly">
-     <bool>false</bool>
-    </property>
-   </widget>
-   <widget class="QLabel" name="lbAg4">
-    <property name="geometry">
-     <rect>
-      <x>1133</x>
-      <y>84</y>
-      <width>16</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background-color: rgb(124, 221, 235);</string>
-    </property>
-    <property name="text">
-     <string>W</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="leAg4">
-    <property name="geometry">
-     <rect>
-      <x>1150</x>
-      <y>79</y>
-      <width>30</width>
-      <height>27</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-    <property name="readOnly">
-     <bool>false</bool>
-    </property>
-   </widget>
-   <widget class="QLabel" name="lbAg5">
-    <property name="geometry">
-     <rect>
-      <x>1188</x>
-      <y>84</y>
-      <width>16</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background-color: rgb(124, 221, 235);</string>
-    </property>
-    <property name="text">
-     <string>F</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="leAg5">
-    <property name="geometry">
-     <rect>
-      <x>1203</x>
-      <y>79</y>
-      <width>30</width>
-      <height>27</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-    <property name="readOnly">
-     <bool>false</bool>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="leAg6">
-    <property name="geometry">
-     <rect>
-      <x>1258</x>
-      <y>79</y>
-      <width>30</width>
-      <height>27</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-    <property name="readOnly">
-     <bool>false</bool>
-    </property>
-   </widget>
-   <widget class="QLabel" name="lbAg6">
-    <property name="geometry">
-     <rect>
-      <x>1240</x>
-      <y>84</y>
-      <width>16</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background-color: rgb(124, 221, 235);</string>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="leVariable3">
-    <property name="geometry">
-     <rect>
-      <x>1019</x>
-      <y>406</y>
-      <width>41</width>
-      <height>22</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>#Z</string>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="leVariable2">
-    <property name="geometry">
-     <rect>
-      <x>969</x>
-      <y>406</y>
-      <width>41</width>
-      <height>22</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>#Y</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="lbVar3">
-    <property name="geometry">
-     <rect>
-      <x>1019</x>
-      <y>436</y>
-      <width>41</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background-color: rgb(225, 225, 225);</string>
-    </property>
-    <property name="text">
-     <string>0</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
-   <widget class="QLabel" name="lbVar1">
+   <widget class="QPushButton" name="pbFormat">
     <property name="geometry">
      <rect>
       <x>920</x>
-      <y>436</y>
-      <width>41</width>
+      <y>410</y>
+      <width>91</width>
+      <height>36</height>
+     </rect>
+    </property>
+    <property name="toolTip">
+     <string>Format Gcode Lines</string>
+    </property>
+    <property name="text">
+     <string>Format</string>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>icon/index.png</normaloff>icon/index.png</iconset>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>30</width>
+      <height>30</height>
+     </size>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="cbLockGcodeEditor">
+    <property name="geometry">
+     <rect>
+      <x>920</x>
+      <y>115</y>
+      <width>91</width>
       <height>20</height>
      </rect>
     </property>
-    <property name="styleSheet">
-     <string notr="true">background-color: rgb(225, 225, 225);</string>
+    <property name="font">
+     <font>
+      <pointsize>8</pointsize>
+     </font>
     </property>
     <property name="text">
-     <string>0</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
+     <string>Lock Editor</string>
     </property>
    </widget>
-   <widget class="QLabel" name="lbVar2">
+   <widget class="QCheckBox" name="cbAutoNumbering">
     <property name="geometry">
      <rect>
-      <x>969</x>
-      <y>436</y>
-      <width>41</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background-color: rgb(225, 225, 225);</string>
-    </property>
-    <property name="text">
-     <string>0</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="leVariable4">
-    <property name="geometry">
-     <rect>
-      <x>1069</x>
-      <y>406</y>
-      <width>41</width>
-      <height>22</height>
+      <x>925</x>
+      <y>470</y>
+      <width>121</width>
+      <height>16</height>
      </rect>
     </property>
     <property name="text">
-     <string>#1010</string>
+     <string>Auto Numbering</string>
+    </property>
+    <property name="checked">
+     <bool>true</bool>
     </property>
    </widget>
-   <widget class="QLineEdit" name="leVariable1">
+   <widget class="QGroupBox" name="gbVar">
     <property name="geometry">
      <rect>
-      <x>919</x>
-      <y>406</y>
-      <width>41</width>
-      <height>22</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>#X</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="lbVar4">
-    <property name="geometry">
-     <rect>
-      <x>1068</x>
-      <y>436</y>
-      <width>41</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background-color: rgb(225, 225, 225);</string>
-    </property>
-    <property name="text">
-     <string>0</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
-   <widget class="QLabel" name="lbVar1_2">
-    <property name="geometry">
-     <rect>
-      <x>750</x>
-      <y>60</y>
+      <x>1230</x>
+      <y>105</y>
       <width>61</width>
-      <height>31</height>
+      <height>301</height>
      </rect>
     </property>
-    <property name="styleSheet">
-     <string notr="true">color: rgb(255, 255, 255);
-background-color: rgb(255, 90, 90);</string>
+    <property name="title">
+     <string>Var</string>
     </property>
-    <property name="text">
-     <string>Variables</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
+    <widget class="QLabel" name="lbVar6">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>275</y>
+       <width>41</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(225, 225, 225);</string>
+     </property>
+     <property name="text">
+      <string>0</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="lbVar4">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>185</y>
+       <width>41</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(225, 225, 225);</string>
+     </property>
+     <property name="text">
+      <string>0</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="leVariable2">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>65</y>
+       <width>41</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>#101</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="leVariable4">
+     <property name="geometry">
+      <rect>
+       <x>11</x>
+       <y>160</y>
+       <width>41</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>#103</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="leVariable6">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>250</y>
+       <width>41</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>#105</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="lbVar5">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>230</y>
+       <width>41</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(225, 225, 225);</string>
+     </property>
+     <property name="text">
+      <string>0</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="lbVar1">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>45</y>
+       <width>41</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(225, 225, 225);</string>
+     </property>
+     <property name="text">
+      <string>0</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="leVariable3">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>110</y>
+       <width>41</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>#102</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="leVariable1">
+     <property name="geometry">
+      <rect>
+       <x>9</x>
+       <y>20</y>
+       <width>41</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>#100</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="lbVar3">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>135</y>
+       <width>41</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(225, 225, 225);</string>
+     </property>
+     <property name="text">
+      <string>0</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="leVariable5">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>205</y>
+       <width>41</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>#104</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="lbVar2">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>90</y>
+       <width>41</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(225, 225, 225);</string>
+     </property>
+     <property name="text">
+      <string>0</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
    </widget>
-   <widget class="QLabel" name="lbVar5">
+   <widget class="CodeEditor" name="pteGcodeArea">
     <property name="geometry">
      <rect>
-      <x>1118</x>
-      <y>436</y>
-      <width>41</width>
-      <height>20</height>
+      <x>920</x>
+      <y>145</y>
+      <width>310</width>
+      <height>261</height>
      </rect>
     </property>
-    <property name="styleSheet">
-     <string notr="true">background-color: rgb(225, 225, 225);</string>
+    <property name="minimumSize">
+     <size>
+      <width>310</width>
+      <height>250</height>
+     </size>
     </property>
-    <property name="text">
-     <string>0</string>
+    <property name="font">
+     <font>
+      <pointsize>8</pointsize>
+     </font>
     </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
+    <property name="horizontalScrollBarPolicy">
+     <enum>Qt::ScrollBarAsNeeded</enum>
     </property>
-   </widget>
-   <widget class="QLineEdit" name="leVariable5">
-    <property name="geometry">
-     <rect>
-      <x>1118</x>
-      <y>406</y>
-      <width>41</width>
-      <height>22</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>#1011</string>
+    <property name="html">
+     <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; color:#000000;&quot;&gt;N05&lt;/span&gt; &lt;span style=&quot; font-weight:600;&quot;&gt;G28&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;N10 &lt;span style=&quot; font-weight:600;&quot;&gt;M204&lt;/span&gt; A1200&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;N15 &lt;span style=&quot; font-weight:600;&quot;&gt;G01&lt;/span&gt; F200&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-style:italic; color:#00aa00;&quot;&gt;;Declare a variable&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;N20 &lt;span style=&quot; font-style:italic;&quot;&gt;#100&lt;/span&gt; = 0&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;N30 &lt;span style=&quot; font-style:italic;&quot;&gt;#100&lt;/span&gt; = &lt;span style=&quot; font-style:italic;&quot;&gt;#100&lt;/span&gt; + 1&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-style:italic; color:#55aa00;&quot;&gt;;Call subprogram&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;N35 &lt;span style=&quot; font-weight:600;&quot;&gt;M98&lt;/span&gt; P2000&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-style:italic; color:#00aa00;&quot;&gt;; Begin subprogram&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;N40 &lt;span style=&quot; font-weight:600;&quot;&gt;O2000&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;N45 &lt;span style=&quot; font-weight:600;&quot;&gt;G01&lt;/span&gt; Z-350&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;N50 &lt;span style=&quot; font-weight:600;&quot;&gt;G01&lt;/span&gt; X-100&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;N55 &lt;span style=&quot; font-weight:600;&quot;&gt;G01&lt;/span&gt; Z-370&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;N60 &lt;span style=&quot; font-weight:600;&quot;&gt;G01&lt;/span&gt; Z-350&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;N65 &lt;span style=&quot; font-weight:600;&quot;&gt;G01&lt;/span&gt; X100&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;N70 &lt;span style=&quot; font-weight:600;&quot;&gt;G01&lt;/span&gt; Z-370&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;N75 M99&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-style:italic; color:#00aa00;&quot;&gt;;End subprogram&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-style:italic; color:#00aa00;&quot;&gt;;Loop 5 times&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;N80 &lt;span style=&quot; font-weight:600; color:#00aa00;&quot;&gt;IF&lt;/span&gt; [&lt;span style=&quot; font-style:italic;&quot;&gt;#100&lt;/span&gt; LE 5] &lt;span style=&quot; font-weight:600; color:#00aa00;&quot;&gt;THEN&lt;/span&gt; &lt;span style=&quot; font-weight:600; color:#ff5500;&quot;&gt;GOTO&lt;/span&gt; 30&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;N85 &lt;span style=&quot; font-weight:600;&quot;&gt;G28&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt; &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
    <widget class="QComboBox" name="cbPositionToExecuteGcode">
     <property name="geometry">
      <rect>
-      <x>1240</x>
+      <x>1175</x>
       <y>470</y>
-      <width>51</width>
-      <height>19</height>
+      <width>56</width>
+      <height>21</height>
      </rect>
     </property>
     <property name="font">
@@ -2707,155 +3390,809 @@ background-color: rgb(255, 90, 90);</string>
      </property>
     </item>
    </widget>
-   <widget class="QCheckBox" name="cbLockGcodeEditor">
+   <widget class="QCheckBox" name="cbFormatColor">
     <property name="geometry">
      <rect>
-      <x>1240</x>
-      <y>496</y>
-      <width>49</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>6</pointsize>
-     </font>
-    </property>
-    <property name="text">
-     <string>Lock</string>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="leVariable6">
-    <property name="geometry">
-     <rect>
-      <x>1168</x>
-      <y>406</y>
-      <width>41</width>
-      <height>22</height>
+      <x>925</x>
+      <y>450</y>
+      <width>71</width>
+      <height>16</height>
      </rect>
     </property>
     <property name="text">
-     <string>#1011</string>
+     <string>Color</string>
+    </property>
+    <property name="checked">
+     <bool>true</bool>
     </property>
    </widget>
-   <widget class="QLabel" name="lbVar6">
+   <widget class="QPushButton" name="pbExecuteGcodes">
     <property name="geometry">
      <rect>
-      <x>1168</x>
-      <y>436</y>
-      <width>41</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background-color: rgb(225, 225, 225);</string>
-    </property>
-    <property name="text">
-     <string>0</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pbRefreshGcodeFiles">
-    <property name="geometry">
-     <rect>
-      <x>918</x>
-      <y>506</y>
-      <width>55</width>
-      <height>31</height>
+      <x>1175</x>
+      <y>410</y>
+      <width>56</width>
+      <height>56</height>
      </rect>
     </property>
     <property name="toolTip">
-     <string extracomment="New gcode"/>
+     <string>Execute Gcode</string>
+    </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
     </property>
     <property name="text">
-     <string>F5   </string>
+     <string/>
     </property>
     <property name="icon">
      <iconset>
-      <normaloff>icon/Restart_16px.png</normaloff>icon/Restart_16px.png</iconset>
+      <normaloff>icon/Play_96px.png</normaloff>
+      <normalon>icon/Pause_96px.png</normalon>icon/Play_96px.png</iconset>
     </property>
     <property name="iconSize">
      <size>
-      <width>16</width>
-      <height>16</height>
+      <width>70</width>
+      <height>70</height>
      </size>
+    </property>
+    <property name="checkable">
+     <bool>true</bool>
     </property>
     <property name="flat">
      <bool>false</bool>
     </property>
    </widget>
-   <widget class="QPushButton" name="pbFindGcodeFile">
+   <widget class="QGroupBox" name="gbAddGcode">
     <property name="geometry">
      <rect>
-      <x>918</x>
-      <y>542</y>
-      <width>55</width>
-      <height>31</height>
+      <x>920</x>
+      <y>15</y>
+      <width>366</width>
+      <height>86</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>Add G-code</string>
+    </property>
+    <widget class="QLabel" name="lbAg1">
+     <property name="geometry">
+      <rect>
+       <x>85</x>
+       <y>30</y>
+       <width>16</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(124, 221, 235);</string>
+     </property>
+     <property name="text">
+      <string>X</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="leAg6">
+     <property name="geometry">
+      <rect>
+       <x>305</x>
+       <y>29</y>
+       <width>26</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="readOnly">
+      <bool>false</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="lbAg2">
+     <property name="geometry">
+      <rect>
+       <x>128</x>
+       <y>30</y>
+       <width>16</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(124, 221, 235);</string>
+     </property>
+     <property name="text">
+      <string>Y</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="leAg5">
+     <property name="geometry">
+      <rect>
+       <x>265</x>
+       <y>29</y>
+       <width>26</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="readOnly">
+      <bool>false</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="lbAg3">
+     <property name="geometry">
+      <rect>
+       <x>170</x>
+       <y>30</y>
+       <width>16</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(124, 221, 235);</string>
+     </property>
+     <property name="text">
+      <string>Z</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="lbAg5">
+     <property name="geometry">
+      <rect>
+       <x>250</x>
+       <y>30</y>
+       <width>16</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(124, 221, 235);</string>
+     </property>
+     <property name="text">
+      <string>F</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="lbAg6">
+     <property name="geometry">
+      <rect>
+       <x>290</x>
+       <y>30</y>
+       <width>16</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(124, 221, 235);</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="leAg3">
+     <property name="geometry">
+      <rect>
+       <x>185</x>
+       <y>29</y>
+       <width>26</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="readOnly">
+      <bool>false</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="lbAg4">
+     <property name="geometry">
+      <rect>
+       <x>210</x>
+       <y>30</y>
+       <width>16</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(124, 221, 235);</string>
+     </property>
+     <property name="text">
+      <string>W</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="leAg4">
+     <property name="geometry">
+      <rect>
+       <x>225</x>
+       <y>29</y>
+       <width>26</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="readOnly">
+      <bool>false</bool>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="leAg2">
+     <property name="geometry">
+      <rect>
+       <x>143</x>
+       <y>29</y>
+       <width>26</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="readOnly">
+      <bool>false</bool>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="leAg1">
+     <property name="geometry">
+      <rect>
+       <x>101</x>
+       <y>29</y>
+       <width>26</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>8</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="readOnly">
+      <bool>false</bool>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pbGcodeReference">
+     <property name="geometry">
+      <rect>
+       <x>80</x>
+       <y>55</y>
+       <width>86</width>
+       <height>26</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string extracomment="Accel">Gcode Reference</string>
+     </property>
+     <property name="text">
+      <string>Reference</string>
+     </property>
+     <property name="icon">
+      <iconset>
+       <normaloff>icon/Help_16px.png</normaloff>icon/Help_16px.png</iconset>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pbAddGcode">
+     <property name="geometry">
+      <rect>
+       <x>5</x>
+       <y>55</y>
+       <width>66</width>
+       <height>26</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Add</string>
+     </property>
+     <property name="icon">
+      <iconset>
+       <normaloff>icon/new.png</normaloff>icon/new.png</iconset>
+     </property>
+     <property name="autoDefault">
+      <bool>false</bool>
+     </property>
+     <property name="default">
+      <bool>false</bool>
+     </property>
+     <property name="flat">
+      <bool>false</bool>
+     </property>
+    </widget>
+    <widget class="QComboBox" name="cbGcode">
+     <property name="geometry">
+      <rect>
+       <x>5</x>
+       <y>25</y>
+       <width>66</width>
+       <height>26</height>
+      </rect>
+     </property>
+     <item>
+      <property name="text">
+       <string>G01</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>G02</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>G03</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>G05</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>G28</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>M03</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>M04</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>M05</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>M204</string>
+      </property>
+     </item>
+    </widget>
+    <zorder>lbAg1</zorder>
+    <zorder>lbAg2</zorder>
+    <zorder>lbAg3</zorder>
+    <zorder>lbAg5</zorder>
+    <zorder>lbAg6</zorder>
+    <zorder>leAg3</zorder>
+    <zorder>lbAg4</zorder>
+    <zorder>leAg4</zorder>
+    <zorder>leAg2</zorder>
+    <zorder>leAg1</zorder>
+    <zorder>pbGcodeReference</zorder>
+    <zorder>pbAddGcode</zorder>
+    <zorder>cbGcode</zorder>
+    <zorder>leAg6</zorder>
+    <zorder>leAg5</zorder>
+   </widget>
+   <widget class="QPushButton" name="pbSaveGcode">
+    <property name="geometry">
+     <rect>
+      <x>1155</x>
+      <y>105</y>
+      <width>76</width>
+      <height>36</height>
      </rect>
     </property>
     <property name="toolTip">
-     <string extracomment="New gcode"/>
+     <string>Save Gcode Into File</string>
     </property>
     <property name="text">
-     <string>Find</string>
+     <string>Save</string>
     </property>
     <property name="icon">
      <iconset>
-      <normaloff>icon/Search_16px.png</normaloff>icon/Search_16px.png</iconset>
+      <normaloff>icon/save.png</normaloff>icon/save.png</iconset>
     </property>
     <property name="iconSize">
      <size>
-      <width>16</width>
-      <height>16</height>
+      <width>30</width>
+      <height>30</height>
      </size>
     </property>
-    <property name="flat">
-     <bool>false</bool>
-    </property>
    </widget>
-   <widget class="QPushButton" name="pbSortGcodeFiles">
+   <widget class="QTabWidget" name="tabWidget">
     <property name="geometry">
      <rect>
-      <x>918</x>
-      <y>578</y>
-      <width>55</width>
-      <height>31</height>
+      <x>920</x>
+      <y>500</y>
+      <width>376</width>
+      <height>181</height>
      </rect>
     </property>
-    <property name="toolTip">
-     <string extracomment="New gcode"/>
+    <property name="currentIndex">
+     <number>0</number>
     </property>
-    <property name="text">
-     <string>Sort</string>
-    </property>
-    <property name="icon">
-     <iconset>
-      <normaloff>icon/Sort_16px.png</normaloff>icon/Sort_16px.png</iconset>
-    </property>
-    <property name="iconSize">
-     <size>
-      <width>16</width>
-      <height>16</height>
-     </size>
-    </property>
-    <property name="flat">
-     <bool>false</bool>
-    </property>
-   </widget>
-   <widget class="QLabel" name="lbID">
-    <property name="geometry">
-     <rect>
-      <x>118</x>
-      <y>54</y>
-      <width>55</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>ID: 0</string>
-    </property>
+    <widget class="QWidget" name="tab">
+     <attribute name="title">
+      <string>Offline</string>
+     </attribute>
+     <widget class="QPushButton" name="pbFindGcodeFile">
+      <property name="geometry">
+       <rect>
+        <x>5</x>
+        <y>80</y>
+        <width>55</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string extracomment="New gcode"/>
+      </property>
+      <property name="text">
+       <string>Find</string>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>icon/Search_16px.png</normaloff>icon/Search_16px.png</iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>16</width>
+        <height>16</height>
+       </size>
+      </property>
+      <property name="flat">
+       <bool>false</bool>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pbRefreshGcodeFiles">
+      <property name="geometry">
+       <rect>
+        <x>5</x>
+        <y>44</y>
+        <width>55</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string extracomment="New gcode"/>
+      </property>
+      <property name="text">
+       <string>F5   </string>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>icon/Restart_16px.png</normaloff>icon/Restart_16px.png</iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>16</width>
+        <height>16</height>
+       </size>
+      </property>
+      <property name="flat">
+       <bool>false</bool>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pbAddNewProgram">
+      <property name="geometry">
+       <rect>
+        <x>5</x>
+        <y>8</y>
+        <width>56</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string extracomment="New gcode"/>
+      </property>
+      <property name="text">
+       <string>New </string>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>icon/new.png</normaloff>icon/new.png</iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>16</width>
+        <height>16</height>
+       </size>
+      </property>
+      <property name="flat">
+       <bool>false</bool>
+      </property>
+     </widget>
+     <widget class="QScrollArea" name="saProgramFiles">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>65</x>
+        <y>11</y>
+        <width>240</width>
+        <height>140</height>
+       </rect>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>240</width>
+        <height>140</height>
+       </size>
+      </property>
+      <property name="styleSheet">
+       <string notr="true"/>
+      </property>
+      <property name="verticalScrollBarPolicy">
+       <enum>Qt::ScrollBarAlwaysOn</enum>
+      </property>
+      <property name="horizontalScrollBarPolicy">
+       <enum>Qt::ScrollBarAlwaysOff</enum>
+      </property>
+      <property name="sizeAdjustPolicy">
+       <enum>QAbstractScrollArea::AdjustToContents</enum>
+      </property>
+      <property name="widgetResizable">
+       <bool>false</bool>
+      </property>
+      <widget class="QWidget" name="wgProgramContainer">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>279</width>
+         <height>589</height>
+        </rect>
+       </property>
+       <widget class="QFrame" name="frExProgram">
+        <property name="geometry">
+         <rect>
+          <x>5</x>
+          <y>10</y>
+          <width>221</width>
+          <height>61</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color:rgb(209, 209, 209)</string>
+        </property>
+        <property name="frameShape">
+         <enum>QFrame::StyledPanel</enum>
+        </property>
+        <property name="frameShadow">
+         <enum>QFrame::Raised</enum>
+        </property>
+        <widget class="QLineEdit" name="leExProgramName">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>5</y>
+           <width>160</width>
+           <height>30</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <property name="cursor">
+          <cursorShape>SizeHorCursor</cursorShape>
+         </property>
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
+         <property name="text">
+          <string>Program 1</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="pbExDeleteProgram">
+         <property name="geometry">
+          <rect>
+           <x>180</x>
+           <y>5</y>
+           <width>30</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normaloff>icon/delete.png</normaloff>icon/delete.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>30</width>
+           <height>30</height>
+          </size>
+         </property>
+         <property name="autoDefault">
+          <bool>false</bool>
+         </property>
+         <property name="default">
+          <bool>true</bool>
+         </property>
+         <property name="flat">
+          <bool>true</bool>
+         </property>
+        </widget>
+        <widget class="QLabel" name="lbExGCodeNumber">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>40</y>
+           <width>101</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>100 Gcode Lines</string>
+         </property>
+        </widget>
+       </widget>
+      </widget>
+     </widget>
+     <widget class="QPushButton" name="pbSortGcodeFiles">
+      <property name="geometry">
+       <rect>
+        <x>5</x>
+        <y>116</y>
+        <width>55</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string extracomment="New gcode"/>
+      </property>
+      <property name="text">
+       <string>Sort</string>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>icon/Sort_16px.png</normaloff>icon/Sort_16px.png</iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>16</width>
+        <height>16</height>
+       </size>
+      </property>
+      <property name="flat">
+       <bool>false</bool>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pbUploadProgram">
+      <property name="geometry">
+       <rect>
+        <x>310</x>
+        <y>10</y>
+        <width>56</width>
+        <height>36</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string extracomment="New gcode"/>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>icon/icons8-upload-to-cloud-48.png</normaloff>icon/icons8-upload-to-cloud-48.png</iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>32</width>
+        <height>32</height>
+       </size>
+      </property>
+      <property name="flat">
+       <bool>false</bool>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pbUploadProgram_3">
+      <property name="geometry">
+       <rect>
+        <x>310</x>
+        <y>50</y>
+        <width>56</width>
+        <height>36</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string extracomment="New gcode"/>
+      </property>
+      <property name="text">
+       <string>Import</string>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>32</width>
+        <height>32</height>
+       </size>
+      </property>
+      <property name="flat">
+       <bool>false</bool>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="tab_3">
+     <attribute name="title">
+      <string>Online</string>
+     </attribute>
+     <widget class="QListWidget" name="listWidget">
+      <property name="geometry">
+       <rect>
+        <x>5</x>
+        <y>10</y>
+        <width>171</width>
+        <height>136</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QTextEdit" name="textEdit">
+      <property name="geometry">
+       <rect>
+        <x>185</x>
+        <y>10</y>
+        <width>166</width>
+        <height>91</height>
+       </rect>
+      </property>
+      <property name="html">
+       <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:7.8pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Author:&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Description:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pbUploadProgram_2">
+      <property name="geometry">
+       <rect>
+        <x>185</x>
+        <y>110</y>
+        <width>56</width>
+        <height>36</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string extracomment="New gcode"/>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>icon/icons8-download-from-cloud-48.png</normaloff>icon/icons8-download-from-cloud-48.png</iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>32</width>
+        <height>32</height>
+       </size>
+      </property>
+      <property name="flat">
+       <bool>false</bool>
+      </property>
+     </widget>
+    </widget>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
@@ -2873,16 +4210,12 @@ color: rgb(166, 156, 157);
 selection-color: rgb(255, 255, 255);
 selection-background-color: rgb(0, 204, 204);</string>
    </property>
-   <widget class="QMenu" name="menuFile">
-    <property name="styleSheet">
-     <string notr="true"/>
-    </property>
-    <property name="title">
-     <string>Delta X</string>
-    </property>
-    <addaction name="actionAdd"/>
-    <addaction name="actionRemove"/>
-   </widget>
+   <property name="defaultUp">
+    <bool>false</bool>
+   </property>
+   <property name="nativeMenuBar">
+    <bool>true</bool>
+   </property>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
      <string>Help</string>
@@ -2913,7 +4246,25 @@ selection-background-color: rgb(0, 204, 204);</string>
     <addaction name="separator"/>
     <addaction name="menuExecute"/>
    </widget>
-   <addaction name="menuFile"/>
+   <widget class="QMenu" name="menu_2">
+    <property name="title">
+     <string>.............................................................</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menuSetting">
+    <property name="title">
+     <string>Setting</string>
+    </property>
+    <widget class="QMenu" name="menuConnection">
+     <property name="title">
+      <string>Connection</string>
+     </property>
+     <addaction name="actionBaudrate"/>
+    </widget>
+    <addaction name="menuConnection"/>
+   </widget>
+   <addaction name="menu_2"/>
+   <addaction name="menuSetting"/>
    <addaction name="menuEditor"/>
    <addaction name="menuHelp"/>
   </widget>
@@ -2952,7 +4303,7 @@ selection-background-color: rgb(0, 204, 204);</string>
     <bool>true</bool>
    </property>
    <property name="checked">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="text">
     <string>Delta X 1</string>
@@ -2961,6 +4312,11 @@ selection-background-color: rgb(0, 204, 204);</string>
   <action name="actionExecute">
    <property name="text">
     <string>Execute</string>
+   </property>
+  </action>
+  <action name="actionBaudrate">
+   <property name="text">
+    <string>Baudrate</string>
    </property>
   </action>
  </widget>
@@ -2984,4 +4340,21 @@ selection-background-color: rgb(0, 204, 204);</string>
  </customwidgets>
  <resources/>
  <connections/>
+ <designerdata>
+  <property name="gridDeltaX">
+   <number>5</number>
+  </property>
+  <property name="gridDeltaY">
+   <number>5</number>
+  </property>
+  <property name="gridSnapX">
+   <bool>true</bool>
+  </property>
+  <property name="gridSnapY">
+   <bool>true</bool>
+  </property>
+  <property name="gridVisible">
+   <bool>true</bool>
+  </property>
+ </designerdata>
 </ui>

@@ -25,6 +25,9 @@
 #include <codeeditor.h>
 #include <qscrollarea.h>
 #include <qscrollbar.h>
+#include "mainwindow.h"
+
+class MainWindow;
 
 class GcodeVariable
 {
@@ -38,25 +41,30 @@ class GcodeProgramManager : public QObject
 	Q_OBJECT
 
 public:
-	GcodeProgramManager();
+	GcodeProgramManager(MainWindow *parent);
 	~GcodeProgramManager();
-	GcodeProgramManager(QScrollArea* scrolArea, QWidget* container, CodeEditor* gcodeArea, ConnectionManager* deltaPort = NULL, DeltaVisualizer* deltaVisualize = NULL);
+	GcodeProgramManager(MainWindow *parent, QScrollArea* scrolArea, QWidget* container, CodeEditor* gcodeArea, QPushButton* executeButton, ConnectionManager* deltaPort = NULL, DeltaVisualizer* deltaVisualize = NULL);
 	void AddGcodeLine(QString line);
 	void AddG01(float  x, float y, float z);
 	void AddG28();
 	void AddM204(float accel);
 	void AddNewProgram();
 	void LoadPrograms();
-	void ExecuteGcode(QString gcodes);
+	void ExecuteGcode(QString gcodes, bool isFromGE = false);
 	void Stop();
 
 	QWidget* wgProgramContainer;
 	QScrollArea* saProgramFilesScrollArea;
 	CodeEditor* pteGcodeArea;
+	QPushButton* pbExecuteGcodes;
 
 	GcodeProgram* SelectingProgram = NULL;
 	int ProgramCounter = 0;
-	QVector<GcodeProgram*>* ProgramList;
+	QVector<GcodeProgram*>* ProgramList = NULL;
+
+	bool IsFromOtherGcodeProgram = false;
+	GcodeProgramManager* OutsideGcodeProgramManager = NULL;
+	GcodeProgramManager* InsideGcodeProgramManager = NULL;
 
 public slots:
 	void ChangeSelectingProgram(GcodeProgram* ptr);
@@ -73,6 +81,7 @@ signals:
 	void OutOfObjectVariable();
 	void JustUpdateVariable(QList<GcodeVariable> gcodeVariables);
 	void MoveToNewPosition(float x, float y, float z, float w);
+	void FinishExecuteGcodes();
 
 private:
 	ConnectionManager* deltaConnection;
@@ -80,6 +89,9 @@ private:
 	QList<GcodeVariable> gcodeVariables;
 
 	int sortMethod = 0;
+
+	bool isFromGcodeEditor = false;
+	bool isFileProgramRunning = false;
 
 	QList<QString> gcodeList;
 	int gcodeOrder = 0;
@@ -89,10 +101,16 @@ private:
 	int returnPointerOrder = -1;
 	QString currentLine;
 
+	MainWindow* mParent;
+
 	float GetVariableValue(QString name);
+	bool isGlobalVariable(QString name);
+	bool isConveyorGcode(QString gcode);
+	bool isSlidingGcode(QString gcode);
 	bool findExeGcodeAndTransmit();
 	float calculateExpressions(QString expression);
 	void SaveGcodeVariable(GcodeVariable gvar);
+	void SaveGcodeVariable(QString name, float value);
 	void updatePositionIntoSystemVariable(QString statement);
 	QString getLeftWord(QString s, int pos);
 	QString getRightWord(QString s, int pos);

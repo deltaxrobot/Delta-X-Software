@@ -21,8 +21,8 @@ QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_ImageProcesser_t {
-    QByteArrayData data[30];
-    char stringdata0[249];
+    QByteArrayData data[31];
+    char stringdata0[270];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -60,7 +60,8 @@ QT_MOC_LITERAL(25, 182, 11), // "GetDistance"
 QT_MOC_LITERAL(26, 194, 8), // "distance"
 QT_MOC_LITERAL(27, 203, 13), // "GetCalibPoint"
 QT_MOC_LITERAL(28, 217, 11), // "SwitchLayer"
-QT_MOC_LITERAL(29, 229, 19) // "changeAxisDirection"
+QT_MOC_LITERAL(29, 229, 19), // "changeAxisDirection"
+QT_MOC_LITERAL(30, 249, 20) // "CalConvenyorPosition"
 
     },
     "ImageProcesser\0LoadTestImage\0\0LoadCamera\0"
@@ -69,7 +70,7 @@ QT_MOC_LITERAL(29, 229, 19) // "changeAxisDirection"
     "SetThreshold\0value\0GetObjectInfo\0x\0y\0"
     "h\0w\0GetProcessRegion\0a\0b\0c\0d\0GetDistance\0"
     "distance\0GetCalibPoint\0SwitchLayer\0"
-    "changeAxisDirection"
+    "changeAxisDirection\0CalConvenyorPosition"
 };
 #undef QT_MOC_LITERAL
 
@@ -79,7 +80,7 @@ static const uint qt_meta_data_ImageProcesser[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-      12,   14, // methods
+      13,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -87,18 +88,19 @@ static const uint qt_meta_data_ImageProcesser[] = {
        0,       // signalCount
 
  // slots: name, argc, parameters, tag, flags
-       1,    0,   74,    2, 0x0a /* Public */,
-       3,    0,   75,    2, 0x0a /* Public */,
-       4,    0,   76,    2, 0x0a /* Public */,
-       5,    0,   77,    2, 0x0a /* Public */,
-       6,    6,   78,    2, 0x0a /* Public */,
-      13,    1,   91,    2, 0x0a /* Public */,
-      15,    4,   94,    2, 0x0a /* Public */,
-      20,    4,  103,    2, 0x0a /* Public */,
-      25,    1,  112,    2, 0x0a /* Public */,
-      27,    2,  115,    2, 0x0a /* Public */,
-      28,    0,  120,    2, 0x0a /* Public */,
-      29,    0,  121,    2, 0x0a /* Public */,
+       1,    0,   79,    2, 0x0a /* Public */,
+       3,    0,   80,    2, 0x0a /* Public */,
+       4,    0,   81,    2, 0x0a /* Public */,
+       5,    0,   82,    2, 0x0a /* Public */,
+       6,    6,   83,    2, 0x0a /* Public */,
+      13,    1,   96,    2, 0x0a /* Public */,
+      15,    4,   99,    2, 0x0a /* Public */,
+      20,    4,  108,    2, 0x0a /* Public */,
+      25,    1,  117,    2, 0x0a /* Public */,
+      27,    2,  120,    2, 0x0a /* Public */,
+      28,    0,  125,    2, 0x0a /* Public */,
+      29,    0,  126,    2, 0x0a /* Public */,
+      30,    0,  127,    2, 0x0a /* Public */,
 
  // slots: parameters
     QMetaType::Void,
@@ -111,6 +113,7 @@ static const uint qt_meta_data_ImageProcesser[] = {
     QMetaType::Void, QMetaType::QPoint, QMetaType::QPoint, QMetaType::QPoint, QMetaType::QPoint,   21,   22,   23,   24,
     QMetaType::Void, QMetaType::Int,   26,
     QMetaType::Void, QMetaType::Int, QMetaType::Int,   16,   17,
+    QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
 
@@ -135,6 +138,7 @@ void ImageProcesser::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _
         case 9: _t->GetCalibPoint((*reinterpret_cast< int(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2]))); break;
         case 10: _t->SwitchLayer(); break;
         case 11: _t->changeAxisDirection(); break;
+        case 12: _t->CalConvenyorPosition(); break;
         default: ;
         }
     }
@@ -165,13 +169,13 @@ int ImageProcesser::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 12)
+        if (_id < 13)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 12;
+        _id -= 13;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 12)
+        if (_id < 13)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 12;
+        _id -= 13;
     }
     return _id;
 }
