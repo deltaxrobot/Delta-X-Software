@@ -29,13 +29,17 @@ public:
 
 	float XHome = 0;
 	float YHome = 0;
-	float ZHome = -290;
+	float ZHome = -200;
 	float WHome = 0;
+	float FDefault = 200;
+	float ADefault = 1200;
 
 	float X = XHome;
 	float Y = YHome;
 	float Z = ZHome;
 	float W = WHome;
+	float F = FDefault;
+	float A = ADefault;
 
 public slots:
 	void ChangeXY(int x, int y);

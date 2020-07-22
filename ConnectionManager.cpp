@@ -11,11 +11,23 @@ void ConnectionManager::init()
 	robotPort = new QSerialPort();
 	
 	connect(timer, SIGNAL(timeout()), this, SLOT(FindingTimeOut()));
+
+	ExternalControllerPort = new QSerialPort();
+	connect(ExternalControllerPort, SIGNAL(readyRead()), this, SLOT(ReadDataFromExternalController()));
+
+	SlidingPort = new QSerialPort();
+	connect(SlidingPort, SIGNAL(readyRead()), this, SLOT(ReadData()));
+
+	ConveyorPort = new QSerialPort();
+	connect(ConveyorPort, SIGNAL(readyRead()), this, SLOT(ReadData()));
+
+	TCPConnection = new TCPConnectionManager();
+	TCPConnection->OpenServer("localhost", 8844);
 }
 
 void ConnectionManager::sendQueue()
 {
-	if (transmitLines.size() == 0)
+	/*if (transmitLines.size() == 0)
 		return; 
 
 	transmitLines.pop_front();
@@ -33,7 +45,7 @@ void ConnectionManager::sendQueue()
 		}
 		else
 			Debug("Serial port is not available !");
-	}
+	}*/
 }
 
 bool ConnectionManager::IsConnect()
@@ -88,7 +100,7 @@ void ConnectionManager::FindDeltaRobot()
 			connect(sP, SIGNAL(readyRead()), this, SLOT(ReadData()));
 
 			QString name = sP->portName();
-
+			QThread::msleep(100);
 			sP->write("IsDelta\n");
 			sP->write("IsDelta\n");
 		}
@@ -99,56 +111,63 @@ void ConnectionManager::FindDeltaRobot()
 
 void ConnectionManager::Send(QString msg)
 {
+	if (!robotPort->isOpen())
+	{
+		Debug("Serial port is not available !");
+		return;
+	}
+
 	if (msg == "")
 		return;
 
-	if (transmitLines.size() > 0)
-	{
-		if (transmitLines.at(transmitLines.size() - 1) == "Position")
-			return;
-	}
+	//if (transmitLines.size() > 0)
+	//{
+	//	if (transmitLines.at(transmitLines.size() - 1) == "Position")
+	//		return;
+	//}
 
-	if (msg == "M701" && transmitLines.size() > 0)
-	{
-		if (transmitLines.back() == "M701")
-		{
-			return;
-		}
-	}
-	/*
-	if (transmitLines.size() > 1)
-	{
-		transmitLines.clear();
-		emit DeltaResponeGcodeDone();
-	}	*/
+	//if (msg == "M701" && transmitLines.size() > 0)
+	//{
+	//	if (transmitLines.back() == "M701")
+	//	{
+	//		return;
+	//	}
+	//}
+	///*
+	//if (transmitLines.size() > 1)
+	//{
+	//	transmitLines.clear();
+	//	emit DeltaResponeGcodeDone();
+	//}	*/
 
-	if (msg == "G28")
-	{
-		transmitLines.clear();
-	}
+	//if (msg == "G28")
+	//{
+	//	transmitLines.clear();
+	//}
 
-	transmitLines.push_back(msg);
+	//transmitLines.push_back(msg);
 
-	if (transmitLines.size() > 1)
-	{
-		return;
-	}
+	//if (transmitLines.size() > 1)
+	//{
+	//	return;
+	//}
 
 	transmitLine = msg;
+	Debug("");
 
 	msg += "\n";
-	if (robotPort->isOpen())
-	{
-		robotPort->write(msg.toStdString().c_str(), msg.size());
-	}
-	else
-		Debug("Serial port is not available !");
+	robotPort->write(msg.toStdString().c_str(), msg.size());
 }
 
 void ConnectionManager::ConveyorSend(QString msg)
 {
-	if (ConveyorPort == NULL || ConveyorPort->isOpen() == false)
+	if (ConveyorPort == NULL)
 		return;
+
+	if (ConveyorPort->isOpen() == false)
+		return;
+
+	Debug("");
 
 	msg += "\n";
 	ConveyorPort->write(msg.toStdString().c_str(), msg.size());
@@ -156,11 +175,40 @@ void ConnectionManager::ConveyorSend(QString msg)
 
 void ConnectionManager::SlidingSend(QString msg)
 {
-	if (ConveyorPort == NULL || ConveyorPort->isOpen() == false)
+	if (SlidingPort == NULL)
 		return;
+
+	if (SlidingPort->isOpen() == false)
+		return;
+
+	Debug("");
 
 	msg += "\n";
 	SlidingPort->write(msg.toStdString().c_str(), msg.size());
+}
+
+void ConnectionManager::ECSend(QString msg)
+{
+	if (ExternalControllerPort == NULL || ExternalControllerPort->isOpen() == false)
+		return;
+
+	Debug("");
+
+	msg += "\n";
+	ExternalControllerPort->write(msg.toStdString().c_str(), msg.size());
+}
+
+bool ConnectionManager::ConnectExternalController(QString name, int baudrate)
+{
+	if (ExternalControllerPort == NULL)
+	{
+		ExternalControllerPort = new QSerialPort();
+	}
+
+	ExternalControllerPort->setPortName(name);
+	ExternalControllerPort->setBaudRate(baudrate);
+
+	return ExternalControllerPort->open((QIODevice::ReadWrite));
 }
 
 void ConnectionManager::ReadData()
@@ -186,11 +234,11 @@ void ConnectionManager::ReadData()
 			}			
 		}
 
-		if (receiveLine.mid(0, 2) == "Ok" || (receiveLine.indexOf('k') > -1 && receiveLine.indexOf('O') > -1))
+		if (receiveLine.mid(0, 2) == "Ok" || (receiveLine.indexOf('k') > -1 && receiveLine.indexOf('O') > -1) || receiveLine.mid(0, 7) == "Unknown")
 		{
 			emit DeltaResponeGcodeDone();
 
-			sendQueue();
+			//sendQueue();
 
 			if (transmitLine == "G28")
 			{
@@ -207,10 +255,10 @@ void ConnectionManager::ReadData()
 				emit InHomePosition(nums[0].toFloat(), nums[1].toFloat(), nums[2].toFloat(), 0);
 			}
 
-			sendQueue();
+			//sendQueue();
 			
 		}
-		if (receiveLine.at(0) == 'P' && transmitLine == "M701")
+		/*if (receiveLine.at(0) == 'P' && transmitLine == "M701")
 		{
 			QString convenyorPosS = receiveLine.mid(1);
 			float convenyorPos = convenyorPosS.toFloat();
@@ -219,7 +267,7 @@ void ConnectionManager::ReadData()
 
 			sendQueue();
 
-		}
+		}*/
 	}	
 }
 
@@ -257,4 +305,32 @@ void ConnectionManager::FindingTimeOut()
 	portList.clear();
 
 	timer->stop();
+}
+
+void ConnectionManager::ReadDataFromExternalController()
+{
+	QSerialPort* sP = qobject_cast<QSerialPort*>(sender());
+
+	while (sP->canReadLine())
+	{
+		receiveLine = sP->readLine();
+		QString name = sP->portName();
+
+		if (receiveLine.at(0) == '#' && receiveLine.indexOf("=") > -1)
+		{
+			int symId = receiveLine.indexOf("=");
+			QString name = receiveLine.mid(0, symId).replace(" ", "");
+			float value = receiveLine.mid(symId + 1).replace(" ", "").toInt();
+			emit ReceiveVariableChangeCommand(name, value);
+		}
+		if (receiveLine.at(0) == '#' && receiveLine.indexOf("=") == -1)
+		{
+			receiveLine = receiveLine.replace(" ", "");
+			receiveLine = receiveLine.replace("\n", "");
+			receiveLine = receiveLine.replace("\r", "");
+
+			QString name = receiveLine;
+			emit ResponseVariableValue(ExternalControllerPort, name);
+		}
+	}
 }

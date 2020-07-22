@@ -46,12 +46,6 @@
     <ClCompile Include="mainwindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="logo.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="glwidget.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="GcodeProgramManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -65,15 +59,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ImageProcesser.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ObjectTracker.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Blob.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ITS.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CameraWidget.cpp">
@@ -103,7 +88,13 @@
     <ClCompile Include="codeeditor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="RobotDashboard.cpp">
+    <ClCompile Include="TCPConnectionManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ROS.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectVariableTable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -111,9 +102,6 @@
     <QtMoc Include="mainwindow.h">
       <Filter>Header Files</Filter>
     </QtMoc>
-    <ClInclude Include="logo.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="UnityTool.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -124,9 +112,6 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="hsvwindow.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="ObjectTracker.h">
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="CameraWidget.h">
@@ -156,7 +141,13 @@
     <QtMoc Include="codeeditor.h">
       <Filter>Header Files</Filter>
     </QtMoc>
-    <QtMoc Include="RobotDashboard.h">
+    <QtMoc Include="TCPConnectionManager.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="ROS.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="ObjectVariableTable.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>
@@ -175,27 +166,13 @@
     <QtUic Include="GcodeReference.ui">
       <Filter>Form Files</Filter>
     </QtUic>
-    <QtUic Include="RobotDashboard.ui">
-      <Filter>Form Files</Filter>
-    </QtUic>
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="glwidget.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
     <QtMoc Include="GcodeProgram.h">
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="GcodeProgramManager.h">
       <Filter>Header Files</Filter>
     </QtMoc>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Blob.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ITS.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>

@@ -6,6 +6,8 @@ GcodeReference::GcodeReference(QWidget *parent)
 	ui.setupUi(this);
 
 	connect(ui.listWidget, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(SelectGcodeItem(QListWidgetItem*)));	
+
+	QString text = ui.textEdit->toPlainText();
 	//connect(ui.textEdit, SIGNAL(cursorPositionChanged()), this, SLOT(SelectLineTextEdit()));
 }
 

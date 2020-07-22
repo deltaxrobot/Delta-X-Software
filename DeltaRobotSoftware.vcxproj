@@ -183,7 +183,6 @@
     </QtUic>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Blob.cpp" />
     <ClCompile Include="BlobManager.cpp" />
     <ClCompile Include="CameraWidget.cpp" />
     <ClCompile Include="codeeditor.cpp" />
@@ -194,16 +193,14 @@
     <ClCompile Include="GcodeProgram.cpp" />
     <ClCompile Include="GcodeProgramManager.cpp" />
     <ClCompile Include="GcodeReference.cpp" />
-    <ClCompile Include="glwidget.cpp" />
     <ClCompile Include="hsvwindow.cpp" />
     <ClCompile Include="ImageProcesser.cpp" />
-    <ClCompile Include="ITS.cpp" />
     <ClCompile Include="Layer.cpp" />
-    <ClCompile Include="logo.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mainwindow.cpp" />
-    <ClCompile Include="ObjectTracker.cpp" />
-    <ClCompile Include="RobotDashboard.cpp" />
+    <ClCompile Include="ObjectVariableTable.cpp" />
+    <ClCompile Include="ROS.cpp" />
+    <ClCompile Include="TCPConnectionManager.cpp" />
     <ClCompile Include="TextLayer.cpp" />
     <ClCompile Include="UnityTool.cpp" />
   </ItemGroup>
@@ -226,13 +223,6 @@
       <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">F:\OpenCV\opencv-3.3.0\include;.\GeneratedFiles\$(ConfigurationName)\.;.\GeneratedFiles;.;$(QTDIR)\include;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtSerialPort;$(QTDIR)\include\QtCore;.\release;$(QTDIR)\mkspecs\win32-msvc2015</IncludePath>
       <Define Condition="'$(Configuration)|$(Platform)'=='Release|x64'">_WINDOWS;UNICODE;WIN32;WIN64;QT_NO_DEBUG;QT_WIDGETS_LIB;QT_GUI_LIB;QT_SERIALPORT_LIB;QT_CORE_LIB;NDEBUG</Define>
     </QtMoc>
-    <QtMoc Include="ObjectTracker.h">
-      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">F:\OpenCV\opencv-3.3.0\include;.\GeneratedFiles\$(ConfigurationName)\.;.\GeneratedFiles;.;$(QTDIR)\include;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtSerialPort;$(QTDIR)\include\QtCore;.\debug;$(QTDIR)\mkspecs\win32-msvc2015</IncludePath>
-      <Define Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">_WINDOWS;UNICODE;WIN32;WIN64;QT_WIDGETS_LIB;QT_GUI_LIB;QT_SERIALPORT_LIB;QT_CORE_LIB</Define>
-      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">F:\OpenCV\opencv-3.3.0\include;.\GeneratedFiles\$(ConfigurationName)\.;.\GeneratedFiles;.;$(QTDIR)\include;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtSerialPort;$(QTDIR)\include\QtCore;.\release;$(QTDIR)\mkspecs\win32-msvc2015</IncludePath>
-      <Define Condition="'$(Configuration)|$(Platform)'=='Release|x64'">_WINDOWS;UNICODE;WIN32;WIN64;QT_NO_DEBUG;QT_WIDGETS_LIB;QT_GUI_LIB;QT_SERIALPORT_LIB;QT_CORE_LIB;NDEBUG</Define>
-    </QtMoc>
-    <ClInclude Include="Blob.h" />
     <QtMoc Include="CameraWidget.h">
       <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">F:\OpenCV\opencv-3.3.0\include;.\GeneratedFiles\$(ConfigurationName)\.;.\GeneratedFiles;.;$(QTDIR)\include;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtSerialPort;$(QTDIR)\include\QtCore;.\debug;$(QTDIR)\mkspecs\win32-msvc2015</IncludePath>
       <Define Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">_WINDOWS;UNICODE;WIN32;WIN64;QT_WIDGETS_LIB;QT_GUI_LIB;QT_SERIALPORT_LIB;QT_CORE_LIB</Define>
@@ -269,7 +259,6 @@
       <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">F:\OpenCV\opencv-4.0\build\include;.\GeneratedFiles\$(ConfigurationName);.\GeneratedFiles;.;$(QTDIR)\include;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtSerialPort;$(QTDIR)\include\QtCore;.\release;$(QTDIR)\mkspecs\win32-msvc2015</IncludePath>
       <Define Condition="'$(Configuration)|$(Platform)'=='Release|x64'">_WINDOWS;UNICODE;WIN32;WIN64;QT_NO_DEBUG;QT_WIDGETS_LIB;QT_GUI_LIB;QT_SERIALPORT_LIB;QT_CORE_LIB;NDEBUG;%(PreprocessorDefinitions)</Define>
     </QtMoc>
-    <ClInclude Include="ITS.h" />
     <QtMoc Include="Layer.h">
       <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">F:\OpenCV\opencv-4.0\build\include;.\GeneratedFiles\$(ConfigurationName);.\GeneratedFiles;.;$(QTDIR)\include;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtSerialPort;$(QTDIR)\include\QtCore;.\debug;$(QTDIR)\mkspecs\win32-msvc2015</IncludePath>
       <Define Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">_WINDOWS;UNICODE;WIN32;WIN64;QT_WIDGETS_LIB;QT_GUI_LIB;QT_SERIALPORT_LIB;QT_CORE_LIB;%(PreprocessorDefinitions)</Define>
@@ -282,11 +271,17 @@
       <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">F:\OpenCV\opencv-4.0\build\include;.\GeneratedFiles\$(ConfigurationName);.\GeneratedFiles;.;$(QTDIR)\include;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtSerialPort;$(QTDIR)\include\QtCore;.\release;$(QTDIR)\mkspecs\win32-msvc2015</IncludePath>
       <Define Condition="'$(Configuration)|$(Platform)'=='Release|x64'">_WINDOWS;UNICODE;WIN32;WIN64;QT_NO_DEBUG;QT_WIDGETS_LIB;QT_GUI_LIB;QT_SERIALPORT_LIB;QT_CORE_LIB;NDEBUG;%(PreprocessorDefinitions)</Define>
     </QtMoc>
-    <QtMoc Include="RobotDashboard.h">
-      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">F:\OpenCV\opencv-4.0\build\include;.\GeneratedFiles\$(ConfigurationName);.\GeneratedFiles;.;$(QTDIR)\include;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtSerialPort;$(QTDIR)\include\QtCore;.\debug;$(QTDIR)\mkspecs\win32-msvc2015</IncludePath>
-      <Define Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">_WINDOWS;UNICODE;WIN32;WIN64;QT_WIDGETS_LIB;QT_GUI_LIB;QT_SERIALPORT_LIB;QT_CORE_LIB;%(PreprocessorDefinitions)</Define>
-      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">F:\OpenCV\opencv-4.0\build\include;.\GeneratedFiles\$(ConfigurationName);.\GeneratedFiles;.;$(QTDIR)\include;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtSerialPort;$(QTDIR)\include\QtCore;.\release;$(QTDIR)\mkspecs\win32-msvc2015</IncludePath>
-      <Define Condition="'$(Configuration)|$(Platform)'=='Release|x64'">_WINDOWS;UNICODE;WIN32;WIN64;QT_NO_DEBUG;QT_WIDGETS_LIB;QT_GUI_LIB;QT_SERIALPORT_LIB;QT_CORE_LIB;NDEBUG;%(PreprocessorDefinitions)</Define>
+    <QtMoc Include="TCPConnectionManager.h">
+      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">E:\OpenCV\opencv-4.0\build\include;.\GeneratedFiles\$(ConfigurationName);.\GeneratedFiles;.;$(QTDIR)\include;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtSerialPort;$(QTDIR)\include\QtCore;.\debug;$(QTDIR)\mkspecs\win32-msvc2015;$(QTDIR)\include\QtNetwork;$(QTDIR)\include\QtOpenGL;$(QTDIR)\include\QtWebSockets;$(QTDIR)\include\QtWebEngine;$(QTDIR)\include\QtWebEngineCore;$(QTDIR)\include\QtWebEngineWidgets</IncludePath>
+      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">E:\OpenCV\opencv-4.0\build\include;.\GeneratedFiles\$(ConfigurationName);.\GeneratedFiles;.;$(QTDIR)\include;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtSerialPort;$(QTDIR)\include\QtCore;.\release;$(QTDIR)\mkspecs\win32-msvc2015;$(QTDIR)\include\QtNetwork;$(QTDIR)\include\QtOpenGL;$(QTDIR)\include\QtWebSockets;$(QTDIR)\include\QtWebEngine;$(QTDIR)\include\QtWebEngineCore;$(QTDIR)\include\QtWebEngineWidgets</IncludePath>
+    </QtMoc>
+    <QtMoc Include="ROS.h">
+      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">E:\OpenCV\opencv-4.0\build\include;.\GeneratedFiles\$(ConfigurationName);.\GeneratedFiles;.;$(QTDIR)\include;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtSerialPort;$(QTDIR)\include\QtCore;.\debug;$(QTDIR)\mkspecs\win32-msvc2015;$(QTDIR)\include\QtNetwork;$(QTDIR)\include\QtOpenGL;$(QTDIR)\include\QtWebSockets;$(QTDIR)\include\QtWebEngine;$(QTDIR)\include\QtWebEngineCore;$(QTDIR)\include\QtWebEngineWidgets</IncludePath>
+      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">E:\OpenCV\opencv-4.0\build\include;.\GeneratedFiles\$(ConfigurationName);.\GeneratedFiles;.;$(QTDIR)\include;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtSerialPort;$(QTDIR)\include\QtCore;.\release;$(QTDIR)\mkspecs\win32-msvc2015;$(QTDIR)\include\QtNetwork;$(QTDIR)\include\QtOpenGL;$(QTDIR)\include\QtWebSockets;$(QTDIR)\include\QtWebEngine;$(QTDIR)\include\QtWebEngineCore;$(QTDIR)\include\QtWebEngineWidgets</IncludePath>
+    </QtMoc>
+    <QtMoc Include="ObjectVariableTable.h">
+      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">E:\OpenCV\opencv-4.0\build\include;.\GeneratedFiles\$(ConfigurationName);.\GeneratedFiles;.;$(QTDIR)\include;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtSerialPort;$(QTDIR)\include\QtCore;.\debug;$(QTDIR)\mkspecs\win32-msvc2015;$(QTDIR)\include\QtNetwork;$(QTDIR)\include\QtOpenGL;$(QTDIR)\include\QtWebSockets;$(QTDIR)\include\QtWebEngine;$(QTDIR)\include\QtWebEngineCore;$(QTDIR)\include\QtWebEngineWidgets</IncludePath>
+      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">E:\OpenCV\opencv-4.0\build\include;.\GeneratedFiles\$(ConfigurationName);.\GeneratedFiles;.;$(QTDIR)\include;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtSerialPort;$(QTDIR)\include\QtCore;.\release;$(QTDIR)\mkspecs\win32-msvc2015;$(QTDIR)\include\QtNetwork;$(QTDIR)\include\QtOpenGL;$(QTDIR)\include\QtWebSockets;$(QTDIR)\include\QtWebEngine;$(QTDIR)\include\QtWebEngineCore;$(QTDIR)\include\QtWebEngineWidgets</IncludePath>
     </QtMoc>
     <ClInclude Include="UnityTool.h" />
     <QtMoc Include="mainwindow.h">
@@ -298,12 +293,6 @@
       <Define Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">_WINDOWS;UNICODE;WIN32;WIN64;QT_WIDGETS_LIB;QT_GUI_LIB;QT_SERIALPORT_LIB;QT_CORE_LIB;%(PreprocessorDefinitions)</Define>
       <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">F:\OpenCV\opencv-4.0\build\include;.\GeneratedFiles\$(ConfigurationName);.\GeneratedFiles;.;$(QTDIR)\include;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtSerialPort;$(QTDIR)\include\QtCore;.\release;$(QTDIR)\mkspecs\win32-msvc2015</IncludePath>
       <Define Condition="'$(Configuration)|$(Platform)'=='Release|x64'">_WINDOWS;UNICODE;WIN32;WIN64;QT_NO_DEBUG;QT_WIDGETS_LIB;QT_GUI_LIB;QT_SERIALPORT_LIB;QT_CORE_LIB;NDEBUG;%(PreprocessorDefinitions)</Define>
-    </QtMoc>
-    <QtMoc Include="glwidget.h">
-      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\GeneratedFiles\$(ConfigurationName)\.;.\GeneratedFiles;.;$(QTDIR)\include;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtSerialPort;$(QTDIR)\include\QtCore;.\debug;$(QTDIR)\mkspecs\win32-msvc2015</IncludePath>
-      <Define Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">_WINDOWS;UNICODE;WIN32;WIN64;QT_WIDGETS_LIB;QT_GUI_LIB;QT_SERIALPORT_LIB;QT_CORE_LIB</Define>
-      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles\$(ConfigurationName)\.;.\GeneratedFiles;.;$(QTDIR)\include;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtSerialPort;$(QTDIR)\include\QtCore;.\release;$(QTDIR)\mkspecs\win32-msvc2015</IncludePath>
-      <Define Condition="'$(Configuration)|$(Platform)'=='Release|x64'">_WINDOWS;UNICODE;WIN32;WIN64;QT_NO_DEBUG;QT_WIDGETS_LIB;QT_GUI_LIB;QT_SERIALPORT_LIB;QT_CORE_LIB;NDEBUG</Define>
     </QtMoc>
     <QtMoc Include="GcodeProgram.h">
       <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">F:\OpenCV\opencv-3.3.0\include;.\GeneratedFiles\$(ConfigurationName)\.;.\GeneratedFiles;.;$(QTDIR)\include;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtSerialPort;$(QTDIR)\include\QtCore;.\debug;$(QTDIR)\mkspecs\win32-msvc2015</IncludePath>
@@ -317,7 +306,6 @@
       <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">F:\OpenCV\opencv-3.3.0\include;.\GeneratedFiles\$(ConfigurationName)\.;.\GeneratedFiles;.;$(QTDIR)\include;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtSerialPort;$(QTDIR)\include\QtCore;.\release;$(QTDIR)\mkspecs\win32-msvc2015</IncludePath>
       <Define Condition="'$(Configuration)|$(Platform)'=='Release|x64'">_WINDOWS;UNICODE;WIN32;WIN64;QT_NO_DEBUG;QT_WIDGETS_LIB;QT_GUI_LIB;QT_SERIALPORT_LIB;QT_CORE_LIB;NDEBUG</Define>
     </QtMoc>
-    <ClInclude Include="logo.h" />
     <ClInclude Include="ui_mainwindow.h" />
   </ItemGroup>
   <ItemGroup>
@@ -325,7 +313,6 @@
     <QtUic Include="HSVWindow.ui" />
     <QtUic Include="mainwindow.ui">
     </QtUic>
-    <QtUic Include="RobotDashboard.ui" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

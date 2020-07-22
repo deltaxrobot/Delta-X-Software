@@ -21,13 +21,14 @@ ImageProcesser::ImageProcesser(MainWindow *parent)
 
 	changeAxisDirection();
 
-	ConvenyorObjectManager = new BlobManager(parent);
-	ConvenyorObjectManager->SetApproximateValue(cv::Point3d(10, 10, 10));
+	ObjectManager = new BlobManager(parent);
+	ObjectManager->SetApproximateValue(cv::Point3d(10, 10, 10));
 
-	CalculatedConvenyorTimer = new QTimer(this);
-	connect(CalculatedConvenyorTimer, SIGNAL(timeout()), this, SLOT(CalConvenyorPosition()));
+	ObjectMovingCalculaterTimer = new QTimer(this);
+	connect(ObjectMovingCalculaterTimer, SIGNAL(timeout()), this, SLOT(CalConvenyorPosition()));
 
-	CalculatedConvenyorTimer->setInterval(100);
+	ObjectMovingCalculaterTimer->setInterval(100);
+	ObjectMovingCalculaterTimer->start(100);
 }
 
 ImageProcesser::~ImageProcesser()
@@ -46,26 +47,69 @@ void ImageProcesser::LoadTestImage()
 	cv::String imgName = imageName.toStdString();
 	captureImage = cv::imread(imgName, cv::IMREAD_COLOR);
 
-	if (!captureImage.data)
-		return;
-	
-	float ratio = (float)captureImage.size().height / captureImage.size().width;
-	
-
-	cv::resize(captureImage, resizeImage, cv::Size(DEFAULT_PROCESSING_SIZE, DEFAULT_PROCESSING_SIZE * ratio));
-
-	UpdateLabelImage(resizeImage, lbResultImage);
+	processImage();
 }
 
-void ImageProcesser::UpdateCameraScreen()
+void ImageProcesser::LoadCamera()
+{
+	QPushButton* loadBt = qobject_cast<QPushButton*>(sender());
+	if (loadBt->isChecked())
+	{
+		bool ok;
+		QString text = QInputDialog::getText(this, tr("QInputDialog::getText()"), tr("Camera ID:"), QLineEdit::Normal, "0", &ok);
+
+		if (ok && !text.isEmpty())
+		{
+			RunningCamera = text.toInt();
+
+			if (mParent->DeltaXMainWindows != NULL)
+			{
+				for (int i = 0; i < mParent->DeltaXMainWindows->size(); i++)
+				{
+					if (mParent->DeltaXMainWindows->at(i)->DeltaImageProcesser->RunningCamera == RunningCamera)
+					{
+						Camera = mParent->DeltaXMainWindows->at(i)->DeltaImageProcesser->Camera;
+						updateScreenTimer->start(DEFAULT_INTERVAL);
+						return;
+					}
+				}
+			}
+
+
+			Camera->open(text.toInt());
+
+			updateScreenTimer->start(DEFAULT_INTERVAL);
+
+			//loadBt->setText("Stop");
+		}
+		else
+		{
+			loadBt->setChecked(false);
+			RunningCamera = -1;
+		}
+	}
+	else
+	{
+		//loadBt->setText("Load Camera");
+		updateScreenTimer->stop();
+		RunningCamera = -1;
+		return;
+	}
+}
+
+void ImageProcesser::CaptureAnImageFromCamera()
+{
+	Camera->read(captureImage);
+	processImage();
+}
+
+void ImageProcesser::processImage()
 {
 	if (lbResultImage->pixmap() != nullptr && isFirstLoad == true)
 	{
 		lbResultImage->InitParameter();
 		isFirstLoad = false;
 	}
-
-	Camera->read(captureImage);
 
 	if (!captureImage.data)
 	{
@@ -85,7 +129,20 @@ void ImageProcesser::UpdateCameraScreen()
 	{
 		SetThreshold(thresholdValue);
 	}
+}
 
+void ImageProcesser::UpdateCameraScreen()
+{
+	if (isStopCapture == true)
+		return;
+
+	Camera->read(captureImage);
+	//cv::VideoWriter video("outcpp.avi", cv:VideoWriter::fourcc('M', 'J', 'P', 'G'), 10, cv::Size(Camera->si, frame_height));
+	processImage();
+}
+
+void ImageProcesser::SaveFPS()
+{
 	int FPS = leFPS->text().toInt();
 
 	if (FPS > 0)
@@ -116,6 +173,12 @@ void ImageProcesser::SetObjectScreenPointer(QLabel * objectImage)
 void ImageProcesser::SetFPSInputBox(QLineEdit * fps)
 {
 	leFPS = fps;
+}
+
+void ImageProcesser::SetTrackingWidgetPointer(QLabel* lbTracking, QLabel* lbVisible)
+{
+	lbTrackingObjectNumber = lbTracking;
+	lbVisibleObjectNumber = lbVisible;
 }
 
 void ImageProcesser::SetHSV(int minH, int maxH, int minS, int maxS, int minV, int maxV)
@@ -188,7 +251,7 @@ void ImageProcesser::GetObjectInfo(int x, int y, int h, int w)
 	leXRec->setText(QString::number(objectRec.width));
 	leYRec->setText(QString::number(objectRec.height));
 
-	ConvenyorObjectManager->SetApproximateValue(cv::Point3d((float)h * 0.8f, (float)w * 0.8f, 60));
+	ObjectManager->SetApproximateValue(cv::Point3d((float)h * 0.8f, (float)w * 0.8f, 60));
 }
 
 void ImageProcesser::GetProcessRegion(QPoint a, QPoint b, QPoint c, QPoint d)
@@ -216,6 +279,18 @@ void ImageProcesser::GetCalibPoint(int x, int y)
 
 	xRealCamOri = xCalib - y * displayAndRealRatio;
 	yRealCamOri = yCalib - x * displayAndRealRatio;
+
+	if (axisDirection == X_AXIS_RIGHT)
+	{
+		xRealCamOri = -xCalib + x * displayAndRealRatio;
+		yRealCamOri = yCalib + y * displayAndRealRatio;
+	}
+
+	if (axisDirection == X_AXIS_UP)
+	{
+		xRealCamOri = xCalib + y * displayAndRealRatio;
+		yRealCamOri = yCalib + x * displayAndRealRatio;
+	}
 }
 
 void ImageProcesser::SwitchLayer()
@@ -229,9 +304,17 @@ void ImageProcesser::SwitchLayer()
 
 void ImageProcesser::changeAxisDirection()
 {
-	if (axisDirection == 1)
+	if (axisDirection == X_AXIS_UP)
 	{
-		axisDirection = 2;
+		if (leXCoor != NULL)
+		{
+			int newX = 0 - leXCoor->text().toInt();
+			int newY = 0 - leYCoor->text().toInt();
+			leXCoor->setText(QString::number(newX));
+			leYCoor->setText(QString::number(newY));
+		}		
+
+		axisDirection = X_AXIS_DOWN;
 		xAxis.setP1(QPoint(20, 20));
 		xAxis.setP2(QPoint(20, 80));
 		arrow1.setP1(QPoint(25, 70));
@@ -239,9 +322,16 @@ void ImageProcesser::changeAxisDirection()
 		arrow2.setP1(QPoint(15, 70));
 		arrow2.setP2(QPoint(20, 80));
 	}
-	else if (axisDirection == 2)
+	else if (axisDirection == X_AXIS_DOWN)
 	{
-		axisDirection = 3;
+		if (leXCoor != NULL)
+		{
+			int newX = leYCoor->text().toInt();
+			int newY = 0 - leXCoor->text().toInt();
+			leXCoor->setText(QString::number(newX));
+			leYCoor->setText(QString::number(newY));
+		}
+		axisDirection = X_AXIS_RIGHT;
 		xAxis.setP1(QPoint(20, 20));
 		xAxis.setP2(QPoint(80, 20));
 		arrow1.setP1(QPoint(70, 25));
@@ -249,9 +339,17 @@ void ImageProcesser::changeAxisDirection()
 		arrow2.setP1(QPoint(70, 15));
 		arrow2.setP2(QPoint(80, 20));
 	}
-	else if (axisDirection == 3)
+	else if (axisDirection == X_AXIS_RIGHT)
 	{
-		axisDirection = 1;
+		if (leXCoor != NULL)
+		{
+			int newX = leYCoor->text().toInt();
+			int newY = 0 - leXCoor->text().toInt();
+			leXCoor->setText(QString::number(newX));
+			leYCoor->setText(QString::number(newY));
+		}
+
+		axisDirection = X_AXIS_UP;
 		xAxis.setP1(QPoint(20, 80));
 		xAxis.setP2(QPoint(20, 20));
 		arrow1.setP1(QPoint(25, 30));
@@ -263,55 +361,18 @@ void ImageProcesser::changeAxisDirection()
 
 void ImageProcesser::CalConvenyorPosition()
 {
-	float delX = convenyorVel / 10;
-	ConvenyorObjectManager->UpdateNewPositionObjects(delX, 0);
-}
+	float distance = conveyorVel / 10;
 
-void ImageProcesser::LoadCamera()
-{
-	QPushButton* loadBt = qobject_cast<QPushButton*>(sender());
-	if (loadBt->isChecked())
+	if (dirName == "X")
 	{
-		bool ok;
-		QString text = QInputDialog::getText(this, tr("QInputDialog::getText()"), tr("Camera ID:"), QLineEdit::Normal, "0", &ok);
-
-		if (ok && !text.isEmpty())
-		{
-			RunningCamera = text.toInt();
-
-			if (mParent->DeltaXMainWindows != NULL)
-			{
-				for (int i = 0; i < mParent->DeltaXMainWindows->size(); i++)
-				{
-					if (mParent->DeltaXMainWindows->at(i)->DeltaImageProcesser->RunningCamera == RunningCamera)
-					{
-						Camera = mParent->DeltaXMainWindows->at(i)->DeltaImageProcesser->Camera;
-						updateScreenTimer->start(50);
-						return;
-					}
-				}
-			}
-
-
-			Camera->open(text.toInt());
-
-			updateScreenTimer->start(50);
-			
-			//loadBt->setText("Stop");
-		}
-		else
-		{
-			loadBt->setChecked(false);
-			RunningCamera = -1;
-		}
+		ObjectManager->UpdateNewPositionObjects(distance, 0);
 	}
 	else
 	{
-		//loadBt->setText("Load Camera");
-		updateScreenTimer->stop();
-		RunningCamera = -1;
-		return;
+		ObjectManager->UpdateNewPositionObjects(0, distance);
 	}
+
+	emit ObjectValueChanged(ObjectManager->ObjectContainer);
 }
 
 void ImageProcesser::OpenParameterPanel()
@@ -325,26 +386,17 @@ void ImageProcesser::UpdateLabelImage(cv::Mat mat, QLabel* label)
 	label->setPixmap(QPixmap::fromImage(img).scaledToWidth(label->size().width()));
 }
 
-void ImageProcesser::SetConvenyorVelocity(float val)
+void ImageProcesser::SetConvenyorVelocity(float val, QString dir)
 {
-	convenyorVel = val;
-
-	if (val != 0)
-	{
-		CalculatedConvenyorTimer->start(100);
-	}
-
-	else
-	{
-		CalculatedConvenyorTimer->stop();
-	}
+	conveyorVel = val;
+	dirName = dir;
 }
 
 void ImageProcesser::drawXAxis()
 {
-	cv::line(resultImage, cv::Point(xAxis.p1().x(), xAxis.p1().y()), cv::Point(xAxis.p2().x(), xAxis.p2().y()), RED_COLOR);
-	cv::line(resultImage, cv::Point(arrow1.p1().x(), arrow1.p1().y()), cv::Point(arrow1.p2().x(), arrow1.p2().y()), RED_COLOR);
-	cv::line(resultImage, cv::Point(arrow2.p1().x(), arrow2.p1().y()), cv::Point(arrow2.p2().x(), arrow2.p2().y()), RED_COLOR);
+	cv::line(resultImage, cv::Point(xAxis.p1().x(), xAxis.p1().y()), cv::Point(xAxis.p2().x(), xAxis.p2().y()), RED_COLOR, 2);
+	cv::line(resultImage, cv::Point(arrow1.p1().x(), arrow1.p1().y()), cv::Point(arrow1.p2().x(), arrow1.p2().y()), RED_COLOR, 2);
+	cv::line(resultImage, cv::Point(arrow2.p1().x(), arrow2.p1().y()), cv::Point(arrow2.p2().x(), arrow2.p2().y()), RED_COLOR, 2);
 	putText(resultImage, "+x", cv::Point(xAxis.p2().x() + 5, xAxis.p2().y() + 5), cv::FONT_HERSHEY_SIMPLEX, 0.8, RED_COLOR, 2);
 }
 
@@ -359,6 +411,40 @@ void ImageProcesser::SelectProcessRegion(cv::Mat processMat)
 	cv::bitwise_and(filterMat, processMat, processMat);
 }
 
+void ImageProcesser::MakeBrightProcessRegion(cv::Mat resultsMat)
+{
+	if (processRegionPoints.size() == 0)
+		return;
+
+	int darkValue = 100;
+
+	cv::Mat filterMat(cv::Size(resultsMat.cols, resultsMat.rows), CV_8UC1, BLACK_COLOR);
+
+	cv::fillConvexPoly(filterMat, processRegionPoints, WHITE_COLOR);
+
+	for (int y = 0; y < resultsMat.rows; y++) 
+	{
+		for (int x = 0; x < resultsMat.cols; x++) 
+		{
+			for (int c = 0; c < resultsMat.channels(); c++) 
+			{
+				int vl = resultsMat.at<cv::Vec3b>(y, x)[c] - darkValue;
+
+				if (vl < 0)
+					vl = 0;
+
+				if (filterMat.at<uchar>(y, x) == 0)
+				{
+					resultsMat.at<cv::Vec3b>(y, x)[c] = cv::saturate_cast<uchar>(vl);
+				}
+				
+			}
+		}
+	}
+
+	//cv::bitwise_and(filterMat, resultsMat, resultsMat);
+}
+
 void ImageProcesser::postProcessing(cv::Mat processMat)
 {
 	if (ParameterPanel->IsInvertBinary())
@@ -368,20 +454,27 @@ void ImageProcesser::postProcessing(cv::Mat processMat)
 
 	resizeImage.copyTo(resultImage);
 
+	MakeBrightProcessRegion(resultImage);
+
 	paintInfo(processMat, resultImage, RED_COLOR);
+
+	UpdateTrackingInfo();
 
 	drawXAxis();
 
 	if (cameraLayer == ORIGIN)
 	{
+		putText(resizeImage, "origin", cv::Point(resizeImage.cols - 80, 50), cv::FONT_HERSHEY_SIMPLEX, 0.8, RED_COLOR, 2);
 		UpdateLabelImage(resizeImage, lbResultImage);
 	}
 	else if (cameraLayer == PROCESSING)
 	{
+		//putText(processMat, "filter", cv::Point(processMat.cols - 70, 30), cv::FONT_HERSHEY_SIMPLEX, 0.8, RED_COLOR, 2);
 		UpdateLabelImage(processMat, lbResultImage);
 	}
 	else if (cameraLayer == RESULT)
 	{
+		putText(resultImage, "result", cv::Point(resultImage.cols - 80, 50), cv::FONT_HERSHEY_SIMPLEX, 0.8, RED_COLOR, 2);
 		UpdateLabelImage(resultImage, lbResultImage);
 	}
 
@@ -406,41 +499,8 @@ void ImageProcesser::paintInfo(cv::Mat input, cv::Mat output, cv::Scalar color)
 
 	//------------------------
 
-	//for (auto &convexHull : hullsContainer)
-	//{
-	//	Blob possibleBlob(convexHull);
+	int visibleCounter = 0;
 
-	//	if (isNotCollision(possibleBlob, currentFrameBlobs) &&
-	//		possibleBlob.CurrentBoundingRect.area() > 5000 &&
-	//		possibleBlob.CurrentAspectRatio >= 0.7 &&
-	//		possibleBlob.CurrentAspectRatio <= 2 &&
-	//		possibleBlob.CurrentBoundingRect.width > 100 &&
-	//		possibleBlob.CurrentBoundingRect.height > 200 &&
-	//		possibleBlob.CurrentDiagonalSize > 60.0 &&
-	//		(contourArea(possibleBlob.CurrentContour) / (double)possibleBlob.CurrentBoundingRect.area()) > 0.50)
-	//	{
-	//		currentFrameBlobs.push_back(possibleBlob);
-	//	}
-	//}
-
-	//if (isFirstFrame == true)
-	//{
-	//	for (auto &currentFrameBlob : currentFrameBlobs)
-	//	{
-	//		appearedBlobs.push_back(currentFrameBlob);
-	//	}
-	//}
-	//else
-	//{
-	//	matchCurrentFrameBlobsToExistingBlobs(appearedBlobs, currentFrameBlobs);
-	//}
-
-	//countedObjectNumber = getObjectNumber(appearedBlobs);
-	//drawCountedObjectDigit(countedObjectNumber, output);
-
-	//isFirstFrame = false;
-
-	//------------------------
 	for (size_t i = 0; i < contoursContainer.size(); i++)
 	{
 		//cv::Rect rec = boundingRect(contoursContainer[i]);
@@ -468,17 +528,18 @@ void ImageProcesser::paintInfo(cv::Mat input, cv::Mat output, cv::Scalar color)
 			obWid = t;
 		}
 
-		cv::drawContours(output, hullsContainer, (int)i, RED_COLOR);
+		//cv::drawContours(output, hullsContainer, (int)i, RED_COLOR);
 
 		if (s > minObjectArea && s < maxObjectArea && h < obHei && w < obWid && minRec.boundingRect().y > 0 && (minRec.boundingRect().y + minRec.boundingRect().height + 5) < input.rows)
 		{
-			//rectangle(output, rec, color, 1);
 			drawMinRec(output, contoursContainer[i], BLUE_COLOR);
-			cv::drawContours(output, hullsContainer, (int)i, RED_COLOR);
-			//drawRotateRec(output, 30, rec, GREEN_COLOR);
-			//putText(output, std::to_string((int)s), cv::Point(rec.x + 20, rec. y + 20), cv::FONT_HERSHEY_SIMPLEX, 0.25, color, 1);
+			//cv::drawContours(output, hullsContainer, (int)i, RED_COLOR);
+
+			visibleCounter += 1;
 		}
 	}
+
+	ObjectManager->VisibleObjectNumber = visibleCounter;
 }
 
 void ImageProcesser::drawRotateRec(cv::Mat& mat, int angle, cv::Rect rec, cv::Scalar color)
@@ -500,19 +561,19 @@ float ImageProcesser::drawMinRec(cv::Mat & mat, std::vector<cv::Point> contour, 
 	for (int j = 0; j < 4; j++)
 		cv::line(mat, rectPoints[j], rectPoints[(j + 1) % 4], color, 2, 8);
 
-	int xRealObject = xRealCamOri + minRec.center.x * processAndRealRatio;
-	int yRealObject = yRealCamOri + minRec.center.y * processAndRealRatio;
+	int xRealObject = xRealCamOri + minRec.center.y * processAndRealRatio;
+	int yRealObject = yRealCamOri + minRec.center.x * processAndRealRatio;
 
-	if (axisDirection == 2)
+	if (axisDirection == X_AXIS_RIGHT)
 	{
-		xRealObject = xRealCamOri + minRec.center.y * processAndRealRatio;
-		yRealObject = yRealCamOri + minRec.center.x * processAndRealRatio;
+		xRealObject = -xRealCamOri + minRec.center.x * processAndRealRatio;
+		yRealObject = yRealCamOri - minRec.center.y * processAndRealRatio;
 	}
 
-	if (axisDirection == 3)
+	if (axisDirection == X_AXIS_UP)
 	{
 		xRealObject = xRealCamOri - minRec.center.y * processAndRealRatio;
-		yRealObject = yRealCamOri + minRec.center.x * processAndRealRatio;
+		yRealObject = yRealCamOri - minRec.center.x * processAndRealRatio;
 	}
 
 	cv::RotatedRect realObject = minRec;
@@ -529,145 +590,17 @@ float ImageProcesser::drawMinRec(cv::Mat & mat, std::vector<cv::Point> contour, 
 		angle = realObject.angle + 90;
 	}
 
-	ConvenyorObjectManager->AddNewObject(realObject);
+	ObjectManager->AddNewObject(realObject);
 
 	putText(mat, std::to_string((int)xRealObject) + "," + std::to_string((int)yRealObject) + "," + std::to_string((int)angle), cv::Point(minRec.center.x - 40, minRec.center.y), cv::FONT_HERSHEY_SIMPLEX, 0.6, BLUE_COLOR, 2);
 
 	return minRec.angle;
 }
 
-bool ImageProcesser::isNotCollision(Blob currentBlob, std::vector<Blob> blobs)
+void ImageProcesser::UpdateTrackingInfo()
 {
-	for (auto &blob : blobs)
-	{
-		if (!currentBlob.IsEqual(blob))
-		{
-			if (((currentBlob.CurrentBoundingRect & blob.CurrentBoundingRect).area() > 0))
-				return false;
-		}
-	}
-	return true;
-}
+	lbTrackingObjectNumber->setText(QString::number(ObjectManager->ObjectContainer.size()));
+	lbVisibleObjectNumber->setText(QString::number(ObjectManager->VisibleObjectNumber));
 
-void ImageProcesser::matchCurrentFrameBlobsToExistingBlobs(std::vector<Blob>& existingBlobs, std::vector<Blob>& currentFrameBlobs)
-{
-	for (auto &existingBlob : existingBlobs)
-	{
-		existingBlob.IsNotNewBlob = false;
-		existingBlob.PredictNextPosition();
-	}
-
-	for (auto &currentFrameBlob : currentFrameBlobs)
-	{
-		int leastDistanceOrder = 0;
-		double leastDistance = 100000.0;
-
-		for (unsigned int i = 0; i < existingBlobs.size(); i++)
-		{
-			if (existingBlobs[i].IsBeingTracked == true)
-			{
-				double distance = getDistance(currentFrameBlob.CenterPositions.back(), existingBlobs[i].PredictedNextPosition);
-
-				if (distance < leastDistance)
-				{
-					leastDistance = distance;
-					leastDistanceOrder = i;
-				}
-			}
-		}
-
-		if (leastDistance < currentFrameBlob.CurrentDiagonalSize * 0.5)
-		{
-			updateAppearedBlob(currentFrameBlob, existingBlobs, leastDistanceOrder);
-		}
-		else
-		{
-			addNewBlob(currentFrameBlob, existingBlobs);
-		}
-
-	}
-
-	for (auto &existingBlob : existingBlobs)
-	{
-		if (existingBlob.IsNotNewBlob == false)
-		{
-			existingBlob.NonMatchFrameNumber++;
-		}
-
-		if (existingBlob.NonMatchFrameNumber >= 5)
-		{
-			existingBlob.IsBeingTracked = false;
-		}
-	}
-}
-
-void ImageProcesser::updateAppearedBlob(Blob &currentFrameBlob, std::vector<Blob> &existingBlobs, int &intIndex)
-{
-
-	existingBlobs[intIndex].CurrentContour = currentFrameBlob.CurrentContour;
-	existingBlobs[intIndex].CurrentBoundingRect = currentFrameBlob.CurrentBoundingRect;
-
-	existingBlobs[intIndex].CenterPositions.push_back(currentFrameBlob.CenterPositions.back());
-
-	existingBlobs[intIndex].CurrentDiagonalSize = currentFrameBlob.CurrentDiagonalSize;
-	existingBlobs[intIndex].CurrentAspectRatio = currentFrameBlob.CurrentAspectRatio;
-	existingBlobs[intIndex].countMatch++;
-
-	if (existingBlobs[intIndex].countMatch >= 10)
-	{
-		existingBlobs[intIndex].IsACar = true;
-	}
-
-	existingBlobs[intIndex].IsBeingTracked = true;
-	existingBlobs[intIndex].IsNotNewBlob = true;
-
-
-}
-
-void ImageProcesser::addNewBlob(Blob &currentFrameBlob, std::vector<Blob> &existingBlobs)
-{
-
-	currentFrameBlob.IsNotNewBlob = true;
-	currentFrameBlob.IsACar = false;
-
-	existingBlobs.push_back(currentFrameBlob);
-
-	isDetectedNewObject = true;
-}
-
-double ImageProcesser::getDistance(cv::Point point1, cv::Point point2)
-{
-
-	int intX = abs(point1.x - point2.x);
-	int intY = abs(point1.y - point2.y);
-
-	return(sqrt(pow(intX, 2) + pow(intY, 2)));
-}
-
-int ImageProcesser::getObjectNumber(std::vector<Blob>& blobs)
-{
-	int count = 0;
-	for (unsigned int i = 0; i < blobs.size(); i++)
-	{
-		if (blobs[i].IsACar == true)
-			count++;
-	}
-	return count;
-}
-
-void ImageProcesser::drawCountedObjectDigit(int & carCount, cv::Mat & imgFrame2Copy)
-{
-	int intFontFace = cv::FONT_HERSHEY_COMPLEX;
-	double dblFontScale = (imgFrame2Copy.rows * imgFrame2Copy.cols) / 300000.0;
-	int intFontThickness = (int)round(dblFontScale * 1.5);
-
-	cv::Size textSize = cv::getTextSize(std::to_string(carCount), intFontFace, dblFontScale, intFontThickness, 0);
-
-	cv::Point ptTextBottomLeftPosition;
-
-	ptTextBottomLeftPosition.x = imgFrame2Copy.cols - 1 - (int)((double)textSize.width * 1.25);
-	ptTextBottomLeftPosition.y = (int)((double)textSize.height * 1.25);
-
-	putText(imgFrame2Copy, std::to_string(carCount), ptTextBottomLeftPosition, intFontFace, dblFontScale, cv::Scalar(0.0, 0.0, 255.0), intFontThickness);
 
 }

@@ -58,7 +58,7 @@ public:
 	CodeEditor* pteGcodeArea;
 	QPushButton* pbExecuteGcodes;
 
-	GcodeProgram* SelectingProgram = NULL;
+	GcodeProgram* selectingProgram = NULL;
 	int ProgramCounter = 0;
 	QVector<GcodeProgram*>* ProgramList = NULL;
 
@@ -75,12 +75,13 @@ public slots:
 	void RefreshGcodeProgramList();
 	void TransmitNextGcode();
 	void UpdateSystemVariable(QString name, float value);
+	void ResponseVariableValue(QObject* sender, QString name);
 	void SetStartingGcodeEditorCursor(QString value);
 
 signals:
 	void OutOfObjectVariable();
 	void JustUpdateVariable(QList<GcodeVariable> gcodeVariables);
-	void MoveToNewPosition(float x, float y, float z, float w);
+	void MoveToNewPosition(float x, float y, float z, float w, float f, float a);
 	void FinishExecuteGcodes();
 
 private:
@@ -107,6 +108,7 @@ private:
 	bool isGlobalVariable(QString name);
 	bool isConveyorGcode(QString gcode);
 	bool isSlidingGcode(QString gcode);
+	bool isMovingGcode(QString gcode);
 	bool findExeGcodeAndTransmit();
 	float calculateExpressions(QString expression);
 	void SaveGcodeVariable(GcodeVariable gvar);

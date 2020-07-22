@@ -5,7 +5,7 @@
 QLabel* DebugLB;
 QList<QLabel*> Debugs;
 
-QString ConvenyorString;
+QString ConveyorString;
 
 void Debug(QString msg)
 {

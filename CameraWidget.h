@@ -5,6 +5,7 @@
 #include <QPixmap>
 #include <QMouseEvent>
 #include <qmath.h>
+#include <qpushbutton.h>
 
 class CameraWidget : public QLabel
 {
@@ -23,8 +24,6 @@ public:
 	// for efficient memory management
 	~CameraWidget();
 
-public slots:
-
 signals:
 	void FinishDrawObject(int x, int y, int h, int w);
 	void FinishSelectProcessRegion(QPoint a, QPoint b, QPoint c, QPoint d);
@@ -42,6 +41,10 @@ public slots:
 	void lineObject();
 	void circleObject();
 	void selectProcessRegion();
+
+	void ChangeCalibLineRealLength(QString value);
+	void ChangeXCalibPoint(QString value);
+	void ChangeYCalibPoint(QString value);
 private:
 	int axisDirection = 1;
 
@@ -58,5 +61,13 @@ private:
 	QPoint mPoints[4];
 	int pointOrder = 3;
 
+	int calibLineRealLength = 120;
+	int xCalibPoint = 150;
+	int yCalibPoint = 0;
+
+	QPoint curPosInWidget;
+
 	QPixmap mergePixmap(QPixmap p1, QPixmap p2);
+
+	void changeToolIconInArea(QIcon icon);
 };

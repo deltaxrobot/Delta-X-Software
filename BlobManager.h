@@ -6,6 +6,8 @@
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc.hpp>
 #include "UnityTool.h"
+#include <QPushButton>
+#include <QVBoxLayout>
 
 class BlobManager : public QObject
 {
@@ -17,6 +19,8 @@ public:
 
 	void AddNewObject(cv::RotatedRect object);
 	void SetApproximateValue(cv::Point3d approVal);
+
+	int VisibleObjectNumber = 0;
 	std::vector<cv::RotatedRect> ObjectContainer;
 
 public slots:

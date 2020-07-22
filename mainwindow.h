@@ -3,7 +3,6 @@
 
 #include <QMainWindow>
 #include "ConnectionManager.h"
-#include "glwidget.h"
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QTimer>
@@ -32,39 +31,51 @@
 #include <QInputDialog>
 #include <QUrl>
 #include <qwebengineview.h>
-
-namespace Ui {
-class MainWindow;
-}
+#include <TCPConnectionManager.h>
+#include <ROS.h>
+#include <QCloseEvent>
+#include <ObjectVariableTable.h>
+#include <QProcess>;
+#include <QSettings>;
 
 class MainWindow;
 class ImageProcesser;
 class GcodeProgramManager;
 class GcodeVariable;
+class ROS;
+
+namespace Ui {
+	class MainWindow;
+}
 
 class MainWindow : public QMainWindow
 {
-    Q_OBJECT
+	Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = 0);
-    ~MainWindow();
+	explicit MainWindow(QWidget *parent = 0);
+	~MainWindow();
 
-    void InitEvents();
-    void InitVariables();
+	void InitEvents();
+	void InitVariables();
 	void AddInstance(QList<MainWindow*>* deltaXMainWindows = NULL);
-
-    ConnectionManager* DeltaPort;
+	void closeEvent(QCloseEvent *event);
+	
+	ConnectionManager* DeltaConnectionManager;
 	GcodeProgramManager* DeltaGcodeManager;
-    GLWidget* VisualArea;
-	DeltaVisualizer *DeltaParameter;
+	DeltaVisualizer *Delta2DVisualizer;
 	ImageProcesser* DeltaImageProcesser;
 	DrawingExporter* DeltaDrawingExporter;
+	ObjectVariableTable* TrackingObjectTable;
 
 	ConnectionManager* CurrentDeltaPort;
 
+	ROS* DeltaXROS;
+
 	QTimer* EditorTimer;
 	QTimer* ConvenyorTimer;
+	QTimer* ShortcutKeyTimer;
+
 
 	//QList<DeltaXDashboard*> DeltaXDashboards;
 	QList<MainWindow*>* DeltaXMainWindows = NULL;
@@ -73,19 +84,27 @@ public:
 	QString Name = "Delta X 1";
 
 	QNetworkAccessManager *HttpManager;
-	QString SoftwareVersion = "0.9.1.2";
+	QString SoftwareVersion = "0.9.2";
+
+	float UIScale = 1;
+
 private slots:
-    void ConnectDeltaRobot();
+	void ConnectDeltaRobot();
 	void AddNewProgram();
 	void SaveProgram();
 	void ExecuteProgram();
+	void ImportGcodeFilesFromComputer();
+	void UploadGcodeFileToServer();
+	void SearchGcodeFile();
+
 	void ExecuteSelectPrograms();
 	void ExecuteCurrentLine();
 	void UpdateZLineEditValue(int z);
 	void UpdateWLineEditValue(int w);
 	void UpdateDeltaPositionFromLineEditValue();
-	void UpdatePositionFrom2DControl(float x, float y, float z, float w);
-	void UpdatePositionControl(float x, float y, float z, float w);
+	void UpdateTextboxFrom2DControl(float x, float y, float z, float w);
+	void UpdateTextboxFrom3DControl(float x, float y, float z, float w);
+	void UpdatePositionControl(float x, float y, float z, float w, float f, float a);
 	void UpdateGlobalHomePositionValueAndControlValue(float x, float y, float z, float w);
 	void UpdateVelocity();
 	void UpdateAccel();
@@ -102,15 +121,22 @@ private slots:
 	void AddGcodeLine();
 	void ChangeGcodeParameter();
 
+	void AddConvenyorToROS();
+
 	void ConnectConveyor();
 	void SetConveyorMode(int mode);
 	void MoveConveyor();
+
+	void ProcessShortcutKey();	
+	
 
 	void ConnectSliding();
 	void GoHomeSliding();
 	void DisableSliding();
 	void SetSlidingSpeed();
 	void SetSlidingPosition();
+
+	void ConnectExternalController();
 
 	void TerminalTransmit();
 	void PrintReceiveData(QString msg);
@@ -129,6 +155,14 @@ private slots:
 	void FinishedRequest(QNetworkReply *reply);
 
 	void ExportBlocklyToGcode();
+
+	void OpenROS();
+	void ROSResponse();
+	void ChangeROSCameraView(int index);
+	void ChangeEndEffector(int index);
+
+	void ScaleUI();
+
 private:
 
 	QString boldKey(QString key, QString htmlText);
@@ -143,5 +177,6 @@ private:
 public:
     Ui::MainWindow *ui;
 };
+
 
 #endif // MAINWINDOW_H

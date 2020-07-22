@@ -35,6 +35,7 @@ public:
 	void CoutingGcodeLines();
 	void Destroy();
 	void SetColor(int color);
+	QPoint GetPosition();
 	
 	int ID;
 	QString GcodeData;

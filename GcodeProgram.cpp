@@ -118,6 +118,11 @@ void GcodeProgram::SetColor(int color)
 	}
 }
 
+QPoint GcodeProgram::GetPosition()
+{
+	return frPanel->pos();
+}
+
 void GcodeProgram::DeleteProgram()
 {
 	emit Deleted(this);

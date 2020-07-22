@@ -4,7 +4,7 @@
 
 #define NULL_NUMBER -6789
 
-extern QString ConvenyorString;
+extern QString ConveyorString;
 
 extern QLabel* DebugLB;
 

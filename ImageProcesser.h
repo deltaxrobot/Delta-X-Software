@@ -14,7 +14,6 @@
 #include <qlabel.h>
 #include <qtimer.h>
 #include <qpushbutton.h>
-#include "Blob.h"
 #include "BlobManager.h"
 #include "UnityTool.h"
 #include "CameraWidget.h"
@@ -45,6 +44,13 @@
 #define MIN_OBJECT_AREA			(DEFAULT_OBJECT_WIDTH - APPROXIMATE_RANGE)*(DEFAULT_OBJECT_HEIGHT - APPROXIMATE_RANGE)
 #define MAX_OBJECT_AREA			(DEFAULT_OBJECT_WIDTH + APPROXIMATE_RANGE)*(DEFAULT_OBJECT_HEIGHT + APPROXIMATE_RANGE)
 
+#define X_AXIS_DOWN		2
+#define X_AXIS_RIGHT	3
+#define X_AXIS_UP		1
+
+#define DEFAULT_FPS			15
+#define DEFAULT_INTERVAL	1000/DEFAULT_FPS
+
 class MainWindow;
 
 class ImageProcesser : public QWidget
@@ -59,24 +65,27 @@ public:
 	void SetResultScreenPointer(CameraWidget* resultImage);
 	void SetObjectScreenPointer(QLabel* objectImage);
 	void SetFPSInputBox(QLineEdit* fps);
+	void SetTrackingWidgetPointer(QLabel* lbTracking, QLabel* lbVisible);
 
 	void UpdateLabelImage(cv::Mat mat, QLabel* label);
 
-	void SetConvenyorVelocity(float val);
+	void SetConvenyorVelocity(float val, QString dir);
 
 	HSVWindow* ParameterPanel;
-	BlobManager* ConvenyorObjectManager;
+	BlobManager* ObjectManager;
 
 
-	QTimer* CalculatedConvenyorTimer;
+	QTimer* ObjectMovingCalculaterTimer;
 	int RunningCamera = -1;
 
 	cv::VideoCapture* Camera;
 
 public slots:
 	void LoadTestImage();
-	void LoadCamera();
+	void LoadCamera();	
+	void CaptureAnImageFromCamera();
 	void UpdateCameraScreen();
+	void SaveFPS();
 	void OpenParameterPanel();
 	void SetHSV(int minH, int maxH, int minS, int maxS, int minV, int maxV);
 	void SetThreshold(int value);
@@ -88,24 +97,23 @@ public slots:
 	void changeAxisDirection();
 
 	void CalConvenyorPosition();
+
+signals:
+	void ObjectValueChanged(std::vector<cv::RotatedRect> ObjectContainer);
 private:
+	void processImage();
 
 	void drawXAxis();
 	void SelectProcessRegion(cv::Mat processMat);
+	void MakeBrightProcessRegion(cv::Mat resultsMat);
 	void postProcessing(cv::Mat processMat);
 	void paintInfo(cv::Mat input, cv::Mat output, cv::Scalar color);
 	void drawRotateRec(cv::Mat& mat, int angle, cv::Rect rec, cv::Scalar color);
 	float drawMinRec(cv::Mat& mat, std::vector<cv::Point> contour, cv::Scalar color);
+	void UpdateTrackingInfo();
 
-	bool isNotCollision(Blob currentBlob, std::vector<Blob> blobs);
-	void matchCurrentFrameBlobsToExistingBlobs(std::vector<Blob> &existingBlobs, std::vector<Blob> &currentFrameBlobs);
-	void updateAppearedBlob(Blob &currentFrameBlob, std::vector<Blob> &existingBlobs, int &intIndex);
-	void addNewBlob(Blob &currentFrameBlob, std::vector<Blob> &existingBlobs);
-	double getDistance(cv::Point point1, cv::Point point2);
-	int getObjectNumber(std::vector<Blob> &blobs);
-	void drawCountedObjectDigit(int &carCount, cv::Mat &imgFrame2Copy);
-
-	float convenyorVel = 0;
+	float conveyorVel = 0;
+	QString dirName = "X";
 
 	int HSVValue[6] = {0, 100, 0, 255, 0, 255};
 	int thresholdValue = 150;
@@ -121,7 +129,7 @@ private:
 	float displayAndRealRatio = 1;
 	int xRealCamOri = 0;
 	int yRealCamOri = 0;
-	int axisDirection = 1;
+	int axisDirection = X_AXIS_UP;
 	QLine xAxis;
 	QLine arrow1;
 	QLine arrow2;
@@ -135,20 +143,20 @@ private:
 	QLabel* lbObjectImage;
 	QLineEdit* leFPS;
 
-	QLineEdit* leXRec;
-	QLineEdit* leYRec;
-	QLineEdit* leDistance;
-	QLineEdit* leXCoor;
-	QLineEdit* leYCoor;
+	QLineEdit* leXRec = NULL;
+	QLineEdit* leYRec = NULL;
+	QLineEdit* leDistance = NULL;
+	QLineEdit* leXCoor = NULL;
+	QLineEdit* leYCoor = NULL;
+
+	QLabel* lbTrackingObjectNumber;
+	QLabel* lbVisibleObjectNumber;
 
 	bool isDetectedNewObject = false;
 	int countedObjectNumber = 0;
 	bool isFirstFrame = true;
 
 	bool isFirstLoad = true;
-
-	std::vector<Blob> appearedBlobs;
-	std::vector<Blob> currentFrameBlobs;
-
+	bool isStopCapture = false;
 	MainWindow* mParent;
 };

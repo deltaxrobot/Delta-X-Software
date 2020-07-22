@@ -21,8 +21,8 @@ QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_CameraWidget_t {
-    QByteArrayData data[19];
-    char stringdata0[179];
+    QByteArrayData data[23];
+    char stringdata0[247];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -49,14 +49,20 @@ QT_MOC_LITERAL(14, 101, 22), // "FinishSelectCalibPoint"
 QT_MOC_LITERAL(15, 124, 10), // "rectObject"
 QT_MOC_LITERAL(16, 135, 10), // "lineObject"
 QT_MOC_LITERAL(17, 146, 12), // "circleObject"
-QT_MOC_LITERAL(18, 159, 19) // "selectProcessRegion"
+QT_MOC_LITERAL(18, 159, 19), // "selectProcessRegion"
+QT_MOC_LITERAL(19, 179, 25), // "ChangeCalibLineRealLength"
+QT_MOC_LITERAL(20, 205, 5), // "value"
+QT_MOC_LITERAL(21, 211, 17), // "ChangeXCalibPoint"
+QT_MOC_LITERAL(22, 229, 17) // "ChangeYCalibPoint"
 
     },
     "CameraWidget\0FinishDrawObject\0\0x\0y\0h\0"
     "w\0FinishSelectProcessRegion\0a\0b\0c\0d\0"
     "FinishMeasureSpace\0distance\0"
     "FinishSelectCalibPoint\0rectObject\0"
-    "lineObject\0circleObject\0selectProcessRegion"
+    "lineObject\0circleObject\0selectProcessRegion\0"
+    "ChangeCalibLineRealLength\0value\0"
+    "ChangeXCalibPoint\0ChangeYCalibPoint"
 };
 #undef QT_MOC_LITERAL
 
@@ -66,7 +72,7 @@ static const uint qt_meta_data_CameraWidget[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-       8,   14, // methods
+      11,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -74,16 +80,19 @@ static const uint qt_meta_data_CameraWidget[] = {
        4,       // signalCount
 
  // signals: name, argc, parameters, tag, flags
-       1,    4,   54,    2, 0x06 /* Public */,
-       7,    4,   63,    2, 0x06 /* Public */,
-      12,    1,   72,    2, 0x06 /* Public */,
-      14,    2,   75,    2, 0x06 /* Public */,
+       1,    4,   69,    2, 0x06 /* Public */,
+       7,    4,   78,    2, 0x06 /* Public */,
+      12,    1,   87,    2, 0x06 /* Public */,
+      14,    2,   90,    2, 0x06 /* Public */,
 
  // slots: name, argc, parameters, tag, flags
-      15,    0,   80,    2, 0x0a /* Public */,
-      16,    0,   81,    2, 0x0a /* Public */,
-      17,    0,   82,    2, 0x0a /* Public */,
-      18,    0,   83,    2, 0x0a /* Public */,
+      15,    0,   95,    2, 0x0a /* Public */,
+      16,    0,   96,    2, 0x0a /* Public */,
+      17,    0,   97,    2, 0x0a /* Public */,
+      18,    0,   98,    2, 0x0a /* Public */,
+      19,    1,   99,    2, 0x0a /* Public */,
+      21,    1,  102,    2, 0x0a /* Public */,
+      22,    1,  105,    2, 0x0a /* Public */,
 
  // signals: parameters
     QMetaType::Void, QMetaType::Int, QMetaType::Int, QMetaType::Int, QMetaType::Int,    3,    4,    5,    6,
@@ -96,6 +105,9 @@ static const uint qt_meta_data_CameraWidget[] = {
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
+    QMetaType::Void, QMetaType::QString,   20,
+    QMetaType::Void, QMetaType::QString,   20,
+    QMetaType::Void, QMetaType::QString,   20,
 
        0        // eod
 };
@@ -114,6 +126,9 @@ void CameraWidget::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id
         case 5: _t->lineObject(); break;
         case 6: _t->circleObject(); break;
         case 7: _t->selectProcessRegion(); break;
+        case 8: _t->ChangeCalibLineRealLength((*reinterpret_cast< QString(*)>(_a[1]))); break;
+        case 9: _t->ChangeXCalibPoint((*reinterpret_cast< QString(*)>(_a[1]))); break;
+        case 10: _t->ChangeYCalibPoint((*reinterpret_cast< QString(*)>(_a[1]))); break;
         default: ;
         }
     } else if (_c == QMetaObject::IndexOfMethod) {
@@ -175,13 +190,13 @@ int CameraWidget::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 8)
+        if (_id < 11)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 8;
+        _id -= 11;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 8)
+        if (_id < 11)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 8;
+        _id -= 11;
     }
     return _id;
 }

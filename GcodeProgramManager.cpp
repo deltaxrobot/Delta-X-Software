@@ -28,6 +28,8 @@ GcodeProgramManager::GcodeProgramManager(MainWindow *parent, QScrollArea* scrolA
 	UpdateSystemVariable("#Y", 0);
 	UpdateSystemVariable("#Z", 0);
 	UpdateSystemVariable("#W", 0);
+	UpdateSystemVariable("#F", 200);
+	UpdateSystemVariable("#A", 1200);
 
 	connect(deltaConnection, SIGNAL(DeltaResponeGcodeDone()), this, SLOT(TransmitNextGcode()));
 }
@@ -200,13 +202,16 @@ void GcodeProgramManager::Stop()
 
 float GcodeProgramManager::GetVariableValue(QString name)
 {	
+	if (name == "NULL")
+		return NULL_NUMBER;
+
 	if (mParent->DeltaXMainWindows != NULL)
 	{
 		if (mParent != mParent->DeltaXMainWindows->at(0))
 		{
 			if (isGlobalVariable(name))
 			{
-				return mParent->DeltaXMainWindows->at(0)->DeltaGcodeManager->GetVariableValue(name);				;
+				return mParent->DeltaXMainWindows->at(0)->DeltaGcodeManager->GetVariableValue(name);
 			}
 		}
 	}
@@ -249,6 +254,15 @@ bool GcodeProgramManager::isSlidingGcode(QString gcode)
 	QString conveyorGcodes = "M320 M321 M322 M323";
 	QString prefix = gcode.mid(0, gcode.indexOf(" "));
 	if (conveyorGcodes.indexOf(prefix) > -1)
+		return true;
+	return false;
+}
+
+bool GcodeProgramManager::isMovingGcode(QString gcode)
+{
+	QString movingGcodes = "G01 G00 G1 G0 G02 G03";
+	QString prefix = gcode.mid(0, gcode.indexOf(" "));
+	if (movingGcodes.indexOf(prefix) > -1)
 		return true;
 	return false;
 }
@@ -523,8 +537,13 @@ bool GcodeProgramManager::findExeGcodeAndTransmit()
 		{
 			gcodeOrder++;
 			deltaConnection->SlidingSend(transmitGcode);
-			return false;
+			return true;
 		}
+		/*if (deltaConnection->IsConnect() == false && !isMovingGcode(transmitGcode))
+		{
+			gcodeOrder++;
+			return false;
+		}*/
 	}
 
 	updatePositionIntoSystemVariable(transmitGcode);
@@ -538,13 +557,13 @@ bool GcodeProgramManager::findExeGcodeAndTransmit()
 void GcodeProgramManager::SaveGcodeIntoFile()
 {
 	Debug("Save");
-	if (SelectingProgram == NULL)
+	if (selectingProgram == NULL)
 	{
 		Debug("No program is selected !");
 		return;
 	}		
 
-	QFile file(SelectingProgram->GetName() + ".dtgc");
+	QFile file(selectingProgram->GetName() + ".dtgc");
 	if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
 	{
 		Debug("Cant not open file to save !");
@@ -554,8 +573,8 @@ void GcodeProgramManager::SaveGcodeIntoFile()
 	QTextStream out(&file);
 	out << pteGcodeArea->toPlainText();
 
-	SelectingProgram->GcodeData = pteGcodeArea->toPlainText();
-	SelectingProgram->CoutingGcodeLines();
+	selectingProgram->GcodeData = pteGcodeArea->toPlainText();
+	selectingProgram->CoutingGcodeLines();
 
 	Debug("Saved");
 }
@@ -565,8 +584,8 @@ void GcodeProgramManager::DeleteProgram(GcodeProgram* ptr)
 	QFile file(ptr->GetName() + ".dtgc");
 	file.remove();
 
-	if (ptr == SelectingProgram)
-		SelectingProgram = NULL;
+	if (ptr == selectingProgram)
+		selectingProgram = NULL;
 
 	int deleteID = ptr->ID;
 
@@ -587,7 +606,7 @@ void GcodeProgramManager::DeleteProgram(GcodeProgram* ptr)
 
 void GcodeProgramManager::EraserAllProgramItems()
 {
-	SelectingProgram = NULL;
+	selectingProgram = NULL;
 
 	for (int i = 0; i < ProgramList->size(); i++)
 	{
@@ -648,7 +667,7 @@ void GcodeProgramManager::TransmitNextGcode()
 
 			if (IsFromOtherGcodeProgram == true)
 			{
-				pteGcodeArea->setText(OutsideGcodeProgramManager->SelectingProgram->GcodeData);
+				pteGcodeArea->setText(OutsideGcodeProgramManager->selectingProgram->GcodeData);
 				emit FinishExecuteGcodes();
 				connect(deltaConnection, SIGNAL(DeltaResponeGcodeDone()), OutsideGcodeProgramManager, SLOT(TransmitNextGcode()));
 			}
@@ -673,6 +692,15 @@ void GcodeProgramManager::UpdateSystemVariable(QString name, float value)
 {
 	SaveGcodeVariable(name, value);
 	emit JustUpdateVariable(gcodeVariables);
+}
+
+void GcodeProgramManager::ResponseVariableValue(QObject* s, QString name)
+{
+	QSerialPort* sP = qobject_cast<QSerialPort*>(s);
+	if (sP == deltaConnection->ExternalControllerPort)
+	{
+		deltaConnection->ECSend(QString::number(GetVariableValue(name)));
+	}	
 }
 
 void GcodeProgramManager::SetStartingGcodeEditorCursor(QString value)
@@ -844,25 +872,8 @@ float GcodeProgramManager::calculateExpressions(QString expression)
 			value1S = getLeftWord(expression, operatorIndex);
 			value2S = getRightWord(expression, operatorIndex);
 
-			if (value1S == "NULL")
-			{
-				value1 = NULL_NUMBER;
-			}
-			else
-			{
-				value1 = value1S.toFloat();
-			}
-			
-			if (value2S == "NULL")
-			{
-				value2 = NULL_NUMBER;
-			}
-			else
-			{
-				value2 = value2S.toFloat();
-			}
-
 			value1 = GetVariableValue(value1S);
+			
 			value2 = GetVariableValue(value2S);
 			
 			int returnValue = -1;
@@ -936,7 +947,14 @@ void GcodeProgramManager::updatePositionIntoSystemVariable(QString statement)
 {
 	QList<QString> pairs = statement.split(' ');
 
-	float x, y, z, w;
+	float x, y, z, w, f, a;
+
+	x = GetVariableValue("#X");
+	y = GetVariableValue("#Y");
+	z = GetVariableValue("#Z");
+	w = GetVariableValue("#W");
+	f = GetVariableValue("#F");
+	a = GetVariableValue("#A");
 
 	if (statement == "G28")
 	{
@@ -945,14 +963,9 @@ void GcodeProgramManager::updatePositionIntoSystemVariable(QString statement)
 		UpdateSystemVariable("#Z", 0);
 		UpdateSystemVariable("#W", 0);
 
-		emit MoveToNewPosition(0, 0, 0, 0);
+		emit MoveToNewPosition(0, 0, 0, 0, f, a);
 		return;
 	}
-
-	x = GetVariableValue("#X");
-	y = GetVariableValue("#Y");
-	z = GetVariableValue("#Z");
-	w = GetVariableValue("#W");
 
 	for each (QString pair in pairs)
 	{
@@ -979,9 +992,19 @@ void GcodeProgramManager::updatePositionIntoSystemVariable(QString statement)
 			w = value.toFloat();
 			UpdateSystemVariable("#W", w);
 		}
+		else if (pair[0] == 'F')
+		{
+			f = value.toFloat();
+			UpdateSystemVariable("#F", f);
+		}
+		else if (pair[0] == 'A')
+		{
+			a = value.toFloat();
+			UpdateSystemVariable("#A", a);
+		}
 	}
 
-	emit MoveToNewPosition(x, y, z, w);
+	emit MoveToNewPosition(x, y, z, w, f, a);
 }
 
 QString GcodeProgramManager::getLeftWord(QString s, int pos)
@@ -1085,16 +1108,18 @@ bool GcodeProgramManager::isNotNegative(QString s)
 
 void GcodeProgramManager::ChangeSelectingProgram(GcodeProgram * ptr)
 {
-	if (SelectingProgram != NULL && ptr != SelectingProgram)
+	SaveGcodeIntoFile();
+
+	if (selectingProgram != NULL && ptr != selectingProgram)
 	{
-		SelectingProgram->SetColor(DEFAULT_COLOR);
+		selectingProgram->SetColor(DEFAULT_COLOR);
 	}
 
 	Debug(QString("#") + QString::number(ptr->ID) + " is selected !");
 
-	SelectingProgram = ptr;
+	selectingProgram = ptr;
 
-	pteGcodeArea->setPlainText(SelectingProgram->GcodeData);
+	pteGcodeArea->setPlainText(selectingProgram->GcodeData);
 }
 
 
