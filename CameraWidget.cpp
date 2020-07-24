@@ -10,7 +10,7 @@ CameraWidget::CameraWidget(QWidget *parent) :
 	drawStarted = false;
 
 	//default is line
-	selectedTool = 1;
+	selectedTool = 0;
 
 	painter.setPen(Qt::red);
 	painter.setBrush(Qt::Dense2Pattern);
@@ -22,39 +22,37 @@ void CameraWidget::mousePressEvent(QMouseEvent* event) {
 	//Mouse is pressed for the first time
 	mousePressed = true;
 
+	pointOrder = -1;
+	for (int i = 0; i < 4; i++)
+	{
+		if (abs(mPoints[i].x() - event->pos().x()) < 5 && abs(mPoints[i].y() - event->pos().y()) < 5)
+		{
+			pointOrder = i;
+			lastSelectedTool = selectedTool;
+			lastCursorIcon = cursor().pixmap();
+
+			selectProcessRegion();
+
+			break;
+		}
+	}
+
 	//set the initial line points, both are same
 	if (selectedTool == 1)
 	{
 		mRect.setTopLeft(event->pos());
 		mRect.setBottomRight(event->pos());
-		pointOrder = -1;
 	}
 	else if (selectedTool == 2)
 	{
 		mLine.setP1(event->pos());
 		mLine.setP2(event->pos());
-		pointOrder = -1;
 	}
 	else if (selectedTool == 3)
 	{
 		mPoint = event->pos();
-		pointOrder = -1;
 
 		emit FinishSelectCalibPoint(mPoint.x(), mPoint.y());
-	}
-	else if (selectedTool == 4)
-	{
-		pointOrder++;
-		if (pointOrder > 3)
-		{
-			pointOrder = 0;
-		}
-		mPoints[pointOrder] = event->pos();
-
-		if (pointOrder == 3)
-		{
-			emit FinishSelectProcessRegion(mPoints[0], mPoints[1], mPoints[2], mPoints[3]);
-		}
 	}
 }
 
@@ -77,6 +75,11 @@ void CameraWidget::mouseMoveEvent(QMouseEvent* event)
 		{
 			mPoint = event->pos();
 		}
+
+		if (pointOrder > -1)
+		{
+			mPoints[pointOrder] = event->pos();			
+		}		
 	}	
 
 	//it calls the paintEven() function continuously
@@ -91,6 +94,13 @@ void CameraWidget::mouseReleaseEvent(QMouseEvent *event) {
 		emit FinishDrawObject(mRect.x(), mRect.y(), mRect.height(), mRect.width());
 	if (selectedTool == 2)
 		emit FinishMeasureSpace(sqrt(pow(mLine.x1() - mLine.x2(), 2) + pow(mLine.y1() - mLine.y2(), 2)));
+	if (selectedTool == 4)
+	{
+		selectedTool = lastSelectedTool;
+		setCursor(QCursor(lastCursorIcon));
+
+		emit FinishSelectProcessRegion(mPoints[0], mPoints[1], mPoints[2], mPoints[3]);
+	}
 	update();
 }
 
@@ -116,35 +126,19 @@ void CameraWidget::paintEvent(QPaintEvent *event)
 	tempPainter.drawPoint(mPoints[3]);
 
 	tempPainter.setPen(QPen(Qt::red, 1));
-
-	if (pointOrder > 0)
-	{
-		tempPainter.setPen(Qt::green);
-
-		for (int i = 0; i < pointOrder; i++)
-		{
-			tempPainter.drawLine(mPoints[i], mPoints[i + 1]);
-		}
-
-		if (pointOrder == 3)
-			tempPainter.drawLine(mPoints[3], mPoints[0]);
-
-		tempPainter.setPen(Qt::red);
-	}
 	
-	if (pointOrder == -1)
+	
+	tempPainter.setPen(Qt::green);
+
+	for (int i = 0; i < 3; i++)
 	{
-		tempPainter.setPen(Qt::green);
-
-		for (int i = 0; i < 3; i++)
-		{
-			tempPainter.drawLine(mPoints[i], mPoints[i + 1]);
-		}
-
-		tempPainter.drawLine(mPoints[3], mPoints[0]);
-
-		tempPainter.setPen(Qt::red);
+		tempPainter.drawLine(mPoints[i], mPoints[i + 1]);
 	}
+
+	tempPainter.drawLine(mPoints[3], mPoints[0]);
+
+	tempPainter.setPen(Qt::red);
+	
 
 	tempPainter.drawLine(mLine);
 	tempPainter.setPen(QPen(Qt::red, 2));

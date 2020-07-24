@@ -402,7 +402,7 @@ color:rgb(0, 235, 0);
         <x>145</x>
         <y>15</y>
         <width>221</width>
-        <height>151</height>
+        <height>146</height>
        </rect>
       </property>
       <property name="title">
@@ -666,9 +666,9 @@ color:rgb(0, 235, 0);
       <property name="geometry">
        <rect>
         <x>5</x>
-        <y>160</y>
-        <width>276</width>
-        <height>56</height>
+        <y>125</y>
+        <width>131</width>
+        <height>91</height>
        </rect>
       </property>
       <property name="title">
@@ -679,7 +679,7 @@ color:rgb(0, 235, 0);
         <rect>
          <x>10</x>
          <y>20</y>
-         <width>141</width>
+         <width>111</width>
          <height>28</height>
         </rect>
        </property>
@@ -687,7 +687,7 @@ color:rgb(0, 235, 0);
         <string notr="true"/>
        </property>
        <property name="text">
-        <string>View data objects</string>
+        <string>Object Table</string>
        </property>
        <property name="icon">
         <iconset>
@@ -697,8 +697,8 @@ color:rgb(0, 235, 0);
       <widget class="QPushButton" name="pbClearDetectObjects">
        <property name="geometry">
         <rect>
-         <x>155</x>
-         <y>20</y>
+         <x>10</x>
+         <y>55</y>
          <width>111</width>
          <height>26</height>
         </rect>
@@ -826,9 +826,9 @@ color:rgb(0, 235, 0);
      <widget class="QPushButton" name="pbFilter">
       <property name="geometry">
        <rect>
-        <x>285</x>
+        <x>290</x>
         <y>180</y>
-        <width>71</width>
+        <width>76</width>
         <height>26</height>
        </rect>
       </property>
@@ -841,26 +841,6 @@ color:rgb(0, 235, 0);
       <property name="icon">
        <iconset>
         <normaloff>icon/Slider 2_16px.png</normaloff>icon/Slider 2_16px.png</iconset>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="pbSelection">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>120</y>
-        <width>121</width>
-        <height>26</height>
-       </rect>
-      </property>
-      <property name="toolTip">
-       <string>Select Process Region</string>
-      </property>
-      <property name="text">
-       <string>Detection Area</string>
-      </property>
-      <property name="icon">
-       <iconset>
-        <normaloff>icon/Cursor_16px.png</normaloff>icon/Cursor_16px.png</iconset>
       </property>
      </widget>
     </widget>

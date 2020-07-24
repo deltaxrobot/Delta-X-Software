@@ -20,6 +20,8 @@ public:
 	bool mousePressed;
 	bool drawStarted;
 	int selectedTool;
+	int lastSelectedTool;
+	QPixmap lastCursorIcon;
 	//destructor is needed when we construct a object on the heap instead of stack
 	// for efficient memory management
 	~CameraWidget();
@@ -59,7 +61,7 @@ private:
 	QRect mRect;
 	QPoint mPoint;
 	QPoint mPoints[4];
-	int pointOrder = 3;
+	int pointOrder = -1;
 
 	int calibLineRealLength = 120;
 	int xCalibPoint = 150;
