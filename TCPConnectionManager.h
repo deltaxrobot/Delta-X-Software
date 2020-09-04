@@ -4,12 +4,14 @@
 #include <qtcpserver.h>
 #include <qtcpsocket.h>
 #include <UnityTool.h>
+#include <QHostInfo>
 
-class ROSConnection
+class Client
 {
 public:
 	QString ID;
 	QTcpSocket* socket;
+	bool IsROS = false;
 };
 
 class TCPConnectionManager : public QObject
@@ -23,25 +25,32 @@ public:
 	void OpenServer();
 	void OpenServer(QString s, int p);
 
+	void ProcessReceivedData(QString data);
+
 	QString serverName = "localhost";
 	int port = 8844;
 
 	QString ReceivedString = "";
 
-	QTcpServer* tcpServer;
-	QList<ROSConnection*>* RosSocketList = NULL;
+	QTcpServer* TcpServer;
+	QList<QTcpSocket*>* TcpClients;
+	QList<Client*>* ClientList = NULL;
+
+	static QString GetLocalIP();
 
 public slots:
 	void CreatNewConnection();
 	void ReadDataFromClients();
-	void SendMessageToAll(QString msg);
+	void SendMessageToROS(QString msg);
+	
 
 signals:
 	void ReceiveVariableChangeCommand(QString name, float value);
 	void ReceivePositionUpdateCommand(float x, float y, float z, float w);
 	void ReceiveOk();
 	void ReceivePosition(float x, float y, float z, float w);
+	void NewConnection(QTcpSocket* socket);
 
 private:
-	void processReceivedData(QString data);
+	
 };

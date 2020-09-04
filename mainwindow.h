@@ -84,7 +84,7 @@ public:
 	QString Name = "Delta X 1";
 
 	QNetworkAccessManager *HttpManager;
-	QString SoftwareVersion = "0.9.2";
+	QString SoftwareVersion = "0.9.3";
 
 	float UIScale = 1;
 
@@ -121,7 +121,9 @@ private slots:
 	void AddGcodeLine();
 	void ChangeGcodeParameter();
 
-	void AddConvenyorToROS();
+	void UpdateDetectObjectSize();
+
+	void UpdateCursorPosition(int x, int y);
 
 	void ConnectConveyor();
 	void SetConveyorMode(int mode);
@@ -136,7 +138,9 @@ private slots:
 	void SetSlidingSpeed();
 	void SetSlidingPosition();
 
-	void ConnectExternalController();
+	void ConnectExternalMCU();
+	void TransmitTextToExternalMCU();
+	void DisplayTextFromExternalMCU(QString text);
 
 	void TerminalTransmit();
 	void PrintReceiveData(QString msg);
@@ -157,11 +161,15 @@ private slots:
 	void ExportBlocklyToGcode();
 
 	void OpenROS();
-	void ROSResponse();
 	void ChangeROSCameraView(int index);
 	void ChangeEndEffector(int index);
+	void ChangeRobotVersion(int index);
+	void AddObjectsToROS(std::vector<cv::RotatedRect> ObjectContainer);
+	void DeleteAllObjectsInROS();
 
 	void ScaleUI();
+
+	void ExecuteRequestsFromExternal(QString request);
 
 private:
 
@@ -169,6 +177,8 @@ private:
 	QString boldPlusKey(QString key, QString plus, QString htmlText);
 	QString italyKey(QString key, QString htmlText);
 	QString replaceHtmlSection(QString start, int offset, int maxlen, QString finish, QString beforeSection, QString afterSection, QString htmlText);
+
+	bool OpenConnectionDialog(QSerialPort* comPort, QTcpSocket* socket,QPushButton* connectButton);
 
 	void initTabs();
 	void hideExampleWidgets();

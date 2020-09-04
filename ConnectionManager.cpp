@@ -8,69 +8,167 @@ ConnectionManager::ConnectionManager()
 void ConnectionManager::init()
 {
 	timer = new QTimer();
-	robotPort = new QSerialPort();
+
+	RobotPort = new QSerialPort();
+	connect(RobotPort, SIGNAL(readyRead()), this, SLOT(ReadData()));
+	RobotSocket = new QTcpSocket();
+	connect(RobotSocket, SIGNAL(readyRead()), this, SLOT(ReadData()));
 	
 	connect(timer, SIGNAL(timeout()), this, SLOT(FindingTimeOut()));
 
 	ExternalControllerPort = new QSerialPort();
-	connect(ExternalControllerPort, SIGNAL(readyRead()), this, SLOT(ReadDataFromExternalController()));
+	connect(ExternalControllerPort, SIGNAL(readyRead()), this, SLOT(ReadData()));
+	ExternalControllerSocket = new QTcpSocket();
+	connect(ExternalControllerSocket, SIGNAL(readyRead()), this, SLOT(ReadData()));
 
 	SlidingPort = new QSerialPort();
 	connect(SlidingPort, SIGNAL(readyRead()), this, SLOT(ReadData()));
+	SlidingSocket = new QTcpSocket();
+	connect(SlidingSocket, SIGNAL(readyRead()), this, SLOT(ReadData()));
 
 	ConveyorPort = new QSerialPort();
 	connect(ConveyorPort, SIGNAL(readyRead()), this, SLOT(ReadData()));
+	ConveyorSocket = new QTcpSocket();
+	connect(ConveyorSocket, SIGNAL(readyRead()), this, SLOT(ReadData()));
 
 	TCPConnection = new TCPConnectionManager();
 	TCPConnection->OpenServer("localhost", 8844);
+
+	TcpServer = TCPConnection->TcpServer;
+	connect(TCPConnection, SIGNAL(NewConnection(QTcpSocket*)), this, SLOT(ReceiveNewConnectionFromServer(QTcpSocket*)));
 }
 
 void ConnectionManager::sendQueue()
 {
-	/*if (transmitLines.size() == 0)
-		return; 
-
-	transmitLines.pop_front();
-
-	if (transmitLines.size() > 0)
-	{
-		transmitLine = transmitLines.at(0);
-
-		QString msg;
-		msg = transmitLine + "\n";
-
-		if (robotPort->isOpen())
-		{
-			robotPort->write(msg.toStdString().c_str(), msg.size());
-		}
-		else
-			Debug("Serial port is not available !");
-	}*/
+	
 }
 
-bool ConnectionManager::IsConnect()
+void ConnectionManager::processReceiveData()
 {
-	if (robotPort->isOpen())
+	if (receiveLine.mid(0, 2) == "Ok" || (receiveLine.indexOf('k') > -1 && receiveLine.indexOf('O') > -1) || receiveLine.mid(0, 7) == "Unknown")
+	{
+		if (!(IsRobotConnect() == true && IsRosSocket(IOSender)))
+		{
+			emit DeltaResponeGcodeDone();
+		}		
+
+		//sendQueue();
+
+		if (transmitLine == "G28")
+		{
+			SendToRobot("Position");
+		}
+	}
+
+	if (receiveLine.indexOf(",") > -1 && transmitLine == "Position")
+	{
+		QList<QString> nums = receiveLine.split(",");
+
+		if (nums.size() == 3)
+		{
+			emit InHomePosition(nums[0].toFloat(), nums[1].toFloat(), nums[2].toFloat(), 0);
+		}
+	}
+
+	if (receiveLine.at(0) == '#' && receiveLine.indexOf("=") > -1)
+	{
+		int symId = receiveLine.indexOf("=");
+		QString name = receiveLine.mid(0, symId).replace(" ", "");
+		float value = receiveLine.mid(symId + 1).replace(" ", "").toInt();
+		emit ReceiveVariableChangeCommand(name, value);
+	}
+	if (receiveLine.at(0) == '#' && receiveLine.indexOf("=") == -1)
+	{
+		receiveLine = receiveLine.replace(" ", "");
+		receiveLine = receiveLine.replace("\n", "");
+		receiveLine = receiveLine.replace("\r", "");
+
+		QString name = receiveLine;
+		emit RequestVariableValue(IOSender, name);
+	}
+	if (receiveLine.at(0) == 'r' && receiveLine.indexOf(":") > -1)
+	{
+		int symId = receiveLine.indexOf(":");
+
+		QString request = receiveLine.mid(symId + 1);
+
+		emit ReceiveRequestsFromExternal(request);
+	}
+}
+
+void ConnectionManager::sendData(QSerialPort * com, QTcpSocket * socket, QString msg)
+{
+	Debug(msg);
+
+	msg += "\n";
+
+	if (com != NULL)
+	{
+		if (com->isOpen())
+		{
+			com->write(msg.toStdString().c_str(), msg.size());
+			return;
+		}
+	}
+	if (socket != NULL)
+	{
+		if (socket->isOpen())
+		{
+			socket->write(msg.toStdString().c_str(), msg.size());
+		}
+	}
+}
+
+bool ConnectionManager::IsRobotConnect()
+{
+	if (RobotPort->isOpen() || RobotSocket->isOpen())
 		return true;
 
 	return false;
 }
 
-void ConnectionManager::Disconnect()
+void ConnectionManager::DisconnectRobot()
 {
-	if (robotPort->isOpen())
+	if (RobotPort->isOpen())
 	{
-		robotPort->close();
+		RobotPort->close();
+		isDeltaPortConnected = false;
+	}
+	if (RobotSocket->isOpen())
+	{
+		RobotSocket->close();
 		isDeltaPortConnected = false;
 	}
 }
 
+bool ConnectionManager::IsRosClientAvailable()
+{
+	bool result = false;
+	for (int i = 0; i < TCPConnection->ClientList->size(); i++)
+	{
+		if (TCPConnection->ClientList->at(i)->IsROS == true)
+			result = true;
+	}
+	return result;
+}
+
+bool ConnectionManager::IsRosSocket(QIODevice* socket)
+{
+	bool result = false;
+	for (int i = 0; i < TCPConnection->ClientList->size(); i++)
+	{
+		if (TCPConnection->ClientList->at(i)->socket == socket)
+			result = true;
+	}
+	return result;
+}
+
 QString ConnectionManager::GetNamePort()
 {
-	if (robotPort == NULL || robotPort == Q_NULLPTR)
+	if (RobotPort == NULL || RobotPort == Q_NULLPTR)
 		return QString("Null");
 	
-	return robotPort->portName();
+	return RobotPort->portName();
 }
 
 void ConnectionManager::SetBaudrate(int baud)
@@ -109,166 +207,102 @@ void ConnectionManager::FindDeltaRobot()
 	timer->start(200);
 }
 
-void ConnectionManager::Send(QString msg)
+void ConnectionManager::SendToRobot(QString msg)
 {
-	if (!robotPort->isOpen())
-	{
-		Debug("Serial port is not available !");
-		return;
-	}
-
-	if (msg == "")
-		return;
-
-	//if (transmitLines.size() > 0)
-	//{
-	//	if (transmitLines.at(transmitLines.size() - 1) == "Position")
-	//		return;
-	//}
-
-	//if (msg == "M701" && transmitLines.size() > 0)
-	//{
-	//	if (transmitLines.back() == "M701")
-	//	{
-	//		return;
-	//	}
-	//}
-	///*
-	//if (transmitLines.size() > 1)
-	//{
-	//	transmitLines.clear();
-	//	emit DeltaResponeGcodeDone();
-	//}	*/
-
-	//if (msg == "G28")
-	//{
-	//	transmitLines.clear();
-	//}
-
-	//transmitLines.push_back(msg);
-
-	//if (transmitLines.size() > 1)
-	//{
-	//	return;
-	//}
-
+	TCPConnection->SendMessageToROS("gcode " + msg);
+	
 	transmitLine = msg;
-	Debug("");
 
-	msg += "\n";
-	robotPort->write(msg.toStdString().c_str(), msg.size());
+	sendData(RobotPort, RobotSocket, msg);
 }
 
 void ConnectionManager::ConveyorSend(QString msg)
 {
-	if (ConveyorPort == NULL)
-		return;
-
-	if (ConveyorPort->isOpen() == false)
-		return;
-
-	Debug("");
-
-	msg += "\n";
-	ConveyorPort->write(msg.toStdString().c_str(), msg.size());
+	sendData(ConveyorPort, ConveyorSocket, msg);
 }
 
 void ConnectionManager::SlidingSend(QString msg)
 {
-	if (SlidingPort == NULL)
-		return;
-
-	if (SlidingPort->isOpen() == false)
-		return;
-
-	Debug("");
-
-	msg += "\n";
-	SlidingPort->write(msg.toStdString().c_str(), msg.size());
+	sendData(SlidingPort, SlidingSocket, msg);
 }
 
-void ConnectionManager::ECSend(QString msg)
+void ConnectionManager::ExternalMCUSend(QString msg)
 {
-	if (ExternalControllerPort == NULL || ExternalControllerPort->isOpen() == false)
-		return;
-
-	Debug("");
-
-	msg += "\n";
-	ExternalControllerPort->write(msg.toStdString().c_str(), msg.size());
-}
-
-bool ConnectionManager::ConnectExternalController(QString name, int baudrate)
-{
-	if (ExternalControllerPort == NULL)
-	{
-		ExternalControllerPort = new QSerialPort();
-	}
-
-	ExternalControllerPort->setPortName(name);
-	ExternalControllerPort->setBaudRate(baudrate);
-
-	return ExternalControllerPort->open((QIODevice::ReadWrite));
+	sendData(ExternalControllerPort, ExternalControllerSocket, msg);
 }
 
 void ConnectionManager::ReadData()
 {
+	IOSender = qobject_cast<QIODevice*>(sender());
+
 	QSerialPort* sP = qobject_cast<QSerialPort*>(sender());
 
-	while (sP->canReadLine())
+	if (sP)
 	{
-		receiveLine = sP->readLine();
-		QString name = sP->portName();
-		emit FinishReadLine(receiveLine);
-
-		if (receiveLine.mid(0, 8) == "YesDelta")
+		while (sP->canReadLine())
 		{
-			if (isDeltaPortConnected != true)
+			receiveLine = sP->readLine();
+
+			if (sP == ExternalControllerPort)
 			{
-				delete robotPort;
-				robotPort = sP;
-				emit DeltaResponeReady();
-
-				isDeltaPortConnected = true;
-
-			}			
-		}
-
-		if (receiveLine.mid(0, 2) == "Ok" || (receiveLine.indexOf('k') > -1 && receiveLine.indexOf('O') > -1) || receiveLine.mid(0, 7) == "Unknown")
-		{
-			emit DeltaResponeGcodeDone();
-
-			//sendQueue();
-
-			if (transmitLine == "G28")
-			{
-				Send("Position");
-			}
-		}
-
-		if (receiveLine.indexOf(",") > -1 && transmitLine == "Position")
-		{
-			QList<QString> nums = receiveLine.split(",");
-			
-			if (nums.size() == 3)
-			{
-				emit InHomePosition(nums[0].toFloat(), nums[1].toFloat(), nums[2].toFloat(), 0);
+				emit ExternalMCUTransmitText(receiveLine);
 			}
 
-			//sendQueue();
+			emit FinishReadLine(receiveLine);
+
+			if (receiveLine.mid(0, 8) == "YesDelta")
+			{
+				if (isDeltaPortConnected != true)
+				{
+					delete RobotPort;
+					RobotPort = sP;
+					emit DeltaResponeReady();
+
+					isDeltaPortConnected = true;
+
+				}
+			}
+
+			processReceiveData();
+		}
+
+		return;
+	}
+	
+	QTcpSocket* socket = qobject_cast<QTcpSocket*>(sender());
+	
+	if (socket)
+	{
+		while (socket->canReadLine())
+		{
+			receiveLine = socket->readLine();
+
+			for (int i = 0; i < TCPConnection->ClientList->size(); i++)
+			{
+				if (TCPConnection->ClientList->at(i)->socket == socket)
+				{
+					if (receiveLine.indexOf("ros") > -1)
+					{
+						TCPConnection->ClientList->at(i)->IsROS = true;
+						break;
+					}
+				}
+			}
+
+			if (IsRosSocket(socket) == true)
+			{
+				TCPConnection->ProcessReceivedData(receiveLine);
+			}
+
+			if (socket == ExternalControllerSocket)
+			{
+				emit ExternalMCUTransmitText(receiveLine);
+			}
+
+			processReceiveData();
 			
 		}
-		/*if (receiveLine.at(0) == 'P' && transmitLine == "M701")
-		{
-			QString convenyorPosS = receiveLine.mid(1);
-			float convenyorPos = convenyorPosS.toFloat();
-
-			emit ReceiveConvenyorPosition(convenyorPos, 0);
-
-			sendQueue();
-
-		}*/
-	}	
+	}
 }
 
 
@@ -295,7 +329,7 @@ void ConnectionManager::FindingTimeOut()
 
 	for(int i = 0; i < portList.length(); i++)
 	{
-		if (portList.at(i)->portName() != robotPort->portName())
+		if (portList.at(i)->portName() != RobotPort->portName())
 		{
 			portList.at(i)->close();
 			delete portList.at(i);
@@ -307,30 +341,7 @@ void ConnectionManager::FindingTimeOut()
 	timer->stop();
 }
 
-void ConnectionManager::ReadDataFromExternalController()
+void ConnectionManager::ReceiveNewConnectionFromServer(QTcpSocket * socket)
 {
-	QSerialPort* sP = qobject_cast<QSerialPort*>(sender());
-
-	while (sP->canReadLine())
-	{
-		receiveLine = sP->readLine();
-		QString name = sP->portName();
-
-		if (receiveLine.at(0) == '#' && receiveLine.indexOf("=") > -1)
-		{
-			int symId = receiveLine.indexOf("=");
-			QString name = receiveLine.mid(0, symId).replace(" ", "");
-			float value = receiveLine.mid(symId + 1).replace(" ", "").toInt();
-			emit ReceiveVariableChangeCommand(name, value);
-		}
-		if (receiveLine.at(0) == '#' && receiveLine.indexOf("=") == -1)
-		{
-			receiveLine = receiveLine.replace(" ", "");
-			receiveLine = receiveLine.replace("\n", "");
-			receiveLine = receiveLine.replace("\r", "");
-
-			QString name = receiveLine;
-			emit ResponseVariableValue(ExternalControllerPort, name);
-		}
-	}
+	connect(socket, SIGNAL(readyRead()), this, SLOT(ReadData()));
 }

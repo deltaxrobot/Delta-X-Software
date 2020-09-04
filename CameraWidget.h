@@ -29,6 +29,7 @@ public:
 signals:
 	void FinishDrawObject(int x, int y, int h, int w);
 	void FinishSelectProcessRegion(QPoint a, QPoint b, QPoint c, QPoint d);
+	void FinishSelectCalibLine(QPoint a, QPoint b);
 	void FinishMeasureSpace(int distance);
 	void FinishSelectCalibPoint(int x, int y);
 

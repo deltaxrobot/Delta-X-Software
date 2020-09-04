@@ -1,26 +1,26 @@
 #ifndef DELTAVISUALIZER_H
 #define DELTAVISUALIZER_H
 
-#include <QOpenGLWidget>
-#include <QOpenGLFunctions>
-#include <QOpenGLVertexArrayObject>
-#include <QOpenGLBuffer>
-#include <QMatrix4x4>
-#include <qopengl.h>
-#include <qopenglshaderprogram.h>
 #include <qslider.h>
 #include <qmath.h>
 #include <qevent.h>
 #include <QElapsedTimer>
 #include <qcombobox.h>
+#include <QLabel>
+#include <QPainter>
+#include <QPixmap>
+#include <QMouseEvent>
 
-class DeltaVisualizer : public QOpenGLWidget, QOpenGLFunctions
+#define MOVING_BASE_SIZE 50
+
+class DeltaVisualizer : public QLabel
 {
 	Q_OBJECT
 
 public:
 	DeltaVisualizer(QWidget *parent = 0);
 	~DeltaVisualizer();
+	void InitGrid();
 	void MoveToHome();
 
 	QSize minimumSizeHint();
@@ -51,6 +51,7 @@ public slots:
 	void MoveRight();
 signals:
 	void Moved(float x, float y, float z, float w);
+	void CursorMoved(int x, int y);
 	void FinishMoving();
 
 	void up_arrow();
@@ -59,20 +60,13 @@ signals:
 	void right_arrow();
 
 protected:
-	void initializeGL() Q_DECL_OVERRIDE;
-	void paintGL() Q_DECL_OVERRIDE;
-	void resizeGL(int width, int height) Q_DECL_OVERRIDE;
-	void mousePressEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
-	void mouseReleaseEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
-	void mouseMoveEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
-	void wheelEvent(QWheelEvent *e) Q_DECL_OVERRIDE;
-	bool eventFilter(QObject *dist, QEvent *event) Q_DECL_OVERRIDE;
+	void mousePressEvent(QMouseEvent *event);
+	void mouseReleaseEvent(QMouseEvent *event);
+	void mouseMoveEvent(QMouseEvent *event);
+	void wheelEvent(QWheelEvent *e);
+	bool eventFilter(QObject *dist, QEvent *event);
 
 private:
-	QMatrix4x4 pMatrix;
-	QOpenGLShaderProgram shaderProgram;
-	QVector<QVector3D> vertices;
-
 	QElapsedTimer timer;
 
 	QComboBox* cbDivision;

@@ -419,13 +419,12 @@ bool GcodeProgramManager::findExeGcodeAndTransmit()
 
 				SaveGcodeVariable(newVar);
 
-				if (GetVariableValue("#1010") == NULL_NUMBER && GetVariableValue("#1011") == NULL_NUMBER && GetVariableValue("#1012") == NULL_NUMBER)
+				if (GetVariableValue("#O1_X") == NULL_NUMBER && GetVariableValue("#O1_Y") == NULL_NUMBER && GetVariableValue("#O1_A") == NULL_NUMBER)
 				{
 					emit OutOfObjectVariable();
 				}
 
 				gcodeOrder++;
-				//TransmitNextGcode();
 				return false;
 			}
 
@@ -471,6 +470,41 @@ bool GcodeProgramManager::findExeGcodeAndTransmit()
 			if (valuePairs[i + 1].at(0) == 'P')
 			{
 				QString subProName = valuePairs[i + 1].mid(1);
+
+				if (subProName == "clearObjects")
+				{
+					emit DeleteAllObjects();
+					gcodeOrder++;
+					return false;
+				}
+
+				if (subProName == "deleteFirstObject")
+				{
+					emit DeleteObject1();
+					gcodeOrder++;
+					return false;
+				}
+
+				if (subProName == "pauseCamera")
+				{
+					emit PauseCamera();
+					gcodeOrder++;
+					return false;
+				}
+
+				if (subProName == "captureCamera")
+				{
+					emit CaptureCamera();
+					gcodeOrder++;
+					return false;
+				}
+
+				if (subProName == "resumeCamera")
+				{
+					emit ResumeCamera();
+					gcodeOrder++;
+					return false;
+				}
 
 				for (int order = 0; order < gcodeList.size(); order++)
 				{
@@ -530,7 +564,7 @@ bool GcodeProgramManager::findExeGcodeAndTransmit()
 		{
 			gcodeOrder++;
 			deltaConnection->ConveyorSend(transmitGcode);
-			return false;
+			return true;
 		}
 
 		if (isSlidingGcode(transmitGcode))
@@ -548,7 +582,7 @@ bool GcodeProgramManager::findExeGcodeAndTransmit()
 
 	updatePositionIntoSystemVariable(transmitGcode);
 
-	deltaConnection->Send(transmitGcode);
+	deltaConnection->SendToRobot(transmitGcode);
 	gcodeOrder += 1;
 	return true;
 }
@@ -694,13 +728,11 @@ void GcodeProgramManager::UpdateSystemVariable(QString name, float value)
 	emit JustUpdateVariable(gcodeVariables);
 }
 
-void GcodeProgramManager::ResponseVariableValue(QObject* s, QString name)
+void GcodeProgramManager::RespondVariableValue(QIODevice* s, QString name)
 {
-	QSerialPort* sP = qobject_cast<QSerialPort*>(s);
-	if (sP == deltaConnection->ExternalControllerPort)
-	{
-		deltaConnection->ECSend(QString::number(GetVariableValue(name)));
-	}	
+	QString value = QString::number(GetVariableValue(name)) + '\n';
+
+	s->write(value.toStdString().c_str(), value.size());
 }
 
 void GcodeProgramManager::SetStartingGcodeEditorCursor(QString value)

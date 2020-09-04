@@ -35,8 +35,9 @@
 #define ORIGIN				0
 #define RESULT				1
 #define PROCESSING			2
+#define TRANSFORM			3
 
-#define DEFAULT_PROCESSING_SIZE	500
+#define DEFAULT_PROCESSING_SIZE	640
 #define DEFAULT_OBJECT_WIDTH	150
 #define DEFAULT_OBJECT_HEIGHT	150
 #define APPROXIMATE_RANGE		20
@@ -48,8 +49,10 @@
 #define X_AXIS_RIGHT	3
 #define X_AXIS_UP		1
 
-#define DEFAULT_FPS			15
+#define DEFAULT_FPS			10
 #define DEFAULT_INTERVAL	1000/DEFAULT_FPS
+
+#define CONVEYOR_TIMER_INTERVAL	100
 
 class MainWindow;
 
@@ -74,29 +77,41 @@ public:
 	HSVWindow* ParameterPanel;
 	BlobManager* ObjectManager;
 
-
 	QTimer* ObjectMovingCalculaterTimer;
+
 	int RunningCamera = -1;
+	bool IsCameraPause = false;
 
 	cv::VideoCapture* Camera;
+	int CameraFPS = DEFAULT_FPS;
+	int CameraTimerInterval = DEFAULT_INTERVAL;
+
+	float ProcessAndRealRatio = 1;
+	float DisplayAndProcessRatio = 1;
+	float DisplayAndRealRatio = 1;
 
 public slots:
 	void LoadTestImage();
-	void LoadCamera();	
-	void CaptureAnImageFromCamera();
+	void LoadCamera();
+	void CaptureCamera();
+	void PauseCamera();
+	void ResumeCamera();
 	void UpdateCameraScreen();
 	void SaveFPS();
 	void OpenParameterPanel();
 	void SetHSV(int minH, int maxH, int minS, int maxS, int minV, int maxV);
 	void SetThreshold(int value);
-	void GetObjectInfo(int x, int y, int h, int w);
+	void GetObjectInfo(int x, int y, int l, int w);
+	void GetObjectInfo(int l, int w);
 	void GetProcessRegion(QPoint a, QPoint b, QPoint c, QPoint d);
+	void GetCalibLine(QPoint p1, QPoint p2);
 	void GetDistance(int distance);
 	void GetCalibPoint(int x, int y);
 	void SwitchLayer();
+	void SelectLayer(int id);
 	void changeAxisDirection();
 
-	void CalConvenyorPosition();
+	void UpdateObjectPositionOnConveyor();
 
 signals:
 	void ObjectValueChanged(std::vector<cv::RotatedRect> ObjectContainer);
@@ -105,12 +120,16 @@ private:
 
 	void drawXAxis();
 	void SelectProcessRegion(cv::Mat processMat);
+	void transformPerspective(cv::Mat processMat, std::vector<cv::Point> points, cv::Mat& transMat);
 	void MakeBrightProcessRegion(cv::Mat resultsMat);
 	void postProcessing(cv::Mat processMat);
-	void paintInfo(cv::Mat input, cv::Mat output, cv::Scalar color);
+	void detectObjects(cv::Mat input, cv::Mat output, cv::Scalar color);
 	void drawRotateRec(cv::Mat& mat, int angle, cv::Rect rec, cv::Scalar color);
-	float drawMinRec(cv::Mat& mat, std::vector<cv::Point> contour, cv::Scalar color);
+	float findObjectRectangle(cv::Mat& mat, std::vector<cv::Point> contour, cv::Scalar color);
 	void UpdateTrackingInfo();
+	void DisplayAdditionalInfo(cv:: Mat& displayMat);
+	void drawBlackWhiteLine(cv::Mat& displayMat, cv::Point p1, cv::Point p2, int thin);
+	void drawBlackWhiteLines(cv::Mat& displayMat, std::vector<cv::Point> points, int thin);
 
 	float conveyorVel = 0;
 	QString dirName = "X";
@@ -124,27 +143,32 @@ private:
 	int minObjectArea;
 	int maxObjectArea;
 	std::vector<cv::Point> processRegionPoints;
-	float processAndRealRatio = 1;
-	float displayAndProcessRatio = 1;
-	float displayAndRealRatio = 1;
+	cv::Point calibLinePoint1;
+	cv::Point calibLinePoint2;
+	cv::Point calibPoint;
+	
 	int xRealCamOri = 0;
 	int yRealCamOri = 0;
 	int axisDirection = X_AXIS_UP;
 	QLine xAxis;
 	QLine arrow1;
 	QLine arrow2;
+
+	int xWidgetCalibPoint = 150;
+	int yWidgetCalibPoint = 0;
 	
 	QTimer* updateScreenTimer;
 	cv::Mat captureImage;
 	cv::Mat resizeImage;
 	cv::Mat resultImage;
+	cv::Mat transformImage;
 
 	CameraWidget* lbResultImage;
 	QLabel* lbObjectImage;
 	QLineEdit* leFPS;
 
-	QLineEdit* leXRec = NULL;
-	QLineEdit* leYRec = NULL;
+	QLineEdit* leWRec = NULL;
+	QLineEdit* leLRec = NULL;
 	QLineEdit* leDistance = NULL;
 	QLineEdit* leXCoor = NULL;
 	QLineEdit* leYCoor = NULL;

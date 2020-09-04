@@ -45,9 +45,9 @@ void BlobManager::RemoveAllDetectObjects()
 			angle = obj.angle + 90;
 		}
 
-		emit NewUpdateObjectPosition(QString("#O_X") + QString::number(i), NULL_NUMBER);
-		emit NewUpdateObjectPosition(QString("#O_Y") + QString::number(i), NULL_NUMBER);
-		emit NewUpdateObjectPosition(QString("#O_A") + QString::number(i), NULL_NUMBER);
+		emit NewUpdateObjectPosition(QString("#O") + QString::number(i + 1) + "_X", NULL_NUMBER);
+		emit NewUpdateObjectPosition(QString("#O") + QString::number(i + 1) + "_Y", NULL_NUMBER);
+		emit NewUpdateObjectPosition(QString("#O") + QString::number(i + 1) + "_A", NULL_NUMBER);
 	}
 
 	ObjectContainer.clear();
@@ -104,8 +104,8 @@ void BlobManager::UpdateNewPositionObjects(float deltaX, float deltaY)
 			angle = obj.angle + 90;
 		}
 
-		emit NewUpdateObjectPosition(QString("#O") + QString::number(i) + "_X", obj.center.x);
-		emit NewUpdateObjectPosition(QString("#O") + QString::number(i) + "_Y", obj.center.y);
-		emit NewUpdateObjectPosition(QString("#O") + QString::number(i) + "_A", angle);
+		emit NewUpdateObjectPosition(QString("#O") + QString::number(i + 1) + "_X", obj.center.x);
+		emit NewUpdateObjectPosition(QString("#O") + QString::number(i + 1) + "_Y", obj.center.y);
+		emit NewUpdateObjectPosition(QString("#O") + QString::number(i + 1) + "_A", angle);
 	}	
 }

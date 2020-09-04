@@ -99,7 +99,9 @@ void MainWindow::InitEvents()
 	connect(ui->leSlidingSpeed, SIGNAL(returnPressed()), this, SLOT(SetSlidingSpeed()));
 	connect(ui->leSlidingPosition, SIGNAL(returnPressed()), this, SLOT(SetSlidingPosition()));
 
-	connect(ui->pbExternalControllerConnect, SIGNAL(clicked(bool)), this, SLOT(ConnectExternalController()));
+	connect(ui->pbExternalControllerConnect, SIGNAL(clicked(bool)), this, SLOT(ConnectExternalMCU()));
+	connect(DeltaConnectionManager, SIGNAL(ExternalMCUTransmitText(QString)), this, SLOT(DisplayTextFromExternalMCU(QString)));
+	connect(ui->leTransmitToMCU, SIGNAL(returnPressed()), this, SLOT(TransmitTextToExternalMCU()));
 
 	connect(ui->pbUp, SIGNAL(clicked(bool)), Delta2DVisualizer, SLOT(MoveUp()));
 	connect(ui->pbDown, SIGNAL(clicked(bool)), Delta2DVisualizer, SLOT(MoveDown()));
@@ -115,13 +117,17 @@ void MainWindow::InitEvents()
 	connect(ui->vsAngleAdjsution, SIGNAL(valueChanged(int)), this, SLOT(UpdateWLineEditValue(int)));
 	connect(ui->vsAngleAdjsution, SIGNAL(sliderReleased()), this, SLOT(UpdateDeltaPositionFromLineEditValue()));
 	connect(Delta2DVisualizer, SIGNAL(Moved(float, float, float, float)), this, SLOT(UpdateTextboxFrom2DControl(float, float, float, float)));
-	connect(DeltaConnectionManager->TCPConnection, SIGNAL(ReceivePosition(float, float, float, float)), this, SLOT(UpdateTextboxFrom3DControl(float, float, float, float)));
+	
 	
 	connect(Delta2DVisualizer, SIGNAL(FinishMoving()), this, SLOT(UpdateDeltaPositionFromLineEditValue()));
+	connect(Delta2DVisualizer, SIGNAL(CursorMoved(int, int)), SLOT(UpdateCursorPosition(int, int)));
 	
 	connect(ui->pbTurnOnROS, SIGNAL(clicked(bool)), this, SLOT(OpenROS()));
 	connect(ui->cbROSCameraView, SIGNAL(currentIndexChanged(int)), this, SLOT(ChangeROSCameraView(int))); 
 	connect(ui->cbEndEffector, SIGNAL(currentIndexChanged(int)), this, SLOT(ChangeEndEffector(int)));
+	connect(ui->cbRobotVersion, SIGNAL(currentIndexChanged(int)), this, SLOT(ChangeRobotVersion(int)));
+	connect(ui->btDeleteAllObjects, SIGNAL(clicked(bool)), this, SLOT(DeleteAllObjectsInROS()));
+	connect(ui->pbClearDetectObjects, SIGNAL(clicked(bool)), this, SLOT(DeleteAllObjectsInROS()));
 
 	connect(ui->leTerminal, SIGNAL(returnPressed()), this, SLOT(TerminalTransmit()));
 
@@ -131,7 +137,8 @@ void MainWindow::InitEvents()
 	//connect(DeltaConnectionManager, SIGNAL(ReceiveConvenyorPosition(float, float)), this, SLOT(UpdateConvenyorPosition(float, float)));
 	//connect(DeltaConnectionManager, SIGNAL(ReceiveConvenyorPosition(float, float)), DeltaImageProcesser->ObjectManager, SLOT(UpdateNewPositionObjects(float, float)));
 	connect(DeltaConnectionManager, SIGNAL(ReceiveVariableChangeCommand(QString, float)), DeltaGcodeManager, SLOT(UpdateSystemVariable(QString, float)));
-	connect(DeltaConnectionManager, SIGNAL(ResponseVariableValue(QObject*, QString)), DeltaGcodeManager, SLOT(ResponseVariableValue(QObject*, QString)));
+	connect(DeltaConnectionManager, SIGNAL(RequestVariableValue(QIODevice*, QString)), DeltaGcodeManager, SLOT(RespondVariableValue(QIODevice*, QString)));
+	connect(DeltaConnectionManager, SIGNAL(ReceiveRequestsFromExternal(QString)), this, SLOT(ExecuteRequestsFromExternal(QString)));
 
 	connect(ui->pbAddGcode, SIGNAL(clicked(bool)), this, SLOT(AddGcodeLine()));
 	connect(ui->cbGcode, SIGNAL(currentIndexChanged(int)), this, SLOT(ChangeGcodeParameter()));
@@ -150,17 +157,22 @@ void MainWindow::InitEvents()
 	connect(ui->pbClearDetectObjects, SIGNAL(clicked(bool)), DeltaImageProcesser->ObjectManager, SLOT(RemoveAllDetectObjects()));
 	connect(ui->pbViewDataObjects, SIGNAL(clicked(bool)), TrackingObjectTable, SLOT(DisplayDialog()));
 	connect(DeltaImageProcesser, SIGNAL(ObjectValueChanged(std::vector<cv::RotatedRect>)), TrackingObjectTable, SLOT(UpdateTable(std::vector<cv::RotatedRect>)));
+	connect(DeltaImageProcesser, SIGNAL(ObjectValueChanged(std::vector<cv::RotatedRect>)), this, SLOT(AddObjectsToROS(std::vector<cv::RotatedRect>)));
 
-	connect(ui->leConvenyorSpeed, SIGNAL(textChanged(QString)), this, SLOT(SetConvenyorSpeed()));
+	connect(ui->leConvenyorSpeed, SIGNAL(returnPressed()), this, SLOT(SetConvenyorSpeed()));
+	connect(ui->cbConveyorDirection, SIGNAL(currentIndexChanged(int)), this, SLOT(SetConvenyorSpeed()));
 
 	connect(ui->lbScreenStreamer, SIGNAL(FinishDrawObject(int, int, int, int)), DeltaImageProcesser, SLOT(GetObjectInfo(int, int, int, int)));
 	connect(ui->lbScreenStreamer, SIGNAL(FinishMeasureSpace(int)), DeltaImageProcesser, SLOT(GetDistance(int)));
 	connect(ui->lbScreenStreamer, SIGNAL(FinishSelectProcessRegion(QPoint, QPoint, QPoint, QPoint)), DeltaImageProcesser, SLOT(GetProcessRegion(QPoint, QPoint, QPoint, QPoint)));
+	connect(ui->lbScreenStreamer, SIGNAL(FinishSelectCalibLine(QPoint, QPoint)), DeltaImageProcesser, SLOT(GetCalibLine(QPoint, QPoint)));
 	connect(ui->lbScreenStreamer, SIGNAL(FinishSelectCalibPoint(int, int)), DeltaImageProcesser, SLOT(GetCalibPoint(int, int)));
 	
 	connect(ui->leRealDistance, SIGNAL(textChanged(QString)), ui->lbScreenStreamer, SLOT(ChangeCalibLineRealLength(QString)));
 	connect(ui->leXCoordinate, SIGNAL(textChanged(QString)), ui->lbScreenStreamer, SLOT(ChangeXCalibPoint(QString)));
 	connect(ui->leYCoordinate, SIGNAL(textChanged(QString)), ui->lbScreenStreamer, SLOT(ChangeYCalibPoint(QString)));
+	connect(ui->leWRec, SIGNAL(returnPressed()), this, SLOT(UpdateDetectObjectSize()));
+	connect(ui->leLRec, SIGNAL(returnPressed()), this, SLOT(UpdateDetectObjectSize()));
 
 	connect(ui->actionBaudrate, SIGNAL(triggered()), this, SLOT(ConfigConnection()));
 	connect(ui->actionGcode, SIGNAL(triggered()), this, SLOT(OpenGcodeReference()));
@@ -172,8 +184,11 @@ void MainWindow::InitEvents()
 	connect(DeltaGcodeManager, SIGNAL(OutOfObjectVariable()), DeltaImageProcesser->ObjectManager, SLOT(RemoveOldestObject()));
 	connect(DeltaGcodeManager, SIGNAL(JustUpdateVariable(QList<GcodeVariable>)), this, SLOT(DisplayGcodeVariable(QList<GcodeVariable>)));
 	connect(DeltaGcodeManager, SIGNAL(MoveToNewPosition(float, float, float, float, float, float)), this, SLOT(UpdatePositionControl(float, float, float, float, float, float)));
-
-	//connect(ui->cbEnoughGetConvenyorContinues, SIGNAL(clicked(bool)), this, SLOT(TurnEnoughConvenyorPositionGetting()));
+	connect(DeltaGcodeManager, SIGNAL(DeleteAllObjects()), ui->pbClearDetectObjects, SLOT(click()));
+	connect(DeltaGcodeManager, SIGNAL(DeleteObject1()), DeltaImageProcesser->ObjectManager, SLOT(RemoveOldestObject()));
+	connect(DeltaGcodeManager, SIGNAL(PauseCamera()), DeltaImageProcesser, SLOT(PauseCamera()));
+	connect(DeltaGcodeManager, SIGNAL(CaptureCamera()), DeltaImageProcesser, SLOT(CaptureCamera()));
+	connect(DeltaGcodeManager, SIGNAL(ResumeCamera()), DeltaImageProcesser, SLOT(ResumeCamera()));
 
 	connect(DeltaImageProcesser->ObjectManager, SIGNAL(NewUpdateObjectPosition(QString, float)), DeltaGcodeManager, SLOT(UpdateSystemVariable(QString, float)));
 
@@ -193,8 +208,7 @@ void MainWindow::InitEvents()
 	connect(ui->twDeltaManager, SIGNAL(tabBarClicked(int)), this, SLOT(ChangeDeltaDashboard(int)));
 	connect(ui->twDeltaManager, SIGNAL(currentChanged(int)), this, SLOT(SelectTrueTabName(int)));
 
-	connect(ui->pbExportBlocklyToGcode, SIGNAL(clicked(bool)), this, SLOT(SelectCursor()));
-
+	connect(DeltaConnectionManager->TCPConnection, SIGNAL(ReceivePosition(float, float, float, float)), this, SLOT(UpdateTextboxFrom3DControl(float, float, float, float)));
 	connect(DeltaConnectionManager->TCPConnection, SIGNAL(ReceiveVariableChangeCommand(QString, float)), DeltaGcodeManager, SLOT(UpdateSystemVariable(QString, float)));
 	connect(DeltaConnectionManager->TCPConnection, SIGNAL(ReceiveOk()), this, SLOT(ROSResponse()));
 }
@@ -203,6 +217,7 @@ void MainWindow::InitVariables()
 {
     DeltaConnectionManager = new ConnectionManager();
 	DeltaConnectionManager->SetBaudrate(115200);
+	ui->lbIP->setText(QString("IP: ") + TCPConnectionManager::GetLocalIP());
 
 	DeltaGcodeManager = new GcodeProgramManager(this, ui->saProgramFiles, ui->wgProgramContainer, ui->pteGcodeArea, ui->pbExecuteGcodes, DeltaConnectionManager, Delta2DVisualizer);
 	
@@ -251,7 +266,7 @@ void MainWindow::InitVariables()
 	DeltaImageProcesser->SetResultScreenPointer(ui->lbScreenStreamer);
 	DeltaImageProcesser->SetObjectScreenPointer(ui->lbTrackingObject);
 	DeltaImageProcesser->SetFPSInputBox(ui->leFPS);
-	DeltaImageProcesser->SetDetectParameterPointer(ui->leXRec, ui->leYRec, ui->leRealDistance, ui->leXCoordinate, ui->leYCoordinate);
+	DeltaImageProcesser->SetDetectParameterPointer(ui->leWRec, ui->leLRec, ui->leRealDistance, ui->leXCoordinate, ui->leYCoordinate);
 	DeltaImageProcesser->SetTrackingWidgetPointer(ui->lbTrackingObjectNumber, ui->lbVisibleObjectNumber);
 
 	TrackingObjectTable = new ObjectVariableTable(this);
@@ -277,6 +292,9 @@ void MainWindow::InitVariables()
 	params.addQueryItem("user", "trungdoanhong");
 	params.addQueryItem("pass", "doanhongtrung");
 	HttpManager->post(request, params.query().toUtf8());
+
+	//------------ UI ----------------
+	Delta2DVisualizer->ChangeXY(0, 0);
 }
 
 void MainWindow::FinishedRequest(QNetworkReply *reply)
@@ -300,7 +318,7 @@ void MainWindow::FinishedRequest(QNetworkReply *reply)
 		QVersionNumber appVersion = QVersionNumber::fromString(SoftwareVersion);
 		int compare = QVersionNumber::compare(appVersion, currentVersion);
 
-		if (compare == -1)
+		if (compare != 0)
 		{
 			QMessageBox::StandardButton reply;
 			reply = QMessageBox::question(this, "Have a new version of Delta X Software", "Do you want to update?",
@@ -310,7 +328,7 @@ void MainWindow::FinishedRequest(QNetworkReply *reply)
 				QDesktopServices::openUrl(myUrl);
 				QApplication::closeAllWindows();
 				QApplication::quit();
-			}			
+			}
 		}
 	}
 }
@@ -341,22 +359,20 @@ void MainWindow::OpenROS()
 	}
 }
 
-void MainWindow::ROSResponse()
-{
-	if (DeltaXROS->IsRunning() && !DeltaConnectionManager->IsConnect())
-	{
-		emit DeltaConnectionManager->DeltaResponeGcodeDone();
-	}	
-}
 
 void MainWindow::ChangeROSCameraView(int index)
 {
-	DeltaConnectionManager->TCPConnection->SendMessageToAll(QString("update camera_position ") + QString::number(index));
+	DeltaConnectionManager->TCPConnection->SendMessageToROS(QString("update camera_position ") + QString::number(index));
 }
 
 void MainWindow::ChangeEndEffector(int index)
 {
-	DeltaConnectionManager->TCPConnection->SendMessageToAll(QString("update end_effector ") + QString::number(index));
+	DeltaConnectionManager->TCPConnection->SendMessageToROS(QString("update end_effector ") + QString::number(index));
+}
+
+void MainWindow::ChangeRobotVersion(int index)
+{
+	DeltaConnectionManager->TCPConnection->SendMessageToROS(QString("update robot ") + QString::number(index));
 }
 
 void MainWindow::ScaleUI()
@@ -387,6 +403,17 @@ void MainWindow::ScaleUI()
 
 		qApp->quit();
 		QProcess::startDetached(qApp->arguments()[0], qApp->arguments());
+	}
+}
+
+void MainWindow::ExecuteRequestsFromExternal(QString request)
+{
+	request = request.replace("\n", "");
+	request = request.replace("\r", "");
+
+	if (request == "Execute All")
+	{
+		ExecuteSelectPrograms();
 	}
 }
 
@@ -421,17 +448,30 @@ void MainWindow::closeEvent(QCloseEvent * event)
 
 void MainWindow::ConnectDeltaRobot()
 {
-	if (ui->pbConnect->text() == "Connect" && !DeltaConnectionManager->IsConnect())
+	if (ui->cbAutoConnect->isChecked() == false)
 	{
-		DeltaConnectionManager->FindDeltaRobot();			
+		bool isConnect = OpenConnectionDialog(DeltaConnectionManager->RobotPort, DeltaConnectionManager->RobotSocket, ui->pbConnect);
+
+		if (isConnect == true)
+		{
+			DeltaConnectionManager->SendToRobot("IsDelta");
+			DeltaConnectionManager->SendToRobot("IsDelta");
+		}
+
+		return;
+	}
+
+	if (ui->pbConnect->text() == "Connect" && !DeltaConnectionManager->IsRobotConnect())
+	{
+		DeltaConnectionManager->FindDeltaRobot();
 	}
 
 	else if (ui->pbConnect->text() == "Disconnect")
 	{
 		ui->pbConnect->setText("Connect");
 
-		if (DeltaConnectionManager->IsConnect())
-			DeltaConnectionManager->Disconnect();
+		if (DeltaConnectionManager->IsRobotConnect())
+			DeltaConnectionManager->DisconnectRobot();
 	}
 }
 
@@ -691,8 +731,8 @@ void MainWindow::SaveProgram()
 
 void MainWindow::ExecuteProgram()
 {
-	if (DeltaConnectionManager->IsConnect() || DeltaXROS->IsRunning())
-	{
+	/*if (DeltaConnectionManager->IsConnect() || DeltaXROS->IsRunning())
+	{*/
 		QPushButton* pbExe = qobject_cast<QPushButton*>(sender());
 
 		if (pbExe->isChecked())
@@ -711,10 +751,10 @@ void MainWindow::ExecuteProgram()
 
 		QString exeGcodes = ui->pteGcodeArea->toPlainText();
 		DeltaGcodeManager->ExecuteGcode(exeGcodes, true);
-	}
+	/*}
 
 	else
-		Debug("Delta Robot is not connecting !");
+		Debug("Delta Robot is not connecting !");*/
 }
 
 void MainWindow::ImportGcodeFilesFromComputer()
@@ -784,6 +824,11 @@ void MainWindow::SearchGcodeFile()
 
 void MainWindow::ExecuteSelectPrograms()
 {
+	if (DeltaXMainWindows == NULL)
+	{
+		ui->pbExecuteGcodes->click();
+		return;
+	}
 	QList<QAction*> actions = ui->menuExecute->actions();
 	for (int i = 0; i < actions.size(); i++)
 	{
@@ -791,7 +836,7 @@ void MainWindow::ExecuteSelectPrograms()
 		{
 			QString actionName = actions.at(i)->text();
 			if (actions.at(i)->isChecked() == true)
-			{
+			{				
 				for (int j = 0; j < DeltaXMainWindows->size(); j++)
 				{
 					if (DeltaXMainWindows->at(j)->Name == actionName)
@@ -860,9 +905,7 @@ void MainWindow::UpdateDeltaPositionFromLineEditValue()
 		ui->leAg4->setText(QString::number(Delta2DVisualizer->W));
 	}
 
-	//DeltaGcodeManager->ExecuteGcode(QString("G01 X") + ui->leX->text() + QString(" Y") + ui->leY->text() + QString(" Z") + ui->leZ->text());
-	DeltaConnectionManager->Send(QString("G01 X") + ui->leX->text() + QString(" Y") + ui->leY->text() + QString(" Z") + ui->leZ->text() + QString(" W") + ui->leW->text() + "\n");
-	DeltaConnectionManager->TCPConnection->SendMessageToAll(QString("gcode G01 X") + ui->leX->text() + " Y" + ui->leY->text() + " Z" + QString::number(ui->leZ->text().toFloat() - Delta2DVisualizer->ZHome));
+	DeltaConnectionManager->SendToRobot(QString("G01 X") + ui->leX->text() + QString(" Y") + ui->leY->text() + QString(" Z") + ui->leZ->text() + QString(" W") + ui->leW->text() + "\n");
 }
 
 void MainWindow::UpdateTextboxFrom2DControl(float x, float y, float z, float w)
@@ -928,8 +971,6 @@ void MainWindow::UpdatePositionControl(float x, float y, float z, float w, float
 		ui->leAg3->setText(QString::number(Delta2DVisualizer->Z));
 		ui->leAg4->setText(QString::number(Delta2DVisualizer->W));
 	}
-
-	//DeltaConnectionManager->TCPConnection->SendMessageToAll(QString("gcode G01 X") + QString::number(x) + " Y" + QString::number(y) + " Z" + QString::number(z));	
 }
 
 void MainWindow::UpdateGlobalHomePositionValueAndControlValue(float x, float y, float z, float w)
@@ -945,67 +986,79 @@ void MainWindow::UpdateGlobalHomePositionValueAndControlValue(float x, float y, 
 
 void MainWindow::UpdateVelocity()
 {
-	DeltaConnectionManager->Send(QString("G01 F") + ui->leVelocity->text());
+	DeltaConnectionManager->SendToRobot(QString("G01 F") + ui->leVelocity->text());
 }
 
 void MainWindow::UpdateAccel()
 {
-	DeltaConnectionManager->Send(QString("M204 A") + ui->leAccel->text());
+	DeltaConnectionManager->SendToRobot(QString("M204 A") + ui->leAccel->text());
 }
 
 void MainWindow::AdjustGripperAngle(int angle)
 {
-	DeltaConnectionManager->Send(QString("M360 E1"));
-	DeltaConnectionManager->Send(QString("M03 S") + QString::number(angle * 5));
+	DeltaConnectionManager->SendToRobot(QString("M360 E1"));
+	DeltaConnectionManager->SendToRobot(QString("M03 S") + QString::number(angle * 5));
+
+	ui->lbGripperValue->setText(QString::number(angle * 5));
 }
 
 void MainWindow::Grip()
 {
-	DeltaConnectionManager->Send(QString("M360 E1"));
+	DeltaConnectionManager->SendToRobot(QString("M360 E1"));
 	if (ui->pbGrip->text() == "Grip")
 	{
 		ui->pbGrip->setText("Release");
-		DeltaConnectionManager->Send(QString("M03 S") + ui->leGripperMax->text());
+		DeltaConnectionManager->SendToRobot(QString("M03 S") + ui->leGripperMax->text());
+
+		ui->hsGripperAngle->blockSignals(true);
 		ui->hsGripperAngle->setValue(ui->leGripperMax->text().toInt() / 5);
+		ui->hsGripperAngle->blockSignals(false);
+		
+		ui->lbGripperValue->setText(ui->leGripperMax->text());
 	}
 	else
 	{
 		ui->pbGrip->setText("Grip");
-		DeltaConnectionManager->Send(QString("M03 S") + ui->leGripperMin->text());
-		ui->hsGripperAngle->setValue(ui->leGripperMin->text().toInt() / 5);
+		DeltaConnectionManager->SendToRobot(QString("M03 S") + ui->leGripperMin->text());
+
+		ui->hsGripperAngle->blockSignals(true);
+		ui->hsGripperAngle->valueChanged(ui->leGripperMin->text().toInt() / 5);
+		ui->hsGripperAngle->blockSignals(false);
+
+		ui->lbGripperValue->setText(ui->leGripperMin->text());
+		
 	}
 }
 
 void MainWindow::SetPump(bool value)
 {
-	DeltaConnectionManager->Send(QString("M360 E0"));
+	DeltaConnectionManager->SendToRobot(QString("M360 E0"));
 	if (value == true)
 	{
-		DeltaConnectionManager->Send(QString("M04"));
+		DeltaConnectionManager->SendToRobot(QString("M04"));
 	}
 	else
 	{
-		DeltaConnectionManager->Send(QString("M05"));
+		DeltaConnectionManager->SendToRobot(QString("M05"));
 	}
 }
 
 void MainWindow::SetLaser(bool value)
 {
-	DeltaConnectionManager->Send(QString("M360 E3"));
+	DeltaConnectionManager->SendToRobot(QString("M360 E3"));
 	if (value == true)
 	{
-		DeltaConnectionManager->Send(QString("M04"));
+		DeltaConnectionManager->SendToRobot(QString("M04"));
 	}
 	else
 	{
-		DeltaConnectionManager->Send(QString("M05"));
+		DeltaConnectionManager->SendToRobot(QString("M05"));
 	}
 }
 
 void MainWindow::Home()
 {
-	DeltaConnectionManager->Send("G28");
-	DeltaConnectionManager->TCPConnection->SendMessageToAll("gcode G28");
+	DeltaConnectionManager->SendToRobot("G28");
 
 	ui->leX->setText(QString::number(Delta2DVisualizer->XHome));
 	ui->leY->setText(QString::number(Delta2DVisualizer->YHome));
@@ -1059,51 +1112,20 @@ void MainWindow::DisplayGcodeVariable(QList<GcodeVariable> gcodeVariables)
 
 void MainWindow::SetConvenyorSpeed()
 {
-	//DeltaPort->Send(QString("M140 S") + ui->leConvenyorSpeed->text());
-
-	//float interval = ui->leConvenPosInterval->text().toInt();
 	float vel = ui->leConvenyorSpeed->text().toInt();
 	QString directionName = ui->cbConveyorDirection->currentText();
 
-	/*if (ui->cbEnoughGetConvenyorContinues->isChecked() == false)
-	{*/
-		DeltaImageProcesser->SetConvenyorVelocity(vel, directionName);
-	/*}
-	else
-	{
-
-	}*/
-	
-	/*if (interval > 0 && vel > 0)
-	{
-		DeltaImageProcesser->ConvenyorObjectManager->SetApproximateValue(cv::Point3d((interval * vel) / 1000, 10, 10));
-	}*/
+	DeltaImageProcesser->SetConvenyorVelocity(vel, directionName);
 }
 
 void MainWindow::GetConvenyorPosition()
 {
-	/*DeltaConnectionManager->Send(QString("M701"));
-
-	float interval = ui->leConvenPosInterval->text().toInt();
-	float vel = ui->leConvenyorSpeed->text().toInt();*/
-	/*if (interval > 0 && vel > 0)
-	{
-		DeltaImageProcesser->ConvenyorObjectManager->SetApproximateValue(cv::Point3d((interval * vel) / 1000, 10, 10));
-	}*/
+	
 }
 
 void MainWindow::TurnEnoughConvenyorPositionGetting()
 {
-	/*if (ui->cbEnoughGetConvenyorContinues->isChecked() == true)
-	{
-		ConvenyorTimer->start(ui->leConvenPosInterval->text().toInt());
-		DeltaImageProcesser->ObjectMovingCalculaterTimer->stop();
-	}
-	else
-	{
-		ConvenyorTimer->stop();
-		DeltaImageProcesser->ObjectMovingCalculaterTimer->start(100);
-	}*/
+	
 }
 
 void MainWindow::AddGcodeLine()
@@ -1177,50 +1199,57 @@ void MainWindow::ChangeGcodeParameter()
 	}
 }
 
-void MainWindow::AddConvenyorToROS()
+void MainWindow::UpdateDetectObjectSize()
 {
+	float lObjectInWidget = ui->leLRec->text().toFloat();
+	float wObjectInWidget = ui->leWRec->text().toFloat();
 
+	lObjectInWidget = lObjectInWidget / DeltaImageProcesser->DisplayAndRealRatio;
+	wObjectInWidget = wObjectInWidget / DeltaImageProcesser->DisplayAndRealRatio;
+
+	DeltaImageProcesser->GetObjectInfo(lObjectInWidget, wObjectInWidget);
+}
+
+void MainWindow::UpdateCursorPosition(int x, int y)
+{
+	ui->lbXCursor->setText(QString::number(x));
+	ui->lbYCursor->setText(QString::number(y));
+}
+
+void MainWindow::AddObjectsToROS(std::vector<cv::RotatedRect> ObjectContainer)
+{
+	for (int i = 0; i < ObjectContainer.size(); i++)
+	{
+		QString rosGcode = "update object O_" + QString::number(i) + " ";
+		rosGcode += ui->leWRec->text() + " ";
+		rosGcode += ui->leLRec->text() + " ";
+		rosGcode += ui->leHRec->text() + " ";
+
+		rosGcode += QString::number(ObjectContainer.at(i).center.x) + " ";
+		rosGcode += QString::number(ObjectContainer.at(i).center.y) + " ";
+		rosGcode += "0 ";
+		
+		int angle = ObjectContainer.at(i).angle + 180;
+
+		if (ObjectContainer.at(i).size.width > ObjectContainer.at(i).size.height)
+		{
+			angle = ObjectContainer.at(i).angle + 90;
+		}
+
+		rosGcode += QString::number(angle);
+
+		DeltaConnectionManager->TCPConnection->SendMessageToROS(rosGcode);
+	}
+}
+
+void MainWindow::DeleteAllObjectsInROS()
+{
+	DeltaConnectionManager->TCPConnection->SendMessageToROS("delete all");
 }
 
 void MainWindow::ConnectConveyor()
 {
-	if (ui->pbConveyorConnect->text() == "Disconnect")
-	{
-		if (DeltaConnectionManager->ConveyorPort->isOpen())
-		{
-			DeltaConnectionManager->ConveyorPort->close();
-		}
-
-		ui->pbConveyorConnect->setText("Connect");
-		return;
-	}
-
-	QStringList items;
-
-	Q_FOREACH(QSerialPortInfo portInfo, QSerialPortInfo::availablePorts())
-	{
-		items << portInfo.portName();
-	}
-
-	bool ok;
-	QString item = QInputDialog::getItem(this, tr("COM Connection"), tr("COM Ports:"), items, 0, false, &ok);
-	if (ok && !item.isEmpty())
-	{
-		bool ok2;
-		QString baudrate = QInputDialog::getText(this, tr("Select Baudrate"), tr("Baudrate:"), QLineEdit::Normal, "115200", &ok2);
-		if (ok2 && !baudrate.isEmpty())
-		{
-			DeltaConnectionManager->ConveyorPort->setPortName(item);
-			DeltaConnectionManager->ConveyorPort->setBaudRate(baudrate.toInt());
-
-			if (DeltaConnectionManager->ConveyorPort->open((QIODevice::ReadWrite)) == true)
-			{
-				//QMessageBox::information(this, "Noti", "Connected");
-				
-				ui->pbConveyorConnect->setText("Disconnect");
-			}
-		};
-	}
+	OpenConnectionDialog(DeltaConnectionManager->ConveyorPort, DeltaConnectionManager->ConveyorSocket, ui->pbConveyorConnect);
 }
 
 void MainWindow::SetConveyorMode(int mode)
@@ -1242,51 +1271,12 @@ void MainWindow::MoveConveyor()
 
 void MainWindow::ProcessShortcutKey()
 {
+
 }
-
-
 
 void MainWindow::ConnectSliding()
 {
-	if (ui->pbSlidingConnect->text() == "Disconnect")
-	{
-		if (DeltaConnectionManager->SlidingPort->isOpen())
-		{
-			DeltaConnectionManager->SlidingPort->close();
-
-			ui->pbSlidingConnect->setText("Connect");
-
-			return;
-		}
-	}
-
-	QStringList items;
-
-	Q_FOREACH(QSerialPortInfo portInfo, QSerialPortInfo::availablePorts())
-	{
-		items << portInfo.portName();
-	}
-
-	bool ok;
-	QString item = QInputDialog::getItem(this, tr("COM Connection"), tr("COM Ports:"), items, 0, false, &ok);
-	if (ok && !item.isEmpty())
-	{
-		bool ok2;
-		QString baudrate = QInputDialog::getText(this, tr("Select baudrate"), tr("Baudrate:"), QLineEdit::Normal, "115200", &ok2);
-		if (ok2 && !baudrate.isEmpty())
-		{
-			
-			DeltaConnectionManager->SlidingPort->setPortName(item);
-			DeltaConnectionManager->SlidingPort->setBaudRate(baudrate.toInt());
-			
-			if (DeltaConnectionManager->SlidingPort->open((QIODevice::ReadWrite)) == true)
-			{
-				//QMessageBox::information(this, "Noti", "Connected");
-				
-				ui->pbSlidingConnect->setText("Disconnect");
-			}
-		};
-	}
+	OpenConnectionDialog(DeltaConnectionManager->SlidingPort, DeltaConnectionManager->SlidingSocket, ui->pbSlidingConnect);
 }
 
 void MainWindow::GoHomeSliding()
@@ -1309,47 +1299,25 @@ void MainWindow::SetSlidingPosition()
 	DeltaConnectionManager->SlidingSend(QString("M322 ") + ui->leSlidingPosition->text());
 }
 
-void MainWindow::ConnectExternalController()
+void MainWindow::ConnectExternalMCU()
 {
-	if (ui->pbExternalControllerConnect->text() == "Disconnect")
-	{
-		if (DeltaConnectionManager->ExternalControllerPort->isOpen())
-		{
-			DeltaConnectionManager->ExternalControllerPort->close();
-		}
+	OpenConnectionDialog(DeltaConnectionManager->ExternalControllerPort, DeltaConnectionManager->ExternalControllerSocket, ui->pbExternalControllerConnect);
+}
 
-		ui->pbExternalControllerConnect->setText("Connect");
-		return;
-	}
+void MainWindow::TransmitTextToExternalMCU()
+{
+	DeltaConnectionManager->ExternalMCUSend(ui->leTransmitToMCU->text());
+	ui->leTransmitToMCU->setText("");
+}
 
-	QStringList items;
-
-	Q_FOREACH(QSerialPortInfo portInfo, QSerialPortInfo::availablePorts())
-	{
-		items << portInfo.portName();
-	}
-
-	bool ok;
-	QString item = QInputDialog::getItem(this, tr("QInputDialog::getItem()"), tr("COM Ports:"), items, 0, false, &ok);
-	if (ok && !item.isEmpty())
-	{
-		bool ok2;
-		QString baudrate = QInputDialog::getText(this, tr("QInputDialog::getText()"), tr("Baudrate:"), QLineEdit::Normal, "115200", &ok2);
-		if (ok2 && !baudrate.isEmpty())
-		{
-			if (DeltaConnectionManager->ConnectExternalController(item, baudrate.toInt()))
-			{
-				//QMessageBox::information(this, "Noti", "Connected");
-				ui->lbECComName->setText(item);
-				ui->pbExternalControllerConnect->setText("Disconnect");
-			}
-		};
-	}
+void MainWindow::DisplayTextFromExternalMCU(QString text)
+{
+	ui->leReceiveFromMCU->setText(text);
 }
 
 void MainWindow::TerminalTransmit()
 {
-	DeltaConnectionManager->Send(ui->leTerminal->text());
+	DeltaConnectionManager->SendToRobot(ui->leTerminal->text());
 	ui->leTerminal->setText("");
 }
 
@@ -1432,6 +1400,87 @@ QString MainWindow::replaceHtmlSection(QString start, int offset, int maxlen, QS
 		beginKey = htmlText.indexOf(start, panOrder);
 	}
 	return htmlText;
+}
+
+bool MainWindow::OpenConnectionDialog(QSerialPort * comPort, QTcpSocket* socket, QPushButton* connectButton)
+{
+	if (connectButton->text() == "Disconnect")
+	{
+		if (comPort->isOpen())
+		{
+			comPort->close();
+		}
+		if (socket->isOpen())
+		{
+			socket->close();
+		}
+
+		connectButton->setText("Connect");
+		return false;
+	}
+
+	QStringList connectionItems;
+	connectionItems.append("COM");
+	connectionItems.append("WIFI");
+	bool ok;
+
+	QString connectionType = QInputDialog::getItem(this, tr("Connection"), tr("Type:"), connectionItems, 0, false, &ok);
+
+	if (ok)
+	{
+		if (connectionType == "WIFI")
+		{
+			bool ok2;
+			QString address = QInputDialog::getText(this, tr("ADDRESS"), tr("IP:PORT"), QLineEdit::Normal, "192.168.1.12:80", &ok2);
+
+			if (address.indexOf(':') > -1)
+			{
+				QString ip = address.split(':').at(0);
+				QString port = address.split(':').at(1);
+				socket->connectToHost(QHostAddress(ip), port.toInt());
+
+				if (socket->open((QIODevice::ReadWrite)) == true)
+				{
+					connectButton->setText("Disconnect");
+					return true;
+				}
+			}
+			
+		}
+		else if (connectionType == "COM")
+		{
+			QStringList items;
+
+			Q_FOREACH(QSerialPortInfo portInfo, QSerialPortInfo::availablePorts())
+			{
+				items << portInfo.portName();
+			}
+
+			bool ok;
+			QString item = QInputDialog::getItem(this, tr("COM Connection"), tr("COM Ports:"), items, 0, false, &ok);
+			if (ok && !item.isEmpty())
+			{
+				bool ok2;
+				QString baudrate = QInputDialog::getText(this, tr("Select Baudrate"), tr("Baudrate:"), QLineEdit::Normal, "115200", &ok2);
+				if (ok2 && !baudrate.isEmpty())
+				{
+					comPort->setPortName(item);
+					comPort->setBaudRate(baudrate.toInt());
+
+					if (comPort->open((QIODevice::ReadWrite)) == true)
+					{
+						//QMessageBox::information(this, "Noti", "Connected");
+
+						connectButton->setText("Disconnect");
+
+						return true;
+					}
+				}
+			}
+		}
+	}
+
+	return false;
 }
 
 void MainWindow::initTabs()

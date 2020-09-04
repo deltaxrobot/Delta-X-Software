@@ -15,44 +15,60 @@ class ConnectionManager : public QObject
 public:
     ConnectionManager();
 
-	QSerialPort* ConveyorPort;
-	QSerialPort* SlidingPort;
-	QSerialPort* ExternalControllerPort;
-	TCPConnectionManager* TCPConnection;
+	QSerialPort* RobotPort;
+	QTcpSocket* RobotSocket;
 
-	bool IsConnect();
-	void Disconnect();
+	QSerialPort* ConveyorPort;
+	QTcpSocket* ConveyorSocket;
+
+	QSerialPort* SlidingPort;
+	QTcpSocket* SlidingSocket;
+
+	QSerialPort* ExternalControllerPort;
+	QTcpSocket* ExternalControllerSocket;
+
+	QIODevice* IOSender;
+
+	TCPConnectionManager* TCPConnection;
+	QTcpServer* TcpServer;
+
+	bool IsRobotConnect();
+	void DisconnectRobot();
+	bool IsRosClientAvailable();
+	bool IsRosSocket(QIODevice* socket);
 	QString GetNamePort();
 	void SetBaudrate(int baud);
 	int GetBaudrate();
     void FindDeltaRobot();
-	void Send(QString msg);
+	void SendToRobot(QString msg);
 
 	void ConveyorSend(QString msg);
 	void SlidingSend(QString msg);
-	void ECSend(QString msg);
-
-	bool ConnectExternalController(QString name, int baudrate);
+	void ExternalMCUSend(QString msg);
 
 public slots:
 	void ReadData();
 	void FindingTimeOut();
 
-	void ReadDataFromExternalController();
+	void ReceiveNewConnectionFromServer(QTcpSocket* socket);
+
 signals:
 	void FinishReadLine(QString msg);
+	void ExternalMCUTransmitText(QString text);
 	void DeltaResponeReady();
 	void DeltaResponeGcodeDone();
 	void InHomePosition(float x, float y, float z, float w);
 	void ReceiveConvenyorPosition(float x, float y);
 
 	void ReceiveVariableChangeCommand(QString name, float value);
-	void ResponseVariableValue(QObject* sender, QString name);
+	void RequestVariableValue(QIODevice* sender, QString name);
+
+	void ReceiveRequestsFromExternal(QString request);
 private:
 	void init();
 	void sendQueue();
-
-    QSerialPort* robotPort;
+	void processReceiveData();
+	void sendData(QSerialPort* com, QTcpSocket* socket, QString msg);
 
 	QString receiveLine;
 	QString transmitLine;

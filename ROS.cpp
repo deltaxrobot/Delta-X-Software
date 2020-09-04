@@ -173,5 +173,5 @@ void ROS::G01_Relative(float x, float y, float z)
 	if (connectionManager == NULL)
 		return;
 
-	connectionManager->SendMessageToAll(QString("move triangle x ") + QString::number(x) + " y " + QString::number(y) + " z " + QString::number(z));
+	connectionManager->SendMessageToROS(QString("move triangle x ") + QString::number(x) + " y " + QString::number(y) + " z " + QString::number(z));
 }

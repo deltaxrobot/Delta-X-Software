@@ -47,6 +47,8 @@ void CameraWidget::mousePressEvent(QMouseEvent* event) {
 	{
 		mLine.setP1(event->pos());
 		mLine.setP2(event->pos());
+
+		emit FinishSelectCalibLine(mLine.p1(), mLine.p2());
 	}
 	else if (selectedTool == 3)
 	{
@@ -78,7 +80,8 @@ void CameraWidget::mouseMoveEvent(QMouseEvent* event)
 
 		if (pointOrder > -1)
 		{
-			mPoints[pointOrder] = event->pos();			
+			mPoints[pointOrder] = event->pos();
+			emit FinishSelectProcessRegion(mPoints[0], mPoints[1], mPoints[2], mPoints[3]);
 		}		
 	}	
 
@@ -99,7 +102,7 @@ void CameraWidget::mouseReleaseEvent(QMouseEvent *event) {
 		selectedTool = lastSelectedTool;
 		setCursor(QCursor(lastCursorIcon));
 
-		emit FinishSelectProcessRegion(mPoints[0], mPoints[1], mPoints[2], mPoints[3]);
+		//emit FinishSelectProcessRegion(mPoints[0], mPoints[1], mPoints[2], mPoints[3]);
 	}
 	update();
 }
@@ -119,43 +122,37 @@ void CameraWidget::paintEvent(QPaintEvent *event)
 
 	QPainter tempPainter(&mPix);
 
-	tempPainter.setPen(QPen(Qt::red, 5));
-	tempPainter.drawPoint(mPoints[0]);
-	tempPainter.drawPoint(mPoints[1]);
-	tempPainter.drawPoint(mPoints[2]);
-	tempPainter.drawPoint(mPoints[3]);
-
-	tempPainter.setPen(QPen(Qt::red, 1));
+	//tempPainter.setPen(QPen(Qt::red, 5));
+	//tempPainter.drawPoint(mPoints[0]);
+	//tempPainter.drawPoint(mPoints[1]);
+	//tempPainter.drawPoint(mPoints[2]);
+	//tempPainter.drawPoint(mPoints[3]);	
 	
-	
-	tempPainter.setPen(Qt::green);
+	//tempPainter.setPen(Qt::green);
 
-	for (int i = 0; i < 3; i++)
-	{
-		tempPainter.drawLine(mPoints[i], mPoints[i + 1]);
-	}
+	//for (int i = 0; i < 3; i++)
+	//{
+	//	tempPainter.drawLine(mPoints[i], mPoints[i + 1]);
+	//}
 
-	tempPainter.drawLine(mPoints[3], mPoints[0]);
-
-	tempPainter.setPen(Qt::red);
-	
-
-	tempPainter.drawLine(mLine);
-	tempPainter.setPen(QPen(Qt::red, 2));
+	//tempPainter.drawLine(mPoints[3], mPoints[0]);
 
 	//------ Display calib point ------------
-	
+
+	tempPainter.setPen(QPen(Qt::red, 2));
 	tempPainter.drawText(QPoint(mPoint.x() + 10, mPoint.y()), QString("x=") + QString::number(xCalibPoint) + ", y=" + QString::number(yCalibPoint) + " (mm)");
 
 	tempPainter.drawPoint(mPoint);
 	tempPainter.drawEllipse(mPoint, 5, 5);
 
 	//------ Display calib length ------------
+	/*tempPainter.setPen(Qt::red);
+	tempPainter.drawLine(mLine);
 
 	int xText = (mLine.p1().x() + mLine.p2().x()) / 2;
 	int yText = (mLine.p1().y() + mLine.p2().y()) / 2 - 10;
 
-	tempPainter.drawText(QPoint(xText, yText), QString::number(calibLineRealLength) + " mm");
+	tempPainter.drawText(QPoint(xText, yText), QString::number(calibLineRealLength) + " mm");*/
 
 	//------ Display cursor center -----------
 
@@ -178,7 +175,10 @@ void CameraWidget::paintEvent(QPaintEvent *event)
 		if (selectedTool == 1)
 			tempPainter.drawRect(mRect);
 		else if (selectedTool == 2)
-			tempPainter.drawLine(mLine);
+		{
+			//tempPainter.drawLine(mLine);
+			emit FinishSelectCalibLine(mLine.p1(), mLine.p2());
+		}			
 		
 		tempPainter.drawPoint(mPoint);
 		tempPainter.drawEllipse(mPoint, 5, 5);
@@ -252,15 +252,16 @@ void CameraWidget::InitParameter()
 	mPoint.setX(166);
 	mPoint.setY(245);
 
-	mPoints[0] = QPoint(40, 20);
+	mPoints[0] = QPoint(40, 40);
 	mPoints[1] = QPoint(40, 280);
 	mPoints[2] = QPoint(320, 280);
-	mPoints[3] = QPoint(320, 20);
+	mPoints[3] = QPoint(320, 40);
 
 	emit FinishMeasureSpace(sqrt(pow(mLine.x1() - mLine.x2(), 2) + pow(mLine.y1() - mLine.y2(), 2)));
 	emit FinishSelectCalibPoint(mPoint.x(), mPoint.y());
 	emit FinishDrawObject(mRect.x(), mRect.y(), mRect.height(), mRect.width());
 	emit FinishSelectProcessRegion(mPoints[0], mPoints[1], mPoints[2], mPoints[3]);
+	emit FinishSelectCalibLine(mLine.p1(), mLine.p2());
 
 	update();
 }

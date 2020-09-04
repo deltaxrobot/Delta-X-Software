@@ -21,8 +21,8 @@ QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_ImageProcesser_t {
-    QByteArrayData data[36];
-    char stringdata0[367];
+    QByteArrayData data[43];
+    char stringdata0[425];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -38,47 +38,56 @@ QT_MOC_LITERAL(3, 35, 28), // "std::vector<cv::RotatedRect>"
 QT_MOC_LITERAL(4, 64, 15), // "ObjectContainer"
 QT_MOC_LITERAL(5, 80, 13), // "LoadTestImage"
 QT_MOC_LITERAL(6, 94, 10), // "LoadCamera"
-QT_MOC_LITERAL(7, 105, 24), // "CaptureAnImageFromCamera"
-QT_MOC_LITERAL(8, 130, 18), // "UpdateCameraScreen"
-QT_MOC_LITERAL(9, 149, 7), // "SaveFPS"
-QT_MOC_LITERAL(10, 157, 18), // "OpenParameterPanel"
-QT_MOC_LITERAL(11, 176, 6), // "SetHSV"
-QT_MOC_LITERAL(12, 183, 4), // "minH"
-QT_MOC_LITERAL(13, 188, 4), // "maxH"
-QT_MOC_LITERAL(14, 193, 4), // "minS"
-QT_MOC_LITERAL(15, 198, 4), // "maxS"
-QT_MOC_LITERAL(16, 203, 4), // "minV"
-QT_MOC_LITERAL(17, 208, 4), // "maxV"
-QT_MOC_LITERAL(18, 213, 12), // "SetThreshold"
-QT_MOC_LITERAL(19, 226, 5), // "value"
-QT_MOC_LITERAL(20, 232, 13), // "GetObjectInfo"
-QT_MOC_LITERAL(21, 246, 1), // "x"
-QT_MOC_LITERAL(22, 248, 1), // "y"
-QT_MOC_LITERAL(23, 250, 1), // "h"
-QT_MOC_LITERAL(24, 252, 1), // "w"
-QT_MOC_LITERAL(25, 254, 16), // "GetProcessRegion"
-QT_MOC_LITERAL(26, 271, 1), // "a"
-QT_MOC_LITERAL(27, 273, 1), // "b"
-QT_MOC_LITERAL(28, 275, 1), // "c"
-QT_MOC_LITERAL(29, 277, 1), // "d"
-QT_MOC_LITERAL(30, 279, 11), // "GetDistance"
-QT_MOC_LITERAL(31, 291, 8), // "distance"
-QT_MOC_LITERAL(32, 300, 13), // "GetCalibPoint"
-QT_MOC_LITERAL(33, 314, 11), // "SwitchLayer"
-QT_MOC_LITERAL(34, 326, 19), // "changeAxisDirection"
-QT_MOC_LITERAL(35, 346, 20) // "CalConvenyorPosition"
+QT_MOC_LITERAL(7, 105, 13), // "CaptureCamera"
+QT_MOC_LITERAL(8, 119, 11), // "PauseCamera"
+QT_MOC_LITERAL(9, 131, 12), // "ResumeCamera"
+QT_MOC_LITERAL(10, 144, 18), // "UpdateCameraScreen"
+QT_MOC_LITERAL(11, 163, 7), // "SaveFPS"
+QT_MOC_LITERAL(12, 171, 18), // "OpenParameterPanel"
+QT_MOC_LITERAL(13, 190, 6), // "SetHSV"
+QT_MOC_LITERAL(14, 197, 4), // "minH"
+QT_MOC_LITERAL(15, 202, 4), // "maxH"
+QT_MOC_LITERAL(16, 207, 4), // "minS"
+QT_MOC_LITERAL(17, 212, 4), // "maxS"
+QT_MOC_LITERAL(18, 217, 4), // "minV"
+QT_MOC_LITERAL(19, 222, 4), // "maxV"
+QT_MOC_LITERAL(20, 227, 12), // "SetThreshold"
+QT_MOC_LITERAL(21, 240, 5), // "value"
+QT_MOC_LITERAL(22, 246, 13), // "GetObjectInfo"
+QT_MOC_LITERAL(23, 260, 1), // "x"
+QT_MOC_LITERAL(24, 262, 1), // "y"
+QT_MOC_LITERAL(25, 264, 1), // "l"
+QT_MOC_LITERAL(26, 266, 1), // "w"
+QT_MOC_LITERAL(27, 268, 16), // "GetProcessRegion"
+QT_MOC_LITERAL(28, 285, 1), // "a"
+QT_MOC_LITERAL(29, 287, 1), // "b"
+QT_MOC_LITERAL(30, 289, 1), // "c"
+QT_MOC_LITERAL(31, 291, 1), // "d"
+QT_MOC_LITERAL(32, 293, 12), // "GetCalibLine"
+QT_MOC_LITERAL(33, 306, 2), // "p1"
+QT_MOC_LITERAL(34, 309, 2), // "p2"
+QT_MOC_LITERAL(35, 312, 11), // "GetDistance"
+QT_MOC_LITERAL(36, 324, 8), // "distance"
+QT_MOC_LITERAL(37, 333, 13), // "GetCalibPoint"
+QT_MOC_LITERAL(38, 347, 11), // "SwitchLayer"
+QT_MOC_LITERAL(39, 359, 11), // "SelectLayer"
+QT_MOC_LITERAL(40, 371, 2), // "id"
+QT_MOC_LITERAL(41, 374, 19), // "changeAxisDirection"
+QT_MOC_LITERAL(42, 394, 30) // "UpdateObjectPositionOnConveyor"
 
     },
     "ImageProcesser\0ObjectValueChanged\0\0"
     "std::vector<cv::RotatedRect>\0"
     "ObjectContainer\0LoadTestImage\0LoadCamera\0"
-    "CaptureAnImageFromCamera\0UpdateCameraScreen\0"
-    "SaveFPS\0OpenParameterPanel\0SetHSV\0"
-    "minH\0maxH\0minS\0maxS\0minV\0maxV\0"
-    "SetThreshold\0value\0GetObjectInfo\0x\0y\0"
-    "h\0w\0GetProcessRegion\0a\0b\0c\0d\0GetDistance\0"
+    "CaptureCamera\0PauseCamera\0ResumeCamera\0"
+    "UpdateCameraScreen\0SaveFPS\0"
+    "OpenParameterPanel\0SetHSV\0minH\0maxH\0"
+    "minS\0maxS\0minV\0maxV\0SetThreshold\0value\0"
+    "GetObjectInfo\0x\0y\0l\0w\0GetProcessRegion\0"
+    "a\0b\0c\0d\0GetCalibLine\0p1\0p2\0GetDistance\0"
     "distance\0GetCalibPoint\0SwitchLayer\0"
-    "changeAxisDirection\0CalConvenyorPosition"
+    "SelectLayer\0id\0changeAxisDirection\0"
+    "UpdateObjectPositionOnConveyor"
 };
 #undef QT_MOC_LITERAL
 
@@ -88,7 +97,7 @@ static const uint qt_meta_data_ImageProcesser[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-      16,   14, // methods
+      21,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -96,24 +105,29 @@ static const uint qt_meta_data_ImageProcesser[] = {
        1,       // signalCount
 
  // signals: name, argc, parameters, tag, flags
-       1,    1,   94,    2, 0x06 /* Public */,
+       1,    1,  119,    2, 0x06 /* Public */,
 
  // slots: name, argc, parameters, tag, flags
-       5,    0,   97,    2, 0x0a /* Public */,
-       6,    0,   98,    2, 0x0a /* Public */,
-       7,    0,   99,    2, 0x0a /* Public */,
-       8,    0,  100,    2, 0x0a /* Public */,
-       9,    0,  101,    2, 0x0a /* Public */,
-      10,    0,  102,    2, 0x0a /* Public */,
-      11,    6,  103,    2, 0x0a /* Public */,
-      18,    1,  116,    2, 0x0a /* Public */,
-      20,    4,  119,    2, 0x0a /* Public */,
-      25,    4,  128,    2, 0x0a /* Public */,
-      30,    1,  137,    2, 0x0a /* Public */,
-      32,    2,  140,    2, 0x0a /* Public */,
-      33,    0,  145,    2, 0x0a /* Public */,
-      34,    0,  146,    2, 0x0a /* Public */,
-      35,    0,  147,    2, 0x0a /* Public */,
+       5,    0,  122,    2, 0x0a /* Public */,
+       6,    0,  123,    2, 0x0a /* Public */,
+       7,    0,  124,    2, 0x0a /* Public */,
+       8,    0,  125,    2, 0x0a /* Public */,
+       9,    0,  126,    2, 0x0a /* Public */,
+      10,    0,  127,    2, 0x0a /* Public */,
+      11,    0,  128,    2, 0x0a /* Public */,
+      12,    0,  129,    2, 0x0a /* Public */,
+      13,    6,  130,    2, 0x0a /* Public */,
+      20,    1,  143,    2, 0x0a /* Public */,
+      22,    4,  146,    2, 0x0a /* Public */,
+      22,    2,  155,    2, 0x0a /* Public */,
+      27,    4,  160,    2, 0x0a /* Public */,
+      32,    2,  169,    2, 0x0a /* Public */,
+      35,    1,  174,    2, 0x0a /* Public */,
+      37,    2,  177,    2, 0x0a /* Public */,
+      38,    0,  182,    2, 0x0a /* Public */,
+      39,    1,  183,    2, 0x0a /* Public */,
+      41,    0,  186,    2, 0x0a /* Public */,
+      42,    0,  187,    2, 0x0a /* Public */,
 
  // signals: parameters
     QMetaType::Void, 0x80000000 | 3,    4,
@@ -125,13 +139,18 @@ static const uint qt_meta_data_ImageProcesser[] = {
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
-    QMetaType::Void, QMetaType::Int, QMetaType::Int, QMetaType::Int, QMetaType::Int, QMetaType::Int, QMetaType::Int,   12,   13,   14,   15,   16,   17,
-    QMetaType::Void, QMetaType::Int,   19,
-    QMetaType::Void, QMetaType::Int, QMetaType::Int, QMetaType::Int, QMetaType::Int,   21,   22,   23,   24,
-    QMetaType::Void, QMetaType::QPoint, QMetaType::QPoint, QMetaType::QPoint, QMetaType::QPoint,   26,   27,   28,   29,
-    QMetaType::Void, QMetaType::Int,   31,
-    QMetaType::Void, QMetaType::Int, QMetaType::Int,   21,   22,
     QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void, QMetaType::Int, QMetaType::Int, QMetaType::Int, QMetaType::Int, QMetaType::Int, QMetaType::Int,   14,   15,   16,   17,   18,   19,
+    QMetaType::Void, QMetaType::Int,   21,
+    QMetaType::Void, QMetaType::Int, QMetaType::Int, QMetaType::Int, QMetaType::Int,   23,   24,   25,   26,
+    QMetaType::Void, QMetaType::Int, QMetaType::Int,   25,   26,
+    QMetaType::Void, QMetaType::QPoint, QMetaType::QPoint, QMetaType::QPoint, QMetaType::QPoint,   28,   29,   30,   31,
+    QMetaType::Void, QMetaType::QPoint, QMetaType::QPoint,   33,   34,
+    QMetaType::Void, QMetaType::Int,   36,
+    QMetaType::Void, QMetaType::Int, QMetaType::Int,   23,   24,
+    QMetaType::Void,
+    QMetaType::Void, QMetaType::Int,   40,
     QMetaType::Void,
     QMetaType::Void,
 
@@ -147,19 +166,24 @@ void ImageProcesser::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _
         case 0: _t->ObjectValueChanged((*reinterpret_cast< std::vector<cv::RotatedRect>(*)>(_a[1]))); break;
         case 1: _t->LoadTestImage(); break;
         case 2: _t->LoadCamera(); break;
-        case 3: _t->CaptureAnImageFromCamera(); break;
-        case 4: _t->UpdateCameraScreen(); break;
-        case 5: _t->SaveFPS(); break;
-        case 6: _t->OpenParameterPanel(); break;
-        case 7: _t->SetHSV((*reinterpret_cast< int(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2])),(*reinterpret_cast< int(*)>(_a[3])),(*reinterpret_cast< int(*)>(_a[4])),(*reinterpret_cast< int(*)>(_a[5])),(*reinterpret_cast< int(*)>(_a[6]))); break;
-        case 8: _t->SetThreshold((*reinterpret_cast< int(*)>(_a[1]))); break;
-        case 9: _t->GetObjectInfo((*reinterpret_cast< int(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2])),(*reinterpret_cast< int(*)>(_a[3])),(*reinterpret_cast< int(*)>(_a[4]))); break;
-        case 10: _t->GetProcessRegion((*reinterpret_cast< QPoint(*)>(_a[1])),(*reinterpret_cast< QPoint(*)>(_a[2])),(*reinterpret_cast< QPoint(*)>(_a[3])),(*reinterpret_cast< QPoint(*)>(_a[4]))); break;
-        case 11: _t->GetDistance((*reinterpret_cast< int(*)>(_a[1]))); break;
-        case 12: _t->GetCalibPoint((*reinterpret_cast< int(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2]))); break;
-        case 13: _t->SwitchLayer(); break;
-        case 14: _t->changeAxisDirection(); break;
-        case 15: _t->CalConvenyorPosition(); break;
+        case 3: _t->CaptureCamera(); break;
+        case 4: _t->PauseCamera(); break;
+        case 5: _t->ResumeCamera(); break;
+        case 6: _t->UpdateCameraScreen(); break;
+        case 7: _t->SaveFPS(); break;
+        case 8: _t->OpenParameterPanel(); break;
+        case 9: _t->SetHSV((*reinterpret_cast< int(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2])),(*reinterpret_cast< int(*)>(_a[3])),(*reinterpret_cast< int(*)>(_a[4])),(*reinterpret_cast< int(*)>(_a[5])),(*reinterpret_cast< int(*)>(_a[6]))); break;
+        case 10: _t->SetThreshold((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 11: _t->GetObjectInfo((*reinterpret_cast< int(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2])),(*reinterpret_cast< int(*)>(_a[3])),(*reinterpret_cast< int(*)>(_a[4]))); break;
+        case 12: _t->GetObjectInfo((*reinterpret_cast< int(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2]))); break;
+        case 13: _t->GetProcessRegion((*reinterpret_cast< QPoint(*)>(_a[1])),(*reinterpret_cast< QPoint(*)>(_a[2])),(*reinterpret_cast< QPoint(*)>(_a[3])),(*reinterpret_cast< QPoint(*)>(_a[4]))); break;
+        case 14: _t->GetCalibLine((*reinterpret_cast< QPoint(*)>(_a[1])),(*reinterpret_cast< QPoint(*)>(_a[2]))); break;
+        case 15: _t->GetDistance((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 16: _t->GetCalibPoint((*reinterpret_cast< int(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2]))); break;
+        case 17: _t->SwitchLayer(); break;
+        case 18: _t->SelectLayer((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 19: _t->changeAxisDirection(); break;
+        case 20: _t->UpdateObjectPositionOnConveyor(); break;
         default: ;
         }
     } else if (_c == QMetaObject::IndexOfMethod) {
@@ -200,13 +224,13 @@ int ImageProcesser::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 16)
+        if (_id < 21)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 16;
+        _id -= 21;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 16)
+        if (_id < 21)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 16;
+        _id -= 21;
     }
     return _id;
 }

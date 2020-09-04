@@ -311,8 +311,12 @@
   <ItemGroup>
     <QtUic Include="GcodeReference.ui" />
     <QtUic Include="HSVWindow.ui" />
+    <QtUic Include="LightUI.ui" />
     <QtUic Include="mainwindow.ui">
     </QtUic>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="DeltaRobotSoftware.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

@@ -13,6 +13,7 @@ ImageProcesser::ImageProcesser(MainWindow *parent)
 
 	updateScreenTimer = new QTimer(this);
 	connect(updateScreenTimer, SIGNAL(timeout()), this, SLOT(UpdateCameraScreen()));
+	updateScreenTimer->start(CameraTimerInterval);
 
 	objectRec.width = DEFAULT_OBJECT_WIDTH;
 	objectRec.height = DEFAULT_OBJECT_HEIGHT;
@@ -25,10 +26,9 @@ ImageProcesser::ImageProcesser(MainWindow *parent)
 	ObjectManager->SetApproximateValue(cv::Point3d(10, 10, 10));
 
 	ObjectMovingCalculaterTimer = new QTimer(this);
-	connect(ObjectMovingCalculaterTimer, SIGNAL(timeout()), this, SLOT(CalConvenyorPosition()));
+	connect(ObjectMovingCalculaterTimer, SIGNAL(timeout()), this, SLOT(UpdateObjectPositionOnConveyor()));
 
-	ObjectMovingCalculaterTimer->setInterval(100);
-	ObjectMovingCalculaterTimer->start(100);
+	ObjectMovingCalculaterTimer->start(CONVEYOR_TIMER_INTERVAL);
 }
 
 ImageProcesser::~ImageProcesser()
@@ -46,7 +46,6 @@ void ImageProcesser::LoadTestImage()
 
 	cv::String imgName = imageName.toStdString();
 	captureImage = cv::imread(imgName, cv::IMREAD_COLOR);
-
 	processImage();
 }
 
@@ -56,7 +55,7 @@ void ImageProcesser::LoadCamera()
 	if (loadBt->isChecked())
 	{
 		bool ok;
-		QString text = QInputDialog::getText(this, tr("QInputDialog::getText()"), tr("Camera ID:"), QLineEdit::Normal, "0", &ok);
+		QString text = QInputDialog::getText(this, tr("Open Camera"), tr("ID: "), QLineEdit::Normal, "0", &ok);
 
 		if (ok && !text.isEmpty())
 		{
@@ -69,7 +68,7 @@ void ImageProcesser::LoadCamera()
 					if (mParent->DeltaXMainWindows->at(i)->DeltaImageProcesser->RunningCamera == RunningCamera)
 					{
 						Camera = mParent->DeltaXMainWindows->at(i)->DeltaImageProcesser->Camera;
-						updateScreenTimer->start(DEFAULT_INTERVAL);
+						IsCameraPause = false;
 						return;
 					}
 				}
@@ -77,30 +76,40 @@ void ImageProcesser::LoadCamera()
 
 
 			Camera->open(text.toInt());
-
-			updateScreenTimer->start(DEFAULT_INTERVAL);
-
-			//loadBt->setText("Stop");
+			IsCameraPause = false;
 		}
 		else
-		{
+		{			
 			loadBt->setChecked(false);
+			IsCameraPause = false;
 			RunningCamera = -1;
 		}
 	}
 	else
 	{
-		//loadBt->setText("Load Camera");
-		updateScreenTimer->stop();
+		Camera->release();
 		RunningCamera = -1;
+		IsCameraPause = false;
 		return;
 	}
 }
 
-void ImageProcesser::CaptureAnImageFromCamera()
+void ImageProcesser::CaptureCamera()
 {
+	if (!Camera->isOpened())
+		return;
+	
 	Camera->read(captureImage);
-	processImage();
+}
+
+void ImageProcesser::PauseCamera()
+{
+	IsCameraPause = true;
+}
+
+void ImageProcesser::ResumeCamera()
+{
+	IsCameraPause = false;
 }
 
 void ImageProcesser::processImage()
@@ -116,9 +125,9 @@ void ImageProcesser::processImage()
 		return;
 	}
 
-	float ratio = (float)captureImage.size().height / captureImage.size().width;
+	
+	cv::resize(captureImage, resizeImage, cv::Size(lbResultImage->width(), lbResultImage->height()));
 
-	cv::resize(captureImage, resizeImage, cv::Size(DEFAULT_PROCESSING_SIZE, DEFAULT_PROCESSING_SIZE * ratio));
 
 	if (filterMethod == HSV_SPACE)
 	{
@@ -133,26 +142,27 @@ void ImageProcesser::processImage()
 
 void ImageProcesser::UpdateCameraScreen()
 {
-	if (isStopCapture == true)
-		return;
+	if (IsCameraPause == false)
+	{
+		CaptureCamera();
+	}
 
-	Camera->read(captureImage);
-	//cv::VideoWriter video("outcpp.avi", cv:VideoWriter::fourcc('M', 'J', 'P', 'G'), 10, cv::Size(Camera->si, frame_height));
 	processImage();
 }
 
 void ImageProcesser::SaveFPS()
 {
-	int FPS = leFPS->text().toInt();
+	CameraFPS = leFPS->text().toInt();
+	CameraTimerInterval = 1000 / CameraFPS;
 
-	if (FPS > 0)
-		updateScreenTimer->setInterval(1000.0f / FPS);
+	if (CameraFPS > 0)
+		updateScreenTimer->setInterval(CameraTimerInterval);
 }
 
 void ImageProcesser::SetDetectParameterPointer(QLineEdit * xRec, QLineEdit * yRec, QLineEdit * distance, QLineEdit * xCoor, QLineEdit * yCoor)
 {
-	leXRec = xRec;
-	leYRec = yRec;
+	leWRec = xRec;
+	leLRec = yRec;
 	leDistance = distance;
 	leXCoor = xCoor;
 	leYCoor = yCoor;
@@ -162,7 +172,8 @@ void ImageProcesser::SetResultScreenPointer(CameraWidget * resultImage)
 {
 	lbResultImage = resultImage;
 
-	displayAndProcessRatio = (float)DEFAULT_PROCESSING_SIZE / lbResultImage->width();
+	//DisplayAndProcessRatio = (float)DEFAULT_PROCESSING_SIZE / lbResultImage->width();
+	DisplayAndProcessRatio = (float)lbResultImage->width() / lbResultImage->width();
 }
 
 void ImageProcesser::SetObjectScreenPointer(QLabel * objectImage)
@@ -183,6 +194,7 @@ void ImageProcesser::SetTrackingWidgetPointer(QLabel* lbTracking, QLabel* lbVisi
 
 void ImageProcesser::SetHSV(int minH, int maxH, int minS, int maxS, int minV, int maxV)
 {
+	// Make binary image
 	HSVValue[0] = minH;
 	HSVValue[1] = maxH;
 	HSVValue[2] = minS;
@@ -204,11 +216,14 @@ void ImageProcesser::SetHSV(int minH, int maxH, int minS, int maxS, int minV, in
 
 	cv::inRange(processMat, minScalar, maxScalar, processMat);
 
+
+	//----------------------
 	postProcessing(processMat);
 }
 
 void ImageProcesser::SetThreshold(int value)
 {
+	// Make binary image
 	thresholdValue = value;
 
 	filterMethod = THRESHOLD_SPACE;
@@ -222,41 +237,55 @@ void ImageProcesser::SetThreshold(int value)
 
 	cv::threshold(processMat, processMat, value, 255, CV_THRESH_BINARY);
 
+	//-----------------
 	postProcessing(processMat);
 }
 
-void ImageProcesser::GetObjectInfo(int x, int y, int h, int w)
+void ImageProcesser::GetObjectInfo(int x, int y, int l, int w)
+{
+	objectRec.x = x;
+	objectRec.y = y;
+
+	GetObjectInfo(l, w);
+	
+	leWRec->setText(QString::number((int)(w * DisplayAndRealRatio)));
+	leLRec->setText(QString::number((int)(l * DisplayAndRealRatio)));
+}
+
+void ImageProcesser::GetObjectInfo(int l, int w)
 {
 	if (lbResultImage->pixmap() == NULL)
 		return;
 
-	float ratio = (float)DEFAULT_PROCESSING_SIZE / lbResultImage->width();
-	objectRec.x = x;
-	objectRec.y = y;
+	//float ratio = (float)DEFAULT_PROCESSING_SIZE / lbResultImage->width();
+	float ratio = (float)lbResultImage->width() / lbResultImage->width();
+
+	// Update information about the object to be identified
+	
 	objectRec.width = w * ratio;
-	objectRec.height = h * ratio;
+	objectRec.height = l * ratio;
+
 	minObjectArea = (objectRec.width - APPROXIMATE_RANGE) * (objectRec.height - APPROXIMATE_RANGE);
 	maxObjectArea = (objectRec.width + APPROXIMATE_RANGE) * (objectRec.height + APPROXIMATE_RANGE);
 
-	QPixmap regionPixmap = lbResultImage->pixmap()->copy(x, y, w, h);
-	
-	if (w > h)
+	ObjectManager->SetApproximateValue(cv::Point3d((float)l * 0.8f, (float)w * 0.8f, 60));
+
+	//Display ROI is cut from widget
+	QPixmap regionPixmap = lbResultImage->pixmap()->copy(objectRec.x, objectRec.y, w, l);
+
+	if (w > l)
 		regionPixmap = regionPixmap.scaledToWidth(lbObjectImage->width());
 	else
 		regionPixmap = regionPixmap.scaledToHeight(lbObjectImage->height());
-	
+
 	lbObjectImage->setPixmap(regionPixmap);
-
-
-	leXRec->setText(QString::number(objectRec.width));
-	leYRec->setText(QString::number(objectRec.height));
-
-	ObjectManager->SetApproximateValue(cv::Point3d((float)h * 0.8f, (float)w * 0.8f, 60));
 }
 
 void ImageProcesser::GetProcessRegion(QPoint a, QPoint b, QPoint c, QPoint d)
 {
-	float ratio = (float)DEFAULT_PROCESSING_SIZE / lbResultImage->width();
+	//float ratio = (float)DEFAULT_PROCESSING_SIZE / lbResultImage->width();
+	float ratio = (float)resizeImage.cols / lbResultImage->width();
+
 	processRegionPoints.clear();
 	processRegionPoints.push_back(cv::Point(a.x() * ratio, a.y() * ratio));
 	processRegionPoints.push_back(cv::Point(b.x() * ratio, b.y() * ratio));
@@ -264,42 +293,63 @@ void ImageProcesser::GetProcessRegion(QPoint a, QPoint b, QPoint c, QPoint d)
 	processRegionPoints.push_back(cv::Point(d.x() * ratio, d.y() * ratio));
 }
 
+void ImageProcesser::GetCalibLine(QPoint p1, QPoint p2)
+{
+	float ratio = (float)lbResultImage->width() / lbResultImage->width();
+
+	calibLinePoint1 = cv::Point(p1.x() * ratio, p1.y() * ratio);
+	calibLinePoint2 = cv::Point(p2.x() * ratio, p2.y() * ratio);
+}
+
 void ImageProcesser::GetDistance(int distance)
 {
 	float displayWidth = lbResultImage->width();
 	float realWidth = leDistance->text().toInt();
-	processAndRealRatio = (displayWidth * realWidth) / (distance * DEFAULT_PROCESSING_SIZE);
-	displayAndRealRatio = (float)leDistance->text().toInt() / distance;
+	ProcessAndRealRatio = (displayWidth * realWidth) / (distance * DEFAULT_PROCESSING_SIZE);
+	DisplayAndRealRatio = (float)leDistance->text().toInt() / distance;
 }
 
 void ImageProcesser::GetCalibPoint(int x, int y)
 {
+	xWidgetCalibPoint = x;
+	yWidgetCalibPoint = y;
+
+	//float ratio = 
+
+	if (leXCoor == NULL)
+		return;
+
 	float xCalib = leXCoor->text().toInt();
 	float yCalib = leYCoor->text().toInt();
 
-	xRealCamOri = xCalib - y * displayAndRealRatio;
-	yRealCamOri = yCalib - x * displayAndRealRatio;
+	xRealCamOri = xCalib - y * DisplayAndRealRatio;
+	yRealCamOri = yCalib - x * DisplayAndRealRatio;
 
 	if (axisDirection == X_AXIS_RIGHT)
 	{
-		xRealCamOri = -xCalib + x * displayAndRealRatio;
-		yRealCamOri = yCalib + y * displayAndRealRatio;
+		xRealCamOri = -xCalib + x * DisplayAndRealRatio;
+		yRealCamOri = yCalib + y * DisplayAndRealRatio;
 	}
 
 	if (axisDirection == X_AXIS_UP)
 	{
-		xRealCamOri = xCalib + y * displayAndRealRatio;
-		yRealCamOri = yCalib + x * displayAndRealRatio;
+		xRealCamOri = xCalib + y * DisplayAndRealRatio;
+		yRealCamOri = yCalib + x * DisplayAndRealRatio;
 	}
 }
 
 void ImageProcesser::SwitchLayer()
 {
 	cameraLayer++;
-	if (cameraLayer > 2)
+	if (cameraLayer > 3)
 	{
 		cameraLayer = 0;
 	}
+}
+
+void ImageProcesser::SelectLayer(int id)
+{
+	cameraLayer = id;
 }
 
 void ImageProcesser::changeAxisDirection()
@@ -315,12 +365,12 @@ void ImageProcesser::changeAxisDirection()
 		}		
 
 		axisDirection = X_AXIS_DOWN;
-		xAxis.setP1(QPoint(20, 20));
-		xAxis.setP2(QPoint(20, 80));
-		arrow1.setP1(QPoint(25, 70));
-		arrow1.setP2(QPoint(20, 80));
-		arrow2.setP1(QPoint(15, 70));
-		arrow2.setP2(QPoint(20, 80));
+		xAxis.setP1(QPoint(10, 10));
+		xAxis.setP2(QPoint(10, 40));
+		arrow1.setP1(QPoint(15, 35));
+		arrow1.setP2(QPoint(10, 40));
+		arrow2.setP1(QPoint(5, 35));
+		arrow2.setP2(QPoint(10, 40));
 	}
 	else if (axisDirection == X_AXIS_DOWN)
 	{
@@ -332,12 +382,12 @@ void ImageProcesser::changeAxisDirection()
 			leYCoor->setText(QString::number(newY));
 		}
 		axisDirection = X_AXIS_RIGHT;
-		xAxis.setP1(QPoint(20, 20));
-		xAxis.setP2(QPoint(80, 20));
-		arrow1.setP1(QPoint(70, 25));
-		arrow1.setP2(QPoint(80, 20));
-		arrow2.setP1(QPoint(70, 15));
-		arrow2.setP2(QPoint(80, 20));
+		xAxis.setP1(QPoint(10, 10));
+		xAxis.setP2(QPoint(40, 10));
+		arrow1.setP1(QPoint(30, 15));
+		arrow1.setP2(QPoint(40, 10));
+		arrow2.setP1(QPoint(30, 5));
+		arrow2.setP2(QPoint(40, 10));
 	}
 	else if (axisDirection == X_AXIS_RIGHT)
 	{
@@ -350,18 +400,20 @@ void ImageProcesser::changeAxisDirection()
 		}
 
 		axisDirection = X_AXIS_UP;
-		xAxis.setP1(QPoint(20, 80));
-		xAxis.setP2(QPoint(20, 20));
-		arrow1.setP1(QPoint(25, 30));
-		arrow1.setP2(QPoint(20, 20));
-		arrow2.setP1(QPoint(15, 30));
-		arrow2.setP2(QPoint(20, 20));
+		xAxis.setP1(QPoint(10, 40));
+		xAxis.setP2(QPoint(10, 10));
+		arrow1.setP1(QPoint(15, 20));
+		arrow1.setP2(QPoint(10, 10));
+		arrow2.setP1(QPoint(5, 20));
+		arrow2.setP2(QPoint(10, 10));
 	}
+
+	GetCalibPoint(xWidgetCalibPoint, yWidgetCalibPoint);	
 }
 
-void ImageProcesser::CalConvenyorPosition()
+void ImageProcesser::UpdateObjectPositionOnConveyor()
 {
-	float distance = conveyorVel / 10;
+	float distance = conveyorVel / (1000.0f / CONVEYOR_TIMER_INTERVAL);
 
 	if (dirName == "X")
 	{
@@ -394,10 +446,25 @@ void ImageProcesser::SetConvenyorVelocity(float val, QString dir)
 
 void ImageProcesser::drawXAxis()
 {
-	cv::line(resultImage, cv::Point(xAxis.p1().x(), xAxis.p1().y()), cv::Point(xAxis.p2().x(), xAxis.p2().y()), RED_COLOR, 2);
-	cv::line(resultImage, cv::Point(arrow1.p1().x(), arrow1.p1().y()), cv::Point(arrow1.p2().x(), arrow1.p2().y()), RED_COLOR, 2);
-	cv::line(resultImage, cv::Point(arrow2.p1().x(), arrow2.p1().y()), cv::Point(arrow2.p2().x(), arrow2.p2().y()), RED_COLOR, 2);
-	putText(resultImage, "+x", cv::Point(xAxis.p2().x() + 5, xAxis.p2().y() + 5), cv::FONT_HERSHEY_SIMPLEX, 0.8, RED_COLOR, 2);
+	drawBlackWhiteLine(resultImage, cv::Point(xAxis.p1().x(), xAxis.p1().y()), cv::Point(xAxis.p2().x(), xAxis.p2().y()), 1);
+	drawBlackWhiteLine(resultImage, cv::Point(arrow1.p1().x(), arrow1.p1().y()), cv::Point(arrow1.p2().x(), arrow1.p2().y()), 1);
+	drawBlackWhiteLine(resultImage, cv::Point(arrow2.p1().x(), arrow2.p1().y()), cv::Point(arrow2.p2().x(), arrow2.p2().y()), 1);
+	
+	if (axisDirection == X_AXIS_DOWN)
+	{
+		putText(resultImage, "+x", cv::Point(xAxis.p2().x() - 10, xAxis.p2().y() + 20), cv::FONT_HERSHEY_SIMPLEX, 0.5, BLACK_COLOR, 1);
+		putText(resultImage, "+x", cv::Point(xAxis.p2().x() - 11, xAxis.p2().y() + 21), cv::FONT_HERSHEY_SIMPLEX, 0.5, WHITE_COLOR, 1);
+	}
+	else if (axisDirection == X_AXIS_RIGHT)
+	{
+		putText(resultImage, "+x", cv::Point(xAxis.p2().x() + 20, xAxis.p2().y() + 10), cv::FONT_HERSHEY_SIMPLEX, 0.5, BLACK_COLOR, 1);
+		putText(resultImage, "+x", cv::Point(xAxis.p2().x() + 21, xAxis.p2().y() + 11), cv::FONT_HERSHEY_SIMPLEX, 0.5, WHITE_COLOR, 1);
+	}
+	else
+	{
+		putText(resultImage, "+x", cv::Point(xAxis.p2().x() + 10, xAxis.p2().y() + 10), cv::FONT_HERSHEY_SIMPLEX, 0.5, BLACK_COLOR, 1);
+		putText(resultImage, "+x", cv::Point(xAxis.p2().x() + 11, xAxis.p2().y() + 11), cv::FONT_HERSHEY_SIMPLEX, 0.5, WHITE_COLOR, 1); 
+	}
 }
 
 void ImageProcesser::SelectProcessRegion(cv::Mat processMat)
@@ -405,10 +472,37 @@ void ImageProcesser::SelectProcessRegion(cv::Mat processMat)
 	if (processRegionPoints.size() == 0)
 		return;
 
+	transformPerspective(processMat, processRegionPoints, transformImage);
+
 	cv::Mat filterMat(cv::Size(processMat.cols, processMat.rows), CV_8UC1, BLACK_COLOR);
 	cv::fillConvexPoly(filterMat, processRegionPoints, WHITE_COLOR);
 
 	cv::bitwise_and(filterMat, processMat, processMat);
+}
+
+void ImageProcesser::transformPerspective(cv::Mat processMat, std::vector<cv::Point> points, cv::Mat & transMat)
+{
+	if (points.size() < 3)
+		return;
+
+	cv::Point2f outputQuad[4];
+	cv::Point2f inputQuad[4];
+
+	inputQuad[0] = points[0];
+	inputQuad[1] = points[1];
+	inputQuad[2] = points[2];
+	inputQuad[3] = points[3];
+
+	outputQuad[0] = cv::Point(0, 0);
+	outputQuad[1] = cv::Point(0, processMat.rows - 1);
+	outputQuad[2] = cv::Point(processMat.cols - 1, processMat.rows - 1);
+	outputQuad[3] = cv::Point(processMat.cols - 1, 0);
+
+	cv:: Mat lambda = cv::Mat::zeros(processMat.rows, processMat.cols, processMat.type());
+
+	lambda = cv::getPerspectiveTransform(inputQuad, outputQuad);
+
+	warpPerspective(processMat, transMat, lambda, transMat.size());
 }
 
 void ImageProcesser::MakeBrightProcessRegion(cv::Mat resultsMat)
@@ -416,7 +510,7 @@ void ImageProcesser::MakeBrightProcessRegion(cv::Mat resultsMat)
 	if (processRegionPoints.size() == 0)
 		return;
 
-	int darkValue = 100;
+	int darkValue = 60;
 
 	cv::Mat filterMat(cv::Size(resultsMat.cols, resultsMat.rows), CV_8UC1, BLACK_COLOR);
 
@@ -447,8 +541,10 @@ void ImageProcesser::MakeBrightProcessRegion(cv::Mat resultsMat)
 
 void ImageProcesser::postProcessing(cv::Mat processMat)
 {
+	// Invert binary image
 	if (ParameterPanel->IsInvertBinary())
 		cv::bitwise_not(processMat, processMat);
+
 
 	SelectProcessRegion(processMat);
 
@@ -456,37 +552,43 @@ void ImageProcesser::postProcessing(cv::Mat processMat)
 
 	MakeBrightProcessRegion(resultImage);
 
-	paintInfo(processMat, resultImage, RED_COLOR);
+	// Detect objects in image and manage them
+	detectObjects(processMat, resultImage, RED_COLOR);
 
 	UpdateTrackingInfo();
 
+	// Display info to screen widget
 	drawXAxis();
 
 	if (cameraLayer == ORIGIN)
 	{
-		putText(resizeImage, "origin", cv::Point(resizeImage.cols - 80, 50), cv::FONT_HERSHEY_SIMPLEX, 0.8, RED_COLOR, 2);
+		putText(resizeImage, "origin", cv::Point(resizeImage.cols - 70, 20), cv::FONT_HERSHEY_SIMPLEX, 0.6, RED_COLOR, 1);
 		UpdateLabelImage(resizeImage, lbResultImage);
 	}
 	else if (cameraLayer == PROCESSING)
 	{
-		//putText(processMat, "filter", cv::Point(processMat.cols - 70, 30), cv::FONT_HERSHEY_SIMPLEX, 0.8, RED_COLOR, 2);
+		putText(processMat, "processing", cv::Point(resizeImage.cols - 100, 20), cv::FONT_HERSHEY_SIMPLEX, 0.6, RED_COLOR, 1);
 		UpdateLabelImage(processMat, lbResultImage);
 	}
 	else if (cameraLayer == RESULT)
 	{
-		putText(resultImage, "result", cv::Point(resultImage.cols - 80, 50), cv::FONT_HERSHEY_SIMPLEX, 0.8, RED_COLOR, 2);
+		DisplayAdditionalInfo(resultImage);
+		putText(resultImage, "result", cv::Point(resizeImage.cols - 70, 20), cv::FONT_HERSHEY_SIMPLEX, 0.6, RED_COLOR, 1);
 		UpdateLabelImage(resultImage, lbResultImage);
 	}
-
-	//UpdateLabelImage(processMat, lbProcessImage);
-	//UpdateLabelImage(resultImage, lbResultImage);
-
+	else if (cameraLayer == TRANSFORM)
+	{
+		putText(transformImage, "transform", cv::Point(resizeImage.cols - 100, 20), cv::FONT_HERSHEY_SIMPLEX, 0.6, RED_COLOR, 1);
+		UpdateLabelImage(transformImage, lbResultImage);
+	}
+	
 	UpdateLabelImage(processMat, ParameterPanel->lbProcessImage);
 	UpdateLabelImage(resultImage, ParameterPanel->lbOriginImage);
 }
 
-void ImageProcesser::paintInfo(cv::Mat input, cv::Mat output, cv::Scalar color)
+void ImageProcesser::detectObjects(cv::Mat input, cv::Mat output, cv::Scalar color)
 {	
+	//Find contour in image
 	std::vector<std::vector<cv::Point> > contoursContainer;
 	findContours(input, contoursContainer, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
 
@@ -497,13 +599,13 @@ void ImageProcesser::paintInfo(cv::Mat input, cv::Mat output, cv::Scalar color)
 		convexHull(contoursContainer[i], hullsContainer[i]);
 	}
 
-	//------------------------
+	//Calculate size of contours
 
 	int visibleCounter = 0;
 
 	for (size_t i = 0; i < contoursContainer.size(); i++)
 	{
-		//cv::Rect rec = boundingRect(contoursContainer[i]);
+		
 		cv::RotatedRect minRec = cv::minAreaRect(cv::Mat(contoursContainer[i]));
 
 		float h = minRec.size.height;
@@ -528,12 +630,11 @@ void ImageProcesser::paintInfo(cv::Mat input, cv::Mat output, cv::Scalar color)
 			obWid = t;
 		}
 
-		//cv::drawContours(output, hullsContainer, (int)i, RED_COLOR);
+		//Find an object of equal size
 
 		if (s > minObjectArea && s < maxObjectArea && h < obHei && w < obWid && minRec.boundingRect().y > 0 && (minRec.boundingRect().y + minRec.boundingRect().height + 5) < input.rows)
 		{
-			drawMinRec(output, contoursContainer[i], BLUE_COLOR);
-			//cv::drawContours(output, hullsContainer, (int)i, RED_COLOR);
+			findObjectRectangle(output, contoursContainer[i], BLUE_COLOR);
 
 			visibleCounter += 1;
 		}
@@ -551,37 +652,41 @@ void ImageProcesser::drawRotateRec(cv::Mat& mat, int angle, cv::Rect rec, cv::Sc
 		line(mat, vertices[i], vertices[(i + 1) % 4], color, 1);
 }
 
-float ImageProcesser::drawMinRec(cv::Mat & mat, std::vector<cv::Point> contour, cv::Scalar color)
+float ImageProcesser::findObjectRectangle(cv::Mat & mat, std::vector<cv::Point> contour, cv::Scalar color)
 {
+	// Get object position from contour
 	cv::RotatedRect minRec = cv::minAreaRect(cv::Mat(contour));
-	cv::Point2f rectPoints[4]; 
 
+	cv::Point2f rectPoints[4];
 	minRec.points(rectPoints);
 
+	// Draw a rectangle outside the object
 	for (int j = 0; j < 4; j++)
 		cv::line(mat, rectPoints[j], rectPoints[(j + 1) % 4], color, 2, 8);
 
-	int xRealObject = xRealCamOri + minRec.center.y * processAndRealRatio;
-	int yRealObject = yRealCamOri + minRec.center.x * processAndRealRatio;
+
+	// Calculate real position of object
+	int xRealObject = xRealCamOri + minRec.center.y * ProcessAndRealRatio;
+	int yRealObject = yRealCamOri + minRec.center.x * ProcessAndRealRatio;
 
 	if (axisDirection == X_AXIS_RIGHT)
 	{
-		xRealObject = -xRealCamOri + minRec.center.x * processAndRealRatio;
-		yRealObject = yRealCamOri - minRec.center.y * processAndRealRatio;
+		xRealObject = -xRealCamOri + minRec.center.x * ProcessAndRealRatio;
+		yRealObject = yRealCamOri - minRec.center.y * ProcessAndRealRatio;
 	}
 
 	if (axisDirection == X_AXIS_UP)
 	{
-		xRealObject = xRealCamOri - minRec.center.y * processAndRealRatio;
-		yRealObject = yRealCamOri - minRec.center.x * processAndRealRatio;
+		xRealObject = xRealCamOri - minRec.center.y * ProcessAndRealRatio;
+		yRealObject = yRealCamOri - minRec.center.x * ProcessAndRealRatio;
 	}
 
 	cv::RotatedRect realObject = minRec;
 
 	realObject.center.x = xRealObject;
 	realObject.center.y = yRealObject;
-	realObject.size.height = minRec.size.height * processAndRealRatio;
-	realObject.size.width = minRec.size.width * processAndRealRatio;
+	realObject.size.height = minRec.size.height * ProcessAndRealRatio;
+	realObject.size.width = minRec.size.width * ProcessAndRealRatio;
 
 	int angle = realObject.angle + 180;
 
@@ -590,8 +695,10 @@ float ImageProcesser::drawMinRec(cv::Mat & mat, std::vector<cv::Point> contour, 
 		angle = realObject.angle + 90;
 	}
 
+	// Add object to object list if it is new object
 	ObjectManager->AddNewObject(realObject);
 
+	// Add object info to screen
 	putText(mat, std::to_string((int)xRealObject) + "," + std::to_string((int)yRealObject) + "," + std::to_string((int)angle), cv::Point(minRec.center.x - 40, minRec.center.y), cv::FONT_HERSHEY_SIMPLEX, 0.6, BLUE_COLOR, 2);
 
 	return minRec.angle;
@@ -601,6 +708,52 @@ void ImageProcesser::UpdateTrackingInfo()
 {
 	lbTrackingObjectNumber->setText(QString::number(ObjectManager->ObjectContainer.size()));
 	lbVisibleObjectNumber->setText(QString::number(ObjectManager->VisibleObjectNumber));
+}
 
+void ImageProcesser::DisplayAdditionalInfo(cv::Mat & displayMat)
+{
+	// Draw calib line
+	drawBlackWhiteLine(displayMat, calibLinePoint1, calibLinePoint2, 1);
 
+	int xText = (calibLinePoint1.x + calibLinePoint2.x) / 2;
+	int yText = (calibLinePoint1.y + calibLinePoint1.y) / 2 - 10;
+
+	cv::putText(displayMat, leDistance->text().toStdString() + " mm", cv::Point(xText, yText), cv::FONT_HERSHEY_SIMPLEX, 0.5, BLACK_COLOR, 1);
+	cv::putText(displayMat, leDistance->text().toStdString() + " mm", cv::Point(xText + 1, yText + 1), cv::FONT_HERSHEY_SIMPLEX, 0.5, WHITE_COLOR, 1);
+
+	// Draw process region
+	if (processRegionPoints.size() == 0)
+		return;
+
+	int offset = 1;
+	int thin = 1;
+	
+	for (int i = 0; i < 3; i++)
+	{
+		cv::line(displayMat, processRegionPoints[i], processRegionPoints[i + 1], BLACK_COLOR, thin);
+		cv::rectangle(displayMat, cv::Rect(cv::Point(processRegionPoints[i].x - 4, processRegionPoints[i].y - 4), cv::Size(10, 10)), BLACK_COLOR, thin);
+	}
+
+	cv::line(displayMat, processRegionPoints[3], processRegionPoints[0], BLACK_COLOR, thin);
+	cv::rectangle(displayMat, cv::Rect(cv::Point(processRegionPoints[3].x - 4, processRegionPoints[3].y - 4), cv::Size(10, 10)), BLACK_COLOR, thin);
+	
+	for (int i = 0; i < 3; i++)
+	{
+		cv::line(displayMat, cv::Point(processRegionPoints[i].x + offset, processRegionPoints[i].y + offset), cv::Point(processRegionPoints[i + 1].x + offset, processRegionPoints[i + 1].y + offset), WHITE_COLOR, thin);
+		cv::rectangle(displayMat, cv::Rect(cv::Point(processRegionPoints[i].x - 4, processRegionPoints[i].y - 4), cv::Size(10, 10)), WHITE_COLOR, thin);
+	}
+	cv::line(displayMat, cv::Point(processRegionPoints[3].x + offset, processRegionPoints[3].y + offset), cv::Point(processRegionPoints[0].x + offset, processRegionPoints[0].y + offset), WHITE_COLOR, thin);
+	cv::rectangle(displayMat, cv::Rect(cv::Point(processRegionPoints[3].x - 4, processRegionPoints[3].y - 4), cv::Size(10, 10)), WHITE_COLOR, thin);
+}
+
+void ImageProcesser::drawBlackWhiteLine(cv::Mat& displayMat, cv::Point p1, cv::Point p2, int thin = 1)
+{
+	cv::line(displayMat, p1, p2, BLACK_COLOR, thin);
+	cv::line(displayMat, cv::Point(p1.x + 1, p1.y + 1), cv::Point(p2.x + 1, p2.y + 1), WHITE_COLOR, thin);
+}
+
+void ImageProcesser::drawBlackWhiteLines(cv::Mat& displayMat, std::vector<cv::Point> points, int thin = 1)
+{
+	cv::polylines(displayMat, points, true, BLACK_COLOR, thin);
+	cv::polylines(displayMat, points, true, WHITE_COLOR, thin);
 }
