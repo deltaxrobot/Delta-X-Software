@@ -1039,7 +1039,8 @@ void MainWindow::Grip()
 		DeltaConnectionManager->SendToRobot(QString("M03 S") + ui->leGripperMin->text());
 
 		ui->hsGripperAngle->blockSignals(true);
-		ui->hsGripperAngle->valueChanged(ui->leGripperMin->text().toInt() / 5);
+		int vl = ui->leGripperMin->text().toInt() / 5;
+		ui->hsGripperAngle->setValue(vl);
 		ui->hsGripperAngle->blockSignals(false);
 
 		ui->lbGripperValue->setText(ui->leGripperMin->text());

@@ -84,7 +84,7 @@ public:
 	QString Name = "Delta X 1";
 
 	QNetworkAccessManager *HttpManager;
-	QString SoftwareVersion = "0.9.3";
+	QString SoftwareVersion = "0.9.5";
 
 	float UIScale = 1;
 
