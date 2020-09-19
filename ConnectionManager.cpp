@@ -32,7 +32,7 @@ void ConnectionManager::init()
 	connect(ConveyorSocket, SIGNAL(readyRead()), this, SLOT(ReadData()));
 
 	TCPConnection = new TCPConnectionManager();
-	TCPConnection->OpenServer("localhost", 8844);
+	OpenAvailableServer();
 
 	TcpServer = TCPConnection->TcpServer;
 	connect(TCPConnection, SIGNAL(NewConnection(QTcpSocket*)), this, SLOT(ReceiveNewConnectionFromServer(QTcpSocket*)));
@@ -117,6 +117,20 @@ void ConnectionManager::sendData(QSerialPort * com, QTcpSocket * socket, QString
 			socket->write(msg.toStdString().c_str(), msg.size());
 		}
 	}
+}
+
+void ConnectionManager::OpenAvailableServer()
+{
+	int port = 8844;
+	for (int i = 0; i < 10; i++)
+	{
+		bool isSuccess = TCPConnection->OpenServer("localhost", port + i);
+		if (isSuccess == true)
+		{
+			return;
+		}
+			
+	}	
 }
 
 bool ConnectionManager::IsRobotConnect()

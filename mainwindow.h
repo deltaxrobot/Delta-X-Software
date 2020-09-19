@@ -127,6 +127,8 @@ private slots:
 
 	void ConnectConveyor();
 	void SetConveyorMode(int mode);
+	void SetConveyorMovingMode(int mode);
+	void SetSpeedOfPositionMode();
 	void MoveConveyor();
 
 	void ProcessShortcutKey();	
@@ -170,6 +172,8 @@ private slots:
 	void ScaleUI();
 
 	void ExecuteRequestsFromExternal(QString request);
+
+	void ChangeParentForWidget(bool state);
 
 private:
 

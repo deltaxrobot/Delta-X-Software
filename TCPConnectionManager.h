@@ -22,13 +22,13 @@ public:
 	TCPConnectionManager();
 	~TCPConnectionManager();
 
-	void OpenServer();
-	void OpenServer(QString s, int p);
+	bool OpenServer();
+	bool OpenServer(QString s, int p);
 
 	void ProcessReceivedData(QString data);
 
-	QString serverName = "localhost";
-	int port = 8844;
+	QString ServerName = "null";
+	int Port = 8844;
 
 	QString ReceivedString = "";
 
@@ -36,7 +36,7 @@ public:
 	QList<QTcpSocket*>* TcpClients;
 	QList<Client*>* ClientList = NULL;
 
-	static QString GetLocalIP();
+	static QString GetIP();
 
 public slots:
 	void CreatNewConnection();

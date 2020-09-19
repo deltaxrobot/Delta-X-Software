@@ -14,8 +14,10 @@
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
 #include <QtWidgets/QHeaderView>
+#include <QtWidgets/QLabel>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenuBar>
+#include <QtWidgets/QScrollArea>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QWidget>
 
@@ -25,6 +27,9 @@ class Ui_MainWindow
 {
 public:
     QWidget *centralwidget;
+    QScrollArea *scrollArea;
+    QWidget *scrollAreaWidgetContents;
+    QLabel *label;
     QMenuBar *menubar;
     QStatusBar *statusbar;
 
@@ -32,18 +37,28 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QStringLiteral("MainWindow"));
-        MainWindow->resize(800, 600);
+        MainWindow->resize(1315, 686);
         centralwidget = new QWidget(MainWindow);
         centralwidget->setObjectName(QStringLiteral("centralwidget"));
-        centralwidget->setGeometry(QRect(0, 21, 800, 560));
+        scrollArea = new QScrollArea(centralwidget);
+        scrollArea->setObjectName(QStringLiteral("scrollArea"));
+        scrollArea->setGeometry(QRect(100, 50, 611, 361));
+        scrollArea->setWidgetResizable(false);
+        scrollAreaWidgetContents = new QWidget();
+        scrollAreaWidgetContents->setObjectName(QStringLiteral("scrollAreaWidgetContents"));
+        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 749, 379));
+        label = new QLabel(scrollAreaWidgetContents);
+        label->setObjectName(QStringLiteral("label"));
+        label->setGeometry(QRect(11, 11, 681, 341));
+        label->setStyleSheet(QStringLiteral("background-color: rgb(48, 255, 79);"));
+        scrollArea->setWidget(scrollAreaWidgetContents);
         MainWindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWindow);
         menubar->setObjectName(QStringLiteral("menubar"));
-        menubar->setGeometry(QRect(0, 0, 800, 21));
+        menubar->setGeometry(QRect(0, 0, 1315, 26));
         MainWindow->setMenuBar(menubar);
         statusbar = new QStatusBar(MainWindow);
         statusbar->setObjectName(QStringLiteral("statusbar"));
-        statusbar->setGeometry(QRect(0, 581, 800, 19));
         MainWindow->setStatusBar(statusbar);
 
         retranslateUi(MainWindow);
@@ -54,6 +69,7 @@ public:
     void retranslateUi(QMainWindow *MainWindow)
     {
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MainWindow", Q_NULLPTR));
+        label->setText(QApplication::translate("MainWindow", "TextLabel jkkulhkujklh ukg ugugu gi ugiugio i g iugkg uguydytdy gu giug iug iu giu g", Q_NULLPTR));
     } // retranslateUi
 
 };

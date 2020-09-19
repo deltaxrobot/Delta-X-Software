@@ -6,32 +6,38 @@
 #include <QMouseEvent>
 #include <qmath.h>
 #include <qpushbutton.h>
+#include <QSettings>;
 
 class CameraWidget : public QLabel
 {
 	Q_OBJECT
 
 public:
-	//the constructor is marked explicit so that we don't get any 
-	// implicit conversion by passing the wrong parameter
-	explicit CameraWidget(QWidget *parent = 0); //also it has a default null pointer value, so a linewidget can be created with null parameter (i.e when we don't specify the constructor parenthesis at all!)
-	void InitParameter(); 
+	explicit CameraWidget(QWidget *parent = 0);
+	void InitParameter();
+
+	void ChangeSize(int w, int h);
 	
 	bool mousePressed;
 	bool drawStarted;
 	int selectedTool;
 	int lastSelectedTool;
+
+	bool IsPerspectiveEnable = false;
+	bool IsMeasureDisplayEnable = true;
+
 	QPixmap lastCursorIcon;
-	//destructor is needed when we construct a object on the heap instead of stack
-	// for efficient memory management
+
 	~CameraWidget();
 
 signals:
 	void FinishDrawObject(int x, int y, int h, int w);
-	void FinishSelectProcessRegion(QPoint a, QPoint b, QPoint c, QPoint d);
+	void FinishSelectPerspectivePoints(QPoint a, QPoint b, QPoint c, QPoint d);
+	void FinishSelectProcessRectangle(QRect rect);
 	void FinishSelectCalibLine(QPoint a, QPoint b);
 	void FinishMeasureSpace(int distance);
 	void FinishSelectCalibPoint(int x, int y);
+	void SizeChanged();
 
 protected:
 	void mousePressEvent(QMouseEvent *event);
@@ -43,14 +49,15 @@ public slots:
 	void rectObject();
 	void lineObject();
 	void circleObject();
-	void selectProcessRegion();
+	void selectPerspectiveRectangle();
+	void selectProcessRectangle();
+	void noTool();
+	void SaveSetting();
+	void LoadSetting();
 
-	void ChangeCalibLineRealLength(QString value);
 	void ChangeXCalibPoint(QString value);
 	void ChangeYCalibPoint(QString value);
 private:
-	int axisDirection = 1;
-
 	QLine xAxis;
 	QLine arrow1;
 	QLine arrow2;
@@ -61,10 +68,12 @@ private:
 	QLine mLine;
 	QRect mRect;
 	QPoint mPoint;
-	QPoint mPoints[4];
-	int pointOrder = -1;
+	QPoint transformPoints[4];
+	QRect PselectedRectangle;
+	int transPointOrder = -1;
+	int processPointOrder = -1;
 
-	int calibLineRealLength = 120;
+	int calibLineRealLength = 100;
 	int xCalibPoint = 150;
 	int yCalibPoint = 0;
 

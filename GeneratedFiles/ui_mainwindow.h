@@ -57,7 +57,6 @@ public:
     QWidget *tabAddNewDelta;
     QTabWidget *twModule;
     QWidget *tResultCameraArea;
-    CameraWidget *lbScreenStreamer;
     QGroupBox *groupBox;
     QLabel *lbTrackingObject;
     QPushButton *pbObjectRect;
@@ -70,6 +69,7 @@ public:
     QLabel *label_54;
     QLabel *label_55;
     QLabel *label_56;
+    QComboBox *cbObjectType;
     QGroupBox *groupBox_7;
     QLineEdit *leConvenyorSpeed;
     QLabel *label_45;
@@ -86,12 +86,17 @@ public:
     QLabel *label_39;
     QLabel *label_40;
     QPushButton *pbChangeXAxis;
-    QPushButton *pbPump_2;
+    QCheckBox *cbDisplayCalibInfo;
     QGroupBox *groupBox_9;
     QPushButton *pbLoadCamera;
     QPushButton *pbLoadTestImage;
     QLabel *label_11;
     QLineEdit *leFPS;
+    QLabel *lbCameraState;
+    QPushButton *pbPlayPauseCamera;
+    QPushButton *pbCaptureCamera;
+    QPushButton *pbLoadCameraSetting;
+    QPushButton *pbSaveCameraSetting;
     QGroupBox *groupBox_10;
     QPushButton *pbViewDataObjects;
     QPushButton *pbClearDetectObjects;
@@ -99,8 +104,14 @@ public:
     QLabel *label_48;
     QLabel *lbTrackingObjectNumber;
     QLabel *lbVisibleObjectNumber;
-    QPushButton *pbSwitchWorkFlow;
     QPushButton *pbFilter;
+    QPushButton *pbTransformPerspective;
+    QScrollArea *saCamera;
+    QWidget *saCameraArea;
+    CameraWidget *lbScreenStreamer;
+    QPushButton *pbExpandCameraWidget;
+    QPushButton *pbCameraWindowMode;
+    QComboBox *lbCameraLayer;
     QWidget *tDrawing;
     QLabel *lbImageForDrawing;
     DrawingWidget *lbDrawingArea;
@@ -223,8 +234,9 @@ public:
     QComboBox *cbConveyorMode;
     QComboBox *cbConveyorValueType;
     QLineEdit *leConveyorvMovingValue;
-    QPushButton *pbConveyorMove;
     QPushButton *pbConveyorConnect;
+    QLineEdit *leSpeedOfPositionMode;
+    QLabel *lbSpeedOfPositionMode;
     QWidget *sSlidingRail;
     QPushButton *pbSlidingConnect;
     QPushButton *pbSlidingHome;
@@ -294,7 +306,7 @@ public:
     QListWidget *listWidget;
     QTextEdit *textEdit;
     QPushButton *pbUploadProgram_2;
-    QLabel *lbID_2;
+    QLabel *lbPort;
     QLabel *lbIP;
     QGroupBox *groupBox_2;
     QLineEdit *leW;
@@ -378,59 +390,58 @@ public:
         twDeltaManager->addTab(tabAddNewDelta, QString());
         twModule = new QTabWidget(centralWidget);
         twModule->setObjectName(QStringLiteral("twModule"));
-        twModule->setGeometry(QRect(418, 114, 476, 566));
+        twModule->setEnabled(true);
+        twModule->setGeometry(QRect(415, 114, 481, 566));
         tResultCameraArea = new QWidget();
         tResultCameraArea->setObjectName(QStringLiteral("tResultCameraArea"));
-        lbScreenStreamer = new CameraWidget(tResultCameraArea);
-        lbScreenStreamer->setObjectName(QStringLiteral("lbScreenStreamer"));
-        lbScreenStreamer->setGeometry(QRect(5, 225, 226, 301));
-        lbScreenStreamer->setStyleSheet(QStringLiteral("background-color:rgb(230, 230, 230)"));
-        lbScreenStreamer->setScaledContents(false);
-        lbScreenStreamer->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop);
         groupBox = new QGroupBox(tResultCameraArea);
         groupBox->setObjectName(QStringLiteral("groupBox"));
-        groupBox->setGeometry(QRect(230, 10, 96, 206));
+        groupBox->setGeometry(QRect(235, 5, 91, 216));
         lbTrackingObject = new QLabel(groupBox);
         lbTrackingObject->setObjectName(QStringLiteral("lbTrackingObject"));
-        lbTrackingObject->setGeometry(QRect(15, 105, 66, 56));
+        lbTrackingObject->setGeometry(QRect(10, 105, 66, 36));
         lbTrackingObject->setStyleSheet(QStringLiteral("background-color:rgb(230, 230, 230)"));
         pbObjectRect = new QPushButton(groupBox);
         pbObjectRect->setObjectName(QStringLiteral("pbObjectRect"));
-        pbObjectRect->setGeometry(QRect(5, 170, 86, 28));
+        pbObjectRect->setGeometry(QRect(5, 180, 81, 31));
         pbObjectRect->setStyleSheet(QStringLiteral(""));
         QIcon icon1;
         icon1.addFile(QStringLiteral("icon/Rectangle_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
         pbObjectRect->setIcon(icon1);
         leLRec = new QLineEdit(groupBox);
         leLRec->setObjectName(QStringLiteral("leLRec"));
-        leLRec->setGeometry(QRect(30, 50, 31, 22));
+        leLRec->setGeometry(QRect(25, 50, 31, 22));
         leWRec = new QLineEdit(groupBox);
         leWRec->setObjectName(QStringLiteral("leWRec"));
-        leWRec->setGeometry(QRect(30, 25, 31, 22));
+        leWRec->setGeometry(QRect(25, 25, 31, 22));
         leHRec = new QLineEdit(groupBox);
         leHRec->setObjectName(QStringLiteral("leHRec"));
-        leHRec->setGeometry(QRect(30, 75, 31, 22));
+        leHRec->setGeometry(QRect(25, 75, 31, 22));
         label_42 = new QLabel(groupBox);
         label_42->setObjectName(QStringLiteral("label_42"));
         label_42->setGeometry(QRect(10, 30, 26, 16));
         label_43 = new QLabel(groupBox);
         label_43->setObjectName(QStringLiteral("label_43"));
-        label_43->setGeometry(QRect(10, 50, 26, 16));
+        label_43->setGeometry(QRect(10, 55, 26, 16));
         label_44 = new QLabel(groupBox);
         label_44->setObjectName(QStringLiteral("label_44"));
-        label_44->setGeometry(QRect(10, 75, 26, 16));
+        label_44->setGeometry(QRect(10, 80, 26, 16));
         label_54 = new QLabel(groupBox);
         label_54->setObjectName(QStringLiteral("label_54"));
-        label_54->setGeometry(QRect(65, 30, 31, 16));
+        label_54->setGeometry(QRect(60, 30, 31, 16));
         label_55 = new QLabel(groupBox);
         label_55->setObjectName(QStringLiteral("label_55"));
-        label_55->setGeometry(QRect(65, 55, 31, 16));
+        label_55->setGeometry(QRect(60, 55, 31, 16));
         label_56 = new QLabel(groupBox);
         label_56->setObjectName(QStringLiteral("label_56"));
-        label_56->setGeometry(QRect(65, 80, 31, 16));
+        label_56->setGeometry(QRect(60, 80, 31, 16));
+        cbObjectType = new QComboBox(groupBox);
+        cbObjectType->setObjectName(QStringLiteral("cbObjectType"));
+        cbObjectType->setEnabled(false);
+        cbObjectType->setGeometry(QRect(10, 150, 71, 22));
         groupBox_7 = new QGroupBox(tResultCameraArea);
         groupBox_7->setObjectName(QStringLiteral("groupBox_7"));
-        groupBox_7->setGeometry(QRect(400, 365, 66, 166));
+        groupBox_7->setGeometry(QRect(405, 360, 71, 166));
         leConvenyorSpeed = new QLineEdit(groupBox_7);
         leConvenyorSpeed->setObjectName(QStringLiteral("leConvenyorSpeed"));
         leConvenyorSpeed->setGeometry(QRect(15, 75, 41, 27));
@@ -453,31 +464,31 @@ public:
         label_49->setFont(font2);
         groupBox_8 = new QGroupBox(tResultCameraArea);
         groupBox_8->setObjectName(QStringLiteral("groupBox_8"));
-        groupBox_8->setGeometry(QRect(5, 75, 221, 141));
+        groupBox_8->setGeometry(QRect(5, 90, 221, 131));
         pbObjectLine = new QPushButton(groupBox_8);
         pbObjectLine->setObjectName(QStringLiteral("pbObjectLine"));
-        pbObjectLine->setGeometry(QRect(5, 25, 106, 31));
+        pbObjectLine->setGeometry(QRect(5, 25, 101, 31));
         QIcon icon2;
         icon2.addFile(QStringLiteral("icon/Width_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
         pbObjectLine->setIcon(icon2);
         leRealDistance = new QLineEdit(groupBox_8);
         leRealDistance->setObjectName(QStringLiteral("leRealDistance"));
-        leRealDistance->setGeometry(QRect(130, 30, 31, 22));
+        leRealDistance->setGeometry(QRect(135, 30, 31, 22));
         leYCoordinate = new QLineEdit(groupBox_8);
         leYCoordinate->setObjectName(QStringLiteral("leYCoordinate"));
-        leYCoordinate->setGeometry(QRect(180, 70, 31, 22));
+        leYCoordinate->setGeometry(QRect(185, 65, 31, 22));
         pbObjectOrigin = new QPushButton(groupBox_8);
         pbObjectOrigin->setObjectName(QStringLiteral("pbObjectOrigin"));
-        pbObjectOrigin->setGeometry(QRect(5, 65, 106, 31));
+        pbObjectOrigin->setGeometry(QRect(5, 60, 101, 31));
         QIcon icon3;
         icon3.addFile(QStringLiteral("icon/Scatter Plot_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
         pbObjectOrigin->setIcon(icon3);
         leXCoordinate = new QLineEdit(groupBox_8);
         leXCoordinate->setObjectName(QStringLiteral("leXCoordinate"));
-        leXCoordinate->setGeometry(QRect(130, 70, 31, 22));
+        leXCoordinate->setGeometry(QRect(135, 65, 31, 22));
         label_38 = new QLabel(groupBox_8);
         label_38->setObjectName(QStringLiteral("label_38"));
-        label_38->setGeometry(QRect(115, 75, 21, 16));
+        label_38->setGeometry(QRect(120, 70, 21, 16));
         QFont font3;
         font3.setBold(false);
         font3.setItalic(false);
@@ -489,100 +500,181 @@ public:
         label_38->setTextFormat(Qt::AutoText);
         label_39 = new QLabel(groupBox_8);
         label_39->setObjectName(QStringLiteral("label_39"));
-        label_39->setGeometry(QRect(165, 70, 21, 21));
+        label_39->setGeometry(QRect(175, 65, 21, 21));
         label_40 = new QLabel(groupBox_8);
         label_40->setObjectName(QStringLiteral("label_40"));
-        label_40->setGeometry(QRect(180, 35, 31, 16));
+        label_40->setGeometry(QRect(175, 35, 31, 16));
         pbChangeXAxis = new QPushButton(groupBox_8);
         pbChangeXAxis->setObjectName(QStringLiteral("pbChangeXAxis"));
-        pbChangeXAxis->setGeometry(QRect(5, 105, 106, 31));
+        pbChangeXAxis->setGeometry(QRect(5, 95, 101, 31));
         QIcon icon4;
         icon4.addFile(QStringLiteral("icon/Arrow Pointing Down_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
         icon4.addFile(QStringLiteral("C:/Users/Admin/.designer/backup/icon/Right Arrow_16px.png"), QSize(), QIcon::Normal, QIcon::On);
         pbChangeXAxis->setIcon(icon4);
         pbChangeXAxis->setCheckable(true);
-        pbPump_2 = new QPushButton(groupBox_8);
-        pbPump_2->setObjectName(QStringLiteral("pbPump_2"));
-        pbPump_2->setGeometry(QRect(115, 105, 96, 31));
-        pbPump_2->setAutoFillBackground(false);
-        QIcon icon5;
-        icon5.addFile(QStringLiteral("icon/Toggle Off_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
-        icon5.addFile(QStringLiteral("icon/Toggle On_16px.png"), QSize(), QIcon::Normal, QIcon::On);
-        pbPump_2->setIcon(icon5);
-        pbPump_2->setCheckable(true);
-        pbPump_2->setChecked(false);
-        pbPump_2->setAutoDefault(false);
-        pbPump_2->setFlat(false);
+        cbDisplayCalibInfo = new QCheckBox(groupBox_8);
+        cbDisplayCalibInfo->setObjectName(QStringLiteral("cbDisplayCalibInfo"));
+        cbDisplayCalibInfo->setGeometry(QRect(115, 105, 71, 16));
+        cbDisplayCalibInfo->setChecked(true);
         groupBox_9 = new QGroupBox(tResultCameraArea);
         groupBox_9->setObjectName(QStringLiteral("groupBox_9"));
-        groupBox_9->setGeometry(QRect(5, 10, 221, 61));
+        groupBox_9->setEnabled(true);
+        groupBox_9->setGeometry(QRect(5, 5, 221, 81));
         pbLoadCamera = new QPushButton(groupBox_9);
         pbLoadCamera->setObjectName(QStringLiteral("pbLoadCamera"));
-        pbLoadCamera->setGeometry(QRect(5, 25, 46, 21));
-        QIcon icon6;
-        icon6.addFile(QStringLiteral("icon/webcam.png"), QSize(), QIcon::Normal, QIcon::Off);
-        icon6.addFile(QStringLiteral("C:/Users/Admin/.designer/backup/icon/stop.png"), QSize(), QIcon::Normal, QIcon::On);
-        pbLoadCamera->setIcon(icon6);
+        pbLoadCamera->setGeometry(QRect(35, 20, 46, 31));
+        QIcon icon5;
+        icon5.addFile(QStringLiteral("icon/webcam.png"), QSize(), QIcon::Normal, QIcon::Off);
+        icon5.addFile(QStringLiteral("C:/Users/Admin/.designer/backup/icon/stop.png"), QSize(), QIcon::Normal, QIcon::On);
+        pbLoadCamera->setIcon(icon5);
         pbLoadCamera->setCheckable(true);
         pbLoadTestImage = new QPushButton(groupBox_9);
         pbLoadTestImage->setObjectName(QStringLiteral("pbLoadTestImage"));
-        pbLoadTestImage->setGeometry(QRect(135, 25, 41, 21));
-        QIcon icon7;
-        icon7.addFile(QStringLiteral("icon/image.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbLoadTestImage->setIcon(icon7);
+        pbLoadTestImage->setGeometry(QRect(165, 20, 46, 31));
+        QIcon icon6;
+        icon6.addFile(QStringLiteral("icon/image.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbLoadTestImage->setIcon(icon6);
         label_11 = new QLabel(groupBox_9);
         label_11->setObjectName(QStringLiteral("label_11"));
-        label_11->setGeometry(QRect(105, 30, 31, 16));
+        label_11->setGeometry(QRect(90, 55, 31, 16));
         leFPS = new QLineEdit(groupBox_9);
         leFPS->setObjectName(QStringLiteral("leFPS"));
-        leFPS->setGeometry(QRect(55, 25, 41, 22));
+        leFPS->setGeometry(QRect(35, 55, 46, 16));
         leFPS->setAlignment(Qt::AlignCenter);
+        lbCameraState = new QLabel(groupBox_9);
+        lbCameraState->setObjectName(QStringLiteral("lbCameraState"));
+        lbCameraState->setEnabled(false);
+        lbCameraState->setGeometry(QRect(15, 30, 15, 15));
+        lbCameraState->setPixmap(QPixmap(QString::fromUtf8("icon/icons8-connection-status-on-48.png")));
+        lbCameraState->setScaledContents(true);
+        pbPlayPauseCamera = new QPushButton(groupBox_9);
+        pbPlayPauseCamera->setObjectName(QStringLiteral("pbPlayPauseCamera"));
+        pbPlayPauseCamera->setGeometry(QRect(90, 25, 21, 21));
+        QIcon icon7;
+        icon7.addFile(QStringLiteral("icon/icons8-play-48.png"), QSize(), QIcon::Normal, QIcon::Off);
+        icon7.addFile(QStringLiteral("icon/icons8-pause-48.png"), QSize(), QIcon::Normal, QIcon::On);
+        icon7.addFile(QStringLiteral("icon/icons8-play-48.png"), QSize(), QIcon::Selected, QIcon::Off);
+        pbPlayPauseCamera->setIcon(icon7);
+        pbPlayPauseCamera->setIconSize(QSize(15, 15));
+        pbPlayPauseCamera->setCheckable(true);
+        pbPlayPauseCamera->setChecked(false);
+        pbPlayPauseCamera->setFlat(false);
+        pbCaptureCamera = new QPushButton(groupBox_9);
+        pbCaptureCamera->setObjectName(QStringLiteral("pbCaptureCamera"));
+        pbCaptureCamera->setGeometry(QRect(115, 20, 36, 36));
+        QIcon icon8;
+        icon8.addFile(QStringLiteral("icon/icons8-screenshot-40.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbCaptureCamera->setIcon(icon8);
+        pbCaptureCamera->setIconSize(QSize(30, 30));
+        pbCaptureCamera->setCheckable(false);
+        pbCaptureCamera->setChecked(false);
+        pbCaptureCamera->setFlat(true);
+        pbLoadCameraSetting = new QPushButton(groupBox_9);
+        pbLoadCameraSetting->setObjectName(QStringLiteral("pbLoadCameraSetting"));
+        pbLoadCameraSetting->setGeometry(QRect(190, 55, 21, 21));
+        QIcon icon9;
+        icon9.addFile(QStringLiteral("icon/icons8-load-resume-template-64.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbLoadCameraSetting->setIcon(icon9);
+        pbLoadCameraSetting->setIconSize(QSize(15, 15));
+        pbLoadCameraSetting->setCheckable(true);
+        pbLoadCameraSetting->setChecked(false);
+        pbLoadCameraSetting->setFlat(false);
+        pbSaveCameraSetting = new QPushButton(groupBox_9);
+        pbSaveCameraSetting->setObjectName(QStringLiteral("pbSaveCameraSetting"));
+        pbSaveCameraSetting->setGeometry(QRect(165, 55, 21, 21));
+        QIcon icon10;
+        icon10.addFile(QStringLiteral("icon/icons8-save-64.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbSaveCameraSetting->setIcon(icon10);
+        pbSaveCameraSetting->setIconSize(QSize(15, 15));
+        pbSaveCameraSetting->setCheckable(true);
+        pbSaveCameraSetting->setChecked(false);
+        pbSaveCameraSetting->setFlat(false);
         groupBox_10 = new QGroupBox(tResultCameraArea);
         groupBox_10->setObjectName(QStringLiteral("groupBox_10"));
-        groupBox_10->setGeometry(QRect(330, 10, 136, 161));
+        groupBox_10->setGeometry(QRect(335, 5, 131, 136));
+        groupBox_10->setStyleSheet(QStringLiteral(""));
         pbViewDataObjects = new QPushButton(groupBox_10);
         pbViewDataObjects->setObjectName(QStringLiteral("pbViewDataObjects"));
-        pbViewDataObjects->setGeometry(QRect(10, 25, 121, 31));
+        pbViewDataObjects->setGeometry(QRect(5, 20, 121, 31));
         pbViewDataObjects->setStyleSheet(QStringLiteral(""));
-        QIcon icon8;
-        icon8.addFile(QStringLiteral("icon/icons8-object-48.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbViewDataObjects->setIcon(icon8);
+        QIcon icon11;
+        icon11.addFile(QStringLiteral("icon/icons8-object-48.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbViewDataObjects->setIcon(icon11);
         pbClearDetectObjects = new QPushButton(groupBox_10);
         pbClearDetectObjects->setObjectName(QStringLiteral("pbClearDetectObjects"));
-        pbClearDetectObjects->setGeometry(QRect(10, 65, 121, 31));
-        QIcon icon9;
-        icon9.addFile(QStringLiteral("icon/Eraser_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbClearDetectObjects->setIcon(icon9);
+        pbClearDetectObjects->setGeometry(QRect(5, 55, 121, 31));
+        QIcon icon12;
+        icon12.addFile(QStringLiteral("icon/Eraser_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbClearDetectObjects->setIcon(icon12);
         label_50 = new QLabel(groupBox_10);
         label_50->setObjectName(QStringLiteral("label_50"));
-        label_50->setGeometry(QRect(15, 135, 51, 16));
+        label_50->setGeometry(QRect(15, 115, 51, 16));
         label_50->setFont(font2);
         label_48 = new QLabel(groupBox_10);
         label_48->setObjectName(QStringLiteral("label_48"));
-        label_48->setGeometry(QRect(15, 110, 51, 16));
+        label_48->setGeometry(QRect(15, 90, 51, 16));
         label_48->setFont(font2);
         lbTrackingObjectNumber = new QLabel(groupBox_10);
         lbTrackingObjectNumber->setObjectName(QStringLiteral("lbTrackingObjectNumber"));
-        lbTrackingObjectNumber->setGeometry(QRect(90, 110, 31, 16));
+        lbTrackingObjectNumber->setGeometry(QRect(90, 90, 31, 16));
         QFont font4;
         font4.setPointSize(10);
         lbTrackingObjectNumber->setFont(font4);
         lbVisibleObjectNumber = new QLabel(groupBox_10);
         lbVisibleObjectNumber->setObjectName(QStringLiteral("lbVisibleObjectNumber"));
-        lbVisibleObjectNumber->setGeometry(QRect(90, 135, 31, 16));
+        lbVisibleObjectNumber->setGeometry(QRect(90, 115, 31, 16));
         lbVisibleObjectNumber->setFont(font4);
-        pbSwitchWorkFlow = new QPushButton(tResultCameraArea);
-        pbSwitchWorkFlow->setObjectName(QStringLiteral("pbSwitchWorkFlow"));
-        pbSwitchWorkFlow->setGeometry(QRect(405, 225, 36, 31));
-        QIcon icon10;
-        icon10.addFile(QStringLiteral("icon/icons8-next-page-48.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbSwitchWorkFlow->setIcon(icon10);
         pbFilter = new QPushButton(tResultCameraArea);
         pbFilter->setObjectName(QStringLiteral("pbFilter"));
-        pbFilter->setGeometry(QRect(405, 265, 61, 36));
-        QIcon icon11;
-        icon11.addFile(QStringLiteral("icon/Slider 2_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbFilter->setIcon(icon11);
+        pbFilter->setGeometry(QRect(410, 225, 61, 36));
+        QIcon icon13;
+        icon13.addFile(QStringLiteral("icon/Slider 2_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbFilter->setIcon(icon13);
+        pbTransformPerspective = new QPushButton(tResultCameraArea);
+        pbTransformPerspective->setObjectName(QStringLiteral("pbTransformPerspective"));
+        pbTransformPerspective->setGeometry(QRect(335, 145, 91, 31));
+        pbTransformPerspective->setAutoFillBackground(false);
+        QIcon icon14;
+        icon14.addFile(QStringLiteral("icon/Toggle Off_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        icon14.addFile(QStringLiteral("icon/Toggle On_16px.png"), QSize(), QIcon::Normal, QIcon::On);
+        pbTransformPerspective->setIcon(icon14);
+        pbTransformPerspective->setCheckable(true);
+        pbTransformPerspective->setChecked(false);
+        pbTransformPerspective->setAutoDefault(false);
+        pbTransformPerspective->setFlat(false);
+        saCamera = new QScrollArea(tResultCameraArea);
+        saCamera->setObjectName(QStringLiteral("saCamera"));
+        saCamera->setGeometry(QRect(5, 225, 400, 300));
+        saCamera->setStyleSheet(QStringLiteral(""));
+        saCamera->setWidgetResizable(false);
+        saCameraArea = new QWidget();
+        saCameraArea->setObjectName(QStringLiteral("saCameraArea"));
+        saCameraArea->setGeometry(QRect(0, 0, 400, 300));
+        saCameraArea->setStyleSheet(QStringLiteral(""));
+        lbScreenStreamer = new CameraWidget(saCameraArea);
+        lbScreenStreamer->setObjectName(QStringLiteral("lbScreenStreamer"));
+        lbScreenStreamer->setGeometry(QRect(0, 0, 400, 300));
+        lbScreenStreamer->setStyleSheet(QStringLiteral("background-color:rgb(230, 230, 230)"));
+        lbScreenStreamer->setScaledContents(false);
+        lbScreenStreamer->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop);
+        saCamera->setWidget(saCameraArea);
+        pbExpandCameraWidget = new QPushButton(tResultCameraArea);
+        pbExpandCameraWidget->setObjectName(QStringLiteral("pbExpandCameraWidget"));
+        pbExpandCameraWidget->setGeometry(QRect(430, 185, 36, 31));
+        QIcon icon15;
+        icon15.addFile(QStringLiteral("icon/icons8-expand-48.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbExpandCameraWidget->setIcon(icon15);
+        pbExpandCameraWidget->setCheckable(true);
+        pbExpandCameraWidget->setChecked(false);
+        pbCameraWindowMode = new QPushButton(tResultCameraArea);
+        pbCameraWindowMode->setObjectName(QStringLiteral("pbCameraWindowMode"));
+        pbCameraWindowMode->setGeometry(QRect(430, 145, 36, 31));
+        QIcon icon16;
+        icon16.addFile(QStringLiteral("icon/icons8-maximize-window-48.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbCameraWindowMode->setIcon(icon16);
+        lbCameraLayer = new QComboBox(tResultCameraArea);
+        lbCameraLayer->setObjectName(QStringLiteral("lbCameraLayer"));
+        lbCameraLayer->setGeometry(QRect(335, 185, 91, 31));
         twModule->addTab(tResultCameraArea, QString());
         tDrawing = new QWidget();
         tDrawing->setObjectName(QStringLiteral("tDrawing"));
@@ -663,27 +755,27 @@ public:
         pbDrawLine = new QPushButton(tDrawing);
         pbDrawLine->setObjectName(QStringLiteral("pbDrawLine"));
         pbDrawLine->setGeometry(QRect(400, 326, 28, 28));
-        QIcon icon12;
-        icon12.addFile(QStringLiteral("icon/Line_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbDrawLine->setIcon(icon12);
+        QIcon icon17;
+        icon17.addFile(QStringLiteral("icon/Line_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbDrawLine->setIcon(icon17);
         pbDrawRectangle = new QPushButton(tDrawing);
         pbDrawRectangle->setObjectName(QStringLiteral("pbDrawRectangle"));
         pbDrawRectangle->setGeometry(QRect(430, 326, 28, 28));
-        QIcon icon13;
-        icon13.addFile(QStringLiteral("icon/Rectangular_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbDrawRectangle->setIcon(icon13);
+        QIcon icon18;
+        icon18.addFile(QStringLiteral("icon/Rectangular_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbDrawRectangle->setIcon(icon18);
         pbDrawArc = new QPushButton(tDrawing);
         pbDrawArc->setObjectName(QStringLiteral("pbDrawArc"));
         pbDrawArc->setGeometry(QRect(400, 356, 28, 28));
-        QIcon icon14;
-        icon14.addFile(QStringLiteral("icon/Circled Notch_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbDrawArc->setIcon(icon14);
+        QIcon icon19;
+        icon19.addFile(QStringLiteral("icon/Circled Notch_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbDrawArc->setIcon(icon19);
         pbDrawCircle = new QPushButton(tDrawing);
         pbDrawCircle->setObjectName(QStringLiteral("pbDrawCircle"));
         pbDrawCircle->setGeometry(QRect(430, 356, 28, 28));
-        QIcon icon15;
-        icon15.addFile(QStringLiteral("icon/Circle_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbDrawCircle->setIcon(icon15);
+        QIcon icon20;
+        icon20.addFile(QStringLiteral("icon/Circle_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbDrawCircle->setIcon(icon20);
         widget_7 = new QWidget(tDrawing);
         widget_7->setObjectName(QStringLiteral("widget_7"));
         widget_7->setGeometry(QRect(405, 152, 53, 31));
@@ -738,40 +830,40 @@ public:
         pbOpenPicture = new QPushButton(tDrawing);
         pbOpenPicture->setObjectName(QStringLiteral("pbOpenPicture"));
         pbOpenPicture->setGeometry(QRect(265, 10, 29, 21));
-        QIcon icon16;
-        icon16.addFile(QStringLiteral("icon/Full Image_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbOpenPicture->setIcon(icon16);
+        QIcon icon21;
+        icon21.addFile(QStringLiteral("icon/Full Image_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbOpenPicture->setIcon(icon21);
         pbExportDrawingGcodes = new QPushButton(tDrawing);
         pbExportDrawingGcodes->setObjectName(QStringLiteral("pbExportDrawingGcodes"));
         pbExportDrawingGcodes->setGeometry(QRect(399, 485, 61, 46));
         pbPainting = new QPushButton(tDrawing);
         pbPainting->setObjectName(QStringLiteral("pbPainting"));
         pbPainting->setGeometry(QRect(400, 90, 61, 37));
-        QIcon icon17;
-        icon17.addFile(QStringLiteral("icon/Paint_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbPainting->setIcon(icon17);
+        QIcon icon22;
+        icon22.addFile(QStringLiteral("icon/Paint_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbPainting->setIcon(icon22);
         pbPainting->setIconSize(QSize(20, 20));
         pbZoomIn = new QPushButton(tDrawing);
         pbZoomIn->setObjectName(QStringLiteral("pbZoomIn"));
         pbZoomIn->setGeometry(QRect(400, 386, 28, 28));
-        QIcon icon18;
-        icon18.addFile(QStringLiteral("icon/Zoom In_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbZoomIn->setIcon(icon18);
+        QIcon icon23;
+        icon23.addFile(QStringLiteral("icon/Zoom In_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbZoomIn->setIcon(icon23);
         pbZoomOut = new QPushButton(tDrawing);
         pbZoomOut->setObjectName(QStringLiteral("pbZoomOut"));
         pbZoomOut->setGeometry(QRect(430, 386, 28, 28));
-        QIcon icon19;
-        icon19.addFile(QStringLiteral("icon/Zoom Out_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbZoomOut->setIcon(icon19);
+        QIcon icon24;
+        icon24.addFile(QStringLiteral("icon/Zoom Out_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbZoomOut->setIcon(icon24);
         label_21 = new QLabel(tDrawing);
         label_21->setObjectName(QStringLiteral("label_21"));
         label_21->setGeometry(QRect(316, 505, 39, 16));
         pbCursor = new QPushButton(tDrawing);
         pbCursor->setObjectName(QStringLiteral("pbCursor"));
         pbCursor->setGeometry(QRect(430, 415, 28, 28));
-        QIcon icon20;
-        icon20.addFile(QStringLiteral("icon/Cursor-color_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbCursor->setIcon(icon20);
+        QIcon icon25;
+        icon25.addFile(QStringLiteral("icon/Cursor-color_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbCursor->setIcon(icon25);
         cbDrawingEffector = new QComboBox(tDrawing);
         cbDrawingEffector->setObjectName(QStringLiteral("cbDrawingEffector"));
         cbDrawingEffector->setGeometry(QRect(399, 455, 61, 22));
@@ -943,10 +1035,10 @@ public:
         pbConnect->setGeometry(QRect(5, 40, 81, 41));
         pbConnect->setStyleSheet(QLatin1String("background-color: rgb(30, 88, 180);\n"
 "color: rgb(255, 255, 255);"));
-        QIcon icon21;
-        icon21.addFile(QStringLiteral("C:/Users/Admin/.designer/backup/icon/disconnected.png"), QSize(), QIcon::Normal, QIcon::Off);
-        icon21.addFile(QStringLiteral("C:/Users/Admin/.designer/backup/icon/connected.png"), QSize(), QIcon::Normal, QIcon::On);
-        pbConnect->setIcon(icon21);
+        QIcon icon26;
+        icon26.addFile(QStringLiteral("C:/Users/Admin/.designer/backup/icon/disconnected.png"), QSize(), QIcon::Normal, QIcon::Off);
+        icon26.addFile(QStringLiteral("C:/Users/Admin/.designer/backup/icon/connected.png"), QSize(), QIcon::Normal, QIcon::On);
+        pbConnect->setIcon(icon26);
         pbConnect->setIconSize(QSize(30, 20));
         lbID = new QLabel(centralWidget);
         lbID->setObjectName(QStringLiteral("lbID"));
@@ -956,7 +1048,7 @@ public:
         lbID->setFont(font6);
         gbGripper = new QGroupBox(centralWidget);
         gbGripper->setObjectName(QStringLiteral("gbGripper"));
-        gbGripper->setGeometry(QRect(605, 28, 141, 80));
+        gbGripper->setGeometry(QRect(595, 28, 146, 80));
         hsGripperAngle = new QSlider(gbGripper);
         hsGripperAngle->setObjectName(QStringLiteral("hsGripperAngle"));
         hsGripperAngle->setGeometry(QRect(6, 60, 101, 16));
@@ -983,18 +1075,18 @@ public:
         lbGripperValue->setFont(font6);
         pbGrip = new QPushButton(gbGripper);
         pbGrip->setObjectName(QStringLiteral("pbGrip"));
-        pbGrip->setGeometry(QRect(10, 30, 41, 21));
+        pbGrip->setGeometry(QRect(5, 30, 51, 21));
         pbGrip->setAutoFillBackground(false);
         pbGrip->setAutoDefault(false);
         pbGrip->setFlat(false);
         gbRelay = new QGroupBox(centralWidget);
         gbRelay->setObjectName(QStringLiteral("gbRelay"));
-        gbRelay->setGeometry(QRect(495, 28, 101, 80));
+        gbRelay->setGeometry(QRect(490, 28, 101, 80));
         pbPump = new QPushButton(gbRelay);
         pbPump->setObjectName(QStringLiteral("pbPump"));
         pbPump->setGeometry(QRect(15, 45, 31, 27));
         pbPump->setAutoFillBackground(false);
-        pbPump->setIcon(icon5);
+        pbPump->setIcon(icon14);
         pbPump->setCheckable(true);
         pbPump->setChecked(false);
         pbPump->setAutoDefault(false);
@@ -1007,7 +1099,7 @@ public:
         pbLaser->setObjectName(QStringLiteral("pbLaser"));
         pbLaser->setGeometry(QRect(60, 45, 31, 27));
         pbLaser->setAutoFillBackground(false);
-        pbLaser->setIcon(icon5);
+        pbLaser->setIcon(icon14);
         pbLaser->setCheckable(true);
         pbLaser->setChecked(false);
         pbLaser->setAutoDefault(false);
@@ -1018,32 +1110,32 @@ public:
         label_35->setFont(font6);
         gbMovement1 = new QGroupBox(centralWidget);
         gbMovement1->setObjectName(QStringLiteral("gbMovement1"));
-        gbMovement1->setGeometry(QRect(205, 28, 201, 101));
+        gbMovement1->setGeometry(QRect(225, 28, 181, 101));
         leY = new QLineEdit(gbMovement1);
         leY->setObjectName(QStringLiteral("leY"));
-        leY->setGeometry(QRect(125, 45, 51, 21));
+        leY->setGeometry(QRect(120, 45, 51, 21));
         leZ = new QLineEdit(gbMovement1);
         leZ->setObjectName(QStringLiteral("leZ"));
-        leZ->setGeometry(QRect(125, 75, 51, 21));
+        leZ->setGeometry(QRect(120, 75, 51, 21));
         leX = new QLineEdit(gbMovement1);
         leX->setObjectName(QStringLiteral("leX"));
-        leX->setGeometry(QRect(125, 15, 51, 21));
+        leX->setGeometry(QRect(120, 15, 51, 21));
         pbZ = new QPushButton(gbMovement1);
         pbZ->setObjectName(QStringLiteral("pbZ"));
-        pbZ->setGeometry(QRect(85, 75, 31, 21));
+        pbZ->setGeometry(QRect(80, 75, 31, 21));
         pbHome = new QPushButton(gbMovement1);
         pbHome->setObjectName(QStringLiteral("pbHome"));
         pbHome->setGeometry(QRect(10, 30, 51, 51));
-        QIcon icon22;
-        icon22.addFile(QStringLiteral("icon/home.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbHome->setIcon(icon22);
+        QIcon icon27;
+        icon27.addFile(QStringLiteral("icon/home.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbHome->setIcon(icon27);
         pbHome->setIconSize(QSize(30, 30));
         pbX = new QPushButton(gbMovement1);
         pbX->setObjectName(QStringLiteral("pbX"));
-        pbX->setGeometry(QRect(85, 15, 31, 21));
+        pbX->setGeometry(QRect(80, 15, 31, 21));
         pbY = new QPushButton(gbMovement1);
         pbY->setObjectName(QStringLiteral("pbY"));
-        pbY->setGeometry(QRect(85, 45, 31, 21));
+        pbY->setGeometry(QRect(80, 45, 31, 21));
         twConveyor = new QTabWidget(centralWidget);
         twConveyor->setObjectName(QStringLiteral("twConveyor"));
         twConveyor->setGeometry(QRect(755, 20, 211, 91));
@@ -1051,37 +1143,46 @@ public:
         tConveyor->setObjectName(QStringLiteral("tConveyor"));
         cbConveyorMode = new QComboBox(tConveyor);
         cbConveyorMode->setObjectName(QStringLiteral("cbConveyorMode"));
-        cbConveyorMode->setGeometry(QRect(95, 5, 71, 24));
+        cbConveyorMode->setGeometry(QRect(5, 35, 76, 21));
         cbConveyorMode->setFont(font6);
         cbConveyorValueType = new QComboBox(tConveyor);
         cbConveyorValueType->setObjectName(QStringLiteral("cbConveyorValueType"));
-        cbConveyorValueType->setGeometry(QRect(110, 35, 56, 25));
+        cbConveyorValueType->setGeometry(QRect(135, 9, 66, 21));
         cbConveyorValueType->setFont(font6);
         leConveyorvMovingValue = new QLineEdit(tConveyor);
         leConveyorvMovingValue->setObjectName(QStringLiteral("leConveyorvMovingValue"));
-        leConveyorvMovingValue->setGeometry(QRect(53, 35, 46, 25));
+        leConveyorvMovingValue->setGeometry(QRect(90, 9, 36, 21));
         leConveyorvMovingValue->setFont(font2);
-        pbConveyorMove = new QPushButton(tConveyor);
-        pbConveyorMove->setObjectName(QStringLiteral("pbConveyorMove"));
-        pbConveyorMove->setGeometry(QRect(5, 35, 41, 25));
         pbConveyorConnect = new QPushButton(tConveyor);
         pbConveyorConnect->setObjectName(QStringLiteral("pbConveyorConnect"));
-        pbConveyorConnect->setGeometry(QRect(5, 5, 81, 25));
+        pbConveyorConnect->setGeometry(QRect(5, 5, 76, 26));
+        pbConveyorConnect->setCheckable(true);
+        leSpeedOfPositionMode = new QLineEdit(tConveyor);
+        leSpeedOfPositionMode->setObjectName(QStringLiteral("leSpeedOfPositionMode"));
+        leSpeedOfPositionMode->setEnabled(false);
+        leSpeedOfPositionMode->setGeometry(QRect(90, 35, 36, 21));
+        leSpeedOfPositionMode->setFont(font2);
+        leSpeedOfPositionMode->setClearButtonEnabled(false);
+        lbSpeedOfPositionMode = new QLabel(tConveyor);
+        lbSpeedOfPositionMode->setObjectName(QStringLiteral("lbSpeedOfPositionMode"));
+        lbSpeedOfPositionMode->setEnabled(false);
+        lbSpeedOfPositionMode->setGeometry(QRect(140, 40, 51, 16));
+        lbSpeedOfPositionMode->setFont(font6);
         twConveyor->addTab(tConveyor, QString());
         sSlidingRail = new QWidget();
         sSlidingRail->setObjectName(QStringLiteral("sSlidingRail"));
         pbSlidingConnect = new QPushButton(sSlidingRail);
         pbSlidingConnect->setObjectName(QStringLiteral("pbSlidingConnect"));
         pbSlidingConnect->setGeometry(QRect(5, 5, 96, 26));
-        QIcon icon23;
-        icon23.addFile(QStringLiteral("icon/connected.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbSlidingConnect->setIcon(icon23);
+        QIcon icon28;
+        icon28.addFile(QStringLiteral("icon/connected.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbSlidingConnect->setIcon(icon28);
         pbSlidingHome = new QPushButton(sSlidingRail);
         pbSlidingHome->setObjectName(QStringLiteral("pbSlidingHome"));
         pbSlidingHome->setGeometry(QRect(5, 35, 51, 26));
-        QIcon icon24;
-        icon24.addFile(QStringLiteral("icon/icons8-home-32.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbSlidingHome->setIcon(icon24);
+        QIcon icon29;
+        icon29.addFile(QStringLiteral("icon/icons8-home-32.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbSlidingHome->setIcon(icon29);
         leSlidingSpeed = new QLineEdit(sSlidingRail);
         leSlidingSpeed->setObjectName(QStringLiteral("leSlidingSpeed"));
         leSlidingSpeed->setGeometry(QRect(110, 35, 36, 21));
@@ -1091,9 +1192,9 @@ public:
         pbSlidingDisable = new QPushButton(sSlidingRail);
         pbSlidingDisable->setObjectName(QStringLiteral("pbSlidingDisable"));
         pbSlidingDisable->setGeometry(QRect(60, 35, 41, 26));
-        QIcon icon25;
-        icon25.addFile(QStringLiteral("icon/icons8-sleeping-in-bed-32.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbSlidingDisable->setIcon(icon25);
+        QIcon icon30;
+        icon30.addFile(QStringLiteral("icon/icons8-sleeping-in-bed-32.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbSlidingDisable->setIcon(icon30);
         label_36 = new QLabel(sSlidingRail);
         label_36->setObjectName(QStringLiteral("label_36"));
         label_36->setGeometry(QRect(110, 10, 46, 16));
@@ -1128,9 +1229,9 @@ public:
         pbFormat = new QPushButton(centralWidget);
         pbFormat->setObjectName(QStringLiteral("pbFormat"));
         pbFormat->setGeometry(QRect(900, 410, 91, 36));
-        QIcon icon26;
-        icon26.addFile(QStringLiteral("icon/index.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbFormat->setIcon(icon26);
+        QIcon icon31;
+        icon31.addFile(QStringLiteral("icon/index.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbFormat->setIcon(icon31);
         pbFormat->setIconSize(QSize(30, 30));
         cbLockGcodeEditor = new QCheckBox(centralWidget);
         cbLockGcodeEditor->setObjectName(QStringLiteral("cbLockGcodeEditor"));
@@ -1209,10 +1310,10 @@ public:
         pbExecuteGcodes->setObjectName(QStringLiteral("pbExecuteGcodes"));
         pbExecuteGcodes->setGeometry(QRect(1155, 410, 56, 56));
         pbExecuteGcodes->setAutoFillBackground(false);
-        QIcon icon27;
-        icon27.addFile(QStringLiteral("icon/Play_96px.png"), QSize(), QIcon::Normal, QIcon::Off);
-        icon27.addFile(QStringLiteral("icon/Pause_96px.png"), QSize(), QIcon::Normal, QIcon::On);
-        pbExecuteGcodes->setIcon(icon27);
+        QIcon icon32;
+        icon32.addFile(QStringLiteral("icon/Play_96px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        icon32.addFile(QStringLiteral("icon/Pause_96px.png"), QSize(), QIcon::Normal, QIcon::On);
+        pbExecuteGcodes->setIcon(icon32);
         pbExecuteGcodes->setIconSize(QSize(70, 70));
         pbExecuteGcodes->setCheckable(true);
         pbExecuteGcodes->setFlat(false);
@@ -1276,15 +1377,15 @@ public:
         pbGcodeReference = new QPushButton(gbAddGcode);
         pbGcodeReference->setObjectName(QStringLiteral("pbGcodeReference"));
         pbGcodeReference->setGeometry(QRect(140, 60, 86, 26));
-        QIcon icon28;
-        icon28.addFile(QStringLiteral("icon/Help_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbGcodeReference->setIcon(icon28);
+        QIcon icon33;
+        icon33.addFile(QStringLiteral("icon/Help_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbGcodeReference->setIcon(icon33);
         pbAddGcode = new QPushButton(gbAddGcode);
         pbAddGcode->setObjectName(QStringLiteral("pbAddGcode"));
         pbAddGcode->setGeometry(QRect(5, 60, 126, 26));
-        QIcon icon29;
-        icon29.addFile(QStringLiteral("icon/new.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbAddGcode->setIcon(icon29);
+        QIcon icon34;
+        icon34.addFile(QStringLiteral("icon/new.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbAddGcode->setIcon(icon34);
         pbAddGcode->setAutoDefault(false);
         pbAddGcode->setFlat(false);
         cbGcode = new QComboBox(gbAddGcode);
@@ -1308,9 +1409,9 @@ public:
         pbSaveGcode = new QPushButton(centralWidget);
         pbSaveGcode->setObjectName(QStringLiteral("pbSaveGcode"));
         pbSaveGcode->setGeometry(QRect(1135, 115, 76, 26));
-        QIcon icon30;
-        icon30.addFile(QStringLiteral("icon/save.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbSaveGcode->setIcon(icon30);
+        QIcon icon35;
+        icon35.addFile(QStringLiteral("icon/save.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbSaveGcode->setIcon(icon35);
         pbSaveGcode->setIconSize(QSize(20, 20));
         tabWidget = new QTabWidget(centralWidget);
         tabWidget->setObjectName(QStringLiteral("tabWidget"));
@@ -1320,23 +1421,23 @@ public:
         pbFindGcodeFile = new QPushButton(tab);
         pbFindGcodeFile->setObjectName(QStringLiteral("pbFindGcodeFile"));
         pbFindGcodeFile->setGeometry(QRect(5, 80, 55, 31));
-        QIcon icon31;
-        icon31.addFile(QStringLiteral("icon/Search_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbFindGcodeFile->setIcon(icon31);
+        QIcon icon36;
+        icon36.addFile(QStringLiteral("icon/Search_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbFindGcodeFile->setIcon(icon36);
         pbFindGcodeFile->setIconSize(QSize(16, 16));
         pbFindGcodeFile->setFlat(false);
         pbRefreshGcodeFiles = new QPushButton(tab);
         pbRefreshGcodeFiles->setObjectName(QStringLiteral("pbRefreshGcodeFiles"));
         pbRefreshGcodeFiles->setGeometry(QRect(5, 44, 55, 31));
-        QIcon icon32;
-        icon32.addFile(QStringLiteral("icon/Restart_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbRefreshGcodeFiles->setIcon(icon32);
+        QIcon icon37;
+        icon37.addFile(QStringLiteral("icon/Restart_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbRefreshGcodeFiles->setIcon(icon37);
         pbRefreshGcodeFiles->setIconSize(QSize(16, 16));
         pbRefreshGcodeFiles->setFlat(false);
         pbAddNewProgram = new QPushButton(tab);
         pbAddNewProgram->setObjectName(QStringLiteral("pbAddNewProgram"));
         pbAddNewProgram->setGeometry(QRect(5, 8, 56, 31));
-        pbAddNewProgram->setIcon(icon29);
+        pbAddNewProgram->setIcon(icon34);
         pbAddNewProgram->setIconSize(QSize(16, 16));
         pbAddNewProgram->setFlat(false);
         saProgramFiles = new QScrollArea(tab);
@@ -1368,9 +1469,9 @@ public:
         pbExDeleteProgram = new QPushButton(frExProgram);
         pbExDeleteProgram->setObjectName(QStringLiteral("pbExDeleteProgram"));
         pbExDeleteProgram->setGeometry(QRect(180, 5, 30, 31));
-        QIcon icon33;
-        icon33.addFile(QStringLiteral("C:/Users/Admin/.designer/backup/icon/delete.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbExDeleteProgram->setIcon(icon33);
+        QIcon icon38;
+        icon38.addFile(QStringLiteral("C:/Users/Admin/.designer/backup/icon/delete.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbExDeleteProgram->setIcon(icon38);
         pbExDeleteProgram->setIconSize(QSize(30, 30));
         pbExDeleteProgram->setAutoDefault(false);
         pbExDeleteProgram->setFlat(true);
@@ -1381,17 +1482,17 @@ public:
         pbSortGcodeFiles = new QPushButton(tab);
         pbSortGcodeFiles->setObjectName(QStringLiteral("pbSortGcodeFiles"));
         pbSortGcodeFiles->setGeometry(QRect(5, 116, 55, 31));
-        QIcon icon34;
-        icon34.addFile(QStringLiteral("icon/Sort_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbSortGcodeFiles->setIcon(icon34);
+        QIcon icon39;
+        icon39.addFile(QStringLiteral("icon/Sort_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbSortGcodeFiles->setIcon(icon39);
         pbSortGcodeFiles->setIconSize(QSize(16, 16));
         pbSortGcodeFiles->setFlat(false);
         pbUploadProgram = new QPushButton(tab);
         pbUploadProgram->setObjectName(QStringLiteral("pbUploadProgram"));
         pbUploadProgram->setGeometry(QRect(325, 10, 56, 36));
-        QIcon icon35;
-        icon35.addFile(QStringLiteral("icon/icons8-upload-to-cloud-48.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbUploadProgram->setIcon(icon35);
+        QIcon icon40;
+        icon40.addFile(QStringLiteral("icon/icons8-upload-to-cloud-48.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbUploadProgram->setIcon(icon40);
         pbUploadProgram->setIconSize(QSize(32, 32));
         pbUploadProgram->setFlat(false);
         pbImportGcodeFiles = new QPushButton(tab);
@@ -1411,19 +1512,19 @@ public:
         pbUploadProgram_2 = new QPushButton(tab_3);
         pbUploadProgram_2->setObjectName(QStringLiteral("pbUploadProgram_2"));
         pbUploadProgram_2->setGeometry(QRect(185, 110, 56, 36));
-        QIcon icon36;
-        icon36.addFile(QStringLiteral("C:/Users/Admin/.designer/backup/icon/icons8-download-from-cloud-48.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbUploadProgram_2->setIcon(icon36);
+        QIcon icon41;
+        icon41.addFile(QStringLiteral("C:/Users/Admin/.designer/backup/icon/icons8-download-from-cloud-48.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbUploadProgram_2->setIcon(icon41);
         pbUploadProgram_2->setIconSize(QSize(32, 32));
         pbUploadProgram_2->setFlat(false);
         tabWidget->addTab(tab_3, QString());
-        lbID_2 = new QLabel(centralWidget);
-        lbID_2->setObjectName(QStringLiteral("lbID_2"));
-        lbID_2->setGeometry(QRect(95, 60, 71, 16));
-        lbID_2->setFont(font6);
+        lbPort = new QLabel(centralWidget);
+        lbPort->setObjectName(QStringLiteral("lbPort"));
+        lbPort->setGeometry(QRect(95, 60, 71, 16));
+        lbPort->setFont(font6);
         lbIP = new QLabel(centralWidget);
         lbIP->setObjectName(QStringLiteral("lbIP"));
-        lbIP->setGeometry(QRect(95, 80, 111, 16));
+        lbIP->setGeometry(QRect(95, 80, 126, 16));
         lbIP->setFont(font6);
         groupBox_2 = new QGroupBox(centralWidget);
         groupBox_2->setObjectName(QStringLiteral("groupBox_2"));
@@ -1485,12 +1586,12 @@ public:
 
         twDeltaManager->setCurrentIndex(0);
         twModule->setCurrentIndex(0);
-        pbPump_2->setDefault(false);
+        pbTransformPerspective->setDefault(false);
         twDeltaGeometry->setCurrentIndex(1);
         pbGrip->setDefault(false);
         pbPump->setDefault(false);
         pbLaser->setDefault(false);
-        twConveyor->setCurrentIndex(1);
+        twConveyor->setCurrentIndex(0);
         pbAddGcode->setDefault(false);
         tabWidget->setCurrentIndex(0);
         pbExDeleteProgram->setDefault(true);
@@ -1518,9 +1619,11 @@ public:
 #ifndef QT_NO_TOOLTIP
         twModule->setToolTip(QString());
 #endif // QT_NO_TOOLTIP
-        lbScreenStreamer->setText(QString());
         groupBox->setTitle(QApplication::translate("MainWindow", "Object", Q_NULLPTR));
         lbTrackingObject->setText(QString());
+#ifndef QT_NO_TOOLTIP
+        pbObjectRect->setToolTip(QApplication::translate("MainWindow", "Bound the object size", Q_NULLPTR));
+#endif // QT_NO_TOOLTIP
         pbObjectRect->setText(QApplication::translate("MainWindow", "Rec Tool", Q_NULLPTR));
         leLRec->setText(QApplication::translate("MainWindow", "20", Q_NULLPTR));
         leWRec->setText(QApplication::translate("MainWindow", "20", Q_NULLPTR));
@@ -1531,6 +1634,19 @@ public:
         label_54->setText(QApplication::translate("MainWindow", "mm", Q_NULLPTR));
         label_55->setText(QApplication::translate("MainWindow", "mm", Q_NULLPTR));
         label_56->setText(QApplication::translate("MainWindow", "mm", Q_NULLPTR));
+        cbObjectType->clear();
+        cbObjectType->insertItems(0, QStringList()
+         << QApplication::translate("MainWindow", "Type 1", Q_NULLPTR)
+         << QApplication::translate("MainWindow", "Type 2", Q_NULLPTR)
+         << QApplication::translate("MainWindow", "Type 3", Q_NULLPTR)
+         << QApplication::translate("MainWindow", "Type 4", Q_NULLPTR)
+         << QApplication::translate("MainWindow", "Type 5", Q_NULLPTR)
+         << QApplication::translate("MainWindow", "Type 6", Q_NULLPTR)
+         << QApplication::translate("MainWindow", "Type 7", Q_NULLPTR)
+         << QApplication::translate("MainWindow", "Type 8", Q_NULLPTR)
+         << QApplication::translate("MainWindow", "Type 9", Q_NULLPTR)
+         << QApplication::translate("MainWindow", "Type 10", Q_NULLPTR)
+        );
         groupBox_7->setTitle(QApplication::translate("MainWindow", "Conveyor", Q_NULLPTR));
         leConvenyorSpeed->setText(QApplication::translate("MainWindow", "0", Q_NULLPTR));
         label_45->setText(QApplication::translate("MainWindow", "Speed", Q_NULLPTR));
@@ -1542,11 +1658,14 @@ public:
         label_47->setText(QApplication::translate("MainWindow", "Direction", Q_NULLPTR));
         label_49->setText(QApplication::translate("MainWindow", "(mm/s)", Q_NULLPTR));
         groupBox_8->setTitle(QApplication::translate("MainWindow", "Measurement", Q_NULLPTR));
+#ifndef QT_NO_TOOLTIP
+        pbObjectLine->setToolTip(QApplication::translate("MainWindow", "Calibrating length", Q_NULLPTR));
+#endif // QT_NO_TOOLTIP
         pbObjectLine->setText(QApplication::translate("MainWindow", "Calib Line", Q_NULLPTR));
-        leRealDistance->setText(QApplication::translate("MainWindow", "120", Q_NULLPTR));
+        leRealDistance->setText(QApplication::translate("MainWindow", "100", Q_NULLPTR));
         leYCoordinate->setText(QApplication::translate("MainWindow", "0", Q_NULLPTR));
 #ifndef QT_NO_TOOLTIP
-        pbObjectOrigin->setToolTip(QApplication::translate("MainWindow", "Coordinate", Q_NULLPTR));
+        pbObjectOrigin->setToolTip(QApplication::translate("MainWindow", "Set a calibrating point", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
         pbObjectOrigin->setText(QApplication::translate("MainWindow", "Calib Point", Q_NULLPTR));
         leXCoordinate->setText(QApplication::translate("MainWindow", "150", Q_NULLPTR));
@@ -1554,10 +1673,10 @@ public:
         label_39->setText(QApplication::translate("MainWindow", "Y", Q_NULLPTR));
         label_40->setText(QApplication::translate("MainWindow", "(mm)", Q_NULLPTR));
 #ifndef QT_NO_TOOLTIP
-        pbChangeXAxis->setToolTip(QApplication::translate("MainWindow", "Switch layers", Q_NULLPTR));
+        pbChangeXAxis->setToolTip(QApplication::translate("MainWindow", "Change direction of coordinates", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
         pbChangeXAxis->setText(QApplication::translate("MainWindow", "X Direction", Q_NULLPTR));
-        pbPump_2->setText(QApplication::translate("MainWindow", "Transform", Q_NULLPTR));
+        cbDisplayCalibInfo->setText(QApplication::translate("MainWindow", "Display", Q_NULLPTR));
         groupBox_9->setTitle(QApplication::translate("MainWindow", "Camera", Q_NULLPTR));
 #ifndef QT_NO_TOOLTIP
         pbLoadCamera->setToolTip(QApplication::translate("MainWindow", "Load Camera", Q_NULLPTR));
@@ -1569,10 +1688,27 @@ public:
         pbLoadTestImage->setText(QString());
         label_11->setText(QApplication::translate("MainWindow", "FPS", Q_NULLPTR));
         leFPS->setText(QApplication::translate("MainWindow", "15", Q_NULLPTR));
+        lbCameraState->setText(QString());
+#ifndef QT_NO_TOOLTIP
+        pbPlayPauseCamera->setToolTip(QApplication::translate("MainWindow", "<html><head/><body><p>Play and Pause</p><p>M98 PpauseCamera</p><p>M98 PresumeCamera</p></body></html>", Q_NULLPTR));
+#endif // QT_NO_TOOLTIP
+        pbPlayPauseCamera->setText(QString());
+#ifndef QT_NO_TOOLTIP
+        pbCaptureCamera->setToolTip(QApplication::translate("MainWindow", "<html><head/><body><p>Capture</p><p>M98 PcaptureCamera</p></body></html>", Q_NULLPTR));
+#endif // QT_NO_TOOLTIP
+        pbCaptureCamera->setText(QString());
+#ifndef QT_NO_TOOLTIP
+        pbLoadCameraSetting->setToolTip(QApplication::translate("MainWindow", "Load Setting", Q_NULLPTR));
+#endif // QT_NO_TOOLTIP
+        pbLoadCameraSetting->setText(QString());
+#ifndef QT_NO_TOOLTIP
+        pbSaveCameraSetting->setToolTip(QApplication::translate("MainWindow", "Save Setting", Q_NULLPTR));
+#endif // QT_NO_TOOLTIP
+        pbSaveCameraSetting->setText(QString());
         groupBox_10->setTitle(QApplication::translate("MainWindow", "Variable", Q_NULLPTR));
         pbViewDataObjects->setText(QApplication::translate("MainWindow", "Object Table", Q_NULLPTR));
 #ifndef QT_NO_TOOLTIP
-        pbClearDetectObjects->setToolTip(QApplication::translate("MainWindow", "Select Process Region", Q_NULLPTR));
+        pbClearDetectObjects->setToolTip(QApplication::translate("MainWindow", "<html><head/><body><p>Clear All Objects in Memory</p><p>M98 PclearObjects --&gt; Clear All</p><p>M98 PdeleteFirstObject --&gt; Delete First</p></body></html>", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
 #ifndef QT_NO_STATUSTIP
         pbClearDetectObjects->setStatusTip(QString());
@@ -1583,13 +1719,32 @@ public:
         lbTrackingObjectNumber->setText(QApplication::translate("MainWindow", "0", Q_NULLPTR));
         lbVisibleObjectNumber->setText(QApplication::translate("MainWindow", "0", Q_NULLPTR));
 #ifndef QT_NO_TOOLTIP
-        pbSwitchWorkFlow->setToolTip(QApplication::translate("MainWindow", "Switch layers", Q_NULLPTR));
-#endif // QT_NO_TOOLTIP
-        pbSwitchWorkFlow->setText(QString());
-#ifndef QT_NO_TOOLTIP
-        pbFilter->setToolTip(QApplication::translate("MainWindow", "Object Filter", Q_NULLPTR));
+        pbFilter->setToolTip(QApplication::translate("MainWindow", "Camera Filter", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
         pbFilter->setText(QApplication::translate("MainWindow", "Filter", Q_NULLPTR));
+#ifndef QT_NO_TOOLTIP
+        pbTransformPerspective->setToolTip(QApplication::translate("MainWindow", "Perspective Transformation", Q_NULLPTR));
+#endif // QT_NO_TOOLTIP
+        pbTransformPerspective->setText(QApplication::translate("MainWindow", "Transform", Q_NULLPTR));
+        lbScreenStreamer->setText(QString());
+#ifndef QT_NO_TOOLTIP
+        pbExpandCameraWidget->setToolTip(QApplication::translate("MainWindow", "Expand Camera Widget", Q_NULLPTR));
+#endif // QT_NO_TOOLTIP
+        pbExpandCameraWidget->setText(QString());
+#ifndef QT_NO_TOOLTIP
+        pbCameraWindowMode->setToolTip(QApplication::translate("MainWindow", "Window Mode", Q_NULLPTR));
+#endif // QT_NO_TOOLTIP
+        pbCameraWindowMode->setText(QString());
+        lbCameraLayer->clear();
+        lbCameraLayer->insertItems(0, QStringList()
+         << QApplication::translate("MainWindow", "Result", Q_NULLPTR)
+         << QApplication::translate("MainWindow", "Processing", Q_NULLPTR)
+         << QApplication::translate("MainWindow", "Origin", Q_NULLPTR)
+        );
+#ifndef QT_NO_TOOLTIP
+        lbCameraLayer->setToolTip(QApplication::translate("MainWindow", "Select Camera Layer", Q_NULLPTR));
+#endif // QT_NO_TOOLTIP
+        lbCameraLayer->setCurrentText(QApplication::translate("MainWindow", "Result", Q_NULLPTR));
         twModule->setTabText(twModule->indexOf(tResultCameraArea), QApplication::translate("MainWindow", "Object Detecting", Q_NULLPTR));
         lbImageForDrawing->setText(QString());
         lbDrawingArea->setText(QString());
@@ -1750,12 +1905,13 @@ public:
         );
         cbConveyorValueType->clear();
         cbConveyorValueType->insertItems(0, QStringList()
-         << QApplication::translate("MainWindow", "mm/s", Q_NULLPTR)
-         << QApplication::translate("MainWindow", "mm", Q_NULLPTR)
+         << QApplication::translate("MainWindow", "Speed", Q_NULLPTR)
+         << QApplication::translate("MainWindow", "Position", Q_NULLPTR)
         );
         leConveyorvMovingValue->setText(QApplication::translate("MainWindow", "-100", Q_NULLPTR));
-        pbConveyorMove->setText(QApplication::translate("MainWindow", "Move", Q_NULLPTR));
         pbConveyorConnect->setText(QApplication::translate("MainWindow", "Connect", Q_NULLPTR));
+        leSpeedOfPositionMode->setText(QApplication::translate("MainWindow", "50", Q_NULLPTR));
+        lbSpeedOfPositionMode->setText(QApplication::translate("MainWindow", "mm/s", Q_NULLPTR));
         twConveyor->setTabText(twConveyor->indexOf(tConveyor), QApplication::translate("MainWindow", "Conveyor X", Q_NULLPTR));
         pbSlidingConnect->setText(QApplication::translate("MainWindow", "Connect", Q_NULLPTR));
 #ifndef QT_NO_TOOLTIP
@@ -1801,39 +1957,49 @@ public:
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:'MS Shell Dlg 2'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" color:#000000;\">N05</span> <span style=\" font-weight:600;\">G28</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-style:italic; color:#00aa00;\">;====Vision functions==========</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-style:italic; color:#00aa00;\">;M98 PpauseCamera</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-style:italic; color:#00aa00;\">;M98 PresumeCamera</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-"
+                        "left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-style:italic; color:#00aa00;\">;M98 PcaptureCamera</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-style:italic; color:#00aa00;\">;M98 PdeleteFirstObject</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-style:italic; color:#00aa00;\">;M98 PclearObjects</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-style:italic; color:#00aa00;\">;========================</span></p>\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-style:italic; color:#00aa00;\"><br /></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; "
+                        "margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" color:#000000;\">N05</span> <span style=\" font-weight:600;\">G28</span></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">N10 <span style=\" font-weight:600;\">M204</span> A1200</p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">N15 <span style=\" font-weight:600;\">G01</span> F200</p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:"
-                        "0; text-indent:0px;\"><span style=\" font-style:italic; color:#00aa00;\">;Declare a variable</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-style:italic; color:#00aa00;\">;Declare a variable</span></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">N20 <span style=\" font-style:italic;\">#100</span> = 0</p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p>\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin"
+                        "-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">N30 <span style=\" font-style:italic;\">#100</span> = <span style=\" font-style:italic;\">#100</span> + 1</p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-style:italic; color:#55aa00;\">;Ca"
-                        "ll subprogram</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-style:italic; color:#55aa00;\">;Call subprogram</span></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">N35 <span style=\" font-weight:600;\">M98</span> P2000</p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-style:italic; color:#00aa00;\">; Begin subprogram</span></p>\n"
+"<p style=\" ma"
+                        "rgin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-style:italic; color:#00aa00;\">; Begin subprogram</span></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">N40 <span style=\" font-weight:600;\">O2000</span></p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; te"
-                        "xt-indent:0px;\">N45 <span style=\" font-weight:600;\">G01</span> Z-350</p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">N45 <span style=\" font-weight:600;\">G01</span> Z-350</p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">N50 <span style=\" font-weight:600;\">G01</span> X-100</p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">N55 <span style=\" font-weight:600;\">G01</span> Z-370</p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">N55"
+                        " <span style=\" font-weight:600;\">G01</span> Z-370</p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">N60 <span style=\" font-weight:600;\">G01</span> Z-350</p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">N65 <span style=\" font-weight:600;\">G01</span> X100</p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; ma"
-                        "rgin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">N70 <span style=\" font-weight:600;\">G01</span> Z-370</p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">N70 <span style=\" font-weight:600;\">G01</span> Z-370</p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">N75 M99</p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-style:italic; color:#00aa00;\">;End subprogram</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0p"
+                        "x;\"><span style=\" font-style:italic; color:#00aa00;\">;End subprogram</span></p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-style:italic; color:#00aa00;\">;Loop 5 times</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">N80 <span style=\" font-weight:600; color:#00aa00;\">IF</span> [<sp"
-                        "an style=\" font-style:italic;\">#100</span> LE 5] <span style=\" font-weight:600; color:#00aa00;\">THEN</span> <span style=\" font-weight:600; color:#ff5500;\">GOTO</span> 30</p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">N80 <span style=\" font-weight:600; color:#00aa00;\">IF</span> [<span style=\" font-style:italic;\">#100</span> LE 5] <span style=\" font-weight:600; color:#00aa00;\">THEN</span> <span style=\" font-weight:600; color:#ff5500;\">GOTO</span> 30</p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">N85 <span style=\" font-weight:600;\">G28</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0"
+                        "px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">N85 <span style=\" font-weight:600;\">G28</span></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"> </p></body></html>", Q_NULLPTR));
         cbPositionToExecuteGcode->clear();
         cbPositionToExecuteGcode->insertItems(0, QStringList()
@@ -1919,7 +2085,7 @@ public:
 #endif // QT_NO_TOOLTIP
         pbUploadProgram_2->setText(QString());
         tabWidget->setTabText(tabWidget->indexOf(tab_3), QApplication::translate("MainWindow", "Online", Q_NULLPTR));
-        lbID_2->setText(QApplication::translate("MainWindow", "PORT: 8844", Q_NULLPTR));
+        lbPort->setText(QApplication::translate("MainWindow", "PORT: 8844", Q_NULLPTR));
         lbIP->setText(QApplication::translate("MainWindow", "IP: localhost", Q_NULLPTR));
         groupBox_2->setTitle(QApplication::translate("MainWindow", "4-Axis", Q_NULLPTR));
 #ifndef QT_NO_TOOLTIP

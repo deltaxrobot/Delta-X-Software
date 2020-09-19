@@ -69,6 +69,7 @@ private:
 	void sendQueue();
 	void processReceiveData();
 	void sendData(QSerialPort* com, QTcpSocket* socket, QString msg);
+	void OpenAvailableServer();
 
 	QString receiveLine;
 	QString transmitLine;

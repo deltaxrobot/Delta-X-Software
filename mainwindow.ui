@@ -106,11 +106,14 @@ color:rgb(0, 235, 0);
     </widget>
    </widget>
    <widget class="QTabWidget" name="twModule">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
     <property name="geometry">
      <rect>
-      <x>418</x>
+      <x>415</x>
       <y>114</y>
-      <width>476</width>
+      <width>481</width>
       <height>566</height>
      </rect>
     </property>
@@ -124,35 +127,13 @@ color:rgb(0, 235, 0);
      <attribute name="title">
       <string>Object Detecting</string>
      </attribute>
-     <widget class="CameraWidget" name="lbScreenStreamer">
-      <property name="geometry">
-       <rect>
-        <x>5</x>
-        <y>225</y>
-        <width>396</width>
-        <height>297</height>
-       </rect>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">background-color:rgb(230, 230, 230)</string>
-      </property>
-      <property name="text">
-       <string/>
-      </property>
-      <property name="scaledContents">
-       <bool>false</bool>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-      </property>
-     </widget>
      <widget class="QGroupBox" name="groupBox">
       <property name="geometry">
        <rect>
-        <x>230</x>
-        <y>10</y>
-        <width>96</width>
-        <height>206</height>
+        <x>235</x>
+        <y>5</y>
+        <width>91</width>
+        <height>216</height>
        </rect>
       </property>
       <property name="title">
@@ -161,10 +142,10 @@ color:rgb(0, 235, 0);
       <widget class="QLabel" name="lbTrackingObject">
        <property name="geometry">
         <rect>
-         <x>15</x>
+         <x>10</x>
          <y>105</y>
          <width>66</width>
-         <height>56</height>
+         <height>36</height>
         </rect>
        </property>
        <property name="styleSheet">
@@ -178,10 +159,13 @@ color:rgb(0, 235, 0);
        <property name="geometry">
         <rect>
          <x>5</x>
-         <y>170</y>
-         <width>86</width>
-         <height>28</height>
+         <y>180</y>
+         <width>81</width>
+         <height>31</height>
         </rect>
+       </property>
+       <property name="toolTip">
+        <string>Bound the object size</string>
        </property>
        <property name="styleSheet">
         <string notr="true"/>
@@ -197,7 +181,7 @@ color:rgb(0, 235, 0);
       <widget class="QLineEdit" name="leLRec">
        <property name="geometry">
         <rect>
-         <x>30</x>
+         <x>25</x>
          <y>50</y>
          <width>31</width>
          <height>22</height>
@@ -210,7 +194,7 @@ color:rgb(0, 235, 0);
       <widget class="QLineEdit" name="leWRec">
        <property name="geometry">
         <rect>
-         <x>30</x>
+         <x>25</x>
          <y>25</y>
          <width>31</width>
          <height>22</height>
@@ -223,7 +207,7 @@ color:rgb(0, 235, 0);
       <widget class="QLineEdit" name="leHRec">
        <property name="geometry">
         <rect>
-         <x>30</x>
+         <x>25</x>
          <y>75</y>
          <width>31</width>
          <height>22</height>
@@ -250,7 +234,7 @@ color:rgb(0, 235, 0);
        <property name="geometry">
         <rect>
          <x>10</x>
-         <y>50</y>
+         <y>55</y>
          <width>26</width>
          <height>16</height>
         </rect>
@@ -263,7 +247,7 @@ color:rgb(0, 235, 0);
        <property name="geometry">
         <rect>
          <x>10</x>
-         <y>75</y>
+         <y>80</y>
          <width>26</width>
          <height>16</height>
         </rect>
@@ -275,7 +259,7 @@ color:rgb(0, 235, 0);
       <widget class="QLabel" name="label_54">
        <property name="geometry">
         <rect>
-         <x>65</x>
+         <x>60</x>
          <y>30</y>
          <width>31</width>
          <height>16</height>
@@ -288,7 +272,7 @@ color:rgb(0, 235, 0);
       <widget class="QLabel" name="label_55">
        <property name="geometry">
         <rect>
-         <x>65</x>
+         <x>60</x>
          <y>55</y>
          <width>31</width>
          <height>16</height>
@@ -301,7 +285,7 @@ color:rgb(0, 235, 0);
       <widget class="QLabel" name="label_56">
        <property name="geometry">
         <rect>
-         <x>65</x>
+         <x>60</x>
          <y>80</y>
          <width>31</width>
          <height>16</height>
@@ -311,13 +295,76 @@ color:rgb(0, 235, 0);
         <string>mm</string>
        </property>
       </widget>
+      <widget class="QComboBox" name="cbObjectType">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>150</y>
+         <width>71</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <item>
+        <property name="text">
+         <string>Type 1</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Type 2</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Type 3</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Type 4</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Type 5</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Type 6</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Type 7</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Type 8</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Type 9</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Type 10</string>
+        </property>
+       </item>
+      </widget>
      </widget>
      <widget class="QGroupBox" name="groupBox_7">
       <property name="geometry">
        <rect>
-        <x>400</x>
-        <y>365</y>
-        <width>66</width>
+        <x>405</x>
+        <y>360</y>
+        <width>71</width>
         <height>166</height>
        </rect>
       </property>
@@ -416,9 +463,9 @@ color:rgb(0, 235, 0);
       <property name="geometry">
        <rect>
         <x>5</x>
-        <y>75</y>
+        <y>90</y>
         <width>221</width>
-        <height>141</height>
+        <height>131</height>
        </rect>
       </property>
       <property name="title">
@@ -429,9 +476,12 @@ color:rgb(0, 235, 0);
         <rect>
          <x>5</x>
          <y>25</y>
-         <width>106</width>
+         <width>101</width>
          <height>31</height>
         </rect>
+       </property>
+       <property name="toolTip">
+        <string>Calibrating length</string>
        </property>
        <property name="text">
         <string>Calib Line</string>
@@ -444,21 +494,21 @@ color:rgb(0, 235, 0);
       <widget class="QLineEdit" name="leRealDistance">
        <property name="geometry">
         <rect>
-         <x>130</x>
+         <x>135</x>
          <y>30</y>
          <width>31</width>
          <height>22</height>
         </rect>
        </property>
        <property name="text">
-        <string>120</string>
+        <string>100</string>
        </property>
       </widget>
       <widget class="QLineEdit" name="leYCoordinate">
        <property name="geometry">
         <rect>
-         <x>180</x>
-         <y>70</y>
+         <x>185</x>
+         <y>65</y>
          <width>31</width>
          <height>22</height>
         </rect>
@@ -471,13 +521,13 @@ color:rgb(0, 235, 0);
        <property name="geometry">
         <rect>
          <x>5</x>
-         <y>65</y>
-         <width>106</width>
+         <y>60</y>
+         <width>101</width>
          <height>31</height>
         </rect>
        </property>
        <property name="toolTip">
-        <string>Coordinate</string>
+        <string>Set a calibrating point</string>
        </property>
        <property name="text">
         <string>Calib Point</string>
@@ -490,8 +540,8 @@ color:rgb(0, 235, 0);
       <widget class="QLineEdit" name="leXCoordinate">
        <property name="geometry">
         <rect>
-         <x>130</x>
-         <y>70</y>
+         <x>135</x>
+         <y>65</y>
          <width>31</width>
          <height>22</height>
         </rect>
@@ -503,8 +553,8 @@ color:rgb(0, 235, 0);
       <widget class="QLabel" name="label_38">
        <property name="geometry">
         <rect>
-         <x>115</x>
-         <y>75</y>
+         <x>120</x>
+         <y>70</y>
          <width>21</width>
          <height>16</height>
         </rect>
@@ -531,8 +581,8 @@ color:rgb(0, 235, 0);
       <widget class="QLabel" name="label_39">
        <property name="geometry">
         <rect>
-         <x>165</x>
-         <y>70</y>
+         <x>175</x>
+         <y>65</y>
          <width>21</width>
          <height>21</height>
         </rect>
@@ -544,7 +594,7 @@ color:rgb(0, 235, 0);
       <widget class="QLabel" name="label_40">
        <property name="geometry">
         <rect>
-         <x>180</x>
+         <x>175</x>
          <y>35</y>
          <width>31</width>
          <height>16</height>
@@ -558,13 +608,13 @@ color:rgb(0, 235, 0);
        <property name="geometry">
         <rect>
          <x>5</x>
-         <y>105</y>
-         <width>106</width>
+         <y>95</y>
+         <width>101</width>
          <height>31</height>
         </rect>
        </property>
        <property name="toolTip">
-        <string>Switch layers</string>
+        <string>Change direction of coordinates</string>
        </property>
        <property name="text">
         <string>X Direction</string>
@@ -578,50 +628,33 @@ color:rgb(0, 235, 0);
         <bool>true</bool>
        </property>
       </widget>
-      <widget class="QPushButton" name="pbPump_2">
+      <widget class="QCheckBox" name="cbDisplayCalibInfo">
        <property name="geometry">
         <rect>
          <x>115</x>
          <y>105</y>
-         <width>96</width>
-         <height>31</height>
+         <width>71</width>
+         <height>16</height>
         </rect>
        </property>
-       <property name="autoFillBackground">
-        <bool>false</bool>
-       </property>
        <property name="text">
-        <string>Transform</string>
-       </property>
-       <property name="icon">
-        <iconset>
-         <normaloff>icon/Toggle Off_16px.png</normaloff>
-         <normalon>icon/Toggle On_16px.png</normalon>icon/Toggle Off_16px.png</iconset>
-       </property>
-       <property name="checkable">
-        <bool>true</bool>
+        <string>Display</string>
        </property>
        <property name="checked">
-        <bool>false</bool>
-       </property>
-       <property name="autoDefault">
-        <bool>false</bool>
-       </property>
-       <property name="default">
-        <bool>false</bool>
-       </property>
-       <property name="flat">
-        <bool>false</bool>
+        <bool>true</bool>
        </property>
       </widget>
      </widget>
      <widget class="QGroupBox" name="groupBox_9">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
       <property name="geometry">
        <rect>
         <x>5</x>
-        <y>10</y>
+        <y>5</y>
         <width>221</width>
-        <height>61</height>
+        <height>81</height>
        </rect>
       </property>
       <property name="title">
@@ -630,10 +663,10 @@ color:rgb(0, 235, 0);
       <widget class="QPushButton" name="pbLoadCamera">
        <property name="geometry">
         <rect>
-         <x>5</x>
-         <y>25</y>
+         <x>35</x>
+         <y>20</y>
          <width>46</width>
-         <height>21</height>
+         <height>31</height>
         </rect>
        </property>
        <property name="toolTip">
@@ -654,10 +687,10 @@ color:rgb(0, 235, 0);
       <widget class="QPushButton" name="pbLoadTestImage">
        <property name="geometry">
         <rect>
-         <x>135</x>
-         <y>25</y>
-         <width>41</width>
-         <height>21</height>
+         <x>165</x>
+         <y>20</y>
+         <width>46</width>
+         <height>31</height>
         </rect>
        </property>
        <property name="toolTip">
@@ -674,8 +707,8 @@ color:rgb(0, 235, 0);
       <widget class="QLabel" name="label_11">
        <property name="geometry">
         <rect>
-         <x>105</x>
-         <y>30</y>
+         <x>90</x>
+         <y>55</y>
          <width>31</width>
          <height>16</height>
         </rect>
@@ -687,10 +720,10 @@ color:rgb(0, 235, 0);
       <widget class="QLineEdit" name="leFPS">
        <property name="geometry">
         <rect>
-         <x>55</x>
-         <y>25</y>
-         <width>41</width>
-         <height>22</height>
+         <x>35</x>
+         <y>55</y>
+         <width>46</width>
+         <height>16</height>
         </rect>
        </property>
        <property name="text">
@@ -700,15 +733,182 @@ color:rgb(0, 235, 0);
         <set>Qt::AlignCenter</set>
        </property>
       </widget>
+      <widget class="QLabel" name="lbCameraState">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="geometry">
+        <rect>
+         <x>15</x>
+         <y>30</y>
+         <width>15</width>
+         <height>15</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>icon/icons8-connection-status-on-48.png</pixmap>
+       </property>
+       <property name="scaledContents">
+        <bool>true</bool>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="pbPlayPauseCamera">
+       <property name="geometry">
+        <rect>
+         <x>90</x>
+         <y>25</y>
+         <width>21</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Play and Pause&lt;/p&gt;&lt;p&gt;M98 PpauseCamera&lt;/p&gt;&lt;p&gt;M98 PresumeCamera&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset>
+         <normaloff>icon/icons8-play-48.png</normaloff>
+         <normalon>icon/icons8-pause-48.png</normalon>
+         <selectedoff>icon/icons8-play-48.png</selectedoff>icon/icons8-play-48.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>15</width>
+         <height>15</height>
+        </size>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+       <property name="checked">
+        <bool>false</bool>
+       </property>
+       <property name="flat">
+        <bool>false</bool>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="pbCaptureCamera">
+       <property name="geometry">
+        <rect>
+         <x>115</x>
+         <y>20</y>
+         <width>36</width>
+         <height>36</height>
+        </rect>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Capture&lt;/p&gt;&lt;p&gt;M98 PcaptureCamera&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset>
+         <normaloff>icon/icons8-screenshot-40.png</normaloff>icon/icons8-screenshot-40.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>30</width>
+         <height>30</height>
+        </size>
+       </property>
+       <property name="checkable">
+        <bool>false</bool>
+       </property>
+       <property name="checked">
+        <bool>false</bool>
+       </property>
+       <property name="flat">
+        <bool>true</bool>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="pbLoadCameraSetting">
+       <property name="geometry">
+        <rect>
+         <x>190</x>
+         <y>55</y>
+         <width>21</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="toolTip">
+        <string>Load Setting</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset>
+         <normaloff>icon/icons8-load-resume-template-64.png</normaloff>icon/icons8-load-resume-template-64.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>15</width>
+         <height>15</height>
+        </size>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+       <property name="checked">
+        <bool>false</bool>
+       </property>
+       <property name="flat">
+        <bool>false</bool>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="pbSaveCameraSetting">
+       <property name="geometry">
+        <rect>
+         <x>165</x>
+         <y>55</y>
+         <width>21</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="toolTip">
+        <string>Save Setting</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset>
+         <normaloff>icon/icons8-save-64.png</normaloff>icon/icons8-save-64.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>15</width>
+         <height>15</height>
+        </size>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+       <property name="checked">
+        <bool>false</bool>
+       </property>
+       <property name="flat">
+        <bool>false</bool>
+       </property>
+      </widget>
      </widget>
      <widget class="QGroupBox" name="groupBox_10">
       <property name="geometry">
        <rect>
-        <x>330</x>
-        <y>10</y>
-        <width>136</width>
-        <height>161</height>
+        <x>335</x>
+        <y>5</y>
+        <width>131</width>
+        <height>136</height>
        </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true"/>
       </property>
       <property name="title">
        <string>Variable</string>
@@ -716,8 +916,8 @@ color:rgb(0, 235, 0);
       <widget class="QPushButton" name="pbViewDataObjects">
        <property name="geometry">
         <rect>
-         <x>10</x>
-         <y>25</y>
+         <x>5</x>
+         <y>20</y>
          <width>121</width>
          <height>31</height>
         </rect>
@@ -736,14 +936,14 @@ color:rgb(0, 235, 0);
       <widget class="QPushButton" name="pbClearDetectObjects">
        <property name="geometry">
         <rect>
-         <x>10</x>
-         <y>65</y>
+         <x>5</x>
+         <y>55</y>
          <width>121</width>
          <height>31</height>
         </rect>
        </property>
        <property name="toolTip">
-        <string>Select Process Region</string>
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Clear All Objects in Memory&lt;/p&gt;&lt;p&gt;M98 PclearObjects --&amp;gt; Clear All&lt;/p&gt;&lt;p&gt;M98 PdeleteFirstObject --&amp;gt; Delete First&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="statusTip">
         <string extracomment="Clear All Detect Objects"/>
@@ -760,7 +960,7 @@ color:rgb(0, 235, 0);
        <property name="geometry">
         <rect>
          <x>15</x>
-         <y>135</y>
+         <y>115</y>
          <width>51</width>
          <height>16</height>
         </rect>
@@ -778,7 +978,7 @@ color:rgb(0, 235, 0);
        <property name="geometry">
         <rect>
          <x>15</x>
-         <y>110</y>
+         <y>90</y>
          <width>51</width>
          <height>16</height>
         </rect>
@@ -796,7 +996,7 @@ color:rgb(0, 235, 0);
        <property name="geometry">
         <rect>
          <x>90</x>
-         <y>110</y>
+         <y>90</y>
          <width>31</width>
          <height>16</height>
         </rect>
@@ -814,7 +1014,7 @@ color:rgb(0, 235, 0);
        <property name="geometry">
         <rect>
          <x>90</x>
-         <y>135</y>
+         <y>115</y>
          <width>31</width>
          <height>16</height>
         </rect>
@@ -829,37 +1029,17 @@ color:rgb(0, 235, 0);
        </property>
       </widget>
      </widget>
-     <widget class="QPushButton" name="pbSwitchWorkFlow">
-      <property name="geometry">
-       <rect>
-        <x>405</x>
-        <y>225</y>
-        <width>36</width>
-        <height>31</height>
-       </rect>
-      </property>
-      <property name="toolTip">
-       <string>Switch layers</string>
-      </property>
-      <property name="text">
-       <string/>
-      </property>
-      <property name="icon">
-       <iconset>
-        <normaloff>icon/icons8-next-page-48.png</normaloff>icon/icons8-next-page-48.png</iconset>
-      </property>
-     </widget>
      <widget class="QPushButton" name="pbFilter">
       <property name="geometry">
        <rect>
-        <x>405</x>
-        <y>265</y>
+        <x>410</x>
+        <y>225</y>
         <width>61</width>
         <height>36</height>
        </rect>
       </property>
       <property name="toolTip">
-       <string>Object Filter</string>
+       <string>Camera Filter</string>
       </property>
       <property name="text">
        <string>Filter</string>
@@ -868,6 +1048,173 @@ color:rgb(0, 235, 0);
        <iconset>
         <normaloff>icon/Slider 2_16px.png</normaloff>icon/Slider 2_16px.png</iconset>
       </property>
+     </widget>
+     <widget class="QPushButton" name="pbTransformPerspective">
+      <property name="geometry">
+       <rect>
+        <x>335</x>
+        <y>145</y>
+        <width>91</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string>Perspective Transformation</string>
+      </property>
+      <property name="autoFillBackground">
+       <bool>false</bool>
+      </property>
+      <property name="text">
+       <string>Transform</string>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>icon/Toggle Off_16px.png</normaloff>
+        <normalon>icon/Toggle On_16px.png</normalon>icon/Toggle Off_16px.png</iconset>
+      </property>
+      <property name="checkable">
+       <bool>true</bool>
+      </property>
+      <property name="checked">
+       <bool>false</bool>
+      </property>
+      <property name="autoDefault">
+       <bool>false</bool>
+      </property>
+      <property name="default">
+       <bool>false</bool>
+      </property>
+      <property name="flat">
+       <bool>false</bool>
+      </property>
+     </widget>
+     <widget class="QScrollArea" name="saCamera">
+      <property name="geometry">
+       <rect>
+        <x>5</x>
+        <y>225</y>
+        <width>400</width>
+        <height>300</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true"/>
+      </property>
+      <property name="widgetResizable">
+       <bool>false</bool>
+      </property>
+      <widget class="QWidget" name="saCameraArea">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>400</width>
+         <height>300</height>
+        </rect>
+       </property>
+       <property name="styleSheet">
+        <string notr="true"/>
+       </property>
+       <widget class="CameraWidget" name="lbScreenStreamer">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>400</width>
+          <height>300</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color:rgb(230, 230, 230)</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="scaledContents">
+         <bool>false</bool>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+        </property>
+       </widget>
+      </widget>
+     </widget>
+     <widget class="QPushButton" name="pbExpandCameraWidget">
+      <property name="geometry">
+       <rect>
+        <x>430</x>
+        <y>185</y>
+        <width>36</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string>Expand Camera Widget</string>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>icon/icons8-expand-48.png</normaloff>icon/icons8-expand-48.png</iconset>
+      </property>
+      <property name="checkable">
+       <bool>true</bool>
+      </property>
+      <property name="checked">
+       <bool>false</bool>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pbCameraWindowMode">
+      <property name="geometry">
+       <rect>
+        <x>430</x>
+        <y>145</y>
+        <width>36</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string>Window Mode</string>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>icon/icons8-maximize-window-48.png</normaloff>icon/icons8-maximize-window-48.png</iconset>
+      </property>
+     </widget>
+     <widget class="QComboBox" name="lbCameraLayer">
+      <property name="geometry">
+       <rect>
+        <x>335</x>
+        <y>185</y>
+        <width>91</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string>Select Camera Layer</string>
+      </property>
+      <property name="currentText">
+       <string>Result</string>
+      </property>
+      <item>
+       <property name="text">
+        <string>Result</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Processing</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Origin</string>
+       </property>
+      </item>
      </widget>
     </widget>
     <widget class="QWidget" name="tDrawing">
@@ -2355,9 +2702,9 @@ color: rgb(255, 255, 255);</string>
    <widget class="QGroupBox" name="gbGripper">
     <property name="geometry">
      <rect>
-      <x>605</x>
+      <x>595</x>
       <y>28</y>
-      <width>141</width>
+      <width>146</width>
       <height>80</height>
      </rect>
     </property>
@@ -2466,9 +2813,9 @@ color: rgb(255, 255, 255);</string>
     <widget class="QPushButton" name="pbGrip">
      <property name="geometry">
       <rect>
-       <x>10</x>
+       <x>5</x>
        <y>30</y>
-       <width>41</width>
+       <width>51</width>
        <height>21</height>
       </rect>
      </property>
@@ -2492,7 +2839,7 @@ color: rgb(255, 255, 255);</string>
    <widget class="QGroupBox" name="gbRelay">
     <property name="geometry">
      <rect>
-      <x>495</x>
+      <x>490</x>
       <y>28</y>
       <width>101</width>
       <height>80</height>
@@ -2613,9 +2960,9 @@ color: rgb(255, 255, 255);</string>
    <widget class="QGroupBox" name="gbMovement1">
     <property name="geometry">
      <rect>
-      <x>205</x>
+      <x>225</x>
       <y>28</y>
-      <width>201</width>
+      <width>181</width>
       <height>101</height>
      </rect>
     </property>
@@ -2625,7 +2972,7 @@ color: rgb(255, 255, 255);</string>
     <widget class="QLineEdit" name="leY">
      <property name="geometry">
       <rect>
-       <x>125</x>
+       <x>120</x>
        <y>45</y>
        <width>51</width>
        <height>21</height>
@@ -2635,7 +2982,7 @@ color: rgb(255, 255, 255);</string>
     <widget class="QLineEdit" name="leZ">
      <property name="geometry">
       <rect>
-       <x>125</x>
+       <x>120</x>
        <y>75</y>
        <width>51</width>
        <height>21</height>
@@ -2645,7 +2992,7 @@ color: rgb(255, 255, 255);</string>
     <widget class="QLineEdit" name="leX">
      <property name="geometry">
       <rect>
-       <x>125</x>
+       <x>120</x>
        <y>15</y>
        <width>51</width>
        <height>21</height>
@@ -2658,7 +3005,7 @@ color: rgb(255, 255, 255);</string>
     <widget class="QPushButton" name="pbZ">
      <property name="geometry">
       <rect>
-       <x>85</x>
+       <x>80</x>
        <y>75</y>
        <width>31</width>
        <height>21</height>
@@ -2697,7 +3044,7 @@ color: rgb(255, 255, 255);</string>
     <widget class="QPushButton" name="pbX">
      <property name="geometry">
       <rect>
-       <x>85</x>
+       <x>80</x>
        <y>15</y>
        <width>31</width>
        <height>21</height>
@@ -2713,7 +3060,7 @@ color: rgb(255, 255, 255);</string>
     <widget class="QPushButton" name="pbY">
      <property name="geometry">
       <rect>
-       <x>85</x>
+       <x>80</x>
        <y>45</y>
        <width>31</width>
        <height>21</height>
@@ -2737,7 +3084,7 @@ color: rgb(255, 255, 255);</string>
      </rect>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>0</number>
     </property>
     <widget class="QWidget" name="tConveyor">
      <attribute name="title">
@@ -2746,10 +3093,10 @@ color: rgb(255, 255, 255);</string>
      <widget class="QComboBox" name="cbConveyorMode">
       <property name="geometry">
        <rect>
-        <x>95</x>
-        <y>5</y>
-        <width>71</width>
-        <height>24</height>
+        <x>5</x>
+        <y>35</y>
+        <width>76</width>
+        <height>21</height>
        </rect>
       </property>
       <property name="font">
@@ -2771,10 +3118,10 @@ color: rgb(255, 255, 255);</string>
      <widget class="QComboBox" name="cbConveyorValueType">
       <property name="geometry">
        <rect>
-        <x>110</x>
-        <y>35</y>
-        <width>56</width>
-        <height>25</height>
+        <x>135</x>
+        <y>9</y>
+        <width>66</width>
+        <height>21</height>
        </rect>
       </property>
       <property name="font">
@@ -2784,22 +3131,22 @@ color: rgb(255, 255, 255);</string>
       </property>
       <item>
        <property name="text">
-        <string>mm/s</string>
+        <string>Speed</string>
        </property>
       </item>
       <item>
        <property name="text">
-        <string>mm</string>
+        <string>Position</string>
        </property>
       </item>
      </widget>
      <widget class="QLineEdit" name="leConveyorvMovingValue">
       <property name="geometry">
        <rect>
-        <x>53</x>
-        <y>35</y>
-        <width>46</width>
-        <height>25</height>
+        <x>90</x>
+        <y>9</y>
+        <width>36</width>
+        <height>21</height>
        </rect>
       </property>
       <property name="font">
@@ -2811,30 +3158,65 @@ color: rgb(255, 255, 255);</string>
        <string>-100</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="pbConveyorMove">
-      <property name="geometry">
-       <rect>
-        <x>5</x>
-        <y>35</y>
-        <width>41</width>
-        <height>25</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Move</string>
-      </property>
-     </widget>
      <widget class="QPushButton" name="pbConveyorConnect">
       <property name="geometry">
        <rect>
         <x>5</x>
         <y>5</y>
-        <width>81</width>
-        <height>25</height>
+        <width>76</width>
+        <height>26</height>
        </rect>
       </property>
       <property name="text">
        <string>Connect</string>
+      </property>
+      <property name="checkable">
+       <bool>true</bool>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="leSpeedOfPositionMode">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>90</x>
+        <y>35</y>
+        <width>36</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>50</string>
+      </property>
+      <property name="clearButtonEnabled">
+       <bool>false</bool>
+      </property>
+     </widget>
+     <widget class="QLabel" name="lbSpeedOfPositionMode">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>140</x>
+        <y>40</y>
+        <width>51</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>7</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>mm/s</string>
       </property>
      </widget>
     </widget>
@@ -3337,6 +3719,14 @@ color: rgb(255, 255, 255);</string>
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-style:italic; color:#00aa00;&quot;&gt;;====Vision functions==========&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-style:italic; color:#00aa00;&quot;&gt;;M98 PpauseCamera&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-style:italic; color:#00aa00;&quot;&gt;;M98 PresumeCamera&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-style:italic; color:#00aa00;&quot;&gt;;M98 PcaptureCamera&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-style:italic; color:#00aa00;&quot;&gt;;M98 PdeleteFirstObject&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-style:italic; color:#00aa00;&quot;&gt;;M98 PclearObjects&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-style:italic; color:#00aa00;&quot;&gt;;========================&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-style:italic; color:#00aa00;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; color:#000000;&quot;&gt;N05&lt;/span&gt; &lt;span style=&quot; font-weight:600;&quot;&gt;G28&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;N10 &lt;span style=&quot; font-weight:600;&quot;&gt;M204&lt;/span&gt; A1200&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;N15 &lt;span style=&quot; font-weight:600;&quot;&gt;G01&lt;/span&gt; F200&lt;/p&gt;
@@ -4200,7 +4590,7 @@ p, li { white-space: pre-wrap; }
      </widget>
     </widget>
    </widget>
-   <widget class="QLabel" name="lbID_2">
+   <widget class="QLabel" name="lbPort">
     <property name="geometry">
      <rect>
       <x>95</x>
@@ -4223,7 +4613,7 @@ p, li { white-space: pre-wrap; }
      <rect>
       <x>95</x>
       <y>80</y>
-      <width>111</width>
+      <width>126</width>
       <height>16</height>
      </rect>
     </property>

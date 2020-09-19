@@ -14,20 +14,20 @@ TCPConnectionManager::~TCPConnectionManager()
 {
 }
 
-void TCPConnectionManager::OpenServer()
+bool TCPConnectionManager::OpenServer()
 {
-	TcpServer->listen(QHostAddress(serverName), port);
+	return TcpServer->listen(QHostAddress(ServerName), Port);
 }
 
-void TCPConnectionManager::OpenServer(QString s, int p)
+bool TCPConnectionManager::OpenServer(QString s, int p)
 {
-	serverName = s;
-	port = p;
+	ServerName = s;
+	Port = p;
 
-	OpenServer();
+	return OpenServer();
 }
 
-QString TCPConnectionManager::GetLocalIP()
+QString TCPConnectionManager::GetIP()
 {
 	QString localhostname = QHostInfo::localHostName();
 	QString localhostIP;

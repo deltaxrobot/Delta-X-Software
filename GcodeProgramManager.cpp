@@ -87,7 +87,7 @@ void GcodeProgramManager::AddNewProgram()
 	GcodeProgram* newProgram = new GcodeProgram(wgProgramContainer);
 	newProgram->SetPosition(10, 10);
 	newProgram->SetName(QString("program ") + QString::number(ProgramCounter + 1));
-	newProgram->GcodeData = "#" + QString::number(ProgramCounter);
+	newProgram->GcodeData = ";====Vision functions==========\n;M98 PpauseCamera\n;M98 PresumeCamera\n;M98 PcaptureCamera\n;M98 PdeleteFirstObject\n;M98 PclearObjects\n;========================\n\nG28";
 	newProgram->ID = 0;
 	ProgramList->push_front(newProgram);
 
@@ -278,6 +278,8 @@ bool GcodeProgramManager::findExeGcodeAndTransmit()
 		pteGcodeArea->setTextCursor(textCursor);
 		pteGcodeArea->highlightCurrentLine();
 	}
+
+	currentLine = currentLine.replace("  ", " ");
 
 	if (currentLine == "")
 	{
@@ -743,6 +745,8 @@ void GcodeProgramManager::SetStartingGcodeEditorCursor(QString value)
 
 float GcodeProgramManager::calculateExpressions(QString expression)
 {
+	expression = expression.replace("  ", " ");
+
 	int index = 0;
 	
 	while (1)
@@ -751,6 +755,7 @@ float GcodeProgramManager::calculateExpressions(QString expression)
 
 		int multiplyIndex = expression.indexOf('*');
 		int divideIndex = expression.indexOf('/');
+		int moduloIndex = expression.indexOf('%');
 		int plusIndex = expression.indexOf('+');
 		int subIndex = expression.indexOf("- ");
 
@@ -802,18 +807,19 @@ float GcodeProgramManager::calculateExpressions(QString expression)
 			 
 			continue;
 		}
-		else if ((multiplyIndex > -1 || divideIndex > -1 || plusIndex > -1 || subIndex > -1 || andIndex > -1 || orIndex > -1 || xorIndex > -1) && isNotNegative(expression))
+		else if ((multiplyIndex > -1 || divideIndex > -1 || moduloIndex > -1 || plusIndex > -1 || subIndex > -1 || andIndex > -1 || orIndex > -1 || xorIndex > -1) && isNotNegative(expression))
 		{
 			// 3 + 2 * 5 - 4 / 2			
 
 			int operaIndex = subIndex;
 
-			operaIndex = (multiplyIndex > -1) ? multiplyIndex : operaIndex;
-			operaIndex = (divideIndex > -1) ? divideIndex : operaIndex;
 			operaIndex = (plusIndex > -1) ? plusIndex : operaIndex;
 			operaIndex = (andIndex > -1) ? andIndex : operaIndex;
 			operaIndex = (orIndex > -1) ? orIndex : operaIndex;
 			operaIndex = (xorIndex > -1) ? xorIndex : operaIndex;
+			operaIndex = (multiplyIndex > -1) ? multiplyIndex : operaIndex;
+			operaIndex = (divideIndex > -1) ? divideIndex : operaIndex;
+			operaIndex = (moduloIndex > -1) ? moduloIndex : operaIndex;
 
 			QString value1S = getLeftWord(expression, operaIndex);
 			QString value2S = getRightWord(expression, operaIndex);
@@ -842,6 +848,16 @@ float GcodeProgramManager::calculateExpressions(QString expression)
 				resultS = QString::number(result);
 
 				operaExpression = value1S + " / " + value2S;
+			}
+			else if (moduloIndex > -1)
+			{
+				if (value2 != 0)
+					result = (int)value1 % (int)value2;
+				else
+					result = 0;
+				resultS = QString::number(result);
+
+				operaExpression = value1S + " % " + value2S;
 			}
 			else if (plusIndex > -1)
 			{

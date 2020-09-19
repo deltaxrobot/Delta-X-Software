@@ -29,6 +29,26 @@ void BlobManager::RemoveOldestObject()
 	if (ObjectContainer.size() == 0)
 		return;
 
+	for (int i = 0; i < ObjectContainer.size() - 1; i++)
+	{
+		cv::RotatedRect obj = ObjectContainer.at(i + 1);
+
+		int angle = obj.angle + 180;
+
+		if (obj.size.width > obj.size.height)
+		{
+			angle = obj.angle + 90;
+		}
+
+		emit NewUpdateObjectPosition(QString("#O") + QString::number(i + 1) + "_X", obj.center.x);
+		emit NewUpdateObjectPosition(QString("#O") + QString::number(i + 1) + "_Y", obj.center.y);
+		emit NewUpdateObjectPosition(QString("#O") + QString::number(i + 1) + "_A", angle);
+	}
+
+	emit NewUpdateObjectPosition(QString("#O") + QString::number(ObjectContainer.size()) + "_X", NULL_NUMBER);
+	emit NewUpdateObjectPosition(QString("#O") + QString::number(ObjectContainer.size()) + "_Y", NULL_NUMBER);
+	emit NewUpdateObjectPosition(QString("#O") + QString::number(ObjectContainer.size()) + "_A", NULL_NUMBER);
+
 	ObjectContainer.erase(ObjectContainer.begin());
 }
 
@@ -60,17 +80,24 @@ bool BlobManager::isNewObject(cv::RotatedRect object)
 	{
 		cv::RotatedRect& oldObj = ObjectContainer.at(i);
 
-		float errX = abs(oldObj.center.x - object.center.x);
-		float errY = abs(oldObj.center.y - object.center.y);
-		float errA = abs(oldObj.angle - object.angle);
-		
-		if (errX < (approValue.x) && errY < (approValue.y))
-		{
-			oldObj.angle = object.angle;
-			oldObj.center = object.center;
-			oldObj.size = object.size;
+		std::vector<cv::Point2f> IntersectionVertices;
 
-			result = false;
+		cv::rotatedRectangleIntersection(oldObj, object, IntersectionVertices);
+
+		int IntersectionArea = 0;
+
+		if (IntersectionVertices.size() > 0)
+		{
+			IntersectionArea = cv::contourArea(IntersectionVertices);
+		}
+
+		int ObjectArea = oldObj.size.height * oldObj.size.width;
+
+		if (IntersectionArea > ObjectArea * 0.3f)
+		{
+			ObjectContainer.at(i).center.x = object.center.x;
+			ObjectContainer.at(i).center.y = object.center.y;
+			return false;
 		}
 	}
 	return result;

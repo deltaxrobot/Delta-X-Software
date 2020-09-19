@@ -1,0 +1,38 @@
+N0 G28
+N5 M204 A5000
+N10 G01 F400
+N15 G01 Z-310 
+N20 #Counter = 0
+N25 #Offset = -28
+N30 G04 P10
+
+N40 IF [#O1_Y == NULL] THEN GOTO 30
+N45 G01 X[#O1_X] Z-330
+N50 IF [#O1_Y > 100] THEN GOTO 30 
+N55 M03
+N60 G01 Y[#O1_Y + #Offset] 
+N65 G01 Y[#O1_Y + #Offset] 
+N70 G01 Z-340
+N75 G01 Z-320
+N80 #Counter = #Counter + 1
+N85 #XOrder = 80 + [#Counter / 4] * 30
+N90 #YOrder = [#Counter % 4] * 30
+N95 G01 X[#XOrder] Y[#YOrder]
+N100 G01 Z-380
+N105 M05
+N110 G01 Z-320
+
+N120 M98 PdeleteFirstObject
+
+N130 GOTO 30
+
+
+
+
+
+
+
+
+
+
+
