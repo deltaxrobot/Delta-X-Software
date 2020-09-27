@@ -28,6 +28,7 @@ void GcodeReference::SelectGcodeItem(QListWidgetItem *item)
 	}
 
 	ui.textEdit->scrollToAnchor(name);
+	ui.teMacro->scrollToAnchor(name);
 	QString s = ui.textEdit->toHtml();
 	QString ss = s;
 	QTextCursor textCursor(ui.textEdit->document());
