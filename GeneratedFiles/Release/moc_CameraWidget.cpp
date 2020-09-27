@@ -21,8 +21,8 @@ QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_CameraWidget_t {
-    QByteArrayData data[28];
-    char stringdata0[330];
+    QByteArrayData data[30];
+    char stringdata0[354];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -56,9 +56,11 @@ QT_MOC_LITERAL(21, 218, 12), // "circleObject"
 QT_MOC_LITERAL(22, 231, 26), // "selectPerspectiveRectangle"
 QT_MOC_LITERAL(23, 258, 22), // "selectProcessRectangle"
 QT_MOC_LITERAL(24, 281, 6), // "noTool"
-QT_MOC_LITERAL(25, 288, 17), // "ChangeXCalibPoint"
-QT_MOC_LITERAL(26, 306, 5), // "value"
-QT_MOC_LITERAL(27, 312, 17) // "ChangeYCalibPoint"
+QT_MOC_LITERAL(25, 288, 11), // "SaveSetting"
+QT_MOC_LITERAL(26, 300, 11), // "LoadSetting"
+QT_MOC_LITERAL(27, 312, 17), // "ChangeXCalibPoint"
+QT_MOC_LITERAL(28, 330, 5), // "value"
+QT_MOC_LITERAL(29, 336, 17) // "ChangeYCalibPoint"
 
     },
     "CameraWidget\0FinishDrawObject\0\0x\0y\0h\0"
@@ -68,8 +70,9 @@ QT_MOC_LITERAL(27, 312, 17) // "ChangeYCalibPoint"
     "distance\0FinishSelectCalibPoint\0"
     "SizeChanged\0rectObject\0lineObject\0"
     "circleObject\0selectPerspectiveRectangle\0"
-    "selectProcessRectangle\0noTool\0"
-    "ChangeXCalibPoint\0value\0ChangeYCalibPoint"
+    "selectProcessRectangle\0noTool\0SaveSetting\0"
+    "LoadSetting\0ChangeXCalibPoint\0value\0"
+    "ChangeYCalibPoint"
 };
 #undef QT_MOC_LITERAL
 
@@ -79,7 +82,7 @@ static const uint qt_meta_data_CameraWidget[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-      15,   14, // methods
+      17,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -87,23 +90,25 @@ static const uint qt_meta_data_CameraWidget[] = {
        7,       // signalCount
 
  // signals: name, argc, parameters, tag, flags
-       1,    4,   89,    2, 0x06 /* Public */,
-       7,    4,   98,    2, 0x06 /* Public */,
-      12,    1,  107,    2, 0x06 /* Public */,
-      14,    2,  110,    2, 0x06 /* Public */,
-      15,    1,  115,    2, 0x06 /* Public */,
-      17,    2,  118,    2, 0x06 /* Public */,
-      18,    0,  123,    2, 0x06 /* Public */,
+       1,    4,   99,    2, 0x06 /* Public */,
+       7,    4,  108,    2, 0x06 /* Public */,
+      12,    1,  117,    2, 0x06 /* Public */,
+      14,    2,  120,    2, 0x06 /* Public */,
+      15,    1,  125,    2, 0x06 /* Public */,
+      17,    2,  128,    2, 0x06 /* Public */,
+      18,    0,  133,    2, 0x06 /* Public */,
 
  // slots: name, argc, parameters, tag, flags
-      19,    0,  124,    2, 0x0a /* Public */,
-      20,    0,  125,    2, 0x0a /* Public */,
-      21,    0,  126,    2, 0x0a /* Public */,
-      22,    0,  127,    2, 0x0a /* Public */,
-      23,    0,  128,    2, 0x0a /* Public */,
-      24,    0,  129,    2, 0x0a /* Public */,
-      25,    1,  130,    2, 0x0a /* Public */,
-      27,    1,  133,    2, 0x0a /* Public */,
+      19,    0,  134,    2, 0x0a /* Public */,
+      20,    0,  135,    2, 0x0a /* Public */,
+      21,    0,  136,    2, 0x0a /* Public */,
+      22,    0,  137,    2, 0x0a /* Public */,
+      23,    0,  138,    2, 0x0a /* Public */,
+      24,    0,  139,    2, 0x0a /* Public */,
+      25,    0,  140,    2, 0x0a /* Public */,
+      26,    0,  141,    2, 0x0a /* Public */,
+      27,    1,  142,    2, 0x0a /* Public */,
+      29,    1,  145,    2, 0x0a /* Public */,
 
  // signals: parameters
     QMetaType::Void, QMetaType::Int, QMetaType::Int, QMetaType::Int, QMetaType::Int,    3,    4,    5,    6,
@@ -121,8 +126,10 @@ static const uint qt_meta_data_CameraWidget[] = {
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
-    QMetaType::Void, QMetaType::QString,   26,
-    QMetaType::Void, QMetaType::QString,   26,
+    QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void, QMetaType::QString,   28,
+    QMetaType::Void, QMetaType::QString,   28,
 
        0        // eod
 };
@@ -146,8 +153,10 @@ void CameraWidget::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id
         case 10: _t->selectPerspectiveRectangle(); break;
         case 11: _t->selectProcessRectangle(); break;
         case 12: _t->noTool(); break;
-        case 13: _t->ChangeXCalibPoint((*reinterpret_cast< QString(*)>(_a[1]))); break;
-        case 14: _t->ChangeYCalibPoint((*reinterpret_cast< QString(*)>(_a[1]))); break;
+        case 13: _t->SaveSetting(); break;
+        case 14: _t->LoadSetting(); break;
+        case 15: _t->ChangeXCalibPoint((*reinterpret_cast< QString(*)>(_a[1]))); break;
+        case 16: _t->ChangeYCalibPoint((*reinterpret_cast< QString(*)>(_a[1]))); break;
         default: ;
         }
     } else if (_c == QMetaObject::IndexOfMethod) {
@@ -230,13 +239,13 @@ int CameraWidget::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 15)
+        if (_id < 17)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 15;
+        _id -= 17;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 15)
+        if (_id < 17)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 15;
+        _id -= 17;
     }
     return _id;
 }

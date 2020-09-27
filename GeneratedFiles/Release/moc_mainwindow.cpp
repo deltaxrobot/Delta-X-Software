@@ -22,8 +22,8 @@ QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_MainWindow_t {
-    QByteArrayData data[86];
-    char stringdata0[1385];
+    QByteArrayData data[88];
+    char stringdata0[1430];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -79,45 +79,47 @@ QT_MOC_LITERAL(43, 690, 20), // "UpdateCursorPosition"
 QT_MOC_LITERAL(44, 711, 15), // "ConnectConveyor"
 QT_MOC_LITERAL(45, 727, 15), // "SetConveyorMode"
 QT_MOC_LITERAL(46, 743, 4), // "mode"
-QT_MOC_LITERAL(47, 748, 12), // "MoveConveyor"
-QT_MOC_LITERAL(48, 761, 18), // "ProcessShortcutKey"
-QT_MOC_LITERAL(49, 780, 14), // "ConnectSliding"
-QT_MOC_LITERAL(50, 795, 13), // "GoHomeSliding"
-QT_MOC_LITERAL(51, 809, 14), // "DisableSliding"
-QT_MOC_LITERAL(52, 824, 15), // "SetSlidingSpeed"
-QT_MOC_LITERAL(53, 840, 18), // "SetSlidingPosition"
-QT_MOC_LITERAL(54, 859, 18), // "ConnectExternalMCU"
-QT_MOC_LITERAL(55, 878, 25), // "TransmitTextToExternalMCU"
-QT_MOC_LITERAL(56, 904, 26), // "DisplayTextFromExternalMCU"
-QT_MOC_LITERAL(57, 931, 4), // "text"
-QT_MOC_LITERAL(58, 936, 16), // "TerminalTransmit"
-QT_MOC_LITERAL(59, 953, 16), // "PrintReceiveData"
-QT_MOC_LITERAL(60, 970, 3), // "msg"
-QT_MOC_LITERAL(61, 974, 15), // "NoticeConnected"
-QT_MOC_LITERAL(62, 990, 14), // "RunSmartEditor"
-QT_MOC_LITERAL(63, 1005, 20), // "StandardFormatEditor"
-QT_MOC_LITERAL(64, 1026, 18), // "OpenGcodeReference"
-QT_MOC_LITERAL(65, 1045, 16), // "ConfigConnection"
-QT_MOC_LITERAL(66, 1062, 20), // "ChangeDeltaDashboard"
-QT_MOC_LITERAL(67, 1083, 5), // "index"
-QT_MOC_LITERAL(68, 1089, 17), // "SelectTrueTabName"
-QT_MOC_LITERAL(69, 1107, 15), // "FinishedRequest"
-QT_MOC_LITERAL(70, 1123, 14), // "QNetworkReply*"
-QT_MOC_LITERAL(71, 1138, 5), // "reply"
-QT_MOC_LITERAL(72, 1144, 20), // "ExportBlocklyToGcode"
-QT_MOC_LITERAL(73, 1165, 7), // "OpenROS"
-QT_MOC_LITERAL(74, 1173, 19), // "ChangeROSCameraView"
-QT_MOC_LITERAL(75, 1193, 17), // "ChangeEndEffector"
-QT_MOC_LITERAL(76, 1211, 18), // "ChangeRobotVersion"
-QT_MOC_LITERAL(77, 1230, 15), // "AddObjectsToROS"
-QT_MOC_LITERAL(78, 1246, 28), // "std::vector<cv::RotatedRect>"
-QT_MOC_LITERAL(79, 1275, 15), // "ObjectContainer"
-QT_MOC_LITERAL(80, 1291, 21), // "DeleteAllObjectsInROS"
-QT_MOC_LITERAL(81, 1313, 7), // "ScaleUI"
-QT_MOC_LITERAL(82, 1321, 27), // "ExecuteRequestsFromExternal"
-QT_MOC_LITERAL(83, 1349, 7), // "request"
-QT_MOC_LITERAL(84, 1357, 21), // "ChangeParentForWidget"
-QT_MOC_LITERAL(85, 1379, 5) // "state"
+QT_MOC_LITERAL(47, 748, 21), // "SetConveyorMovingMode"
+QT_MOC_LITERAL(48, 770, 22), // "SetSpeedOfPositionMode"
+QT_MOC_LITERAL(49, 793, 12), // "MoveConveyor"
+QT_MOC_LITERAL(50, 806, 18), // "ProcessShortcutKey"
+QT_MOC_LITERAL(51, 825, 14), // "ConnectSliding"
+QT_MOC_LITERAL(52, 840, 13), // "GoHomeSliding"
+QT_MOC_LITERAL(53, 854, 14), // "DisableSliding"
+QT_MOC_LITERAL(54, 869, 15), // "SetSlidingSpeed"
+QT_MOC_LITERAL(55, 885, 18), // "SetSlidingPosition"
+QT_MOC_LITERAL(56, 904, 18), // "ConnectExternalMCU"
+QT_MOC_LITERAL(57, 923, 25), // "TransmitTextToExternalMCU"
+QT_MOC_LITERAL(58, 949, 26), // "DisplayTextFromExternalMCU"
+QT_MOC_LITERAL(59, 976, 4), // "text"
+QT_MOC_LITERAL(60, 981, 16), // "TerminalTransmit"
+QT_MOC_LITERAL(61, 998, 16), // "PrintReceiveData"
+QT_MOC_LITERAL(62, 1015, 3), // "msg"
+QT_MOC_LITERAL(63, 1019, 15), // "NoticeConnected"
+QT_MOC_LITERAL(64, 1035, 14), // "RunSmartEditor"
+QT_MOC_LITERAL(65, 1050, 20), // "StandardFormatEditor"
+QT_MOC_LITERAL(66, 1071, 18), // "OpenGcodeReference"
+QT_MOC_LITERAL(67, 1090, 16), // "ConfigConnection"
+QT_MOC_LITERAL(68, 1107, 20), // "ChangeDeltaDashboard"
+QT_MOC_LITERAL(69, 1128, 5), // "index"
+QT_MOC_LITERAL(70, 1134, 17), // "SelectTrueTabName"
+QT_MOC_LITERAL(71, 1152, 15), // "FinishedRequest"
+QT_MOC_LITERAL(72, 1168, 14), // "QNetworkReply*"
+QT_MOC_LITERAL(73, 1183, 5), // "reply"
+QT_MOC_LITERAL(74, 1189, 20), // "ExportBlocklyToGcode"
+QT_MOC_LITERAL(75, 1210, 7), // "OpenROS"
+QT_MOC_LITERAL(76, 1218, 19), // "ChangeROSCameraView"
+QT_MOC_LITERAL(77, 1238, 17), // "ChangeEndEffector"
+QT_MOC_LITERAL(78, 1256, 18), // "ChangeRobotVersion"
+QT_MOC_LITERAL(79, 1275, 15), // "AddObjectsToROS"
+QT_MOC_LITERAL(80, 1291, 28), // "std::vector<cv::RotatedRect>"
+QT_MOC_LITERAL(81, 1320, 15), // "ObjectContainer"
+QT_MOC_LITERAL(82, 1336, 21), // "DeleteAllObjectsInROS"
+QT_MOC_LITERAL(83, 1358, 7), // "ScaleUI"
+QT_MOC_LITERAL(84, 1366, 27), // "ExecuteRequestsFromExternal"
+QT_MOC_LITERAL(85, 1394, 7), // "request"
+QT_MOC_LITERAL(86, 1402, 21), // "ChangeParentForWidget"
+QT_MOC_LITERAL(87, 1424, 5) // "state"
 
     },
     "MainWindow\0ConnectDeltaRobot\0\0"
@@ -141,6 +143,7 @@ QT_MOC_LITERAL(85, 1379, 5) // "state"
     "AddGcodeLine\0ChangeGcodeParameter\0"
     "UpdateDetectObjectSize\0UpdateCursorPosition\0"
     "ConnectConveyor\0SetConveyorMode\0mode\0"
+    "SetConveyorMovingMode\0SetSpeedOfPositionMode\0"
     "MoveConveyor\0ProcessShortcutKey\0"
     "ConnectSliding\0GoHomeSliding\0"
     "DisableSliding\0SetSlidingSpeed\0"
@@ -168,7 +171,7 @@ static const uint qt_meta_data_MainWindow[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-      64,   14, // methods
+      66,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -176,70 +179,72 @@ static const uint qt_meta_data_MainWindow[] = {
        0,       // signalCount
 
  // slots: name, argc, parameters, tag, flags
-       1,    0,  334,    2, 0x08 /* Private */,
-       3,    0,  335,    2, 0x08 /* Private */,
-       4,    0,  336,    2, 0x08 /* Private */,
-       5,    0,  337,    2, 0x08 /* Private */,
-       6,    0,  338,    2, 0x08 /* Private */,
-       7,    0,  339,    2, 0x08 /* Private */,
-       8,    0,  340,    2, 0x08 /* Private */,
-       9,    0,  341,    2, 0x08 /* Private */,
-      10,    0,  342,    2, 0x08 /* Private */,
-      11,    1,  343,    2, 0x08 /* Private */,
-      13,    1,  346,    2, 0x08 /* Private */,
-      15,    0,  349,    2, 0x08 /* Private */,
-      16,    4,  350,    2, 0x08 /* Private */,
-      19,    4,  359,    2, 0x08 /* Private */,
-      20,    6,  368,    2, 0x08 /* Private */,
-      23,    4,  381,    2, 0x08 /* Private */,
-      24,    0,  390,    2, 0x08 /* Private */,
-      25,    0,  391,    2, 0x08 /* Private */,
-      26,    1,  392,    2, 0x08 /* Private */,
-      28,    0,  395,    2, 0x08 /* Private */,
-      29,    1,  396,    2, 0x08 /* Private */,
-      31,    1,  399,    2, 0x08 /* Private */,
-      32,    0,  402,    2, 0x08 /* Private */,
-      33,    2,  403,    2, 0x08 /* Private */,
-      34,    1,  408,    2, 0x08 /* Private */,
-      37,    0,  411,    2, 0x08 /* Private */,
-      38,    0,  412,    2, 0x08 /* Private */,
-      39,    0,  413,    2, 0x08 /* Private */,
-      40,    0,  414,    2, 0x08 /* Private */,
-      41,    0,  415,    2, 0x08 /* Private */,
-      42,    0,  416,    2, 0x08 /* Private */,
-      43,    2,  417,    2, 0x08 /* Private */,
-      44,    0,  422,    2, 0x08 /* Private */,
-      45,    1,  423,    2, 0x08 /* Private */,
-      47,    0,  426,    2, 0x08 /* Private */,
-      48,    0,  427,    2, 0x08 /* Private */,
-      49,    0,  428,    2, 0x08 /* Private */,
-      50,    0,  429,    2, 0x08 /* Private */,
-      51,    0,  430,    2, 0x08 /* Private */,
-      52,    0,  431,    2, 0x08 /* Private */,
-      53,    0,  432,    2, 0x08 /* Private */,
-      54,    0,  433,    2, 0x08 /* Private */,
-      55,    0,  434,    2, 0x08 /* Private */,
-      56,    1,  435,    2, 0x08 /* Private */,
-      58,    0,  438,    2, 0x08 /* Private */,
-      59,    1,  439,    2, 0x08 /* Private */,
-      61,    0,  442,    2, 0x08 /* Private */,
-      62,    0,  443,    2, 0x08 /* Private */,
-      63,    0,  444,    2, 0x08 /* Private */,
-      64,    0,  445,    2, 0x08 /* Private */,
-      65,    0,  446,    2, 0x08 /* Private */,
-      66,    1,  447,    2, 0x08 /* Private */,
-      68,    1,  450,    2, 0x08 /* Private */,
-      69,    1,  453,    2, 0x08 /* Private */,
-      72,    0,  456,    2, 0x08 /* Private */,
-      73,    0,  457,    2, 0x08 /* Private */,
-      74,    1,  458,    2, 0x08 /* Private */,
-      75,    1,  461,    2, 0x08 /* Private */,
-      76,    1,  464,    2, 0x08 /* Private */,
-      77,    1,  467,    2, 0x08 /* Private */,
-      80,    0,  470,    2, 0x08 /* Private */,
-      81,    0,  471,    2, 0x08 /* Private */,
-      82,    1,  472,    2, 0x08 /* Private */,
-      84,    1,  475,    2, 0x08 /* Private */,
+       1,    0,  344,    2, 0x08 /* Private */,
+       3,    0,  345,    2, 0x08 /* Private */,
+       4,    0,  346,    2, 0x08 /* Private */,
+       5,    0,  347,    2, 0x08 /* Private */,
+       6,    0,  348,    2, 0x08 /* Private */,
+       7,    0,  349,    2, 0x08 /* Private */,
+       8,    0,  350,    2, 0x08 /* Private */,
+       9,    0,  351,    2, 0x08 /* Private */,
+      10,    0,  352,    2, 0x08 /* Private */,
+      11,    1,  353,    2, 0x08 /* Private */,
+      13,    1,  356,    2, 0x08 /* Private */,
+      15,    0,  359,    2, 0x08 /* Private */,
+      16,    4,  360,    2, 0x08 /* Private */,
+      19,    4,  369,    2, 0x08 /* Private */,
+      20,    6,  378,    2, 0x08 /* Private */,
+      23,    4,  391,    2, 0x08 /* Private */,
+      24,    0,  400,    2, 0x08 /* Private */,
+      25,    0,  401,    2, 0x08 /* Private */,
+      26,    1,  402,    2, 0x08 /* Private */,
+      28,    0,  405,    2, 0x08 /* Private */,
+      29,    1,  406,    2, 0x08 /* Private */,
+      31,    1,  409,    2, 0x08 /* Private */,
+      32,    0,  412,    2, 0x08 /* Private */,
+      33,    2,  413,    2, 0x08 /* Private */,
+      34,    1,  418,    2, 0x08 /* Private */,
+      37,    0,  421,    2, 0x08 /* Private */,
+      38,    0,  422,    2, 0x08 /* Private */,
+      39,    0,  423,    2, 0x08 /* Private */,
+      40,    0,  424,    2, 0x08 /* Private */,
+      41,    0,  425,    2, 0x08 /* Private */,
+      42,    0,  426,    2, 0x08 /* Private */,
+      43,    2,  427,    2, 0x08 /* Private */,
+      44,    0,  432,    2, 0x08 /* Private */,
+      45,    1,  433,    2, 0x08 /* Private */,
+      47,    1,  436,    2, 0x08 /* Private */,
+      48,    0,  439,    2, 0x08 /* Private */,
+      49,    0,  440,    2, 0x08 /* Private */,
+      50,    0,  441,    2, 0x08 /* Private */,
+      51,    0,  442,    2, 0x08 /* Private */,
+      52,    0,  443,    2, 0x08 /* Private */,
+      53,    0,  444,    2, 0x08 /* Private */,
+      54,    0,  445,    2, 0x08 /* Private */,
+      55,    0,  446,    2, 0x08 /* Private */,
+      56,    0,  447,    2, 0x08 /* Private */,
+      57,    0,  448,    2, 0x08 /* Private */,
+      58,    1,  449,    2, 0x08 /* Private */,
+      60,    0,  452,    2, 0x08 /* Private */,
+      61,    1,  453,    2, 0x08 /* Private */,
+      63,    0,  456,    2, 0x08 /* Private */,
+      64,    0,  457,    2, 0x08 /* Private */,
+      65,    0,  458,    2, 0x08 /* Private */,
+      66,    0,  459,    2, 0x08 /* Private */,
+      67,    0,  460,    2, 0x08 /* Private */,
+      68,    1,  461,    2, 0x08 /* Private */,
+      70,    1,  464,    2, 0x08 /* Private */,
+      71,    1,  467,    2, 0x08 /* Private */,
+      74,    0,  470,    2, 0x08 /* Private */,
+      75,    0,  471,    2, 0x08 /* Private */,
+      76,    1,  472,    2, 0x08 /* Private */,
+      77,    1,  475,    2, 0x08 /* Private */,
+      78,    1,  478,    2, 0x08 /* Private */,
+      79,    1,  481,    2, 0x08 /* Private */,
+      82,    0,  484,    2, 0x08 /* Private */,
+      83,    0,  485,    2, 0x08 /* Private */,
+      84,    1,  486,    2, 0x08 /* Private */,
+      86,    1,  489,    2, 0x08 /* Private */,
 
  // slots: parameters
     QMetaType::Void,
@@ -276,6 +281,7 @@ static const uint qt_meta_data_MainWindow[] = {
     QMetaType::Void, QMetaType::Int, QMetaType::Int,   17,   18,
     QMetaType::Void,
     QMetaType::Void, QMetaType::Int,   46,
+    QMetaType::Void, QMetaType::Int,   46,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
@@ -285,27 +291,28 @@ static const uint qt_meta_data_MainWindow[] = {
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
-    QMetaType::Void, QMetaType::QString,   57,
     QMetaType::Void,
-    QMetaType::Void, QMetaType::QString,   60,
+    QMetaType::Void, QMetaType::QString,   59,
     QMetaType::Void,
-    QMetaType::Void,
-    QMetaType::Void,
+    QMetaType::Void, QMetaType::QString,   62,
     QMetaType::Void,
     QMetaType::Void,
-    QMetaType::Void, QMetaType::Int,   67,
-    QMetaType::Void, QMetaType::Int,   67,
-    QMetaType::Void, 0x80000000 | 70,   71,
     QMetaType::Void,
     QMetaType::Void,
-    QMetaType::Void, QMetaType::Int,   67,
-    QMetaType::Void, QMetaType::Int,   67,
-    QMetaType::Void, QMetaType::Int,   67,
-    QMetaType::Void, 0x80000000 | 78,   79,
+    QMetaType::Void,
+    QMetaType::Void, QMetaType::Int,   69,
+    QMetaType::Void, QMetaType::Int,   69,
+    QMetaType::Void, 0x80000000 | 72,   73,
     QMetaType::Void,
     QMetaType::Void,
-    QMetaType::Void, QMetaType::QString,   83,
-    QMetaType::Void, QMetaType::Bool,   85,
+    QMetaType::Void, QMetaType::Int,   69,
+    QMetaType::Void, QMetaType::Int,   69,
+    QMetaType::Void, QMetaType::Int,   69,
+    QMetaType::Void, 0x80000000 | 80,   81,
+    QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void, QMetaType::QString,   85,
+    QMetaType::Void, QMetaType::Bool,   87,
 
        0        // eod
 };
@@ -350,42 +357,44 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 31: _t->UpdateCursorPosition((*reinterpret_cast< int(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2]))); break;
         case 32: _t->ConnectConveyor(); break;
         case 33: _t->SetConveyorMode((*reinterpret_cast< int(*)>(_a[1]))); break;
-        case 34: _t->MoveConveyor(); break;
-        case 35: _t->ProcessShortcutKey(); break;
-        case 36: _t->ConnectSliding(); break;
-        case 37: _t->GoHomeSliding(); break;
-        case 38: _t->DisableSliding(); break;
-        case 39: _t->SetSlidingSpeed(); break;
-        case 40: _t->SetSlidingPosition(); break;
-        case 41: _t->ConnectExternalMCU(); break;
-        case 42: _t->TransmitTextToExternalMCU(); break;
-        case 43: _t->DisplayTextFromExternalMCU((*reinterpret_cast< QString(*)>(_a[1]))); break;
-        case 44: _t->TerminalTransmit(); break;
-        case 45: _t->PrintReceiveData((*reinterpret_cast< QString(*)>(_a[1]))); break;
-        case 46: _t->NoticeConnected(); break;
-        case 47: _t->RunSmartEditor(); break;
-        case 48: _t->StandardFormatEditor(); break;
-        case 49: _t->OpenGcodeReference(); break;
-        case 50: _t->ConfigConnection(); break;
-        case 51: _t->ChangeDeltaDashboard((*reinterpret_cast< int(*)>(_a[1]))); break;
-        case 52: _t->SelectTrueTabName((*reinterpret_cast< int(*)>(_a[1]))); break;
-        case 53: _t->FinishedRequest((*reinterpret_cast< QNetworkReply*(*)>(_a[1]))); break;
-        case 54: _t->ExportBlocklyToGcode(); break;
-        case 55: _t->OpenROS(); break;
-        case 56: _t->ChangeROSCameraView((*reinterpret_cast< int(*)>(_a[1]))); break;
-        case 57: _t->ChangeEndEffector((*reinterpret_cast< int(*)>(_a[1]))); break;
-        case 58: _t->ChangeRobotVersion((*reinterpret_cast< int(*)>(_a[1]))); break;
-        case 59: _t->AddObjectsToROS((*reinterpret_cast< std::vector<cv::RotatedRect>(*)>(_a[1]))); break;
-        case 60: _t->DeleteAllObjectsInROS(); break;
-        case 61: _t->ScaleUI(); break;
-        case 62: _t->ExecuteRequestsFromExternal((*reinterpret_cast< QString(*)>(_a[1]))); break;
-        case 63: _t->ChangeParentForWidget((*reinterpret_cast< bool(*)>(_a[1]))); break;
+        case 34: _t->SetConveyorMovingMode((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 35: _t->SetSpeedOfPositionMode(); break;
+        case 36: _t->MoveConveyor(); break;
+        case 37: _t->ProcessShortcutKey(); break;
+        case 38: _t->ConnectSliding(); break;
+        case 39: _t->GoHomeSliding(); break;
+        case 40: _t->DisableSliding(); break;
+        case 41: _t->SetSlidingSpeed(); break;
+        case 42: _t->SetSlidingPosition(); break;
+        case 43: _t->ConnectExternalMCU(); break;
+        case 44: _t->TransmitTextToExternalMCU(); break;
+        case 45: _t->DisplayTextFromExternalMCU((*reinterpret_cast< QString(*)>(_a[1]))); break;
+        case 46: _t->TerminalTransmit(); break;
+        case 47: _t->PrintReceiveData((*reinterpret_cast< QString(*)>(_a[1]))); break;
+        case 48: _t->NoticeConnected(); break;
+        case 49: _t->RunSmartEditor(); break;
+        case 50: _t->StandardFormatEditor(); break;
+        case 51: _t->OpenGcodeReference(); break;
+        case 52: _t->ConfigConnection(); break;
+        case 53: _t->ChangeDeltaDashboard((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 54: _t->SelectTrueTabName((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 55: _t->FinishedRequest((*reinterpret_cast< QNetworkReply*(*)>(_a[1]))); break;
+        case 56: _t->ExportBlocklyToGcode(); break;
+        case 57: _t->OpenROS(); break;
+        case 58: _t->ChangeROSCameraView((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 59: _t->ChangeEndEffector((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 60: _t->ChangeRobotVersion((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 61: _t->AddObjectsToROS((*reinterpret_cast< std::vector<cv::RotatedRect>(*)>(_a[1]))); break;
+        case 62: _t->DeleteAllObjectsInROS(); break;
+        case 63: _t->ScaleUI(); break;
+        case 64: _t->ExecuteRequestsFromExternal((*reinterpret_cast< QString(*)>(_a[1]))); break;
+        case 65: _t->ChangeParentForWidget((*reinterpret_cast< bool(*)>(_a[1]))); break;
         default: ;
         }
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
         switch (_id) {
         default: *reinterpret_cast<int*>(_a[0]) = -1; break;
-        case 53:
+        case 55:
             switch (*reinterpret_cast<int*>(_a[1])) {
             default: *reinterpret_cast<int*>(_a[0]) = -1; break;
             case 0:
@@ -421,13 +430,13 @@ int MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 64)
+        if (_id < 66)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 64;
+        _id -= 66;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 64)
+        if (_id < 66)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 64;
+        _id -= 66;
     }
     return _id;
 }
