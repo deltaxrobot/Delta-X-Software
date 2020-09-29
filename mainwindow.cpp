@@ -288,9 +288,11 @@ void MainWindow::InitVariables()
 	//ui->wevBlockly->setUrl(QUrl(QStringLiteral("C:/Users/Admin/Downloads/blockly-master/blockly-master/demos/code/index.html")));
 
 	//----------------ROS-------------------
-	DeltaXROS = new ROS(this, ui->frameROS, "/ros/Delta X Ros.exe");
+#ifdef Q_OS_WIN
+    DeltaXROS = new ROS(this, ui->frameROS, "/ros/Delta X Ros.exe");
 	DeltaXROS->SetConnectionManager(DeltaConnectionManager->TCPConnection);
 	//DeltaXROS->Run();
+#endif
 	//---------------Socket------------------------
 	
 
@@ -308,6 +310,13 @@ void MainWindow::InitVariables()
 
 	//------------ UI ----------------
 	Delta2DVisualizer->ChangeXY(0, 0);
+
+    //------------------- Linux -----------------
+//    QString cmd = "stty -F /dev/ttyACM0 -hupcl";
+//    QProcess *process = new QProcess;
+//    process->start(cmd);
+//    process->waitForBytesWritten();
+//    process->waitForFinished();
 }
 
 void MainWindow::FinishedRequest(QNetworkReply *reply)
@@ -360,16 +369,20 @@ void MainWindow::ExportBlocklyToGcode()
 
 void MainWindow::OpenROS()
 {
-	if (DeltaXROS->IsRunning())
-	{		
-		DeltaXROS->Close();
-		ui->pbTurnOnROS->setText("Turn on ROS");
-	}
-	else
-	{
-		DeltaXROS->Run();
-		ui->pbTurnOnROS->setText("Turn off ROS");
-	}
+#ifdef Q_OS_WIN
+    if (DeltaXROS->IsRunning())
+    {
+        DeltaXROS->Close();
+        ui->pbTurnOnROS->setText("Turn on ROS");
+    }
+    else
+    {
+        DeltaXROS->Run();
+        ui->pbTurnOnROS->setText("Turn off ROS");
+    }
+#else
+    QMessageBox::information(this, "Noti", "Currently, ROS is not available on Linux");
+#endif
 }
 
 
@@ -778,7 +791,7 @@ void MainWindow::ImportGcodeFilesFromComputer()
 {
 	QStringList fileNames = QFileDialog::getOpenFileNames(this, tr("Open G-code Files"), "",	tr("G-code file (*.dtgc);;All Files (*)"));
 
-	for each (QString fileName in fileNames)
+    foreach (QString fileName, fileNames)
 	{
 		QFileInfo fileInfo(fileName);
 		QString newFullName = QDir::currentPath() + "/" + fileInfo.fileName();
@@ -1099,7 +1112,7 @@ void MainWindow::UpdateConvenyorPosition(float x, float y)
 
 void MainWindow::DisplayGcodeVariable(QList<GcodeVariable> gcodeVariables)
 {
-	for each (GcodeVariable var in gcodeVariables)
+    foreach (GcodeVariable var, gcodeVariables)
 	{
 		if (var.Name == ui->leVariable1->text())
 		{

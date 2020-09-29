@@ -22,28 +22,48 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
+    BlobManager.cpp \
+    CameraWidget.cpp \
+    DrawingExporter.cpp \
+    DrawingWidget.cpp \
+    GcodeReference.cpp \
+    ImageProcesser.cpp \
+    Layer.cpp \
+    ObjectVariableTable.cpp \
+    ROS.cpp \
+    TCPConnectionManager.cpp \
+    TextLayer.cpp \
+    codeeditor.cpp \
         mainwindow.cpp \
     ConnectionManager.cpp \
     DeltaVisualizer.cpp \
-    glwidget.cpp \
-    logo.cpp \
     GcodeProgramManager.cpp \
     GcodeProgram.cpp \
     UnityTool.cpp \
-    hsvwindow.cpp
+    hsvwindow.cpp \
 
 HEADERS  += mainwindow.h \
+    BlobManager.h \
+    CameraWidget.h \
     ConnectionManager.h \
     DeltaVisualizer.h \
-    glwidget.h \
-    logo.h \
+    DrawingExporter.h \
+    DrawingWidget.h \
+    GcodeReference.h \
+    ImageProcesser.h \
     ImageUnity.h \
     GcodeProgram.h \
     GcodeProgramManager.h \
+    Layer.h \
+    ObjectVariableTable.h \
+    ROS.h \
+    TCPConnectionManager.h \
+    TextLayer.h \
+    codeeditor.h \
     hsvwindow.h \
-	GcodeReference.h \
+    GcodeReference.h \
 
 FORMS    += mainwindow.ui \
     hsvwindow.ui \
-	GcodeReference.ui \
-	
+        GcodeReference.ui \
+

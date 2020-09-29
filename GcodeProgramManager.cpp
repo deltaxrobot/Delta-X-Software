@@ -1015,7 +1015,7 @@ void GcodeProgramManager::updatePositionIntoSystemVariable(QString statement)
 		return;
 	}
 
-	for each (QString pair in pairs)
+    foreach (QString pair, pairs)
 	{
 		QChar prefix = pair[0];
 		QString value = pair.mid(1);

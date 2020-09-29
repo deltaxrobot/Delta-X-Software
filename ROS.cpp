@@ -1,5 +1,7 @@
 #include "ROS.h"
 
+#ifdef Q_OS_WIN
+
 HWND unityHWND;
 
 void ActivateUnityWindow()
@@ -175,3 +177,5 @@ void ROS::G01_Relative(float x, float y, float z)
 
 	connectionManager->SendMessageToROS(QString("move triangle x ") + QString::number(x) + " y " + QString::number(y) + " z " + QString::number(z));
 }
+
+#endif

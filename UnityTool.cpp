@@ -9,7 +9,7 @@ QString ConveyorString;
 
 void Debug(QString msg)
 {
-	for each (QLabel* debugLB in Debugs)
+    foreach (QLabel* debugLB, Debugs)
 	{
 		debugLB->setText(msg);
 	}

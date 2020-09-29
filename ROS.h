@@ -1,5 +1,7 @@
 #pragma once
 
+#ifdef Q_OS_WIN
+
 #include <QMainWindow>
 
 #include <QtCore/qt_windows.h>
@@ -53,3 +55,5 @@ private:
 	void initROS();
 	bool isRunning = false;
 };
+
+#endif // Q_OS_WIN
