@@ -312,11 +312,11 @@ void MainWindow::InitVariables()
 	Delta2DVisualizer->ChangeXY(0, 0);
 
     //------------------- Linux -----------------
-//    QString cmd = "stty -F /dev/ttyACM0 -hupcl";
-//    QProcess *process = new QProcess;
-//    process->start(cmd);
-//    process->waitForBytesWritten();
-//    process->waitForFinished();
+    QString cmd = "stty -F /dev/ttyACM0 -hupcl";
+    QProcess *process = new QProcess;
+    process->start(cmd);
+    process->waitForBytesWritten();
+    process->waitForFinished();
 }
 
 void MainWindow::FinishedRequest(QNetworkReply *reply)
