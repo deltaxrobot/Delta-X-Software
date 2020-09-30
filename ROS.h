@@ -1,4 +1,5 @@
 #pragma once
+#include <QApplication>
 
 #ifdef Q_OS_WIN
 
