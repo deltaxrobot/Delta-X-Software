@@ -2,15 +2,28 @@
 #include "mainwindow.h"
 #include <qlist.h>
 
-QLabel* DebugLB;
-QList<QLabel*> Debugs;
+QTextEdit* DebugLB;
+QList<QTextEdit*> Debugs;
 
 QString ConveyorString;
 
 void Debug(QString msg)
 {
-    foreach (QLabel* debugLB, Debugs)
+    foreach (QTextEdit* debugLB, Debugs)
 	{
-		debugLB->setText(msg);
+		QString lastText = debugLB->toPlainText();
+		if (lastText.split('\n').count() > 50)
+			lastText = "";
+		debugLB->setText(lastText + msg);
+		debugLB->moveCursor(QTextCursor::End);
 	}
+}
+
+void Debug(int id, QString msg)
+{	
+	QString lastText = Debugs[id]->toPlainText();
+	if (lastText.split('\n').count() > 50)
+		lastText = "";
+	Debugs[id]->setText(lastText + msg);
+	Debugs[id]->moveCursor(QTextCursor::End);
 }

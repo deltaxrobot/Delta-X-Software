@@ -4,16 +4,23 @@
 #
 #-------------------------------------------------
 
-QT       += core gui serialport opengl webview webenginewidgets
+QT       += core gui serialport opengl network
 
+windows {
+    INCLUDEPATH += E:\OpenCV\opencv-4.0\build\include
+    LIBS += E:\OpenCV\opencv-4.0\build\x64\vc15\lib\opencv_world400.lib
+    LIBS += E:\OpenCV\opencv-4.0\build\x64\vc15\lib\opencv_world400d.lib
+}
 
+linux {
+    INCLUDEPATH += "/usr/local/inlcude/"
+    LIBS += `pkg-config --libs opencv`
+}
 #INCLUDEPATH +=  F:\OpenCV\opencv-3.3.0\include
 #LIBS += -LF:\OpenCV\opencv-3.3.0\x64\vc14\lib \
 #    -lopencv_world330d
 
-INCLUDEPATH += "/usr/local/inlcude/"
 
-LIBS += `pkg-config --libs opencv`
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -30,7 +37,6 @@ SOURCES += main.cpp\
     ImageProcesser.cpp \
     Layer.cpp \
     ObjectVariableTable.cpp \
-    ROS.cpp \
     TCPConnectionManager.cpp \
     TextLayer.cpp \
     codeeditor.cpp \
@@ -41,6 +47,7 @@ SOURCES += main.cpp\
     GcodeProgram.cpp \
     UnityTool.cpp \
     hsvwindow.cpp \
+    robotmanager.cpp
 
 HEADERS  += mainwindow.h \
     BlobManager.h \
@@ -56,14 +63,17 @@ HEADERS  += mainwindow.h \
     GcodeProgramManager.h \
     Layer.h \
     ObjectVariableTable.h \
-    ROS.h \
     TCPConnectionManager.h \
     TextLayer.h \
     codeeditor.h \
     hsvwindow.h \
     GcodeReference.h \
+    robotmanager.h
 
 FORMS    += mainwindow.ui \
     hsvwindow.ui \
         GcodeReference.ui \
+
+RESOURCES += \
+    resource.qrc
 

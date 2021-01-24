@@ -30,13 +30,12 @@
 #include <QMessageBox>
 #include <QInputDialog>
 #include <QUrl>
-#include <qwebengineview.h>
 #include <TCPConnectionManager.h>
-#include <ROS.h>
+//#include <ROS.h>
 #include <QCloseEvent>
 #include <ObjectVariableTable.h>
-#include <QProcess>;
-#include <QSettings>;
+#include <QProcess>
+#include <QSettings>
 
 class MainWindow;
 class ImageProcesser;

@@ -1,18 +1,19 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'hsvwindow.h'
 **
-** Created by: The Qt Meta Object Compiler version 67 (Qt 5.8.0)
+** Created by: The Qt Meta Object Compiler version 67 (Qt 5.15.2)
 **
 ** WARNING! All changes made in this file will be lost!
 *****************************************************************************/
 
+#include <memory>
 #include "../../hsvwindow.h"
 #include <QtCore/qbytearray.h>
 #include <QtCore/qmetatype.h>
 #if !defined(Q_MOC_OUTPUT_REVISION)
 #error "The header file 'hsvwindow.h' doesn't include <QObject>."
 #elif Q_MOC_OUTPUT_REVISION != 67
-#error "This file was generated using the moc from 5.8.0. It"
+#error "This file was generated using the moc from 5.15.2. It"
 #error "cannot be used with the include files from this version of Qt."
 #error "(The moc has changed too much.)"
 #endif
@@ -53,7 +54,7 @@ QT_MOC_LITERAL(10, 64, 24) // "UpdateSliderValueToLabel"
 static const uint qt_meta_data_HSVWindow[] = {
 
  // content:
-       7,       // revision
+       8,       // revision
        0,       // classname
        0,    0, // classinfo
        3,   14, // methods
@@ -83,7 +84,7 @@ static const uint qt_meta_data_HSVWindow[] = {
 void HSVWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
 {
     if (_c == QMetaObject::InvokeMetaMethod) {
-        HSVWindow *_t = static_cast<HSVWindow *>(_o);
+        auto *_t = static_cast<HSVWindow *>(_o);
         Q_UNUSED(_t)
         switch (_id) {
         case 0: _t->ValueChanged((*reinterpret_cast< int(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2])),(*reinterpret_cast< int(*)>(_a[3])),(*reinterpret_cast< int(*)>(_a[4])),(*reinterpret_cast< int(*)>(_a[5])),(*reinterpret_cast< int(*)>(_a[6]))); break;
@@ -93,17 +94,16 @@ void HSVWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, v
         }
     } else if (_c == QMetaObject::IndexOfMethod) {
         int *result = reinterpret_cast<int *>(_a[0]);
-        void **func = reinterpret_cast<void **>(_a[1]);
         {
-            typedef void (HSVWindow::*_t)(int , int , int , int , int , int );
-            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&HSVWindow::ValueChanged)) {
+            using _t = void (HSVWindow::*)(int , int , int , int , int , int );
+            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&HSVWindow::ValueChanged)) {
                 *result = 0;
                 return;
             }
         }
         {
-            typedef void (HSVWindow::*_t)(int );
-            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&HSVWindow::ValueChanged)) {
+            using _t = void (HSVWindow::*)(int );
+            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&HSVWindow::ValueChanged)) {
                 *result = 1;
                 return;
             }
@@ -111,10 +111,14 @@ void HSVWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, v
     }
 }
 
-const QMetaObject HSVWindow::staticMetaObject = {
-    { &QDialog::staticMetaObject, qt_meta_stringdata_HSVWindow.data,
-      qt_meta_data_HSVWindow,  qt_static_metacall, Q_NULLPTR, Q_NULLPTR}
-};
+QT_INIT_METAOBJECT const QMetaObject HSVWindow::staticMetaObject = { {
+    QMetaObject::SuperData::link<QDialog::staticMetaObject>(),
+    qt_meta_stringdata_HSVWindow.data,
+    qt_meta_data_HSVWindow,
+    qt_static_metacall,
+    nullptr,
+    nullptr
+} };
 
 
 const QMetaObject *HSVWindow::metaObject() const
@@ -124,9 +128,9 @@ const QMetaObject *HSVWindow::metaObject() const
 
 void *HSVWindow::qt_metacast(const char *_clname)
 {
-    if (!_clname) return Q_NULLPTR;
+    if (!_clname) return nullptr;
     if (!strcmp(_clname, qt_meta_stringdata_HSVWindow.stringdata0))
-        return static_cast<void*>(const_cast< HSVWindow*>(this));
+        return static_cast<void*>(this);
     return QDialog::qt_metacast(_clname);
 }
 
@@ -150,14 +154,14 @@ int HSVWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
 // SIGNAL 0
 void HSVWindow::ValueChanged(int _t1, int _t2, int _t3, int _t4, int _t5, int _t6)
 {
-    void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)), const_cast<void*>(reinterpret_cast<const void*>(&_t2)), const_cast<void*>(reinterpret_cast<const void*>(&_t3)), const_cast<void*>(reinterpret_cast<const void*>(&_t4)), const_cast<void*>(reinterpret_cast<const void*>(&_t5)), const_cast<void*>(reinterpret_cast<const void*>(&_t6)) };
+    void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t1))), const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t2))), const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t3))), const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t4))), const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t5))), const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t6))) };
     QMetaObject::activate(this, &staticMetaObject, 0, _a);
 }
 
 // SIGNAL 1
 void HSVWindow::ValueChanged(int _t1)
 {
-    void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
+    void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t1))) };
     QMetaObject::activate(this, &staticMetaObject, 1, _a);
 }
 QT_WARNING_POP

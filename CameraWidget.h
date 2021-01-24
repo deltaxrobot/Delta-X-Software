@@ -6,7 +6,7 @@
 #include <QMouseEvent>
 #include <qmath.h>
 #include <qpushbutton.h>
-#include <QSettings>;
+#include <QSettings>
 
 class CameraWidget : public QLabel
 {

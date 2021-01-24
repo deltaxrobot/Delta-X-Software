@@ -17,43 +17,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
-	
 
-	/*DeltaXROS->ResetDisplayParent();
-
-	delete DeltaXROS;	
-
-	if (DeltaXMainWindows == NULL)
-	{
-		delete ui;
-		return;
-	}
-
-	for (int i = 0; i < DeltaXMainWindows->size(); i++)
-	{
-		DeltaXMainWindows->at(i)->ui->twDeltaManager->removeTab(ID);
-	}
-
-	for (int i = 0; i < DeltaXMainWindows->size(); i++)
-	{
-		DeltaXMainWindows->at(i)->ID = i;
-		DeltaXMainWindows->at(i)->ui->lbID->setText(QString("ID: ") + QString::number(i));
-	}
-
-	DeltaXMainWindows->removeAt(ID);
-	Debugs.removeAt(ID);
-
-	delete SelectedAction;
-
-	for (int i = 0; i < DeltaXMainWindows->size(); i++)
-	{
-		DeltaXMainWindows->at(i)->ID = i;
-		DeltaXMainWindows->at(i)->ui->lbID->setText(QString("ID: ") + QString::number(i));
-	}
-
-	SelectTrueTabName(0);
-
-    delete ui;*/
 }
 
 void MainWindow::InitEvents()
@@ -234,7 +198,7 @@ void MainWindow::InitVariables()
 	DeltaGcodeManager = new GcodeProgramManager(this, ui->saProgramFiles, ui->wgProgramContainer, ui->pteGcodeArea, ui->pbExecuteGcodes, DeltaConnectionManager, Delta2DVisualizer);
 	
 	//DebugLB = ui->lbDebug;
-	Debugs.push_back(ui->lbDebug);
+	Debugs.push_back(ui->teDebug);
 
 	DeltaGcodeManager->LoadPrograms();
 	
@@ -289,8 +253,8 @@ void MainWindow::InitVariables()
 
 	//----------------ROS-------------------
 #ifdef Q_OS_WIN
-    DeltaXROS = new ROS(this, ui->frameROS, "/ros/Delta X Ros.exe");
-	DeltaXROS->SetConnectionManager(DeltaConnectionManager->TCPConnection);
+//    DeltaXROS = new ROS(this, ui->frameROS, "/ros/Delta X Ros.exe");
+//	DeltaXROS->SetConnectionManager(DeltaConnectionManager->TCPConnection);
 	//DeltaXROS->Run();
 #endif
 	//---------------Socket------------------------
@@ -370,16 +334,16 @@ void MainWindow::ExportBlocklyToGcode()
 void MainWindow::OpenROS()
 {
 #ifdef Q_OS_WIN
-    if (DeltaXROS->IsRunning())
-    {
-        DeltaXROS->Close();
-        ui->pbTurnOnROS->setText("Turn on ROS");
-    }
-    else
-    {
-        DeltaXROS->Run();
-        ui->pbTurnOnROS->setText("Turn off ROS");
-    }
+//    if (DeltaXROS->IsRunning())
+//    {
+//        DeltaXROS->Close();
+//        ui->pbTurnOnROS->setText("Turn on ROS");
+//    }
+//    else
+//    {
+//        DeltaXROS->Run();
+//        ui->pbTurnOnROS->setText("Turn off ROS");
+//    }
 #else
     QMessageBox::information(this, "Noti", "Currently, ROS is not available on Linux");
 #endif
@@ -730,8 +694,7 @@ void MainWindow::ChangeDeltaDashboard(int index)
 		//DeltaXMainWindows->at(index)->setWindowFlags(Qt::WindowStaysOnTopHint);
 		DeltaXMainWindows->at(index)->activateWindow();
 		DeltaXMainWindows->at(index)->show();
-		DeltaXMainWindows->at(index)->setFocus();
-		//DeltaXROS->Foces();
+        DeltaXMainWindows->at(index)->setFocus();
 	}
 	Debug(QString::number(index));
 }
@@ -1373,8 +1336,8 @@ void MainWindow::TerminalTransmit()
 
 void MainWindow::PrintReceiveData(QString msg)
 {
-	msg.replace("\n", "");
-	Debug(msg);
+	//msg.replace("\n", "");
+	Debug(ID, QString("Robot: ") + msg);
 }
 
 void MainWindow::NoticeConnected()

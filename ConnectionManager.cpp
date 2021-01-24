@@ -98,9 +98,10 @@ void ConnectionManager::processReceiveData()
 
 void ConnectionManager::sendData(QSerialPort * com, QTcpSocket * socket, QString msg)
 {
-	Debug(msg);
+	if (msg[msg.length() - 1] != "\n")
+		msg += "\n";
 
-	msg += "\n";
+	Debug(QString("Software: ") + msg);	
 
 	if (com != NULL)
 	{

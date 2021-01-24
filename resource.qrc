@@ -1,0 +1,86 @@
+<RCC>
+    <qresource prefix="/">
+        <file>icon/Arrow Pointing Down_16px.png</file>
+        <file>icon/Below_16px.png</file>
+        <file>icon/camera.png</file>
+        <file>icon/Circle-limit.png</file>
+        <file>icon/Circle_16px.png</file>
+        <file>icon/Circled Notch_16px.png</file>
+        <file>icon/Circled Right_16px.png</file>
+        <file>icon/connected.png</file>
+        <file>icon/Copy_16px.png</file>
+        <file>icon/Cursor-color_16px.png</file>
+        <file>icon/Cursor_16px.png</file>
+        <file>icon/delete.png</file>
+        <file>icon/disconnected.png</file>
+        <file>icon/Eraser_16px.png</file>
+        <file>icon/Forward Button_16px.png</file>
+        <file>icon/Full Image_16px.png</file>
+        <file>icon/Go Back_16px.png</file>
+        <file>icon/grid-1-pixel.png</file>
+        <file>icon/grid-10-pixel-2.png</file>
+        <file>icon/grid-10-pixel-3.png</file>
+        <file>icon/grid-10-pixel.png</file>
+        <file>icon/grid-5-pixel.png</file>
+        <file>icon/grid-axis-2.png</file>
+        <file>icon/grid-axis.png</file>
+        <file>icon/Help_16px.png</file>
+        <file>icon/home.png</file>
+        <file>icon/icon.qrc</file>
+        <file>icon/icons8-back-48.png</file>
+        <file>icon/icons8-collapse-arrow-48.png</file>
+        <file>icon/icons8-connection-status-on-48.png</file>
+        <file>icon/icons8-download-from-cloud-48.png</file>
+        <file>icon/icons8-expand-48.png</file>
+        <file>icon/icons8-expand-arrow-48.png</file>
+        <file>icon/icons8-forward-48.png</file>
+        <file>icon/icons8-home-32.png</file>
+        <file>icon/icons8-load-resume-template-64.png</file>
+        <file>icon/icons8-maximize-window-48.png</file>
+        <file>icon/icons8-next-page-48.png</file>
+        <file>icon/icons8-object-48.png</file>
+        <file>icon/icons8-pause-48.png</file>
+        <file>icon/icons8-play-48.png</file>
+        <file>icon/icons8-save-64.png</file>
+        <file>icon/icons8-screenshot-40.png</file>
+        <file>icon/icons8-sleeping-in-bed-32.png</file>
+        <file>icon/icons8-upload-to-cloud-48.png</file>
+        <file>icon/icons8_expand_arrow_16px.png</file>
+        <file>icon/image.png</file>
+        <file>icon/index.png</file>
+        <file>icon/Line_16px.png</file>
+        <file>icon/logo.png</file>
+        <file>icon/moving-base.png</file>
+        <file>icon/new.png</file>
+        <file>icon/Paint_16px.png</file>
+        <file>icon/Pause_96px.png</file>
+        <file>icon/Pencil Drawing_16px.png</file>
+        <file>icon/play.png</file>
+        <file>icon/Play_96px.png</file>
+        <file>icon/Rectangle_16px.png</file>
+        <file>icon/Rectangular_16px.png</file>
+        <file>icon/Restart_16px.png</file>
+        <file>icon/Right Arrow_16px.png</file>
+        <file>icon/Ruler2_16px.png</file>
+        <file>icon/Ruler_16px.png</file>
+        <file>icon/save.png</file>
+        <file>icon/Save_16px.png</file>
+        <file>icon/Scatter Plot_16px.png</file>
+        <file>icon/Search_16px.png</file>
+        <file>icon/Slider 2_16px.png</file>
+        <file>icon/Slider _16px.png</file>
+        <file>icon/Sort_16px.png</file>
+        <file>icon/Speed_16px.png</file>
+        <file>icon/stop.png</file>
+        <file>icon/Toggle Off_16px.png</file>
+        <file>icon/Toggle On_16px.png</file>
+        <file>icon/Trash_16px.png</file>
+        <file>icon/Upward Arrow_16px.png</file>
+        <file>icon/webcam.png</file>
+        <file>icon/Width_16px.png</file>
+        <file>icon/Workflow_16px.png</file>
+        <file>icon/Zoom In_16px.png</file>
+        <file>icon/Zoom Out_16px.png</file>
+        <file>delta_x_logo_96x96.ico</file>
+    </qresource>
+</RCC>

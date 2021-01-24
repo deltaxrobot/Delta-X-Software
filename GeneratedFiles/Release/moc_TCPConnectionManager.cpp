@@ -1,18 +1,19 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'TCPConnectionManager.h'
 **
-** Created by: The Qt Meta Object Compiler version 67 (Qt 5.8.0)
+** Created by: The Qt Meta Object Compiler version 67 (Qt 5.15.2)
 **
 ** WARNING! All changes made in this file will be lost!
 *****************************************************************************/
 
+#include <memory>
 #include "../../TCPConnectionManager.h"
 #include <QtCore/qbytearray.h>
 #include <QtCore/qmetatype.h>
 #if !defined(Q_MOC_OUTPUT_REVISION)
 #error "The header file 'TCPConnectionManager.h' doesn't include <QObject>."
 #elif Q_MOC_OUTPUT_REVISION != 67
-#error "This file was generated using the moc from 5.8.0. It"
+#error "This file was generated using the moc from 5.15.2. It"
 #error "cannot be used with the include files from this version of Qt."
 #error "(The moc has changed too much.)"
 #endif
@@ -64,7 +65,7 @@ QT_MOC_LITERAL(18, 214, 3) // "msg"
 static const uint qt_meta_data_TCPConnectionManager[] = {
 
  // content:
-       7,       // revision
+       8,       // revision
        0,       // classname
        0,    0, // classinfo
        8,   14, // methods
@@ -104,7 +105,7 @@ static const uint qt_meta_data_TCPConnectionManager[] = {
 void TCPConnectionManager::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
 {
     if (_c == QMetaObject::InvokeMetaMethod) {
-        TCPConnectionManager *_t = static_cast<TCPConnectionManager *>(_o);
+        auto *_t = static_cast<TCPConnectionManager *>(_o);
         Q_UNUSED(_t)
         switch (_id) {
         case 0: _t->ReceiveVariableChangeCommand((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< float(*)>(_a[2]))); break;
@@ -130,38 +131,37 @@ void TCPConnectionManager::qt_static_metacall(QObject *_o, QMetaObject::Call _c,
         }
     } else if (_c == QMetaObject::IndexOfMethod) {
         int *result = reinterpret_cast<int *>(_a[0]);
-        void **func = reinterpret_cast<void **>(_a[1]);
         {
-            typedef void (TCPConnectionManager::*_t)(QString , float );
-            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&TCPConnectionManager::ReceiveVariableChangeCommand)) {
+            using _t = void (TCPConnectionManager::*)(QString , float );
+            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&TCPConnectionManager::ReceiveVariableChangeCommand)) {
                 *result = 0;
                 return;
             }
         }
         {
-            typedef void (TCPConnectionManager::*_t)(float , float , float , float );
-            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&TCPConnectionManager::ReceivePositionUpdateCommand)) {
+            using _t = void (TCPConnectionManager::*)(float , float , float , float );
+            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&TCPConnectionManager::ReceivePositionUpdateCommand)) {
                 *result = 1;
                 return;
             }
         }
         {
-            typedef void (TCPConnectionManager::*_t)();
-            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&TCPConnectionManager::ReceiveOk)) {
+            using _t = void (TCPConnectionManager::*)();
+            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&TCPConnectionManager::ReceiveOk)) {
                 *result = 2;
                 return;
             }
         }
         {
-            typedef void (TCPConnectionManager::*_t)(float , float , float , float );
-            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&TCPConnectionManager::ReceivePosition)) {
+            using _t = void (TCPConnectionManager::*)(float , float , float , float );
+            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&TCPConnectionManager::ReceivePosition)) {
                 *result = 3;
                 return;
             }
         }
         {
-            typedef void (TCPConnectionManager::*_t)(QTcpSocket * );
-            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&TCPConnectionManager::NewConnection)) {
+            using _t = void (TCPConnectionManager::*)(QTcpSocket * );
+            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&TCPConnectionManager::NewConnection)) {
                 *result = 4;
                 return;
             }
@@ -169,10 +169,14 @@ void TCPConnectionManager::qt_static_metacall(QObject *_o, QMetaObject::Call _c,
     }
 }
 
-const QMetaObject TCPConnectionManager::staticMetaObject = {
-    { &QObject::staticMetaObject, qt_meta_stringdata_TCPConnectionManager.data,
-      qt_meta_data_TCPConnectionManager,  qt_static_metacall, Q_NULLPTR, Q_NULLPTR}
-};
+QT_INIT_METAOBJECT const QMetaObject TCPConnectionManager::staticMetaObject = { {
+    QMetaObject::SuperData::link<QObject::staticMetaObject>(),
+    qt_meta_stringdata_TCPConnectionManager.data,
+    qt_meta_data_TCPConnectionManager,
+    qt_static_metacall,
+    nullptr,
+    nullptr
+} };
 
 
 const QMetaObject *TCPConnectionManager::metaObject() const
@@ -182,9 +186,9 @@ const QMetaObject *TCPConnectionManager::metaObject() const
 
 void *TCPConnectionManager::qt_metacast(const char *_clname)
 {
-    if (!_clname) return Q_NULLPTR;
+    if (!_clname) return nullptr;
     if (!strcmp(_clname, qt_meta_stringdata_TCPConnectionManager.stringdata0))
-        return static_cast<void*>(const_cast< TCPConnectionManager*>(this));
+        return static_cast<void*>(this);
     return QObject::qt_metacast(_clname);
 }
 
@@ -208,34 +212,34 @@ int TCPConnectionManager::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
 // SIGNAL 0
 void TCPConnectionManager::ReceiveVariableChangeCommand(QString _t1, float _t2)
 {
-    void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)), const_cast<void*>(reinterpret_cast<const void*>(&_t2)) };
+    void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t1))), const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t2))) };
     QMetaObject::activate(this, &staticMetaObject, 0, _a);
 }
 
 // SIGNAL 1
 void TCPConnectionManager::ReceivePositionUpdateCommand(float _t1, float _t2, float _t3, float _t4)
 {
-    void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)), const_cast<void*>(reinterpret_cast<const void*>(&_t2)), const_cast<void*>(reinterpret_cast<const void*>(&_t3)), const_cast<void*>(reinterpret_cast<const void*>(&_t4)) };
+    void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t1))), const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t2))), const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t3))), const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t4))) };
     QMetaObject::activate(this, &staticMetaObject, 1, _a);
 }
 
 // SIGNAL 2
 void TCPConnectionManager::ReceiveOk()
 {
-    QMetaObject::activate(this, &staticMetaObject, 2, Q_NULLPTR);
+    QMetaObject::activate(this, &staticMetaObject, 2, nullptr);
 }
 
 // SIGNAL 3
 void TCPConnectionManager::ReceivePosition(float _t1, float _t2, float _t3, float _t4)
 {
-    void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)), const_cast<void*>(reinterpret_cast<const void*>(&_t2)), const_cast<void*>(reinterpret_cast<const void*>(&_t3)), const_cast<void*>(reinterpret_cast<const void*>(&_t4)) };
+    void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t1))), const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t2))), const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t3))), const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t4))) };
     QMetaObject::activate(this, &staticMetaObject, 3, _a);
 }
 
 // SIGNAL 4
 void TCPConnectionManager::NewConnection(QTcpSocket * _t1)
 {
-    void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
+    void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t1))) };
     QMetaObject::activate(this, &staticMetaObject, 4, _a);
 }
 QT_WARNING_POP

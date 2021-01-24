@@ -1,18 +1,19 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'codeeditor.h'
 **
-** Created by: The Qt Meta Object Compiler version 67 (Qt 5.8.0)
+** Created by: The Qt Meta Object Compiler version 67 (Qt 5.15.2)
 **
 ** WARNING! All changes made in this file will be lost!
 *****************************************************************************/
 
+#include <memory>
 #include "../../codeeditor.h"
 #include <QtCore/qbytearray.h>
 #include <QtCore/qmetatype.h>
 #if !defined(Q_MOC_OUTPUT_REVISION)
 #error "The header file 'codeeditor.h' doesn't include <QObject>."
 #elif Q_MOC_OUTPUT_REVISION != 67
-#error "This file was generated using the moc from 5.8.0. It"
+#error "This file was generated using the moc from 5.15.2. It"
 #error "cannot be used with the include files from this version of Qt."
 #error "(The moc has changed too much.)"
 #endif
@@ -48,7 +49,7 @@ QT_MOC_LITERAL(5, 73, 20) // "updateLineNumberArea"
 static const uint qt_meta_data_CodeEditor[] = {
 
  // content:
-       7,       // revision
+       8,       // revision
        0,       // classname
        0,    0, // classinfo
        3,   14, // methods
@@ -74,7 +75,7 @@ static const uint qt_meta_data_CodeEditor[] = {
 void CodeEditor::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
 {
     if (_c == QMetaObject::InvokeMetaMethod) {
-        CodeEditor *_t = static_cast<CodeEditor *>(_o);
+        auto *_t = static_cast<CodeEditor *>(_o);
         Q_UNUSED(_t)
         switch (_id) {
         case 0: _t->updateLineNumberAreaWidth((*reinterpret_cast< int(*)>(_a[1]))); break;
@@ -85,10 +86,14 @@ void CodeEditor::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
     }
 }
 
-const QMetaObject CodeEditor::staticMetaObject = {
-    { &QTextEdit::staticMetaObject, qt_meta_stringdata_CodeEditor.data,
-      qt_meta_data_CodeEditor,  qt_static_metacall, Q_NULLPTR, Q_NULLPTR}
-};
+QT_INIT_METAOBJECT const QMetaObject CodeEditor::staticMetaObject = { {
+    QMetaObject::SuperData::link<QTextEdit::staticMetaObject>(),
+    qt_meta_stringdata_CodeEditor.data,
+    qt_meta_data_CodeEditor,
+    qt_static_metacall,
+    nullptr,
+    nullptr
+} };
 
 
 const QMetaObject *CodeEditor::metaObject() const
@@ -98,9 +103,9 @@ const QMetaObject *CodeEditor::metaObject() const
 
 void *CodeEditor::qt_metacast(const char *_clname)
 {
-    if (!_clname) return Q_NULLPTR;
+    if (!_clname) return nullptr;
     if (!strcmp(_clname, qt_meta_stringdata_CodeEditor.stringdata0))
-        return static_cast<void*>(const_cast< CodeEditor*>(this));
+        return static_cast<void*>(this);
     return QTextEdit::qt_metacast(_clname);
 }
 

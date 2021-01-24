@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'GcodeReference.ui'
 **
-** Created by: Qt User Interface Compiler version 5.8.0
+** Created by: Qt User Interface Compiler version 5.15.2
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -10,12 +10,9 @@
 #define UI_GCODEREFERENCE_H
 
 #include <QtCore/QVariant>
-#include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
-#include <QtWidgets/QButtonGroup>
 #include <QtWidgets/QGridLayout>
 #include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QHeaderView>
 #include <QtWidgets/QListWidget>
 #include <QtWidgets/QTextEdit>
 #include <QtWidgets/QVBoxLayout>
@@ -36,7 +33,7 @@ public:
     void setupUi(QWidget *GcodeReference)
     {
         if (GcodeReference->objectName().isEmpty())
-            GcodeReference->setObjectName(QStringLiteral("GcodeReference"));
+            GcodeReference->setObjectName(QString::fromUtf8("GcodeReference"));
         GcodeReference->resize(1219, 751);
         GcodeReference->setMaximumSize(QSize(16777201, 16777215));
         GcodeReference->setLayoutDirection(Qt::LeftToRight);
@@ -44,11 +41,11 @@ public:
         gridLayout = new QGridLayout(GcodeReference);
         gridLayout->setSpacing(0);
         gridLayout->setContentsMargins(11, 11, 11, 11);
-        gridLayout->setObjectName(QStringLiteral("gridLayout"));
+        gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
         gridLayout->setContentsMargins(0, 0, 0, 0);
         horizontalLayout = new QHBoxLayout();
         horizontalLayout->setSpacing(0);
-        horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
+        horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
         listWidget = new QListWidget(GcodeReference);
         new QListWidgetItem(listWidget);
         new QListWidgetItem(listWidget);
@@ -92,7 +89,7 @@ public:
         new QListWidgetItem(listWidget);
         new QListWidgetItem(listWidget);
         new QListWidgetItem(listWidget);
-        listWidget->setObjectName(QStringLiteral("listWidget"));
+        listWidget->setObjectName(QString::fromUtf8("listWidget"));
         listWidget->setMinimumSize(QSize(200, 0));
         listWidget->setMaximumSize(QSize(400, 16777215));
 
@@ -100,14 +97,14 @@ public:
 
         verticalLayout = new QVBoxLayout();
         verticalLayout->setSpacing(6);
-        verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
+        verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
         teMacro = new QTextEdit(GcodeReference);
-        teMacro->setObjectName(QStringLiteral("teMacro"));
+        teMacro->setObjectName(QString::fromUtf8("teMacro"));
 
         verticalLayout->addWidget(teMacro);
 
         textEdit = new QTextEdit(GcodeReference);
-        textEdit->setObjectName(QStringLiteral("textEdit"));
+        textEdit->setObjectName(QString::fromUtf8("textEdit"));
         textEdit->setMinimumSize(QSize(400, 0));
         textEdit->setAcceptRichText(true);
         textEdit->setTextInteractionFlags(Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse);
@@ -128,97 +125,97 @@ public:
 
     void retranslateUi(QWidget *GcodeReference)
     {
-        GcodeReference->setWindowTitle(QApplication::translate("GcodeReference", "Gcode Reference", Q_NULLPTR));
+        GcodeReference->setWindowTitle(QCoreApplication::translate("GcodeReference", "Gcode Reference", nullptr));
 
         const bool __sortingEnabled = listWidget->isSortingEnabled();
         listWidget->setSortingEnabled(false);
         QListWidgetItem *___qlistwidgetitem = listWidget->item(0);
-        ___qlistwidgetitem->setText(QApplication::translate("GcodeReference", "1. GOTO", Q_NULLPTR));
+        ___qlistwidgetitem->setText(QCoreApplication::translate("GcodeReference", "1. GOTO", nullptr));
         QListWidgetItem *___qlistwidgetitem1 = listWidget->item(1);
-        ___qlistwidgetitem1->setText(QApplication::translate("GcodeReference", "2. IF", Q_NULLPTR));
+        ___qlistwidgetitem1->setText(QCoreApplication::translate("GcodeReference", "2. IF", nullptr));
         QListWidgetItem *___qlistwidgetitem2 = listWidget->item(2);
-        ___qlistwidgetitem2->setText(QApplication::translate("GcodeReference", "3. Conditional Expressions", Q_NULLPTR));
+        ___qlistwidgetitem2->setText(QCoreApplication::translate("GcodeReference", "3. Conditional Expressions", nullptr));
         QListWidgetItem *___qlistwidgetitem3 = listWidget->item(3);
-        ___qlistwidgetitem3->setText(QApplication::translate("GcodeReference", "4. Variables", Q_NULLPTR));
+        ___qlistwidgetitem3->setText(QCoreApplication::translate("GcodeReference", "4. Variables", nullptr));
         QListWidgetItem *___qlistwidgetitem4 = listWidget->item(4);
-        ___qlistwidgetitem4->setText(QApplication::translate("GcodeReference", "5. Define Subprograms", Q_NULLPTR));
+        ___qlistwidgetitem4->setText(QCoreApplication::translate("GcodeReference", "5. Define Subprograms", nullptr));
         QListWidgetItem *___qlistwidgetitem5 = listWidget->item(5);
-        ___qlistwidgetitem5->setText(QApplication::translate("GcodeReference", "6. Call Subprograms", Q_NULLPTR));
+        ___qlistwidgetitem5->setText(QCoreApplication::translate("GcodeReference", "6. Call Subprograms", nullptr));
         QListWidgetItem *___qlistwidgetitem6 = listWidget->item(6);
-        ___qlistwidgetitem6->setText(QApplication::translate("GcodeReference", "7. Vision Functions", Q_NULLPTR));
+        ___qlistwidgetitem6->setText(QCoreApplication::translate("GcodeReference", "7. Vision Functions", nullptr));
         QListWidgetItem *___qlistwidgetitem7 = listWidget->item(7);
-        ___qlistwidgetitem7->setText(QApplication::translate("GcodeReference", "G0, G1 - Linear Move", Q_NULLPTR));
+        ___qlistwidgetitem7->setText(QCoreApplication::translate("GcodeReference", "G0, G1 - Linear Move", nullptr));
         QListWidgetItem *___qlistwidgetitem8 = listWidget->item(8);
-        ___qlistwidgetitem8->setText(QApplication::translate("GcodeReference", "G2, G3 - Controlled Arc Move", Q_NULLPTR));
+        ___qlistwidgetitem8->setText(QCoreApplication::translate("GcodeReference", "G2, G3 - Controlled Arc Move", nullptr));
         QListWidgetItem *___qlistwidgetitem9 = listWidget->item(9);
-        ___qlistwidgetitem9->setText(QApplication::translate("GcodeReference", "G4 - Dwell", Q_NULLPTR));
+        ___qlistwidgetitem9->setText(QCoreApplication::translate("GcodeReference", "G4 - Dwell", nullptr));
         QListWidgetItem *___qlistwidgetitem10 = listWidget->item(10);
-        ___qlistwidgetitem10->setText(QApplication::translate("GcodeReference", "G5 - Bezier cubic spline", Q_NULLPTR));
+        ___qlistwidgetitem10->setText(QCoreApplication::translate("GcodeReference", "G5 - Bezier cubic spline", nullptr));
         QListWidgetItem *___qlistwidgetitem11 = listWidget->item(11);
-        ___qlistwidgetitem11->setText(QApplication::translate("GcodeReference", "G6 - Controlled Angle", Q_NULLPTR));
+        ___qlistwidgetitem11->setText(QCoreApplication::translate("GcodeReference", "G6 - Controlled Angle", nullptr));
         QListWidgetItem *___qlistwidgetitem12 = listWidget->item(12);
-        ___qlistwidgetitem12->setText(QApplication::translate("GcodeReference", "G28 - Auto Home", Q_NULLPTR));
+        ___qlistwidgetitem12->setText(QCoreApplication::translate("GcodeReference", "G28 - Auto Home", nullptr));
         QListWidgetItem *___qlistwidgetitem13 = listWidget->item(13);
-        ___qlistwidgetitem13->setText(QApplication::translate("GcodeReference", "G90 - Absolute Positioning", Q_NULLPTR));
+        ___qlistwidgetitem13->setText(QCoreApplication::translate("GcodeReference", "G90 - Absolute Positioning", nullptr));
         QListWidgetItem *___qlistwidgetitem14 = listWidget->item(14);
-        ___qlistwidgetitem14->setText(QApplication::translate("GcodeReference", "G91 - Relative Positioning", Q_NULLPTR));
+        ___qlistwidgetitem14->setText(QCoreApplication::translate("GcodeReference", "G91 - Relative Positioning", nullptr));
         QListWidgetItem *___qlistwidgetitem15 = listWidget->item(15);
-        ___qlistwidgetitem15->setText(QApplication::translate("GcodeReference", "M3 - Spindle CW/ Laser On/ Set Gripper To Close/ Set Angle of Gripper", Q_NULLPTR));
+        ___qlistwidgetitem15->setText(QCoreApplication::translate("GcodeReference", "M3 - Spindle CW/ Laser On/ Set Gripper To Close/ Set Angle of Gripper", nullptr));
         QListWidgetItem *___qlistwidgetitem16 = listWidget->item(16);
-        ___qlistwidgetitem16->setText(QApplication::translate("GcodeReference", "M4 - Spindle CCW/ Laser On/ Set Gripper To Close/ Set Angle of Gripper", Q_NULLPTR));
+        ___qlistwidgetitem16->setText(QCoreApplication::translate("GcodeReference", "M4 - Spindle CCW/ Laser On/ Set Gripper To Close/ Set Angle of Gripper", nullptr));
         QListWidgetItem *___qlistwidgetitem17 = listWidget->item(17);
-        ___qlistwidgetitem17->setText(QApplication::translate("GcodeReference", "M5 - Spindle / Laser Off/ Gripper Open", Q_NULLPTR));
+        ___qlistwidgetitem17->setText(QCoreApplication::translate("GcodeReference", "M5 - Spindle / Laser Off/ Gripper Open", nullptr));
         QListWidgetItem *___qlistwidgetitem18 = listWidget->item(18);
-        ___qlistwidgetitem18->setText(QApplication::translate("GcodeReference", "M84 - Disable steppers", Q_NULLPTR));
+        ___qlistwidgetitem18->setText(QCoreApplication::translate("GcodeReference", "M84 - Disable steppers", nullptr));
         QListWidgetItem *___qlistwidgetitem19 = listWidget->item(19);
-        ___qlistwidgetitem19->setText(QApplication::translate("GcodeReference", "M104 - Set Hotend Temperature", Q_NULLPTR));
+        ___qlistwidgetitem19->setText(QCoreApplication::translate("GcodeReference", "M104 - Set Hotend Temperature", nullptr));
         QListWidgetItem *___qlistwidgetitem20 = listWidget->item(20);
-        ___qlistwidgetitem20->setText(QApplication::translate("GcodeReference", "M109 - Wait for Hotend Temperature", Q_NULLPTR));
+        ___qlistwidgetitem20->setText(QCoreApplication::translate("GcodeReference", "M109 - Wait for Hotend Temperature", nullptr));
         QListWidgetItem *___qlistwidgetitem21 = listWidget->item(21);
-        ___qlistwidgetitem21->setText(QApplication::translate("GcodeReference", "M203 - Set Max Feedrate", Q_NULLPTR));
+        ___qlistwidgetitem21->setText(QCoreApplication::translate("GcodeReference", "M203 - Set Max Feedrate", nullptr));
         QListWidgetItem *___qlistwidgetitem22 = listWidget->item(22);
-        ___qlistwidgetitem22->setText(QApplication::translate("GcodeReference", "M204 - Set Acceleration", Q_NULLPTR));
+        ___qlistwidgetitem22->setText(QCoreApplication::translate("GcodeReference", "M204 - Set Acceleration", nullptr));
         QListWidgetItem *___qlistwidgetitem23 = listWidget->item(23);
-        ___qlistwidgetitem23->setText(QApplication::translate("GcodeReference", "M205 - Set begin speed", Q_NULLPTR));
+        ___qlistwidgetitem23->setText(QCoreApplication::translate("GcodeReference", "M205 - Set begin speed", nullptr));
         QListWidgetItem *___qlistwidgetitem24 = listWidget->item(24);
-        ___qlistwidgetitem24->setText(QApplication::translate("GcodeReference", "M206 - Set Z Offsets", Q_NULLPTR));
+        ___qlistwidgetitem24->setText(QCoreApplication::translate("GcodeReference", "M206 - Set Z Offsets", nullptr));
         QListWidgetItem *___qlistwidgetitem25 = listWidget->item(25);
-        ___qlistwidgetitem25->setText(QApplication::translate("GcodeReference", "M330 - Set External Serial Port 1", Q_NULLPTR));
+        ___qlistwidgetitem25->setText(QCoreApplication::translate("GcodeReference", "M330 - Set External Serial Port 1", nullptr));
         QListWidgetItem *___qlistwidgetitem26 = listWidget->item(26);
-        ___qlistwidgetitem26->setText(QApplication::translate("GcodeReference", "M331 - Set External Serial Port 2", Q_NULLPTR));
+        ___qlistwidgetitem26->setText(QCoreApplication::translate("GcodeReference", "M331 - Set External Serial Port 2", nullptr));
         QListWidgetItem *___qlistwidgetitem27 = listWidget->item(27);
-        ___qlistwidgetitem27->setText(QApplication::translate("GcodeReference", "M500 - Save Settings", Q_NULLPTR));
+        ___qlistwidgetitem27->setText(QCoreApplication::translate("GcodeReference", "M500 - Save Settings", nullptr));
         QListWidgetItem *___qlistwidgetitem28 = listWidget->item(28);
-        ___qlistwidgetitem28->setText(QApplication::translate("GcodeReference", "M501 - Restore Settings", Q_NULLPTR));
+        ___qlistwidgetitem28->setText(QCoreApplication::translate("GcodeReference", "M501 - Restore Settings", nullptr));
         QListWidgetItem *___qlistwidgetitem29 = listWidget->item(29);
-        ___qlistwidgetitem29->setText(QApplication::translate("GcodeReference", "M502 - Restore Settings", Q_NULLPTR));
+        ___qlistwidgetitem29->setText(QCoreApplication::translate("GcodeReference", "M502 - Restore Settings", nullptr));
         QListWidgetItem *___qlistwidgetitem30 = listWidget->item(30);
-        ___qlistwidgetitem30->setText(QApplication::translate("GcodeReference", "M360 - Set End effector", Q_NULLPTR));
+        ___qlistwidgetitem30->setText(QCoreApplication::translate("GcodeReference", "M360 - Set End effector", nullptr));
         QListWidgetItem *___qlistwidgetitem31 = listWidget->item(31);
-        ___qlistwidgetitem31->setText(QApplication::translate("GcodeReference", "M361 - Set mm per linear segment", Q_NULLPTR));
+        ___qlistwidgetitem31->setText(QCoreApplication::translate("GcodeReference", "M361 - Set mm per linear segment", nullptr));
         QListWidgetItem *___qlistwidgetitem32 = listWidget->item(32);
-        ___qlistwidgetitem32->setText(QApplication::translate("GcodeReference", "M362 - Set mm per arc segment", Q_NULLPTR));
+        ___qlistwidgetitem32->setText(QCoreApplication::translate("GcodeReference", "M362 - Set mm per arc segment", nullptr));
         QListWidgetItem *___qlistwidgetitem33 = listWidget->item(33);
-        ___qlistwidgetitem33->setText(QApplication::translate("GcodeReference", "M310 - Set Speed Mode", Q_NULLPTR));
+        ___qlistwidgetitem33->setText(QCoreApplication::translate("GcodeReference", "M310 - Set Speed Mode", nullptr));
         QListWidgetItem *___qlistwidgetitem34 = listWidget->item(34);
-        ___qlistwidgetitem34->setText(QApplication::translate("GcodeReference", "M311 - Set Speed", Q_NULLPTR));
+        ___qlistwidgetitem34->setText(QCoreApplication::translate("GcodeReference", "M311 - Set Speed", nullptr));
         QListWidgetItem *___qlistwidgetitem35 = listWidget->item(35);
-        ___qlistwidgetitem35->setText(QApplication::translate("GcodeReference", "M312 - Set Position", Q_NULLPTR));
+        ___qlistwidgetitem35->setText(QCoreApplication::translate("GcodeReference", "M312 - Set Position", nullptr));
         QListWidgetItem *___qlistwidgetitem36 = listWidget->item(36);
-        ___qlistwidgetitem36->setText(QApplication::translate("GcodeReference", "M313 - Set Speed for Position Moving ", Q_NULLPTR));
+        ___qlistwidgetitem36->setText(QCoreApplication::translate("GcodeReference", "M313 - Set Speed for Position Moving ", nullptr));
         QListWidgetItem *___qlistwidgetitem37 = listWidget->item(37);
-        ___qlistwidgetitem37->setText(QApplication::translate("GcodeReference", "M320 - Go To Home", Q_NULLPTR));
+        ___qlistwidgetitem37->setText(QCoreApplication::translate("GcodeReference", "M320 - Go To Home", nullptr));
         QListWidgetItem *___qlistwidgetitem38 = listWidget->item(38);
-        ___qlistwidgetitem38->setText(QApplication::translate("GcodeReference", "M321 - Set Speed", Q_NULLPTR));
+        ___qlistwidgetitem38->setText(QCoreApplication::translate("GcodeReference", "M321 - Set Speed", nullptr));
         QListWidgetItem *___qlistwidgetitem39 = listWidget->item(39);
-        ___qlistwidgetitem39->setText(QApplication::translate("GcodeReference", "M322 - Set Position", Q_NULLPTR));
+        ___qlistwidgetitem39->setText(QCoreApplication::translate("GcodeReference", "M322 - Set Position", nullptr));
         QListWidgetItem *___qlistwidgetitem40 = listWidget->item(40);
-        ___qlistwidgetitem40->setText(QApplication::translate("GcodeReference", "M323 - Disable Stepper Motor", Q_NULLPTR));
+        ___qlistwidgetitem40->setText(QCoreApplication::translate("GcodeReference", "M323 - Disable Stepper Motor", nullptr));
         QListWidgetItem *___qlistwidgetitem41 = listWidget->item(41);
-        ___qlistwidgetitem41->setText(QApplication::translate("GcodeReference", "Some other commands", Q_NULLPTR));
+        ___qlistwidgetitem41->setText(QCoreApplication::translate("GcodeReference", "Some other commands", nullptr));
         listWidget->setSortingEnabled(__sortingEnabled);
 
-        teMacro->setHtml(QApplication::translate("GcodeReference", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        teMacro->setHtml(QCoreApplication::translate("GcodeReference", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:'MS Shell Dlg 2'; font-size:7.8pt; font-weight:400; font-style:normal;\">\n"
@@ -288,11 +285,11 @@ public:
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:10pt;\">N80 </span><span style=\" font-size:10pt; font-weight:600; color:#00aa00;\">IF</span><span style=\" font-size:10pt;\"> [</span><span style=\" font-size:10pt; font-style:italic;\">#100</span><span style=\" font-size:10pt;\"> LE "
                         "5] </span><span style=\" font-size:10pt; font-weight:600; color:#00aa00;\">THEN</span><span style=\" font-size:10pt;\"> </span><span style=\" font-size:10pt; font-weight:600; color:#ff5500;\">GOTO</span><span style=\" font-size:10pt;\"> 30</span></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:10pt;\"><br /></span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:10pt;\">N85 </span><span style=\" font-size:10pt; font-weight:600;\">G28</span></p></body></html>", Q_NULLPTR));
-#ifndef QT_NO_TOOLTIP
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:10pt;\">N85 </span><span style=\" font-size:10pt; font-weight:600;\">G28</span></p></body></html>", nullptr));
+#if QT_CONFIG(tooltip)
         textEdit->setToolTip(QString());
-#endif // QT_NO_TOOLTIP
-        textEdit->setHtml(QApplication::translate("GcodeReference", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+#endif // QT_CONFIG(tooltip)
+        textEdit->setHtml(QCoreApplication::translate("GcodeReference", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:'MS Shell Dlg 2'; font-size:7.8pt; font-weight:400; font-style:normal;\">\n"
@@ -380,7 +377,7 @@ public:
                         "tyle=\" font-family:'Ubuntu'; font-size:11pt;\">: wifi name;<br />Example: &quot;SSID:</span><span style=\" font-family:'Ubuntu'; font-size:11pt; font-style:italic;\">wifi_imwi&quot;</span><span style=\" font-family:'Ubuntu'; font-size:11pt;\"><br /><br /></span><span style=\" font-family:'Ubuntu'; font-size:11pt; font-weight:600;\">PSWD:x </span><span style=\" font-family:'Ubuntu'; font-size:11pt;\">\342\200\223 Set PASSWORD of your wifi<br />             </span><span style=\" font-family:'Ubuntu'; font-size:11pt; font-weight:600;\">x</span><span style=\" font-family:'Ubuntu'; font-size:11pt;\">: password;<br />Example: &quot;PSWD:</span><span style=\" font-family:'Ubuntu'; font-size:11pt; font-style:italic;\">matkhauwifi&quot;</span></p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Ubuntu'; font-size:11pt; font-style:italic;\"><br /></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin"
-                        "-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><a href=\"https://www.deltaxrobot.com/p/reference.html\"><span style=\" font-size:8pt; text-decoration: underline; color:#0000ff;\">https://www.deltaxrobot.com/p/reference.html</span></a></p></body></html>", Q_NULLPTR));
+                        "-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><a href=\"https://www.deltaxrobot.com/p/reference.html\"><span style=\" font-size:8pt; text-decoration: underline; color:#0000ff;\">https://www.deltaxrobot.com/p/reference.html</span></a></p></body></html>", nullptr));
     } // retranslateUi
 
 };

@@ -1,18 +1,19 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'ConnectionManager.h'
 **
-** Created by: The Qt Meta Object Compiler version 67 (Qt 5.8.0)
+** Created by: The Qt Meta Object Compiler version 67 (Qt 5.15.2)
 **
 ** WARNING! All changes made in this file will be lost!
 *****************************************************************************/
 
+#include <memory>
 #include "../../ConnectionManager.h"
 #include <QtCore/qbytearray.h>
 #include <QtCore/qmetatype.h>
 #if !defined(Q_MOC_OUTPUT_REVISION)
 #error "The header file 'ConnectionManager.h' doesn't include <QObject>."
 #elif Q_MOC_OUTPUT_REVISION != 67
-#error "This file was generated using the moc from 5.8.0. It"
+#error "This file was generated using the moc from 5.15.2. It"
 #error "cannot be used with the include files from this version of Qt."
 #error "(The moc has changed too much.)"
 #endif
@@ -76,7 +77,7 @@ QT_MOC_LITERAL(26, 337, 6) // "socket"
 static const uint qt_meta_data_ConnectionManager[] = {
 
  // content:
-       7,       // revision
+       8,       // revision
        0,       // classname
        0,    0, // classinfo
       12,   14, // methods
@@ -124,7 +125,7 @@ static const uint qt_meta_data_ConnectionManager[] = {
 void ConnectionManager::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
 {
     if (_c == QMetaObject::InvokeMetaMethod) {
-        ConnectionManager *_t = static_cast<ConnectionManager *>(_o);
+        auto *_t = static_cast<ConnectionManager *>(_o);
         Q_UNUSED(_t)
         switch (_id) {
         case 0: _t->FinishReadLine((*reinterpret_cast< QString(*)>(_a[1]))); break;
@@ -154,66 +155,65 @@ void ConnectionManager::qt_static_metacall(QObject *_o, QMetaObject::Call _c, in
         }
     } else if (_c == QMetaObject::IndexOfMethod) {
         int *result = reinterpret_cast<int *>(_a[0]);
-        void **func = reinterpret_cast<void **>(_a[1]);
         {
-            typedef void (ConnectionManager::*_t)(QString );
-            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&ConnectionManager::FinishReadLine)) {
+            using _t = void (ConnectionManager::*)(QString );
+            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&ConnectionManager::FinishReadLine)) {
                 *result = 0;
                 return;
             }
         }
         {
-            typedef void (ConnectionManager::*_t)(QString );
-            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&ConnectionManager::ExternalMCUTransmitText)) {
+            using _t = void (ConnectionManager::*)(QString );
+            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&ConnectionManager::ExternalMCUTransmitText)) {
                 *result = 1;
                 return;
             }
         }
         {
-            typedef void (ConnectionManager::*_t)();
-            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&ConnectionManager::DeltaResponeReady)) {
+            using _t = void (ConnectionManager::*)();
+            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&ConnectionManager::DeltaResponeReady)) {
                 *result = 2;
                 return;
             }
         }
         {
-            typedef void (ConnectionManager::*_t)();
-            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&ConnectionManager::DeltaResponeGcodeDone)) {
+            using _t = void (ConnectionManager::*)();
+            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&ConnectionManager::DeltaResponeGcodeDone)) {
                 *result = 3;
                 return;
             }
         }
         {
-            typedef void (ConnectionManager::*_t)(float , float , float , float );
-            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&ConnectionManager::InHomePosition)) {
+            using _t = void (ConnectionManager::*)(float , float , float , float );
+            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&ConnectionManager::InHomePosition)) {
                 *result = 4;
                 return;
             }
         }
         {
-            typedef void (ConnectionManager::*_t)(float , float );
-            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&ConnectionManager::ReceiveConvenyorPosition)) {
+            using _t = void (ConnectionManager::*)(float , float );
+            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&ConnectionManager::ReceiveConvenyorPosition)) {
                 *result = 5;
                 return;
             }
         }
         {
-            typedef void (ConnectionManager::*_t)(QString , float );
-            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&ConnectionManager::ReceiveVariableChangeCommand)) {
+            using _t = void (ConnectionManager::*)(QString , float );
+            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&ConnectionManager::ReceiveVariableChangeCommand)) {
                 *result = 6;
                 return;
             }
         }
         {
-            typedef void (ConnectionManager::*_t)(QIODevice * , QString );
-            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&ConnectionManager::RequestVariableValue)) {
+            using _t = void (ConnectionManager::*)(QIODevice * , QString );
+            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&ConnectionManager::RequestVariableValue)) {
                 *result = 7;
                 return;
             }
         }
         {
-            typedef void (ConnectionManager::*_t)(QString );
-            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&ConnectionManager::ReceiveRequestsFromExternal)) {
+            using _t = void (ConnectionManager::*)(QString );
+            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&ConnectionManager::ReceiveRequestsFromExternal)) {
                 *result = 8;
                 return;
             }
@@ -221,10 +221,14 @@ void ConnectionManager::qt_static_metacall(QObject *_o, QMetaObject::Call _c, in
     }
 }
 
-const QMetaObject ConnectionManager::staticMetaObject = {
-    { &QObject::staticMetaObject, qt_meta_stringdata_ConnectionManager.data,
-      qt_meta_data_ConnectionManager,  qt_static_metacall, Q_NULLPTR, Q_NULLPTR}
-};
+QT_INIT_METAOBJECT const QMetaObject ConnectionManager::staticMetaObject = { {
+    QMetaObject::SuperData::link<QObject::staticMetaObject>(),
+    qt_meta_stringdata_ConnectionManager.data,
+    qt_meta_data_ConnectionManager,
+    qt_static_metacall,
+    nullptr,
+    nullptr
+} };
 
 
 const QMetaObject *ConnectionManager::metaObject() const
@@ -234,9 +238,9 @@ const QMetaObject *ConnectionManager::metaObject() const
 
 void *ConnectionManager::qt_metacast(const char *_clname)
 {
-    if (!_clname) return Q_NULLPTR;
+    if (!_clname) return nullptr;
     if (!strcmp(_clname, qt_meta_stringdata_ConnectionManager.stringdata0))
-        return static_cast<void*>(const_cast< ConnectionManager*>(this));
+        return static_cast<void*>(this);
     return QObject::qt_metacast(_clname);
 }
 
@@ -260,61 +264,61 @@ int ConnectionManager::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
 // SIGNAL 0
 void ConnectionManager::FinishReadLine(QString _t1)
 {
-    void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
+    void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t1))) };
     QMetaObject::activate(this, &staticMetaObject, 0, _a);
 }
 
 // SIGNAL 1
 void ConnectionManager::ExternalMCUTransmitText(QString _t1)
 {
-    void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
+    void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t1))) };
     QMetaObject::activate(this, &staticMetaObject, 1, _a);
 }
 
 // SIGNAL 2
 void ConnectionManager::DeltaResponeReady()
 {
-    QMetaObject::activate(this, &staticMetaObject, 2, Q_NULLPTR);
+    QMetaObject::activate(this, &staticMetaObject, 2, nullptr);
 }
 
 // SIGNAL 3
 void ConnectionManager::DeltaResponeGcodeDone()
 {
-    QMetaObject::activate(this, &staticMetaObject, 3, Q_NULLPTR);
+    QMetaObject::activate(this, &staticMetaObject, 3, nullptr);
 }
 
 // SIGNAL 4
 void ConnectionManager::InHomePosition(float _t1, float _t2, float _t3, float _t4)
 {
-    void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)), const_cast<void*>(reinterpret_cast<const void*>(&_t2)), const_cast<void*>(reinterpret_cast<const void*>(&_t3)), const_cast<void*>(reinterpret_cast<const void*>(&_t4)) };
+    void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t1))), const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t2))), const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t3))), const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t4))) };
     QMetaObject::activate(this, &staticMetaObject, 4, _a);
 }
 
 // SIGNAL 5
 void ConnectionManager::ReceiveConvenyorPosition(float _t1, float _t2)
 {
-    void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)), const_cast<void*>(reinterpret_cast<const void*>(&_t2)) };
+    void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t1))), const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t2))) };
     QMetaObject::activate(this, &staticMetaObject, 5, _a);
 }
 
 // SIGNAL 6
 void ConnectionManager::ReceiveVariableChangeCommand(QString _t1, float _t2)
 {
-    void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)), const_cast<void*>(reinterpret_cast<const void*>(&_t2)) };
+    void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t1))), const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t2))) };
     QMetaObject::activate(this, &staticMetaObject, 6, _a);
 }
 
 // SIGNAL 7
 void ConnectionManager::RequestVariableValue(QIODevice * _t1, QString _t2)
 {
-    void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)), const_cast<void*>(reinterpret_cast<const void*>(&_t2)) };
+    void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t1))), const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t2))) };
     QMetaObject::activate(this, &staticMetaObject, 7, _a);
 }
 
 // SIGNAL 8
 void ConnectionManager::ReceiveRequestsFromExternal(QString _t1)
 {
-    void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
+    void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t1))) };
     QMetaObject::activate(this, &staticMetaObject, 8, _a);
 }
 QT_WARNING_POP

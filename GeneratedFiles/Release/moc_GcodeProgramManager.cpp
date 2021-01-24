@@ -1,11 +1,12 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'GcodeProgramManager.h'
 **
-** Created by: The Qt Meta Object Compiler version 67 (Qt 5.8.0)
+** Created by: The Qt Meta Object Compiler version 67 (Qt 5.15.2)
 **
 ** WARNING! All changes made in this file will be lost!
 *****************************************************************************/
 
+#include <memory>
 #include "../../GcodeProgramManager.h"
 #include <QtCore/qbytearray.h>
 #include <QtCore/qmetatype.h>
@@ -13,7 +14,7 @@
 #if !defined(Q_MOC_OUTPUT_REVISION)
 #error "The header file 'GcodeProgramManager.h' doesn't include <QObject>."
 #elif Q_MOC_OUTPUT_REVISION != 67
-#error "This file was generated using the moc from 5.8.0. It"
+#error "This file was generated using the moc from 5.15.2. It"
 #error "cannot be used with the include files from this version of Qt."
 #error "(The moc has changed too much.)"
 #endif
@@ -88,7 +89,7 @@ QT_MOC_LITERAL(34, 441, 28) // "SetStartingGcodeEditorCursor"
 static const uint qt_meta_data_GcodeProgramManager[] = {
 
  // content:
-       7,       // revision
+       8,       // revision
        0,       // classname
        0,    0, // classinfo
       19,   14, // methods
@@ -150,7 +151,7 @@ static const uint qt_meta_data_GcodeProgramManager[] = {
 void GcodeProgramManager::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
 {
     if (_c == QMetaObject::InvokeMetaMethod) {
-        GcodeProgramManager *_t = static_cast<GcodeProgramManager *>(_o);
+        auto *_t = static_cast<GcodeProgramManager *>(_o);
         Q_UNUSED(_t)
         switch (_id) {
         case 0: _t->OutOfObjectVariable(); break;
@@ -201,66 +202,65 @@ void GcodeProgramManager::qt_static_metacall(QObject *_o, QMetaObject::Call _c, 
         }
     } else if (_c == QMetaObject::IndexOfMethod) {
         int *result = reinterpret_cast<int *>(_a[0]);
-        void **func = reinterpret_cast<void **>(_a[1]);
         {
-            typedef void (GcodeProgramManager::*_t)();
-            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&GcodeProgramManager::OutOfObjectVariable)) {
+            using _t = void (GcodeProgramManager::*)();
+            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&GcodeProgramManager::OutOfObjectVariable)) {
                 *result = 0;
                 return;
             }
         }
         {
-            typedef void (GcodeProgramManager::*_t)(QList<GcodeVariable> );
-            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&GcodeProgramManager::JustUpdateVariable)) {
+            using _t = void (GcodeProgramManager::*)(QList<GcodeVariable> );
+            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&GcodeProgramManager::JustUpdateVariable)) {
                 *result = 1;
                 return;
             }
         }
         {
-            typedef void (GcodeProgramManager::*_t)(float , float , float , float , float , float );
-            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&GcodeProgramManager::MoveToNewPosition)) {
+            using _t = void (GcodeProgramManager::*)(float , float , float , float , float , float );
+            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&GcodeProgramManager::MoveToNewPosition)) {
                 *result = 2;
                 return;
             }
         }
         {
-            typedef void (GcodeProgramManager::*_t)();
-            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&GcodeProgramManager::FinishExecuteGcodes)) {
+            using _t = void (GcodeProgramManager::*)();
+            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&GcodeProgramManager::FinishExecuteGcodes)) {
                 *result = 3;
                 return;
             }
         }
         {
-            typedef void (GcodeProgramManager::*_t)();
-            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&GcodeProgramManager::DeleteAllObjects)) {
+            using _t = void (GcodeProgramManager::*)();
+            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&GcodeProgramManager::DeleteAllObjects)) {
                 *result = 4;
                 return;
             }
         }
         {
-            typedef void (GcodeProgramManager::*_t)();
-            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&GcodeProgramManager::DeleteObject1)) {
+            using _t = void (GcodeProgramManager::*)();
+            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&GcodeProgramManager::DeleteObject1)) {
                 *result = 5;
                 return;
             }
         }
         {
-            typedef void (GcodeProgramManager::*_t)();
-            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&GcodeProgramManager::PauseCamera)) {
+            using _t = void (GcodeProgramManager::*)();
+            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&GcodeProgramManager::PauseCamera)) {
                 *result = 6;
                 return;
             }
         }
         {
-            typedef void (GcodeProgramManager::*_t)();
-            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&GcodeProgramManager::CaptureCamera)) {
+            using _t = void (GcodeProgramManager::*)();
+            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&GcodeProgramManager::CaptureCamera)) {
                 *result = 7;
                 return;
             }
         }
         {
-            typedef void (GcodeProgramManager::*_t)();
-            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&GcodeProgramManager::ResumeCamera)) {
+            using _t = void (GcodeProgramManager::*)();
+            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&GcodeProgramManager::ResumeCamera)) {
                 *result = 8;
                 return;
             }
@@ -268,10 +268,14 @@ void GcodeProgramManager::qt_static_metacall(QObject *_o, QMetaObject::Call _c, 
     }
 }
 
-const QMetaObject GcodeProgramManager::staticMetaObject = {
-    { &QObject::staticMetaObject, qt_meta_stringdata_GcodeProgramManager.data,
-      qt_meta_data_GcodeProgramManager,  qt_static_metacall, Q_NULLPTR, Q_NULLPTR}
-};
+QT_INIT_METAOBJECT const QMetaObject GcodeProgramManager::staticMetaObject = { {
+    QMetaObject::SuperData::link<QObject::staticMetaObject>(),
+    qt_meta_stringdata_GcodeProgramManager.data,
+    qt_meta_data_GcodeProgramManager,
+    qt_static_metacall,
+    nullptr,
+    nullptr
+} };
 
 
 const QMetaObject *GcodeProgramManager::metaObject() const
@@ -281,9 +285,9 @@ const QMetaObject *GcodeProgramManager::metaObject() const
 
 void *GcodeProgramManager::qt_metacast(const char *_clname)
 {
-    if (!_clname) return Q_NULLPTR;
+    if (!_clname) return nullptr;
     if (!strcmp(_clname, qt_meta_stringdata_GcodeProgramManager.stringdata0))
-        return static_cast<void*>(const_cast< GcodeProgramManager*>(this));
+        return static_cast<void*>(this);
     return QObject::qt_metacast(_clname);
 }
 
@@ -307,57 +311,57 @@ int GcodeProgramManager::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
 // SIGNAL 0
 void GcodeProgramManager::OutOfObjectVariable()
 {
-    QMetaObject::activate(this, &staticMetaObject, 0, Q_NULLPTR);
+    QMetaObject::activate(this, &staticMetaObject, 0, nullptr);
 }
 
 // SIGNAL 1
 void GcodeProgramManager::JustUpdateVariable(QList<GcodeVariable> _t1)
 {
-    void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
+    void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t1))) };
     QMetaObject::activate(this, &staticMetaObject, 1, _a);
 }
 
 // SIGNAL 2
 void GcodeProgramManager::MoveToNewPosition(float _t1, float _t2, float _t3, float _t4, float _t5, float _t6)
 {
-    void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)), const_cast<void*>(reinterpret_cast<const void*>(&_t2)), const_cast<void*>(reinterpret_cast<const void*>(&_t3)), const_cast<void*>(reinterpret_cast<const void*>(&_t4)), const_cast<void*>(reinterpret_cast<const void*>(&_t5)), const_cast<void*>(reinterpret_cast<const void*>(&_t6)) };
+    void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t1))), const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t2))), const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t3))), const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t4))), const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t5))), const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t6))) };
     QMetaObject::activate(this, &staticMetaObject, 2, _a);
 }
 
 // SIGNAL 3
 void GcodeProgramManager::FinishExecuteGcodes()
 {
-    QMetaObject::activate(this, &staticMetaObject, 3, Q_NULLPTR);
+    QMetaObject::activate(this, &staticMetaObject, 3, nullptr);
 }
 
 // SIGNAL 4
 void GcodeProgramManager::DeleteAllObjects()
 {
-    QMetaObject::activate(this, &staticMetaObject, 4, Q_NULLPTR);
+    QMetaObject::activate(this, &staticMetaObject, 4, nullptr);
 }
 
 // SIGNAL 5
 void GcodeProgramManager::DeleteObject1()
 {
-    QMetaObject::activate(this, &staticMetaObject, 5, Q_NULLPTR);
+    QMetaObject::activate(this, &staticMetaObject, 5, nullptr);
 }
 
 // SIGNAL 6
 void GcodeProgramManager::PauseCamera()
 {
-    QMetaObject::activate(this, &staticMetaObject, 6, Q_NULLPTR);
+    QMetaObject::activate(this, &staticMetaObject, 6, nullptr);
 }
 
 // SIGNAL 7
 void GcodeProgramManager::CaptureCamera()
 {
-    QMetaObject::activate(this, &staticMetaObject, 7, Q_NULLPTR);
+    QMetaObject::activate(this, &staticMetaObject, 7, nullptr);
 }
 
 // SIGNAL 8
 void GcodeProgramManager::ResumeCamera()
 {
-    QMetaObject::activate(this, &staticMetaObject, 8, Q_NULLPTR);
+    QMetaObject::activate(this, &staticMetaObject, 8, nullptr);
 }
 QT_WARNING_POP
 QT_END_MOC_NAMESPACE

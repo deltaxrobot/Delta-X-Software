@@ -1,18 +1,19 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'ObjectVariableTable.h'
 **
-** Created by: The Qt Meta Object Compiler version 67 (Qt 5.8.0)
+** Created by: The Qt Meta Object Compiler version 67 (Qt 5.15.2)
 **
 ** WARNING! All changes made in this file will be lost!
 *****************************************************************************/
 
+#include <memory>
 #include "../../ObjectVariableTable.h"
 #include <QtCore/qbytearray.h>
 #include <QtCore/qmetatype.h>
 #if !defined(Q_MOC_OUTPUT_REVISION)
 #error "The header file 'ObjectVariableTable.h' doesn't include <QObject>."
 #elif Q_MOC_OUTPUT_REVISION != 67
-#error "This file was generated using the moc from 5.8.0. It"
+#error "This file was generated using the moc from 5.15.2. It"
 #error "cannot be used with the include files from this version of Qt."
 #error "(The moc has changed too much.)"
 #endif
@@ -48,7 +49,7 @@ QT_MOC_LITERAL(5, 76, 15) // "ObjectContainer"
 static const uint qt_meta_data_ObjectVariableTable[] = {
 
  // content:
-       7,       // revision
+       8,       // revision
        0,       // classname
        0,    0, // classinfo
        2,   14, // methods
@@ -72,7 +73,7 @@ static const uint qt_meta_data_ObjectVariableTable[] = {
 void ObjectVariableTable::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
 {
     if (_c == QMetaObject::InvokeMetaMethod) {
-        ObjectVariableTable *_t = static_cast<ObjectVariableTable *>(_o);
+        auto *_t = static_cast<ObjectVariableTable *>(_o);
         Q_UNUSED(_t)
         switch (_id) {
         case 0: _t->DisplayDialog(); break;
@@ -82,10 +83,14 @@ void ObjectVariableTable::qt_static_metacall(QObject *_o, QMetaObject::Call _c, 
     }
 }
 
-const QMetaObject ObjectVariableTable::staticMetaObject = {
-    { &QObject::staticMetaObject, qt_meta_stringdata_ObjectVariableTable.data,
-      qt_meta_data_ObjectVariableTable,  qt_static_metacall, Q_NULLPTR, Q_NULLPTR}
-};
+QT_INIT_METAOBJECT const QMetaObject ObjectVariableTable::staticMetaObject = { {
+    QMetaObject::SuperData::link<QObject::staticMetaObject>(),
+    qt_meta_stringdata_ObjectVariableTable.data,
+    qt_meta_data_ObjectVariableTable,
+    qt_static_metacall,
+    nullptr,
+    nullptr
+} };
 
 
 const QMetaObject *ObjectVariableTable::metaObject() const
@@ -95,9 +100,9 @@ const QMetaObject *ObjectVariableTable::metaObject() const
 
 void *ObjectVariableTable::qt_metacast(const char *_clname)
 {
-    if (!_clname) return Q_NULLPTR;
+    if (!_clname) return nullptr;
     if (!strcmp(_clname, qt_meta_stringdata_ObjectVariableTable.stringdata0))
-        return static_cast<void*>(const_cast< ObjectVariableTable*>(this));
+        return static_cast<void*>(this);
     return QObject::qt_metacast(_clname);
 }
 
