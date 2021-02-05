@@ -13,14 +13,11 @@ windows {
 }
 
 linux {
-    INCLUDEPATH += "/usr/local/inlcude/"
-    LIBS += `pkg-config --libs opencv`
+    INCLUDEPATH += "/usr/local/include/opencv4"
+    INCLUDEPATH += "/"
+    LIBS += $(shell pkg-config opencv --libs)
+    LIBS += -L/usr/local/lib -lopencv_core -lopencv_highgui -lopencv_imgproc -lopencv_imgcodecs -lopencv_videoio
 }
-#INCLUDEPATH +=  F:\OpenCV\opencv-3.3.0\include
-#LIBS += -LF:\OpenCV\opencv-3.3.0\x64\vc14\lib \
-#    -lopencv_world330d
-
-
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 

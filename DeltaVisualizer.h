@@ -71,6 +71,8 @@ private:
 
 	QComboBox* cbDivision;
 
+    QLabel* lbParent;
+
 	float fPara;
 	float rfPara;
 	float rePara;

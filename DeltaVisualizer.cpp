@@ -3,6 +3,7 @@
 DeltaVisualizer::DeltaVisualizer(QWidget *parent) :QLabel(parent)
 {
 	setMouseTracking(true);
+    lbParent = (QLabel*)parent;
 }
 
 DeltaVisualizer::~DeltaVisualizer()
@@ -37,28 +38,28 @@ void DeltaVisualizer::SetDivisionComboBox(QComboBox* division)
 
 void DeltaVisualizer::ChangeXY(int x, int y)
 {
-	QPixmap pi = QPixmap(width(), height());
+    QPixmap pi = QPixmap(width(), height());
 	pi.fill(QColor(0, 0, 0, 0));
 
-	QPixmap pix = QPixmap(QString::fromUtf8("icon/moving-base.png"));
+    QPixmap pix = QPixmap(QString::fromUtf8(":/icon/moving-base.png"));
 
-	QPixmap pix1 = QPixmap(QString::fromUtf8("icon/grid-10-pixel-3.png"));
-	QPixmap pix2 = QPixmap(QString::fromUtf8("icon/grid-axis-2.png"));
+    QPixmap pix1 = QPixmap(QString::fromUtf8(":/icon/grid-10-pixel-3.png"));
+    QPixmap pix2 = QPixmap(QString::fromUtf8(":/icon/grid-axis-2.png"));
 
 	QPainter p(&pi);
 
 	p.begin(this);
 
-	p.drawPixmap(0, 0, width(), height(), pix1);
-	p.drawPixmap(0, 0, width(), height(), pix2);
-	p.drawPixmap(width() / 2 + x - MOVING_BASE_SIZE / 2, height() / 2 - MOVING_BASE_SIZE / 2 - y, MOVING_BASE_SIZE, MOVING_BASE_SIZE, pix);
+    p.drawPixmap(0, 0, width(), height(), pix1);
+    p.drawPixmap(0, 0, width(), height(), pix2);
+    p.drawPixmap(width() / 2 + x - MOVING_BASE_SIZE / 2, height() / 2 - MOVING_BASE_SIZE / 2 - y, MOVING_BASE_SIZE, MOVING_BASE_SIZE, pix);
 	
 	p.end();
 
-	setPixmap(pi);
-	setScaledContents(true);
+    setPixmap(pi);
+    setScaledContents(true);
 	
-	update();
+    update();
 
 	X = x;
 	Y = y;

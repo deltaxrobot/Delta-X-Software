@@ -202,9 +202,9 @@ void MainWindow::InitVariables()
 
 	DeltaGcodeManager->LoadPrograms();
 	
-	Delta2DVisualizer = new DeltaVisualizer(ui->t2D);
-	Delta2DVisualizer->setObjectName(QStringLiteral("wg2D"));
-	Delta2DVisualizer->setGeometry(QRect(50, 10, 300, 300));
+    Delta2DVisualizer = new DeltaVisualizer(ui->wg2D);
+    Delta2DVisualizer->setObjectName(QStringLiteral("2DArea"));
+    Delta2DVisualizer->setGeometry(QRect(0, 0, 300, 300));
 	Delta2DVisualizer->SetDivisionComboBox(ui->cbDivision);
 
 	DeltaDrawingExporter = new DrawingExporter(this);

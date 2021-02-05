@@ -82,7 +82,7 @@ bool BlobManager::isNewObject(cv::RotatedRect object)
 
 		std::vector<cv::Point2f> IntersectionVertices;
 
-		cv::rotatedRectangleIntersection(oldObj, object, IntersectionVertices);
+        cv::rotatedRectangleIntersection(oldObj, object, IntersectionVertices);
 
 		int IntersectionArea = 0;
 
