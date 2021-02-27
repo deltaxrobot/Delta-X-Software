@@ -2342,7 +2342,7 @@ p, li { white-space: pre-wrap; }
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>-335</y>
+                <y>0</y>
                 <width>539</width>
                 <height>900</height>
                </rect>
@@ -3492,7 +3492,7 @@ p, li { white-space: pre-wrap; }
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>-130</y>
+                <y>-1061</y>
                 <width>600</width>
                 <height>1500</height>
                </rect>
@@ -3503,96 +3503,11 @@ p, li { white-space: pre-wrap; }
                 <height>1500</height>
                </size>
               </property>
-              <widget class="QPushButton" name="pbTransformPerspective">
-               <property name="geometry">
-                <rect>
-                 <x>310</x>
-                 <y>540</y>
-                 <width>91</width>
-                 <height>31</height>
-                </rect>
-               </property>
-               <property name="toolTip">
-                <string>Perspective Transformation</string>
-               </property>
-               <property name="autoFillBackground">
-                <bool>false</bool>
-               </property>
-               <property name="text">
-                <string>Transform</string>
-               </property>
-               <property name="icon">
-                <iconset>
-                 <normaloff>icon/Toggle Off_16px.png</normaloff>
-                 <normalon>icon/Toggle On_16px.png</normalon>icon/Toggle Off_16px.png</iconset>
-               </property>
-               <property name="checkable">
-                <bool>true</bool>
-               </property>
-               <property name="checked">
-                <bool>false</bool>
-               </property>
-               <property name="autoDefault">
-                <bool>false</bool>
-               </property>
-               <property name="default">
-                <bool>false</bool>
-               </property>
-               <property name="flat">
-                <bool>false</bool>
-               </property>
-              </widget>
-              <widget class="QPushButton" name="pbExpandCameraWidget">
-               <property name="geometry">
-                <rect>
-                 <x>405</x>
-                 <y>580</y>
-                 <width>36</width>
-                 <height>31</height>
-                </rect>
-               </property>
-               <property name="toolTip">
-                <string>Expand Camera Widget</string>
-               </property>
-               <property name="text">
-                <string/>
-               </property>
-               <property name="icon">
-                <iconset resource="resource.qrc">
-                 <normaloff>:/icon/icons8-expand-48.png</normaloff>:/icon/icons8-expand-48.png</iconset>
-               </property>
-               <property name="checkable">
-                <bool>true</bool>
-               </property>
-               <property name="checked">
-                <bool>false</bool>
-               </property>
-              </widget>
-              <widget class="QPushButton" name="pbFilter">
-               <property name="geometry">
-                <rect>
-                 <x>385</x>
-                 <y>620</y>
-                 <width>61</width>
-                 <height>36</height>
-                </rect>
-               </property>
-               <property name="toolTip">
-                <string>Camera Filter</string>
-               </property>
-               <property name="text">
-                <string>Filter</string>
-               </property>
-               <property name="icon">
-                <iconset resource="resource.qrc">
-                 <normaloff>:/icon/Slider 2_16px.png</normaloff>:/icon/Slider 2_16px.png</iconset>
-               </property>
-              </widget>
               <widget class="QScrollArea" name="saCamera">
                <property name="geometry">
                 <rect>
-                 <x>20</x>
-                 <y>685</y>
+                 <x>35</x>
+                 <y>880</y>
                  <width>400</width>
                  <height>300</height>
                 </rect>
@@ -3977,10 +3892,10 @@ p, li { white-space: pre-wrap; }
               <widget class="QGroupBox" name="groupBox_10">
                <property name="geometry">
                 <rect>
-                 <x>25</x>
-                 <y>535</y>
-                 <width>256</width>
-                 <height>136</height>
+                 <x>35</x>
+                 <y>630</y>
+                 <width>356</width>
+                 <height>121</height>
                 </rect>
                </property>
                <property name="styleSheet">
@@ -3989,172 +3904,130 @@ p, li { white-space: pre-wrap; }
                <property name="title">
                 <string>Variable</string>
                </property>
-               <widget class="QPushButton" name="pbViewDataObjects">
-                <property name="geometry">
-                 <rect>
-                  <x>5</x>
-                  <y>20</y>
-                  <width>121</width>
-                  <height>31</height>
-                 </rect>
+               <layout class="QHBoxLayout" name="horizontalLayout_30">
+                <property name="topMargin">
+                 <number>20</number>
                 </property>
-                <property name="styleSheet">
-                 <string notr="true"/>
-                </property>
-                <property name="text">
-                 <string>Object Table</string>
-                </property>
-                <property name="icon">
-                 <iconset resource="resource.qrc">
-                  <normaloff>:/icon/icons8-object-48.png</normaloff>:/icon/icons8-object-48.png</iconset>
-                </property>
-               </widget>
-               <widget class="QPushButton" name="pbClearDetectObjects">
-                <property name="geometry">
-                 <rect>
-                  <x>5</x>
-                  <y>55</y>
-                  <width>121</width>
-                  <height>31</height>
-                 </rect>
-                </property>
-                <property name="toolTip">
-                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Clear All Objects in Memory&lt;/p&gt;&lt;p&gt;M98 PclearObjects --&amp;gt; Clear All&lt;/p&gt;&lt;p&gt;M98 PdeleteFirstObject --&amp;gt; Delete First&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                </property>
-                <property name="statusTip">
-                 <string extracomment="Clear All Detect Objects"/>
-                </property>
-                <property name="text">
-                 <string>Clear Objects</string>
-                </property>
-                <property name="icon">
-                 <iconset resource="resource.qrc">
-                  <normaloff>:/icon/Eraser_16px.png</normaloff>:/icon/Eraser_16px.png</iconset>
-                </property>
-               </widget>
-               <widget class="QLabel" name="label_50">
-                <property name="geometry">
-                 <rect>
-                  <x>15</x>
-                  <y>115</y>
-                  <width>51</width>
-                  <height>16</height>
-                 </rect>
-                </property>
-                <property name="font">
-                 <font>
-                  <pointsize>8</pointsize>
-                  <weight>50</weight>
-                  <bold>false</bold>
-                  <kerning>true</kerning>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>Visible</string>
-                </property>
-               </widget>
-               <widget class="QLabel" name="label_48">
-                <property name="geometry">
-                 <rect>
-                  <x>15</x>
-                  <y>90</y>
-                  <width>51</width>
-                  <height>16</height>
-                 </rect>
-                </property>
-                <property name="font">
-                 <font>
-                  <pointsize>8</pointsize>
-                  <weight>50</weight>
-                  <bold>false</bold>
-                  <kerning>true</kerning>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>Tracking</string>
-                </property>
-               </widget>
-               <widget class="QLabel" name="lbTrackingObjectNumber">
-                <property name="geometry">
-                 <rect>
-                  <x>90</x>
-                  <y>90</y>
-                  <width>31</width>
-                  <height>16</height>
-                 </rect>
-                </property>
-                <property name="font">
-                 <font>
-                  <pointsize>10</pointsize>
-                  <weight>50</weight>
-                  <bold>false</bold>
-                  <kerning>true</kerning>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>0</string>
-                </property>
-               </widget>
-               <widget class="QLabel" name="lbVisibleObjectNumber">
-                <property name="geometry">
-                 <rect>
-                  <x>90</x>
-                  <y>115</y>
-                  <width>31</width>
-                  <height>16</height>
-                 </rect>
-                </property>
-                <property name="font">
-                 <font>
-                  <pointsize>10</pointsize>
-                  <weight>50</weight>
-                  <bold>false</bold>
-                  <kerning>true</kerning>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>0</string>
-                </property>
-               </widget>
-              </widget>
-              <widget class="QComboBox" name="lbCameraLayer">
-               <property name="geometry">
-                <rect>
-                 <x>310</x>
-                 <y>580</y>
-                 <width>91</width>
-                 <height>31</height>
-                </rect>
-               </property>
-               <property name="toolTip">
-                <string>Select Camera Layer</string>
-               </property>
-               <property name="currentText">
-                <string>Result</string>
-               </property>
-               <item>
-                <property name="text">
-                 <string>Result</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>Processing</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>Origin</string>
-                </property>
-               </item>
+                <item>
+                 <layout class="QVBoxLayout" name="verticalLayout_41">
+                  <item>
+                   <widget class="QPushButton" name="pbViewDataObjects">
+                    <property name="minimumSize">
+                     <size>
+                      <width>0</width>
+                      <height>30</height>
+                     </size>
+                    </property>
+                    <property name="styleSheet">
+                     <string notr="true"/>
+                    </property>
+                    <property name="text">
+                     <string>Object Table</string>
+                    </property>
+                    <property name="icon">
+                     <iconset resource="resource.qrc">
+                      <normaloff>:/icon/icons8-object-48.png</normaloff>:/icon/icons8-object-48.png</iconset>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="pbClearDetectObjects">
+                    <property name="minimumSize">
+                     <size>
+                      <width>0</width>
+                      <height>30</height>
+                     </size>
+                    </property>
+                    <property name="toolTip">
+                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Clear All Objects in Memory&lt;/p&gt;&lt;p&gt;M98 PclearObjects --&amp;gt; Clear All&lt;/p&gt;&lt;p&gt;M98 PdeleteFirstObject --&amp;gt; Delete First&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                    </property>
+                    <property name="statusTip">
+                     <string extracomment="Clear All Detect Objects"/>
+                    </property>
+                    <property name="text">
+                     <string>Clear Objects</string>
+                    </property>
+                    <property name="icon">
+                     <iconset resource="resource.qrc">
+                      <normaloff>:/icon/Eraser_16px.png</normaloff>:/icon/Eraser_16px.png</iconset>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+                <item>
+                 <layout class="QGridLayout" name="gridLayout_15">
+                  <item row="0" column="0">
+                   <widget class="QLabel" name="label_48">
+                    <property name="font">
+                     <font>
+                      <pointsize>12</pointsize>
+                      <weight>50</weight>
+                      <bold>false</bold>
+                      <kerning>true</kerning>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>Tracking</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="1">
+                   <widget class="QLabel" name="lbTrackingObjectNumber">
+                    <property name="font">
+                     <font>
+                      <pointsize>12</pointsize>
+                      <weight>50</weight>
+                      <bold>false</bold>
+                      <kerning>true</kerning>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>0</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="0">
+                   <widget class="QLabel" name="label_50">
+                    <property name="font">
+                     <font>
+                      <pointsize>12</pointsize>
+                      <weight>50</weight>
+                      <bold>false</bold>
+                      <kerning>true</kerning>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>Visible</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="1">
+                   <widget class="QLabel" name="lbVisibleObjectNumber">
+                    <property name="font">
+                     <font>
+                      <pointsize>12</pointsize>
+                      <weight>50</weight>
+                      <bold>false</bold>
+                      <kerning>true</kerning>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>0</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+               </layout>
               </widget>
               <widget class="QGroupBox" name="groupBox">
                <property name="geometry">
                 <rect>
                  <x>20</x>
-                 <y>355</y>
+                 <y>365</y>
                  <width>470</width>
-                 <height>181</height>
+                 <height>226</height>
                 </rect>
                </property>
                <property name="title">
@@ -4168,6 +4041,9 @@ p, li { white-space: pre-wrap; }
                  <layout class="QHBoxLayout" name="horizontalLayout_28">
                   <item>
                    <layout class="QGridLayout" name="gridLayout_12">
+                    <property name="leftMargin">
+                     <number>6</number>
+                    </property>
                     <item row="0" column="0">
                      <widget class="QLabel" name="label_42">
                       <property name="text">
@@ -4177,6 +4053,12 @@ p, li { white-space: pre-wrap; }
                     </item>
                     <item row="0" column="1">
                      <widget class="QLineEdit" name="leWRec">
+                      <property name="minimumSize">
+                       <size>
+                        <width>0</width>
+                        <height>30</height>
+                       </size>
+                      </property>
                       <property name="text">
                        <string>20</string>
                       </property>
@@ -4198,6 +4080,12 @@ p, li { white-space: pre-wrap; }
                     </item>
                     <item row="1" column="1">
                      <widget class="QLineEdit" name="leLRec">
+                      <property name="minimumSize">
+                       <size>
+                        <width>0</width>
+                        <height>30</height>
+                       </size>
+                      </property>
                       <property name="text">
                        <string>20</string>
                       </property>
@@ -4219,6 +4107,12 @@ p, li { white-space: pre-wrap; }
                     </item>
                     <item row="2" column="1">
                      <widget class="QLineEdit" name="leHRec">
+                      <property name="minimumSize">
+                       <size>
+                        <width>0</width>
+                        <height>30</height>
+                       </size>
+                      </property>
                       <property name="text">
                        <string>20</string>
                       </property>
@@ -4232,6 +4126,19 @@ p, li { white-space: pre-wrap; }
                      </widget>
                     </item>
                    </layout>
+                  </item>
+                  <item>
+                   <spacer name="horizontalSpacer_9">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
                   </item>
                   <item>
                    <widget class="QLabel" name="lbTrackingObject">
@@ -4252,6 +4159,9 @@ p, li { white-space: pre-wrap; }
                     </property>
                     <property name="text">
                      <string/>
+                    </property>
+                    <property name="margin">
+                     <number>0</number>
                     </property>
                    </widget>
                   </item>
@@ -4276,6 +4186,12 @@ p, li { white-space: pre-wrap; }
                    <widget class="QComboBox" name="cbObjectType">
                     <property name="enabled">
                      <bool>false</bool>
+                    </property>
+                    <property name="minimumSize">
+                     <size>
+                      <width>0</width>
+                      <height>30</height>
+                     </size>
                     </property>
                     <item>
                      <property name="text">
@@ -4331,6 +4247,12 @@ p, li { white-space: pre-wrap; }
                   </item>
                   <item>
                    <widget class="QPushButton" name="pbObjectRect">
+                    <property name="minimumSize">
+                     <size>
+                      <width>0</width>
+                      <height>30</height>
+                     </size>
+                    </property>
                     <property name="toolTip">
                      <string>Bound the object size</string>
                     </property>
@@ -4348,21 +4270,47 @@ p, li { white-space: pre-wrap; }
                   </item>
                  </layout>
                 </item>
+                <item>
+                 <widget class="QPushButton" name="pbFilter">
+                  <property name="minimumSize">
+                   <size>
+                    <width>0</width>
+                    <height>30</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>200</width>
+                    <height>16777215</height>
+                   </size>
+                  </property>
+                  <property name="toolTip">
+                   <string>Camera Filter</string>
+                  </property>
+                  <property name="text">
+                   <string>Filter</string>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="resource.qrc">
+                    <normaloff>:/icon/Slider 2_16px.png</normaloff>:/icon/Slider 2_16px.png</iconset>
+                  </property>
+                 </widget>
+                </item>
                </layout>
               </widget>
               <widget class="QGroupBox" name="groupBox_7">
                <property name="geometry">
                 <rect>
-                 <x>20</x>
-                 <y>995</y>
-                 <width>206</width>
-                 <height>106</height>
+                 <x>35</x>
+                 <y>1195</y>
+                 <width>391</width>
+                 <height>90</height>
                 </rect>
                </property>
                <property name="title">
                 <string>Conveyor</string>
                </property>
-               <layout class="QGridLayout" name="gridLayout_13">
+               <layout class="QFormLayout" name="formLayout">
                 <property name="topMargin">
                  <number>30</number>
                 </property>
@@ -4388,7 +4336,7 @@ p, li { white-space: pre-wrap; }
                   </property>
                  </widget>
                 </item>
-                <item row="0" column="2">
+                <item row="1" column="1">
                  <widget class="QLabel" name="label_49">
                   <property name="font">
                    <font>
@@ -4403,7 +4351,7 @@ p, li { white-space: pre-wrap; }
                   </property>
                  </widget>
                 </item>
-                <item row="1" column="0">
+                <item row="2" column="0">
                  <widget class="QLabel" name="label_47">
                   <property name="font">
                    <font>
@@ -4418,7 +4366,7 @@ p, li { white-space: pre-wrap; }
                   </property>
                  </widget>
                 </item>
-                <item row="1" column="1">
+                <item row="2" column="1">
                  <widget class="QComboBox" name="cbConveyorDirection">
                   <item>
                    <property name="text">
@@ -4434,212 +4382,338 @@ p, li { white-space: pre-wrap; }
                 </item>
                </layout>
               </widget>
-              <widget class="QPushButton" name="pbCameraWindowMode">
-               <property name="geometry">
-                <rect>
-                 <x>405</x>
-                 <y>540</y>
-                 <width>36</width>
-                 <height>31</height>
-                </rect>
-               </property>
-               <property name="toolTip">
-                <string>Window Mode</string>
-               </property>
-               <property name="text">
-                <string/>
-               </property>
-               <property name="icon">
-                <iconset resource="resource.qrc">
-                 <normaloff>:/icon/icons8-maximize-window-48.png</normaloff>:/icon/icons8-maximize-window-48.png</iconset>
-               </property>
-              </widget>
               <widget class="QGroupBox" name="groupBox_8">
                <property name="geometry">
                 <rect>
                  <x>20</x>
-                 <y>215</y>
-                 <width>436</width>
-                 <height>131</height>
+                 <y>200</y>
+                 <width>446</width>
+                 <height>156</height>
                 </rect>
                </property>
                <property name="title">
                 <string>Measurement</string>
                </property>
-               <widget class="QPushButton" name="pbObjectLine">
-                <property name="geometry">
-                 <rect>
-                  <x>5</x>
-                  <y>25</y>
-                  <width>101</width>
-                  <height>31</height>
-                 </rect>
+               <layout class="QGridLayout" name="gridLayout_14">
+                <property name="topMargin">
+                 <number>30</number>
                 </property>
-                <property name="toolTip">
-                 <string>Calibrating length</string>
+                <property name="verticalSpacing">
+                 <number>2</number>
                 </property>
-                <property name="text">
-                 <string>Calib Line</string>
+                <item row="0" column="0">
+                 <widget class="QPushButton" name="pbObjectLine">
+                  <property name="minimumSize">
+                   <size>
+                    <width>150</width>
+                    <height>30</height>
+                   </size>
+                  </property>
+                  <property name="toolTip">
+                   <string>Calibrating length</string>
+                  </property>
+                  <property name="text">
+                   <string>Calib Line</string>
+                  </property>
+                  <property name="icon">
+                   <iconset>
+                    <normaloff>icon/Width_16px.png</normaloff>icon/Width_16px.png</iconset>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="2">
+                 <widget class="QLineEdit" name="leRealDistance">
+                  <property name="minimumSize">
+                   <size>
+                    <width>0</width>
+                    <height>30</height>
+                   </size>
+                  </property>
+                  <property name="text">
+                   <string>100</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="3" colspan="2">
+                 <widget class="QLabel" name="label_40">
+                  <property name="minimumSize">
+                   <size>
+                    <width>0</width>
+                    <height>30</height>
+                   </size>
+                  </property>
+                  <property name="text">
+                   <string>mm</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="0">
+                 <widget class="QPushButton" name="pbObjectOrigin">
+                  <property name="minimumSize">
+                   <size>
+                    <width>0</width>
+                    <height>30</height>
+                   </size>
+                  </property>
+                  <property name="toolTip">
+                   <string>Set a calibrating point</string>
+                  </property>
+                  <property name="text">
+                   <string>Calib Point</string>
+                  </property>
+                  <property name="icon">
+                   <iconset>
+                    <normaloff>icon/Scatter Plot_16px.png</normaloff>icon/Scatter Plot_16px.png</iconset>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="1">
+                 <widget class="QLabel" name="label_38">
+                  <property name="minimumSize">
+                   <size>
+                    <width>0</width>
+                    <height>30</height>
+                   </size>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <weight>50</weight>
+                    <italic>false</italic>
+                    <bold>false</bold>
+                    <underline>false</underline>
+                    <strikeout>false</strikeout>
+                    <kerning>true</kerning>
+                   </font>
+                  </property>
+                  <property name="mouseTracking">
+                   <bool>true</bool>
+                  </property>
+                  <property name="text">
+                   <string>X</string>
+                  </property>
+                  <property name="textFormat">
+                   <enum>Qt::AutoText</enum>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="2">
+                 <widget class="QLineEdit" name="leXCoordinate">
+                  <property name="minimumSize">
+                   <size>
+                    <width>0</width>
+                    <height>30</height>
+                   </size>
+                  </property>
+                  <property name="text">
+                   <string>150</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="3">
+                 <widget class="QLabel" name="label_39">
+                  <property name="text">
+                   <string>Y</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="4">
+                 <widget class="QLineEdit" name="leYCoordinate">
+                  <property name="minimumSize">
+                   <size>
+                    <width>0</width>
+                    <height>30</height>
+                   </size>
+                  </property>
+                  <property name="text">
+                   <string>0</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="0">
+                 <widget class="QPushButton" name="pbChangeXAxis">
+                  <property name="minimumSize">
+                   <size>
+                    <width>0</width>
+                    <height>30</height>
+                   </size>
+                  </property>
+                  <property name="toolTip">
+                   <string>Change direction of coordinates</string>
+                  </property>
+                  <property name="text">
+                   <string>X Direction</string>
+                  </property>
+                  <property name="icon">
+                   <iconset>
+                    <normaloff>icon/Arrow Pointing Down_16px.png</normaloff>
+                    <normalon>C:/Users/Admin/.designer/backup/icon/Right Arrow_16px.png</normalon>icon/Arrow Pointing Down_16px.png</iconset>
+                  </property>
+                  <property name="checkable">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="1" colspan="3">
+                 <widget class="QCheckBox" name="cbDisplayCalibInfo">
+                  <property name="text">
+                   <string>Display</string>
+                  </property>
+                  <property name="checked">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+              <widget class="QGroupBox" name="">
+               <property name="geometry">
+                <rect>
+                 <x>40</x>
+                 <y>755</y>
+                 <width>401</width>
+                 <height>71</height>
+                </rect>
+               </property>
+               <property name="title">
+                <string>Display</string>
+               </property>
+               <layout class="QHBoxLayout" name="horizontalLayout_31">
+                <property name="leftMargin">
+                 <number>0</number>
                 </property>
-                <property name="icon">
-                 <iconset>
-                  <normaloff>icon/Width_16px.png</normaloff>icon/Width_16px.png</iconset>
+                <property name="topMargin">
+                 <number>20</number>
                 </property>
-               </widget>
-               <widget class="QLineEdit" name="leRealDistance">
-                <property name="geometry">
-                 <rect>
-                  <x>135</x>
-                  <y>30</y>
-                  <width>31</width>
-                  <height>22</height>
-                 </rect>
-                </property>
-                <property name="text">
-                 <string>100</string>
-                </property>
-               </widget>
-               <widget class="QLineEdit" name="leYCoordinate">
-                <property name="geometry">
-                 <rect>
-                  <x>185</x>
-                  <y>65</y>
-                  <width>31</width>
-                  <height>22</height>
-                 </rect>
-                </property>
-                <property name="text">
-                 <string>0</string>
-                </property>
-               </widget>
-               <widget class="QPushButton" name="pbObjectOrigin">
-                <property name="geometry">
-                 <rect>
-                  <x>5</x>
-                  <y>60</y>
-                  <width>101</width>
-                  <height>31</height>
-                 </rect>
-                </property>
-                <property name="toolTip">
-                 <string>Set a calibrating point</string>
-                </property>
-                <property name="text">
-                 <string>Calib Point</string>
-                </property>
-                <property name="icon">
-                 <iconset>
-                  <normaloff>icon/Scatter Plot_16px.png</normaloff>icon/Scatter Plot_16px.png</iconset>
-                </property>
-               </widget>
-               <widget class="QLineEdit" name="leXCoordinate">
-                <property name="geometry">
-                 <rect>
-                  <x>135</x>
-                  <y>65</y>
-                  <width>31</width>
-                  <height>22</height>
-                 </rect>
-                </property>
-                <property name="text">
-                 <string>150</string>
-                </property>
-               </widget>
-               <widget class="QLabel" name="label_38">
-                <property name="geometry">
-                 <rect>
-                  <x>120</x>
-                  <y>70</y>
-                  <width>21</width>
-                  <height>16</height>
-                 </rect>
-                </property>
-                <property name="font">
-                 <font>
-                  <weight>50</weight>
-                  <italic>false</italic>
-                  <bold>false</bold>
-                  <underline>false</underline>
-                  <strikeout>false</strikeout>
-                  <kerning>true</kerning>
-                 </font>
-                </property>
-                <property name="mouseTracking">
-                 <bool>true</bool>
-                </property>
-                <property name="text">
-                 <string>X</string>
-                </property>
-                <property name="textFormat">
-                 <enum>Qt::AutoText</enum>
-                </property>
-               </widget>
-               <widget class="QLabel" name="label_39">
-                <property name="geometry">
-                 <rect>
-                  <x>175</x>
-                  <y>65</y>
-                  <width>21</width>
-                  <height>21</height>
-                 </rect>
-                </property>
-                <property name="text">
-                 <string>Y</string>
-                </property>
-               </widget>
-               <widget class="QLabel" name="label_40">
-                <property name="geometry">
-                 <rect>
-                  <x>175</x>
-                  <y>35</y>
-                  <width>31</width>
-                  <height>16</height>
-                 </rect>
-                </property>
-                <property name="text">
-                 <string>(mm)</string>
-                </property>
-               </widget>
-               <widget class="QPushButton" name="pbChangeXAxis">
-                <property name="geometry">
-                 <rect>
-                  <x>5</x>
-                  <y>95</y>
-                  <width>101</width>
-                  <height>31</height>
-                 </rect>
-                </property>
-                <property name="toolTip">
-                 <string>Change direction of coordinates</string>
-                </property>
-                <property name="text">
-                 <string>X Direction</string>
-                </property>
-                <property name="icon">
-                 <iconset>
-                  <normaloff>icon/Arrow Pointing Down_16px.png</normaloff>
-                  <normalon>C:/Users/Admin/.designer/backup/icon/Right Arrow_16px.png</normalon>icon/Arrow Pointing Down_16px.png</iconset>
-                </property>
-                <property name="checkable">
-                 <bool>true</bool>
-                </property>
-               </widget>
-               <widget class="QCheckBox" name="cbDisplayCalibInfo">
-                <property name="geometry">
-                 <rect>
-                  <x>115</x>
-                  <y>105</y>
-                  <width>71</width>
-                  <height>16</height>
-                 </rect>
-                </property>
-                <property name="text">
-                 <string>Display</string>
-                </property>
-                <property name="checked">
-                 <bool>true</bool>
-                </property>
-               </widget>
+                <item>
+                 <widget class="QPushButton" name="pbTransformPerspective">
+                  <property name="minimumSize">
+                   <size>
+                    <width>100</width>
+                    <height>30</height>
+                   </size>
+                  </property>
+                  <property name="toolTip">
+                   <string>Perspective Transformation</string>
+                  </property>
+                  <property name="autoFillBackground">
+                   <bool>false</bool>
+                  </property>
+                  <property name="text">
+                   <string>Transform</string>
+                  </property>
+                  <property name="icon">
+                   <iconset>
+                    <normaloff>icon/Toggle Off_16px.png</normaloff>
+                    <normalon>icon/Toggle On_16px.png</normalon>icon/Toggle Off_16px.png</iconset>
+                  </property>
+                  <property name="checkable">
+                   <bool>true</bool>
+                  </property>
+                  <property name="checked">
+                   <bool>false</bool>
+                  </property>
+                  <property name="autoDefault">
+                   <bool>false</bool>
+                  </property>
+                  <property name="default">
+                   <bool>false</bool>
+                  </property>
+                  <property name="flat">
+                   <bool>false</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="pbCameraWindowMode">
+                  <property name="minimumSize">
+                   <size>
+                    <width>90</width>
+                    <height>30</height>
+                   </size>
+                  </property>
+                  <property name="toolTip">
+                   <string>Window Mode</string>
+                  </property>
+                  <property name="text">
+                   <string>Window</string>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="resource.qrc">
+                    <normaloff>:/icon/icons8-maximize-window-48.png</normaloff>:/icon/icons8-maximize-window-48.png</iconset>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="pbExpandCameraWidget">
+                  <property name="minimumSize">
+                   <size>
+                    <width>90</width>
+                    <height>30</height>
+                   </size>
+                  </property>
+                  <property name="toolTip">
+                   <string>Expand Camera Widget</string>
+                  </property>
+                  <property name="text">
+                   <string>Expand</string>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="resource.qrc">
+                    <normaloff>:/icon/icons8-expand-48.png</normaloff>:/icon/icons8-expand-48.png</iconset>
+                  </property>
+                  <property name="checkable">
+                   <bool>true</bool>
+                  </property>
+                  <property name="checked">
+                   <bool>false</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_10">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item>
+                 <widget class="QComboBox" name="lbCameraLayer">
+                  <property name="minimumSize">
+                   <size>
+                    <width>0</width>
+                    <height>30</height>
+                   </size>
+                  </property>
+                  <property name="toolTip">
+                   <string>Select Camera Layer</string>
+                  </property>
+                  <property name="currentText">
+                   <string>Result</string>
+                  </property>
+                  <item>
+                   <property name="text">
+                    <string>Result</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Processing</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Origin</string>
+                   </property>
+                  </item>
+                 </widget>
+                </item>
+               </layout>
               </widget>
              </widget>
             </widget>
