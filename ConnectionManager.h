@@ -48,7 +48,7 @@ public:
 
 public slots:
 	void ReadData();
-	void FindingTimeOut();
+    void FindingRobotTimeOut();
 
 	void ReceiveNewConnectionFromServer(QTcpSocket* socket);
 
@@ -56,9 +56,12 @@ signals:
 	void FinishReadLine(QString msg);
 	void ExternalMCUTransmitText(QString text);
 	void DeltaResponeReady();
+    void FinishFindingRobot();
 	void DeltaResponeGcodeDone();
-	void InHomePosition(float x, float y, float z, float w);
+    void InHomePosition(float x, float y, float z, float w, float u, float v);
 	void ReceiveConvenyorPosition(float x, float y);
+
+    void ReceiveInputIO(QString response);
 
 	void ReceiveVariableChangeCommand(QString name, float value);
 	void RequestVariableValue(QIODevice* sender, QString name);
@@ -74,7 +77,7 @@ private:
 	QString receiveLine;
 	QString transmitLine;
 	QList<QString> transmitLines;
-	QTimer* timer;
+    QTimer* connectionTimer;
 	QList<QSerialPort*> portList;
 
 	bool isDeltaPortConnected = false;

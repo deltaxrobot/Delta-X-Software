@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui serialport opengl network
+QT       += core gui serialport opengl network multimedia
 
 windows {
     INCLUDEPATH += E:\OpenCV\opencv-4.0\build\include
@@ -33,20 +33,26 @@ SOURCES += main.cpp\
     GcodeReference.cpp \
     ImageProcesser.cpp \
     Layer.cpp \
+    MainWindow.cpp \
     ObjectVariableTable.cpp \
+    ProjectManager.cpp \
+    ProjectWindow.cpp \
+    SmartDialog.cpp \
     TCPConnectionManager.cpp \
+    TabDashboard.cpp \
     TextLayer.cpp \
     codeeditor.cpp \
-        mainwindow.cpp \
     ConnectionManager.cpp \
     DeltaVisualizer.cpp \
     GcodeProgramManager.cpp \
     GcodeProgram.cpp \
     UnityTool.cpp \
+    geisttextedit.cpp \
+    highlighter.cpp \
     hsvwindow.cpp \
     robotmanager.cpp
 
-HEADERS  += mainwindow.h \
+HEADERS  += \
     BlobManager.h \
     CameraWidget.h \
     ConnectionManager.h \
@@ -59,18 +65,30 @@ HEADERS  += mainwindow.h \
     GcodeProgram.h \
     GcodeProgramManager.h \
     Layer.h \
+    MainWindow.h \
     ObjectVariableTable.h \
+    ProjectManager.h \
+    ProjectWindow.h \
+    SmartDialog.h \
     TCPConnectionManager.h \
+    TabDashboard.h \
     TextLayer.h \
     codeeditor.h \
+    geisttextedit.h \
+    highlighter.h \
     hsvwindow.h \
     GcodeReference.h \
-    robotmanager.h
+    robotmanager.h \
+    sdk/DeltaXPlugin.h
 
-FORMS    += mainwindow.ui \
+FORMS    += \
+    MainWindow.ui \
+    ProjectWindow.ui \
     hsvwindow.ui \
-        GcodeReference.ui \
+        GcodeReference.ui
 
 RESOURCES += \
     resource.qrc
+
+include ($$PWD/3rd-party/QJoysticks/QJoysticks.pri)
 

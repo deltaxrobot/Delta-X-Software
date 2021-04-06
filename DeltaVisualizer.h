@@ -26,11 +26,14 @@ public:
 	QSize minimumSizeHint();
 	QSize sizeHint();	
 	void SetDivisionComboBox(QComboBox* division);
+    void JumpOneStep(float* axis, float step);
 
 	float XHome = 0;
 	float YHome = 0;
 	float ZHome = -200;
 	float WHome = 0;
+    float UHome = 0;
+    float VHome = 0;
 	float FDefault = 200;
 	float ADefault = 1200;
 
@@ -38,20 +41,31 @@ public:
 	float Y = YHome;
 	float Z = ZHome;
 	float W = WHome;
+    float U = UHome;
+    float V = VHome;
 	float F = FDefault;
 	float A = ADefault;
 
 public slots:
-	void ChangeXY(int x, int y);
+    void ChangeXY(float x, float y);
 	void MoveUp();
 	void MoveDown();
 	void MoveForward();
 	void MoveBackward();
 	void MoveLeft();
 	void MoveRight();
+
+    void SubW();
+    void SubU();
+    void SubV();
+    void PlusW();
+    void PlusU();
+    void PlusV();
+
+    void ChangeWorkingSize(int option);
 signals:
-	void Moved(float x, float y, float z, float w);
-	void CursorMoved(int x, int y);
+    void Moved(float x, float y, float z, float w, float u, float v);
+    void CursorMoved(float x, float y);
 	void FinishMoving();
 
 	void up_arrow();
@@ -65,8 +79,11 @@ protected:
 	void mouseMoveEvent(QMouseEvent *event);
 	void wheelEvent(QWheelEvent *e);
 	bool eventFilter(QObject *dist, QEvent *event);
+    void paintEvent(QPaintEvent *event);
 
 private:
+    void setWorkingSize(int width);
+
 	QElapsedTimer timer;
 
 	QComboBox* cbDivision;

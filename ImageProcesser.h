@@ -18,7 +18,7 @@
 #include "BlobManager.h"
 #include "UnityTool.h"
 #include "CameraWidget.h"
-#include "mainwindow.h"
+#include "ProjectWindow.h"
 
 #define RED_COLOR       cv::Scalar(0, 0, 255)
 #define GREEN_COLOR     cv::Scalar(0, 255, 0)
@@ -56,20 +56,20 @@
 
 #define CONVEYOR_TIMER_INTERVAL	100
 
-class MainWindow;
+class ProjectWindow;
 
 class ImageProcesser : public QWidget
 {
 	Q_OBJECT
 
 public:
-	ImageProcesser(MainWindow *parent);
+	ImageProcesser(ProjectWindow *parent);
 	~ImageProcesser();
 	
 	void SetDetectParameterPointer(QLineEdit* xRec, QLineEdit* yRec, QLineEdit* distance, QLineEdit* xCoor, QLineEdit* yCoor);
 	void SetResultScreenPointer(CameraWidget* resultImage);
 	void SetObjectScreenPointer(QLabel* objectImage);
-	void SetCameraInfoWidget(QLineEdit* fps, QLabel* state, QPushButton* playBt);
+    void SetCameraInfoWidget(QLineEdit* fps, QLabel* state, QPushButton* playBt, QPushButton* loadBt);
 	void SetTrackingWidgetPointer(QLabel* lbTracking, QLabel* lbVisible);
 
 	void UpdateLabelImage(cv::Mat mat, QLabel* label);
@@ -137,6 +137,8 @@ public slots:
 signals:
 	void ObjectValueChanged(std::vector<cv::RotatedRect> ObjectContainer);
 private:
+	void stopCamera();
+
 	void processImage();
 
 	void drawXAxis(cv::Mat resultsMat);
@@ -201,6 +203,7 @@ private:
 	QLineEdit* leFPS;
 	QLabel* lbCameraState;
 	QPushButton* pbPlayCammera;
+    QPushButton* pbLoadCamera;
 	QWidget* cameraWindow;
 	QWidget* cameraLayout;
 	QVBoxLayout * cameraBox;
@@ -222,5 +225,5 @@ private:
 
 	bool isFirstLoad = true;
 	bool isStopCapture = false;
-	MainWindow* mParent;
+	ProjectWindow* mParent;
 };

@@ -81,5 +81,15 @@
         <file>icon/Zoom In_16px.png</file>
         <file>icon/Zoom Out_16px.png</file>
         <file>delta_x_logo_96x96.ico</file>
+        <file>icon/deltax-loading.gif</file>
+        <file>icon/project_64px.png</file>
+        <file>icon/home_64px.png</file>
+        <file>icon/settings_64px.png</file>
+        <file>icon/account_64px.png</file>
+        <file>icon/document_64px.png</file>
+        <file>icon/shopping_cart_promotion_64px.png</file>
+        <file>icon/variable_64px.png</file>
+        <file>icon/blue_project_64px_1.png</file>
+        <file>icon/charity_64px.png</file>
     </qresource>
 </RCC>

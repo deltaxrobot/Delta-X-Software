@@ -238,9 +238,9 @@ void DrawingExporter::ApplyConversion()
 	*effectPixmap = effectPixmap->fromImage(image);
 
 	float ratio = (float)effectPixmap->width() / effectPixmap->height();
-	int h = lbImageForDrawing->height();
+    int h = lbImageForDrawing->height();
 
-	lbImageForDrawing->resize(h * ratio, h);
+    lbImageForDrawing->setMaximumWidth(h * ratio);
 
 	lbWImage->setText(QString("W: ") + QString::number(originPixmap->width()));
 	lbHImage->setText(QString("H: ") + QString::number(originPixmap->height()));
@@ -260,7 +260,7 @@ void DrawingExporter::ScaleEffectImage()
 
 void DrawingExporter::initEnvent()
 {
-	connect(hsDrawingThreshold, SIGNAL(valueChanged(int)), this, SLOT(ApplyConversion()));
+    connect(hsDrawingThreshold, SIGNAL(sliderReleased()), this, SLOT(ApplyConversion()));
 	connect(leWidthScale, SIGNAL(textChanged(const QString &)), this, SLOT(ApplyConversion()));
 	connect(leHeightScale, SIGNAL(textChanged(const QString &)), this, SLOT(ApplyConversion()));
 	connect(cbConversion, SIGNAL(currentTextChanged(const QString &)), this, SLOT(ApplyConversion()));

@@ -66,10 +66,10 @@ void TCPConnectionManager::ProcessReceivedData(QString data)
 	if (data == "")
 		return;
 
-	else if (data.indexOf('x') > -1 && data.indexOf('y') > -1 && data.indexOf('z') > -1)
+    else if (data.indexOf('x') > -1 && data.indexOf('y') > -1 && data.indexOf('z') > -1 )
 	{
 		QStringList datas = data.split(' ');
-		emit ReceivePosition(datas.at(1).toFloat(), datas.at(3).toFloat(), datas.at(5).toFloat(), NULL_NUMBER);
+        emit ReceivePosition(datas.at(1).toFloat(), datas.at(3).toFloat(), datas.at(5).toFloat(), NULL_NUMBER, NULL_NUMBER, NULL_NUMBER);
 	}
 
 }

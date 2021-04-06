@@ -1,13 +1,13 @@
 #include "GcodeProgramManager.h"
 
 
-GcodeProgramManager::GcodeProgramManager(MainWindow *parent)
+GcodeProgramManager::GcodeProgramManager(ProjectWindow *parent)
 {
 	ProgramList = new QVector<GcodeProgram*>();
 	mParent = parent;
 }
 
-GcodeProgramManager::GcodeProgramManager(MainWindow *parent, QScrollArea* scrolArea, QWidget* container, CodeEditor * gcodeArea, QPushButton* executeButton, ConnectionManager* deltaPort, DeltaVisualizer* deltaVisualize) : GcodeProgramManager(parent)
+GcodeProgramManager::GcodeProgramManager(ProjectWindow *parent, QScrollArea* scrolArea, QWidget* container, CodeEditor * gcodeArea, QPushButton* executeButton, ConnectionManager* deltaPort, DeltaVisualizer* deltaVisualize) : GcodeProgramManager(parent)
 {
 	saProgramFilesScrollArea = scrolArea;
 	wgProgramContainer = container;
@@ -746,8 +746,6 @@ void GcodeProgramManager::SetStartingGcodeEditorCursor(QString value)
 float GcodeProgramManager::calculateExpressions(QString expression)
 {
 	expression = expression.replace("  ", " ");
-
-	int index = 0;
 	
 	while (1)
 	{
@@ -906,8 +904,7 @@ float GcodeProgramManager::calculateExpressions(QString expression)
 			QString value2S;
 
 			float value1;
-			float value2;
-			float result;
+            float value2;
 
 			int operatorIndex = eqIndex;
 

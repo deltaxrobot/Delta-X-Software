@@ -25,9 +25,9 @@
 #include <codeeditor.h>
 #include <qscrollarea.h>
 #include <qscrollbar.h>
-#include "mainwindow.h"
+#include "ProjectWindow.h"
 
-class MainWindow;
+class ProjectWindow;
 
 class GcodeVariable
 {
@@ -41,9 +41,9 @@ class GcodeProgramManager : public QObject
 	Q_OBJECT
 
 public:
-	GcodeProgramManager(MainWindow *parent);
+	GcodeProgramManager(ProjectWindow *parent);
 	~GcodeProgramManager();
-	GcodeProgramManager(MainWindow *parent, QScrollArea* scrolArea, QWidget* container, CodeEditor* gcodeArea, QPushButton* executeButton, ConnectionManager* deltaPort = NULL, DeltaVisualizer* deltaVisualize = NULL);
+	GcodeProgramManager(ProjectWindow *parent, QScrollArea* scrolArea, QWidget* container, CodeEditor* gcodeArea, QPushButton* executeButton, ConnectionManager* deltaPort = NULL, DeltaVisualizer* deltaVisualize = NULL);
 	void AddGcodeLine(QString line);
 	void AddG01(float  x, float y, float z);
 	void AddG28();
@@ -108,7 +108,7 @@ private:
 	int returnPointerOrder = -1;
 	QString currentLine;
 
-	MainWindow* mParent;
+	ProjectWindow* mParent;
 
 	float GetVariableValue(QString name);
 	bool isGlobalVariable(QString name);

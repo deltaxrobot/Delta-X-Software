@@ -1,6 +1,6 @@
 #include "ImageProcesser.h"
 
-ImageProcesser::ImageProcesser(MainWindow *parent)
+ImageProcesser::ImageProcesser(ProjectWindow *parent)
 	: QWidget(parent)
 {
 	ParameterPanel = new HSVWindow(parent);
@@ -57,13 +57,23 @@ void ImageProcesser::LoadCamera()
 {
 	QPushButton* loadBt = qobject_cast<QPushButton*>(sender());
 	if (loadBt->isChecked())
-	{
+	{        
+        QStringList cameraItems;
+
+        QList<QCameraInfo> cameras = QCameraInfo::availableCameras();
+        for (int i = 0; i < cameras.size(); i++)
+        {
+            cameraItems.append(QString::number(i) + QString(" - ") + cameras[i].description());
+        }
+
 		bool ok;
-		QString text = QInputDialog::getText(this, tr("Open Camera"), tr("ID: "), QLineEdit::Normal, "0", &ok);
+        QString text = QInputDialog::getItem(this, tr("Open Camera"), tr("Camera ID: "), cameraItems, 0, false, &ok);
 
 		if (ok && !text.isEmpty())
 		{
-			RunningCamera = text.toInt();
+            QString cameraIDText = text.mid(0, text.indexOf(" - "));
+            int cameraID = cameraIDText.toInt();
+            RunningCamera = cameraID;
 
 			if (mParent->DeltaXMainWindows != NULL)
 			{
@@ -81,7 +91,9 @@ void ImageProcesser::LoadCamera()
 			pbPlayCammera->setChecked(true);
 			lbResultImage->InitParameter();
 
-			Camera->open(text.toInt());
+            loadBt->setText("Stop Camera");
+
+            Camera->open(cameraID);
 			Camera->set(cv::CAP_PROP_FRAME_WIDTH, 800);
 			Camera->set(cv::CAP_PROP_FRAME_HEIGHT, 600);
 
@@ -98,10 +110,7 @@ void ImageProcesser::LoadCamera()
 	}
 	else
 	{
-		lbCameraState->setEnabled(false);
-		Camera->release();
-		RunningCamera = -1;
-		IsCameraPause = false;
+		stopCamera();
 		return;
 	}
 }
@@ -109,9 +118,14 @@ void ImageProcesser::LoadCamera()
 void ImageProcesser::CaptureCamera()
 {
 	if (!Camera->isOpened())
+		return;	
+
+    if (!Camera->read(captureImage))
+	{
+		stopCamera();
+        QMessageBox::information(this, "Problem", "The camera has lost connection!");
 		return;
-	
-	Camera->read(captureImage);	
+	}	
 }
 
 void ImageProcesser::PauseCamera()
@@ -136,6 +150,15 @@ void ImageProcesser::ResumeCamera()
 {
 	IsCameraPause = false;
 	pbPlayCammera->setChecked(true);
+}
+
+void ImageProcesser::stopCamera()
+{
+	lbCameraState->setEnabled(false);
+	Camera->release();
+	RunningCamera = -1;
+	IsCameraPause = false;
+    pbLoadCamera->setText("Load Camera");
 }
 
 void ImageProcesser::processImage()
@@ -219,11 +242,12 @@ void ImageProcesser::SetObjectScreenPointer(QLabel * objectImage)
 	lbObjectImage = objectImage;
 }
 
-void ImageProcesser::SetCameraInfoWidget(QLineEdit* fps, QLabel* state, QPushButton* playBt)
+void ImageProcesser::SetCameraInfoWidget(QLineEdit* fps, QLabel* state, QPushButton* playBt, QPushButton* loadBt = NULL)
 {
 	pbPlayCammera = playBt;
 	leFPS = fps;
 	lbCameraState = state;
+    pbLoadCamera = loadBt;
 }
 
 void ImageProcesser::SetTrackingWidgetPointer(QLabel* lbTracking, QLabel* lbVisible)
@@ -810,8 +834,7 @@ void ImageProcesser::detectObjects(cv::Mat input, cv::Mat output, cv::Scalar col
 		cv::RotatedRect minRec = cv::minAreaRect(cv::Mat(contoursContainer[i]));
 
 		float h = minRec.size.height;
-		float w = minRec.size.width;
-		float ratio = h / w;
+        float w = minRec.size.width;
 		float s = w * h;
 
 		if (w > h)
@@ -914,9 +937,6 @@ void ImageProcesser::UpdateTrackingInfo()
 
 void ImageProcesser::DisplayAdditionalInfo(cv::Mat & displayMat)
 {
-	int offset = 1;
-	int thin = 1;
-
 	// Draw process rectangle
 	drawBlackWhiteRect(displayMat, DselectedRec);
 	drawCorner(displayMat, DselectedRec.topLeft());

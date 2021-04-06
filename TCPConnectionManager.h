@@ -46,9 +46,9 @@ public slots:
 
 signals:
 	void ReceiveVariableChangeCommand(QString name, float value);
-	void ReceivePositionUpdateCommand(float x, float y, float z, float w);
+    void ReceivePositionUpdateCommand(float x, float y, float z, float w, float u, float v);
 	void ReceiveOk();
-	void ReceivePosition(float x, float y, float z, float w);
+    void ReceivePosition(float x, float y, float z, float w, float u, float v);
 	void NewConnection(QTcpSocket* socket);
 
 private:

@@ -7,14 +7,13 @@ ConnectionManager::ConnectionManager()
 
 void ConnectionManager::init()
 {
-	timer = new QTimer();
-
 	RobotPort = new QSerialPort();
 	connect(RobotPort, SIGNAL(readyRead()), this, SLOT(ReadData()));
 	RobotSocket = new QTcpSocket();
 	connect(RobotSocket, SIGNAL(readyRead()), this, SLOT(ReadData()));
 	
-	connect(timer, SIGNAL(timeout()), this, SLOT(FindingTimeOut()));
+    connectionTimer = new QTimer();
+    connect(connectionTimer, SIGNAL(timeout()), this, SLOT(FindingRobotTimeOut()));
 
 	ExternalControllerPort = new QSerialPort();
 	connect(ExternalControllerPort, SIGNAL(readyRead()), this, SLOT(ReadData()));
@@ -64,11 +63,24 @@ void ConnectionManager::processReceiveData()
 	{
 		QList<QString> nums = receiveLine.split(",");
 
-		if (nums.size() == 3)
+        if (nums.size() >= 3)
 		{
-			emit InHomePosition(nums[0].toFloat(), nums[1].toFloat(), nums[2].toFloat(), 0);
+            float w = 0, u = 0, v = 0;
+            if (nums.size() == 4)
+                w = nums[3].toFloat();
+            if (nums.size() == 5)
+                u = nums[4].toFloat();
+            if (nums.size() == 6)
+                v = nums[5].toFloat();
+
+            emit InHomePosition(nums[0].toFloat(), nums[1].toFloat(), nums[2].toFloat(), w, u, v);
 		}
-	}
+    }
+
+    if (receiveLine.indexOf(" V") > -1 && (receiveLine.indexOf("A") > -1 || receiveLine.indexOf(" V") > -1))
+    {
+        emit ReceiveInputIO(receiveLine);
+    }
 
 	if (receiveLine.at(0) == '#' && receiveLine.indexOf("=") > -1)
 	{
@@ -219,7 +231,7 @@ void ConnectionManager::FindDeltaRobot()
 		}
 	}
 
-	timer->start(200);
+    connectionTimer->start(200);
 }
 
 void ConnectionManager::SendToRobot(QString msg)
@@ -322,20 +334,20 @@ void ConnectionManager::ReadData()
 
 
 
-void ConnectionManager::FindingTimeOut()
+void ConnectionManager::FindingRobotTimeOut()
 {
-	static int order = 0;
+    static int order = 0;
 	
 	order++;
 
-	QString waitS = "";
+//	QString waitS = "";
 
-	for (int i = 0; i < order; i++)
-	{
-		waitS += ".";
-	}
+//	for (int i = 0; i < order; i++)
+//	{
+//		waitS += ".";
+//	}
 
-	Debug(waitS);
+//	Debug(waitS);
 
 	if (order < 20 && isDeltaPortConnected == false)
 		return;
@@ -353,7 +365,9 @@ void ConnectionManager::FindingTimeOut()
 
 	portList.clear();
 
-	timer->stop();
+    connectionTimer->stop();
+
+    emit FinishFindingRobot();
 }
 
 void ConnectionManager::ReceiveNewConnectionFromServer(QTcpSocket * socket)

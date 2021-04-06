@@ -1,5 +1,5 @@
 #include <UnityTool.h>
-#include "mainwindow.h"
+#include "ProjectWindow.h"
 #include <qlist.h>
 
 QTextEdit* DebugLB;
