@@ -149,11 +149,12 @@ void ProjectWindow::InitEvents()
 	connect(ui->btDeleteAllObjects, SIGNAL(clicked(bool)), this, SLOT(DeleteAllObjectsInROS()));
 	connect(ui->pbClearDetectObjects, SIGNAL(clicked(bool)), this, SLOT(DeleteAllObjectsInROS()));
 
+#ifdef Q_WS_WIN
     //------------- Joystick -----------
     connect(joystick, SIGNAL(buttonEvent (const QJoystickButtonEvent&)), SLOT(ProcessJoystickButton(const QJoystickButtonEvent&)));
     connect(joystick, SIGNAL(axisEvent(const QJoystickAxisEvent&)), SLOT(ProcessJoystickAxis(const QJoystickAxisEvent&)));
     connect(joystick, SIGNAL(POVEvent(const QJoystickPOVEvent&)), SLOT(ProcessJoystickPOV(const QJoystickPOVEvent&)));
-
+#endif
     //------------- Terminal ---------------
 	connect(ui->leTerminal, SIGNAL(returnPressed()), this, SLOT(TerminalTransmit()));
 
@@ -277,11 +278,13 @@ void ProjectWindow::InitVariables()
     //---- Init pointer --------
     initInputValueLabels();
 
-    //------Joystick-----
+#ifdef Q_WS_WIN
+    //------Joystick-----    
     joystick = QJoysticks::getInstance();
     joystick->setVirtualJoystickRange(ui->leJoystickRange->text().toDouble());
     joystick->setVirtualJoystickAxisSensibility(ui->leJoystickSensibility->text().toDouble());
     ui->cbJoystickDevice->addItems(joystick->deviceNames());
+#endif
 
     //----- Gcode Programing----------
 
@@ -813,6 +816,9 @@ void ProjectWindow::ChangeDeltaDashboard(int index)
 
 void ProjectWindow::SelectTrueTabName(int index)
 {
+    if (DeltaXMainWindows == NULL)
+        return;
+
 	for (int i = 0; i < DeltaXMainWindows->size(); i++)
 	{
 		if (DeltaXMainWindows->at(i) != NULL)
@@ -1883,6 +1889,8 @@ void ProjectWindow::CloseLoadingPopup()
     mvLoadingPopup->stop();
 }
 
+#ifdef Q_WS_WIN
+
 void ProjectWindow::ProcessJoystickButton(const QJoystickButtonEvent& event)
 {
     Debug(QString::number(event.button) + ": " + ((event.pressed == true)?"1":"0") + "\n");
@@ -1967,6 +1975,7 @@ void ProjectWindow::ProcessJoystickPOV(const QJoystickPOVEvent &event)
             break;
     }
 }
+#endif
 
 void ProjectWindow::MaximizeTab(int index)
 {
@@ -1998,6 +2007,8 @@ void ProjectWindow::MaximizeTab(int index)
         MainWindowStackedWidget->setCurrentWidget(MainWindowPage);
     }
 }
+
+
 
 QStringList ProjectWindow::getPlugins(QString path)
 {

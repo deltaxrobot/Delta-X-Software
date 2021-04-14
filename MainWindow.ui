@@ -80,7 +80,7 @@ QTabBar::tab {
 }
 
 QTabBar::tab:selected, QTabBar::tab:hover {
-    background: rgb(0, 110, 255);
+    background: rgb(24, 70, 139);
 	color: rgb(255, 255, 255);
 }
 

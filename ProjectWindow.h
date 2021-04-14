@@ -41,7 +41,11 @@
 #include "sdk/DeltaXPlugin.h"
 #include <QPluginLoader>
 #include "SmartDialog.h"
-#include <QJoysticks.h>
+
+#ifdef Q_WS_WIN
+    #include <QJoysticks.h>
+#endif
+
 #include <QMap>
 #include <QLayout>
 #include <QStackedWidget>
@@ -209,11 +213,12 @@ private slots:
     void OpenLoadingPopup();
     void CloseLoadingPopup();
 
+#ifdef Q_WS_WIN
     //--------Joystick-----------
     void ProcessJoystickButton(const QJoystickButtonEvent& event);
     void ProcessJoystickAxis(const QJoystickAxisEvent& event);
     void ProcessJoystickPOV(const QJoystickPOVEvent& event);
-
+#endif
     //-------- Tab UX ---------
     void MaximizeTab(int index);
 
@@ -232,8 +237,9 @@ private:
 	void makeEffectExample();
 
     //--------- Controller -------
+#ifdef Q_WS_WIN
     QJoysticks *joystick;
-
+#endif
     //--------- IO ----------
     void sendGcode(QString prefix, QString para1, QString para2);
     QObject* getObjectByName(QObject* parent, QString name);
