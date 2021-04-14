@@ -91,5 +91,6 @@
         <file>icon/variable_64px.png</file>
         <file>icon/blue_project_64px_1.png</file>
         <file>icon/charity_64px.png</file>
+        <file>icon/divider_50px.png</file>
     </qresource>
 </RCC>

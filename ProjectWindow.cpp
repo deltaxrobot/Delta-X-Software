@@ -271,8 +271,8 @@ void ProjectWindow::InitVariables()
 
     // Init UI
     ui->lbBaudrate->setText(QString::number(DeltaConnectionManager->GetBaudrate()));
-    ui->lbIP->setText(TCPConnectionManager::GetIP());
-    ui->lbLocalPort->setText(QString::number(DeltaConnectionManager->TCPConnection->Port));
+//    ui->lbIP->setText(TCPConnectionManager::GetIP());
+//    ui->lbLocalPort->setText(QString::number(DeltaConnectionManager->TCPConnection->Port));
 
     //---- Init pointer --------
     initInputValueLabels();
@@ -545,6 +545,21 @@ void ProjectWindow::LoadPlugin()
     //qInfo() << "Done!";
 }
 
+void ProjectWindow::SetMainStackedWidgetAndPages(QStackedWidget *mainStack, QWidget *mainPage, QWidget *fullDisplayPage, QLayout *fullDisplayLayout)
+{
+    this->MainWindowStackedWidget = mainStack;
+    this->MainWindowPage = mainPage;
+    this->FullDisplayPage = fullDisplayPage;
+    this->FullDisplayLayout = fullDisplayLayout;
+    connect(ui->twDeltaGeometry, SIGNAL(tabBarDoubleClicked(int)), this, SLOT(MaximizeTab(int)));
+    connect(ui->twModule, SIGNAL(tabBarDoubleClicked(int)), this, SLOT(MaximizeTab(int)));
+}
+
+void ProjectWindow::SetSubStackedWidget(QStackedWidget *subStackedWidget)
+{
+    this->SubWindowStackedWidget = subStackedWidget;
+}
+
 void ProjectWindow::ConnectDeltaRobot()
 {
 	if (ui->cbAutoConnect->isChecked() == false)
@@ -736,6 +751,7 @@ void ProjectWindow::ConfigConnection()
 
 void ProjectWindow::ChangeDeltaDashboard(int index)
 {
+    // ---- If press "Add new robot" --------
 	if (ui->twDeltaManager->count() == index + 1)
 	{
 		if (ID == 0)
@@ -747,51 +763,52 @@ void ProjectWindow::ChangeDeltaDashboard(int index)
 			}
 		}
 
+        //----- Creat new robot window -----------
         ProjectWindow* mainWindow = new ProjectWindow();
-		mainWindow->setAttribute(Qt::WA_DeleteOnClose);
-		mainWindow->ID = DeltaXMainWindows->size();
-		mainWindow->Name = QString("Delta X ") + QString::number(mainWindow->ID + 1);
+        SubWindowStackedWidget->addWidget(mainWindow);
 
+        mainWindow->SetMainStackedWidgetAndPages(MainWindowStackedWidget, MainWindowPage, FullDisplayPage, FullDisplayLayout);
+        mainWindow->SetSubStackedWidget(SubWindowStackedWidget);
+
+        //mainWindow->setAttribute(Qt::WA_DeleteOnClose);
+		mainWindow->ID = DeltaXMainWindows->size();
+        mainWindow->Name = QString("robot ") + QString::number(mainWindow->ID + 1);
+
+        //----- Add new robot to menu ------
 		QAction *actionNewDelta_X;
 		actionNewDelta_X = new QAction(mainWindow);
 
 		actionNewDelta_X->setCheckable(true);
 		actionNewDelta_X->setChecked(true);
-		actionNewDelta_X->setText(QString("Delta X ") + QString::number(mainWindow->ID + 1));
+        actionNewDelta_X->setText(QString("robot ") + QString::number(mainWindow->ID + 1));
 		DeltaXMainWindows->at(0)->ui->menuExecute->addAction(actionNewDelta_X);
 
 		mainWindow->AddInstance(this->DeltaXMainWindows);
-		mainWindow->ui->lbID->setText(QString("ID: ") + QString::number(mainWindow->ID));
-		mainWindow->SelectedAction = actionNewDelta_X;
+        mainWindow->ui->lbID->setText(QString::number(mainWindow->ID));
+        mainWindow->SelectedAction = actionNewDelta_X;
 
-        //mainWindow->show();
-
+        //----- Creat new tab widget in other robot window -------
 		for (int i = 0; i < DeltaXMainWindows->size() - 1; i++)
 		{
 			DeltaXMainWindows->at(i)->ui->twDeltaManager->setTabText(index, QString("Delta") + QString::number(index + 1));
 			QWidget *newDeltaTab = new QWidget();
             DeltaXMainWindows->at(i)->ui->twDeltaManager->addTab(newDeltaTab, QString());
-            //DeltaXMainWindows->at(i)->ui->twDeltaManager->addTab(mainWindow, QString());
 			DeltaXMainWindows->at(i)->ui->twDeltaManager->setTabText(DeltaXMainWindows->at(i)->ui->twDeltaManager->indexOf(newDeltaTab), "+");
-		}
-
-		/*DeltaXDashboard* dashBoard = new DeltaXDashboard(ui, this);
-		dashBoard->InitVariable();
-		DeltaXDashboards.push_back(dashBoard);*/
+        }
 	}
+    // -------- Select other robot ---------
 	else
 	{
 		if (DeltaXMainWindows == NULL)
 			return;
 		if (DeltaXMainWindows->count() == 0)
-			return;
+            return;
 
-		//DeltaXMainWindows->at(index)->setWindowFlags(Qt::WindowStaysOnTopHint);
-		DeltaXMainWindows->at(index)->activateWindow();
-		DeltaXMainWindows->at(index)->show();
-        DeltaXMainWindows->at(index)->setFocus();
-	}
-	Debug(QString::number(index));
+        if (DeltaXMainWindows->at(0)->SubWindowStackedWidget != NULL)
+        {
+            DeltaXMainWindows->at(0)->SubWindowStackedWidget->setCurrentIndex(index);
+        }
+    }
 }
 
 void ProjectWindow::SelectTrueTabName(int index)
@@ -912,28 +929,27 @@ void ProjectWindow::SearchGcodeFile()
 
 void ProjectWindow::ExecuteSelectPrograms()
 {
+    // If only one robot, execute program for it
 	if (DeltaXMainWindows == NULL)
 	{
 		ui->pbExecuteGcodes->click();
 		return;
 	}
+
 	QList<QAction*> actions = ui->menuExecute->actions();
 	for (int i = 0; i < actions.size(); i++)
 	{
-		if (actions.at(i)->text().indexOf("Delta X") > -1)
-		{
-			QString actionName = actions.at(i)->text();
-			if (actions.at(i)->isChecked() == true)
-			{				
-				for (int j = 0; j < DeltaXMainWindows->size(); j++)
-				{
-					if (DeltaXMainWindows->at(j)->Name == actionName)
-					{
-						DeltaXMainWindows->at(j)->ui->pbExecuteGcodes->click();
-					}
-				}
-			}
-		}
+        if (actions.at(i)->isChecked() == true)
+        {
+            QString actionName = actions.at(i)->text();
+            for (int j = 0; j < DeltaXMainWindows->size(); j++)
+            {
+                if (DeltaXMainWindows->at(j)->Name == actionName)
+                {
+                    DeltaXMainWindows->at(j)->ui->pbExecuteGcodes->click();
+                }
+            }
+        }
 	}
 }
 
@@ -1949,6 +1965,37 @@ void ProjectWindow::ProcessJoystickPOV(const QJoystickPOVEvent &event)
         case 270:
             ui->pbLeft->click();
             break;
+    }
+}
+
+void ProjectWindow::MaximizeTab(int index)
+{
+    QTabWidget* selectedTabWidget = qobject_cast<QTabWidget*>(sender());
+
+    bool isFull = false;
+
+    if (FullDisplayLayout->count() > 0)
+    {
+        isFull = true;
+    }
+
+    if (isFull == false)
+    {
+        FullDisplayLayout->addWidget(selectedTabWidget);
+        MainWindowStackedWidget->setCurrentWidget(FullDisplayPage);
+    }
+    else
+    {
+        if (selectedTabWidget == ui->twDeltaGeometry)
+        {
+            ui->GeometryTabManagerLayout->addWidget(selectedTabWidget);
+        }
+        if (selectedTabWidget == ui->twModule)
+        {
+            ui->ModuleTabManagerLayout->addWidget(selectedTabWidget);
+        }
+
+        MainWindowStackedWidget->setCurrentWidget(MainWindowPage);
     }
 }
 

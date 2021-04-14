@@ -8,25 +8,31 @@
 #include <QInputDialog>
 #include <QMessageBox>
 #include <QHBoxLayout>
+#include <QStackedWidget>
 
 class ProjectManager : public QWidget
 {
     Q_OBJECT
 public:
-    ProjectManager(QWidget* parent);
+    ProjectManager(QWidget* parent = NULL);
     void InitTabManager(QTabWidget* tabWidget);
-    void InitDefaultTab(QWidget* defaultTab);
     void InitAddNewTab(QWidget* addNewTab);
-    void InitDefaultProject(QWidget* defaultProject);
+    void AddNewTab(QWidget* newTab = NULL, QStackedWidget* stack = NULL);
+
+    QStackedWidget *SubProject;
+
+     bool IsNewTabSlotOutside = false;
 
 public slots:
     void ChangeProjectTab(int index);
     void ChangeProjectName(int tabIndex);
     void CloseProject(int tabIndex);
 
+    signals:
+    void NewTab_Signal(int index);
+
 private:
     QTabWidget* twProjectManager;
-    QWidget* tabDefaultProject;
     QWidget* tabAddNewButton;
 };
 

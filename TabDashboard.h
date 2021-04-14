@@ -19,7 +19,7 @@ class TabDashboard : public QWidget
 {
     Q_OBJECT
 public:
-    TabDashboard(QWidget* parent);
+    TabDashboard(QWidget* parent = NULL);
 
     void InitPage(QAbstractButton* button, QWidget* page);
     void InitPanel(QWidget* panel, QStackedWidget* pageStack);

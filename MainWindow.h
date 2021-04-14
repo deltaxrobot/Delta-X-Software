@@ -7,6 +7,8 @@
 #include "ProjectManager.h"
 #include "ProjectWindow.h"
 #include <QSettings>
+#include "UXManager.h"
+#include "QStackedWidget"
 
 namespace Ui {
 class MainWindow;
@@ -26,6 +28,10 @@ public:
     TabDashboard* Dashboard;
     ProjectManager* RobotProjectManager;
     QSettings* ProjectSetting;
+    UXManager* Ux;
+
+public slots:
+    void NewProject_Slot(int index);
 
 private:
     Ui::MainWindow *ui;

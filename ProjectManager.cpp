@@ -3,6 +3,8 @@
 ProjectManager::ProjectManager(QWidget* parent) : QWidget(parent)
 {
     this->setStyleSheet("QPushButton{min-width:60px;min-height:20px;}");
+
+    SubProject = new QStackedWidget();
 }
 
 void ProjectManager::InitTabManager(QTabWidget *tabWidget)
@@ -12,11 +14,6 @@ void ProjectManager::InitTabManager(QTabWidget *tabWidget)
     connect(twProjectManager, SIGNAL(tabBarClicked(int)), this, SLOT(ChangeProjectTab(int)));
     connect(twProjectManager, SIGNAL(tabBarDoubleClicked(int)), this, SLOT(ChangeProjectName(int)));
     connect(twProjectManager, SIGNAL(tabCloseRequested(int)), this, SLOT(CloseProject(int)));
-}
-
-void ProjectManager::InitDefaultTab(QWidget *defaultTab)
-{
-    tabDefaultProject = defaultTab;
 }
 
 void ProjectManager::InitAddNewTab(QWidget *addNewTab)
@@ -32,23 +29,38 @@ void ProjectManager::InitAddNewTab(QWidget *addNewTab)
     }
 }
 
-void ProjectManager::InitDefaultProject(QWidget *defaultProject)
+void ProjectManager::AddNewTab(QWidget* newTab, QStackedWidget* stack)
 {
-    if (tabDefaultProject != NULL)
+    if (newTab == NULL)
     {
-        twProjectManager->removeTab(twProjectManager->indexOf(tabDefaultProject));
+        newTab = new QWidget();
     }
 
-    twProjectManager->insertTab(0, defaultProject, "project 1");
-    twProjectManager->setCurrentWidget(defaultProject);
+    int tabID = twProjectManager->count() - 1;
+
+    if (stack != NULL)
+    {
+        twProjectManager->insertTab(tabID, stack, QString("project " + QString::number(tabID)));
+        twProjectManager->setCurrentWidget(stack);
+
+        stack->addWidget(newTab);
+    }
+    else
+    {
+        twProjectManager->insertTab(tabID, newTab, QString("project " + QString::number(tabID)));
+    }
 }
 
 void ProjectManager::ChangeProjectTab(int index)
 {
     if (twProjectManager->widget(index) == tabAddNewButton)
     {
-        QWidget* newTab = new QWidget();
-        twProjectManager->insertTab(index, newTab, "new Project");
+        if (IsNewTabSlotOutside == false)
+        {
+            AddNewTab();
+        }
+
+        NewTab_Signal(index);
     }
     else
     {

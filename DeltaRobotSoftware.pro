@@ -26,6 +26,7 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
+    AccountWindow.cpp \
     BlobManager.cpp \
     CameraWidget.cpp \
     DrawingExporter.cpp \
@@ -41,6 +42,7 @@ SOURCES += main.cpp\
     TCPConnectionManager.cpp \
     TabDashboard.cpp \
     TextLayer.cpp \
+    UXManage.cpp \
     codeeditor.cpp \
     ConnectionManager.cpp \
     DeltaVisualizer.cpp \
@@ -53,6 +55,7 @@ SOURCES += main.cpp\
     robotmanager.cpp
 
 HEADERS  += \
+    AccountWindow.h \
     BlobManager.h \
     CameraWidget.h \
     ConnectionManager.h \
@@ -73,6 +76,7 @@ HEADERS  += \
     TCPConnectionManager.h \
     TabDashboard.h \
     TextLayer.h \
+    UXManager.h \
     codeeditor.h \
     geisttextedit.h \
     highlighter.h \
@@ -82,6 +86,8 @@ HEADERS  += \
     sdk/DeltaXPlugin.h
 
 FORMS    += \
+    AccountWindow.ui \
+    HSVWindow.ui \
     MainWindow.ui \
     ProjectWindow.ui \
     hsvwindow.ui \

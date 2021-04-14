@@ -2,6 +2,7 @@
 #include "MainWindow.h"
 #include "qdesktopwidget.h"
 #include <QApplication>
+#include "AccountWindow.h"
 
 #define NEW_WINDOW
 

@@ -42,6 +42,9 @@
 #include <QPluginLoader>
 #include "SmartDialog.h"
 #include <QJoysticks.h>
+#include <QMap>
+#include <QLayout>
+#include <QStackedWidget>
 
 class ProjectWindow;
 class ImageProcesser;
@@ -66,7 +69,9 @@ public:
     void AddInstance(QList<ProjectWindow*>* deltaXMainWindows = NULL);
 	void closeEvent(QCloseEvent *event);
     void LoadPlugin();
-	
+    void SetMainStackedWidgetAndPages(QStackedWidget* mainStack, QWidget* mainPage, QWidget* fullDisplayPage, QLayout* fullDisplayLayout);
+    void SetSubStackedWidget(QStackedWidget* subStackedWidget);
+
 	ConnectionManager* DeltaConnectionManager;
 	GcodeProgramManager* DeltaGcodeManager;
 	DeltaVisualizer *Delta2DVisualizer;
@@ -97,6 +102,13 @@ public:
 	float UIScale = 1;
 
     SmartDialog* CloseDialog;
+
+    QStackedWidget* MainWindowStackedWidget;
+    QWidget* MainWindowPage;
+    QWidget* FullDisplayPage;
+    QLayout* FullDisplayLayout;
+
+    QStackedWidget* SubWindowStackedWidget;
 
 private slots:
     void ConnectDeltaRobot();
@@ -201,6 +213,9 @@ private slots:
     void ProcessJoystickButton(const QJoystickButtonEvent& event);
     void ProcessJoystickAxis(const QJoystickAxisEvent& event);
     void ProcessJoystickPOV(const QJoystickPOVEvent& event);
+
+    //-------- Tab UX ---------
+    void MaximizeTab(int index);
 
 private:
 
