@@ -29,6 +29,10 @@ void MainWindow::InitVariables()
     //-------- UX --------
     Ux = new UXManager();
 
+    //-------- Variable Table -----------
+    ProgramVariableManager = new VariableManager();
+    ProgramVariableManager->SetTreeWidget(ui->trwProgramVariableTable);
+    SoftwareManager::GetInstance()->ProgramVariableManager = ProgramVariableManager;
 
     //------- Project Manager --------
     RobotProjectManager = new ProjectManager();
@@ -36,12 +40,19 @@ void MainWindow::InitVariables()
     RobotProjectManager->InitAddNewTab(ui->tabAddNewButton);
     RobotProjectManager->IsNewTabSlotOutside = true;
 
+    SoftwareManager::GetInstance()->RobotProjectManager = RobotProjectManager;
+    //SoftwareManager::GetInstance()->RobotManagers = &RobotManagers;
+
     connect(RobotProjectManager, SIGNAL(NewTab_Signal(int)), SLOT(NewProject_Slot(int)));
 
     if (!IsLastProject())
     {
         NewProject_Slot(0);
     }
+
+    //------------- Init Widgets -----------
+    ui->trwProgramVariableTable->expandAll();
+    ui->trwProgramVariableTable->setColumnWidth(0, 150);
 }
 
 bool MainWindow::IsLastProject()
@@ -51,14 +62,22 @@ bool MainWindow::IsLastProject()
 
 void MainWindow::NewProject_Slot(int index)
 {
-    ProjectWindow* projectTab = new ProjectWindow(this);
-
     QStackedWidget* stack = new QStackedWidget();
 
-    projectTab->SetMainStackedWidgetAndPages(ui->stackedWidget, ui->page, ui->pFullTabDisplay, ui->layoutFullTabDisplay);
-    projectTab->SetSubStackedWidget(stack);
+    //------- Make new robot manager ----------
+    RobotManager* robotManager = new RobotManager();
+    robotManager->SetMainStackedWidgetAndPages(ui->stackedWidget, ui->page, ui->pFullTabDisplay, ui->layoutFullTabDisplay);
+    robotManager->SetSubStackedWidget(stack);
 
-    RobotProjectManager->AddNewTab(projectTab, stack);
+    robotManager->ProjectID = index - 1;
+
+    //Insert robot manager in this project to robot manager list ----------
+    RobotManagers.append(robotManager);
+
+    //------ Create new robot project tab ---------
+    RobotProjectManager->AddNewTab(stack);
+
+    robotManager->CreatNewRobotWindow();
 }
 
 MainWindow::~MainWindow()

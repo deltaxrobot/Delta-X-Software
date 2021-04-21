@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui serialport opengl network multimedia
+QT       += core gui serialport opengl network multimedia quick3d quickwidgets
 
 windows {
     INCLUDEPATH += E:\OpenCV\opencv-4.0\build\include
@@ -39,12 +39,15 @@ SOURCES += main.cpp\
     MainWindow.cpp \
     ObjectVariableTable.cpp \
     ProjectManager.cpp \
-    ProjectWindow.cpp \
+    Robot.cpp \
+    RobotWindow.cpp \
     SmartDialog.cpp \
+    SoftwareManager.cpp \
     TCPConnectionManager.cpp \
     TabDashboard.cpp \
     TextLayer.cpp \
     UXManage.cpp \
+    VariableManager.cpp \
     codeeditor.cpp \
     ConnectionManager.cpp \
     DeltaVisualizer.cpp \
@@ -73,12 +76,15 @@ HEADERS  += \
     MainWindow.h \
     ObjectVariableTable.h \
     ProjectManager.h \
-    ProjectWindow.h \
+    Robot.h \
+    RobotWindow.h \
     SmartDialog.h \
+    SoftwareManager.h \
     TCPConnectionManager.h \
     TabDashboard.h \
     TextLayer.h \
     UXManager.h \
+    VariableManager.h \
     codeeditor.h \
     geisttextedit.h \
     highlighter.h \
@@ -91,7 +97,7 @@ FORMS    += \
     AccountWindow.ui \
     HSVWindow.ui \
     MainWindow.ui \
-    ProjectWindow.ui \
+    RobotWindow.ui \
     hsvwindow.ui \
         GcodeReference.ui
 

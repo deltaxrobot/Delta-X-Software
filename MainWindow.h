@@ -5,10 +5,14 @@
 #include "robotmanager.h"
 #include "TabDashboard.h"
 #include "ProjectManager.h"
-#include "ProjectWindow.h"
+#include "RobotWindow.h"
 #include <QSettings>
 #include "UXManager.h"
 #include "QStackedWidget"
+#include "robotmanager.h"
+#include <QList>
+#include "VariableManager.h"
+#include "SoftwareManager.h"
 
 namespace Ui {
 class MainWindow;
@@ -27,8 +31,10 @@ public:
 
     TabDashboard* Dashboard;
     ProjectManager* RobotProjectManager;
+    QList<RobotManager*> RobotManagers;
     QSettings* ProjectSetting;
     UXManager* Ux;
+    VariableManager* ProgramVariableManager;
 
 public slots:
     void NewProject_Slot(int index);

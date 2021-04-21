@@ -1,5 +1,5 @@
- #ifndef PROJECTWINDOW_H
-#define PROJECTWINDOW_H
+#ifndef ROBOTWINDOW_H
+#define ROBOTWINDOW_H
 
 #include <QMainWindow>
 #include "ConnectionManager.h"
@@ -50,31 +50,43 @@
 #include <QLayout>
 #include <QStackedWidget>
 
-class ProjectWindow;
+#include "Robot.h"
+#include "robotmanager.h"
+#include "SoftwareManager.h"
+
+class RobotWindow;
 class ImageProcesser;
 class GcodeProgramManager;
 class GcodeVariable;
 class ROS;
+class RobotManager;
 
 namespace Ui {
-    class ProjectWindow;
+    class RobotWindow;
 }
 
-class ProjectWindow : public QMainWindow
+class RobotWindow : public QMainWindow
 {
 	Q_OBJECT
 
 public:
-    explicit ProjectWindow(QWidget *parent = 0);
-    ~ProjectWindow();
+    explicit RobotWindow(QWidget *parent = 0);
+    ~RobotWindow();
 
 	void InitEvents();
-	void InitVariables();
-    void AddInstance(QList<ProjectWindow*>* deltaXMainWindows = NULL);
+    void InitVariables();
 	void closeEvent(QCloseEvent *event);
     void LoadPlugin();
     void SetMainStackedWidgetAndPages(QStackedWidget* mainStack, QWidget* mainPage, QWidget* fullDisplayPage, QLayout* fullDisplayLayout);
     void SetSubStackedWidget(QStackedWidget* subStackedWidget);
+
+    void SetID(int id);
+    void SetName(QString name);
+    void InitTabs();
+
+    //--------- Single ton ---------
+
+    //------------------------------
 
 	ConnectionManager* DeltaConnectionManager;
 	GcodeProgramManager* DeltaGcodeManager;
@@ -82,6 +94,9 @@ public:
 	ImageProcesser* DeltaImageProcesser;
 	DrawingExporter* DeltaDrawingExporter;
 	ObjectVariableTable* TrackingObjectTable;
+
+    Robot RobotParamter;
+    RobotManager* RobotObjectManager;
 
 	ConnectionManager* CurrentDeltaPort;
 
@@ -94,11 +109,10 @@ public:
     QLabel* lbLoadingPopup;
     QMovie *mvLoadingPopup;
 
-	//QList<DeltaXDashboard*> DeltaXDashboards;
-    QList<ProjectWindow*>* DeltaXMainWindows = NULL;
+    RobotManager* RobotManagerPointer = NULL;
 	QAction* SelectedAction = NULL;
 	int ID = 0;
-	QString Name = "Delta X 1";
+    QString Name = "robot 1";
 
 	QNetworkAccessManager *HttpManager;
 	QString SoftwareVersion = "0.9.5";
@@ -231,7 +245,7 @@ private:
 
     bool OpenConnectionDialog(QSerialPort* comPort, QTcpSocket* socket,QPushButton* connectButton, QLabel* comNameInfo = NULL);
 
-	void initTabs();
+
 	void hideExampleWidgets();
 	void interpolateCircle();
 	void makeEffectExample();
@@ -256,8 +270,8 @@ private:
     QList<QLabel*>* lbInputValues;
 
 public:
-    Ui::ProjectWindow *ui;
+    Ui::RobotWindow *ui;
 };
 
 
-#endif // PROJECTWINDOW_H
+#endif // ROBOTWINDOW_H

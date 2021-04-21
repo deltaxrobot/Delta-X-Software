@@ -1,14 +1,16 @@
 #include "GcodeProgramManager.h"
 
 
-GcodeProgramManager::GcodeProgramManager(ProjectWindow *parent)
+GcodeProgramManager::GcodeProgramManager(RobotWindow *parent)
 {
 	ProgramList = new QVector<GcodeProgram*>();
 	mParent = parent;
 }
 
-GcodeProgramManager::GcodeProgramManager(ProjectWindow *parent, QScrollArea* scrolArea, QWidget* container, CodeEditor * gcodeArea, QPushButton* executeButton, ConnectionManager* deltaPort, DeltaVisualizer* deltaVisualize) : GcodeProgramManager(parent)
+GcodeProgramManager::GcodeProgramManager(RobotWindow *parent, QScrollArea* scrolArea, QWidget* container, CodeEditor * gcodeArea, QPushButton* executeButton, ConnectionManager* deltaPort, DeltaVisualizer* deltaVisualize) : GcodeProgramManager(parent)
 {
+    mParent = parent;
+
 	saProgramFilesScrollArea = scrolArea;
 	wgProgramContainer = container;
 	pteGcodeArea = gcodeArea;
@@ -16,18 +18,20 @@ GcodeProgramManager::GcodeProgramManager(ProjectWindow *parent, QScrollArea* scr
 	deltaParameter = deltaVisualize;
 	pbExecuteGcodes = executeButton;
 
-	UpdateSystemVariable("#1001", -1000);
-	UpdateSystemVariable("#1002", -1000);
-	UpdateSystemVariable("#1003", -1000);
+//	UpdateSystemVariable("#1001", -1000);
+//	UpdateSystemVariable("#1002", -1000);
+//	UpdateSystemVariable("#1003", -1000);
 
-	UpdateSystemVariable("#1010", NULL_NUMBER);
-	UpdateSystemVariable("#1011", NULL_NUMBER);
-	UpdateSystemVariable("#1012", NULL_NUMBER);
+//	UpdateSystemVariable("#1010", NULL_NUMBER);
+//	UpdateSystemVariable("#1011", NULL_NUMBER);
+//	UpdateSystemVariable("#1012", NULL_NUMBER);
 
 	UpdateSystemVariable("#X", 0);
 	UpdateSystemVariable("#Y", 0);
 	UpdateSystemVariable("#Z", 0);
 	UpdateSystemVariable("#W", 0);
+    UpdateSystemVariable("#U", 0);
+    UpdateSystemVariable("#V", 0);
 	UpdateSystemVariable("#F", 200);
 	UpdateSystemVariable("#A", 1200);
 
@@ -205,18 +209,21 @@ float GcodeProgramManager::GetVariableValue(QString name)
 	if (name == "NULL")
 		return NULL_NUMBER;
 
-	if (mParent->DeltaXMainWindows != NULL)
-	{
-		if (mParent != mParent->DeltaXMainWindows->at(0))
-		{
-			if (isGlobalVariable(name))
-			{
-				return mParent->DeltaXMainWindows->at(0)->DeltaGcodeManager->GetVariableValue(name);
-			}
-		}
-	}
+    if (mParent->RobotManagerPointer != NULL)
+    {
+        if (mParent->RobotManagerPointer->RobotWindows.size() > 0)
+        {
+            if (mParent != mParent->RobotManagerPointer->RobotWindows.at(0))
+            {
+                if (isGlobalVariable(name))
+                {
+                    return mParent->RobotManagerPointer->RobotWindows.at(0)->DeltaGcodeManager->GetVariableValue(name);
+                }
+            }
+        }
+    }
 
-	foreach(GcodeVariable var, gcodeVariables)
+    foreach(GcodeVariable var, GcodeVariables)
 	{
 		if (var.Name == name)
 		{
@@ -727,7 +734,7 @@ void GcodeProgramManager::TransmitNextGcode()
 void GcodeProgramManager::UpdateSystemVariable(QString name, float value)
 {
 	SaveGcodeVariable(name, value);
-	emit JustUpdateVariable(gcodeVariables);
+    emit JustUpdateVariable(GcodeVariables);
 }
 
 void GcodeProgramManager::RespondVariableValue(QIODevice* s, QString name)
@@ -953,31 +960,41 @@ float GcodeProgramManager::calculateExpressions(QString expression)
 
 void GcodeProgramManager::SaveGcodeVariable(GcodeVariable gvar)
 {
-	if (mParent->DeltaXMainWindows != NULL)
-	{
-		if (mParent != mParent->DeltaXMainWindows->at(0))
-		{
-			if (isGlobalVariable(gvar.Name))
-			{				
-				mParent->DeltaXMainWindows->at(0)->DeltaGcodeManager->SaveGcodeVariable(gvar);
-				return;
-			}
-		}
-	}
+    if (mParent->RobotManagerPointer != NULL)
+    {
+
+        if (mParent->RobotManagerPointer->RobotWindows.size() > 0)
+        {
+            if (mParent != mParent->RobotManagerPointer->RobotWindows.at(0))
+            {
+                if (isGlobalVariable(gvar.Name))
+                {
+                    mParent->RobotManagerPointer->RobotWindows.at(0)->DeltaGcodeManager->SaveGcodeVariable(gvar);
+                    return;
+                }
+            }
+        }
+    }
+
+    QString projectName = SoftwareManager::GetInstance()->RobotProjectManager->GetProjectName(mParent->SubWindowStackedWidget);
+    QString robotName = mParent->Name;
+    QString fullName = projectName + "." + robotName + "." + gvar.Name;
+    fullName = fullName.replace(" ", "");
+    SoftwareManager::GetInstance()->ProgramVariableManager->AddVariable(fullName, QString::number(gvar.Value));
 
 	bool isNewVar = true;
 
-	for (int i = 0; i < gcodeVariables.length(); i++)
+    for (int i = 0; i < GcodeVariables.length(); i++)
 	{
-		if (gcodeVariables[i].Name == gvar.Name)
+        if (GcodeVariables[i].Name == gvar.Name)
 		{
-			gcodeVariables[i].Value = gvar.Value;
+            GcodeVariables[i].Value = gvar.Value;
 			isNewVar = false;
 		}
 	}
 
 	if (isNewVar == true)
-		gcodeVariables.push_back(gvar);
+        GcodeVariables.push_back(gvar);
 }
 
 void GcodeProgramManager::SaveGcodeVariable(QString name, float value)

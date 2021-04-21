@@ -1,24 +1,24 @@
-﻿#include "ProjectWindow.h"
-#include "ui_ProjectWindow.h"
+﻿#include "RobotWindow.h"
+#include "ui_RobotWindow.h"
 
-ProjectWindow::ProjectWindow(QWidget *parent) :
+RobotWindow::RobotWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::ProjectWindow)
+    ui(new Ui::RobotWindow)
 {
     ui->setupUi(this);
 
-    InitVariables();
-    InitEvents();
+//    InitVariables();
+//    InitEvents();
 
     hideExampleWidgets();
 }
 
-ProjectWindow::~ProjectWindow()
+RobotWindow::~RobotWindow()
 {
 
 }
 
-void ProjectWindow::InitEvents()
+void RobotWindow::InitEvents()
 {
     connect(ui->pbConnect, SIGNAL(clicked(bool)), this, SLOT(ConnectDeltaRobot()));
 	connect(ui->pbAddNewProgram, SIGNAL(clicked(bool)), this, SLOT(AddNewProgram()));
@@ -257,7 +257,7 @@ void ProjectWindow::InitEvents()
 
 }
 
-void ProjectWindow::InitVariables()
+void RobotWindow::InitVariables()
 {
     //---------- Connection -----------
     DeltaConnectionManager = new ConnectionManager();
@@ -372,9 +372,11 @@ void ProjectWindow::InitVariables()
     process->start(cmd);
     process->waitForBytesWritten();
     process->waitForFinished();
+
+    //------------ Robot --------
 }
 
-void ProjectWindow::FinishedRequest(QNetworkReply *reply)
+void RobotWindow::FinishedRequest(QNetworkReply *reply)
 {
 	if (reply->error() != QNetworkReply::NoError)
 	{
@@ -410,7 +412,7 @@ void ProjectWindow::FinishedRequest(QNetworkReply *reply)
 	}
 }
 
-void ProjectWindow::ExportBlocklyToGcode()
+void RobotWindow::ExportBlocklyToGcode()
 {
 	/*QWebEnginePage* clone = new QWebEnginePage();
 	
@@ -422,7 +424,7 @@ void ProjectWindow::ExportBlocklyToGcode()
 	});*/
 }
 
-void ProjectWindow::OpenROS()
+void RobotWindow::OpenROS()
 {
 #ifdef Q_OS_WIN
 //    if (DeltaXROS->IsRunning())
@@ -441,22 +443,22 @@ void ProjectWindow::OpenROS()
 }
 
 
-void ProjectWindow::ChangeROSCameraView(int index)
+void RobotWindow::ChangeROSCameraView(int index)
 {
 	DeltaConnectionManager->TCPConnection->SendMessageToROS(QString("update camera_position ") + QString::number(index));
 }
 
-void ProjectWindow::ChangeEndEffector(int index)
+void RobotWindow::ChangeEndEffector(int index)
 {
 	DeltaConnectionManager->TCPConnection->SendMessageToROS(QString("update end_effector ") + QString::number(index));
 }
 
-void ProjectWindow::ChangeRobotVersion(int index)
+void RobotWindow::ChangeRobotVersion(int index)
 {
 	DeltaConnectionManager->TCPConnection->SendMessageToROS(QString("update robot ") + QString::number(index));
 }
 
-void ProjectWindow::ScaleUI()
+void RobotWindow::ScaleUI()
 {
 	QSettings settings("setting.ini", QSettings::IniFormat);
 
@@ -487,7 +489,7 @@ void ProjectWindow::ScaleUI()
 	}
 }
 
-void ProjectWindow::ExecuteRequestsFromExternal(QString request)
+void RobotWindow::ExecuteRequestsFromExternal(QString request)
 {
 	request = request.replace("\n", "");
 	request = request.replace("\r", "");
@@ -498,27 +500,12 @@ void ProjectWindow::ExecuteRequestsFromExternal(QString request)
 	}
 }
 
-void ProjectWindow::ChangeParentForWidget(bool state)
+void RobotWindow::ChangeParentForWidget(bool state)
 {
 	
 }
 
-void ProjectWindow::AddInstance(QList<ProjectWindow*>* deltaXMainWindows)
-{
-	if (deltaXMainWindows == NULL)
-	{
-        DeltaXMainWindows = new QList<ProjectWindow*>();
-		DeltaXMainWindows->push_back(this);
-	}
-	else
-	{
-		DeltaXMainWindows = deltaXMainWindows;
-		DeltaXMainWindows->push_back(this);
-		initTabs();
-	}
-}
-
-void ProjectWindow::closeEvent(QCloseEvent * event)
+void RobotWindow::closeEvent(QCloseEvent * event)
 {
     bool result = CloseDialog->PopUp("Close software", "Do you want to close the software?");
 
@@ -533,7 +520,7 @@ void ProjectWindow::closeEvent(QCloseEvent * event)
     }
 }
 
-void ProjectWindow::LoadPlugin()
+void RobotWindow::LoadPlugin()
 {
     pluginList = new QList<DeltaXPlugin*>();
 
@@ -548,7 +535,7 @@ void ProjectWindow::LoadPlugin()
     //qInfo() << "Done!";
 }
 
-void ProjectWindow::SetMainStackedWidgetAndPages(QStackedWidget *mainStack, QWidget *mainPage, QWidget *fullDisplayPage, QLayout *fullDisplayLayout)
+void RobotWindow::SetMainStackedWidgetAndPages(QStackedWidget *mainStack, QWidget *mainPage, QWidget *fullDisplayPage, QLayout *fullDisplayLayout)
 {
     this->MainWindowStackedWidget = mainStack;
     this->MainWindowPage = mainPage;
@@ -558,12 +545,25 @@ void ProjectWindow::SetMainStackedWidgetAndPages(QStackedWidget *mainStack, QWid
     connect(ui->twModule, SIGNAL(tabBarDoubleClicked(int)), this, SLOT(MaximizeTab(int)));
 }
 
-void ProjectWindow::SetSubStackedWidget(QStackedWidget *subStackedWidget)
+void RobotWindow::SetSubStackedWidget(QStackedWidget *subStackedWidget)
 {
     this->SubWindowStackedWidget = subStackedWidget;
 }
 
-void ProjectWindow::ConnectDeltaRobot()
+void RobotWindow::SetID(int id)
+{
+    ID = id;
+    RobotParamter.ID = id;
+    ui->lbID->setText(QString::number(id));
+}
+
+void RobotWindow::SetName(QString name)
+{
+    RobotParamter.Name = name;
+    Name = name;
+}
+
+void RobotWindow::ConnectDeltaRobot()
 {
 	if (ui->cbAutoConnect->isChecked() == false)
 	{
@@ -593,12 +593,12 @@ void ProjectWindow::ConnectDeltaRobot()
 	}
 }
 
-void ProjectWindow::RunSmartEditor()
+void RobotWindow::RunSmartEditor()
 {
 	
 }
 
-void ProjectWindow::StandardFormatEditor()
+void RobotWindow::StandardFormatEditor()
 {
 	if (ui->cbAutoNumbering->isChecked() == true)
 	{
@@ -736,13 +736,13 @@ void ProjectWindow::StandardFormatEditor()
     }
 }
 
-void ProjectWindow::OpenGcodeReference()
+void RobotWindow::OpenGcodeReference()
 {
 	GcodeReference* gcodeReferenceWindow = new GcodeReference();
 	gcodeReferenceWindow->show();
 }
 
-void ProjectWindow::ConfigConnection()
+void RobotWindow::ConfigConnection()
 {
 	bool ok;
 	QString text = QInputDialog::getText(this, tr("Baudrate for COM"),
@@ -752,99 +752,42 @@ void ProjectWindow::ConfigConnection()
 		DeltaConnectionManager->SetBaudrate(text.toInt());
 }
 
-void ProjectWindow::ChangeDeltaDashboard(int index)
+void RobotWindow::ChangeDeltaDashboard(int index)
 {
     // ---- If press "Add new robot" --------
-	if (ui->twDeltaManager->count() == index + 1)
-	{
-		if (ID == 0)
-		{
-			if (DeltaXMainWindows == NULL)
-			{
-                DeltaXMainWindows = new QList<ProjectWindow*>();
-				DeltaXMainWindows->push_back(this);
-			}
-		}
-
+    if (ui->twDeltaManager->tabText(index) == "+")
+    {
         //----- Creat new robot window -----------
-        ProjectWindow* mainWindow = new ProjectWindow();
-        SubWindowStackedWidget->addWidget(mainWindow);
-
-        mainWindow->SetMainStackedWidgetAndPages(MainWindowStackedWidget, MainWindowPage, FullDisplayPage, FullDisplayLayout);
-        mainWindow->SetSubStackedWidget(SubWindowStackedWidget);
-
-        //mainWindow->setAttribute(Qt::WA_DeleteOnClose);
-		mainWindow->ID = DeltaXMainWindows->size();
-        mainWindow->Name = QString("robot ") + QString::number(mainWindow->ID + 1);
-
-        //----- Add new robot to menu ------
-		QAction *actionNewDelta_X;
-		actionNewDelta_X = new QAction(mainWindow);
-
-		actionNewDelta_X->setCheckable(true);
-		actionNewDelta_X->setChecked(true);
-        actionNewDelta_X->setText(QString("robot ") + QString::number(mainWindow->ID + 1));
-		DeltaXMainWindows->at(0)->ui->menuExecute->addAction(actionNewDelta_X);
-
-		mainWindow->AddInstance(this->DeltaXMainWindows);
-        mainWindow->ui->lbID->setText(QString::number(mainWindow->ID));
-        mainWindow->SelectedAction = actionNewDelta_X;
-
-        //----- Creat new tab widget in other robot window -------
-		for (int i = 0; i < DeltaXMainWindows->size() - 1; i++)
-		{
-			DeltaXMainWindows->at(i)->ui->twDeltaManager->setTabText(index, QString("Delta") + QString::number(index + 1));
-			QWidget *newDeltaTab = new QWidget();
-            DeltaXMainWindows->at(i)->ui->twDeltaManager->addTab(newDeltaTab, QString());
-			DeltaXMainWindows->at(i)->ui->twDeltaManager->setTabText(DeltaXMainWindows->at(i)->ui->twDeltaManager->indexOf(newDeltaTab), "+");
-        }
+        RobotManagerPointer->CreatNewRobotWindow();
 	}
     // -------- Select other robot ---------
 	else
-	{
-		if (DeltaXMainWindows == NULL)
-			return;
-		if (DeltaXMainWindows->count() == 0)
-            return;
-
-        if (DeltaXMainWindows->at(0)->SubWindowStackedWidget != NULL)
+    {
+        if (RobotManagerPointer->SubWindowStackedWidget != NULL)
         {
-            DeltaXMainWindows->at(0)->SubWindowStackedWidget->setCurrentIndex(index);
+            RobotManagerPointer->SubWindowStackedWidget->setCurrentIndex(index);
+
+            RobotManagerPointer->RobotWindows.at(index)->ui->twDeltaManager->setCurrentIndex(index);
         }
     }
 }
 
-void ProjectWindow::SelectTrueTabName(int index)
+void RobotWindow::SelectTrueTabName(int index)
 {
-    if (DeltaXMainWindows == NULL)
-        return;
 
-	for (int i = 0; i < DeltaXMainWindows->size(); i++)
-	{
-		if (DeltaXMainWindows->at(i) != NULL)
-		{
-			if (DeltaXMainWindows->at(i)->ui != NULL)
-			{
-				if (DeltaXMainWindows->at(i)->ui->twDeltaManager != NULL)
-				{
-					DeltaXMainWindows->at(i)->ui->twDeltaManager->setCurrentIndex(i);
-				}
-			}
-		}
-	}
 }
 
-void ProjectWindow::AddNewProgram()
+void RobotWindow::AddNewProgram()
 {
 	DeltaGcodeManager->AddNewProgram();
 }
 
-void ProjectWindow::SaveProgram()
+void RobotWindow::SaveProgram()
 {
 	DeltaGcodeManager->SaveGcodeIntoFile();
 }
 
-void ProjectWindow::ExecuteProgram()
+void RobotWindow::ExecuteProgram()
 {
 	QPushButton* pbExe = qobject_cast<QPushButton*>(sender());
 
@@ -868,7 +811,7 @@ void ProjectWindow::ExecuteProgram()
 	DeltaGcodeManager->ExecuteGcode(exeGcodes, true);
 }
 
-void ProjectWindow::ImportGcodeFilesFromComputer()
+void RobotWindow::ImportGcodeFilesFromComputer()
 {
 	QStringList fileNames = QFileDialog::getOpenFileNames(this, tr("Open G-code Files"), "",	tr("G-code file (*.dtgc);;All Files (*)"));
 
@@ -892,12 +835,12 @@ void ProjectWindow::ImportGcodeFilesFromComputer()
 	DeltaGcodeManager->RefreshGcodeProgramList();
 }
 
-void ProjectWindow::UploadGcodeFileToServer()
+void RobotWindow::UploadGcodeFileToServer()
 {
 	QMessageBox::information(this, "Sorry!", "This function is not yet available");
 }
 
-void ProjectWindow::SearchGcodeFile()
+void RobotWindow::SearchGcodeFile()
 {
 	bool ok;
 	QString searchValue = QInputDialog::getText(this, tr("QInputDialog::getText()"), tr("File Name:"), QLineEdit::Normal, "", &ok);
@@ -933,33 +876,40 @@ void ProjectWindow::SearchGcodeFile()
 	};
 }
 
-void ProjectWindow::ExecuteSelectPrograms()
+void RobotWindow::ExecuteSelectPrograms()
 {
     // If only one robot, execute program for it
-	if (DeltaXMainWindows == NULL)
-	{
-		ui->pbExecuteGcodes->click();
-		return;
-	}
-
+    if (RobotManagerPointer != NULL)
+    {
+        if (RobotManagerPointer->RobotWindows.size() == 1)
+        {
+            ui->pbExecuteGcodes->click();
+            return;
+        }
+    }
+    // Execute selected robots
 	QList<QAction*> actions = ui->menuExecute->actions();
 	for (int i = 0; i < actions.size(); i++)
 	{
         if (actions.at(i)->isChecked() == true)
         {
             QString actionName = actions.at(i)->text();
-            for (int j = 0; j < DeltaXMainWindows->size(); j++)
+
+            if (RobotManagerPointer == NULL)
+                break;
+
+            for (int j = 0; j < RobotManagerPointer->RobotWindows.size(); j++)
             {
-                if (DeltaXMainWindows->at(j)->Name == actionName)
+                if (RobotManagerPointer->RobotWindows.at(j)->Name == actionName)
                 {
-                    DeltaXMainWindows->at(j)->ui->pbExecuteGcodes->click();
+                    RobotManagerPointer->RobotWindows.at(j)->ui->pbExecuteGcodes->click();
                 }
             }
         }
 	}
 }
 
-void ProjectWindow::ExecuteCurrentLine()
+void RobotWindow::ExecuteCurrentLine()
 {
 	if (ui->cbLockGcodeEditor->isChecked() == false)
 	{
@@ -977,7 +927,7 @@ void ProjectWindow::ExecuteCurrentLine()
 	DeltaGcodeManager->ExecuteGcode(line);
 }
 
-void ProjectWindow::UpdateZLineEditValue(int z)
+void RobotWindow::UpdateZLineEditValue(int z)
 {
 	ui->leZ->setText(QString::number(Delta2DVisualizer->ZHome - z));
 
@@ -987,7 +937,7 @@ void ProjectWindow::UpdateZLineEditValue(int z)
 	}
 }
 
-void ProjectWindow::UpdateWLineEditValue(int w)
+void RobotWindow::UpdateWLineEditValue(int w)
 {
 	ui->leW->setText(QString::number(w));
 
@@ -997,7 +947,7 @@ void ProjectWindow::UpdateWLineEditValue(int w)
 	}
 }
 
-void ProjectWindow::UpdateDeltaPositionFromLineEditValue()
+void RobotWindow::UpdateDeltaPositionFromLineEditValue()
 {
 	Delta2DVisualizer->X = ui->leX->text().toFloat();
 	Delta2DVisualizer->Y = ui->leY->text().toFloat();
@@ -1024,7 +974,7 @@ void ProjectWindow::UpdateDeltaPositionFromLineEditValue()
     DeltaConnectionManager->SendToRobot(QString("G01 X") + ui->leX->text() + QString(" Y") + ui->leY->text() + QString(" Z") + ui->leZ->text() + QString(" W") + ui->leW->text() + QString(" U") + ui->leU->text() + QString(" V") + ui->leV->text() + "\n");
 }
 
-void ProjectWindow::UpdatePositionToLabel()
+void RobotWindow::UpdatePositionToLabel()
 {
     ui->lbX->setText(QString::number(Delta2DVisualizer->X));
     ui->lbY->setText(QString::number(Delta2DVisualizer->Y));
@@ -1034,7 +984,7 @@ void ProjectWindow::UpdatePositionToLabel()
     ui->lbV->setText(QString::number(Delta2DVisualizer->V));
 }
 
-void ProjectWindow::UpdateTextboxFrom2DControl(float x, float y, float z, float w, float u, float v)
+void RobotWindow::UpdateTextboxFrom2DControl(float x, float y, float z, float w, float u, float v)
 {
 	ui->leX->setText(QString::number(x));
 	ui->leY->setText(QString::number(y));
@@ -1045,7 +995,7 @@ void ProjectWindow::UpdateTextboxFrom2DControl(float x, float y, float z, float 
     UpdatePositionToLabel();
 }
 
-void ProjectWindow::UpdateTextboxFrom3DControl(float x, float y, float z, float w, float u, float v)
+void RobotWindow::UpdateTextboxFrom3DControl(float x, float y, float z, float w, float u, float v)
 {
 	if (x != NULL_NUMBER)
 	{
@@ -1068,7 +1018,7 @@ void ProjectWindow::UpdateTextboxFrom3DControl(float x, float y, float z, float 
 	UpdateDeltaPositionFromLineEditValue();
 }
 
-void ProjectWindow::UpdatePositionControl(float x, float y, float z, float w, float u, float v, float f, float a)
+void RobotWindow::UpdatePositionControl(float x, float y, float z, float w, float u, float v, float f, float a)
 {
     if (x == 0 && y == 0 && z == 0 && w == 0 && u == 0 && v == 0)
 	{
@@ -1110,7 +1060,7 @@ void ProjectWindow::UpdatePositionControl(float x, float y, float z, float w, fl
 	}
 }
 
-void ProjectWindow::UpdateGlobalHomePositionValueAndControlValue(float x, float y, float z, float w, float u, float v)
+void RobotWindow::UpdateGlobalHomePositionValueAndControlValue(float x, float y, float z, float w, float u, float v)
 {
 	Delta2DVisualizer->XHome = x;
 	Delta2DVisualizer->YHome = y;
@@ -1123,17 +1073,17 @@ void ProjectWindow::UpdateGlobalHomePositionValueAndControlValue(float x, float 
 	UpdateDeltaPositionFromLineEditValue();
 }
 
-void ProjectWindow::UpdateVelocity()
+void RobotWindow::UpdateVelocity()
 {
 	DeltaConnectionManager->SendToRobot(QString("G01 F") + ui->leVelocity->text());
 }
 
-void ProjectWindow::UpdateAccel()
+void RobotWindow::UpdateAccel()
 {
 	DeltaConnectionManager->SendToRobot(QString("M204 A") + ui->leAccel->text());
 }
 
-void ProjectWindow::AdjustGripperAngle(int angle)
+void RobotWindow::AdjustGripperAngle(int angle)
 {
 	DeltaConnectionManager->SendToRobot(QString("M360 E1"));
 	DeltaConnectionManager->SendToRobot(QString("M03 S") + QString::number(angle * 5));
@@ -1141,7 +1091,7 @@ void ProjectWindow::AdjustGripperAngle(int angle)
 	ui->lbGripperValue->setText(QString::number(angle * 5));
 }
 
-void ProjectWindow::Grip()
+void RobotWindow::Grip()
 {
 	DeltaConnectionManager->SendToRobot(QString("M360 E1"));
 	if (ui->pbGrip->text() == "Grip")
@@ -1170,7 +1120,7 @@ void ProjectWindow::Grip()
 	}
 }
 
-void ProjectWindow::SetPump(bool value)
+void RobotWindow::SetPump(bool value)
 {
 	DeltaConnectionManager->SendToRobot(QString("M360 E0"));
 	if (value == true)
@@ -1183,7 +1133,7 @@ void ProjectWindow::SetPump(bool value)
 	}
 }
 
-void ProjectWindow::SetLaser(bool value)
+void RobotWindow::SetLaser(bool value)
 {
 	DeltaConnectionManager->SendToRobot(QString("M360 E3"));
 	if (value == true)
@@ -1196,7 +1146,7 @@ void ProjectWindow::SetLaser(bool value)
 	}
 }
 
-void ProjectWindow::Home()
+void RobotWindow::Home()
 {
 	DeltaConnectionManager->SendToRobot("G28");
 
@@ -1214,7 +1164,7 @@ void ProjectWindow::Home()
     ui->vsZAdjsution->setValue(0);
 }
 
-void ProjectWindow::SetOnOffOutput(bool result)
+void RobotWindow::SetOnOffOutput(bool result)
 {
     QString widgetName = sender()->objectName();
     if (widgetName.indexOf("D") > -1 || widgetName.indexOf("R") > -1)
@@ -1241,7 +1191,7 @@ void ProjectWindow::SetOnOffOutput(bool result)
     }
 }
 
-void ProjectWindow::SetValueOutput()
+void RobotWindow::SetValueOutput()
 {
     // lePxValue, leSxValue, leP0Value, leS0Value, ...
     QLineEdit* leValue = qobject_cast<QLineEdit*>(sender());
@@ -1260,7 +1210,7 @@ void ProjectWindow::SetValueOutput()
     sendGcode("M03", outputName, valueName);
 }
 
-void ProjectWindow::RequestValueInput()
+void RobotWindow::RequestValueInput()
 {
     // pbReadI0, pbReadI1, ... pbReadIx
     QString inputName = sender()->objectName().mid(6);
@@ -1304,7 +1254,7 @@ void ProjectWindow::RequestValueInput()
 
 }
 
-void ProjectWindow::GetValueInput(QString response)
+void RobotWindow::GetValueInput(QString response)
 {
     response = response.replace("\n", "");
     response = response.replace("\r", "");
@@ -1347,12 +1297,12 @@ void ProjectWindow::GetValueInput(QString response)
     lbValue->setText(value);
 }
 
-void ProjectWindow::UpdateConvenyorPosition(float x, float y)
+void RobotWindow::UpdateConvenyorPosition(float x, float y)
 {
 	//ui->leCurrentConvenyoPosition->setText(QString::number(x));
 }
 
-void ProjectWindow::DisplayGcodeVariable(QList<GcodeVariable> gcodeVariables)
+void RobotWindow::DisplayGcodeVariable(QList<GcodeVariable> gcodeVariables)
 {
     foreach (GcodeVariable var, gcodeVariables)
 	{
@@ -1383,7 +1333,7 @@ void ProjectWindow::DisplayGcodeVariable(QList<GcodeVariable> gcodeVariables)
 	}
 }
 
-void ProjectWindow::SetConvenyorSpeed()
+void RobotWindow::SetConvenyorSpeed()
 {
 	float vel = ui->leConvenyorSpeed->text().toInt();
 	QString directionName = ui->cbConveyorDirection->currentText();
@@ -1391,17 +1341,17 @@ void ProjectWindow::SetConvenyorSpeed()
 	DeltaImageProcesser->SetConvenyorVelocity(vel, directionName);
 }
 
-void ProjectWindow::GetConvenyorPosition()
+void RobotWindow::GetConvenyorPosition()
 {
 	
 }
 
-void ProjectWindow::TurnEnoughConvenyorPositionGetting()
+void RobotWindow::TurnEnoughConvenyorPositionGetting()
 {
 	
 }
 
-void ProjectWindow::AddGcodeLine()
+void RobotWindow::AddGcodeLine()
 {
 	QString gcodeName = ui->cbGcode->currentText();
 
@@ -1415,7 +1365,7 @@ void ProjectWindow::AddGcodeLine()
 	DeltaGcodeManager->AddGcodeLine(gcodeName + ag1 + ag2 + ag3 + ag4 + ag5 + ag6);
 }
 
-void ProjectWindow::ChangeGcodeParameter()
+void RobotWindow::ChangeGcodeParameter()
 {
 	QString gcodeName = ui->cbGcode->currentText();
 
@@ -1472,7 +1422,7 @@ void ProjectWindow::ChangeGcodeParameter()
 	}
 }
 
-void ProjectWindow::UpdateDetectObjectSize()
+void RobotWindow::UpdateDetectObjectSize()
 {
 	float realObjLength = ui->leLRec->text().toFloat();
 	float realObjWidth = ui->leWRec->text().toFloat();
@@ -1483,13 +1433,13 @@ void ProjectWindow::UpdateDetectObjectSize()
 	DeltaImageProcesser->GetObjectInfo(lObjectInWidget, wObjectInWidget);
 }
 
-void ProjectWindow::UpdateCursorPosition(float x, float y)
+void RobotWindow::UpdateCursorPosition(float x, float y)
 {
 //	ui->lbXCursor->setText(QString::number(x));
 //	ui->lbYCursor->setText(QString::number(y));
 }
 
-void ProjectWindow::AddObjectsToROS(std::vector<cv::RotatedRect> ObjectContainer)
+void RobotWindow::AddObjectsToROS(std::vector<cv::RotatedRect> ObjectContainer)
 {
 	for (int i = 0; i < ObjectContainer.size(); i++)
 	{
@@ -1515,22 +1465,22 @@ void ProjectWindow::AddObjectsToROS(std::vector<cv::RotatedRect> ObjectContainer
 	}
 }
 
-void ProjectWindow::DeleteAllObjectsInROS()
+void RobotWindow::DeleteAllObjectsInROS()
 {
 	DeltaConnectionManager->TCPConnection->SendMessageToROS("delete all");
 }
 
-void ProjectWindow::ConnectConveyor()
+void RobotWindow::ConnectConveyor()
 {
     OpenConnectionDialog(DeltaConnectionManager->ConveyorPort, DeltaConnectionManager->ConveyorSocket, ui->pbConveyorConnect, ui->lbConveyorCOMName);
 }
 
-void ProjectWindow::SetConveyorMode(int mode)
+void RobotWindow::SetConveyorMode(int mode)
 {
 	DeltaConnectionManager->ConveyorSend(QString("M310 ") + QString::number(mode));
 }
 
-void ProjectWindow::SetConveyorMovingMode(int mode)
+void RobotWindow::SetConveyorMovingMode(int mode)
 {
 	if (mode == 0)
     {
@@ -1544,12 +1494,12 @@ void ProjectWindow::SetConveyorMovingMode(int mode)
 	}
 }
 
-void ProjectWindow::SetSpeedOfPositionMode()
+void RobotWindow::SetSpeedOfPositionMode()
 {
 	DeltaConnectionManager->ConveyorSend(QString("M313 ") + ui->leSpeedOfPositionMode->text());
 }
 
-void ProjectWindow::MoveConveyor()
+void RobotWindow::MoveConveyor()
 {
 	if (ui->cbConveyorValueType->currentIndex() == 0)
 	{
@@ -1561,65 +1511,65 @@ void ProjectWindow::MoveConveyor()
 	}
 }
 
-void ProjectWindow::ProcessShortcutKey()
+void RobotWindow::ProcessShortcutKey()
 {
 
 }
 
-void ProjectWindow::ConnectSliding()
+void RobotWindow::ConnectSliding()
 {
     OpenConnectionDialog(DeltaConnectionManager->SlidingPort, DeltaConnectionManager->SlidingSocket, ui->pbSlidingConnect, ui->lbSliderCOMName);
 }
 
-void ProjectWindow::GoHomeSliding()
+void RobotWindow::GoHomeSliding()
 {
 	DeltaConnectionManager->SlidingSend("M320");
 }
 
-void ProjectWindow::DisableSliding()
+void RobotWindow::DisableSliding()
 {
 	DeltaConnectionManager->SlidingSend("M323");
 }
 
-void ProjectWindow::SetSlidingSpeed()
+void RobotWindow::SetSlidingSpeed()
 {
 	DeltaConnectionManager->SlidingSend(QString("M321 ") + ui->leSlidingSpeed->text());
 }
 
-void ProjectWindow::SetSlidingPosition()
+void RobotWindow::SetSlidingPosition()
 {
 	DeltaConnectionManager->SlidingSend(QString("M322 ") + ui->leSlidingPosition->text());
 }
 
-void ProjectWindow::ConnectExternalMCU()
+void RobotWindow::ConnectExternalMCU()
 {
     OpenConnectionDialog(DeltaConnectionManager->ExternalControllerPort, DeltaConnectionManager->ExternalControllerSocket, ui->pbExternalControllerConnect, ui->lbExternalCOMName);
 }
 
-void ProjectWindow::TransmitTextToExternalMCU()
+void RobotWindow::TransmitTextToExternalMCU()
 {
 	DeltaConnectionManager->ExternalMCUSend(ui->leTransmitToMCU->text());
 	ui->leTransmitToMCU->setText("");
 }
 
-void ProjectWindow::DisplayTextFromExternalMCU(QString text)
+void RobotWindow::DisplayTextFromExternalMCU(QString text)
 {
 	ui->leReceiveFromMCU->setText(text);
 }
 
-void ProjectWindow::TerminalTransmit()
+void RobotWindow::TerminalTransmit()
 {
 	DeltaConnectionManager->SendToRobot(ui->leTerminal->text());
 	ui->leTerminal->setText("");
 }
 
-void ProjectWindow::PrintReceiveData(QString msg)
+void RobotWindow::PrintReceiveData(QString msg)
 {
 	//msg.replace("\n", "");
 	Debug(ID, QString("Robot: ") + msg);
 }
 
-void ProjectWindow::NoticeConnected()
+void RobotWindow::NoticeConnected()
 {
 	Debug(DeltaConnectionManager->GetNamePort());
 
@@ -1630,7 +1580,7 @@ void ProjectWindow::NoticeConnected()
     CloseLoadingPopup();
 }
 
-QString ProjectWindow::boldKey(QString key, QString htmlText)
+QString RobotWindow::boldKey(QString key, QString htmlText)
 {
 	int keyOrder = htmlText.indexOf(key);
 
@@ -1642,7 +1592,7 @@ QString ProjectWindow::boldKey(QString key, QString htmlText)
 	return htmlText;
 }
 
-QString ProjectWindow::boldPlusKey(QString key, QString plus, QString htmlText)
+QString RobotWindow::boldPlusKey(QString key, QString plus, QString htmlText)
 {
 	int keyOrder = htmlText.indexOf(key);
 
@@ -1654,7 +1604,7 @@ QString ProjectWindow::boldPlusKey(QString key, QString plus, QString htmlText)
 	return htmlText;
 }
 
-QString ProjectWindow::italyKey(QString key, QString htmlText)
+QString RobotWindow::italyKey(QString key, QString htmlText)
 {
 	int keyOrder = htmlText.indexOf(key);
 
@@ -1666,7 +1616,7 @@ QString ProjectWindow::italyKey(QString key, QString htmlText)
 	return htmlText;
 }
 
-QString ProjectWindow::replaceHtmlSection(QString start, int offset, int maxlen, QString finish, QString beforeSection, QString afterSection, QString htmlText)
+QString RobotWindow::replaceHtmlSection(QString start, int offset, int maxlen, QString finish, QString beforeSection, QString afterSection, QString htmlText)
 {
 	int beginKey = -1;
 	int endKey = 0;
@@ -1698,7 +1648,7 @@ QString ProjectWindow::replaceHtmlSection(QString start, int offset, int maxlen,
 	return htmlText;
 }
 
-bool ProjectWindow::OpenConnectionDialog(QSerialPort * comPort, QTcpSocket* socket, QPushButton* connectButton, QLabel* comNameInfo)
+bool RobotWindow::OpenConnectionDialog(QSerialPort * comPort, QTcpSocket* socket, QPushButton* connectButton, QLabel* comNameInfo)
 {
 	if (connectButton->text() == "Disconnect")
 	{
@@ -1784,34 +1734,37 @@ bool ProjectWindow::OpenConnectionDialog(QSerialPort * comPort, QTcpSocket* sock
 	return false;
 }
 
-void ProjectWindow::initTabs()
+void RobotWindow::InitTabs()
 {
-	ui->twDeltaManager->removeTab(1);
+    ui->twDeltaManager->clear();
 
-	ui->menuExecute->clear();
+    QStringList robotNames = RobotManagerPointer->GetRobotNames();
 
-	delete ui->menuExecute;
+    for (int i = 0; i < robotNames.size(); i++)
+    {
+        QAction *actionNewDelta_X;
+        actionNewDelta_X = new QAction(this);
 
-	ui->menuEditor->addMenu(DeltaXMainWindows->at(0)->ui->menuExecute);
+        actionNewDelta_X->setCheckable(true);
+        actionNewDelta_X->setChecked(true);
+        actionNewDelta_X->setText(robotNames.at(i));
+        ui->menuExecute->addAction(actionNewDelta_X);
 
-	for (int i = 1; i < DeltaXMainWindows->size(); i++)
-	{
-		QWidget *newDeltaTab = new QWidget();
-		ui->twDeltaManager->addTab(newDeltaTab, QString());
-		ui->twDeltaManager->setTabText(i, QString("Delta") + QString::number(i + 1));
-	}
+        QWidget *newDeltaTab = new QWidget();
+        ui->twDeltaManager->addTab(newDeltaTab, robotNames.at(i));
+    }
 
-	QWidget *newDeltaTab = new QWidget();
-	ui->twDeltaManager->addTab(newDeltaTab, QString());
-	ui->twDeltaManager->setTabText(ui->twDeltaManager->indexOf(newDeltaTab), "+");
+    QWidget *newDeltaTab = new QWidget();
+    ui->twDeltaManager->addTab(newDeltaTab, QString());
+    ui->twDeltaManager->setTabText(ui->twDeltaManager->indexOf(newDeltaTab), "+");
 }
 
-void ProjectWindow::hideExampleWidgets()
+void RobotWindow::hideExampleWidgets()
 {
 	ui->frExProgram->setVisible(false);
 }
 
-void ProjectWindow::interpolateCircle()
+void RobotWindow::interpolateCircle()
 {
 	float r = 120;
 	int resolution = 120;
@@ -1836,18 +1789,18 @@ void ProjectWindow::interpolateCircle()
 	ui->pteGcodeArea->setPlainText(gcode);
 }
 
-void ProjectWindow::makeEffectExample()
+void RobotWindow::makeEffectExample()
 {
 	QCursor cursorTarget = QCursor(QPixmap("icon/Zoom In_16px.png"));
     ui->lbDrawingArea->setCursor(cursorTarget);
 }
 
-void ProjectWindow::sendGcode(QString prefix, QString para1, QString para2)
+void RobotWindow::sendGcode(QString prefix, QString para1, QString para2)
 {
     DeltaConnectionManager->SendToRobot(prefix + " " + para1 + " " + para2);
 }
 
-QObject* ProjectWindow::getObjectByName(QObject* parent, QString name)
+QObject* RobotWindow::getObjectByName(QObject* parent, QString name)
 {
     QObjectList objList = parent->children();
 
@@ -1860,7 +1813,7 @@ QObject* ProjectWindow::getObjectByName(QObject* parent, QString name)
     return NULL;
 }
 
-void ProjectWindow::initInputValueLabels()
+void RobotWindow::initInputValueLabels()
 {
     lbInputValues = new QList<QLabel*>();
 
@@ -1877,13 +1830,13 @@ void ProjectWindow::initInputValueLabels()
     lbInputValues->append(ui->lbAxValue);
 }
 
-void ProjectWindow::OpenLoadingPopup()
+void RobotWindow::OpenLoadingPopup()
 {
     lbLoadingPopup->show();
     mvLoadingPopup->start();
 }
 
-void ProjectWindow::CloseLoadingPopup()
+void RobotWindow::CloseLoadingPopup()
 {
     lbLoadingPopup->hide();
     mvLoadingPopup->stop();
@@ -1977,7 +1930,7 @@ void ProjectWindow::ProcessJoystickPOV(const QJoystickPOVEvent &event)
 }
 #endif
 
-void ProjectWindow::MaximizeTab(int index)
+void RobotWindow::MaximizeTab(int index)
 {
     QTabWidget* selectedTabWidget = qobject_cast<QTabWidget*>(sender());
 
@@ -2010,7 +1963,7 @@ void ProjectWindow::MaximizeTab(int index)
 
 
 
-QStringList ProjectWindow::getPlugins(QString path)
+QStringList RobotWindow::getPlugins(QString path)
 {
     QStringList filter;
     filter << "*.dll" << "*.so" << "*.dylib";
@@ -2026,7 +1979,7 @@ QStringList ProjectWindow::getPlugins(QString path)
     return plugins;
 }
 
-void ProjectWindow::initPlugins(QStringList plugins)
+void RobotWindow::initPlugins(QStringList plugins)
 {
     foreach (QString file,plugins)
     {
@@ -2062,7 +2015,7 @@ void ProjectWindow::initPlugins(QStringList plugins)
     }
 }
 
-QList<DeltaXPlugin*> *ProjectWindow::getPluginList()
+QList<DeltaXPlugin*> *RobotWindow::getPluginList()
 {
     return pluginList;
 }

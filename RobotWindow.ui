@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>ProjectWindow</class>
- <widget class="QMainWindow" name="ProjectWindow">
+ <class>RobotWindow</class>
+ <widget class="QMainWindow" name="RobotWindow">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>943</width>
-    <height>400</height>
+    <width>1210</width>
+    <height>630</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -124,6 +124,12 @@ QScrollBar::handle:horizontal {
 QTabBar::tab
 {
 	padding: 10px;
+}
+
+/* ------ ScrollArea*/
+QScrollArea
+{
+	border:none;
 }</string>
   </property>
   <widget class="QWidget" name="centralWidget">
@@ -257,7 +263,8 @@ QTabBar::tab:!selected {
          </property>
          <property name="styleSheet">
           <string notr="true">background-color: rgb(255, 255, 255);
-color: rgb(54, 54, 54);</string>
+color: rgb(54, 54, 54);
+border: none;</string>
          </property>
          <property name="frameShape">
           <enum>QFrame::StyledPanel</enum>
@@ -841,7 +848,7 @@ QPushButton:pressed
                    <rect>
                     <x>0</x>
                     <y>0</y>
-                    <width>415</width>
+                    <width>522</width>
                     <height>600</height>
                    </rect>
                   </property>
@@ -1135,7 +1142,7 @@ QPushButton:pressed
                    <rect>
                     <x>0</x>
                     <y>0</y>
-                    <width>415</width>
+                    <width>522</width>
                     <height>1200</height>
                    </rect>
                   </property>
@@ -1377,7 +1384,7 @@ QPushButton:pressed
                    <rect>
                     <x>0</x>
                     <y>0</y>
-                    <width>456</width>
+                    <width>522</width>
                     <height>1500</height>
                    </rect>
                   </property>
@@ -1389,7 +1396,7 @@ QPushButton:pressed
                   </property>
                   <property name="maximumSize">
                    <size>
-                    <width>485</width>
+                    <width>16777215</width>
                     <height>16777215</height>
                    </size>
                   </property>
@@ -1492,6 +1499,12 @@ QPushButton:pressed
                          </item>
                          <item>
                           <widget class="QFrame" name="framePositionParameter">
+                           <property name="maximumSize">
+                            <size>
+                             <width>230</width>
+                             <height>16777215</height>
+                            </size>
+                           </property>
                            <property name="styleSheet">
                             <string notr="true">QFrame
 {
@@ -1576,6 +1589,12 @@ QLabel
                               </item>
                               <item>
                                <widget class="QLabel" name="label_8">
+                                <property name="maximumSize">
+                                 <size>
+                                  <width>30</width>
+                                  <height>16777215</height>
+                                 </size>
+                                </property>
                                 <property name="text">
                                  <string>mm</string>
                                 </property>
@@ -1677,6 +1696,12 @@ QLabel
                               </item>
                               <item>
                                <widget class="QLabel" name="label_9">
+                                <property name="maximumSize">
+                                 <size>
+                                  <width>30</width>
+                                  <height>16777215</height>
+                                 </size>
+                                </property>
                                 <property name="text">
                                  <string>mm</string>
                                 </property>
@@ -1778,6 +1803,12 @@ QLabel
                               </item>
                               <item>
                                <widget class="QLabel" name="label_66">
+                                <property name="maximumSize">
+                                 <size>
+                                  <width>30</width>
+                                  <height>16777215</height>
+                                 </size>
+                                </property>
                                 <property name="text">
                                  <string>mm</string>
                                 </property>
@@ -1879,6 +1910,12 @@ QLabel
                               </item>
                               <item>
                                <widget class="QLabel" name="label_81">
+                                <property name="maximumSize">
+                                 <size>
+                                  <width>30</width>
+                                  <height>16777215</height>
+                                 </size>
+                                </property>
                                 <property name="text">
                                  <string>deg</string>
                                 </property>
@@ -1980,6 +2017,12 @@ QLabel
                               </item>
                               <item>
                                <widget class="QLabel" name="label_87">
+                                <property name="maximumSize">
+                                 <size>
+                                  <width>30</width>
+                                  <height>16777215</height>
+                                 </size>
+                                </property>
                                 <property name="text">
                                  <string>deg</string>
                                 </property>
@@ -2081,6 +2124,12 @@ QLabel
                               </item>
                               <item>
                                <widget class="QLabel" name="label_89">
+                                <property name="maximumSize">
+                                 <size>
+                                  <width>30</width>
+                                  <height>16777215</height>
+                                 </size>
+                                </property>
                                 <property name="text">
                                  <string>deg</string>
                                 </property>
@@ -2146,19 +2195,6 @@ QLabel
                          <property name="topMargin">
                           <number>1</number>
                          </property>
-                         <item>
-                          <spacer name="horizontalSpacer_46">
-                           <property name="orientation">
-                            <enum>Qt::Horizontal</enum>
-                           </property>
-                           <property name="sizeHint" stdset="0">
-                            <size>
-                             <width>40</width>
-                             <height>20</height>
-                            </size>
-                           </property>
-                          </spacer>
-                         </item>
                          <item>
                           <layout class="QGridLayout" name="gridLayout_2">
                            <property name="spacing">
@@ -2335,6 +2371,12 @@ QLabel
                            </property>
                            <item row="0" column="0">
                             <widget class="QLabel" name="label_33">
+                             <property name="maximumSize">
+                              <size>
+                               <width>60</width>
+                               <height>16777215</height>
+                              </size>
+                             </property>
                              <property name="text">
                               <string>Division</string>
                              </property>
@@ -2346,6 +2388,12 @@ QLabel
                               <size>
                                <width>0</width>
                                <height>30</height>
+                              </size>
+                             </property>
+                             <property name="maximumSize">
+                              <size>
+                               <width>100</width>
+                               <height>16777215</height>
                               </size>
                              </property>
                              <property name="text">
@@ -2371,6 +2419,12 @@ QLabel
                                <height>30</height>
                               </size>
                              </property>
+                             <property name="maximumSize">
+                              <size>
+                               <width>100</width>
+                               <height>16777215</height>
+                              </size>
+                             </property>
                              <property name="text">
                               <string>200</string>
                              </property>
@@ -2382,6 +2436,12 @@ QLabel
                               <size>
                                <width>0</width>
                                <height>30</height>
+                              </size>
+                             </property>
+                             <property name="maximumSize">
+                              <size>
+                               <width>100</width>
+                               <height>16777215</height>
                               </size>
                              </property>
                              <property name="currentText">
@@ -2434,6 +2494,12 @@ QLabel
                            </item>
                            <item row="1" column="0">
                             <widget class="QLabel" name="label_29">
+                             <property name="maximumSize">
+                              <size>
+                               <width>60</width>
+                               <height>16777215</height>
+                              </size>
+                             </property>
                              <property name="text">
                               <string>Velocity</string>
                              </property>
@@ -2457,6 +2523,12 @@ QLabel
                                <height>30</height>
                               </size>
                              </property>
+                             <property name="maximumSize">
+                              <size>
+                               <width>100</width>
+                               <height>16777215</height>
+                              </size>
+                             </property>
                              <property name="text">
                               <string>1200</string>
                              </property>
@@ -2464,6 +2536,12 @@ QLabel
                            </item>
                            <item row="3" column="0">
                             <widget class="QLabel" name="label_62">
+                             <property name="maximumSize">
+                              <size>
+                               <width>60</width>
+                               <height>16777215</height>
+                              </size>
+                             </property>
                              <property name="text">
                               <string>Start</string>
                              </property>
@@ -2481,6 +2559,12 @@ QLabel
                            </item>
                            <item row="2" column="0">
                             <widget class="QLabel" name="label_31">
+                             <property name="maximumSize">
+                              <size>
+                               <width>60</width>
+                               <height>16777215</height>
+                              </size>
+                             </property>
                              <property name="text">
                               <string>Accel</string>
                              </property>
@@ -2568,73 +2652,20 @@ QLabel
                             <property name="verticalSpacing">
                              <number>5</number>
                             </property>
-                            <item row="0" column="1">
-                             <spacer name="horizontalSpacer_40">
-                              <property name="orientation">
-                               <enum>Qt::Horizontal</enum>
-                              </property>
-                              <property name="sizeHint" stdset="0">
-                               <size>
-                                <width>40</width>
-                                <height>20</height>
-                               </size>
-                              </property>
-                             </spacer>
-                            </item>
-                            <item row="1" column="2">
-                             <widget class="QLineEdit" name="leJoystickRange">
+                            <item row="2" column="0">
+                             <widget class="QLabel" name="label_79">
                               <property name="maximumSize">
                                <size>
-                                <width>150</width>
+                                <width>300</width>
                                 <height>16777215</height>
                                </size>
                               </property>
-                              <property name="text">
-                               <string>1</string>
-                              </property>
-                             </widget>
-                            </item>
-                            <item row="1" column="0">
-                             <widget class="QLabel" name="label_51">
-                              <property name="text">
-                               <string>Range</string>
-                              </property>
-                             </widget>
-                            </item>
-                            <item row="2" column="0">
-                             <widget class="QLabel" name="label_79">
                               <property name="text">
                                <string>Sensibility</string>
                               </property>
                              </widget>
                             </item>
-                            <item row="2" column="1">
-                             <spacer name="horizontalSpacer_42">
-                              <property name="orientation">
-                               <enum>Qt::Horizontal</enum>
-                              </property>
-                              <property name="sizeHint" stdset="0">
-                               <size>
-                                <width>40</width>
-                                <height>20</height>
-                               </size>
-                              </property>
-                             </spacer>
-                            </item>
-                            <item row="2" column="2">
-                             <widget class="QLineEdit" name="leJoystickSensibility">
-                              <property name="maximumSize">
-                               <size>
-                                <width>150</width>
-                                <height>16777215</height>
-                               </size>
-                              </property>
-                              <property name="text">
-                               <string>0.7</string>
-                              </property>
-                             </widget>
-                            </item>
-                            <item row="0" column="2">
+                            <item row="0" column="1">
                              <widget class="QComboBox" name="cbJoystickDevice">
                               <property name="minimumSize">
                                <size>
@@ -2655,13 +2686,58 @@ QLabel
                             </item>
                             <item row="0" column="0">
                              <widget class="QLabel" name="label_41">
+                              <property name="maximumSize">
+                               <size>
+                                <width>300</width>
+                                <height>16777215</height>
+                               </size>
+                              </property>
                               <property name="text">
                                <string>Device</string>
                               </property>
                              </widget>
                             </item>
                             <item row="1" column="1">
-                             <spacer name="horizontalSpacer_41">
+                             <widget class="QLineEdit" name="leJoystickRange">
+                              <property name="maximumSize">
+                               <size>
+                                <width>150</width>
+                                <height>16777215</height>
+                               </size>
+                              </property>
+                              <property name="text">
+                               <string>1</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="2" column="1">
+                             <widget class="QLineEdit" name="leJoystickSensibility">
+                              <property name="maximumSize">
+                               <size>
+                                <width>150</width>
+                                <height>16777215</height>
+                               </size>
+                              </property>
+                              <property name="text">
+                               <string>0.7</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="1" column="0">
+                             <widget class="QLabel" name="label_51">
+                              <property name="maximumSize">
+                               <size>
+                                <width>300</width>
+                                <height>16777215</height>
+                               </size>
+                              </property>
+                              <property name="text">
+                               <string>Range</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="0" column="2">
+                             <spacer name="horizontalSpacer_32">
                               <property name="orientation">
                                <enum>Qt::Horizontal</enum>
                               </property>
@@ -2753,7 +2829,7 @@ QLabel
                               </property>
                               <property name="font">
                                <font>
-                                <pointsize>7</pointsize>
+                                <pointsize>8</pointsize>
                                 <weight>50</weight>
                                 <bold>false</bold>
                                 <kerning>true</kerning>
@@ -2777,7 +2853,7 @@ QLabel
                               </property>
                               <property name="font">
                                <font>
-                                <pointsize>7</pointsize>
+                                <pointsize>8</pointsize>
                                 <weight>50</weight>
                                 <bold>false</bold>
                                 <kerning>true</kerning>
@@ -2809,6 +2885,12 @@ QLabel
                                <iconset resource="resource.qrc">
                                 <normaloff>:/icon/Toggle Off_16px.png</normaloff>
                                 <normalon>:/icon/Toggle On_16px.png</normalon>:/icon/Toggle Off_16px.png</iconset>
+                              </property>
+                              <property name="iconSize">
+                               <size>
+                                <width>16</width>
+                                <height>16</height>
+                               </size>
                               </property>
                               <property name="checkable">
                                <bool>true</bool>
@@ -2845,6 +2927,12 @@ QLabel
                                <iconset resource="resource.qrc">
                                 <normaloff>:/icon/Toggle Off_16px.png</normaloff>
                                 <normalon>:/icon/Toggle On_16px.png</normalon>:/icon/Toggle Off_16px.png</iconset>
+                              </property>
+                              <property name="iconSize">
+                               <size>
+                                <width>16</width>
+                                <height>16</height>
+                               </size>
                               </property>
                               <property name="checkable">
                                <bool>true</bool>
@@ -2893,7 +2981,7 @@ QLabel
                                <widget class="QLabel" name="label_17">
                                 <property name="font">
                                  <font>
-                                  <pointsize>7</pointsize>
+                                  <pointsize>8</pointsize>
                                   <weight>50</weight>
                                   <bold>false</bold>
                                   <kerning>true</kerning>
@@ -2902,13 +2990,16 @@ QLabel
                                 <property name="text">
                                  <string>min</string>
                                 </property>
+                                <property name="alignment">
+                                 <set>Qt::AlignCenter</set>
+                                </property>
                                </widget>
                               </item>
                               <item row="0" column="2">
                                <widget class="QLabel" name="label_27">
                                 <property name="font">
                                  <font>
-                                  <pointsize>7</pointsize>
+                                  <pointsize>8</pointsize>
                                   <weight>50</weight>
                                   <bold>false</bold>
                                   <kerning>true</kerning>
@@ -2916,6 +3007,9 @@ QLabel
                                 </property>
                                 <property name="text">
                                  <string>max</string>
+                                </property>
+                                <property name="alignment">
+                                 <set>Qt::AlignCenter</set>
                                 </property>
                                </widget>
                               </item>
@@ -3043,6 +3137,19 @@ QLabel
                            </layout>
                           </widget>
                          </item>
+                         <item>
+                          <spacer name="horizontalSpacer_46">
+                           <property name="orientation">
+                            <enum>Qt::Horizontal</enum>
+                           </property>
+                           <property name="sizeHint" stdset="0">
+                            <size>
+                             <width>40</width>
+                             <height>20</height>
+                            </size>
+                           </property>
+                          </spacer>
+                         </item>
                         </layout>
                        </widget>
                       </item>
@@ -3073,6 +3180,12 @@ QLabel
                            <layout class="QHBoxLayout" name="horizontalLayout_34">
                             <item>
                              <widget class="QLabel" name="label_67">
+                              <property name="minimumSize">
+                               <size>
+                                <width>70</width>
+                                <height>0</height>
+                               </size>
+                              </property>
                               <property name="font">
                                <font>
                                 <weight>50</weight>
@@ -3085,20 +3198,13 @@ QLabel
                              </widget>
                             </item>
                             <item>
-                             <spacer name="horizontalSpacer_47">
-                              <property name="orientation">
-                               <enum>Qt::Horizontal</enum>
-                              </property>
-                              <property name="sizeHint" stdset="0">
+                             <widget class="QCheckBox" name="cbR0">
+                              <property name="minimumSize">
                                <size>
-                                <width>40</width>
-                                <height>20</height>
+                                <width>45</width>
+                                <height>0</height>
                                </size>
                               </property>
-                             </spacer>
-                            </item>
-                            <item>
-                             <widget class="QCheckBox" name="cbR0">
                               <property name="text">
                                <string>R0</string>
                               </property>
@@ -3106,6 +3212,12 @@ QLabel
                             </item>
                             <item>
                              <widget class="QCheckBox" name="cbR1">
+                              <property name="minimumSize">
+                               <size>
+                                <width>45</width>
+                                <height>0</height>
+                               </size>
+                              </property>
                               <property name="text">
                                <string>R1</string>
                               </property>
@@ -3113,6 +3225,12 @@ QLabel
                             </item>
                             <item>
                              <widget class="QCheckBox" name="cbR2">
+                              <property name="minimumSize">
+                               <size>
+                                <width>45</width>
+                                <height>0</height>
+                               </size>
+                              </property>
                               <property name="text">
                                <string>R2</string>
                               </property>
@@ -3120,6 +3238,12 @@ QLabel
                             </item>
                             <item>
                              <widget class="QCheckBox" name="cbR3">
+                              <property name="minimumSize">
+                               <size>
+                                <width>45</width>
+                                <height>0</height>
+                               </size>
+                              </property>
                               <property name="text">
                                <string>R3</string>
                               </property>
@@ -3151,6 +3275,19 @@ QLabel
                               </property>
                              </widget>
                             </item>
+                            <item>
+                             <spacer name="horizontalSpacer_47">
+                              <property name="orientation">
+                               <enum>Qt::Horizontal</enum>
+                              </property>
+                              <property name="sizeHint" stdset="0">
+                               <size>
+                                <width>40</width>
+                                <height>20</height>
+                               </size>
+                              </property>
+                             </spacer>
+                            </item>
                            </layout>
                           </widget>
                          </item>
@@ -3159,6 +3296,12 @@ QLabel
                            <layout class="QHBoxLayout" name="horizontalLayout_35">
                             <item>
                              <widget class="QLabel" name="label_68">
+                              <property name="minimumSize">
+                               <size>
+                                <width>70</width>
+                                <height>0</height>
+                               </size>
+                              </property>
                               <property name="font">
                                <font>
                                 <weight>50</weight>
@@ -3171,20 +3314,13 @@ QLabel
                              </widget>
                             </item>
                             <item>
-                             <spacer name="horizontalSpacer_48">
-                              <property name="orientation">
-                               <enum>Qt::Horizontal</enum>
-                              </property>
-                              <property name="sizeHint" stdset="0">
+                             <widget class="QCheckBox" name="cbD0">
+                              <property name="minimumSize">
                                <size>
-                                <width>40</width>
-                                <height>20</height>
+                                <width>45</width>
+                                <height>0</height>
                                </size>
                               </property>
-                             </spacer>
-                            </item>
-                            <item>
-                             <widget class="QCheckBox" name="cbD0">
                               <property name="text">
                                <string>D0</string>
                               </property>
@@ -3192,6 +3328,12 @@ QLabel
                             </item>
                             <item>
                              <widget class="QCheckBox" name="cbD1">
+                              <property name="minimumSize">
+                               <size>
+                                <width>45</width>
+                                <height>0</height>
+                               </size>
+                              </property>
                               <property name="text">
                                <string>D1</string>
                               </property>
@@ -3199,6 +3341,12 @@ QLabel
                             </item>
                             <item>
                              <widget class="QCheckBox" name="cbD2">
+                              <property name="minimumSize">
+                               <size>
+                                <width>45</width>
+                                <height>0</height>
+                               </size>
+                              </property>
                               <property name="text">
                                <string>D2</string>
                               </property>
@@ -3206,6 +3354,12 @@ QLabel
                             </item>
                             <item>
                              <widget class="QCheckBox" name="cbD3">
+                              <property name="minimumSize">
+                               <size>
+                                <width>45</width>
+                                <height>0</height>
+                               </size>
+                              </property>
                               <property name="text">
                                <string>D3</string>
                               </property>
@@ -3237,6 +3391,19 @@ QLabel
                               </property>
                              </widget>
                             </item>
+                            <item>
+                             <spacer name="horizontalSpacer_48">
+                              <property name="orientation">
+                               <enum>Qt::Horizontal</enum>
+                              </property>
+                              <property name="sizeHint" stdset="0">
+                               <size>
+                                <width>40</width>
+                                <height>20</height>
+                               </size>
+                              </property>
+                             </spacer>
+                            </item>
                            </layout>
                           </widget>
                          </item>
@@ -3247,7 +3414,7 @@ QLabel
                              <widget class="QLabel" name="label_69">
                               <property name="minimumSize">
                                <size>
-                                <width>60</width>
+                                <width>70</width>
                                 <height>0</height>
                                </size>
                               </property>
@@ -3269,20 +3436,13 @@ QLabel
                              </widget>
                             </item>
                             <item>
-                             <spacer name="horizontalSpacer_14">
-                              <property name="orientation">
-                               <enum>Qt::Horizontal</enum>
-                              </property>
-                              <property name="sizeHint" stdset="0">
+                             <widget class="QLabel" name="label_72">
+                              <property name="minimumSize">
                                <size>
-                                <width>40</width>
-                                <height>20</height>
+                                <width>30</width>
+                                <height>0</height>
                                </size>
                               </property>
-                             </spacer>
-                            </item>
-                            <item>
-                             <widget class="QLabel" name="label_72">
                               <property name="text">
                                <string>P0</string>
                               </property>
@@ -3298,7 +3458,7 @@ QLabel
                               </property>
                               <property name="maximumSize">
                                <size>
-                                <width>100</width>
+                                <width>50</width>
                                 <height>16777215</height>
                                </size>
                               </property>
@@ -3320,9 +3480,12 @@ QLabel
                              </widget>
                             </item>
                             <item>
-                             <spacer name="horizontalSpacer_27">
+                             <spacer name="horizontalSpacer_14">
                               <property name="orientation">
                                <enum>Qt::Horizontal</enum>
+                              </property>
+                              <property name="sizeType">
+                               <enum>QSizePolicy::Maximum</enum>
                               </property>
                               <property name="sizeHint" stdset="0">
                                <size>
@@ -3334,6 +3497,12 @@ QLabel
                             </item>
                             <item>
                              <widget class="QLabel" name="label_73">
+                              <property name="minimumSize">
+                               <size>
+                                <width>30</width>
+                                <height>0</height>
+                               </size>
+                              </property>
                               <property name="text">
                                <string>P1</string>
                               </property>
@@ -3349,7 +3518,7 @@ QLabel
                               </property>
                               <property name="maximumSize">
                                <size>
-                                <width>100</width>
+                                <width>50</width>
                                 <height>16777215</height>
                                </size>
                               </property>
@@ -3369,6 +3538,9 @@ QLabel
                               <property name="orientation">
                                <enum>Qt::Horizontal</enum>
                               </property>
+                              <property name="sizeType">
+                               <enum>QSizePolicy::Maximum</enum>
+                              </property>
                               <property name="sizeHint" stdset="0">
                                <size>
                                 <width>40</width>
@@ -3381,7 +3553,7 @@ QLabel
                              <widget class="QLineEdit" name="lePx">
                               <property name="minimumSize">
                                <size>
-                                <width>0</width>
+                                <width>30</width>
                                 <height>0</height>
                                </size>
                               </property>
@@ -3409,7 +3581,7 @@ QLabel
                               </property>
                               <property name="maximumSize">
                                <size>
-                                <width>100</width>
+                                <width>50</width>
                                 <height>16777215</height>
                                </size>
                               </property>
@@ -3447,7 +3619,7 @@ QLabel
                              <widget class="QLabel" name="label_71">
                               <property name="minimumSize">
                                <size>
-                                <width>60</width>
+                                <width>70</width>
                                 <height>0</height>
                                </size>
                               </property>
@@ -3469,20 +3641,13 @@ QLabel
                              </widget>
                             </item>
                             <item>
-                             <spacer name="horizontalSpacer_31">
-                              <property name="orientation">
-                               <enum>Qt::Horizontal</enum>
-                              </property>
-                              <property name="sizeHint" stdset="0">
+                             <widget class="QLabel" name="label_75">
+                              <property name="minimumSize">
                                <size>
-                                <width>40</width>
-                                <height>20</height>
+                                <width>30</width>
+                                <height>0</height>
                                </size>
                               </property>
-                             </spacer>
-                            </item>
-                            <item>
-                             <widget class="QLabel" name="label_75">
                               <property name="text">
                                <string>S0</string>
                               </property>
@@ -3498,7 +3663,7 @@ QLabel
                               </property>
                               <property name="maximumSize">
                                <size>
-                                <width>100</width>
+                                <width>50</width>
                                 <height>16777215</height>
                                </size>
                               </property>
@@ -3520,9 +3685,12 @@ QLabel
                              </widget>
                             </item>
                             <item>
-                             <spacer name="horizontalSpacer_32">
+                             <spacer name="horizontalSpacer_27">
                               <property name="orientation">
                                <enum>Qt::Horizontal</enum>
+                              </property>
+                              <property name="sizeType">
+                               <enum>QSizePolicy::Maximum</enum>
                               </property>
                               <property name="sizeHint" stdset="0">
                                <size>
@@ -3534,6 +3702,12 @@ QLabel
                             </item>
                             <item>
                              <widget class="QLabel" name="label_77">
+                              <property name="minimumSize">
+                               <size>
+                                <width>30</width>
+                                <height>0</height>
+                               </size>
+                              </property>
                               <property name="text">
                                <string>S1</string>
                               </property>
@@ -3549,7 +3723,7 @@ QLabel
                               </property>
                               <property name="maximumSize">
                                <size>
-                                <width>100</width>
+                                <width>50</width>
                                 <height>16777215</height>
                                </size>
                               </property>
@@ -3565,9 +3739,12 @@ QLabel
                              </widget>
                             </item>
                             <item>
-                             <spacer name="horizontalSpacer_33">
+                             <spacer name="horizontalSpacer_31">
                               <property name="orientation">
                                <enum>Qt::Horizontal</enum>
+                              </property>
+                              <property name="sizeType">
+                               <enum>QSizePolicy::Maximum</enum>
                               </property>
                               <property name="sizeHint" stdset="0">
                                <size>
@@ -3581,7 +3758,7 @@ QLabel
                              <widget class="QLineEdit" name="leSx">
                               <property name="minimumSize">
                                <size>
-                                <width>0</width>
+                                <width>30</width>
                                 <height>0</height>
                                </size>
                               </property>
@@ -3609,7 +3786,7 @@ QLabel
                               </property>
                               <property name="maximumSize">
                                <size>
-                                <width>100</width>
+                                <width>50</width>
                                 <height>16777215</height>
                                </size>
                               </property>
@@ -3671,7 +3848,7 @@ QLabel
                             <widget class="QLabel" name="label_70">
                              <property name="minimumSize">
                               <size>
-                               <width>25</width>
+                               <width>30</width>
                                <height>0</height>
                               </size>
                              </property>
@@ -3697,6 +3874,9 @@ QLabel
                              <property name="orientation">
                               <enum>Qt::Horizontal</enum>
                              </property>
+                             <property name="sizeType">
+                              <enum>QSizePolicy::Maximum</enum>
+                             </property>
                              <property name="sizeHint" stdset="0">
                               <size>
                                <width>40</width>
@@ -3717,6 +3897,9 @@ QLabel
                              <property name="orientation">
                               <enum>Qt::Horizontal</enum>
                              </property>
+                             <property name="sizeType">
+                              <enum>QSizePolicy::Maximum</enum>
+                             </property>
                              <property name="sizeHint" stdset="0">
                               <size>
                                <width>40</width>
@@ -3727,6 +3910,18 @@ QLabel
                            </item>
                            <item>
                             <widget class="QCheckBox" name="cbToggle0">
+                             <property name="minimumSize">
+                              <size>
+                               <width>110</width>
+                               <height>0</height>
+                              </size>
+                             </property>
+                             <property name="maximumSize">
+                              <size>
+                               <width>110</width>
+                               <height>16777215</height>
+                              </size>
+                             </property>
                              <property name="toolTip">
                               <string>The robot will respond when the value of digital input pin changes</string>
                              </property>
@@ -3769,7 +3964,7 @@ QLabel
                             <widget class="QLabel" name="label_74">
                              <property name="minimumSize">
                               <size>
-                               <width>25</width>
+                               <width>30</width>
                                <height>0</height>
                               </size>
                              </property>
@@ -3795,6 +3990,9 @@ QLabel
                              <property name="orientation">
                               <enum>Qt::Horizontal</enum>
                              </property>
+                             <property name="sizeType">
+                              <enum>QSizePolicy::Maximum</enum>
+                             </property>
                              <property name="sizeHint" stdset="0">
                               <size>
                                <width>40</width>
@@ -3815,6 +4013,9 @@ QLabel
                              <property name="orientation">
                               <enum>Qt::Horizontal</enum>
                              </property>
+                             <property name="sizeType">
+                              <enum>QSizePolicy::Maximum</enum>
+                             </property>
                              <property name="sizeHint" stdset="0">
                               <size>
                                <width>40</width>
@@ -3825,6 +4026,18 @@ QLabel
                            </item>
                            <item>
                             <widget class="QCheckBox" name="cbToggle1">
+                             <property name="minimumSize">
+                              <size>
+                               <width>110</width>
+                               <height>0</height>
+                              </size>
+                             </property>
+                             <property name="maximumSize">
+                              <size>
+                               <width>110</width>
+                               <height>16777215</height>
+                              </size>
+                             </property>
                              <property name="toolTip">
                               <string>The robot will respond when the value of digital input pin changes</string>
                              </property>
@@ -3867,7 +4080,7 @@ QLabel
                             <widget class="QLabel" name="label_76">
                              <property name="minimumSize">
                               <size>
-                               <width>25</width>
+                               <width>30</width>
                                <height>0</height>
                               </size>
                              </property>
@@ -3893,6 +4106,9 @@ QLabel
                              <property name="orientation">
                               <enum>Qt::Horizontal</enum>
                              </property>
+                             <property name="sizeType">
+                              <enum>QSizePolicy::Maximum</enum>
+                             </property>
                              <property name="sizeHint" stdset="0">
                               <size>
                                <width>40</width>
@@ -3913,6 +4129,9 @@ QLabel
                              <property name="orientation">
                               <enum>Qt::Horizontal</enum>
                              </property>
+                             <property name="sizeType">
+                              <enum>QSizePolicy::Maximum</enum>
+                             </property>
                              <property name="sizeHint" stdset="0">
                               <size>
                                <width>40</width>
@@ -3923,6 +4142,18 @@ QLabel
                            </item>
                            <item>
                             <widget class="QCheckBox" name="cbToggle2">
+                             <property name="minimumSize">
+                              <size>
+                               <width>110</width>
+                               <height>0</height>
+                              </size>
+                             </property>
+                             <property name="maximumSize">
+                              <size>
+                               <width>110</width>
+                               <height>16777215</height>
+                              </size>
+                             </property>
                              <property name="toolTip">
                               <string>The robot will respond when the value of digital input pin changes</string>
                              </property>
@@ -3965,7 +4196,7 @@ QLabel
                             <widget class="QLabel" name="label_78">
                              <property name="minimumSize">
                               <size>
-                               <width>25</width>
+                               <width>30</width>
                                <height>0</height>
                               </size>
                              </property>
@@ -3991,6 +4222,9 @@ QLabel
                              <property name="orientation">
                               <enum>Qt::Horizontal</enum>
                              </property>
+                             <property name="sizeType">
+                              <enum>QSizePolicy::Maximum</enum>
+                             </property>
                              <property name="sizeHint" stdset="0">
                               <size>
                                <width>40</width>
@@ -4011,6 +4245,9 @@ QLabel
                              <property name="orientation">
                               <enum>Qt::Horizontal</enum>
                              </property>
+                             <property name="sizeType">
+                              <enum>QSizePolicy::Maximum</enum>
+                             </property>
                              <property name="sizeHint" stdset="0">
                               <size>
                                <width>40</width>
@@ -4021,6 +4258,18 @@ QLabel
                            </item>
                            <item>
                             <widget class="QCheckBox" name="cbToggle3">
+                             <property name="minimumSize">
+                              <size>
+                               <width>110</width>
+                               <height>0</height>
+                              </size>
+                             </property>
+                             <property name="maximumSize">
+                              <size>
+                               <width>110</width>
+                               <height>16777215</height>
+                              </size>
+                             </property>
                              <property name="toolTip">
                               <string>The robot will respond when the value of digital input pin changes</string>
                              </property>
@@ -4063,7 +4312,7 @@ QLabel
                             <widget class="QLabel" name="label_80">
                              <property name="minimumSize">
                               <size>
-                               <width>25</width>
+                               <width>30</width>
                                <height>0</height>
                               </size>
                              </property>
@@ -4089,6 +4338,9 @@ QLabel
                              <property name="orientation">
                               <enum>Qt::Horizontal</enum>
                              </property>
+                             <property name="sizeType">
+                              <enum>QSizePolicy::Maximum</enum>
+                             </property>
                              <property name="sizeHint" stdset="0">
                               <size>
                                <width>40</width>
@@ -4109,6 +4361,9 @@ QLabel
                              <property name="orientation">
                               <enum>Qt::Horizontal</enum>
                              </property>
+                             <property name="sizeType">
+                              <enum>QSizePolicy::Maximum</enum>
+                             </property>
                              <property name="sizeHint" stdset="0">
                               <size>
                                <width>40</width>
@@ -4119,6 +4374,18 @@ QLabel
                            </item>
                            <item>
                             <widget class="QCheckBox" name="cbToggle4">
+                             <property name="minimumSize">
+                              <size>
+                               <width>110</width>
+                               <height>0</height>
+                              </size>
+                             </property>
+                             <property name="maximumSize">
+                              <size>
+                               <width>110</width>
+                               <height>16777215</height>
+                              </size>
+                             </property>
                              <property name="toolTip">
                               <string>The robot will respond when the value of digital input pin changes</string>
                              </property>
@@ -4161,7 +4428,7 @@ QLabel
                             <widget class="QLabel" name="label_82">
                              <property name="minimumSize">
                               <size>
-                               <width>25</width>
+                               <width>30</width>
                                <height>0</height>
                               </size>
                              </property>
@@ -4187,6 +4454,9 @@ QLabel
                              <property name="orientation">
                               <enum>Qt::Horizontal</enum>
                              </property>
+                             <property name="sizeType">
+                              <enum>QSizePolicy::Maximum</enum>
+                             </property>
                              <property name="sizeHint" stdset="0">
                               <size>
                                <width>40</width>
@@ -4207,6 +4477,9 @@ QLabel
                              <property name="orientation">
                               <enum>Qt::Horizontal</enum>
                              </property>
+                             <property name="sizeType">
+                              <enum>QSizePolicy::Maximum</enum>
+                             </property>
                              <property name="sizeHint" stdset="0">
                               <size>
                                <width>40</width>
@@ -4217,6 +4490,18 @@ QLabel
                            </item>
                            <item>
                             <widget class="QCheckBox" name="cbToggle5">
+                             <property name="minimumSize">
+                              <size>
+                               <width>110</width>
+                               <height>0</height>
+                              </size>
+                             </property>
+                             <property name="maximumSize">
+                              <size>
+                               <width>110</width>
+                               <height>16777215</height>
+                              </size>
+                             </property>
                              <property name="toolTip">
                               <string>The robot will respond when the value of digital input pin changes</string>
                              </property>
@@ -4259,7 +4544,7 @@ QLabel
                             <widget class="QLineEdit" name="leIx">
                              <property name="minimumSize">
                               <size>
-                               <width>25</width>
+                               <width>30</width>
                                <height>0</height>
                               </size>
                              </property>
@@ -4288,6 +4573,9 @@ QLabel
                              <property name="orientation">
                               <enum>Qt::Horizontal</enum>
                              </property>
+                             <property name="sizeType">
+                              <enum>QSizePolicy::Maximum</enum>
+                             </property>
                              <property name="sizeHint" stdset="0">
                               <size>
                                <width>40</width>
@@ -4308,6 +4596,9 @@ QLabel
                              <property name="orientation">
                               <enum>Qt::Horizontal</enum>
                              </property>
+                             <property name="sizeType">
+                              <enum>QSizePolicy::Maximum</enum>
+                             </property>
                              <property name="sizeHint" stdset="0">
                               <size>
                                <width>40</width>
@@ -4318,6 +4609,18 @@ QLabel
                            </item>
                            <item>
                             <widget class="QCheckBox" name="cbTogglex">
+                             <property name="minimumSize">
+                              <size>
+                               <width>110</width>
+                               <height>0</height>
+                              </size>
+                             </property>
+                             <property name="maximumSize">
+                              <size>
+                               <width>110</width>
+                               <height>16777215</height>
+                              </size>
+                             </property>
                              <property name="toolTip">
                               <string>The robot will respond when the value of digital input pin changes</string>
                              </property>
@@ -4360,7 +4663,7 @@ QLabel
                             <widget class="QLabel" name="label_83">
                              <property name="minimumSize">
                               <size>
-                               <width>25</width>
+                               <width>30</width>
                                <height>0</height>
                               </size>
                              </property>
@@ -4386,6 +4689,9 @@ QLabel
                              <property name="orientation">
                               <enum>Qt::Horizontal</enum>
                              </property>
+                             <property name="sizeType">
+                              <enum>QSizePolicy::Maximum</enum>
+                             </property>
                              <property name="sizeHint" stdset="0">
                               <size>
                                <width>40</width>
@@ -4406,6 +4712,9 @@ QLabel
                              <property name="orientation">
                               <enum>Qt::Horizontal</enum>
                              </property>
+                             <property name="sizeType">
+                              <enum>QSizePolicy::Maximum</enum>
+                             </property>
                              <property name="sizeHint" stdset="0">
                               <size>
                                <width>40</width>
@@ -4416,9 +4725,15 @@ QLabel
                            </item>
                            <item>
                             <widget class="QLineEdit" name="leA0Delay">
+                             <property name="minimumSize">
+                              <size>
+                               <width>110</width>
+                               <height>0</height>
+                              </size>
+                             </property>
                              <property name="maximumSize">
                               <size>
-                               <width>80</width>
+                               <width>110</width>
                                <height>16777215</height>
                               </size>
                              </property>
@@ -4461,7 +4776,7 @@ QLabel
                             <widget class="QLabel" name="label_85">
                              <property name="minimumSize">
                               <size>
-                               <width>25</width>
+                               <width>30</width>
                                <height>0</height>
                               </size>
                              </property>
@@ -4487,6 +4802,9 @@ QLabel
                              <property name="orientation">
                               <enum>Qt::Horizontal</enum>
                              </property>
+                             <property name="sizeType">
+                              <enum>QSizePolicy::Maximum</enum>
+                             </property>
                              <property name="sizeHint" stdset="0">
                               <size>
                                <width>40</width>
@@ -4507,6 +4825,9 @@ QLabel
                              <property name="orientation">
                               <enum>Qt::Horizontal</enum>
                              </property>
+                             <property name="sizeType">
+                              <enum>QSizePolicy::Maximum</enum>
+                             </property>
                              <property name="sizeHint" stdset="0">
                               <size>
                                <width>40</width>
@@ -4517,9 +4838,15 @@ QLabel
                            </item>
                            <item>
                             <widget class="QLineEdit" name="leA1Delay">
+                             <property name="minimumSize">
+                              <size>
+                               <width>110</width>
+                               <height>0</height>
+                              </size>
+                             </property>
                              <property name="maximumSize">
                               <size>
-                               <width>80</width>
+                               <width>110</width>
                                <height>16777215</height>
                               </size>
                              </property>
@@ -4562,7 +4889,7 @@ QLabel
                             <widget class="QLineEdit" name="leAx">
                              <property name="minimumSize">
                               <size>
-                               <width>25</width>
+                               <width>30</width>
                                <height>0</height>
                               </size>
                              </property>
@@ -4591,6 +4918,9 @@ QLabel
                              <property name="orientation">
                               <enum>Qt::Horizontal</enum>
                              </property>
+                             <property name="sizeType">
+                              <enum>QSizePolicy::Maximum</enum>
+                             </property>
                              <property name="sizeHint" stdset="0">
                               <size>
                                <width>40</width>
@@ -4611,6 +4941,9 @@ QLabel
                              <property name="orientation">
                               <enum>Qt::Horizontal</enum>
                              </property>
+                             <property name="sizeType">
+                              <enum>QSizePolicy::Maximum</enum>
+                             </property>
                              <property name="sizeHint" stdset="0">
                               <size>
                                <width>40</width>
@@ -4621,9 +4954,15 @@ QLabel
                            </item>
                            <item>
                             <widget class="QLineEdit" name="leAxDelay">
+                             <property name="minimumSize">
+                              <size>
+                               <width>110</width>
+                               <height>0</height>
+                              </size>
+                             </property>
                              <property name="maximumSize">
                               <size>
-                               <width>80</width>
+                               <width>110</width>
                                <height>16777215</height>
                               </size>
                              </property>
@@ -5399,8 +5738,8 @@ QLabel
                    <rect>
                     <x>0</x>
                     <y>0</y>
-                    <width>429</width>
-                    <height>180</height>
+                    <width>536</width>
+                    <height>412</height>
                    </rect>
                   </property>
                   <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -5543,7 +5882,7 @@ p, li { white-space: pre-wrap; }
                    <rect>
                     <x>0</x>
                     <y>0</y>
-                    <width>450</width>
+                    <width>578</width>
                     <height>900</height>
                    </rect>
                   </property>
@@ -6747,7 +7086,7 @@ p, li { white-space: pre-wrap; }
                    <rect>
                     <x>0</x>
                     <y>0</y>
-                    <width>450</width>
+                    <width>578</width>
                     <height>1500</height>
                    </rect>
                   </property>
@@ -8127,7 +8466,7 @@ p, li { white-space: pre-wrap; }
                    <rect>
                     <x>0</x>
                     <y>0</y>
-                    <width>450</width>
+                    <width>578</width>
                     <height>1200</height>
                    </rect>
                   </property>
@@ -9025,7 +9364,7 @@ p, li { white-space: pre-wrap; }
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>943</width>
+     <width>1210</width>
      <height>22</height>
     </rect>
    </property>
@@ -9035,7 +9374,7 @@ p, li { white-space: pre-wrap; }
    <property name="styleSheet">
     <string notr="true">QMenuBar
 {
-background-color: rgb(41, 155, 255);
+background-color: rgb(24, 70, 139);
 color: rgb(255, 255, 255);
 }
 QMenuBar:selected
@@ -9089,7 +9428,7 @@ QMenu::item:selected
      <enum>Qt::RightToLeft</enum>
     </property>
     <property name="title">
-     <string>Editor</string>
+     <string>Program</string>
     </property>
     <widget class="QMenu" name="menuExecute">
      <property name="title">
@@ -9098,7 +9437,6 @@ QMenu::item:selected
      <addaction name="actionExecute"/>
      <addaction name="actionExecute_All"/>
      <addaction name="separator"/>
-     <addaction name="actionDelta_X_1"/>
     </widget>
     <addaction name="separator"/>
     <addaction name="menuExecute"/>

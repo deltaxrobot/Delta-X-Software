@@ -1,6 +1,6 @@
 #include "ImageProcesser.h"
 
-ImageProcesser::ImageProcesser(ProjectWindow *parent)
+ImageProcesser::ImageProcesser(RobotWindow *parent)
 	: QWidget(parent)
 {
 	ParameterPanel = new HSVWindow(parent);
@@ -74,19 +74,21 @@ void ImageProcesser::LoadCamera()
             QString cameraIDText = text.mid(0, text.indexOf(" - "));
             int cameraID = cameraIDText.toInt();
             RunningCamera = cameraID;
-
-			if (mParent->DeltaXMainWindows != NULL)
-			{
-				for (int i = 0; i < mParent->DeltaXMainWindows->size(); i++)
-				{
-					if (mParent->DeltaXMainWindows->at(i)->DeltaImageProcesser->RunningCamera == RunningCamera)
-					{
-						Camera = mParent->DeltaXMainWindows->at(i)->DeltaImageProcesser->Camera;
-						IsCameraPause = false;
-						return;
-					}
-				}
-			}
+            if (mParent->RobotManagerPointer != NULL)
+            {
+                if (mParent->RobotManagerPointer->RobotWindows.size() > 0)
+                {
+                    for (int i = 0; i < mParent->RobotManagerPointer->RobotWindows.size(); i++)
+                    {
+                        if (mParent->RobotManagerPointer->RobotWindows.at(i)->DeltaImageProcesser->RunningCamera == RunningCamera)
+                        {
+                            Camera = mParent->RobotManagerPointer->RobotWindows.at(i)->DeltaImageProcesser->Camera;
+                            IsCameraPause = false;
+                            return;
+                        }
+                    }
+                }
+            }
 			lbCameraState->setEnabled(true);
 			pbPlayCammera->setChecked(true);
 			lbResultImage->InitParameter();

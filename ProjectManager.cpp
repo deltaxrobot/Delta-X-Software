@@ -51,6 +51,24 @@ void ProjectManager::AddNewTab(QWidget* newTab, QStackedWidget* stack)
     }
 }
 
+void ProjectManager::AddNewTab(QStackedWidget *stack)
+{
+    int tabID = twProjectManager->count() - 1;
+
+    twProjectManager->insertTab(tabID, stack, QString("project " + QString::number(tabID)));
+    twProjectManager->setCurrentWidget(stack);
+}
+
+QString ProjectManager::GetProjectName(int index)
+{
+    return twProjectManager->tabText(index);
+}
+
+QString ProjectManager::GetProjectName(QWidget *widget)
+{
+    return GetProjectName(twProjectManager->indexOf(widget));
+}
+
 void ProjectManager::ChangeProjectTab(int index)
 {
     if (twProjectManager->widget(index) == tabAddNewButton)
@@ -96,5 +114,10 @@ void ProjectManager::CloseProject(int tabIndex)
     else
     {
 
+    }
+
+    if (tabIndex > 0)
+    {
+        twProjectManager->setCurrentIndex(tabIndex - 1);
     }
 }

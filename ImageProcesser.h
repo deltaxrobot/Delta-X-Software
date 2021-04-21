@@ -18,7 +18,7 @@
 #include "BlobManager.h"
 #include "UnityTool.h"
 #include "CameraWidget.h"
-#include "ProjectWindow.h"
+#include "RobotWindow.h"
 
 #define RED_COLOR       cv::Scalar(0, 0, 255)
 #define GREEN_COLOR     cv::Scalar(0, 255, 0)
@@ -56,14 +56,14 @@
 
 #define CONVEYOR_TIMER_INTERVAL	100
 
-class ProjectWindow;
+class RobotWindow;
 
 class ImageProcesser : public QWidget
 {
 	Q_OBJECT
 
 public:
-	ImageProcesser(ProjectWindow *parent);
+	ImageProcesser(RobotWindow *parent);
 	~ImageProcesser();
 	
 	void SetDetectParameterPointer(QLineEdit* xRec, QLineEdit* yRec, QLineEdit* distance, QLineEdit* xCoor, QLineEdit* yCoor);
@@ -225,5 +225,5 @@ private:
 
 	bool isFirstLoad = true;
 	bool isStopCapture = false;
-	ProjectWindow* mParent;
+	RobotWindow* mParent;
 };

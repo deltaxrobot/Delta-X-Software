@@ -2,6 +2,14 @@
 #define ROBOTMANAGER_H
 
 #include <QObject>
+#include <QList>
+#include "Robot.h"
+#include "RobotWindow.h"
+#include <QAction>
+
+namespace Ui {
+    class RobotWindow;
+}
 
 class RobotManager : public QObject
 {
@@ -9,12 +17,23 @@ class RobotManager : public QObject
 public:
     explicit RobotManager(QObject *parent = nullptr);
 
-    RobotManager* getInstance();
+    void AddRobotWindow(RobotWindow* robotWindow);
+    RobotWindow* CreatNewRobotWindow();
+    void SetMainStackedWidgetAndPages(QStackedWidget* mainStack, QWidget* mainPage, QWidget* fullDisplayPage, QLayout* fullDisplayLayout);
+    void SetSubStackedWidget(QStackedWidget* subStackedWidget);
 
-private:
-    RobotManager *instance = NULL;
+    QStringList GetRobotNames();
 
-signals:
+    QList<Robot*> *Robots;
+    QList<RobotWindow*> RobotWindows;
+    int ProjectID = 0;
+
+    QStackedWidget* MainWindowStackedWidget;
+    QWidget* MainWindowPage;
+    QWidget* FullDisplayPage;
+    QLayout* FullDisplayLayout;
+
+    QStackedWidget* SubWindowStackedWidget;
 
 };
 

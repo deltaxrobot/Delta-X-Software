@@ -25,9 +25,9 @@
 #include <codeeditor.h>
 #include <qscrollarea.h>
 #include <qscrollbar.h>
-#include "ProjectWindow.h"
+#include "RobotWindow.h"
 
-class ProjectWindow;
+class RobotWindow;
 
 class GcodeVariable
 {
@@ -41,9 +41,9 @@ class GcodeProgramManager : public QObject
 	Q_OBJECT
 
 public:
-	GcodeProgramManager(ProjectWindow *parent);
+	GcodeProgramManager(RobotWindow *parent);
 	~GcodeProgramManager();
-	GcodeProgramManager(ProjectWindow *parent, QScrollArea* scrolArea, QWidget* container, CodeEditor* gcodeArea, QPushButton* executeButton, ConnectionManager* deltaPort = NULL, DeltaVisualizer* deltaVisualize = NULL);
+	GcodeProgramManager(RobotWindow *parent, QScrollArea* scrolArea, QWidget* container, CodeEditor* gcodeArea, QPushButton* executeButton, ConnectionManager* deltaPort = NULL, DeltaVisualizer* deltaVisualize = NULL);
 	void AddGcodeLine(QString line);
 	void AddG01(float  x, float y, float z);
 	void AddG28();
@@ -65,6 +65,8 @@ public:
 	bool IsFromOtherGcodeProgram = false;
 	GcodeProgramManager* OutsideGcodeProgramManager = NULL;
 	GcodeProgramManager* InsideGcodeProgramManager = NULL;
+
+    QList<GcodeVariable> GcodeVariables;
 
 public slots:
 	void ChangeSelectingProgram(GcodeProgram* ptr);
@@ -92,8 +94,7 @@ signals:
 
 private:
 	ConnectionManager* deltaConnection;
-	DeltaVisualizer* deltaParameter;
-	QList<GcodeVariable> gcodeVariables;
+    DeltaVisualizer* deltaParameter;
 
 	int sortMethod = 0;
 
@@ -108,7 +109,7 @@ private:
 	int returnPointerOrder = -1;
 	QString currentLine;
 
-	ProjectWindow* mParent;
+	RobotWindow* mParent;
 
 	float GetVariableValue(QString name);
 	bool isGlobalVariable(QString name);

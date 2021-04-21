@@ -18,10 +18,13 @@ public:
     void InitTabManager(QTabWidget* tabWidget);
     void InitAddNewTab(QWidget* addNewTab);
     void AddNewTab(QWidget* newTab = NULL, QStackedWidget* stack = NULL);
+    void AddNewTab(QStackedWidget* stack);
+    QString GetProjectName(int index);
+    QString GetProjectName(QWidget* widget);
 
     QStackedWidget *SubProject;
 
-     bool IsNewTabSlotOutside = false;
+    bool IsNewTabSlotOutside = false;
 
 public slots:
     void ChangeProjectTab(int index);
