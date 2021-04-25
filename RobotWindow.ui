@@ -345,115 +345,144 @@ QPushButton:pressed
            <layout class="QVBoxLayout" name="verticalLayout_11"/>
           </item>
           <item>
-           <layout class="QGridLayout" name="gridLayout_17">
-            <property name="leftMargin">
-             <number>20</number>
+           <widget class="QFrame" name="fConnectionInfo">
+            <property name="styleSheet">
+             <string notr="true"/>
             </property>
-            <property name="horizontalSpacing">
-             <number>10</number>
-            </property>
-            <property name="verticalSpacing">
-             <number>2</number>
-            </property>
-            <item row="0" column="1">
-             <widget class="QLabel" name="label_6">
-              <property name="text">
-               <string>ID</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignCenter</set>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="0">
-             <widget class="QLabel" name="label_64">
-              <property name="text">
-               <string>Method</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignCenter</set>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="3">
-             <widget class="QLabel" name="label_65">
-              <property name="text">
-               <string>Baudrate</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignCenter</set>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="2">
-             <widget class="QLabel" name="label_10">
-              <property name="text">
-               <string>COM</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignCenter</set>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="3">
-             <widget class="QLabel" name="lbBaudrate">
-              <property name="font">
-               <font>
-                <pointsize>8</pointsize>
-               </font>
-              </property>
-              <property name="styleSheet">
-               <string notr="true">color: rgb(41, 155, 255);</string>
-              </property>
-              <property name="text">
-               <string>115200</string>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="2">
-             <widget class="QLabel" name="lbComName">
-              <property name="font">
-               <font>
-                <pointsize>8</pointsize>
-               </font>
-              </property>
-              <property name="styleSheet">
-               <string notr="true">color: rgb(41, 155, 255);</string>
-              </property>
-              <property name="text">
-               <string>COM9</string>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="0">
-             <widget class="QCheckBox" name="cbAutoConnect">
-              <property name="styleSheet">
-               <string notr="true">color: rgb(41, 155, 255);</string>
-              </property>
-              <property name="text">
-               <string>Auto</string>
-              </property>
-              <property name="checked">
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="1">
-             <widget class="QLabel" name="lbID">
-              <property name="font">
-               <font>
-                <pointsize>8</pointsize>
-               </font>
-              </property>
-              <property name="styleSheet">
-               <string notr="true">color: rgb(41, 155, 255);</string>
-              </property>
-              <property name="text">
-               <string>0</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
+            <layout class="QGridLayout" name="gridLayout_17">
+             <property name="leftMargin">
+              <number>20</number>
+             </property>
+             <property name="horizontalSpacing">
+              <number>10</number>
+             </property>
+             <property name="verticalSpacing">
+              <number>2</number>
+             </property>
+             <item row="0" column="1">
+              <widget class="QLabel" name="label_6">
+               <property name="font">
+                <font>
+                 <weight>75</weight>
+                 <bold>true</bold>
+                </font>
+               </property>
+               <property name="text">
+                <string>ID</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="0">
+              <widget class="QLabel" name="label_64">
+               <property name="font">
+                <font>
+                 <weight>75</weight>
+                 <bold>true</bold>
+                </font>
+               </property>
+               <property name="text">
+                <string>Method</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="3">
+              <widget class="QLabel" name="label_65">
+               <property name="font">
+                <font>
+                 <weight>75</weight>
+                 <bold>true</bold>
+                </font>
+               </property>
+               <property name="text">
+                <string>Baudrate</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="2">
+              <widget class="QLabel" name="label_10">
+               <property name="font">
+                <font>
+                 <weight>75</weight>
+                 <bold>true</bold>
+                </font>
+               </property>
+               <property name="text">
+                <string>COM</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="3">
+              <widget class="QLabel" name="lbBaudrate">
+               <property name="font">
+                <font>
+                 <pointsize>11</pointsize>
+                </font>
+               </property>
+               <property name="styleSheet">
+                <string notr="true"/>
+               </property>
+               <property name="text">
+                <string>115200</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="2">
+              <widget class="QLabel" name="lbComName">
+               <property name="font">
+                <font>
+                 <pointsize>11</pointsize>
+                </font>
+               </property>
+               <property name="styleSheet">
+                <string notr="true"/>
+               </property>
+               <property name="text">
+                <string>NONE</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="0">
+              <widget class="QCheckBox" name="cbAutoConnect">
+               <property name="styleSheet">
+                <string notr="true"/>
+               </property>
+               <property name="text">
+                <string>Auto</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="1">
+              <widget class="QLabel" name="lbID">
+               <property name="font">
+                <font>
+                 <pointsize>11</pointsize>
+                </font>
+               </property>
+               <property name="styleSheet">
+                <string notr="true"/>
+               </property>
+               <property name="text">
+                <string>0</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
           </item>
           <item>
            <spacer name="horizontalSpacer_4">
@@ -631,7 +660,7 @@ QPushButton:pressed
                 </size>
                </property>
                <property name="text">
-                <string>-235.25</string>
+                <string>0</string>
                </property>
                <property name="alignment">
                 <set>Qt::AlignCenter</set>
@@ -647,7 +676,7 @@ QPushButton:pressed
                 </size>
                </property>
                <property name="text">
-                <string>-524.23</string>
+                <string>0</string>
                </property>
                <property name="alignment">
                 <set>Qt::AlignCenter</set>
@@ -810,7 +839,7 @@ QPushButton:pressed
              </property>
              <property name="font">
               <font>
-               <pointsize>8</pointsize>
+               <pointsize>11</pointsize>
                <weight>50</weight>
                <bold>false</bold>
               </font>
@@ -822,7 +851,7 @@ QPushButton:pressed
               <enum>QTabWidget::North</enum>
              </property>
              <property name="currentIndex">
-              <number>2</number>
+              <number>3</number>
              </property>
              <property name="elideMode">
               <enum>Qt::ElideNone</enum>
@@ -847,7 +876,7 @@ QPushButton:pressed
                   <property name="geometry">
                    <rect>
                     <x>0</x>
-                    <y>0</y>
+                    <y>-180</y>
                     <width>522</width>
                     <height>600</height>
                    </rect>
@@ -924,6 +953,9 @@ QPushButton:pressed
                    </item>
                    <item>
                     <layout class="QHBoxLayout" name="horizontalLayout_16">
+                     <property name="spacing">
+                      <number>6</number>
+                     </property>
                      <item>
                       <widget class="QGroupBox" name="groupBox_3">
                        <property name="minimumSize">
@@ -934,57 +966,53 @@ QPushButton:pressed
                        </property>
                        <property name="maximumSize">
                         <size>
-                         <width>150</width>
+                         <width>200</width>
                          <height>16777215</height>
                         </size>
                        </property>
                        <property name="title">
                         <string>Camera</string>
                        </property>
-                       <widget class="QComboBox" name="cbROSCameraView">
-                        <property name="geometry">
-                         <rect>
-                          <x>95</x>
-                          <y>30</y>
-                          <width>41</width>
-                          <height>30</height>
-                         </rect>
-                        </property>
-                        <property name="minimumSize">
-                         <size>
-                          <width>0</width>
-                          <height>30</height>
-                         </size>
-                        </property>
-                        <item>
-                         <property name="text">
-                          <string>0</string>
-                         </property>
+                       <layout class="QGridLayout" name="gridLayout_21">
+                        <item row="0" column="0">
+                         <widget class="QLabel" name="label">
+                          <property name="minimumSize">
+                           <size>
+                            <width>100</width>
+                            <height>0</height>
+                           </size>
+                          </property>
+                          <property name="text">
+                           <string>Change View</string>
+                          </property>
+                         </widget>
                         </item>
-                        <item>
-                         <property name="text">
-                          <string>1</string>
-                         </property>
+                        <item row="0" column="1">
+                         <widget class="QComboBox" name="cbROSCameraView">
+                          <property name="minimumSize">
+                           <size>
+                            <width>0</width>
+                            <height>30</height>
+                           </size>
+                          </property>
+                          <item>
+                           <property name="text">
+                            <string>0</string>
+                           </property>
+                          </item>
+                          <item>
+                           <property name="text">
+                            <string>1</string>
+                           </property>
+                          </item>
+                          <item>
+                           <property name="text">
+                            <string>2</string>
+                           </property>
+                          </item>
+                         </widget>
                         </item>
-                        <item>
-                         <property name="text">
-                          <string>2</string>
-                         </property>
-                        </item>
-                       </widget>
-                       <widget class="QLabel" name="label">
-                        <property name="geometry">
-                         <rect>
-                          <x>10</x>
-                          <y>30</y>
-                          <width>81</width>
-                          <height>16</height>
-                         </rect>
-                        </property>
-                        <property name="text">
-                         <string>Change View</string>
-                        </property>
-                       </widget>
+                       </layout>
                       </widget>
                      </item>
                      <item>
@@ -995,6 +1023,12 @@ QPushButton:pressed
                          <height>150</height>
                         </size>
                        </property>
+                       <property name="maximumSize">
+                        <size>
+                         <width>16777215</width>
+                         <height>16777215</height>
+                        </size>
+                       </property>
                        <property name="title">
                         <string>Display</string>
                        </property>
@@ -1003,7 +1037,7 @@ QPushButton:pressed
                          <rect>
                           <x>20</x>
                           <y>30</y>
-                          <width>206</width>
+                          <width>240</width>
                           <height>106</height>
                          </rect>
                         </property>
@@ -1037,9 +1071,15 @@ QPushButton:pressed
                          </item>
                          <item row="1" column="0">
                           <widget class="QLabel" name="label_2">
+                           <property name="minimumSize">
+                            <size>
+                             <width>120</width>
+                             <height>0</height>
+                            </size>
+                           </property>
                            <property name="maximumSize">
                             <size>
-                             <width>80</width>
+                             <width>16777215</width>
                              <height>16777215</height>
                             </size>
                            </property>
@@ -1141,7 +1181,7 @@ QPushButton:pressed
                   <property name="geometry">
                    <rect>
                     <x>0</x>
-                    <y>0</y>
+                    <y>-180</y>
                     <width>522</width>
                     <height>1200</height>
                    </rect>
@@ -5041,7 +5081,7 @@ QLabel
                   <enum>QTabWidget::West</enum>
                  </property>
                  <property name="currentIndex">
-                  <number>2</number>
+                  <number>0</number>
                  </property>
                  <widget class="QWidget" name="tConveyor">
                   <attribute name="title">
@@ -5049,22 +5089,25 @@ QLabel
                   </attribute>
                   <layout class="QVBoxLayout" name="verticalLayout_16">
                    <property name="spacing">
-                    <number>0</number>
+                    <number>10</number>
                    </property>
                    <property name="leftMargin">
-                    <number>0</number>
+                    <number>10</number>
                    </property>
                    <property name="topMargin">
-                    <number>0</number>
+                    <number>10</number>
                    </property>
                    <property name="rightMargin">
-                    <number>0</number>
+                    <number>10</number>
                    </property>
                    <property name="bottomMargin">
-                    <number>0</number>
+                    <number>10</number>
                    </property>
                    <item>
                     <layout class="QHBoxLayout" name="horizontalLayout_48">
+                     <property name="leftMargin">
+                      <number>10</number>
+                     </property>
                      <item>
                       <widget class="QPushButton" name="pbConveyorConnect">
                        <property name="minimumSize">
@@ -5099,7 +5142,7 @@ QLabel
                       <widget class="QLabel" name="lbConveyorCOMName">
                        <property name="font">
                         <font>
-                         <pointsize>10</pointsize>
+                         <pointsize>11</pointsize>
                         </font>
                        </property>
                        <property name="styleSheet">
@@ -5149,7 +5192,7 @@ QLabel
                        </property>
                        <property name="font">
                         <font>
-                         <pointsize>8</pointsize>
+                         <pointsize>11</pointsize>
                          <weight>50</weight>
                          <bold>false</bold>
                          <kerning>true</kerning>
@@ -5187,7 +5230,7 @@ QLabel
                        </property>
                        <property name="font">
                         <font>
-                         <pointsize>8</pointsize>
+                         <pointsize>11</pointsize>
                          <weight>50</weight>
                          <bold>false</bold>
                          <kerning>true</kerning>
@@ -5225,7 +5268,7 @@ QLabel
                        </property>
                        <property name="font">
                         <font>
-                         <pointsize>8</pointsize>
+                         <pointsize>11</pointsize>
                          <weight>50</weight>
                          <bold>false</bold>
                          <kerning>true</kerning>
@@ -5246,7 +5289,7 @@ QLabel
                        </property>
                        <property name="font">
                         <font>
-                         <pointsize>10</pointsize>
+                         <pointsize>11</pointsize>
                          <weight>50</weight>
                          <bold>false</bold>
                          <kerning>true</kerning>
@@ -5271,7 +5314,7 @@ QLabel
                        </property>
                        <property name="font">
                         <font>
-                         <pointsize>10</pointsize>
+                         <pointsize>11</pointsize>
                          <weight>50</weight>
                          <bold>false</bold>
                          <kerning>true</kerning>
@@ -5295,7 +5338,7 @@ QLabel
                        </property>
                        <property name="font">
                         <font>
-                         <pointsize>8</pointsize>
+                         <pointsize>11</pointsize>
                          <weight>50</weight>
                          <bold>false</bold>
                          <kerning>true</kerning>
@@ -5335,33 +5378,36 @@ QLabel
                   </attribute>
                   <layout class="QVBoxLayout" name="verticalLayout_18">
                    <property name="spacing">
-                    <number>0</number>
+                    <number>10</number>
                    </property>
                    <property name="leftMargin">
-                    <number>0</number>
+                    <number>10</number>
                    </property>
                    <property name="topMargin">
-                    <number>0</number>
+                    <number>10</number>
                    </property>
                    <property name="rightMargin">
-                    <number>0</number>
+                    <number>10</number>
                    </property>
                    <property name="bottomMargin">
-                    <number>0</number>
+                    <number>10</number>
                    </property>
                    <item>
                     <layout class="QHBoxLayout" name="horizontalLayout_49">
+                     <property name="leftMargin">
+                      <number>10</number>
+                     </property>
                      <item>
                       <widget class="QPushButton" name="pbSlidingConnect">
                        <property name="minimumSize">
                         <size>
-                         <width>0</width>
+                         <width>100</width>
                          <height>30</height>
                         </size>
                        </property>
                        <property name="maximumSize">
                         <size>
-                         <width>200</width>
+                         <width>120</width>
                          <height>50</height>
                         </size>
                        </property>
@@ -5383,7 +5429,7 @@ QLabel
                       <widget class="QLabel" name="lbSliderCOMName">
                        <property name="font">
                         <font>
-                         <pointsize>9</pointsize>
+                         <pointsize>11</pointsize>
                         </font>
                        </property>
                        <property name="styleSheet">
@@ -5418,13 +5464,13 @@ QLabel
                        <property name="minimumSize">
                         <size>
                          <width>0</width>
-                         <height>25</height>
+                         <height>30</height>
                         </size>
                        </property>
                        <property name="maximumSize">
                         <size>
                          <width>16777215</width>
-                         <height>30</height>
+                         <height>40</height>
                         </size>
                        </property>
                       </widget>
@@ -5434,18 +5480,18 @@ QLabel
                        <property name="minimumSize">
                         <size>
                          <width>0</width>
-                         <height>25</height>
+                         <height>30</height>
                         </size>
                        </property>
                        <property name="maximumSize">
                         <size>
                          <width>16777215</width>
-                         <height>30</height>
+                         <height>40</height>
                         </size>
                        </property>
                        <property name="font">
                         <font>
-                         <pointsize>9</pointsize>
+                         <pointsize>11</pointsize>
                         </font>
                        </property>
                        <property name="toolTip">
@@ -5464,7 +5510,7 @@ QLabel
                       <widget class="QLabel" name="label_58">
                        <property name="font">
                         <font>
-                         <pointsize>8</pointsize>
+                         <pointsize>11</pointsize>
                          <weight>50</weight>
                          <bold>false</bold>
                          <kerning>true</kerning>
@@ -5479,7 +5525,7 @@ QLabel
                       <widget class="QLabel" name="label_37">
                        <property name="font">
                         <font>
-                         <pointsize>8</pointsize>
+                         <pointsize>11</pointsize>
                          <weight>50</weight>
                          <bold>false</bold>
                          <kerning>true</kerning>
@@ -5495,18 +5541,18 @@ QLabel
                        <property name="minimumSize">
                         <size>
                          <width>0</width>
-                         <height>25</height>
+                         <height>30</height>
                         </size>
                        </property>
                        <property name="maximumSize">
                         <size>
                          <width>16777215</width>
-                         <height>30</height>
+                         <height>40</height>
                         </size>
                        </property>
                        <property name="font">
                         <font>
-                         <pointsize>9</pointsize>
+                         <pointsize>11</pointsize>
                         </font>
                        </property>
                        <property name="toolTip">
@@ -5526,13 +5572,13 @@ QLabel
                        <property name="minimumSize">
                         <size>
                          <width>0</width>
-                         <height>25</height>
+                         <height>30</height>
                         </size>
                        </property>
                        <property name="maximumSize">
                         <size>
                          <width>16777215</width>
-                         <height>30</height>
+                         <height>40</height>
                         </size>
                        </property>
                       </widget>
@@ -5541,7 +5587,7 @@ QLabel
                       <widget class="QLabel" name="label_36">
                        <property name="font">
                         <font>
-                         <pointsize>8</pointsize>
+                         <pointsize>11</pointsize>
                          <weight>50</weight>
                          <bold>false</bold>
                          <kerning>true</kerning>
@@ -5556,7 +5602,7 @@ QLabel
                       <widget class="QLabel" name="label_59">
                        <property name="font">
                         <font>
-                         <pointsize>8</pointsize>
+                         <pointsize>11</pointsize>
                          <weight>50</weight>
                          <bold>false</bold>
                          <kerning>true</kerning>
@@ -5593,16 +5639,16 @@ QLabel
                     <number>5</number>
                    </property>
                    <property name="leftMargin">
-                    <number>0</number>
+                    <number>10</number>
                    </property>
                    <property name="topMargin">
-                    <number>0</number>
+                    <number>10</number>
                    </property>
                    <property name="rightMargin">
-                    <number>0</number>
+                    <number>10</number>
                    </property>
                    <property name="bottomMargin">
-                    <number>0</number>
+                    <number>10</number>
                    </property>
                    <item>
                     <widget class="QWidget" name="widget" native="true">
@@ -5613,6 +5659,21 @@ QLabel
                       </size>
                      </property>
                      <layout class="QHBoxLayout" name="horizontalLayout_50">
+                      <property name="spacing">
+                       <number>10</number>
+                      </property>
+                      <property name="leftMargin">
+                       <number>0</number>
+                      </property>
+                      <property name="topMargin">
+                       <number>0</number>
+                      </property>
+                      <property name="rightMargin">
+                       <number>10</number>
+                      </property>
+                      <property name="bottomMargin">
+                       <number>10</number>
+                      </property>
                       <item>
                        <widget class="QPushButton" name="pbExternalControllerConnect">
                         <property name="sizePolicy">
@@ -5624,13 +5685,13 @@ QLabel
                         <property name="minimumSize">
                          <size>
                           <width>100</width>
-                          <height>25</height>
+                          <height>30</height>
                          </size>
                         </property>
                         <property name="maximumSize">
                          <size>
                           <width>120</width>
-                          <height>30</height>
+                          <height>50</height>
                          </size>
                         </property>
                         <property name="font">
@@ -5659,7 +5720,7 @@ QLabel
                         </property>
                         <property name="font">
                          <font>
-                          <pointsize>9</pointsize>
+                          <pointsize>11</pointsize>
                          </font>
                         </property>
                         <property name="styleSheet">
@@ -5739,7 +5800,7 @@ QLabel
                     <x>0</x>
                     <y>0</y>
                     <width>536</width>
-                    <height>412</height>
+                    <height>409</height>
                    </rect>
                   </property>
                   <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -5763,7 +5824,7 @@ QLabel
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:7.8pt;&quot;&gt;Debug:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2';&quot;&gt;Debug:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                        </property>
                       </widget>
                      </item>
@@ -5850,7 +5911,7 @@ p, li { white-space: pre-wrap; }
               <enum>QTabWidget::Rounded</enum>
              </property>
              <property name="currentIndex">
-              <number>0</number>
+              <number>1</number>
              </property>
              <property name="usesScrollButtons">
               <bool>false</bool>
@@ -7500,6 +7561,12 @@ p, li { white-space: pre-wrap; }
                    </item>
                    <item>
                     <widget class="QGroupBox" name="gbCameraDisplay">
+                     <property name="font">
+                      <font>
+                       <weight>75</weight>
+                       <bold>true</bold>
+                      </font>
+                     </property>
                      <property name="title">
                       <string>Display</string>
                      </property>
@@ -7647,6 +7714,12 @@ p, li { white-space: pre-wrap; }
                    </item>
                    <item>
                     <widget class="QGroupBox" name="gbCameraMeasurement">
+                     <property name="font">
+                      <font>
+                       <weight>75</weight>
+                       <bold>true</bold>
+                      </font>
+                     </property>
                      <property name="title">
                       <string>Measurement</string>
                      </property>
@@ -7864,6 +7937,12 @@ p, li { white-space: pre-wrap; }
                    </item>
                    <item>
                     <widget class="QGroupBox" name="gbCameraObject">
+                     <property name="font">
+                      <font>
+                       <weight>75</weight>
+                       <bold>true</bold>
+                      </font>
+                     </property>
                      <property name="title">
                       <string>Object</string>
                      </property>
@@ -8169,6 +8248,12 @@ p, li { white-space: pre-wrap; }
                    </item>
                    <item>
                     <widget class="QGroupBox" name="gbCameraVariable">
+                     <property name="font">
+                      <font>
+                       <weight>75</weight>
+                       <bold>true</bold>
+                      </font>
+                     </property>
                      <property name="styleSheet">
                       <string notr="true"/>
                      </property>
@@ -8301,8 +8386,17 @@ p, li { white-space: pre-wrap; }
                    </item>
                    <item>
                     <widget class="QGroupBox" name="gbConveyorForTracking">
+                     <property name="font">
+                      <font>
+                       <weight>75</weight>
+                       <bold>true</bold>
+                      </font>
+                     </property>
                      <property name="title">
                       <string>Conveyor</string>
+                     </property>
+                     <property name="checkable">
+                      <bool>true</bool>
                      </property>
                      <layout class="QGridLayout" name="gridLayout_16">
                       <property name="topMargin">
@@ -9379,7 +9473,7 @@ color: rgb(255, 255, 255);
 }
 QMenuBar:selected
 {
-color: rgb(72, 72, 72);
+	background-color: rgb(25, 167, 242);
 }
 QMenu
 {
@@ -9397,6 +9491,7 @@ padding-left:20px;
 QMenu::item:selected
 {
 	background-color: rgb(0, 170, 127);
+	
 }
 </string>
    </property>

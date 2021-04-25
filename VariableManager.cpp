@@ -38,6 +38,7 @@ void VariableManager::AddVariable(QString name, QString value)
 
 void VariableManager::AddVariable(QString name, QString value, QTreeWidgetItem *item)
 {
+    name = name.replace("_", ".");
     QStringList names = name.split('.');
 
     QTreeWidgetItem* childItem = getItem(names[0], item);

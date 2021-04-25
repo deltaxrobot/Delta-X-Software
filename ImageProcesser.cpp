@@ -74,30 +74,40 @@ void ImageProcesser::LoadCamera()
             QString cameraIDText = text.mid(0, text.indexOf(" - "));
             int cameraID = cameraIDText.toInt();
             RunningCamera = cameraID;
-            if (mParent->RobotManagerPointer != NULL)
-            {
-                if (mParent->RobotManagerPointer->RobotWindows.size() > 0)
-                {
-                    for (int i = 0; i < mParent->RobotManagerPointer->RobotWindows.size(); i++)
-                    {
-                        if (mParent->RobotManagerPointer->RobotWindows.at(i)->DeltaImageProcesser->RunningCamera == RunningCamera)
-                        {
-                            Camera = mParent->RobotManagerPointer->RobotWindows.at(i)->DeltaImageProcesser->Camera;
-                            IsCameraPause = false;
-                            return;
-                        }
-                    }
-                }
-            }
+
 			lbCameraState->setEnabled(true);
 			pbPlayCammera->setChecked(true);
 			lbResultImage->InitParameter();
 
             loadBt->setText("Stop Camera");
 
-            Camera->open(cameraID);
-			Camera->set(cv::CAP_PROP_FRAME_WIDTH, 800);
-			Camera->set(cv::CAP_PROP_FRAME_HEIGHT, 600);
+            bool isCameraUsingByOtherRobot = false;
+
+            if (mParent->RobotManagerPointer != NULL)
+            {
+                if (mParent->RobotManagerPointer->RobotWindows.size() > 0)
+                {
+                    for (int i = 0; i < mParent->RobotManagerPointer->RobotWindows.size(); i++)
+                    {
+                        if (mParent == mParent->RobotManagerPointer->RobotWindows.at(i))
+                            continue;
+
+                        if (mParent->RobotManagerPointer->RobotWindows.at(i)->DeltaImageProcesser->RunningCamera == RunningCamera)
+                        {
+                            Camera = mParent->RobotManagerPointer->RobotWindows.at(i)->DeltaImageProcesser->Camera;
+
+                            isCameraUsingByOtherRobot = true;
+                        }
+                    }
+                }
+            }
+
+            if (isCameraUsingByOtherRobot == false)
+            {
+                Camera->open(cameraID);
+                Camera->set(cv::CAP_PROP_FRAME_WIDTH, 800);
+                Camera->set(cv::CAP_PROP_FRAME_HEIGHT, 600);
+            }
 
 			UpdateRatios();
 

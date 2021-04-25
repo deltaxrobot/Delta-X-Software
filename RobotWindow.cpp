@@ -17,7 +17,6 @@ RobotWindow::~RobotWindow()
 {
 
 }
-
 void RobotWindow::InitEvents()
 {
     connect(ui->pbConnect, SIGNAL(clicked(bool)), this, SLOT(ConnectDeltaRobot()));

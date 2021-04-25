@@ -36,7 +36,7 @@
    to submit a pull request on the GitHub page.
 */
 #if Q_BYTE_ORDER == Q_BIG_ENDIAN
-#error Some of QImage's formats are endian-dependant. This file assumes little endian. See comment at top of header.
+           #error Some of QImage's formats are endian-dependant. This file assumes little endian. See comment at top of header.
 #endif
 
 namespace ImageTool {
