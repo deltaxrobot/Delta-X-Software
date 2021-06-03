@@ -11,24 +11,24 @@ windows {
     LIBS += E:\OpenCV\opencv-4.0\build\x64\vc15\lib\opencv_world400.lib
     LIBS += E:\OpenCV\opencv-4.0\build\x64\vc15\lib\opencv_world400d.lib
 
-    include ($$PWD/3rd-party/QJoysticks/QJoysticks.pri)
+    include ($$PWD\3rd-party\QJoysticks\QJoysticks.pri)
 }
 
-linux
-{
-    INCLUDEPATH += "/usr/local/include"
-    INCLUDEPATH += "/"
-    LIBS += $(shell pkg-config opencv --libs)
-    LIBS += -L/usr/local/lib -lopencv_core -lopencv_highgui -lopencv_imgproc -lopencv_imgcodecs -lopencv_videoio
-}
-
-unix:!macx
-{
-    INCLUDEPATH += "/usr/local/include"
+#linux
+#{
+#    INCLUDEPATH += "/usr/local/include"
+#    INCLUDEPATH += "/"
 #    LIBS += $(shell pkg-config opencv --libs)
-    LIBS += -L/home/trungdoanhong/Documents/opencv-4.0/sources/build/lib -lopencv_core -lopencv_highgui -lopencv_imgproc -lopencv_imgcodecs -lopencv_videoio
+#    LIBS += -L/usr/local/lib -lopencv_core -lopencv_highgui -lopencv_imgproc -lopencv_imgcodecs -lopencv_videoio
+#}
 
-}
+#unix:!macx
+#{
+#    INCLUDEPATH += "/usr/local/include"
+##    LIBS += $(shell pkg-config opencv --libs)
+#    LIBS += -L/home/trungdoanhong/Documents/opencv-4.0/sources/build/lib -lopencv_core -lopencv_highgui -lopencv_imgproc -lopencv_imgcodecs -lopencv_videoio
+
+#}
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 

@@ -92,5 +92,8 @@
         <file>icon/blue_project_64px_1.png</file>
         <file>icon/charity_64px.png</file>
         <file>icon/divider_50px.png</file>
+        <file>icon/icons8_image_96px.png</file>
+        <file>icon/icons8_pencil_drawing_96px.png</file>
+        <file>icon/icons8_code_96px.png</file>
     </qresource>
 </RCC>

@@ -42,7 +42,7 @@
 #include <QPluginLoader>
 #include "SmartDialog.h"
 
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN
     #include <QJoysticks.h>
 #endif
 
@@ -227,7 +227,7 @@ private slots:
     void OpenLoadingPopup();
     void CloseLoadingPopup();
 
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN
     //--------Joystick-----------
     void ProcessJoystickButton(const QJoystickButtonEvent& event);
     void ProcessJoystickAxis(const QJoystickAxisEvent& event);
@@ -251,7 +251,7 @@ private:
 	void makeEffectExample();
 
     //--------- Controller -------
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN
     QJoysticks *joystick;
 #endif
     //--------- IO ----------

@@ -148,7 +148,7 @@ void RobotWindow::InitEvents()
 	connect(ui->btDeleteAllObjects, SIGNAL(clicked(bool)), this, SLOT(DeleteAllObjectsInROS()));
 	connect(ui->pbClearDetectObjects, SIGNAL(clicked(bool)), this, SLOT(DeleteAllObjectsInROS()));
 
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN
     //------------- Joystick -----------
     connect(joystick, SIGNAL(buttonEvent (const QJoystickButtonEvent&)), SLOT(ProcessJoystickButton(const QJoystickButtonEvent&)));
     connect(joystick, SIGNAL(axisEvent(const QJoystickAxisEvent&)), SLOT(ProcessJoystickAxis(const QJoystickAxisEvent&)));
@@ -196,7 +196,7 @@ void RobotWindow::InitEvents()
 	connect(ui->leConvenyorSpeed, SIGNAL(returnPressed()), this, SLOT(SetConvenyorSpeed()));
 	connect(ui->cbConveyorDirection, SIGNAL(currentIndexChanged(int)), this, SLOT(SetConvenyorSpeed()));
 
-    //----------- Drawing -----------
+    //----------- Camera -----------
 	connect(ui->lbScreenStreamer, SIGNAL(FinishDrawObject(int, int, int, int)), DeltaImageProcesser, SLOT(GetObjectInfo(int, int, int, int)));
 	connect(ui->lbScreenStreamer, SIGNAL(FinishMeasureSpace(int)), DeltaImageProcesser, SLOT(GetDistance(int)));
 	connect(ui->lbScreenStreamer, SIGNAL(FinishSelectPerspectivePoints(QPoint, QPoint, QPoint, QPoint)), DeltaImageProcesser, SLOT(GetPerspectivePoints(QPoint, QPoint, QPoint, QPoint)));
@@ -231,6 +231,7 @@ void RobotWindow::InitEvents()
 
 	connect(DeltaImageProcesser->ObjectManager, SIGNAL(NewUpdateObjectPosition(QString, float)), DeltaGcodeManager, SLOT(UpdateSystemVariable(QString, float)));
 
+    //----------- Drawing -----------
 	connect(ui->pbOpenPicture, SIGNAL(clicked(bool)), DeltaDrawingExporter, SLOT(OpenImage()));
 	connect(ui->pbPainting, SIGNAL(clicked(bool)), DeltaDrawingExporter, SLOT(ConvertToDrawingArea()));
 
@@ -273,11 +274,12 @@ void RobotWindow::InitVariables()
     ui->lbBaudrate->setText(QString::number(DeltaConnectionManager->GetBaudrate()));
 //    ui->lbIP->setText(TCPConnectionManager::GetIP());
 //    ui->lbLocalPort->setText(QString::number(DeltaConnectionManager->TCPConnection->Port));
+    ui->mbRobot->setVisible(false);
 
     //---- Init pointer --------
     initInputValueLabels();
 
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN
     //------Joystick-----    
     joystick = QJoysticks::getInstance();
     joystick->setVirtualJoystickRange(ui->leJoystickRange->text().toDouble());
@@ -302,11 +304,13 @@ void RobotWindow::InitVariables()
 
 	DeltaDrawingExporter = new DrawingExporter(this);
 	DeltaDrawingExporter->SetDrawingParameterPointer(ui->lbImageForDrawing, ui->lbImageWidth, ui->lbImageHeight, ui->leHeightScale, ui->leWidthScale, ui->leSpace, ui->leDrawingThreshold, ui->hsDrawingThreshold, ui->cbDrawMethod, ui->cbConversionTool);
-	DeltaDrawingExporter->SetDrawingAreaWidget(ui->lbDrawingArea);
+    DeltaDrawingExporter->SetDrawingAreaWidget(ui->lbDrawingArea);
 
 	ui->lbDrawingArea->InitGrid();
 	ui->lbDrawingArea->SetGcodeEditor(ui->pteGcodeArea);
 	ui->lbDrawingArea->SetEffector(ui->cbDrawingEffector);
+    ui->lbDrawingArea->SetGcodeExportParameterPointer(ui->leSafeZHeight, ui->leTravelSpeed, ui->leDrawingSpeed, ui->leDrawingAcceleration);
+
 
 	//--------------Timer-------------
 
@@ -1841,9 +1845,9 @@ void RobotWindow::CloseLoadingPopup()
     mvLoadingPopup->stop();
 }
 
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN
 
-void ProjectWindow::ProcessJoystickButton(const QJoystickButtonEvent& event)
+void RobotWindow::ProcessJoystickButton(const QJoystickButtonEvent& event)
 {
     Debug(QString::number(event.button) + ": " + ((event.pressed == true)?"1":"0") + "\n");
 
@@ -1857,7 +1861,7 @@ void ProjectWindow::ProcessJoystickButton(const QJoystickButtonEvent& event)
                 ui->cbD0->click();
                 break;
             case 1:
-                ui->cbD1->click();
+                ui->cbDx->click();
                 break;
             case 6:
                 ui->pbUp->click();
@@ -1886,7 +1890,7 @@ void ProjectWindow::ProcessJoystickButton(const QJoystickButtonEvent& event)
     }
 }
 
-void ProjectWindow::ProcessJoystickAxis(const QJoystickAxisEvent &event)
+void RobotWindow::ProcessJoystickAxis(const QJoystickAxisEvent &event)
 {
     Debug(QString::number(event.axis) + ": " + QString::number(event.value) + "\n");
 
@@ -1907,7 +1911,7 @@ void ProjectWindow::ProcessJoystickAxis(const QJoystickAxisEvent &event)
 
 }
 
-void ProjectWindow::ProcessJoystickPOV(const QJoystickPOVEvent &event)
+void RobotWindow::ProcessJoystickPOV(const QJoystickPOVEvent &event)
 {
     Debug(QString::number(event.pov) + ": " + QString::number(event.angle) + "\n");
 

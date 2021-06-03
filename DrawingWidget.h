@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QLabel>
+#include <QLineEdit>
 #include <QPainter>
 #include <QPixmap>
 #include <QMouseEvent>
@@ -18,6 +19,9 @@
 #include <opencv2/imgproc.hpp>
 #include <ImageUnity.h>
 
+#include <QDir>
+#include <QCoreApplication>
+
 #define ZOOM_IN_ICON		"icon/Zoom In_16px.png"
 #define ZOOM_OUT_ICON		"icon/Zoom Out_16px.png"
 #define CIRCLE_ICON			"icon/Circle_16px.png"
@@ -26,7 +30,7 @@
 #define LINE_ICON			"icon/Line_16px.png"
 #define CURSOR_ICON			"icon/Cursor_16px.png"
 
-#define PRECISION			0.2f
+#define PRECISION			1.0f
 
 enum Tool
 {
@@ -60,12 +64,17 @@ public:
 
 	void InitGrid();
 	void AddImage(int x, int y, int w, int h, QPixmap pix, float space, QString type, QString conversion);
-	void AddLine(QPoint p1, QPoint p2);
+    void AddLineToStack(QPoint p1, QPoint p2);
+    void DrawLineFromStack();
 	void AddRectangle(QRect rec);
 	void SetGcodeEditor(QTextEdit* gcodeEditor);
 	void SetEffector(QComboBox* drawingEffector);
+    void SetGcodeExportParameterPointer(QLineEdit* safeZHeight, QLineEdit* travelSpeed, QLineEdit* drawingSpeed, QLineEdit* drawingAcceleration);
+
 	void ClearShape();
 	void ClearImage();
+
+    QVector<QVector<QPointF>> Vectors;
 
 public slots:
 	void SelectZoomInTool();
@@ -89,8 +98,14 @@ private:
 	QTextEdit* pteGcodeEditor;	
 	QComboBox* cbDrawingEffector;
 
+    QLineEdit* leSafeZHeight;
+    QLineEdit* leTravelSpeed;
+    QLineEdit* leDrawingSpeed;
+    QLineEdit* leDrawingAcceleration;
+
 	QVector<Image> images;
 	QVector<QLine> lines;
+
 	QVector<QRect> rectangles;
 	QVector<QVector3D> circles;
 	QVector<QVector4D> arcs;

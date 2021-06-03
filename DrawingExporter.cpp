@@ -65,42 +65,50 @@ void DrawingExporter::ConvertToDrawingArea()
 		matClone = cv::Scalar(255, 255, 255, 255);
 
 		float ratio = (float)effectPixmap->width() / effectPixmap->height();
-		int hS = leHeightScale->text().toInt();
-		int wS = hS * ratio;
+        float hS = leHeightScale->text().toInt();
+        float wS = hS * ratio;
 
 		float scale = (float)hS / mat.rows;
 
-		int xOffset = wS / 2;
-		int yOffset = hS / 2;
+        float xOffset = wS / 2;
+        float yOffset = hS / 2;
 
 		for (int i = 0; i < contoursContainer.size(); i++)
 		{
 			double arclen = cv::arcLength(contoursContainer[i], true);
-			double eps = 0.0005f;
+            double eps = 0.00025f;
 			double epsilon = arclen * eps;
 
 			std::vector<cv::Point> approx;
 			cv::approxPolyDP(contoursContainer[i], approx, epsilon, true);
 
+            QVector<QPointF> points;
+
 			for (int j = 0; j < approx.size() - 1; j++)
 			{
-				int x1 = approx[j].x * scale - xOffset;
-				int y1 = approx[j].y * scale - yOffset;
-				int x2 = approx[j + 1].x * scale - xOffset;
-				int y2 = approx[j + 1].y * scale - yOffset;
+                float x1 = approx[j].x * scale - xOffset;
+                float y1 = approx[j].y * scale - yOffset;
+                float x2 = approx[j + 1].x * scale - xOffset;
+                float y2 = approx[j + 1].y * scale - yOffset;
 
-				drawingArea->AddLine(QPoint(x1, y1), QPoint(x2, y2));
+                drawingArea->AddLineToStack(QPoint(x1, y1), QPoint(x2, y2));
+
+                points.append(QPointF(x1, y1));
 			}
+
+            drawingArea->Vectors.append(points);
 
 			//cv::polylines(matClone, approx, true, cv::Scalar(0, 0, 0, 255));
 
-			int x1 = approx[approx.size() - 1].x * scale - xOffset;
-			int y1 = approx[approx.size() - 1].y * scale - yOffset;
-			int x2 = approx[0].x * scale - xOffset;
-			int y2 = approx[0].y * scale - yOffset;
+            float x1 = approx[approx.size() - 1].x * scale - xOffset;
+            float y1 = approx[approx.size() - 1].y * scale - yOffset;
+            float x2 = approx[0].x * scale - xOffset;
+            float y2 = approx[0].y * scale - yOffset;
 
-			drawingArea->AddLine(QPoint(x1, y1), QPoint(x2, y2));
+            drawingArea->AddLineToStack(QPoint(x1, y1), QPoint(x2, y2));
 		}
+
+        drawingArea->DrawLineFromStack();
 	}
 	else
 	{

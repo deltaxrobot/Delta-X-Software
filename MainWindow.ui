@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>480</height>
+    <width>1200</width>
+    <height>700</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -39,11 +39,16 @@
   <property name="styleSheet">
    <string notr="true">QWidget
 {	
-	background-color: rgb(255, 255, 255);
+	color:rgb(60, 60, 60);
 }
 
+/*QWidget
+{	
+	background-color: rgb(255, 255, 255);
+}*/
+
 /*------- Combo Box---------*/
-QComboBox
+/*QComboBox
 {	
 	color: rgb(79, 79, 79);
 	border: 1px solid rgb(79, 79, 79);
@@ -58,18 +63,18 @@ QComboBox:drop-down
 
     border-left-width: 1px;
     border-left-color: darkgray;
-    border-left-style: solid; /* just a single line */
-    border-top-right-radius: 3px; /* same radius as the QComboBox */
+    border-left-style: solid;
+    border-top-right-radius: 3px;
     border-bottom-right-radius: 3px;	
 }
 
 QComboBox::down-arrow {
     image: url(:/icon/icons8_expand_arrow_16px.png);
-}
+}*/
 
 /* --------- Tab ----------*/
 
-
+/*
 QTabBar::tab {
     background: rgb(0, 132, 255);
 	
@@ -83,26 +88,6 @@ QTabBar::tab:selected, QTabBar::tab:hover {
     background: rgb(24, 70, 139);
 	color: rgb(255, 255, 255);
 }
-
-/*--------- Dialog -------------*/
-/*QPushButton
-{	
-	background-color: rgb(0, 132, 255);
-	border: none;
-	color: rgb(255, 255, 255);
-}
-
-QPushButton::hover
-{	
-	background-color: rgb(0, 195, 255);
-}
-
-QPushButton::pressed
-{	
-	background-color: rgb(255, 255, 255);	
-	color: rgb(58, 58, 58);
-	border: 1px solid rgb(58, 58, 58);
-}*/
 
 QPushButton
 {	
@@ -122,8 +107,9 @@ QPushButton:pressed
 	color: rgb(50, 50, 50);
 	background: none;
 }
-
+*/
 /*----- Scroll Bar ------*/
+/*
 QScrollBar:horizontal {
     background: rgb(185, 185, 185);
 }
@@ -137,7 +123,8 @@ QScrollBar:vertical {
 
 QScrollBar::handle:horizontal {	
 	background-color: rgb(172, 172, 172);
-}</string>
+}
+*/</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QHBoxLayout" name="horizontalLayout">
@@ -287,7 +274,8 @@ QToolButton::pressed
               </size>
              </property>
              <property name="styleSheet">
-              <string notr="true">background-color: rgb(24, 70, 139);</string>
+              <string notr="true">background-color: rgb(39, 114, 226);
+border-right: 5px solid rgb(24, 70, 139);</string>
              </property>
              <property name="text">
               <string>Project</string>

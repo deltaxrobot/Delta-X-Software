@@ -19,9 +19,11 @@ void DrawingWidget::InitGrid()
 	QPixmap pi = QPixmap(h, h);
 	pi.fill(QColor(0, 0, 0, 0));
 
-	QPixmap pix = QPixmap(QString::fromUtf8("icon/Circle-limit.png"));
-	QPixmap pix1 = QPixmap(QString::fromUtf8("icon/grid-10-pixel.png"));
-	QPixmap pix2 = QPixmap(QString::fromUtf8("icon/grid-axis.png"));
+    QString currentPaint = QCoreApplication::applicationDirPath();
+
+    QPixmap pix = QPixmap(currentPaint + "/icon/Circle-limit.png");
+    QPixmap pix1 = QPixmap(currentPaint + "/icon/grid-10-pixel.png");
+    QPixmap pix2 = QPixmap(currentPaint + "/icon/grid-axis.png");
 		
 	QPainter p(&pi);
 	
@@ -75,35 +77,76 @@ void DrawingWidget::AddImage(int x, int y, int w, int h, QPixmap pix, float spac
 	update();	
 }
 
-void DrawingWidget::AddLine(QPoint p1, QPoint p2)
+void DrawingWidget::AddLineToStack(QPoint p1, QPoint p2)
 {
 	QLine l;
-	l.setPoints(p1, p2);
+	l.setPoints(p1, p2);       
+
+    if (lines.count() > 0)
+    {
+        QLine lastLine = lines.at(lines.count() - 1);
+
+        if (l.p1() == lastLine.p1() && l.p2() == lastLine.p2())
+            return;
+    }
+
 	lines.push_back(l);
 
-	QPixmap pix = *pixmap();
-	cv::Mat matPix = ImageTool::QPixmapToCvMat(pix);
+//	QPixmap pix = *pixmap();
+//    //cv::Mat matPix = ImageTool::QPixmapToCvMat(pix);
 
-	float ratio = (float)pix.height() / height();
+//	float ratio = (float)pix.height() / height();
 
-	QLine line;
+//	QLine line;
 
-	int xOffset = height() / 2;
-	int yOffset = width() / 2;
+//	int xOffset = height() / 2;
+//	int yOffset = width() / 2;
 
-	line.setP1(QPoint((p1.x() + xOffset) * ratio, (p1.y() + yOffset) * ratio));
-	line.setP2(QPoint((p2.x() + xOffset) * ratio, (p2.y() + yOffset) * ratio));
+//	line.setP1(QPoint((p1.x() + xOffset) * ratio, (p1.y() + yOffset) * ratio));
+//	line.setP2(QPoint((p2.x() + xOffset) * ratio, (p2.y() + yOffset) * ratio));
 
-	QPainter p(&pix);
+//	QPainter p(&pix);
 
-	p.begin(this);
-	p.drawLine(line);
-	p.end();
+//	p.begin(this);
+//	p.drawLine(line);
+//	p.end();
 
-	matPix = ImageTool::QPixmapToCvMat(pix);
-	setPixmap(pix);
+//    //matPix = ImageTool::QPixmapToCvMat(pix);
+//	setPixmap(pix);
 
-	update();
+    //	update();
+}
+
+void DrawingWidget::DrawLineFromStack()
+{
+    QPixmap pix = *pixmap();
+    //cv::Mat matPix = ImageTool::QPixmapToCvMat(pix);
+
+    float ratio = (float)pix.height() / height();
+    int xOffset = height() / 2;
+    int yOffset = width() / 2;
+
+    QPainter p(&pix);
+
+    p.begin(this);
+
+    foreach(QLine l, lines)
+    {
+        QLine line;
+
+
+        line.setP1(QPoint((l.x1() + xOffset) * ratio, (l.y1()) + yOffset) * ratio);
+        line.setP2(QPoint((l.x2() + xOffset) * ratio, (l.y2() + yOffset) * ratio));
+
+
+        p.drawLine(line);
+    }
+    p.end();
+
+    //matPix = ImageTool::QPixmapToCvMat(pix);
+    setPixmap(pix);
+
+    update();
 }
 
 void DrawingWidget::AddRectangle(QRect rec)
@@ -193,25 +236,48 @@ void DrawingWidget::SelectCursor()
 
 void DrawingWidget::SetEffector(QComboBox * drawingEffector)
 {
-	cbDrawingEffector = drawingEffector;
+    cbDrawingEffector = drawingEffector;
+}
+
+void DrawingWidget::SetGcodeExportParameterPointer(QLineEdit *safeZHeight, QLineEdit *travelSpeed, QLineEdit *drawingSpeed, QLineEdit *drawingAcceleration)
+{
+    leSafeZHeight = safeZHeight;
+    leTravelSpeed = travelSpeed;
+    leDrawingSpeed = drawingSpeed;
+    leDrawingAcceleration = drawingAcceleration;
 }
 
 void DrawingWidget::ExportGcodes()
 {
-	QString gcodes = "G28\n";
-	gcodes += "M360 E3\n";
-	gcodes += "G01 F200\n";
-	gcodes += "G01 Z-295\n";
-	gcodes += "G01 F15\n";
-	gcodes += "M204 A800\n";
-	gcodes += "M03 S0\n";
-	gcodes += "#100 = 255\n";
-	gcodes += "#200 = -300\n";
-	gcodes += "#201 = -310\n";
+    float downZ = leSafeZHeight->text().toFloat();
+    float upZ = downZ + 10;
+    float safeZ = downZ + 50;
+    int travelSpeed = leTravelSpeed->text().toInt();
+    int drawingSpeed = leDrawingSpeed->text().toInt();
+    int drawingAcceleration = leDrawingAcceleration->text().toInt();
 
-	QString zUp = "G01 Z[#200]\n";
-	QString zDown = "G01 Z[#201]\n";
-	QString laserOn = "M03 S[#100]\n";
+    QString gcodes = "G28\n";
+
+    if (cbDrawingEffector->currentText() == "Laser")
+    {
+        gcodes += ";Select laser head";
+        gcodes += "M360 E3\n";
+        gcodes += ";Turn off laser head";
+        gcodes += "M03 S0\n";
+    }
+
+    gcodes += QString("G01 F%1\n").arg(travelSpeed);
+    gcodes += QString("G01 Z%1\n").arg(safeZ);
+    gcodes += QString("G01 F%1\n").arg(drawingSpeed);
+    gcodes += QString("M204 A%1\n").arg(drawingAcceleration);
+
+    gcodes += "#OnValue = 255\n";
+    gcodes += QString("#UpZ = %1\n").arg(upZ);
+    gcodes += QString("#DownZ = %1\n").arg(downZ);
+
+    QString zUp = "G01 Z[#UpZ]\n";
+    QString zDown = "G01 Z[#DownZ]\n";
+    QString laserOn = "M03 S[#OnValue]\n";
 	QString laserOff = "M03 S0\n";
 
 	QString startDrawing = zDown;
@@ -223,32 +289,66 @@ void DrawingWidget::ExportGcodes()
 		finishDrawing = laserOff;
 	}
 
-	int curX = 0;
-	int curY = 0;
+//	int curX = 0;
+//	int curY = 0;
 
-	if (lines.size() > 0)
-	{
-		for (int i = 0; i < lines.size(); i++)
-		{
-			if (curX != lines[i].p1().x() || curY != -lines[i].p1().y())
-			{
-				gcodes += finishDrawing;
+//	if (lines.size() > 0)
+//	{
+//		for (int i = 0; i < lines.size(); i++)
+//		{
+//			if (curX != lines[i].p1().x() || curY != -lines[i].p1().y())
+//			{
+//                gcodes += finishDrawing;
 
-				curX = lines[i].p1().x();
-				curY = -lines[i].p1().y();
+//				curX = lines[i].p1().x();
+//				curY = -lines[i].p1().y();
 
-				gcodes += QString("G01") + " X" + QString::number(curX) + " Y" + QString::number(curY) + "\n";
-				gcodes += startDrawing;
-			}
+//                gcodes += QString("G01") + " X" + QString::number(curX) + " Y" + QString::number(curY) + "\n";
+//                gcodes += startDrawing;
+//			}
 
-			curX = lines[i].p2().x();
-			curY = -lines[i].p2().y();
+//            if (curX != lines[i].p2().x() || curY != -lines[i].p2().y())
+//            {
+//                curX = lines[i].p2().x();
+//                curY = -lines[i].p2().y();
 
-			gcodes += QString("G01") + " X" + QString::number(curX) + " Y" + QString::number(curY) + "\n";
-		}
+//                gcodes += QString("G01") + " X" + QString::number(curX) + " Y" + QString::number(curY) + "\n";
+//            }
+//		}
 
-		gcodes += finishDrawing;
-	}
+//		gcodes += finishDrawing;
+//	}
+
+    float curXf = 0;
+    float curYf = 0;
+
+    foreach(QVector<QPointF> points, Vectors)
+    {
+        gcodes += finishDrawing;
+
+        int index = 0;
+        int begin = 0;
+        int end = points.count() - 1;
+
+        foreach(QPointF point, points)
+        {
+            curXf = point.x();
+            curYf = -point.y();
+
+            gcodes += QString("G01") + " X" + QString::number(curXf, 'f', 1) + " Y" + QString::number(curYf, 'f', 1) + "\n";
+
+            if (index == begin)
+            {
+                gcodes += startDrawing;
+            }
+            if (index == end)
+            {
+                gcodes += finishDrawing;
+            }
+
+            index++;
+        }
+    }
 
 	if (images.size() > 0)
 	{
@@ -272,9 +372,6 @@ void DrawingWidget::ExportGcodes()
 		float lastX = (0 - offsetX) * lastImage.LineSpace;
 		float lastY = (0 - offsetY) * lastImage.LineSpace;;
 
-		/*gcodes += QString("#200 = -290") + "\n";
-		gcodes += QString("#201 = -300") + "\n\n";*/
-
 		for (int i = 0; i < image.height(); i++)
 		{
 			for (int j = 0; j < image.width(); j++)
@@ -288,7 +385,6 @@ void DrawingWidget::ExportGcodes()
 
 				QRgb pixelValue = image.pixel(j, i);
 
-				//QColor colorValue(pixelValue);
 				QColor colorValue = image.pixelColor(QPoint(j, i));
 				int red = colorValue.red();
 				int green = colorValue.green();
@@ -323,14 +419,6 @@ void DrawingWidget::ExportGcodes()
 						{
 							binaries += "1";
 
-							//-----------------
-							/*gcodes += zUp + "\n";
-							gcodes += QString("G01") + " X" + QString::number(i) + " Y" + QString::number(j) + "\n";
-							gcodes += zDown + "\n";*/
-							//-----------------
-
-							//gcode = QString("G01") + " X" + QString::number(i - offsetX) + " Y" + QString::number(j - offsetY) + "\n";
-
 							if (isWhite == false)
 							{
 								gcodes += QString("G01") + " X" + QString::number(xPos) + " Y" + QString::number(yPos) + "\n";
@@ -357,8 +445,7 @@ void DrawingWidget::ExportGcodes()
 				{
 					if (distance < lastImage.LineSpace)
 						continue;
-					gcodes += QString("G01") + " X" + QString::number(xPos) + " Y" + QString::number(yPos) + "\n";
-					//gcodes += "#100 = " + QString::number(colorValue.black() < 100 ? 100: colorValue.black()) + "\n";
+                    gcodes += QString("G01") + " X" + QString::number(xPos) + " Y" + QString::number(yPos) + "\n";
 					gcodes += "#100 = " + QString::number(colorValue.black()) + "\n";
 					gcodes += startDrawing + "\n";
 				}
