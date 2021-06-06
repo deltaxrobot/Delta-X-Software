@@ -243,7 +243,7 @@ void RobotWindow::InitEvents()
 	connect(ui->pbZoomOut, SIGNAL(clicked(bool)), ui->lbDrawingArea, SLOT(SelectZoomOutTool()));
 	connect(ui->pbCursor, SIGNAL(clicked(bool)), ui->lbDrawingArea, SLOT(SelectCursor()));
 
-	connect(ui->pbExportDrawingGcodes, SIGNAL(clicked(bool)), ui->lbDrawingArea, SLOT(ExportGcodes()));
+    connect(ui->pbExportDrawingGcodes, SIGNAL(clicked(bool)), DeltaDrawingExporter, SLOT(ExportGcodes()));
 
 	connect(ui->twDeltaManager, SIGNAL(tabBarClicked(int)), this, SLOT(ChangeDeltaDashboard(int)));
 	connect(ui->twDeltaManager, SIGNAL(currentChanged(int)), this, SLOT(SelectTrueTabName(int)));
@@ -303,14 +303,11 @@ void RobotWindow::InitVariables()
 	Delta2DVisualizer->SetDivisionComboBox(ui->cbDivision);
 
 	DeltaDrawingExporter = new DrawingExporter(this);
-	DeltaDrawingExporter->SetDrawingParameterPointer(ui->lbImageForDrawing, ui->lbImageWidth, ui->lbImageHeight, ui->leHeightScale, ui->leWidthScale, ui->leSpace, ui->leDrawingThreshold, ui->hsDrawingThreshold, ui->cbDrawMethod, ui->cbConversionTool);
+    DeltaDrawingExporter->SetDrawingParameterPointer(ui->lbImageForDrawing, ui->lbImageWidth, ui->lbImageHeight, ui->leHeightScale, ui->leWidthScale, ui->leSpace, ui->leDrawingThreshold, ui->hsDrawingThreshold, ui->cbReverseDrawing, ui->cbDrawMethod, ui->cbConversionTool);
     DeltaDrawingExporter->SetDrawingAreaWidget(ui->lbDrawingArea);
-
-	ui->lbDrawingArea->InitGrid();
-	ui->lbDrawingArea->SetGcodeEditor(ui->pteGcodeArea);
-	ui->lbDrawingArea->SetEffector(ui->cbDrawingEffector);
-    ui->lbDrawingArea->SetGcodeExportParameterPointer(ui->leSafeZHeight, ui->leTravelSpeed, ui->leDrawingSpeed, ui->leDrawingAcceleration);
-
+    DeltaDrawingExporter->SetGcodeEditor(ui->pteGcodeArea);
+    DeltaDrawingExporter->SetEffector(ui->cbDrawingEffector);
+    DeltaDrawingExporter->SetGcodeExportParameterPointer(ui->leSafeZHeight, ui->leTravelSpeed, ui->leDrawingSpeed, ui->leDrawingAcceleration);
 
 	//--------------Timer-------------
 
@@ -974,7 +971,9 @@ void RobotWindow::UpdateDeltaPositionFromLineEditValue()
         ui->leAg6->setText(QString::number(Delta2DVisualizer->V));
 	}
 
-    DeltaConnectionManager->SendToRobot(QString("G01 X") + ui->leX->text() + QString(" Y") + ui->leY->text() + QString(" Z") + ui->leZ->text() + QString(" W") + ui->leW->text() + QString(" U") + ui->leU->text() + QString(" V") + ui->leV->text() + "\n");
+    QString gcode = QString("G01 X%1 Y%2 Z%3 W%4 U%5 V%6\n").arg(Delta2DVisualizer->X).arg(Delta2DVisualizer->Y).arg(Delta2DVisualizer->Z).arg(Delta2DVisualizer->W).arg(Delta2DVisualizer->U).arg(Delta2DVisualizer->V);
+
+    DeltaConnectionManager->SendToRobot(gcode);
 }
 
 void RobotWindow::UpdatePositionToLabel()
@@ -1037,8 +1036,8 @@ void RobotWindow::UpdatePositionControl(float x, float y, float z, float w, floa
 	ui->leY->setText(QString::number(y));
 	ui->leZ->setText(QString::number(z));
 	ui->leW->setText(QString::number(w));
-    ui->leW->setText(QString::number(u));
-    ui->leW->setText(QString::number(v));
+    ui->leU->setText(QString::number(u));
+    ui->leV->setText(QString::number(v));
 	ui->leVelocity->setText(QString::number(f));
 	ui->leAccel->setText(QString::number(a));
 

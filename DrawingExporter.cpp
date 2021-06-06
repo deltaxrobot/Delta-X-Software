@@ -6,7 +6,7 @@ DrawingExporter::DrawingExporter(QWidget *parent)
 
 }
 
-void DrawingExporter::SetDrawingParameterPointer(QLabel *imageForDrawing, QLabel * wImage, QLabel * hImage, QLineEdit * heightScale, QLineEdit * widthScale, QLineEdit * space, QLineEdit *drawingThresValue, QSlider* drawingThresSlider,QComboBox * drawMethod, QComboBox* conversionTool)
+void DrawingExporter::SetDrawingParameterPointer(QLabel *imageForDrawing, QLabel * wImage, QLabel * hImage, QLineEdit * heightScale, QLineEdit * widthScale, QLineEdit * space, QLineEdit *drawingThresValue, QSlider* drawingThresSlider, QCheckBox* inverse,QComboBox * drawMethod, QComboBox* conversionTool)
 {
 	lbImageForDrawing = imageForDrawing;
 	lbWImage = wImage;
@@ -16,17 +16,36 @@ void DrawingExporter::SetDrawingParameterPointer(QLabel *imageForDrawing, QLabel
 	leSpace = space;
 	leDrawingThreshold = drawingThresValue;
 	hsDrawingThreshold = drawingThresSlider;
+    cbInverse = inverse;
 	cbDrawMethod = drawMethod;
 	cbConversion = conversionTool;
 
 	lbImageForDrawing->setScaledContents(true);
 
-	initEnvent();
+    initEnvent();
+}
+
+void DrawingExporter::SetGcodeExportParameterPointer(QLineEdit *safeZHeight, QLineEdit *travelSpeed, QLineEdit *drawingSpeed, QLineEdit *drawingAcceleration)
+{
+    leSafeZHeight = safeZHeight;
+    leTravelSpeed = travelSpeed;
+    leDrawingSpeed = drawingSpeed;
+    leDrawingAcceleration = drawingAcceleration;
 }
 
 void DrawingExporter::SetDrawingAreaWidget(DrawingWidget * drawingWidget)
 {
-	drawingArea = drawingWidget;
+    drawingArea = drawingWidget;
+}
+
+void DrawingExporter::SetGcodeEditor(QTextEdit *gcodeEditor)
+{
+    pteGcodeEditor = gcodeEditor;
+}
+
+void DrawingExporter::SetEffector(QComboBox *drawingEffector)
+{
+    cbDrawingEffector = drawingEffector;
 }
 
 DrawingExporter::~DrawingExporter()
@@ -56,6 +75,8 @@ void DrawingExporter::ConvertToDrawingArea()
 	drawingArea->ClearImage();
 	drawingArea->InitGrid();
 
+    drawingArea->Vectors.clear();
+
 	if (cbConversion->currentText() == "Vectorize")
 	{
 		std::vector<std::vector<cv::Point> > contoursContainer;
@@ -73,10 +94,12 @@ void DrawingExporter::ConvertToDrawingArea()
         float xOffset = wS / 2;
         float yOffset = hS / 2;
 
+
+
 		for (int i = 0; i < contoursContainer.size(); i++)
 		{
 			double arclen = cv::arcLength(contoursContainer[i], true);
-            double eps = 0.00025f;
+            double eps = 0.001f;
 			double epsilon = arclen * eps;
 
 			std::vector<cv::Point> approx;
@@ -96,7 +119,7 @@ void DrawingExporter::ConvertToDrawingArea()
                 points.append(QPointF(x1, y1));
 			}
 
-            drawingArea->Vectors.append(points);
+
 
 			//cv::polylines(matClone, approx, true, cv::Scalar(0, 0, 0, 255));
 
@@ -104,6 +127,11 @@ void DrawingExporter::ConvertToDrawingArea()
             float y1 = approx[approx.size() - 1].y * scale - yOffset;
             float x2 = approx[0].x * scale - xOffset;
             float y2 = approx[0].y * scale - yOffset;
+
+            points.append(QPointF(x1, y1));
+            points.append(QPointF(x2, y2));
+
+            drawingArea->Vectors.append(points);
 
             drawingArea->AddLineToStack(QPoint(x1, y1), QPoint(x2, y2));
 		}
@@ -121,7 +149,195 @@ void DrawingExporter::ConvertToDrawingArea()
 		int y = (drawingArea->height() - leHeightScale->text().toInt()) / 2;
 
 		drawingArea->AddImage(x, y, wS, hS, *effectPixmap, leSpace->text().toFloat(), cbDrawMethod->currentText(), cbConversion->currentText());
-	}
+    }
+}
+
+void DrawingExporter::ExportGcodes()
+{
+    float downZ = leSafeZHeight->text().toFloat();
+    float upZ = downZ + 10;
+    float safeZ = downZ + 50;
+    int travelSpeed = leTravelSpeed->text().toInt();
+    int drawingSpeed = leDrawingSpeed->text().toInt();
+    int drawingAcceleration = leDrawingAcceleration->text().toInt();
+
+    QString gcodes = "G28\n";
+
+    if (cbDrawingEffector->currentText() == "Laser")
+    {
+        gcodes += ";Select laser head";
+        gcodes += "M360 E3\n";
+        gcodes += ";Turn off laser head";
+        gcodes += "M03 S0\n";
+    }
+
+    gcodes += QString("G01 F%1\n").arg(travelSpeed);
+    gcodes += QString("G01 Z%1\n").arg(safeZ);
+    gcodes += QString("G01 F%1\n").arg(drawingSpeed);
+    gcodes += QString("M204 A%1\n").arg(drawingAcceleration);
+
+    gcodes += "#OnValue = 255\n";
+    gcodes += QString("#UpZ = %1\n").arg(upZ);
+    gcodes += QString("#DownZ = %1\n").arg(downZ);
+
+    QString zUp = "G01 Z[#UpZ]\n";
+    QString zDown = "G01 Z[#DownZ]\n";
+    QString laserOn = "M03 S[#OnValue]\n";
+    QString laserOff = "M03 S0\n";
+
+    QString startDrawing = zDown;
+    QString finishDrawing = zUp;
+
+    if (cbDrawingEffector->currentText() == "Laser")
+    {
+        startDrawing = laserOn;
+        finishDrawing = laserOff;
+    }
+
+    if (drawingArea->Vectors.empty() == false)
+    {
+
+        float curXf = 0;
+        float curYf = 0;
+
+        foreach(QVector<QPointF> points, drawingArea->Vectors)
+        {
+            gcodes += finishDrawing;
+
+            int index = 0;
+            int begin = 0;
+            int end = points.count() - 1;
+
+            foreach(QPointF point, points)
+            {
+                curXf = point.x();
+                curYf = -point.y();
+
+                gcodes += QString("G01") + " X" + QString::number(curXf, 'f', 1) + " Y" + QString::number(curYf, 'f', 1) + "\n";
+
+                if (index == begin)
+                {
+                    gcodes += startDrawing;
+                }
+                if (index == end)
+                {
+                    gcodes += finishDrawing;
+                }
+
+                index++;
+            }
+        }
+    }
+
+    else if (drawingArea->Images.size() > 0)
+    {
+        Image lastImage = drawingArea->Images.back();
+        lastImage.LineSpace = leSpace->text().toFloat();
+        QImage image = lastImage.Pixmap->toImage();
+        int hS = lastImage.Size.y() * (1.0f / lastImage.LineSpace);
+
+        image = image.scaledToHeight(hS);
+
+        QString binaries;
+
+        bool isWhite = true;
+        QString gcode;
+
+        int counter = 0;
+        int realX = 0;
+
+        int offsetX = image.width() / 2;
+        int offsetY = image.height() / 2;
+
+        float lastX = (0 - offsetX) * lastImage.LineSpace;
+        float lastY = (0 - offsetY) * lastImage.LineSpace;;
+
+        for (int i = 0; i < image.height(); i++)
+        {
+            for (int j = 0; j < image.width(); j++)
+            {
+                realX = j;
+
+                if (i % 2 == 1)
+                {
+                    j = image.width() - 1 - j;
+                }
+
+                QRgb pixelValue = image.pixel(j, i);
+
+                QColor colorValue = image.pixelColor(QPoint(j, i));
+                int red = colorValue.red();
+                int green = colorValue.green();
+                int blue = colorValue.blue();
+                int alpha = colorValue.alpha();
+
+                float xPos = (j - offsetX) * lastImage.LineSpace;
+                float yPos = -(i - offsetY) * lastImage.LineSpace;
+
+                float distance = sqrt(pow(xPos - lastX, 2) + pow(yPos - lastY, 2));
+
+                if (cbConversion->currentText() == "Threshold")
+                {
+                    if (cbDrawMethod->currentText() == "Line")
+                    {
+                        // Black point
+                        if (red == 0 && green == 0 && blue == 0 && alpha == 255)
+                        {
+                            binaries += "0";
+
+                            if (isWhite == true || realX == 0)
+                            {
+                                gcodes += QString("G01") + " X" + QString::number(xPos, 'f', 1) + " Y" + QString::number(yPos, 'f', 1) + "\n";
+                                gcodes += startDrawing + "\n";
+                                isWhite = false;
+                            }
+                        }
+                        else
+                        {
+                            binaries += "1";
+
+                            if (isWhite == false)
+                            {
+                                gcodes += QString("G01") + " X" + QString::number(lastX, 'f', 1) + " Y" + QString::number(yPos, 'f', 1) + "\n";
+                                gcodes += finishDrawing + "\n";
+                                isWhite = true;
+                            }
+                        }
+                    }
+                    else if (cbDrawMethod->currentText() == "Dot")
+                    {
+                        if (distance < lastImage.LineSpace)
+                            continue;
+
+                        // Black point
+                        if (red == 0 && green == 0 && blue == 0 && alpha == 255)
+                        {
+                            gcodes += QString("G01") + " X" + QString::number(xPos) + " Y" + QString::number(yPos) + "\n";;
+                            gcodes += startDrawing + "\n";
+                            gcodes += finishDrawing + "\n";
+                        }
+                    }
+                }
+                else if (cbConversion->currentText() == "Gray")
+                {
+                    if (distance < lastImage.LineSpace)
+                        continue;
+                    gcodes += QString("G01") + " X" + QString::number(xPos) + " Y" + QString::number(yPos) + "\n";
+                    gcodes += "#100 = " + QString::number(colorValue.black()) + "\n";
+                    gcodes += startDrawing + "\n";
+                }
+
+                lastX = xPos;
+                lastY = yPos;
+
+                j = realX;
+            }
+            binaries += "\n";
+        }
+    }
+
+    gcodes += finishDrawing + "\n";
+    pteGcodeEditor->setPlainText(gcodes);
 }
 
 void DrawingExporter::ApplyConversion()
@@ -172,7 +388,7 @@ void DrawingExporter::ApplyConversion()
 		
 		cv::cvtColor(mat, mat, CV_BGR2GRAY);
 
-		if (leDrawingThreshold->text().toInt() < 0)
+        if (cbInverse->isChecked())
 		{
 			cv::threshold(mat, mat, thresh, 255, CV_THRESH_BINARY_INV);
 		}
@@ -227,7 +443,16 @@ void DrawingExporter::ApplyConversion()
 			{
 				QColor color = image.pixelColor(QPoint(i, j));
 				int grayValue = color.black();
-				int value = grayValue > thresh ? 0 : 255;
+                int value;
+
+                if (!cbInverse->isChecked())
+                {
+                    value = grayValue > thresh ? 0 : 255;
+                }
+                else
+                {
+                    value = grayValue > thresh ? 255 : 0;
+                }
 
 				int alpha = 255 - value;
 
@@ -272,4 +497,5 @@ void DrawingExporter::initEnvent()
 	connect(leWidthScale, SIGNAL(textChanged(const QString &)), this, SLOT(ApplyConversion()));
 	connect(leHeightScale, SIGNAL(textChanged(const QString &)), this, SLOT(ApplyConversion()));
 	connect(cbConversion, SIGNAL(currentTextChanged(const QString &)), this, SLOT(ApplyConversion()));
+    connect(cbInverse, SIGNAL(stateChanged(int)), this, SLOT(ApplyConversion()));
 }

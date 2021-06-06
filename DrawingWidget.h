@@ -67,14 +67,13 @@ public:
     void AddLineToStack(QPoint p1, QPoint p2);
     void DrawLineFromStack();
 	void AddRectangle(QRect rec);
-	void SetGcodeEditor(QTextEdit* gcodeEditor);
-	void SetEffector(QComboBox* drawingEffector);
-    void SetGcodeExportParameterPointer(QLineEdit* safeZHeight, QLineEdit* travelSpeed, QLineEdit* drawingSpeed, QLineEdit* drawingAcceleration);
 
 	void ClearShape();
 	void ClearImage();
 
     QVector<QVector<QPointF>> Vectors;
+
+    QVector<Image> Images;
 
 public slots:
 	void SelectZoomInTool();
@@ -85,8 +84,6 @@ public slots:
 	void SelectArcTool();
 	void SelectCursor();
 
-	void ExportGcodes();
-
 protected:
 	void mousePressEvent(QMouseEvent *event);
 	void mouseMoveEvent(QMouseEvent *event);
@@ -94,16 +91,8 @@ protected:
 	void paintEvent(QPaintEvent *event);
 
 private:
-	QPixmap topLayer;
-	QTextEdit* pteGcodeEditor;	
-	QComboBox* cbDrawingEffector;
+    QPixmap topLayer;
 
-    QLineEdit* leSafeZHeight;
-    QLineEdit* leTravelSpeed;
-    QLineEdit* leDrawingSpeed;
-    QLineEdit* leDrawingAcceleration;
-
-	QVector<Image> images;
 	QVector<QLine> lines;
 
 	QVector<QRect> rectangles;

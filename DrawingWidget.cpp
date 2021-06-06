@@ -3,7 +3,7 @@
 DrawingWidget::DrawingWidget(QWidget *parent)
 	: QLabel(parent)
 {
-
+    InitGrid();
 }
 
 
@@ -51,7 +51,7 @@ void DrawingWidget::AddImage(int x, int y, int w, int h, QPixmap pix, float spac
 	image.ToolType = type;
 	image.Conversion = conversion;
 
-	images.push_back(image);
+    Images.push_back(image);
 
 	InitGrid();
 
@@ -170,11 +170,6 @@ void DrawingWidget::AddRectangle(QRect rec)
 	rectangles.push_back(rect);
 }
 
-void DrawingWidget::SetGcodeEditor(QTextEdit * gcodeEditor)
-{
-	pteGcodeEditor = gcodeEditor;
-}
-
 void DrawingWidget::ClearShape()
 {
 	lines.clear();
@@ -182,12 +177,12 @@ void DrawingWidget::ClearShape()
 
 void DrawingWidget::ClearImage()
 {
-	for (int i = 0; i < images.size(); i++)
+    for (int i = 0; i < Images.size(); i++)
 	{
-		delete images[i].Pixmap;
+        delete Images[i].Pixmap;
 	}
 
-	images.clear();
+    Images.clear();
 }
 
 void DrawingWidget::SelectZoomInTool()
@@ -232,232 +227,6 @@ void DrawingWidget::SelectCursor()
 {
 	tool = CURSOR;
 	changeToolIconInArea(CURSOR_ICON);
-}
-
-void DrawingWidget::SetEffector(QComboBox * drawingEffector)
-{
-    cbDrawingEffector = drawingEffector;
-}
-
-void DrawingWidget::SetGcodeExportParameterPointer(QLineEdit *safeZHeight, QLineEdit *travelSpeed, QLineEdit *drawingSpeed, QLineEdit *drawingAcceleration)
-{
-    leSafeZHeight = safeZHeight;
-    leTravelSpeed = travelSpeed;
-    leDrawingSpeed = drawingSpeed;
-    leDrawingAcceleration = drawingAcceleration;
-}
-
-void DrawingWidget::ExportGcodes()
-{
-    float downZ = leSafeZHeight->text().toFloat();
-    float upZ = downZ + 10;
-    float safeZ = downZ + 50;
-    int travelSpeed = leTravelSpeed->text().toInt();
-    int drawingSpeed = leDrawingSpeed->text().toInt();
-    int drawingAcceleration = leDrawingAcceleration->text().toInt();
-
-    QString gcodes = "G28\n";
-
-    if (cbDrawingEffector->currentText() == "Laser")
-    {
-        gcodes += ";Select laser head";
-        gcodes += "M360 E3\n";
-        gcodes += ";Turn off laser head";
-        gcodes += "M03 S0\n";
-    }
-
-    gcodes += QString("G01 F%1\n").arg(travelSpeed);
-    gcodes += QString("G01 Z%1\n").arg(safeZ);
-    gcodes += QString("G01 F%1\n").arg(drawingSpeed);
-    gcodes += QString("M204 A%1\n").arg(drawingAcceleration);
-
-    gcodes += "#OnValue = 255\n";
-    gcodes += QString("#UpZ = %1\n").arg(upZ);
-    gcodes += QString("#DownZ = %1\n").arg(downZ);
-
-    QString zUp = "G01 Z[#UpZ]\n";
-    QString zDown = "G01 Z[#DownZ]\n";
-    QString laserOn = "M03 S[#OnValue]\n";
-	QString laserOff = "M03 S0\n";
-
-	QString startDrawing = zDown;
-	QString finishDrawing = zUp;
-
-	if (cbDrawingEffector->currentText() == "Laser")
-	{
-		startDrawing = laserOn;
-		finishDrawing = laserOff;
-	}
-
-//	int curX = 0;
-//	int curY = 0;
-
-//	if (lines.size() > 0)
-//	{
-//		for (int i = 0; i < lines.size(); i++)
-//		{
-//			if (curX != lines[i].p1().x() || curY != -lines[i].p1().y())
-//			{
-//                gcodes += finishDrawing;
-
-//				curX = lines[i].p1().x();
-//				curY = -lines[i].p1().y();
-
-//                gcodes += QString("G01") + " X" + QString::number(curX) + " Y" + QString::number(curY) + "\n";
-//                gcodes += startDrawing;
-//			}
-
-//            if (curX != lines[i].p2().x() || curY != -lines[i].p2().y())
-//            {
-//                curX = lines[i].p2().x();
-//                curY = -lines[i].p2().y();
-
-//                gcodes += QString("G01") + " X" + QString::number(curX) + " Y" + QString::number(curY) + "\n";
-//            }
-//		}
-
-//		gcodes += finishDrawing;
-//	}
-
-    float curXf = 0;
-    float curYf = 0;
-
-    foreach(QVector<QPointF> points, Vectors)
-    {
-        gcodes += finishDrawing;
-
-        int index = 0;
-        int begin = 0;
-        int end = points.count() - 1;
-
-        foreach(QPointF point, points)
-        {
-            curXf = point.x();
-            curYf = -point.y();
-
-            gcodes += QString("G01") + " X" + QString::number(curXf, 'f', 1) + " Y" + QString::number(curYf, 'f', 1) + "\n";
-
-            if (index == begin)
-            {
-                gcodes += startDrawing;
-            }
-            if (index == end)
-            {
-                gcodes += finishDrawing;
-            }
-
-            index++;
-        }
-    }
-
-	if (images.size() > 0)
-	{
-		Image lastImage = images.back();
-		QImage image = lastImage.Pixmap->toImage();
-		int hS = lastImage.Size.y() * (1.0f / lastImage.LineSpace);
-
-		image = image.scaledToHeight(hS);
-
-		QString binaries;
-
-		bool isWhite = true;
-		QString gcode;
-
-		int counter = 0;
-		int realX = 0;
-
-		int offsetX = image.width() / 2;
-		int offsetY = image.height() / 2;
-
-		float lastX = (0 - offsetX) * lastImage.LineSpace;
-		float lastY = (0 - offsetY) * lastImage.LineSpace;;
-
-		for (int i = 0; i < image.height(); i++)
-		{
-			for (int j = 0; j < image.width(); j++)
-			{
-				realX = j;
-
-				if (i % 2 == 1)
-				{
-					j = image.width() - 1 - j;
-				}
-
-				QRgb pixelValue = image.pixel(j, i);
-
-				QColor colorValue = image.pixelColor(QPoint(j, i));
-				int red = colorValue.red();
-				int green = colorValue.green();
-				int blue = colorValue.blue();
-				int alpha = colorValue.alpha();
-
-				float xPos = (j - offsetX) * lastImage.LineSpace;
-				float yPos = -(i - offsetY) * lastImage.LineSpace;
-
-				float distance = sqrt(pow(xPos - lastX, 2) + pow(yPos - lastY, 2));
-
-				lastX = xPos;
-				lastY = yPos;
-
-				if (lastImage.Conversion == "Threshold")
-				{
-					if (lastImage.ToolType == "Line")
-					{
-						// Black point
-						if (red == 0 && green == 0 && blue == 0 && alpha == 255)
-						{
-							binaries += "0";
-
-							if (isWhite == true || realX == 0)
-							{
-								gcodes += QString("G01") + " X" + QString::number(xPos) + " Y" + QString::number(yPos) + "\n";
-								gcodes += startDrawing + "\n";
-								isWhite = false;
-							}
-						}
-						else
-						{
-							binaries += "1";
-
-							if (isWhite == false)
-							{
-								gcodes += QString("G01") + " X" + QString::number(xPos) + " Y" + QString::number(yPos) + "\n";
-								gcodes += finishDrawing + "\n";
-								isWhite = true;
-							}
-						}
-					}
-					else if (lastImage.ToolType == "Dot")
-					{
-						if (distance < lastImage.LineSpace)
-							continue;
-
-						// Black point
-						if (red == 0 && green == 0 && blue == 0 && alpha == 255)
-						{
-							gcodes += QString("G01") + " X" + QString::number(xPos) + " Y" + QString::number(yPos) + "\n";;
-							gcodes += startDrawing + "\n";
-							gcodes += finishDrawing + "\n";
-						}
-					}
-				}
-				else if (lastImage.Conversion == "Gray")
-				{
-					if (distance < lastImage.LineSpace)
-						continue;
-                    gcodes += QString("G01") + " X" + QString::number(xPos) + " Y" + QString::number(yPos) + "\n";
-					gcodes += "#100 = " + QString::number(colorValue.black()) + "\n";
-					gcodes += startDrawing + "\n";
-				}
-				
-				j = realX;
-			}
-			binaries += "\n";
-		}
-	}
-
-	gcodes += finishDrawing + "\n";
-	pteGcodeEditor->setPlainText(gcodes);
 }
 
 void DrawingWidget::mousePressEvent(QMouseEvent * event)
