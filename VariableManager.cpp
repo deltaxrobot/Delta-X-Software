@@ -8,6 +8,7 @@ VariableManager::VariableManager(QWidget *parent) : QWidget(parent)
 void VariableManager::SetTreeWidget(QTreeWidget *treeWidget)
 {
     treeWidgetDisplay = treeWidget;
+    connect(treeWidgetDisplay, SIGNAL(itemChanged(QTreeWidgetItem*, int)), this, SLOT(changeVariableItem(QTreeWidgetItem*, int)));
 }
 
 void VariableManager::AddVariable(QString name, QString value)
@@ -47,6 +48,7 @@ void VariableManager::AddVariable(QString name, QString value, QTreeWidgetItem *
     if (childItem == NULL)
     {
         childItem = new QTreeWidgetItem(item);
+        childItem->setFlags(Qt::ItemIsSelectable|Qt::ItemIsEditable|Qt::ItemIsDragEnabled|Qt::ItemIsDropEnabled|Qt::ItemIsUserCheckable|Qt::ItemIsEnabled);
 
         childItem->setText(0, names[0]);
     }
@@ -54,7 +56,6 @@ void VariableManager::AddVariable(QString name, QString value, QTreeWidgetItem *
     if (names.size() == 1)
     {
         childItem->setText(1, value);
-        childItem->setFlags(Qt::ItemIsSelectable|Qt::ItemIsEditable|Qt::ItemIsDragEnabled|Qt::ItemIsDropEnabled|Qt::ItemIsUserCheckable|Qt::ItemIsEnabled);
 
     }
     // if name has child, add value to child
@@ -62,6 +63,13 @@ void VariableManager::AddVariable(QString name, QString value, QTreeWidgetItem *
     {
         AddVariable(name.mid(names[0].length() + 1), value, childItem);
     }
+}
+
+void VariableManager::changeVariableItem(QTreeWidgetItem *item, int col)
+{
+    QString key = item->text(0);
+    QString value = item->text(col);
+    emit variableChanged(key, value);
 }
 
 QTreeWidgetItem *VariableManager::getItem(QString name, QTreeWidgetItem *rootItem)

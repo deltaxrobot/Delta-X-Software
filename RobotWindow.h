@@ -41,6 +41,7 @@
 #include "sdk/DeltaXPlugin.h"
 #include <QPluginLoader>
 #include "SmartDialog.h"
+#include <QElapsedTimer>
 
 #ifdef Q_OS_WIN
     #include <QJoysticks.h>
@@ -53,6 +54,8 @@
 #include "Robot.h"
 #include "robotmanager.h"
 #include "SoftwareManager.h"
+
+#include "ComDevice.h"
 
 class RobotWindow;
 class ImageProcesser;
@@ -74,6 +77,8 @@ public:
     ~RobotWindow();
 
 	void InitEvents();
+    void DisablePositionUpdatingEvents();
+    void EnablePositionUpdatingEvents();
     void InitVariables();
 	void closeEvent(QCloseEvent *event);
     void LoadPlugin();
@@ -99,6 +104,8 @@ public:
     RobotManager* RobotObjectManager;
 
 	ConnectionManager* CurrentDeltaPort;
+    COMDevice* COMEncoder;
+    QElapsedTimer ElapsedTimeEncoder;
 
 	ROS* DeltaXROS;
 
@@ -129,7 +136,14 @@ public:
     QStackedWidget* SubWindowStackedWidget;
 
 private slots:
+    // ---- Setting ----
+    void SaveSetting();
+    void LoadSetting();
+
+    // ---- Robot ----
     void ConnectDeltaRobot();
+
+    // ---- Gcode Editor ----
 	void AddNewProgram();
 	void SaveProgram();
 	void ExecuteProgram();
@@ -145,10 +159,12 @@ private slots:
     void UpdatePositionToLabel();
     void UpdateTextboxFrom2DControl(float x, float y, float z, float w, float u, float v);
     void UpdateTextboxFrom3DControl(float x, float y, float z, float w, float u, float v);
-    void UpdatePositionControl(float x, float y, float z, float w, float u, float v, float f, float a);
+    void UpdatePositionControl(float x, float y, float z, float w, float u, float v, float f, float a, float s, float e);
     void UpdateGlobalHomePositionValueAndControlValue(float x, float y, float z, float w, float u, float v);
 	void UpdateVelocity();
 	void UpdateAccel();
+    void UpdateStartSpeed();
+    void UpdateEndSpeed();
 	void AdjustGripperAngle(int angle);
 	void Grip();
 
@@ -162,15 +178,16 @@ private slots:
     void GetValueInput(QString response);
     //-------------------------
 
-	void UpdateConvenyorPosition(float x, float y);
 	void DisplayGcodeVariable(QList<GcodeVariable> gcodeVariables);
-	void SetConvenyorSpeed();
-	void GetConvenyorPosition();
-	void TurnEnoughConvenyorPositionGetting();
+    void SetConvenyorSpeed();
+    void ConnectEncoder();
+    void ResetEncoderPosition();
 	void AddGcodeLine();
 	void ChangeGcodeParameter();
 
-	void UpdateDetectObjectSize();
+    void ReceiveConveyorResponse(QString response);
+
+    void UpdateDetectObjectSize();
 
     void UpdateCursorPosition(float x, float y);
 
@@ -268,6 +285,9 @@ private:
     //------------------
 
     QList<QLabel*>* lbInputValues;
+
+    //----- Event Variables ----
+    QString positionEmitter = "";
 
 public:
     Ui::RobotWindow *ui;

@@ -314,9 +314,9 @@ void CameraWidget::noTool()
 	setCursor(Qt::ArrowCursor);
 }
 
-void CameraWidget::SaveSetting()
+void CameraWidget::SaveSetting(QString fileName)
 {
-	QSettings settings("setting.ini", QSettings::IniFormat);
+    QSettings settings(fileName, QSettings::IniFormat);
 	
 	settings.setValue("line", mLine);
 	settings.setValue("object", mRect);
@@ -329,9 +329,9 @@ void CameraWidget::SaveSetting()
 	settings.setValue("rect", PselectedRectangle);
 }
 
-void CameraWidget::LoadSetting()
+void CameraWidget::LoadSetting(QString fileName)
 {
-	QSettings settings("setting.ini", QSettings::IniFormat);
+    QSettings settings(fileName, QSettings::IniFormat);
 
 	mLine = settings.value("line").toLine();
 
@@ -354,17 +354,15 @@ void CameraWidget::LoadSetting()
 	emit FinishSelectCalibLine(mLine.p1(), mLine.p2());
 }
 
-void CameraWidget::ChangeXCalibPoint(QString value)
+void CameraWidget::ChangeCalibPoint()
 {
-	xCalibPoint = value.toInt();
+    emit FinishSelectCalibPoint(mPoint.x(), mPoint.y());
 }
 
-void CameraWidget::ChangeYCalibPoint(QString value)
+void CameraWidget::ChangeCalibLine()
 {
-	yCalibPoint = value.toInt();
+    emit FinishSelectCalibLine(mLine.p1(), mLine.p2());
 }
-
-
 
 QPixmap CameraWidget::mergePixmap(QPixmap p1, QPixmap p2)
 {
@@ -406,6 +404,6 @@ void CameraWidget::rectObject()
 {
 	selectedTool = 1;
 
-	QPushButton* bt = qobject_cast<QPushButton*>(sender());
+    QToolButton* bt = qobject_cast<QToolButton*>(sender());
 	changeToolIconInArea(bt->icon());
 }

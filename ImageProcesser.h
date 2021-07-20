@@ -19,6 +19,8 @@
 #include "UnityTool.h"
 #include "CameraWidget.h"
 #include "RobotWindow.h"
+#include <QToolButton>
+#include "opencv2/dnn.hpp"
 
 #define RED_COLOR       cv::Scalar(0, 0, 255)
 #define GREEN_COLOR     cv::Scalar(0, 255, 0)
@@ -66,10 +68,10 @@ public:
 	ImageProcesser(RobotWindow *parent);
 	~ImageProcesser();
 	
-	void SetDetectParameterPointer(QLineEdit* xRec, QLineEdit* yRec, QLineEdit* distance, QLineEdit* xCoor, QLineEdit* yCoor);
+    void SetDetectParameterPointer(QLineEdit* wRec, QLineEdit* lRec, QLineEdit* distance, QLineEdit* xCoor, QLineEdit* yCoor);
 	void SetResultScreenPointer(CameraWidget* resultImage);
 	void SetObjectScreenPointer(QLabel* objectImage);
-    void SetCameraInfoWidget(QLineEdit* fps, QLabel* state, QPushButton* playBt, QPushButton* loadBt);
+    void SetCameraInfoWidget(QLineEdit* fps, QLabel* state, QToolButton* playBt, QToolButton* loadBt);
 	void SetTrackingWidgetPointer(QLabel* lbTracking, QLabel* lbVisible);
 
 	void UpdateLabelImage(cv::Mat mat, QLabel* label);
@@ -79,7 +81,7 @@ public:
 	HSVWindow* ParameterPanel;
 	BlobManager* ObjectManager;
 
-	QTimer* ObjectMovingCalculaterTimer;
+    QTimer* ObjectMovingCalculaterTimer;
 
 	int RunningCamera = -1;
 	bool IsCameraPause = false;
@@ -99,7 +101,14 @@ public:
 
 	QScrollArea* CameraScrollArea;
 
-	QElapsedTimer TimerTool;
+    QElapsedTimer TimerTool;
+
+    float ConveyorVel = 0;
+    float LastEncoderPosition = 0;
+    float EncoderPosition = 0;
+    QString DirName = "X";
+
+    bool IsEncoderEnable = false;
 
 public slots:
 	void LoadTestImage();
@@ -119,7 +128,7 @@ public slots:
 	void GetProcessArea(QRect processArea);
 	void GetCalibLine(QPoint p1, QPoint p2);
 	void GetDistance(int distance);
-	void GetCalibPoint(int x, int y);
+    void GetCalibPoint(int x, int y);
 	void SwitchLayer();
 	void SelectLayer(int id);
 	void changeAxisDirection();
@@ -132,8 +141,10 @@ public slots:
 
 	void UpdateObjectPositionOnConveyor();
 
-	void SaveSetting();
-	void LoadSetting();
+    void EncoderEnabled(bool status);
+
+    void SaveSetting(QString fileName);
+    void LoadSetting(QString fileName);
 signals:
 	void ObjectValueChanged(std::vector<cv::RotatedRect> ObjectContainer);
 private:
@@ -159,9 +170,6 @@ private:
 	void drawBlackWhiteRect(cv::Mat& displayMat, QRect rect);
 	void drawLine(cv::Mat& displayMat, QPoint p1, QPoint p2);
 	void drawCorner(cv::Mat& displayMat, QPoint p);
-
-	float conveyorVel = 0;
-	QString dirName = "X";
 
 	int HSVValue[6] = {0, 100, 0, 255, 0, 255};
 	int thresholdValue = 150;
@@ -202,8 +210,8 @@ private:
 	QLabel* lbObjectImage;
 	QLineEdit* leFPS;
 	QLabel* lbCameraState;
-	QPushButton* pbPlayCammera;
-    QPushButton* pbLoadCamera;
+    QToolButton* pbPlayCammera;
+    QToolButton* pbLoadCamera;
 	QWidget* cameraWindow;
 	QWidget* cameraLayout;
 	QVBoxLayout * cameraBox;

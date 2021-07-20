@@ -26,6 +26,8 @@
 #include <qscrollarea.h>
 #include <qscrollbar.h>
 #include "RobotWindow.h"
+#include <QtMath>
+#include "ScurveInterpolator.h"
 
 class RobotWindow;
 
@@ -51,7 +53,10 @@ public:
 	void AddNewProgram();
 	void LoadPrograms();
 	void ExecuteGcode(QString gcodes, bool isFromGE = false);
-	void Stop();
+	void Stop();    
+
+    void SaveGcodeVariable(GcodeVariable gvar);
+    void SaveGcodeVariable(QString name, float value);
 
 	QWidget* wgProgramContainer;
 	QScrollArea* saProgramFilesScrollArea;
@@ -62,11 +67,21 @@ public:
 	int ProgramCounter = 0;
 	QVector<GcodeProgram*>* ProgramList = NULL;
 
+    /*!
+     Parameter: - Conveyor: speed, direction
+                - Robot: speed, acceleration, start speed, end speed, position
+     */
+    bool IsConveyorSync = false;
+    float syncStartArea = -100;
+    float syncEndArea = 100;
+
 	bool IsFromOtherGcodeProgram = false;
 	GcodeProgramManager* OutsideGcodeProgramManager = NULL;
 	GcodeProgramManager* InsideGcodeProgramManager = NULL;
 
     QList<GcodeVariable> GcodeVariables;
+
+    Scurve_Interpolator DeltaXSMoving;
 
 public slots:
 	void ChangeSelectingProgram(GcodeProgram* ptr);
@@ -78,12 +93,12 @@ public slots:
 	void TransmitNextGcode();
 	void UpdateSystemVariable(QString name, float value);
 	void RespondVariableValue(QIODevice* sender, QString name);
-	void SetStartingGcodeEditorCursor(QString value);
+    void SetStartingGcodeEditorCursor(QString value);
 
 signals:
 	void OutOfObjectVariable();
 	void JustUpdateVariable(QList<GcodeVariable> gcodeVariables);
-	void MoveToNewPosition(float x, float y, float z, float w, float f, float a);
+    void MoveToNewPosition(float x, float y, float z, float w, float u, float v, float f, float a, float s, float e);
 	void FinishExecuteGcodes();
 
 	void DeleteAllObjects();
@@ -112,18 +127,19 @@ private:
 	RobotWindow* mParent;
 
 	float GetVariableValue(QString name);
+    float GetResultOfMathFunction(QString expression);
 	bool isGlobalVariable(QString name);
 	bool isConveyorGcode(QString gcode);
 	bool isSlidingGcode(QString gcode);
 	bool isMovingGcode(QString gcode);
 	bool findExeGcodeAndTransmit();
-	float calculateExpressions(QString expression);
-	void SaveGcodeVariable(GcodeVariable gvar);
-	void SaveGcodeVariable(QString name, float value);
+    float calculateExpressions(QString expression);
 	void updatePositionIntoSystemVariable(QString statement);
 	QString getLeftWord(QString s, int pos);
 	QString getRightWord(QString s, int pos);
 	QString deleteSpaces(QString s);
 	bool isNotNegative(QString s);
+
+    QString convertGcodeToSyncConveyor(QString gcode);
 };
 

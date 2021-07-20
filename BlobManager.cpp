@@ -14,8 +14,8 @@ void BlobManager::AddNewObject(cv::RotatedRect object)
 	if (isNewObject(object))
 	{
 		ObjectContainer.push_back(object);
-		ConveyorString = QString("O") + ConveyorString;
-		Debug(ConveyorString);
+//		ConveyorString = QString("O") + ConveyorString;
+//		Debug(ConveyorString);
 	}
 }
 
@@ -95,8 +95,8 @@ bool BlobManager::isNewObject(cv::RotatedRect object)
 
 		if (IntersectionArea > ObjectArea * 0.3f)
 		{
-			ObjectContainer.at(i).center.x = object.center.x;
-			ObjectContainer.at(i).center.y = object.center.y;
+//			ObjectContainer.at(i).center.x = object.center.x;
+//			ObjectContainer.at(i).center.y = object.center.y;
 			return false;
 		}
 	}
@@ -114,11 +114,11 @@ void BlobManager::UpdateNewPositionObjects(float deltaX, float deltaY)
 		ObjectContainer.at(i).center.y += deltaY;
 	}
 
-	if (deltaX > 0)
-	{
-		ConveyorString = QString(".") + ConveyorString;
-		Debug(ConveyorString);
-	}
+//	if (deltaX > 0)
+//	{
+//		ConveyorString = QString(".") + ConveyorString;
+//		Debug(ConveyorString);
+//	}
 	
 	for (int i = 0; i < ObjectContainer.size(); i++)
 	{

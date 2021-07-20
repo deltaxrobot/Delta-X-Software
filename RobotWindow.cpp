@@ -30,7 +30,7 @@ void RobotWindow::InitEvents()
 
 	connect(ui->pbExecuteGcodes, SIGNAL(clicked(bool)), this, SLOT(ExecuteProgram()));
 	connect(ui->pteGcodeArea, SIGNAL(cursorPositionChanged()), this, SLOT(ExecuteCurrentLine()));
-	connect(ui->cbPositionToExecuteGcode, SIGNAL(currentIndexChanged(const QString &)), DeltaGcodeManager, SLOT(SetStartingGcodeEditorCursor(QString)));
+    //connect(ui->cbPositionToExecuteGcode, SIGNAL(currentIndexChanged(const QString &)), DeltaGcodeManager, SLOT(SetStartingGcodeEditorCursor(QString)));
 
     // ------------ Jogging -----------
 	connect(ui->pbHome, SIGNAL(clicked(bool)), this, SLOT(Home()));
@@ -55,6 +55,8 @@ void RobotWindow::InitEvents()
     connect(ui->pbRight, SIGNAL(clicked(bool)), Delta2DVisualizer, SLOT(MoveRight()));
     connect(ui->leVelocity, SIGNAL(returnPressed()), this, SLOT(UpdateVelocity()));
     connect(ui->leAccel, SIGNAL(returnPressed()), this, SLOT(UpdateAccel()));
+    connect(ui->leStartSpeed, SIGNAL(returnPressed()), this, SLOT(UpdateStartSpeed()));
+    connect(ui->leEndSpeed, SIGNAL(returnPressed()), this, SLOT(UpdateEndSpeed()));
 
     connect(ui->pbsubX, SIGNAL(clicked(bool)), Delta2DVisualizer, SLOT(MoveLeft()));
     connect(ui->pbsubY, SIGNAL(clicked(bool)), Delta2DVisualizer, SLOT(MoveBackward()));
@@ -170,6 +172,7 @@ void RobotWindow::InitEvents()
 	connect(ui->cbGcode, SIGNAL(currentIndexChanged(int)), this, SLOT(ChangeGcodeParameter()));
 
 	connect(ui->pbFormat, SIGNAL(clicked(bool)), this, SLOT(StandardFormatEditor()));
+    connect(ui->cbLockGcodeEditor, SIGNAL(clicked(bool)), ui->pteGcodeArea, SLOT(setLockState(bool)));
 
     //------------ Image Processing -----------
 	connect(ui->pbFilter, SIGNAL(clicked(bool)), DeltaImageProcesser, SLOT(OpenParameterPanel()));
@@ -190,11 +193,16 @@ void RobotWindow::InitEvents()
 	connect(ui->pbExpandCameraWidget, SIGNAL(clicked(bool)), DeltaImageProcesser, SLOT(ExpandCameraWidget(bool)));
 	connect(ui->pbCameraWindowMode, SIGNAL(clicked(bool)), DeltaImageProcesser, SLOT(OpenCameraWindow()));
 	connect(ui->lbScreenStreamer, SIGNAL(SizeChanged()), DeltaImageProcesser, SLOT(UpdateRatios())); 
-	connect(ui->pbLoadCameraSetting, SIGNAL(clicked(bool)), DeltaImageProcesser, SLOT(LoadSetting()));
-	connect(ui->pbSaveCameraSetting, SIGNAL(clicked(bool)), DeltaImageProcesser, SLOT(SaveSetting()));
 
+    connect(ui->pbConnectEncdoer, SIGNAL(clicked(bool)), this, SLOT(ConnectEncoder()));
 	connect(ui->leConvenyorSpeed, SIGNAL(returnPressed()), this, SLOT(SetConvenyorSpeed()));
 	connect(ui->cbConveyorDirection, SIGNAL(currentIndexChanged(int)), this, SLOT(SetConvenyorSpeed()));
+    connect(ui->cbEncoderEnable, SIGNAL(toggled(bool)), DeltaImageProcesser, SLOT(EncoderEnabled(bool)));
+    connect(ui->pbResetEncoderPosition, SIGNAL(clicked(bool)), this, SLOT(ResetEncoderPosition()));
+
+    // ---- Setting ----
+    connect(ui->pbLoadCameraSetting, SIGNAL(clicked(bool)), this, SLOT(LoadSetting()));
+    connect(ui->pbSaveCameraSetting, SIGNAL(clicked(bool)), this, SLOT(SaveSetting()));
 
     //----------- Camera -----------
 	connect(ui->lbScreenStreamer, SIGNAL(FinishDrawObject(int, int, int, int)), DeltaImageProcesser, SLOT(GetObjectInfo(int, int, int, int)));
@@ -204,10 +212,11 @@ void RobotWindow::InitEvents()
 	connect(ui->lbScreenStreamer, SIGNAL(FinishSelectCalibLine(QPoint, QPoint)), DeltaImageProcesser, SLOT(GetCalibLine(QPoint, QPoint)));
 	connect(ui->lbScreenStreamer, SIGNAL(FinishSelectCalibPoint(int, int)), DeltaImageProcesser, SLOT(GetCalibPoint(int, int)));
 	
-	connect(ui->leXCoordinate, SIGNAL(textChanged(QString)), ui->lbScreenStreamer, SLOT(ChangeXCalibPoint(QString)));
-	connect(ui->leYCoordinate, SIGNAL(textChanged(QString)), ui->lbScreenStreamer, SLOT(ChangeYCalibPoint(QString)));
+    connect(ui->leXCoordinate, SIGNAL(returnPressed()), ui->lbScreenStreamer, SLOT(ChangeCalibPoint()));
+    connect(ui->leYCoordinate, SIGNAL(returnPressed()), ui->lbScreenStreamer, SLOT(ChangeCalibPoint()));
+    connect(ui->leRealDistance, SIGNAL(returnPressed()), ui->lbScreenStreamer, SLOT(ChangeCalibLine()));
 	connect(ui->leWRec, SIGNAL(returnPressed()), this, SLOT(UpdateDetectObjectSize()));
-	connect(ui->leLRec, SIGNAL(returnPressed()), this, SLOT(UpdateDetectObjectSize()));
+    connect(ui->leLRec, SIGNAL(returnPressed()), this, SLOT(UpdateDetectObjectSize()));
 
     //---------- Menu -----------
 	connect(ui->actionBaudrate, SIGNAL(triggered()), this, SLOT(ConfigConnection()));
@@ -219,7 +228,7 @@ void RobotWindow::InitEvents()
 
 	connect(DeltaGcodeManager, SIGNAL(OutOfObjectVariable()), DeltaImageProcesser->ObjectManager, SLOT(RemoveOldestObject()));
 	connect(DeltaGcodeManager, SIGNAL(JustUpdateVariable(QList<GcodeVariable>)), this, SLOT(DisplayGcodeVariable(QList<GcodeVariable>)));
-	connect(DeltaGcodeManager, SIGNAL(MoveToNewPosition(float, float, float, float, float, float)), this, SLOT(UpdatePositionControl(float, float, float, float, float, float)));
+    connect(DeltaGcodeManager, SIGNAL(MoveToNewPosition(float, float, float, float, float, float, float, float, float, float)), this, SLOT(UpdatePositionControl(float, float, float, float, float, float, float, float, float, float)));
 	connect(DeltaGcodeManager, SIGNAL(DeleteAllObjects()), ui->pbClearDetectObjects, SLOT(click()));
 	connect(DeltaGcodeManager, SIGNAL(DeleteObject1()), DeltaImageProcesser->ObjectManager, SLOT(RemoveOldestObject()));
 	connect(DeltaGcodeManager, SIGNAL(PauseCamera()), DeltaImageProcesser, SLOT(PauseCamera()));
@@ -257,11 +266,50 @@ void RobotWindow::InitEvents()
 
 }
 
+void RobotWindow::DisablePositionUpdatingEvents()
+{
+    disconnect(ui->vsZAdjsution, SIGNAL(valueChanged(int)), this, SLOT(UpdateZLineEditValue(int)));
+    disconnect(ui->vsZAdjsution, SIGNAL(sliderReleased()), this, SLOT(UpdateDeltaPositionFromLineEditValue()));
+    disconnect(ui->leW, SIGNAL(returnPressed()), this, SLOT(UpdateDeltaPositionFromLineEditValue()));
+    disconnect(ui->leZ, SIGNAL(returnPressed()), this, SLOT(UpdateDeltaPositionFromLineEditValue()));
+    disconnect(ui->leY, SIGNAL(returnPressed()), this, SLOT(UpdateDeltaPositionFromLineEditValue()));
+    disconnect(ui->leX, SIGNAL(returnPressed()), this, SLOT(UpdateDeltaPositionFromLineEditValue()));
+    disconnect(ui->leU, SIGNAL(returnPressed()), this, SLOT(UpdateDeltaPositionFromLineEditValue()));
+    disconnect(ui->leV, SIGNAL(returnPressed()), this, SLOT(UpdateDeltaPositionFromLineEditValue()));
+
+    disconnect(ui->leVelocity, SIGNAL(returnPressed()), this, SLOT(UpdateVelocity()));
+    disconnect(ui->leAccel, SIGNAL(returnPressed()), this, SLOT(UpdateAccel()));
+    disconnect(ui->leStartSpeed, SIGNAL(returnPressed()), this, SLOT(UpdateStartSpeed()));
+    disconnect(ui->leEndSpeed, SIGNAL(returnPressed()), this, SLOT(UpdateEndSpeed()));
+}
+
+void RobotWindow::EnablePositionUpdatingEvents()
+{
+    connect(ui->vsZAdjsution, SIGNAL(valueChanged(int)), this, SLOT(UpdateZLineEditValue(int)));
+    connect(ui->vsZAdjsution, SIGNAL(sliderReleased()), this, SLOT(UpdateDeltaPositionFromLineEditValue()));
+    connect(ui->leW, SIGNAL(returnPressed()), this, SLOT(UpdateDeltaPositionFromLineEditValue()));
+    connect(ui->leZ, SIGNAL(returnPressed()), this, SLOT(UpdateDeltaPositionFromLineEditValue()));
+    connect(ui->leY, SIGNAL(returnPressed()), this, SLOT(UpdateDeltaPositionFromLineEditValue()));
+    connect(ui->leX, SIGNAL(returnPressed()), this, SLOT(UpdateDeltaPositionFromLineEditValue()));
+    connect(ui->leU, SIGNAL(returnPressed()), this, SLOT(UpdateDeltaPositionFromLineEditValue()));
+    connect(ui->leV, SIGNAL(returnPressed()), this, SLOT(UpdateDeltaPositionFromLineEditValue()));
+
+    connect(ui->leVelocity, SIGNAL(returnPressed()), this, SLOT(UpdateVelocity()));
+    connect(ui->leAccel, SIGNAL(returnPressed()), this, SLOT(UpdateAccel()));
+    connect(ui->leStartSpeed, SIGNAL(returnPressed()), this, SLOT(UpdateStartSpeed()));
+    connect(ui->leEndSpeed, SIGNAL(returnPressed()), this, SLOT(UpdateEndSpeed()));
+}
+
 void RobotWindow::InitVariables()
 {
     //---------- Connection -----------
     DeltaConnectionManager = new ConnectionManager();
 	DeltaConnectionManager->SetBaudrate(115200);
+
+    COMEncoder = new COMDevice();
+    COMEncoder->DefaultBaudrate = 9600;
+    connect(COMEncoder, SIGNAL(FinishedReadLine(QString)), this, SLOT(ReceiveConveyorResponse(QString)));
+    ElapsedTimeEncoder.start();
 
     //--------- Init Dialog -------------
     CloseDialog = new SmartDialog(this);
@@ -272,9 +320,17 @@ void RobotWindow::InitVariables()
 
     // Init UI
     ui->lbBaudrate->setText(QString::number(DeltaConnectionManager->GetBaudrate()));
-//    ui->lbIP->setText(TCPConnectionManager::GetIP());
-//    ui->lbLocalPort->setText(QString::number(DeltaConnectionManager->TCPConnection->Port));
+    ui->lbIP->setText(TCPConnectionManager::GetIP());
+    ui->lbLocalPort->setText(QString::number(DeltaConnectionManager->TCPConnection->Port));
     ui->mbRobot->setVisible(false);
+
+    QDir directory(QDir::currentPath());
+    ui->cbSetting->clear();
+    QStringList iniFiles = directory.entryList(QStringList() << "*.ini" << "*.INI",QDir::Files);
+    foreach(QString filename, iniFiles)
+    {
+        ui->cbSetting->addItem(filename);
+    }
 
     //---- Init pointer --------
     initInputValueLabels();
@@ -320,7 +376,7 @@ void RobotWindow::InitVariables()
 	connect(ShortcutKeyTimer, SIGNAL(timeout()), this, SLOT(ProcessShortcutKey()));
 	ShortcutKeyTimer->start(100);
 
-    //------------ Loading Popup -----------
+    //------------ Loading Popup ------------
     lbLoadingPopup = new QLabel();
     mvLoadingPopup = new QMovie(":/icon/deltax-loading.gif");
 
@@ -526,13 +582,10 @@ void RobotWindow::LoadPlugin()
 
     QDir dir(QApplication::applicationDirPath());
     dir.cd("plugin");
-    //qInfo() << "Path: " << dir.path();
 
     QStringList plugins = getPlugins(dir.path());
-    //qInfo() << "Plugins: " << plugins;
 
     initPlugins(plugins);
-    //qInfo() << "Done!";
 }
 
 void RobotWindow::SetMainStackedWidgetAndPages(QStackedWidget *mainStack, QWidget *mainPage, QWidget *fullDisplayPage, QLayout *fullDisplayLayout)
@@ -789,6 +842,15 @@ void RobotWindow::SaveProgram()
 
 void RobotWindow::ExecuteProgram()
 {
+    if (ui->rbEditorStart->isChecked() == true)
+    {
+        DeltaGcodeManager->SetStartingGcodeEditorCursor("beginning");
+    }
+    else
+    {
+        DeltaGcodeManager->SetStartingGcodeEditorCursor("current");
+    }
+
 	QPushButton* pbExe = qobject_cast<QPushButton*>(sender());
 
 	if (pbExe->isChecked())
@@ -949,18 +1011,29 @@ void RobotWindow::UpdateWLineEditValue(int w)
 
 void RobotWindow::UpdateDeltaPositionFromLineEditValue()
 {
-	Delta2DVisualizer->X = ui->leX->text().toFloat();
-	Delta2DVisualizer->Y = ui->leY->text().toFloat();
-	Delta2DVisualizer->Z = ui->leZ->text().toFloat();
-	Delta2DVisualizer->W = ui->leW->text().toFloat();
-    Delta2DVisualizer->U = ui->leU->text().toFloat();
-    Delta2DVisualizer->V = ui->leV->text().toFloat();
+    DisablePositionUpdatingEvents();
 
+    //---- 1. Delta 2D Visualizer Values----
+    if (positionEmitter != "Delta2DVisualizer")
+    {
+        Delta2DVisualizer->X = ui->leX->text().toFloat();
+        Delta2DVisualizer->Y = ui->leY->text().toFloat();
+        Delta2DVisualizer->Z = ui->leZ->text().toFloat();
+        Delta2DVisualizer->W = ui->leW->text().toFloat();
+        Delta2DVisualizer->U = ui->leU->text().toFloat();
+        Delta2DVisualizer->V = ui->leV->text().toFloat();
+    }
+
+    //---- 2. Z Slider -----
 	ui->vsZAdjsution->setValue(Delta2DVisualizer->ZHome - Delta2DVisualizer->Z);
-	Delta2DVisualizer->ChangeXY(ui->leX->text().toFloat(), ui->leY->text().toFloat());
 
+    //---- 3. Delta 2D Visualizer Display ------
+    Delta2DVisualizer->ChangeXY(ui->leX->text().toFloat(), ui->leY->text().toFloat());
+
+    //---- 4. Position Label ---
     UpdatePositionToLabel();
 
+    //---- 5. Gcode Editor Para ----
 	if (ui->cbGcode->currentText() == "G01")
 	{
 		ui->leAg1->setText(QString::number(Delta2DVisualizer->X));
@@ -974,6 +1047,10 @@ void RobotWindow::UpdateDeltaPositionFromLineEditValue()
     QString gcode = QString("G01 X%1 Y%2 Z%3 W%4 U%5 V%6\n").arg(Delta2DVisualizer->X).arg(Delta2DVisualizer->Y).arg(Delta2DVisualizer->Z).arg(Delta2DVisualizer->W).arg(Delta2DVisualizer->U).arg(Delta2DVisualizer->V);
 
     DeltaConnectionManager->SendToRobot(gcode);
+
+    EnablePositionUpdatingEvents();
+
+    positionEmitter = "";
 }
 
 void RobotWindow::UpdatePositionToLabel()
@@ -988,17 +1065,25 @@ void RobotWindow::UpdatePositionToLabel()
 
 void RobotWindow::UpdateTextboxFrom2DControl(float x, float y, float z, float w, float u, float v)
 {
+    positionEmitter = "Delta2DVisualizer";
+
+    DisablePositionUpdatingEvents();
 	ui->leX->setText(QString::number(x));
 	ui->leY->setText(QString::number(y));
 	ui->leZ->setText(QString::number(z));
 	ui->leW->setText(QString::number(w));
     ui->leU->setText(QString::number(u));
     ui->leV->setText(QString::number(v));
-    UpdatePositionToLabel();
+    EnablePositionUpdatingEvents();
+
+    UpdateDeltaPositionFromLineEditValue();
 }
 
 void RobotWindow::UpdateTextboxFrom3DControl(float x, float y, float z, float w, float u, float v)
 {
+    positionEmitter = "Delta3DVisualizer";
+    DisablePositionUpdatingEvents();
+
 	if (x != NULL_NUMBER)
 	{
 		ui->leX->setText(QString::number(x));
@@ -1016,12 +1101,15 @@ void RobotWindow::UpdateTextboxFrom3DControl(float x, float y, float z, float w,
 	{
 		ui->leW->setText(QString::number(w));
 	}
+    EnablePositionUpdatingEvents();
 
 	UpdateDeltaPositionFromLineEditValue();
 }
 
-void RobotWindow::UpdatePositionControl(float x, float y, float z, float w, float u, float v, float f, float a)
+void RobotWindow::UpdatePositionControl(float x, float y, float z, float w, float u, float v, float f, float a, float s, float e)
 {
+    DisablePositionUpdatingEvents();
+
     if (x == 0 && y == 0 && z == 0 && w == 0 && u == 0 && v == 0)
 	{
 		x = Delta2DVisualizer->XHome;
@@ -1040,6 +1128,8 @@ void RobotWindow::UpdatePositionControl(float x, float y, float z, float w, floa
     ui->leV->setText(QString::number(v));
 	ui->leVelocity->setText(QString::number(f));
 	ui->leAccel->setText(QString::number(a));
+    ui->leStartSpeed->setText(QString::number(s));
+    ui->leEndSpeed->setText(QString::number(e));
 
 	Delta2DVisualizer->X = x;
 	Delta2DVisualizer->Y = y;
@@ -1047,6 +1137,10 @@ void RobotWindow::UpdatePositionControl(float x, float y, float z, float w, floa
 	Delta2DVisualizer->W = w;
     Delta2DVisualizer->U = u;
     Delta2DVisualizer->V = v;
+    Delta2DVisualizer->F = f;
+    Delta2DVisualizer->A = a;
+    Delta2DVisualizer->S = s;
+    Delta2DVisualizer->E = e;
 
 	ui->vsZAdjsution->setValue(Delta2DVisualizer->ZHome - Delta2DVisualizer->Z);
 	Delta2DVisualizer->ChangeXY(x, y);
@@ -1060,19 +1154,20 @@ void RobotWindow::UpdatePositionControl(float x, float y, float z, float w, floa
         ui->leAg5->setText(QString::number(Delta2DVisualizer->U));
         ui->leAg6->setText(QString::number(Delta2DVisualizer->V));
 	}
+
+    EnablePositionUpdatingEvents();
 }
 
 void RobotWindow::UpdateGlobalHomePositionValueAndControlValue(float x, float y, float z, float w, float u, float v)
 {
-	Delta2DVisualizer->XHome = x;
-	Delta2DVisualizer->YHome = y;
-	Delta2DVisualizer->ZHome = z;
-	Delta2DVisualizer->WHome = w;
-    Delta2DVisualizer->UHome = u;
-    Delta2DVisualizer->VHome = v;
+    Delta2DVisualizer->XHome = Delta2DVisualizer->X = x;
+    Delta2DVisualizer->YHome = Delta2DVisualizer->Y = y;
+    Delta2DVisualizer->ZHome = Delta2DVisualizer->Z = z;
+    Delta2DVisualizer->WHome = Delta2DVisualizer->W = w;
+    Delta2DVisualizer->UHome = Delta2DVisualizer->U = u;
+    Delta2DVisualizer->VHome = Delta2DVisualizer->V = v;
 
     UpdateTextboxFrom2DControl(x, y, z, w, u, v);
-	UpdateDeltaPositionFromLineEditValue();
 }
 
 void RobotWindow::UpdateVelocity()
@@ -1082,7 +1177,17 @@ void RobotWindow::UpdateVelocity()
 
 void RobotWindow::UpdateAccel()
 {
-	DeltaConnectionManager->SendToRobot(QString("M204 A") + ui->leAccel->text());
+    DeltaConnectionManager->SendToRobot(QString("M204 A") + ui->leAccel->text());
+}
+
+void RobotWindow::UpdateStartSpeed()
+{
+    DeltaConnectionManager->SendToRobot(QString("M205 S") + ui->leStartSpeed->text());
+}
+
+void RobotWindow::UpdateEndSpeed()
+{
+    DeltaConnectionManager->SendToRobot(QString("M205 E") + ui->leEndSpeed->text());
 }
 
 void RobotWindow::AdjustGripperAngle(int angle)
@@ -1299,11 +1404,6 @@ void RobotWindow::GetValueInput(QString response)
     lbValue->setText(value);
 }
 
-void RobotWindow::UpdateConvenyorPosition(float x, float y)
-{
-	//ui->leCurrentConvenyoPosition->setText(QString::number(x));
-}
-
 void RobotWindow::DisplayGcodeVariable(QList<GcodeVariable> gcodeVariables)
 {
     foreach (GcodeVariable var, gcodeVariables)
@@ -1341,16 +1441,30 @@ void RobotWindow::SetConvenyorSpeed()
 	QString directionName = ui->cbConveyorDirection->currentText();
 
 	DeltaImageProcesser->SetConvenyorVelocity(vel, directionName);
+
+    DeltaGcodeManager->SaveGcodeVariable("#ConveyorSpeed", vel);
+    DeltaGcodeManager->SaveGcodeVariable("#ConveyorDirection", (directionName.toLower()=="x") ? 0 : 1);
 }
 
-void RobotWindow::GetConvenyorPosition()
+void RobotWindow::ConnectEncoder()
 {
-	
+    bool result = COMEncoder->Connect();
+
+    if (result == true)
+    {
+        ui->pbConnectEncdoer->setText("Disconnect Encoder");
+        COMEncoder->Send(QString("M317 T100\n"));
+
+    }
+    else
+    {
+        ui->pbConnectEncdoer->setText("Connect Encoder");
+    }
 }
 
-void RobotWindow::TurnEnoughConvenyorPositionGetting()
+void RobotWindow::ResetEncoderPosition()
 {
-	
+    COMEncoder->Send(QString("M316\n"));
 }
 
 void RobotWindow::AddGcodeLine()
@@ -1421,7 +1535,37 @@ void RobotWindow::ChangeGcodeParameter()
 	else if (gcodeName == "M204")
 	{
 		ui->lbAg1->setText("A");
-	}
+    }
+}
+
+void RobotWindow::ReceiveConveyorResponse(QString response)
+{
+    if (ui->cbEncoderEnable->isChecked() == false)
+        return;
+
+    if (response.at(0) == "P")
+    {
+        float elapseTime = (float)ElapsedTimeEncoder.elapsed() / 1000;
+        ElapsedTimeEncoder.start();
+
+        DeltaImageProcesser->EncoderPosition = response.mid(1).toFloat() / 10;
+
+        if (ui->cbEncoderPositionInverse->isChecked() == true)
+        {
+            DeltaImageProcesser->EncoderPosition *= -1;
+        }
+
+
+        float calVelocity = (DeltaImageProcesser->EncoderPosition - DeltaImageProcesser->LastEncoderPosition) / elapseTime;
+        //Debug(QString::number(calVelocity) + "\n");
+        DeltaImageProcesser->ConveyorVel = calVelocity;
+
+        ui->leEncoderVelocity->setText(QString::number(DeltaImageProcesser->ConveyorVel));
+        ui->leEncoderPosition->setText(QString::number(DeltaImageProcesser->EncoderPosition));
+
+        DeltaImageProcesser->UpdateObjectPositionOnConveyor();
+        DeltaImageProcesser->LastEncoderPosition = DeltaImageProcesser->EncoderPosition;
+    }
 }
 
 void RobotWindow::UpdateDetectObjectSize()
@@ -1432,7 +1576,7 @@ void RobotWindow::UpdateDetectObjectSize()
 	float lObjectInWidget = realObjLength * DeltaImageProcesser->DnRratio;
 	float wObjectInWidget = realObjWidth * DeltaImageProcesser->DnRratio;
 
-	DeltaImageProcesser->GetObjectInfo(lObjectInWidget, wObjectInWidget);
+    DeltaImageProcesser->GetObjectInfo(lObjectInWidget, wObjectInWidget);
 }
 
 void RobotWindow::UpdateCursorPosition(float x, float y)
@@ -1759,6 +1903,36 @@ void RobotWindow::InitTabs()
     QWidget *newDeltaTab = new QWidget();
     ui->twDeltaManager->addTab(newDeltaTab, QString());
     ui->twDeltaManager->setTabText(ui->twDeltaManager->indexOf(newDeltaTab), "+");
+}
+
+void RobotWindow::SaveSetting()
+{
+    QString currentName = ui->cbSetting->currentText();
+
+    bool isNewSetting = true;
+    for (int i = 0; i < ui->cbSetting->count(); i++)
+    {
+        if (ui->cbSetting->itemText(i) == currentName)
+            isNewSetting = false;
+    }
+
+    if (isNewSetting == true)
+    {
+        ui->cbSetting->addItem(currentName);
+    }
+
+    DeltaImageProcesser->SaveSetting(currentName);
+    ui->lbScreenStreamer->SaveSetting(currentName);
+}
+
+void RobotWindow::LoadSetting()
+{
+    QString filePath = QDir::currentPath() + "/" + ui->cbSetting->currentText();
+    if (!QFileInfo::exists(filePath))
+        return;
+
+    DeltaImageProcesser->LoadSetting("setting.ini");
+    ui->lbScreenStreamer->LoadSetting("setting.ini");
 }
 
 void RobotWindow::hideExampleWidgets()

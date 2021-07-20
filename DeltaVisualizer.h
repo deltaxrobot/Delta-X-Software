@@ -36,6 +36,8 @@ public:
     float VHome = 0;
 	float FDefault = 200;
 	float ADefault = 1200;
+    float SDefault = 12;
+    float EDefault = 12;
 
 	float X = XHome;
 	float Y = YHome;
@@ -45,6 +47,8 @@ public:
     float V = VHome;
 	float F = FDefault;
 	float A = ADefault;
+    float S = SDefault;
+    float E = EDefault;
 
 public slots:
     void ChangeXY(float x, float y);

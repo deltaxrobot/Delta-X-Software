@@ -95,5 +95,38 @@
         <file>icon/icons8_image_96px.png</file>
         <file>icon/icons8_pencil_drawing_96px.png</file>
         <file>icon/icons8_code_96px.png</file>
+        <file>icon/icons8_image_30px_1.png</file>
+        <file>icon/icons8_opacity_48px.png</file>
+        <file>icon/icons8_target_48px.png</file>
+        <file>icon/icons8_lipids_48px.png</file>
+        <file>icon/icons8_grid_3_48px_1.png</file>
+        <file>icon/icons8_3d_model_48px.png</file>
+        <file>icon/icons8_select_48px.png</file>
+        <file>icon/icons8_line_48px.png</file>
+        <file>icon/icons8_chessboard_48px.png</file>
+        <file>icon/icons8_connected_48px.png</file>
+        <file>icon/icons8_lens_48px.png</file>
+        <file>icon/icons8_record_48px.png</file>
+        <file>icon/icons8_pause_48px.png</file>
+        <file>icon/icons8_play_48px.png</file>
+        <file>icon/icons8_zoom_48px.png</file>
+        <file>icon/icons8_replay_48px.png</file>
+        <file>icon/icons8_reset_48px.png</file>
+        <file>icon/icons8_camcorder_48px.png</file>
+        <file>icon/icons8_image_gallery_48px.png</file>
+        <file>icon/icons8_google_images_48px.png</file>
+        <file>icon/icons8_image_48px.png</file>
+        <file>icon/icons8_folder_64px.png</file>
+        <file>icon/expand.png</file>
+        <file>icon/collapse.png</file>
+        <file>icon/icons8_expand_arrow_20px.png</file>
+        <file>icon/icons8_collapse_arrow_20px.png</file>
+        <file>icon/icons8_collapse_arrow_20px_1.png</file>
+        <file>icon/icons8_expand_arrow_20px_1.png</file>
+        <file>icon/icons8_expand_arrow_10px.png</file>
+        <file>icon/icons8_collapse_arrow_10px.png</file>
+        <file>icon/icons8_page_size_64px.png</file>
+        <file>icon/icons8_split_vertical_32px.png</file>
+        <file>icon/icons8_split_vertical_64px.png</file>
     </qresource>
 </RCC>

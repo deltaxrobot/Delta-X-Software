@@ -33,7 +33,35 @@ void HSVWindow::InitVariables()
 	lbPara[5] = ui->lbmaxV;
 
 	lbOriginImage = ui->lbOriginImage;
-	lbProcessImage = ui->lbProcessImage;
+    lbProcessImage = ui->lbProcessImage;
+}
+
+void HSVWindow::SaveSetting(QString fileName)
+{
+    QSettings settings(fileName, QSettings::IniFormat);
+
+    settings.setValue("minH", sPara[0]->value());
+    settings.setValue("maxH", sPara[1]->value());
+    settings.setValue("minS", sPara[2]->value());
+    settings.setValue("maxS", sPara[3]->value());
+    settings.setValue("minV", sPara[4]->value());
+    settings.setValue("maxV", sPara[5]->value());
+}
+
+void HSVWindow::LoadSetting(QString fileName)
+{
+    QSettings settings(fileName, QSettings::IniFormat);
+    sPara[0]->setValue(settings.value("minH", 0).toInt());
+    sPara[1]->setValue(settings.value("maxH", 255).toInt());
+    sPara[0]->setValue(settings.value("minS", 0).toInt());
+    sPara[1]->setValue(settings.value("maxS", 255).toInt());
+    sPara[0]->setValue(settings.value("minV", 0).toInt());
+    sPara[1]->setValue(settings.value("maxV", 255).toInt());
+
+    for (int i = 0; i < 6; i++)
+    {
+        lbPara[i]->setText(QString::number(sPara[i]->value()));
+    }
 }
 
 bool HSVWindow::IsInvertBinary()

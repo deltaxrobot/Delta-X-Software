@@ -25,9 +25,9 @@ ImageProcesser::ImageProcesser(RobotWindow *parent)
 	ObjectManager = new BlobManager(parent);
 
 	ObjectMovingCalculaterTimer = new QTimer(this);
-	/*connect(ObjectMovingCalculaterTimer, SIGNAL(timeout()), this, SLOT(UpdateObjectPositionOnConveyor()));
+    connect(ObjectMovingCalculaterTimer, SIGNAL(timeout()), this, SLOT(UpdateObjectPositionOnConveyor()));
+    ObjectMovingCalculaterTimer->start(CONVEYOR_TIMER_INTERVAL);
 
-	ObjectMovingCalculaterTimer->start(CONVEYOR_TIMER_INTERVAL);*/
 	TimerTool.start();
 
 	cameraWindow = new QWidget();
@@ -55,7 +55,7 @@ void ImageProcesser::LoadTestImage()
 
 void ImageProcesser::LoadCamera()
 {
-	QPushButton* loadBt = qobject_cast<QPushButton*>(sender());
+    QToolButton* loadBt = qobject_cast<QToolButton*>(sender());
 	if (loadBt->isChecked())
 	{        
         QStringList cameraItems;
@@ -137,7 +137,9 @@ void ImageProcesser::CaptureCamera()
 		stopCamera();
         QMessageBox::information(this, "Problem", "The camera has lost connection!");
 		return;
-	}	
+    }
+
+    processImage();
 }
 
 void ImageProcesser::PauseCamera()
@@ -209,12 +211,13 @@ void ImageProcesser::UpdateCameraScreen()
 {
 	if (IsCameraPause == false)
 	{
-		CaptureCamera();
-	}
+		CaptureCamera();        
+    }
 
-	processImage();
-
-	UpdateObjectPositionOnConveyor();
+    if (IsEncoderEnable == false)
+    {
+        UpdateObjectPositionOnConveyor();
+    }
 
 	if (!cameraWindow->isVisible() && lbResultImage->parentWidget() == cameraWindow)
 	{
@@ -231,10 +234,10 @@ void ImageProcesser::SaveFPS()
 		updateScreenTimer->setInterval(CameraTimerInterval);
 }
 
-void ImageProcesser::SetDetectParameterPointer(QLineEdit * xRec, QLineEdit * yRec, QLineEdit * distance, QLineEdit * xCoor, QLineEdit * yCoor)
+void ImageProcesser::SetDetectParameterPointer(QLineEdit * wRec, QLineEdit * lRec, QLineEdit * distance, QLineEdit * xCoor, QLineEdit * yCoor)
 {
-	leWRec = xRec;
-	leLRec = yRec;
+    leWRec = wRec;
+    leLRec = lRec;
 	leDistance = distance;
 	leXCoor = xCoor;
 	leYCoor = yCoor;
@@ -254,7 +257,7 @@ void ImageProcesser::SetObjectScreenPointer(QLabel * objectImage)
 	lbObjectImage = objectImage;
 }
 
-void ImageProcesser::SetCameraInfoWidget(QLineEdit* fps, QLabel* state, QPushButton* playBt, QPushButton* loadBt = NULL)
+void ImageProcesser::SetCameraInfoWidget(QLineEdit* fps, QLabel* state, QToolButton* playBt, QToolButton* loadBt = NULL)
 {
 	pbPlayCammera = playBt;
 	leFPS = fps;
@@ -602,10 +605,18 @@ void ImageProcesser::CloseCameraWindow()
 
 void ImageProcesser::UpdateObjectPositionOnConveyor()
 {
-	float distance = conveyorVel * ((float)TimerTool.elapsed() / 1000);
-	TimerTool.restart();
+    float distance = 0;
 
-	if (dirName == "X")
+    if (IsEncoderEnable == false)
+    {
+        distance = ConveyorVel * ((float)CONVEYOR_TIMER_INTERVAL / 1000);
+    }
+    else
+    {
+        distance = EncoderPosition - LastEncoderPosition;
+    }
+
+    if (DirName.toLower() == "x")
 	{
 		ObjectManager->UpdateNewPositionObjects(distance, 0);
 	}
@@ -617,17 +628,36 @@ void ImageProcesser::UpdateObjectPositionOnConveyor()
 	emit ObjectValueChanged(ObjectManager->ObjectContainer);
 
 	//Debug(QString::number((distance)));
-	
+
 }
 
-void ImageProcesser::SaveSetting()
+void ImageProcesser::EncoderEnabled(bool status)
 {
-	lbResultImage->SaveSetting();
+    IsEncoderEnable = status;
 }
 
-void ImageProcesser::LoadSetting()
+void ImageProcesser::SaveSetting(QString fileName)
 {
-	lbResultImage->LoadSetting();
+    ParameterPanel->SaveSetting(fileName);
+
+    QSettings settings(fileName, QSettings::IniFormat);
+
+    settings.setValue("ObjectWidth", PobjectRec.width);
+    settings.setValue("ObjectHeight", PobjectRec.height);
+    settings.setValue("MinObjectArea", minObjectArea);
+    settings.setValue("MaxObjectArea", maxObjectArea);
+}
+
+void ImageProcesser::LoadSetting(QString fileName)
+{
+    ParameterPanel->LoadSetting(fileName);
+
+    QSettings settings(fileName, QSettings::IniFormat);
+
+    PobjectRec.width = settings.value("ObjectWidth", PobjectRec.width).toInt();
+    PobjectRec.height = settings.value("ObjectHeight", PobjectRec.height).toInt();
+    minObjectArea = settings.value("MinObjectArea", minObjectArea).toInt();
+    maxObjectArea = settings.value("MaxObjectArea", maxObjectArea).toInt();
 }
 
 void ImageProcesser::OpenParameterPanel()
@@ -643,8 +673,8 @@ void ImageProcesser::UpdateLabelImage(cv::Mat mat, QLabel* label)
 
 void ImageProcesser::SetConvenyorVelocity(float val, QString dir)
 {
-	conveyorVel = val;
-	dirName = dir;
+    ConveyorVel = val;
+    DirName = dir;
 }
 
 void ImageProcesser::drawXAxis(cv::Mat resultsMat)

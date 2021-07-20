@@ -4,6 +4,7 @@
 #include <QDialog>
 #include <qslider.h>
 #include <qlabel.h>
+#include <QSettings>
 
 namespace Ui {
 class HSVWindow;
@@ -18,7 +19,9 @@ public:
     ~HSVWindow();
 
 	void InitEvents();
-	void InitVariables();
+    void InitVariables();
+    void SaveSetting(QString fileName);
+    void LoadSetting(QString fileName);
 
 	QSlider *sPara[6];
 	QLabel *lbPara[6];

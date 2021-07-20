@@ -225,9 +225,8 @@ void ConnectionManager::FindDeltaRobot()
 			connect(sP, SIGNAL(readyRead()), this, SLOT(ReadData()));
 
 			QString name = sP->portName();
-            QThread::msleep(100);
-			sP->write("IsDelta\n");
-			sP->write("IsDelta\n");
+            QThread::msleep(500);
+            sP->write("IsDelta\n");
 		}
 	}
 

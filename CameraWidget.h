@@ -7,6 +7,7 @@
 #include <qmath.h>
 #include <qpushbutton.h>
 #include <QSettings>
+#include <QToolButton>
 
 class CameraWidget : public QLabel
 {
@@ -27,6 +28,12 @@ public:
 	bool IsMeasureDisplayEnable = true;
 
 	QPixmap lastCursorIcon;
+
+    QLine mLine;
+    QRect mRect;
+    QPoint mPoint;
+    QPoint transformPoints[4];
+    QRect PselectedRectangle;
 
 	~CameraWidget();
 
@@ -52,11 +59,11 @@ public slots:
 	void selectPerspectiveRectangle();
 	void selectProcessRectangle();
 	void noTool();
-	void SaveSetting();
-	void LoadSetting();
+    void SaveSetting(QString fileName);
+    void LoadSetting(QString fileName);
 
-	void ChangeXCalibPoint(QString value);
-	void ChangeYCalibPoint(QString value);
+    void ChangeCalibPoint();
+    void ChangeCalibLine();
 private:
 	QLine xAxis;
 	QLine arrow1;
@@ -65,11 +72,7 @@ private:
 	QPainter painter2;
 	QPixmap overPix;
 	QPixmap mPix;
-	QLine mLine;
-	QRect mRect;
-	QPoint mPoint;
-	QPoint transformPoints[4];
-	QRect PselectedRectangle;
+
 	int transPointOrder = -1;
 	int processPointOrder = -1;
 

@@ -40,6 +40,7 @@ SOURCES += main.cpp\
     AccountWindow.cpp \
     BlobManager.cpp \
     CameraWidget.cpp \
+    ComDevice.cpp \
     DrawingExporter.cpp \
     DrawingWidget.cpp \
     GcodeReference.cpp \
@@ -72,6 +73,7 @@ HEADERS  += \
     AccountWindow.h \
     BlobManager.h \
     CameraWidget.h \
+    ComDevice.h \
     ConnectionManager.h \
     DeltaVisualizer.h \
     DrawingExporter.h \
@@ -87,6 +89,7 @@ HEADERS  += \
     ProjectManager.h \
     Robot.h \
     RobotWindow.h \
+    ScurveInterpolator.h \
     SmartDialog.h \
     SoftwareManager.h \
     TCPConnectionManager.h \
@@ -112,3 +115,5 @@ FORMS    += \
 
 RESOURCES += \
     resource.qrc
+
+RC_ICONS = delta_x_logo_96x96.ico
