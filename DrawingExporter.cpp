@@ -94,8 +94,6 @@ void DrawingExporter::ConvertToDrawingArea()
         float xOffset = wS / 2;
         float yOffset = hS / 2;
 
-
-
 		for (int i = 0; i < contoursContainer.size(); i++)
 		{
 			double arclen = cv::arcLength(contoursContainer[i], true);
@@ -306,6 +304,7 @@ void DrawingExporter::ExportGcodes()
                     }
                     else if (cbDrawMethod->currentText() == "Dot")
                     {
+                        if (cbConversion->currentText() == "Gray")
                         if (distance < lastImage.LineSpace)
                             continue;
 

@@ -46,6 +46,8 @@ void HSVWindow::SaveSetting(QString fileName)
     settings.setValue("maxS", sPara[3]->value());
     settings.setValue("minV", sPara[4]->value());
     settings.setValue("maxV", sPara[5]->value());
+
+    settings.setValue("thresV", ui->hsThreshold->value());
 }
 
 void HSVWindow::LoadSetting(QString fileName)
@@ -57,6 +59,10 @@ void HSVWindow::LoadSetting(QString fileName)
     sPara[1]->setValue(settings.value("maxS", 255).toInt());
     sPara[0]->setValue(settings.value("minV", 0).toInt());
     sPara[1]->setValue(settings.value("maxV", 255).toInt());
+
+    ui->hsThreshold->setValue(settings.value("thresV", 100).toInt());
+    ui->lbThreshold->setText(QString::number(ui->hsThreshold->value()));
+
 
     for (int i = 0; i < 6; i++)
     {
@@ -91,6 +97,7 @@ void HSVWindow::UpdateSliderValueToLabel()
 	if (senderSlide->objectName() == "hsThreshold")
 	{
 		emit ValueChanged(ui->hsThreshold->value());
+        ui->lbThreshold->setText(QString::number(ui->hsThreshold->value()));
 	}
 	else
 	{

@@ -53,6 +53,17 @@ void MainWindow::InitVariables()
     //------------- Init Widgets -----------
     ui->trwProgramVariableTable->expandAll();
     ui->trwProgramVariableTable->setColumnWidth(0, 150);
+
+    // ---- Check software version ----
+
+    DeltaXVersionManager = new VersionManager(this);
+    DeltaXVersionManager->CurrentVersion = "0.9.5";
+    DeltaXVersionManager->SoftwareName = "DeltaXSoftware";
+    DeltaXVersionManager->CheckVersionUrl = "http://imwi.space/admin/server.php";
+    DeltaXVersionManager->NewVersionSoftwareUrl = "https://sourceforge.net/projects/delta-x-software/files/";
+    DeltaXVersionManager->CheckNewVersion(true);
+
+    // ----
 }
 
 bool MainWindow::IsLastProject()

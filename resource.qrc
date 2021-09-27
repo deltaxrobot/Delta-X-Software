@@ -128,5 +128,6 @@
         <file>icon/icons8_page_size_64px.png</file>
         <file>icon/icons8_split_vertical_32px.png</file>
         <file>icon/icons8_split_vertical_64px.png</file>
+        <file>icon/Axis_64px.png</file>
     </qresource>
 </RCC>

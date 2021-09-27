@@ -15,12 +15,18 @@
 #include <qlabel.h>
 #include <qtimer.h>
 #include <qpushbutton.h>
+#include <QCheckBox>
 #include "BlobManager.h"
 #include "UnityTool.h"
 #include "CameraWidget.h"
 #include "RobotWindow.h"
 #include <QToolButton>
+#include <QRadioButton>
 #include "opencv2/dnn.hpp"
+
+#include "VideoProcessor.h"
+#include <QThread>
+#include "VideoDisplay.h"
 
 #define RED_COLOR       cv::Scalar(0, 0, 255)
 #define GREEN_COLOR     cv::Scalar(0, 255, 0)
@@ -43,7 +49,7 @@
 #define DEFAULT_OBJECT_WIDTH	150
 #define DEFAULT_OBJECT_HEIGHT	150
 #define APPROXIMATE_RANGE		20
-#define APPROXIMATE_RATIO		0.4f
+#define APPROXIMATE_RATIO		0.5f
 
 #define MIN_OBJECT_AREA			(DEFAULT_OBJECT_WIDTH - APPROXIMATE_RANGE)*(DEFAULT_OBJECT_HEIGHT - APPROXIMATE_RANGE)
 #define MAX_OBJECT_AREA			(DEFAULT_OBJECT_WIDTH + APPROXIMATE_RANGE)*(DEFAULT_OBJECT_HEIGHT + APPROXIMATE_RANGE)
@@ -60,36 +66,70 @@
 
 class RobotWindow;
 
-class ImageProcesser : public QWidget
+class ObjectFilter
+{
+public:
+    int HSVValue[6] = {0, 100, 0, 255, 0, 255};
+    int ThresholdValue = 150;
+    int FilterMethod = THRESHOLD_SPACE;
+
+    cv::Rect PobjectRec;
+    int MinObjectArea;
+    int MaxObjectArea;
+};
+
+class ObjectDetector : public QWidget
 {
 	Q_OBJECT
 
 public:
-	ImageProcesser(RobotWindow *parent);
-	~ImageProcesser();
+    ObjectDetector(RobotWindow *parent);
+    ~ObjectDetector();
 	
-    void SetDetectParameterPointer(QLineEdit* wRec, QLineEdit* lRec, QLineEdit* distance, QLineEdit* xCoor, QLineEdit* yCoor);
+    // ---- Init UI pointer ----
+    void SetObjectSizePointer(QLineEdit* wRec, QLineEdit* lRec);//, QLineEdit* distance, QLineEdit* xCoor, QLineEdit* yCoor);
+    void SetCalibLinePointer(QLineEdit* realityLine, QLineEdit* imageLine);
+    void SetScaleRoateEnablePointer(QCheckBox* lineEnable);
+    void SetRealityCalibPointPointer(QLineEdit* realityPoint1X, QLineEdit* realityPoint1Y, QLineEdit* realityPoint2X, QLineEdit* realityPoint2Y);
+    void SetImageCalibPointPointer(QLineEdit* imagePoint1X, QLineEdit* imagePoint1Y, QLineEdit* imagePoint2X, QLineEdit* imagePoint2Y);
 	void SetResultScreenPointer(CameraWidget* resultImage);
 	void SetObjectScreenPointer(QLabel* objectImage);
     void SetCameraInfoWidget(QLineEdit* fps, QLabel* state, QToolButton* playBt, QToolButton* loadBt);
 	void SetTrackingWidgetPointer(QLabel* lbTracking, QLabel* lbVisible);
+    void SetResolutionWidget(QLineEdit* w, QLineEdit* h);
+    void SetDisplayInfoWidget(QLabel* scale, QLabel* size);
+    void SetChessboardWidget(QLineEdit* chessW, QLineEdit* chessH, QLineEdit* chesSquareSize, QLineEdit* chessPoints[4][2]);
+    void SetXAngleWidget(QLineEdit* xAngle);
+    void SetObjectFilterWidget(QRadioButton* blobFilter, QRadioButton* externalFilter, QRadioButton* circleFilter);
 
+    // ---- Display Value ----
 	void UpdateLabelImage(cv::Mat mat, QLabel* label);
-
 	void SetConvenyorVelocity(float val, QString dir);
 
+    // Thread
+    VideoProcessor* VideoProcessorThread;
+
+    VideoDisplay* VideoDisplayThread;
+
+    // ---- Table ----
 	HSVWindow* ParameterPanel;
 	BlobManager* ObjectManager;
 
+    // ---- Timer ----
+    QElapsedTimer TimerTool;
     QTimer* ObjectMovingCalculaterTimer;
 
+    // ----- State ----
 	int RunningCamera = -1;
 	bool IsCameraPause = false;
 
+    // ---- Camera ----
 	cv::VideoCapture* Camera;
+
 	int CameraFPS = DEFAULT_FPS;
 	int CameraTimerInterval = DEFAULT_INTERVAL;
 
+    // ---- Calculating ----
 	QMatrix D2PMatrix;
 	QMatrix P2RMatrix;
 	QMatrix D2RMatrix;
@@ -97,72 +137,105 @@ public:
 	float DnPRatio;
 	float PnRRatio;
 	float DnRratio;
-	float CameraRatio;
+    float CameraRatio = 4.0/3;
+    int CameraWidgetHeight = 300;
 
 	QScrollArea* CameraScrollArea;
 
-    QElapsedTimer TimerTool;
+    // ---- Conveyor ----
 
     float ConveyorVel = 0;
     float LastEncoderPosition = 0;
     float EncoderPosition = 0;
     QString DirName = "X";
-
     bool IsEncoderEnable = false;
 
+    // ---- Object ----
+    QList<cv::RotatedRect> *DisplayObjects;
+    std::vector<cv::Vec3f>  CircleObjects;
+
 public slots:
+    // ---- Camera ----
 	void LoadTestImage();
 	void LoadCamera();
 	void CaptureCamera();
+    void GetImage(cv::Mat mat);
 	void PauseCamera();
 	void PlayCamera(bool state);
 	void ResumeCamera();
-	void UpdateCameraScreen();
+    void UpdateEvent();
 	void SaveFPS();
+    void ProcessErrorCamera();
+
+    // ----- Filter ----
 	void OpenParameterPanel();
 	void SetHSV(int minH, int maxH, int minS, int maxS, int minV, int maxV);
 	void SetThreshold(int value);
+
+    // ----- Tool ----
 	void GetObjectInfo(int x, int y, int l, int w);
 	void GetObjectInfo(int l, int w);
 	void GetPerspectivePoints(QPoint a, QPoint b, QPoint c, QPoint d);
 	void GetProcessArea(QRect processArea);
 	void GetCalibLine(QPoint p1, QPoint p2);
 	void GetDistance(int distance);
-    void GetCalibPoint(int x, int y);
+    //void GetCalibPoint(int x, int y);
+    void GetCalibPoint(QPoint p1, QPoint p2);
+    void GetMappingPoint(QPoint mappingPoint);
+    void changeAxisDirection();
+    void TurnTransformPerspective(bool isTurnOn);
+    void FindChessboard();
+
+
+    void UpdateCalibLine(int realLine, int imageLine);
+
+    // ---- Display ----
 	void SwitchLayer();
-	void SelectLayer(int id);
-	void changeAxisDirection();
-	void TurnTransformPerspective(bool isTurnOn);
+    void SelectLayer(int id);
 	void TurnCalibDisplay(bool state);
 	void ExpandCameraWidget(bool isExpand);
+    void ChangeCameraWidgetHeight(QString valueS);
 	void OpenCameraWindow();
 	void CloseCameraWindow();
-	void UpdateRatios();
 
+    void UpdateToCameraWidget();
+
+    // ---- Calib ----
+	void UpdateRatios();
+    void CalculateMappingMatrix();
+
+    // ---- Tracking ----
 	void UpdateObjectPositionOnConveyor();
 
     void EncoderEnabled(bool status);
+
+    // ---- Setting ----
 
     void SaveSetting(QString fileName);
     void LoadSetting(QString fileName);
 signals:
 	void ObjectValueChanged(std::vector<cv::RotatedRect> ObjectContainer);
+    void openCamera(cv::VideoCapture* cam);
+    void display(cv::Mat mat, QLabel* displayWidget);
+    void display2(QLabel* displayWidget);
 private:
-	void stopCamera();
+    // ---- Camera ----
+    void stopCamera();
 
+    // ---- Image Processing ----
+    void SelectProcessRegion(cv::Mat processMat);
 	void processImage();
+    void transformPerspective(cv::Mat processMat, std::vector<cv::Point> points, cv::Mat& transMat);
+    void MakeBrightProcessRegion(cv::Mat resultsMat);
+    void postProcessing();
+    void detectBlobObjects(cv::Mat input);
+    void detectCircleObjects(cv::Mat input);
+    float processDetectingObjectOnCamera(cv::Mat& mat, QList<cv::RotatedRect> objects, cv::Scalar color);
 
-	void drawXAxis(cv::Mat resultsMat);
-	void SelectProcessRegion(cv::Mat processMat);
-	void transformPerspective(cv::Mat processMat, std::vector<cv::Point> points, cv::Mat& transMat);
-	void MakeBrightProcessRegion(cv::Mat resultsMat);
-	void postProcessing(cv::Mat processMat);
-	void detectObjects(cv::Mat input, cv::Mat output, cv::Scalar color);
-	void drawRotateRec(cv::Mat& mat, int angle, cv::Rect rec, cv::Scalar color);
-	float findObjectRectangle(cv::Mat& mat, std::vector<cv::Point> contour, cv::Scalar color);
-	
-	void UpdateTrackingInfo();
-	void DisplayAdditionalInfo(cv:: Mat& displayMat);
+    // ---- Display ----    
+    void DisplayAdditionalInfo(cv:: Mat& displayMat);
+    void drawXAxis(cv::Mat resultsMat);
+    void drawRotateRec(cv::Mat& mat, int angle, cv::Rect rec, cv::Scalar color);
 	void drawBlackWhiteLine(cv::Mat& displayMat, cv::Point p1, cv::Point p2, int thin);
 	void drawBlackWhiteLine(cv::Mat& displayMat, QLine line, int thin);
 	void drawBlackWhiteLines(cv::Mat& displayMat, std::vector<cv::Point> points, int thin);
@@ -171,6 +244,11 @@ private:
 	void drawLine(cv::Mat& displayMat, QPoint p1, QPoint p2);
 	void drawCorner(cv::Mat& displayMat, QPoint p);
 
+    // ---- Result Display ----
+    void UpdateTrackingInfo();
+    void UpdateDetectingResultToWidgets();
+
+    // ---- Parameter ----
 	int HSVValue[6] = {0, 100, 0, 255, 0, 255};
 	int thresholdValue = 150;
 	int filterMethod = THRESHOLD_SPACE;
@@ -183,7 +261,7 @@ private:
 	std::vector<cv::Point> PperspectivePoints;
 	cv::Rect PselectedRectangle;
 	cv::Point PcalibLinePoint1;
-	cv::Point PcalibLinePoint2;	
+    cv::Point PcalibLinePoint2;
 	cv::Point PcalibPoint;
 	cv::Rect Pobject;
 
@@ -195,18 +273,23 @@ private:
 	
 	int xRealCamOri = 0;
 	int yRealCamOri = 0;
-	int axisDirection = X_AXIS_LEFT;
+    int axisDirection = X_AXIS_RIGHT;
 	QLine xAxis;
 	QLine arrow1;
-	QLine arrow2;
-	
-	QTimer* updateScreenTimer;
+	QLine arrow2;	
+
+    // ---- Display ----
+    QTimer* updateScreenTimer;
+
 	cv::Mat captureImage;
-	cv::Mat resizeImage;
+    cv::Mat resizeImage;
+    cv::Mat processMat;
 	cv::Mat resultImage;
 	cv::Mat transformImage;
 
-	CameraWidget* lbResultImage;
+    // ----- Widget Pointer ----
+
+    CameraWidget* cameraWidget;
 	QLabel* lbObjectImage;
 	QLineEdit* leFPS;
 	QLabel* lbCameraState;
@@ -215,15 +298,44 @@ private:
 	QWidget* cameraWindow;
 	QWidget* cameraLayout;
 	QVBoxLayout * cameraBox;
+    QLabel* lbScale;
+    QLabel* lbImageSize;
+
+    QLineEdit* leWidth;
+    QLineEdit* leHeight;
 
 	QLineEdit* leWRec = NULL;
 	QLineEdit* leLRec = NULL;
-	QLineEdit* leDistance = NULL;
-	QLineEdit* leXCoor = NULL;
-	QLineEdit* leYCoor = NULL;
+    QLineEdit* leRealityLine = NULL;
+    QLineEdit* leImageLine = NULL;
+
+    QLineEdit* leRealityPoint1X = NULL;
+    QLineEdit* leRealityPoint1Y = NULL;
+    QLineEdit* leRealityPoint2X = NULL;
+    QLineEdit* leRealityPoint2Y = NULL;
+
+    QLineEdit* leImagePoint1X = NULL;
+    QLineEdit* leImagePoint1Y = NULL;
+    QLineEdit* leImagePoint2X = NULL;
+    QLineEdit* leImagePoint2Y = NULL;
+
+    QCheckBox* cbScaleRotateToolEnable = NULL;
 
 	QLabel* lbTrackingObjectNumber;
 	QLabel* lbVisibleObjectNumber;
+
+    QLineEdit* leChessboardWidth;
+    QLineEdit* leChessboardHeight;
+    QLineEdit* leChessboardSquareSize;
+    QLineEdit* (*leChessboardPoints)[2];
+
+    QLineEdit* leXAxisAngle;
+
+    QRadioButton* rbBlobFilter;
+    QRadioButton* rbExternalFilter;
+    QRadioButton* rbCircleFilter;
+
+    // ---- Configuration ----
 
 	bool isDetectedNewObject = false;
 	int countedObjectNumber = 0;
@@ -233,5 +345,7 @@ private:
 
 	bool isFirstLoad = true;
 	bool isStopCapture = false;
+
+    // ---- Relation ----
 	RobotWindow* mParent;
 };

@@ -5,7 +5,9 @@
 #include "AccountWindow.h"
 #include <QtQuick3D/qquick3d.h>
 
+
 #define NEW_WINDOW
+#define JOY_STICK
 
 int main(int argc, char *argv[])
 {

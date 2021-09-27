@@ -8,6 +8,7 @@
 #include "UnityTool.h"
 #include <QPushButton>
 #include <QVBoxLayout>
+#include <QDebug>
 
 class BlobManager : public QObject
 {
@@ -24,14 +25,16 @@ public:
 	std::vector<cv::RotatedRect> ObjectContainer;
 
 public slots:
-	void UpdateNewPositionObjects(float deltaX, float deltaY);
+    void UpdateNewObjectMoving(float deltaX, float deltaY);
 	void RemoveOldestObject();
 	void RemoveAllDetectObjects();
+    void AddNewObject(float x, float y, float w, float h);
 
 signals:
 	void NewUpdateObjectPosition(QString name, float value);
 private:
 	bool isNewObject(cv::RotatedRect object);
+    void updateObjectVariable(cv::RotatedRect object, int id);
 
 	cv::Point3i approValue;
 };

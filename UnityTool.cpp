@@ -1,11 +1,14 @@
 #include <UnityTool.h>
 #include "RobotWindow.h"
 #include <qlist.h>
+#include <QElapsedTimer>
 
 QTextEdit* DebugLB;
 QList<QTextEdit*> Debugs;
 
 QString ConveyorString;
+
+QElapsedTimer ElapsedTimer;
 
 void Debug(QString msg)
 {

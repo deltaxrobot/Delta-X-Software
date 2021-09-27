@@ -30,7 +30,7 @@ public:
 	QIODevice* IOSender;
 
 	TCPConnectionManager* TCPConnection;
-	QTcpServer* TcpServer;
+    QTcpServer* TcpServer;
 
 	bool IsRobotConnect();
 	void DisconnectRobot();
@@ -64,9 +64,13 @@ signals:
     void ReceiveInputIO(QString response);
 
 	void ReceiveVariableChangeCommand(QString name, float value);
+    void ReceiveObjectInfoFromExternalAI(QString msg);
+    void ReceiveCaptureSignalFromExternalAI();
 	void RequestVariableValue(QIODevice* sender, QString name);
 
 	void ReceiveRequestsFromExternal(QString request);
+
+    void CaptureFromExternalCamera();
 private:
 	void init();
 	void sendQueue();

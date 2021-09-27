@@ -13,9 +13,10 @@ void BlobManager::AddNewObject(cv::RotatedRect object)
 {
 	if (isNewObject(object))
 	{
-		ObjectContainer.push_back(object);
-//		ConveyorString = QString("O") + ConveyorString;
-//		Debug(ConveyorString);
+        ObjectContainer.push_back(object);
+        ElapsedTimer.start();
+        updateObjectVariable(object, ObjectContainer.size());
+        qDebug() << ElapsedTimer.elapsed();
 	}
 }
 
@@ -70,7 +71,14 @@ void BlobManager::RemoveAllDetectObjects()
 		emit NewUpdateObjectPosition(QString("#O") + QString::number(i + 1) + "_A", NULL_NUMBER);
 	}
 
-	ObjectContainer.clear();
+    ObjectContainer.clear();
+}
+
+void BlobManager::AddNewObject(float x, float y, float w, float h)
+{
+    cv::RotatedRect object(cv::Point2f(x, y), cv::Size(w, h), 0);
+
+    AddNewObject(object);
 }
 
 bool BlobManager::isNewObject(cv::RotatedRect object)
@@ -95,15 +103,29 @@ bool BlobManager::isNewObject(cv::RotatedRect object)
 
 		if (IntersectionArea > ObjectArea * 0.3f)
 		{
-//			ObjectContainer.at(i).center.x = object.center.x;
-//			ObjectContainer.at(i).center.y = object.center.y;
+//            ObjectContainer.at(i).center.x = object.center.x;
+//            ObjectContainer.at(i).center.y = object.center.y;
 			return false;
 		}
 	}
-	return result;
+    return result;
 }
 
-void BlobManager::UpdateNewPositionObjects(float deltaX, float deltaY)
+void BlobManager::updateObjectVariable(cv::RotatedRect object, int id)
+{
+    int angle = object.angle + 180;
+
+    if (object.size.width > object.size.height)
+    {
+        angle = object.angle + 90;
+    }
+
+    emit NewUpdateObjectPosition(QString("#O") + QString::number(id) + "_X", object.center.x);
+    emit NewUpdateObjectPosition(QString("#O") + QString::number(id) + "_Y", object.center.y);
+    emit NewUpdateObjectPosition(QString("#O") + QString::number(id) + "_A", angle);
+}
+
+void BlobManager::UpdateNewObjectMoving(float deltaX, float deltaY)
 {
 	if (ObjectContainer.size() == 0)
 		return;
@@ -112,13 +134,7 @@ void BlobManager::UpdateNewPositionObjects(float deltaX, float deltaY)
 	{
 		ObjectContainer.at(i).center.x += deltaX;
 		ObjectContainer.at(i).center.y += deltaY;
-	}
-
-//	if (deltaX > 0)
-//	{
-//		ConveyorString = QString(".") + ConveyorString;
-//		Debug(ConveyorString);
-//	}
+    }
 	
 	for (int i = 0; i < ObjectContainer.size(); i++)
 	{

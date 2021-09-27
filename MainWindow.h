@@ -13,6 +13,7 @@
 #include <QList>
 #include "VariableManager.h"
 #include "SoftwareManager.h"
+#include "VersionManager.h"
 
 namespace Ui {
 class MainWindow;
@@ -35,6 +36,7 @@ public:
     QSettings* ProjectSetting;
     UXManager* Ux;
     VariableManager* ProgramVariableManager;
+    VersionManager* DeltaXVersionManager;
 
 public slots:
     void NewProject_Slot(int index);

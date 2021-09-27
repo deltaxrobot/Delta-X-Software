@@ -86,8 +86,22 @@ void ConnectionManager::processReceiveData()
 	{
 		int symId = receiveLine.indexOf("=");
 		QString name = receiveLine.mid(0, symId).replace(" ", "");
-		float value = receiveLine.mid(symId + 1).replace(" ", "").toInt();
-		emit ReceiveVariableChangeCommand(name, value);
+        QString valueS = receiveLine.mid(symId + 1).replace(" ", "");
+
+        if (name == "#StartCapture" && valueS.toInt() == 1)
+        {
+            ReceiveCaptureSignalFromExternalAI();
+        }
+
+        if (name == "#Label")
+        {
+            emit ReceiveObjectInfoFromExternalAI(valueS);
+        }
+        else
+        {
+            int value = valueS.toInt();
+            emit ReceiveVariableChangeCommand(name, value);
+        }
 	}
 	if (receiveLine.at(0) == '#' && receiveLine.indexOf("=") == -1)
 	{
@@ -271,7 +285,7 @@ void ConnectionManager::ReadData()
 
 			if (sP == ExternalControllerPort)
 			{
-				emit ExternalMCUTransmitText(receiveLine);
+                emit ExternalMCUTransmitText(receiveLine);
 			}
 
 			emit FinishReadLine(receiveLine);
@@ -322,7 +336,7 @@ void ConnectionManager::ReadData()
 
 			if (socket == ExternalControllerSocket)
 			{
-				emit ExternalMCUTransmitText(receiveLine);
+                emit ExternalMCUTransmitText(receiveLine);
 			}
 
 			processReceiveData();

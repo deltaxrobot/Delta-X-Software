@@ -44,9 +44,9 @@ SOURCES += main.cpp\
     DrawingExporter.cpp \
     DrawingWidget.cpp \
     GcodeReference.cpp \
-    ImageProcesser.cpp \
     Layer.cpp \
     MainWindow.cpp \
+    ObjectDetector.cpp \
     ObjectVariableTable.cpp \
     ProjectManager.cpp \
     Robot.cpp \
@@ -58,6 +58,9 @@ SOURCES += main.cpp\
     TextLayer.cpp \
     UXManage.cpp \
     VariableManager.cpp \
+    VersionManager.cpp \
+    VideoDisplay.cpp \
+    VideoProcessor.cpp \
     codeeditor.cpp \
     ConnectionManager.cpp \
     DeltaVisualizer.cpp \
@@ -79,12 +82,12 @@ HEADERS  += \
     DrawingExporter.h \
     DrawingWidget.h \
     GcodeReference.h \
-    ImageProcesser.h \
     ImageUnity.h \
     GcodeProgram.h \
     GcodeProgramManager.h \
     Layer.h \
     MainWindow.h \
+    ObjectDetector.h \
     ObjectVariableTable.h \
     ProjectManager.h \
     Robot.h \
@@ -97,6 +100,9 @@ HEADERS  += \
     TextLayer.h \
     UXManager.h \
     VariableManager.h \
+    VersionManager.h \
+    VideoDisplay.h \
+    VideoProcessor.h \
     codeeditor.h \
     geisttextedit.h \
     highlighter.h \
