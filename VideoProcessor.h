@@ -35,9 +35,10 @@ public slots:
     void putInfoOnImage(cv::Mat& mat, QList<cv::RotatedRect> objects, cv::Scalar color);
     void startVideo();
     void stopVideo();
+    void CloseLoop();
 
 private:
-    bool stopped;
+    bool loopRunning;
     cv::VideoCapture* camera = NULL;
 };
 

@@ -1,0 +1,532 @@
+/********************************************************************************
+** Form generated from reading UI file 'form.ui'
+**
+** Created by: Qt User Interface Compiler version 5.15.2
+**
+** WARNING! All changes made in this file will be lost when recompiling UI file!
+********************************************************************************/
+
+#ifndef UI_FORM_H
+#define UI_FORM_H
+
+#include <QtCore/QVariant>
+#include <QtGui/QIcon>
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QCheckBox>
+#include <QtWidgets/QComboBox>
+#include <QtWidgets/QFrame>
+#include <QtWidgets/QGridLayout>
+#include <QtWidgets/QGroupBox>
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QScrollArea>
+#include <QtWidgets/QSpacerItem>
+#include <QtWidgets/QToolButton>
+#include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QWidget>
+
+QT_BEGIN_NAMESPACE
+
+class Ui_Form
+{
+public:
+    QVBoxLayout *verticalLayout;
+    QScrollArea *scrollArea;
+    QWidget *scrollAreaWidgetContents;
+    QVBoxLayout *verticalLayout_2;
+    QGridLayout *gridLayout;
+    QPushButton *pbConnectCamera;
+    QCheckBox *cbStream;
+    QLabel *lbCameraName;
+    QPushButton *pbRefresh;
+    QComboBox *cbCameraList;
+    QSpacerItem *horizontalSpacer;
+    QLineEdit *leCameraName;
+    QLabel *label_2;
+    QLabel *label_3;
+    QFrame *frame;
+    QGridLayout *gridLayout_3;
+    QPushButton *pbShotImage;
+    QPushButton *pbShotVideo;
+    QLabel *label_13;
+    QLineEdit *leInterval;
+    QLabel *label_14;
+    QFrame *frame_3;
+    QHBoxLayout *horizontalLayout_8;
+    QFrame *fImageCounter;
+    QHBoxLayout *horizontalLayout_5;
+    QToolButton *tbResetImageCounter;
+    QLabel *label_12;
+    QLabel *lbImageCounter;
+    QFrame *fResolution;
+    QHBoxLayout *horizontalLayout_7;
+    QLabel *label_17;
+    QLabel *lbResolution;
+    QFrame *fResolution_2;
+    QHBoxLayout *horizontalLayout_9;
+    QLabel *label_18;
+    QLabel *lbDisplayRatio;
+    QFrame *fResolution_3;
+    QHBoxLayout *horizontalLayout_10;
+    QLabel *label_28;
+    QLabel *lbFPS;
+    QSpacerItem *horizontalSpacer_2;
+    QLabel *lbCameraDisplay;
+    QGroupBox *groupBox;
+    QGridLayout *gridLayout_2;
+    QLabel *label_10;
+    QLabel *label_6;
+    QLabel *label_8;
+    QLabel *label_9;
+    QLabel *label_4;
+    QLabel *label;
+    QLabel *label_5;
+    QLineEdit *lineEdit_6;
+    QLabel *label_7;
+    QComboBox *comboBox_2;
+    QLineEdit *lineEdit;
+    QLineEdit *lineEdit_2;
+    QLineEdit *lineEdit_3;
+    QComboBox *comboBox;
+    QLineEdit *lineEdit_4;
+    QLineEdit *lineEdit_5;
+    QSpacerItem *verticalSpacer;
+
+    void setupUi(QWidget *Form)
+    {
+        if (Form->objectName().isEmpty())
+            Form->setObjectName(QString::fromUtf8("Form"));
+        Form->resize(459, 607);
+        verticalLayout = new QVBoxLayout(Form);
+        verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
+        scrollArea = new QScrollArea(Form);
+        scrollArea->setObjectName(QString::fromUtf8("scrollArea"));
+        scrollArea->setMinimumSize(QSize(0, 0));
+        scrollArea->setWidgetResizable(true);
+        scrollAreaWidgetContents = new QWidget();
+        scrollAreaWidgetContents->setObjectName(QString::fromUtf8("scrollAreaWidgetContents"));
+        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 450, 800));
+        QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+        sizePolicy.setHorizontalStretch(0);
+        sizePolicy.setVerticalStretch(0);
+        sizePolicy.setHeightForWidth(scrollAreaWidgetContents->sizePolicy().hasHeightForWidth());
+        scrollAreaWidgetContents->setSizePolicy(sizePolicy);
+        scrollAreaWidgetContents->setMinimumSize(QSize(450, 800));
+        verticalLayout_2 = new QVBoxLayout(scrollAreaWidgetContents);
+        verticalLayout_2->setObjectName(QString::fromUtf8("verticalLayout_2"));
+        gridLayout = new QGridLayout();
+        gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
+        pbConnectCamera = new QPushButton(scrollAreaWidgetContents);
+        pbConnectCamera->setObjectName(QString::fromUtf8("pbConnectCamera"));
+        QFont font;
+        font.setBold(true);
+        font.setWeight(75);
+        pbConnectCamera->setFont(font);
+        pbConnectCamera->setStyleSheet(QString::fromUtf8(""));
+
+        gridLayout->addWidget(pbConnectCamera, 1, 0, 1, 1);
+
+        cbStream = new QCheckBox(scrollAreaWidgetContents);
+        cbStream->setObjectName(QString::fromUtf8("cbStream"));
+        cbStream->setEnabled(false);
+
+        gridLayout->addWidget(cbStream, 3, 0, 1, 1);
+
+        lbCameraName = new QLabel(scrollAreaWidgetContents);
+        lbCameraName->setObjectName(QString::fromUtf8("lbCameraName"));
+        lbCameraName->setEnabled(false);
+
+        gridLayout->addWidget(lbCameraName, 2, 0, 1, 1);
+
+        pbRefresh = new QPushButton(scrollAreaWidgetContents);
+        pbRefresh->setObjectName(QString::fromUtf8("pbRefresh"));
+        QIcon icon;
+        icon.addFile(QString::fromUtf8(":/icon/icons8_replay_48px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbRefresh->setIcon(icon);
+
+        gridLayout->addWidget(pbRefresh, 1, 2, 1, 1);
+
+        cbCameraList = new QComboBox(scrollAreaWidgetContents);
+        cbCameraList->setObjectName(QString::fromUtf8("cbCameraList"));
+        cbCameraList->setMinimumSize(QSize(200, 0));
+
+        gridLayout->addWidget(cbCameraList, 1, 1, 1, 1);
+
+        horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        gridLayout->addItem(horizontalSpacer, 1, 3, 1, 1);
+
+        leCameraName = new QLineEdit(scrollAreaWidgetContents);
+        leCameraName->setObjectName(QString::fromUtf8("leCameraName"));
+        leCameraName->setEnabled(false);
+
+        gridLayout->addWidget(leCameraName, 2, 1, 1, 1);
+
+        label_2 = new QLabel(scrollAreaWidgetContents);
+        label_2->setObjectName(QString::fromUtf8("label_2"));
+
+        gridLayout->addWidget(label_2, 0, 0, 1, 1);
+
+        label_3 = new QLabel(scrollAreaWidgetContents);
+        label_3->setObjectName(QString::fromUtf8("label_3"));
+        label_3->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+
+        gridLayout->addWidget(label_3, 0, 1, 1, 1);
+
+
+        verticalLayout_2->addLayout(gridLayout);
+
+        frame = new QFrame(scrollAreaWidgetContents);
+        frame->setObjectName(QString::fromUtf8("frame"));
+        frame->setMinimumSize(QSize(0, 100));
+        frame->setFrameShape(QFrame::StyledPanel);
+        frame->setFrameShadow(QFrame::Raised);
+        gridLayout_3 = new QGridLayout(frame);
+        gridLayout_3->setObjectName(QString::fromUtf8("gridLayout_3"));
+        pbShotImage = new QPushButton(frame);
+        pbShotImage->setObjectName(QString::fromUtf8("pbShotImage"));
+        pbShotImage->setEnabled(false);
+        QIcon icon1;
+        icon1.addFile(QString::fromUtf8(":/icon/icons8_google_images_48px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbShotImage->setIcon(icon1);
+
+        gridLayout_3->addWidget(pbShotImage, 0, 0, 1, 1);
+
+        pbShotVideo = new QPushButton(frame);
+        pbShotVideo->setObjectName(QString::fromUtf8("pbShotVideo"));
+        pbShotVideo->setEnabled(false);
+        QIcon icon2;
+        icon2.addFile(QString::fromUtf8(":/icon/icons8_play_48px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        icon2.addFile(QString::fromUtf8(":/icon/icons8_pause_48px.png"), QSize(), QIcon::Normal, QIcon::On);
+        pbShotVideo->setIcon(icon2);
+        pbShotVideo->setCheckable(true);
+
+        gridLayout_3->addWidget(pbShotVideo, 1, 0, 1, 1);
+
+        label_13 = new QLabel(frame);
+        label_13->setObjectName(QString::fromUtf8("label_13"));
+        label_13->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+
+        gridLayout_3->addWidget(label_13, 1, 1, 1, 1);
+
+        leInterval = new QLineEdit(frame);
+        leInterval->setObjectName(QString::fromUtf8("leInterval"));
+        leInterval->setMaximumSize(QSize(100, 16777215));
+        leInterval->setAlignment(Qt::AlignCenter);
+
+        gridLayout_3->addWidget(leInterval, 1, 2, 1, 1);
+
+        label_14 = new QLabel(frame);
+        label_14->setObjectName(QString::fromUtf8("label_14"));
+
+        gridLayout_3->addWidget(label_14, 1, 3, 1, 1);
+
+
+        verticalLayout_2->addWidget(frame);
+
+        frame_3 = new QFrame(scrollAreaWidgetContents);
+        frame_3->setObjectName(QString::fromUtf8("frame_3"));
+        horizontalLayout_8 = new QHBoxLayout(frame_3);
+        horizontalLayout_8->setObjectName(QString::fromUtf8("horizontalLayout_8"));
+        horizontalLayout_8->setContentsMargins(0, 0, 0, 0);
+        fImageCounter = new QFrame(frame_3);
+        fImageCounter->setObjectName(QString::fromUtf8("fImageCounter"));
+        fImageCounter->setStyleSheet(QString::fromUtf8("QFrame\n"
+"{\n"
+"	background-color: rgb(225, 225, 225);\n"
+"}"));
+        horizontalLayout_5 = new QHBoxLayout(fImageCounter);
+        horizontalLayout_5->setObjectName(QString::fromUtf8("horizontalLayout_5"));
+        horizontalLayout_5->setContentsMargins(10, 0, 10, 0);
+        tbResetImageCounter = new QToolButton(fImageCounter);
+        tbResetImageCounter->setObjectName(QString::fromUtf8("tbResetImageCounter"));
+        QIcon icon3;
+        icon3.addFile(QString::fromUtf8(":/icon/icons8_reset_48px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        tbResetImageCounter->setIcon(icon3);
+
+        horizontalLayout_5->addWidget(tbResetImageCounter);
+
+        label_12 = new QLabel(fImageCounter);
+        label_12->setObjectName(QString::fromUtf8("label_12"));
+
+        horizontalLayout_5->addWidget(label_12);
+
+        lbImageCounter = new QLabel(fImageCounter);
+        lbImageCounter->setObjectName(QString::fromUtf8("lbImageCounter"));
+        lbImageCounter->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
+
+        horizontalLayout_5->addWidget(lbImageCounter);
+
+
+        horizontalLayout_8->addWidget(fImageCounter);
+
+        fResolution = new QFrame(frame_3);
+        fResolution->setObjectName(QString::fromUtf8("fResolution"));
+        fResolution->setMinimumSize(QSize(0, 0));
+        fResolution->setStyleSheet(QString::fromUtf8("background-color: rgb(225, 225, 225);"));
+        fResolution->setFrameShape(QFrame::StyledPanel);
+        fResolution->setFrameShadow(QFrame::Raised);
+        horizontalLayout_7 = new QHBoxLayout(fResolution);
+        horizontalLayout_7->setObjectName(QString::fromUtf8("horizontalLayout_7"));
+        horizontalLayout_7->setContentsMargins(10, 0, 10, 0);
+        label_17 = new QLabel(fResolution);
+        label_17->setObjectName(QString::fromUtf8("label_17"));
+
+        horizontalLayout_7->addWidget(label_17);
+
+        lbResolution = new QLabel(fResolution);
+        lbResolution->setObjectName(QString::fromUtf8("lbResolution"));
+
+        horizontalLayout_7->addWidget(lbResolution);
+
+
+        horizontalLayout_8->addWidget(fResolution);
+
+        fResolution_2 = new QFrame(frame_3);
+        fResolution_2->setObjectName(QString::fromUtf8("fResolution_2"));
+        fResolution_2->setMinimumSize(QSize(0, 0));
+        fResolution_2->setStyleSheet(QString::fromUtf8("background-color: rgb(225, 225, 225);"));
+        fResolution_2->setFrameShape(QFrame::StyledPanel);
+        fResolution_2->setFrameShadow(QFrame::Raised);
+        horizontalLayout_9 = new QHBoxLayout(fResolution_2);
+        horizontalLayout_9->setObjectName(QString::fromUtf8("horizontalLayout_9"));
+        horizontalLayout_9->setContentsMargins(10, 0, 10, 0);
+        label_18 = new QLabel(fResolution_2);
+        label_18->setObjectName(QString::fromUtf8("label_18"));
+
+        horizontalLayout_9->addWidget(label_18);
+
+        lbDisplayRatio = new QLabel(fResolution_2);
+        lbDisplayRatio->setObjectName(QString::fromUtf8("lbDisplayRatio"));
+
+        horizontalLayout_9->addWidget(lbDisplayRatio);
+
+
+        horizontalLayout_8->addWidget(fResolution_2);
+
+        fResolution_3 = new QFrame(frame_3);
+        fResolution_3->setObjectName(QString::fromUtf8("fResolution_3"));
+        fResolution_3->setMinimumSize(QSize(0, 0));
+        fResolution_3->setStyleSheet(QString::fromUtf8("background-color: rgb(225, 225, 225);"));
+        fResolution_3->setFrameShape(QFrame::StyledPanel);
+        fResolution_3->setFrameShadow(QFrame::Raised);
+        horizontalLayout_10 = new QHBoxLayout(fResolution_3);
+        horizontalLayout_10->setObjectName(QString::fromUtf8("horizontalLayout_10"));
+        horizontalLayout_10->setContentsMargins(10, 0, 10, 0);
+        label_28 = new QLabel(fResolution_3);
+        label_28->setObjectName(QString::fromUtf8("label_28"));
+
+        horizontalLayout_10->addWidget(label_28);
+
+        lbFPS = new QLabel(fResolution_3);
+        lbFPS->setObjectName(QString::fromUtf8("lbFPS"));
+
+        horizontalLayout_10->addWidget(lbFPS);
+
+
+        horizontalLayout_8->addWidget(fResolution_3);
+
+        horizontalSpacer_2 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        horizontalLayout_8->addItem(horizontalSpacer_2);
+
+
+        verticalLayout_2->addWidget(frame_3);
+
+        lbCameraDisplay = new QLabel(scrollAreaWidgetContents);
+        lbCameraDisplay->setObjectName(QString::fromUtf8("lbCameraDisplay"));
+        QSizePolicy sizePolicy1(QSizePolicy::Minimum, QSizePolicy::Minimum);
+        sizePolicy1.setHorizontalStretch(0);
+        sizePolicy1.setVerticalStretch(0);
+        sizePolicy1.setHeightForWidth(lbCameraDisplay->sizePolicy().hasHeightForWidth());
+        lbCameraDisplay->setSizePolicy(sizePolicy1);
+        lbCameraDisplay->setMinimumSize(QSize(0, 200));
+        lbCameraDisplay->setStyleSheet(QString::fromUtf8("background-color: rgb(255, 255, 255);"));
+
+        verticalLayout_2->addWidget(lbCameraDisplay);
+
+        groupBox = new QGroupBox(scrollAreaWidgetContents);
+        groupBox->setObjectName(QString::fromUtf8("groupBox"));
+        groupBox->setMinimumSize(QSize(0, 100));
+        gridLayout_2 = new QGridLayout(groupBox);
+        gridLayout_2->setObjectName(QString::fromUtf8("gridLayout_2"));
+        label_10 = new QLabel(groupBox);
+        label_10->setObjectName(QString::fromUtf8("label_10"));
+
+        gridLayout_2->addWidget(label_10, 9, 0, 1, 1);
+
+        label_6 = new QLabel(groupBox);
+        label_6->setObjectName(QString::fromUtf8("label_6"));
+
+        gridLayout_2->addWidget(label_6, 4, 0, 1, 1);
+
+        label_8 = new QLabel(groupBox);
+        label_8->setObjectName(QString::fromUtf8("label_8"));
+
+        gridLayout_2->addWidget(label_8, 8, 0, 1, 1);
+
+        label_9 = new QLabel(groupBox);
+        label_9->setObjectName(QString::fromUtf8("label_9"));
+
+        gridLayout_2->addWidget(label_9, 1, 0, 1, 1);
+
+        label_4 = new QLabel(groupBox);
+        label_4->setObjectName(QString::fromUtf8("label_4"));
+
+        gridLayout_2->addWidget(label_4, 2, 0, 1, 1);
+
+        label = new QLabel(groupBox);
+        label->setObjectName(QString::fromUtf8("label"));
+
+        gridLayout_2->addWidget(label, 0, 0, 1, 1);
+
+        label_5 = new QLabel(groupBox);
+        label_5->setObjectName(QString::fromUtf8("label_5"));
+
+        gridLayout_2->addWidget(label_5, 3, 0, 1, 1);
+
+        lineEdit_6 = new QLineEdit(groupBox);
+        lineEdit_6->setObjectName(QString::fromUtf8("lineEdit_6"));
+        lineEdit_6->setMaximumSize(QSize(100, 16777215));
+        lineEdit_6->setAlignment(Qt::AlignCenter);
+
+        gridLayout_2->addWidget(lineEdit_6, 8, 1, 1, 1);
+
+        label_7 = new QLabel(groupBox);
+        label_7->setObjectName(QString::fromUtf8("label_7"));
+
+        gridLayout_2->addWidget(label_7, 5, 0, 1, 1);
+
+        comboBox_2 = new QComboBox(groupBox);
+        comboBox_2->addItem(QString());
+        comboBox_2->addItem(QString());
+        comboBox_2->addItem(QString());
+        comboBox_2->addItem(QString());
+        comboBox_2->addItem(QString());
+        comboBox_2->setObjectName(QString::fromUtf8("comboBox_2"));
+        comboBox_2->setMaximumSize(QSize(100, 16777215));
+
+        gridLayout_2->addWidget(comboBox_2, 9, 1, 1, 1);
+
+        lineEdit = new QLineEdit(groupBox);
+        lineEdit->setObjectName(QString::fromUtf8("lineEdit"));
+        lineEdit->setMaximumSize(QSize(100, 16777215));
+        lineEdit->setAlignment(Qt::AlignCenter);
+
+        gridLayout_2->addWidget(lineEdit, 0, 1, 1, 1);
+
+        lineEdit_2 = new QLineEdit(groupBox);
+        lineEdit_2->setObjectName(QString::fromUtf8("lineEdit_2"));
+        lineEdit_2->setMaximumSize(QSize(100, 16777215));
+        lineEdit_2->setAlignment(Qt::AlignCenter);
+
+        gridLayout_2->addWidget(lineEdit_2, 1, 1, 1, 1);
+
+        lineEdit_3 = new QLineEdit(groupBox);
+        lineEdit_3->setObjectName(QString::fromUtf8("lineEdit_3"));
+        lineEdit_3->setMaximumSize(QSize(100, 16777215));
+        lineEdit_3->setAlignment(Qt::AlignCenter);
+
+        gridLayout_2->addWidget(lineEdit_3, 2, 1, 1, 1);
+
+        comboBox = new QComboBox(groupBox);
+        comboBox->addItem(QString());
+        comboBox->addItem(QString());
+        comboBox->setObjectName(QString::fromUtf8("comboBox"));
+        comboBox->setMaximumSize(QSize(100, 16777215));
+
+        gridLayout_2->addWidget(comboBox, 3, 1, 1, 1);
+
+        lineEdit_4 = new QLineEdit(groupBox);
+        lineEdit_4->setObjectName(QString::fromUtf8("lineEdit_4"));
+        lineEdit_4->setMaximumSize(QSize(100, 16777215));
+        lineEdit_4->setAlignment(Qt::AlignCenter);
+
+        gridLayout_2->addWidget(lineEdit_4, 4, 1, 1, 1);
+
+        lineEdit_5 = new QLineEdit(groupBox);
+        lineEdit_5->setObjectName(QString::fromUtf8("lineEdit_5"));
+        lineEdit_5->setMaximumSize(QSize(100, 16777215));
+        lineEdit_5->setAlignment(Qt::AlignCenter);
+
+        gridLayout_2->addWidget(lineEdit_5, 5, 1, 1, 1);
+
+
+        verticalLayout_2->addWidget(groupBox);
+
+        verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+
+        verticalLayout_2->addItem(verticalSpacer);
+
+        scrollArea->setWidget(scrollAreaWidgetContents);
+
+        verticalLayout->addWidget(scrollArea);
+
+
+        retranslateUi(Form);
+
+        QMetaObject::connectSlotsByName(Form);
+    } // setupUi
+
+    void retranslateUi(QWidget *Form)
+    {
+        Form->setWindowTitle(QCoreApplication::translate("Form", "Form", nullptr));
+        pbConnectCamera->setText(QCoreApplication::translate("Form", "Connect", nullptr));
+        cbStream->setText(QCoreApplication::translate("Form", "Stream", nullptr));
+        lbCameraName->setText(QCoreApplication::translate("Form", "Camera Name", nullptr));
+        pbRefresh->setText(QString());
+        leCameraName->setText(QCoreApplication::translate("Form", "iCam", nullptr));
+        label_2->setText(QCoreApplication::translate("Form", "Supported camera", nullptr));
+        label_3->setText(QCoreApplication::translate("Form", "Basler, Hikrobot", nullptr));
+        pbShotImage->setText(QCoreApplication::translate("Form", "Single Shot", nullptr));
+        pbShotVideo->setText(QCoreApplication::translate("Form", "Continious Shot", nullptr));
+        label_13->setText(QCoreApplication::translate("Form", "Interval", nullptr));
+        leInterval->setText(QCoreApplication::translate("Form", "50", nullptr));
+        label_14->setText(QCoreApplication::translate("Form", "ms", nullptr));
+        tbResetImageCounter->setText(QString());
+        label_12->setText(QCoreApplication::translate("Form", "Images:", nullptr));
+        lbImageCounter->setText(QCoreApplication::translate("Form", "0", nullptr));
+        label_17->setText(QCoreApplication::translate("Form", "Resolution:", nullptr));
+        lbResolution->setText(QCoreApplication::translate("Form", "0 x 0", nullptr));
+        label_18->setText(QCoreApplication::translate("Form", "Display:", nullptr));
+        lbDisplayRatio->setText(QCoreApplication::translate("Form", "50%", nullptr));
+        label_28->setText(QCoreApplication::translate("Form", "FPS:", nullptr));
+        lbFPS->setText(QCoreApplication::translate("Form", "0", nullptr));
+        lbCameraDisplay->setText(QString());
+        groupBox->setTitle(QCoreApplication::translate("Form", "Camera Setting", nullptr));
+        label_10->setText(QCoreApplication::translate("Form", "Trigger Source", nullptr));
+        label_6->setText(QCoreApplication::translate("Form", "Balance Ratio Red", nullptr));
+        label_8->setText(QCoreApplication::translate("Form", "Balance Ratio Blue", nullptr));
+        label_9->setText(QCoreApplication::translate("Form", "Gain", nullptr));
+        label_4->setText(QCoreApplication::translate("Form", "Gamma", nullptr));
+        label->setText(QCoreApplication::translate("Form", "Exposure Time", nullptr));
+        label_5->setText(QCoreApplication::translate("Form", "Balance White", nullptr));
+        lineEdit_6->setText(QCoreApplication::translate("Form", "0", nullptr));
+        label_7->setText(QCoreApplication::translate("Form", "Balance Ratio Green", nullptr));
+        comboBox_2->setItemText(0, QCoreApplication::translate("Form", "Software", nullptr));
+        comboBox_2->setItemText(1, QCoreApplication::translate("Form", "Line 1", nullptr));
+        comboBox_2->setItemText(2, QCoreApplication::translate("Form", "Line 2", nullptr));
+        comboBox_2->setItemText(3, QCoreApplication::translate("Form", "Line 3", nullptr));
+        comboBox_2->setItemText(4, QCoreApplication::translate("Form", "Line 4", nullptr));
+
+        lineEdit->setText(QCoreApplication::translate("Form", "0", nullptr));
+        lineEdit_2->setText(QCoreApplication::translate("Form", "0", nullptr));
+        lineEdit_3->setText(QCoreApplication::translate("Form", "0", nullptr));
+        comboBox->setItemText(0, QCoreApplication::translate("Form", "Off", nullptr));
+        comboBox->setItemText(1, QCoreApplication::translate("Form", "Continuous", nullptr));
+
+        lineEdit_4->setText(QCoreApplication::translate("Form", "0", nullptr));
+        lineEdit_5->setText(QCoreApplication::translate("Form", "0", nullptr));
+    } // retranslateUi
+
+};
+
+namespace Ui {
+    class Form: public Ui_Form {};
+} // namespace Ui
+
+QT_END_NAMESPACE
+
+#endif // UI_FORM_H

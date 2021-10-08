@@ -15,7 +15,7 @@ RobotWindow::RobotWindow(QWidget *parent) :
 
 RobotWindow::~RobotWindow()
 {
-
+    delete DeltaImageProcesser;
 }
 
 void RobotWindow::InitVariables()
@@ -126,6 +126,7 @@ void RobotWindow::InitVariables()
     DeltaImageProcesser->SetDisplayInfoWidget(ui->lbDisplayRatio, ui->lbMatSize);
     DeltaImageProcesser->SetXAngleWidget(ui->leXAxisAngle);
     DeltaImageProcesser->SetObjectFilterWidget(ui->rbBlobFilter, ui->rbExternalFilter, ui->rbCircleFilter);
+    DeltaImageProcesser->SetFilterParaWidget(ui->lePythonUrl);
 
     leChessPoints[0][0] = ui->leCorner1X;
     leChessPoints[0][1] = ui->leCorner1Y;
@@ -330,6 +331,9 @@ void RobotWindow::InitEvents()
 
     connect(DeltaConnectionManager, SIGNAL(ReceiveCaptureSignalFromExternalAI()), this, SLOT(SaveEncoderPositionWhenExternalAIDetect()));
     connect(DeltaConnectionManager, SIGNAL(ReceiveObjectInfoFromExternalAI(QString)), this, SLOT(ProcessDetectedObjectFromExternalAI(QString)));
+    connect(DeltaConnectionManager, SIGNAL(ExternalScriptOpened(QTcpSocket*)), DeltaImageProcesser, SLOT(GetExternalScriptSocket(QTcpSocket*)));
+    connect(DeltaConnectionManager, SIGNAL(ReceiveDisplayObjectFromExternalScript(QString)), this, SLOT(AddDisplayObjectFromExternalScript(QString)));
+
 
     //------------- Gcode Editor -------------
 	connect(ui->pbAddGcode, SIGNAL(clicked(bool)), this, SLOT(AddGcodeLine()));
@@ -374,6 +378,8 @@ void RobotWindow::InitEvents()
 
     connect(ui->pbImageMapping, SIGNAL(clicked(bool)), DeltaImageProcesser, SLOT(CalculateMappingMatrix()));
     connect(ui->pbPointTool, SIGNAL(clicked(bool)), ui->cameraWidget, SLOT(SelectMappingTool()));
+    connect(ui->pbExternalScriptOpen, SIGNAL(clicked(bool)), DeltaImageProcesser, SLOT(OpenExternalFilterScript()));
+    connect(ui->pbRunExternalScript, SIGNAL(clicked(bool)), DeltaImageProcesser, SLOT(RunExternalScript()));
 
     // ---- Setting ----
     connect(ui->pbLoadCameraSetting, SIGNAL(clicked(bool)), this, SLOT(LoadSetting()));
@@ -409,7 +415,7 @@ void RobotWindow::InitEvents()
 	connect(ui->actionScale, SIGNAL(triggered(bool)), this, SLOT(ScaleUI()));
 
 	connect(DeltaGcodeManager, SIGNAL(OutOfObjectVariable()), DeltaImageProcesser->ObjectManager, SLOT(RemoveOldestObject()));
-	connect(DeltaGcodeManager, SIGNAL(JustUpdateVariable(QList<GcodeVariable>)), this, SLOT(DisplayGcodeVariable(QList<GcodeVariable>)));
+    connect(DeltaGcodeManager, SIGNAL(JustUpdateVariable()), this, SLOT(DisplayGcodeVariable()));
     connect(DeltaGcodeManager, SIGNAL(MoveToNewPosition(float, float, float, float, float, float, float, float, float, float)), this, SLOT(UpdatePositionControl(float, float, float, float, float, float, float, float, float, float)));
 	connect(DeltaGcodeManager, SIGNAL(DeleteAllObjects()), ui->pbClearDetectObjects, SLOT(click()));
 	connect(DeltaGcodeManager, SIGNAL(DeleteObject1()), DeltaImageProcesser->ObjectManager, SLOT(RemoveOldestObject()));
@@ -421,6 +427,7 @@ void RobotWindow::InitEvents()
 	connect(ui->pbCaptureCamera, SIGNAL(clicked(bool)), DeltaImageProcesser, SLOT(CaptureCamera()));
 
 	connect(DeltaImageProcesser->ObjectManager, SIGNAL(NewUpdateObjectPosition(QString, float)), DeltaGcodeManager, SLOT(UpdateSystemVariable(QString, float)));
+    connect(DeltaImageProcesser->ObjectManager, SIGNAL(NewUpdateObjectPosition(QString)), DeltaGcodeManager, SLOT(SaveGcodeVariable(QString)));
 
     //----------- Drawing -----------
 	connect(ui->pbOpenPicture, SIGNAL(clicked(bool)), DeltaDrawingExporter, SLOT(OpenImage()));
@@ -621,7 +628,7 @@ void RobotWindow::closeEvent(QCloseEvent * event)
         event->ignore();
     }
     else
-    {
+    {        
         qApp->exit();
         event->accept();
     }
@@ -1452,9 +1459,9 @@ void RobotWindow::GetValueInput(QString response)
     lbValue->setText(value);
 }
 
-void RobotWindow::DisplayGcodeVariable(QList<GcodeVariable> gcodeVariables)
+void RobotWindow::DisplayGcodeVariable()
 {
-    foreach (GcodeVariable var, gcodeVariables)
+    foreach (GcodeVariable var, DeltaGcodeManager->GcodeVariables)
 	{
 		if (var.Name == ui->leVariable1->text())
 		{
@@ -1668,7 +1675,12 @@ void RobotWindow::AddObjectsToROS(std::vector<cv::RotatedRect> ObjectContainer)
 
 void RobotWindow::DeleteAllObjectsInROS()
 {
-	DeltaConnectionManager->TCPConnection->SendMessageToROS("delete all");
+    DeltaConnectionManager->TCPConnection->SendMessageToROS("delete all");
+}
+
+void RobotWindow::GetImage(cv::Mat mat)
+{
+    DeltaImageProcesser->GetImage(mat);
 }
 
 void RobotWindow::ConnectConveyor()
@@ -1736,6 +1748,23 @@ void RobotWindow::ProcessDetectedObjectFromExternalAI(QString msg)
         float delta = DeltaImageProcesser->EncoderPosition - EncoderPositionAtCameraCapture;
 
         DeltaImageProcesser->ObjectManager->AddNewObject(x.toFloat(), y.toFloat() + delta, w.toFloat(), h.toFloat());
+    }
+}
+
+void RobotWindow::AddDisplayObjectFromExternalScript(QString msg)
+{
+    QStringList paras = msg.split(",");
+    if (paras.count() >= 5)
+    {
+        //QString label = paras[0];
+        float x = paras[0].toFloat();
+        float y = paras[1].toFloat();
+        float w = paras[2].toFloat();
+        float h = paras[3].toFloat();
+        float a = paras[4].toFloat();
+
+        cv::RotatedRect object(cv::Point2f(x, y), cv::Size(w, h), a);
+        DeltaImageProcesser->DisplayObjects->append(object);
     }
 }
 
@@ -2284,6 +2313,12 @@ void RobotWindow::initPlugins(QStringList plugins)
             {
                 pluginWidget->ProcessCommand("-23");
                 connect(pluginWidget, SIGNAL(EmitCommand(QString)), this, SLOT(PrintReceiveData(QString)));
+            }
+            else
+            {
+            // general init
+                qRegisterMetaType< cv::Mat >("cv::Mat");
+                connect(pluginWidget, SIGNAL(CapturedImage(cv::Mat)), this, SLOT(GetImage(cv::Mat)));
             }
         }
         else

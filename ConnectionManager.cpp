@@ -97,6 +97,10 @@ void ConnectionManager::processReceiveData()
         {
             emit ReceiveObjectInfoFromExternalAI(valueS);
         }
+        if (name == "#Display")
+        {
+            emit ReceiveDisplayObjectFromExternalScript(valueS);
+        }
         else
         {
             int value = valueS.toInt();
@@ -332,6 +336,11 @@ void ConnectionManager::ReadData()
 			if (IsRosSocket(socket) == true)
 			{
 				TCPConnection->ProcessReceivedData(receiveLine);
+
+                if (receiveLine.contains("ExternalScript"))
+                {
+                    emit ExternalScriptOpened(socket);
+                }
 			}
 
 			if (socket == ExternalControllerSocket)

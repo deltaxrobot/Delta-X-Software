@@ -7,27 +7,32 @@ VideoDisplay::VideoDisplay(QObject *parent) : QObject(parent)
 
 void VideoDisplay::Loop()
 {
-    while (true)
+    while (!isCloseLoop)
     {
         if (updateSignal == false)
             continue;
 
-        QImage img = ImageTool::cvMatToQImage(matDisplay);
-        lbDisplay->setPixmap(QPixmap::fromImage(img).scaledToHeight(lbDisplay->size().height()));
+        for (int id = 0; id < MAX_DISPLAY; id++)
+        {
+            if (lbDisplay[id] != NULL)
+            {
+                QImage img = ImageTool::cvMatToQImage(matDisplay[id]);
+                lbDisplay[id]->setPixmap(QPixmap::fromImage(img).scaledToHeight(lbDisplay[id]->size().height()));
+            }
+        }
 
         updateSignal = false;
     }
 }
 
-void VideoDisplay::UpdateLabelImage(cv::Mat mat, QLabel *label)
+void VideoDisplay::UpdateLabelImage(cv::Mat mat, QLabel *label, int id)
 {
-    matDisplay = mat;
-    lbDisplay = label;
+    matDisplay[id] = mat;
+    lbDisplay[id] = label;
     updateSignal = true;
 }
 
-void VideoDisplay::UpdateLabelImage2(QLabel *label)
+void VideoDisplay::CloseLoop()
 {
-    int i = 0;
-    i += 1;
+    isCloseLoop = true;
 }

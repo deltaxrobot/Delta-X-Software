@@ -38,14 +38,14 @@ void ObjectVariableTable::UpdateTable(std::vector<cv::RotatedRect> ObjectContain
 		ObjectVariableWidgetList->at(i)->xValue->setText(QString::number(ObjectContainer.at(i).center.x));
 		ObjectVariableWidgetList->at(i)->yValue->setText(QString::number(ObjectContainer.at(i).center.y));
 
-		int angle = ObjectContainer.at(i).angle + 180;
+//		int angle = ObjectContainer.at(i).angle + 180;
 
-		if (ObjectContainer.at(i).size.width > ObjectContainer.at(i).size.height)
-		{
-			angle = ObjectContainer.at(i).angle + 90;
-		}
+//		if (ObjectContainer.at(i).size.width > ObjectContainer.at(i).size.height)
+//		{
+//			angle = ObjectContainer.at(i).angle + 90;
+//		}
 
-		ObjectVariableWidgetList->at(i)->aValue->setText(QString::number(angle));
+        ObjectVariableWidgetList->at(i)->aValue->setText(QString::number(ObjectContainer.at(i).angle));
 	}
 
 	while (ObjectContainer.size() < ObjectVariableWidgetList->size())

@@ -63,12 +63,29 @@ void MainWindow::InitVariables()
     DeltaXVersionManager->NewVersionSoftwareUrl = "https://sourceforge.net/projects/delta-x-software/files/";
     DeltaXVersionManager->CheckNewVersion(true);
 
-    // ----
+    //--------- Init Dialog -------------
+    CloseDialog = new SmartDialog(this);
+    CloseDialog->SetType(CloseDialog->CLOSE_DIALOG);
 }
 
 bool MainWindow::IsLastProject()
 {
     return false;
+}
+
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+    bool result = CloseDialog->PopUp("Close software", "Do you want to close the software?");
+
+    if(result == false)
+    {
+        event->ignore();
+    }
+    else
+    {
+        qApp->exit();
+        event->accept();
+    }
 }
 
 void MainWindow::NewProject_Slot(int index)
@@ -93,5 +110,13 @@ void MainWindow::NewProject_Slot(int index)
 
 MainWindow::~MainWindow()
 {
+    for (int i = 0; i < RobotManagers.count(); i++)
+    {
+        for (int j = 0; j < RobotManagers.at(i)->RobotWindows.count(); j++)
+        {
+            delete RobotManagers.at(i)->RobotWindows.at(j);
+        }
+    }
+
     delete ui;
 }

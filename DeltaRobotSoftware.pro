@@ -117,9 +117,12 @@ FORMS    += \
     MainWindow.ui \
     RobotWindow.ui \
     hsvwindow.ui \
-        GcodeReference.ui
+        GcodeReference.ui \
 
 RESOURCES += \
     resource.qrc
 
 RC_ICONS = delta_x_logo_96x96.ico
+
+
+

@@ -214,7 +214,7 @@ private slots:
     void GetValueInput(QString response);
 
     //----- Variable -----
-	void DisplayGcodeVariable(QList<GcodeVariable> gcodeVariables);
+    void DisplayGcodeVariable();
 
     // ---- Conveyor ----
     void ConnectConveyor();
@@ -235,6 +235,7 @@ private slots:
     void CalculateLostEncoderPositionWhenDetecting();
 
     void ProcessDetectedObjectFromExternalAI(QString msg);
+    void AddDisplayObjectFromExternalScript(QString msg);
     void SaveEncoderPositionWhenExternalAIDetect();
 	
     // ---- Slider ----
@@ -265,6 +266,8 @@ private slots:
 	void DeleteAllObjectsInROS();
 
     // ----- Display ----
+    void GetImage(cv::Mat mat);
+
 	void ScaleUI();    
 	void ChangeParentForWidget(bool state);
 

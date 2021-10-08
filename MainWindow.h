@@ -29,6 +29,7 @@ public:
 
     void InitVariables();
     bool IsLastProject();
+    void closeEvent(QCloseEvent *event);
 
     TabDashboard* Dashboard;
     ProjectManager* RobotProjectManager;
@@ -37,6 +38,7 @@ public:
     UXManager* Ux;
     VariableManager* ProgramVariableManager;
     VersionManager* DeltaXVersionManager;
+    SmartDialog* CloseDialog;
 
 public slots:
     void NewProject_Slot(int index);

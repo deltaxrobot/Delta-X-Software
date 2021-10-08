@@ -65,12 +65,14 @@ signals:
 
 	void ReceiveVariableChangeCommand(QString name, float value);
     void ReceiveObjectInfoFromExternalAI(QString msg);
+    void ReceiveDisplayObjectFromExternalScript(QString msg);
     void ReceiveCaptureSignalFromExternalAI();
 	void RequestVariableValue(QIODevice* sender, QString name);
 
 	void ReceiveRequestsFromExternal(QString request);
 
     void CaptureFromExternalCamera();
+    void ExternalScriptOpened(QTcpSocket* socket);
 private:
 	void init();
 	void sendQueue();

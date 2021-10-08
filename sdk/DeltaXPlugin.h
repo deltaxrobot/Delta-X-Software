@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QWidget>
 #include <QString>
+#include <opencv2/core/core.hpp>
 
 //! [0]
 class DeltaXPlugin : public QObject
@@ -19,6 +20,7 @@ public slots:
 
 signals:
     virtual void EmitCommand(QString cmd) = 0;
+    virtual void CapturedImage(cv::Mat mat) = 0;
 
 };
 

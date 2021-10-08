@@ -64,7 +64,7 @@ void TCPConnectionManager::SendMessageToROS(QString msg)
 void TCPConnectionManager::ProcessReceivedData(QString data)
 {	
 	if (data == "")
-		return;
+        return;
 
     else if (data.indexOf('x') > -1 && data.indexOf('y') > -1 && data.indexOf('z') > -1 )
 	{

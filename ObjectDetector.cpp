@@ -57,12 +57,13 @@ ObjectDetector::ObjectDetector(RobotWindow *parent)
 
 ObjectDetector::~ObjectDetector()
 {
-    VideoProcessorThread->stopVideo();
+    VideoProcessorThread->CloseLoop();
     VideoProcessorThread->thread()->quit();
     VideoProcessorThread->thread()->wait();
 
     VideoDisplayThread->thread()->quit();
     VideoDisplayThread->thread()->wait();
+    VideoDisplayThread->CloseLoop();
 }
 
 void ObjectDetector::LoadTestImage()
@@ -218,6 +219,7 @@ void ObjectDetector::stopCamera()
 	Camera->release();
 	RunningCamera = -1;
 	IsCameraPause = false;
+    isFirstRead = true;
     pbLoadCamera->setText("Load Camera");
 
     VideoProcessorThread->stopVideo();
@@ -235,6 +237,11 @@ void ObjectDetector::processImage()
 	{
 		return;
 	}
+
+    if (isFirstRead == true)
+    {
+        CalculateMappingMatrix();
+    }
 	
 	//cv::resize(captureImage, resizeImage, cv::Size(lbResultImage->width(), lbResultImage->height()));
 	resizeImage = captureImage.clone();
@@ -247,10 +254,12 @@ void ObjectDetector::processImage()
     processMat = resizeImage.clone();
     resizeImage.copyTo(resultImage);
 
+
     //----------------------
     // Detect objects in image and manage them
     if (rbBlobFilter->isChecked())
-    {
+    {        
+
         postProcessing();
         detectBlobObjects(processMat);
     }
@@ -258,10 +267,13 @@ void ObjectDetector::processImage()
     {
         detectCircleObjects(resizeImage);
     }
-
+    else if (rbExternalFilter->isChecked())
+    {
+        sendImageToExternalScript(resizeImage);
+    }
 
     processDetectingObjectOnCamera(resultImage, *DisplayObjects, BLUE_COLOR);
-
+    DisplayObjects->clear();
     UpdateTrackingInfo();
 
     UpdateDetectingResultToWidgets();
@@ -423,6 +435,11 @@ void ObjectDetector::SetObjectFilterWidget(QRadioButton *blobFilter, QRadioButto
     rbCircleFilter = circleFilter;
 }
 
+void ObjectDetector::SetFilterParaWidget(QLineEdit *pythonUrl)
+{
+    lePythonUrl = pythonUrl;
+}
+
 void ObjectDetector::SetHSV(int minH, int maxH, int minS, int maxS, int minV, int maxV)
 {
 	// Make binary image
@@ -459,6 +476,12 @@ void ObjectDetector::SetThreshold(int value)
 	cvtColor(resizeImage, processMat, CV_BGR2GRAY);
 
     cv::threshold(processMat, processMat, value, 255, CV_THRESH_BINARY);
+}
+
+void ObjectDetector::OpenExternalFilterScript()
+{
+    QString path = QFileDialog::getOpenFileName(this, tr("Open Python Script"), lePythonUrl->text(), tr("Python Files (*.py)"));
+    lePythonUrl->setText(path);
 }
 
 void ObjectDetector::GetObjectInfo(int x, int y, int l, int w)
@@ -920,6 +943,11 @@ void ObjectDetector::LoadSetting(QString fileName)
     leRealityLine->setText(settings.value("RealCalibLine", leRealityLine->text()).toString());
 }
 
+void ObjectDetector::GetExternalScriptSocket(QTcpSocket *socket)
+{
+    PythonTcpClient = socket;
+}
+
 void ObjectDetector::OpenParameterPanel()
 {	
 	ParameterPanel->exec();
@@ -1136,6 +1164,16 @@ void ObjectDetector::detectBlobObjects(cv::Mat input)
 		if (s > minObjectArea && s < maxObjectArea && h < obHei && w < obWid && minRec.boundingRect().y > 0 && (minRec.boundingRect().y + minRec.boundingRect().height + 5) < input.rows)
 		{
             cv::RotatedRect object = cv::minAreaRect(cv::Mat(contoursContainer[i]));
+
+            int angle = object.angle + 180;
+
+            if (object.size.width > object.size.height)
+            {
+                angle = object.angle + 90;
+            }
+
+            object.angle = angle;
+
             DisplayObjects->append(object);
 
 			visibleCounter += 1;
@@ -1158,6 +1196,58 @@ void ObjectDetector::detectCircleObjects(cv::Mat input)
 
     // Apply Hough Transform
     HoughCircles(img_blur, CircleObjects, cv::HOUGH_GRADIENT, 1, resizeImage.rows/64, 200, 10, minRaius, maxRaius);
+}
+
+void ObjectDetector::sendImageToExternalScript(cv::Mat input)
+{
+    if (PythonTcpClient == NULL)
+        return;
+
+    int paras[3];
+    paras[0] = input.cols;
+    paras[1] = input.rows;
+    paras[2] = input.channels();
+
+    int len = 3 * sizeof(int);
+
+    PythonTcpClient->write((char*)paras, len);
+
+    char* pos = (char*)input.data;
+
+    int colByte = input.cols*input.channels() * sizeof(uchar);
+    for (int i = 0; i < input.rows; i++)
+    {
+        char* data = (char*)input.ptr<uchar>(i); //first address of the i-th line
+        int sedNum = 0;
+        char buf[1024] = { 0 };
+
+        while (sedNum < colByte)
+        {
+            int sed = (1024 < colByte - sedNum) ? 1024 : (colByte - sedNum);
+            memcpy(buf, &data[sedNum], sed);
+            int SendSize = PythonTcpClient->write(buf, sed);
+
+            if (SendSize == -1)
+                return;
+            sedNum += SendSize;
+        }
+    }
+}
+
+void ObjectDetector::RunExternalScript()
+{
+    QString path = QCoreApplication::applicationDirPath();
+    QString command("python");
+    QStringList params = QStringList() << lePythonUrl->text();
+
+    QString imageParas = QString("-h %1 -w %2 -c %3").arg(resizeImage.rows).arg(resizeImage.cols).arg(resizeImage.channels());
+
+    params << imageParas.split(' ');
+
+    QProcess *process = new QProcess();
+    process->startDetached(command, params);
+    process->waitForFinished();
+    process->close();
 }
 
 void ObjectDetector::drawRotateRec(cv::Mat& mat, int angle, cv::Rect rec, cv::Scalar color)
@@ -1209,18 +1299,11 @@ float ObjectDetector::processDetectingObjectOnCamera(cv::Mat& mat, QList<cv::Rot
             realObject.size.height = object.size.height / PnRRatio;
             realObject.size.width = object.size.width / PnRRatio;
 
-            int angle = realObject.angle + 180;
-
-            if (realObject.size.width > realObject.size.height)
-            {
-                angle = realObject.angle + 90;
-            }
-
             // Add object to object list if it is new object
             ObjectManager->AddNewObject(realObject);
             // Add object info to screen
-            putText(mat, std::to_string((int)xRealObject) + "," + std::to_string((int)yRealObject) + "," + std::to_string((int)angle), cv::Point(object.center.x - 40, object.center.y), cv::FONT_HERSHEY_SIMPLEX, 0.4, BLACK_COLOR, 2);
-            putText(mat, std::to_string((int)xRealObject) + "," + std::to_string((int)yRealObject) + "," + std::to_string((int)angle), cv::Point(object.center.x - 40, object.center.y), cv::FONT_HERSHEY_SIMPLEX, 0.4, WHITE_COLOR, 1);
+            putText(mat, std::to_string((int)xRealObject) + "," + std::to_string((int)yRealObject) + "," + std::to_string((int)realObject.angle), cv::Point(object.center.x - 40, object.center.y), cv::FONT_HERSHEY_SIMPLEX, 0.4, BLACK_COLOR, 2);
+            putText(mat, std::to_string((int)xRealObject) + "," + std::to_string((int)yRealObject) + "," + std::to_string((int)realObject.angle), cv::Point(object.center.x - 40, object.center.y), cv::FONT_HERSHEY_SIMPLEX, 0.4, WHITE_COLOR, 1);
 
         }
     }
@@ -1255,7 +1338,7 @@ void ObjectDetector::CalculateMappingMatrix()
     float n1n2 = a1 * a2 + b1 * b2;
     float _n1 = qSqrt(qPow(a1, 2) + qPow(b1, 2));
     float _n2 = qSqrt(qPow(a2, 2) + qPow(b2, 2));
-    float ratio = _n2/_n1;
+    float ratio = PnRRatio = _n2/_n1;
 
     float _n1_n2_ = _n1 * _n2;
 
@@ -1283,7 +1366,7 @@ void ObjectDetector::CalculateMappingMatrix()
     {
         float imageLine = leImageLine->text().toFloat();
         float realLine = leRealityLine->text().toFloat();
-        ratio = realLine / imageLine;
+        ratio = PnRRatio = realLine / imageLine;
 
         float angle = leXAxisAngle->text().toFloat();
         theta = angle * (M_PI / 180);
@@ -1325,23 +1408,23 @@ void ObjectDetector::UpdateDetectingResultToWidgets()
 {
     if (cameraLayer == ORIGIN)
     {
-        VideoDisplayThread->UpdateLabelImage(resizeImage, cameraWidget);
+        VideoDisplayThread->UpdateLabelImage(resizeImage, cameraWidget, 0);
     }
     else if (cameraLayer == PROCESSING)
     {
-        VideoDisplayThread->UpdateLabelImage(processMat, cameraWidget);
+        VideoDisplayThread->UpdateLabelImage(processMat, cameraWidget, 0);
     }
     else if (cameraLayer == RESULT)
     {
         DisplayAdditionalInfo(resultImage);
 
-        VideoDisplayThread->UpdateLabelImage(resultImage, cameraWidget);
+        VideoDisplayThread->UpdateLabelImage(resultImage, cameraWidget, 0);
     }
 
     if (ParameterPanel->isHidden() == false)
     {
-        VideoDisplayThread->UpdateLabelImage(processMat, ParameterPanel->lbProcessImage);
-        VideoDisplayThread->UpdateLabelImage(resultImage, ParameterPanel->lbOriginImage);
+        VideoDisplayThread->UpdateLabelImage(processMat, ParameterPanel->lbProcessImage, 1);
+        VideoDisplayThread->UpdateLabelImage(resizeImage, ParameterPanel->lbOriginImage, 2);
     }
 }
 

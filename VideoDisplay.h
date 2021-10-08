@@ -9,6 +9,8 @@
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc.hpp>
 
+#define MAX_DISPLAY 5
+
 class VideoDisplay : public QObject
 {
     Q_OBJECT
@@ -17,13 +19,14 @@ public:
 
 public slots:
     void Loop();
-    void UpdateLabelImage(cv::Mat mat, QLabel* label);
-    void UpdateLabelImage2(QLabel* label);
+    void UpdateLabelImage(cv::Mat mat, QLabel* label, int id);
+    void CloseLoop();
 signals:
 private:
     bool updateSignal = false;
-    cv::Mat matDisplay;
-    QLabel* lbDisplay;
+    bool isCloseLoop = false;
+    cv::Mat matDisplay[MAX_DISPLAY];
+    QLabel* lbDisplay[MAX_DISPLAY] = {NULL};
 };
 
 #endif // VIDEODISPLAY_H

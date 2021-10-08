@@ -824,7 +824,7 @@ void GcodeProgramManager::TransmitNextGcode()
 void GcodeProgramManager::UpdateSystemVariable(QString name, float value)
 {
 	SaveGcodeVariable(name, value);
-    emit JustUpdateVariable(GcodeVariables);
+    emit JustUpdateVariable();
 }
 
 void GcodeProgramManager::RespondVariableValue(QIODevice* s, QString name)
@@ -1092,7 +1092,19 @@ void GcodeProgramManager::SaveGcodeVariable(QString name, float value)
 	GcodeVariable gvar;
 	gvar.Name = name;
 	gvar.Value = value;
-	SaveGcodeVariable(gvar);
+    SaveGcodeVariable(gvar);
+}
+
+void GcodeProgramManager::SaveGcodeVariable(QString cmd)
+{
+    QStringList vars = cmd.split(';');
+
+    foreach(QString var, vars)
+    {
+        var = var.replace(" ", "");
+        QStringList paras = var.split('=');
+        SaveGcodeVariable(GcodeVariable(paras[0], paras[1].toFloat()));
+    }
 }
 
 void GcodeProgramManager::updatePositionIntoSystemVariable(QString statement)

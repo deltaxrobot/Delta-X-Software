@@ -32,6 +32,7 @@ public slots:
 
 signals:
 	void NewUpdateObjectPosition(QString name, float value);
+    void NewUpdateObjectPosition(QString cmd);
 private:
 	bool isNewObject(cv::RotatedRect object);
     void updateObjectVariable(cv::RotatedRect object, int id);

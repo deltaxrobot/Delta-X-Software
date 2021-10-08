@@ -34,6 +34,16 @@ class RobotWindow;
 class GcodeVariable
 {
 public:
+    GcodeVariable()
+    {
+        Name = "";
+        Value = 0;
+    };
+    GcodeVariable(QString name, float value)
+    {
+        Name = name;
+        Value = value;
+    }
 	QString Name;
 	float Value;
 };
@@ -55,8 +65,7 @@ public:
 	void ExecuteGcode(QString gcodes, bool isFromGE = false);
 	void Stop();    
 
-    void SaveGcodeVariable(GcodeVariable gvar);
-    void SaveGcodeVariable(QString name, float value);
+
 
 	QWidget* wgProgramContainer;
 	QScrollArea* saProgramFilesScrollArea;
@@ -95,9 +104,13 @@ public slots:
 	void RespondVariableValue(QIODevice* sender, QString name);
     void SetStartingGcodeEditorCursor(QString value);
 
+    void SaveGcodeVariable(GcodeVariable gvar);
+    void SaveGcodeVariable(QString name, float value);
+    void SaveGcodeVariable(QString cmd);
+
 signals:
 	void OutOfObjectVariable();
-	void JustUpdateVariable(QList<GcodeVariable> gcodeVariables);
+    void JustUpdateVariable();
     void MoveToNewPosition(float x, float y, float z, float w, float u, float v, float f, float a, float s, float e);
 	void FinishExecuteGcodes();
 

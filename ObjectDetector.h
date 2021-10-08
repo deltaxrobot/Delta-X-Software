@@ -27,6 +27,9 @@
 #include "VideoProcessor.h"
 #include <QThread>
 #include "VideoDisplay.h"
+#include <QTcpSocket>
+#include <QProcess>
+#include <QTcpServer>
 
 #define RED_COLOR       cv::Scalar(0, 0, 255)
 #define GREEN_COLOR     cv::Scalar(0, 255, 0)
@@ -101,6 +104,7 @@ public:
     void SetChessboardWidget(QLineEdit* chessW, QLineEdit* chessH, QLineEdit* chesSquareSize, QLineEdit* chessPoints[4][2]);
     void SetXAngleWidget(QLineEdit* xAngle);
     void SetObjectFilterWidget(QRadioButton* blobFilter, QRadioButton* externalFilter, QRadioButton* circleFilter);
+    void SetFilterParaWidget(QLineEdit* pythonUrl);
 
     // ---- Display Value ----
 	void UpdateLabelImage(cv::Mat mat, QLabel* label);
@@ -110,6 +114,7 @@ public:
     VideoProcessor* VideoProcessorThread;
 
     VideoDisplay* VideoDisplayThread;
+    QTcpSocket* PythonTcpClient = NULL;
 
     // ---- Table ----
 	HSVWindow* ParameterPanel;
@@ -134,9 +139,9 @@ public:
 	QMatrix P2RMatrix;
 	QMatrix D2RMatrix;
 
-	float DnPRatio;
-	float PnRRatio;
-	float DnRratio;
+    float DnPRatio = 1.0;
+    float PnRRatio = 1.0;
+    float DnRratio = 1.0;
     float CameraRatio = 4.0/3;
     int CameraWidgetHeight = 300;
 
@@ -171,6 +176,7 @@ public slots:
 	void OpenParameterPanel();
 	void SetHSV(int minH, int maxH, int minS, int maxS, int minV, int maxV);
 	void SetThreshold(int value);
+    void OpenExternalFilterScript();
 
     // ----- Tool ----
 	void GetObjectInfo(int x, int y, int l, int w);
@@ -213,6 +219,11 @@ public slots:
 
     void SaveSetting(QString fileName);
     void LoadSetting(QString fileName);
+
+    // ---- Detecting ----
+    void GetExternalScriptSocket(QTcpSocket* socket);
+
+    void RunExternalScript();
 signals:
 	void ObjectValueChanged(std::vector<cv::RotatedRect> ObjectContainer);
     void openCamera(cv::VideoCapture* cam);
@@ -230,6 +241,7 @@ private:
     void postProcessing();
     void detectBlobObjects(cv::Mat input);
     void detectCircleObjects(cv::Mat input);
+    void sendImageToExternalScript(cv::Mat input);
     float processDetectingObjectOnCamera(cv::Mat& mat, QList<cv::RotatedRect> objects, cv::Scalar color);
 
     // ---- Display ----    
@@ -334,6 +346,7 @@ private:
     QRadioButton* rbBlobFilter;
     QRadioButton* rbExternalFilter;
     QRadioButton* rbCircleFilter;
+    QLineEdit* lePythonUrl;
 
     // ---- Configuration ----
 
@@ -344,6 +357,7 @@ private:
 	bool isCalibInfoVisible = true;
 
 	bool isFirstLoad = true;
+    bool isFirstRead = true;
 	bool isStopCapture = false;
 
     // ---- Relation ----

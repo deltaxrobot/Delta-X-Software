@@ -99,7 +99,12 @@ bool BlobManager::isNewObject(cv::RotatedRect object)
 			IntersectionArea = cv::contourArea(IntersectionVertices);
 		}
 
-		int ObjectArea = oldObj.size.height * oldObj.size.width;
+        if (IntersectionArea > 0)
+        {
+            int abc = 1;
+        }
+
+        int ObjectArea = oldObj.size.height * oldObj.size.width;
 
 		if (IntersectionArea > ObjectArea * 0.3f)
 		{
@@ -113,16 +118,18 @@ bool BlobManager::isNewObject(cv::RotatedRect object)
 
 void BlobManager::updateObjectVariable(cv::RotatedRect object, int id)
 {
-    int angle = object.angle + 180;
+//    int angle = object.angle + 180;
 
-    if (object.size.width > object.size.height)
-    {
-        angle = object.angle + 90;
-    }
+//    if (object.size.width > object.size.height)
+//    {
+//        angle = object.angle + 90;
+//    }
 
-    emit NewUpdateObjectPosition(QString("#O") + QString::number(id) + "_X", object.center.x);
-    emit NewUpdateObjectPosition(QString("#O") + QString::number(id) + "_Y", object.center.y);
-    emit NewUpdateObjectPosition(QString("#O") + QString::number(id) + "_A", angle);
+    QString cmd = "";
+    cmd += QString("#O%1_X=%2;").arg(id).arg(object.center.x);
+    cmd += QString("#O%1_Y=%2;").arg(id).arg(object.center.y);
+    cmd += QString("#O%1_A=%2").arg(id).arg(object.angle);
+    emit NewUpdateObjectPosition(cmd);
 }
 
 void BlobManager::UpdateNewObjectMoving(float deltaX, float deltaY)
