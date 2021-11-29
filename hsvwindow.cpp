@@ -40,27 +40,40 @@ void HSVWindow::SaveSetting(QString fileName)
 {
     QSettings settings(fileName, QSettings::IniFormat);
 
-    settings.setValue("minH", sPara[0]->value());
-    settings.setValue("maxH", sPara[1]->value());
-    settings.setValue("minS", sPara[2]->value());
-    settings.setValue("maxS", sPara[3]->value());
-    settings.setValue("minV", sPara[4]->value());
-    settings.setValue("maxV", sPara[5]->value());
+    SaveSetting(&settings);
+}
 
-    settings.setValue("thresV", ui->hsThreshold->value());
+void HSVWindow::SaveSetting(QSettings *setting)
+{
+    setting->setValue("minH", sPara[0]->value());
+    setting->setValue("maxH", sPara[1]->value());
+    setting->setValue("minS", sPara[2]->value());
+    setting->setValue("maxS", sPara[3]->value());
+    setting->setValue("minV", sPara[4]->value());
+    setting->setValue("maxV", sPara[5]->value());
+
+    setting->setValue("thresV", ui->hsThreshold->value());
+
+    setting->setValue("invert", ui->cbInvert->isChecked());
 }
 
 void HSVWindow::LoadSetting(QString fileName)
 {
     QSettings settings(fileName, QSettings::IniFormat);
-    sPara[0]->setValue(settings.value("minH", 0).toInt());
-    sPara[1]->setValue(settings.value("maxH", 255).toInt());
-    sPara[0]->setValue(settings.value("minS", 0).toInt());
-    sPara[1]->setValue(settings.value("maxS", 255).toInt());
-    sPara[0]->setValue(settings.value("minV", 0).toInt());
-    sPara[1]->setValue(settings.value("maxV", 255).toInt());
 
-    ui->hsThreshold->setValue(settings.value("thresV", 100).toInt());
+    LoadSetting(&settings);
+}
+
+void HSVWindow::LoadSetting(QSettings *setting)
+{
+    sPara[0]->setValue(setting->value("minH", 0).toInt());
+    sPara[1]->setValue(setting->value("maxH", 255).toInt());
+    sPara[0]->setValue(setting->value("minS", 0).toInt());
+    sPara[1]->setValue(setting->value("maxS", 255).toInt());
+    sPara[0]->setValue(setting->value("minV", 0).toInt());
+    sPara[1]->setValue(setting->value("maxV", 255).toInt());
+
+    ui->hsThreshold->setValue(setting->value("thresV", 100).toInt());
     ui->lbThreshold->setText(QString::number(ui->hsThreshold->value()));
 
 
@@ -68,6 +81,8 @@ void HSVWindow::LoadSetting(QString fileName)
     {
         lbPara[i]->setText(QString::number(sPara[i]->value()));
     }
+
+    ui->cbInvert->setChecked(setting->value("invert", false).toBool());
 }
 
 bool HSVWindow::IsInvertBinary()
@@ -79,10 +94,10 @@ void HSVWindow::InitEvents()
 {
 	for (int i = 0; i < 6; i++)
 	{
-		connect(sPara[i], SIGNAL(valueChanged(int)), this, SLOT(UpdateSliderValueToLabel()));
+        connect(sPara[i], &QAbstractSlider::sliderReleased, this, &HSVWindow::UpdateSliderValueToLabel);
 	}
 
-	connect(ui->hsThreshold, SIGNAL(valueChanged(int)), this, SLOT(UpdateSliderValueToLabel()));
+    connect(ui->hsThreshold, &QAbstractSlider::sliderReleased, this, &HSVWindow::UpdateSliderValueToLabel);
 }
 
 void HSVWindow::UpdateSliderValueToLabel()

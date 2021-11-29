@@ -90,7 +90,8 @@ public:
     ~ObjectDetector();
 	
     // ---- Init UI pointer ----
-    void SetObjectSizePointer(QLineEdit* wRec, QLineEdit* lRec);//, QLineEdit* distance, QLineEdit* xCoor, QLineEdit* yCoor);
+    void SetObjectSizePointer(QLineEdit* wRec, QLineEdit* lRec, QLineEdit* hRec);//, QLineEdit* distance, QLineEdit* xCoor, QLineEdit* yCoor);
+    void SetObjectErrorPointer(QLineEdit* objectErrorSize, QLineEdit* trackingError);
     void SetCalibLinePointer(QLineEdit* realityLine, QLineEdit* imageLine);
     void SetScaleRoateEnablePointer(QCheckBox* lineEnable);
     void SetRealityCalibPointPointer(QLineEdit* realityPoint1X, QLineEdit* realityPoint1Y, QLineEdit* realityPoint2X, QLineEdit* realityPoint2Y);
@@ -110,19 +111,25 @@ public:
 	void UpdateLabelImage(cv::Mat mat, QLabel* label);
 	void SetConvenyorVelocity(float val, QString dir);
 
+    // ----- Encoder + Conveyor -----
+    void UpdatePointPositionOnConveyor(QLineEdit* x, QLineEdit* y, float angle, float distance);
+    void UpdatePointPositionOnConveyor(float& x, float& y, float angle, float distance);
+
     // Thread
     VideoProcessor* VideoProcessorThread;
 
     VideoDisplay* VideoDisplayThread;
     QTcpSocket* PythonTcpClient = NULL;
 
+    QProcess *ExternalScriptProcess;
+
     // ---- Table ----
 	HSVWindow* ParameterPanel;
 	BlobManager* ObjectManager;
 
     // ---- Timer ----
-    QElapsedTimer TimerTool;
     QTimer* ObjectMovingCalculaterTimer;
+    QTimer* ProcessingImageTimer;
 
     // ----- State ----
 	int RunningCamera = -1;
@@ -131,8 +138,11 @@ public:
     // ---- Camera ----
 	cv::VideoCapture* Camera;
 
-	int CameraFPS = DEFAULT_FPS;
-	int CameraTimerInterval = DEFAULT_INTERVAL;
+    float CameraFPS = DEFAULT_FPS;
+    float CameraTimerInterval = DEFAULT_INTERVAL;
+
+    QCheckBox* cbExternalCamera = NULL;
+    QComboBox* cbImageSourceForExternal = NULL;
 
     // ---- Calculating ----
 	QMatrix D2PMatrix;
@@ -152,17 +162,29 @@ public:
     float ConveyorVel = 0;
     float LastEncoderPosition = 0;
     float EncoderPosition = 0;
+    float MovingDistance = 0;
     QString DirName = "X";
     bool IsEncoderEnable = false;
+
+    float DeviationAngle = 0;
+
+    // ------- Encoder ---------
+    float EncoderPositionAtCameraCapture = 0;
 
     // ---- Object ----
     QList<cv::RotatedRect> *DisplayObjects;
     std::vector<cv::Vec3f>  CircleObjects;
 
+    float ObjectError = 0.5f;
+
+    cv::Rect PobjectRec;
+    int minObjectArea;
+    int maxObjectArea;
+
 public slots:
     // ---- Camera ----
 	void LoadTestImage();
-	void LoadCamera();
+    void LoadCamera2();
 	void CaptureCamera();
     void GetImage(cv::Mat mat);
 	void PauseCamera();
@@ -181,6 +203,7 @@ public slots:
     // ----- Tool ----
 	void GetObjectInfo(int x, int y, int l, int w);
 	void GetObjectInfo(int l, int w);
+    void GetObjectError();
 	void GetPerspectivePoints(QPoint a, QPoint b, QPoint c, QPoint d);
 	void GetProcessArea(QRect processArea);
 	void GetCalibLine(QPoint p1, QPoint p2);
@@ -205,9 +228,11 @@ public slots:
 	void CloseCameraWindow();
 
     void UpdateToCameraWidget();
+    void UpdatePixmapToLabel(QLabel* lb, QPixmap pm);
 
     // ---- Calib ----
-	void UpdateRatios();
+    void UpdateRatios(float w, float h);
+    void UpdateRatios();
     void CalculateMappingMatrix();
 
     // ---- Tracking ----
@@ -218,12 +243,13 @@ public slots:
     // ---- Setting ----
 
     void SaveSetting(QString fileName);
+    void SaveSetting(QSettings* setting);
     void LoadSetting(QString fileName);
+    void LoadSetting(QSettings* setting);
 
     // ---- Detecting ----
     void GetExternalScriptSocket(QTcpSocket* socket);
 
-    void RunExternalScript();
 signals:
 	void ObjectValueChanged(std::vector<cv::RotatedRect> ObjectContainer);
     void openCamera(cv::VideoCapture* cam);
@@ -256,6 +282,8 @@ private:
 	void drawLine(cv::Mat& displayMat, QPoint p1, QPoint p2);
 	void drawCorner(cv::Mat& displayMat, QPoint p);
 
+    void updatePerspectivePointsToUI();
+
     // ---- Result Display ----
     void UpdateTrackingInfo();
     void UpdateDetectingResultToWidgets();
@@ -266,9 +294,7 @@ private:
 	int filterMethod = THRESHOLD_SPACE;
 	int cameraLayer = RESULT;
 
-	cv::Rect PobjectRec;
-	int minObjectArea;
-	int maxObjectArea;
+
 
 	std::vector<cv::Point> PperspectivePoints;
 	cv::Rect PselectedRectangle;
@@ -291,11 +317,10 @@ private:
 	QLine arrow2;	
 
     // ---- Display ----
-    QTimer* updateScreenTimer;
 
 	cv::Mat captureImage;
-    cv::Mat resizeImage;
-    cv::Mat processMat;
+    cv::Mat calibImage;
+    cv::Mat filterMat;
 	cv::Mat resultImage;
 	cv::Mat transformImage;
 
@@ -318,8 +343,13 @@ private:
 
 	QLineEdit* leWRec = NULL;
 	QLineEdit* leLRec = NULL;
+    QLineEdit* leHRec = NULL;
+
     QLineEdit* leRealityLine = NULL;
     QLineEdit* leImageLine = NULL;
+
+    QLineEdit* leObjectErrorSize;
+    QLineEdit* leTrackingError;
 
     QLineEdit* leRealityPoint1X = NULL;
     QLineEdit* leRealityPoint1Y = NULL;

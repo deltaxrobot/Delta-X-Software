@@ -9,6 +9,11 @@
 #include <QMessageBox>
 #include <QHBoxLayout>
 #include <QStackedWidget>
+#include <QSettings>
+
+#include "robotmanager.h"
+
+class RobotManager;
 
 class ProjectManager : public QWidget
 {
@@ -18,13 +23,19 @@ public:
     void InitTabManager(QTabWidget* tabWidget);
     void InitAddNewTab(QWidget* addNewTab);
     void AddNewTab(QWidget* newTab = NULL, QStackedWidget* stack = NULL);
-    void AddNewTab(QStackedWidget* stack);
+    void AddNewTab(QStackedWidget* stack, int id, QString name);
+    void RemoveTab(int tabIndex);
     QString GetProjectName(int index);
     QString GetProjectName(QWidget* widget);
+    RobotManager *GetProject(QString name);
 
     QStackedWidget *SubProject;
 
     bool IsNewTabSlotOutside = false;
+
+
+    RobotManager* CurrentRobotManager;
+    QList<RobotManager*> RobotManagers;
 
 public slots:
     void ChangeProjectTab(int index);

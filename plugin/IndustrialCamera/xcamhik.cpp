@@ -48,8 +48,11 @@ unsigned char *XCamHIK::Capture()
     if (Camera == NULL)
         return NULL;
 
+    if (data != NULL)
+        free(data);
+
     int nBufSize = 3 * 1920 * 1200;
-    unsigned char* data = (unsigned char*)std::malloc(sizeof(unsigned char) * (nBufSize));
+    data = (unsigned char*)std::malloc(sizeof(unsigned char) * (nBufSize));
 
 
     MV_FRAME_OUT_INFO_EX stInfo;
@@ -65,4 +68,14 @@ unsigned char *XCamHIK::Capture()
     height = stInfo.nHeight;
 
     return data;
+}
+
+void XCamHIK::SetExposureTime(int value)
+{
+
+}
+
+int XCamHIK::GetExposureTime()
+{
+    return 0;
 }

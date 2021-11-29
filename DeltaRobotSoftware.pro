@@ -38,6 +38,7 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
     AccountWindow.cpp \
+    Authority.cpp \
     BlobManager.cpp \
     CameraWidget.cpp \
     ComDevice.cpp \
@@ -74,6 +75,7 @@ SOURCES += main.cpp\
 
 HEADERS  += \
     AccountWindow.h \
+    Authority.h \
     BlobManager.h \
     CameraWidget.h \
     ComDevice.h \
@@ -123,6 +125,9 @@ RESOURCES += \
     resource.qrc
 
 RC_ICONS = delta_x_logo_96x96.ico
+
+DISTFILES += \
+    SettingTree.json
 
 
 

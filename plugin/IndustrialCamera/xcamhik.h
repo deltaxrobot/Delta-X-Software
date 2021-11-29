@@ -14,7 +14,12 @@ public:
     bool Connect();
     bool IsOpen();
     unsigned char *Capture();
+
+    void SetExposureTime(int value);
+    int GetExposureTime();
+
     void* Camera;
+    unsigned char* data = NULL;
 };
 
 #endif // XCAMHIK_H

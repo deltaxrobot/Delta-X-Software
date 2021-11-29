@@ -66,8 +66,11 @@ public slots:
     void SelectAreaTool();
     void SelectMappingTool();
     void SelectNoTool();
+
     void SaveSetting(QString fileName);
+    void SaveSetting(QSettings* setting);
     void LoadSetting(QString fileName);
+    void LoadSetting(QSettings* setting);
 
     //void ChangePoint();
     void ChangeLine();

@@ -9,6 +9,8 @@
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc.hpp>
 
+#include <QTimer>
+
 #define MAX_DISPLAY 5
 
 class VideoDisplay : public QObject
@@ -17,11 +19,16 @@ class VideoDisplay : public QObject
 public:
     explicit VideoDisplay(QObject *parent = nullptr);
 
+    QTimer* Timer;
+
+
 public slots:
     void Loop();
     void UpdateLabelImage(cv::Mat mat, QLabel* label, int id);
     void CloseLoop();
+    void TimerFunction();
 signals:
+    void neededUpdatePixmapToLabel(QLabel*, QPixmap);
 private:
     bool updateSignal = false;
     bool isCloseLoop = false;

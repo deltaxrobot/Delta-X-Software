@@ -51,12 +51,21 @@ void ProjectManager::AddNewTab(QWidget* newTab, QStackedWidget* stack)
     }
 }
 
-void ProjectManager::AddNewTab(QStackedWidget *stack)
+void ProjectManager::AddNewTab(QStackedWidget *stack,  int id, QString name = "")
 {
-    int tabID = twProjectManager->count() - 1;
+    if (name == "")
+    {
+        name = QString("project " + QString::number(id));
+    }
 
-    twProjectManager->insertTab(tabID, stack, QString("project " + QString::number(tabID)));
+    twProjectManager->insertTab(id, stack, name);
     twProjectManager->setCurrentWidget(stack);
+}
+
+void ProjectManager::RemoveTab(int tabIndex)
+{
+
+    RobotManagers.removeAt(tabIndex);
 }
 
 QString ProjectManager::GetProjectName(int index)
@@ -67,6 +76,17 @@ QString ProjectManager::GetProjectName(int index)
 QString ProjectManager::GetProjectName(QWidget *widget)
 {
     return GetProjectName(twProjectManager->indexOf(widget));
+}
+
+RobotManager *ProjectManager::GetProject(QString name)
+{
+    foreach(RobotManager* robotManager, RobotManagers)
+    {
+        if (robotManager->Name == name)
+            return robotManager;
+    }
+
+    return NULL;
 }
 
 void ProjectManager::ChangeProjectTab(int index)
@@ -82,7 +102,13 @@ void ProjectManager::ChangeProjectTab(int index)
     }
     else
     {
-
+        foreach(RobotManager* robotManager, RobotManagers)
+        {
+            if (robotManager->SubWindowStackedWidget == twProjectManager->currentWidget())
+            {
+                CurrentRobotManager = robotManager;
+            }
+        }
     }
 }
 
@@ -96,6 +122,7 @@ void ProjectManager::ChangeProjectName(int tabIndex)
     if (ok && !newTabName.isEmpty())
     {
         twProjectManager->setTabText(tabIndex, newTabName);
+        RobotManagers[tabIndex]->Name = newTabName;
     }
 }
 
@@ -110,10 +137,18 @@ void ProjectManager::CloseProject(int tabIndex)
     if (reply == QMessageBox::Yes)
     {
         twProjectManager->removeTab(tabIndex);
+//        foreach(RobotWindow* robotWindow, RobotManagers.at(tabIndex)->RobotWindows)
+//        {
+//            delete robotWindow;
+//        }
+
+        //delete RobotManagers.at(tabIndex);
+
+        RobotManagers.removeAt(tabIndex);
     }
     else
     {
-
+        return;
     }
 
     if (tabIndex > 0)

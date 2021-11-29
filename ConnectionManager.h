@@ -50,7 +50,9 @@ public slots:
 	void ReadData();
     void FindingRobotTimeOut();
 
-	void ReceiveNewConnectionFromServer(QTcpSocket* socket);
+    void ReceiveNewConnectionFromServer(QTcpSocket* socket);
+
+    void SendRobotMsgToCOMPort();
 
 signals:
 	void FinishReadLine(QString msg);
@@ -58,12 +60,13 @@ signals:
 	void DeltaResponeReady();
     void FinishFindingRobot();
 	void DeltaResponeGcodeDone();
+    void Responsed(QString msg);
     void InHomePosition(float x, float y, float z, float w, float u, float v);
 	void ReceiveConvenyorPosition(float x, float y);
 
     void ReceiveInputIO(QString response);
 
-	void ReceiveVariableChangeCommand(QString name, float value);
+    void ReceiveVariableChangeCommand(QString name, QString value);
     void ReceiveObjectInfoFromExternalAI(QString msg);
     void ReceiveDisplayObjectFromExternalScript(QString msg);
     void ReceiveCaptureSignalFromExternalAI();
@@ -84,6 +87,7 @@ private:
 	QString transmitLine;
 	QList<QString> transmitLines;
     QTimer* connectionTimer;
+    QTimer* callfuntionTimer;
 	QList<QSerialPort*> portList;
 
 	bool isDeltaPortConnected = false;

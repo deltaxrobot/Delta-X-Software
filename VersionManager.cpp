@@ -23,7 +23,7 @@ void VersionManager::FinishedRequest(QNetworkReply *reply)
     QVersionNumber appVersion = QVersionNumber::fromString(CurrentVersion);
     int compare = QVersionNumber::compare(appVersion, currentVersion);
 
-    if (compare != 0)
+    if (compare < 0)
     {
         QMessageBox::StandardButton reply;
         reply = QMessageBox::question(this, "There is a new version of Delta X Software", "Do you want to update?",

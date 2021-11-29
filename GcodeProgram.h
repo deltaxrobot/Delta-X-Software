@@ -14,6 +14,7 @@
 #include <qlayout.h>
 #include "Layer.h"
 #include "TextLayer.h"
+#include <QSettings>
 
 #define DEFAULT_COLOR	0
 #define SELECTED_COLOR  1
@@ -35,8 +36,8 @@ public:
 	void CoutingGcodeLines();
 	void Destroy();
 	void SetColor(int color);
-	QPoint GetPosition();
-	
+    QPoint GetPosition();
+
 	int ID;
 	QString GcodeData;
 

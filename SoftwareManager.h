@@ -6,6 +6,8 @@
 #include <QList>
 #include "ProjectManager.h"
 
+class ProjectManager;
+
 class SoftwareManager
 {
 protected:
@@ -21,9 +23,11 @@ public:
 
     static SoftwareManager *GetInstance();
 
+    QObject* SoftwarePointer = NULL;
+
     VariableManager* ProgramVariableManager;
     //QList<RobotManager*>* RobotManagers;
-    ProjectManager* RobotProjectManager;
+    ProjectManager* SoftwareProjectManager;
 };
 
 #endif // SOFTWAREMANAGER_H

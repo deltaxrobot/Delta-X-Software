@@ -13,6 +13,9 @@ public:
     virtual bool IsOpen() = 0;
     virtual unsigned char* Capture() = 0;
 
+    virtual void SetExposureTime(int value) = 0;
+    virtual int GetExposureTime() = 0;
+
     int height;
     int width;
 };

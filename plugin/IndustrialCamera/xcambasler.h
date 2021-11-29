@@ -18,7 +18,11 @@ public:
     bool IsOpen();
     unsigned char *Capture();
 
+    void SetExposureTime(int value);
+    int GetExposureTime();
+
     CInstantCamera* Camera = NULL;
+    unsigned char* data = NULL;
 };
 
 #endif // XCAMBASLER_H

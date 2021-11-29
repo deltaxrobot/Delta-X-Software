@@ -9,6 +9,7 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 #include <QDebug>
+#include <QLineEdit>
 
 class BlobManager : public QObject
 {
@@ -24,11 +25,14 @@ public:
 	int VisibleObjectNumber = 0;
 	std::vector<cv::RotatedRect> ObjectContainer;
 
+    float TrackingError = 0.3;
+
 public slots:
     void UpdateNewObjectMoving(float deltaX, float deltaY);
 	void RemoveOldestObject();
 	void RemoveAllDetectObjects();
     void AddNewObject(float x, float y, float w, float h);
+    void UpdateTrackingError();
 
 signals:
 	void NewUpdateObjectPosition(QString name, float value);

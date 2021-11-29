@@ -68,6 +68,9 @@ void Form::on_pbConnectCamera_clicked()
         CameraProcessorThread->ShotImage();
 
         ui->lbResolution->setText(QString("%1 x %2").arg(CameraProcessorThread->Width).arg(CameraProcessorThread->Height));
+
+        QString exposureTime = QString::number(CameraProcessorThread->IndustryCamera.GetExposureTime());
+
     }
 }
 
@@ -113,3 +116,16 @@ void Form::intervalFunction()
 {
     CameraProcessorThread->CaptureSignal = true;
 }
+
+void Form::on_leExposureTime_returnPressed()
+{
+    int exposureTime = ui->leExposureTime->text().toInt();
+    CameraProcessorThread->IndustryCamera.SetExposureTime(exposureTime);
+}
+
+
+void Form::on_leGain_returnPressed()
+{
+    int gain = ui->leGain->text().toInt();
+}
+

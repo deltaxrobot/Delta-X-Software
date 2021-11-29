@@ -3,18 +3,22 @@
 ObjectDetector::ObjectDetector(RobotWindow *parent)
 	: QWidget(parent)
 {
+    mParent = parent;
+
+    // ---------- Blob Filter Window---------
 	ParameterPanel = new HSVWindow(parent);
 	connect(ParameterPanel, SIGNAL(ValueChanged(int, int, int, int, int, int)), this, SLOT(SetHSV(int, int, int, int, int, int)));
 	connect(ParameterPanel, SIGNAL(ValueChanged(int)), this, SLOT(SetThreshold(int)));
 
-	mParent = parent;
-
+    //----------- Camera ------------
 	Camera = new cv::VideoCapture();	
 
-	updateScreenTimer = new QTimer(this);
-    connect(updateScreenTimer, SIGNAL(timeout()), this, SLOT(UpdateEvent()));
-	updateScreenTimer->start(CameraTimerInterval);
+    //---------- Camera Display ---------
+    ProcessingImageTimer = new QTimer(this);
+    connect(ProcessingImageTimer, SIGNAL(timeout()), this, SLOT(UpdateEvent()));
+    ProcessingImageTimer->start(CameraTimerInterval);
 
+    //------- Object ----------
 	PobjectRec.width = DEFAULT_OBJECT_WIDTH;
 	PobjectRec.height = DEFAULT_OBJECT_HEIGHT;
 	minObjectArea = MIN_OBJECT_AREA;
@@ -25,18 +29,19 @@ ObjectDetector::ObjectDetector(RobotWindow *parent)
 
 	ObjectManager = new BlobManager(parent);
 
+    //---------- Conveyor ----------
 	ObjectMovingCalculaterTimer = new QTimer(this);
-    connect(ObjectMovingCalculaterTimer, SIGNAL(timeout()), this, SLOT(UpdateObjectPositionOnConveyor()));
-    ObjectMovingCalculaterTimer->start(CONVEYOR_TIMER_INTERVAL);
+//    connect(ObjectMovingCalculaterTimer, SIGNAL(timeout()), this, SLOT(UpdateObjectPositionOnConveyor()));
+//    ObjectMovingCalculaterTimer->start(CONVEYOR_TIMER_INTERVAL);
 
-	TimerTool.start();
-
+    //-------- Camera Window ---------
 	cameraWindow = new QWidget();
 	cameraWindow->setWindowTitle("Camera Window");
 	cameraWindow->setWindowFlags(Qt::WindowStaysOnTopHint);
 
+    //--------- Camera Thread -----------
     VideoProcessorThread = new VideoProcessor();
-    VideoProcessorThread->moveToThread(new QThread(this));
+    VideoProcessorThread->moveToThread(new QThread(SoftwareManager::GetInstance()->SoftwarePointer));
     qRegisterMetaType< cv::Mat >("cv::Mat");
     connect(VideoProcessorThread->thread(), SIGNAL(started()), VideoProcessorThread, SLOT(startVideo()));
     connect(VideoProcessorThread->thread(), SIGNAL(finished()), VideoProcessorThread, SLOT(deleteLater()));
@@ -45,12 +50,13 @@ ObjectDetector::ObjectDetector(RobotWindow *parent)
 
     VideoProcessorThread->thread()->start();
 
+    //-------- Camera Display Thread -----------
     VideoDisplayThread = new VideoDisplay();
-    VideoDisplayThread->moveToThread(new QThread(this));
+    VideoDisplayThread->moveToThread(new QThread(SoftwareManager::GetInstance()->SoftwarePointer));
     qRegisterMetaType< cv::Mat >("cv::Mat");
     connect(VideoDisplayThread->thread(), SIGNAL(started()), VideoDisplayThread, SLOT(Loop()));
     connect(VideoDisplayThread->thread(), SIGNAL(finished()), VideoDisplayThread, SLOT(deleteLater()));
-    //connect(DeltaImageProcesser, SIGNAL(display(cv::Mat, QLabel*)), VideoDisplayThread, SLOT(UpdateLabelImage(cv::Mat, QLabel*)));
+    connect(VideoDisplayThread, SIGNAL(neededUpdatePixmapToLabel(QLabel*, QPixmap)), this, SLOT(UpdatePixmapToLabel(QLabel*, QPixmap)));
 
     VideoDisplayThread->thread()->start();
 }
@@ -61,9 +67,9 @@ ObjectDetector::~ObjectDetector()
     VideoProcessorThread->thread()->quit();
     VideoProcessorThread->thread()->wait();
 
+    VideoDisplayThread->CloseLoop();
     VideoDisplayThread->thread()->quit();
     VideoDisplayThread->thread()->wait();
-    VideoDisplayThread->CloseLoop();
 }
 
 void ObjectDetector::LoadTestImage()
@@ -79,8 +85,17 @@ void ObjectDetector::LoadTestImage()
 	processImage();
 }
 
-void ObjectDetector::LoadCamera()
+void ObjectDetector::LoadCamera2()
 {
+    if (cbExternalCamera != NULL)
+    {
+        if(cbExternalCamera->isChecked() == true)
+        {
+            QMessageBox::information(this, "Notify", "You are using the camera from the outside. Please uncheck the box below if you want to use the webcam.");
+            return;
+        }
+    }
+
     QToolButton* loadBt = qobject_cast<QToolButton*>(sender());
 	if (loadBt->isChecked())
 	{        
@@ -93,7 +108,7 @@ void ObjectDetector::LoadCamera()
         }
 
 		bool ok;
-        QString text = QInputDialog::getItem(this, tr("Open Camera"), tr("Camera ID: "), cameraItems, 0, false, &ok);
+        QString text = QInputDialog::getItem(this, tr("Open camera"), tr("Camera ID: "), cameraItems, 0, false, &ok);
 
 		if (ok && !text.isEmpty())
         {
@@ -116,7 +131,7 @@ void ObjectDetector::LoadCamera()
 
 			lbCameraState->setEnabled(true);
 			pbPlayCammera->setChecked(true);
-            cameraWidget->InitParameter();
+            //cameraWidget->InitParameter();
 
             loadBt->setText("Stop Camera");
 
@@ -143,13 +158,17 @@ void ObjectDetector::LoadCamera()
 
             if (isCameraUsingByOtherRobot == false)
             {
-                Camera->open(cameraID);
-                Camera->set(cv::CAP_PROP_FRAME_WIDTH, leWidth->text().toInt());
-                Camera->set(cv::CAP_PROP_FRAME_HEIGHT, leHeight->text().toInt());
-                VideoProcessorThread->getCamera(Camera);
+//                Camera->open(cameraID);
+//                Camera->set(cv::CAP_PROP_FRAME_WIDTH, leWidth->text().toInt());
+//                Camera->set(cv::CAP_PROP_FRAME_HEIGHT, leHeight->text().toInt());
+
+//                leWidth->setText(QString::number((int)Camera->get(cv::CAP_PROP_FRAME_WIDTH)));
+//                leHeight->setText(QString::number((int)Camera->get(cv::CAP_PROP_FRAME_HEIGHT)));
+
+                VideoProcessorThread->getCamera(Camera, cameraID, leWidth, leHeight);
             }
 
-            UpdateRatios();
+            UpdateRatios(Camera->get(cv::CAP_PROP_FRAME_WIDTH), Camera->get(cv::CAP_PROP_FRAME_HEIGHT));
             ChangeCameraWidgetHeight(QString::number(CameraWidgetHeight));
 
 			IsCameraPause = false;
@@ -186,7 +205,13 @@ void ObjectDetector::GetImage(cv::Mat mat)
     if (IsCameraPause == true)
         return;
 
-    captureImage = mat.clone();
+    if (captureImage.empty() == false)
+        captureImage.release();
+
+    captureImage = mat;
+
+    EncoderPositionAtCameraCapture = EncoderPosition;
+
 }
 
 void ObjectDetector::PauseCamera()
@@ -227,9 +252,10 @@ void ObjectDetector::stopCamera()
 
 void ObjectDetector::processImage()
 {
+    //ElapsedTimer.start();
     if (cameraWidget->pixmap() != nullptr && isFirstLoad == true)
 	{
-        cameraWidget->InitParameter();
+        //cameraWidget->InitParameter();
 		isFirstLoad = false;
 	}
 
@@ -242,35 +268,56 @@ void ObjectDetector::processImage()
     {
         CalculateMappingMatrix();
     }
-	
-	//cv::resize(captureImage, resizeImage, cv::Size(lbResultImage->width(), lbResultImage->height()));
-	resizeImage = captureImage.clone();
+
+    //qDebug() << "matrix: " << ElapsedTimer.elapsed();
+
 
 	if (isPerspectiveMode == true)
     {
-        transformPerspective(resizeImage, PperspectivePoints, resizeImage);
+        transformPerspective(captureImage, PperspectivePoints, calibImage);
+    }
+    else
+    {
+        calibImage = captureImage.clone();
     }
 
-    processMat = resizeImage.clone();
-    resizeImage.copyTo(resultImage);
+    //qDebug() << "transform: " << ElapsedTimer.elapsed();
 
+    filterMat = calibImage.clone();
+    resultImage = calibImage.clone();
+    //qDebug() << "copy: " << ElapsedTimer.elapsed();
 
     //----------------------
     // Detect objects in image and manage them
     if (rbBlobFilter->isChecked())
-    {        
-
+    {
         postProcessing();
-        detectBlobObjects(processMat);
+        //qDebug() << "post processing: " << ElapsedTimer.elapsed();
+        detectBlobObjects(filterMat);
     }
     else if (rbCircleFilter->isChecked())
     {
-        detectCircleObjects(resizeImage);
+        detectCircleObjects(calibImage);
     }
     else if (rbExternalFilter->isChecked())
     {
-        sendImageToExternalScript(resizeImage);
+        if (cbImageSourceForExternal->currentText() == "Origin Image")
+        {
+            sendImageToExternalScript(captureImage);
+        }
+        else if (cbImageSourceForExternal->currentText() == "Calib Image")
+        {
+            sendImageToExternalScript(calibImage);
+        }
+        else if (cbImageSourceForExternal->currentText() == "Filter Image")
+        {
+            postProcessing();
+
+            sendImageToExternalScript(filterMat);
+        }
     }
+    //qDebug() << "detect: " << ElapsedTimer.elapsed();
+
 
     processDetectingObjectOnCamera(resultImage, *DisplayObjects, BLUE_COLOR);
     DisplayObjects->clear();
@@ -282,7 +329,7 @@ void ObjectDetector::processImage()
 
 void ObjectDetector::UpdateEvent()
 {
-    processImage();
+    processImage();    
 
     if (IsEncoderEnable == false)
     {
@@ -297,11 +344,11 @@ void ObjectDetector::UpdateEvent()
 
 void ObjectDetector::SaveFPS()
 {
-	CameraFPS = leFPS->text().toInt();
-	CameraTimerInterval = 1000 / CameraFPS;
+    CameraFPS = leFPS->text().toFloat();
+    CameraTimerInterval = 1000.0f / CameraFPS;
 
 	if (CameraFPS > 0)
-        updateScreenTimer->setInterval(CameraTimerInterval);
+        ProcessingImageTimer->setInterval(CameraTimerInterval);
 }
 
 void ObjectDetector::ProcessErrorCamera()
@@ -310,10 +357,17 @@ void ObjectDetector::ProcessErrorCamera()
     QMessageBox::information(this, "Problem", "The camera has lost connection!");
 }
 
-void ObjectDetector::SetObjectSizePointer(QLineEdit * wRec, QLineEdit * lRec)//, QLineEdit * distance, QLineEdit * xCoor, QLineEdit * yCoor)
+void ObjectDetector::SetObjectSizePointer(QLineEdit * wRec, QLineEdit * lRec, QLineEdit* hRec)//, QLineEdit * distance, QLineEdit * xCoor, QLineEdit * yCoor)
 {
     leWRec = wRec;
     leLRec = lRec;
+    leHRec = hRec;
+}
+
+void ObjectDetector::SetObjectErrorPointer(QLineEdit *objectErrorSize, QLineEdit *trackingError)
+{
+    leObjectErrorSize = objectErrorSize;
+    leTrackingError = trackingError;
 }
 
 void ObjectDetector::SetCalibLinePointer(QLineEdit *realityLine, QLineEdit *imageLine)
@@ -452,15 +506,15 @@ void ObjectDetector::SetHSV(int minH, int maxH, int minS, int maxS, int minV, in
 
 	filterMethod = HSV_SPACE;
 
-	if (resizeImage.empty())
+    if (calibImage.empty())
         return;
 
-	cvtColor(processMat, processMat, CV_BGR2HSV);
+    cvtColor(calibImage, filterMat, CV_BGR2HSV);
 
 	cv::Scalar minScalar(minH, minS, minV);
 	cv::Scalar maxScalar(maxH, maxS, maxV);
 
-	cv::inRange(processMat, minScalar, maxScalar, processMat);
+    cv::inRange(filterMat, minScalar, maxScalar, filterMat);
 }
 
 void ObjectDetector::SetThreshold(int value)
@@ -470,12 +524,12 @@ void ObjectDetector::SetThreshold(int value)
 
 	filterMethod = THRESHOLD_SPACE;
 
-	if (resizeImage.empty())
+    if (calibImage.empty())
         return;
 
-	cvtColor(resizeImage, processMat, CV_BGR2GRAY);
+    cvtColor(calibImage, filterMat, CV_BGR2GRAY);
 
-    cv::threshold(processMat, processMat, value, 255, CV_THRESH_BINARY);
+    cv::threshold(filterMat, filterMat, value, 255, CV_THRESH_BINARY);
 }
 
 void ObjectDetector::OpenExternalFilterScript()
@@ -512,8 +566,15 @@ void ObjectDetector::GetObjectInfo(int l, int w)
 	PobjectRec.width = w / DnPRatio;
 	PobjectRec.height = l / DnPRatio;
 
-	minObjectArea = (PobjectRec.width * ( 1.0 - APPROXIMATE_RATIO)) * (PobjectRec.height * (1.0 - APPROXIMATE_RATIO));
-	maxObjectArea = (PobjectRec.width * (1.0 + APPROXIMATE_RATIO)) * (PobjectRec.height + (1.0 + APPROXIMATE_RATIO));
+    ObjectError = leObjectErrorSize->text().toFloat();
+
+    if (ObjectError >= 1)
+    {
+        ObjectError = 0.5f;
+    }
+
+    minObjectArea = (PobjectRec.width * ( 1.0 - ObjectError)) * (PobjectRec.height * (1.0 - APPROXIMATE_RATIO));
+    maxObjectArea = (PobjectRec.width * (1.0 + ObjectError)) * (PobjectRec.height + (1.0 + APPROXIMATE_RATIO));
 
 	//ObjectManager->SetApproximateValue(cv::Point3d((float)l * 0.8f, (float)w * 0.8f, 60));
 
@@ -525,7 +586,22 @@ void ObjectDetector::GetObjectInfo(int l, int w)
 	else
 		regionPixmap = regionPixmap.scaledToHeight(lbObjectImage->height());
 
-	lbObjectImage->setPixmap(regionPixmap);
+    lbObjectImage->setPixmap(regionPixmap);
+}
+
+void ObjectDetector::GetObjectError()
+{
+    QLineEdit* le = qobject_cast<QLineEdit*>(sender());
+
+    if (le == NULL)
+        return;
+
+    if (le->text().toFloat() >= 1)
+    {
+        ObjectError = 0.5f;
+    }
+
+    ObjectError = le->text().toFloat();
 }
 
 void ObjectDetector::GetPerspectivePoints(QPoint a, QPoint b, QPoint c, QPoint d)
@@ -540,6 +616,8 @@ void ObjectDetector::GetPerspectivePoints(QPoint a, QPoint b, QPoint c, QPoint d
 	PperspectivePoints.push_back(cv::Point(b.x(), b.y()) / DnPRatio);
 	PperspectivePoints.push_back(cv::Point(c.x(), c.y()) / DnPRatio);
 	PperspectivePoints.push_back(cv::Point(d.x(), d.y()) / DnPRatio);
+
+    updatePerspectivePointsToUI();
 }
 
 void ObjectDetector::GetProcessArea(QRect processArea)
@@ -646,15 +724,15 @@ void ObjectDetector::GetDistance(int distance)
 
 void ObjectDetector::GetCalibPoint(QPoint p1, QPoint p2)
 {
-    leImagePoint1X->setText(QString::number(p1.x()));
-    leImagePoint1Y->setText(QString::number(p1.y()));
-    leImagePoint2X->setText(QString::number(p2.x()));
-    leImagePoint2Y->setText(QString::number(p2.y()));
+    leImagePoint1X->setText(QString::number(p1.x() / DnPRatio));
+    leImagePoint1Y->setText(QString::number(p1.y() / DnPRatio));
+    leImagePoint2X->setText(QString::number(p2.x() / DnPRatio));
+    leImagePoint2Y->setText(QString::number(p2.y() / DnPRatio));
 }
 
 void ObjectDetector::GetMappingPoint(QPoint mappingPoint)
 {
-    mappingPoint = mappingPoint * D2PMatrix;
+    mappingPoint = mappingPoint / DnPRatio;
     QPointF RPoint = P2RMatrix.map(QPointF(mappingPoint.x(), 0 - mappingPoint.y()));
     cameraWidget->ChangeRealMappingValue(RPoint);
 }
@@ -735,9 +813,9 @@ void ObjectDetector::FindChessboard()
 
     cv::Size patternsize(width, height);
     cv::Mat gray;
-    cv::Mat mat = resizeImage.clone();
+    cv::Mat mat = calibImage.clone();
 
-    cvtColor(resizeImage, gray, cv::COLOR_BGR2GRAY);
+    cvtColor(calibImage, gray, cv::COLOR_BGR2GRAY);
 
     std::vector<cv::Point2f> corners;
     bool patternfound = findChessboardCorners(gray, patternsize, corners, cv::CALIB_CB_ADAPTIVE_THRESH + cv::CALIB_CB_NORMALIZE_IMAGE + cv::CALIB_CB_FAST_CHECK);
@@ -751,7 +829,7 @@ void ObjectDetector::FindChessboard()
 
       points.push_back(cv::Point(corners[0].x, corners[0].y));
       points.push_back(cv::Point(corners[width - 1].x, corners[width - 1].y));
-      if (height % 2 == 0)
+      if (height % 2 == 1)
       {
           points.push_back(cv::Point(corners[width * height - 1].x, corners[width * height - 1].y));
           points.push_back(cv::Point(corners[width * (height - 1)].x, corners[width * (height - 1)].y));
@@ -777,43 +855,36 @@ void ObjectDetector::FindChessboard()
           PperspectivePoints.push_back(points[1]);
       }
 
-      leChessboardPoints[0][0]->setText(QString::number(PperspectivePoints[0].x));
-      leChessboardPoints[0][1]->setText(QString::number(PperspectivePoints[0].y));
-      leChessboardPoints[1][0]->setText(QString::number(PperspectivePoints[1].x));
-      leChessboardPoints[1][1]->setText(QString::number(PperspectivePoints[1].y));
-      leChessboardPoints[2][0]->setText(QString::number(PperspectivePoints[2].x));
-      leChessboardPoints[2][1]->setText(QString::number(PperspectivePoints[2].y));
-      leChessboardPoints[3][0]->setText(QString::number(PperspectivePoints[3].x));
-      leChessboardPoints[3][1]->setText(QString::number(PperspectivePoints[3].y));
+      updatePerspectivePointsToUI();
 
-      circle(resizeImage, PperspectivePoints[0], 10, cv::Scalar(0, 255, 0), 2);
-      putText(resizeImage, "1", PperspectivePoints[0], cv::FONT_HERSHEY_SIMPLEX, 2, cv::Scalar(0, 255, 0), 2, cv::LINE_AA);
+      circle(calibImage, PperspectivePoints[0], 10, cv::Scalar(0, 255, 0), 2);
+      putText(calibImage, "1", PperspectivePoints[0], cv::FONT_HERSHEY_SIMPLEX, 2, cv::Scalar(0, 255, 0), 2, cv::LINE_AA);
 
-      circle(resizeImage, PperspectivePoints[1], 10, cv::Scalar(255, 0, 0), 2);
-      putText(resizeImage, "2", PperspectivePoints[1], cv::FONT_HERSHEY_SIMPLEX, 2, cv::Scalar(255, 0, 0), 2, cv::LINE_AA);
+      circle(calibImage, PperspectivePoints[1], 10, cv::Scalar(255, 0, 0), 2);
+      putText(calibImage, "2", PperspectivePoints[1], cv::FONT_HERSHEY_SIMPLEX, 2, cv::Scalar(255, 0, 0), 2, cv::LINE_AA);
 
-      circle(resizeImage, PperspectivePoints[2], 10, cv::Scalar(0, 0, 255), 2);
-      putText(resizeImage, "3", PperspectivePoints[2], cv::FONT_HERSHEY_SIMPLEX, 2, cv::Scalar(0, 0, 255), 2, cv::LINE_AA);
+      circle(calibImage, PperspectivePoints[2], 10, cv::Scalar(0, 0, 255), 2);
+      putText(calibImage, "3", PperspectivePoints[2], cv::FONT_HERSHEY_SIMPLEX, 2, cv::Scalar(0, 0, 255), 2, cv::LINE_AA);
 
-      circle(resizeImage, PperspectivePoints[3], 10, cv::Scalar(255, 255, 0), 2, cv::LINE_AA);
-      putText(resizeImage, "4", PperspectivePoints[3], cv::FONT_HERSHEY_SIMPLEX, 2, cv::Scalar(255, 255, 0), 2, cv::LINE_AA);
+      circle(calibImage, PperspectivePoints[3], 10, cv::Scalar(255, 255, 0), 2, cv::LINE_AA);
+      putText(calibImage, "4", PperspectivePoints[3], cv::FONT_HERSHEY_SIMPLEX, 2, cv::Scalar(255, 255, 0), 2, cv::LINE_AA);
 
 
-      drawChessboardCorners(resizeImage, patternsize, cv::Mat(corners), patternfound);
+      drawChessboardCorners(calibImage, patternsize, cv::Mat(corners), patternfound);
 
       QVector<QPointF> fPoints(4);
-      fPoints[0].setX(float(PperspectivePoints[0].x) / resizeImage.cols);
-      fPoints[0].setY(float(PperspectivePoints[0].y) / resizeImage.rows);
-      fPoints[1].setX(float(PperspectivePoints[1].x) / resizeImage.cols);
-      fPoints[1].setY(float(PperspectivePoints[1].y) / resizeImage.rows);
-      fPoints[2].setX(float(PperspectivePoints[2].x) / resizeImage.cols);
-      fPoints[2].setY(float(PperspectivePoints[2].y) / resizeImage.rows);
-      fPoints[3].setX(float(PperspectivePoints[3].x) / resizeImage.cols);
-      fPoints[3].setY(float(PperspectivePoints[3].y) / resizeImage.rows);
+      fPoints[0].setX(float(PperspectivePoints[0].x) / calibImage.cols);
+      fPoints[0].setY(float(PperspectivePoints[0].y) / calibImage.rows);
+      fPoints[1].setX(float(PperspectivePoints[1].x) / calibImage.cols);
+      fPoints[1].setY(float(PperspectivePoints[1].y) / calibImage.rows);
+      fPoints[2].setX(float(PperspectivePoints[2].x) / calibImage.cols);
+      fPoints[2].setY(float(PperspectivePoints[2].y) / calibImage.rows);
+      fPoints[3].setX(float(PperspectivePoints[3].x) / calibImage.cols);
+      fPoints[3].setY(float(PperspectivePoints[3].y) / calibImage.rows);
 
       cameraWidget->ChangeQuadrangle(fPoints);
 
-      UpdateLabelImage(resizeImage, cameraWidget);
+      UpdateLabelImage(calibImage, cameraWidget);
     }
     else
     {
@@ -878,6 +949,11 @@ void ObjectDetector::UpdateToCameraWidget()
     cameraWidget->ChangeRealPoint2Value(QPoint(realX2, realY2));
 }
 
+void ObjectDetector::UpdatePixmapToLabel(QLabel *lb, QPixmap pm)
+{
+    lb->setPixmap(pm);
+}
+
 void ObjectDetector::UpdateObjectPositionOnConveyor()
 {
     float distance = 0;
@@ -888,17 +964,36 @@ void ObjectDetector::UpdateObjectPositionOnConveyor()
     }
     else
     {
-        distance = EncoderPosition - LastEncoderPosition;
+        distance = MovingDistance;
     }
 
-    if (DirName.toLower() == "x")
-	{
-        ObjectManager->UpdateNewObjectMoving(distance, 0);
-	}
-	else
-	{
-        ObjectManager->UpdateNewObjectMoving(0, distance);
-	}
+    float xOffset1 = 100;
+    float yOffset1 = 100;
+    float xOffset2 = 100;
+    float yOffset2 = 100;
+    float xOffset = 100;
+    float yOffset = 100;
+
+    UpdatePointPositionOnConveyor(xOffset2, yOffset2, DeviationAngle, distance);
+
+    xOffset = xOffset2 - xOffset1;
+    yOffset = yOffset2 - yOffset1;
+
+    if (DeviationAngle != 0)
+    {
+        ObjectManager->UpdateNewObjectMoving(xOffset, yOffset);
+    }
+    else
+    {
+        if (DirName.toLower() == "x")
+        {
+            ObjectManager->UpdateNewObjectMoving(distance, 0);
+        }
+        else
+        {
+            ObjectManager->UpdateNewObjectMoving(0, distance);
+        }
+    }
 
 	emit ObjectValueChanged(ObjectManager->ObjectContainer);
 
@@ -917,30 +1012,96 @@ void ObjectDetector::SaveSetting(QString fileName)
 
     QSettings settings(fileName, QSettings::IniFormat);
 
-    settings.setValue("ObjectWidth", PobjectRec.width);
-    settings.setValue("ObjectHeight", PobjectRec.height);
-    settings.setValue("MinObjectArea", minObjectArea);
-    settings.setValue("MaxObjectArea", maxObjectArea);
+    SaveSetting(&settings);
+}
 
-    settings.setValue("RealCalibPointX", leRealityPoint1X->text());
-    settings.setValue("RealCalibPointY", leRealityPoint1Y->text());
-    settings.setValue("RealCalibLine", leRealityLine->text());
+void ObjectDetector::SaveSetting(QSettings *setting)
+{
+    setting->beginGroup("Parameter");
+    ParameterPanel->SaveSetting(setting);
+    setting->endGroup();
+
+    setting->setValue("CameraWidth", leWidth->text());
+    setting->setValue("CameraHeight", leHeight->text());
+    setting->setValue("CameraFPS", leFPS->text());
+
+    setting->setValue("ChessWidth", leChessboardWidth->text());
+    setting->setValue("ChessHeight", leChessboardHeight->text());
+    setting->setValue("ChessSize", leChessboardSquareSize->text());
+
+    setting->setValue("ObjectWidth", PobjectRec.width);
+    setting->setValue("ObjectHeight", PobjectRec.height);
+    setting->setValue("RealObjectWidth", leWRec->text());
+    setting->setValue("RealObjectLength", leLRec->text());
+    setting->setValue("RealObjectHeight", leHRec->text());
+    setting->setValue("ObjectErrorSize", leObjectErrorSize->text());
+    setting->setValue("TrackingError", leTrackingError->text());
+    setting->setValue("MinObjectArea", minObjectArea);
+    setting->setValue("MaxObjectArea", maxObjectArea);
+
+    setting->setValue("RealCalibPointX", leRealityPoint1X->text());
+    setting->setValue("RealCalibPointY", leRealityPoint1Y->text());
+    setting->setValue("RealCalibPoint2X", leRealityPoint2X->text());
+    setting->setValue("RealCalibPoint2Y", leRealityPoint2Y->text());
+    setting->setValue("RealCalibLine", leRealityLine->text());
+
+    QString filterCheckState = (rbBlobFilter->isChecked())?"100":(rbExternalFilter->isChecked()?"010":"001");
+    setting->setValue("Filter", filterCheckState);
+    setting->setValue("ExternalScriptUrl", lePythonUrl->text());
 }
 
 void ObjectDetector::LoadSetting(QString fileName)
 {
-    ParameterPanel->LoadSetting(fileName);
-
     QSettings settings(fileName, QSettings::IniFormat);
 
-    PobjectRec.width = settings.value("ObjectWidth", PobjectRec.width).toInt();
-    PobjectRec.height = settings.value("ObjectHeight", PobjectRec.height).toInt();
-    minObjectArea = settings.value("MinObjectArea", minObjectArea).toInt();
-    maxObjectArea = settings.value("MaxObjectArea", maxObjectArea).toInt();
+    LoadSetting(&settings);
+}
 
-    leRealityPoint1X->setText(settings.value("RealCalibPointX", leRealityPoint1X->text()).toString());
-    leRealityPoint1Y->setText(settings.value("RealCalibPointY", leRealityPoint1Y->text()).toString());
-    leRealityLine->setText(settings.value("RealCalibLine", leRealityLine->text()).toString());
+void ObjectDetector::LoadSetting(QSettings *setting)
+{
+    setting->beginGroup("Parameter");
+    ParameterPanel->LoadSetting(setting);
+    setting->endGroup();
+
+    leWidth->setText(setting->value("CameraWidth", leWidth->text()).toString());
+    leHeight->setText(setting->value("CameraHeight", leHeight->text()).toString());
+    leFPS->setText(setting->value("CameraFPS", leFPS->text()).toString());
+
+    leChessboardWidth->setText(setting->value("ChessWidth", leChessboardWidth->text()).toString());
+    leChessboardHeight->setText(setting->value("ChessHeight", leChessboardHeight->text()).toString());
+    leChessboardSquareSize->setText(setting->value("ChessSize", leChessboardSquareSize->text()).toString());
+
+    PobjectRec.width = setting->value("ObjectWidth", PobjectRec.width).toInt();
+    PobjectRec.height = setting->value("ObjectHeight", PobjectRec.height).toInt();
+    leWRec->setText(setting->value("RealObjectWidth", leWRec->text()).toString());
+    leLRec->setText(setting->value("RealObjectLength", leLRec->text()).toString());
+    leHRec->setText(setting->value("RealObjectHeight", leHRec->text()).toString());
+    leObjectErrorSize->setText(setting->value("ObjectErrorSize", leObjectErrorSize->text()).toString());
+    leTrackingError->setText(setting->value("TrackingError", leTrackingError->text()).toString());
+    minObjectArea = setting->value("MinObjectArea", minObjectArea).toInt();
+    maxObjectArea = setting->value("MaxObjectArea", maxObjectArea).toInt();
+
+    leRealityPoint1X->setText(setting->value("RealCalibPointX", leRealityPoint1X->text()).toString());
+    leRealityPoint1Y->setText(setting->value("RealCalibPointY", leRealityPoint1Y->text()).toString());
+    leRealityPoint2X->setText(setting->value("RealCalibPoint2X", leRealityPoint2X->text()).toString());
+    leRealityPoint2Y->setText(setting->value("RealCalibPoint2Y", leRealityPoint2Y->text()).toString());
+
+    cameraWidget->ChangeRealPointValue(QPoint(leRealityPoint1X->text().toFloat(), leRealityPoint1Y->text().toFloat()));
+    cameraWidget->ChangeRealPoint2Value(QPoint(leRealityPoint2X->text().toFloat(), leRealityPoint2Y->text().toFloat()));
+
+    leRealityLine->setText(setting->value("RealCalibLine", leRealityLine->text()).toString());
+
+    QString filterCheckState = setting->value("Filter", "100").toString();
+    if (filterCheckState.length() >= 3)
+    {
+        rbBlobFilter->setChecked(filterCheckState[0] == '1'?true:false);
+        rbExternalFilter->setChecked(filterCheckState[1] == '1'?true:false);
+        rbCircleFilter->setChecked(filterCheckState[2] == '1'?true:false);
+    }
+
+    lePythonUrl->setText(setting->value("ExternalScriptUrl", lePythonUrl->text()).toString());
+
+
 }
 
 void ObjectDetector::GetExternalScriptSocket(QTcpSocket *socket)
@@ -963,6 +1124,70 @@ void ObjectDetector::SetConvenyorVelocity(float val, QString dir)
 {
     ConveyorVel = val;
     DirName = dir;
+}
+
+void ObjectDetector::UpdatePointPositionOnConveyor(QLineEdit *x, QLineEdit *y, float angle, float distance)
+{
+    QPointF point3;
+
+    point3.setX(x->text().toFloat());
+    point3.setY(y->text().toFloat());
+
+
+    QLineF line;
+    line.setP1(point3);
+    line.setAngle(angle);
+
+    if (distance == 0)
+        return;
+
+    line.setLength(distance);
+
+    if (point3 == QPointF(0, 0))
+    {
+        float cosa = qCos(qDegreesToRadians(360 - angle));
+        float sina = qSin(qDegreesToRadians(360 - angle));
+
+        line.setP2(QPointF(distance * cosa, distance * sina));
+    }
+
+    float p2X = ((float)((int)(line.p2().x() * 100))) / 100;
+    float p2Y = ((float)((int)(line.p2().y() * 100))) / 100;
+
+    x->setText(QString::number(p2X));
+    y->setText(QString::number(p2Y));
+}
+
+void ObjectDetector::UpdatePointPositionOnConveyor(float& x, float& y, float angle, float distance)
+{
+    QPointF point3;
+
+    point3.setX(x);
+    point3.setY(y);
+
+
+    QLineF line;
+    line.setP1(point3);
+    line.setAngle(angle);
+
+    if (distance == 0)
+        return;
+
+    line.setLength(distance);
+
+    if (point3 == QPointF(0, 0))
+    {
+        float cosa = qCos(qDegreesToRadians(360 - angle));
+        float sina = qSin(qDegreesToRadians(360 - angle));
+
+        line.setP2(QPointF(distance * cosa, distance * sina));
+    }
+
+    float p2X = ((float)((int)(line.p2().x() * 100))) / 100;
+    float p2Y = ((float)((int)(line.p2().y() * 100))) / 100;
+
+    x = p2X;
+    y = p2Y;
 }
 
 void ObjectDetector::drawXAxis(cv::Mat resultsMat)
@@ -1111,23 +1336,25 @@ void ObjectDetector::postProcessing()
 
 	// Invert binary image
 	if (ParameterPanel->IsInvertBinary())
-		cv::bitwise_not(processMat, processMat);
+        cv::bitwise_not(filterMat, filterMat);
 
-	SelectProcessRegion(processMat);
+    SelectProcessRegion(filterMat);
 }
 
 void ObjectDetector::detectBlobObjects(cv::Mat input)
 {	
 	//Find contour in image
 	std::vector<std::vector<cv::Point> > contoursContainer;
-	findContours(input, contoursContainer, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
+    findContours(input, contoursContainer, cv::RETR_LIST, cv::CHAIN_APPROX_SIMPLE);
 
-	std::vector<std::vector<cv::Point> >hullsContainer(contoursContainer.size());
+    //qDebug() << "contour: " << ElapsedTimer.elapsed();
 
-	for (size_t i = 0; i < contoursContainer.size(); i++)
-	{
-		convexHull(contoursContainer[i], hullsContainer[i]);
-	}
+//	std::vector<std::vector<cv::Point> >hullsContainer(contoursContainer.size());
+
+//	for (size_t i = 0; i < contoursContainer.size(); i++)
+//	{
+//		convexHull(contoursContainer[i], hullsContainer[i]);
+//	}
 
 	//Calculate size of contours
 
@@ -1136,10 +1363,10 @@ void ObjectDetector::detectBlobObjects(cv::Mat input)
 	for (size_t i = 0; i < contoursContainer.size(); i++)
 	{
 		
-		cv::RotatedRect minRec = cv::minAreaRect(cv::Mat(contoursContainer[i]));
+        cv::RotatedRect object = cv::minAreaRect(cv::Mat(contoursContainer[i]));
 
-		float h = minRec.size.height;
-        float w = minRec.size.width;
+        float h = object.size.height;
+        float w = object.size.width;
 		float s = w * h;
 
 		if (w > h)
@@ -1161,10 +1388,8 @@ void ObjectDetector::detectBlobObjects(cv::Mat input)
 
 		//Find an object of equal size
 
-		if (s > minObjectArea && s < maxObjectArea && h < obHei && w < obWid && minRec.boundingRect().y > 0 && (minRec.boundingRect().y + minRec.boundingRect().height + 5) < input.rows)
-		{
-            cv::RotatedRect object = cv::minAreaRect(cv::Mat(contoursContainer[i]));
-
+        if (s > minObjectArea && s < maxObjectArea && h < obHei && w < obWid && object.boundingRect().y > 0 && (object.boundingRect().y + object.boundingRect().height + 5) < input.rows)
+        {
             int angle = object.angle + 180;
 
             if (object.size.width > object.size.height)
@@ -1195,7 +1420,7 @@ void ObjectDetector::detectCircleObjects(cv::Mat input)
     int maxRaius = radius * 1.7;
 
     // Apply Hough Transform
-    HoughCircles(img_blur, CircleObjects, cv::HOUGH_GRADIENT, 1, resizeImage.rows/64, 200, 10, minRaius, maxRaius);
+    HoughCircles(img_blur, CircleObjects, cv::HOUGH_GRADIENT, 1, calibImage.rows/64, 200, 10, minRaius, maxRaius);
 }
 
 void ObjectDetector::sendImageToExternalScript(cv::Mat input)
@@ -1232,22 +1457,6 @@ void ObjectDetector::sendImageToExternalScript(cv::Mat input)
             sedNum += SendSize;
         }
     }
-}
-
-void ObjectDetector::RunExternalScript()
-{
-    QString path = QCoreApplication::applicationDirPath();
-    QString command("python");
-    QStringList params = QStringList() << lePythonUrl->text();
-
-    QString imageParas = QString("-h %1 -w %2 -c %3").arg(resizeImage.rows).arg(resizeImage.cols).arg(resizeImage.channels());
-
-    params << imageParas.split(' ');
-
-    QProcess *process = new QProcess();
-    process->startDetached(command, params);
-    process->waitForFinished();
-    process->close();
 }
 
 void ObjectDetector::drawRotateRec(cv::Mat& mat, int angle, cv::Rect rec, cv::Scalar color)
@@ -1296,8 +1505,12 @@ float ObjectDetector::processDetectingObjectOnCamera(cv::Mat& mat, QList<cv::Rot
 
             realObject.center.x = xRealObject;
             realObject.center.y = yRealObject;
-            realObject.size.height = object.size.height / PnRRatio;
-            realObject.size.width = object.size.width / PnRRatio;
+            realObject.size.height = object.size.height * PnRRatio;
+            realObject.size.width = object.size.width * PnRRatio;
+
+            float delta = EncoderPosition - EncoderPositionAtCameraCapture;
+
+            UpdatePointPositionOnConveyor(realObject.center.x, realObject.center.y, DeviationAngle, delta);
 
             // Add object to object list if it is new object
             ObjectManager->AddNewObject(realObject);
@@ -1310,12 +1523,20 @@ float ObjectDetector::processDetectingObjectOnCamera(cv::Mat& mat, QList<cv::Rot
     return 0;
 }
 
-void ObjectDetector::UpdateRatios()
+void ObjectDetector::UpdateRatios(float w, float h)
 {
-    DnPRatio = (float)cameraWidget->height() / Camera->get(cv::CAP_PROP_FRAME_HEIGHT);
-	CameraRatio = (float)Camera->get(cv::CAP_PROP_FRAME_WIDTH) / Camera->get(cv::CAP_PROP_FRAME_HEIGHT);
+    DnPRatio = (float)cameraWidget->height() / h;
+    CameraRatio = w / h;
 
     D2PMatrix.setMatrix(DnPRatio, 0, 0, DnPRatio, 0, 0);
+}
+
+void ObjectDetector::UpdateRatios()
+{
+    if (captureImage.empty())
+        return;
+
+    UpdateRatios(captureImage.cols, captureImage.rows);
 }
 
 void ObjectDetector::CalculateMappingMatrix()
@@ -1408,11 +1629,11 @@ void ObjectDetector::UpdateDetectingResultToWidgets()
 {
     if (cameraLayer == ORIGIN)
     {
-        VideoDisplayThread->UpdateLabelImage(resizeImage, cameraWidget, 0);
+        VideoDisplayThread->UpdateLabelImage(calibImage, cameraWidget, 0);
     }
     else if (cameraLayer == PROCESSING)
     {
-        VideoDisplayThread->UpdateLabelImage(processMat, cameraWidget, 0);
+        VideoDisplayThread->UpdateLabelImage(filterMat, cameraWidget, 0);
     }
     else if (cameraLayer == RESULT)
     {
@@ -1423,8 +1644,8 @@ void ObjectDetector::UpdateDetectingResultToWidgets()
 
     if (ParameterPanel->isHidden() == false)
     {
-        VideoDisplayThread->UpdateLabelImage(processMat, ParameterPanel->lbProcessImage, 1);
-        VideoDisplayThread->UpdateLabelImage(resizeImage, ParameterPanel->lbOriginImage, 2);
+        VideoDisplayThread->UpdateLabelImage(filterMat, ParameterPanel->lbProcessImage, 1);
+        VideoDisplayThread->UpdateLabelImage(calibImage, ParameterPanel->lbOriginImage, 2);
     }
 }
 
@@ -1484,5 +1705,18 @@ void ObjectDetector::drawCorner(cv::Mat & displayMat, QPoint p)
 {
 	cv::Point RectcvPoint1 = cv::Point(p.x() - 4, p.y() - 4);
 
-	drawBlackWhiteRect(displayMat, RectcvPoint1, cv::Size(10, 10));
+    drawBlackWhiteRect(displayMat, RectcvPoint1, cv::Size(10, 10));
+}
+
+void ObjectDetector::updatePerspectivePointsToUI()
+{
+    leChessboardPoints[0][0]->setText(QString::number(PperspectivePoints[0].x));
+    leChessboardPoints[0][1]->setText(QString::number(PperspectivePoints[0].y));
+    leChessboardPoints[1][0]->setText(QString::number(PperspectivePoints[1].x));
+    leChessboardPoints[1][1]->setText(QString::number(PperspectivePoints[1].y));
+    leChessboardPoints[2][0]->setText(QString::number(PperspectivePoints[2].x));
+    leChessboardPoints[2][1]->setText(QString::number(PperspectivePoints[2].y));
+    leChessboardPoints[3][0]->setText(QString::number(PperspectivePoints[3].x));
+    leChessboardPoints[3][1]->setText(QString::number(PperspectivePoints[3].y));
+
 }

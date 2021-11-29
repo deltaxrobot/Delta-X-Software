@@ -14,5 +14,7 @@ extern QList<QTextEdit*> Debugs;
 
 extern QElapsedTimer ElapsedTimer;
 
+QString DeleteExcessSpace(QString text);
+
 void Debug(QString msg);
 void Debug(int id, QString msg);

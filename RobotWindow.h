@@ -42,6 +42,7 @@
 #include <QPluginLoader>
 #include "SmartDialog.h"
 #include <QElapsedTimer>
+#include <QProcess>
 
 #define JOY_STICK
 
@@ -60,6 +61,10 @@
 #include "SoftwareManager.h"
 
 #include "ComDevice.h"
+
+#include <QSettings>
+
+#define DEFAULT_BAUDRATE 115200
 
 class RobotWindow;
 class ObjectDetector;
@@ -84,6 +89,31 @@ public:
 	void InitEvents();
     void InitVariables();
     void LoadPlugin();
+    void InitParseNames();
+
+    void LoadSettings(QSettings* setting);
+    void LoadGeneralSettings(QSettings* setting);
+    void LoadJoggingSettings(QSettings* setting);
+    void Load2DSettings(QSettings* setting);
+    void Load3DSettings(QSettings* setting);
+    void LoadExternalDeviceSettings(QSettings* setting);
+    void LoadTerminalSettings(QSettings* setting);
+    void LoadGcodeEditorSettings(QSettings* setting);
+    void LoadObjectDetectorSetting(QSettings* setting);
+    void LoadDrawingSetting(QSettings* setting);
+    void LoadPluginSetting(QSettings* setting);
+
+    void SaveSettings(QSettings* setting);
+    void SaveGeneralSettings(QSettings* setting);
+    void SaveJoggingSettings(QSettings* setting);
+    void Save2DSettings(QSettings* setting);
+    void Save3DSettings(QSettings* setting);
+    void SaveExternalDeviceSettings(QSettings* setting);
+    void SaveTerminalSettings(QSettings* setting);
+    void SaveGcodeEditorSettings(QSettings* setting);
+    void SaveObjectDetectorSetting(QSettings* setting);
+    void SaveDrawingSetting(QSettings* setting);
+    void SavePluginSetting(QSettings* setting);
 
     void InitTabs();
     void SetID(int id);
@@ -94,16 +124,26 @@ public:
     void EnablePositionUpdatingEvents();
     void closeEvent(QCloseEvent *event);
 
+    bool Run();
+    bool Stop();
+
     // ---- UI pointer -----
     void SetMainStackedWidgetAndPages(QStackedWidget* mainStack, QWidget* mainPage, QWidget* fullDisplayPage, QLayout* fullDisplayLayout);
     void SetSubStackedWidget(QStackedWidget* subStackedWidget);
 
+    QWidget* GetWidget(QString name);
+    QString GetRealNameWidget(QString name);
+    QString GetRedefineNameWidget(QString name);
+    QStringList GetShareDisplayWidgetNames();
     // ---- MODULE ----
 
     //---- Connection ----
-	ConnectionManager* DeltaConnectionManager;
-    ConnectionManager* CurrentDeltaPort;
+    ConnectionManager* DeltaConnectionManager;
     QNetworkAccessManager *HttpManager;
+
+    //---- Process -----
+
+    QProcess* ExternalScriptProcess;
 
     // ---- Gcode ----
 	GcodeProgramManager* DeltaGcodeManager;
@@ -111,7 +151,6 @@ public:
 
     // ---- Robot ----
     Robot RobotParamter;
-    RobotManager* RobotObjectManager;
     RobotManager* RobotManagerPointer = NULL;
     DeltaVisualizer *Delta2DVisualizer;
     QTimer* ShortcutKeyTimer;
@@ -119,6 +158,8 @@ public:
     int ID = 0;
     QString Name = "robot 1";
     QString SoftwareVersion = "0.9.5";
+
+    int DefaultBaudrate = DEFAULT_BAUDRATE;
 
     // ---- Vision ----
 
@@ -128,7 +169,8 @@ public:
     QElapsedTimer ElapsedTimeEncoder;
     QTimer* ConvenyorTimer;
 
-    float EncoderPositionAtCameraCapture = 0;
+    float ConveyorDistanceToMove = 0;
+    float ConveyorPositionBeforeMove = 0;
 
     // ---- Drawing ----
     DrawingExporter* DeltaDrawingExporter;
@@ -154,7 +196,10 @@ public:
 
     QStackedWidget* SubWindowStackedWidget;
 
-private slots:
+    // ----- Data ----
+    QMap<QString, QString> ParseNames;
+
+public slots:
     // ---- Setting ----
     void SaveSetting();
     void LoadSetting();
@@ -190,7 +235,7 @@ private slots:
     // ---- Robot Controller ----
     void Home();
 	void UpdateZLineEditValue(int z);
-	void UpdateWLineEditValue(int w);
+    void UpdateAngleLineEditValue(int w);
 	void UpdateDeltaPositionFromLineEditValue();
     void UpdatePositionToLabel();
     void UpdateTextboxFrom2DControl(float x, float y, float z, float w, float u, float v);
@@ -227,6 +272,9 @@ private slots:
     void ConnectEncoder();
     void ResetEncoderPosition();
     void ReceiveConveyorResponse(QString response);
+    void UpdatePointPositionOnConveyor(QLineEdit* x, QLineEdit* y, float angle, float distance);
+
+    void CalculateConveyorDeviationAngle();
 
     void UpdateDetectObjectSize();
     void UpdateCursorPosition(float x, float y);
@@ -237,6 +285,11 @@ private slots:
     void ProcessDetectedObjectFromExternalAI(QString msg);
     void AddDisplayObjectFromExternalScript(QString msg);
     void SaveEncoderPositionWhenExternalAIDetect();
+
+    void MoveExternalConveyor();
+    void ForwardExternalConveyor();
+    void BackwardExternalConveyor();
+    void TurnOffExternalConveyor();
 	
     // ---- Slider ----
 	void ConnectSliding();
@@ -253,7 +306,7 @@ private slots:
     // ---- Termite ----
 	void TerminalTransmit();
 	void PrintReceiveData(QString msg);
-
+    void RunExternalScript();
     // ---- Connection ----
 	void FinishedRequest(QNetworkReply *reply);
 
@@ -275,6 +328,9 @@ private slots:
     void CloseLoadingPopup();
 
     void MaximizeTab(int index);
+
+    // -------- Object Detecting --------
+    void UseCameraFromPlugin(bool checked);
 #ifdef Q_OS_WIN
     #ifdef JOY_STICK
         //--------Joystick-----------

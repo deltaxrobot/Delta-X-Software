@@ -23,17 +23,17 @@ public:
 		QFont font3 = QFont();
 		font3.setItalic(true);
 
-		name = new QLabel(QString("Object ") + QString::number(i + 1) + " -");
+        name = new QLabel(QString("Object ") + QString::number(i) + " -");
 		name->setFont(font1);
-		xVar = new QLabel(QString(" #O") + QString::number(i + 1) + "_X: ");
+        xVar = new QLabel(QString(" #O") + QString::number(i) + "_X: ");
 		xVar->setFont(font3);
 		xValue = new QLabel();
 		xValue->setFont(font2);
-		yVar = new QLabel(QString(" #O") + QString::number(i + 1) + "_Y: ");
+        yVar = new QLabel(QString(" #O") + QString::number(i) + "_Y: ");
 		yVar->setFont(font3);
 		yValue = new QLabel();
 		yValue->setFont(font2);
-		aVar = new QLabel(QString(" #O") + QString::number(i + 1) + "_A: ");
+        aVar = new QLabel(QString(" #O") + QString::number(i) + "_A: ");
 		aVar->setFont(font3);
 		aValue = new QLabel();
 		aValue->setFont(font2);

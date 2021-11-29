@@ -10,6 +10,29 @@ QString ConveyorString;
 
 QElapsedTimer ElapsedTimer;
 
+QString DeleteExcessSpace(QString text)
+{
+    if (text.length() == 0)
+        return "";
+
+    int b = 0;
+    int e = text.length() - 1;
+
+    while(text.at(b) == ' ')
+    {
+        ++b;
+    }
+
+    while(text.at(e) == ' ')
+    {
+        --e;
+    }
+
+    text = text.mid(b, e - b + 1);
+
+    return text;
+}
+
 void Debug(QString msg)
 {
     foreach (QTextEdit* debugLB, Debugs)

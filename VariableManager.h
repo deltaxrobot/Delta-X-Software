@@ -14,6 +14,9 @@ public:
 
     void AddVariable(QString name, QString value);
     void AddVariable(QString name, QString value, QTreeWidgetItem* item);
+    QString GetValue(QString name);
+
+    QMap<QString, QString> VarPairs;
 
 public slots:
     void changeVariableItem(QTreeWidgetItem *item, int col);

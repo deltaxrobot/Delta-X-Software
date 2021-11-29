@@ -2,7 +2,9 @@
 
 CameraProcessor::CameraProcessor(QObject *parent) : QObject(parent)
 {
-
+    Timer = new QTimer(NULL);
+    Timer->connect(Timer, SIGNAL(timeout()), this, SLOT(TimerFunction()));
+    Timer->start(10);
 }
 
 void CameraProcessor::UpdateLabelImage(cv::Mat mat, QLabel *label)
@@ -29,26 +31,49 @@ void CameraProcessor::ShotImage()
     if (openCvImage != NULL)
         delete openCvImage;
 
+    if (imageData == NULL)
+        return;
 
-    Height = IndustryCamera.Height();
-    Width = IndustryCamera.Width();
-    openCvImage = new cv::Mat(Height, Width, CV_8UC3, imageData);
-
-    emit CapturedImage(*openCvImage);
-
-    if (cameraWidget != NULL)
+    try
     {
-        UpdateLabelImage(*openCvImage, cameraWidget);
+        Height = IndustryCamera.Height();
+        Width = IndustryCamera.Width();
+        openCvImage = new cv::Mat(Height, Width, CV_8UC3, imageData);
+        //cv::Mat mat(Height, Width, CV_8UC3, imageData);
+
+        emit CapturedImage((*openCvImage).clone());
+
+        if (cameraWidget != NULL)
+        {
+            UpdateLabelImage(*openCvImage, cameraWidget);
+        }
+    }  catch (...)
+    {
+
     }
 }
 
 void CameraProcessor::Loop()
 {
+    return;
     while (IsLoopRunning)
     {
 //        if (IndustryCamera.IsOpen() == false)
 //            continue;
 
+        if (CaptureSignal == true)
+        {
+            qDebug() << "Capture";
+            ShotImage();
+            CaptureSignal = false;
+        }
+    }
+}
+
+void CameraProcessor::TimerFunction()
+{
+    if (IsLoopRunning)
+    {
         if (CaptureSignal == true)
         {
             qDebug() << "Capture";

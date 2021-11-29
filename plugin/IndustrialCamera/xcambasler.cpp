@@ -60,9 +60,11 @@ unsigned char *XCamBasler::Capture()
 
     Pylon::PylonInitialize();
 
+    if (data != NULL)
+        free(data);
 
     size_t size = height * width * 3;
-    unsigned char* data = (unsigned char*)std::malloc(size);
+    data = (unsigned char*)std::malloc(size);
 
     CImageFormatConverter formatConverter;
     formatConverter.OutputPixelFormat = PixelType_BGR8packed;
@@ -80,4 +82,24 @@ unsigned char *XCamBasler::Capture()
     }
 
     return data;
+}
+
+void XCamBasler::SetExposureTime(int value)
+{
+    GenApi::INodeMap& nodemap = Camera->GetNodeMap();
+    GenApi::CIntegerPtr ExposureTimeRaw(nodemap.GetNode("ExposureTimeRaw"));
+    ExposureTimeRaw->SetValue(value);
+}
+
+int XCamBasler::GetExposureTime()
+{
+    GenApi::INodeMap& nodemap = Camera->GetNodeMap();
+    GenApi::CIntegerPtr ExposureTimeRaw(nodemap.GetNode("ExposureTimeRaw"));
+
+    if(ExposureTimeRaw.IsValid())
+    {
+        return ExposureTimeRaw->GetValue();
+    }
+
+    return 0;
 }

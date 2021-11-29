@@ -18,7 +18,7 @@ int main(int argc, char *argv[])
 #ifdef NEW_WINDOW
     MainWindow w;
 #else
-    ProjectWindow w;
+    RobotWindow w;
 #endif
 	w.show();		
 

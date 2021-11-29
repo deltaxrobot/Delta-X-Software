@@ -42,7 +42,7 @@ void GcodeProgram::InitWidget()
 
 	pbDelete = new QPushButton(frPanel);
 	QIcon icon1;
-	icon1.addFile(QStringLiteral("icon/delete.png"), QSize(), QIcon::Normal, QIcon::Off);
+    icon1.addFile(QStringLiteral(":icon/delete.png"), QSize(), QIcon::Normal, QIcon::Off);
 	pbDelete->setIcon(icon1);
 	pbDelete->setIconSize(QSize(30, 30));
 	pbDelete->setGeometry(QRect(180, 10, 30, 31));
@@ -120,7 +120,7 @@ void GcodeProgram::SetColor(int color)
 
 QPoint GcodeProgram::GetPosition()
 {
-	return frPanel->pos();
+    return frPanel->pos();
 }
 
 void GcodeProgram::DeleteProgram()

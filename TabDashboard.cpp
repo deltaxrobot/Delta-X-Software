@@ -27,6 +27,12 @@ void TabDashboard::SetSelectedState(QString qss)
 
 void TabDashboard::SelectPage()
 {
+    if (Lock == true)
+    {
+        QMessageBox::information(this, "Permission", "You do not have permission to access these tabs.");
+        return;
+    }
+
     QAbstractButton* senderButton = qobject_cast<QAbstractButton*>(sender());
 
     for(int i = 0; i < TabPages->length(); i++)
@@ -39,6 +45,8 @@ void TabDashboard::SelectPage()
             swPageStack->setCurrentWidget(TabPages->at(i)->Page);
             // Set forcus color for selected button
             TabPages->at(i)->Button->setStyleSheet(SelectedStateQSS);
+
+            emit TabChanged(TabPages->at(i)->Button);
         }
     }
 }

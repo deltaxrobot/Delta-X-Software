@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 4.15.2, 2021-10-07T22:39:05. -->
+<!-- Written by QtCreator 4.15.2, 2021-11-24T20:39:25. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
@@ -140,8 +140,8 @@
     <value type="int" key="Qt4ProjectManager.Qt4BuildConfiguration.BuildConfiguration">2</value>
    </valuemap>
    <valuemap type="QVariantMap" key="ProjectExplorer.Target.BuildConfiguration.1">
-    <value type="QString" key="ProjectExplorer.BuildConfiguration.BuildDirectory">E:\Git\build-DeltaRobotSoftware-MSVC2015-Release</value>
-    <value type="QString" key="ProjectExplorer.BuildConfiguration.BuildDirectory.shadowDir">E:/Git/build-DeltaRobotSoftware-MSVC2015-Release</value>
+    <value type="QString" key="ProjectExplorer.BuildConfiguration.BuildDirectory">T:\Delta X 0.9.6</value>
+    <value type="QString" key="ProjectExplorer.BuildConfiguration.BuildDirectory.shadowDir">T:/Delta X 0.9.6</value>
     <valuemap type="QVariantMap" key="ProjectExplorer.BuildConfiguration.BuildStepList.0">
      <valuemap type="QVariantMap" key="ProjectExplorer.BuildStepList.Step.0">
       <value type="bool" key="ProjectExplorer.BuildStep.Enabled">true</value>

@@ -64,6 +64,10 @@ private slots:
     void on_pbShotVideo_clicked();
     void intervalFunction();
 
+    void on_leExposureTime_returnPressed();
+
+    void on_leGain_returnPressed();
+
 private:
     Ui::Form *ui;
 

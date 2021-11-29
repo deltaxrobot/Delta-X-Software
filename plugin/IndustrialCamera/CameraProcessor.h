@@ -22,6 +22,7 @@
 #include <QLabel>
 #include "ImageUnity.h"
 #include <qtimer.h>
+#include <QTimer>
 
 class CameraProcessor : public QObject
 {
@@ -30,6 +31,8 @@ public:
     explicit CameraProcessor(QObject *parent = nullptr);
 
     void UpdateLabelImage(cv::Mat mat, QLabel* label);
+
+    QTimer* Timer;
 
     XCamManager IndustryCamera;
     cv::Mat* openCvImage = NULL;
@@ -51,6 +54,7 @@ public slots:
 
     void ShotImage();
     void Loop();
+    void TimerFunction();
 signals:
     void CapturedImage(cv::Mat mat);
 private:

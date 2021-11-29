@@ -14,6 +14,7 @@ void RobotManager::AddRobotWindow(RobotWindow* robotWindow)
 
 RobotWindow* RobotManager::CreatNewRobotWindow()
 {
+    ElapsedTimer.start();
     RobotWindow* robotWindow = new RobotWindow();
     robotWindow->RobotManagerPointer = this;
 
@@ -58,6 +59,10 @@ RobotWindow* RobotManager::CreatNewRobotWindow()
 
     robotWindow->ui->twDeltaManager->setCurrentIndex(robotID);
 
+    robotWindow->ConnectDeltaRobot();
+
+    qDebug() << ElapsedTimer.elapsed();
+
     return robotWindow;
 }
 
@@ -73,6 +78,23 @@ QStringList RobotManager::GetRobotNames()
     return nameList;
 }
 
+void RobotManager::SetName(QString name)
+{
+    Name = name;
+    twProjectManager->setTabText(ID, name);
+}
+
+RobotWindow *RobotManager::GetRobot(QString name)
+{
+    foreach(RobotWindow* robotWindow, RobotWindows)
+    {
+        if (robotWindow->Name == name)
+            return robotWindow;
+    }
+
+    return NULL;
+}
+
 void RobotManager::SetMainStackedWidgetAndPages(QStackedWidget *mainStack, QWidget *mainPage, QWidget *fullDisplayPage, QLayout *fullDisplayLayout)
 {
     this->MainWindowStackedWidget = mainStack;
@@ -84,4 +106,70 @@ void RobotManager::SetMainStackedWidgetAndPages(QStackedWidget *mainStack, QWidg
 void RobotManager::SetSubStackedWidget(QStackedWidget *subStackedWidget)
 {
     this->SubWindowStackedWidget = subStackedWidget;
+}
+
+void RobotManager::LoadSettings(QSettings *setting)
+{
+    setting->beginGroup("Project");
+
+    Setting = setting;
+
+    SetName(setting->value("Name", "project 1").toString());
+
+    int robotNumber = setting->value("RobotNumber", 1).toInt();
+
+    for (int i = 0; i < robotNumber; i++)
+    {
+        setting->beginGroup(QString("Robot%1").arg(i));
+
+        RobotWindow* robotWindow = CreatNewRobotWindow();
+        robotWindow->SetName(setting->value("Name", "robot " + QString::number(i + 1)).toString());
+
+        robotWindow->LoadSettings(setting);
+
+        setting->endGroup();
+    }
+
+    setting->endGroup();
+}
+
+void RobotManager::SaveSettings(QSettings *setting)
+{
+    setting->beginGroup("Project");
+    setting->setValue("Name", Name);
+    setting->setValue("RobotNumber", RobotWindows.size());
+
+    for(int i = 0; i < RobotWindows.size(); i++)
+    {
+        setting->beginGroup(QString("Robot%1").arg(i));
+
+        setting->setValue(QString("Name").arg(i), RobotWindows[i]->Name);
+
+        RobotWindows[i]->SaveSettings(setting);        
+
+        setting->endGroup();
+    }
+    setting->endGroup();
+}
+
+void RobotManager::Run()
+{
+    foreach(RobotWindow* robotWindow, RobotWindows)
+    {
+        if (!robotWindow->Run())
+        {
+            QMessageBox::information(NULL, QString("Cannot connect %").arg(robotWindow->Name), "Unable to open the COM port");
+        }
+    }
+}
+
+void RobotManager::Stop()
+{
+    foreach(RobotWindow* robotWindow, RobotWindows)
+    {
+        if (!robotWindow->Stop())
+        {
+            QMessageBox::information(NULL, QString("Cannot stop %").arg(robotWindow->Name), "Unable to close the COM port");
+        }
+    }
 }

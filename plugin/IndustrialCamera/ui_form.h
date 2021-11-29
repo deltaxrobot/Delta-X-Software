@@ -83,22 +83,22 @@ public:
     QLabel *label_4;
     QLabel *label;
     QLabel *label_5;
-    QLineEdit *lineEdit_6;
+    QLineEdit *leBalanceRatioBlue;
     QLabel *label_7;
-    QComboBox *comboBox_2;
-    QLineEdit *lineEdit;
-    QLineEdit *lineEdit_2;
-    QLineEdit *lineEdit_3;
-    QComboBox *comboBox;
-    QLineEdit *lineEdit_4;
-    QLineEdit *lineEdit_5;
+    QComboBox *cbTriggerSource;
+    QLineEdit *leExposureTime;
+    QLineEdit *leGain;
+    QLineEdit *leGamma;
+    QComboBox *cbBalanceWhite;
+    QLineEdit *leBalanceRatioRed;
+    QLineEdit *leBalanceRatioGreen;
     QSpacerItem *verticalSpacer;
 
     void setupUi(QWidget *Form)
     {
         if (Form->objectName().isEmpty())
             Form->setObjectName(QString::fromUtf8("Form"));
-        Form->resize(459, 607);
+        Form->resize(502, 607);
         verticalLayout = new QVBoxLayout(Form);
         verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
         scrollArea = new QScrollArea(Form);
@@ -107,13 +107,13 @@ public:
         scrollArea->setWidgetResizable(true);
         scrollAreaWidgetContents = new QWidget();
         scrollAreaWidgetContents->setObjectName(QString::fromUtf8("scrollAreaWidgetContents"));
-        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 450, 800));
+        scrollAreaWidgetContents->setGeometry(QRect(0, -262, 457, 2000));
         QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
         sizePolicy.setHeightForWidth(scrollAreaWidgetContents->sizePolicy().hasHeightForWidth());
         scrollAreaWidgetContents->setSizePolicy(sizePolicy);
-        scrollAreaWidgetContents->setMinimumSize(QSize(450, 800));
+        scrollAreaWidgetContents->setMinimumSize(QSize(450, 2000));
         verticalLayout_2 = new QVBoxLayout(scrollAreaWidgetContents);
         verticalLayout_2->setObjectName(QString::fromUtf8("verticalLayout_2"));
         gridLayout = new QGridLayout();
@@ -349,6 +349,7 @@ public:
 
         groupBox = new QGroupBox(scrollAreaWidgetContents);
         groupBox->setObjectName(QString::fromUtf8("groupBox"));
+        groupBox->setEnabled(false);
         groupBox->setMinimumSize(QSize(0, 100));
         gridLayout_2 = new QGridLayout(groupBox);
         gridLayout_2->setObjectName(QString::fromUtf8("gridLayout_2"));
@@ -387,71 +388,71 @@ public:
 
         gridLayout_2->addWidget(label_5, 3, 0, 1, 1);
 
-        lineEdit_6 = new QLineEdit(groupBox);
-        lineEdit_6->setObjectName(QString::fromUtf8("lineEdit_6"));
-        lineEdit_6->setMaximumSize(QSize(100, 16777215));
-        lineEdit_6->setAlignment(Qt::AlignCenter);
+        leBalanceRatioBlue = new QLineEdit(groupBox);
+        leBalanceRatioBlue->setObjectName(QString::fromUtf8("leBalanceRatioBlue"));
+        leBalanceRatioBlue->setMaximumSize(QSize(100, 16777215));
+        leBalanceRatioBlue->setAlignment(Qt::AlignCenter);
 
-        gridLayout_2->addWidget(lineEdit_6, 8, 1, 1, 1);
+        gridLayout_2->addWidget(leBalanceRatioBlue, 8, 1, 1, 1);
 
         label_7 = new QLabel(groupBox);
         label_7->setObjectName(QString::fromUtf8("label_7"));
 
         gridLayout_2->addWidget(label_7, 5, 0, 1, 1);
 
-        comboBox_2 = new QComboBox(groupBox);
-        comboBox_2->addItem(QString());
-        comboBox_2->addItem(QString());
-        comboBox_2->addItem(QString());
-        comboBox_2->addItem(QString());
-        comboBox_2->addItem(QString());
-        comboBox_2->setObjectName(QString::fromUtf8("comboBox_2"));
-        comboBox_2->setMaximumSize(QSize(100, 16777215));
+        cbTriggerSource = new QComboBox(groupBox);
+        cbTriggerSource->addItem(QString());
+        cbTriggerSource->addItem(QString());
+        cbTriggerSource->addItem(QString());
+        cbTriggerSource->addItem(QString());
+        cbTriggerSource->addItem(QString());
+        cbTriggerSource->setObjectName(QString::fromUtf8("cbTriggerSource"));
+        cbTriggerSource->setMaximumSize(QSize(100, 16777215));
 
-        gridLayout_2->addWidget(comboBox_2, 9, 1, 1, 1);
+        gridLayout_2->addWidget(cbTriggerSource, 9, 1, 1, 1);
 
-        lineEdit = new QLineEdit(groupBox);
-        lineEdit->setObjectName(QString::fromUtf8("lineEdit"));
-        lineEdit->setMaximumSize(QSize(100, 16777215));
-        lineEdit->setAlignment(Qt::AlignCenter);
+        leExposureTime = new QLineEdit(groupBox);
+        leExposureTime->setObjectName(QString::fromUtf8("leExposureTime"));
+        leExposureTime->setMaximumSize(QSize(100, 16777215));
+        leExposureTime->setAlignment(Qt::AlignCenter);
 
-        gridLayout_2->addWidget(lineEdit, 0, 1, 1, 1);
+        gridLayout_2->addWidget(leExposureTime, 0, 1, 1, 1);
 
-        lineEdit_2 = new QLineEdit(groupBox);
-        lineEdit_2->setObjectName(QString::fromUtf8("lineEdit_2"));
-        lineEdit_2->setMaximumSize(QSize(100, 16777215));
-        lineEdit_2->setAlignment(Qt::AlignCenter);
+        leGain = new QLineEdit(groupBox);
+        leGain->setObjectName(QString::fromUtf8("leGain"));
+        leGain->setMaximumSize(QSize(100, 16777215));
+        leGain->setAlignment(Qt::AlignCenter);
 
-        gridLayout_2->addWidget(lineEdit_2, 1, 1, 1, 1);
+        gridLayout_2->addWidget(leGain, 1, 1, 1, 1);
 
-        lineEdit_3 = new QLineEdit(groupBox);
-        lineEdit_3->setObjectName(QString::fromUtf8("lineEdit_3"));
-        lineEdit_3->setMaximumSize(QSize(100, 16777215));
-        lineEdit_3->setAlignment(Qt::AlignCenter);
+        leGamma = new QLineEdit(groupBox);
+        leGamma->setObjectName(QString::fromUtf8("leGamma"));
+        leGamma->setMaximumSize(QSize(100, 16777215));
+        leGamma->setAlignment(Qt::AlignCenter);
 
-        gridLayout_2->addWidget(lineEdit_3, 2, 1, 1, 1);
+        gridLayout_2->addWidget(leGamma, 2, 1, 1, 1);
 
-        comboBox = new QComboBox(groupBox);
-        comboBox->addItem(QString());
-        comboBox->addItem(QString());
-        comboBox->setObjectName(QString::fromUtf8("comboBox"));
-        comboBox->setMaximumSize(QSize(100, 16777215));
+        cbBalanceWhite = new QComboBox(groupBox);
+        cbBalanceWhite->addItem(QString());
+        cbBalanceWhite->addItem(QString());
+        cbBalanceWhite->setObjectName(QString::fromUtf8("cbBalanceWhite"));
+        cbBalanceWhite->setMaximumSize(QSize(100, 16777215));
 
-        gridLayout_2->addWidget(comboBox, 3, 1, 1, 1);
+        gridLayout_2->addWidget(cbBalanceWhite, 3, 1, 1, 1);
 
-        lineEdit_4 = new QLineEdit(groupBox);
-        lineEdit_4->setObjectName(QString::fromUtf8("lineEdit_4"));
-        lineEdit_4->setMaximumSize(QSize(100, 16777215));
-        lineEdit_4->setAlignment(Qt::AlignCenter);
+        leBalanceRatioRed = new QLineEdit(groupBox);
+        leBalanceRatioRed->setObjectName(QString::fromUtf8("leBalanceRatioRed"));
+        leBalanceRatioRed->setMaximumSize(QSize(100, 16777215));
+        leBalanceRatioRed->setAlignment(Qt::AlignCenter);
 
-        gridLayout_2->addWidget(lineEdit_4, 4, 1, 1, 1);
+        gridLayout_2->addWidget(leBalanceRatioRed, 4, 1, 1, 1);
 
-        lineEdit_5 = new QLineEdit(groupBox);
-        lineEdit_5->setObjectName(QString::fromUtf8("lineEdit_5"));
-        lineEdit_5->setMaximumSize(QSize(100, 16777215));
-        lineEdit_5->setAlignment(Qt::AlignCenter);
+        leBalanceRatioGreen = new QLineEdit(groupBox);
+        leBalanceRatioGreen->setObjectName(QString::fromUtf8("leBalanceRatioGreen"));
+        leBalanceRatioGreen->setMaximumSize(QSize(100, 16777215));
+        leBalanceRatioGreen->setAlignment(Qt::AlignCenter);
 
-        gridLayout_2->addWidget(lineEdit_5, 5, 1, 1, 1);
+        gridLayout_2->addWidget(leBalanceRatioGreen, 5, 1, 1, 1);
 
 
         verticalLayout_2->addWidget(groupBox);
@@ -503,22 +504,22 @@ public:
         label_4->setText(QCoreApplication::translate("Form", "Gamma", nullptr));
         label->setText(QCoreApplication::translate("Form", "Exposure Time", nullptr));
         label_5->setText(QCoreApplication::translate("Form", "Balance White", nullptr));
-        lineEdit_6->setText(QCoreApplication::translate("Form", "0", nullptr));
+        leBalanceRatioBlue->setText(QCoreApplication::translate("Form", "0", nullptr));
         label_7->setText(QCoreApplication::translate("Form", "Balance Ratio Green", nullptr));
-        comboBox_2->setItemText(0, QCoreApplication::translate("Form", "Software", nullptr));
-        comboBox_2->setItemText(1, QCoreApplication::translate("Form", "Line 1", nullptr));
-        comboBox_2->setItemText(2, QCoreApplication::translate("Form", "Line 2", nullptr));
-        comboBox_2->setItemText(3, QCoreApplication::translate("Form", "Line 3", nullptr));
-        comboBox_2->setItemText(4, QCoreApplication::translate("Form", "Line 4", nullptr));
+        cbTriggerSource->setItemText(0, QCoreApplication::translate("Form", "Software", nullptr));
+        cbTriggerSource->setItemText(1, QCoreApplication::translate("Form", "Line 1", nullptr));
+        cbTriggerSource->setItemText(2, QCoreApplication::translate("Form", "Line 2", nullptr));
+        cbTriggerSource->setItemText(3, QCoreApplication::translate("Form", "Line 3", nullptr));
+        cbTriggerSource->setItemText(4, QCoreApplication::translate("Form", "Line 4", nullptr));
 
-        lineEdit->setText(QCoreApplication::translate("Form", "0", nullptr));
-        lineEdit_2->setText(QCoreApplication::translate("Form", "0", nullptr));
-        lineEdit_3->setText(QCoreApplication::translate("Form", "0", nullptr));
-        comboBox->setItemText(0, QCoreApplication::translate("Form", "Off", nullptr));
-        comboBox->setItemText(1, QCoreApplication::translate("Form", "Continuous", nullptr));
+        leExposureTime->setText(QCoreApplication::translate("Form", "0", nullptr));
+        leGain->setText(QCoreApplication::translate("Form", "0", nullptr));
+        leGamma->setText(QCoreApplication::translate("Form", "0", nullptr));
+        cbBalanceWhite->setItemText(0, QCoreApplication::translate("Form", "Off", nullptr));
+        cbBalanceWhite->setItemText(1, QCoreApplication::translate("Form", "Continuous", nullptr));
 
-        lineEdit_4->setText(QCoreApplication::translate("Form", "0", nullptr));
-        lineEdit_5->setText(QCoreApplication::translate("Form", "0", nullptr));
+        leBalanceRatioRed->setText(QCoreApplication::translate("Form", "0", nullptr));
+        leBalanceRatioGreen->setText(QCoreApplication::translate("Form", "0", nullptr));
     } // retranslateUi
 
 };

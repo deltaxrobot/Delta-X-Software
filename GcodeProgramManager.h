@@ -28,6 +28,7 @@
 #include "RobotWindow.h"
 #include <QtMath>
 #include "ScurveInterpolator.h"
+#include <QSettings>
 
 class RobotWindow;
 
@@ -37,15 +38,15 @@ public:
     GcodeVariable()
     {
         Name = "";
-        Value = 0;
+        Value = "0";
     };
-    GcodeVariable(QString name, float value)
+    GcodeVariable(QString name, QString value)
     {
         Name = name;
         Value = value;
     }
 	QString Name;
-	float Value;
+    QString Value;
 };
 
 class GcodeProgramManager : public QObject
@@ -60,17 +61,20 @@ public:
 	void AddG01(float  x, float y, float z);
 	void AddG28();
 	void AddM204(float accel);
-	void AddNewProgram();
+    GcodeProgram* AddNewProgram();
 	void LoadPrograms();
+    void LoadPrograms(QDir dir);
 	void ExecuteGcode(QString gcodes, bool isFromGE = false);
-	void Stop();    
+    void Stop();
 
-
+    void SaveSettings(QSettings* setting);
+    void LoadSettings(QSettings* setting);
 
 	QWidget* wgProgramContainer;
 	QScrollArea* saProgramFilesScrollArea;
 	CodeEditor* pteGcodeArea;
 	QPushButton* pbExecuteGcodes;
+    QLineEdit* leGcodeProgramPath = NULL;
 
 	GcodeProgram* selectingProgram = NULL;
 	int ProgramCounter = 0;
@@ -95,18 +99,21 @@ public:
 public slots:
 	void ChangeSelectingProgram(GcodeProgram* ptr);
 	void SaveGcodeIntoFile();
+    void SaveGcodeIntoFile(GcodeProgram* program);
 	void DeleteProgram(GcodeProgram* ptr);
 	void EraserAllProgramItems();
 	void SortProgramFiles();
 	void RefreshGcodeProgramList();
 	void TransmitNextGcode();
-	void UpdateSystemVariable(QString name, float value);
+    void UpdateSystemVariable(QString name, QString value);
 	void RespondVariableValue(QIODevice* sender, QString name);
     void SetStartingGcodeEditorCursor(QString value);
 
     void SaveGcodeVariable(GcodeVariable gvar);
-    void SaveGcodeVariable(QString name, float value);
+    void SaveGcodeVariable(QString name, QString value);
     void SaveGcodeVariable(QString cmd);
+
+    void SelectGcodeProgramPath();
 
 signals:
 	void OutOfObjectVariable();
@@ -139,14 +146,14 @@ private:
 
 	RobotWindow* mParent;
 
-	float GetVariableValue(QString name);
+    QString GetVariableValue(QString name);
     float GetResultOfMathFunction(QString expression);
 	bool isGlobalVariable(QString name);
 	bool isConveyorGcode(QString gcode);
 	bool isSlidingGcode(QString gcode);
 	bool isMovingGcode(QString gcode);
 	bool findExeGcodeAndTransmit();
-    float calculateExpressions(QString expression);
+    QString calculateExpressions(QString expression);
 	void updatePositionIntoSystemVariable(QString statement);
 	QString getLeftWord(QString s, int pos);
 	QString getRightWord(QString s, int pos);
@@ -154,5 +161,7 @@ private:
 	bool isNotNegative(QString s);
 
     QString convertGcodeToSyncConveyor(QString gcode);
+
+    QString getTrueProgramPath();
 };
 

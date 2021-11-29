@@ -34,6 +34,9 @@ public:
     bool IsCameraOpen(int id);
     bool IsOpen();
 
+    void SetExposureTime(int value);
+    int GetExposureTime();
+
     unsigned char *Capture();
 
     QList<XCam*> CameraList;

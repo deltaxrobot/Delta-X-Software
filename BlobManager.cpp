@@ -14,9 +14,9 @@ void BlobManager::AddNewObject(cv::RotatedRect object)
 	if (isNewObject(object))
 	{
         ObjectContainer.push_back(object);
-        ElapsedTimer.start();
-        updateObjectVariable(object, ObjectContainer.size());
-        qDebug() << ElapsedTimer.elapsed();
+        //ElapsedTimer.start();
+        updateObjectVariable(object, ObjectContainer.size() - 1);
+        //qDebug() << ElapsedTimer.elapsed();
 	}
 }
 
@@ -34,21 +34,18 @@ void BlobManager::RemoveOldestObject()
 	{
 		cv::RotatedRect obj = ObjectContainer.at(i + 1);
 
-		int angle = obj.angle + 180;
+        QString cmd = "";
+        cmd += QString("#O%1_X=%2;").arg(i).arg(obj.center.x);
+        cmd += QString("#O%1_Y=%2;").arg(i).arg(obj.center.y);
+        cmd += QString("#O%1_A=%2").arg(i).arg(obj.angle);
+        emit NewUpdateObjectPosition(cmd);
+    }
 
-		if (obj.size.width > obj.size.height)
-		{
-			angle = obj.angle + 90;
-		}
-
-		emit NewUpdateObjectPosition(QString("#O") + QString::number(i + 1) + "_X", obj.center.x);
-		emit NewUpdateObjectPosition(QString("#O") + QString::number(i + 1) + "_Y", obj.center.y);
-		emit NewUpdateObjectPosition(QString("#O") + QString::number(i + 1) + "_A", angle);
-	}
-
-	emit NewUpdateObjectPosition(QString("#O") + QString::number(ObjectContainer.size()) + "_X", NULL_NUMBER);
-	emit NewUpdateObjectPosition(QString("#O") + QString::number(ObjectContainer.size()) + "_Y", NULL_NUMBER);
-	emit NewUpdateObjectPosition(QString("#O") + QString::number(ObjectContainer.size()) + "_A", NULL_NUMBER);
+    QString cmd = "";
+    cmd += QString("#O%1_X=%2;").arg(ObjectContainer.size() - 1).arg(NULL_NUMBER);
+    cmd += QString("#O%1_Y=%2;").arg(ObjectContainer.size() - 1).arg(NULL_NUMBER);
+    cmd += QString("#O%1_A=%2").arg(ObjectContainer.size() - 1).arg(NULL_NUMBER);
+    emit NewUpdateObjectPosition(cmd);
 
 	ObjectContainer.erase(ObjectContainer.begin());
 }
@@ -59,16 +56,11 @@ void BlobManager::RemoveAllDetectObjects()
 	{
 		cv::RotatedRect obj = ObjectContainer.at(i);
 
-		int angle = obj.angle + 180;
-
-		if (obj.size.width > obj.size.height)
-		{
-			angle = obj.angle + 90;
-		}
-
-		emit NewUpdateObjectPosition(QString("#O") + QString::number(i + 1) + "_X", NULL_NUMBER);
-		emit NewUpdateObjectPosition(QString("#O") + QString::number(i + 1) + "_Y", NULL_NUMBER);
-		emit NewUpdateObjectPosition(QString("#O") + QString::number(i + 1) + "_A", NULL_NUMBER);
+        QString cmd = "";
+        cmd += QString("#O%1_X=%2;").arg(i).arg(NULL_NUMBER);
+        cmd += QString("#O%1_Y=%2;").arg(i).arg(NULL_NUMBER);
+        cmd += QString("#O%1_A=%2").arg(i).arg(NULL_NUMBER);
+        emit NewUpdateObjectPosition(cmd);
 	}
 
     ObjectContainer.clear();
@@ -79,6 +71,16 @@ void BlobManager::AddNewObject(float x, float y, float w, float h)
     cv::RotatedRect object(cv::Point2f(x, y), cv::Size(w, h), 0);
 
     AddNewObject(object);
+}
+
+void BlobManager::UpdateTrackingError()
+{
+    QLineEdit* le = qobject_cast<QLineEdit*>(sender());
+
+    if (le == NULL)
+        return;
+
+    TrackingError = le->text().toFloat();
 }
 
 bool BlobManager::isNewObject(cv::RotatedRect object)
@@ -106,7 +108,7 @@ bool BlobManager::isNewObject(cv::RotatedRect object)
 
         int ObjectArea = oldObj.size.height * oldObj.size.width;
 
-		if (IntersectionArea > ObjectArea * 0.3f)
+        if (IntersectionArea > ObjectArea * TrackingError)
 		{
 //            ObjectContainer.at(i).center.x = object.center.x;
 //            ObjectContainer.at(i).center.y = object.center.y;
@@ -118,13 +120,6 @@ bool BlobManager::isNewObject(cv::RotatedRect object)
 
 void BlobManager::updateObjectVariable(cv::RotatedRect object, int id)
 {
-//    int angle = object.angle + 180;
-
-//    if (object.size.width > object.size.height)
-//    {
-//        angle = object.angle + 90;
-//    }
-
     QString cmd = "";
     cmd += QString("#O%1_X=%2;").arg(id).arg(object.center.x);
     cmd += QString("#O%1_Y=%2;").arg(id).arg(object.center.y);
@@ -147,15 +142,10 @@ void BlobManager::UpdateNewObjectMoving(float deltaX, float deltaY)
 	{
 		cv::RotatedRect obj = ObjectContainer.at(i);
 
-		int angle = obj.angle + 180;
+        QString cmd = "";
+        cmd += QString("#O%1_X=%2;").arg(i).arg(obj.center.x);
+        cmd += QString("#O%1_Y=%2;").arg(i).arg(obj.center.y);
 
-		if (obj.size.width > obj.size.height)
-		{
-			angle = obj.angle + 90;
-		}
-
-		emit NewUpdateObjectPosition(QString("#O") + QString::number(i + 1) + "_X", obj.center.x);
-		emit NewUpdateObjectPosition(QString("#O") + QString::number(i + 1) + "_Y", obj.center.y);
-		emit NewUpdateObjectPosition(QString("#O") + QString::number(i + 1) + "_A", angle);
+        emit NewUpdateObjectPosition(cmd);
 	}	
 }

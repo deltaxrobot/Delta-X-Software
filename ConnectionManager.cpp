@@ -15,6 +15,9 @@ void ConnectionManager::init()
     connectionTimer = new QTimer();
     connect(connectionTimer, SIGNAL(timeout()), this, SLOT(FindingRobotTimeOut()));
 
+    callfuntionTimer = new QTimer();
+//    connect(callfuntionTimer, SIGNAL(timeout()), this, SLOT(()));
+
 	ExternalControllerPort = new QSerialPort();
 	connect(ExternalControllerPort, SIGNAL(readyRead()), this, SLOT(ReadData()));
 	ExternalControllerSocket = new QTcpSocket();
@@ -97,14 +100,14 @@ void ConnectionManager::processReceiveData()
         {
             emit ReceiveObjectInfoFromExternalAI(valueS);
         }
-        if (name == "#Display")
+        if (name == "#Object")
         {
             emit ReceiveDisplayObjectFromExternalScript(valueS);
         }
         else
         {
             int value = valueS.toInt();
-            emit ReceiveVariableChangeCommand(name, value);
+            emit ReceiveVariableChangeCommand(name, valueS);
         }
 	}
 	if (receiveLine.at(0) == '#' && receiveLine.indexOf("=") == -1)
@@ -242,13 +245,17 @@ void ConnectionManager::FindDeltaRobot()
 		{
 			connect(sP, SIGNAL(readyRead()), this, SLOT(ReadData()));
 
-			QString name = sP->portName();
-            QThread::msleep(500);
-            sP->write("IsDelta\n");
+            QString name = sP->portName();
+
+//            QThread::msleep(500);
+//            sP->write("IsDelta\n");
+
+
 		}
 	}
 
-    connectionTimer->start(200);
+    QTimer::singleShot(500, this, &ConnectionManager::SendRobotMsgToCOMPort);
+
 }
 
 void ConnectionManager::SendToRobot(QString msg)
@@ -286,6 +293,11 @@ void ConnectionManager::ReadData()
 		while (sP->canReadLine())
 		{
 			receiveLine = sP->readLine();
+
+            if (sP == RobotPort)
+            {
+                emit ReceiveVariableChangeCommand("Response", receiveLine.replace("\n", "").replace("\r", ""));
+            }
 
 			if (sP == ExternalControllerPort)
 			{
@@ -394,5 +406,17 @@ void ConnectionManager::FindingRobotTimeOut()
 
 void ConnectionManager::ReceiveNewConnectionFromServer(QTcpSocket * socket)
 {
-	connect(socket, SIGNAL(readyRead()), this, SLOT(ReadData()));
+    connect(socket, SIGNAL(readyRead()), this, SLOT(ReadData()));
+}
+
+void ConnectionManager::SendRobotMsgToCOMPort()
+{
+    foreach(QSerialPort* sp, portList)
+    {
+        if (sp->isOpen())
+        {
+          sp->write("IsDelta\n");
+        }
+    }
+    connectionTimer->start(200);
 }

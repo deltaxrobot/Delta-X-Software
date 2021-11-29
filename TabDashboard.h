@@ -5,6 +5,7 @@
 #include <QToolButton>
 #include <QPushButton>
 #include <QStackedWidget>
+#include <QMessageBox>
 
 class TabPage
 {
@@ -25,8 +26,13 @@ public:
     void InitPanel(QWidget* panel, QStackedWidget* pageStack);
     void SetSelectedState(QString qss);
 
+    bool Lock = false;
+
 public slots:
     void SelectPage();
+
+signals:
+    void TabChanged(QAbstractButton* tabButton);
 
 private:
     QWidget* qPanel;

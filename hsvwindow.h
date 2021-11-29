@@ -21,7 +21,9 @@ public:
 	void InitEvents();
     void InitVariables();
     void SaveSetting(QString fileName);
+    void SaveSetting(QSettings* setting);
     void LoadSetting(QString fileName);
+    void LoadSetting(QSettings* setting);
 
 	QSlider *sPara[6];
 	QLabel *lbPara[6];

@@ -13,6 +13,8 @@ void VariableManager::SetTreeWidget(QTreeWidget *treeWidget)
 
 void VariableManager::AddVariable(QString name, QString value)
 {
+    VarPairs.insert(name, value);
+
     QStringList names = name.split('.');
 
     QTreeWidgetItem* item = getItem(names[0], treeWidgetDisplay);
@@ -34,7 +36,9 @@ void VariableManager::AddVariable(QString name, QString value)
     else
     {
         AddVariable(name.mid(names[0].length() + 1), value, item);
-    }
+    }    
+
+    emit variableChanged(name, value);
 }
 
 void VariableManager::AddVariable(QString name, QString value, QTreeWidgetItem *item)
@@ -65,11 +69,15 @@ void VariableManager::AddVariable(QString name, QString value, QTreeWidgetItem *
     }
 }
 
+QString VariableManager::GetValue(QString name)
+{
+    return VarPairs[name];
+}
+
 void VariableManager::changeVariableItem(QTreeWidgetItem *item, int col)
 {
     QString key = item->text(0);
     QString value = item->text(col);
-    emit variableChanged(key, value);
 }
 
 QTreeWidgetItem *VariableManager::getItem(QString name, QTreeWidgetItem *rootItem)

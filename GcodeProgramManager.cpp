@@ -18,18 +18,22 @@ GcodeProgramManager::GcodeProgramManager(RobotWindow *parent, QScrollArea* scrol
 	deltaParameter = deltaVisualize;
     pbExecuteGcodes = executeButton;
 
-	UpdateSystemVariable("#X", 0);
-	UpdateSystemVariable("#Y", 0);
-	UpdateSystemVariable("#Z", 0);
-	UpdateSystemVariable("#W", 0);
-    UpdateSystemVariable("#U", 0);
-    UpdateSystemVariable("#V", 0);
-	UpdateSystemVariable("#F", 200);
-	UpdateSystemVariable("#A", 1200);
-    UpdateSystemVariable("#S", 12);
-    UpdateSystemVariable("#E", 12);
-    UpdateSystemVariable("#ConveyorSpeed", 0);
-    UpdateSystemVariable("#ConveyorDirection", 0);
+    UpdateSystemVariable("#X", "0");
+    UpdateSystemVariable("#Y", "0");
+    UpdateSystemVariable("#Z", "0");
+    UpdateSystemVariable("#W", "0");
+    UpdateSystemVariable("#U", "0");
+    UpdateSystemVariable("#V", "0");
+    UpdateSystemVariable("#F", "200");
+    UpdateSystemVariable("#A", "1200");
+    UpdateSystemVariable("#S", "12");
+    UpdateSystemVariable("#E", "12");
+    UpdateSystemVariable("#ConveyorSpeed", "0");
+    UpdateSystemVariable("#ConveyorDirection", "0");
+
+    UpdateSystemVariable("#O0_X", QString::number(NULL_NUMBER));
+    UpdateSystemVariable("#O0_Y", QString::number(NULL_NUMBER));
+    UpdateSystemVariable("#O0_A", QString::number(NULL_NUMBER));
 
 	connect(deltaConnection, SIGNAL(DeltaResponeGcodeDone()), this, SLOT(TransmitNextGcode()));
 }
@@ -76,7 +80,7 @@ void GcodeProgramManager::AddM204(float accel)
 	AddGcodeLine(m204);
 }
 
-void GcodeProgramManager::AddNewProgram()
+GcodeProgram* GcodeProgramManager::AddNewProgram()
 {
 	for (int i = 0; i < ProgramList->size(); i++)
 	{
@@ -101,69 +105,76 @@ void GcodeProgramManager::AddNewProgram()
 
 	newProgram->SelectNewProgram();
 	saProgramFilesScrollArea->verticalScrollBar()->setValue(0);
+
+    return newProgram;
 }
 
 void GcodeProgramManager::LoadPrograms()
 {
-	QDir directory(QDir::currentPath());
+    QDir dir(getTrueProgramPath());
 	
-	QStringList deltaGcodeFiles;
-	
-	if (sortMethod == 0)
-	{
-		deltaGcodeFiles = directory.entryList(QStringList() << "*.dtgc" << "*.DTGC", QDir::Files, QDir::Time);
-	}
-	if (sortMethod == 1)
-	{
-		deltaGcodeFiles = directory.entryList(QStringList() << "*.dtgc" << "*.DTGC", QDir::Files, QDir::Time | QDir::Reversed);
-	}
-	if (sortMethod == 2)
-	{
-		deltaGcodeFiles = directory.entryList(QStringList() << "*.dtgc" << "*.DTGC", QDir::Files, QDir::Name);
-	}
-	if (sortMethod == 3)
-	{
-		deltaGcodeFiles = directory.entryList(QStringList() << "*.dtgc" << "*.DTGC", QDir::Files, QDir::Name | QDir::Reversed);
-	}
+    LoadPrograms(dir);
+}
 
-	ProgramCounter = 0;
+void GcodeProgramManager::LoadPrograms(QDir directory)
+{
+    QStringList deltaGcodeFiles;
 
-	foreach(QString gcodeFile, deltaGcodeFiles)
-	{
-		QFile file(gcodeFile);
+    if (sortMethod == 0)
+    {
+        deltaGcodeFiles = directory.entryList(QStringList() << "*.dtgc" << "*.DTGC", QDir::Files, QDir::Time);
+    }
+    if (sortMethod == 1)
+    {
+        deltaGcodeFiles = directory.entryList(QStringList() << "*.dtgc" << "*.DTGC", QDir::Files, QDir::Time | QDir::Reversed);
+    }
+    if (sortMethod == 2)
+    {
+        deltaGcodeFiles = directory.entryList(QStringList() << "*.dtgc" << "*.DTGC", QDir::Files, QDir::Name);
+    }
+    if (sortMethod == 3)
+    {
+        deltaGcodeFiles = directory.entryList(QStringList() << "*.dtgc" << "*.DTGC", QDir::Files, QDir::Name | QDir::Reversed);
+    }
 
-		if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
-		{
-			continue;
-		}
+    ProgramCounter = 0;
 
-		GcodeProgram* newProgram = new GcodeProgram(wgProgramContainer);
+    foreach(QString gcodeFile, deltaGcodeFiles)
+    {
+        QFile file(directory.path() + "/" + gcodeFile);
 
-		newProgram->SetPosition(10, 10 + 90 * ProgramCounter);
+        if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+        {
+            continue;
+        }
 
-		QString nameWithExtension = QUrl(gcodeFile).fileName();
-		newProgram->SetName(nameWithExtension.left(nameWithExtension.lastIndexOf(".")));
-		newProgram->ID = ProgramCounter;
-		ProgramList->push_back(newProgram);
+        GcodeProgram* newProgram = new GcodeProgram(wgProgramContainer);
 
-		wgProgramContainer->setGeometry(QRect(0, 0, 279, 90 * (ProgramCounter + 1) + 10));
+        newProgram->SetPosition(10, 10 + 90 * ProgramCounter);
 
-		connect(newProgram, SIGNAL(Selected(GcodeProgram*)), this, SLOT(ChangeSelectingProgram(GcodeProgram*)));
-		connect(newProgram, SIGNAL(Deleted(GcodeProgram*)), this, SLOT(DeleteProgram(GcodeProgram*)));
+        QString nameWithExtension = QUrl(gcodeFile).fileName();
+        newProgram->SetName(nameWithExtension.left(nameWithExtension.lastIndexOf(".")));
+        newProgram->ID = ProgramCounter;
+        ProgramList->push_back(newProgram);
 
-		ProgramCounter++;
+        wgProgramContainer->setGeometry(QRect(0, 0, 279, 90 * (ProgramCounter + 1) + 10));
 
-		QTextStream in(&file);
+        connect(newProgram, SIGNAL(Selected(GcodeProgram*)), this, SLOT(ChangeSelectingProgram(GcodeProgram*)));
+        connect(newProgram, SIGNAL(Deleted(GcodeProgram*)), this, SLOT(DeleteProgram(GcodeProgram*)));
 
-		while (!in.atEnd())
-		{
-			QString line = in.readLine();
+        ProgramCounter++;
 
-			newProgram->GcodeData += line + "\n";
-		}
+        QTextStream in(&file);
 
-		newProgram->CoutingGcodeLines();
-	}
+        while (!in.atEnd())
+        {
+            QString line = in.readLine();
+
+            newProgram->GcodeData += line + "\n";
+        }
+
+        newProgram->CoutingGcodeLines();
+    }
 }
 
 void GcodeProgramManager::ExecuteGcode(QString gcodes, bool isFromGE)
@@ -186,6 +197,8 @@ void GcodeProgramManager::ExecuteGcode(QString gcodes, bool isFromGE)
 	{
 		QString line = tempGcodeList.at(i);
 
+        line = DeleteExcessSpace(line);
+
 		gcodeList.push_back(line);
 	}
 
@@ -197,13 +210,50 @@ void GcodeProgramManager::ExecuteGcode(QString gcodes, bool isFromGE)
 void GcodeProgramManager::Stop()
 {	
 	gcodeList.clear();
-	gcodeOrder = 0;
+    gcodeOrder = 0;
 }
 
-float GcodeProgramManager::GetVariableValue(QString name)
+void GcodeProgramManager::SaveSettings(QSettings *setting)
+{
+    setting->setValue("GcodeProgramPath", leGcodeProgramPath->text());
+    setting->setValue("Content", pteGcodeArea->toPlainText());
+
+    QString selectingProgramName = "NULL";
+    if (selectingProgram != NULL)
+        selectingProgramName = selectingProgram->GetName();
+    setting->setValue("SelectedProgram", selectingProgramName);
+}
+
+void GcodeProgramManager::LoadSettings(QSettings *setting)
+{
+    if (leGcodeProgramPath != NULL)
+    {
+        leGcodeProgramPath->setText(setting->value("GcodeProgramPath", leGcodeProgramPath->text()).toString());
+    }
+
+    pteGcodeArea->setText(setting->value("Content", pteGcodeArea->toPlainText()).toString());
+
+    EraserAllProgramItems();
+    LoadPrograms(QDir(getTrueProgramPath()));
+
+    QString selectedProgramName = setting->value("SelectedProgram").toString();
+
+    if (selectedProgramName != "NULL")
+    {
+        foreach(GcodeProgram* gp, *ProgramList)
+        {
+            if (gp->GetName() == selectedProgramName)
+            {
+                gp->SelectNewProgram();
+            }
+        }
+    }
+}
+
+QString GcodeProgramManager::GetVariableValue(QString name)
 {	
 	if (name == "NULL")
-		return NULL_NUMBER;
+        return QString::number(NULL_NUMBER);
 
     if (mParent->RobotManagerPointer != NULL)
     {
@@ -222,17 +272,17 @@ float GcodeProgramManager::GetVariableValue(QString name)
     float result = GetResultOfMathFunction(name);
     if (result != NULL_NUMBER)
     {
-        return QString::number(result, 'f', 2).toFloat();
+        return QString::number(result, 'f', 2);
     }
 
     foreach(GcodeVariable var, GcodeVariables)
 	{
-        if (var.Name == name || var.Name == (QString("#") + name))
+        if (var.Name.replace("#", "") == name.replace("#", ""))
 		{
 			return var.Value;
 		}
 	}
-    return name.toFloat();
+    return name;
 }
 
 float GcodeProgramManager::GetResultOfMathFunction(QString expression)
@@ -267,7 +317,7 @@ float GcodeProgramManager::GetResultOfMathFunction(QString expression)
         {
             if (values[i][0] == "#")
             {
-                values[i] = QString::number(GetVariableValue(values[i]));
+                values[i] = GetVariableValue(values[i]);
             }
         }
     }
@@ -377,7 +427,7 @@ bool GcodeProgramManager::findExeGcodeAndTransmit()
 	//-----------------------------------
 	int openBracIndex = currentLine.indexOf('[');
 	QString expressInBracket = "";
-	float resultInBracket;
+    QString resultInBracket;
 	int subBracNum = 0;
 
 	// ------------- Conlapse Gcode Line by calculating all expression in [ ... ] ---------------
@@ -409,7 +459,7 @@ bool GcodeProgramManager::findExeGcodeAndTransmit()
 
 		resultInBracket = calculateExpressions(expressInBracket);				
 
-		currentLine.replace(expressInBracket, QString::number(resultInBracket));
+        currentLine.replace(expressInBracket, resultInBracket);
 
 		expressInBracket = "";
 
@@ -603,6 +653,20 @@ bool GcodeProgramManager::findExeGcodeAndTransmit()
                     return false;
                 }
 
+                QString funcName = "sendExternalMCU";
+
+                if (subProName.contains(funcName) == true)
+                {
+                    int pos1 = subProName.indexOf("\"") + 1;
+                    int pos2 = subProName.lastIndexOf("\"");
+                    QString msg = subProName.mid(pos1, pos2 - pos1);
+
+                    deltaConnection->ExternalMCUSend(msg);
+
+                    gcodeOrder++;
+                    return false;
+                }
+
 				for (int order = 0; order < gcodeList.size(); order++)
 				{
 					if (gcodeList[order].indexOf(QString("O") + subProName) > -1)
@@ -689,27 +753,35 @@ bool GcodeProgramManager::findExeGcodeAndTransmit()
 
 void GcodeProgramManager::SaveGcodeIntoFile()
 {
-	Debug("Save");
-	if (selectingProgram == NULL)
-	{
-		Debug("No program is selected !");
-		return;
-	}		
+    SaveGcodeIntoFile(selectingProgram);
+}
 
-	QFile file(selectingProgram->GetName() + ".dtgc");
-	if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
-	{
-		Debug("Cant not open file to save !");
-		return;
-	}
-		
-	QTextStream out(&file);
-	out << pteGcodeArea->toPlainText();
+void GcodeProgramManager::SaveGcodeIntoFile(GcodeProgram *program)
+{
+    Debug("Save");
+    if (program == NULL)
+    {
+        Debug("No program is selected !");
+        return;
+    }
 
-	selectingProgram->GcodeData = pteGcodeArea->toPlainText();
-	selectingProgram->CoutingGcodeLines();
+    QString fullFileName = getTrueProgramPath() + "/" + program->GetName() + ".dtgc";
+    fullFileName = fullFileName.replace("//", "/");
 
-	Debug("Saved");
+    QFile file(fullFileName);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+        Debug("Cant not open file to save !");
+        return;
+    }
+
+    QTextStream out(&file);
+    out << pteGcodeArea->toPlainText();
+
+    program->GcodeData = pteGcodeArea->toPlainText();
+    program->CoutingGcodeLines();
+
+    Debug("Saved");
 }
 
 void GcodeProgramManager::DeleteProgram(GcodeProgram* ptr)
@@ -821,7 +893,7 @@ void GcodeProgramManager::TransmitNextGcode()
 	//Debug(currentLine);
 }
 
-void GcodeProgramManager::UpdateSystemVariable(QString name, float value)
+void GcodeProgramManager::UpdateSystemVariable(QString name, QString value)
 {
 	SaveGcodeVariable(name, value);
     emit JustUpdateVariable();
@@ -829,7 +901,7 @@ void GcodeProgramManager::UpdateSystemVariable(QString name, float value)
 
 void GcodeProgramManager::RespondVariableValue(QIODevice* s, QString name)
 {
-	QString value = QString::number(GetVariableValue(name)) + '\n';
+    QString value = GetVariableValue(name) + '\n';
 
 	s->write(value.toStdString().c_str(), value.size());
 }
@@ -840,7 +912,7 @@ void GcodeProgramManager::SetStartingGcodeEditorCursor(QString value)
 }
 
 
-float GcodeProgramManager::calculateExpressions(QString expression)
+QString GcodeProgramManager::calculateExpressions(QString expression)
 {
 	expression = expression.replace("  ", " ");
 	
@@ -894,11 +966,11 @@ float GcodeProgramManager::calculateExpressions(QString expression)
 		{
 			int closeIndex = expression.indexOf(']', openIndex);
 			QString subExpression = expression.mid(openIndex + 1, closeIndex - openIndex -1);
-			float result = calculateExpressions(subExpression);
+            QString result = calculateExpressions(subExpression);
 
 			subExpression = QString("[") + subExpression + "]";
 
-			expression.replace(subExpression, QString::number(result));
+            expression.replace(subExpression, result);
 			 
 			continue;
 		}
@@ -919,8 +991,8 @@ float GcodeProgramManager::calculateExpressions(QString expression)
 			QString value1S = getLeftWord(expression, operaIndex);
 			QString value2S = getRightWord(expression, operaIndex);
 
-			float value1 = GetVariableValue(value1S);
-			float value2 = GetVariableValue(value2S);
+            float value1 = GetVariableValue(value1S).toFloat();
+            float value2 = GetVariableValue(value2S).toFloat();
 
 			float result = value1 - value2;
 			QString resultS = QString::number(result);
@@ -1014,9 +1086,9 @@ float GcodeProgramManager::calculateExpressions(QString expression)
 			value1S = getLeftWord(expression, operatorIndex);
 			value2S = getRightWord(expression, operatorIndex);
 
-			value1 = GetVariableValue(value1S);
+            value1 = GetVariableValue(value1S).toFloat();
 			
-			value2 = GetVariableValue(value2S);
+            value2 = GetVariableValue(value2S).toFloat();
 			
 			int returnValue = -1;
 
@@ -1028,28 +1100,29 @@ float GcodeProgramManager::calculateExpressions(QString expression)
 			returnValue = (geIndex > -1) ? ((value1 >= value2) ? 1 : 0) : returnValue;
 
 			if (returnValue != -1)
-				return returnValue;
+                return QString::number(returnValue);
 		}
 
 		else
 		{
 
-			float value = GetVariableValue(deleteSpaces(expression));
+            float value = GetVariableValue(deleteSpaces(expression)).toFloat();
 
 			if (deleteSpaces(expression) == "NULL")
 			{
 				value = NULL_NUMBER;
 			}
 
-			return value;
+            return QString::number(value);
 		}
 
-		return expression.toFloat();
+        return expression;
 	}
 }
 
 void GcodeProgramManager::SaveGcodeVariable(GcodeVariable gvar)
 {
+    gvar.Name = gvar.Name.replace("#", "");
     if (mParent->RobotManagerPointer != NULL)
     {
 
@@ -1066,11 +1139,11 @@ void GcodeProgramManager::SaveGcodeVariable(GcodeVariable gvar)
         }
     }
 
-    QString projectName = SoftwareManager::GetInstance()->RobotProjectManager->GetProjectName(mParent->SubWindowStackedWidget);
+    QString projectName = SoftwareManager::GetInstance()->SoftwareProjectManager->GetProjectName(mParent->SubWindowStackedWidget);
     QString robotName = mParent->Name;
     QString fullName = projectName + "." + robotName + "." + gvar.Name;
     fullName = fullName.replace(" ", "");
-    SoftwareManager::GetInstance()->ProgramVariableManager->AddVariable(fullName, QString::number(gvar.Value));
+    SoftwareManager::GetInstance()->ProgramVariableManager->AddVariable(fullName, gvar.Value);
 
 	bool isNewVar = true;
 
@@ -1087,7 +1160,7 @@ void GcodeProgramManager::SaveGcodeVariable(GcodeVariable gvar)
         GcodeVariables.push_back(gvar);
 }
 
-void GcodeProgramManager::SaveGcodeVariable(QString name, float value)
+void GcodeProgramManager::SaveGcodeVariable(QString name, QString value)
 {
 	GcodeVariable gvar;
 	gvar.Name = name;
@@ -1097,14 +1170,57 @@ void GcodeProgramManager::SaveGcodeVariable(QString name, float value)
 
 void GcodeProgramManager::SaveGcodeVariable(QString cmd)
 {
+    if (cmd == "")
+        return;
+
     QStringList vars = cmd.split(';');
 
     foreach(QString var, vars)
     {
         var = var.replace(" ", "");
         QStringList paras = var.split('=');
-        SaveGcodeVariable(GcodeVariable(paras[0], paras[1].toFloat()));
+        if (paras.count() < 2)
+            return;
+
+        SaveGcodeVariable(GcodeVariable(paras[0], paras[1]));
     }
+}
+
+void GcodeProgramManager::SelectGcodeProgramPath()
+{
+    QString path;
+    if (leGcodeProgramPath == NULL)
+    {
+        path = QApplication::applicationDirPath();
+    }
+    else
+    {
+        if (QDir(leGcodeProgramPath->text()).exists())
+            path = leGcodeProgramPath->text();
+
+        QString path2 = QApplication::applicationDirPath() + "/" + leGcodeProgramPath->text();
+
+        path2 = path2.replace("/", "");
+        if (QDir(path2).exists())
+            path = path2;
+    }
+
+    QString dir = QFileDialog::getExistingDirectory(mParent, tr("Open G-code program directory"),
+                                                 path,
+                                                 QFileDialog::ShowDirsOnly
+                                                 | QFileDialog::DontResolveSymlinks);
+    if (dir == "")
+    {
+
+    }
+
+    if (leGcodeProgramPath != NULL)
+    {
+        leGcodeProgramPath->setText(dir);
+    }
+
+    EraserAllProgramItems();
+    LoadPrograms(QDir(dir));
 }
 
 void GcodeProgramManager::updatePositionIntoSystemVariable(QString statement)
@@ -1113,16 +1229,16 @@ void GcodeProgramManager::updatePositionIntoSystemVariable(QString statement)
 
     float x, y, z, w, u, v, f, a, s, e;
 
-	x = GetVariableValue("#X");
-	y = GetVariableValue("#Y");
-	z = GetVariableValue("#Z");
-	w = GetVariableValue("#W");
-    u = GetVariableValue("#U");
-    v = GetVariableValue("#V");
-	f = GetVariableValue("#F");
-	a = GetVariableValue("#A");
-    s = GetVariableValue("#S");
-    e = GetVariableValue("#E");
+    x = GetVariableValue("#X").toFloat();
+    y = GetVariableValue("#Y").toFloat();
+    z = GetVariableValue("#Z").toFloat();
+    w = GetVariableValue("#W").toFloat();
+    u = GetVariableValue("#U").toFloat();
+    v = GetVariableValue("#V").toFloat();
+    f = GetVariableValue("#F").toFloat();
+    a = GetVariableValue("#A").toFloat();
+    s = GetVariableValue("#S").toFloat();
+    e = GetVariableValue("#E").toFloat();
 
 	if (statement == "G28")
 	{
@@ -1145,52 +1261,52 @@ void GcodeProgramManager::updatePositionIntoSystemVariable(QString statement)
 		if (pair[0] == 'X')
 		{
 			x = value.toFloat();
-			UpdateSystemVariable("#X", x);
+            UpdateSystemVariable("#X", value);
 		}
 		else if (pair[0] == 'Y')
 		{
 			y = value.toFloat();
-			UpdateSystemVariable("#Y", y);
+            UpdateSystemVariable("#Y", value);
 		}
 		else if (pair[0] == 'Z')
 		{
 			z = value.toFloat();
-			UpdateSystemVariable("#Z", z);
+            UpdateSystemVariable("#Z", value);
 		}
 		else if (pair[0] == 'W')
 		{
 			w = value.toFloat();
-			UpdateSystemVariable("#W", w);
+            UpdateSystemVariable("#W", value);
 		}
         else if (pair[0] == 'U')
         {
             u = value.toFloat();
-            UpdateSystemVariable("#U", u);
+            UpdateSystemVariable("#U", value);
         }
         else if (pair[0] == 'V')
         {
             v = value.toFloat();
-            UpdateSystemVariable("#V", v);
+            UpdateSystemVariable("#V", value);
         }
 		else if (pair[0] == 'F')
 		{
 			f = value.toFloat();
-			UpdateSystemVariable("#F", f);
+            UpdateSystemVariable("#F", value);
 		}
 		else if (pair[0] == 'A')
 		{
 			a = value.toFloat();
-			UpdateSystemVariable("#A", a);
+            UpdateSystemVariable("#A", value);
 		}
         else if (pair[0] == 'S')
         {
             s = value.toFloat();
-            UpdateSystemVariable("#S", s);
+            UpdateSystemVariable("#S", value);
         }
         else if (pair[0] == 'E')
         {
             e = value.toFloat();
-            UpdateSystemVariable("#E", e);
+            UpdateSystemVariable("#E", value);
         }
 	}
 
@@ -1304,16 +1420,20 @@ QString GcodeProgramManager::convertGcodeToSyncConveyor(QString gcode)
     if (!(gcode.indexOf("G01 ") > -1 || gcode.indexOf("G1 ") > -1 || gcode.indexOf("G0 ") > -1 || gcode.indexOf("G00 ") > -1 || gcode.indexOf("G04 ") > -1 || gcode.indexOf("G4 ") > -1))
         return gcode;
 
-    float velocity = GetVariableValue("F");
-    float accel = GetVariableValue("A");
-    float startSpeed = GetVariableValue("S");
-    float endSpeed = GetVariableValue("E");
-    float conveyorSpeed = GetVariableValue("ConveyorSpeed");
-    QString conveyorDirection = (GetVariableValue("ConveyorDirection") == 0) ? "X":"Y";
+    float velocity = GetVariableValue("F").toFloat();
+    float accel = GetVariableValue("A").toFloat();
+    float startSpeed = GetVariableValue("S").toFloat();
+    float endSpeed = GetVariableValue("E").toFloat();
+    float conveyorSpeed = GetVariableValue("ConveyorSpeed").toFloat();
+
+    if (conveyorSpeed == 0)
+        return gcode;
+
+    QString conveyorDirection = (GetVariableValue("ConveyorDirection").toFloat() == 0) ? "X":"Y";
     
-    float currentX = GetVariableValue("X");
-    float currentY = GetVariableValue("Y");
-    float currentZ = GetVariableValue("Z");
+    float currentX = GetVariableValue("X").toFloat();
+    float currentY = GetVariableValue("Y").toFloat();
+    float currentZ = GetVariableValue("Z").toFloat();
     
     float time = 1;
 
@@ -1463,6 +1583,34 @@ QString GcodeProgramManager::convertGcodeToSyncConveyor(QString gcode)
     }
 
     return newGcode;
+}
+
+QString GcodeProgramManager::getTrueProgramPath()
+{
+    QString path = "";
+    QString softwarePath = QApplication::applicationDirPath();
+
+    if (leGcodeProgramPath == NULL)
+    {
+        path = softwarePath;
+    }
+    else
+    {
+        QString subpath = leGcodeProgramPath->text();
+
+        QDir subDir(subpath);
+        QDir fullDir(softwarePath + "/" + subpath);
+        if (subDir.exists())
+        {
+            path = subpath;
+        }
+
+        fullDir.mkpath(".");
+        path = softwarePath + "/" + subpath;
+        path = path.replace("//", "/");
+    }
+
+    return path;
 }
 
 void GcodeProgramManager::ChangeSelectingProgram(GcodeProgram * ptr)

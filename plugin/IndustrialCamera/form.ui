@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>459</width>
+    <width>502</width>
     <height>607</height>
    </rect>
   </property>
@@ -29,9 +29,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>0</y>
-        <width>450</width>
-        <height>800</height>
+        <y>-262</y>
+        <width>457</width>
+        <height>2000</height>
        </rect>
       </property>
       <property name="sizePolicy">
@@ -43,7 +43,7 @@
       <property name="minimumSize">
        <size>
         <width>450</width>
-        <height>800</height>
+        <height>2000</height>
        </size>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -479,6 +479,9 @@
        </item>
        <item>
         <widget class="QGroupBox" name="groupBox">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
          <property name="minimumSize">
           <size>
            <width>0</width>
@@ -539,7 +542,7 @@
            </widget>
           </item>
           <item row="8" column="1">
-           <widget class="QLineEdit" name="lineEdit_6">
+           <widget class="QLineEdit" name="leBalanceRatioBlue">
             <property name="maximumSize">
              <size>
               <width>100</width>
@@ -562,7 +565,7 @@
            </widget>
           </item>
           <item row="9" column="1">
-           <widget class="QComboBox" name="comboBox_2">
+           <widget class="QComboBox" name="cbTriggerSource">
             <property name="maximumSize">
              <size>
               <width>100</width>
@@ -597,7 +600,7 @@
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QLineEdit" name="lineEdit">
+           <widget class="QLineEdit" name="leExposureTime">
             <property name="maximumSize">
              <size>
               <width>100</width>
@@ -613,7 +616,7 @@
            </widget>
           </item>
           <item row="1" column="1">
-           <widget class="QLineEdit" name="lineEdit_2">
+           <widget class="QLineEdit" name="leGain">
             <property name="maximumSize">
              <size>
               <width>100</width>
@@ -629,7 +632,7 @@
            </widget>
           </item>
           <item row="2" column="1">
-           <widget class="QLineEdit" name="lineEdit_3">
+           <widget class="QLineEdit" name="leGamma">
             <property name="maximumSize">
              <size>
               <width>100</width>
@@ -645,7 +648,7 @@
            </widget>
           </item>
           <item row="3" column="1">
-           <widget class="QComboBox" name="comboBox">
+           <widget class="QComboBox" name="cbBalanceWhite">
             <property name="maximumSize">
              <size>
               <width>100</width>
@@ -665,7 +668,7 @@
            </widget>
           </item>
           <item row="4" column="1">
-           <widget class="QLineEdit" name="lineEdit_4">
+           <widget class="QLineEdit" name="leBalanceRatioRed">
             <property name="maximumSize">
              <size>
               <width>100</width>
@@ -681,7 +684,7 @@
            </widget>
           </item>
           <item row="5" column="1">
-           <widget class="QLineEdit" name="lineEdit_5">
+           <widget class="QLineEdit" name="leBalanceRatioGreen">
             <property name="maximumSize">
              <size>
               <width>100</width>

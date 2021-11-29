@@ -119,6 +119,16 @@ bool XCamManager::IsOpen()
     return false;;
 }
 
+void XCamManager::SetExposureTime(int value)
+{
+    CurrentCamera->SetExposureTime(value);
+}
+
+int XCamManager::GetExposureTime()
+{
+    return CurrentCamera->GetExposureTime();
+}
+
 unsigned char *XCamManager::Capture()
 {
     return CurrentCamera->Capture();

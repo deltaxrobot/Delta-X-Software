@@ -6,6 +6,7 @@
 #include "Robot.h"
 #include "RobotWindow.h"
 #include <QAction>
+#include <QTabWidget>
 
 namespace Ui {
     class RobotWindow;
@@ -22,18 +23,31 @@ public:
     void SetMainStackedWidgetAndPages(QStackedWidget* mainStack, QWidget* mainPage, QWidget* fullDisplayPage, QLayout* fullDisplayLayout);
     void SetSubStackedWidget(QStackedWidget* subStackedWidget);
 
+    void LoadSettings(QSettings* setting);
+    void SaveSettings(QSettings* setting);
+
+    void Run();
+    void Stop();
+
     QStringList GetRobotNames();
+    void SetName(QString name);
+    RobotWindow *GetRobot(QString name);
 
     QList<Robot*> *Robots;
     QList<RobotWindow*> RobotWindows;
-    int ProjectID = 0;
+    int ID = 0;
+    QString Name;
 
     QStackedWidget* MainWindowStackedWidget;
     QWidget* MainWindowPage;
     QWidget* FullDisplayPage;
     QLayout* FullDisplayLayout;
 
-    QStackedWidget* SubWindowStackedWidget;
+    QStackedWidget* SubWindowStackedWidget;    
+
+    QSettings* Setting;
+
+    QTabWidget* twProjectManager;
 
 };
 

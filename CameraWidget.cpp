@@ -25,11 +25,11 @@ void CameraWidget::InitParameter()
 	mRect.setTopLeft(QPoint(0, 0));
 	mRect.setBottomRight(QPoint(57, 127));
 
-//    mPoint.setX(25);
-//    mPoint.setY(250);
+    mPoint.setX(25);
+    mPoint.setY(250);
 
-//    mPoint2.setX(250);
-//    mPoint2.setY(250);
+    mPoint2.setX(250);
+    mPoint2.setY(250);
 
 //    realPointValue.setX(100);
 //    realPointValue.setY(100);
@@ -46,7 +46,7 @@ void CameraWidget::InitParameter()
     mArea.setBottomRight(QPoint(300, 250));
 
     emit DistanceChanged(sqrt(pow(mLine.x1() - mLine.x2(), 2) + pow(mLine.y1() - mLine.y2(), 2)));
-    //emit PointChanged(mPoint.x(), mPoint.y());
+    emit PointChanged(mPoint, mPoint2);
     emit ObjectChanged(mRect.x(), mRect.y(), mRect.height(), mRect.width());
     emit QuadrangleChanged(mQuadrangle[0], mQuadrangle[1], mQuadrangle[2], mQuadrangle[3]);
     emit AreaChanged(mArea);
@@ -64,8 +64,6 @@ void CameraWidget::ChangeSize(int w, int h)
 
 	mPoint = mPoint * ratio;
     mPoint2 = mPoint2 * ratio;
-
-    mArea.setRect(mArea.x() * ratio, mArea.y() * ratio, mArea.width() * ratio, mArea.height() * ratio);
 
 	mRect.setRect(mRect.x() * ratio, mRect.y() * ratio, mRect.width() * ratio, mRect.height() * ratio);
 	
@@ -85,10 +83,12 @@ void CameraWidget::ChangeSize(int w, int h)
 	parrentSize.setHeight(h);
 	parentWidget()->setGeometry(parrentSize);
 
+    mArea.setRect(mArea.x() * ratio, mArea.y() * ratio, mArea.width() * ratio, mArea.height() * ratio);
+
 	emit SizeChanged();
 
     emit DistanceChanged(sqrt(pow(mLine.x1() - mLine.x2(), 2) + pow(mLine.y1() - mLine.y2(), 2)));
-    //emit PointChanged(mPoint.x(), mPoint.y());
+    emit PointChanged(mPoint, mPoint2);
     emit ObjectChanged(mRect.x(), mRect.y(), mRect.height(), mRect.width());
     emit QuadrangleChanged(mQuadrangle[0], mQuadrangle[1], mQuadrangle[2], mQuadrangle[3]);
     emit AreaChanged(mArea);
@@ -161,7 +161,7 @@ void CameraWidget::mousePressEvent(QMouseEvent* event)
 		lastCursorIcon = cursor().pixmap();
 
         SelectAreaTool();
-	}
+    }
 
 	//------------------------	
     if (selectedTool == OBJECT_TOOL)
@@ -254,7 +254,7 @@ void CameraWidget::mouseMoveEvent(QMouseEvent* event)
                 mArea.setBottomRight(QPoint(event->pos()));
 			}
 
-            AreaChanged(mArea);
+            emit AreaChanged(mArea);
 		}
 	}	
 
@@ -284,55 +284,61 @@ void CameraWidget::mouseReleaseEvent(QMouseEvent *event) {
 
 void CameraWidget::paintEvent(QPaintEvent *event) 
 {
-	QLabel::paintEvent(event);
+    try
+    {
+        QLabel::paintEvent(event);
+        const QPixmap* curPix = this->pixmap();
 
-	const QPixmap* curPix = this->pixmap();
+        if (curPix == NULL)
+            return;
 
-	if (curPix == NULL)
-		return;
-	
-	mPix = *curPix;
+        mPix = *curPix;
 
-	painter.begin(this);
+        painter.begin(this);
 
-	QPainter tempPainter(&mPix);
+        QPainter tempPainter(&mPix);
 
-	//------ Display cursor center -----------
+        //------ Display cursor center -----------
 
-	tempPainter.setPen(QPen(Qt::red, 5));
+        tempPainter.setPen(QPen(Qt::red, 5));
 
-	curPosInWidget = mapFromGlobal(QCursor::pos());
-    tempPainter.drawPoint(curPosInWidget);
+        curPosInWidget = mapFromGlobal(QCursor::pos());
+        tempPainter.drawPoint(curPosInWidget);
 
-	//
+        //
 
-	tempPainter.setPen(QPen(Qt::red, 1));
+        tempPainter.setPen(QPen(Qt::red, 1));
 
-	if (mousePressed) 
-	{				
-        if (selectedTool == OBJECT_TOOL)
-		{
-			tempPainter.drawRect(mRect);
-		}
+        if (mousePressed)
+        {
+            if (selectedTool == OBJECT_TOOL)
+            {
+                tempPainter.drawRect(mRect);
+            }
 
-		painter.drawPixmap(0, 0, mPix);
+            painter.drawPixmap(0, 0, mPix);
 
-		drawStarted = true;
+            drawStarted = true;
+        }
+
+        // ---- Draw info ----
+        drawQuadrangle(&tempPainter);
+        drawArea(&tempPainter);
+        drawLine(&tempPainter);
+        drawPoint(&tempPainter);
+        drawMappingPoint(&tempPainter);
+
+        // ---- Draw Axis ----
+        drawAxisSymbol(&tempPainter);
+
+        painter.drawPixmap(0, 0, mPix);
+
+        painter.end();
     }
+    catch(...)
+    {
 
-    // ---- Draw info ----
-    drawQuadrangle(&tempPainter);
-    drawArea(&tempPainter);
-    drawLine(&tempPainter);
-    drawPoint(&tempPainter);
-    drawMappingPoint(&tempPainter);
-
-    // ---- Draw Axis ----
-    drawAxisSymbol(&tempPainter);
-
-    painter.drawPixmap(0, 0, mPix);
-
-	painter.end();	
+    }
 
 }
 
@@ -390,40 +396,54 @@ void CameraWidget::SaveSetting(QString fileName)
 {
     QSettings settings(fileName, QSettings::IniFormat);
 	
-	settings.setValue("line", mLine);
-	settings.setValue("object", mRect);
-	settings.setValue("point", mPoint);
-    settings.setValue("transpoint1", mQuadrangle[0]);
-    settings.setValue("transpoint2", mQuadrangle[1]);
-    settings.setValue("transpoint3", mQuadrangle[2]);
-    settings.setValue("transpoint4", mQuadrangle[3]);
+    SaveSetting(&settings);
+}
 
-    settings.setValue("rect", mArea);
+void CameraWidget::SaveSetting(QSettings *setting)
+{
+    setting->setValue("line", mLine);
+    setting->setValue("object", mRect);
+    setting->setValue("point", mPoint);
+    setting->setValue("point2", mPoint2);
+    setting->setValue("transpoint1", mQuadrangle[0]);
+    setting->setValue("transpoint2", mQuadrangle[1]);
+    setting->setValue("transpoint3", mQuadrangle[2]);
+    setting->setValue("transpoint4", mQuadrangle[3]);
+
+    setting->setValue("rect", mArea);
 }
 
 void CameraWidget::LoadSetting(QString fileName)
 {
     QSettings settings(fileName, QSettings::IniFormat);
 
-	mLine = settings.value("line").toLine();
+    LoadSetting(&settings);
+}
 
-	mRect = settings.value("object").toRect();
+void CameraWidget::LoadSetting(QSettings *setting)
+{
+    mLine = setting->value("line").toLine();
 
-	mPoint = settings.value("point").toPoint();
+    mRect = setting->value("object").toRect();
 
-    mQuadrangle[0] = settings.value("transpoint1").toPoint();
-    mQuadrangle[1] = settings.value("transpoint2").toPoint();
-    mQuadrangle[2] = settings.value("transpoint3").toPoint();
-    mQuadrangle[3] = settings.value("transpoint4").toPoint();
+    mPoint = setting->value("point").toPoint();
+    mPoint2 = setting->value("point2").toPoint();
 
-    mArea = settings.value("rect").toRect();
+    mQuadrangle[0] = setting->value("transpoint1").toPoint();
+    mQuadrangle[1] = setting->value("transpoint2").toPoint();
+    mQuadrangle[2] = setting->value("transpoint3").toPoint();
+    mQuadrangle[3] = setting->value("transpoint4").toPoint();
+
+    mArea = setting->value("rect").toRect();
 
     emit DistanceChanged(mLine.length());
-    //emit PointChanged(mPoint.x(), mPoint.y());
+    emit PointChanged(mPoint, mPoint2);
     emit ObjectChanged(mRect.x(), mRect.y(), mRect.height(), mRect.width());
     emit QuadrangleChanged(mQuadrangle[0], mQuadrangle[1], mQuadrangle[2], mQuadrangle[3]);
     emit AreaChanged(mArea);
     //emit LineChanged(mLine.p1(), mLine.p2());
+
+    update();
 }
 
 //void CameraWidget::ChangePoint()
