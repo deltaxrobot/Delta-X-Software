@@ -23,8 +23,10 @@
 #include <qtimer.h>
 
 #include <QThread>
+#include <QSettings>
 
 #include "CameraProcessor.h"
+#include <QMessageBox>
 
 namespace Ui {
 class Form;
@@ -38,6 +40,8 @@ public:
     explicit Form(QWidget *parent = nullptr);
     ~Form();
 
+    void LoadSettings(QSettings* setting);
+    void SaveSettings(QSettings* setting);
     void GetMessageFromOtherModule(QString cmd);
 
     // ---- Camera variables -----
@@ -67,6 +71,8 @@ private slots:
     void on_leExposureTime_returnPressed();
 
     void on_leGain_returnPressed();
+
+    void on_leImageWidth_returnPressed();
 
 private:
     Ui::Form *ui;

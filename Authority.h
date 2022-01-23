@@ -27,9 +27,16 @@ public:
     QTreeWidget* twOperatorParameter;
     QListWidget* lwOperatorDisplayWidget;
     QListWidget* lwOperatorDisplayVariable;
+    QListWidget* lwOperatorGcodeProgram;
+    QFrame* fOperatorRobotOnOffPanel;
+    QGridLayout* layoutOperatorRobotOnOff;
+
+    QList<QCheckBox*> RobotEnableList;
 
     RobotManager* robotManager;
     RobotWindow* robotWindow;
+
+    QStringList operatorGcodeProgram;
 public slots:
     void UpdateVariableToDisplay(QString key, QString value);
 
@@ -40,8 +47,8 @@ private:
     QString password;
     QMap<QString, QString>  Vars;
 
-    QWidget* oldSubDisplayWidgetParent;
-    QWidget* subDisplayWidget;
+    QWidget* oldSubDisplayWidgetParent = NULL;
+    QWidget* subDisplayWidget = NULL;
 
 };
 

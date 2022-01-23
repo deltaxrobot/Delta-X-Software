@@ -27,6 +27,7 @@ public:
     void SaveSettings(QSettings* setting);
 
     void Run();
+    void Run(QStringList robotProgramList);
     void Stop();
 
     QStringList GetRobotNames();

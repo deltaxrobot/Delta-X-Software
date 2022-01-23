@@ -123,7 +123,9 @@ void BlobManager::updateObjectVariable(cv::RotatedRect object, int id)
     QString cmd = "";
     cmd += QString("#O%1_X=%2;").arg(id).arg(object.center.x);
     cmd += QString("#O%1_Y=%2;").arg(id).arg(object.center.y);
-    cmd += QString("#O%1_A=%2").arg(id).arg(object.angle);
+    cmd += QString("#O%1_A=%2;").arg(id).arg(object.angle);
+    cmd += QString("#O%1_W=%2;").arg(id).arg(object.size.width);
+    cmd += QString("#O%1_H=%2;").arg(id).arg(object.size.height);
     emit NewUpdateObjectPosition(cmd);
 }
 

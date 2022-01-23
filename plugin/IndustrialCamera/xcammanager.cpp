@@ -95,6 +95,12 @@ bool XCamManager::ConnectCamera(int id)
     return CurrentCamera->Connect();
 }
 
+bool XCamManager::DisconnectCamera()
+{
+    CurrentCamera->Disconnect();
+    return true;
+}
+
 void XCamManager::SelectCamera(int id)
 {
     CurrentCamera = CameraList.at(id);

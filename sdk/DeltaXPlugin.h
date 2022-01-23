@@ -5,6 +5,7 @@
 #include <QWidget>
 #include <QString>
 #include <opencv2/core/core.hpp>
+#include <QSettings>
 
 //! [0]
 class DeltaXPlugin : public QObject
@@ -15,11 +16,14 @@ public:
     virtual QString GetName() = 0;
     virtual QString GetTitle() = 0;
 
+    virtual void LoadSettings(QSettings* setting) = 0;
+    virtual void SaveSettings(QSettings* setting) = 0;
+
 public slots:
     virtual void ProcessCommand(QString cmd) = 0;
 
 signals:
-    virtual void EmitCommand(QString cmd) = 0;
+//    virtual void EmitCommand(QString cmd) = 0;
     virtual void CapturedImage(cv::Mat mat) = 0;
 
 };

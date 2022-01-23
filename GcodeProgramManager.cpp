@@ -34,6 +34,8 @@ GcodeProgramManager::GcodeProgramManager(RobotWindow *parent, QScrollArea* scrol
     UpdateSystemVariable("#O0_X", QString::number(NULL_NUMBER));
     UpdateSystemVariable("#O0_Y", QString::number(NULL_NUMBER));
     UpdateSystemVariable("#O0_A", QString::number(NULL_NUMBER));
+    UpdateSystemVariable("#O0_W", QString::number(NULL_NUMBER));
+    UpdateSystemVariable("#O0_H", QString::number(NULL_NUMBER));
 
 	connect(deltaConnection, SIGNAL(DeltaResponeGcodeDone()), this, SLOT(TransmitNextGcode()));
 }
@@ -47,7 +49,7 @@ void GcodeProgramManager::AddGcodeLine(QString line)
 
 	for (i = pos; i > (pos - 500) && i > -1; i--)
 	{
-		if (text[i] == '\n')
+        if (text.at(i) == '\n')
 		{
 			curPos.setPosition(i + 1);
 			break;
@@ -118,28 +120,26 @@ void GcodeProgramManager::LoadPrograms()
 
 void GcodeProgramManager::LoadPrograms(QDir directory)
 {
-    QStringList deltaGcodeFiles;
-
     if (sortMethod == 0)
     {
-        deltaGcodeFiles = directory.entryList(QStringList() << "*.dtgc" << "*.DTGC", QDir::Files, QDir::Time);
+        DeltaGcodeFiles = directory.entryList(QStringList() << "*.dtgc" << "*.DTGC", QDir::Files, QDir::Time);
     }
     if (sortMethod == 1)
     {
-        deltaGcodeFiles = directory.entryList(QStringList() << "*.dtgc" << "*.DTGC", QDir::Files, QDir::Time | QDir::Reversed);
+        DeltaGcodeFiles = directory.entryList(QStringList() << "*.dtgc" << "*.DTGC", QDir::Files, QDir::Time | QDir::Reversed);
     }
     if (sortMethod == 2)
     {
-        deltaGcodeFiles = directory.entryList(QStringList() << "*.dtgc" << "*.DTGC", QDir::Files, QDir::Name);
+        DeltaGcodeFiles = directory.entryList(QStringList() << "*.dtgc" << "*.DTGC", QDir::Files, QDir::Name);
     }
     if (sortMethod == 3)
     {
-        deltaGcodeFiles = directory.entryList(QStringList() << "*.dtgc" << "*.DTGC", QDir::Files, QDir::Name | QDir::Reversed);
+        DeltaGcodeFiles = directory.entryList(QStringList() << "*.dtgc" << "*.DTGC", QDir::Files, QDir::Name | QDir::Reversed);
     }
 
     ProgramCounter = 0;
 
-    foreach(QString gcodeFile, deltaGcodeFiles)
+    foreach(QString gcodeFile, DeltaGcodeFiles)
     {
         QFile file(directory.path() + "/" + gcodeFile);
 
@@ -250,6 +250,25 @@ void GcodeProgramManager::LoadSettings(QSettings *setting)
     }
 }
 
+void GcodeProgramManager::SelectProgram(QString name)
+{
+    if (name != "")
+    {
+        foreach(GcodeProgram* gp, *ProgramList)
+        {
+            if (gp->GetName() == name)
+            {
+                gp->SelectNewProgram();
+            }
+        }
+    }
+}
+
+QStringList GcodeProgramManager::GetProgramNames()
+{
+    return DeltaGcodeFiles;
+}
+
 QString GcodeProgramManager::GetVariableValue(QString name)
 {	
 	if (name == "NULL")
@@ -290,7 +309,7 @@ float GcodeProgramManager::GetResultOfMathFunction(QString expression)
     if (expression == "")
         return NULL_NUMBER;
 
-    if (expression[0] != "#")
+    if (expression.at(0) != "#")
         return NULL_NUMBER;
 
     int p1 = expression.indexOf('(');
@@ -311,13 +330,16 @@ float GcodeProgramManager::GetResultOfMathFunction(QString expression)
         values.append(value);
     }
 
+    values.append("0");
+    values.append("0");
+
     for (int i = 0; i < values.size(); i++)
     {
-        if (values[i] != "")
+        if (values.at(i) != "")
         {
-            if (values[i][0] == "#")
+            if (values.at(i).at(0) == "#")
             {
-                values[i] = GetVariableValue(values[i]);
+                values.replace(i,GetVariableValue(values.at(i)));
             }
         }
     }
@@ -330,6 +352,26 @@ float GcodeProgramManager::GetResultOfMathFunction(QString expression)
     if (functionName.toLower() == "cos")
     {
         return cos((values[0].toFloat()/180) * M_PI);
+    }
+
+    if (functionName.toLower() == "tan")
+    {
+        return tan((values[0].toFloat()/180) * M_PI);
+    }
+
+    if (functionName.toLower() == "atan")
+    {
+        return atan(values[0].toFloat()) * 180 / M_PI;
+    }
+
+    if (functionName.toLower() == "atan2")
+    {
+        return atan2(values[0].toFloat(), values.at(1).toFloat()) * 180 / M_PI;
+    }
+
+    if (functionName.toLower() == "asin")
+    {
+        return asin(values[0].toFloat()) * 180 / M_PI;
     }
 
     if (functionName.toLower() == "abs")
@@ -346,7 +388,7 @@ float GcodeProgramManager::GetResultOfMathFunction(QString expression)
     {
         if (values.length() >= 2)
         {
-            return pow(values[0].toFloat(), values[1].toFloat());
+            return pow(values[0].toFloat(), values.at(1).toFloat());
         }
         else
         {
@@ -418,7 +460,7 @@ bool GcodeProgramManager::findExeGcodeAndTransmit()
 		return false;
 	}
 
-	if (currentLine[0] == ';')
+    if (currentLine.at(0) == ';')
 	{
 		gcodeOrder += 1;
 		return false;
@@ -441,14 +483,14 @@ bool GcodeProgramManager::findExeGcodeAndTransmit()
 
 		for (int i = openBracIndex; i < currentLine.length(); i++)
 		{
-			expressInBracket += currentLine[i];
+            expressInBracket += currentLine.at(i);
 
-			if (currentLine[i] == '[')
+            if (currentLine.at(i) == '[')
 			{
 				subBracNum++;
 			}
 
-			if (currentLine[i] == ']')
+            if (currentLine.at(i) == ']')
 			{
 				subBracNum--;				
 			}
@@ -473,11 +515,11 @@ bool GcodeProgramManager::findExeGcodeAndTransmit()
 
 	for (int i = 0; i < valuePairs.size(); i++)
 	{
-		if (valuePairs[i] == "")
+        if (valuePairs.at(i) == "")
 			continue;
 		//------------ GOTO -----------
 
-		if (valuePairs[i] == "GOTO" && valuePairs.size() > (i + 1))
+        if (valuePairs.at(i) == "GOTO" && valuePairs.size() > (i + 1))
 		{
 			bool isNumber;
 			int goID;
@@ -489,23 +531,29 @@ bool GcodeProgramManager::findExeGcodeAndTransmit()
 				for (int order = 0; order < gcodeList.size(); order++)
 				{
 					QList<QString> pairs = gcodeList[order].split(' ');
-					if (pairs[0][0] == 'N')
-					{
-						int id = pairs[0].mid(1).toInt();
+                    if (pairs.count() > 1)
+                    {
+                        if (pairs[0] != "")
+                        {
+                            if (pairs[0].at(0) == 'N')
+                            {
+                                int id = pairs[0].mid(1).toInt();
 
-						if (id == goID)
-						{
-							gcodeOrder = order;
-							//TransmitNextGcode();
-							return false;
-						}
-					}
+                                if (id == goID)
+                                {
+                                    gcodeOrder = order;
+                                    //TransmitNextGcode();
+                                    return false;
+                                }
+                            }
+                        }
+                    }
 				}
 			}
 		}
 
 		// --------------- IF ---------------------
-		if (valuePairs[i] == "IF" && valuePairs.size() > (i + 3))
+        if (valuePairs.at(i) == "IF" && valuePairs.size() > (i + 3))
 		{
 			if (valuePairs[i + 2] == "THEN")
 			{
@@ -539,11 +587,11 @@ bool GcodeProgramManager::findExeGcodeAndTransmit()
 		// #100 = #100 + 2 
 		// #100 = #101 - #102
 
-		if (valuePairs[i].at(0) == '#' && valuePairs.size() > (i + 2))
+        if (valuePairs.at(i).at(0) == '#' && valuePairs.size() > (i + 2))
 		{
 			if (valuePairs[i + 1] == "=")
 			{
-				QString varName = valuePairs[i];
+                QString varName = valuePairs.at(i);
 				QString expression = currentLine.mid(currentLine.indexOf("=") + 2);
 				GcodeVariable newVar;
 
@@ -571,9 +619,9 @@ bool GcodeProgramManager::findExeGcodeAndTransmit()
 		// ....
 		// N45 M99
 
-		if (valuePairs[i].at(0) == 'O')
+        if (valuePairs.at(i).at(0) == 'O')
 		{
-			/*QString subProName = valuePairs[i].mid(1);
+            /*QString subProName = valuePairs.at(i).mid(1);
 
 			bool isNumber;
 			int subProID;
@@ -598,7 +646,7 @@ bool GcodeProgramManager::findExeGcodeAndTransmit()
 
 		// N50 M98 P2000
 		
-		if (valuePairs[i] == "M98" && valuePairs.size() > (i + 1))
+        if (valuePairs.at(i) == "M98" && valuePairs.size() > (i + 1))
 		{
 			if (valuePairs[i + 1].at(0) == 'P')
 			{
@@ -713,7 +761,7 @@ bool GcodeProgramManager::findExeGcodeAndTransmit()
 			}
 		}
 
-		if (valuePairs[i] == "M99")
+        if (valuePairs.at(i) == "M99")
 		{
 			gcodeOrder = returnSubProPointer[returnPointerOrder] + 1;
 			returnPointerOrder--;
@@ -743,7 +791,7 @@ bool GcodeProgramManager::findExeGcodeAndTransmit()
 
     transmitGcode = convertGcodeToSyncConveyor(transmitGcode);
 
-	updatePositionIntoSystemVariable(transmitGcode);
+    //updatePositionIntoSystemVariable(transmitGcode);
 
 	deltaConnection->SendToRobot(transmitGcode);
 	gcodeOrder += 1;
@@ -854,17 +902,27 @@ void GcodeProgramManager::TransmitNextGcode()
 	while (true)
 	{
 		currentLine = gcodeList.at(gcodeOrder);
-		QString firstPair = currentLine.split(' ')[0];
+        bool isGcode = true;
 
-		if (firstPair[0] == 'N')
-		{
-			QString line = currentLine;
-			currentLine = line.replace(firstPair + " ", "");
-		}
+        if (currentLine == "")
+        {
+            isGcode = false;
+            gcodeOrder += 1;
+        }
+        else
+        {
+            QString firstPair = currentLine.split(' ').at(0);
 
-		bool isGcode = findExeGcodeAndTransmit();
+            if (firstPair.at(0) == 'N')
+            {
+                QString line = currentLine;
+                currentLine = line.replace(firstPair + " ", "");
+            }
 
-		if (gcodeOrder == gcodeList.size())
+            isGcode = findExeGcodeAndTransmit();
+        }
+
+        if (gcodeOrder >= gcodeList.size())
 		{
 			//timer->stop();
 			gcodeOrder = 0;
@@ -961,6 +1019,18 @@ QString GcodeProgramManager::calculateExpressions(QString expression)
 		{
 			geIndex = expression.indexOf(">=");
 		}
+        if (andIndex == -1)
+        {
+            andIndex = expression.indexOf("&&");
+        }
+        if (orIndex == -1)
+        {
+            orIndex = expression.indexOf("||");
+        }
+        if (xorIndex == -1)
+        {
+            xorIndex = expression.indexOf("^^");
+        }
 
 		if (openIndex > -1)
 		{
@@ -1143,13 +1213,14 @@ void GcodeProgramManager::SaveGcodeVariable(GcodeVariable gvar)
     QString robotName = mParent->Name;
     QString fullName = projectName + "." + robotName + "." + gvar.Name;
     fullName = fullName.replace(" ", "");
+    ElapsedTimer.start();
     SoftwareManager::GetInstance()->ProgramVariableManager->AddVariable(fullName, gvar.Value);
-
+    qDebug() << "Var table time: " << ElapsedTimer.elapsed();
 	bool isNewVar = true;
 
     for (int i = 0; i < GcodeVariables.length(); i++)
 	{
-        if (GcodeVariables[i].Name == gvar.Name)
+        if (GcodeVariables.at(i).Name == gvar.Name)
 		{
             GcodeVariables[i].Value = gvar.Value;
 			isNewVar = false;
@@ -1182,7 +1253,7 @@ void GcodeProgramManager::SaveGcodeVariable(QString cmd)
         if (paras.count() < 2)
             return;
 
-        SaveGcodeVariable(GcodeVariable(paras[0], paras[1]));
+        SaveGcodeVariable(GcodeVariable(paras.at(0), paras.at(1)));
     }
 }
 
@@ -1255,55 +1326,57 @@ void GcodeProgramManager::updatePositionIntoSystemVariable(QString statement)
 
     foreach (QString pair, pairs)
 	{
-		QChar prefix = pair[0];
+        if (pair.replace(" ", "") == "")
+            continue;
+        QChar prefix = pair.at(0);
 		QString value = pair.mid(1);
 
-		if (pair[0] == 'X')
+        if (pair.at(0) == 'X')
 		{
 			x = value.toFloat();
             UpdateSystemVariable("#X", value);
 		}
-		else if (pair[0] == 'Y')
+        else if (pair.at(0) == 'Y')
 		{
 			y = value.toFloat();
             UpdateSystemVariable("#Y", value);
 		}
-		else if (pair[0] == 'Z')
+        else if (pair.at(0) == 'Z')
 		{
 			z = value.toFloat();
             UpdateSystemVariable("#Z", value);
 		}
-		else if (pair[0] == 'W')
+        else if (pair.at(0) == 'W')
 		{
 			w = value.toFloat();
             UpdateSystemVariable("#W", value);
 		}
-        else if (pair[0] == 'U')
+        else if (pair.at(0) == 'U')
         {
             u = value.toFloat();
             UpdateSystemVariable("#U", value);
         }
-        else if (pair[0] == 'V')
+        else if (pair.at(0) == 'V')
         {
             v = value.toFloat();
             UpdateSystemVariable("#V", value);
         }
-		else if (pair[0] == 'F')
+        else if (pair.at(0) == 'F')
 		{
 			f = value.toFloat();
             UpdateSystemVariable("#F", value);
 		}
-		else if (pair[0] == 'A')
+        else if (pair.at(0) == 'A')
 		{
 			a = value.toFloat();
             UpdateSystemVariable("#A", value);
 		}
-        else if (pair[0] == 'S')
+        else if (pair.at(0) == 'S')
         {
             s = value.toFloat();
             UpdateSystemVariable("#S", value);
         }
-        else if (pair[0] == 'E')
+        else if (pair.at(0) == 'E')
         {
             e = value.toFloat();
             UpdateSystemVariable("#E", value);
@@ -1452,33 +1525,33 @@ QString GcodeProgramManager::convertGcodeToSyncConveyor(QString gcode)
         
         for(int i = 0; i < paras.size(); i++)
         {
-            if (paras[i][0] == 'X')
+            if (paras.at(i).at(0) == 'X')
             {
-                desireX = paras[i].mid(1).toFloat();
+                desireX = paras.at(i).mid(1).toFloat();
             }
-            if (paras[i][0] == 'Y')
+            if (paras.at(i).at(0) == 'Y')
             {
-                desireY = paras[i].mid(1).toFloat();
+                desireY = paras.at(i).mid(1).toFloat();
             }
-            if (paras[i][0] == 'Z')
+            if (paras.at(i).at(0) == 'Z')
             {
-                desireZ = paras[i].mid(1).toFloat();
+                desireZ = paras.at(i).mid(1).toFloat();
             }
-            if (paras[i][0] == 'F')
+            if (paras.at(i).at(0) == 'F')
             {
-                velocity = paras[i].mid(1).toFloat();
+                velocity = paras.at(i).mid(1).toFloat();
             }
-            if (paras[i][0] == 'A')
+            if (paras.at(i).at(0) == 'A')
             {
-                accel = paras[i].mid(1).toFloat();
+                accel = paras.at(i).mid(1).toFloat();
             }
-            if (paras[i][0] == 'S')
+            if (paras.at(i).at(0) == 'S')
             {
-                startSpeed = paras[i].mid(1).toFloat();
+                startSpeed = paras.at(i).mid(1).toFloat();
             }
-            if (paras[i][0] == 'E')
+            if (paras.at(i).at(0) == 'E')
             {
-                endSpeed = paras[i].mid(1).toFloat();
+                endSpeed = paras.at(i).mid(1).toFloat();
             }
         }        
 
@@ -1527,20 +1600,20 @@ QString GcodeProgramManager::convertGcodeToSyncConveyor(QString gcode)
 
         for(int i = 0; i < paras.size(); i++)
         {
-            if (paras[i][0] == 'X')
+            if (paras.at(i).at(0) == 'X')
             {
-                paras[i] = QString("X%1").arg(desireX);
+                paras.replace(i, QString("X%1").arg(desireX));
             }
-            if (paras[i][0] == 'Y')
+            if (paras.at(i).at(0) == 'Y')
             {
-                paras[i] = QString("Y%1").arg(desireY);
+                paras.replace(i, QString("Y%1").arg(desireY));
             }
-            if (paras[i][0] == 'Z')
+            if (paras.at(i).at(0) == 'Z')
             {
-                paras[i] = QString("Z%1").arg(desireZ);
+                paras.replace(i, QString("Z%1").arg(desireZ));
             }
 
-            newGcode += paras[i] + " ";
+            newGcode += paras.at(i) + " ";
         }
 
         if (newGcode.indexOf('X') == -1)
@@ -1562,9 +1635,9 @@ QString GcodeProgramManager::convertGcodeToSyncConveyor(QString gcode)
 
         for(int i = 0; i < paras.size(); i++)
         {
-            if (paras[i][0] == 'P')
+            if (paras.at(i).at(0) == 'P')
             {
-                time = paras[i].mid(1).toFloat() / 1000;
+                time = paras.at(i).mid(1).toFloat() / 1000;
             }
         }
 

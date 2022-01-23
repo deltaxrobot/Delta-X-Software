@@ -10,6 +10,7 @@ public:
     virtual ~XCam();
 
     virtual bool Connect() = 0;
+    virtual bool Disconnect() = 0;
     virtual bool IsOpen() = 0;
     virtual unsigned char* Capture() = 0;
 

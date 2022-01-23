@@ -2,8 +2,9 @@
 #define PRINTINGPLUGIN_H
 
 #include "form.h"
-#include "../../../DeltaRobot-Software/sdk/DeltaXPlugin.h"
+#include "../../sdk/DeltaXPlugin.h"
 #include <QThread>
+#include <QSettings>
 
 class IndustrialCameraPlugin : public DeltaXPlugin
 {
@@ -15,13 +16,15 @@ class IndustrialCameraPlugin : public DeltaXPlugin
     QWidget* GetUI();
     QString GetName();
     QString GetTitle();
+    void LoadSettings(QSettings* setting);
+    void SaveSettings(QSettings* setting);
 
 public slots:
     void ProcessCommand(QString cmd);
     void TranferEmit(QString msg);
     void GetCaptureImageSignal(cv::Mat mat);
 signals:
-    void EmitCommand(QString cmd);
+    //void EmitCommand(QString cmd);
     void CapturedImage(cv::Mat mat);
 private:
     Form* pluginForm;

@@ -90,8 +90,13 @@ void MainWindow::InitVariables()
     SoftwareAuthority->twOperatorParameter = ui->twOperatorParameter;
     SoftwareAuthority->lwOperatorDisplayWidget = ui->lwOperatorDisplayWidget;
     SoftwareAuthority->lwOperatorDisplayVariable = ui->lwOperatorDisplayVariable;
+    SoftwareAuthority->lwOperatorGcodeProgram = ui->lwOperatorRobotGcodeProgram;
+    SoftwareAuthority->fOperatorRobotOnOffPanel = ui->fOperatorRobotOnOffPanel;
+    SoftwareAuthority->layoutOperatorRobotOnOff = ui->layoutOperatorRobotOnOff;
 
     connect(ProgramVariableManager, SIGNAL(variableChanged(QString, QString)), SoftwareAuthority, SLOT(UpdateVariableToDisplay(QString, QString)));
+
+    Dashboard->SoftwareAuthority = SoftwareAuthority;
 
     InitProjectToOperator();
 
@@ -148,7 +153,7 @@ void MainWindow::InitVisible()
     ui->leOperatorTitle->setText(systemName);
     ui->lbOperatorTitile->setText(systemName);
 
-    ui->leAuthorityPassword->setText(settings->value("AdminPassword", "1234").toString());
+    LoadOperatorSettings();
 }
 
 void MainWindow::InitProjectToOperator()
@@ -159,6 +164,9 @@ void MainWindow::InitProjectToOperator()
     if (ui->cbOperatorRobotDisplay->count() > 0)
         ui->cbOperatorRobotDisplay->clear();
 
+    if (ui->cbOperatorRobot->count() > 0)
+        ui->cbOperatorRobot->clear();
+
     foreach(RobotManager* robotManager, SoftwareProjectManager->RobotManagers)
     {
         ui->cbOperatorProject->addItem(robotManager->Name);
@@ -167,6 +175,70 @@ void MainWindow::InitProjectToOperator()
     if (ui->cbOperatorProject->count() > 0)
     {
         ui->cbOperatorProject->setCurrentIndex(0);
+    }
+}
+
+void MainWindow::SaveOperatorSettings()
+{
+    QSettings* settings = new QSettings("customUI.ini", QSettings::IniFormat);
+    settings->setValue("AdminPassword", ui->leAuthorityPassword->text());
+
+    QString widgetList = "";
+    for (int i = 0; i < ui->lwOperatorDisplayWidget->count(); i++)
+    {
+        widgetList += ui->lwOperatorDisplayWidget->item(i)->text() + "\n";
+    }
+    settings->setValue("OperatorDisplayWidget", widgetList);
+
+    QString variableList = "";
+    for (int i = 0; i < ui->lwOperatorDisplayVariable->count(); i++)
+    {
+        variableList += ui->lwOperatorDisplayVariable->item(i)->text() + "\n";
+    }
+    settings->setValue("OperatorDisplayVariable", variableList);
+
+    QString propramList = "";
+    for (int i = 0; i < ui->lwOperatorRobotGcodeProgram->count(); i++)
+    {
+        propramList += ui->lwOperatorRobotGcodeProgram->item(i)->text() + "\n";
+    }
+    settings->setValue("OperatorRobotGcodeProgram", propramList);
+}
+
+void MainWindow::LoadOperatorSettings()
+{
+    QSettings* settings = new QSettings("customUI.ini", QSettings::IniFormat);
+
+    ui->leAuthorityPassword->setText(settings->value("AdminPassword", "1234").toString());
+
+    QString widgetList = settings->value("OperatorDisplayWidget", "").toString();
+
+    foreach(QString str, widgetList.split('\n'))
+    {
+        if (str == "")
+            continue;
+
+        ui->lwOperatorDisplayWidget->addItem(str);
+    }
+
+    QString variableList = settings->value("OperatorDisplayVariable", "").toString();
+
+    foreach(QString str, variableList.split('\n'))
+    {
+        if (str == "")
+            continue;
+
+        ui->lwOperatorDisplayVariable->addItem(str);
+    }
+
+    QString propramList = settings->value("OperatorRobotGcodeProgram", "").toString();
+
+    foreach(QString str, propramList.split('\n'))
+    {
+        if (str == "")
+            continue;
+
+        ui->lwOperatorRobotGcodeProgram->addItem(str);
     }
 }
 
@@ -260,8 +332,9 @@ void MainWindow::on_pbApplyOperator_clicked()
     SoftwareAuthority->SetPassword(ui->leAuthorityPassword->text());
     SoftwareAuthority->ApplyOperatorSettings();
 
-    QSettings* settings = new QSettings("customUI.ini", QSettings::IniFormat);
-    settings->setValue("AdminPassword", ui->leAuthorityPassword->text());
+    Dashboard->Pass = ui->leAuthorityPassword->text();
+
+    SaveOperatorSettings();
 
     ui->tbHome->click();
 
@@ -269,6 +342,7 @@ void MainWindow::on_pbApplyOperator_clicked()
 
     SoftwareAuthority->Name = ui->leOperatorTitle->text();
     ui->lbOperatorTitile->setText(SoftwareAuthority->Name);
+
 }
 
 
@@ -343,18 +417,41 @@ void MainWindow::on_cbOperatorProject_currentIndexChanged(int index)
         return;
 
     ui->cbOperatorRobotDisplay->clear();
+    ui->cbOperatorRobot->clear();
 
     foreach(RobotWindow* robotWindow, SoftwareProjectManager->RobotManagers[index]->RobotWindows)
     {
         ui->cbOperatorRobotDisplay->addItem(robotWindow->Name);
+        ui->cbOperatorRobot->addItem(robotWindow->Name);
     }
+
+    ui->cbOperatorGcodeProgram->clear();
+
+    ui->cbOperatorGcodeProgram->addItems(SoftwareProjectManager->RobotManagers[index]->RobotWindows[0]->DeltaGcodeManager->GetProgramNames());
 }
 
 void MainWindow::on_pbStartSystem_clicked()
 {
-    SoftwareAuthority->robotManager->Run();
-}
+    for(int i = 0; i < SoftwareAuthority->RobotEnableList.count(); i++)
+    {
+        QCheckBox* robotEnable = SoftwareAuthority->RobotEnableList.at(i);
+        if (robotEnable->isChecked() == false)
+            continue;
 
+        RobotWindow* robotWindow = SoftwareAuthority->robotManager->GetRobot(robotEnable->text());
+
+        foreach(QString robotGcode, SoftwareAuthority->operatorGcodeProgram)
+        {
+            QStringList paras = robotGcode.split(':');
+            if (robotWindow->Name == paras[0])
+            {
+                robotWindow->DeltaGcodeManager->SelectProgram(paras[1]);
+                robotWindow->ClickExecuteButton(true);
+            }
+        }
+
+    }
+}
 
 void MainWindow::on_pbStopSystem_clicked()
 {
@@ -369,5 +466,40 @@ void MainWindow::openProject(QString fullName)
     int tabID = ui->twProjectManager->count() - 1; // x
     RobotManager* robotManager = NewProject_Slot(tabID);
     robotManager->LoadSettings(settings);
+}
+
+
+void MainWindow::on_pbAddOperatorGcodeProgram_clicked()
+{
+    QString projectName = ui->cbOperatorProject->currentText().replace(" ", "");
+    QString robotName = ui->cbOperatorRobot->currentText().replace(" ", "");
+    QString programName = ui->cbOperatorGcodeProgram->currentText();
+    QString fullVarName = robotName + ":\"" + programName + "\"";
+
+    bool isNew = true;
+
+    for (int i = 0; i < ui->lwOperatorRobotGcodeProgram->count(); i++)
+    {
+        QString row = ui->lwOperatorRobotGcodeProgram->item(i)->text();
+        QStringList paras = row.split(':');
+
+        if (paras[0] == robotName)
+        {
+            isNew = false;
+            ui->lwOperatorRobotGcodeProgram->takeItem(i);
+            break;
+        }
+    }
+
+    ui->lwOperatorRobotGcodeProgram->addItem(fullVarName);
+}
+
+
+void MainWindow::on_pbDeleteOperatorGcodeProgram_clicked()
+{
+    QList<QListWidgetItem*> items = ui->lwOperatorRobotGcodeProgram->selectedItems();
+
+    ui->lwOperatorRobotGcodeProgram->takeItem(ui->lwOperatorRobotGcodeProgram->currentRow());
+
 }
 

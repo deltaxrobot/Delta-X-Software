@@ -15,6 +15,7 @@ public:
     ~XCamBasler();
 
     bool Connect();
+    bool Disconnect();
     bool IsOpen();
     unsigned char *Capture();
 

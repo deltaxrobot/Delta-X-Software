@@ -6,6 +6,8 @@
 #include <QPushButton>
 #include <QStackedWidget>
 #include <QMessageBox>
+#include <QInputDialog>
+#include <Authority.h>
 
 class TabPage
 {
@@ -27,6 +29,9 @@ public:
     void SetSelectedState(QString qss);
 
     bool Lock = false;
+    QString Pass = "1234";
+
+    Authority* SoftwareAuthority = NULL;
 
 public slots:
     void SelectPage();

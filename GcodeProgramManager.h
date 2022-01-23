@@ -70,6 +70,10 @@ public:
     void SaveSettings(QSettings* setting);
     void LoadSettings(QSettings* setting);
 
+    void SelectProgram(QString name);
+
+    QStringList GetProgramNames();
+
 	QWidget* wgProgramContainer;
 	QScrollArea* saProgramFilesScrollArea;
 	CodeEditor* pteGcodeArea;
@@ -93,6 +97,8 @@ public:
 	GcodeProgramManager* InsideGcodeProgramManager = NULL;
 
     QList<GcodeVariable> GcodeVariables;
+
+    QStringList DeltaGcodeFiles;
 
     Scurve_Interpolator DeltaXSMoving;
 

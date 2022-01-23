@@ -747,10 +747,28 @@ void RobotWindow::LoadSettings(QSettings *setting)
 
 void RobotWindow::LoadGeneralSettings(QSettings *setting)
 {
-    ui->lbComName->setText(setting->value("ComName").toString());
-    ui->lbBaudrate->setText(setting->value("DefaultBaudrate").toString());
-    ui->lbIP->setText(setting->value("IP").toString());
-    ui->lbLocalPort->setText(setting->value("TCPPort").toString());
+    QString comName = setting->value("ComName", "None").toString();
+    int defaultBaudrate = setting->value("DefaultBaudrate", 115200).toInt();
+    QString ip = setting->value("IP").toString();
+    int port = setting->value("TCPPort").toInt();
+    bool state = setting->value("RobotState", false).toBool();
+
+    DeltaConnectionManager->RobotPort->setPortName(comName);
+    DeltaConnectionManager->RobotPort->setBaudRate(defaultBaudrate);
+    DeltaConnectionManager->TCPConnection->ServerName = ip;
+    DeltaConnectionManager->TCPConnection->Port = port;
+
+    if (state == true)
+    {
+        if (DeltaConnectionManager->RobotPort->open((QIODevice::ReadWrite)) == true)
+        {
+            connect(DeltaConnectionManager->RobotPort, SIGNAL(readyRead()), DeltaConnectionManager, SLOT(ReadData()));
+            ui->pbConnect->setText("Disconnect");
+        }
+    }
+
+    ui->lbComName->setText(comName);
+    ui->lbBaudrate->setText(QString::number(defaultBaudrate));
     ui->cbRobotModel->setCurrentText(setting->value("RobotModel").toString());
 
     DeltaConnectionManager->RobotPort->setBaudRate(ui->lbBaudrate->text().toInt());
@@ -769,6 +787,8 @@ void RobotWindow::LoadGeneralSettings(QSettings *setting)
     ui->leForwardConveyorGcode->setText(setting->value("ForwardConveyorGcode", ui->leForwardConveyorGcode->text()).toString());
     ui->leBackwardConveyorGcode->setText(setting->value("BackwardConveyorGcode", ui->leBackwardConveyorGcode->text()).toString());
     ui->leTurnOffConveyorGcode->setText(setting->value("TurnOffConveyorGcode", ui->leTurnOffConveyorGcode->text()).toString());
+
+    ui->leConvenyorSpeed->returnPressed();
 }
 
 void RobotWindow::LoadJoggingSettings(QSettings *setting)
@@ -788,7 +808,102 @@ void RobotWindow::Load3DSettings(QSettings *setting)
 
 void RobotWindow::LoadExternalDeviceSettings(QSettings *setting)
 {
+    setting->beginGroup("ExternalDevice");
 
+    //---- Conveyor -----
+    setting->beginGroup("Conveyor");
+
+    bool connectionState = setting->value("State", false).toBool();
+    QString comPort = setting->value("ComPort", "COM1").toString();
+    int baudrate = setting->value("Baudrate", 115200).toInt();
+
+    ui->cbConveyorMode->setCurrentText(setting->value("ControlMode").toString());
+    ui->cbConveyorValueType->setCurrentText(setting->value("MovingMode").toString());
+    ui->leConveyorvMovingValue->setText(setting->value("MovingValue").toString());
+
+    DeltaConnectionManager->ConveyorPort->setPortName(comPort);
+    DeltaConnectionManager->ConveyorPort->setBaudRate(baudrate);
+
+    if (connectionState == true)
+    {
+        if (DeltaConnectionManager->ConveyorPort->open(QIODevice::ReadWrite) == true)
+        {
+            ui->pbConveyorConnect->setText("Disconnect");
+            ui->lbConveyorCOMName->setText(comPort);
+        }
+    }
+
+    setting->endGroup();
+
+    //---- Encoder -----
+
+    setting->beginGroup("Encoder");
+
+    connectionState = setting->value("State", false).toBool();
+    comPort = setting->value("ComPort", "COM1").toString();
+    baudrate = setting->value("Baudrate", 115200).toInt();
+
+    COMEncoder->COMPort->setPortName(comPort);
+    COMEncoder->COMPort->setBaudRate(baudrate);
+
+    if (connectionState == true)
+    {
+        if (COMEncoder->COMPort->open((QIODevice::ReadWrite)) == true)
+        {
+            ui->pbConnectEncdoer->setText("Disconnect");
+            ui->leEncoderCom->setText(comPort);
+        }
+    }
+
+    setting->endGroup();
+
+    //---- Slider -----
+
+    setting->beginGroup("Slider");
+
+    connectionState = setting->value("State", false).toBool();
+    comPort = setting->value("ComPort", "COM1").toString();
+    baudrate = setting->value("Baudrate", 115200).toInt();
+
+    DeltaConnectionManager->SlidingPort->setPortName(comPort);
+    DeltaConnectionManager->SlidingPort->setBaudRate(baudrate);
+
+    if (connectionState == true)
+    {
+        if (DeltaConnectionManager->SlidingPort->open((QIODevice::ReadWrite)) == true)
+        {
+            ui->pbSlidingConnect->setText("Disconnect");
+            ui->lbSliderCOMName->setText(comPort);
+        }
+    }
+
+    setting->endGroup();
+
+    //---- MCU -----
+
+    setting->beginGroup("MCU");
+
+    connectionState = setting->value("State", false).toBool();
+    comPort = setting->value("ComPort", "COM1").toString();
+    baudrate = setting->value("Baudrate", 115200).toInt();
+
+    DeltaConnectionManager->ExternalControllerPort->setPortName(comPort);
+    DeltaConnectionManager->ExternalControllerPort->setBaudRate(baudrate);
+
+    if (connectionState == true)
+    {
+        if (DeltaConnectionManager->ExternalControllerPort->open((QIODevice::ReadWrite)) == true)
+        {
+            ui->pbExternalControllerConnect->setText("Disconnect");
+            ui->lbExternalCOMName->setText(comPort);
+        }
+    }
+
+    setting->endGroup();
+
+    //-------------
+
+    setting->endGroup();
 }
 
 void RobotWindow::LoadTerminalSettings(QSettings *setting)
@@ -810,7 +925,29 @@ void RobotWindow::LoadObjectDetectorSetting(QSettings *setting)
     ui->cbCameraWidgetHeight->setCurrentText(setting->value("CameraWidgetHeight", "300").toString());
 
     DeltaImageProcesser->LoadSetting(setting);
-    ui->cameraWidget->LoadSetting(setting);
+    ui->cameraWidget->LoadSetting(setting);    
+
+    if (setting->value("WarpEnable", false).toBool() == true)
+    {
+        ui->pbWarpTool->clicked(true);
+        ui->pbWarpTool->setChecked(true);
+    }
+    else
+    {
+        ui->pbWarpTool->clicked(false);
+        ui->pbWarpTool->setChecked(false);
+    }
+
+    if (setting->value("CalibDisplayEnable", false).toBool() == true)
+    {
+        ui->cbDisplayCalibInfo->clicked(true);
+        ui->cbDisplayCalibInfo->setChecked(true);
+    }
+    else
+    {
+        ui->cbDisplayCalibInfo->setChecked(false);
+        ui->cbDisplayCalibInfo->clicked(false);
+    }
 
     setting->endGroup();
 }
@@ -822,7 +959,21 @@ void RobotWindow::LoadDrawingSetting(QSettings *setting)
 
 void RobotWindow::LoadPluginSetting(QSettings *setting)
 {
+    setting->beginGroup("Plugin");
 
+    int id = 0;
+
+    for (int i = 0; i < pluginList->count(); i++)
+    {
+        DeltaXPlugin* plugin = pluginList->at(i);
+        setting->beginGroup(plugin->GetName() + "-" + QString::number(id++));
+
+        plugin->LoadSettings(setting);
+
+        setting->endGroup();
+    }
+
+    setting->endGroup();
 }
 
 void RobotWindow::SaveSettings(QSettings *setting)
@@ -842,10 +993,11 @@ void RobotWindow::SaveSettings(QSettings *setting)
 void RobotWindow::SaveGeneralSettings(QSettings *setting)
 {
     setting->setValue("ComName", DeltaConnectionManager->RobotPort->portName());
-    setting->setValue("DefaultBaudrate", DefaultBaudrate);
+    setting->setValue("DefaultBaudrate", DeltaConnectionManager->RobotPort->baudRate());
     setting->setValue("IP", TCPConnectionManager::GetIP());
     setting->setValue("TCPPort", DeltaConnectionManager->TCPConnection->Port);
     setting->setValue("RobotModel", ui->cbRobotModel->currentText());
+    setting->setValue("RobotState", DeltaConnectionManager->RobotPort->isOpen());
 
     setting->setValue("Name", Name);
 
@@ -859,7 +1011,7 @@ void RobotWindow::SaveGeneralSettings(QSettings *setting)
     setting->setValue("BackwardConveyorGcode", ui->leBackwardConveyorGcode->text());
     setting->setValue("TurnOffConveyorGcode", ui->leTurnOffConveyorGcode->text());
 
-    ui->leConvenyorSpeed->returnPressed();
+
 }
 
 void RobotWindow::SaveJoggingSettings(QSettings *setting)
@@ -885,6 +1037,66 @@ void RobotWindow::Save3DSettings(QSettings *setting)
 void RobotWindow::SaveExternalDeviceSettings(QSettings *setting)
 {
     setting->beginGroup("ExternalDevice");
+
+    //---- Conveyor -----
+    setting->beginGroup("Conveyor");
+
+    bool connectionState = DeltaConnectionManager->ConveyorPort->isOpen();
+    QString comPort = DeltaConnectionManager->ConveyorPort->portName();
+    int baudrate = DeltaConnectionManager->ConveyorPort->baudRate();
+
+    setting->setValue("State", connectionState);
+    setting->setValue("ComPort", comPort);
+    setting->setValue("Baudrate", baudrate);
+    setting->setValue("ControlMode", ui->cbConveyorMode->currentText());
+    setting->setValue("MovingMode", ui->cbConveyorValueType->currentText());
+    setting->setValue("MovingValue", ui->leConveyorvMovingValue->text());
+
+    setting->endGroup();
+
+    //---- Encoder -----
+
+    setting->beginGroup("Encoder");
+
+    connectionState = COMEncoder->COMPort->isOpen();
+    comPort = COMEncoder->COMPort->portName();
+    baudrate = COMEncoder->COMPort->baudRate();
+
+    setting->setValue("State", connectionState);
+    setting->setValue("ComPort", comPort);
+    setting->setValue("Baudrate", baudrate);
+
+    setting->endGroup();
+
+    //---- Slider -----
+
+    setting->beginGroup("Slider");
+
+    connectionState = DeltaConnectionManager->SlidingPort->isOpen();
+    comPort = DeltaConnectionManager->SlidingPort->portName();
+    baudrate = DeltaConnectionManager->SlidingPort->baudRate();
+
+    setting->setValue("State", connectionState);
+    setting->setValue("ComPort", comPort);
+    setting->setValue("Baudrate", baudrate);
+
+    setting->endGroup();
+
+    //---- MCU -----
+
+    setting->beginGroup("MCU");
+
+    connectionState = DeltaConnectionManager->ExternalControllerPort->isOpen();
+    comPort = DeltaConnectionManager->ExternalControllerPort->portName();
+    baudrate = DeltaConnectionManager->ExternalControllerPort->baudRate();
+
+    setting->setValue("State", connectionState);
+    setting->setValue("ComPort", comPort);
+    setting->setValue("Baudrate", baudrate);
+
+    setting->endGroup();
+
+    //-------------
 
     setting->endGroup();
 }
@@ -916,6 +1128,10 @@ void RobotWindow::SaveObjectDetectorSetting(QSettings *setting)
 
     setting->setValue("ConveyorDeviationAngle", ui->leConveyorDeviationAngle->text());
 
+    setting->setValue("WarpEnable", DeltaImageProcesser->IsPerspectiveMode);
+    setting->setValue("CalibDisplayEnable", DeltaImageProcesser->IsCalibInfoVisible);
+
+
     DeltaImageProcesser->SaveSetting(setting);
     ui->cameraWidget->SaveSetting(setting);
     setting->endGroup();
@@ -931,6 +1147,19 @@ void RobotWindow::SaveDrawingSetting(QSettings *setting)
 void RobotWindow::SavePluginSetting(QSettings *setting)
 {
     setting->beginGroup("Plugin");
+
+    for (int i = 0; i < pluginList->count(); i++)
+    {
+        DeltaXPlugin* plugin = pluginList->at(i);
+
+        QString name = plugin->GetName();
+
+        setting->beginGroup(name + "-" + QString::number(i));
+
+        plugin->SaveSettings(setting);
+
+        setting->endGroup();
+    }
 
     setting->endGroup();
 }
@@ -1132,7 +1361,7 @@ void RobotWindow::StandardFormatEditor()
 
 			for (int i = 0; i < oldNumbers.size(); i++)
 			{
-				if (oldNumbers.at(i).toInt() == gotoIndexS.toInt())
+                if ((oldNumbers.at(i).toInt() == gotoIndexS.toInt()) && gotoIndexS != "")
 				{
 					QString old = QString("GOTO ") + gotoIndexS;
 					QString replace = QString("GOTO ") + newNumbers.at(i);
@@ -1177,8 +1406,10 @@ void RobotWindow::StandardFormatEditor()
 
 void RobotWindow::OpenGcodeReference()
 {
-	GcodeReference* gcodeReferenceWindow = new GcodeReference();
-	gcodeReferenceWindow->show();
+//	GcodeReference* gcodeReferenceWindow = new GcodeReference();
+//	gcodeReferenceWindow->show();
+    QUrl myUrl("https://www.deltaxrobot.com/p/gcode.html");
+    QDesktopServices::openUrl(myUrl);
 }
 
 void RobotWindow::ConfigConnection()
@@ -1239,24 +1470,38 @@ void RobotWindow::ExecuteProgram()
 
 	QPushButton* pbExe = qobject_cast<QPushButton*>(sender());
 
-	if (pbExe->isChecked())
-	{
+    if (pbExe != NULL)
+    {
+        if (pbExe->isChecked())
+        {
 
-	}
-	else
-	{
-		DeltaGcodeManager->Stop();
-		if (DeltaGcodeManager->InsideGcodeProgramManager != NULL)
-		{
-			DeltaGcodeManager->InsideGcodeProgramManager->Stop();
-		}
-		return;
-	}
+        }
+        else
+        {
+            DeltaGcodeManager->Stop();
+            if (DeltaGcodeManager->InsideGcodeProgramManager != NULL)
+            {
+                DeltaGcodeManager->InsideGcodeProgramManager->Stop();
+            }
+            return;
+        }
+    }
 
 	SaveProgram();
 
 	QString exeGcodes = ui->pteGcodeArea->toPlainText();
-	DeltaGcodeManager->ExecuteGcode(exeGcodes, true);
+    DeltaGcodeManager->ExecuteGcode(exeGcodes, true);
+}
+
+void RobotWindow::ClickExecuteButton(bool val)
+{
+    //ui->pbExecuteGcodes->setChecked(val);
+    if (ui->pbExecuteGcodes->isChecked() == false && val == true)
+        ui->pbExecuteGcodes->click();
+
+    if (ui->pbExecuteGcodes->isChecked() == true && val == false)
+        ui->pbExecuteGcodes->click();
+    //ui->pbExecuteGcodes->setChecked(val);
 }
 
 void RobotWindow::ImportGcodeFilesFromComputer()
@@ -1773,6 +2018,8 @@ void RobotWindow::GetValueInput(QString response)
     QString value = response.mid(response.indexOf("V") + 1);
 
     QString pinName = response.mid(1, response.indexOf(" V"));
+    QString pin = response.mid(0, response.indexOf(" V"));
+    DeltaGcodeManager->UpdateSystemVariable(pin, value);
     // lbI1Vlaue, lbIxValue, lbA0Value, lbAxValue
     QLabel* lbValue;
 
@@ -1854,6 +2101,8 @@ void RobotWindow::ConnectEncoder()
     {
         ui->pbConnectEncdoer->setText("Disconnect Encoder");
         COMEncoder->Send(QString("M317 T100\n"));
+
+        ui->leEncoderCom->setText(COMEncoder->COMPort->portName());
 
     }
     else
@@ -2105,7 +2354,6 @@ void RobotWindow::GetImage(cv::Mat mat)
 
     DeltaImageProcesser->GetImage(mat);
 
-
     DeltaImageProcesser->UpdateEvent();
 }
 
@@ -2173,12 +2421,21 @@ void RobotWindow::ProcessDetectedObjectFromExternalAI(QString msg)
 
         float delta = DeltaImageProcesser->EncoderPosition - DeltaImageProcesser->EncoderPositionAtCameraCapture;
 
-        DeltaImageProcesser->ObjectManager->AddNewObject(x.toFloat(), y.toFloat() + delta, w.toFloat(), h.toFloat());
+        if (ui->cbConveyorDirection->currentText() == "Y")
+        {
+            DeltaImageProcesser->ObjectManager->AddNewObject(x.toFloat(), y.toFloat() + delta, w.toFloat(), h.toFloat());
+        }
+        else
+        {
+            DeltaImageProcesser->ObjectManager->AddNewObject(x.toFloat()  + delta, y.toFloat(), w.toFloat(), h.toFloat());
+        }
+
     }
 }
 
 void RobotWindow::AddDisplayObjectFromExternalScript(QString msg)
 {
+    DeltaImageProcesser->DisplayObjects->clear();
     QStringList objectInfos = msg.split(";");
     foreach(QString objectInfo, objectInfos)
     {
@@ -2197,8 +2454,15 @@ void RobotWindow::AddDisplayObjectFromExternalScript(QString msg)
 
             cv::RotatedRect object(cv::Point2f(x, y), cv::Size(w, h), a);
             DeltaImageProcesser->DisplayObjects->append(object);
+
+            //TrackingObjectTable->UpdateTable(DeltaImageProcesser->ObjectManager->ObjectContainer);
+
         }
     }
+
+//    qDebug() << ElapsedTimer.elapsed();
+    DeltaImageProcesser->ProcessDisplayAfterReceivingObjectData();
+    DeltaImageProcesser->DisplayObjects->clear();
 }
 
 void RobotWindow::SaveEncoderPositionWhenExternalAIDetect()
@@ -2345,6 +2609,10 @@ void RobotWindow::RunExternalScript()
         ExternalScriptProcess->start(QString("cd ") + appPath);
 
     ExternalScriptProcess->start(command, params);
+
+//    ExternalScriptProcess->waitForFinished(); // sets current thread to sleep and waits for pingProcess end
+//    QString output(ExternalScriptProcess->readAllStandardOutput());
+//    Debug(output);
 //    ExternalScriptProcess->waitForFinished();
 //    ExternalScriptProcess->close();
 
@@ -2871,5 +3139,11 @@ void RobotWindow::initPlugins(QStringList plugins)
 QList<DeltaXPlugin*> *RobotWindow::getPluginList()
 {
     return pluginList;
+}
+
+
+void RobotWindow::on_pbSaveObjectDetectingParameters_clicked()
+{
+
 }
 

@@ -47,12 +47,13 @@ void ConnectionManager::sendQueue()
 
 void ConnectionManager::processReceiveData()
 {
-	if (receiveLine.mid(0, 2) == "Ok" || (receiveLine.indexOf('k') > -1 && receiveLine.indexOf('O') > -1) || receiveLine.mid(0, 7) == "Unknown")
+    //if (receiveLine.mid(0, 2) == "Ok" || (receiveLine.indexOf('k') > -1 && receiveLine.indexOf('O') > -1) || receiveLine.mid(0, 7) == "Unknown")
+    if (receiveLine != "")
 	{
 		if (!(IsRobotConnect() == true && IsRosSocket(IOSender)))
 		{
 			emit DeltaResponeGcodeDone();
-		}		
+        }
 
 		//sendQueue();
 
@@ -241,8 +242,8 @@ void ConnectionManager::FindDeltaRobot()
 
 		portList.push_back(sP);
 
-		if (sP->open((QIODevice::ReadWrite)) == true)
-		{
+        if (sP->open((QIODevice::ReadWrite)) == true)
+        {
 			connect(sP, SIGNAL(readyRead()), this, SLOT(ReadData()));
 
             QString name = sP->portName();

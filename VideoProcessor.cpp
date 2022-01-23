@@ -34,7 +34,7 @@ void VideoProcessor::putInfoOnImage(cv::Mat& mat, QList<cv::RotatedRect> objects
 void VideoProcessor::startVideo()
 {
     return;
-    while(!loopRunning)
+    while(loopRunning)
     {
         if (camera == NULL)
             continue;
@@ -66,14 +66,14 @@ void VideoProcessor::stopVideo()
 
 void VideoProcessor::CloseLoop()
 {
-    loopRunning = true;
+    loopRunning = false;
 }
 
 void VideoProcessor::TimerFunction()
 {
     try
     {
-        if (!loopRunning)
+        if (loopRunning)
         {
             if (camera == NULL)
                 return;

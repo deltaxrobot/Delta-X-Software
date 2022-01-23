@@ -34,6 +34,12 @@ bool XCamHIK::Connect()
     return true;
 }
 
+bool XCamHIK::Disconnect()
+{
+    MV_CC_CloseDevice(Camera);
+    return true;
+}
+
 bool XCamHIK::IsOpen()
 {
     if (Camera == NULL)

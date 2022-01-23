@@ -111,6 +111,8 @@ public:
 	void UpdateLabelImage(cv::Mat mat, QLabel* label);
 	void SetConvenyorVelocity(float val, QString dir);
 
+    void ProcessDisplayAfterReceivingObjectData();
+
     // ----- Encoder + Conveyor -----
     void UpdatePointPositionOnConveyor(QLineEdit* x, QLineEdit* y, float angle, float distance);
     void UpdatePointPositionOnConveyor(float& x, float& y, float angle, float distance);
@@ -156,6 +158,9 @@ public:
     int CameraWidgetHeight = 300;
 
 	QScrollArea* CameraScrollArea;
+
+    bool IsPerspectiveMode = false;
+    bool IsCalibInfoVisible = true;
 
     // ---- Conveyor ----
 
@@ -292,9 +297,7 @@ private:
 	int HSVValue[6] = {0, 100, 0, 255, 0, 255};
 	int thresholdValue = 150;
 	int filterMethod = THRESHOLD_SPACE;
-	int cameraLayer = RESULT;
-
-
+    int cameraLayer = RESULT;
 
 	std::vector<cv::Point> PperspectivePoints;
 	cv::Rect PselectedRectangle;
@@ -382,9 +385,7 @@ private:
 
 	bool isDetectedNewObject = false;
 	int countedObjectNumber = 0;
-	bool isFirstFrame = true;
-	bool isPerspectiveMode = false;
-	bool isCalibInfoVisible = true;
+    bool isFirstFrame = true;
 
 	bool isFirstLoad = true;
     bool isFirstRead = true;

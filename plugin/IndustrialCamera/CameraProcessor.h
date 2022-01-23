@@ -37,6 +37,9 @@ public:
     XCamManager IndustryCamera;
     cv::Mat* openCvImage = NULL;
 
+    int MatWidth = 800;
+    int MatHeight = 600;
+
     int CameraInterval = 50;
 
     bool IsLoopRunning = true;

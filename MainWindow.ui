@@ -555,7 +555,7 @@ border-right: 5px solid rgb(24, 70, 139);</string>
            <number>1</number>
           </property>
           <property name="currentIndex">
-           <number>8</number>
+           <number>1</number>
           </property>
           <widget class="QWidget" name="pVariable">
            <property name="styleSheet">
@@ -778,6 +778,23 @@ QPushButton:pressed
                            </size>
                           </property>
                          </spacer>
+                        </item>
+                        <item>
+                         <widget class="QFrame" name="fOperatorRobotOnOffPanel">
+                          <property name="minimumSize">
+                           <size>
+                            <width>0</width>
+                            <height>100</height>
+                           </size>
+                          </property>
+                          <property name="frameShape">
+                           <enum>QFrame::StyledPanel</enum>
+                          </property>
+                          <property name="frameShadow">
+                           <enum>QFrame::Raised</enum>
+                          </property>
+                          <layout class="QGridLayout" name="layoutOperatorRobotOnOff"/>
+                         </widget>
                         </item>
                        </layout>
                       </widget>
@@ -1185,7 +1202,7 @@ QPushButton:pressed
                    <property name="geometry">
                     <rect>
                      <x>0</x>
-                     <y>0</y>
+                     <y>-24</y>
                      <width>1072</width>
                      <height>700</height>
                     </rect>
@@ -1235,10 +1252,118 @@ QPushButton:pressed
                        <string>Operator Setting</string>
                       </property>
                       <layout class="QGridLayout" name="gridLayout_4">
+                       <item row="6" column="0">
+                        <widget class="QListWidget" name="lwOperatorDisplayVariable">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="8" column="0">
+                        <widget class="QPushButton" name="pbApplyOperator">
+                         <property name="font">
+                          <font>
+                           <pointsize>12</pointsize>
+                           <weight>75</weight>
+                           <bold>true</bold>
+                          </font>
+                         </property>
+                         <property name="text">
+                          <string>Operator</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="3" column="0" colspan="2">
+                        <layout class="QHBoxLayout" name="horizontalLayout_5">
+                         <item>
+                          <widget class="QLabel" name="label_9">
+                           <property name="minimumSize">
+                            <size>
+                             <width>100</width>
+                             <height>0</height>
+                            </size>
+                           </property>
+                           <property name="text">
+                            <string>Display</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item>
+                          <widget class="QPushButton" name="pbAddOperatorDisplayWidget">
+                           <property name="text">
+                            <string>Add</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item>
+                          <widget class="QComboBox" name="cbOperatorRobotDisplay"/>
+                         </item>
+                         <item>
+                          <widget class="QComboBox" name="cbOperatorDisplayWidget">
+                           <property name="minimumSize">
+                            <size>
+                             <width>150</width>
+                             <height>0</height>
+                            </size>
+                           </property>
+                           <item>
+                            <property name="text">
+                             <string>CameraWindow</string>
+                            </property>
+                           </item>
+                          </widget>
+                         </item>
+                         <item>
+                          <spacer name="horizontalSpacer_4">
+                           <property name="orientation">
+                            <enum>Qt::Horizontal</enum>
+                           </property>
+                           <property name="sizeHint" stdset="0">
+                            <size>
+                             <width>40</width>
+                             <height>20</height>
+                            </size>
+                           </property>
+                          </spacer>
+                         </item>
+                        </layout>
+                       </item>
+                       <item row="4" column="2">
+                        <spacer name="horizontalSpacer_3">
+                         <property name="orientation">
+                          <enum>Qt::Horizontal</enum>
+                         </property>
+                         <property name="sizeHint" stdset="0">
+                          <size>
+                           <width>40</width>
+                           <height>20</height>
+                          </size>
+                         </property>
+                        </spacer>
+                       </item>
+                       <item row="4" column="0">
+                        <widget class="QListWidget" name="lwOperatorDisplayWidget">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                        </widget>
+                       </item>
                        <item row="0" column="0" colspan="2">
                         <layout class="QHBoxLayout" name="horizontalLayout_4">
                          <item>
                           <widget class="QLabel" name="label_8">
+                           <property name="minimumSize">
+                            <size>
+                             <width>100</width>
+                             <height>0</height>
+                            </size>
+                           </property>
                            <property name="text">
                             <string>Project</string>
                            </property>
@@ -1288,40 +1413,7 @@ QPushButton:pressed
                          </item>
                         </layout>
                        </item>
-                       <item row="4" column="0">
-                        <widget class="QListWidget" name="lwOperatorDisplayVariable">
-                         <property name="sizePolicy">
-                          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                           <horstretch>0</horstretch>
-                           <verstretch>0</verstretch>
-                          </sizepolicy>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="2" column="0">
-                        <widget class="QListWidget" name="lwOperatorDisplayWidget">
-                         <property name="sizePolicy">
-                          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                           <horstretch>0</horstretch>
-                           <verstretch>0</verstretch>
-                          </sizepolicy>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="2" column="1">
-                        <widget class="QPushButton" name="pbDeleteOperatorDisplayWidget">
-                         <property name="maximumSize">
-                          <size>
-                           <width>50</width>
-                           <height>16777215</height>
-                          </size>
-                         </property>
-                         <property name="text">
-                          <string>x</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="4" column="1">
+                       <item row="6" column="1">
                         <widget class="QPushButton" name="pbDeleteOperatorVar">
                          <property name="maximumSize">
                           <size>
@@ -1334,100 +1426,17 @@ QPushButton:pressed
                          </property>
                         </widget>
                        </item>
-                       <item row="5" column="0">
-                        <layout class="QHBoxLayout" name="horizontalLayout_7">
-                         <item>
-                          <widget class="QLabel" name="label_15">
-                           <property name="text">
-                            <string>Password</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item>
-                          <widget class="QLineEdit" name="leAuthorityPassword">
-                           <property name="text">
-                            <string>1234</string>
-                           </property>
-                           <property name="frame">
-                            <bool>true</bool>
-                           </property>
-                           <property name="echoMode">
-                            <enum>QLineEdit::Password</enum>
-                           </property>
-                           <property name="cursorMoveStyle">
-                            <enum>Qt::LogicalMoveStyle</enum>
-                           </property>
-                           <property name="clearButtonEnabled">
-                            <bool>false</bool>
-                           </property>
-                          </widget>
-                         </item>
-                        </layout>
-                       </item>
-                       <item row="6" column="0">
-                        <widget class="QPushButton" name="pbApplyOperator">
-                         <property name="font">
-                          <font>
-                           <pointsize>12</pointsize>
-                           <weight>75</weight>
-                           <bold>true</bold>
-                          </font>
-                         </property>
-                         <property name="text">
-                          <string>Operator</string>
+                       <item row="2" column="0">
+                        <widget class="QListWidget" name="lwOperatorRobotGcodeProgram">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
                          </property>
                         </widget>
                        </item>
-                       <item row="1" column="0" colspan="2">
-                        <layout class="QHBoxLayout" name="horizontalLayout_5">
-                         <item>
-                          <widget class="QLabel" name="label_9">
-                           <property name="text">
-                            <string>Display</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item>
-                          <widget class="QPushButton" name="pbAddOperatorDisplayWidget">
-                           <property name="text">
-                            <string>Add</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item>
-                          <widget class="QComboBox" name="cbOperatorRobotDisplay"/>
-                         </item>
-                         <item>
-                          <widget class="QComboBox" name="cbOperatorDisplayWidget">
-                           <property name="minimumSize">
-                            <size>
-                             <width>150</width>
-                             <height>0</height>
-                            </size>
-                           </property>
-                           <item>
-                            <property name="text">
-                             <string>CameraWindow</string>
-                            </property>
-                           </item>
-                          </widget>
-                         </item>
-                         <item>
-                          <spacer name="horizontalSpacer_4">
-                           <property name="orientation">
-                            <enum>Qt::Horizontal</enum>
-                           </property>
-                           <property name="sizeHint" stdset="0">
-                            <size>
-                             <width>40</width>
-                             <height>20</height>
-                            </size>
-                           </property>
-                          </spacer>
-                         </item>
-                        </layout>
-                       </item>
-                       <item row="3" column="0" colspan="2">
+                       <item row="5" column="0" colspan="2">
                         <layout class="QHBoxLayout" name="horizontalLayout_6">
                          <item>
                           <widget class="QPushButton" name="pbAddVarToOperatorDisplay">
@@ -1515,18 +1524,111 @@ QPushButton:pressed
                          </item>
                         </layout>
                        </item>
-                       <item row="2" column="2">
-                        <spacer name="horizontalSpacer_3">
-                         <property name="orientation">
-                          <enum>Qt::Horizontal</enum>
-                         </property>
-                         <property name="sizeHint" stdset="0">
+                       <item row="7" column="0">
+                        <layout class="QHBoxLayout" name="horizontalLayout_7">
+                         <item>
+                          <widget class="QLabel" name="label_15">
+                           <property name="text">
+                            <string>Password</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item>
+                          <widget class="QLineEdit" name="leAuthorityPassword">
+                           <property name="text">
+                            <string>1234</string>
+                           </property>
+                           <property name="frame">
+                            <bool>true</bool>
+                           </property>
+                           <property name="echoMode">
+                            <enum>QLineEdit::Password</enum>
+                           </property>
+                           <property name="cursorMoveStyle">
+                            <enum>Qt::LogicalMoveStyle</enum>
+                           </property>
+                           <property name="clearButtonEnabled">
+                            <bool>false</bool>
+                           </property>
+                          </widget>
+                         </item>
+                        </layout>
+                       </item>
+                       <item row="1" column="0">
+                        <layout class="QHBoxLayout" name="horizontalLayout_12">
+                         <item>
+                          <widget class="QLabel" name="label_11">
+                           <property name="minimumSize">
+                            <size>
+                             <width>100</width>
+                             <height>0</height>
+                            </size>
+                           </property>
+                           <property name="text">
+                            <string>Program</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item>
+                          <widget class="QPushButton" name="pbAddOperatorGcodeProgram">
+                           <property name="text">
+                            <string>Add</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item>
+                          <widget class="QComboBox" name="cbOperatorRobot"/>
+                         </item>
+                         <item>
+                          <widget class="QComboBox" name="cbOperatorGcodeProgram">
+                           <property name="minimumSize">
+                            <size>
+                             <width>150</width>
+                             <height>0</height>
+                            </size>
+                           </property>
+                          </widget>
+                         </item>
+                         <item>
+                          <spacer name="horizontalSpacer_6">
+                           <property name="orientation">
+                            <enum>Qt::Horizontal</enum>
+                           </property>
+                           <property name="sizeHint" stdset="0">
+                            <size>
+                             <width>40</width>
+                             <height>20</height>
+                            </size>
+                           </property>
+                          </spacer>
+                         </item>
+                        </layout>
+                       </item>
+                       <item row="4" column="1">
+                        <widget class="QPushButton" name="pbDeleteOperatorDisplayWidget">
+                         <property name="maximumSize">
                           <size>
-                           <width>40</width>
-                           <height>20</height>
+                           <width>50</width>
+                           <height>16777215</height>
                           </size>
                          </property>
-                        </spacer>
+                         <property name="text">
+                          <string>x</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="2" column="1">
+                        <widget class="QPushButton" name="pbDeleteOperatorGcodeProgram">
+                         <property name="maximumSize">
+                          <size>
+                           <width>50</width>
+                           <height>16777215</height>
+                          </size>
+                         </property>
+                         <property name="text">
+                          <string>x</string>
+                         </property>
+                        </widget>
                        </item>
                       </layout>
                      </widget>

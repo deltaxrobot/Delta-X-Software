@@ -216,6 +216,7 @@ public slots:
 	void AddNewProgram();
 	void SaveProgram();
 	void ExecuteProgram();
+    void ClickExecuteButton(bool val);
 	void ImportGcodeFilesFromComputer();
 	void UploadGcodeFileToServer();
 	void SearchGcodeFile();
@@ -385,6 +386,8 @@ private:
 
 public:
     Ui::RobotWindow *ui;
+private slots:
+    void on_pbSaveObjectDetectingParameters_clicked();
 };
 
 

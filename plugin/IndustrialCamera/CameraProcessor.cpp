@@ -41,11 +41,15 @@ void CameraProcessor::ShotImage()
         openCvImage = new cv::Mat(Height, Width, CV_8UC3, imageData);
         //cv::Mat mat(Height, Width, CV_8UC3, imageData);
 
-        emit CapturedImage((*openCvImage).clone());
+        cv::Mat mat;
+        MatHeight = Height * ((float)MatWidth/ Width);
+        resize(*openCvImage, mat, cv::Size(MatWidth, MatHeight), cv::INTER_LINEAR);
+
+        emit CapturedImage(mat);
 
         if (cameraWidget != NULL)
         {
-            UpdateLabelImage(*openCvImage, cameraWidget);
+            UpdateLabelImage(mat, cameraWidget);
         }
     }  catch (...)
     {
@@ -63,7 +67,7 @@ void CameraProcessor::Loop()
 
         if (CaptureSignal == true)
         {
-            qDebug() << "Capture";
+            //qDebug() << "Capture";
             ShotImage();
             CaptureSignal = false;
         }
@@ -76,7 +80,7 @@ void CameraProcessor::TimerFunction()
     {
         if (CaptureSignal == true)
         {
-            qDebug() << "Capture";
+            //qDebug() << "Capture";
             ShotImage();
             CaptureSignal = false;
         }

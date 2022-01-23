@@ -50,8 +50,6 @@ void DeltaVisualizer::ChangeXY(float x, float y)
 	QPainter p(&pi);
     p.setPen(QPen(Qt::blue, 1));
 
-	p.begin(this);
-
 //    p.drawPixmap(0, 0, width(), height(), pix1);
 //    p.drawPixmap(0, 0, width(), height(), pix2);
 //    for (int i = 0; i <= width(); i+=10)
@@ -75,7 +73,6 @@ void DeltaVisualizer::ChangeXY(float x, float y)
     p.drawText(QPoint(width() / 2 + x + MOVING_BASE_SIZE / 2, height() / 2 - y), QString("X:%1, Y:%2").arg(QString::number(X), QString::number(Y)));
     p.drawEllipse(QPoint(width() / 2 + X, height() / 2 - Y), 5, 5);
     p.drawEllipse(QPoint(width() / 2 + X, height() / 2 - Y), 1, 1);
-    p.end();
 
     setPixmap(pi);
     setScaledContents(true);

@@ -33,6 +33,8 @@ public:
     void InitProjectUX();
     void InitVisible();
     void InitProjectToOperator();
+    void SaveOperatorSettings();
+    void LoadOperatorSettings();
 
     TabDashboard* Dashboard;
     ProjectManager* SoftwareProjectManager;
@@ -70,6 +72,10 @@ private slots:
     void on_pbStartSystem_clicked();
 
     void on_pbStopSystem_clicked();
+
+    void on_pbAddOperatorGcodeProgram_clicked();
+
+    void on_pbDeleteOperatorGcodeProgram_clicked();
 
 private:
     void openProject(QString fullName);

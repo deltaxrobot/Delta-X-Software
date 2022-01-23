@@ -24,6 +24,16 @@ QString IndustrialCameraPlugin::GetTitle()
     return pluginTitle;
 }
 
+void IndustrialCameraPlugin::LoadSettings(QSettings *setting)
+{
+    pluginForm->LoadSettings(setting);
+}
+
+void IndustrialCameraPlugin::SaveSettings(QSettings *setting)
+{
+    pluginForm->SaveSettings(setting);
+}
+
 void IndustrialCameraPlugin::ProcessCommand(QString cmd)
 {
     pluginForm->GetMessageFromOtherModule(cmd);
@@ -31,7 +41,7 @@ void IndustrialCameraPlugin::ProcessCommand(QString cmd)
 
 void IndustrialCameraPlugin::TranferEmit(QString msg)
 {
-    emit EmitCommand(msg);
+//    emit EmitCommand(msg);
 }
 
 void IndustrialCameraPlugin::GetCaptureImageSignal(cv::Mat mat)

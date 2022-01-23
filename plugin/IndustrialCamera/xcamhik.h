@@ -12,6 +12,7 @@ public:
     ~XCamHIK();
 
     bool Connect();
+    bool Disconnect();
     bool IsOpen();
     unsigned char *Capture();
 

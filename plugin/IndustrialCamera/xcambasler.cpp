@@ -42,6 +42,12 @@ bool XCamBasler::Connect()
     return true;
 }
 
+bool XCamBasler::Disconnect()
+{
+    Camera->Close();
+    return true;
+}
+
 bool XCamBasler::IsOpen()
 {
     if (Camera == NULL)
@@ -86,20 +92,20 @@ unsigned char *XCamBasler::Capture()
 
 void XCamBasler::SetExposureTime(int value)
 {
-    GenApi::INodeMap& nodemap = Camera->GetNodeMap();
-    GenApi::CIntegerPtr ExposureTimeRaw(nodemap.GetNode("ExposureTimeRaw"));
-    ExposureTimeRaw->SetValue(value);
+//    GenApi::INodeMap& nodemap = Camera->GetNodeMap();
+//    GenApi::CIntegerPtr ExposureTimeRaw(nodemap.GetNode("ExposureTimeRaw"));
+//    ExposureTimeRaw->SetValue(value);
 }
 
 int XCamBasler::GetExposureTime()
 {
-    GenApi::INodeMap& nodemap = Camera->GetNodeMap();
-    GenApi::CIntegerPtr ExposureTimeRaw(nodemap.GetNode("ExposureTimeRaw"));
+//    GenApi::INodeMap& nodemap = Camera->GetNodeMap();
+//    GenApi::CIntegerPtr ExposureTimeRaw(nodemap.GetNode("ExposureTimeRaw"));
 
-    if(ExposureTimeRaw.IsValid())
-    {
-        return ExposureTimeRaw->GetValue();
-    }
+//    if(ExposureTimeRaw.IsValid())
+//    {
+//        return ExposureTimeRaw->GetValue();
+//    }
 
     return 0;
 }

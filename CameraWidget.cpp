@@ -349,6 +349,9 @@ CameraWidget::~CameraWidget()
 
 void CameraWidget::SelectLineTool()
 {
+    if (IsCalibVisible == false)
+        return;
+
     selectedTool = LINE_TOOL;
 
 	QPushButton* bt = qobject_cast<QPushButton*>(sender());
@@ -357,6 +360,9 @@ void CameraWidget::SelectLineTool()
 
 void CameraWidget::SelectPointTool()
 {
+    if (IsCalibVisible == false)
+        return;
+
     selectedTool = POINT_TOOL;
 
 	QPushButton* bt = qobject_cast<QPushButton*>(sender());
@@ -365,6 +371,9 @@ void CameraWidget::SelectPointTool()
 
 void CameraWidget::SelectQuadrangleTool()
 {
+    if (IsCalibVisible == false)
+        return;
+
     selectedTool = QUADRANGLE_TOOL;
 
 	setCursor(Qt::ArrowCursor);
@@ -372,6 +381,9 @@ void CameraWidget::SelectQuadrangleTool()
 
 void CameraWidget::SelectAreaTool()
 {
+    if (IsCalibVisible == false)
+        return;
+
     selectedTool = AREA_TOOL;
 
     setCursor(Qt::ArrowCursor);
@@ -379,6 +391,9 @@ void CameraWidget::SelectAreaTool()
 
 void CameraWidget::SelectMappingTool()
 {
+    if (IsCalibVisible == false)
+        return;
+
     selectedTool = MAPPING_TOOL;
 
     QPushButton* bt = qobject_cast<QPushButton*>(sender());
@@ -558,6 +573,9 @@ void CameraWidget::changeToolIconInArea(QIcon icon)
 
 void CameraWidget::drawQuadrangle(QPainter *painter)
 {
+    if (IsCalibVisible == false)
+        return;
+
     if (IsQuadrangleEnable == true)
         return;
 
@@ -572,6 +590,9 @@ void CameraWidget::drawQuadrangle(QPainter *painter)
 
 void CameraWidget::drawArea(QPainter *painter)
 {
+    if (IsCalibVisible == false)
+        return;
+
     painter->setOpacity(0.5f);
     drawStrokeRect(painter, mArea);
     drawStrokeRect(painter, QRect(mArea.topLeft() - QPoint(4, 4), mArea.topLeft() + QPoint(4, 4)));
@@ -681,6 +702,9 @@ void CameraWidget::drawSolidColor(QPainter *painter, QRect rect, float alpha)
 
 void CameraWidget::drawAxisSymbol(QPainter *painter)
 {
+    if (IsCalibVisible == false)
+        return;
+
     QPixmap pix = QPixmap(":/icon/Axis_64px.png");
     QMatrix rm;
     rm.rotate(-xAxisAngle);

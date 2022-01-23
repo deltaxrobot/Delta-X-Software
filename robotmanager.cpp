@@ -14,7 +14,7 @@ void RobotManager::AddRobotWindow(RobotWindow* robotWindow)
 
 RobotWindow* RobotManager::CreatNewRobotWindow()
 {
-    ElapsedTimer.start();
+    //ElapsedTimer.start();
     RobotWindow* robotWindow = new RobotWindow();
     robotWindow->RobotManagerPointer = this;
 
@@ -59,9 +59,9 @@ RobotWindow* RobotManager::CreatNewRobotWindow()
 
     robotWindow->ui->twDeltaManager->setCurrentIndex(robotID);
 
-    robotWindow->ConnectDeltaRobot();
+    //robotWindow->ConnectDeltaRobot();
 
-    qDebug() << ElapsedTimer.elapsed();
+    //qDebug() << ElapsedTimer.elapsed();
 
     return robotWindow;
 }
@@ -88,7 +88,7 @@ RobotWindow *RobotManager::GetRobot(QString name)
 {
     foreach(RobotWindow* robotWindow, RobotWindows)
     {
-        if (robotWindow->Name == name)
+        if (robotWindow->Name.replace(" ", "") == name.replace(" ", ""))
             return robotWindow;
     }
 
@@ -156,9 +156,30 @@ void RobotManager::Run()
 {
     foreach(RobotWindow* robotWindow, RobotWindows)
     {
+
+        // ---- Camera
+
+        // ---- Gcode Program
+
         if (!robotWindow->Run())
         {
             QMessageBox::information(NULL, QString("Cannot connect %").arg(robotWindow->Name), "Unable to open the COM port");
+        }
+    }
+}
+
+void RobotManager::Run(QStringList robotProgramList)
+{
+    foreach(RobotWindow* robotWindow, RobotWindows)
+    {
+        foreach(QString robotGcode, robotProgramList)
+        {
+            QStringList paras = robotGcode.split(':');
+            if (robotWindow->Name == paras[0])
+            {
+                robotWindow->DeltaGcodeManager->SelectProgram(paras[1]);
+                robotWindow->ExecuteProgram();
+            }
         }
     }
 }
@@ -167,9 +188,6 @@ void RobotManager::Stop()
 {
     foreach(RobotWindow* robotWindow, RobotWindows)
     {
-        if (!robotWindow->Stop())
-        {
-            QMessageBox::information(NULL, QString("Cannot stop %").arg(robotWindow->Name), "Unable to close the COM port");
-        }
+        robotWindow->ClickExecuteButton(false);
     }
 }

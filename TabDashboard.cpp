@@ -29,7 +29,33 @@ void TabDashboard::SelectPage()
 {
     if (Lock == true)
     {
-        QMessageBox::information(this, "Permission", "You do not have permission to access these tabs.");
+//        QMessageBox::information(this, "Permission", "You do not have permission to access these tabs.");
+        bool ok;
+        QString text = QInputDialog::getText(this, tr("Permission"),
+                                             tr("Password (default \"1234\"):"), QLineEdit::Password, "", &ok);
+        if (ok && !text.isEmpty())
+        {
+            if (text == Pass)
+            {
+                if (SoftwareAuthority != NULL)
+                {
+                    SoftwareAuthority->ReturnProgramer();
+                }
+
+                Lock = false;
+            }
+            else
+            {
+                QMessageBox::information(this, "Wrong", "You have entered the wrong password!");
+                return;
+            }
+        }
+    }
+
+
+
+    if (Lock == true)
+    {
         return;
     }
 

@@ -272,7 +272,7 @@ void ObjectDetector::processImage()
     //qDebug() << "matrix: " << ElapsedTimer.elapsed();
 
 
-	if (isPerspectiveMode == true)
+    if (IsPerspectiveMode == true)
     {
         transformPerspective(captureImage, PperspectivePoints, calibImage);
     }
@@ -294,6 +294,12 @@ void ObjectDetector::processImage()
         postProcessing();
         //qDebug() << "post processing: " << ElapsedTimer.elapsed();
         detectBlobObjects(filterMat);
+
+        processDetectingObjectOnCamera(resultImage, *DisplayObjects, BLUE_COLOR);
+        DisplayObjects->clear();
+        UpdateTrackingInfo();
+
+        UpdateDetectingResultToWidgets();
     }
     else if (rbCircleFilter->isChecked())
     {
@@ -307,6 +313,10 @@ void ObjectDetector::processImage()
         }
         else if (cbImageSourceForExternal->currentText() == "Calib Image")
         {
+            static int i = 0;
+            putText(calibImage, std::to_string(i++), cv::Point(50, 50), cv::FONT_HERSHEY_SIMPLEX, 1, cv::Scalar(255, 0, 0), 2);
+            qDebug() << "detect: " << ElapsedTimer.elapsed();
+            ElapsedTimer.start();
             sendImageToExternalScript(calibImage);
         }
         else if (cbImageSourceForExternal->currentText() == "Filter Image")
@@ -318,9 +328,10 @@ void ObjectDetector::processImage()
     }
     //qDebug() << "detect: " << ElapsedTimer.elapsed();
 
-
+    ElapsedTimer.start();
     processDetectingObjectOnCamera(resultImage, *DisplayObjects, BLUE_COLOR);
-    DisplayObjects->clear();
+    qDebug() << "time in ms: " << ElapsedTimer.elapsed();
+    //DisplayObjects->clear();
     UpdateTrackingInfo();
 
     UpdateDetectingResultToWidgets();
@@ -329,7 +340,7 @@ void ObjectDetector::processImage()
 
 void ObjectDetector::UpdateEvent()
 {
-    processImage();    
+    processImage();
 
     if (IsEncoderEnable == false)
     {
@@ -793,7 +804,7 @@ void ObjectDetector::changeAxisDirection()
 
 void ObjectDetector::TurnTransformPerspective(bool isTurnOn)
 {
-	isPerspectiveMode = isTurnOn;
+    IsPerspectiveMode = isTurnOn;
     cameraWidget->IsQuadrangleEnable = isTurnOn;
     if (pbPlayCammera->isChecked() == false)
     {
@@ -900,7 +911,7 @@ void ObjectDetector::UpdateCalibLine(int realLine, int imageLine)
 
 void ObjectDetector::TurnCalibDisplay(bool state)
 {
-	isCalibInfoVisible = state;
+    IsCalibInfoVisible = state;
     cameraWidget->IsCalibVisible = state;
 }
 
@@ -919,7 +930,11 @@ void ObjectDetector::ExpandCameraWidget(bool isExpand)
 void ObjectDetector::ChangeCameraWidgetHeight(QString valueS)
 {
     CameraWidgetHeight = valueS.toInt();
-    cameraWidget->parentWidget()->parentWidget()->parentWidget()->setMinimumHeight(CameraWidgetHeight);
+    if (cameraWidget->parent() != cameraWindow)
+    {
+        cameraWidget->parentWidget()->parentWidget()->parentWidget()->setMinimumHeight(CameraWidgetHeight);
+    }
+
     cameraWidget->ChangeSize(CameraWidgetHeight * CameraRatio, CameraWidgetHeight);
 }
 
@@ -1025,9 +1040,12 @@ void ObjectDetector::SaveSetting(QSettings *setting)
     setting->setValue("CameraHeight", leHeight->text());
     setting->setValue("CameraFPS", leFPS->text());
 
+    setting->setValue("ExternalCameraEnable", cbExternalCamera->isChecked());
+
     setting->setValue("ChessWidth", leChessboardWidth->text());
     setting->setValue("ChessHeight", leChessboardHeight->text());
     setting->setValue("ChessSize", leChessboardSquareSize->text());
+
 
     setting->setValue("ObjectWidth", PobjectRec.width);
     setting->setValue("ObjectHeight", PobjectRec.height);
@@ -1067,9 +1085,12 @@ void ObjectDetector::LoadSetting(QSettings *setting)
     leHeight->setText(setting->value("CameraHeight", leHeight->text()).toString());
     leFPS->setText(setting->value("CameraFPS", leFPS->text()).toString());
 
+    cbExternalCamera->setChecked(setting->value("ExternalCameraEnable", false).toBool());
+
     leChessboardWidth->setText(setting->value("ChessWidth", leChessboardWidth->text()).toString());
     leChessboardHeight->setText(setting->value("ChessHeight", leChessboardHeight->text()).toString());
     leChessboardSquareSize->setText(setting->value("ChessSize", leChessboardSquareSize->text()).toString());
+
 
     PobjectRec.width = setting->value("ObjectWidth", PobjectRec.width).toInt();
     PobjectRec.height = setting->value("ObjectHeight", PobjectRec.height).toInt();
@@ -1124,6 +1145,15 @@ void ObjectDetector::SetConvenyorVelocity(float val, QString dir)
 {
     ConveyorVel = val;
     DirName = dir;
+}
+
+void ObjectDetector::ProcessDisplayAfterReceivingObjectData()
+{
+    processDetectingObjectOnCamera(resultImage, *DisplayObjects, BLUE_COLOR);
+
+    UpdateTrackingInfo();
+
+    UpdateDetectingResultToWidgets();
 }
 
 void ObjectDetector::UpdatePointPositionOnConveyor(QLineEdit *x, QLineEdit *y, float angle, float distance)
@@ -1488,9 +1518,20 @@ float ObjectDetector::processDetectingObjectOnCamera(cv::Mat& mat, QList<cv::Rot
             cv::Point2f rectPoints[4];
             object.points(rectPoints);
 
-            // Draw a rectangle outside the object
-            for (int j = 0; j < 4; j++)
-                cv::line(mat, rectPoints[j], rectPoints[(j + 1) % 4], color, 2, 8);
+            for (int i = 0; i < 4; i++)
+            {
+                if (rectPoints[i].x < 0)
+                {
+                    rectPoints[i].x = 0;
+                }
+                if (rectPoints[i].y < 0)
+                {
+                    rectPoints[i].y = 0;
+                }
+            }
+
+
+
 
             int xRealObject = 0;
             int yRealObject = 0;
@@ -1507,6 +1548,7 @@ float ObjectDetector::processDetectingObjectOnCamera(cv::Mat& mat, QList<cv::Rot
             realObject.center.y = yRealObject;
             realObject.size.height = object.size.height * PnRRatio;
             realObject.size.width = object.size.width * PnRRatio;
+            realObject.angle = object.angle;
 
             float delta = EncoderPosition - EncoderPositionAtCameraCapture;
 
@@ -1515,9 +1557,17 @@ float ObjectDetector::processDetectingObjectOnCamera(cv::Mat& mat, QList<cv::Rot
             // Add object to object list if it is new object
             ObjectManager->AddNewObject(realObject);
             // Add object info to screen
-            putText(mat, std::to_string((int)xRealObject) + "," + std::to_string((int)yRealObject) + "," + std::to_string((int)realObject.angle), cv::Point(object.center.x - 40, object.center.y), cv::FONT_HERSHEY_SIMPLEX, 0.4, BLACK_COLOR, 2);
-            putText(mat, std::to_string((int)xRealObject) + "," + std::to_string((int)yRealObject) + "," + std::to_string((int)realObject.angle), cv::Point(object.center.x - 40, object.center.y), cv::FONT_HERSHEY_SIMPLEX, 0.4, WHITE_COLOR, 1);
+            // Draw a rectangle outside the object
+            if (mat.data)
+            {
+                for (int j = 0; j < 4; j++)
+                    cv::line(mat, rectPoints[j], rectPoints[(j + 1) % 4], color, 2, 8);
 
+                putText(mat, std::to_string((int)xRealObject) + "," + std::to_string((int)yRealObject) + "," + std::to_string((int)realObject.angle), cv::Point(object.center.x - 40, object.center.y), cv::FONT_HERSHEY_SIMPLEX, 0.4, BLACK_COLOR, 2);
+                putText(mat, std::to_string((int)xRealObject) + "," + std::to_string((int)yRealObject) + "," + std::to_string((int)realObject.angle), cv::Point(object.center.x - 40, object.center.y), cv::FONT_HERSHEY_SIMPLEX, 0.4, WHITE_COLOR, 1);
+
+
+            }
         }
     }
     return 0;

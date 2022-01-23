@@ -46,7 +46,7 @@ public slots:
     void CloseLoop();
     void TimerFunction();
 private:
-    bool loopRunning = false;
+    bool loopRunning = true;
     cv::VideoCapture* camera = NULL;
 };
 

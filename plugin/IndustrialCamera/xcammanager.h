@@ -30,6 +30,7 @@ public:
     int Width();
 
     bool ConnectCamera(int id);
+    bool DisconnectCamera();
     void SelectCamera(int id);
     bool IsCameraOpen(int id);
     bool IsOpen();

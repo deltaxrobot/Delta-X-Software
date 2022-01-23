@@ -1,6 +1,6 @@
 #include "Authority.h"
 
-Authority::Authority(QObject *parent) : QObject(parent)
+Authority::Authority(QObject *parent) : QObject(parent), RobotEnableList()
 {
 
 }
@@ -35,23 +35,48 @@ void Authority::ApplyOperatorSettings()
         operatorDisplayVariable.append(lwOperatorDisplayVariable->item(i)->text());
     }
 
+    operatorGcodeProgram.clear();
+
+    for (int i = 0; i < RobotEnableList.count(); i++)
+    {
+        layoutOperatorRobotOnOff->removeWidget(RobotEnableList.at(i));
+
+        delete RobotEnableList.at(i);
+    }
+
+    RobotEnableList.clear();
+
+    for (int i = 0; i < lwOperatorGcodeProgram->count(); i++)
+    {
+        QString row = lwOperatorGcodeProgram->item(i)->text();
+        operatorGcodeProgram.append(row);
+
+        QString robotName = row.split(':').at(0);
+
+        QCheckBox* cbOperatorEnableRobot = new QCheckBox(fOperatorRobotOnOffPanel);
+        cbOperatorEnableRobot->setText(robotName);
+        QFont font3;
+        font3.setPointSize(12);
+        cbOperatorEnableRobot->setFont(font3);
+        cbOperatorEnableRobot->setChecked(true);
+
+        layoutOperatorRobotOnOff->addWidget(cbOperatorEnableRobot, i, 0, 1, 1);
+
+        RobotEnableList.append(cbOperatorEnableRobot);
+     }
+
     // ---- Get objects ----
 
-    if (operatorDisplayVariable.count() > 0)
+    ProjectManager* projectManager = SoftwareManager::GetInstance()->SoftwareProjectManager;
+
+    if (operatorDisplayWidget.count() > 0)
     {
         QStringList paras = operatorDisplayWidget[0].split("/");
-
-
-        ProjectManager* projectManager = SoftwareManager::GetInstance()->SoftwareProjectManager;
-
         robotManager = projectManager->GetProject(paras[0]);
         robotWindow = robotManager->GetRobot(paras[1]);
         subDisplayWidget = robotWindow->GetWidget(paras[2]);
-
         oldSubDisplayWidgetParent = subDisplayWidget->parentWidget();
-
         wgOperatorDisplay->layout()->addWidget(subDisplayWidget);
-
     }
 
     // ---- var ----
@@ -63,10 +88,20 @@ void Authority::ApplyOperatorSettings()
 
 void Authority::ReturnProgramer()
 {
-    if (lwOperatorDisplayWidget->count() > 0)
-    {
-        oldSubDisplayWidgetParent->layout()->addWidget(subDisplayWidget);
+    try {
+        if (oldSubDisplayWidgetParent == NULL)
+            return;
+        if (oldSubDisplayWidgetParent->layout() == nullptr)
+            return;
+
+        if (lwOperatorDisplayWidget->count() > 0 && oldSubDisplayWidgetParent->layout() != NULL)
+        {
+            oldSubDisplayWidgetParent->layout()->addWidget(subDisplayWidget);
+        }
+    }  catch (...) {
+
     }
+
 }
 
 void Authority::AddVarPair(QStringList list)
@@ -74,6 +109,9 @@ void Authority::AddVarPair(QStringList list)
     foreach(QString str, list)
     {
         QStringList paras = str.split(':');
+        if (paras.count() < 2)
+            continue;
+
         Vars.insert(paras[0], paras[1]);
     }
 }
