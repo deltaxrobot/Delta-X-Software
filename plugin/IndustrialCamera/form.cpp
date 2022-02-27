@@ -2,23 +2,22 @@
 #include "ui_form.h"
 
 Form::Form(QWidget *parent) :
-    QWidget(parent),
+    QWidget(parent), IndustryCamera(),
     ui(new Ui::Form)
 {
     ui->setupUi(this);
 
 
-    CameraProcessorThread = new CameraProcessor();
+//    CameraProcessorThread = new CameraProcessor();
 
-    CameraProcessorThread->lbRatio = ui->lbDisplayRatio;
-    CameraProcessorThread->cameraWidget = ui->lbCameraDisplay;
+//    CameraProcessorThread->lbRatio = ui->lbDisplayRatio;
+//    CameraProcessorThread->cameraWidget = ui->lbCameraDisplay;
 
-    CameraProcessorThread->moveToThread(new QThread(this));
-    connect(CameraProcessorThread->thread(), SIGNAL(started()), CameraProcessorThread, SLOT(Loop()));
-    connect(CameraProcessorThread->thread(), SIGNAL(finished()), CameraProcessorThread, SLOT(deleteLater()));
-
-    CameraProcessorThread->thread()->start();
-
+//    CameraProcessorThread->moveToThread(new QThread(this));
+//    connect(CameraProcessorThread->thread(), SIGNAL(started()), CameraProcessorThread, SLOT(ShotImage()));
+//    connect(CameraProcessorThread->thread(), SIGNAL(finished()), CameraProcessorThread, SLOT(deleteLater()));
+//    connect(CameraProcessorThread, &CameraProcessor::FinishReadingImage, ui->lbCameraDisplay, &QLabel::setPixmap);
+//    connect(CameraProcessorThread, &CameraProcessor::UpdatedRatio, ui->lbDisplayRatio, &QLabel::setText);
 
     CameraDisplayUpdatingTimer = new QTimer();
     CameraDisplayUpdatingTimer->setTimerType(Qt::PreciseTimer);
@@ -30,10 +29,10 @@ Form::Form(QWidget *parent) :
 
 Form::~Form()
 {
-    CameraProcessorThread->IsLoopRunning = false;
+//    CameraProcessorThread->IsLoopRunning = false;
 
-    CameraProcessorThread->thread()->quit();
-    CameraProcessorThread->thread()->wait();
+//    CameraProcessorThread->thread()->quit();
+//    CameraProcessorThread->thread()->wait();
 
     delete ui;
 }
@@ -71,7 +70,7 @@ void Form::LoadSettings(QSettings *setting)
 
 void Form::SaveSettings(QSettings *setting)
 {
-    bool isOpen = CameraProcessorThread->IndustryCamera.IsOpen();
+    bool isOpen = IndustryCamera.IsOpen();
     QString cameraName = ui->cbCameraList->currentText();
 
     setting->setValue("IsOpen", isOpen);
@@ -91,10 +90,15 @@ void Form::GetEventFromUI()
     emit EmitEventFromUI("Hello");
 }
 
+void Form::GetStateLastJob(bool state)
+{
+    IsLastJobDone = state;
+}
+
 void Form::on_pbRefresh_clicked()
 {
     ui->cbCameraList->clear();
-    ui->cbCameraList->addItems(CameraProcessorThread->IndustryCamera.FindCameraList());
+    ui->cbCameraList->addItems(IndustryCamera.FindCameraList());
 }
 
 void Form::on_pbConnectCamera_clicked()
@@ -107,7 +111,7 @@ void Form::on_pbConnectCamera_clicked()
             return;
         }
 
-        bool result = CameraProcessorThread->IndustryCamera.ConnectCamera(ui->cbCameraList->currentIndex());
+        bool result = IndustryCamera.ConnectCamera(ui->cbCameraList->currentIndex());
 
         if (result == true)
         {
@@ -120,11 +124,11 @@ void Form::on_pbConnectCamera_clicked()
 
             qDebug() << "Connected Industry Camera";
 
-            CameraProcessorThread->ShotImage();
+            intervalFunction();
 
-            ui->lbResolution->setText(QString("%1 x %2").arg(CameraProcessorThread->Width).arg(CameraProcessorThread->Height));
+//            ui->lbResolution->setText(QString("%1 x %2").arg(CameraProcessorThread->Width).arg(CameraProcessorThread->Height));
 
-            QString exposureTime = QString::number(CameraProcessorThread->IndustryCamera.GetExposureTime());
+            QString exposureTime = QString::number(IndustryCamera.GetExposureTime());
 
             ui->pbConnectCamera->setText("Disconnect");
 
@@ -134,9 +138,9 @@ void Form::on_pbConnectCamera_clicked()
     {
         ui->pbConnectCamera->setText("Connect");
 
-        if (CameraProcessorThread->IndustryCamera.IsOpen())
+        if (IndustryCamera.IsOpen())
         {
-            CameraProcessorThread->IndustryCamera.DisconnectCamera();
+            IndustryCamera.DisconnectCamera();
         }
     }
 
@@ -144,13 +148,13 @@ void Form::on_pbConnectCamera_clicked()
 
 void Form::on_cbStream_toggled(bool checked)
 {
-    CameraProcessorThread->IsStream = checked;
+//    CameraProcessorThread->IsStream = checked;
 }
 
 
 void Form::on_pbShotImage_clicked()
 {
-    CameraProcessorThread->ShotImage();
+//    CameraProcessorThread->ShotImage();
 }
 
 
@@ -159,14 +163,12 @@ void Form::on_pbShotVideo_clicked()
     if (ui->pbShotVideo->isChecked() == true)
     {
         int inputValue = ui->leInterval->text().toInt();
-        if (inputValue > 0)
-            CameraProcessorThread->CameraInterval = inputValue;
 
-        ui->lbFPS->setText(QString::number((float)1000/CameraProcessorThread->CameraInterval));
+        ui->lbFPS->setText(QString::number((float)1000/inputValue));
 
-        CameraProcessorThread->Width = ui->leImageWidth->text().toInt();
-
-        CameraDisplayUpdatingTimer->start(CameraProcessorThread->CameraInterval);
+        CameraDisplayUpdatingTimer->setInterval(inputValue);
+        CameraDisplayUpdatingTimer->setTimerType(Qt::PreciseTimer);
+        CameraDisplayUpdatingTimer->start();
         ui->pbShotVideo->setText("Stop");
 
         ui->cbCameraList->setEnabled(false);
@@ -185,13 +187,41 @@ void Form::on_pbShotVideo_clicked()
 void Form::intervalFunction()
 {
 //    CameraProcessorThread->CaptureSignal = true;
-    CameraProcessorThread->ShotImage();
+//    CameraProcessorThread->thread()->start();
+    qDebug() << "timer: " << ElapseTimer.restart();
+
+    if (IsLastJobDone == false)
+        return;
+
+    IsLastJobDone = false;
+
+    CameraProcessorJob = new CameraProcessor();
+
+    CameraProcessorJob->lbRatio = ui->lbDisplayRatio;
+    CameraProcessorJob->cameraWidget = ui->lbCameraDisplay;
+    CameraProcessorJob->IndustryCamera = &IndustryCamera;
+    if (ui->cbEnoughResize->isChecked() == true)
+    {
+        CameraProcessorJob->MatWidth = ui->leImageWidth->text().toInt();
+    }
+    else
+    {
+
+        CameraProcessorJob->MatWidth = -1;
+    }
+    connect(CameraProcessorJob, &CameraProcessor::FinishReadingImage, ui->lbCameraDisplay, &QLabel::setPixmap);
+    connect(CameraProcessorJob, &CameraProcessor::UpdatedRatio, ui->lbDisplayRatio, &QLabel::setText);
+    connect(CameraProcessorJob, &CameraProcessor::CapturedImage, this, &Form::CapturedImage);
+    connect(CameraProcessorJob, &CameraProcessor::StartedCapture, this, &Form::StartedCapture);
+    connect(CameraProcessorJob, &CameraProcessor::FinishJob, this, &Form::GetStateLastJob);
+
+    QThreadPool::globalInstance()->start(CameraProcessorJob);
 }
 
 void Form::on_leExposureTime_returnPressed()
 {
     int exposureTime = ui->leExposureTime->text().toInt();
-    CameraProcessorThread->IndustryCamera.SetExposureTime(exposureTime);
+    IndustryCamera.SetExposureTime(exposureTime);
 }
 
 
@@ -203,6 +233,26 @@ void Form::on_leGain_returnPressed()
 
 void Form::on_leImageWidth_returnPressed()
 {
-    CameraProcessorThread->Width = ui->leImageWidth->text().toInt();
+    if (CameraProcessorJob != NULL)
+    {
+        CameraProcessorJob->MatWidth = ui->leImageWidth->text().toInt();
+    }
+}
+
+
+void Form::on_cbEnoughResize_toggled(bool checked)
+{
+    if (checked == true)
+    {
+        ui->leImageWidth->setEnabled(true);
+        ui->lbWidth->setEnabled(true);
+        ui->lbWidthUnit->setEnabled(true);
+    }
+    else
+    {
+        ui->leImageWidth->setEnabled(true);
+        ui->lbWidth->setEnabled(true);
+        ui->lbWidthUnit->setEnabled(true);
+    }
 }
 

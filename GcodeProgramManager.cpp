@@ -791,7 +791,7 @@ bool GcodeProgramManager::findExeGcodeAndTransmit()
 
     transmitGcode = convertGcodeToSyncConveyor(transmitGcode);
 
-    //updatePositionIntoSystemVariable(transmitGcode);
+    updatePositionIntoSystemVariable(transmitGcode);
 
 	deltaConnection->SendToRobot(transmitGcode);
 	gcodeOrder += 1;
@@ -954,7 +954,7 @@ void GcodeProgramManager::TransmitNextGcode()
 void GcodeProgramManager::UpdateSystemVariable(QString name, QString value)
 {
 	SaveGcodeVariable(name, value);
-    emit JustUpdateVariable();
+//    emit JustUpdateVariable();
 }
 
 void GcodeProgramManager::RespondVariableValue(QIODevice* s, QString name)
@@ -1213,9 +1213,9 @@ void GcodeProgramManager::SaveGcodeVariable(GcodeVariable gvar)
     QString robotName = mParent->Name;
     QString fullName = projectName + "." + robotName + "." + gvar.Name;
     fullName = fullName.replace(" ", "");
-    ElapsedTimer.start();
+//    ElapsedTimer.start();
     SoftwareManager::GetInstance()->ProgramVariableManager->AddVariable(fullName, gvar.Value);
-    qDebug() << "Var table time: " << ElapsedTimer.elapsed();
+//    qDebug() << "Var table time: " << ElapsedTimer.elapsed();
 	bool isNewVar = true;
 
     for (int i = 0; i < GcodeVariables.length(); i++)
@@ -1294,6 +1294,10 @@ void GcodeProgramManager::SelectGcodeProgramPath()
     LoadPrograms(QDir(dir));
 }
 
+/*
+ Update robot position in UI when gcode command is executed
+ */
+
 void GcodeProgramManager::updatePositionIntoSystemVariable(QString statement)
 {
 	QList<QString> pairs = statement.split(' ');
@@ -1313,12 +1317,7 @@ void GcodeProgramManager::updatePositionIntoSystemVariable(QString statement)
 
 	if (statement == "G28")
 	{
-		UpdateSystemVariable("#X", 0);
-		UpdateSystemVariable("#Y", 0);
-		UpdateSystemVariable("#Z", 0);
-		UpdateSystemVariable("#W", 0);
-        UpdateSystemVariable("#U", 0);
-        UpdateSystemVariable("#V", 0);
+        SaveGcodeVariable("#X=0;#Y=0;#Z=0;#W=0;#U=0;#V=0;");
 
         emit MoveToNewPosition(0, 0, 0, 0, 0, 0, f, a, s, e);
 		return;

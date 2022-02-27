@@ -71,7 +71,7 @@
           <widget class="QComboBox" name="cbCameraList">
            <property name="minimumSize">
             <size>
-             <width>200</width>
+             <width>150</width>
              <height>0</height>
             </size>
            </property>
@@ -88,9 +88,9 @@
           </widget>
          </item>
          <item row="7" column="3">
-          <widget class="QLabel" name="lbCameraName_3">
+          <widget class="QLabel" name="lbWidthUnit">
            <property name="enabled">
-            <bool>true</bool>
+            <bool>false</bool>
            </property>
            <property name="text">
             <string>px</string>
@@ -99,6 +99,9 @@
          </item>
          <item row="7" column="2">
           <widget class="QLineEdit" name="leImageWidth">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
            <property name="maximumSize">
             <size>
              <width>100</width>
@@ -163,9 +166,9 @@
           </widget>
          </item>
          <item row="7" column="0">
-          <widget class="QLabel" name="lbCameraName_2">
+          <widget class="QLabel" name="lbWidth">
            <property name="enabled">
-            <bool>true</bool>
+            <bool>false</bool>
            </property>
            <property name="text">
             <string>Width</string>
@@ -189,6 +192,13 @@
            </property>
            <property name="text">
             <string>192.168.50.1:8888</string>
+           </property>
+          </widget>
+         </item>
+         <item row="7" column="4">
+          <widget class="QCheckBox" name="cbEnoughResize">
+           <property name="text">
+            <string>Resize</string>
            </property>
           </widget>
          </item>

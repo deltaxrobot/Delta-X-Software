@@ -11,6 +11,19 @@ ObjectVariableTable::ObjectVariableTable(QObject *parent)
 	dialog->setLayout(gridLayout);
 
 	dialog->setWindowFlags(Qt::WindowStaysOnTopHint);
+
+    for (int i = 0; i < 100; i++)
+    {
+        ObjectVariable* ov = new ObjectVariable(i);
+
+        ObjectVariableWidgetList->push_back(ov);
+
+        ov->AddLayout(gridLayout, i);
+    }
+
+    QSpacerItem* space = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+    gridLayout->addItem(space, 101, 0);
+
 }
 
 ObjectVariableTable::~ObjectVariableTable()
@@ -23,18 +36,18 @@ void ObjectVariableTable::UpdateTable(std::vector<cv::RotatedRect> ObjectContain
 {
 	for (int i = 0; i < ObjectContainer.size(); i++)
 	{
-		if (i > ObjectVariableWidgetList->size() - 1)
-		{
-			ObjectVariable* ov = new ObjectVariable(i);
+        if (i > ObjectVariableWidgetList->size() - 1)
+            break;
 
-			ObjectVariableWidgetList->push_back(ov);
-
-			ov->AddLayout(gridLayout, i);
-		}
+        if (ObjectVariableWidgetList->at(i)->IsShow == false)
+            ObjectVariableWidgetList->at(i)->Show();
 	}
 
 	for (int i = 0; i < ObjectContainer.size(); i++)
 	{
+        if (i > ObjectVariableWidgetList->size() - 1)
+            break;
+
 		ObjectVariableWidgetList->at(i)->xValue->setText(QString::number(ObjectContainer.at(i).center.x));
 		ObjectVariableWidgetList->at(i)->yValue->setText(QString::number(ObjectContainer.at(i).center.y));
 
@@ -48,10 +61,12 @@ void ObjectVariableTable::UpdateTable(std::vector<cv::RotatedRect> ObjectContain
         ObjectVariableWidgetList->at(i)->aValue->setText(QString::number(ObjectContainer.at(i).angle));
 	}
 
-	while (ObjectContainer.size() < ObjectVariableWidgetList->size())
+    for (int i = ObjectContainer.size(); i < ObjectVariableWidgetList->size(); i++)
 	{
-		delete ObjectVariableWidgetList->last();
-		ObjectVariableWidgetList->removeLast();
+        if (i > ObjectVariableWidgetList->size() - 1)
+            break;
+
+        ObjectVariableWidgetList->at(i)->Hidden();
 	}
 }
 

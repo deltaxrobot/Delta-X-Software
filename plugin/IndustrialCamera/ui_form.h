@@ -41,15 +41,16 @@ public:
     QLabel *label_2;
     QComboBox *cbCameraList;
     QLabel *lbCameraName;
-    QLabel *lbCameraName_3;
+    QLabel *lbWidthUnit;
     QLineEdit *leImageWidth;
     QLabel *label_3;
     QSpacerItem *horizontalSpacer;
     QCheckBox *cbStream;
     QPushButton *pbConnectCamera;
-    QLabel *lbCameraName_2;
+    QLabel *lbWidth;
     QLineEdit *leCameraName;
     QLineEdit *leStreamAddress;
+    QCheckBox *cbEnoughResize;
     QFrame *frame;
     QGridLayout *gridLayout_3;
     QPushButton *pbShotImage;
@@ -137,7 +138,7 @@ public:
 
         cbCameraList = new QComboBox(scrollAreaWidgetContents);
         cbCameraList->setObjectName(QString::fromUtf8("cbCameraList"));
-        cbCameraList->setMinimumSize(QSize(200, 0));
+        cbCameraList->setMinimumSize(QSize(150, 0));
 
         gridLayout->addWidget(cbCameraList, 1, 2, 1, 1);
 
@@ -147,14 +148,15 @@ public:
 
         gridLayout->addWidget(lbCameraName, 2, 0, 1, 1);
 
-        lbCameraName_3 = new QLabel(scrollAreaWidgetContents);
-        lbCameraName_3->setObjectName(QString::fromUtf8("lbCameraName_3"));
-        lbCameraName_3->setEnabled(true);
+        lbWidthUnit = new QLabel(scrollAreaWidgetContents);
+        lbWidthUnit->setObjectName(QString::fromUtf8("lbWidthUnit"));
+        lbWidthUnit->setEnabled(false);
 
-        gridLayout->addWidget(lbCameraName_3, 7, 3, 1, 1);
+        gridLayout->addWidget(lbWidthUnit, 7, 3, 1, 1);
 
         leImageWidth = new QLineEdit(scrollAreaWidgetContents);
         leImageWidth->setObjectName(QString::fromUtf8("leImageWidth"));
+        leImageWidth->setEnabled(false);
         leImageWidth->setMaximumSize(QSize(100, 16777215));
         leImageWidth->setAlignment(Qt::AlignCenter);
 
@@ -186,11 +188,11 @@ public:
 
         gridLayout->addWidget(pbConnectCamera, 1, 0, 1, 1);
 
-        lbCameraName_2 = new QLabel(scrollAreaWidgetContents);
-        lbCameraName_2->setObjectName(QString::fromUtf8("lbCameraName_2"));
-        lbCameraName_2->setEnabled(true);
+        lbWidth = new QLabel(scrollAreaWidgetContents);
+        lbWidth->setObjectName(QString::fromUtf8("lbWidth"));
+        lbWidth->setEnabled(false);
 
-        gridLayout->addWidget(lbCameraName_2, 7, 0, 1, 1);
+        gridLayout->addWidget(lbWidth, 7, 0, 1, 1);
 
         leCameraName = new QLineEdit(scrollAreaWidgetContents);
         leCameraName->setObjectName(QString::fromUtf8("leCameraName"));
@@ -203,6 +205,11 @@ public:
         leStreamAddress->setEnabled(false);
 
         gridLayout->addWidget(leStreamAddress, 3, 2, 1, 1);
+
+        cbEnoughResize = new QCheckBox(scrollAreaWidgetContents);
+        cbEnoughResize->setObjectName(QString::fromUtf8("cbEnoughResize"));
+
+        gridLayout->addWidget(cbEnoughResize, 7, 4, 1, 1);
 
 
         verticalLayout_2->addLayout(gridLayout);
@@ -506,14 +513,15 @@ public:
         pbRefresh->setText(QString());
         label_2->setText(QCoreApplication::translate("Form", "Supported camera:", nullptr));
         lbCameraName->setText(QCoreApplication::translate("Form", "Camera Name", nullptr));
-        lbCameraName_3->setText(QCoreApplication::translate("Form", "px", nullptr));
+        lbWidthUnit->setText(QCoreApplication::translate("Form", "px", nullptr));
         leImageWidth->setText(QCoreApplication::translate("Form", "800", nullptr));
         label_3->setText(QCoreApplication::translate("Form", "Basler, Hikrobot", nullptr));
         cbStream->setText(QCoreApplication::translate("Form", "Stream", nullptr));
         pbConnectCamera->setText(QCoreApplication::translate("Form", "Connect", nullptr));
-        lbCameraName_2->setText(QCoreApplication::translate("Form", "Width", nullptr));
+        lbWidth->setText(QCoreApplication::translate("Form", "Width", nullptr));
         leCameraName->setText(QCoreApplication::translate("Form", "iCam", nullptr));
         leStreamAddress->setText(QCoreApplication::translate("Form", "192.168.50.1:8888", nullptr));
+        cbEnoughResize->setText(QCoreApplication::translate("Form", "Resize", nullptr));
         pbShotImage->setText(QCoreApplication::translate("Form", "Single Shot", nullptr));
         pbShotVideo->setText(QCoreApplication::translate("Form", "Continious Shot", nullptr));
         label_13->setText(QCoreApplication::translate("Form", "Interval", nullptr));

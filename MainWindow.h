@@ -53,6 +53,7 @@ public slots:
     void OpenProjectFromFile();
     void SaveProjectToFile();
     void SelectedTab(QAbstractButton* tabButton);
+    void Log(QString msg);
 
 private slots:
     void on_pbApplyOperator_clicked();
@@ -76,6 +77,8 @@ private slots:
     void on_pbAddOperatorGcodeProgram_clicked();
 
     void on_pbDeleteOperatorGcodeProgram_clicked();
+
+    void on_tbExpandLoggingBox_clicked();
 
 private:
     void openProject(QString fullName);

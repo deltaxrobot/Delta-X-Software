@@ -314,6 +314,13 @@ void MainWindow::SelectedTab(QAbstractButton *tabButton)
     }
 }
 
+void MainWindow::Log(QString msg)
+{
+    ui->teLoggingBox->moveCursor (QTextCursor::End);
+    ui->teLoggingBox->insertPlainText(msg);
+    ui->teLoggingBox->moveCursor(QTextCursor::End);
+}
+
 MainWindow::~MainWindow()
 {
     for (int i = 0; i < SoftwareProjectManager->RobotManagers.count(); i++)
@@ -500,6 +507,16 @@ void MainWindow::on_pbDeleteOperatorGcodeProgram_clicked()
     QList<QListWidgetItem*> items = ui->lwOperatorRobotGcodeProgram->selectedItems();
 
     ui->lwOperatorRobotGcodeProgram->takeItem(ui->lwOperatorRobotGcodeProgram->currentRow());
+
+}
+
+
+void MainWindow::on_tbExpandLoggingBox_clicked()
+{
+    if (ui->teLoggingBox->minimumHeight() == 300)
+        ui->teLoggingBox->setMinimumHeight(0);
+    else
+        ui->teLoggingBox->setMinimumHeight(300);
 
 }
 

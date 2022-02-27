@@ -27,6 +27,8 @@
 
 #include "CameraProcessor.h"
 #include <QMessageBox>
+#include <QThreadPool>
+#include <QElapsedTimer>
 
 namespace Ui {
 class Form;
@@ -45,14 +47,24 @@ public:
     void GetMessageFromOtherModule(QString cmd);
 
     // ---- Camera variables -----
-    CameraProcessor* CameraProcessorThread;
+//    CameraProcessor* CameraProcessorThread;
+
+    CameraProcessor* CameraProcessorJob;
+
+    XCamManager IndustryCamera;
 
     QTimer* CameraDisplayUpdatingTimer;
+    QElapsedTimer ElapseTimer;
+
+    bool IsLastJobDone = true;
 
 public slots:
     void GetEventFromUI();
+    void GetStateLastJob(bool state);
 signals:
     void EmitEventFromUI(QString cmd);
+    void CapturedImage(cv::Mat mat);
+    void StartedCapture();
 
 private slots:
     void on_pbRefresh_clicked();
@@ -73,6 +85,8 @@ private slots:
     void on_leGain_returnPressed();
 
     void on_leImageWidth_returnPressed();
+
+    void on_cbEnoughResize_toggled(bool checked);
 
 private:
     Ui::Form *ui;

@@ -132,7 +132,7 @@ void Authority::UpdateVariableToDisplay(QString key, QString value)
         return;
 
     //---- check if #var is new or not
-    QTreeWidgetItem* item;
+    QTreeWidgetItem* item = NULL;
     bool isNew = true;
     for (int i = 0; i < twOperatorParameter->topLevelItemCount(); i++)
     {
@@ -148,6 +148,9 @@ void Authority::UpdateVariableToDisplay(QString key, QString value)
     {
         item = new QTreeWidgetItem(twOperatorParameter);
     }
+
+    if (item == NULL)
+        return;
 
     item->setText(0, Vars.value(key));
     item->setText(1, value);

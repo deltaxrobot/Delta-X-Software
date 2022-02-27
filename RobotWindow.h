@@ -11,7 +11,7 @@
 #include <GcodeProgramManager.h>
 #include <DeltaVisualizer.h>
 #include <qmath.h>
-#include <hsvwindow.h>
+#include <FilterWindow.h>
 #include <qfiledialog.h>
 #include <opencv2/opencv.hpp>
 #include <opencv2/highgui.hpp>
@@ -43,6 +43,8 @@
 #include "SmartDialog.h"
 #include <QElapsedTimer>
 #include <QProcess>
+#include <QComboBox>
+#include "Encoder.h"
 
 #define JOY_STICK
 
@@ -135,6 +137,11 @@ public:
     QString GetRealNameWidget(QString name);
     QString GetRedefineNameWidget(QString name);
     QStringList GetShareDisplayWidgetNames();
+
+    // ----- Object Detecting ----
+
+
+
     // ---- MODULE ----
 
     //---- Connection ----
@@ -147,7 +154,8 @@ public:
 
     // ---- Gcode ----
 	GcodeProgramManager* DeltaGcodeManager;
-    QTimer* EditorTimer;
+    QTimer* VirtualEncoderTimer;
+    QTimer* UIEvent;
 
     // ---- Robot ----
     Robot RobotParamter;
@@ -169,8 +177,13 @@ public:
     QElapsedTimer ElapsedTimeEncoder;
     QTimer* ConvenyorTimer;
 
+    Encoder* Encoder1;
+    Encoder* Encoder2;
+
     float ConveyorDistanceToMove = 0;
     float ConveyorPositionBeforeMove = 0;
+
+    QWidget* ImageViewerWindow = NULL;
 
     // ---- Drawing ----
     DrawingExporter* DeltaDrawingExporter;
@@ -204,6 +217,9 @@ public slots:
     void SaveSetting();
     void LoadSetting();
 
+    // ---- Debug Log ----
+    void ExpandLogBox(bool value);
+
     // ---- Robot Connection ----
     void ConnectDeltaRobot();
     void NoticeConnected();
@@ -222,10 +238,8 @@ public slots:
 	void SearchGcodeFile();
 
 	void ExecuteSelectPrograms();
-	void ExecuteCurrentLine();
-    void AddGcodeLine();
+    void ExecuteCurrentLine();
 
-    void ChangeGcodeParameter();
     void RunSmartEditor();
     void StandardFormatEditor();
 
@@ -260,7 +274,6 @@ public slots:
     void GetValueInput(QString response);
 
     //----- Variable -----
-    void DisplayGcodeVariable();
 
     // ---- Conveyor ----
     void ConnectConveyor();
@@ -272,7 +285,7 @@ public slots:
     void SetConvenyorSpeed();
     void ConnectEncoder();
     void ResetEncoderPosition();
-    void ReceiveConveyorResponse(QString response);
+    void ReceiveEncoderResponse(QString response);
     void UpdatePointPositionOnConveyor(QLineEdit* x, QLineEdit* y, float angle, float distance);
 
     void CalculateConveyorDeviationAngle();
@@ -281,16 +294,18 @@ public slots:
     void UpdateCursorPosition(float x, float y);
 
     void ProcessShortcutKey();
-    void CalculateLostEncoderPositionWhenDetecting();
 
     void ProcessDetectedObjectFromExternalAI(QString msg);
     void AddDisplayObjectFromExternalScript(QString msg);
-    void SaveEncoderPositionWhenExternalAIDetect();
 
     void MoveExternalConveyor();
+    void CheckForTurnOffExternalConveyor();
     void ForwardExternalConveyor();
     void BackwardExternalConveyor();
     void TurnOffExternalConveyor();
+
+    void VirtualEncoder();
+    void ProcessEncoderValue(float value);
 	
     // ---- Slider ----
 	void ConnectSliding();
@@ -319,8 +334,10 @@ public slots:
 	void AddObjectsToROS(std::vector<cv::RotatedRect> ObjectContainer);
 	void DeleteAllObjectsInROS();
 
+    // ----- Object Detecting ----
+    void GetImageFromExternal(cv::Mat mat);
+
     // ----- Display ----
-    void GetImage(cv::Mat mat);
 
 	void ScaleUI();    
 	void ChangeParentForWidget(bool state);
@@ -329,6 +346,13 @@ public slots:
     void CloseLoadingPopup();
 
     void MaximizeTab(int index);
+
+    void OpenCameraWindow();
+
+    void SelectImageProviderOption(int option);
+
+    // ------ Timer -----
+    void ProcessUIEvent();
 
     // -------- Object Detecting --------
     void UseCameraFromPlugin(bool checked);
@@ -354,6 +378,9 @@ private:
 
 	void hideExampleWidgets();
 
+    // ---- Encoder/Conveyor ----
+    void updateEncoderUI();
+
     // ---- Test ----
 	void interpolateCircle();
 	void makeEffectExample();
@@ -368,6 +395,7 @@ private:
     void sendGcode(QString prefix, QString para1, QString para2);
     QObject* getObjectByName(QObject* parent, QString name);
     void initInputValueLabels();
+    void plugValue(QLineEdit* le, float value);
 
     //--------- Plugin -----------
     QStringList getPlugins(QString path);
@@ -386,8 +414,6 @@ private:
 
 public:
     Ui::RobotWindow *ui;
-private slots:
-    void on_pbSaveObjectDetectingParameters_clicked();
 };
 
 

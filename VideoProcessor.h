@@ -40,6 +40,7 @@ signals:
 public slots:
     void getCamera(cv::VideoCapture* cam);
     void getCamera(cv::VideoCapture* cam, int id, QLineEdit* w, QLineEdit* h);
+    void getCamera(cv::VideoCapture* cam, QLineEdit* w, QLineEdit* h);
     void putInfoOnImage(cv::Mat& mat, QList<cv::RotatedRect> objects, cv::Scalar color);
     void startVideo();
     void stopVideo();
@@ -48,6 +49,7 @@ public slots:
 private:
     bool loopRunning = true;
     cv::VideoCapture* camera = NULL;
+    bool isVideo = false;
 };
 
 #endif // VIDEOPROCESSOR_H

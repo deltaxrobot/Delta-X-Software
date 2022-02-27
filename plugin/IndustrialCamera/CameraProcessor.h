@@ -23,18 +23,23 @@
 #include "ImageUnity.h"
 #include <qtimer.h>
 #include <QTimer>
+#include <QElapsedTimer>
+#include <QRunnable>
+#include <QMutex>
 
-class CameraProcessor : public QObject
+class CameraProcessor : public QObject, public QRunnable
 {
     Q_OBJECT
 public:
     explicit CameraProcessor(QObject *parent = nullptr);
 
+    void run() override;
+
     void UpdateLabelImage(cv::Mat mat, QLabel* label);
 
     QTimer* Timer;
 
-    XCamManager IndustryCamera;
+    XCamManager* IndustryCamera;
     cv::Mat* openCvImage = NULL;
 
     int MatWidth = 800;
@@ -53,13 +58,17 @@ public:
 
 
     bool CaptureSignal = false;
-public slots:
 
+    QElapsedTimer elapseTime;
+public slots:
     void ShotImage();
-    void Loop();
-    void TimerFunction();
 signals:
+    void StartedCapture();
     void CapturedImage(cv::Mat mat);
+    void FinishReadingImage(QPixmap pixmap);
+    void UpdatedRatio(QString ratio);
+    void FinishJob(bool state);
+
 private:
 
 };

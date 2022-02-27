@@ -10,6 +10,9 @@ windows {
     INCLUDEPATH += E:\OpenCV\opencv-4.0\build\include
     LIBS += E:\OpenCV\opencv-4.0\build\x64\vc15\lib\opencv_world400.lib
     LIBS += E:\OpenCV\opencv-4.0\build\x64\vc15\lib\opencv_world400d.lib
+#INCLUDEPATH += E:\OpenCV\opencv-4.5.5\build\include\
+#LIBS += E:\OpenCV\opencv-4.5.5\build\x64\vc15\lib\opencv_world455.lib
+#LIBS += E:\OpenCV\opencv-4.5.5\build\x64\vc15\lib\opencv_world455d.lib
 
     include ($$PWD\3rd-party\QJoysticks\QJoysticks.pri)
 }
@@ -44,7 +47,11 @@ SOURCES += main.cpp\
     ComDevice.cpp \
     DrawingExporter.cpp \
     DrawingWidget.cpp \
+    Encoder.cpp \
+    FilterWindow.cpp \
     GcodeReference.cpp \
+    ImageProcessing.cpp \
+    ImageViewer.cpp \
     Layer.cpp \
     MainWindow.cpp \
     ObjectDetector.cpp \
@@ -70,7 +77,6 @@ SOURCES += main.cpp\
     UnityTool.cpp \
     geisttextedit.cpp \
     highlighter.cpp \
-    hsvwindow.cpp \
     robotmanager.cpp
 
 HEADERS  += \
@@ -83,13 +89,17 @@ HEADERS  += \
     DeltaVisualizer.h \
     DrawingExporter.h \
     DrawingWidget.h \
+    Encoder.h \
+    FilterWindow.h \
     GcodeReference.h \
     ImageUnity.h \
     GcodeProgram.h \
     GcodeProgramManager.h \
+    ImageViewer.h \
     Layer.h \
     MainWindow.h \
     ObjectDetector.h \
+    ImageProcessing.h \
     ObjectVariableTable.h \
     ProjectManager.h \
     Robot.h \
@@ -108,20 +118,19 @@ HEADERS  += \
     codeeditor.h \
     geisttextedit.h \
     highlighter.h \
-    hsvwindow.h \
     GcodeReference.h \
     robotmanager.h \
-    sdk/DeltaXPlugin.h
+    sdk/DeltaXPlugin.h \
 
 FORMS    += \
     AccountWindow.ui \
-    HSVWindow.ui \
+    FilterWindow.ui \
     MainWindow.ui \
     RobotWindow.ui \
-    hsvwindow.ui \
-        GcodeReference.ui \
+    GcodeReference.ui \
 
 RESOURCES += \
+    C:/Users/Admin/Downloads/rs.qrc \
     resource.qrc
 
 RC_ICONS = delta_x_logo_96x96.ico

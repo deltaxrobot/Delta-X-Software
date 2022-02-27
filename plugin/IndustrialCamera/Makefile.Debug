@@ -516,6 +516,11 @@ debug\moc_CameraProcessor.cpp: CameraProcessor.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qtimer.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qbasictimer.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QTimer \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QElapsedTimer \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qelapsedtimer.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QRunnable \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qrunnable.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutex \
 		debug\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2015_64\bin\moc.exe
 	C:\Qt\5.15.2\msvc2015_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include E:/Git/DeltaXSoftware/plugin/IndustrialCamera/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2015_64/mkspecs/win32-msvc -IE:/Git/DeltaXSoftware/plugin/IndustrialCamera -I"C:/Program Files/Basler/pylon 6/Development/include" -I"C:/Program Files/Basler/pylon 6/Development/include/pylon" -I"C:/Program Files (x86)/MVS/Development/Includes" -IE:/OpenCV/opencv-4.0/build/include -IC:/Qt/5.15.2/msvc2015_64/include -IC:/Qt/5.15.2/msvc2015_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtGui -IC:/Qt/5.15.2/msvc2015_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2015_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" CameraProcessor.h -o debug\moc_CameraProcessor.cpp
@@ -853,9 +858,15 @@ debug\moc_IndustrialCameraPlugin.cpp: IndustrialCameraPlugin.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsettings.h \
 		CameraProcessor.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QTimer \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QElapsedTimer \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QRunnable \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qrunnable.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutex \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QMessageBox \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qmessagebox.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qdialog.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QThreadPool \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qthreadpool.h \
 		..\..\sdk\DeltaXPlugin.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QString \
 		debug\moc_predefs.h \
@@ -1315,9 +1326,15 @@ debug\moc_form.cpp: form.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsettings.h \
 		CameraProcessor.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QTimer \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QElapsedTimer \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QRunnable \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qrunnable.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutex \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QMessageBox \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qmessagebox.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qdialog.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QThreadPool \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qthreadpool.h \
 		debug\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2015_64\bin\moc.exe
 	C:\Qt\5.15.2\msvc2015_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include E:/Git/DeltaXSoftware/plugin/IndustrialCamera/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2015_64/mkspecs/win32-msvc -IE:/Git/DeltaXSoftware/plugin/IndustrialCamera -I"C:/Program Files/Basler/pylon 6/Development/include" -I"C:/Program Files/Basler/pylon 6/Development/include/pylon" -I"C:/Program Files (x86)/MVS/Development/Includes" -IE:/OpenCV/opencv-4.0/build/include -IC:/Qt/5.15.2/msvc2015_64/include -IC:/Qt/5.15.2/msvc2015_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtGui -IC:/Qt/5.15.2/msvc2015_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2015_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" form.h -o debug\moc_form.cpp
@@ -1937,7 +1954,12 @@ debug\CameraProcessor.obj: CameraProcessor.cpp CameraProcessor.h \
 		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\types_c.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qtimer.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qbasictimer.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QTimer
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QTimer \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QElapsedTimer \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qelapsedtimer.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QRunnable \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qrunnable.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutex
 
 debug\IndustrialCameraPlugin.obj: IndustrialCameraPlugin.cpp IndustrialCameraPlugin.h \
 		form.h \
@@ -2272,9 +2294,15 @@ debug\IndustrialCameraPlugin.obj: IndustrialCameraPlugin.cpp IndustrialCameraPlu
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsettings.h \
 		CameraProcessor.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QTimer \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QElapsedTimer \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QRunnable \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qrunnable.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutex \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QMessageBox \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qmessagebox.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qdialog.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QThreadPool \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qthreadpool.h \
 		..\..\sdk\DeltaXPlugin.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QString
 
@@ -2728,9 +2756,15 @@ debug\form.obj: form.cpp form.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsettings.h \
 		CameraProcessor.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QTimer \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QElapsedTimer \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QRunnable \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qrunnable.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutex \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QMessageBox \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qmessagebox.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qdialog.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QThreadPool \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qthreadpool.h \
 		ui_form.h
 
 debug\xcam.obj: xcam.cpp xcam.h

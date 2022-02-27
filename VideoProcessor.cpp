@@ -4,7 +4,7 @@ VideoProcessor::VideoProcessor(QObject *parent) : QObject(parent)
 {
     Timer = new QTimer(NULL);
     Timer->connect(Timer, SIGNAL(timeout()), this, SLOT(TimerFunction()));
-    Timer->start(10);
+    Timer->start(50);
 }
 
 void VideoProcessor::getCamera(cv::VideoCapture *cam)
@@ -17,6 +17,10 @@ void VideoProcessor::getCamera(cv::VideoCapture *cam, int id, QLineEdit* w, QLin
     emit startingOpenCamera();
     camera = cam;
     camera->open(id);
+    if (!camera->isOpened())
+    {
+
+    }
     camera->set(cv::CAP_PROP_FRAME_WIDTH, w->text().toInt());
     camera->set(cv::CAP_PROP_FRAME_HEIGHT, h->text().toInt());
 
@@ -24,6 +28,21 @@ void VideoProcessor::getCamera(cv::VideoCapture *cam, int id, QLineEdit* w, QLin
     h->setText(QString::number((int)camera->get(cv::CAP_PROP_FRAME_HEIGHT)));
 
     emit finishingOpenCamera();
+}
+
+void VideoProcessor::getCamera(cv::VideoCapture *cam, QLineEdit *w, QLineEdit *h)
+{
+    emit startingOpenCamera();
+    camera = cam;
+    camera->set(cv::CAP_PROP_FRAME_WIDTH, w->text().toInt());
+    camera->set(cv::CAP_PROP_FRAME_HEIGHT, h->text().toInt());
+
+    w->setText(QString::number((int)camera->get(cv::CAP_PROP_FRAME_WIDTH)));
+    h->setText(QString::number((int)camera->get(cv::CAP_PROP_FRAME_HEIGHT)));
+
+    emit finishingOpenCamera();
+
+    isVideo = true;
 }
 
 void VideoProcessor::putInfoOnImage(cv::Mat& mat, QList<cv::RotatedRect> objects, cv::Scalar color)
@@ -78,11 +97,12 @@ void VideoProcessor::TimerFunction()
             if (camera == NULL)
                 return;
 
-            if (camera->isOpened() == false)
+            if (camera->isOpened() == false && isVideo == false)
             {
                 emit cameraClosed();
                 return;
             }
+
 
             cv::Mat inFrame;
 

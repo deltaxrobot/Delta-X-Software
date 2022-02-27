@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QObject>
+#include <QSpacerItem>
 #include <qlabel.h>
 #include <QGridLayout>
 #include <opencv2/opencv.hpp>
@@ -62,6 +63,32 @@ public:
 		layout->addWidget(aVar, row, 5);
 		layout->addWidget(aValue, row, 6);
 	}
+
+    void Hidden()
+    {
+        IsShow = false;
+        name->hide();
+        xVar->hide();
+        xValue->hide();
+        yVar->hide();
+        yValue->hide();
+        aVar->hide();
+        aValue->hide();
+    }
+
+    void Show()
+    {
+        IsShow = true;
+        name->show();
+        xVar->show();
+        xValue->show();
+        yVar->show();
+        yValue->show();
+        aVar->show();
+        aValue->show();
+    }
+
+    bool IsShow = true;
 	
 	QGridLayout* Layout;
 

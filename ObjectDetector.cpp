@@ -6,7 +6,7 @@ ObjectDetector::ObjectDetector(RobotWindow *parent)
     mParent = parent;
 
     // ---------- Blob Filter Window---------
-	ParameterPanel = new HSVWindow(parent);
+    ParameterPanel = new FilterWindow(parent);
 	connect(ParameterPanel, SIGNAL(ValueChanged(int, int, int, int, int, int)), this, SLOT(SetHSV(int, int, int, int, int, int)));
 	connect(ParameterPanel, SIGNAL(ValueChanged(int)), this, SLOT(SetThreshold(int)));
 
@@ -59,6 +59,13 @@ ObjectDetector::ObjectDetector(RobotWindow *parent)
     connect(VideoDisplayThread, SIGNAL(neededUpdatePixmapToLabel(QLabel*, QPixmap)), this, SLOT(UpdatePixmapToLabel(QLabel*, QPixmap)));
 
     VideoDisplayThread->thread()->start();
+
+    // -------- Image Processing Thread ------
+    ImageProcessingThread = new ImageProcessing();
+    ImageProcessingThread->moveToThread(new QThread(this));
+    connect(ImageProcessingThread->thread(), SIGNAL(finished()), ImageProcessingThread, SLOT(deleteLater()));
+    connect(this, &ObjectDetector::RequestResizeImage, ImageProcessingThread, &ImageProcessing::ResizeImage);
+    connect(this, &ObjectDetector::RequestGetImage, ImageProcessingThread, &ImageProcessing::GetImage);
 }
 
 ObjectDetector::~ObjectDetector()
@@ -75,14 +82,33 @@ ObjectDetector::~ObjectDetector()
 void ObjectDetector::LoadTestImage()
 {
 	QString imageName;
-	imageName = QFileDialog::getOpenFileName(this, tr("Open Image"), "", tr("Image Files (*.png *.jpg *.bmp)"));
+    imageName = QFileDialog::getOpenFileName(this, tr("Open Image/Video"), "", tr("Image Files (*.png *.jpg *.bmp *.avi *.mp4)"));
 
 	if (imageName == "")
 		return;
 
-	cv::String imgName = imageName.toStdString();
-	captureImage = cv::imread(imgName, cv::IMREAD_COLOR);
-	processImage();
+    if (imageName.contains(".avi") || imageName.contains(".mp4"))
+    {
+        Camera->open(imageName.toStdString());
+
+        if (!Camera->isOpened())
+        {
+            return;
+        }
+
+        VideoProcessorThread->getCamera(Camera, leWidth, leHeight);
+        UpdateRatios(Camera->get(cv::CAP_PROP_FRAME_WIDTH), Camera->get(cv::CAP_PROP_FRAME_HEIGHT));
+        ChangeCameraWidgetHeight(QString::number(CameraWidgetHeight));
+
+
+        IsCameraPause = false;
+    }
+    else
+    {
+        cv::String imgName = imageName.toStdString();
+        captureImage = cv::imread(imgName, cv::IMREAD_COLOR);
+        processImage();
+    }
 }
 
 void ObjectDetector::LoadCamera2()
@@ -112,6 +138,7 @@ void ObjectDetector::LoadCamera2()
 
 		if (ok && !text.isEmpty())
         {
+            // Get webcam ID
             QString cameraIDText = text.mid(0, text.indexOf(" - "));
             int cameraID = cameraIDText.toInt();
 
@@ -205,13 +232,7 @@ void ObjectDetector::GetImage(cv::Mat mat)
     if (IsCameraPause == true)
         return;
 
-    if (captureImage.empty() == false)
-        captureImage.release();
-
-    captureImage = mat;
-
-    EncoderPositionAtCameraCapture = EncoderPosition;
-
+    emit RequestGetImage(mat);
 }
 
 void ObjectDetector::PauseCamera()
@@ -249,13 +270,16 @@ void ObjectDetector::stopCamera()
 
     VideoProcessorThread->stopVideo();
 }
-
+/**
+ * Get raw image (Mat type) after resize.
+ * Post processing on image.
+ * Get object on image.
+ * Update data to storeage.
+ */
 void ObjectDetector::processImage()
 {
-    //ElapsedTimer.start();
     if (cameraWidget->pixmap() != nullptr && isFirstLoad == true)
-	{
-        //cameraWidget->InitParameter();
+    {
 		isFirstLoad = false;
 	}
 
@@ -269,37 +293,38 @@ void ObjectDetector::processImage()
         CalculateMappingMatrix();
     }
 
-    //qDebug() << "matrix: " << ElapsedTimer.elapsed();
-
-
     if (IsPerspectiveMode == true)
     {
         transformPerspective(captureImage, PperspectivePoints, calibImage);
+        qDebug() << "Perspective Time: " << ElapsedTimer.elapsed();
     }
     else
     {
         calibImage = captureImage.clone();
     }
 
-    //qDebug() << "transform: " << ElapsedTimer.elapsed();
-
     filterMat = calibImage.clone();
     resultImage = calibImage.clone();
-    //qDebug() << "copy: " << ElapsedTimer.elapsed();
+    qDebug() << "Clone Time: " << ElapsedTimer.elapsed();
 
     //----------------------
     // Detect objects in image and manage them
     if (rbBlobFilter->isChecked())
     {
         postProcessing();
-        //qDebug() << "post processing: " << ElapsedTimer.elapsed();
+        qDebug() << "Post Processing Time: " << ElapsedTimer.elapsed();
         detectBlobObjects(filterMat);
+        qDebug() << "Detect Blob Time: " << ElapsedTimer.elapsed();
 
         processDetectingObjectOnCamera(resultImage, *DisplayObjects, BLUE_COLOR);
+        qDebug() << "Process Detect Time: " << ElapsedTimer.elapsed();
         DisplayObjects->clear();
         UpdateTrackingInfo();
 
+        qDebug() << "Tracking Info Time: " << ElapsedTimer.elapsed();
         UpdateDetectingResultToWidgets();
+        qDebug() << "Display Time: " << ElapsedTimer.elapsed();
+        return;
     }
     else if (rbCircleFilter->isChecked())
     {
@@ -315,8 +340,7 @@ void ObjectDetector::processImage()
         {
             static int i = 0;
             putText(calibImage, std::to_string(i++), cv::Point(50, 50), cv::FONT_HERSHEY_SIMPLEX, 1, cv::Scalar(255, 0, 0), 2);
-            qDebug() << "detect: " << ElapsedTimer.elapsed();
-            ElapsedTimer.start();
+
             sendImageToExternalScript(calibImage);
         }
         else if (cbImageSourceForExternal->currentText() == "Filter Image")
@@ -325,27 +349,28 @@ void ObjectDetector::processImage()
 
             sendImageToExternalScript(filterMat);
         }
+
+        qDebug() << "Detect Time: " << ElapsedTimer.elapsed();
+        processDetectingObjectOnCamera(resultImage, *DisplayObjects, BLUE_COLOR);
+        qDebug() << "Process Detect Time: " << ElapsedTimer.elapsed();
+        UpdateTrackingInfo();
+        qDebug() << "Tracking Info Time: " << ElapsedTimer.elapsed();
+        UpdateDetectingResultToWidgets();
+        qDebug() << "Display Time: " << ElapsedTimer.elapsed();
     }
-    //qDebug() << "detect: " << ElapsedTimer.elapsed();
 
-    ElapsedTimer.start();
-    processDetectingObjectOnCamera(resultImage, *DisplayObjects, BLUE_COLOR);
-    qDebug() << "time in ms: " << ElapsedTimer.elapsed();
-    //DisplayObjects->clear();
-    UpdateTrackingInfo();
-
-    UpdateDetectingResultToWidgets();
 
 }
 
 void ObjectDetector::UpdateEvent()
 {
     processImage();
-
-    if (IsEncoderEnable == false)
-    {
-        UpdateObjectPositionOnConveyor();
-    }
+    qDebug() << "Process Image Time: " << ElapsedTimer.elapsed();
+//    if (IsEncoderEnable == false)
+//    {
+//        UpdateObjectPositionOnConveyor();
+//        qDebug() << "Update Object Time: " << ElapsedTimer.elapsed();
+//    }
 
     if (!cameraWindow->isVisible() && cameraWidget->parentWidget() == cameraWindow)
     {
@@ -517,10 +542,10 @@ void ObjectDetector::SetHSV(int minH, int maxH, int minS, int maxS, int minV, in
 
 	filterMethod = HSV_SPACE;
 
-    if (calibImage.empty())
+    if (filterMat.empty())
         return;
 
-    cvtColor(calibImage, filterMat, CV_BGR2HSV);
+    //cvtColor(calibImage, filterMat, CV_BGR2HSV);
 
 	cv::Scalar minScalar(minH, minS, minV);
 	cv::Scalar maxScalar(maxH, maxS, maxV);
@@ -917,14 +942,14 @@ void ObjectDetector::TurnCalibDisplay(bool state)
 
 void ObjectDetector::ExpandCameraWidget(bool isExpand)
 {
-	if (isExpand == true)
-	{
-        cameraWidget->ChangeSize(600 * CameraRatio, 600);
-	}
-	else
-	{
-        cameraWidget->ChangeSize(300 * CameraRatio, 300);
-    }
+//	if (isExpand == true)
+//	{
+//        cameraWidget->ChangeSize(600 * CameraRatio, 600);
+//	}
+//	else
+//	{
+//        cameraWidget->ChangeSize(300 * CameraRatio, 300);
+//    }
 }
 
 void ObjectDetector::ChangeCameraWidgetHeight(QString valueS)
@@ -942,7 +967,6 @@ void ObjectDetector::OpenCameraWindow()
 {
     cameraWidget->setParent(cameraWindow);
 	cameraWindow->show();
-
 
     //lbResultImage->ChangeSize(800, 600);
 }
@@ -969,56 +993,12 @@ void ObjectDetector::UpdatePixmapToLabel(QLabel *lb, QPixmap pm)
     lb->setPixmap(pm);
 }
 
-void ObjectDetector::UpdateObjectPositionOnConveyor()
+void ObjectDetector::UpdateObjectPositionOnConveyor(QPointF offset)
 {
-    float distance = 0;
 
-    if (IsEncoderEnable == false)
-    {
-        distance = ConveyorVel * ((float)CONVEYOR_TIMER_INTERVAL / 1000);
-    }
-    else
-    {
-        distance = MovingDistance;
-    }
+    ObjectManager->UpdateNewObjectMoving(offset.x(), offset.y());
 
-    float xOffset1 = 100;
-    float yOffset1 = 100;
-    float xOffset2 = 100;
-    float yOffset2 = 100;
-    float xOffset = 100;
-    float yOffset = 100;
-
-    UpdatePointPositionOnConveyor(xOffset2, yOffset2, DeviationAngle, distance);
-
-    xOffset = xOffset2 - xOffset1;
-    yOffset = yOffset2 - yOffset1;
-
-    if (DeviationAngle != 0)
-    {
-        ObjectManager->UpdateNewObjectMoving(xOffset, yOffset);
-    }
-    else
-    {
-        if (DirName.toLower() == "x")
-        {
-            ObjectManager->UpdateNewObjectMoving(distance, 0);
-        }
-        else
-        {
-            ObjectManager->UpdateNewObjectMoving(0, distance);
-        }
-    }
-
-	emit ObjectValueChanged(ObjectManager->ObjectContainer);
-
-	//Debug(QString::number((distance)));
-
-}
-
-void ObjectDetector::EncoderEnabled(bool status)
-{
-    IsEncoderEnable = status;
+    emit ObjectValueChanged(ObjectManager->ObjectContainer);
 }
 
 void ObjectDetector::SaveSetting(QString fileName)
@@ -1132,6 +1112,7 @@ void ObjectDetector::GetExternalScriptSocket(QTcpSocket *socket)
 
 void ObjectDetector::OpenParameterPanel()
 {	
+    ParameterPanel->SetImage(captureImage.clone());
 	ParameterPanel->exec();
 }
 
@@ -1218,6 +1199,57 @@ void ObjectDetector::UpdatePointPositionOnConveyor(float& x, float& y, float ang
 
     x = p2X;
     y = p2Y;
+}
+
+void ObjectDetector::TaskExecute()
+{
+    QString taskName = TaskList[TaskOrder];
+
+    if (taskName == "ResizeImage")
+    {
+        emit RequestResizeImage(captureImage);
+    }
+    else if (taskName == "WarpImage")
+    {
+
+    }
+    else if (taskName == "HSVImage")
+    {
+
+    }
+    else if (taskName == "ThresholdImage")
+    {
+
+    }
+    else if (taskName == "DetectBlobs")
+    {
+
+    }
+    else if (taskName == "DetectCircles")
+    {
+
+    }
+    else if (taskName == "SendImage")
+    {
+
+    }
+    else if (taskName == "GetImage")
+    {
+
+    }
+    else if (taskName == "ObjectMapping")
+    {
+
+    }
+    else if (taskName == "DisplayImage")
+    {
+
+    }
+}
+
+void ObjectDetector::UpdateTaskList()
+{
+
 }
 
 void ObjectDetector::drawXAxis(cv::Mat resultsMat)
@@ -1307,11 +1339,78 @@ void ObjectDetector::transformPerspective(cv::Mat processMat, std::vector<cv::Po
 	outputQuad[2] = center + cv::Point2f(halfLen, halfLen);
 	outputQuad[3] = center + cv::Point2f(halfLen, -halfLen);
 
-	cv:: Mat lambda = cv::Mat::zeros(processMat.rows, processMat.cols, processMat.type());
+    cv:: Mat lambda = cv::Mat::zeros(processMat.rows, processMat.cols, processMat.type());
 
-	lambda = cv::getPerspectiveTransform(inputQuad, outputQuad);
+    lambda = cv::getPerspectiveTransform(inputQuad, outputQuad);
+    qDebug() << "Cal matrix: " << ElapsedTimer.elapsed();
+    cv::warpPerspective(processMat, transMat, lambda, transMat.size(), cv::INTER_NEAREST);
+    qDebug() << "Warp Time: " << ElapsedTimer.elapsed();
+}
 
-    warpPerspective(processMat, transMat, lambda, transMat.size(), cv::INTER_NEAREST);
+void ObjectDetector::calculatePerspectiveTransformMatrix(std::vector<cv::Point> points)
+{
+    if (points.size() < 3)
+        return;
+
+    cv::Point2f outputQuad[4];
+    cv::Point2f inputQuad[4];
+
+    inputQuad[0] = points[0];
+    inputQuad[1] = points[1];
+    inputQuad[2] = points[2];
+    inputQuad[3] = points[3];
+
+    // ---------Find new position-------------------
+    cv::Point2f center;
+    center.x = (points[0].x + points[1].x + points[2].x + points[3].x)/4;
+    center.y = (points[0].y + points[1].y + points[2].y + points[3].y) / 4;
+
+    int maxLength = 0;
+
+    for (int i = 0; i < 4; i++)
+    {
+        QLineF line;
+        line.setP1(QPoint(inputQuad[i].x, inputQuad[i].y));
+        if (i == 3)
+        {
+            line.setP2(QPoint(inputQuad[0].x, inputQuad[0].y));
+        }
+        else
+        {
+            line.setP2(QPoint(inputQuad[i + 1].x, inputQuad[i + 1].y));
+        }
+
+        int len = line.length();
+
+        if (len > maxLength)
+        {
+            maxLength = len;
+        }
+    }
+
+    int halfLen = maxLength / 2;
+
+    outputQuad[0] = center + cv::Point2f(-halfLen, -halfLen);
+    outputQuad[1] = center + cv::Point2f(-halfLen, halfLen);
+    outputQuad[2] = center + cv::Point2f(halfLen, halfLen);
+    outputQuad[3] = center + cv::Point2f(halfLen, -halfLen);
+
+    PerspectiveTransformationMatrix = cv::getPerspectiveTransform(inputQuad, outputQuad);
+}
+
+cv::Point2f ObjectDetector::warpPerspective(cv::Point2f p, cv::Mat matrix)
+{
+    if (matrix.cols != 3 && matrix.rows != 3)
+        return cv::Point2f(0, 0);
+
+    float x = 0, y = 0;
+
+    float divisor = matrix.at<float>(2, 0) * p.x + matrix.at<float>(2, 1) * p.y + matrix.at<float>(2, 2);
+
+    x = float(matrix.at<float>(0, 0) * p.x + matrix.at<float>(0, 1) * p.y + matrix.at<float>(0, 2)) / divisor;
+    y = float(matrix.at<float>(1, 0) * p.x + matrix.at<float>(1, 1) * p.y + matrix.at<float>(1, 2)) / divisor;
+
+    return cv::Point2f(x, y);
 }
 
 void ObjectDetector::MakeBrightProcessRegion(cv::Mat resultsMat)
@@ -1356,7 +1455,9 @@ void ObjectDetector::postProcessing()
 {
     if (filterMethod == HSV_SPACE)
     {
+        ElapsedTimer.start();
         SetHSV(HSVValue[0], HSVValue[1], HSVValue[2], HSVValue[3], HSVValue[4], HSVValue[5]);
+        qDebug() << ElapsedTimer.elapsed();
     }
 
     if (filterMethod == THRESHOLD_SPACE)
@@ -1467,8 +1568,6 @@ void ObjectDetector::sendImageToExternalScript(cv::Mat input)
 
     PythonTcpClient->write((char*)paras, len);
 
-    char* pos = (char*)input.data;
-
     int colByte = input.cols*input.channels() * sizeof(uchar);
     for (int i = 0; i < input.rows; i++)
     {
@@ -1530,9 +1629,6 @@ float ObjectDetector::processDetectingObjectOnCamera(cv::Mat& mat, QList<cv::Rot
                 }
             }
 
-
-
-
             int xRealObject = 0;
             int yRealObject = 0;
 
@@ -1550,9 +1646,10 @@ float ObjectDetector::processDetectingObjectOnCamera(cv::Mat& mat, QList<cv::Rot
             realObject.size.width = object.size.width * PnRRatio;
             realObject.angle = object.angle;
 
-            float delta = EncoderPosition - EncoderPositionAtCameraCapture;
+            QPointF offset = Encoder1->CalculateOffset(Encoder1->GetMeasuredDistance());
 
-            UpdatePointPositionOnConveyor(realObject.center.x, realObject.center.y, DeviationAngle, delta);
+            realObject.center.x += offset.x();
+            realObject.center.y += offset.y();
 
             // Add object to object list if it is new object
             ObjectManager->AddNewObject(realObject);
@@ -1566,10 +1663,10 @@ float ObjectDetector::processDetectingObjectOnCamera(cv::Mat& mat, QList<cv::Rot
                 putText(mat, std::to_string((int)xRealObject) + "," + std::to_string((int)yRealObject) + "," + std::to_string((int)realObject.angle), cv::Point(object.center.x - 40, object.center.y), cv::FONT_HERSHEY_SIMPLEX, 0.4, BLACK_COLOR, 2);
                 putText(mat, std::to_string((int)xRealObject) + "," + std::to_string((int)yRealObject) + "," + std::to_string((int)realObject.angle), cv::Point(object.center.x - 40, object.center.y), cv::FONT_HERSHEY_SIMPLEX, 0.4, WHITE_COLOR, 1);
 
-
             }
         }
     }
+
     return 0;
 }
 
@@ -1694,8 +1791,8 @@ void ObjectDetector::UpdateDetectingResultToWidgets()
 
     if (ParameterPanel->isHidden() == false)
     {
-        VideoDisplayThread->UpdateLabelImage(filterMat, ParameterPanel->lbProcessImage, 1);
-        VideoDisplayThread->UpdateLabelImage(calibImage, ParameterPanel->lbOriginImage, 2);
+//        VideoDisplayThread->UpdateLabelImage(filterMat, ParameterPanel->lbProcessImage, 1);
+//        VideoDisplayThread->UpdateLabelImage(calibImage, ParameterPanel->lbOriginImage, 2);
     }
 }
 

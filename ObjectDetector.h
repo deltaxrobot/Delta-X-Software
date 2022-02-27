@@ -2,7 +2,7 @@
 
 #include <QObject>
 #include <qwidget.h>
-#include <hsvwindow.h>
+#include <FilterWindow.h>
 #include <qfiledialog.h>
 #include <qscrollarea.h>
 #include <opencv2/opencv.hpp>
@@ -30,6 +30,8 @@
 #include <QTcpSocket>
 #include <QProcess>
 #include <QTcpServer>
+#include "Encoder.h"
+#include "ImageProcessing.h"
 
 #define RED_COLOR       cv::Scalar(0, 0, 255)
 #define GREEN_COLOR     cv::Scalar(0, 255, 0)
@@ -125,8 +127,10 @@ public:
 
     QProcess *ExternalScriptProcess;
 
+    ImageProcessing* ImageProcessingThread;
+
     // ---- Table ----
-	HSVWindow* ParameterPanel;
+	FilterWindow* ParameterPanel;
 	BlobManager* ObjectManager;
 
     // ---- Timer ----
@@ -157,6 +161,8 @@ public:
     float CameraRatio = 4.0/3;
     int CameraWidgetHeight = 300;
 
+    cv:: Mat PerspectiveTransformationMatrix;
+
 	QScrollArea* CameraScrollArea;
 
     bool IsPerspectiveMode = false;
@@ -176,6 +182,8 @@ public:
     // ------- Encoder ---------
     float EncoderPositionAtCameraCapture = 0;
 
+    Encoder* Encoder1 = NULL;
+
     // ---- Object ----
     QList<cv::RotatedRect> *DisplayObjects;
     std::vector<cv::Vec3f>  CircleObjects;
@@ -186,7 +194,15 @@ public:
     int minObjectArea;
     int maxObjectArea;
 
+    // ---- FLow Processing ----
+
+    int TaskOrder = -1;
+
 public slots:
+    // ---- FLow Processing ----
+    void TaskExecute();
+    void UpdateTaskList();
+
     // ---- Camera ----
 	void LoadTestImage();
     void LoadCamera2();
@@ -241,9 +257,7 @@ public slots:
     void CalculateMappingMatrix();
 
     // ---- Tracking ----
-	void UpdateObjectPositionOnConveyor();
-
-    void EncoderEnabled(bool status);
+    void UpdateObjectPositionOnConveyor(QPointF offset);
 
     // ---- Setting ----
 
@@ -260,6 +274,11 @@ signals:
     void openCamera(cv::VideoCapture* cam);
     void display(cv::Mat mat, QLabel* displayWidget);
     void display2(QLabel* displayWidget);
+
+    void RequestGetImage(cv::Mat mat);
+    void RequestResizeImage(cv::Mat mat);
+
+
 private:
     // ---- Camera ----
     void stopCamera();
@@ -268,6 +287,8 @@ private:
     void SelectProcessRegion(cv::Mat processMat);
 	void processImage();
     void transformPerspective(cv::Mat processMat, std::vector<cv::Point> points, cv::Mat& transMat);
+    void calculatePerspectiveTransformMatrix(std::vector<cv::Point> points);
+    cv::Point2f warpPerspective(cv::Point2f p, cv::Mat matrix);
     void MakeBrightProcessRegion(cv::Mat resultsMat);
     void postProcessing();
     void detectBlobObjects(cv::Mat input);

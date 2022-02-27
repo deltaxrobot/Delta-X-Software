@@ -9,10 +9,13 @@
 #define NEW_WINDOW
 #define JOY_STICK
 
+using namespace std;
+using namespace cv;
+
 int main(int argc, char *argv[])
 {
     QCoreApplication::addLibraryPath("./");
-	QApplication a(argc, argv);
+    QApplication a(argc, argv);
     QSurfaceFormat::setDefaultFormat(QQuick3D::idealSurfaceFormat());
 
 #ifdef NEW_WINDOW
@@ -20,7 +23,7 @@ int main(int argc, char *argv[])
 #else
     RobotWindow w;
 #endif
-	w.show();		
+    w.show();
 
-	return a.exec();
+    return a.exec();
 }

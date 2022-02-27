@@ -26,6 +26,7 @@ public slots:
 signals:
     //void EmitCommand(QString cmd);
     void CapturedImage(cv::Mat mat);
+    void StartedCapture();
 private:
     Form* pluginForm;
 
