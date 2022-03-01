@@ -32,6 +32,8 @@
 #include <QProcess>
 #include <QTcpServer>
 
+#include <QMap>
+
 #define RED_COLOR       cv::Scalar(0, 0, 255)
 #define GREEN_COLOR     cv::Scalar(0, 255, 0)
 #define BLUE_COLOR      cv::Scalar(255, 0, 0)
@@ -81,9 +83,25 @@ public:
 
     }
 
+    cv::Mat OutputMat;
+    cv::Mat InputMat;
+
+    QMap<QString, Task*> PreviousTaskMap;
+    QMap<QString, Task*> NextTaskMap;
+
+    Task* getLastTask(QString name)
+    {
+
+    }
+
     QString getName()
     {
         return name;
+    }
+
+    bool isLastTaskName(QString lastName)
+    {
+
     }
 
     cv::Mat getMat(QString name)

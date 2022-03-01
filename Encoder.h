@@ -21,6 +21,7 @@ public:
     float GetStep();
     float GetMeasuredDistance();
     QPointF GetOffset();
+    QPointF CalculateOffset(float distance);
 
 public slots:
     void MarkPosition();
@@ -35,9 +36,6 @@ private:
     float measurePosition = 0;
     float deviationAngle = 0;
     QPointF offset;
-
-    void calculateOffset();
-
 };
 
 #endif

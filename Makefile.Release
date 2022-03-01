@@ -65,6 +65,7 @@ SOURCES       = 3rd-party\QJoysticks\src\QJoysticks.cpp \
 		Encoder.cpp \
 		FilterWindow.cpp \
 		GcodeReference.cpp \
+		ImageProcessing.cpp \
 		ImageViewer.cpp \
 		Layer.cpp \
 		MainWindow.cpp \
@@ -147,6 +148,7 @@ OBJECTS       = release\QJoysticks.obj \
 		release\Encoder.obj \
 		release\FilterWindow.obj \
 		release\GcodeReference.obj \
+		release\ImageProcessing.obj \
 		release\ImageViewer.obj \
 		release\Layer.obj \
 		release\MainWindow.obj \
@@ -276,6 +278,7 @@ DIST          = SettingTree.json 3rd-party\QJoysticks\src\QJoysticks.h \
 		Encoder.cpp \
 		FilterWindow.cpp \
 		GcodeReference.cpp \
+		ImageProcessing.cpp \
 		ImageViewer.cpp \
 		Layer.cpp \
 		MainWindow.cpp \
@@ -399,9 +402,9 @@ all: Makefile.Release  release\DeltaRobotSoftware.exe
 
 release\DeltaRobotSoftware.exe: C:\Qt\5.15.2\msvc2015_64\lib\Qt5OpenGL.lib C:\Qt\5.15.2\msvc2015_64\lib\Qt5QuickWidgets.lib C:\Qt\5.15.2\msvc2015_64\lib\Qt5Widgets.lib C:\Qt\5.15.2\msvc2015_64\lib\Qt5Multimedia.lib C:\Qt\5.15.2\msvc2015_64\lib\Qt5Quick3D.lib C:\Qt\5.15.2\msvc2015_64\lib\Qt5Quick3DRuntimeRender.lib C:\Qt\5.15.2\msvc2015_64\lib\Qt5Quick3DAssetImport.lib C:\Qt\5.15.2\msvc2015_64\lib\Qt5Quick3DRender.lib C:\Qt\5.15.2\msvc2015_64\lib\Qt5Quick3DUtils.lib C:\Qt\5.15.2\msvc2015_64\lib\Qt5Quick.lib C:\Qt\5.15.2\msvc2015_64\lib\Qt5Gui.lib C:\Qt\5.15.2\msvc2015_64\lib\Qt5SerialPort.lib C:\Qt\5.15.2\msvc2015_64\lib\Qt5QmlModels.lib C:\Qt\5.15.2\msvc2015_64\lib\Qt5Qml.lib C:\Qt\5.15.2\msvc2015_64\lib\Qt5Network.lib C:\Qt\5.15.2\msvc2015_64\lib\Qt5Core.lib C:\Qt\5.15.2\msvc2015_64\lib\qtmain.lib ui_AccountWindow.h ui_FilterWindow.h ui_MainWindow.h ui_RobotWindow.h ui_GcodeReference.h $(OBJECTS) release\DeltaRobotSoftware_resource.res
 	$(LINKER) $(LFLAGS) /MANIFEST:embed /OUT:$(DESTDIR_TARGET) @<<
-release\QJoysticks.obj release\SDL_Joysticks.obj release\VirtualJoystick.obj release\Android_Joystick.obj release\main.obj release\AccountWindow.obj release\Authority.obj release\BlobManager.obj release\CameraWidget.obj release\ComDevice.obj release\DrawingExporter.obj release\DrawingWidget.obj release\Encoder.obj release\FilterWindow.obj release\GcodeReference.obj release\ImageViewer.obj release\Layer.obj release\MainWindow.obj release\ObjectDetector.obj release\ObjectVariableTable.obj release\ProjectManager.obj release\Robot.obj release\RobotWindow.obj release\SmartDialog.obj release\SoftwareManager.obj release\TCPConnectionManager.obj release\TabDashboard.obj release\TextLayer.obj release\UXManage.obj release\VariableManager.obj release\VersionManager.obj release\VideoDisplay.obj release\VideoProcessor.obj release\codeeditor.obj release\ConnectionManager.obj release\DeltaVisualizer.obj release\GcodeProgramManager.obj release\GcodeProgram.obj release\UnityTool.obj
-release\geisttextedit.obj release\highlighter.obj release\robotmanager.obj release\qrc_qjoysticks-res.obj release\qrc_rs.obj release\qrc_resource.obj release\moc_QJoysticks.obj release\moc_SDL_Joysticks.obj release\moc_VirtualJoystick.obj release\moc_AccountWindow.obj release\moc_Authority.obj release\moc_BlobManager.obj release\moc_CameraWidget.obj release\moc_ComDevice.obj release\moc_ConnectionManager.obj release\moc_DeltaVisualizer.obj release\moc_DrawingExporter.obj release\moc_DrawingWidget.obj release\moc_Encoder.obj release\moc_FilterWindow.obj release\moc_GcodeReference.obj release\moc_GcodeProgram.obj release\moc_GcodeProgramManager.obj release\moc_ImageViewer.obj release\moc_Layer.obj release\moc_MainWindow.obj release\moc_ObjectDetector.obj release\moc_ImageProcessing.obj release\moc_ObjectVariableTable.obj release\moc_ProjectManager.obj release\moc_RobotWindow.obj release\moc_SmartDialog.obj release\moc_TCPConnectionManager.obj release\moc_TabDashboard.obj
-release\moc_TextLayer.obj release\moc_UXManager.obj release\moc_VariableManager.obj release\moc_VersionManager.obj release\moc_VideoDisplay.obj release\moc_VideoProcessor.obj release\moc_codeeditor.obj release\moc_geisttextedit.obj release\moc_highlighter.obj release\moc_robotmanager.obj
+release\QJoysticks.obj release\SDL_Joysticks.obj release\VirtualJoystick.obj release\Android_Joystick.obj release\main.obj release\AccountWindow.obj release\Authority.obj release\BlobManager.obj release\CameraWidget.obj release\ComDevice.obj release\DrawingExporter.obj release\DrawingWidget.obj release\Encoder.obj release\FilterWindow.obj release\GcodeReference.obj release\ImageProcessing.obj release\ImageViewer.obj release\Layer.obj release\MainWindow.obj release\ObjectDetector.obj release\ObjectVariableTable.obj release\ProjectManager.obj release\Robot.obj release\RobotWindow.obj release\SmartDialog.obj release\SoftwareManager.obj release\TCPConnectionManager.obj release\TabDashboard.obj release\TextLayer.obj release\UXManage.obj release\VariableManager.obj release\VersionManager.obj release\VideoDisplay.obj release\VideoProcessor.obj release\codeeditor.obj release\ConnectionManager.obj release\DeltaVisualizer.obj release\GcodeProgramManager.obj release\GcodeProgram.obj
+release\UnityTool.obj release\geisttextedit.obj release\highlighter.obj release\robotmanager.obj release\qrc_qjoysticks-res.obj release\qrc_rs.obj release\qrc_resource.obj release\moc_QJoysticks.obj release\moc_SDL_Joysticks.obj release\moc_VirtualJoystick.obj release\moc_AccountWindow.obj release\moc_Authority.obj release\moc_BlobManager.obj release\moc_CameraWidget.obj release\moc_ComDevice.obj release\moc_ConnectionManager.obj release\moc_DeltaVisualizer.obj release\moc_DrawingExporter.obj release\moc_DrawingWidget.obj release\moc_Encoder.obj release\moc_FilterWindow.obj release\moc_GcodeReference.obj release\moc_GcodeProgram.obj release\moc_GcodeProgramManager.obj release\moc_ImageViewer.obj release\moc_Layer.obj release\moc_MainWindow.obj release\moc_ObjectDetector.obj release\moc_ImageProcessing.obj release\moc_ObjectVariableTable.obj release\moc_ProjectManager.obj release\moc_RobotWindow.obj release\moc_SmartDialog.obj release\moc_TCPConnectionManager.obj
+release\moc_TabDashboard.obj release\moc_TextLayer.obj release\moc_UXManager.obj release\moc_VariableManager.obj release\moc_VersionManager.obj release\moc_VideoDisplay.obj release\moc_VideoProcessor.obj release\moc_codeeditor.obj release\moc_geisttextedit.obj release\moc_highlighter.obj release\moc_robotmanager.obj
 $(LIBS)
 <<
 
@@ -414,11 +417,11 @@ qmake: FORCE
 qmake_all: FORCE
 
 dist:
-	$(ZIP) DeltaRobotSoftware.zip $(SOURCES) $(DIST) DeltaRobotSoftware.pro C:\Qt\5.15.2\msvc2015_64\mkspecs\features\spec_pre.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\common\angle.conf C:\Qt\5.15.2\msvc2015_64\mkspecs\common\windows-desktop.conf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\win32\windows_vulkan_sdk.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\common\windows-vulkan.conf C:\Qt\5.15.2\msvc2015_64\mkspecs\common\msvc-desktop.conf C:\Qt\5.15.2\msvc2015_64\mkspecs\qconfig.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3danimation.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3danimation_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dcore.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dcore_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dextras.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dextras_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dinput.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dinput_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dlogic.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dlogic_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dquick.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dquick_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dquickanimation.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dquickanimation_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dquickextras.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dquickextras_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dquickinput.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dquickinput_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dquickrender.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dquickrender_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dquickscene2d.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dquickscene2d_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3drender.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3drender_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_accessibility_support_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_axbase.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_axbase_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_axcontainer.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_axcontainer_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_axserver.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_axserver_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_bluetooth.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_bluetooth_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_bootstrap_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_charts.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_charts_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_concurrent.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_concurrent_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_core.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_core_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_dbus.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_dbus_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_designer.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_designer_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_designercomponents_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_devicediscovery_support_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_edid_support_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_egl_support_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_eventdispatcher_support_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_fb_support_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_fontdatabase_support_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_gamepad.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_gamepad_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_gui.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_gui_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_help.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_help_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_location.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_location_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_multimedia.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_multimedia_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_multimediawidgets.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_multimediawidgets_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_network.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_network_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_nfc.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_nfc_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_opengl.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_opengl_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_openglextensions.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_openglextensions_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_packetprotocol_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_platformcompositor_support_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_positioning.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_positioning_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_positioningquick.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_positioningquick_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_printsupport.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_printsupport_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_qml.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_qml_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_qmldebug_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_qmldevtools_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_qmlmodels.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_qmlmodels_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_qmltest.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_qmltest_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_qmlworkerscript.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_qmlworkerscript_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_qtmultimediaquicktools_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quick.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quick3d.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quick3d_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quick3dassetimport.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quick3dassetimport_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quick3drender.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quick3drender_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quick3druntimerender.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quick3druntimerender_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quick3dutils.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quick3dutils_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quick_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quickcontrols2.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quickcontrols2_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quickparticles_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quickshapes_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quicktemplates2.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quicktemplates2_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quickwidgets.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quickwidgets_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_remoteobjects.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_remoteobjects_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_repparser.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_repparser_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_script.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_script_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_scripttools.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_scripttools_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_scxml.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_scxml_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_sensors.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_sensors_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_serialbus.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_serialbus_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_serialport.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_serialport_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_sql.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_sql_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_svg.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_svg_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_testlib.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_testlib_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_texttospeech.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_texttospeech_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_theme_support_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_uiplugin.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_uitools.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_uitools_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_virtualkeyboard.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_virtualkeyboard_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_vulkan_support_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_webchannel.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_webchannel_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_websockets.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_websockets_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_webview.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_webview_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_widgets.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_widgets_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_windowsuiautomation_support_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_winextras.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_winextras_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_xml.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_xml_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_xmlpatterns.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_xmlpatterns_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_zlib_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\features\qt_functions.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\qt_config.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\win32-msvc\qmake.conf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\spec_post.prf .qmake.stash C:\Qt\5.15.2\msvc2015_64\mkspecs\features\exclusive_builds.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\common\msvc-version.conf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\toolchain.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\default_pre.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\win32\default_pre.prf 3rd-party\QJoysticks\lib\SDL\SDL.pri 3rd-party\QJoysticks\QJoysticks.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\features\resolve_config.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\exclusive_builds_post.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\default_post.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\build_pass.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\qml_debug.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\precompile_header.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\warn_on.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\qt.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\resources_functions.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\resources.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\moc.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\win32\opengl.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\uic.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\qmake_use.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\file_copies.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\win32\windows.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\testcase_targets.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\exceptions.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\yacc.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\lex.prf DeltaRobotSoftware.pro 3rd-party\QJoysticks\etc\resources\qjoysticks-res.qrc C:\Users\Admin\Downloads\rs.qrc resource.qrc C:\Qt\5.15.2\msvc2015_64\lib\Qt5OpenGL.prl C:\Qt\5.15.2\msvc2015_64\lib\Qt5QuickWidgets.prl C:\Qt\5.15.2\msvc2015_64\lib\Qt5Widgets.prl C:\Qt\5.15.2\msvc2015_64\lib\Qt5Multimedia.prl C:\Qt\5.15.2\msvc2015_64\lib\Qt5Quick3D.prl C:\Qt\5.15.2\msvc2015_64\lib\Qt5Quick3DRuntimeRender.prl C:\Qt\5.15.2\msvc2015_64\lib\Qt5Quick3DAssetImport.prl C:\Qt\5.15.2\msvc2015_64\lib\Qt5Quick3DRender.prl C:\Qt\5.15.2\msvc2015_64\lib\Qt5Quick3DUtils.prl C:\Qt\5.15.2\msvc2015_64\lib\Qt5Quick.prl C:\Qt\5.15.2\msvc2015_64\lib\Qt5Gui.prl C:\Qt\5.15.2\msvc2015_64\lib\Qt5SerialPort.prl C:\Qt\5.15.2\msvc2015_64\lib\Qt5QmlModels.prl C:\Qt\5.15.2\msvc2015_64\lib\Qt5Qml.prl C:\Qt\5.15.2\msvc2015_64\lib\Qt5Network.prl C:\Qt\5.15.2\msvc2015_64\lib\Qt5Core.prl C:\Qt\5.15.2\msvc2015_64\lib\qtmain.prl   3rd-party\QJoysticks\etc\resources\qjoysticks-res.qrc C:\Users\Admin\Downloads\rs.qrc resource.qrc C:\Qt\5.15.2\msvc2015_64\mkspecs\features\data\dummy.cpp 3rd-party\QJoysticks\src\QJoysticks.h 3rd-party\QJoysticks\src\QJoysticks\JoysticksCommon.h 3rd-party\QJoysticks\src\QJoysticks\SDL_Joysticks.h 3rd-party\QJoysticks\src\QJoysticks\VirtualJoystick.h 3rd-party\QJoysticks\src\QJoysticks\Android_Joystick.h AccountWindow.h Authority.h BlobManager.h CameraWidget.h ComDevice.h ConnectionManager.h DeltaVisualizer.h DrawingExporter.h DrawingWidget.h Encoder.h FilterWindow.h GcodeReference.h ImageUnity.h GcodeProgram.h GcodeProgramManager.h ImageViewer.h Layer.h MainWindow.h ObjectDetector.h ImageProcessing.h ObjectVariableTable.h ProjectManager.h Robot.h RobotWindow.h ScurveInterpolator.h SmartDialog.h SoftwareManager.h TCPConnectionManager.h TabDashboard.h TextLayer.h UXManager.h VariableManager.h VersionManager.h VideoDisplay.h VideoProcessor.h codeeditor.h geisttextedit.h highlighter.h GcodeReference.h robotmanager.h sdk\DeltaXPlugin.h  3rd-party\QJoysticks\src\QJoysticks.cpp 3rd-party\QJoysticks\src\QJoysticks\SDL_Joysticks.cpp 3rd-party\QJoysticks\src\QJoysticks\VirtualJoystick.cpp 3rd-party\QJoysticks\src\QJoysticks\Android_Joystick.cpp main.cpp AccountWindow.cpp Authority.cpp BlobManager.cpp CameraWidget.cpp ComDevice.cpp DrawingExporter.cpp DrawingWidget.cpp Encoder.cpp FilterWindow.cpp GcodeReference.cpp ImageViewer.cpp Layer.cpp MainWindow.cpp ObjectDetector.cpp ObjectVariableTable.cpp ProjectManager.cpp Robot.cpp RobotWindow.cpp SmartDialog.cpp SoftwareManager.cpp TCPConnectionManager.cpp TabDashboard.cpp TextLayer.cpp UXManage.cpp VariableManager.cpp VersionManager.cpp VideoDisplay.cpp VideoProcessor.cpp codeeditor.cpp ConnectionManager.cpp DeltaVisualizer.cpp GcodeProgramManager.cpp GcodeProgram.cpp UnityTool.cpp geisttextedit.cpp highlighter.cpp robotmanager.cpp AccountWindow.ui FilterWindow.ui MainWindow.ui RobotWindow.ui GcodeReference.ui    
+	$(ZIP) DeltaRobotSoftware.zip $(SOURCES) $(DIST) DeltaRobotSoftware.pro C:\Qt\5.15.2\msvc2015_64\mkspecs\features\spec_pre.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\common\angle.conf C:\Qt\5.15.2\msvc2015_64\mkspecs\common\windows-desktop.conf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\win32\windows_vulkan_sdk.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\common\windows-vulkan.conf C:\Qt\5.15.2\msvc2015_64\mkspecs\common\msvc-desktop.conf C:\Qt\5.15.2\msvc2015_64\mkspecs\qconfig.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3danimation.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3danimation_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dcore.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dcore_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dextras.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dextras_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dinput.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dinput_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dlogic.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dlogic_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dquick.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dquick_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dquickanimation.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dquickanimation_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dquickextras.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dquickextras_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dquickinput.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dquickinput_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dquickrender.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dquickrender_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dquickscene2d.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dquickscene2d_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3drender.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3drender_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_accessibility_support_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_axbase.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_axbase_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_axcontainer.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_axcontainer_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_axserver.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_axserver_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_bluetooth.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_bluetooth_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_bootstrap_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_charts.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_charts_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_concurrent.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_concurrent_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_core.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_core_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_dbus.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_dbus_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_designer.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_designer_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_designercomponents_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_devicediscovery_support_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_edid_support_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_egl_support_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_eventdispatcher_support_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_fb_support_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_fontdatabase_support_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_gamepad.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_gamepad_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_gui.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_gui_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_help.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_help_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_location.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_location_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_multimedia.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_multimedia_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_multimediawidgets.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_multimediawidgets_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_network.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_network_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_nfc.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_nfc_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_opengl.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_opengl_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_openglextensions.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_openglextensions_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_packetprotocol_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_platformcompositor_support_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_positioning.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_positioning_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_positioningquick.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_positioningquick_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_printsupport.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_printsupport_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_qml.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_qml_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_qmldebug_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_qmldevtools_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_qmlmodels.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_qmlmodels_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_qmltest.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_qmltest_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_qmlworkerscript.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_qmlworkerscript_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_qtmultimediaquicktools_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quick.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quick3d.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quick3d_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quick3dassetimport.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quick3dassetimport_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quick3drender.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quick3drender_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quick3druntimerender.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quick3druntimerender_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quick3dutils.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quick3dutils_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quick_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quickcontrols2.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quickcontrols2_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quickparticles_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quickshapes_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quicktemplates2.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quicktemplates2_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quickwidgets.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quickwidgets_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_remoteobjects.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_remoteobjects_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_repparser.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_repparser_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_script.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_script_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_scripttools.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_scripttools_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_scxml.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_scxml_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_sensors.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_sensors_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_serialbus.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_serialbus_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_serialport.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_serialport_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_sql.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_sql_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_svg.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_svg_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_testlib.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_testlib_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_texttospeech.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_texttospeech_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_theme_support_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_uiplugin.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_uitools.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_uitools_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_virtualkeyboard.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_virtualkeyboard_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_vulkan_support_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_webchannel.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_webchannel_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_websockets.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_websockets_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_webview.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_webview_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_widgets.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_widgets_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_windowsuiautomation_support_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_winextras.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_winextras_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_xml.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_xml_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_xmlpatterns.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_xmlpatterns_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_zlib_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\features\qt_functions.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\qt_config.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\win32-msvc\qmake.conf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\spec_post.prf .qmake.stash C:\Qt\5.15.2\msvc2015_64\mkspecs\features\exclusive_builds.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\common\msvc-version.conf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\toolchain.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\default_pre.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\win32\default_pre.prf 3rd-party\QJoysticks\lib\SDL\SDL.pri 3rd-party\QJoysticks\QJoysticks.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\features\resolve_config.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\exclusive_builds_post.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\default_post.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\build_pass.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\qml_debug.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\precompile_header.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\warn_on.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\qt.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\resources_functions.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\resources.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\moc.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\win32\opengl.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\uic.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\qmake_use.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\file_copies.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\win32\windows.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\testcase_targets.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\exceptions.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\yacc.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\lex.prf DeltaRobotSoftware.pro 3rd-party\QJoysticks\etc\resources\qjoysticks-res.qrc C:\Users\Admin\Downloads\rs.qrc resource.qrc C:\Qt\5.15.2\msvc2015_64\lib\Qt5OpenGL.prl C:\Qt\5.15.2\msvc2015_64\lib\Qt5QuickWidgets.prl C:\Qt\5.15.2\msvc2015_64\lib\Qt5Widgets.prl C:\Qt\5.15.2\msvc2015_64\lib\Qt5Multimedia.prl C:\Qt\5.15.2\msvc2015_64\lib\Qt5Quick3D.prl C:\Qt\5.15.2\msvc2015_64\lib\Qt5Quick3DRuntimeRender.prl C:\Qt\5.15.2\msvc2015_64\lib\Qt5Quick3DAssetImport.prl C:\Qt\5.15.2\msvc2015_64\lib\Qt5Quick3DRender.prl C:\Qt\5.15.2\msvc2015_64\lib\Qt5Quick3DUtils.prl C:\Qt\5.15.2\msvc2015_64\lib\Qt5Quick.prl C:\Qt\5.15.2\msvc2015_64\lib\Qt5Gui.prl C:\Qt\5.15.2\msvc2015_64\lib\Qt5SerialPort.prl C:\Qt\5.15.2\msvc2015_64\lib\Qt5QmlModels.prl C:\Qt\5.15.2\msvc2015_64\lib\Qt5Qml.prl C:\Qt\5.15.2\msvc2015_64\lib\Qt5Network.prl C:\Qt\5.15.2\msvc2015_64\lib\Qt5Core.prl C:\Qt\5.15.2\msvc2015_64\lib\qtmain.prl   3rd-party\QJoysticks\etc\resources\qjoysticks-res.qrc C:\Users\Admin\Downloads\rs.qrc resource.qrc C:\Qt\5.15.2\msvc2015_64\mkspecs\features\data\dummy.cpp 3rd-party\QJoysticks\src\QJoysticks.h 3rd-party\QJoysticks\src\QJoysticks\JoysticksCommon.h 3rd-party\QJoysticks\src\QJoysticks\SDL_Joysticks.h 3rd-party\QJoysticks\src\QJoysticks\VirtualJoystick.h 3rd-party\QJoysticks\src\QJoysticks\Android_Joystick.h AccountWindow.h Authority.h BlobManager.h CameraWidget.h ComDevice.h ConnectionManager.h DeltaVisualizer.h DrawingExporter.h DrawingWidget.h Encoder.h FilterWindow.h GcodeReference.h ImageUnity.h GcodeProgram.h GcodeProgramManager.h ImageViewer.h Layer.h MainWindow.h ObjectDetector.h ImageProcessing.h ObjectVariableTable.h ProjectManager.h Robot.h RobotWindow.h ScurveInterpolator.h SmartDialog.h SoftwareManager.h TCPConnectionManager.h TabDashboard.h TextLayer.h UXManager.h VariableManager.h VersionManager.h VideoDisplay.h VideoProcessor.h codeeditor.h geisttextedit.h highlighter.h GcodeReference.h robotmanager.h sdk\DeltaXPlugin.h  3rd-party\QJoysticks\src\QJoysticks.cpp 3rd-party\QJoysticks\src\QJoysticks\SDL_Joysticks.cpp 3rd-party\QJoysticks\src\QJoysticks\VirtualJoystick.cpp 3rd-party\QJoysticks\src\QJoysticks\Android_Joystick.cpp main.cpp AccountWindow.cpp Authority.cpp BlobManager.cpp CameraWidget.cpp ComDevice.cpp DrawingExporter.cpp DrawingWidget.cpp Encoder.cpp FilterWindow.cpp GcodeReference.cpp ImageProcessing.cpp ImageViewer.cpp Layer.cpp MainWindow.cpp ObjectDetector.cpp ObjectVariableTable.cpp ProjectManager.cpp Robot.cpp RobotWindow.cpp SmartDialog.cpp SoftwareManager.cpp TCPConnectionManager.cpp TabDashboard.cpp TextLayer.cpp UXManage.cpp VariableManager.cpp VersionManager.cpp VideoDisplay.cpp VideoProcessor.cpp codeeditor.cpp ConnectionManager.cpp DeltaVisualizer.cpp GcodeProgramManager.cpp GcodeProgram.cpp UnityTool.cpp geisttextedit.cpp highlighter.cpp robotmanager.cpp AccountWindow.ui FilterWindow.ui MainWindow.ui RobotWindow.ui GcodeReference.ui    
 
 clean: compiler_clean 
-	-$(DEL_FILE) release\QJoysticks.obj release\SDL_Joysticks.obj release\VirtualJoystick.obj release\Android_Joystick.obj release\main.obj release\AccountWindow.obj release\Authority.obj release\BlobManager.obj release\CameraWidget.obj release\ComDevice.obj release\DrawingExporter.obj release\DrawingWidget.obj release\Encoder.obj release\FilterWindow.obj release\GcodeReference.obj release\ImageViewer.obj release\Layer.obj release\MainWindow.obj release\ObjectDetector.obj release\ObjectVariableTable.obj release\ProjectManager.obj release\Robot.obj release\RobotWindow.obj release\SmartDialog.obj release\SoftwareManager.obj release\TCPConnectionManager.obj release\TabDashboard.obj release\TextLayer.obj release\UXManage.obj release\VariableManager.obj release\VersionManager.obj release\VideoDisplay.obj release\VideoProcessor.obj release\codeeditor.obj release\ConnectionManager.obj release\DeltaVisualizer.obj release\GcodeProgramManager.obj release\GcodeProgram.obj release\UnityTool.obj release\geisttextedit.obj release\highlighter.obj release\robotmanager.obj release\qrc_qjoysticks-res.obj release\qrc_rs.obj release\qrc_resource.obj release\moc_QJoysticks.obj release\moc_SDL_Joysticks.obj release\moc_VirtualJoystick.obj release\moc_AccountWindow.obj release\moc_Authority.obj release\moc_BlobManager.obj release\moc_CameraWidget.obj release\moc_ComDevice.obj release\moc_ConnectionManager.obj release\moc_DeltaVisualizer.obj release\moc_DrawingExporter.obj release\moc_DrawingWidget.obj release\moc_Encoder.obj release\moc_FilterWindow.obj release\moc_GcodeReference.obj release\moc_GcodeProgram.obj release\moc_GcodeProgramManager.obj release\moc_ImageViewer.obj release\moc_Layer.obj release\moc_MainWindow.obj release\moc_ObjectDetector.obj release\moc_ImageProcessing.obj release\moc_ObjectVariableTable.obj release\moc_ProjectManager.obj release\moc_RobotWindow.obj release\moc_SmartDialog.obj release\moc_TCPConnectionManager.obj release\moc_TabDashboard.obj release\moc_TextLayer.obj release\moc_UXManager.obj
-	-$(DEL_FILE) release\moc_VariableManager.obj release\moc_VersionManager.obj release\moc_VideoDisplay.obj release\moc_VideoProcessor.obj release\moc_codeeditor.obj release\moc_geisttextedit.obj release\moc_highlighter.obj release\moc_robotmanager.obj
+	-$(DEL_FILE) release\QJoysticks.obj release\SDL_Joysticks.obj release\VirtualJoystick.obj release\Android_Joystick.obj release\main.obj release\AccountWindow.obj release\Authority.obj release\BlobManager.obj release\CameraWidget.obj release\ComDevice.obj release\DrawingExporter.obj release\DrawingWidget.obj release\Encoder.obj release\FilterWindow.obj release\GcodeReference.obj release\ImageProcessing.obj release\ImageViewer.obj release\Layer.obj release\MainWindow.obj release\ObjectDetector.obj release\ObjectVariableTable.obj release\ProjectManager.obj release\Robot.obj release\RobotWindow.obj release\SmartDialog.obj release\SoftwareManager.obj release\TCPConnectionManager.obj release\TabDashboard.obj release\TextLayer.obj release\UXManage.obj release\VariableManager.obj release\VersionManager.obj release\VideoDisplay.obj release\VideoProcessor.obj release\codeeditor.obj release\ConnectionManager.obj release\DeltaVisualizer.obj release\GcodeProgramManager.obj release\GcodeProgram.obj release\UnityTool.obj release\geisttextedit.obj release\highlighter.obj release\robotmanager.obj release\qrc_qjoysticks-res.obj release\qrc_rs.obj release\qrc_resource.obj release\moc_QJoysticks.obj release\moc_SDL_Joysticks.obj release\moc_VirtualJoystick.obj release\moc_AccountWindow.obj release\moc_Authority.obj release\moc_BlobManager.obj release\moc_CameraWidget.obj release\moc_ComDevice.obj release\moc_ConnectionManager.obj release\moc_DeltaVisualizer.obj release\moc_DrawingExporter.obj release\moc_DrawingWidget.obj release\moc_Encoder.obj release\moc_FilterWindow.obj release\moc_GcodeReference.obj release\moc_GcodeProgram.obj release\moc_GcodeProgramManager.obj release\moc_ImageViewer.obj release\moc_Layer.obj release\moc_MainWindow.obj release\moc_ObjectDetector.obj release\moc_ImageProcessing.obj release\moc_ObjectVariableTable.obj release\moc_ProjectManager.obj release\moc_RobotWindow.obj release\moc_SmartDialog.obj release\moc_TCPConnectionManager.obj release\moc_TabDashboard.obj release\moc_TextLayer.obj
+	-$(DEL_FILE) release\moc_UXManager.obj release\moc_VariableManager.obj release\moc_VersionManager.obj release\moc_VideoDisplay.obj release\moc_VideoProcessor.obj release\moc_codeeditor.obj release\moc_geisttextedit.obj release\moc_highlighter.obj release\moc_robotmanager.obj
 	-$(DEL_FILE) release\DeltaRobotSoftware_resource.res
 
 distclean: clean 
@@ -1357,6 +1360,11 @@ release\moc_Authority.cpp: Authority.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QProcess \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qprocess.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QTcpServer \
+		Encoder.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QPoint \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QLine \
+		ImageProcessing.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		GcodeReference.h \
 		ui_GcodeReference.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QVariant \
@@ -1440,13 +1448,9 @@ release\moc_Authority.cpp: Authority.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qlibrary.h \
 		SmartDialog.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QComboBox \
-		Encoder.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QPoint \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QLine \
 		3rd-party\QJoysticks\src\QJoysticks.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QStringList \
 		3rd-party\QJoysticks\src\QJoysticks\JoysticksCommon.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLayout \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QStackedWidget \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qstackedwidget.h \
@@ -3655,6 +3659,11 @@ release\moc_GcodeProgramManager.cpp: GcodeProgramManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QProcess \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qprocess.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QTcpServer \
+		Encoder.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QPoint \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QLine \
+		ImageProcessing.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		GcodeReference.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QWidget \
 		ui_GcodeReference.h \
@@ -3740,13 +3749,9 @@ release\moc_GcodeProgramManager.cpp: GcodeProgramManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qlibrary.h \
 		SmartDialog.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QComboBox \
-		Encoder.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QPoint \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QLine \
 		3rd-party\QJoysticks\src\QJoysticks.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QStringList \
 		3rd-party\QJoysticks\src\QJoysticks\JoysticksCommon.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLayout \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QStackedWidget \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qstackedwidget.h \
@@ -4713,6 +4718,11 @@ release\moc_MainWindow.cpp: MainWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QProcess \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qprocess.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QTcpServer \
+		Encoder.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QPoint \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QLine \
+		ImageProcessing.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		GcodeReference.h \
 		ui_GcodeReference.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QVariant \
@@ -4794,13 +4804,9 @@ release\moc_MainWindow.cpp: MainWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qlibrary.h \
 		SmartDialog.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QComboBox \
-		Encoder.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QPoint \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QLine \
 		3rd-party\QJoysticks\src\QJoysticks.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QStringList \
 		3rd-party\QJoysticks\src\QJoysticks\JoysticksCommon.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLayout \
 		ComDevice.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QAction \
@@ -5150,6 +5156,11 @@ release\moc_ObjectDetector.cpp: ObjectDetector.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QProcess \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qprocess.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QTcpServer \
+		Encoder.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QPoint \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QLine \
+		ImageProcessing.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		GcodeReference.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QWidget \
 		ui_GcodeReference.h \
@@ -5235,13 +5246,9 @@ release\moc_ObjectDetector.cpp: ObjectDetector.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qlibrary.h \
 		SmartDialog.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QComboBox \
-		Encoder.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QPoint \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QLine \
 		3rd-party\QJoysticks\src\QJoysticks.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QStringList \
 		3rd-party\QJoysticks\src\QJoysticks\JoysticksCommon.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLayout \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QStackedWidget \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qstackedwidget.h \
@@ -5600,6 +5607,11 @@ release\moc_ImageProcessing.cpp: ImageProcessing.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QProcess \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qprocess.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QTcpServer \
+		Encoder.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QPoint \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QLine \
+		ImageProcessing.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		GcodeReference.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QWidget \
 		ui_GcodeReference.h \
@@ -5685,13 +5697,9 @@ release\moc_ImageProcessing.cpp: ImageProcessing.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qlibrary.h \
 		SmartDialog.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QComboBox \
-		Encoder.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QPoint \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QLine \
 		3rd-party\QJoysticks\src\QJoysticks.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QStringList \
 		3rd-party\QJoysticks\src\QJoysticks\JoysticksCommon.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLayout \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QStackedWidget \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qstackedwidget.h \
@@ -6283,6 +6291,11 @@ release\moc_ProjectManager.cpp: ProjectManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QProcess \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qprocess.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QTcpServer \
+		Encoder.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QPoint \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QLine \
+		ImageProcessing.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		GcodeReference.h \
 		ui_GcodeReference.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QVariant \
@@ -6364,13 +6377,9 @@ release\moc_ProjectManager.cpp: ProjectManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qlibrary.h \
 		SmartDialog.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QComboBox \
-		Encoder.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QPoint \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QLine \
 		3rd-party\QJoysticks\src\QJoysticks.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QStringList \
 		3rd-party\QJoysticks\src\QJoysticks\JoysticksCommon.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLayout \
 		SoftwareManager.h \
 		VariableManager.h \
@@ -6720,6 +6729,12 @@ release\moc_RobotWindow.cpp: RobotWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QProcess \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qprocess.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QTcpServer \
+		Encoder.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QPoint \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QLine \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QtMath \
+		ImageProcessing.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		GcodeReference.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QWidget \
 		ui_GcodeReference.h \
@@ -6805,14 +6820,9 @@ release\moc_RobotWindow.cpp: RobotWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qlibrary.h \
 		SmartDialog.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QComboBox \
-		Encoder.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QPoint \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QLine \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QtMath \
 		3rd-party\QJoysticks\src\QJoysticks.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QStringList \
 		3rd-party\QJoysticks\src\QJoysticks\JoysticksCommon.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLayout \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QStackedWidget \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qstackedwidget.h \
@@ -7427,6 +7437,11 @@ release\moc_TabDashboard.cpp: TabDashboard.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QProcess \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qprocess.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QTcpServer \
+		Encoder.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QPoint \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QLine \
+		ImageProcessing.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		GcodeReference.h \
 		ui_GcodeReference.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QVariant \
@@ -7508,13 +7523,9 @@ release\moc_TabDashboard.cpp: TabDashboard.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qlibrary.h \
 		SmartDialog.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QComboBox \
-		Encoder.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QPoint \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QLine \
 		3rd-party\QJoysticks\src\QJoysticks.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QStringList \
 		3rd-party\QJoysticks\src\QJoysticks\JoysticksCommon.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLayout \
 		ComDevice.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QAction \
@@ -9359,6 +9370,11 @@ release\moc_robotmanager.cpp: robotmanager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QProcess \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qprocess.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QTcpServer \
+		Encoder.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QPoint \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QLine \
+		ImageProcessing.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		GcodeReference.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QWidget \
 		ui_GcodeReference.h \
@@ -9443,13 +9459,9 @@ release\moc_robotmanager.cpp: robotmanager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qlibrary.h \
 		SmartDialog.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QComboBox \
-		Encoder.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QPoint \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QLine \
 		3rd-party\QJoysticks\src\QJoysticks.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QStringList \
 		3rd-party\QJoysticks\src\QJoysticks\JoysticksCommon.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLayout \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QStackedWidget \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qstackedwidget.h \
@@ -11284,6 +11296,11 @@ release\main.obj: main.cpp RobotWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QProcess \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qprocess.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QTcpServer \
+		Encoder.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QPoint \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QLine \
+		ImageProcessing.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		GcodeReference.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QWidget \
 		ui_GcodeReference.h \
@@ -11369,13 +11386,9 @@ release\main.obj: main.cpp RobotWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qlibrary.h \
 		SmartDialog.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QComboBox \
-		Encoder.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QPoint \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QLine \
 		3rd-party\QJoysticks\src\QJoysticks.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QStringList \
 		3rd-party\QJoysticks\src\QJoysticks\JoysticksCommon.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLayout \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QStackedWidget \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qstackedwidget.h \
@@ -11878,6 +11891,11 @@ release\Authority.obj: Authority.cpp Authority.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QProcess \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qprocess.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QTcpServer \
+		Encoder.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QPoint \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QLine \
+		ImageProcessing.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		GcodeReference.h \
 		ui_GcodeReference.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QVariant \
@@ -11961,13 +11979,9 @@ release\Authority.obj: Authority.cpp Authority.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qlibrary.h \
 		SmartDialog.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QComboBox \
-		Encoder.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QPoint \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QLine \
 		3rd-party\QJoysticks\src\QJoysticks.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QStringList \
 		3rd-party\QJoysticks\src\QJoysticks\JoysticksCommon.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLayout \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QStackedWidget \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qstackedwidget.h \
@@ -13421,6 +13435,453 @@ release\GcodeReference.obj: GcodeReference.cpp GcodeReference.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpen.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QVBoxLayout
 
+release\ImageProcessing.obj: ImageProcessing.cpp ImageProcessing.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QObject \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qobject.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qobjectdefs.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qnamespace.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qglobal.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qconfig-bootstrapped.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qconfig.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qtcore-config.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsystemdetection.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qprocessordetection.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qcompilerdetection.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qtypeinfo.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsysinfo.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qlogging.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qflags.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qatomic.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qbasicatomic.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qatomic_bootstrap.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qgenericatomic.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qatomic_cxx11.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qatomic_msvc.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qglobalstatic.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qmutex.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qnumeric.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qversiontagging.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qobjectdefs_impl.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qstring.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qchar.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qbytearray.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qrefcount.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qarraydata.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qstringliteral.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qstringalgorithms.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qstringview.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qstringbuilder.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qlist.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qalgorithms.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qiterator.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qhashfunctions.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qpair.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qvector.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qcontainertools_impl.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qpoint.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qbytearraylist.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qstringlist.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qregexp.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qstringmatcher.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qcoreevent.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qscopedpointer.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qmetatype.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qvarlengtharray.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qcontainerfwd.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qobject_impl.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qwidget.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qtwidgetsglobal.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtguiglobal.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtgui-config.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qtwidgets-config.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qwindowdefs.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qwindowdefs_win.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qmargins.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpaintdevice.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qrect.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsize.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpalette.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qcolor.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qrgb.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qrgba64.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qbrush.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qmatrix.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpolygon.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qregion.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qdatastream.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qiodevice.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qline.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtransform.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qimage.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpixelformat.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpixmap.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsharedpointer.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qshareddata.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qhash.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsharedpointer_impl.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qfont.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qfontmetrics.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qfontinfo.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qsizepolicy.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qcursor.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qkeysequence.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qevent.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qvariant.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qmap.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qdebug.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qtextstream.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qlocale.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qset.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qcontiguouscache.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qurl.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qurlquery.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qfile.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qfiledevice.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qvector2d.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtouchdevice.h \
+		FilterWindow.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QDialog \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qdialog.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qslider.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qabstractslider.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qlabel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qframe.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSettings \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsettings.h \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\opencv.hpp \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\opencv_modules.hpp \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\core.hpp \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\core\cvdef.h \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\core\hal\interface.h \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\core\cv_cpu_dispatch.h \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\core\cv_cpu_helper.h \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\core\fast_math.hpp \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\core\version.hpp \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\core\base.hpp \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\core\cvstd.hpp \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\core\cvstd_wrapper.hpp \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\core\neon_utils.hpp \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\core\vsx_utils.hpp \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\core\check.hpp \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\core\traits.hpp \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\core\matx.hpp \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\core\saturate.hpp \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\core\types.hpp \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\core\mat.hpp \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\core\bufferpool.hpp \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\core\mat.inl.hpp \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\core\persistence.hpp \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\core\operations.hpp \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\core\cvstd.inl.hpp \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\core\utility.hpp \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\core\optim.hpp \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\core\ovx.hpp \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\calib3d.hpp \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\features2d.hpp \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\flann\miniflann.hpp \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\flann\defines.h \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\flann\config.h \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\core\affine.hpp \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\dnn.hpp \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\dnn\dnn.hpp \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\dnn\version.hpp \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\dnn\dict.hpp \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\dnn\layer.hpp \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\dnn\dnn.inl.hpp \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\flann.hpp \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\flann\flann_base.hpp \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\flann\general.h \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\flann\matrix.h \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\flann\params.h \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\flann\any.h \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\flann\saving.h \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\flann\nn_index.h \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\flann\result_set.h \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\flann\all_indices.h \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\flann\kdtree_index.h \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\flann\dynamic_bitset.h \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\flann\dist.h \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\flann\heap.h \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\flann\allocator.h \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\flann\random.h \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\flann\kdtree_single_index.h \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\flann\kmeans_index.h \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\flann\logger.h \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\flann\composite_index.h \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\flann\linear_index.h \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\flann\hierarchical_clustering_index.h \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\flann\lsh_index.h \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\flann\lsh_table.h \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\flann\autotuned_index.h \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\flann\ground_truth.h \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\flann\index_testing.h \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\flann\timer.h \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\flann\sampling.h \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\highgui.hpp \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\imgcodecs.hpp \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\videoio.hpp \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\imgproc.hpp \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\ml.hpp \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\ml\ml.inl.hpp \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\objdetect.hpp \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\objdetect\detection_based_tracker.hpp \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\photo.hpp \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\stitching.hpp \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\stitching\warpers.hpp \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\stitching\detail\warpers.hpp \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\core\cuda.hpp \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\core\cuda_types.hpp \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\core\cuda.inl.hpp \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\stitching\detail\warpers_inl.hpp \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\stitching\detail\matchers.hpp \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\stitching\detail\motion_estimators.hpp \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\stitching\detail\util.hpp \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\stitching\detail\util_inl.hpp \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\stitching\detail\camera.hpp \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\stitching\detail\exposure_compensate.hpp \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\stitching\detail\seam_finders.hpp \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\stitching\detail\blenders.hpp \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\video.hpp \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\video\tracking.hpp \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\video\background_segm.hpp \
+		ImageUnity.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDebug \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QImage \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPixmap \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QtGlobal \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\imgproc\imgproc.hpp \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\imgproc\types_c.h \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\core\core_c.h \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\core\types_c.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QThread \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qthread.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qdeadlinetimer.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qelapsedtimer.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qfiledialog.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qdir.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qfileinfo.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qscrollarea.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qabstractscrollarea.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QInputDialog \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qinputdialog.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qlineedit.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtextcursor.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtextformat.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpen.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtextoption.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qtimer.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qbasictimer.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qpushbutton.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qabstractbutton.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qicon.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QCheckBox \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qcheckbox.h \
+		BlobManager.h \
+		UnityTool.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qtextedit.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtextdocument.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QElapsedTimer \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QPushButton \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QVBoxLayout \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qboxlayout.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qlayout.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qlayoutitem.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qgridlayout.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLineEdit \
+		CameraWidget.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLabel \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPainter \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpainter.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QMouseEvent \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qmath.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QToolButton \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qtoolbutton.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QVector \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QCoreApplication \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qcoreapplication.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qeventloop.h \
+		RobotWindow.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QMainWindow \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qmainwindow.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qtabwidget.h \
+		ConnectionManager.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtSerialPort\QSerialPort \
+		C:\Qt\5.15.2\msvc2015_64\include\QtSerialPort\qserialport.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtSerialPort\qserialportglobal.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtSerialPort\QSerialPortInfo \
+		C:\Qt\5.15.2\msvc2015_64\include\QtSerialPort\qserialportinfo.h \
+		TCPConnectionManager.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qtcpserver.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qtnetworkglobal.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qtnetwork-config.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qabstractsocket.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qhostaddress.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qtcpsocket.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QHostInfo \
+		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qhostinfo.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QHBoxLayout \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QTimer \
+		GcodeProgramManager.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qlistwidget.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qlistview.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qabstractitemview.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qabstractitemmodel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qitemselectionmodel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qabstractitemdelegate.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qstyleoption.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qabstractspinbox.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qvalidator.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qregularexpression.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qstyle.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qtabbar.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qrubberband.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qplaintextedit.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qabstracttextdocumentlayout.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtextlayout.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qglyphrun.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qrawfont.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qfontdatabase.h \
+		GcodeProgram.h \
+		Layer.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QFrame \
+		TextLayer.h \
+		DeltaVisualizer.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qcombobox.h \
+		codeeditor.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QTextEdit \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QTextDocument \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qscrollbar.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QtMath \
+		ScurveInterpolator.h \
+		ObjectDetector.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QRadioButton \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qradiobutton.h \
+		VideoProcessor.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutex \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QReadWriteLock \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qreadwritelock.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSemaphore \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsemaphore.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QWaitCondition \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qwaitcondition.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDeadlineTimer \
+		VideoDisplay.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QTcpSocket \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QProcess \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qprocess.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QTcpServer \
+		Encoder.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QPoint \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QLine \
+		GcodeReference.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QWidget \
+		ui_GcodeReference.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QVariant \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QApplication \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qapplication.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qdesktopwidget.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qguiapplication.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qinputmethod.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGridLayout \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QListWidget \
+		DrawingExporter.h \
+		DrawingWidget.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qvector4d.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qvector3d.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDir \
+		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QNetworkAccessManager \
+		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qnetworkaccessmanager.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qnetworkrequest.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSharedDataPointer \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QString \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QUrl \
+		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QSslConfiguration \
+		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qsslconfiguration.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qsslsocket.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qsslerror.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qsslcertificate.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qcryptographichash.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qdatetime.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qssl.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QFlags \
+		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QSslPreSharedKeyAuthenticator \
+		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qsslpresharedkeyauthenticator.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMetaType \
+		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QNetworkReply \
+		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qnetworkreply.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QIODevice \
+		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QNetworkRequest \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QUrlQuery \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QVersionNumber \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qversionnumber.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QDesktopServices \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qdesktopservices.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qstandardpaths.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QMessageBox \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qmessagebox.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QCloseEvent \
+		ObjectVariableTable.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QSpacerItem \
+		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\QCameraInfo \
+		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\qcamerainfo.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\qcamera.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\qmediacontrol.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\qtmultimediaglobal.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\qtmultimedia-config.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\qmediaobject.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\qmultimedia.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\qmediaservice.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\qcameraexposure.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\qmediaenumdebug.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qmetaobject.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\qcamerafocus.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\qcameraimageprocessing.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\qcameraviewfindersettings.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\qvideoframe.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\qabstractvideobuffer.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QMovie \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qmovie.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qimagereader.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qimageiohandler.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qplugin.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qpointer.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qjsonobject.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qjsonvalue.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qcborvalue.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qcborcommon.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\quuid.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qfactoryinterface.h \
+		sdk\DeltaXPlugin.h \
+		..\..\OpenCV\opencv-4.0\build\include\opencv2\core\core.hpp \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QPluginLoader \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qpluginloader.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qlibrary.h \
+		SmartDialog.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QComboBox \
+		3rd-party\QJoysticks\src\QJoysticks.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QStringList \
+		3rd-party\QJoysticks\src\QJoysticks\JoysticksCommon.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLayout \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QStackedWidget \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qstackedwidget.h \
+		Robot.h \
+		robotmanager.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QList \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QAction \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qaction.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qactiongroup.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QTabWidget \
+		SoftwareManager.h \
+		VariableManager.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QTreeWidget \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qtreewidget.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qtreeview.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qtreewidgetitemiterator.h \
+		ProjectManager.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QTabBar \
+		ComDevice.h
+
 release\ImageViewer.obj: ImageViewer.cpp ImageViewer.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGraphicsView \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qgraphicsview.h \
@@ -14358,6 +14819,11 @@ release\MainWindow.obj: MainWindow.cpp MainWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QProcess \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qprocess.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QTcpServer \
+		Encoder.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QPoint \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QLine \
+		ImageProcessing.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		GcodeReference.h \
 		ui_GcodeReference.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QVariant \
@@ -14439,13 +14905,9 @@ release\MainWindow.obj: MainWindow.cpp MainWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qlibrary.h \
 		SmartDialog.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QComboBox \
-		Encoder.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QPoint \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QLine \
 		3rd-party\QJoysticks\src\QJoysticks.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QStringList \
 		3rd-party\QJoysticks\src\QJoysticks\JoysticksCommon.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLayout \
 		ComDevice.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QAction \
@@ -14909,7 +15371,8 @@ release\ObjectDetector.obj: ObjectDetector.cpp ObjectDetector.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDeadlineTimer \
 		VideoDisplay.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QTcpSocket \
-		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QTcpServer
+		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QTcpServer \
+		ImageProcessing.h
 
 release\ObjectVariableTable.obj: ObjectVariableTable.cpp ObjectVariableTable.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QObject \
@@ -15476,6 +15939,11 @@ release\ProjectManager.obj: ProjectManager.cpp ProjectManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QProcess \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qprocess.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QTcpServer \
+		Encoder.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QPoint \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QLine \
+		ImageProcessing.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		GcodeReference.h \
 		ui_GcodeReference.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QVariant \
@@ -15557,13 +16025,9 @@ release\ProjectManager.obj: ProjectManager.cpp ProjectManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qlibrary.h \
 		SmartDialog.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QComboBox \
-		Encoder.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QPoint \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QLine \
 		3rd-party\QJoysticks\src\QJoysticks.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QStringList \
 		3rd-party\QJoysticks\src\QJoysticks\JoysticksCommon.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLayout \
 		SoftwareManager.h \
 		VariableManager.h \
@@ -15944,6 +16408,11 @@ release\RobotWindow.obj: RobotWindow.cpp RobotWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QProcess \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qprocess.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QTcpServer \
+		Encoder.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QPoint \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QLine \
+		ImageProcessing.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		GcodeReference.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QWidget \
 		ui_GcodeReference.h \
@@ -16029,13 +16498,9 @@ release\RobotWindow.obj: RobotWindow.cpp RobotWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qlibrary.h \
 		SmartDialog.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QComboBox \
-		Encoder.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QPoint \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QLine \
 		3rd-party\QJoysticks\src\QJoysticks.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QStringList \
 		3rd-party\QJoysticks\src\QJoysticks\JoysticksCommon.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLayout \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QStackedWidget \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qstackedwidget.h \
@@ -16785,6 +17250,11 @@ release\SoftwareManager.obj: SoftwareManager.cpp SoftwareManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QProcess \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qprocess.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QTcpServer \
+		Encoder.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QPoint \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QLine \
+		ImageProcessing.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		GcodeReference.h \
 		ui_GcodeReference.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QVariant \
@@ -16868,13 +17338,9 @@ release\SoftwareManager.obj: SoftwareManager.cpp SoftwareManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qlibrary.h \
 		SmartDialog.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QComboBox \
-		Encoder.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QPoint \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QLine \
 		3rd-party\QJoysticks\src\QJoysticks.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QStringList \
 		3rd-party\QJoysticks\src\QJoysticks\JoysticksCommon.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLayout \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QStackedWidget \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qstackedwidget.h \
@@ -17362,6 +17828,11 @@ release\TabDashboard.obj: TabDashboard.cpp TabDashboard.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QProcess \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qprocess.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QTcpServer \
+		Encoder.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QPoint \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QLine \
+		ImageProcessing.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		GcodeReference.h \
 		ui_GcodeReference.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QVariant \
@@ -17443,13 +17914,9 @@ release\TabDashboard.obj: TabDashboard.cpp TabDashboard.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qlibrary.h \
 		SmartDialog.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QComboBox \
-		Encoder.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QPoint \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QLine \
 		3rd-party\QJoysticks\src\QJoysticks.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QStringList \
 		3rd-party\QJoysticks\src\QJoysticks\JoysticksCommon.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLayout \
 		ComDevice.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QAction \
@@ -19476,6 +19943,12 @@ release\GcodeProgramManager.obj: GcodeProgramManager.cpp GcodeProgramManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QProcess \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qprocess.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QTcpServer \
+		Encoder.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QPoint \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QLine \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QtMath \
+		ImageProcessing.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		GcodeReference.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QWidget \
 		ui_GcodeReference.h \
@@ -19561,14 +20034,9 @@ release\GcodeProgramManager.obj: GcodeProgramManager.cpp GcodeProgramManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qlibrary.h \
 		SmartDialog.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QComboBox \
-		Encoder.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QPoint \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QLine \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QtMath \
 		3rd-party\QJoysticks\src\QJoysticks.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QStringList \
 		3rd-party\QJoysticks\src\QJoysticks\JoysticksCommon.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLayout \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QStackedWidget \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qstackedwidget.h \
@@ -20069,6 +20537,11 @@ release\UnityTool.obj: UnityTool.cpp UnityTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QProcess \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qprocess.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QTcpServer \
+		Encoder.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QPoint \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QLine \
+		ImageProcessing.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		GcodeReference.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QWidget \
 		ui_GcodeReference.h \
@@ -20154,13 +20627,9 @@ release\UnityTool.obj: UnityTool.cpp UnityTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qlibrary.h \
 		SmartDialog.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QComboBox \
-		Encoder.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QPoint \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QLine \
 		3rd-party\QJoysticks\src\QJoysticks.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QStringList \
 		3rd-party\QJoysticks\src\QJoysticks\JoysticksCommon.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLayout \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QStackedWidget \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qstackedwidget.h \
@@ -21007,6 +21476,11 @@ release\robotmanager.obj: robotmanager.cpp robotmanager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QProcess \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qprocess.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QTcpServer \
+		Encoder.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QPoint \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QLine \
+		ImageProcessing.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		GcodeReference.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QWidget \
 		ui_GcodeReference.h \
@@ -21091,13 +21565,9 @@ release\robotmanager.obj: robotmanager.cpp robotmanager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qlibrary.h \
 		SmartDialog.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QComboBox \
-		Encoder.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QPoint \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QLine \
 		3rd-party\QJoysticks\src\QJoysticks.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QStringList \
 		3rd-party\QJoysticks\src\QJoysticks\JoysticksCommon.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLayout \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QStackedWidget \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qstackedwidget.h \

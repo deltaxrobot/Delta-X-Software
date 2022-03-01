@@ -2317,11 +2317,6 @@ void RobotWindow::AddDisplayObjectFromExternalScript(QString msg)
     DeltaImageProcesser->DisplayObjects->clear();
 }
 
-void RobotWindow::SaveEncoderPositionWhenExternalAIDetect()
-{
-    Encoder1->MarkPosition();
-}
-
 void RobotWindow::MoveExternalConveyor()
 {
     QString direction = ui->cbConveyorDirectionControl->currentText();

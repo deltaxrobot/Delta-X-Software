@@ -61,11 +61,11 @@ ObjectDetector::ObjectDetector(RobotWindow *parent)
     VideoDisplayThread->thread()->start();
 
     // -------- Image Processing Thread ------
-    ImageProcessingThread = new ImageProcessing();
-    ImageProcessingThread->moveToThread(new QThread(this));
-    connect(ImageProcessingThread->thread(), SIGNAL(finished()), ImageProcessingThread, SLOT(deleteLater()));
-    connect(this, &ObjectDetector::RequestResizeImage, ImageProcessingThread, &ImageProcessing::ResizeImage);
-    connect(this, &ObjectDetector::RequestGetImage, ImageProcessingThread, &ImageProcessing::GetImage);
+//    ImageProcessingThread = new ImageProcessing();
+//    ImageProcessingThread->moveToThread(new QThread(this));
+//    connect(ImageProcessingThread->thread(), SIGNAL(finished()), ImageProcessingThread, SLOT(deleteLater()));
+//    connect(this, &ObjectDetector::RequestResizeImage, ImageProcessingThread, &ImageProcessing::ResizeImage);
+//    connect(this, &ObjectDetector::RequestGetImage, ImageProcessingThread, &ImageProcessing::GetImage);
 }
 
 ObjectDetector::~ObjectDetector()
@@ -1203,48 +1203,48 @@ void ObjectDetector::UpdatePointPositionOnConveyor(float& x, float& y, float ang
 
 void ObjectDetector::TaskExecute()
 {
-    QString taskName = TaskList[TaskOrder];
+//    QString taskName = TaskList[TaskOrder];
 
-    if (taskName == "ResizeImage")
-    {
-        emit RequestResizeImage(captureImage);
-    }
-    else if (taskName == "WarpImage")
-    {
+//    if (taskName == "ResizeImage")
+//    {
+//        emit RequestResizeImage(captureImage);
+//    }
+//    else if (taskName == "WarpImage")
+//    {
 
-    }
-    else if (taskName == "HSVImage")
-    {
+//    }
+//    else if (taskName == "HSVImage")
+//    {
 
-    }
-    else if (taskName == "ThresholdImage")
-    {
+//    }
+//    else if (taskName == "ThresholdImage")
+//    {
 
-    }
-    else if (taskName == "DetectBlobs")
-    {
+//    }
+//    else if (taskName == "DetectBlobs")
+//    {
 
-    }
-    else if (taskName == "DetectCircles")
-    {
+//    }
+//    else if (taskName == "DetectCircles")
+//    {
 
-    }
-    else if (taskName == "SendImage")
-    {
+//    }
+//    else if (taskName == "SendImage")
+//    {
 
-    }
-    else if (taskName == "GetImage")
-    {
+//    }
+//    else if (taskName == "GetImage")
+//    {
 
-    }
-    else if (taskName == "ObjectMapping")
-    {
+//    }
+//    else if (taskName == "ObjectMapping")
+//    {
 
-    }
-    else if (taskName == "DisplayImage")
-    {
+//    }
+//    else if (taskName == "DisplayImage")
+//    {
 
-    }
+//    }
 }
 
 void ObjectDetector::UpdateTaskList()

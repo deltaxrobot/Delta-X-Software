@@ -127,7 +127,7 @@ public:
 
     QProcess *ExternalScriptProcess;
 
-    ImageProcessing* ImageProcessingThread;
+//    ImageProcessing* ImageProcessingThread;
 
     // ---- Table ----
 	FilterWindow* ParameterPanel;
