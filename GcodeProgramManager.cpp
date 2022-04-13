@@ -18,25 +18,6 @@ GcodeProgramManager::GcodeProgramManager(RobotWindow *parent, QScrollArea* scrol
 	deltaParameter = deltaVisualize;
     pbExecuteGcodes = executeButton;
 
-    UpdateSystemVariable("#X", "0");
-    UpdateSystemVariable("#Y", "0");
-    UpdateSystemVariable("#Z", "0");
-    UpdateSystemVariable("#W", "0");
-    UpdateSystemVariable("#U", "0");
-    UpdateSystemVariable("#V", "0");
-    UpdateSystemVariable("#F", "200");
-    UpdateSystemVariable("#A", "1200");
-    UpdateSystemVariable("#S", "12");
-    UpdateSystemVariable("#E", "12");
-    UpdateSystemVariable("#ConveyorSpeed", "0");
-    UpdateSystemVariable("#ConveyorDirection", "0");
-
-    UpdateSystemVariable("#O0_X", QString::number(NULL_NUMBER));
-    UpdateSystemVariable("#O0_Y", QString::number(NULL_NUMBER));
-    UpdateSystemVariable("#O0_A", QString::number(NULL_NUMBER));
-    UpdateSystemVariable("#O0_W", QString::number(NULL_NUMBER));
-    UpdateSystemVariable("#O0_H", QString::number(NULL_NUMBER));
-
 	connect(deltaConnection, SIGNAL(DeltaResponeGcodeDone()), this, SLOT(TransmitNextGcode()));
 }
 
@@ -428,7 +409,16 @@ bool GcodeProgramManager::isSlidingGcode(QString gcode)
 	QString prefix = gcode.mid(0, gcode.indexOf(" "));
 	if (conveyorGcodes.indexOf(prefix) > -1)
 		return true;
-	return false;
+    return false;
+}
+
+bool GcodeProgramManager::isEncoderGcode(QString gcode)
+{
+    QString encoderGcodes = "M316 M317 M318 M319";
+    QString prefix = gcode.mid(0, gcode.indexOf(" "));
+    if (encoderGcodes.indexOf(prefix) > -1)
+        return true;
+    return false;
 }
 
 bool GcodeProgramManager::isMovingGcode(QString gcode)
@@ -479,7 +469,7 @@ bool GcodeProgramManager::findExeGcodeAndTransmit()
 		/*int thenIndex = currentLine.indexOf("THEN");
 
 		if (thenIndex < -1)
-			thenIndex = currentLine.length();*/
+            thenIndex = currentLine.length();*/
 
 		for (int i = openBracIndex; i < currentLine.length(); i++)
 		{
@@ -709,7 +699,7 @@ bool GcodeProgramManager::findExeGcodeAndTransmit()
                     int pos2 = subProName.lastIndexOf("\"");
                     QString msg = subProName.mid(pos1, pos2 - pos1);
 
-                    deltaConnection->ExternalMCUSend(msg);
+                    deltaConnection->SendToExternalMCU(msg);
 
                     gcodeOrder++;
                     return false;
@@ -772,14 +762,14 @@ bool GcodeProgramManager::findExeGcodeAndTransmit()
 		if (isConveyorGcode(transmitGcode))
 		{
 			gcodeOrder++;
-			deltaConnection->ConveyorSend(transmitGcode);
+            deltaConnection->SendToConveyor(transmitGcode);
 			return true;
 		}
 
 		if (isSlidingGcode(transmitGcode))
 		{
 			gcodeOrder++;
-			deltaConnection->SlidingSend(transmitGcode);
+            deltaConnection->SendToSlider(transmitGcode);
 			return true;
 		}
 		/*if (deltaConnection->IsConnect() == false && !isMovingGcode(transmitGcode))
@@ -806,10 +796,11 @@ void GcodeProgramManager::SaveGcodeIntoFile()
 
 void GcodeProgramManager::SaveGcodeIntoFile(GcodeProgram *program)
 {
-    Debug("Save");
+    SoftwareLog("Save");
+
     if (program == NULL)
     {
-        Debug("No program is selected !");
+        SoftwareLog("No program is selected !");
         return;
     }
 
@@ -819,7 +810,7 @@ void GcodeProgramManager::SaveGcodeIntoFile(GcodeProgram *program)
     QFile file(fullFileName);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
     {
-        Debug("Cant not open file to save !");
+        SoftwareLog("Cant not open file to save !");
         return;
     }
 
@@ -829,7 +820,7 @@ void GcodeProgramManager::SaveGcodeIntoFile(GcodeProgram *program)
     program->GcodeData = pteGcodeArea->toPlainText();
     program->CoutingGcodeLines();
 
-    Debug("Saved");
+    SoftwareLog("Saved");
 }
 
 void GcodeProgramManager::DeleteProgram(GcodeProgram* ptr)
@@ -1694,7 +1685,7 @@ void GcodeProgramManager::ChangeSelectingProgram(GcodeProgram * ptr)
 		selectingProgram->SetColor(DEFAULT_COLOR);
 	}
 
-	Debug(QString("#") + QString::number(ptr->ID) + " is selected !");
+    SoftwareLog(QString("#") + QString::number(ptr->ID) + " is selected !");
 
 	selectingProgram = ptr;
 

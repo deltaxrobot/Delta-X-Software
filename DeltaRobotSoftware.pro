@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui serialport opengl network multimedia quick3d quickwidgets
+QT       += core gui serialport opengl network multimedia quick3d quickwidgets printsupport
 
 windows {
     INCLUDEPATH += E:\OpenCV\opencv-4.0\build\include
@@ -42,7 +42,6 @@ TEMPLATE = app
 SOURCES += main.cpp\
     AccountWindow.cpp \
     Authority.cpp \
-    BlobManager.cpp \
     CameraWidget.cpp \
     ComDevice.cpp \
     DrawingExporter.cpp \
@@ -50,12 +49,16 @@ SOURCES += main.cpp\
     Encoder.cpp \
     FilterWindow.cpp \
     GcodeReference.cpp \
+    GcodeScript.cpp \
     ImageProcessing.cpp \
     ImageViewer.cpp \
     Layer.cpp \
     MainWindow.cpp \
+    Object.cpp \
     ObjectDetector.cpp \
+    ObjectManager.cpp \
     ObjectVariableTable.cpp \
+    Parameter.cpp \
     ProjectManager.cpp \
     Robot.cpp \
     RobotWindow.cpp \
@@ -63,12 +66,11 @@ SOURCES += main.cpp\
     SoftwareManager.cpp \
     TCPConnectionManager.cpp \
     TabDashboard.cpp \
+    TaskNode.cpp \
     TextLayer.cpp \
     UXManage.cpp \
     VariableManager.cpp \
     VersionManager.cpp \
-    VideoDisplay.cpp \
-    VideoProcessor.cpp \
     codeeditor.cpp \
     ConnectionManager.cpp \
     DeltaVisualizer.cpp \
@@ -82,7 +84,6 @@ SOURCES += main.cpp\
 HEADERS  += \
     AccountWindow.h \
     Authority.h \
-    BlobManager.h \
     CameraWidget.h \
     ComDevice.h \
     ConnectionManager.h \
@@ -92,15 +93,19 @@ HEADERS  += \
     Encoder.h \
     FilterWindow.h \
     GcodeReference.h \
+    GcodeScript.h \
     ImageUnity.h \
     GcodeProgram.h \
     GcodeProgramManager.h \
     ImageViewer.h \
     Layer.h \
     MainWindow.h \
+    Object.h \
     ObjectDetector.h \
     ImageProcessing.h \
+    ObjectManager.h \
     ObjectVariableTable.h \
+    Parameter.h \
     ProjectManager.h \
     Robot.h \
     RobotWindow.h \
@@ -109,12 +114,11 @@ HEADERS  += \
     SoftwareManager.h \
     TCPConnectionManager.h \
     TabDashboard.h \
+    TaskNode.h \
     TextLayer.h \
     UXManager.h \
     VariableManager.h \
     VersionManager.h \
-    VideoDisplay.h \
-    VideoProcessor.h \
     codeeditor.h \
     geisttextedit.h \
     highlighter.h \

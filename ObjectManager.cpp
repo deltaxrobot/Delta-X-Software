@@ -1,15 +1,15 @@
-﻿#include "BlobManager.h"
+﻿#include "ObjectManager.h"
 
-BlobManager::BlobManager(QObject *parent)
+ObjectManager::ObjectManager(QObject *parent)
 	: QObject(parent)
 {
 }
 
-BlobManager::~BlobManager()
+ObjectManager::~ObjectManager()
 {
 }
 
-void BlobManager::AddNewObject(cv::RotatedRect object)
+void ObjectManager::AddNewObject(cv::RotatedRect object)
 {
 	if (isNewObject(object))
 	{
@@ -20,12 +20,12 @@ void BlobManager::AddNewObject(cv::RotatedRect object)
 	}
 }
 
-void BlobManager::SetApproximateValue(cv::Point3d approVal)
+void ObjectManager::SetApproximateValue(cv::Point3d approVal)
 {
 	approValue = approVal;
 }
 
-void BlobManager::RemoveOldestObject()
+void ObjectManager::RemoveOldestObject()
 {
 	if (ObjectContainer.size() == 0)
 		return;
@@ -50,7 +50,7 @@ void BlobManager::RemoveOldestObject()
 	ObjectContainer.erase(ObjectContainer.begin());
 }
 
-void BlobManager::RemoveAllDetectObjects()
+void ObjectManager::RemoveAllDetectObjects()
 {
 	for (int i = 0; i < ObjectContainer.size(); i++)
 	{
@@ -66,14 +66,14 @@ void BlobManager::RemoveAllDetectObjects()
     ObjectContainer.clear();
 }
 
-void BlobManager::AddNewObject(float x, float y, float w, float h)
+void ObjectManager::AddNewObject(float x, float y, float w, float h)
 {
     cv::RotatedRect object(cv::Point2f(x, y), cv::Size(w, h), 0);
 
     AddNewObject(object);
 }
 
-void BlobManager::UpdateTrackingError()
+void ObjectManager::UpdateTrackingError()
 {
     QLineEdit* le = qobject_cast<QLineEdit*>(sender());
 
@@ -83,7 +83,7 @@ void BlobManager::UpdateTrackingError()
     TrackingError = le->text().toFloat();
 }
 
-bool BlobManager::isNewObject(cv::RotatedRect object)
+bool ObjectManager::isNewObject(cv::RotatedRect object)
 {
 	bool result = true;
 	for(int i = 0; i < ObjectContainer.size(); i++)
@@ -118,7 +118,7 @@ bool BlobManager::isNewObject(cv::RotatedRect object)
     return result;
 }
 
-void BlobManager::updateObjectVariable(cv::RotatedRect object, int id)
+void ObjectManager::updateObjectVariable(cv::RotatedRect object, int id)
 {
     QString cmd = "";
     cmd += QString("#O%1_X=%2;").arg(id).arg(object.center.x);
@@ -129,7 +129,7 @@ void BlobManager::updateObjectVariable(cv::RotatedRect object, int id)
     emit NewUpdateObjectPosition(cmd);
 }
 
-void BlobManager::UpdateNewObjectMoving(float deltaX, float deltaY)
+void ObjectManager::UpdateNewObjectMoving(float deltaX, float deltaY)
 {
 	if (ObjectContainer.size() == 0)
 		return;

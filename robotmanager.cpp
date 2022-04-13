@@ -3,13 +3,11 @@
 
 RobotManager::RobotManager(QObject *parent) : QObject(parent)
 {
-    Robots = new QList<Robot*>();
 }
 
 void RobotManager::AddRobotWindow(RobotWindow* robotWindow)
 {
     robotWindow->RobotManagerPointer = this;
-    this->Robots->append(&(robotWindow->RobotParamter));
 }
 
 RobotWindow* RobotManager::CreatNewRobotWindow()
@@ -114,7 +112,7 @@ void RobotManager::LoadSettings(QSettings *setting)
 
     Setting = setting;
 
-    SetName(setting->value("Name", "project 1").toString());
+    SetName(setting->value("Name", "project 0").toString());
 
     int robotNumber = setting->value("RobotNumber", 1).toInt();
 

@@ -27,7 +27,7 @@ ObjectDetector::ObjectDetector(RobotWindow *parent)
     //changeAxisDirection();
     DisplayObjects = new QList<cv::RotatedRect>();
 
-	ObjectManager = new BlobManager(parent);
+    ObjectManager1 = new ObjectManager(parent);
 
     //---------- Conveyor ----------
 	ObjectMovingCalculaterTimer = new QTimer(this);
@@ -40,25 +40,25 @@ ObjectDetector::ObjectDetector(RobotWindow *parent)
 	cameraWindow->setWindowFlags(Qt::WindowStaysOnTopHint);
 
     //--------- Camera Thread -----------
-    VideoProcessorThread = new VideoProcessor();
-    VideoProcessorThread->moveToThread(new QThread(SoftwareManager::GetInstance()->SoftwarePointer));
-    qRegisterMetaType< cv::Mat >("cv::Mat");
-    connect(VideoProcessorThread->thread(), SIGNAL(started()), VideoProcessorThread, SLOT(startVideo()));
-    connect(VideoProcessorThread->thread(), SIGNAL(finished()), VideoProcessorThread, SLOT(deleteLater()));
-    connect(VideoProcessorThread, SIGNAL(captureImage(cv::Mat)), this, SLOT(GetImage(cv::Mat)));
-    connect(VideoProcessorThread, SIGNAL(readImageFailed()), this, SLOT(ProcessErrorCamera()));
+//    VideoProcessorThread = new VideoProcessor();
+//    VideoProcessorThread->moveToThread(new QThread(SoftwareManager::GetInstance()->SoftwarePointer));
+//    qRegisterMetaType< cv::Mat >("cv::Mat");
+//    connect(VideoProcessorThread->thread(), SIGNAL(started()), VideoProcessorThread, SLOT(startVideo()));
+//    connect(VideoProcessorThread->thread(), SIGNAL(finished()), VideoProcessorThread, SLOT(deleteLater()));
+//    connect(VideoProcessorThread, SIGNAL(captureImage(cv::Mat)), this, SLOT(GetImage(cv::Mat)));
+//    connect(VideoProcessorThread, SIGNAL(readImageFailed()), this, SLOT(ProcessErrorCamera()));
 
-    VideoProcessorThread->thread()->start();
+//    VideoProcessorThread->thread()->start();
 
     //-------- Camera Display Thread -----------
-    VideoDisplayThread = new VideoDisplay();
-    VideoDisplayThread->moveToThread(new QThread(SoftwareManager::GetInstance()->SoftwarePointer));
-    qRegisterMetaType< cv::Mat >("cv::Mat");
-    connect(VideoDisplayThread->thread(), SIGNAL(started()), VideoDisplayThread, SLOT(Loop()));
-    connect(VideoDisplayThread->thread(), SIGNAL(finished()), VideoDisplayThread, SLOT(deleteLater()));
-    connect(VideoDisplayThread, SIGNAL(neededUpdatePixmapToLabel(QLabel*, QPixmap)), this, SLOT(UpdatePixmapToLabel(QLabel*, QPixmap)));
+//    VideoDisplayThread = new VideoDisplay();
+//    VideoDisplayThread->moveToThread(new QThread(SoftwareManager::GetInstance()->SoftwarePointer));
+//    qRegisterMetaType< cv::Mat >("cv::Mat");
+//    connect(VideoDisplayThread->thread(), SIGNAL(started()), VideoDisplayThread, SLOT(Loop()));
+//    connect(VideoDisplayThread->thread(), SIGNAL(finished()), VideoDisplayThread, SLOT(deleteLater()));
+//    connect(VideoDisplayThread, SIGNAL(neededUpdatePixmapToLabel(QLabel*, QPixmap)), this, SLOT(UpdatePixmapToLabel(QLabel*, QPixmap)));
 
-    VideoDisplayThread->thread()->start();
+//    VideoDisplayThread->thread()->start();
 
     // -------- Image Processing Thread ------
 //    ImageProcessingThread = new ImageProcessing();
@@ -70,13 +70,13 @@ ObjectDetector::ObjectDetector(RobotWindow *parent)
 
 ObjectDetector::~ObjectDetector()
 {
-    VideoProcessorThread->CloseLoop();
-    VideoProcessorThread->thread()->quit();
-    VideoProcessorThread->thread()->wait();
+//    VideoProcessorThread->CloseLoop();
+//    VideoProcessorThread->thread()->quit();
+//    VideoProcessorThread->thread()->wait();
 
-    VideoDisplayThread->CloseLoop();
-    VideoDisplayThread->thread()->quit();
-    VideoDisplayThread->thread()->wait();
+//    VideoDisplayThread->CloseLoop();
+//    VideoDisplayThread->thread()->quit();
+//    VideoDisplayThread->thread()->wait();
 }
 
 void ObjectDetector::LoadTestImage()
@@ -96,7 +96,7 @@ void ObjectDetector::LoadTestImage()
             return;
         }
 
-        VideoProcessorThread->getCamera(Camera, leWidth, leHeight);
+//        VideoProcessorThread->getCamera(Camera, leWidth, leHeight);
         UpdateRatios(Camera->get(cv::CAP_PROP_FRAME_WIDTH), Camera->get(cv::CAP_PROP_FRAME_HEIGHT));
         ChangeCameraWidgetHeight(QString::number(CameraWidgetHeight));
 
@@ -176,7 +176,7 @@ void ObjectDetector::LoadCamera2()
                         if (mParent->RobotManagerPointer->RobotWindows.at(i)->DeltaImageProcesser->RunningCamera == RunningCamera)
                         {
                             Camera = mParent->RobotManagerPointer->RobotWindows.at(i)->DeltaImageProcesser->Camera;
-                            VideoProcessorThread->getCamera(Camera);
+//                            VideoProcessorThread->getCamera(Camera);
                             isCameraUsingByOtherRobot = true;
                         }
                     }
@@ -192,7 +192,7 @@ void ObjectDetector::LoadCamera2()
 //                leWidth->setText(QString::number((int)Camera->get(cv::CAP_PROP_FRAME_WIDTH)));
 //                leHeight->setText(QString::number((int)Camera->get(cv::CAP_PROP_FRAME_HEIGHT)));
 
-                VideoProcessorThread->getCamera(Camera, cameraID, leWidth, leHeight);
+//                VideoProcessorThread->getCamera(Camera, cameraID, leWidth, leHeight);
             }
 
             UpdateRatios(Camera->get(cv::CAP_PROP_FRAME_WIDTH), Camera->get(cv::CAP_PROP_FRAME_HEIGHT));
@@ -268,7 +268,7 @@ void ObjectDetector::stopCamera()
     isFirstRead = true;
     pbLoadCamera->setText("Load Camera");
 
-    VideoProcessorThread->stopVideo();
+//    VideoProcessorThread->stopVideo();
 }
 /**
  * Get raw image (Mat type) after resize.
@@ -278,10 +278,10 @@ void ObjectDetector::stopCamera()
  */
 void ObjectDetector::processImage()
 {
-    if (cameraWidget->pixmap() != nullptr && isFirstLoad == true)
-    {
-		isFirstLoad = false;
-	}
+//    if (cameraWidget->pixmap() != nullptr && isFirstLoad == true)
+//    {
+//		isFirstLoad = false;
+//	}
 
 	if (!captureImage.data)
 	{
@@ -372,10 +372,10 @@ void ObjectDetector::UpdateEvent()
 //        qDebug() << "Update Object Time: " << ElapsedTimer.elapsed();
 //    }
 
-    if (!cameraWindow->isVisible() && cameraWidget->parentWidget() == cameraWindow)
-    {
-        CloseCameraWindow();
-    }
+//    if (!cameraWindow->isVisible() && cameraWidget->parentWidget() == cameraWindow)
+//    {
+//        CloseCameraWindow();
+//    }
 }
 
 void ObjectDetector::SaveFPS()
@@ -830,11 +830,11 @@ void ObjectDetector::changeAxisDirection()
 void ObjectDetector::TurnTransformPerspective(bool isTurnOn)
 {
     IsPerspectiveMode = isTurnOn;
-    cameraWidget->IsQuadrangleEnable = isTurnOn;
-    if (pbPlayCammera->isChecked() == false)
-    {
-        pbPlayCammera->click();
-    }
+//    cameraWidget->IsQuadrangleEnable = isTurnOn;
+//    if (pbPlayCammera->isChecked() == false)
+//    {
+//        pbPlayCammera->click();
+//    }
 }
 
 void ObjectDetector::FindChessboard()
@@ -937,7 +937,7 @@ void ObjectDetector::UpdateCalibLine(int realLine, int imageLine)
 void ObjectDetector::TurnCalibDisplay(bool state)
 {
     IsCalibInfoVisible = state;
-    cameraWidget->IsCalibVisible = state;
+//    cameraWidget->IsCalibVisible = state;
 }
 
 void ObjectDetector::ExpandCameraWidget(bool isExpand)
@@ -996,9 +996,9 @@ void ObjectDetector::UpdatePixmapToLabel(QLabel *lb, QPixmap pm)
 void ObjectDetector::UpdateObjectPositionOnConveyor(QPointF offset)
 {
 
-    ObjectManager->UpdateNewObjectMoving(offset.x(), offset.y());
+    ObjectManager1->UpdateNewObjectMoving(offset.x(), offset.y());
 
-    emit ObjectValueChanged(ObjectManager->ObjectContainer);
+    emit ObjectValueChanged(ObjectManager1->ObjectContainer);
 }
 
 void ObjectDetector::SaveSetting(QString fileName)
@@ -1093,12 +1093,12 @@ void ObjectDetector::LoadSetting(QSettings *setting)
     leRealityLine->setText(setting->value("RealCalibLine", leRealityLine->text()).toString());
 
     QString filterCheckState = setting->value("Filter", "100").toString();
-    if (filterCheckState.length() >= 3)
-    {
-        rbBlobFilter->setChecked(filterCheckState[0] == '1'?true:false);
-        rbExternalFilter->setChecked(filterCheckState[1] == '1'?true:false);
-        rbCircleFilter->setChecked(filterCheckState[2] == '1'?true:false);
-    }
+//    if (filterCheckState.length() >= 3)
+//    {
+//        rbBlobFilter->setChecked(filterCheckState[0] == '1'?true:false);
+//        rbExternalFilter->setChecked(filterCheckState[1] == '1'?true:false);
+//        rbCircleFilter->setChecked(filterCheckState[2] == '1'?true:false);
+//    }
 
     lePythonUrl->setText(setting->value("ExternalScriptUrl", lePythonUrl->text()).toString());
 
@@ -1536,7 +1536,7 @@ void ObjectDetector::detectBlobObjects(cv::Mat input)
 		}
 	}
 
-    ObjectManager->VisibleObjectNumber = visibleCounter;
+    ObjectManager1->VisibleObjectNumber = visibleCounter;
 }
 
 void ObjectDetector::detectCircleObjects(cv::Mat input)
@@ -1652,7 +1652,7 @@ float ObjectDetector::processDetectingObjectOnCamera(cv::Mat& mat, QList<cv::Rot
             realObject.center.y += offset.y();
 
             // Add object to object list if it is new object
-            ObjectManager->AddNewObject(realObject);
+            ObjectManager1->AddNewObject(realObject);
             // Add object info to screen
             // Draw a rectangle outside the object
             if (mat.data)
@@ -1768,25 +1768,25 @@ void ObjectDetector::CalculateMappingMatrix()
 
 void ObjectDetector::UpdateTrackingInfo()
 {
-	lbTrackingObjectNumber->setText(QString::number(ObjectManager->ObjectContainer.size()));
-    lbVisibleObjectNumber->setText(QString::number(ObjectManager->VisibleObjectNumber));
+    lbTrackingObjectNumber->setText(QString::number(ObjectManager1->ObjectContainer.size()));
+    lbVisibleObjectNumber->setText(QString::number(ObjectManager1->VisibleObjectNumber));
 }
 
 void ObjectDetector::UpdateDetectingResultToWidgets()
 {
     if (cameraLayer == ORIGIN)
     {
-        VideoDisplayThread->UpdateLabelImage(calibImage, cameraWidget, 0);
+//        VideoDisplayThread->UpdateLabelImage(calibImage, cameraWidget, 0);
     }
     else if (cameraLayer == PROCESSING)
     {
-        VideoDisplayThread->UpdateLabelImage(filterMat, cameraWidget, 0);
+//        VideoDisplayThread->UpdateLabelImage(filterMat, cameraWidget, 0);
     }
     else if (cameraLayer == RESULT)
     {
         DisplayAdditionalInfo(resultImage);
 
-        VideoDisplayThread->UpdateLabelImage(resultImage, cameraWidget, 0);
+//        VideoDisplayThread->UpdateLabelImage(resultImage, cameraWidget, 0);
     }
 
     if (ParameterPanel->isHidden() == false)

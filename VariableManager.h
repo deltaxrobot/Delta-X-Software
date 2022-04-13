@@ -16,7 +16,8 @@ public:
     void AddVariable(QString name, QString value, QTreeWidgetItem* item);
     QString GetValue(QString name);
 
-    QMap<QString, QString> VarPairs;
+    QMap<QString, QString>* GetMap();
+
 
 public slots:
     void changeVariableItem(QTreeWidgetItem *item, int col);
@@ -29,6 +30,7 @@ private:
     QTreeWidgetItem *getItem(QString name, QTreeWidget* tree);
 
     QTreeWidget* treeWidgetDisplay;
+    QMap<QString, QString>* varPairs;
 };
 
 #endif // VARIABLEMANAGER_H

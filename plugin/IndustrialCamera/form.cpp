@@ -40,31 +40,18 @@ Form::~Form()
 void Form::LoadSettings(QSettings *setting)
 {
     bool isOpen = setting->value("IsOpen", false).toBool();
-    QString cameraName = setting->value("CameraName", "").toString();
-
-    if (isOpen == true)
-    {
-        for (int i = 0; ui->cbCameraList->count(); i++)
-        {
-            if (ui->cbCameraList->itemText(i) == cameraName)
-            {
-                QTimer::singleShot(3000, this, SLOT(on_pbConnectCamera_clicked()));
-
-                break;
-            }
-        }
-    }
+    cameraName = setting->value("CameraName", "").toString();
 
     int scaleWidth = setting->value("ScaleWidth", 800).toInt();
     int interval = setting->value("Interval", 500).toInt();
-    bool continiousShot = setting->value("ContiniousShot", false).toBool();
+    autoPlay = setting->value("ContiniousShot", false).toBool();
 
     ui->leImageWidth->setText(QString::number(scaleWidth));
     ui->leInterval->setText(QString::number(interval));
 
-    if (continiousShot == true)
+    if (isOpen == true)
     {
-        QTimer::singleShot(4000, ui->pbShotVideo, SLOT(click()));
+        QTimer::singleShot(3000, this, SLOT(TryToConnectCamera()));
     }
 }
 
@@ -93,6 +80,19 @@ void Form::GetEventFromUI()
 void Form::GetStateLastJob(bool state)
 {
     IsLastJobDone = state;
+}
+
+void Form::TryToConnectCamera()
+{
+    for (int i = 0; ui->cbCameraList->count(); i++)
+    {
+        if (ui->cbCameraList->itemText(i) == cameraName)
+        {
+            on_pbConnectCamera_clicked();
+            QTimer::singleShot(3000, ui->pbShotVideo, SLOT(click()));
+            break;
+        }
+    }
 }
 
 void Form::on_pbRefresh_clicked()

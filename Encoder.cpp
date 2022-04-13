@@ -20,6 +20,8 @@ void Encoder::SetPosition(float value)
     velocity = step / time;
 
     offset = CalculateOffset(step);
+
+    emit DistanceMoved(offset);
 }
 
 void Encoder::SetDeviationAngle(float value)

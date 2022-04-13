@@ -13,6 +13,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
 void MainWindow::InitVariables()
 {
+    SetLoadingIconRun(true);
+
     // ---- Check software version ----
 
     DeltaXVersionManager = new VersionManager(this);
@@ -46,6 +48,8 @@ void MainWindow::InitVariables()
     //-------- UX --------
     Ux = new UXManager();
 
+    teSoftwareLog = ui->teLoggingBox;
+
     //-------- Variable Table -----------
     ProgramVariableManager = new VariableManager();
     ProgramVariableManager->SetTreeWidget(ui->trwProgramVariableTable);
@@ -62,10 +66,12 @@ void MainWindow::InitVariables()
 
     connect(SoftwareProjectManager, SIGNAL(NewTab_Signal(int)), SLOT(AddNewProjectAndrobot(int)));
 
+
     if (!IsLastProject())
     {
         RobotManager* robotManager = NewProject_Slot(0);
-        robotManager->CreatNewRobotWindow();
+        RobotWindow* robotWindow = robotManager->CreatNewRobotWindow();
+        robotWindow->ProjectName = robotManager->Name;
     }
     else
     {
@@ -101,12 +107,14 @@ void MainWindow::InitVariables()
     InitProjectToOperator();
 
     on_pbApplyOperator_clicked();
+
+    SetLoadingIconRun(false);
 }
 
 bool MainWindow::IsLastProject()
 {
-    QSettings* settings = new QSettings("customUI.ini", QSettings::IniFormat);
-    LastProject = settings->value("LastProject", "").toString();
+    QSettings settings("customUI.ini", QSettings::IniFormat);
+    LastProject = settings.value("LastProject", "").toString();
 
     if (LastProject == "")
         return false;
@@ -143,13 +151,13 @@ void MainWindow::InitVisible()
     ui->tbMarket->setVisible(false);
 
     // ----- Load custom UI ----
-    QSettings* settings = new QSettings("customUI.ini", QSettings::IniFormat);
-    QString softwareName = settings->value("SoftwareName", "Delta X Software").toString();
+    QSettings settings("customUI.ini", QSettings::IniFormat);
+    QString softwareName = settings.value("SoftwareName", "Delta X Software").toString();
 
     softwareName = QString("%1 - %2").arg(softwareName).arg(DeltaXVersionManager->CurrentVersion);
     this->setWindowTitle(softwareName);
 
-    QString systemName = settings->value("SystemName", "Delta Robot System").toString();
+    QString systemName = settings.value("SystemName", "Delta Robot System").toString();
     ui->leOperatorTitle->setText(systemName);
     ui->lbOperatorTitile->setText(systemName);
 
@@ -180,38 +188,45 @@ void MainWindow::InitProjectToOperator()
 
 void MainWindow::SaveOperatorSettings()
 {
-    QSettings* settings = new QSettings("customUI.ini", QSettings::IniFormat);
-    settings->setValue("AdminPassword", ui->leAuthorityPassword->text());
+    QFile file(QCoreApplication::applicationDirPath() + "/customUI.ini");
+    if (!file.exists())
+    {
+        file.open(QIODevice::WriteOnly);
+        file.close();
+    }
+
+    QSettings settings("customUI.ini", QSettings::IniFormat);
+    settings.setValue("AdminPassword", ui->leAuthorityPassword->text());
 
     QString widgetList = "";
     for (int i = 0; i < ui->lwOperatorDisplayWidget->count(); i++)
     {
         widgetList += ui->lwOperatorDisplayWidget->item(i)->text() + "\n";
     }
-    settings->setValue("OperatorDisplayWidget", widgetList);
+    settings.setValue("OperatorDisplayWidget", widgetList);
 
     QString variableList = "";
     for (int i = 0; i < ui->lwOperatorDisplayVariable->count(); i++)
     {
         variableList += ui->lwOperatorDisplayVariable->item(i)->text() + "\n";
     }
-    settings->setValue("OperatorDisplayVariable", variableList);
+    settings.setValue("OperatorDisplayVariable", variableList);
 
     QString propramList = "";
     for (int i = 0; i < ui->lwOperatorRobotGcodeProgram->count(); i++)
     {
         propramList += ui->lwOperatorRobotGcodeProgram->item(i)->text() + "\n";
     }
-    settings->setValue("OperatorRobotGcodeProgram", propramList);
+    settings.setValue("OperatorRobotGcodeProgram", propramList);
 }
 
 void MainWindow::LoadOperatorSettings()
 {
-    QSettings* settings = new QSettings("customUI.ini", QSettings::IniFormat);
+    QSettings settings("customUI.ini", QSettings::IniFormat);
 
-    ui->leAuthorityPassword->setText(settings->value("AdminPassword", "1234").toString());
+    ui->leAuthorityPassword->setText(settings.value("AdminPassword", "1234").toString());
 
-    QString widgetList = settings->value("OperatorDisplayWidget", "").toString();
+    QString widgetList = settings.value("OperatorDisplayWidget", "").toString();
 
     foreach(QString str, widgetList.split('\n'))
     {
@@ -221,7 +236,7 @@ void MainWindow::LoadOperatorSettings()
         ui->lwOperatorDisplayWidget->addItem(str);
     }
 
-    QString variableList = settings->value("OperatorDisplayVariable", "").toString();
+    QString variableList = settings.value("OperatorDisplayVariable", "").toString();
 
     foreach(QString str, variableList.split('\n'))
     {
@@ -231,7 +246,7 @@ void MainWindow::LoadOperatorSettings()
         ui->lwOperatorDisplayVariable->addItem(str);
     }
 
-    QString propramList = settings->value("OperatorRobotGcodeProgram", "").toString();
+    QString propramList = settings.value("OperatorRobotGcodeProgram", "").toString();
 
     foreach(QString str, propramList.split('\n'))
     {
@@ -274,8 +289,12 @@ RobotWindow *MainWindow::AddNewProjectAndrobot(int index)
 
 void MainWindow::OpenProjectFromFile()
 {
+    QDir dir = QCoreApplication::applicationDirPath() + "/project/";
+    if (!dir.exists())
+        dir.mkpath(".");
+
     QString fileName = QFileDialog::getOpenFileName(this,
-        tr("Open Delta X Project"), QCoreApplication::applicationDirPath() + "/project/", tr("Project File (*.prx)"));
+        tr("Open Delta X Project"), dir.path(), tr("Project File (*.prx)"));
 
     if (fileName.isEmpty())
         return;
@@ -285,19 +304,30 @@ void MainWindow::OpenProjectFromFile()
 
 void MainWindow::SaveProjectToFile()
 {
+    QDir dir = QCoreApplication::applicationDirPath() + "/project/";
+    if (!dir.exists())
+        dir.mkpath(".");
+
     QFileDialog dialog(this);
     dialog.setFileMode(QFileDialog::AnyFile);
     dialog.setNameFilter(tr("Delta X Project (*.prx)"));
     dialog.setViewMode(QFileDialog::Detail);
     QString fileName;
-    fileName = dialog.getSaveFileName(this, "Save delta robot project", QApplication::applicationDirPath() + "/project", "Delta X Project (*.prx)");
+    fileName = dialog.getSaveFileName(this, "Save delta robot project", dir.path(), "Delta X Project (*.prx)");
 
     QSettings settings(fileName, QSettings::IniFormat);
 
     SoftwareProjectManager->CurrentRobotManager->SaveSettings(&settings);
 
-    QSettings* settings2 = new QSettings("customUI.ini", QSettings::IniFormat);
-    settings2->setValue("LastProject", fileName);
+    QFile file(QCoreApplication::applicationDirPath() + "/customUI.ini");
+    if (!file.exists())
+    {
+        file.open(QIODevice::WriteOnly);
+        file.close();
+    }
+
+    QSettings settings2("customUI.ini", QSettings::IniFormat);
+    settings2.setValue("LastProject", fileName);
 }
 
 void MainWindow::SelectedTab(QAbstractButton *tabButton)
@@ -319,6 +349,29 @@ void MainWindow::Log(QString msg)
     ui->teLoggingBox->moveCursor (QTextCursor::End);
     ui->teLoggingBox->insertPlainText(msg);
     ui->teLoggingBox->moveCursor(QTextCursor::End);
+}
+
+void MainWindow::SetLoadingIconRun(bool isRun)
+{
+    QMovie* movie = ui->lbLoadingIcon->movie();
+
+    if (movie == NULL)
+    {
+        movie = new QMovie(":/icon/deltax-loading.gif");
+        ui->lbLoadingIcon->setMovie(movie);
+    }
+
+    if (isRun == false)
+    {
+        ui->lbLoadingIcon->hide();
+        movie->stop();
+    }
+    else
+    {
+        ui->lbLoadingIcon->show();
+        movie->start();
+    }
+
 }
 
 MainWindow::~MainWindow()

@@ -34,7 +34,6 @@ public:
     void SetName(QString name);
     RobotWindow *GetRobot(QString name);
 
-    QList<Robot*> *Robots;
     QList<RobotWindow*> RobotWindows;
     int ID = 0;
     QString Name;

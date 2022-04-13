@@ -64,6 +64,7 @@ public:
     QHBoxLayout *horizontalLayout_2;
     QWidget *wgLeftPanel;
     QVBoxLayout *verticalLayout;
+    QLabel *lbLoadingIcon;
     QToolButton *tbOpenProject;
     QToolButton *tbSaveProject;
     QSpacerItem *verticalSpacer_3;
@@ -383,6 +384,12 @@ public:
         verticalLayout->setContentsMargins(11, 11, 11, 11);
         verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
         verticalLayout->setContentsMargins(0, 0, 0, 0);
+        lbLoadingIcon = new QLabel(wgLeftPanel);
+        lbLoadingIcon->setObjectName(QString::fromUtf8("lbLoadingIcon"));
+        lbLoadingIcon->setMinimumSize(QSize(0, 50));
+
+        verticalLayout->addWidget(lbLoadingIcon);
+
         tbOpenProject = new QToolButton(wgLeftPanel);
         tbOpenProject->setObjectName(QString::fromUtf8("tbOpenProject"));
         QSizePolicy sizePolicy1(QSizePolicy::Preferred, QSizePolicy::Fixed);
@@ -599,7 +606,7 @@ public:
         scrollArea_2->setWidgetResizable(true);
         scrollAreaWidgetContents_2 = new QWidget();
         scrollAreaWidgetContents_2->setObjectName(QString::fromUtf8("scrollAreaWidgetContents_2"));
-        scrollAreaWidgetContents_2->setGeometry(QRect(0, 0, 713, 385));
+        scrollAreaWidgetContents_2->setGeometry(QRect(0, 0, 713, 211));
         verticalLayout_10 = new QVBoxLayout(scrollAreaWidgetContents_2);
         verticalLayout_10->setSpacing(6);
         verticalLayout_10->setContentsMargins(11, 11, 11, 11);
@@ -1328,6 +1335,7 @@ public:
         actionRobot_2->setText(QCoreApplication::translate("MainWindow", "Robot", nullptr));
         actionProject_2->setText(QCoreApplication::translate("MainWindow", "Project", nullptr));
         actionNew->setText(QCoreApplication::translate("MainWindow", "New", nullptr));
+        lbLoadingIcon->setText(QString());
         tbOpenProject->setText(QCoreApplication::translate("MainWindow", "...", nullptr));
         tbSaveProject->setText(QCoreApplication::translate("MainWindow", "...", nullptr));
         tbHome->setText(QCoreApplication::translate("MainWindow", "Home", nullptr));

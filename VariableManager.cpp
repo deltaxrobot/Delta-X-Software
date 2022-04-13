@@ -2,7 +2,7 @@
 
 VariableManager::VariableManager(QWidget *parent) : QWidget(parent)
 {
-
+    varPairs = new QMap<QString, QString>();
 }
 
 void VariableManager::SetTreeWidget(QTreeWidget *treeWidget)
@@ -13,7 +13,7 @@ void VariableManager::SetTreeWidget(QTreeWidget *treeWidget)
 
 void VariableManager::AddVariable(QString name, QString value)
 {
-    VarPairs.insert(name, value);
+    varPairs->insert(name, value);
 
     QStringList names = name.split('.');
 
@@ -71,7 +71,7 @@ void VariableManager::AddVariable(QString name, QString value, QTreeWidgetItem *
 
 QString VariableManager::GetValue(QString name)
 {
-    return VarPairs[name];
+    return varPairs->value(name);
 }
 
 void VariableManager::changeVariableItem(QTreeWidgetItem *item, int col)
@@ -104,4 +104,9 @@ QTreeWidgetItem *VariableManager::getItem(QString name, QTreeWidget *tree)
     }
 
     return NULL;
+}
+
+QMap<QString, QString> *VariableManager::GetMap()
+{
+    return varPairs;
 }

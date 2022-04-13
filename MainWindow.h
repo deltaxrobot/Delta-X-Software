@@ -12,6 +12,7 @@
 #include "SoftwareManager.h"
 #include "VersionManager.h"
 #include "Authority.h"
+#include "UnityTool.h"
 
 #include <QSettings>
 
@@ -54,6 +55,8 @@ public slots:
     void SaveProjectToFile();
     void SelectedTab(QAbstractButton* tabButton);
     void Log(QString msg);
+
+    void SetLoadingIconRun(bool isRun);
 
 private slots:
     void on_pbApplyOperator_clicked();

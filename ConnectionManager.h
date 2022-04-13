@@ -8,6 +8,7 @@
 #include <UnityTool.h>
 #include <qtimer.h>
 #include <TCPConnectionManager.h>
+#include <QList>
 
 class ConnectionManager : public QObject
 {
@@ -32,6 +33,8 @@ public:
 	TCPConnectionManager* TCPConnection;
     QTcpServer* TcpServer;
 
+    QList<QSerialPort*> Ports;
+
 	bool IsRobotConnect();
 	void DisconnectRobot();
 	bool IsRosClientAvailable();
@@ -42,9 +45,10 @@ public:
     void FindDeltaRobot();
 	void SendToRobot(QString msg);
 
-	void ConveyorSend(QString msg);
-	void SlidingSend(QString msg);
-	void ExternalMCUSend(QString msg);
+    void SendToConveyor(QString msg);
+    void SendToSlider(QString msg);
+    void SendToExternalMCU(QString msg);
+
 
 public slots:
 	void ReadData();
@@ -58,6 +62,7 @@ signals:
 	void FinishReadLine(QString msg);
 	void ExternalMCUTransmitText(QString text);
 	void DeltaResponeReady();
+    void FailTransmit();
     void FinishFindingRobot();
 	void DeltaResponeGcodeDone();
     void Responsed(QString msg);
@@ -76,6 +81,8 @@ signals:
 
     void CaptureFromExternalCamera();
     void ExternalScriptOpened(QTcpSocket* socket);
+
+    void Log(QString msg);
 private:
 	void init();
 	void sendQueue();

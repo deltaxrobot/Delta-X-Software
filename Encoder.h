@@ -26,6 +26,9 @@ public:
 public slots:
     void MarkPosition();
 
+signals:
+    void DistanceMoved(QPointF offset);
+
 private:
     QElapsedTimer elapseTimer;
     float currentPosition = 0;

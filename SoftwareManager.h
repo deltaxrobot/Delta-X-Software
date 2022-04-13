@@ -10,6 +10,7 @@ class ProjectManager;
 
 class SoftwareManager
 {
+
 protected:
     SoftwareManager()
     {

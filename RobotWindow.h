@@ -2,6 +2,7 @@
 #define ROBOTWINDOW_H
 
 #include <QMainWindow>
+#include <QtOpenGL>
 #include "ConnectionManager.h"
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -45,6 +46,7 @@
 #include <QProcess>
 #include <QComboBox>
 #include "Encoder.h"
+#include "FilterWindow.h"
 
 #define JOY_STICK
 
@@ -63,10 +65,18 @@
 #include "SoftwareManager.h"
 
 #include "ComDevice.h"
+#include "ImageProcessing.h"
 
 #include <QSettings>
+#include "GcodeScript.h"
+
+
+#include <QDialogButtonBox>
 
 #define DEFAULT_BAUDRATE 115200
+
+#define DEFAULT_FPS			15
+#define DEFAULT_INTERVAL	1000/DEFAULT_FPS
 
 class RobotWindow;
 class ObjectDetector;
@@ -90,6 +100,9 @@ public:
     //----- Init ----
 	void InitEvents();
     void InitVariables();
+    void InitObjectDetectingModule();
+    void InitGcodeEditorModule();
+    void InitUIController();
     void LoadPlugin();
     void InitParseNames();
 
@@ -138,12 +151,6 @@ public:
     QString GetRedefineNameWidget(QString name);
     QStringList GetShareDisplayWidgetNames();
 
-    // ----- Object Detecting ----
-
-
-
-    // ---- MODULE ----
-
     //---- Connection ----
     ConnectionManager* DeltaConnectionManager;
     QNetworkAccessManager *HttpManager;
@@ -153,23 +160,33 @@ public:
     QProcess* ExternalScriptProcess;
 
     // ---- Gcode ----
+    GcodeScript* GcodeScriptThread;
 	GcodeProgramManager* DeltaGcodeManager;
     QTimer* VirtualEncoderTimer;
     QTimer* UIEvent;
 
     // ---- Robot ----
-    Robot RobotParamter;
+    RobotPara RobotParameter;
     RobotManager* RobotManagerPointer = NULL;
     DeltaVisualizer *Delta2DVisualizer;
     QTimer* ShortcutKeyTimer;
 
+    QTimer UpdateUITimer;
+
     int ID = 0;
     QString Name = "robot 1";
+    QString ProjectName = "project 0";
     QString SoftwareVersion = "0.9.5";
 
     int DefaultBaudrate = DEFAULT_BAUDRATE;
 
+    //----- Termite ------
+    QStringList SentCommands;
+    int SentCommandIndex = 0;
+
     // ---- Vision ----
+    ImageProcessing* ImageProcessingThread;
+    FilterWindow* ParameterPanel;
 
     ObjectDetector* DeltaImageProcesser;
     ObjectVariableTable* TrackingObjectTable;
@@ -184,6 +201,14 @@ public:
     float ConveyorPositionBeforeMove = 0;
 
     QWidget* ImageViewerWindow = NULL;
+
+    int RunningCamera = -1;
+    bool IsCameraPause = false;
+    cv::VideoCapture* Camera;
+    cv::Mat CaptureImage;
+    float CameraFPS = DEFAULT_FPS;
+    float CameraTimerInterval = DEFAULT_INTERVAL;
+    QTimer WebcamTimer;
 
     // ---- Drawing ----
     DrawingExporter* DeltaDrawingExporter;
@@ -211,14 +236,9 @@ public:
 
     // ----- Data ----
     QMap<QString, QString> ParseNames;
+    QMap<QString, QString>* GcodeVariables;
 
 public slots:
-    // ---- Setting ----
-    void SaveSetting();
-    void LoadSetting();
-
-    // ---- Debug Log ----
-    void ExpandLogBox(bool value);
 
     // ---- Robot Connection ----
     void ConnectDeltaRobot();
@@ -239,6 +259,7 @@ public slots:
 
 	void ExecuteSelectPrograms();
     void ExecuteCurrentLine();
+    void HighLineCurrentLine(int pos);
 
     void RunSmartEditor();
     void StandardFormatEditor();
@@ -249,14 +270,15 @@ public slots:
 
     // ---- Robot Controller ----
     void Home();
-	void UpdateZLineEditValue(int z);
-    void UpdateAngleLineEditValue(int w);
-	void UpdateDeltaPositionFromLineEditValue();
+//	void UpdateZLineEditValue(int z);
+//    void UpdateAngleLineEditValue(int w);
+//	void UpdateDeltaPositionFromLineEditValue();
     void UpdatePositionToLabel();
-    void UpdateTextboxFrom2DControl(float x, float y, float z, float w, float u, float v);
-    void UpdateTextboxFrom3DControl(float x, float y, float z, float w, float u, float v);
-    void UpdatePositionControl(float x, float y, float z, float w, float u, float v, float f, float a, float s, float e);
-    void UpdateGlobalHomePositionValueAndControlValue(float x, float y, float z, float w, float u, float v);
+//    void UpdateTextboxFrom2DControl(float x, float y, float z, float w, float u, float v);
+//    void UpdateTextboxFrom3DControl(float x, float y, float z, float w, float u, float v);
+//    void UpdatePositionControl(float x, float y, float z, float w, float u, float v, float f, float a, float s, float e);
+    void UpdatePositionControl(RobotPara robotPara);
+    void ReceiveHomePosition(float x, float y, float z, float w, float u, float v);
 	void UpdateVelocity();
 	void UpdateAccel();
     void UpdateStartSpeed();
@@ -264,6 +286,12 @@ public slots:
 	void AdjustGripperAngle(int angle);
 	void Grip();
 
+    void MoveRobot(QString gcode);
+    void MoveRobot(QString axis, float step);
+
+    // ------ Robot Position -----
+
+    void UpdateRobotPositionToUI();
 
     //------ End Effector Robot -------
 	void SetPump(bool value);
@@ -274,6 +302,11 @@ public slots:
     void GetValueInput(QString response);
 
     //----- Variable -----
+    void UpdateVariable(QString key, QString value);
+    void UpdateVariables(QString cmd);
+
+    //----- Device ----
+    void SendGcodeToDevice(QString deviceName, QString gcode);
 
     // ---- Conveyor ----
     void ConnectConveyor();
@@ -290,7 +323,6 @@ public slots:
 
     void CalculateConveyorDeviationAngle();
 
-    void UpdateDetectObjectSize();
     void UpdateCursorPosition(float x, float y);
 
     void ProcessShortcutKey();
@@ -320,9 +352,10 @@ public slots:
     void DisplayTextFromExternalMCU(QString text);
 
     // ---- Termite ----
-	void TerminalTransmit();
-	void PrintReceiveData(QString msg);
+    void TerminalTransmit();
     void RunExternalScript();
+    void Log(QString msg);
+
     // ---- Connection ----
 	void FinishedRequest(QNetworkReply *reply);
 
@@ -336,7 +369,24 @@ public slots:
 
     // ----- Object Detecting ----
     void GetImageFromExternal(cv::Mat mat);
+    void ChangeOutputDisplay(QString outputName);
+    void LoadWebcam();
+    void LoadImages();
+    void StopWebcam();
+    void CaptureWebcam();
+    void RearrangeTaskFlow();
+    void OpenColorFilterWindow();
+    void SelectObjectDetectingAlgorithm(int algorithm);
+    void ConfigChessboard();
+    void GetCalibPointsFromImage(QPointF p1, QPointF p2);
+    void UpdateRealPositionOfCalibPoints();
+    void GetObjectSizeFromImage(QRectF rect);
+    void GetMappingPointFromImage(QPointF point);
+    void GetNewImageSize();
 
+    void UnselectToolButtons();
+    void UpdateObjectsToImageViewer(QList<Object*> objects);
+    void EditImage(bool isWarp, bool isCropTool);
     // ----- Display ----
 
 	void ScaleUI();    
@@ -365,6 +415,19 @@ public slots:
     #endif
 #endif
 
+signals:
+    void GotImage(cv::Mat mat);
+    void GotObjects(QList<Object> objects);
+    void GotResizePara(cv::Size size);
+    void GotResizeImage(cv::Mat mat);
+    void GotChessboardSize(cv::Size size);
+    void GotCalibPoints(QPolygonF poly);
+    void GotMappingMatrix(QMatrix matrix);
+    void GotOjectFilterInfo(Object obj);
+    void RequestFindChessboard();
+    void StopGcodeProgram();
+    void RunGcodeProgram(QString gcodes, int pos, bool isEditor);
+
 private:
 
     // ---- Gcode Editor -----
@@ -384,6 +447,8 @@ private:
     // ---- Test ----
 	void interpolateCircle();
 	void makeEffectExample();
+
+    // ---- Tool ----
 
     //--------- Controller -------
 #ifdef Q_OS_WIN

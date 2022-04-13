@@ -6,13 +6,63 @@ ImageViewer::ImageViewer(QWidget *parent) :
     ViewerScene = new CustomScene();
     setScene(ViewerScene);
 
+    ImageItem = new QGraphicsPixmapItem();
+    ImageItem->setZValue(-1);
+
+    ViewerScene->addItem(ImageItem);
+
     cLine.SetScene(scene());
     cRect.SetScene(scene());
     cPoint.SetScene(scene());
     cPoint2.SetScene(scene());
     cMappingPoint.SetScene(scene());
     cQuadangle.SetScene(scene());
+    cArea.SetScene(scene());
     cMappingPoint.SetScene(scene());
+
+    SelectNoTool();
+
+    setMoveHand(true);
+
+    for (int i = 0; i < 100; i++)
+    {
+        QGraphicsPolygonItem* polygonItem = new QGraphicsPolygonItem();
+        polygonItems.append(polygonItem);
+        polygonItem->setVisible(false);
+        polygonItem->setPen(QPen(Qt::red, 2));
+
+        QGraphicsTextItem* textItem = new QGraphicsTextItem();
+        textItems.append(textItem);
+        textItem->setVisible(false);
+        textItem->setDefaultTextColor(Qt::red);
+
+        ViewerScene->addItem(polygonItem);
+        ViewerScene->addItem(textItem);
+    }
+}
+
+ImageViewer::~ImageViewer()
+{
+    for(int i = 0; i < rectItems.count(); i++)
+    {
+        delete rectItems[i];
+    }
+
+    rectItems.clear();
+
+    for(int i = 0; i < polygonItems.count(); i++)
+    {
+        delete polygonItems[i];
+    }
+
+    polygonItems.clear();
+
+    for(int i = 0; i < textItems.count(); i++)
+    {
+        delete textItems[i];
+    }
+
+    textItems.clear();
 }
 
 void ImageViewer::InitParameter()
@@ -20,19 +70,49 @@ void ImageViewer::InitParameter()
     if (ImageItem == NULL)
         return;
 
-    int quadangleOffset = 200;
-    int areaOffset = 50;
+    imgWidth = ImageItem->pixmap().width();
+    imgHeight = ImageItem->pixmap().height();
 
-    int imgWidth = ImageItem->pixmap().width();
-    int imgHeight = ImageItem->pixmap().height();
+    int quadangleOffset = imgHeight / 4;
+    int areaOffset = 25;
 
-    cQuadangle.SetPoint(QPointF(quadangleOffset, quadangleOffset), 0);
-    cQuadangle.SetPoint(QPointF(quadangleOffset, imgHeight - quadangleOffset), 1);
-    cQuadangle.SetPoint(QPointF(imgWidth - quadangleOffset, imgHeight - quadangleOffset), 2);
-    cQuadangle.SetPoint(QPointF(imgWidth - quadangleOffset, quadangleOffset), 3);
+    QPolygonF poly;
+    poly.append(QPointF(imgWidth / 2 - quadangleOffset, imgHeight / 2 - quadangleOffset));
+    poly.append(QPointF(imgWidth / 2 - quadangleOffset, imgHeight / 2 + quadangleOffset));
+    poly.append(QPointF(imgWidth / 2 + quadangleOffset, imgHeight / 2 + quadangleOffset));
+    poly.append(QPointF(imgWidth / 2 + quadangleOffset, imgHeight / 2 - quadangleOffset));
+
+    cQuadangle.SetPolygon(poly);
 
     cArea.SetTopLeft(QPointF(areaOffset, areaOffset));
-    cArea.SetBottomRight(QPointF(imgWidth - quadangleOffset, imgHeight - quadangleOffset));
+    cArea.SetBottomRight(QPointF(imgWidth - areaOffset, imgHeight - areaOffset));
+
+    cRect.SetValue(QRectF(200, 200, 30, 15));
+}
+
+void ImageViewer::SaveSetting(QSettings *setting)
+{
+    setting->setValue("Point1", cPoint.GetValue());
+    setting->setValue("Point2", cPoint2.GetValue());
+
+    setting->setValue("Quadangle", cQuadangle.GetPolygon());
+    setting->setValue("Area", cArea.GetValue());
+    setting->setValue("Rectangle", cRect.GetValue());
+}
+
+void ImageViewer::LoadSetting(QSettings *setting)
+{
+    cPoint.SetValue(setting->value("Point1", cPoint.GetValue()).toPointF());
+    cPoint2.SetValue(setting->value("Point2", cPoint2.GetValue()).toPointF());
+
+    cQuadangle.SetPolygon(setting->value("Quadangle", cQuadangle.GetPolygon()).value<QPolygonF>());
+    cArea.SetValue(setting->value("Area", cArea.GetValue()).toRectF());
+    cRect.SetValue(setting->value("Rectangle", cRect.GetValue()).toRectF());
+
+    emit changedPoints(cPoint.GetValue(), cPoint2.GetValue());
+    emit changedQuadrangle(cQuadangle.GetPolygon());
+    emit changedArea(cArea.GetValue());
+    emit changedRect(cRect.GetValue());
 }
 
 void ImageViewer::ZoomIn(qreal value)
@@ -63,13 +143,153 @@ void ImageViewer::Zoom(qreal value)
     setTransform(matrix);
 }
 
+void ImageViewer::SetImage(QPixmap pixmap)
+{
+    ImageItem->setPixmap(pixmap);
+
+    if (isFirstLoad == true)
+    {
+        isFirstLoad = false;
+        InitParameter();
+    }
+
+    if (pixmap.width() != imgWidth || pixmap.height() != imgHeight)
+    {
+        updateScale(float(pixmap.width()) / imgWidth);
+
+        imgWidth = pixmap.width();
+        imgHeight = pixmap.height();
+    }
+}
+
+void ImageViewer::SetQuadrangle(QPolygonF poly)
+{
+    if (poly.count() < 4)
+        return;
+
+    if (isInRange(poly))
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            QPointF p = poly.at(i);
+            p.setX(p.x() * imgWidth);
+            p.setY(p.y() * imgHeight);
+            cQuadangle.SetPoint(p, i);
+        }
+    }
+    else
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            cQuadangle.SetPoint(poly.at(i), i);
+        }
+    }
+
+
+}
+
+void ImageViewer::DrawRecangles(QList<QRect> rects)
+{
+    for(int i = 0; i < rectItems.count(); i++)
+    {
+        if (i < rects.count())
+        {
+            rectItems.at(i)->setRect(rects.at(i));
+            rectItems.at(i)->setVisible(true);
+            continue;
+        }
+
+        rectItems.at(i)->setVisible(false);
+    }
+}
+
+void ImageViewer::DrawPolygons(QList<QPolygonF> polygons)
+{
+    for(int i = 0; i < polygonItems.count(); i++)
+    {
+        if (i < polygons.count())
+        {
+            polygonItems.at(i)->setPolygon(polygons.at(i));
+            polygonItems.at(i)->setVisible(true);
+            continue;
+        }
+
+        polygonItems.at(i)->setVisible(false);
+    }
+}
+
+void ImageViewer::DrawTexts(QMap<QString, QPointF> texts)
+{
+    for (int i = 0; i < texts.count(); i++)
+    {
+        if (i < texts.count())
+        {
+            textItems.at(i)->setPlainText(texts.keys().at(i));
+            textItems.at(i)->setPos(texts.values().at(i));
+            textItems.at(i)->setVisible(true);
+            continue;
+        }
+
+        textItems.at(i)->setVisible(false);
+    }
+}
+
+void ImageViewer::TurnOnTool(bool value)
+{
+    cLine.SetVisible(value);
+    cRect.SetVisible(value);
+    cPoint.SetVisible(value);
+    cPoint2.SetVisible(value);
+    cMappingPoint.SetVisible(value);
+    cQuadangle.SetVisible(value);
+    cArea.SetVisible(value);
+}
+
+void ImageViewer::TurnOnObjects(bool value)
+{
+
+}
+
+void ImageViewer::SetPointTitles(QString p1Text, QString p2Text)
+{
+    cPoint.SetText(p1Text);
+    cPoint2.SetText(p2Text);
+}
+
+void ImageViewer::SetMappingPointTitle(QString text)
+{
+    cMappingPoint.SetText(text);
+}
+
+QPointF ImageViewer::GetPoint1()
+{
+    return cPoint.GetValue();
+}
+
+QPointF ImageViewer::GetPoint2()
+{
+    return cPoint2.GetValue();
+}
+
+QSize ImageViewer::GetImageSize()
+{
+    return QSize(imgWidth, imgHeight);
+}
+
+float ImageViewer::GetRatio()
+{
+    return CurrentZoom;
+}
+
 void ImageViewer::SelectRectTool()
 {
     selectedTool = RECTANGLE_TOOL;
 
-//    QToolButton* bt = qobject_cast<QToolButton*>(sender());
-//    if (bt != NULL)
-//        changeToolIconInArea(bt->icon());
+    setMoveHand(false);
+
+    TurnOnTool(false);
+
+    cRect.SetVisible(true);
 }
 
 void ImageViewer::SelectLineTool()
@@ -79,10 +299,11 @@ void ImageViewer::SelectLineTool()
 
     selectedTool = LINE_TOOL;
 
-//    QPushButton* bt = qobject_cast<QPushButton*>(sender());
+    setMoveHand(false);
 
-//    if (bt != NULL)
-//        changeToolIconInArea(bt->icon());
+    TurnOnTool(false);
+
+    cLine.SetVisible(true);
 }
 
 void ImageViewer::SelectPointTool()
@@ -92,9 +313,14 @@ void ImageViewer::SelectPointTool()
 
     selectedTool = POINT_TOOL;
 
-//    QPushButton* bt = qobject_cast<QPushButton*>(sender());
-//    if (bt != NULL)
-//        changeToolIconInArea(bt->icon());
+    selectedPoint = 0;
+
+    setMoveHand(false);
+
+    TurnOnTool(false);
+
+    cPoint.SetVisible(true);
+    cPoint2.SetVisible(true);
 }
 
 void ImageViewer::SelectQuadrangleTool()
@@ -105,6 +331,12 @@ void ImageViewer::SelectQuadrangleTool()
     selectedTool = QUADRANGLE_TOOL;
 
     setCursor(Qt::ArrowCursor);
+
+    setMoveHand(false);
+
+    TurnOnTool(false);
+
+    cQuadangle.SetVisible(true);
 }
 
 void ImageViewer::SelectAreaTool()
@@ -115,6 +347,12 @@ void ImageViewer::SelectAreaTool()
     selectedTool = AREA_TOOL;
 
     setCursor(Qt::ArrowCursor);
+
+    TurnOnTool(false);
+
+    cArea.SetVisible(true);
+
+    setMoveHand(false);
 }
 
 void ImageViewer::SelectMappingTool()
@@ -124,24 +362,31 @@ void ImageViewer::SelectMappingTool()
 
     selectedTool = MAPPING_TOOL;
 
-    QPushButton* bt = qobject_cast<QPushButton*>(sender());
-    changeToolIconInArea(bt->icon());
+//    QPushButton* bt = qobject_cast<QPushButton*>(sender());
+//    changeToolIconInArea(bt->icon());
+
+    TurnOnTool(false);
+
+    cMappingPoint.SetVisible(true);
 }
 
 void ImageViewer::SelectNoTool()
 {
     selectedTool = NO_TOOL;
 
-    setCursor(Qt::ArrowCursor);
+//    setCursor(Qt::OpenHandCursor);
+
+    setMoveHand(true);
+    TurnOnTool(false);
+
+    emit selectedNoTool();
 }
 
-void ImageViewer::DrawingAllShape()
-{
-
-}
 
 void ImageViewer::wheelEvent(QWheelEvent *e)
 {
+//    setCursor(Qt::ClosedHandCursor);
+
     if (e->modifiers() & Qt::ControlModifier) {
         if (e->angleDelta().y() > 0)
             ZoomIn(2);
@@ -185,27 +430,30 @@ void ImageViewer::mousePressEvent(QMouseEvent *event)
 
 void ImageViewer::mouseMoveEvent(QMouseEvent *event)
 {
+//    if (event->buttons() == Qt::MiddleButton)
+//    {
+//        setDragMode(QGraphicsView::RubberBandDrag);
+//        setInteractive(true);
 
+//        QGraphicsView::mouseMoveEvent(event);
 
-    if (event->buttons() == Qt::MiddleButton)
-    {
-        setDragMode(QGraphicsView::ScrollHandDrag);
-        setInteractive(true);
+//        return;
+//    }
+//    else
+//    {
+//        setDragMode(QGraphicsView::ScrollHandDrag);
+//        setInteractive(false);
+//    }
 
-        QGraphicsView::mouseMoveEvent(event);
+//    if (event->buttons() == Qt::LeftButton)
+//    {
 
-        return;
-    }
-    else
-    {
-        setDragMode(QGraphicsView::NoDrag);
-        setInteractive(false);
-    }
+//    }
+
+    QPointF mousePosOnScene = mapToScene(event->pos());
 
     if (mousePressed == false)
         return;
-
-    QPointF mousePosOnScene = mapToScene(event->pos());
 
     if (event->type() == QEvent::MouseMove)
     {
@@ -265,20 +513,41 @@ void ImageViewer::mouseReleaseEvent(QMouseEvent *event)
 
     if (selectedTool == RECTANGLE_TOOL)
     {
-//        emit ObjectChanged(mRect.x(), mRect.y(), mRect.height(), mRect.width());
+        emit changedRect(cRect.GetValue());
     }
 
     if (selectedTool == LINE_TOOL && IsCalibVisible == true)
     {
-//            emit DistanceChanged(sqrt(pow(mLine.x1() - mLine.x2(), 2) + pow(mLine.y1() - mLine.y2(), 2)));
+        emit changedLine(cLine.GetValue());
     }
 
     if (selectedTool == QUADRANGLE_TOOL)
     {
-        selectedTool = lastSelectedTool;
-        setCursor(QCursor(lastCursorIcon));
+        emit changedQuadrangle(cQuadangle.GetPolygon());
     }
+
+    if (selectedTool == AREA_TOOL)
+    {
+        emit changedArea(cArea.GetValue());
+    }
+
     update();
+}
+
+void ImageViewer::paintEvent(QPaintEvent *event)
+{
+    QGraphicsView::paintEvent(event);
+
+    QPoint mousePosOnImage = ImageItem->mapFromScene(QCursor::pos()).toPoint();
+
+    if (cArea.IsOverPoint(mousePosOnImage))
+    {
+        setMoveHand(true);
+    }
+    else
+    {
+        setMoveHand(false);
+    }
 }
 
 void ImageViewer::changeToolIconInArea(QIcon icon)
@@ -309,6 +578,20 @@ QPoint ImageViewer::getMousePositionOnImage(QMouseEvent *event)
     }
 }
 
+void ImageViewer::setMoveHand(bool value)
+{
+    if (value == false)
+    {
+        setDragMode(QGraphicsView::NoDrag);
+//        setInteractive(true);
+    }
+    else
+    {
+        setDragMode(QGraphicsView::ScrollHandDrag);
+//        setInteractive(false);
+    }
+}
+
 void ImageViewer::processRightPressEvent()
 {
     if (selectedTool == POINT_TOOL)
@@ -318,14 +601,12 @@ void ImageViewer::processRightPressEvent()
         else
         {
             selectedPoint = 0;
-            selectedTool = NO_TOOL;
-            setCursor(Qt::ArrowCursor);
+            SelectNoTool();
         }
     }
     else
     {
-        selectedTool = NO_TOOL;
-        setCursor(Qt::ArrowCursor);
+        SelectNoTool();
     }
 }
 
@@ -339,10 +620,10 @@ void ImageViewer::processQuadanglePressEvent(QPoint mousePos)
             if (cQuadangle.IsOverPoint(mousePos, i))
             {
                 transPointOrder = i;
-                lastSelectedTool = selectedTool;
-                lastCursorIcon = cursor().pixmap();
+//                lastSelectedTool = selectedTool;
+//                lastCursorIcon = cursor().pixmap();
 
-                SelectQuadrangleTool();
+//                SelectQuadrangleTool();
 
                 break;
             }
@@ -354,13 +635,13 @@ void ImageViewer::processAreaPressEvent(QPoint mousePos)
 {
     processPointOrder = cArea.OverPoint(mousePos);
 
-    if (processPointOrder > -1)
-    {
-        lastSelectedTool = selectedTool;
-        lastCursorIcon = cursor().pixmap();
+//    if (processPointOrder > -1)
+//    {
+//        lastSelectedTool = selectedTool;
+//        lastCursorIcon = cursor().pixmap();
 
-        SelectAreaTool();
-    }
+//        SelectAreaTool();
+//    }
 }
 
 void ImageViewer::processRectPressEvent(QPoint mousePos)
@@ -381,23 +662,17 @@ void ImageViewer::processPointPressEvent(QPoint mousePos)
         if (selectedPoint == 0)
         {
             cPoint.SetValue(mousePos);
-//            mPoint = mousePos;
-            //emit PointChanged(mPoint.x(), mPoint.y());
 
             selectedPoint = 1;
         }
         else
         {
             cPoint2.SetValue(mousePos);
-//            mPoint2 = mousePos;
-            //emit PointChanged(mPoint2.x(), mPoint2.y());
 
             selectedPoint = 0;
-            selectedTool = NO_TOOL;
         }
 
-//        emit PointChanged(mPoint, mPoint2);
-//        emit RequestUpdate();
+        emit changedPoints(cPoint.GetValue(), cPoint2.GetValue());
     }
 }
 
@@ -419,11 +694,30 @@ void ImageViewer::processMappingPressEvent(QPoint mousePos)
     {
         cMappingPoint.SetValue(mousePos);
 
-//        emit MappingPointChanged(mMappingPoint);
+        emit changedMappingPoint(cMappingPoint.GetValue());
     }
 }
 
 void ImageViewer::drawStrokeLine(QLineF line)
 {
 
+}
+
+bool ImageViewer::isInRange(QPolygonF poly)
+{
+    foreach(QPointF p, poly)
+    {
+        if (p.x() > 1 || p.y() > 1)
+            return false;
+    }
+
+    return true;
+}
+
+void ImageViewer::updateScale(float scale)
+{
+    cPoint.Scale(scale);
+    cRect.Scale(scale);
+    cQuadangle.Scale(scale);
+    cArea.Scale(scale);
 }

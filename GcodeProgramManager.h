@@ -157,6 +157,7 @@ private:
 	bool isGlobalVariable(QString name);
 	bool isConveyorGcode(QString gcode);
 	bool isSlidingGcode(QString gcode);
+    bool isEncoderGcode(QString gcode);
 	bool isMovingGcode(QString gcode);
 	bool findExeGcodeAndTransmit();
     QString calculateExpressions(QString expression);

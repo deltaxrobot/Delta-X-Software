@@ -16,7 +16,7 @@
 #include <qtimer.h>
 #include <qpushbutton.h>
 #include <QCheckBox>
-#include "BlobManager.h"
+#include "ObjectManager.h"
 #include "UnityTool.h"
 #include "CameraWidget.h"
 #include "RobotWindow.h"
@@ -24,9 +24,7 @@
 #include <QRadioButton>
 #include "opencv2/dnn.hpp"
 
-#include "VideoProcessor.h"
 #include <QThread>
-#include "VideoDisplay.h"
 #include <QTcpSocket>
 #include <QProcess>
 #include <QTcpServer>
@@ -120,9 +118,9 @@ public:
     void UpdatePointPositionOnConveyor(float& x, float& y, float angle, float distance);
 
     // Thread
-    VideoProcessor* VideoProcessorThread;
+//    VideoProcessor* VideoProcessorThread;
 
-    VideoDisplay* VideoDisplayThread;
+//    VideoDisplay* VideoDisplayThread;
     QTcpSocket* PythonTcpClient = NULL;
 
     QProcess *ExternalScriptProcess;
@@ -131,7 +129,7 @@ public:
 
     // ---- Table ----
 	FilterWindow* ParameterPanel;
-	BlobManager* ObjectManager;
+    ObjectManager* ObjectManager1;
 
     // ---- Timer ----
     QTimer* ObjectMovingCalculaterTimer;

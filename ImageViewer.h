@@ -6,6 +6,7 @@
 #include <QtWidgets>
 #include <QtMath>
 #include <QtPrintSupport/qtprintsupportglobal.h>
+#include <QSettings>
 
 class CustomScene : public QGraphicsScene
 {
@@ -42,7 +43,16 @@ public:
         blackLineItem->setPen(QPen(Qt::black, 1));
 
         whiteLineItem->setZValue(1);
-        blackLineItem->setZValue(1.1f);
+        blackLineItem->setZValue(1.1f);        
+
+        whiteTextItem = new QGraphicsSimpleTextItem;
+        blackTextItem = new QGraphicsSimpleTextItem;
+
+        whiteTextItem->setPen(QPen(Qt::white, 2));
+        blackTextItem->setPen(QPen(Qt::black, 1));
+
+        whiteTextItem->setZValue(1);
+        blackTextItem->setZValue(1.1f);
 
         updateVisual();
     }
@@ -51,6 +61,9 @@ public:
     {
         delete whiteLineItem;
         delete blackLineItem;
+
+        delete whiteTextItem;
+        delete blackTextItem;
     }
 
     void SetValue(QPointF p)
@@ -64,11 +77,20 @@ public:
         return point;
     }
 
+    void Scale(float scale)
+    {
+        point = point * scale;
+        updateVisual();
+    }
+
     void SetThin(float value)
     {
         size = value * 6;
         whiteLineItem->setPen(QPen(Qt::white, value * 2));
         blackLineItem->setPen(QPen(Qt::black, value));
+
+        whiteTextItem->setPen(QPen(Qt::white, value * 2));
+        blackTextItem->setPen(QPen(Qt::black, value));
 
         updateVisual();
     }
@@ -77,6 +99,26 @@ public:
     {
         scene->addItem(blackLineItem);
         scene->addItem(whiteLineItem);
+
+        scene->addItem(blackTextItem);
+        scene->addItem(whiteTextItem);
+    }
+
+    void SetVisible(bool value)
+    {
+        whiteLineItem->setVisible(value);
+        blackLineItem->setVisible(value);
+
+        whiteTextItem->setVisible(value);
+        blackTextItem->setVisible(value);
+    }
+
+    void SetText(QString txt)
+    {
+        text = txt;
+
+        whiteTextItem->setText(text);
+        blackTextItem->setText(text);
     }
 
 private:
@@ -86,12 +128,21 @@ private:
 
         whiteLineItem->setRect(rect);
         blackLineItem->setRect(rect);
+
+        whiteTextItem->setPos(rect.center().x() + size * 2, rect.center().y() + size);
+        blackTextItem->setPos(rect.center().x() + size * 2, rect.center().y() + size);
     }
 
     float size;
     QPointF point;
     QGraphicsEllipseItem* whiteLineItem;
     QGraphicsEllipseItem* blackLineItem;
+
+    QGraphicsSimpleTextItem* whiteTextItem;
+    QGraphicsSimpleTextItem* blackTextItem;
+
+    QString text;
+
 };
 
 class CameraLineItem : public QObject
@@ -104,6 +155,7 @@ public:
 
         whiteLineItem = new QGraphicsLineItem;
         blackLineItem = new QGraphicsLineItem;
+
 
         whiteLineItem->setPen(QPen(Qt::white, 2));
         blackLineItem->setPen(QPen(Qt::black, 1));
@@ -165,6 +217,12 @@ public:
     {
         scene->addItem(blackLineItem);
         scene->addItem(whiteLineItem);
+    }
+
+    void SetVisible(bool value)
+    {
+        whiteLineItem->setVisible(value);
+        blackLineItem->setVisible(value);
     }
 
 private:
@@ -234,6 +292,12 @@ public:
         return rect;
     }
 
+    void Scale(float scale)
+    {
+        SetTopLeft(TopLeft() * scale);
+        SetBottomRight(BottomRight() * scale);
+    }
+
     void SetTopLeft(QPointF p)
     {
         rect.setTopLeft(p);
@@ -270,6 +334,12 @@ public:
     {
         scene->addItem(blackRectItem);
         scene->addItem(whiteRectItem);
+    }
+
+    void SetVisible(bool value)
+    {
+        whiteRectItem->setVisible(value);
+        blackRectItem->setVisible(value);
     }
 
 private:
@@ -346,6 +416,23 @@ public:
         }
     }
 
+    void SetPolygon(QPolygonF poly)
+    {
+        if (poly.count() < 4)
+            return;
+
+        for (int i = 0; i < 4; i++)
+        {
+            points[i] = poly.at(i);
+        }
+
+        pointsToLines();
+        pointsToRects();
+        pointsToPolygon();
+
+        updateVisual();
+    }
+
     void SetValue(QPointF ps[4])
     {
         for (int i = 0; i < 4; i++)
@@ -355,6 +442,7 @@ public:
 
         pointsToLines();
         pointsToRects();
+        pointsToPolygon();
 
         updateVisual();
     }
@@ -365,6 +453,7 @@ public:
 
         pointsToLines();
         pointsToRects();
+        pointsToPolygon();
 
         updateVisual();
     }
@@ -374,9 +463,30 @@ public:
         return points;
     }
 
+    QPolygonF GetPolygon()
+    {
+        return poly;
+    }
+
+    void Scale(float scale)
+    {
+        QPointF* points = GetValue();
+
+        for (int i = 0; i < 4; i++)
+        {
+            points[i] = points[i] * scale;
+        }
+
+        pointsToLines();
+        pointsToRects();
+        pointsToPolygon();
+
+        updateVisual();
+    }
+
     bool IsOverPoint(QPointF mousePos, int i)
     {
-        if (abs(points[i].x() - mousePos.x()) < size && abs(points[i].y() - mousePos.y()) < size)
+        if (abs(points[i].x() - mousePos.x()) <= rects[i].width() / 2 && abs(points[i].y() - mousePos.y()) <= rects[i].height() / 2)
         {
             return true;
         }
@@ -411,6 +521,18 @@ public:
 
             scene->addItem(blackRectItems[i]);
             scene->addItem(whiteRectItems[i]);
+        }
+    }
+
+    void SetVisible(bool value)
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            whiteLineItems[i]->setVisible(value);
+            blackLineItems[i]->setVisible(value);
+
+            whiteRectItems[i]->setVisible(value);
+            blackRectItems[i]->setVisible(value);
         }
     }
 
@@ -450,11 +572,21 @@ private:
         }
     }
 
+    void pointsToPolygon()
+    {
+        poly.clear();
+        for (int i = 0; i < 4; i++)
+        {
+            poly.append(points[i]);
+        }
+    }
+
     float size;
 
     QPointF points[4];
     QRectF rects[4];
     QLineF lines[4];
+    QPolygonF poly;
     QGraphicsLineItem* whiteLineItems[4];
     QGraphicsLineItem* blackLineItems[4];
 
@@ -472,7 +604,7 @@ public:
 
         this->rect = rect;
 
-        for (int i = 0; i < 2; i++)
+        for (int i = 0; i < 3; i++)
         {
             whiteRectItems[i] = new QGraphicsRectItem;
             blackRectItems[i] = new QGraphicsRectItem;
@@ -525,14 +657,20 @@ public:
         return rect;
     }
 
+    void Scale(float scale)
+    {
+        SetTopLeft(TopLeft() * scale);
+        SetBottomRight(BottomRight() * scale);
+    }
+
     int OverPoint(QPointF mousePos)
     {
-        if (abs(rect.topLeft().x() - mousePos.x()) < 5 && abs(rect.topLeft().y() - mousePos.y()) < 5)
+        if (abs(rect.topLeft().x() - mousePos.x()) < size && abs(rect.topLeft().y() - mousePos.y()) < size)
         {
             return 1;
         }
 
-        if (abs(rect.bottomRight().x() - mousePos.x()) < 5 && abs(rect.bottomRight().y() - mousePos.y()) < 5)
+        if (abs(rect.bottomRight().x() - mousePos.x()) < size && abs(rect.bottomRight().y() - mousePos.y()) < size)
         {
             return 2;
         }
@@ -564,25 +702,50 @@ public:
         return rect.bottomRight();
     }
 
+    bool IsOverPoint(QPointF mousePos)
+    {
+        if (abs(rect.topLeft().x() - mousePos.x()) < size && abs(rect.topLeft().y() - mousePos.y()) < size)
+        {
+            return true;
+        }
+
+        if (abs(rect.bottomRight().x() - mousePos.x()) < size && abs(rect.bottomRight().y() - mousePos.y()) < size)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
     void SetThin(float value)
     {
         size = POINT_SIZE * value;
-        whiteRectItems[0]->setPen(QPen(Qt::white, value * 2));
-        blackRectItems[0]->setPen(QPen(Qt::black, value));
 
-        whiteRectItems[1]->setPen(QPen(Qt::white, value * 2));
-        blackRectItems[1]->setPen(QPen(Qt::black, value));
+        for (int i = 0; i < 3; i++)
+        {
+            whiteRectItems[i]->setPen(QPen(Qt::white, value * 2));
+            blackRectItems[i]->setPen(QPen(Qt::black, value));
+        }
 
         updateVisual();
     }
 
     void SetScene(QGraphicsScene* scene)
     {
-        scene->addItem(blackRectItems[0]);
-        scene->addItem(whiteRectItems[0]);
+        for (int i = 0; i < 3; i++)
+        {
+            scene->addItem(blackRectItems[i]);
+            scene->addItem(whiteRectItems[i]);
+        }
+    }
 
-        scene->addItem(blackRectItems[1]);
-        scene->addItem(whiteRectItems[1]);
+    void SetVisible(bool value)
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            whiteRectItems[i]->setVisible(value);
+            blackRectItems[i]->setVisible(value);
+        }
     }
 
 private:
@@ -597,11 +760,15 @@ private:
         rect2.setTopLeft(rect.bottomRight() - QPointF(size/2, size/2));
         rect2.setBottomRight(rect.bottomRight() + QPointF(size/2, size/2));
 
+
         whiteRectItems[0]->setRect(rect1);
         blackRectItems[0]->setRect(rect1);
 
         whiteRectItems[1]->setRect(rect2);
         blackRectItems[1]->setRect(rect2);
+
+        whiteRectItems[2]->setRect(rect);
+        blackRectItems[2]->setRect(rect);
     }
 
     void lineToRect()
@@ -626,8 +793,8 @@ private:
 
     QRectF rect;
     QLineF diagonalLine;
-    QGraphicsRectItem* whiteRectItems[2];
-    QGraphicsRectItem* blackRectItems[2];
+    QGraphicsRectItem* whiteRectItems[3];
+    QGraphicsRectItem* blackRectItems[3];
 };
 
 class ImageViewer : public QGraphicsView
@@ -635,10 +802,24 @@ class ImageViewer : public QGraphicsView
     Q_OBJECT
 public:
     ImageViewer(QWidget *parent = 0);
+    ~ImageViewer();
     void InitParameter();
+    void SaveSetting(QSettings* setting);
+    void LoadSetting(QSettings* setting);
     void ZoomIn(qreal value);
     void ZoomOut(qreal value);
     void Zoom(qreal value);
+    void DrawRecangles(QList<QRect> rects);
+    void DrawPolygons(QList<QPolygonF> polygons);
+    void DrawTexts(QMap<QString, QPointF> texts);
+    void TurnOnTool(bool value);
+    void TurnOnObjects(bool value);
+    void SetPointTitles(QString p1Text, QString p2Text);
+    void SetMappingPointTitle(QString text);
+    QPointF GetPoint1();
+    QPointF GetPoint2();
+    QSize GetImageSize();
+    float GetRatio();
 
     qreal CurrentZoom = 1;
     QGraphicsLineItem *item;
@@ -671,21 +852,33 @@ public slots:
     void SelectMappingTool();
     void SelectNoTool();
 
-    void DrawingAllShape();
+    void SetImage(QPixmap pixmap);
+
+    void SetQuadrangle(QPolygonF poly);
 
 signals:
 
     void clickedImage(QPoint p);
     void clickedImage(int x, int y);
 
+    void changedPoints(QPointF p1, QPointF p2);
+    void changedMappingPoint(QPointF p);
+    void changedQuadrangle(QPolygonF poly);
+    void changedArea(QRectF rect);
+    void changedRect(QRectF rect);
+    void changedLine(QLineF line);
+    void selectedNoTool();
+
 protected:
     void wheelEvent(QWheelEvent *) override;
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
+    void paintEvent(QPaintEvent *event) override;
 
     void changeToolIconInArea(QIcon icon);
     QPoint getMousePositionOnImage(QMouseEvent *event);
+    void setMoveHand(bool value);
     void processRightPressEvent();
     void processQuadanglePressEvent(QPoint mousePos);
     void processAreaPressEvent(QPoint mousePos);
@@ -705,6 +898,9 @@ protected:
     void drawSolidColor(QRect rect, float alpha);
     void drawAxisSymbol();
 
+    bool isInRange(QPolygonF poly);
+    void updateScale(float scale);
+
     QPixmap lastCursorIcon;
 
     CameraLineItem cLine;
@@ -715,13 +911,20 @@ protected:
     CameraQuadangleItem cQuadangle;
     CameraAreaItem cArea;
 
-    QLineF mLine;
-    QRect mRect;
-    QPoint mPoint;
-    QPoint mPoint2;
-    QPoint mQuadrangle[4];
-    QRect mArea;
-    QPoint mMappingPoint;
+//    QLineF mLine;
+//    QRect mRect;
+//    QPoint mPoint;
+//    QPoint mPoint2;
+//    QPoint mQuadrangle[4];
+//    QRect mArea;
+//    QPoint mMappingPoint;
+
+    float imgWidth = 0;
+    float imgHeight = 0;
+
+    QList<QGraphicsRectItem*> rectItems;
+    QList<QGraphicsPolygonItem*> polygonItems;
+    QList<QGraphicsTextItem*> textItems;
 
     bool mousePressed;
     bool drawStarted;
@@ -731,6 +934,7 @@ protected:
 
     int transPointOrder = -1;
     int processPointOrder = -1;
+    bool isFirstLoad = true;
 };
 
 #endif // IMAGEVIEWER_H

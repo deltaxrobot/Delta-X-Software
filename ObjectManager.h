@@ -11,13 +11,13 @@
 #include <QDebug>
 #include <QLineEdit>
 
-class BlobManager : public QObject
+class ObjectManager : public QObject
 {
 	Q_OBJECT
 
 public:
-	BlobManager(QObject *parent);
-	~BlobManager();
+    ObjectManager(QObject *parent);
+    ~ObjectManager();
 
 	void AddNewObject(cv::RotatedRect object);
 	void SetApproximateValue(cv::Point3d approVal);

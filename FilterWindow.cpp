@@ -44,24 +44,22 @@ void FilterWindow::InitVariables()
     FilterJob->thread()->start();
 }
 
-
-
 void FilterWindow::InitEvents()
 {
-    for (int i = 0; i < 6; i++)
-    {
-        connect(sPara[i], &QAbstractSlider::sliderReleased, this, &FilterWindow::UpdateSliderValueToLabel);
-    }
-
-    connect(ui->hsThreshold, &QAbstractSlider::sliderReleased, this, &FilterWindow::UpdateSliderValueToLabel);
-
     qRegisterMetaType< cv::Mat >("cv::Mat");
 
-    connect(FilterJob->thread(), SIGNAL(finished()), FilterJob->thread(), SLOT(deleteLater()));
-    connect(this, &FilterWindow::requestThresholdFilter, FilterJob, &FilterWork::DoThresholdFilter);
-    connect(this, &FilterWindow::requestHSVFilter, FilterJob, &FilterWork::DoHSVFilter);
-    connect(ui->cbInvert, &QCheckBox::toggled, FilterJob, &FilterWork::InvertImage);
+    for (int i = 0; i < 6; i++)
+    {
+        connect(sPara[i], &QAbstractSlider::sliderReleased, this, &FilterWindow::ProcessValueFromUI);
+    }
 
+    connect(ui->hsThreshold, &QAbstractSlider::sliderReleased, this, &FilterWindow::ProcessValueFromUI);
+    connect(ui->cbInvert, &QCheckBox::toggled, this, &FilterWindow::ProcessValueFromUI);
+    connect(ui->hsBlurSize, &QAbstractSlider::sliderReleased, this, &FilterWindow::ProcessValueFromUI);
+
+    connect(this, &FilterWindow::requestFilter, FilterJob, &FilterWork::DoFilter);
+
+    connect(FilterJob->thread(), SIGNAL(finished()), FilterJob->thread(), SLOT(deleteLater()));
     connect(FilterJob, &FilterWork::FinishedFilter, ui->lbProcessImage, &QLabel::setPixmap);
 
 }
@@ -75,14 +73,18 @@ void FilterWindow::SaveSetting(QString fileName)
 
 void FilterWindow::SaveSetting(QSettings *setting)
 {
-    setting->setValue("minH", sPara[0]->value());
-    setting->setValue("maxH", sPara[1]->value());
-    setting->setValue("minS", sPara[2]->value());
-    setting->setValue("maxS", sPara[3]->value());
-    setting->setValue("minV", sPara[4]->value());
-    setting->setValue("maxV", sPara[5]->value());
+    QList<QVariant> hsvParas;
+
+    for(int i = 0; i < 6; i++)
+    {
+        hsvParas.append(sPara[i]->value());
+    }
+
+    setting->setValue("hsvV", hsvParas);
 
     setting->setValue("thresV", ui->hsThreshold->value());
+
+    setting->setValue("blurV", ui->hsThreshold->value());
 
     setting->setValue("invert", ui->cbInvert->isChecked());
 }
@@ -96,28 +98,27 @@ void FilterWindow::LoadSetting(QString fileName)
 
 void FilterWindow::LoadSetting(QSettings *setting)
 {
-    sPara[0]->setValue(setting->value("minH", 0).toInt());
-    sPara[1]->setValue(setting->value("maxH", 255).toInt());
-    sPara[0]->setValue(setting->value("minS", 0).toInt());
-    sPara[1]->setValue(setting->value("maxS", 255).toInt());
-    sPara[0]->setValue(setting->value("minV", 0).toInt());
-    sPara[1]->setValue(setting->value("maxV", 255).toInt());
+    QList<QVariant> hsvParas = setting->value("hsvV").toList();
+
+    for(int i = 0; i < hsvParas.count(); i++)
+    {
+        sPara[i]->setValue(hsvParas.at(i).toInt());
+        lbPara[i]->setText(QString::number(hsvParas.at(i).toInt()));
+    }
 
     ui->hsThreshold->setValue(setting->value("thresV", 100).toInt());
     ui->lbThreshold->setText(QString::number(ui->hsThreshold->value()));
 
-
-    for (int i = 0; i < 6; i++)
-    {
-        lbPara[i]->setText(QString::number(sPara[i]->value()));
-    }
+    ui->hsBlurSize->setValue(setting->value("blurV", 100).toInt());
+    ui->lbBlurSize->setText(QString::number(ui->hsBlurSize->value()));
 
     ui->cbInvert->setChecked(setting->value("invert", false).toBool());
 }
 
 void FilterWindow::SetImage(cv::Mat mat)
 {
-    OriginMat = mat;
+    OriginMat.release();
+    OriginMat = mat.clone();
 
     ui->lbOriginImage->setPixmap(ImageTool::cvMatToQPixmap(mat));
 }
@@ -127,32 +128,41 @@ bool FilterWindow::IsInvertBinary()
 	return ui->cbInvert->isChecked();
 }
 
-void FilterWindow::UpdateSliderValueToLabel()
+void FilterWindow::ProcessValueFromUI()
 {
-    ui->lbOriginImage->setPixmap(ImageTool::cvMatToQPixmap(OriginMat));
+    if (OriginMat.empty())
+        return;
 
-    int paras[6];
-	for (int i = 0; i < 6; i++)
+    if (sender() == ui->hsThreshold)
 	{
-        int value = sPara[i]->value();
-        lbPara[i]->setText(QString::number(value));
-        paras[i] = value;
-	}
+        intParas.clear();
 
-	QSlider*  senderSlide = qobject_cast<QSlider*>(sender());
-
-	if (senderSlide->objectName() == "hsThreshold")
-	{
         int value = ui->hsThreshold->value();
-        //emit ValueChanged(value);
-        ui->lbThreshold->setText(QString::number(ui->hsThreshold->value()));
-
-        emit requestThresholdFilter(OriginMat.clone(), value);
+        ui->lbThreshold->setText(QString::number(value));
+        intParas.append(value);
     }
-	else
-	{
-        //emit ValueChanged(sPara[0]->value(), sPara[1]->value(), sPara[2]->value(), sPara[3]->value(), sPara[4]->value(), sPara[5]->value());
+    else if (sender() != ui->hsBlurSize && sender() != ui->cbInvert)
+    {
+        intParas.clear();
 
-        emit requestHSVFilter(OriginMat.clone(), paras[0], paras[1], paras[2], paras[3], paras[4], paras[5]);
-	}
+        for (int i = 0; i < 6; i++)
+        {
+            int value = sPara[i]->value();
+            lbPara[i]->setText(QString::number(value));
+            intParas.append(value);
+        }
+    }
+
+
+    int blurSize = ui->hsBlurSize->value();
+    blurSize = (blurSize / 2)  * 2 + 1;
+
+    ui->lbBlurSize->setText(QString::number(blurSize));
+
+//    emit ValueChanged(intParas, ui->cbInvert->isChecked(), ui->hsBlurSize->value());
+    emit ColorFilterValueChanged(intParas);
+    emit ColorInverted(ui->cbInvert->isChecked());
+    emit BlurSizeChanged(blurSize);
+
+    emit requestFilter(OriginMat.clone(), intParas, ui->cbInvert->isChecked(), blurSize);
 }

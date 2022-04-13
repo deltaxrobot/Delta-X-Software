@@ -34,56 +34,46 @@ public:
     };
 
     int CurrentFilter = THRESHOLD;
+    QList<int> Paras;
     bool IsInvert = false;
+    int BlurSize = 1;
     cv::Mat FilterResult;
 
 public slots:
-    void DoHSVFilter(cv::Mat mat, int minH, int maxH, int minS, int maxS, int minV, int maxV )
+    void DoFilter(cv::Mat mat, QList<int> paras, bool isInvert, int blurSize)
     {
-        CurrentFilter = HSV;
+        Paras = paras;
 
-        cv::Scalar minScalar(minH, minS, minV);
-        cv::Scalar maxScalar(maxH, maxS, maxV);
+        if (paras.size() == 1)
+        {
+            CurrentFilter = THRESHOLD;
 
-        cv::cvtColor(mat, mat, CV_BGR2HSV);
-        cv::inRange(mat, minScalar, maxScalar, mat);
+            cvtColor(mat, mat, CV_BGR2GRAY);
+            cv::threshold(mat, mat, paras.at(0), 255, CV_THRESH_BINARY);
+        }
+        else if (paras.size() == 6)
+        {
+            CurrentFilter = HSV;
 
-        FilterResult = mat.clone();
+            cv::Scalar minScalar(paras.at(0), paras.at(2), paras.at(4));
+            cv::Scalar maxScalar(paras.at(1), paras.at(3), paras.at(5));
 
-        if (IsInvert == true)
+            cv::cvtColor(mat, mat, CV_BGR2HSV);
+            cv::inRange(mat, minScalar, maxScalar, mat);
+        }
+
+        IsInvert = isInvert;
+
+        if (isInvert == true)
         {
             cv::bitwise_not(mat, mat);
         }
 
-        emit FinishedFilter(ImageTool::cvMatToQPixmap(mat));
-    }
-    void DoThresholdFilter(cv::Mat mat, int value)
-    {
-        CurrentFilter = THRESHOLD;
+        BlurSize = blurSize;
 
-        cvtColor(mat, mat, CV_BGR2GRAY);
-        cv::threshold(mat, mat, value, 255, CV_THRESH_BINARY);
-
-        FilterResult = mat;
-
-        if (IsInvert == true)
-        {
-            cv::bitwise_not(mat, mat);
-        }
+        cv::medianBlur(mat, mat, BlurSize);
 
         emit FinishedFilter(ImageTool::cvMatToQPixmap(mat));
-    }
-
-    void InvertImage(bool value)
-    {
-        IsInvert = value;
-
-        if (IsInvert == true)
-        {
-            cv::bitwise_not(FilterResult, FilterResult);
-        }
-
-        emit FinishedFilter(ImageTool::cvMatToQPixmap(FilterResult));
     }
 
 signals:
@@ -117,17 +107,18 @@ public:
     FilterWork* FilterJob;
 
 public slots:
-    void UpdateSliderValueToLabel();
+    void ProcessValueFromUI();
 signals:
-	void ValueChanged(int minH, int maxH, int minS, int maxS, int minV, int maxV);
-    void ValueChanged(int threshold);
+    void ValueChanged(QList<int> paras, bool isInvert, int blurSize);
+    void ColorFilterValueChanged(QList<int> values);
+    void ColorInverted(bool isInvert);
+    void BlurSizeChanged(int size);
 
-    void requestThresholdFilter(cv::Mat mat, int value);
-    void requestHSVFilter(cv::Mat mat, int minH, int maxH, int minS, int maxS, int minV, int maxV );
-
+    void requestFilter(cv::Mat mat, QList<int> paras, bool isInvert, int blurSize);
 
 private:
     Ui::FilterWindow *ui;
-};
+
+    QList<int> intParas;};
 
 #endif // FILTERWINDOW_H

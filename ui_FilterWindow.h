@@ -52,9 +52,12 @@ public:
     QLabel *lbminH;
     QGroupBox *groupBox_2;
     QGridLayout *gridLayout_2;
-    QLabel *label_7;
-    QSlider *hsThreshold;
     QLabel *lbThreshold;
+    QSlider *hsThreshold;
+    QGroupBox *groupBox_3;
+    QGridLayout *gridLayout_3;
+    QLabel *lbBlurSize;
+    QSlider *hsBlurSize;
     QSpacerItem *verticalSpacer;
     QFrame *frame1;
     QVBoxLayout *verticalLayout_2;
@@ -67,7 +70,7 @@ public:
     {
         if (FilterWindow->objectName().isEmpty())
             FilterWindow->setObjectName(QString::fromUtf8("FilterWindow"));
-        FilterWindow->resize(838, 545);
+        FilterWindow->resize(838, 565);
         horizontalLayout = new QHBoxLayout(FilterWindow);
         horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
         frame = new QFrame(FilterWindow);
@@ -200,10 +203,10 @@ public:
         groupBox_2->setFont(font);
         gridLayout_2 = new QGridLayout(groupBox_2);
         gridLayout_2->setObjectName(QString::fromUtf8("gridLayout_2"));
-        label_7 = new QLabel(groupBox_2);
-        label_7->setObjectName(QString::fromUtf8("label_7"));
+        lbThreshold = new QLabel(groupBox_2);
+        lbThreshold->setObjectName(QString::fromUtf8("lbThreshold"));
 
-        gridLayout_2->addWidget(label_7, 0, 0, 1, 1);
+        gridLayout_2->addWidget(lbThreshold, 0, 1, 1, 1);
 
         hsThreshold = new QSlider(groupBox_2);
         hsThreshold->setObjectName(QString::fromUtf8("hsThreshold"));
@@ -211,15 +214,33 @@ public:
         hsThreshold->setValue(150);
         hsThreshold->setOrientation(Qt::Horizontal);
 
-        gridLayout_2->addWidget(hsThreshold, 0, 1, 1, 1);
-
-        lbThreshold = new QLabel(groupBox_2);
-        lbThreshold->setObjectName(QString::fromUtf8("lbThreshold"));
-
-        gridLayout_2->addWidget(lbThreshold, 0, 2, 1, 1);
+        gridLayout_2->addWidget(hsThreshold, 0, 0, 1, 1);
 
 
         verticalLayout->addWidget(groupBox_2);
+
+        groupBox_3 = new QGroupBox(frame);
+        groupBox_3->setObjectName(QString::fromUtf8("groupBox_3"));
+        groupBox_3->setFont(font);
+        gridLayout_3 = new QGridLayout(groupBox_3);
+        gridLayout_3->setObjectName(QString::fromUtf8("gridLayout_3"));
+        lbBlurSize = new QLabel(groupBox_3);
+        lbBlurSize->setObjectName(QString::fromUtf8("lbBlurSize"));
+
+        gridLayout_3->addWidget(lbBlurSize, 0, 1, 1, 1);
+
+        hsBlurSize = new QSlider(groupBox_3);
+        hsBlurSize->setObjectName(QString::fromUtf8("hsBlurSize"));
+        hsBlurSize->setMinimum(1);
+        hsBlurSize->setMaximum(51);
+        hsBlurSize->setSingleStep(2);
+        hsBlurSize->setValue(1);
+        hsBlurSize->setOrientation(Qt::Horizontal);
+
+        gridLayout_3->addWidget(hsBlurSize, 0, 0, 1, 1);
+
+
+        verticalLayout->addWidget(groupBox_3);
 
         verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
 
@@ -285,8 +306,9 @@ public:
         lbmaxH->setText(QCoreApplication::translate("FilterWindow", "150", nullptr));
         lbminH->setText(QCoreApplication::translate("FilterWindow", "100", nullptr));
         groupBox_2->setTitle(QCoreApplication::translate("FilterWindow", "Threshold", nullptr));
-        label_7->setText(QCoreApplication::translate("FilterWindow", "min", nullptr));
         lbThreshold->setText(QCoreApplication::translate("FilterWindow", "100", nullptr));
+        groupBox_3->setTitle(QCoreApplication::translate("FilterWindow", "Blur", nullptr));
+        lbBlurSize->setText(QCoreApplication::translate("FilterWindow", "1", nullptr));
         cbInvert->setText(QCoreApplication::translate("FilterWindow", "Invert", nullptr));
         lbOriginImage->setText(QString());
         lbProcessImage->setText(QString());

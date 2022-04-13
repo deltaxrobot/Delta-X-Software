@@ -4,6 +4,7 @@
 #include <QElapsedTimer>
 
 QTextEdit* DebugLB;
+QTextEdit* teSoftwareLog;
 QList<QTextEdit*> Debugs;
 
 QString ConveyorString;
@@ -18,14 +19,19 @@ QString DeleteExcessSpace(QString text)
     int b = 0;
     int e = text.length() - 1;
 
-    while(text.at(b) == ' ')
+    while(text.at(b) == ' ' && b < text.length() - 1)
     {
         ++b;
     }
 
-    while(text.at(e) == ' ')
+    while(text.at(e) == ' ' && e > 1)
     {
         --e;
+    }
+
+    if (b == text.length() || e == 0)
+    {
+        return "";
     }
 
     text = text.mid(b, e - b + 1);
@@ -52,4 +58,46 @@ void Debug(int id, QString msg)
 		lastText = "";
 	Debugs[id]->setText(lastText + msg);
 	Debugs[id]->moveCursor(QTextCursor::End);
+}
+
+void SoftwareLog(QString msg, bool isNewLine)
+{
+    if (teSoftwareLog->document()->blockCount() > 200)
+        teSoftwareLog->setText("");
+
+    if (isNewLine == true)
+    {
+        if (msg[msg.length() - 1] != "\n")
+            msg += "\n";
+    }
+
+    teSoftwareLog->moveCursor (QTextCursor::End);
+    teSoftwareLog->insertPlainText(msg);
+    teSoftwareLog->moveCursor(QTextCursor::End);
+}
+
+QString GetValueInGcode(QString key, QString gcode)
+{
+    QStringList pairs = gcode.split(' ');
+
+    foreach(QString pair, pairs)
+    {
+        if (pair.contains(key))
+        {
+            return pair.mid(1);
+        }
+    }
+
+    return "";
+}
+
+bool IsInRange(QPolygonF poly)
+{
+    foreach(QPointF p, poly)
+    {
+        if (p.x() > 1 || p.y() > 1)
+            return false;
+    }
+
+    return true;
 }

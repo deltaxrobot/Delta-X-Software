@@ -222,6 +222,19 @@ QToolButton::pressed
             <number>0</number>
            </property>
            <item>
+            <widget class="QLabel" name="lbLoadingIcon">
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>50</height>
+              </size>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item>
             <widget class="QToolButton" name="tbOpenProject">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -683,7 +696,7 @@ border-right: 5px solid rgb(24, 70, 139);</string>
                    <x>0</x>
                    <y>0</y>
                    <width>713</width>
-                   <height>385</height>
+                   <height>211</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_10">

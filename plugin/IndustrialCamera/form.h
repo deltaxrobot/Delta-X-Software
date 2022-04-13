@@ -61,6 +61,7 @@ public:
 public slots:
     void GetEventFromUI();
     void GetStateLastJob(bool state);
+    void TryToConnectCamera();
 signals:
     void EmitEventFromUI(QString cmd);
     void CapturedImage(cv::Mat mat);
@@ -92,6 +93,8 @@ private:
     Ui::Form *ui;
 
     bool isStream = false;
+    QString cameraName = "None";
+    bool autoPlay = false;
 };
 
 #endif // FORM_H

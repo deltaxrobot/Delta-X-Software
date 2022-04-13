@@ -1,95 +1,45 @@
 #include "ImageProcessing.h"
 
 
-void ImageProcessing::CaptureCamera(cv::VideoCapture *Camera)
-{
-    if (!Camera->isOpened())
-        return;
-
-    cv::Mat captureImage;
-
-    if (!Camera->read(captureImage))
-    {
-//            emit StopCamera();
-    }
-    else
-    {
-//            emit capturedImage(captureImage.clone());
-    }
-}
-
-void ImageProcessing::GetImage(cv::Mat mat)
-{
-    TaskList[TaskOrder]->OutputMat = mat.clone();
-
-    FindNextTask();
-}
-
-void ImageProcessing::ResizeImage(cv::Mat mat)
+ImageProcessing::ImageProcessing()
 {
 
 }
 
-void ImageProcessing::ExecuteTaskFlow()
+ImageProcessing::~ImageProcessing()
 {
-    for (int i = 0; i < TaskList.count(); i++)
-    {
 
+}
+
+void ImageProcessing::MoveToThread(QThread *thread)
+{
+    moveToThread(thread);
+
+    foreach(TaskNode* taskNode, taskNodeList)
+    {
+        taskNode->moveToThread(thread);
     }
 }
 
-void ImageProcessing::FindNextTask()
+TaskNode *ImageProcessing::CreatTaskNode(QString name, int type, QString previousTasks)
 {
-    TaskOrder++;
+    TaskNode* taskNode = new TaskNode(name, type);
+    taskNode->moveToThread(thread());
+    taskNodeList.insert(name, taskNode);
 
-    Task* task = TaskList[TaskOrder];
-
-    if (task->getName() == "ResizeImage")
+    if (previousTasks != "")
     {
-        ResizeImage(TaskList[TaskOrder - 1]->OutputMat);
+        QStringList previousTaskList = previousTasks.split("|");
+        foreach(QString previousTask, previousTaskList)
+        {
+            taskNodeList.value(previousTask)->SetNextNode(taskNode);
+        }
     }
-    if (task->getName() == "TransformPerspective")
-    {
 
-    }
-    if (task->getName() == "HSVFilter")
-    {
+    return taskNode;
+}
 
-    }
-    if (task->getName() == "ThresholdFilter")
-    {
-
-    }
-    if (task->getName() == "InvertColor")
-    {
-
-    }
-    if (task->getName() == "DetectBlobs")
-    {
-
-    }
-    if (task->getName() == "DetectCircles")
-    {
-
-    }
-    if (task->getName() == "SendImageToOtherProcess")
-    {
-
-    }
-    if (task->getName() == "ReceiveObjectInfoFromOtherProcess")
-    {
-
-    }
-    if (task->getName() == "MapImagePositionToRealPosition")
-    {
-
-    }
-    if (task->getName() == "DisplayObjectOnImage")
-    {
-
-    }
-    if (task->getName() == "ReadConveyorAndUpdateToObject")
-    {
-
-    }
+TaskNode *ImageProcessing::GetNode(QString name)
+{
+    return taskNodeList.value(name);
 }

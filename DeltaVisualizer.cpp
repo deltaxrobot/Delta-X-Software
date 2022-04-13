@@ -96,6 +96,7 @@ void DeltaVisualizer::mousePressEvent(QMouseEvent *event)
 void DeltaVisualizer::mouseReleaseEvent(QMouseEvent *event)
 {
 	emit FinishMoving();
+    emit CursorMoved(X, Y);
 }
 
 void DeltaVisualizer::mouseMoveEvent(QMouseEvent *event)
@@ -213,10 +214,13 @@ void DeltaVisualizer::paintEvent(QPaintEvent *event)
     tempPainter.setPen(QPen(Qt::red, 1));
 
     QPoint curPosInWidget = mapFromGlobal(QCursor::pos());
-    int workingX = curPosInWidget.x() - width() / 2;
-    int workingY = - curPosInWidget.y() + height() / 2;
-    tempPainter.drawText(curPosInWidget.x() + 10, curPosInWidget.y() - 10, QString("(%1, %2)").arg(QString::number(workingX), QString::number(workingY)));
 
+    if (curPosInWidget.x() > 0)
+    {
+        int workingX = curPosInWidget.x() - width() / 2;
+        int workingY = - curPosInWidget.y() + height() / 2;
+        tempPainter.drawText(curPosInWidget.x() + 10, curPosInWidget.y() - 10, QString("(%1, %2)").arg(QString::number(workingX), QString::number(workingY)));
+    }
     //
 
     painter.drawPixmap(0, 0, mPix);

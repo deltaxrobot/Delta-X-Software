@@ -38,6 +38,11 @@ void ConnectionManager::init()
 
 	TcpServer = TCPConnection->TcpServer;
 	connect(TCPConnection, SIGNAL(NewConnection(QTcpSocket*)), this, SLOT(ReceiveNewConnectionFromServer(QTcpSocket*)));
+
+    Ports.append(RobotPort);
+    Ports.append(ConveyorPort);
+    Ports.append(SlidingPort);
+    Ports.append(ExternalControllerPort);
 }
 
 void ConnectionManager::sendQueue()
@@ -50,10 +55,7 @@ void ConnectionManager::processReceiveData()
     //if (receiveLine.mid(0, 2) == "Ok" || (receiveLine.indexOf('k') > -1 && receiveLine.indexOf('O') > -1) || receiveLine.mid(0, 7) == "Unknown")
     if (receiveLine != "")
 	{
-		if (!(IsRobotConnect() == true && IsRosSocket(IOSender)))
-		{
-			emit DeltaResponeGcodeDone();
-        }
+        emit DeltaResponeGcodeDone();
 
 		//sendQueue();
 
@@ -132,17 +134,19 @@ void ConnectionManager::processReceiveData()
 
 void ConnectionManager::sendData(QSerialPort * com, QTcpSocket * socket, QString msg)
 {
-	if (msg[msg.length() - 1] != "\n")
-		msg += "\n";
+    transmitLine = msg;
 
-	Debug(QString("Software: ") + msg);	
+	if (msg[msg.length() - 1] != "\n")
+        msg += "\n";
+
+    bool result = false;
 
 	if (com != NULL)
 	{
 		if (com->isOpen())
 		{
 			com->write(msg.toStdString().c_str(), msg.size());
-			return;
+            result = true;
 		}
 	}
 	if (socket != NULL)
@@ -150,8 +154,15 @@ void ConnectionManager::sendData(QSerialPort * com, QTcpSocket * socket, QString
 		if (socket->isOpen())
 		{
 			socket->write(msg.toStdString().c_str(), msg.size());
+            result = true;
 		}
 	}
+
+    if (result == false)
+    {
+        emit Log(com->portName() + " fail");
+        emit FailTransmit();
+    }
 }
 
 void ConnectionManager::OpenAvailableServer()
@@ -261,25 +272,31 @@ void ConnectionManager::FindDeltaRobot()
 
 void ConnectionManager::SendToRobot(QString msg)
 {
-	TCPConnection->SendMessageToROS("gcode " + msg);
-	
-	transmitLine = msg;
+//	TCPConnection->SendMessageToROS("gcode " + msg);
+
+    emit Log(QString("Robot >> ") + msg);
 
 	sendData(RobotPort, RobotSocket, msg);
 }
 
-void ConnectionManager::ConveyorSend(QString msg)
+void ConnectionManager::SendToConveyor(QString msg)
 {
+    emit Log(QString("Conveyor >> ") + msg);
+
 	sendData(ConveyorPort, ConveyorSocket, msg);
 }
 
-void ConnectionManager::SlidingSend(QString msg)
+void ConnectionManager::SendToSlider(QString msg)
 {
+    emit Log(QString("Slider >> ") + msg);
+
 	sendData(SlidingPort, SlidingSocket, msg);
 }
 
-void ConnectionManager::ExternalMCUSend(QString msg)
+void ConnectionManager::SendToExternalMCU(QString msg)
 {
+    emit Log(QString("MCU >> ") + msg);
+
 	sendData(ExternalControllerPort, ExternalControllerSocket, msg);
 }
 
@@ -298,11 +315,13 @@ void ConnectionManager::ReadData()
             if (sP == RobotPort)
             {
                 emit ReceiveVariableChangeCommand("Response", receiveLine.replace("\n", "").replace("\r", ""));
+                emit Log(QString("Robot << ") + receiveLine);
             }
 
 			if (sP == ExternalControllerPort)
 			{
                 emit ExternalMCUTransmitText(receiveLine);
+                emit Log(QString("MCU << ") + receiveLine);
 			}
 
 			emit FinishReadLine(receiveLine);
@@ -321,6 +340,16 @@ void ConnectionManager::ReadData()
 			}
 
 			processReceiveData();
+
+            if (sP == ConveyorPort)
+            {
+                emit Log(QString("Conveyor << ") + receiveLine);
+            }
+
+            if (sP == SlidingPort)
+            {
+                emit Log(QString("Slider << ") + receiveLine);
+            }
 		}
 
 		return;
@@ -373,16 +402,7 @@ void ConnectionManager::FindingRobotTimeOut()
 {
     static int order = 0;
 	
-	order++;
-
-//	QString waitS = "";
-
-//	for (int i = 0; i < order; i++)
-//	{
-//		waitS += ".";
-//	}
-
-//	Debug(waitS);
+    order++;
 
 	if (order < 20 && isDeltaPortConnected == false)
 		return;

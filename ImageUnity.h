@@ -199,6 +199,13 @@ namespace ImageTool {
    {
       return QImageToCvMat( inPixmap.toImage(), inCloneImageData );
    }
+
+    inline int Map(int a1, int a2, int b2)
+    {
+        if (a2 == 0)
+            return 0;
+        return (a1 * b2) / a2;
+    }
 }
 
 #endif // IMAGEUNITY
