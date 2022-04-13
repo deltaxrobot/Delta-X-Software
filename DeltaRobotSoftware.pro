@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui serialport opengl network multimedia quick3d quickwidgets printsupport
+QT       += core gui serialport opengl network multimedia quickwidgets printsupport
 
 windows {
     INCLUDEPATH += E:\OpenCV\opencv-4.0\build\include
@@ -134,13 +134,11 @@ FORMS    += \
     GcodeReference.ui \
 
 RESOURCES += \
-    C:/Users/Admin/Downloads/rs.qrc \
     resource.qrc
 
 RC_ICONS = delta_x_logo_96x96.ico
 
-DISTFILES += \
-    SettingTree.json
+DISTFILES +=
 
 
 

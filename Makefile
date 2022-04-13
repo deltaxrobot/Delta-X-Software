@@ -285,11 +285,6 @@ Makefile: DeltaRobotSoftware.pro C:\Qt\5.15.2\msvc2015_64\mkspecs\win32-msvc\qma
 		C:\Qt\5.15.2\msvc2015_64\lib\Qt5PrintSupport.prl \
 		C:\Qt\5.15.2\msvc2015_64\lib\Qt5Widgets.prl \
 		C:\Qt\5.15.2\msvc2015_64\lib\Qt5Multimedia.prl \
-		C:\Qt\5.15.2\msvc2015_64\lib\Qt5Quick3D.prl \
-		C:\Qt\5.15.2\msvc2015_64\lib\Qt5Quick3DRuntimeRender.prl \
-		C:\Qt\5.15.2\msvc2015_64\lib\Qt5Quick3DAssetImport.prl \
-		C:\Qt\5.15.2\msvc2015_64\lib\Qt5Quick3DRender.prl \
-		C:\Qt\5.15.2\msvc2015_64\lib\Qt5Quick3DUtils.prl \
 		C:\Qt\5.15.2\msvc2015_64\lib\Qt5Quick.prl \
 		C:\Qt\5.15.2\msvc2015_64\lib\Qt5Gui.prl \
 		C:\Qt\5.15.2\msvc2015_64\lib\Qt5SerialPort.prl \
@@ -300,18 +295,12 @@ Makefile: DeltaRobotSoftware.pro C:\Qt\5.15.2\msvc2015_64\mkspecs\win32-msvc\qma
 		C:\Qt\5.15.2\msvc2015_64\lib\qtmain.prl \
 		C:\Qt\5.15.2\msvc2015_64\mkspecs\features\build_pass.prf \
 		3rd-party\QJoysticks\etc\resources\qjoysticks-res.qrc \
-		C:\Users\Admin\Downloads\rs.qrc \
 		resource.qrc \
 		C:\Qt\5.15.2\msvc2015_64\lib\Qt5OpenGLd.prl \
 		C:\Qt\5.15.2\msvc2015_64\lib\Qt5QuickWidgetsd.prl \
 		C:\Qt\5.15.2\msvc2015_64\lib\Qt5PrintSupportd.prl \
 		C:\Qt\5.15.2\msvc2015_64\lib\Qt5Widgetsd.prl \
 		C:\Qt\5.15.2\msvc2015_64\lib\Qt5Multimediad.prl \
-		C:\Qt\5.15.2\msvc2015_64\lib\Qt5Quick3Dd.prl \
-		C:\Qt\5.15.2\msvc2015_64\lib\Qt5Quick3DRuntimeRenderd.prl \
-		C:\Qt\5.15.2\msvc2015_64\lib\Qt5Quick3DAssetImportd.prl \
-		C:\Qt\5.15.2\msvc2015_64\lib\Qt5Quick3DRenderd.prl \
-		C:\Qt\5.15.2\msvc2015_64\lib\Qt5Quick3DUtilsd.prl \
 		C:\Qt\5.15.2\msvc2015_64\lib\Qt5Quickd.prl \
 		C:\Qt\5.15.2\msvc2015_64\lib\Qt5Guid.prl \
 		C:\Qt\5.15.2\msvc2015_64\lib\Qt5SerialPortd.prl \
@@ -522,11 +511,6 @@ C:\Qt\5.15.2\msvc2015_64\lib\Qt5QuickWidgets.prl:
 C:\Qt\5.15.2\msvc2015_64\lib\Qt5PrintSupport.prl:
 C:\Qt\5.15.2\msvc2015_64\lib\Qt5Widgets.prl:
 C:\Qt\5.15.2\msvc2015_64\lib\Qt5Multimedia.prl:
-C:\Qt\5.15.2\msvc2015_64\lib\Qt5Quick3D.prl:
-C:\Qt\5.15.2\msvc2015_64\lib\Qt5Quick3DRuntimeRender.prl:
-C:\Qt\5.15.2\msvc2015_64\lib\Qt5Quick3DAssetImport.prl:
-C:\Qt\5.15.2\msvc2015_64\lib\Qt5Quick3DRender.prl:
-C:\Qt\5.15.2\msvc2015_64\lib\Qt5Quick3DUtils.prl:
 C:\Qt\5.15.2\msvc2015_64\lib\Qt5Quick.prl:
 C:\Qt\5.15.2\msvc2015_64\lib\Qt5Gui.prl:
 C:\Qt\5.15.2\msvc2015_64\lib\Qt5SerialPort.prl:
@@ -537,18 +521,12 @@ C:\Qt\5.15.2\msvc2015_64\lib\Qt5Core.prl:
 C:\Qt\5.15.2\msvc2015_64\lib\qtmain.prl:
 C:\Qt\5.15.2\msvc2015_64\mkspecs\features\build_pass.prf:
 3rd-party\QJoysticks\etc\resources\qjoysticks-res.qrc:
-C:\Users\Admin\Downloads\rs.qrc:
 resource.qrc:
 C:\Qt\5.15.2\msvc2015_64\lib\Qt5OpenGLd.prl:
 C:\Qt\5.15.2\msvc2015_64\lib\Qt5QuickWidgetsd.prl:
 C:\Qt\5.15.2\msvc2015_64\lib\Qt5PrintSupportd.prl:
 C:\Qt\5.15.2\msvc2015_64\lib\Qt5Widgetsd.prl:
 C:\Qt\5.15.2\msvc2015_64\lib\Qt5Multimediad.prl:
-C:\Qt\5.15.2\msvc2015_64\lib\Qt5Quick3Dd.prl:
-C:\Qt\5.15.2\msvc2015_64\lib\Qt5Quick3DRuntimeRenderd.prl:
-C:\Qt\5.15.2\msvc2015_64\lib\Qt5Quick3DAssetImportd.prl:
-C:\Qt\5.15.2\msvc2015_64\lib\Qt5Quick3DRenderd.prl:
-C:\Qt\5.15.2\msvc2015_64\lib\Qt5Quick3DUtilsd.prl:
 C:\Qt\5.15.2\msvc2015_64\lib\Qt5Quickd.prl:
 C:\Qt\5.15.2\msvc2015_64\lib\Qt5Guid.prl:
 C:\Qt\5.15.2\msvc2015_64\lib\Qt5SerialPortd.prl:
