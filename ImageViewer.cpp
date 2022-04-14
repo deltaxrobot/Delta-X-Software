@@ -220,7 +220,7 @@ void ImageViewer::DrawPolygons(QList<QPolygonF> polygons)
 
 void ImageViewer::DrawTexts(QMap<QString, QPointF> texts)
 {
-    for (int i = 0; i < texts.count(); i++)
+    for (int i = 0; i < textItems.count(); i++)
     {
         if (i < texts.count())
         {

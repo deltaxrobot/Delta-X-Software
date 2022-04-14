@@ -191,8 +191,8 @@ void RobotWindow::InitVariables()
     //------------ UI ----------------
     Delta2DVisualizer->ChangeXY(0, 0);
 
-    ui->twDeltaGeometry->setTabVisible(0, false);
-    ui->twModule->setTabVisible(2, false);
+//    ui->twDeltaGeometry->setTabVisible(0, false);
+//    ui->twModule->setTabVisible(2, false);
     ui->gbRelay->setVisible(false);
     ui->gbGripper->setVisible(false);
 

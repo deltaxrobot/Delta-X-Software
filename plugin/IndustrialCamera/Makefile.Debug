@@ -16,7 +16,7 @@ CXX           = cl
 DEFINES       = -DUNICODE -D_UNICODE -DWIN32 -D_ENABLE_EXTENDED_ALIGNED_STORAGE -DWIN64 -DQT_QML_DEBUG -DQT_PLUGIN -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB -D_WINDLL
 CFLAGS        = -nologo -Zc:wchar_t -FS -Zc:strictStrings -Zi -MDd -W3 -w44456 -w44457 -w44458 /Fddebug\IndustrialCamera.vc.pdb $(DEFINES)
 CXXFLAGS      = -nologo -Zc:wchar_t -FS -Zc:rvalueCast -Zc:inline -Zc:strictStrings -Zc:throwingNew -Zi -MDd -W3 -w34100 -w34189 -w44996 -w44456 -w44457 -w44458 -wd4577 -wd4467 -EHsc /Fddebug\IndustrialCamera.vc.pdb $(DEFINES)
-INCPATH       = -I. -I"C:\Program Files\Basler\pylon 6\Development\include" -I"C:\Program Files\Basler\pylon 6\Development\include\pylon" -I"C:\Program Files (x86)\MVS\Development\Includes" -I..\..\..\..\OpenCV\opencv-4.0\build\include -IC:\Qt\5.15.2\msvc2015_64\include -IC:\Qt\5.15.2\msvc2015_64\include\QtWidgets -IC:\Qt\5.15.2\msvc2015_64\include\QtGui -IC:\Qt\5.15.2\msvc2015_64\include\QtANGLE -IC:\Qt\5.15.2\msvc2015_64\include\QtCore -Idebug -I. -I/include -IC:\Qt\5.15.2\msvc2015_64\mkspecs\win32-msvc 
+INCPATH       = -I. -I"C:\Program Files\Basler\pylon 6\Development\include" -I"C:\Program Files\Basler\pylon 6\Development\include\pylon" -I"C:\Program Files (x86)\MVS\Development\Includes" -IE:\OpenCV\opencv-4.0\build\include -IC:\Qt\5.15.2\msvc2015_64\include -IC:\Qt\5.15.2\msvc2015_64\include\QtWidgets -IC:\Qt\5.15.2\msvc2015_64\include\QtGui -IC:\Qt\5.15.2\msvc2015_64\include\QtANGLE -IC:\Qt\5.15.2\msvc2015_64\include\QtCore -Idebug -I. -I/include -IC:\Qt\5.15.2\msvc2015_64\mkspecs\win32-msvc 
 LINKER        = link
 LFLAGS        = /NOLOGO /DYNAMICBASE /NXCOMPAT /DEBUG /DLL /SUBSYSTEM:WINDOWS
 LIBS          = /LIBPATH:"C:\Program Files\Basler\pylon 6\Development\lib\x64" E:\OpenCV\opencv-4.0\build\x64\vc15\lib\opencv_world400.lib E:\OpenCV\opencv-4.0\build\x64\vc15\lib\opencv_world400d.lib "C:\Program Files (x86)\MVS\Development\Libraries\win64\MvCameraControl.lib" C:\Qt\5.15.2\msvc2015_64\lib\Qt5Widgetsd.lib C:\Qt\5.15.2\msvc2015_64\lib\Qt5Guid.lib C:\Qt\5.15.2\msvc2015_64\lib\Qt5Cored.lib   
@@ -159,7 +159,7 @@ qmake: FORCE
 qmake_all: FORCE
 
 dist:
-	$(ZIP) IndustrialCamera.zip $(SOURCES) $(DIST) IndustrialCamera.pro C:\Qt\5.15.2\msvc2015_64\mkspecs\features\spec_pre.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\common\angle.conf C:\Qt\5.15.2\msvc2015_64\mkspecs\common\windows-desktop.conf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\win32\windows_vulkan_sdk.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\common\windows-vulkan.conf C:\Qt\5.15.2\msvc2015_64\mkspecs\common\msvc-desktop.conf C:\Qt\5.15.2\msvc2015_64\mkspecs\qconfig.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3danimation.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3danimation_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dcore.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dcore_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dextras.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dextras_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dinput.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dinput_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dlogic.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dlogic_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dquick.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dquick_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dquickanimation.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dquickanimation_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dquickextras.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dquickextras_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dquickinput.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dquickinput_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dquickrender.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dquickrender_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dquickscene2d.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dquickscene2d_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3drender.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3drender_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_accessibility_support_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_axbase.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_axbase_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_axcontainer.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_axcontainer_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_axserver.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_axserver_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_bluetooth.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_bluetooth_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_bootstrap_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_charts.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_charts_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_concurrent.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_concurrent_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_core.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_core_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_dbus.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_dbus_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_designer.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_designer_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_designercomponents_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_devicediscovery_support_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_edid_support_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_egl_support_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_eventdispatcher_support_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_fb_support_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_fontdatabase_support_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_gamepad.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_gamepad_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_gui.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_gui_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_help.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_help_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_location.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_location_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_multimedia.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_multimedia_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_multimediawidgets.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_multimediawidgets_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_network.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_network_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_nfc.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_nfc_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_opengl.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_opengl_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_openglextensions.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_openglextensions_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_packetprotocol_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_platformcompositor_support_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_positioning.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_positioning_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_positioningquick.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_positioningquick_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_printsupport.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_printsupport_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_qml.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_qml_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_qmldebug_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_qmldevtools_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_qmlmodels.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_qmlmodels_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_qmltest.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_qmltest_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_qmlworkerscript.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_qmlworkerscript_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_qtmultimediaquicktools_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quick.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quick3d.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quick3d_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quick3dassetimport.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quick3dassetimport_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quick3drender.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quick3drender_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quick3druntimerender.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quick3druntimerender_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quick3dutils.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quick3dutils_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quick_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quickcontrols2.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quickcontrols2_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quickparticles_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quickshapes_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quicktemplates2.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quicktemplates2_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quickwidgets.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quickwidgets_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_remoteobjects.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_remoteobjects_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_repparser.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_repparser_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_script.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_script_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_scripttools.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_scripttools_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_scxml.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_scxml_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_sensors.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_sensors_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_serialbus.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_serialbus_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_serialport.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_serialport_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_sql.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_sql_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_svg.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_svg_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_testlib.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_testlib_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_texttospeech.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_texttospeech_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_theme_support_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_uiplugin.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_uitools.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_uitools_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_virtualkeyboard.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_virtualkeyboard_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_vulkan_support_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_webchannel.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_webchannel_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_websockets.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_websockets_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_webview.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_webview_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_widgets.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_widgets_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_windowsuiautomation_support_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_winextras.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_winextras_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_xml.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_xml_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_xmlpatterns.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_xmlpatterns_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_zlib_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\features\qt_functions.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\qt_config.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\win32-msvc\qmake.conf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\spec_post.prf .qmake.stash C:\Qt\5.15.2\msvc2015_64\mkspecs\features\exclusive_builds.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\common\msvc-version.conf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\toolchain.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\default_pre.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\win32\default_pre.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\resolve_config.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\exclusive_builds_post.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\default_post.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\build_pass.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\qml_debug.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\precompile_header.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\warn_on.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\qt.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\resources_functions.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\resources.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\moc.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\win32\opengl.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\uic.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\qmake_use.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\file_copies.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\win32\windows.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\testcase_targets.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\exceptions.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\yacc.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\lex.prf IndustrialCamera.pro C:\Qt\5.15.2\msvc2015_64\lib\Qt5Widgetsd.prl C:\Qt\5.15.2\msvc2015_64\lib\Qt5Guid.prl C:\Qt\5.15.2\msvc2015_64\lib\Qt5Cored.prl    C:\Qt\5.15.2\msvc2015_64\mkspecs\features\data\dummy.cpp ..\..\..\DeltaXSoftware\sdk\DeltaXPlugin.h CameraProcessor.h ImageUnity.h IndustrialCameraPlugin.h camerawidget.h form.h xcam.h xcambasler.h xcamhik.h xcammanager.h  CameraProcessor.cpp IndustrialCameraPlugin.cpp camerawidget.cpp form.cpp xcam.cpp xcambasler.cpp xcamhik.cpp xcammanager.cpp form.ui    
+	$(ZIP) IndustrialCamera.zip $(SOURCES) $(DIST) IndustrialCamera.pro C:\Qt\5.15.2\msvc2015_64\mkspecs\features\spec_pre.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\common\angle.conf C:\Qt\5.15.2\msvc2015_64\mkspecs\common\windows-desktop.conf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\win32\windows_vulkan_sdk.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\common\windows-vulkan.conf C:\Qt\5.15.2\msvc2015_64\mkspecs\common\msvc-desktop.conf C:\Qt\5.15.2\msvc2015_64\mkspecs\qconfig.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3danimation.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3danimation_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dcore.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dcore_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dextras.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dextras_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dinput.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dinput_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dlogic.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dlogic_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dquick.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dquick_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dquickanimation.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dquickanimation_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dquickextras.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dquickextras_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dquickinput.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dquickinput_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dquickrender.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dquickrender_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dquickscene2d.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dquickscene2d_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3drender.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3drender_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_accessibility_support_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_axbase.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_axbase_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_axcontainer.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_axcontainer_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_axserver.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_axserver_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_bluetooth.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_bluetooth_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_bootstrap_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_concurrent.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_concurrent_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_core.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_core_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_dbus.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_dbus_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_designer.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_designer_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_designercomponents_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_devicediscovery_support_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_edid_support_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_egl_support_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_eventdispatcher_support_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_fb_support_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_fontdatabase_support_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_gamepad.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_gamepad_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_gui.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_gui_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_help.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_help_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_location.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_location_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_multimedia.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_multimedia_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_multimediawidgets.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_multimediawidgets_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_network.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_network_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_nfc.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_nfc_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_opengl.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_opengl_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_openglextensions.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_openglextensions_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_packetprotocol_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_platformcompositor_support_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_positioning.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_positioning_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_positioningquick.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_positioningquick_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_printsupport.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_printsupport_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_qml.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_qml_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_qmldebug_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_qmldevtools_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_qmlmodels.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_qmlmodels_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_qmltest.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_qmltest_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_qmlworkerscript.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_qmlworkerscript_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_qtmultimediaquicktools_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quick.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quick3d.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quick3d_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quick3dassetimport.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quick3dassetimport_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quick3drender.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quick3drender_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quick3druntimerender.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quick3druntimerender_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quick3dutils.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quick3dutils_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quick_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quickcontrols2.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quickcontrols2_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quickparticles_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quickshapes_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quicktemplates2.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quicktemplates2_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quickwidgets.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quickwidgets_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_remoteobjects.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_remoteobjects_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_repparser.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_repparser_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_scxml.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_scxml_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_sensors.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_sensors_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_serialbus.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_serialbus_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_serialport.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_serialport_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_sql.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_sql_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_svg.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_svg_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_testlib.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_testlib_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_texttospeech.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_texttospeech_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_theme_support_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_uiplugin.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_uitools.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_uitools_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_vulkan_support_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_webchannel.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_webchannel_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_websockets.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_websockets_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_webview.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_webview_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_widgets.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_widgets_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_windowsuiautomation_support_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_winextras.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_winextras_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_xml.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_xml_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_xmlpatterns.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_xmlpatterns_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_zlib_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\features\qt_functions.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\qt_config.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\win32-msvc\qmake.conf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\spec_post.prf .qmake.stash C:\Qt\5.15.2\msvc2015_64\mkspecs\features\exclusive_builds.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\common\msvc-version.conf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\toolchain.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\default_pre.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\win32\default_pre.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\resolve_config.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\exclusive_builds_post.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\default_post.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\build_pass.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\qml_debug.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\precompile_header.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\warn_on.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\qt.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\resources_functions.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\resources.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\moc.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\win32\opengl.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\uic.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\qmake_use.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\file_copies.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\win32\windows.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\testcase_targets.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\exceptions.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\yacc.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\lex.prf IndustrialCamera.pro C:\Qt\5.15.2\msvc2015_64\lib\Qt5Widgetsd.prl C:\Qt\5.15.2\msvc2015_64\lib\Qt5Guid.prl C:\Qt\5.15.2\msvc2015_64\lib\Qt5Cored.prl    C:\Qt\5.15.2\msvc2015_64\mkspecs\features\data\dummy.cpp ..\..\..\DeltaXSoftware\sdk\DeltaXPlugin.h CameraProcessor.h ImageUnity.h IndustrialCameraPlugin.h camerawidget.h form.h xcam.h xcambasler.h xcamhik.h xcammanager.h  CameraProcessor.cpp IndustrialCameraPlugin.cpp camerawidget.cpp form.cpp xcam.cpp xcambasler.cpp xcamhik.cpp xcammanager.cpp form.ui    
 
 clean: compiler_clean 
 	-$(DEL_FILE) debug\CameraProcessor.obj debug\IndustrialCameraPlugin.obj debug\camerawidget.obj debug\form.obj debug\xcam.obj debug\xcambasler.obj debug\xcamhik.obj debug\xcammanager.obj debug\moc_CameraProcessor.obj debug\moc_IndustrialCameraPlugin.obj debug\moc_camerawidget.obj debug\moc_form.obj debug\moc_xcammanager.obj
@@ -296,51 +296,51 @@ debug\moc_CameraProcessor.cpp: CameraProcessor.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qfiledevice.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qvector2d.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtouchdevice.h \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\core.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\cvdef.h \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\hal\interface.h \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\cv_cpu_dispatch.h \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\cv_cpu_helper.h \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\fast_math.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\version.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\base.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\opencv_modules.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\cvstd.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\cvstd_wrapper.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\neon_utils.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\vsx_utils.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\check.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\traits.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\matx.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\saturate.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\types.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\mat.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\bufferpool.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\mat.inl.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\persistence.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\operations.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\cvstd.inl.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\utility.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\optim.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\ovx.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\imgproc\imgproc.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\imgproc.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\highgui\highgui.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\highgui.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\imgcodecs.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\videoio.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\video\video.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\video.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\video\tracking.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\video\background_segm.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\calib3d\calib3d.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\calib3d.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\features2d.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\flann\miniflann.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\flann\defines.h \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\flann\config.h \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\affine.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\core.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\cvdef.h \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\hal\interface.h \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\cv_cpu_dispatch.h \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\cv_cpu_helper.h \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\fast_math.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\version.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\base.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\opencv_modules.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\cvstd.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\cvstd_wrapper.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\neon_utils.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\vsx_utils.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\check.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\traits.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\matx.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\saturate.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\types.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\mat.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\bufferpool.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\mat.inl.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\persistence.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\operations.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\cvstd.inl.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\utility.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\optim.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\ovx.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\imgproc\imgproc.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\imgproc.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\highgui\highgui.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\highgui.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\imgcodecs.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\videoio.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\video\video.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\video.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\video\tracking.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\video\background_segm.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\calib3d\calib3d.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\calib3d.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\features2d.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\flann\miniflann.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\flann\defines.h \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\flann\config.h \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\affine.hpp \
 		"C:\Program Files\Basler\pylon 6\Development\include\pylon\PylonIncludes.h" \
 		"C:\Program Files\Basler\pylon 6\Development\include\pylon\Platform.h" \
 		"C:\Program Files\Basler\pylon 6\Development\include\pylon\PylonLinkage.h" \
@@ -492,6 +492,7 @@ debug\moc_CameraProcessor.cpp: CameraProcessor.h \
 		"C:\Program Files\Basler\pylon 6\Development\include\pylon\PylonGUI.h" \
 		"C:\Program Files (x86)\MVS\Development\Includes\MvCameraControl.h" \
 		"C:\Program Files (x86)\MVS\Development\Includes\MvErrorDefine.h" \
+		"C:\Program Files (x86)\MVS\Development\Includes\MvISPErrorDefine.h" \
 		"C:\Program Files (x86)\MVS\Development\Includes\CameraParams.h" \
 		"C:\Program Files (x86)\MVS\Development\Includes\PixelType.h" \
 		"C:\Program Files (x86)\MVS\Development\Includes\MvObsoleteInterfaces.h" \
@@ -510,9 +511,9 @@ debug\moc_CameraProcessor.cpp: CameraProcessor.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QImage \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPixmap \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QtGlobal \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\imgproc\types_c.h \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\core_c.h \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\types_c.h \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\imgproc\types_c.h \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\core_c.h \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\types_c.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qtimer.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qbasictimer.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QTimer \
@@ -523,7 +524,7 @@ debug\moc_CameraProcessor.cpp: CameraProcessor.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutex \
 		debug\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2015_64\bin\moc.exe
-	C:\Qt\5.15.2\msvc2015_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include E:/Git/DeltaXSoftware/plugin/IndustrialCamera/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2015_64/mkspecs/win32-msvc -IE:/Git/DeltaXSoftware/plugin/IndustrialCamera -I"C:/Program Files/Basler/pylon 6/Development/include" -I"C:/Program Files/Basler/pylon 6/Development/include/pylon" -I"C:/Program Files (x86)/MVS/Development/Includes" -IE:/OpenCV/opencv-4.0/build/include -IC:/Qt/5.15.2/msvc2015_64/include -IC:/Qt/5.15.2/msvc2015_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtGui -IC:/Qt/5.15.2/msvc2015_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2015_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" CameraProcessor.h -o debug\moc_CameraProcessor.cpp
+	C:\Qt\5.15.2\msvc2015_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include E:/Project/Company/DeltaXSoftware/plugin/IndustrialCamera/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2015_64/mkspecs/win32-msvc -IE:/Project/Company/DeltaXSoftware/plugin/IndustrialCamera -I"C:/Program Files/Basler/pylon 6/Development/include" -I"C:/Program Files/Basler/pylon 6/Development/include/pylon" -I"C:/Program Files (x86)/MVS/Development/Includes" -IE:/OpenCV/opencv-4.0/build/include -IC:/Qt/5.15.2/msvc2015_64/include -IC:/Qt/5.15.2/msvc2015_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtGui -IC:/Qt/5.15.2/msvc2015_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2015_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" CameraProcessor.h -o debug\moc_CameraProcessor.cpp
 
 debug\moc_IndustrialCameraPlugin.cpp: IndustrialCameraPlugin.h \
 		form.h \
@@ -630,51 +631,51 @@ debug\moc_IndustrialCameraPlugin.cpp: IndustrialCameraPlugin.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qfiledevice.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qvector2d.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtouchdevice.h \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\core.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\cvdef.h \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\hal\interface.h \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\cv_cpu_dispatch.h \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\cv_cpu_helper.h \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\fast_math.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\version.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\base.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\opencv_modules.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\cvstd.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\cvstd_wrapper.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\neon_utils.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\vsx_utils.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\check.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\traits.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\matx.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\saturate.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\types.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\mat.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\bufferpool.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\mat.inl.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\persistence.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\operations.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\cvstd.inl.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\utility.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\optim.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\ovx.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\imgproc\imgproc.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\imgproc.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\highgui\highgui.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\highgui.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\imgcodecs.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\videoio.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\video\video.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\video.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\video\tracking.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\video\background_segm.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\calib3d\calib3d.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\calib3d.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\features2d.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\flann\miniflann.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\flann\defines.h \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\flann\config.h \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\affine.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\core.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\cvdef.h \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\hal\interface.h \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\cv_cpu_dispatch.h \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\cv_cpu_helper.h \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\fast_math.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\version.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\base.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\opencv_modules.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\cvstd.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\cvstd_wrapper.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\neon_utils.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\vsx_utils.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\check.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\traits.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\matx.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\saturate.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\types.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\mat.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\bufferpool.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\mat.inl.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\persistence.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\operations.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\cvstd.inl.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\utility.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\optim.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\ovx.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\imgproc\imgproc.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\imgproc.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\highgui\highgui.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\highgui.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\imgcodecs.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\videoio.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\video\video.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\video.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\video\tracking.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\video\background_segm.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\calib3d\calib3d.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\calib3d.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\features2d.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\flann\miniflann.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\flann\defines.h \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\flann\config.h \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\affine.hpp \
 		"C:\Program Files\Basler\pylon 6\Development\include\pylon\PylonIncludes.h" \
 		"C:\Program Files\Basler\pylon 6\Development\include\pylon\Platform.h" \
 		"C:\Program Files\Basler\pylon 6\Development\include\pylon\PylonLinkage.h" \
@@ -826,6 +827,7 @@ debug\moc_IndustrialCameraPlugin.cpp: IndustrialCameraPlugin.h \
 		"C:\Program Files\Basler\pylon 6\Development\include\pylon\PylonGUI.h" \
 		"C:\Program Files (x86)\MVS\Development\Includes\MvCameraControl.h" \
 		"C:\Program Files (x86)\MVS\Development\Includes\MvErrorDefine.h" \
+		"C:\Program Files (x86)\MVS\Development\Includes\MvISPErrorDefine.h" \
 		"C:\Program Files (x86)\MVS\Development\Includes\CameraParams.h" \
 		"C:\Program Files (x86)\MVS\Development\Includes\PixelType.h" \
 		"C:\Program Files (x86)\MVS\Development\Includes\MvObsoleteInterfaces.h" \
@@ -845,9 +847,9 @@ debug\moc_IndustrialCameraPlugin.cpp: IndustrialCameraPlugin.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QImage \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPixmap \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QtGlobal \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\imgproc\types_c.h \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\core_c.h \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\types_c.h \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\imgproc\types_c.h \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\core_c.h \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\types_c.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qtimer.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qbasictimer.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QThread \
@@ -871,7 +873,7 @@ debug\moc_IndustrialCameraPlugin.cpp: IndustrialCameraPlugin.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QString \
 		debug\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2015_64\bin\moc.exe
-	C:\Qt\5.15.2\msvc2015_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include E:/Git/DeltaXSoftware/plugin/IndustrialCamera/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2015_64/mkspecs/win32-msvc -IE:/Git/DeltaXSoftware/plugin/IndustrialCamera -I"C:/Program Files/Basler/pylon 6/Development/include" -I"C:/Program Files/Basler/pylon 6/Development/include/pylon" -I"C:/Program Files (x86)/MVS/Development/Includes" -IE:/OpenCV/opencv-4.0/build/include -IC:/Qt/5.15.2/msvc2015_64/include -IC:/Qt/5.15.2/msvc2015_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtGui -IC:/Qt/5.15.2/msvc2015_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2015_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" IndustrialCameraPlugin.h -o debug\moc_IndustrialCameraPlugin.cpp
+	C:\Qt\5.15.2\msvc2015_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include E:/Project/Company/DeltaXSoftware/plugin/IndustrialCamera/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2015_64/mkspecs/win32-msvc -IE:/Project/Company/DeltaXSoftware/plugin/IndustrialCamera -I"C:/Program Files/Basler/pylon 6/Development/include" -I"C:/Program Files/Basler/pylon 6/Development/include/pylon" -I"C:/Program Files (x86)/MVS/Development/Includes" -IE:/OpenCV/opencv-4.0/build/include -IC:/Qt/5.15.2/msvc2015_64/include -IC:/Qt/5.15.2/msvc2015_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtGui -IC:/Qt/5.15.2/msvc2015_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2015_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" IndustrialCameraPlugin.h -o debug\moc_IndustrialCameraPlugin.cpp
 
 debug\moc_camerawidget.cpp: camerawidget.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLabel \
@@ -992,7 +994,7 @@ debug\moc_camerawidget.cpp: camerawidget.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QMouseEvent \
 		debug\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2015_64\bin\moc.exe
-	C:\Qt\5.15.2\msvc2015_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include E:/Git/DeltaXSoftware/plugin/IndustrialCamera/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2015_64/mkspecs/win32-msvc -IE:/Git/DeltaXSoftware/plugin/IndustrialCamera -I"C:/Program Files/Basler/pylon 6/Development/include" -I"C:/Program Files/Basler/pylon 6/Development/include/pylon" -I"C:/Program Files (x86)/MVS/Development/Includes" -IE:/OpenCV/opencv-4.0/build/include -IC:/Qt/5.15.2/msvc2015_64/include -IC:/Qt/5.15.2/msvc2015_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtGui -IC:/Qt/5.15.2/msvc2015_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2015_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" camerawidget.h -o debug\moc_camerawidget.cpp
+	C:\Qt\5.15.2\msvc2015_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include E:/Project/Company/DeltaXSoftware/plugin/IndustrialCamera/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2015_64/mkspecs/win32-msvc -IE:/Project/Company/DeltaXSoftware/plugin/IndustrialCamera -I"C:/Program Files/Basler/pylon 6/Development/include" -I"C:/Program Files/Basler/pylon 6/Development/include/pylon" -I"C:/Program Files (x86)/MVS/Development/Includes" -IE:/OpenCV/opencv-4.0/build/include -IC:/Qt/5.15.2/msvc2015_64/include -IC:/Qt/5.15.2/msvc2015_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtGui -IC:/Qt/5.15.2/msvc2015_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2015_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" camerawidget.h -o debug\moc_camerawidget.cpp
 
 debug\moc_form.cpp: form.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QWidget \
@@ -1098,51 +1100,51 @@ debug\moc_form.cpp: form.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qfiledevice.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qvector2d.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtouchdevice.h \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\core.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\cvdef.h \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\hal\interface.h \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\cv_cpu_dispatch.h \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\cv_cpu_helper.h \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\fast_math.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\version.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\base.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\opencv_modules.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\cvstd.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\cvstd_wrapper.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\neon_utils.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\vsx_utils.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\check.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\traits.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\matx.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\saturate.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\types.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\mat.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\bufferpool.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\mat.inl.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\persistence.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\operations.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\cvstd.inl.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\utility.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\optim.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\ovx.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\imgproc\imgproc.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\imgproc.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\highgui\highgui.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\highgui.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\imgcodecs.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\videoio.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\video\video.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\video.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\video\tracking.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\video\background_segm.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\calib3d\calib3d.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\calib3d.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\features2d.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\flann\miniflann.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\flann\defines.h \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\flann\config.h \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\affine.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\core.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\cvdef.h \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\hal\interface.h \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\cv_cpu_dispatch.h \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\cv_cpu_helper.h \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\fast_math.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\version.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\base.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\opencv_modules.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\cvstd.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\cvstd_wrapper.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\neon_utils.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\vsx_utils.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\check.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\traits.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\matx.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\saturate.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\types.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\mat.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\bufferpool.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\mat.inl.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\persistence.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\operations.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\cvstd.inl.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\utility.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\optim.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\ovx.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\imgproc\imgproc.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\imgproc.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\highgui\highgui.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\highgui.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\imgcodecs.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\videoio.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\video\video.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\video.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\video\tracking.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\video\background_segm.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\calib3d\calib3d.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\calib3d.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\features2d.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\flann\miniflann.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\flann\defines.h \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\flann\config.h \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\affine.hpp \
 		"C:\Program Files\Basler\pylon 6\Development\include\pylon\PylonIncludes.h" \
 		"C:\Program Files\Basler\pylon 6\Development\include\pylon\Platform.h" \
 		"C:\Program Files\Basler\pylon 6\Development\include\pylon\PylonLinkage.h" \
@@ -1294,6 +1296,7 @@ debug\moc_form.cpp: form.h \
 		"C:\Program Files\Basler\pylon 6\Development\include\pylon\PylonGUI.h" \
 		"C:\Program Files (x86)\MVS\Development\Includes\MvCameraControl.h" \
 		"C:\Program Files (x86)\MVS\Development\Includes\MvErrorDefine.h" \
+		"C:\Program Files (x86)\MVS\Development\Includes\MvISPErrorDefine.h" \
 		"C:\Program Files (x86)\MVS\Development\Includes\CameraParams.h" \
 		"C:\Program Files (x86)\MVS\Development\Includes\PixelType.h" \
 		"C:\Program Files (x86)\MVS\Development\Includes\MvObsoleteInterfaces.h" \
@@ -1313,9 +1316,9 @@ debug\moc_form.cpp: form.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QImage \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPixmap \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QtGlobal \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\imgproc\types_c.h \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\core_c.h \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\types_c.h \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\imgproc\types_c.h \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\core_c.h \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\types_c.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qtimer.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qbasictimer.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QThread \
@@ -1337,7 +1340,7 @@ debug\moc_form.cpp: form.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qthreadpool.h \
 		debug\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2015_64\bin\moc.exe
-	C:\Qt\5.15.2\msvc2015_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include E:/Git/DeltaXSoftware/plugin/IndustrialCamera/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2015_64/mkspecs/win32-msvc -IE:/Git/DeltaXSoftware/plugin/IndustrialCamera -I"C:/Program Files/Basler/pylon 6/Development/include" -I"C:/Program Files/Basler/pylon 6/Development/include/pylon" -I"C:/Program Files (x86)/MVS/Development/Includes" -IE:/OpenCV/opencv-4.0/build/include -IC:/Qt/5.15.2/msvc2015_64/include -IC:/Qt/5.15.2/msvc2015_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtGui -IC:/Qt/5.15.2/msvc2015_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2015_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" form.h -o debug\moc_form.cpp
+	C:\Qt\5.15.2\msvc2015_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include E:/Project/Company/DeltaXSoftware/plugin/IndustrialCamera/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2015_64/mkspecs/win32-msvc -IE:/Project/Company/DeltaXSoftware/plugin/IndustrialCamera -I"C:/Program Files/Basler/pylon 6/Development/include" -I"C:/Program Files/Basler/pylon 6/Development/include/pylon" -I"C:/Program Files (x86)/MVS/Development/Includes" -IE:/OpenCV/opencv-4.0/build/include -IC:/Qt/5.15.2/msvc2015_64/include -IC:/Qt/5.15.2/msvc2015_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtGui -IC:/Qt/5.15.2/msvc2015_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2015_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" form.h -o debug\moc_form.cpp
 
 debug\moc_xcammanager.cpp: xcammanager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QObject \
@@ -1599,13 +1602,14 @@ debug\moc_xcammanager.cpp: xcammanager.h \
 		xcamhik.h \
 		"C:\Program Files (x86)\MVS\Development\Includes\MvCameraControl.h" \
 		"C:\Program Files (x86)\MVS\Development\Includes\MvErrorDefine.h" \
+		"C:\Program Files (x86)\MVS\Development\Includes\MvISPErrorDefine.h" \
 		"C:\Program Files (x86)\MVS\Development\Includes\CameraParams.h" \
 		"C:\Program Files (x86)\MVS\Development\Includes\PixelType.h" \
 		"C:\Program Files (x86)\MVS\Development\Includes\MvObsoleteInterfaces.h" \
 		"C:\Program Files (x86)\MVS\Development\Includes\ObsoleteCamParams.h" \
 		debug\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2015_64\bin\moc.exe
-	C:\Qt\5.15.2\msvc2015_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include E:/Git/DeltaXSoftware/plugin/IndustrialCamera/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2015_64/mkspecs/win32-msvc -IE:/Git/DeltaXSoftware/plugin/IndustrialCamera -I"C:/Program Files/Basler/pylon 6/Development/include" -I"C:/Program Files/Basler/pylon 6/Development/include/pylon" -I"C:/Program Files (x86)/MVS/Development/Includes" -IE:/OpenCV/opencv-4.0/build/include -IC:/Qt/5.15.2/msvc2015_64/include -IC:/Qt/5.15.2/msvc2015_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtGui -IC:/Qt/5.15.2/msvc2015_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2015_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" xcammanager.h -o debug\moc_xcammanager.cpp
+	C:\Qt\5.15.2\msvc2015_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include E:/Project/Company/DeltaXSoftware/plugin/IndustrialCamera/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2015_64/mkspecs/win32-msvc -IE:/Project/Company/DeltaXSoftware/plugin/IndustrialCamera -I"C:/Program Files/Basler/pylon 6/Development/include" -I"C:/Program Files/Basler/pylon 6/Development/include/pylon" -I"C:/Program Files (x86)/MVS/Development/Includes" -IE:/OpenCV/opencv-4.0/build/include -IC:/Qt/5.15.2/msvc2015_64/include -IC:/Qt/5.15.2/msvc2015_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtGui -IC:/Qt/5.15.2/msvc2015_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2015_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" xcammanager.h -o debug\moc_xcammanager.cpp
 
 compiler_moc_objc_header_make_all:
 compiler_moc_objc_header_clean:
@@ -1735,51 +1739,51 @@ debug\CameraProcessor.obj: CameraProcessor.cpp CameraProcessor.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qfiledevice.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qvector2d.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtouchdevice.h \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\core.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\cvdef.h \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\hal\interface.h \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\cv_cpu_dispatch.h \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\cv_cpu_helper.h \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\fast_math.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\version.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\base.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\opencv_modules.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\cvstd.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\cvstd_wrapper.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\neon_utils.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\vsx_utils.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\check.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\traits.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\matx.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\saturate.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\types.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\mat.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\bufferpool.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\mat.inl.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\persistence.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\operations.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\cvstd.inl.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\utility.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\optim.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\ovx.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\imgproc\imgproc.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\imgproc.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\highgui\highgui.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\highgui.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\imgcodecs.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\videoio.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\video\video.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\video.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\video\tracking.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\video\background_segm.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\calib3d\calib3d.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\calib3d.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\features2d.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\flann\miniflann.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\flann\defines.h \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\flann\config.h \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\affine.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\core.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\cvdef.h \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\hal\interface.h \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\cv_cpu_dispatch.h \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\cv_cpu_helper.h \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\fast_math.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\version.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\base.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\opencv_modules.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\cvstd.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\cvstd_wrapper.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\neon_utils.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\vsx_utils.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\check.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\traits.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\matx.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\saturate.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\types.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\mat.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\bufferpool.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\mat.inl.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\persistence.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\operations.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\cvstd.inl.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\utility.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\optim.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\ovx.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\imgproc\imgproc.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\imgproc.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\highgui\highgui.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\highgui.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\imgcodecs.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\videoio.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\video\video.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\video.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\video\tracking.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\video\background_segm.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\calib3d\calib3d.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\calib3d.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\features2d.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\flann\miniflann.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\flann\defines.h \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\flann\config.h \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\affine.hpp \
 		"C:\Program Files\Basler\pylon 6\Development\include\pylon\PylonIncludes.h" \
 		"C:\Program Files\Basler\pylon 6\Development\include\pylon\Platform.h" \
 		"C:\Program Files\Basler\pylon 6\Development\include\pylon\PylonLinkage.h" \
@@ -1931,6 +1935,7 @@ debug\CameraProcessor.obj: CameraProcessor.cpp CameraProcessor.h \
 		"C:\Program Files\Basler\pylon 6\Development\include\pylon\PylonGUI.h" \
 		"C:\Program Files (x86)\MVS\Development\Includes\MvCameraControl.h" \
 		"C:\Program Files (x86)\MVS\Development\Includes\MvErrorDefine.h" \
+		"C:\Program Files (x86)\MVS\Development\Includes\MvISPErrorDefine.h" \
 		"C:\Program Files (x86)\MVS\Development\Includes\CameraParams.h" \
 		"C:\Program Files (x86)\MVS\Development\Includes\PixelType.h" \
 		"C:\Program Files (x86)\MVS\Development\Includes\MvObsoleteInterfaces.h" \
@@ -1949,9 +1954,9 @@ debug\CameraProcessor.obj: CameraProcessor.cpp CameraProcessor.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QImage \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPixmap \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QtGlobal \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\imgproc\types_c.h \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\core_c.h \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\types_c.h \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\imgproc\types_c.h \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\core_c.h \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\types_c.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qtimer.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qbasictimer.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QTimer \
@@ -2066,51 +2071,51 @@ debug\IndustrialCameraPlugin.obj: IndustrialCameraPlugin.cpp IndustrialCameraPlu
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qfiledevice.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qvector2d.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtouchdevice.h \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\core.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\cvdef.h \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\hal\interface.h \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\cv_cpu_dispatch.h \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\cv_cpu_helper.h \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\fast_math.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\version.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\base.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\opencv_modules.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\cvstd.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\cvstd_wrapper.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\neon_utils.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\vsx_utils.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\check.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\traits.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\matx.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\saturate.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\types.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\mat.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\bufferpool.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\mat.inl.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\persistence.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\operations.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\cvstd.inl.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\utility.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\optim.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\ovx.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\imgproc\imgproc.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\imgproc.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\highgui\highgui.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\highgui.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\imgcodecs.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\videoio.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\video\video.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\video.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\video\tracking.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\video\background_segm.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\calib3d\calib3d.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\calib3d.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\features2d.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\flann\miniflann.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\flann\defines.h \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\flann\config.h \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\affine.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\core.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\cvdef.h \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\hal\interface.h \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\cv_cpu_dispatch.h \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\cv_cpu_helper.h \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\fast_math.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\version.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\base.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\opencv_modules.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\cvstd.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\cvstd_wrapper.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\neon_utils.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\vsx_utils.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\check.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\traits.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\matx.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\saturate.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\types.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\mat.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\bufferpool.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\mat.inl.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\persistence.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\operations.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\cvstd.inl.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\utility.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\optim.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\ovx.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\imgproc\imgproc.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\imgproc.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\highgui\highgui.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\highgui.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\imgcodecs.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\videoio.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\video\video.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\video.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\video\tracking.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\video\background_segm.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\calib3d\calib3d.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\calib3d.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\features2d.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\flann\miniflann.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\flann\defines.h \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\flann\config.h \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\affine.hpp \
 		"C:\Program Files\Basler\pylon 6\Development\include\pylon\PylonIncludes.h" \
 		"C:\Program Files\Basler\pylon 6\Development\include\pylon\Platform.h" \
 		"C:\Program Files\Basler\pylon 6\Development\include\pylon\PylonLinkage.h" \
@@ -2262,6 +2267,7 @@ debug\IndustrialCameraPlugin.obj: IndustrialCameraPlugin.cpp IndustrialCameraPlu
 		"C:\Program Files\Basler\pylon 6\Development\include\pylon\PylonGUI.h" \
 		"C:\Program Files (x86)\MVS\Development\Includes\MvCameraControl.h" \
 		"C:\Program Files (x86)\MVS\Development\Includes\MvErrorDefine.h" \
+		"C:\Program Files (x86)\MVS\Development\Includes\MvISPErrorDefine.h" \
 		"C:\Program Files (x86)\MVS\Development\Includes\CameraParams.h" \
 		"C:\Program Files (x86)\MVS\Development\Includes\PixelType.h" \
 		"C:\Program Files (x86)\MVS\Development\Includes\MvObsoleteInterfaces.h" \
@@ -2281,9 +2287,9 @@ debug\IndustrialCameraPlugin.obj: IndustrialCameraPlugin.cpp IndustrialCameraPlu
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QImage \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPixmap \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QtGlobal \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\imgproc\types_c.h \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\core_c.h \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\types_c.h \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\imgproc\types_c.h \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\core_c.h \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\types_c.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qtimer.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qbasictimer.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QThread \
@@ -2528,51 +2534,51 @@ debug\form.obj: form.cpp form.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qfiledevice.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qvector2d.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtouchdevice.h \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\core.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\cvdef.h \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\hal\interface.h \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\cv_cpu_dispatch.h \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\cv_cpu_helper.h \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\fast_math.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\version.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\base.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\opencv_modules.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\cvstd.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\cvstd_wrapper.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\neon_utils.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\vsx_utils.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\check.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\traits.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\matx.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\saturate.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\types.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\mat.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\bufferpool.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\mat.inl.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\persistence.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\operations.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\cvstd.inl.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\utility.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\optim.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\ovx.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\imgproc\imgproc.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\imgproc.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\highgui\highgui.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\highgui.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\imgcodecs.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\videoio.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\video\video.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\video.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\video\tracking.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\video\background_segm.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\calib3d\calib3d.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\calib3d.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\features2d.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\flann\miniflann.hpp \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\flann\defines.h \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\flann\config.h \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\affine.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\core.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\cvdef.h \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\hal\interface.h \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\cv_cpu_dispatch.h \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\cv_cpu_helper.h \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\fast_math.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\version.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\base.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\opencv_modules.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\cvstd.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\cvstd_wrapper.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\neon_utils.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\vsx_utils.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\check.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\traits.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\matx.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\saturate.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\types.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\mat.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\bufferpool.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\mat.inl.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\persistence.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\operations.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\cvstd.inl.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\utility.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\optim.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\ovx.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\imgproc\imgproc.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\imgproc.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\highgui\highgui.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\highgui.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\imgcodecs.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\videoio.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\video\video.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\video.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\video\tracking.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\video\background_segm.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\calib3d\calib3d.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\calib3d.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\features2d.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\flann\miniflann.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\flann\defines.h \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\flann\config.h \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\affine.hpp \
 		"C:\Program Files\Basler\pylon 6\Development\include\pylon\PylonIncludes.h" \
 		"C:\Program Files\Basler\pylon 6\Development\include\pylon\Platform.h" \
 		"C:\Program Files\Basler\pylon 6\Development\include\pylon\PylonLinkage.h" \
@@ -2724,6 +2730,7 @@ debug\form.obj: form.cpp form.h \
 		"C:\Program Files\Basler\pylon 6\Development\include\pylon\PylonGUI.h" \
 		"C:\Program Files (x86)\MVS\Development\Includes\MvCameraControl.h" \
 		"C:\Program Files (x86)\MVS\Development\Includes\MvErrorDefine.h" \
+		"C:\Program Files (x86)\MVS\Development\Includes\MvISPErrorDefine.h" \
 		"C:\Program Files (x86)\MVS\Development\Includes\CameraParams.h" \
 		"C:\Program Files (x86)\MVS\Development\Includes\PixelType.h" \
 		"C:\Program Files (x86)\MVS\Development\Includes\MvObsoleteInterfaces.h" \
@@ -2743,9 +2750,9 @@ debug\form.obj: form.cpp form.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QImage \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPixmap \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QtGlobal \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\imgproc\types_c.h \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\core_c.h \
-		..\..\..\..\OpenCV\opencv-4.0\build\include\opencv2\core\types_c.h \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\imgproc\types_c.h \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\core_c.h \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\types_c.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qtimer.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qbasictimer.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QThread \
@@ -2924,6 +2931,7 @@ debug\xcamhik.obj: xcamhik.cpp xcamhik.h \
 		xcam.h \
 		"C:\Program Files (x86)\MVS\Development\Includes\MvCameraControl.h" \
 		"C:\Program Files (x86)\MVS\Development\Includes\MvErrorDefine.h" \
+		"C:\Program Files (x86)\MVS\Development\Includes\MvISPErrorDefine.h" \
 		"C:\Program Files (x86)\MVS\Development\Includes\CameraParams.h" \
 		"C:\Program Files (x86)\MVS\Development\Includes\PixelType.h" \
 		"C:\Program Files (x86)\MVS\Development\Includes\MvObsoleteInterfaces.h" \
@@ -3189,6 +3197,7 @@ debug\xcammanager.obj: xcammanager.cpp xcammanager.h \
 		xcamhik.h \
 		"C:\Program Files (x86)\MVS\Development\Includes\MvCameraControl.h" \
 		"C:\Program Files (x86)\MVS\Development\Includes\MvErrorDefine.h" \
+		"C:\Program Files (x86)\MVS\Development\Includes\MvISPErrorDefine.h" \
 		"C:\Program Files (x86)\MVS\Development\Includes\CameraParams.h" \
 		"C:\Program Files (x86)\MVS\Development\Includes\PixelType.h" \
 		"C:\Program Files (x86)\MVS\Development\Includes\MvObsoleteInterfaces.h" \
