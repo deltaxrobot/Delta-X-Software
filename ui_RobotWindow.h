@@ -709,65 +709,63 @@ public:
     QLineEdit *leTrackingError;
     QLabel *label_127;
     QGridLayout *gridLayout_16;
-    QLineEdit *leBackwardConveyorGcode;
-    QPushButton *pbBackwardConveyor;
-    QLineEdit *leEncoderPosition;
-    QCheckBox *cbAutoReadProximitySensor;
-    QCheckBox *cbEncoderPositionInverse;
-    QLabel *label_189;
-    QLabel *label_162;
-    QPushButton *pbReadProximitySensor;
-    QLabel *label_148;
-    QLineEdit *leEncoderVelocity;
-    QLabel *label_160;
-    QLineEdit *leMovingDistanceConveyorControl;
-    QLabel *label_149;
-    QLabel *label_45;
-    QLabel *leEncoderCom;
     QLineEdit *leConvenyorSpeed;
-    QLabel *label_163;
-    QLabel *label_47;
-    QPushButton *pbResetEncoderPosition;
-    QLineEdit *leForwardConveyorGcode;
-    QLabel *label_121;
-    QPushButton *pbForwardConveyor;
-    QComboBox *cbConveyorDirection;
-    QComboBox *cbConveyorDirectionControl;
-    QLabel *label_49;
     QSpacerItem *horizontalSpacer_11;
-    QLabel *label_191;
-    QLabel *label_119;
-    QLabel *label_118;
-    QLabel *lbProximitySensorValue;
-    QRadioButton *rbEncoderEnable;
-    QLabel *label_120;
-    QPushButton *pbTurnOffConveyor;
+    QPushButton *pbReadProximitySensor;
+    QPushButton *pbBackwardConveyor;
+    QLineEdit *leMovingDistanceConveyorControl;
+    QPushButton *pbResetEncoderPosition;
+    QLabel *label_189;
+    QLineEdit *leForwardConveyorGcode;
     QLineEdit *leTurnOffConveyorGcode;
-    QLabel *label_161;
+    QRadioButton *rbEncoderEnable;
+    QLabel *label_148;
+    QLabel *label_191;
+    QLineEdit *leBackwardConveyorGcode;
+    QLabel *label_45;
+    QLabel *label_163;
+    QLabel *lbProximitySensorValue;
+    QLabel *leEncoderCom;
+    QPushButton *pbTurnOffConveyor;
+    QLabel *label_121;
+    QLabel *label_162;
+    QLineEdit *leEncoderVelocity;
     QLineEdit *leConveyorDeviationAngle;
     QPushButton *pbConnectEncdoer;
+    QLabel *label_161;
+    QCheckBox *cbEncoderPositionInverse;
+    QLabel *label_49;
+    QLabel *label_160;
+    QLabel *label_119;
+    QRadioButton *rbVirtualEncoderEnable;
+    QLabel *label_118;
+    QPushButton *pbForwardConveyor;
+    QComboBox *cbConveyorDirectionControl;
+    QLabel *label_120;
+    QCheckBox *cbAutoReadProximitySensor;
+    QLineEdit *leEncoderPosition;
     QFrame *frame_11;
     QGridLayout *gridLayout_37;
+    QLabel *label_165;
+    QLineEdit *leConveyorPoint1Y;
+    QLabel *label_164;
+    QLineEdit *leConveyorPoint2Y;
+    QLabel *label_166;
+    QPushButton *pbCalibConveyorAngle;
     QLineEdit *leConveyorPoint2X;
     QLabel *label_154;
-    QLabel *label_164;
-    QLabel *label_166;
     QLineEdit *leConveyorPoint1X;
-    QLineEdit *leConveyorPoint1Y;
-    QLabel *label_165;
-    QLineEdit *leConveyorPoint2Y;
-    QPushButton *pbCalibConveyorAngle;
-    QLabel *label_171;
     QLabel *label_170;
+    QLabel *label_196;
+    QLabel *label_149;
     QFrame *frame_12;
     QGridLayout *gridLayout_38;
     QLineEdit *leConveyorPoint3X;
     QLineEdit *leConveyorPoint3Y;
-    QLabel *label_168;
     QLabel *label_169;
+    QLabel *label_168;
+    QLabel *label_171;
     QLabel *label_167;
-    QLabel *label_196;
-    QRadioButton *rbVirtualEncoderEnable;
     QFrame *fVisionConveyorFrame;
     QVBoxLayout *verticalLayout_49;
     QSpacerItem *verticalSpacer_11;
@@ -890,7 +888,6 @@ public:
         RobotWindow->setMinimumSize(QSize(700, 400));
         QFont font;
         font.setBold(false);
-        font.setWeight(50);
         font.setKerning(true);
         RobotWindow->setFont(font);
         QIcon icon;
@@ -1062,7 +1059,6 @@ public:
         QFont font1;
         font1.setPointSize(10);
         font1.setBold(false);
-        font1.setWeight(50);
         font1.setKerning(true);
         twDeltaManager->setFont(font1);
         twDeltaManager->setLayoutDirection(Qt::LeftToRight);
@@ -1137,7 +1133,6 @@ public:
         QFont font3;
         font3.setBold(false);
         font3.setItalic(false);
-        font3.setWeight(50);
         font3.setKerning(true);
         frameRobotConnection->setFont(font3);
         frameRobotConnection->setStyleSheet(QString::fromUtf8("/*background-color: rgb(255, 255, 255);\n"
@@ -1159,7 +1154,6 @@ public:
         QFont font4;
         font4.setPointSize(10);
         font4.setBold(false);
-        font4.setWeight(50);
         pbConnect->setFont(font4);
         pbConnect->setStyleSheet(QString::fromUtf8("QPushButton\n"
 "{\n"
@@ -1222,7 +1216,6 @@ public:
         label_122->setObjectName(QString::fromUtf8("label_122"));
         QFont font5;
         font5.setBold(true);
-        font5.setWeight(75);
         label_122->setFont(font5);
         label_122->setAlignment(Qt::AlignCenter);
 
@@ -1468,7 +1461,6 @@ public:
         QFont font6;
         font6.setPointSize(11);
         font6.setBold(false);
-        font6.setWeight(50);
         twDeltaGeometry->setFont(font6);
         twDeltaGeometry->setStyleSheet(QString::fromUtf8(""));
         twDeltaGeometry->setTabPosition(QTabWidget::North);
@@ -1790,7 +1782,6 @@ public:
         QFont font7;
         font7.setPointSize(10);
         font7.setBold(true);
-        font7.setWeight(75);
         gbMovement1->setFont(font7);
         gbMovement1->setStyleSheet(QString::fromUtf8(""));
         verticalLayout_3 = new QVBoxLayout(gbMovement1);
@@ -2373,7 +2364,6 @@ public:
         QFont font9;
         font9.setPointSize(8);
         font9.setBold(false);
-        font9.setWeight(50);
         font9.setKerning(true);
         label_34->setFont(font9);
         label_34->setAlignment(Qt::AlignCenter);
@@ -2496,7 +2486,6 @@ public:
         QFont font10;
         font10.setPointSize(7);
         font10.setBold(false);
-        font10.setWeight(50);
         font10.setKerning(true);
         lbGripperValue->setFont(font10);
 
@@ -2552,7 +2541,6 @@ public:
         label_67->setMinimumSize(QSize(70, 0));
         QFont font11;
         font11.setBold(false);
-        font11.setWeight(50);
         label_67->setFont(font11);
 
         gridLayout_35->addWidget(label_67, 0, 0, 1, 1);
@@ -3378,7 +3366,6 @@ public:
         QFont font14;
         font14.setPointSize(11);
         font14.setBold(false);
-        font14.setWeight(50);
         font14.setKerning(true);
         cbConveyorValueType->setFont(font14);
         cbConveyorValueType->setStyleSheet(QString::fromUtf8(""));
@@ -3583,7 +3570,6 @@ public:
         QFont font15;
         font15.setPointSize(12);
         font15.setBold(false);
-        font15.setWeight(50);
         font15.setKerning(true);
         pbExternalControllerConnect->setFont(font15);
 
@@ -3627,7 +3613,7 @@ public:
         scrollArea_7->setWidgetResizable(true);
         scrollAreaWidgetContents_7 = new QWidget();
         scrollAreaWidgetContents_7->setObjectName(QString::fromUtf8("scrollAreaWidgetContents_7"));
-        scrollAreaWidgetContents_7->setGeometry(QRect(0, 0, 554, 396));
+        scrollAreaWidgetContents_7->setGeometry(QRect(0, 0, 550, 413));
         verticalLayout_27 = new QVBoxLayout(scrollAreaWidgetContents_7);
         verticalLayout_27->setSpacing(6);
         verticalLayout_27->setContentsMargins(11, 11, 11, 11);
@@ -3864,7 +3850,7 @@ public:
         scrollArea->setWidgetResizable(true);
         scrollAreaWidgetContents = new QWidget();
         scrollAreaWidgetContents->setObjectName(QString::fromUtf8("scrollAreaWidgetContents"));
-        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 533, 1200));
+        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 553, 1200));
         scrollAreaWidgetContents->setMinimumSize(QSize(450, 1200));
         verticalLayout_30 = new QVBoxLayout(scrollAreaWidgetContents);
         verticalLayout_30->setSpacing(6);
@@ -4076,7 +4062,7 @@ public:
         saObjectDetecting->setWidgetResizable(true);
         wObjectDetecting = new QWidget();
         wObjectDetecting->setObjectName(QString::fromUtf8("wObjectDetecting"));
-        wObjectDetecting->setGeometry(QRect(0, 0, 555, 4000));
+        wObjectDetecting->setGeometry(QRect(0, -2047, 571, 4000));
         wObjectDetecting->setMinimumSize(QSize(450, 4000));
         wObjectDetecting->setStyleSheet(QString::fromUtf8("QWidget#wObjectDetecting\n"
 "{	\n"
@@ -4401,7 +4387,6 @@ public:
         QFont font16;
         font16.setPointSize(8);
         font16.setBold(false);
-        font16.setWeight(50);
         pbLoadCamera->setFont(font16);
         QIcon icon32;
         icon32.addFile(QString::fromUtf8(":/icon/webcam.png"), QSize(), QIcon::Normal, QIcon::Off);
@@ -4806,7 +4791,6 @@ public:
         font17.setBold(false);
         font17.setItalic(false);
         font17.setUnderline(false);
-        font17.setWeight(50);
         font17.setStrikeOut(false);
         font17.setKerning(true);
         label_38->setFont(font17);
@@ -5532,7 +5516,6 @@ public:
         font18.setPointSize(8);
         font18.setBold(false);
         font18.setItalic(true);
-        font18.setWeight(50);
         font18.setKerning(true);
         label_152->setFont(font18);
 
@@ -5561,106 +5544,6 @@ public:
         gridLayout_16 = new QGridLayout();
         gridLayout_16->setSpacing(6);
         gridLayout_16->setObjectName(QString::fromUtf8("gridLayout_16"));
-        leBackwardConveyorGcode = new QLineEdit(fTracking);
-        leBackwardConveyorGcode->setObjectName(QString::fromUtf8("leBackwardConveyorGcode"));
-        leBackwardConveyorGcode->setMaximumSize(QSize(16777215, 16777215));
-
-        gridLayout_16->addWidget(leBackwardConveyorGcode, 15, 1, 1, 2);
-
-        pbBackwardConveyor = new QPushButton(fTracking);
-        pbBackwardConveyor->setObjectName(QString::fromUtf8("pbBackwardConveyor"));
-        sizePolicy.setHeightForWidth(pbBackwardConveyor->sizePolicy().hasHeightForWidth());
-        pbBackwardConveyor->setSizePolicy(sizePolicy);
-        pbBackwardConveyor->setMaximumSize(QSize(16777215, 16777215));
-
-        gridLayout_16->addWidget(pbBackwardConveyor, 15, 0, 1, 1);
-
-        leEncoderPosition = new QLineEdit(fTracking);
-        leEncoderPosition->setObjectName(QString::fromUtf8("leEncoderPosition"));
-        leEncoderPosition->setMaximumSize(QSize(100, 16777215));
-
-        gridLayout_16->addWidget(leEncoderPosition, 4, 1, 1, 1);
-
-        cbAutoReadProximitySensor = new QCheckBox(fTracking);
-        cbAutoReadProximitySensor->setObjectName(QString::fromUtf8("cbAutoReadProximitySensor"));
-
-        gridLayout_16->addWidget(cbAutoReadProximitySensor, 18, 3, 1, 1);
-
-        cbEncoderPositionInverse = new QCheckBox(fTracking);
-        cbEncoderPositionInverse->setObjectName(QString::fromUtf8("cbEncoderPositionInverse"));
-
-        gridLayout_16->addWidget(cbEncoderPositionInverse, 4, 3, 1, 1);
-
-        label_189 = new QLabel(fTracking);
-        label_189->setObjectName(QString::fromUtf8("label_189"));
-        label_189->setFont(font5);
-
-        gridLayout_16->addWidget(label_189, 17, 0, 1, 1);
-
-        label_162 = new QLabel(fTracking);
-        label_162->setObjectName(QString::fromUtf8("label_162"));
-        label_162->setMaximumSize(QSize(60, 16777215));
-        label_162->setFont(font18);
-
-        gridLayout_16->addWidget(label_162, 12, 2, 1, 1);
-
-        pbReadProximitySensor = new QPushButton(fTracking);
-        pbReadProximitySensor->setObjectName(QString::fromUtf8("pbReadProximitySensor"));
-        sizePolicy.setHeightForWidth(pbReadProximitySensor->sizePolicy().hasHeightForWidth());
-        pbReadProximitySensor->setSizePolicy(sizePolicy);
-        pbReadProximitySensor->setMaximumSize(QSize(16777215, 16777215));
-
-        gridLayout_16->addWidget(pbReadProximitySensor, 18, 4, 1, 1);
-
-        label_148 = new QLabel(fTracking);
-        label_148->setObjectName(QString::fromUtf8("label_148"));
-        QFont font19;
-        font19.setPointSize(8);
-        font19.setBold(true);
-        font19.setWeight(75);
-        font19.setKerning(true);
-        label_148->setFont(font19);
-
-        gridLayout_16->addWidget(label_148, 8, 0, 1, 1);
-
-        leEncoderVelocity = new QLineEdit(fTracking);
-        leEncoderVelocity->setObjectName(QString::fromUtf8("leEncoderVelocity"));
-        leEncoderVelocity->setMaximumSize(QSize(100, 16777215));
-
-        gridLayout_16->addWidget(leEncoderVelocity, 5, 1, 1, 1);
-
-        label_160 = new QLabel(fTracking);
-        label_160->setObjectName(QString::fromUtf8("label_160"));
-        label_160->setFont(font5);
-
-        gridLayout_16->addWidget(label_160, 11, 0, 1, 1);
-
-        leMovingDistanceConveyorControl = new QLineEdit(fTracking);
-        leMovingDistanceConveyorControl->setObjectName(QString::fromUtf8("leMovingDistanceConveyorControl"));
-        leMovingDistanceConveyorControl->setMaximumSize(QSize(100, 16777215));
-
-        gridLayout_16->addWidget(leMovingDistanceConveyorControl, 12, 1, 1, 1);
-
-        label_149 = new QLabel(fTracking);
-        label_149->setObjectName(QString::fromUtf8("label_149"));
-        label_149->setMaximumSize(QSize(60, 16777215));
-        label_149->setFont(font18);
-
-        gridLayout_16->addWidget(label_149, 8, 2, 1, 1);
-
-        label_45 = new QLabel(fTracking);
-        label_45->setObjectName(QString::fromUtf8("label_45"));
-        label_45->setMinimumSize(QSize(100, 0));
-        label_45->setMaximumSize(QSize(150, 16777215));
-        label_45->setFont(font9);
-
-        gridLayout_16->addWidget(label_45, 6, 0, 1, 1);
-
-        leEncoderCom = new QLabel(fTracking);
-        leEncoderCom->setObjectName(QString::fromUtf8("leEncoderCom"));
-
-        gridLayout_16->addWidget(leEncoderCom, 3, 1, 1, 1);
-
         leConvenyorSpeed = new QLineEdit(fTracking);
         leConvenyorSpeed->setObjectName(QString::fromUtf8("leConvenyorSpeed"));
         leConvenyorSpeed->setMinimumSize(QSize(0, 0));
@@ -5668,17 +5551,31 @@ public:
 
         gridLayout_16->addWidget(leConvenyorSpeed, 6, 1, 1, 1);
 
-        label_163 = new QLabel(fTracking);
-        label_163->setObjectName(QString::fromUtf8("label_163"));
-        label_163->setFont(font9);
+        horizontalSpacer_11 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
-        gridLayout_16->addWidget(label_163, 13, 1, 1, 1);
+        gridLayout_16->addItem(horizontalSpacer_11, 6, 4, 1, 1);
 
-        label_47 = new QLabel(fTracking);
-        label_47->setObjectName(QString::fromUtf8("label_47"));
-        label_47->setFont(font9);
+        pbReadProximitySensor = new QPushButton(fTracking);
+        pbReadProximitySensor->setObjectName(QString::fromUtf8("pbReadProximitySensor"));
+        sizePolicy.setHeightForWidth(pbReadProximitySensor->sizePolicy().hasHeightForWidth());
+        pbReadProximitySensor->setSizePolicy(sizePolicy);
+        pbReadProximitySensor->setMaximumSize(QSize(16777215, 16777215));
 
-        gridLayout_16->addWidget(label_47, 7, 0, 1, 1);
+        gridLayout_16->addWidget(pbReadProximitySensor, 17, 4, 1, 1);
+
+        pbBackwardConveyor = new QPushButton(fTracking);
+        pbBackwardConveyor->setObjectName(QString::fromUtf8("pbBackwardConveyor"));
+        sizePolicy.setHeightForWidth(pbBackwardConveyor->sizePolicy().hasHeightForWidth());
+        pbBackwardConveyor->setSizePolicy(sizePolicy);
+        pbBackwardConveyor->setMaximumSize(QSize(16777215, 16777215));
+
+        gridLayout_16->addWidget(pbBackwardConveyor, 14, 0, 1, 1);
+
+        leMovingDistanceConveyorControl = new QLineEdit(fTracking);
+        leMovingDistanceConveyorControl->setObjectName(QString::fromUtf8("leMovingDistanceConveyorControl"));
+        leMovingDistanceConveyorControl->setMaximumSize(QSize(100, 16777215));
+
+        gridLayout_16->addWidget(leMovingDistanceConveyorControl, 11, 1, 1, 1);
 
         pbResetEncoderPosition = new QPushButton(fTracking);
         pbResetEncoderPosition->setObjectName(QString::fromUtf8("pbResetEncoderPosition"));
@@ -5688,11 +5585,83 @@ public:
 
         gridLayout_16->addWidget(pbResetEncoderPosition, 4, 4, 1, 1);
 
+        label_189 = new QLabel(fTracking);
+        label_189->setObjectName(QString::fromUtf8("label_189"));
+        label_189->setFont(font5);
+
+        gridLayout_16->addWidget(label_189, 16, 0, 1, 1);
+
         leForwardConveyorGcode = new QLineEdit(fTracking);
         leForwardConveyorGcode->setObjectName(QString::fromUtf8("leForwardConveyorGcode"));
         leForwardConveyorGcode->setMaximumSize(QSize(16777215, 16777215));
 
-        gridLayout_16->addWidget(leForwardConveyorGcode, 14, 1, 1, 2);
+        gridLayout_16->addWidget(leForwardConveyorGcode, 13, 1, 1, 2);
+
+        leTurnOffConveyorGcode = new QLineEdit(fTracking);
+        leTurnOffConveyorGcode->setObjectName(QString::fromUtf8("leTurnOffConveyorGcode"));
+        leTurnOffConveyorGcode->setMaximumSize(QSize(16777215, 16777215));
+
+        gridLayout_16->addWidget(leTurnOffConveyorGcode, 15, 1, 1, 2);
+
+        rbEncoderEnable = new QRadioButton(fTracking);
+        rbEncoderEnable->setObjectName(QString::fromUtf8("rbEncoderEnable"));
+
+        gridLayout_16->addWidget(rbEncoderEnable, 2, 1, 1, 1);
+
+        label_148 = new QLabel(fTracking);
+        label_148->setObjectName(QString::fromUtf8("label_148"));
+        QFont font19;
+        font19.setPointSize(8);
+        font19.setBold(true);
+        font19.setKerning(true);
+        label_148->setFont(font19);
+
+        gridLayout_16->addWidget(label_148, 8, 0, 1, 1);
+
+        label_191 = new QLabel(fTracking);
+        label_191->setObjectName(QString::fromUtf8("label_191"));
+        label_191->setFont(font9);
+
+        gridLayout_16->addWidget(label_191, 17, 0, 1, 1);
+
+        leBackwardConveyorGcode = new QLineEdit(fTracking);
+        leBackwardConveyorGcode->setObjectName(QString::fromUtf8("leBackwardConveyorGcode"));
+        leBackwardConveyorGcode->setMaximumSize(QSize(16777215, 16777215));
+
+        gridLayout_16->addWidget(leBackwardConveyorGcode, 14, 1, 1, 2);
+
+        label_45 = new QLabel(fTracking);
+        label_45->setObjectName(QString::fromUtf8("label_45"));
+        label_45->setMinimumSize(QSize(100, 0));
+        label_45->setMaximumSize(QSize(150, 16777215));
+        label_45->setFont(font9);
+
+        gridLayout_16->addWidget(label_45, 6, 0, 1, 1);
+
+        label_163 = new QLabel(fTracking);
+        label_163->setObjectName(QString::fromUtf8("label_163"));
+        label_163->setFont(font9);
+
+        gridLayout_16->addWidget(label_163, 12, 1, 1, 1);
+
+        lbProximitySensorValue = new QLabel(fTracking);
+        lbProximitySensorValue->setObjectName(QString::fromUtf8("lbProximitySensorValue"));
+        lbProximitySensorValue->setFont(font9);
+
+        gridLayout_16->addWidget(lbProximitySensorValue, 17, 1, 1, 1);
+
+        leEncoderCom = new QLabel(fTracking);
+        leEncoderCom->setObjectName(QString::fromUtf8("leEncoderCom"));
+
+        gridLayout_16->addWidget(leEncoderCom, 3, 1, 1, 1);
+
+        pbTurnOffConveyor = new QPushButton(fTracking);
+        pbTurnOffConveyor->setObjectName(QString::fromUtf8("pbTurnOffConveyor"));
+        sizePolicy.setHeightForWidth(pbTurnOffConveyor->sizePolicy().hasHeightForWidth());
+        pbTurnOffConveyor->setSizePolicy(sizePolicy);
+        pbTurnOffConveyor->setMaximumSize(QSize(16777215, 16777215));
+
+        gridLayout_16->addWidget(pbTurnOffConveyor, 15, 0, 1, 1);
 
         label_121 = new QLabel(fTracking);
         label_121->setObjectName(QString::fromUtf8("label_121"));
@@ -5701,96 +5670,18 @@ public:
 
         gridLayout_16->addWidget(label_121, 5, 2, 1, 1);
 
-        pbForwardConveyor = new QPushButton(fTracking);
-        pbForwardConveyor->setObjectName(QString::fromUtf8("pbForwardConveyor"));
-        sizePolicy.setHeightForWidth(pbForwardConveyor->sizePolicy().hasHeightForWidth());
-        pbForwardConveyor->setSizePolicy(sizePolicy);
-        pbForwardConveyor->setMaximumSize(QSize(16777215, 16777215));
+        label_162 = new QLabel(fTracking);
+        label_162->setObjectName(QString::fromUtf8("label_162"));
+        label_162->setMaximumSize(QSize(60, 16777215));
+        label_162->setFont(font18);
 
-        gridLayout_16->addWidget(pbForwardConveyor, 14, 0, 1, 1);
+        gridLayout_16->addWidget(label_162, 11, 2, 1, 1);
 
-        cbConveyorDirection = new QComboBox(fTracking);
-        cbConveyorDirection->addItem(QString());
-        cbConveyorDirection->addItem(QString());
-        cbConveyorDirection->setObjectName(QString::fromUtf8("cbConveyorDirection"));
-        cbConveyorDirection->setMinimumSize(QSize(0, 0));
-        cbConveyorDirection->setMaximumSize(QSize(100, 16777215));
+        leEncoderVelocity = new QLineEdit(fTracking);
+        leEncoderVelocity->setObjectName(QString::fromUtf8("leEncoderVelocity"));
+        leEncoderVelocity->setMaximumSize(QSize(100, 16777215));
 
-        gridLayout_16->addWidget(cbConveyorDirection, 7, 1, 1, 1);
-
-        cbConveyorDirectionControl = new QComboBox(fTracking);
-        cbConveyorDirectionControl->addItem(QString());
-        cbConveyorDirectionControl->addItem(QString());
-        cbConveyorDirectionControl->setObjectName(QString::fromUtf8("cbConveyorDirectionControl"));
-        cbConveyorDirectionControl->setMinimumSize(QSize(0, 0));
-        cbConveyorDirectionControl->setMaximumSize(QSize(100, 16777215));
-
-        gridLayout_16->addWidget(cbConveyorDirectionControl, 12, 3, 1, 1);
-
-        label_49 = new QLabel(fTracking);
-        label_49->setObjectName(QString::fromUtf8("label_49"));
-        label_49->setMaximumSize(QSize(60, 16777215));
-        label_49->setFont(font18);
-
-        gridLayout_16->addWidget(label_49, 6, 2, 1, 1);
-
-        horizontalSpacer_11 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-
-        gridLayout_16->addItem(horizontalSpacer_11, 6, 4, 1, 1);
-
-        label_191 = new QLabel(fTracking);
-        label_191->setObjectName(QString::fromUtf8("label_191"));
-        label_191->setFont(font9);
-
-        gridLayout_16->addWidget(label_191, 18, 0, 1, 1);
-
-        label_119 = new QLabel(fTracking);
-        label_119->setObjectName(QString::fromUtf8("label_119"));
-        label_119->setMaximumSize(QSize(60, 16777215));
-        label_119->setFont(font18);
-
-        gridLayout_16->addWidget(label_119, 4, 2, 1, 1);
-
-        label_118 = new QLabel(fTracking);
-        label_118->setObjectName(QString::fromUtf8("label_118"));
-
-        gridLayout_16->addWidget(label_118, 4, 0, 1, 1);
-
-        lbProximitySensorValue = new QLabel(fTracking);
-        lbProximitySensorValue->setObjectName(QString::fromUtf8("lbProximitySensorValue"));
-        lbProximitySensorValue->setFont(font9);
-
-        gridLayout_16->addWidget(lbProximitySensorValue, 18, 1, 1, 1);
-
-        rbEncoderEnable = new QRadioButton(fTracking);
-        rbEncoderEnable->setObjectName(QString::fromUtf8("rbEncoderEnable"));
-
-        gridLayout_16->addWidget(rbEncoderEnable, 2, 1, 1, 1);
-
-        label_120 = new QLabel(fTracking);
-        label_120->setObjectName(QString::fromUtf8("label_120"));
-
-        gridLayout_16->addWidget(label_120, 5, 0, 1, 1);
-
-        pbTurnOffConveyor = new QPushButton(fTracking);
-        pbTurnOffConveyor->setObjectName(QString::fromUtf8("pbTurnOffConveyor"));
-        sizePolicy.setHeightForWidth(pbTurnOffConveyor->sizePolicy().hasHeightForWidth());
-        pbTurnOffConveyor->setSizePolicy(sizePolicy);
-        pbTurnOffConveyor->setMaximumSize(QSize(16777215, 16777215));
-
-        gridLayout_16->addWidget(pbTurnOffConveyor, 16, 0, 1, 1);
-
-        leTurnOffConveyorGcode = new QLineEdit(fTracking);
-        leTurnOffConveyorGcode->setObjectName(QString::fromUtf8("leTurnOffConveyorGcode"));
-        leTurnOffConveyorGcode->setMaximumSize(QSize(16777215, 16777215));
-
-        gridLayout_16->addWidget(leTurnOffConveyorGcode, 16, 1, 1, 2);
-
-        label_161 = new QLabel(fTracking);
-        label_161->setObjectName(QString::fromUtf8("label_161"));
-        label_161->setFont(font9);
-
-        gridLayout_16->addWidget(label_161, 12, 0, 1, 1);
+        gridLayout_16->addWidget(leEncoderVelocity, 5, 1, 1, 1);
 
         leConveyorDeviationAngle = new QLineEdit(fTracking);
         leConveyorDeviationAngle->setObjectName(QString::fromUtf8("leConveyorDeviationAngle"));
@@ -5804,6 +5695,81 @@ public:
 
         gridLayout_16->addWidget(pbConnectEncdoer, 3, 0, 1, 1);
 
+        label_161 = new QLabel(fTracking);
+        label_161->setObjectName(QString::fromUtf8("label_161"));
+        label_161->setFont(font9);
+
+        gridLayout_16->addWidget(label_161, 11, 0, 1, 1);
+
+        cbEncoderPositionInverse = new QCheckBox(fTracking);
+        cbEncoderPositionInverse->setObjectName(QString::fromUtf8("cbEncoderPositionInverse"));
+
+        gridLayout_16->addWidget(cbEncoderPositionInverse, 4, 3, 1, 1);
+
+        label_49 = new QLabel(fTracking);
+        label_49->setObjectName(QString::fromUtf8("label_49"));
+        label_49->setMaximumSize(QSize(60, 16777215));
+        label_49->setFont(font18);
+
+        gridLayout_16->addWidget(label_49, 6, 2, 1, 1);
+
+        label_160 = new QLabel(fTracking);
+        label_160->setObjectName(QString::fromUtf8("label_160"));
+        label_160->setFont(font5);
+
+        gridLayout_16->addWidget(label_160, 10, 0, 1, 1);
+
+        label_119 = new QLabel(fTracking);
+        label_119->setObjectName(QString::fromUtf8("label_119"));
+        label_119->setMaximumSize(QSize(60, 16777215));
+        label_119->setFont(font18);
+
+        gridLayout_16->addWidget(label_119, 4, 2, 1, 1);
+
+        rbVirtualEncoderEnable = new QRadioButton(fTracking);
+        rbVirtualEncoderEnable->setObjectName(QString::fromUtf8("rbVirtualEncoderEnable"));
+        rbVirtualEncoderEnable->setChecked(true);
+
+        gridLayout_16->addWidget(rbVirtualEncoderEnable, 2, 3, 1, 2);
+
+        label_118 = new QLabel(fTracking);
+        label_118->setObjectName(QString::fromUtf8("label_118"));
+
+        gridLayout_16->addWidget(label_118, 4, 0, 1, 1);
+
+        pbForwardConveyor = new QPushButton(fTracking);
+        pbForwardConveyor->setObjectName(QString::fromUtf8("pbForwardConveyor"));
+        sizePolicy.setHeightForWidth(pbForwardConveyor->sizePolicy().hasHeightForWidth());
+        pbForwardConveyor->setSizePolicy(sizePolicy);
+        pbForwardConveyor->setMaximumSize(QSize(16777215, 16777215));
+
+        gridLayout_16->addWidget(pbForwardConveyor, 13, 0, 1, 1);
+
+        cbConveyorDirectionControl = new QComboBox(fTracking);
+        cbConveyorDirectionControl->addItem(QString());
+        cbConveyorDirectionControl->addItem(QString());
+        cbConveyorDirectionControl->setObjectName(QString::fromUtf8("cbConveyorDirectionControl"));
+        cbConveyorDirectionControl->setMinimumSize(QSize(0, 0));
+        cbConveyorDirectionControl->setMaximumSize(QSize(100, 16777215));
+
+        gridLayout_16->addWidget(cbConveyorDirectionControl, 11, 3, 1, 1);
+
+        label_120 = new QLabel(fTracking);
+        label_120->setObjectName(QString::fromUtf8("label_120"));
+
+        gridLayout_16->addWidget(label_120, 5, 0, 1, 1);
+
+        cbAutoReadProximitySensor = new QCheckBox(fTracking);
+        cbAutoReadProximitySensor->setObjectName(QString::fromUtf8("cbAutoReadProximitySensor"));
+
+        gridLayout_16->addWidget(cbAutoReadProximitySensor, 17, 3, 1, 1);
+
+        leEncoderPosition = new QLineEdit(fTracking);
+        leEncoderPosition->setObjectName(QString::fromUtf8("leEncoderPosition"));
+        leEncoderPosition->setMaximumSize(QSize(100, 16777215));
+
+        gridLayout_16->addWidget(leEncoderPosition, 4, 1, 1, 1);
+
         frame_11 = new QFrame(fTracking);
         frame_11->setObjectName(QString::fromUtf8("frame_11"));
         frame_11->setMinimumSize(QSize(0, 20));
@@ -5816,11 +5782,54 @@ public:
         gridLayout_37->setHorizontalSpacing(0);
         gridLayout_37->setVerticalSpacing(5);
         gridLayout_37->setContentsMargins(0, 0, 0, 0);
-        leConveyorPoint2X = new QLineEdit(frame_11);
-        leConveyorPoint2X->setObjectName(QString::fromUtf8("leConveyorPoint2X"));
+        label_165 = new QLabel(frame_11);
+        label_165->setObjectName(QString::fromUtf8("label_165"));
+        label_165->setMaximumSize(QSize(20, 16777215));
+
+        gridLayout_37->addWidget(label_165, 2, 0, 1, 1);
+
+        leConveyorPoint1Y = new QLineEdit(frame_11);
+        leConveyorPoint1Y->setObjectName(QString::fromUtf8("leConveyorPoint1Y"));
         QSizePolicy sizePolicy10(QSizePolicy::Ignored, QSizePolicy::Preferred);
         sizePolicy10.setHorizontalStretch(0);
         sizePolicy10.setVerticalStretch(0);
+        sizePolicy10.setHeightForWidth(leConveyorPoint1Y->sizePolicy().hasHeightForWidth());
+        leConveyorPoint1Y->setSizePolicy(sizePolicy10);
+        leConveyorPoint1Y->setMinimumSize(QSize(0, 0));
+
+        gridLayout_37->addWidget(leConveyorPoint1Y, 1, 1, 1, 1);
+
+        label_164 = new QLabel(frame_11);
+        label_164->setObjectName(QString::fromUtf8("label_164"));
+        label_164->setMaximumSize(QSize(20, 16777215));
+
+        gridLayout_37->addWidget(label_164, 1, 0, 1, 1);
+
+        leConveyorPoint2Y = new QLineEdit(frame_11);
+        leConveyorPoint2Y->setObjectName(QString::fromUtf8("leConveyorPoint2Y"));
+        sizePolicy10.setHeightForWidth(leConveyorPoint2Y->sizePolicy().hasHeightForWidth());
+        leConveyorPoint2Y->setSizePolicy(sizePolicy10);
+        leConveyorPoint2Y->setMinimumSize(QSize(0, 0));
+
+        gridLayout_37->addWidget(leConveyorPoint2Y, 3, 1, 1, 1);
+
+        label_166 = new QLabel(frame_11);
+        label_166->setObjectName(QString::fromUtf8("label_166"));
+        label_166->setMaximumSize(QSize(20, 16777215));
+
+        gridLayout_37->addWidget(label_166, 3, 0, 1, 1);
+
+        pbCalibConveyorAngle = new QPushButton(frame_11);
+        pbCalibConveyorAngle->setObjectName(QString::fromUtf8("pbCalibConveyorAngle"));
+        sizePolicy10.setHeightForWidth(pbCalibConveyorAngle->sizePolicy().hasHeightForWidth());
+        pbCalibConveyorAngle->setSizePolicy(sizePolicy10);
+        pbCalibConveyorAngle->setMinimumSize(QSize(0, 0));
+        pbCalibConveyorAngle->setMaximumSize(QSize(16777215, 16777215));
+
+        gridLayout_37->addWidget(pbCalibConveyorAngle, 4, 1, 1, 1);
+
+        leConveyorPoint2X = new QLineEdit(frame_11);
+        leConveyorPoint2X->setObjectName(QString::fromUtf8("leConveyorPoint2X"));
         sizePolicy10.setHeightForWidth(leConveyorPoint2X->sizePolicy().hasHeightForWidth());
         leConveyorPoint2X->setSizePolicy(sizePolicy10);
         leConveyorPoint2X->setMinimumSize(QSize(0, 0));
@@ -5833,18 +5842,6 @@ public:
 
         gridLayout_37->addWidget(label_154, 0, 0, 1, 1);
 
-        label_164 = new QLabel(frame_11);
-        label_164->setObjectName(QString::fromUtf8("label_164"));
-        label_164->setMaximumSize(QSize(20, 16777215));
-
-        gridLayout_37->addWidget(label_164, 1, 0, 1, 1);
-
-        label_166 = new QLabel(frame_11);
-        label_166->setObjectName(QString::fromUtf8("label_166"));
-        label_166->setMaximumSize(QSize(20, 16777215));
-
-        gridLayout_37->addWidget(label_166, 3, 0, 1, 1);
-
         leConveyorPoint1X = new QLineEdit(frame_11);
         leConveyorPoint1X->setObjectName(QString::fromUtf8("leConveyorPoint1X"));
         sizePolicy10.setHeightForWidth(leConveyorPoint1X->sizePolicy().hasHeightForWidth());
@@ -5853,51 +5850,27 @@ public:
 
         gridLayout_37->addWidget(leConveyorPoint1X, 0, 1, 1, 1);
 
-        leConveyorPoint1Y = new QLineEdit(frame_11);
-        leConveyorPoint1Y->setObjectName(QString::fromUtf8("leConveyorPoint1Y"));
-        sizePolicy10.setHeightForWidth(leConveyorPoint1Y->sizePolicy().hasHeightForWidth());
-        leConveyorPoint1Y->setSizePolicy(sizePolicy10);
-        leConveyorPoint1Y->setMinimumSize(QSize(0, 0));
-
-        gridLayout_37->addWidget(leConveyorPoint1Y, 1, 1, 1, 1);
-
-        label_165 = new QLabel(frame_11);
-        label_165->setObjectName(QString::fromUtf8("label_165"));
-        label_165->setMaximumSize(QSize(20, 16777215));
-
-        gridLayout_37->addWidget(label_165, 2, 0, 1, 1);
-
-        leConveyorPoint2Y = new QLineEdit(frame_11);
-        leConveyorPoint2Y->setObjectName(QString::fromUtf8("leConveyorPoint2Y"));
-        sizePolicy10.setHeightForWidth(leConveyorPoint2Y->sizePolicy().hasHeightForWidth());
-        leConveyorPoint2Y->setSizePolicy(sizePolicy10);
-        leConveyorPoint2Y->setMinimumSize(QSize(0, 0));
-
-        gridLayout_37->addWidget(leConveyorPoint2Y, 3, 1, 1, 1);
-
-        pbCalibConveyorAngle = new QPushButton(frame_11);
-        pbCalibConveyorAngle->setObjectName(QString::fromUtf8("pbCalibConveyorAngle"));
-        sizePolicy10.setHeightForWidth(pbCalibConveyorAngle->sizePolicy().hasHeightForWidth());
-        pbCalibConveyorAngle->setSizePolicy(sizePolicy10);
-        pbCalibConveyorAngle->setMinimumSize(QSize(0, 0));
-        pbCalibConveyorAngle->setMaximumSize(QSize(16777215, 16777215));
-
-        gridLayout_37->addWidget(pbCalibConveyorAngle, 4, 1, 1, 1);
-
-
-        gridLayout_16->addWidget(frame_11, 9, 3, 1, 1);
-
-        label_171 = new QLabel(fTracking);
-        label_171->setObjectName(QString::fromUtf8("label_171"));
-        label_171->setMaximumSize(QSize(16777215, 16777215));
-
-        gridLayout_16->addWidget(label_171, 9, 4, 1, 1);
-
-        label_170 = new QLabel(fTracking);
+        label_170 = new QLabel(frame_11);
         label_170->setObjectName(QString::fromUtf8("label_170"));
         label_170->setMaximumSize(QSize(16777215, 16777215));
 
-        gridLayout_16->addWidget(label_170, 10, 4, 1, 1);
+        gridLayout_37->addWidget(label_170, 0, 2, 1, 1);
+
+
+        gridLayout_16->addWidget(frame_11, 8, 4, 1, 1);
+
+        label_196 = new QLabel(fTracking);
+        label_196->setObjectName(QString::fromUtf8("label_196"));
+        label_196->setFont(font9);
+
+        gridLayout_16->addWidget(label_196, 8, 3, 1, 1);
+
+        label_149 = new QLabel(fTracking);
+        label_149->setObjectName(QString::fromUtf8("label_149"));
+        label_149->setMaximumSize(QSize(60, 16777215));
+        label_149->setFont(font18);
+
+        gridLayout_16->addWidget(label_149, 8, 2, 1, 1);
 
         frame_12 = new QFrame(fTracking);
         frame_12->setObjectName(QString::fromUtf8("frame_12"));
@@ -5927,38 +5900,32 @@ public:
 
         gridLayout_38->addWidget(leConveyorPoint3Y, 1, 1, 1, 1);
 
-        label_168 = new QLabel(frame_12);
-        label_168->setObjectName(QString::fromUtf8("label_168"));
-        label_168->setMaximumSize(QSize(20, 16777215));
-
-        gridLayout_38->addWidget(label_168, 0, 0, 1, 1);
-
         label_169 = new QLabel(frame_12);
         label_169->setObjectName(QString::fromUtf8("label_169"));
         label_169->setMaximumSize(QSize(20, 16777215));
 
         gridLayout_38->addWidget(label_169, 1, 0, 1, 1);
 
+        label_168 = new QLabel(frame_12);
+        label_168->setObjectName(QString::fromUtf8("label_168"));
+        label_168->setMaximumSize(QSize(20, 16777215));
 
-        gridLayout_16->addWidget(frame_12, 10, 3, 1, 1);
+        gridLayout_38->addWidget(label_168, 0, 0, 1, 1);
+
+        label_171 = new QLabel(frame_12);
+        label_171->setObjectName(QString::fromUtf8("label_171"));
+        label_171->setMaximumSize(QSize(16777215, 16777215));
+
+        gridLayout_38->addWidget(label_171, 0, 2, 1, 1);
+
+
+        gridLayout_16->addWidget(frame_12, 9, 4, 1, 1);
 
         label_167 = new QLabel(fTracking);
         label_167->setObjectName(QString::fromUtf8("label_167"));
         label_167->setFont(font9);
 
-        gridLayout_16->addWidget(label_167, 10, 2, 1, 1);
-
-        label_196 = new QLabel(fTracking);
-        label_196->setObjectName(QString::fromUtf8("label_196"));
-        label_196->setFont(font9);
-
-        gridLayout_16->addWidget(label_196, 9, 2, 1, 1);
-
-        rbVirtualEncoderEnable = new QRadioButton(fTracking);
-        rbVirtualEncoderEnable->setObjectName(QString::fromUtf8("rbVirtualEncoderEnable"));
-        rbVirtualEncoderEnable->setChecked(true);
-
-        gridLayout_16->addWidget(rbVirtualEncoderEnable, 2, 3, 1, 2);
+        gridLayout_16->addWidget(label_167, 9, 3, 1, 1);
 
 
         verticalLayout_33->addLayout(gridLayout_16);
@@ -6006,7 +5973,7 @@ public:
         scrollArea_6->setWidgetResizable(true);
         scrollAreaWidgetContents_6 = new QWidget();
         scrollAreaWidgetContents_6->setObjectName(QString::fromUtf8("scrollAreaWidgetContents_6"));
-        scrollAreaWidgetContents_6->setGeometry(QRect(0, 0, 533, 1600));
+        scrollAreaWidgetContents_6->setGeometry(QRect(0, 0, 553, 1600));
         scrollAreaWidgetContents_6->setMinimumSize(QSize(450, 1600));
         scrollAreaWidgetContents_6->setMaximumSize(QSize(16777215, 16777215));
         verticalLayout_38 = new QVBoxLayout(scrollAreaWidgetContents_6);
@@ -6816,7 +6783,7 @@ public:
         RobotWindow->setCentralWidget(centralWidget);
         mbRobot = new QMenuBar(RobotWindow);
         mbRobot->setObjectName(QString::fromUtf8("mbRobot"));
-        mbRobot->setGeometry(QRect(0, 0, 1210, 26));
+        mbRobot->setGeometry(QRect(0, 0, 1210, 22));
         mbRobot->setLayoutDirection(Qt::RightToLeft);
         mbRobot->setStyleSheet(QString::fromUtf8("QMenuBar\n"
 "{\n"
@@ -6902,7 +6869,7 @@ public:
         QObject::connect(pbWarpTool, SIGNAL(clicked()), pbTransformPerspective, SLOT(toggle()));
 
         twDeltaManager->setCurrentIndex(1);
-        twDeltaGeometry->setCurrentIndex(2);
+        twDeltaGeometry->setCurrentIndex(3);
         cbDivision->setCurrentIndex(1);
         pbPump->setDefault(false);
         pbLaser->setDefault(false);
@@ -7338,10 +7305,10 @@ public:
         twConveyor->setTabText(twConveyor->indexOf(tExternalMCU), QCoreApplication::translate("RobotWindow", "External MCU", nullptr));
         twDeltaGeometry->setTabText(twDeltaGeometry->indexOf(xExternal), QCoreApplication::translate("RobotWindow", "External", nullptr));
         teDebug->setHtml(QCoreApplication::translate("RobotWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:'MS Shell Dlg 2'; font-size:7.8pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>", nullptr));
+"</style></head><body style=\" font-family:'Segoe UI'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:7.8pt;\"><br /></p></body></html>", nullptr));
         label_4->setText(QCoreApplication::translate("RobotWindow", "Sender", nullptr));
         label_5->setText(QCoreApplication::translate("RobotWindow", "Receiver", nullptr));
         cbDeviceSender->setItemText(0, QCoreApplication::translate("RobotWindow", "Robot", nullptr));
@@ -7373,47 +7340,49 @@ public:
 #endif // QT_CONFIG(tooltip)
         pbSaveGcode->setText(QString());
         pteGcodeArea->setHtml(QCoreApplication::translate("RobotWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:'MS Shell Dlg 2'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" color:#000000;\">N05</span> <span style=\" font-weight:600;\">G28</span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600;\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-style:italic; color:#00aa00;\">;Acceleration</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-bl"
-                        "ock-indent:0; text-indent:0px;\">N10 <span style=\" font-weight:600;\">M204</span> A1200</p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-style:italic; color:#00aa00;\">;Speed</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">N15 <span style=\" font-weight:600;\">G01</span> F200</p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-style:italic; color:#00aa00;\">;Declare variables</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">N20 <span style=\" font-style:italic;\">#100</span> = 0</p>\n"
-""
-                        "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">N30 <span style=\" font-style:italic;\">#100</span> = <span style=\" font-style:italic;\">#100</span> + 1</p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-style:italic; color:#55aa00;\">;Call subprogram</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">N35 <span style=\" font-weight:600;\">M98</span> P2000</p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px"
-                        "; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-style:italic; color:#00aa00;\">; Begin subprogram</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">N40 <span style=\" font-weight:600;\">O2000</span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">N45 <span style=\" font-weight:600;\">G01</span> Z-350</p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">N50 <span style=\" font-weight:600;\">G01</span> X-100</p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">N55 <span style=\" font-weight:600;\">G01</span> Z-370</p>\n"
-"<p sty"
-                        "le=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">N60 <span style=\" font-weight:600;\">G01</span> Z-350</p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">N65 <span style=\" font-weight:600;\">G01</span> X100</p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">N70 <span style=\" font-weight:600;\">G01</span> Z-370</p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">N75 M99</p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-style:italic; color:#00aa00;\">;End subpr"
-                        "ogram</span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-style:italic; color:#00aa00;\">;Loop 5 times</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">N80 <span style=\" font-weight:600; color:#00aa00;\">IF</span> [<span style=\" font-style:italic;\">#100</span> LE 5] <span style=\" font-weight:600; color:#00aa00;\">THEN</span> <span style=\" font-weight:600; color:#ff5500;\">GOTO</span> 30</p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-in"
-                        "dent:0px;\">N85 <span style=\" font-weight:600;\">G28</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"> </p></body></html>", nullptr));
+"</style></head><body style=\" font-family:'Segoe UI'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2'; color:#000000;\">N05</span><span style=\" font-family:'MS Shell Dlg 2';\"> </span><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600;\">G28</span></p>\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-weight:600;\"><br /></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><spa"
+                        "n style=\" font-family:'MS Shell Dlg 2'; font-style:italic; color:#00aa00;\">;Acceleration</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\">N10 </span><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600;\">M204</span><span style=\" font-family:'MS Shell Dlg 2';\"> A1200</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2'; font-style:italic; color:#00aa00;\">;Speed</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\">N15 </span><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600;\">G01</span><span style=\" font-family:'MS Shell Dlg 2';\"> F200</span></p>\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px"
+                        "; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2';\"><br /></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2'; font-style:italic; color:#00aa00;\">;Declare variables</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\">N20 </span><span style=\" font-family:'MS Shell Dlg 2'; font-style:italic;\">#100</span><span style=\" font-family:'MS Shell Dlg 2';\"> = 0</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\">N30 </span><span style=\" font-family:'MS Shell Dlg 2'; font-style:italic;\">#100</span><span style=\" font-family:'MS Shell Dlg 2';\"> = </span><span style=\""
+                        " font-family:'MS Shell Dlg 2'; font-style:italic;\">#100</span><span style=\" font-family:'MS Shell Dlg 2';\"> + 1</span></p>\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2';\"><br /></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2'; font-style:italic; color:#55aa00;\">;Call subprogram</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\">N35 </span><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600;\">M98</span><span style=\" font-family:'MS Shell Dlg 2';\"> P2000</span></p>\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font"
+                        "-family:'MS Shell Dlg 2';\"><br /></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2'; font-style:italic; color:#00aa00;\">; Begin subprogram</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\">N40 </span><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600;\">O2000</span></p>\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2';\"><br /></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\">N45 </span><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600;\">G01</span><span style=\" font-family:'MS Shell D"
+                        "lg 2';\"> Z-350</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\">N50 </span><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600;\">G01</span><span style=\" font-family:'MS Shell Dlg 2';\"> X-100</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\">N55 </span><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600;\">G01</span><span style=\" font-family:'MS Shell Dlg 2';\"> Z-370</span></p>\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2';\"><br /></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell D"
+                        "lg 2';\">N60 </span><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600;\">G01</span><span style=\" font-family:'MS Shell Dlg 2';\"> Z-350</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\">N65 </span><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600;\">G01</span><span style=\" font-family:'MS Shell Dlg 2';\"> X100</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\">N70 </span><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600;\">G01</span><span style=\" font-family:'MS Shell Dlg 2';\"> Z-370</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\">N75 M99</span></p>\n"
+"<p style=\" margin-top:0px; "
+                        "margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2'; font-style:italic; color:#00aa00;\">;End subprogram</span></p>\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2';\"><br /></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2'; font-style:italic; color:#00aa00;\">;Loop 5 times</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\">N80 </span><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600; color:#00aa00;\">IF</span><span style=\" font-family:'MS Shell Dlg 2';\"> [</span><span style=\" font-family:'MS Shell Dlg 2'; font-style:italic;\">#100</spa"
+                        "n><span style=\" font-family:'MS Shell Dlg 2';\"> LE 5] </span><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600; color:#00aa00;\">THEN</span><span style=\" font-family:'MS Shell Dlg 2';\"> </span><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600; color:#ff5500;\">GOTO</span><span style=\" font-family:'MS Shell Dlg 2';\"> 30</span></p>\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2';\"><br /></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\">N85 </span><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600;\">G28</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\"> </span></p></body></html>", nullptr));
         leExProgramName->setText(QCoreApplication::translate("RobotWindow", "Program 1", nullptr));
         pbExDeleteProgram->setText(QString());
         lbExGCodeNumber->setText(QCoreApplication::translate("RobotWindow", "100 Gcode Lines", nullptr));
@@ -7446,11 +7415,11 @@ public:
         pbOpenGcodeProgramPath->setText(QString());
         tabWidget->setTabText(tabWidget->indexOf(tab), QCoreApplication::translate("RobotWindow", "Offline", nullptr));
         textEdit->setHtml(QCoreApplication::translate("RobotWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:'MS Shell Dlg 2'; font-size:7.8pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Author:</p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Description:</p></body></html>", nullptr));
+"</style></head><body style=\" font-family:'Segoe UI'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2'; font-size:7.8pt;\">Author:</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2'; font-size:7.8pt;\">Description:</span></p></body></html>", nullptr));
 #if QT_CONFIG(tooltip)
         pbUploadProgram_2->setToolTip(QString());
 #endif // QT_CONFIG(tooltip)
@@ -7545,8 +7514,8 @@ public:
         leImageHeight->setText(QCoreApplication::translate("RobotWindow", "600", nullptr));
         gbCameraCalibration->setTitle(QCoreApplication::translate("RobotWindow", "Calibration", nullptr));
         pbCalibStep1->setText(QCoreApplication::translate("RobotWindow", "Step 1: Find the 4 points of the square", nullptr));
-        leChessWidth->setText(QCoreApplication::translate("RobotWindow", "4", nullptr));
-        leChessHeight->setText(QCoreApplication::translate("RobotWindow", "4", nullptr));
+        leChessWidth->setText(QCoreApplication::translate("RobotWindow", "7", nullptr));
+        leChessHeight->setText(QCoreApplication::translate("RobotWindow", "7", nullptr));
         label_109->setText(QCoreApplication::translate("RobotWindow", "Chessboard", nullptr));
 #if QT_CONFIG(tooltip)
         pbTransformPerspective->setToolTip(QCoreApplication::translate("RobotWindow", "Perspective Transformation", nullptr));
@@ -7665,61 +7634,57 @@ public:
         label_151->setText(QCoreApplication::translate("RobotWindow", "Tracking error", nullptr));
         leTrackingError->setText(QCoreApplication::translate("RobotWindow", "0.3", nullptr));
         label_127->setText(QCoreApplication::translate("RobotWindow", "Conveyor", nullptr));
-        leBackwardConveyorGcode->setText(QCoreApplication::translate("RobotWindow", "M03 D1", nullptr));
-        pbBackwardConveyor->setText(QCoreApplication::translate("RobotWindow", "Backward", nullptr));
-        cbAutoReadProximitySensor->setText(QCoreApplication::translate("RobotWindow", "Auto", nullptr));
-        cbEncoderPositionInverse->setText(QCoreApplication::translate("RobotWindow", "Inverse", nullptr));
-        label_189->setText(QCoreApplication::translate("RobotWindow", "Sensor", nullptr));
-        label_162->setText(QCoreApplication::translate("RobotWindow", "(mm)", nullptr));
-        pbReadProximitySensor->setText(QCoreApplication::translate("RobotWindow", "Read", nullptr));
-        label_148->setText(QCoreApplication::translate("RobotWindow", "Deviation angle", nullptr));
-        label_160->setText(QCoreApplication::translate("RobotWindow", "Control", nullptr));
-        label_149->setText(QCoreApplication::translate("RobotWindow", "(deg)", nullptr));
-        label_45->setText(QCoreApplication::translate("RobotWindow", "Constant Velocity", nullptr));
-        leEncoderCom->setText(QCoreApplication::translate("RobotWindow", "COM", nullptr));
         leConvenyorSpeed->setText(QCoreApplication::translate("RobotWindow", "0", nullptr));
-        label_163->setText(QCoreApplication::translate("RobotWindow", "Gcode Setting", nullptr));
-        label_47->setText(QCoreApplication::translate("RobotWindow", "Direction", nullptr));
+        pbReadProximitySensor->setText(QCoreApplication::translate("RobotWindow", "Read", nullptr));
+        pbBackwardConveyor->setText(QCoreApplication::translate("RobotWindow", "Backward", nullptr));
         pbResetEncoderPosition->setText(QCoreApplication::translate("RobotWindow", "Reset", nullptr));
+        label_189->setText(QCoreApplication::translate("RobotWindow", "Sensor", nullptr));
         leForwardConveyorGcode->setText(QCoreApplication::translate("RobotWindow", "M03 D0", nullptr));
+        leTurnOffConveyorGcode->setText(QCoreApplication::translate("RobotWindow", "M05 D0, M05 D1", nullptr));
+        rbEncoderEnable->setText(QCoreApplication::translate("RobotWindow", "Use Encoder", nullptr));
+        label_148->setText(QCoreApplication::translate("RobotWindow", "<html><head/><body><p>Deviation angle </p><p>(X asis)</p></body></html>", nullptr));
+        label_191->setText(QCoreApplication::translate("RobotWindow", "Proximity sensor", nullptr));
+        leBackwardConveyorGcode->setText(QCoreApplication::translate("RobotWindow", "M03 D1", nullptr));
+        label_45->setText(QCoreApplication::translate("RobotWindow", "Constant Velocity", nullptr));
+        label_163->setText(QCoreApplication::translate("RobotWindow", "Gcode Setting", nullptr));
+        lbProximitySensorValue->setText(QCoreApplication::translate("RobotWindow", "0", nullptr));
+        leEncoderCom->setText(QCoreApplication::translate("RobotWindow", "COM", nullptr));
+        pbTurnOffConveyor->setText(QCoreApplication::translate("RobotWindow", "Turn off", nullptr));
         label_121->setText(QCoreApplication::translate("RobotWindow", "(mm/s)", nullptr));
+        label_162->setText(QCoreApplication::translate("RobotWindow", "(mm)", nullptr));
+        leConveyorDeviationAngle->setText(QCoreApplication::translate("RobotWindow", "0", nullptr));
+        pbConnectEncdoer->setText(QCoreApplication::translate("RobotWindow", "Connect Encoder", nullptr));
+        label_161->setText(QCoreApplication::translate("RobotWindow", "Move", nullptr));
+        cbEncoderPositionInverse->setText(QCoreApplication::translate("RobotWindow", "Inverse", nullptr));
+        label_49->setText(QCoreApplication::translate("RobotWindow", "(mm/s)", nullptr));
+        label_160->setText(QCoreApplication::translate("RobotWindow", "Control", nullptr));
+        label_119->setText(QCoreApplication::translate("RobotWindow", "(mm)", nullptr));
+        rbVirtualEncoderEnable->setText(QCoreApplication::translate("RobotWindow", "Use Virtual Encoder", nullptr));
+        label_118->setText(QCoreApplication::translate("RobotWindow", "Current Position", nullptr));
         pbForwardConveyor->setText(QCoreApplication::translate("RobotWindow", "Forward", nullptr));
-        cbConveyorDirection->setItemText(0, QCoreApplication::translate("RobotWindow", "X", nullptr));
-        cbConveyorDirection->setItemText(1, QCoreApplication::translate("RobotWindow", "Y", nullptr));
-
         cbConveyorDirectionControl->setItemText(0, QCoreApplication::translate("RobotWindow", "Forward", nullptr));
         cbConveyorDirectionControl->setItemText(1, QCoreApplication::translate("RobotWindow", "Backward", nullptr));
 
-        label_49->setText(QCoreApplication::translate("RobotWindow", "(mm/s)", nullptr));
-        label_191->setText(QCoreApplication::translate("RobotWindow", "Proximity sensor", nullptr));
-        label_119->setText(QCoreApplication::translate("RobotWindow", "(mm)", nullptr));
-        label_118->setText(QCoreApplication::translate("RobotWindow", "Current Position", nullptr));
-        lbProximitySensorValue->setText(QCoreApplication::translate("RobotWindow", "0", nullptr));
-        rbEncoderEnable->setText(QCoreApplication::translate("RobotWindow", "Use Encoder", nullptr));
         label_120->setText(QCoreApplication::translate("RobotWindow", "Current Velocity", nullptr));
-        pbTurnOffConveyor->setText(QCoreApplication::translate("RobotWindow", "Turn off", nullptr));
-        leTurnOffConveyorGcode->setText(QCoreApplication::translate("RobotWindow", "M05 D0, M05 D1", nullptr));
-        label_161->setText(QCoreApplication::translate("RobotWindow", "Move", nullptr));
-        leConveyorDeviationAngle->setText(QCoreApplication::translate("RobotWindow", "0", nullptr));
-        pbConnectEncdoer->setText(QCoreApplication::translate("RobotWindow", "Connect Encoder", nullptr));
+        cbAutoReadProximitySensor->setText(QCoreApplication::translate("RobotWindow", "Auto", nullptr));
+        label_165->setText(QCoreApplication::translate("RobotWindow", "X2", nullptr));
+        leConveyorPoint1Y->setText(QCoreApplication::translate("RobotWindow", "0", nullptr));
+        label_164->setText(QCoreApplication::translate("RobotWindow", "Y1", nullptr));
+        leConveyorPoint2Y->setText(QCoreApplication::translate("RobotWindow", "0", nullptr));
+        label_166->setText(QCoreApplication::translate("RobotWindow", "Y2", nullptr));
+        pbCalibConveyorAngle->setText(QCoreApplication::translate("RobotWindow", "Calculate", nullptr));
         leConveyorPoint2X->setText(QCoreApplication::translate("RobotWindow", "100", nullptr));
         label_154->setText(QCoreApplication::translate("RobotWindow", "X1", nullptr));
-        label_164->setText(QCoreApplication::translate("RobotWindow", "Y1", nullptr));
-        label_166->setText(QCoreApplication::translate("RobotWindow", "Y2", nullptr));
         leConveyorPoint1X->setText(QCoreApplication::translate("RobotWindow", "0", nullptr));
-        leConveyorPoint1Y->setText(QCoreApplication::translate("RobotWindow", "0", nullptr));
-        label_165->setText(QCoreApplication::translate("RobotWindow", "X2", nullptr));
-        leConveyorPoint2Y->setText(QCoreApplication::translate("RobotWindow", "0", nullptr));
-        pbCalibConveyorAngle->setText(QCoreApplication::translate("RobotWindow", "Calculate", nullptr));
-        label_171->setText(QCoreApplication::translate("RobotWindow", "(mm)", nullptr));
         label_170->setText(QCoreApplication::translate("RobotWindow", "(mm)", nullptr));
+        label_196->setText(QCoreApplication::translate("RobotWindow", "<html><head/><body><p>Calib Points</p></body></html>", nullptr));
+        label_149->setText(QCoreApplication::translate("RobotWindow", "(deg)", nullptr));
         leConveyorPoint3X->setText(QCoreApplication::translate("RobotWindow", "0", nullptr));
         leConveyorPoint3Y->setText(QCoreApplication::translate("RobotWindow", "0", nullptr));
-        label_168->setText(QCoreApplication::translate("RobotWindow", "X", nullptr));
         label_169->setText(QCoreApplication::translate("RobotWindow", "Y", nullptr));
+        label_168->setText(QCoreApplication::translate("RobotWindow", "X", nullptr));
+        label_171->setText(QCoreApplication::translate("RobotWindow", "(mm)", nullptr));
         label_167->setText(QCoreApplication::translate("RobotWindow", "<html><head/><body><p>Test Object</p></body></html>", nullptr));
-        label_196->setText(QCoreApplication::translate("RobotWindow", "<html><head/><body><p>Calib Points</p></body></html>", nullptr));
-        rbVirtualEncoderEnable->setText(QCoreApplication::translate("RobotWindow", "Use Virtual Encoder", nullptr));
         twModule->setTabText(twModule->indexOf(tObjectDetecting), QCoreApplication::translate("RobotWindow", "Object Detecting", nullptr));
         pbOpenPicture->setText(QCoreApplication::translate("RobotWindow", "Load Image", nullptr));
         lbImageForDrawing->setText(QString());

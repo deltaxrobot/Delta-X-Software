@@ -21,7 +21,8 @@ void Encoder::SetPosition(float value)
 
     offset = CalculateOffset(step);
 
-    emit DistanceMoved(offset);
+    if (offset != QPointF(0, 0))
+        emit DistanceMoved(offset);
 }
 
 void Encoder::SetDeviationAngle(float value)

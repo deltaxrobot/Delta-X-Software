@@ -32,42 +32,42 @@ ObjectVariableTable::~ObjectVariableTable()
 
 }
 
-void ObjectVariableTable::UpdateTable(std::vector<cv::RotatedRect> ObjectContainer)
+void ObjectVariableTable::UpdateTable(QList<Object*>* ObjectContainer)
 {
-	for (int i = 0; i < ObjectContainer.size(); i++)
-	{
+    for (int i = 0; i < ObjectContainer->size(); i++)
+    {
         if (i > ObjectVariableWidgetList->size() - 1)
             break;
 
         if (ObjectVariableWidgetList->at(i)->IsShow == false)
             ObjectVariableWidgetList->at(i)->Show();
-	}
+    }
 
-	for (int i = 0; i < ObjectContainer.size(); i++)
-	{
+    for (int i = 0; i < ObjectContainer->size(); i++)
+    {
         if (i > ObjectVariableWidgetList->size() - 1)
             break;
 
-		ObjectVariableWidgetList->at(i)->xValue->setText(QString::number(ObjectContainer.at(i).center.x));
-		ObjectVariableWidgetList->at(i)->yValue->setText(QString::number(ObjectContainer.at(i).center.y));
+        ObjectVariableWidgetList->at(i)->xValue->setText(QString::number(ObjectContainer->at(i)->X.Real));
+        ObjectVariableWidgetList->at(i)->yValue->setText(QString::number(ObjectContainer->at(i)->Y.Real));
 
 //		int angle = ObjectContainer.at(i).angle + 180;
 
 //		if (ObjectContainer.at(i).size.width > ObjectContainer.at(i).size.height)
 //		{
-//			angle = ObjectContainer.at(i).angle + 90;
+//			angle = ObjectContainer.at(i).angle + 90;``
 //		}
 
-        ObjectVariableWidgetList->at(i)->aValue->setText(QString::number(ObjectContainer.at(i).angle));
-	}
+        ObjectVariableWidgetList->at(i)->aValue->setText(QString::number(ObjectContainer->at(i)->Angle.Real));
+    }
 
-    for (int i = ObjectContainer.size(); i < ObjectVariableWidgetList->size(); i++)
-	{
+    for (int i = ObjectContainer->size(); i < ObjectVariableWidgetList->size(); i++)
+    {
         if (i > ObjectVariableWidgetList->size() - 1)
             break;
 
         ObjectVariableWidgetList->at(i)->Hidden();
-	}
+    }
 }
 
 void ObjectVariableTable::DisplayDialog()

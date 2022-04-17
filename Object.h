@@ -113,16 +113,16 @@ public:
 
     bool IsSame(Object object, float error)
     {
-        if (abs(X.Real - object.X.Real) > Height.Real * error)
+        if (abs(X.Real - object.X.Real) > Length.Real * error)
             return false;
 
-        if (abs(Y.Real - object.Y.Real) > Height.Real * error)
+        if (abs(Y.Real - object.Y.Real) > Length.Real * error)
             return false;
 
-        if (abs(Angle.Real - object.Angle.Real) > 360 * error)
+        if (abs(Angle.Real - object.Angle.Real) > 360 * error && abs(360 - Angle.Real - object.Angle.Real) > 360 * error)
             return false;
 
-        if (abs(Height.Real - object.Height.Real) > Height.Real * error)
+        if (abs(Length.Real - object.Length.Real) > Length.Real * error)
             return false;
 
         if (abs(Width.Real - object.Width.Real) > Width.Real * error)

@@ -5,6 +5,8 @@ TaskNode::TaskNode(QString name, int type)
     this->type = type;
     this->name = name;
 
+    qRegisterMetaType< QList<Object*>* >("QList<Object*>*");
+
     if (type == RESIZE_IMAGE_NODE)
     {
         size = cv::Size(0, 0);
@@ -30,30 +32,41 @@ TaskNode::TaskNode(QString name, int type)
         inputObject.Length.Image = 150;
     }
 
+    if (type == VISIBLE_OBJECTS_NODE || type == TRACKING_OBJECTS_NODE || type == GET_OBJECTS_NODE)
+    {
+        inputObjects = new QList<Object*>();
+        outputObjects = new QList<Object*>();
+    }
+
     if (type == VISIBLE_OBJECTS_NODE)
     {
         inputMatrix.reset();
+
     }
 
     if (type == TRACKING_OBJECTS_NODE)
     {
-
+        floatPara = 0.3f;
     }
 }
 
 TaskNode::~TaskNode()
 {
-    foreach(Object* obj, inputObjects)
+    for (int i = 0; i < inputObjects->count(); i++)
     {
-        if (obj != NULL)
-            delete obj;
+        if (inputObjects->at(i) != NULL)
+            delete inputObjects->at(i);
     }
 
-    foreach(Object* obj, outputObjects)
+    delete inputObjects;
+
+    for (int i = 0; i < outputObjects->count(); i++)
     {
-        if (obj != NULL)
-            delete obj;
+        if (outputObjects->at(i) != NULL)
+            delete outputObjects->at(i);
     }
+
+    delete outputObjects;
 }
 
 void TaskNode::SetNextNode(TaskNode *next)
@@ -68,7 +81,7 @@ void TaskNode::SetPreviousNode(TaskNode *previous)
     connectInOutNode(previous, this);
 }
 
-void TaskNode::ClearInput()
+void TaskNode::ClearInputConnections()
 {
     foreach(QMetaObject::Connection con, InputConnections)
     {
@@ -80,7 +93,7 @@ void TaskNode::ClearInput()
     previousTaskNodes.clear();
 }
 
-void TaskNode::RemoveInput(TaskNode* previous)
+void TaskNode::RemoveInputConnection(TaskNode* previous)
 {
     int index = previousTaskNodes.indexOf(previous);
     QObject::disconnect(InputConnections.at(index));
@@ -88,7 +101,7 @@ void TaskNode::RemoveInput(TaskNode* previous)
     previousTaskNodes.removeOne(previous);
 }
 
-void TaskNode::ClearOutput()
+void TaskNode::ClearOutputConnections()
 {
     nextTaskNodes.clear();
 }
@@ -113,6 +126,32 @@ Object TaskNode::GetInputObject()
     return inputObject;
 }
 
+bool TaskNode::ClearVariable(QString name)
+{
+    QMutex mux;
+    mux.lock();
+
+    if (name.toLower() == QString("outputObjects").toLower())
+    {
+        clear(outputObjects);
+
+        HadOutput(outputObjects);
+
+        return true;
+    }
+
+    if (name.toLower() == QString("inputObjects").toLower())
+    {
+        clear(inputObjects);
+
+        return true;
+    }
+
+    mux.unlock();
+
+    return false;
+}
+
 void TaskNode::Input(cv::Size size)
 {
     this->size = size;
@@ -132,7 +171,7 @@ void TaskNode::Input2(cv::Mat mat)
     inputMat2 = mat;
 }
 
-void TaskNode::Input(QList<Object*> objects)
+void TaskNode::Input(QList<Object*>* objects)
 {
     this->inputObjects = objects;
 
@@ -337,7 +376,7 @@ void TaskNode::connectInOutNode(TaskNode* previous, TaskNode *next)
     if (next->type == TaskNode::VISIBLE_OBJECTS_NODE)
     {
         if (previous->type == GET_OBJECTS_NODE)
-            next->InputConnections << connect(previous, SIGNAL(HadOutput(QList<Object*>)), next, SLOT(Input(QList<Object*>)));
+            next->InputConnections << connect(previous, SIGNAL(HadOutput(QList<Object*>*)), next, SLOT(Input(QList<Object*>*)));
 
         if (previous->type == MAPPING_MATRIX_NODE)
             next->InputConnections << connect(previous, SIGNAL(HadOutput(QMatrix)), next, SLOT(Input(QMatrix)));
@@ -346,7 +385,7 @@ void TaskNode::connectInOutNode(TaskNode* previous, TaskNode *next)
 
     if (next->type == TaskNode::TRACKING_OBJECTS_NODE)
     {
-        next->InputConnections << connect(previous, SIGNAL(HadOutput(QList<Object*>)), next, SLOT(Input(QList<Object*>)));
+        next->InputConnections << connect(previous, SIGNAL(HadOutput(QList<Object*>*)), next, SLOT(Input(QList<Object*>*)));
     }
 
 //    // ------ Previous -----
@@ -660,12 +699,10 @@ void TaskNode::doGetObjectsWork()
     if (inputMat.empty())
         return;
 
-    foreach(Object* obj, outputObjects)
-    {
-        delete obj;
-    }
+    if (inputObjects == NULL || outputObjects == NULL)
+        return;
 
-    outputObjects.clear();
+    clear(outputObjects);
 
     std::vector<std::vector<cv::Point> > contoursContainer;
     findContours(inputMat, contoursContainer, cv::RETR_LIST, cv::CHAIN_APPROX_SIMPLE);
@@ -674,52 +711,14 @@ void TaskNode::doGetObjectsWork()
     {
 
         cv::RotatedRect object = cv::minAreaRect(cv::Mat(contoursContainer[i]));
-
-//        float h = object.size.height;
-//        float w = object.size.width;
-//        float s = w * h;
-
-//        if (w > h)
-//        {
-//            float t = h;
-//            h = w;
-//            w = t;
-//        }
-
-//        float desiredHeight = size.height;
-//        float desiredWidth = size.width;
-
-//        if (desiredWidth > desiredHeight)
-//        {
-//            float t = desiredHeight;
-//            desiredHeight = desiredWidth;
-//            desiredWidth = t;
-//        }
-
-//        //Find an object of equal size
-
-//        Range areaRange = ranges.value("area");
-
-//        if (s > areaRange.Min && s < areaRange.Max && h < desiredHeight && w < desiredWidth && object.boundingRect().y > 0 && (object.boundingRect().y + object.boundingRect().height + 5) < inputMat.rows)
-//        {
-//            int angle = object.angle + 180;
-
-//            if (object.size.width > object.size.height)
-//            {
-//                angle = object.angle + 90;
-//            }
-
-//            object.angle = angle;
-
-//            Object* obj = new Object(object);
-
-//            outputObjects.append(obj);
-//        }
+        cv::Rect box = cv::boundingRect(contoursContainer[i]);
+        if (box.y <= 0 || (box.y + box.height) >= inputMat.rows - 2 || box.x <= 0 || (box.x + box.width) >= inputMat.cols - 2)
+            continue;
 
         Object* obj = new Object(object);
         if (inputObject.IsSameType(*obj))
         {
-            outputObjects.append(obj);
+            outputObjects->append(obj);
         }
         else
         {
@@ -732,16 +731,15 @@ void TaskNode::doGetObjectsWork()
 
 void TaskNode::doVisibleObjectsWork()
 {
-    outputObjects.clear();
-    foreach(Object* object, inputObjects)
+    if (inputObjects == NULL || outputObjects == NULL)
+        return;
+
+    clear(outputObjects);
+    for (int i = 0; i < inputObjects->count(); i++)
     {
-        cv::Point2f* rectPoints;
+        inputObjects->at(i)->Map(inputMatrix);
 
-        rectPoints = object->ToPoints();
-
-        object->Map(inputMatrix);
-
-        outputObjects.append(object);
+        outputObjects->append(inputObjects->at(i));
     }
 
     emit HadOutput(outputObjects);
@@ -749,31 +747,54 @@ void TaskNode::doVisibleObjectsWork()
 
 void TaskNode::doTrackingObjectsWork()
 {
+    if (inputObjects == NULL || outputObjects == NULL)
+        return;
+
     if (inputPoint.x() != 0 || inputPoint.y() != 0)
     {
-        for( int i = 0; i < outputObjects.count(); i++)
+        for( int i = 0; i < outputObjects->count(); i++)
         {
-            outputObjects[i]->Move(inputPoint);
+            outputObjects->at(i)->Move(inputPoint);
         }
 
         inputPoint = QPointF(0, 0);
     }
 
-    if (inputObjects.size() > 0)
+    else if (inputObjects->size() > 0)
     {
-        foreach(Object* input, inputObjects)
+        for (int i = 0; i < inputObjects->count(); i++)
         {
-            foreach(Object* output, outputObjects)
+            bool isNew = true;
+
+            for (int j = 0; j < outputObjects->count(); j++)
             {
-                if (output->IsSame(*input, floatPara))
+                if (outputObjects->at(j)->IsSame(*inputObjects->at(i), floatPara))
                 {
-                    outputObjects.append(input);
+                    isNew = false;
+                    continue;
                 }
             }
-        }
 
-        inputObjects.clear();
+            if (isNew == true)
+            {
+                outputObjects->append(inputObjects->at(i));
+            }
+        }
     }
 
     emit HadOutput(outputObjects);
+}
+
+void TaskNode::clear(QList<Object *> *objs)
+{
+//    if (objs == NULL)
+//        return;
+
+//    for (int i = 0; i < objs->count(); i++)
+//    {
+//        if (objs->at(i) != NULL)
+//            delete objs->at(i);
+//    }
+
+    objs->clear();
 }

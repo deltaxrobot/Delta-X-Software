@@ -84,9 +84,11 @@ void FilterWindow::SaveSetting(QSettings *setting)
 
     setting->setValue("thresV", ui->hsThreshold->value());
 
-    setting->setValue("blurV", ui->hsThreshold->value());
+    setting->setValue("blurV", ui->hsBlurSize->value());
 
     setting->setValue("invert", ui->cbInvert->isChecked());
+
+    setting->setValue("algorithm", FilterJob->CurrentFilter);
 }
 
 void FilterWindow::LoadSetting(QString fileName)
@@ -109,10 +111,12 @@ void FilterWindow::LoadSetting(QSettings *setting)
     ui->hsThreshold->setValue(setting->value("thresV", 100).toInt());
     ui->lbThreshold->setText(QString::number(ui->hsThreshold->value()));
 
-    ui->hsBlurSize->setValue(setting->value("blurV", 100).toInt());
+    ui->hsBlurSize->setValue(setting->value("blurV", 1).toInt());
     ui->lbBlurSize->setText(QString::number(ui->hsBlurSize->value()));
 
     ui->cbInvert->setChecked(setting->value("invert", false).toBool());
+
+    FilterJob->CurrentFilter = setting->value("algorithm", FilterJob->CurrentFilter).toInt();
 }
 
 void FilterWindow::SetImage(cv::Mat mat)
@@ -121,6 +125,15 @@ void FilterWindow::SetImage(cv::Mat mat)
     OriginMat = mat.clone();
 
     ui->lbOriginImage->setPixmap(ImageTool::cvMatToQPixmap(mat));
+
+    if (FilterJob->CurrentFilter == FilterWork::HSV)
+    {
+        emit ui->hsminH->sliderReleased();
+    }
+    else
+    {
+        emit ui->hsThreshold->sliderReleased();
+    }
 }
 
 bool FilterWindow::IsInvertBinary()

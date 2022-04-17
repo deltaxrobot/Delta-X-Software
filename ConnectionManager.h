@@ -14,6 +14,16 @@ class ConnectionManager : public QObject
 {
 	Q_OBJECT
 public:
+
+    enum
+    {
+        ROBOT = 0,
+        CONVEYOR,
+        SLIDER,
+        MCU,
+        ENCODER
+    };
+
     ConnectionManager();
 
 	QSerialPort* RobotPort;
@@ -28,7 +38,10 @@ public:
 	QSerialPort* ExternalControllerPort;
 	QTcpSocket* ExternalControllerSocket;
 
-	QIODevice* IOSender;
+    QSerialPort* EncoderPort;
+    QTcpSocket* EncoderSocket;
+
+    QIODevice* EmitIOSender;
 
 	TCPConnectionManager* TCPConnection;
     QTcpServer* TcpServer;
@@ -41,30 +54,32 @@ public:
 	bool IsRosSocket(QIODevice* socket);
 	QString GetNamePort();
 	void SetBaudrate(int baud);
-	int GetBaudrate();
-    void FindDeltaRobot();
+    int GetBaudrate();
 	void SendToRobot(QString msg);
 
     void SendToConveyor(QString msg);
     void SendToSlider(QString msg);
     void SendToExternalMCU(QString msg);
+    void SendtoEncoder(QString msg);
 
 
 public slots:
+    void FindDeltaRobot();
 	void ReadData();
     void FindingRobotTimeOut();
 
     void ReceiveNewConnectionFromServer(QTcpSocket* socket);
 
     void SendRobotMsgToCOMPort();
+    void Send(int device, QString msg);
+    void SendGcode(QString device, QString msg);
 
 signals:
-	void FinishReadLine(QString msg);
 	void ExternalMCUTransmitText(QString text);
 	void DeltaResponeReady();
     void FailTransmit();
     void FinishFindingRobot();
-	void DeltaResponeGcodeDone();
+    void GcodeDone();
     void Responsed(QString msg);
     void InHomePosition(float x, float y, float z, float w, float u, float v);
 	void ReceiveConvenyorPosition(float x, float y);
@@ -82,11 +97,20 @@ signals:
     void CaptureFromExternalCamera();
     void ExternalScriptOpened(QTcpSocket* socket);
 
+    void ReceivedEncoderPosition(float pos);
+    void ReceivedProximitySensorValue(int value);
+
     void Log(QString msg);
 private:
-	void init();
-	void sendQueue();
-	void processReceiveData();
+    void init();
+
+    void processRobotData();
+    void processConveyorData();
+    void processSliderData();
+    void processMCUData();
+    void processEncoderData();
+    void processOtherSoftwareData();
+
 	void sendData(QSerialPort* com, QTcpSocket* socket, QString msg);
 	void OpenAvailableServer();
 
@@ -94,7 +118,6 @@ private:
 	QString transmitLine;
 	QList<QString> transmitLines;
     QTimer* connectionTimer;
-    QTimer* callfuntionTimer;
 	QList<QSerialPort*> portList;
 
 	bool isDeltaPortConnected = false;

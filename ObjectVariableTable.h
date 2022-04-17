@@ -9,6 +9,7 @@
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc.hpp>
 #include "UnityTool.h"
+#include "Object.h"
 
 class ObjectVariable
 {
@@ -111,7 +112,7 @@ public:
 
 public slots:
 	void DisplayDialog();
-	void UpdateTable(std::vector<cv::RotatedRect> ObjectContainer);
+    void UpdateTable(QList<Object*>* ObjectContainer);
 
 private:
 	QWidget* dialog;

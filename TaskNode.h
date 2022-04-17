@@ -11,6 +11,7 @@
 #include <QMap>
 #include <qmath.h>
 #include "Object.h"
+#include <QMutexLocker>
 
 #define RED_COLOR       cv::Scalar(0, 0, 255)
 #define GREEN_COLOR     cv::Scalar(0, 255, 0)
@@ -56,14 +57,14 @@ public:
 
     void SetNextNode(TaskNode* next);
     void SetPreviousNode(TaskNode* previous);
-    void ClearInput();
-    void RemoveInput(TaskNode* previous);
-    void ClearOutput();
+    void ClearInputConnections();
+    void RemoveInputConnection(TaskNode* previous);
+    void ClearOutputConnections();
     QSize GetImageSize();
     QMatrix GetMatrix();
     cv::Mat GetOutputImage();
     Object GetInputObject();
-
+    bool ClearVariable(QString name);
 
     QList<QMetaObject::Connection> InputConnections;
 
@@ -71,7 +72,7 @@ public slots:
     void Input(cv::Size size);
     void Input(cv::Mat mat);
     void Input2(cv::Mat mat);
-    void Input(QList<Object*> objects);
+    void Input(QList<Object*>* objects);
     void Input(QList<int> paras);
     void Input(int para);
     void Input(bool value);
@@ -91,8 +92,8 @@ signals:
     void HadOutput(cv::Point2f outputPoints[]);
     void HadOutput(QPolygonF poly);
     void HadOutput(QPixmap pixmap);
-    void HadOutput(QPixmap pixmap, QList<Object*> objects);
-    void HadOutput(QList<Object*> objects);
+    void HadOutput(QPixmap pixmap, QList<Object*>* objects);
+    void HadOutput(QList<Object*>* objects);
     void HadOutput(QMatrix matrix);
 
 private:
@@ -103,7 +104,7 @@ private:
     cv::Mat outputMat;
     cv::Mat inputMat;
     cv::Mat inputMat2;
-    QList<Object*> inputObjects;
+    QList<Object*>* inputObjects = NULL;
 
     cv::Point2f inputPoints[4];
     cv::Point2f outputPoints[4];
@@ -112,7 +113,7 @@ private:
     QPolygonF outputPoly;
     QRectF inputRect;
 
-    QList<Object*> outputObjects;
+    QList<Object*>* outputObjects = NULL;
     QList<int> intParas;
     int intPara;
     float floatPara;
@@ -144,6 +145,7 @@ private:
     void doVisibleObjectsWork();
     void doTrackingObjectsWork();
 
+    void clear(QList<Object*>* objs);
 };
 
 #endif

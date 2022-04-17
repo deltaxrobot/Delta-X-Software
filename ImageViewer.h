@@ -48,11 +48,11 @@ public:
         whiteTextItem = new QGraphicsSimpleTextItem;
         blackTextItem = new QGraphicsSimpleTextItem;
 
-        whiteTextItem->setPen(QPen(Qt::white, 2));
-        blackTextItem->setPen(QPen(Qt::black, 1));
+        whiteTextItem->setPen(QPen(Qt::white, 1));
+        blackTextItem->setPen(QPen(Qt::black, 2));
 
-        whiteTextItem->setZValue(1);
-        blackTextItem->setZValue(1.1f);
+        whiteTextItem->setZValue(1.1f);
+        blackTextItem->setZValue(1);
 
         updateVisual();
     }

@@ -8,7 +8,10 @@ ImageProcessing::ImageProcessing()
 
 ImageProcessing::~ImageProcessing()
 {
-
+    foreach(TaskNode* node, taskNodeList.values())
+    {
+        delete node;
+    }
 }
 
 void ImageProcessing::MoveToThread(QThread *thread)

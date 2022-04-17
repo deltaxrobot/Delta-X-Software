@@ -100,6 +100,7 @@ public:
     //----- Init ----
 	void InitEvents();
     void InitVariables();
+    void InitConnectionModule();
     void InitObjectDetectingModule();
     void InitGcodeEditorModule();
     void InitUIController();
@@ -190,7 +191,6 @@ public:
 
     ObjectDetector* DeltaImageProcesser;
     ObjectVariableTable* TrackingObjectTable;
-    COMDevice* COMEncoder;
     QElapsedTimer ElapsedTimeEncoder;
     QTimer* ConvenyorTimer;
 
@@ -304,9 +304,10 @@ public slots:
     //----- Variable -----
     void UpdateVariable(QString key, QString value);
     void UpdateVariables(QString cmd);
+    void RespondVariableValue(QIODevice* s, QString name);
 
     //----- Device ----
-    void SendGcodeToDevice(QString deviceName, QString gcode);
+    void UpdateGcodeValueToDeviceUI(QString deviceName, QString gcode);
 
     // ---- Conveyor ----
     void ConnectConveyor();
@@ -317,6 +318,7 @@ public slots:
 
     void SetConvenyorSpeed();
     void ConnectEncoder();
+    void CheckIsEncoderPort();
     void ResetEncoderPosition();
     void ReceiveEncoderResponse(QString response);
     void UpdatePointPositionOnConveyor(QLineEdit* x, QLineEdit* y, float angle, float distance);
@@ -338,6 +340,7 @@ public slots:
 
     void VirtualEncoder();
     void ProcessEncoderValue(float value);
+    void ProcessProximitySensorValue(int value);
 	
     // ---- Slider ----
 	void ConnectSliding();
@@ -385,7 +388,7 @@ public slots:
     void GetNewImageSize();
 
     void UnselectToolButtons();
-    void UpdateObjectsToImageViewer(QList<Object*> objects);
+    void UpdateObjectsToImageViewer(QList<Object*>* objects);
     void EditImage(bool isWarp, bool isCropTool);
     // ----- Display ----
 
@@ -417,7 +420,7 @@ public slots:
 
 signals:
     void GotImage(cv::Mat mat);
-    void GotObjects(QList<Object> objects);
+    void GotObjects(QList<Object*>* objects);
     void GotResizePara(cv::Size size);
     void GotResizeImage(cv::Mat mat);
     void GotChessboardSize(cv::Size size);
@@ -427,6 +430,8 @@ signals:
     void RequestFindChessboard();
     void StopGcodeProgram();
     void RunGcodeProgram(QString gcodes, int pos, bool isEditor);
+    void Send(int device, QString msg);
+    void ScanAndConnectRobot();
 
 private:
 

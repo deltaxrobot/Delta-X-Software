@@ -538,16 +538,16 @@ void ImageViewer::paintEvent(QPaintEvent *event)
 {
     QGraphicsView::paintEvent(event);
 
-    QPoint mousePosOnImage = ImageItem->mapFromScene(QCursor::pos()).toPoint();
+//    QPoint mousePosOnImage = ImageItem->mapFromScene(QCursor::pos()).toPoint();
 
-    if (cArea.IsOverPoint(mousePosOnImage))
-    {
-        setMoveHand(true);
-    }
-    else
-    {
-        setMoveHand(false);
-    }
+//    if (cArea.IsOverPoint(mousePosOnImage))
+//    {
+//        setMoveHand(true);
+//    }
+//    else
+//    {
+//        setMoveHand(false);
+//    }
 }
 
 void ImageViewer::changeToolIconInArea(QIcon icon)

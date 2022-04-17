@@ -7,65 +7,67 @@ ConnectionManager::ConnectionManager()
 
 void ConnectionManager::init()
 {
+    // ---- Robot -----
 	RobotPort = new QSerialPort();
 	connect(RobotPort, SIGNAL(readyRead()), this, SLOT(ReadData()));
 	RobotSocket = new QTcpSocket();
 	connect(RobotSocket, SIGNAL(readyRead()), this, SLOT(ReadData()));
 	
+    // ---- Timer for robot scanning -----
     connectionTimer = new QTimer();
     connect(connectionTimer, SIGNAL(timeout()), this, SLOT(FindingRobotTimeOut()));
 
-    callfuntionTimer = new QTimer();
-//    connect(callfuntionTimer, SIGNAL(timeout()), this, SLOT(()));
-
+    // ---- MCU -----
 	ExternalControllerPort = new QSerialPort();
 	connect(ExternalControllerPort, SIGNAL(readyRead()), this, SLOT(ReadData()));
 	ExternalControllerSocket = new QTcpSocket();
 	connect(ExternalControllerSocket, SIGNAL(readyRead()), this, SLOT(ReadData()));
 
+    // ----- Slider -----
 	SlidingPort = new QSerialPort();
 	connect(SlidingPort, SIGNAL(readyRead()), this, SLOT(ReadData()));
 	SlidingSocket = new QTcpSocket();
 	connect(SlidingSocket, SIGNAL(readyRead()), this, SLOT(ReadData()));
 
+    // ---- Conveyor ----
 	ConveyorPort = new QSerialPort();
 	connect(ConveyorPort, SIGNAL(readyRead()), this, SLOT(ReadData()));
 	ConveyorSocket = new QTcpSocket();
 	connect(ConveyorSocket, SIGNAL(readyRead()), this, SLOT(ReadData()));
 
+    // ---- Encoder ----
+    EncoderPort = new QSerialPort();
+    connect(EncoderPort, SIGNAL(readyRead()), this, SLOT(ReadData()));
+    EncoderSocket = new QTcpSocket();
+    connect(EncoderSocket, SIGNAL(readyRead()), this, SLOT(ReadData()));
+
+    // ---- Software Server ----
 	TCPConnection = new TCPConnectionManager();
 	OpenAvailableServer();
 
 	TcpServer = TCPConnection->TcpServer;
 	connect(TCPConnection, SIGNAL(NewConnection(QTcpSocket*)), this, SLOT(ReceiveNewConnectionFromServer(QTcpSocket*)));
 
+    // ------
     Ports.append(RobotPort);
     Ports.append(ConveyorPort);
     Ports.append(SlidingPort);
     Ports.append(ExternalControllerPort);
+    Ports.append(EncoderPort);
 }
 
-void ConnectionManager::sendQueue()
+void ConnectionManager::processRobotData()
 {
-	
-}
+    emit GcodeDone();
+    emit ReceiveVariableChangeCommand("Response", receiveLine.replace("\n", "").replace("\r", ""));
+    emit Log(QString("Robot << ") + receiveLine);
 
-void ConnectionManager::processReceiveData()
-{
-    //if (receiveLine.mid(0, 2) == "Ok" || (receiveLine.indexOf('k') > -1 && receiveLine.indexOf('O') > -1) || receiveLine.mid(0, 7) == "Unknown")
-    if (receiveLine != "")
-	{
-        emit DeltaResponeGcodeDone();
-
-		//sendQueue();
-
-		if (transmitLine == "G28")
-		{
-			SendToRobot("Position");
-		}
-	}
-
-	if (receiveLine.indexOf(",") > -1 && transmitLine == "Position")
+    if (transmitLine == "G28")
+    {
+        SendToRobot("Position");
+    }
+    // ---- Receive robot position after homing ----
+    else if (receiveLine.indexOf(",") > -1 && transmitLine == "Position")
 	{
 		QList<QString> nums = receiveLine.split(",");
 
@@ -82,54 +84,132 @@ void ConnectionManager::processReceiveData()
             emit InHomePosition(nums[0].toFloat(), nums[1].toFloat(), nums[2].toFloat(), w, u, v);
 		}
     }
-
-    if (receiveLine.indexOf(" V") > -1 && (receiveLine.indexOf("A") > -1 || receiveLine.indexOf(" V") > -1))
+    // ---- Input Output Feedback -----
+    else if (receiveLine.indexOf(" V") > -1 && (receiveLine.indexOf("A") > -1 || receiveLine.indexOf(" V") > -1))
     {
         emit ReceiveInputIO(receiveLine);
     }
+    // ---- Confirm from robot ----
+    else if (receiveLine.mid(0, 8) == "YesDelta")
+    {
+        if (isDeltaPortConnected != true)
+        {
+            delete RobotPort;
+            RobotPort = qobject_cast<QSerialPort*>(EmitIOSender);
+            emit DeltaResponeReady();
 
-	if (receiveLine.at(0) == '#' && receiveLine.indexOf("=") > -1)
-	{
-		int symId = receiveLine.indexOf("=");
-		QString name = receiveLine.mid(0, symId).replace(" ", "");
+            isDeltaPortConnected = true;
+
+        }
+    }
+}
+
+void ConnectionManager::processConveyorData()
+{
+    emit Log(QString("Conveyor << ") + receiveLine);
+}
+
+void ConnectionManager::processSliderData()
+{
+    emit Log(QString("Slider << ") + receiveLine);
+}
+
+void ConnectionManager::processMCUData()
+{
+    emit ExternalMCUTransmitText(receiveLine);
+
+    emit Log(QString("MCU << ") + receiveLine);
+}
+
+void ConnectionManager::processEncoderData()
+{
+    if (receiveLine.at(0) == "P")
+    {
+        float pos = receiveLine.mid(1).toFloat();
+//        ProcessEncoderValue(pos);
+        emit ReceivedEncoderPosition(pos);
+    }
+    else if (receiveLine.at(0) == '0' || receiveLine.at(0) == '1')
+    {
+        emit ReceivedProximitySensorValue(receiveLine.mid(0, 1).toInt());
+    }
+}
+
+void ConnectionManager::processOtherSoftwareData()
+{
+    // ---- receive variable values or signal ----
+    if (receiveLine.at(0) == '#' && receiveLine.indexOf("=") > -1)
+    {
+        int symId = receiveLine.indexOf("=");
+        QString name = receiveLine.mid(0, symId).replace(" ", "");
         QString valueS = receiveLine.mid(symId + 1).replace(" ", "");
 
+        // ---- Captured image signal from other processing ----
         if (name == "#StartCapture" && valueS.toInt() == 1)
         {
             ReceiveCaptureSignalFromExternalAI();
         }
-
-        if (name == "#Label")
+        // ---- Receive real object info from other processing ----
+        else if (name == "#Label")
         {
             emit ReceiveObjectInfoFromExternalAI(valueS);
         }
-        if (name == "#Object")
+        // ---- Receive decting object info from other processing ----
+        else if (name == "#Object")
         {
             emit ReceiveDisplayObjectFromExternalScript(valueS);
         }
+        // ---- Request to change variable ----
         else
         {
             int value = valueS.toInt();
             emit ReceiveVariableChangeCommand(name, valueS);
         }
-	}
-	if (receiveLine.at(0) == '#' && receiveLine.indexOf("=") == -1)
-	{
-		receiveLine = receiveLine.replace(" ", "");
-		receiveLine = receiveLine.replace("\n", "");
-		receiveLine = receiveLine.replace("\r", "");
+    }
 
-		QString name = receiveLine;
-		emit RequestVariableValue(IOSender, name);
-	}
-	if (receiveLine.at(0) == 'r' && receiveLine.indexOf(":") > -1)
-	{
-		int symId = receiveLine.indexOf(":");
+    // ---- Request variable value ----
+    if (receiveLine.at(0) == '#' && receiveLine.indexOf("=") == -1)
+    {
+        receiveLine = receiveLine.replace(" ", "");
+        receiveLine = receiveLine.replace("\n", "");
+        receiveLine = receiveLine.replace("\r", "");
 
-		QString request = receiveLine.mid(symId + 1);
+        QString name = receiveLine;
+        emit RequestVariableValue(EmitIOSender, name);
+    }
 
-		emit ReceiveRequestsFromExternal(request);
-	}
+    // ---- Request event on software ----
+    if (receiveLine.at(0) == 'r' && receiveLine.indexOf(":") > -1)
+    {
+        int symId = receiveLine.indexOf(":");
+
+        QString request = receiveLine.mid(symId + 1);
+
+        emit ReceiveRequestsFromExternal(request);
+    }
+
+    // ---- Connect ROS -----
+    for (int i = 0; i < TCPConnection->ClientList->size(); i++)
+    {
+        if (TCPConnection->ClientList->at(i)->socket == EmitIOSender)
+        {
+            if (receiveLine.indexOf("ros") > -1)
+            {
+                TCPConnection->ClientList->at(i)->IsROS = true;
+                break;
+            }
+        }
+    }
+
+    if (IsRosSocket(EmitIOSender) == true)
+    {
+        TCPConnection->ProcessReceivedData(receiveLine);
+
+        if (receiveLine.contains("ExternalScript"))
+        {
+            emit ExternalScriptOpened(qobject_cast<QTcpSocket*>(EmitIOSender));
+        }
+    }
 }
 
 void ConnectionManager::sendData(QSerialPort * com, QTcpSocket * socket, QString msg)
@@ -160,7 +240,7 @@ void ConnectionManager::sendData(QSerialPort * com, QTcpSocket * socket, QString
 
     if (result == false)
     {
-        emit Log(com->portName() + " fail");
+        emit Log(QString("Robot >> ") + com->portName() + " fail");
         emit FailTransmit();
     }
 }
@@ -295,105 +375,57 @@ void ConnectionManager::SendToSlider(QString msg)
 
 void ConnectionManager::SendToExternalMCU(QString msg)
 {
-    emit Log(QString("MCU >> ") + msg);
+    emit Log(QString("Encoder >> ") + msg);
 
-	sendData(ExternalControllerPort, ExternalControllerSocket, msg);
+    sendData(EncoderPort, EncoderSocket, msg);
+}
+
+void ConnectionManager::SendtoEncoder(QString msg)
+{
+
 }
 
 void ConnectionManager::ReadData()
 {
-	IOSender = qobject_cast<QIODevice*>(sender());
+    EmitIOSender = qobject_cast<QIODevice*>(sender());
 
-	QSerialPort* sP = qobject_cast<QSerialPort*>(sender());
+    if (EmitIOSender)
+    {
+        while (EmitIOSender->canReadLine())
+        {
+            receiveLine = EmitIOSender->readLine();
 
-	if (sP)
-	{
-		while (sP->canReadLine())
-		{
-			receiveLine = sP->readLine();
+            if (receiveLine == "")
+                continue;
 
-            if (sP == RobotPort)
+            if (EmitIOSender == RobotPort || EmitIOSender == RobotSocket)
             {
-                emit ReceiveVariableChangeCommand("Response", receiveLine.replace("\n", "").replace("\r", ""));
-                emit Log(QString("Robot << ") + receiveLine);
+                processRobotData();
             }
 
-			if (sP == ExternalControllerPort)
-			{
-                emit ExternalMCUTransmitText(receiveLine);
-                emit Log(QString("MCU << ") + receiveLine);
-			}
-
-			emit FinishReadLine(receiveLine);
-
-			if (receiveLine.mid(0, 8) == "YesDelta")
-			{
-				if (isDeltaPortConnected != true)
-				{
-					delete RobotPort;
-					RobotPort = sP;
-					emit DeltaResponeReady();
-
-					isDeltaPortConnected = true;
-
-				}
-			}
-
-			processReceiveData();
-
-            if (sP == ConveyorPort)
+            else if (EmitIOSender == ConveyorPort || EmitIOSender == ConveyorSocket)
             {
-                emit Log(QString("Conveyor << ") + receiveLine);
+                processConveyorData();
             }
 
-            if (sP == SlidingPort)
+            else if (EmitIOSender == SlidingPort || EmitIOSender == SlidingSocket)
             {
-                emit Log(QString("Slider << ") + receiveLine);
+                processSliderData();
             }
-		}
 
-		return;
-	}
-	
-	QTcpSocket* socket = qobject_cast<QTcpSocket*>(sender());
-	
-	if (socket)
-	{
-		while (socket->canReadLine())
-		{
-			receiveLine = socket->readLine();
+            else if (EmitIOSender == ExternalControllerPort || EmitIOSender == ExternalControllerSocket)
+            {
+                processMCUData();
+            }
 
-			for (int i = 0; i < TCPConnection->ClientList->size(); i++)
-			{
-				if (TCPConnection->ClientList->at(i)->socket == socket)
-				{
-					if (receiveLine.indexOf("ros") > -1)
-					{
-						TCPConnection->ClientList->at(i)->IsROS = true;
-						break;
-					}
-				}
-			}
+            else if (EmitIOSender == EncoderPort || EmitIOSender == EncoderSocket)
+            {
+                processEncoderData();
+            }
 
-			if (IsRosSocket(socket) == true)
-			{
-				TCPConnection->ProcessReceivedData(receiveLine);
-
-                if (receiveLine.contains("ExternalScript"))
-                {
-                    emit ExternalScriptOpened(socket);
-                }
-			}
-
-			if (socket == ExternalControllerSocket)
-			{
-                emit ExternalMCUTransmitText(receiveLine);
-			}
-
-			processReceiveData();
-			
-		}
-	}
+            processOtherSoftwareData();
+        }
+    }
 }
 
 
@@ -440,4 +472,38 @@ void ConnectionManager::SendRobotMsgToCOMPort()
         }
     }
     connectionTimer->start(200);
+}
+
+void ConnectionManager::Send(int device, QString msg)
+{
+    switch (device)
+    {
+        case ROBOT : SendToRobot(msg);
+        case CONVEYOR : SendToConveyor(msg);
+        case SLIDER : SendToSlider(msg);
+        case MCU : SendToExternalMCU(msg);
+    }
+}
+
+void ConnectionManager::SendGcode(QString deviceName, QString msg)
+{
+    if (deviceName == "Robot")
+    {
+        SendToRobot(msg);
+    }
+
+    if (deviceName == "Conveyor")
+    {
+        SendToConveyor(msg);
+    }
+
+    if (deviceName == "Slider")
+    {
+        SendToSlider(msg);
+    }
+
+    if (deviceName == "ExternalMCU")
+    {
+        SendToExternalMCU(msg);
+    }
 }
