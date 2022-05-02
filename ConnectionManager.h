@@ -21,7 +21,8 @@ public:
         CONVEYOR,
         SLIDER,
         MCU,
-        ENCODER
+        ENCODER,
+        CONTROLLER
     };
 
     ConnectionManager();
@@ -41,6 +42,9 @@ public:
     QSerialPort* EncoderPort;
     QTcpSocket* EncoderSocket;
 
+    QSerialPort* ControllerPort;
+    QTcpSocket* ControllerSocket;
+
     QIODevice* EmitIOSender;
 
 	TCPConnectionManager* TCPConnection;
@@ -48,8 +52,7 @@ public:
 
     QList<QSerialPort*> Ports;
 
-	bool IsRobotConnect();
-	void DisconnectRobot();
+    bool IsRobotConnect();
 	bool IsRosClientAvailable();
 	bool IsRosSocket(QIODevice* socket);
 	QString GetNamePort();
@@ -60,12 +63,14 @@ public:
     void SendToConveyor(QString msg);
     void SendToSlider(QString msg);
     void SendToExternalMCU(QString msg);
-    void SendtoEncoder(QString msg);
+    void SendToEncoder(QString msg);
 
 
 public slots:
-    void FindDeltaRobot();
+    void FindDeltaRobot();    
+    void DisconnectRobot();
 	void ReadData();
+    void CheckScanningRobotRespone();
     void FindingRobotTimeOut();
 
     void ReceiveNewConnectionFromServer(QTcpSocket* socket);

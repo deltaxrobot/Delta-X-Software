@@ -126,6 +126,11 @@ void FilterWindow::SetImage(cv::Mat mat)
 
     ui->lbOriginImage->setPixmap(ImageTool::cvMatToQPixmap(mat));
 
+    RequestValue();
+}
+
+void FilterWindow::RequestValue()
+{
     if (FilterJob->CurrentFilter == FilterWork::HSV)
     {
         emit ui->hsminH->sliderReleased();
@@ -143,9 +148,6 @@ bool FilterWindow::IsInvertBinary()
 
 void FilterWindow::ProcessValueFromUI()
 {
-    if (OriginMat.empty())
-        return;
-
     if (sender() == ui->hsThreshold)
 	{
         intParas.clear();
@@ -176,6 +178,9 @@ void FilterWindow::ProcessValueFromUI()
     emit ColorFilterValueChanged(intParas);
     emit ColorInverted(ui->cbInvert->isChecked());
     emit BlurSizeChanged(blurSize);
+
+    if (OriginMat.empty())
+        return;
 
     emit requestFilter(OriginMat.clone(), intParas, ui->cbInvert->isChecked(), blurSize);
 }

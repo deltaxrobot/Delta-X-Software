@@ -23,6 +23,8 @@ public:
     QPointF GetOffset();
     QPointF CalculateOffset(float distance);
 
+    QPointF* OffsetPoint = NULL;
+
 public slots:
     void MarkPosition();
 

@@ -60,8 +60,10 @@ public:
     bool CaptureSignal = false;
 
     QElapsedTimer elapseTime;
+
 public slots:
     void ShotImage();
+
 signals:
     void StartedCapture();
     void CapturedImage(cv::Mat mat);

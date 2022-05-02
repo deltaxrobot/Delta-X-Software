@@ -29,6 +29,7 @@
 #include <QMessageBox>
 #include <QThreadPool>
 #include <QElapsedTimer>
+#include "CameraReader.h"
 
 namespace Ui {
 class Form;
@@ -51,6 +52,8 @@ public:
 
     CameraProcessor* CameraProcessorJob;
 
+    CameraReader* CameraReaderWork;
+
     XCamManager IndustryCamera;
 
     QTimer* CameraDisplayUpdatingTimer;
@@ -62,10 +65,18 @@ public slots:
     void GetEventFromUI();
     void GetStateLastJob(bool state);
     void TryToConnectCamera();
+    void GetResultOfCameraConnecting(bool);
+    void GetImageToDisplay(QPixmap pixmap);
+    void GetCameraList(QStringList list);
 signals:
     void EmitEventFromUI(QString cmd);
     void CapturedImage(cv::Mat mat);
+    void RequestConnectCamera(int id);
+    void RequestDisconnectCamera();
     void StartedCapture();
+    void RequestImage();
+    void UpdateResizeWidth(int newWidth);
+    void RequestCameraList();
 
 private slots:
     void on_pbRefresh_clicked();

@@ -104,6 +104,7 @@ public:
     void InitObjectDetectingModule();
     void InitGcodeEditorModule();
     void InitUIController();
+    void InitCalibration();
     void LoadPlugin();
     void InitParseNames();
 
@@ -191,7 +192,6 @@ public:
 
     ObjectDetector* DeltaImageProcesser;
     ObjectVariableTable* TrackingObjectTable;
-    QElapsedTimer ElapsedTimeEncoder;
     QTimer* ConvenyorTimer;
 
     Encoder* Encoder1;
@@ -268,6 +268,8 @@ public slots:
     void ExportBlocklyToGcode();
     void ExecuteRequestsFromExternal(QString request);
 
+    void AddGcodeLine(QString gcode);
+
     // ---- Robot Controller ----
     void Home();
 //	void UpdateZLineEditValue(int z);
@@ -318,9 +320,7 @@ public slots:
 
     void SetConvenyorSpeed();
     void ConnectEncoder();
-    void CheckIsEncoderPort();
     void ResetEncoderPosition();
-    void ReceiveEncoderResponse(QString response);
     void UpdatePointPositionOnConveyor(QLineEdit* x, QLineEdit* y, float angle, float distance);
 
     void CalculateConveyorDeviationAngle();
@@ -372,6 +372,7 @@ public slots:
 
     // ----- Object Detecting ----
     void GetImageFromExternal(cv::Mat mat);
+    void GetCapturedSignal();
     void ChangeOutputDisplay(QString outputName);
     void LoadWebcam();
     void LoadImages();
@@ -432,6 +433,7 @@ signals:
     void RunGcodeProgram(QString gcodes, int pos, bool isEditor);
     void Send(int device, QString msg);
     void ScanAndConnectRobot();
+    void DisconnectRobot();
 
 private:
 

@@ -12,15 +12,11 @@ void CameraProcessor::run()
 void CameraProcessor::UpdateLabelImage(cv::Mat mat, QLabel *label)
 {
     QImage img = ImageTool::cvMatToQImage(mat);
-    qDebug() << "Convert time: " << elapseTime.elapsed();
+
     int width3 = label->parentWidget()->parentWidget()->parentWidget()->geometry().width();
 
     int ratio = (float)width3/mat.cols * 100;
 
-//    if (lbRatio != NULL)
-//    {
-//        lbRatio->setText(QString::number(ratio) + "%");
-//    }
     emit UpdatedRatio(QString::number(ratio) + "%");
     emit FinishReadingImage(QPixmap::fromImage(img).scaledToWidth(width3));
 //    label->setPixmap(QPixmap::fromImage(img).scaledToWidth(width3));

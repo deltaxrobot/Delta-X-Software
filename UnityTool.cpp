@@ -62,6 +62,9 @@ void Debug(int id, QString msg)
 
 void SoftwareLog(QString msg, bool isNewLine)
 {
+    if (msg == "")
+        return;
+
     if (teSoftwareLog->document()->blockCount() > 200)
         teSoftwareLog->setText("");
 

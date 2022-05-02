@@ -11,6 +11,7 @@ CONFIG += c++11
 
 SOURCES += \
     CameraProcessor.cpp \
+    CameraReader.cpp \
     IndustrialCameraPlugin.cpp \
     camerawidget.cpp \
     form.cpp \
@@ -22,6 +23,7 @@ SOURCES += \
 HEADERS += \
     ../../../DeltaXSoftware/sdk/DeltaXPlugin.h \
     CameraProcessor.h \
+    CameraReader.h \
     ImageUnity.h \
     IndustrialCameraPlugin.h \
     camerawidget.h \

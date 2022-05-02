@@ -7,8 +7,9 @@ ObjectVariableTable::ObjectVariableTable(QObject *parent)
 
 	dialog = new QWidget();
 	dialog->setWindowTitle("Object Variables");
-	gridLayout = new QGridLayout();
-	dialog->setLayout(gridLayout);
+    gridLayout = new QGridLayout();
+
+    dialog->setLayout(gridLayout);
 
 	dialog->setWindowFlags(Qt::WindowStaysOnTopHint);
 

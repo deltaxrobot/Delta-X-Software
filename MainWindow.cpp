@@ -492,6 +492,9 @@ void MainWindow::on_cbOperatorProject_currentIndexChanged(int index)
 
 void MainWindow::on_pbStartSystem_clicked()
 {
+    if (SoftwareAuthority->robotManager == NULL)
+        return;
+
     for(int i = 0; i < SoftwareAuthority->RobotEnableList.count(); i++)
     {
         QCheckBox* robotEnable = SoftwareAuthority->RobotEnableList.at(i);
@@ -515,12 +518,17 @@ void MainWindow::on_pbStartSystem_clicked()
 
 void MainWindow::on_pbStopSystem_clicked()
 {
+    if (SoftwareAuthority->robotManager == NULL)
+        return;
+
     SoftwareAuthority->robotManager->Stop();
 }
 
 void MainWindow::openProject(QString fullName)
 {
     QSettings* settings = new QSettings(fullName, QSettings::IniFormat);
+
+    SoftwareLog(QString("Load project: ") + fullName);
 
     int robotNumber = settings->value("Project/RobotNumber").toInt();
     int tabID = ui->twProjectManager->count() - 1; // x

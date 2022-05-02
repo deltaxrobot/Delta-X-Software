@@ -21,6 +21,9 @@ void Encoder::SetPosition(float value)
 
     offset = CalculateOffset(step);
 
+    if (OffsetPoint != NULL)
+        *OffsetPoint = CalculateOffset(currentPosition - markPosition);
+
     if (offset != QPointF(0, 0))
         emit DistanceMoved(offset);
 }

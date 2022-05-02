@@ -746,16 +746,19 @@ public:
     QLineEdit *leEncoderPosition;
     QFrame *frame_11;
     QGridLayout *gridLayout_37;
-    QLabel *label_165;
-    QLineEdit *leConveyorPoint1Y;
-    QLabel *label_164;
-    QLineEdit *leConveyorPoint2Y;
-    QLabel *label_166;
-    QPushButton *pbCalibConveyorAngle;
-    QLineEdit *leConveyorPoint2X;
-    QLabel *label_154;
-    QLineEdit *leConveyorPoint1X;
     QLabel *label_170;
+    QLineEdit *leConveyorPoint2X;
+    QPushButton *pbCalibConveyorAngle;
+    QLineEdit *leConveyorPoint1X;
+    QLabel *label_197;
+    QLabel *label_199;
+    QLineEdit *leConveyorPoint1Y;
+    QLabel *label_198;
+    QLineEdit *leConveyorPoint2Y;
+    QPushButton *pbGetConveyorPoint1X;
+    QPushButton *pbGetConveyorPoint1Y;
+    QPushButton *pbGetConveyorPoint2X;
+    QPushButton *pbGetConveyorPoint2Y;
     QLabel *label_196;
     QLabel *label_149;
     QFrame *frame_12;
@@ -4062,7 +4065,7 @@ public:
         saObjectDetecting->setWidgetResizable(true);
         wObjectDetecting = new QWidget();
         wObjectDetecting->setObjectName(QString::fromUtf8("wObjectDetecting"));
-        wObjectDetecting->setGeometry(QRect(0, -2047, 571, 4000));
+        wObjectDetecting->setGeometry(QRect(0, -2077, 571, 4000));
         wObjectDetecting->setMinimumSize(QSize(450, 4000));
         wObjectDetecting->setStyleSheet(QString::fromUtf8("QWidget#wObjectDetecting\n"
 "{	\n"
@@ -5782,42 +5785,22 @@ public:
         gridLayout_37->setHorizontalSpacing(0);
         gridLayout_37->setVerticalSpacing(5);
         gridLayout_37->setContentsMargins(0, 0, 0, 0);
-        label_165 = new QLabel(frame_11);
-        label_165->setObjectName(QString::fromUtf8("label_165"));
-        label_165->setMaximumSize(QSize(20, 16777215));
+        label_170 = new QLabel(frame_11);
+        label_170->setObjectName(QString::fromUtf8("label_170"));
+        label_170->setMaximumSize(QSize(16777215, 16777215));
 
-        gridLayout_37->addWidget(label_165, 2, 0, 1, 1);
+        gridLayout_37->addWidget(label_170, 0, 2, 1, 1);
 
-        leConveyorPoint1Y = new QLineEdit(frame_11);
-        leConveyorPoint1Y->setObjectName(QString::fromUtf8("leConveyorPoint1Y"));
+        leConveyorPoint2X = new QLineEdit(frame_11);
+        leConveyorPoint2X->setObjectName(QString::fromUtf8("leConveyorPoint2X"));
         QSizePolicy sizePolicy10(QSizePolicy::Ignored, QSizePolicy::Preferred);
         sizePolicy10.setHorizontalStretch(0);
         sizePolicy10.setVerticalStretch(0);
-        sizePolicy10.setHeightForWidth(leConveyorPoint1Y->sizePolicy().hasHeightForWidth());
-        leConveyorPoint1Y->setSizePolicy(sizePolicy10);
-        leConveyorPoint1Y->setMinimumSize(QSize(0, 0));
+        sizePolicy10.setHeightForWidth(leConveyorPoint2X->sizePolicy().hasHeightForWidth());
+        leConveyorPoint2X->setSizePolicy(sizePolicy10);
+        leConveyorPoint2X->setMinimumSize(QSize(0, 0));
 
-        gridLayout_37->addWidget(leConveyorPoint1Y, 1, 1, 1, 1);
-
-        label_164 = new QLabel(frame_11);
-        label_164->setObjectName(QString::fromUtf8("label_164"));
-        label_164->setMaximumSize(QSize(20, 16777215));
-
-        gridLayout_37->addWidget(label_164, 1, 0, 1, 1);
-
-        leConveyorPoint2Y = new QLineEdit(frame_11);
-        leConveyorPoint2Y->setObjectName(QString::fromUtf8("leConveyorPoint2Y"));
-        sizePolicy10.setHeightForWidth(leConveyorPoint2Y->sizePolicy().hasHeightForWidth());
-        leConveyorPoint2Y->setSizePolicy(sizePolicy10);
-        leConveyorPoint2Y->setMinimumSize(QSize(0, 0));
-
-        gridLayout_37->addWidget(leConveyorPoint2Y, 3, 1, 1, 1);
-
-        label_166 = new QLabel(frame_11);
-        label_166->setObjectName(QString::fromUtf8("label_166"));
-        label_166->setMaximumSize(QSize(20, 16777215));
-
-        gridLayout_37->addWidget(label_166, 3, 0, 1, 1);
+        gridLayout_37->addWidget(leConveyorPoint2X, 2, 1, 1, 1);
 
         pbCalibConveyorAngle = new QPushButton(frame_11);
         pbCalibConveyorAngle->setObjectName(QString::fromUtf8("pbCalibConveyorAngle"));
@@ -5828,20 +5811,6 @@ public:
 
         gridLayout_37->addWidget(pbCalibConveyorAngle, 4, 1, 1, 1);
 
-        leConveyorPoint2X = new QLineEdit(frame_11);
-        leConveyorPoint2X->setObjectName(QString::fromUtf8("leConveyorPoint2X"));
-        sizePolicy10.setHeightForWidth(leConveyorPoint2X->sizePolicy().hasHeightForWidth());
-        leConveyorPoint2X->setSizePolicy(sizePolicy10);
-        leConveyorPoint2X->setMinimumSize(QSize(0, 0));
-
-        gridLayout_37->addWidget(leConveyorPoint2X, 2, 1, 1, 1);
-
-        label_154 = new QLabel(frame_11);
-        label_154->setObjectName(QString::fromUtf8("label_154"));
-        label_154->setMaximumSize(QSize(20, 16777215));
-
-        gridLayout_37->addWidget(label_154, 0, 0, 1, 1);
-
         leConveyorPoint1X = new QLineEdit(frame_11);
         leConveyorPoint1X->setObjectName(QString::fromUtf8("leConveyorPoint1X"));
         sizePolicy10.setHeightForWidth(leConveyorPoint1X->sizePolicy().hasHeightForWidth());
@@ -5850,11 +5819,75 @@ public:
 
         gridLayout_37->addWidget(leConveyorPoint1X, 0, 1, 1, 1);
 
-        label_170 = new QLabel(frame_11);
-        label_170->setObjectName(QString::fromUtf8("label_170"));
-        label_170->setMaximumSize(QSize(16777215, 16777215));
+        label_197 = new QLabel(frame_11);
+        label_197->setObjectName(QString::fromUtf8("label_197"));
+        label_197->setMaximumSize(QSize(16777215, 16777215));
 
-        gridLayout_37->addWidget(label_170, 0, 2, 1, 1);
+        gridLayout_37->addWidget(label_197, 1, 2, 1, 1);
+
+        label_199 = new QLabel(frame_11);
+        label_199->setObjectName(QString::fromUtf8("label_199"));
+        label_199->setMaximumSize(QSize(16777215, 16777215));
+
+        gridLayout_37->addWidget(label_199, 3, 2, 1, 1);
+
+        leConveyorPoint1Y = new QLineEdit(frame_11);
+        leConveyorPoint1Y->setObjectName(QString::fromUtf8("leConveyorPoint1Y"));
+        sizePolicy10.setHeightForWidth(leConveyorPoint1Y->sizePolicy().hasHeightForWidth());
+        leConveyorPoint1Y->setSizePolicy(sizePolicy10);
+        leConveyorPoint1Y->setMinimumSize(QSize(0, 0));
+
+        gridLayout_37->addWidget(leConveyorPoint1Y, 1, 1, 1, 1);
+
+        label_198 = new QLabel(frame_11);
+        label_198->setObjectName(QString::fromUtf8("label_198"));
+        label_198->setMaximumSize(QSize(16777215, 16777215));
+
+        gridLayout_37->addWidget(label_198, 2, 2, 1, 1);
+
+        leConveyorPoint2Y = new QLineEdit(frame_11);
+        leConveyorPoint2Y->setObjectName(QString::fromUtf8("leConveyorPoint2Y"));
+        sizePolicy10.setHeightForWidth(leConveyorPoint2Y->sizePolicy().hasHeightForWidth());
+        leConveyorPoint2Y->setSizePolicy(sizePolicy10);
+        leConveyorPoint2Y->setMinimumSize(QSize(0, 0));
+
+        gridLayout_37->addWidget(leConveyorPoint2Y, 3, 1, 1, 1);
+
+        pbGetConveyorPoint1X = new QPushButton(frame_11);
+        pbGetConveyorPoint1X->setObjectName(QString::fromUtf8("pbGetConveyorPoint1X"));
+        sizePolicy1.setHeightForWidth(pbGetConveyorPoint1X->sizePolicy().hasHeightForWidth());
+        pbGetConveyorPoint1X->setSizePolicy(sizePolicy1);
+        pbGetConveyorPoint1X->setMaximumSize(QSize(50, 16777215));
+        pbGetConveyorPoint1X->setFlat(true);
+
+        gridLayout_37->addWidget(pbGetConveyorPoint1X, 0, 0, 1, 1);
+
+        pbGetConveyorPoint1Y = new QPushButton(frame_11);
+        pbGetConveyorPoint1Y->setObjectName(QString::fromUtf8("pbGetConveyorPoint1Y"));
+        sizePolicy1.setHeightForWidth(pbGetConveyorPoint1Y->sizePolicy().hasHeightForWidth());
+        pbGetConveyorPoint1Y->setSizePolicy(sizePolicy1);
+        pbGetConveyorPoint1Y->setMaximumSize(QSize(50, 16777215));
+        pbGetConveyorPoint1Y->setFlat(true);
+
+        gridLayout_37->addWidget(pbGetConveyorPoint1Y, 1, 0, 1, 1);
+
+        pbGetConveyorPoint2X = new QPushButton(frame_11);
+        pbGetConveyorPoint2X->setObjectName(QString::fromUtf8("pbGetConveyorPoint2X"));
+        sizePolicy1.setHeightForWidth(pbGetConveyorPoint2X->sizePolicy().hasHeightForWidth());
+        pbGetConveyorPoint2X->setSizePolicy(sizePolicy1);
+        pbGetConveyorPoint2X->setMaximumSize(QSize(50, 16777215));
+        pbGetConveyorPoint2X->setFlat(true);
+
+        gridLayout_37->addWidget(pbGetConveyorPoint2X, 2, 0, 1, 1);
+
+        pbGetConveyorPoint2Y = new QPushButton(frame_11);
+        pbGetConveyorPoint2Y->setObjectName(QString::fromUtf8("pbGetConveyorPoint2Y"));
+        sizePolicy1.setHeightForWidth(pbGetConveyorPoint2Y->sizePolicy().hasHeightForWidth());
+        pbGetConveyorPoint2Y->setSizePolicy(sizePolicy1);
+        pbGetConveyorPoint2Y->setMaximumSize(QSize(50, 16777215));
+        pbGetConveyorPoint2Y->setFlat(true);
+
+        gridLayout_37->addWidget(pbGetConveyorPoint2Y, 3, 0, 1, 1);
 
 
         gridLayout_16->addWidget(frame_11, 8, 4, 1, 1);
@@ -7511,7 +7544,7 @@ public:
         label_178->setText(QCoreApplication::translate("RobotWindow", "W", nullptr));
         leImageWidth->setText(QCoreApplication::translate("RobotWindow", "800", nullptr));
         label_179->setText(QCoreApplication::translate("RobotWindow", "H", nullptr));
-        leImageHeight->setText(QCoreApplication::translate("RobotWindow", "600", nullptr));
+        leImageHeight->setText(QCoreApplication::translate("RobotWindow", "500", nullptr));
         gbCameraCalibration->setTitle(QCoreApplication::translate("RobotWindow", "Calibration", nullptr));
         pbCalibStep1->setText(QCoreApplication::translate("RobotWindow", "Step 1: Find the 4 points of the square", nullptr));
         leChessWidth->setText(QCoreApplication::translate("RobotWindow", "7", nullptr));
@@ -7642,7 +7675,7 @@ public:
         leForwardConveyorGcode->setText(QCoreApplication::translate("RobotWindow", "M03 D0", nullptr));
         leTurnOffConveyorGcode->setText(QCoreApplication::translate("RobotWindow", "M05 D0, M05 D1", nullptr));
         rbEncoderEnable->setText(QCoreApplication::translate("RobotWindow", "Use Encoder", nullptr));
-        label_148->setText(QCoreApplication::translate("RobotWindow", "<html><head/><body><p>Deviation angle </p><p>(X asis)</p></body></html>", nullptr));
+        label_148->setText(QCoreApplication::translate("RobotWindow", "<html><head/><body><p>Deviation angle </p><p><span style=\" font-weight:400; font-style:italic;\">X Axis</span></p></body></html>", nullptr));
         label_191->setText(QCoreApplication::translate("RobotWindow", "Proximity sensor", nullptr));
         leBackwardConveyorGcode->setText(QCoreApplication::translate("RobotWindow", "M03 D1", nullptr));
         label_45->setText(QCoreApplication::translate("RobotWindow", "Constant Velocity", nullptr));
@@ -7667,16 +7700,19 @@ public:
 
         label_120->setText(QCoreApplication::translate("RobotWindow", "Current Velocity", nullptr));
         cbAutoReadProximitySensor->setText(QCoreApplication::translate("RobotWindow", "Auto", nullptr));
-        label_165->setText(QCoreApplication::translate("RobotWindow", "X2", nullptr));
-        leConveyorPoint1Y->setText(QCoreApplication::translate("RobotWindow", "0", nullptr));
-        label_164->setText(QCoreApplication::translate("RobotWindow", "Y1", nullptr));
-        leConveyorPoint2Y->setText(QCoreApplication::translate("RobotWindow", "0", nullptr));
-        label_166->setText(QCoreApplication::translate("RobotWindow", "Y2", nullptr));
-        pbCalibConveyorAngle->setText(QCoreApplication::translate("RobotWindow", "Calculate", nullptr));
-        leConveyorPoint2X->setText(QCoreApplication::translate("RobotWindow", "100", nullptr));
-        label_154->setText(QCoreApplication::translate("RobotWindow", "X1", nullptr));
-        leConveyorPoint1X->setText(QCoreApplication::translate("RobotWindow", "0", nullptr));
         label_170->setText(QCoreApplication::translate("RobotWindow", "(mm)", nullptr));
+        leConveyorPoint2X->setText(QCoreApplication::translate("RobotWindow", "100", nullptr));
+        pbCalibConveyorAngle->setText(QCoreApplication::translate("RobotWindow", "Calculate", nullptr));
+        leConveyorPoint1X->setText(QCoreApplication::translate("RobotWindow", "0", nullptr));
+        label_197->setText(QCoreApplication::translate("RobotWindow", "(mm)", nullptr));
+        label_199->setText(QCoreApplication::translate("RobotWindow", "(mm)", nullptr));
+        leConveyorPoint1Y->setText(QCoreApplication::translate("RobotWindow", "0", nullptr));
+        label_198->setText(QCoreApplication::translate("RobotWindow", "(mm)", nullptr));
+        leConveyorPoint2Y->setText(QCoreApplication::translate("RobotWindow", "0", nullptr));
+        pbGetConveyorPoint1X->setText(QCoreApplication::translate("RobotWindow", "X1", nullptr));
+        pbGetConveyorPoint1Y->setText(QCoreApplication::translate("RobotWindow", "Y1", nullptr));
+        pbGetConveyorPoint2X->setText(QCoreApplication::translate("RobotWindow", "X2", nullptr));
+        pbGetConveyorPoint2Y->setText(QCoreApplication::translate("RobotWindow", "Y2", nullptr));
         label_196->setText(QCoreApplication::translate("RobotWindow", "<html><head/><body><p>Calib Points</p></body></html>", nullptr));
         label_149->setText(QCoreApplication::translate("RobotWindow", "(deg)", nullptr));
         leConveyorPoint3X->setText(QCoreApplication::translate("RobotWindow", "0", nullptr));

@@ -31,10 +31,19 @@ public:
     {
         X.Image = rotateRec.center.x;
         Y.Image = rotateRec.center.y;
-        Width.Image = rotateRec.size.height;
-        Length.Image = rotateRec.size.width;
 
-        Angle.Image = rotateRec.angle;
+        if (rotateRec.size.height < rotateRec.size.width)
+        {
+            Width.Image = rotateRec.size.height;
+            Length.Image = rotateRec.size.width;
+            Angle.Image = rotateRec.angle;
+        }
+        else
+        {
+            Width.Image = rotateRec.size.width;
+            Length.Image = rotateRec.size.height;
+            Angle.Image = rotateRec.angle + 90;
+        }
 
         ToPoints();
     }

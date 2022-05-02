@@ -3,6 +3,7 @@
 
 RobotManager::RobotManager(QObject *parent) : QObject(parent)
 {
+    int size = RobotWindows.size();
 }
 
 void RobotManager::AddRobotWindow(RobotWindow* robotWindow)
@@ -112,16 +113,25 @@ void RobotManager::LoadSettings(QSettings *setting)
 
     Setting = setting;
 
-    SetName(setting->value("Name", "project 0").toString());
+    QString projectName = setting->value("Name", "project 0").toString();
+    SetName(projectName);
+
+    SoftwareLog(QString("Project name: ") + projectName);
 
     int robotNumber = setting->value("RobotNumber", 1).toInt();
 
+    SoftwareLog(QString::number(robotNumber) + QString(" Robot"));
+
     for (int i = 0; i < robotNumber; i++)
     {
-        setting->beginGroup(QString("Robot%1").arg(i));
+        setting->beginGroup(QString("Robot%1").arg(i));        
 
         RobotWindow* robotWindow = CreatNewRobotWindow();
-        robotWindow->SetName(setting->value("Name", "robot " + QString::number(i + 1)).toString());
+
+        QString robotName = setting->value("Name", "robot " + QString::number(i + 1)).toString();
+        robotWindow->SetName(robotName);
+
+        SoftwareLog(QString("Open ") + robotName);
 
         robotWindow->LoadSettings(setting);
 
@@ -141,7 +151,7 @@ void RobotManager::SaveSettings(QSettings *setting)
     {
         setting->beginGroup(QString("Robot%1").arg(i));
 
-        setting->setValue(QString("Name").arg(i), RobotWindows[i]->Name);
+        setting->setValue("Name", RobotWindows[i]->Name);
 
         RobotWindows[i]->SaveSettings(setting);        
 

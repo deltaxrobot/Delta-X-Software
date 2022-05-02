@@ -89,19 +89,6 @@ void ConnectionManager::processRobotData()
     {
         emit ReceiveInputIO(receiveLine);
     }
-    // ---- Confirm from robot ----
-    else if (receiveLine.mid(0, 8) == "YesDelta")
-    {
-        if (isDeltaPortConnected != true)
-        {
-            delete RobotPort;
-            RobotPort = qobject_cast<QSerialPort*>(EmitIOSender);
-            emit DeltaResponeReady();
-
-            isDeltaPortConnected = true;
-
-        }
-    }
 }
 
 void ConnectionManager::processConveyorData()
@@ -216,6 +203,9 @@ void ConnectionManager::sendData(QSerialPort * com, QTcpSocket * socket, QString
 {
     transmitLine = msg;
 
+    if (msg == "")
+        return;
+
 	if (msg[msg.length() - 1] != "\n")
         msg += "\n";
 
@@ -229,7 +219,7 @@ void ConnectionManager::sendData(QSerialPort * com, QTcpSocket * socket, QString
             result = true;
 		}
 	}
-	if (socket != NULL)
+    else if (socket != NULL)
 	{
 		if (socket->isOpen())
 		{
@@ -323,7 +313,7 @@ int ConnectionManager::GetBaudrate()
 
 void ConnectionManager::FindDeltaRobot()
 {
-	Q_FOREACH(QSerialPortInfo portInfo, QSerialPortInfo::availablePorts())
+    foreach(QSerialPortInfo portInfo, QSerialPortInfo::availablePorts())
 	{
 		QSerialPort* sP = new QSerialPort();
 
@@ -335,7 +325,7 @@ void ConnectionManager::FindDeltaRobot()
 
         if (sP->open((QIODevice::ReadWrite)) == true)
         {
-			connect(sP, SIGNAL(readyRead()), this, SLOT(ReadData()));
+            connect(sP, SIGNAL(readyRead()), this, SLOT(CheckScanningRobotRespone()));
 
             QString name = sP->portName();
 
@@ -375,14 +365,16 @@ void ConnectionManager::SendToSlider(QString msg)
 
 void ConnectionManager::SendToExternalMCU(QString msg)
 {
+    emit Log(QString("MCU >> ") + msg);
+
+    sendData(ExternalControllerPort, ExternalControllerSocket, msg);
+}
+
+void ConnectionManager::SendToEncoder(QString msg)
+{
     emit Log(QString("Encoder >> ") + msg);
 
     sendData(EncoderPort, EncoderSocket, msg);
-}
-
-void ConnectionManager::SendtoEncoder(QString msg)
-{
-
 }
 
 void ConnectionManager::ReadData()
@@ -424,6 +416,33 @@ void ConnectionManager::ReadData()
             }
 
             processOtherSoftwareData();
+
+            receiveLine = "";
+        }
+    }
+}
+
+void ConnectionManager::CheckScanningRobotRespone()
+{
+    EmitIOSender = qobject_cast<QIODevice*>(sender());
+    QString response = EmitIOSender->readLine();
+
+    if (response.mid(0, 8) == "YesDelta")
+    {
+        if (isDeltaPortConnected != true)
+        {
+            delete RobotPort;
+            RobotPort = qobject_cast<QSerialPort*>(sender());
+
+            RobotPort->disconnect();
+
+            connect(RobotPort, SIGNAL(readyRead()), this, SLOT(ReadData()));
+            connect(RobotSocket, SIGNAL(readyRead()), this, SLOT(ReadData()));
+
+            emit DeltaResponeReady();
+
+            isDeltaPortConnected = true;
+
         }
     }
 }
@@ -478,10 +497,21 @@ void ConnectionManager::Send(int device, QString msg)
 {
     switch (device)
     {
-        case ROBOT : SendToRobot(msg);
-        case CONVEYOR : SendToConveyor(msg);
-        case SLIDER : SendToSlider(msg);
-        case MCU : SendToExternalMCU(msg);
+        case ROBOT :
+            SendToRobot(msg);
+            break;
+        case CONVEYOR :
+            SendToConveyor(msg);
+            break;
+        case SLIDER :
+            SendToSlider(msg);
+            break;
+        case MCU :
+            SendToExternalMCU(msg);
+            break;
+        case ENCODER :
+            SendToEncoder(msg);
+            break;
     }
 }
 

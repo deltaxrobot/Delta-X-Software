@@ -30,7 +30,7 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>457</width>
+        <width>465</width>
         <height>2000</height>
        </rect>
       </property>
@@ -153,7 +153,6 @@
           <widget class="QPushButton" name="pbConnectCamera">
            <property name="font">
             <font>
-             <weight>75</weight>
              <bold>true</bold>
             </font>
            </property>
@@ -514,7 +513,7 @@
        <item>
         <widget class="QLabel" name="lbCameraDisplay">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
@@ -522,7 +521,7 @@
          <property name="minimumSize">
           <size>
            <width>0</width>
-           <height>200</height>
+           <height>0</height>
           </size>
          </property>
          <property name="styleSheet">
@@ -530,6 +529,9 @@
          </property>
          <property name="text">
           <string/>
+         </property>
+         <property name="scaledContents">
+          <bool>true</bool>
          </property>
         </widget>
        </item>

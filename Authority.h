@@ -33,8 +33,8 @@ public:
 
     QList<QCheckBox*> RobotEnableList;
 
-    RobotManager* robotManager;
-    RobotWindow* robotWindow;
+    RobotManager* robotManager = NULL;
+    RobotWindow* robotWindow = NULL;
 
     QStringList operatorGcodeProgram;
 public slots:

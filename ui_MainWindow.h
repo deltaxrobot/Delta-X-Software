@@ -206,7 +206,6 @@ public:
         MainWindow->setMinimumSize(QSize(800, 480));
         QFont font;
         font.setBold(false);
-        font.setWeight(50);
         font.setKerning(true);
         MainWindow->setFont(font);
         QIcon icon;
@@ -596,7 +595,6 @@ public:
         QFont font1;
         font1.setPointSize(12);
         font1.setBold(true);
-        font1.setWeight(75);
         label_21->setFont(font1);
 
         verticalLayout_8->addWidget(label_21);
@@ -606,7 +604,7 @@ public:
         scrollArea_2->setWidgetResizable(true);
         scrollAreaWidgetContents_2 = new QWidget();
         scrollAreaWidgetContents_2->setObjectName(QString::fromUtf8("scrollAreaWidgetContents_2"));
-        scrollAreaWidgetContents_2->setGeometry(QRect(0, 0, 713, 211));
+        scrollAreaWidgetContents_2->setGeometry(QRect(0, 0, 1093, 604));
         verticalLayout_10 = new QVBoxLayout(scrollAreaWidgetContents_2);
         verticalLayout_10->setSpacing(6);
         verticalLayout_10->setContentsMargins(11, 11, 11, 11);
@@ -616,7 +614,6 @@ public:
         QFont font2;
         font2.setPointSize(20);
         font2.setBold(true);
-        font2.setWeight(75);
         lbOperatorTitile->setFont(font2);
         lbOperatorTitile->setStyleSheet(QString::fromUtf8("QLabel\n"
 "{\n"
@@ -779,7 +776,6 @@ public:
         groupBox_4->setObjectName(QString::fromUtf8("groupBox_4"));
         QFont font3;
         font3.setBold(true);
-        font3.setWeight(75);
         groupBox_4->setFont(font3);
         groupBox_4->setStyleSheet(QString::fromUtf8("QLabel:hover\n"
 "{\n"
@@ -951,7 +947,7 @@ public:
         scrollArea->setWidgetResizable(true);
         scrollAreaWidgetContents = new QWidget();
         scrollAreaWidgetContents->setObjectName(QString::fromUtf8("scrollAreaWidgetContents"));
-        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 636, 700));
+        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 600, 700));
         scrollAreaWidgetContents->setMinimumSize(QSize(0, 700));
         verticalLayout_7 = new QVBoxLayout(scrollAreaWidgetContents);
         verticalLayout_7->setSpacing(6);
@@ -973,7 +969,6 @@ public:
         groupBox_5->setMinimumSize(QSize(0, 0));
         QFont font4;
         font4.setBold(false);
-        font4.setWeight(50);
         groupBox_5->setFont(font4);
         gridLayout_4 = new QGridLayout(groupBox_5);
         gridLayout_4->setSpacing(6);
@@ -1221,7 +1216,6 @@ public:
         QFont font5;
         font5.setPointSize(12);
         font5.setBold(false);
-        font5.setWeight(50);
         font5.setKerning(true);
         twProjectManager->setFont(font5);
         twProjectManager->setStyleSheet(QString::fromUtf8(""));
@@ -1307,7 +1301,7 @@ public:
         retranslateUi(MainWindow);
 
         stackedWidget->setCurrentIndex(0);
-        swPageStack->setCurrentIndex(8);
+        swPageStack->setCurrentIndex(1);
         swAuthority->setCurrentIndex(0);
         twProjectManager->setCurrentIndex(0);
 
@@ -1408,10 +1402,10 @@ public:
         pbDeleteOperatorGcodeProgram->setText(QCoreApplication::translate("MainWindow", "x", nullptr));
         twProjectManager->setTabText(twProjectManager->indexOf(tabAddNewButton), QCoreApplication::translate("MainWindow", "+", nullptr));
         teLoggingBox->setHtml(QCoreApplication::translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:'MS Shell Dlg 2'; font-size:7.8pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>", nullptr));
+"</style></head><body style=\" font-family:'Segoe UI'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:7.8pt;\"><br /></p></body></html>", nullptr));
         tbExpandLoggingBox->setText(QString());
     } // retranslateUi
 

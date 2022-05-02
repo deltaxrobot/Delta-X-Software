@@ -7,6 +7,7 @@
 #include <QtMath>
 #include <QtPrintSupport/qtprintsupportglobal.h>
 #include <QSettings>
+#include <UnityTool.h>
 
 class CustomScene : public QGraphicsScene
 {
@@ -680,6 +681,7 @@ public:
 
     void SetTopLeft(QPointF p)
     {
+
         rect.setTopLeft(p);
         rectToLine();
         updateVisual();
@@ -796,6 +798,8 @@ private:
     QGraphicsRectItem* whiteRectItems[3];
     QGraphicsRectItem* blackRectItems[3];
 };
+
+#define MAX_DRAWING_OBJECT_NUMBER 100
 
 class ImageViewer : public QGraphicsView
 {
@@ -925,6 +929,9 @@ protected:
     QList<QGraphicsRectItem*> rectItems;
     QList<QGraphicsPolygonItem*> polygonItems;
     QList<QGraphicsTextItem*> textItems;
+
+    int visiblePolygon = 0;
+    int visibleText = 0;
 
     bool mousePressed;
     bool drawStarted;

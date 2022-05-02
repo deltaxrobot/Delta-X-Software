@@ -10,6 +10,7 @@
 #include <opencv2/imgproc.hpp>
 #include "UnityTool.h"
 #include "Object.h"
+#include <QScrollArea>
 
 class ObjectVariable
 {

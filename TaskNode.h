@@ -64,6 +64,7 @@ public:
     QMatrix GetMatrix();
     cv::Mat GetOutputImage();
     Object GetInputObject();
+    QPointF *GetInputPointPointer();
     bool ClearVariable(QString name);
 
     QList<QMetaObject::Connection> InputConnections;

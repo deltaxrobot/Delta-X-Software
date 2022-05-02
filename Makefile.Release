@@ -1672,6 +1672,7 @@ release\moc_Authority.cpp: Authority.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		TaskNode.h \
 		Object.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutexLocker \
 		GcodeReference.h \
 		ui_GcodeReference.h \
 		DrawingExporter.h \
@@ -1702,6 +1703,7 @@ release\moc_Authority.cpp: Authority.h \
 		ObjectVariableTable.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QSpacerItem \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGridLayout \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QScrollArea \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\QCameraInfo \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\qcamerainfo.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\qcamera.h \
@@ -4106,6 +4108,7 @@ release\moc_GcodeProgramManager.cpp: GcodeProgramManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		TaskNode.h \
 		Object.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutexLocker \
 		GcodeReference.h \
 		ui_GcodeReference.h \
 		DrawingExporter.h \
@@ -4137,6 +4140,7 @@ release\moc_GcodeProgramManager.cpp: GcodeProgramManager.h \
 		ObjectVariableTable.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QSpacerItem \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGridLayout \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QScrollArea \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\QCameraInfo \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\qcamerainfo.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\qcamera.h \
@@ -5432,6 +5436,7 @@ release\moc_MainWindow.cpp: MainWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		TaskNode.h \
 		Object.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutexLocker \
 		GcodeReference.h \
 		ui_GcodeReference.h \
 		DrawingExporter.h \
@@ -5461,6 +5466,7 @@ release\moc_MainWindow.cpp: MainWindow.h \
 		ObjectVariableTable.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QSpacerItem \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGridLayout \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QScrollArea \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\QCameraInfo \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\qcamerainfo.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\qcamera.h \
@@ -6151,6 +6157,7 @@ release\moc_ObjectDetector.cpp: ObjectDetector.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		TaskNode.h \
 		Object.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutexLocker \
 		GcodeReference.h \
 		ui_GcodeReference.h \
 		DrawingExporter.h \
@@ -6182,6 +6189,7 @@ release\moc_ObjectDetector.cpp: ObjectDetector.h \
 		ObjectVariableTable.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QSpacerItem \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGridLayout \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QScrollArea \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\QCameraInfo \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\qcamerainfo.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\qcamera.h \
@@ -6489,6 +6497,7 @@ release\moc_ImageProcessing.cpp: ImageProcessing.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qlayoutitem.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qgridlayout.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLineEdit \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutexLocker \
 		release\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2015_64\bin\moc.exe
 	C:\Qt\5.15.2\msvc2015_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include E:/Project/Company/DeltaXSoftware/release/moc_predefs.h -IC:/Qt/5.15.2/msvc2015_64/mkspecs/win32-msvc -IE:/Project/Company/DeltaXSoftware -IE:/OpenCV/opencv-4.0/build/include -IE:/Project/Company/DeltaXSoftware/3rd-party/QJoysticks/lib/SDL/include -IE:/Project/Company/DeltaXSoftware/3rd-party/QJoysticks/src -IC:/Qt/5.15.2/msvc2015_64/include -IC:/Qt/5.15.2/msvc2015_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2015_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2015_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2015_64/include/QtQuick -IC:/Qt/5.15.2/msvc2015_64/include/QtGui -IC:/Qt/5.15.2/msvc2015_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2015_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2015_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2015_64/include/QtQml -IC:/Qt/5.15.2/msvc2015_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2015_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" ImageProcessing.h -o release\moc_ImageProcessing.cpp
@@ -6939,6 +6948,17 @@ release\moc_ObjectVariableTable.cpp: ObjectVariableTable.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpen.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QElapsedTimer \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qelapsedtimer.h \
+		Object.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QPushButton \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qpushbutton.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qabstractbutton.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qicon.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QVBoxLayout \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDebug \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLineEdit \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qlineedit.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QScrollArea \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qscrollarea.h \
 		release\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2015_64\bin\moc.exe
 	C:\Qt\5.15.2\msvc2015_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include E:/Project/Company/DeltaXSoftware/release/moc_predefs.h -IC:/Qt/5.15.2/msvc2015_64/mkspecs/win32-msvc -IE:/Project/Company/DeltaXSoftware -IE:/OpenCV/opencv-4.0/build/include -IE:/Project/Company/DeltaXSoftware/3rd-party/QJoysticks/lib/SDL/include -IE:/Project/Company/DeltaXSoftware/3rd-party/QJoysticks/src -IC:/Qt/5.15.2/msvc2015_64/include -IC:/Qt/5.15.2/msvc2015_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2015_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2015_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2015_64/include/QtQuick -IC:/Qt/5.15.2/msvc2015_64/include/QtGui -IC:/Qt/5.15.2/msvc2015_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2015_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2015_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2015_64/include/QtQml -IC:/Qt/5.15.2/msvc2015_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2015_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" ObjectVariableTable.h -o release\moc_ObjectVariableTable.cpp
@@ -7600,6 +7620,7 @@ release\moc_ProjectManager.cpp: ProjectManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		TaskNode.h \
 		Object.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutexLocker \
 		GcodeReference.h \
 		ui_GcodeReference.h \
 		DrawingExporter.h \
@@ -7629,6 +7650,7 @@ release\moc_ProjectManager.cpp: ProjectManager.h \
 		ObjectVariableTable.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QSpacerItem \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGridLayout \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QScrollArea \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\QCameraInfo \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\qcamerainfo.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\qcamera.h \
@@ -8316,6 +8338,7 @@ release\moc_RobotWindow.cpp: RobotWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		TaskNode.h \
 		Object.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutexLocker \
 		GcodeReference.h \
 		ui_GcodeReference.h \
 		DrawingExporter.h \
@@ -8347,6 +8370,7 @@ release\moc_RobotWindow.cpp: RobotWindow.h \
 		ObjectVariableTable.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QSpacerItem \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGridLayout \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QScrollArea \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\QCameraInfo \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\qcamerainfo.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\qcamera.h \
@@ -9289,6 +9313,7 @@ release\moc_TabDashboard.cpp: TabDashboard.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		TaskNode.h \
 		Object.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutexLocker \
 		GcodeReference.h \
 		ui_GcodeReference.h \
 		DrawingExporter.h \
@@ -9318,6 +9343,7 @@ release\moc_TabDashboard.cpp: TabDashboard.h \
 		ObjectVariableTable.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QSpacerItem \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGridLayout \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QScrollArea \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\QCameraInfo \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\qcamerainfo.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\qcamera.h \
@@ -9590,6 +9616,7 @@ release\moc_TaskNode.cpp: TaskNode.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qgridlayout.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLineEdit \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qlineedit.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutexLocker \
 		release\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2015_64\bin\moc.exe
 	C:\Qt\5.15.2\msvc2015_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include E:/Project/Company/DeltaXSoftware/release/moc_predefs.h -IC:/Qt/5.15.2/msvc2015_64/mkspecs/win32-msvc -IE:/Project/Company/DeltaXSoftware -IE:/OpenCV/opencv-4.0/build/include -IE:/Project/Company/DeltaXSoftware/3rd-party/QJoysticks/lib/SDL/include -IE:/Project/Company/DeltaXSoftware/3rd-party/QJoysticks/src -IC:/Qt/5.15.2/msvc2015_64/include -IC:/Qt/5.15.2/msvc2015_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2015_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2015_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2015_64/include/QtQuick -IC:/Qt/5.15.2/msvc2015_64/include/QtGui -IC:/Qt/5.15.2/msvc2015_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2015_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2015_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2015_64/include/QtQml -IC:/Qt/5.15.2/msvc2015_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2015_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" TaskNode.h -o release\moc_TaskNode.cpp
@@ -11253,6 +11280,7 @@ release\moc_robotmanager.cpp: robotmanager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		TaskNode.h \
 		Object.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutexLocker \
 		GcodeReference.h \
 		ui_GcodeReference.h \
 		DrawingExporter.h \
@@ -11283,6 +11311,7 @@ release\moc_robotmanager.cpp: robotmanager.h \
 		ObjectVariableTable.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QSpacerItem \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGridLayout \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QScrollArea \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\QCameraInfo \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\qcamerainfo.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\qcamera.h \
@@ -13326,6 +13355,7 @@ release\main.obj: main.cpp RobotWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		TaskNode.h \
 		Object.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutexLocker \
 		GcodeReference.h \
 		ui_GcodeReference.h \
 		DrawingExporter.h \
@@ -13357,6 +13387,7 @@ release\main.obj: main.cpp RobotWindow.h \
 		ObjectVariableTable.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QSpacerItem \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGridLayout \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QScrollArea \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\QCameraInfo \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\qcamerainfo.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\qcamera.h \
@@ -14169,6 +14200,7 @@ release\Authority.obj: Authority.cpp Authority.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		TaskNode.h \
 		Object.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutexLocker \
 		GcodeReference.h \
 		ui_GcodeReference.h \
 		DrawingExporter.h \
@@ -14199,6 +14231,7 @@ release\Authority.obj: Authority.cpp Authority.h \
 		ObjectVariableTable.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QSpacerItem \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGridLayout \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QScrollArea \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\QCameraInfo \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\qcamerainfo.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\qcamera.h \
@@ -15770,7 +15803,8 @@ release\ImageProcessing.obj: ImageProcessing.cpp ImageProcessing.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qlayout.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qlayoutitem.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qgridlayout.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLineEdit
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLineEdit \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutexLocker
 
 release\ImageViewer.obj: ImageViewer.cpp ImageViewer.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGraphicsView \
@@ -17018,6 +17052,7 @@ release\MainWindow.obj: MainWindow.cpp MainWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		TaskNode.h \
 		Object.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutexLocker \
 		GcodeReference.h \
 		ui_GcodeReference.h \
 		DrawingExporter.h \
@@ -17047,6 +17082,7 @@ release\MainWindow.obj: MainWindow.cpp MainWindow.h \
 		ObjectVariableTable.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QSpacerItem \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGridLayout \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QScrollArea \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\QCameraInfo \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\qcamerainfo.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\qcamera.h \
@@ -17756,6 +17792,8 @@ release\ObjectDetector.obj: ObjectDetector.cpp ObjectDetector.h \
 		ObjectVariableTable.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QSpacerItem \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGridLayout \
+		Object.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QScrollArea \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QProcess \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\QCameraInfo \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\qcamerainfo.h \
@@ -17801,7 +17839,7 @@ release\ObjectDetector.obj: ObjectDetector.cpp ObjectDetector.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QTcpSocket \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QTcpServer \
 		TaskNode.h \
-		Object.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutexLocker \
 		GcodeScript.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutex \
 		Parameter.h \
@@ -18249,7 +18287,18 @@ release\ObjectVariableTable.obj: ObjectVariableTable.cpp ObjectVariableTable.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtextformat.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpen.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QElapsedTimer \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qelapsedtimer.h
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qelapsedtimer.h \
+		Object.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QPushButton \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qpushbutton.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qabstractbutton.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qicon.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QVBoxLayout \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDebug \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLineEdit \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qlineedit.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QScrollArea \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qscrollarea.h
 
 release\Parameter.obj: Parameter.cpp 
 
@@ -18910,6 +18959,7 @@ release\ProjectManager.obj: ProjectManager.cpp ProjectManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		TaskNode.h \
 		Object.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutexLocker \
 		GcodeReference.h \
 		ui_GcodeReference.h \
 		DrawingExporter.h \
@@ -18939,6 +18989,7 @@ release\ProjectManager.obj: ProjectManager.cpp ProjectManager.h \
 		ObjectVariableTable.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QSpacerItem \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGridLayout \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QScrollArea \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\QCameraInfo \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\qcamerainfo.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\qcamera.h \
@@ -19656,6 +19707,7 @@ release\RobotWindow.obj: RobotWindow.cpp RobotWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		TaskNode.h \
 		Object.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutexLocker \
 		GcodeReference.h \
 		ui_GcodeReference.h \
 		DrawingExporter.h \
@@ -19687,6 +19739,7 @@ release\RobotWindow.obj: RobotWindow.cpp RobotWindow.h \
 		ObjectVariableTable.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QSpacerItem \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGridLayout \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QScrollArea \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\QCameraInfo \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\qcamerainfo.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\qcamera.h \
@@ -20491,6 +20544,7 @@ release\SoftwareManager.obj: SoftwareManager.cpp SoftwareManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		TaskNode.h \
 		Object.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutexLocker \
 		GcodeReference.h \
 		ui_GcodeReference.h \
 		DrawingExporter.h \
@@ -20521,6 +20575,7 @@ release\SoftwareManager.obj: SoftwareManager.cpp SoftwareManager.h \
 		ObjectVariableTable.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QSpacerItem \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGridLayout \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QScrollArea \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\QCameraInfo \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\qcamerainfo.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\qcamera.h \
@@ -21340,6 +21395,7 @@ release\TabDashboard.obj: TabDashboard.cpp TabDashboard.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		TaskNode.h \
 		Object.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutexLocker \
 		GcodeReference.h \
 		ui_GcodeReference.h \
 		DrawingExporter.h \
@@ -21369,6 +21425,7 @@ release\TabDashboard.obj: TabDashboard.cpp TabDashboard.h \
 		ObjectVariableTable.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QSpacerItem \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGridLayout \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QScrollArea \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\QCameraInfo \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\qcamerainfo.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\qcamera.h \
@@ -21637,7 +21694,8 @@ release\TaskNode.obj: TaskNode.cpp TaskNode.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qlayoutitem.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qgridlayout.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLineEdit \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qlineedit.h
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qlineedit.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutexLocker
 
 release\TextLayer.obj: TextLayer.cpp TextLayer.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLineEdit \
@@ -23534,6 +23592,7 @@ release\GcodeProgramManager.obj: GcodeProgramManager.cpp GcodeProgramManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		TaskNode.h \
 		Object.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutexLocker \
 		GcodeReference.h \
 		ui_GcodeReference.h \
 		DrawingExporter.h \
@@ -23565,6 +23624,7 @@ release\GcodeProgramManager.obj: GcodeProgramManager.cpp GcodeProgramManager.h \
 		ObjectVariableTable.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QSpacerItem \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGridLayout \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QScrollArea \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\QCameraInfo \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\qcamerainfo.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\qcamera.h \
@@ -24400,6 +24460,7 @@ release\UnityTool.obj: UnityTool.cpp UnityTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		TaskNode.h \
 		Object.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutexLocker \
 		GcodeReference.h \
 		ui_GcodeReference.h \
 		DrawingExporter.h \
@@ -24431,6 +24492,7 @@ release\UnityTool.obj: UnityTool.cpp UnityTool.h \
 		ObjectVariableTable.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QSpacerItem \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGridLayout \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QScrollArea \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\QCameraInfo \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\qcamerainfo.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\qcamera.h \
@@ -25611,6 +25673,7 @@ release\robotmanager.obj: robotmanager.cpp robotmanager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		TaskNode.h \
 		Object.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutexLocker \
 		GcodeReference.h \
 		ui_GcodeReference.h \
 		DrawingExporter.h \
@@ -25641,6 +25704,7 @@ release\robotmanager.obj: robotmanager.cpp robotmanager.h \
 		ObjectVariableTable.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QSpacerItem \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGridLayout \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QScrollArea \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\QCameraInfo \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\qcamerainfo.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\qcamera.h \

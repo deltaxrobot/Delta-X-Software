@@ -7232,7 +7232,7 @@ p, li { white-space: pre-wrap; }
                   <property name="geometry">
                    <rect>
                     <x>0</x>
-                    <y>-2047</y>
+                    <y>-2077</y>
                     <width>571</width>
                     <height>4000</height>
                    </rect>
@@ -8588,7 +8588,7 @@ p, li { white-space: pre-wrap; }
                                    </font>
                                   </property>
                                   <property name="text">
-                                   <string>600</string>
+                                   <string>500</string>
                                   </property>
                                   <property name="alignment">
                                    <set>Qt::AlignCenter</set>
@@ -10788,7 +10788,7 @@ p, li { white-space: pre-wrap; }
                                   </font>
                                  </property>
                                  <property name="text">
-                                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Deviation angle &lt;/p&gt;&lt;p&gt;(X asis)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Deviation angle &lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:400; font-style:italic;&quot;&gt;X Axis&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                                  </property>
                                 </widget>
                                </item>
@@ -11171,21 +11171,21 @@ p, li { white-space: pre-wrap; }
                                   <property name="verticalSpacing">
                                    <number>5</number>
                                   </property>
-                                  <item row="2" column="0">
-                                   <widget class="QLabel" name="label_165">
+                                  <item row="0" column="2">
+                                   <widget class="QLabel" name="label_170">
                                     <property name="maximumSize">
                                      <size>
-                                      <width>20</width>
+                                      <width>16777215</width>
                                       <height>16777215</height>
                                      </size>
                                     </property>
                                     <property name="text">
-                                     <string>X2</string>
+                                     <string>(mm)</string>
                                     </property>
                                    </widget>
                                   </item>
-                                  <item row="1" column="1">
-                                   <widget class="QLineEdit" name="leConveyorPoint1Y">
+                                  <item row="2" column="1">
+                                   <widget class="QLineEdit" name="leConveyorPoint2X">
                                     <property name="sizePolicy">
                                      <sizepolicy hsizetype="Ignored" vsizetype="Preferred">
                                       <horstretch>0</horstretch>
@@ -11199,52 +11199,7 @@ p, li { white-space: pre-wrap; }
                                      </size>
                                     </property>
                                     <property name="text">
-                                     <string>0</string>
-                                    </property>
-                                   </widget>
-                                  </item>
-                                  <item row="1" column="0">
-                                   <widget class="QLabel" name="label_164">
-                                    <property name="maximumSize">
-                                     <size>
-                                      <width>20</width>
-                                      <height>16777215</height>
-                                     </size>
-                                    </property>
-                                    <property name="text">
-                                     <string>Y1</string>
-                                    </property>
-                                   </widget>
-                                  </item>
-                                  <item row="3" column="1">
-                                   <widget class="QLineEdit" name="leConveyorPoint2Y">
-                                    <property name="sizePolicy">
-                                     <sizepolicy hsizetype="Ignored" vsizetype="Preferred">
-                                      <horstretch>0</horstretch>
-                                      <verstretch>0</verstretch>
-                                     </sizepolicy>
-                                    </property>
-                                    <property name="minimumSize">
-                                     <size>
-                                      <width>0</width>
-                                      <height>0</height>
-                                     </size>
-                                    </property>
-                                    <property name="text">
-                                     <string>0</string>
-                                    </property>
-                                   </widget>
-                                  </item>
-                                  <item row="3" column="0">
-                                   <widget class="QLabel" name="label_166">
-                                    <property name="maximumSize">
-                                     <size>
-                                      <width>20</width>
-                                      <height>16777215</height>
-                                     </size>
-                                    </property>
-                                    <property name="text">
-                                     <string>Y2</string>
+                                     <string>100</string>
                                     </property>
                                    </widget>
                                   </item>
@@ -11273,38 +11228,6 @@ p, li { white-space: pre-wrap; }
                                     </property>
                                    </widget>
                                   </item>
-                                  <item row="2" column="1">
-                                   <widget class="QLineEdit" name="leConveyorPoint2X">
-                                    <property name="sizePolicy">
-                                     <sizepolicy hsizetype="Ignored" vsizetype="Preferred">
-                                      <horstretch>0</horstretch>
-                                      <verstretch>0</verstretch>
-                                     </sizepolicy>
-                                    </property>
-                                    <property name="minimumSize">
-                                     <size>
-                                      <width>0</width>
-                                      <height>0</height>
-                                     </size>
-                                    </property>
-                                    <property name="text">
-                                     <string>100</string>
-                                    </property>
-                                   </widget>
-                                  </item>
-                                  <item row="0" column="0">
-                                   <widget class="QLabel" name="label_154">
-                                    <property name="maximumSize">
-                                     <size>
-                                      <width>20</width>
-                                      <height>16777215</height>
-                                     </size>
-                                    </property>
-                                    <property name="text">
-                                     <string>X1</string>
-                                    </property>
-                                   </widget>
-                                  </item>
                                   <item row="0" column="1">
                                    <widget class="QLineEdit" name="leConveyorPoint1X">
                                     <property name="sizePolicy">
@@ -11324,8 +11247,8 @@ p, li { white-space: pre-wrap; }
                                     </property>
                                    </widget>
                                   </item>
-                                  <item row="0" column="2">
-                                   <widget class="QLabel" name="label_170">
+                                  <item row="1" column="2">
+                                   <widget class="QLabel" name="label_197">
                                     <property name="maximumSize">
                                      <size>
                                       <width>16777215</width>
@@ -11334,6 +11257,158 @@ p, li { white-space: pre-wrap; }
                                     </property>
                                     <property name="text">
                                      <string>(mm)</string>
+                                    </property>
+                                   </widget>
+                                  </item>
+                                  <item row="3" column="2">
+                                   <widget class="QLabel" name="label_199">
+                                    <property name="maximumSize">
+                                     <size>
+                                      <width>16777215</width>
+                                      <height>16777215</height>
+                                     </size>
+                                    </property>
+                                    <property name="text">
+                                     <string>(mm)</string>
+                                    </property>
+                                   </widget>
+                                  </item>
+                                  <item row="1" column="1">
+                                   <widget class="QLineEdit" name="leConveyorPoint1Y">
+                                    <property name="sizePolicy">
+                                     <sizepolicy hsizetype="Ignored" vsizetype="Preferred">
+                                      <horstretch>0</horstretch>
+                                      <verstretch>0</verstretch>
+                                     </sizepolicy>
+                                    </property>
+                                    <property name="minimumSize">
+                                     <size>
+                                      <width>0</width>
+                                      <height>0</height>
+                                     </size>
+                                    </property>
+                                    <property name="text">
+                                     <string>0</string>
+                                    </property>
+                                   </widget>
+                                  </item>
+                                  <item row="2" column="2">
+                                   <widget class="QLabel" name="label_198">
+                                    <property name="maximumSize">
+                                     <size>
+                                      <width>16777215</width>
+                                      <height>16777215</height>
+                                     </size>
+                                    </property>
+                                    <property name="text">
+                                     <string>(mm)</string>
+                                    </property>
+                                   </widget>
+                                  </item>
+                                  <item row="3" column="1">
+                                   <widget class="QLineEdit" name="leConveyorPoint2Y">
+                                    <property name="sizePolicy">
+                                     <sizepolicy hsizetype="Ignored" vsizetype="Preferred">
+                                      <horstretch>0</horstretch>
+                                      <verstretch>0</verstretch>
+                                     </sizepolicy>
+                                    </property>
+                                    <property name="minimumSize">
+                                     <size>
+                                      <width>0</width>
+                                      <height>0</height>
+                                     </size>
+                                    </property>
+                                    <property name="text">
+                                     <string>0</string>
+                                    </property>
+                                   </widget>
+                                  </item>
+                                  <item row="0" column="0">
+                                   <widget class="QPushButton" name="pbGetConveyorPoint1X">
+                                    <property name="sizePolicy">
+                                     <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                                      <horstretch>0</horstretch>
+                                      <verstretch>0</verstretch>
+                                     </sizepolicy>
+                                    </property>
+                                    <property name="maximumSize">
+                                     <size>
+                                      <width>50</width>
+                                      <height>16777215</height>
+                                     </size>
+                                    </property>
+                                    <property name="text">
+                                     <string>X1</string>
+                                    </property>
+                                    <property name="flat">
+                                     <bool>true</bool>
+                                    </property>
+                                   </widget>
+                                  </item>
+                                  <item row="1" column="0">
+                                   <widget class="QPushButton" name="pbGetConveyorPoint1Y">
+                                    <property name="sizePolicy">
+                                     <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                                      <horstretch>0</horstretch>
+                                      <verstretch>0</verstretch>
+                                     </sizepolicy>
+                                    </property>
+                                    <property name="maximumSize">
+                                     <size>
+                                      <width>50</width>
+                                      <height>16777215</height>
+                                     </size>
+                                    </property>
+                                    <property name="text">
+                                     <string>Y1</string>
+                                    </property>
+                                    <property name="flat">
+                                     <bool>true</bool>
+                                    </property>
+                                   </widget>
+                                  </item>
+                                  <item row="2" column="0">
+                                   <widget class="QPushButton" name="pbGetConveyorPoint2X">
+                                    <property name="sizePolicy">
+                                     <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                                      <horstretch>0</horstretch>
+                                      <verstretch>0</verstretch>
+                                     </sizepolicy>
+                                    </property>
+                                    <property name="maximumSize">
+                                     <size>
+                                      <width>50</width>
+                                      <height>16777215</height>
+                                     </size>
+                                    </property>
+                                    <property name="text">
+                                     <string>X2</string>
+                                    </property>
+                                    <property name="flat">
+                                     <bool>true</bool>
+                                    </property>
+                                   </widget>
+                                  </item>
+                                  <item row="3" column="0">
+                                   <widget class="QPushButton" name="pbGetConveyorPoint2Y">
+                                    <property name="sizePolicy">
+                                     <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                                      <horstretch>0</horstretch>
+                                      <verstretch>0</verstretch>
+                                     </sizepolicy>
+                                    </property>
+                                    <property name="maximumSize">
+                                     <size>
+                                      <width>50</width>
+                                      <height>16777215</height>
+                                     </size>
+                                    </property>
+                                    <property name="text">
+                                     <string>Y2</string>
+                                    </property>
+                                    <property name="flat">
+                                     <bool>true</bool>
                                     </property>
                                    </widget>
                                   </item>

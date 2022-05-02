@@ -223,6 +223,8 @@ Makefile: IndustrialCamera.pro C:\Qt\5.15.2\msvc2015_64\mkspecs\win32-msvc\qmake
 		C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_uiplugin.pri \
 		C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_uitools.pri \
 		C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_uitools_private.pri \
+		C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_virtualkeyboard.pri \
+		C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_virtualkeyboard_private.pri \
 		C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_vulkan_support_private.pri \
 		C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_webchannel.pri \
 		C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_webchannel_private.pri \
@@ -417,6 +419,8 @@ C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_theme_support_private.pri:
 C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_uiplugin.pri:
 C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_uitools.pri:
 C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_uitools_private.pri:
+C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_virtualkeyboard.pri:
+C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_virtualkeyboard_private.pri:
 C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_vulkan_support_private.pri:
 C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_webchannel.pri:
 C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_webchannel_private.pri:

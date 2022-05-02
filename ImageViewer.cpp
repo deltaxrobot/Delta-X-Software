@@ -24,7 +24,7 @@ ImageViewer::ImageViewer(QWidget *parent) :
 
     setMoveHand(true);
 
-    for (int i = 0; i < 100; i++)
+    for (int i = 0; i < MAX_DRAWING_OBJECT_NUMBER; i++)
     {
         QGraphicsPolygonItem* polygonItem = new QGraphicsPolygonItem();
         polygonItems.append(polygonItem);
@@ -76,28 +76,55 @@ void ImageViewer::InitParameter()
     int quadangleOffset = imgHeight / 4;
     int areaOffset = 25;
 
-    QPolygonF poly;
-    poly.append(QPointF(imgWidth / 2 - quadangleOffset, imgHeight / 2 - quadangleOffset));
-    poly.append(QPointF(imgWidth / 2 - quadangleOffset, imgHeight / 2 + quadangleOffset));
-    poly.append(QPointF(imgWidth / 2 + quadangleOffset, imgHeight / 2 + quadangleOffset));
-    poly.append(QPointF(imgWidth / 2 + quadangleOffset, imgHeight / 2 - quadangleOffset));
+    if (cQuadangle.GetPolygon().count() == 0)
+    {
+        QPolygonF poly;
+        poly.append(QPointF(imgWidth / 2 - quadangleOffset, imgHeight / 2 - quadangleOffset));
+        poly.append(QPointF(imgWidth / 2 - quadangleOffset, imgHeight / 2 + quadangleOffset));
+        poly.append(QPointF(imgWidth / 2 + quadangleOffset, imgHeight / 2 + quadangleOffset));
+        poly.append(QPointF(imgWidth / 2 + quadangleOffset, imgHeight / 2 - quadangleOffset));
 
-    cQuadangle.SetPolygon(poly);
+        cQuadangle.SetPolygon(poly);
 
-    cArea.SetTopLeft(QPointF(areaOffset, areaOffset));
-    cArea.SetBottomRight(QPointF(imgWidth - areaOffset, imgHeight - areaOffset));
+        emit changedQuadrangle(poly);
+    }
 
-    cRect.SetValue(QRectF(200, 200, 30, 15));
+    if (cArea.GetValue() == QRectF(0, 0, 0, 0))
+    {
+        cArea.SetTopLeft(QPointF(areaOffset, areaOffset));
+        cArea.SetBottomRight(QPointF(imgWidth - areaOffset, imgHeight - areaOffset));
+
+        emit changedArea(cArea.GetValue());
+    }
+
+    if (cRect.GetValue() == QRectF(0, 0, 0, 0))
+    {
+        cRect.SetValue(QRectF(200, 200, 30, 15));
+
+        emit changedRect(cRect.GetValue());
+    }
 }
 
 void ImageViewer::SaveSetting(QSettings *setting)
 {
-    setting->setValue("Point1", cPoint.GetValue());
-    setting->setValue("Point2", cPoint2.GetValue());
+    QPointF p1 = cPoint.GetValue();
+    QPointF p2 = cPoint2.GetValue();
+
+    QRectF rect = cArea.GetValue();
+
+    setting->setValue("Point1", p1);
+    setting->setValue("Point2", p2);
 
     setting->setValue("Quadangle", cQuadangle.GetPolygon());
-    setting->setValue("Area", cArea.GetValue());
+    setting->setValue("Area", rect);
     setting->setValue("Rectangle", cRect.GetValue());
+
+    SoftwareLog(QString("Point 1: x = %1, y = %2").arg(p1.x()).arg(p1.y()));
+    SoftwareLog(QString("Point 2: x = %1, y = %2").arg(p2.x()).arg(p2.y()));
+
+    SoftwareLog(QString("Crop top left: x = %1, y = %2").arg(rect.topLeft().x()).arg(rect.topLeft().y()));
+    SoftwareLog(QString("Crop bottom right: x = %1, y = %2").arg(rect.bottomRight().x()).arg(rect.bottomRight().y()));
+
 }
 
 void ImageViewer::LoadSetting(QSettings *setting)
@@ -108,6 +135,12 @@ void ImageViewer::LoadSetting(QSettings *setting)
     cQuadangle.SetPolygon(setting->value("Quadangle", cQuadangle.GetPolygon()).value<QPolygonF>());
     cArea.SetValue(setting->value("Area", cArea.GetValue()).toRectF());
     cRect.SetValue(setting->value("Rectangle", cRect.GetValue()).toRectF());
+
+    SoftwareLog(QString("Point 1: x = %1, y = %2").arg(cPoint.GetValue().x()).arg(cPoint.GetValue().y()));
+    SoftwareLog(QString("Point 2: x = %1, y = %2").arg(cPoint2.GetValue().x()).arg(cPoint2.GetValue().y()));
+
+    SoftwareLog(QString("Crop top left: x = %1, y = %2").arg(cArea.GetValue().topLeft().x()).arg(cArea.GetValue().topLeft().y()));
+    SoftwareLog(QString("Crop bottom right: x = %1, y = %2").arg(cArea.GetValue().bottomRight().x()).arg(cArea.GetValue().bottomRight().y()));
 
     emit changedPoints(cPoint.GetValue(), cPoint2.GetValue());
     emit changedQuadrangle(cQuadangle.GetPolygon());
@@ -155,7 +188,7 @@ void ImageViewer::SetImage(QPixmap pixmap)
 
     if (pixmap.width() != imgWidth || pixmap.height() != imgHeight)
     {
-        updateScale(float(pixmap.width()) / imgWidth);
+//        updateScale(float(pixmap.width()) / imgWidth);
 
         imgWidth = pixmap.width();
         imgHeight = pixmap.height();
@@ -205,9 +238,10 @@ void ImageViewer::DrawRecangles(QList<QRect> rects)
 
 void ImageViewer::DrawPolygons(QList<QPolygonF> polygons)
 {
+    visiblePolygon = polygons.count();
     for(int i = 0; i < polygonItems.count(); i++)
     {
-        if (i < polygons.count())
+        if (i < visiblePolygon)
         {
             polygonItems.at(i)->setPolygon(polygons.at(i));
             polygonItems.at(i)->setVisible(true);
@@ -220,9 +254,10 @@ void ImageViewer::DrawPolygons(QList<QPolygonF> polygons)
 
 void ImageViewer::DrawTexts(QMap<QString, QPointF> texts)
 {
+    visibleText = texts.count();
     for (int i = 0; i < textItems.count(); i++)
     {
-        if (i < texts.count())
+        if (i < visibleText)
         {
             textItems.at(i)->setPlainText(texts.keys().at(i));
             textItems.at(i)->setPos(texts.values().at(i));
@@ -247,7 +282,14 @@ void ImageViewer::TurnOnTool(bool value)
 
 void ImageViewer::TurnOnObjects(bool value)
 {
+    for( int i = 0; i < MAX_DRAWING_OBJECT_NUMBER; i++)
+    {
+        if (i < visiblePolygon)
+            polygonItems.at(i)->setVisible(value);
 
+        if (i < visibleText)
+            textItems.at(i)->setVisible(value);
+    }
 }
 
 void ImageViewer::SetPointTitles(QString p1Text, QString p2Text)
@@ -529,6 +571,10 @@ void ImageViewer::mouseReleaseEvent(QMouseEvent *event)
     if (selectedTool == AREA_TOOL)
     {
         emit changedArea(cArea.GetValue());
+
+        SoftwareLog(QString("Crop top left: x = %1, y = %2").arg(cArea.GetValue().topLeft().x()).arg(cArea.GetValue().topLeft().y()));
+        SoftwareLog(QString("Crop bottom right: x = %1, y = %2").arg(cArea.GetValue().bottomRight().x()).arg(cArea.GetValue().bottomRight().y()));
+
     }
 
     update();

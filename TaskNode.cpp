@@ -52,21 +52,31 @@ TaskNode::TaskNode(QString name, int type)
 
 TaskNode::~TaskNode()
 {
-    for (int i = 0; i < inputObjects->count(); i++)
+    if (inputObjects != nullptr && !inputObjects->isEmpty())
     {
-        if (inputObjects->at(i) != NULL)
-            delete inputObjects->at(i);
+        int iNum = inputObjects->size();
+        for (int i = 0; i < iNum; i++)
+        {
+            delete inputObjects->takeAt(0);
+        }
+
+        inputObjects->clear();
+//        delete inputObjects;
+//        inputObjects = nullptr;
     }
 
-    delete inputObjects;
-
-    for (int i = 0; i < outputObjects->count(); i++)
+    if (outputObjects != nullptr && !outputObjects->isEmpty())
     {
-        if (outputObjects->at(i) != NULL)
-            delete outputObjects->at(i);
-    }
+        int iNum = outputObjects->size();
+        for (int i = 0; i < iNum; i++)
+        {
+            delete outputObjects->takeAt(0);
+        }
 
-    delete outputObjects;
+        outputObjects->clear();
+//        delete outputObjects;
+//        outputObjects = nullptr;
+    }
 }
 
 void TaskNode::SetNextNode(TaskNode *next)
@@ -124,6 +134,11 @@ cv::Mat TaskNode::GetOutputImage()
 Object TaskNode::GetInputObject()
 {
     return inputObject;
+}
+
+QPointF *TaskNode::GetInputPointPointer()
+{
+    return &inputPoint;
 }
 
 bool TaskNode::ClearVariable(QString name)
@@ -594,6 +609,9 @@ void TaskNode::doDisplayImageWork()
 
 void TaskNode::doColorFilterWork()
 {
+    if (inputMat.empty())
+        return;
+
     if (intParas.count() == 1)
     {
         cvtColor(inputMat, outputMat, CV_BGR2GRAY);
@@ -710,19 +728,16 @@ void TaskNode::doGetObjectsWork()
     for (size_t i = 0; i < contoursContainer.size(); i++)
     {
 
-        cv::RotatedRect object = cv::minAreaRect(cv::Mat(contoursContainer[i]));
+        cv::RotatedRect rectObject = cv::minAreaRect(cv::Mat(contoursContainer[i]));
         cv::Rect box = cv::boundingRect(contoursContainer[i]);
         if (box.y <= 0 || (box.y + box.height) >= inputMat.rows - 2 || box.x <= 0 || (box.x + box.width) >= inputMat.cols - 2)
             continue;
 
-        Object* obj = new Object(object);
-        if (inputObject.IsSameType(*obj))
+        Object obj(rectObject);
+        if (inputObject.IsSameType(obj))
         {
-            outputObjects->append(obj);
-        }
-        else
-        {
-            delete obj;
+            Object* obPointer = new Object(rectObject);
+            outputObjects->append(obPointer);
         }
     }
 
@@ -738,6 +753,14 @@ void TaskNode::doVisibleObjectsWork()
     for (int i = 0; i < inputObjects->count(); i++)
     {
         inputObjects->at(i)->Map(inputMatrix);
+
+//        QMutex mux;
+//        mux.lock();
+
+//        inputObjects->at(i)->X.Real += inputPoint.x();
+//        inputObjects->at(i)->Y.Real += inputPoint.y();
+
+//        mux.unlock();
 
         outputObjects->append(inputObjects->at(i));
     }
@@ -787,14 +810,20 @@ void TaskNode::doTrackingObjectsWork()
 
 void TaskNode::clear(QList<Object *> *objs)
 {
+//    QMutex mux;
+//    mux.lock();
+
 //    if (objs == NULL)
 //        return;
 
-//    for (int i = 0; i < objs->count(); i++)
+//    for (int i = 0; i < objs->size(); i++)
 //    {
-//        if (objs->at(i) != NULL)
-//            delete objs->at(i);
+//        delete objs->takeAt(0);
 //    }
 
+//    qDeleteAll(*objs);
+
     objs->clear();
+
+//    mux.unlock();
 }

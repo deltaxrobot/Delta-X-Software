@@ -112,7 +112,7 @@ public:
         scrollArea->setWidgetResizable(true);
         scrollAreaWidgetContents = new QWidget();
         scrollAreaWidgetContents->setObjectName(QString::fromUtf8("scrollAreaWidgetContents"));
-        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 457, 2000));
+        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 465, 2000));
         QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
@@ -182,7 +182,6 @@ public:
         pbConnectCamera->setObjectName(QString::fromUtf8("pbConnectCamera"));
         QFont font;
         font.setBold(true);
-        font.setWeight(75);
         pbConnectCamera->setFont(font);
         pbConnectCamera->setStyleSheet(QString::fromUtf8(""));
 
@@ -373,13 +372,14 @@ public:
 
         lbCameraDisplay = new QLabel(scrollAreaWidgetContents);
         lbCameraDisplay->setObjectName(QString::fromUtf8("lbCameraDisplay"));
-        QSizePolicy sizePolicy1(QSizePolicy::Minimum, QSizePolicy::Minimum);
+        QSizePolicy sizePolicy1(QSizePolicy::Preferred, QSizePolicy::Preferred);
         sizePolicy1.setHorizontalStretch(0);
         sizePolicy1.setVerticalStretch(0);
         sizePolicy1.setHeightForWidth(lbCameraDisplay->sizePolicy().hasHeightForWidth());
         lbCameraDisplay->setSizePolicy(sizePolicy1);
-        lbCameraDisplay->setMinimumSize(QSize(0, 200));
+        lbCameraDisplay->setMinimumSize(QSize(0, 0));
         lbCameraDisplay->setStyleSheet(QString::fromUtf8("background-color: rgb(255, 255, 255);"));
+        lbCameraDisplay->setScaledContents(true);
 
         verticalLayout_2->addWidget(lbCameraDisplay);
 

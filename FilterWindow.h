@@ -95,6 +95,7 @@ public:
     void LoadSetting(QString fileName);
     void LoadSetting(QSettings* setting);
     void SetImage(cv::Mat mat);
+    void RequestValue();
 
 	QSlider *sPara[6];
 	QLabel *lbPara[6];
