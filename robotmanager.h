@@ -8,6 +8,8 @@
 #include <QAction>
 #include <QTabWidget>
 
+class RobotWindow;
+
 namespace Ui {
     class RobotWindow;
 }
@@ -48,6 +50,8 @@ public:
     QSettings* Setting;
 
     QTabWidget* twProjectManager;
+
+    QMap<QString, QString>* GcodeVariables;
 
 };
 

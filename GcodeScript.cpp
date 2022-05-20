@@ -3,7 +3,7 @@
 
 GcodeScript::GcodeScript()
 {
-
+    vars = SoftwareManager::GetInstance()->ProgramVariableManager->GetMap();
 }
 
 GcodeScript::~GcodeScript()
@@ -45,24 +45,37 @@ void GcodeScript::ExecuteGcode(QString gcodes, int startMode, bool isFromGcodeEd
 
 void GcodeScript::TransmitNextGcode()
 {
-    if (gcodeList.empty())
+    if (isFileProgramRunning == true)
+    {
+        TransmitNextGcode(subGcodeList, subGcodeOrder);
+    }
+    else
+    {
+        TransmitNextGcode(gcodeList, gcodeOrder);
+    }
+}
+
+void GcodeScript::TransmitNextGcode(QList<QString> gcodes, int& order)
+{
+    if (gcodes.empty())
         return;
 
-    if (gcodeOrder >= gcodeList.size())
+    if (order >= gcodes.size())
     {
-//        emit Finished();
+        Stop();
+        emit Finished();
         return;
     }
 
     while (true)
     {
-        currentLine = gcodeList.at(gcodeOrder);
+        currentLine = gcodes.at(order);
         bool isGcode = true;
 
         if (currentLine == "")
         {
             isGcode = false;
-            gcodeOrder += 1;
+            order += 1;
         }
         else
         {
@@ -77,7 +90,7 @@ void GcodeScript::TransmitNextGcode()
             isGcode = findExeGcodeAndTransmit();
         }
 
-        if (gcodeOrder >= gcodeList.size())
+        if (order >= gcodes.size())
         {
             Stop();
 
@@ -95,8 +108,17 @@ void GcodeScript::TransmitNextGcode()
 
 void GcodeScript::Stop()
 {
-    gcodeList.clear();
-    gcodeOrder = 0;
+    if (isFileProgramRunning == false)
+    {
+        gcodeList.clear();
+        gcodeOrder = 0;
+    }
+    else
+    {
+        subGcodeList.clear();
+        subGcodeOrder = 0;
+        isFileProgramRunning = false;
+    }
 }
 
 float GcodeScript::GetResultOfMathFunction(QString expression)
@@ -398,7 +420,7 @@ bool GcodeScript::findExeGcodeAndTransmit()
 
                 QString newVarValue = calculateExpressions(expression);
 
-                emit SaveVariable(varName, newVarValue);
+                saveVariable(varName, newVarValue);
 
                 gcodeOrder++;
                 return false;
@@ -550,6 +572,38 @@ bool GcodeScript::findExeGcodeAndTransmit()
             {
                 QString subProName = valuePairs[i + 1].mid(1);
 
+                for (int i = 0; i < ProgramList->size(); i++)
+                {
+                    if (ProgramList->at(i)->GetName() == subProName)
+                    {
+                        isFileProgramRunning = true;
+
+                        QString exeGcodes = ProgramList->at(i)->GcodeData;
+
+                        QList<QString> tempGcodeList = exeGcodes.split('\n');
+
+                        subGcodeList.clear();
+
+                        for (int i = 0; i < tempGcodeList.size(); i++)
+                        {
+                            QString line = tempGcodeList.at(i);
+
+                            line = DeleteExcessSpace(line);
+
+                            if (line == "")
+                                continue;
+
+                            subGcodeList.push_back(line);
+                        }
+
+                        tempGcodeList.clear();
+
+                        gcodeOrder++;
+                        return true;
+                    }
+                }
+
+
 //                for (int i = 0; i < ProgramList->size(); i++)
 //                {
 //                    if (ProgramList->at(i)->GetName() == subProName)
@@ -584,31 +638,32 @@ bool GcodeScript::findExeGcodeAndTransmit()
             return false;
         }
 
-        if (isConveyorGcode(transmitGcode))
-        {
-            gcodeOrder++;
-            emit SendGcodeToDevice("Conveyor", transmitGcode);
-            return true;
-        }
-
-        if (isSlidingGcode(transmitGcode))
-        {
-            gcodeOrder++;
-            emit SendGcodeToDevice("Slider", transmitGcode);
-            return true;
-        }
-
-        if (isEncoderGcode(transmitGcode))
-        {
-            gcodeOrder++;
-            emit SendGcodeToDevice("Encoder", transmitGcode);
-            return true;
-        }
         /*if (deltaConnection->IsConnect() == false && !isMovingGcode(transmitGcode))
         {
             gcodeOrder++;
             return false;
         }*/
+    }
+
+    if (isConveyorGcode(transmitGcode))
+    {
+        gcodeOrder++;
+        emit SendGcodeToDevice("Conveyor", transmitGcode);
+        return true;
+    }
+
+    if (isSlidingGcode(transmitGcode))
+    {
+        gcodeOrder++;
+        emit SendGcodeToDevice("Slider", transmitGcode);
+        return true;
+    }
+
+    if (isEncoderGcode(transmitGcode))
+    {
+        gcodeOrder++;
+        emit SendGcodeToDevice("Encoder", transmitGcode);
+        return true;
     }
 
     transmitGcode = convertGcodeToSyncConveyor(transmitGcode);
@@ -950,17 +1005,42 @@ bool GcodeScript::isNotNegative(QString s)
     return !isNumeric;
 }
 
-QString GcodeScript::getValueOfVariable(QString var)
+QString GcodeScript::getValueOfVariable(QString name)
 {
-    QMutexLocker ml(&mMutex);
+    name = name.replace("#", "");
 
-    if (GcodeVariables->contains(var) == true)
+    QString fullName = name;
+
+    if (name.count('.') == 0)
     {
-        return GcodeVariables->value(var);
+        fullName = VariableAddress + "." + name;
+    }
+
+    if (name.count('.') == 1)
+    {
+        fullName = VariableAddress.split('.')[0] + "." + name;
+    }
+
+    fullName = fullName.replace(" ", "");
+
+//    qDebug() << "Full name: " + fullName;
+
+    QStringList names = vars->keys();
+
+//    foreach(QString s, names)
+//    {
+//        qDebug() << s;
+//    }
+
+//    QMutexLocker ml(&mMutex);
+
+    if (names.contains(fullName) == true)
+    {
+        return SoftwareManager::GetInstance()->ProgramVariableManager->GetValue(fullName);
     }
     else
     {
-        return var;
+        return name;
     }
 }
 
@@ -977,13 +1057,33 @@ void GcodeScript::updateVariables(QString str)
             continue;
         }
 
-        SaveVariable(map[0], map[1]);
+        saveVariable(map[0], map[1]);
+
     }
+}
+
+void GcodeScript::saveVariable(QString name, QString value)
+{
+    QString fullName = name;
+
+    if (name.count('.') == 0)
+    {
+        fullName = VariableAddress + "." + name;
+    }
+
+    if (name.count('.') == 1)
+    {
+        fullName = VariableAddress.split('.')[0] + "." + name;
+    }
+
+    fullName = fullName.replace(" ", "");
+    SoftwareManager::GetInstance()->ProgramVariableManager->AddVariable(fullName, value);
+
 }
 
 QString GcodeScript::convertGcodeToSyncConveyor(QString gcode)
 {
-    QMutexLocker ml(&mMutex);
+//    QMutexLocker ml(&mMutex);
 
     if (IsConveyorSync == false)
         return gcode;
@@ -991,20 +1091,21 @@ QString GcodeScript::convertGcodeToSyncConveyor(QString gcode)
     if (!(gcode.indexOf("G01 ") > -1 || gcode.indexOf("G1 ") > -1 || gcode.indexOf("G0 ") > -1 || gcode.indexOf("G00 ") > -1 || gcode.indexOf("G04 ") > -1 || gcode.indexOf("G4 ") > -1))
         return gcode;
 
-    float velocity = GcodeVariables->value("F").toFloat();
-    float accel = GcodeVariables->value("A").toFloat();
-    float startSpeed = GcodeVariables->value("S").toFloat();
-    float endSpeed = GcodeVariables->value("E").toFloat();
-    float conveyorSpeed = GcodeVariables->value("ConveyorSpeed").toFloat();
+    float velocity = getValueOfVariable("F").toFloat();
+    float accel = getValueOfVariable("A").toFloat();
+    float startSpeed = getValueOfVariable("S").toFloat();
+    float endSpeed = getValueOfVariable("E").toFloat();
+    float conveyorSpeed = getValueOfVariable("ConveyorSpeed").toFloat();
 
     if (conveyorSpeed == 0)
         return gcode;
 
-    QString conveyorDirection = (GcodeVariables->value("ConveyorDirection").toFloat() == 0) ? "X":"Y";
+    QString conveyorDirection = (getValueOfVariable("ConveyorDirection").toFloat() == 0) ? "X":"Y";
 
-    float currentX = GcodeVariables->value("X").toFloat();
-    float currentY = GcodeVariables->value("Y").toFloat();
-    float currentZ = GcodeVariables->value("Z").toFloat();
+    float currentX = getValueOfVariable("X").toFloat();
+    //qDebug() << "current X: " << currentX;
+    float currentY = getValueOfVariable("Y").toFloat();
+    float currentZ = getValueOfVariable("Z").toFloat();
 
     float time = 1;
 
@@ -1026,6 +1127,7 @@ QString GcodeScript::convertGcodeToSyncConveyor(QString gcode)
             if (paras.at(i).at(0) == 'X')
             {
                 desireX = paras.at(i).mid(1).toFloat();
+                //qDebug() << "desire X: " << desireX;
             }
             if (paras.at(i).at(0) == 'Y')
             {
@@ -1071,15 +1173,20 @@ QString GcodeScript::convertGcodeToSyncConveyor(QString gcode)
 
             distanceConveyor += increaseValue;
 
+            //qDebug() << "distance+: " << distanceConveyor;
+
             // S2 = S1^2 - 2.S.S1.cos(alpha) + S^2
             float alpha = atan(abs(desireY - currentY) / abs(desireX - currentX));
             distanceRobot = sqrt(pow(distanceConveyor, 2) - 2 * xyz * distanceConveyor * cos(alpha) + pow(xyz, 2));
 
-            time = distanceConveyor / abs(conveyorSpeed);
+            time = abs(distanceConveyor) / abs(conveyorSpeed);
+            //qDebug() << "time: " << time;
 
             DeltaXSMoving.setTarget(distanceRobot);
 
             DeltaXSMoving.start();
+
+            //qDebug() << "target: " << DeltaXSMoving.t_target + 0.005;
 
             if ((time) > (DeltaXSMoving.t_target + 0.005))
             {
@@ -1087,9 +1194,12 @@ QString GcodeScript::convertGcodeToSyncConveyor(QString gcode)
             }
         }
 
+        //qDebug() << "distance: " << distanceConveyor;
+
         if (conveyorDirection == "X")
         {
             desireX += distanceConveyor;
+            //qDebug() << "desire X + distance: " << desireX;
         }
         if (conveyorDirection == "Y")
         {
@@ -1141,15 +1251,18 @@ QString GcodeScript::convertGcodeToSyncConveyor(QString gcode)
 
         float distanceConveyor = time * conveyorSpeed;
 
+        //qDebug() << "distance: " << distanceConveyor;
+
         if (conveyorDirection == "X")
         {
             desireX += distanceConveyor;
-            newGcode = QString("G01 X%1 F%2").arg(desireX).arg(conveyorSpeed);
+            //qDebug() << "desire X G04: " << desireX;
+            newGcode = QString("G01 X%1 F%2").arg(desireX).arg(abs(conveyorSpeed));
         }
         if (conveyorDirection == "Y")
         {
             desireY += distanceConveyor;
-            newGcode = QString("G01 Y%1 F%2").arg(desireY).arg(conveyorSpeed);;
+            newGcode = QString("G01 Y%1 F%2").arg(desireY).arg(abs(conveyorSpeed));;
         }
     }
 

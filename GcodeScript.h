@@ -9,6 +9,10 @@
 #include <QMutex>
 #include <QElapsedTimer>
 #include "Parameter.h"
+#include "robotmanager.h"
+#include "SoftwareManager.h"
+
+class RobotManager;
 
 class GcodeScript : public QObject
 {
@@ -24,11 +28,15 @@ public:
     };
 
     QMap<QString, QString> *GcodeVariables = NULL;
+    QVector<GcodeProgram*>* ProgramList = NULL;
+
+    QString VariableAddress = "";
     Scurve_Interpolator DeltaXSMoving;
 
 public slots:
     void ExecuteGcode(QString gcodes, int position, bool isFromGcodeEditor);
     void TransmitNextGcode();
+    void TransmitNextGcode(QList<QString> gcodes, int& order);
     void Stop();
 
 signals:
@@ -53,7 +61,9 @@ private:
     bool isFileProgramRunning = false;
 
     QList<QString> gcodeList;
+    QList<QString> subGcodeList;
     int gcodeOrder = 0;
+    int subGcodeOrder = 0;
     int currentGcodeEditorCursor = 0;
     int returnSubProPointer[20];
     int returnPointerOrder = -1;
@@ -62,6 +72,8 @@ private:
     bool IsConveyorSync = false;
     float syncStartArea = -100;
     float syncEndArea = 100;
+
+    QMap<QString, QString>* vars;
 
     QMutex mMutex;
 
@@ -81,6 +93,7 @@ private:
     bool isNotNegative(QString s);
     QString getValueOfVariable(QString var);
     void updateVariables(QString str);
+    void saveVariable(QString name, QString value);
 
     QString convertGcodeToSyncConveyor(QString gcode);
 };

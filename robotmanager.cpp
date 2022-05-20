@@ -3,7 +3,6 @@
 
 RobotManager::RobotManager(QObject *parent) : QObject(parent)
 {
-    int size = RobotWindows.size();
 }
 
 void RobotManager::AddRobotWindow(RobotWindow* robotWindow)

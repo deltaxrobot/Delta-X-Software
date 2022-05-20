@@ -183,7 +183,7 @@ public:
     Encoder* Encoder1 = NULL;
 
     // ---- Object ----
-    QList<cv::RotatedRect> *DisplayObjects;
+    QList<cv::RotatedRect> *DisplayObjects = NULL;
     std::vector<cv::Vec3f>  CircleObjects;
 
     float ObjectError = 0.5f;

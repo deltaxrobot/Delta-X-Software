@@ -88,6 +88,9 @@ public slots:
 
     void DoWork();
 
+    void ClearOutput();
+    void DeleteOutput(int id);
+
 signals:
     void HadOutput(cv::Mat mat);
     void HadOutput(cv::Point2f outputPoints[]);
@@ -96,6 +99,7 @@ signals:
     void HadOutput(QPixmap pixmap, QList<Object*>* objects);
     void HadOutput(QList<Object*>* objects);
     void HadOutput(QMatrix matrix);
+    void DebugEvent();
 
 private:
     QString name;

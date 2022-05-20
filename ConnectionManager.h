@@ -45,6 +45,8 @@ public:
     QSerialPort* ControllerPort;
     QTcpSocket* ControllerSocket;
 
+    QTcpSocket* ExternalScriptSocket = NULL;
+
     QIODevice* EmitIOSender;
 
 	TCPConnectionManager* TCPConnection;
@@ -75,7 +77,7 @@ public slots:
 
     void ReceiveNewConnectionFromServer(QTcpSocket* socket);
 
-    void SendRobotMsgToCOMPort();
+    void SendRobotConfirmCommand();
     void Send(int device, QString msg);
     void SendGcode(QString device, QString msg);
 

@@ -36,7 +36,7 @@ public:
 	QList<QTcpSocket*>* TcpClients;
 	QList<Client*>* ClientList = NULL;
 
-	static QString GetIP();
+    QString GetIP();
 
 public slots:
 	void CreatNewConnection();

@@ -163,9 +163,9 @@ void DrawingExporter::ExportGcodes()
 
     if (cbDrawingEffector->currentText() == "Laser")
     {
-        gcodes += ";Select laser head";
+        gcodes += ";Select laser head\n";
         gcodes += "M360 E3\n";
-        gcodes += ";Turn off laser head";
+        gcodes += ";Turn off laser head\n";
         gcodes += "M03 S0\n";
     }
 

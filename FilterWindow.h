@@ -8,6 +8,7 @@
 #include <opencv2/opencv.hpp>
 #include <ImageUnity.h>
 #include <QThread>
+#include <QMutexLocker>
 
 namespace Ui {
 class FilterWindow;

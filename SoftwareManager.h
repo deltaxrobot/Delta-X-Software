@@ -7,6 +7,7 @@
 #include "ProjectManager.h"
 
 class ProjectManager;
+class RobotManager;
 
 class SoftwareManager
 {

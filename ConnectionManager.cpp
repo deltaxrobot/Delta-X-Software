@@ -14,8 +14,8 @@ void ConnectionManager::init()
 	connect(RobotSocket, SIGNAL(readyRead()), this, SLOT(ReadData()));
 	
     // ---- Timer for robot scanning -----
-    connectionTimer = new QTimer();
-    connect(connectionTimer, SIGNAL(timeout()), this, SLOT(FindingRobotTimeOut()));
+//    connectionTimer = new QTimer();
+//    connect(connectionTimer, SIGNAL(timeout()), this, SLOT(FindingRobotTimeOut()));
 
     // ---- MCU -----
 	ExternalControllerPort = new QSerialPort();
@@ -62,12 +62,13 @@ void ConnectionManager::processRobotData()
     emit ReceiveVariableChangeCommand("Response", receiveLine.replace("\n", "").replace("\r", ""));
     emit Log(QString("Robot << ") + receiveLine);
 
+    // ---- Receive robot position after homing ----
     if (transmitLine == "G28")
     {
         SendToRobot("Position");
     }
-    // ---- Receive robot position after homing ----
-    else if (receiveLine.indexOf(",") > -1 && transmitLine == "Position")
+
+    if (receiveLine.indexOf(",") > -1 && transmitLine == "Position")
 	{
 		QList<QString> nums = receiveLine.split(",");
 
@@ -93,6 +94,7 @@ void ConnectionManager::processRobotData()
 
 void ConnectionManager::processConveyorData()
 {
+    emit GcodeDone();
     emit Log(QString("Conveyor << ") + receiveLine);
 }
 
@@ -194,7 +196,8 @@ void ConnectionManager::processOtherSoftwareData()
 
         if (receiveLine.contains("ExternalScript"))
         {
-            emit ExternalScriptOpened(qobject_cast<QTcpSocket*>(EmitIOSender));
+            ExternalScriptSocket = qobject_cast<QTcpSocket*>(EmitIOSender);
+            emit ExternalScriptSocket;
         }
     }
 }
@@ -240,7 +243,7 @@ void ConnectionManager::OpenAvailableServer()
 	int port = 8844;
 	for (int i = 0; i < 10; i++)
 	{
-		bool isSuccess = TCPConnection->OpenServer("localhost", port + i);
+        bool isSuccess = TCPConnection->OpenServer("127.0.0.1", port + i);
 		if (isSuccess == true)
 		{
 			return;
@@ -336,7 +339,7 @@ void ConnectionManager::FindDeltaRobot()
 		}
 	}
 
-    QTimer::singleShot(500, this, &ConnectionManager::SendRobotMsgToCOMPort);
+    QTimer::singleShot(500, this, &ConnectionManager::SendRobotConfirmCommand);
 
 }
 
@@ -429,9 +432,10 @@ void ConnectionManager::CheckScanningRobotRespone()
 
     if (response.mid(0, 8) == "YesDelta")
     {
-        if (isDeltaPortConnected != true)
+        if (isDeltaPortConnected == false)
         {
             delete RobotPort;
+
             RobotPort = qobject_cast<QSerialPort*>(sender());
 
             RobotPort->disconnect();
@@ -443,6 +447,7 @@ void ConnectionManager::CheckScanningRobotRespone()
 
             isDeltaPortConnected = true;
 
+            SendToRobot("Position");
         }
     }
 }
@@ -451,27 +456,19 @@ void ConnectionManager::CheckScanningRobotRespone()
 
 void ConnectionManager::FindingRobotTimeOut()
 {
-    static int order = 0;
-	
-    order++;
-
-	if (order < 20 && isDeltaPortConnected == false)
-		return;
-
-	order = 0;
-
-	for(int i = 0; i < portList.length(); i++)
+    foreach(QSerialPort* port, portList)
 	{
-		if (portList.at(i)->portName() != RobotPort->portName())
+        if (port->portName() != RobotPort->portName())
 		{
-			portList.at(i)->close();
-			delete portList.at(i);
+            port->close();
+            delete port;
+            port = NULL;
 		}
 	}
 
 	portList.clear();
 
-    connectionTimer->stop();
+//    connectionTimer->stop();
 
     emit FinishFindingRobot();
 }
@@ -481,16 +478,22 @@ void ConnectionManager::ReceiveNewConnectionFromServer(QTcpSocket * socket)
     connect(socket, SIGNAL(readyRead()), this, SLOT(ReadData()));
 }
 
-void ConnectionManager::SendRobotMsgToCOMPort()
+void ConnectionManager::SendRobotConfirmCommand()
 {
     foreach(QSerialPort* sp, portList)
     {
+        if (sp == NULL)
+            continue;
+
         if (sp->isOpen())
         {
           sp->write("IsDelta\n");
+          sp->write("IsDelta\n");
         }
     }
-    connectionTimer->start(200);
+
+    QTimer::singleShot(2000, this, &ConnectionManager::FindingRobotTimeOut);
+//    connectionTimer->start(200);
 }
 
 void ConnectionManager::Send(int device, QString msg)

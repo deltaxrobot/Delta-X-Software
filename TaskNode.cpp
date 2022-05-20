@@ -336,6 +336,29 @@ void TaskNode::DoWork()
     }
 }
 
+void TaskNode::ClearOutput()
+{
+    if (type == TRACKING_OBJECTS_NODE)
+    {
+        foreach(Object* obj, *outputObjects)
+        {
+            delete obj;
+        }
+
+
+        outputObjects->clear();
+
+        HadOutput(outputObjects);
+//        delete outputObjects;
+    }
+}
+
+void TaskNode::DeleteOutput(int id)
+{
+    outputObjects->removeAt(id);
+    HadOutput(outputObjects);
+}
+
 void TaskNode::connectInOutNode(TaskNode* previous, TaskNode *next)
 {
     // ------ Next ------
@@ -754,16 +777,22 @@ void TaskNode::doVisibleObjectsWork()
     {
         inputObjects->at(i)->Map(inputMatrix);
 
-//        QMutex mux;
-//        mux.lock();
+        QMutex mux;
+        mux.lock();
 
-//        inputObjects->at(i)->X.Real += inputPoint.x();
-//        inputObjects->at(i)->Y.Real += inputPoint.y();
+        inputObjects->at(i)->X.Real += inputPoint.x();
+        inputObjects->at(i)->Y.Real += inputPoint.y();
 
-//        mux.unlock();
+        mux.unlock();
+
+        emit DebugEvent();
 
         outputObjects->append(inputObjects->at(i));
     }
+    QMutex mux;
+    mux.lock();
+    inputPoint = QPoint(0, 0);
+    mux.unlock();
 
     emit HadOutput(outputObjects);
 }

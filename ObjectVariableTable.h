@@ -26,8 +26,11 @@ public:
 		QFont font3 = QFont();
 		font3.setItalic(true);
 
-        name = new QLabel(QString("Object ") + QString::number(i) + " -");
+        name = new QPushButton(QString("Object ") + QString::number(i) + " -");
 		name->setFont(font1);
+        name->setFlat(true);
+
+
         xVar = new QLabel(QString(" #O") + QString::number(i) + "_X: ");
 		xVar->setFont(font3);
 		xValue = new QLabel();
@@ -94,7 +97,7 @@ public:
 	
 	QGridLayout* Layout;
 
-	QLabel *name;
+    QPushButton *name;
 	QLabel *xVar;
 	QLabel *xValue;
 	QLabel *yVar;
@@ -111,12 +114,18 @@ public:
 	ObjectVariableTable(QObject *parent);
 	~ObjectVariableTable();
 
+    QList<ObjectVariable*>* ObjectVariableWidgetList;
+
 public slots:
 	void DisplayDialog();
     void UpdateTable(QList<Object*>* ObjectContainer);
 
+signals:
+    void TakeObjectPosition(float x, float y, float angle);
+
+
 private:
 	QWidget* dialog;
 	QGridLayout *gridLayout;
-	QList<ObjectVariable*>* ObjectVariableWidgetList;
+
 };

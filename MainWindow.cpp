@@ -328,6 +328,8 @@ void MainWindow::SaveProjectToFile()
 
     QSettings settings2("customUI.ini", QSettings::IniFormat);
     settings2.setValue("LastProject", fileName);
+
+    SaveOperatorSettings();
 }
 
 void MainWindow::SelectedTab(QAbstractButton *tabButton)
@@ -410,7 +412,7 @@ void MainWindow::on_pbSwitchProgramer_clicked()
 {
     bool ok;
     QString text = QInputDialog::getText(this, tr("Permission"),
-                                         tr("Password (default \"1234\"):"), QLineEdit::Password, "", &ok);
+                                         tr("Password (default \"1234\"):"), QLineEdit::Password, "1234", &ok);
     if (ok && !text.isEmpty())
     {
         if (SoftwareAuthority->IsPassword(text) == true)

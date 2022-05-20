@@ -20,6 +20,8 @@ ObjectVariableTable::ObjectVariableTable(QObject *parent)
         ObjectVariableWidgetList->push_back(ov);
 
         ov->AddLayout(gridLayout, i);
+
+        connect(ov->name, &QPushButton::clicked, [=](){emit TakeObjectPosition(ov->xValue->text().toFloat(), ov->yValue->text().toFloat(), ov->aValue->text().toFloat());});
     }
 
     QSpacerItem* space = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);

@@ -119,11 +119,11 @@ void ImageViewer::SaveSetting(QSettings *setting)
     setting->setValue("Area", rect);
     setting->setValue("Rectangle", cRect.GetValue());
 
-    SoftwareLog(QString("Point 1: x = %1, y = %2").arg(p1.x()).arg(p1.y()));
-    SoftwareLog(QString("Point 2: x = %1, y = %2").arg(p2.x()).arg(p2.y()));
+//    SoftwareLog(QString("Point 1: x = %1, y = %2").arg(p1.x()).arg(p1.y()));
+//    SoftwareLog(QString("Point 2: x = %1, y = %2").arg(p2.x()).arg(p2.y()));
 
-    SoftwareLog(QString("Crop top left: x = %1, y = %2").arg(rect.topLeft().x()).arg(rect.topLeft().y()));
-    SoftwareLog(QString("Crop bottom right: x = %1, y = %2").arg(rect.bottomRight().x()).arg(rect.bottomRight().y()));
+//    SoftwareLog(QString("Crop top left: x = %1, y = %2").arg(rect.topLeft().x()).arg(rect.topLeft().y()));
+//    SoftwareLog(QString("Crop bottom right: x = %1, y = %2").arg(rect.bottomRight().x()).arg(rect.bottomRight().y()));
 
 }
 
@@ -136,11 +136,11 @@ void ImageViewer::LoadSetting(QSettings *setting)
     cArea.SetValue(setting->value("Area", cArea.GetValue()).toRectF());
     cRect.SetValue(setting->value("Rectangle", cRect.GetValue()).toRectF());
 
-    SoftwareLog(QString("Point 1: x = %1, y = %2").arg(cPoint.GetValue().x()).arg(cPoint.GetValue().y()));
-    SoftwareLog(QString("Point 2: x = %1, y = %2").arg(cPoint2.GetValue().x()).arg(cPoint2.GetValue().y()));
+//    SoftwareLog(QString("Point 1: x = %1, y = %2").arg(cPoint.GetValue().x()).arg(cPoint.GetValue().y()));
+//    SoftwareLog(QString("Point 2: x = %1, y = %2").arg(cPoint2.GetValue().x()).arg(cPoint2.GetValue().y()));
 
-    SoftwareLog(QString("Crop top left: x = %1, y = %2").arg(cArea.GetValue().topLeft().x()).arg(cArea.GetValue().topLeft().y()));
-    SoftwareLog(QString("Crop bottom right: x = %1, y = %2").arg(cArea.GetValue().bottomRight().x()).arg(cArea.GetValue().bottomRight().y()));
+//    SoftwareLog(QString("Crop top left: x = %1, y = %2").arg(cArea.GetValue().topLeft().x()).arg(cArea.GetValue().topLeft().y()));
+//    SoftwareLog(QString("Crop bottom right: x = %1, y = %2").arg(cArea.GetValue().bottomRight().x()).arg(cArea.GetValue().bottomRight().y()));
 
     emit changedPoints(cPoint.GetValue(), cPoint2.GetValue());
     emit changedQuadrangle(cQuadangle.GetPolygon());
@@ -572,8 +572,8 @@ void ImageViewer::mouseReleaseEvent(QMouseEvent *event)
     {
         emit changedArea(cArea.GetValue());
 
-        SoftwareLog(QString("Crop top left: x = %1, y = %2").arg(cArea.GetValue().topLeft().x()).arg(cArea.GetValue().topLeft().y()));
-        SoftwareLog(QString("Crop bottom right: x = %1, y = %2").arg(cArea.GetValue().bottomRight().x()).arg(cArea.GetValue().bottomRight().y()));
+//        SoftwareLog(QString("Crop top left: x = %1, y = %2").arg(cArea.GetValue().topLeft().x()).arg(cArea.GetValue().topLeft().y()));
+//        SoftwareLog(QString("Crop bottom right: x = %1, y = %2").arg(cArea.GetValue().bottomRight().x()).arg(cArea.GetValue().bottomRight().y()));
 
     }
 

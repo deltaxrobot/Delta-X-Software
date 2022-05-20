@@ -122,7 +122,11 @@ void FilterWindow::LoadSetting(QSettings *setting)
 void FilterWindow::SetImage(cv::Mat mat)
 {
     OriginMat.release();
+
+    QMutex mux;
+    mux.lock();
     OriginMat = mat.clone();
+    mux.unlock();
 
     ui->lbOriginImage->setPixmap(ImageTool::cvMatToQPixmap(mat));
 

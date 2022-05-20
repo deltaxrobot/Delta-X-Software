@@ -32,7 +32,7 @@ void VariableManager::AddVariable(QString name, QString value)
         item->setFlags(Qt::ItemIsSelectable|Qt::ItemIsEditable|Qt::ItemIsDragEnabled|Qt::ItemIsDropEnabled|Qt::ItemIsUserCheckable|Qt::ItemIsEnabled);
 
     }
-    // if name has child, add value to child
+    // if name has child, add value to child2
     else
     {
         AddVariable(name.mid(names[0].length() + 1), value, item);

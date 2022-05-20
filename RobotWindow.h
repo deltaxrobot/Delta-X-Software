@@ -19,7 +19,7 @@
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc.hpp>
 #include <ImageUnity.h>
-#include "ObjectDetector.h"
+//#include "ObjectDetector.h"
 #include <GcodeReference.h>
 #include <DrawingExporter.h>
 #include <QNetworkAccessManager>
@@ -78,12 +78,14 @@
 #define DEFAULT_FPS			15
 #define DEFAULT_INTERVAL	1000/DEFAULT_FPS
 
-class RobotWindow;
-class ObjectDetector;
 class GcodeProgramManager;
+class ObjectDetector;
+
 class GcodeVariable;
 class ROS;
 class RobotManager;
+class GcodeScript;
+class SoftwareManager;
 
 namespace Ui {
     class RobotWindow;
@@ -236,17 +238,21 @@ public:
 
     // ----- Data ----
     QMap<QString, QString> ParseNames;
-    QMap<QString, QString>* GcodeVariables;
+//    QMap<QString, QString>* GcodeVariables;
 
 public slots:
+
+    // ---- Tab ----
+    void ChangeDeltaDashboard(int index);
+    void SelectTrueTabName(int index);
+    void ChangeRobotName(int tabIndex);
+    void DeleteRobot(int index);
 
     // ---- Robot Connection ----
     void ConnectDeltaRobot();
     void NoticeConnected();
 
     void ConfigConnection();
-    void ChangeDeltaDashboard(int index);
-    void SelectTrueTabName(int index);
 
     // ---- Gcode Editor ----
 	void AddNewProgram();
@@ -291,6 +297,8 @@ public slots:
     void MoveRobot(QString gcode);
     void MoveRobot(QString axis, float step);
 
+    void MoveRobotFollowObject(float x, float y, float angle);
+    void DoADemo();
     // ------ Robot Position -----
 
     void UpdateRobotPositionToUI();
@@ -329,8 +337,7 @@ public slots:
 
     void ProcessShortcutKey();
 
-    void ProcessDetectedObjectFromExternalAI(QString msg);
-    void AddDisplayObjectFromExternalScript(QString msg);
+
 
     void MoveExternalConveyor();
     void CheckForTurnOffExternalConveyor();
@@ -390,7 +397,14 @@ public slots:
 
     void UnselectToolButtons();
     void UpdateObjectsToImageViewer(QList<Object*>* objects);
+    void UpdateObjectsToVariableTable(QList<Object*>* objects);
+    void ClearObjectsToVariableTable();
+    void DeleteFirstVariable();
     void EditImage(bool isWarp, bool isCropTool);
+
+    void SendImageToExternalScript(cv::Mat input);
+    void ProcessDetectedObjectFromExternalAI(QString msg);
+    void AddDisplayObjectFromExternalScript(QString msg);
     // ----- Display ----
 
 	void ScaleUI();    
@@ -428,6 +442,8 @@ signals:
     void GotCalibPoints(QPolygonF poly);
     void GotMappingMatrix(QMatrix matrix);
     void GotOjectFilterInfo(Object obj);
+    void RequestClearObjects();
+    void RequestDeleteObject(int index);
     void RequestFindChessboard();
     void StopGcodeProgram();
     void RunGcodeProgram(QString gcodes, int pos, bool isEditor);

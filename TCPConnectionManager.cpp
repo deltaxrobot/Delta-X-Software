@@ -29,15 +29,17 @@ bool TCPConnectionManager::OpenServer(QString s, int p)
 
 QString TCPConnectionManager::GetIP()
 {
-	QString localhostname = QHostInfo::localHostName();
-	QString localhostIP;
-	QList<QHostAddress> hostList = QHostInfo::fromName(localhostname).addresses();
-	foreach(const QHostAddress& address, hostList) {
-		if (address.protocol() == QAbstractSocket::IPv4Protocol && address.isLoopback() == false) {
-			 localhostIP = address.toString();
-			 return localhostIP;
-		}
-	}
+//	QString localhostname = QHostInfo::localHostName();
+//	QString localhostIP;
+//	QList<QHostAddress> hostList = QHostInfo::fromName(localhostname).addresses();
+//	foreach(const QHostAddress& address, hostList) {
+//		if (address.protocol() == QAbstractSocket::IPv4Protocol && address.isLoopback() == false) {
+//			 localhostIP = address.toString();
+//			 return localhostIP;
+//		}
+//	}
+
+    return TcpServer->serverAddress().toString();
 }
 
 void TCPConnectionManager::ReadDataFromClients()

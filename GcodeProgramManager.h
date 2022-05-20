@@ -32,23 +32,6 @@
 
 class RobotWindow;
 
-class GcodeVariable
-{
-public:
-    GcodeVariable()
-    {
-        Name = "";
-        Value = "0";
-    };
-    GcodeVariable(QString name, QString value)
-    {
-        Name = name;
-        Value = value;
-    }
-	QString Name;
-    QString Value;
-};
-
 class GcodeProgramManager : public QObject
 {
 	Q_OBJECT
@@ -64,8 +47,6 @@ public:
     GcodeProgram* AddNewProgram();
 	void LoadPrograms();
     void LoadPrograms(QDir dir);
-	void ExecuteGcode(QString gcodes, bool isFromGE = false);
-    void Stop();
 
     void SaveSettings(QSettings* setting);
     void LoadSettings(QSettings* setting);
@@ -96,8 +77,6 @@ public:
 	GcodeProgramManager* OutsideGcodeProgramManager = NULL;
 	GcodeProgramManager* InsideGcodeProgramManager = NULL;
 
-    QList<GcodeVariable> GcodeVariables;
-
     QStringList DeltaGcodeFiles;
 
     Scurve_Interpolator DeltaXSMoving;
@@ -109,65 +88,17 @@ public slots:
 	void DeleteProgram(GcodeProgram* ptr);
 	void EraserAllProgramItems();
 	void SortProgramFiles();
-	void RefreshGcodeProgramList();
-	void TransmitNextGcode();
-    void UpdateSystemVariable(QString name, QString value);
-	void RespondVariableValue(QIODevice* sender, QString name);
-    void SetStartingGcodeEditorCursor(QString value);
-
-    void SaveGcodeVariable(GcodeVariable gvar);
-    void SaveGcodeVariable(QString name, QString value);
-    void SaveGcodeVariable(QString cmd);
+    void RefreshGcodeProgramList();
 
     void SelectGcodeProgramPath();
-
-signals:
-	void OutOfObjectVariable();
-    void JustUpdateVariable();
-    void MoveToNewPosition(float x, float y, float z, float w, float u, float v, float f, float a, float s, float e);
-	void FinishExecuteGcodes();
-
-	void DeleteAllObjects();
-	void DeleteObject1();
-	void PauseCamera();
-	void CaptureCamera();
-	void ResumeCamera();
 
 private:
 	ConnectionManager* deltaConnection;
     DeltaVisualizer* deltaParameter;
 
-	int sortMethod = 0;
-
-	bool isFromGcodeEditor = false;
-	bool isFileProgramRunning = false;
-
-	QList<QString> gcodeList;
-	int gcodeOrder = 0;
-	QString startingMode = "Begin";
-	int currentGcodeEditorCursor = 0;
-	int returnSubProPointer[20];
-	int returnPointerOrder = -1;
-	QString currentLine;
+    int sortMethod = 0;
 
 	RobotWindow* mParent;
-
-    QString GetVariableValue(QString name);
-    float GetResultOfMathFunction(QString expression);
-	bool isGlobalVariable(QString name);
-	bool isConveyorGcode(QString gcode);
-	bool isSlidingGcode(QString gcode);
-    bool isEncoderGcode(QString gcode);
-	bool isMovingGcode(QString gcode);
-	bool findExeGcodeAndTransmit();
-    QString calculateExpressions(QString expression);
-	void updatePositionIntoSystemVariable(QString statement);
-	QString getLeftWord(QString s, int pos);
-	QString getRightWord(QString s, int pos);
-	QString deleteSpaces(QString s);
-	bool isNotNegative(QString s);
-
-    QString convertGcodeToSyncConveyor(QString gcode);
 
     QString getTrueProgramPath();
 };

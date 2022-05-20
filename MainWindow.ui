@@ -222,6 +222,12 @@ QToolButton::pressed
            </property>
            <item>
             <widget class="QLabel" name="lbLoadingIcon">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="minimumSize">
               <size>
                <width>0</width>
@@ -642,7 +648,7 @@ border-right: 5px solid rgb(24, 70, 139);</string>
              <number>1</number>
             </property>
             <property name="currentIndex">
-             <number>1</number>
+             <number>8</number>
             </property>
             <widget class="QWidget" name="pVariable">
              <property name="styleSheet">
@@ -693,8 +699,8 @@ border-right: 5px solid rgb(24, 70, 139);</string>
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>1093</width>
-                   <height>604</height>
+                   <width>662</width>
+                   <height>198</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_10">

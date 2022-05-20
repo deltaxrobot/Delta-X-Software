@@ -385,17 +385,22 @@ public:
         verticalLayout->setContentsMargins(0, 0, 0, 0);
         lbLoadingIcon = new QLabel(wgLeftPanel);
         lbLoadingIcon->setObjectName(QString::fromUtf8("lbLoadingIcon"));
+        QSizePolicy sizePolicy1(QSizePolicy::Expanding, QSizePolicy::Fixed);
+        sizePolicy1.setHorizontalStretch(0);
+        sizePolicy1.setVerticalStretch(0);
+        sizePolicy1.setHeightForWidth(lbLoadingIcon->sizePolicy().hasHeightForWidth());
+        lbLoadingIcon->setSizePolicy(sizePolicy1);
         lbLoadingIcon->setMinimumSize(QSize(0, 50));
 
         verticalLayout->addWidget(lbLoadingIcon);
 
         tbOpenProject = new QToolButton(wgLeftPanel);
         tbOpenProject->setObjectName(QString::fromUtf8("tbOpenProject"));
-        QSizePolicy sizePolicy1(QSizePolicy::Preferred, QSizePolicy::Fixed);
-        sizePolicy1.setHorizontalStretch(0);
-        sizePolicy1.setVerticalStretch(0);
-        sizePolicy1.setHeightForWidth(tbOpenProject->sizePolicy().hasHeightForWidth());
-        tbOpenProject->setSizePolicy(sizePolicy1);
+        QSizePolicy sizePolicy2(QSizePolicy::Preferred, QSizePolicy::Fixed);
+        sizePolicy2.setHorizontalStretch(0);
+        sizePolicy2.setVerticalStretch(0);
+        sizePolicy2.setHeightForWidth(tbOpenProject->sizePolicy().hasHeightForWidth());
+        tbOpenProject->setSizePolicy(sizePolicy2);
         tbOpenProject->setMinimumSize(QSize(0, 30));
         QIcon icon1;
         icon1.addFile(QString::fromUtf8(":/icon/icons8_folder_64px.png"), QSize(), QIcon::Normal, QIcon::Off);
@@ -407,8 +412,8 @@ public:
 
         tbSaveProject = new QToolButton(wgLeftPanel);
         tbSaveProject->setObjectName(QString::fromUtf8("tbSaveProject"));
-        sizePolicy1.setHeightForWidth(tbSaveProject->sizePolicy().hasHeightForWidth());
-        tbSaveProject->setSizePolicy(sizePolicy1);
+        sizePolicy2.setHeightForWidth(tbSaveProject->sizePolicy().hasHeightForWidth());
+        tbSaveProject->setSizePolicy(sizePolicy2);
         tbSaveProject->setMinimumSize(QSize(0, 30));
         QIcon icon2;
         icon2.addFile(QString::fromUtf8(":/icon/save.png"), QSize(), QIcon::Normal, QIcon::Off);
@@ -424,8 +429,8 @@ public:
 
         tbHome = new QToolButton(wgLeftPanel);
         tbHome->setObjectName(QString::fromUtf8("tbHome"));
-        sizePolicy1.setHeightForWidth(tbHome->sizePolicy().hasHeightForWidth());
-        tbHome->setSizePolicy(sizePolicy1);
+        sizePolicy2.setHeightForWidth(tbHome->sizePolicy().hasHeightForWidth());
+        tbHome->setSizePolicy(sizePolicy2);
         tbHome->setMinimumSize(QSize(80, 0));
         tbHome->setStyleSheet(QString::fromUtf8(""));
         QIcon icon3;
@@ -441,8 +446,8 @@ public:
 
         tbProject = new QToolButton(wgLeftPanel);
         tbProject->setObjectName(QString::fromUtf8("tbProject"));
-        sizePolicy1.setHeightForWidth(tbProject->sizePolicy().hasHeightForWidth());
-        tbProject->setSizePolicy(sizePolicy1);
+        sizePolicy2.setHeightForWidth(tbProject->sizePolicy().hasHeightForWidth());
+        tbProject->setSizePolicy(sizePolicy2);
         tbProject->setMinimumSize(QSize(80, 0));
         tbProject->setStyleSheet(QString::fromUtf8("background-color: rgb(39, 114, 226);\n"
 "border-right: 5px solid rgb(24, 70, 139);"));
@@ -459,8 +464,8 @@ public:
 
         tbVariable = new QToolButton(wgLeftPanel);
         tbVariable->setObjectName(QString::fromUtf8("tbVariable"));
-        sizePolicy1.setHeightForWidth(tbVariable->sizePolicy().hasHeightForWidth());
-        tbVariable->setSizePolicy(sizePolicy1);
+        sizePolicy2.setHeightForWidth(tbVariable->sizePolicy().hasHeightForWidth());
+        tbVariable->setSizePolicy(sizePolicy2);
         tbVariable->setMinimumSize(QSize(80, 0));
         tbVariable->setStyleSheet(QString::fromUtf8(""));
         QIcon icon5;
@@ -474,8 +479,8 @@ public:
 
         tbSetting = new QToolButton(wgLeftPanel);
         tbSetting->setObjectName(QString::fromUtf8("tbSetting"));
-        sizePolicy1.setHeightForWidth(tbSetting->sizePolicy().hasHeightForWidth());
-        tbSetting->setSizePolicy(sizePolicy1);
+        sizePolicy2.setHeightForWidth(tbSetting->sizePolicy().hasHeightForWidth());
+        tbSetting->setSizePolicy(sizePolicy2);
         tbSetting->setMinimumSize(QSize(80, 0));
         tbSetting->setStyleSheet(QString::fromUtf8(""));
         QIcon icon6;
@@ -489,8 +494,8 @@ public:
 
         tbMarket = new QToolButton(wgLeftPanel);
         tbMarket->setObjectName(QString::fromUtf8("tbMarket"));
-        sizePolicy1.setHeightForWidth(tbMarket->sizePolicy().hasHeightForWidth());
-        tbMarket->setSizePolicy(sizePolicy1);
+        sizePolicy2.setHeightForWidth(tbMarket->sizePolicy().hasHeightForWidth());
+        tbMarket->setSizePolicy(sizePolicy2);
         tbMarket->setMinimumSize(QSize(80, 0));
         tbMarket->setStyleSheet(QString::fromUtf8(""));
         QIcon icon7;
@@ -504,8 +509,8 @@ public:
 
         tbDocument = new QToolButton(wgLeftPanel);
         tbDocument->setObjectName(QString::fromUtf8("tbDocument"));
-        sizePolicy1.setHeightForWidth(tbDocument->sizePolicy().hasHeightForWidth());
-        tbDocument->setSizePolicy(sizePolicy1);
+        sizePolicy2.setHeightForWidth(tbDocument->sizePolicy().hasHeightForWidth());
+        tbDocument->setSizePolicy(sizePolicy2);
         tbDocument->setMinimumSize(QSize(80, 0));
         tbDocument->setStyleSheet(QString::fromUtf8(""));
         QIcon icon8;
@@ -519,8 +524,8 @@ public:
 
         tbCommunity = new QToolButton(wgLeftPanel);
         tbCommunity->setObjectName(QString::fromUtf8("tbCommunity"));
-        sizePolicy1.setHeightForWidth(tbCommunity->sizePolicy().hasHeightForWidth());
-        tbCommunity->setSizePolicy(sizePolicy1);
+        sizePolicy2.setHeightForWidth(tbCommunity->sizePolicy().hasHeightForWidth());
+        tbCommunity->setSizePolicy(sizePolicy2);
         tbCommunity->setMinimumSize(QSize(80, 0));
         tbCommunity->setStyleSheet(QString::fromUtf8(""));
         QIcon icon9;
@@ -534,8 +539,8 @@ public:
 
         tbAuthority = new QToolButton(wgLeftPanel);
         tbAuthority->setObjectName(QString::fromUtf8("tbAuthority"));
-        sizePolicy1.setHeightForWidth(tbAuthority->sizePolicy().hasHeightForWidth());
-        tbAuthority->setSizePolicy(sizePolicy1);
+        sizePolicy2.setHeightForWidth(tbAuthority->sizePolicy().hasHeightForWidth());
+        tbAuthority->setSizePolicy(sizePolicy2);
         tbAuthority->setMinimumSize(QSize(80, 0));
         tbAuthority->setStyleSheet(QString::fromUtf8(""));
         QIcon icon10;
@@ -559,11 +564,11 @@ public:
         verticalLayout_11->setObjectName(QString::fromUtf8("verticalLayout_11"));
         swPageStack = new QStackedWidget(page);
         swPageStack->setObjectName(QString::fromUtf8("swPageStack"));
-        QSizePolicy sizePolicy2(QSizePolicy::Preferred, QSizePolicy::Ignored);
-        sizePolicy2.setHorizontalStretch(0);
-        sizePolicy2.setVerticalStretch(0);
-        sizePolicy2.setHeightForWidth(swPageStack->sizePolicy().hasHeightForWidth());
-        swPageStack->setSizePolicy(sizePolicy2);
+        QSizePolicy sizePolicy3(QSizePolicy::Preferred, QSizePolicy::Ignored);
+        sizePolicy3.setHorizontalStretch(0);
+        sizePolicy3.setVerticalStretch(0);
+        sizePolicy3.setHeightForWidth(swPageStack->sizePolicy().hasHeightForWidth());
+        swPageStack->setSizePolicy(sizePolicy3);
         swPageStack->setMaximumSize(QSize(16777215, 16777215));
         swPageStack->setStyleSheet(QString::fromUtf8(""));
         swPageStack->setLineWidth(1);
@@ -604,7 +609,7 @@ public:
         scrollArea_2->setWidgetResizable(true);
         scrollAreaWidgetContents_2 = new QWidget();
         scrollAreaWidgetContents_2->setObjectName(QString::fromUtf8("scrollAreaWidgetContents_2"));
-        scrollAreaWidgetContents_2->setGeometry(QRect(0, 0, 1093, 604));
+        scrollAreaWidgetContents_2->setGeometry(QRect(0, 0, 662, 198));
         verticalLayout_10 = new QVBoxLayout(scrollAreaWidgetContents_2);
         verticalLayout_10->setSpacing(6);
         verticalLayout_10->setContentsMargins(11, 11, 11, 11);
@@ -647,11 +652,11 @@ public:
         verticalLayout_9->setObjectName(QString::fromUtf8("verticalLayout_9"));
         pbStartSystem = new QPushButton(frame);
         pbStartSystem->setObjectName(QString::fromUtf8("pbStartSystem"));
-        QSizePolicy sizePolicy3(QSizePolicy::Preferred, QSizePolicy::Expanding);
-        sizePolicy3.setHorizontalStretch(0);
-        sizePolicy3.setVerticalStretch(0);
-        sizePolicy3.setHeightForWidth(pbStartSystem->sizePolicy().hasHeightForWidth());
-        pbStartSystem->setSizePolicy(sizePolicy3);
+        QSizePolicy sizePolicy4(QSizePolicy::Preferred, QSizePolicy::Expanding);
+        sizePolicy4.setHorizontalStretch(0);
+        sizePolicy4.setVerticalStretch(0);
+        sizePolicy4.setHeightForWidth(pbStartSystem->sizePolicy().hasHeightForWidth());
+        pbStartSystem->setSizePolicy(sizePolicy4);
         pbStartSystem->setMaximumSize(QSize(200, 100));
         pbStartSystem->setFont(font2);
         pbStartSystem->setStyleSheet(QString::fromUtf8("QPushButton\n"
@@ -676,8 +681,8 @@ public:
 
         pbStopSystem = new QPushButton(frame);
         pbStopSystem->setObjectName(QString::fromUtf8("pbStopSystem"));
-        sizePolicy3.setHeightForWidth(pbStopSystem->sizePolicy().hasHeightForWidth());
-        pbStopSystem->setSizePolicy(sizePolicy3);
+        sizePolicy4.setHeightForWidth(pbStopSystem->sizePolicy().hasHeightForWidth());
+        pbStopSystem->setSizePolicy(sizePolicy4);
         pbStopSystem->setMaximumSize(QSize(200, 100));
         pbStopSystem->setFont(font2);
         pbStopSystem->setStyleSheet(QString::fromUtf8("QPushButton\n"
@@ -938,11 +943,11 @@ public:
         verticalLayout_6->setContentsMargins(0, 0, 0, 0);
         scrollArea = new QScrollArea(pProgramer);
         scrollArea->setObjectName(QString::fromUtf8("scrollArea"));
-        QSizePolicy sizePolicy4(QSizePolicy::Expanding, QSizePolicy::Expanding);
-        sizePolicy4.setHorizontalStretch(0);
-        sizePolicy4.setVerticalStretch(0);
-        sizePolicy4.setHeightForWidth(scrollArea->sizePolicy().hasHeightForWidth());
-        scrollArea->setSizePolicy(sizePolicy4);
+        QSizePolicy sizePolicy5(QSizePolicy::Expanding, QSizePolicy::Expanding);
+        sizePolicy5.setHorizontalStretch(0);
+        sizePolicy5.setVerticalStretch(0);
+        sizePolicy5.setHeightForWidth(scrollArea->sizePolicy().hasHeightForWidth());
+        scrollArea->setSizePolicy(sizePolicy5);
         scrollArea->setMinimumSize(QSize(0, 600));
         scrollArea->setWidgetResizable(true);
         scrollAreaWidgetContents = new QWidget();
@@ -961,11 +966,11 @@ public:
 
         groupBox_5 = new QGroupBox(scrollAreaWidgetContents);
         groupBox_5->setObjectName(QString::fromUtf8("groupBox_5"));
-        QSizePolicy sizePolicy5(QSizePolicy::Minimum, QSizePolicy::Expanding);
-        sizePolicy5.setHorizontalStretch(0);
-        sizePolicy5.setVerticalStretch(0);
-        sizePolicy5.setHeightForWidth(groupBox_5->sizePolicy().hasHeightForWidth());
-        groupBox_5->setSizePolicy(sizePolicy5);
+        QSizePolicy sizePolicy6(QSizePolicy::Minimum, QSizePolicy::Expanding);
+        sizePolicy6.setHorizontalStretch(0);
+        sizePolicy6.setVerticalStretch(0);
+        sizePolicy6.setHeightForWidth(groupBox_5->sizePolicy().hasHeightForWidth());
+        groupBox_5->setSizePolicy(sizePolicy6);
         groupBox_5->setMinimumSize(QSize(0, 0));
         QFont font4;
         font4.setBold(false);
@@ -1236,11 +1241,11 @@ public:
 
         fFileMenu = new QFrame(page);
         fFileMenu->setObjectName(QString::fromUtf8("fFileMenu"));
-        QSizePolicy sizePolicy6(QSizePolicy::Preferred, QSizePolicy::Maximum);
-        sizePolicy6.setHorizontalStretch(0);
-        sizePolicy6.setVerticalStretch(0);
-        sizePolicy6.setHeightForWidth(fFileMenu->sizePolicy().hasHeightForWidth());
-        fFileMenu->setSizePolicy(sizePolicy6);
+        QSizePolicy sizePolicy7(QSizePolicy::Preferred, QSizePolicy::Maximum);
+        sizePolicy7.setHorizontalStretch(0);
+        sizePolicy7.setVerticalStretch(0);
+        sizePolicy7.setHeightForWidth(fFileMenu->sizePolicy().hasHeightForWidth());
+        fFileMenu->setSizePolicy(sizePolicy7);
         fFileMenu->setMinimumSize(QSize(0, 40));
         fFileMenu->setStyleSheet(QString::fromUtf8(""));
         fFileMenu->setFrameShape(QFrame::StyledPanel);
@@ -1252,11 +1257,11 @@ public:
         horizontalLayout_10->setContentsMargins(0, 0, 0, 0);
         teLoggingBox = new QTextEdit(fFileMenu);
         teLoggingBox->setObjectName(QString::fromUtf8("teLoggingBox"));
-        QSizePolicy sizePolicy7(QSizePolicy::Expanding, QSizePolicy::Ignored);
-        sizePolicy7.setHorizontalStretch(0);
-        sizePolicy7.setVerticalStretch(0);
-        sizePolicy7.setHeightForWidth(teLoggingBox->sizePolicy().hasHeightForWidth());
-        teLoggingBox->setSizePolicy(sizePolicy7);
+        QSizePolicy sizePolicy8(QSizePolicy::Expanding, QSizePolicy::Ignored);
+        sizePolicy8.setHorizontalStretch(0);
+        sizePolicy8.setVerticalStretch(0);
+        sizePolicy8.setHeightForWidth(teLoggingBox->sizePolicy().hasHeightForWidth());
+        teLoggingBox->setSizePolicy(sizePolicy8);
         teLoggingBox->setMinimumSize(QSize(0, 0));
         teLoggingBox->setMaximumSize(QSize(16777215, 16777215));
         teLoggingBox->setStyleSheet(QString::fromUtf8("QTextEdit\n"
@@ -1301,7 +1306,7 @@ public:
         retranslateUi(MainWindow);
 
         stackedWidget->setCurrentIndex(0);
-        swPageStack->setCurrentIndex(1);
+        swPageStack->setCurrentIndex(8);
         swAuthority->setCurrentIndex(0);
         twProjectManager->setCurrentIndex(0);
 
