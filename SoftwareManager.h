@@ -30,6 +30,8 @@ public:
     VariableManager* ProgramVariableManager;
     //QList<RobotManager*>* RobotManagers;
     ProjectManager* SoftwareProjectManager;
+
+    QString SoftwarePath = "";
 };
 
 #endif // SOFTWAREMANAGER_H

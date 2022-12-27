@@ -8,6 +8,7 @@
 #include <robotmanager.h>
 #include <RobotWindow.h>
 #include <QVBoxLayout>
+#include <QGraphicsView>
 
 class Authority : public QObject
 {
@@ -30,6 +31,8 @@ public:
     QListWidget* lwOperatorGcodeProgram;
     QFrame* fOperatorRobotOnOffPanel;
     QGridLayout* layoutOperatorRobotOnOff;
+
+    QGraphicsView* gvOperatorViewer;
 
     QList<QCheckBox*> RobotEnableList;
 

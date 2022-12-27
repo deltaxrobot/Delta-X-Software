@@ -29,7 +29,7 @@
    </font>
   </property>
   <property name="windowTitle">
-   <string>Delta X Software - Version 0.9.6</string>
+   <string>Delta X Software - Version 0.9.7</string>
   </property>
   <property name="windowIcon">
    <iconset resource="resource.qrc">
@@ -221,23 +221,17 @@ QToolButton::pressed
             <number>0</number>
            </property>
            <item>
-            <widget class="QLabel" name="lbLoadingIcon">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
+            <spacer name="verticalSpacer_5">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
              </property>
-             <property name="minimumSize">
+             <property name="sizeHint" stdset="0">
               <size>
-               <width>0</width>
-               <height>50</height>
+               <width>20</width>
+               <height>40</height>
               </size>
              </property>
-             <property name="text">
-              <string/>
-             </property>
-            </widget>
+            </spacer>
            </item>
            <item>
             <widget class="QToolButton" name="tbOpenProject">
@@ -435,41 +429,6 @@ border-right: 5px solid rgb(24, 70, 139);</string>
             </widget>
            </item>
            <item>
-            <widget class="QToolButton" name="tbSetting">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="minimumSize">
-              <size>
-               <width>80</width>
-               <height>0</height>
-              </size>
-             </property>
-             <property name="styleSheet">
-              <string notr="true"/>
-             </property>
-             <property name="text">
-              <string>Setting</string>
-             </property>
-             <property name="icon">
-              <iconset resource="resource.qrc">
-               <normaloff>:/icon/settings_64px.png</normaloff>:/icon/settings_64px.png</iconset>
-             </property>
-             <property name="popupMode">
-              <enum>QToolButton::DelayedPopup</enum>
-             </property>
-             <property name="toolButtonStyle">
-              <enum>Qt::ToolButtonTextUnderIcon</enum>
-             </property>
-             <property name="autoRaise">
-              <bool>false</bool>
-             </property>
-            </widget>
-           </item>
-           <item>
             <widget class="QToolButton" name="tbMarket">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -622,6 +581,41 @@ border-right: 5px solid rgb(24, 70, 139);</string>
              </property>
             </spacer>
            </item>
+           <item>
+            <widget class="QToolButton" name="tbSetting">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>80</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="styleSheet">
+              <string notr="true"/>
+             </property>
+             <property name="text">
+              <string>Setting</string>
+             </property>
+             <property name="icon">
+              <iconset resource="resource.qrc">
+               <normaloff>:/icon/settings_64px.png</normaloff>:/icon/settings_64px.png</iconset>
+             </property>
+             <property name="popupMode">
+              <enum>QToolButton::DelayedPopup</enum>
+             </property>
+             <property name="toolButtonStyle">
+              <enum>Qt::ToolButtonTextUnderIcon</enum>
+             </property>
+             <property name="autoRaise">
+              <bool>false</bool>
+             </property>
+            </widget>
+           </item>
           </layout>
          </widget>
         </item>
@@ -648,7 +642,7 @@ border-right: 5px solid rgb(24, 70, 139);</string>
              <number>1</number>
             </property>
             <property name="currentIndex">
-             <number>8</number>
+             <number>7</number>
             </property>
             <widget class="QWidget" name="pVariable">
              <property name="styleSheet">
@@ -699,8 +693,8 @@ border-right: 5px solid rgb(24, 70, 139);</string>
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>662</width>
-                   <height>198</height>
+                   <width>601</width>
+                   <height>171</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_10">
@@ -899,7 +893,21 @@ QPushButton:pressed
                          <property name="styleSheet">
                           <string notr="true">background-color: rgb(0, 170, 255);</string>
                          </property>
-                         <layout class="QHBoxLayout" name="horizontalLayout_11"/>
+                         <layout class="QHBoxLayout" name="horizontalLayout_11">
+                          <item>
+                           <widget class="QGraphicsView" name="gvOperatorViewer">
+                            <property name="sizePolicy">
+                             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                              <horstretch>0</horstretch>
+                              <verstretch>0</verstretch>
+                             </sizepolicy>
+                            </property>
+                            <property name="styleSheet">
+                             <string notr="true">background-color: rgb(238, 238, 238);</string>
+                            </property>
+                           </widget>
+                          </item>
+                         </layout>
                         </widget>
                        </item>
                        <item>
@@ -1287,7 +1295,7 @@ QPushButton:pressed
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>600</width>
+                       <width>571</width>
                        <height>700</height>
                       </rect>
                      </property>
@@ -1731,8 +1739,92 @@ QPushButton:pressed
             </widget>
             <widget class="QWidget" name="pSetting">
              <property name="styleSheet">
-              <string notr="true">background-color: rgb(170, 85, 255);</string>
+              <string notr="true"/>
              </property>
+             <layout class="QVBoxLayout" name="verticalLayout_12">
+              <item>
+               <widget class="QFrame" name="frame_3">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>50</height>
+                 </size>
+                </property>
+                <property name="frameShape">
+                 <enum>QFrame::StyledPanel</enum>
+                </property>
+                <property name="frameShadow">
+                 <enum>QFrame::Raised</enum>
+                </property>
+                <layout class="QHBoxLayout" name="horizontalLayout_13">
+                 <item>
+                  <spacer name="horizontalSpacer">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="pbSaveSetting">
+                   <property name="text">
+                    <string>Save</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item>
+               <widget class="QTableWidget" name="twSetting">
+                <property name="maximumSize">
+                 <size>
+                  <width>1101</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
+                <attribute name="horizontalHeaderCascadingSectionResizes">
+                 <bool>true</bool>
+                </attribute>
+                <attribute name="horizontalHeaderDefaultSectionSize">
+                 <number>100</number>
+                </attribute>
+                <attribute name="horizontalHeaderStretchLastSection">
+                 <bool>true</bool>
+                </attribute>
+                <row>
+                 <property name="text">
+                  <string/>
+                 </property>
+                </row>
+                <column>
+                 <property name="text">
+                  <string>Name</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>Value</string>
+                 </property>
+                </column>
+                <item row="0" column="0">
+                 <property name="text">
+                  <string>Python</string>
+                 </property>
+                </item>
+                <item row="0" column="1">
+                 <property name="text">
+                  <string>/lib/Python38/python.exe</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+             </layout>
             </widget>
             <widget class="QWidget" name="pProject">
              <property name="styleSheet">
@@ -1883,6 +1975,7 @@ QPushButton:pressed
                 <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;meta charset=&quot;utf-8&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
+hr { height: 1px; border-width: 0; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Segoe UI'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:7.8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>

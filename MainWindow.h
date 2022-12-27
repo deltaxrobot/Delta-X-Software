@@ -13,6 +13,7 @@
 #include "VersionManager.h"
 #include "Authority.h"
 #include "UnityTool.h"
+#include <QFileInfo>
 
 #include <QSettings>
 

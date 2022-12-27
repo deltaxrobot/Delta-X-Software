@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui serialport opengl network multimedia quickwidgets printsupport
+QT       += core gui serialport opengl network quickwidgets printsupport multimedia
 
 windows {
     INCLUDEPATH += E:\OpenCV\opencv-4.0\build\include

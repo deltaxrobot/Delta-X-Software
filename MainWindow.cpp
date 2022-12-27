@@ -18,7 +18,7 @@ void MainWindow::InitVariables()
     // ---- Check software version ----
 
     DeltaXVersionManager = new VersionManager(this);
-    DeltaXVersionManager->CurrentVersion = "0.9.6";
+    DeltaXVersionManager->CurrentVersion = "0.9.7";
     DeltaXVersionManager->SoftwareName = "DeltaXSoftware";
     DeltaXVersionManager->CheckVersionUrl = "http://imwi.space/admin/server.php";
     DeltaXVersionManager->NewVersionSoftwareUrl = "https://sourceforge.net/projects/delta-x-software/files/";
@@ -26,6 +26,8 @@ void MainWindow::InitVariables()
 
     // ----- Init Pointer -----
     SoftwareManager::GetInstance()->SoftwarePointer = this;
+    SoftwareManager::GetInstance()->SoftwarePath = QApplication::applicationDirPath();
+
     //------- Dasboard --------
     Dashboard = new TabDashboard();
     Dashboard->InitPanel(ui->wgLeftPanel, ui->swPageStack);
@@ -93,6 +95,7 @@ void MainWindow::InitVariables()
     //--------- Authority ---------
     SoftwareAuthority = new Authority();
     SoftwareAuthority->wgOperatorDisplay = ui->wgOperatorDisplay;
+    SoftwareAuthority->gvOperatorViewer = ui->gvOperatorViewer;
     SoftwareAuthority->twOperatorParameter = ui->twOperatorParameter;
     SoftwareAuthority->lwOperatorDisplayWidget = ui->lwOperatorDisplayWidget;
     SoftwareAuthority->lwOperatorDisplayVariable = ui->lwOperatorDisplayVariable;
@@ -116,10 +119,14 @@ bool MainWindow::IsLastProject()
     QSettings settings("customUI.ini", QSettings::IniFormat);
     LastProject = settings.value("LastProject", "").toString();
 
-    if (LastProject == "")
-        return false;
-    else
+    if(QFileInfo::exists(LastProject))
+    {
         return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
@@ -145,7 +152,7 @@ void MainWindow::InitProjectUX()
 
 void MainWindow::InitVisible()
 {
-    ui->tbSetting->setVisible(false);
+//    ui->tbSetting->setVisible(false);
     ui->tbCommunity->setVisible(false);
     ui->tbDocument->setVisible(false);
     ui->tbMarket->setVisible(false);
@@ -274,7 +281,7 @@ RobotManager* MainWindow::NewProject_Slot(int index)
     SoftwareProjectManager->RobotManagers.append(robotManager);
 
     //------ Create new robot project tab ---------
-    SoftwareProjectManager->AddNewTab(stack, robotManager->ID, robotManager->Name);    
+    SoftwareProjectManager->AddNewTab(stack, robotManager->ID, robotManager->Name);
 
     SoftwareProjectManager->CurrentRobotManager = robotManager;
 
@@ -355,24 +362,24 @@ void MainWindow::Log(QString msg)
 
 void MainWindow::SetLoadingIconRun(bool isRun)
 {
-    QMovie* movie = ui->lbLoadingIcon->movie();
+//    QMovie* movie = ui->lbLoadingIcon->movie();
 
-    if (movie == NULL)
-    {
-        movie = new QMovie(":/icon/deltax-loading.gif");
-        ui->lbLoadingIcon->setMovie(movie);
-    }
+//    if (movie == NULL)
+//    {
+//        movie = new QMovie(":/icon/deltax-loading.gif");
+//        ui->lbLoadingIcon->setMovie(movie);
+//    }
 
-    if (isRun == false)
-    {
-        ui->lbLoadingIcon->hide();
-        movie->stop();
-    }
-    else
-    {
-        ui->lbLoadingIcon->show();
-        movie->start();
-    }
+//    if (isRun == false)
+//    {
+//        ui->lbLoadingIcon->hide();
+//        movie->stop();
+//    }
+//    else
+//    {
+//        ui->lbLoadingIcon->show();
+//        movie->start();
+//    }
 
 }
 
@@ -453,12 +460,7 @@ void MainWindow::on_pbAddOperatorDisplayWidget_clicked()
 
 void MainWindow::on_pbDeleteOperatorDisplayWidget_clicked()
 {
-    QList<QListWidgetItem*> items = ui->lwOperatorDisplayWidget->selectedItems();
-
-    foreach(QListWidgetItem* item, items)
-    {
-        ui->lwOperatorDisplayWidget->takeItem(ui->lwOperatorDisplayVariable->currentRow());
-    }
+    ui->lwOperatorDisplayWidget->takeItem(ui->lwOperatorDisplayWidget->currentRow());
 }
 
 

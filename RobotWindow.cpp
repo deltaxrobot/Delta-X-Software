@@ -476,6 +476,10 @@ void RobotWindow::InitGcodeEditorModule()
 //    UpdateVariable("O0_W", QString::number(NULL_NUMBER));
 //    UpdateVariable("O0_L", QString::number(NULL_NUMBER));
 
+    DeltaGcodeManager = new GcodeProgramManager(this, ui->saProgramFiles, ui->wgProgramContainer, ui->pteGcodeArea, ui->pbExecuteGcodes, DeltaConnectionManager, Delta2DVisualizer);
+    DeltaGcodeManager->leGcodeProgramPath = ui->leGcodeProgramPath;
+    DeltaGcodeManager->LoadPrograms();
+
     GcodeScriptThread = new GcodeScript();
     GcodeScriptThread->GcodeVariables = SoftwareManager::GetInstance()->ProgramVariableManager->GetMap();
     GcodeScriptThread->VariableAddress = ProjectName + "." + Name;
@@ -496,9 +500,7 @@ void RobotWindow::InitGcodeEditorModule()
 
     GcodeScriptThread->thread()->start();
 
-    DeltaGcodeManager = new GcodeProgramManager(this, ui->saProgramFiles, ui->wgProgramContainer, ui->pteGcodeArea, ui->pbExecuteGcodes, DeltaConnectionManager, Delta2DVisualizer);
-    DeltaGcodeManager->leGcodeProgramPath = ui->leGcodeProgramPath;
-    DeltaGcodeManager->LoadPrograms();
+
 
     connect(DeltaConnectionManager, SIGNAL(ReceiveVariableChangeCommand(QString, QString)), DeltaGcodeManager, SLOT(UpdateSystemVariable(QString, QString)));
     connect(DeltaConnectionManager->TCPConnection, SIGNAL(ReceiveVariableChangeCommand(QString, float)), DeltaGcodeManager, SLOT(UpdateSystemVariable(QString, float)));

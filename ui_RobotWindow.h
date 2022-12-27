@@ -1480,7 +1480,7 @@ public:
         scrollArea_4->setWidgetResizable(true);
         scrollAreaWidgetContents_4 = new QWidget();
         scrollAreaWidgetContents_4->setObjectName(QString::fromUtf8("scrollAreaWidgetContents_4"));
-        scrollAreaWidgetContents_4->setGeometry(QRect(0, 0, 533, 600));
+        scrollAreaWidgetContents_4->setGeometry(QRect(0, 0, 544, 600));
         scrollAreaWidgetContents_4->setMinimumSize(QSize(0, 600));
         verticalLayout_24 = new QVBoxLayout(scrollAreaWidgetContents_4);
         verticalLayout_24->setSpacing(6);
@@ -1615,7 +1615,7 @@ public:
         scrollArea_3->setWidgetResizable(true);
         scrollAreaWidgetContents_3 = new QWidget();
         scrollAreaWidgetContents_3->setObjectName(QString::fromUtf8("scrollAreaWidgetContents_3"));
-        scrollAreaWidgetContents_3->setGeometry(QRect(0, 0, 533, 1200));
+        scrollAreaWidgetContents_3->setGeometry(QRect(0, 0, 544, 1200));
         scrollAreaWidgetContents_3->setMinimumSize(QSize(0, 1200));
         verticalLayout_44 = new QVBoxLayout(scrollAreaWidgetContents_3);
         verticalLayout_44->setSpacing(6);
@@ -1770,7 +1770,7 @@ public:
         scrollArea_2->setWidgetResizable(true);
         wgJoggingScrollWidget = new QWidget();
         wgJoggingScrollWidget->setObjectName(QString::fromUtf8("wgJoggingScrollWidget"));
-        wgJoggingScrollWidget->setGeometry(QRect(0, 0, 533, 2000));
+        wgJoggingScrollWidget->setGeometry(QRect(0, 0, 544, 2000));
         wgJoggingScrollWidget->setMinimumSize(QSize(0, 2000));
         wgJoggingScrollWidget->setMaximumSize(QSize(16777215, 16777215));
         verticalLayout_5 = new QVBoxLayout(wgJoggingScrollWidget);
@@ -3616,7 +3616,7 @@ public:
         scrollArea_7->setWidgetResizable(true);
         scrollAreaWidgetContents_7 = new QWidget();
         scrollAreaWidgetContents_7->setObjectName(QString::fromUtf8("scrollAreaWidgetContents_7"));
-        scrollAreaWidgetContents_7->setGeometry(QRect(0, 0, 550, 413));
+        scrollAreaWidgetContents_7->setGeometry(QRect(0, 0, 554, 437));
         verticalLayout_27 = new QVBoxLayout(scrollAreaWidgetContents_7);
         verticalLayout_27->setSpacing(6);
         verticalLayout_27->setContentsMargins(11, 11, 11, 11);
@@ -3853,7 +3853,7 @@ public:
         scrollArea->setWidgetResizable(true);
         scrollAreaWidgetContents = new QWidget();
         scrollAreaWidgetContents->setObjectName(QString::fromUtf8("scrollAreaWidgetContents"));
-        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 553, 1200));
+        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 578, 1200));
         scrollAreaWidgetContents->setMinimumSize(QSize(450, 1200));
         verticalLayout_30 = new QVBoxLayout(scrollAreaWidgetContents);
         verticalLayout_30->setSpacing(6);
@@ -4065,7 +4065,7 @@ public:
         saObjectDetecting->setWidgetResizable(true);
         wObjectDetecting = new QWidget();
         wObjectDetecting->setObjectName(QString::fromUtf8("wObjectDetecting"));
-        wObjectDetecting->setGeometry(QRect(0, 0, 571, 4000));
+        wObjectDetecting->setGeometry(QRect(0, 0, 590, 4000));
         wObjectDetecting->setMinimumSize(QSize(450, 4000));
         wObjectDetecting->setStyleSheet(QString::fromUtf8("QWidget#wObjectDetecting\n"
 "{	\n"
@@ -5998,7 +5998,7 @@ public:
         scrollArea_6->setWidgetResizable(true);
         scrollAreaWidgetContents_6 = new QWidget();
         scrollAreaWidgetContents_6->setObjectName(QString::fromUtf8("scrollAreaWidgetContents_6"));
-        scrollAreaWidgetContents_6->setGeometry(QRect(0, 0, 553, 1600));
+        scrollAreaWidgetContents_6->setGeometry(QRect(0, 0, 578, 1600));
         scrollAreaWidgetContents_6->setMinimumSize(QSize(450, 1600));
         scrollAreaWidgetContents_6->setMaximumSize(QSize(16777215, 16777215));
         verticalLayout_38 = new QVBoxLayout(scrollAreaWidgetContents_6);
@@ -6808,7 +6808,7 @@ public:
         RobotWindow->setCentralWidget(centralWidget);
         mbRobot = new QMenuBar(RobotWindow);
         mbRobot->setObjectName(QString::fromUtf8("mbRobot"));
-        mbRobot->setGeometry(QRect(0, 0, 1210, 22));
+        mbRobot->setGeometry(QRect(0, 0, 1210, 17));
         mbRobot->setLayoutDirection(Qt::RightToLeft);
         mbRobot->setStyleSheet(QString::fromUtf8("QMenuBar\n"
 "{\n"
@@ -6894,7 +6894,7 @@ public:
         QObject::connect(pbWarpTool, SIGNAL(clicked()), pbTransformPerspective, SLOT(toggle()));
 
         twDeltaManager->setCurrentIndex(1);
-        twDeltaGeometry->setCurrentIndex(3);
+        twDeltaGeometry->setCurrentIndex(2);
         cbDivision->setCurrentIndex(1);
         pbPump->setDefault(false);
         pbLaser->setDefault(false);
@@ -7332,6 +7332,9 @@ public:
         teDebug->setHtml(QCoreApplication::translate("RobotWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
+"hr { height: 1px; border-width: 0; }\n"
+"li.unchecked::marker { content: \"\\2610\"; }\n"
+"li.checked::marker { content: \"\\2612\"; }\n"
 "</style></head><body style=\" font-family:'Segoe UI'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:7.8pt;\"><br /></p></body></html>", nullptr));
         label_4->setText(QCoreApplication::translate("RobotWindow", "Sender", nullptr));
@@ -7367,47 +7370,51 @@ public:
         pteGcodeArea->setHtml(QCoreApplication::translate("RobotWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
+"hr { height: 1px; border-width: 0; }\n"
+"li.unchecked::marker { content: \"\\2610\"; }\n"
+"li.checked::marker { content: \"\\2612\"; }\n"
 "</style></head><body style=\" font-family:'Segoe UI'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2'; color:#000000;\">N05</span><span style=\" font-family:'MS Shell Dlg 2';\"> </span><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600;\">G28</span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-weight:600;\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><spa"
-                        "n style=\" font-family:'MS Shell Dlg 2'; font-style:italic; color:#00aa00;\">;Acceleration</span></p>\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-weight:600;\"><"
+                        "br /></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2'; font-style:italic; color:#00aa00;\">;Acceleration</span></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\">N10 </span><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600;\">M204</span><span style=\" font-family:'MS Shell Dlg 2';\"> A1200</span></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2'; font-style:italic; color:#00aa00;\">;Speed</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\">N15 </span><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600;\">G01</span><span style=\" font-family:'MS Shell Dlg 2';\"> F200</span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px"
-                        "; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2';\"><br /></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\">N15 </span><span style=\" font-family:'MS Shell Dlg 2'; font-weig"
+                        "ht:600;\">G01</span><span style=\" font-family:'MS Shell Dlg 2';\"> F200</span></p>\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2';\"><br /></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2'; font-style:italic; color:#00aa00;\">;Declare variables</span></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\">N20 </span><span style=\" font-family:'MS Shell Dlg 2'; font-style:italic;\">#100</span><span style=\" font-family:'MS Shell Dlg 2';\"> = 0</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\">N30 </span><span style=\" font-family:'MS Shell Dlg 2'; font-style:italic;\">#100</span><span style=\" font-family:'MS Shell Dlg 2';\"> = </span><span style=\""
-                        " font-family:'MS Shell Dlg 2'; font-style:italic;\">#100</span><span style=\" font-family:'MS Shell Dlg 2';\"> + 1</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\">N30 </span><span st"
+                        "yle=\" font-family:'MS Shell Dlg 2'; font-style:italic;\">#100</span><span style=\" font-family:'MS Shell Dlg 2';\"> = </span><span style=\" font-family:'MS Shell Dlg 2'; font-style:italic;\">#100</span><span style=\" font-family:'MS Shell Dlg 2';\"> + 1</span></p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2';\"><br /></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2'; font-style:italic; color:#55aa00;\">;Call subprogram</span></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\">N35 </span><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600;\">M98</span><span style=\" font-family:'MS Shell Dlg 2';\"> P2000</span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font"
-                        "-family:'MS Shell Dlg 2';\"><br /></p>\n"
+"<p style"
+                        "=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2';\"><br /></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2'; font-style:italic; color:#00aa00;\">; Begin subprogram</span></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\">N40 </span><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600;\">O2000</span></p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2';\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\">N45 </span><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600;\">G01</span><span style=\" font-family:'MS Shell D"
-                        "lg 2';\"> Z-350</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS"
+                        " Shell Dlg 2';\">N45 </span><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600;\">G01</span><span style=\" font-family:'MS Shell Dlg 2';\"> Z-350</span></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\">N50 </span><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600;\">G01</span><span style=\" font-family:'MS Shell Dlg 2';\"> X-100</span></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\">N55 </span><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600;\">G01</span><span style=\" font-family:'MS Shell Dlg 2';\"> Z-370</span></p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2';\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell D"
-                        "lg 2';\">N60 </span><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600;\">G01</span><span style=\" font-family:'MS Shell Dlg 2';\"> Z-350</span></p>\n"
+"<p style=\" margin-"
+                        "top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\">N60 </span><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600;\">G01</span><span style=\" font-family:'MS Shell Dlg 2';\"> Z-350</span></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\">N65 </span><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600;\">G01</span><span style=\" font-family:'MS Shell Dlg 2';\"> X100</span></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\">N70 </span><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600;\">G01</span><span style=\" font-family:'MS Shell Dlg 2';\"> Z-370</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\">N75 M99</span></p>\n"
-"<p style=\" margin-top:0px; "
-                        "margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2'; font-style:italic; color:#00aa00;\">;End subprogram</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0p"
+                        "x; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\">N75 M99</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2'; font-style:italic; color:#00aa00;\">;End subprogram</span></p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2';\"><br /></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2'; font-style:italic; color:#00aa00;\">;Loop 5 times</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\">N80 </span><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600; color:#00aa00;\">IF</span><span style=\" font-family:'MS Shell Dlg 2';\"> [</span><span style=\" font-family:'MS Shell Dlg 2'; font-style:italic;\">#100</spa"
-                        "n><span style=\" font-family:'MS Shell Dlg 2';\"> LE 5] </span><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600; color:#00aa00;\">THEN</span><span style=\" font-family:'MS Shell Dlg 2';\"> </span><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600; color:#ff5500;\">GOTO</span><span style=\" font-family:'MS Shell Dlg 2';\"> 30</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\">N80 </span><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600; color:#00aa00;\">"
+                        "IF</span><span style=\" font-family:'MS Shell Dlg 2';\"> [</span><span style=\" font-family:'MS Shell Dlg 2'; font-style:italic;\">#100</span><span style=\" font-family:'MS Shell Dlg 2';\"> LE 5] </span><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600; color:#00aa00;\">THEN</span><span style=\" font-family:'MS Shell Dlg 2';\"> </span><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600; color:#ff5500;\">GOTO</span><span style=\" font-family:'MS Shell Dlg 2';\"> 30</span></p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2';\"><br /></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\">N85 </span><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600;\">G28</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\"> </span></p></body></html>", nullptr));
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; marg"
+                        "in-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\"> </span></p></body></html>", nullptr));
         leExProgramName->setText(QCoreApplication::translate("RobotWindow", "Program 1", nullptr));
         pbExDeleteProgram->setText(QString());
         lbExGCodeNumber->setText(QCoreApplication::translate("RobotWindow", "100 Gcode Lines", nullptr));
@@ -7442,6 +7449,9 @@ public:
         textEdit->setHtml(QCoreApplication::translate("RobotWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
+"hr { height: 1px; border-width: 0; }\n"
+"li.unchecked::marker { content: \"\\2610\"; }\n"
+"li.checked::marker { content: \"\\2612\"; }\n"
 "</style></head><body style=\" font-family:'Segoe UI'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2'; font-size:7.8pt;\">Author:</span></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2'; font-size:7.8pt;\">Description:</span></p></body></html>", nullptr));
