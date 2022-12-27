@@ -1,3 +1,7 @@
 x64
 release
 debug
+.qtc_clangd
+.qt_for_python
+3rd-party\QJoysticks
+*.idx
