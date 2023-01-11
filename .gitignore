@@ -5,3 +5,5 @@ debug
 .qt_for_python
 3rd-party\QJoysticks
 *.idx
+.qtc_clangd
+plugin\IndustrialCamera\.qtc_clangd

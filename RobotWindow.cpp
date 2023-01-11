@@ -30,6 +30,8 @@ RobotWindow::~RobotWindow()
 
 void RobotWindow::InitVariables()
 {
+    QElapsedTimer time;
+    qint64 start = time.elapsed();
     //---------- Connection -----------
     InitConnectionModule();
 
@@ -67,6 +69,7 @@ void RobotWindow::InitVariables()
         joystick = QJoysticks::getInstance();
         joystick->setVirtualJoystickRange(ui->leJoystickRange->text().toDouble());
         joystick->setVirtualJoystickAxisSensibility(ui->leJoystickSensibility->text().toDouble());
+        qDebug() << "joystick device: " << joystick->deviceNames();
         ui->cbJoystickDevice->addItems(joystick->deviceNames());
     #endif
 #endif
@@ -98,6 +101,8 @@ void RobotWindow::InitVariables()
 
     InitUIController();
 
+
+
     //--------------Timer-------------
 
     VirtualEncoderTimer = new QTimer(this);
@@ -109,7 +114,7 @@ void RobotWindow::InitVariables()
     UIEvent->start(100);
 
     ConvenyorTimer = new QTimer(this);
-    connect(ConvenyorTimer, SIGNAL(timeout()), this, SLOT(GetConvenyorPosition()));
+//    connect(ConvenyorTimer, SIGNAL(timeout()), this, SLOT(GetConvenyorPosition()));
 
     ShortcutKeyTimer = new QTimer(this);
     connect(ShortcutKeyTimer, SIGNAL(timeout()), this, SLOT(ProcessShortcutKey()));
@@ -165,10 +170,12 @@ void RobotWindow::InitVariables()
     ui->gbCameraVariable->setChecked(false);
     ui->gbConveyorForTracking->setChecked(false);
 
+
+
     //------- New image processing thread --------
 
     InitObjectDetectingModule();
-
+ qDebug() << "Mid Var: " << time.elapsed() - start;
     InitCalibration();
 
     //----------------ROS-------------------
@@ -230,9 +237,9 @@ void RobotWindow::InitConnectionModule()
 //    connect(DeltaConnectionManager, SIGNAL(ExternalScriptOpened(QTcpSocket*)), DeltaImageProcesser, SLOT(GetExternalScriptSocket(QTcpSocket*)));
     connect(DeltaConnectionManager, SIGNAL(ReceiveDisplayObjectFromExternalScript(QString)), this, SLOT(AddDisplayObjectFromExternalScript(QString)));
 
-    connect(DeltaConnectionManager->TCPConnection, SIGNAL(ReceivePosition(float, float, float, float, float, float)), this, SLOT(UpdateTextboxFrom3DControl(float, float, float, float, float, float)));
+//    connect(DeltaConnectionManager->TCPConnection, SIGNAL(ReceivePosition(float, float, float, float, float, float)), this, SLOT(UpdateTextboxFrom3DControl(float, float, float, float, float, float)));
 
-    connect(DeltaConnectionManager->TCPConnection, SIGNAL(ReceiveOk()), this, SLOT(ROSResponse()));
+//    connect(DeltaConnectionManager->TCPConnection, SIGNAL(ReceiveOk()), this, SLOT(ROSResponse()));
 
     connect(DeltaConnectionManager, SIGNAL(FinishFindingRobot()), this, SLOT(CloseLoadingPopup()));
 
@@ -278,9 +285,9 @@ void RobotWindow::InitObjectDetectingModule()
     ParameterPanel = new FilterWindow(this);
 
     // ---------- Main UI -------
-    connect(ui->cbImageOutput, SIGNAL(currentTextChanged(QString)), this, SLOT(ChangeOutputDisplay()));
+//    connect(ui->cbImageOutput, SIGNAL(currentTextChanged(QString)), this, SLOT(ChangeOutputDisplay()));
     connect(ui->pbLoadCamera, SIGNAL(clicked(bool)), this, SLOT(LoadWebcam()));
-    connect(ui->pbLoadTestImage, SIGNAL(clicked(bool)), this, SLOT(LoadImage()));
+    connect(ui->pbLoadTestImage, SIGNAL(clicked(bool)), this, SLOT(LoadImages()));
     connect(ui->cbDetectingAlgorithm, SIGNAL(currentIndexChanged(int)), this, SLOT(SelectObjectDetectingAlgorithm(int)));
 
     ui->cbDetectingAlgorithm->setCurrentIndex(0);
@@ -502,8 +509,8 @@ void RobotWindow::InitGcodeEditorModule()
 
 
 
-    connect(DeltaConnectionManager, SIGNAL(ReceiveVariableChangeCommand(QString, QString)), DeltaGcodeManager, SLOT(UpdateSystemVariable(QString, QString)));
-    connect(DeltaConnectionManager->TCPConnection, SIGNAL(ReceiveVariableChangeCommand(QString, float)), DeltaGcodeManager, SLOT(UpdateSystemVariable(QString, float)));
+//    connect(DeltaConnectionManager, SIGNAL(ReceiveVariableChangeCommand(QString, QString)), DeltaGcodeManager, SLOT(UpdateSystemVariable(QString, QString)));
+//    connect(DeltaConnectionManager->TCPConnection, SIGNAL(ReceiveVariableChangeCommand(QString, float)), DeltaGcodeManager, SLOT(UpdateSystemVariable(QString, float)));
 }
 
 void RobotWindow::InitUIController()
@@ -644,32 +651,22 @@ void RobotWindow::InitEvents()
     connect(ui->cbD5, SIGNAL(clicked(bool)), this, SLOT(SetOnOffOutput(bool)));
     connect(ui->cbD6, SIGNAL(clicked(bool)), this, SLOT(SetOnOffOutput(bool)));
     connect(ui->cbD7, SIGNAL(clicked(bool)), this, SLOT(SetOnOffOutput(bool)));
-    connect(ui->cbD8, SIGNAL(clicked(bool)), this, SLOT(SetOnOffOutput(bool)));
-    connect(ui->cbD9, SIGNAL(clicked(bool)), this, SLOT(SetOnOffOutput(bool)));
-    connect(ui->cbD10, SIGNAL(clicked(bool)), this, SLOT(SetOnOffOutput(bool)));
-    connect(ui->cbD11, SIGNAL(clicked(bool)), this, SLOT(SetOnOffOutput(bool)));
-    connect(ui->cbD12, SIGNAL(clicked(bool)), this, SLOT(SetOnOffOutput(bool)));
-    connect(ui->cbD13, SIGNAL(clicked(bool)), this, SLOT(SetOnOffOutput(bool)));
-    connect(ui->cbD14, SIGNAL(clicked(bool)), this, SLOT(SetOnOffOutput(bool)));
-    connect(ui->cbD15, SIGNAL(clicked(bool)), this, SLOT(SetOnOffOutput(bool)));
 
     connect(ui->cbDx, SIGNAL(clicked(bool)), this, SLOT(SetOnOffOutput(bool)));
     connect(ui->cbRx, SIGNAL(clicked(bool)), this, SLOT(SetOnOffOutput(bool)));
 
-    connect(ui->leP0Value, SIGNAL(returnPressed()), this, SLOT(SetValueOutput()));
-    connect(ui->leP1Value, SIGNAL(returnPressed()), this, SLOT(SetValueOutput()));
-    connect(ui->lePxValue, SIGNAL(returnPressed()), this, SLOT(SetValueOutput()));
+//    connect(ui->leP0Value, SIGNAL(returnPressed()), this, SLOT(SetValueOutput()));
+//    connect(ui->leP1Value, SIGNAL(returnPressed()), this, SLOT(SetValueOutput()));
+//    connect(ui->lePxValue, SIGNAL(returnPressed()), this, SLOT(SetValueOutput()));
 
-    connect(ui->leS0Value, SIGNAL(returnPressed()), this, SLOT(SetValueOutput()));
-    connect(ui->leS1Value, SIGNAL(returnPressed()), this, SLOT(SetValueOutput()));
-    connect(ui->leSxValue, SIGNAL(returnPressed()), this, SLOT(SetValueOutput()));
+//    connect(ui->leS0Value, SIGNAL(returnPressed()), this, SLOT(SetValueOutput()));
+//    connect(ui->leS1Value, SIGNAL(returnPressed()), this, SLOT(SetValueOutput()));
+//    connect(ui->leSxValue, SIGNAL(returnPressed()), this, SLOT(SetValueOutput()));
 
     connect(ui->pbReadI0, SIGNAL(clicked()), this, SLOT(RequestValueInput()));
     connect(ui->pbReadI1, SIGNAL(clicked()), this, SLOT(RequestValueInput()));
     connect(ui->pbReadI2, SIGNAL(clicked()), this, SLOT(RequestValueInput()));
     connect(ui->pbReadI3, SIGNAL(clicked()), this, SLOT(RequestValueInput()));
-    connect(ui->pbReadI4, SIGNAL(clicked()), this, SLOT(RequestValueInput()));
-    connect(ui->pbReadI5, SIGNAL(clicked()), this, SLOT(RequestValueInput()));
     connect(ui->pbReadIx, SIGNAL(clicked()), this, SLOT(RequestValueInput()));
 
     connect(ui->pbReadA0, SIGNAL(clicked()), this, SLOT(RequestValueInput()));
@@ -712,18 +709,18 @@ void RobotWindow::InitEvents()
     connect(ui->cbWorkingSize, SIGNAL(currentIndexChanged(int)), Delta2DVisualizer, SLOT(ChangeWorkingSize(int)));
 	
     //------------- 3D control -------------------
-	connect(ui->pbTurnOnROS, SIGNAL(clicked(bool)), this, SLOT(OpenROS()));
-	connect(ui->cbROSCameraView, SIGNAL(currentIndexChanged(int)), this, SLOT(ChangeROSCameraView(int))); 
-	connect(ui->cbEndEffector, SIGNAL(currentIndexChanged(int)), this, SLOT(ChangeEndEffector(int)));
-	connect(ui->cbRobotVersion, SIGNAL(currentIndexChanged(int)), this, SLOT(ChangeRobotVersion(int)));
-	connect(ui->btDeleteAllObjects, SIGNAL(clicked(bool)), this, SLOT(DeleteAllObjectsInROS()));
-	connect(ui->pbClearDetectObjects, SIGNAL(clicked(bool)), this, SLOT(DeleteAllObjectsInROS()));
+//	connect(ui->pbTurnOnROS, SIGNAL(clicked(bool)), this, SLOT(OpenROS()));
+//	connect(ui->cbROSCameraView, SIGNAL(currentIndexChanged(int)), this, SLOT(ChangeROSCameraView(int)));
+//	connect(ui->cbEndEffector, SIGNAL(currentIndexChanged(int)), this, SLOT(ChangeEndEffector(int)));
+//	connect(ui->cbRobotVersion, SIGNAL(currentIndexChanged(int)), this, SLOT(ChangeRobotVersion(int)));
+//	connect(ui->btDeleteAllObjects, SIGNAL(clicked(bool)), this, SLOT(DeleteAllObjectsInROS()));
+//	connect(ui->pbClearDetectObjects, SIGNAL(clicked(bool)), this, SLOT(DeleteAllObjectsInROS()));
 
 #ifdef Q_OS_WIN
     #ifdef JOY_STICK
         //------------- Joystick -----------
         connect(joystick, SIGNAL(buttonEvent (const QJoystickButtonEvent&)), SLOT(ProcessJoystickButton(const QJoystickButtonEvent&)));
-        connect(joystick, SIGNAL(axisEvent(const QJoystickAxisEvent&)), SLOT(ProcessJoystickAxis(const QJoystickAxisEvent&)));
+//        connect(joystick, SIGNAL(axisEvent(const QJoystickAxisEvent&)), SLOT(ProcessJoystickAxis(const QJoystickAxisEvent&)));
         connect(joystick, SIGNAL(POVEvent(const QJoystickPOVEvent&)), SLOT(ProcessJoystickPOV(const QJoystickPOVEvent&)));
     #endif
 #endif
@@ -763,7 +760,7 @@ void RobotWindow::InitEvents()
 //    connect(ui->pbWarpTool, SIGNAL(clicked(bool)), DeltaImageProcesser, SLOT(TurnTransformPerspective(bool)));
 //	connect(ui->cbDisplayCalibInfo, SIGNAL(clicked(bool)), DeltaImageProcesser, SLOT(TurnCalibDisplay(bool)));
 //	connect(ui->pbExpandCameraWidget, SIGNAL(clicked(bool)), DeltaImageProcesser, SLOT(ExpandCameraWidget(bool)));
-    connect(ui->pbCameraWindowMode, SIGNAL(clicked(bool)), this, SLOT(OpenCameraWindow()));
+//    connect(ui->pbCameraWindowMode, SIGNAL(clicked(bool)), this, SLOT(OpenCameraWindow()));
 //    connect(ui->cameraWidget, SIGNAL(SizeChanged()), DeltaImageProcesser, SLOT(UpdateRatios()));
 
 //    connect(ui->pbFindChessboard, SIGNAL(clicked(bool)), DeltaImageProcesser, SLOT(FindChessboard()));
@@ -2758,15 +2755,6 @@ void RobotWindow::SetValueOutput()
     QString valueName = "W" + leValue->text();
     QString outputName = leValue->objectName().mid(2, leValue->objectName().indexOf("Value") - 2);
 
-    if (outputName.indexOf("Px") > -1)
-    {
-        outputName = ui->lePx->text();
-    }
-    if (outputName.indexOf("Sx") > -1)
-    {
-        outputName = ui->leSx->text();
-    }
-
     sendGcode("M03", outputName, valueName);
 }
 
@@ -3186,7 +3174,11 @@ void RobotWindow::LoadImages()
     else
     {
         cv::String imgName = imageName.toStdString();
-        CaptureImage = cv::imread(imgName, cv::IMREAD_COLOR);
+        cv::Mat* mat = new cv::Mat();
+        *mat = cv::imread("C:\\Users\\Surface LaptopStudio\\Desktop\\giun1.jpg");
+
+        cv::imshow("image", *mat);
+        cv::waitKey(0);
         emit GotImage(CaptureImage);
     }
 }
@@ -4235,8 +4227,6 @@ void RobotWindow::initInputValueLabels()
     lbInputValues->append(ui->lbI1Value);
     lbInputValues->append(ui->lbI2Value);
     lbInputValues->append(ui->lbI3Value);
-    lbInputValues->append(ui->lbI4Value);
-    lbInputValues->append(ui->lbI5Value);
     lbInputValues->append(ui->lbIxValue);
 
     lbInputValues->append(ui->lbA0Value);
@@ -4274,31 +4264,31 @@ void RobotWindow::ProcessJoystickButton(const QJoystickButtonEvent& event)
 
         switch (event.button)
         {
-            case 0:
+            case 1:
                 ui->cbD0->click();
                 break;
-            case 1:
+            case 2:
                 ui->cbDx->click();
                 break;
-            case 4:
+            case 9:
                 ui->pbHome->click();
                 break;
-            case 6:
+            case 4:
                 ui->pbUp->click();
                 break;
 
-            case 7:
+            case 5:
                 index++;
                 if (index == ui->cbDivision->count())
                     index = 0;
                 ui->cbDivision->setCurrentIndex(index);
                 break;
 
-            case 8:
+            case 6:
                 ui->pbDown->click();
                 break;
 
-            case 9:
+            case 7:
                 index = ui->cbDivision->currentIndex();
                 index--;
                 if (index < 0)
@@ -4314,20 +4304,22 @@ void RobotWindow::ProcessJoystickButton(const QJoystickButtonEvent& event)
 
 void RobotWindow::ProcessJoystickAxis(const QJoystickAxisEvent &event)
 {
-//    SoftwareLog(QString::number(event.axis) + ": " + QString::number(event.value) + "\n");
+    if (abs(event.value) < 0.2f)
+        return;
+    SoftwareLog(QString::number(event.axis) + ": " + QString::number(event.value) + "\n");
 
     switch(event.axis)
     {
         case 0:
-            Delta2DVisualizer->JumpOneStep(&Delta2DVisualizer->X, event.value);
+            MoveRobot("X", event.value);
             break;
         case 1:
-            Delta2DVisualizer->JumpOneStep(&Delta2DVisualizer->Y, -event.value);
+            MoveRobot("Y", -event.value);
             break;
         case 2:
             break;
         case 3:
-            Delta2DVisualizer->JumpOneStep(&Delta2DVisualizer->Z, -event.value);
+            MoveRobot("Z", -event.value);
             break;
     }
 

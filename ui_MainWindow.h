@@ -220,10 +220,36 @@ public:
         QIcon icon;
         icon.addFile(QString::fromUtf8(":/delta_x_logo_96x96.ico"), QSize(), QIcon::Normal, QIcon::Off);
         MainWindow->setWindowIcon(icon);
-        MainWindow->setStyleSheet(QString::fromUtf8("QWidget\n"
+        MainWindow->setStyleSheet(QString::fromUtf8("/*QWidget{\n"
+"background-color: rgb(255, 255, 255);\n"
+"}*/\n"
+"/*\n"
+"QPushButton {\n"
+"    \n"
+"	background-color: rgba(255, 255, 255, 0);\n"
+"	color: rgb(118, 118, 118);\n"
+"    border-radius: 3px;\n"
+"	border: 1px solid rgb(118, 118, 118);\n"
+"    min-height: 10px;\n"
+"    padding: 0px 10px 2px 10px;\n"
+"	margin-left:5px;\n"
+"	margin-right:5px;\n"
+"	margin-top:2px;\n"
+"	margin-bottom:2px;\n"
+"}\n"
+"\n"
+"QPushButton:pressed{\n"
+"	\n"
+"	color: rgb(255, 255, 255);\n"
+"	background-color: rgb(54, 178, 242);\n"
+"	border-color: rgb(255, 255, 255);\n"
+"}\n"
+"*/\n"
+"\n"
+"/*QWidget\n"
 "{	\n"
 "	color:rgb(60, 60, 60);\n"
-"}\n"
+"}*/\n"
 "\n"
 "/*QWidget\n"
 "{	\n"
@@ -244,7 +270,8 @@ public:
 "    subcontrol-position: top right;\n"
 "    width: 25px;\n"
 "\n"
-"    border-left-width: 1px;\n"
+"    border-left-widt"
+                        "h: 1px;\n"
 "    border-left-color: darkgray;\n"
 "    border-left-style: solid;\n"
 "    border-top-right-radius: 3px;\n"
@@ -268,8 +295,7 @@ public:
 "}\n"
 "\n"
 "QTabBar::tab:selected, QTabBar::tab:hover {\n"
-"    background: rgb(24, 70, 139)"
-                        ";\n"
+"    background: rgb(24, 70, 139);\n"
 "	color: rgb(255, 255, 255);\n"
 "}\n"
 "\n"
@@ -295,7 +321,8 @@ public:
 "/*----- Scroll Bar ------*/\n"
 "/*\n"
 "QScrollBar:horizontal {\n"
-"    background: rgb(185, 185, 185);\n"
+"   "
+                        " background: rgb(185, 185, 185);\n"
 "}\n"
 "QScrollBar::handle:vertical {	\n"
 "	background-color: rgb(172, 172, 172);\n"
@@ -611,7 +638,7 @@ public:
         scrollArea_2->setWidgetResizable(true);
         scrollAreaWidgetContents_2 = new QWidget();
         scrollAreaWidgetContents_2->setObjectName(QString::fromUtf8("scrollAreaWidgetContents_2"));
-        scrollAreaWidgetContents_2->setGeometry(QRect(0, 0, 601, 171));
+        scrollAreaWidgetContents_2->setGeometry(QRect(0, 0, 1099, 614));
         verticalLayout_10 = new QVBoxLayout(scrollAreaWidgetContents_2);
         verticalLayout_10->setSpacing(6);
         verticalLayout_10->setContentsMargins(11, 11, 11, 11);
@@ -842,25 +869,25 @@ public:
         gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
         pushButton = new QPushButton(groupBox);
         pushButton->setObjectName(QString::fromUtf8("pushButton"));
-        pushButton->setMinimumSize(QSize(0, 30));
+        pushButton->setMinimumSize(QSize(0, 0));
 
         gridLayout->addWidget(pushButton, 0, 0, 1, 1);
 
         pushButton_2 = new QPushButton(groupBox);
         pushButton_2->setObjectName(QString::fromUtf8("pushButton_2"));
-        pushButton_2->setMinimumSize(QSize(0, 30));
+        pushButton_2->setMinimumSize(QSize(0, 0));
 
         gridLayout->addWidget(pushButton_2, 0, 1, 1, 1);
 
         pushButton_3 = new QPushButton(groupBox);
         pushButton_3->setObjectName(QString::fromUtf8("pushButton_3"));
-        pushButton_3->setMinimumSize(QSize(0, 30));
+        pushButton_3->setMinimumSize(QSize(0, 0));
 
         gridLayout->addWidget(pushButton_3, 1, 0, 1, 1);
 
         pushButton_4 = new QPushButton(groupBox);
         pushButton_4->setObjectName(QString::fromUtf8("pushButton_4"));
-        pushButton_4->setMinimumSize(QSize(0, 30));
+        pushButton_4->setMinimumSize(QSize(0, 0));
 
         gridLayout->addWidget(pushButton_4, 1, 1, 1, 1);
 
@@ -876,25 +903,25 @@ public:
         gridLayout_2->setObjectName(QString::fromUtf8("gridLayout_2"));
         pushButton_6 = new QPushButton(groupBox_2);
         pushButton_6->setObjectName(QString::fromUtf8("pushButton_6"));
-        pushButton_6->setMinimumSize(QSize(0, 30));
+        pushButton_6->setMinimumSize(QSize(0, 0));
 
         gridLayout_2->addWidget(pushButton_6, 0, 0, 1, 1);
 
         pushButton_8 = new QPushButton(groupBox_2);
         pushButton_8->setObjectName(QString::fromUtf8("pushButton_8"));
-        pushButton_8->setMinimumSize(QSize(0, 30));
+        pushButton_8->setMinimumSize(QSize(0, 0));
 
         gridLayout_2->addWidget(pushButton_8, 1, 0, 1, 1);
 
         pushButton_7 = new QPushButton(groupBox_2);
         pushButton_7->setObjectName(QString::fromUtf8("pushButton_7"));
-        pushButton_7->setMinimumSize(QSize(0, 30));
+        pushButton_7->setMinimumSize(QSize(0, 0));
 
         gridLayout_2->addWidget(pushButton_7, 0, 1, 1, 1);
 
         pushButton_9 = new QPushButton(groupBox_2);
         pushButton_9->setObjectName(QString::fromUtf8("pushButton_9"));
-        pushButton_9->setMinimumSize(QSize(0, 30));
+        pushButton_9->setMinimumSize(QSize(0, 0));
 
         gridLayout_2->addWidget(pushButton_9, 1, 1, 1, 1);
 
@@ -962,7 +989,7 @@ public:
         scrollArea->setWidgetResizable(true);
         scrollAreaWidgetContents = new QWidget();
         scrollAreaWidgetContents->setObjectName(QString::fromUtf8("scrollAreaWidgetContents"));
-        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 571, 700));
+        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 1085, 700));
         scrollAreaWidgetContents->setMinimumSize(QSize(0, 700));
         verticalLayout_7 = new QVBoxLayout(scrollAreaWidgetContents);
         verticalLayout_7->setSpacing(6);
@@ -1364,7 +1391,7 @@ public:
         retranslateUi(MainWindow);
 
         stackedWidget->setCurrentIndex(0);
-        swPageStack->setCurrentIndex(7);
+        swPageStack->setCurrentIndex(5);
         swAuthority->setCurrentIndex(0);
         twProjectManager->setCurrentIndex(0);
 
@@ -1481,6 +1508,8 @@ public:
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "hr { height: 1px; border-width: 0; }\n"
+"li.unchecked::marker { content: \"\\2610\"; }\n"
+"li.checked::marker { content: \"\\2612\"; }\n"
 "</style></head><body style=\" font-family:'Segoe UI'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:7.8pt;\"><br /></p></body></html>", nullptr));
         tbExpandLoggingBox->setText(QString());

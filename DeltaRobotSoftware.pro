@@ -8,8 +8,8 @@ QT       += core gui serialport opengl network quickwidgets printsupport multime
 
 windows {
     INCLUDEPATH += E:\OpenCV\opencv-4.0\build\include
-    LIBS += E:\OpenCV\opencv-4.0\build\x64\vc15\lib\opencv_world400.lib
-    LIBS += E:\OpenCV\opencv-4.0\build\x64\vc15\lib\opencv_world400d.lib
+    LIBS += E:\OpenCV\opencv\build\x64\vc15\lib\opencv_world460.lib
+    LIBS += E:\OpenCV\opencv\build\x64\vc15\lib\opencv_world460d.lib
 #INCLUDEPATH += E:\OpenCV\opencv-4.5.5\build\include\
 #LIBS += E:\OpenCV\opencv-4.5.5\build\x64\vc15\lib\opencv_world455.lib
 #LIBS += E:\OpenCV\opencv-4.5.5\build\x64\vc15\lib\opencv_world455d.lib

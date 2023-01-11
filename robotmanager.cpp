@@ -27,8 +27,13 @@ RobotWindow* RobotManager::CreatNewRobotWindow()
     robotWindow->SetName(robotName);
     robotWindow->SetID(robotID);
 
+    QElapsedTimer time;
+    qint64 start = time.elapsed();
     robotWindow->InitVariables();
+    qDebug()<< "Var: " << time.elapsed() - start;
     robotWindow->InitEvents();
+
+    qDebug()<< "Init Var and Events Robot Window: " << time.elapsed() - start;
 
     //----- Add new robot to menu ------
     for (int i = 0; i < RobotWindows.size() - 1; i++)

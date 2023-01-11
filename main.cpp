@@ -3,6 +3,8 @@
 #include "qdesktopwidget.h"
 #include <QApplication>
 #include "AccountWindow.h"
+#include <QElapsedTimer>
+#include <opencv2/opencv.hpp>
 
 
 #define NEW_WINDOW
@@ -16,6 +18,8 @@ int main(int argc, char *argv[])
     QCoreApplication::addLibraryPath("./");
     QApplication a(argc, argv);
 
+    QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+
 #ifdef NEW_WINDOW
     MainWindow w;
 #else
@@ -23,5 +27,5 @@ int main(int argc, char *argv[])
 #endif
     w.show();
 
-    return a.exec();
+    return a.exec();//
 }

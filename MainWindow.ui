@@ -36,10 +36,36 @@
     <normaloff>:/delta_x_logo_96x96.ico</normaloff>:/delta_x_logo_96x96.ico</iconset>
   </property>
   <property name="styleSheet">
-   <string notr="true">QWidget
+   <string notr="true">/*QWidget{
+background-color: rgb(255, 255, 255);
+}*/
+/*
+QPushButton {
+    
+	background-color: rgba(255, 255, 255, 0);
+	color: rgb(118, 118, 118);
+    border-radius: 3px;
+	border: 1px solid rgb(118, 118, 118);
+    min-height: 10px;
+    padding: 0px 10px 2px 10px;
+	margin-left:5px;
+	margin-right:5px;
+	margin-top:2px;
+	margin-bottom:2px;
+}
+
+QPushButton:pressed{
+	
+	color: rgb(255, 255, 255);
+	background-color: rgb(54, 178, 242);
+	border-color: rgb(255, 255, 255);
+}
+*/
+
+/*QWidget
 {	
 	color:rgb(60, 60, 60);
-}
+}*/
 
 /*QWidget
 {	
@@ -642,7 +668,7 @@ border-right: 5px solid rgb(24, 70, 139);</string>
              <number>1</number>
             </property>
             <property name="currentIndex">
-             <number>7</number>
+             <number>5</number>
             </property>
             <widget class="QWidget" name="pVariable">
              <property name="styleSheet">
@@ -693,8 +719,8 @@ border-right: 5px solid rgb(24, 70, 139);</string>
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>601</width>
-                   <height>171</height>
+                   <width>1099</width>
+                   <height>614</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_10">
@@ -1074,7 +1100,7 @@ QPushButton:pressed
                    <property name="minimumSize">
                     <size>
                      <width>0</width>
-                     <height>30</height>
+                     <height>0</height>
                     </size>
                    </property>
                    <property name="text">
@@ -1087,7 +1113,7 @@ QPushButton:pressed
                    <property name="minimumSize">
                     <size>
                      <width>0</width>
-                     <height>30</height>
+                     <height>0</height>
                     </size>
                    </property>
                    <property name="text">
@@ -1100,7 +1126,7 @@ QPushButton:pressed
                    <property name="minimumSize">
                     <size>
                      <width>0</width>
-                     <height>30</height>
+                     <height>0</height>
                     </size>
                    </property>
                    <property name="text">
@@ -1113,7 +1139,7 @@ QPushButton:pressed
                    <property name="minimumSize">
                     <size>
                      <width>0</width>
-                     <height>30</height>
+                     <height>0</height>
                     </size>
                    </property>
                    <property name="text">
@@ -1140,7 +1166,7 @@ QPushButton:pressed
                    <property name="minimumSize">
                     <size>
                      <width>0</width>
-                     <height>30</height>
+                     <height>0</height>
                     </size>
                    </property>
                    <property name="text">
@@ -1153,7 +1179,7 @@ QPushButton:pressed
                    <property name="minimumSize">
                     <size>
                      <width>0</width>
-                     <height>30</height>
+                     <height>0</height>
                     </size>
                    </property>
                    <property name="text">
@@ -1166,7 +1192,7 @@ QPushButton:pressed
                    <property name="minimumSize">
                     <size>
                      <width>0</width>
-                     <height>30</height>
+                     <height>0</height>
                     </size>
                    </property>
                    <property name="text">
@@ -1179,7 +1205,7 @@ QPushButton:pressed
                    <property name="minimumSize">
                     <size>
                      <width>0</width>
-                     <height>30</height>
+                     <height>0</height>
                     </size>
                    </property>
                    <property name="text">
@@ -1295,7 +1321,7 @@ QPushButton:pressed
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>571</width>
+                       <width>1085</width>
                        <height>700</height>
                       </rect>
                      </property>
@@ -1976,6 +2002,8 @@ QPushButton:pressed
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;meta charset=&quot;utf-8&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 hr { height: 1px; border-width: 0; }
+li.unchecked::marker { content: &quot;\2610&quot;; }
+li.checked::marker { content: &quot;\2612&quot;; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Segoe UI'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:7.8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>

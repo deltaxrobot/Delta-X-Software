@@ -180,16 +180,6 @@ Makefile: IndustrialCamera.pro C:\Qt\5.15.2\msvc2015_64\mkspecs\win32-msvc\qmake
 		C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_qmlworkerscript_private.pri \
 		C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_qtmultimediaquicktools_private.pri \
 		C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quick.pri \
-		C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quick3d.pri \
-		C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quick3d_private.pri \
-		C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quick3dassetimport.pri \
-		C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quick3dassetimport_private.pri \
-		C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quick3drender.pri \
-		C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quick3drender_private.pri \
-		C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quick3druntimerender.pri \
-		C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quick3druntimerender_private.pri \
-		C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quick3dutils.pri \
-		C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quick3dutils_private.pri \
 		C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quick_private.pri \
 		C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quickcontrols2.pri \
 		C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quickcontrols2_private.pri \
@@ -223,8 +213,6 @@ Makefile: IndustrialCamera.pro C:\Qt\5.15.2\msvc2015_64\mkspecs\win32-msvc\qmake
 		C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_uiplugin.pri \
 		C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_uitools.pri \
 		C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_uitools_private.pri \
-		C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_virtualkeyboard.pri \
-		C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_virtualkeyboard_private.pri \
 		C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_vulkan_support_private.pri \
 		C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_webchannel.pri \
 		C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_webchannel_private.pri \
@@ -376,16 +364,6 @@ C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_qmlworkerscript.pri:
 C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_qmlworkerscript_private.pri:
 C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_qtmultimediaquicktools_private.pri:
 C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quick.pri:
-C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quick3d.pri:
-C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quick3d_private.pri:
-C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quick3dassetimport.pri:
-C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quick3dassetimport_private.pri:
-C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quick3drender.pri:
-C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quick3drender_private.pri:
-C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quick3druntimerender.pri:
-C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quick3druntimerender_private.pri:
-C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quick3dutils.pri:
-C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quick3dutils_private.pri:
 C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quick_private.pri:
 C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quickcontrols2.pri:
 C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quickcontrols2_private.pri:
@@ -419,8 +397,6 @@ C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_theme_support_private.pri:
 C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_uiplugin.pri:
 C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_uitools.pri:
 C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_uitools_private.pri:
-C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_virtualkeyboard.pri:
-C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_virtualkeyboard_private.pri:
 C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_vulkan_support_private.pri:
 C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_webchannel.pri:
 C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_webchannel_private.pri:

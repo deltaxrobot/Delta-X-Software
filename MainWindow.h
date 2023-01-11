@@ -16,6 +16,7 @@
 #include <QFileInfo>
 
 #include <QSettings>
+#include <QElapsedTimer>
 
 namespace Ui {
 class MainWindow;

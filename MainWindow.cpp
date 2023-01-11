@@ -13,6 +13,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
 void MainWindow::InitVariables()
 {
+    QElapsedTimer time;
+    qint64 start = time.elapsed();
+
     SetLoadingIconRun(true);
 
     // ---- Check software version ----
@@ -23,6 +26,8 @@ void MainWindow::InitVariables()
     DeltaXVersionManager->CheckVersionUrl = "http://imwi.space/admin/server.php";
     DeltaXVersionManager->NewVersionSoftwareUrl = "https://sourceforge.net/projects/delta-x-software/files/";
     DeltaXVersionManager->CheckNewVersion(true);
+
+    qDebug() << "check version: " << time.elapsed() - start;
 
     // ----- Init Pointer -----
     SoftwareManager::GetInstance()->SoftwarePointer = this;
@@ -47,6 +52,8 @@ void MainWindow::InitVariables()
 
     ui->tbHome->click();
 
+    qDebug() << "Init Dashboard: " << time.elapsed() - start;
+
     //-------- UX --------
     Ux = new UXManager();
 
@@ -68,7 +75,7 @@ void MainWindow::InitVariables()
 
     connect(SoftwareProjectManager, SIGNAL(NewTab_Signal(int)), SLOT(AddNewProjectAndrobot(int)));
 
-
+    start = time.elapsed();
     if (!IsLastProject())
     {
         RobotManager* robotManager = NewProject_Slot(0);
@@ -81,6 +88,8 @@ void MainWindow::InitVariables()
     }
 
     InitProjectUX();
+
+    qDebug() << "Init robot window: " << time.elapsed() - start;
 
     //------------- Init Widgets -----------
     ui->trwProgramVariableTable->expandAll();
@@ -112,6 +121,8 @@ void MainWindow::InitVariables()
     on_pbApplyOperator_clicked();
 
     SetLoadingIconRun(false);
+
+    qDebug() << time.elapsed() - start;
 }
 
 bool MainWindow::IsLastProject()
