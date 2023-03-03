@@ -503,18 +503,18 @@ public:
     QHBoxLayout *horizontalLayout_14;
     QFrame *fRobotPosition;
     QGridLayout *gridLayout_19;
-    QLabel *lbW;
-    QLabel *label_94;
-    QLabel *label_88;
-    QLabel *lbU;
-    QLabel *label_92;
     QLabel *lbY;
-    QLabel *lbZ;
-    QLabel *lbV;
+    QSpacerItem *horizontalSpacer_4;
+    QLabel *lbW;
+    QLabel *label_88;
     QLabel *label_90;
     QLabel *label_86;
-    QSpacerItem *horizontalSpacer_4;
+    QLabel *lbZ;
+    QLabel *label_92;
+    QLabel *lbU;
+    QLabel *label_94;
     QLabel *lbX;
+    QLabel *lbV;
     QLabel *label_84;
     QVBoxLayout *verticalLayout_12;
     QPushButton *pbConnect;
@@ -522,7 +522,7 @@ public:
     QFrame *frameRobotConnection;
     QHBoxLayout *horizontalLayout_13;
     QTabWidget *RobotTabWidget;
-    QWidget *InstallationTab;
+    QWidget *ConfigurationTab;
     QWidget *layoutWidget2;
     QGridLayout *gridLayout_31;
     QLabel *label_65;
@@ -600,7 +600,6 @@ public:
     QLabel *label_47;
     QLineEdit *leEndSpeed_2;
     QWidget *ButtonTab;
-    QLabel *label_28;
     QComboBox *cbDivision;
     QToolButton *pbHome;
     QLabel *label_33;
@@ -780,7 +779,6 @@ public:
     QLineEdit *leAxDelay;
     QPushButton *pbReadAx;
     QSpacerItem *horizontalSpacer_60;
-    QWidget *ParameterTab;
     QWidget *EncoderTab;
     QWidget *ConveyorTab;
     QVBoxLayout *verticalLayout_22;
@@ -1356,7 +1354,7 @@ public:
         scrollArea->setWidgetResizable(true);
         scrollAreaWidgetContents = new QWidget();
         scrollAreaWidgetContents->setObjectName(QString::fromUtf8("scrollAreaWidgetContents"));
-        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 583, 1200));
+        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 582, 1200));
         scrollAreaWidgetContents->setMinimumSize(QSize(450, 1200));
         verticalLayout_30 = new QVBoxLayout(scrollAreaWidgetContents);
         verticalLayout_30->setSpacing(6);
@@ -1571,8 +1569,8 @@ public:
         saObjectDetecting->setWidgetResizable(true);
         wObjectDetecting = new QWidget();
         wObjectDetecting->setObjectName(QString::fromUtf8("wObjectDetecting"));
-        wObjectDetecting->setGeometry(QRect(0, 0, 595, 4000));
-        wObjectDetecting->setMinimumSize(QSize(450, 4000));
+        wObjectDetecting->setGeometry(QRect(0, 0, 594, 4000));
+        wObjectDetecting->setMinimumSize(QSize(300, 4000));
         wObjectDetecting->setStyleSheet(QString::fromUtf8("QWidget#wObjectDetecting\n"
 "{	\n"
 "	background-color: rgb(255, 255, 255);\n"
@@ -1637,6 +1635,7 @@ public:
         QIcon icon12;
         icon12.addFile(QString::fromUtf8(":/icon/icons8_chessboard_48px.png"), QSize(), QIcon::Normal, QIcon::Off);
         pbFindChessboardTool->setIcon(icon12);
+        pbFindChessboardTool->setIconSize(QSize(24, 24));
         pbFindChessboardTool->setCheckable(true);
         pbFindChessboardTool->setFlat(true);
 
@@ -1648,6 +1647,7 @@ public:
         QIcon icon13;
         icon13.addFile(QString::fromUtf8(":/icon/icons8_opacity_48px.png"), QSize(), QIcon::Normal, QIcon::Off);
         pbWarpTool->setIcon(icon13);
+        pbWarpTool->setIconSize(QSize(24, 24));
         pbWarpTool->setCheckable(true);
         pbWarpTool->setFlat(true);
 
@@ -1659,6 +1659,7 @@ public:
         QIcon icon14;
         icon14.addFile(QString::fromUtf8(":/icon/icons8_rectangle_64px.png"), QSize(), QIcon::Normal, QIcon::Off);
         pbAreaTool->setIcon(icon14);
+        pbAreaTool->setIconSize(QSize(24, 24));
         pbAreaTool->setCheckable(true);
         pbAreaTool->setFlat(true);
 
@@ -1670,6 +1671,7 @@ public:
         QIcon icon15;
         icon15.addFile(QString::fromUtf8(":/icon/icons8_select_48px.png"), QSize(), QIcon::Normal, QIcon::Off);
         pbCalibPointTool->setIcon(icon15);
+        pbCalibPointTool->setIconSize(QSize(24, 24));
         pbCalibPointTool->setCheckable(true);
         pbCalibPointTool->setFlat(true);
 
@@ -1681,6 +1683,7 @@ public:
         QIcon icon16;
         icon16.addFile(QString::fromUtf8(":/icon/icons8_target_48px.png"), QSize(), QIcon::Normal, QIcon::Off);
         pbMappingPointTool->setIcon(icon16);
+        pbMappingPointTool->setIconSize(QSize(24, 24));
         pbMappingPointTool->setCheckable(true);
         pbMappingPointTool->setFlat(true);
 
@@ -1709,6 +1712,7 @@ public:
         QIcon icon17;
         icon17.addFile(QString::fromUtf8(":/icon/icons8_page_size_64px.png"), QSize(), QIcon::Normal, QIcon::Off);
         pbGetSizeTool->setIcon(icon17);
+        pbGetSizeTool->setIconSize(QSize(24, 24));
         pbGetSizeTool->setCheckable(true);
         pbGetSizeTool->setAutoRaise(true);
 
@@ -1720,6 +1724,7 @@ public:
         QIcon icon18;
         icon18.addFile(QString::fromUtf8(":/icon/Slider 2_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
         pbFilterTool->setIcon(icon18);
+        pbFilterTool->setIconSize(QSize(24, 24));
         pbFilterTool->setFlat(true);
 
         verticalLayout_50->addWidget(pbFilterTool);
@@ -1730,6 +1735,7 @@ public:
         QIcon icon19;
         icon19.addFile(QString::fromUtf8(":/icon/icons8-object-48.png"), QSize(), QIcon::Normal, QIcon::Off);
         pbOpenObjectTable->setIcon(icon19);
+        pbOpenObjectTable->setIconSize(QSize(24, 24));
         pbOpenObjectTable->setFlat(true);
 
         verticalLayout_50->addWidget(pbOpenObjectTable);
@@ -1740,6 +1746,7 @@ public:
         QIcon icon20;
         icon20.addFile(QString::fromUtf8(":/icon/Eraser_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
         pbClearObject->setIcon(icon20);
+        pbClearObject->setIconSize(QSize(24, 24));
         pbClearObject->setFlat(true);
 
         verticalLayout_50->addWidget(pbClearObject);
@@ -3502,7 +3509,7 @@ public:
         scrollArea_6->setWidgetResizable(true);
         scrollAreaWidgetContents_6 = new QWidget();
         scrollAreaWidgetContents_6->setObjectName(QString::fromUtf8("scrollAreaWidgetContents_6"));
-        scrollAreaWidgetContents_6->setGeometry(QRect(0, 0, 583, 1600));
+        scrollAreaWidgetContents_6->setGeometry(QRect(0, 0, 582, 1600));
         scrollAreaWidgetContents_6->setMinimumSize(QSize(450, 1600));
         scrollAreaWidgetContents_6->setMaximumSize(QSize(16777215, 16777215));
         verticalLayout_38 = new QVBoxLayout(scrollAreaWidgetContents_6);
@@ -4316,7 +4323,7 @@ public:
         scrollArea_7->setWidgetResizable(true);
         scrollAreaWidgetContents_7 = new QWidget();
         scrollAreaWidgetContents_7->setObjectName(QString::fromUtf8("scrollAreaWidgetContents_7"));
-        scrollAreaWidgetContents_7->setGeometry(QRect(0, 0, 593, 511));
+        scrollAreaWidgetContents_7->setGeometry(QRect(0, 0, 592, 511));
         verticalLayout_27 = new QVBoxLayout(scrollAreaWidgetContents_7);
         verticalLayout_27->setSpacing(6);
         verticalLayout_27->setContentsMargins(11, 11, 11, 11);
@@ -4376,7 +4383,7 @@ public:
         GeometryTabManagerWidget = new QWidget(splitter_2);
         GeometryTabManagerWidget->setObjectName(QString::fromUtf8("GeometryTabManagerWidget"));
         GeometryTabManagerWidget->setMinimumSize(QSize(0, 0));
-        GeometryTabManagerWidget->setMaximumSize(QSize(800, 16777215));
+        GeometryTabManagerWidget->setMaximumSize(QSize(900, 16777215));
         GeometryTabManagerWidget->setStyleSheet(QString::fromUtf8(""));
         GeometryTabManagerLayout = new QVBoxLayout(GeometryTabManagerWidget);
         GeometryTabManagerLayout->setSpacing(0);
@@ -4402,7 +4409,7 @@ public:
         scrollArea_2->setWidgetResizable(true);
         wgJoggingScrollWidget = new QWidget();
         wgJoggingScrollWidget->setObjectName(QString::fromUtf8("wgJoggingScrollWidget"));
-        wgJoggingScrollWidget->setGeometry(QRect(0, 0, 547, 800));
+        wgJoggingScrollWidget->setGeometry(QRect(0, 0, 548, 800));
         wgJoggingScrollWidget->setMinimumSize(QSize(0, 800));
         wgJoggingScrollWidget->setMaximumSize(QSize(16777215, 16777215));
         verticalLayout_5 = new QVBoxLayout(wgJoggingScrollWidget);
@@ -4436,20 +4443,23 @@ public:
         gridLayout_19->setContentsMargins(11, 11, 11, 11);
         gridLayout_19->setObjectName(QString::fromUtf8("gridLayout_19"));
         gridLayout_19->setContentsMargins(0, 0, -1, 0);
+        lbY = new QLabel(fRobotPosition);
+        lbY->setObjectName(QString::fromUtf8("lbY"));
+        lbY->setMinimumSize(QSize(30, 20));
+        lbY->setAlignment(Qt::AlignCenter);
+
+        gridLayout_19->addWidget(lbY, 1, 3, 1, 1);
+
+        horizontalSpacer_4 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        gridLayout_19->addItem(horizontalSpacer_4, 0, 8, 1, 1);
+
         lbW = new QLabel(fRobotPosition);
         lbW->setObjectName(QString::fromUtf8("lbW"));
         lbW->setMinimumSize(QSize(30, 20));
         lbW->setAlignment(Qt::AlignCenter);
 
         gridLayout_19->addWidget(lbW, 1, 5, 1, 1);
-
-        label_94 = new QLabel(fRobotPosition);
-        label_94->setObjectName(QString::fromUtf8("label_94"));
-        label_94->setMinimumSize(QSize(0, 20));
-        label_94->setFont(font10);
-        label_94->setAlignment(Qt::AlignCenter);
-
-        gridLayout_19->addWidget(label_94, 0, 7, 1, 1);
 
         label_88 = new QLabel(fRobotPosition);
         label_88->setObjectName(QString::fromUtf8("label_88"));
@@ -4458,42 +4468,6 @@ public:
         label_88->setAlignment(Qt::AlignCenter);
 
         gridLayout_19->addWidget(label_88, 0, 4, 1, 1);
-
-        lbU = new QLabel(fRobotPosition);
-        lbU->setObjectName(QString::fromUtf8("lbU"));
-        lbU->setMinimumSize(QSize(30, 20));
-        lbU->setAlignment(Qt::AlignCenter);
-
-        gridLayout_19->addWidget(lbU, 1, 6, 1, 1);
-
-        label_92 = new QLabel(fRobotPosition);
-        label_92->setObjectName(QString::fromUtf8("label_92"));
-        label_92->setMinimumSize(QSize(0, 20));
-        label_92->setFont(font10);
-        label_92->setAlignment(Qt::AlignCenter);
-
-        gridLayout_19->addWidget(label_92, 0, 6, 1, 1);
-
-        lbY = new QLabel(fRobotPosition);
-        lbY->setObjectName(QString::fromUtf8("lbY"));
-        lbY->setMinimumSize(QSize(30, 20));
-        lbY->setAlignment(Qt::AlignCenter);
-
-        gridLayout_19->addWidget(lbY, 1, 3, 1, 1);
-
-        lbZ = new QLabel(fRobotPosition);
-        lbZ->setObjectName(QString::fromUtf8("lbZ"));
-        lbZ->setMinimumSize(QSize(30, 20));
-        lbZ->setAlignment(Qt::AlignCenter);
-
-        gridLayout_19->addWidget(lbZ, 1, 4, 1, 1);
-
-        lbV = new QLabel(fRobotPosition);
-        lbV->setObjectName(QString::fromUtf8("lbV"));
-        lbV->setMinimumSize(QSize(30, 20));
-        lbV->setAlignment(Qt::AlignCenter);
-
-        gridLayout_19->addWidget(lbV, 1, 7, 1, 1);
 
         label_90 = new QLabel(fRobotPosition);
         label_90->setObjectName(QString::fromUtf8("label_90"));
@@ -4511,9 +4485,35 @@ public:
 
         gridLayout_19->addWidget(label_86, 0, 3, 1, 1);
 
-        horizontalSpacer_4 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+        lbZ = new QLabel(fRobotPosition);
+        lbZ->setObjectName(QString::fromUtf8("lbZ"));
+        lbZ->setMinimumSize(QSize(30, 20));
+        lbZ->setAlignment(Qt::AlignCenter);
 
-        gridLayout_19->addItem(horizontalSpacer_4, 0, 8, 1, 1);
+        gridLayout_19->addWidget(lbZ, 1, 4, 1, 1);
+
+        label_92 = new QLabel(fRobotPosition);
+        label_92->setObjectName(QString::fromUtf8("label_92"));
+        label_92->setMinimumSize(QSize(0, 20));
+        label_92->setFont(font10);
+        label_92->setAlignment(Qt::AlignCenter);
+
+        gridLayout_19->addWidget(label_92, 0, 6, 1, 1);
+
+        lbU = new QLabel(fRobotPosition);
+        lbU->setObjectName(QString::fromUtf8("lbU"));
+        lbU->setMinimumSize(QSize(30, 20));
+        lbU->setAlignment(Qt::AlignCenter);
+
+        gridLayout_19->addWidget(lbU, 1, 6, 1, 1);
+
+        label_94 = new QLabel(fRobotPosition);
+        label_94->setObjectName(QString::fromUtf8("label_94"));
+        label_94->setMinimumSize(QSize(0, 20));
+        label_94->setFont(font10);
+        label_94->setAlignment(Qt::AlignCenter);
+
+        gridLayout_19->addWidget(label_94, 0, 7, 1, 1);
 
         lbX = new QLabel(fRobotPosition);
         lbX->setObjectName(QString::fromUtf8("lbX"));
@@ -4521,6 +4521,13 @@ public:
         lbX->setAlignment(Qt::AlignCenter);
 
         gridLayout_19->addWidget(lbX, 1, 2, 1, 1);
+
+        lbV = new QLabel(fRobotPosition);
+        lbV->setObjectName(QString::fromUtf8("lbV"));
+        lbV->setMinimumSize(QSize(30, 20));
+        lbV->setAlignment(Qt::AlignCenter);
+
+        gridLayout_19->addWidget(lbV, 1, 7, 1, 1);
 
         label_84 = new QLabel(fRobotPosition);
         label_84->setObjectName(QString::fromUtf8("label_84"));
@@ -4597,9 +4604,9 @@ public:
         RobotTabWidget = new QTabWidget(wgJoggingScrollWidget);
         RobotTabWidget->setObjectName(QString::fromUtf8("RobotTabWidget"));
         RobotTabWidget->setMinimumSize(QSize(0, 300));
-        InstallationTab = new QWidget();
-        InstallationTab->setObjectName(QString::fromUtf8("InstallationTab"));
-        layoutWidget2 = new QWidget(InstallationTab);
+        ConfigurationTab = new QWidget();
+        ConfigurationTab->setObjectName(QString::fromUtf8("ConfigurationTab"));
+        layoutWidget2 = new QWidget(ConfigurationTab);
         layoutWidget2->setObjectName(QString::fromUtf8("layoutWidget2"));
         layoutWidget2->setGeometry(QRect(10, 15, 201, 176));
         gridLayout_31 = new QGridLayout(layoutWidget2);
@@ -4711,7 +4718,7 @@ public:
 
         gridLayout_31->addWidget(cbRobotModel_2, 2, 1, 1, 1);
 
-        RobotTabWidget->addTab(InstallationTab, QString());
+        RobotTabWidget->addTab(ConfigurationTab, QString());
         MoveTab = new QWidget();
         MoveTab->setObjectName(QString::fromUtf8("MoveTab"));
         verticalLayout_53 = new QVBoxLayout(MoveTab);
@@ -5100,10 +5107,6 @@ public:
         tabWidget_2->addTab(tab_4, QString());
         ButtonTab = new QWidget();
         ButtonTab->setObjectName(QString::fromUtf8("ButtonTab"));
-        label_28 = new QLabel(ButtonTab);
-        label_28->setObjectName(QString::fromUtf8("label_28"));
-        label_28->setGeometry(QRect(20, 305, 31, 19));
-        label_28->setStyleSheet(QString::fromUtf8("color: rgb(95, 95, 95);"));
         cbDivision = new QComboBox(ButtonTab);
         cbDivision->addItem(QString());
         cbDivision->addItem(QString());
@@ -5112,12 +5115,13 @@ public:
         cbDivision->addItem(QString());
         cbDivision->addItem(QString());
         cbDivision->setObjectName(QString::fromUtf8("cbDivision"));
-        cbDivision->setGeometry(QRect(15, 280, 46, 21));
+        cbDivision->setGeometry(QRect(115, 15, 41, 22));
         cbDivision->setMinimumSize(QSize(0, 20));
         cbDivision->setMaximumSize(QSize(100, 16777215));
+        cbDivision->setSizeAdjustPolicy(QComboBox::AdjustToContents);
         pbHome = new QToolButton(ButtonTab);
         pbHome->setObjectName(QString::fromUtf8("pbHome"));
-        pbHome->setGeometry(QRect(15, 10, 60, 60));
+        pbHome->setGeometry(QRect(15, 45, 60, 60));
         pbHome->setMinimumSize(QSize(60, 60));
         pbHome->setFont(font3);
         QIcon icon38;
@@ -5127,11 +5131,11 @@ public:
         pbHome->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
         label_33 = new QLabel(ButtonTab);
         label_33->setObjectName(QString::fromUtf8("label_33"));
-        label_33->setGeometry(QRect(15, 255, 41, 19));
-        label_33->setMaximumSize(QSize(60, 16777215));
+        label_33->setGeometry(QRect(20, 15, 86, 19));
+        label_33->setMaximumSize(QSize(120, 16777215));
         layoutWidget3 = new QWidget(ButtonTab);
         layoutWidget3->setObjectName(QString::fromUtf8("layoutWidget3"));
-        layoutWidget3->setGeometry(QRect(75, 10, 209, 147));
+        layoutWidget3->setGeometry(QRect(75, 45, 209, 147));
         gridLayout_2 = new QGridLayout(layoutWidget3);
         gridLayout_2->setSpacing(5);
         gridLayout_2->setContentsMargins(11, 11, 11, 11);
@@ -5180,49 +5184,49 @@ public:
 
         pbSubRoll = new QToolButton(ButtonTab);
         pbSubRoll->setObjectName(QString::fromUtf8("pbSubRoll"));
-        pbSubRoll->setGeometry(QRect(80, 180, 48, 70));
+        pbSubRoll->setGeometry(QRect(80, 205, 48, 70));
         pbSubRoll->setIcon(icon39);
         pbSubRoll->setIconSize(QSize(40, 40));
         pbSubRoll->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
         pbPlusRoll = new QToolButton(ButtonTab);
         pbPlusRoll->setObjectName(QString::fromUtf8("pbPlusRoll"));
-        pbPlusRoll->setGeometry(QRect(80, 260, 48, 70));
+        pbPlusRoll->setGeometry(QRect(80, 285, 48, 70));
         pbPlusRoll->setIcon(icon40);
         pbPlusRoll->setIconSize(QSize(40, 40));
         pbPlusRoll->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
         pbPlusYaw = new QToolButton(ButtonTab);
         pbPlusYaw->setObjectName(QString::fromUtf8("pbPlusYaw"));
-        pbPlusYaw->setGeometry(QRect(155, 260, 48, 70));
+        pbPlusYaw->setGeometry(QRect(155, 285, 48, 70));
         pbPlusYaw->setIcon(icon40);
         pbPlusYaw->setIconSize(QSize(40, 40));
         pbPlusYaw->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
         pbSubYaw = new QToolButton(ButtonTab);
         pbSubYaw->setObjectName(QString::fromUtf8("pbSubYaw"));
-        pbSubYaw->setGeometry(QRect(155, 180, 48, 70));
+        pbSubYaw->setGeometry(QRect(155, 205, 48, 70));
         pbSubYaw->setIcon(icon39);
         pbSubYaw->setIconSize(QSize(40, 40));
         pbSubYaw->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
         pbPlusPitch = new QToolButton(ButtonTab);
         pbPlusPitch->setObjectName(QString::fromUtf8("pbPlusPitch"));
-        pbPlusPitch->setGeometry(QRect(230, 260, 48, 70));
+        pbPlusPitch->setGeometry(QRect(230, 285, 48, 70));
         pbPlusPitch->setIcon(icon40);
         pbPlusPitch->setIconSize(QSize(40, 40));
         pbPlusPitch->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
         pbSubPitch = new QToolButton(ButtonTab);
         pbSubPitch->setObjectName(QString::fromUtf8("pbSubPitch"));
-        pbSubPitch->setGeometry(QRect(230, 180, 48, 70));
+        pbSubPitch->setGeometry(QRect(230, 205, 48, 70));
         pbSubPitch->setIcon(icon39);
         pbSubPitch->setIconSize(QSize(40, 40));
         pbSubPitch->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
         pbDown = new QToolButton(ButtonTab);
         pbDown->setObjectName(QString::fromUtf8("pbDown"));
-        pbDown->setGeometry(QRect(315, 85, 48, 67));
+        pbDown->setGeometry(QRect(315, 120, 48, 67));
         pbDown->setIcon(icon41);
         pbDown->setIconSize(QSize(40, 40));
         pbDown->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
         pbUp = new QToolButton(ButtonTab);
         pbUp->setObjectName(QString::fromUtf8("pbUp"));
-        pbUp->setGeometry(QRect(315, 10, 48, 67));
+        pbUp->setGeometry(QRect(315, 45, 48, 67));
         pbUp->setIcon(icon42);
         pbUp->setIconSize(QSize(40, 40));
         pbUp->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
@@ -5239,7 +5243,7 @@ public:
         scrollArea_3->setWidgetResizable(true);
         scrollAreaWidgetContents_3 = new QWidget();
         scrollAreaWidgetContents_3->setObjectName(QString::fromUtf8("scrollAreaWidgetContents_3"));
-        scrollAreaWidgetContents_3->setGeometry(QRect(0, 0, 108, 300));
+        scrollAreaWidgetContents_3->setGeometry(QRect(0, 0, 104, 300));
         scrollAreaWidgetContents_3->setMinimumSize(QSize(0, 300));
         scrollAreaWidgetContents_3->setMaximumSize(QSize(16777215, 600));
         verticalLayout_44 = new QVBoxLayout(scrollAreaWidgetContents_3);
@@ -6194,9 +6198,6 @@ public:
         verticalLayout_6->addWidget(tabWidget_3);
 
         RobotTabWidget->addTab(IOTab, QString());
-        ParameterTab = new QWidget();
-        ParameterTab->setObjectName(QString::fromUtf8("ParameterTab"));
-        RobotTabWidget->addTab(ParameterTab, QString());
 
         verticalLayout_5->addWidget(RobotTabWidget);
 
@@ -6601,8 +6602,8 @@ public:
         pbTransformPerspective->setDefault(false);
         pbImageMapping->setDefault(false);
         cbImageSource->setCurrentIndex(0);
-        twDeltaGeometry->setCurrentIndex(0);
-        RobotTabWidget->setCurrentIndex(1);
+        twDeltaGeometry->setCurrentIndex(2);
+        RobotTabWidget->setCurrentIndex(0);
         tabWidget_2->setCurrentIndex(1);
         cbDivision->setCurrentIndex(1);
         tabWidget_3->setCurrentIndex(1);
@@ -6735,7 +6736,7 @@ public:
 "hr { height: 1px; border-width: 0; }\n"
 "li.unchecked::marker { content: \"\\2610\"; }\n"
 "li.checked::marker { content: \"\\2612\"; }\n"
-"</style></head><body style=\" font-family:'Segoe UI'; font-size:10.8pt; font-weight:400; font-style:normal;\">\n"
+"</style></head><body style=\" font-family:'Segoe UI'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2'; font-size:7.8pt;\">Author:</span></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2'; font-size:7.8pt;\">Description:</span></p></body></html>", nullptr));
 #if QT_CONFIG(tooltip)
@@ -7072,7 +7073,7 @@ public:
 "hr { height: 1px; border-width: 0; }\n"
 "li.unchecked::marker { content: \"\\2610\"; }\n"
 "li.checked::marker { content: \"\\2612\"; }\n"
-"</style></head><body style=\" font-family:'Segoe UI'; font-size:10.8pt; font-weight:400; font-style:normal;\">\n"
+"</style></head><body style=\" font-family:'Segoe UI'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:7.8pt;\"><br /></p></body></html>", nullptr));
         label_4->setText(QCoreApplication::translate("RobotWindow", "Sender", nullptr));
         label_5->setText(QCoreApplication::translate("RobotWindow", "Receiver", nullptr));
@@ -7083,17 +7084,17 @@ public:
         cbDeviceSender->setItemText(4, QCoreApplication::translate("RobotWindow", "Encoder", nullptr));
 
         twModule->setTabText(twModule->indexOf(TermiteTab), QCoreApplication::translate("RobotWindow", "Termite", nullptr));
-        lbW->setText(QCoreApplication::translate("RobotWindow", "0", nullptr));
-        label_94->setText(QCoreApplication::translate("RobotWindow", "V", nullptr));
-        label_88->setText(QCoreApplication::translate("RobotWindow", "Z", nullptr));
-        lbU->setText(QCoreApplication::translate("RobotWindow", "0", nullptr));
-        label_92->setText(QCoreApplication::translate("RobotWindow", "U", nullptr));
         lbY->setText(QCoreApplication::translate("RobotWindow", "0", nullptr));
-        lbZ->setText(QCoreApplication::translate("RobotWindow", "0", nullptr));
-        lbV->setText(QCoreApplication::translate("RobotWindow", "0", nullptr));
+        lbW->setText(QCoreApplication::translate("RobotWindow", "0", nullptr));
+        label_88->setText(QCoreApplication::translate("RobotWindow", "Z", nullptr));
         label_90->setText(QCoreApplication::translate("RobotWindow", "W", nullptr));
         label_86->setText(QCoreApplication::translate("RobotWindow", "Y", nullptr));
+        lbZ->setText(QCoreApplication::translate("RobotWindow", "0", nullptr));
+        label_92->setText(QCoreApplication::translate("RobotWindow", "U", nullptr));
+        lbU->setText(QCoreApplication::translate("RobotWindow", "0", nullptr));
+        label_94->setText(QCoreApplication::translate("RobotWindow", "V", nullptr));
         lbX->setText(QCoreApplication::translate("RobotWindow", "0", nullptr));
+        lbV->setText(QCoreApplication::translate("RobotWindow", "0", nullptr));
         label_84->setText(QCoreApplication::translate("RobotWindow", "X", nullptr));
         pbConnect->setText(QCoreApplication::translate("RobotWindow", "Connect", nullptr));
         cbAutoConnect->setText(QCoreApplication::translate("RobotWindow", "Auto", nullptr));
@@ -7119,7 +7120,7 @@ public:
         cbRobotModel_2->setItemText(2, QCoreApplication::translate("RobotWindow", "5 DOF", nullptr));
         cbRobotModel_2->setItemText(3, QCoreApplication::translate("RobotWindow", "6 DOF", nullptr));
 
-        RobotTabWidget->setTabText(RobotTabWidget->indexOf(InstallationTab), QCoreApplication::translate("RobotWindow", "Installation", nullptr));
+        RobotTabWidget->setTabText(RobotTabWidget->indexOf(ConfigurationTab), QCoreApplication::translate("RobotWindow", "Configuration", nullptr));
         label_106->setText(QCoreApplication::translate("RobotWindow", "Y", nullptr));
         pbsubY->setText(QCoreApplication::translate("RobotWindow", "-", nullptr));
 #if QT_CONFIG(shortcut)
@@ -7190,7 +7191,6 @@ public:
         leEndSpeed_2->setText(QString());
         leEndSpeed_2->setPlaceholderText(QCoreApplication::translate("RobotWindow", "None", nullptr));
         tabWidget_2->setTabText(tabWidget_2->indexOf(tab_4), QCoreApplication::translate("RobotWindow", "Parameter", nullptr));
-        label_28->setText(QCoreApplication::translate("RobotWindow", "mm", nullptr));
         cbDivision->setItemText(0, QCoreApplication::translate("RobotWindow", "0.5", nullptr));
         cbDivision->setItemText(1, QCoreApplication::translate("RobotWindow", "1", nullptr));
         cbDivision->setItemText(2, QCoreApplication::translate("RobotWindow", "5", nullptr));
@@ -7200,7 +7200,7 @@ public:
 
         cbDivision->setCurrentText(QCoreApplication::translate("RobotWindow", "1", nullptr));
         pbHome->setText(QCoreApplication::translate("RobotWindow", "Home", nullptr));
-        label_33->setText(QCoreApplication::translate("RobotWindow", "Step", nullptr));
+        label_33->setText(QCoreApplication::translate("RobotWindow", "Step (mm)", nullptr));
 #if QT_CONFIG(tooltip)
         pbLeft->setToolTip(QCoreApplication::translate("RobotWindow", "Left (shift + w)", nullptr));
 #endif // QT_CONFIG(tooltip)
@@ -7427,7 +7427,6 @@ public:
         pbReadAx->setText(QCoreApplication::translate("RobotWindow", "read", nullptr));
         tabWidget_3->setTabText(tabWidget_3->indexOf(InputTab), QCoreApplication::translate("RobotWindow", "Input", nullptr));
         RobotTabWidget->setTabText(RobotTabWidget->indexOf(IOTab), QCoreApplication::translate("RobotWindow", "IO", nullptr));
-        RobotTabWidget->setTabText(RobotTabWidget->indexOf(ParameterTab), QCoreApplication::translate("RobotWindow", "Parameter", nullptr));
         twDeltaGeometry->setTabText(twDeltaGeometry->indexOf(tRobot), QCoreApplication::translate("RobotWindow", "Robot", nullptr));
         twDeltaGeometry->setTabText(twDeltaGeometry->indexOf(EncoderTab), QCoreApplication::translate("RobotWindow", "Encoder", nullptr));
         pbConveyorConnect->setText(QCoreApplication::translate("RobotWindow", "Connect", nullptr));

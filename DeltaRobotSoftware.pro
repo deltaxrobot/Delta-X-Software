@@ -8,11 +8,8 @@ QT       += core gui serialport opengl network quickwidgets printsupport multime
 
 windows {
     INCLUDEPATH += E:\OpenCV\opencv-4.0\build\include
-    LIBS += E:\OpenCV\opencv\build\x64\vc15\lib\opencv_world460.lib
-    LIBS += E:\OpenCV\opencv\build\x64\vc15\lib\opencv_world460d.lib
-#INCLUDEPATH += E:\OpenCV\opencv-4.5.5\build\include\
-#LIBS += E:\OpenCV\opencv-4.5.5\build\x64\vc15\lib\opencv_world455.lib
-#LIBS += E:\OpenCV\opencv-4.5.5\build\x64\vc15\lib\opencv_world455d.lib
+    LIBS += E:\OpenCV\opencv-4.0\build\x64\vc15\lib\opencv_world400.lib
+    LIBS += E:\OpenCV\opencv-4.0\build\x64\vc15\lib\opencv_world400d.lib
 
     include ($$PWD\3rd-party\QJoysticks\QJoysticks.pri)
 }
@@ -67,6 +64,7 @@ SOURCES += main.cpp\
     TCPConnectionManager.cpp \
     TabDashboard.cpp \
     TaskNode.cpp \
+    TestCode.cpp \
     TextLayer.cpp \
     UXManage.cpp \
     VariableManager.cpp \
@@ -78,8 +76,10 @@ SOURCES += main.cpp\
     GcodeProgram.cpp \
     UnityTool.cpp \
     geisttextedit.cpp \
+    global.cpp \
     highlighter.cpp \
-    robotmanager.cpp
+    robotmanager.cpp \
+    testwindow.cpp
 
 HEADERS  += \
     AccountWindow.h \
@@ -121,10 +121,13 @@ HEADERS  += \
     VersionManager.h \
     codeeditor.h \
     geisttextedit.h \
+    global.h \
     highlighter.h \
     GcodeReference.h \
     robotmanager.h \
     sdk/DeltaXPlugin.h \
+    testcode.h \
+    testwindow.h
 
 FORMS    += \
     AccountWindow.ui \
@@ -132,6 +135,7 @@ FORMS    += \
     MainWindow.ui \
     RobotWindow.ui \
     GcodeReference.ui \
+    testwindow.ui
 
 RESOURCES += \
     resource.qrc

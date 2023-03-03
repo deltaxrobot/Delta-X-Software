@@ -5,10 +5,12 @@
 #include "AccountWindow.h"
 #include <QElapsedTimer>
 #include <opencv2/opencv.hpp>
+#include "testwindow.h"
 
 
 #define NEW_WINDOW
 #define JOY_STICK
+//#define TEST
 
 using namespace std;
 using namespace cv;
@@ -16,16 +18,22 @@ using namespace cv;
 int main(int argc, char *argv[])
 {
     QCoreApplication::addLibraryPath("./");
+    QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QApplication a(argc, argv);
 
-    QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+#ifdef TEST
+    TestWindow w;
 
-#ifdef NEW_WINDOW
-    MainWindow w;
 #else
-    RobotWindow w;
-#endif
-    w.show();
+    #ifdef NEW_WINDOW
+        MainWindow w;
 
-    return a.exec();//
+    #else
+        RobotWindow w;
+    #endif
+#endif
+//    w.show();
+    w.showMaximized();
+
+    return a.exec();
 }

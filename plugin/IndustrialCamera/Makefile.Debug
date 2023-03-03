@@ -59,6 +59,7 @@ SOURCES       = CameraProcessor.cpp \
 		xcambasler.cpp \
 		xcamhik.cpp \
 		xcammanager.cpp debug\moc_CameraProcessor.cpp \
+		debug\moc_CameraReader.cpp \
 		debug\moc_IndustrialCameraPlugin.cpp \
 		debug\moc_camerawidget.cpp \
 		debug\moc_form.cpp \
@@ -73,6 +74,7 @@ OBJECTS       = debug\CameraProcessor.obj \
 		debug\xcamhik.obj \
 		debug\xcammanager.obj \
 		debug\moc_CameraProcessor.obj \
+		debug\moc_CameraReader.obj \
 		debug\moc_IndustrialCameraPlugin.obj \
 		debug\moc_camerawidget.obj \
 		debug\moc_form.obj \
@@ -153,7 +155,7 @@ all: Makefile.Debug  debug\IndustrialCamera.dll
 
 debug\IndustrialCamera.dll: C:\Qt\5.15.2\msvc2015_64\lib\Qt5Widgetsd.lib C:\Qt\5.15.2\msvc2015_64\lib\Qt5Guid.lib C:\Qt\5.15.2\msvc2015_64\lib\Qt5Cored.lib ui_form.h $(OBJECTS) 
 	$(LINKER) $(LFLAGS) /OUT:$(DESTDIR_TARGET) @<<
-debug\CameraProcessor.obj debug\CameraReader.obj debug\IndustrialCameraPlugin.obj debug\camerawidget.obj debug\form.obj debug\xcam.obj debug\xcambasler.obj debug\xcamhik.obj debug\xcammanager.obj debug\moc_CameraProcessor.obj debug\moc_IndustrialCameraPlugin.obj debug\moc_camerawidget.obj debug\moc_form.obj debug\moc_xcammanager.obj
+debug\CameraProcessor.obj debug\CameraReader.obj debug\IndustrialCameraPlugin.obj debug\camerawidget.obj debug\form.obj debug\xcam.obj debug\xcambasler.obj debug\xcamhik.obj debug\xcammanager.obj debug\moc_CameraProcessor.obj debug\moc_CameraReader.obj debug\moc_IndustrialCameraPlugin.obj debug\moc_camerawidget.obj debug\moc_form.obj debug\moc_xcammanager.obj
 $(LIBS)
 <<
 
@@ -166,7 +168,7 @@ dist:
 	$(ZIP) IndustrialCamera.zip $(SOURCES) $(DIST) IndustrialCamera.pro C:\Qt\5.15.2\msvc2015_64\mkspecs\features\spec_pre.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\common\angle.conf C:\Qt\5.15.2\msvc2015_64\mkspecs\common\windows-desktop.conf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\win32\windows_vulkan_sdk.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\common\windows-vulkan.conf C:\Qt\5.15.2\msvc2015_64\mkspecs\common\msvc-desktop.conf C:\Qt\5.15.2\msvc2015_64\mkspecs\qconfig.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3danimation.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3danimation_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dcore.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dcore_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dextras.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dextras_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dinput.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dinput_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dlogic.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dlogic_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dquick.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dquick_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dquickanimation.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dquickanimation_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dquickextras.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dquickextras_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dquickinput.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dquickinput_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dquickrender.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dquickrender_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dquickscene2d.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dquickscene2d_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3drender.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3drender_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_accessibility_support_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_axbase.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_axbase_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_axcontainer.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_axcontainer_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_axserver.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_axserver_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_bluetooth.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_bluetooth_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_bootstrap_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_concurrent.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_concurrent_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_core.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_core_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_dbus.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_dbus_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_designer.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_designer_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_designercomponents_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_devicediscovery_support_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_edid_support_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_egl_support_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_eventdispatcher_support_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_fb_support_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_fontdatabase_support_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_gamepad.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_gamepad_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_gui.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_gui_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_help.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_help_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_location.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_location_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_multimedia.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_multimedia_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_multimediawidgets.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_multimediawidgets_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_network.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_network_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_nfc.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_nfc_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_opengl.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_opengl_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_openglextensions.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_openglextensions_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_packetprotocol_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_platformcompositor_support_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_positioning.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_positioning_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_positioningquick.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_positioningquick_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_printsupport.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_printsupport_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_qml.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_qml_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_qmldebug_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_qmldevtools_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_qmlmodels.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_qmlmodels_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_qmltest.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_qmltest_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_qmlworkerscript.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_qmlworkerscript_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_qtmultimediaquicktools_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quick.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quick_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quickcontrols2.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quickcontrols2_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quickparticles_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quickshapes_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quicktemplates2.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quicktemplates2_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quickwidgets.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quickwidgets_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_remoteobjects.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_remoteobjects_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_repparser.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_repparser_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_scxml.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_scxml_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_sensors.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_sensors_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_serialbus.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_serialbus_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_serialport.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_serialport_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_sql.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_sql_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_svg.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_svg_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_testlib.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_testlib_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_texttospeech.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_texttospeech_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_theme_support_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_uiplugin.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_uitools.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_uitools_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_vulkan_support_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_webchannel.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_webchannel_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_websockets.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_websockets_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_webview.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_webview_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_widgets.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_widgets_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_windowsuiautomation_support_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_winextras.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_winextras_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_xml.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_xml_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_xmlpatterns.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_xmlpatterns_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_zlib_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\features\qt_functions.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\qt_config.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\win32-msvc\qmake.conf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\spec_post.prf .qmake.stash C:\Qt\5.15.2\msvc2015_64\mkspecs\features\exclusive_builds.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\common\msvc-version.conf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\toolchain.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\default_pre.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\win32\default_pre.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\resolve_config.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\exclusive_builds_post.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\default_post.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\build_pass.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\qml_debug.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\precompile_header.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\warn_on.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\qt.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\resources_functions.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\resources.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\moc.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\win32\opengl.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\uic.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\qmake_use.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\file_copies.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\win32\windows.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\testcase_targets.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\exceptions.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\yacc.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\lex.prf IndustrialCamera.pro C:\Qt\5.15.2\msvc2015_64\lib\Qt5Widgetsd.prl C:\Qt\5.15.2\msvc2015_64\lib\Qt5Guid.prl C:\Qt\5.15.2\msvc2015_64\lib\Qt5Cored.prl    C:\Qt\5.15.2\msvc2015_64\mkspecs\features\data\dummy.cpp ..\..\..\DeltaXSoftware\sdk\DeltaXPlugin.h CameraProcessor.h CameraReader.h ImageUnity.h IndustrialCameraPlugin.h camerawidget.h form.h xcam.h xcambasler.h xcamhik.h xcammanager.h  CameraProcessor.cpp CameraReader.cpp IndustrialCameraPlugin.cpp camerawidget.cpp form.cpp xcam.cpp xcambasler.cpp xcamhik.cpp xcammanager.cpp form.ui    
 
 clean: compiler_clean 
-	-$(DEL_FILE) debug\CameraProcessor.obj debug\CameraReader.obj debug\IndustrialCameraPlugin.obj debug\camerawidget.obj debug\form.obj debug\xcam.obj debug\xcambasler.obj debug\xcamhik.obj debug\xcammanager.obj debug\moc_CameraProcessor.obj debug\moc_IndustrialCameraPlugin.obj debug\moc_camerawidget.obj debug\moc_form.obj debug\moc_xcammanager.obj
+	-$(DEL_FILE) debug\CameraProcessor.obj debug\CameraReader.obj debug\IndustrialCameraPlugin.obj debug\camerawidget.obj debug\form.obj debug\xcam.obj debug\xcambasler.obj debug\xcamhik.obj debug\xcammanager.obj debug\moc_CameraProcessor.obj debug\moc_CameraReader.obj debug\moc_IndustrialCameraPlugin.obj debug\moc_camerawidget.obj debug\moc_form.obj debug\moc_xcammanager.obj
 	-$(DEL_FILE) debug\IndustrialCamera.exp debug\IndustrialCamera.vc.pdb debug\IndustrialCamera.ilk debug\IndustrialCamera.idb
 
 distclean: clean 
@@ -192,9 +194,9 @@ compiler_moc_predefs_clean:
 debug\moc_predefs.h: C:\Qt\5.15.2\msvc2015_64\mkspecs\features\data\dummy.cpp
 	cl -BxC:\Qt\5.15.2\msvc2015_64\bin\qmake.exe -nologo -Zc:wchar_t -FS -Zc:rvalueCast -Zc:inline -Zc:strictStrings -Zc:throwingNew -Zi -MDd -W3 -w34100 -w34189 -w44996 -w44456 -w44457 -w44458 -wd4577 -wd4467 -E C:\Qt\5.15.2\msvc2015_64\mkspecs\features\data\dummy.cpp 2>NUL >debug\moc_predefs.h
 
-compiler_moc_header_make_all: debug\moc_CameraProcessor.cpp debug\moc_IndustrialCameraPlugin.cpp debug\moc_camerawidget.cpp debug\moc_form.cpp debug\moc_xcammanager.cpp
+compiler_moc_header_make_all: debug\moc_CameraProcessor.cpp debug\moc_CameraReader.cpp debug\moc_IndustrialCameraPlugin.cpp debug\moc_camerawidget.cpp debug\moc_form.cpp debug\moc_xcammanager.cpp
 compiler_moc_header_clean:
-	-$(DEL_FILE) debug\moc_CameraProcessor.cpp debug\moc_IndustrialCameraPlugin.cpp debug\moc_camerawidget.cpp debug\moc_form.cpp debug\moc_xcammanager.cpp
+	-$(DEL_FILE) debug\moc_CameraProcessor.cpp debug\moc_CameraReader.cpp debug\moc_IndustrialCameraPlugin.cpp debug\moc_camerawidget.cpp debug\moc_form.cpp debug\moc_xcammanager.cpp
 debug\moc_CameraProcessor.cpp: CameraProcessor.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QObject \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qobject.h \
@@ -529,6 +531,341 @@ debug\moc_CameraProcessor.cpp: CameraProcessor.h \
 		debug\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2015_64\bin\moc.exe
 	C:\Qt\5.15.2\msvc2015_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include "E:/Software Projects/Delta X Software/DeltaXSoftware/plugin/IndustrialCamera/debug/moc_predefs.h" -IC:/Qt/5.15.2/msvc2015_64/mkspecs/win32-msvc -I"E:/Software Projects/Delta X Software/DeltaXSoftware/plugin/IndustrialCamera" -I"C:/Program Files/Basler/pylon 6/Development/include" -I"C:/Program Files/Basler/pylon 6/Development/include/pylon" -I"C:/Program Files (x86)/MVS/Development/Includes" -IE:/OpenCV/opencv-4.0/build/include -IC:/Qt/5.15.2/msvc2015_64/include -IC:/Qt/5.15.2/msvc2015_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtGui -IC:/Qt/5.15.2/msvc2015_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2015_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" CameraProcessor.h -o debug\moc_CameraProcessor.cpp
+
+debug\moc_CameraReader.cpp: CameraReader.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QObject \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qobject.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qobjectdefs.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qnamespace.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qglobal.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qconfig-bootstrapped.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qconfig.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qtcore-config.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsystemdetection.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qprocessordetection.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qcompilerdetection.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qtypeinfo.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsysinfo.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qlogging.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qflags.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qatomic.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qbasicatomic.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qatomic_bootstrap.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qgenericatomic.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qatomic_cxx11.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qatomic_msvc.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qglobalstatic.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qmutex.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qnumeric.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qversiontagging.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qobjectdefs_impl.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qstring.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qchar.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qbytearray.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qrefcount.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qarraydata.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qstringliteral.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qstringalgorithms.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qstringview.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qstringbuilder.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qlist.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qalgorithms.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qiterator.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qhashfunctions.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qpair.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qvector.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qcontainertools_impl.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qpoint.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qbytearraylist.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qstringlist.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qregexp.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qstringmatcher.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qcoreevent.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qscopedpointer.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qmetatype.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qvarlengtharray.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qcontainerfwd.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qobject_impl.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QWidget \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qwidget.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qtwidgetsglobal.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtguiglobal.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtgui-config.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qtwidgets-config.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qwindowdefs.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qwindowdefs_win.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qmargins.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpaintdevice.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qrect.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsize.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpalette.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qcolor.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qrgb.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qrgba64.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qbrush.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qmatrix.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpolygon.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qregion.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qdatastream.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qiodevice.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qline.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtransform.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qimage.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpixelformat.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpixmap.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsharedpointer.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qshareddata.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qhash.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsharedpointer_impl.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qfont.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qfontmetrics.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qfontinfo.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qsizepolicy.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qcursor.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qkeysequence.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qevent.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qvariant.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qmap.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qdebug.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qtextstream.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qlocale.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qset.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qcontiguouscache.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qurl.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qurlquery.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qfile.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qfiledevice.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qvector2d.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtouchdevice.h \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\core.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\cvdef.h \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\hal\interface.h \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\cv_cpu_dispatch.h \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\cv_cpu_helper.h \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\fast_math.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\version.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\base.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\opencv_modules.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\cvstd.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\cvstd_wrapper.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\neon_utils.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\vsx_utils.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\check.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\traits.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\matx.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\saturate.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\types.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\mat.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\bufferpool.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\mat.inl.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\persistence.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\operations.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\cvstd.inl.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\utility.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\optim.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\ovx.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\imgproc\imgproc.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\imgproc.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\highgui\highgui.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\highgui.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\imgcodecs.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\videoio.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\video\video.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\video.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\video\tracking.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\video\background_segm.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\calib3d\calib3d.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\calib3d.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\features2d.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\flann\miniflann.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\flann\defines.h \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\flann\config.h \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\affine.hpp \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\PylonIncludes.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\Platform.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\PylonLinkage.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenICamVersion.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\_GenICamVersion.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\Base\GCLinkage.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\Base\GCTypes.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\Base\GCNamespace.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\Base\GCString.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\Base\GCStringVector.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\GenApi.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\Base\GCBase.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\Base\GCArray.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\Base\GCException.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\Base\GCUtilities.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\Base\GCRTSSUtilities.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\GenApiDll.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\GenApiNamespace.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\Pointer.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenICamFwd.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\IEnumeration.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\IEnumEntry.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\IValue.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\Types.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\Autovector.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\IBase.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\Reference.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\INode.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\Container.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\IFloat.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\IInteger.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\ICategory.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\IRegister.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\IBoolean.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\IPort.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\IPortRecorder.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\IPortConstruct.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\IChunkPort.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\IString.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\INodeMap.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\Synch.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\IDestroy.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\IDeviceInfo.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\ISelector.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\ICommand.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\IUserData.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\NodeMapRef.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\NodeMapFactory.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\GenApiVersion.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\NodeCallback.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\Persistence.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\StructPort.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\PortImpl.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\SelectorSet.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\ISelectorDigit.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\GenApiLinkage.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\stdinclude.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\TypeMappings.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\PylonBase.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\PylonVersionInfo.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\Info.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\TlInfo.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\DeviceClass.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\DeviceInfo.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\Container.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\InterfaceInfo.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\DeviceFactory.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\DeviceAccessMode.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\PylonVersionNumber.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\TransportLayer.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\Interface.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\TlFactory.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\EventAdapter.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\Callback.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\Device.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\WaitObject.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\WaitObjects.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\StreamGrabber.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\PixelType.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\Pixel.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\PixelTypeMapper.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\IEnumerationT.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\Compatibility.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\Result.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\PayloadType.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\ResultImage.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\Image.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\PylonDataComponent.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\PylonDataContainer.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\ChunkParser.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\EventGrabber.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\EventGrabberProxy.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\NodeMapProxy.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\AcquireSingleFrameConfiguration.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\InstantCamera.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\ImageEventHandler.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\GrabResultPtr.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\GrabResultData.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\ConfigurationEventHandler.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\CameraEventHandler.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\BufferFactory.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\SfncVersion.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\_InstantCameraParams.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\ParameterIncludes.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\ArrayParameter.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\Parameter.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\BooleanParameter.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\CommandParameter.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\EnumParameter.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\FloatParameter.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\IntegerParameter.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\StringParameter.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\EnumParameterT.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\ConfigurationHelper.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\InstantCameraArray.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\AcquireContinuousConfiguration.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\SoftwareTriggerConfiguration.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\InstantInterface.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\_BaslerUniversalInterfaceParams.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\PylonUtilityIncludes.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\PylonUtility.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\PylonImage.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\PylonImageBase.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\ReusableImage.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\ImagePersistence.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\PixelData.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\PylonImageUserBufferEventHandler.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\ImageDecompressor.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\ImageFormatConverter.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\_ImageFormatConverterParams.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\FeaturePersistence.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\PylonBitmapImage.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\AviWriter.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\VideoWriter.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\_VideoWriterParams.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\gige\BaslerGigECamera.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\gige\PylonGigECamera.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\StreamGrabberProxy.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\gige\BaslerGigEDeviceInfo.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\gige\PylonGigE.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\gige\PylonGigEDeviceProxy.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\gige\PylonGigEDevice.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\PylonDeviceProxy.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\gige\_GigETLParams.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\DLLLoad.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\gige\_GigEStreamParams.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\gige\_GigEEventParams.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\gige\_BaslerGigECameraParams.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\PylonGUI.h" \
+		"C:\Program Files (x86)\MVS\Development\Includes\MvCameraControl.h" \
+		"C:\Program Files (x86)\MVS\Development\Includes\MvErrorDefine.h" \
+		"C:\Program Files (x86)\MVS\Development\Includes\MvISPErrorDefine.h" \
+		"C:\Program Files (x86)\MVS\Development\Includes\CameraParams.h" \
+		"C:\Program Files (x86)\MVS\Development\Includes\PixelType.h" \
+		"C:\Program Files (x86)\MVS\Development\Includes\MvObsoleteInterfaces.h" \
+		"C:\Program Files (x86)\MVS\Development\Includes\ObsoleteCamParams.h" \
+		xcammanager.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QStringList \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QList \
+		xcam.h \
+		xcambasler.h \
+		xcamhik.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLabel \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qlabel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qframe.h \
+		ImageUnity.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDebug \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QImage \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPixmap \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QtGlobal \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\imgproc\types_c.h \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\core_c.h \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\types_c.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qtimer.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qbasictimer.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QTimer \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QElapsedTimer \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qelapsedtimer.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QRunnable \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qrunnable.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutex \
+		debug\moc_predefs.h \
+		C:\Qt\5.15.2\msvc2015_64\bin\moc.exe
+	C:\Qt\5.15.2\msvc2015_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include "E:/Software Projects/Delta X Software/DeltaXSoftware/plugin/IndustrialCamera/debug/moc_predefs.h" -IC:/Qt/5.15.2/msvc2015_64/mkspecs/win32-msvc -I"E:/Software Projects/Delta X Software/DeltaXSoftware/plugin/IndustrialCamera" -I"C:/Program Files/Basler/pylon 6/Development/include" -I"C:/Program Files/Basler/pylon 6/Development/include/pylon" -I"C:/Program Files (x86)/MVS/Development/Includes" -IE:/OpenCV/opencv-4.0/build/include -IC:/Qt/5.15.2/msvc2015_64/include -IC:/Qt/5.15.2/msvc2015_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtGui -IC:/Qt/5.15.2/msvc2015_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2015_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" CameraReader.h -o debug\moc_CameraReader.cpp
 
 debug\moc_IndustrialCameraPlugin.cpp: IndustrialCameraPlugin.h \
 		form.h \
@@ -873,6 +1210,7 @@ debug\moc_IndustrialCameraPlugin.cpp: IndustrialCameraPlugin.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qdialog.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QThreadPool \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qthreadpool.h \
+		CameraReader.h \
 		..\..\sdk\DeltaXPlugin.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QString \
 		debug\moc_predefs.h \
@@ -1342,6 +1680,7 @@ debug\moc_form.cpp: form.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qdialog.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QThreadPool \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qthreadpool.h \
+		CameraReader.h \
 		debug\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2015_64\bin\moc.exe
 	C:\Qt\5.15.2\msvc2015_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include "E:/Software Projects/Delta X Software/DeltaXSoftware/plugin/IndustrialCamera/debug/moc_predefs.h" -IC:/Qt/5.15.2/msvc2015_64/mkspecs/win32-msvc -I"E:/Software Projects/Delta X Software/DeltaXSoftware/plugin/IndustrialCamera" -I"C:/Program Files/Basler/pylon 6/Development/include" -I"C:/Program Files/Basler/pylon 6/Development/include/pylon" -I"C:/Program Files (x86)/MVS/Development/Includes" -IE:/OpenCV/opencv-4.0/build/include -IC:/Qt/5.15.2/msvc2015_64/include -IC:/Qt/5.15.2/msvc2015_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtGui -IC:/Qt/5.15.2/msvc2015_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2015_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" form.h -o debug\moc_form.cpp
@@ -1970,7 +2309,337 @@ debug\CameraProcessor.obj: CameraProcessor.cpp CameraProcessor.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qrunnable.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutex
 
-debug\CameraReader.obj: CameraReader.cpp 
+debug\CameraReader.obj: CameraReader.cpp CameraReader.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QObject \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qobject.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qobjectdefs.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qnamespace.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qglobal.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qconfig-bootstrapped.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qconfig.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qtcore-config.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsystemdetection.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qprocessordetection.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qcompilerdetection.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qtypeinfo.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsysinfo.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qlogging.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qflags.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qatomic.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qbasicatomic.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qatomic_bootstrap.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qgenericatomic.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qatomic_cxx11.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qatomic_msvc.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qglobalstatic.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qmutex.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qnumeric.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qversiontagging.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qobjectdefs_impl.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qstring.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qchar.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qbytearray.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qrefcount.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qarraydata.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qstringliteral.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qstringalgorithms.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qstringview.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qstringbuilder.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qlist.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qalgorithms.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qiterator.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qhashfunctions.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qpair.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qvector.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qcontainertools_impl.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qpoint.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qbytearraylist.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qstringlist.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qregexp.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qstringmatcher.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qcoreevent.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qscopedpointer.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qmetatype.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qvarlengtharray.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qcontainerfwd.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qobject_impl.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QWidget \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qwidget.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qtwidgetsglobal.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtguiglobal.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtgui-config.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qtwidgets-config.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qwindowdefs.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qwindowdefs_win.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qmargins.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpaintdevice.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qrect.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsize.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpalette.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qcolor.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qrgb.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qrgba64.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qbrush.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qmatrix.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpolygon.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qregion.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qdatastream.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qiodevice.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qline.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtransform.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qimage.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpixelformat.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpixmap.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsharedpointer.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qshareddata.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qhash.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsharedpointer_impl.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qfont.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qfontmetrics.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qfontinfo.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qsizepolicy.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qcursor.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qkeysequence.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qevent.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qvariant.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qmap.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qdebug.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qtextstream.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qlocale.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qset.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qcontiguouscache.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qurl.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qurlquery.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qfile.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qfiledevice.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qvector2d.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtouchdevice.h \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\core.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\cvdef.h \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\hal\interface.h \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\cv_cpu_dispatch.h \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\cv_cpu_helper.h \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\fast_math.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\version.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\base.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\opencv_modules.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\cvstd.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\cvstd_wrapper.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\neon_utils.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\vsx_utils.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\check.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\traits.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\matx.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\saturate.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\types.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\mat.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\bufferpool.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\mat.inl.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\persistence.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\operations.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\cvstd.inl.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\utility.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\optim.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\ovx.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\imgproc\imgproc.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\imgproc.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\highgui\highgui.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\highgui.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\imgcodecs.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\videoio.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\video\video.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\video.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\video\tracking.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\video\background_segm.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\calib3d\calib3d.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\calib3d.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\features2d.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\flann\miniflann.hpp \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\flann\defines.h \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\flann\config.h \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\affine.hpp \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\PylonIncludes.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\Platform.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\PylonLinkage.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenICamVersion.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\_GenICamVersion.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\Base\GCLinkage.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\Base\GCTypes.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\Base\GCNamespace.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\Base\GCString.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\Base\GCStringVector.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\GenApi.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\Base\GCBase.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\Base\GCArray.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\Base\GCException.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\Base\GCUtilities.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\Base\GCRTSSUtilities.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\GenApiDll.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\GenApiNamespace.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\Pointer.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenICamFwd.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\IEnumeration.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\IEnumEntry.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\IValue.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\Types.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\Autovector.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\IBase.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\Reference.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\INode.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\Container.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\IFloat.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\IInteger.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\ICategory.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\IRegister.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\IBoolean.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\IPort.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\IPortRecorder.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\IPortConstruct.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\IChunkPort.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\IString.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\INodeMap.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\Synch.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\IDestroy.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\IDeviceInfo.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\ISelector.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\ICommand.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\IUserData.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\NodeMapRef.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\NodeMapFactory.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\GenApiVersion.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\NodeCallback.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\Persistence.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\StructPort.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\PortImpl.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\SelectorSet.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\ISelectorDigit.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\GenApiLinkage.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\stdinclude.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\TypeMappings.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\PylonBase.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\PylonVersionInfo.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\Info.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\TlInfo.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\DeviceClass.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\DeviceInfo.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\Container.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\InterfaceInfo.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\DeviceFactory.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\DeviceAccessMode.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\PylonVersionNumber.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\TransportLayer.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\Interface.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\TlFactory.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\EventAdapter.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\Callback.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\Device.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\WaitObject.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\WaitObjects.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\StreamGrabber.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\PixelType.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\Pixel.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\PixelTypeMapper.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\IEnumerationT.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\Compatibility.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\Result.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\PayloadType.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\ResultImage.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\Image.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\PylonDataComponent.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\PylonDataContainer.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\ChunkParser.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\EventGrabber.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\EventGrabberProxy.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\NodeMapProxy.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\AcquireSingleFrameConfiguration.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\InstantCamera.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\ImageEventHandler.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\GrabResultPtr.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\GrabResultData.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\ConfigurationEventHandler.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\CameraEventHandler.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\BufferFactory.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\SfncVersion.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\_InstantCameraParams.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\ParameterIncludes.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\ArrayParameter.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\Parameter.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\BooleanParameter.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\CommandParameter.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\EnumParameter.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\FloatParameter.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\IntegerParameter.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\StringParameter.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\EnumParameterT.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\ConfigurationHelper.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\InstantCameraArray.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\AcquireContinuousConfiguration.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\SoftwareTriggerConfiguration.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\InstantInterface.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\_BaslerUniversalInterfaceParams.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\PylonUtilityIncludes.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\PylonUtility.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\PylonImage.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\PylonImageBase.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\ReusableImage.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\ImagePersistence.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\PixelData.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\PylonImageUserBufferEventHandler.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\ImageDecompressor.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\ImageFormatConverter.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\_ImageFormatConverterParams.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\FeaturePersistence.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\PylonBitmapImage.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\AviWriter.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\VideoWriter.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\_VideoWriterParams.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\gige\BaslerGigECamera.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\gige\PylonGigECamera.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\StreamGrabberProxy.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\gige\BaslerGigEDeviceInfo.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\gige\PylonGigE.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\gige\PylonGigEDeviceProxy.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\gige\PylonGigEDevice.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\PylonDeviceProxy.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\gige\_GigETLParams.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\GenApi\DLLLoad.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\gige\_GigEStreamParams.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\gige\_GigEEventParams.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\gige\_BaslerGigECameraParams.h" \
+		"C:\Program Files\Basler\pylon 6\Development\include\pylon\PylonGUI.h" \
+		"C:\Program Files (x86)\MVS\Development\Includes\MvCameraControl.h" \
+		"C:\Program Files (x86)\MVS\Development\Includes\MvErrorDefine.h" \
+		"C:\Program Files (x86)\MVS\Development\Includes\MvISPErrorDefine.h" \
+		"C:\Program Files (x86)\MVS\Development\Includes\CameraParams.h" \
+		"C:\Program Files (x86)\MVS\Development\Includes\PixelType.h" \
+		"C:\Program Files (x86)\MVS\Development\Includes\MvObsoleteInterfaces.h" \
+		"C:\Program Files (x86)\MVS\Development\Includes\ObsoleteCamParams.h" \
+		xcammanager.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QStringList \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QList \
+		xcam.h \
+		xcambasler.h \
+		xcamhik.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLabel \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qlabel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qframe.h \
+		ImageUnity.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDebug \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QImage \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPixmap \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QtGlobal \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\imgproc\types_c.h \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\core_c.h \
+		E:\OpenCV\opencv-4.0\build\include\opencv2\core\types_c.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qtimer.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qbasictimer.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QTimer \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QElapsedTimer \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qelapsedtimer.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QRunnable \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qrunnable.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutex
 
 debug\IndustrialCameraPlugin.obj: IndustrialCameraPlugin.cpp IndustrialCameraPlugin.h \
 		form.h \
@@ -2315,6 +2984,7 @@ debug\IndustrialCameraPlugin.obj: IndustrialCameraPlugin.cpp IndustrialCameraPlu
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qdialog.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QThreadPool \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qthreadpool.h \
+		CameraReader.h \
 		..\..\sdk\DeltaXPlugin.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QString
 
@@ -2778,58 +3448,8 @@ debug\form.obj: form.cpp form.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qdialog.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QThreadPool \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qthreadpool.h \
-		ui_form.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QVariant \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QIcon \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qicon.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QApplication \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qapplication.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qcoreapplication.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qeventloop.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qdesktopwidget.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qguiapplication.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qinputmethod.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QCheckBox \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qcheckbox.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qabstractbutton.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QComboBox \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qcombobox.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qabstractitemdelegate.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qstyleoption.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qabstractspinbox.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qvalidator.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qregularexpression.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qslider.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qabstractslider.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qstyle.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qtabbar.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qtabwidget.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qrubberband.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qabstractitemmodel.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QFrame \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGridLayout \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qgridlayout.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qlayout.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qlayoutitem.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qboxlayout.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGroupBox \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qgroupbox.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QHBoxLayout \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLineEdit \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qlineedit.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtextcursor.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtextformat.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpen.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtextoption.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QPushButton \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qpushbutton.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QScrollArea \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qscrollarea.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qabstractscrollarea.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QSpacerItem \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QToolButton \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qtoolbutton.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QVBoxLayout
+		CameraReader.h \
+		ui_form.h
 
 debug\xcam.obj: xcam.cpp xcam.h
 
@@ -3261,6 +3881,8 @@ debug\xcammanager.obj: xcammanager.cpp xcammanager.h \
 		"C:\Program Files (x86)\MVS\Development\Includes\ObsoleteCamParams.h"
 
 debug\moc_CameraProcessor.obj: debug\moc_CameraProcessor.cpp 
+
+debug\moc_CameraReader.obj: debug\moc_CameraReader.cpp 
 
 debug\moc_IndustrialCameraPlugin.obj: debug\moc_IndustrialCameraPlugin.cpp 
 

@@ -3174,11 +3174,7 @@ void RobotWindow::LoadImages()
     else
     {
         cv::String imgName = imageName.toStdString();
-        cv::Mat* mat = new cv::Mat();
-        *mat = cv::imread("C:\\Users\\Surface LaptopStudio\\Desktop\\giun1.jpg");
-
-        cv::imshow("image", *mat);
-        cv::waitKey(0);
+        CaptureImage = cv::imread(imgName);
         emit GotImage(CaptureImage);
     }
 }
