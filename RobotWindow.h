@@ -60,7 +60,6 @@
 #include <QLayout>
 #include <QStackedWidget>
 
-#include "Robot.h"
 #include "robotmanager.h"
 #include "SoftwareManager.h"
 
@@ -72,6 +71,7 @@
 
 
 #include <QDialogButtonBox>
+#include <device/DeviceManager.h>
 
 #define DEFAULT_BAUDRATE 115200
 
@@ -100,6 +100,7 @@ public:
     ~RobotWindow();
 
     //----- Init ----
+    void InitOtherThreadObjects();
 	void InitEvents();
     void InitVariables();
     void InitConnectionModule();
@@ -154,6 +155,9 @@ public:
     QString GetRealNameWidget(QString name);
     QString GetRedefineNameWidget(QString name);
     QStringList GetShareDisplayWidgetNames();
+
+    //---- Object in other threads ----
+    DeviceManager* DeviceManagerInstance;
 
     //---- Connection ----
     ConnectionManager* DeltaConnectionManager;

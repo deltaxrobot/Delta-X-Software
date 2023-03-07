@@ -112,13 +112,13 @@ public:
         scrollArea->setWidgetResizable(true);
         scrollAreaWidgetContents = new QWidget();
         scrollAreaWidgetContents->setObjectName(QString::fromUtf8("scrollAreaWidgetContents"));
-        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 465, 2000));
+        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 457, 2000));
         QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
         sizePolicy.setHeightForWidth(scrollAreaWidgetContents->sizePolicy().hasHeightForWidth());
         scrollAreaWidgetContents->setSizePolicy(sizePolicy);
-        scrollAreaWidgetContents->setMinimumSize(QSize(450, 2000));
+        scrollAreaWidgetContents->setMinimumSize(QSize(100, 2000));
         verticalLayout_2 = new QVBoxLayout(scrollAreaWidgetContents);
         verticalLayout_2->setObjectName(QString::fromUtf8("verticalLayout_2"));
         gridLayout = new QGridLayout();
@@ -138,7 +138,7 @@ public:
 
         cbCameraList = new QComboBox(scrollAreaWidgetContents);
         cbCameraList->setObjectName(QString::fromUtf8("cbCameraList"));
-        cbCameraList->setMinimumSize(QSize(150, 0));
+        cbCameraList->setMinimumSize(QSize(0, 0));
 
         gridLayout->addWidget(cbCameraList, 1, 2, 1, 1);
 
@@ -182,6 +182,7 @@ public:
         pbConnectCamera->setObjectName(QString::fromUtf8("pbConnectCamera"));
         QFont font;
         font.setBold(true);
+        font.setWeight(75);
         pbConnectCamera->setFont(font);
         pbConnectCamera->setStyleSheet(QString::fromUtf8(""));
 

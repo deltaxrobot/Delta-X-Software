@@ -7,6 +7,7 @@ RobotWindow::RobotWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    InitOtherThreadObjects();
 //    InitVariables();
 //    InitEvents();
 
@@ -16,16 +17,27 @@ RobotWindow::RobotWindow(QWidget *parent) :
 RobotWindow::~RobotWindow()
 {
 //    delete DeltaImageProcesser;
-    lbLoadingPopup->thread()->quit();
-    lbLoadingPopup->thread()->wait();
+//    lbLoadingPopup->thread()->quit();
+//    lbLoadingPopup->thread()->wait();
 
-    GcodeScriptThread->thread()->quit();
-    GcodeScriptThread->thread()->wait();
+//    GcodeScriptThread->thread()->quit();
+//    GcodeScriptThread->thread()->wait();
 
-    DeltaConnectionManager->thread()->quit();
-    DeltaConnectionManager->thread()->wait();
+//    DeltaConnectionManager->thread()->quit();
+//    DeltaConnectionManager->thread()->wait();
 
-    ImageProcessingThread->thread()->quit();
+//    ImageProcessingThread->thread()->quit();
+}
+
+void RobotWindow::InitOtherThreadObjects()
+{
+    DeviceManagerInstance = new DeviceManager();
+    QThread* thread = new QThread(this);
+    DeviceManagerInstance->moveToThread(thread);
+    thread->start();
+
+    QMetaObject::invokeMethod(DeviceManagerInstance, "AddRobot", Qt::QueuedConnection);
+
 }
 
 void RobotWindow::InitVariables()
@@ -216,7 +228,8 @@ void RobotWindow::InitConnectionModule()
     DeltaConnectionManager->SetBaudrate(DefaultBaudrate);
 
 
-    connect(this, &RobotWindow::Send, DeltaConnectionManager, &ConnectionManager::Send);
+//    connect(this, &RobotWindow::Send, DeltaConnectionManager, &ConnectionManager::Send);
+    connect(this, SIGNAL(Send(int, QString)), DeviceManagerInstance, SLOT(SendGcode(int, QString)));
     connect(this, &RobotWindow::ScanAndConnectRobot, DeltaConnectionManager, &ConnectionManager::FindDeltaRobot);
     connect(this, &RobotWindow::DisconnectRobot, DeltaConnectionManager, &ConnectionManager::DisconnectRobot);
     connect(DeltaConnectionManager->thread(), SIGNAL(finished()), DeltaConnectionManager, SLOT(deleteLater()));
@@ -496,11 +509,13 @@ void RobotWindow::InitGcodeEditorModule()
     connect(GcodeScriptThread->thread(), SIGNAL(finished()), GcodeScriptThread, SLOT(deleteLater()));
     connect(this, SIGNAL(StopGcodeProgram()), GcodeScriptThread, SLOT(Stop()));
     connect(this, SIGNAL(RunGcodeProgram(QString, int, bool)), GcodeScriptThread, SLOT(ExecuteGcode(QString, int, bool)));
-    connect(DeltaConnectionManager, SIGNAL(GcodeDone()), GcodeScriptThread, SLOT(TransmitNextGcode()));
+//    connect(DeltaConnectionManager, SIGNAL(GcodeDone()), GcodeScriptThread, SLOT(TransmitNextGcode()));
+    connect(DeviceManagerInstance, SIGNAL(DeviceResponded()), GcodeScriptThread, SLOT(TransmitNextGcode()));
     connect(DeltaConnectionManager, SIGNAL(FailTransmit()), GcodeScriptThread, SLOT(TransmitNextGcode()));
 
     connect(GcodeScriptThread, SIGNAL(Moved(int)), this, SLOT(HighLineCurrentLine(int)));
-    connect(GcodeScriptThread, &GcodeScript::SendGcodeToDevice, DeltaConnectionManager, &ConnectionManager::SendGcode);
+//    connect(GcodeScriptThread, &GcodeScript::SendGcodeToDevice, DeltaConnectionManager, &ConnectionManager::SendGcode);
+    connect(GcodeScriptThread, SIGNAL(SendGcodeToDevice(QString, QString)), DeviceManagerInstance, SLOT(SendGcode(QString, QString)));
     connect(GcodeScriptThread, &GcodeScript::Finished, [=](){ ui->pbExecuteGcodes->setChecked(false);});
     connect(GcodeScriptThread, SIGNAL(SendGcodeToDevice(QString, QString)), this, SLOT(UpdateGcodeValueToDeviceUI(QString, QString)));
     connect(GcodeScriptThread, SIGNAL(SaveVariable(QString, QString)), this, SLOT(UpdateVariable(QString, QString)));
@@ -1822,7 +1837,7 @@ void RobotWindow::SetMainStackedWidgetAndPages(QStackedWidget *mainStack, QWidge
     this->MainWindowPage = mainPage;
     this->FullDisplayPage = fullDisplayPage;
     this->FullDisplayLayout = fullDisplayLayout;
-    connect(ui->twDeltaGeometry, SIGNAL(tabBarDoubleClicked(int)), this, SLOT(MaximizeTab(int)));
+    connect(ui->twDevices, SIGNAL(tabBarDoubleClicked(int)), this, SLOT(MaximizeTab(int)));
     connect(ui->twModule, SIGNAL(tabBarDoubleClicked(int)), this, SLOT(MaximizeTab(int)));
 }
 
@@ -3852,32 +3867,39 @@ void RobotWindow::TerminalTransmit()
 {
     QString msg = ui->leTerminal->text();
 
-    if (SentCommands.count() > 50)
+    if (SentCommands.count() > 500)
         SentCommands.clear();
 
     SentCommands.append(msg);
 
-    if (ui->cbDeviceSender->currentText() == "Robot")
+    QString target = ui->cbDeviceSender->currentText();
+
+    if (target == "Software")
+    {
+        QMetaObject::invokeMethod(DeviceManagerInstance, "GetCommand", Qt::QueuedConnection, Q_ARG(QString, msg));
+    }
+
+    if (target == "Robot")
     {
         emit Send(ConnectionManager::ROBOT, msg);
     }
 
-    if (ui->cbDeviceSender->currentText() == "Conveyor")
+    if (target == "Conveyor")
     {
         emit Send(ConnectionManager::CONVEYOR, msg);
     }
 
-    if (ui->cbDeviceSender->currentText() == "Slider")
+    if (target == "Slider")
     {
         emit Send(ConnectionManager::SLIDER, msg);
     }
 
-    if (ui->cbDeviceSender->currentText() == "External MCU")
+    if (target == "External MCU")
     {
         emit Send(ConnectionManager::MCU, msg);
     }
 
-    if (ui->cbDeviceSender->currentText() == "Encoder")
+    if (target == "Encoder")
     {
         emit Send(ConnectionManager::ENCODER, msg);
     }
@@ -4362,7 +4384,7 @@ void RobotWindow::MaximizeTab(int index)
     }
     else
     {
-        if (selectedTabWidget == ui->twDeltaGeometry)
+        if (selectedTabWidget == ui->twDevices)
         {
             ui->GeometryTabManagerLayout->addWidget(selectedTabWidget);
         }

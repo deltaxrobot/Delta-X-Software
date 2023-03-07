@@ -2,12 +2,16 @@
 #define SCURVEINTERPOLATOR_H
 
 #include "math.h"
+#include <iostream>
+#include <chrono>
 
 constexpr double one_sixth = 1.0 / 6;
 
 #define square(x) (x * x)
 #define cubic(x) (x * x * x)
 #define max(a, b) a>b?a:b
+
+#define M_PI 3.14159265358979323846
 
 // S-Curve interpolator
 class Scurve_Interpolator
@@ -249,6 +253,88 @@ public:
         p = p_target;
 
         return true;
+    }
+
+    std::pair<double, double> find_short_point(double x0, double y0, double x1, double y1, double F, double v, double angle) {
+        if (x0 == x1 && y0 == y1)
+        {
+            return std::make_pair(x0, y0);
+        }
+
+        double xv = v * cos(angle * M_PI / 180.0);
+        double yv = v * sin(angle * M_PI / 180.0);
+
+        double K1 = -yv * x1 + xv * y1;
+        double K2 = K1 - y0 * xv;
+        double K3 = K1 - y1 * xv;
+
+        double a = v * v * xv * xv + v * v * yv * yv - xv * xv * F * F - F * F * yv * yv;
+        double b = -2 * x0 * v * v * xv * xv + v * v * 2 * yv * K2 + 2 * x1 * xv * xv * F * F - F * F * 2 * yv * K3;
+        double c = v * v * xv * xv * x0 * x0 + v * v * K2 * K2 - xv * xv * F * F * x1 * x1 - F * F * K3 * K3;
+
+        double d = (b * b) - (4 * a * c);
+
+        // find two solutions
+        double sol1 = (-b - sqrt(d)) / (2 * a);
+        double sol2 = (-b + sqrt(d)) / (2 * a);
+        double x = sol1;
+
+        if (cos(angle * M_PI / 180.0) > 0) {
+            if (sol2 - x1 > 0) {
+                x = sol2;
+            }
+        }
+        else {
+            if (sol2 - x1 < 0) {
+                x = sol2;
+            }
+        }
+
+        double k = tan(angle * M_PI / 180.0);
+        double y = k * x + (y1 - k * x1);
+
+        return std::make_pair(x, y);
+    }
+
+    std::pair<double, double> find_sync_point(double x1, double y1, double z1, double x2, double y2, double z2, double vel, double angle, double time_offset=0) {
+        auto start_time = std::chrono::high_resolution_clock::now();
+        double rad = M_PI / 180.0 * angle;
+
+        std::pair<double, double> short_point = find_short_point(x1, y1, x2, y2, max_vel, vel, angle);
+        double Cmx = short_point.first;
+        double Cmy = short_point.second;
+        double BCm = sqrt(pow(Cmx - x2, 2) + pow(Cmy - y2, 2));
+
+        int step = 1;
+        int i = 1;
+
+        double Cx = Cmx;
+        double Cy = Cmy;
+
+        double total_time;
+
+        while (i < 200) {
+            double BC = BCm + step * i;
+            i++;
+
+            Cx = BC * cos(rad) + x2;
+            Cy = BC * sin(rad) + y2;
+
+            double AC = sqrt(pow(Cx - x1, 2) + pow(Cy - y1, 2));
+            double ACz = sqrt(pow(AC, 2) + pow(z2 - z1, 2));
+            p_target = ACz;
+            start();
+            double t = t_target;
+            double td = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - start_time).count() / 1e6;
+            total_time = t + td + time_offset;
+            double BD = total_time * vel;
+
+            if (BC - BD > 0.5) {
+                break;
+            }
+        }
+
+        return {Cx, Cy};
     }
 };
 #endif // SCURVEINTERPOLATOR_H

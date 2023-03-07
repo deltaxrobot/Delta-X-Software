@@ -18,7 +18,7 @@ using namespace cv;
 int main(int argc, char *argv[])
 {
     QCoreApplication::addLibraryPath("./");
-    QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+//    QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QApplication a(argc, argv);
 
 #ifdef TEST

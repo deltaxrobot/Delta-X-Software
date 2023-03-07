@@ -57,7 +57,6 @@ SOURCES += main.cpp\
     ObjectVariableTable.cpp \
     Parameter.cpp \
     ProjectManager.cpp \
-    Robot.cpp \
     RobotWindow.cpp \
     SmartDialog.cpp \
     SoftwareManager.cpp \
@@ -75,6 +74,9 @@ SOURCES += main.cpp\
     GcodeProgramManager.cpp \
     GcodeProgram.cpp \
     UnityTool.cpp \
+    device/DeviceManager.cpp \
+    device/device.cpp \
+    device/robot.cpp \
     geisttextedit.cpp \
     global.cpp \
     highlighter.cpp \
@@ -107,7 +109,6 @@ HEADERS  += \
     ObjectVariableTable.h \
     Parameter.h \
     ProjectManager.h \
-    Robot.h \
     RobotWindow.h \
     ScurveInterpolator.h \
     SmartDialog.h \
@@ -120,6 +121,9 @@ HEADERS  += \
     VariableManager.h \
     VersionManager.h \
     codeeditor.h \
+    device/DeviceManager.h \
+    device/device.h \
+    device/robot.h \
     geisttextedit.h \
     global.h \
     highlighter.h \

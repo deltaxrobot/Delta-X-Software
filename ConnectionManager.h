@@ -19,10 +19,9 @@ public:
     {
         ROBOT = 0,
         CONVEYOR,
-        SLIDER,
-        MCU,
         ENCODER,
-        CONTROLLER
+        SLIDER,
+        MCU
     };
 
     ConnectionManager();
