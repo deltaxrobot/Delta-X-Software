@@ -38,6 +38,9 @@ void RobotWindow::InitOtherThreadObjects()
 
     QMetaObject::invokeMethod(DeviceManagerInstance, "AddRobot", Qt::QueuedConnection);
 
+    connect(DeviceManagerInstance, SIGNAL(GotDeviceInfo(QString)), this, SLOT(GetDeviceInfo(QString)));
+    connect(this, SIGNAL(ChangeDeviceState(int, bool)), DeviceManagerInstance, SLOT(SetDeviceState(int, bool)));
+
 }
 
 void RobotWindow::InitVariables()
@@ -60,13 +63,7 @@ void RobotWindow::InitVariables()
     ui->lbLocalPort->setText(QString::number(DeltaConnectionManager->TCPConnection->Port));
     ui->mbRobot->setVisible(false);
 
-//    QDir directory(QDir::currentPath());
-//    ui->cbSetting->clear();
-//    QStringList iniFiles = directory.entryList(QStringList() << "*.ini" << "*.INI",QDir::Files);
-//    foreach(QString filename, iniFiles)
-//    {
-//        ui->cbSetting->addItem(filename);
-//    }
+
 
     InitParseNames();
 
@@ -212,7 +209,8 @@ void RobotWindow::InitVariables()
     //------------------- Linux -----------------
 
 
-    //------------ Robot --------
+    //------------ Devices --------
+    connect(ui->cbSelectedRobot, SIGNAL(currentIndexChanged(int)), this, SLOT(ChangeSelectedRobot(int)));
 
     //----- Process ------
     ExternalScriptProcess = new QProcess(this);
@@ -522,10 +520,28 @@ void RobotWindow::InitGcodeEditorModule()
 
     GcodeScriptThread->thread()->start();
 
+    //----- Gcode Editor -----
+    highlighter = new GCodeHighlighter(ui->pteGcodeArea->document());
 
+    // ------- Gcode Explorer -----
 
-//    connect(DeltaConnectionManager, SIGNAL(ReceiveVariableChangeCommand(QString, QString)), DeltaGcodeManager, SLOT(UpdateSystemVariable(QString, QString)));
-//    connect(DeltaConnectionManager->TCPConnection, SIGNAL(ReceiveVariableChangeCommand(QString, float)), DeltaGcodeManager, SLOT(UpdateSystemVariable(QString, float)));
+    QString openPath = QCoreApplication::applicationDirPath() + "/gcode";
+
+    QDir dir(openPath);
+    if (!dir.exists())
+        dir.mkpath(openPath);
+
+    explorerModel.setRootPath(QDir::currentPath());
+    ui->tvGcodeExplorer->setModel(&explorerModel);
+    ui->tvGcodeExplorer->setRootIndex(explorerModel.index(openPath));
+
+    ui->tvGcodeExplorer->setHeaderHidden(true); // Hiển thị header
+    ui->tvGcodeExplorer->header()->setSectionResizeMode(0, QHeaderView::Stretch); // Chỉnh độ rộng cột
+    ui->tvGcodeExplorer->header()->setSectionHidden(1, true); // Ẩn cột Size
+    ui->tvGcodeExplorer->header()->setSectionHidden(2, true); // Ẩn cột Type
+    ui->tvGcodeExplorer->header()->setSectionHidden(3, true); // Ẩn cột Type
+
+    QObject::connect(ui->tvGcodeExplorer, &QTreeView::clicked, this, &RobotWindow::LoadGcodeFromFileToEditor);
 }
 
 void RobotWindow::InitUIController()
@@ -598,7 +614,7 @@ void RobotWindow::InitEvents()
 
 
     // ------------- --------------
-    connect(ui->pbConnect, SIGNAL(clicked(bool)), this, SLOT(ConnectDeltaRobot()));
+    connect(ui->pbConnect, &QPushButton::clicked, this, [=](){emit ChangeDeviceState(DeviceManager::ROBOT, (ui->pbConnect->text() == "Connect")?true:false);});
 	connect(ui->pbAddNewProgram, SIGNAL(clicked(bool)), this, SLOT(AddNewProgram()));
 	connect(ui->pbRefreshGcodeFiles, SIGNAL(clicked(bool)), DeltaGcodeManager, SLOT(RefreshGcodeProgramList()));
 	connect(ui->pbSortGcodeFiles, SIGNAL(clicked(bool)), DeltaGcodeManager, SLOT(SortProgramFiles()));
@@ -829,6 +845,8 @@ void RobotWindow::InitEvents()
     //---------- Menu -----------
 	connect(ui->actionBaudrate, SIGNAL(triggered()), this, SLOT(ConfigConnection()));
 	connect(ui->actionGcode, SIGNAL(triggered()), this, SLOT(OpenGcodeReference()));
+    connect(ui->pbOpenGcodeDocs, SIGNAL(clicked(bool)), this, SLOT(OpenGcodeReference()));
+
 	connect(ui->actionExecute_All, SIGNAL(triggered()), this, SLOT(ExecuteSelectPrograms()));
 	connect(ui->actionExecute, SIGNAL(triggered()), this, SLOT(ExecuteProgram()));
     connect(ui->actionScale, SIGNAL(triggered(bool)), this, SLOT(ScaleUI()));
@@ -860,10 +878,10 @@ void RobotWindow::InitEvents()
 
     connect(ui->pbExportDrawingGcodes, SIGNAL(clicked(bool)), DeltaDrawingExporter, SLOT(ExportGcodes()));
 
-	connect(ui->twDeltaManager, SIGNAL(tabBarClicked(int)), this, SLOT(ChangeDeltaDashboard(int)));
-	connect(ui->twDeltaManager, SIGNAL(currentChanged(int)), this, SLOT(SelectTrueTabName(int)));
-    connect(ui->twDeltaManager, SIGNAL(tabBarDoubleClicked(int)), this, SLOT(ChangeRobotName(int)));
-    connect(ui->twDeltaManager, SIGNAL(tabCloseRequested(int)), this, SLOT(DeleteRobot(int)));
+//	connect(ui->twDeltaManager, SIGNAL(tabBarClicked(int)), this, SLOT(ChangeDeltaDashboard(int)));
+//	connect(ui->twDeltaManager, SIGNAL(currentChanged(int)), this, SLOT(SelectTrueTabName(int)));
+//    connect(ui->twDeltaManager, SIGNAL(tabBarDoubleClicked(int)), this, SLOT(ChangeRobotName(int)));
+//    connect(ui->twDeltaManager, SIGNAL(tabCloseRequested(int)), this, SLOT(DeleteRobot(int)));
 
 
 
@@ -1185,6 +1203,18 @@ void RobotWindow::AddGcodeLine(QString gcode)
     ui->pteGcodeArea->moveCursor(QTextCursor::End);
 }
 
+void RobotWindow::LoadGcodeFromFileToEditor(const QModelIndex &index)
+{
+    QString filePath = explorerModel.filePath(index);
+    QFile file(filePath);
+    if (file.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        QTextStream stream(&file);
+        ui->pteGcodeArea->setPlainText(stream.readAll());
+        file.close();
+    }
+}
+
 void RobotWindow::ChangeParentForWidget(bool state)
 {
 	
@@ -1317,12 +1347,12 @@ void RobotWindow::LoadGeneralSettings(QSettings *setting)
 
     GcodeScriptThread->VariableAddress = ProjectName + "." + Name;
 
-    ui->twDeltaManager->setTabText(ID, Name);
+//    ui->twDeltaManager->setTabText(ID, Name);
 
-    for (int i = 0; i < RobotManagerPointer->RobotWindows.size() - 1; i++)
-    {
-        RobotManagerPointer->RobotWindows.at(i)->ui->twDeltaManager->setTabText(ID, Name);
-    }
+//    for (int i = 0; i < RobotManagerPointer->RobotWindows.size() - 1; i++)
+//    {
+//        RobotManagerPointer->RobotWindows.at(i)->ui->twDeltaManager->setTabText(ID, Name);
+//    }
 
     // ---- Tracking ----
     bool isEncoderOn = setting->value("EncoderEnable").toBool();
@@ -1885,6 +1915,37 @@ QStringList RobotWindow::GetShareDisplayWidgetNames()
     return list;
 }
 
+void RobotWindow::GetDeviceInfo(QString json)
+{
+    QJsonDocument jsonDocument = QJsonDocument::fromJson(json.toUtf8());
+    QJsonObject jsonObject = jsonDocument.object();
+
+    if (jsonObject.value("device").toString() == "robot")
+    {
+        float x = jsonObject.value("x").toDouble();
+        float y = jsonObject.value("y").toDouble();
+        float z = jsonObject.value("z").toDouble();
+        float w = jsonObject.value("w").toDouble();
+        float u = jsonObject.value("u").toDouble();
+        float v = jsonObject.value("v").toDouble();
+
+        ReceiveHomePosition(x, y, z, w, u, v);
+
+        QString state = jsonObject.value("state").toString();
+        if (state == "open")
+        {
+            ui->pbConnect->setText("Disconnect");
+        }
+        else
+        {
+            ui->pbConnect->setText("Connect");
+        }
+
+        ui->lbComName->setText(jsonObject.value("com_name").toString());
+
+    }
+}
+
 void RobotWindow::SelectImageProviderOption(int option)
 {
     ui->fPluginSource->setHidden(true);
@@ -1962,147 +2023,153 @@ void RobotWindow::RunSmartEditor()
 
 void RobotWindow::StandardFormatEditor()
 {
-	if (ui->cbAutoNumbering->isChecked() == true)
-	{
-		QString editorText = ui->pteGcodeArea->toPlainText();
+    // ---- Number -----
+    QString editorText = ui->pteGcodeArea->toPlainText();
 
-		QList<QString> lines = editorText.split('\n');
-		QList<QString> oldNumbers;
-		QList<QString> newNumbers;
-		QList<QString> oldGcodes;
+    // Xóa các dòng trống không có kí tự
+    editorText.replace(QRegularExpression("(\\n[ \\t]*){2,}"), "\n");
 
-		QString oldNumber = "";
+    // Gộp các kí tự trống liên tiếp thành một kí tự trống
+    editorText.replace(QRegularExpression("[\\t ]+"), " ");
 
-		if (lines.size() > 4000)
-		{
-			QMessageBox::information(this, "Warning", "Too many g-code lines ( > 4000 ) will take time to format. You should divide the program into multiple files and use M98 F[filename] to execute each files.");
-			return;
-		}
+    QList<QString> lines = editorText.split('\n');
+    QList<QString> oldNumbers;
+    QList<QString> newNumbers;
+    QList<QString> oldGcodes;
 
-		editorText = "";
+    QString oldNumber = "";
 
-		int i = 0;
-
-		foreach(QString line, lines)
-		{
-			line = line.replace("  ", " ");
-			oldNumber = "";
-			while (1)
-			{
-				if (line[0] == ' ')
-				{
-					line.replace(" ", "");
-				}
-				else
-				{
-					break;
-				}
-			}
-
-			if (line[0] == 'N')
-			{
-				int spacePos = line.indexOf(' ');
-				QString mS = line.mid(0, spacePos + 1);
-				oldNumber = line.mid(1, spacePos);
-
-				line.replace(mS, "");
-			}
-
-			while (1)
-			{
-				if (line[0] == ' ')
-				{
-					line.replace(" ", "");
-				}
-				else
-				{
-					break;
-				}
-			}
-
-			if (line != "")
-			{
-				if (line[0] != ';')
-				{
-					QString numberS = QString("N") + QString::number(i);
-					newNumbers.push_back(QString::number(i));
-					oldNumbers.push_back(oldNumber);
-					line = numberS + " " + line;
-				}
-			}
-
-			editorText += line + "\n";
-			i += 5;
-		}
-
-		int gotoCursor = 0;
-        gotoCursor = editorText.indexOf("GOTO", gotoCursor);
-
-		while (gotoCursor > -1)
-		{
-			//gotoEnd = editorText.indexOf("\n", gotoCursor);
-			QString gotoIndexS = "";
-			for (int i = 0; i < 20; i++)
-			{
-				QChar c = editorText.at(gotoCursor + 5 + i);
-				if (c.isDigit())
-					gotoIndexS += c;
-				else
-					break;
-			}
-
-			gotoCursor = editorText.indexOf("GOTO", gotoCursor + 5);
-
-			for (int i = 0; i < oldNumbers.size(); i++)
-			{
-                if ((oldNumbers.at(i).toInt() == gotoIndexS.toInt()) && gotoIndexS != "")
-				{
-					QString old = QString("GOTO ") + gotoIndexS;
-					QString replace = QString("GOTO ") + newNumbers.at(i);
-					editorText.replace(old, replace);
-				}
-			}
-		}
-		ui->pteGcodeArea->setPlainText(editorText);
-	}
-
-	QTextCharFormat reset;
-	ui->pteGcodeArea->setCurrentCharFormat(reset);
-	ui->pteGcodeArea->currentCharFormat();
-
-	if (ui->cbFormatColor->isChecked() == true)
-	{
-		QString htmlText = ui->pteGcodeArea->toHtml();
-
-		htmlText = replaceHtmlSection(">;", 1, 200, "<", "<span style=\"font-style:italic;color:#00aa00;\">", "</span>", htmlText);
-		htmlText = replaceHtmlSection(" O", 1, 50, "<", "<span style =\"font-weight:600;\">", "</span>", htmlText);
-		htmlText = replaceHtmlSection("#", 0, 6, "&&&", "<span style=\"font-style:italic;\">", "</span>", htmlText);
-
-		htmlText = boldKey("G01", htmlText);
-		htmlText = boldKey("G02", htmlText);
-		htmlText = boldKey("G03", htmlText);
-		htmlText = boldKey("G04", htmlText);
-		htmlText = boldKey("G28", htmlText);
-		htmlText = boldKey("M204", htmlText);
-		htmlText = boldKey("M360", htmlText);
-		htmlText = boldPlusKey("GOTO", "color:#ff5500;", htmlText);
-		htmlText = boldPlusKey("IF", "color:#00aa00;", htmlText);
-		htmlText = boldPlusKey("THEN", "color:#00aa00;", htmlText);
-		htmlText = boldKey("M99", htmlText);
-		htmlText = boldKey("M98", htmlText);
-		htmlText = boldKey("M05", htmlText);
-		htmlText = boldKey("M04", htmlText);
-		htmlText = boldKey("M03", htmlText);		
-
-		ui->pteGcodeArea->setHtml(htmlText);
+    if (lines.size() > 4000)
+    {
+        QMessageBox::information(this, "Warning", "Too many g-code lines ( > 4000 ) will take time to format. You should divide the program into multiple files and use M98 F[filename] to execute each files.");
+        return;
     }
+
+    editorText = "";
+
+    int i = 0;
+
+    foreach(QString line, lines)
+    {
+//        line = line.replace("  ", " ");
+//        oldNumber = "";
+//        while (1)
+//        {
+//            if (line[0] == ' ')
+//            {
+//                line.replace(" ", "");
+//            }
+//            else
+//            {
+//                break;
+//            }
+//        }
+
+        if (line[0] == 'N')
+        {
+            int spacePos = line.indexOf(' ');
+            QString mS = line.mid(0, spacePos + 1);
+            oldNumber = line.mid(1, spacePos);
+
+            line.replace(mS, "");
+        }
+
+//        while (1)
+//        {
+//            if (line[0] == ' ')
+//            {
+//                line.replace(" ", "");
+//            }
+//            else
+//            {
+//                break;
+//            }
+//        }
+
+        if (line != "")
+        {
+            if (line[0] != ';')
+            {
+                QString numberS = QString("N") + QString::number(i);
+                newNumbers.push_back(QString::number(i));
+                oldNumbers.push_back(oldNumber);
+                line = numberS + " " + line;
+            }
+        }
+
+        editorText += line + "\n";
+        i += 5;
+    }
+
+    int gotoCursor = 0;
+    gotoCursor = editorText.indexOf("GOTO", gotoCursor);
+
+    while (gotoCursor > -1)
+    {
+        //gotoEnd = editorText.indexOf("\n", gotoCursor);
+        QString gotoIndexS = "";
+        for (int i = 0; i < 20; i++)
+        {
+            QChar c = editorText.at(gotoCursor + 5 + i);
+            if (c.isDigit())
+                gotoIndexS += c;
+            else
+                break;
+        }
+
+        gotoCursor = editorText.indexOf("GOTO", gotoCursor + 5);
+
+        for (int i = 0; i < oldNumbers.size(); i++)
+        {
+            if ((oldNumbers.at(i).toInt() == gotoIndexS.toInt()) && gotoIndexS != "")
+            {
+                QString old = QString("GOTO ") + gotoIndexS;
+                QString replace = QString("GOTO ") + newNumbers.at(i);
+                editorText.replace(old, replace);
+            }
+        }
+    }
+
+    ui->pteGcodeArea->setPlainText(editorText);
+
+    // ---- Color ----
+//	QTextCharFormat reset;
+//	ui->pteGcodeArea->setCurrentCharFormat(reset);
+//	ui->pteGcodeArea->currentCharFormat();
+
+//	if (ui->cbFormatColor->isChecked() == true)
+//	{
+//		QString htmlText = ui->pteGcodeArea->toHtml();
+
+//		htmlText = replaceHtmlSection(">;", 1, 200, "<", "<span style=\"font-style:italic;color:#00aa00;\">", "</span>", htmlText);
+//		htmlText = replaceHtmlSection(" O", 1, 50, "<", "<span style =\"font-weight:600;\">", "</span>", htmlText);
+//		htmlText = replaceHtmlSection("#", 0, 6, "&&&", "<span style=\"font-style:italic;\">", "</span>", htmlText);
+
+//		htmlText = boldKey("G01", htmlText);
+//		htmlText = boldKey("G02", htmlText);
+//		htmlText = boldKey("G03", htmlText);
+//		htmlText = boldKey("G04", htmlText);
+//		htmlText = boldKey("G28", htmlText);
+//		htmlText = boldKey("M204", htmlText);
+//		htmlText = boldKey("M360", htmlText);
+//		htmlText = boldPlusKey("GOTO", "color:#ff5500;", htmlText);
+//		htmlText = boldPlusKey("IF", "color:#00aa00;", htmlText);
+//		htmlText = boldPlusKey("THEN", "color:#00aa00;", htmlText);
+//		htmlText = boldKey("M99", htmlText);
+//		htmlText = boldKey("M98", htmlText);
+//		htmlText = boldKey("M05", htmlText);
+//		htmlText = boldKey("M04", htmlText);
+//		htmlText = boldKey("M03", htmlText);
+
+//		ui->pteGcodeArea->setHtml(htmlText);
+//    }
 }
 
 void RobotWindow::OpenGcodeReference()
 {
 //	GcodeReference* gcodeReferenceWindow = new GcodeReference();
 //	gcodeReferenceWindow->show();
-    QUrl myUrl("https://www.deltaxrobot.com/p/gcode.html");
+    QUrl myUrl("https://docs.deltaxrobot.com/");
     QDesktopServices::openUrl(myUrl);
 }
 
@@ -2113,27 +2180,43 @@ void RobotWindow::ConfigConnection()
 		tr("Baudrate:"), QLineEdit::Normal,
 		QString::number(DeltaConnectionManager->GetBaudrate()), &ok);
 	if (ok && !text.isEmpty())
-		DeltaConnectionManager->SetBaudrate(text.toInt());
+        DeltaConnectionManager->SetBaudrate(text.toInt());
+}
+
+void RobotWindow::ChangeSelectedRobot(int id)
+{
+    if (ui->cbSelectedRobot->currentText() == "+")
+    {
+        QStandardItemModel *model = qobject_cast<QStandardItemModel*>(ui->cbSelectedRobot->model());
+        QStandardItem *item = model->item(id);
+        item->setText(QString::number(id));
+
+        ui->cbSelectedRobot->addItem("+");
+    }
+
+    DeviceManagerInstance->SelectedRobotID = id;
+
+    QMetaObject::invokeMethod(DeviceManagerInstance, "RequestDeviceInfo", Qt::QueuedConnection, Q_ARG(int, DeviceManager::ROBOT));
 }
 
 void RobotWindow::ChangeDeltaDashboard(int index)
 {
-    // ---- If press "Add new robot" --------
-    if (ui->twDeltaManager->tabText(index) == "+")
-    {
-        //----- Creat new robot window -----------
-        RobotManagerPointer->CreatNewRobotWindow();
-	}
-    // -------- Select other robot ---------
-	else
-    {
-        if (RobotManagerPointer->SubWindowStackedWidget != NULL)
-        {
-            RobotManagerPointer->SubWindowStackedWidget->setCurrentIndex(index);
+//    // ---- If press "Add new robot" --------
+//    if (ui->twDeltaManager->tabText(index) == "+")
+//    {
+//        //----- Creat new robot window -----------
+//        RobotManagerPointer->CreatNewRobotWindow();
+//	}
+//    // -------- Select other robot ---------
+//	else
+//    {
+//        if (RobotManagerPointer->SubWindowStackedWidget != NULL)
+//        {
+//            RobotManagerPointer->SubWindowStackedWidget->setCurrentIndex(index);
 
-            RobotManagerPointer->RobotWindows.at(index)->ui->twDeltaManager->setCurrentIndex(index);
-        }
-    }
+//            RobotManagerPointer->RobotWindows.at(index)->ui->twDeltaManager->setCurrentIndex(index);
+//        }
+//    }
 }
 
 void RobotWindow::SelectTrueTabName(int index)
@@ -2143,51 +2226,51 @@ void RobotWindow::SelectTrueTabName(int index)
 
 void RobotWindow::ChangeRobotName(int tabIndex)
 {
-    QString oldRobotName = ui->twDeltaManager->tabText(tabIndex);
+//    QString oldRobotName = ui->twDeltaManager->tabText(tabIndex);
 
-    bool ok;
-    QString newRobotName = QInputDialog::getText(this, tr("Change project name"), tr("New name:"), QLineEdit::Normal, oldRobotName, &ok);
+//    bool ok;
+//    QString newRobotName = QInputDialog::getText(this, tr("Change project name"), tr("New name:"), QLineEdit::Normal, oldRobotName, &ok);
 
-    if (ok && !newRobotName.isEmpty())
-    {
-        Name = newRobotName;
+//    if (ok && !newRobotName.isEmpty())
+//    {
+//        Name = newRobotName;
 
-        foreach(RobotWindow* robot, RobotManagerPointer->RobotWindows)
-        {
-            robot->ui->twDeltaManager->setTabText(tabIndex, newRobotName);
-        }
-    }
+//        foreach(RobotWindow* robot, RobotManagerPointer->RobotWindows)
+//        {
+//            robot->ui->twDeltaManager->setTabText(tabIndex, newRobotName);
+//        }
+//    }
 }
 
 void RobotWindow::DeleteRobot(int tabIndex)
 {
-    QString projectName = ui->twDeltaManager->tabText(tabIndex);
+//    QString projectName = ui->twDeltaManager->tabText(tabIndex);
 
-    QMessageBox::StandardButton reply;
-    reply = QMessageBox::question(this, projectName, "Do you want to delete this robot?",
-                                QMessageBox::Yes|QMessageBox::No);
+//    QMessageBox::StandardButton reply;
+//    reply = QMessageBox::question(this, projectName, "Do you want to delete this robot?",
+//                                QMessageBox::Yes|QMessageBox::No);
 
-    if (reply == QMessageBox::Yes)
-    {
-        ui->twDeltaManager->removeTab(tabIndex);
-//        foreach(RobotWindow* robotWindow, RobotManagers.at(tabIndex)->RobotWindows)
-//        {
-//            delete robotWindow;
-//        }
+//    if (reply == QMessageBox::Yes)
+//    {
+//        ui->twDeltaManager->removeTab(tabIndex);
+////        foreach(RobotWindow* robotWindow, RobotManagers.at(tabIndex)->RobotWindows)
+////        {
+////            delete robotWindow;
+////        }
 
-        //delete RobotManagers.at(tabIndex);
+//        //delete RobotManagers.at(tabIndex);
 
-        RobotManagerPointer->RobotWindows.removeAt(tabIndex);
-    }
-    else
-    {
-        return;
-    }
+//        RobotManagerPointer->RobotWindows.removeAt(tabIndex);
+//    }
+//    else
+//    {
+//        return;
+//    }
 
-    if (tabIndex > 0)
-    {
-        ui->twDeltaManager->setCurrentIndex(tabIndex - 1);
-    }
+//    if (tabIndex > 0)
+//    {
+//        ui->twDeltaManager->setCurrentIndex(tabIndex - 1);
+//    }
 }
 
 void RobotWindow::AddNewProgram()
@@ -4120,27 +4203,27 @@ bool RobotWindow::openConnectionDialog(QSerialPort * comPort, QTcpSocket* socket
 
 void RobotWindow::InitTabs()
 {
-    ui->twDeltaManager->clear();
+//    ui->twDeltaManager->clear();
 
-    QStringList robotNames = RobotManagerPointer->GetRobotNames();
+//    QStringList robotNames = RobotManagerPointer->GetRobotNames();
 
-    for (int i = 0; i < robotNames.size(); i++)
-    {
-        QAction *actionNewDelta_X;
-        actionNewDelta_X = new QAction(this);
+//    for (int i = 0; i < robotNames.size(); i++)
+//    {
+//        QAction *actionNewDelta_X;
+//        actionNewDelta_X = new QAction(this);
 
-        actionNewDelta_X->setCheckable(true);
-        actionNewDelta_X->setChecked(true);
-        actionNewDelta_X->setText(robotNames.at(i));
-        ui->menuExecute->addAction(actionNewDelta_X);
+//        actionNewDelta_X->setCheckable(true);
+//        actionNewDelta_X->setChecked(true);
+//        actionNewDelta_X->setText(robotNames.at(i));
+//        ui->menuExecute->addAction(actionNewDelta_X);
 
-        QWidget *newDeltaTab = new QWidget();
-        ui->twDeltaManager->addTab(newDeltaTab, robotNames.at(i));
-    }
+//        QWidget *newDeltaTab = new QWidget();
+//        ui->twDeltaManager->addTab(newDeltaTab, robotNames.at(i));
+//    }
 
-    QWidget *newDeltaTab = new QWidget();
-    ui->twDeltaManager->addTab(newDeltaTab, QString());
-    ui->twDeltaManager->setTabText(ui->twDeltaManager->indexOf(newDeltaTab), "+");
+//    QWidget *newDeltaTab = new QWidget();
+//    ui->twDeltaManager->addTab(newDeltaTab, QString());
+//    ui->twDeltaManager->setTabText(ui->twDeltaManager->indexOf(newDeltaTab), "+");
 }
 
 void RobotWindow::Log(QString msg)

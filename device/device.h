@@ -10,6 +10,9 @@
 #include <QDebug>
 #include <QTime>
 #include <QElapsedTimer>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonArray>
 
 class Device : public QObject
 {
@@ -21,10 +24,13 @@ public:
 
 signals:
     void receivedMsg(QString);
+    void gcodeDone();
+    void infoReady(QString infoJson);
 
 public slots:
     void Run();
-    void Connect(QString port = "COM1", int baudrate = 115200, bool autoRead = false);
+    void Connect();
+    void Disconnect();
 
     void Delay(int msec);
 
@@ -36,6 +42,7 @@ public slots:
 protected:
     QSerialPort* serialPort;
     QMetaObject::Connection readDataConnection;
+    QJsonObject jsonObject;
 
 private:
     QString serialPortName;

@@ -131,5 +131,12 @@
         <file>icon/Axis_64px.png</file>
         <file>icon/icons8_rectangle_64px.png</file>
         <file>icon/deltaicon.png</file>
+        <file>icon/icons8_folder_52px.png</file>
+        <file>icon/icons8_add_new_52px.png</file>
+        <file>icon/icons8_back_52px.png</file>
+        <file>icon/icons8_help_52px.png</file>
+        <file>icon/icons8_file_52px.png</file>
+        <file>icon/icons8_save_52px_1.png</file>
+        <file>icon/icons8_view_details_52px.png</file>
     </qresource>
 </RCC>

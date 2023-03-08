@@ -24,6 +24,8 @@ Robot::Robot(QString COM, int baudrate, bool is_open, QObject *parent) : Device(
     path_vel = 100;
     path_angle = 0;
     path_rad_angle = 0;
+
+    GetInfo();
 }
 
 QString Robot::SendGcode(QString gcode, bool is_wait, int time_out)
@@ -37,7 +39,8 @@ QString Robot::SendGcode(QString gcode, bool is_wait, int time_out)
     if (this->serialPort->isOpen())
         this->serialPort->write(gcode.toLocal8Bit());
 
-    last_gcode = gcode;
+    last_gcode = now_gcode;
+    now_gcode = gcode;
     bool isMovingGcode = this->getPara(gcode);
 
     if (is_wait)
@@ -67,30 +70,67 @@ void Robot::ProcessResponse(QString response) {
         emit gcodeDone();
     }
 
-    if (last_gcode.count("Position") > 0) {
-        if (response.count(",") > 2) {
+    if (now_gcode.count("G28") > 0)
+    {
+        SendGcode("Position");
+    }
+
+    qDebug() << response;
+
+    if (now_gcode.count("Position") > 0) {
+        if (response.count(",") > 1) {
             QStringList paras = response.split(",");
-            for (int i = 0; i < paras.size(); i++) {
-                if (i == 0) {
-                    X = paras[i].toFloat();
-                }
-                if (i == 1) {
-                    Y = paras[i].toFloat();
-                }
-                if (i == 2) {
-                    Z = paras[i].toFloat();
-                }
-                if (i == 3) {
-                    W = paras[i].toFloat();
-                }
-                if (i == 4) {
-                    U = paras[i].toFloat();
-                }
-                if (i == 5) {
-                    V = paras[i].toFloat();
+            if (last_gcode.count("G28") > 0)
+            {
+                for (int i = 0; i < paras.size(); i++)
+                {
+                    if (i == 0) {
+                        X = home_X = paras[i].toFloat();
+                    }
+                    if (i == 1) {
+                        Y = home_Y = paras[i].toFloat();
+                    }
+                    if (i == 2) {
+                        Z = home_Z = paras[i].toFloat();
+                    }
+                    if (i == 3) {
+                        W = home_W = paras[i].toFloat();
+                    }
+                    if (i == 4) {
+                        U = home_U = paras[i].toFloat();
+                    }
+                    if (i == 5) {
+                        V = home_V = paras[i].toFloat();
+                    }
                 }
             }
-            emit receivedPosition(response);
+
+            else
+            {
+                for (int i = 0; i < paras.size(); i++)
+                {
+                    if (i == 0) {
+                        X = paras[i].toFloat();
+                    }
+                    if (i == 1) {
+                        Y = paras[i].toFloat();
+                    }
+                    if (i == 2) {
+                        Z = paras[i].toFloat();
+                    }
+                    if (i == 3) {
+                        W = paras[i].toFloat();
+                    }
+                    if (i == 4) {
+                        U = paras[i].toFloat();
+                    }
+                    if (i == 5) {
+                        V = paras[i].toFloat();
+                    }
+                }
+            }
+
+            GetInfo();
         }
     }
 }
@@ -153,6 +193,39 @@ void Robot::calMoveTime()
     float xyz = sqrt(pow(xy, 2) + pow(this->Z - this->old_Z, 2));
     this->scurve_tool.p_target = xyz;
     this->scurve_tool.start();
+}
+
+QString Robot::GetInfo()
+{
+    jsonObject["id"] = id;
+    jsonObject["device"] = "robot";
+    jsonObject["home_x"] = home_X;
+    jsonObject["home_y"] = home_Y;
+    jsonObject["home_z"] = home_Z;
+    jsonObject["home_w"] = home_W;
+    jsonObject["home_u"] = home_U;
+    jsonObject["home_v"] = home_V;
+
+    jsonObject["x"] = X;
+    jsonObject["y"] = Y;
+    jsonObject["z"] = Z;
+    jsonObject["w"] = W;
+    jsonObject["u"] = U;
+    jsonObject["v"] = V;
+
+    jsonObject["F"] = F;
+    jsonObject["A"] = A;
+    jsonObject["S"] = S;
+    jsonObject["E"] = E;
+    jsonObject["J"] = J;
+
+    QJsonDocument jsonDocument;
+    jsonDocument.setObject(jsonObject);
+    QString jsonString = jsonDocument.toJson(QJsonDocument::Indented);
+
+    emit infoReady(jsonString);
+
+    return jsonString;
 }
 
 QString Robot::SetInput(int pin)

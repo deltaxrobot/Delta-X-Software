@@ -48,19 +48,19 @@ RobotWindow* RobotManager::CreatNewRobotWindow()
     }
 
     //----- Creat new tab widget in other robot window -------
-    for (int i = 0; i < RobotWindows.size() - 1; i++)
-    {
-        RobotWindows.at(i)->ui->twDeltaManager->setTabText(robotID, robotName);
-        QWidget *newDeltaTab = new QWidget();
-        RobotWindows.at(i)->ui->twDeltaManager->addTab(newDeltaTab, QString("+"));
-    }
+//    for (int i = 0; i < RobotWindows.size() - 1; i++)
+//    {
+//        RobotWindows.at(i)->ui->twDeltaManager->setTabText(robotID, robotName);
+//        QWidget *newDeltaTab = new QWidget();
+//        RobotWindows.at(i)->ui->twDeltaManager->addTab(newDeltaTab, QString("+"));
+//    }
 
     robotWindow->InitTabs();
 
     SubWindowStackedWidget->addWidget(robotWindow);
     SubWindowStackedWidget->setCurrentWidget(robotWindow);
 
-    robotWindow->ui->twDeltaManager->setCurrentIndex(robotID);
+//    robotWindow->ui->twDeltaManager->setCurrentIndex(robotID);
 
     //robotWindow->ConnectDeltaRobot();
 

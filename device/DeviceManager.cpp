@@ -20,8 +20,39 @@ void DeviceManager::AddRobot()
     robot->moveToThread(robotThread);
     connect(robotThread, SIGNAL(started()), robot, SLOT(Run()));
     connect(robot, &Robot::gcodeDone, this, &DeviceManager::DeviceResponded);
+    connect(robot, &Robot::infoReady, this, &DeviceManager::GotDeviceInfo);
 
     robotThread->start();
+}
+
+void DeviceManager::SetDeviceState(int deviceType, bool isOpen)
+{
+    if (deviceType == ROBOT)
+    {
+        if (SelectedRobotID > Robots.count() - 1)
+        {
+            AddRobot();
+        }
+
+        if (isOpen == true)
+            QMetaObject::invokeMethod(Robots[SelectedRobotID], "Connect", Qt::QueuedConnection);
+        else
+            QMetaObject::invokeMethod(Robots[SelectedRobotID], "Disconnect", Qt::QueuedConnection);
+    }
+}
+
+void DeviceManager::RequestDeviceInfo(int deviceType)
+{
+    if (deviceType == ROBOT)
+    {
+        if (SelectedRobotID > Robots.count() - 1)
+        {
+            AddRobot();
+        }
+
+        QMetaObject::invokeMethod(Robots[SelectedRobotID], "GetInfo", Qt::QueuedConnection);
+    }
+
 }
 
 void DeviceManager::SendGcode(int deviceType, QString gcode)

@@ -290,6 +290,11 @@ bool GcodeScript::findExeGcodeAndTransmit()
         return false;
     }
 
+    if(currentLine.contains(";"))
+    {
+        currentLine = currentLine.split(";").at(0);
+    }
+
     //-----------------------------------
     int openBracIndex = currentLine.indexOf('[');
     QString expressInBracket = "";

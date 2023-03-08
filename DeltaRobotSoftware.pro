@@ -45,6 +45,7 @@ SOURCES += main.cpp\
     DrawingWidget.cpp \
     Encoder.cpp \
     FilterWindow.cpp \
+    GcodeHighlighter.cpp \
     GcodeReference.cpp \
     GcodeScript.cpp \
     ImageProcessing.cpp \
@@ -94,6 +95,7 @@ HEADERS  += \
     DrawingWidget.h \
     Encoder.h \
     FilterWindow.h \
+    GcodeHighlighter.h \
     GcodeReference.h \
     GcodeScript.h \
     ImageUnity.h \

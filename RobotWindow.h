@@ -47,6 +47,7 @@
 #include <QComboBox>
 #include "Encoder.h"
 #include "FilterWindow.h"
+#include "GcodeHighlighter.h"
 
 #define JOY_STICK
 
@@ -245,6 +246,8 @@ public:
 //    QMap<QString, QString>* GcodeVariables;
 
 public slots:
+    // ---- View update ----
+    void GetDeviceInfo(QString json);
 
     // ---- Tab ----
     void ChangeDeltaDashboard(int index);
@@ -257,6 +260,7 @@ public slots:
     void NoticeConnected();
 
     void ConfigConnection();
+    void ChangeSelectedRobot(int id);
 
     // ---- Gcode Editor ----
 	void AddNewProgram();
@@ -279,6 +283,7 @@ public slots:
     void ExecuteRequestsFromExternal(QString request);
 
     void AddGcodeLine(QString gcode);
+    void LoadGcodeFromFileToEditor(const QModelIndex &index);
 
     // ---- Robot Controller ----
     void Home();
@@ -438,6 +443,9 @@ public slots:
 #endif
 
 signals:
+    // ---- Device ----
+    void ChangeDeviceState(int deviceType, bool isOpen);
+    // ----
     void GotImage(cv::Mat mat);
     void GotObjects(QList<Object*>* objects);
     void GotResizePara(cv::Size size);
@@ -503,6 +511,10 @@ private:
 
     //----- Event Robot Controller ----
     QString positionEmitter = "";
+
+    // ---- Gcode Editor ----
+    QFileSystemModel explorerModel;
+    GCodeHighlighter *highlighter;
 
 public:
     Ui::RobotWindow *ui;

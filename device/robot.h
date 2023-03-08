@@ -25,10 +25,6 @@ public:
     int ID();
     void SetID(int);
 
-signals:
-    void gcodeDone();
-    void receivedPosition(QString);
-
 public slots:
     QString SendGcode(QString gcode = "G28", bool is_wait = false, int time_out = 10000);
     void ProcessResponse(QString response = "");
@@ -36,16 +32,20 @@ public slots:
     void GoHome();
     void Move(float x, float y, float z, float w, float u, float v, float f, float a, float s, float e, float j, bool sync, float time_offset);
     void MoveStep(QString direction, float step);
+    QString GetInfo();
+
 private:
     QString done_msg;
     QString path_type;
     QString last_gcode;
+    QString now_gcode;
     float path_vel;
     float path_angle;
     float path_rad_angle;
     Device* port;
     Scurve_Interpolator scurve_tool;
     float X, Y, Z, W, U, V, F, A, S, E, J;
+    float home_X, home_Y, home_Z, home_W, home_U, home_V;
     float old_X, old_Y, old_Z;
     QTimer* timer;
     int id;

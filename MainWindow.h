@@ -51,8 +51,8 @@ public:
     QString LastProject = "";
 
 public slots:
-    RobotManager* NewProject_Slot(int index);
-    RobotWindow *AddNewProjectAndrobot(int index);
+    RobotManager* CreateNewProject(int index);
+    RobotWindow *AddNewProjectAndRobot(int index);
     void OpenProjectFromFile();
     void SaveProjectToFile();
     void SelectedTab(QAbstractButton* tabButton);

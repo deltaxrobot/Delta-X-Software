@@ -7,3 +7,4 @@ debug
 *.idx
 .qtc_clangd
 plugin\IndustrialCamera\.qtc_clangd
+code test

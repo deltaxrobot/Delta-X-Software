@@ -27,9 +27,12 @@ public:
     int SelectedRobotID = 0;
 signals:
     void DeviceResponded();
+    void GotDeviceInfo(QString jsonDeviceInfo);
 
 public slots:
     void AddRobot();
+    void SetDeviceState(int deviceType, bool isOpen);
+    void RequestDeviceInfo(int deviceType);
     void SendGcode(int deviceType, QString gcode);
     void SendGcode(QString deviceName, QString gcode);
     void GetCommand(QString cmd);
