@@ -11,6 +11,13 @@ GCodeHighlighter::GCodeHighlighter(QTextDocument *parent) : QSyntaxHighlighter(p
     highlightRule rule = {gcodeRegex, gcodeFormat};
     highlightRules.append(rule);
 
+    QTextCharFormat mcodeFormat;
+    mcodeFormat.setForeground(Qt::black);
+    mcodeFormat.setFontWeight(QFont::Bold);
+    QRegularExpression mcodeRegex("[Mm]\\d{1,3}\\b");
+    rule = {mcodeRegex, mcodeFormat};
+    highlightRules.append(rule);
+
     QTextCharFormat commentFormat;
     commentFormat.setForeground(Qt::darkGreen);
     commentFormat.setFontItalic(true);

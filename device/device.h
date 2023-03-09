@@ -24,7 +24,7 @@ public:
 
 signals:
     void receivedMsg(QString);
-    void gcodeDone();
+    void gcodeDone(QString id, QString response);
     void infoReady(QString infoJson);
 
 public slots:

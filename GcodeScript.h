@@ -28,13 +28,22 @@ public:
     };
 
     QMap<QString, QString> *GcodeVariables = NULL;
-    QVector<GcodeProgram*>* ProgramList = NULL;
 
     QString VariableAddress = "";
     Scurve_Interpolator DeltaXSMoving;
 
+    QString DefaultRobot = "robot";
+
+    void SetGcodeScript(QString gcode);
+    QString GetGcodeScript();
+    void SetProgramPath(QString path);
+    QString GetProgramPath();
+    QString GetProgramName();
+    bool IsRunning();
+
 public slots:
     void ExecuteGcode(QString gcodes, int position, bool isFromGcodeEditor);
+    void GetResponse(QString deviceId, QString respose);
     void TransmitNextGcode();
     void TransmitNextGcode(QList<QString> gcodes, int& order);
     void Stop();
@@ -57,8 +66,15 @@ signals:
     void SendToDevice(QString deviceName, QString gcode);
 
 private:
+    bool isRunning = false;
+    QString gcodeScript = "";
+    QString programPath = "";
+    QString programName = "";
+
     bool isFromGcodeEditor = false;
     bool isFileProgramRunning = false;
+
+    QString transmitDeviceId = DefaultRobot;
 
     QList<QString> gcodeList;
     QList<QString> subGcodeList;
@@ -68,6 +84,8 @@ private:
     int returnSubProPointer[20];
     int returnPointerOrder = -1;
     QString currentLine;
+
+    QString response = "";
 
     bool IsConveyorSync = false;
     float syncStartArea = -100;

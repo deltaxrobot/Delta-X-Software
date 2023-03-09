@@ -9,7 +9,6 @@
 #include <QTimer>
 #include <stdio.h>
 #include <UnityTool.h>
-#include <GcodeProgramManager.h>
 #include <DeltaVisualizer.h>
 #include <qmath.h>
 #include <FilterWindow.h>
@@ -48,6 +47,7 @@
 #include "Encoder.h"
 #include "FilterWindow.h"
 #include "GcodeHighlighter.h"
+#include <QList>
 
 #define JOY_STICK
 
@@ -111,6 +111,9 @@ public:
     void InitCalibration();
     void LoadPlugin();
     void InitParseNames();
+    void InitScriptThread();
+    void AddScriptThread();
+    void LoadScriptThread();
 
     void LoadSettings(QSettings* setting);
     void LoadGeneralSettings(QSettings* setting);
@@ -169,8 +172,7 @@ public:
     QProcess* ExternalScriptProcess;
 
     // ---- Gcode ----
-    GcodeScript* GcodeScriptThread;
-	GcodeProgramManager* DeltaGcodeManager;
+    QList<GcodeScript*> GcodeScripts;
     QTimer* VirtualEncoderTimer;
     QTimer* UIEvent;
 
@@ -263,13 +265,10 @@ public slots:
     void ChangeSelectedRobot(int id);
 
     // ---- Gcode Editor ----
-	void AddNewProgram();
 	void SaveProgram();
 	void ExecuteProgram();
     void ClickExecuteButton(bool val);
-	void ImportGcodeFilesFromComputer();
-	void UploadGcodeFileToServer();
-	void SearchGcodeFile();
+    void ImportGcodeFilesFromComputer();
 
 	void ExecuteSelectPrograms();
     void ExecuteCurrentLine();
@@ -284,16 +283,20 @@ public slots:
 
     void AddGcodeLine(QString gcode);
     void LoadGcodeFromFileToEditor(const QModelIndex &index);
+    void SelectGcodeExplorer();
+    void BackParentExplorer();
+    void CreateNewGcodeFile();
+    void SaveGcodeFile(QString fileName, QString content);
+    void RefreshExplorer();
+    void DeleteGcodeFile();
+
+    void ChangeSelectedEditorThread(int id);
 
     // ---- Robot Controller ----
+    void SetRobotState(bool isHold);
+    void RequestPosition();
     void Home();
-//	void UpdateZLineEditValue(int z);
-//    void UpdateAngleLineEditValue(int w);
-//	void UpdateDeltaPositionFromLineEditValue();
     void UpdatePositionToLabel();
-//    void UpdateTextboxFrom2DControl(float x, float y, float z, float w, float u, float v);
-//    void UpdateTextboxFrom3DControl(float x, float y, float z, float w, float u, float v);
-//    void UpdatePositionControl(float x, float y, float z, float w, float u, float v, float f, float a, float s, float e);
     void UpdatePositionControl(RobotPara robotPara);
     void ReceiveHomePosition(float x, float y, float z, float w, float u, float v);
 	void UpdateVelocity();
@@ -416,8 +419,7 @@ public slots:
     void AddDisplayObjectFromExternalScript(QString msg);
     // ----- Display ----
 
-	void ScaleUI();    
-	void ChangeParentForWidget(bool state);
+    void ScaleUI();
 
     void OpenLoadingPopup();
     void CloseLoadingPopup();

@@ -14,7 +14,7 @@ void DeviceManager::AddRobot()
 {
     qDebug() << "Add robot";
     Robot* robot = new Robot("auto", 115200, false);
-    robot->SetID(Robots.count());
+    robot->SetID(QString("robot") + QString::number(Robots.count()));
     Robots.append(robot);
     QThread* robotThread = new QThread(this);
     robot->moveToThread(robotThread);
@@ -65,9 +65,24 @@ void DeviceManager::SendGcode(int deviceType, QString gcode)
 
 void DeviceManager::SendGcode(QString deviceName, QString gcode)
 {
-    if (deviceName.toLower() == "robot")
+    QRegularExpression re("(\\D+)(\\d+)");
+    QRegularExpressionMatch match = re.match(deviceName);
+
+    QString device = deviceName;
+    int id = -1;
+
+    if (match.hasMatch())
     {
-        SendGcode(ROBOT, gcode);
+        device = match.captured(1);
+        id = match.captured(2).toInt();
+    }
+
+    if (device.toLower() == "robot")
+    {
+        if (id > -1)
+            QMetaObject::invokeMethod(Robots[id], "SendGcode", Qt::QueuedConnection, Q_ARG(QString, gcode));
+        else
+            QMetaObject::invokeMethod(Robots[SelectedRobotID], "SendGcode", Qt::QueuedConnection, Q_ARG(QString, gcode));
     }
 }
 

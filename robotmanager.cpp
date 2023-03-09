@@ -189,7 +189,6 @@ void RobotManager::Run(QStringList robotProgramList)
             QStringList paras = robotGcode.split(':');
             if (robotWindow->Name == paras[0])
             {
-                robotWindow->DeltaGcodeManager->SelectProgram(paras[1]);
                 robotWindow->ExecuteProgram();
             }
         }

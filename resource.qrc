@@ -138,5 +138,12 @@
         <file>icon/icons8_file_52px.png</file>
         <file>icon/icons8_save_52px_1.png</file>
         <file>icon/icons8_view_details_52px.png</file>
+        <file>icon/icons8_refresh_52px.png</file>
+        <file>icon/icons8_close_52px.png</file>
+        <file>icon/icons8_edit_52px.png</file>
+        <file>icon/icons8_my_location_52px_1.png</file>
+        <file>icon/icons8_sleep_52px.png</file>
+        <file>icon/icons8_switch_on_52px.png</file>
+        <file>icon/icons8_switch_off_52px.png</file>
     </qresource>
 </RCC>

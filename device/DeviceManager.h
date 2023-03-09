@@ -26,7 +26,7 @@ public:
 
     int SelectedRobotID = 0;
 signals:
-    void DeviceResponded();
+    void DeviceResponded(QString id, QString response);
     void GotDeviceInfo(QString jsonDeviceInfo);
 
 public slots:

@@ -111,7 +111,7 @@ void CodeEditor::updateLineNumberArea(const QRect &rect, int dy)
 
 void CodeEditor::setLockState(bool state)
 {
-    if (state == true)
+    if (state == false)
         setTextInteractionFlags(Qt::TextBrowserInteraction);
     else
         setTextInteractionFlags(Qt::TextEditorInteraction);

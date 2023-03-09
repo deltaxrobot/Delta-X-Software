@@ -66,11 +66,9 @@ QString Robot::SendGcode(QString gcode, bool is_wait, int time_out)
 }
 
 void Robot::ProcessResponse(QString response) {
-    if (response.count(done_msg) > 0) {
-        emit gcodeDone();
-    }
+    emit gcodeDone(id, response);
 
-    if (now_gcode.count("G28") > 0)
+    if (now_gcode.count("G28") > 0 || now_gcode.count("M85"))
     {
         SendGcode("Position");
     }
@@ -408,12 +406,12 @@ void Robot::SetSyncPath(QString path = "line", float con_vel = 100, float con_an
     path_rad_angle = qDegreesToRadians(con_angle);
 }
 
-int Robot::ID()
+QString Robot::ID()
 {
     return this->id;
 }
 
-void Robot::SetID(int id)
+void Robot::SetID(QString id)
 {
     this->id = id;
 }

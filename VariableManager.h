@@ -33,4 +33,6 @@ private:
     QMap<QString, QString>* varPairs;
 };
 
+
+
 #endif // VARIABLEMANAGER_H

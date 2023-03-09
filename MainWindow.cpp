@@ -502,7 +502,7 @@ void MainWindow::on_cbOperatorProject_currentIndexChanged(int index)
 
     ui->cbOperatorGcodeProgram->clear();
 
-    ui->cbOperatorGcodeProgram->addItems(SoftwareProjectManager->RobotManagers[index]->RobotWindows[0]->DeltaGcodeManager->GetProgramNames());
+//    ui->cbOperatorGcodeProgram->addItems("");
 }
 
 void MainWindow::on_pbStartSystem_clicked()
@@ -523,7 +523,6 @@ void MainWindow::on_pbStartSystem_clicked()
             QStringList paras = robotGcode.split(':');
             if (robotWindow->Name == paras[0])
             {
-                robotWindow->DeltaGcodeManager->SelectProgram(paras[1]);
                 robotWindow->ClickExecuteButton(true);
             }
         }

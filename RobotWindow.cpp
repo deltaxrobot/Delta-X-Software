@@ -138,39 +138,8 @@ void RobotWindow::InitVariables()
     lbLoadingPopup->setMinimumWidth(200);
     lbLoadingPopup->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
     lbLoadingPopup->setStyleSheet("border: 1px solid black;");
-//    lbLoadingPopup->moveToThread(new QThread(this));
-    //connect(lbLoadingPopup->thread(), SIGNAL(finished()), lbLoadingPopup, SLOT(deleteLater()));
-//    connect(lbLoadingPopup->thread(), SIGNAL(started()), lbLoadingPopup, SLOT(show()));
-//    connect(lbLoadingPopup->thread(), SIGNAL(started()), mvLoadingPopup, SLOT(start()));
-//    connect(lbLoadingPopup->thread(), SIGNAL(quit()), lbLoadingPopup, SLOT(hide()));
-//    connect(lbLoadingPopup->thread(), SIGNAL(quit()), mvLoadingPopup, SLOT(stop()));
 
     //---------- Object Detector Init -------------
-
-//    DeltaImageProcesser = new ObjectDetector(this);
-//    DeltaImageProcesser->SetResultScreenPointer(ui->cameraWidget);
-//    DeltaImageProcesser->SetObjectScreenPointer(ui->lbTrackingObject);
-//    DeltaImageProcesser->SetCameraInfoWidget(ui->leFPS, ui->lbCameraState, ui->pbPlayPauseCamera, ui->pbLoadCamera);
-//    DeltaImageProcesser->SetObjectSizePointer(ui->leWRec, ui->leLRec, ui->leHRec);
-//    DeltaImageProcesser->SetObjectErrorPointer(ui->leObjectErrorSize, ui->leTrackingError);
-//    DeltaImageProcesser->SetCalibLinePointer(ui->leRealDistance, ui->leImageDistance);
-//    DeltaImageProcesser->SetScaleRoateEnablePointer(ui->cbScaleRotateTool);
-//    DeltaImageProcesser->SetRealityCalibPointPointer(ui->leRealityPoint1X, ui->leRealityPoint1Y, ui->leRealityPoint2X, ui->leRealityPoint2Y);
-//    DeltaImageProcesser->SetImageCalibPointPointer(ui->leImagePoint1X, ui->leImagePoint1Y, ui->leImagePoint2X, ui->leImagePoint2Y);
-//    DeltaImageProcesser->SetTrackingWidgetPointer(ui->lbTrackingObjectNumber, ui->lbVisibleObjectNumber);
-//    DeltaImageProcesser->CameraScrollArea = ui->saCamera;
-//    DeltaImageProcesser->SetResolutionWidget(ui->leCameraWidth, ui->leCameraHeight);
-//    DeltaImageProcesser->SetDisplayInfoWidget(ui->lbDisplayRatio, ui->lbMatSize);
-//    DeltaImageProcesser->SetXAngleWidget(ui->leXAxisAngle);
-////    DeltaImageProcesser->SetObjectFilterWidget(ui->rbBlobFilter, ui->rbExternalFilter, ui->rbCircleFilter);
-//    DeltaImageProcesser->SetFilterParaWidget(ui->lePythonUrl);
-//    DeltaImageProcesser->cbExternalCamera = ui->cbExternalImageSource;
-//    DeltaImageProcesser->cbImageSourceForExternal = ui->cbImageSource;
-//    DeltaImageProcesser->Encoder1 = Encoder1;
-
-//    DeltaImageProcesser->SetChessboardWidget(ui->leChessWidth, ui->leChessHeight, ui->leChessRealSize, leChessPoints);
-
-
 
     TrackingObjectTable = new ObjectVariableTable(this);
 
@@ -199,11 +168,6 @@ void RobotWindow::InitVariables()
     //------------ UI ----------------
     Delta2DVisualizer->ChangeXY(0, 0);
 
-//    ui->twDeltaGeometry->setTabVisible(0, false);
-//    ui->twModule->setTabVisible(2, false);
-//    ui->gbRelay->setVisible(false);
-//    ui->gbGripper->setVisible(false);
-
     SelectImageProviderOption(0);
 
     //------------------- Linux -----------------
@@ -211,6 +175,8 @@ void RobotWindow::InitVariables()
 
     //------------ Devices --------
     connect(ui->cbSelectedRobot, SIGNAL(currentIndexChanged(int)), this, SLOT(ChangeSelectedRobot(int)));
+    connect(ui->tbDisableRobot, SIGNAL(clicked(bool)), this, SLOT(SetRobotState(bool)));
+    connect(ui->tbRequestPosition, SIGNAL(clicked(bool)), this, SLOT(RequestPosition()));
 
     //----- Process ------
     ExternalScriptProcess = new QProcess(this);
@@ -494,31 +460,9 @@ void RobotWindow::InitGcodeEditorModule()
 //    UpdateVariable("O0_W", QString::number(NULL_NUMBER));
 //    UpdateVariable("O0_L", QString::number(NULL_NUMBER));
 
-    DeltaGcodeManager = new GcodeProgramManager(this, ui->saProgramFiles, ui->wgProgramContainer, ui->pteGcodeArea, ui->pbExecuteGcodes, DeltaConnectionManager, Delta2DVisualizer);
-    DeltaGcodeManager->leGcodeProgramPath = ui->leGcodeProgramPath;
-    DeltaGcodeManager->LoadPrograms();
-
-    GcodeScriptThread = new GcodeScript();
-    GcodeScriptThread->GcodeVariables = SoftwareManager::GetInstance()->ProgramVariableManager->GetMap();
-    GcodeScriptThread->VariableAddress = ProjectName + "." + Name;
-    GcodeScriptThread->ProgramList = DeltaGcodeManager->ProgramList;
-    GcodeScriptThread->moveToThread(new QThread(this));
-
-    connect(GcodeScriptThread->thread(), SIGNAL(finished()), GcodeScriptThread, SLOT(deleteLater()));
-    connect(this, SIGNAL(StopGcodeProgram()), GcodeScriptThread, SLOT(Stop()));
-    connect(this, SIGNAL(RunGcodeProgram(QString, int, bool)), GcodeScriptThread, SLOT(ExecuteGcode(QString, int, bool)));
-//    connect(DeltaConnectionManager, SIGNAL(GcodeDone()), GcodeScriptThread, SLOT(TransmitNextGcode()));
-    connect(DeviceManagerInstance, SIGNAL(DeviceResponded()), GcodeScriptThread, SLOT(TransmitNextGcode()));
-    connect(DeltaConnectionManager, SIGNAL(FailTransmit()), GcodeScriptThread, SLOT(TransmitNextGcode()));
-
-    connect(GcodeScriptThread, SIGNAL(Moved(int)), this, SLOT(HighLineCurrentLine(int)));
-//    connect(GcodeScriptThread, &GcodeScript::SendGcodeToDevice, DeltaConnectionManager, &ConnectionManager::SendGcode);
-    connect(GcodeScriptThread, SIGNAL(SendGcodeToDevice(QString, QString)), DeviceManagerInstance, SLOT(SendGcode(QString, QString)));
-    connect(GcodeScriptThread, &GcodeScript::Finished, [=](){ ui->pbExecuteGcodes->setChecked(false);});
-    connect(GcodeScriptThread, SIGNAL(SendGcodeToDevice(QString, QString)), this, SLOT(UpdateGcodeValueToDeviceUI(QString, QString)));
-    connect(GcodeScriptThread, SIGNAL(SaveVariable(QString, QString)), this, SLOT(UpdateVariable(QString, QString)));
-
-    GcodeScriptThread->thread()->start();
+    // ------- Script ---------
+    InitScriptThread();
+    connect(ui->cbProgramThreadID, SIGNAL(currentIndexChanged(int)), this, SLOT(ChangeSelectedEditorThread(int)));
 
     //----- Gcode Editor -----
     highlighter = new GCodeHighlighter(ui->pteGcodeArea->document());
@@ -531,6 +475,8 @@ void RobotWindow::InitGcodeEditorModule()
     if (!dir.exists())
         dir.mkpath(openPath);
 
+    ui->leGcodeExplorer->setText(openPath);
+
     explorerModel.setRootPath(QDir::currentPath());
     ui->tvGcodeExplorer->setModel(&explorerModel);
     ui->tvGcodeExplorer->setRootIndex(explorerModel.index(openPath));
@@ -542,10 +488,28 @@ void RobotWindow::InitGcodeEditorModule()
     ui->tvGcodeExplorer->header()->setSectionHidden(3, true); // Ẩn cột Type
 
     QObject::connect(ui->tvGcodeExplorer, &QTreeView::clicked, this, &RobotWindow::LoadGcodeFromFileToEditor);
+
+    QObject::connect(ui->tbBackGcodeFolder, &QPushButton::clicked, this, &RobotWindow::BackParentExplorer);
+
+    QObject::connect(ui->tbNewGcodeFile, &QPushButton::clicked, this, &RobotWindow::CreateNewGcodeFile);
+
+    QObject::connect(ui->tbOpenGcodePath, &QPushButton::clicked, this, &RobotWindow::SelectGcodeExplorer);
+
+    QObject::connect(ui->tbRefreshExplorer, &QPushButton::clicked, this, &RobotWindow::RefreshExplorer);
+
+    QObject::connect(ui->tbDeleteGcodeFile, &QPushButton::clicked, this, &RobotWindow::DeleteGcodeFile);
+
+
 }
 
 void RobotWindow::InitUIController()
 {
+    connect(ui->pbConnect, &QPushButton::clicked, this, [=]()
+    {
+        OpenLoadingPopup();
+        emit ChangeDeviceState(DeviceManager::ROBOT, (ui->pbConnect->text() == "Connect")?true:false);
+    });
+
     connect(&UpdateUITimer, &QTimer::timeout, this, &RobotWindow::UpdateRobotPositionToUI);
     UpdateUITimer.start(100);
 
@@ -614,58 +578,12 @@ void RobotWindow::InitEvents()
 
 
     // ------------- --------------
-    connect(ui->pbConnect, &QPushButton::clicked, this, [=](){emit ChangeDeviceState(DeviceManager::ROBOT, (ui->pbConnect->text() == "Connect")?true:false);});
-	connect(ui->pbAddNewProgram, SIGNAL(clicked(bool)), this, SLOT(AddNewProgram()));
-	connect(ui->pbRefreshGcodeFiles, SIGNAL(clicked(bool)), DeltaGcodeManager, SLOT(RefreshGcodeProgramList()));
-	connect(ui->pbSortGcodeFiles, SIGNAL(clicked(bool)), DeltaGcodeManager, SLOT(SortProgramFiles()));
-	connect(ui->pbSaveGcode, SIGNAL(clicked(bool)), this, SLOT(SaveProgram()));
-	connect(ui->pbImportGcodeFiles, SIGNAL(clicked(bool)), this, SLOT(ImportGcodeFilesFromComputer()));
-	connect(ui->pbUploadProgram, SIGNAL(clicked(bool)), this, SLOT(UploadGcodeFileToServer()));
-	connect(ui->pbFindGcodeFile, SIGNAL(clicked(bool)), this, SLOT(SearchGcodeFile()));
+    connect(ui->pbSaveGcode, SIGNAL(clicked(bool)), this, SLOT(SaveProgram()));
 
     connect(ui->pbExecuteGcodes, SIGNAL(clicked(bool)), this, SLOT(ExecuteProgram()));
 	connect(ui->pteGcodeArea, SIGNAL(cursorPositionChanged()), this, SLOT(ExecuteCurrentLine()));
-    //connect(ui->cbPositionToExecuteGcode, SIGNAL(currentIndexChanged(const QString &)), DeltaGcodeManager, SLOT(SetStartingGcodeEditorCursor(QString)));
 
     // ------------ Jogging -----------
-//	connect(ui->pbHome, SIGNAL(clicked(bool)), this, SLOT(Home()));
-//	connect(ui->pbW, SIGNAL(clicked(bool)), this, SLOT(UpdateDeltaPositionFromLineEditValue()));
-//	connect(ui->pbZ, SIGNAL(clicked(bool)), this, SLOT(UpdateDeltaPositionFromLineEditValue()));
-//	connect(ui->pbY, SIGNAL(clicked(bool)), this, SLOT(UpdateDeltaPositionFromLineEditValue()));
-//	connect(ui->pbX, SIGNAL(clicked(bool)), this, SLOT(UpdateDeltaPositionFromLineEditValue()));
-//    connect(ui->pbU, SIGNAL(clicked(bool)), this, SLOT(UpdateDeltaPositionFromLineEditValue()));
-//    connect(ui->pbV, SIGNAL(clicked(bool)), this, SLOT(UpdateDeltaPositionFromLineEditValue()));
-//	connect(ui->leW, SIGNAL(returnPressed()), this, SLOT(UpdateDeltaPositionFromLineEditValue()));
-//	connect(ui->leZ, SIGNAL(returnPressed()), this, SLOT(UpdateDeltaPositionFromLineEditValue()));
-//	connect(ui->leY, SIGNAL(returnPressed()), this, SLOT(UpdateDeltaPositionFromLineEditValue()));
-//	connect(ui->leX, SIGNAL(returnPressed()), this, SLOT(UpdateDeltaPositionFromLineEditValue()));
-//    connect(ui->leU, SIGNAL(returnPressed()), this, SLOT(UpdateDeltaPositionFromLineEditValue()));
-//    connect(ui->leV, SIGNAL(returnPressed()), this, SLOT(UpdateDeltaPositionFromLineEditValue()));
-
-//    connect(ui->pbUp, SIGNAL(clicked(bool)), Delta2DVisualizer, SLOT(MoveUp()));
-//    connect(ui->pbDown, SIGNAL(clicked(bool)), Delta2DVisualizer, SLOT(MoveDown()));
-//    connect(ui->pbForward, SIGNAL(clicked(bool)), Delta2DVisualizer, SLOT(MoveForward()));
-//    connect(ui->pbBackward, SIGNAL(clicked(bool)), Delta2DVisualizer, SLOT(MoveBackward()));
-//    connect(ui->pbLeft, SIGNAL(clicked(bool)), Delta2DVisualizer, SLOT(MoveLeft()));
-//    connect(ui->pbRight, SIGNAL(clicked(bool)), Delta2DVisualizer, SLOT(MoveRight()));
-//    connect(ui->leVelocity, SIGNAL(returnPressed()), this, SLOT(UpdateVelocity()));
-//    connect(ui->leAccel, SIGNAL(returnPressed()), this, SLOT(UpdateAccel()));
-//    connect(ui->leStartSpeed, SIGNAL(returnPressed()), this, SLOT(UpdateStartSpeed()));
-//    connect(ui->leEndSpeed, SIGNAL(returnPressed()), this, SLOT(UpdateEndSpeed()));
-
-//    connect(ui->pbsubX, SIGNAL(clicked(bool)), Delta2DVisualizer, SLOT(MoveLeft()));
-//    connect(ui->pbsubY, SIGNAL(clicked(bool)), Delta2DVisualizer, SLOT(MoveBackward()));
-//    connect(ui->pbsubZ, SIGNAL(clicked(bool)), Delta2DVisualizer, SLOT(MoveDown()));
-//    connect(ui->pbsubW, SIGNAL(clicked(bool)), Delta2DVisualizer, SLOT(SubW()));
-//    connect(ui->pbsubU, SIGNAL(clicked(bool)), Delta2DVisualizer, SLOT(SubU()));
-//    connect(ui->pbsubV, SIGNAL(clicked(bool)), Delta2DVisualizer, SLOT(SubV()));
-
-//    connect(ui->pbplusX, SIGNAL(clicked(bool)), Delta2DVisualizer, SLOT(MoveRight()));
-//    connect(ui->pbplusY, SIGNAL(clicked(bool)), Delta2DVisualizer, SLOT(MoveForward()));
-//    connect(ui->pbplusZ, SIGNAL(clicked(bool)), Delta2DVisualizer, SLOT(MoveUp()));
-//    connect(ui->pbplusW, SIGNAL(clicked(bool)), Delta2DVisualizer, SLOT(PlusW()));
-//    connect(ui->pbplusU, SIGNAL(clicked(bool)), Delta2DVisualizer, SLOT(PlusU()));
-//    connect(ui->pbplusV, SIGNAL(clicked(bool)), Delta2DVisualizer, SLOT(PlusV()));
 
     //---------- End effector -----------
 	connect(ui->hsGripperAngle, SIGNAL(valueChanged(int)), this, SLOT(AdjustGripperAngle(int)));
@@ -762,8 +680,7 @@ void RobotWindow::InitEvents()
 
     //------------- Gcode Editor -------------
 	connect(ui->pbFormat, SIGNAL(clicked(bool)), this, SLOT(StandardFormatEditor()));
-    connect(ui->cbLockGcodeEditor, SIGNAL(clicked(bool)), ui->pteGcodeArea, SLOT(setLockState(bool)));
-    connect(ui->pbOpenGcodeProgramPath, SIGNAL(clicked(bool)), DeltaGcodeManager, SLOT(SelectGcodeProgramPath()));
+    connect(ui->cbEditGcodeEditor, SIGNAL(clicked(bool)), ui->pteGcodeArea, SLOT(setLockState(bool)));
 
     //------------ Image Processing -----------
 //	connect(ui->pbFilter, SIGNAL(clicked(bool)), DeltaImageProcesser, SLOT(OpenParameterPanel()));
@@ -850,19 +767,6 @@ void RobotWindow::InitEvents()
 	connect(ui->actionExecute_All, SIGNAL(triggered()), this, SLOT(ExecuteSelectPrograms()));
 	connect(ui->actionExecute, SIGNAL(triggered()), this, SLOT(ExecuteProgram()));
     connect(ui->actionScale, SIGNAL(triggered(bool)), this, SLOT(ScaleUI()));
-
-//    connect(DeltaGcodeManager, SIGNAL(OutOfObjectVariable()), DeltaImageProcesser->ObjectManager1, SLOT(RemoveOldestObject()));
-//    connect(DeltaGcodeManager, SIGNAL(MoveToNewPosition(float, float, float, float, float, float, float, float, float, float)), this, SLOT(UpdatePositionControl(float, float, float, float, float, float, float, float, float, float)));
-    connect(GcodeScriptThread, SIGNAL(DeleteAllObjects()), this, SLOT(ClearObjectsToVariableTable()));
-    connect(GcodeScriptThread, SIGNAL(DeleteObject1()), this, SLOT(DeleteFirstVariable()));
-//	connect(DeltaGcodeManager, SIGNAL(PauseCamera()), DeltaImageProcesser, SLOT(PauseCamera()));
-//	connect(DeltaGcodeManager, SIGNAL(CaptureCamera()), DeltaImageProcesser, SLOT(CaptureCamera()));
-//	connect(DeltaGcodeManager, SIGNAL(ResumeCamera()), DeltaImageProcesser, SLOT(ResumeCamera()));
-
-//	connect(ui->pbPlayPauseCamera, SIGNAL(clicked(bool)), DeltaImageProcesser, SLOT(PlayCamera(bool)));
-//	connect(ui->pbCaptureCamera, SIGNAL(clicked(bool)), DeltaImageProcesser, SLOT(CaptureCamera()));
-
-//    connect(DeltaImageProcesser->ObjectManager1, SIGNAL(NewUpdateObjectPosition(QString)), DeltaGcodeManager, SLOT(SaveGcodeVariable(QString)));
 
     //----------- Drawing -----------
 	connect(ui->pbOpenPicture, SIGNAL(clicked(bool)), DeltaDrawingExporter, SLOT(OpenImage()));
@@ -1049,32 +953,6 @@ void RobotWindow::ExecuteRequestsFromExternal(QString request)
 
 	if (request == "Execute All")
 	{
-//        if (RobotManagerPointer != NULL)
-//        {
-//            foreach(RobotWindow* robot, RobotManagerPointer->RobotWindows)
-//            {
-
-//                if (robot->ui->cbRobotModel->currentText() == "Delta X 1")
-//                {
-//                   robot->DeltaGcodeManager->SelectProgram("X 1 - Shark Tank");
-//                   robot->ui->pbExecuteGcodes->setChecked(true);
-//                   robot->ExecuteProgram();
-//                }
-
-//                if (robot->ui->cbRobotModel->currentText() == "Delta X 2")
-//                {
-//                   robot->DeltaGcodeManager->SelectProgram("X 2 - Shark Tank");
-//                   robot->ui->pbExecuteGcodes->setChecked(true);
-//                   robot->ExecuteProgram();
-//                }
-
-//                if (robot->ui->cbRobotModel->currentText() == "Delta X S")
-//                {
-//                   //DeltaGcodeManager->SelectProgram("X S - Shark Tank");
-//                }
-//            }
-//        }
-
         return;
 	}
 
@@ -1205,19 +1083,151 @@ void RobotWindow::AddGcodeLine(QString gcode)
 
 void RobotWindow::LoadGcodeFromFileToEditor(const QModelIndex &index)
 {
+    if (ui->pbExecuteGcodes->isChecked() == true)
+    {
+        ui->pbExecuteGcodes->click();
+    }
+
+    SaveProgram();
+
     QString filePath = explorerModel.filePath(index);
     QFile file(filePath);
     if (file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
         QTextStream stream(&file);
-        ui->pteGcodeArea->setPlainText(stream.readAll());
+        QString content = stream.readAll();
+        ui->pteGcodeArea->setPlainText(content);
+
+        int threadId = ui->cbProgramThreadID->currentIndex();
+        GcodeScripts.at(threadId)->SetGcodeScript(content);
+        GcodeScripts.at(threadId)->SetProgramPath(filePath);
+
         file.close();
     }
 }
 
-void RobotWindow::ChangeParentForWidget(bool state)
+void RobotWindow::SelectGcodeExplorer()
 {
-	
+    QString path = QApplication::applicationDirPath() + "/gcode";
+
+    QString dir = QFileDialog::getExistingDirectory(this, tr("Open G-code program directory"),
+                                                 path,
+                                                 QFileDialog::ShowDirsOnly
+                                                 | QFileDialog::DontResolveSymlinks);
+
+    if (dir != "")
+    {
+        ui->leGcodeExplorer->setText(dir);
+        ui->tvGcodeExplorer->setRootIndex(explorerModel.index(dir));
+    }
+}
+
+void RobotWindow::BackParentExplorer()
+{
+    QModelIndex rootIndex = ui->tvGcodeExplorer->rootIndex();
+    QModelIndex parentIndex = rootIndex.parent();
+    if (parentIndex.isValid())
+    {
+        ui->tvGcodeExplorer->setRootIndex(parentIndex);
+    }
+}
+
+void RobotWindow::CreateNewGcodeFile()
+{
+    QString fileName = QInputDialog::getText(this, "newgcode.dtgc", "Gcode file name:");
+    // Lấy đường dẫn đến thư mục đang chọn trên dir view
+
+    if (fileName == "")
+        return;
+
+    QString content = "G28\n";
+
+    SaveGcodeFile(fileName, content);
+}
+
+void RobotWindow::SaveGcodeFile(QString fileName, QString content)
+{
+    QModelIndex index = ui->tvGcodeExplorer->currentIndex();
+    QString path = explorerModel.filePath(index);
+
+    if (path == "")
+    {
+        path = ui->leGcodeExplorer->text();
+    }
+    else
+    {
+        QFileInfo fileInfo(path);
+        if (fileInfo.isFile())
+            path = fileInfo.absolutePath();
+    }
+
+    // Tạo đối tượng QFile để tạo file mới và mở file để viết dữ liệu vào
+    QFile file(path + QString("/") + fileName);
+    if (file.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+        QTextStream out(&file);
+        out << content;
+        file.close();
+    }
+}
+
+void RobotWindow::RefreshExplorer()
+{
+    ui->tvGcodeExplorer->setRootIndex(explorerModel.index(ui->leGcodeExplorer->text()));
+}
+
+void RobotWindow::DeleteGcodeFile()
+{
+    int ret = QMessageBox::warning(this, tr("Delete file"), tr("Are you sure you want to delete this file?"), QMessageBox::Yes | QMessageBox::No);
+    if (ret == QMessageBox::Yes)
+    {
+        QString filePath = explorerModel.filePath(ui->tvGcodeExplorer->currentIndex());
+        QFile file(filePath);
+        if (file.remove())
+        {
+
+        } else
+        {
+
+        }
+    } else
+    {
+
+    }
+
+}
+
+void RobotWindow::ChangeSelectedEditorThread(int id)
+{
+    if (ui->cbProgramThreadID->currentText() == "+")
+    {
+        QStandardItemModel *model = qobject_cast<QStandardItemModel*>(ui->cbProgramThreadID->model());
+        QStandardItem *item = model->item(id);
+        item->setText(QString::number(id + 1));
+
+        AddScriptThread();
+
+        ui->cbProgramThreadID->addItem("+");
+    }
+
+    LoadScriptThread();
+}
+
+void RobotWindow::SetRobotState(bool isHold)
+{
+    if (isHold == false)
+    {
+        emit Send(ConnectionManager::ROBOT, "M84");
+    }
+    else
+    {
+        emit Send(ConnectionManager::ROBOT, "M85");
+    }
+}
+
+void RobotWindow::RequestPosition()
+{
+    emit Send(ConnectionManager::ROBOT, "Position");
 }
 
 void RobotWindow::closeEvent(QCloseEvent * event)
@@ -1277,6 +1287,45 @@ void RobotWindow::LoadPlugin()
 void RobotWindow::InitParseNames()
 {
     ParseNames.insert("CameraWindow", "cameraWidget");
+}
+
+void RobotWindow::InitScriptThread()
+{
+    AddScriptThread();
+}
+
+void RobotWindow::AddScriptThread()
+{
+    GcodeScript* GcodeScriptThread = new GcodeScript();
+    GcodeScriptThread->GcodeVariables = SoftwareManager::GetInstance()->ProgramVariableManager->GetMap();
+    GcodeScriptThread->VariableAddress = ProjectName;
+    GcodeScriptThread->moveToThread(new QThread(this));
+
+    connect(GcodeScriptThread->thread(), SIGNAL(finished()), GcodeScriptThread, SLOT(deleteLater()));
+//    connect(this, SIGNAL(StopGcodeProgram()), GcodeScriptThread, SLOT(Stop()));
+//    connect(this, SIGNAL(RunGcodeProgram(QString, int, bool)), GcodeScriptThread, SLOT(ExecuteGcode(QString, int, bool)));
+    connect(DeviceManagerInstance, SIGNAL(DeviceResponded(QString, QString)), GcodeScriptThread, SLOT(GetResponse(QString, QString)));
+    connect(DeltaConnectionManager, SIGNAL(FailTransmit()), GcodeScriptThread, SLOT(TransmitNextGcode()));
+
+    connect(GcodeScriptThread, SIGNAL(Moved(int)), this, SLOT(HighLineCurrentLine(int)));
+    connect(GcodeScriptThread, SIGNAL(SendGcodeToDevice(QString, QString)), DeviceManagerInstance, SLOT(SendGcode(QString, QString)));
+    connect(GcodeScriptThread, &GcodeScript::Finished, [=](){ ui->pbExecuteGcodes->setChecked(false);});
+    connect(GcodeScriptThread, SIGNAL(SendGcodeToDevice(QString, QString)), this, SLOT(UpdateGcodeValueToDeviceUI(QString, QString)));
+    connect(GcodeScriptThread, SIGNAL(SaveVariable(QString, QString)), this, SLOT(UpdateVariable(QString, QString)));
+
+    connect(GcodeScriptThread, SIGNAL(DeleteAllObjects()), this, SLOT(ClearObjectsToVariableTable()));
+    connect(GcodeScriptThread, SIGNAL(DeleteObject1()), this, SLOT(DeleteFirstVariable()));
+
+    GcodeScriptThread->thread()->start();
+
+    GcodeScripts.append(GcodeScriptThread);
+}
+
+void RobotWindow::LoadScriptThread()
+{
+    int threadId = ui->cbProgramThreadID->currentIndex();
+    ui->pteGcodeArea->setPlainText(GcodeScripts.at(threadId)->GetGcodeScript());
+    ui->pbExecuteGcodes->setChecked(GcodeScripts.at(threadId)->IsRunning());
 }
 
 void RobotWindow::LoadSettings(QSettings *setting)
@@ -1345,7 +1394,7 @@ void RobotWindow::LoadGeneralSettings(QSettings *setting)
 
     Name = setting->value("Name").toString();
 
-    GcodeScriptThread->VariableAddress = ProjectName + "." + Name;
+    GcodeScripts.at(ui->cbProgramThreadID->currentIndex())->VariableAddress = ProjectName + "." + Name;
 
 //    ui->twDeltaManager->setTabText(ID, Name);
 
@@ -1500,7 +1549,7 @@ void RobotWindow::LoadTerminalSettings(QSettings *setting)
 void RobotWindow::LoadGcodeEditorSettings(QSettings *setting)
 {
     setting->beginGroup("GcodeEditor");
-    DeltaGcodeManager->LoadSettings(setting);
+
     setting->endGroup();
 }
 
@@ -1754,7 +1803,7 @@ void RobotWindow::SaveTerminalSettings(QSettings *setting)
 void RobotWindow::SaveGcodeEditorSettings(QSettings *setting)
 {
     setting->beginGroup("GcodeEditor");
-    DeltaGcodeManager->SaveSettings(setting);
+
 
     setting->endGroup();
 }
@@ -1917,6 +1966,7 @@ QStringList RobotWindow::GetShareDisplayWidgetNames()
 
 void RobotWindow::GetDeviceInfo(QString json)
 {
+    CloseLoadingPopup();
     QJsonDocument jsonDocument = QJsonDocument::fromJson(json.toUtf8());
     QJsonObject jsonObject = jsonDocument.object();
 
@@ -2027,7 +2077,7 @@ void RobotWindow::StandardFormatEditor()
     QString editorText = ui->pteGcodeArea->toPlainText();
 
     // Xóa các dòng trống không có kí tự
-    editorText.replace(QRegularExpression("(\\n[ \\t]*){2,}"), "\n");
+    editorText.replace(QRegularExpression("(\\n[ \\t]*){3,}"), "\n\n");
 
     // Gộp các kí tự trống liên tiếp thành một kí tự trống
     editorText.replace(QRegularExpression("[\\t ]+"), " ");
@@ -2051,6 +2101,7 @@ void RobotWindow::StandardFormatEditor()
 
     foreach(QString line, lines)
     {
+        line = line.trimmed();
 //        line = line.replace("  ", " ");
 //        oldNumber = "";
 //        while (1)
@@ -2273,18 +2324,23 @@ void RobotWindow::DeleteRobot(int tabIndex)
 //    }
 }
 
-void RobotWindow::AddNewProgram()
-{
-	DeltaGcodeManager->AddNewProgram();
-}
-
 void RobotWindow::SaveProgram()
 {
-	DeltaGcodeManager->SaveGcodeIntoFile();
+    int threadId = ui->cbProgramThreadID->currentIndex();
+    QString name = GcodeScripts.at(threadId)->GetProgramName();
+    GcodeScripts.at(threadId)->SetGcodeScript(ui->pteGcodeArea->toPlainText());
+
+    if (name == "")
+        name = QInputDialog::getText(this, "newgcode.dtgc", "Gcode file name:");
+
+    SaveGcodeFile(name, ui->pteGcodeArea->toPlainText());
 }
 
 void RobotWindow::ExecuteProgram()
 {
+    int threadId = ui->cbProgramThreadID->currentIndex();
+    GcodeScript* currentScript = GcodeScripts.at(threadId);
+
     int startMode = GcodeScript::BEGIN;
 
     if (ui->rbEditorStart->isChecked() != true)
@@ -2294,21 +2350,14 @@ void RobotWindow::ExecuteProgram()
 
     if (ui->pbExecuteGcodes->isChecked() == false)
     {
-        emit StopGcodeProgram();
+        QMetaObject::invokeMethod(currentScript, "Stop", Qt::QueuedConnection);
 
-//        if (DeltaGcodeManager->InsideGcodeProgramManager != NULL)
-//        {
-//            DeltaGcodeManager->InsideGcodeProgramManager->Stop();
-//        }
         return;
     }
 
-	SaveProgram();
+    currentScript->DefaultRobot = QString("robot") + ui->cbSelectedRobot->currentText();
+    QMetaObject::invokeMethod(currentScript, "ExecuteGcode", Qt::QueuedConnection, Q_ARG(QString, ui->pteGcodeArea->toPlainText()), Q_ARG(int, startMode), Q_ARG(bool, true));
 
-//	QString exeGcodes = ui->pteGcodeArea->toPlainText();
-//    DeltaGcodeManager->ExecuteGcode(exeGcodes, true);
-
-    emit RunGcodeProgram(ui->pteGcodeArea->toPlainText(), startMode, true);
 }
 
 void RobotWindow::ClickExecuteButton(bool val)
@@ -2341,50 +2390,8 @@ void RobotWindow::ImportGcodeFilesFromComputer()
 		{
             SoftwareLog(QString("Can't import ") + fileName);
 		}
-	}
+    }
 
-	DeltaGcodeManager->RefreshGcodeProgramList();
-}
-
-void RobotWindow::UploadGcodeFileToServer()
-{
-	QMessageBox::information(this, "Sorry!", "This function is not yet available");
-}
-
-void RobotWindow::SearchGcodeFile()
-{
-	bool ok;
-	QString searchValue = QInputDialog::getText(this, tr("QInputDialog::getText()"), tr("File Name:"), QLineEdit::Normal, "", &ok);
-	if (ok && !searchValue.isEmpty())
-	{
-		QStringList nameList;
-		for(int i = 0; i < DeltaGcodeManager->ProgramList->count(); i++)
-		{
-			nameList.push_back(DeltaGcodeManager->ProgramList->at(i)->GetName().toLower());
-		}		
-
-		QStringList result = nameList.filter(searchValue.toLower(), Qt::CaseSensitive);
-
-		if (result.count() == 0)
-		{
-            SoftwareLog("No result");
-			return;
-		}
-
-		for (int i = 0; i < DeltaGcodeManager->ProgramList->count(); i++)
-		{
-			QString name1 = DeltaGcodeManager->ProgramList->at(i)->GetName().toLower();
-			QString name2 = result.at(0);
-			if (name1 == name2)
-			{
-				QPoint pos = DeltaGcodeManager->ProgramList->at(i)->GetPosition();
-				DeltaGcodeManager->saProgramFilesScrollArea->verticalScrollBar()->setValue(pos.y());
-
-				DeltaGcodeManager->ProgramList->at(i)->SelectNewProgram();
-				return;
-			}
-		}
-	};
 }
 
 void RobotWindow::ExecuteSelectPrograms()
@@ -2422,7 +2429,11 @@ void RobotWindow::ExecuteSelectPrograms()
 
 void RobotWindow::ExecuteCurrentLine()
 {
-	if (ui->cbLockGcodeEditor->isChecked() == false)
+    int threadId = ui->cbProgramThreadID->currentIndex();
+    GcodeScript* currentScript = GcodeScripts.at(threadId);
+
+
+    if (ui->cbEditGcodeEditor->isChecked() == true)
 	{
 		return;
 	}
@@ -2436,10 +2447,17 @@ void RobotWindow::ExecuteCurrentLine()
 	line = cursor.selectedText();
 
     emit RunGcodeProgram(line, GcodeScript::BEGIN, false);
+    QMetaObject::invokeMethod(currentScript, "RunGcodeProgram", Qt::QueuedConnection, Q_ARG(QString, line), Q_ARG(int, GcodeScript::BEGIN), Q_ARG(bool, false));
+
 }
 
 void RobotWindow::HighLineCurrentLine(int pos)
 {
+    int threadId = ui->cbProgramThreadID->currentIndex();
+    GcodeScript* scriptThread = qobject_cast<GcodeScript*>(sender());
+    if (scriptThread != GcodeScripts.at(threadId))
+        return;
+
     QTextCursor textCursor = ui->pteGcodeArea->textCursor();
     textCursor.movePosition(QTextCursor::Start);
     textCursor.movePosition(QTextCursor::Down, QTextCursor::MoveAnchor, pos);
@@ -2717,32 +2735,7 @@ void RobotWindow::MoveRobotFollowObject(float x, float y, float angle)
 
 void RobotWindow::DoADemo()
 {
-    static bool FirstRun1 = true;
-    static bool FirstRun2 = true;
-    static bool FirstRun3 = true;
 
-
-    if (ui->cbRobotModel->currentText() == "Delta X 1" && FirstRun1 == true)
-    {
-       DeltaGcodeManager->SelectProgram("X 1 - Demo");
-    }
-
-    if (ui->cbRobotModel->currentText() == "Delta X 2" && FirstRun1 == true)
-    {
-       DeltaGcodeManager->SelectProgram("X 2 - Demo");
-    }
-
-    if (ui->cbRobotModel->currentText() == "Delta X S" && FirstRun1 == true)
-    {
-       DeltaGcodeManager->SelectProgram("X S - Demo");
-    }
-
-    ui->pbExecuteGcodes->setChecked(true);
-    ExecuteProgram();
-
-//    FirstRun1 = false;
-//    FirstRun2 = false;
-//    FirstRun3 = false;
 }
 
 void RobotWindow::UpdateRobotPositionToUI()
@@ -3888,11 +3881,6 @@ void RobotWindow::ProcessEncoderValue(float value)
     CheckForTurnOffExternalConveyor();
 
     updateEncoderUI();
-
-//    DeltaGcodeManager->SaveGcodeVariable("#EncoderMoving", QString::number(DeltaImageProcesser->MovingDistance));
-//    DeltaGcodeManager->SaveGcodeVariable("#EncoderPosition", QString::number(DeltaImageProcesser->EncoderPosition));
-
-    //    DeltaImageProcesser->UpdateObjectPositionOnConveyor(Encoder1->GetOffset());
 }
 
 void RobotWindow::ProcessProximitySensorValue(int value)
@@ -4241,7 +4229,6 @@ void RobotWindow::Log(QString msg)
 
 void RobotWindow::hideExampleWidgets()
 {
-    ui->frExProgram->setVisible(false);
 }
 
 void RobotWindow::updateEncoderUI()

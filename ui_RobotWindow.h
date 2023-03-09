@@ -72,19 +72,20 @@ public:
     QVBoxLayout *verticalLayout;
     QGridLayout *gridLayout_30;
     QSpacerItem *horizontalSpacer_3;
-    QPushButton *pbExecuteGcodes;
-    QHBoxLayout *horizontalLayout_12;
-    QVBoxLayout *verticalLayout_8;
-    QToolButton *pbFormat;
-    QLabel *lbGcodeProgramingIssues;
-    QVBoxLayout *verticalLayout_9;
-    QToolButton *pbSaveGcode;
-    QSpacerItem *horizontalSpacer_2;
-    QToolButton *pbCreateNewGcode;
     QRadioButton *rbEditorCurrent;
+    QPushButton *pbExecuteGcodes;
+    QLabel *label_7;
     QRadioButton *rbEditorStart;
-    QCheckBox *cbLockGcodeEditor;
+    QSpacerItem *horizontalSpacer_2;
+    QComboBox *cbProgramThreadID;
+    QFrame *frame_10;
+    QHBoxLayout *horizontalLayout_9;
     QToolButton *pbOpenGcodeDocs;
+    QToolButton *pbSaveGcode;
+    QToolButton *pbCreateNewGcode;
+    QToolButton *pbFormat;
+    QSpacerItem *horizontalSpacer_13;
+    QCheckBox *cbEditGcodeEditor;
     QScrollArea *scrollArea;
     QWidget *scrollAreaWidgetContents;
     QVBoxLayout *verticalLayout_30;
@@ -94,35 +95,16 @@ public:
     QVBoxLayout *verticalLayout_2;
     QHBoxLayout *horizontalLayout_8;
     QLabel *label_3;
-    QToolButton *toolButton_3;
-    QLineEdit *lineEdit;
+    QToolButton *tbOpenGcodePath;
+    QLineEdit *leGcodeExplorer;
     QHBoxLayout *horizontalLayout_6;
-    QToolButton *toolButton;
-    QToolButton *toolButton_2;
+    QToolButton *tbBackGcodeFolder;
+    QToolButton *tbNewGcodeFile;
+    QToolButton *tbRefreshExplorer;
+    QToolButton *tbDeleteGcodeFile;
     QSpacerItem *horizontalSpacer_10;
     QTreeView *tvGcodeExplorer;
     QWidget *tab;
-    QScrollArea *saProgramFiles;
-    QWidget *wgProgramContainer;
-    QFrame *frExProgram;
-    QLineEdit *leExProgramName;
-    QPushButton *pbExDeleteProgram;
-    QLabel *lbExGCodeNumber;
-    QWidget *layoutWidget;
-    QVBoxLayout *verticalLayout_13;
-    QPushButton *pbUploadProgram;
-    QPushButton *pbImportGcodeFiles;
-    QWidget *layoutWidget1;
-    QVBoxLayout *verticalLayout_14;
-    QPushButton *pbAddNewProgram;
-    QPushButton *pbRefreshGcodeFiles;
-    QPushButton *pbFindGcodeFile;
-    QPushButton *pbSortGcodeFiles;
-    QWidget *layoutWidget2;
-    QHBoxLayout *horizontalLayout_5;
-    QLabel *lbExGCodeNumber_2;
-    QLineEdit *leGcodeProgramPath;
-    QPushButton *pbOpenGcodeProgramPath;
     QSpacerItem *verticalSpacer_9;
     QWidget *tObjectDetecting;
     QVBoxLayout *verticalLayout_25;
@@ -530,12 +512,14 @@ public:
     QLabel *label_84;
     QComboBox *cbSelectedRobot;
     QLabel *label;
+    QToolButton *tbDisableRobot;
+    QToolButton *tbRequestPosition;
     QSpacerItem *horizontalSpacer_4;
     QFrame *frameRobotConnection;
     QHBoxLayout *horizontalLayout_13;
     QTabWidget *RobotTabWidget;
     QWidget *ConfigurationTab;
-    QWidget *layoutWidget3;
+    QWidget *layoutWidget;
     QGridLayout *gridLayout_31;
     QLabel *label_65;
     QLabel *lbID;
@@ -615,7 +599,7 @@ public:
     QComboBox *cbDivision;
     QToolButton *pbHome;
     QLabel *label_33;
-    QWidget *layoutWidget4;
+    QWidget *layoutWidget1;
     QGridLayout *gridLayout_2;
     QToolButton *pbLeft;
     QToolButton *pbRight;
@@ -642,7 +626,7 @@ public:
     QWidget *wg2D;
     QLabel *label_15;
     QSlider *vsZAdjsution;
-    QWidget *layoutWidget5;
+    QWidget *layoutWidget2;
     QGridLayout *gridLayout_17;
     QLabel *label_72;
     QDial *d5axis;
@@ -1260,7 +1244,13 @@ public:
         gridLayout_30->setObjectName(QString::fromUtf8("gridLayout_30"));
         horizontalSpacer_3 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
-        gridLayout_30->addItem(horizontalSpacer_3, 2, 3, 1, 1);
+        gridLayout_30->addItem(horizontalSpacer_3, 2, 5, 1, 1);
+
+        rbEditorCurrent = new QRadioButton(tGcodeEditor);
+        rbEditorCurrent->setObjectName(QString::fromUtf8("rbEditorCurrent"));
+        rbEditorCurrent->setChecked(false);
+
+        gridLayout_30->addWidget(rbEditorCurrent, 2, 6, 1, 1);
 
         pbExecuteGcodes = new QPushButton(tGcodeEditor);
         pbExecuteGcodes->setObjectName(QString::fromUtf8("pbExecuteGcodes"));
@@ -1282,37 +1272,54 @@ public:
         pbExecuteGcodes->setCheckable(true);
         pbExecuteGcodes->setFlat(false);
 
-        gridLayout_30->addWidget(pbExecuteGcodes, 0, 5, 3, 1);
+        gridLayout_30->addWidget(pbExecuteGcodes, 0, 7, 3, 1);
 
-        horizontalLayout_12 = new QHBoxLayout();
-        horizontalLayout_12->setSpacing(6);
-        horizontalLayout_12->setObjectName(QString::fromUtf8("horizontalLayout_12"));
-        verticalLayout_8 = new QVBoxLayout();
-        verticalLayout_8->setSpacing(6);
-        verticalLayout_8->setObjectName(QString::fromUtf8("verticalLayout_8"));
-        pbFormat = new QToolButton(tGcodeEditor);
-        pbFormat->setObjectName(QString::fromUtf8("pbFormat"));
+        label_7 = new QLabel(tGcodeEditor);
+        label_7->setObjectName(QString::fromUtf8("label_7"));
+
+        gridLayout_30->addWidget(label_7, 0, 0, 1, 1);
+
+        rbEditorStart = new QRadioButton(tGcodeEditor);
+        rbEditorStart->setObjectName(QString::fromUtf8("rbEditorStart"));
+        rbEditorStart->setChecked(true);
+
+        gridLayout_30->addWidget(rbEditorStart, 0, 6, 1, 1);
+
+        horizontalSpacer_2 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        gridLayout_30->addItem(horizontalSpacer_2, 0, 5, 1, 1);
+
+        cbProgramThreadID = new QComboBox(tGcodeEditor);
+        cbProgramThreadID->addItem(QString());
+        cbProgramThreadID->addItem(QString());
+        cbProgramThreadID->setObjectName(QString::fromUtf8("cbProgramThreadID"));
+
+        gridLayout_30->addWidget(cbProgramThreadID, 0, 1, 1, 1);
+
+
+        verticalLayout->addLayout(gridLayout_30);
+
+        frame_10 = new QFrame(tGcodeEditor);
+        frame_10->setObjectName(QString::fromUtf8("frame_10"));
+        frame_10->setMinimumSize(QSize(0, 0));
+        frame_10->setFrameShape(QFrame::StyledPanel);
+        frame_10->setFrameShadow(QFrame::Raised);
+        horizontalLayout_9 = new QHBoxLayout(frame_10);
+        horizontalLayout_9->setSpacing(2);
+        horizontalLayout_9->setContentsMargins(11, 11, 11, 11);
+        horizontalLayout_9->setObjectName(QString::fromUtf8("horizontalLayout_9"));
+        horizontalLayout_9->setContentsMargins(2, 2, 2, 2);
+        pbOpenGcodeDocs = new QToolButton(frame_10);
+        pbOpenGcodeDocs->setObjectName(QString::fromUtf8("pbOpenGcodeDocs"));
         QIcon icon2;
-        icon2.addFile(QString::fromUtf8(":/icon/icons8_view_details_52px.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbFormat->setIcon(icon2);
-        pbFormat->setIconSize(QSize(30, 30));
-        pbFormat->setAutoRaise(true);
+        icon2.addFile(QString::fromUtf8(":/icon/icons8_help_52px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbOpenGcodeDocs->setIcon(icon2);
+        pbOpenGcodeDocs->setIconSize(QSize(32, 32));
+        pbOpenGcodeDocs->setAutoRaise(true);
 
-        verticalLayout_8->addWidget(pbFormat);
+        horizontalLayout_9->addWidget(pbOpenGcodeDocs);
 
-
-        horizontalLayout_12->addLayout(verticalLayout_8);
-
-        lbGcodeProgramingIssues = new QLabel(tGcodeEditor);
-        lbGcodeProgramingIssues->setObjectName(QString::fromUtf8("lbGcodeProgramingIssues"));
-        lbGcodeProgramingIssues->setStyleSheet(QString::fromUtf8("color: rgb(255, 0, 0);"));
-
-        horizontalLayout_12->addWidget(lbGcodeProgramingIssues);
-
-        verticalLayout_9 = new QVBoxLayout();
-        verticalLayout_9->setSpacing(6);
-        verticalLayout_9->setObjectName(QString::fromUtf8("verticalLayout_9"));
-        pbSaveGcode = new QToolButton(tGcodeEditor);
+        pbSaveGcode = new QToolButton(frame_10);
         pbSaveGcode->setObjectName(QString::fromUtf8("pbSaveGcode"));
         sizePolicy.setHeightForWidth(pbSaveGcode->sizePolicy().hasHeightForWidth());
         pbSaveGcode->setSizePolicy(sizePolicy);
@@ -1323,19 +1330,9 @@ public:
         pbSaveGcode->setIconSize(QSize(32, 32));
         pbSaveGcode->setAutoRaise(true);
 
-        verticalLayout_9->addWidget(pbSaveGcode);
+        horizontalLayout_9->addWidget(pbSaveGcode);
 
-
-        horizontalLayout_12->addLayout(verticalLayout_9);
-
-
-        gridLayout_30->addLayout(horizontalLayout_12, 2, 1, 1, 1);
-
-        horizontalSpacer_2 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-
-        gridLayout_30->addItem(horizontalSpacer_2, 0, 3, 1, 1);
-
-        pbCreateNewGcode = new QToolButton(tGcodeEditor);
+        pbCreateNewGcode = new QToolButton(frame_10);
         pbCreateNewGcode->setObjectName(QString::fromUtf8("pbCreateNewGcode"));
         sizePolicy.setHeightForWidth(pbCreateNewGcode->sizePolicy().hasHeightForWidth());
         pbCreateNewGcode->setSizePolicy(sizePolicy);
@@ -1346,50 +1343,47 @@ public:
         pbCreateNewGcode->setIconSize(QSize(32, 32));
         pbCreateNewGcode->setAutoRaise(true);
 
-        gridLayout_30->addWidget(pbCreateNewGcode, 2, 2, 1, 1);
+        horizontalLayout_9->addWidget(pbCreateNewGcode);
 
-        rbEditorCurrent = new QRadioButton(tGcodeEditor);
-        rbEditorCurrent->setObjectName(QString::fromUtf8("rbEditorCurrent"));
-        rbEditorCurrent->setChecked(false);
+        pbFormat = new QToolButton(frame_10);
+        pbFormat->setObjectName(QString::fromUtf8("pbFormat"));
+        QIcon icon5;
+        icon5.addFile(QString::fromUtf8(":/icon/icons8_view_details_52px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbFormat->setIcon(icon5);
+        pbFormat->setIconSize(QSize(32, 32));
+        pbFormat->setAutoRaise(true);
 
-        gridLayout_30->addWidget(rbEditorCurrent, 2, 4, 1, 1);
+        horizontalLayout_9->addWidget(pbFormat);
 
-        rbEditorStart = new QRadioButton(tGcodeEditor);
-        rbEditorStart->setObjectName(QString::fromUtf8("rbEditorStart"));
-        rbEditorStart->setChecked(true);
+        horizontalSpacer_13 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
-        gridLayout_30->addWidget(rbEditorStart, 0, 4, 1, 1);
+        horizontalLayout_9->addItem(horizontalSpacer_13);
 
-        cbLockGcodeEditor = new QCheckBox(tGcodeEditor);
-        cbLockGcodeEditor->setObjectName(QString::fromUtf8("cbLockGcodeEditor"));
+        cbEditGcodeEditor = new QCheckBox(frame_10);
+        cbEditGcodeEditor->setObjectName(QString::fromUtf8("cbEditGcodeEditor"));
         QFont font4;
         font4.setPointSize(8);
         font4.setBold(false);
         font4.setWeight(50);
         font4.setKerning(true);
-        cbLockGcodeEditor->setFont(font4);
+        cbEditGcodeEditor->setFont(font4);
+        QIcon icon6;
+        icon6.addFile(QString::fromUtf8(":/icon/icons8_edit_52px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        cbEditGcodeEditor->setIcon(icon6);
+        cbEditGcodeEditor->setIconSize(QSize(32, 32));
+        cbEditGcodeEditor->setChecked(true);
 
-        gridLayout_30->addWidget(cbLockGcodeEditor, 0, 1, 1, 1);
-
-        pbOpenGcodeDocs = new QToolButton(tGcodeEditor);
-        pbOpenGcodeDocs->setObjectName(QString::fromUtf8("pbOpenGcodeDocs"));
-        QIcon icon5;
-        icon5.addFile(QString::fromUtf8(":/icon/icons8_help_52px.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbOpenGcodeDocs->setIcon(icon5);
-        pbOpenGcodeDocs->setIconSize(QSize(30, 30));
-        pbOpenGcodeDocs->setAutoRaise(true);
-
-        gridLayout_30->addWidget(pbOpenGcodeDocs, 2, 0, 1, 1);
+        horizontalLayout_9->addWidget(cbEditGcodeEditor);
 
 
-        verticalLayout->addLayout(gridLayout_30);
+        verticalLayout->addWidget(frame_10);
 
         scrollArea = new QScrollArea(tGcodeEditor);
         scrollArea->setObjectName(QString::fromUtf8("scrollArea"));
         scrollArea->setWidgetResizable(true);
         scrollAreaWidgetContents = new QWidget();
         scrollAreaWidgetContents->setObjectName(QString::fromUtf8("scrollAreaWidgetContents"));
-        scrollAreaWidgetContents->setGeometry(QRect(0, -264, 583, 1200));
+        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 539, 1200));
         scrollAreaWidgetContents->setMinimumSize(QSize(450, 1200));
         verticalLayout_30 = new QVBoxLayout(scrollAreaWidgetContents);
         verticalLayout_30->setSpacing(6);
@@ -1404,6 +1398,7 @@ public:
         pteGcodeArea->setSizePolicy(sizePolicy4);
         pteGcodeArea->setMinimumSize(QSize(310, 500));
         pteGcodeArea->setFont(font4);
+        pteGcodeArea->setStyleSheet(QString::fromUtf8(""));
         pteGcodeArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
         pteGcodeArea->setReadOnly(false);
         pteGcodeArea->setTextInteractionFlags(Qt::TextEditorInteraction);
@@ -1427,18 +1422,18 @@ public:
 
         horizontalLayout_8->addWidget(label_3);
 
-        toolButton_3 = new QToolButton(tab_3);
-        toolButton_3->setObjectName(QString::fromUtf8("toolButton_3"));
-        QIcon icon6;
-        icon6.addFile(QString::fromUtf8(":/icon/icons8_folder_52px.png"), QSize(), QIcon::Normal, QIcon::Off);
-        toolButton_3->setIcon(icon6);
+        tbOpenGcodePath = new QToolButton(tab_3);
+        tbOpenGcodePath->setObjectName(QString::fromUtf8("tbOpenGcodePath"));
+        QIcon icon7;
+        icon7.addFile(QString::fromUtf8(":/icon/icons8_folder_52px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        tbOpenGcodePath->setIcon(icon7);
 
-        horizontalLayout_8->addWidget(toolButton_3);
+        horizontalLayout_8->addWidget(tbOpenGcodePath);
 
-        lineEdit = new QLineEdit(tab_3);
-        lineEdit->setObjectName(QString::fromUtf8("lineEdit"));
+        leGcodeExplorer = new QLineEdit(tab_3);
+        leGcodeExplorer->setObjectName(QString::fromUtf8("leGcodeExplorer"));
 
-        horizontalLayout_8->addWidget(lineEdit);
+        horizontalLayout_8->addWidget(leGcodeExplorer);
 
 
         verticalLayout_2->addLayout(horizontalLayout_8);
@@ -1446,19 +1441,35 @@ public:
         horizontalLayout_6 = new QHBoxLayout();
         horizontalLayout_6->setSpacing(6);
         horizontalLayout_6->setObjectName(QString::fromUtf8("horizontalLayout_6"));
-        toolButton = new QToolButton(tab_3);
-        toolButton->setObjectName(QString::fromUtf8("toolButton"));
-        QIcon icon7;
-        icon7.addFile(QString::fromUtf8(":/icon/icons8_back_52px.png"), QSize(), QIcon::Normal, QIcon::Off);
-        toolButton->setIcon(icon7);
+        tbBackGcodeFolder = new QToolButton(tab_3);
+        tbBackGcodeFolder->setObjectName(QString::fromUtf8("tbBackGcodeFolder"));
+        QIcon icon8;
+        icon8.addFile(QString::fromUtf8(":/icon/icons8_back_52px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        tbBackGcodeFolder->setIcon(icon8);
 
-        horizontalLayout_6->addWidget(toolButton);
+        horizontalLayout_6->addWidget(tbBackGcodeFolder);
 
-        toolButton_2 = new QToolButton(tab_3);
-        toolButton_2->setObjectName(QString::fromUtf8("toolButton_2"));
-        toolButton_2->setIcon(icon4);
+        tbNewGcodeFile = new QToolButton(tab_3);
+        tbNewGcodeFile->setObjectName(QString::fromUtf8("tbNewGcodeFile"));
+        tbNewGcodeFile->setIcon(icon4);
 
-        horizontalLayout_6->addWidget(toolButton_2);
+        horizontalLayout_6->addWidget(tbNewGcodeFile);
+
+        tbRefreshExplorer = new QToolButton(tab_3);
+        tbRefreshExplorer->setObjectName(QString::fromUtf8("tbRefreshExplorer"));
+        QIcon icon9;
+        icon9.addFile(QString::fromUtf8(":/icon/icons8_refresh_52px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        tbRefreshExplorer->setIcon(icon9);
+
+        horizontalLayout_6->addWidget(tbRefreshExplorer);
+
+        tbDeleteGcodeFile = new QToolButton(tab_3);
+        tbDeleteGcodeFile->setObjectName(QString::fromUtf8("tbDeleteGcodeFile"));
+        QIcon icon10;
+        icon10.addFile(QString::fromUtf8(":/icon/icons8_close_52px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        tbDeleteGcodeFile->setIcon(icon10);
+
+        horizontalLayout_6->addWidget(tbDeleteGcodeFile);
 
         horizontalSpacer_10 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
@@ -1475,165 +1486,6 @@ public:
         tabWidget->addTab(tab_3, QString());
         tab = new QWidget();
         tab->setObjectName(QString::fromUtf8("tab"));
-        saProgramFiles = new QScrollArea(tab);
-        saProgramFiles->setObjectName(QString::fromUtf8("saProgramFiles"));
-        saProgramFiles->setEnabled(true);
-        saProgramFiles->setGeometry(QRect(85, 45, 256, 300));
-        saProgramFiles->setMinimumSize(QSize(240, 300));
-        saProgramFiles->setStyleSheet(QString::fromUtf8(""));
-        saProgramFiles->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
-        saProgramFiles->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-        saProgramFiles->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
-        saProgramFiles->setWidgetResizable(false);
-        wgProgramContainer = new QWidget();
-        wgProgramContainer->setObjectName(QString::fromUtf8("wgProgramContainer"));
-        wgProgramContainer->setGeometry(QRect(0, 0, 279, 589));
-        frExProgram = new QFrame(wgProgramContainer);
-        frExProgram->setObjectName(QString::fromUtf8("frExProgram"));
-        frExProgram->setGeometry(QRect(5, 10, 221, 61));
-        frExProgram->setStyleSheet(QString::fromUtf8("QFrame{\n"
-"border-radius: 2px;\n"
-"border: 1px solid rgb(50, 50, 50)\n"
-"}\n"
-"\n"
-"QLabel{\n"
-"border: none\n"
-"}"));
-        frExProgram->setFrameShape(QFrame::StyledPanel);
-        frExProgram->setFrameShadow(QFrame::Raised);
-        leExProgramName = new QLineEdit(frExProgram);
-        leExProgramName->setObjectName(QString::fromUtf8("leExProgramName"));
-        leExProgramName->setEnabled(true);
-        leExProgramName->setGeometry(QRect(10, 5, 160, 30));
-        leExProgramName->setFont(font3);
-        leExProgramName->setCursor(QCursor(Qt::SizeHorCursor));
-        leExProgramName->setStyleSheet(QString::fromUtf8(""));
-        pbExDeleteProgram = new QPushButton(frExProgram);
-        pbExDeleteProgram->setObjectName(QString::fromUtf8("pbExDeleteProgram"));
-        pbExDeleteProgram->setGeometry(QRect(180, 5, 30, 31));
-        QIcon icon8;
-        icon8.addFile(QString::fromUtf8("C:/Users/Admin/.designer/backup/icon/delete.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbExDeleteProgram->setIcon(icon8);
-        pbExDeleteProgram->setIconSize(QSize(30, 30));
-        pbExDeleteProgram->setAutoDefault(false);
-        pbExDeleteProgram->setFlat(true);
-        lbExGCodeNumber = new QLabel(frExProgram);
-        lbExGCodeNumber->setObjectName(QString::fromUtf8("lbExGCodeNumber"));
-        lbExGCodeNumber->setGeometry(QRect(10, 40, 101, 16));
-        lbExGCodeNumber->setStyleSheet(QString::fromUtf8(""));
-        saProgramFiles->setWidget(wgProgramContainer);
-        layoutWidget = new QWidget(tab);
-        layoutWidget->setObjectName(QString::fromUtf8("layoutWidget"));
-        layoutWidget->setGeometry(QRect(355, 45, 71, 91));
-        verticalLayout_13 = new QVBoxLayout(layoutWidget);
-        verticalLayout_13->setSpacing(6);
-        verticalLayout_13->setContentsMargins(11, 11, 11, 11);
-        verticalLayout_13->setObjectName(QString::fromUtf8("verticalLayout_13"));
-        verticalLayout_13->setContentsMargins(0, 0, 0, 0);
-        pbUploadProgram = new QPushButton(layoutWidget);
-        pbUploadProgram->setObjectName(QString::fromUtf8("pbUploadProgram"));
-        pbUploadProgram->setMinimumSize(QSize(40, 40));
-        QIcon icon9;
-        icon9.addFile(QString::fromUtf8(":/icon/icons8-upload-to-cloud-48.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbUploadProgram->setIcon(icon9);
-        pbUploadProgram->setIconSize(QSize(32, 32));
-        pbUploadProgram->setFlat(false);
-
-        verticalLayout_13->addWidget(pbUploadProgram);
-
-        pbImportGcodeFiles = new QPushButton(layoutWidget);
-        pbImportGcodeFiles->setObjectName(QString::fromUtf8("pbImportGcodeFiles"));
-        pbImportGcodeFiles->setMinimumSize(QSize(40, 40));
-        pbImportGcodeFiles->setIconSize(QSize(32, 32));
-        pbImportGcodeFiles->setFlat(false);
-
-        verticalLayout_13->addWidget(pbImportGcodeFiles);
-
-        layoutWidget1 = new QWidget(tab);
-        layoutWidget1->setObjectName(QString::fromUtf8("layoutWidget1"));
-        layoutWidget1->setGeometry(QRect(5, 45, 66, 183));
-        verticalLayout_14 = new QVBoxLayout(layoutWidget1);
-        verticalLayout_14->setSpacing(6);
-        verticalLayout_14->setContentsMargins(11, 11, 11, 11);
-        verticalLayout_14->setObjectName(QString::fromUtf8("verticalLayout_14"));
-        verticalLayout_14->setContentsMargins(0, 0, 0, 0);
-        pbAddNewProgram = new QPushButton(layoutWidget1);
-        pbAddNewProgram->setObjectName(QString::fromUtf8("pbAddNewProgram"));
-        pbAddNewProgram->setMinimumSize(QSize(40, 40));
-        QIcon icon10;
-        icon10.addFile(QString::fromUtf8(":/icon/new.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbAddNewProgram->setIcon(icon10);
-        pbAddNewProgram->setIconSize(QSize(16, 16));
-        pbAddNewProgram->setFlat(false);
-
-        verticalLayout_14->addWidget(pbAddNewProgram);
-
-        pbRefreshGcodeFiles = new QPushButton(layoutWidget1);
-        pbRefreshGcodeFiles->setObjectName(QString::fromUtf8("pbRefreshGcodeFiles"));
-        pbRefreshGcodeFiles->setMinimumSize(QSize(40, 40));
-        QIcon icon11;
-        icon11.addFile(QString::fromUtf8(":/icon/Restart_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbRefreshGcodeFiles->setIcon(icon11);
-        pbRefreshGcodeFiles->setIconSize(QSize(16, 16));
-        pbRefreshGcodeFiles->setFlat(false);
-
-        verticalLayout_14->addWidget(pbRefreshGcodeFiles);
-
-        pbFindGcodeFile = new QPushButton(layoutWidget1);
-        pbFindGcodeFile->setObjectName(QString::fromUtf8("pbFindGcodeFile"));
-        pbFindGcodeFile->setMinimumSize(QSize(40, 40));
-        QIcon icon12;
-        icon12.addFile(QString::fromUtf8(":/icon/Search_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbFindGcodeFile->setIcon(icon12);
-        pbFindGcodeFile->setIconSize(QSize(16, 16));
-        pbFindGcodeFile->setFlat(false);
-
-        verticalLayout_14->addWidget(pbFindGcodeFile);
-
-        pbSortGcodeFiles = new QPushButton(layoutWidget1);
-        pbSortGcodeFiles->setObjectName(QString::fromUtf8("pbSortGcodeFiles"));
-        pbSortGcodeFiles->setMinimumSize(QSize(40, 40));
-        QIcon icon13;
-        icon13.addFile(QString::fromUtf8(":/icon/Sort_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbSortGcodeFiles->setIcon(icon13);
-        pbSortGcodeFiles->setIconSize(QSize(16, 16));
-        pbSortGcodeFiles->setFlat(false);
-
-        verticalLayout_14->addWidget(pbSortGcodeFiles);
-
-        layoutWidget2 = new QWidget(tab);
-        layoutWidget2->setObjectName(QString::fromUtf8("layoutWidget2"));
-        layoutWidget2->setGeometry(QRect(5, 5, 336, 31));
-        horizontalLayout_5 = new QHBoxLayout(layoutWidget2);
-        horizontalLayout_5->setSpacing(6);
-        horizontalLayout_5->setContentsMargins(11, 11, 11, 11);
-        horizontalLayout_5->setObjectName(QString::fromUtf8("horizontalLayout_5"));
-        horizontalLayout_5->setContentsMargins(0, 0, 0, 0);
-        lbExGCodeNumber_2 = new QLabel(layoutWidget2);
-        lbExGCodeNumber_2->setObjectName(QString::fromUtf8("lbExGCodeNumber_2"));
-        lbExGCodeNumber_2->setStyleSheet(QString::fromUtf8(""));
-
-        horizontalLayout_5->addWidget(lbExGCodeNumber_2);
-
-        leGcodeProgramPath = new QLineEdit(layoutWidget2);
-        leGcodeProgramPath->setObjectName(QString::fromUtf8("leGcodeProgramPath"));
-
-        horizontalLayout_5->addWidget(leGcodeProgramPath);
-
-        pbOpenGcodeProgramPath = new QPushButton(layoutWidget2);
-        pbOpenGcodeProgramPath->setObjectName(QString::fromUtf8("pbOpenGcodeProgramPath"));
-        QSizePolicy sizePolicy5(QSizePolicy::Minimum, QSizePolicy::Minimum);
-        sizePolicy5.setHorizontalStretch(0);
-        sizePolicy5.setVerticalStretch(0);
-        sizePolicy5.setHeightForWidth(pbOpenGcodeProgramPath->sizePolicy().hasHeightForWidth());
-        pbOpenGcodeProgramPath->setSizePolicy(sizePolicy5);
-        pbOpenGcodeProgramPath->setMaximumSize(QSize(30, 16777215));
-        QIcon icon14;
-        icon14.addFile(QString::fromUtf8(":/icon/icons8_folder_64px.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbOpenGcodeProgramPath->setIcon(icon14);
-
-        horizontalLayout_5->addWidget(pbOpenGcodeProgramPath);
-
         tabWidget->addTab(tab, QString());
 
         verticalLayout_30->addWidget(tabWidget);
@@ -1661,7 +1513,7 @@ public:
         saObjectDetecting->setWidgetResizable(true);
         wObjectDetecting = new QWidget();
         wObjectDetecting->setObjectName(QString::fromUtf8("wObjectDetecting"));
-        wObjectDetecting->setGeometry(QRect(0, 0, 605, 4000));
+        wObjectDetecting->setGeometry(QRect(0, 0, 561, 4000));
         wObjectDetecting->setMinimumSize(QSize(100, 4000));
         wObjectDetecting->setStyleSheet(QString::fromUtf8("QWidget#wObjectDetecting\n"
 "{	\n"
@@ -1722,9 +1574,9 @@ public:
         pbFindChessboardTool = new QPushButton(frame_16);
         pbFindChessboardTool->setObjectName(QString::fromUtf8("pbFindChessboardTool"));
         pbFindChessboardTool->setMinimumSize(QSize(30, 30));
-        QIcon icon15;
-        icon15.addFile(QString::fromUtf8(":/icon/icons8_chessboard_48px.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbFindChessboardTool->setIcon(icon15);
+        QIcon icon11;
+        icon11.addFile(QString::fromUtf8(":/icon/icons8_chessboard_48px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbFindChessboardTool->setIcon(icon11);
         pbFindChessboardTool->setIconSize(QSize(24, 24));
         pbFindChessboardTool->setCheckable(true);
         pbFindChessboardTool->setFlat(true);
@@ -1734,9 +1586,9 @@ public:
         pbWarpTool = new QPushButton(frame_16);
         pbWarpTool->setObjectName(QString::fromUtf8("pbWarpTool"));
         pbWarpTool->setMinimumSize(QSize(30, 30));
-        QIcon icon16;
-        icon16.addFile(QString::fromUtf8(":/icon/icons8_opacity_48px.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbWarpTool->setIcon(icon16);
+        QIcon icon12;
+        icon12.addFile(QString::fromUtf8(":/icon/icons8_opacity_48px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbWarpTool->setIcon(icon12);
         pbWarpTool->setIconSize(QSize(24, 24));
         pbWarpTool->setCheckable(true);
         pbWarpTool->setFlat(true);
@@ -1746,9 +1598,9 @@ public:
         pbAreaTool = new QPushButton(frame_16);
         pbAreaTool->setObjectName(QString::fromUtf8("pbAreaTool"));
         pbAreaTool->setMinimumSize(QSize(30, 30));
-        QIcon icon17;
-        icon17.addFile(QString::fromUtf8(":/icon/icons8_rectangle_64px.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbAreaTool->setIcon(icon17);
+        QIcon icon13;
+        icon13.addFile(QString::fromUtf8(":/icon/icons8_rectangle_64px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbAreaTool->setIcon(icon13);
         pbAreaTool->setIconSize(QSize(24, 24));
         pbAreaTool->setCheckable(true);
         pbAreaTool->setFlat(true);
@@ -1758,9 +1610,9 @@ public:
         pbCalibPointTool = new QPushButton(frame_16);
         pbCalibPointTool->setObjectName(QString::fromUtf8("pbCalibPointTool"));
         pbCalibPointTool->setMinimumSize(QSize(30, 30));
-        QIcon icon18;
-        icon18.addFile(QString::fromUtf8(":/icon/icons8_select_48px.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbCalibPointTool->setIcon(icon18);
+        QIcon icon14;
+        icon14.addFile(QString::fromUtf8(":/icon/icons8_select_48px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbCalibPointTool->setIcon(icon14);
         pbCalibPointTool->setIconSize(QSize(24, 24));
         pbCalibPointTool->setCheckable(true);
         pbCalibPointTool->setFlat(true);
@@ -1770,9 +1622,9 @@ public:
         pbMappingPointTool = new QPushButton(frame_16);
         pbMappingPointTool->setObjectName(QString::fromUtf8("pbMappingPointTool"));
         pbMappingPointTool->setMinimumSize(QSize(30, 30));
-        QIcon icon19;
-        icon19.addFile(QString::fromUtf8(":/icon/icons8_target_48px.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbMappingPointTool->setIcon(icon19);
+        QIcon icon15;
+        icon15.addFile(QString::fromUtf8(":/icon/icons8_target_48px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbMappingPointTool->setIcon(icon15);
         pbMappingPointTool->setIconSize(QSize(24, 24));
         pbMappingPointTool->setCheckable(true);
         pbMappingPointTool->setFlat(true);
@@ -1799,9 +1651,9 @@ public:
         pbGetSizeTool = new QToolButton(frame_8);
         pbGetSizeTool->setObjectName(QString::fromUtf8("pbGetSizeTool"));
         pbGetSizeTool->setMinimumSize(QSize(30, 30));
-        QIcon icon20;
-        icon20.addFile(QString::fromUtf8(":/icon/icons8_page_size_64px.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbGetSizeTool->setIcon(icon20);
+        QIcon icon16;
+        icon16.addFile(QString::fromUtf8(":/icon/icons8_page_size_64px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbGetSizeTool->setIcon(icon16);
         pbGetSizeTool->setIconSize(QSize(24, 24));
         pbGetSizeTool->setCheckable(true);
         pbGetSizeTool->setAutoRaise(true);
@@ -1811,9 +1663,9 @@ public:
         pbFilterTool = new QPushButton(frame_8);
         pbFilterTool->setObjectName(QString::fromUtf8("pbFilterTool"));
         pbFilterTool->setMinimumSize(QSize(30, 30));
-        QIcon icon21;
-        icon21.addFile(QString::fromUtf8(":/icon/Slider 2_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbFilterTool->setIcon(icon21);
+        QIcon icon17;
+        icon17.addFile(QString::fromUtf8(":/icon/Slider 2_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbFilterTool->setIcon(icon17);
         pbFilterTool->setIconSize(QSize(24, 24));
         pbFilterTool->setFlat(true);
 
@@ -1822,9 +1674,9 @@ public:
         pbOpenObjectTable = new QPushButton(frame_8);
         pbOpenObjectTable->setObjectName(QString::fromUtf8("pbOpenObjectTable"));
         pbOpenObjectTable->setMinimumSize(QSize(30, 30));
-        QIcon icon22;
-        icon22.addFile(QString::fromUtf8(":/icon/icons8-object-48.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbOpenObjectTable->setIcon(icon22);
+        QIcon icon18;
+        icon18.addFile(QString::fromUtf8(":/icon/icons8-object-48.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbOpenObjectTable->setIcon(icon18);
         pbOpenObjectTable->setIconSize(QSize(24, 24));
         pbOpenObjectTable->setFlat(true);
 
@@ -1833,9 +1685,9 @@ public:
         pbClearObject = new QPushButton(frame_8);
         pbClearObject->setObjectName(QString::fromUtf8("pbClearObject"));
         pbClearObject->setMinimumSize(QSize(30, 30));
-        QIcon icon23;
-        icon23.addFile(QString::fromUtf8(":/icon/Eraser_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbClearObject->setIcon(icon23);
+        QIcon icon19;
+        icon19.addFile(QString::fromUtf8(":/icon/Eraser_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbClearObject->setIcon(icon19);
         pbClearObject->setIconSize(QSize(24, 24));
         pbClearObject->setFlat(true);
 
@@ -1875,11 +1727,11 @@ public:
         cbImageOutput->addItem(QString());
         cbImageOutput->addItem(QString());
         cbImageOutput->setObjectName(QString::fromUtf8("cbImageOutput"));
-        QSizePolicy sizePolicy6(QSizePolicy::Fixed, QSizePolicy::Preferred);
-        sizePolicy6.setHorizontalStretch(0);
-        sizePolicy6.setVerticalStretch(0);
-        sizePolicy6.setHeightForWidth(cbImageOutput->sizePolicy().hasHeightForWidth());
-        cbImageOutput->setSizePolicy(sizePolicy6);
+        QSizePolicy sizePolicy5(QSizePolicy::Fixed, QSizePolicy::Preferred);
+        sizePolicy5.setHorizontalStretch(0);
+        sizePolicy5.setVerticalStretch(0);
+        sizePolicy5.setHeightForWidth(cbImageOutput->sizePolicy().hasHeightForWidth());
+        cbImageOutput->setSizePolicy(sizePolicy5);
         cbImageOutput->setMinimumSize(QSize(90, 0));
 
         verticalLayout_10->addWidget(cbImageOutput);
@@ -1907,11 +1759,11 @@ public:
         splitter->addWidget(gbImageViewer);
         fObjectDetectingTool = new QFrame(splitter);
         fObjectDetectingTool->setObjectName(QString::fromUtf8("fObjectDetectingTool"));
-        QSizePolicy sizePolicy7(QSizePolicy::Expanding, QSizePolicy::Expanding);
-        sizePolicy7.setHorizontalStretch(0);
-        sizePolicy7.setVerticalStretch(30);
-        sizePolicy7.setHeightForWidth(fObjectDetectingTool->sizePolicy().hasHeightForWidth());
-        fObjectDetectingTool->setSizePolicy(sizePolicy7);
+        QSizePolicy sizePolicy6(QSizePolicy::Expanding, QSizePolicy::Expanding);
+        sizePolicy6.setHorizontalStretch(0);
+        sizePolicy6.setVerticalStretch(30);
+        sizePolicy6.setHeightForWidth(fObjectDetectingTool->sizePolicy().hasHeightForWidth());
+        fObjectDetectingTool->setSizePolicy(sizePolicy6);
         fObjectDetectingTool->setMinimumSize(QSize(0, 0));
         fObjectDetectingTool->setFrameShape(QFrame::StyledPanel);
         fObjectDetectingTool->setFrameShadow(QFrame::Raised);
@@ -1989,9 +1841,9 @@ public:
         font6.setBold(false);
         font6.setWeight(50);
         pbLoadCamera->setFont(font6);
-        QIcon icon24;
-        icon24.addFile(QString::fromUtf8(":/icon/webcam.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbLoadCamera->setIcon(icon24);
+        QIcon icon20;
+        icon20.addFile(QString::fromUtf8(":/icon/webcam.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbLoadCamera->setIcon(icon20);
         pbLoadCamera->setIconSize(QSize(30, 30));
         pbLoadCamera->setCheckable(true);
         pbLoadCamera->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
@@ -2010,11 +1862,11 @@ public:
 
         leFPS = new QLineEdit(fWebcamSource);
         leFPS->setObjectName(QString::fromUtf8("leFPS"));
-        QSizePolicy sizePolicy8(QSizePolicy::Expanding, QSizePolicy::Minimum);
-        sizePolicy8.setHorizontalStretch(0);
-        sizePolicy8.setVerticalStretch(0);
-        sizePolicy8.setHeightForWidth(leFPS->sizePolicy().hasHeightForWidth());
-        leFPS->setSizePolicy(sizePolicy8);
+        QSizePolicy sizePolicy7(QSizePolicy::Expanding, QSizePolicy::Minimum);
+        sizePolicy7.setHorizontalStretch(0);
+        sizePolicy7.setVerticalStretch(0);
+        sizePolicy7.setHeightForWidth(leFPS->sizePolicy().hasHeightForWidth());
+        leFPS->setSizePolicy(sizePolicy7);
         leFPS->setMinimumSize(QSize(0, 10));
         leFPS->setMaximumSize(QSize(40, 25));
         leFPS->setFont(font7);
@@ -2031,8 +1883,8 @@ public:
 
         leCameraWidth = new QLineEdit(fWebcamSource);
         leCameraWidth->setObjectName(QString::fromUtf8("leCameraWidth"));
-        sizePolicy8.setHeightForWidth(leCameraWidth->sizePolicy().hasHeightForWidth());
-        leCameraWidth->setSizePolicy(sizePolicy8);
+        sizePolicy7.setHeightForWidth(leCameraWidth->sizePolicy().hasHeightForWidth());
+        leCameraWidth->setSizePolicy(sizePolicy7);
         leCameraWidth->setMinimumSize(QSize(0, 10));
         leCameraWidth->setMaximumSize(QSize(40, 25));
         leCameraWidth->setFont(font7);
@@ -2049,8 +1901,8 @@ public:
 
         leCameraHeight = new QLineEdit(fWebcamSource);
         leCameraHeight->setObjectName(QString::fromUtf8("leCameraHeight"));
-        sizePolicy8.setHeightForWidth(leCameraHeight->sizePolicy().hasHeightForWidth());
-        leCameraHeight->setSizePolicy(sizePolicy8);
+        sizePolicy7.setHeightForWidth(leCameraHeight->sizePolicy().hasHeightForWidth());
+        leCameraHeight->setSizePolicy(sizePolicy7);
         leCameraHeight->setMinimumSize(QSize(0, 10));
         leCameraHeight->setMaximumSize(QSize(40, 25));
         leCameraHeight->setFont(font7);
@@ -2069,11 +1921,11 @@ public:
         pbPlayPauseCamera->setSizePolicy(sizePolicy);
         pbPlayPauseCamera->setMinimumSize(QSize(0, 0));
         pbPlayPauseCamera->setFont(font7);
-        QIcon icon25;
-        icon25.addFile(QString::fromUtf8(":/icon/icons8-play-48.png"), QSize(), QIcon::Normal, QIcon::Off);
-        icon25.addFile(QString::fromUtf8(":/icon/icons8-pause-48.png"), QSize(), QIcon::Normal, QIcon::On);
-        icon25.addFile(QString::fromUtf8("icon/icons8-play-48.png"), QSize(), QIcon::Selected, QIcon::Off);
-        pbPlayPauseCamera->setIcon(icon25);
+        QIcon icon21;
+        icon21.addFile(QString::fromUtf8(":/icon/icons8-play-48.png"), QSize(), QIcon::Normal, QIcon::Off);
+        icon21.addFile(QString::fromUtf8(":/icon/icons8-pause-48.png"), QSize(), QIcon::Normal, QIcon::On);
+        icon21.addFile(QString::fromUtf8("icon/icons8-play-48.png"), QSize(), QIcon::Selected, QIcon::Off);
+        pbPlayPauseCamera->setIcon(icon21);
         pbPlayPauseCamera->setIconSize(QSize(30, 30));
         pbPlayPauseCamera->setCheckable(true);
         pbPlayPauseCamera->setChecked(false);
@@ -2087,9 +1939,9 @@ public:
         pbCaptureCamera->setEnabled(false);
         pbCaptureCamera->setMinimumSize(QSize(0, 0));
         pbCaptureCamera->setFont(font7);
-        QIcon icon26;
-        icon26.addFile(QString::fromUtf8(":/icon/icons8-screenshot-40.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbCaptureCamera->setIcon(icon26);
+        QIcon icon22;
+        icon22.addFile(QString::fromUtf8(":/icon/icons8-screenshot-40.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbCaptureCamera->setIcon(icon22);
         pbCaptureCamera->setIconSize(QSize(30, 30));
         pbCaptureCamera->setCheckable(false);
         pbCaptureCamera->setChecked(false);
@@ -2132,9 +1984,9 @@ public:
         pbLoadTestImage->setMinimumSize(QSize(0, 0));
         pbLoadTestImage->setMaximumSize(QSize(120, 16777215));
         pbLoadTestImage->setFont(font7);
-        QIcon icon27;
-        icon27.addFile(QString::fromUtf8(":/icon/icons8_image_30px_1.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbLoadTestImage->setIcon(icon27);
+        QIcon icon23;
+        icon23.addFile(QString::fromUtf8(":/icon/icons8_image_30px_1.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbLoadTestImage->setIcon(icon23);
         pbLoadTestImage->setIconSize(QSize(30, 30));
         pbLoadTestImage->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
         pbLoadTestImage->setAutoRaise(true);
@@ -2193,8 +2045,8 @@ public:
 
         leImageWidth = new QLineEdit(fPluginSource);
         leImageWidth->setObjectName(QString::fromUtf8("leImageWidth"));
-        sizePolicy8.setHeightForWidth(leImageWidth->sizePolicy().hasHeightForWidth());
-        leImageWidth->setSizePolicy(sizePolicy8);
+        sizePolicy7.setHeightForWidth(leImageWidth->sizePolicy().hasHeightForWidth());
+        leImageWidth->setSizePolicy(sizePolicy7);
         leImageWidth->setMinimumSize(QSize(0, 10));
         leImageWidth->setMaximumSize(QSize(40, 25));
         leImageWidth->setFont(font7);
@@ -2211,8 +2063,8 @@ public:
 
         leImageHeight = new QLineEdit(fPluginSource);
         leImageHeight->setObjectName(QString::fromUtf8("leImageHeight"));
-        sizePolicy8.setHeightForWidth(leImageHeight->sizePolicy().hasHeightForWidth());
-        leImageHeight->setSizePolicy(sizePolicy8);
+        sizePolicy7.setHeightForWidth(leImageHeight->sizePolicy().hasHeightForWidth());
+        leImageHeight->setSizePolicy(sizePolicy7);
         leImageHeight->setMinimumSize(QSize(0, 10));
         leImageHeight->setMaximumSize(QSize(40, 25));
         leImageHeight->setFont(font7);
@@ -2276,8 +2128,11 @@ public:
 
         leChessWidth = new QLineEdit(fCalibStep1);
         leChessWidth->setObjectName(QString::fromUtf8("leChessWidth"));
-        sizePolicy5.setHeightForWidth(leChessWidth->sizePolicy().hasHeightForWidth());
-        leChessWidth->setSizePolicy(sizePolicy5);
+        QSizePolicy sizePolicy8(QSizePolicy::Minimum, QSizePolicy::Minimum);
+        sizePolicy8.setHorizontalStretch(0);
+        sizePolicy8.setVerticalStretch(0);
+        sizePolicy8.setHeightForWidth(leChessWidth->sizePolicy().hasHeightForWidth());
+        leChessWidth->setSizePolicy(sizePolicy8);
         leChessWidth->setMinimumSize(QSize(20, 0));
         leChessWidth->setMaximumSize(QSize(70, 16777215));
 
@@ -2285,8 +2140,8 @@ public:
 
         leChessHeight = new QLineEdit(fCalibStep1);
         leChessHeight->setObjectName(QString::fromUtf8("leChessHeight"));
-        sizePolicy8.setHeightForWidth(leChessHeight->sizePolicy().hasHeightForWidth());
-        leChessHeight->setSizePolicy(sizePolicy8);
+        sizePolicy7.setHeightForWidth(leChessHeight->sizePolicy().hasHeightForWidth());
+        leChessHeight->setSizePolicy(sizePolicy7);
         leChessHeight->setMaximumSize(QSize(70, 16777215));
 
         gridLayout_27->addWidget(leChessHeight, 1, 2, 1, 1);
@@ -2302,7 +2157,7 @@ public:
         pbTransformPerspective->setMinimumSize(QSize(0, 45));
         pbTransformPerspective->setMaximumSize(QSize(150, 16777215));
         pbTransformPerspective->setAutoFillBackground(false);
-        pbTransformPerspective->setIcon(icon16);
+        pbTransformPerspective->setIcon(icon12);
         pbTransformPerspective->setIconSize(QSize(30, 30));
         pbTransformPerspective->setCheckable(true);
         pbTransformPerspective->setChecked(false);
@@ -2321,7 +2176,7 @@ public:
         pbFindChessboard = new QPushButton(fCalibStep1);
         pbFindChessboard->setObjectName(QString::fromUtf8("pbFindChessboard"));
         pbFindChessboard->setMinimumSize(QSize(0, 45));
-        pbFindChessboard->setIcon(icon15);
+        pbFindChessboard->setIcon(icon11);
         pbFindChessboard->setIconSize(QSize(32, 32));
 
         gridLayout_27->addWidget(pbFindChessboard, 2, 0, 1, 2);
@@ -2353,9 +2208,9 @@ public:
         pbImageMapping->setMinimumSize(QSize(0, 45));
         pbImageMapping->setMaximumSize(QSize(200, 16777215));
         pbImageMapping->setAutoFillBackground(false);
-        QIcon icon28;
-        icon28.addFile(QString::fromUtf8(":/icon/icons8_grid_3_48px_1.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbImageMapping->setIcon(icon28);
+        QIcon icon24;
+        icon24.addFile(QString::fromUtf8(":/icon/icons8_grid_3_48px_1.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbImageMapping->setIcon(icon24);
         pbImageMapping->setIconSize(QSize(30, 30));
         pbImageMapping->setCheckable(true);
         pbImageMapping->setChecked(false);
@@ -2408,7 +2263,7 @@ public:
         pbObjectOrigin->setObjectName(QString::fromUtf8("pbObjectOrigin"));
         pbObjectOrigin->setMinimumSize(QSize(0, 0));
         pbObjectOrigin->setMaximumSize(QSize(200, 16777215));
-        pbObjectOrigin->setIcon(icon18);
+        pbObjectOrigin->setIcon(icon14);
 
         gridLayout_26->addWidget(pbObjectOrigin, 7, 4, 1, 1);
 
@@ -2519,16 +2374,16 @@ public:
 
         pushButton = new QPushButton(fVisionObjectFrame);
         pushButton->setObjectName(QString::fromUtf8("pushButton"));
-        sizePolicy5.setHeightForWidth(pushButton->sizePolicy().hasHeightForWidth());
-        pushButton->setSizePolicy(sizePolicy5);
+        sizePolicy8.setHeightForWidth(pushButton->sizePolicy().hasHeightForWidth());
+        pushButton->setSizePolicy(sizePolicy8);
         pushButton->setMaximumSize(QSize(30, 16777215));
 
         horizontalLayout_29->addWidget(pushButton);
 
         pushButton_2 = new QPushButton(fVisionObjectFrame);
         pushButton_2->setObjectName(QString::fromUtf8("pushButton_2"));
-        sizePolicy5.setHeightForWidth(pushButton_2->sizePolicy().hasHeightForWidth());
-        pushButton_2->setSizePolicy(sizePolicy5);
+        sizePolicy8.setHeightForWidth(pushButton_2->sizePolicy().hasHeightForWidth());
+        pushButton_2->setSizePolicy(sizePolicy8);
         pushButton_2->setMaximumSize(QSize(30, 30));
 
         horizontalLayout_29->addWidget(pushButton_2);
@@ -2587,8 +2442,8 @@ public:
 
         leMaxWRec = new QLineEdit(fBlobPanel);
         leMaxWRec->setObjectName(QString::fromUtf8("leMaxWRec"));
-        sizePolicy5.setHeightForWidth(leMaxWRec->sizePolicy().hasHeightForWidth());
-        leMaxWRec->setSizePolicy(sizePolicy5);
+        sizePolicy8.setHeightForWidth(leMaxWRec->sizePolicy().hasHeightForWidth());
+        leMaxWRec->setSizePolicy(sizePolicy8);
         leMaxWRec->setMinimumSize(QSize(0, 20));
         leMaxWRec->setMaximumSize(QSize(50, 16777215));
 
@@ -2596,8 +2451,8 @@ public:
 
         leMaxLRec = new QLineEdit(fBlobPanel);
         leMaxLRec->setObjectName(QString::fromUtf8("leMaxLRec"));
-        sizePolicy5.setHeightForWidth(leMaxLRec->sizePolicy().hasHeightForWidth());
-        leMaxLRec->setSizePolicy(sizePolicy5);
+        sizePolicy8.setHeightForWidth(leMaxLRec->sizePolicy().hasHeightForWidth());
+        leMaxLRec->setSizePolicy(sizePolicy8);
         leMaxLRec->setMinimumSize(QSize(0, 20));
         leMaxLRec->setMaximumSize(QSize(50, 16777215));
 
@@ -2610,8 +2465,8 @@ public:
 
         leWRec = new QLineEdit(fBlobPanel);
         leWRec->setObjectName(QString::fromUtf8("leWRec"));
-        sizePolicy5.setHeightForWidth(leWRec->sizePolicy().hasHeightForWidth());
-        leWRec->setSizePolicy(sizePolicy5);
+        sizePolicy8.setHeightForWidth(leWRec->sizePolicy().hasHeightForWidth());
+        leWRec->setSizePolicy(sizePolicy8);
         leWRec->setMinimumSize(QSize(0, 30));
         leWRec->setMaximumSize(QSize(50, 16777215));
 
@@ -2621,7 +2476,7 @@ public:
         pbObjectRect->setObjectName(QString::fromUtf8("pbObjectRect"));
         pbObjectRect->setMinimumSize(QSize(0, 30));
         pbObjectRect->setStyleSheet(QString::fromUtf8(""));
-        pbObjectRect->setIcon(icon20);
+        pbObjectRect->setIcon(icon16);
         pbObjectRect->setIconSize(QSize(30, 30));
         pbObjectRect->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
         pbObjectRect->setAutoRaise(true);
@@ -2640,8 +2495,8 @@ public:
 
         leMinLRec = new QLineEdit(fBlobPanel);
         leMinLRec->setObjectName(QString::fromUtf8("leMinLRec"));
-        sizePolicy5.setHeightForWidth(leMinLRec->sizePolicy().hasHeightForWidth());
-        leMinLRec->setSizePolicy(sizePolicy5);
+        sizePolicy8.setHeightForWidth(leMinLRec->sizePolicy().hasHeightForWidth());
+        leMinLRec->setSizePolicy(sizePolicy8);
         leMinLRec->setMinimumSize(QSize(0, 20));
         leMinLRec->setMaximumSize(QSize(50, 16777215));
 
@@ -2649,8 +2504,8 @@ public:
 
         leLRec = new QLineEdit(fBlobPanel);
         leLRec->setObjectName(QString::fromUtf8("leLRec"));
-        sizePolicy5.setHeightForWidth(leLRec->sizePolicy().hasHeightForWidth());
-        leLRec->setSizePolicy(sizePolicy5);
+        sizePolicy8.setHeightForWidth(leLRec->sizePolicy().hasHeightForWidth());
+        leLRec->setSizePolicy(sizePolicy8);
         leLRec->setMinimumSize(QSize(0, 30));
         leLRec->setMaximumSize(QSize(50, 16777215));
 
@@ -2660,7 +2515,7 @@ public:
         pbFilter->setObjectName(QString::fromUtf8("pbFilter"));
         pbFilter->setMinimumSize(QSize(0, 30));
         pbFilter->setMaximumSize(QSize(150, 16777215));
-        pbFilter->setIcon(icon21);
+        pbFilter->setIcon(icon17);
 
         gridLayout_14->addWidget(pbFilter, 0, 0, 1, 2);
 
@@ -2677,8 +2532,8 @@ public:
 
         leHRec = new QLineEdit(fBlobPanel);
         leHRec->setObjectName(QString::fromUtf8("leHRec"));
-        sizePolicy5.setHeightForWidth(leHRec->sizePolicy().hasHeightForWidth());
-        leHRec->setSizePolicy(sizePolicy5);
+        sizePolicy8.setHeightForWidth(leHRec->sizePolicy().hasHeightForWidth());
+        leHRec->setSizePolicy(sizePolicy8);
         leHRec->setMinimumSize(QSize(0, 30));
         leHRec->setMaximumSize(QSize(50, 16777215));
 
@@ -2706,8 +2561,8 @@ public:
 
         leMinWRec = new QLineEdit(fBlobPanel);
         leMinWRec->setObjectName(QString::fromUtf8("leMinWRec"));
-        sizePolicy5.setHeightForWidth(leMinWRec->sizePolicy().hasHeightForWidth());
-        leMinWRec->setSizePolicy(sizePolicy5);
+        sizePolicy8.setHeightForWidth(leMinWRec->sizePolicy().hasHeightForWidth());
+        leMinWRec->setSizePolicy(sizePolicy8);
         leMinWRec->setMinimumSize(QSize(0, 20));
         leMinWRec->setMaximumSize(QSize(50, 16777215));
 
@@ -2746,13 +2601,13 @@ public:
         gridLayout_28->setObjectName(QString::fromUtf8("gridLayout_28"));
         pbRunExternalScript = new QPushButton(fExternalScriptPanel);
         pbRunExternalScript->setObjectName(QString::fromUtf8("pbRunExternalScript"));
-        sizePolicy5.setHeightForWidth(pbRunExternalScript->sizePolicy().hasHeightForWidth());
-        pbRunExternalScript->setSizePolicy(sizePolicy5);
+        sizePolicy8.setHeightForWidth(pbRunExternalScript->sizePolicy().hasHeightForWidth());
+        pbRunExternalScript->setSizePolicy(sizePolicy8);
         pbRunExternalScript->setMaximumSize(QSize(30, 16777215));
-        QIcon icon29;
-        icon29.addFile(QString::fromUtf8(":/icon/icons8_play_48px.png"), QSize(), QIcon::Normal, QIcon::Off);
-        icon29.addFile(QString::fromUtf8(":/icon/Pause_96px.png"), QSize(), QIcon::Normal, QIcon::On);
-        pbRunExternalScript->setIcon(icon29);
+        QIcon icon25;
+        icon25.addFile(QString::fromUtf8(":/icon/icons8_play_48px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        icon25.addFile(QString::fromUtf8(":/icon/Pause_96px.png"), QSize(), QIcon::Normal, QIcon::On);
+        pbRunExternalScript->setIcon(icon25);
         pbRunExternalScript->setCheckable(true);
 
         gridLayout_28->addWidget(pbRunExternalScript, 0, 3, 1, 1);
@@ -2792,10 +2647,12 @@ public:
 
         pbExternalScriptOpen = new QPushButton(fExternalScriptPanel);
         pbExternalScriptOpen->setObjectName(QString::fromUtf8("pbExternalScriptOpen"));
-        sizePolicy5.setHeightForWidth(pbExternalScriptOpen->sizePolicy().hasHeightForWidth());
-        pbExternalScriptOpen->setSizePolicy(sizePolicy5);
+        sizePolicy8.setHeightForWidth(pbExternalScriptOpen->sizePolicy().hasHeightForWidth());
+        pbExternalScriptOpen->setSizePolicy(sizePolicy8);
         pbExternalScriptOpen->setMaximumSize(QSize(30, 16777215));
-        pbExternalScriptOpen->setIcon(icon14);
+        QIcon icon26;
+        icon26.addFile(QString::fromUtf8(":/icon/icons8_folder_64px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbExternalScriptOpen->setIcon(icon26);
 
         gridLayout_28->addWidget(pbExternalScriptOpen, 0, 2, 1, 1);
 
@@ -2811,8 +2668,8 @@ public:
 
         pbExternalScriptHelp = new QPushButton(fExternalScriptPanel);
         pbExternalScriptHelp->setObjectName(QString::fromUtf8("pbExternalScriptHelp"));
-        sizePolicy5.setHeightForWidth(pbExternalScriptHelp->sizePolicy().hasHeightForWidth());
-        pbExternalScriptHelp->setSizePolicy(sizePolicy5);
+        sizePolicy8.setHeightForWidth(pbExternalScriptHelp->sizePolicy().hasHeightForWidth());
+        pbExternalScriptHelp->setSizePolicy(sizePolicy8);
         pbExternalScriptHelp->setMaximumSize(QSize(30, 16777215));
 
         gridLayout_28->addWidget(pbExternalScriptHelp, 0, 4, 1, 1);
@@ -2834,8 +2691,8 @@ public:
 
         lePythonUrl = new QLineEdit(fExternalScriptPanel);
         lePythonUrl->setObjectName(QString::fromUtf8("lePythonUrl"));
-        sizePolicy8.setHeightForWidth(lePythonUrl->sizePolicy().hasHeightForWidth());
-        lePythonUrl->setSizePolicy(sizePolicy8);
+        sizePolicy7.setHeightForWidth(lePythonUrl->sizePolicy().hasHeightForWidth());
+        lePythonUrl->setSizePolicy(sizePolicy7);
         lePythonUrl->setMinimumSize(QSize(0, 30));
         lePythonUrl->setMaximumSize(QSize(16777215, 16777215));
 
@@ -2865,8 +2722,8 @@ public:
         gridLayout_29->setObjectName(QString::fromUtf8("gridLayout_29"));
         leCenterThreshold = new QLineEdit(fCirclePanel);
         leCenterThreshold->setObjectName(QString::fromUtf8("leCenterThreshold"));
-        sizePolicy5.setHeightForWidth(leCenterThreshold->sizePolicy().hasHeightForWidth());
-        leCenterThreshold->setSizePolicy(sizePolicy5);
+        sizePolicy8.setHeightForWidth(leCenterThreshold->sizePolicy().hasHeightForWidth());
+        leCenterThreshold->setSizePolicy(sizePolicy8);
         leCenterThreshold->setMinimumSize(QSize(0, 30));
         leCenterThreshold->setMaximumSize(QSize(50, 16777215));
 
@@ -2878,8 +2735,8 @@ public:
 
         leEdgeThreshold = new QLineEdit(fCirclePanel);
         leEdgeThreshold->setObjectName(QString::fromUtf8("leEdgeThreshold"));
-        sizePolicy5.setHeightForWidth(leEdgeThreshold->sizePolicy().hasHeightForWidth());
-        leEdgeThreshold->setSizePolicy(sizePolicy5);
+        sizePolicy8.setHeightForWidth(leEdgeThreshold->sizePolicy().hasHeightForWidth());
+        leEdgeThreshold->setSizePolicy(sizePolicy8);
         leEdgeThreshold->setMinimumSize(QSize(0, 30));
         leEdgeThreshold->setMaximumSize(QSize(50, 16777215));
 
@@ -2902,8 +2759,8 @@ public:
 
         leMaxRadius = new QLineEdit(fCirclePanel);
         leMaxRadius->setObjectName(QString::fromUtf8("leMaxRadius"));
-        sizePolicy5.setHeightForWidth(leMaxRadius->sizePolicy().hasHeightForWidth());
-        leMaxRadius->setSizePolicy(sizePolicy5);
+        sizePolicy8.setHeightForWidth(leMaxRadius->sizePolicy().hasHeightForWidth());
+        leMaxRadius->setSizePolicy(sizePolicy8);
         leMaxRadius->setMinimumSize(QSize(0, 30));
         leMaxRadius->setMaximumSize(QSize(50, 16777215));
 
@@ -2921,8 +2778,8 @@ public:
 
         leMinRadius = new QLineEdit(fCirclePanel);
         leMinRadius->setObjectName(QString::fromUtf8("leMinRadius"));
-        sizePolicy5.setHeightForWidth(leMinRadius->sizePolicy().hasHeightForWidth());
-        leMinRadius->setSizePolicy(sizePolicy5);
+        sizePolicy8.setHeightForWidth(leMinRadius->sizePolicy().hasHeightForWidth());
+        leMinRadius->setSizePolicy(sizePolicy8);
         leMinRadius->setMinimumSize(QSize(0, 30));
         leMinRadius->setMaximumSize(QSize(50, 16777215));
 
@@ -2983,7 +2840,7 @@ public:
         pbViewDataObjects->setMinimumSize(QSize(150, 30));
         pbViewDataObjects->setMaximumSize(QSize(200, 16777215));
         pbViewDataObjects->setStyleSheet(QString::fromUtf8(""));
-        pbViewDataObjects->setIcon(icon22);
+        pbViewDataObjects->setIcon(icon18);
 
         horizontalLayout_25->addWidget(pbViewDataObjects);
 
@@ -2991,7 +2848,7 @@ public:
         pbClearDetectObjects->setObjectName(QString::fromUtf8("pbClearDetectObjects"));
         pbClearDetectObjects->setMinimumSize(QSize(150, 30));
         pbClearDetectObjects->setMaximumSize(QSize(200, 16777215));
-        pbClearDetectObjects->setIcon(icon23);
+        pbClearDetectObjects->setIcon(icon19);
 
         horizontalLayout_25->addWidget(pbClearDetectObjects);
 
@@ -3453,8 +3310,8 @@ public:
 
         pbGetConveyorPoint1X = new QPushButton(frame_11);
         pbGetConveyorPoint1X->setObjectName(QString::fromUtf8("pbGetConveyorPoint1X"));
-        sizePolicy5.setHeightForWidth(pbGetConveyorPoint1X->sizePolicy().hasHeightForWidth());
-        pbGetConveyorPoint1X->setSizePolicy(sizePolicy5);
+        sizePolicy8.setHeightForWidth(pbGetConveyorPoint1X->sizePolicy().hasHeightForWidth());
+        pbGetConveyorPoint1X->setSizePolicy(sizePolicy8);
         pbGetConveyorPoint1X->setMaximumSize(QSize(50, 16777215));
         pbGetConveyorPoint1X->setFlat(true);
 
@@ -3462,8 +3319,8 @@ public:
 
         pbGetConveyorPoint1Y = new QPushButton(frame_11);
         pbGetConveyorPoint1Y->setObjectName(QString::fromUtf8("pbGetConveyorPoint1Y"));
-        sizePolicy5.setHeightForWidth(pbGetConveyorPoint1Y->sizePolicy().hasHeightForWidth());
-        pbGetConveyorPoint1Y->setSizePolicy(sizePolicy5);
+        sizePolicy8.setHeightForWidth(pbGetConveyorPoint1Y->sizePolicy().hasHeightForWidth());
+        pbGetConveyorPoint1Y->setSizePolicy(sizePolicy8);
         pbGetConveyorPoint1Y->setMaximumSize(QSize(50, 16777215));
         pbGetConveyorPoint1Y->setFlat(true);
 
@@ -3471,8 +3328,8 @@ public:
 
         pbGetConveyorPoint2X = new QPushButton(frame_11);
         pbGetConveyorPoint2X->setObjectName(QString::fromUtf8("pbGetConveyorPoint2X"));
-        sizePolicy5.setHeightForWidth(pbGetConveyorPoint2X->sizePolicy().hasHeightForWidth());
-        pbGetConveyorPoint2X->setSizePolicy(sizePolicy5);
+        sizePolicy8.setHeightForWidth(pbGetConveyorPoint2X->sizePolicy().hasHeightForWidth());
+        pbGetConveyorPoint2X->setSizePolicy(sizePolicy8);
         pbGetConveyorPoint2X->setMaximumSize(QSize(50, 16777215));
         pbGetConveyorPoint2X->setFlat(true);
 
@@ -3480,8 +3337,8 @@ public:
 
         pbGetConveyorPoint2Y = new QPushButton(frame_11);
         pbGetConveyorPoint2Y->setObjectName(QString::fromUtf8("pbGetConveyorPoint2Y"));
-        sizePolicy5.setHeightForWidth(pbGetConveyorPoint2Y->sizePolicy().hasHeightForWidth());
-        pbGetConveyorPoint2Y->setSizePolicy(sizePolicy5);
+        sizePolicy8.setHeightForWidth(pbGetConveyorPoint2Y->sizePolicy().hasHeightForWidth());
+        pbGetConveyorPoint2Y->setSizePolicy(sizePolicy8);
         pbGetConveyorPoint2Y->setMaximumSize(QSize(50, 16777215));
         pbGetConveyorPoint2Y->setFlat(true);
 
@@ -3604,7 +3461,7 @@ public:
         scrollArea_6->setWidgetResizable(true);
         scrollAreaWidgetContents_6 = new QWidget();
         scrollAreaWidgetContents_6->setObjectName(QString::fromUtf8("scrollAreaWidgetContents_6"));
-        scrollAreaWidgetContents_6->setGeometry(QRect(0, 0, 583, 1600));
+        scrollAreaWidgetContents_6->setGeometry(QRect(0, 0, 539, 1600));
         scrollAreaWidgetContents_6->setMinimumSize(QSize(450, 1600));
         scrollAreaWidgetContents_6->setMaximumSize(QSize(16777215, 16777215));
         verticalLayout_38 = new QVBoxLayout(scrollAreaWidgetContents_6);
@@ -3616,8 +3473,8 @@ public:
         verticalLayout_37->setObjectName(QString::fromUtf8("verticalLayout_37"));
         frame_4 = new QFrame(scrollAreaWidgetContents_6);
         frame_4->setObjectName(QString::fromUtf8("frame_4"));
-        sizePolicy5.setHeightForWidth(frame_4->sizePolicy().hasHeightForWidth());
-        frame_4->setSizePolicy(sizePolicy5);
+        sizePolicy8.setHeightForWidth(frame_4->sizePolicy().hasHeightForWidth());
+        frame_4->setSizePolicy(sizePolicy8);
         frame_4->setMinimumSize(QSize(0, 75));
         frame_4->setMaximumSize(QSize(16777215, 16777215));
         frame_4->setStyleSheet(QString::fromUtf8("QFrame\n"
@@ -3658,9 +3515,9 @@ public:
         font12.setWeight(50);
         pbOpenPicture->setFont(font12);
         pbOpenPicture->setLayoutDirection(Qt::LeftToRight);
-        QIcon icon30;
-        icon30.addFile(QString::fromUtf8(":/icon/icons8_image_96px.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbOpenPicture->setIcon(icon30);
+        QIcon icon27;
+        icon27.addFile(QString::fromUtf8(":/icon/icons8_image_96px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbOpenPicture->setIcon(icon27);
         pbOpenPicture->setIconSize(QSize(64, 64));
         pbOpenPicture->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
         pbOpenPicture->setAutoRaise(false);
@@ -3829,9 +3686,9 @@ public:
         pbPainting->setMinimumSize(QSize(0, 0));
         pbPainting->setMaximumSize(QSize(16777215, 16777215));
         pbPainting->setFont(font12);
-        QIcon icon31;
-        icon31.addFile(QString::fromUtf8(":/icon/icons8_pencil_drawing_96px.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbPainting->setIcon(icon31);
+        QIcon icon28;
+        icon28.addFile(QString::fromUtf8(":/icon/icons8_pencil_drawing_96px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbPainting->setIcon(icon28);
         pbPainting->setIconSize(QSize(64, 64));
         pbPainting->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
         pbPainting->setAutoRaise(false);
@@ -3903,8 +3760,8 @@ public:
 
         frame_3 = new QFrame(scrollAreaWidgetContents_6);
         frame_3->setObjectName(QString::fromUtf8("frame_3"));
-        sizePolicy5.setHeightForWidth(frame_3->sizePolicy().hasHeightForWidth());
-        frame_3->setSizePolicy(sizePolicy5);
+        sizePolicy8.setHeightForWidth(frame_3->sizePolicy().hasHeightForWidth());
+        frame_3->setSizePolicy(sizePolicy8);
         frame_3->setMinimumSize(QSize(300, 300));
         frame_3->setMaximumSize(QSize(300, 300));
         frame_3->setFrameShape(QFrame::StyledPanel);
@@ -4073,9 +3930,9 @@ public:
         pbDrawLine->setSizePolicy(sizePolicy12);
         pbDrawLine->setMinimumSize(QSize(0, 0));
         pbDrawLine->setMaximumSize(QSize(70, 16777215));
-        QIcon icon32;
-        icon32.addFile(QString::fromUtf8(":/icon/Line_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbDrawLine->setIcon(icon32);
+        QIcon icon29;
+        icon29.addFile(QString::fromUtf8(":/icon/Line_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbDrawLine->setIcon(icon29);
         pbDrawLine->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
         pbDrawLine->setAutoRaise(true);
 
@@ -4087,9 +3944,9 @@ public:
         pbDrawRectangle->setSizePolicy(sizePolicy12);
         pbDrawRectangle->setMinimumSize(QSize(0, 0));
         pbDrawRectangle->setMaximumSize(QSize(70, 16777215));
-        QIcon icon33;
-        icon33.addFile(QString::fromUtf8(":/icon/Rectangular_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbDrawRectangle->setIcon(icon33);
+        QIcon icon30;
+        icon30.addFile(QString::fromUtf8(":/icon/Rectangular_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbDrawRectangle->setIcon(icon30);
         pbDrawRectangle->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
         pbDrawRectangle->setAutoRaise(true);
 
@@ -4101,9 +3958,9 @@ public:
         pbZoomIn->setSizePolicy(sizePolicy12);
         pbZoomIn->setMinimumSize(QSize(0, 0));
         pbZoomIn->setMaximumSize(QSize(70, 16777215));
-        QIcon icon34;
-        icon34.addFile(QString::fromUtf8(":/icon/Zoom In_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbZoomIn->setIcon(icon34);
+        QIcon icon31;
+        icon31.addFile(QString::fromUtf8(":/icon/Zoom In_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbZoomIn->setIcon(icon31);
         pbZoomIn->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
         pbZoomIn->setAutoRaise(true);
 
@@ -4115,9 +3972,9 @@ public:
         pbCursor->setSizePolicy(sizePolicy12);
         pbCursor->setMinimumSize(QSize(0, 0));
         pbCursor->setMaximumSize(QSize(70, 16777215));
-        QIcon icon35;
-        icon35.addFile(QString::fromUtf8(":/icon/Cursor-color_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbCursor->setIcon(icon35);
+        QIcon icon32;
+        icon32.addFile(QString::fromUtf8(":/icon/Cursor-color_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbCursor->setIcon(icon32);
         pbCursor->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
         pbCursor->setAutoRaise(true);
 
@@ -4129,9 +3986,9 @@ public:
         pbDrawArc->setSizePolicy(sizePolicy12);
         pbDrawArc->setMinimumSize(QSize(0, 0));
         pbDrawArc->setMaximumSize(QSize(70, 16777215));
-        QIcon icon36;
-        icon36.addFile(QString::fromUtf8(":/icon/Circled Notch_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbDrawArc->setIcon(icon36);
+        QIcon icon33;
+        icon33.addFile(QString::fromUtf8(":/icon/Circled Notch_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbDrawArc->setIcon(icon33);
         pbDrawArc->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
         pbDrawArc->setAutoRaise(true);
 
@@ -4143,9 +4000,9 @@ public:
         pbDrawCircle->setSizePolicy(sizePolicy12);
         pbDrawCircle->setMinimumSize(QSize(0, 0));
         pbDrawCircle->setMaximumSize(QSize(70, 16777215));
-        QIcon icon37;
-        icon37.addFile(QString::fromUtf8(":/icon/Circle_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbDrawCircle->setIcon(icon37);
+        QIcon icon34;
+        icon34.addFile(QString::fromUtf8(":/icon/Circle_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbDrawCircle->setIcon(icon34);
         pbDrawCircle->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
         pbDrawCircle->setAutoRaise(true);
 
@@ -4157,9 +4014,9 @@ public:
         pbZoomOut->setSizePolicy(sizePolicy12);
         pbZoomOut->setMinimumSize(QSize(0, 0));
         pbZoomOut->setMaximumSize(QSize(70, 16777215));
-        QIcon icon38;
-        icon38.addFile(QString::fromUtf8(":/icon/Zoom Out_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbZoomOut->setIcon(icon38);
+        QIcon icon35;
+        icon35.addFile(QString::fromUtf8(":/icon/Zoom Out_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbZoomOut->setIcon(icon35);
         pbZoomOut->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
         pbZoomOut->setAutoRaise(true);
 
@@ -4204,9 +4061,9 @@ public:
         pbExportDrawingGcodes->setMinimumSize(QSize(185, 65));
         pbExportDrawingGcodes->setMaximumSize(QSize(16777215, 16777215));
         pbExportDrawingGcodes->setFont(font12);
-        QIcon icon39;
-        icon39.addFile(QString::fromUtf8(":/icon/icons8_code_96px.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbExportDrawingGcodes->setIcon(icon39);
+        QIcon icon36;
+        icon36.addFile(QString::fromUtf8(":/icon/icons8_code_96px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbExportDrawingGcodes->setIcon(icon36);
         pbExportDrawingGcodes->setIconSize(QSize(64, 64));
         pbExportDrawingGcodes->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
         pbExportDrawingGcodes->setAutoRaise(false);
@@ -4419,7 +4276,7 @@ public:
         scrollArea_7->setWidgetResizable(true);
         scrollAreaWidgetContents_7 = new QWidget();
         scrollAreaWidgetContents_7->setObjectName(QString::fromUtf8("scrollAreaWidgetContents_7"));
-        scrollAreaWidgetContents_7->setGeometry(QRect(0, 0, 604, 519));
+        scrollAreaWidgetContents_7->setGeometry(QRect(0, 0, 560, 519));
         verticalLayout_27 = new QVBoxLayout(scrollAreaWidgetContents_7);
         verticalLayout_27->setSpacing(6);
         verticalLayout_27->setContentsMargins(11, 11, 11, 11);
@@ -4507,7 +4364,7 @@ public:
         scrollArea_2->setWidgetResizable(true);
         wgJoggingScrollWidget = new QWidget();
         wgJoggingScrollWidget->setObjectName(QString::fromUtf8("wgJoggingScrollWidget"));
-        wgJoggingScrollWidget->setGeometry(QRect(0, 0, 495, 800));
+        wgJoggingScrollWidget->setGeometry(QRect(0, 0, 582, 800));
         wgJoggingScrollWidget->setMinimumSize(QSize(0, 800));
         wgJoggingScrollWidget->setMaximumSize(QSize(16777215, 16777215));
         verticalLayout_5 = new QVBoxLayout(wgJoggingScrollWidget);
@@ -4517,8 +4374,8 @@ public:
         verticalLayout_5->setContentsMargins(5, 10, 5, 0);
         groupRobotConnection = new QFrame(wgJoggingScrollWidget);
         groupRobotConnection->setObjectName(QString::fromUtf8("groupRobotConnection"));
-        sizePolicy5.setHeightForWidth(groupRobotConnection->sizePolicy().hasHeightForWidth());
-        groupRobotConnection->setSizePolicy(sizePolicy5);
+        sizePolicy8.setHeightForWidth(groupRobotConnection->sizePolicy().hasHeightForWidth());
+        groupRobotConnection->setSizePolicy(sizePolicy8);
         groupRobotConnection->setMaximumSize(QSize(16777215, 16777215));
         groupRobotConnection->setFont(font7);
         groupRobotConnection->setStyleSheet(QString::fromUtf8(""));
@@ -4550,10 +4407,10 @@ public:
 "	background-color: rgb(41, 155, 255);\n"
 "}\n"
 ""));
-        QIcon icon40;
-        icon40.addFile(QString::fromUtf8("C:/Users/Admin/.designer/backup/icon/disconnected.png"), QSize(), QIcon::Normal, QIcon::Off);
-        icon40.addFile(QString::fromUtf8("C:/Users/Admin/.designer/backup/icon/connected.png"), QSize(), QIcon::Normal, QIcon::On);
-        pbConnect->setIcon(icon40);
+        QIcon icon37;
+        icon37.addFile(QString::fromUtf8("C:/Users/Admin/.designer/backup/icon/disconnected.png"), QSize(), QIcon::Normal, QIcon::Off);
+        icon37.addFile(QString::fromUtf8("C:/Users/Admin/.designer/backup/icon/connected.png"), QSize(), QIcon::Normal, QIcon::On);
+        pbConnect->setIcon(icon37);
         pbConnect->setIconSize(QSize(30, 20));
         pbConnect->setCheckable(true);
 
@@ -4695,6 +4552,38 @@ public:
 
         horizontalLayout_14->addWidget(fRobotPosition);
 
+        tbDisableRobot = new QToolButton(groupRobotConnection);
+        tbDisableRobot->setObjectName(QString::fromUtf8("tbDisableRobot"));
+        sizePolicy.setHeightForWidth(tbDisableRobot->sizePolicy().hasHeightForWidth());
+        tbDisableRobot->setSizePolicy(sizePolicy);
+        tbDisableRobot->setMinimumSize(QSize(20, 20));
+        QIcon icon38;
+        icon38.addFile(QString::fromUtf8(":/icon/icons8_switch_off_52px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        icon38.addFile(QString::fromUtf8(":/icon/icons8_switch_on_52px.png"), QSize(), QIcon::Normal, QIcon::On);
+        icon38.addFile(QString::fromUtf8(":/icon/icons8_switch_on_52px.png"), QSize(), QIcon::Active, QIcon::On);
+        tbDisableRobot->setIcon(icon38);
+        tbDisableRobot->setIconSize(QSize(32, 32));
+        tbDisableRobot->setCheckable(true);
+        tbDisableRobot->setChecked(true);
+        tbDisableRobot->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+        tbDisableRobot->setAutoRaise(true);
+
+        horizontalLayout_14->addWidget(tbDisableRobot);
+
+        tbRequestPosition = new QToolButton(groupRobotConnection);
+        tbRequestPosition->setObjectName(QString::fromUtf8("tbRequestPosition"));
+        sizePolicy.setHeightForWidth(tbRequestPosition->sizePolicy().hasHeightForWidth());
+        tbRequestPosition->setSizePolicy(sizePolicy);
+        tbRequestPosition->setMinimumSize(QSize(20, 20));
+        QIcon icon39;
+        icon39.addFile(QString::fromUtf8(":/icon/icons8_my_location_52px_1.png"), QSize(), QIcon::Normal, QIcon::Off);
+        tbRequestPosition->setIcon(icon39);
+        tbRequestPosition->setIconSize(QSize(32, 32));
+        tbRequestPosition->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+        tbRequestPosition->setAutoRaise(true);
+
+        horizontalLayout_14->addWidget(tbRequestPosition);
+
         horizontalSpacer_4 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
         horizontalLayout_14->addItem(horizontalSpacer_4);
@@ -4723,57 +4612,57 @@ public:
         RobotTabWidget->setMinimumSize(QSize(0, 300));
         ConfigurationTab = new QWidget();
         ConfigurationTab->setObjectName(QString::fromUtf8("ConfigurationTab"));
-        layoutWidget3 = new QWidget(ConfigurationTab);
-        layoutWidget3->setObjectName(QString::fromUtf8("layoutWidget3"));
-        layoutWidget3->setGeometry(QRect(10, 15, 201, 176));
-        gridLayout_31 = new QGridLayout(layoutWidget3);
+        layoutWidget = new QWidget(ConfigurationTab);
+        layoutWidget->setObjectName(QString::fromUtf8("layoutWidget"));
+        layoutWidget->setGeometry(QRect(10, 15, 201, 176));
+        gridLayout_31 = new QGridLayout(layoutWidget);
         gridLayout_31->setSpacing(6);
         gridLayout_31->setContentsMargins(11, 11, 11, 11);
         gridLayout_31->setObjectName(QString::fromUtf8("gridLayout_31"));
         gridLayout_31->setContentsMargins(0, 0, 0, 0);
-        label_65 = new QLabel(layoutWidget3);
+        label_65 = new QLabel(layoutWidget);
         label_65->setObjectName(QString::fromUtf8("label_65"));
         label_65->setFont(font10);
         label_65->setAlignment(Qt::AlignCenter);
 
         gridLayout_31->addWidget(label_65, 7, 0, 1, 1);
 
-        lbID = new QLabel(layoutWidget3);
+        lbID = new QLabel(layoutWidget);
         lbID->setObjectName(QString::fromUtf8("lbID"));
         lbID->setFont(font7);
         lbID->setStyleSheet(QString::fromUtf8(""));
 
         gridLayout_31->addWidget(lbID, 3, 1, 1, 1);
 
-        lbComName = new QLabel(layoutWidget3);
+        lbComName = new QLabel(layoutWidget);
         lbComName->setObjectName(QString::fromUtf8("lbComName"));
         lbComName->setFont(font7);
         lbComName->setStyleSheet(QString::fromUtf8(""));
 
         gridLayout_31->addWidget(lbComName, 5, 1, 1, 1);
 
-        lbBaudrate = new QLabel(layoutWidget3);
+        lbBaudrate = new QLabel(layoutWidget);
         lbBaudrate->setObjectName(QString::fromUtf8("lbBaudrate"));
         lbBaudrate->setFont(font7);
         lbBaudrate->setStyleSheet(QString::fromUtf8(""));
 
         gridLayout_31->addWidget(lbBaudrate, 7, 1, 1, 1);
 
-        lbIP = new QLabel(layoutWidget3);
+        lbIP = new QLabel(layoutWidget);
         lbIP->setObjectName(QString::fromUtf8("lbIP"));
         lbIP->setFont(font7);
         lbIP->setStyleSheet(QString::fromUtf8(""));
 
         gridLayout_31->addWidget(lbIP, 8, 1, 1, 1);
 
-        label_91 = new QLabel(layoutWidget3);
+        label_91 = new QLabel(layoutWidget);
         label_91->setObjectName(QString::fromUtf8("label_91"));
         label_91->setFont(font10);
         label_91->setAlignment(Qt::AlignCenter);
 
         gridLayout_31->addWidget(label_91, 1, 0, 1, 1);
 
-        cbRobotModel = new QComboBox(layoutWidget3);
+        cbRobotModel = new QComboBox(layoutWidget);
         cbRobotModel->addItem(QString());
         cbRobotModel->addItem(QString());
         cbRobotModel->addItem(QString());
@@ -4783,49 +4672,49 @@ public:
 
         gridLayout_31->addWidget(cbRobotModel, 1, 1, 1, 1);
 
-        label_6 = new QLabel(layoutWidget3);
+        label_6 = new QLabel(layoutWidget);
         label_6->setObjectName(QString::fromUtf8("label_6"));
         label_6->setFont(font10);
         label_6->setAlignment(Qt::AlignCenter);
 
         gridLayout_31->addWidget(label_6, 3, 0, 1, 1);
 
-        label_10 = new QLabel(layoutWidget3);
+        label_10 = new QLabel(layoutWidget);
         label_10->setObjectName(QString::fromUtf8("label_10"));
         label_10->setFont(font10);
         label_10->setAlignment(Qt::AlignCenter);
 
         gridLayout_31->addWidget(label_10, 5, 0, 1, 1);
 
-        label_122 = new QLabel(layoutWidget3);
+        label_122 = new QLabel(layoutWidget);
         label_122->setObjectName(QString::fromUtf8("label_122"));
         label_122->setFont(font10);
         label_122->setAlignment(Qt::AlignCenter);
 
         gridLayout_31->addWidget(label_122, 8, 0, 1, 1);
 
-        label_123 = new QLabel(layoutWidget3);
+        label_123 = new QLabel(layoutWidget);
         label_123->setObjectName(QString::fromUtf8("label_123"));
         label_123->setFont(font10);
         label_123->setAlignment(Qt::AlignCenter);
 
         gridLayout_31->addWidget(label_123, 9, 0, 1, 1);
 
-        lbLocalPort = new QLabel(layoutWidget3);
+        lbLocalPort = new QLabel(layoutWidget);
         lbLocalPort->setObjectName(QString::fromUtf8("lbLocalPort"));
         lbLocalPort->setFont(font7);
         lbLocalPort->setStyleSheet(QString::fromUtf8(""));
 
         gridLayout_31->addWidget(lbLocalPort, 9, 1, 1, 1);
 
-        label_113 = new QLabel(layoutWidget3);
+        label_113 = new QLabel(layoutWidget);
         label_113->setObjectName(QString::fromUtf8("label_113"));
         label_113->setFont(font10);
         label_113->setAlignment(Qt::AlignCenter);
 
         gridLayout_31->addWidget(label_113, 2, 0, 1, 1);
 
-        cbRobotModel_2 = new QComboBox(layoutWidget3);
+        cbRobotModel_2 = new QComboBox(layoutWidget);
         cbRobotModel_2->addItem(QString());
         cbRobotModel_2->addItem(QString());
         cbRobotModel_2->addItem(QString());
@@ -5241,59 +5130,59 @@ public:
         pbHome->setGeometry(QRect(15, 45, 60, 76));
         pbHome->setMinimumSize(QSize(60, 60));
         pbHome->setFont(font3);
-        QIcon icon41;
-        icon41.addFile(QString::fromUtf8(":/icon/home.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbHome->setIcon(icon41);
+        QIcon icon40;
+        icon40.addFile(QString::fromUtf8(":/icon/home.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbHome->setIcon(icon40);
         pbHome->setIconSize(QSize(40, 40));
         pbHome->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
         label_33 = new QLabel(ButtonTab);
         label_33->setObjectName(QString::fromUtf8("label_33"));
         label_33->setGeometry(QRect(20, 15, 86, 19));
         label_33->setMaximumSize(QSize(120, 16777215));
-        layoutWidget4 = new QWidget(ButtonTab);
-        layoutWidget4->setObjectName(QString::fromUtf8("layoutWidget4"));
-        layoutWidget4->setGeometry(QRect(75, 45, 209, 147));
-        gridLayout_2 = new QGridLayout(layoutWidget4);
+        layoutWidget1 = new QWidget(ButtonTab);
+        layoutWidget1->setObjectName(QString::fromUtf8("layoutWidget1"));
+        layoutWidget1->setGeometry(QRect(75, 45, 209, 147));
+        gridLayout_2 = new QGridLayout(layoutWidget1);
         gridLayout_2->setSpacing(5);
         gridLayout_2->setContentsMargins(11, 11, 11, 11);
         gridLayout_2->setObjectName(QString::fromUtf8("gridLayout_2"));
         gridLayout_2->setContentsMargins(0, 0, 0, 0);
-        pbLeft = new QToolButton(layoutWidget4);
+        pbLeft = new QToolButton(layoutWidget1);
         pbLeft->setObjectName(QString::fromUtf8("pbLeft"));
-        QIcon icon42;
-        icon42.addFile(QString::fromUtf8(":/icon/icons8-back-48.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbLeft->setIcon(icon42);
+        QIcon icon41;
+        icon41.addFile(QString::fromUtf8(":/icon/icons8-back-48.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbLeft->setIcon(icon41);
         pbLeft->setIconSize(QSize(40, 40));
         pbLeft->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 
         gridLayout_2->addWidget(pbLeft, 0, 2, 2, 1);
 
-        pbRight = new QToolButton(layoutWidget4);
+        pbRight = new QToolButton(layoutWidget1);
         pbRight->setObjectName(QString::fromUtf8("pbRight"));
-        QIcon icon43;
-        icon43.addFile(QString::fromUtf8(":/icon/icons8-forward-48.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbRight->setIcon(icon43);
+        QIcon icon42;
+        icon42.addFile(QString::fromUtf8(":/icon/icons8-forward-48.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbRight->setIcon(icon42);
         pbRight->setIconSize(QSize(40, 40));
         pbRight->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 
         gridLayout_2->addWidget(pbRight, 0, 4, 2, 1);
 
-        pbBackward = new QToolButton(layoutWidget4);
+        pbBackward = new QToolButton(layoutWidget1);
         pbBackward->setObjectName(QString::fromUtf8("pbBackward"));
-        QIcon icon44;
-        icon44.addFile(QString::fromUtf8(":/icon/icons8-expand-arrow-48.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbBackward->setIcon(icon44);
+        QIcon icon43;
+        icon43.addFile(QString::fromUtf8(":/icon/icons8-expand-arrow-48.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbBackward->setIcon(icon43);
         pbBackward->setIconSize(QSize(40, 40));
         pbBackward->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 
         gridLayout_2->addWidget(pbBackward, 1, 3, 1, 1);
 
-        pbForward = new QToolButton(layoutWidget4);
+        pbForward = new QToolButton(layoutWidget1);
         pbForward->setObjectName(QString::fromUtf8("pbForward"));
         pbForward->setStyleSheet(QString::fromUtf8(""));
-        QIcon icon45;
-        icon45.addFile(QString::fromUtf8(":/icon/icons8-collapse-arrow-48.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbForward->setIcon(icon45);
+        QIcon icon44;
+        icon44.addFile(QString::fromUtf8(":/icon/icons8-collapse-arrow-48.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbForward->setIcon(icon44);
         pbForward->setIconSize(QSize(40, 40));
         pbForward->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 
@@ -5302,49 +5191,49 @@ public:
         pbSubRoll = new QToolButton(ButtonTab);
         pbSubRoll->setObjectName(QString::fromUtf8("pbSubRoll"));
         pbSubRoll->setGeometry(QRect(80, 205, 48, 70));
-        pbSubRoll->setIcon(icon42);
+        pbSubRoll->setIcon(icon41);
         pbSubRoll->setIconSize(QSize(40, 40));
         pbSubRoll->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
         pbPlusRoll = new QToolButton(ButtonTab);
         pbPlusRoll->setObjectName(QString::fromUtf8("pbPlusRoll"));
         pbPlusRoll->setGeometry(QRect(80, 285, 48, 70));
-        pbPlusRoll->setIcon(icon43);
+        pbPlusRoll->setIcon(icon42);
         pbPlusRoll->setIconSize(QSize(40, 40));
         pbPlusRoll->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
         pbPlusYaw = new QToolButton(ButtonTab);
         pbPlusYaw->setObjectName(QString::fromUtf8("pbPlusYaw"));
         pbPlusYaw->setGeometry(QRect(155, 285, 48, 70));
-        pbPlusYaw->setIcon(icon43);
+        pbPlusYaw->setIcon(icon42);
         pbPlusYaw->setIconSize(QSize(40, 40));
         pbPlusYaw->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
         pbSubYaw = new QToolButton(ButtonTab);
         pbSubYaw->setObjectName(QString::fromUtf8("pbSubYaw"));
         pbSubYaw->setGeometry(QRect(155, 205, 48, 70));
-        pbSubYaw->setIcon(icon42);
+        pbSubYaw->setIcon(icon41);
         pbSubYaw->setIconSize(QSize(40, 40));
         pbSubYaw->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
         pbPlusPitch = new QToolButton(ButtonTab);
         pbPlusPitch->setObjectName(QString::fromUtf8("pbPlusPitch"));
         pbPlusPitch->setGeometry(QRect(230, 285, 48, 70));
-        pbPlusPitch->setIcon(icon43);
+        pbPlusPitch->setIcon(icon42);
         pbPlusPitch->setIconSize(QSize(40, 40));
         pbPlusPitch->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
         pbSubPitch = new QToolButton(ButtonTab);
         pbSubPitch->setObjectName(QString::fromUtf8("pbSubPitch"));
         pbSubPitch->setGeometry(QRect(230, 205, 48, 70));
-        pbSubPitch->setIcon(icon42);
+        pbSubPitch->setIcon(icon41);
         pbSubPitch->setIconSize(QSize(40, 40));
         pbSubPitch->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
         pbDown = new QToolButton(ButtonTab);
         pbDown->setObjectName(QString::fromUtf8("pbDown"));
         pbDown->setGeometry(QRect(315, 120, 48, 67));
-        pbDown->setIcon(icon44);
+        pbDown->setIcon(icon43);
         pbDown->setIconSize(QSize(40, 40));
         pbDown->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
         pbUp = new QToolButton(ButtonTab);
         pbUp->setObjectName(QString::fromUtf8("pbUp"));
         pbUp->setGeometry(QRect(315, 45, 48, 67));
-        pbUp->setIcon(icon45);
+        pbUp->setIcon(icon44);
         pbUp->setIconSize(QSize(40, 40));
         pbUp->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
         pbUp->setAutoRaise(false);
@@ -5416,25 +5305,25 @@ public:
         vsZAdjsution = new QSlider(fXYWorkingArea);
         vsZAdjsution->setObjectName(QString::fromUtf8("vsZAdjsution"));
         vsZAdjsution->setGeometry(QRect(6, 6, 16, 201));
-        sizePolicy6.setHeightForWidth(vsZAdjsution->sizePolicy().hasHeightForWidth());
-        vsZAdjsution->setSizePolicy(sizePolicy6);
+        sizePolicy5.setHeightForWidth(vsZAdjsution->sizePolicy().hasHeightForWidth());
+        vsZAdjsution->setSizePolicy(sizePolicy5);
         vsZAdjsution->setMaximum(300);
         vsZAdjsution->setOrientation(Qt::Vertical);
-        layoutWidget5 = new QWidget(fXYWorkingArea);
-        layoutWidget5->setObjectName(QString::fromUtf8("layoutWidget5"));
-        layoutWidget5->setGeometry(QRect(255, 10, 102, 296));
-        gridLayout_17 = new QGridLayout(layoutWidget5);
+        layoutWidget2 = new QWidget(fXYWorkingArea);
+        layoutWidget2->setObjectName(QString::fromUtf8("layoutWidget2"));
+        layoutWidget2->setGeometry(QRect(255, 10, 102, 296));
+        gridLayout_17 = new QGridLayout(layoutWidget2);
         gridLayout_17->setSpacing(6);
         gridLayout_17->setContentsMargins(11, 11, 11, 11);
         gridLayout_17->setObjectName(QString::fromUtf8("gridLayout_17"));
         gridLayout_17->setContentsMargins(0, 0, 0, 0);
-        label_72 = new QLabel(layoutWidget5);
+        label_72 = new QLabel(layoutWidget2);
         label_72->setObjectName(QString::fromUtf8("label_72"));
         label_72->setAlignment(Qt::AlignCenter);
 
         gridLayout_17->addWidget(label_72, 5, 0, 1, 1);
 
-        d5axis = new QDial(layoutWidget5);
+        d5axis = new QDial(layoutWidget2);
         d5axis->setObjectName(QString::fromUtf8("d5axis"));
         d5axis->setMinimum(-180);
         d5axis->setMaximum(180);
@@ -5446,7 +5335,7 @@ public:
 
         gridLayout_17->addWidget(d5axis, 2, 0, 1, 1);
 
-        d6axis = new QDial(layoutWidget5);
+        d6axis = new QDial(layoutWidget2);
         d6axis->setObjectName(QString::fromUtf8("d6axis"));
         d6axis->setMinimum(-180);
         d6axis->setMaximum(180);
@@ -5458,19 +5347,19 @@ public:
 
         gridLayout_17->addWidget(d6axis, 4, 0, 1, 1);
 
-        label_69 = new QLabel(layoutWidget5);
+        label_69 = new QLabel(layoutWidget2);
         label_69->setObjectName(QString::fromUtf8("label_69"));
         label_69->setAlignment(Qt::AlignCenter);
 
         gridLayout_17->addWidget(label_69, 1, 0, 1, 1);
 
-        label_71 = new QLabel(layoutWidget5);
+        label_71 = new QLabel(layoutWidget2);
         label_71->setObjectName(QString::fromUtf8("label_71"));
         label_71->setAlignment(Qt::AlignCenter);
 
         gridLayout_17->addWidget(label_71, 3, 0, 1, 1);
 
-        d4axis = new QDial(layoutWidget5);
+        d4axis = new QDial(layoutWidget2);
         d4axis->setObjectName(QString::fromUtf8("d4axis"));
         d4axis->setMinimum(-180);
         d4axis->setMaximum(180);
@@ -5482,17 +5371,17 @@ public:
 
         gridLayout_17->addWidget(d4axis, 0, 0, 1, 1);
 
-        lb4AxisValue = new QLabel(layoutWidget5);
+        lb4AxisValue = new QLabel(layoutWidget2);
         lb4AxisValue->setObjectName(QString::fromUtf8("lb4AxisValue"));
 
         gridLayout_17->addWidget(lb4AxisValue, 0, 1, 1, 1);
 
-        lb5AxisValue = new QLabel(layoutWidget5);
+        lb5AxisValue = new QLabel(layoutWidget2);
         lb5AxisValue->setObjectName(QString::fromUtf8("lb5AxisValue"));
 
         gridLayout_17->addWidget(lb5AxisValue, 2, 1, 1, 1);
 
-        lb6AxisValue = new QLabel(layoutWidget5);
+        lb6AxisValue = new QLabel(layoutWidget2);
         lb6AxisValue->setObjectName(QString::fromUtf8("lb6AxisValue"));
 
         gridLayout_17->addWidget(lb6AxisValue, 4, 1, 1, 1);
@@ -5690,10 +5579,10 @@ public:
         pbPump->setObjectName(QString::fromUtf8("pbPump"));
         pbPump->setMinimumSize(QSize(50, 30));
         pbPump->setAutoFillBackground(false);
-        QIcon icon46;
-        icon46.addFile(QString::fromUtf8(":/icon/Toggle Off_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
-        icon46.addFile(QString::fromUtf8(":/icon/Toggle On_16px.png"), QSize(), QIcon::Normal, QIcon::On);
-        pbPump->setIcon(icon46);
+        QIcon icon45;
+        icon45.addFile(QString::fromUtf8(":/icon/Toggle Off_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        icon45.addFile(QString::fromUtf8(":/icon/Toggle On_16px.png"), QSize(), QIcon::Normal, QIcon::On);
+        pbPump->setIcon(icon45);
         pbPump->setIconSize(QSize(16, 16));
         pbPump->setCheckable(true);
         pbPump->setChecked(false);
@@ -5706,7 +5595,7 @@ public:
         pbLaser->setObjectName(QString::fromUtf8("pbLaser"));
         pbLaser->setMinimumSize(QSize(50, 30));
         pbLaser->setAutoFillBackground(false);
-        pbLaser->setIcon(icon46);
+        pbLaser->setIcon(icon45);
         pbLaser->setIconSize(QSize(16, 16));
         pbLaser->setCheckable(true);
         pbLaser->setChecked(false);
@@ -6324,9 +6213,9 @@ public:
 
         verticalLayout_4->addWidget(scrollArea_2);
 
-        QIcon icon47;
-        icon47.addFile(QString::fromUtf8(":/icon/deltaicon.png"), QSize(), QIcon::Normal, QIcon::Off);
-        twDevices->addTab(tRobot, icon47, QString());
+        QIcon icon46;
+        icon46.addFile(QString::fromUtf8(":/icon/deltaicon.png"), QSize(), QIcon::Normal, QIcon::Off);
+        twDevices->addTab(tRobot, icon46, QString());
         ConveyorTab = new QWidget();
         ConveyorTab->setObjectName(QString::fromUtf8("ConveyorTab"));
         verticalLayout_22 = new QVBoxLayout(ConveyorTab);
@@ -6491,9 +6380,9 @@ public:
         pbSlidingConnect->setMinimumSize(QSize(100, 30));
         pbSlidingConnect->setMaximumSize(QSize(120, 50));
         pbSlidingConnect->setFont(font17);
-        QIcon icon48;
-        icon48.addFile(QString::fromUtf8("icon/connected.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbSlidingConnect->setIcon(icon48);
+        QIcon icon47;
+        icon47.addFile(QString::fromUtf8("icon/connected.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbSlidingConnect->setIcon(icon47);
 
         horizontalLayout_49->addWidget(pbSlidingConnect);
 
@@ -6523,9 +6412,9 @@ public:
         pbSlidingDisable->setMinimumSize(QSize(0, 30));
         pbSlidingDisable->setMaximumSize(QSize(200, 40));
         pbSlidingDisable->setFont(font18);
-        QIcon icon49;
-        icon49.addFile(QString::fromUtf8("icon/icons8-sleeping-in-bed-32.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbSlidingDisable->setIcon(icon49);
+        QIcon icon48;
+        icon48.addFile(QString::fromUtf8("icon/icons8-sleeping-in-bed-32.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbSlidingDisable->setIcon(icon48);
 
         gridLayout_8->addWidget(pbSlidingDisable, 0, 1, 1, 1);
 
@@ -6547,9 +6436,9 @@ public:
         pbSlidingHome->setMinimumSize(QSize(0, 30));
         pbSlidingHome->setMaximumSize(QSize(200, 40));
         pbSlidingHome->setFont(font18);
-        QIcon icon50;
-        icon50.addFile(QString::fromUtf8("icon/icons8-home-32.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbSlidingHome->setIcon(icon50);
+        QIcon icon49;
+        icon49.addFile(QString::fromUtf8("icon/icons8-home-32.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbSlidingHome->setIcon(icon49);
 
         gridLayout_8->addWidget(pbSlidingHome, 1, 1, 1, 1);
 
@@ -6725,7 +6614,7 @@ public:
         QObject::connect(gbConveyorForTracking, SIGNAL(toggled(bool)), fTracking, SLOT(setVisible(bool)));
         QObject::connect(pbWarpTool, SIGNAL(clicked()), pbTransformPerspective, SLOT(toggle()));
         QObject::connect(pbCalibStep1, SIGNAL(toggled(bool)), fCalibStep1, SLOT(setVisible(bool)));
-        QObject::connect(cbLockGcodeEditor, SIGNAL(toggled(bool)), pbExecuteGcodes, SLOT(setDisabled(bool)));
+        QObject::connect(cbEditGcodeEditor, SIGNAL(toggled(bool)), pbExecuteGcodes, SLOT(setDisabled(bool)));
         QObject::connect(pbLoadCamera, SIGNAL(clicked(bool)), pbCaptureCamera, SLOT(setEnabled(bool)));
         QObject::connect(gbCameraVariable, SIGNAL(toggled(bool)), fVisionVariableFrame, SLOT(setVisible(bool)));
         QObject::connect(pbLoadCamera, SIGNAL(clicked(bool)), pbPlayPauseCamera, SLOT(setEnabled(bool)));
@@ -6735,15 +6624,14 @@ public:
         twDeltaManager->setCurrentIndex(0);
         twModule->setCurrentIndex(0);
         tabWidget->setCurrentIndex(0);
-        pbExDeleteProgram->setDefault(true);
         pbTransformPerspective->setDefault(false);
         pbImageMapping->setDefault(false);
         cbImageSource->setCurrentIndex(0);
-        twDevices->setCurrentIndex(1);
-        RobotTabWidget->setCurrentIndex(1);
-        tabWidget_2->setCurrentIndex(1);
+        twDevices->setCurrentIndex(0);
+        RobotTabWidget->setCurrentIndex(2);
+        tabWidget_2->setCurrentIndex(0);
         cbDivision->setCurrentIndex(1);
-        tabWidget_3->setCurrentIndex(1);
+        tabWidget_3->setCurrentIndex(0);
         pbPump->setDefault(false);
         pbLaser->setDefault(false);
         pbGrip->setDefault(false);
@@ -6770,15 +6658,20 @@ public:
 #if QT_CONFIG(tooltip)
         twModule->setToolTip(QString());
 #endif // QT_CONFIG(tooltip)
+        rbEditorCurrent->setText(QCoreApplication::translate("RobotWindow", "Current", nullptr));
 #if QT_CONFIG(tooltip)
         pbExecuteGcodes->setToolTip(QCoreApplication::translate("RobotWindow", "Execute Gcode", nullptr));
 #endif // QT_CONFIG(tooltip)
         pbExecuteGcodes->setText(QCoreApplication::translate("RobotWindow", "Run", nullptr));
+        label_7->setText(QCoreApplication::translate("RobotWindow", "Thread", nullptr));
+        rbEditorStart->setText(QCoreApplication::translate("RobotWindow", "Begin", nullptr));
+        cbProgramThreadID->setItemText(0, QCoreApplication::translate("RobotWindow", "1", nullptr));
+        cbProgramThreadID->setItemText(1, QCoreApplication::translate("RobotWindow", "+", nullptr));
+
 #if QT_CONFIG(tooltip)
-        pbFormat->setToolTip(QCoreApplication::translate("RobotWindow", "Format Gcode Lines", nullptr));
+        pbOpenGcodeDocs->setToolTip(QCoreApplication::translate("RobotWindow", "Gcode Docs", nullptr));
 #endif // QT_CONFIG(tooltip)
-        pbFormat->setText(QCoreApplication::translate("RobotWindow", "Format", nullptr));
-        lbGcodeProgramingIssues->setText(QString());
+        pbOpenGcodeDocs->setText(QCoreApplication::translate("RobotWindow", "Format", nullptr));
 #if QT_CONFIG(tooltip)
         pbSaveGcode->setToolTip(QCoreApplication::translate("RobotWindow", "Save Gcode Into File", nullptr));
 #endif // QT_CONFIG(tooltip)
@@ -6787,13 +6680,11 @@ public:
         pbCreateNewGcode->setToolTip(QCoreApplication::translate("RobotWindow", "Creat New Editor", nullptr));
 #endif // QT_CONFIG(tooltip)
         pbCreateNewGcode->setText(QString());
-        rbEditorCurrent->setText(QCoreApplication::translate("RobotWindow", "Current", nullptr));
-        rbEditorStart->setText(QCoreApplication::translate("RobotWindow", "Begin", nullptr));
-        cbLockGcodeEditor->setText(QCoreApplication::translate("RobotWindow", "Block Editor", nullptr));
 #if QT_CONFIG(tooltip)
-        pbOpenGcodeDocs->setToolTip(QCoreApplication::translate("RobotWindow", "Gcode Docs", nullptr));
+        pbFormat->setToolTip(QCoreApplication::translate("RobotWindow", "Format Gcode Lines", nullptr));
 #endif // QT_CONFIG(tooltip)
-        pbOpenGcodeDocs->setText(QCoreApplication::translate("RobotWindow", "Format", nullptr));
+        pbFormat->setText(QCoreApplication::translate("RobotWindow", "Format", nullptr));
+        cbEditGcodeEditor->setText(QCoreApplication::translate("RobotWindow", "Edit", nullptr));
         pteGcodeArea->setHtml(QCoreApplication::translate("RobotWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
@@ -6838,55 +6729,39 @@ public:
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"> </p></body></html>", nullptr));
         label_3->setText(QCoreApplication::translate("RobotWindow", "Path", nullptr));
 #if QT_CONFIG(tooltip)
-        toolButton_3->setToolTip(QCoreApplication::translate("RobotWindow", "Open gcode folder", nullptr));
+        tbOpenGcodePath->setToolTip(QCoreApplication::translate("RobotWindow", "Open gcode folder", nullptr));
 #endif // QT_CONFIG(tooltip)
-        toolButton_3->setText(QString());
+        tbOpenGcodePath->setText(QString());
 #if QT_CONFIG(tooltip)
-        toolButton->setToolTip(QCoreApplication::translate("RobotWindow", "Back", nullptr));
+        tbBackGcodeFolder->setToolTip(QCoreApplication::translate("RobotWindow", "Back", nullptr));
 #endif // QT_CONFIG(tooltip)
 #if QT_CONFIG(statustip)
-        toolButton->setStatusTip(QString());
+        tbBackGcodeFolder->setStatusTip(QString());
 #endif // QT_CONFIG(statustip)
-        toolButton->setText(QString());
+        tbBackGcodeFolder->setText(QString());
 #if QT_CONFIG(tooltip)
-        toolButton_2->setToolTip(QCoreApplication::translate("RobotWindow", "New", nullptr));
+        tbNewGcodeFile->setToolTip(QCoreApplication::translate("RobotWindow", "New", nullptr));
 #endif // QT_CONFIG(tooltip)
 #if QT_CONFIG(statustip)
-        toolButton_2->setStatusTip(QString());
+        tbNewGcodeFile->setStatusTip(QString());
 #endif // QT_CONFIG(statustip)
-        toolButton_2->setText(QString());
+        tbNewGcodeFile->setText(QString());
+#if QT_CONFIG(tooltip)
+        tbRefreshExplorer->setToolTip(QCoreApplication::translate("RobotWindow", "New", nullptr));
+#endif // QT_CONFIG(tooltip)
+#if QT_CONFIG(statustip)
+        tbRefreshExplorer->setStatusTip(QString());
+#endif // QT_CONFIG(statustip)
+        tbRefreshExplorer->setText(QString());
+#if QT_CONFIG(tooltip)
+        tbDeleteGcodeFile->setToolTip(QCoreApplication::translate("RobotWindow", "New", nullptr));
+#endif // QT_CONFIG(tooltip)
+#if QT_CONFIG(statustip)
+        tbDeleteGcodeFile->setStatusTip(QString());
+#endif // QT_CONFIG(statustip)
+        tbDeleteGcodeFile->setText(QString());
         tabWidget->setTabText(tabWidget->indexOf(tab_3), QCoreApplication::translate("RobotWindow", "Explorer", nullptr));
-        leExProgramName->setText(QCoreApplication::translate("RobotWindow", "Program 1", nullptr));
-        pbExDeleteProgram->setText(QString());
-        lbExGCodeNumber->setText(QCoreApplication::translate("RobotWindow", "100 Gcode Lines", nullptr));
-#if QT_CONFIG(tooltip)
-        pbUploadProgram->setToolTip(QString());
-#endif // QT_CONFIG(tooltip)
-        pbUploadProgram->setText(QString());
-#if QT_CONFIG(tooltip)
-        pbImportGcodeFiles->setToolTip(QString());
-#endif // QT_CONFIG(tooltip)
-        pbImportGcodeFiles->setText(QCoreApplication::translate("RobotWindow", "Import", nullptr));
-#if QT_CONFIG(tooltip)
-        pbAddNewProgram->setToolTip(QString());
-#endif // QT_CONFIG(tooltip)
-        pbAddNewProgram->setText(QCoreApplication::translate("RobotWindow", "New ", nullptr));
-#if QT_CONFIG(tooltip)
-        pbRefreshGcodeFiles->setToolTip(QString());
-#endif // QT_CONFIG(tooltip)
-        pbRefreshGcodeFiles->setText(QCoreApplication::translate("RobotWindow", "F5   ", nullptr));
-#if QT_CONFIG(tooltip)
-        pbFindGcodeFile->setToolTip(QString());
-#endif // QT_CONFIG(tooltip)
-        pbFindGcodeFile->setText(QCoreApplication::translate("RobotWindow", "Find", nullptr));
-#if QT_CONFIG(tooltip)
-        pbSortGcodeFiles->setToolTip(QString());
-#endif // QT_CONFIG(tooltip)
-        pbSortGcodeFiles->setText(QCoreApplication::translate("RobotWindow", "Sort", nullptr));
-        lbExGCodeNumber_2->setText(QCoreApplication::translate("RobotWindow", "Path", nullptr));
-        leGcodeProgramPath->setText(QCoreApplication::translate("RobotWindow", "/gcode", nullptr));
-        pbOpenGcodeProgramPath->setText(QString());
-        tabWidget->setTabText(tabWidget->indexOf(tab), QCoreApplication::translate("RobotWindow", "Old Program", nullptr));
+        tabWidget->setTabText(tabWidget->indexOf(tab), QCoreApplication::translate("RobotWindow", "Cloud", nullptr));
         twModule->setTabText(twModule->indexOf(tGcodeEditor), QCoreApplication::translate("RobotWindow", "Gcode Editor", nullptr));
         gbImageViewer->setTitle(QCoreApplication::translate("RobotWindow", "Image Viewer", nullptr));
 #if QT_CONFIG(tooltip)
@@ -7243,8 +7118,16 @@ public:
         cbSelectedRobot->setItemText(1, QCoreApplication::translate("RobotWindow", "+", nullptr));
 
         label->setText(QCoreApplication::translate("RobotWindow", "ID", nullptr));
+#if QT_CONFIG(tooltip)
+        tbDisableRobot->setToolTip(QCoreApplication::translate("RobotWindow", "Creat New Editor", nullptr));
+#endif // QT_CONFIG(tooltip)
+        tbDisableRobot->setText(QCoreApplication::translate("RobotWindow", "Hold", nullptr));
+#if QT_CONFIG(tooltip)
+        tbRequestPosition->setToolTip(QCoreApplication::translate("RobotWindow", "Creat New Editor", nullptr));
+#endif // QT_CONFIG(tooltip)
+        tbRequestPosition->setText(QCoreApplication::translate("RobotWindow", "Position", nullptr));
         label_65->setText(QCoreApplication::translate("RobotWindow", "Baudrate", nullptr));
-        lbID->setText(QCoreApplication::translate("RobotWindow", "0", nullptr));
+        lbID->setText(QCoreApplication::translate("RobotWindow", "robot0", nullptr));
         lbComName->setText(QCoreApplication::translate("RobotWindow", "NONE", nullptr));
         lbBaudrate->setText(QCoreApplication::translate("RobotWindow", "115200", nullptr));
         lbIP->setText(QCoreApplication::translate("RobotWindow", "null", nullptr));

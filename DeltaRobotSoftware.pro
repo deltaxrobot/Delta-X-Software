@@ -72,8 +72,6 @@ SOURCES += main.cpp\
     codeeditor.cpp \
     ConnectionManager.cpp \
     DeltaVisualizer.cpp \
-    GcodeProgramManager.cpp \
-    GcodeProgram.cpp \
     UnityTool.cpp \
     device/DeviceManager.cpp \
     device/device.cpp \
@@ -99,8 +97,6 @@ HEADERS  += \
     GcodeReference.h \
     GcodeScript.h \
     ImageUnity.h \
-    GcodeProgram.h \
-    GcodeProgramManager.h \
     ImageViewer.h \
     Layer.h \
     MainWindow.h \

@@ -11,8 +11,41 @@ GcodeScript::~GcodeScript()
 
 }
 
+void GcodeScript::SetGcodeScript(QString gcode)
+{
+    gcodeScript = gcode;
+}
+
+QString GcodeScript::GetGcodeScript()
+{
+    return gcodeScript;
+}
+
+void GcodeScript::SetProgramPath(QString path)
+{
+    programPath = path;
+    QFileInfo fileInfo(programPath);
+    programName = fileInfo.fileName();
+}
+
+QString GcodeScript::GetProgramPath()
+{
+    return programPath;
+}
+
+QString GcodeScript::GetProgramName()
+{
+    return programName;
+}
+
+bool GcodeScript::IsRunning()
+{
+    return isRunning;
+}
+
 void GcodeScript::ExecuteGcode(QString gcodes, int startMode, bool isFromGcodeEditor)
 {
+    isRunning = true;
 
     this->isFromGcodeEditor = isFromGcodeEditor;
 
@@ -43,6 +76,15 @@ void GcodeScript::ExecuteGcode(QString gcodes, int startMode, bool isFromGcodeEd
     TransmitNextGcode();
 }
 
+void GcodeScript::GetResponse(QString deviceId, QString respose)
+{
+    if (deviceId == transmitDeviceId)
+    {
+        TransmitNextGcode();
+        this->response = response;
+    }
+}
+
 void GcodeScript::TransmitNextGcode()
 {
     if (isFileProgramRunning == true)
@@ -63,7 +105,7 @@ void GcodeScript::TransmitNextGcode(QList<QString> gcodes, int& order)
     if (order >= gcodes.size())
     {
         Stop();
-        emit Finished();
+
         return;
     }
 
@@ -94,8 +136,6 @@ void GcodeScript::TransmitNextGcode(QList<QString> gcodes, int& order)
         {
             Stop();
 
-            emit Finished();
-
             break;
         }
 
@@ -108,6 +148,9 @@ void GcodeScript::TransmitNextGcode(QList<QString> gcodes, int& order)
 
 void GcodeScript::Stop()
 {
+    isRunning = false;
+    emit Finished();
+
     if (isFileProgramRunning == false)
     {
         gcodeList.clear();
@@ -576,62 +619,6 @@ bool GcodeScript::findExeGcodeAndTransmit()
             if (valuePairs[i + 1].at(0) == 'F')
             {
                 QString subProName = valuePairs[i + 1].mid(1);
-
-                for (int i = 0; i < ProgramList->size(); i++)
-                {
-                    if (ProgramList->at(i)->GetName() == subProName)
-                    {
-                        isFileProgramRunning = true;
-
-                        QString exeGcodes = ProgramList->at(i)->GcodeData;
-
-                        QList<QString> tempGcodeList = exeGcodes.split('\n');
-
-                        subGcodeList.clear();
-
-                        for (int i = 0; i < tempGcodeList.size(); i++)
-                        {
-                            QString line = tempGcodeList.at(i);
-
-                            line = DeleteExcessSpace(line);
-
-                            if (line == "")
-                                continue;
-
-                            subGcodeList.push_back(line);
-                        }
-
-                        tempGcodeList.clear();
-
-                        gcodeOrder++;
-                        return true;
-                    }
-                }
-
-
-//                for (int i = 0; i < ProgramList->size(); i++)
-//                {
-//                    if (ProgramList->at(i)->GetName() == subProName)
-//                    {
-//                        disconnect(deltaConnection, SIGNAL(DeltaResponeGcodeDone()), this, SLOT(TransmitNextGcode()));
-
-//                        InsideGcodeProgramManager = new GcodeProgramManager(mParent, saProgramFilesScrollArea, wgProgramContainer, pteGcodeArea, pbExecuteGcodes, deltaConnection, deltaParameter);
-
-//                        connect(InsideGcodeProgramManager, SIGNAL(FinishExecuteGcodes()), this, SLOT(TransmitNextGcode()));
-//                        InsideGcodeProgramManager->IsFromOtherGcodeProgram = true;
-//                        InsideGcodeProgramManager->OutsideGcodeProgramManager = this;
-//                        isFileProgramRunning = true;
-
-//                        QString exeGcodes = ProgramList->at(i)->GcodeData;
-
-//                        pteGcodeArea->setText(exeGcodes);
-
-//                        InsideGcodeProgramManager->ExecuteGcode(exeGcodes, true);
-
-//                        gcodeOrder++;
-//                        return true;
-//                    }
-//                }
             }
         }
 
@@ -640,6 +627,17 @@ bool GcodeScript::findExeGcodeAndTransmit()
             gcodeOrder = returnSubProPointer[returnPointerOrder] + 1;
             returnPointerOrder--;
             //TransmitNextGcode();
+            return false;
+        }
+
+        if (valuePairs.at(i) == "SELECT")
+        {
+            QString selectedDevice = valuePairs.at(i + 1);
+            if (selectedDevice.contains("robot"))
+                DefaultRobot = valuePairs.at(i + 1);
+
+            gcodeOrder++;
+
             return false;
         }
 
@@ -675,7 +673,8 @@ bool GcodeScript::findExeGcodeAndTransmit()
 
 //    updatePositionIntoSystemVariable(transmitGcode);
 
-    emit SendGcodeToDevice("Robot", transmitGcode);
+    transmitDeviceId = DefaultRobot;
+    emit SendGcodeToDevice(DefaultRobot, transmitGcode);
     gcodeOrder += 1;
     return true;
 }
