@@ -5,7 +5,6 @@
 #include "TabDashboard.h"
 #include "RobotWindow.h"
 #include <QSettings>
-#include "UXManager.h"
 #include "QStackedWidget"
 #include <QList>
 #include "VariableManager.h"
@@ -17,6 +16,7 @@
 
 #include <QSettings>
 #include <QElapsedTimer>
+#include "VarManager.h"
 
 namespace Ui {
 class MainWindow;
@@ -42,8 +42,6 @@ public:
     TabDashboard* Dashboard;
     ProjectManager* SoftwareProjectManager;
     QSettings* ProjectSetting;
-    UXManager* Ux;
-    VariableManager* ProgramVariableManager;
     VersionManager* DeltaXVersionManager;
     SmartDialog* CloseDialog;
     Authority* SoftwareAuthority;
@@ -51,7 +49,7 @@ public:
     QString LastProject = "";
 
 public slots:
-    RobotManager* CreateNewProject(int index);
+    QStackedWidget* CreateNewProject(int index);
     RobotWindow *AddNewProjectAndRobot(int index);
     void OpenProjectFromFile();
     void SaveProjectToFile();

@@ -61,7 +61,6 @@
 #include <QLayout>
 #include <QStackedWidget>
 
-#include "robotmanager.h"
 #include "SoftwareManager.h"
 
 #include "ComDevice.h"
@@ -73,6 +72,7 @@
 
 #include <QDialogButtonBox>
 #include <device/DeviceManager.h>
+#include "VarManager.h"
 
 #define DEFAULT_BAUDRATE 115200
 
@@ -140,8 +140,7 @@ public:
     void SavePluginSetting(QSettings* setting);
 
     void InitTabs();
-    void SetID(int id);
-    void SetName(QString name);
+    void SetID(QString id);
 
     // ----- Event ----
     void DisablePositionUpdatingEvents();

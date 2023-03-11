@@ -21,13 +21,11 @@ void MainWindow::InitVariables()
     // ---- Check software version ----
 
     DeltaXVersionManager = new VersionManager(this);
-    DeltaXVersionManager->CurrentVersion = "0.9.7";
+    DeltaXVersionManager->CurrentVersion = "1.0 Beta";
     DeltaXVersionManager->SoftwareName = "DeltaXSoftware";
     DeltaXVersionManager->CheckVersionUrl = "http://imwi.space/admin/server.php";
     DeltaXVersionManager->NewVersionSoftwareUrl = "https://sourceforge.net/projects/delta-x-software/files/";
     DeltaXVersionManager->CheckNewVersion(true);
-
-    qDebug() << "check version: " << time.elapsed() - start;
 
     // ----- Init Pointer -----
     SoftwareManager::GetInstance()->SoftwarePointer = this;
@@ -52,17 +50,12 @@ void MainWindow::InitVariables()
 
     ui->tbHome->click();
 
-    qDebug() << "Init Dashboard: " << time.elapsed() - start;
-
     //-------- UX --------
-    Ux = new UXManager();
 
     teSoftwareLog = ui->teLoggingBox;
 
     //-------- Variable Table -----------
-    ProgramVariableManager = new VariableManager();
-    ProgramVariableManager->SetTreeWidget(ui->trwProgramVariableTable);
-    SoftwareManager::GetInstance()->ProgramVariableManager = ProgramVariableManager;
+
 
     //------- Project Manager --------
     SoftwareProjectManager = new ProjectManager();
@@ -71,16 +64,12 @@ void MainWindow::InitVariables()
     SoftwareProjectManager->IsNewTabSlotOutside = true;
 
     SoftwareManager::GetInstance()->SoftwareProjectManager = SoftwareProjectManager;
-    //SoftwareManager::GetInstance()->RobotManagers = &RobotManagers;
 
     connect(SoftwareProjectManager, SIGNAL(NewTab_Signal(int)), SLOT(AddNewProjectAndRobot(int)));
 
-    start = time.elapsed();
     if (!IsLastProject())
     {
-        RobotManager* robotManager = CreateNewProject(0);
-        RobotWindow* robotWindow = robotManager->CreatNewRobotWindow();
-        robotWindow->ProjectName = robotManager->Name;
+        RobotWindow* robotWindow = AddNewProjectAndRobot(0);
     }
     else
     {
@@ -89,13 +78,8 @@ void MainWindow::InitVariables()
 
     InitProjectUX();
 
-    qDebug() << "Init robot window: " << time.elapsed() - start;
-
     //------------- Init Widgets -----------
-    ui->trwProgramVariableTable->expandAll();
-    ui->trwProgramVariableTable->setColumnWidth(0, 150);
-
-
+    ui->tvVariables->expandAll();
 
     //--------- Init Dialog -------------
     CloseDialog = new SmartDialog(this);
@@ -112,7 +96,8 @@ void MainWindow::InitVariables()
     SoftwareAuthority->fOperatorRobotOnOffPanel = ui->fOperatorRobotOnOffPanel;
     SoftwareAuthority->layoutOperatorRobotOnOff = ui->layoutOperatorRobotOnOff;
 
-    connect(ProgramVariableManager, SIGNAL(variableChanged(QString, QString)), SoftwareAuthority, SLOT(UpdateVariableToDisplay(QString, QString)));
+
+    connect(VarManager::getInstance(), SIGNAL(varUpdated(QString, QVariant)), SoftwareAuthority, SLOT(UpdateVariableToDisplay(QString, QVariant)));
 
     Dashboard->SoftwareAuthority = SoftwareAuthority;
 
@@ -193,9 +178,9 @@ void MainWindow::InitProjectToOperator()
     if (ui->cbOperatorRobot->count() > 0)
         ui->cbOperatorRobot->clear();
 
-    foreach(RobotManager* robotManager, SoftwareProjectManager->RobotManagers)
+    foreach(RobotWindow* robotWindow, SoftwareProjectManager->RobotWindows)
     {
-        ui->cbOperatorProject->addItem(robotManager->Name);
+        ui->cbOperatorProject->addItem(robotWindow->ProjectName);
     }
 
     if (ui->cbOperatorProject->count() > 0)
@@ -275,34 +260,36 @@ void MainWindow::LoadOperatorSettings()
     }
 }
 
-RobotManager* MainWindow::CreateNewProject(int index)
+QStackedWidget* MainWindow::CreateNewProject(int index)
 {
     QStackedWidget* stack = new QStackedWidget();
+    int projectTabID = ui->twProjectManager->count() - 1;
+    QString projectName = QString("project " + QString::number(projectTabID));
+    SoftwareProjectManager->AddNewTab(stack, projectTabID, projectName);
 
-    //------- Make new robot manager ----------
-    RobotManager* robotManager = new RobotManager(this);
-    robotManager->SetMainStackedWidgetAndPages(ui->stackedWidget, ui->page, ui->pFullTabDisplay, ui->layoutFullTabDisplay);
-    robotManager->SetSubStackedWidget(stack);
-    robotManager->twProjectManager = ui->twProjectManager;
-
-    robotManager->ID = ui->twProjectManager->count() - 1;
-    robotManager->Name = QString("project " + QString::number(robotManager->ID));
-
-    //Insert robot manager in this project to robot manager list ----------
-    SoftwareProjectManager->RobotManagers.append(robotManager);
-
-    //------ Create new robot project tab ---------
-    SoftwareProjectManager->AddNewTab(stack, robotManager->ID, robotManager->Name);
-
-    SoftwareProjectManager->CurrentRobotManager = robotManager;
-
-    return robotManager;
+    return stack;
 }
 
 RobotWindow *MainWindow::AddNewProjectAndRobot(int index)
 {
-    RobotManager* robotManager = CreateNewProject(index);
-    return robotManager->CreatNewRobotWindow();
+    QStackedWidget *stack = CreateNewProject(index);
+
+    RobotWindow* robotWindow = new RobotWindow();
+    robotWindow->ProjectName = SoftwareProjectManager->GetProjectName(index);
+
+    robotWindow->SetMainStackedWidgetAndPages(ui->stackedWidget, ui->page, ui->pFullTabDisplay, ui->layoutFullTabDisplay);
+    robotWindow->SetSubStackedWidget(ui->swPageStack);
+
+    robotWindow->SetID("robot0");
+
+    robotWindow->InitVariables();
+    robotWindow->InitEvents();
+    robotWindow->InitTabs();
+
+    stack->addWidget(robotWindow);
+    stack->setCurrentWidget(robotWindow);
+
+    return robotWindow;
 }
 
 void MainWindow::OpenProjectFromFile()
@@ -335,7 +322,7 @@ void MainWindow::SaveProjectToFile()
 
     QSettings settings(fileName, QSettings::IniFormat);
 
-    SoftwareProjectManager->CurrentRobotManager->SaveSettings(&settings);
+    SoftwareProjectManager->CurrentRobotWindow->SaveSettings(&settings);
 
     QFile file(QCoreApplication::applicationDirPath() + "/customUI.ini");
     if (!file.exists())
@@ -396,12 +383,9 @@ void MainWindow::SetLoadingIconRun(bool isRun)
 
 MainWindow::~MainWindow()
 {
-    for (int i = 0; i < SoftwareProjectManager->RobotManagers.count(); i++)
+    for (int i = 0; i < SoftwareProjectManager->RobotWindows.count(); i++)
     {
-        for (int j = 0; j < SoftwareProjectManager->RobotManagers.at(i)->RobotWindows.count(); j++)
-        {
-            delete SoftwareProjectManager->RobotManagers.at(i)->RobotWindows.at(j);
-        }
+        delete SoftwareProjectManager->RobotWindows.at(i);
     }
 
     delete ui;
@@ -494,7 +478,7 @@ void MainWindow::on_cbOperatorProject_currentIndexChanged(int index)
     ui->cbOperatorRobotDisplay->clear();
     ui->cbOperatorRobot->clear();
 
-    foreach(RobotWindow* robotWindow, SoftwareProjectManager->RobotManagers[index]->RobotWindows)
+    foreach(RobotWindow* robotWindow, SoftwareProjectManager->RobotWindows)
     {
         ui->cbOperatorRobotDisplay->addItem(robotWindow->Name);
         ui->cbOperatorRobot->addItem(robotWindow->Name);
@@ -516,16 +500,16 @@ void MainWindow::on_pbStartSystem_clicked()
         if (robotEnable->isChecked() == false)
             continue;
 
-        RobotWindow* robotWindow = SoftwareAuthority->robotManager->GetRobot(robotEnable->text());
+//        RobotWindow* robotWindow = SoftwareAuthority->robotManager->GetRobot(robotEnable->text());
 
-        foreach(QString robotGcode, SoftwareAuthority->operatorGcodeProgram)
-        {
-            QStringList paras = robotGcode.split(':');
-            if (robotWindow->Name == paras[0])
-            {
-                robotWindow->ClickExecuteButton(true);
-            }
-        }
+//        foreach(QString robotGcode, SoftwareAuthority->operatorGcodeProgram)
+//        {
+//            QStringList paras = robotGcode.split(':');
+//            if (robotWindow->Name == paras[0])
+//            {
+//                robotWindow->ClickExecuteButton(true);
+//            }
+//        }
 
     }
 }
@@ -535,7 +519,7 @@ void MainWindow::on_pbStopSystem_clicked()
     if (SoftwareAuthority->robotManager == NULL)
         return;
 
-    SoftwareAuthority->robotManager->Stop();
+//    SoftwareAuthority->robotManager->Stop();
 }
 
 void MainWindow::openProject(QString fullName)
@@ -546,8 +530,8 @@ void MainWindow::openProject(QString fullName)
 
     int robotNumber = settings->value("Project/RobotNumber").toInt();
     int tabID = ui->twProjectManager->count() - 1; // x
-    RobotManager* robotManager = CreateNewProject(tabID);
-    robotManager->LoadSettings(settings);
+    RobotWindow* robotWindow = AddNewProjectAndRobot(tabID);
+    robotWindow->LoadSettings(settings);
 }
 
 

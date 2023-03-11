@@ -10,10 +10,9 @@
 #include <QHBoxLayout>
 #include <QStackedWidget>
 #include <QSettings>
+#include "RobotWindow.h"
 
-#include "robotmanager.h"
-
-class RobotManager;
+class RobotWindow;
 
 class ProjectManager : public QWidget
 {
@@ -27,15 +26,15 @@ public:
     void RemoveTab(int tabIndex);
     QString GetProjectName(int index);
     QString GetProjectName(QWidget* widget);
-    RobotManager *GetProject(QString name);
+    RobotWindow *GetProject(QString name);
 
     QStackedWidget *SubProject;
 
     bool IsNewTabSlotOutside = false;
 
 
-    RobotManager* CurrentRobotManager;
-    QList<RobotManager*> RobotManagers;
+    RobotWindow* CurrentRobotWindow;
+    QList<RobotWindow*> RobotWindows;
 
 public slots:
     void ChangeProjectTab(int index);

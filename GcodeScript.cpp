@@ -3,7 +3,7 @@
 
 GcodeScript::GcodeScript()
 {
-    vars = SoftwareManager::GetInstance()->ProgramVariableManager->GetMap();
+
 }
 
 GcodeScript::~GcodeScript()
@@ -1031,16 +1031,9 @@ QString GcodeScript::getValueOfVariable(QString name)
 
     QStringList names = vars->keys();
 
-//    foreach(QString s, names)
-//    {
-//        qDebug() << s;
-//    }
-
-//    QMutexLocker ml(&mMutex);
-
-    if (names.contains(fullName) == true)
+    if (VarManager::getInstance()->contains(fullName) == true)
     {
-        return SoftwareManager::GetInstance()->ProgramVariableManager->GetValue(fullName);
+        return VarManager::getInstance()->getVar(fullName).toString();
     }
     else
     {
@@ -1081,8 +1074,7 @@ void GcodeScript::saveVariable(QString name, QString value)
     }
 
     fullName = fullName.replace(" ", "");
-    SoftwareManager::GetInstance()->ProgramVariableManager->AddVariable(fullName, value);
-
+    VarManager::getInstance()->addVar(fullName, value);
 }
 
 QString GcodeScript::convertGcodeToSyncConveyor(QString gcode)

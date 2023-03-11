@@ -9,8 +9,9 @@
 #include <QMutex>
 #include <QElapsedTimer>
 #include "Parameter.h"
-#include "robotmanager.h"
 #include "SoftwareManager.h"
+#include <QFileInfo>
+#include "VarManager.h"
 
 class RobotManager;
 
@@ -33,6 +34,7 @@ public:
     Scurve_Interpolator DeltaXSMoving;
 
     QString DefaultRobot = "robot";
+    QString ID = "thread";
 
     void SetGcodeScript(QString gcode);
     QString GetGcodeScript();

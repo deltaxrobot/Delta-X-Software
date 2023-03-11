@@ -1297,8 +1297,9 @@ void RobotWindow::InitScriptThread()
 void RobotWindow::AddScriptThread()
 {
     GcodeScript* GcodeScriptThread = new GcodeScript();
-    GcodeScriptThread->GcodeVariables = SoftwareManager::GetInstance()->ProgramVariableManager->GetMap();
+
     GcodeScriptThread->VariableAddress = ProjectName;
+    GcodeScriptThread->ID = QString("thread") + GcodeScripts.count();
     GcodeScriptThread->moveToThread(new QThread(this));
 
     connect(GcodeScriptThread->thread(), SIGNAL(finished()), GcodeScriptThread, SLOT(deleteLater()));
@@ -2018,15 +2019,9 @@ void RobotWindow::SelectImageProviderOption(int option)
     }
 }
 
-void RobotWindow::SetID(int id)
+void RobotWindow::SetID(QString id)
 {
-    ID = id;
-    ui->lbID->setText(QString::number(id));
-}
-
-void RobotWindow::SetName(QString name)
-{
-    Name = name;
+    ui->lbID->setText(id);
 }
 
 void RobotWindow::ConnectDeltaRobot()
@@ -2396,35 +2391,7 @@ void RobotWindow::ImportGcodeFilesFromComputer()
 
 void RobotWindow::ExecuteSelectPrograms()
 {
-    // If only one robot, execute program for it
-    if (RobotManagerPointer != NULL)
-    {
-        if (RobotManagerPointer->RobotWindows.size() == 1)
-        {
-            ui->pbExecuteGcodes->click();
-            return;
-        }
-    }
-    // Execute selected robots
-	QList<QAction*> actions = ui->menuExecute->actions();
-	for (int i = 0; i < actions.size(); i++)
-	{
-        if (actions.at(i)->isChecked() == true)
-        {
-            QString actionName = actions.at(i)->text();
 
-            if (RobotManagerPointer == NULL)
-                break;
-
-            for (int j = 0; j < RobotManagerPointer->RobotWindows.size(); j++)
-            {
-                if (RobotManagerPointer->RobotWindows.at(j)->Name == actionName)
-                {
-                    RobotManagerPointer->RobotWindows.at(j)->ui->pbExecuteGcodes->click();
-                }
-            }
-        }
-	}
 }
 
 void RobotWindow::ExecuteCurrentLine()
@@ -2940,7 +2907,7 @@ void RobotWindow::UpdateVariable(QString key, QString value)
     QString fullName = ProjectName + "." + Name + "." + key;
     fullName = fullName.replace(" ", "");
 
-    SoftwareManager::GetInstance()->ProgramVariableManager->AddVariable(fullName, value);
+    VarManager::getInstance()->addVar(fullName, value);
 }
 
 void RobotWindow::UpdateVariables(QString cmd)
@@ -2963,7 +2930,7 @@ void RobotWindow::UpdateVariables(QString cmd)
 
 void RobotWindow::RespondVariableValue(QIODevice *s, QString name)
 {
-    QString value = SoftwareManager::GetInstance()->ProgramVariableManager->GetValue(name) + '\n';
+    QString value = VarManager::getInstance()->getVar(name).toString() + '\n';
 
     s->write(value.toStdString().c_str(), value.size());
 }
@@ -3190,24 +3157,6 @@ void RobotWindow::LoadWebcam()
             ui->pbLoadCamera->setText("Stop Camera");
 
             bool isCameraUsingByOtherRobot = false;
-
-            if (RobotManagerPointer != NULL)
-            {
-                if (RobotManagerPointer->RobotWindows.size() > 0)
-                {
-                    for (int i = 0; i < RobotManagerPointer->RobotWindows.size(); i++)
-                    {
-                        if (this == RobotManagerPointer->RobotWindows.at(i))
-                            continue;
-
-                        if (RobotManagerPointer->RobotWindows.at(i)->RunningCamera == RunningCamera)
-                        {
-                            Camera = RobotManagerPointer->RobotWindows.at(i)->Camera;
-                            isCameraUsingByOtherRobot = true;
-                        }
-                    }
-                }
-            }
 
             if (isCameraUsingByOtherRobot == false)
             {
@@ -3558,7 +3507,7 @@ void RobotWindow::UpdateObjectsToVariableTable(QList<Object *> *objects)
         QString fullName = ProjectName + "." + Name + "." + QString("O%1_X").arg(i);
         fullName = fullName.replace(" ", "");
 
-        if (SoftwareManager::GetInstance()->ProgramVariableManager->GetMap()->contains(fullName) == false)
+        if (VarManager::getInstance()->contains(fullName) == false)
             break;
 
         UpdateVariable(QString("O%1_X").arg(i), "-6789");

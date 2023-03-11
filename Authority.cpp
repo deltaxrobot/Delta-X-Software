@@ -72,8 +72,7 @@ void Authority::ApplyOperatorSettings()
     if (operatorDisplayWidget.count() > 0)
     {
         QStringList paras = operatorDisplayWidget[0].split("/");
-        robotManager = projectManager->GetProject(paras[0]);
-        robotWindow = robotManager->GetRobot(paras[1]);
+        robotWindow = projectManager->GetProject(paras[0]);
         subDisplayWidget = robotWindow->GetWidget(paras[2]);
         oldSubDisplayWidgetParent = subDisplayWidget->parentWidget();
         wgOperatorDisplay->layout()->addWidget(subDisplayWidget);
@@ -120,12 +119,13 @@ void Authority::UpdateVariableToDisplay()
 {
     foreach(QString name, Vars.keys())
     {
-        QString value = SoftwareManager::GetInstance()->ProgramVariableManager->GetValue(name);
+
+        QVariant value = VarManager::getInstance()->getVar(name);
         UpdateVariableToDisplay(name, value);
     }
 }
 
-void Authority::UpdateVariableToDisplay(QString key, QString value)
+void Authority::UpdateVariableToDisplay(const QString& key, const QVariant& value)
 {
     // ---- check if #var is display var
     if (Vars.keys().contains(key) == false)
@@ -153,5 +153,5 @@ void Authority::UpdateVariableToDisplay(QString key, QString value)
         return;
 
     item->setText(0, Vars.value(key));
-    item->setText(1, value);
+    item->setText(1, value.toString());
 }

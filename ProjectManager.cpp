@@ -65,7 +65,6 @@ void ProjectManager::AddNewTab(QStackedWidget *stack,  int id, QString name = ""
 void ProjectManager::RemoveTab(int tabIndex)
 {
 
-    RobotManagers.removeAt(tabIndex);
 }
 
 QString ProjectManager::GetProjectName(int index)
@@ -78,12 +77,12 @@ QString ProjectManager::GetProjectName(QWidget *widget)
     return GetProjectName(twProjectManager->indexOf(widget));
 }
 
-RobotManager *ProjectManager::GetProject(QString name)
+RobotWindow *ProjectManager::GetProject(QString name)
 {
-    foreach(RobotManager* robotManager, RobotManagers)
+    foreach(RobotWindow* robot, RobotWindows)
     {
-        if (robotManager->Name == name)
-            return robotManager;
+        if (robot->ProjectName == name)
+            return robot;
     }
 
     return NULL;
@@ -102,13 +101,7 @@ void ProjectManager::ChangeProjectTab(int index)
     }
     else
     {
-        foreach(RobotManager* robotManager, RobotManagers)
-        {
-            if (robotManager->SubWindowStackedWidget == twProjectManager->currentWidget())
-            {
-                CurrentRobotManager = robotManager;
-            }
-        }
+        CurrentRobotWindow = RobotWindows.at(index);
     }
 }
 
@@ -122,7 +115,7 @@ void ProjectManager::ChangeProjectName(int tabIndex)
     if (ok && !newTabName.isEmpty())
     {
         twProjectManager->setTabText(tabIndex, newTabName);
-        RobotManagers[tabIndex]->Name = newTabName;
+//        RobotManagers[tabIndex]->Name = newTabName;
     }
 }
 
@@ -144,7 +137,7 @@ void ProjectManager::CloseProject(int tabIndex)
 
         //delete RobotManagers.at(tabIndex);
 
-        RobotManagers.removeAt(tabIndex);
+//        RobotManagers.removeAt(tabIndex);
     }
     else
     {

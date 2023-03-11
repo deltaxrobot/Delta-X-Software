@@ -66,7 +66,7 @@ SOURCES += main.cpp\
     TaskNode.cpp \
     TestCode.cpp \
     TextLayer.cpp \
-    UXManage.cpp \
+    VarManager.cpp \
     VariableManager.cpp \
     VersionManager.cpp \
     codeeditor.cpp \
@@ -79,7 +79,6 @@ SOURCES += main.cpp\
     geisttextedit.cpp \
     global.cpp \
     highlighter.cpp \
-    robotmanager.cpp \
     testwindow.cpp
 
 HEADERS  += \
@@ -115,7 +114,7 @@ HEADERS  += \
     TabDashboard.h \
     TaskNode.h \
     TextLayer.h \
-    UXManager.h \
+    VarManager.h \
     VariableManager.h \
     VersionManager.h \
     codeeditor.h \
@@ -126,7 +125,6 @@ HEADERS  += \
     global.h \
     highlighter.h \
     GcodeReference.h \
-    robotmanager.h \
     sdk/DeltaXPlugin.h \
     testcode.h \
     testwindow.h

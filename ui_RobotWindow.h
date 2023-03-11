@@ -779,21 +779,58 @@ public:
     QVBoxLayout *verticalLayout_22;
     QHBoxLayout *horizontalLayout_48;
     QPushButton *pbConveyorConnect;
-    QLabel *lbConveyorCOMName;
-    QSpacerItem *horizontalSpacer;
     QLabel *label_2;
     QComboBox *cbSelectedConveyor;
+    QLabel *label_28;
+    QComboBox *cbConveyorType;
+    QLabel *lbConveyorCOMName;
+    QSpacerItem *horizontalSpacer;
+    QFrame *fConveyorX;
     QGridLayout *gridLayout_7;
-    QLabel *label_46;
-    QComboBox *cbConveyorValueType;
-    QLabel *label_52;
-    QComboBox *cbConveyorMode;
-    QLabel *label_12;
     QLineEdit *leConveyorvMovingValue;
+    QComboBox *cbConveyorValueType;
     QLabel *lbUnitOfConveyorMoving;
     QLabel *label_57;
-    QLabel *lbSpeedOfPositionMode;
+    QLabel *label_46;
+    QComboBox *cbConveyorMode;
+    QLabel *label_12;
     QLineEdit *leSpeedOfPositionMode;
+    QLabel *label_52;
+    QLabel *lbSpeedOfPositionMode;
+    QFrame *fConveyorXHub;
+    QGridLayout *gridLayout_18;
+    QLabel *label_77;
+    QLineEdit *leSpeedOfPositionMode_3;
+    QLabel *label_115;
+    QLabel *label_114;
+    QComboBox *cbConveyorValueType_4;
+    QLineEdit *leConveyorvMovingValue_2;
+    QLabel *label_75;
+    QLabel *label_82;
+    QLineEdit *leSpeedOfPositionMode_2;
+    QLineEdit *leSpeedOfPositionMode_6;
+    QComboBox *cbConveyorValueType_5;
+    QLineEdit *leSpeedOfPositionMode_10;
+    QComboBox *cbConveyorValueType_2;
+    QLabel *label_80;
+    QLineEdit *leSpeedOfPositionMode_11;
+    QFrame *fConveyorCustom;
+    QGridLayout *gridLayout_39;
+    QLineEdit *leSpeedOfPositionMode_13;
+    QPushButton *pushButton_7;
+    QPushButton *pushButton_9;
+    QLabel *label_147;
+    QLineEdit *leSpeedOfPositionMode_14;
+    QPushButton *pushButton_8;
+    QLineEdit *leSpeedOfPositionMode_16;
+    QLabel *label_153;
+    QPushButton *pushButton_4;
+    QPushButton *pushButton_5;
+    QLineEdit *leSpeedOfPositionMode_12;
+    QLineEdit *leConveyorvMovingValue_5;
+    QPushButton *pushButton_6;
+    QLineEdit *leSpeedOfPositionMode_15;
+    QLabel *label_154;
     QSpacerItem *verticalSpacer_2;
     QWidget *EncoderTab;
     QWidget *SliderTab1;
@@ -6238,6 +6275,32 @@ public:
 
         horizontalLayout_48->addWidget(pbConveyorConnect);
 
+        label_2 = new QLabel(ConveyorTab);
+        label_2->setObjectName(QString::fromUtf8("label_2"));
+
+        horizontalLayout_48->addWidget(label_2);
+
+        cbSelectedConveyor = new QComboBox(ConveyorTab);
+        cbSelectedConveyor->addItem(QString());
+        cbSelectedConveyor->addItem(QString());
+        cbSelectedConveyor->setObjectName(QString::fromUtf8("cbSelectedConveyor"));
+
+        horizontalLayout_48->addWidget(cbSelectedConveyor);
+
+        label_28 = new QLabel(ConveyorTab);
+        label_28->setObjectName(QString::fromUtf8("label_28"));
+
+        horizontalLayout_48->addWidget(label_28);
+
+        cbConveyorType = new QComboBox(ConveyorTab);
+        cbConveyorType->addItem(QString());
+        cbConveyorType->addItem(QString());
+        cbConveyorType->addItem(QString());
+        cbConveyorType->setObjectName(QString::fromUtf8("cbConveyorType"));
+        cbConveyorType->setMinimumSize(QSize(100, 0));
+
+        horizontalLayout_48->addWidget(cbConveyorType);
+
         lbConveyorCOMName = new QLabel(ConveyorTab);
         lbConveyorCOMName->setObjectName(QString::fromUtf8("lbConveyorCOMName"));
         QFont font18;
@@ -6251,111 +6314,365 @@ public:
 
         horizontalLayout_48->addItem(horizontalSpacer);
 
-        label_2 = new QLabel(ConveyorTab);
-        label_2->setObjectName(QString::fromUtf8("label_2"));
-
-        horizontalLayout_48->addWidget(label_2);
-
-        cbSelectedConveyor = new QComboBox(ConveyorTab);
-        cbSelectedConveyor->addItem(QString());
-        cbSelectedConveyor->addItem(QString());
-        cbSelectedConveyor->setObjectName(QString::fromUtf8("cbSelectedConveyor"));
-
-        horizontalLayout_48->addWidget(cbSelectedConveyor);
-
 
         verticalLayout_22->addLayout(horizontalLayout_48);
 
-        gridLayout_7 = new QGridLayout();
+        fConveyorX = new QFrame(ConveyorTab);
+        fConveyorX->setObjectName(QString::fromUtf8("fConveyorX"));
+        gridLayout_7 = new QGridLayout(fConveyorX);
         gridLayout_7->setSpacing(6);
+        gridLayout_7->setContentsMargins(11, 11, 11, 11);
         gridLayout_7->setObjectName(QString::fromUtf8("gridLayout_7"));
         gridLayout_7->setHorizontalSpacing(20);
         gridLayout_7->setVerticalSpacing(10);
         gridLayout_7->setContentsMargins(10, 10, 10, 10);
-        label_46 = new QLabel(ConveyorTab);
-        label_46->setObjectName(QString::fromUtf8("label_46"));
-        label_46->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
-
-        gridLayout_7->addWidget(label_46, 1, 0, 1, 1);
-
-        cbConveyorValueType = new QComboBox(ConveyorTab);
-        cbConveyorValueType->addItem(QString());
-        cbConveyorValueType->addItem(QString());
-        cbConveyorValueType->setObjectName(QString::fromUtf8("cbConveyorValueType"));
-        cbConveyorValueType->setMinimumSize(QSize(0, 20));
-        cbConveyorValueType->setMaximumSize(QSize(200, 16777215));
+        leConveyorvMovingValue = new QLineEdit(fConveyorX);
+        leConveyorvMovingValue->setObjectName(QString::fromUtf8("leConveyorvMovingValue"));
+        leConveyorvMovingValue->setMinimumSize(QSize(0, 30));
+        leConveyorvMovingValue->setMaximumSize(QSize(200, 16777215));
         QFont font19;
         font19.setPointSize(11);
         font19.setBold(false);
         font19.setWeight(50);
         font19.setKerning(true);
+        leConveyorvMovingValue->setFont(font19);
+
+        gridLayout_7->addWidget(leConveyorvMovingValue, 3, 1, 1, 1);
+
+        cbConveyorValueType = new QComboBox(fConveyorX);
+        cbConveyorValueType->addItem(QString());
+        cbConveyorValueType->addItem(QString());
+        cbConveyorValueType->setObjectName(QString::fromUtf8("cbConveyorValueType"));
+        cbConveyorValueType->setMinimumSize(QSize(0, 30));
+        cbConveyorValueType->setMaximumSize(QSize(200, 16777215));
         cbConveyorValueType->setFont(font19);
         cbConveyorValueType->setStyleSheet(QString::fromUtf8(""));
 
         gridLayout_7->addWidget(cbConveyorValueType, 1, 1, 1, 1);
 
-        label_52 = new QLabel(ConveyorTab);
-        label_52->setObjectName(QString::fromUtf8("label_52"));
-        label_52->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+        lbUnitOfConveyorMoving = new QLabel(fConveyorX);
+        lbUnitOfConveyorMoving->setObjectName(QString::fromUtf8("lbUnitOfConveyorMoving"));
+        lbUnitOfConveyorMoving->setEnabled(false);
+        lbUnitOfConveyorMoving->setFont(font4);
 
-        gridLayout_7->addWidget(label_52, 0, 0, 1, 1);
+        gridLayout_7->addWidget(lbUnitOfConveyorMoving, 3, 2, 1, 1);
 
-        cbConveyorMode = new QComboBox(ConveyorTab);
+        label_57 = new QLabel(fConveyorX);
+        label_57->setObjectName(QString::fromUtf8("label_57"));
+        label_57->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+
+        gridLayout_7->addWidget(label_57, 2, 0, 1, 1);
+
+        label_46 = new QLabel(fConveyorX);
+        label_46->setObjectName(QString::fromUtf8("label_46"));
+        label_46->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+
+        gridLayout_7->addWidget(label_46, 1, 0, 1, 1);
+
+        cbConveyorMode = new QComboBox(fConveyorX);
         cbConveyorMode->addItem(QString());
         cbConveyorMode->addItem(QString());
         cbConveyorMode->setObjectName(QString::fromUtf8("cbConveyorMode"));
-        cbConveyorMode->setMinimumSize(QSize(0, 20));
+        cbConveyorMode->setMinimumSize(QSize(0, 30));
         cbConveyorMode->setMaximumSize(QSize(200, 16777215));
         cbConveyorMode->setFont(font19);
 
         gridLayout_7->addWidget(cbConveyorMode, 0, 1, 1, 1);
 
-        label_12 = new QLabel(ConveyorTab);
+        label_12 = new QLabel(fConveyorX);
         label_12->setObjectName(QString::fromUtf8("label_12"));
         label_12->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
 
-        gridLayout_7->addWidget(label_12, 2, 0, 1, 1);
+        gridLayout_7->addWidget(label_12, 3, 0, 1, 1);
 
-        leConveyorvMovingValue = new QLineEdit(ConveyorTab);
-        leConveyorvMovingValue->setObjectName(QString::fromUtf8("leConveyorvMovingValue"));
-        leConveyorvMovingValue->setMinimumSize(QSize(0, 20));
-        leConveyorvMovingValue->setMaximumSize(QSize(200, 16777215));
-        leConveyorvMovingValue->setFont(font19);
-
-        gridLayout_7->addWidget(leConveyorvMovingValue, 2, 1, 1, 1);
-
-        lbUnitOfConveyorMoving = new QLabel(ConveyorTab);
-        lbUnitOfConveyorMoving->setObjectName(QString::fromUtf8("lbUnitOfConveyorMoving"));
-        lbUnitOfConveyorMoving->setEnabled(false);
-        lbUnitOfConveyorMoving->setFont(font4);
-
-        gridLayout_7->addWidget(lbUnitOfConveyorMoving, 2, 2, 1, 1);
-
-        label_57 = new QLabel(ConveyorTab);
-        label_57->setObjectName(QString::fromUtf8("label_57"));
-        label_57->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
-
-        gridLayout_7->addWidget(label_57, 3, 0, 1, 1);
-
-        lbSpeedOfPositionMode = new QLabel(ConveyorTab);
-        lbSpeedOfPositionMode->setObjectName(QString::fromUtf8("lbSpeedOfPositionMode"));
-        lbSpeedOfPositionMode->setEnabled(false);
-        lbSpeedOfPositionMode->setFont(font4);
-
-        gridLayout_7->addWidget(lbSpeedOfPositionMode, 3, 2, 1, 1);
-
-        leSpeedOfPositionMode = new QLineEdit(ConveyorTab);
+        leSpeedOfPositionMode = new QLineEdit(fConveyorX);
         leSpeedOfPositionMode->setObjectName(QString::fromUtf8("leSpeedOfPositionMode"));
-        leSpeedOfPositionMode->setEnabled(false);
-        leSpeedOfPositionMode->setMinimumSize(QSize(0, 20));
+        leSpeedOfPositionMode->setEnabled(true);
+        leSpeedOfPositionMode->setMinimumSize(QSize(0, 30));
         leSpeedOfPositionMode->setMaximumSize(QSize(200, 16777215));
         leSpeedOfPositionMode->setFont(font19);
         leSpeedOfPositionMode->setClearButtonEnabled(false);
 
-        gridLayout_7->addWidget(leSpeedOfPositionMode, 3, 1, 1, 1);
+        gridLayout_7->addWidget(leSpeedOfPositionMode, 2, 1, 1, 1);
+
+        label_52 = new QLabel(fConveyorX);
+        label_52->setObjectName(QString::fromUtf8("label_52"));
+        label_52->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+
+        gridLayout_7->addWidget(label_52, 0, 0, 1, 1);
+
+        lbSpeedOfPositionMode = new QLabel(fConveyorX);
+        lbSpeedOfPositionMode->setObjectName(QString::fromUtf8("lbSpeedOfPositionMode"));
+        lbSpeedOfPositionMode->setEnabled(false);
+        lbSpeedOfPositionMode->setFont(font4);
+
+        gridLayout_7->addWidget(lbSpeedOfPositionMode, 2, 2, 1, 1);
 
 
-        verticalLayout_22->addLayout(gridLayout_7);
+        verticalLayout_22->addWidget(fConveyorX);
+
+        fConveyorXHub = new QFrame(ConveyorTab);
+        fConveyorXHub->setObjectName(QString::fromUtf8("fConveyorXHub"));
+        gridLayout_18 = new QGridLayout(fConveyorXHub);
+        gridLayout_18->setSpacing(6);
+        gridLayout_18->setContentsMargins(11, 11, 11, 11);
+        gridLayout_18->setObjectName(QString::fromUtf8("gridLayout_18"));
+        gridLayout_18->setHorizontalSpacing(20);
+        gridLayout_18->setVerticalSpacing(10);
+        gridLayout_18->setContentsMargins(10, 10, 10, 10);
+        label_77 = new QLabel(fConveyorXHub);
+        label_77->setObjectName(QString::fromUtf8("label_77"));
+        label_77->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
+
+        gridLayout_18->addWidget(label_77, 4, 0, 1, 1);
+
+        leSpeedOfPositionMode_3 = new QLineEdit(fConveyorXHub);
+        leSpeedOfPositionMode_3->setObjectName(QString::fromUtf8("leSpeedOfPositionMode_3"));
+        leSpeedOfPositionMode_3->setEnabled(true);
+        leSpeedOfPositionMode_3->setMinimumSize(QSize(0, 30));
+        leSpeedOfPositionMode_3->setMaximumSize(QSize(200, 16777215));
+        leSpeedOfPositionMode_3->setFont(font19);
+        leSpeedOfPositionMode_3->setClearButtonEnabled(false);
+
+        gridLayout_18->addWidget(leSpeedOfPositionMode_3, 4, 1, 1, 1);
+
+        label_115 = new QLabel(fConveyorXHub);
+        label_115->setObjectName(QString::fromUtf8("label_115"));
+        label_115->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
+
+        gridLayout_18->addWidget(label_115, 1, 0, 1, 1);
+
+        label_114 = new QLabel(fConveyorXHub);
+        label_114->setObjectName(QString::fromUtf8("label_114"));
+        label_114->setAlignment(Qt::AlignCenter);
+
+        gridLayout_18->addWidget(label_114, 0, 3, 1, 1);
+
+        cbConveyorValueType_4 = new QComboBox(fConveyorXHub);
+        cbConveyorValueType_4->addItem(QString());
+        cbConveyorValueType_4->addItem(QString());
+        cbConveyorValueType_4->setObjectName(QString::fromUtf8("cbConveyorValueType_4"));
+        cbConveyorValueType_4->setMinimumSize(QSize(0, 30));
+        cbConveyorValueType_4->setMaximumSize(QSize(200, 16777215));
+        cbConveyorValueType_4->setFont(font19);
+        cbConveyorValueType_4->setStyleSheet(QString::fromUtf8(""));
+
+        gridLayout_18->addWidget(cbConveyorValueType_4, 1, 2, 1, 1);
+
+        leConveyorvMovingValue_2 = new QLineEdit(fConveyorXHub);
+        leConveyorvMovingValue_2->setObjectName(QString::fromUtf8("leConveyorvMovingValue_2"));
+        leConveyorvMovingValue_2->setMinimumSize(QSize(0, 30));
+        leConveyorvMovingValue_2->setMaximumSize(QSize(200, 16777215));
+        leConveyorvMovingValue_2->setFont(font19);
+
+        gridLayout_18->addWidget(leConveyorvMovingValue_2, 3, 1, 1, 1);
+
+        label_75 = new QLabel(fConveyorXHub);
+        label_75->setObjectName(QString::fromUtf8("label_75"));
+        label_75->setAlignment(Qt::AlignCenter);
+
+        gridLayout_18->addWidget(label_75, 0, 1, 1, 1);
+
+        label_82 = new QLabel(fConveyorXHub);
+        label_82->setObjectName(QString::fromUtf8("label_82"));
+        label_82->setAlignment(Qt::AlignCenter);
+
+        gridLayout_18->addWidget(label_82, 0, 2, 1, 1);
+
+        leSpeedOfPositionMode_2 = new QLineEdit(fConveyorXHub);
+        leSpeedOfPositionMode_2->setObjectName(QString::fromUtf8("leSpeedOfPositionMode_2"));
+        leSpeedOfPositionMode_2->setEnabled(true);
+        leSpeedOfPositionMode_2->setMinimumSize(QSize(0, 30));
+        leSpeedOfPositionMode_2->setMaximumSize(QSize(200, 16777215));
+        leSpeedOfPositionMode_2->setFont(font19);
+        leSpeedOfPositionMode_2->setClearButtonEnabled(false);
+
+        gridLayout_18->addWidget(leSpeedOfPositionMode_2, 4, 2, 1, 1);
+
+        leSpeedOfPositionMode_6 = new QLineEdit(fConveyorXHub);
+        leSpeedOfPositionMode_6->setObjectName(QString::fromUtf8("leSpeedOfPositionMode_6"));
+        leSpeedOfPositionMode_6->setEnabled(true);
+        leSpeedOfPositionMode_6->setMinimumSize(QSize(0, 30));
+        leSpeedOfPositionMode_6->setMaximumSize(QSize(200, 16777215));
+        leSpeedOfPositionMode_6->setFont(font19);
+        leSpeedOfPositionMode_6->setClearButtonEnabled(false);
+
+        gridLayout_18->addWidget(leSpeedOfPositionMode_6, 3, 2, 1, 1);
+
+        cbConveyorValueType_5 = new QComboBox(fConveyorXHub);
+        cbConveyorValueType_5->addItem(QString());
+        cbConveyorValueType_5->addItem(QString());
+        cbConveyorValueType_5->setObjectName(QString::fromUtf8("cbConveyorValueType_5"));
+        cbConveyorValueType_5->setMinimumSize(QSize(0, 30));
+        cbConveyorValueType_5->setMaximumSize(QSize(200, 16777215));
+        cbConveyorValueType_5->setFont(font19);
+        cbConveyorValueType_5->setStyleSheet(QString::fromUtf8(""));
+
+        gridLayout_18->addWidget(cbConveyorValueType_5, 1, 3, 1, 1);
+
+        leSpeedOfPositionMode_10 = new QLineEdit(fConveyorXHub);
+        leSpeedOfPositionMode_10->setObjectName(QString::fromUtf8("leSpeedOfPositionMode_10"));
+        leSpeedOfPositionMode_10->setEnabled(true);
+        leSpeedOfPositionMode_10->setMinimumSize(QSize(0, 30));
+        leSpeedOfPositionMode_10->setMaximumSize(QSize(200, 16777215));
+        leSpeedOfPositionMode_10->setFont(font19);
+        leSpeedOfPositionMode_10->setClearButtonEnabled(false);
+
+        gridLayout_18->addWidget(leSpeedOfPositionMode_10, 3, 3, 1, 1);
+
+        cbConveyorValueType_2 = new QComboBox(fConveyorXHub);
+        cbConveyorValueType_2->addItem(QString());
+        cbConveyorValueType_2->addItem(QString());
+        cbConveyorValueType_2->setObjectName(QString::fromUtf8("cbConveyorValueType_2"));
+        cbConveyorValueType_2->setMinimumSize(QSize(0, 30));
+        cbConveyorValueType_2->setMaximumSize(QSize(200, 16777215));
+        cbConveyorValueType_2->setFont(font19);
+        cbConveyorValueType_2->setStyleSheet(QString::fromUtf8(""));
+
+        gridLayout_18->addWidget(cbConveyorValueType_2, 1, 1, 1, 1);
+
+        label_80 = new QLabel(fConveyorXHub);
+        label_80->setObjectName(QString::fromUtf8("label_80"));
+        label_80->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
+
+        gridLayout_18->addWidget(label_80, 3, 0, 1, 1);
+
+        leSpeedOfPositionMode_11 = new QLineEdit(fConveyorXHub);
+        leSpeedOfPositionMode_11->setObjectName(QString::fromUtf8("leSpeedOfPositionMode_11"));
+        leSpeedOfPositionMode_11->setEnabled(true);
+        leSpeedOfPositionMode_11->setMinimumSize(QSize(0, 30));
+        leSpeedOfPositionMode_11->setMaximumSize(QSize(200, 16777215));
+        leSpeedOfPositionMode_11->setFont(font19);
+        leSpeedOfPositionMode_11->setClearButtonEnabled(false);
+
+        gridLayout_18->addWidget(leSpeedOfPositionMode_11, 4, 3, 1, 1);
+
+
+        verticalLayout_22->addWidget(fConveyorXHub);
+
+        fConveyorCustom = new QFrame(ConveyorTab);
+        fConveyorCustom->setObjectName(QString::fromUtf8("fConveyorCustom"));
+        gridLayout_39 = new QGridLayout(fConveyorCustom);
+        gridLayout_39->setSpacing(6);
+        gridLayout_39->setContentsMargins(11, 11, 11, 11);
+        gridLayout_39->setObjectName(QString::fromUtf8("gridLayout_39"));
+        gridLayout_39->setHorizontalSpacing(20);
+        gridLayout_39->setVerticalSpacing(10);
+        gridLayout_39->setContentsMargins(10, 10, 10, 10);
+        leSpeedOfPositionMode_13 = new QLineEdit(fConveyorCustom);
+        leSpeedOfPositionMode_13->setObjectName(QString::fromUtf8("leSpeedOfPositionMode_13"));
+        leSpeedOfPositionMode_13->setEnabled(true);
+        leSpeedOfPositionMode_13->setMinimumSize(QSize(0, 30));
+        leSpeedOfPositionMode_13->setMaximumSize(QSize(200, 16777215));
+        leSpeedOfPositionMode_13->setFont(font19);
+        leSpeedOfPositionMode_13->setClearButtonEnabled(false);
+
+        gridLayout_39->addWidget(leSpeedOfPositionMode_13, 4, 1, 1, 1);
+
+        pushButton_7 = new QPushButton(fConveyorCustom);
+        pushButton_7->setObjectName(QString::fromUtf8("pushButton_7"));
+        pushButton_7->setMinimumSize(QSize(0, 30));
+
+        gridLayout_39->addWidget(pushButton_7, 1, 2, 1, 1);
+
+        pushButton_9 = new QPushButton(fConveyorCustom);
+        pushButton_9->setObjectName(QString::fromUtf8("pushButton_9"));
+        pushButton_9->setMinimumSize(QSize(0, 30));
+
+        gridLayout_39->addWidget(pushButton_9, 3, 2, 1, 1);
+
+        label_147 = new QLabel(fConveyorCustom);
+        label_147->setObjectName(QString::fromUtf8("label_147"));
+        label_147->setAlignment(Qt::AlignCenter);
+
+        gridLayout_39->addWidget(label_147, 0, 2, 1, 1);
+
+        leSpeedOfPositionMode_14 = new QLineEdit(fConveyorCustom);
+        leSpeedOfPositionMode_14->setObjectName(QString::fromUtf8("leSpeedOfPositionMode_14"));
+        leSpeedOfPositionMode_14->setEnabled(true);
+        leSpeedOfPositionMode_14->setMinimumSize(QSize(0, 30));
+        leSpeedOfPositionMode_14->setMaximumSize(QSize(200, 16777215));
+        leSpeedOfPositionMode_14->setFont(font19);
+        leSpeedOfPositionMode_14->setClearButtonEnabled(false);
+
+        gridLayout_39->addWidget(leSpeedOfPositionMode_14, 2, 1, 1, 1);
+
+        pushButton_8 = new QPushButton(fConveyorCustom);
+        pushButton_8->setObjectName(QString::fromUtf8("pushButton_8"));
+        pushButton_8->setMinimumSize(QSize(0, 30));
+
+        gridLayout_39->addWidget(pushButton_8, 3, 1, 1, 1);
+
+        leSpeedOfPositionMode_16 = new QLineEdit(fConveyorCustom);
+        leSpeedOfPositionMode_16->setObjectName(QString::fromUtf8("leSpeedOfPositionMode_16"));
+        leSpeedOfPositionMode_16->setEnabled(true);
+        leSpeedOfPositionMode_16->setMinimumSize(QSize(0, 30));
+        leSpeedOfPositionMode_16->setMaximumSize(QSize(200, 16777215));
+        leSpeedOfPositionMode_16->setFont(font19);
+        leSpeedOfPositionMode_16->setClearButtonEnabled(false);
+
+        gridLayout_39->addWidget(leSpeedOfPositionMode_16, 4, 2, 1, 1);
+
+        label_153 = new QLabel(fConveyorCustom);
+        label_153->setObjectName(QString::fromUtf8("label_153"));
+        label_153->setAlignment(Qt::AlignCenter);
+
+        gridLayout_39->addWidget(label_153, 0, 0, 1, 1);
+
+        pushButton_4 = new QPushButton(fConveyorCustom);
+        pushButton_4->setObjectName(QString::fromUtf8("pushButton_4"));
+        pushButton_4->setMinimumSize(QSize(0, 30));
+
+        gridLayout_39->addWidget(pushButton_4, 1, 0, 1, 1);
+
+        pushButton_5 = new QPushButton(fConveyorCustom);
+        pushButton_5->setObjectName(QString::fromUtf8("pushButton_5"));
+        pushButton_5->setMinimumSize(QSize(0, 30));
+
+        gridLayout_39->addWidget(pushButton_5, 3, 0, 1, 1);
+
+        leSpeedOfPositionMode_12 = new QLineEdit(fConveyorCustom);
+        leSpeedOfPositionMode_12->setObjectName(QString::fromUtf8("leSpeedOfPositionMode_12"));
+        leSpeedOfPositionMode_12->setEnabled(true);
+        leSpeedOfPositionMode_12->setMinimumSize(QSize(0, 30));
+        leSpeedOfPositionMode_12->setMaximumSize(QSize(200, 16777215));
+        leSpeedOfPositionMode_12->setFont(font19);
+        leSpeedOfPositionMode_12->setClearButtonEnabled(false);
+
+        gridLayout_39->addWidget(leSpeedOfPositionMode_12, 4, 0, 1, 1);
+
+        leConveyorvMovingValue_5 = new QLineEdit(fConveyorCustom);
+        leConveyorvMovingValue_5->setObjectName(QString::fromUtf8("leConveyorvMovingValue_5"));
+        leConveyorvMovingValue_5->setMinimumSize(QSize(0, 30));
+        leConveyorvMovingValue_5->setMaximumSize(QSize(200, 16777215));
+        leConveyorvMovingValue_5->setFont(font19);
+
+        gridLayout_39->addWidget(leConveyorvMovingValue_5, 2, 0, 1, 1);
+
+        pushButton_6 = new QPushButton(fConveyorCustom);
+        pushButton_6->setObjectName(QString::fromUtf8("pushButton_6"));
+        pushButton_6->setMinimumSize(QSize(0, 30));
+
+        gridLayout_39->addWidget(pushButton_6, 1, 1, 1, 1);
+
+        leSpeedOfPositionMode_15 = new QLineEdit(fConveyorCustom);
+        leSpeedOfPositionMode_15->setObjectName(QString::fromUtf8("leSpeedOfPositionMode_15"));
+        leSpeedOfPositionMode_15->setEnabled(true);
+        leSpeedOfPositionMode_15->setMinimumSize(QSize(0, 30));
+        leSpeedOfPositionMode_15->setMaximumSize(QSize(200, 16777215));
+        leSpeedOfPositionMode_15->setFont(font19);
+        leSpeedOfPositionMode_15->setClearButtonEnabled(false);
+
+        gridLayout_39->addWidget(leSpeedOfPositionMode_15, 2, 2, 1, 1);
+
+        label_154 = new QLabel(fConveyorCustom);
+        label_154->setObjectName(QString::fromUtf8("label_154"));
+        label_154->setAlignment(Qt::AlignCenter);
+
+        gridLayout_39->addWidget(label_154, 0, 1, 1, 1);
+
+
+        verticalLayout_22->addWidget(fConveyorCustom);
 
         verticalSpacer_2 = new QSpacerItem(20, 304, QSizePolicy::Minimum, QSizePolicy::Expanding);
 
@@ -6627,7 +6944,7 @@ public:
         pbTransformPerspective->setDefault(false);
         pbImageMapping->setDefault(false);
         cbImageSource->setCurrentIndex(0);
-        twDevices->setCurrentIndex(0);
+        twDevices->setCurrentIndex(1);
         RobotTabWidget->setCurrentIndex(2);
         tabWidget_2->setCurrentIndex(0);
         cbDivision->setCurrentIndex(1);
@@ -7457,24 +7774,16 @@ public:
         RobotTabWidget->setTabText(RobotTabWidget->indexOf(IOTab), QCoreApplication::translate("RobotWindow", "IO", nullptr));
         twDevices->setTabText(twDevices->indexOf(tRobot), QCoreApplication::translate("RobotWindow", "Robot", nullptr));
         pbConveyorConnect->setText(QCoreApplication::translate("RobotWindow", "Connect", nullptr));
-        lbConveyorCOMName->setText(QCoreApplication::translate("RobotWindow", "COM", nullptr));
         label_2->setText(QCoreApplication::translate("RobotWindow", "ID", nullptr));
         cbSelectedConveyor->setItemText(0, QCoreApplication::translate("RobotWindow", "0", nullptr));
         cbSelectedConveyor->setItemText(1, QCoreApplication::translate("RobotWindow", "+", nullptr));
 
-        label_46->setText(QCoreApplication::translate("RobotWindow", "Moving Mode", nullptr));
-        cbConveyorValueType->setItemText(0, QCoreApplication::translate("RobotWindow", "Speed", nullptr));
-        cbConveyorValueType->setItemText(1, QCoreApplication::translate("RobotWindow", "Position", nullptr));
+        label_28->setText(QCoreApplication::translate("RobotWindow", "Type", nullptr));
+        cbConveyorType->setItemText(0, QCoreApplication::translate("RobotWindow", "Conveyor X", nullptr));
+        cbConveyorType->setItemText(1, QCoreApplication::translate("RobotWindow", "Conveyor Hub X", nullptr));
+        cbConveyorType->setItemText(2, QCoreApplication::translate("RobotWindow", "Custom", nullptr));
 
-        label_52->setText(QCoreApplication::translate("RobotWindow", "Control Mode", nullptr));
-        cbConveyorMode->setItemText(0, QCoreApplication::translate("RobotWindow", "Manual", nullptr));
-        cbConveyorMode->setItemText(1, QCoreApplication::translate("RobotWindow", "UART", nullptr));
-
-#if QT_CONFIG(tooltip)
-        cbConveyorMode->setToolTip(QCoreApplication::translate("RobotWindow", "<html><head/><body><p><a name=\"31\"/><span style=\" font-family:'-apple-system','BlinkMacSystemFont','Segoe UI','Roboto','Helvetica Neue','Arial','Noto Sans','sans-serif','Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'; font-weight:600; color:#212529;\">M</span><span style=\" font-family:'-apple-system','BlinkMacSystemFont','Segoe UI','Roboto','Helvetica Neue','Arial','Noto Sans','sans-serif','Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'; font-weight:600; color:#212529;\">310 \342\200\223 Set Mode</span></p><p><span style=\" font-family:'-apple-system','BlinkMacSystemFont','Segoe UI','Roboto','Helvetica Neue','Arial','Noto Sans','sans-serif','Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'; color:#212529; background-color:#ffffff;\">Description: .</span></p><p><span style=\" font-family:'-apple-system','BlinkMacSystemFont','Segoe UI','Roboto','Helvetica Neue','Arial','Noto Sans','sans-serif','Apple Color Emoji','Segoe UI Emoji','Se"
-                        "goe UI Symbol','Noto Color Emoji'; color:#212529; background-color:#ffffff;\">Usage: M310 [&lt;index&gt;]</span></p><p><span style=\" font-family:'-apple-system','BlinkMacSystemFont','Segoe UI','Roboto','Helvetica Neue','Arial','Noto Sans','sans-serif','Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'; color:#212529; background-color:#ffffff;\">Parameters:</span></p><p><span style=\" font-family:'-apple-system','BlinkMacSystemFont','Segoe UI','Roboto','Helvetica Neue','Arial','Noto Sans','sans-serif','Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'; color:#212529; background-color:#ffffff;\">1: Serial Mode.</span></p><p><span style=\" font-family:'-apple-system','BlinkMacSystemFont','Segoe UI','Roboto','Helvetica Neue','Arial','Noto Sans','sans-serif','Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'; color:#212529; background-color:#ffffff;\">0: Volume Mode.</span></p></body></html>", nullptr));
-#endif // QT_CONFIG(tooltip)
-        label_12->setText(QCoreApplication::translate("RobotWindow", "Value of Moving", nullptr));
+        lbConveyorCOMName->setText(QCoreApplication::translate("RobotWindow", "COM", nullptr));
 #if QT_CONFIG(tooltip)
         leConveyorvMovingValue->setToolTip(QCoreApplication::translate("RobotWindow", "<html><head/><body><p><a name=\"32\"/><span style=\" font-family:'-apple-system','BlinkMacSystemFont','Segoe UI','Roboto','Helvetica Neue','Arial','Noto Sans','sans-serif','Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'; font-weight:600; color:#212529;\">M</span><span style=\" font-family:'-apple-system','BlinkMacSystemFont','Segoe UI','Roboto','Helvetica Neue','Arial','Noto Sans','sans-serif','Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'; font-weight:600; color:#212529;\">311 \342\200\223 Set Speed</span></p><p><span style=\" font-family:'-apple-system','BlinkMacSystemFont','Segoe UI','Roboto','Helvetica Neue','Arial','Noto Sans','sans-serif','Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'; color:#212529; background-color:#ffffff;\">Description:</span></p><p><span style=\" font-family:'-apple-system','BlinkMacSystemFont','Segoe UI','Roboto','Helvetica Neue','Arial','Noto Sans','sans-serif','Apple Color Emoji','Segoe UI Emoji','Seg"
                         "oe UI Symbol','Noto Color Emoji'; color:#212529; background-color:#ffffff;\">Usage: M311 [&lt;value&gt;]</span></p><p><span style=\" font-family:'-apple-system','BlinkMacSystemFont','Segoe UI','Roboto','Helvetica Neue','Arial','Noto Sans','sans-serif','Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'; color:#212529; background-color:#ffffff;\">Parameters:</span></p><p><span style=\" font-family:'-apple-system','BlinkMacSystemFont','Segoe UI','Roboto','Helvetica Neue','Arial','Noto Sans','sans-serif','Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'; color:#212529; background-color:#ffffff;\">[&lt;value&gt;]: Speed in mm/s</span></p><p><br/></p><p><a name=\"33\"/><span style=\" font-family:'-apple-system','BlinkMacSystemFont','Segoe UI','Roboto','Helvetica Neue','Arial','Noto Sans','sans-serif','Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'; font-weight:600; color:#212529;\">M</span><span style=\" font-family:'-apple-system','BlinkMacSys"
@@ -7482,13 +7791,104 @@ public:
                         "-color:#ffffff;\">Parameters:</span></p><p><span style=\" font-family:'-apple-system','BlinkMacSystemFont','Segoe UI','Roboto','Helvetica Neue','Arial','Noto Sans','sans-serif','Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'; color:#212529; background-color:#ffffff;\">[&lt;value&gt;]: Position in mm</span></p></body></html>", nullptr));
 #endif // QT_CONFIG(tooltip)
         leConveyorvMovingValue->setText(QCoreApplication::translate("RobotWindow", "-100", nullptr));
-        lbUnitOfConveyorMoving->setText(QCoreApplication::translate("RobotWindow", "mm/s", nullptr));
-        label_57->setText(QCoreApplication::translate("RobotWindow", "Velocity in Position Mode", nullptr));
-        lbSpeedOfPositionMode->setText(QCoreApplication::translate("RobotWindow", "mm/s", nullptr));
+        cbConveyorValueType->setItemText(0, QCoreApplication::translate("RobotWindow", "Continuous", nullptr));
+        cbConveyorValueType->setItemText(1, QCoreApplication::translate("RobotWindow", "Position", nullptr));
+
+        lbUnitOfConveyorMoving->setText(QCoreApplication::translate("RobotWindow", "mm", nullptr));
+        label_57->setText(QCoreApplication::translate("RobotWindow", "Speed", nullptr));
+        label_46->setText(QCoreApplication::translate("RobotWindow", "Moving Mode", nullptr));
+        cbConveyorMode->setItemText(0, QCoreApplication::translate("RobotWindow", "Manual", nullptr));
+        cbConveyorMode->setItemText(1, QCoreApplication::translate("RobotWindow", "UART", nullptr));
+
+#if QT_CONFIG(tooltip)
+        cbConveyorMode->setToolTip(QCoreApplication::translate("RobotWindow", "<html><head/><body><p><a name=\"31\"/><span style=\" font-family:'-apple-system','BlinkMacSystemFont','Segoe UI','Roboto','Helvetica Neue','Arial','Noto Sans','sans-serif','Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'; font-weight:600; color:#212529;\">M</span><span style=\" font-family:'-apple-system','BlinkMacSystemFont','Segoe UI','Roboto','Helvetica Neue','Arial','Noto Sans','sans-serif','Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'; font-weight:600; color:#212529;\">310 \342\200\223 Set Mode</span></p><p><span style=\" font-family:'-apple-system','BlinkMacSystemFont','Segoe UI','Roboto','Helvetica Neue','Arial','Noto Sans','sans-serif','Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'; color:#212529; background-color:#ffffff;\">Description: .</span></p><p><span style=\" font-family:'-apple-system','BlinkMacSystemFont','Segoe UI','Roboto','Helvetica Neue','Arial','Noto Sans','sans-serif','Apple Color Emoji','Segoe UI Emoji','Se"
+                        "goe UI Symbol','Noto Color Emoji'; color:#212529; background-color:#ffffff;\">Usage: M310 [&lt;index&gt;]</span></p><p><span style=\" font-family:'-apple-system','BlinkMacSystemFont','Segoe UI','Roboto','Helvetica Neue','Arial','Noto Sans','sans-serif','Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'; color:#212529; background-color:#ffffff;\">Parameters:</span></p><p><span style=\" font-family:'-apple-system','BlinkMacSystemFont','Segoe UI','Roboto','Helvetica Neue','Arial','Noto Sans','sans-serif','Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'; color:#212529; background-color:#ffffff;\">1: Serial Mode.</span></p><p><span style=\" font-family:'-apple-system','BlinkMacSystemFont','Segoe UI','Roboto','Helvetica Neue','Arial','Noto Sans','sans-serif','Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'; color:#212529; background-color:#ffffff;\">0: Volume Mode.</span></p></body></html>", nullptr));
+#endif // QT_CONFIG(tooltip)
+        label_12->setText(QCoreApplication::translate("RobotWindow", "Position", nullptr));
 #if QT_CONFIG(tooltip)
         leSpeedOfPositionMode->setToolTip(QString());
 #endif // QT_CONFIG(tooltip)
         leSpeedOfPositionMode->setText(QCoreApplication::translate("RobotWindow", "50", nullptr));
+        label_52->setText(QCoreApplication::translate("RobotWindow", "Control Mode", nullptr));
+        lbSpeedOfPositionMode->setText(QCoreApplication::translate("RobotWindow", "mm/s", nullptr));
+        label_77->setText(QCoreApplication::translate("RobotWindow", "Position (mm)", nullptr));
+#if QT_CONFIG(tooltip)
+        leSpeedOfPositionMode_3->setToolTip(QString());
+#endif // QT_CONFIG(tooltip)
+        leSpeedOfPositionMode_3->setText(QCoreApplication::translate("RobotWindow", "50", nullptr));
+        label_115->setText(QCoreApplication::translate("RobotWindow", "Moving Mode", nullptr));
+        label_114->setText(QCoreApplication::translate("RobotWindow", "C3", nullptr));
+        cbConveyorValueType_4->setItemText(0, QCoreApplication::translate("RobotWindow", "Continuous", nullptr));
+        cbConveyorValueType_4->setItemText(1, QCoreApplication::translate("RobotWindow", "Position", nullptr));
+
+#if QT_CONFIG(tooltip)
+        leConveyorvMovingValue_2->setToolTip(QCoreApplication::translate("RobotWindow", "<html><head/><body><p><a name=\"32\"/><span style=\" font-family:'-apple-system','BlinkMacSystemFont','Segoe UI','Roboto','Helvetica Neue','Arial','Noto Sans','sans-serif','Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'; font-weight:600; color:#212529;\">M</span><span style=\" font-family:'-apple-system','BlinkMacSystemFont','Segoe UI','Roboto','Helvetica Neue','Arial','Noto Sans','sans-serif','Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'; font-weight:600; color:#212529;\">311 \342\200\223 Set Speed</span></p><p><span style=\" font-family:'-apple-system','BlinkMacSystemFont','Segoe UI','Roboto','Helvetica Neue','Arial','Noto Sans','sans-serif','Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'; color:#212529; background-color:#ffffff;\">Description:</span></p><p><span style=\" font-family:'-apple-system','BlinkMacSystemFont','Segoe UI','Roboto','Helvetica Neue','Arial','Noto Sans','sans-serif','Apple Color Emoji','Segoe UI Emoji','Seg"
+                        "oe UI Symbol','Noto Color Emoji'; color:#212529; background-color:#ffffff;\">Usage: M311 [&lt;value&gt;]</span></p><p><span style=\" font-family:'-apple-system','BlinkMacSystemFont','Segoe UI','Roboto','Helvetica Neue','Arial','Noto Sans','sans-serif','Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'; color:#212529; background-color:#ffffff;\">Parameters:</span></p><p><span style=\" font-family:'-apple-system','BlinkMacSystemFont','Segoe UI','Roboto','Helvetica Neue','Arial','Noto Sans','sans-serif','Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'; color:#212529; background-color:#ffffff;\">[&lt;value&gt;]: Speed in mm/s</span></p><p><br/></p><p><a name=\"33\"/><span style=\" font-family:'-apple-system','BlinkMacSystemFont','Segoe UI','Roboto','Helvetica Neue','Arial','Noto Sans','sans-serif','Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'; font-weight:600; color:#212529;\">M</span><span style=\" font-family:'-apple-system','BlinkMacSys"
+                        "temFont','Segoe UI','Roboto','Helvetica Neue','Arial','Noto Sans','sans-serif','Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'; font-weight:600; color:#212529;\">312 - Set Position</span></p><p><span style=\" font-family:'-apple-system','BlinkMacSystemFont','Segoe UI','Roboto','Helvetica Neue','Arial','Noto Sans','sans-serif','Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'; color:#212529; background-color:#ffffff;\">Description:</span></p><p><span style=\" font-family:'-apple-system','BlinkMacSystemFont','Segoe UI','Roboto','Helvetica Neue','Arial','Noto Sans','sans-serif','Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'; color:#212529; background-color:#ffffff;\">Usage: M312 [&lt;value&gt;]</span></p><p><span style=\" font-family:'-apple-system','BlinkMacSystemFont','Segoe UI','Roboto','Helvetica Neue','Arial','Noto Sans','sans-serif','Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'; color:#212529; background"
+                        "-color:#ffffff;\">Parameters:</span></p><p><span style=\" font-family:'-apple-system','BlinkMacSystemFont','Segoe UI','Roboto','Helvetica Neue','Arial','Noto Sans','sans-serif','Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'; color:#212529; background-color:#ffffff;\">[&lt;value&gt;]: Position in mm</span></p></body></html>", nullptr));
+#endif // QT_CONFIG(tooltip)
+        leConveyorvMovingValue_2->setText(QCoreApplication::translate("RobotWindow", "-100", nullptr));
+        label_75->setText(QCoreApplication::translate("RobotWindow", "C1", nullptr));
+        label_82->setText(QCoreApplication::translate("RobotWindow", "C2", nullptr));
+#if QT_CONFIG(tooltip)
+        leSpeedOfPositionMode_2->setToolTip(QString());
+#endif // QT_CONFIG(tooltip)
+        leSpeedOfPositionMode_2->setText(QCoreApplication::translate("RobotWindow", "50", nullptr));
+#if QT_CONFIG(tooltip)
+        leSpeedOfPositionMode_6->setToolTip(QString());
+#endif // QT_CONFIG(tooltip)
+        leSpeedOfPositionMode_6->setText(QCoreApplication::translate("RobotWindow", "50", nullptr));
+        cbConveyorValueType_5->setItemText(0, QCoreApplication::translate("RobotWindow", "Continuous", nullptr));
+        cbConveyorValueType_5->setItemText(1, QCoreApplication::translate("RobotWindow", "Position", nullptr));
+
+#if QT_CONFIG(tooltip)
+        leSpeedOfPositionMode_10->setToolTip(QString());
+#endif // QT_CONFIG(tooltip)
+        leSpeedOfPositionMode_10->setText(QCoreApplication::translate("RobotWindow", "50", nullptr));
+        cbConveyorValueType_2->setItemText(0, QCoreApplication::translate("RobotWindow", "Continuous", nullptr));
+        cbConveyorValueType_2->setItemText(1, QCoreApplication::translate("RobotWindow", "Position", nullptr));
+
+        label_80->setText(QCoreApplication::translate("RobotWindow", "Speed (mm/s)", nullptr));
+#if QT_CONFIG(tooltip)
+        leSpeedOfPositionMode_11->setToolTip(QString());
+#endif // QT_CONFIG(tooltip)
+        leSpeedOfPositionMode_11->setText(QCoreApplication::translate("RobotWindow", "50", nullptr));
+#if QT_CONFIG(tooltip)
+        leSpeedOfPositionMode_13->setToolTip(QString());
+#endif // QT_CONFIG(tooltip)
+        leSpeedOfPositionMode_13->setText(QCoreApplication::translate("RobotWindow", "robot0 M05 D1", nullptr));
+        pushButton_7->setText(QCoreApplication::translate("RobotWindow", "Start", nullptr));
+        pushButton_9->setText(QCoreApplication::translate("RobotWindow", "Stop", nullptr));
+        label_147->setText(QCoreApplication::translate("RobotWindow", "C3", nullptr));
+#if QT_CONFIG(tooltip)
+        leSpeedOfPositionMode_14->setToolTip(QString());
+#endif // QT_CONFIG(tooltip)
+        leSpeedOfPositionMode_14->setText(QCoreApplication::translate("RobotWindow", "robot0 M03 D1", nullptr));
+        pushButton_8->setText(QCoreApplication::translate("RobotWindow", "Stop", nullptr));
+#if QT_CONFIG(tooltip)
+        leSpeedOfPositionMode_16->setToolTip(QString());
+#endif // QT_CONFIG(tooltip)
+        leSpeedOfPositionMode_16->setText(QCoreApplication::translate("RobotWindow", "robot0 M05 D2", nullptr));
+        label_153->setText(QCoreApplication::translate("RobotWindow", "C1", nullptr));
+        pushButton_4->setText(QCoreApplication::translate("RobotWindow", "Start", nullptr));
+        pushButton_5->setText(QCoreApplication::translate("RobotWindow", "Stop", nullptr));
+#if QT_CONFIG(tooltip)
+        leSpeedOfPositionMode_12->setToolTip(QString());
+#endif // QT_CONFIG(tooltip)
+        leSpeedOfPositionMode_12->setText(QCoreApplication::translate("RobotWindow", "robot0 M05 D0", nullptr));
+#if QT_CONFIG(tooltip)
+        leConveyorvMovingValue_5->setToolTip(QCoreApplication::translate("RobotWindow", "<html><head/><body><p><a name=\"32\"/><span style=\" font-family:'-apple-system','BlinkMacSystemFont','Segoe UI','Roboto','Helvetica Neue','Arial','Noto Sans','sans-serif','Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'; font-weight:600; color:#212529;\">M</span><span style=\" font-family:'-apple-system','BlinkMacSystemFont','Segoe UI','Roboto','Helvetica Neue','Arial','Noto Sans','sans-serif','Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'; font-weight:600; color:#212529;\">311 \342\200\223 Set Speed</span></p><p><span style=\" font-family:'-apple-system','BlinkMacSystemFont','Segoe UI','Roboto','Helvetica Neue','Arial','Noto Sans','sans-serif','Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'; color:#212529; background-color:#ffffff;\">Description:</span></p><p><span style=\" font-family:'-apple-system','BlinkMacSystemFont','Segoe UI','Roboto','Helvetica Neue','Arial','Noto Sans','sans-serif','Apple Color Emoji','Segoe UI Emoji','Seg"
+                        "oe UI Symbol','Noto Color Emoji'; color:#212529; background-color:#ffffff;\">Usage: M311 [&lt;value&gt;]</span></p><p><span style=\" font-family:'-apple-system','BlinkMacSystemFont','Segoe UI','Roboto','Helvetica Neue','Arial','Noto Sans','sans-serif','Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'; color:#212529; background-color:#ffffff;\">Parameters:</span></p><p><span style=\" font-family:'-apple-system','BlinkMacSystemFont','Segoe UI','Roboto','Helvetica Neue','Arial','Noto Sans','sans-serif','Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'; color:#212529; background-color:#ffffff;\">[&lt;value&gt;]: Speed in mm/s</span></p><p><br/></p><p><a name=\"33\"/><span style=\" font-family:'-apple-system','BlinkMacSystemFont','Segoe UI','Roboto','Helvetica Neue','Arial','Noto Sans','sans-serif','Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'; font-weight:600; color:#212529;\">M</span><span style=\" font-family:'-apple-system','BlinkMacSys"
+                        "temFont','Segoe UI','Roboto','Helvetica Neue','Arial','Noto Sans','sans-serif','Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'; font-weight:600; color:#212529;\">312 - Set Position</span></p><p><span style=\" font-family:'-apple-system','BlinkMacSystemFont','Segoe UI','Roboto','Helvetica Neue','Arial','Noto Sans','sans-serif','Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'; color:#212529; background-color:#ffffff;\">Description:</span></p><p><span style=\" font-family:'-apple-system','BlinkMacSystemFont','Segoe UI','Roboto','Helvetica Neue','Arial','Noto Sans','sans-serif','Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'; color:#212529; background-color:#ffffff;\">Usage: M312 [&lt;value&gt;]</span></p><p><span style=\" font-family:'-apple-system','BlinkMacSystemFont','Segoe UI','Roboto','Helvetica Neue','Arial','Noto Sans','sans-serif','Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'; color:#212529; background"
+                        "-color:#ffffff;\">Parameters:</span></p><p><span style=\" font-family:'-apple-system','BlinkMacSystemFont','Segoe UI','Roboto','Helvetica Neue','Arial','Noto Sans','sans-serif','Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'; color:#212529; background-color:#ffffff;\">[&lt;value&gt;]: Position in mm</span></p></body></html>", nullptr));
+#endif // QT_CONFIG(tooltip)
+        leConveyorvMovingValue_5->setText(QCoreApplication::translate("RobotWindow", "robot0 M03 D0", nullptr));
+        pushButton_6->setText(QCoreApplication::translate("RobotWindow", "Start", nullptr));
+#if QT_CONFIG(tooltip)
+        leSpeedOfPositionMode_15->setToolTip(QString());
+#endif // QT_CONFIG(tooltip)
+        leSpeedOfPositionMode_15->setText(QCoreApplication::translate("RobotWindow", "robot0 M03 D2", nullptr));
+        label_154->setText(QCoreApplication::translate("RobotWindow", "C2", nullptr));
         twDevices->setTabText(twDevices->indexOf(ConveyorTab), QCoreApplication::translate("RobotWindow", "Conveyor", nullptr));
         twDevices->setTabText(twDevices->indexOf(EncoderTab), QCoreApplication::translate("RobotWindow", "Encoder", nullptr));
         pbSlidingConnect->setText(QCoreApplication::translate("RobotWindow", "Connect", nullptr));
@@ -7513,7 +7913,7 @@ public:
         lbExternalCOMName->setText(QCoreApplication::translate("RobotWindow", "COM", nullptr));
         leTransmitToMCU->setText(QString());
         leTransmitToMCU->setPlaceholderText(QCoreApplication::translate("RobotWindow", "Transmit to MCU", nullptr));
-        twDevices->setTabText(twDevices->indexOf(MCUTab), QCoreApplication::translate("RobotWindow", "MCU", nullptr));
+        twDevices->setTabText(twDevices->indexOf(MCUTab), QCoreApplication::translate("RobotWindow", "External Device", nullptr));
         twDevices->setTabText(twDevices->indexOf(PlusDeviceTab), QCoreApplication::translate("RobotWindow", "+", nullptr));
         menuHelp->setTitle(QCoreApplication::translate("RobotWindow", "Help", nullptr));
         menuReferences->setTitle(QCoreApplication::translate("RobotWindow", "References", nullptr));

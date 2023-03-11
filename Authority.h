@@ -5,10 +5,10 @@
 #include <QWidget>
 #include <SoftwareManager.h>
 #include <ProjectManager.h>
-#include <robotmanager.h>
 #include <RobotWindow.h>
 #include <QVBoxLayout>
 #include <QGraphicsView>
+#include "VarManager.h"
 
 class Authority : public QObject
 {
@@ -41,7 +41,7 @@ public:
 
     QStringList operatorGcodeProgram;
 public slots:
-    void UpdateVariableToDisplay(QString key, QString value);
+    void UpdateVariableToDisplay(const QString& key, const QVariant& value);
 
 signals:
 

@@ -2,12 +2,10 @@
 #define SOFTWAREMANAGER_H
 
 #include "VariableManager.h"
-#include "robotmanager.h"
 #include <QList>
 #include "ProjectManager.h"
 
 class ProjectManager;
-class RobotManager;
 
 class SoftwareManager
 {
@@ -27,8 +25,6 @@ public:
 
     QObject* SoftwarePointer = NULL;
 
-    VariableManager* ProgramVariableManager;
-    //QList<RobotManager*>* RobotManagers;
     ProjectManager* SoftwareProjectManager;
 
     QString SoftwarePath = "";

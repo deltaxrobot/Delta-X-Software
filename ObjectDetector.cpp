@@ -164,24 +164,7 @@ void ObjectDetector::LoadCamera2()
 
             bool isCameraUsingByOtherRobot = false;
 
-            if (mParent->RobotManagerPointer != NULL)
-            {
-                if (mParent->RobotManagerPointer->RobotWindows.size() > 0)
-                {
-                    for (int i = 0; i < mParent->RobotManagerPointer->RobotWindows.size(); i++)
-                    {
-                        if (mParent == mParent->RobotManagerPointer->RobotWindows.at(i))
-                            continue;
 
-                        if (mParent->RobotManagerPointer->RobotWindows.at(i)->DeltaImageProcesser->RunningCamera == RunningCamera)
-                        {
-                            Camera = mParent->RobotManagerPointer->RobotWindows.at(i)->DeltaImageProcesser->Camera;
-//                            VideoProcessorThread->getCamera(Camera);
-                            isCameraUsingByOtherRobot = true;
-                        }
-                    }
-                }
-            }
 
             if (isCameraUsingByOtherRobot == false)
             {

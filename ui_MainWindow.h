@@ -33,6 +33,7 @@
 #include <QtWidgets/QTableWidget>
 #include <QtWidgets/QTextEdit>
 #include <QtWidgets/QToolButton>
+#include <QtWidgets/QTreeView>
 #include <QtWidgets/QTreeWidget>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
@@ -83,7 +84,7 @@ public:
     QStackedWidget *swPageStack;
     QWidget *pVariable;
     QVBoxLayout *verticalLayout_4;
-    QTreeWidget *trwProgramVariableTable;
+    QTreeView *tvVariables;
     QWidget *pOperator;
     QVBoxLayout *verticalLayout_8;
     QLabel *label_21;
@@ -215,6 +216,7 @@ public:
         MainWindow->setMinimumSize(QSize(800, 480));
         QFont font;
         font.setBold(false);
+        font.setWeight(50);
         font.setKerning(true);
         MainWindow->setFont(font);
         QIcon icon;
@@ -608,14 +610,10 @@ public:
         verticalLayout_4->setSpacing(6);
         verticalLayout_4->setContentsMargins(11, 11, 11, 11);
         verticalLayout_4->setObjectName(QString::fromUtf8("verticalLayout_4"));
-        trwProgramVariableTable = new QTreeWidget(pVariable);
-        QTreeWidgetItem *__qtreewidgetitem = new QTreeWidgetItem();
-        __qtreewidgetitem->setText(0, QString::fromUtf8("1"));
-        trwProgramVariableTable->setHeaderItem(__qtreewidgetitem);
-        trwProgramVariableTable->setObjectName(QString::fromUtf8("trwProgramVariableTable"));
-        trwProgramVariableTable->header()->setDefaultSectionSize(300);
+        tvVariables = new QTreeView(pVariable);
+        tvVariables->setObjectName(QString::fromUtf8("tvVariables"));
 
-        verticalLayout_4->addWidget(trwProgramVariableTable);
+        verticalLayout_4->addWidget(tvVariables);
 
         swPageStack->addWidget(pVariable);
         pOperator = new QWidget();
@@ -629,6 +627,7 @@ public:
         QFont font1;
         font1.setPointSize(12);
         font1.setBold(true);
+        font1.setWeight(75);
         label_21->setFont(font1);
 
         verticalLayout_8->addWidget(label_21);
@@ -638,7 +637,7 @@ public:
         scrollArea_2->setWidgetResizable(true);
         scrollAreaWidgetContents_2 = new QWidget();
         scrollAreaWidgetContents_2->setObjectName(QString::fromUtf8("scrollAreaWidgetContents_2"));
-        scrollAreaWidgetContents_2->setGeometry(QRect(0, 0, 1099, 614));
+        scrollAreaWidgetContents_2->setGeometry(QRect(0, 0, 713, 211));
         verticalLayout_10 = new QVBoxLayout(scrollAreaWidgetContents_2);
         verticalLayout_10->setSpacing(6);
         verticalLayout_10->setContentsMargins(11, 11, 11, 11);
@@ -648,6 +647,7 @@ public:
         QFont font2;
         font2.setPointSize(20);
         font2.setBold(true);
+        font2.setWeight(75);
         lbOperatorTitile->setFont(font2);
         lbOperatorTitile->setStyleSheet(QString::fromUtf8("QLabel\n"
 "{\n"
@@ -818,6 +818,7 @@ public:
         groupBox_4->setObjectName(QString::fromUtf8("groupBox_4"));
         QFont font3;
         font3.setBold(true);
+        font3.setWeight(75);
         groupBox_4->setFont(font3);
         groupBox_4->setStyleSheet(QString::fromUtf8("QLabel:hover\n"
 "{\n"
@@ -989,7 +990,7 @@ public:
         scrollArea->setWidgetResizable(true);
         scrollAreaWidgetContents = new QWidget();
         scrollAreaWidgetContents->setObjectName(QString::fromUtf8("scrollAreaWidgetContents"));
-        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 1085, 700));
+        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 636, 700));
         scrollAreaWidgetContents->setMinimumSize(QSize(0, 700));
         verticalLayout_7 = new QVBoxLayout(scrollAreaWidgetContents);
         verticalLayout_7->setSpacing(6);
@@ -1011,6 +1012,7 @@ public:
         groupBox_5->setMinimumSize(QSize(0, 0));
         QFont font4;
         font4.setBold(false);
+        font4.setWeight(50);
         groupBox_5->setFont(font4);
         gridLayout_4 = new QGridLayout(groupBox_5);
         gridLayout_4->setSpacing(6);
@@ -1306,6 +1308,7 @@ public:
         QFont font5;
         font5.setPointSize(12);
         font5.setBold(false);
+        font5.setWeight(50);
         font5.setKerning(true);
         twProjectManager->setFont(font5);
         twProjectManager->setStyleSheet(QString::fromUtf8(""));
@@ -1391,7 +1394,7 @@ public:
         retranslateUi(MainWindow);
 
         stackedWidget->setCurrentIndex(0);
-        swPageStack->setCurrentIndex(5);
+        swPageStack->setCurrentIndex(0);
         swAuthority->setCurrentIndex(0);
         twProjectManager->setCurrentIndex(0);
 
@@ -1429,15 +1432,13 @@ public:
         tbCommunity->setText(QCoreApplication::translate("MainWindow", "Community", nullptr));
         tbAuthority->setText(QCoreApplication::translate("MainWindow", "Admin", nullptr));
         tbSetting->setText(QCoreApplication::translate("MainWindow", "Setting", nullptr));
-        QTreeWidgetItem *___qtreewidgetitem = trwProgramVariableTable->headerItem();
-        ___qtreewidgetitem->setText(1, QCoreApplication::translate("MainWindow", "Value", nullptr));
         label_21->setText(QCoreApplication::translate("MainWindow", "Operator", nullptr));
         lbOperatorTitile->setText(QCoreApplication::translate("MainWindow", "Delta Robot System", nullptr));
         pbStartSystem->setText(QCoreApplication::translate("MainWindow", "Start", nullptr));
         pbStopSystem->setText(QCoreApplication::translate("MainWindow", "Stop", nullptr));
-        QTreeWidgetItem *___qtreewidgetitem1 = twOperatorParameter->headerItem();
-        ___qtreewidgetitem1->setText(1, QCoreApplication::translate("MainWindow", "Value", nullptr));
-        ___qtreewidgetitem1->setText(0, QCoreApplication::translate("MainWindow", "Name", nullptr));
+        QTreeWidgetItem *___qtreewidgetitem = twOperatorParameter->headerItem();
+        ___qtreewidgetitem->setText(1, QCoreApplication::translate("MainWindow", "Value", nullptr));
+        ___qtreewidgetitem->setText(0, QCoreApplication::translate("MainWindow", "Name", nullptr));
         pbOperatorResetParameter->setText(QCoreApplication::translate("MainWindow", "Reset", nullptr));
         pbSwitchProgramer->setText(QCoreApplication::translate("MainWindow", "> Programer", nullptr));
         groupBox_4->setTitle(QCoreApplication::translate("MainWindow", "Project", nullptr));
@@ -1505,13 +1506,10 @@ public:
 
         twProjectManager->setTabText(twProjectManager->indexOf(tabAddNewButton), QCoreApplication::translate("MainWindow", "+", nullptr));
         teLoggingBox->setHtml(QCoreApplication::translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
-"hr { height: 1px; border-width: 0; }\n"
-"li.unchecked::marker { content: \"\\2610\"; }\n"
-"li.checked::marker { content: \"\\2612\"; }\n"
-"</style></head><body style=\" font-family:'Segoe UI'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:7.8pt;\"><br /></p></body></html>", nullptr));
+"</style></head><body style=\" font-family:'MS Shell Dlg 2'; font-size:7.8pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>", nullptr));
         tbExpandLoggingBox->setText(QString());
     } // retranslateUi
 

@@ -3,6 +3,12 @@
 
 #include <QWidget>
 #include <QTreeWidget>
+#include <QCoreApplication>
+#include <QHash>
+#include <QMutex>
+#include <QAbstractItemModel>
+#include <QVariant>
+#include <QDebug>
 
 class VariableManager : public QWidget
 {
