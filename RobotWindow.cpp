@@ -177,6 +177,7 @@ void RobotWindow::InitVariables()
     connect(ui->cbSelectedRobot, SIGNAL(currentIndexChanged(int)), this, SLOT(ChangeSelectedRobot(int)));
     connect(ui->tbDisableRobot, SIGNAL(clicked(bool)), this, SLOT(SetRobotState(bool)));
     connect(ui->tbRequestPosition, SIGNAL(clicked(bool)), this, SLOT(RequestPosition()));
+    connect(ui->cbRobotDOF, SIGNAL(currentIndexChanged(int)), this, SLOT(ChangeRobotDOF(int)));
 
     //----- Process ------
     ExternalScriptProcess = new QProcess(this);
@@ -1980,7 +1981,10 @@ void RobotWindow::GetDeviceInfo(QString json)
         float u = jsonObject.value("u").toDouble();
         float v = jsonObject.value("v").toDouble();
 
-        ReceiveHomePosition(x, y, z, w, u, v);
+        QString id = jsonObject.value("id").toString();
+
+        if (id == QString("robot") + ui->cbSelectedRobot->currentText())
+            ReceiveHomePosition(x, y, z, w, u, v);
 
         QString state = jsonObject.value("state").toString();
         if (state == "open")
@@ -2235,7 +2239,7 @@ void RobotWindow::ChangeSelectedRobot(int id)
     {
         QStandardItemModel *model = qobject_cast<QStandardItemModel*>(ui->cbSelectedRobot->model());
         QStandardItem *item = model->item(id);
-        item->setText(QString::number(id));
+        item->setText(QString::number(id + 1));
 
         ui->cbSelectedRobot->addItem("+");
     }
@@ -2243,6 +2247,34 @@ void RobotWindow::ChangeSelectedRobot(int id)
     DeviceManagerInstance->SelectedRobotID = id;
 
     QMetaObject::invokeMethod(DeviceManagerInstance, "RequestDeviceInfo", Qt::QueuedConnection, Q_ARG(int, DeviceManager::ROBOT));
+}
+
+void RobotWindow::ChangeRobotDOF(int id)
+{
+    if (id == 0)
+    {
+        emit Send(ConnectionManager::ROBOT, QString("M60 D0"));
+        emit Send(ConnectionManager::ROBOT, QString("M61 D0"));
+        emit Send(ConnectionManager::ROBOT, QString("M62 D0"));
+    }
+    else if (id == 1)
+    {
+        emit Send(ConnectionManager::ROBOT, QString("M60 D1"));
+        emit Send(ConnectionManager::ROBOT, QString("M61 D0"));
+        emit Send(ConnectionManager::ROBOT, QString("M62 D0"));
+    }
+    else if (id == 2)
+    {
+        emit Send(ConnectionManager::ROBOT, QString("M60 D1"));
+        emit Send(ConnectionManager::ROBOT, QString("M61 D1"));
+        emit Send(ConnectionManager::ROBOT, QString("M62 D0"));
+    }
+    else if (id == 3)
+    {
+        emit Send(ConnectionManager::ROBOT, QString("M60 D1"));
+        emit Send(ConnectionManager::ROBOT, QString("M61 D1"));
+        emit Send(ConnectionManager::ROBOT, QString("M62 D1"));
+    }
 }
 
 void RobotWindow::ChangeDeltaDashboard(int index)

@@ -1,6 +1,6 @@
 #include <windows.h>
 
-IDI_ICON1	ICON	DISCARDABLE	"E:\\Git\\DeltaXSoftware\\delta_x_logo_96x96.ico"
+IDI_ICON1	ICON	DISCARDABLE	"E:\\Software Projects\\Delta X Software\\DeltaXSoftware\\delta_x_logo_96x96.ico"
 
 VS_VERSION_INFO VERSIONINFO
 	FILEVERSION 0,0,0,0

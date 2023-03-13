@@ -30,6 +30,10 @@ windows {
 
 #}
 
+QMAKE_CXXFLAGS += -pthread
+QMAKE_LFLAGS += -pthread
+
+
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = DeltaRobotSoftware

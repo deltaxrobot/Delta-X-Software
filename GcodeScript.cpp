@@ -1029,8 +1029,6 @@ QString GcodeScript::getValueOfVariable(QString name)
 
 //    qDebug() << "Full name: " + fullName;
 
-    QStringList names = vars->keys();
-
     if (VarManager::getInstance()->contains(fullName) == true)
     {
         return VarManager::getInstance()->getVar(fullName).toString();

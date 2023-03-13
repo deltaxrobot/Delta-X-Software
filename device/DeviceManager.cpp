@@ -14,7 +14,7 @@ void DeviceManager::AddRobot()
 {
     qDebug() << "Add robot";
     Robot* robot = new Robot("auto", 115200, false);
-    robot->SetID(QString("robot") + QString::number(Robots.count()));
+    robot->SetID(QString("robot") + QString::number(Robots.count() + 1));
     Robots.append(robot);
     QThread* robotThread = new QThread(this);
     robot->moveToThread(robotThread);

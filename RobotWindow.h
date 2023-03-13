@@ -256,12 +256,13 @@ public slots:
     void ChangeRobotName(int tabIndex);
     void DeleteRobot(int index);
 
-    // ---- Robot Connection ----
+    // ---- Robot ----
     void ConnectDeltaRobot();
     void NoticeConnected();
 
     void ConfigConnection();
     void ChangeSelectedRobot(int id);
+    void ChangeRobotDOF(int id);
 
     // ---- Gcode Editor ----
 	void SaveProgram();
