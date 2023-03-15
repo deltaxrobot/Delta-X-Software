@@ -55,7 +55,7 @@ void MainWindow::InitVariables()
     teSoftwareLog = ui->teLoggingBox;
 
     //-------- Variable Table -----------
-
+    VariableTreeModel.setHorizontalHeaderLabels(QStringList() << "Name" << "Value");
 
     //------- Project Manager --------
     SoftwareProjectManager = new ProjectManager();
@@ -275,6 +275,7 @@ RobotWindow *MainWindow::AddNewProjectAndRobot(int index)
     QStackedWidget *stack = CreateNewProject(index);
 
     RobotWindow* robotWindow = new RobotWindow();
+    SoftwareProjectManager->RobotWindows.append(robotWindow);
     robotWindow->ProjectName = SoftwareProjectManager->GetProjectName(index);
 
     robotWindow->SetMainStackedWidgetAndPages(ui->stackedWidget, ui->page, ui->pFullTabDisplay, ui->layoutFullTabDisplay);
@@ -491,8 +492,8 @@ void MainWindow::on_cbOperatorProject_currentIndexChanged(int index)
 
 void MainWindow::on_pbStartSystem_clicked()
 {
-    if (SoftwareAuthority->robotManager == NULL)
-        return;
+//    if (SoftwareAuthority->robotManager == NULL)
+//        return;
 
     for(int i = 0; i < SoftwareAuthority->RobotEnableList.count(); i++)
     {
@@ -516,8 +517,8 @@ void MainWindow::on_pbStartSystem_clicked()
 
 void MainWindow::on_pbStopSystem_clicked()
 {
-    if (SoftwareAuthority->robotManager == NULL)
-        return;
+//    if (SoftwareAuthority->robotManager == NULL)
+//        return;
 
 //    SoftwareAuthority->robotManager->Stop();
 }
@@ -577,5 +578,43 @@ void MainWindow::on_tbExpandLoggingBox_clicked()
     else
         ui->teLoggingBox->setMinimumHeight(300);
 
+}
+
+
+void MainWindow::on_pbUpdateVarDisplay_clicked()
+{
+    VariableTreeModel.clear();
+    VariableTreeModel.setHorizontalHeaderLabels(QStringList() << "Name" << "Value");
+    QStandardItem *rootItem = VariableTreeModel.invisibleRootItem();
+    QSettings* settings = VarManager::getInstance()->getSettings();
+    QStringList keys = settings->allKeys();
+    for (QString key : keys) {
+        key = key.replace('/', '.');
+        key = key.replace('_', '.');
+        QStringList parts = key.split('.');
+        QStandardItem *parent = rootItem;
+        for (int i = 0; i < parts.count() - 1; i++) {
+            QString part = parts[i];
+            QStandardItem *child = nullptr;
+            for (int j = 0; j < parent->rowCount(); j++) {
+                if (parent->child(j)->text() == part) {
+                    child = parent->child(j);
+                    break;
+                }
+            }
+            if (!child) {
+                child = new QStandardItem(part);
+                parent->appendRow(child);
+            }
+            parent = child;
+        }
+        QString value = settings->value(key).toString();
+        QStandardItem *valueItem = new QStandardItem(value);
+        parent->appendRow(QList<QStandardItem*>() << new QStandardItem(parts.last()) << valueItem);
+    }
+
+    QTreeView* treeView = ui->tvVariables;
+    treeView->setModel(&VariableTreeModel);
+    treeView->show();
 }
 

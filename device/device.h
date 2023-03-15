@@ -38,6 +38,8 @@ public slots:
     void ReadData();
     QString ReadLine();
     QString GetSerialPortName();
+    int GetSerialPortBaudrate();
+    bool IsOpen();
 
 protected:
     QSerialPort* serialPort;

@@ -125,6 +125,16 @@ QString Device::GetSerialPortName()
     return serialPortName;
 }
 
+int Device::GetSerialPortBaudrate()
+{
+    return baudrate;
+}
+
+bool Device::IsOpen()
+{
+    return serialPort->isOpen();
+}
+
 void Device::Run()
 {
     qDebug() << "Device run";

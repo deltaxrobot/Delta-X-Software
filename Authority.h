@@ -36,7 +36,6 @@ public:
 
     QList<QCheckBox*> RobotEnableList;
 
-    RobotManager* robotManager = NULL;
     RobotWindow* robotWindow = NULL;
 
     QStringList operatorGcodeProgram;

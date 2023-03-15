@@ -39,6 +39,8 @@ ImageViewer::ImageViewer(QWidget *parent) :
         ViewerScene->addItem(polygonItem);
         ViewerScene->addItem(textItem);
     }
+
+//    LoadSetting();
 }
 
 ImageViewer::~ImageViewer()
@@ -119,12 +121,33 @@ void ImageViewer::SaveSetting(QSettings *setting)
     setting->setValue("Area", rect);
     setting->setValue("Rectangle", cRect.GetValue());
 
+//    VarManager::getInstance()->updateVar("Point1", p1);
+//    VarManager::getInstance()->updateVar("Point2", p2);
+//    VarManager::getInstance()->updateVar("Quadangle", cQuadangle.GetPolygon());
+//    VarManager::getInstance()->updateVar("Area", cArea.GetValue());
+//    VarManager::getInstance()->updateVar("Rectangle", cRect.GetValue());
+
 //    SoftwareLog(QString("Point 1: x = %1, y = %2").arg(p1.x()).arg(p1.y()));
 //    SoftwareLog(QString("Point 2: x = %1, y = %2").arg(p2.x()).arg(p2.y()));
 
 //    SoftwareLog(QString("Crop top left: x = %1, y = %2").arg(rect.topLeft().x()).arg(rect.topLeft().y()));
 //    SoftwareLog(QString("Crop bottom right: x = %1, y = %2").arg(rect.bottomRight().x()).arg(rect.bottomRight().y()));
 
+}
+
+void ImageViewer::LoadSetting()
+{
+    cPoint.SetValue(VarManager::getInstance()->getVar("Point1").toPointF());
+    cPoint2.SetValue(VarManager::getInstance()->getVar("Point2").toPointF());
+
+    cQuadangle.SetPolygon(VarManager::getInstance()->getVar("Quadangle").value<QPolygonF>());
+    cArea.SetValue(VarManager::getInstance()->getVar("Area").toRectF());
+    cRect.SetValue(VarManager::getInstance()->getVar("Rectangle").toRectF());
+
+    emit changedPoints(cPoint.GetValue(), cPoint2.GetValue());
+    emit changedQuadrangle(cQuadangle.GetPolygon());
+    emit changedArea(cArea.GetValue());
+    emit changedRect(cRect.GetValue());
 }
 
 void ImageViewer::LoadSetting(QSettings *setting)
@@ -555,6 +578,7 @@ void ImageViewer::mouseReleaseEvent(QMouseEvent *event)
 
     if (selectedTool == RECTANGLE_TOOL)
     {
+        VarManager::getInstance()->updateVar("Rectangle", cRect.GetValue());
         emit changedRect(cRect.GetValue());
     }
 
@@ -565,11 +589,13 @@ void ImageViewer::mouseReleaseEvent(QMouseEvent *event)
 
     if (selectedTool == QUADRANGLE_TOOL)
     {
+        VarManager::getInstance()->updateVar("Quadangle", cQuadangle.GetPolygon());
         emit changedQuadrangle(cQuadangle.GetPolygon());
     }
 
     if (selectedTool == AREA_TOOL)
     {
+        VarManager::getInstance()->updateVar("Area", cArea.GetValue());
         emit changedArea(cArea.GetValue());
 
 //        SoftwareLog(QString("Crop top left: x = %1, y = %2").arg(cArea.GetValue().topLeft().x()).arg(cArea.GetValue().topLeft().y()));
@@ -718,6 +744,8 @@ void ImageViewer::processPointPressEvent(QPoint mousePos)
             selectedPoint = 0;
         }
 
+        VarManager::getInstance()->updateVar("Point1", cPoint.GetValue());
+        VarManager::getInstance()->updateVar("Point2", cPoint2.GetValue());
         emit changedPoints(cPoint.GetValue(), cPoint2.GetValue());
     }
 }

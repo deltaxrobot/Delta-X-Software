@@ -28,6 +28,7 @@ public:
 signals:
     void DeviceResponded(QString id, QString response);
     void GotDeviceInfo(QString jsonDeviceInfo);
+    void Log(QString msg);
 
 public slots:
     void AddRobot();

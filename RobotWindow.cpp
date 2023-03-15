@@ -16,17 +16,28 @@ RobotWindow::RobotWindow(QWidget *parent) :
 
 RobotWindow::~RobotWindow()
 {
-//    delete DeltaImageProcesser;
-//    lbLoadingPopup->thread()->quit();
-//    lbLoadingPopup->thread()->wait();
-
-//    GcodeScriptThread->thread()->quit();
-//    GcodeScriptThread->thread()->wait();
+    DeviceManagerInstance->thread()->quit();
+    DeviceManagerInstance->thread()->wait();
+    delete DeviceManagerInstance;
 
 //    DeltaConnectionManager->thread()->quit();
 //    DeltaConnectionManager->thread()->wait();
+//    delete DeltaConnectionManager;
 
-//    ImageProcessingThread->thread()->quit();
+    ImageProcessingThread->thread()->quit();
+    ImageProcessingThread->thread()->wait();
+
+    for (int i = 0; i < GcodeScripts.count(); i++)
+    {
+        GcodeScripts.at(i)->thread()->quit();
+        GcodeScripts.at(i)->thread()->wait();
+//        delete GcodeScripts.at(i);
+    }
+
+    delete VirtualEncoderTimer;
+    delete UIEvent;
+    delete Delta2DVisualizer;
+    delete ShortcutKeyTimer;
 }
 
 void RobotWindow::InitOtherThreadObjects()
@@ -40,6 +51,7 @@ void RobotWindow::InitOtherThreadObjects()
 
     connect(DeviceManagerInstance, SIGNAL(GotDeviceInfo(QString)), this, SLOT(GetDeviceInfo(QString)));
     connect(this, SIGNAL(ChangeDeviceState(int, bool)), DeviceManagerInstance, SLOT(SetDeviceState(int, bool)));
+    connect(DeviceManagerInstance, SIGNAL(Log(QString)), this, SLOT(Log(QString)));
 
 }
 
@@ -181,6 +193,8 @@ void RobotWindow::InitVariables()
 
     //----- Process ------
     ExternalScriptProcess = new QProcess(this);
+
+    LoadSettings();
 }
 
 void RobotWindow::InitConnectionModule()
@@ -347,6 +361,14 @@ void RobotWindow::InitObjectDetectingModule()
     connect(ui->pbClearObject, &QPushButton::clicked, [=](bool checked)
     {
         ImageProcessingThread->GetNode("TrackingObjectsNode")->ClearVariable("outputObjects");
+        for (int i = 0; i < 500; i++)
+        {
+            VarManager::getInstance()->removeVar(QString("project0.robot1.O%1_X").arg(i));
+            VarManager::getInstance()->removeVar(QString("project0.robot1.O%1_Y").arg(i));
+            VarManager::getInstance()->removeVar(QString("project0.robot1.O%1_W").arg(i));
+            VarManager::getInstance()->removeVar(QString("project0.robot1.O%1_L").arg(i));
+            VarManager::getInstance()->removeVar(QString("project0.robot1.O%1_A").arg(i));
+        }
     });
     connect(ui->pbOpenObjectTable, SIGNAL(clicked(bool)), TrackingObjectTable, SLOT(DisplayDialog()));
     connect(TrackingObjectTable, SIGNAL(TakeObjectPosition(float, float, float)), this, SLOT(MoveRobotFollowObject(float, float, float)));
@@ -436,7 +458,7 @@ void RobotWindow::InitObjectDetectingModule()
     // ----------- init para ----------
     emit GotResizePara(cv::Size(ui->leImageWidth->text().toInt(), ui->leImageHeight->text().toInt()));
     Encoder1->OffsetPoint = ImageProcessingThread->GetNode("VisibleObjectsNode")->GetInputPointPointer();
-    UpdateRealPositionOfCalibPoints();// ---------
+    // ---------
 }
 
 void RobotWindow::InitGcodeEditorModule()
@@ -568,8 +590,10 @@ void RobotWindow::InitCalibration()
     connect(ui->pbGetConveyorPoint2X, &QPushButton::clicked, [=](){ ui->leConveyorPoint2X->setText(QString::number(RobotParameter.X)); });
     connect(ui->pbGetConveyorPoint2Y, &QPushButton::clicked, [=](){ ui->leConveyorPoint2Y->setText(QString::number(RobotParameter.Y)); });
 
-    connect(ui->pbCalibPoint1, &QPushButton::clicked, [=](){ ui->leRealityPoint1X->setText(QString::number(RobotParameter.X)); ui->leRealityPoint1Y->setText(QString::number(RobotParameter.Y));});
-    connect(ui->pbCalibPoint2, &QPushButton::clicked, [=](){ ui->leRealityPoint2X->setText(QString::number(RobotParameter.X)); ui->leRealityPoint2Y->setText(QString::number(RobotParameter.Y));});
+    connect(ui->pbCalibPoint1, &QPushButton::clicked, [=](){ ui->leRealityPoint1X->setText(QString::number(RobotParameter.X)); ui->leRealityPoint1Y->setText(QString::number(RobotParameter.Y)); UpdateRealPositionOfCalibPoints();});
+    connect(ui->pbCalibPoint2, &QPushButton::clicked, [=](){ ui->leRealityPoint2X->setText(QString::number(RobotParameter.X)); ui->leRealityPoint2Y->setText(QString::number(RobotParameter.Y)); UpdateRealPositionOfCalibPoints();});
+    connect(ui->pbImageMapping, &QPushButton::clicked, this, &RobotWindow::UpdateRealPositionOfCalibPoints);
+
 }
 
 void RobotWindow::InitEvents()
@@ -684,54 +708,16 @@ void RobotWindow::InitEvents()
     connect(ui->cbEditGcodeEditor, SIGNAL(clicked(bool)), ui->pteGcodeArea, SLOT(setLockState(bool)));
 
     //------------ Image Processing -----------
-//	connect(ui->pbFilter, SIGNAL(clicked(bool)), DeltaImageProcesser, SLOT(OpenParameterPanel()));
-//    connect(ui->pbFilterTool, SIGNAL(clicked(bool)), this, SLOT(OpenColorFilterWindow()));
-//	connect(ui->pbLoadTestImage, SIGNAL(clicked(bool)), DeltaImageProcesser, SLOT(LoadTestImage()));
-//    connect(ui->pbLoadCamera, SIGNAL(clicked(bool)), DeltaImageProcesser, SLOT(LoadCamera2()));
-//    connect(ui->pbObjectRect, SIGNAL(clicked(bool)), ui->cameraWidget, SLOT(SelectObjectTool()));
-//    connect(ui->pbGetSizeTool, SIGNAL(clicked(bool)), ui->cameraWidget, SLOT(SelectObjectTool()));
-//    connect(ui->pbObjectLine, SIGNAL(clicked(bool)), ui->cameraWidget, SLOT(SelectLineTool()));
-//    connect(ui->pbCalibLineTool, SIGNAL(clicked(bool)), ui->cameraWidget, SLOT(SelectLineTool()));
-//    connect(ui->pbObjectOrigin, SIGNAL(clicked(bool)), ui->cameraWidget, SLOT(SelectPointTool()));
-//    connect(ui->pbCalibPointTool, SIGNAL(clicked(bool)), ui->cameraWidget, SLOT(SelectPointTool()));
-//	connect(ui->lbCameraLayer, SIGNAL(currentIndexChanged(int)), DeltaImageProcesser, SLOT(SelectLayer(int )));
-//    connect(ui->pbRotateAxis90, SIGNAL(clicked(bool)), DeltaImageProcesser, SLOT(changeAxisDirection()));
-//    connect(ui->pbDirectionTool, SIGNAL(clicked(bool)), DeltaImageProcesser, SLOT(changeAxisDirection()));
-//	connect(ui->leFPS, SIGNAL(returnPressed()), DeltaImageProcesser, SLOT(SaveFPS()));
-//    connect(ui->pbClearDetectObjects, SIGNAL(clicked(bool)), DeltaImageProcesser->ObjectManager1, SLOT(RemoveAllDetectObjects()));
-//	connect(ui->pbViewDataObjects, SIGNAL(clicked(bool)), TrackingObjectTable, SLOT(DisplayDialog()));
-//    connect(ui->pbClearObject, SIGNAL(clicked(bool)), DeltaImageProcesser->ObjectManager1, SLOT(RemoveAllDetectObjects()));
-//    connect(ui->pbOpenObjectTable, SIGNAL(clicked(bool)), TrackingObjectTable, SLOT(DisplayDialog()));
-
-//    connect(DeltaImageProcesser, SIGNAL(ObjectValueChanged(std::vector<cv::RotatedRect>)), TrackingObjectTable, SLOT(UpdateTable(std::vector<cv::RotatedRect>)));
-//	connect(DeltaImageProcesser, SIGNAL(ObjectValueChanged(std::vector<cv::RotatedRect>)), this, SLOT(AddObjectsToROS(std::vector<cv::RotatedRect>)));
-//	connect(ui->pbTransformPerspective, SIGNAL(clicked(bool)), DeltaImageProcesser, SLOT(TurnTransformPerspective(bool)));
-//    connect(ui->pbWarpTool, SIGNAL(clicked(bool)), DeltaImageProcesser, SLOT(TurnTransformPerspective(bool)));
-//	connect(ui->cbDisplayCalibInfo, SIGNAL(clicked(bool)), DeltaImageProcesser, SLOT(TurnCalibDisplay(bool)));
-//	connect(ui->pbExpandCameraWidget, SIGNAL(clicked(bool)), DeltaImageProcesser, SLOT(ExpandCameraWidget(bool)));
-//    connect(ui->pbCameraWindowMode, SIGNAL(clicked(bool)), this, SLOT(OpenCameraWindow()));
-//    connect(ui->cameraWidget, SIGNAL(SizeChanged()), DeltaImageProcesser, SLOT(UpdateRatios()));
-
-//    connect(ui->pbFindChessboard, SIGNAL(clicked(bool)), DeltaImageProcesser, SLOT(FindChessboard()));
-
-//    connect(ui->leTrackingError, &QLineEdit::returnPressed, DeltaImageProcesser->ObjectManager1, &ObjectManager::UpdateTrackingError);
-//    connect(ui->leObjectErrorSize, &QLineEdit::returnPressed, DeltaImageProcesser, &ObjectDetector::GetObjectError);
 
     connect(ui->pbConnectEncdoer, SIGNAL(clicked(bool)), this, SLOT(ConnectEncoder()));
     connect(ui->pbCalibConveyorAngle, SIGNAL(clicked(bool)), this, SLOT(CalculateConveyorDeviationAngle()));
 	connect(ui->leConvenyorSpeed, SIGNAL(returnPressed()), this, SLOT(SetConvenyorSpeed()));
-//    connect(ui->cbConveyorDirection, SIGNAL(currentIndexChanged(int)), this, SLOT(SetConvenyorSpeed()));
     connect(ui->pbResetEncoderPosition, SIGNAL(clicked(bool)), this, SLOT(ResetEncoderPosition()));
 
     connect(ui->leMovingDistanceConveyorControl, SIGNAL(returnPressed()), this, SLOT(MoveExternalConveyor()));
     connect(ui->pbForwardConveyor, SIGNAL(clicked(bool)), this, SLOT(ForwardExternalConveyor()));
     connect(ui->pbBackwardConveyor, SIGNAL(clicked(bool)), this, SLOT(BackwardExternalConveyor()));
     connect(ui->pbTurnOffConveyor, SIGNAL(clicked(bool)), this, SLOT(TurnOffExternalConveyor()));
-
-//    connect(ui->pbImageMapping, SIGNAL(clicked(bool)), DeltaImageProcesser, SLOT(CalculateMappingMatrix()));
-//    connect(ui->pbMapping, SIGNAL(clicked(bool)), DeltaImageProcesser, SLOT(CalculateMappingMatrix()));
-//    connect(ui->pbPointToolOnBar, SIGNAL(clicked(bool)), ui->cameraWidget, SLOT(SelectMappingTool()));
-//    connect(ui->pbExternalScriptOpen, SIGNAL(clicked(bool)), DeltaImageProcesser, SLOT(OpenExternalFilterScript()));
     connect(ui->pbRunExternalScript, SIGNAL(clicked(bool)), this, SLOT(RunExternalScript()));
 
     connect(ui->cbExternalImageSource, SIGNAL(toggled(bool)), this, SLOT(UseCameraFromPlugin(bool)));
@@ -739,26 +725,9 @@ void RobotWindow::InitEvents()
     connect(ui->cbSourceForImageProvider, SIGNAL(currentIndexChanged(int)), this, SLOT(SelectImageProviderOption(int)));
 
     // ---- Setting ----
-//    connect(ui->pbLoadCameraSetting, SIGNAL(clicked(bool)), this, SLOT(LoadSetting()));
-//    connect(ui->pbSaveCameraSetting, SIGNAL(clicked(bool)), this, SLOT(SaveSetting()));
 
     //----------- Camera -----------
-//    connect(ui->cameraWidget, SIGNAL(ObjectChanged(int, int, int, int)), DeltaImageProcesser, SLOT(GetObjectInfo(int, int, int, int)));
-//    connect(ui->cameraWidget, SIGNAL(DistanceChanged(int)), DeltaImageProcesser, SLOT(GetDistance(int)));
-//    connect(ui->cameraWidget, SIGNAL(QuadrangleChanged(QPoint, QPoint, QPoint, QPoint)), DeltaImageProcesser, SLOT(GetPerspectivePoints(QPoint, QPoint, QPoint, QPoint)));
-//    connect(ui->cameraWidget, SIGNAL(AreaChanged(QRect)), DeltaImageProcesser, SLOT(GetProcessArea(QRect)));
-//    connect(ui->cameraWidget, SIGNAL(LineChanged(QPoint, QPoint)), DeltaImageProcesser, SLOT(GetCalibLine(QPoint, QPoint)));
-//    connect(ui->cameraWidget, SIGNAL(PointChanged(QPoint, QPoint)), DeltaImageProcesser, SLOT(GetCalibPoint(QPoint, QPoint)));
-//    connect(ui->cameraWidget, SIGNAL(MappingPointChanged(QPoint)), DeltaImageProcesser, SLOT(GetMappingPoint(QPoint)));
 
-	
-//    connect(ui->leRealityPoint1X, SIGNAL(returnPressed()), ui->lbScreenStreamer, SLOT(ChangePoint()));
-//    connect(ui->leRealityPoint1Y, SIGNAL(returnPressed()), ui->lbScreenStreamer, SLOT(ChangePoint()));
-//    connect(ui->leRealDistance, SIGNAL(returnPressed()), ui->cameraWidget, SLOT(ChangeLine()));
-
-//    connect(ui->cbCameraWidgetHeight, SIGNAL(currentIndexChanged(QString)), DeltaImageProcesser, SLOT(ChangeCameraWidgetHeight(QString)));
-
-//    connect(ui->cameraWidget, SIGNAL(RequestUpdate()), DeltaImageProcesser, SLOT(UpdateToCameraWidget()));
 
     //---------- Menu -----------
 	connect(ui->actionBaudrate, SIGNAL(triggered()), this, SLOT(ConfigConnection()));
@@ -782,13 +751,6 @@ void RobotWindow::InitEvents()
 	connect(ui->pbCursor, SIGNAL(clicked(bool)), ui->lbDrawingArea, SLOT(SelectCursor()));
 
     connect(ui->pbExportDrawingGcodes, SIGNAL(clicked(bool)), DeltaDrawingExporter, SLOT(ExportGcodes()));
-
-//	connect(ui->twDeltaManager, SIGNAL(tabBarClicked(int)), this, SLOT(ChangeDeltaDashboard(int)));
-//	connect(ui->twDeltaManager, SIGNAL(currentChanged(int)), this, SLOT(SelectTrueTabName(int)));
-//    connect(ui->twDeltaManager, SIGNAL(tabBarDoubleClicked(int)), this, SLOT(ChangeRobotName(int)));
-//    connect(ui->twDeltaManager, SIGNAL(tabCloseRequested(int)), this, SLOT(DeleteRobot(int)));
-
-
 
 
 }
@@ -847,7 +809,7 @@ void RobotWindow::FinishedRequest(QNetworkReply *reply)
 	{
 		QNetworkRequest request = QNetworkRequest(QUrl("http://imwi.space/admin/server.php?software=DeltaXSoftware&info=version"));
 		request.setRawHeader("Content-Type", "application/x-www-form-urlencoded");
-		HttpManager->get(request);
+        HttpManager.get(request);
 	}
 	else
 	{
@@ -1330,6 +1292,19 @@ void RobotWindow::LoadScriptThread()
     ui->pbExecuteGcodes->setChecked(GcodeScripts.at(threadId)->IsRunning());
 }
 
+void RobotWindow::LoadSettings()
+{
+    ui->gvImageViewer->LoadSetting();
+    QPointF calibPoint1 = VarManager::getInstance()->getVar("RealCalibPoint1").toPointF();
+    QPointF calibPoint2 = VarManager::getInstance()->getVar("RealCalibPoint2").toPointF();
+    ui->leRealityPoint1X->setText(QString::number(calibPoint1.x()));
+    ui->leRealityPoint1Y->setText(QString::number(calibPoint1.y()));
+    ui->leRealityPoint2X->setText(QString::number(calibPoint2.x()));
+    ui->leRealityPoint2Y->setText(QString::number(calibPoint2.y()));
+
+    UpdateRealPositionOfCalibPoints();
+}
+
 void RobotWindow::LoadSettings(QSettings *setting)
 {
     LoadGeneralSettings(setting);
@@ -1359,11 +1334,11 @@ void RobotWindow::LoadGeneralSettings(QSettings *setting)
     UpdateVariable("ConveyorSpeed", "0");
     UpdateVariable("ConveyorDirection", "0");
 
-    UpdateVariable("O0_X", QString::number(NULL_NUMBER));
-    UpdateVariable("O0_Y", QString::number(NULL_NUMBER));
-    UpdateVariable("O0_A", QString::number(NULL_NUMBER));
-    UpdateVariable("O0_W", QString::number(NULL_NUMBER));
-    UpdateVariable("O0_L", QString::number(NULL_NUMBER));
+    UpdateVariable("O0.X", QString::number(NULL_NUMBER));
+    UpdateVariable("O0.Y", QString::number(NULL_NUMBER));
+    UpdateVariable("O0.A", QString::number(NULL_NUMBER));
+    UpdateVariable("O0.W", QString::number(NULL_NUMBER));
+    UpdateVariable("O0.L", QString::number(NULL_NUMBER));
 
     QString comName = setting->value("ComName", "None").toString();
     int defaultBaudrate = setting->value("DefaultBaudrate", 115200).toInt();
@@ -1396,7 +1371,7 @@ void RobotWindow::LoadGeneralSettings(QSettings *setting)
 
     Name = setting->value("Name").toString();
 
-    GcodeScripts.at(ui->cbProgramThreadID->currentIndex())->VariableAddress = ProjectName + "." + Name;
+    GcodeScripts.at(ui->cbProgramThreadID->currentIndex())->VariableAddress = ProjectName;
 
 //    ui->twDeltaManager->setTabText(ID, Name);
 
@@ -1618,6 +1593,7 @@ void RobotWindow::LoadObjectDetectorSetting(QSettings *setting)
 
     ui->leTrackingError->setText(setting->value("TrackingError", ui->leTrackingError->text()).toString());
 
+
     QPointF calibPoint1 = setting->value("RealCalibPoint1", QPointF(ui->leRealityPoint1X->text().toFloat(), ui->leRealityPoint1Y->text().toFloat())).toPointF();
     QPointF calibPoint2 = setting->value("RealCalibPoint2", QPointF(ui->leRealityPoint2X->text().toFloat(), ui->leRealityPoint2Y->text().toFloat())).toPointF();
     ui->leRealityPoint1X->setText(QString::number(calibPoint1.x()));
@@ -1688,12 +1664,16 @@ void RobotWindow::SaveSettings(QSettings *setting)
 
 void RobotWindow::SaveGeneralSettings(QSettings *setting)
 {
-    setting->setValue("ComName", DeltaConnectionManager->RobotPort->portName());
-    setting->setValue("DefaultBaudrate", DeltaConnectionManager->RobotPort->baudRate());
+    for (int i = 0; i < DeviceManagerInstance->Robots.count(); i++)
+    {
+        setting->setValue("ComName", DeviceManagerInstance->Robots.at(i)->GetSerialPortName());
+        setting->setValue("DefaultBaudrate", DeviceManagerInstance->Robots.at(i)->GetSerialPortBaudrate());
+        setting->setValue("RobotModel", ui->cbRobotModel->currentText());
+        setting->setValue("RobotState", DeviceManagerInstance->Robots.at(i)->IsOpen());
+    }
+
     setting->setValue("IP", DeltaConnectionManager->TCPConnection->GetIP());
     setting->setValue("TCPPort", DeltaConnectionManager->TCPConnection->Port);
-    setting->setValue("RobotModel", ui->cbRobotModel->currentText());
-    setting->setValue("RobotState", DeltaConnectionManager->RobotPort->isOpen());
 
     setting->setValue("Name", Name);
 
@@ -2277,79 +2257,6 @@ void RobotWindow::ChangeRobotDOF(int id)
     }
 }
 
-void RobotWindow::ChangeDeltaDashboard(int index)
-{
-//    // ---- If press "Add new robot" --------
-//    if (ui->twDeltaManager->tabText(index) == "+")
-//    {
-//        //----- Creat new robot window -----------
-//        RobotManagerPointer->CreatNewRobotWindow();
-//	}
-//    // -------- Select other robot ---------
-//	else
-//    {
-//        if (RobotManagerPointer->SubWindowStackedWidget != NULL)
-//        {
-//            RobotManagerPointer->SubWindowStackedWidget->setCurrentIndex(index);
-
-//            RobotManagerPointer->RobotWindows.at(index)->ui->twDeltaManager->setCurrentIndex(index);
-//        }
-//    }
-}
-
-void RobotWindow::SelectTrueTabName(int index)
-{
-
-}
-
-void RobotWindow::ChangeRobotName(int tabIndex)
-{
-//    QString oldRobotName = ui->twDeltaManager->tabText(tabIndex);
-
-//    bool ok;
-//    QString newRobotName = QInputDialog::getText(this, tr("Change project name"), tr("New name:"), QLineEdit::Normal, oldRobotName, &ok);
-
-//    if (ok && !newRobotName.isEmpty())
-//    {
-//        Name = newRobotName;
-
-//        foreach(RobotWindow* robot, RobotManagerPointer->RobotWindows)
-//        {
-//            robot->ui->twDeltaManager->setTabText(tabIndex, newRobotName);
-//        }
-//    }
-}
-
-void RobotWindow::DeleteRobot(int tabIndex)
-{
-//    QString projectName = ui->twDeltaManager->tabText(tabIndex);
-
-//    QMessageBox::StandardButton reply;
-//    reply = QMessageBox::question(this, projectName, "Do you want to delete this robot?",
-//                                QMessageBox::Yes|QMessageBox::No);
-
-//    if (reply == QMessageBox::Yes)
-//    {
-//        ui->twDeltaManager->removeTab(tabIndex);
-////        foreach(RobotWindow* robotWindow, RobotManagers.at(tabIndex)->RobotWindows)
-////        {
-////            delete robotWindow;
-////        }
-
-//        //delete RobotManagers.at(tabIndex);
-
-//        RobotManagerPointer->RobotWindows.removeAt(tabIndex);
-//    }
-//    else
-//    {
-//        return;
-//    }
-
-//    if (tabIndex > 0)
-//    {
-//        ui->twDeltaManager->setCurrentIndex(tabIndex - 1);
-//    }
-}
 
 void RobotWindow::SaveProgram()
 {
@@ -2936,7 +2843,7 @@ void RobotWindow::GetValueInput(QString response)
 
 void RobotWindow::UpdateVariable(QString key, QString value)
 {
-    QString fullName = ProjectName + "." + Name + "." + key;
+    QString fullName = ProjectName + "." + key;
     fullName = fullName.replace(" ", "");
 
     VarManager::getInstance()->addVar(fullName, value);
@@ -3380,6 +3287,9 @@ void RobotWindow::UpdateRealPositionOfCalibPoints()
     QPointF rpoint1(ui->leRealityPoint1X->text().toFloat(), ui->leRealityPoint1Y->text().toFloat());
     QPointF rpoint2(ui->leRealityPoint2X->text().toFloat(), ui->leRealityPoint2Y->text().toFloat());
 
+    VarManager::getInstance()->updateVar("RealCalibPoint1", rpoint1);
+    VarManager::getInstance()->updateVar("RealCalibPoint2", rpoint2);
+
     QString p1Text = QString("P1: X = %1, Y = %2").arg(rpoint1.x()).arg(rpoint1.y());
     QString p2Text = QString("P2: X = %1, Y = %2").arg(rpoint2.x()).arg(rpoint2.y());
 
@@ -3522,31 +3432,33 @@ void RobotWindow::UpdateObjectsToVariableTable(QList<Object *> *objects)
 {
     int counter = 0;
 
+    UpdateVariable("Objects.Count", QString::number(objects->count()));
+
     foreach(Object* obj, *objects)
     {
 
-        UpdateVariable(QString("O%1_X").arg(counter), QString::number(obj->X.Real));
-        UpdateVariable(QString("O%1_Y").arg(counter), QString::number(obj->Y.Real));
-        UpdateVariable(QString("O%1_W").arg(counter), QString::number(obj->Width.Real));
-        UpdateVariable(QString("O%1_L").arg(counter), QString::number(obj->Length.Real));
-        UpdateVariable(QString("O%1_A").arg(counter), QString::number(obj->Angle.Real));
+        UpdateVariable(QString("O%1.X").arg(counter), QString::number(obj->X.Real));
+        UpdateVariable(QString("O%1.Y").arg(counter), QString::number(obj->Y.Real));
+        UpdateVariable(QString("O%1.W").arg(counter), QString::number(obj->Width.Real));
+        UpdateVariable(QString("O%1.L").arg(counter), QString::number(obj->Length.Real));
+        UpdateVariable(QString("O%1.A").arg(counter), QString::number(obj->Angle.Real));
 
         counter++;
     }
 
     for(int i = counter; i < 100; i++)
     {
-        QString fullName = ProjectName + "." + Name + "." + QString("O%1_X").arg(i);
+        QString fullName = ProjectName + "." + QString("O%1.X").arg(i);
         fullName = fullName.replace(" ", "");
 
         if (VarManager::getInstance()->contains(fullName) == false)
             break;
 
-        UpdateVariable(QString("O%1_X").arg(i), "-6789");
-        UpdateVariable(QString("O%1_Y").arg(i), "-6789");
-        UpdateVariable(QString("O%1_W").arg(i), "-6789");
-        UpdateVariable(QString("O%1_L").arg(i), "-6789");
-        UpdateVariable(QString("O%1_A").arg(i), "-6789");
+        UpdateVariable(QString("O%1.X").arg(i), "NULL");
+        UpdateVariable(QString("O%1.Y").arg(i), "NULL");
+        UpdateVariable(QString("O%1.W").arg(i), "NULL");
+        UpdateVariable(QString("O%1.L").arg(i), "NULL");
+        UpdateVariable(QString("O%1.A").arg(i), "NULL");
     }
 }
 
@@ -3691,30 +3603,6 @@ void RobotWindow::MoveConveyor()
 void RobotWindow::ProcessShortcutKey()
 {
 
-}
-
-void RobotWindow::ProcessDetectedObjectFromExternalAI(QString msg)
-{
-//    QStringList paras = msg.split(",");
-//    if (paras.count() >= 4)
-//    {
-//        //QString label = paras[0];
-//        QString x = paras[0];
-//        QString y = paras[1];
-//        QString w = paras[2];
-//        QString h = paras[3];
-
-//        float delta = DeltaImageProcesser->EncoderPosition - DeltaImageProcesser->EncoderPositionAtCameraCapture;
-
-//        if (ui->cbConveyorDirection->currentText() == "Y")
-//        {
-//            DeltaImageProcesser->ObjectManager1->AddNewObject(x.toFloat(), y.toFloat() + delta, w.toFloat(), h.toFloat());
-//        }
-//        else
-//        {
-//            DeltaImageProcesser->ObjectManager1->AddNewObject(x.toFloat()  + delta, y.toFloat(), w.toFloat(), h.toFloat());
-//        }
-//    }
 }
 
 /*!

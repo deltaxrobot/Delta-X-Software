@@ -84,7 +84,6 @@ class ObjectDetector;
 
 class GcodeVariable;
 class ROS;
-class RobotManager;
 class GcodeScript;
 class SoftwareManager;
 
@@ -115,6 +114,7 @@ public:
     void AddScriptThread();
     void LoadScriptThread();
 
+    void LoadSettings();
     void LoadSettings(QSettings* setting);
     void LoadGeneralSettings(QSettings* setting);
     void LoadJoggingSettings(QSettings* setting);
@@ -164,7 +164,7 @@ public:
 
     //---- Connection ----
     ConnectionManager* DeltaConnectionManager;
-    QNetworkAccessManager *HttpManager;
+    QNetworkAccessManager HttpManager;
 
     //---- Process -----
 
@@ -177,7 +177,6 @@ public:
 
     // ---- Robot ----
     RobotPara RobotParameter;
-    RobotManager* RobotManagerPointer = NULL;
     DeltaVisualizer *Delta2DVisualizer;
     QTimer* ShortcutKeyTimer;
 
@@ -198,7 +197,6 @@ public:
     ImageProcessing* ImageProcessingThread;
     FilterWindow* ParameterPanel;
 
-    ObjectDetector* DeltaImageProcesser;
     ObjectVariableTable* TrackingObjectTable;
     QTimer* ConvenyorTimer;
 
@@ -249,12 +247,6 @@ public:
 public slots:
     // ---- View update ----
     void GetDeviceInfo(QString json);
-
-    // ---- Tab ----
-    void ChangeDeltaDashboard(int index);
-    void SelectTrueTabName(int index);
-    void ChangeRobotName(int tabIndex);
-    void DeleteRobot(int index);
 
     // ---- Robot ----
     void ConnectDeltaRobot();
@@ -415,7 +407,6 @@ public slots:
     void EditImage(bool isWarp, bool isCropTool);
 
     void SendImageToExternalScript(cv::Mat input);
-    void ProcessDetectedObjectFromExternalAI(QString msg);
     void AddDisplayObjectFromExternalScript(QString msg);
     // ----- Display ----
 

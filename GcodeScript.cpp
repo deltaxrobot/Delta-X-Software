@@ -1012,6 +1012,7 @@ bool GcodeScript::isNotNegative(QString s)
 QString GcodeScript::getValueOfVariable(QString name)
 {
     name = name.replace("#", "");
+    name = name.replace("_", ".");
 
     QString fullName = name;
 
@@ -1059,6 +1060,7 @@ void GcodeScript::updateVariables(QString str)
 
 void GcodeScript::saveVariable(QString name, QString value)
 {
+    name = name.replace("_", ".");
     QString fullName = name;
 
     if (name.count('.') == 0)

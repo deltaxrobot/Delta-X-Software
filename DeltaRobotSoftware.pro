@@ -57,7 +57,6 @@ SOURCES += main.cpp\
     Layer.cpp \
     MainWindow.cpp \
     Object.cpp \
-    ObjectDetector.cpp \
     ObjectManager.cpp \
     ObjectVariableTable.cpp \
     Parameter.cpp \
@@ -104,7 +103,6 @@ HEADERS  += \
     Layer.h \
     MainWindow.h \
     Object.h \
-    ObjectDetector.h \
     ImageProcessing.h \
     ObjectManager.h \
     ObjectVariableTable.h \

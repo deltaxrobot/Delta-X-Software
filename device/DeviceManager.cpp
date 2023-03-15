@@ -7,7 +7,12 @@ DeviceManager::DeviceManager()
 
 DeviceManager::~DeviceManager()
 {
-
+    for (int i = 0; i < Robots.count(); i++)
+    {
+        Robots.at(i)->thread()->quit();
+        Robots.at(i)->thread()->wait();
+        delete Robots.at(i);
+    }
 }
 
 void DeviceManager::AddRobot()
@@ -19,7 +24,7 @@ void DeviceManager::AddRobot()
     QThread* robotThread = new QThread(this);
     robot->moveToThread(robotThread);
     connect(robotThread, SIGNAL(started()), robot, SLOT(Run()));
-    connect(robot, &Robot::gcodeDone, this, &DeviceManager::DeviceResponded);
+    connect(robot, &Robot::gcodeDone, [=](QString id, QString response){ emit DeviceResponded(id, response); });
     connect(robot, &Robot::infoReady, this, &DeviceManager::GotDeviceInfo);
 
     robotThread->start();
@@ -60,6 +65,7 @@ void DeviceManager::SendGcode(int deviceType, QString gcode)
     if (deviceType == ROBOT)
     {
         QMetaObject::invokeMethod(Robots[SelectedRobotID], "SendGcode", Qt::QueuedConnection, Q_ARG(QString, gcode));
+        emit Log(QString("Robot %1<< ").arg(SelectedRobotID + 1) + gcode);
     }
 }
 
@@ -69,20 +75,19 @@ void DeviceManager::SendGcode(QString deviceName, QString gcode)
     QRegularExpressionMatch match = re.match(deviceName);
 
     QString device = deviceName;
-    int id = -1;
+    int id = SelectedRobotID;
 
     if (match.hasMatch())
     {
         device = match.captured(1);
-        id = match.captured(2).toInt();
+        id = match.captured(2).toInt() - 1;
     }
 
     if (device.toLower() == "robot")
     {
-        if (id > -1)
-            QMetaObject::invokeMethod(Robots[id], "SendGcode", Qt::QueuedConnection, Q_ARG(QString, gcode));
-        else
-            QMetaObject::invokeMethod(Robots[SelectedRobotID], "SendGcode", Qt::QueuedConnection, Q_ARG(QString, gcode));
+        QMetaObject::invokeMethod(Robots[id], "SendGcode", Qt::QueuedConnection, Q_ARG(QString, gcode));
+
+        emit Log(QString("Robot %1<< ").arg(id + 1) + gcode);
     }
 }
 

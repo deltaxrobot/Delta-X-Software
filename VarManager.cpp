@@ -47,3 +47,8 @@ bool VarManager::contains(const QString &key)
 {
     return m_settings->contains(key);
 }
+
+QSettings *VarManager::getSettings()
+{
+    return m_settings;
+}

@@ -17,6 +17,7 @@ public:
     void updateVar(const QString& key, const QVariant& value);
     QVariant getVar(const QString& key) const;
     bool contains(const QString& key);
+    QSettings *getSettings();
 
 signals:
     void varAdded(const QString& key, const QVariant& value);

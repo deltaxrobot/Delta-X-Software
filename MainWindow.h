@@ -48,6 +48,8 @@ public:
 
     QString LastProject = "";
 
+    QStandardItemModel VariableTreeModel;
+
 public slots:
     QStackedWidget* CreateNewProject(int index);
     RobotWindow *AddNewProjectAndRobot(int index);
@@ -82,6 +84,8 @@ private slots:
     void on_pbDeleteOperatorGcodeProgram_clicked();
 
     void on_tbExpandLoggingBox_clicked();
+
+    void on_pbUpdateVarDisplay_clicked();
 
 private:
     void openProject(QString fullName);

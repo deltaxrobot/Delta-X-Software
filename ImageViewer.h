@@ -8,6 +8,7 @@
 #include <QtPrintSupport/qtprintsupportglobal.h>
 #include <QSettings>
 #include <UnityTool.h>
+#include "VarManager.h"
 
 class CustomScene : public QGraphicsScene
 {
@@ -809,6 +810,7 @@ public:
     ~ImageViewer();
     void InitParameter();
     void SaveSetting(QSettings* setting);
+    void LoadSetting();
     void LoadSetting(QSettings* setting);
     void ZoomIn(qreal value);
     void ZoomOut(qreal value);

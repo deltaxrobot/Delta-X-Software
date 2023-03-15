@@ -13,8 +13,6 @@
 #include <QFileInfo>
 #include "VarManager.h"
 
-class RobotManager;
-
 class GcodeScript : public QObject
 {
     Q_OBJECT

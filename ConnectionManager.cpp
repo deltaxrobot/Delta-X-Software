@@ -59,7 +59,9 @@ void ConnectionManager::init()
 void ConnectionManager::processRobotData()
 {
     emit GcodeDone();
-    emit ReceiveVariableChangeCommand("Response", receiveLine.replace("\n", "").replace("\r", ""));
+    receiveLine = receiveLine.replace("\n", "");
+    VarManager::getInstance()->updateVar("Response", receiveLine);
+    emit ReceiveVariableChangeCommand("Response", receiveLine);
     emit Log(QString("Robot << ") + receiveLine);
 
     // ---- Receive robot position after homing ----
@@ -151,7 +153,8 @@ void ConnectionManager::processOtherSoftwareData()
         // ---- Request to change variable ----
         else
         {
-            int value = valueS.toInt();
+//            int value = valueS.toInt();
+            VarManager::getInstance()->updateVar(name, valueS);
             emit ReceiveVariableChangeCommand(name, valueS);
         }
     }

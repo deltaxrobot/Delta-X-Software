@@ -24,6 +24,7 @@
   </property>
   <property name="font">
    <font>
+    <weight>50</weight>
     <bold>false</bold>
     <kerning>true</kerning>
    </font>
@@ -236,6 +237,7 @@ QGroupBox::indicator:unchecked {
       <property name="font">
        <font>
         <pointsize>10</pointsize>
+        <weight>50</weight>
         <bold>false</bold>
         <kerning>true</kerning>
        </font>
@@ -422,6 +424,7 @@ QTabBar::tab:!selected {
              <property name="font">
               <font>
                <pointsize>11</pointsize>
+               <weight>50</weight>
                <bold>false</bold>
               </font>
              </property>
@@ -479,7 +482,7 @@ QToolBox QScrollArea&gt;QWidget&gt;QWidget
               <enum>QTabWidget::Rounded</enum>
              </property>
              <property name="currentIndex">
-              <number>0</number>
+              <number>3</number>
              </property>
              <property name="usesScrollButtons">
               <bool>false</bool>
@@ -783,6 +786,7 @@ QToolBox QScrollArea&gt;QWidget&gt;QWidget
                     <property name="font">
                      <font>
                       <pointsize>8</pointsize>
+                      <weight>50</weight>
                       <bold>false</bold>
                       <kerning>true</kerning>
                      </font>
@@ -818,7 +822,7 @@ QToolBox QScrollArea&gt;QWidget&gt;QWidget
                    <rect>
                     <x>0</x>
                     <y>0</y>
-                    <width>565</width>
+                    <width>517</width>
                     <height>1200</height>
                    </rect>
                   </property>
@@ -846,6 +850,7 @@ QToolBox QScrollArea&gt;QWidget&gt;QWidget
                      <property name="font">
                       <font>
                        <pointsize>8</pointsize>
+                       <weight>50</weight>
                        <bold>false</bold>
                        <kerning>true</kerning>
                       </font>
@@ -861,44 +866,41 @@ QToolBox QScrollArea&gt;QWidget&gt;QWidget
                      </property>
                      <property name="html">
                       <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;meta charset=&quot;utf-8&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-hr { height: 1px; border-width: 0; }
-li.unchecked::marker { content: &quot;\2610&quot;; }
-li.checked::marker { content: &quot;\2612&quot;; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Segoe UI'; font-size:8pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; color:#000000;&quot;&gt;N05&lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2';&quot;&gt; &lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-weight:600;&quot;&gt;G28&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-weight:600;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-style:italic; color:#00aa00;&quot;&gt;;Acceleration&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2';&quot;&gt;N10 &lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-weight:600;&quot;&gt;M204&lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2';&quot;&gt; A1200&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-style:italic; color:#00aa00;&quot;&gt;;Speed&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2';&quot;&gt;N15 &lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-weight:600;&quot;&gt;G01&lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2';&quot;&gt; F200&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2';&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-style:italic; color:#00aa00;&quot;&gt;;Declare variables&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2';&quot;&gt;N20 &lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-style:italic;&quot;&gt;#100&lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2';&quot;&gt; = 0&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2';&quot;&gt;N30 &lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-style:italic;&quot;&gt;#100&lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2';&quot;&gt; = &lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-style:italic;&quot;&gt;#100&lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2';&quot;&gt; + 1&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2';&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-style:italic; color:#55aa00;&quot;&gt;;Call subprogram&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2';&quot;&gt;N35 &lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-weight:600;&quot;&gt;M98&lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2';&quot;&gt; P2000&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2';&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-style:italic; color:#00aa00;&quot;&gt;; Begin subprogram&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2';&quot;&gt;N40 &lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-weight:600;&quot;&gt;O2000&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2';&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2';&quot;&gt;N45 &lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-weight:600;&quot;&gt;G01&lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2';&quot;&gt; Z-350&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2';&quot;&gt;N50 &lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-weight:600;&quot;&gt;G01&lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2';&quot;&gt; X-100&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2';&quot;&gt;N55 &lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-weight:600;&quot;&gt;G01&lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2';&quot;&gt; Z-370&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2';&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2';&quot;&gt;N60 &lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-weight:600;&quot;&gt;G01&lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2';&quot;&gt; Z-350&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2';&quot;&gt;N65 &lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-weight:600;&quot;&gt;G01&lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2';&quot;&gt; X100&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2';&quot;&gt;N70 &lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-weight:600;&quot;&gt;G01&lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2';&quot;&gt; Z-370&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2';&quot;&gt;N75 M99&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-style:italic; color:#00aa00;&quot;&gt;;End subprogram&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2';&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-style:italic; color:#00aa00;&quot;&gt;;Loop 5 times&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2';&quot;&gt;N80 &lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-weight:600; color:#00aa00;&quot;&gt;IF&lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2';&quot;&gt; [&lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-style:italic;&quot;&gt;#100&lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2';&quot;&gt; LE 5] &lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-weight:600; color:#00aa00;&quot;&gt;THEN&lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2';&quot;&gt; &lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-weight:600; color:#ff5500;&quot;&gt;GOTO&lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2';&quot;&gt; 30&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2';&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2';&quot;&gt;N85 &lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-weight:600;&quot;&gt;G28&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2';&quot;&gt; &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; color:#000000;&quot;&gt;N05&lt;/span&gt; &lt;span style=&quot; font-weight:600;&quot;&gt;G28&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-style:italic; color:#00aa00;&quot;&gt;;Acceleration&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;N10 &lt;span style=&quot; font-weight:600;&quot;&gt;M204&lt;/span&gt; A1200&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-style:italic; color:#00aa00;&quot;&gt;;Speed&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;N15 &lt;span style=&quot; font-weight:600;&quot;&gt;G01&lt;/span&gt; F200&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-style:italic; color:#00aa00;&quot;&gt;;Declare variables&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;N20 &lt;span style=&quot; font-style:italic;&quot;&gt;#100&lt;/span&gt; = 0&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;N30 &lt;span style=&quot; font-style:italic;&quot;&gt;#100&lt;/span&gt; = &lt;span style=&quot; font-style:italic;&quot;&gt;#100&lt;/span&gt; + 1&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-style:italic; color:#55aa00;&quot;&gt;;Call subprogram&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;N35 &lt;span style=&quot; font-weight:600;&quot;&gt;M98&lt;/span&gt; P2000&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-style:italic; color:#00aa00;&quot;&gt;; Begin subprogram&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;N40 &lt;span style=&quot; font-weight:600;&quot;&gt;O2000&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;N45 &lt;span style=&quot; font-weight:600;&quot;&gt;G01&lt;/span&gt; Z-350&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;N50 &lt;span style=&quot; font-weight:600;&quot;&gt;G01&lt;/span&gt; X-100&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;N55 &lt;span style=&quot; font-weight:600;&quot;&gt;G01&lt;/span&gt; Z-370&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;N60 &lt;span style=&quot; font-weight:600;&quot;&gt;G01&lt;/span&gt; Z-350&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;N65 &lt;span style=&quot; font-weight:600;&quot;&gt;G01&lt;/span&gt; X100&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;N70 &lt;span style=&quot; font-weight:600;&quot;&gt;G01&lt;/span&gt; Z-370&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;N75 M99&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-style:italic; color:#00aa00;&quot;&gt;;End subprogram&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-style:italic; color:#00aa00;&quot;&gt;;Loop 5 times&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;N80 &lt;span style=&quot; font-weight:600; color:#00aa00;&quot;&gt;IF&lt;/span&gt; [&lt;span style=&quot; font-style:italic;&quot;&gt;#100&lt;/span&gt; LE 5] &lt;span style=&quot; font-weight:600; color:#00aa00;&quot;&gt;THEN&lt;/span&gt; &lt;span style=&quot; font-weight:600; color:#ff5500;&quot;&gt;GOTO&lt;/span&gt; 30&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;N85 &lt;span style=&quot; font-weight:600;&quot;&gt;G28&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt; &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                      </property>
                      <property name="textInteractionFlags">
                       <set>Qt::TextEditorInteraction</set>
@@ -1100,8 +1102,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
                   <property name="geometry">
                    <rect>
                     <x>0</x>
-                    <y>0</y>
-                    <width>577</width>
+                    <y>-840</y>
+                    <width>539</width>
                     <height>4000</height>
                    </rect>
                   </property>
@@ -1162,6 +1164,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
                       <property name="font">
                        <font>
                         <pointsize>10</pointsize>
+                        <weight>75</weight>
                         <bold>true</bold>
                        </font>
                       </property>
@@ -1735,6 +1738,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
                          <property name="font">
                           <font>
                            <pointsize>10</pointsize>
+                           <weight>75</weight>
                            <bold>true</bold>
                           </font>
                          </property>
@@ -1888,6 +1892,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
                                   <property name="font">
                                    <font>
                                     <pointsize>8</pointsize>
+                                    <weight>50</weight>
                                     <bold>false</bold>
                                    </font>
                                   </property>
@@ -2515,6 +2520,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
                          <property name="font">
                           <font>
                            <pointsize>10</pointsize>
+                           <weight>75</weight>
                            <bold>true</bold>
                           </font>
                          </property>
@@ -2935,6 +2941,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
                                   </property>
                                   <property name="font">
                                    <font>
+                                    <weight>50</weight>
                                     <italic>false</italic>
                                     <bold>false</bold>
                                     <underline>false</underline>
@@ -3079,6 +3086,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
                          <property name="font">
                           <font>
                            <pointsize>10</pointsize>
+                           <weight>75</weight>
                            <bold>true</bold>
                           </font>
                          </property>
@@ -4062,6 +4070,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
                          <property name="font">
                           <font>
                            <pointsize>10</pointsize>
+                           <weight>75</weight>
                            <bold>true</bold>
                           </font>
                          </property>
@@ -4184,6 +4193,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
                                  <property name="font">
                                   <font>
                                    <pointsize>8</pointsize>
+                                   <weight>50</weight>
                                    <bold>false</bold>
                                    <kerning>true</kerning>
                                   </font>
@@ -4198,6 +4208,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
                                  <property name="font">
                                   <font>
                                    <pointsize>8</pointsize>
+                                   <weight>50</weight>
                                    <bold>false</bold>
                                    <kerning>true</kerning>
                                   </font>
@@ -4212,6 +4223,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
                                  <property name="font">
                                   <font>
                                    <pointsize>8</pointsize>
+                                   <weight>50</weight>
                                    <bold>false</bold>
                                    <kerning>true</kerning>
                                   </font>
@@ -4239,6 +4251,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
                                  <property name="font">
                                   <font>
                                    <pointsize>8</pointsize>
+                                   <weight>50</weight>
                                    <bold>false</bold>
                                    <kerning>true</kerning>
                                   </font>
@@ -4357,6 +4370,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
                          <property name="font">
                           <font>
                            <pointsize>10</pointsize>
+                           <weight>75</weight>
                            <bold>true</bold>
                           </font>
                          </property>
@@ -4402,6 +4416,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
                                <property name="font">
                                 <font>
                                  <pointsize>10</pointsize>
+                                 <weight>75</weight>
                                  <bold>true</bold>
                                 </font>
                                </property>
@@ -4443,6 +4458,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
                                   <property name="font">
                                    <font>
                                     <pointsize>8</pointsize>
+                                    <weight>50</weight>
                                     <italic>true</italic>
                                     <bold>false</bold>
                                     <kerning>true</kerning>
@@ -4481,6 +4497,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
                                <property name="font">
                                 <font>
                                  <pointsize>10</pointsize>
+                                 <weight>75</weight>
                                  <bold>true</bold>
                                 </font>
                                </property>
@@ -4594,6 +4611,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
                                 <widget class="QLabel" name="label_189">
                                  <property name="font">
                                   <font>
+                                   <weight>75</weight>
                                    <bold>true</bold>
                                   </font>
                                  </property>
@@ -4640,6 +4658,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
                                  <property name="font">
                                   <font>
                                    <pointsize>8</pointsize>
+                                   <weight>75</weight>
                                    <bold>true</bold>
                                    <kerning>true</kerning>
                                   </font>
@@ -4654,6 +4673,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
                                  <property name="font">
                                   <font>
                                    <pointsize>8</pointsize>
+                                   <weight>50</weight>
                                    <bold>false</bold>
                                    <kerning>true</kerning>
                                   </font>
@@ -4693,6 +4713,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
                                  <property name="font">
                                   <font>
                                    <pointsize>8</pointsize>
+                                   <weight>50</weight>
                                    <bold>false</bold>
                                    <kerning>true</kerning>
                                   </font>
@@ -4707,6 +4728,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
                                  <property name="font">
                                   <font>
                                    <pointsize>8</pointsize>
+                                   <weight>50</weight>
                                    <bold>false</bold>
                                    <kerning>true</kerning>
                                   </font>
@@ -4721,6 +4743,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
                                  <property name="font">
                                   <font>
                                    <pointsize>8</pointsize>
+                                   <weight>50</weight>
                                    <bold>false</bold>
                                    <kerning>true</kerning>
                                   </font>
@@ -4767,6 +4790,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
                                  <property name="font">
                                   <font>
                                    <pointsize>8</pointsize>
+                                   <weight>50</weight>
                                    <italic>true</italic>
                                    <bold>false</bold>
                                    <kerning>true</kerning>
@@ -4788,6 +4812,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
                                  <property name="font">
                                   <font>
                                    <pointsize>8</pointsize>
+                                   <weight>50</weight>
                                    <italic>true</italic>
                                    <bold>false</bold>
                                    <kerning>true</kerning>
@@ -4839,6 +4864,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
                                  <property name="font">
                                   <font>
                                    <pointsize>8</pointsize>
+                                   <weight>50</weight>
                                    <bold>false</bold>
                                    <kerning>true</kerning>
                                   </font>
@@ -4866,6 +4892,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
                                  <property name="font">
                                   <font>
                                    <pointsize>8</pointsize>
+                                   <weight>50</weight>
                                    <italic>true</italic>
                                    <bold>false</bold>
                                    <kerning>true</kerning>
@@ -4880,6 +4907,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
                                 <widget class="QLabel" name="label_160">
                                  <property name="font">
                                   <font>
+                                   <weight>75</weight>
                                    <bold>true</bold>
                                   </font>
                                  </property>
@@ -4899,6 +4927,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
                                  <property name="font">
                                   <font>
                                    <pointsize>8</pointsize>
+                                   <weight>50</weight>
                                    <italic>true</italic>
                                    <bold>false</bold>
                                    <kerning>true</kerning>
@@ -5277,6 +5306,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
                                  <property name="font">
                                   <font>
                                    <pointsize>8</pointsize>
+                                   <weight>50</weight>
                                    <bold>false</bold>
                                    <kerning>true</kerning>
                                   </font>
@@ -5297,6 +5327,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
                                  <property name="font">
                                   <font>
                                    <pointsize>8</pointsize>
+                                   <weight>50</weight>
                                    <italic>true</italic>
                                    <bold>false</bold>
                                    <kerning>true</kerning>
@@ -5425,6 +5456,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
                                  <property name="font">
                                   <font>
                                    <pointsize>8</pointsize>
+                                   <weight>50</weight>
                                    <bold>false</bold>
                                    <kerning>true</kerning>
                                   </font>
@@ -5510,7 +5542,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
                    <rect>
                     <x>0</x>
                     <y>0</y>
-                    <width>565</width>
+                    <width>517</width>
                     <height>1600</height>
                    </rect>
                   </property>
@@ -5612,6 +5644,7 @@ QToolButton::hover
                           <property name="font">
                            <font>
                             <pointsize>10</pointsize>
+                            <weight>50</weight>
                             <bold>false</bold>
                            </font>
                           </property>
@@ -5723,6 +5756,7 @@ QLabel
                                <property name="font">
                                 <font>
                                  <pointsize>8</pointsize>
+                                 <weight>50</weight>
                                  <bold>false</bold>
                                  <kerning>true</kerning>
                                 </font>
@@ -5740,6 +5774,7 @@ QLabel
                                <property name="font">
                                 <font>
                                  <pointsize>8</pointsize>
+                                 <weight>50</weight>
                                  <bold>false</bold>
                                  <kerning>true</kerning>
                                 </font>
@@ -5849,6 +5884,7 @@ QLabel
                           <property name="font">
                            <font>
                             <pointsize>8</pointsize>
+                            <weight>50</weight>
                             <bold>false</bold>
                             <kerning>true</kerning>
                            </font>
@@ -5863,6 +5899,7 @@ QLabel
                           <property name="font">
                            <font>
                             <pointsize>8</pointsize>
+                            <weight>50</weight>
                             <bold>false</bold>
                             <kerning>true</kerning>
                            </font>
@@ -5877,6 +5914,7 @@ QLabel
                           <property name="font">
                            <font>
                             <pointsize>8</pointsize>
+                            <weight>50</weight>
                             <bold>false</bold>
                             <kerning>true</kerning>
                            </font>
@@ -5979,6 +6017,7 @@ QToolButton::hover
                           <property name="font">
                            <font>
                             <pointsize>10</pointsize>
+                            <weight>50</weight>
                             <bold>false</bold>
                            </font>
                           </property>
@@ -6029,6 +6068,7 @@ QToolButton::hover
                           <property name="font">
                            <font>
                             <pointsize>8</pointsize>
+                            <weight>50</weight>
                             <bold>false</bold>
                             <kerning>true</kerning>
                            </font>
@@ -6043,6 +6083,7 @@ QToolButton::hover
                           <property name="font">
                            <font>
                             <pointsize>8</pointsize>
+                            <weight>50</weight>
                             <bold>false</bold>
                             <kerning>true</kerning>
                            </font>
@@ -6259,6 +6300,7 @@ QLabel
                             <property name="font">
                              <font>
                               <pointsize>8</pointsize>
+                              <weight>50</weight>
                               <bold>false</bold>
                               <kerning>true</kerning>
                              </font>
@@ -6760,6 +6802,7 @@ QToolButton::hover
                           <property name="font">
                            <font>
                             <pointsize>10</pointsize>
+                            <weight>50</weight>
                             <bold>false</bold>
                            </font>
                           </property>
@@ -6852,6 +6895,7 @@ QToolButton::hover
                          <property name="font">
                           <font>
                            <pointsize>8</pointsize>
+                           <weight>50</weight>
                            <bold>false</bold>
                            <kerning>true</kerning>
                           </font>
@@ -7173,6 +7217,7 @@ QToolButton::hover
                          <property name="font">
                           <font>
                            <pointsize>8</pointsize>
+                           <weight>50</weight>
                            <bold>false</bold>
                            <kerning>true</kerning>
                           </font>
@@ -7269,8 +7314,8 @@ QToolButton::hover
                    <rect>
                     <x>0</x>
                     <y>0</y>
-                    <width>575</width>
-                    <height>551</height>
+                    <width>538</width>
+                    <height>519</height>
                    </rect>
                   </property>
                   <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -7280,6 +7325,7 @@ QToolButton::hover
                       <widget class="QTextEdit" name="teDebug">
                        <property name="font">
                         <font>
+                         <weight>50</weight>
                          <italic>false</italic>
                          <bold>false</bold>
                          <kerning>true</kerning>
@@ -7290,13 +7336,10 @@ QToolButton::hover
                        </property>
                        <property name="html">
                         <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;meta charset=&quot;utf-8&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-hr { height: 1px; border-width: 0; }
-li.unchecked::marker { content: &quot;\2610&quot;; }
-li.checked::marker { content: &quot;\2612&quot;; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Segoe UI'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:7.8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:7.8pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                        </property>
                       </widget>
                      </item>
@@ -7413,6 +7456,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
              <property name="font">
               <font>
                <pointsize>11</pointsize>
+               <weight>50</weight>
                <bold>false</bold>
               </font>
              </property>
@@ -7450,7 +7494,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
                    <rect>
                     <x>0</x>
                     <y>0</y>
-                    <width>565</width>
+                    <width>582</width>
                     <height>800</height>
                    </rect>
                   </property>
@@ -7530,6 +7574,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
                           <property name="font">
                            <font>
                             <pointsize>10</pointsize>
+                            <weight>50</weight>
                             <bold>false</bold>
                            </font>
                           </property>
@@ -7650,6 +7695,7 @@ QPushButton:pressed
                            </property>
                            <property name="font">
                             <font>
+                             <weight>75</weight>
                              <bold>true</bold>
                             </font>
                            </property>
@@ -7719,6 +7765,7 @@ QPushButton:pressed
                            </property>
                            <property name="font">
                             <font>
+                             <weight>75</weight>
                              <bold>true</bold>
                             </font>
                            </property>
@@ -7772,6 +7819,7 @@ QPushButton:pressed
                            </property>
                            <property name="font">
                             <font>
+                             <weight>75</weight>
                              <bold>true</bold>
                             </font>
                            </property>
@@ -7793,6 +7841,7 @@ QPushButton:pressed
                            </property>
                            <property name="font">
                             <font>
+                             <weight>75</weight>
                              <bold>true</bold>
                             </font>
                            </property>
@@ -7814,6 +7863,7 @@ QPushButton:pressed
                            </property>
                            <property name="font">
                             <font>
+                             <weight>75</weight>
                              <bold>true</bold>
                             </font>
                            </property>
@@ -7835,6 +7885,7 @@ QPushButton:pressed
                            </property>
                            <property name="font">
                             <font>
+                             <weight>75</weight>
                              <bold>true</bold>
                             </font>
                            </property>
@@ -7992,6 +8043,7 @@ QPushButton:pressed
                         </property>
                         <property name="font">
                          <font>
+                          <weight>50</weight>
                           <italic>false</italic>
                           <bold>false</bold>
                           <kerning>true</kerning>
@@ -8037,7 +8089,7 @@ QPushButton:pressed
                       </size>
                      </property>
                      <property name="currentIndex">
-                      <number>0</number>
+                      <number>1</number>
                      </property>
                      <widget class="QWidget" name="ConfigurationTab">
                       <attribute name="title">
@@ -8057,6 +8109,7 @@ QPushButton:pressed
                          <widget class="QLabel" name="label_65">
                           <property name="font">
                            <font>
+                            <weight>75</weight>
                             <bold>true</bold>
                            </font>
                           </property>
@@ -8132,6 +8185,7 @@ QPushButton:pressed
                          <widget class="QLabel" name="label_91">
                           <property name="font">
                            <font>
+                            <weight>75</weight>
                             <bold>true</bold>
                            </font>
                           </property>
@@ -8177,6 +8231,7 @@ QPushButton:pressed
                          <widget class="QLabel" name="label_6">
                           <property name="font">
                            <font>
+                            <weight>75</weight>
                             <bold>true</bold>
                            </font>
                           </property>
@@ -8192,6 +8247,7 @@ QPushButton:pressed
                          <widget class="QLabel" name="label_10">
                           <property name="font">
                            <font>
+                            <weight>75</weight>
                             <bold>true</bold>
                            </font>
                           </property>
@@ -8207,6 +8263,7 @@ QPushButton:pressed
                          <widget class="QLabel" name="label_122">
                           <property name="font">
                            <font>
+                            <weight>75</weight>
                             <bold>true</bold>
                            </font>
                           </property>
@@ -8222,6 +8279,7 @@ QPushButton:pressed
                          <widget class="QLabel" name="label_123">
                           <property name="font">
                            <font>
+                            <weight>75</weight>
                             <bold>true</bold>
                            </font>
                           </property>
@@ -8252,6 +8310,7 @@ QPushButton:pressed
                          <widget class="QLabel" name="label_113">
                           <property name="font">
                            <font>
+                            <weight>75</weight>
                             <bold>true</bold>
                            </font>
                           </property>
@@ -8313,7 +8372,7 @@ QPushButton:pressed
                           <enum>QTabWidget::North</enum>
                          </property>
                          <property name="currentIndex">
-                          <number>0</number>
+                          <number>1</number>
                          </property>
                          <widget class="QWidget" name="tab_4">
                           <attribute name="title">
@@ -8361,6 +8420,7 @@ QLabel
                                   <property name="font">
                                    <font>
                                     <pointsize>10</pointsize>
+                                    <weight>75</weight>
                                     <bold>true</bold>
                                    </font>
                                   </property>
@@ -8466,6 +8526,7 @@ QLabel
                                   <property name="font">
                                    <font>
                                     <pointsize>10</pointsize>
+                                    <weight>75</weight>
                                     <bold>true</bold>
                                    </font>
                                   </property>
@@ -8574,6 +8635,7 @@ QLabel
                                   <property name="font">
                                    <font>
                                     <pointsize>10</pointsize>
+                                    <weight>75</weight>
                                     <bold>true</bold>
                                    </font>
                                   </property>
@@ -8679,6 +8741,7 @@ QLabel
                                   <property name="font">
                                    <font>
                                     <pointsize>10</pointsize>
+                                    <weight>75</weight>
                                     <bold>true</bold>
                                    </font>
                                   </property>
@@ -8784,6 +8847,7 @@ QLabel
                                   <property name="font">
                                    <font>
                                     <pointsize>10</pointsize>
+                                    <weight>75</weight>
                                     <bold>true</bold>
                                    </font>
                                   </property>
@@ -8883,6 +8947,7 @@ QLabel
                                   <property name="font">
                                    <font>
                                     <pointsize>10</pointsize>
+                                    <weight>75</weight>
                                     <bold>true</bold>
                                    </font>
                                   </property>
@@ -9228,7 +9293,7 @@ QLabel
                             <rect>
                              <x>115</x>
                              <y>15</y>
-                             <width>41</width>
+                             <width>51</width>
                              <height>22</height>
                             </rect>
                            </property>
@@ -9773,7 +9838,7 @@ QLabel
                                <rect>
                                 <x>0</x>
                                 <y>0</y>
-                                <width>104</width>
+                                <width>135</width>
                                 <height>300</height>
                                </rect>
                               </property>
@@ -10197,6 +10262,7 @@ QLabel
                              <property name="font">
                               <font>
                                <pointsize>10</pointsize>
+                               <weight>75</weight>
                                <bold>true</bold>
                               </font>
                              </property>
@@ -10393,6 +10459,7 @@ QLabel
                                 </property>
                                 <property name="font">
                                  <font>
+                                  <weight>75</weight>
                                   <bold>true</bold>
                                  </font>
                                 </property>
@@ -10411,6 +10478,7 @@ QLabel
                                    <property name="font">
                                     <font>
                                      <pointsize>8</pointsize>
+                                     <weight>50</weight>
                                      <bold>false</bold>
                                      <kerning>true</kerning>
                                     </font>
@@ -10434,6 +10502,7 @@ QLabel
                                    <property name="font">
                                     <font>
                                      <pointsize>8</pointsize>
+                                     <weight>50</weight>
                                      <bold>false</bold>
                                      <kerning>true</kerning>
                                     </font>
@@ -10543,6 +10612,7 @@ QLabel
                                 </property>
                                 <property name="font">
                                  <font>
+                                  <weight>75</weight>
                                   <bold>true</bold>
                                  </font>
                                 </property>
@@ -10560,6 +10630,7 @@ QLabel
                                      <property name="font">
                                       <font>
                                        <pointsize>8</pointsize>
+                                       <weight>50</weight>
                                        <bold>false</bold>
                                        <kerning>true</kerning>
                                       </font>
@@ -10577,6 +10648,7 @@ QLabel
                                      <property name="font">
                                       <font>
                                        <pointsize>8</pointsize>
+                                       <weight>50</weight>
                                        <bold>false</bold>
                                        <kerning>true</kerning>
                                       </font>
@@ -10698,6 +10770,7 @@ QLabel
                                      <property name="font">
                                       <font>
                                        <pointsize>7</pointsize>
+                                       <weight>50</weight>
                                        <bold>false</bold>
                                        <kerning>true</kerning>
                                       </font>
@@ -10739,6 +10812,7 @@ QLabel
                              <property name="font">
                               <font>
                                <pointsize>10</pointsize>
+                               <weight>75</weight>
                                <bold>true</bold>
                               </font>
                              </property>
@@ -10807,6 +10881,7 @@ QLabel
                                    </property>
                                    <property name="font">
                                     <font>
+                                     <weight>50</weight>
                                      <bold>false</bold>
                                     </font>
                                    </property>
@@ -10863,6 +10938,7 @@ QLabel
                                    </property>
                                    <property name="font">
                                     <font>
+                                     <weight>50</weight>
                                      <bold>false</bold>
                                     </font>
                                    </property>
@@ -11044,6 +11120,7 @@ QLabel
                            <property name="font">
                             <font>
                              <pointsize>10</pointsize>
+                             <weight>75</weight>
                              <bold>true</bold>
                             </font>
                            </property>
@@ -11072,6 +11149,7 @@ QLabel
                                 </property>
                                 <property name="font">
                                  <font>
+                                  <weight>50</weight>
                                   <bold>false</bold>
                                  </font>
                                 </property>
@@ -11187,6 +11265,7 @@ QLabel
                                 </property>
                                 <property name="font">
                                  <font>
+                                  <weight>50</weight>
                                   <bold>false</bold>
                                  </font>
                                 </property>
@@ -11302,6 +11381,7 @@ QLabel
                                 </property>
                                 <property name="font">
                                  <font>
+                                  <weight>50</weight>
                                   <bold>false</bold>
                                  </font>
                                 </property>
@@ -11417,6 +11497,7 @@ QLabel
                                 </property>
                                 <property name="font">
                                  <font>
+                                  <weight>50</weight>
                                   <bold>false</bold>
                                  </font>
                                 </property>
@@ -11532,6 +11613,7 @@ QLabel
                                 </property>
                                 <property name="font">
                                  <font>
+                                  <weight>50</weight>
                                   <bold>false</bold>
                                  </font>
                                 </property>
@@ -11650,6 +11732,7 @@ QLabel
                                 </property>
                                 <property name="font">
                                  <font>
+                                  <weight>50</weight>
                                   <bold>false</bold>
                                  </font>
                                 </property>
@@ -11762,6 +11845,7 @@ QLabel
                                 </property>
                                 <property name="font">
                                  <font>
+                                  <weight>50</weight>
                                   <bold>false</bold>
                                  </font>
                                 </property>
@@ -11874,6 +11958,7 @@ QLabel
                                 </property>
                                 <property name="font">
                                  <font>
+                                  <weight>50</weight>
                                   <bold>false</bold>
                                  </font>
                                 </property>
@@ -12147,6 +12232,7 @@ QLabel
                     <property name="font">
                      <font>
                       <pointsize>11</pointsize>
+                      <weight>50</weight>
                       <bold>false</bold>
                       <kerning>true</kerning>
                      </font>
@@ -12176,6 +12262,7 @@ QLabel
                     <property name="font">
                      <font>
                       <pointsize>11</pointsize>
+                      <weight>50</weight>
                       <bold>false</bold>
                       <kerning>true</kerning>
                      </font>
@@ -12203,6 +12290,7 @@ QLabel
                     <property name="font">
                      <font>
                       <pointsize>8</pointsize>
+                      <weight>50</weight>
                       <bold>false</bold>
                       <kerning>true</kerning>
                      </font>
@@ -12249,6 +12337,7 @@ QLabel
                     <property name="font">
                      <font>
                       <pointsize>11</pointsize>
+                      <weight>50</weight>
                       <bold>false</bold>
                       <kerning>true</kerning>
                      </font>
@@ -12298,6 +12387,7 @@ QLabel
                     <property name="font">
                      <font>
                       <pointsize>11</pointsize>
+                      <weight>50</weight>
                       <bold>false</bold>
                       <kerning>true</kerning>
                      </font>
@@ -12331,6 +12421,7 @@ QLabel
                     <property name="font">
                      <font>
                       <pointsize>8</pointsize>
+                      <weight>50</weight>
                       <bold>false</bold>
                       <kerning>true</kerning>
                      </font>
@@ -12394,6 +12485,7 @@ QLabel
                     <property name="font">
                      <font>
                       <pointsize>11</pointsize>
+                      <weight>50</weight>
                       <bold>false</bold>
                       <kerning>true</kerning>
                      </font>
@@ -12446,6 +12538,7 @@ QLabel
                     <property name="font">
                      <font>
                       <pointsize>11</pointsize>
+                      <weight>50</weight>
                       <bold>false</bold>
                       <kerning>true</kerning>
                      </font>
@@ -12482,6 +12575,7 @@ QLabel
                     <property name="font">
                      <font>
                       <pointsize>11</pointsize>
+                      <weight>50</weight>
                       <bold>false</bold>
                       <kerning>true</kerning>
                      </font>
@@ -12534,6 +12628,7 @@ QLabel
                     <property name="font">
                      <font>
                       <pointsize>11</pointsize>
+                      <weight>50</weight>
                       <bold>false</bold>
                       <kerning>true</kerning>
                      </font>
@@ -12569,6 +12664,7 @@ QLabel
                     <property name="font">
                      <font>
                       <pointsize>11</pointsize>
+                      <weight>50</weight>
                       <bold>false</bold>
                       <kerning>true</kerning>
                      </font>
@@ -12601,6 +12697,7 @@ QLabel
                     <property name="font">
                      <font>
                       <pointsize>11</pointsize>
+                      <weight>50</weight>
                       <bold>false</bold>
                       <kerning>true</kerning>
                      </font>
@@ -12640,6 +12737,7 @@ QLabel
                     <property name="font">
                      <font>
                       <pointsize>11</pointsize>
+                      <weight>50</weight>
                       <bold>false</bold>
                       <kerning>true</kerning>
                      </font>
@@ -12672,6 +12770,7 @@ QLabel
                     <property name="font">
                      <font>
                       <pointsize>11</pointsize>
+                      <weight>50</weight>
                       <bold>false</bold>
                       <kerning>true</kerning>
                      </font>
@@ -12721,6 +12820,7 @@ QLabel
                     <property name="font">
                      <font>
                       <pointsize>11</pointsize>
+                      <weight>50</weight>
                       <bold>false</bold>
                       <kerning>true</kerning>
                      </font>
@@ -12780,6 +12880,7 @@ QLabel
                     <property name="font">
                      <font>
                       <pointsize>11</pointsize>
+                      <weight>50</weight>
                       <bold>false</bold>
                       <kerning>true</kerning>
                      </font>
@@ -12851,6 +12952,7 @@ QLabel
                     <property name="font">
                      <font>
                       <pointsize>11</pointsize>
+                      <weight>50</weight>
                       <bold>false</bold>
                       <kerning>true</kerning>
                      </font>
@@ -12899,6 +13001,7 @@ QLabel
                     <property name="font">
                      <font>
                       <pointsize>11</pointsize>
+                      <weight>50</weight>
                       <bold>false</bold>
                       <kerning>true</kerning>
                      </font>
@@ -12970,6 +13073,7 @@ QLabel
                     <property name="font">
                      <font>
                       <pointsize>11</pointsize>
+                      <weight>50</weight>
                       <bold>false</bold>
                       <kerning>true</kerning>
                      </font>
@@ -13002,6 +13106,7 @@ QLabel
                     <property name="font">
                      <font>
                       <pointsize>11</pointsize>
+                      <weight>50</weight>
                       <bold>false</bold>
                       <kerning>true</kerning>
                      </font>
@@ -13047,6 +13152,7 @@ QLabel
                     <property name="font">
                      <font>
                       <pointsize>11</pointsize>
+                      <weight>50</weight>
                       <bold>false</bold>
                       <kerning>true</kerning>
                      </font>
@@ -13219,6 +13325,7 @@ QLabel
                    <property name="font">
                     <font>
                      <pointsize>8</pointsize>
+                     <weight>50</weight>
                      <bold>false</bold>
                      <kerning>true</kerning>
                     </font>
@@ -13233,6 +13340,7 @@ QLabel
                    <property name="font">
                     <font>
                      <pointsize>8</pointsize>
+                     <weight>50</weight>
                      <bold>false</bold>
                      <kerning>true</kerning>
                     </font>
@@ -13297,6 +13405,7 @@ QLabel
                    <property name="font">
                     <font>
                      <pointsize>8</pointsize>
+                     <weight>50</weight>
                      <bold>false</bold>
                      <kerning>true</kerning>
                     </font>
@@ -13314,6 +13423,7 @@ QLabel
                    <property name="font">
                     <font>
                      <pointsize>8</pointsize>
+                     <weight>50</weight>
                      <bold>false</bold>
                      <kerning>true</kerning>
                     </font>
@@ -13392,6 +13502,7 @@ QLabel
                     <property name="font">
                      <font>
                       <pointsize>12</pointsize>
+                      <weight>50</weight>
                       <bold>false</bold>
                       <kerning>true</kerning>
                      </font>
@@ -13471,7 +13582,7 @@ QLabel
      <x>0</x>
      <y>0</y>
      <width>1210</width>
-     <height>17</height>
+     <height>26</height>
     </rect>
    </property>
    <property name="layoutDirection">

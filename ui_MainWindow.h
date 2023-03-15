@@ -84,6 +84,10 @@ public:
     QStackedWidget *swPageStack;
     QWidget *pVariable;
     QVBoxLayout *verticalLayout_4;
+    QFrame *frame_4;
+    QHBoxLayout *horizontalLayout_14;
+    QPushButton *pbUpdateVarDisplay;
+    QSpacerItem *horizontalSpacer_7;
     QTreeView *tvVariables;
     QWidget *pOperator;
     QVBoxLayout *verticalLayout_8;
@@ -610,6 +614,27 @@ public:
         verticalLayout_4->setSpacing(6);
         verticalLayout_4->setContentsMargins(11, 11, 11, 11);
         verticalLayout_4->setObjectName(QString::fromUtf8("verticalLayout_4"));
+        frame_4 = new QFrame(pVariable);
+        frame_4->setObjectName(QString::fromUtf8("frame_4"));
+        frame_4->setMinimumSize(QSize(0, 25));
+        frame_4->setFrameShape(QFrame::StyledPanel);
+        frame_4->setFrameShadow(QFrame::Raised);
+        horizontalLayout_14 = new QHBoxLayout(frame_4);
+        horizontalLayout_14->setSpacing(6);
+        horizontalLayout_14->setContentsMargins(11, 11, 11, 11);
+        horizontalLayout_14->setObjectName(QString::fromUtf8("horizontalLayout_14"));
+        pbUpdateVarDisplay = new QPushButton(frame_4);
+        pbUpdateVarDisplay->setObjectName(QString::fromUtf8("pbUpdateVarDisplay"));
+
+        horizontalLayout_14->addWidget(pbUpdateVarDisplay);
+
+        horizontalSpacer_7 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        horizontalLayout_14->addItem(horizontalSpacer_7);
+
+
+        verticalLayout_4->addWidget(frame_4);
+
         tvVariables = new QTreeView(pVariable);
         tvVariables->setObjectName(QString::fromUtf8("tvVariables"));
 
@@ -637,7 +662,7 @@ public:
         scrollArea_2->setWidgetResizable(true);
         scrollAreaWidgetContents_2 = new QWidget();
         scrollAreaWidgetContents_2->setObjectName(QString::fromUtf8("scrollAreaWidgetContents_2"));
-        scrollAreaWidgetContents_2->setGeometry(QRect(0, 0, 713, 211));
+        scrollAreaWidgetContents_2->setGeometry(QRect(0, 0, 1089, 596));
         verticalLayout_10 = new QVBoxLayout(scrollAreaWidgetContents_2);
         verticalLayout_10->setSpacing(6);
         verticalLayout_10->setContentsMargins(11, 11, 11, 11);
@@ -1432,6 +1457,7 @@ public:
         tbCommunity->setText(QCoreApplication::translate("MainWindow", "Community", nullptr));
         tbAuthority->setText(QCoreApplication::translate("MainWindow", "Admin", nullptr));
         tbSetting->setText(QCoreApplication::translate("MainWindow", "Setting", nullptr));
+        pbUpdateVarDisplay->setText(QCoreApplication::translate("MainWindow", "Update", nullptr));
         label_21->setText(QCoreApplication::translate("MainWindow", "Operator", nullptr));
         lbOperatorTitile->setText(QCoreApplication::translate("MainWindow", "Delta Robot System", nullptr));
         pbStartSystem->setText(QCoreApplication::translate("MainWindow", "Start", nullptr));
