@@ -285,7 +285,7 @@ void RobotWindow::InitObjectDetectingModule()
     ui->cbDetectingAlgorithm->setCurrentIndex(0);
     SelectObjectDetectingAlgorithm(0);
 
-    connect(&WebcamTimer, SIGNAL(timeout()), this, SLOT(CaptureWebcam()));
+    connect(&CameraTimer, SIGNAL(timeout()), this, SLOT(GeneralCapture()));
 
     ui->gvImageViewer->setViewport(new QGLWidget(QGLFormat(QGL::SampleBuffers)));
 
@@ -458,31 +458,11 @@ void RobotWindow::InitObjectDetectingModule()
     // ----------- init para ----------
     emit GotResizePara(cv::Size(ui->leImageWidth->text().toInt(), ui->leImageHeight->text().toInt()));
     Encoder1->OffsetPoint = ImageProcessingThread->GetNode("VisibleObjectsNode")->GetInputPointPointer();
-    // ---------
+    // --------- init gcode script -----
 }
 
 void RobotWindow::InitGcodeEditorModule()
 {
-
-//    UpdateVariable("X", "0");
-//    UpdateVariable("Y", "0");
-//    UpdateVariable("Z", "0");
-//    UpdateVariable("W", "0");
-//    UpdateVariable("U", "0");
-//    UpdateVariable("V", "0");
-//    UpdateVariable("F", "200");
-//    UpdateVariable("A", "1200");
-//    UpdateVariable("S", "12");
-//    UpdateVariable("E", "12");
-//    UpdateVariable("ConveyorSpeed", "0");
-//    UpdateVariable("ConveyorDirection", "0");
-
-//    UpdateVariable("O0_X", QString::number(NULL_NUMBER));
-//    UpdateVariable("O0_Y", QString::number(NULL_NUMBER));
-//    UpdateVariable("O0_A", QString::number(NULL_NUMBER));
-//    UpdateVariable("O0_W", QString::number(NULL_NUMBER));
-//    UpdateVariable("O0_L", QString::number(NULL_NUMBER));
-
     // ------- Script ---------
     InitScriptThread();
     connect(ui->cbProgramThreadID, SIGNAL(currentIndexChanged(int)), this, SLOT(ChangeSelectedEditorThread(int)));
@@ -538,12 +518,12 @@ void RobotWindow::InitUIController()
 
     connect(ui->pbHome, &QPushButton::clicked, this, [=](){emit Send(ConnectionManager::ROBOT, "G28");});
 
-    connect(ui->leX, &QLineEdit::returnPressed, this, [=](){RobotParameter.X = ui->leX->text().toFloat(); emit Send(ConnectionManager::ROBOT, QString("G01 X") + ui->leX->text());});
-    connect(ui->leY, &QLineEdit::returnPressed, this, [=](){RobotParameter.Y = ui->leY->text().toFloat(); emit Send(ConnectionManager::ROBOT, QString("G01 Y") + ui->leY->text());});
-    connect(ui->leZ, &QLineEdit::returnPressed, this, [=](){RobotParameter.Z = ui->leZ->text().toFloat(); emit Send(ConnectionManager::ROBOT, QString("G01 Z") + ui->leZ->text());});
-    connect(ui->leW, &QLineEdit::returnPressed, this, [=](){RobotParameter.W = ui->leW->text().toFloat(); emit Send(ConnectionManager::ROBOT, QString("G01 W") + ui->leW->text());});
-    connect(ui->leU, &QLineEdit::returnPressed, this, [=](){RobotParameter.U = ui->leU->text().toFloat(); emit Send(ConnectionManager::ROBOT, QString("G01 U") + ui->leU->text());});
-    connect(ui->leV, &QLineEdit::returnPressed, this, [=](){RobotParameter.V = ui->leV->text().toFloat(); emit Send(ConnectionManager::ROBOT, QString("G01 V") + ui->leV->text());});
+    connect(ui->leX, &QLineEdit::returnPressed, this, [=](){RobotParameter.X = ui->leX->text().toFloat(); UpdateVariable("X", QString::number(RobotParameter.X)); emit Send(ConnectionManager::ROBOT, QString("G01 X") + ui->leX->text());});
+    connect(ui->leY, &QLineEdit::returnPressed, this, [=](){RobotParameter.Y = ui->leY->text().toFloat(); UpdateVariable("Y", QString::number(RobotParameter.Y));emit Send(ConnectionManager::ROBOT, QString("G01 Y") + ui->leY->text());});
+    connect(ui->leZ, &QLineEdit::returnPressed, this, [=](){RobotParameter.Z = ui->leZ->text().toFloat(); UpdateVariable("Z", QString::number(RobotParameter.Z));emit Send(ConnectionManager::ROBOT, QString("G01 Z") + ui->leZ->text());});
+    connect(ui->leW, &QLineEdit::returnPressed, this, [=](){RobotParameter.W = ui->leW->text().toFloat(); UpdateVariable("W", QString::number(RobotParameter.W));emit Send(ConnectionManager::ROBOT, QString("G01 W") + ui->leW->text());});
+    connect(ui->leU, &QLineEdit::returnPressed, this, [=](){RobotParameter.U = ui->leU->text().toFloat(); UpdateVariable("U", QString::number(RobotParameter.U));emit Send(ConnectionManager::ROBOT, QString("G01 U") + ui->leU->text());});
+    connect(ui->leV, &QLineEdit::returnPressed, this, [=](){RobotParameter.V = ui->leV->text().toFloat(); UpdateVariable("V", QString::number(RobotParameter.V));emit Send(ConnectionManager::ROBOT, QString("G01 V") + ui->leV->text());});
 
     connect(ui->vsZAdjsution, &QSlider::valueChanged, [=](int value){RobotParameter.Z = RobotParameter.ZHome - value;});
     connect(ui->vsZAdjsution, &QSlider::sliderReleased, [=](){emit Send(ConnectionManager::ROBOT, QString("G01 Z%1").arg(RobotParameter.Z));});
@@ -720,8 +700,6 @@ void RobotWindow::InitEvents()
     connect(ui->pbTurnOffConveyor, SIGNAL(clicked(bool)), this, SLOT(TurnOffExternalConveyor()));
     connect(ui->pbRunExternalScript, SIGNAL(clicked(bool)), this, SLOT(RunExternalScript()));
 
-    connect(ui->cbExternalImageSource, SIGNAL(toggled(bool)), this, SLOT(UseCameraFromPlugin(bool)));
-
     connect(ui->cbSourceForImageProvider, SIGNAL(currentIndexChanged(int)), this, SLOT(SelectImageProviderOption(int)));
 
     // ---- Setting ----
@@ -752,7 +730,16 @@ void RobotWindow::InitEvents()
 
     connect(ui->pbExportDrawingGcodes, SIGNAL(clicked(bool)), DeltaDrawingExporter, SLOT(ExportGcodes()));
 
-
+    // ------ Script to Detector -------
+    for (int i = 0; i < GcodeScripts.count(); i++)
+    {
+        connect(GcodeScripts.at(i), &GcodeScript::PauseCamera, [=](){ IsCameraPause = true;});
+        connect(GcodeScripts.at(i), &GcodeScript::ResumeCamera, [=](){ IsCameraPause = false;});
+        connect(GcodeScripts.at(i), &GcodeScript::CaptureCamera, this, &RobotWindow::GeneralCapture);
+    }
+    // ------ Ui to Detector ----
+    connect(ui->pbCapture, &QPushButton::clicked, this, &RobotWindow::GeneralCapture);
+    connect(ui->pbStartAcquisition, &QPushButton::clicked, this, &RobotWindow::StartContinuousCapture);
 }
 
 void RobotWindow::DisablePositionUpdatingEvents()
@@ -1547,16 +1534,13 @@ void RobotWindow::LoadObjectDetectorSetting(QSettings *setting)
 
     ui->cbSourceForImageProvider->setCurrentText(setting->value("ImageSource", ui->cbSourceForImageProvider->currentText()).toString());
 
-    ui->leCameraWidth->setText(setting->value("WebcamWidth", ui->leCameraWidth->text()).toString());
-    ui->leCameraHeight->setText(setting->value("WebcamHeight", ui->leCameraHeight->text()).toString());
-    ui->leFPS->setText(setting->value("WebcamFPS", ui->leFPS->text()).toString());
 
-    ui->leImageWidth->setText(setting->value("ResizeWidth", ui->leCameraWidth->text()).toString());
-    ui->leImageHeight->setText(setting->value("ResizeHeight", ui->leCameraHeight->text()).toString());
+    ui->leCaptureInterval->setText(setting->value("WebcamInterval", ui->leCaptureInterval->text()).toString());
+
+    ui->leImageWidth->setText(setting->value("ResizeWidth", ui->leImageWidth->text()).toString());
+    ui->leImageHeight->setText(setting->value("ResizeHeight", ui->leImageHeight->text()).toString());
 
     emit GotResizePara(cv::Size(ui->leImageWidth->text().toInt(), ui->leImageHeight->text().toInt()));
-
-    ui->cbExternalImageSource->setChecked(setting->value("ExternalImageSourceEnable", ui->cbExternalImageSource->isChecked()).toBool());
 
     ui->leChessWidth->setText(setting->value("ChessWidth", ui->leChessWidth->text()).toString());
     ui->leChessHeight->setText(setting->value("ChessHeight", ui->leChessHeight->text()).toString());
@@ -1807,13 +1791,10 @@ void RobotWindow::SaveObjectDetectorSetting(QSettings *setting)
 //----------
     setting->setValue("ImageSource", ui->cbSourceForImageProvider->currentText());
 
-    setting->setValue("WebcamWidth", ui->leCameraWidth->text());
-    setting->setValue("WebcamHeight", ui->leCameraHeight->text());
-    setting->setValue("WebcamFPS", ui->leFPS->text());
+    setting->setValue("WebcamInterval", ui->leCaptureInterval->text());
 
     setting->setValue("ResizeWidth", ui->leImageWidth->text());
     setting->setValue("ResizeHeight", ui->leImageHeight->text());
-    setting->setValue("ExternalImageSourceEnable", ui->cbExternalImageSource->isChecked());
 
     setting->setValue("ChessWidth", ui->leChessWidth->text());
     setting->setValue("ChessHeight", ui->leChessHeight->text());
@@ -1983,9 +1964,8 @@ void RobotWindow::GetDeviceInfo(QString json)
 
 void RobotWindow::SelectImageProviderOption(int option)
 {
-    ui->fPluginSource->setHidden(true);
-    ui->fWebcamSource->setHidden(true);
     ui->fImageSource->setHidden(true);
+    ui->fWebcamSource->setHidden(false);
 
     QString text = ui->cbSourceForImageProvider->itemText(option);
 
@@ -1993,13 +1973,19 @@ void RobotWindow::SelectImageProviderOption(int option)
     {
         ui->fWebcamSource->setHidden(false);
     }
-    if (text == "Plugin")
+    else if (text == "Industrial Camera")
     {
-        ui->fPluginSource->setHidden(false);
+        ui->fWebcamSource->setHidden(true);
     }
-    if (text == "Images")
+    else if (text == "Images")
     {
         ui->fImageSource->setHidden(false);
+        ui->fWebcamSource->setHidden(true);
+    }
+    else
+    {
+        ui->fImageSource->setHidden(true);
+        ui->fWebcamSource->setHidden(true);
     }
 }
 
@@ -2636,6 +2622,11 @@ void RobotWindow::MoveRobot(QString axis, float step)
 void RobotWindow::MoveRobotFollowObject(float x, float y, float angle)
 {
 //    emit Send(ConnectionManager::ROBOT, QString("G01 X%1 Y%2 W%3").arg(x).arg(y).arg(angle));
+    RobotParameter.X = x;
+    RobotParameter.Y = y;
+
+    UpdateVariable("X", QString::number(x));
+    UpdateVariable("Y", QString::number(y));
     emit Send(ConnectionManager::ROBOT, QString("G01 X%1 Y%2").arg(x).arg(y));
 }
 
@@ -3005,11 +2996,36 @@ void RobotWindow::DeleteAllObjectsInROS()
     DeltaConnectionManager->TCPConnection->SendMessageToROS("delete all");
 }
 
+void RobotWindow::GeneralCapture()
+{
+    if (ui->cbSourceForImageProvider->currentText() == "Webcam")
+    {
+        CaptureWebcam();
+    }
+    else if (ui->cbSourceForImageProvider->currentText() == "Industrial Camera")
+    {
+        emit RequestCapture();
+    }
+}
+
+void RobotWindow::StartContinuousCapture()
+{
+    if (ui->pbStartAcquisition->isChecked() == true)
+    {
+        ui->lbCameraState->setEnabled(true);
+        IsCameraPause = false;
+        CameraTimer.start(ui->leCaptureInterval->text().toInt());
+    }
+    else
+    {
+        StopCapture();
+    }
+}
+
 void RobotWindow::GetImageFromExternal(cv::Mat mat)
 {
-    if (ui->cbExternalImageSource->isChecked() == false)
+    if (ui->cbSourceForImageProvider->currentText() != "Industrial Camera")
         return;
-//    qDebug() << "Start: " << Encoder1->GetPosition();
 
     Encoder1->MarkPosition();
 
@@ -3048,15 +3064,6 @@ void RobotWindow::ChangeOutputDisplay(QString outputName)
 
 void RobotWindow::LoadWebcam()
 {
-    if (ui->cbExternalImageSource != NULL)
-    {
-        if(ui->cbExternalImageSource->isChecked() == true)
-        {
-            QMessageBox::information(this, "Notify", "You are using the camera from the outside. Please uncheck the box below if you want to use the webcam.");
-            return;
-        }
-    }
-
     if (ui->pbLoadCamera->isChecked())
     {
         QStringList cameraItems;
@@ -3076,40 +3083,35 @@ void RobotWindow::LoadWebcam()
             QString cameraIDText = text.mid(0, text.indexOf(" - "));
             int cameraID = cameraIDText.toInt();
 
-            if (cameraItems.count() > 2)
-            {
-                if (cameraID == 0)
-                {
-                    cameraID = 1;
-                }
-                else if(cameraID == 1)
-                {
-                    cameraID = 0;
-                }
-            }
+//            if (cameraItems.count() > 2)
+//            {
+//                if (cameraID == 0)
+//                {
+//                    cameraID = 1;
+//                }
+//                else if(cameraID == 1)
+//                {
+//                    cameraID = 0;
+//                }
+//            }
 
             RunningCamera = cameraID;
 
-            ui->lbCameraState->setEnabled(true);
-            ui->pbPlayPauseCamera->setChecked(true);
 
-            ui->pbLoadCamera->setText("Stop Camera");
-
-            bool isCameraUsingByOtherRobot = false;
-
-            if (isCameraUsingByOtherRobot == false)
+            if (Camera->open(cameraID) == true)
             {
-                Camera->open(cameraID);
-                Camera->set(cv::CAP_PROP_FRAME_WIDTH, ui->leCameraWidth->text().toInt());
-                Camera->set(cv::CAP_PROP_FRAME_HEIGHT, ui->leCameraHeight->text().toInt());
+                ui->pbLoadCamera->setText("Stop Camera");
 
-                ui->leCameraWidth->setText(QString::number((int)Camera->get(cv::CAP_PROP_FRAME_WIDTH)));
-                ui->leCameraHeight->setText(QString::number((int)Camera->get(cv::CAP_PROP_FRAME_HEIGHT)));
+                Camera->set(cv::CAP_PROP_FRAME_WIDTH, ui->leImageWidth->text().toInt());
+                Camera->set(cv::CAP_PROP_FRAME_HEIGHT, ui->leImageHeight->text().toInt());
 
-                WebcamTimer.start(1000 / ui->leFPS->text().toInt());
+                ui->leImageWidth->setText(QString::number((int)Camera->get(cv::CAP_PROP_FRAME_WIDTH)));
+                ui->leImageHeight->setText(QString::number((int)Camera->get(cv::CAP_PROP_FRAME_HEIGHT)));
+
+
+                ui->pbStartAcquisition->clicked(true);
             }
 
-            IsCameraPause = false;
         }
         else
         {
@@ -3120,7 +3122,7 @@ void RobotWindow::LoadWebcam()
     }
     else
     {
-        StopWebcam();
+        StopCapture();
     }
 }
 
@@ -3142,13 +3144,13 @@ void RobotWindow::LoadImages()
         }
 
         Camera->open(imageName.toStdString());
-        Camera->set(cv::CAP_PROP_FRAME_WIDTH, ui->leCameraWidth->text().toInt());
-        Camera->set(cv::CAP_PROP_FRAME_HEIGHT, ui->leCameraHeight->text().toInt());
+        Camera->set(cv::CAP_PROP_FRAME_WIDTH, ui->leImageWidth->text().toInt());
+        Camera->set(cv::CAP_PROP_FRAME_HEIGHT, ui->leImageHeight->text().toInt());
 
-        ui->leCameraWidth->setText(QString::number((int)Camera->get(cv::CAP_PROP_FRAME_WIDTH)));
-        ui->leCameraHeight->setText(QString::number((int)Camera->get(cv::CAP_PROP_FRAME_HEIGHT)));
+        ui->leImageWidth->setText(QString::number((int)Camera->get(cv::CAP_PROP_FRAME_WIDTH)));
+        ui->leImageHeight->setText(QString::number((int)Camera->get(cv::CAP_PROP_FRAME_HEIGHT)));
 
-        WebcamTimer.start(1000 / ui->leFPS->text().toInt());
+        CameraTimer.start(ui->leCaptureInterval->text().toInt());
     }
     else
     {
@@ -3158,7 +3160,7 @@ void RobotWindow::LoadImages()
     }
 }
 
-void RobotWindow::StopWebcam()
+void RobotWindow::StopCapture()
 {
     ui->lbCameraState->setEnabled(false);
     Camera->release();
@@ -3166,7 +3168,7 @@ void RobotWindow::StopWebcam()
     IsCameraPause = false;
     ui->pbLoadCamera->setText("Load Camera");
 
-    WebcamTimer.stop();
+    CameraTimer.stop();
 }
 
 void RobotWindow::CaptureWebcam()
@@ -3176,7 +3178,7 @@ void RobotWindow::CaptureWebcam()
 
     if (Camera->isOpened() == false)
     {
-        StopWebcam();
+        StopCapture();
         return;
     }
 
@@ -4413,19 +4415,12 @@ void RobotWindow::initPlugins(QStringList plugins)
             ui->twModule->addTab(pluginWidget->GetUI(), pluginWidget->GetTitle());
 
             pluginList->append(pluginWidget);
-
-            if (pluginWidget->GetTitle() == "3D Printing")
-            {
-                pluginWidget->ProcessCommand("-23");
-            }
-            else
-            {
             // general init
-                qRegisterMetaType< cv::Mat >("cv::Mat");
-                connect(pluginWidget, SIGNAL(CapturedImage(cv::Mat)), this, SLOT(GetImageFromExternal(cv::Mat)));
-                connect(pluginWidget, SIGNAL(StartedCapture()), this, SLOT(GetCapturedSignal()));
+            qRegisterMetaType< cv::Mat >("cv::Mat");
+            connect(pluginWidget, SIGNAL(CapturedImage(cv::Mat)), this, SLOT(GetImageFromExternal(cv::Mat)));
+            connect(pluginWidget, SIGNAL(StartedCapture()), this, SLOT(GetCapturedSignal()));
+            connect(this, &RobotWindow::RequestCapture, pluginWidget, &DeltaXPlugin::RequestCapture);
 
-            }
         }
         else
         {

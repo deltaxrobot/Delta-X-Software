@@ -515,7 +515,7 @@ public:
         label_2->setText(QCoreApplication::translate("Form", "Supported camera:", nullptr));
         lbCameraName->setText(QCoreApplication::translate("Form", "Camera Name", nullptr));
         lbWidthUnit->setText(QCoreApplication::translate("Form", "px", nullptr));
-        leImageWidth->setText(QCoreApplication::translate("Form", "800", nullptr));
+        leImageWidth->setText(QCoreApplication::translate("Form", "1920", nullptr));
         label_3->setText(QCoreApplication::translate("Form", "Basler, Hikrobot", nullptr));
         cbStream->setText(QCoreApplication::translate("Form", "Stream", nullptr));
         pbConnectCamera->setText(QCoreApplication::translate("Form", "Connect", nullptr));

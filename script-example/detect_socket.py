@@ -85,9 +85,9 @@ def find_circles(img):
     gray = cv2.cvtColor(img_copy, cv2.COLOR_BGR2GRAY)
     # edges = cv2.Canny(gray, 207, 255)
     # Giảm nhiễu
-    edges = cv2.blur(gray, (5, 5))
+    edges = cv2.blur(gray, (3, 3))
 
-    circles = cv2.HoughCircles(edges, cv2.HOUGH_GRADIENT, dp=1, minDist=30, param1=110, param2=19, minRadius=8, maxRadius=15)
+    circles = cv2.HoughCircles(edges, cv2.HOUGH_GRADIENT, dp=1, minDist=30, param1=100, param2=17, minRadius=9, maxRadius=13)
 
     if circles is not None:
         circles = np.round(circles[0, :]).astype("int")

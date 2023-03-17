@@ -76,7 +76,7 @@
 
 #define DEFAULT_BAUDRATE 115200
 
-#define DEFAULT_FPS			15
+#define DEFAULT_FPS			2
 #define DEFAULT_INTERVAL	1000/DEFAULT_FPS
 
 class GcodeProgramManager;
@@ -214,7 +214,7 @@ public:
     cv::Mat CaptureImage;
     float CameraFPS = DEFAULT_FPS;
     float CameraTimerInterval = DEFAULT_INTERVAL;
-    QTimer WebcamTimer;
+    QTimer CameraTimer;
 
     // ---- Drawing ----
     DrawingExporter* DeltaDrawingExporter;
@@ -382,12 +382,14 @@ public slots:
 	void DeleteAllObjectsInROS();
 
     // ----- Object Detecting ----
+    void GeneralCapture();
+    void StartContinuousCapture();
     void GetImageFromExternal(cv::Mat mat);
     void GetCapturedSignal();
     void ChangeOutputDisplay(QString outputName);
     void LoadWebcam();
     void LoadImages();
-    void StopWebcam();
+    void StopCapture();
     void CaptureWebcam();
     void RearrangeTaskFlow();
     void OpenColorFilterWindow();
@@ -439,6 +441,7 @@ signals:
     // ---- Device ----
     void ChangeDeviceState(int deviceType, bool isOpen);
     // ----
+    void RequestCapture();
     void GotImage(cv::Mat mat);
     void GotObjects(QList<Object*>* objects);
     void GotResizePara(cv::Size size);

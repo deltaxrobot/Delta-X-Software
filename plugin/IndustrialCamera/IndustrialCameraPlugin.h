@@ -27,6 +27,7 @@ signals:
     //void EmitCommand(QString cmd);
     void CapturedImage(cv::Mat mat);
     void StartedCapture();
+    void RequestCapture();
 private:
     Form* pluginForm;
 

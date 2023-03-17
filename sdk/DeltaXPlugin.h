@@ -26,6 +26,7 @@ signals:
 //    virtual void EmitCommand(QString cmd) = 0;
     virtual void CapturedImage(cv::Mat mat) = 0;
     virtual void StartedCapture() = 0;
+    virtual void RequestCapture() = 0;
 };
 
 QT_BEGIN_NAMESPACE

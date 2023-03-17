@@ -109,7 +109,7 @@
             </size>
            </property>
            <property name="text">
-            <string>800</string>
+            <string>1920</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignCenter</set>

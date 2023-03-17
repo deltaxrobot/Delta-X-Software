@@ -152,29 +152,23 @@ public:
     QFrame *fWebcamSource;
     QHBoxLayout *horizontalLayout_11;
     QToolButton *pbLoadCamera;
-    QLabel *label_11;
-    QLineEdit *leFPS;
-    QLabel *label_124;
-    QLineEdit *leCameraWidth;
-    QLabel *label_125;
-    QLineEdit *leCameraHeight;
     QSpacerItem *horizontalSpacer_45;
-    QToolButton *pbPlayPauseCamera;
-    QToolButton *pbCaptureCamera;
-    QLabel *lbCameraState;
     QFrame *fImageSource;
     QHBoxLayout *horizontalLayout_27;
     QToolButton *pbLoadTestImage;
     QSpacerItem *horizontalSpacer_64;
-    QFrame *fPluginSource;
+    QFrame *fCameraPara;
     QHBoxLayout *horizontalLayout_28;
-    QCheckBox *cbExternalImageSource;
-    QLabel *label_177;
-    QComboBox *comboBox_2;
     QLabel *label_178;
     QLineEdit *leImageWidth;
     QLabel *label_179;
     QLineEdit *leImageHeight;
+    QLabel *label_73;
+    QLineEdit *leCaptureInterval;
+    QLabel *label_128;
+    QToolButton *pbStartAcquisition;
+    QToolButton *pbCapture;
+    QLabel *lbCameraState;
     QSpacerItem *horizontalSpacer_65;
     QGroupBox *gbCameraCalibration;
     QVBoxLayout *verticalLayout_29;
@@ -1550,7 +1544,7 @@ public:
         saObjectDetecting->setWidgetResizable(true);
         wObjectDetecting = new QWidget();
         wObjectDetecting->setObjectName(QString::fromUtf8("wObjectDetecting"));
-        wObjectDetecting->setGeometry(QRect(0, -840, 539, 4000));
+        wObjectDetecting->setGeometry(QRect(0, 0, 539, 4000));
         wObjectDetecting->setMinimumSize(QSize(100, 4000));
         wObjectDetecting->setStyleSheet(QString::fromUtf8("QWidget#wObjectDetecting\n"
 "{	\n"
@@ -1843,6 +1837,7 @@ public:
         cbSourceForImageProvider->addItem(QString());
         cbSourceForImageProvider->addItem(QString());
         cbSourceForImageProvider->setObjectName(QString::fromUtf8("cbSourceForImageProvider"));
+        cbSourceForImageProvider->setMinimumSize(QSize(200, 0));
 
         horizontalLayout_10->addWidget(cbSourceForImageProvider);
 
@@ -1888,113 +1883,9 @@ public:
 
         horizontalLayout_11->addWidget(pbLoadCamera);
 
-        label_11 = new QLabel(fWebcamSource);
-        label_11->setObjectName(QString::fromUtf8("label_11"));
-        label_11->setMaximumSize(QSize(30, 16777215));
-        QFont font7;
-        font7.setPointSize(8);
-        label_11->setFont(font7);
-
-        horizontalLayout_11->addWidget(label_11);
-
-        leFPS = new QLineEdit(fWebcamSource);
-        leFPS->setObjectName(QString::fromUtf8("leFPS"));
-        QSizePolicy sizePolicy7(QSizePolicy::Expanding, QSizePolicy::Minimum);
-        sizePolicy7.setHorizontalStretch(0);
-        sizePolicy7.setVerticalStretch(0);
-        sizePolicy7.setHeightForWidth(leFPS->sizePolicy().hasHeightForWidth());
-        leFPS->setSizePolicy(sizePolicy7);
-        leFPS->setMinimumSize(QSize(0, 10));
-        leFPS->setMaximumSize(QSize(40, 25));
-        leFPS->setFont(font7);
-        leFPS->setAlignment(Qt::AlignCenter);
-
-        horizontalLayout_11->addWidget(leFPS);
-
-        label_124 = new QLabel(fWebcamSource);
-        label_124->setObjectName(QString::fromUtf8("label_124"));
-        label_124->setFont(font7);
-        label_124->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
-
-        horizontalLayout_11->addWidget(label_124);
-
-        leCameraWidth = new QLineEdit(fWebcamSource);
-        leCameraWidth->setObjectName(QString::fromUtf8("leCameraWidth"));
-        sizePolicy7.setHeightForWidth(leCameraWidth->sizePolicy().hasHeightForWidth());
-        leCameraWidth->setSizePolicy(sizePolicy7);
-        leCameraWidth->setMinimumSize(QSize(0, 10));
-        leCameraWidth->setMaximumSize(QSize(40, 25));
-        leCameraWidth->setFont(font7);
-        leCameraWidth->setAlignment(Qt::AlignCenter);
-
-        horizontalLayout_11->addWidget(leCameraWidth);
-
-        label_125 = new QLabel(fWebcamSource);
-        label_125->setObjectName(QString::fromUtf8("label_125"));
-        label_125->setFont(font7);
-        label_125->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
-
-        horizontalLayout_11->addWidget(label_125);
-
-        leCameraHeight = new QLineEdit(fWebcamSource);
-        leCameraHeight->setObjectName(QString::fromUtf8("leCameraHeight"));
-        sizePolicy7.setHeightForWidth(leCameraHeight->sizePolicy().hasHeightForWidth());
-        leCameraHeight->setSizePolicy(sizePolicy7);
-        leCameraHeight->setMinimumSize(QSize(0, 10));
-        leCameraHeight->setMaximumSize(QSize(40, 25));
-        leCameraHeight->setFont(font7);
-        leCameraHeight->setAlignment(Qt::AlignCenter);
-
-        horizontalLayout_11->addWidget(leCameraHeight);
-
         horizontalSpacer_45 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
         horizontalLayout_11->addItem(horizontalSpacer_45);
-
-        pbPlayPauseCamera = new QToolButton(fWebcamSource);
-        pbPlayPauseCamera->setObjectName(QString::fromUtf8("pbPlayPauseCamera"));
-        pbPlayPauseCamera->setEnabled(false);
-        sizePolicy.setHeightForWidth(pbPlayPauseCamera->sizePolicy().hasHeightForWidth());
-        pbPlayPauseCamera->setSizePolicy(sizePolicy);
-        pbPlayPauseCamera->setMinimumSize(QSize(0, 0));
-        pbPlayPauseCamera->setFont(font7);
-        QIcon icon21;
-        icon21.addFile(QString::fromUtf8(":/icon/icons8-play-48.png"), QSize(), QIcon::Normal, QIcon::Off);
-        icon21.addFile(QString::fromUtf8(":/icon/icons8-pause-48.png"), QSize(), QIcon::Normal, QIcon::On);
-        icon21.addFile(QString::fromUtf8("icon/icons8-play-48.png"), QSize(), QIcon::Selected, QIcon::Off);
-        pbPlayPauseCamera->setIcon(icon21);
-        pbPlayPauseCamera->setIconSize(QSize(30, 30));
-        pbPlayPauseCamera->setCheckable(true);
-        pbPlayPauseCamera->setChecked(false);
-        pbPlayPauseCamera->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-        pbPlayPauseCamera->setAutoRaise(true);
-
-        horizontalLayout_11->addWidget(pbPlayPauseCamera);
-
-        pbCaptureCamera = new QToolButton(fWebcamSource);
-        pbCaptureCamera->setObjectName(QString::fromUtf8("pbCaptureCamera"));
-        pbCaptureCamera->setEnabled(false);
-        pbCaptureCamera->setMinimumSize(QSize(0, 0));
-        pbCaptureCamera->setFont(font7);
-        QIcon icon22;
-        icon22.addFile(QString::fromUtf8(":/icon/icons8-screenshot-40.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbCaptureCamera->setIcon(icon22);
-        pbCaptureCamera->setIconSize(QSize(30, 30));
-        pbCaptureCamera->setCheckable(false);
-        pbCaptureCamera->setChecked(false);
-        pbCaptureCamera->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-        pbCaptureCamera->setAutoRaise(true);
-
-        horizontalLayout_11->addWidget(pbCaptureCamera);
-
-        lbCameraState = new QLabel(fWebcamSource);
-        lbCameraState->setObjectName(QString::fromUtf8("lbCameraState"));
-        lbCameraState->setEnabled(false);
-        lbCameraState->setMaximumSize(QSize(20, 20));
-        lbCameraState->setPixmap(QPixmap(QString::fromUtf8("icon/icons8-connection-status-on-48.png")));
-        lbCameraState->setScaledContents(true);
-
-        horizontalLayout_11->addWidget(lbCameraState);
 
 
         verticalLayout_51->addWidget(fWebcamSource);
@@ -2020,10 +1911,12 @@ public:
         pbLoadTestImage->setSizePolicy(sizePolicy);
         pbLoadTestImage->setMinimumSize(QSize(0, 0));
         pbLoadTestImage->setMaximumSize(QSize(120, 16777215));
+        QFont font7;
+        font7.setPointSize(8);
         pbLoadTestImage->setFont(font7);
-        QIcon icon23;
-        icon23.addFile(QString::fromUtf8(":/icon/icons8_image_30px_1.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbLoadTestImage->setIcon(icon23);
+        QIcon icon21;
+        icon21.addFile(QString::fromUtf8(":/icon/icons8_image_30px_1.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbLoadTestImage->setIcon(icon21);
         pbLoadTestImage->setIconSize(QSize(30, 30));
         pbLoadTestImage->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
         pbLoadTestImage->setAutoRaise(true);
@@ -2037,51 +1930,33 @@ public:
 
         verticalLayout_51->addWidget(fImageSource);
 
-        fPluginSource = new QFrame(fImageProvider);
-        fPluginSource->setObjectName(QString::fromUtf8("fPluginSource"));
-        fPluginSource->setMinimumSize(QSize(0, 20));
-        fPluginSource->setMaximumSize(QSize(16777215, 50));
-        fPluginSource->setStyleSheet(QString::fromUtf8("QFrame#fPluginSource\n"
+        fCameraPara = new QFrame(fImageProvider);
+        fCameraPara->setObjectName(QString::fromUtf8("fCameraPara"));
+        fCameraPara->setMinimumSize(QSize(0, 20));
+        fCameraPara->setMaximumSize(QSize(16777215, 50));
+        fCameraPara->setStyleSheet(QString::fromUtf8("QFrame#fPluginSource\n"
 "{\n"
 "	border: 1px solid rgb(10, 198, 255);\n"
 "}"));
-        fPluginSource->setFrameShape(QFrame::StyledPanel);
-        fPluginSource->setFrameShadow(QFrame::Raised);
-        horizontalLayout_28 = new QHBoxLayout(fPluginSource);
+        fCameraPara->setFrameShape(QFrame::StyledPanel);
+        fCameraPara->setFrameShadow(QFrame::Raised);
+        horizontalLayout_28 = new QHBoxLayout(fCameraPara);
         horizontalLayout_28->setSpacing(6);
         horizontalLayout_28->setContentsMargins(11, 11, 11, 11);
         horizontalLayout_28->setObjectName(QString::fromUtf8("horizontalLayout_28"));
         horizontalLayout_28->setContentsMargins(5, 5, 5, 5);
-        cbExternalImageSource = new QCheckBox(fPluginSource);
-        cbExternalImageSource->setObjectName(QString::fromUtf8("cbExternalImageSource"));
-
-        horizontalLayout_28->addWidget(cbExternalImageSource);
-
-        label_177 = new QLabel(fPluginSource);
-        label_177->setObjectName(QString::fromUtf8("label_177"));
-        label_177->setMaximumSize(QSize(100, 16777215));
-        label_177->setFont(font7);
-
-        horizontalLayout_28->addWidget(label_177);
-
-        comboBox_2 = new QComboBox(fPluginSource);
-        comboBox_2->addItem(QString());
-        comboBox_2->setObjectName(QString::fromUtf8("comboBox_2"));
-        sizePolicy.setHeightForWidth(comboBox_2->sizePolicy().hasHeightForWidth());
-        comboBox_2->setSizePolicy(sizePolicy);
-        comboBox_2->setMinimumSize(QSize(150, 0));
-
-        horizontalLayout_28->addWidget(comboBox_2);
-
-        label_178 = new QLabel(fPluginSource);
+        label_178 = new QLabel(fCameraPara);
         label_178->setObjectName(QString::fromUtf8("label_178"));
         label_178->setFont(font7);
         label_178->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
 
         horizontalLayout_28->addWidget(label_178);
 
-        leImageWidth = new QLineEdit(fPluginSource);
+        leImageWidth = new QLineEdit(fCameraPara);
         leImageWidth->setObjectName(QString::fromUtf8("leImageWidth"));
+        QSizePolicy sizePolicy7(QSizePolicy::Expanding, QSizePolicy::Minimum);
+        sizePolicy7.setHorizontalStretch(0);
+        sizePolicy7.setVerticalStretch(0);
         sizePolicy7.setHeightForWidth(leImageWidth->sizePolicy().hasHeightForWidth());
         leImageWidth->setSizePolicy(sizePolicy7);
         leImageWidth->setMinimumSize(QSize(0, 10));
@@ -2091,14 +1966,14 @@ public:
 
         horizontalLayout_28->addWidget(leImageWidth);
 
-        label_179 = new QLabel(fPluginSource);
+        label_179 = new QLabel(fCameraPara);
         label_179->setObjectName(QString::fromUtf8("label_179"));
         label_179->setFont(font7);
         label_179->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
 
         horizontalLayout_28->addWidget(label_179);
 
-        leImageHeight = new QLineEdit(fPluginSource);
+        leImageHeight = new QLineEdit(fCameraPara);
         leImageHeight->setObjectName(QString::fromUtf8("leImageHeight"));
         sizePolicy7.setHeightForWidth(leImageHeight->sizePolicy().hasHeightForWidth());
         leImageHeight->setSizePolicy(sizePolicy7);
@@ -2109,12 +1984,82 @@ public:
 
         horizontalLayout_28->addWidget(leImageHeight);
 
+        label_73 = new QLabel(fCameraPara);
+        label_73->setObjectName(QString::fromUtf8("label_73"));
+        label_73->setMaximumSize(QSize(50, 16777215));
+        label_73->setFont(font7);
+
+        horizontalLayout_28->addWidget(label_73);
+
+        leCaptureInterval = new QLineEdit(fCameraPara);
+        leCaptureInterval->setObjectName(QString::fromUtf8("leCaptureInterval"));
+        sizePolicy7.setHeightForWidth(leCaptureInterval->sizePolicy().hasHeightForWidth());
+        leCaptureInterval->setSizePolicy(sizePolicy7);
+        leCaptureInterval->setMinimumSize(QSize(0, 10));
+        leCaptureInterval->setMaximumSize(QSize(40, 25));
+        leCaptureInterval->setFont(font7);
+        leCaptureInterval->setAlignment(Qt::AlignCenter);
+
+        horizontalLayout_28->addWidget(leCaptureInterval);
+
+        label_128 = new QLabel(fCameraPara);
+        label_128->setObjectName(QString::fromUtf8("label_128"));
+        label_128->setMaximumSize(QSize(50, 16777215));
+        label_128->setFont(font7);
+
+        horizontalLayout_28->addWidget(label_128);
+
+        pbStartAcquisition = new QToolButton(fCameraPara);
+        pbStartAcquisition->setObjectName(QString::fromUtf8("pbStartAcquisition"));
+        pbStartAcquisition->setEnabled(true);
+        sizePolicy.setHeightForWidth(pbStartAcquisition->sizePolicy().hasHeightForWidth());
+        pbStartAcquisition->setSizePolicy(sizePolicy);
+        pbStartAcquisition->setMinimumSize(QSize(0, 0));
+        pbStartAcquisition->setFont(font7);
+        QIcon icon22;
+        icon22.addFile(QString::fromUtf8(":/icon/icons8-play-48.png"), QSize(), QIcon::Normal, QIcon::Off);
+        icon22.addFile(QString::fromUtf8(":/icon/icons8-pause-48.png"), QSize(), QIcon::Normal, QIcon::On);
+        icon22.addFile(QString::fromUtf8("icon/icons8-play-48.png"), QSize(), QIcon::Selected, QIcon::Off);
+        pbStartAcquisition->setIcon(icon22);
+        pbStartAcquisition->setIconSize(QSize(30, 30));
+        pbStartAcquisition->setCheckable(true);
+        pbStartAcquisition->setChecked(false);
+        pbStartAcquisition->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+        pbStartAcquisition->setAutoRaise(true);
+
+        horizontalLayout_28->addWidget(pbStartAcquisition);
+
+        pbCapture = new QToolButton(fCameraPara);
+        pbCapture->setObjectName(QString::fromUtf8("pbCapture"));
+        pbCapture->setEnabled(true);
+        pbCapture->setMinimumSize(QSize(0, 0));
+        pbCapture->setFont(font7);
+        QIcon icon23;
+        icon23.addFile(QString::fromUtf8(":/icon/icons8-screenshot-40.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbCapture->setIcon(icon23);
+        pbCapture->setIconSize(QSize(30, 30));
+        pbCapture->setCheckable(false);
+        pbCapture->setChecked(false);
+        pbCapture->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+        pbCapture->setAutoRaise(true);
+
+        horizontalLayout_28->addWidget(pbCapture);
+
+        lbCameraState = new QLabel(fCameraPara);
+        lbCameraState->setObjectName(QString::fromUtf8("lbCameraState"));
+        lbCameraState->setEnabled(true);
+        lbCameraState->setMaximumSize(QSize(20, 20));
+        lbCameraState->setPixmap(QPixmap(QString::fromUtf8("icon/icons8-connection-status-on-48.png")));
+        lbCameraState->setScaledContents(true);
+
+        horizontalLayout_28->addWidget(lbCameraState);
+
         horizontalSpacer_65 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
         horizontalLayout_28->addItem(horizontalSpacer_65);
 
 
-        verticalLayout_51->addWidget(fPluginSource);
+        verticalLayout_51->addWidget(fCameraPara);
 
 
         verticalLayout_39->addWidget(fImageProvider);
@@ -6932,21 +6877,19 @@ public:
         QObject::connect(pbWarpTool, SIGNAL(clicked()), pbTransformPerspective, SLOT(toggle()));
         QObject::connect(pbCalibStep1, SIGNAL(toggled(bool)), fCalibStep1, SLOT(setVisible(bool)));
         QObject::connect(cbEditGcodeEditor, SIGNAL(toggled(bool)), pbExecuteGcodes, SLOT(setDisabled(bool)));
-        QObject::connect(pbLoadCamera, SIGNAL(clicked(bool)), pbCaptureCamera, SLOT(setEnabled(bool)));
         QObject::connect(gbCameraVariable, SIGNAL(toggled(bool)), fVisionVariableFrame, SLOT(setVisible(bool)));
-        QObject::connect(pbLoadCamera, SIGNAL(clicked(bool)), pbPlayPauseCamera, SLOT(setEnabled(bool)));
         QObject::connect(pbTransformPerspective, SIGNAL(clicked()), pbWarpTool, SLOT(toggle()));
         QObject::connect(gbCameraObject, SIGNAL(toggled(bool)), fVisionObjectFrame, SLOT(setVisible(bool)));
 
         twDeltaManager->setCurrentIndex(0);
-        twModule->setCurrentIndex(3);
+        twModule->setCurrentIndex(1);
         tabWidget->setCurrentIndex(0);
         pbTransformPerspective->setDefault(false);
         pbImageMapping->setDefault(false);
         cbImageSource->setCurrentIndex(0);
         twDevices->setCurrentIndex(0);
         RobotTabWidget->setCurrentIndex(1);
-        tabWidget_2->setCurrentIndex(1);
+        tabWidget_2->setCurrentIndex(0);
         cbDivision->setCurrentIndex(1);
         tabWidget_3->setCurrentIndex(0);
         pbPump->setDefault(false);
@@ -7127,41 +7070,34 @@ public:
         gbImageProvider->setTitle(QCoreApplication::translate("RobotWindow", "Image Provider", nullptr));
         label_176->setText(QCoreApplication::translate("RobotWindow", "Source", nullptr));
         cbSourceForImageProvider->setItemText(0, QCoreApplication::translate("RobotWindow", "Webcam", nullptr));
-        cbSourceForImageProvider->setItemText(1, QCoreApplication::translate("RobotWindow", "Images", nullptr));
-        cbSourceForImageProvider->setItemText(2, QCoreApplication::translate("RobotWindow", "Plugin", nullptr));
+        cbSourceForImageProvider->setItemText(1, QCoreApplication::translate("RobotWindow", "Industrial Camera", nullptr));
+        cbSourceForImageProvider->setItemText(2, QCoreApplication::translate("RobotWindow", "Images", nullptr));
         cbSourceForImageProvider->setItemText(3, QCoreApplication::translate("RobotWindow", "Socket", nullptr));
 
 #if QT_CONFIG(tooltip)
         pbLoadCamera->setToolTip(QCoreApplication::translate("RobotWindow", "Load Camera", nullptr));
 #endif // QT_CONFIG(tooltip)
         pbLoadCamera->setText(QCoreApplication::translate("RobotWindow", "Load Camera", nullptr));
-        label_11->setText(QCoreApplication::translate("RobotWindow", "FPS", nullptr));
-        leFPS->setText(QCoreApplication::translate("RobotWindow", "5", nullptr));
-        label_124->setText(QCoreApplication::translate("RobotWindow", "W", nullptr));
-        leCameraWidth->setText(QCoreApplication::translate("RobotWindow", "800", nullptr));
-        label_125->setText(QCoreApplication::translate("RobotWindow", "H", nullptr));
-        leCameraHeight->setText(QCoreApplication::translate("RobotWindow", "500", nullptr));
-#if QT_CONFIG(tooltip)
-        pbPlayPauseCamera->setToolTip(QCoreApplication::translate("RobotWindow", "<html><head/><body><p>Play and Pause</p><p>M98 PpauseCamera</p><p>M98 PresumeCamera</p></body></html>", nullptr));
-#endif // QT_CONFIG(tooltip)
-        pbPlayPauseCamera->setText(QString());
-#if QT_CONFIG(tooltip)
-        pbCaptureCamera->setToolTip(QCoreApplication::translate("RobotWindow", "<html><head/><body><p>Capture</p><p>M98 PcaptureCamera</p></body></html>", nullptr));
-#endif // QT_CONFIG(tooltip)
-        pbCaptureCamera->setText(QString());
-        lbCameraState->setText(QString());
 #if QT_CONFIG(tooltip)
         pbLoadTestImage->setToolTip(QCoreApplication::translate("RobotWindow", "Load Image", nullptr));
 #endif // QT_CONFIG(tooltip)
         pbLoadTestImage->setText(QCoreApplication::translate("RobotWindow", "Load Image", nullptr));
-        cbExternalImageSource->setText(QCoreApplication::translate("RobotWindow", "Enough", nullptr));
-        label_177->setText(QCoreApplication::translate("RobotWindow", "plugin", nullptr));
-        comboBox_2->setItemText(0, QCoreApplication::translate("RobotWindow", "IndustryCamera", nullptr));
-
         label_178->setText(QCoreApplication::translate("RobotWindow", "W", nullptr));
         leImageWidth->setText(QCoreApplication::translate("RobotWindow", "800", nullptr));
         label_179->setText(QCoreApplication::translate("RobotWindow", "H", nullptr));
         leImageHeight->setText(QCoreApplication::translate("RobotWindow", "500", nullptr));
+        label_73->setText(QCoreApplication::translate("RobotWindow", "Interval", nullptr));
+        leCaptureInterval->setText(QCoreApplication::translate("RobotWindow", "500", nullptr));
+        label_128->setText(QCoreApplication::translate("RobotWindow", "ms", nullptr));
+#if QT_CONFIG(tooltip)
+        pbStartAcquisition->setToolTip(QCoreApplication::translate("RobotWindow", "<html><head/><body><p>Play and Pause</p><p>M98 PpauseCamera</p><p>M98 PresumeCamera</p></body></html>", nullptr));
+#endif // QT_CONFIG(tooltip)
+        pbStartAcquisition->setText(QString());
+#if QT_CONFIG(tooltip)
+        pbCapture->setToolTip(QCoreApplication::translate("RobotWindow", "<html><head/><body><p>Capture</p><p>M98 PcaptureCamera</p></body></html>", nullptr));
+#endif // QT_CONFIG(tooltip)
+        pbCapture->setText(QString());
+        lbCameraState->setText(QString());
         gbCameraCalibration->setTitle(QCoreApplication::translate("RobotWindow", "Calibration", nullptr));
         pbCalibStep1->setText(QCoreApplication::translate("RobotWindow", "Step 1: Find the 4 points of the square", nullptr));
         leChessWidth->setText(QCoreApplication::translate("RobotWindow", "7", nullptr));
