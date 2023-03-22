@@ -40,11 +40,14 @@ public slots:
     QString GetSerialPortName();
     int GetSerialPortBaudrate();
     bool IsOpen();
+    QString ID();
+    void SetID(QString);
 
 protected:
     QSerialPort* serialPort;
     QMetaObject::Connection readDataConnection;
     QJsonObject jsonObject;
+    QString id;
 
 private:
     QString serialPortName;
@@ -52,8 +55,6 @@ private:
     QString confirmRequest;
     QString confirmResponse;
     QString feedback;
-
-
 };
 
 #endif // DEVICE_H

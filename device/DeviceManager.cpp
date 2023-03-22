@@ -13,6 +13,13 @@ DeviceManager::~DeviceManager()
         Robots.at(i)->thread()->wait();
         delete Robots.at(i);
     }
+
+    for (int i = 0; i < Sliders.count(); i++)
+    {
+        Sliders.at(i)->thread()->quit();
+        Sliders.at(i)->thread()->wait();
+        delete Sliders.at(i);
+    }
 }
 
 void DeviceManager::AddRobot()
@@ -30,6 +37,21 @@ void DeviceManager::AddRobot()
     robotThread->start();
 }
 
+void DeviceManager::AddSlider()
+{
+    qDebug() << "Add slider";
+    Slider* slider = new Slider("auto", 115200, false);
+    slider->SetID(QString("slider") + QString::number(Sliders.count() + 1));
+    Sliders.append(slider);
+    QThread* sliderThread = new QThread(this);
+    slider->moveToThread(sliderThread);
+    connect(sliderThread, SIGNAL(started()), slider, SLOT(Run()));
+    connect(slider, &Slider::gcodeDone, [=](QString id, QString response){ emit DeviceResponded(id, response); });
+    connect(slider, &Slider::infoReady, this, &DeviceManager::GotDeviceInfo);
+
+    sliderThread->start();
+}
+
 void DeviceManager::SetDeviceState(int deviceType, bool isOpen)
 {
     if (deviceType == ROBOT)
@@ -44,6 +66,19 @@ void DeviceManager::SetDeviceState(int deviceType, bool isOpen)
         else
             QMetaObject::invokeMethod(Robots[SelectedRobotID], "Disconnect", Qt::QueuedConnection);
     }
+
+    if (deviceType == SLIDER)
+    {
+        if (SelectedSliderID > Sliders.count() - 1)
+        {
+            AddSlider();
+        }
+
+        if (isOpen == true)
+            QMetaObject::invokeMethod(Sliders[SelectedSliderID], "Connect", Qt::QueuedConnection);
+        else
+            QMetaObject::invokeMethod(Sliders[SelectedSliderID], "Disconnect", Qt::QueuedConnection);
+    }
 }
 
 void DeviceManager::RequestDeviceInfo(int deviceType)
@@ -56,6 +91,16 @@ void DeviceManager::RequestDeviceInfo(int deviceType)
         }
 
         QMetaObject::invokeMethod(Robots[SelectedRobotID], "GetInfo", Qt::QueuedConnection);
+    }
+
+    if (deviceType == SLIDER)
+    {
+        if (SelectedSliderID > Sliders.count() - 1)
+        {
+            AddSlider();
+        }
+
+        QMetaObject::invokeMethod(Sliders[SelectedSliderID], "GetInfo", Qt::QueuedConnection);
     }
 
 }

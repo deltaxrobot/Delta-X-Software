@@ -79,6 +79,7 @@ SOURCES += main.cpp\
     device/DeviceManager.cpp \
     device/device.cpp \
     device/robot.cpp \
+    device/slider.cpp \
     geisttextedit.cpp \
     global.cpp \
     highlighter.cpp \
@@ -123,6 +124,7 @@ HEADERS  += \
     device/DeviceManager.h \
     device/device.h \
     device/robot.h \
+    device/slider.h \
     geisttextedit.h \
     global.h \
     highlighter.h \
