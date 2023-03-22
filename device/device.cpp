@@ -135,6 +135,16 @@ bool Device::IsOpen()
     return serialPort->isOpen();
 }
 
+QString Device::ID()
+{
+    return this->id;
+}
+
+void Device::SetID(QString)
+{
+    this->id = id;
+}
+
 void Device::Run()
 {
     qDebug() << "Device run";
