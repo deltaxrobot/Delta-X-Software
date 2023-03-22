@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <device/robot.h>
+#include <device/slider.h>
 #include <QThread>
 
 class DeviceManager : public QObject
@@ -22,9 +23,11 @@ public:
     ~DeviceManager();
 
     QList<Robot*> Robots;
+    QList<Slider*> Sliders;
     QList<QThread*> Threads;
 
     int SelectedRobotID = 0;
+    int SelectedSliderID = 0;
 signals:
     void DeviceResponded(QString id, QString response);
     void GotDeviceInfo(QString jsonDeviceInfo);
@@ -32,6 +35,7 @@ signals:
 
 public slots:
     void AddRobot();
+    void AddSlider();
     void SetDeviceState(int deviceType, bool isOpen);
     void RequestDeviceInfo(int deviceType);
     void SendGcode(int deviceType, QString gcode);

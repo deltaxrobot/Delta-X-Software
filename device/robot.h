@@ -22,8 +22,6 @@ public:
     void SetOutput(int pin, bool state);
     void MovePoint(QVector3D point);
     void SetSyncPath(QString path, float con_vel, float con_angle);
-    QString ID();
-    void SetID(QString);
 
 public slots:
     QString SendGcode(QString gcode = "G28", bool is_wait = false, int time_out = 10000);
@@ -48,7 +46,6 @@ private:
     float home_X, home_Y, home_Z, home_W, home_U, home_V;
     float old_X, old_Y, old_Z;
     QTimer* timer;
-    QString id;
 
     bool getPara(QString gcode);
     void calMoveTime();
