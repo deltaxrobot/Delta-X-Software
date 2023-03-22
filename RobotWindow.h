@@ -324,6 +324,8 @@ public slots:
     void UpdateGcodeValueToDeviceUI(QString deviceName, QString gcode);
 
     // ---- Conveyor ----
+    void ChangeConveyorType(int index);
+
     void ConnectConveyor();
     void SetConveyorMode(int mode);
     void SetConveyorMovingMode(int mode);

@@ -191,6 +191,10 @@ void RobotWindow::InitVariables()
     connect(ui->tbRequestPosition, SIGNAL(clicked(bool)), this, SLOT(RequestPosition()));
     connect(ui->cbRobotDOF, SIGNAL(currentIndexChanged(int)), this, SLOT(ChangeRobotDOF(int)));
 
+    connect(ui->cbConveyorType, SIGNAL(currentIndexChanged(int)), this, SLOT(ChangeConveyorType(int)));
+    ChangeConveyorType(0);
+
+
     //----- Process ------
     ExternalScriptProcess = new QProcess(this);
 
@@ -2882,6 +2886,25 @@ void RobotWindow::UpdateGcodeValueToDeviceUI(QString deviceName, QString gcode)
 
     if (deviceName == "ExternalMCU")
     {
+    }
+}
+
+void RobotWindow::ChangeConveyorType(int index)
+{
+    ui->fConveyorX->setHidden(true);
+    ui->fConveyorXHub->setHidden(true);
+    ui->fConveyorCustom->setHidden(true);
+    if (index == 0)
+    {
+        ui->fConveyorX->setHidden(false);
+    }
+    else if (index == 1)
+    {
+        ui->fConveyorXHub->setHidden(false);
+    }
+    else
+    {
+        ui->fConveyorCustom->setHidden(false);
     }
 }
 
