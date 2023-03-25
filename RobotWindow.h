@@ -247,6 +247,7 @@ public:
 public slots:
     // ---- View update ----
     void GetDeviceInfo(QString json);
+    void GetDeviceResponse(QString id, QString response);
 
     // ---- Robot ----
     void ConnectDeltaRobot();
@@ -329,8 +330,8 @@ public slots:
     void ConnectConveyor();
     void SetConveyorMode(int mode);
     void SetConveyorMovingMode(int mode);
-    void SetSpeedOfPositionMode();
-    void MoveConveyor();
+    void SetConveyorXSpeed();
+    void SetConveyorXPosition();
 
     void SetConvenyorSpeed();
     void ConnectEncoder();
@@ -385,7 +386,7 @@ public slots:
 
     // ----- Object Detecting ----
     void GeneralCapture();
-    void StartContinuousCapture();
+    void StartContinuousCapture(bool isCheck);
     void GetImageFromExternal(cv::Mat mat);
     void GetCapturedSignal();
     void ChangeOutputDisplay(QString outputName);
@@ -441,7 +442,7 @@ public slots:
 
 signals:
     // ---- Device ----
-    void ChangeDeviceState(int deviceType, bool isOpen);
+    void ChangeDeviceState(int deviceType, bool isOpen, QString address);
     // ----
     void RequestCapture();
     void GotImage(cv::Mat mat);

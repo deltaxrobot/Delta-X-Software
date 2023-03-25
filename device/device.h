@@ -23,8 +23,7 @@ public:
     ~Device();
 
 signals:
-    void receivedMsg(QString);
-    void gcodeDone(QString id, QString response);
+    void receivedMsg(QString id, QString);
     void infoReady(QString infoJson);
 
 public slots:
@@ -35,13 +34,14 @@ public slots:
     void Delay(int msec);
 
     QString GetResponse(int timeout = 2000);
+    void WriteData(QString data);
     void ReadData();
     QString ReadLine();
     QString GetSerialPortName();
     int GetSerialPortBaudrate();
     bool IsOpen();
     QString ID();
-    void SetID(QString);
+    void SetID(QString id);
 
 protected:
     QSerialPort* serialPort;

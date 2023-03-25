@@ -9,7 +9,6 @@ Slider::Slider(QString COM, int baudrate, bool is_open, QObject *parent) : Devic
 
 void Slider::ProcessResponse(QString response)
 {
-    emit gcodeDone(id, response);
     qDebug() << response;
 }
 

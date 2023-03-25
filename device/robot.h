@@ -16,7 +16,7 @@ class Robot : public Device
     Q_OBJECT
 public:
     Robot(QString COM = "auto", int baudrate = 115200, bool is_open = true, QObject *parent = nullptr);
-    ~Robot(){}
+    ~Robot();
 
     QString SetInput(int pin);
     void SetOutput(int pin, bool state);
@@ -25,7 +25,7 @@ public:
 
 public slots:
     QString SendGcode(QString gcode = "G28", bool is_wait = false, int time_out = 10000);
-    void ProcessResponse(QString response = "");
+    void ProcessResponse(QString id, QString response = "");
     void Sleep(int time_ms, bool sync);
     void GoHome();
     void Move(float x, float y, float z, float w, float u, float v, float f, float a, float s, float e, float j, bool sync, float time_offset);

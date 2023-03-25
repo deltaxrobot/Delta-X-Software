@@ -43,7 +43,8 @@ public:
 
 public slots:
     void ExecuteGcode(QString gcodes, int position, bool isFromGcodeEditor);
-    void GetResponse(QString deviceId, QString respose);
+    void GetResponse(QString deviceId, QString response);
+    void SendMsgToDevice(QString deviceId, QString msg);
     void TransmitNextGcode();
     void TransmitNextGcode(QList<QString> gcodes, int& order);
     void Stop();

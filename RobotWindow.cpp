@@ -50,7 +50,7 @@ void RobotWindow::InitOtherThreadObjects()
     QMetaObject::invokeMethod(DeviceManagerInstance, "AddRobot", Qt::QueuedConnection);
 
     connect(DeviceManagerInstance, SIGNAL(GotDeviceInfo(QString)), this, SLOT(GetDeviceInfo(QString)));
-    connect(this, SIGNAL(ChangeDeviceState(int, bool)), DeviceManagerInstance, SLOT(SetDeviceState(int, bool)));
+    connect(this, SIGNAL(ChangeDeviceState(int, bool, QString)), DeviceManagerInstance, SLOT(SetDeviceState(int, bool, QString)));
     connect(DeviceManagerInstance, SIGNAL(Log(QString)), this, SLOT(Log(QString)));
 
 }
@@ -446,7 +446,7 @@ void RobotWindow::InitObjectDetectingModule()
     connect(this, SIGNAL(GotMappingMatrix(QMatrix)), ImageProcessingThread->GetNode("VisibleObjectsNode"), SLOT(Input(QMatrix)));
     connect(this, SIGNAL(GotOjectFilterInfo(Object)), ImageProcessingThread->GetNode("GetObjectsNode"), SLOT(Input(Object)));
     connect(ImageProcessingThread->GetNode("VisibleObjectsNode"), SIGNAL(HadOutput(QList<Object*>*)), this, SLOT(UpdateObjectsToImageViewer(QList<Object*>*)));
-    connect(ImageProcessingThread->GetNode("VisibleObjectsNode"), &TaskNode::DebugEvent, [=] () { qDebug() << "End: " << Encoder1->GetMeasuredDistance();});
+//    connect(ImageProcessingThread->GetNode("VisibleObjectsNode"), &TaskNode::DebugEvent, [=] () { qDebug() << "End: " << Encoder1->GetMeasuredDistance();});
 
     connect(Encoder1, SIGNAL(DistanceMoved(QPointF)), ImageProcessingThread->GetNode("TrackingObjectsNode"), SLOT(Input(QPointF)));
 
@@ -514,31 +514,31 @@ void RobotWindow::InitUIController()
     connect(ui->pbConnect, &QPushButton::clicked, this, [=]()
     {
         OpenLoadingPopup();
-        emit ChangeDeviceState(DeviceManager::ROBOT, (ui->pbConnect->text() == "Connect")?true:false);
+        emit ChangeDeviceState(DeviceManager::ROBOT, (ui->pbConnect->text() == "Connect")?true:false, "auto");
     });
 
     connect(&UpdateUITimer, &QTimer::timeout, this, &RobotWindow::UpdateRobotPositionToUI);
     UpdateUITimer.start(100);
 
-    connect(ui->pbHome, &QPushButton::clicked, this, [=](){emit Send(ConnectionManager::ROBOT, "G28");});
+    connect(ui->pbHome, &QPushButton::clicked, this, [=](){emit Send(DeviceManager::ROBOT, "G28");});
 
-    connect(ui->leX, &QLineEdit::returnPressed, this, [=](){RobotParameter.X = ui->leX->text().toFloat(); UpdateVariable("X", QString::number(RobotParameter.X)); emit Send(ConnectionManager::ROBOT, QString("G01 X") + ui->leX->text());});
-    connect(ui->leY, &QLineEdit::returnPressed, this, [=](){RobotParameter.Y = ui->leY->text().toFloat(); UpdateVariable("Y", QString::number(RobotParameter.Y));emit Send(ConnectionManager::ROBOT, QString("G01 Y") + ui->leY->text());});
-    connect(ui->leZ, &QLineEdit::returnPressed, this, [=](){RobotParameter.Z = ui->leZ->text().toFloat(); UpdateVariable("Z", QString::number(RobotParameter.Z));emit Send(ConnectionManager::ROBOT, QString("G01 Z") + ui->leZ->text());});
-    connect(ui->leW, &QLineEdit::returnPressed, this, [=](){RobotParameter.W = ui->leW->text().toFloat(); UpdateVariable("W", QString::number(RobotParameter.W));emit Send(ConnectionManager::ROBOT, QString("G01 W") + ui->leW->text());});
-    connect(ui->leU, &QLineEdit::returnPressed, this, [=](){RobotParameter.U = ui->leU->text().toFloat(); UpdateVariable("U", QString::number(RobotParameter.U));emit Send(ConnectionManager::ROBOT, QString("G01 U") + ui->leU->text());});
-    connect(ui->leV, &QLineEdit::returnPressed, this, [=](){RobotParameter.V = ui->leV->text().toFloat(); UpdateVariable("V", QString::number(RobotParameter.V));emit Send(ConnectionManager::ROBOT, QString("G01 V") + ui->leV->text());});
+    connect(ui->leX, &QLineEdit::returnPressed, this, [=](){RobotParameter.X = ui->leX->text().toFloat(); UpdateVariable("X", QString::number(RobotParameter.X)); emit Send(DeviceManager::ROBOT, QString("G01 X") + ui->leX->text());});
+    connect(ui->leY, &QLineEdit::returnPressed, this, [=](){RobotParameter.Y = ui->leY->text().toFloat(); UpdateVariable("Y", QString::number(RobotParameter.Y));emit Send(DeviceManager::ROBOT, QString("G01 Y") + ui->leY->text());});
+    connect(ui->leZ, &QLineEdit::returnPressed, this, [=](){RobotParameter.Z = ui->leZ->text().toFloat(); UpdateVariable("Z", QString::number(RobotParameter.Z));emit Send(DeviceManager::ROBOT, QString("G01 Z") + ui->leZ->text());});
+    connect(ui->leW, &QLineEdit::returnPressed, this, [=](){RobotParameter.W = ui->leW->text().toFloat(); UpdateVariable("W", QString::number(RobotParameter.W));emit Send(DeviceManager::ROBOT, QString("G01 W") + ui->leW->text());});
+    connect(ui->leU, &QLineEdit::returnPressed, this, [=](){RobotParameter.U = ui->leU->text().toFloat(); UpdateVariable("U", QString::number(RobotParameter.U));emit Send(DeviceManager::ROBOT, QString("G01 U") + ui->leU->text());});
+    connect(ui->leV, &QLineEdit::returnPressed, this, [=](){RobotParameter.V = ui->leV->text().toFloat(); UpdateVariable("V", QString::number(RobotParameter.V));emit Send(DeviceManager::ROBOT, QString("G01 V") + ui->leV->text());});
 
     connect(ui->vsZAdjsution, &QSlider::valueChanged, [=](int value){RobotParameter.Z = RobotParameter.ZHome - value;});
-    connect(ui->vsZAdjsution, &QSlider::sliderReleased, [=](){emit Send(ConnectionManager::ROBOT, QString("G01 Z%1").arg(RobotParameter.Z));});
+    connect(ui->vsZAdjsution, &QSlider::sliderReleased, [=](){emit Send(DeviceManager::ROBOT, QString("G01 Z%1").arg(RobotParameter.Z));});
     connect(ui->vsAngleAdjsution, &QSlider::valueChanged, [=](int value){RobotParameter.W = value;});
-    connect(ui->vsAngleAdjsution, &QSlider::sliderReleased, [=](){emit Send(ConnectionManager::ROBOT, QString("G01 W%1").arg(RobotParameter.W));});
+    connect(ui->vsAngleAdjsution, &QSlider::sliderReleased, [=](){emit Send(DeviceManager::ROBOT, QString("G01 W%1").arg(RobotParameter.W));});
     connect(ui->vs5AxisAdjsution, &QSlider::valueChanged, [=](int value){RobotParameter.U = value;});
-    connect(ui->vs5AxisAdjsution, &QSlider::sliderReleased, [=](){emit Send(ConnectionManager::ROBOT, QString("G01 U%1").arg(RobotParameter.U));});
+    connect(ui->vs5AxisAdjsution, &QSlider::sliderReleased, [=](){emit Send(DeviceManager::ROBOT, QString("G01 U%1").arg(RobotParameter.U));});
     connect(ui->vs6AxisAdjsution, &QSlider::valueChanged, [=](int value){RobotParameter.V = value;});
-    connect(ui->vs6AxisAdjsution, &QSlider::sliderReleased, [=](){emit Send(ConnectionManager::ROBOT, QString("G01 V%1").arg(RobotParameter.V));});
+    connect(ui->vs6AxisAdjsution, &QSlider::sliderReleased, [=](){emit Send(DeviceManager::ROBOT, QString("G01 V%1").arg(RobotParameter.V));});
 
-    connect(Delta2DVisualizer, &DeltaVisualizer::CursorMoved, [=](float x, float y){RobotParameter.X = x; RobotParameter.Y = y; emit Send(ConnectionManager::ROBOT, QString("G01 X%1 Y%2").arg(x).arg(y));});
+    connect(Delta2DVisualizer, &DeltaVisualizer::CursorMoved, [=](float x, float y){RobotParameter.X = x; RobotParameter.Y = y; emit Send(DeviceManager::ROBOT, QString("G01 X%1 Y%2").arg(x).arg(y));});
 
     connect(ui->pbUp, &QPushButton::clicked, [=](){MoveRobot("Z", ui->cbDivision->currentText().toFloat());});
     connect(ui->pbDown, &QPushButton::clicked, [=](){MoveRobot("Z", 0 - ui->cbDivision->currentText().toFloat());});
@@ -637,8 +637,8 @@ void RobotWindow::InitEvents()
 	connect(ui->pbConveyorConnect, SIGNAL(clicked(bool)), this, SLOT(ConnectConveyor()));
 	connect(ui->cbConveyorMode, SIGNAL(currentIndexChanged(int)), this, SLOT(SetConveyorMode(int)));
 	connect(ui->cbConveyorValueType, SIGNAL(currentIndexChanged(int)), this, SLOT(SetConveyorMovingMode(int)));
-	connect(ui->leConveyorvMovingValue, SIGNAL(returnPressed()), this, SLOT(MoveConveyor()));
-	connect(ui->leSpeedOfPositionMode, SIGNAL(returnPressed()), this, SLOT(SetSpeedOfPositionMode()));
+    connect(ui->leConveyorXPosition, SIGNAL(returnPressed()), this, SLOT(SetConveyorXPosition()));
+    connect(ui->leConveyorXSpeed, SIGNAL(returnPressed()), this, SLOT(SetConveyorXSpeed()));
 
 	connect(ui->pbSlidingConnect, SIGNAL(clicked(bool)), this, SLOT(ConnectSliding()));
 	connect(ui->pbSlidingHome, SIGNAL(clicked(bool)), this, SLOT(GoHomeSliding()));
@@ -737,8 +737,8 @@ void RobotWindow::InitEvents()
     // ------ Script to Detector -------
     for (int i = 0; i < GcodeScripts.count(); i++)
     {
-        connect(GcodeScripts.at(i), &GcodeScript::PauseCamera, [=](){ IsCameraPause = true;});
-        connect(GcodeScripts.at(i), &GcodeScript::ResumeCamera, [=](){ IsCameraPause = false;});
+        connect(GcodeScripts.at(i), &GcodeScript::PauseCamera, [=](){ CameraTimer.stop();});
+        connect(GcodeScripts.at(i), &GcodeScript::ResumeCamera, [=](){ CameraTimer.start(ui->leCaptureInterval->text().toInt());});
         connect(GcodeScripts.at(i), &GcodeScript::CaptureCamera, this, &RobotWindow::GeneralCapture);
     }
     // ------ Ui to Detector ----
@@ -961,8 +961,8 @@ void RobotWindow::ExecuteRequestsFromExternal(QString request)
 
             if (paras[i + 1] == "ConveyorPosition")
             {
-                ui->leConveyorvMovingValue->setText(paras[i + 2]);
-                emit ui->leConveyorvMovingValue->returnPressed();
+                ui->leConveyorXPosition->setText(paras[i + 2]);
+                emit ui->leConveyorXPosition->returnPressed();
             }
         }
 
@@ -1017,7 +1017,7 @@ void RobotWindow::ExecuteRequestsFromExternal(QString request)
                     gcode += QString(" ") + paras[j];
                 }
 
-                emit Send(ConnectionManager::ROBOT, gcode);
+                emit Send(DeviceManager::ROBOT, gcode);
             }
         }
     }
@@ -1171,17 +1171,17 @@ void RobotWindow::SetRobotState(bool isHold)
 {
     if (isHold == false)
     {
-        emit Send(ConnectionManager::ROBOT, "M84");
+        emit Send(DeviceManager::ROBOT, "M84");
     }
     else
     {
-        emit Send(ConnectionManager::ROBOT, "M85");
+        emit Send(DeviceManager::ROBOT, "M85");
     }
 }
 
 void RobotWindow::RequestPosition()
 {
-    emit Send(ConnectionManager::ROBOT, "Position");
+    emit Send(DeviceManager::ROBOT, "Position");
 }
 
 void RobotWindow::closeEvent(QCloseEvent * event)
@@ -1260,6 +1260,7 @@ void RobotWindow::AddScriptThread()
 //    connect(this, SIGNAL(StopGcodeProgram()), GcodeScriptThread, SLOT(Stop()));
 //    connect(this, SIGNAL(RunGcodeProgram(QString, int, bool)), GcodeScriptThread, SLOT(ExecuteGcode(QString, int, bool)));
     connect(DeviceManagerInstance, SIGNAL(DeviceResponded(QString, QString)), GcodeScriptThread, SLOT(GetResponse(QString, QString)));
+    connect(DeviceManagerInstance, SIGNAL(DeviceResponded(QString, QString)), this, SLOT(GetDeviceResponse(QString, QString)));
     connect(DeltaConnectionManager, SIGNAL(FailTransmit()), GcodeScriptThread, SLOT(TransmitNextGcode()));
 
     connect(GcodeScriptThread, SIGNAL(Moved(int)), this, SLOT(HighLineCurrentLine(int)));
@@ -1422,7 +1423,7 @@ void RobotWindow::LoadExternalDeviceSettings(QSettings *setting)
 
     ui->cbConveyorMode->setCurrentText(setting->value("ControlMode").toString());
     ui->cbConveyorValueType->setCurrentText(setting->value("MovingMode").toString());
-    ui->leConveyorvMovingValue->setText(setting->value("MovingValue").toString());
+    ui->leConveyorXPosition->setText(setting->value("MovingValue").toString());
 
     DeltaConnectionManager->ConveyorPort->setPortName(comPort);
     DeltaConnectionManager->ConveyorPort->setBaudRate(baudrate);
@@ -1712,7 +1713,7 @@ void RobotWindow::SaveExternalDeviceSettings(QSettings *setting)
     setting->setValue("Baudrate", baudrate);
     setting->setValue("ControlMode", ui->cbConveyorMode->currentText());
     setting->setValue("MovingMode", ui->cbConveyorValueType->currentText());
-    setting->setValue("MovingValue", ui->leConveyorvMovingValue->text());
+    setting->setValue("MovingValue", ui->leConveyorXPosition->text());
 
     setting->endGroup();
 
@@ -1964,6 +1965,46 @@ void RobotWindow::GetDeviceInfo(QString json)
         ui->lbComName->setText(jsonObject.value("com_name").toString());
 
     }
+
+    if (jsonObject.value("device").toString() == "device")
+    {
+        QString state = jsonObject.value("state").toString();
+        if (state == "open")
+        {
+            ui->pbExternalControllerConnect->setText("Disconnect");
+        }
+        else
+        {
+            ui->pbExternalControllerConnect->setText("Connect");
+        }
+
+        ui->lbExternalCOMName->setText(jsonObject.value("com_name").toString());
+    }
+
+    if (jsonObject.value("device").toString() == "conveyor")
+    {
+        QString state = jsonObject.value("state").toString();
+        if (state == "open")
+        {
+            ui->pbConveyorConnect->setText("Disconnect");
+        }
+        else
+        {
+            ui->pbConveyorConnect->setText("Connect");
+        }
+
+        ui->lbExternalCOMName->setText(jsonObject.value("com_name").toString());
+    }
+}
+
+void RobotWindow::GetDeviceResponse(QString id, QString response)
+{
+    Log(QString("%1 << %2").arg(id).arg(response));
+
+    if (id.contains("device"))
+    {
+        DisplayTextFromExternalMCU(response);
+    }
 }
 
 void RobotWindow::SelectImageProviderOption(int option)
@@ -2008,12 +2049,12 @@ void RobotWindow::ConnectDeltaRobot()
 		{
             if (ui->cbRobotModel->currentText() == "Delta X 1")
             {
-                QTimer::singleShot(2000, [=](){emit Send(ConnectionManager::ROBOT, "IsDelta"); emit Send(ConnectionManager::ROBOT, "IsDelta");});
-                QTimer::singleShot(2000, [=](){emit Send(ConnectionManager::ROBOT, "IsDelta");});
+                QTimer::singleShot(2000, [=](){emit Send(DeviceManager::ROBOT, "IsDelta"); emit Send(DeviceManager::ROBOT, "IsDelta");});
+                QTimer::singleShot(2000, [=](){emit Send(DeviceManager::ROBOT, "IsDelta");});
             }
             else
             {
-                emit Send(ConnectionManager::ROBOT, "IsDelta");
+                emit Send(DeviceManager::ROBOT, "IsDelta");
             }
 		}
 
@@ -2223,27 +2264,27 @@ void RobotWindow::ChangeRobotDOF(int id)
 {
     if (id == 0)
     {
-        emit Send(ConnectionManager::ROBOT, QString("M60 D0"));
-        emit Send(ConnectionManager::ROBOT, QString("M61 D0"));
-        emit Send(ConnectionManager::ROBOT, QString("M62 D0"));
+        emit Send(DeviceManager::ROBOT, QString("M60 D0"));
+        emit Send(DeviceManager::ROBOT, QString("M61 D0"));
+        emit Send(DeviceManager::ROBOT, QString("M62 D0"));
     }
     else if (id == 1)
     {
-        emit Send(ConnectionManager::ROBOT, QString("M60 D1"));
-        emit Send(ConnectionManager::ROBOT, QString("M61 D0"));
-        emit Send(ConnectionManager::ROBOT, QString("M62 D0"));
+        emit Send(DeviceManager::ROBOT, QString("M60 D1"));
+        emit Send(DeviceManager::ROBOT, QString("M61 D0"));
+        emit Send(DeviceManager::ROBOT, QString("M62 D0"));
     }
     else if (id == 2)
     {
-        emit Send(ConnectionManager::ROBOT, QString("M60 D1"));
-        emit Send(ConnectionManager::ROBOT, QString("M61 D1"));
-        emit Send(ConnectionManager::ROBOT, QString("M62 D0"));
+        emit Send(DeviceManager::ROBOT, QString("M60 D1"));
+        emit Send(DeviceManager::ROBOT, QString("M61 D1"));
+        emit Send(DeviceManager::ROBOT, QString("M62 D0"));
     }
     else if (id == 3)
     {
-        emit Send(ConnectionManager::ROBOT, QString("M60 D1"));
-        emit Send(ConnectionManager::ROBOT, QString("M61 D1"));
-        emit Send(ConnectionManager::ROBOT, QString("M62 D1"));
+        emit Send(DeviceManager::ROBOT, QString("M60 D1"));
+        emit Send(DeviceManager::ROBOT, QString("M61 D1"));
+        emit Send(DeviceManager::ROBOT, QString("M62 D1"));
     }
 }
 
@@ -2530,45 +2571,45 @@ void RobotWindow::UpdateVelocity()
 {
     QString value = ui->leVelocity->text();
     UpdateVariable("F", value);
-    emit Send(ConnectionManager::ROBOT, QString("G01 F") + value);
+    emit Send(DeviceManager::ROBOT, QString("G01 F") + value);
 }
 
 void RobotWindow::UpdateAccel()
 {
     QString value = ui->leAccel->text();
     UpdateVariable("A", value);
-    emit Send(ConnectionManager::ROBOT, QString("M204 A") + ui->leAccel->text());
+    emit Send(DeviceManager::ROBOT, QString("M204 A") + ui->leAccel->text());
 }
 
 void RobotWindow::UpdateStartSpeed()
 {
     QString value = ui->leStartSpeed->text();
     UpdateVariable("S", value);
-    emit Send(ConnectionManager::ROBOT, QString("M205 S") + ui->leStartSpeed->text());
+    emit Send(DeviceManager::ROBOT, QString("M205 S") + ui->leStartSpeed->text());
 }
 
 void RobotWindow::UpdateEndSpeed()
 {
     QString value = ui->leEndSpeed->text();
     UpdateVariable("E", value);
-    emit Send(ConnectionManager::ROBOT, QString("M205 E") + ui->leEndSpeed->text());
+    emit Send(DeviceManager::ROBOT, QString("M205 E") + ui->leEndSpeed->text());
 }
 
 void RobotWindow::AdjustGripperAngle(int angle)
 {
-    emit Send(ConnectionManager::ROBOT, QString("M360 E1"));
-    emit Send(ConnectionManager::ROBOT, QString("M03 S") + QString::number(angle * 5));
+    emit Send(DeviceManager::ROBOT, QString("M360 E1"));
+    emit Send(DeviceManager::ROBOT, QString("M03 S") + QString::number(angle * 5));
 
 	ui->lbGripperValue->setText(QString::number(angle * 5));
 }
 
 void RobotWindow::Grip()
 {
-    emit Send(ConnectionManager::ROBOT, QString("M360 E1"));
+    emit Send(DeviceManager::ROBOT, QString("M360 E1"));
 	if (ui->pbGrip->text() == "Grip")
 	{
 		ui->pbGrip->setText("Release");
-        emit Send(ConnectionManager::ROBOT, QString("M03 S") + ui->leGripperMax->text());
+        emit Send(DeviceManager::ROBOT, QString("M03 S") + ui->leGripperMax->text());
 
 		ui->hsGripperAngle->blockSignals(true);
 		ui->hsGripperAngle->setValue(ui->leGripperMax->text().toInt() / 5);
@@ -2579,7 +2620,7 @@ void RobotWindow::Grip()
 	else
 	{
 		ui->pbGrip->setText("Grip");
-        emit Send(ConnectionManager::ROBOT, QString("M03 S") + ui->leGripperMin->text());
+        emit Send(DeviceManager::ROBOT, QString("M03 S") + ui->leGripperMin->text());
 
 		ui->hsGripperAngle->blockSignals(true);
 		int vl = ui->leGripperMin->text().toInt() / 5;
@@ -2620,18 +2661,18 @@ void RobotWindow::MoveRobot(QString axis, float step)
 
     UpdateVariable(axis, QString::number(value));
 
-    emit Send(ConnectionManager::ROBOT, QString("G01 ") + axis + QString::number(value));
+    emit Send(DeviceManager::ROBOT, QString("G01 ") + axis + QString::number(value));
 }
 
 void RobotWindow::MoveRobotFollowObject(float x, float y, float angle)
 {
-//    emit Send(ConnectionManager::ROBOT, QString("G01 X%1 Y%2 W%3").arg(x).arg(y).arg(angle));
+//    emit Send(DeviceManager::ROBOT, QString("G01 X%1 Y%2 W%3").arg(x).arg(y).arg(angle));
     RobotParameter.X = x;
     RobotParameter.Y = y;
 
     UpdateVariable("X", QString::number(x));
     UpdateVariable("Y", QString::number(y));
-    emit Send(ConnectionManager::ROBOT, QString("G01 X%1 Y%2").arg(x).arg(y));
+    emit Send(DeviceManager::ROBOT, QString("G01 X%1 Y%2").arg(x).arg(y));
 }
 
 void RobotWindow::DoADemo()
@@ -2670,33 +2711,33 @@ void RobotWindow::UpdateRobotPositionToUI()
 
 void RobotWindow::SetPump(bool value)
 {
-    emit Send(ConnectionManager::ROBOT, QString("M360 E0"));
+    emit Send(DeviceManager::ROBOT, QString("M360 E0"));
 	if (value == true)
 	{
-        emit Send(ConnectionManager::ROBOT, QString("M04"));
+        emit Send(DeviceManager::ROBOT, QString("M04"));
 	}
 	else
 	{
-        emit Send(ConnectionManager::ROBOT, QString("M05"));
+        emit Send(DeviceManager::ROBOT, QString("M05"));
 	}
 }
 
 void RobotWindow::SetLaser(bool value)
 {
-    emit Send(ConnectionManager::ROBOT, QString("M360 E3"));
+    emit Send(DeviceManager::ROBOT, QString("M360 E3"));
 	if (value == true)
 	{
-        emit Send(ConnectionManager::ROBOT, QString("M04"));
+        emit Send(DeviceManager::ROBOT, QString("M04"));
 	}
 	else
 	{
-        emit Send(ConnectionManager::ROBOT, QString("M05"));
+        emit Send(DeviceManager::ROBOT, QString("M05"));
 	}
 }
 
 void RobotWindow::Home()
 {
-    emit Send(ConnectionManager::ROBOT, "G28");
+    emit Send(DeviceManager::ROBOT, "G28");
 
 //	ui->leX->setText(QString::number(Delta2DVisualizer->XHome));
 //	ui->leY->setText(QString::number(Delta2DVisualizer->YHome));
@@ -2773,22 +2814,22 @@ void RobotWindow::RequestValueInput()
     {
         if (cbInputType->isChecked() == true)
         {
-            emit Send(ConnectionManager::ROBOT, "M08 " + inputName);
+            emit Send(DeviceManager::ROBOT, "M08 " + inputName);
         }
         else
         {
-            emit Send(ConnectionManager::ROBOT, "M07 " + inputName);
+            emit Send(DeviceManager::ROBOT, "M07 " + inputName);
         }
     }
     else
     {
         if (leDelay->text() == "")
         {
-            emit Send(ConnectionManager::ROBOT, "M08 " + inputName);
+            emit Send(DeviceManager::ROBOT, "M08 " + inputName);
         }
         else
         {
-            emit Send(ConnectionManager::ROBOT, "M08 " + inputName + " W" + leDelay->text());
+            emit Send(DeviceManager::ROBOT, "M08 " + inputName + " W" + leDelay->text());
         }
     }
 
@@ -3031,9 +3072,9 @@ void RobotWindow::GeneralCapture()
     }
 }
 
-void RobotWindow::StartContinuousCapture()
+void RobotWindow::StartContinuousCapture(bool isCheck)
 {
-    if (ui->pbStartAcquisition->isChecked() == true)
+    if (isCheck == true)
     {
         ui->lbCameraState->setEnabled(true);
         IsCameraPause = false;
@@ -3041,7 +3082,9 @@ void RobotWindow::StartContinuousCapture()
     }
     else
     {
-        StopCapture();
+        IsCameraPause = true;
+
+        CameraTimer.stop();
     }
 }
 
@@ -3131,7 +3174,7 @@ void RobotWindow::LoadWebcam()
                 ui->leImageWidth->setText(QString::number((int)Camera->get(cv::CAP_PROP_FRAME_WIDTH)));
                 ui->leImageHeight->setText(QString::number((int)Camera->get(cv::CAP_PROP_FRAME_HEIGHT)));
 
-
+                ui->pbStartAcquisition->setChecked(true);
                 ui->pbStartAcquisition->clicked(true);
             }
 
@@ -3586,43 +3629,68 @@ void RobotWindow::SendImageToExternalScript(cv::Mat input)
 
 void RobotWindow::ConnectConveyor()
 {
-    openConnectionDialog(DeltaConnectionManager->ConveyorPort, DeltaConnectionManager->ConveyorSocket, ui->pbConveyorConnect, ui->lbConveyorCOMName);
+//    openConnectionDialog(DeltaConnectionManager->ConveyorPort, DeltaConnectionManager->ConveyorSocket, ui->pbConveyorConnect, ui->lbConveyorCOMName);
+
+    if (ui->pbConveyorConnect->text() != "Connect")
+    {
+        emit ChangeDeviceState(DeviceManager::CONVEYOR, false, "");
+        return;
+    }
+
+    QStringList items;
+
+    Q_FOREACH(QSerialPortInfo portInfo, QSerialPortInfo::availablePorts())
+    {
+        items << portInfo.portName() + " - " + portInfo.description();
+    }
+
+    bool ok;
+    QString item = QInputDialog::getItem(this, tr("COM Connection"), tr("COM Ports:"), items, 0, false, &ok);
+    QString comName = item.mid(0, item.indexOf(" - "));
+
+    if (ok && !item.isEmpty())
+    {
+        bool ok2;
+        QString baudrate = QInputDialog::getText(this, tr("Select Baudrate"), tr("Baudrate:"), QLineEdit::Normal, "115200", &ok2);
+        if (ok2 && !baudrate.isEmpty())
+        {
+            emit ChangeDeviceState(DeviceManager::CONVEYOR, (ui->pbConveyorConnect->text() == "Connect")?true:false, comName);
+        }
+    }
 }
 
 void RobotWindow::SetConveyorMode(int mode)
 {
-    emit Send(ConnectionManager::CONVEYOR, QString("M310 ") + QString::number(mode));
+    emit Send(DeviceManager::CONVEYOR, QString("M310 ") + QString::number(mode));
 }
 
 void RobotWindow::SetConveyorMovingMode(int mode)
 {
 	if (mode == 0)
     {
-        ui->leSpeedOfPositionMode->setEnabled(false);
-        ui->lbUnitOfConveyorMoving->setText("mm/s");
+        ui->leConveyorXPosition->setEnabled(false);
 	}
 	else
     {
-        ui->leSpeedOfPositionMode->setEnabled(true);
-        ui->lbUnitOfConveyorMoving->setText("mm");
+        ui->leConveyorXPosition->setEnabled(true);
 	}
 }
 
-void RobotWindow::SetSpeedOfPositionMode()
+void RobotWindow::SetConveyorXSpeed()
 {
-    emit Send(ConnectionManager::CONVEYOR, QString("M313 ") + ui->leSpeedOfPositionMode->text());
+    if (ui->cbConveyorValueType->currentIndex() == 0)
+    {
+        emit Send(ConnectionManager::CONVEYOR, QString("M311 ") + ui->leConveyorXSpeed->text());
+    }
+    else
+    {
+        emit Send(ConnectionManager::CONVEYOR, QString("M313 ") + ui->leConveyorXSpeed->text());
+    }
 }
 
-void RobotWindow::MoveConveyor()
+void RobotWindow::SetConveyorXPosition()
 {
-	if (ui->cbConveyorValueType->currentIndex() == 0)
-	{
-        emit Send(ConnectionManager::CONVEYOR, QString("M311 ") + ui->leConveyorvMovingValue->text());
-	}
-	else
-	{
-        emit Send(ConnectionManager::CONVEYOR, QString("M312 ") + ui->leConveyorvMovingValue->text());
-	}
+    emit Send(ConnectionManager::CONVEYOR, QString("M312 ") + ui->leConveyorXPosition->text());
 }
 
 void RobotWindow::ProcessShortcutKey()
@@ -3713,7 +3781,7 @@ void RobotWindow::ForwardExternalConveyor()
     foreach(QString gcode, gcodes)
     {
         gcode = DeleteExcessSpace(gcode);
-        emit Send(ConnectionManager::ROBOT, gcode);
+        emit Send(DeviceManager::ROBOT, gcode);
     }
 }
 
@@ -3725,7 +3793,7 @@ void RobotWindow::BackwardExternalConveyor()
     foreach(QString gcode, gcodes)
     {
         gcode = DeleteExcessSpace(gcode);
-        emit Send(ConnectionManager::ROBOT, gcode);
+        emit Send(DeviceManager::ROBOT, gcode);
     }
 }
 
@@ -3737,7 +3805,7 @@ void RobotWindow::TurnOffExternalConveyor()
     foreach(QString gcode, gcodes)
     {
         gcode = DeleteExcessSpace(gcode);
-        emit Send(ConnectionManager::ROBOT, gcode);
+        emit Send(DeviceManager::ROBOT, gcode);
     }
 }
 
@@ -3809,12 +3877,39 @@ void RobotWindow::SetSlidingPosition()
 
 void RobotWindow::ConnectExternalMCU()
 {
-    openConnectionDialog(DeltaConnectionManager->ExternalControllerPort, DeltaConnectionManager->ExternalControllerSocket, ui->pbExternalControllerConnect, ui->lbExternalCOMName);
+//    openConnectionDialog(DeltaConnectionManager->ExternalControllerPort, DeltaConnectionManager->ExternalControllerSocket, ui->pbExternalControllerConnect, ui->lbExternalCOMName);
+    if (ui->pbExternalControllerConnect->text() != "Connect")
+    {
+        emit ChangeDeviceState(DeviceManager::DEVICE, false, "");
+        return;
+    }
+
+    QStringList items;
+
+    Q_FOREACH(QSerialPortInfo portInfo, QSerialPortInfo::availablePorts())
+    {
+        items << portInfo.portName() + " - " + portInfo.description();
+    }
+
+    bool ok;
+    QString item = QInputDialog::getItem(this, tr("COM Connection"), tr("COM Ports:"), items, 0, false, &ok);
+    QString comName = item.mid(0, item.indexOf(" - "));
+
+    if (ok && !item.isEmpty())
+    {
+        bool ok2;
+        QString baudrate = QInputDialog::getText(this, tr("Select Baudrate"), tr("Baudrate:"), QLineEdit::Normal, "115200", &ok2);
+        if (ok2 && !baudrate.isEmpty())
+        {
+            emit ChangeDeviceState(DeviceManager::DEVICE, (ui->pbExternalControllerConnect->text() == "Connect")?true:false, comName);
+        }
+    }
+
 }
 
 void RobotWindow::TransmitTextToExternalMCU()
 {
-    emit Send(ConnectionManager::MCU, ui->leTransmitToMCU->text());
+    emit Send(DeviceManager::DEVICE, ui->leTransmitToMCU->text());
 	ui->leTransmitToMCU->setText("");
 }
 
@@ -3846,27 +3941,27 @@ void RobotWindow::TerminalTransmit()
 
     if (target == "Robot")
     {
-        emit Send(ConnectionManager::ROBOT, msg);
+        emit Send(DeviceManager::ROBOT, msg);
     }
 
     if (target == "Conveyor")
     {
-        emit Send(ConnectionManager::CONVEYOR, msg);
+        emit Send(DeviceManager::CONVEYOR, msg);
     }
 
     if (target == "Slider")
     {
-        emit Send(ConnectionManager::SLIDER, msg);
+        emit Send(DeviceManager::SLIDER, msg);
     }
 
     if (target == "External MCU")
     {
-        emit Send(ConnectionManager::MCU, msg);
+        emit Send(DeviceManager::DEVICE, msg);
     }
 
     if (target == "Encoder")
     {
-        emit Send(ConnectionManager::ENCODER, msg);
+        emit Send(DeviceManager::ENCODER, msg);
     }
 
 	ui->leTerminal->setText("");
@@ -4185,7 +4280,7 @@ void RobotWindow::sendGcode(QString prefix, QString para1, QString para2)
     if (para2 != "")
         para1 += " ";
 
-    emit Send(ConnectionManager::ROBOT, prefix + para1 + para2);
+    emit Send(DeviceManager::ROBOT, prefix + para1 + para2);
 }
 
 QObject* RobotWindow::getObjectByName(QObject* parent, QString name)
