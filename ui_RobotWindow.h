@@ -781,14 +781,14 @@ public:
     QSpacerItem *horizontalSpacer;
     QFrame *fConveyorX;
     QGridLayout *gridLayout_7;
-    QLineEdit *leConveyorvMovingValue;
+    QLineEdit *leConveyorXPosition;
     QComboBox *cbConveyorValueType;
     QLabel *lbUnitOfConveyorMoving;
     QLabel *label_57;
     QLabel *label_46;
     QComboBox *cbConveyorMode;
     QLabel *label_12;
-    QLineEdit *leSpeedOfPositionMode;
+    QLineEdit *leConveyorXSpeed;
     QLabel *label_52;
     QLabel *lbSpeedOfPositionMode;
     QFrame *fConveyorXHub;
@@ -873,6 +873,7 @@ public:
         RobotWindow->setMinimumSize(QSize(700, 400));
         QFont font;
         font.setBold(false);
+        font.setWeight(50);
         font.setKerning(true);
         RobotWindow->setFont(font);
         QIcon icon;
@@ -1090,6 +1091,7 @@ public:
         QFont font1;
         font1.setPointSize(10);
         font1.setBold(false);
+        font1.setWeight(50);
         font1.setKerning(true);
         twDeltaManager->setFont(font1);
         twDeltaManager->setLayoutDirection(Qt::LeftToRight);
@@ -1211,6 +1213,7 @@ public:
         QFont font2;
         font2.setPointSize(11);
         font2.setBold(false);
+        font2.setWeight(50);
         twModule->setFont(font2);
         twModule->setFocusPolicy(Qt::TabFocus);
         twModule->setStyleSheet(QString::fromUtf8("QGroupBox {\n"
@@ -1392,6 +1395,7 @@ public:
         QFont font4;
         font4.setPointSize(8);
         font4.setBold(false);
+        font4.setWeight(50);
         font4.setKerning(true);
         cbEditGcodeEditor->setFont(font4);
         QIcon icon6;
@@ -1410,7 +1414,7 @@ public:
         scrollArea->setWidgetResizable(true);
         scrollAreaWidgetContents = new QWidget();
         scrollAreaWidgetContents->setObjectName(QString::fromUtf8("scrollAreaWidgetContents"));
-        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 565, 1200));
+        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 517, 1200));
         scrollAreaWidgetContents->setMinimumSize(QSize(450, 1200));
         verticalLayout_30 = new QVBoxLayout(scrollAreaWidgetContents);
         verticalLayout_30->setSpacing(6);
@@ -1540,7 +1544,7 @@ public:
         saObjectDetecting->setWidgetResizable(true);
         wObjectDetecting = new QWidget();
         wObjectDetecting->setObjectName(QString::fromUtf8("wObjectDetecting"));
-        wObjectDetecting->setGeometry(QRect(0, 0, 577, 4000));
+        wObjectDetecting->setGeometry(QRect(0, 0, 539, 4000));
         wObjectDetecting->setMinimumSize(QSize(100, 4000));
         wObjectDetecting->setStyleSheet(QString::fromUtf8("QWidget#wObjectDetecting\n"
 "{	\n"
@@ -1571,6 +1575,7 @@ public:
         QFont font5;
         font5.setPointSize(10);
         font5.setBold(true);
+        font5.setWeight(75);
         gbImageViewer->setFont(font5);
         gbImageViewer->setCheckable(true);
         vlImageViewer = new QVBoxLayout(gbImageViewer);
@@ -1866,6 +1871,7 @@ public:
         QFont font6;
         font6.setPointSize(8);
         font6.setBold(false);
+        font6.setWeight(50);
         pbLoadCamera->setFont(font6);
         QIcon icon20;
         icon20.addFile(QString::fromUtf8(":/icon/webcam.png"), QSize(), QIcon::Normal, QIcon::Off);
@@ -2250,6 +2256,7 @@ public:
         font8.setBold(false);
         font8.setItalic(false);
         font8.setUnderline(false);
+        font8.setWeight(50);
         font8.setStrikeOut(false);
         font8.setKerning(true);
         label_38->setFont(font8);
@@ -2944,6 +2951,7 @@ public:
         font9.setPointSize(8);
         font9.setBold(false);
         font9.setItalic(true);
+        font9.setWeight(50);
         font9.setKerning(true);
         label_152->setFont(font9);
 
@@ -3017,6 +3025,7 @@ public:
         label_189->setObjectName(QString::fromUtf8("label_189"));
         QFont font10;
         font10.setBold(true);
+        font10.setWeight(75);
         label_189->setFont(font10);
 
         gridLayout_16->addWidget(label_189, 16, 0, 1, 1);
@@ -3043,6 +3052,7 @@ public:
         QFont font11;
         font11.setPointSize(8);
         font11.setBold(true);
+        font11.setWeight(75);
         font11.setKerning(true);
         label_148->setFont(font11);
 
@@ -3433,7 +3443,7 @@ public:
         scrollArea_6->setWidgetResizable(true);
         scrollAreaWidgetContents_6 = new QWidget();
         scrollAreaWidgetContents_6->setObjectName(QString::fromUtf8("scrollAreaWidgetContents_6"));
-        scrollAreaWidgetContents_6->setGeometry(QRect(0, 0, 565, 1600));
+        scrollAreaWidgetContents_6->setGeometry(QRect(0, 0, 517, 1600));
         scrollAreaWidgetContents_6->setMinimumSize(QSize(450, 1600));
         scrollAreaWidgetContents_6->setMaximumSize(QSize(16777215, 16777215));
         verticalLayout_38 = new QVBoxLayout(scrollAreaWidgetContents_6);
@@ -3484,6 +3494,7 @@ public:
         QFont font12;
         font12.setPointSize(10);
         font12.setBold(false);
+        font12.setWeight(50);
         pbOpenPicture->setFont(font12);
         pbOpenPicture->setLayoutDirection(Qt::LeftToRight);
         QIcon icon27;
@@ -4247,7 +4258,7 @@ public:
         scrollArea_7->setWidgetResizable(true);
         scrollAreaWidgetContents_7 = new QWidget();
         scrollAreaWidgetContents_7->setObjectName(QString::fromUtf8("scrollAreaWidgetContents_7"));
-        scrollAreaWidgetContents_7->setGeometry(QRect(0, 0, 575, 551));
+        scrollAreaWidgetContents_7->setGeometry(QRect(0, 0, 538, 519));
         verticalLayout_27 = new QVBoxLayout(scrollAreaWidgetContents_7);
         verticalLayout_27->setSpacing(6);
         verticalLayout_27->setContentsMargins(11, 11, 11, 11);
@@ -4260,6 +4271,7 @@ public:
         QFont font14;
         font14.setBold(false);
         font14.setItalic(false);
+        font14.setWeight(50);
         font14.setKerning(true);
         teDebug->setFont(font14);
         teDebug->setStyleSheet(QString::fromUtf8("color: rgb(255, 82, 87);"));
@@ -4334,7 +4346,7 @@ public:
         scrollArea_2->setWidgetResizable(true);
         wgJoggingScrollWidget = new QWidget();
         wgJoggingScrollWidget->setObjectName(QString::fromUtf8("wgJoggingScrollWidget"));
-        wgJoggingScrollWidget->setGeometry(QRect(0, 0, 565, 800));
+        wgJoggingScrollWidget->setGeometry(QRect(0, 0, 582, 800));
         wgJoggingScrollWidget->setMinimumSize(QSize(0, 800));
         wgJoggingScrollWidget->setMaximumSize(QSize(16777215, 16777215));
         verticalLayout_5 = new QVBoxLayout(wgJoggingScrollWidget);
@@ -5091,7 +5103,7 @@ public:
         cbDivision->addItem(QString());
         cbDivision->addItem(QString());
         cbDivision->setObjectName(QString::fromUtf8("cbDivision"));
-        cbDivision->setGeometry(QRect(115, 15, 41, 22));
+        cbDivision->setGeometry(QRect(115, 15, 51, 22));
         cbDivision->setMinimumSize(QSize(0, 20));
         cbDivision->setMaximumSize(QSize(100, 16777215));
         cbDivision->setSizeAdjustPolicy(QComboBox::AdjustToContents);
@@ -5219,7 +5231,7 @@ public:
         scrollArea_3->setWidgetResizable(true);
         scrollAreaWidgetContents_3 = new QWidget();
         scrollAreaWidgetContents_3->setObjectName(QString::fromUtf8("scrollAreaWidgetContents_3"));
-        scrollAreaWidgetContents_3->setGeometry(QRect(0, 0, 104, 300));
+        scrollAreaWidgetContents_3->setGeometry(QRect(0, 0, 135, 300));
         scrollAreaWidgetContents_3->setMinimumSize(QSize(0, 300));
         scrollAreaWidgetContents_3->setMaximumSize(QSize(16777215, 600));
         verticalLayout_44 = new QVBoxLayout(scrollAreaWidgetContents_3);
@@ -5650,6 +5662,7 @@ public:
         QFont font15;
         font15.setPointSize(7);
         font15.setBold(false);
+        font15.setWeight(50);
         font15.setKerning(true);
         lbGripperValue->setFont(font15);
 
@@ -5705,6 +5718,7 @@ public:
         label_67->setMinimumSize(QSize(70, 0));
         QFont font16;
         font16.setBold(false);
+        font16.setWeight(50);
         label_67->setFont(font16);
 
         gridLayout_35->addWidget(label_67, 0, 0, 1, 1);
@@ -6257,17 +6271,18 @@ public:
         gridLayout_7->setHorizontalSpacing(20);
         gridLayout_7->setVerticalSpacing(10);
         gridLayout_7->setContentsMargins(10, 10, 10, 10);
-        leConveyorvMovingValue = new QLineEdit(fConveyorX);
-        leConveyorvMovingValue->setObjectName(QString::fromUtf8("leConveyorvMovingValue"));
-        leConveyorvMovingValue->setMinimumSize(QSize(0, 30));
-        leConveyorvMovingValue->setMaximumSize(QSize(200, 16777215));
+        leConveyorXPosition = new QLineEdit(fConveyorX);
+        leConveyorXPosition->setObjectName(QString::fromUtf8("leConveyorXPosition"));
+        leConveyorXPosition->setMinimumSize(QSize(0, 30));
+        leConveyorXPosition->setMaximumSize(QSize(200, 16777215));
         QFont font19;
         font19.setPointSize(11);
         font19.setBold(false);
+        font19.setWeight(50);
         font19.setKerning(true);
-        leConveyorvMovingValue->setFont(font19);
+        leConveyorXPosition->setFont(font19);
 
-        gridLayout_7->addWidget(leConveyorvMovingValue, 3, 1, 1, 1);
+        gridLayout_7->addWidget(leConveyorXPosition, 3, 1, 1, 1);
 
         cbConveyorValueType = new QComboBox(fConveyorX);
         cbConveyorValueType->addItem(QString());
@@ -6315,15 +6330,15 @@ public:
 
         gridLayout_7->addWidget(label_12, 3, 0, 1, 1);
 
-        leSpeedOfPositionMode = new QLineEdit(fConveyorX);
-        leSpeedOfPositionMode->setObjectName(QString::fromUtf8("leSpeedOfPositionMode"));
-        leSpeedOfPositionMode->setEnabled(true);
-        leSpeedOfPositionMode->setMinimumSize(QSize(0, 30));
-        leSpeedOfPositionMode->setMaximumSize(QSize(200, 16777215));
-        leSpeedOfPositionMode->setFont(font19);
-        leSpeedOfPositionMode->setClearButtonEnabled(false);
+        leConveyorXSpeed = new QLineEdit(fConveyorX);
+        leConveyorXSpeed->setObjectName(QString::fromUtf8("leConveyorXSpeed"));
+        leConveyorXSpeed->setEnabled(true);
+        leConveyorXSpeed->setMinimumSize(QSize(0, 30));
+        leConveyorXSpeed->setMaximumSize(QSize(200, 16777215));
+        leConveyorXSpeed->setFont(font19);
+        leConveyorXSpeed->setClearButtonEnabled(false);
 
-        gridLayout_7->addWidget(leSpeedOfPositionMode, 2, 1, 1, 1);
+        gridLayout_7->addWidget(leConveyorXSpeed, 2, 1, 1, 1);
 
         label_52 = new QLabel(fConveyorX);
         label_52->setObjectName(QString::fromUtf8("label_52"));
@@ -6740,6 +6755,7 @@ public:
         QFont font20;
         font20.setPointSize(12);
         font20.setBold(false);
+        font20.setWeight(50);
         font20.setKerning(true);
         pbExternalControllerConnect->setFont(font20);
 
@@ -6784,7 +6800,7 @@ public:
         RobotWindow->setCentralWidget(centralWidget);
         mbRobot = new QMenuBar(RobotWindow);
         mbRobot->setObjectName(QString::fromUtf8("mbRobot"));
-        mbRobot->setGeometry(QRect(0, 0, 1210, 17));
+        mbRobot->setGeometry(QRect(0, 0, 1210, 26));
         mbRobot->setLayoutDirection(Qt::RightToLeft);
         mbRobot->setStyleSheet(QString::fromUtf8("QMenuBar\n"
 "{\n"
@@ -6871,7 +6887,7 @@ public:
         pbTransformPerspective->setDefault(false);
         pbImageMapping->setDefault(false);
         cbImageSource->setCurrentIndex(0);
-        twDevices->setCurrentIndex(0);
+        twDevices->setCurrentIndex(4);
         RobotTabWidget->setCurrentIndex(1);
         tabWidget_2->setCurrentIndex(1);
         cbDivision->setCurrentIndex(1);
@@ -6930,53 +6946,47 @@ public:
         pbFormat->setText(QCoreApplication::translate("RobotWindow", "Format", nullptr));
         cbEditGcodeEditor->setText(QCoreApplication::translate("RobotWindow", "Edit", nullptr));
         pteGcodeArea->setHtml(QCoreApplication::translate("RobotWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
-"hr { height: 1px; border-width: 0; }\n"
-"li.unchecked::marker { content: \"\\2610\"; }\n"
-"li.checked::marker { content: \"\\2612\"; }\n"
-"</style></head><body style=\" font-family:'Segoe UI'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2'; color:#000000;\">N05</span><span style=\" font-family:'MS Shell Dlg 2';\"> </span><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600;\">G28</span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-weight:600;\"><"
-                        "br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2'; font-style:italic; color:#00aa00;\">;Acceleration</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\">N10 </span><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600;\">M204</span><span style=\" font-family:'MS Shell Dlg 2';\"> A1200</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2'; font-style:italic; color:#00aa00;\">;Speed</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\">N15 </span><span style=\" font-family:'MS Shell Dlg 2'; font-weig"
-                        "ht:600;\">G01</span><span style=\" font-family:'MS Shell Dlg 2';\"> F200</span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2';\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2'; font-style:italic; color:#00aa00;\">;Declare variables</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\">N20 </span><span style=\" font-family:'MS Shell Dlg 2'; font-style:italic;\">#100</span><span style=\" font-family:'MS Shell Dlg 2';\"> = 0</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\">N30 </span><span st"
-                        "yle=\" font-family:'MS Shell Dlg 2'; font-style:italic;\">#100</span><span style=\" font-family:'MS Shell Dlg 2';\"> = </span><span style=\" font-family:'MS Shell Dlg 2'; font-style:italic;\">#100</span><span style=\" font-family:'MS Shell Dlg 2';\"> + 1</span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2';\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2'; font-style:italic; color:#55aa00;\">;Call subprogram</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\">N35 </span><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600;\">M98</span><span style=\" font-family:'MS Shell Dlg 2';\"> P2000</span></p>\n"
-"<p style"
-                        "=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2';\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2'; font-style:italic; color:#00aa00;\">; Begin subprogram</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\">N40 </span><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600;\">O2000</span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2';\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS"
-                        " Shell Dlg 2';\">N45 </span><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600;\">G01</span><span style=\" font-family:'MS Shell Dlg 2';\"> Z-350</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\">N50 </span><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600;\">G01</span><span style=\" font-family:'MS Shell Dlg 2';\"> X-100</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\">N55 </span><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600;\">G01</span><span style=\" font-family:'MS Shell Dlg 2';\"> Z-370</span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2';\"><br /></p>\n"
-"<p style=\" margin-"
-                        "top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\">N60 </span><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600;\">G01</span><span style=\" font-family:'MS Shell Dlg 2';\"> Z-350</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\">N65 </span><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600;\">G01</span><span style=\" font-family:'MS Shell Dlg 2';\"> X100</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\">N70 </span><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600;\">G01</span><span style=\" font-family:'MS Shell Dlg 2';\"> Z-370</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0p"
-                        "x; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\">N75 M99</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2'; font-style:italic; color:#00aa00;\">;End subprogram</span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2';\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2'; font-style:italic; color:#00aa00;\">;Loop 5 times</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\">N80 </span><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600; color:#00aa00;\">"
-                        "IF</span><span style=\" font-family:'MS Shell Dlg 2';\"> [</span><span style=\" font-family:'MS Shell Dlg 2'; font-style:italic;\">#100</span><span style=\" font-family:'MS Shell Dlg 2';\"> LE 5] </span><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600; color:#00aa00;\">THEN</span><span style=\" font-family:'MS Shell Dlg 2';\"> </span><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600; color:#ff5500;\">GOTO</span><span style=\" font-family:'MS Shell Dlg 2';\"> 30</span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2';\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\">N85 </span><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600;\">G28</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; marg"
-                        "in-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\"> </span></p></body></html>", nullptr));
+"</style></head><body style=\" font-family:'MS Shell Dlg 2'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" color:#000000;\">N05</span> <span style=\" font-weight:600;\">G28</span></p>\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600;\"><br /></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-style:italic; color:#00aa00;\">;Acceleration</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-bl"
+                        "ock-indent:0; text-indent:0px;\">N10 <span style=\" font-weight:600;\">M204</span> A1200</p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-style:italic; color:#00aa00;\">;Speed</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">N15 <span style=\" font-weight:600;\">G01</span> F200</p>\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-style:italic; color:#00aa00;\">;Declare variables</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">N20 <span style=\" font-style:italic;\">#100</span> = 0</p>\n"
+""
+                        "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">N30 <span style=\" font-style:italic;\">#100</span> = <span style=\" font-style:italic;\">#100</span> + 1</p>\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-style:italic; color:#55aa00;\">;Call subprogram</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">N35 <span style=\" font-weight:600;\">M98</span> P2000</p>\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px"
+                        "; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-style:italic; color:#00aa00;\">; Begin subprogram</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">N40 <span style=\" font-weight:600;\">O2000</span></p>\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">N45 <span style=\" font-weight:600;\">G01</span> Z-350</p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">N50 <span style=\" font-weight:600;\">G01</span> X-100</p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">N55 <span style=\" font-weight:600;\">G01</span> Z-370</p>\n"
+"<p sty"
+                        "le=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">N60 <span style=\" font-weight:600;\">G01</span> Z-350</p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">N65 <span style=\" font-weight:600;\">G01</span> X100</p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">N70 <span style=\" font-weight:600;\">G01</span> Z-370</p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">N75 M99</p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-style:italic; color:#00aa00;\">;End subpr"
+                        "ogram</span></p>\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-style:italic; color:#00aa00;\">;Loop 5 times</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">N80 <span style=\" font-weight:600; color:#00aa00;\">IF</span> [<span style=\" font-style:italic;\">#100</span> LE 5] <span style=\" font-weight:600; color:#00aa00;\">THEN</span> <span style=\" font-weight:600; color:#ff5500;\">GOTO</span> 30</p>\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-in"
+                        "dent:0px;\">N85 <span style=\" font-weight:600;\">G28</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"> </p></body></html>", nullptr));
         label_3->setText(QCoreApplication::translate("RobotWindow", "Path", nullptr));
 #if QT_CONFIG(tooltip)
         tbOpenGcodePath->setToolTip(QCoreApplication::translate("RobotWindow", "Open gcode folder", nullptr));
@@ -7329,13 +7339,10 @@ public:
         label_103->setText(QCoreApplication::translate("RobotWindow", "mm/dot(line)", nullptr));
         twModule->setTabText(twModule->indexOf(tDrawing), QCoreApplication::translate("RobotWindow", "Drawing", nullptr));
         teDebug->setHtml(QCoreApplication::translate("RobotWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
-"hr { height: 1px; border-width: 0; }\n"
-"li.unchecked::marker { content: \"\\2610\"; }\n"
-"li.checked::marker { content: \"\\2612\"; }\n"
-"</style></head><body style=\" font-family:'Segoe UI'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:7.8pt;\"><br /></p></body></html>", nullptr));
+"</style></head><body style=\" font-family:'MS Shell Dlg 2'; font-size:7.8pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>", nullptr));
         label_4->setText(QCoreApplication::translate("RobotWindow", "Sender", nullptr));
         label_5->setText(QCoreApplication::translate("RobotWindow", "Receiver", nullptr));
         cbDeviceSender->setItemText(0, QCoreApplication::translate("RobotWindow", "Software", nullptr));
@@ -7714,12 +7721,12 @@ public:
 
         lbConveyorCOMName->setText(QCoreApplication::translate("RobotWindow", "COM", nullptr));
 #if QT_CONFIG(tooltip)
-        leConveyorvMovingValue->setToolTip(QCoreApplication::translate("RobotWindow", "<html><head/><body><p><a name=\"32\"/><span style=\" font-family:'-apple-system','BlinkMacSystemFont','Segoe UI','Roboto','Helvetica Neue','Arial','Noto Sans','sans-serif','Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'; font-weight:600; color:#212529;\">M</span><span style=\" font-family:'-apple-system','BlinkMacSystemFont','Segoe UI','Roboto','Helvetica Neue','Arial','Noto Sans','sans-serif','Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'; font-weight:600; color:#212529;\">311 \342\200\223 Set Speed</span></p><p><span style=\" font-family:'-apple-system','BlinkMacSystemFont','Segoe UI','Roboto','Helvetica Neue','Arial','Noto Sans','sans-serif','Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'; color:#212529; background-color:#ffffff;\">Description:</span></p><p><span style=\" font-family:'-apple-system','BlinkMacSystemFont','Segoe UI','Roboto','Helvetica Neue','Arial','Noto Sans','sans-serif','Apple Color Emoji','Segoe UI Emoji','Seg"
+        leConveyorXPosition->setToolTip(QCoreApplication::translate("RobotWindow", "<html><head/><body><p><a name=\"32\"/><span style=\" font-family:'-apple-system','BlinkMacSystemFont','Segoe UI','Roboto','Helvetica Neue','Arial','Noto Sans','sans-serif','Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'; font-weight:600; color:#212529;\">M</span><span style=\" font-family:'-apple-system','BlinkMacSystemFont','Segoe UI','Roboto','Helvetica Neue','Arial','Noto Sans','sans-serif','Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'; font-weight:600; color:#212529;\">311 \342\200\223 Set Speed</span></p><p><span style=\" font-family:'-apple-system','BlinkMacSystemFont','Segoe UI','Roboto','Helvetica Neue','Arial','Noto Sans','sans-serif','Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'; color:#212529; background-color:#ffffff;\">Description:</span></p><p><span style=\" font-family:'-apple-system','BlinkMacSystemFont','Segoe UI','Roboto','Helvetica Neue','Arial','Noto Sans','sans-serif','Apple Color Emoji','Segoe UI Emoji','Seg"
                         "oe UI Symbol','Noto Color Emoji'; color:#212529; background-color:#ffffff;\">Usage: M311 [&lt;value&gt;]</span></p><p><span style=\" font-family:'-apple-system','BlinkMacSystemFont','Segoe UI','Roboto','Helvetica Neue','Arial','Noto Sans','sans-serif','Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'; color:#212529; background-color:#ffffff;\">Parameters:</span></p><p><span style=\" font-family:'-apple-system','BlinkMacSystemFont','Segoe UI','Roboto','Helvetica Neue','Arial','Noto Sans','sans-serif','Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'; color:#212529; background-color:#ffffff;\">[&lt;value&gt;]: Speed in mm/s</span></p><p><br/></p><p><a name=\"33\"/><span style=\" font-family:'-apple-system','BlinkMacSystemFont','Segoe UI','Roboto','Helvetica Neue','Arial','Noto Sans','sans-serif','Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'; font-weight:600; color:#212529;\">M</span><span style=\" font-family:'-apple-system','BlinkMacSys"
                         "temFont','Segoe UI','Roboto','Helvetica Neue','Arial','Noto Sans','sans-serif','Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'; font-weight:600; color:#212529;\">312 - Set Position</span></p><p><span style=\" font-family:'-apple-system','BlinkMacSystemFont','Segoe UI','Roboto','Helvetica Neue','Arial','Noto Sans','sans-serif','Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'; color:#212529; background-color:#ffffff;\">Description:</span></p><p><span style=\" font-family:'-apple-system','BlinkMacSystemFont','Segoe UI','Roboto','Helvetica Neue','Arial','Noto Sans','sans-serif','Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'; color:#212529; background-color:#ffffff;\">Usage: M312 [&lt;value&gt;]</span></p><p><span style=\" font-family:'-apple-system','BlinkMacSystemFont','Segoe UI','Roboto','Helvetica Neue','Arial','Noto Sans','sans-serif','Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'; color:#212529; background"
                         "-color:#ffffff;\">Parameters:</span></p><p><span style=\" font-family:'-apple-system','BlinkMacSystemFont','Segoe UI','Roboto','Helvetica Neue','Arial','Noto Sans','sans-serif','Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'; color:#212529; background-color:#ffffff;\">[&lt;value&gt;]: Position in mm</span></p></body></html>", nullptr));
 #endif // QT_CONFIG(tooltip)
-        leConveyorvMovingValue->setText(QCoreApplication::translate("RobotWindow", "-100", nullptr));
+        leConveyorXPosition->setText(QCoreApplication::translate("RobotWindow", "-100", nullptr));
         cbConveyorValueType->setItemText(0, QCoreApplication::translate("RobotWindow", "Continuous", nullptr));
         cbConveyorValueType->setItemText(1, QCoreApplication::translate("RobotWindow", "Position", nullptr));
 
@@ -7735,11 +7742,11 @@ public:
 #endif // QT_CONFIG(tooltip)
         label_12->setText(QCoreApplication::translate("RobotWindow", "Position", nullptr));
 #if QT_CONFIG(tooltip)
-        leSpeedOfPositionMode->setToolTip(QString());
+        leConveyorXSpeed->setToolTip(QString());
 #endif // QT_CONFIG(tooltip)
-        leSpeedOfPositionMode->setText(QCoreApplication::translate("RobotWindow", "50", nullptr));
+        leConveyorXSpeed->setText(QCoreApplication::translate("RobotWindow", "50", nullptr));
         label_52->setText(QCoreApplication::translate("RobotWindow", "Control Mode", nullptr));
-        lbSpeedOfPositionMode->setText(QCoreApplication::translate("RobotWindow", "mm/s", nullptr));
+        lbSpeedOfPositionMode->setText(QCoreApplication::translate("RobotWindow", "mm/s2", nullptr));
         label_77->setText(QCoreApplication::translate("RobotWindow", "Position (mm)", nullptr));
 #if QT_CONFIG(tooltip)
         leSpeedOfPositionMode_3->setToolTip(QString());
@@ -7777,7 +7784,7 @@ public:
         cbConveyorValueType_2->setItemText(0, QCoreApplication::translate("RobotWindow", "Continuous", nullptr));
         cbConveyorValueType_2->setItemText(1, QCoreApplication::translate("RobotWindow", "Position", nullptr));
 
-        label_80->setText(QCoreApplication::translate("RobotWindow", "Speed (mm/s)", nullptr));
+        label_80->setText(QCoreApplication::translate("RobotWindow", "Speed (mm/s2)", nullptr));
 #if QT_CONFIG(tooltip)
         leSpeedOfPositionMode_11->setToolTip(QString());
 #endif // QT_CONFIG(tooltip)

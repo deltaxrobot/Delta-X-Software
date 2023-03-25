@@ -31,28 +31,59 @@ void DeviceManager::AddRobot()
     QThread* robotThread = new QThread(this);
     robot->moveToThread(robotThread);
     connect(robotThread, SIGNAL(started()), robot, SLOT(Run()));
-    connect(robot, &Robot::gcodeDone, [=](QString id, QString response){ emit DeviceResponded(id, response); });
+    connect(robot, &Robot::receivedMsg, [=](QString id, QString response){ emit DeviceResponded(id, response); });
     connect(robot, &Robot::infoReady, this, &DeviceManager::GotDeviceInfo);
 
     robotThread->start();
 }
 
-void DeviceManager::AddSlider()
+void DeviceManager::AddConveyor(QString address="auto")
+{
+    qDebug() << "Add Conveyor";
+    Conveyor* conveyor = new Conveyor(address, 115200, false);
+    conveyor->SetID(QString("conveyor") + QString::number(Conveyors.count() + 1));
+    Conveyors.append(conveyor);
+    QThread* conveyorThread = new QThread(this);
+    conveyor->moveToThread(conveyorThread);
+    connect(conveyorThread, SIGNAL(started()), conveyor, SLOT(Run()));
+    connect(conveyor, &Slider::receivedMsg, [=](QString id, QString response){ emit DeviceResponded(id, response); });
+    connect(conveyor, &Slider::infoReady, this, &DeviceManager::GotDeviceInfo);
+
+    conveyorThread->start();
+}
+
+void DeviceManager::AddSlider(QString address="auto")
 {
     qDebug() << "Add slider";
-    Slider* slider = new Slider("auto", 115200, false);
+    Slider* slider = new Slider(address, 115200, false);
     slider->SetID(QString("slider") + QString::number(Sliders.count() + 1));
     Sliders.append(slider);
     QThread* sliderThread = new QThread(this);
     slider->moveToThread(sliderThread);
     connect(sliderThread, SIGNAL(started()), slider, SLOT(Run()));
-    connect(slider, &Slider::gcodeDone, [=](QString id, QString response){ emit DeviceResponded(id, response); });
+    connect(slider, &Slider::receivedMsg, [=](QString id, QString response){ emit DeviceResponded(id, response); });
     connect(slider, &Slider::infoReady, this, &DeviceManager::GotDeviceInfo);
 
     sliderThread->start();
 }
 
-void DeviceManager::SetDeviceState(int deviceType, bool isOpen)
+void DeviceManager::AddDevice(QString address)
+{
+    qDebug() << "Add device";
+    Device* device = new Device(address);
+    device->SetID(QString("device") + QString::number(Devices.count() + 1));
+    Devices.append(device);
+
+    QThread* deviceThread = new QThread(this);
+    device->moveToThread(deviceThread);
+    connect(deviceThread, SIGNAL(started()), device, SLOT(Run()));
+    connect(device, &Device::receivedMsg, [=](QString id, QString response){ emit DeviceResponded(id, response); });
+    connect(device, &Device::infoReady, this, &DeviceManager::GotDeviceInfo);
+
+    deviceThread->start();
+}
+
+void DeviceManager::SetDeviceState(int deviceType, bool isOpen, QString address = "auto")
 {
     if (deviceType == ROBOT)
     {
@@ -79,6 +110,32 @@ void DeviceManager::SetDeviceState(int deviceType, bool isOpen)
         else
             QMetaObject::invokeMethod(Sliders[SelectedSliderID], "Disconnect", Qt::QueuedConnection);
     }
+
+    if (deviceType == DEVICE)
+    {
+        if (SelectedDeviceID > Devices.count() - 1)
+        {
+            AddDevice(address);
+        }
+
+        if (isOpen == true)
+            QMetaObject::invokeMethod(Devices[SelectedDeviceID], "Connect", Qt::QueuedConnection);
+        else
+            QMetaObject::invokeMethod(Devices[SelectedDeviceID], "Disconnect", Qt::QueuedConnection);
+    }
+
+    if (deviceType == CONVEYOR)
+    {
+        if (SelectedConveyorID > Conveyors.count() - 1)
+        {
+            AddConveyor(address);
+        }
+
+        if (isOpen == true)
+            QMetaObject::invokeMethod(Conveyors[SelectedConveyorID], "Connect", Qt::QueuedConnection);
+        else
+            QMetaObject::invokeMethod(Conveyors[SelectedConveyorID], "Disconnect", Qt::QueuedConnection);
+    }
 }
 
 void DeviceManager::RequestDeviceInfo(int deviceType)
@@ -103,6 +160,16 @@ void DeviceManager::RequestDeviceInfo(int deviceType)
         QMetaObject::invokeMethod(Sliders[SelectedSliderID], "GetInfo", Qt::QueuedConnection);
     }
 
+    if (deviceType == CONVEYOR)
+    {
+        if (SelectedConveyorID > Conveyors.count() - 1)
+        {
+            AddConveyor();
+        }
+
+        QMetaObject::invokeMethod(Conveyors[SelectedConveyorID], "GetInfo", Qt::QueuedConnection);
+    }
+
 }
 
 void DeviceManager::SendGcode(int deviceType, QString gcode)
@@ -111,6 +178,18 @@ void DeviceManager::SendGcode(int deviceType, QString gcode)
     {
         QMetaObject::invokeMethod(Robots[SelectedRobotID], "SendGcode", Qt::QueuedConnection, Q_ARG(QString, gcode));
         emit Log(QString("Robot %1<< ").arg(SelectedRobotID + 1) + gcode);
+    }
+
+    if (deviceType == DEVICE)
+    {
+        QMetaObject::invokeMethod(Devices[SelectedDeviceID], "WriteData", Qt::QueuedConnection, Q_ARG(QString, gcode));
+        emit Log(QString("Device %1<< ").arg(SelectedDeviceID + 1) + gcode);
+    }
+
+    if (deviceType == CONVEYOR)
+    {
+        QMetaObject::invokeMethod(Conveyors[SelectedConveyorID], "WriteData", Qt::QueuedConnection, Q_ARG(QString, gcode));
+        emit Log(QString("Conveyor %1<< ").arg(SelectedConveyorID + 1) + gcode);
     }
 }
 
@@ -126,6 +205,8 @@ void DeviceManager::SendGcode(QString deviceName, QString gcode)
     {
         device = match.captured(1);
         id = match.captured(2).toInt() - 1;
+        if (id < 0)
+            id = 0;
     }
 
     if (device.toLower() == "robot")
@@ -133,6 +214,20 @@ void DeviceManager::SendGcode(QString deviceName, QString gcode)
         QMetaObject::invokeMethod(Robots[id], "SendGcode", Qt::QueuedConnection, Q_ARG(QString, gcode));
 
         emit Log(QString("Robot %1<< ").arg(id + 1) + gcode);
+    }
+
+    if (device.toLower() == "slider")
+    {
+        QMetaObject::invokeMethod(Sliders[id], "SendGcode", Qt::QueuedConnection, Q_ARG(QString, gcode));
+
+        emit Log(QString("Slider %1<< ").arg(id + 1) + gcode);
+    }
+
+    if (device.toLower() == "device")
+    {
+        QMetaObject::invokeMethod(Devices[id], "WriteData", Qt::QueuedConnection, Q_ARG(QString, gcode));
+
+        emit Log(QString("Device %1<< ").arg(id + 1) + gcode);
     }
 }
 
@@ -147,16 +242,28 @@ void DeviceManager::GetCommand(QString cmd)
     if (paras[0].contains("info"))
     {
 //        get_info();
+        return;
     }
-    else if (paras[0].contains("robot"))
+
+    QStringList deviceNames = {"robot", "device", "conveyor", "slider", "encoder"};
+    bool isSendDevice = false;
+    for (int j = 0; j < deviceNames.count(); j++)
     {
-        QString gcode = cmd.mid(paras[0].length() + 1);
-        int id = paras[0].mid(5).toInt();
-        Robot* robot = Robots[id];
-        QMetaObject::invokeMethod(robot, "SendGcode", Qt::QueuedConnection, Q_ARG(QString, gcode));
-//        robot->SendGcode(gcode);
+        if (paras.at(0).contains(deviceNames[j]))
+        {
+            isSendDevice = true;
+            break;
+        }
     }
-    else if (paras[0].contains("move"))
+
+    if (isSendDevice == true)
+    {
+        QString msg = cmd.mid(paras[0].length() + 1);
+
+        SendGcode(paras.at(0), msg);
+    }
+
+    if (paras[0].contains("move"))
     {
         if (paras[1].contains("C"))
         {

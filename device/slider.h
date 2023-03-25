@@ -17,6 +17,13 @@ class Slider : public Device
 public:
     explicit Slider(QString COM = "auto", int baudrate = 115200, bool is_open = true, QObject *parent = nullptr);
     ~Slider(){};
+
+public slots:
+    void ProcessResponse(QString response = "");
+    QString SendGcode(QString gcode = "M320", bool is_wait = false, int time_out = 10000);
+
+private:
+    QString id;
 };
 
 #endif // SLIDER_H

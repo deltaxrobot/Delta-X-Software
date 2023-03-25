@@ -30,8 +30,6 @@ windows {
 
 #}
 
-QMAKE_CXXFLAGS += -pthread
-QMAKE_LFLAGS += -pthread
 
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
@@ -77,6 +75,7 @@ SOURCES += main.cpp\
     DeltaVisualizer.cpp \
     UnityTool.cpp \
     device/DeviceManager.cpp \
+    device/conveyor.cpp \
     device/device.cpp \
     device/robot.cpp \
     device/slider.cpp \
@@ -122,6 +121,7 @@ HEADERS  += \
     VersionManager.h \
     codeeditor.h \
     device/DeviceManager.h \
+    device/conveyor.h \
     device/device.h \
     device/robot.h \
     device/slider.h \

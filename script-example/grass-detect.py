@@ -82,10 +82,12 @@ def Get_Image():
 
 def find_circles(img):
     img_copy = np.copy(img)
+
+    img_copy = cv2.medianBlur(img_copy, 17)
     _hsv = cv2.cvtColor(img_copy, cv2.COLOR_RGB2HSV)
     
-    _lower_blue = np.array(41, 33, 0)
-    _upper_blue = np.array(91, 255, 255)
+    _lower_blue = np.array(15, 16, 0)
+    _upper_blue = np.array(97, 255, 255)
 
     # preparing the mask to overlay
     mask = cv2.inRange(_hsv, _lower_blue, _upper_blue)
@@ -93,40 +95,39 @@ def find_circles(img):
     # The black region in the mask has the value of 0,
     # so when multiplied with original image removes all non-blue regions
     _result = cv2.bitwise_and(img_copy, img_copy, mask = mask)
-    _result = cv2.medianBlur(_result, 15)
 
     retval2, threshold2 = cv2.threshold(cv2.cvtColor(_result, cv2.COLOR_RGB2GRAY), 0, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)
 
     # detect the contours on the binary image using cv2.CHAIN_APPROX_NONE
-    contours, hierarchy = cv2.findContours(image=threshold2, mode=cv2.RETR_TREE, method=cv2.CHAIN_APPROX_NONE)
-    cv2.drawContours(image=img_copy, contours=contours, contourIdx=-1, color=(0, 255, 0), thickness=2, lineType=cv2.LINE_AA)
+    contours, hierarchy = cv2.findContours(image=threshold2, mode=cv2.RETR_EXTERNAL, method=cv2.CHAIN_APPROX_SIMPLE)
+    cv2.drawContours(image=img, contours=contours, contourIdx=-1, color=(0, 255, 0), thickness=2, lineType=cv2.LINE_AA)
 
-    centers = np.array[()]
+    centers = []
 
     for _contour in contours:
         rect = cv2.minAreaRect(_contour)
         box = cv2.boxPoints(rect)
         box = np.intp(box)
-        cv2.drawContours(img_copy,[box],0,(0,0,255),2)
+        cv2.drawContours(img,[box],0,(0,0,255),2)
         
         (_x, _y),(_w, _h),_r = rect
 
         center_x = (box[0][0] + box[2][0]) / 2
         center_y = (box[0][1] + box[2][1]) / 2
 
-        if _w < 10 or _h < 10:
-            cv2.putText(img_copy, '', (center_x, center_y), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2, cv2.LINE_AA)
-        elif _w > 100 or _h > 100:
-            cv2.putText(img_copy, 'tree', (center_x, center_y), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2, cv2.LINE_AA)
-            cv2.circle(img_copy,(int(center_x), int(center_y)),5,(255,0,0),5)
+        if _w < 20 and _h < 20:
+            continue
+        elif _w > 260 or _h > 260:
+            cv2.putText(img, 'tree', (center_x, center_y), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2, cv2.LINE_AA)
+            cv2.circle(img,(int(center_x), int(center_y)),5,(255,0,0),5)
         else:
-            cv2.putText(img_copy, 'grass', (center_x, center_y), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2, cv2.LINE_AA)
-            cv2.circle(img_copy,(int(center_x), int(center_y)),5,(255,0,0),5)
+            cv2.putText(img, 'grass', (center_x, center_y), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2, cv2.LINE_AA)
+            cv2.circle(img,(int(center_x), int(center_y)),5,(255,0,0),5)
 
-            np.append(centers, (int(center_x), int(center_y)))
+            centers.append((int(center_x), int(center_y)))
 
-        cv2.imshow('image', img_copy)
-
+    cv2.imshow('image', img)
+    cv2.waitKey(1)
     return centers
 
 def get_objects(image):
@@ -162,9 +163,9 @@ def Loop_Event():
             while True:
                 try:
                     image = Get_Image()
-                    get_objects(image)
-                    # cv2.imshow("Image", image)
-                    # cv2.waitKey(1)
+                    #get_objects(image)
+                    cv2.imshow("Image", image)
+                    cv2.waitKey(1)
                 except:
                     break
         except socket.timeout:

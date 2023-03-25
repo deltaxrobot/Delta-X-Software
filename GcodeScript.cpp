@@ -85,6 +85,12 @@ void GcodeScript::GetResponse(QString deviceId, QString respose)
     }
 }
 
+void GcodeScript::SendMsgToDevice(QString deviceId, QString msg)
+{
+    transmitDeviceId = deviceId;
+    emit SendGcodeToDevice(deviceId, msg);
+}
+
 void GcodeScript::TransmitNextGcode()
 {
     if (isFileProgramRunning == true)
@@ -584,6 +590,7 @@ bool GcodeScript::findExeGcodeAndTransmit()
                     return false;
                 }
 
+
                 if (subProName.contains("sendGcode") == true)
                 {
                     int pos1 = subProName.indexOf("\"") + 1;
@@ -641,6 +648,36 @@ bool GcodeScript::findExeGcodeAndTransmit()
             return false;
         }
 
+
+        //device0 msg;
+
+        QStringList deviceNames = {"robot", "device", "conveyor", "slider", "encoder"};
+        bool isSendDevice = false;
+        for (int j = 0; j < deviceNames.count(); j++)
+        {
+            if (valuePairs.at(i).contains(deviceNames[j]))
+            {
+                isSendDevice = true;
+                break;
+            }
+        }
+
+        if (isSendDevice == true)
+        {
+            QString msg = valuePairs[i + 1];;
+
+            QString deviceName = valuePairs.at(i);
+            for (int j = i + 2; j < valuePairs.count(); j++)
+            {
+                msg += QString(" ") + valuePairs[j];
+            }
+
+            SendMsgToDevice(deviceName, msg);
+
+            gcodeOrder++;
+            return true;
+        }
+
         /*if (deltaConnection->IsConnect() == false && !isMovingGcode(transmitGcode))
         {
             gcodeOrder++;
@@ -673,8 +710,7 @@ bool GcodeScript::findExeGcodeAndTransmit()
 
 //    updatePositionIntoSystemVariable(transmitGcode);
 
-    transmitDeviceId = DefaultRobot;
-    emit SendGcodeToDevice(DefaultRobot, transmitGcode);
+    SendMsgToDevice(DefaultRobot, transmitGcode);
     gcodeOrder += 1;
     return true;
 }

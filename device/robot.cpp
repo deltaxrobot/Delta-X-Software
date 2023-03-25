@@ -3,7 +3,7 @@
 Robot::Robot(QString COM, int baudrate, bool is_open, QObject *parent) : Device(COM, baudrate, "IsDelta", "YesDelta", is_open, parent)
 {
     qDebug() << "Robot init";
-    connect(this, SIGNAL(receivedMsg(QString)), this, SLOT(ProcessResponse(QString)));
+    connect(this, SIGNAL(receivedMsg(QString, QString)), this, SLOT(ProcessResponse(QString, QString)));
     this->scurve_tool = Scurve_Interpolator();
 
     X = 0;
@@ -25,20 +25,22 @@ Robot::Robot(QString COM, int baudrate, bool is_open, QObject *parent) : Device(
     path_angle = 0;
     path_rad_angle = 0;
 
+    jsonObject["device"] = "robot";
+
     GetInfo();
+}
+
+Robot::~Robot()
+{
+
 }
 
 QString Robot::SendGcode(QString gcode, bool is_wait, int time_out)
 {
-    if (!gcode.endsWith("\n"))
-        gcode.append("\n");
+    WriteData(gcode);
 
     if (gcode.indexOf("G04") < 0)
         qDebug() << gcode;
-
-    if (this->serialPort->isOpen())
-        this->serialPort->write(gcode.toLocal8Bit());
-
     last_gcode = now_gcode;
     now_gcode = gcode;
     bool isMovingGcode = this->getPara(gcode);
@@ -65,8 +67,7 @@ QString Robot::SendGcode(QString gcode, bool is_wait, int time_out)
     return "";
 }
 
-void Robot::ProcessResponse(QString response) {
-    emit gcodeDone(id, response);
+void Robot::ProcessResponse(QString id, QString response) {
 
     if (now_gcode.count("G28") > 0 || now_gcode.count("M85"))
     {
@@ -196,7 +197,6 @@ void Robot::calMoveTime()
 QString Robot::GetInfo()
 {
     jsonObject["id"] = id;
-    jsonObject["device"] = "robot";
     jsonObject["home_x"] = home_X;
     jsonObject["home_y"] = home_Y;
     jsonObject["home_z"] = home_Z;
@@ -404,14 +404,4 @@ void Robot::SetSyncPath(QString path = "line", float con_vel = 100, float con_an
     path_vel = con_vel;
     path_angle = con_angle;
     path_rad_angle = qDegreesToRadians(con_angle);
-}
-
-QString Robot::ID()
-{
-    return this->id;
-}
-
-void Robot::SetID(QString id)
-{
-    this->id = id;
 }
