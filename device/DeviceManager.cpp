@@ -46,8 +46,8 @@ void DeviceManager::AddConveyor(QString address="auto")
     QThread* conveyorThread = new QThread(this);
     conveyor->moveToThread(conveyorThread);
     connect(conveyorThread, SIGNAL(started()), conveyor, SLOT(Run()));
-    connect(conveyor, &Slider::receivedMsg, [=](QString id, QString response){ emit DeviceResponded(id, response); });
-    connect(conveyor, &Slider::infoReady, this, &DeviceManager::GotDeviceInfo);
+    connect(conveyor, &Conveyor::receivedMsg, [=](QString id, QString response){ emit DeviceResponded(id, response); });
+    connect(conveyor, &Conveyor::infoReady, this, &DeviceManager::GotDeviceInfo);
 
     conveyorThread->start();
 }

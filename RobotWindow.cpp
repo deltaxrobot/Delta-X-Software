@@ -8,8 +8,8 @@ RobotWindow::RobotWindow(QWidget *parent) :
     ui->setupUi(this);
 
     InitOtherThreadObjects();
-//    InitVariables();
-//    InitEvents();
+    InitVariables();
+    InitEvents();
 
     hideExampleWidgets();
 }
@@ -42,6 +42,8 @@ RobotWindow::~RobotWindow()
 
 void RobotWindow::InitOtherThreadObjects()
 {
+
+    //------ Device Managers ----------
     DeviceManagerInstance = new DeviceManager();
     QThread* thread = new QThread(this);
     DeviceManagerInstance->moveToThread(thread);
@@ -51,7 +53,57 @@ void RobotWindow::InitOtherThreadObjects()
 
     connect(DeviceManagerInstance, SIGNAL(GotDeviceInfo(QString)), this, SLOT(GetDeviceInfo(QString)));
     connect(this, SIGNAL(ChangeDeviceState(int, bool, QString)), DeviceManagerInstance, SLOT(SetDeviceState(int, bool, QString)));
-    connect(DeviceManagerInstance, SIGNAL(Log(QString)), this, SLOT(Log(QString)));
+    connect(DeviceManagerInstance, SIGNAL(Log(QString)), this, SLOT(Log(QString)));    
+    connect(DeviceManagerInstance, SIGNAL(DeviceResponded(QString, QString)), this, SLOT(GetDeviceResponse(QString, QString)));
+
+    //------------ Devices --------
+
+        //-------- Robot ---------
+    connect(ui->cbSelectedRobot, SIGNAL(currentIndexChanged(int)), this, SLOT(ChangeSelectedRobot(int)));
+    connect(ui->tbDisableRobot, SIGNAL(clicked(bool)), this, SLOT(SetRobotState(bool)));
+    connect(ui->tbRequestPosition, SIGNAL(clicked(bool)), this, SLOT(RequestPosition()));
+    connect(ui->cbRobotDOF, SIGNAL(currentIndexChanged(int)), this, SLOT(ChangeRobotDOF(int)));
+
+        //-------- Conveyor --------
+
+    connect(ui->pbConveyorConnect, SIGNAL(clicked(bool)), this, SLOT(ConnectConveyor()));
+    connect(ui->cbConveyorMode, SIGNAL(currentIndexChanged(int)), this, SLOT(SetConveyorMode(int)));
+    connect(ui->cbConveyorValueType, SIGNAL(currentIndexChanged(int)), this, SLOT(SetConveyorMovingMode(int)));
+    connect(ui->leConveyorXPosition, SIGNAL(returnPressed()), this, SLOT(SetConveyorXPosition()));
+    connect(ui->leConveyorXSpeed, SIGNAL(returnPressed()), this, SLOT(SetConveyorXSpeed()));
+    connect(ui->cbConveyorType, SIGNAL(currentIndexChanged(int)), this, SLOT(ChangeConveyorType(int)));
+    ChangeConveyorType(0);
+
+    connect(ui->leSubConveyor1Speed, SIGNAL(returnPressed()), this, SLOT(SetConveyorSpeed()));
+    connect(ui->leSubConveyor2Speed, SIGNAL(returnPressed()), this, SLOT(SetConveyorSpeed()));
+    connect(ui->leSubConveyor3Speed, SIGNAL(returnPressed()), this, SLOT(SetConveyorSpeed()));
+
+    connect(ui->leSubConveyor1Position, SIGNAL(returnPressed()), this, SLOT(SetConveyorPosition()));
+    connect(ui->leSubConveyor2Position, SIGNAL(returnPressed()), this, SLOT(SetConveyorPosition()));
+    connect(ui->leSubConveyor3Position, SIGNAL(returnPressed()), this, SLOT(SetConveyorPosition()));
+
+    connect(ui->cbSubConveyor1Mode, SIGNAL(currentIndexChanged(int)), this, SLOT(SetConveyorMovingMode(int)));
+    connect(ui->cbSubConveyor2Mode, SIGNAL(currentIndexChanged(int)), this, SLOT(SetConveyorMovingMode(int)));
+    connect(ui->cbSubConveyor3Mode, SIGNAL(currentIndexChanged(int)), this, SLOT(SetConveyorMovingMode(int)));
+
+        //-------- Encoder --------
+    connect(ui->pbReadEncoder, SIGNAL(clicked(bool)), this, SLOT(ReadEncoder()));
+    connect(ui->pbSetEncoderInterval, SIGNAL(clicked(bool)), this, SLOT(SetEncoderAutoRead()));
+    connect(ui->pbResetEncoder, SIGNAL(clicked(bool)), this, SLOT(ResetEncoderPosition()));
+
+
+        //-------- Slider --------
+
+    connect(ui->pbSlidingConnect, SIGNAL(clicked(bool)), this, SLOT(ConnectSliding()));
+    connect(ui->pbSlidingHome, SIGNAL(clicked(bool)), this, SLOT(GoHomeSliding()));
+    connect(ui->pbSlidingDisable, SIGNAL(clicked(bool)), this, SLOT(DisableSliding()));
+    connect(ui->leSlidingSpeed, SIGNAL(returnPressed()), this, SLOT(SetSlidingSpeed()));
+    connect(ui->leSlidingPosition, SIGNAL(returnPressed()), this, SLOT(SetSlidingPosition()));
+
+        //-------- MCU --------
+    connect(ui->pbExternalControllerConnect, SIGNAL(clicked(bool)), this, SLOT(ConnectExternalMCU()));
+//    connect(DeltaConnectionManager, SIGNAL(ExternalMCUTransmitText(QString)), this, SLOT(DisplayTextFromExternalMCU(QString)));
+    connect(ui->leTransmitToMCU, SIGNAL(returnPressed()), this, SLOT(TransmitTextToExternalMCU()));
 
 }
 
@@ -75,11 +127,7 @@ void RobotWindow::InitVariables()
     ui->lbLocalPort->setText(QString::number(DeltaConnectionManager->TCPConnection->Port));
     ui->mbRobot->setVisible(false);
 
-
-
     InitParseNames();
-
-
 
     //---- Init pointer --------
     initInputValueLabels();
@@ -98,6 +146,10 @@ void RobotWindow::InitVariables()
     //----- Gcode Programing----------
 
     InitGcodeEditorModule();
+
+    connect(ui->pbCalculateMappingMatrixTool, SIGNAL(clicked(bool)), this, SLOT(CalculateMappingMatrixTool()));
+    connect(ui->pbCalculatePointMatrixTool, SIGNAL(clicked(bool)), this, SLOT(CalculatePointMatrixTool()));
+    connect(ui->pbCalculateTestPoint, SIGNAL(clicked(bool)), this, SLOT(CalculateTestPoint()));
 
 
 
@@ -121,8 +173,6 @@ void RobotWindow::InitVariables()
     // --------- UI Update -------
 
     InitUIController();
-
-
 
     //--------------Timer-------------
 
@@ -160,12 +210,9 @@ void RobotWindow::InitVariables()
     ui->gbCameraVariable->setChecked(false);
     ui->gbConveyorForTracking->setChecked(false);
 
-
-
     //------- New image processing thread --------
 
     InitObjectDetectingModule();
- qDebug() << "Mid Var: " << time.elapsed() - start;
     InitCalibration();
 
     //----------------ROS-------------------
@@ -183,16 +230,6 @@ void RobotWindow::InitVariables()
     SelectImageProviderOption(0);
 
     //------------------- Linux -----------------
-
-
-    //------------ Devices --------
-    connect(ui->cbSelectedRobot, SIGNAL(currentIndexChanged(int)), this, SLOT(ChangeSelectedRobot(int)));
-    connect(ui->tbDisableRobot, SIGNAL(clicked(bool)), this, SLOT(SetRobotState(bool)));
-    connect(ui->tbRequestPosition, SIGNAL(clicked(bool)), this, SLOT(RequestPosition()));
-    connect(ui->cbRobotDOF, SIGNAL(currentIndexChanged(int)), this, SLOT(ChangeRobotDOF(int)));
-
-    connect(ui->cbConveyorType, SIGNAL(currentIndexChanged(int)), this, SLOT(ChangeConveyorType(int)));
-    ChangeConveyorType(0);
 
 
     //----- Process ------
@@ -631,24 +668,6 @@ void RobotWindow::InitEvents()
     connect(ui->pbReadA1, SIGNAL(clicked()), this, SLOT(RequestValueInput()));
     connect(ui->pbReadAx, SIGNAL(clicked()), this, SLOT(RequestValueInput()));
 
-
-
-    //---------- External Devices ------------
-	connect(ui->pbConveyorConnect, SIGNAL(clicked(bool)), this, SLOT(ConnectConveyor()));
-	connect(ui->cbConveyorMode, SIGNAL(currentIndexChanged(int)), this, SLOT(SetConveyorMode(int)));
-	connect(ui->cbConveyorValueType, SIGNAL(currentIndexChanged(int)), this, SLOT(SetConveyorMovingMode(int)));
-    connect(ui->leConveyorXPosition, SIGNAL(returnPressed()), this, SLOT(SetConveyorXPosition()));
-    connect(ui->leConveyorXSpeed, SIGNAL(returnPressed()), this, SLOT(SetConveyorXSpeed()));
-
-	connect(ui->pbSlidingConnect, SIGNAL(clicked(bool)), this, SLOT(ConnectSliding()));
-	connect(ui->pbSlidingHome, SIGNAL(clicked(bool)), this, SLOT(GoHomeSliding()));
-	connect(ui->pbSlidingDisable, SIGNAL(clicked(bool)), this, SLOT(DisableSliding()));
-	connect(ui->leSlidingSpeed, SIGNAL(returnPressed()), this, SLOT(SetSlidingSpeed()));
-	connect(ui->leSlidingPosition, SIGNAL(returnPressed()), this, SLOT(SetSlidingPosition()));
-
-	connect(ui->pbExternalControllerConnect, SIGNAL(clicked(bool)), this, SLOT(ConnectExternalMCU()));
-	connect(DeltaConnectionManager, SIGNAL(ExternalMCUTransmitText(QString)), this, SLOT(DisplayTextFromExternalMCU(QString)));
-	connect(ui->leTransmitToMCU, SIGNAL(returnPressed()), this, SLOT(TransmitTextToExternalMCU()));
 
     //------------- 2D control ----------------
 //	connect(ui->vsZAdjsution, SIGNAL(valueChanged(int)), this, SLOT(UpdateZLineEditValue(int)));
@@ -1260,7 +1279,6 @@ void RobotWindow::AddScriptThread()
 //    connect(this, SIGNAL(StopGcodeProgram()), GcodeScriptThread, SLOT(Stop()));
 //    connect(this, SIGNAL(RunGcodeProgram(QString, int, bool)), GcodeScriptThread, SLOT(ExecuteGcode(QString, int, bool)));
     connect(DeviceManagerInstance, SIGNAL(DeviceResponded(QString, QString)), GcodeScriptThread, SLOT(GetResponse(QString, QString)));
-    connect(DeviceManagerInstance, SIGNAL(DeviceResponded(QString, QString)), this, SLOT(GetDeviceResponse(QString, QString)));
     connect(DeltaConnectionManager, SIGNAL(FailTransmit()), GcodeScriptThread, SLOT(TransmitNextGcode()));
 
     connect(GcodeScriptThread, SIGNAL(Moved(int)), this, SLOT(HighLineCurrentLine(int)));
@@ -2004,6 +2022,21 @@ void RobotWindow::GetDeviceResponse(QString id, QString response)
     if (id.contains("device"))
     {
         DisplayTextFromExternalMCU(response);
+    }
+
+    if (id.contains("conveyor"))
+    {
+        if (response.contains("P3"))
+        {
+            int id = response.mid(1,1).toInt();
+            float value = response.mid(3).toFloat();
+            emit GotEncoderPosition(id, value);
+
+            if (ui->cbSelectedEncoder->currentText() == QString::number(id))
+            {
+                ui->leEncoderCurrentPosition->setText(QString::number(value));
+            }
+        }
     }
 }
 
@@ -2966,13 +2999,55 @@ void RobotWindow::ConnectEncoder()
 
     if (result == true)
     {
-        emit Send(ConnectionManager::ENCODER, "M317 T100");
+        emit Send(DeviceManager::ENCODER, "M317 T100");
+    }
+}
+
+void RobotWindow::ReadEncoder()
+{
+    if (ui->cbEncoderType->currentText() == "Sub Encoder")
+    {
+        QString cmd = QString("M422 C") + ui->cbSelectedEncoder->currentText();
+        emit Send(DeviceManager::CONVEYOR, cmd);
+    }
+    if (ui->cbEncoderType->currentText() == "Encoder X")
+    {
+        emit Send(DeviceManager::ENCODER, "M317");
+    }
+}
+
+void RobotWindow::SetEncoderAutoRead()
+{
+    QString interval = ui->leEncoderInterval->text();
+
+    if (ui->cbEncoderType->currentText() == "Sub Encoder")
+    {
+        QString name = ui->cbSelectedEncoder->currentText();
+
+        QString cmd = QString("M421 C%1:%2").arg(name).arg(interval);
+        emit Send(DeviceManager::CONVEYOR, cmd);
+    }
+    if (ui->cbEncoderType->currentText() == "Encoder X")
+    {
+        emit Send(DeviceManager::ENCODER, QString("M317 T%1").arg(interval));
     }
 }
 
 void RobotWindow::ResetEncoderPosition()
 {
-    emit Send(ConnectionManager::ENCODER, "M316");
+    QString interval = ui->leEncoderInterval->text();
+
+    if (ui->cbEncoderType->currentText() == "Sub Encoder")
+    {
+        QString name = ui->cbSelectedEncoder->currentText();
+
+        QString cmd = QString("M423 C%1").arg(name);
+        emit Send(DeviceManager::CONVEYOR, cmd);
+    }
+    if (ui->cbEncoderType->currentText() == "Encoder X")
+    {
+        emit Send(DeviceManager::ENCODER, "M316 0");
+    }
 }
 
 void RobotWindow::UpdatePointPositionOnConveyor(QLineEdit *x, QLineEdit *y, float angle, float distance)
@@ -3666,31 +3741,129 @@ void RobotWindow::SetConveyorMode(int mode)
 
 void RobotWindow::SetConveyorMovingMode(int mode)
 {
-	if (mode == 0)
+    if (ui->cbConveyorType->currentText() == "Conveyor X")
     {
-        ui->leConveyorXPosition->setEnabled(false);
-	}
-	else
+        if (mode == 0)
+        {
+            ui->leConveyorXPosition->setEnabled(false);
+        }
+        else
+        {
+            ui->leConveyorXPosition->setEnabled(true);
+        }
+    }
+    else if (ui->cbConveyorType->currentText() == "Conveyor Hub X")
     {
-        ui->leConveyorXPosition->setEnabled(true);
-	}
+        mode = (mode == 0)?1:0;
+
+        QComboBox *cb = qobject_cast<QComboBox *>(sender());
+        if (cb == ui->cbSubConveyor1Mode)
+        {
+            emit Send(DeviceManager::CONVEYOR, QString("M400 C1:") + QString::number(mode));
+        }
+        if (cb == ui->cbSubConveyor2Mode)
+        {
+            emit Send(DeviceManager::CONVEYOR, QString("M400 C2:") + QString::number(mode));
+        }
+        if (cb == ui->cbSubConveyor3Mode)
+        {
+            emit Send(DeviceManager::CONVEYOR, QString("M400 C3:") + QString::number(mode));
+        }
+    }
 }
 
-void RobotWindow::SetConveyorXSpeed()
+void RobotWindow::SetConveyorSpeed()
 {
-    if (ui->cbConveyorValueType->currentIndex() == 0)
+    if (ui->cbConveyorType->currentText() == "Conveyor X")
     {
-        emit Send(ConnectionManager::CONVEYOR, QString("M311 ") + ui->leConveyorXSpeed->text());
+        if (ui->cbConveyorValueType->currentIndex() == 0)
+        {
+            emit Send(DeviceManager::CONVEYOR, QString("M311 ") + ui->leConveyorXSpeed->text());
+        }
+        else
+        {
+            emit Send(DeviceManager::CONVEYOR, QString("M313 ") + ui->leConveyorXSpeed->text());
+        }
     }
-    else
+    else if (ui->cbConveyorType->currentText() == "Conveyor Hub X")
     {
-        emit Send(ConnectionManager::CONVEYOR, QString("M313 ") + ui->leConveyorXSpeed->text());
+        QLineEdit *le = qobject_cast<QLineEdit *>(sender());
+
+        if (le == ui->leSubConveyor1Speed)
+        {
+            QString speed = ui->leSubConveyor1Speed->text();
+
+            if (ui->cbSubConveyor1Mode->currentText() == "Continuous")
+            {
+
+                emit Send(DeviceManager::CONVEYOR, QString("M401 C1:") + speed);
+            }
+            else
+            {
+                emit Send(DeviceManager::CONVEYOR, QString("M402 C1:") + speed);
+            }
+
+        }
+        if (le == ui->leSubConveyor2Speed)
+        {
+            QString speed = ui->leSubConveyor2Speed->text();
+
+            if (ui->cbSubConveyor2Mode->currentText() == "Continuous")
+            {
+
+                emit Send(DeviceManager::CONVEYOR, QString("M401 C2:") + speed);
+            }
+            else
+            {
+                emit Send(DeviceManager::CONVEYOR, QString("M402 C2:") + speed);
+            }
+
+        }
+        if (le == ui->leSubConveyor3Speed)
+        {
+            QString speed = ui->leSubConveyor3Speed->text();
+
+            if (ui->cbSubConveyor3Mode->currentText() == "Continuous")
+            {
+
+                emit Send(DeviceManager::CONVEYOR, QString("M401 C3:") + speed);
+            }
+            else
+            {
+                emit Send(DeviceManager::CONVEYOR, QString("M402 C3:") + speed);
+            }
+
+        }
+
     }
 }
 
-void RobotWindow::SetConveyorXPosition()
+void RobotWindow::SetConveyorPosition()
 {
-    emit Send(ConnectionManager::CONVEYOR, QString("M312 ") + ui->leConveyorXPosition->text());
+    if (ui->cbConveyorType->currentText() == "Conveyor X")
+    {
+        emit Send(DeviceManager::CONVEYOR, QString("M312 ") + ui->leConveyorXPosition->text());
+    }
+    else if (ui->cbConveyorType->currentText() == "Conveyor Hub X")
+    {
+        QLineEdit *le = qobject_cast<QLineEdit *>(sender());
+
+        if (le == ui->leSubConveyor1Position)
+        {
+            QString position = ui->leSubConveyor1Position->text();
+            emit Send(DeviceManager::CONVEYOR, QString("M403 C1:") + position);
+        }
+        if (le == ui->leSubConveyor2Position)
+        {
+            QString position = ui->leSubConveyor2Position->text();
+            emit Send(DeviceManager::CONVEYOR, QString("M403 C2:") + position);
+        }
+        if (le == ui->leSubConveyor3Position)
+        {
+            QString position = ui->leSubConveyor3Position->text();
+            emit Send(DeviceManager::CONVEYOR, QString("M403 C3:") + position);
+        }
+    }
 }
 
 void RobotWindow::ProcessShortcutKey()
@@ -3742,6 +3915,33 @@ void RobotWindow::AddDisplayObjectFromExternalScript(QString msg)
 
 
     emit GotObjects(Objects);
+}
+
+void RobotWindow::CalculateMappingMatrixTool()
+{
+    QPointF sp1(ui->leSourcePoint1X->text().toFloat(), ui->leSourcePoint1Y->text().toFloat());
+    QPointF sp2(ui->leSourcePoint2X->text().toFloat(), ui->leSourcePoint2Y->text().toFloat());
+    QPointF tp1(ui->leDestinationPoint1X->text().toFloat(), ui->leDestinationPoint1Y->text().toFloat());
+    QPointF tp2(ui->leDestinationPoint2X->text().toFloat(), ui->leDestinationPoint2Y->text().toFloat());
+
+    QTransform transformMatrix = calculateTransformMatrix(sp1, sp2, tp1, tp2);
+
+    VarManager::getInstance()->addVar(ui->leMatrix1Name->text(), transformMatrix);
+}
+
+void RobotWindow::CalculatePointMatrixTool()
+{
+
+}
+
+void RobotWindow::CalculateTestPoint()
+{
+    QTransform matrix = VarManager::getInstance()->getVar(ui->leTestMatrixName->text()).value<QTransform>();
+
+    QPointF testPoint(ui->leTestPointX->text().toFloat(), ui->leTestPointY->text().toFloat());
+    QPointF target = matrix.map(testPoint);
+    ui->leTargetTestPointX->setText(QString::number(target.x()));
+    ui->leTargetTestPointY->setText(QString::number(target.y()));
 }
 
 void RobotWindow::MoveExternalConveyor()
@@ -3857,22 +4057,22 @@ void RobotWindow::ConnectSliding()
 
 void RobotWindow::GoHomeSliding()
 {
-    emit Send(ConnectionManager::SLIDER, "M320");
+    emit Send(DeviceManager::SLIDER, "M320");
 }
 
 void RobotWindow::DisableSliding()
 {
-    emit Send(ConnectionManager::SLIDER, "M323");
+    emit Send(DeviceManager::SLIDER, "M323");
 }
 
 void RobotWindow::SetSlidingSpeed()
 {
-    emit Send(ConnectionManager::SLIDER, QString("M321 ") + ui->leSlidingSpeed->text());
+    emit Send(DeviceManager::SLIDER, QString("M321 ") + ui->leSlidingSpeed->text());
 }
 
 void RobotWindow::SetSlidingPosition()
 {
-    emit Send(ConnectionManager::SLIDER, QString("M322 ") + ui->leSlidingPosition->text());
+    emit Send(DeviceManager::SLIDER, QString("M322 ") + ui->leSlidingPosition->text());
 }
 
 void RobotWindow::ConnectExternalMCU()
@@ -4178,31 +4378,6 @@ bool RobotWindow::openConnectionDialog(QSerialPort * comPort, QTcpSocket* socket
 	return false;
 }
 
-void RobotWindow::InitTabs()
-{
-//    ui->twDeltaManager->clear();
-
-//    QStringList robotNames = RobotManagerPointer->GetRobotNames();
-
-//    for (int i = 0; i < robotNames.size(); i++)
-//    {
-//        QAction *actionNewDelta_X;
-//        actionNewDelta_X = new QAction(this);
-
-//        actionNewDelta_X->setCheckable(true);
-//        actionNewDelta_X->setChecked(true);
-//        actionNewDelta_X->setText(robotNames.at(i));
-//        ui->menuExecute->addAction(actionNewDelta_X);
-
-//        QWidget *newDeltaTab = new QWidget();
-//        ui->twDeltaManager->addTab(newDeltaTab, robotNames.at(i));
-//    }
-
-//    QWidget *newDeltaTab = new QWidget();
-//    ui->twDeltaManager->addTab(newDeltaTab, QString());
-//    ui->twDeltaManager->setTabText(ui->twDeltaManager->indexOf(newDeltaTab), "+");
-}
-
 void RobotWindow::Log(QString msg)
 {
     if (msg[msg.length() - 1] != "\n")
@@ -4314,6 +4489,17 @@ void RobotWindow::initInputValueLabels()
 void RobotWindow::plugValue(QLineEdit *le, float value)
 {
     le->setText(QString::number(le->text().toFloat() + value));
+}
+
+QTransform RobotWindow::calculateTransformMatrix(QPointF sourcePoint1, QPointF sourcePoint2, QPointF targetPoint1, QPointF targetPoint2)
+{
+    qreal a = (targetPoint2.y() - targetPoint1.y()) / (sourcePoint2.y() - sourcePoint1.y());
+    qreal b = (targetPoint2.x() - a * sourcePoint2.x()) - targetPoint1.x();
+    qreal c = (targetPoint2.x() - targetPoint1.x()) / (sourcePoint2.x() - sourcePoint1.x());
+    qreal d = (targetPoint2.y() - c * sourcePoint2.y()) - targetPoint1.y();
+
+    QTransform transformMatrix(a, c, b, d, 0, 0);
+    return transformMatrix;
 }
 
 void RobotWindow::OpenLoadingPopup()

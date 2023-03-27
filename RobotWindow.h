@@ -139,7 +139,6 @@ public:
     void SaveDrawingSetting(QSettings* setting);
     void SavePluginSetting(QSettings* setting);
 
-    void InitTabs();
     void SetID(QString id);
 
     // ----- Event ----
@@ -330,12 +329,10 @@ public slots:
     void ConnectConveyor();
     void SetConveyorMode(int mode);
     void SetConveyorMovingMode(int mode);
-    void SetConveyorXSpeed();
-    void SetConveyorXPosition();
+    void SetConveyorSpeed();
+    void SetConveyorPosition();
 
     void SetConvenyorSpeed();
-    void ConnectEncoder();
-    void ResetEncoderPosition();
     void UpdatePointPositionOnConveyor(QLineEdit* x, QLineEdit* y, float angle, float distance);
 
     void CalculateConveyorDeviationAngle();
@@ -352,6 +349,12 @@ public slots:
     void BackwardExternalConveyor();
     void TurnOffExternalConveyor();
 
+    //----- Encoder -----
+
+    void ConnectEncoder();
+    void ReadEncoder();
+    void SetEncoderAutoRead();
+    void ResetEncoderPosition();
     void VirtualEncoder();
     void ProcessEncoderValue(float value);
     void ProcessProximitySensorValue(int value);
@@ -413,6 +416,12 @@ public slots:
 
     void SendImageToExternalScript(cv::Mat input);
     void AddDisplayObjectFromExternalScript(QString msg);
+
+    //------ Point Tool -----
+    void CalculateMappingMatrixTool();
+    void CalculatePointMatrixTool();
+    void CalculateTestPoint();
+
     // ----- Display ----
 
     void ScaleUI();
@@ -445,6 +454,7 @@ signals:
     void ChangeDeviceState(int deviceType, bool isOpen, QString address);
     // ----
     void RequestCapture();
+    void GotEncoderPosition(int id, float value);
     void GotImage(cv::Mat mat);
     void GotObjects(QList<Object*>* objects);
     void GotResizePara(cv::Size size);
@@ -495,6 +505,9 @@ private:
     QObject* getObjectByName(QObject* parent, QString name);
     void initInputValueLabels();
     void plugValue(QLineEdit* le, float value);
+
+    //--------- Tool -------
+    QTransform calculateTransformMatrix(QPointF sourcePoint1, QPointF sourcePoint2, QPointF targetPoint1, QPointF targetPoint2);
 
     //--------- Plugin -----------
     QStringList getPlugins(QString path);

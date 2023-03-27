@@ -67,6 +67,7 @@ SOURCES += main.cpp\
     TaskNode.cpp \
     TestCode.cpp \
     TextLayer.cpp \
+    TrackingManager.cpp \
     VarManager.cpp \
     VariableManager.cpp \
     VersionManager.cpp \
@@ -116,6 +117,7 @@ HEADERS  += \
     TabDashboard.h \
     TaskNode.h \
     TextLayer.h \
+    TrackingManager.h \
     VarManager.h \
     VariableManager.h \
     VersionManager.h \

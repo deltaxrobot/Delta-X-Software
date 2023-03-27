@@ -281,11 +281,7 @@ RobotWindow *MainWindow::AddNewProjectAndRobot(int index)
     robotWindow->SetMainStackedWidgetAndPages(ui->stackedWidget, ui->page, ui->pFullTabDisplay, ui->layoutFullTabDisplay);
     robotWindow->SetSubStackedWidget(ui->swPageStack);
 
-    robotWindow->SetID("robot0");
-
-    robotWindow->InitVariables();
-    robotWindow->InitEvents();
-    robotWindow->InitTabs();
+    robotWindow->SetID("robot0");    
 
     stack->addWidget(robotWindow);
     stack->setCurrentWidget(robotWindow);

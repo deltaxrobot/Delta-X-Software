@@ -262,6 +262,11 @@ float GcodeScript::GetResultOfMathFunction(QString expression)
         }
     }
 
+    if (functionName.toLower() == "round")
+    {
+        return round(values[0].toInt());
+    }
+
     return NULL_NUMBER;
 }
 
@@ -572,6 +577,30 @@ bool GcodeScript::findExeGcodeAndTransmit()
                     return false;
                 }
 
+                if (subProName.contains("delay") == true)
+                {
+                    int pos1 = subProName.indexOf("(") + 1;
+                    int pos2 = subProName.lastIndexOf(")");
+                    QString valueS = subProName.mid(pos1, pos2 - pos1);
+
+                    QThread::msleep(valueS.toULong());
+
+                    gcodeOrder++;
+                    return false;
+                }
+
+                if (subProName.contains("delay") == true)
+                {
+                    int pos1 = subProName.indexOf("(") + 1;
+                    int pos2 = subProName.lastIndexOf(")");
+                    QString valueS = subProName.mid(pos1, pos2 - pos1);
+
+                    QThread::msleep(valueS.toULong());
+
+                    gcodeOrder++;
+                    return false;
+                }
+
                 //QString funcName = "sendExternalMCU";
 
                 if (subProName.contains("send") == true)
@@ -677,12 +706,6 @@ bool GcodeScript::findExeGcodeAndTransmit()
             gcodeOrder++;
             return true;
         }
-
-        /*if (deltaConnection->IsConnect() == false && !isMovingGcode(transmitGcode))
-        {
-            gcodeOrder++;
-            return false;
-        }*/
     }
 
     if (isConveyorGcode(transmitGcode))
