@@ -18,11 +18,6 @@ GCodeHighlighter::GCodeHighlighter(QTextDocument *parent) : QSyntaxHighlighter(p
     rule = {mcodeRegex, mcodeFormat};
     highlightRules.append(rule);
 
-    QTextCharFormat commentFormat;
-    commentFormat.setForeground(Qt::darkGreen);
-    commentFormat.setFontItalic(true);
-    highlightRules.append({QRegularExpression(";.*"), commentFormat});
-
     QTextCharFormat lineNumberFormat;
     lineNumberFormat.setForeground(QColor(Qt::gray));
     QRegularExpression numberRegex("^N\\d+");
@@ -48,6 +43,11 @@ GCodeHighlighter::GCodeHighlighter(QTextDocument *parent) : QSyntaxHighlighter(p
     QRegularExpression pattern("#\\w+");
     rule = {pattern, format};
     highlightRules.append(rule);
+
+    QTextCharFormat commentFormat;
+    commentFormat.setForeground(Qt::darkGreen);
+    commentFormat.setFontItalic(true);
+    highlightRules.append({QRegularExpression(";.*"), commentFormat});
 }
 
 void GCodeHighlighter::highlightBlock(const QString &text)

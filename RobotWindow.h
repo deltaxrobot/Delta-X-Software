@@ -44,7 +44,6 @@
 #include <QElapsedTimer>
 #include <QProcess>
 #include <QComboBox>
-#include "Encoder.h"
 #include "FilterWindow.h"
 #include "GcodeHighlighter.h"
 #include <QList>
@@ -72,7 +71,9 @@
 
 #include <QDialogButtonBox>
 #include <device/DeviceManager.h>
+#include "device/camera.h"
 #include "VarManager.h"
+#include "TrackingManager.h"
 
 #define DEFAULT_BAUDRATE 115200
 
@@ -96,7 +97,7 @@ class RobotWindow : public QMainWindow
 	Q_OBJECT
 
 public:
-    explicit RobotWindow(QWidget *parent = 0);
+    explicit RobotWindow(QWidget *parent = 0, QString projectName = "project0");
     ~RobotWindow();
 
     //----- Init ----
@@ -113,6 +114,9 @@ public:
     void InitScriptThread();
     void AddScriptThread();
     void LoadScriptThread();
+    void InitTrackingThread();
+    void AddTrackingThread();
+    void LoadTrackingThread();
 
     void LoadSettings();
     void LoadSettings(QSettings* setting);
@@ -171,7 +175,6 @@ public:
 
     // ---- Gcode ----
     QList<GcodeScript*> GcodeScripts;
-    QTimer* VirtualEncoderTimer;
     QTimer* UIEvent;
 
     // ---- Robot ----
@@ -181,10 +184,7 @@ public:
 
     QTimer UpdateUITimer;
 
-    int ID = 0;
-    QString Name = "robot 1";
-    QString ProjectName = "project 0";
-    QString SoftwareVersion = "0.9.5";
+    QString ProjectName = "project0";
 
     int DefaultBaudrate = DEFAULT_BAUDRATE;
 
@@ -202,18 +202,14 @@ public:
     Encoder* Encoder1;
     Encoder* Encoder2;
 
-    float ConveyorDistanceToMove = 0;
-    float ConveyorPositionBeforeMove = 0;
-
     QWidget* ImageViewerWindow = NULL;
 
-    int RunningCamera = -1;
-    bool IsCameraPause = false;
-    cv::VideoCapture* Camera;
-    cv::Mat CaptureImage;
-    float CameraFPS = DEFAULT_FPS;
-    float CameraTimerInterval = DEFAULT_INTERVAL;
+    Camera* CameraInstance;
+
     QTimer CameraTimer;
+
+    // ----- Tracking -----
+    TrackingManager* TrackingManagerInstance;
 
     // ---- Drawing ----
     DrawingExporter* DeltaDrawingExporter;
@@ -249,7 +245,6 @@ public slots:
     void GetDeviceResponse(QString id, QString response);
 
     // ---- Robot ----
-    void ConnectDeltaRobot();
     void NoticeConnected();
 
     void ConfigConnection();
@@ -325,6 +320,7 @@ public slots:
 
     // ---- Conveyor ----
     void ChangeConveyorType(int index);
+    void ChangeSelectedConveyor(int id);
 
     void ConnectConveyor();
     void SetConveyorMode(int mode);
@@ -332,31 +328,22 @@ public slots:
     void SetConveyorSpeed();
     void SetConveyorPosition();
 
-    void SetConvenyorSpeed();
     void UpdatePointPositionOnConveyor(QLineEdit* x, QLineEdit* y, float angle, float distance);
 
-    void CalculateConveyorDeviationAngle();
 
     void UpdateCursorPosition(float x, float y);
 
     void ProcessShortcutKey();
 
-
-
-    void MoveExternalConveyor();
-    void CheckForTurnOffExternalConveyor();
-    void ForwardExternalConveyor();
-    void BackwardExternalConveyor();
-    void TurnOffExternalConveyor();
-
     //----- Encoder -----
+    void ChangeEncoderType(int index);
 
     void ConnectEncoder();
     void ReadEncoder();
     void SetEncoderAutoRead();
     void ResetEncoderPosition();
-    void VirtualEncoder();
-    void ProcessEncoderValue(float value);
+    void SetEncoderVelocity();
+    void CalculateEncoderVelocity(int id, float value);
     void ProcessProximitySensorValue(int value);
 	
     // ---- Slider ----
@@ -374,10 +361,10 @@ public slots:
     // ---- Termite ----
     void TerminalTransmit();
     void RunExternalScript();
-    void Log(QString msg);
+    void OpenExternalScriptFolder();
+    void UpdateTermite(QString device, QString mess, int direction);
 
     // ---- Connection ----
-	void FinishedRequest(QNetworkReply *reply);
 
     // ---- ROS ----
 	void OpenROS();
@@ -388,15 +375,11 @@ public slots:
 	void DeleteAllObjectsInROS();
 
     // ----- Object Detecting ----
-    void GeneralCapture();
     void StartContinuousCapture(bool isCheck);
-    void GetImageFromExternal(cv::Mat mat);
-    void GetCapturedSignal();
     void ChangeOutputDisplay(QString outputName);
     void LoadWebcam();
     void LoadImages();
     void StopCapture();
-    void CaptureWebcam();
     void RearrangeTaskFlow();
     void OpenColorFilterWindow();
     void SelectObjectDetectingAlgorithm(int algorithm);
@@ -408,19 +391,21 @@ public slots:
     void GetNewImageSize();
 
     void UnselectToolButtons();
-    void UpdateObjectsToImageViewer(QList<Object*>* objects);
-    void UpdateObjectsToVariableTable(QList<Object*>* objects);
-    void ClearObjectsToVariableTable();
-    void DeleteFirstVariable();
+    void UpdateObjectsToImageViewer(QList<Object>& objects);
+//    void UpdateObjectsToVariableTable(QList<Object*>* objects);
     void EditImage(bool isWarp, bool isCropTool);
 
     void SendImageToExternalScript(cv::Mat input);
     void AddDisplayObjectFromExternalScript(QString msg);
 
+    //------ Tracking --------
+    void ChangeSelectedTracking(int id);
+
     //------ Point Tool -----
     void CalculateMappingMatrixTool();
     void CalculatePointMatrixTool();
     void CalculateTestPoint();
+    void CalculateAngle();
 
     // ----- Display ----
 
@@ -438,8 +423,6 @@ public slots:
     // ------ Timer -----
     void ProcessUIEvent();
 
-    // -------- Object Detecting --------
-    void UseCameraFromPlugin(bool checked);
 #ifdef Q_OS_WIN
     #ifdef JOY_STICK
         //--------Joystick-----------
@@ -453,10 +436,7 @@ signals:
     // ---- Device ----
     void ChangeDeviceState(int deviceType, bool isOpen, QString address);
     // ----
-    void RequestCapture();
-    void GotEncoderPosition(int id, float value);
-    void GotImage(cv::Mat mat);
-    void GotObjects(QList<Object*>* objects);
+    void GotObjects(QList<Object>& objects);
     void GotResizePara(cv::Size size);
     void GotResizeImage(cv::Mat mat);
     void GotChessboardSize(cv::Size size);
@@ -466,8 +446,6 @@ signals:
     void RequestClearObjects();
     void RequestDeleteObject(int index);
     void RequestFindChessboard();
-    void StopGcodeProgram();
-    void RunGcodeProgram(QString gcodes, int pos, bool isEditor);
     void Send(int device, QString msg);
     void ScanAndConnectRobot();
     void DisconnectRobot();
@@ -486,7 +464,6 @@ private:
 	void hideExampleWidgets();
 
     // ---- Encoder/Conveyor ----
-    void updateEncoderUI();
 
     // ---- Test ----
 	void interpolateCircle();
@@ -508,6 +485,8 @@ private:
 
     //--------- Tool -------
     QTransform calculateTransformMatrix(QPointF sourcePoint1, QPointF sourcePoint2, QPointF targetPoint1, QPointF targetPoint2);
+    void runPythonFile(QString filePath);
+    QProcess *process = nullptr;
 
     //--------- Plugin -----------
     QStringList getPlugins(QString path);

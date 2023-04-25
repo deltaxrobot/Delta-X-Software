@@ -25,7 +25,6 @@
 #include <QThread>
 #include <QSettings>
 
-#include "CameraProcessor.h"
 #include <QMessageBox>
 #include <QThreadPool>
 #include <QElapsedTimer>
@@ -48,9 +47,6 @@ public:
     void GetMessageFromOtherModule(QString cmd);
 
     // ---- Camera variables -----
-//    CameraProcessor* CameraProcessorThread;
-
-    CameraProcessor* CameraProcessorJob;
 
     CameraReader* CameraReaderWork;
 

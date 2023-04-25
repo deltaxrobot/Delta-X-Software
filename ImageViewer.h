@@ -811,7 +811,6 @@ public:
     void InitParameter();
     void SaveSetting(QSettings* setting);
     void LoadSetting();
-    void LoadSetting(QSettings* setting);
     void ZoomIn(qreal value);
     void ZoomOut(qreal value);
     void Zoom(qreal value);
@@ -836,6 +835,8 @@ public:
     QGraphicsPixmapItem* ImageItem = NULL;
 
     CustomScene* ViewerScene;
+
+    QString ProjectName = "project0";
 
     enum CameraTool
     {
@@ -935,7 +936,7 @@ protected:
     int visiblePolygon = 0;
     int visibleText = 0;
 
-    bool mousePressed;
+    bool mousePressed = false;
     bool drawStarted;
     int selectedTool;
     int selectedPoint = 0;

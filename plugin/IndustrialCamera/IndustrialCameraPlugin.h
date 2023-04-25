@@ -22,7 +22,6 @@ class IndustrialCameraPlugin : public DeltaXPlugin
 public slots:
     void ProcessCommand(QString cmd);
     void TranferEmit(QString msg);
-    void GetCaptureImageSignal(cv::Mat mat);
 signals:
     //void EmitCommand(QString cmd);
     void CapturedImage(cv::Mat mat);

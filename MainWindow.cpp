@@ -25,7 +25,7 @@ void MainWindow::InitVariables()
     DeltaXVersionManager->SoftwareName = "DeltaXSoftware";
     DeltaXVersionManager->CheckVersionUrl = "http://imwi.space/admin/server.php";
     DeltaXVersionManager->NewVersionSoftwareUrl = "https://sourceforge.net/projects/delta-x-software/files/";
-    DeltaXVersionManager->CheckNewVersion(true);
+//    DeltaXVersionManager->CheckNewVersion(true);
 
     // ----- Init Pointer -----
     SoftwareManager::GetInstance()->SoftwarePointer = this;
@@ -48,7 +48,7 @@ void MainWindow::InitVariables()
 
     InitVisible();
 
-    ui->tbHome->click();
+//    ui->tbHome->click();
 
     //-------- UX --------
 
@@ -103,7 +103,7 @@ void MainWindow::InitVariables()
 
     InitProjectToOperator();
 
-    on_pbApplyOperator_clicked();
+//    on_pbApplyOperator_clicked();
 
     SetLoadingIconRun(false);
 
@@ -149,9 +149,13 @@ void MainWindow::InitProjectUX()
 void MainWindow::InitVisible()
 {
 //    ui->tbSetting->setVisible(false);
+    ui->tbHome->setVisible(false);
     ui->tbCommunity->setVisible(false);
     ui->tbDocument->setVisible(false);
     ui->tbMarket->setVisible(false);
+    ui->tbAuthority->setVisible(false);
+    ui->tbSaveProject->setVisible(false);
+    ui->tbOpenProject->setVisible(false);
 
     // ----- Load custom UI ----
     QSettings settings("customUI.ini", QSettings::IniFormat);
@@ -264,7 +268,7 @@ QStackedWidget* MainWindow::CreateNewProject(int index)
 {
     QStackedWidget* stack = new QStackedWidget();
     int projectTabID = ui->twProjectManager->count() - 1;
-    QString projectName = QString("project " + QString::number(projectTabID));
+    QString projectName = QString("project") + QString::number(projectTabID);
     SoftwareProjectManager->AddNewTab(stack, projectTabID, projectName);
 
     return stack;
@@ -274,14 +278,11 @@ RobotWindow *MainWindow::AddNewProjectAndRobot(int index)
 {
     QStackedWidget *stack = CreateNewProject(index);
 
-    RobotWindow* robotWindow = new RobotWindow();
+    RobotWindow* robotWindow = new RobotWindow(this, SoftwareProjectManager->GetProjectName(index));
     SoftwareProjectManager->RobotWindows.append(robotWindow);
-    robotWindow->ProjectName = SoftwareProjectManager->GetProjectName(index);
 
     robotWindow->SetMainStackedWidgetAndPages(ui->stackedWidget, ui->page, ui->pFullTabDisplay, ui->layoutFullTabDisplay);
     robotWindow->SetSubStackedWidget(ui->swPageStack);
-
-    robotWindow->SetID("robot0");    
 
     stack->addWidget(robotWindow);
     stack->setCurrentWidget(robotWindow);
@@ -380,11 +381,6 @@ void MainWindow::SetLoadingIconRun(bool isRun)
 
 MainWindow::~MainWindow()
 {
-    for (int i = 0; i < SoftwareProjectManager->RobotWindows.count(); i++)
-    {
-        delete SoftwareProjectManager->RobotWindows.at(i);
-    }
-
     delete ui;
 }
 
@@ -475,12 +471,6 @@ void MainWindow::on_cbOperatorProject_currentIndexChanged(int index)
     ui->cbOperatorRobotDisplay->clear();
     ui->cbOperatorRobot->clear();
 
-    foreach(RobotWindow* robotWindow, SoftwareProjectManager->RobotWindows)
-    {
-        ui->cbOperatorRobotDisplay->addItem(robotWindow->Name);
-        ui->cbOperatorRobot->addItem(robotWindow->Name);
-    }
-
     ui->cbOperatorGcodeProgram->clear();
 
 //    ui->cbOperatorGcodeProgram->addItems("");
@@ -528,7 +518,7 @@ void MainWindow::openProject(QString fullName)
     int robotNumber = settings->value("Project/RobotNumber").toInt();
     int tabID = ui->twProjectManager->count() - 1; // x
     RobotWindow* robotWindow = AddNewProjectAndRobot(tabID);
-    robotWindow->LoadSettings(settings);
+//    robotWindow->LoadSettings(settings);
 }
 
 

@@ -9,6 +9,8 @@ FilterWindow::FilterWindow(QWidget *parent) :
 
 	InitVariables();
 	InitEvents();
+    LoadSetting();
+    RequestValue();
 }
 
 FilterWindow::~FilterWindow()
@@ -62,16 +64,11 @@ void FilterWindow::InitEvents()
     connect(FilterJob->thread(), SIGNAL(finished()), FilterJob->thread(), SLOT(deleteLater()));
     connect(FilterJob, &FilterWork::FinishedFilter, ui->lbProcessImage, &QLabel::setPixmap);
 
+    connect(ui->pbSaveFilter, &QPushButton::clicked, this, &FilterWindow::SaveSetting);
+
 }
 
-void FilterWindow::SaveSetting(QString fileName)
-{
-    QSettings settings(fileName, QSettings::IniFormat);
-
-    SaveSetting(&settings);
-}
-
-void FilterWindow::SaveSetting(QSettings *setting)
+void FilterWindow::SaveSetting()
 {
     QList<QVariant> hsvParas;
 
@@ -80,27 +77,23 @@ void FilterWindow::SaveSetting(QSettings *setting)
         hsvParas.append(sPara[i]->value());
     }
 
-    setting->setValue("hsvV", hsvParas);
+    QString filterName = QString("filter%1").arg(ui->cbObjectType->currentText());
 
-    setting->setValue("thresV", ui->hsThreshold->value());
+    VarManager::getInstance()->Prefix = ProjectName;
 
-    setting->setValue("blurV", ui->hsBlurSize->value());
-
-    setting->setValue("invert", ui->cbInvert->isChecked());
-
-    setting->setValue("algorithm", FilterJob->CurrentFilter);
+    VarManager::getInstance()->updateVar(filterName + "hsvV", hsvParas);
+    VarManager::getInstance()->updateVar(filterName + "thresV", ui->hsThreshold->value());
+    VarManager::getInstance()->updateVar(filterName + "blurV", ui->hsBlurSize->value());
+    VarManager::getInstance()->updateVar(filterName + "invert", ui->cbInvert->isChecked());
+    VarManager::getInstance()->updateVar(filterName + "algorithm", FilterJob->CurrentFilter);
 }
 
-void FilterWindow::LoadSetting(QString fileName)
+void FilterWindow::LoadSetting()
 {
-    QSettings settings(fileName, QSettings::IniFormat);
+    VarManager::getInstance()->Prefix = ProjectName;
 
-    LoadSetting(&settings);
-}
-
-void FilterWindow::LoadSetting(QSettings *setting)
-{
-    QList<QVariant> hsvParas = setting->value("hsvV").toList();
+    QString filterName = QString("filter%1").arg(ui->cbObjectType->currentText());
+    QList<QVariant> hsvParas = VarManager::getInstance()->getVar(filterName + "hsvV").toList();
 
     for(int i = 0; i < hsvParas.count(); i++)
     {
@@ -108,15 +101,15 @@ void FilterWindow::LoadSetting(QSettings *setting)
         lbPara[i]->setText(QString::number(hsvParas.at(i).toInt()));
     }
 
-    ui->hsThreshold->setValue(setting->value("thresV", 100).toInt());
+    ui->hsThreshold->setValue(VarManager::getInstance()->getVar(filterName + "thresV", 100).toInt());
     ui->lbThreshold->setText(QString::number(ui->hsThreshold->value()));
 
-    ui->hsBlurSize->setValue(setting->value("blurV", 1).toInt());
+    ui->hsBlurSize->setValue(VarManager::getInstance()->getVar(filterName + "blurV", 1).toInt());
     ui->lbBlurSize->setText(QString::number(ui->hsBlurSize->value()));
 
-    ui->cbInvert->setChecked(setting->value("invert", false).toBool());
+    ui->cbInvert->setChecked(VarManager::getInstance()->getVar(filterName + "invert", false).toBool());
 
-    FilterJob->CurrentFilter = setting->value("algorithm", FilterJob->CurrentFilter).toInt();
+    FilterJob->CurrentFilter = VarManager::getInstance()->getVar(filterName + "algorithm", FilterJob->CurrentFilter).toInt();
 }
 
 void FilterWindow::SetImage(cv::Mat mat)
@@ -177,6 +170,8 @@ void FilterWindow::ProcessValueFromUI()
     blurSize = (blurSize / 2)  * 2 + 1;
 
     ui->lbBlurSize->setText(QString::number(blurSize));
+
+    SaveSetting();
 
 //    emit ValueChanged(intParas, ui->cbInvert->isChecked(), ui->hsBlurSize->value());
     emit ColorFilterValueChanged(intParas);

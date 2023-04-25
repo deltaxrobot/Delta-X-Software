@@ -9,6 +9,8 @@
 #include <ImageUnity.h>
 #include <QThread>
 #include <QMutexLocker>
+#include <VarManager.h>
+#include <QPushButton>
 
 namespace Ui {
 class FilterWindow;
@@ -91,10 +93,8 @@ public:
 
 	void InitEvents();
     void InitVariables();
-    void SaveSetting(QString fileName);
-    void SaveSetting(QSettings* setting);
-    void LoadSetting(QString fileName);
-    void LoadSetting(QSettings* setting);
+    void SaveSetting();
+    void LoadSetting();
     void SetImage(cv::Mat mat);
     void RequestValue();
 
@@ -107,6 +107,7 @@ public:
 
     cv::Mat OriginMat;
     FilterWork* FilterJob;
+    QString ProjectName = "project0";
 
 public slots:
     void ProcessValueFromUI();

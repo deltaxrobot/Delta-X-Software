@@ -5,9 +5,39 @@ Conveyor::Conveyor(QString COM, int baudrate, bool is_open, QObject *parent) : D
     qDebug() << "Conveyor init";
 
     jsonObject["device"] = "conveyor";
+
+    connect(this, SIGNAL(receivedMsg(QString, QString)), this, SLOT(ProcessResponse(QString, QString)));
+
 }
 
 Conveyor::~Conveyor()
 {
 
+}
+
+QString Conveyor::GetInfo()
+{
+    jsonObject["id_name"] = idName;
+    jsonObject["id"] = ID();
+
+    jsonObject["type"] = type;
+
+    QJsonDocument jsonDocument;
+    jsonDocument.setObject(jsonObject);
+    QString jsonString = jsonDocument.toJson(QJsonDocument::Indented);
+
+    emit infoReady(jsonString);
+
+    return jsonString;
+}
+
+void Conveyor::ProcessResponse(QString idName, QString response)
+{
+    if (response.contains("P"))
+    {
+        int id = response.mid(1,1).toInt() - 1;
+        float value = response.mid(3).toFloat();
+
+        emit GotEncoderPosition(id, value);
+    }
 }

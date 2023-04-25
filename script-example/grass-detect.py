@@ -154,7 +154,7 @@ def get_objects(image):
     cv2.imshow("Image", image)
     cv2.waitKey(1)
 
-    return image
+    return image        
 
 def Loop_Event():
     while True:  
@@ -168,8 +168,10 @@ def Loop_Event():
                     cv2.waitKey(1)
                 except:
                     break
-        except socket.timeout:
-            print("time out")
+        except Exception as e:
+            # In ra lỗi
+            print(e)
+            traceback.print_exc()
             time.sleep(2)
 
 def main():

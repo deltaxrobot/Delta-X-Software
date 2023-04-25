@@ -4,18 +4,27 @@ ObjectVariableTable::ObjectVariableTable(QObject *parent)
 	: QObject(parent)
 {
 	ObjectVariableWidgetList = new QList<ObjectVariable*>();
+    dialog = new QWidget();
+    dialog->setWindowTitle("Object Variables");
 
-	dialog = new QWidget();
-	dialog->setWindowTitle("Object Variables");
-    gridLayout = new QGridLayout();
+    // Tạo QGridLayout và đưa nó vào QScrollArea
+    QScrollArea *scrollArea = new QScrollArea();
+    QGridLayout *gridLayout = new QGridLayout(scrollArea->viewport());
+    scrollArea->setWidgetResizable(true);
+    scrollArea->setWidget(new QWidget());
+    scrollArea->widget()->setLayout(gridLayout);
 
-    dialog->setLayout(gridLayout);
+    // Đưa QScrollArea vào cửa sổ
+    QVBoxLayout *layout = new QVBoxLayout(dialog);
+    layout->addWidget(scrollArea);
+    dialog->setLayout(layout);
 
 	dialog->setWindowFlags(Qt::WindowStaysOnTopHint);
 
     for (int i = 0; i < 100; i++)
     {
         ObjectVariable* ov = new ObjectVariable(i);
+        ov->name->setText(QString::number(i));
 
         ObjectVariableWidgetList->push_back(ov);
 
@@ -35,9 +44,9 @@ ObjectVariableTable::~ObjectVariableTable()
 
 }
 
-void ObjectVariableTable::UpdateTable(QList<Object*>* ObjectContainer)
+void ObjectVariableTable::UpdateTable(QList<Object>& ObjectContainer)
 {
-    for (int i = 0; i < ObjectContainer->size(); i++)
+    for (int i = 0; i < ObjectContainer.size(); i++)
     {
         if (i > ObjectVariableWidgetList->size() - 1)
             break;
@@ -46,13 +55,13 @@ void ObjectVariableTable::UpdateTable(QList<Object*>* ObjectContainer)
             ObjectVariableWidgetList->at(i)->Show();
     }
 
-    for (int i = 0; i < ObjectContainer->size(); i++)
+    for (int i = 0; i < ObjectContainer.size(); i++)
     {
         if (i > ObjectVariableWidgetList->size() - 1)
             break;
 
-        ObjectVariableWidgetList->at(i)->xValue->setText(QString::number(ObjectContainer->at(i)->X.Real));
-        ObjectVariableWidgetList->at(i)->yValue->setText(QString::number(ObjectContainer->at(i)->Y.Real));
+        ObjectVariableWidgetList->at(i)->xValue->setText(QString::number(ObjectContainer[i].X.Real));
+        ObjectVariableWidgetList->at(i)->yValue->setText(QString::number(ObjectContainer[i].Y.Real));
 
 //		int angle = ObjectContainer.at(i).angle + 180;
 
@@ -61,10 +70,10 @@ void ObjectVariableTable::UpdateTable(QList<Object*>* ObjectContainer)
 //			angle = ObjectContainer.at(i).angle + 90;``
 //		}
 
-        ObjectVariableWidgetList->at(i)->aValue->setText(QString::number(ObjectContainer->at(i)->Angle.Real));
+        ObjectVariableWidgetList->at(i)->aValue->setText(QString::number(ObjectContainer[i].Angle.Real));
     }
 
-    for (int i = ObjectContainer->size(); i < ObjectVariableWidgetList->size(); i++)
+    for (int i = ObjectContainer.size(); i < ObjectVariableWidgetList->size(); i++)
     {
         if (i > ObjectVariableWidgetList->size() - 1)
             break;

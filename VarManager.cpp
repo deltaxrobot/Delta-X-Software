@@ -20,31 +20,58 @@ VarManager::~VarManager()
     delete m_settings;
 }
 
-void VarManager::addVar(const QString& key, const QVariant& value)
+void VarManager::addVar(QString key, QVariant value)
 {
+    if (Prefix != "")
+    {
+        key = Prefix + "." + key;
+    }
     m_settings->setValue(key, value);
     emit varAdded(key, value);
 }
 
-void VarManager::removeVar(const QString& key)
+void VarManager::removeVar(QString key)
 {
-    m_settings->remove(key);
+    if (Prefix != "")
+    {
+        key = Prefix + "." + key;
+    }
+    QStringList keys = m_settings->allKeys();
+    for (QString k : keys)
+    {
+        if (k.startsWith(key))
+        {
+            m_settings->remove(k);
+        }
+    }
     emit varRemoved(key);
 }
 
-void VarManager::updateVar(const QString& key, const QVariant& value)
+void VarManager::updateVar(QString key, QVariant value)
 {
+    if (Prefix != "")
+    {
+        key = Prefix + "." + key;
+    }
     m_settings->setValue(key, value);
     emit varUpdated(key, value);
 }
 
-QVariant VarManager::getVar(const QString& key) const
+QVariant VarManager::getVar(QString key, QVariant defaultValue)
 {
-    return m_settings->value(key, NULL);
+    if (Prefix != "")
+    {
+        key = Prefix + "." + key;
+    }
+    return m_settings->value(key, defaultValue);
 }
 
-bool VarManager::contains(const QString &key)
+bool VarManager::contains(QString key)
 {
+    if (Prefix != "")
+    {
+        key = Prefix + "." + key;
+    }
     return m_settings->contains(key);
 }
 

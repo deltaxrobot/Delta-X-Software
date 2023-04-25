@@ -12,12 +12,14 @@
 #include <QtCore/QVariant>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QCheckBox>
+#include <QtWidgets/QComboBox>
 #include <QtWidgets/QDialog>
 #include <QtWidgets/QFrame>
 #include <QtWidgets/QGridLayout>
 #include <QtWidgets/QGroupBox>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QLabel>
+#include <QtWidgets/QPushButton>
 #include <QtWidgets/QSlider>
 #include <QtWidgets/QSpacerItem>
 #include <QtWidgets/QVBoxLayout>
@@ -30,6 +32,11 @@ public:
     QHBoxLayout *horizontalLayout;
     QFrame *frame;
     QVBoxLayout *verticalLayout;
+    QFrame *frame_2;
+    QHBoxLayout *horizontalLayout_2;
+    QLabel *label_7;
+    QComboBox *cbObjectType;
+    QSpacerItem *horizontalSpacer;
     QGroupBox *groupBox;
     QGridLayout *gridLayout;
     QLabel *label_2;
@@ -59,6 +66,7 @@ public:
     QLabel *lbBlurSize;
     QSlider *hsBlurSize;
     QSpacerItem *verticalSpacer;
+    QPushButton *pbSaveFilter;
     QFrame *frame1;
     QVBoxLayout *verticalLayout_2;
     QCheckBox *cbInvert;
@@ -79,6 +87,61 @@ public:
         verticalLayout = new QVBoxLayout(frame);
         verticalLayout->setSpacing(20);
         verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
+        frame_2 = new QFrame(frame);
+        frame_2->setObjectName(QString::fromUtf8("frame_2"));
+        frame_2->setMinimumSize(QSize(0, 50));
+        frame_2->setFrameShape(QFrame::StyledPanel);
+        frame_2->setFrameShadow(QFrame::Raised);
+        horizontalLayout_2 = new QHBoxLayout(frame_2);
+        horizontalLayout_2->setObjectName(QString::fromUtf8("horizontalLayout_2"));
+        label_7 = new QLabel(frame_2);
+        label_7->setObjectName(QString::fromUtf8("label_7"));
+
+        horizontalLayout_2->addWidget(label_7);
+
+        cbObjectType = new QComboBox(frame_2);
+        cbObjectType->addItem(QString());
+        cbObjectType->addItem(QString());
+        cbObjectType->addItem(QString());
+        cbObjectType->addItem(QString());
+        cbObjectType->addItem(QString());
+        cbObjectType->addItem(QString());
+        cbObjectType->addItem(QString());
+        cbObjectType->addItem(QString());
+        cbObjectType->addItem(QString());
+        cbObjectType->addItem(QString());
+        cbObjectType->addItem(QString());
+        cbObjectType->addItem(QString());
+        cbObjectType->addItem(QString());
+        cbObjectType->addItem(QString());
+        cbObjectType->addItem(QString());
+        cbObjectType->addItem(QString());
+        cbObjectType->addItem(QString());
+        cbObjectType->addItem(QString());
+        cbObjectType->addItem(QString());
+        cbObjectType->addItem(QString());
+        cbObjectType->addItem(QString());
+        cbObjectType->addItem(QString());
+        cbObjectType->addItem(QString());
+        cbObjectType->addItem(QString());
+        cbObjectType->addItem(QString());
+        cbObjectType->addItem(QString());
+        cbObjectType->addItem(QString());
+        cbObjectType->addItem(QString());
+        cbObjectType->addItem(QString());
+        cbObjectType->addItem(QString());
+        cbObjectType->addItem(QString());
+        cbObjectType->setObjectName(QString::fromUtf8("cbObjectType"));
+
+        horizontalLayout_2->addWidget(cbObjectType);
+
+        horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        horizontalLayout_2->addItem(horizontalSpacer);
+
+
+        verticalLayout->addWidget(frame_2);
+
         groupBox = new QGroupBox(frame);
         groupBox->setObjectName(QString::fromUtf8("groupBox"));
         QFont font;
@@ -246,6 +309,11 @@ public:
 
         verticalLayout->addItem(verticalSpacer);
 
+        pbSaveFilter = new QPushButton(frame);
+        pbSaveFilter->setObjectName(QString::fromUtf8("pbSaveFilter"));
+
+        verticalLayout->addWidget(pbSaveFilter);
+
 
         horizontalLayout->addWidget(frame);
 
@@ -292,6 +360,39 @@ public:
     void retranslateUi(QDialog *FilterWindow)
     {
         FilterWindow->setWindowTitle(QCoreApplication::translate("FilterWindow", "Filter Window", nullptr));
+        label_7->setText(QCoreApplication::translate("FilterWindow", "Object Type", nullptr));
+        cbObjectType->setItemText(0, QCoreApplication::translate("FilterWindow", "1", nullptr));
+        cbObjectType->setItemText(1, QCoreApplication::translate("FilterWindow", "2", nullptr));
+        cbObjectType->setItemText(2, QCoreApplication::translate("FilterWindow", "3", nullptr));
+        cbObjectType->setItemText(3, QCoreApplication::translate("FilterWindow", "4", nullptr));
+        cbObjectType->setItemText(4, QCoreApplication::translate("FilterWindow", "5", nullptr));
+        cbObjectType->setItemText(5, QCoreApplication::translate("FilterWindow", "6", nullptr));
+        cbObjectType->setItemText(6, QCoreApplication::translate("FilterWindow", "7", nullptr));
+        cbObjectType->setItemText(7, QCoreApplication::translate("FilterWindow", "8", nullptr));
+        cbObjectType->setItemText(8, QCoreApplication::translate("FilterWindow", "9", nullptr));
+        cbObjectType->setItemText(9, QCoreApplication::translate("FilterWindow", "10", nullptr));
+        cbObjectType->setItemText(10, QCoreApplication::translate("FilterWindow", "11", nullptr));
+        cbObjectType->setItemText(11, QCoreApplication::translate("FilterWindow", "12", nullptr));
+        cbObjectType->setItemText(12, QCoreApplication::translate("FilterWindow", "13", nullptr));
+        cbObjectType->setItemText(13, QCoreApplication::translate("FilterWindow", "14", nullptr));
+        cbObjectType->setItemText(14, QCoreApplication::translate("FilterWindow", "15", nullptr));
+        cbObjectType->setItemText(15, QCoreApplication::translate("FilterWindow", "16", nullptr));
+        cbObjectType->setItemText(16, QCoreApplication::translate("FilterWindow", "17", nullptr));
+        cbObjectType->setItemText(17, QCoreApplication::translate("FilterWindow", "18", nullptr));
+        cbObjectType->setItemText(18, QCoreApplication::translate("FilterWindow", "19", nullptr));
+        cbObjectType->setItemText(19, QCoreApplication::translate("FilterWindow", "20", nullptr));
+        cbObjectType->setItemText(20, QCoreApplication::translate("FilterWindow", "21", nullptr));
+        cbObjectType->setItemText(21, QCoreApplication::translate("FilterWindow", "22", nullptr));
+        cbObjectType->setItemText(22, QCoreApplication::translate("FilterWindow", "23", nullptr));
+        cbObjectType->setItemText(23, QCoreApplication::translate("FilterWindow", "24", nullptr));
+        cbObjectType->setItemText(24, QCoreApplication::translate("FilterWindow", "25", nullptr));
+        cbObjectType->setItemText(25, QCoreApplication::translate("FilterWindow", "26", nullptr));
+        cbObjectType->setItemText(26, QCoreApplication::translate("FilterWindow", "27", nullptr));
+        cbObjectType->setItemText(27, QCoreApplication::translate("FilterWindow", "28", nullptr));
+        cbObjectType->setItemText(28, QCoreApplication::translate("FilterWindow", "29", nullptr));
+        cbObjectType->setItemText(29, QCoreApplication::translate("FilterWindow", "30", nullptr));
+        cbObjectType->setItemText(30, QCoreApplication::translate("FilterWindow", "+", nullptr));
+
         groupBox->setTitle(QCoreApplication::translate("FilterWindow", "HSV", nullptr));
         label_2->setText(QCoreApplication::translate("FilterWindow", "max H", nullptr));
         label_4->setText(QCoreApplication::translate("FilterWindow", "max S", nullptr));
@@ -309,6 +410,7 @@ public:
         lbThreshold->setText(QCoreApplication::translate("FilterWindow", "100", nullptr));
         groupBox_3->setTitle(QCoreApplication::translate("FilterWindow", "Blur", nullptr));
         lbBlurSize->setText(QCoreApplication::translate("FilterWindow", "1", nullptr));
+        pbSaveFilter->setText(QCoreApplication::translate("FilterWindow", "Save", nullptr));
         cbInvert->setText(QCoreApplication::translate("FilterWindow", "Invert", nullptr));
         lbOriginImage->setText(QString());
         lbProcessImage->setText(QString());

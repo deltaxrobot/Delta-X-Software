@@ -45,7 +45,6 @@ SOURCES += main.cpp\
     ComDevice.cpp \
     DrawingExporter.cpp \
     DrawingWidget.cpp \
-    Encoder.cpp \
     FilterWindow.cpp \
     GcodeHighlighter.cpp \
     GcodeReference.cpp \
@@ -76,8 +75,10 @@ SOURCES += main.cpp\
     DeltaVisualizer.cpp \
     UnityTool.cpp \
     device/DeviceManager.cpp \
+    device/camera.cpp \
     device/conveyor.cpp \
     device/device.cpp \
+    device/encoder.cpp \
     device/robot.cpp \
     device/slider.cpp \
     geisttextedit.cpp \
@@ -94,7 +95,6 @@ HEADERS  += \
     DeltaVisualizer.h \
     DrawingExporter.h \
     DrawingWidget.h \
-    Encoder.h \
     FilterWindow.h \
     GcodeHighlighter.h \
     GcodeReference.h \
@@ -123,8 +123,10 @@ HEADERS  += \
     VersionManager.h \
     codeeditor.h \
     device/DeviceManager.h \
+    device/camera.h \
     device/conveyor.h \
     device/device.h \
+    device/encoder.h \
     device/robot.h \
     device/slider.h \
     geisttextedit.h \

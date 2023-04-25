@@ -1,11 +1,14 @@
 #include "TaskNode.h"
 
+QElapsedTimer TaskNode::DebugTimer;
+
 TaskNode::TaskNode(QString name, int type)
 {
     this->type = type;
     this->name = name;
 
-    qRegisterMetaType< QList<Object*>* >("QList<Object*>*");
+    qRegisterMetaType< QList<Object>* >("QList<Object>*");
+    qRegisterMetaType< QList<Object>>("QList<Object>");
 
     if (type == RESIZE_IMAGE_NODE)
     {
@@ -34,8 +37,6 @@ TaskNode::TaskNode(QString name, int type)
 
     if (type == VISIBLE_OBJECTS_NODE || type == TRACKING_OBJECTS_NODE || type == GET_OBJECTS_NODE)
     {
-        inputObjects = new QList<Object*>();
-        outputObjects = new QList<Object*>();
     }
 
     if (type == VISIBLE_OBJECTS_NODE)
@@ -52,31 +53,6 @@ TaskNode::TaskNode(QString name, int type)
 
 TaskNode::~TaskNode()
 {
-    if (inputObjects != nullptr && !inputObjects->isEmpty())
-    {
-        int iNum = inputObjects->size();
-        for (int i = 0; i < iNum; i++)
-        {
-            delete inputObjects->takeAt(0);
-        }
-
-        inputObjects->clear();
-//        delete inputObjects;
-//        inputObjects = nullptr;
-    }
-
-    if (outputObjects != nullptr && !outputObjects->isEmpty())
-    {
-        int iNum = outputObjects->size();
-        for (int i = 0; i < iNum; i++)
-        {
-            delete outputObjects->takeAt(0);
-        }
-
-        outputObjects->clear();
-//        delete outputObjects;
-//        outputObjects = nullptr;
-    }
 }
 
 void TaskNode::SetNextNode(TaskNode *next)
@@ -131,7 +107,7 @@ cv::Mat TaskNode::GetOutputImage()
     return outputMat;
 }
 
-Object TaskNode::GetInputObject()
+Object& TaskNode::GetInputObject()
 {
     return inputObject;
 }
@@ -143,11 +119,9 @@ QPointF *TaskNode::GetInputPointPointer()
 
 bool TaskNode::ClearVariable(QString name)
 {
-    QMutex mux;
-    mux.lock();
-
     if (name.toLower() == QString("outputObjects").toLower())
     {
+        VarManager::getInstance()->removeVar("Objects");
         clear(outputObjects);
 
         HadOutput(outputObjects);
@@ -161,8 +135,6 @@ bool TaskNode::ClearVariable(QString name)
 
         return true;
     }
-
-    mux.unlock();
 
     return false;
 }
@@ -186,9 +158,10 @@ void TaskNode::Input2(cv::Mat mat)
     inputMat2 = mat;
 }
 
-void TaskNode::Input(QList<Object*>* objects)
+void TaskNode::Input(QList<Object>& objects)
 {
     this->inputObjects = objects;
+    inputType = "objects";
 
     DoWork();
 }
@@ -234,6 +207,7 @@ void TaskNode::Input(QMatrix matrix)
 void TaskNode::Input(QPointF point)
 {
     this->inputPoint = point;
+    this->inputType = "point";
 
     DoWork();
 }
@@ -340,22 +314,15 @@ void TaskNode::ClearOutput()
 {
     if (type == TRACKING_OBJECTS_NODE)
     {
-        foreach(Object* obj, *outputObjects)
-        {
-            delete obj;
-        }
-
-
-        outputObjects->clear();
+        outputObjects.clear();
 
         HadOutput(outputObjects);
-//        delete outputObjects;
     }
 }
 
 void TaskNode::DeleteOutput(int id)
 {
-    outputObjects->removeAt(id);
+    outputObjects.removeAt(id);
     HadOutput(outputObjects);
 }
 
@@ -414,7 +381,7 @@ void TaskNode::connectInOutNode(TaskNode* previous, TaskNode *next)
     if (next->type == TaskNode::VISIBLE_OBJECTS_NODE)
     {
         if (previous->type == GET_OBJECTS_NODE)
-            next->InputConnections << connect(previous, SIGNAL(HadOutput(QList<Object*>*)), next, SLOT(Input(QList<Object*>*)));
+            next->InputConnections << connect(previous, SIGNAL(HadOutput(QList<Object>&)), next, SLOT(Input(QList<Object>&)));
 
         if (previous->type == MAPPING_MATRIX_NODE)
             next->InputConnections << connect(previous, SIGNAL(HadOutput(QMatrix)), next, SLOT(Input(QMatrix)));
@@ -423,7 +390,7 @@ void TaskNode::connectInOutNode(TaskNode* previous, TaskNode *next)
 
     if (next->type == TaskNode::TRACKING_OBJECTS_NODE)
     {
-        next->InputConnections << connect(previous, SIGNAL(HadOutput(QList<Object*>*)), next, SLOT(Input(QList<Object*>*)));
+        next->InputConnections << connect(previous, SIGNAL(HadOutput(QList<Object>&)), next, SLOT(Input(QList<Object>&)));
     }
 
 //    // ------ Previous -----
@@ -435,6 +402,7 @@ void TaskNode::connectInOutNode(TaskNode* previous, TaskNode *next)
 
 void TaskNode::doGetImageWork()
 {
+    qDebug() << "capture: " << DebugTimer.restart();
     outputMat.release();
     outputMat = inputMat;
 
@@ -639,7 +607,7 @@ void TaskNode::doColorFilterWork()
     {
         cvtColor(inputMat, outputMat, CV_BGR2GRAY);
 
-        cv::threshold(outputMat, outputMat, intPara, 255, CV_THRESH_BINARY);
+        cv::threshold(outputMat, outputMat, intParas[0], 255, CV_THRESH_BINARY);
     }
 
     if (intParas.count() == 6)
@@ -740,10 +708,9 @@ void TaskNode::doGetObjectsWork()
     if (inputMat.empty())
         return;
 
-    if (inputObjects == NULL || outputObjects == NULL)
-        return;
-
     clear(outputObjects);
+
+    qDebug() << "Get object: " << DebugTimer.elapsed();
 
     std::vector<std::vector<cv::Point> > contoursContainer;
     findContours(inputMat, contoursContainer, cv::RETR_LIST, cv::CHAIN_APPROX_SIMPLE);
@@ -759,100 +726,118 @@ void TaskNode::doGetObjectsWork()
         Object obj(rectObject);
         if (inputObject.IsSameType(obj))
         {
-            Object* obPointer = new Object(rectObject);
-            outputObjects->append(obPointer);
+            Object obPointer(rectObject);
+            outputObjects.append(obPointer);
         }
     }
 
     emit HadOutput(outputObjects);
+    emit Done();
 }
 
 void TaskNode::doVisibleObjectsWork()
 {
-    if (inputObjects == NULL || outputObjects == NULL)
+    if (inputType == "objects")
         return;
 
     clear(outputObjects);
-    for (int i = 0; i < inputObjects->count(); i++)
+    for (int i = 0; i < inputObjects.count(); i++)
     {
-        inputObjects->at(i)->Map(inputMatrix);
+        inputObjects[i].Map(inputMatrix);
 
         QMutex mux;
         mux.lock();
 
-        inputObjects->at(i)->X.Real += inputPoint.x();
-        inputObjects->at(i)->Y.Real += inputPoint.y();
+        inputObjects[i].X.Real += inputPoint.x();
+        inputObjects[i].Y.Real += inputPoint.y();
 
         mux.unlock();
 
-        emit DebugEvent();
+//        emit DebugEvent();
 
-        outputObjects->append(inputObjects->at(i));
+        outputObjects.append(inputObjects[i]);
     }
-    QMutex mux;
-    mux.lock();
-    inputPoint = QPoint(0, 0);
-    mux.unlock();
+
+    inputPoint = QPointF(0, 0);
+    inputObjects.clear();
 
     emit HadOutput(outputObjects);
 }
 
 void TaskNode::doTrackingObjectsWork()
 {
-    if (inputObjects == NULL || outputObjects == NULL)
-        return;
-
-    if (inputPoint.x() != 0 || inputPoint.y() != 0)
+    if (inputType == "point")
     {
-        for( int i = 0; i < outputObjects->count(); i++)
+
+        qDebug() << "tracking move: " << DebugTimer.elapsed();
+
+        if (inputPoint.x() != 0 || inputPoint.y() != 0)
         {
-            outputObjects->at(i)->Move(inputPoint);
-        }
-
-        inputPoint = QPointF(0, 0);
-    }
-
-    else if (inputObjects->size() > 0)
-    {
-        for (int i = 0; i < inputObjects->count(); i++)
-        {
-            bool isNew = true;
-
-            for (int j = 0; j < outputObjects->count(); j++)
+            for( int i = 0; i < outputObjects.count(); i++)
             {
-                if (outputObjects->at(j)->IsSame(*inputObjects->at(i), floatPara))
+                outputObjects[i].Move(inputPoint);
+            }
+
+            inputPoint = QPointF(0, 0);
+        }
+    }
+    else if (inputType == "objects")
+    {
+
+        qDebug() << "tracking new object: " << DebugTimer.elapsed();
+
+        if (inputObjects.size() > 0)
+        {
+            for (int i = 0; i < inputObjects.count(); i++)
+            {
+                bool isNew = true;
+
+                for (int j = 0; j < outputObjects.count(); j++)
                 {
-                    isNew = false;
-                    continue;
+                    if (outputObjects[j].IsSame(inputObjects.at(i), floatPara))
+                    {
+                        isNew = false;
+                        break;
+                    }
+                }
+
+                if (isNew == true)
+                {
+                    outputObjects.append(inputObjects.at(i));
                 }
             }
 
-            if (isNew == true)
-            {
-                outputObjects->append(inputObjects->at(i));
-            }
+            inputObjects.clear();
         }
-    }
 
-    emit HadOutput(outputObjects);
+        updateObjectsToVariableTable(outputObjects);
+        emit HadOutput(outputObjects);
+    }
+    emit Done();
 }
 
-void TaskNode::clear(QList<Object *> *objs)
+void TaskNode::clear(QList<Object>& objs)
 {
-//    QMutex mux;
-//    mux.lock();
+    objs.clear();
+}
 
-//    if (objs == NULL)
-//        return;
+void TaskNode::updateObjectsToVariableTable(QList<Object> &objects)
+{
+    VarManager::getInstance()->Prefix = ProjectName;
 
-//    for (int i = 0; i < objs->size(); i++)
-//    {
-//        delete objs->takeAt(0);
-//    }
+    int counter = 0;
 
-//    qDeleteAll(*objs);
+    VarManager::getInstance()->addVar("Objects.Count", objects.count());
 
-    objs->clear();
+    foreach(Object obj, objects)
+    {
 
-//    mux.unlock();
+        VarManager::getInstance()->addVar(QString("Objects.%1.X").arg(counter), obj.X.Real);
+        VarManager::getInstance()->addVar(QString("Objects.%1.Y").arg(counter), obj.Y.Real);
+        VarManager::getInstance()->addVar(QString("Objects.%1.W").arg(counter), obj.Width.Real);
+        VarManager::getInstance()->addVar(QString("Objects.%1.L").arg(counter), obj.Length.Real);
+        VarManager::getInstance()->addVar(QString("Objects.%1.A").arg(counter), obj.Angle.Real);
+
+        counter++;
+    }
 }

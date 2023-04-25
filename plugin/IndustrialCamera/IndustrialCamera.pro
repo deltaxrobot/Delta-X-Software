@@ -10,10 +10,8 @@ CONFIG += c++11
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    CameraProcessor.cpp \
     CameraReader.cpp \
     IndustrialCameraPlugin.cpp \
-    camerawidget.cpp \
     form.cpp \
     xcam.cpp \
     xcambasler.cpp \
@@ -22,11 +20,9 @@ SOURCES += \
 
 HEADERS += \
     ../../../DeltaXSoftware/sdk/DeltaXPlugin.h \
-    CameraProcessor.h \
     CameraReader.h \
     ImageUnity.h \
     IndustrialCameraPlugin.h \
-    camerawidget.h \
     form.h \
     xcam.h \
     xcambasler.h \

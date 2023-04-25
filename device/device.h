@@ -22,8 +22,19 @@ public:
     explicit Device(QString COM = "auto", int baudrate = 115200, QString confirm_cmd = "", QString rev_msg = "Ok", bool is_open = true, QObject *parent = nullptr);
     ~Device();
 
+    void SetSerialPortName(QString name);
+    QString GetSerialPortName();
+    int GetSerialPortBaudrate();
+    bool IsOpen();
+    int ID();
+    void SetIDName(QString idName);
+
+    QString ProjectName = "project0";
+
+    static QElapsedTimer DebugTimer;
+
 signals:
-    void receivedMsg(QString id, QString);
+    void receivedMsg(QString idName, QString);
     void infoReady(QString infoJson);
 
 public slots:
@@ -37,17 +48,12 @@ public slots:
     void WriteData(QString data);
     void ReadData();
     QString ReadLine();
-    QString GetSerialPortName();
-    int GetSerialPortBaudrate();
-    bool IsOpen();
-    QString ID();
-    void SetID(QString id);
 
 protected:
-    QSerialPort* serialPort;
+    QSerialPort* serialPort = NULL;
     QMetaObject::Connection readDataConnection;
     QJsonObject jsonObject;
-    QString id;
+    QString idName;
 
 private:
     QString serialPortName;

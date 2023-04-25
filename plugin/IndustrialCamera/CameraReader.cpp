@@ -49,7 +49,8 @@ void CameraReader::ShotImage()
         resize(openCvImage, openCvImage, cv::Size(ResizeWidth, ResizeHeight), cv::INTER_NEAREST);
     }
 
-    emit CapturedImage(openCvImage);
+    emit CapturedImage(openCvImage.clone());
+    openCvImage.release();
 
     emit FinishReadingImage(ImageTool::cvMatToQPixmap(openCvImage));
 }

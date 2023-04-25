@@ -5,6 +5,7 @@
 #include <device/robot.h>
 #include <device/slider.h>
 #include <device/conveyor.h>
+#include <device/encoder.h>
 #include <QThread>
 
 class DeviceManager : public QObject
@@ -27,20 +28,26 @@ public:
     QList<Slider*> Sliders;
     QList<Device*> Devices;
     QList<Conveyor*> Conveyors;
+    QList<Encoder*> Encoders;
     QList<QThread*> Threads;
 
     int SelectedRobotID = 0;
     int SelectedSliderID = 0;
     int SelectedDeviceID = 0;
     int SelectedConveyorID = 0;
+    int SelectedEncoderID = 0;
+    QString ProjectName = "project0";
 signals:
+    void GotEncoderPosition(int id, float position);
+    void DeviceNotAvailable(QString device);
     void DeviceResponded(QString id, QString response);
     void GotDeviceInfo(QString jsonDeviceInfo);
-    void Log(QString msg);
+    void Log(QString device, QString msg, int direction);
 
 public slots:
     void AddRobot();
     void AddConveyor(QString address);
+    void AddEncoder(QString address);
     void AddSlider(QString address);
     void AddDevice(QString address);
     void SetDeviceState(int deviceType, bool isOpen, QString address);

@@ -10,6 +10,7 @@
 //! [0]
 class DeltaXPlugin : public QObject
 {
+    Q_OBJECT
 public:
     virtual ~DeltaXPlugin() = default;
     virtual QWidget* GetUI() = 0;

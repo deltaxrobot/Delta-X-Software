@@ -5,6 +5,7 @@
 #include <qtcpsocket.h>
 #include <UnityTool.h>
 #include <QHostInfo>
+#include <QNetworkInterface>
 
 class Client
 {

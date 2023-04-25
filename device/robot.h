@@ -10,6 +10,7 @@
 #include <ScurveInterpolator.h>
 #include <QtMath>
 #include <QVector3D>
+#include <VarManager.h>
 
 class Robot : public Device
 {
@@ -42,13 +43,18 @@ private:
     float path_rad_angle;
     Device* port;
     Scurve_Interpolator scurve_tool;
-    float X, Y, Z, W, U, V, F, A, S, E, J;
+    float X, Y, Z, W, U, V, F, A, S, E, J, O;
     float home_X, home_Y, home_Z, home_W, home_U, home_V;
     float old_X, old_Y, old_Z;
     QTimer* timer;
+    bool isSyncDelay = false;
 
+    void saveParaVar();
     bool getPara(QString gcode);
     void calMoveTime();
+    bool checkSetSyncPathCmd(QString cmd);
+    QString syncGcode(QString cmd);
+
 };
 
 

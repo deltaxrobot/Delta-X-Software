@@ -27,6 +27,7 @@ void ImageProcessing::MoveToThread(QThread *thread)
 TaskNode *ImageProcessing::CreatTaskNode(QString name, int type, QString previousTasks)
 {
     TaskNode* taskNode = new TaskNode(name, type);
+    taskNode->ProjectName = ProjectName;
     taskNode->moveToThread(thread());
     taskNodeList.insert(name, taskNode);
 

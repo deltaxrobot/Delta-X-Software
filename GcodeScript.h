@@ -28,10 +28,14 @@ public:
 
     QMap<QString, QString> *GcodeVariables = NULL;
 
-    QString VariableAddress = "";
+    QString ProjectName = "project0";
     Scurve_Interpolator DeltaXSMoving;
 
-    QString DefaultRobot = "robot";
+    QString DefaultRobot = "robot0";
+    QString DefaultConveyor = "conveyor0";
+    QString DefaultEncoder = "encoder0";
+    QString DefaultSlider = "slider0";
+    QString DefaultDevice = "device0";
     QString ID = "thread";
 
     void SetGcodeScript(QString gcode);
@@ -42,11 +46,10 @@ public:
     bool IsRunning();
 
 public slots:
-    void ExecuteGcode(QString gcodes, int position, bool isFromGcodeEditor);
+    void ExecuteGcode(QString gcodes, int position);
     void GetResponse(QString deviceId, QString response);
     void SendMsgToDevice(QString deviceId, QString msg);
     void TransmitNextGcode();
-    void TransmitNextGcode(QList<QString> gcodes, int& order);
     void Stop();
 
 signals:
@@ -55,13 +58,14 @@ signals:
     void RobotMoved(float x, float y, float z, float w, float u, float v, float f, float a, float s, float e);
     void RobotMoved(QString gcode);
 
-    void SaveVariable(QString key, QString value);
-
     void DeleteAllObjects();
-    void DeleteObject1();
+    void DeleteObject(int id);
     void PauseCamera();
     void CaptureCamera();
     void ResumeCamera();
+
+    void UpdateTrackingRequest(int id);
+    void CaptureAndDetectRequest();
 
     void SendGcodeToDevice(QString deviceName, QString gcode);
     void SendToDevice(QString deviceName, QString gcode);
@@ -72,15 +76,11 @@ private:
     QString programPath = "";
     QString programName = "";
 
-    bool isFromGcodeEditor = false;
-    bool isFileProgramRunning = false;
-
     QString transmitDeviceId = DefaultRobot;
+    QString transmitMsg = "";
 
     QList<QString> gcodeList;
-    QList<QString> subGcodeList;
     int gcodeOrder = 0;
-    int subGcodeOrder = 0;
     int currentGcodeEditorCursor = 0;
     int returnSubProPointer[20];
     int returnPointerOrder = -1;
@@ -113,6 +113,8 @@ private:
     QString getValueOfVariable(QString var);
     void updateVariables(QString str);
     void saveVariable(QString name, QString value);
+    void processResponse(QString response);
+    bool checkExclution(QString response);
 
     QString convertGcodeToSyncConveyor(QString gcode);
 };

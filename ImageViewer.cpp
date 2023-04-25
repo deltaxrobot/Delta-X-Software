@@ -112,58 +112,25 @@ void ImageViewer::SaveSetting(QSettings *setting)
     QPointF p1 = cPoint.GetValue();
     QPointF p2 = cPoint2.GetValue();
 
-    QRectF rect = cArea.GetValue();
+    VarManager::getInstance()->Prefix = ProjectName;
 
-    setting->setValue("Point1", p1);
-    setting->setValue("Point2", p2);
-
-    setting->setValue("Quadangle", cQuadangle.GetPolygon());
-    setting->setValue("Area", rect);
-    setting->setValue("Rectangle", cRect.GetValue());
-
-//    VarManager::getInstance()->updateVar("Point1", p1);
-//    VarManager::getInstance()->updateVar("Point2", p2);
-//    VarManager::getInstance()->updateVar("Quadangle", cQuadangle.GetPolygon());
-//    VarManager::getInstance()->updateVar("Area", cArea.GetValue());
-//    VarManager::getInstance()->updateVar("Rectangle", cRect.GetValue());
-
-//    SoftwareLog(QString("Point 1: x = %1, y = %2").arg(p1.x()).arg(p1.y()));
-//    SoftwareLog(QString("Point 2: x = %1, y = %2").arg(p2.x()).arg(p2.y()));
-
-//    SoftwareLog(QString("Crop top left: x = %1, y = %2").arg(rect.topLeft().x()).arg(rect.topLeft().y()));
-//    SoftwareLog(QString("Crop bottom right: x = %1, y = %2").arg(rect.bottomRight().x()).arg(rect.bottomRight().y()));
-
+    VarManager::getInstance()->updateVar("Point1", p1);
+    VarManager::getInstance()->updateVar("Point2", p2);
+    VarManager::getInstance()->updateVar("Quadangle", cQuadangle.GetPolygon());
+    VarManager::getInstance()->updateVar("Area", cArea.GetValue());
+    VarManager::getInstance()->updateVar("Rectangle", cRect.GetValue());
 }
 
 void ImageViewer::LoadSetting()
 {
+    VarManager::getInstance()->Prefix = ProjectName;
+
     cPoint.SetValue(VarManager::getInstance()->getVar("Point1").toPointF());
     cPoint2.SetValue(VarManager::getInstance()->getVar("Point2").toPointF());
 
     cQuadangle.SetPolygon(VarManager::getInstance()->getVar("Quadangle").value<QPolygonF>());
     cArea.SetValue(VarManager::getInstance()->getVar("Area").toRectF());
     cRect.SetValue(VarManager::getInstance()->getVar("Rectangle").toRectF());
-
-    emit changedPoints(cPoint.GetValue(), cPoint2.GetValue());
-    emit changedQuadrangle(cQuadangle.GetPolygon());
-    emit changedArea(cArea.GetValue());
-    emit changedRect(cRect.GetValue());
-}
-
-void ImageViewer::LoadSetting(QSettings *setting)
-{
-    cPoint.SetValue(setting->value("Point1", cPoint.GetValue()).toPointF());
-    cPoint2.SetValue(setting->value("Point2", cPoint2.GetValue()).toPointF());
-
-    cQuadangle.SetPolygon(setting->value("Quadangle", cQuadangle.GetPolygon()).value<QPolygonF>());
-    cArea.SetValue(setting->value("Area", cArea.GetValue()).toRectF());
-    cRect.SetValue(setting->value("Rectangle", cRect.GetValue()).toRectF());
-
-//    SoftwareLog(QString("Point 1: x = %1, y = %2").arg(cPoint.GetValue().x()).arg(cPoint.GetValue().y()));
-//    SoftwareLog(QString("Point 2: x = %1, y = %2").arg(cPoint2.GetValue().x()).arg(cPoint2.GetValue().y()));
-
-//    SoftwareLog(QString("Crop top left: x = %1, y = %2").arg(cArea.GetValue().topLeft().x()).arg(cArea.GetValue().topLeft().y()));
-//    SoftwareLog(QString("Crop bottom right: x = %1, y = %2").arg(cArea.GetValue().bottomRight().x()).arg(cArea.GetValue().bottomRight().y()));
 
     emit changedPoints(cPoint.GetValue(), cPoint2.GetValue());
     emit changedQuadrangle(cQuadangle.GetPolygon());
@@ -575,6 +542,7 @@ void ImageViewer::mouseReleaseEvent(QMouseEvent *event)
     QGraphicsView::mouseReleaseEvent(event);
 
     mousePressed = false;
+    VarManager::getInstance()->Prefix = ProjectName;
 
     if (selectedTool == RECTANGLE_TOOL)
     {

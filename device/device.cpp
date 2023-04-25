@@ -1,5 +1,7 @@
 #include "device.h"
 
+QElapsedTimer Device::DebugTimer;
+
 Device::Device(QString COM, int baudrate, QString confirm_cmd, QString rev_msg, bool is_open, QObject *parent) : QObject(parent),
     serialPortName(COM), baudrate(baudrate), confirmRequest(confirm_cmd), confirmResponse(rev_msg)
 {
@@ -13,7 +15,12 @@ Device::Device(QString COM, int baudrate, QString confirm_cmd, QString rev_msg, 
 
 Device::~Device()
 {
-    delete serialPort;
+
+}
+
+void Device::SetSerialPortName(QString name)
+{
+    serialPortName = name;
 }
 
 void Device::Connect()
@@ -64,7 +71,7 @@ void Device::Connect()
         }
     }
 
-    jsonObject["id"] = id;
+    jsonObject["id"] = ID();
     jsonObject["state"] = (serialPort->isOpen())?"open":"close";
     jsonObject["com_name"] = serialPort->portName();
     jsonObject["baudrate"] = serialPort->baudRate();
@@ -114,6 +121,8 @@ void Device::WriteData(QString data)
     if (!data.endsWith("\n"))
         data.append("\n");
 
+    qDebug() << "Write time:" << DebugTimer.elapsed();
+    qDebug() << data;
     if (this->serialPort->isOpen())
         this->serialPort->write(data.toLocal8Bit());
 }
@@ -129,7 +138,9 @@ void Device::ReadData()
 QString Device::ReadLine(){
     QString data = QString(serialPort->readLine());
 
-    emit receivedMsg(id, data);
+    data.replace("\n", "").replace("\r", "");
+    qDebug() << "Start:" << DebugTimer.restart();
+    emit receivedMsg(idName, data);
 
     return data;
 }
@@ -149,14 +160,16 @@ bool Device::IsOpen()
     return serialPort->isOpen();
 }
 
-QString Device::ID()
-{
-    return this->id;
+int Device::ID()
+{    
+    QString num = idName.right(idName.length() - idName.indexOf(QRegExp("\\d")));
+    int value = num.toInt();
+    return value;
 }
 
-void Device::SetID(QString id)
+void Device::SetIDName(QString idName)
 {
-    this->id = id;
+    this->idName = idName;
 }
 
 void Device::Run()

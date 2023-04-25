@@ -28,7 +28,7 @@ public:
 
         name = new QPushButton(QString("Object ") + QString::number(i) + " -");
 		name->setFont(font1);
-        name->setFlat(true);
+//        name->setFlat(true);
 
 
         xVar = new QLabel(QString(" #O") + QString::number(i) + "_X: ");
@@ -118,7 +118,7 @@ public:
 
 public slots:
 	void DisplayDialog();
-    void UpdateTable(QList<Object*>* ObjectContainer);
+    void UpdateTable(QList<Object>& ObjectContainer);
 
 signals:
     void TakeObjectPosition(float x, float y, float angle);

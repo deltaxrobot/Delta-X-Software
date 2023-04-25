@@ -12,6 +12,8 @@
 #include <qmath.h>
 #include "Object.h"
 #include <QMutexLocker>
+#include <VarManager.h>
+#include <QElapsedTimer>
 
 #define RED_COLOR       cv::Scalar(0, 0, 255)
 #define GREEN_COLOR     cv::Scalar(0, 255, 0)
@@ -55,6 +57,10 @@ public:
         HSV = 11
     };
 
+    static QElapsedTimer DebugTimer;
+
+    QString ProjectName = "project0";
+
     void SetNextNode(TaskNode* next);
     void SetPreviousNode(TaskNode* previous);
     void ClearInputConnections();
@@ -63,9 +69,8 @@ public:
     QSize GetImageSize();
     QMatrix GetMatrix();
     cv::Mat GetOutputImage();
-    Object GetInputObject();
+    Object& GetInputObject();
     QPointF *GetInputPointPointer();
-    bool ClearVariable(QString name);
 
     QList<QMetaObject::Connection> InputConnections;
 
@@ -73,7 +78,7 @@ public slots:
     void Input(cv::Size size);
     void Input(cv::Mat mat);
     void Input2(cv::Mat mat);
-    void Input(QList<Object*>* objects);
+    void Input(QList<Object>& objects);
     void Input(QList<int> paras);
     void Input(int para);
     void Input(bool value);
@@ -91,25 +96,30 @@ public slots:
     void ClearOutput();
     void DeleteOutput(int id);
 
+    bool ClearVariable(QString name);
+
 signals:
     void HadOutput(cv::Mat mat);
     void HadOutput(cv::Point2f outputPoints[]);
     void HadOutput(QPolygonF poly);
     void HadOutput(QPixmap pixmap);
-    void HadOutput(QPixmap pixmap, QList<Object*>* objects);
-    void HadOutput(QList<Object*>* objects);
+    void HadOutput(QPixmap pixmap, QList<Object>& objects);
+    void HadOutput(QList<Object>& objects);
     void HadOutput(QMatrix matrix);
     void DebugEvent();
+    void InputRequest();
+    void Done();
 
 private:
     QString name;
     int type;
+    QString inputType = "";
 
     cv::Size size;
     cv::Mat outputMat;
     cv::Mat inputMat;
     cv::Mat inputMat2;
-    QList<Object*>* inputObjects = NULL;
+    QList<Object> inputObjects;
 
     cv::Point2f inputPoints[4];
     cv::Point2f outputPoints[4];
@@ -118,7 +128,7 @@ private:
     QPolygonF outputPoly;
     QRectF inputRect;
 
-    QList<Object*>* outputObjects = NULL;
+    QList<Object> outputObjects;
     QList<int> intParas;
     int intPara;
     float floatPara;
@@ -150,7 +160,9 @@ private:
     void doVisibleObjectsWork();
     void doTrackingObjectsWork();
 
-    void clear(QList<Object*>* objs);
+    void clear(QList<Object>& objs);
+
+    void updateObjectsToVariableTable(QList<Object>&objects);
 };
 
 #endif

@@ -7,18 +7,6 @@ Form::Form(QWidget *parent) :
 {
     ui->setupUi(this);
 
-
-//    CameraProcessorThread = new CameraProcessor();
-
-//    CameraProcessorThread->lbRatio = ui->lbDisplayRatio;
-//    CameraProcessorThread->cameraWidget = ui->lbCameraDisplay;
-
-//    CameraProcessorThread->moveToThread(new QThread(this));
-//    connect(CameraProcessorThread->thread(), SIGNAL(started()), CameraProcessorThread, SLOT(ShotImage()));
-//    connect(CameraProcessorThread->thread(), SIGNAL(finished()), CameraProcessorThread, SLOT(deleteLater()));
-//    connect(CameraProcessorThread, &CameraProcessor::FinishReadingImage, ui->lbCameraDisplay, &QLabel::setPixmap);
-//    connect(CameraProcessorThread, &CameraProcessor::UpdatedRatio, ui->lbDisplayRatio, &QLabel::setText);
-
     CameraReaderWork = new CameraReader();
     CameraReaderWork->moveToThread(new QThread(this));
     connect(CameraReaderWork->thread(), SIGNAL(finished()), CameraReaderWork, SLOT(deleteLater()));

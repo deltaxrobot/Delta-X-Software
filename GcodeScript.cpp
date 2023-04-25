@@ -43,11 +43,9 @@ bool GcodeScript::IsRunning()
     return isRunning;
 }
 
-void GcodeScript::ExecuteGcode(QString gcodes, int startMode, bool isFromGcodeEditor)
+void GcodeScript::ExecuteGcode(QString gcodes, int startMode)
 {
     isRunning = true;
-
-    this->isFromGcodeEditor = isFromGcodeEditor;
 
     QList<QString> tempGcodeList = gcodes.split('\n');
 
@@ -76,39 +74,30 @@ void GcodeScript::ExecuteGcode(QString gcodes, int startMode, bool isFromGcodeEd
     TransmitNextGcode();
 }
 
-void GcodeScript::GetResponse(QString deviceId, QString respose)
+void GcodeScript::GetResponse(QString deviceId, QString response)
 {
+    if (checkExclution(response))
+        return;
+
+    processResponse(response);
     if (deviceId == transmitDeviceId)
     {
-        TransmitNextGcode();
         this->response = response;
+        saveVariable("Response", response);
+        TransmitNextGcode();
     }
 }
 
 void GcodeScript::SendMsgToDevice(QString deviceId, QString msg)
 {
     transmitDeviceId = deviceId;
+    transmitMsg = msg;
     emit SendGcodeToDevice(deviceId, msg);
 }
 
 void GcodeScript::TransmitNextGcode()
 {
-    if (isFileProgramRunning == true)
-    {
-        TransmitNextGcode(subGcodeList, subGcodeOrder);
-    }
-    else
-    {
-        TransmitNextGcode(gcodeList, gcodeOrder);
-    }
-}
-
-void GcodeScript::TransmitNextGcode(QList<QString> gcodes, int& order)
-{
-    if (gcodes.empty())
-        return;
-
-    if (order >= gcodes.size())
+    if (gcodeOrder >= gcodeList.size())
     {
         Stop();
 
@@ -117,13 +106,13 @@ void GcodeScript::TransmitNextGcode(QList<QString> gcodes, int& order)
 
     while (true)
     {
-        currentLine = gcodes.at(order);
+        currentLine = gcodeList.at(gcodeOrder);
         bool isGcode = true;
 
         if (currentLine == "")
         {
             isGcode = false;
-            order += 1;
+            gcodeOrder += 1;
         }
         else
         {
@@ -138,7 +127,7 @@ void GcodeScript::TransmitNextGcode(QList<QString> gcodes, int& order)
             isGcode = findExeGcodeAndTransmit();
         }
 
-        if (order >= gcodes.size())
+        if (gcodeOrder >= gcodeList.size())
         {
             Stop();
 
@@ -157,17 +146,8 @@ void GcodeScript::Stop()
     isRunning = false;
     emit Finished();
 
-    if (isFileProgramRunning == false)
-    {
-        gcodeList.clear();
-        gcodeOrder = 0;
-    }
-    else
-    {
-        subGcodeList.clear();
-        subGcodeOrder = 0;
-        isFileProgramRunning = false;
-    }
+    gcodeList.clear();
+    gcodeOrder = 0;
 }
 
 float GcodeScript::GetResultOfMathFunction(QString expression)
@@ -322,13 +302,10 @@ bool GcodeScript::isMovingGcode(QString gcode)
 
 bool GcodeScript::findExeGcodeAndTransmit()
 {
-    if (isFromGcodeEditor == true)
-    {
-        currentGcodeEditorCursor = gcodeOrder;
+    currentGcodeEditorCursor = gcodeOrder;
 
-        if (elapsedTimer.restart() > 50)
-            emit Moved(currentGcodeEditorCursor);
-    }
+    if (elapsedTimer.restart() > 50 && gcodeList.count() > 1)
+        emit Moved(currentGcodeEditorCursor);
 
     currentLine = currentLine.replace("  ", " ");
 
@@ -527,50 +504,64 @@ bool GcodeScript::findExeGcodeAndTransmit()
             if (valuePairs[i + 1].at(0) == 'P')
             {
                 QString subProName = valuePairs[i + 1].mid(1);
+                subProName = subProName.remove("_").toLower();
 
-                if (subProName == "clearObjects")
+                // PclearObjects = P_clear_object = PClearObject = ...
+
+                if (subProName == "clearobjects")
                 {
                     emit DeleteAllObjects();
                     gcodeOrder++;
                     return false;
                 }
 
-                if (subProName == "deleteFirstObject")
+                if (subProName == "deletefirstobject")
                 {
-                    emit DeleteObject1();
+                    emit DeleteObject(0);
                     gcodeOrder++;
                     return false;
                 }
 
-                if (subProName == "pauseCamera")
+                if (subProName == "deleteobject")
+                {
+                    int pos1 = subProName.indexOf("(") + 1;
+                    int pos2 = subProName.lastIndexOf(")");
+                    int value = subProName.mid(pos1, pos2 - pos1).toInt();
+
+                    emit DeleteObject(value);
+                    gcodeOrder++;
+                    return false;
+                }
+
+                if (subProName == "pausecamera")
                 {
                     emit PauseCamera();
                     gcodeOrder++;
                     return false;
                 }
 
-                if (subProName == "captureCamera")
+                if (subProName == "capturecamera")
                 {
                     emit CaptureCamera();
                     gcodeOrder++;
                     return false;
                 }
 
-                if (subProName == "resumeCamera")
+                if (subProName == "resumecamera")
                 {
                     emit ResumeCamera();
                     gcodeOrder++;
                     return false;
                 }
 
-                if (subProName == "syncConveyor")
+                if (subProName == "syncconveyor")
                 {
                     IsConveyorSync = true;
                     gcodeOrder++;
                     return false;
                 }
 
-                if (subProName == "stopSyncConveyor")
+                if (subProName == "stopsyncconveyor")
                 {
                     IsConveyorSync = false;
                     gcodeOrder++;
@@ -589,16 +580,29 @@ bool GcodeScript::findExeGcodeAndTransmit()
                     return false;
                 }
 
-                if (subProName.contains("delay") == true)
+                if (subProName.contains("updatetracking") == true)
                 {
-                    int pos1 = subProName.indexOf("(") + 1;
-                    int pos2 = subProName.lastIndexOf(")");
-                    QString valueS = subProName.mid(pos1, pos2 - pos1);
+                    QString valueS = "0";
+                    if (subProName.contains("("))
+                    {
+                        int pos1 = subProName.indexOf("(") + 1;
+                        int pos2 = subProName.lastIndexOf(")");
+                        valueS = subProName.mid(pos1, pos2 - pos1);
+                    }
+                    else
+                    {
+                        int pos = subProName.indexOf("tracking") + 8;
+                        if (pos < subProName.count())
+                        {
+                            valueS = subProName.mid(pos);
+                        }
+                    }
 
-                    QThread::msleep(valueS.toULong());
+                    transmitDeviceId = QString("tracking") + valueS;
+                    emit UpdateTrackingRequest(valueS.toInt());
 
                     gcodeOrder++;
-                    return false;
+                    return true;
                 }
 
                 //QString funcName = "sendExternalMCU";
@@ -613,7 +617,7 @@ bool GcodeScript::findExeGcodeAndTransmit()
                     pos2 = subProName.indexOf("\(");
                     QString deviceName = subProName.mid(pos1, pos2 - pos1);
 
-                    emit SendGcodeToDevice(deviceName, msg);
+                    SendMsgToDevice(deviceName, msg);
 
                     gcodeOrder++;
                     return false;
@@ -630,7 +634,7 @@ bool GcodeScript::findExeGcodeAndTransmit()
                     pos2 = subProName.indexOf("\(");
                     QString deviceName = subProName.mid(pos1, pos2 - pos1);
 
-                    emit SendGcodeToDevice(deviceName, msg);
+                    SendMsgToDevice(deviceName, msg);
 
                     gcodeOrder++;
                     return true;
@@ -666,11 +670,38 @@ bool GcodeScript::findExeGcodeAndTransmit()
             return false;
         }
 
+        if (valuePairs.at(i) == "SYNC")
+        {
+            QString target = valuePairs.at(i + 1);
+            if (target.contains("robot") && valuePairs.count() > i + 2)
+            {
+                QString vector = "";
+                for (int j = i + 2; j < valuePairs.count(); j++)
+                {
+                    vector += valuePairs.at(j);
+                }
+
+                SendMsgToDevice(target, QString("SYNC ") + vector);
+
+                gcodeOrder++;
+
+                return true;
+            }
+        }
+
         if (valuePairs.at(i) == "SELECT")
         {
             QString selectedDevice = valuePairs.at(i + 1);
             if (selectedDevice.contains("robot"))
                 DefaultRobot = valuePairs.at(i + 1);
+            else if (selectedDevice.contains("conveyor"))
+                DefaultConveyor = valuePairs.at(i + 1);
+            else if (selectedDevice.contains("encoder"))
+                DefaultEncoder = valuePairs.at(i + 1);
+            else if (selectedDevice.contains("slider"))
+                DefaultSlider = valuePairs.at(i + 1);
+            else if (selectedDevice.contains("device"))
+                DefaultDevice = valuePairs.at(i + 1);
 
             gcodeOrder++;
 
@@ -701,6 +732,17 @@ bool GcodeScript::findExeGcodeAndTransmit()
                 msg += QString(" ") + valuePairs[j];
             }
 
+            if (deviceName.contains("robot"))
+                DefaultRobot = deviceName;
+            else if (deviceName.contains("conveyor"))
+                DefaultConveyor = deviceName;
+            else if (deviceName.contains("encoder"))
+                DefaultEncoder = deviceName;
+            else if (deviceName.contains("slider"))
+                DefaultSlider = deviceName;
+            else if (deviceName.contains("device"))
+                DefaultDevice = deviceName;
+
             SendMsgToDevice(deviceName, msg);
 
             gcodeOrder++;
@@ -711,21 +753,21 @@ bool GcodeScript::findExeGcodeAndTransmit()
     if (isConveyorGcode(transmitGcode))
     {
         gcodeOrder++;
-        emit SendGcodeToDevice("Conveyor", transmitGcode);
+        SendMsgToDevice(DefaultConveyor, transmitGcode);
         return true;
     }
 
     if (isSlidingGcode(transmitGcode))
     {
         gcodeOrder++;
-        emit SendGcodeToDevice("Slider", transmitGcode);
+        SendMsgToDevice(DefaultSlider, transmitGcode);
         return true;
     }
 
     if (isEncoderGcode(transmitGcode))
     {
         gcodeOrder++;
-        emit SendGcodeToDevice("Encoder", transmitGcode);
+        SendMsgToDevice(DefaultEncoder, transmitGcode);
         return true;
     }
 
@@ -1077,12 +1119,12 @@ QString GcodeScript::getValueOfVariable(QString name)
 
     if (name.count('.') == 0)
     {
-        fullName = VariableAddress + "." + name;
+        fullName = ProjectName + "." + name;
     }
 
     if (name.count('.') == 1)
     {
-        fullName = VariableAddress.split('.')[0] + "." + name;
+        fullName = ProjectName.split('.')[0] + "." + name;
     }
 
     fullName = fullName.replace(" ", "");
@@ -1120,20 +1162,47 @@ void GcodeScript::updateVariables(QString str)
 void GcodeScript::saveVariable(QString name, QString value)
 {
     name = name.replace("_", ".");
-    QString fullName = name;
 
-    if (name.count('.') == 0)
+    if (name.split('.').at(0).contains("project"))
     {
-        fullName = VariableAddress + "." + name;
+        VarManager::getInstance()->Prefix = "";
+    }
+    else
+    {
+        VarManager::getInstance()->Prefix = ProjectName;
     }
 
-    if (name.count('.') == 1)
+    VarManager::getInstance()->addVar(name, value);
+}
+
+void GcodeScript::processResponse(QString response)
+{
+    QRegularExpression pattern("^I\\d+\\sV\\d+$");
+
+    QRegularExpressionMatch match = pattern.match(response);
+    if (match.hasMatch())
     {
-        fullName = VariableAddress.split('.')[0] + "." + name;
+        QString value1 = response.split(' ')[0];
+        QString value2 = response.split(' ')[1].split('V')[1];
+        saveVariable(value1, value2);
+    }
+    else
+    {
+
+    }
+}
+
+bool GcodeScript::checkExclution(QString response)
+{
+    if (response.contains("Error:Angle"))
+        return true;
+    else if (response.count(",") > 1)
+    {
+        if (!transmitMsg.contains("Position"))
+            return true;
     }
 
-    fullName = fullName.replace(" ", "");
-    VarManager::getInstance()->addVar(fullName, value);
+    return false;
 }
 
 QString GcodeScript::convertGcodeToSyncConveyor(QString gcode)

@@ -10,6 +10,7 @@ QWidget *IndustrialCameraPlugin::GetUI()
     qRegisterMetaType< cv::Mat >("cv::Mat");
     connect(pluginForm, SIGNAL(EmitEventFromUI(QString)), this, SLOT(TranferEmit(QString)));
     connect(pluginForm, &Form::CapturedImage, this, &IndustrialCameraPlugin::CapturedImage);
+    connect(pluginForm, &Form::StartedCapture, this, &IndustrialCameraPlugin::StartedCapture);
     connect(this, &IndustrialCameraPlugin::RequestCapture, pluginForm, &Form::RequestImage);
 
     return pluginForm;
@@ -43,9 +44,4 @@ void IndustrialCameraPlugin::ProcessCommand(QString cmd)
 void IndustrialCameraPlugin::TranferEmit(QString msg)
 {
 //    emit EmitCommand(msg);
-}
-
-void IndustrialCameraPlugin::GetCaptureImageSignal(cv::Mat mat)
-{
-    emit CapturedImage(mat);
 }

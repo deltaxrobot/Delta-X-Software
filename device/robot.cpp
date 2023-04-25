@@ -17,6 +17,7 @@ Robot::Robot(QString COM, int baudrate, bool is_open, QObject *parent) : Device(
     S = 30;
     E = 40;
     J = 255000;
+    O = 0;
 
     done_msg = "Ok";
 
@@ -37,10 +38,18 @@ Robot::~Robot()
 
 QString Robot::SendGcode(QString gcode, bool is_wait, int time_out)
 {
+    if (checkSetSyncPathCmd(gcode))
+    {
+        emit receivedMsg(idName, "Ok");
+        return "";
+    }
+
+    gcode = syncGcode(gcode);
+
     WriteData(gcode);
 
-    if (gcode.indexOf("G04") < 0)
-        qDebug() << gcode;
+//    if (gcode.indexOf("G04") < 0)
+//        qDebug() << gcode;
     last_gcode = now_gcode;
     now_gcode = gcode;
     bool isMovingGcode = this->getPara(gcode);
@@ -129,6 +138,8 @@ void Robot::ProcessResponse(QString id, QString response) {
                 }
             }
 
+            saveParaVar();
+
             GetInfo();
         }
     }
@@ -149,6 +160,8 @@ bool Robot::getPara(QString gcode)
     {
         QString para = paras.at(i);
         float value = para.mid(1).toFloat();
+        VarManager::getInstance()->Prefix = ProjectName;
+
         if (para[0] == 'X')
             X = value;
         if (para[0] == 'Y')
@@ -162,7 +175,12 @@ bool Robot::getPara(QString gcode)
         if (para[0] == 'V')
             V = value;
         if (para[0] == 'F')
-            F = value;
+        {
+            if (isSyncDelay == false)
+                F = value;
+            else
+                isSyncDelay = true;
+        }
         if (para[0] == 'A')
             A = value;
         if (para[0] == 'S')
@@ -177,14 +195,16 @@ bool Robot::getPara(QString gcode)
             J = value;
     }
 
+    saveParaVar();
+
     scurve_tool.setMaxAcc(A);
     scurve_tool.setMaxVel(F);
     scurve_tool.setMaxJerk(J);
     scurve_tool.setVelStart(S);
     scurve_tool.setVelEnd(E);
 
-        return true;
-    }
+    return true;
+}
 
 void Robot::calMoveTime()
 {
@@ -194,9 +214,127 @@ void Robot::calMoveTime()
     this->scurve_tool.start();
 }
 
+bool Robot::checkSetSyncPathCmd(QString cmd)
+{
+    // SYNC (1, 2, 1.5)
+    // SYNC (X, Y, Z)
+
+    QRegExp rx("\\s*SYNC\\s*\\(([-]?\\d+\\.?\\d*),?\\s*([-]?\\d+\\.?\\d*)\\)|\\s*SYNC\\s*\\(([-]?\\d+\\.?\\d*),?\\s*([-]?\\d+\\.?\\d*),?\\s*([-]?\\d+\\.?\\d*)\\)");
+
+    if (!rx.exactMatch(cmd))
+    {
+        return false;
+    }
+
+    QStringList list = rx.capturedTexts();
+    float speed = 0;
+    float angle = 0;
+    if (list[1] != "") {
+        speed = list[1].toFloat();
+        angle = list[2].toFloat();
+    }
+
+    // Extract the values of X, Y, and Z from the command string, if present
+    if (list[4] != "")
+    {
+        float x = list[4].toFloat();
+        float y = list[5].toFloat();
+        float z = list[6].toFloat();
+        QVector3D velocity(x, y, z);
+        speed = velocity.length();
+        angle = qRadiansToDegrees(qAtan2(velocity.y(), velocity.x()));
+    }
+
+    SetSyncPath("line", speed, angle);
+
+    // Print the results
+    qDebug() << "Speed: " << speed << ", Angle: " << angle << " degrees.";
+    return true;
+}
+
+QString Robot::syncGcode(QString cmd)
+{
+    QString result = cmd;
+    QStringList params = cmd.split(' ');
+
+    old_X = X;
+    old_Y = Y;
+    old_Z = Z;
+
+    // Check if the command contains "SYNC"
+    if (cmd.contains("SYNC"))
+    {
+        if (cmd.contains("G01"))
+        {
+            // Extract the values of X, Y, Z, W, U, V, F, A, and J from the command string
+            for (int i = 1; i < params.size(); i++)
+            {
+                QString param = params[i];
+                if (param.startsWith("X"))
+                {
+                    X = param.mid(1).toFloat();
+                } else if (param.startsWith("Y"))
+                {
+                    Y = param.mid(1).toFloat();
+                } else if (param.startsWith("Z"))
+                {
+                    Z = param.mid(1).toFloat();
+                } else if (param.startsWith("W"))
+                {
+                    W = param.mid(1).toFloat();
+                } else if (param.startsWith("U"))
+                {
+                    U = param.mid(1).toFloat();
+                } else if (param.startsWith("V"))
+                {
+                    V = param.mid(1).toFloat();
+                } else if (param.startsWith("F"))
+                {
+                    F = param.mid(1).toFloat();
+                } else if (param.startsWith("A"))
+                {
+                    A = param.mid(1).toFloat();
+                } else if (param.startsWith("J"))
+                {
+                    J = param.mid(1).toFloat();
+                }
+            }
+            float new_x, new_y;
+            std::pair<double, double> new_point = scurve_tool.find_sync_point(old_X, old_Y, old_Z, X, Y, Z, path_vel, path_angle, O);
+            new_x = round(float(new_point.first) * 100) / 100;
+            new_y = round(float(new_point.second) * 100) / 100;
+
+            return QString("G01 X%1 Y%2 Z%3 W%4 F%5 A%6 S%7 E%8 J%9").arg(new_x).arg(new_y).arg(Z).arg(W).arg(F).arg(A).arg(S).arg(E).arg(J);
+        }
+        else if (cmd.contains("G04"))
+        {
+            QRegExp rx("P(\\d+\\.?\\d*)");
+
+            if (rx.indexIn(cmd) != -1)
+            {
+                QString match = rx.cap(1);
+                float time_ms = match.toInt();
+
+                float distance;
+                float new_x, new_y;
+
+                distance = path_vel * (float(time_ms) / 1000);
+                new_x = X + distance * cos(path_rad_angle);
+                new_y = Y + distance * sin(path_rad_angle);
+
+                isSyncDelay = true;
+
+                return QString("G01 X%1 Y%2 F%3").arg(new_x).arg(new_y).arg(abs(path_vel));
+            }
+        }
+    }
+    return cmd;
+}
+
 QString Robot::GetInfo()
 {
-    jsonObject["id"] = id;
+    jsonObject["id"] = ID();
+    jsonObject["id_name"] = idName;
     jsonObject["home_x"] = home_X;
     jsonObject["home_y"] = home_Y;
     jsonObject["home_z"] = home_Z;
@@ -224,6 +362,30 @@ QString Robot::GetInfo()
     emit infoReady(jsonString);
 
     return jsonString;
+}
+
+void Robot::saveParaVar()
+{
+    VarManager::getInstance()->Prefix = ProjectName;
+    VarManager::getInstance()->addVar(QString("%1.X").arg(idName), X);
+    VarManager::getInstance()->addVar(QString("%1.Y").arg(idName), Y);
+    VarManager::getInstance()->addVar(QString("%1.Z").arg(idName), Z);
+    VarManager::getInstance()->addVar(QString("%1.W").arg(idName), W);
+    VarManager::getInstance()->addVar(QString("%1.U").arg(idName), U);
+    VarManager::getInstance()->addVar(QString("%1.V").arg(idName), V);
+    VarManager::getInstance()->addVar(QString("%1.F").arg(idName), F);
+    VarManager::getInstance()->addVar(QString("%1.A").arg(idName), A);
+    VarManager::getInstance()->addVar(QString("%1.J").arg(idName), J);
+    VarManager::getInstance()->addVar(QString("%1.OLD_X").arg(idName), old_X);
+    VarManager::getInstance()->addVar(QString("%1.OLD_Y").arg(idName), old_Y);
+    VarManager::getInstance()->addVar(QString("%1.OLD_Z").arg(idName), old_Z);
+    VarManager::getInstance()->addVar(QString("%1.O").arg(idName), O);
+    VarManager::getInstance()->addVar(QString("%1.HOME_X").arg(idName), home_X);
+    VarManager::getInstance()->addVar(QString("%1.HOME_Y").arg(idName), home_Y);
+    VarManager::getInstance()->addVar(QString("%1.HOME_Z").arg(idName), home_Z);
+    VarManager::getInstance()->addVar(QString("%1.HOME_W").arg(idName), home_W);
+    VarManager::getInstance()->addVar(QString("%1.HOME_U").arg(idName), home_U);
+    VarManager::getInstance()->addVar(QString("%1.HOME_V").arg(idName), home_V);
 }
 
 QString Robot::SetInput(int pin)
@@ -277,16 +439,15 @@ void Robot::Sleep(int time_ms=1000, bool sync=false)
         Move(round(float(new_x)), round(float(new_y)), NULL, NULL, NULL, NULL, F, NULL, NULL, NULL, NULL, false, 0);
         F = old_F;
         scurve_tool.setMaxVel(F);
-
     }
 }
 
 void Robot::Move(float x = 0, float y = 0, float z = 0, float w = 0, float u = 0, float v = 0, float f = 0, float a = 0, float s = 0, float e = 0, float j = 0, bool sync = false, float time_offset = 0)
 {
     QString gcode = "G01";
-    old_X = x;
-    old_Y = y;
-    old_Z = z;
+    old_X = X;
+    old_Y = Y;
+    old_Z = Z;
 
     if (x != NULL)
     {
@@ -360,7 +521,6 @@ void Robot::Move(float x = 0, float y = 0, float z = 0, float w = 0, float u = 0
         new_x = round(float(new_point.first) * 100) / 100;
         new_y = round(float(new_point.second) * 100) / 100;
 
-        // SendGcode(QString("G01 X%1 Y%2 Z%3 W%4 U%5 V%6 F%7 A%8 S%9 E%10 J%11").arg(new_x).arg(new_y).arg(Z).arg(W).arg(U).arg(V).arg(F).arg(A).arg(S).arg(E).arg(J));
         SendGcode(QString("G01 X%1 Y%2 Z%3 W%4 F%5 A%6 S%7 E%8 J%9").arg(new_x).arg(new_y).arg(Z).arg(W).arg(F).arg(A).arg(S).arg(E).arg(J));
     }
 }

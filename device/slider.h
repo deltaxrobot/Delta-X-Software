@@ -23,7 +23,6 @@ public slots:
     QString SendGcode(QString gcode = "M320", bool is_wait = false, int time_out = 10000);
 
 private:
-    QString id;
 };
 
 #endif // SLIDER_H

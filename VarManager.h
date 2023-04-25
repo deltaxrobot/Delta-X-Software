@@ -12,17 +12,19 @@ public:
     static VarManager* getInstance();
     ~VarManager();
 
-    void addVar(const QString& key, const QVariant& value);
-    void removeVar(const QString& key);
-    void updateVar(const QString& key, const QVariant& value);
-    QVariant getVar(const QString& key) const;
-    bool contains(const QString& key);
+    void addVar(QString key, QVariant value);
+    void removeVar(QString key);
+    void updateVar(QString key, QVariant value);
+    QVariant getVar(QString key, QVariant defaultValue = NULL);
+    bool contains(QString key);
     QSettings *getSettings();
 
+    QString Prefix = "";
+
 signals:
-    void varAdded(const QString& key, const QVariant& value);
-    void varRemoved(const QString& key);
-    void varUpdated(const QString& key, const QVariant& value);
+    void varAdded(QString key, QVariant value);
+    void varRemoved(QString key);
+    void varUpdated(QString key, QVariant value);
 
 private:
     VarManager();

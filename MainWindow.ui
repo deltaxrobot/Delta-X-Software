@@ -669,7 +669,7 @@ border-right: 5px solid rgb(24, 70, 139);</string>
              <number>1</number>
             </property>
             <property name="currentIndex">
-             <number>0</number>
+             <number>8</number>
             </property>
             <widget class="QWidget" name="pVariable">
              <property name="styleSheet">
@@ -745,8 +745,8 @@ border-right: 5px solid rgb(24, 70, 139);</string>
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>1089</width>
-                   <height>596</height>
+                   <width>713</width>
+                   <height>211</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_10">
