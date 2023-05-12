@@ -32,6 +32,7 @@ public slots:
     void GetImageFromExternal(cv::Mat mat);
     void GeneralCapture();
     void CaptureWebcam();
+    void CaptureAndDetect();
 };
 
 #endif // CAMERA_H

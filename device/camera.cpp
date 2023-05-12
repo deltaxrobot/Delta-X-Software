@@ -28,6 +28,11 @@ void Camera::GeneralCapture()
     }
 }
 
+void Camera::CaptureAndDetect()
+{
+    GeneralCapture();
+}
+
 void Camera::CaptureWebcam()
 {
     if (WebcamInstance == NULL)

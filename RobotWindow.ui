@@ -624,7 +624,7 @@ QToolBox QScrollArea&gt;QWidget&gt;QWidget
               <enum>QTabWidget::Rounded</enum>
              </property>
              <property name="currentIndex">
-              <number>1</number>
+              <number>2</number>
              </property>
              <property name="usesScrollButtons">
               <bool>true</bool>
@@ -1549,7 +1549,7 @@ p, li { white-space: pre-wrap; }
                   <property name="geometry">
                    <rect>
                     <x>0</x>
-                    <y>-892</y>
+                    <y>0</y>
                     <width>493</width>
                     <height>4000</height>
                    </rect>
@@ -7582,7 +7582,7 @@ p, li { white-space: pre-wrap; }
               <enum>QTabWidget::North</enum>
              </property>
              <property name="currentIndex">
-              <number>2</number>
+              <number>0</number>
              </property>
              <property name="elideMode">
               <enum>Qt::ElideNone</enum>
@@ -8214,7 +8214,7 @@ QPushButton:pressed
                       </size>
                      </property>
                      <property name="currentIndex">
-                      <number>0</number>
+                      <number>1</number>
                      </property>
                      <widget class="QWidget" name="ConfigurationTab">
                       <attribute name="title">
@@ -8404,7 +8404,7 @@ QPushButton:pressed
                           <enum>QTabWidget::North</enum>
                          </property>
                          <property name="currentIndex">
-                          <number>0</number>
+                          <number>1</number>
                          </property>
                          <widget class="QWidget" name="tab_4">
                           <attribute name="title">

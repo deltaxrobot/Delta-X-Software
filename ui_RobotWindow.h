@@ -1943,7 +1943,7 @@ public:
         saObjectDetecting->setWidgetResizable(true);
         wObjectDetecting = new QWidget();
         wObjectDetecting->setObjectName(QString::fromUtf8("wObjectDetecting"));
-        wObjectDetecting->setGeometry(QRect(0, -892, 493, 4000));
+        wObjectDetecting->setGeometry(QRect(0, 0, 493, 4000));
         wObjectDetecting->setMinimumSize(QSize(100, 4000));
         wObjectDetecting->setStyleSheet(QString::fromUtf8("QWidget#wObjectDetecting\n"
 "{	\n"
@@ -7571,13 +7571,13 @@ public:
         QObject::connect(gbCameraObject, SIGNAL(toggled(bool)), fVisionObjectFrame, SLOT(setVisible(bool)));
 
         twDeltaManager->setCurrentIndex(0);
-        twModule->setCurrentIndex(1);
+        twModule->setCurrentIndex(2);
         tabWidget->setCurrentIndex(0);
         pbImageMapping->setDefault(false);
         cbImageSource->setCurrentIndex(0);
-        twDevices->setCurrentIndex(2);
-        RobotTabWidget->setCurrentIndex(0);
-        tabWidget_2->setCurrentIndex(0);
+        twDevices->setCurrentIndex(0);
+        RobotTabWidget->setCurrentIndex(1);
+        tabWidget_2->setCurrentIndex(1);
         cbDivision->setCurrentIndex(1);
         tabWidget_3->setCurrentIndex(0);
         pbPump->setDefault(false);

@@ -106,9 +106,11 @@ private:
     bool isMovingGcode(QString gcode);
     bool findExeGcodeAndTransmit();
     QString calculateExpressions(QString expression);
+    QString calculateExpressions2(QString expression);
     QString getLeftWord(QString s, int pos);
     QString getRightWord(QString s, int pos);
     QString deleteSpaces(QString s);
+    QString formatSpaces(QString s);
     bool isNotNegative(QString s);
     QString getValueOfVariable(QString var);
     void updateVariables(QString str);

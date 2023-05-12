@@ -400,6 +400,7 @@ public slots:
 
     //------ Tracking --------
     void ChangeSelectedTracking(int id);
+    void ChangeSelectedTrackingEncoder(int id);
 
     //------ Point Tool -----
     void CalculateMappingMatrixTool();

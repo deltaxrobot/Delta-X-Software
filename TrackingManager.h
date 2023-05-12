@@ -37,6 +37,7 @@ public:
     float DeviationAngle = 0;
     int EncoderID = 0;
     QString EncoderType = "Encoder X";
+    bool IsReverse = false;
     QString Direction = "X";
     QString ListName = "#O";
     QPointF* DetectDelayOffsetPoint = NULL;
@@ -59,6 +60,7 @@ public slots:
     void OnReceivceEncoderPosition(float value);
     void GetVirtualEncoderPosition();
     void ReadEncoder();
+    void SetEncoderReverse(bool isReverse);
     void SaveCapturePosition();
     void SaveDetectPosition();
 

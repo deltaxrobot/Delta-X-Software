@@ -54,6 +54,8 @@ QString Robot::SendGcode(QString gcode, bool is_wait, int time_out)
     now_gcode = gcode;
     bool isMovingGcode = this->getPara(gcode);
 
+    GetInfo();
+
     if (is_wait)
     {
         serialPort->blockSignals(true);

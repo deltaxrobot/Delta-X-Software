@@ -308,6 +308,7 @@ bool GcodeScript::findExeGcodeAndTransmit()
         emit Moved(currentGcodeEditorCursor);
 
     currentLine = currentLine.replace("  ", " ");
+    currentLine = formatSpaces(currentLine);
 
     if (currentLine == "")
     {
@@ -440,6 +441,7 @@ bool GcodeScript::findExeGcodeAndTransmit()
                 }
             }
         }
+        //0765414444
 
         //------------ VARIABLE ------------
 
@@ -453,10 +455,31 @@ bool GcodeScript::findExeGcodeAndTransmit()
             {
                 QString varName = valuePairs.at(i).mid(1);
                 QString expression = currentLine.mid(currentLine.indexOf("=") + 2);
+                QString trimmedStr = expression;
 
-                QString newVarValue = calculateExpressions(expression);
+                trimmedStr = trimmedStr.replace(" ", "");  // Xóa khoảng trắng ở đầu và cuối chuỗi
+//                QRegExp rx("\\((-?\\d+(?:\\.\\d+)?),(-?\\d+(?:\\.\\d+)?)\\)");
+                QRegExp rx("\\((-?\\d+(?:\\.\\d+)?),(-?\\d+(?:\\.\\d+)?),?(-?\\d+(?:\\.\\d+)?)?\\)");
 
-                saveVariable(varName, newVarValue);
+                if (rx.indexIn(trimmedStr) != -1)
+                {
+                    QString x = rx.cap(1);
+                    QString y = rx.cap(2);
+                    QString z = rx.cap(4);
+
+                    saveVariable(varName + ".X", calculateExpressions(x));
+                    saveVariable(varName + ".Y", calculateExpressions(y));
+
+                    if (!z.isEmpty()) {
+                        saveVariable(varName + ".Z", calculateExpressions(z));
+                    }
+                }
+                else
+                {
+                    QString newVarValue = calculateExpressions(expression);
+
+                    saveVariable(varName, newVarValue);
+                }
 
                 gcodeOrder++;
                 return false;
@@ -580,6 +603,7 @@ bool GcodeScript::findExeGcodeAndTransmit()
                     return false;
                 }
 
+                // P_update_tracking = Pupdatetracking = PupdateTracking = P_updateTracking(0)
                 if (subProName.contains("updatetracking") == true)
                 {
                     QString valueS = "0";
@@ -600,6 +624,16 @@ bool GcodeScript::findExeGcodeAndTransmit()
 
                     transmitDeviceId = QString("tracking") + valueS;
                     emit UpdateTrackingRequest(valueS.toInt());
+
+                    gcodeOrder++;
+                    return true;
+                }
+
+                // P_capture_and_detect = Pcaptureanddetect = PcaptureAndDetect
+                if (subProName.contains("captureanddetect") == true)
+                {
+                    transmitDeviceId = QString("tracking0");
+                    emit CaptureAndDetectRequest();
 
                     gcodeOrder++;
                     return true;
@@ -779,6 +813,132 @@ bool GcodeScript::findExeGcodeAndTransmit()
     gcodeOrder += 1;
     return true;
 }
+
+QString GcodeScript::calculateExpressions2(QString expression)
+{
+    expression.replace(" ", "");
+
+    int startIndex = 0;
+    while ((startIndex = expression.lastIndexOf("[", startIndex)) != -1) {
+        int endIndex = expression.indexOf("]", startIndex);
+        if (startIndex != -1 && endIndex != -1) {
+            QString subExpression = expression.mid(startIndex + 1, endIndex - startIndex - 1);
+            QString result = calculateExpressions(subExpression);
+            expression.replace(startIndex, endIndex - startIndex + 1, result);
+        }
+    }
+
+    startIndex = 0;
+    while ((startIndex = expression.lastIndexOf("(", startIndex)) != -1) {
+        int endIndex = expression.indexOf(")", startIndex);
+        if (startIndex != -1 && endIndex != -1) {
+            QString subExpression = expression.mid(startIndex + 1, endIndex - startIndex - 1);
+            QString result = calculateExpressions(subExpression);
+            expression.replace(startIndex, endIndex - startIndex + 1, result);
+        }
+    }
+
+    QStringList operators = {">=", "<=", "==", "!=", ">", "<", "*", "/", "%", "+", "-", "AND", "OR", "XOR"};
+
+    while (true) {
+        int operatorIndex = -1;
+        int operatorPosition = -1;
+
+        for (const QStringList &operatorGroup : {operators.mid(6, 3), operators.mid(9, 2), operators.mid(0, 6), operators.mid(11, 3)}) {
+            for (const QString &op : operatorGroup) {
+                int index = expression.indexOf(QRegExp("\\b" + op + "\\b"));
+                if (index != -1 && (operatorPosition == -1 || index < operatorPosition)) {
+                    operatorPosition = index;
+                    operatorIndex = operators.indexOf(op);
+                }
+            }
+            if (operatorIndex > -1) {
+                break;
+            }
+        }
+
+        if (operatorIndex == -1) {
+            break;
+        }
+
+        QString value1S = expression.left(operatorPosition).trimmed();
+        QString value2S = expression.right(expression.size() - operatorPosition - operators[operatorIndex].size()).trimmed();
+
+        value1S = getValueOfVariable(value1S);
+        value2S = getValueOfVariable(value2S);
+
+        float value1 = value1S.toFloat();
+        float value2 = value2S.toFloat();
+        float result;
+
+        switch (operatorIndex) {
+            case 0: // ">="
+                result = value1 >= value2;
+                break;
+            case 1: // "<="
+                result = value1 <= value2;
+                break;
+            case 2: // "=="
+                if (value1S.startsWith("\"") && value1S.endsWith("\"")) {
+                    result = value1S == value2S;
+                } else {
+                    result = value1 == value2;
+                }
+                break;
+            case 3: // "!="
+                result = value1 != value2;
+                break;
+            case 4: // ">"
+                result = value1 > value2;
+                break;
+            case 5: // "<"
+                result = value1 < value2;
+                break;
+            case 6: // "*"
+                result = value1 * value2;
+                break;
+            case 7: // "/"
+                if (value2 != 0) {
+                    result = value1 / value2;
+                } else {
+                    result = 0;
+                }
+                break;
+            case 8: // "%"
+                if (value2 != 0) {
+                    result = static_cast<int>(value1) % static_cast<int>(value2);
+                } else {
+                    result = 0;
+                }
+                break;
+            case 9: // "+"
+                result = value1 + value2;
+                break;
+            case 10: // "-"
+                result = value1 - value2;
+                break;
+            case 11: // "AND"
+                result = value1 * value2;
+                result = (result > 0) ? 1 : 0;
+                break;
+            case 12: // "OR"
+                result = value1 + value2;
+                result = (result > 0) ? 1 : 0;
+                break;
+            case 13: // "XOR"
+                value1 = (value1 > 0) ? 1 : 0;
+                value2 = (value2 > 0) ? 1 : 0;
+                result = (value1 != value2) ? 1 : 0;
+                break;
+        }
+
+        QString resultString = QString::number(result);
+        expression.replace(0, expression.size(), resultString);
+    }
+
+    return expression;
+}
+
 
 QString GcodeScript::calculateExpressions(QString expression)
 {
@@ -978,7 +1138,15 @@ QString GcodeScript::calculateExpressions(QString expression)
 
             int returnValue = -1;
 
-            returnValue = (eqIndex > -1) ? ((value1 == value2) ? 1 : 0 ) : returnValue;
+            if (value1S.startsWith("\"") && value1S.endsWith("\""))
+            {
+                returnValue = (eqIndex > -1) ? ((value1S == value2S) ? 1 : 0 ) : returnValue;
+            }
+            else
+            {
+                returnValue = (eqIndex > -1) ? ((value1 == value2) ? 1 : 0 ) : returnValue;
+            }
+
             returnValue = (neIndex > -1) ? ((value1 != value2) ? 1 : 0) : returnValue;
             returnValue = (ltIndex > -1) ? ((value1 < value2) ? 1 : 0) : returnValue;
             returnValue = (leIndex > -1) ? ((value1 <= value2) ? 1 : 0) : returnValue;
@@ -1010,6 +1178,7 @@ QString GcodeScript::calculateExpressions(QString expression)
 
     return expression;
 }
+
 
 QString GcodeScript::getLeftWord(QString s, int pos)
 {
@@ -1102,6 +1271,14 @@ QString GcodeScript::deleteSpaces(QString s)
     return s;
 }
 
+QString GcodeScript::formatSpaces(QString s)
+{
+    QRegExp opRegExp("(?<!\\S)(\\+|\\*|\\/|\\%|\\(|\\)|\\^)(?!\\S)");
+    s.replace(opRegExp, " \\1 ");
+
+    return s;
+}
+
 bool GcodeScript::isNotNegative(QString s)
 {
     bool isNumeric = false;
@@ -1117,14 +1294,15 @@ QString GcodeScript::getValueOfVariable(QString name)
 
     QString fullName = name;
 
-    if (name.count('.') == 0)
-    {
-        fullName = ProjectName + "." + name;
-    }
+    QStringList paras = name.split('.');
 
-    if (name.count('.') == 1)
+    if (paras[0] != ProjectName)
     {
-        fullName = ProjectName.split('.')[0] + "." + name;
+        VarManager::getInstance()->Prefix = ProjectName;
+    }
+    else
+    {
+        VarManager::getInstance()->Prefix = "";
     }
 
     fullName = fullName.replace(" ", "");
@@ -1163,13 +1341,15 @@ void GcodeScript::saveVariable(QString name, QString value)
 {
     name = name.replace("_", ".");
 
-    if (name.split('.').at(0).contains("project"))
+    QStringList paras = name.split('.');
+
+    if (paras[0] != ProjectName)
     {
-        VarManager::getInstance()->Prefix = "";
+        VarManager::getInstance()->Prefix = ProjectName;
     }
     else
     {
-        VarManager::getInstance()->Prefix = ProjectName;
+        VarManager::getInstance()->Prefix = "";
     }
 
     VarManager::getInstance()->addVar(name, value);

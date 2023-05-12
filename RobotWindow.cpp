@@ -135,6 +135,7 @@ void RobotWindow::InitOtherThreadObjects()
     //----- Tracking -----
     InitTrackingThread();
     connect(ui->cbSelectedTracking, SIGNAL(currentIndexChanged(int)), this, SLOT(ChangeSelectedTracking(int)));
+    connect(ui->cbTrackingEncoderSource, SIGNAL(currentIndexChanged(int)), this, SLOT(ChangeSelectedTrackingEncoder(int)));
 
 
     //----- Gcode Programing----------
@@ -1299,8 +1300,11 @@ void RobotWindow::AddScriptThread()
     connect(GcodeScriptThread, &GcodeScript::PauseCamera, [=](){ CameraTimer.stop();});
     connect(GcodeScriptThread, &GcodeScript::ResumeCamera, [=](){ CameraTimer.start(ui->leCaptureInterval->text().toInt());});
     connect(GcodeScriptThread, &GcodeScript::CaptureCamera, CameraInstance, &Camera::GeneralCapture);
+    connect(GcodeScriptThread, &GcodeScript::CaptureAndDetectRequest, CameraInstance, &Camera::CaptureAndDetect);
 
     connect(GcodeScriptThread, &GcodeScript::UpdateTrackingRequest, TrackingManagerInstance, &TrackingManager::UpdateTracking);
+
+    connect(TrackingManagerInstance, &TrackingManager::GotResponse, GcodeScriptThread, &GcodeScript::GetResponse);
 
     GcodeScriptThread->thread()->start();
 
@@ -1336,6 +1340,8 @@ void RobotWindow::AddTrackingThread()
     connect(tracking->thread(), &QThread::finished, tracking, &QObject::deleteLater);
 
     connect(ui->leDeviationAngle, &QLineEdit::returnPressed, [=](){tracking->DeviationAngle = ui->leDeviationAngle->text().toFloat();});
+    connect(ui->cbReverseEncoderValue, SIGNAL(clicked(bool)), tracking, SLOT(SetEncoderReverse(bool)));
+
     tracking->DetectDelayOffsetPoint = ImageProcessingThread->GetNode("VisibleObjectsNode")->GetInputPointPointer();
     connect(tracking, SIGNAL(DistanceMoved(QPointF)), ImageProcessingThread->GetNode("TrackingObjectsNode"), SLOT(Input(QPointF)));
     connect(tracking, SIGNAL(SendGcodeRequest(QString, QString)), DeviceManagerInstance, SLOT(SendGcode(QString, QString)));
@@ -1958,7 +1964,21 @@ void RobotWindow::GetDeviceInfo(QString json)
         float u = jsonObject.value("u").toDouble();
         float v = jsonObject.value("v").toDouble();
 
-        ReceiveHomePosition(x, y, z, w, u, v);
+        float home_x = jsonObject.value("home_x").toDouble();
+        float home_y = jsonObject.value("home_y").toDouble();
+        float home_z = jsonObject.value("home_z").toDouble();
+        float home_w = jsonObject.value("home_w").toDouble();
+        float home_u = jsonObject.value("home_u").toDouble();
+        float home_v = jsonObject.value("home_v").toDouble();
+
+        ReceiveHomePosition(home_x, home_y, home_z, home_w, home_u, home_v);
+
+        RobotParameter.X = x;
+        RobotParameter.Y = y;
+        RobotParameter.Z = z;
+        RobotParameter.W = w;
+        RobotParameter.U = u;
+        RobotParameter.V = v;
 
         QString state = jsonObject.value("state").toString();
         if (state == "open")
@@ -3545,7 +3565,8 @@ void RobotWindow::UpdateObjectsToImageViewer(QList<Object>& objects)
         if (counter > 100)
             return;
         polys.append(obj.ToPolygon());
-        texts.insert(QString("X=%1\nY=%2\nA=%3").arg(obj.X.Real, 0, 'f', 2).arg(obj.Y.Real, 0, 'f', 2).arg(obj.Angle.Real, 0, 'f', 2), QPointF(obj.X.Image, obj.Y.Image));
+//        texts.insert(QString("X=%1\nY=%2\nA=%3").arg(obj.X.Real, 0, 'f', 2).arg(obj.Y.Real, 0, 'f', 2).arg(obj.Angle.Real, 0, 'f', 2), QPointF(obj.X.Image, obj.Y.Image));
+        texts.insert(QString::number(counter - 1), QPointF(obj.X.Image, obj.Y.Image));
     }
 
     ui->gvImageViewer->DrawPolygons(polys);
@@ -3886,6 +3907,12 @@ void RobotWindow::ChangeSelectedTracking(int id)
     }
 
     LoadTrackingThread();
+}
+
+void RobotWindow::ChangeSelectedTrackingEncoder(int id)
+{
+    int trackingID = ui->cbSelectedTracking->currentText().toInt();
+    TrackingManagerInstance->Trackings.at(trackingID)->EncoderID = id;
 }
 
 void RobotWindow::CalculateMappingMatrixTool()
@@ -4573,11 +4600,7 @@ void RobotWindow::initPlugins(QStringList plugins)
             // general init
             qRegisterMetaType< cv::Mat >("cv::Mat");
             connect(pluginWidget, SIGNAL(CapturedImage(cv::Mat)), CameraInstance, SLOT(GetImageFromExternal(cv::Mat)));
-            connect(pluginWidget, &DeltaXPlugin::StartedCapture, [=]()
-            {
-                int id = ui->cbEncoderForCamera->currentText().toInt();
-                QMetaObject::invokeMethod(TrackingManagerInstance, "SaveCapturePosition", Qt::QueuedConnection, Q_ARG(int, id));
-            });
+            connect(pluginWidget, SIGNAL(StartedCapture()), TrackingManagerInstance->Trackings[0],SLOT(SaveCapturePosition()));
             connect(CameraInstance, &Camera::RequestCapture, pluginWidget, &DeltaXPlugin::RequestCapture);
 
         }

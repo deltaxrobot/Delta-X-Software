@@ -8943,6 +8943,19 @@ release\moc_TrackingManager.cpp: TrackingManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QTimer \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qtimer.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qbasictimer.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDebug \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qdebug.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qhash.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qmap.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qtextstream.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qiodevice.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qlocale.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qvariant.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qshareddata.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qset.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qcontiguouscache.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsharedpointer.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsharedpointer_impl.h \
 		release\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2015_64\bin\moc.exe
 	C:\Qt\5.15.2\msvc2015_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include E:/Git/DeltaXSoftware/release/moc_predefs.h -IC:/Qt/5.15.2/msvc2015_64/mkspecs/win32-msvc -IE:/Git/DeltaXSoftware -IE:/OpenCV/opencv-4.0/build/include -IE:/Git/DeltaXSoftware/3rd-party/QJoysticks/lib/SDL/include -IE:/Git/DeltaXSoftware/3rd-party/QJoysticks/src -IC:/Qt/5.15.2/msvc2015_64/include -IC:/Qt/5.15.2/msvc2015_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2015_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2015_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtQuick -IC:/Qt/5.15.2/msvc2015_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2015_64/include/QtGui -IC:/Qt/5.15.2/msvc2015_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2015_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2015_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2015_64/include/QtQml -IC:/Qt/5.15.2/msvc2015_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2015_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" TrackingManager.h -o release\moc_TrackingManager.cpp
@@ -21809,7 +21822,20 @@ release\TrackingManager.obj: TrackingManager.cpp TrackingManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qelapsedtimer.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QTimer \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qtimer.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qbasictimer.h
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qbasictimer.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDebug \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qdebug.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qhash.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qmap.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qtextstream.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qiodevice.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qlocale.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qvariant.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qshareddata.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qset.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qcontiguouscache.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsharedpointer.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsharedpointer_impl.h
 
 release\VarManager.obj: VarManager.cpp VarManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QObject \

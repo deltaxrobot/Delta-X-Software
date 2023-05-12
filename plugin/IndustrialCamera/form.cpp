@@ -14,8 +14,8 @@ Form::Form(QWidget *parent) :
     connect(CameraReaderWork, &CameraReader::HadConnectingResult, this, &Form::GetResultOfCameraConnecting);
     connect(this, &Form::RequestConnectCamera, CameraReaderWork, &CameraReader::ConnectCamera);
     connect(this, &Form::RequestDisconnectCamera, CameraReaderWork, &CameraReader::DisconnectCamera);
-    connect(CameraReaderWork, &CameraReader::CapturedImage, this, &Form::CapturedImage);
-    connect(CameraReaderWork, &CameraReader::StartedCapture, this, &Form::StartedCapture);
+//    connect(CameraReaderWork, &CameraReader::CapturedImage, this, &Form::CapturedImage);
+//    connect(CameraReaderWork, &CameraReader::StartedCapture, this, &Form::StartedCapture);
     connect(CameraReaderWork, &CameraReader::FinishReadingImage, this, &Form::GetImageToDisplay);
     connect(this, &Form::RequestCameraList, CameraReaderWork, &CameraReader::ScanCameras);
     connect(CameraReaderWork, &CameraReader::HadCameraList, this, &Form::GetCameraList);

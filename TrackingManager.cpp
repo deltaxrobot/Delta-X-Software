@@ -16,6 +16,11 @@ void Tracking::OnReceivceEncoderPosition(float value)
         return;
     }
 
+    if (IsReverse == true)
+    {
+        value = value * - 1;
+    }
+
     currentPosition = value;
     if (first == true)
     {
@@ -26,6 +31,9 @@ void Tracking::OnReceivceEncoderPosition(float value)
 
     float distance = value - lastPosition;
     lastPosition = value;
+
+    QPointF offset = calculateMoved(distance);
+    emit DistanceMoved(offset);
 
     if (ReadPurpose == "Capture")
     {
@@ -38,11 +46,6 @@ void Tracking::OnReceivceEncoderPosition(float value)
         ReadPurpose = "Update";
         QPointF offset = calculateMoved(currentPosition - capturePosition);
         emit GotCaptureDetectOffset(offset);
-    }
-    else if (ReadPurpose == "Update")
-    {
-        QPointF offset = calculateMoved(distance);
-        emit DistanceMoved(offset);
     }
 }
 
@@ -75,6 +78,11 @@ void Tracking::ReadEncoder()
     {
 
     }
+}
+
+void Tracking::SetEncoderReverse(bool isReverse)
+{
+    IsReverse = isReverse;
 }
 
 void Tracking::SaveCapturePosition()

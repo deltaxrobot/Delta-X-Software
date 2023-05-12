@@ -14853,3 +14853,12 @@ Warning: QObject::connect: No such signal GcodeScript::SaveVariable(QString, QSt
 Warning: QObject::connect:  (receiver name: 'RobotWindow')
 Warning: QMetaObject::indexOfSignal: signal CapturedImage(cv::Mat) from DeltaXPlugin redefined in IndustrialCameraPlugin
 Debug: 9542
+Debug: Unknown property pading
+Debug: Unknown property pading
+Debug: Unknown property pading
+Debug: Unknown property pading
+Debug: Unknown property pading
+Warning: QGraphicsScene::addItem: item has already been added to this scene
+Warning: QGraphicsScene::addItem: item has already been added to this scene
+Warning: QGraphicsScene::addItem: item has already been added to this scene
+Warning: QGraphicsScene::addItem: item has already been added to this scene

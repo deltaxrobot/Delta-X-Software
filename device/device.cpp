@@ -121,8 +121,8 @@ void Device::WriteData(QString data)
     if (!data.endsWith("\n"))
         data.append("\n");
 
-    qDebug() << "Write time:" << DebugTimer.elapsed();
-    qDebug() << data;
+//    qDebug() << "Write time:" << DebugTimer.elapsed();
+//    qDebug() << data;
     if (this->serialPort->isOpen())
         this->serialPort->write(data.toLocal8Bit());
 }

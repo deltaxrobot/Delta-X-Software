@@ -720,7 +720,7 @@ void TaskNode::doGetObjectsWork()
 
         cv::RotatedRect rectObject = cv::minAreaRect(cv::Mat(contoursContainer[i]));
         cv::Rect box = cv::boundingRect(contoursContainer[i]);
-        if (box.y <= 0 || (box.y + box.height) >= inputMat.rows - 2 || box.x <= 0 || (box.x + box.width) >= inputMat.cols - 2)
+        if (box.y <= 5 || (box.y + box.height) >= inputMat.rows - 5 || box.x <= 5 || (box.x + box.width) >= inputMat.cols - 5)
             continue;
 
         Object obj(rectObject);
@@ -808,11 +808,12 @@ void TaskNode::doTrackingObjectsWork()
             }
 
             inputObjects.clear();
-        }
-
-        updateObjectsToVariableTable(outputObjects);
-        emit HadOutput(outputObjects);
+        }       
     }
+
+    updateObjectsToVariableTable(outputObjects);
+    emit HadOutput(outputObjects);
+
     emit Done();
 }
 

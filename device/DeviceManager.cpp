@@ -241,26 +241,38 @@ void DeviceManager::SendGcode(int deviceType, QString gcode)
 {
     if (deviceType == ROBOT)
     {
-        QMetaObject::invokeMethod(Robots[SelectedRobotID], "SendGcode", Qt::QueuedConnection, Q_ARG(QString, gcode));
-        emit Log(QString("Robot %1").arg(SelectedRobotID), gcode, 1);
+        if (Robots.count() > SelectedRobotID)
+        {
+            QMetaObject::invokeMethod(Robots[SelectedRobotID], "SendGcode", Qt::QueuedConnection, Q_ARG(QString, gcode));
+            emit Log(QString("Robot %1").arg(SelectedRobotID), gcode, 1);
+        }
     }
 
     if (deviceType == DEVICE)
     {
-        QMetaObject::invokeMethod(Devices[SelectedDeviceID], "WriteData", Qt::QueuedConnection, Q_ARG(QString, gcode));
-        emit Log(QString("Device %1").arg(SelectedDeviceID), gcode, 1);
+        if (Devices.count() > SelectedDeviceID)
+        {
+            QMetaObject::invokeMethod(Devices[SelectedDeviceID], "WriteData", Qt::QueuedConnection, Q_ARG(QString, gcode));
+            emit Log(QString("Device %1").arg(SelectedDeviceID), gcode, 1);
+        }
     }
 
     if (deviceType == CONVEYOR)
     {
-        QMetaObject::invokeMethod(Conveyors[SelectedConveyorID], "WriteData", Qt::QueuedConnection, Q_ARG(QString, gcode));
-        emit Log(QString("Conveyor %1").arg(SelectedConveyorID), gcode, 1);
+        if (Conveyors.count() > SelectedConveyorID)
+        {
+            QMetaObject::invokeMethod(Conveyors[SelectedConveyorID], "WriteData", Qt::QueuedConnection, Q_ARG(QString, gcode));
+            emit Log(QString("Conveyor %1").arg(SelectedConveyorID), gcode, 1);
+        }
     }
 
     if (deviceType == ENCODER)
     {
-        QMetaObject::invokeMethod(Encoders[SelectedEncoderID], "WriteData", Qt::QueuedConnection, Q_ARG(QString, gcode));
-        emit Log(QString("Encoder %1").arg(SelectedEncoderID), gcode, 1);
+        if (Encoders.count() > SelectedEncoderID)
+        {
+            QMetaObject::invokeMethod(Encoders[SelectedEncoderID], "WriteData", Qt::QueuedConnection, Q_ARG(QString, gcode));
+            emit Log(QString("Encoder %1").arg(SelectedEncoderID), gcode, 1);
+        }
     }
 }
 
