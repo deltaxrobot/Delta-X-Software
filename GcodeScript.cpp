@@ -1378,8 +1378,12 @@ bool GcodeScript::checkExclution(QString response)
         return true;
     else if (response.count(",") > 1)
     {
-        if (!transmitMsg.contains("Position"))
+        if (!transmitMsg.contains("Position") && !transmitMsg.contains("G28"))
             return true;
+    }
+    else if (transmitMsg.contains("G28") && response.contains("Ok"))
+    {
+        return true;
     }
 
     return false;

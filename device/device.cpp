@@ -38,6 +38,7 @@ void Device::Connect()
             serialPort->setBaudRate(baudrate);
 
             if (serialPort->open(QIODevice::ReadWrite)) {
+                QThread::msleep(500);
                 serialPort->blockSignals(true);
                 serialPort->write((confirmRequest + "\n").toLocal8Bit());
                 serialPort->waitForReadyRead(500);

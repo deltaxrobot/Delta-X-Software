@@ -402,7 +402,7 @@ void TaskNode::connectInOutNode(TaskNode* previous, TaskNode *next)
 
 void TaskNode::doGetImageWork()
 {
-    qDebug() << "capture: " << DebugTimer.restart();
+//    qDebug() << "capture: " << DebugTimer.restart();
     outputMat.release();
     outputMat = inputMat;
 

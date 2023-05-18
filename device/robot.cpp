@@ -151,7 +151,7 @@ bool Robot::getPara(QString gcode)
 {
     QStringList paras = gcode.split(" ");
 
-    if (paras[0].indexOf("G01") < 0 && paras[0].indexOf("G1") < 0)
+    if (paras[0].indexOf("G01") < 0 && paras[0].indexOf("G1") < 0 && paras[0].indexOf("M203") < 0 && paras[0].indexOf("M204") < 0 && paras[0].indexOf("M205") < 0)
         return false;
 
     old_X = X;

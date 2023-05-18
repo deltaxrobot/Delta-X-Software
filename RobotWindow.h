@@ -178,7 +178,8 @@ public:
     QTimer* UIEvent;
 
     // ---- Robot ----
-    RobotPara RobotParameter;
+    int RbID = 0;
+    QVector<RobotPara> RobotParameters;
     DeltaVisualizer *Delta2DVisualizer;
     QTimer* ShortcutKeyTimer;
 
@@ -250,6 +251,7 @@ public slots:
     void ConfigConnection();
     void ChangeSelectedRobot(int id);
     void ChangeRobotDOF(int id);
+    void ChangeRobotModel(int id);
 
     // ---- Gcode Editor ----
 	void SaveProgram();
@@ -290,6 +292,7 @@ public slots:
 	void UpdateAccel();
     void UpdateStartSpeed();
     void UpdateEndSpeed();
+    void UpdateJerk();
 	void AdjustGripperAngle(int angle);
 	void Grip();
 

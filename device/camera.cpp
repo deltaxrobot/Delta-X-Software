@@ -22,6 +22,10 @@ void Camera::GeneralCapture()
     {
         CaptureWebcam();
     }
+    if (Source == "Images")
+    {
+        emit GotImage(CaptureImage);
+    }
     else if (Source == "Industrial Camera")
     {
         emit RequestCapture();
