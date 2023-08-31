@@ -455,6 +455,8 @@ signals:
     void DisconnectRobot();
 
 private:
+    // ----- Check Performence ----
+    void CheckSettingsSpeed();
 
     // ---- Gcode Editor -----
 	QString boldKey(QString key, QString htmlText);

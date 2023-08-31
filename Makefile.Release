@@ -9537,6 +9537,9 @@ release\moc_DeviceManager.cpp: device\DeviceManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qjsonobject.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QJsonArray \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qjsonarray.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QThread \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qthread.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qdeadlinetimer.h \
 		ScurveInterpolator.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QtMath \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qmath.h \
@@ -9550,9 +9553,6 @@ release\moc_DeviceManager.cpp: device\DeviceManager.h \
 		device\slider.h \
 		device\conveyor.h \
 		device\encoder.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QThread \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qthread.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qdeadlinetimer.h \
 		release\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2015_64\bin\moc.exe
 	C:\Qt\5.15.2\msvc2015_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include E:/Git/DeltaXSoftware/release/moc_predefs.h -IC:/Qt/5.15.2/msvc2015_64/mkspecs/win32-msvc -IE:/Git/DeltaXSoftware -IE:/OpenCV/opencv-4.0/build/include -IE:/Git/DeltaXSoftware/3rd-party/QJoysticks/lib/SDL/include -IE:/Git/DeltaXSoftware/3rd-party/QJoysticks/src -IC:/Qt/5.15.2/msvc2015_64/include -IC:/Qt/5.15.2/msvc2015_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2015_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2015_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtQuick -IC:/Qt/5.15.2/msvc2015_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2015_64/include/QtGui -IC:/Qt/5.15.2/msvc2015_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2015_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2015_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2015_64/include/QtQml -IC:/Qt/5.15.2/msvc2015_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2015_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" device\DeviceManager.h -o release\moc_DeviceManager.cpp
@@ -9878,6 +9878,9 @@ release\moc_conveyor.cpp: device\conveyor.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qjsonobject.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QJsonArray \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qjsonarray.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QThread \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qthread.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qdeadlinetimer.h \
 		release\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2015_64\bin\moc.exe
 	C:\Qt\5.15.2\msvc2015_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include E:/Git/DeltaXSoftware/release/moc_predefs.h -IC:/Qt/5.15.2/msvc2015_64/mkspecs/win32-msvc -IE:/Git/DeltaXSoftware -IE:/OpenCV/opencv-4.0/build/include -IE:/Git/DeltaXSoftware/3rd-party/QJoysticks/lib/SDL/include -IE:/Git/DeltaXSoftware/3rd-party/QJoysticks/src -IC:/Qt/5.15.2/msvc2015_64/include -IC:/Qt/5.15.2/msvc2015_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2015_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2015_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtQuick -IC:/Qt/5.15.2/msvc2015_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2015_64/include/QtGui -IC:/Qt/5.15.2/msvc2015_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2015_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2015_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2015_64/include/QtQml -IC:/Qt/5.15.2/msvc2015_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2015_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" device\conveyor.h -o release\moc_conveyor.cpp
@@ -9977,6 +9980,9 @@ release\moc_device.cpp: device\device.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qjsonobject.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QJsonArray \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qjsonarray.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QThread \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qthread.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qdeadlinetimer.h \
 		release\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2015_64\bin\moc.exe
 	C:\Qt\5.15.2\msvc2015_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include E:/Git/DeltaXSoftware/release/moc_predefs.h -IC:/Qt/5.15.2/msvc2015_64/mkspecs/win32-msvc -IE:/Git/DeltaXSoftware -IE:/OpenCV/opencv-4.0/build/include -IE:/Git/DeltaXSoftware/3rd-party/QJoysticks/lib/SDL/include -IE:/Git/DeltaXSoftware/3rd-party/QJoysticks/src -IC:/Qt/5.15.2/msvc2015_64/include -IC:/Qt/5.15.2/msvc2015_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2015_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2015_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtQuick -IC:/Qt/5.15.2/msvc2015_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2015_64/include/QtGui -IC:/Qt/5.15.2/msvc2015_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2015_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2015_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2015_64/include/QtQml -IC:/Qt/5.15.2/msvc2015_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2015_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" device\device.h -o release\moc_device.cpp
@@ -10077,6 +10083,9 @@ release\moc_encoder.cpp: device\encoder.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qjsonobject.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QJsonArray \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qjsonarray.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QThread \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qthread.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qdeadlinetimer.h \
 		release\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2015_64\bin\moc.exe
 	C:\Qt\5.15.2\msvc2015_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include E:/Git/DeltaXSoftware/release/moc_predefs.h -IC:/Qt/5.15.2/msvc2015_64/mkspecs/win32-msvc -IE:/Git/DeltaXSoftware -IE:/OpenCV/opencv-4.0/build/include -IE:/Git/DeltaXSoftware/3rd-party/QJoysticks/lib/SDL/include -IE:/Git/DeltaXSoftware/3rd-party/QJoysticks/src -IC:/Qt/5.15.2/msvc2015_64/include -IC:/Qt/5.15.2/msvc2015_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2015_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2015_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtQuick -IC:/Qt/5.15.2/msvc2015_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2015_64/include/QtGui -IC:/Qt/5.15.2/msvc2015_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2015_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2015_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2015_64/include/QtQml -IC:/Qt/5.15.2/msvc2015_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2015_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" device\encoder.h -o release\moc_encoder.cpp
@@ -10177,6 +10186,9 @@ release\moc_robot.cpp: device\robot.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qjsonobject.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QJsonArray \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qjsonarray.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QThread \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qthread.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qdeadlinetimer.h \
 		ScurveInterpolator.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QtMath \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qmath.h \
@@ -10287,6 +10299,9 @@ release\moc_slider.cpp: device\slider.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qjsonobject.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QJsonArray \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qjsonarray.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QThread \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qthread.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qdeadlinetimer.h \
 		ScurveInterpolator.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QtMath \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qmath.h \
@@ -23769,6 +23784,9 @@ release\DeviceManager.obj: device\DeviceManager.cpp device\DeviceManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qjsonobject.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QJsonArray \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qjsonarray.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QThread \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qthread.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qdeadlinetimer.h \
 		ScurveInterpolator.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QtMath \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qmath.h \
@@ -23781,10 +23799,7 @@ release\DeviceManager.obj: device\DeviceManager.cpp device\DeviceManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsettings.h \
 		device\slider.h \
 		device\conveyor.h \
-		device\encoder.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QThread \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qthread.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qdeadlinetimer.h
+		device\encoder.h
 
 release\camera.obj: device\camera.cpp device\camera.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QObject \
@@ -24103,7 +24118,10 @@ release\conveyor.obj: device\conveyor.cpp device\conveyor.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QJsonObject \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qjsonobject.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QJsonArray \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qjsonarray.h
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qjsonarray.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QThread \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qthread.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qdeadlinetimer.h
 
 release\device.obj: device\device.cpp device\device.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QObject \
@@ -24199,7 +24217,10 @@ release\device.obj: device\device.cpp device\device.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QJsonObject \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qjsonobject.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QJsonArray \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qjsonarray.h
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qjsonarray.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QThread \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qthread.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qdeadlinetimer.h
 
 release\encoder.obj: device\encoder.cpp device\encoder.h \
 		device\device.h \
@@ -24296,7 +24317,10 @@ release\encoder.obj: device\encoder.cpp device\encoder.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QJsonObject \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qjsonobject.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QJsonArray \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qjsonarray.h
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qjsonarray.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QThread \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qthread.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qdeadlinetimer.h
 
 release\robot.obj: device\robot.cpp device\robot.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QObject \
@@ -24394,6 +24418,9 @@ release\robot.obj: device\robot.cpp device\robot.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qjsonobject.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QJsonArray \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qjsonarray.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QThread \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qthread.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qdeadlinetimer.h \
 		ScurveInterpolator.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QtMath \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qmath.h \
@@ -24501,6 +24528,9 @@ release\slider.obj: device\slider.cpp device\slider.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qjsonobject.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QJsonArray \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qjsonarray.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QThread \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qthread.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qdeadlinetimer.h \
 		ScurveInterpolator.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QtMath \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qmath.h \

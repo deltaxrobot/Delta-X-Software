@@ -14,6 +14,7 @@ RobotWindow::RobotWindow(QWidget *parent, QString projectName) :
     InitEvents();
 
     hideExampleWidgets();
+//    CheckSettingsSpeed();
 }
 
 RobotWindow::~RobotWindow()
@@ -4569,6 +4570,34 @@ void RobotWindow::ProcessJoystickPOV(const QJoystickPOVEvent &event)
             ui->pbLeft->click();
             break;
     }
+}
+
+void RobotWindow::CheckSettingsSpeed()
+{
+    QElapsedTimer elapse;
+    elapse.start();
+
+    QList<Object> objects;
+
+    for (int counter = 0; counter < 1000; counter++)
+    {
+//        VarManager::getInstance()->addVar(QString("ObjectTests.%1.X").arg(counter), 12);
+//        VarManager::getInstance()->addVar(QString("ObjectTests.%1.Y").arg(counter), 143);
+//        VarManager::getInstance()->addVar(QString("ObjectTests.%1.W").arg(counter), 21);
+//        VarManager::getInstance()->addVar(QString("ObjectTests.%1.L").arg(counter), 33);
+//        VarManager::getInstance()->addVar(QString("ObjectTests.%1.A").arg(counter), 100);
+
+        Object object;
+        object.X.Real = 34;
+        object.Y.Real =33;
+        object.Height.Real = 34;
+        object.Width.Real = 34;
+        object.Angle.Real = 21;
+
+        objects.append(object);
+    }
+
+    qDebug() << "var" << elapse.elapsed();
 }
     #endif
 #endif
