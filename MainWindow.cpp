@@ -154,8 +154,8 @@ void MainWindow::InitVisible()
     ui->tbDocument->setVisible(false);
     ui->tbMarket->setVisible(false);
     ui->tbAuthority->setVisible(false);
-    ui->tbSaveProject->setVisible(false);
-    ui->tbOpenProject->setVisible(false);
+    ui->tbSaveProject->setVisible(true);
+    ui->tbOpenProject->setVisible(true);
 
     // ----- Load custom UI ----
     QSettings settings("customUI.ini", QSettings::IniFormat);

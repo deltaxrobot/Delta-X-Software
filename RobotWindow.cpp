@@ -173,6 +173,7 @@ void RobotWindow::InitVariables()
 
     // ---- Init UI ----
     ui->lbBaudrate->setText(QString::number(DeltaConnectionManager->GetBaudrate()));
+
     ui->leIP->setText(DeltaConnectionManager->TCPConnection->GetIP());
     ui->lePort->setText(QString::number(DeltaConnectionManager->TCPConnection->Port));
 
@@ -205,12 +206,27 @@ void RobotWindow::InitVariables()
     // ------- Log and Debug -----
     Debugs.push_back(ui->teDebug);
 
-    //-------- 2D controler ------------
+    //-------- Jogging -------
 
-    Delta2DVisualizer = new DeltaVisualizer(ui->wg2D);
-    Delta2DVisualizer->setObjectName(QStringLiteral("2DArea"));
-    Delta2DVisualizer->setGeometry(QRect(0, 0, 300, 300));
-    Delta2DVisualizer->SetDivisionComboBox(ui->cbDivision);
+    QList<QRadioButton*> stepRBs = {
+        ui->rb01,
+        ui->rb05,
+        ui->rb10,
+        ui->rb50,
+        ui->rb100,
+        ui->rb500,
+        ui->rb1000
+    };
+
+    // Sử dụng vòng lặp để kết nối tất cả
+    for (auto* rb : stepRBs) {
+        connect(rb, &QRadioButton::toggled, [=](bool checked) {
+            if (checked) RobotParameters[RbID].Step = rb->text().toFloat();
+        });
+    }
+
+
+    //-------- 2D controler ------------
 
     DeltaDrawingExporter = new DrawingExporter(this);
     DeltaDrawingExporter->SetDrawingParameterPointer(ui->lbImageForDrawing, ui->lbImageWidth, ui->lbImageHeight, ui->leHeightScale, ui->leWidthScale, ui->leSpace, ui->leDrawingThreshold, ui->hsDrawingThreshold, ui->cbReverseDrawing, ui->cbDrawMethod, ui->cbConversionTool);
@@ -269,7 +285,6 @@ void RobotWindow::InitVariables()
 
 
     //------------ UI ----------------
-    Delta2DVisualizer->ChangeXY(0, 0);    
 
     //------------------- Linux -----------------
 
@@ -639,43 +654,17 @@ void RobotWindow::InitUIController()
     connect(ui->leU, &QLineEdit::returnPressed, this, [=](){RobotParameters[RbID].U = ui->leU->text().toFloat(); UpdateVariable("U", QString::number(RobotParameters[RbID].U));emit Send(DeviceManager::ROBOT, QString("G01 U") + ui->leU->text());});
     connect(ui->leV, &QLineEdit::returnPressed, this, [=](){RobotParameters[RbID].V = ui->leV->text().toFloat(); UpdateVariable("V", QString::number(RobotParameters[RbID].V));emit Send(DeviceManager::ROBOT, QString("G01 V") + ui->leV->text());});
 
-    connect(ui->vsZAdjsution, &QSlider::valueChanged, [=](int value){RobotParameters[RbID].Z = RobotParameters[RbID].ZHome - value;});
-    connect(ui->vsZAdjsution, &QSlider::sliderReleased, [=](){emit Send(DeviceManager::ROBOT, QString("G01 Z%1").arg(RobotParameters[RbID].Z));});
-    connect(ui->vsAngleAdjsution, &QSlider::valueChanged, [=](int value){RobotParameters[RbID].W = value;});
-    connect(ui->vsAngleAdjsution, &QSlider::sliderReleased, [=](){emit Send(DeviceManager::ROBOT, QString("G01 W%1").arg(RobotParameters[RbID].W));});
-    connect(ui->vs5AxisAdjsution, &QSlider::valueChanged, [=](int value){RobotParameters[RbID].U = value;});
-    connect(ui->vs5AxisAdjsution, &QSlider::sliderReleased, [=](){emit Send(DeviceManager::ROBOT, QString("G01 U%1").arg(RobotParameters[RbID].U));});
-    connect(ui->vs6AxisAdjsution, &QSlider::valueChanged, [=](int value){RobotParameters[RbID].V = value;});
-    connect(ui->vs6AxisAdjsution, &QSlider::sliderReleased, [=](){emit Send(DeviceManager::ROBOT, QString("G01 V%1").arg(RobotParameters[RbID].V));});
-
-    connect(Delta2DVisualizer, &DeltaVisualizer::CursorMoved, [=](float x, float y){RobotParameters[RbID].X = x; RobotParameters[RbID].Y = y; emit Send(DeviceManager::ROBOT, QString("G01 X%1 Y%2").arg(x).arg(y));});
-
-    connect(ui->pbUp, &QPushButton::clicked, [=](){MoveRobot("Z", ui->cbDivision->currentText().toFloat());});
-    connect(ui->pbDown, &QPushButton::clicked, [=](){MoveRobot("Z", 0 - ui->cbDivision->currentText().toFloat());});
-    connect(ui->pbForward, &QPushButton::clicked, [=](){MoveRobot("Y", ui->cbDivision->currentText().toFloat());});
-    connect(ui->pbBackward, &QPushButton::clicked, [=](){MoveRobot("Y", 0 - ui->cbDivision->currentText().toFloat());});
-    connect(ui->pbLeft, &QPushButton::clicked, [=](){MoveRobot("X", 0 - ui->cbDivision->currentText().toFloat());});
-    connect(ui->pbRight, &QPushButton::clicked, [=](){MoveRobot("X", ui->cbDivision->currentText().toFloat());});
+    connect(ui->pbUp, &QPushButton::clicked, [=](){MoveRobot("Z", RobotParameters[RbID].Step);});
+    connect(ui->pbDown, &QPushButton::clicked, [=](){MoveRobot("Z", 0 - RobotParameters[RbID].Step);});
+    connect(ui->pbForward, &QPushButton::clicked, [=](){MoveRobot("Y", RobotParameters[RbID].Step);});
+    connect(ui->pbBackward, &QPushButton::clicked, [=](){MoveRobot("Y", 0 - RobotParameters[RbID].Step);});
+    connect(ui->pbLeft, &QPushButton::clicked, [=](){MoveRobot("X", 0 - RobotParameters[RbID].Step);});
+    connect(ui->pbRight, &QPushButton::clicked, [=](){MoveRobot("X", RobotParameters[RbID].Step);});
     connect(ui->leVelocity, &QLineEdit::returnPressed, this, &RobotWindow::UpdateVelocity);
     connect(ui->leAccel, &QLineEdit::returnPressed, this, &RobotWindow::UpdateAccel);
     connect(ui->leStartSpeed, &QLineEdit::returnPressed, this, &RobotWindow::UpdateStartSpeed);
     connect(ui->leEndSpeed, &QLineEdit::returnPressed, this, &RobotWindow::UpdateEndSpeed);
     connect(ui->leJerk, &QLineEdit::returnPressed, this, &RobotWindow::UpdateJerk);
-
-    connect(ui->pbsubX, &QPushButton::clicked, [=](){emit ui->pbLeft->clicked(); ui->leX->setText(QString::number(RobotParameters[RbID].X));});
-    connect(ui->pbsubY, &QPushButton::clicked, [=](){emit ui->pbBackward->clicked(); ui->leY->setText(QString::number(RobotParameters[RbID].Y));});
-    connect(ui->pbsubZ, &QPushButton::clicked, [=](){emit ui->pbDown->clicked(); ui->leZ->setText(QString::number(RobotParameters[RbID].Z));});
-    connect(ui->pbsubW, &QPushButton::clicked, [=](){MoveRobot("W", 0 - ui->cbDivision->currentText().toFloat()); ui->leW->setText(QString::number(RobotParameters[RbID].W));});
-    connect(ui->pbsubU, &QPushButton::clicked, [=](){MoveRobot("U", 0 - ui->cbDivision->currentText().toFloat()); ui->leU->setText(QString::number(RobotParameters[RbID].U));});
-    connect(ui->pbsubV, &QPushButton::clicked, [=](){MoveRobot("V", 0 - ui->cbDivision->currentText().toFloat()); ui->leV->setText(QString::number(RobotParameters[RbID].V));});
-
-    connect(ui->pbplusX, &QPushButton::clicked, [=](){emit ui->pbRight->clicked(); ui->leX->setText(QString::number(RobotParameters[RbID].X));});
-    connect(ui->pbplusY, &QPushButton::clicked, [=](){emit ui->pbForward->clicked(); ui->leY->setText(QString::number(RobotParameters[RbID].Y));});
-    connect(ui->pbplusZ, &QPushButton::clicked, [=](){emit ui->pbUp->clicked(); ui->leZ->setText(QString::number(RobotParameters[RbID].Z));});
-    connect(ui->pbplusW, &QPushButton::clicked, [=](){MoveRobot("W", ui->cbDivision->currentText().toFloat()); ui->leW->setText(QString::number(RobotParameters[RbID].W));});
-    connect(ui->pbplusU, &QPushButton::clicked, [=](){MoveRobot("U", ui->cbDivision->currentText().toFloat()); ui->leU->setText(QString::number(RobotParameters[RbID].U));});
-    connect(ui->pbplusV, &QPushButton::clicked, [=](){MoveRobot("V", ui->cbDivision->currentText().toFloat()); ui->leV->setText(QString::number(RobotParameters[RbID].V));});
-
 }
 
 void RobotWindow::InitCalibration()
@@ -752,8 +741,7 @@ void RobotWindow::InitEvents()
 
 //	connect(Delta2DVisualizer, SIGNAL(FinishMoving()), this, SLOT(UpdateDeltaPositionFromLineEditValue()));
     //connect(Delta2DVisualizer, SIGNAL(CursorMoved(float, float)), SLOT(UpdateCursorPosition(float, float)));
-    connect(ui->cbWorkingSize, SIGNAL(currentIndexChanged(int)), Delta2DVisualizer, SLOT(ChangeWorkingSize(int)));
-	
+
     //------------- 3D control -------------------
 //	connect(ui->pbTurnOnROS, SIGNAL(clicked(bool)), this, SLOT(OpenROS()));
 //	connect(ui->cbROSCameraView, SIGNAL(currentIndexChanged(int)), this, SLOT(ChangeROSCameraView(int)));
@@ -829,11 +817,6 @@ void RobotWindow::DisablePositionUpdatingEvents()
     ui->leU->blockSignals(true);
     ui->leV->blockSignals(true);
 
-    ui->vsZAdjsution->blockSignals(true);
-    ui->vsAngleAdjsution->blockSignals(true);
-    ui->vs5AxisAdjsution->blockSignals(true);
-    ui->vs6AxisAdjsution->blockSignals(true);
-
     ui->leVelocity->blockSignals(true);
     ui->leAccel->blockSignals(true);
     ui->leStartSpeed->blockSignals(true);
@@ -847,12 +830,7 @@ void RobotWindow::EnablePositionUpdatingEvents()
     ui->leZ->blockSignals(false);
     ui->leW->blockSignals(false);
     ui->leU->blockSignals(false);
-    ui->leV->blockSignals(false);
-
-    ui->vsZAdjsution->blockSignals(false);
-    ui->vsAngleAdjsution->blockSignals(false);
-    ui->vs5AxisAdjsution->blockSignals(false);
-    ui->vs6AxisAdjsution->blockSignals(false);
+    ui->leV->blockSignals(false);  
 
     ui->leVelocity->blockSignals(false);
     ui->leAccel->blockSignals(false);
@@ -994,7 +972,7 @@ void RobotWindow::ExecuteRequestsFromExternal(QString request)
         {
             if (paras[i + 1] == "Division")
             {
-                ui->cbDivision->setCurrentText(paras[i + 2]);
+                RobotParameters[RbID].Step = paras[i + 2].toFloat();
             }
 
             if (paras[i + 1] == "ConveyorPosition")
@@ -1724,7 +1702,6 @@ void RobotWindow::SaveJoggingSettings(QSettings *setting)
 void RobotWindow::Save2DSettings(QSettings *setting)
 {
     setting->beginGroup("Jogging");
-    setting->setValue("2DSize", Delta2DVisualizer->geometry());
     setting->endGroup();
 }
 
@@ -2357,13 +2334,11 @@ void RobotWindow::ChangeRobotModel(int id)
     {
         ui->gbOutput->setVisible(false);
         ui->gbInput->setVisible(false);
-        ui->gbDeltaX12Output->setVisible(true);
     }
     else if (id == 2)
     {
         ui->gbOutput->setVisible(true);
         ui->gbInput->setVisible(true);
-        ui->gbDeltaX12Output->setVisible(false);
     }
 }
 
@@ -2554,13 +2529,6 @@ void RobotWindow::HighLineCurrentLine(int pos)
 
 void RobotWindow::UpdatePositionToLabel()
 {
-    ui->lbX->setText(QString::number(RobotParameters[RbID].X));
-    ui->lbY->setText(QString::number(RobotParameters[RbID].Y));
-    ui->lbZ->setText(QString::number(RobotParameters[RbID].Z));
-    ui->lbW->setText(QString::number(RobotParameters[RbID].W));
-    ui->lbU->setText(QString::number(RobotParameters[RbID].U));
-    ui->lbV->setText(QString::number(RobotParameters[RbID].V));
-
 
 }
 
@@ -2790,25 +2758,12 @@ void RobotWindow::UpdateRobotPositionToUI()
 {
     DisablePositionUpdatingEvents();
 
-    if (!ui->framePositionParameter->underMouse())
-    {
-        ui->leX->setText(QString::number(RobotParameters[RbID].X));
-        ui->leY->setText(QString::number(RobotParameters[RbID].Y));
-        ui->leZ->setText(QString::number(RobotParameters[RbID].Z));
-        ui->leW->setText(QString::number(RobotParameters[RbID].W));
-        ui->leU->setText(QString::number(RobotParameters[RbID].U));
-        ui->leV->setText(QString::number(RobotParameters[RbID].V));
-    }
-
-    if (!ui->wg2D->underMouse())
-        Delta2DVisualizer->ChangeXY(RobotParameters[RbID].X, RobotParameters[RbID].Y);
-
-    if (!ui->vsZAdjsution->underMouse())
-        ui->vsZAdjsution->setValue(RobotParameters[RbID].ZHome - RobotParameters[RbID].Z);
-
-    ui->vsAngleAdjsution->setValue(RobotParameters[RbID].W);
-    ui->vs5AxisAdjsution->setValue(RobotParameters[RbID].U);
-    ui->vs6AxisAdjsution->setValue(RobotParameters[RbID].V);
+    ui->leX->setText(QString::number(RobotParameters[RbID].X));
+    ui->leY->setText(QString::number(RobotParameters[RbID].Y));
+    ui->leZ->setText(QString::number(RobotParameters[RbID].Z));
+    ui->leW->setText(QString::number(RobotParameters[RbID].W));
+    ui->leU->setText(QString::number(RobotParameters[RbID].U));
+    ui->leV->setText(QString::number(RobotParameters[RbID].V));
 
     UpdatePositionToLabel();
 

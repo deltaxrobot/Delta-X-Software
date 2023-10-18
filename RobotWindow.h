@@ -48,7 +48,7 @@
 #include "GcodeHighlighter.h"
 #include <QList>
 
-#define JOY_STICK
+//#define JOY_STICK
 
 #ifdef Q_OS_WIN
     #ifdef JOY_STICK
@@ -180,7 +180,6 @@ public:
     // ---- Robot ----
     int RbID = 0;
     QVector<RobotPara> RobotParameters;
-    DeltaVisualizer *Delta2DVisualizer;
     QTimer* ShortcutKeyTimer;
 
     QTimer UpdateUITimer;

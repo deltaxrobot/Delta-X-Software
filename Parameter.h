@@ -22,6 +22,7 @@ struct RobotPara
     float WHome = 0;
     float UHome = 0;
     float VHome = 0;
+    float Step = 10;
 
     void Set(QString key, float value)
     {

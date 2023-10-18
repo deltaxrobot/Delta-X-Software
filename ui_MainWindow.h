@@ -220,7 +220,6 @@ public:
         MainWindow->setMinimumSize(QSize(800, 480));
         QFont font;
         font.setBold(false);
-        font.setWeight(50);
         font.setKerning(true);
         MainWindow->setFont(font);
         QIcon icon;
@@ -380,6 +379,49 @@ public:
         actionNew->setObjectName(QString::fromUtf8("actionNew"));
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
+        centralWidget->setStyleSheet(QString::fromUtf8("QWidget#centralWidget\n"
+"{\n"
+"	background-color: rgb(30, 30, 32);\n"
+"}\n"
+"\n"
+"QTabWidget::pane { /* The tab widget frame */\n"
+"    border: none;\n"
+"}\n"
+"\n"
+"QTabWidget::tab-bar \n"
+"{\n"
+"\n"
+"}\n"
+"\n"
+"QTabBar::tab \n"
+"{\n"
+"    background: #3f3f3f;\n"
+"	color: #f5f5f5;\n"
+"   /* border-radius: 13px;*/\n"
+"	border: 1px solid rgb(90, 90, 90);\n"
+"    height: 25px;\n"
+"    padding: 0px 10px 2px 10px;\n"
+"}\n"
+"\n"
+"QTabBar::tab:selected {\n"
+"    background: #007cd6;	\n"
+"	color: rgb(255, 255, 255);\n"
+"	/*border-radius: 13px;*/\n"
+"}\n"
+"\n"
+"QTabBar::tab:hover {\n"
+"    background: #6f6f6f;	\n"
+"	color: rgb(255, 255, 255);\n"
+"	/*border-radius: 13px;*/\n"
+"}\n"
+"\n"
+"QTabBar::tab:selected {\n"
+"\n"
+"}\n"
+"\n"
+"QTabBar::tab:!selected {\n"
+"}\n"
+""));
         horizontalLayout = new QHBoxLayout(centralWidget);
         horizontalLayout->setSpacing(0);
         horizontalLayout->setContentsMargins(11, 11, 11, 11);
@@ -390,6 +432,11 @@ public:
         stackedWidget->setStyleSheet(QString::fromUtf8(""));
         page = new QWidget();
         page->setObjectName(QString::fromUtf8("page"));
+        page->setStyleSheet(QString::fromUtf8("#page\n"
+"{\n"
+"	\n"
+"	background-color: rgb(30, 30, 32);\n"
+"}"));
         horizontalLayout_2 = new QHBoxLayout(page);
         horizontalLayout_2->setSpacing(5);
         horizontalLayout_2->setContentsMargins(11, 11, 11, 11);
@@ -399,9 +446,10 @@ public:
         wgLeftPanel->setObjectName(QString::fromUtf8("wgLeftPanel"));
         wgLeftPanel->setMinimumSize(QSize(80, 0));
         wgLeftPanel->setMaximumSize(QSize(80, 16777215));
-        wgLeftPanel->setStyleSheet(QString::fromUtf8("QWidget\n"
+        wgLeftPanel->setStyleSheet(QString::fromUtf8("QWidget#wgLeftPanel\n"
 "{\n"
-"	background-color: rgb(0, 132, 255);\n"
+"	background-color: #28282B;\n"
+"	border: 1px solid #565659;\n"
 "}\n"
 "\n"
 "QToolButton\n"
@@ -413,11 +461,11 @@ public:
 "QToolButton:hover\n"
 "{	\n"
 "	\n"
-"	background-color: rgb(0, 195, 255);\n"
+"	background-color: #353538;\n"
 "}\n"
 "QToolButton::pressed\n"
 "{	\n"
-"	background-color: rgb(24, 70, 139);\n"
+"	background-color: #3F3F42;\n"
 "}\n"
 ""));
         verticalLayout = new QVBoxLayout(wgLeftPanel);
@@ -484,7 +532,7 @@ public:
         sizePolicy1.setHeightForWidth(tbProject->sizePolicy().hasHeightForWidth());
         tbProject->setSizePolicy(sizePolicy1);
         tbProject->setMinimumSize(QSize(80, 0));
-        tbProject->setStyleSheet(QString::fromUtf8("background-color: rgb(39, 114, 226);\n"
+        tbProject->setStyleSheet(QString::fromUtf8("background-color: #3F3F42;\n"
 "border-right: 5px solid rgb(24, 70, 139);"));
         QIcon icon4;
         icon4.addFile(QString::fromUtf8(":/icon/project_64px.png"), QSize(), QIcon::Normal, QIcon::Off);
@@ -652,7 +700,6 @@ public:
         QFont font1;
         font1.setPointSize(12);
         font1.setBold(true);
-        font1.setWeight(75);
         label_21->setFont(font1);
 
         verticalLayout_8->addWidget(label_21);
@@ -662,7 +709,7 @@ public:
         scrollArea_2->setWidgetResizable(true);
         scrollAreaWidgetContents_2 = new QWidget();
         scrollAreaWidgetContents_2->setObjectName(QString::fromUtf8("scrollAreaWidgetContents_2"));
-        scrollAreaWidgetContents_2->setGeometry(QRect(0, 0, 713, 211));
+        scrollAreaWidgetContents_2->setGeometry(QRect(0, 0, 636, 188));
         verticalLayout_10 = new QVBoxLayout(scrollAreaWidgetContents_2);
         verticalLayout_10->setSpacing(6);
         verticalLayout_10->setContentsMargins(11, 11, 11, 11);
@@ -672,7 +719,6 @@ public:
         QFont font2;
         font2.setPointSize(20);
         font2.setBold(true);
-        font2.setWeight(75);
         lbOperatorTitile->setFont(font2);
         lbOperatorTitile->setStyleSheet(QString::fromUtf8("QLabel\n"
 "{\n"
@@ -843,7 +889,6 @@ public:
         groupBox_4->setObjectName(QString::fromUtf8("groupBox_4"));
         QFont font3;
         font3.setBold(true);
-        font3.setWeight(75);
         groupBox_4->setFont(font3);
         groupBox_4->setStyleSheet(QString::fromUtf8("QLabel:hover\n"
 "{\n"
@@ -1015,7 +1060,7 @@ public:
         scrollArea->setWidgetResizable(true);
         scrollAreaWidgetContents = new QWidget();
         scrollAreaWidgetContents->setObjectName(QString::fromUtf8("scrollAreaWidgetContents"));
-        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 636, 700));
+        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 588, 700));
         scrollAreaWidgetContents->setMinimumSize(QSize(0, 700));
         verticalLayout_7 = new QVBoxLayout(scrollAreaWidgetContents);
         verticalLayout_7->setSpacing(6);
@@ -1037,7 +1082,6 @@ public:
         groupBox_5->setMinimumSize(QSize(0, 0));
         QFont font4;
         font4.setBold(false);
-        font4.setWeight(50);
         groupBox_5->setFont(font4);
         gridLayout_4 = new QGridLayout(groupBox_5);
         gridLayout_4->setSpacing(6);
@@ -1287,6 +1331,18 @@ public:
 
         pbSaveSetting = new QPushButton(frame_3);
         pbSaveSetting->setObjectName(QString::fromUtf8("pbSaveSetting"));
+        pbSaveSetting->setStyleSheet(QString::fromUtf8("/* \303\201p d\341\273\245ng cho m\341\273\231t ph\341\272\247n t\341\273\255 c\341\273\245 th\341\273\203, v\303\255 d\341\273\245 QPushButton */\n"
+"QPushButton {\n"
+"    background-color: #4A4A4F;\n"
+"    border-radius: 5px;\n"
+"    padding:5px;\n"
+"	color: rgb(208, 208, 209);\n"
+"}\n"
+"\n"
+"QPushButton:hover\n"
+"{\n"
+"	border: 2px solid #FFFFFF;\n"
+"}"));
 
         horizontalLayout_13->addWidget(pbSaveSetting);
 
@@ -1333,7 +1389,6 @@ public:
         QFont font5;
         font5.setPointSize(12);
         font5.setBold(false);
-        font5.setWeight(50);
         font5.setKerning(true);
         twProjectManager->setFont(font5);
         twProjectManager->setStyleSheet(QString::fromUtf8(""));
@@ -1378,9 +1433,10 @@ public:
         teLoggingBox->setMinimumSize(QSize(0, 0));
         teLoggingBox->setMaximumSize(QSize(16777215, 16777215));
         teLoggingBox->setStyleSheet(QString::fromUtf8("QTextEdit\n"
-"{		\n"
+"{\n"
+"	color: #CDCDCD;\n"
 "	border: none;\n"
-"	background-color: rgb(228, 244, 255);\n"
+"	background-color: #434347;\n"
 "}"));
 
         horizontalLayout_10->addWidget(teLoggingBox);
@@ -1388,8 +1444,7 @@ public:
         tbExpandLoggingBox = new QToolButton(fFileMenu);
         tbExpandLoggingBox->setObjectName(QString::fromUtf8("tbExpandLoggingBox"));
         QIcon icon11;
-        icon11.addFile(QString::fromUtf8(":/icon/icons8_collapse_arrow_20px.png"), QSize(), QIcon::Normal, QIcon::Off);
-        icon11.addFile(QString::fromUtf8(":/icon/icons8_expand_arrow_20px.png"), QSize(), QIcon::Normal, QIcon::On);
+        icon11.addFile(QString::fromUtf8(":/icon/Collapse Arrow.png"), QSize(), QIcon::Normal, QIcon::Off);
         tbExpandLoggingBox->setIcon(icon11);
         tbExpandLoggingBox->setCheckable(true);
         tbExpandLoggingBox->setAutoRaise(true);
@@ -1532,10 +1587,13 @@ public:
 
         twProjectManager->setTabText(twProjectManager->indexOf(tabAddNewButton), QCoreApplication::translate("MainWindow", "+", nullptr));
         teLoggingBox->setHtml(QCoreApplication::translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:'MS Shell Dlg 2'; font-size:7.8pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>", nullptr));
+"hr { height: 1px; border-width: 0; }\n"
+"li.unchecked::marker { content: \"\\2610\"; }\n"
+"li.checked::marker { content: \"\\2612\"; }\n"
+"</style></head><body style=\" font-family:'Segoe UI'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:7.8pt;\"><br /></p></body></html>", nullptr));
         tbExpandLoggingBox->setText(QString());
     } // retranslateUi
 

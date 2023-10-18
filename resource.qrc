@@ -145,5 +145,6 @@
         <file>icon/icons8_sleep_52px.png</file>
         <file>icon/icons8_switch_on_52px.png</file>
         <file>icon/icons8_switch_off_52px.png</file>
+        <file>icon/Collapse Arrow.png</file>
     </qresource>
 </RCC>

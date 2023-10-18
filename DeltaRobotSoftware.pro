@@ -11,7 +11,7 @@ windows {
     LIBS += E:\OpenCV\opencv-4.0\build\x64\vc15\lib\opencv_world400.lib
     LIBS += E:\OpenCV\opencv-4.0\build\x64\vc15\lib\opencv_world400d.lib
 
-    include ($$PWD\3rd-party\QJoysticks\QJoysticks.pri)
+#    include ($$PWD\3rd-party\QJoysticks\QJoysticks.pri)
 }
 
 #linux

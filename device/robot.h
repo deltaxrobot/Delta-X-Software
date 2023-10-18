@@ -24,6 +24,8 @@ public:
     void MovePoint(QVector3D point);
     void SetSyncPath(QString path, float con_vel, float con_angle);
 
+    float X,Y,Z,W,U,V,F,S,E,A,J,O;
+
 public slots:
     QString SendGcode(QString gcode = "G28", bool is_wait = false, int time_out = 10000);
     void ProcessResponse(QString id, QString response = "");
@@ -43,7 +45,7 @@ private:
     float path_rad_angle;
     Device* port;
     Scurve_Interpolator scurve_tool;
-    float X, Y, Z, W, U, V, F, A, S, E, J, O;
+
     float home_X, home_Y, home_Z, home_W, home_U, home_V;
     float old_X, old_Y, old_Z;
     QTimer* timer;
