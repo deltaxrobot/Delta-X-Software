@@ -92,19 +92,7 @@ public:
     QSpacerItem *horizontalSpacer_122;
     QComboBox *cbProgramSource;
     QFrame *frame_55;
-    QTabWidget *tabWidget;
-    QWidget *tab;
-    QVBoxLayout *verticalLayout_3;
-    QFrame *frame_10;
-    QHBoxLayout *horizontalLayout_9;
-    QToolButton *pbCreateNewGcode;
-    QToolButton *pbSaveGcode;
-    QToolButton *pbOpenGcodeDocs;
-    QCheckBox *cbEditGcodeEditor;
-    QToolButton *pbFormat;
-    CodeEditor *pteGcodeArea;
-    QWidget *tab_2;
-    QWidget *widget;
+    QHBoxLayout *horizontalLayout_2;
     QVBoxLayout *verticalLayout_2;
     QHBoxLayout *horizontalLayout_8;
     QLabel *label_3;
@@ -117,6 +105,16 @@ public:
     QToolButton *tbDeleteGcodeFile;
     QSpacerItem *horizontalSpacer_10;
     QTreeView *tvGcodeExplorer;
+    QVBoxLayout *verticalLayout_3;
+    QFrame *frame_10;
+    QHBoxLayout *horizontalLayout_9;
+    QLabel *label_87;
+    QToolButton *pbSaveGcode;
+    QToolButton *pbFormat;
+    QSpacerItem *horizontalSpacer_2;
+    QCheckBox *cbEditGcodeEditor;
+    QToolButton *pbOpenGcodeDocs;
+    CodeEditor *pteGcodeArea;
     QWidget *tObjectDetecting;
     QVBoxLayout *verticalLayout_25;
     QScrollArea *saObjectDetecting;
@@ -451,7 +449,7 @@ public:
     QHBoxLayout *horizontalLayout_24;
     QFrame *frame_2;
     QLabel *lbImageForDrawing;
-    QWidget *widget1;
+    QWidget *widget;
     QVBoxLayout *verticalLayout_36;
     QWidget *widget_3;
     QGridLayout *gridLayout_23;
@@ -966,7 +964,7 @@ public:
     QGroupBox *groupBox_22;
     QHBoxLayout *horizontalLayout_113;
     QLabel *lbBaudrate_8;
-    QWidget *widget2;
+    QWidget *widget1;
     QHBoxLayout *horizontalLayout_50;
     QTextEdit *teReceiveFromMCU;
     QLineEdit *leTransmitToMCU;
@@ -976,7 +974,7 @@ public:
     {
         if (RobotWindow->objectName().isEmpty())
             RobotWindow->setObjectName(QString::fromUtf8("RobotWindow"));
-        RobotWindow->resize(1210, 630);
+        RobotWindow->resize(1210, 780);
         QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
@@ -1394,6 +1392,7 @@ public:
         sizePolicy3.setVerticalStretch(0);
         sizePolicy3.setHeightForWidth(leIP->sizePolicy().hasHeightForWidth());
         leIP->setSizePolicy(sizePolicy3);
+        leIP->setMinimumSize(QSize(100, 0));
         leIP->setFrame(false);
         leIP->setDragEnabled(false);
         leIP->setReadOnly(true);
@@ -1412,6 +1411,7 @@ public:
         lePort->setObjectName(QString::fromUtf8("lePort"));
         sizePolicy.setHeightForWidth(lePort->sizePolicy().hasHeightForWidth());
         lePort->setSizePolicy(sizePolicy);
+        lePort->setMinimumSize(QSize(60, 0));
         lePort->setFrame(false);
         lePort->setDragEnabled(false);
         lePort->setReadOnly(true);
@@ -1496,7 +1496,23 @@ public:
         ModuleTabManagerWidget = new QWidget(splitter_2);
         ModuleTabManagerWidget->setObjectName(QString::fromUtf8("ModuleTabManagerWidget"));
         ModuleTabManagerWidget->setMinimumSize(QSize(0, 0));
-        ModuleTabManagerWidget->setStyleSheet(QString::fromUtf8(""));
+        ModuleTabManagerWidget->setStyleSheet(QString::fromUtf8("QToolButton\n"
+"{\n"
+"	\n"
+"	color: rgb(255, 255, 255);\n"
+"	border-radius: 5px;\n"
+"	color: \n"
+"}\n"
+"\n"
+"QToolButton::hover\n"
+"{\n"
+"border: 2px solid #FFFFFF;\n"
+"background-color: rgb(129, 129, 129);;\n"
+"}\n"
+"QToolButton::pressed\n"
+"{\n"
+"	background-color: rgb(81, 176, 255);\n"
+"}"));
         ModuleTabManagerLayout = new QVBoxLayout(ModuleTabManagerWidget);
         ModuleTabManagerLayout->setSpacing(0);
         ModuleTabManagerLayout->setContentsMargins(11, 11, 11, 11);
@@ -1578,6 +1594,7 @@ public:
         verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
         robotTitile_16 = new QFrame(tGcodeEditor);
         robotTitile_16->setObjectName(QString::fromUtf8("robotTitile_16"));
+        robotTitile_16->setMinimumSize(QSize(0, 40));
         robotTitile_16->setMaximumSize(QSize(16777215, 40));
         robotTitile_16->setStyleSheet(QString::fromUtf8("QFrame\n"
 "{\n"
@@ -1619,6 +1636,7 @@ public:
         horizontalLayout_114->setSpacing(6);
         horizontalLayout_114->setContentsMargins(11, 11, 11, 11);
         horizontalLayout_114->setObjectName(QString::fromUtf8("horizontalLayout_114"));
+        horizontalLayout_114->setContentsMargins(-1, 0, -1, 0);
         label_28 = new QLabel(robotTitile_16);
         label_28->setObjectName(QString::fromUtf8("label_28"));
 
@@ -1645,26 +1663,33 @@ public:
 
         rbEditorStart = new QRadioButton(robotTitile_16);
         rbEditorStart->setObjectName(QString::fromUtf8("rbEditorStart"));
-        rbEditorStart->setMinimumSize(QSize(60, 0));
+        QSizePolicy sizePolicy6(QSizePolicy::Minimum, QSizePolicy::Minimum);
+        sizePolicy6.setHorizontalStretch(0);
+        sizePolicy6.setVerticalStretch(0);
+        sizePolicy6.setHeightForWidth(rbEditorStart->sizePolicy().hasHeightForWidth());
+        rbEditorStart->setSizePolicy(sizePolicy6);
+        rbEditorStart->setMinimumSize(QSize(60, 30));
         rbEditorStart->setChecked(true);
 
         horizontalLayout_114->addWidget(rbEditorStart);
 
         rbEditorCurrent = new QRadioButton(robotTitile_16);
         rbEditorCurrent->setObjectName(QString::fromUtf8("rbEditorCurrent"));
-        rbEditorCurrent->setMinimumSize(QSize(60, 0));
+        sizePolicy6.setHeightForWidth(rbEditorCurrent->sizePolicy().hasHeightForWidth());
+        rbEditorCurrent->setSizePolicy(sizePolicy6);
+        rbEditorCurrent->setMinimumSize(QSize(60, 30));
         rbEditorCurrent->setChecked(false);
 
         horizontalLayout_114->addWidget(rbEditorCurrent);
 
         pbExecuteGcodes = new QPushButton(robotTitile_16);
         pbExecuteGcodes->setObjectName(QString::fromUtf8("pbExecuteGcodes"));
-        QSizePolicy sizePolicy6(QSizePolicy::Minimum, QSizePolicy::Expanding);
-        sizePolicy6.setHorizontalStretch(0);
-        sizePolicy6.setVerticalStretch(0);
-        sizePolicy6.setHeightForWidth(pbExecuteGcodes->sizePolicy().hasHeightForWidth());
-        pbExecuteGcodes->setSizePolicy(sizePolicy6);
-        pbExecuteGcodes->setMinimumSize(QSize(70, 0));
+        QSizePolicy sizePolicy7(QSizePolicy::Minimum, QSizePolicy::Expanding);
+        sizePolicy7.setHorizontalStretch(0);
+        sizePolicy7.setVerticalStretch(0);
+        sizePolicy7.setHeightForWidth(pbExecuteGcodes->sizePolicy().hasHeightForWidth());
+        pbExecuteGcodes->setSizePolicy(sizePolicy7);
+        pbExecuteGcodes->setMinimumSize(QSize(70, 30));
         QFont font4;
         font4.setPointSize(10);
         pbExecuteGcodes->setFont(font4);
@@ -1759,131 +1784,31 @@ public:
 "}"));
         frame_55->setFrameShape(QFrame::StyledPanel);
         frame_55->setFrameShadow(QFrame::Raised);
-        tabWidget = new QTabWidget(frame_55);
-        tabWidget->setObjectName(QString::fromUtf8("tabWidget"));
-        tabWidget->setGeometry(QRect(264, 6, 326, 444));
-        tab = new QWidget();
-        tab->setObjectName(QString::fromUtf8("tab"));
-        verticalLayout_3 = new QVBoxLayout(tab);
-        verticalLayout_3->setSpacing(6);
-        verticalLayout_3->setContentsMargins(11, 11, 11, 11);
-        verticalLayout_3->setObjectName(QString::fromUtf8("verticalLayout_3"));
-        frame_10 = new QFrame(tab);
-        frame_10->setObjectName(QString::fromUtf8("frame_10"));
-        frame_10->setMinimumSize(QSize(0, 0));
-        frame_10->setFrameShape(QFrame::StyledPanel);
-        frame_10->setFrameShadow(QFrame::Raised);
-        horizontalLayout_9 = new QHBoxLayout(frame_10);
-        horizontalLayout_9->setSpacing(2);
-        horizontalLayout_9->setContentsMargins(11, 11, 11, 11);
-        horizontalLayout_9->setObjectName(QString::fromUtf8("horizontalLayout_9"));
-        horizontalLayout_9->setContentsMargins(2, 2, 2, 2);
-        pbCreateNewGcode = new QToolButton(frame_10);
-        pbCreateNewGcode->setObjectName(QString::fromUtf8("pbCreateNewGcode"));
-        sizePolicy.setHeightForWidth(pbCreateNewGcode->sizePolicy().hasHeightForWidth());
-        pbCreateNewGcode->setSizePolicy(sizePolicy);
-        pbCreateNewGcode->setMinimumSize(QSize(30, 30));
-        QIcon icon3;
-        icon3.addFile(QString::fromUtf8(":/icon/icons8_add_new_52px.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbCreateNewGcode->setIcon(icon3);
-        pbCreateNewGcode->setIconSize(QSize(32, 32));
-        pbCreateNewGcode->setAutoRaise(true);
-
-        horizontalLayout_9->addWidget(pbCreateNewGcode);
-
-        pbSaveGcode = new QToolButton(frame_10);
-        pbSaveGcode->setObjectName(QString::fromUtf8("pbSaveGcode"));
-        sizePolicy.setHeightForWidth(pbSaveGcode->sizePolicy().hasHeightForWidth());
-        pbSaveGcode->setSizePolicy(sizePolicy);
-        pbSaveGcode->setMinimumSize(QSize(30, 30));
-        QIcon icon4;
-        icon4.addFile(QString::fromUtf8(":/icon/icons8_save_52px_1.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbSaveGcode->setIcon(icon4);
-        pbSaveGcode->setIconSize(QSize(32, 32));
-        pbSaveGcode->setAutoRaise(true);
-
-        horizontalLayout_9->addWidget(pbSaveGcode);
-
-        pbOpenGcodeDocs = new QToolButton(frame_10);
-        pbOpenGcodeDocs->setObjectName(QString::fromUtf8("pbOpenGcodeDocs"));
-        QIcon icon5;
-        icon5.addFile(QString::fromUtf8(":/icon/icons8_help_52px.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbOpenGcodeDocs->setIcon(icon5);
-        pbOpenGcodeDocs->setIconSize(QSize(32, 32));
-        pbOpenGcodeDocs->setAutoRaise(true);
-
-        horizontalLayout_9->addWidget(pbOpenGcodeDocs);
-
-        cbEditGcodeEditor = new QCheckBox(frame_10);
-        cbEditGcodeEditor->setObjectName(QString::fromUtf8("cbEditGcodeEditor"));
-        QFont font5;
-        font5.setPointSize(8);
-        font5.setBold(false);
-        font5.setKerning(true);
-        cbEditGcodeEditor->setFont(font5);
-        cbEditGcodeEditor->setIconSize(QSize(32, 32));
-        cbEditGcodeEditor->setChecked(true);
-
-        horizontalLayout_9->addWidget(cbEditGcodeEditor);
-
-        pbFormat = new QToolButton(frame_10);
-        pbFormat->setObjectName(QString::fromUtf8("pbFormat"));
-        QIcon icon6;
-        icon6.addFile(QString::fromUtf8(":/icon/icons8_view_details_52px.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbFormat->setIcon(icon6);
-        pbFormat->setIconSize(QSize(32, 32));
-        pbFormat->setAutoRaise(true);
-
-        horizontalLayout_9->addWidget(pbFormat);
-
-
-        verticalLayout_3->addWidget(frame_10);
-
-        pteGcodeArea = new CodeEditor(tab);
-        pteGcodeArea->setObjectName(QString::fromUtf8("pteGcodeArea"));
-        QSizePolicy sizePolicy7(QSizePolicy::Preferred, QSizePolicy::Expanding);
-        sizePolicy7.setHorizontalStretch(0);
-        sizePolicy7.setVerticalStretch(0);
-        sizePolicy7.setHeightForWidth(pteGcodeArea->sizePolicy().hasHeightForWidth());
-        pteGcodeArea->setSizePolicy(sizePolicy7);
-        pteGcodeArea->setMinimumSize(QSize(310, 500));
-        pteGcodeArea->setFont(font5);
-        pteGcodeArea->setStyleSheet(QString::fromUtf8(""));
-        pteGcodeArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
-        pteGcodeArea->setReadOnly(false);
-        pteGcodeArea->setTextInteractionFlags(Qt::TextEditorInteraction);
-
-        verticalLayout_3->addWidget(pteGcodeArea);
-
-        tabWidget->addTab(tab, QString());
-        tab_2 = new QWidget();
-        tab_2->setObjectName(QString::fromUtf8("tab_2"));
-        tabWidget->addTab(tab_2, QString());
-        widget = new QWidget(frame_55);
-        widget->setObjectName(QString::fromUtf8("widget"));
-        widget->setGeometry(QRect(6, 6, 254, 444));
-        verticalLayout_2 = new QVBoxLayout(widget);
+        horizontalLayout_2 = new QHBoxLayout(frame_55);
+        horizontalLayout_2->setSpacing(6);
+        horizontalLayout_2->setContentsMargins(11, 11, 11, 11);
+        horizontalLayout_2->setObjectName(QString::fromUtf8("horizontalLayout_2"));
+        verticalLayout_2 = new QVBoxLayout();
         verticalLayout_2->setSpacing(6);
-        verticalLayout_2->setContentsMargins(11, 11, 11, 11);
         verticalLayout_2->setObjectName(QString::fromUtf8("verticalLayout_2"));
-        verticalLayout_2->setContentsMargins(0, 0, 0, 0);
         horizontalLayout_8 = new QHBoxLayout();
         horizontalLayout_8->setSpacing(6);
         horizontalLayout_8->setObjectName(QString::fromUtf8("horizontalLayout_8"));
-        label_3 = new QLabel(widget);
+        label_3 = new QLabel(frame_55);
         label_3->setObjectName(QString::fromUtf8("label_3"));
 
         horizontalLayout_8->addWidget(label_3);
 
-        tbOpenGcodePath = new QToolButton(widget);
+        tbOpenGcodePath = new QToolButton(frame_55);
         tbOpenGcodePath->setObjectName(QString::fromUtf8("tbOpenGcodePath"));
-        QIcon icon7;
-        icon7.addFile(QString::fromUtf8(":/icon/icons8_folder_52px.png"), QSize(), QIcon::Normal, QIcon::Off);
-        tbOpenGcodePath->setIcon(icon7);
+        QIcon icon3;
+        icon3.addFile(QString::fromUtf8(":/icon/icons8_folder_52px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        tbOpenGcodePath->setIcon(icon3);
+        tbOpenGcodePath->setAutoRaise(true);
 
         horizontalLayout_8->addWidget(tbOpenGcodePath);
 
-        leGcodeExplorer = new QLineEdit(widget);
+        leGcodeExplorer = new QLineEdit(frame_55);
         leGcodeExplorer->setObjectName(QString::fromUtf8("leGcodeExplorer"));
 
         horizontalLayout_8->addWidget(leGcodeExplorer);
@@ -1894,33 +1819,36 @@ public:
         horizontalLayout_6 = new QHBoxLayout();
         horizontalLayout_6->setSpacing(6);
         horizontalLayout_6->setObjectName(QString::fromUtf8("horizontalLayout_6"));
-        tbBackGcodeFolder = new QToolButton(widget);
+        tbBackGcodeFolder = new QToolButton(frame_55);
         tbBackGcodeFolder->setObjectName(QString::fromUtf8("tbBackGcodeFolder"));
-        QIcon icon8;
-        icon8.addFile(QString::fromUtf8(":/icon/icons8_back_52px.png"), QSize(), QIcon::Normal, QIcon::Off);
-        tbBackGcodeFolder->setIcon(icon8);
+        QIcon icon4;
+        icon4.addFile(QString::fromUtf8(":/icon/icons8_back_52px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        tbBackGcodeFolder->setIcon(icon4);
+        tbBackGcodeFolder->setAutoRaise(true);
 
         horizontalLayout_6->addWidget(tbBackGcodeFolder);
 
-        tbNewGcodeFile = new QToolButton(widget);
+        tbNewGcodeFile = new QToolButton(frame_55);
         tbNewGcodeFile->setObjectName(QString::fromUtf8("tbNewGcodeFile"));
-        tbNewGcodeFile->setIcon(icon3);
+        QIcon icon5;
+        icon5.addFile(QString::fromUtf8(":/icon/icons8_add_new_52px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        tbNewGcodeFile->setIcon(icon5);
 
         horizontalLayout_6->addWidget(tbNewGcodeFile);
 
-        tbRefreshExplorer = new QToolButton(widget);
+        tbRefreshExplorer = new QToolButton(frame_55);
         tbRefreshExplorer->setObjectName(QString::fromUtf8("tbRefreshExplorer"));
-        QIcon icon9;
-        icon9.addFile(QString::fromUtf8(":/icon/icons8_refresh_52px.png"), QSize(), QIcon::Normal, QIcon::Off);
-        tbRefreshExplorer->setIcon(icon9);
+        QIcon icon6;
+        icon6.addFile(QString::fromUtf8(":/icon/icons8_refresh_52px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        tbRefreshExplorer->setIcon(icon6);
 
         horizontalLayout_6->addWidget(tbRefreshExplorer);
 
-        tbDeleteGcodeFile = new QToolButton(widget);
+        tbDeleteGcodeFile = new QToolButton(frame_55);
         tbDeleteGcodeFile->setObjectName(QString::fromUtf8("tbDeleteGcodeFile"));
-        QIcon icon10;
-        icon10.addFile(QString::fromUtf8(":/icon/icons8_close_52px.png"), QSize(), QIcon::Normal, QIcon::Off);
-        tbDeleteGcodeFile->setIcon(icon10);
+        QIcon icon7;
+        icon7.addFile(QString::fromUtf8(":/icon/icons8_close_52px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        tbDeleteGcodeFile->setIcon(icon7);
 
         horizontalLayout_6->addWidget(tbDeleteGcodeFile);
 
@@ -1931,11 +1859,128 @@ public:
 
         verticalLayout_2->addLayout(horizontalLayout_6);
 
-        tvGcodeExplorer = new QTreeView(widget);
+        tvGcodeExplorer = new QTreeView(frame_55);
         tvGcodeExplorer->setObjectName(QString::fromUtf8("tvGcodeExplorer"));
+        tvGcodeExplorer->setStyleSheet(QString::fromUtf8("QTreeView\n"
+"{\n"
+"	\n"
+"	color: rgb(219, 219, 220);\n"
+"}"));
+        tvGcodeExplorer->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+        tvGcodeExplorer->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 
         verticalLayout_2->addWidget(tvGcodeExplorer);
 
+
+        horizontalLayout_2->addLayout(verticalLayout_2);
+
+        verticalLayout_3 = new QVBoxLayout();
+        verticalLayout_3->setSpacing(6);
+        verticalLayout_3->setObjectName(QString::fromUtf8("verticalLayout_3"));
+        frame_10 = new QFrame(frame_55);
+        frame_10->setObjectName(QString::fromUtf8("frame_10"));
+        frame_10->setMinimumSize(QSize(0, 0));
+        frame_10->setStyleSheet(QString::fromUtf8("QFrame\n"
+"{	\n"
+"	background-color: #333337;\n"
+"}"));
+        frame_10->setFrameShape(QFrame::StyledPanel);
+        frame_10->setFrameShadow(QFrame::Raised);
+        horizontalLayout_9 = new QHBoxLayout(frame_10);
+        horizontalLayout_9->setSpacing(5);
+        horizontalLayout_9->setContentsMargins(11, 11, 11, 11);
+        horizontalLayout_9->setObjectName(QString::fromUtf8("horizontalLayout_9"));
+        horizontalLayout_9->setContentsMargins(5, 5, 5, 5);
+        label_87 = new QLabel(frame_10);
+        label_87->setObjectName(QString::fromUtf8("label_87"));
+
+        horizontalLayout_9->addWidget(label_87);
+
+        pbSaveGcode = new QToolButton(frame_10);
+        pbSaveGcode->setObjectName(QString::fromUtf8("pbSaveGcode"));
+        sizePolicy.setHeightForWidth(pbSaveGcode->sizePolicy().hasHeightForWidth());
+        pbSaveGcode->setSizePolicy(sizePolicy);
+        pbSaveGcode->setMinimumSize(QSize(0, 0));
+        pbSaveGcode->setMaximumSize(QSize(20, 20));
+        QIcon icon8;
+        icon8.addFile(QString::fromUtf8(":/icon/icons8_save_52px_1.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbSaveGcode->setIcon(icon8);
+        pbSaveGcode->setIconSize(QSize(32, 32));
+        pbSaveGcode->setAutoRaise(true);
+
+        horizontalLayout_9->addWidget(pbSaveGcode);
+
+        pbFormat = new QToolButton(frame_10);
+        pbFormat->setObjectName(QString::fromUtf8("pbFormat"));
+        QIcon icon9;
+        icon9.addFile(QString::fromUtf8(":/icon/icons8_view_details_52px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbFormat->setIcon(icon9);
+        pbFormat->setIconSize(QSize(20, 20));
+        pbFormat->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+        pbFormat->setAutoRaise(true);
+
+        horizontalLayout_9->addWidget(pbFormat);
+
+        horizontalSpacer_2 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        horizontalLayout_9->addItem(horizontalSpacer_2);
+
+        cbEditGcodeEditor = new QCheckBox(frame_10);
+        cbEditGcodeEditor->setObjectName(QString::fromUtf8("cbEditGcodeEditor"));
+        QSizePolicy sizePolicy8(QSizePolicy::MinimumExpanding, QSizePolicy::Preferred);
+        sizePolicy8.setHorizontalStretch(0);
+        sizePolicy8.setVerticalStretch(0);
+        sizePolicy8.setHeightForWidth(cbEditGcodeEditor->sizePolicy().hasHeightForWidth());
+        cbEditGcodeEditor->setSizePolicy(sizePolicy8);
+        cbEditGcodeEditor->setMinimumSize(QSize(20, 0));
+        QFont font5;
+        font5.setPointSize(8);
+        font5.setBold(false);
+        font5.setKerning(true);
+        cbEditGcodeEditor->setFont(font5);
+        cbEditGcodeEditor->setIconSize(QSize(32, 32));
+        cbEditGcodeEditor->setChecked(true);
+
+        horizontalLayout_9->addWidget(cbEditGcodeEditor);
+
+        pbOpenGcodeDocs = new QToolButton(frame_10);
+        pbOpenGcodeDocs->setObjectName(QString::fromUtf8("pbOpenGcodeDocs"));
+        sizePolicy6.setHeightForWidth(pbOpenGcodeDocs->sizePolicy().hasHeightForWidth());
+        pbOpenGcodeDocs->setSizePolicy(sizePolicy6);
+        pbOpenGcodeDocs->setMaximumSize(QSize(20, 20));
+        QIcon icon10;
+        icon10.addFile(QString::fromUtf8(":/icon/icons8_help_52px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbOpenGcodeDocs->setIcon(icon10);
+        pbOpenGcodeDocs->setIconSize(QSize(32, 32));
+        pbOpenGcodeDocs->setAutoRaise(true);
+
+        horizontalLayout_9->addWidget(pbOpenGcodeDocs);
+
+
+        verticalLayout_3->addWidget(frame_10);
+
+        pteGcodeArea = new CodeEditor(frame_55);
+        pteGcodeArea->setObjectName(QString::fromUtf8("pteGcodeArea"));
+        QSizePolicy sizePolicy9(QSizePolicy::Preferred, QSizePolicy::Expanding);
+        sizePolicy9.setHorizontalStretch(0);
+        sizePolicy9.setVerticalStretch(0);
+        sizePolicy9.setHeightForWidth(pteGcodeArea->sizePolicy().hasHeightForWidth());
+        pteGcodeArea->setSizePolicy(sizePolicy9);
+        pteGcodeArea->setMinimumSize(QSize(310, 500));
+        pteGcodeArea->setFont(font5);
+        pteGcodeArea->setStyleSheet(QString::fromUtf8(""));
+        pteGcodeArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+        pteGcodeArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+        pteGcodeArea->setReadOnly(false);
+        pteGcodeArea->setTextInteractionFlags(Qt::TextEditorInteraction);
+
+        verticalLayout_3->addWidget(pteGcodeArea);
+
+
+        horizontalLayout_2->addLayout(verticalLayout_3);
+
+        horizontalLayout_2->setStretch(0, 1);
+        horizontalLayout_2->setStretch(1, 3);
 
         verticalLayout_84->addWidget(frame_55);
 
@@ -1957,7 +2002,7 @@ public:
         saObjectDetecting->setWidgetResizable(true);
         wObjectDetecting = new QWidget();
         wObjectDetecting->setObjectName(QString::fromUtf8("wObjectDetecting"));
-        wObjectDetecting->setGeometry(QRect(0, 0, 596, 4000));
+        wObjectDetecting->setGeometry(QRect(0, 0, 586, 4000));
         wObjectDetecting->setMinimumSize(QSize(100, 4000));
         wObjectDetecting->setStyleSheet(QString::fromUtf8("QWidget#wObjectDetecting\n"
 "{	\n"
@@ -1983,11 +2028,11 @@ public:
         cbSelectedDetecting->addItem(QString());
         cbSelectedDetecting->addItem(QString());
         cbSelectedDetecting->setObjectName(QString::fromUtf8("cbSelectedDetecting"));
-        QSizePolicy sizePolicy8(QSizePolicy::Minimum, QSizePolicy::Fixed);
-        sizePolicy8.setHorizontalStretch(0);
-        sizePolicy8.setVerticalStretch(0);
-        sizePolicy8.setHeightForWidth(cbSelectedDetecting->sizePolicy().hasHeightForWidth());
-        cbSelectedDetecting->setSizePolicy(sizePolicy8);
+        QSizePolicy sizePolicy10(QSizePolicy::Minimum, QSizePolicy::Fixed);
+        sizePolicy10.setHorizontalStretch(0);
+        sizePolicy10.setVerticalStretch(0);
+        sizePolicy10.setHeightForWidth(cbSelectedDetecting->sizePolicy().hasHeightForWidth());
+        cbSelectedDetecting->setSizePolicy(sizePolicy10);
 
         horizontalLayout_17->addWidget(cbSelectedDetecting);
 
@@ -2200,11 +2245,11 @@ public:
         cbImageOutput->addItem(QString());
         cbImageOutput->setObjectName(QString::fromUtf8("cbImageOutput"));
         cbImageOutput->setEnabled(false);
-        QSizePolicy sizePolicy9(QSizePolicy::Fixed, QSizePolicy::Preferred);
-        sizePolicy9.setHorizontalStretch(0);
-        sizePolicy9.setVerticalStretch(0);
-        sizePolicy9.setHeightForWidth(cbImageOutput->sizePolicy().hasHeightForWidth());
-        cbImageOutput->setSizePolicy(sizePolicy9);
+        QSizePolicy sizePolicy11(QSizePolicy::Fixed, QSizePolicy::Preferred);
+        sizePolicy11.setHorizontalStretch(0);
+        sizePolicy11.setVerticalStretch(0);
+        sizePolicy11.setHeightForWidth(cbImageOutput->sizePolicy().hasHeightForWidth());
+        cbImageOutput->setSizePolicy(sizePolicy11);
         cbImageOutput->setMinimumSize(QSize(90, 0));
 
         verticalLayout_10->addWidget(cbImageOutput);
@@ -2242,11 +2287,11 @@ public:
         splitter->addWidget(gbImageViewer);
         fObjectDetectingTool = new QFrame(splitter);
         fObjectDetectingTool->setObjectName(QString::fromUtf8("fObjectDetectingTool"));
-        QSizePolicy sizePolicy10(QSizePolicy::Expanding, QSizePolicy::Expanding);
-        sizePolicy10.setHorizontalStretch(0);
-        sizePolicy10.setVerticalStretch(30);
-        sizePolicy10.setHeightForWidth(fObjectDetectingTool->sizePolicy().hasHeightForWidth());
-        fObjectDetectingTool->setSizePolicy(sizePolicy10);
+        QSizePolicy sizePolicy12(QSizePolicy::Expanding, QSizePolicy::Expanding);
+        sizePolicy12.setHorizontalStretch(0);
+        sizePolicy12.setVerticalStretch(30);
+        sizePolicy12.setHeightForWidth(fObjectDetectingTool->sizePolicy().hasHeightForWidth());
+        fObjectDetectingTool->setSizePolicy(sizePolicy12);
         fObjectDetectingTool->setMinimumSize(QSize(0, 0));
         fObjectDetectingTool->setFrameShape(QFrame::StyledPanel);
         fObjectDetectingTool->setFrameShadow(QFrame::Raised);
@@ -2419,11 +2464,11 @@ public:
 
         leImageWidth = new QLineEdit(fCameraPara);
         leImageWidth->setObjectName(QString::fromUtf8("leImageWidth"));
-        QSizePolicy sizePolicy11(QSizePolicy::Expanding, QSizePolicy::Minimum);
-        sizePolicy11.setHorizontalStretch(0);
-        sizePolicy11.setVerticalStretch(0);
-        sizePolicy11.setHeightForWidth(leImageWidth->sizePolicy().hasHeightForWidth());
-        leImageWidth->setSizePolicy(sizePolicy11);
+        QSizePolicy sizePolicy13(QSizePolicy::Expanding, QSizePolicy::Minimum);
+        sizePolicy13.setHorizontalStretch(0);
+        sizePolicy13.setVerticalStretch(0);
+        sizePolicy13.setHeightForWidth(leImageWidth->sizePolicy().hasHeightForWidth());
+        leImageWidth->setSizePolicy(sizePolicy13);
         leImageWidth->setMinimumSize(QSize(0, 10));
         leImageWidth->setMaximumSize(QSize(40, 25));
         leImageWidth->setFont(font8);
@@ -2440,8 +2485,8 @@ public:
 
         leImageHeight = new QLineEdit(fCameraPara);
         leImageHeight->setObjectName(QString::fromUtf8("leImageHeight"));
-        sizePolicy11.setHeightForWidth(leImageHeight->sizePolicy().hasHeightForWidth());
-        leImageHeight->setSizePolicy(sizePolicy11);
+        sizePolicy13.setHeightForWidth(leImageHeight->sizePolicy().hasHeightForWidth());
+        leImageHeight->setSizePolicy(sizePolicy13);
         leImageHeight->setMinimumSize(QSize(0, 10));
         leImageHeight->setMaximumSize(QSize(40, 25));
         leImageHeight->setFont(font8);
@@ -2458,8 +2503,8 @@ public:
 
         leCaptureInterval = new QLineEdit(fCameraPara);
         leCaptureInterval->setObjectName(QString::fromUtf8("leCaptureInterval"));
-        sizePolicy11.setHeightForWidth(leCaptureInterval->sizePolicy().hasHeightForWidth());
-        leCaptureInterval->setSizePolicy(sizePolicy11);
+        sizePolicy13.setHeightForWidth(leCaptureInterval->sizePolicy().hasHeightForWidth());
+        leCaptureInterval->setSizePolicy(sizePolicy13);
         leCaptureInterval->setMinimumSize(QSize(0, 10));
         leCaptureInterval->setMaximumSize(QSize(40, 25));
         leCaptureInterval->setFont(font8);
@@ -2783,11 +2828,8 @@ public:
 
         leObjectOverlay = new QLineEdit(frame_13);
         leObjectOverlay->setObjectName(QString::fromUtf8("leObjectOverlay"));
-        QSizePolicy sizePolicy12(QSizePolicy::Minimum, QSizePolicy::Minimum);
-        sizePolicy12.setHorizontalStretch(0);
-        sizePolicy12.setVerticalStretch(0);
-        sizePolicy12.setHeightForWidth(leObjectOverlay->sizePolicy().hasHeightForWidth());
-        leObjectOverlay->setSizePolicy(sizePolicy12);
+        sizePolicy6.setHeightForWidth(leObjectOverlay->sizePolicy().hasHeightForWidth());
+        leObjectOverlay->setSizePolicy(sizePolicy6);
         leObjectOverlay->setMinimumSize(QSize(0, 30));
         leObjectOverlay->setMaximumSize(QSize(50, 16777215));
 
@@ -2811,8 +2853,8 @@ public:
         gridLayout_14->setObjectName(QString::fromUtf8("gridLayout_14"));
         leMaxWRec = new QLineEdit(fBlobPanel);
         leMaxWRec->setObjectName(QString::fromUtf8("leMaxWRec"));
-        sizePolicy12.setHeightForWidth(leMaxWRec->sizePolicy().hasHeightForWidth());
-        leMaxWRec->setSizePolicy(sizePolicy12);
+        sizePolicy6.setHeightForWidth(leMaxWRec->sizePolicy().hasHeightForWidth());
+        leMaxWRec->setSizePolicy(sizePolicy6);
         leMaxWRec->setMinimumSize(QSize(0, 20));
         leMaxWRec->setMaximumSize(QSize(50, 16777215));
 
@@ -2826,8 +2868,8 @@ public:
 
         leMinLRec = new QLineEdit(fBlobPanel);
         leMinLRec->setObjectName(QString::fromUtf8("leMinLRec"));
-        sizePolicy12.setHeightForWidth(leMinLRec->sizePolicy().hasHeightForWidth());
-        leMinLRec->setSizePolicy(sizePolicy12);
+        sizePolicy6.setHeightForWidth(leMinLRec->sizePolicy().hasHeightForWidth());
+        leMinLRec->setSizePolicy(sizePolicy6);
         leMinLRec->setMinimumSize(QSize(0, 20));
         leMinLRec->setMaximumSize(QSize(50, 16777215));
 
@@ -2835,8 +2877,8 @@ public:
 
         leMaxLRec = new QLineEdit(fBlobPanel);
         leMaxLRec->setObjectName(QString::fromUtf8("leMaxLRec"));
-        sizePolicy12.setHeightForWidth(leMaxLRec->sizePolicy().hasHeightForWidth());
-        leMaxLRec->setSizePolicy(sizePolicy12);
+        sizePolicy6.setHeightForWidth(leMaxLRec->sizePolicy().hasHeightForWidth());
+        leMaxLRec->setSizePolicy(sizePolicy6);
         leMaxLRec->setMinimumSize(QSize(0, 20));
         leMaxLRec->setMaximumSize(QSize(50, 16777215));
 
@@ -2844,8 +2886,8 @@ public:
 
         leWRec = new QLineEdit(fBlobPanel);
         leWRec->setObjectName(QString::fromUtf8("leWRec"));
-        sizePolicy12.setHeightForWidth(leWRec->sizePolicy().hasHeightForWidth());
-        leWRec->setSizePolicy(sizePolicy12);
+        sizePolicy6.setHeightForWidth(leWRec->sizePolicy().hasHeightForWidth());
+        leWRec->setSizePolicy(sizePolicy6);
         leWRec->setMinimumSize(QSize(0, 30));
         leWRec->setMaximumSize(QSize(50, 16777215));
 
@@ -2859,8 +2901,8 @@ public:
 
         leLRec = new QLineEdit(fBlobPanel);
         leLRec->setObjectName(QString::fromUtf8("leLRec"));
-        sizePolicy12.setHeightForWidth(leLRec->sizePolicy().hasHeightForWidth());
-        leLRec->setSizePolicy(sizePolicy12);
+        sizePolicy6.setHeightForWidth(leLRec->sizePolicy().hasHeightForWidth());
+        leLRec->setSizePolicy(sizePolicy6);
         leLRec->setMinimumSize(QSize(0, 30));
         leLRec->setMaximumSize(QSize(50, 16777215));
 
@@ -2889,8 +2931,8 @@ public:
 
         leMinWRec = new QLineEdit(fBlobPanel);
         leMinWRec->setObjectName(QString::fromUtf8("leMinWRec"));
-        sizePolicy12.setHeightForWidth(leMinWRec->sizePolicy().hasHeightForWidth());
-        leMinWRec->setSizePolicy(sizePolicy12);
+        sizePolicy6.setHeightForWidth(leMinWRec->sizePolicy().hasHeightForWidth());
+        leMinWRec->setSizePolicy(sizePolicy6);
         leMinWRec->setMinimumSize(QSize(0, 20));
         leMinWRec->setMaximumSize(QSize(50, 16777215));
 
@@ -2947,8 +2989,8 @@ public:
         gridLayout_28->setObjectName(QString::fromUtf8("gridLayout_28"));
         pbRunExternalScript = new QPushButton(fExternalScriptPanel);
         pbRunExternalScript->setObjectName(QString::fromUtf8("pbRunExternalScript"));
-        sizePolicy12.setHeightForWidth(pbRunExternalScript->sizePolicy().hasHeightForWidth());
-        pbRunExternalScript->setSizePolicy(sizePolicy12);
+        sizePolicy6.setHeightForWidth(pbRunExternalScript->sizePolicy().hasHeightForWidth());
+        pbRunExternalScript->setSizePolicy(sizePolicy6);
         pbRunExternalScript->setMaximumSize(QSize(30, 16777215));
         QIcon icon25;
         icon25.addFile(QString::fromUtf8(":/icon/icons8_play_48px.png"), QSize(), QIcon::Normal, QIcon::Off);
@@ -2993,8 +3035,8 @@ public:
 
         pbExternalScriptOpen = new QPushButton(fExternalScriptPanel);
         pbExternalScriptOpen->setObjectName(QString::fromUtf8("pbExternalScriptOpen"));
-        sizePolicy12.setHeightForWidth(pbExternalScriptOpen->sizePolicy().hasHeightForWidth());
-        pbExternalScriptOpen->setSizePolicy(sizePolicy12);
+        sizePolicy6.setHeightForWidth(pbExternalScriptOpen->sizePolicy().hasHeightForWidth());
+        pbExternalScriptOpen->setSizePolicy(sizePolicy6);
         pbExternalScriptOpen->setMaximumSize(QSize(30, 16777215));
         QIcon icon26;
         icon26.addFile(QString::fromUtf8(":/icon/icons8_folder_64px.png"), QSize(), QIcon::Normal, QIcon::Off);
@@ -3014,8 +3056,8 @@ public:
 
         pbExternalScriptHelp = new QPushButton(fExternalScriptPanel);
         pbExternalScriptHelp->setObjectName(QString::fromUtf8("pbExternalScriptHelp"));
-        sizePolicy12.setHeightForWidth(pbExternalScriptHelp->sizePolicy().hasHeightForWidth());
-        pbExternalScriptHelp->setSizePolicy(sizePolicy12);
+        sizePolicy6.setHeightForWidth(pbExternalScriptHelp->sizePolicy().hasHeightForWidth());
+        pbExternalScriptHelp->setSizePolicy(sizePolicy6);
         pbExternalScriptHelp->setMaximumSize(QSize(30, 16777215));
 
         gridLayout_28->addWidget(pbExternalScriptHelp, 0, 4, 1, 1);
@@ -3037,8 +3079,8 @@ public:
 
         lePythonUrl = new QLineEdit(fExternalScriptPanel);
         lePythonUrl->setObjectName(QString::fromUtf8("lePythonUrl"));
-        sizePolicy11.setHeightForWidth(lePythonUrl->sizePolicy().hasHeightForWidth());
-        lePythonUrl->setSizePolicy(sizePolicy11);
+        sizePolicy13.setHeightForWidth(lePythonUrl->sizePolicy().hasHeightForWidth());
+        lePythonUrl->setSizePolicy(sizePolicy13);
         lePythonUrl->setMinimumSize(QSize(0, 30));
         lePythonUrl->setMaximumSize(QSize(16777215, 16777215));
 
@@ -3068,8 +3110,8 @@ public:
         gridLayout_29->setObjectName(QString::fromUtf8("gridLayout_29"));
         leCenterThreshold = new QLineEdit(fCirclePanel);
         leCenterThreshold->setObjectName(QString::fromUtf8("leCenterThreshold"));
-        sizePolicy12.setHeightForWidth(leCenterThreshold->sizePolicy().hasHeightForWidth());
-        leCenterThreshold->setSizePolicy(sizePolicy12);
+        sizePolicy6.setHeightForWidth(leCenterThreshold->sizePolicy().hasHeightForWidth());
+        leCenterThreshold->setSizePolicy(sizePolicy6);
         leCenterThreshold->setMinimumSize(QSize(0, 30));
         leCenterThreshold->setMaximumSize(QSize(50, 16777215));
 
@@ -3081,8 +3123,8 @@ public:
 
         leEdgeThreshold = new QLineEdit(fCirclePanel);
         leEdgeThreshold->setObjectName(QString::fromUtf8("leEdgeThreshold"));
-        sizePolicy12.setHeightForWidth(leEdgeThreshold->sizePolicy().hasHeightForWidth());
-        leEdgeThreshold->setSizePolicy(sizePolicy12);
+        sizePolicy6.setHeightForWidth(leEdgeThreshold->sizePolicy().hasHeightForWidth());
+        leEdgeThreshold->setSizePolicy(sizePolicy6);
         leEdgeThreshold->setMinimumSize(QSize(0, 30));
         leEdgeThreshold->setMaximumSize(QSize(50, 16777215));
 
@@ -3105,8 +3147,8 @@ public:
 
         leMaxRadius = new QLineEdit(fCirclePanel);
         leMaxRadius->setObjectName(QString::fromUtf8("leMaxRadius"));
-        sizePolicy12.setHeightForWidth(leMaxRadius->sizePolicy().hasHeightForWidth());
-        leMaxRadius->setSizePolicy(sizePolicy12);
+        sizePolicy6.setHeightForWidth(leMaxRadius->sizePolicy().hasHeightForWidth());
+        leMaxRadius->setSizePolicy(sizePolicy6);
         leMaxRadius->setMinimumSize(QSize(0, 30));
         leMaxRadius->setMaximumSize(QSize(50, 16777215));
 
@@ -3124,8 +3166,8 @@ public:
 
         leMinRadius = new QLineEdit(fCirclePanel);
         leMinRadius->setObjectName(QString::fromUtf8("leMinRadius"));
-        sizePolicy12.setHeightForWidth(leMinRadius->sizePolicy().hasHeightForWidth());
-        leMinRadius->setSizePolicy(sizePolicy12);
+        sizePolicy6.setHeightForWidth(leMinRadius->sizePolicy().hasHeightForWidth());
+        leMinRadius->setSizePolicy(sizePolicy6);
         leMinRadius->setMinimumSize(QSize(0, 30));
         leMinRadius->setMaximumSize(QSize(50, 16777215));
 
@@ -3335,7 +3377,7 @@ public:
         saObjectDetecting_2->setWidgetResizable(true);
         wObjectDetecting_2 = new QWidget();
         wObjectDetecting_2->setObjectName(QString::fromUtf8("wObjectDetecting_2"));
-        wObjectDetecting_2->setGeometry(QRect(0, 0, 584, 4000));
+        wObjectDetecting_2->setGeometry(QRect(0, 0, 574, 4000));
         wObjectDetecting_2->setMinimumSize(QSize(100, 4000));
         wObjectDetecting_2->setStyleSheet(QString::fromUtf8("QWidget#wObjectDetecting\n"
 "{	\n"
@@ -3359,8 +3401,8 @@ public:
         splitter_3->setHandleWidth(10);
         fObjectDetectingTool_2 = new QFrame(splitter_3);
         fObjectDetectingTool_2->setObjectName(QString::fromUtf8("fObjectDetectingTool_2"));
-        sizePolicy10.setHeightForWidth(fObjectDetectingTool_2->sizePolicy().hasHeightForWidth());
-        fObjectDetectingTool_2->setSizePolicy(sizePolicy10);
+        sizePolicy12.setHeightForWidth(fObjectDetectingTool_2->sizePolicy().hasHeightForWidth());
+        fObjectDetectingTool_2->setSizePolicy(sizePolicy12);
         fObjectDetectingTool_2->setMinimumSize(QSize(0, 0));
         fObjectDetectingTool_2->setFrameShape(QFrame::StyledPanel);
         fObjectDetectingTool_2->setFrameShadow(QFrame::Raised);
@@ -3434,8 +3476,8 @@ public:
         cbSelectedTracking->addItem(QString());
         cbSelectedTracking->addItem(QString());
         cbSelectedTracking->setObjectName(QString::fromUtf8("cbSelectedTracking"));
-        sizePolicy8.setHeightForWidth(cbSelectedTracking->sizePolicy().hasHeightForWidth());
-        cbSelectedTracking->setSizePolicy(sizePolicy8);
+        sizePolicy10.setHeightForWidth(cbSelectedTracking->sizePolicy().hasHeightForWidth());
+        cbSelectedTracking->setSizePolicy(sizePolicy10);
 
         gridLayout_16->addWidget(cbSelectedTracking, 0, 2, 1, 1);
 
@@ -4003,11 +4045,11 @@ public:
 
         leTestMatrixName = new QLineEdit(frame_21);
         leTestMatrixName->setObjectName(QString::fromUtf8("leTestMatrixName"));
-        QSizePolicy sizePolicy13(QSizePolicy::Expanding, QSizePolicy::Fixed);
-        sizePolicy13.setHorizontalStretch(0);
-        sizePolicy13.setVerticalStretch(0);
-        sizePolicy13.setHeightForWidth(leTestMatrixName->sizePolicy().hasHeightForWidth());
-        leTestMatrixName->setSizePolicy(sizePolicy13);
+        QSizePolicy sizePolicy14(QSizePolicy::Expanding, QSizePolicy::Fixed);
+        sizePolicy14.setHorizontalStretch(0);
+        sizePolicy14.setVerticalStretch(0);
+        sizePolicy14.setHeightForWidth(leTestMatrixName->sizePolicy().hasHeightForWidth());
+        leTestMatrixName->setSizePolicy(sizePolicy14);
         leTestMatrixName->setMinimumSize(QSize(0, 0));
 
         gridLayout_43->addWidget(leTestMatrixName, 2, 5, 1, 1);
@@ -4085,7 +4127,7 @@ public:
         scrollArea_6->setWidgetResizable(true);
         scrollAreaWidgetContents_6 = new QWidget();
         scrollAreaWidgetContents_6->setObjectName(QString::fromUtf8("scrollAreaWidgetContents_6"));
-        scrollAreaWidgetContents_6->setGeometry(QRect(0, 0, 584, 1600));
+        scrollAreaWidgetContents_6->setGeometry(QRect(0, 0, 574, 1600));
         scrollAreaWidgetContents_6->setMinimumSize(QSize(450, 1600));
         scrollAreaWidgetContents_6->setMaximumSize(QSize(16777215, 16777215));
         verticalLayout_38 = new QVBoxLayout(scrollAreaWidgetContents_6);
@@ -4097,8 +4139,8 @@ public:
         verticalLayout_37->setObjectName(QString::fromUtf8("verticalLayout_37"));
         frame_4 = new QFrame(scrollAreaWidgetContents_6);
         frame_4->setObjectName(QString::fromUtf8("frame_4"));
-        sizePolicy12.setHeightForWidth(frame_4->sizePolicy().hasHeightForWidth());
-        frame_4->setSizePolicy(sizePolicy12);
+        sizePolicy6.setHeightForWidth(frame_4->sizePolicy().hasHeightForWidth());
+        frame_4->setSizePolicy(sizePolicy6);
         frame_4->setMinimumSize(QSize(0, 75));
         frame_4->setMaximumSize(QSize(16777215, 16777215));
         frame_4->setStyleSheet(QString::fromUtf8("QFrame\n"
@@ -4126,11 +4168,11 @@ public:
         verticalLayout_21->setContentsMargins(5, 5, 0, 5);
         pbOpenPicture = new QToolButton(frame_4);
         pbOpenPicture->setObjectName(QString::fromUtf8("pbOpenPicture"));
-        QSizePolicy sizePolicy14(QSizePolicy::Fixed, QSizePolicy::Fixed);
-        sizePolicy14.setHorizontalStretch(0);
-        sizePolicy14.setVerticalStretch(0);
-        sizePolicy14.setHeightForWidth(pbOpenPicture->sizePolicy().hasHeightForWidth());
-        pbOpenPicture->setSizePolicy(sizePolicy14);
+        QSizePolicy sizePolicy15(QSizePolicy::Fixed, QSizePolicy::Fixed);
+        sizePolicy15.setHorizontalStretch(0);
+        sizePolicy15.setVerticalStretch(0);
+        sizePolicy15.setHeightForWidth(pbOpenPicture->sizePolicy().hasHeightForWidth());
+        pbOpenPicture->setSizePolicy(sizePolicy15);
         pbOpenPicture->setMinimumSize(QSize(0, 0));
         pbOpenPicture->setMaximumSize(QSize(16777215, 16777215));
         QFont font10;
@@ -4177,14 +4219,14 @@ public:
 
         horizontalLayout_24->addWidget(frame_2);
 
-        widget1 = new QWidget(scrollAreaWidgetContents_6);
-        widget1->setObjectName(QString::fromUtf8("widget1"));
-        widget1->setMaximumSize(QSize(100, 16777215));
-        verticalLayout_36 = new QVBoxLayout(widget1);
+        widget = new QWidget(scrollAreaWidgetContents_6);
+        widget->setObjectName(QString::fromUtf8("widget"));
+        widget->setMaximumSize(QSize(100, 16777215));
+        verticalLayout_36 = new QVBoxLayout(widget);
         verticalLayout_36->setSpacing(6);
         verticalLayout_36->setContentsMargins(11, 11, 11, 11);
         verticalLayout_36->setObjectName(QString::fromUtf8("verticalLayout_36"));
-        widget_3 = new QWidget(widget1);
+        widget_3 = new QWidget(widget);
         widget_3->setObjectName(QString::fromUtf8("widget_3"));
         widget_3->setStyleSheet(QString::fromUtf8(""));
         gridLayout_23 = new QGridLayout(widget_3);
@@ -4213,7 +4255,7 @@ public:
         verticalLayout_36->addWidget(widget_3);
 
 
-        horizontalLayout_24->addWidget(widget1);
+        horizontalLayout_24->addWidget(widget);
 
 
         verticalLayout_37->addLayout(horizontalLayout_24);
@@ -4304,8 +4346,8 @@ public:
         verticalLayout_47->setContentsMargins(5, 5, 0, 5);
         pbPainting = new QToolButton(frame_5);
         pbPainting->setObjectName(QString::fromUtf8("pbPainting"));
-        sizePolicy14.setHeightForWidth(pbPainting->sizePolicy().hasHeightForWidth());
-        pbPainting->setSizePolicy(sizePolicy14);
+        sizePolicy15.setHeightForWidth(pbPainting->sizePolicy().hasHeightForWidth());
+        pbPainting->setSizePolicy(sizePolicy15);
         pbPainting->setMinimumSize(QSize(0, 0));
         pbPainting->setMaximumSize(QSize(16777215, 16777215));
         pbPainting->setFont(font10);
@@ -4383,8 +4425,8 @@ public:
 
         frame_3 = new QFrame(scrollAreaWidgetContents_6);
         frame_3->setObjectName(QString::fromUtf8("frame_3"));
-        sizePolicy12.setHeightForWidth(frame_3->sizePolicy().hasHeightForWidth());
-        frame_3->setSizePolicy(sizePolicy12);
+        sizePolicy6.setHeightForWidth(frame_3->sizePolicy().hasHeightForWidth());
+        frame_3->setSizePolicy(sizePolicy6);
         frame_3->setMinimumSize(QSize(300, 300));
         frame_3->setMaximumSize(QSize(300, 300));
         frame_3->setFrameShape(QFrame::StyledPanel);
@@ -4424,11 +4466,11 @@ public:
 
         leDrawAg5 = new QLineEdit(widget_11);
         leDrawAg5->setObjectName(QString::fromUtf8("leDrawAg5"));
-        QSizePolicy sizePolicy15(QSizePolicy::Expanding, QSizePolicy::Preferred);
-        sizePolicy15.setHorizontalStretch(0);
-        sizePolicy15.setVerticalStretch(0);
-        sizePolicy15.setHeightForWidth(leDrawAg5->sizePolicy().hasHeightForWidth());
-        leDrawAg5->setSizePolicy(sizePolicy15);
+        QSizePolicy sizePolicy16(QSizePolicy::Expanding, QSizePolicy::Preferred);
+        sizePolicy16.setHorizontalStretch(0);
+        sizePolicy16.setVerticalStretch(0);
+        sizePolicy16.setHeightForWidth(leDrawAg5->sizePolicy().hasHeightForWidth());
+        leDrawAg5->setSizePolicy(sizePolicy16);
         leDrawAg5->setMinimumSize(QSize(0, 20));
         leDrawAg5->setMaximumSize(QSize(100, 16777215));
 
@@ -4452,8 +4494,8 @@ public:
 
         leDrawAg4 = new QLineEdit(widget_10);
         leDrawAg4->setObjectName(QString::fromUtf8("leDrawAg4"));
-        sizePolicy15.setHeightForWidth(leDrawAg4->sizePolicy().hasHeightForWidth());
-        leDrawAg4->setSizePolicy(sizePolicy15);
+        sizePolicy16.setHeightForWidth(leDrawAg4->sizePolicy().hasHeightForWidth());
+        leDrawAg4->setSizePolicy(sizePolicy16);
         leDrawAg4->setMinimumSize(QSize(0, 20));
         leDrawAg4->setMaximumSize(QSize(100, 16777215));
 
@@ -4476,8 +4518,8 @@ public:
 
         leDrawAg3 = new QLineEdit(widget_9);
         leDrawAg3->setObjectName(QString::fromUtf8("leDrawAg3"));
-        sizePolicy15.setHeightForWidth(leDrawAg3->sizePolicy().hasHeightForWidth());
-        leDrawAg3->setSizePolicy(sizePolicy15);
+        sizePolicy16.setHeightForWidth(leDrawAg3->sizePolicy().hasHeightForWidth());
+        leDrawAg3->setSizePolicy(sizePolicy16);
         leDrawAg3->setMinimumSize(QSize(0, 20));
         leDrawAg3->setMaximumSize(QSize(100, 16777215));
 
@@ -4500,8 +4542,8 @@ public:
 
         leDrawAg2 = new QLineEdit(widget_8);
         leDrawAg2->setObjectName(QString::fromUtf8("leDrawAg2"));
-        sizePolicy15.setHeightForWidth(leDrawAg2->sizePolicy().hasHeightForWidth());
-        leDrawAg2->setSizePolicy(sizePolicy15);
+        sizePolicy16.setHeightForWidth(leDrawAg2->sizePolicy().hasHeightForWidth());
+        leDrawAg2->setSizePolicy(sizePolicy16);
         leDrawAg2->setMinimumSize(QSize(0, 20));
         leDrawAg2->setMaximumSize(QSize(100, 16777215));
 
@@ -4524,8 +4566,8 @@ public:
 
         leDrawAg1 = new QLineEdit(widget_7);
         leDrawAg1->setObjectName(QString::fromUtf8("leDrawAg1"));
-        sizePolicy15.setHeightForWidth(leDrawAg1->sizePolicy().hasHeightForWidth());
-        leDrawAg1->setSizePolicy(sizePolicy15);
+        sizePolicy16.setHeightForWidth(leDrawAg1->sizePolicy().hasHeightForWidth());
+        leDrawAg1->setSizePolicy(sizePolicy16);
         leDrawAg1->setMinimumSize(QSize(0, 20));
         leDrawAg1->setMaximumSize(QSize(100, 16777215));
 
@@ -4546,8 +4588,8 @@ public:
 
         pbDrawLine = new QToolButton(scrollAreaWidgetContents_6);
         pbDrawLine->setObjectName(QString::fromUtf8("pbDrawLine"));
-        sizePolicy13.setHeightForWidth(pbDrawLine->sizePolicy().hasHeightForWidth());
-        pbDrawLine->setSizePolicy(sizePolicy13);
+        sizePolicy14.setHeightForWidth(pbDrawLine->sizePolicy().hasHeightForWidth());
+        pbDrawLine->setSizePolicy(sizePolicy14);
         pbDrawLine->setMinimumSize(QSize(0, 0));
         pbDrawLine->setMaximumSize(QSize(70, 16777215));
         QIcon icon29;
@@ -4560,8 +4602,8 @@ public:
 
         pbDrawRectangle = new QToolButton(scrollAreaWidgetContents_6);
         pbDrawRectangle->setObjectName(QString::fromUtf8("pbDrawRectangle"));
-        sizePolicy13.setHeightForWidth(pbDrawRectangle->sizePolicy().hasHeightForWidth());
-        pbDrawRectangle->setSizePolicy(sizePolicy13);
+        sizePolicy14.setHeightForWidth(pbDrawRectangle->sizePolicy().hasHeightForWidth());
+        pbDrawRectangle->setSizePolicy(sizePolicy14);
         pbDrawRectangle->setMinimumSize(QSize(0, 0));
         pbDrawRectangle->setMaximumSize(QSize(70, 16777215));
         QIcon icon30;
@@ -4574,8 +4616,8 @@ public:
 
         pbZoomIn = new QToolButton(scrollAreaWidgetContents_6);
         pbZoomIn->setObjectName(QString::fromUtf8("pbZoomIn"));
-        sizePolicy13.setHeightForWidth(pbZoomIn->sizePolicy().hasHeightForWidth());
-        pbZoomIn->setSizePolicy(sizePolicy13);
+        sizePolicy14.setHeightForWidth(pbZoomIn->sizePolicy().hasHeightForWidth());
+        pbZoomIn->setSizePolicy(sizePolicy14);
         pbZoomIn->setMinimumSize(QSize(0, 0));
         pbZoomIn->setMaximumSize(QSize(70, 16777215));
         QIcon icon31;
@@ -4588,8 +4630,8 @@ public:
 
         pbCursor = new QToolButton(scrollAreaWidgetContents_6);
         pbCursor->setObjectName(QString::fromUtf8("pbCursor"));
-        sizePolicy13.setHeightForWidth(pbCursor->sizePolicy().hasHeightForWidth());
-        pbCursor->setSizePolicy(sizePolicy13);
+        sizePolicy14.setHeightForWidth(pbCursor->sizePolicy().hasHeightForWidth());
+        pbCursor->setSizePolicy(sizePolicy14);
         pbCursor->setMinimumSize(QSize(0, 0));
         pbCursor->setMaximumSize(QSize(70, 16777215));
         QIcon icon32;
@@ -4602,8 +4644,8 @@ public:
 
         pbDrawArc = new QToolButton(scrollAreaWidgetContents_6);
         pbDrawArc->setObjectName(QString::fromUtf8("pbDrawArc"));
-        sizePolicy13.setHeightForWidth(pbDrawArc->sizePolicy().hasHeightForWidth());
-        pbDrawArc->setSizePolicy(sizePolicy13);
+        sizePolicy14.setHeightForWidth(pbDrawArc->sizePolicy().hasHeightForWidth());
+        pbDrawArc->setSizePolicy(sizePolicy14);
         pbDrawArc->setMinimumSize(QSize(0, 0));
         pbDrawArc->setMaximumSize(QSize(70, 16777215));
         QIcon icon33;
@@ -4616,8 +4658,8 @@ public:
 
         pbDrawCircle = new QToolButton(scrollAreaWidgetContents_6);
         pbDrawCircle->setObjectName(QString::fromUtf8("pbDrawCircle"));
-        sizePolicy13.setHeightForWidth(pbDrawCircle->sizePolicy().hasHeightForWidth());
-        pbDrawCircle->setSizePolicy(sizePolicy13);
+        sizePolicy14.setHeightForWidth(pbDrawCircle->sizePolicy().hasHeightForWidth());
+        pbDrawCircle->setSizePolicy(sizePolicy14);
         pbDrawCircle->setMinimumSize(QSize(0, 0));
         pbDrawCircle->setMaximumSize(QSize(70, 16777215));
         QIcon icon34;
@@ -4630,8 +4672,8 @@ public:
 
         pbZoomOut = new QToolButton(scrollAreaWidgetContents_6);
         pbZoomOut->setObjectName(QString::fromUtf8("pbZoomOut"));
-        sizePolicy13.setHeightForWidth(pbZoomOut->sizePolicy().hasHeightForWidth());
-        pbZoomOut->setSizePolicy(sizePolicy13);
+        sizePolicy14.setHeightForWidth(pbZoomOut->sizePolicy().hasHeightForWidth());
+        pbZoomOut->setSizePolicy(sizePolicy14);
         pbZoomOut->setMinimumSize(QSize(0, 0));
         pbZoomOut->setMaximumSize(QSize(70, 16777215));
         QIcon icon35;
@@ -4676,8 +4718,8 @@ public:
         verticalLayout_48->setContentsMargins(5, 5, 0, 5);
         pbExportDrawingGcodes = new QToolButton(frame_6);
         pbExportDrawingGcodes->setObjectName(QString::fromUtf8("pbExportDrawingGcodes"));
-        sizePolicy14.setHeightForWidth(pbExportDrawingGcodes->sizePolicy().hasHeightForWidth());
-        pbExportDrawingGcodes->setSizePolicy(sizePolicy14);
+        sizePolicy15.setHeightForWidth(pbExportDrawingGcodes->sizePolicy().hasHeightForWidth());
+        pbExportDrawingGcodes->setSizePolicy(sizePolicy15);
         pbExportDrawingGcodes->setMinimumSize(QSize(185, 65));
         pbExportDrawingGcodes->setMaximumSize(QSize(16777215, 16777215));
         pbExportDrawingGcodes->setFont(font10);
@@ -4699,8 +4741,8 @@ public:
         gridLayout_22->setContentsMargins(-1, 5, -1, 5);
         label_96 = new QLabel(scrollAreaWidgetContents_6);
         label_96->setObjectName(QString::fromUtf8("label_96"));
-        sizePolicy6.setHeightForWidth(label_96->sizePolicy().hasHeightForWidth());
-        label_96->setSizePolicy(sizePolicy6);
+        sizePolicy7.setHeightForWidth(label_96->sizePolicy().hasHeightForWidth());
+        label_96->setSizePolicy(sizePolicy7);
         label_96->setMinimumSize(QSize(0, 0));
         label_96->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
 
@@ -4731,8 +4773,8 @@ public:
 
         label_97 = new QLabel(scrollAreaWidgetContents_6);
         label_97->setObjectName(QString::fromUtf8("label_97"));
-        sizePolicy6.setHeightForWidth(label_97->sizePolicy().hasHeightForWidth());
-        label_97->setSizePolicy(sizePolicy6);
+        sizePolicy7.setHeightForWidth(label_97->sizePolicy().hasHeightForWidth());
+        label_97->setSizePolicy(sizePolicy7);
         label_97->setMinimumSize(QSize(0, 0));
         label_97->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
 
@@ -4800,8 +4842,8 @@ public:
 
         label_95 = new QLabel(scrollAreaWidgetContents_6);
         label_95->setObjectName(QString::fromUtf8("label_95"));
-        sizePolicy6.setHeightForWidth(label_95->sizePolicy().hasHeightForWidth());
-        label_95->setSizePolicy(sizePolicy6);
+        sizePolicy7.setHeightForWidth(label_95->sizePolicy().hasHeightForWidth());
+        label_95->setSizePolicy(sizePolicy7);
         label_95->setMinimumSize(QSize(0, 0));
         label_95->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
 
@@ -4819,8 +4861,8 @@ public:
 
         label_98 = new QLabel(scrollAreaWidgetContents_6);
         label_98->setObjectName(QString::fromUtf8("label_98"));
-        sizePolicy6.setHeightForWidth(label_98->sizePolicy().hasHeightForWidth());
-        label_98->setSizePolicy(sizePolicy6);
+        sizePolicy7.setHeightForWidth(label_98->sizePolicy().hasHeightForWidth());
+        label_98->setSizePolicy(sizePolicy7);
         label_98->setMinimumSize(QSize(0, 0));
         label_98->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
 
@@ -4893,7 +4935,7 @@ public:
         scrollArea_7->setWidgetResizable(true);
         scrollAreaWidgetContents_7 = new QWidget();
         scrollAreaWidgetContents_7->setObjectName(QString::fromUtf8("scrollAreaWidgetContents_7"));
-        scrollAreaWidgetContents_7->setGeometry(QRect(0, 0, 598, 534));
+        scrollAreaWidgetContents_7->setGeometry(QRect(0, 0, 588, 684));
         verticalLayout_27 = new QVBoxLayout(scrollAreaWidgetContents_7);
         verticalLayout_27->setSpacing(6);
         verticalLayout_27->setContentsMargins(11, 11, 11, 11);
@@ -4982,7 +5024,7 @@ public:
         scrollArea_2->setWidgetResizable(true);
         wgJoggingScrollWidget = new QWidget();
         wgJoggingScrollWidget->setObjectName(QString::fromUtf8("wgJoggingScrollWidget"));
-        wgJoggingScrollWidget->setGeometry(QRect(0, -470, 554, 1500));
+        wgJoggingScrollWidget->setGeometry(QRect(0, 0, 564, 1500));
         wgJoggingScrollWidget->setMinimumSize(QSize(0, 1500));
         wgJoggingScrollWidget->setMaximumSize(QSize(16777215, 16777215));
         wgJoggingScrollWidget->setStyleSheet(QString::fromUtf8("QWidget#wgJoggingScrollWidget\n"
@@ -5061,6 +5103,7 @@ public:
         horizontalLayout_36->setSpacing(6);
         horizontalLayout_36->setContentsMargins(11, 11, 11, 11);
         horizontalLayout_36->setObjectName(QString::fromUtf8("horizontalLayout_36"));
+        horizontalLayout_36->setContentsMargins(-1, 0, -1, 0);
         label_158 = new QLabel(robotTitile);
         label_158->setObjectName(QString::fromUtf8("label_158"));
         label_158->setMaximumSize(QSize(100, 16777215));
@@ -5099,7 +5142,7 @@ public:
         pbConnect->setObjectName(QString::fromUtf8("pbConnect"));
         sizePolicy.setHeightForWidth(pbConnect->sizePolicy().hasHeightForWidth());
         pbConnect->setSizePolicy(sizePolicy);
-        pbConnect->setMinimumSize(QSize(0, 0));
+        pbConnect->setMinimumSize(QSize(0, 28));
         pbConnect->setFont(font10);
         pbConnect->setStyleSheet(QString::fromUtf8("QPushButton\n"
 "{\n"
@@ -5162,8 +5205,8 @@ public:
         cbSelectedRobot->addItem(QString());
         cbSelectedRobot->addItem(QString());
         cbSelectedRobot->setObjectName(QString::fromUtf8("cbSelectedRobot"));
-        sizePolicy8.setHeightForWidth(cbSelectedRobot->sizePolicy().hasHeightForWidth());
-        cbSelectedRobot->setSizePolicy(sizePolicy8);
+        sizePolicy10.setHeightForWidth(cbSelectedRobot->sizePolicy().hasHeightForWidth());
+        cbSelectedRobot->setSizePolicy(sizePolicy10);
         cbSelectedRobot->setMinimumSize(QSize(100, 0));
         cbSelectedRobot->setMaximumSize(QSize(300, 16777215));
         cbSelectedRobot->setFont(font4);
@@ -5562,11 +5605,11 @@ public:
 
         frame_31 = new QFrame(frame_30);
         frame_31->setObjectName(QString::fromUtf8("frame_31"));
-        QSizePolicy sizePolicy16(QSizePolicy::Preferred, QSizePolicy::Maximum);
-        sizePolicy16.setHorizontalStretch(0);
-        sizePolicy16.setVerticalStretch(0);
-        sizePolicy16.setHeightForWidth(frame_31->sizePolicy().hasHeightForWidth());
-        frame_31->setSizePolicy(sizePolicy16);
+        QSizePolicy sizePolicy17(QSizePolicy::Preferred, QSizePolicy::Maximum);
+        sizePolicy17.setHorizontalStretch(0);
+        sizePolicy17.setVerticalStretch(0);
+        sizePolicy17.setHeightForWidth(frame_31->sizePolicy().hasHeightForWidth());
+        frame_31->setSizePolicy(sizePolicy17);
         frame_31->setMinimumSize(QSize(0, 0));
         frame_31->setMaximumSize(QSize(16777215, 16777215));
         frame_31->setStyleSheet(QString::fromUtf8("QFrame\n"
@@ -5616,11 +5659,11 @@ public:
         gridLayout_56->setObjectName(QString::fromUtf8("gridLayout_56"));
         leJerk = new QLineEdit(frame_31);
         leJerk->setObjectName(QString::fromUtf8("leJerk"));
-        QSizePolicy sizePolicy17(QSizePolicy::Expanding, QSizePolicy::Maximum);
-        sizePolicy17.setHorizontalStretch(0);
-        sizePolicy17.setVerticalStretch(0);
-        sizePolicy17.setHeightForWidth(leJerk->sizePolicy().hasHeightForWidth());
-        leJerk->setSizePolicy(sizePolicy17);
+        QSizePolicy sizePolicy18(QSizePolicy::Expanding, QSizePolicy::Maximum);
+        sizePolicy18.setHorizontalStretch(0);
+        sizePolicy18.setVerticalStretch(0);
+        sizePolicy18.setHeightForWidth(leJerk->sizePolicy().hasHeightForWidth());
+        leJerk->setSizePolicy(sizePolicy18);
         leJerk->setMinimumSize(QSize(0, 0));
         leJerk->setMaximumSize(QSize(60, 16777215));
 
@@ -5647,11 +5690,11 @@ public:
 
         leVelocity = new QLineEdit(frame_31);
         leVelocity->setObjectName(QString::fromUtf8("leVelocity"));
-        QSizePolicy sizePolicy18(QSizePolicy::Minimum, QSizePolicy::Maximum);
-        sizePolicy18.setHorizontalStretch(0);
-        sizePolicy18.setVerticalStretch(0);
-        sizePolicy18.setHeightForWidth(leVelocity->sizePolicy().hasHeightForWidth());
-        leVelocity->setSizePolicy(sizePolicy18);
+        QSizePolicy sizePolicy19(QSizePolicy::Minimum, QSizePolicy::Maximum);
+        sizePolicy19.setHorizontalStretch(0);
+        sizePolicy19.setVerticalStretch(0);
+        sizePolicy19.setHeightForWidth(leVelocity->sizePolicy().hasHeightForWidth());
+        leVelocity->setSizePolicy(sizePolicy19);
         leVelocity->setMinimumSize(QSize(0, 0));
         leVelocity->setMaximumSize(QSize(60, 16777215));
 
@@ -5687,8 +5730,8 @@ public:
 
         leStartSpeed = new QLineEdit(frame_31);
         leStartSpeed->setObjectName(QString::fromUtf8("leStartSpeed"));
-        sizePolicy17.setHeightForWidth(leStartSpeed->sizePolicy().hasHeightForWidth());
-        leStartSpeed->setSizePolicy(sizePolicy17);
+        sizePolicy18.setHeightForWidth(leStartSpeed->sizePolicy().hasHeightForWidth());
+        leStartSpeed->setSizePolicy(sizePolicy18);
         leStartSpeed->setMinimumSize(QSize(0, 0));
         leStartSpeed->setMaximumSize(QSize(60, 16777215));
 
@@ -5718,8 +5761,8 @@ public:
 
         leEndSpeed = new QLineEdit(frame_31);
         leEndSpeed->setObjectName(QString::fromUtf8("leEndSpeed"));
-        sizePolicy17.setHeightForWidth(leEndSpeed->sizePolicy().hasHeightForWidth());
-        leEndSpeed->setSizePolicy(sizePolicy17);
+        sizePolicy18.setHeightForWidth(leEndSpeed->sizePolicy().hasHeightForWidth());
+        leEndSpeed->setSizePolicy(sizePolicy18);
         leEndSpeed->setMinimumSize(QSize(0, 0));
         leEndSpeed->setMaximumSize(QSize(60, 16777215));
 
@@ -5767,8 +5810,8 @@ public:
 
         pbForward = new QToolButton(frame_31);
         pbForward->setObjectName(QString::fromUtf8("pbForward"));
-        sizePolicy14.setHeightForWidth(pbForward->sizePolicy().hasHeightForWidth());
-        pbForward->setSizePolicy(sizePolicy14);
+        sizePolicy15.setHeightForWidth(pbForward->sizePolicy().hasHeightForWidth());
+        pbForward->setSizePolicy(sizePolicy15);
         pbForward->setStyleSheet(QString::fromUtf8(""));
         pbForward->setIconSize(QSize(20, 20));
         pbForward->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
@@ -5798,8 +5841,8 @@ public:
 
         leAccel = new QLineEdit(frame_31);
         leAccel->setObjectName(QString::fromUtf8("leAccel"));
-        sizePolicy17.setHeightForWidth(leAccel->sizePolicy().hasHeightForWidth());
-        leAccel->setSizePolicy(sizePolicy17);
+        sizePolicy18.setHeightForWidth(leAccel->sizePolicy().hasHeightForWidth());
+        leAccel->setSizePolicy(sizePolicy18);
         leAccel->setMinimumSize(QSize(0, 0));
         leAccel->setMaximumSize(QSize(60, 16777215));
 
@@ -6136,8 +6179,8 @@ public:
         horizontalLayout_15->setObjectName(QString::fromUtf8("horizontalLayout_15"));
         hsGripperAngle = new QSlider(gbGripper);
         hsGripperAngle->setObjectName(QString::fromUtf8("hsGripperAngle"));
-        sizePolicy15.setHeightForWidth(hsGripperAngle->sizePolicy().hasHeightForWidth());
-        hsGripperAngle->setSizePolicy(sizePolicy15);
+        sizePolicy16.setHeightForWidth(hsGripperAngle->sizePolicy().hasHeightForWidth());
+        hsGripperAngle->setSizePolicy(sizePolicy16);
         hsGripperAngle->setMinimumSize(QSize(0, 30));
         hsGripperAngle->setMaximum(20);
         hsGripperAngle->setSingleStep(5);
@@ -7668,11 +7711,11 @@ public:
 
         pbSetEncoderInterval = new QPushButton(frame_44);
         pbSetEncoderInterval->setObjectName(QString::fromUtf8("pbSetEncoderInterval"));
-        QSizePolicy sizePolicy19(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
-        sizePolicy19.setHorizontalStretch(0);
-        sizePolicy19.setVerticalStretch(0);
-        sizePolicy19.setHeightForWidth(pbSetEncoderInterval->sizePolicy().hasHeightForWidth());
-        pbSetEncoderInterval->setSizePolicy(sizePolicy19);
+        QSizePolicy sizePolicy20(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
+        sizePolicy20.setHorizontalStretch(0);
+        sizePolicy20.setVerticalStretch(0);
+        sizePolicy20.setHeightForWidth(pbSetEncoderInterval->sizePolicy().hasHeightForWidth());
+        pbSetEncoderInterval->setSizePolicy(sizePolicy20);
 
         gridLayout_21->addWidget(pbSetEncoderInterval, 2, 2, 1, 1);
 
@@ -7695,18 +7738,15 @@ public:
 
         pbResetEncoder = new QPushButton(frame_44);
         pbResetEncoder->setObjectName(QString::fromUtf8("pbResetEncoder"));
-        QSizePolicy sizePolicy20(QSizePolicy::MinimumExpanding, QSizePolicy::Preferred);
-        sizePolicy20.setHorizontalStretch(0);
-        sizePolicy20.setVerticalStretch(0);
-        sizePolicy20.setHeightForWidth(pbResetEncoder->sizePolicy().hasHeightForWidth());
-        pbResetEncoder->setSizePolicy(sizePolicy20);
+        sizePolicy8.setHeightForWidth(pbResetEncoder->sizePolicy().hasHeightForWidth());
+        pbResetEncoder->setSizePolicy(sizePolicy8);
 
         gridLayout_21->addWidget(pbResetEncoder, 4, 3, 1, 1);
 
         pbSetEncoderVelocity = new QPushButton(frame_44);
         pbSetEncoderVelocity->setObjectName(QString::fromUtf8("pbSetEncoderVelocity"));
-        sizePolicy12.setHeightForWidth(pbSetEncoderVelocity->sizePolicy().hasHeightForWidth());
-        pbSetEncoderVelocity->setSizePolicy(sizePolicy12);
+        sizePolicy6.setHeightForWidth(pbSetEncoderVelocity->sizePolicy().hasHeightForWidth());
+        pbSetEncoderVelocity->setSizePolicy(sizePolicy6);
 
         gridLayout_21->addWidget(pbSetEncoderVelocity, 3, 2, 1, 1);
 
@@ -7728,8 +7768,8 @@ public:
 
         pbReadEncoder = new QPushButton(frame_44);
         pbReadEncoder->setObjectName(QString::fromUtf8("pbReadEncoder"));
-        sizePolicy12.setHeightForWidth(pbReadEncoder->sizePolicy().hasHeightForWidth());
-        pbReadEncoder->setSizePolicy(sizePolicy12);
+        sizePolicy6.setHeightForWidth(pbReadEncoder->sizePolicy().hasHeightForWidth());
+        pbReadEncoder->setSizePolicy(sizePolicy6);
 
         gridLayout_21->addWidget(pbReadEncoder, 4, 2, 1, 1);
 
@@ -8037,8 +8077,8 @@ public:
 
         pbSlidingDisable = new QPushButton(frame_48);
         pbSlidingDisable->setObjectName(QString::fromUtf8("pbSlidingDisable"));
-        sizePolicy19.setHeightForWidth(pbSlidingDisable->sizePolicy().hasHeightForWidth());
-        pbSlidingDisable->setSizePolicy(sizePolicy19);
+        sizePolicy20.setHeightForWidth(pbSlidingDisable->sizePolicy().hasHeightForWidth());
+        pbSlidingDisable->setSizePolicy(sizePolicy20);
         pbSlidingDisable->setMinimumSize(QSize(0, 0));
         pbSlidingDisable->setMaximumSize(QSize(200, 40));
         pbSlidingDisable->setFont(font16);
@@ -8243,16 +8283,16 @@ public:
 
         verticalLayout_24->addWidget(frame_49);
 
-        widget2 = new QWidget(MCUTab);
-        widget2->setObjectName(QString::fromUtf8("widget2"));
-        widget2->setMaximumSize(QSize(16777215, 40));
-        horizontalLayout_50 = new QHBoxLayout(widget2);
+        widget1 = new QWidget(MCUTab);
+        widget1->setObjectName(QString::fromUtf8("widget1"));
+        widget1->setMaximumSize(QSize(16777215, 40));
+        horizontalLayout_50 = new QHBoxLayout(widget1);
         horizontalLayout_50->setSpacing(10);
         horizontalLayout_50->setContentsMargins(11, 11, 11, 11);
         horizontalLayout_50->setObjectName(QString::fromUtf8("horizontalLayout_50"));
         horizontalLayout_50->setContentsMargins(0, 0, 10, 10);
 
-        verticalLayout_24->addWidget(widget2);
+        verticalLayout_24->addWidget(widget1);
 
         teReceiveFromMCU = new QTextEdit(MCUTab);
         teReceiveFromMCU->setObjectName(QString::fromUtf8("teReceiveFromMCU"));
@@ -8291,10 +8331,9 @@ public:
 
         twDeltaManager->setCurrentIndex(0);
         twModule->setCurrentIndex(0);
-        tabWidget->setCurrentIndex(0);
         pbImageMapping->setDefault(false);
         cbImageSource->setCurrentIndex(0);
-        twDevices->setCurrentIndex(1);
+        twDevices->setCurrentIndex(0);
         pbPump->setDefault(false);
         pbLaser->setDefault(false);
         pbGrip->setDefault(false);
@@ -8346,75 +8385,6 @@ public:
         cbProgramSource->setItemText(0, QCoreApplication::translate("RobotWindow", "Local", nullptr));
         cbProgramSource->setItemText(1, QCoreApplication::translate("RobotWindow", "Online", nullptr));
 
-#if QT_CONFIG(tooltip)
-        pbCreateNewGcode->setToolTip(QCoreApplication::translate("RobotWindow", "Creat New Editor", nullptr));
-#endif // QT_CONFIG(tooltip)
-        pbCreateNewGcode->setText(QString());
-#if QT_CONFIG(tooltip)
-        pbSaveGcode->setToolTip(QCoreApplication::translate("RobotWindow", "Save Gcode Into File", nullptr));
-#endif // QT_CONFIG(tooltip)
-        pbSaveGcode->setText(QString());
-#if QT_CONFIG(tooltip)
-        pbOpenGcodeDocs->setToolTip(QCoreApplication::translate("RobotWindow", "Gcode Docs", nullptr));
-#endif // QT_CONFIG(tooltip)
-        pbOpenGcodeDocs->setText(QCoreApplication::translate("RobotWindow", "Format", nullptr));
-        cbEditGcodeEditor->setText(QCoreApplication::translate("RobotWindow", "Lock", nullptr));
-#if QT_CONFIG(tooltip)
-        pbFormat->setToolTip(QCoreApplication::translate("RobotWindow", "Format Gcode Lines", nullptr));
-#endif // QT_CONFIG(tooltip)
-        pbFormat->setText(QCoreApplication::translate("RobotWindow", "Format", nullptr));
-        pteGcodeArea->setHtml(QCoreApplication::translate("RobotWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\n"
-"p, li { white-space: pre-wrap; }\n"
-"hr { height: 1px; border-width: 0; }\n"
-"li.unchecked::marker { content: \"\\2610\"; }\n"
-"li.checked::marker { content: \"\\2612\"; }\n"
-"</style></head><body style=\" font-family:'Segoe UI'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2'; font-style:italic; color:#00aa00;\">;Delta X 2 Example</span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2';\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent"
-                        ":0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2'; color:#000000;\">N05</span><span style=\" font-family:'MS Shell Dlg 2';\"> </span><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600;\">G28</span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-weight:600;\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2'; font-style:italic; color:#00aa00;\">;Acceleration</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\">N10 </span><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600;\">M204</span><span style=\" font-family:'MS Shell Dlg 2';\"> A1200</span></p>\n"
-"<p style=\" margin-top:0px; ma"
-                        "rgin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2'; font-style:italic; color:#00aa00;\">;Speed</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\">N15 </span><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600;\">G01</span><span style=\" font-family:'MS Shell Dlg 2';\"> F200</span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2';\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2'; font-style:italic; color:#00aa00;\">;Declare variables</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -"
-                        "qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\">N20 </span><span style=\" font-family:'MS Shell Dlg 2'; font-style:italic;\">#100</span><span style=\" font-family:'MS Shell Dlg 2';\"> = 0</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\">N30 </span><span style=\" font-family:'MS Shell Dlg 2'; font-style:italic;\">#100</span><span style=\" font-family:'MS Shell Dlg 2';\"> = </span><span style=\" font-family:'MS Shell Dlg 2'; font-style:italic;\">#100</span><span style=\" font-family:'MS Shell Dlg 2';\"> + 1</span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2';\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" f"
-                        "ont-family:'MS Shell Dlg 2'; font-style:italic; color:#55aa00;\">;Call subprogram</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\">N35 </span><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600;\">M98</span><span style=\" font-family:'MS Shell Dlg 2';\"> P2000</span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2';\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2'; font-style:italic; color:#00aa00;\">; Begin subprogram</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\">N40 </span>"
-                        "<span style=\" font-family:'MS Shell Dlg 2'; font-weight:600;\">O2000</span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2';\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\">N45 </span><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600;\">G01</span><span style=\" font-family:'MS Shell Dlg 2';\"> Z-350</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\">N50 </span><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600;\">G01</span><span style=\" font-family:'MS Shell Dlg 2';\"> X-100</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; tex"
-                        "t-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\">N55 </span><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600;\">G01</span><span style=\" font-family:'MS Shell Dlg 2';\"> Z-370</span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2';\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\">N60 </span><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600;\">G01</span><span style=\" font-family:'MS Shell Dlg 2';\"> Z-350</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\">N65 </span><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600;\">G01</span><span style=\" font-family:'MS Shell Dlg 2"
-                        "';\"> X100</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\">N70 </span><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600;\">G01</span><span style=\" font-family:'MS Shell Dlg 2';\"> Z-370</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\">N75 M99</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2'; font-style:italic; color:#00aa00;\">;End subprogram</span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2';\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px"
-                        "; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2'; font-style:italic; color:#00aa00;\">;Loop 5 times</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\">N80 </span><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600; color:#00aa00;\">IF</span><span style=\" font-family:'MS Shell Dlg 2';\"> [</span><span style=\" font-family:'MS Shell Dlg 2'; font-style:italic;\">#100</span><span style=\" font-family:'MS Shell Dlg 2';\"> LE 5] </span><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600; color:#00aa00;\">THEN</span><span style=\" font-family:'MS Shell Dlg 2';\"> </span><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600; color:#ff5500;\">GOTO</span><span style=\" font-family:'MS Shell Dlg 2';\"> 30</span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margi"
-                        "n-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2';\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\">N85 </span><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600;\">G28</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\"> </span></p></body></html>", nullptr));
-        tabWidget->setTabText(tabWidget->indexOf(tab), QCoreApplication::translate("RobotWindow", "Tab 1", nullptr));
-        tabWidget->setTabText(tabWidget->indexOf(tab_2), QCoreApplication::translate("RobotWindow", "Tab 2", nullptr));
         label_3->setText(QCoreApplication::translate("RobotWindow", "Path", nullptr));
 #if QT_CONFIG(tooltip)
         tbOpenGcodePath->setToolTip(QCoreApplication::translate("RobotWindow", "Open gcode folder", nullptr));
@@ -8448,6 +8418,71 @@ public:
         tbDeleteGcodeFile->setStatusTip(QString());
 #endif // QT_CONFIG(statustip)
         tbDeleteGcodeFile->setText(QString());
+        label_87->setText(QCoreApplication::translate("RobotWindow", "Program1", nullptr));
+#if QT_CONFIG(tooltip)
+        pbSaveGcode->setToolTip(QCoreApplication::translate("RobotWindow", "Save Gcode Into File", nullptr));
+#endif // QT_CONFIG(tooltip)
+        pbSaveGcode->setText(QString());
+#if QT_CONFIG(tooltip)
+        pbFormat->setToolTip(QCoreApplication::translate("RobotWindow", "Format Gcode Lines", nullptr));
+#endif // QT_CONFIG(tooltip)
+        pbFormat->setText(QCoreApplication::translate("RobotWindow", "Format", nullptr));
+        cbEditGcodeEditor->setText(QCoreApplication::translate("RobotWindow", "Lock", nullptr));
+#if QT_CONFIG(tooltip)
+        pbOpenGcodeDocs->setToolTip(QCoreApplication::translate("RobotWindow", "Gcode Docs", nullptr));
+#endif // QT_CONFIG(tooltip)
+        pbOpenGcodeDocs->setText(QCoreApplication::translate("RobotWindow", "Format", nullptr));
+        pteGcodeArea->setHtml(QCoreApplication::translate("RobotWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"hr { height: 1px; border-width: 0; }\n"
+"li.unchecked::marker { content: \"\\2610\"; }\n"
+"li.checked::marker { content: \"\\2612\"; }\n"
+"</style></head><body style=\" font-family:'Segoe UI'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2'; font-style:italic; color:#00aa00;\">;Delta X 2 Example</span></p>\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2';\"><br /></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent"
+                        ":0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2'; color:#dbdbdc;\">N05 </span><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600; color:#dbdbdc;\">G28</span></p>\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-weight:600;\"><br /></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2'; font-style:italic; color:#00aa00;\">;Acceleration</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2'; color:#dbdbdc;\">N10 </span><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600; color:#dbdbdc;\">M204</span><span style=\" font-family:'MS Shell Dlg 2'; color:#dbdbdc;\"> A1200</span></p>\n"
+"<p style=\" margin-top:0"
+                        "px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2'; font-style:italic; color:#00aa00;\">;Speed</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2'; color:#dbdbdc;\">N15 </span><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600; color:#dbdbdc;\">G01</span><span style=\" font-family:'MS Shell Dlg 2'; color:#dbdbdc;\"> F200</span></p>\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2';\"><br /></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2'; font-style:italic; color:#00aa00;\">;Declare variables</span></p>\n"
+"<p style=\" margin-top:0px; marg"
+                        "in-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2'; color:#dbdbdc;\">N20 </span><span style=\" font-family:'MS Shell Dlg 2'; font-style:italic; color:#dbdbdc;\">#Counter</span><span style=\" font-family:'MS Shell Dlg 2'; color:#dbdbdc;\"> = 0</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2'; color:#dbdbdc;\">N30 </span><span style=\" font-family:'MS Shell Dlg 2'; font-style:italic; color:#dbdbdc;\">#Counter</span><span style=\" font-family:'MS Shell Dlg 2'; color:#dbdbdc;\"> = </span><span style=\" font-family:'MS Shell Dlg 2'; font-style:italic; color:#dbdbdc;\">#Counter</span><span style=\" font-family:'MS Shell Dlg 2'; color:#dbdbdc;\"> + 1</span></p>\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; f"
+                        "ont-family:'MS Shell Dlg 2';\"><br /></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2'; font-style:italic; color:#55aa00;\">;Call subprogram</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2'; color:#dbdbdc;\">N35 </span><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600; color:#dbdbdc;\">M98</span><span style=\" font-family:'MS Shell Dlg 2'; color:#dbdbdc;\"> P2000</span></p>\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2';\"><br /></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2'; font-style:italic; co"
+                        "lor:#00aa00;\">; Begin subprogram</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2'; color:#dbdbdc;\">N40 </span><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600; color:#dbdbdc;\">O2000</span></p>\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; color:#dbdbdc;\"><br /></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2'; color:#dbdbdc;\">N45 </span><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600; color:#dbdbdc;\">G01</span><span style=\" font-family:'MS Shell Dlg 2'; color:#dbdbdc;\"> Z[#HOME_Z]</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; te"
+                        "xt-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2'; color:#dbdbdc;\">N50 </span><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600; color:#dbdbdc;\">G01</span><span style=\" font-family:'MS Shell Dlg 2'; color:#dbdbdc;\"> X-100</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2'; color:#dbdbdc;\">N55 </span><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600; color:#dbdbdc;\">G01</span><span style=\" font-family:'MS Shell Dlg 2'; color:#dbdbdc;\"> Z[#HOME_Z - 20]</span></p>\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; color:#dbdbdc;\"><br /></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2'; color:#dbdbdc"
+                        ";\">N60 </span><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600; color:#dbdbdc;\">G01</span><span style=\" font-family:'MS Shell Dlg 2'; color:#dbdbdc;\"> Z[#HOME_Z]</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2'; color:#dbdbdc;\">N65 </span><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600; color:#dbdbdc;\">G01</span><span style=\" font-family:'MS Shell Dlg 2'; color:#dbdbdc;\"> X100</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2'; color:#dbdbdc;\">N70 </span><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600; color:#dbdbdc;\">G01</span><span style=\" font-family:'MS Shell Dlg 2'; color:#dbdbdc;\"> Z[#HOME_Z - 20]</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-blo"
+                        "ck-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2'; color:#dbdbdc;\">N75 M99</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2'; font-style:italic; color:#00aa00;\">;End subprogram</span></p>\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2';\"><br /></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2'; font-style:italic; color:#00aa00;\">;Loop 5 times</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2'; color:#dbdbdc;\">N80 </span><span style=\" font-family:'MS Shell Dlg 2'; font-weight:60"
+                        "0; color:#dbdbdc;\">IF</span><span style=\" font-family:'MS Shell Dlg 2'; color:#dbdbdc;\"> [</span><span style=\" font-family:'MS Shell Dlg 2'; font-style:italic; color:#dbdbdc;\">#Counter</span><span style=\" font-family:'MS Shell Dlg 2'; color:#dbdbdc;\"> &lt; 5] </span><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600; color:#dbdbdc;\">THEN</span><span style=\" font-family:'MS Shell Dlg 2'; color:#dbdbdc;\"> </span><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600; color:#dbdbdc;\">GOTO</span><span style=\" font-family:'MS Shell Dlg 2'; color:#dbdbdc;\"> 30</span></p>\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; color:#dbdbdc;\"><br /></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2'; color:#dbdbdc;\">N85 </span><span style=\" font-"
+                        "family:'MS Shell Dlg 2'; font-weight:600; color:#dbdbdc;\">G28</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\"> </span></p></body></html>", nullptr));
         twModule->setTabText(twModule->indexOf(tGcodeEditor), QCoreApplication::translate("RobotWindow", "Gcode Editor", nullptr));
         label_191->setText(QCoreApplication::translate("RobotWindow", "ID", nullptr));
         cbSelectedDetecting->setItemText(0, QCoreApplication::translate("RobotWindow", "0", nullptr));

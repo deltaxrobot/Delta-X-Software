@@ -597,6 +597,16 @@ void RobotWindow::InitGcodeEditorModule()
     connect(ui->cbProgramThreadID, SIGNAL(currentIndexChanged(int)), this, SLOT(ChangeSelectedEditorThread(int)));
 
     //----- Gcode Editor -----
+
+    // Tạo một QPalette mới từ QPalette hiện tại của textEdit
+    QPalette p = ui->pteGcodeArea->palette();
+
+    // Thiết lập màu cho văn bản
+    p.setColor(QPalette::Text, QColor("#888888"));
+
+    // Áp dụng QPalette mới cho textEdit
+    ui->pteGcodeArea->setPalette(p);
+
     highlighter = new GCodeHighlighter(ui->pteGcodeArea->document());
 
     // ------- Gcode Explorer -----
@@ -630,8 +640,6 @@ void RobotWindow::InitGcodeEditorModule()
     QObject::connect(ui->tbRefreshExplorer, &QPushButton::clicked, this, &RobotWindow::RefreshExplorer);
 
     QObject::connect(ui->tbDeleteGcodeFile, &QPushButton::clicked, this, &RobotWindow::DeleteGcodeFile);
-
-    QObject::connect(ui->pbCreateNewGcode, &QPushButton::clicked, this, &RobotWindow::CreateNewGcodeFile);
 }
 
 void RobotWindow::InitUIController()
@@ -2228,6 +2236,14 @@ void RobotWindow::StandardFormatEditor()
     }
 
     ui->pteGcodeArea->setPlainText(editorText);
+
+    QPalette p = ui->pteGcodeArea->palette();
+
+    // Thiết lập màu cho văn bản
+    p.setColor(QPalette::Text, QColor("#DBDBDC"));
+
+    // Áp dụng QPalette mới cho textEdit
+    ui->pteGcodeArea->setPalette(p);
 
     // ---- Color ----
 //	QTextCharFormat reset;

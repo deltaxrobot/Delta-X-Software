@@ -4,7 +4,8 @@
 GCodeHighlighter::GCodeHighlighter(QTextDocument *parent) : QSyntaxHighlighter(parent)
 {
     QTextCharFormat gcodeFormat;
-    gcodeFormat.setForeground(Qt::black);
+    gcodeFormat.setForeground(QColor("#DBDBDC"));
+
 //    gcodeFormat.setBackground(Qt::yellow);
     gcodeFormat.setFontWeight(QFont::Bold);
     QRegularExpression gcodeRegex("[Gg]\\d{1,3}\\b");
@@ -12,7 +13,7 @@ GCodeHighlighter::GCodeHighlighter(QTextDocument *parent) : QSyntaxHighlighter(p
     highlightRules.append(rule);
 
     QTextCharFormat mcodeFormat;
-    mcodeFormat.setForeground(Qt::black);
+    mcodeFormat.setForeground(QColor("#DBDBDC"));
     mcodeFormat.setFontWeight(QFont::Bold);
     QRegularExpression mcodeRegex("[Mm]\\d{1,3}\\b");
     rule = {mcodeRegex, mcodeFormat};
@@ -25,14 +26,14 @@ GCodeHighlighter::GCodeHighlighter(QTextDocument *parent) : QSyntaxHighlighter(p
     highlightRules.append(rule);
 
     QTextCharFormat gotoFormat;
-    gotoFormat.setForeground(Qt::blue);
+    gotoFormat.setForeground(QColor("#3195EF"));
     gotoFormat.setFontWeight(QFont::Bold);
     QRegularExpression gotoRegex("\\bGOTO\\b");
     rule = {gotoRegex, gotoFormat};
     highlightRules.append(rule);
 
     QTextCharFormat ifthenFormat;
-    ifthenFormat.setForeground(Qt::blue);
+    ifthenFormat.setForeground(QColor("#3195EF"));
     ifthenFormat.setFontWeight(QFont::Bold);
     QRegularExpression ifRegex("\\bIF\\b|\\bTHEN\\b");
     rule = {ifRegex, ifthenFormat};

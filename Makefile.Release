@@ -18521,7 +18521,8 @@ release\RobotWindow.obj: RobotWindow.cpp RobotWindow.h \
 		device\encoder.h \
 		device\camera.h \
 		TrackingManager.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QLineF
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QLineF \
+		ui_RobotWindow.h
 
 release\SmartDialog.obj: SmartDialog.cpp SmartDialog.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QWidget \
