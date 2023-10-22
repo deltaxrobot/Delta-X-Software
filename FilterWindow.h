@@ -9,7 +9,7 @@
 #include <ImageUnity.h>
 #include <QThread>
 #include <QMutexLocker>
-#include <VarManager.h>
+#include <VariableManager.h>
 #include <QPushButton>
 
 namespace Ui {

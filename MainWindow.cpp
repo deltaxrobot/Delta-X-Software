@@ -97,7 +97,7 @@ void MainWindow::InitVariables()
     SoftwareAuthority->layoutOperatorRobotOnOff = ui->layoutOperatorRobotOnOff;
 
 
-    connect(VarManager::getInstance(), SIGNAL(varUpdated(QString, QVariant)), SoftwareAuthority, SLOT(UpdateVariableToDisplay(QString, QVariant)));
+    connect(&VariableManager::instance(), SIGNAL(varUpdated(QString, QVariant)), SoftwareAuthority, SLOT(UpdateVariableToDisplay(QString, QVariant)));
 
     Dashboard->SoftwareAuthority = SoftwareAuthority;
 
@@ -572,7 +572,7 @@ void MainWindow::on_pbUpdateVarDisplay_clicked()
     VariableTreeModel.clear();
     VariableTreeModel.setHorizontalHeaderLabels(QStringList() << "Name" << "Value");
     QStandardItem *rootItem = VariableTreeModel.invisibleRootItem();
-    QSettings* settings = VarManager::getInstance()->getSettings();
+    QSettings* settings = VariableManager::instance().getSettings();
     QStringList keys = settings->allKeys();
     for (QString key : keys) {
         key = key.replace('/', '.');

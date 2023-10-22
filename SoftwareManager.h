@@ -1,7 +1,6 @@
 #ifndef SOFTWAREMANAGER_H
 #define SOFTWAREMANAGER_H
 
-#include "VariableManager.h"
 #include <QList>
 #include "ProjectManager.h"
 

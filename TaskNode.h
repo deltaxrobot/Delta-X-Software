@@ -12,7 +12,7 @@
 #include <qmath.h>
 #include "Object.h"
 #include <QMutexLocker>
-#include <VarManager.h>
+#include <VariableManager.h>
 #include <QElapsedTimer>
 
 #define RED_COLOR       cv::Scalar(0, 0, 255)

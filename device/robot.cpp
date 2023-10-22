@@ -162,7 +162,7 @@ bool Robot::getPara(QString gcode)
     {
         QString para = paras.at(i);
         float value = para.mid(1).toFloat();
-        VarManager::getInstance()->Prefix = ProjectName;
+        VariableManager::instance().Prefix = ProjectName;
 
         if (para[0] == 'X')
             X = value;
@@ -368,26 +368,26 @@ QString Robot::GetInfo()
 
 void Robot::saveParaVar()
 {
-    VarManager::getInstance()->Prefix = ProjectName;
-    VarManager::getInstance()->addVar(QString("%1.X").arg(idName), X);
-    VarManager::getInstance()->addVar(QString("%1.Y").arg(idName), Y);
-    VarManager::getInstance()->addVar(QString("%1.Z").arg(idName), Z);
-    VarManager::getInstance()->addVar(QString("%1.W").arg(idName), W);
-    VarManager::getInstance()->addVar(QString("%1.U").arg(idName), U);
-    VarManager::getInstance()->addVar(QString("%1.V").arg(idName), V);
-    VarManager::getInstance()->addVar(QString("%1.F").arg(idName), F);
-    VarManager::getInstance()->addVar(QString("%1.A").arg(idName), A);
-    VarManager::getInstance()->addVar(QString("%1.J").arg(idName), J);
-    VarManager::getInstance()->addVar(QString("%1.OLD_X").arg(idName), old_X);
-    VarManager::getInstance()->addVar(QString("%1.OLD_Y").arg(idName), old_Y);
-    VarManager::getInstance()->addVar(QString("%1.OLD_Z").arg(idName), old_Z);
-    VarManager::getInstance()->addVar(QString("%1.O").arg(idName), O);
-    VarManager::getInstance()->addVar(QString("%1.HOME_X").arg(idName), home_X);
-    VarManager::getInstance()->addVar(QString("%1.HOME_Y").arg(idName), home_Y);
-    VarManager::getInstance()->addVar(QString("%1.HOME_Z").arg(idName), home_Z);
-    VarManager::getInstance()->addVar(QString("%1.HOME_W").arg(idName), home_W);
-    VarManager::getInstance()->addVar(QString("%1.HOME_U").arg(idName), home_U);
-    VarManager::getInstance()->addVar(QString("%1.HOME_V").arg(idName), home_V);
+    VariableManager::instance().Prefix = ProjectName;
+    VariableManager::instance().addVar(QString("%1.X").arg(idName), X);
+    VariableManager::instance().addVar(QString("%1.Y").arg(idName), Y);
+    VariableManager::instance().addVar(QString("%1.Z").arg(idName), Z);
+    VariableManager::instance().addVar(QString("%1.W").arg(idName), W);
+    VariableManager::instance().addVar(QString("%1.U").arg(idName), U);
+    VariableManager::instance().addVar(QString("%1.V").arg(idName), V);
+    VariableManager::instance().addVar(QString("%1.F").arg(idName), F);
+    VariableManager::instance().addVar(QString("%1.A").arg(idName), A);
+    VariableManager::instance().addVar(QString("%1.J").arg(idName), J);
+    VariableManager::instance().addVar(QString("%1.OLD_X").arg(idName), old_X);
+    VariableManager::instance().addVar(QString("%1.OLD_Y").arg(idName), old_Y);
+    VariableManager::instance().addVar(QString("%1.OLD_Z").arg(idName), old_Z);
+    VariableManager::instance().addVar(QString("%1.O").arg(idName), O);
+    VariableManager::instance().addVar(QString("%1.HOME_X").arg(idName), home_X);
+    VariableManager::instance().addVar(QString("%1.HOME_Y").arg(idName), home_Y);
+    VariableManager::instance().addVar(QString("%1.HOME_Z").arg(idName), home_Z);
+    VariableManager::instance().addVar(QString("%1.HOME_W").arg(idName), home_W);
+    VariableManager::instance().addVar(QString("%1.HOME_U").arg(idName), home_U);
+    VariableManager::instance().addVar(QString("%1.HOME_V").arg(idName), home_V);
 }
 
 QString Robot::SetInput(int pin)

@@ -1,43 +1,95 @@
 #ifndef VARIABLEMANAGER_H
 #define VARIABLEMANAGER_H
 
-#include <QWidget>
-#include <QTreeWidget>
-#include <QCoreApplication>
-#include <QHash>
-#include <QMutex>
-#include <QAbstractItemModel>
+#include <QSettings>
 #include <QVariant>
-#include <QDebug>
+#include <unordered_map>
+#include <mutex>
+#include <string>
 
-class VariableManager : public QWidget
+class VariableManager : public QObject
 {
     Q_OBJECT
 public:
-    explicit VariableManager(QWidget *parent = nullptr);
+    // Singleton instance
+    static VariableManager& instance();
 
-    void SetTreeWidget(QTreeWidget* treeWidget);
+    void addVar(const QString &key, const QVariant &value);
 
-    void AddVariable(QString name, QString value);
-    void AddVariable(QString name, QString value, QTreeWidgetItem* item);
-    QString GetValue(QString name);
+    // Set variable
+    void setVariable(const QString &key, const QVariant &value);
+    void updateVar(const QString &key, const QVariant& value);
 
-    QMap<QString, QString>* GetMap();
+    // Get variable
+    QVariant getVariable(const QString &key, QVariant defaultValue = NULL);
+    QVariant getVar(const QString &key, QVariant defaultValue = NULL);
 
+    void removeVar(const QString &key);
+    bool contains(const QString &key);
 
-public slots:
-    void changeVariableItem(QTreeWidgetItem *item, int col);
+    // Save all variables to QSettings explicitly
+    void saveToQSettings();
+
+    // Load all variables from QSettings explicitly
+    void loadFromQSettings();
+
+    QSettings *getSettings();
+
+    QString Prefix = "";
 
 signals:
-    void variableChanged(QString name, QString value);
+    void varAdded(QString key, QVariant value);
+    void varRemoved(QString key);
+    void varUpdated(QString key, QVariant value);
+
+
 
 private:
-    QTreeWidgetItem *getItem(QString name, QTreeWidgetItem* rootItem);
-    QTreeWidgetItem *getItem(QString name, QTreeWidget* tree);
+    const QString getFullKey(const QString key);
 
-    QTreeWidget* treeWidgetDisplay;
-    QMap<QString, QString>* varPairs;
+    VariableManager() : settings("./settings.ini", QSettings::IniFormat) {}
+    std::map<std::string, QVariant> dataMap;
+    std::mutex dataMutex;
+    QSettings settings;
 };
+
+//#include <QWidget>
+//#include <QTreeWidget>
+//#include <QCoreApplication>
+//#include <QHash>
+//#include <QMutex>
+//#include <QAbstractItemModel>
+//#include <QVariant>
+//#include <QDebug>
+
+//class VariableManager : public QWidget
+//{
+//    Q_OBJECT
+//public:
+//    explicit VariableManager(QWidget *parent = nullptr);
+
+//    void SetTreeWidget(QTreeWidget* treeWidget);
+
+//    void AddVariable(QString name, QString value);
+//    void AddVariable(QString name, QString value, QTreeWidgetItem* item);
+//    QString GetValue(QString name);
+
+//    QMap<QString, QString>* GetMap();
+
+
+//public slots:
+//    void changeVariableItem(QTreeWidgetItem *item, int col);
+
+//signals:
+//    void variableChanged(QString name, QString value);
+
+//private:
+//    QTreeWidgetItem *getItem(QString name, QTreeWidgetItem* rootItem);
+//    QTreeWidgetItem *getItem(QString name, QTreeWidget* tree);
+
+//    QTreeWidget* treeWidgetDisplay;
+//    QMap<QString, QString>* varPairs;
+//};
 
 
 

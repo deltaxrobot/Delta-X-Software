@@ -60,7 +60,7 @@ void ConnectionManager::processRobotData()
 {
     emit GcodeDone();
     receiveLine = receiveLine.replace("\n", "");
-    VarManager::getInstance()->updateVar("Response", receiveLine);
+    VariableManager::instance().updateVar("Response", receiveLine);
     emit ReceiveVariableChangeCommand("Response", receiveLine);
     emit Log(QString("Robot << ") + receiveLine);
 
@@ -154,7 +154,7 @@ void ConnectionManager::processOtherSoftwareData()
         else
         {
 //            int value = valueS.toInt();
-            VarManager::getInstance()->updateVar(name, valueS);
+            VariableManager::instance().updateVar(name, valueS);
             emit ReceiveVariableChangeCommand(name, valueS);
         }
     }

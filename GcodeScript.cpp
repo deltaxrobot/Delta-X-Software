@@ -1298,20 +1298,20 @@ QString GcodeScript::getValueOfVariable(QString name)
 
     if (paras[0] != ProjectName)
     {
-        VarManager::getInstance()->Prefix = ProjectName;
+        VariableManager::instance().Prefix = ProjectName;
     }
     else
     {
-        VarManager::getInstance()->Prefix = "";
+        VariableManager::instance().Prefix = "";
     }
 
     fullName = fullName.replace(" ", "");
 
 //    qDebug() << "Full name: " + fullName;
 
-    if (VarManager::getInstance()->contains(fullName) == true)
+    if (VariableManager::instance().contains(fullName) == true)
     {
-        return VarManager::getInstance()->getVar(fullName).toString();
+        return VariableManager::instance().getVar(fullName).toString();
     }
     else
     {
@@ -1345,14 +1345,14 @@ void GcodeScript::saveVariable(QString name, QString value)
 
     if (paras[0] != ProjectName)
     {
-        VarManager::getInstance()->Prefix = ProjectName;
+        VariableManager::instance().Prefix = ProjectName;
     }
     else
     {
-        VarManager::getInstance()->Prefix = "";
+        VariableManager::instance().Prefix = "";
     }
 
-    VarManager::getInstance()->addVar(name, value);
+    VariableManager::instance().addVar(name, value);
 }
 
 void GcodeScript::processResponse(QString response)

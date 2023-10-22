@@ -1361,12 +1361,12 @@ void RobotWindow::LoadTrackingThread()
 void RobotWindow::LoadSettings()
 {    
     //------ Robot -------
-//    ui->cbRobotModel->setCurrentText(VarManager::getInstance()->getVar("RobotModel").toString());
+//    ui->cbRobotModel->setCurrentText(VariableManager::instance().getVar("RobotModel").toString());
 
     //------ Image Detecting Module -----
     ui->gvImageViewer->LoadSetting();
-    QPointF calibPoint1 = VarManager::getInstance()->getVar("RealCalibPoint1").toPointF();
-    QPointF calibPoint2 = VarManager::getInstance()->getVar("RealCalibPoint2").toPointF();
+    QPointF calibPoint1 = VariableManager::instance().getVar("RealCalibPoint1").toPointF();
+    QPointF calibPoint2 = VariableManager::instance().getVar("RealCalibPoint2").toPointF();
     ui->leRealityPoint1X->setText(QString::number(calibPoint1.x()));
     ui->leRealityPoint1Y->setText(QString::number(calibPoint1.y()));
     ui->leRealityPoint2X->setText(QString::number(calibPoint2.x()));
@@ -2964,9 +2964,9 @@ void RobotWindow::GetValueInput(QString response)
 
 void RobotWindow::UpdateVariable(QString key, QString value)
 {
-    VarManager::getInstance()->Prefix = ProjectName;
+    VariableManager::instance().Prefix = ProjectName;
 
-    VarManager::getInstance()->addVar(key, value);
+    VariableManager::instance().addVar(key, value);
 }
 
 void RobotWindow::UpdateVariables(QString cmd)
@@ -2989,7 +2989,7 @@ void RobotWindow::UpdateVariables(QString cmd)
 
 void RobotWindow::RespondVariableValue(QIODevice *s, QString name)
 {
-    QString value = VarManager::getInstance()->getVar(name).toString() + '\n';
+    QString value = VariableManager::instance().getVar(name).toString() + '\n';
 
     s->write(value.toStdString().c_str(), value.size());
 }
@@ -3503,8 +3503,8 @@ void RobotWindow::UpdateRealPositionOfCalibPoints()
     QPointF rpoint1(ui->leRealityPoint1X->text().toFloat(), ui->leRealityPoint1Y->text().toFloat());
     QPointF rpoint2(ui->leRealityPoint2X->text().toFloat(), ui->leRealityPoint2Y->text().toFloat());
 
-    VarManager::getInstance()->updateVar("RealCalibPoint1", rpoint1);
-    VarManager::getInstance()->updateVar("RealCalibPoint2", rpoint2);
+    VariableManager::instance().updateVar("RealCalibPoint1", rpoint1);
+    VariableManager::instance().updateVar("RealCalibPoint2", rpoint2);
 
     QString p1Text = QString("P1: X = %1, Y = %2").arg(rpoint1.x()).arg(rpoint1.y());
     QString p2Text = QString("P2: X = %1, Y = %2").arg(rpoint2.x()).arg(rpoint2.y());
@@ -3966,7 +3966,7 @@ void RobotWindow::CalculateMappingMatrixTool()
 
     QTransform transformMatrix = calculateTransformMatrix(sp1, sp2, tp1, tp2);
 
-    VarManager::getInstance()->addVar(ui->leMatrix1Name->text(), transformMatrix);
+    VariableManager::instance().addVar(ui->leMatrix1Name->text(), transformMatrix);
 }
 
 void RobotWindow::CalculatePointMatrixTool()
@@ -3976,7 +3976,7 @@ void RobotWindow::CalculatePointMatrixTool()
 
 void RobotWindow::CalculateTestPoint()
 {
-    QTransform matrix = VarManager::getInstance()->getVar(ui->leTestMatrixName->text()).value<QTransform>();
+    QTransform matrix = VariableManager::instance().getVar(ui->leTestMatrixName->text()).value<QTransform>();
 
     QPointF testPoint(ui->leTestPointX->text().toFloat(), ui->leTestPointY->text().toFloat());
     QPointF target = matrix.map(testPoint);
@@ -4552,11 +4552,11 @@ void RobotWindow::CheckSettingsSpeed()
 
     for (int counter = 0; counter < 1000; counter++)
     {
-//        VarManager::getInstance()->addVar(QString("ObjectTests.%1.X").arg(counter), 12);
-//        VarManager::getInstance()->addVar(QString("ObjectTests.%1.Y").arg(counter), 143);
-//        VarManager::getInstance()->addVar(QString("ObjectTests.%1.W").arg(counter), 21);
-//        VarManager::getInstance()->addVar(QString("ObjectTests.%1.L").arg(counter), 33);
-//        VarManager::getInstance()->addVar(QString("ObjectTests.%1.A").arg(counter), 100);
+//        VariableManager::instance().addVar(QString("ObjectTests.%1.X").arg(counter), 12);
+//        VariableManager::instance().addVar(QString("ObjectTests.%1.Y").arg(counter), 143);
+//        VariableManager::instance().addVar(QString("ObjectTests.%1.W").arg(counter), 21);
+//        VariableManager::instance().addVar(QString("ObjectTests.%1.L").arg(counter), 33);
+//        VariableManager::instance().addVar(QString("ObjectTests.%1.A").arg(counter), 100);
 
         Object object;
         object.X.Real = 34;

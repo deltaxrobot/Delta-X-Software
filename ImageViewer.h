@@ -8,7 +8,7 @@
 #include <QtPrintSupport/qtprintsupportglobal.h>
 #include <QSettings>
 #include <UnityTool.h>
-#include "VarManager.h"
+#include <VariableManager.h>
 
 class CustomScene : public QGraphicsScene
 {

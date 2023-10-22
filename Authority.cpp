@@ -120,7 +120,7 @@ void Authority::UpdateVariableToDisplay()
     foreach(QString name, Vars.keys())
     {
 
-        QVariant value = VarManager::getInstance()->getVar(name);
+        QVariant value = VariableManager::instance().getVar(name);
         UpdateVariableToDisplay(name, value);
     }
 }

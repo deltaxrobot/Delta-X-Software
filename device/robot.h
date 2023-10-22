@@ -10,7 +10,7 @@
 #include <ScurveInterpolator.h>
 #include <QtMath>
 #include <QVector3D>
-#include <VarManager.h>
+#include <VariableManager.h>
 
 class Robot : public Device
 {

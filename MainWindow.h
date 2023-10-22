@@ -7,7 +7,6 @@
 #include <QSettings>
 #include "QStackedWidget"
 #include <QList>
-#include "VariableManager.h"
 #include "SoftwareManager.h"
 #include "VersionManager.h"
 #include "Authority.h"

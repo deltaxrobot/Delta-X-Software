@@ -9,7 +9,7 @@
 #include <qtimer.h>
 #include <TCPConnectionManager.h>
 #include <QList>
-#include "VarManager.h"
+#include "VariableManager.h"
 class ConnectionManager : public QObject
 {
 	Q_OBJECT

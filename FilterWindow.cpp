@@ -79,21 +79,21 @@ void FilterWindow::SaveSetting()
 
     QString filterName = QString("filter%1").arg(ui->cbObjectType->currentText());
 
-    VarManager::getInstance()->Prefix = ProjectName;
+    VariableManager::instance().Prefix = ProjectName;
 
-    VarManager::getInstance()->updateVar(filterName + "hsvV", hsvParas);
-    VarManager::getInstance()->updateVar(filterName + "thresV", ui->hsThreshold->value());
-    VarManager::getInstance()->updateVar(filterName + "blurV", ui->hsBlurSize->value());
-    VarManager::getInstance()->updateVar(filterName + "invert", ui->cbInvert->isChecked());
-    VarManager::getInstance()->updateVar(filterName + "algorithm", FilterJob->CurrentFilter);
+    VariableManager::instance().updateVar(filterName + "hsvV", hsvParas);
+    VariableManager::instance().updateVar(filterName + "thresV", ui->hsThreshold->value());
+    VariableManager::instance().updateVar(filterName + "blurV", ui->hsBlurSize->value());
+    VariableManager::instance().updateVar(filterName + "invert", ui->cbInvert->isChecked());
+    VariableManager::instance().updateVar(filterName + "algorithm", FilterJob->CurrentFilter);
 }
 
 void FilterWindow::LoadSetting()
 {
-    VarManager::getInstance()->Prefix = ProjectName;
+    VariableManager::instance().Prefix = ProjectName;
 
     QString filterName = QString("filter%1").arg(ui->cbObjectType->currentText());
-    QList<QVariant> hsvParas = VarManager::getInstance()->getVar(filterName + "hsvV").toList();
+    QList<QVariant> hsvParas = VariableManager::instance().getVar(filterName + "hsvV").toList();
 
     for(int i = 0; i < hsvParas.count(); i++)
     {
@@ -101,15 +101,15 @@ void FilterWindow::LoadSetting()
         lbPara[i]->setText(QString::number(hsvParas.at(i).toInt()));
     }
 
-    ui->hsThreshold->setValue(VarManager::getInstance()->getVar(filterName + "thresV", 100).toInt());
+    ui->hsThreshold->setValue(VariableManager::instance().getVar(filterName + "thresV", 100).toInt());
     ui->lbThreshold->setText(QString::number(ui->hsThreshold->value()));
 
-    ui->hsBlurSize->setValue(VarManager::getInstance()->getVar(filterName + "blurV", 1).toInt());
+    ui->hsBlurSize->setValue(VariableManager::instance().getVar(filterName + "blurV", 1).toInt());
     ui->lbBlurSize->setText(QString::number(ui->hsBlurSize->value()));
 
-    ui->cbInvert->setChecked(VarManager::getInstance()->getVar(filterName + "invert", false).toBool());
+    ui->cbInvert->setChecked(VariableManager::instance().getVar(filterName + "invert", false).toBool());
 
-    FilterJob->CurrentFilter = VarManager::getInstance()->getVar(filterName + "algorithm", FilterJob->CurrentFilter).toInt();
+    FilterJob->CurrentFilter = VariableManager::instance().getVar(filterName + "algorithm", FilterJob->CurrentFilter).toInt();
 }
 
 void FilterWindow::SetImage(cv::Mat mat)

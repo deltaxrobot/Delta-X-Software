@@ -121,7 +121,7 @@ bool TaskNode::ClearVariable(QString name)
 {
     if (name.toLower() == QString("outputObjects").toLower())
     {
-        VarManager::getInstance()->removeVar("Objects");
+        VariableManager::instance().removeVar("Objects");
         clear(outputObjects);
 
         HadOutput(outputObjects);
@@ -824,20 +824,20 @@ void TaskNode::clear(QList<Object>& objs)
 
 void TaskNode::updateObjectsToVariableTable(QList<Object> &objects)
 {
-    VarManager::getInstance()->Prefix = ProjectName;
+    VariableManager::instance().Prefix = ProjectName;
 
     int counter = 0;
 
-    VarManager::getInstance()->addVar("Objects.Count", objects.count());
+    VariableManager::instance().addVar("Objects.Count", objects.count());
 
     foreach(Object obj, objects)
     {
 
-        VarManager::getInstance()->addVar(QString("Objects.%1.X").arg(counter), obj.X.Real);
-        VarManager::getInstance()->addVar(QString("Objects.%1.Y").arg(counter), obj.Y.Real);
-        VarManager::getInstance()->addVar(QString("Objects.%1.W").arg(counter), obj.Width.Real);
-        VarManager::getInstance()->addVar(QString("Objects.%1.L").arg(counter), obj.Length.Real);
-        VarManager::getInstance()->addVar(QString("Objects.%1.A").arg(counter), obj.Angle.Real);
+        VariableManager::instance().addVar(QString("Objects.%1.X").arg(counter), obj.X.Real);
+        VariableManager::instance().addVar(QString("Objects.%1.Y").arg(counter), obj.Y.Real);
+        VariableManager::instance().addVar(QString("Objects.%1.W").arg(counter), obj.Width.Real);
+        VariableManager::instance().addVar(QString("Objects.%1.L").arg(counter), obj.Length.Real);
+        VariableManager::instance().addVar(QString("Objects.%1.A").arg(counter), obj.Angle.Real);
 
         counter++;
     }
