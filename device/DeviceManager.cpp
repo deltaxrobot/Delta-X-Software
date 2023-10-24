@@ -36,10 +36,10 @@ DeviceManager::~DeviceManager()
     }
 }
 
-void DeviceManager::AddRobot()
+void DeviceManager::AddRobot(QString address="auto")
 {
     qDebug() << "Add robot";
-    Robot* robot = new Robot("auto", 115200, false);
+    Robot* robot = new Robot(address, 115200, false);
     robot->ProjectName = ProjectName;
     robot->SetIDName(QString("robot") + QString::number(SelectedRobotID));
     Robots.append(robot);
@@ -48,6 +48,7 @@ void DeviceManager::AddRobot()
     connect(robotThread, SIGNAL(started()), robot, SLOT(Run()));
     connect(robot, &Robot::receivedMsg, [=](QString id, QString response){ emit DeviceResponded(id, response); });
     connect(robot, &Robot::infoReady, this, &DeviceManager::GotDeviceInfo);
+    connect(robot, &Robot::Log, this, &DeviceManager::Log);
 
     robotThread->start();
 }
@@ -125,7 +126,7 @@ void DeviceManager::SetDeviceState(int deviceType, bool isOpen, QString address 
     {
         if (SelectedRobotID > Robots.count() - 1)
         {
-            AddRobot();
+            AddRobot(address);
         }
 
         if (isOpen == true)
@@ -138,7 +139,7 @@ void DeviceManager::SetDeviceState(int deviceType, bool isOpen, QString address 
     {
         if (SelectedSliderID > Sliders.count() - 1)
         {
-            AddSlider();
+            AddSlider(address);
         }
 
         if (isOpen == true)
@@ -244,7 +245,7 @@ void DeviceManager::SendGcode(int deviceType, QString gcode)
         if (Robots.count() > SelectedRobotID)
         {
             QMetaObject::invokeMethod(Robots[SelectedRobotID], "SendGcode", Qt::QueuedConnection, Q_ARG(QString, gcode));
-            emit Log(QString("Robot %1").arg(SelectedRobotID), gcode, 1);
+//            emit Log(QString("Robot %1").arg(SelectedRobotID), gcode, 1);
         }
     }
 
@@ -298,7 +299,7 @@ void DeviceManager::SendGcode(QString deviceName, QString gcode)
         {
             QMetaObject::invokeMethod(Robots[id], "SendGcode", Qt::QueuedConnection, Q_ARG(QString, gcode));
 
-            emit Log(QString("Robot %1").arg(id), gcode, 1);
+//            emit Log(QString("Robot %1").arg(id), gcode, 1);
         }
     }
 

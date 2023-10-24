@@ -90,6 +90,7 @@ void RobotWindow::InitOtherThreadObjects()
     connect(&CameraTimer, SIGNAL(timeout()), CameraInstance, SLOT(GeneralCapture()));
     SelectImageProviderOption(0);
         //-------- Robot ---------
+    connect(ui->pbConnect, SIGNAL(clicked(bool)), this, SLOT(ConnectRobot()));
     connect(ui->cbSelectedRobot, SIGNAL(currentIndexChanged(int)), this, SLOT(ChangeSelectedRobot(int)));
     connect(ui->tbDisableRobot, SIGNAL(clicked(bool)), this, SLOT(SetRobotState(bool)));
     connect(ui->tbRequestPosition, SIGNAL(clicked(bool)), this, SLOT(RequestPosition()));
@@ -644,12 +645,6 @@ void RobotWindow::InitGcodeEditorModule()
 
 void RobotWindow::InitUIController()
 {
-    connect(ui->pbConnect, &QPushButton::clicked, this, [=]()
-    {
-        OpenLoadingPopup();
-        emit ChangeDeviceState(DeviceManager::ROBOT, (ui->pbConnect->text() == "Connect")?true:false, "auto");
-    });
-
     connect(&UpdateUITimer, &QTimer::timeout, this, &RobotWindow::UpdateRobotPositionToUI);
     UpdateUITimer.start(100);
 
@@ -662,6 +657,12 @@ void RobotWindow::InitUIController()
     connect(ui->leU, &QLineEdit::returnPressed, this, [=](){RobotParameters[RbID].U = ui->leU->text().toFloat(); UpdateVariable("U", QString::number(RobotParameters[RbID].U));emit Send(DeviceManager::ROBOT, QString("G01 U") + ui->leU->text());});
     connect(ui->leV, &QLineEdit::returnPressed, this, [=](){RobotParameters[RbID].V = ui->leV->text().toFloat(); UpdateVariable("V", QString::number(RobotParameters[RbID].V));emit Send(DeviceManager::ROBOT, QString("G01 V") + ui->leV->text());});
 
+    connect(ui->pbSubPitch, &QPushButton::clicked, [=](){MoveRobot("V", 0 - RobotParameters[RbID].Step);});
+    connect(ui->pbPlusPitch, &QPushButton::clicked, [=](){MoveRobot("V", RobotParameters[RbID].Step);});
+    connect(ui->pbSubYaw, &QPushButton::clicked, [=](){MoveRobot("U", 0 - RobotParameters[RbID].Step);});
+    connect(ui->pbPlusYaw, &QPushButton::clicked, [=](){MoveRobot("U", RobotParameters[RbID].Step);});
+    connect(ui->pbSubRoll, &QPushButton::clicked, [=](){MoveRobot("W", 0 - RobotParameters[RbID].Step);});
+    connect(ui->pbPlusRoll, &QPushButton::clicked, [=](){MoveRobot("W", RobotParameters[RbID].Step);});
     connect(ui->pbUp, &QPushButton::clicked, [=](){MoveRobot("Z", RobotParameters[RbID].Step);});
     connect(ui->pbDown, &QPushButton::clicked, [=](){MoveRobot("Z", 0 - RobotParameters[RbID].Step);});
     connect(ui->pbForward, &QPushButton::clicked, [=](){MoveRobot("Y", RobotParameters[RbID].Step);});
@@ -773,7 +774,7 @@ void RobotWindow::InitEvents()
 
     //------------- Gcode Editor -------------
 	connect(ui->pbFormat, SIGNAL(clicked(bool)), this, SLOT(StandardFormatEditor()));
-    connect(ui->cbEditGcodeEditor, SIGNAL(clicked(bool)), ui->pteGcodeArea, SLOT(setLockState(bool)));
+    connect(ui->cbEditGcodeLock, SIGNAL(clicked(bool)), ui->pteGcodeArea, SLOT(setLockState(bool)));
 
     //------------ Image Processing -----------
 
@@ -1067,6 +1068,11 @@ void RobotWindow::LoadGcodeFromFileToEditor(const QModelIndex &index)
     SaveProgram();
 
     QString filePath = explorerModel.filePath(index);
+    LoadGcode(filePath);
+}
+
+void RobotWindow::LoadGcode(QString filePath)
+{
     QFile file(filePath);
     if (file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
@@ -1079,6 +1085,12 @@ void RobotWindow::LoadGcodeFromFileToEditor(const QModelIndex &index)
         GcodeScripts.at(threadId)->SetProgramPath(filePath);
 
         file.close();
+
+        QFileInfo fileInfo(filePath);
+        QString fileName = fileInfo.fileName();
+        ui->lbSelectedProgram->setText(fileName);
+
+        ui->pbFormat->click();
     }
 }
 
@@ -1353,7 +1365,6 @@ void RobotWindow::LoadTrackingThread()
     int id = ui->cbSelectedTracking->currentIndex();
     ui->leSelectedTrackingObjectList->setText(TrackingManagerInstance->Trackings.at(id)->ListName);
     ui->cbTrackingEncoderSource->setCurrentText(QString::number(TrackingManagerInstance->Trackings.at(id)->EncoderID));
-    ui->cbTrackingDirection->setCurrentText(TrackingManagerInstance->Trackings.at(id)->Direction);
     ui->leDeviationAngle->setText(QString::number(TrackingManagerInstance->Trackings.at(id)->DeviationAngle));
 
 }
@@ -1953,7 +1964,7 @@ void RobotWindow::GetDeviceInfo(QString json)
     int id = jsonObject.value("id").toInt();
     QString device = jsonObject.value("device").toString();
 
-    if (device == "robot" && id == ui->cbSelectedRobot->currentText().toInt())
+    if (device == "robot" && id == ui->cbSelectedRobot->currentIndex())
     {
         float x = jsonObject.value("x").toDouble();
         float y = jsonObject.value("y").toDouble();
@@ -2042,7 +2053,7 @@ void RobotWindow::GetDeviceInfo(QString json)
 
 void RobotWindow::GetDeviceResponse(QString id, QString response)
 {
-    UpdateTermite(id, response, 1);
+//    UpdateTermite(id, response, 1);
 
     if (id.contains("device"))
     {
@@ -2085,6 +2096,44 @@ void RobotWindow::GetDeviceResponse(QString id, QString response)
             {
                 ui->leEncoderCurrentPosition->setText(value);
             }
+        }
+    }
+}
+
+void RobotWindow::ConnectRobot()
+{
+    //    openConnectionDialog(DeltaConnectionManager->ConveyorPort, DeltaConnectionManager->ConveyorSocket, ui->pbConveyorConnect, ui->lbConveyorCOMName);
+    if (ui->tbAutoScanRobot->isChecked() == true)
+    {
+        OpenLoadingPopup();
+        emit ChangeDeviceState(DeviceManager::ROBOT, (ui->pbConnect->text() == "Connect")?true:false, "auto");
+        return;
+    }
+
+    if (ui->pbConnect->text() != "Connect")
+    {
+        emit ChangeDeviceState(DeviceManager::ROBOT, false, "");
+        return;
+    }
+
+    QStringList items;
+
+    Q_FOREACH(QSerialPortInfo portInfo, QSerialPortInfo::availablePorts())
+    {
+        items << portInfo.portName() + " - " + portInfo.description();
+    }
+
+    bool ok;
+    QString item = QInputDialog::getItem(this, tr("COM Connection"), tr("COM Ports:"), items, 0, false, &ok);
+    QString comName = item.mid(0, item.indexOf(" - "));
+
+    if (ok && !item.isEmpty())
+    {
+        bool ok2;
+        QString baudrate = QInputDialog::getText(this, tr("Select Baudrate"), tr("Baudrate:"), QLineEdit::Normal, "115200", &ok2);
+        if (ok2 && !baudrate.isEmpty())
+        {
+            emit ChangeDeviceState(DeviceManager::ROBOT, (ui->pbConnect->text() == "Connect")?true:false, comName);
         }
     }
 }
@@ -2387,7 +2436,7 @@ void RobotWindow::SaveProgram()
 
 void RobotWindow::ExecuteProgram()
 {
-    SaveProgram();
+//    SaveProgram();
 
     int threadId = ui->cbProgramThreadID->currentIndex();
     GcodeScript* currentScript = GcodeScripts.at(threadId);
@@ -2406,7 +2455,7 @@ void RobotWindow::ExecuteProgram()
         return;
     }
 
-    currentScript->DefaultRobot = QString("robot") + ui->cbSelectedRobot->currentText();
+    currentScript->DefaultRobot = ui->cbSelectedRobot->currentText();
     currentScript->DefaultConveyor = QString("conveyor") + ui->cbSelectedConveyor->currentText();
     currentScript->DefaultEncoder = QString("encoder") + ui->cbSelectedEncoder->currentText();
     currentScript->DefaultSlider = QString("slider") + ui->cbSelectedSlider->currentText();
@@ -2460,8 +2509,7 @@ void RobotWindow::ExecuteCurrentLine()
     int threadId = ui->cbProgramThreadID->currentIndex();
     GcodeScript* currentScript = GcodeScripts.at(threadId);
 
-
-    if (ui->cbEditGcodeEditor->isChecked() == true)
+    if (ui->cbEditGcodeLock->isChecked() == false)
 	{
 		return;
 	}
@@ -2542,11 +2590,6 @@ void RobotWindow::HighLineCurrentLine(int pos)
 
 //    positionEmitter = "";
 //}
-
-void RobotWindow::UpdatePositionToLabel()
-{
-
-}
 
 //void RobotWindow::UpdateTextboxFrom2DControl(float x, float y, float z, float w, float u, float v)
 //{
@@ -2774,14 +2817,30 @@ void RobotWindow::UpdateRobotPositionToUI()
 {
     DisablePositionUpdatingEvents();
 
-    ui->leX->setText(QString::number(RobotParameters[RbID].X));
-    ui->leY->setText(QString::number(RobotParameters[RbID].Y));
-    ui->leZ->setText(QString::number(RobotParameters[RbID].Z));
-    ui->leW->setText(QString::number(RobotParameters[RbID].W));
-    ui->leU->setText(QString::number(RobotParameters[RbID].U));
-    ui->leV->setText(QString::number(RobotParameters[RbID].V));
-
-    UpdatePositionToLabel();
+    if (!ui->leX->hasFocus())
+    {
+        ui->leX->setText(QString::number(RobotParameters[RbID].X));
+    }
+    if (!ui->leY->hasFocus())
+    {
+        ui->leY->setText(QString::number(RobotParameters[RbID].Y));
+    }
+    if (!ui->leZ->hasFocus())
+    {
+        ui->leZ->setText(QString::number(RobotParameters[RbID].Z));
+    }
+    if (!ui->leW->hasFocus())
+    {
+        ui->leW->setText(QString::number(RobotParameters[RbID].W));
+    }
+    if (!ui->leU->hasFocus())
+    {
+        ui->leU->setText(QString::number(RobotParameters[RbID].U));
+    }
+    if (!ui->leV->hasFocus())
+    {
+        ui->leV->setText(QString::number(RobotParameters[RbID].V));
+    }
 
     if (ui->cbEncoderType->currentText() == "Virtual Encoder")
     {
@@ -4314,11 +4373,16 @@ void RobotWindow::UpdateTermite(QString device, QString mess, int direction)
     if (msg[msg.length() - 1] != "\n")
         msg += "\n";
 
+    UpdateTermite(msg);
+}
+
+void RobotWindow::UpdateTermite(QString mess)
+{
     if (ui->teDebug->document()->blockCount() > 200)
         ui->teDebug->setText("");
 
     ui->teDebug->moveCursor (QTextCursor::End);
-    ui->teDebug->insertPlainText(msg);
+    ui->teDebug->insertPlainText(mess);
     ui->teDebug->moveCursor(QTextCursor::End);
 }
 

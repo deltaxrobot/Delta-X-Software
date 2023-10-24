@@ -47,6 +47,7 @@ QString Robot::SendGcode(QString gcode, bool is_wait, int time_out)
     gcode = syncGcode(gcode);
 
     WriteData(gcode);
+    emit Log(idName, gcode, 1);
 
 //    if (gcode.indexOf("G04") < 0)
 //        qDebug() << gcode;
@@ -79,10 +80,11 @@ QString Robot::SendGcode(QString gcode, bool is_wait, int time_out)
 }
 
 void Robot::ProcessResponse(QString id, QString response) {
-
+    emit Log(idName, response, 0);
     if (now_gcode.count("G28") > 0 || now_gcode.count("M85"))
     {
         SendGcode("Position");
+        return;
     }
 
     qDebug() << response;

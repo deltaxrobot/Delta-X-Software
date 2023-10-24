@@ -146,5 +146,7 @@
         <file>icon/icons8_switch_on_52px.png</file>
         <file>icon/icons8_switch_off_52px.png</file>
         <file>icon/Collapse Arrow.png</file>
+        <file>icon/Paste.png</file>
+        <file>icon/Copy.png</file>
     </qresource>
 </RCC>

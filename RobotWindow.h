@@ -245,6 +245,7 @@ public slots:
     void GetDeviceResponse(QString id, QString response);
 
     // ---- Robot ----
+    void ConnectRobot();
     void NoticeConnected();
 
     void ConfigConnection();
@@ -271,6 +272,7 @@ public slots:
 
     void AddGcodeLine(QString gcode);
     void LoadGcodeFromFileToEditor(const QModelIndex &index);
+    void LoadGcode(QString filePath);
     void SelectGcodeExplorer();
     void BackParentExplorer();
     void CreateNewGcodeFile();
@@ -284,7 +286,6 @@ public slots:
     void SetRobotState(bool isHold);
     void RequestPosition();
     void Home();
-    void UpdatePositionToLabel();
     void UpdatePositionControl(RobotPara robotPara);
     void ReceiveHomePosition(float x, float y, float z, float w, float u, float v);
 	void UpdateVelocity();
@@ -365,6 +366,7 @@ public slots:
     void RunExternalScript();
     void OpenExternalScriptFolder();
     void UpdateTermite(QString device, QString mess, int direction);
+    void UpdateTermite(QString mess);
 
     // ---- Connection ----
 

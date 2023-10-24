@@ -38,19 +38,32 @@ void Device::Connect()
             serialPort->setBaudRate(baudrate);
 
             if (serialPort->open(QIODevice::ReadWrite)) {
-                QThread::msleep(500);
-                serialPort->blockSignals(true);
-                serialPort->write((confirmRequest + "\n").toLocal8Bit());
-                serialPort->waitForReadyRead(500);
-                QString response = QString(serialPort->readLine());
-                if (response.indexOf(confirmResponse) > -1) {
-                    qDebug() << availablePorts.at(i).portName() << "is connected";
-                    readDataConnection = connect(serialPort, SIGNAL(readyRead()), this, SLOT(ReadData()));
-                    serialPort->blockSignals(false);
-                    break;
+                int counter = 0;
+                for (int i = 0; i < 10; i++)
+                {
+                    QThread::msleep(50);
+                    serialPort->blockSignals(true);
+                    serialPort->write((confirmRequest + "\n").toLocal8Bit());
+                    serialPort->waitForReadyRead(50);
+                    QString response = QString(serialPort->readLine());
+                    if (response.indexOf(confirmResponse) > -1) {
+                        qDebug() << availablePorts.at(i).portName() << "is connected";
+                        readDataConnection = connect(serialPort, SIGNAL(readyRead()), this, SLOT(ReadData()));                        
+                        serialPort->blockSignals(false);
+                        break;
+                    }
+                    else {
+                        counter++;
+                    }
                 }
-                else {
+
+                if (counter == 10)
+                {
                     serialPort->close();
+                }
+                else
+                {
+                    serialPort->readAll();
                 }
             }
         }
@@ -140,9 +153,8 @@ QString Device::ReadLine(){
     QString data = QString(serialPort->readLine());
 
     data.replace("\n", "").replace("\r", "");
-    qDebug() << "Start:" << DebugTimer.restart();
+//    qDebug() << "Start:" << DebugTimer.restart();
     emit receivedMsg(idName, data);
-
     return data;
 }
 

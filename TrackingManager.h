@@ -38,8 +38,7 @@ public:
     int EncoderID = 0;
     QString EncoderType = "Encoder X";
     bool IsReverse = false;
-    QString Direction = "X";
-    QString ListName = "#O";
+    QString ListName = "#Objects";
     QPointF* DetectDelayOffsetPoint = NULL;
 
     QTimer* VirtualEncoderTimer;

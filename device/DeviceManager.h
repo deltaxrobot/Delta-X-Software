@@ -45,7 +45,7 @@ signals:
     void Log(QString device, QString msg, int direction);
 
 public slots:
-    void AddRobot();
+    void AddRobot(QString address);
     void AddConveyor(QString address);
     void AddEncoder(QString address);
     void AddSlider(QString address);

@@ -26,6 +26,9 @@ public:
 
     float X,Y,Z,W,U,V,F,S,E,A,J,O;
 
+signals:
+    void Log(QString device, QString msg, int direction);
+
 public slots:
     QString SendGcode(QString gcode = "G28", bool is_wait = false, int time_out = 10000);
     void ProcessResponse(QString id, QString response = "");

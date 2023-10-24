@@ -155,7 +155,7 @@ float GcodeScript::GetResultOfMathFunction(QString expression)
     if (expression == "")
         return NULL_NUMBER;
 
-    if (expression.at(0) != "#")
+    if (expression.at(0) != '#')
         return NULL_NUMBER;
 
     int p1 = expression.indexOf('(');
@@ -163,8 +163,6 @@ float GcodeScript::GetResultOfMathFunction(QString expression)
 
     if (p1 == -1 && p2 == -1)
         return NULL_NUMBER;
-
-
 
     QString functionName = expression.mid(1, p1 - 1);
     QString value = expression.mid(p1 + 1,  p2 - p1 - 1);
@@ -183,7 +181,7 @@ float GcodeScript::GetResultOfMathFunction(QString expression)
     {
         if (values.at(i) != "")
         {
-            if (values.at(i).at(0) == "#")
+            if (values.at(i).at(0) == '#')
             {
                 values.replace(i, getValueOfVariable(values.at(i)));
             }
@@ -1035,8 +1033,11 @@ QString GcodeScript::calculateExpressions(QString expression)
             QString value1S = getLeftWord(expression, operaIndex);
             QString value2S = getRightWord(expression, operaIndex);
 
-            float value1 = getValueOfVariable(value1S).toFloat();
-            float value2 = getValueOfVariable(value2S).toFloat();
+            QString value1Val = getValueOfVariable(value1S);
+            QString value2Val = getValueOfVariable(value2S);
+
+            float value1 = value1Val.toFloat();
+            float value2 = value2Val.toFloat();
 
             float result = value1 - value2;
             QString resultS = QString::number(result);
@@ -1290,7 +1291,7 @@ bool GcodeScript::isNotNegative(QString s)
 QString GcodeScript::getValueOfVariable(QString name)
 {
     name = name.replace("#", "");
-    name = name.replace("_", ".");
+//    name = name.replace("_", ".");
 
     QString fullName = name;
 
@@ -1311,7 +1312,8 @@ QString GcodeScript::getValueOfVariable(QString name)
 
     if (VariableManager::instance().contains(fullName) == true)
     {
-        return VariableManager::instance().getVar(fullName).toString();
+        QVariant var = VariableManager::instance().getVar(fullName);
+        return var.toString();
     }
     else
     {
@@ -1339,7 +1341,7 @@ void GcodeScript::updateVariables(QString str)
 
 void GcodeScript::saveVariable(QString name, QString value)
 {
-    name = name.replace("_", ".");
+//    name = name.replace("_", ".");
 
     QStringList paras = name.split('.');
 
@@ -1376,15 +1378,15 @@ bool GcodeScript::checkExclution(QString response)
 {
     if (response.contains("Error:Angle"))
         return true;
-    else if (response.count(",") > 1)
-    {
-        if (!transmitMsg.contains("Position") && !transmitMsg.contains("G28"))
-            return true;
-    }
-    else if (transmitMsg.contains("G28") && response.contains("Ok"))
-    {
-        return true;
-    }
+//    else if (response.count(",") > 1)
+//    {
+//        if (!transmitMsg.contains("Position") && !transmitMsg.contains("G28"))
+//            return true;
+//    }
+//    else if (transmitMsg.contains("G28") && response.contains("Ok"))
+//    {
+//        return true;
+//    }
 
     return false;
 }

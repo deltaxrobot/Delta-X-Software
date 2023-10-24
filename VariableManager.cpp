@@ -121,7 +121,7 @@ void VariableManager::addVar(const QString &key, const QVariant &value)
 {
     const QString fullKey = getFullKey(key);
     std::lock_guard<std::mutex> lock(dataMutex);
-    dataMap[fullKey.toStdString()] = value;
+    dataMap[fullKey] = value;
     emit varAdded(key, value);
 }
 
@@ -129,7 +129,7 @@ void VariableManager::setVariable(const QString &key, const QVariant &value)
 {
     const QString fullKey = getFullKey(key);
     std::lock_guard<std::mutex> lock(dataMutex);
-    dataMap[fullKey.toStdString()] = value;
+    dataMap[fullKey] = value;
     emit varAdded(key, value);
 }
 
@@ -137,7 +137,7 @@ void VariableManager::updateVar(const QString &key, const QVariant &value)
 {
     const QString fullKey = getFullKey(key);
     std::lock_guard<std::mutex> lock(dataMutex);
-    dataMap[fullKey.toStdString()] = value;
+    dataMap[fullKey] = value;
     emit varUpdated(key, value);
 }
 
@@ -145,11 +145,11 @@ QVariant VariableManager::getVariable(const QString &key, QVariant defaultValue)
 {
     const QString fullKey = getFullKey(key);
     std::lock_guard<std::mutex> lock(dataMutex);
-    if(dataMap.find(fullKey.toStdString()) != dataMap.end())
+    if(dataMap.find(fullKey) != dataMap.end())
     {
-        return dataMap[key.toStdString()];
+        return dataMap[fullKey];
     }
-    return QVariant();
+    return defaultValue;
 }
 
 QVariant VariableManager::getVar(const QString &key, QVariant defaultValue)
@@ -161,7 +161,7 @@ void VariableManager::removeVar(const QString &key)
 {
     const QString fullKey = getFullKey(key);
     std::lock_guard<std::mutex> lock(dataMutex);
-    dataMap.erase(fullKey.toStdString());
+    dataMap.erase(fullKey);
     emit varRemoved(key);
 }
 
@@ -169,7 +169,7 @@ bool VariableManager::contains(const QString &key)
 {
     const QString fullKey = getFullKey(key);
     std::lock_guard<std::mutex> lock(dataMutex);
-    return (dataMap.find(fullKey.toStdString()) != dataMap.end());
+    return (dataMap.find(fullKey) != dataMap.end());
 }
 
 void VariableManager::saveToQSettings()
@@ -177,7 +177,7 @@ void VariableManager::saveToQSettings()
     std::lock_guard<std::mutex> lock(dataMutex);
     for(const auto& kv : dataMap)
     {
-        settings.setValue(QString::fromStdString(kv.first), kv.second);
+        settings.setValue(kv.first, kv.second);
     }
 }
 
@@ -187,7 +187,7 @@ void VariableManager::loadFromQSettings()
     QStringList keys = settings.allKeys();
     for(const QString& key : keys)
     {
-        dataMap[key.toStdString()] = settings.value(key);
+        dataMap[key] = settings.value(key);
     }
 }
 

@@ -48,7 +48,7 @@ private:
     const QString getFullKey(const QString key);
 
     VariableManager() : settings("./settings.ini", QSettings::IniFormat) {}
-    std::map<std::string, QVariant> dataMap;
+    std::map<QString, QVariant> dataMap;
     std::mutex dataMutex;
     QSettings settings;
 };
