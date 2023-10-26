@@ -28,6 +28,7 @@ public:
 
 protected:
     void resizeEvent(QResizeEvent *event) override;
+    void keyPressEvent(QKeyEvent *event) override;
 
 public slots:
     void updateLineNumberAreaWidth(int newBlockCount);
@@ -37,6 +38,8 @@ public slots:
 
 private:
     QWidget *lineNumberArea;
+
+    void commentSelectedLines();
 };
 
 //![codeeditordefinition]

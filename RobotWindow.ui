@@ -788,7 +788,7 @@ QToolBox QScrollArea&gt;QWidget&gt;QWidget
               <enum>QTabWidget::Rounded</enum>
              </property>
              <property name="currentIndex">
-              <number>0</number>
+              <number>2</number>
              </property>
              <property name="usesScrollButtons">
               <bool>true</bool>
@@ -1311,6 +1311,34 @@ QGroupBox
                          </property>
                         </widget>
                        </item>
+                       <item>
+                        <widget class="QTreeView" name="tvCurrentVariable">
+                         <property name="styleSheet">
+                          <string notr="true">QTreeView
+{
+	color: rgb(224, 224, 224);
+}
+
+QTreeView::header {
+	background-color: rgb(78, 78, 78);
+}</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QComboBox" name="cbVariableDisplayOption">
+                         <item>
+                          <property name="text">
+                           <string>Visible Variables</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>All Variables</string>
+                          </property>
+                         </item>
+                        </widget>
+                       </item>
                       </layout>
                      </item>
                      <item>
@@ -1571,13 +1599,13 @@ li.checked::marker { content: &quot;\2612&quot;; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-style:italic; color:#00aa00;&quot;&gt;; Begin subprogram&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; color:#dbdbdc;&quot;&gt;N40 &lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-weight:600; color:#dbdbdc;&quot;&gt;O2000&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; color:#dbdbdc;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; color:#dbdbdc;&quot;&gt;N45 &lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-weight:600; color:#dbdbdc;&quot;&gt;G01&lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; color:#dbdbdc;&quot;&gt; Z[#HOME_Z - 80]&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; color:#dbdbdc;&quot;&gt;N45 &lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-weight:600; color:#dbdbdc;&quot;&gt;G01&lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; color:#dbdbdc;&quot;&gt; Z[#robot0.HOME_Z - 80]&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; color:#dbdbdc;&quot;&gt;N50 &lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-weight:600; color:#dbdbdc;&quot;&gt;G01&lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; color:#dbdbdc;&quot;&gt; X-100&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; color:#dbdbdc;&quot;&gt;N55 &lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-weight:600; color:#dbdbdc;&quot;&gt;G01&lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; color:#dbdbdc;&quot;&gt; Z[#HOME_Z - 100]&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; color:#dbdbdc;&quot;&gt;N55 &lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-weight:600; color:#dbdbdc;&quot;&gt;G01&lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; color:#dbdbdc;&quot;&gt; Z[#robot0.HOME_Z - 100]&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; color:#dbdbdc;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; color:#dbdbdc;&quot;&gt;N60 &lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-weight:600; color:#dbdbdc;&quot;&gt;G01&lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; color:#dbdbdc;&quot;&gt; Z[#HOME_Z - 80]&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; color:#dbdbdc;&quot;&gt;N60 &lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-weight:600; color:#dbdbdc;&quot;&gt;G01&lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; color:#dbdbdc;&quot;&gt; Z[#robot0.HOME_Z - 80]&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; color:#dbdbdc;&quot;&gt;N65 &lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-weight:600; color:#dbdbdc;&quot;&gt;G01&lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; color:#dbdbdc;&quot;&gt; X100&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; color:#dbdbdc;&quot;&gt;N70 &lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-weight:600; color:#dbdbdc;&quot;&gt;G01&lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; color:#dbdbdc;&quot;&gt; Z[#HOME_Z - 100]&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; color:#dbdbdc;&quot;&gt;N70 &lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-weight:600; color:#dbdbdc;&quot;&gt;G01&lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; color:#dbdbdc;&quot;&gt; Z[#robot0.HOME_Z - 100]&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; color:#dbdbdc;&quot;&gt;N75 M99&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-style:italic; color:#00aa00;&quot;&gt;;End subprogram&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2';&quot;&gt;&lt;br /&gt;&lt;/p&gt;
@@ -4985,15 +5013,15 @@ QFrame
                   <property name="geometry">
                    <rect>
                     <x>0</x>
-                    <y>0</y>
+                    <y>-870</y>
                     <width>574</width>
-                    <height>1500</height>
+                    <height>1700</height>
                    </rect>
                   </property>
                   <property name="minimumSize">
                    <size>
                     <width>0</width>
-                    <height>1500</height>
+                    <height>1700</height>
                    </size>
                   </property>
                   <property name="styleSheet">
@@ -5348,7 +5376,7 @@ QGroupBox::title
                              </spacer>
                             </item>
                             <item row="2" column="1">
-                             <widget class="QLineEdit" name="leAngleResult_5">
+                             <widget class="QLineEdit" name="leMovingValue">
                               <property name="text">
                                <string>200</string>
                               </property>
@@ -5457,7 +5485,7 @@ QGroupBox::title
                             <item row="5" column="2">
                              <widget class="QLabel" name="label_224">
                               <property name="text">
-                               <string>Angle</string>
+                               <string>Angle vs X-axis</string>
                               </property>
                               <property name="alignment">
                                <set>Qt::AlignCenter</set>
@@ -5568,69 +5596,10 @@ QGroupBox::title
                             <enum>QFrame::Raised</enum>
                            </property>
                            <layout class="QGridLayout" name="gridLayout_45">
-                            <item row="2" column="2">
-                             <widget class="QLabel" name="label_227">
+                            <item row="3" column="0">
+                             <widget class="QLineEdit" name="leVectorName">
                               <property name="text">
-                               <string>Y</string>
-                              </property>
-                              <property name="alignment">
-                               <set>Qt::AlignCenter</set>
-                              </property>
-                             </widget>
-                            </item>
-                            <item row="0" column="1">
-                             <widget class="QLabel" name="label_209">
-                              <property name="text">
-                               <string>Angle</string>
-                              </property>
-                              <property name="alignment">
-                               <set>Qt::AlignCenter</set>
-                              </property>
-                             </widget>
-                            </item>
-                            <item row="2" column="4">
-                             <widget class="QLabel" name="label_228">
-                              <property name="text">
-                               <string>Z</string>
-                              </property>
-                              <property name="alignment">
-                               <set>Qt::AlignCenter</set>
-                              </property>
-                             </widget>
-                            </item>
-                            <item row="1" column="2">
-                             <widget class="QPushButton" name="pbCalculateAngle_2">
-                              <property name="sizePolicy">
-                               <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-                                <horstretch>0</horstretch>
-                                <verstretch>0</verstretch>
-                               </sizepolicy>
-                              </property>
-                              <property name="text">
-                               <string>Calculate</string>
-                              </property>
-                             </widget>
-                            </item>
-                            <item row="2" column="0">
-                             <widget class="QLabel" name="label_229">
-                              <property name="text">
-                               <string>Name</string>
-                              </property>
-                              <property name="alignment">
-                               <set>Qt::AlignCenter</set>
-                              </property>
-                             </widget>
-                            </item>
-                            <item row="1" column="1">
-                             <widget class="QLineEdit" name="leAnglePoint1Y_2"/>
-                            </item>
-                            <item row="2" column="1">
-                             <widget class="QLabel" name="label_226">
-                              <property name="text">
-                               <string>X</string>
-                              </property>
-                              <property name="alignment">
-                               <set>Qt::AlignCenter</set>
+                               <string>#Vector1</string>
                               </property>
                              </widget>
                             </item>
@@ -5644,26 +5613,104 @@ QGroupBox::title
                               </property>
                              </widget>
                             </item>
-                            <item row="3" column="2">
-                             <widget class="QLineEdit" name="leAnglePoint2X_2"/>
+                            <item row="1" column="0">
+                             <widget class="QLineEdit" name="leVectorSpeedInput"/>
                             </item>
-                            <item row="3" column="1">
-                             <widget class="QLineEdit" name="leAngleResult_2"/>
-                            </item>
-                            <item row="3" column="4">
-                             <widget class="QLineEdit" name="leAnglePoint2Y_2"/>
-                            </item>
-                            <item row="3" column="0">
-                             <widget class="QLineEdit" name="leAngleResult_3">
+                            <item row="1" column="2">
+                             <widget class="QPushButton" name="pbCalVector">
+                              <property name="sizePolicy">
+                               <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                                <horstretch>0</horstretch>
+                                <verstretch>0</verstretch>
+                               </sizepolicy>
+                              </property>
                               <property name="text">
-                               <string>#Vector1</string>
+                               <string>Calculate</string>
                               </property>
                              </widget>
                             </item>
-                            <item row="1" column="0">
-                             <widget class="QLineEdit" name="leAnglePoint1X_2"/>
+                            <item row="0" column="1">
+                             <widget class="QLabel" name="label_209">
+                              <property name="text">
+                               <string>Angle</string>
+                              </property>
+                              <property name="alignment">
+                               <set>Qt::AlignCenter</set>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="2" column="1">
+                             <widget class="QLabel" name="label_226">
+                              <property name="text">
+                               <string>X</string>
+                              </property>
+                              <property name="alignment">
+                               <set>Qt::AlignCenter</set>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="2" column="2">
+                             <widget class="QLabel" name="label_227">
+                              <property name="text">
+                               <string>Y</string>
+                              </property>
+                              <property name="alignment">
+                               <set>Qt::AlignCenter</set>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="1" column="1">
+                             <widget class="QLineEdit" name="leVectorAngleInput"/>
+                            </item>
+                            <item row="2" column="4">
+                             <widget class="QLabel" name="label_228">
+                              <property name="text">
+                               <string>Z</string>
+                              </property>
+                              <property name="alignment">
+                               <set>Qt::AlignCenter</set>
+                              </property>
+                             </widget>
                             </item>
                             <item row="3" column="5">
+                             <widget class="QPushButton" name="pbAddVector">
+                              <property name="sizePolicy">
+                               <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+                                <horstretch>0</horstretch>
+                                <verstretch>0</verstretch>
+                               </sizepolicy>
+                              </property>
+                              <property name="minimumSize">
+                               <size>
+                                <width>80</width>
+                                <height>20</height>
+                               </size>
+                              </property>
+                              <property name="text">
+                               <string>Add Vector</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="3" column="4">
+                             <widget class="QLineEdit" name="leVectorZ"/>
+                            </item>
+                            <item row="2" column="0">
+                             <widget class="QLabel" name="label_229">
+                              <property name="text">
+                               <string>Name</string>
+                              </property>
+                              <property name="alignment">
+                               <set>Qt::AlignCenter</set>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="3" column="1">
+                             <widget class="QLineEdit" name="leVectorX"/>
+                            </item>
+                            <item row="3" column="2">
+                             <widget class="QLineEdit" name="leVectorY"/>
+                            </item>
+                            <item row="3" column="6">
                              <spacer name="horizontalSpacer_28">
                               <property name="orientation">
                                <enum>Qt::Horizontal</enum>
@@ -5675,6 +5722,39 @@ QGroupBox::title
                                </size>
                               </property>
                              </spacer>
+                            </item>
+                            <item row="4" column="4" colspan="2">
+                             <widget class="QListWidget" name="lwVectorList">
+                              <property name="sizePolicy">
+                               <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
+                                <horstretch>0</horstretch>
+                                <verstretch>0</verstretch>
+                               </sizepolicy>
+                              </property>
+                              <property name="minimumSize">
+                               <size>
+                                <width>0</width>
+                                <height>70</height>
+                               </size>
+                              </property>
+                              <property name="maximumSize">
+                               <size>
+                                <width>16777215</width>
+                                <height>100</height>
+                               </size>
+                              </property>
+                              <property name="styleSheet">
+                               <string notr="true">background-color: rgb(118, 118, 118);
+color: rgb(241, 241, 241);
+border-radius: 5px;
+padding: 5px;</string>
+                              </property>
+                              <item>
+                               <property name="text">
+                                <string>#Vector1</string>
+                               </property>
+                              </item>
+                             </widget>
                             </item>
                            </layout>
                           </widget>
@@ -5715,20 +5795,21 @@ QGroupBox::title
                             <enum>QFrame::Raised</enum>
                            </property>
                            <layout class="QGridLayout" name="gridLayout_41">
-                            <item row="1" column="3">
-                             <widget class="QLabel" name="label_166">
-                              <property name="font">
-                               <font>
-                                <bold>true</bold>
-                               </font>
-                              </property>
+                            <property name="verticalSpacing">
+                             <number>4</number>
+                            </property>
+                            <item row="7" column="3">
+                             <widget class="QLabel" name="label_205">
                               <property name="text">
-                               <string>Source</string>
+                               <string>Point 2</string>
                               </property>
                              </widget>
                             </item>
-                            <item row="2" column="6">
-                             <widget class="QLineEdit" name="leSourcePoint1Y"/>
+                            <item row="7" column="6">
+                             <widget class="QLineEdit" name="leDestinationPoint2Y"/>
+                            </item>
+                            <item row="2" column="4">
+                             <widget class="QLineEdit" name="leSourcePoint1X"/>
                             </item>
                             <item row="3" column="3">
                              <widget class="QLabel" name="label_201">
@@ -5737,90 +5818,11 @@ QGroupBox::title
                               </property>
                              </widget>
                             </item>
-                            <item row="7" column="3">
-                             <widget class="QLabel" name="label_205">
-                              <property name="text">
-                               <string>Point 2</string>
-                              </property>
-                             </widget>
-                            </item>
-                            <item row="1" column="4">
-                             <widget class="QLabel" name="label_177">
-                              <property name="text">
-                               <string>X</string>
-                              </property>
-                              <property name="alignment">
-                               <set>Qt::AlignCenter</set>
-                              </property>
-                             </widget>
-                            </item>
-                            <item row="1" column="6">
-                             <widget class="QLabel" name="label_202">
-                              <property name="text">
-                               <string>Y</string>
-                              </property>
-                              <property name="alignment">
-                               <set>Qt::AlignCenter</set>
-                              </property>
-                             </widget>
-                            </item>
-                            <item row="2" column="0">
-                             <widget class="QLabel" name="label_165">
-                              <property name="text">
-                               <string>Name</string>
-                              </property>
-                             </widget>
-                            </item>
                             <item row="6" column="4">
                              <widget class="QLineEdit" name="leDestinationPoint1X"/>
                             </item>
-                            <item row="7" column="4">
-                             <widget class="QLineEdit" name="leDestinationPoint2X"/>
-                            </item>
-                            <item row="2" column="1">
-                             <widget class="QLineEdit" name="leMatrix1Name">
-                              <property name="text">
-                               <string>#MappingMatrix1</string>
-                              </property>
-                             </widget>
-                            </item>
-                            <item row="2" column="4">
-                             <widget class="QLineEdit" name="leSourcePoint1X"/>
-                            </item>
-                            <item row="5" column="3">
-                             <widget class="QLabel" name="label_200">
-                              <property name="font">
-                               <font>
-                                <bold>true</bold>
-                               </font>
-                              </property>
-                              <property name="text">
-                               <string>Destination</string>
-                              </property>
-                             </widget>
-                            </item>
-                            <item row="6" column="3">
-                             <widget class="QLabel" name="label_204">
-                              <property name="text">
-                               <string>Point 1</string>
-                              </property>
-                             </widget>
-                            </item>
                             <item row="3" column="4">
                              <widget class="QLineEdit" name="leSourcePoint2X"/>
-                            </item>
-                            <item row="7" column="6">
-                             <widget class="QLineEdit" name="leDestinationPoint2Y"/>
-                            </item>
-                            <item row="6" column="6">
-                             <widget class="QLineEdit" name="leDestinationPoint1Y"/>
-                            </item>
-                            <item row="2" column="3">
-                             <widget class="QLabel" name="label_203">
-                              <property name="text">
-                               <string>Point 1</string>
-                              </property>
-                             </widget>
                             </item>
                             <item row="7" column="7">
                              <spacer name="horizontalSpacer_41">
@@ -5835,6 +5837,45 @@ QGroupBox::title
                               </property>
                              </spacer>
                             </item>
+                            <item row="2" column="1">
+                             <widget class="QLineEdit" name="leMatrixName">
+                              <property name="text">
+                               <string>#MappingMatrix1</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="2" column="6">
+                             <widget class="QLineEdit" name="leSourcePoint1Y"/>
+                            </item>
+                            <item row="2" column="3">
+                             <widget class="QLabel" name="label_203">
+                              <property name="text">
+                               <string>Point 1</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="2" column="0">
+                             <widget class="QLabel" name="label_165">
+                              <property name="text">
+                               <string>Name</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="1" column="3">
+                             <widget class="QLabel" name="label_166">
+                              <property name="font">
+                               <font>
+                                <bold>true</bold>
+                               </font>
+                              </property>
+                              <property name="text">
+                               <string>Source</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="3" column="6">
+                             <widget class="QLineEdit" name="leSourcePoint2Y"/>
+                            </item>
                             <item row="3" column="1">
                              <widget class="QPushButton" name="pbCalculateMappingMatrixTool">
                               <property name="minimumSize">
@@ -5848,11 +5889,41 @@ QGroupBox::title
                               </property>
                              </widget>
                             </item>
-                            <item row="3" column="6">
-                             <widget class="QLineEdit" name="leSourcePoint2Y"/>
+                            <item row="1" column="6">
+                             <widget class="QLabel" name="label_202">
+                              <property name="text">
+                               <string>Y</string>
+                              </property>
+                              <property name="alignment">
+                               <set>Qt::AlignCenter</set>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="7" column="4">
+                             <widget class="QLineEdit" name="leDestinationPoint2X"/>
+                            </item>
+                            <item row="6" column="3">
+                             <widget class="QLabel" name="label_204">
+                              <property name="text">
+                               <string>Point 1</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="1" column="4">
+                             <widget class="QLabel" name="label_177">
+                              <property name="text">
+                               <string>X</string>
+                              </property>
+                              <property name="alignment">
+                               <set>Qt::AlignCenter</set>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="6" column="6">
+                             <widget class="QLineEdit" name="leDestinationPoint1Y"/>
                             </item>
                             <item row="8" column="6">
-                             <widget class="QPushButton" name="pbAddVariablePoint_2">
+                             <widget class="QPushButton" name="pbAddMappingMatrix">
                               <property name="minimumSize">
                                <size>
                                 <width>0</width>
@@ -5861,6 +5932,78 @@ QGroupBox::title
                               </property>
                               <property name="text">
                                <string>Add Matrix</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="5" column="3">
+                             <widget class="QLabel" name="label_200">
+                              <property name="font">
+                               <font>
+                                <bold>true</bold>
+                               </font>
+                              </property>
+                              <property name="text">
+                               <string>Destination</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="9" column="4" colspan="3">
+                             <widget class="QListWidget" name="lwMappingMatrixList">
+                              <property name="sizePolicy">
+                               <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
+                                <horstretch>0</horstretch>
+                                <verstretch>0</verstretch>
+                               </sizepolicy>
+                              </property>
+                              <property name="minimumSize">
+                               <size>
+                                <width>0</width>
+                                <height>70</height>
+                               </size>
+                              </property>
+                              <property name="maximumSize">
+                               <size>
+                                <width>16777215</width>
+                                <height>100</height>
+                               </size>
+                              </property>
+                              <property name="styleSheet">
+                               <string notr="true">background-color: rgb(118, 118, 118);
+color: rgb(241, 241, 241);
+border-radius: 5px;
+padding: 5px;</string>
+                              </property>
+                              <item>
+                               <property name="text">
+                                <string>#MappingMatrix1</string>
+                               </property>
+                              </item>
+                              <item>
+                               <property name="text">
+                                <string>#MappingMatrix2</string>
+                               </property>
+                              </item>
+                              <item>
+                               <property name="text">
+                                <string>#MappingMatrix3</string>
+                               </property>
+                              </item>
+                              <item>
+                               <property name="text">
+                                <string>#MappingMatrix4</string>
+                               </property>
+                              </item>
+                              <item>
+                               <property name="text">
+                                <string>#MappingMatrix5</string>
+                               </property>
+                              </item>
+                             </widget>
+                            </item>
+                            <item row="5" column="1" rowspan="3">
+                             <widget class="QLabel" name="lbMatrixDisplay">
+                              <property name="text">
+                               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;|m11 , m12, m13 |&lt;/p&gt;&lt;p&gt;|m21, m22, m23 |&lt;/p&gt;&lt;p&gt;|m31, m32, m33 |&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                               </property>
                              </widget>
                             </item>
@@ -5911,7 +6054,7 @@ QGroupBox::title
                              </widget>
                             </item>
                             <item>
-                             <widget class="QLineEdit" name="lePoint1Name">
+                             <widget class="QLineEdit" name="leObjectListName">
                               <property name="text">
                                <string>#Objects</string>
                               </property>
@@ -5925,7 +6068,7 @@ QGroupBox::title
                              </widget>
                             </item>
                             <item>
-                             <widget class="QLineEdit" name="lePoint1X"/>
+                             <widget class="QLineEdit" name="leObjectX"/>
                             </item>
                             <item>
                              <widget class="QLabel" name="label_138">
@@ -5935,7 +6078,7 @@ QGroupBox::title
                              </widget>
                             </item>
                             <item>
-                             <widget class="QLineEdit" name="lePoint1Y"/>
+                             <widget class="QLineEdit" name="leObjectY"/>
                             </item>
                             <item>
                              <widget class="QLabel" name="label_143">
@@ -5945,7 +6088,7 @@ QGroupBox::title
                              </widget>
                             </item>
                             <item>
-                             <widget class="QLineEdit" name="lePoint1Z"/>
+                             <widget class="QLineEdit" name="leObjectZ"/>
                             </item>
                             <item>
                              <widget class="QPushButton" name="pbAddVariablePoint">
@@ -6018,26 +6161,32 @@ QGroupBox::title
                             <enum>QFrame::Raised</enum>
                            </property>
                            <layout class="QGridLayout" name="gridLayout_42">
-                            <item row="3" column="5">
-                             <widget class="QLineEdit" name="leMPoint3Y"/>
+                            <item row="8" column="5">
+                             <widget class="QLineEdit" name="leDPoint2Y"/>
                             </item>
-                            <item row="3" column="2">
+                            <item row="4" column="5">
+                             <widget class="QLineEdit" name="leSPoint3Y"/>
+                            </item>
+                            <item row="7" column="3">
+                             <widget class="QLineEdit" name="leDPoint1X"/>
+                            </item>
+                            <item row="4" column="2">
                              <widget class="QLabel" name="label_212">
                               <property name="text">
                                <string>Point 3</string>
                               </property>
                              </widget>
                             </item>
-                            <item row="1" column="3">
-                             <widget class="QLineEdit" name="leMPoint1X"/>
-                            </item>
-                            <item row="0" column="3">
-                             <widget class="QLabel" name="label_218">
-                              <property name="text">
-                               <string>X</string>
+                            <item row="11" column="5">
+                             <widget class="QPushButton" name="pbAddPointMatrix">
+                              <property name="minimumSize">
+                               <size>
+                                <width>0</width>
+                                <height>20</height>
+                               </size>
                               </property>
-                              <property name="alignment">
-                               <set>Qt::AlignCenter</set>
+                              <property name="text">
+                               <string>Add Matrix</string>
                               </property>
                              </widget>
                             </item>
@@ -6048,72 +6197,21 @@ QGroupBox::title
                               </property>
                              </widget>
                             </item>
-                            <item row="2" column="5">
-                             <widget class="QLineEdit" name="leMPoint2Y"/>
+                            <item row="8" column="3">
+                             <widget class="QLineEdit" name="leDPoint2X"/>
                             </item>
-                            <item row="3" column="3">
-                             <widget class="QLineEdit" name="leMPoint3X"/>
+                            <item row="10" column="3">
+                             <widget class="QLineEdit" name="leDPoint4X"/>
                             </item>
-                            <item row="1" column="5">
-                             <widget class="QLineEdit" name="leMPoint1Y"/>
-                            </item>
-                            <item row="4" column="5">
-                             <widget class="QLineEdit" name="leMPoint4Y"/>
-                            </item>
-                            <item row="4" column="3">
-                             <widget class="QLineEdit" name="leMPoint4X"/>
-                            </item>
-                            <item row="1" column="0">
-                             <widget class="QLabel" name="label_216">
-                              <property name="text">
-                               <string>Name</string>
-                              </property>
-                             </widget>
-                            </item>
-                            <item row="1" column="1">
-                             <widget class="QLineEdit" name="lePointMatrixName">
-                              <property name="text">
-                               <string>#PointMatrix1</string>
-                              </property>
-                             </widget>
-                            </item>
-                            <item row="2" column="3">
-                             <widget class="QLineEdit" name="leMPoint2X"/>
-                            </item>
-                            <item row="0" column="5">
-                             <widget class="QLabel" name="label_210">
-                              <property name="text">
-                               <string>Y</string>
-                              </property>
-                              <property name="alignment">
-                               <set>Qt::AlignCenter</set>
-                              </property>
-                             </widget>
-                            </item>
-                            <item row="4" column="2">
-                             <widget class="QLabel" name="label_219">
-                              <property name="text">
-                               <string>Point 4</string>
-                              </property>
-                             </widget>
-                            </item>
-                            <item row="1" column="2">
-                             <widget class="QLabel" name="label_211">
-                              <property name="text">
-                               <string>Point 1</string>
-                              </property>
-                             </widget>
-                            </item>
-                            <item row="2" column="1">
-                             <widget class="QPushButton" name="pbCalculatePointMatrixTool">
-                              <property name="minimumSize">
-                               <size>
-                                <width>0</width>
-                                <height>20</height>
-                               </size>
+                            <item row="6" column="2">
+                             <widget class="QLabel" name="label_207">
+                              <property name="font">
+                               <font>
+                                <bold>true</bold>
+                               </font>
                               </property>
                               <property name="text">
-                               <string>Calculate</string>
+                               <string>Destination</string>
                               </property>
                              </widget>
                             </item>
@@ -6130,8 +6228,114 @@ QGroupBox::title
                               </property>
                              </spacer>
                             </item>
-                            <item row="5" column="5">
-                             <widget class="QPushButton" name="pbAddVariablePoint_4">
+                            <item row="1" column="2">
+                             <widget class="QLabel" name="label_211">
+                              <property name="text">
+                               <string>Point 1</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="2" column="5">
+                             <widget class="QLineEdit" name="leSPoint2Y"/>
+                            </item>
+                            <item row="1" column="3">
+                             <widget class="QLineEdit" name="leSPoint1X"/>
+                            </item>
+                            <item row="0" column="3">
+                             <widget class="QLabel" name="label_218">
+                              <property name="text">
+                               <string>X</string>
+                              </property>
+                              <property name="alignment">
+                               <set>Qt::AlignCenter</set>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="0" column="5">
+                             <widget class="QLabel" name="label_210">
+                              <property name="text">
+                               <string>Y</string>
+                              </property>
+                              <property name="alignment">
+                               <set>Qt::AlignCenter</set>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="9" column="5">
+                             <widget class="QLineEdit" name="leDPoint3Y"/>
+                            </item>
+                            <item row="1" column="1">
+                             <widget class="QLineEdit" name="lePointMatrixName">
+                              <property name="text">
+                               <string>#PointMatrix1</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="1" column="5">
+                             <widget class="QLineEdit" name="leSPoint1Y"/>
+                            </item>
+                            <item row="4" column="1" rowspan="3">
+                             <widget class="QLabel" name="lbPointMatrixDisplay">
+                              <property name="text">
+                               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;|m11 , m12, m13 |&lt;/p&gt;&lt;p&gt;|m21, m22, m23 |&lt;/p&gt;&lt;p&gt;|m31, m32, m33 |&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="5" column="2">
+                             <widget class="QLabel" name="label_219">
+                              <property name="text">
+                               <string>Point 4</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="9" column="2">
+                             <widget class="QLabel" name="label_234">
+                              <property name="text">
+                               <string>Point 3</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="7" column="5">
+                             <widget class="QLineEdit" name="leDPoint1Y"/>
+                            </item>
+                            <item row="1" column="0">
+                             <widget class="QLabel" name="label_216">
+                              <property name="text">
+                               <string>Name</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="7" column="2">
+                             <widget class="QLabel" name="label_220">
+                              <property name="text">
+                               <string>Point 1</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="10" column="2">
+                             <widget class="QLabel" name="label_235">
+                              <property name="text">
+                               <string>Point 4</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="0" column="2">
+                             <widget class="QLabel" name="label_167">
+                              <property name="font">
+                               <font>
+                                <bold>true</bold>
+                               </font>
+                              </property>
+                              <property name="text">
+                               <string>Source</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="5" column="3">
+                             <widget class="QLineEdit" name="leSPoint4X"/>
+                            </item>
+                            <item row="2" column="1">
+                             <widget class="QPushButton" name="pbCalculatePointMatrixTool">
                               <property name="minimumSize">
                                <size>
                                 <width>0</width>
@@ -6139,8 +6343,83 @@ QGroupBox::title
                                </size>
                               </property>
                               <property name="text">
-                               <string>Add Matrix</string>
+                               <string>Calculate</string>
                               </property>
+                             </widget>
+                            </item>
+                            <item row="9" column="3">
+                             <widget class="QLineEdit" name="leDPoint3X"/>
+                            </item>
+                            <item row="10" column="5">
+                             <widget class="QLineEdit" name="leDPoint4Y"/>
+                            </item>
+                            <item row="2" column="3">
+                             <widget class="QLineEdit" name="leSPoint2X"/>
+                            </item>
+                            <item row="5" column="5">
+                             <widget class="QLineEdit" name="leSPoint4Y"/>
+                            </item>
+                            <item row="8" column="2">
+                             <widget class="QLabel" name="label_233">
+                              <property name="text">
+                               <string>Point 2</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="4" column="3">
+                             <widget class="QLineEdit" name="leSPoint3X"/>
+                            </item>
+                            <item row="12" column="3" colspan="3">
+                             <widget class="QListWidget" name="lwPointMatrixList">
+                              <property name="sizePolicy">
+                               <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
+                                <horstretch>0</horstretch>
+                                <verstretch>0</verstretch>
+                               </sizepolicy>
+                              </property>
+                              <property name="minimumSize">
+                               <size>
+                                <width>0</width>
+                                <height>70</height>
+                               </size>
+                              </property>
+                              <property name="maximumSize">
+                               <size>
+                                <width>16777215</width>
+                                <height>100</height>
+                               </size>
+                              </property>
+                              <property name="styleSheet">
+                               <string notr="true">background-color: rgb(118, 118, 118);
+color: rgb(241, 241, 241);
+border-radius: 5px;
+padding: 5px;</string>
+                              </property>
+                              <item>
+                               <property name="text">
+                                <string>#MappingMatrix1</string>
+                               </property>
+                              </item>
+                              <item>
+                               <property name="text">
+                                <string>#MappingMatrix2</string>
+                               </property>
+                              </item>
+                              <item>
+                               <property name="text">
+                                <string>#MappingMatrix3</string>
+                               </property>
+                              </item>
+                              <item>
+                               <property name="text">
+                                <string>#MappingMatrix4</string>
+                               </property>
+                              </item>
+                              <item>
+                               <property name="text">
+                                <string>#MappingMatrix5</string>
+                               </property>
+                              </item>
                              </widget>
                             </item>
                            </layout>
@@ -15682,12 +15961,12 @@ QGroupBox
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>298</x>
-     <y>179</y>
+     <x>303</x>
+     <y>-614</y>
     </hint>
     <hint type="destinationlabel">
-     <x>298</x>
-     <y>189</y>
+     <x>312</x>
+     <y>-615</y>
     </hint>
    </hints>
   </connection>

@@ -1,4 +1,5 @@
 #include "MainWindow.h"
+#include "SoftwareManager.h"
 #include "ui_MainWindow.h"
 
 
@@ -13,6 +14,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
 void MainWindow::InitVariables()
 {
+    VariableManager::instance().loadFromQSettings();
+
     QElapsedTimer time;
     qint64 start = time.elapsed();
 
@@ -29,6 +32,7 @@ void MainWindow::InitVariables()
 
     // ----- Init Pointer -----
     SoftwareManager::GetInstance()->SoftwarePointer = this;
+//    ui->tvVariables->setModel(&SoftwareManager::GetInstance()->SoftwarePointer->VariableTreeModel);
     SoftwareManager::GetInstance()->SoftwarePath = QApplication::applicationDirPath();
 
     //------- Dasboard --------
@@ -56,6 +60,9 @@ void MainWindow::InitVariables()
 
     //-------- Variable Table -----------
     VariableTreeModel.setHorizontalHeaderLabels(QStringList() << "Name" << "Value");
+    connect(&VariableManager::instance(), SIGNAL(varUpdated(QString, QVariant)), this, SLOT(UpdateVarToTreeView(QString, QVariant)));
+    connect(&VariableManager::instance(), SIGNAL(varAdded(QString, QVariant)), this, SLOT(UpdateVarToTreeView(QString, QVariant)));
+    ui->tvVariables->setModel(&VariableTreeModel);
 
     //------- Project Manager --------
     SoftwareProjectManager = new ProjectManager();
@@ -142,7 +149,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
 
 void MainWindow::InitProjectUX()
 {
-    connect(ui->tbOpenProject, SIGNAL(clicked()), this, SLOT(OpenProjectFromFile()));
+//    connect(ui->tbOpenProject, SIGNAL(clicked()), this, SLOT(OpenProjectFromFile()));
     connect(ui->tbSaveProject, SIGNAL(clicked()), this, SLOT(SaveProjectToFile()));
 }
 
@@ -155,7 +162,7 @@ void MainWindow::InitVisible()
     ui->tbMarket->setVisible(false);
     ui->tbAuthority->setVisible(false);
     ui->tbSaveProject->setVisible(true);
-    ui->tbOpenProject->setVisible(true);
+    ui->tbOpenProject->setVisible(false);
 
     // ----- Load custom UI ----
     QSettings settings("customUI.ini", QSettings::IniFormat);
@@ -292,45 +299,43 @@ RobotWindow *MainWindow::AddNewProjectAndRobot(int index)
 
 void MainWindow::OpenProjectFromFile()
 {
-    QDir dir = QCoreApplication::applicationDirPath() + "/project/";
-    if (!dir.exists())
-        dir.mkpath(".");
+//    QDir dir = QCoreApplication::applicationDirPath() + "/project/";
+//    if (!dir.exists())
+//        dir.mkpath(".");
 
-    QString fileName = QFileDialog::getOpenFileName(this,
-        tr("Open Delta X Project"), dir.path(), tr("Project File (*.prx)"));
+//    QString fileName = QFileDialog::getOpenFileName(this,
+//        tr("Open Delta X Project"), dir.path(), tr("Project File (*.prx)"));
 
-    if (fileName.isEmpty())
-        return;
+//    if (fileName.isEmpty())
+//        return;
 
-    openProject(fileName);
+//    openProject(fileName);
 }
 
 void MainWindow::SaveProjectToFile()
 {
-    QDir dir = QCoreApplication::applicationDirPath() + "/project/";
-    if (!dir.exists())
-        dir.mkpath(".");
+//    QDir dir = QCoreApplication::applicationDirPath() + "/project/";
+//    if (!dir.exists())
+//        dir.mkpath(".");
 
-    QFileDialog dialog(this);
-    dialog.setFileMode(QFileDialog::AnyFile);
-    dialog.setNameFilter(tr("Delta X Project (*.prx)"));
-    dialog.setViewMode(QFileDialog::Detail);
-    QString fileName;
-    fileName = dialog.getSaveFileName(this, "Save delta robot project", dir.path(), "Delta X Project (*.prx)");
+//    QFileDialog dialog(this);
+//    dialog.setFileMode(QFileDialog::AnyFile);
+//    dialog.setNameFilter(tr("Delta X Project (*.prx)"));
+//    dialog.setViewMode(QFileDialog::Detail);
+//    QString fileName;
+//    fileName = dialog.getSaveFileName(this, "Save delta robot project", dir.path(), "Delta X Project (*.prx)");
 
-    QSettings settings(fileName, QSettings::IniFormat);
+    VariableManager::instance().saveToQSettings();
 
-    SoftwareProjectManager->CurrentRobotWindow->SaveSettings(&settings);
+//    QFile file(QCoreApplication::applicationDirPath() + "/customUI.ini");
+//    if (!file.exists())
+//    {
+//        file.open(QIODevice::WriteOnly);
+//        file.close();
+//    }
 
-    QFile file(QCoreApplication::applicationDirPath() + "/customUI.ini");
-    if (!file.exists())
-    {
-        file.open(QIODevice::WriteOnly);
-        file.close();
-    }
-
-    QSettings settings2("customUI.ini", QSettings::IniFormat);
-    settings2.setValue("LastProject", fileName);
+//    QSettings settings2("customUI.ini", QSettings::IniFormat);
+//    settings2.setValue("LastProject", fileName);
 
     SaveOperatorSettings();
 }
@@ -354,6 +359,39 @@ void MainWindow::Log(QString msg)
     ui->teLoggingBox->moveCursor (QTextCursor::End);
     ui->teLoggingBox->insertPlainText(msg);
     ui->teLoggingBox->moveCursor(QTextCursor::End);
+}
+
+void MainWindow::UpdateVarToTreeView(QString key, QVariant value)
+{
+    QStandardItem *parent = VariableTreeModel.invisibleRootItem();
+    QStringList parts = key.split('.');
+
+    for (int i = 0; i < parts.count() - 1; ++i) {
+        QString part = parts[i];
+        QStandardItem *child = nullptr;
+        for (int j = 0; j < parent->rowCount(); ++j) {
+            if (parent->child(j)->text() == part) {
+                child = parent->child(j);
+                break;
+            }
+        }
+        if (!child) {
+            child = new QStandardItem(part);
+            parent->appendRow(child);
+        }
+        parent = child;
+    }
+    bool found = false;
+    for (int i = 0; i < parent->rowCount(); ++i) {
+        if (parent->child(i)->text() == parts.last()) {
+            parent->child(i, 1)->setText(value.toString());
+            found = true;
+            break;
+        }
+    }
+    if (!found) {
+        parent->appendRow(QList<QStandardItem*>() << new QStandardItem(parts.last()) << new QStandardItem(value.toString()));
+    }
 }
 
 void MainWindow::SetLoadingIconRun(bool isRun)

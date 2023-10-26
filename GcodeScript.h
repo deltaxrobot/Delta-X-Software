@@ -70,6 +70,7 @@ signals:
     void SendGcodeToDevice(QString deviceName, QString gcode);
     void SendToDevice(QString deviceName, QString gcode);
 
+    void CatchVariable(QString key, QString value);
 private:
     bool isRunning = false;
     QString gcodeScript = "";

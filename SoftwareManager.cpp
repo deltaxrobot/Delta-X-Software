@@ -1,4 +1,5 @@
 #include "SoftwareManager.h"
+#include "MainWindow.h"
 
 SoftwareManager* SoftwareManager::singleton_= nullptr;;
 

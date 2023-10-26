@@ -57,6 +57,7 @@ SOURCES += main.cpp\
     ObjectManager.cpp \
     ObjectVariableTable.cpp \
     Parameter.cpp \
+    PointTool.cpp \
     ProjectManager.cpp \
     RobotWindow.cpp \
     SmartDialog.cpp \
@@ -108,6 +109,7 @@ HEADERS  += \
     ObjectManager.h \
     ObjectVariableTable.h \
     Parameter.h \
+    PointTool.h \
     ProjectManager.h \
     RobotWindow.h \
     ScurveInterpolator.h \

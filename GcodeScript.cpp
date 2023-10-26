@@ -183,7 +183,8 @@ float GcodeScript::GetResultOfMathFunction(QString expression)
         {
             if (values.at(i).at(0) == '#')
             {
-                values.replace(i, getValueOfVariable(values.at(i)));
+                QString val = getValueOfVariable(values.at(i));
+                values.replace(i, val);
             }
         }
     }
@@ -1313,6 +1314,7 @@ QString GcodeScript::getValueOfVariable(QString name)
     if (VariableManager::instance().contains(fullName) == true)
     {
         QVariant var = VariableManager::instance().getVar(fullName);
+        emit CatchVariable(name, var.toString());
         return var.toString();
     }
     else
@@ -1342,6 +1344,8 @@ void GcodeScript::updateVariables(QString str)
 void GcodeScript::saveVariable(QString name, QString value)
 {
 //    name = name.replace("_", ".");
+
+    emit CatchVariable(name, value);
 
     QStringList paras = name.split('.');
 

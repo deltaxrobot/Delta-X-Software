@@ -7,7 +7,7 @@
 #include <QSettings>
 #include "QStackedWidget"
 #include <QList>
-#include "SoftwareManager.h"
+
 #include "VersionManager.h"
 #include "Authority.h"
 #include "UnityTool.h"
@@ -20,6 +20,8 @@
 namespace Ui {
 class MainWindow;
 }
+
+//class SoftwareManager;
 
 class MainWindow : public QMainWindow
 {
@@ -40,7 +42,6 @@ public:
 
     TabDashboard* Dashboard;
     ProjectManager* SoftwareProjectManager;
-    QSettings* ProjectSetting;
     VersionManager* DeltaXVersionManager;
     SmartDialog* CloseDialog;
     Authority* SoftwareAuthority;
@@ -56,6 +57,8 @@ public slots:
     void SaveProjectToFile();
     void SelectedTab(QAbstractButton* tabButton);
     void Log(QString msg);
+
+    void UpdateVarToTreeView(QString key, QVariant value);
 
     void SetLoadingIconRun(bool isRun);
 

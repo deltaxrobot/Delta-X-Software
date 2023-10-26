@@ -44,7 +44,6 @@
 #include <QElapsedTimer>
 #include <QProcess>
 #include <QComboBox>
-#include "FilterWindow.h"
 #include "GcodeHighlighter.h"
 #include <QList>
 
@@ -60,20 +59,19 @@
 #include <QLayout>
 #include <QStackedWidget>
 
-#include "SoftwareManager.h"
+//#include "SoftwareManager.h"
 
-#include "ComDevice.h"
 #include "ImageProcessing.h"
 
-#include <QSettings>
 #include "GcodeScript.h"
-
 
 #include <QDialogButtonBox>
 #include <device/DeviceManager.h>
 #include "device/camera.h"
 #include "VarManager.h"
 #include "TrackingManager.h"
+
+#include "PointTool.h"
 
 #define DEFAULT_BAUDRATE 115200
 
@@ -237,12 +235,19 @@ public:
 
     // ----- Data ----
     QMap<QString, QString> ParseNames;
+
+    QStandardItemModel VarViewModel;
 //    QMap<QString, QString>* GcodeVariables;
+    QTransform CalculatingTransform;
+    QMatrix PointMatrix;
+    QVector3D CalVector;
 
 public slots:
     // ---- View update ----
     void GetDeviceInfo(QString json);
     void GetDeviceResponse(QString id, QString response);
+    void UpdateVarToView(QString fullKey, QString value);
+    void UpdateVarToModel(QStandardItem *parent, QString fullKey, QString value);
 
     // ---- Robot ----
     void ConnectRobot();
@@ -411,6 +416,7 @@ public slots:
     void CalculatePointMatrixTool();
     void CalculateTestPoint();
     void CalculateAngle();
+    void CalVector();
 
     // ----- Display ----
 
@@ -492,6 +498,7 @@ private:
 
     //--------- Tool -------
     QTransform calculateTransformMatrix(QPointF sourcePoint1, QPointF sourcePoint2, QPointF targetPoint1, QPointF targetPoint2);
+
     void runPythonFile(QString filePath);
     QProcess *process = nullptr;
 

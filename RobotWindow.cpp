@@ -1,5 +1,7 @@
 ﻿#include "RobotWindow.h"
 #include "ui_RobotWindow.h"
+#include "SoftwareManager.h"
+#include "MainWindow.h"
 
 RobotWindow::RobotWindow(QWidget *parent, QString projectName) :
     QMainWindow(parent),
@@ -180,6 +182,20 @@ void RobotWindow::InitVariables()
 
     InitParseNames();
 
+    VarViewModel.setHorizontalHeaderLabels(QStringList() << "Name" << "Value");
+    ui->tvCurrentVariable->setModel(&VarViewModel);
+
+    connect(ui->cbVariableDisplayOption, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), [=](int index){
+        if (index == 1)
+        {
+            ui->tvCurrentVariable->setModel(&SoftwareManager::GetInstance()->SoftwarePointer->VariableTreeModel);
+        }
+        else
+        {
+            ui->tvCurrentVariable->setModel(&VarViewModel);
+        }
+    });
+
     //---- Init pointer --------
     initInputValueLabels();
 
@@ -194,16 +210,20 @@ void RobotWindow::InitVariables()
     #endif
 #endif
 
-
+    // -------- Point Tool -------
 
     connect(ui->pbCalculateMappingMatrixTool, SIGNAL(clicked(bool)), this, SLOT(CalculateMappingMatrixTool()));
     connect(ui->pbCalculatePointMatrixTool, SIGNAL(clicked(bool)), this, SLOT(CalculatePointMatrixTool()));
     connect(ui->pbCalculateTestPoint, SIGNAL(clicked(bool)), this, SLOT(CalculateTestPoint()));
     connect(ui->pbCalculateAngle, SIGNAL(clicked(bool)), this, SLOT(CalculateAngle()));
+    connect(ui->pbCalVector, SIGNAL(clicked(bool)), this, SLOT(CalculateVector()));
 
     connect(ui->pbAnglePoint1, &QPushButton::clicked, [=](){ ui->leAnglePoint1X->setText(QString::number(RobotParameters[RbID].X)); ui->leAnglePoint1Y->setText(QString::number(RobotParameters[RbID].Y)); UpdateRealPositionOfCalibPoints();});
     connect(ui->pbAnglePoint2, &QPushButton::clicked, [=](){ ui->leAnglePoint2X->setText(QString::number(RobotParameters[RbID].X)); ui->leAnglePoint2Y->setText(QString::number(RobotParameters[RbID].Y)); UpdateRealPositionOfCalibPoints();});
 
+    connect(ui->pbAddMappingMatrix, &QPushButton::clicked, [=](){VariableManager::instance().addVar(ui->leMatrixName->text(), CalculatingTransform);ui->lwMappingMatrixList->addItem(ui->lbMatrixDisplay->text());});
+    connect(ui->pbAddPointMatrix, &QPushButton::clicked, [=](){VariableManager::instance().addVar(ui->lePointMatrixName->text(), PointMatrix);ui->lwPointMatrixList->addItem(ui->lbPointMatrixDisplay->text());});
+    connect(ui->pbAddVector, &QPushButton::clicked, [=](){VariableManager::instance().addVar(ui->leVectorName->text(), CalVector);ui->lwVectorList->addItem(ui->leVectorName->text());});
     // ------- Log and Debug -----
     Debugs.push_back(ui->teDebug);
 
@@ -1317,6 +1337,8 @@ void RobotWindow::AddScriptThread()
     GcodeScriptThread->thread()->start();
 
     GcodeScripts.append(GcodeScriptThread);
+
+    connect(GcodeScriptThread, &GcodeScript::CatchVariable, this, &RobotWindow::UpdateVarToView);
 }
 
 void RobotWindow::LoadScriptThread()
@@ -2097,6 +2119,44 @@ void RobotWindow::GetDeviceResponse(QString id, QString response)
                 ui->leEncoderCurrentPosition->setText(value);
             }
         }
+    }
+}
+
+void RobotWindow::UpdateVarToView(QString fullKey, QString value)
+{
+    QStandardItem *parent = VarViewModel.invisibleRootItem();
+    UpdateVarToModel(parent, fullKey, value);
+}
+
+void RobotWindow::UpdateVarToModel(QStandardItem *parent, QString fullKey, QString value)
+{
+    QStringList parts = fullKey.split('.');
+
+    for (int i = 0; i < parts.count() - 1; ++i) {
+        QString part = parts[i];
+        QStandardItem *child = nullptr;
+        for (int j = 0; j < parent->rowCount(); ++j) {
+            if (parent->child(j)->text() == part) {
+                child = parent->child(j);
+                break;
+            }
+        }
+        if (!child) {
+            child = new QStandardItem(part);
+            parent->appendRow(child);
+        }
+        parent = child;
+    }
+    bool found = false;
+    for (int i = 0; i < parent->rowCount(); ++i) {
+        if (parent->child(i)->text() == parts.last()) {
+            parent->child(i, 1)->setText(value);
+            found = true;
+            break;
+        }
+    }
+    if (!found) {
+        parent->appendRow(QList<QStandardItem*>() << new QStandardItem(parts.last()) << new QStandardItem(value));
     }
 }
 
@@ -4024,13 +4084,51 @@ void RobotWindow::CalculateMappingMatrixTool()
     QPointF tp2(ui->leDestinationPoint2X->text().toFloat(), ui->leDestinationPoint2Y->text().toFloat());
 
     QTransform transformMatrix = calculateTransformMatrix(sp1, sp2, tp1, tp2);
+    CalculatingTransform = PointTool::calculateTransform(sp1, sp2, tp1, tp2);
 
-    VariableManager::instance().addVar(ui->leMatrix1Name->text(), transformMatrix);
+    QString transformAsString = QString("Matrix:\n"
+                                        "| %1, %2, %3 |\n"
+                                        "| %4, %5, %6 |\n"
+                                        "| %7, %8, %9 |")
+                                    .arg(CalculatingTransform.m11()).arg(CalculatingTransform.m12()).arg(CalculatingTransform.m13())
+                                    .arg(CalculatingTransform.m21()).arg(CalculatingTransform.m22()).arg(CalculatingTransform.m23())
+                                    .arg(CalculatingTransform.m31()).arg(CalculatingTransform.m32()).arg(CalculatingTransform.m33());
+
+    ui->lbMatrixDisplay->setText(transformAsString);
+
 }
 
 void RobotWindow::CalculatePointMatrixTool()
 {
+    QPointF sp1(ui->leSPoint1X->text().toFloat(), ui->leSPoint1Y->text().toFloat());
+    QPointF sp2(ui->leSPoint2X->text().toFloat(), ui->leSPoint2Y->text().toFloat());
+    QPointF sp3(ui->leSPoint3X->text().toFloat(), ui->leSPoint3Y->text().toFloat());
+    QPointF sp4(ui->leSPoint4X->text().toFloat(), ui->leSPoint4Y->text().toFloat());
 
+    QPointF dp1(ui->leDPoint1X->text().toFloat(), ui->leDPoint1Y->text().toFloat());
+    QPointF dp2(ui->leDPoint2X->text().toFloat(), ui->leDPoint2Y->text().toFloat());
+    QPointF dp3(ui->leDPoint3X->text().toFloat(), ui->leDPoint3Y->text().toFloat());
+    QPointF dp4(ui->leDPoint4X->text().toFloat(), ui->leDPoint4Y->text().toFloat());
+
+    QPolygonF source;
+    source << sp1 << sp2 << sp3 << sp4;
+
+    QPolygonF dest;
+    dest << dp1 << dp2 << dp3 << dp4;
+
+    PointMatrix = PointTool::calculateMatrix(source, dest);
+
+    qreal m11 = PointMatrix.m11();  // x scaling
+    qreal m12 = PointMatrix.m12();  // y rotation
+    qreal m21 = PointMatrix.m21();  // x rotation
+    qreal m22 = PointMatrix.m22();  // y scaling
+    qreal dx = PointMatrix.dx();    // x translation
+    qreal dy = PointMatrix.dy();    // y translation
+
+    QString matrixString = QString("m11: %1, m12: %2\nm21: %3, m22: %4\ndx: %5, dy: %6")
+                             .arg(m11).arg(m12).arg(m21).arg(m22).arg(dx).arg(dy);
+
+    ui->lbPointMatrixDisplay->setText(matrixString);
 }
 
 void RobotWindow::CalculateTestPoint()
@@ -4051,6 +4149,26 @@ void RobotWindow::CalculateAngle()
     QVector2D vector(end - start);
     float angle = qRadiansToDegrees(qAtan2(vector.y(), vector.x()));
     ui->leAngleResult->setText(QString::number(angle));
+}
+
+void RobotWindow::CalculateVector()
+{
+    double angleXYInDegrees = ui->leVectorAngleInput->text().toDouble();
+    double angleZInDegrees = ui->leVectorAngle2Input->text().toDouble();
+    double magnitude = ui->leVectorSpeedInput->text().toDouble();
+
+    double angleXYInRadians = qDegreesToRadians(angleXYInDegrees);  // Chuyển đổi từ độ sang radian cho góc XY
+    double angleZInRadians = qDegreesToRadians(angleZInDegrees);  // Chuyển đổi từ độ sang radian cho góc Z
+
+    double x = magnitude * qCos(angleXYInRadians) * qCos(angleZInRadians);
+    double y = magnitude * qSin(angleXYInRadians) * qCos(angleZInRadians);
+    double z = magnitude * qSin(angleZInRadians);
+
+    ui->leVectorX->setText(QString::number(x));
+    ui->leVectorY->setText(QString::number(y));
+    ui->leVectorZ->setText(QString::number(z));
+
+    CalVector = QVector3D(x, y, z);
 }
 
 void RobotWindow::ProcessProximitySensorValue(int value)

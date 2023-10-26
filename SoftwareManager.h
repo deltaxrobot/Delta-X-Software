@@ -5,6 +5,7 @@
 #include "ProjectManager.h"
 
 class ProjectManager;
+class MainWindow;
 
 class SoftwareManager
 {
@@ -22,7 +23,7 @@ public:
 
     static SoftwareManager *GetInstance();
 
-    QObject* SoftwarePointer = NULL;
+    MainWindow* SoftwarePointer = NULL;
 
     ProjectManager* SoftwareProjectManager;
 

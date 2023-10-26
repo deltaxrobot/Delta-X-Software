@@ -117,6 +117,47 @@ void CodeEditor::setLockState(bool state)
         setTextInteractionFlags(Qt::TextEditorInteraction);
 }
 
+void CodeEditor::commentSelectedLines()
+{
+    QTextCursor cursor = textCursor();
+    cursor.beginEditBlock();
+
+    int startPos = cursor.selectionStart();
+    int endPos = cursor.selectionEnd();
+
+    cursor.setPosition(startPos, QTextCursor::MoveAnchor);
+    cursor.movePosition(QTextCursor::StartOfLine);
+
+    bool allLinesCommented = true;
+    while (cursor.position() <= endPos) {
+        cursor.movePosition(QTextCursor::Right, QTextCursor::KeepAnchor, 1);
+        if (cursor.selectedText() != ";") {
+            allLinesCommented = false;
+            break;
+        }
+        cursor.movePosition(QTextCursor::Down);
+        cursor.movePosition(QTextCursor::StartOfLine);
+    }
+
+    cursor.setPosition(startPos, QTextCursor::MoveAnchor);
+    cursor.movePosition(QTextCursor::StartOfLine);
+
+    while (cursor.position() <= endPos) {
+        if (allLinesCommented) {
+            cursor.movePosition(QTextCursor::Right, QTextCursor::KeepAnchor, 1);
+            if (cursor.selectedText() == ";") {
+                cursor.removeSelectedText();
+            }
+        } else {
+            cursor.insertText(";");
+        }
+        cursor.movePosition(QTextCursor::Down);
+        cursor.movePosition(QTextCursor::StartOfLine);
+    }
+
+    cursor.endEditBlock();
+}
+
 //![slotUpdateRequest]
 
 //![resizeEvent]
@@ -127,6 +168,15 @@ void CodeEditor::resizeEvent(QResizeEvent *e)
 
     /*QRect cr = contentsRect();
     lineNumberArea->setGeometry(QRect(cr.left(), cr.top(), lineNumberAreaWidth(), cr.height()));*/
+}
+
+void CodeEditor::keyPressEvent(QKeyEvent *event)
+{
+    if (event->modifiers() == Qt::ControlModifier && event->key() == Qt::Key_Slash) {
+        commentSelectedLines();
+    } else {
+        QTextEdit::keyPressEvent(event);
+    }
 }
 
 //![resizeEvent]
