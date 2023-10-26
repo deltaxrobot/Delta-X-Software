@@ -5013,15 +5013,15 @@ QFrame
                   <property name="geometry">
                    <rect>
                     <x>0</x>
-                    <y>-870</y>
+                    <y>0</y>
                     <width>574</width>
-                    <height>1700</height>
+                    <height>1900</height>
                    </rect>
                   </property>
                   <property name="minimumSize">
                    <size>
                     <width>0</width>
-                    <height>1700</height>
+                    <height>1900</height>
                    </size>
                   </property>
                   <property name="styleSheet">
@@ -5596,83 +5596,7 @@ QGroupBox::title
                             <enum>QFrame::Raised</enum>
                            </property>
                            <layout class="QGridLayout" name="gridLayout_45">
-                            <item row="3" column="0">
-                             <widget class="QLineEdit" name="leVectorName">
-                              <property name="text">
-                               <string>#Vector1</string>
-                              </property>
-                             </widget>
-                            </item>
-                            <item row="0" column="0">
-                             <widget class="QLabel" name="label_197">
-                              <property name="text">
-                               <string>Speed</string>
-                              </property>
-                              <property name="alignment">
-                               <set>Qt::AlignCenter</set>
-                              </property>
-                             </widget>
-                            </item>
-                            <item row="1" column="0">
-                             <widget class="QLineEdit" name="leVectorSpeedInput"/>
-                            </item>
-                            <item row="1" column="2">
-                             <widget class="QPushButton" name="pbCalVector">
-                              <property name="sizePolicy">
-                               <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-                                <horstretch>0</horstretch>
-                                <verstretch>0</verstretch>
-                               </sizepolicy>
-                              </property>
-                              <property name="text">
-                               <string>Calculate</string>
-                              </property>
-                             </widget>
-                            </item>
-                            <item row="0" column="1">
-                             <widget class="QLabel" name="label_209">
-                              <property name="text">
-                               <string>Angle</string>
-                              </property>
-                              <property name="alignment">
-                               <set>Qt::AlignCenter</set>
-                              </property>
-                             </widget>
-                            </item>
-                            <item row="2" column="1">
-                             <widget class="QLabel" name="label_226">
-                              <property name="text">
-                               <string>X</string>
-                              </property>
-                              <property name="alignment">
-                               <set>Qt::AlignCenter</set>
-                              </property>
-                             </widget>
-                            </item>
-                            <item row="2" column="2">
-                             <widget class="QLabel" name="label_227">
-                              <property name="text">
-                               <string>Y</string>
-                              </property>
-                              <property name="alignment">
-                               <set>Qt::AlignCenter</set>
-                              </property>
-                             </widget>
-                            </item>
-                            <item row="1" column="1">
-                             <widget class="QLineEdit" name="leVectorAngleInput"/>
-                            </item>
-                            <item row="2" column="4">
-                             <widget class="QLabel" name="label_228">
-                              <property name="text">
-                               <string>Z</string>
-                              </property>
-                              <property name="alignment">
-                               <set>Qt::AlignCenter</set>
-                              </property>
-                             </widget>
-                            </item>
-                            <item row="3" column="5">
+                            <item row="3" column="6">
                              <widget class="QPushButton" name="pbAddVector">
                               <property name="sizePolicy">
                                <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
@@ -5691,8 +5615,14 @@ QGroupBox::title
                               </property>
                              </widget>
                             </item>
-                            <item row="3" column="4">
+                            <item row="3" column="5">
                              <widget class="QLineEdit" name="leVectorZ"/>
+                            </item>
+                            <item row="1" column="1">
+                             <widget class="QLineEdit" name="leVectorAngleInput"/>
+                            </item>
+                            <item row="3" column="3">
+                             <widget class="QLineEdit" name="leVectorY"/>
                             </item>
                             <item row="2" column="0">
                              <widget class="QLabel" name="label_229">
@@ -5704,13 +5634,7 @@ QGroupBox::title
                               </property>
                              </widget>
                             </item>
-                            <item row="3" column="1">
-                             <widget class="QLineEdit" name="leVectorX"/>
-                            </item>
-                            <item row="3" column="2">
-                             <widget class="QLineEdit" name="leVectorY"/>
-                            </item>
-                            <item row="3" column="6">
+                            <item row="3" column="7">
                              <spacer name="horizontalSpacer_28">
                               <property name="orientation">
                                <enum>Qt::Horizontal</enum>
@@ -5723,7 +5647,30 @@ QGroupBox::title
                               </property>
                              </spacer>
                             </item>
-                            <item row="4" column="4" colspan="2">
+                            <item row="2" column="1">
+                             <widget class="QLabel" name="label_226">
+                              <property name="text">
+                               <string>X</string>
+                              </property>
+                              <property name="alignment">
+                               <set>Qt::AlignCenter</set>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="2" column="3">
+                             <widget class="QLabel" name="label_227">
+                              <property name="text">
+                               <string>Y</string>
+                              </property>
+                              <property name="alignment">
+                               <set>Qt::AlignCenter</set>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="1" column="0">
+                             <widget class="QLineEdit" name="leVectorSpeedInput"/>
+                            </item>
+                            <item row="4" column="5" colspan="2">
                              <widget class="QListWidget" name="lwVectorList">
                               <property name="sizePolicy">
                                <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
@@ -5754,6 +5701,76 @@ padding: 5px;</string>
                                 <string>#Vector1</string>
                                </property>
                               </item>
+                             </widget>
+                            </item>
+                            <item row="3" column="1">
+                             <widget class="QLineEdit" name="leVectorX"/>
+                            </item>
+                            <item row="3" column="0">
+                             <widget class="QLineEdit" name="leVectorName">
+                              <property name="text">
+                               <string>#Vector1</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="0" column="1">
+                             <widget class="QLabel" name="label_209">
+                              <property name="text">
+                               <string>Angle vs X-axis</string>
+                              </property>
+                              <property name="alignment">
+                               <set>Qt::AlignCenter</set>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="2" column="5">
+                             <widget class="QLabel" name="label_228">
+                              <property name="text">
+                               <string>Z</string>
+                              </property>
+                              <property name="alignment">
+                               <set>Qt::AlignCenter</set>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="0" column="0">
+                             <widget class="QLabel" name="label_197">
+                              <property name="text">
+                               <string>Speed</string>
+                              </property>
+                              <property name="alignment">
+                               <set>Qt::AlignCenter</set>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="1" column="5">
+                             <widget class="QPushButton" name="pbCalVector">
+                              <property name="sizePolicy">
+                               <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                                <horstretch>0</horstretch>
+                                <verstretch>0</verstretch>
+                               </sizepolicy>
+                              </property>
+                              <property name="text">
+                               <string>Calculate</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="1" column="3">
+                             <widget class="QLineEdit" name="leVectorAngle2Input">
+                              <property name="text">
+                               <string>90</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="0" column="3">
+                             <widget class="QLabel" name="label_236">
+                              <property name="text">
+                               <string>Angle vs Z-axis</string>
+                              </property>
+                              <property name="alignment">
+                               <set>Qt::AlignCenter</set>
+                              </property>
                              </widget>
                             </item>
                            </layout>

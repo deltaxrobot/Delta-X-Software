@@ -20,7 +20,7 @@ QTransform PointTool::calculateTransform(const QPointF &P1, const QPointF &P2, c
     return transform;
 }
 
-QMatrix PointTool::calculateTransformMatrix(const QPolygonF &sourcePolygon, const QPolygonF &destPolygon)
+QMatrix PointTool::calculateMatrix(const QPolygonF &sourcePolygon, const QPolygonF &destPolygon)
 {
     // Kiểm tra điều kiện.
     if (sourcePolygon.size() < 4 || destPolygon.size() < 4) {

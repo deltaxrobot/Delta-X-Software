@@ -416,7 +416,7 @@ public slots:
     void CalculatePointMatrixTool();
     void CalculateTestPoint();
     void CalculateAngle();
-    void CalVector();
+    void CalculateVector();
 
     // ----- Display ----
 
