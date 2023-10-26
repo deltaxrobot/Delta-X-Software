@@ -8,6 +8,7 @@
 #include <QElapsedTimer>
 #include <QTimer>
 #include <QDebug>
+#include <QVector3D>
 
 class TrackingObject
 {
@@ -34,7 +35,8 @@ class Tracking : public QObject
 public:
     explicit Tracking(QObject *parent = nullptr);
 
-    float DeviationAngle = 0;
+    QVector3D VelocityVector;
+    QString VectorName = "#Vector1";
     int EncoderID = 0;
     QString EncoderType = "Encoder X";
     bool IsReverse = false;

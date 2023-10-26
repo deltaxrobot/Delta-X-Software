@@ -11,6 +11,7 @@
 #include <QtMath>
 #include <QVector3D>
 #include <VariableManager.h>
+#include <QVector3D>
 
 class Robot : public Device
 {
@@ -22,7 +23,7 @@ public:
     QString SetInput(int pin);
     void SetOutput(int pin, bool state);
     void MovePoint(QVector3D point);
-    void SetSyncPath(QString path, float con_vel, float con_angle);
+    void SetSyncPath(QString path, float con_vel, float con_angle, float con_angle2);
 
     float X,Y,Z,W,U,V,F,S,E,A,J,O;
 
@@ -45,7 +46,10 @@ private:
     QString now_gcode;
     float path_vel;
     float path_angle;
+    float path_angle2;
     float path_rad_angle;
+    float path_rad_angle2;
+    QVector3D sync_vector;
     Device* port;
     Scurve_Interpolator scurve_tool;
 
@@ -59,6 +63,8 @@ private:
     void calMoveTime();
     bool checkSetSyncPathCmd(QString cmd);
     QString syncGcode(QString cmd);
+    double calculateMovingTime(double distance);
+    QVector3D calculateSyncPosition(QVector3D robotPos, QVector3D objectPos, QVector3D beltVelocity, double tolerance = 1e-3);
 
 };
 

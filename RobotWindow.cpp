@@ -215,11 +215,10 @@ void RobotWindow::InitVariables()
     connect(ui->pbCalculateMappingMatrixTool, SIGNAL(clicked(bool)), this, SLOT(CalculateMappingMatrixTool()));
     connect(ui->pbCalculatePointMatrixTool, SIGNAL(clicked(bool)), this, SLOT(CalculatePointMatrixTool()));
     connect(ui->pbCalculateTestPoint, SIGNAL(clicked(bool)), this, SLOT(CalculateTestPoint()));
-    connect(ui->pbCalculateAngle, SIGNAL(clicked(bool)), this, SLOT(CalculateAngle()));
     connect(ui->pbCalVector, SIGNAL(clicked(bool)), this, SLOT(CalculateVector()));
 
-    connect(ui->pbAnglePoint1, &QPushButton::clicked, [=](){ ui->leAnglePoint1X->setText(QString::number(RobotParameters[RbID].X)); ui->leAnglePoint1Y->setText(QString::number(RobotParameters[RbID].Y)); UpdateRealPositionOfCalibPoints();});
-    connect(ui->pbAnglePoint2, &QPushButton::clicked, [=](){ ui->leAnglePoint2X->setText(QString::number(RobotParameters[RbID].X)); ui->leAnglePoint2Y->setText(QString::number(RobotParameters[RbID].Y)); UpdateRealPositionOfCalibPoints();});
+    connect(ui->pbAnglePoint1, &QPushButton::clicked, [=](){ ui->lePointAtT1X->setText(QString::number(RobotParameters[RbID].X)); ui->lePointAtT1Y->setText(QString::number(RobotParameters[RbID].Y)); ui->lePointAtT1Z->setText(QString::number(RobotParameters[RbID].Z)); UpdateRealPositionOfCalibPoints();});
+    connect(ui->pbAnglePoint2, &QPushButton::clicked, [=](){ ui->lePointAtT2X->setText(QString::number(RobotParameters[RbID].X)); ui->lePointAtT2Y->setText(QString::number(RobotParameters[RbID].Y)); ui->lePointAtT2Z->setText(QString::number(RobotParameters[RbID].Z)); UpdateRealPositionOfCalibPoints();});
 
     connect(ui->pbAddMappingMatrix, &QPushButton::clicked, [=](){VariableManager::instance().addVar(ui->leMatrixName->text(), CalculatingTransform);ui->lwMappingMatrixList->addItem(ui->lbMatrixDisplay->text());});
     connect(ui->pbAddPointMatrix, &QPushButton::clicked, [=](){VariableManager::instance().addVar(ui->lePointMatrixName->text(), PointMatrix);ui->lwPointMatrixList->addItem(ui->lbPointMatrixDisplay->text());});
@@ -1369,7 +1368,7 @@ void RobotWindow::AddTrackingThread()
     tracking->moveToThread(trackingThread);
     connect(tracking->thread(), &QThread::finished, tracking, &QObject::deleteLater);
 
-    connect(ui->leDeviationAngle, &QLineEdit::returnPressed, [=](){tracking->DeviationAngle = ui->leDeviationAngle->text().toFloat();});
+    connect(ui->pbSaveTrackingManager, &QPushButton::clicked, [=](){tracking->VelocityVector = VariableManager::instance().getVariable(ui->leVelocityVector->text()).value<QVector3D>(); tracking->VectorName = ui->leVectorName->text();});
     connect(ui->cbReverseEncoderValue, SIGNAL(clicked(bool)), tracking, SLOT(SetEncoderReverse(bool)));
 
     tracking->DetectDelayOffsetPoint = ImageProcessingThread->GetNode("VisibleObjectsNode")->GetInputPointPointer();
@@ -1387,7 +1386,7 @@ void RobotWindow::LoadTrackingThread()
     int id = ui->cbSelectedTracking->currentIndex();
     ui->leSelectedTrackingObjectList->setText(TrackingManagerInstance->Trackings.at(id)->ListName);
     ui->cbTrackingEncoderSource->setCurrentText(QString::number(TrackingManagerInstance->Trackings.at(id)->EncoderID));
-    ui->leDeviationAngle->setText(QString::number(TrackingManagerInstance->Trackings.at(id)->DeviationAngle));
+    ui->leVectorName->setText(TrackingManagerInstance->Trackings.at(id)->VectorName);
 
 }
 
@@ -4141,34 +4140,26 @@ void RobotWindow::CalculateTestPoint()
     ui->leTargetTestPointY->setText(QString::number(target.y()));
 }
 
-void RobotWindow::CalculateAngle()
-{
-    QPointF start(ui->leAnglePoint1X->text().toFloat(), ui->leAnglePoint1Y->text().toFloat());
-    QPointF end(ui->leAnglePoint2X->text().toFloat(), ui->leAnglePoint2Y->text().toFloat());
-
-    QVector2D vector(end - start);
-    float angle = qRadiansToDegrees(qAtan2(vector.y(), vector.x()));
-    ui->leAngleResult->setText(QString::number(angle));
-}
-
 void RobotWindow::CalculateVector()
 {
-    double angleXYInDegrees = ui->leVectorAngleInput->text().toDouble();
-    double angleZInDegrees = ui->leVectorAngle2Input->text().toDouble();
-    double magnitude = ui->leVectorSpeedInput->text().toDouble();
+    QVector3D P1(ui->lePointAtT1X->text().toFloat(), ui->lePointAtT1Y->text().toFloat(), ui->lePointAtT1Z->text().toFloat());
+    QVector3D P2(ui->lePointAtT2X->text().toFloat(), ui->lePointAtT2Y->text().toFloat(), ui->lePointAtT2Z->text().toFloat());
+    float vectorValue = ui->leVectorValue->text().toFloat();
 
-    double angleXYInRadians = qDegreesToRadians(angleXYInDegrees);  // Chuyển đổi từ độ sang radian cho góc XY
-    double angleZInRadians = qDegreesToRadians(angleZInDegrees);  // Chuyển đổi từ độ sang radian cho góc Z
+    QVector3D deltaPosition = P1 - P2;
 
-    double x = magnitude * qCos(angleXYInRadians) * qCos(angleZInRadians);
-    double y = magnitude * qSin(angleXYInRadians) * qCos(angleZInRadians);
-    double z = magnitude * qSin(angleZInRadians);
+    // Tính độ lớn của deltaPosition
+    double deltaMagnitude = deltaPosition.length();
 
-    ui->leVectorX->setText(QString::number(x));
-    ui->leVectorY->setText(QString::number(y));
-    ui->leVectorZ->setText(QString::number(z));
+    // Tính vector đơn vị
+    QVector3D unitVector = deltaPosition / deltaMagnitude;
 
-    CalVector = QVector3D(x, y, z);
+    // Tính vector vận tốc của băng tải
+    QVector3D vector = unitVector * vectorValue;
+
+    ui->leVectorX->setText(QString::number(vector.x()));
+    ui->leVectorY->setText(QString::number(vector.y()));
+    ui->leVectorZ->setText(QString::number(vector.z()));
 }
 
 void RobotWindow::ProcessProximitySensorValue(int value)

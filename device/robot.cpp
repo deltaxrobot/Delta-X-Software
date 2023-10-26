@@ -49,8 +49,6 @@ QString Robot::SendGcode(QString gcode, bool is_wait, int time_out)
     WriteData(gcode);
     emit Log(idName, gcode, 1);
 
-//    if (gcode.indexOf("G04") < 0)
-//        qDebug() << gcode;
     last_gcode = now_gcode;
     now_gcode = gcode;
     bool isMovingGcode = this->getPara(gcode);
@@ -115,6 +113,13 @@ void Robot::ProcessResponse(QString id, QString response) {
                         V = home_V = paras[i].toFloat();
                     }
                 }
+
+                VariableManager::instance().addVar(QString("%1.HOME_X").arg(idName), home_X);
+                VariableManager::instance().addVar(QString("%1.HOME_Y").arg(idName), home_Y);
+                VariableManager::instance().addVar(QString("%1.HOME_Z").arg(idName), home_Z);
+                VariableManager::instance().addVar(QString("%1.HOME_W").arg(idName), home_W);
+                VariableManager::instance().addVar(QString("%1.HOME_U").arg(idName), home_U);
+                VariableManager::instance().addVar(QString("%1.HOME_V").arg(idName), home_V);
             }
 
             else
@@ -233,6 +238,7 @@ bool Robot::checkSetSyncPathCmd(QString cmd)
     QStringList list = rx.capturedTexts();
     float speed = 0;
     float angle = 0;
+    float angle2 = 90;
     if (list[1] != "") {
         speed = list[1].toFloat();
         angle = list[2].toFloat();
@@ -244,12 +250,13 @@ bool Robot::checkSetSyncPathCmd(QString cmd)
         float x = list[4].toFloat();
         float y = list[5].toFloat();
         float z = list[6].toFloat();
-        QVector3D velocity(x, y, z);
-        speed = velocity.length();
-        angle = qRadiansToDegrees(qAtan2(velocity.y(), velocity.x()));
+        sync_vector = QVector3D(x, y, z);
+        speed = sync_vector.length();
+        angle2 = qRadiansToDegrees(qAcos(x / speed));
+        angle2 = qRadiansToDegrees(qAcos(z / speed));
     }
 
-    SetSyncPath("line", speed, angle);
+    SetSyncPath("line", speed, angle, angle2);
 
     // Print the results
     qDebug() << "Speed: " << speed << ", Angle: " << angle << " degrees.";
@@ -258,6 +265,9 @@ bool Robot::checkSetSyncPathCmd(QString cmd)
 
 QString Robot::syncGcode(QString cmd)
 {
+    if (!cmd.contains("SYNC"))
+        return cmd;
+
     QString result = cmd;
     QStringList params = cmd.split(' ');
 
@@ -265,74 +275,117 @@ QString Robot::syncGcode(QString cmd)
     old_Y = Y;
     old_Z = Z;
 
-    // Check if the command contains "SYNC"
-    if (cmd.contains("SYNC"))
+    if (cmd.contains("G01"))
     {
-        if (cmd.contains("G01"))
+        // Extract the values of X, Y, Z, W, U, V, F, A, and J from the command string
+        for (int i = 1; i < params.size(); i++)
         {
-            // Extract the values of X, Y, Z, W, U, V, F, A, and J from the command string
-            for (int i = 1; i < params.size(); i++)
+            QString param = params[i];
+            if (param.startsWith("X"))
             {
-                QString param = params[i];
-                if (param.startsWith("X"))
-                {
-                    X = param.mid(1).toFloat();
-                } else if (param.startsWith("Y"))
-                {
-                    Y = param.mid(1).toFloat();
-                } else if (param.startsWith("Z"))
-                {
-                    Z = param.mid(1).toFloat();
-                } else if (param.startsWith("W"))
-                {
-                    W = param.mid(1).toFloat();
-                } else if (param.startsWith("U"))
-                {
-                    U = param.mid(1).toFloat();
-                } else if (param.startsWith("V"))
-                {
-                    V = param.mid(1).toFloat();
-                } else if (param.startsWith("F"))
-                {
-                    F = param.mid(1).toFloat();
-                } else if (param.startsWith("A"))
-                {
-                    A = param.mid(1).toFloat();
-                } else if (param.startsWith("J"))
-                {
-                    J = param.mid(1).toFloat();
-                }
+                X = param.mid(1).toFloat();
+            } else if (param.startsWith("Y"))
+            {
+                Y = param.mid(1).toFloat();
+            } else if (param.startsWith("Z"))
+            {
+                Z = param.mid(1).toFloat();
+            } else if (param.startsWith("W"))
+            {
+                W = param.mid(1).toFloat();
+            } else if (param.startsWith("U"))
+            {
+                U = param.mid(1).toFloat();
+            } else if (param.startsWith("V"))
+            {
+                V = param.mid(1).toFloat();
+            } else if (param.startsWith("F"))
+            {
+                F = param.mid(1).toFloat();
+            } else if (param.startsWith("A"))
+            {
+                A = param.mid(1).toFloat();
+            } else if (param.startsWith("J"))
+            {
+                J = param.mid(1).toFloat();
             }
-            float new_x, new_y;
-            std::pair<double, double> new_point = scurve_tool.find_sync_point(old_X, old_Y, old_Z, X, Y, Z, path_vel, path_angle, O);
-            new_x = round(float(new_point.first) * 100) / 100;
-            new_y = round(float(new_point.second) * 100) / 100;
-
-            return QString("G01 X%1 Y%2 Z%3 W%4 F%5 A%6 S%7 E%8 J%9").arg(new_x).arg(new_y).arg(Z).arg(W).arg(F).arg(A).arg(S).arg(E).arg(J);
         }
-        else if (cmd.contains("G04"))
+
+        scurve_tool.setMaxVel(F);
+        scurve_tool.setMaxAcc(A);
+        scurve_tool.setVelStart(S);
+        scurve_tool.setVelEnd(E);
+        scurve_tool.setMaxJerk(J);
+
+//        float new_x, new_y;
+//        std::pair<double, double> new_point = scurve_tool.find_sync_point(old_X, old_Y, old_Z, X, Y, Z, path_vel, path_angle, O);
+//        new_x = round(float(new_point.first) * 100) / 100;
+//        new_y = round(float(new_point.second) * 100) / 100;
+
+        QVector3D newPosition = calculateSyncPosition(QVector3D(old_X, old_Y, old_Z), QVector3D(X, Y, Z), sync_vector);
+
+        return QString("G01 X%1 Y%2 Z%3 W%4 F%5 A%6 S%7 E%8 J%9").arg(newPosition.x()).arg(newPosition.y()).arg(newPosition.z()).arg(W).arg(F).arg(A).arg(S).arg(E).arg(J);
+    }
+    else if (cmd.contains("G04"))
+    {
+        QRegExp rx("P(\\d+\\.?\\d*)");
+
+        if (rx.indexIn(cmd) != -1)
         {
-            QRegExp rx("P(\\d+\\.?\\d*)");
+            QString match = rx.cap(1);
+            float time_ms = match.toInt();
 
-            if (rx.indexIn(cmd) != -1)
-            {
-                QString match = rx.cap(1);
-                float time_ms = match.toInt();
+            float distance;
+            float new_x, new_y;
 
-                float distance;
-                float new_x, new_y;
+            distance = path_vel * (float(time_ms) / 1000);
+            new_x = X + distance * cos(path_rad_angle);
+            new_y = Y + distance * sin(path_rad_angle);
 
-                distance = path_vel * (float(time_ms) / 1000);
-                new_x = X + distance * cos(path_rad_angle);
-                new_y = Y + distance * sin(path_rad_angle);
+            isSyncDelay = true;
 
-                isSyncDelay = true;
-
-                return QString("G01 X%1 Y%2 F%3").arg(new_x).arg(new_y).arg(abs(path_vel));
-            }
+            return QString("G01 X%1 Y%2 F%3").arg(new_x).arg(new_y).arg(abs(path_vel));
         }
     }
-    return cmd;
+
+}
+
+double Robot::calculateMovingTime(double distance)
+{
+    scurve_tool.p_target = distance;
+    scurve_tool.start();
+
+    return scurve_tool.t_target;
+}
+
+QVector3D Robot::calculateSyncPosition(QVector3D robotPos, QVector3D objectPos, QVector3D beltVelocity, double tolerance) {
+    double t, t_new, distance_initial, distance_new;
+    QVector3D estimatedObjectPos;
+
+    // Ước tính khoảng cách ban đầu và thời gian di chuyển
+    distance_initial = (objectPos - robotPos).length();
+    t = calculateMovingTime(distance_initial);
+
+    do {
+        // Cập nhật vị trí mới của vật
+        estimatedObjectPos = objectPos + beltVelocity * t;
+
+        // Tính khoảng cách mới
+        distance_new = (estimatedObjectPos - robotPos).length();
+
+        // Cập nhật lại ước tính thời gian
+        t_new = calculateMovingTime(distance_new);
+
+        // Kiểm tra điều kiện dừng
+        if (std::abs(t_new - t) < tolerance) {
+            break;
+        }
+
+        t = t_new;
+
+    } while (true);
+
+    return estimatedObjectPos;
 }
 
 QString Robot::GetInfo()
@@ -384,12 +437,7 @@ void Robot::saveParaVar()
     VariableManager::instance().addVar(QString("%1.OLD_Y").arg(idName), old_Y);
     VariableManager::instance().addVar(QString("%1.OLD_Z").arg(idName), old_Z);
     VariableManager::instance().addVar(QString("%1.O").arg(idName), O);
-    VariableManager::instance().addVar(QString("%1.HOME_X").arg(idName), home_X);
-    VariableManager::instance().addVar(QString("%1.HOME_Y").arg(idName), home_Y);
-    VariableManager::instance().addVar(QString("%1.HOME_Z").arg(idName), home_Z);
-    VariableManager::instance().addVar(QString("%1.HOME_W").arg(idName), home_W);
-    VariableManager::instance().addVar(QString("%1.HOME_U").arg(idName), home_U);
-    VariableManager::instance().addVar(QString("%1.HOME_V").arg(idName), home_V);
+
 }
 
 QString Robot::SetInput(int pin)
@@ -499,13 +547,13 @@ void Robot::Move(float x = 0, float y = 0, float z = 0, float w = 0, float u = 0
     {
         S = s;
         scurve_tool.setVelStart(S);
-        gcode += " S" + QString::number(E);
+        gcode += " S" + QString::number(S);
     }
     if (E != NULL)
     {
         E = E;
         scurve_tool.setVelEnd(E);
-        gcode += " E" + QString::number(S);
+        gcode += " E" + QString::number(E);
     }
     if (J != NULL)
     {
@@ -562,10 +610,11 @@ void Robot::MovePoint(QVector3D point)
     Move(point.x(), point.y(), point.z());
 }
 
-void Robot::SetSyncPath(QString path = "line", float con_vel = 100, float con_angle = 0)
+void Robot::SetSyncPath(QString path = "line", float con_vel = 100, float con_angle = 0, float con_angle2 = 90)
 {
     path_type = path;
     path_vel = con_vel;
     path_angle = con_angle;
+    path_angle2 = con_angle2;
     path_rad_angle = qDegreesToRadians(con_angle);
 }

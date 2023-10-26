@@ -59,6 +59,7 @@ SOURCES += main.cpp\
     Parameter.cpp \
     PointTool.cpp \
     ProjectManager.cpp \
+    RobotSimulator.cpp \
     RobotWindow.cpp \
     SmartDialog.cpp \
     SoftwareManager.cpp \
@@ -111,6 +112,7 @@ HEADERS  += \
     Parameter.h \
     PointTool.h \
     ProjectManager.h \
+    RobotSimulator.h \
     RobotWindow.h \
     ScurveInterpolator.h \
     SmartDialog.h \

@@ -415,7 +415,6 @@ public slots:
     void CalculateMappingMatrixTool();
     void CalculatePointMatrixTool();
     void CalculateTestPoint();
-    void CalculateAngle();
     void CalculateVector();
 
     // ----- Display ----
