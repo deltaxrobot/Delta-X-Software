@@ -9,24 +9,45 @@
 #include <QTimer>
 #include <QDebug>
 #include <QVector3D>
+#include <QVector2D>
+#include <QDateTime>
+#include <VariableManager.h>
 
-class TrackingObject
-{
+class VirtualEncoder : public QObject {
+    Q_OBJECT
+private:
+    QTimer timer;
+    qint64 lastUpdateTime;
+    float velocity;  // Đơn vị: mm/giây
+    float currentPosition;  // Đơn vị: mm
+
 public:
-    TrackingObject(int id = -1, float x = 0, float y = 0, float w = 50, float l = 80, float angle = 0, float startPos = 0, float overlay = 1);
-    int ID;
-    float StartX;
-    float StartY;
-    float X;
-    float Y;
-    float Width;
-    float Length;
-    float Angle;
-    float StartEncoderPosition;
-    float CurrentEncoderPosition;
-    float Overlay;
+    VirtualEncoder(float initialPosition = 0.0, float velocity = 0.0, QObject* parent = nullptr);
 
-    bool IsSame(TrackingObject other);
+    void setVelocity(float newVelocity);
+    float readPosition();
+public slots:
+    void stop();
+    // Phương thức để khởi động lại encoder
+    void start(int interval = 100);
+    void reset();
+    void updatePosition();
+
+signals:
+    void positionUpdated(float newPosition);
+};
+
+class ObjectInfo {
+public:
+    int id;
+    QVector3D center;  // X, Y, Z position
+    double width;
+    double height;
+    double angle;
+    bool isPicked;  // Indicates if the object has been picked
+
+    ObjectInfo(int id, QVector3D center, double width, double height, double angle, bool isPicked=false)
+        : id(id), center(center), width(width), height(height), angle(angle), isPicked(isPicked) {}
 };
 
 class Tracking : public QObject
@@ -35,17 +56,22 @@ class Tracking : public QObject
 public:
     explicit Tracking(QObject *parent = nullptr);
 
+    QList<ObjectInfo> trackedObjects;
+    int nextID = 0;
+
     QVector3D VelocityVector;
     QString VectorName = "#Vector1";
+
     int EncoderID = 0;
     QString EncoderType = "Encoder X";
     bool IsReverse = false;
     QString ListName = "#Objects";
     QPointF* DetectDelayOffsetPoint = NULL;
 
-    QTimer* VirtualEncoderTimer;
-    float VirtualEncoderPosition = 0;
-    float VirtualEncoderVelocity = 100;
+    VirtualEncoder VirEncoder;
+
+    float lastEncoderPositionAtCapture = 0.0;
+    float lastEncoderPositionAtMapping = 0.0;
 
     int ID = 0;
     QString ReadPurpose = "Update";
@@ -65,13 +91,17 @@ public slots:
     void SaveCapturePosition();
     void SaveDetectPosition();
 
+    void UpdateTrackedObjects(QList<ObjectInfo> detectedObjects, double displacement);
+    void updatePositions(double displacement);
 private:
     QPointF calculateMoved(float distance);
+    double similarity(ObjectInfo& obj1, ObjectInfo& obj2, double displacement);
     float lastPosition = 0;
     float capturePosition = 0;
     float detectPosition = 0;
     float currentPosition = 0;
     bool first = true;
+    double X_max, X_min, Y_max, Y_min; // Boundary coordinates
 
 };
 

@@ -710,7 +710,7 @@ void TaskNode::doGetObjectsWork()
 
     clear(outputObjects);
 
-    qDebug() << "Get object: " << DebugTimer.elapsed();
+//    qDebug() << "Get object: " << DebugTimer.elapsed();
 
     std::vector<std::vector<cv::Point> > contoursContainer;
     findContours(inputMat, contoursContainer, cv::RETR_LIST, cv::CHAIN_APPROX_SIMPLE);
@@ -769,7 +769,7 @@ void TaskNode::doTrackingObjectsWork()
     if (inputType == "point")
     {
 
-        qDebug() << "tracking move: " << DebugTimer.elapsed();
+//        qDebug() << "tracking move: " << DebugTimer.elapsed();
 
         if (inputPoint.x() != 0 || inputPoint.y() != 0)
         {
@@ -784,7 +784,7 @@ void TaskNode::doTrackingObjectsWork()
     else if (inputType == "objects")
     {
 
-        qDebug() << "tracking new object: " << DebugTimer.elapsed();
+//        qDebug() << "tracking new object: " << DebugTimer.elapsed();
 
         if (inputObjects.size() > 0)
         {
@@ -811,7 +811,7 @@ void TaskNode::doTrackingObjectsWork()
         }       
     }
 
-    updateObjectsToVariableTable(outputObjects);
+//    updateObjectsToVariableTable(outputObjects);
     emit HadOutput(outputObjects);
 
     emit Done();

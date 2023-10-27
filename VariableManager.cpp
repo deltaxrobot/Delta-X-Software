@@ -94,5 +94,7 @@ const QString VariableManager::getFullKey(const QString key)
         fullKey = Prefix + "." + key;
     }
 
+    fullKey.replace("#", "");
+
     return fullKey;
 }

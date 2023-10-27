@@ -223,6 +223,40 @@ void RobotWindow::InitVariables()
     connect(ui->pbAddMappingMatrix, &QPushButton::clicked, [=](){VariableManager::instance().addVar(ui->leMatrixName->text(), CalculatingTransform);ui->lwMappingMatrixList->addItem(ui->lbMatrixDisplay->text());});
     connect(ui->pbAddPointMatrix, &QPushButton::clicked, [=](){VariableManager::instance().addVar(ui->lePointMatrixName->text(), PointMatrix);ui->lwPointMatrixList->addItem(ui->lbPointMatrixDisplay->text());});
     connect(ui->pbAddVector, &QPushButton::clicked, [=](){VariableManager::instance().addVar(ui->leVectorName->text(), CalVector);ui->lwVectorList->addItem(ui->leVectorName->text());});
+
+    connect(ui->pbAddVariablePoint, &QPushButton::clicked, [=]()
+    {
+        int selectedEncoderID = ui->cbSelectedTracking->currentText().toInt();
+        float x = ui->leObjectX->text().toFloat();
+        float y = ui->leObjectY->text().toFloat();
+        float z = ui->leObjectZ->text().toFloat();
+        int angle = qrand() % ((180 + 1) - (-180)) + (-180);
+
+        if (ui->leObjectListName->text() == TrackingManagerInstance->Trackings.at(selectedEncoderID)->ListName)
+        {
+            QList<ObjectInfo> list;
+            QVector3D position(x, y, z);
+
+            ObjectInfo object(-1, position, 20, 40, angle);
+            list.append(object);
+            TrackingManagerInstance->Trackings.at(selectedEncoderID)->UpdateTrackedObjects(list, 0);
+        }
+        else
+        {
+            QString listName = ui->leObjectListName->text();
+            int counter = VariableManager::instance().getVariable(listName + ".Count", 0).toInt();
+            VariableManager::instance().addVar((listName + ".%1.X").arg(counter), x);
+            VariableManager::instance().addVar((listName + ".%1.Y").arg(counter), y);
+            VariableManager::instance().addVar((listName + ".%1.Z").arg(counter), z);
+            VariableManager::instance().addVar((listName + ".%1.W").arg(counter), 20);
+            VariableManager::instance().addVar((listName + ".%1.L").arg(counter), 40);
+            VariableManager::instance().addVar((listName + ".%1.A").arg(counter), angle);
+
+            VariableManager::instance().addVar(listName + ".Count", counter + 1);
+        }
+    });
+
+
     // ------- Log and Debug -----
     Debugs.push_back(ui->teDebug);
 
@@ -2905,7 +2939,7 @@ void RobotWindow::UpdateRobotPositionToUI()
     {
         int selectedEncoderID = ui->cbSelectedEncoder->currentText().toInt() - 1;
 
-        ui->leEncoderCurrentPosition->setText(QString::number(TrackingManagerInstance->Trackings.at(selectedEncoderID)->VirtualEncoderPosition));
+        ui->leEncoderCurrentPosition->setText(QString::number(TrackingManagerInstance->Trackings.at(selectedEncoderID)->VirEncoder.readPosition()));
 
     }
 
@@ -3237,7 +3271,7 @@ void RobotWindow::SetEncoderAutoRead()
             ui->leEncoderInterval->setText(QString::number(1000));
         }
 
-        TrackingManagerInstance->Trackings[id]->VirtualEncoderTimer->start(interval);
+        TrackingManagerInstance->Trackings[id]->VirEncoder.start(interval);
     }
 }
 
@@ -3260,7 +3294,7 @@ void RobotWindow::ResetEncoderPosition()
     }
     if (ui->cbEncoderType->currentText() == "Virtual Encoder")
     {
-        TrackingManagerInstance->Trackings[selectedEncoderID]->VirtualEncoderPosition = 0;
+        TrackingManagerInstance->Trackings[selectedEncoderID]->VirEncoder.reset();
     }
 }
 
@@ -3268,7 +3302,7 @@ void RobotWindow::SetEncoderVelocity()
 {
     int selectedEncoderID = ui->cbSelectedEncoder->currentText().toInt() - 1;
 
-    TrackingManagerInstance->Trackings[selectedEncoderID]->VirtualEncoderVelocity = ui->leEncoderVelocity->text().toFloat();
+    TrackingManagerInstance->Trackings[selectedEncoderID]->VirEncoder.setVelocity(ui->leEncoderVelocity->text().toFloat());
 }
 
 void RobotWindow::CalculateEncoderVelocity(int id, float value)
@@ -3488,23 +3522,7 @@ void RobotWindow::LoadImages()
             return;
         }
 
-        cv::Mat mat;
-
-        // Chuyển đổi QImage thành cv::Mat
-        switch (qImage.format()) {
-        case QImage::Format_RGB888:
-            mat = cv::Mat(qImage.height(), qImage.width(), CV_8UC3, const_cast<uchar*>(qImage.bits()), qImage.bytesPerLine());
-            cv::cvtColor(mat, mat, cv::COLOR_RGB2BGR);
-            break;
-        case QImage::Format_Indexed8:
-            mat = cv::Mat(qImage.height(), qImage.width(), CV_8UC1, const_cast<uchar*>(qImage.bits()), qImage.bytesPerLine());
-            break;
-        default:
-            qDebug() << "Định dạng ảnh không được hỗ trợ";
-            break;
-        }
-
-        CameraInstance->CaptureImage = mat.clone();
+        CameraInstance->CaptureImage = ImageTool::QImageToCvMat(qImage, true);
         ui->pbCapture->clicked();
         ui->pbStartAcquisition->setChecked(true);
         ui->pbStartAcquisition->clicked(true);
@@ -3995,17 +4013,24 @@ void RobotWindow::ChangeEncoderType(int index)
 {
     ui->pbConnectEncoder->setHidden(true);
     ui->pbSetEncoderVelocity->setHidden(true);
-    if (index == 0)
+    if (ui->cbEncoderType->currentText() == "Encoder X")
+    {
+        int selectedEncoderID = ui->cbSelectedEncoder->currentText().toInt() - 1;
+
+        TrackingManagerInstance->Trackings.at(selectedEncoderID)->VirEncoder.stop();
+    }
+    else if (ui->cbEncoderType->currentText() == "Sub Encoder")
+    {
+        int selectedEncoderID = ui->cbSelectedEncoder->currentText().toInt() - 1;
+
+        TrackingManagerInstance->Trackings.at(selectedEncoderID)->VirEncoder.stop();
+    }
+    else if (ui->cbEncoderType->currentText() == "Virtual Encoder")
     {
         ui->pbConnectEncoder->setHidden(false);
-    }
-    else if (index == 1)
-    {
+        int selectedEncoderID = ui->cbSelectedEncoder->currentText().toInt() - 1;
 
-    }
-    else
-    {
-        ui->pbSetEncoderVelocity->setHidden(false);
+        TrackingManagerInstance->Trackings.at(selectedEncoderID)->VirEncoder.start();
     }
 }
 

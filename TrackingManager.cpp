@@ -3,9 +3,7 @@
 Tracking::Tracking(QObject *parent)
     : QObject{parent}
 {
-    VirtualEncoderTimer = new QTimer(this);
-    connect(VirtualEncoderTimer, SIGNAL(timeout()), this, SLOT(GetVirtualEncoderPosition()));
-//    VirtualEncoderTimer->start(1000);
+    connect(&VirEncoder, &VirtualEncoder::positionUpdated, this, &Tracking::OnReceivceEncoderPosition);
 }
 
 void Tracking::OnReceivceEncoderPosition(float value)
@@ -51,15 +49,7 @@ void Tracking::OnReceivceEncoderPosition(float value)
 
 void Tracking::GetVirtualEncoderPosition()
 {
-    static QElapsedTimer timeForUpdate;
-
-    float distance = VirtualEncoderVelocity * float(timeForUpdate.elapsed())/1000;
-
-    VirtualEncoderPosition += distance;
-
-    timeForUpdate.start();
-
-    OnReceivceEncoderPosition(VirtualEncoderPosition);
+    OnReceivceEncoderPosition(VirEncoder.readPosition());
 }
 
 void Tracking::ReadEncoder()
@@ -97,55 +87,93 @@ void Tracking::SaveDetectPosition()
     ReadEncoder();
 }
 
+void Tracking::UpdateTrackedObjects(QList<ObjectInfo> detectedObjects, double displacement) {
+    for (auto& detected : detectedObjects) {
+        bool isTracked = false;
+        double minSimilarity = 1e9;  // Initialize with a large value
+        ObjectInfo* bestMatch = nullptr;
+
+        for (auto& tracked : trackedObjects) {
+            double score = similarity(tracked, detected, displacement);
+
+            if (score < minSimilarity) {
+                minSimilarity = score;
+                bestMatch = &tracked;
+            }
+        }
+
+        if (minSimilarity < 50 /* Similarity threshold */) {
+            // Update the tracked object's info
+            bestMatch->center = detected.center;
+            bestMatch->width = detected.width;
+            bestMatch->height = detected.height;
+            bestMatch->angle = detected.angle;
+            isTracked = true;
+        }
+
+        if (!isTracked) {
+            // This is a new object
+            trackedObjects.append(ObjectInfo(nextID, detected.center, detected.width, detected.height, detected.angle));
+
+            VariableManager::instance().addVar((ListName + ".%1.X").arg(nextID), detected.center.x());
+            VariableManager::instance().addVar((ListName + ".%1.Y").arg(nextID), detected.center.y());
+            VariableManager::instance().addVar((ListName + ".%1.Z").arg(nextID), detected.center.z());
+            VariableManager::instance().addVar((ListName + ".%1.W").arg(nextID), detected.width);
+            VariableManager::instance().addVar((ListName + ".%1.L").arg(nextID), detected.height);
+            VariableManager::instance().addVar((ListName + ".%1.A").arg(nextID), detected.angle);
+            VariableManager::instance().addVar((ListName + ".%1.IsPicked").arg(nextID), detected.isPicked);
+
+            ++nextID;
+
+            VariableManager::instance().addVar(ListName + ".Count", nextID);
+        }
+    }
+}
+
+void Tracking::updatePositions(double displacement) {
+    QVector3D effectiveDisplacement = VelocityVector * displacement;
+
+    for (auto it = trackedObjects.begin(); it != trackedObjects.end(); ) {
+        if (!it->isPicked) {
+            it->center += effectiveDisplacement;
+        }
+
+        // Remove object if it goes out of boundary
+        if (it->center.x() > X_max || it->center.x() < X_min || it->center.y() > Y_max || it->center.y() < Y_min) {
+            it = trackedObjects.erase(it);
+        } else {
+            ++it;
+        }
+    }
+}
+
 QPointF Tracking::calculateMoved(float distance)
 {
-    QPointF point3(0, 0);
+    QVector2D direction = QVector2D(VelocityVector.x(), VelocityVector.y()).normalized();
 
-    QLineF line;
-    line.setP1(point3);
-    line.setAngle(DeviationAngle);
+    // Calculate the effective 2D displacement vector
+    QVector2D effectiveDisplacement = direction * distance;
 
-    if (distance == 0)
-    {
-        return point3;
-    }
-
-    line.setLength(distance);
-
-    float cosa = qCos(qDegreesToRadians(360 - DeviationAngle));
-    float sina = qSin(qDegreesToRadians(360 - DeviationAngle));
-
-    line.setP2(QPointF(distance * cosa, distance * sina));
-
-    float p2X = ((float)((int)(line.p2().x() * 100))) / 100;
-    float p2Y = ((float)((int)(line.p2().y() * 100))) / 100;
-
-    return QPointF(p2X, p2Y);
+    return effectiveDisplacement.toPointF();
 }
 
-TrackingObject::TrackingObject(int id, float x, float y, float w, float l, float angle, float startPos, float overlay)
-{
-    ID = id;
-    StartX = X = x;
-    StartY = Y = y;
-    Width = w;
-    Length = l;
-    Angle = angle;
-    CurrentEncoderPosition = StartEncoderPosition = startPos;
-    Overlay = overlay;
-}
+double Tracking::similarity(ObjectInfo &obj1, ObjectInfo &obj2, double displacement) {
+    // Calculate effective 3D displacement based on conveyor 3D velocity
+    QVector3D effectiveDisplacement = VelocityVector * displacement;
 
-bool TrackingObject::IsSame(TrackingObject other)
-{
-        if (abs(this->X - other.X) > this->Length * this->Overlay) {
-            return false;
-        }
+    // Predict new position of obj1 based on effective displacement
+    QVector3D predictedCenter = obj1.center + effectiveDisplacement;
 
-        if (abs(this->Y - other.Y) > this->Length * this->Overlay) {
-            return false;
-        }
+    // Calculate "error" based on distance from predicted position to obj2 position
+    double positionError = (predictedCenter - obj2.center).length();
 
-        return true;
+    double sizeDifference = std::abs(obj1.width * obj1.height - obj2.width * obj2.height);
+    double angleDifference = std::abs(obj1.angle - obj2.angle);
+
+    // Compute a similarity score
+    double score = positionError + sizeDifference + angleDifference;
+
+    return score;
 }
 
 TrackingManager::TrackingManager(QObject *parent)
@@ -188,4 +216,54 @@ void TrackingManager::ReadEncoderWhenSensorActive(int id)
 void TrackingManager::OnDoneUpdateTracking()
 {
     emit GotResponse(QString("tracking") + QString::number(currentTrackingRequest), "Done");
+}
+
+VirtualEncoder::VirtualEncoder(float initialPosition, float velocity, QObject *parent)
+    : QObject(parent), currentPosition(initialPosition), velocity(velocity) {
+    lastUpdateTime = QDateTime::currentMSecsSinceEpoch();
+
+    connect(&timer, &QTimer::timeout, this, &VirtualEncoder::updatePosition);
+    timer.start(100);  // Cập nhật vị trí mỗi 100 ms
+}
+
+void VirtualEncoder::setVelocity(float newVelocity) {
+    velocity = newVelocity;
+}
+
+void VirtualEncoder::stop() {
+    timer.stop();
+}
+
+void VirtualEncoder::start(int interval) {
+    lastUpdateTime = QDateTime::currentMSecsSinceEpoch();
+    timer.start(interval);
+}
+
+void VirtualEncoder::reset()
+{
+    lastUpdateTime = QDateTime::currentMSecsSinceEpoch();
+    currentPosition = 0;
+    emit positionUpdated(currentPosition);
+}
+
+void VirtualEncoder::updatePosition() {
+    qint64 currentTime = QDateTime::currentMSecsSinceEpoch();
+    qint64 deltaTime = currentTime - lastUpdateTime;  // Đơn vị: ms
+    lastUpdateTime = currentTime;
+
+    // Cập nhật vị trí dựa trên vận tốc và thời gian đã trôi qua
+    currentPosition += velocity * (deltaTime / 1000.0);
+
+    emit positionUpdated(currentPosition);
+}
+
+float VirtualEncoder::readPosition() {
+    qint64 currentTime = QDateTime::currentMSecsSinceEpoch();
+    qint64 deltaTime = currentTime - lastUpdateTime;  // Đơn vị: ms
+    lastUpdateTime = currentTime;
+
+    // Cập nhật vị trí dựa trên vận tốc và thời gian đã trôi qua
+    currentPosition += velocity * (deltaTime / 1000.0);
+
+    return currentPosition;
 }

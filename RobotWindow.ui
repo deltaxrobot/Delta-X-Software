@@ -1665,7 +1665,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
                   <property name="geometry">
                    <rect>
                     <x>0</x>
-                    <y>0</y>
+                    <y>-296</y>
                     <width>586</width>
                     <height>1800</height>
                    </rect>
@@ -2603,19 +2603,25 @@ QFrame
                                </item>
                                <item>
                                 <widget class="QComboBox" name="cbEncoderForCamera">
+                                 <property name="minimumSize">
+                                  <size>
+                                   <width>100</width>
+                                   <height>0</height>
+                                  </size>
+                                 </property>
                                  <item>
                                   <property name="text">
-                                   <string>0</string>
+                                   <string>encoder0</string>
                                   </property>
                                  </item>
                                  <item>
                                   <property name="text">
-                                   <string>1</string>
+                                   <string>encoder1</string>
                                   </property>
                                  </item>
                                  <item>
                                   <property name="text">
-                                   <string>2</string>
+                                   <string>encoder2</string>
                                   </property>
                                  </item>
                                  <item>
@@ -5013,7 +5019,7 @@ QFrame
                   <property name="geometry">
                    <rect>
                     <x>0</x>
-                    <y>0</y>
+                    <y>-514</y>
                     <width>574</width>
                     <height>1900</height>
                    </rect>
@@ -5240,17 +5246,17 @@ QGroupBox::title
                               </property>
                               <item>
                                <property name="text">
-                                <string>0</string>
+                                <string>encoder0</string>
                                </property>
                               </item>
                               <item>
                                <property name="text">
-                                <string>1</string>
+                                <string>encoder1</string>
                                </property>
                               </item>
                               <item>
                                <property name="text">
-                                <string>2</string>
+                                <string>encoder2</string>
                                </property>
                               </item>
                              </widget>
@@ -8469,7 +8475,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
               <enum>QTabWidget::North</enum>
              </property>
              <property name="currentIndex">
-              <number>0</number>
+              <number>2</number>
              </property>
              <property name="elideMode">
               <enum>Qt::ElideNone</enum>
@@ -14225,17 +14231,17 @@ QGroupBox
                        </property>
                        <item>
                         <property name="text">
-                         <string>0</string>
+                         <string>encoder0</string>
                         </property>
                        </item>
                        <item>
                         <property name="text">
-                         <string>1</string>
+                         <string>encoder1</string>
                         </property>
                        </item>
                        <item>
                         <property name="text">
-                         <string>2</string>
+                         <string>encoder2</string>
                         </property>
                        </item>
                        <item>

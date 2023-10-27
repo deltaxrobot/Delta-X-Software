@@ -128,9 +128,6 @@ public:
         if (abs(Y.Real - object.Y.Real) > Length.Real * error)
             return false;
 
-//        if (abs(Angle.Real - object.Angle.Real) > 360 * error && abs(360 - Angle.Real - object.Angle.Real) > 360 * error)
-//            return false;
-
         if (abs(Length.Real - object.Length.Real) > Length.Real * error)
             return false;
 
