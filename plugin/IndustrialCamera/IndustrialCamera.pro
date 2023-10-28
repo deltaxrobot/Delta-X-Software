@@ -30,17 +30,17 @@ HEADERS += \
     xcammanager.h
 
 INCLUDEPATH += \
-$$(PYLON_DEV_DIR)/include \
-$$(PYLON_DEV_DIR)/include/pylon \
-"C:/Program Files (x86)/MVS/Development/Includes"
+$$PWD\3rd-party\pylon\include \
+$$PWD\3rd-party\pylon\include\pylon \
+$$PWD\3rd-party\mvs\Includes
 
-LIBS += \
--L$$(PYLON_DEV_DIR)/lib/x64
+LIBS += -L$$PWD\3rd-party\pylon\lib\x64
+LIBS += $$PWD\3rd-party\mvs\Libraries\win64\MvCameraControl.lib
 
-INCLUDEPATH += E:\OpenCV\opencv-4.0\build\include
-LIBS += E:\OpenCV\opencv-4.0\build\x64\vc15\lib\opencv_world400.lib
-LIBS += E:\OpenCV\opencv-4.0\build\x64\vc15\lib\opencv_world400d.lib
-LIBS += "C:\Program Files (x86)\MVS\Development\Libraries\win64\MvCameraControl.lib"
+INCLUDEPATH += $$PWD\3rd-party\opencv\build\include
+LIBS += $$PWD\3rd-party\opencv\build\x64\vc15\lib\opencv_world400.lib
+LIBS += $$PWD\3rd-party\opencv\build\x64\vc15\lib\opencv_world400d.lib
+
 
 DISTFILES += IndustrialCameraPlugin.json
 

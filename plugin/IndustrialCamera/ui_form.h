@@ -104,6 +104,17 @@ public:
         if (Form->objectName().isEmpty())
             Form->setObjectName(QString::fromUtf8("Form"));
         Form->resize(502, 607);
+        Form->setStyleSheet(QString::fromUtf8("QWidget#Form\n"
+"{\n"
+"	\n"
+"	background-color: rgb(30, 30, 32);\n"
+"}\n"
+"\n"
+"QLabel\n"
+"{\n"
+"	\n"
+"	color: rgb(223, 223, 223);\n"
+"}"));
         verticalLayout = new QVBoxLayout(Form);
         verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
         scrollArea = new QScrollArea(Form);
@@ -112,13 +123,18 @@ public:
         scrollArea->setWidgetResizable(true);
         scrollAreaWidgetContents = new QWidget();
         scrollAreaWidgetContents->setObjectName(QString::fromUtf8("scrollAreaWidgetContents"));
-        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 457, 2000));
+        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 474, 2000));
         QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
         sizePolicy.setHeightForWidth(scrollAreaWidgetContents->sizePolicy().hasHeightForWidth());
         scrollAreaWidgetContents->setSizePolicy(sizePolicy);
         scrollAreaWidgetContents->setMinimumSize(QSize(100, 2000));
+        scrollAreaWidgetContents->setStyleSheet(QString::fromUtf8("QWidget#scrollAreaWidgetContents\n"
+"{\n"
+"	\n"
+"	background-color: rgb(38, 38, 41);\n"
+"}"));
         verticalLayout_2 = new QVBoxLayout(scrollAreaWidgetContents);
         verticalLayout_2->setObjectName(QString::fromUtf8("verticalLayout_2"));
         gridLayout = new QGridLayout();
@@ -180,9 +196,13 @@ public:
 
         pbConnectCamera = new QPushButton(scrollAreaWidgetContents);
         pbConnectCamera->setObjectName(QString::fromUtf8("pbConnectCamera"));
+        QSizePolicy sizePolicy1(QSizePolicy::Minimum, QSizePolicy::Preferred);
+        sizePolicy1.setHorizontalStretch(0);
+        sizePolicy1.setVerticalStretch(0);
+        sizePolicy1.setHeightForWidth(pbConnectCamera->sizePolicy().hasHeightForWidth());
+        pbConnectCamera->setSizePolicy(sizePolicy1);
         QFont font;
         font.setBold(true);
-        font.setWeight(75);
         pbConnectCamera->setFont(font);
         pbConnectCamera->setStyleSheet(QString::fromUtf8(""));
 
@@ -264,15 +284,17 @@ public:
 
         frame_3 = new QFrame(scrollAreaWidgetContents);
         frame_3->setObjectName(QString::fromUtf8("frame_3"));
+        frame_3->setStyleSheet(QString::fromUtf8("QFrame\n"
+"{\n"
+"	\n"
+"	background-color: rgb(51, 51, 55);\n"
+"}"));
         horizontalLayout_8 = new QHBoxLayout(frame_3);
         horizontalLayout_8->setObjectName(QString::fromUtf8("horizontalLayout_8"));
         horizontalLayout_8->setContentsMargins(0, 0, 0, 0);
         fImageCounter = new QFrame(frame_3);
         fImageCounter->setObjectName(QString::fromUtf8("fImageCounter"));
-        fImageCounter->setStyleSheet(QString::fromUtf8("QFrame\n"
-"{\n"
-"	background-color: rgb(225, 225, 225);\n"
-"}"));
+        fImageCounter->setStyleSheet(QString::fromUtf8(""));
         horizontalLayout_5 = new QHBoxLayout(fImageCounter);
         horizontalLayout_5->setObjectName(QString::fromUtf8("horizontalLayout_5"));
         horizontalLayout_5->setContentsMargins(10, 0, 10, 0);
@@ -301,7 +323,7 @@ public:
         fResolution = new QFrame(frame_3);
         fResolution->setObjectName(QString::fromUtf8("fResolution"));
         fResolution->setMinimumSize(QSize(0, 0));
-        fResolution->setStyleSheet(QString::fromUtf8("background-color: rgb(225, 225, 225);"));
+        fResolution->setStyleSheet(QString::fromUtf8(""));
         fResolution->setFrameShape(QFrame::StyledPanel);
         fResolution->setFrameShadow(QFrame::Raised);
         horizontalLayout_7 = new QHBoxLayout(fResolution);
@@ -323,7 +345,7 @@ public:
         fResolution_2 = new QFrame(frame_3);
         fResolution_2->setObjectName(QString::fromUtf8("fResolution_2"));
         fResolution_2->setMinimumSize(QSize(0, 0));
-        fResolution_2->setStyleSheet(QString::fromUtf8("background-color: rgb(225, 225, 225);"));
+        fResolution_2->setStyleSheet(QString::fromUtf8(""));
         fResolution_2->setFrameShape(QFrame::StyledPanel);
         fResolution_2->setFrameShadow(QFrame::Raised);
         horizontalLayout_9 = new QHBoxLayout(fResolution_2);
@@ -345,7 +367,7 @@ public:
         fResolution_3 = new QFrame(frame_3);
         fResolution_3->setObjectName(QString::fromUtf8("fResolution_3"));
         fResolution_3->setMinimumSize(QSize(0, 0));
-        fResolution_3->setStyleSheet(QString::fromUtf8("background-color: rgb(225, 225, 225);"));
+        fResolution_3->setStyleSheet(QString::fromUtf8(""));
         fResolution_3->setFrameShape(QFrame::StyledPanel);
         fResolution_3->setFrameShadow(QFrame::Raised);
         horizontalLayout_10 = new QHBoxLayout(fResolution_3);
@@ -373,11 +395,11 @@ public:
 
         lbCameraDisplay = new QLabel(scrollAreaWidgetContents);
         lbCameraDisplay->setObjectName(QString::fromUtf8("lbCameraDisplay"));
-        QSizePolicy sizePolicy1(QSizePolicy::Preferred, QSizePolicy::Preferred);
-        sizePolicy1.setHorizontalStretch(0);
-        sizePolicy1.setVerticalStretch(0);
-        sizePolicy1.setHeightForWidth(lbCameraDisplay->sizePolicy().hasHeightForWidth());
-        lbCameraDisplay->setSizePolicy(sizePolicy1);
+        QSizePolicy sizePolicy2(QSizePolicy::Preferred, QSizePolicy::Preferred);
+        sizePolicy2.setHorizontalStretch(0);
+        sizePolicy2.setVerticalStretch(0);
+        sizePolicy2.setHeightForWidth(lbCameraDisplay->sizePolicy().hasHeightForWidth());
+        lbCameraDisplay->setSizePolicy(sizePolicy2);
         lbCameraDisplay->setMinimumSize(QSize(0, 0));
         lbCameraDisplay->setStyleSheet(QString::fromUtf8("background-color: rgb(255, 255, 255);"));
         lbCameraDisplay->setScaledContents(true);
@@ -388,6 +410,11 @@ public:
         groupBox->setObjectName(QString::fromUtf8("groupBox"));
         groupBox->setEnabled(false);
         groupBox->setMinimumSize(QSize(0, 100));
+        groupBox->setStyleSheet(QString::fromUtf8("QGroupBox::title\n"
+"{\n"
+"	\n"
+"	color: rgb(231, 231, 231);\n"
+"}"));
         gridLayout_2 = new QGridLayout(groupBox);
         gridLayout_2->setObjectName(QString::fromUtf8("gridLayout_2"));
         label_10 = new QLabel(groupBox);

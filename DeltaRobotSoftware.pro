@@ -4,12 +4,12 @@
 #
 #-------------------------------------------------
 
-QT       += core gui serialport opengl network quickwidgets printsupport multimedia
+QT       += core gui serialport opengl network quickwidgets printsupport multimedia 3dcore 3drender 3dinput 3dextras
 
 windows {
-    INCLUDEPATH += E:\OpenCV\opencv-4.0\build\include
-    LIBS += E:\OpenCV\opencv-4.0\build\x64\vc15\lib\opencv_world400.lib
-    LIBS += E:\OpenCV\opencv-4.0\build\x64\vc15\lib\opencv_world400d.lib
+    INCLUDEPATH += $$PWD\3rd-party\opencv\build\include
+    LIBS += $$PWD\3rd-party\opencv\build\x64\vc15\lib\opencv_world400.lib
+    LIBS += $$PWD\3rd-party\opencv\build\x64\vc15\lib\opencv_world400d.lib
 
 #    include ($$PWD\3rd-party\QJoysticks\QJoysticks.pri)
 }
@@ -62,6 +62,7 @@ SOURCES += main.cpp\
     RobotSimulator.cpp \
     RobotWindow.cpp \
     SmartDialog.cpp \
+    SocketConnectionManager.cpp \
     SoftwareManager.cpp \
     TCPConnectionManager.cpp \
     TabDashboard.cpp \
@@ -73,7 +74,6 @@ SOURCES += main.cpp\
     VariableManager.cpp \
     VersionManager.cpp \
     codeeditor.cpp \
-    ConnectionManager.cpp \
     DeltaVisualizer.cpp \
     UnityTool.cpp \
     device/DeviceManager.cpp \
@@ -93,7 +93,6 @@ HEADERS  += \
     Authority.h \
     CameraWidget.h \
     ComDevice.h \
-    ConnectionManager.h \
     DeltaVisualizer.h \
     DrawingExporter.h \
     DrawingWidget.h \
@@ -116,6 +115,7 @@ HEADERS  += \
     RobotWindow.h \
     ScurveInterpolator.h \
     SmartDialog.h \
+    SocketConnectionManager.h \
     SoftwareManager.h \
     TCPConnectionManager.h \
     TabDashboard.h \

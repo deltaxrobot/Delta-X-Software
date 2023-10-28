@@ -3,11 +3,13 @@
 
 #include <QMainWindow>
 #include <QtOpenGL>
-#include "ConnectionManager.h"
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QTimer>
 #include <stdio.h>
+
+#include <SocketConnectionManager.h>
+
 #include <UnityTool.h>
 #include <DeltaVisualizer.h>
 #include <qmath.h>
@@ -46,6 +48,7 @@
 #include <QComboBox>
 #include "GcodeHighlighter.h"
 #include <QList>
+#include <random>
 
 //#define JOY_STICK
 
@@ -148,9 +151,6 @@ public:
     void EnablePositionUpdatingEvents();
     void closeEvent(QCloseEvent *event);
 
-    bool Run();
-    bool Stop();
-
     // ---- UI pointer -----
     void SetMainStackedWidgetAndPages(QStackedWidget* mainStack, QWidget* mainPage, QWidget* fullDisplayPage, QLayout* fullDisplayLayout);
     void SetSubStackedWidget(QStackedWidget* subStackedWidget);
@@ -160,11 +160,13 @@ public:
     QString GetRedefineNameWidget(QString name);
     QStringList GetShareDisplayWidgetNames();
 
+    // ---- Server ----
+    SocketConnectionManager* ConnectionManager;
+
     //---- Object in other threads ----
     DeviceManager* DeviceManagerInstance;
 
     //---- Connection ----
-    ConnectionManager* DeltaConnectionManager;
     QNetworkAccessManager HttpManager;
 
     //---- Process -----
@@ -249,11 +251,12 @@ public slots:
     void UpdateVarToView(QString fullKey, QString value);
     void UpdateVarToModel(QStandardItem *parent, QString fullKey, QString value);
 
+    //----- 3D -----
+    void Load3DComponents();
+
     // ---- Robot ----
     void ConnectRobot();
-    void NoticeConnected();
 
-    void ConfigConnection();
     void ChangeSelectedRobot(int id);
     void ChangeRobotDOF(int id);
     void ChangeRobotModel(int id);
@@ -376,12 +379,6 @@ public slots:
     // ---- Connection ----
 
     // ---- ROS ----
-	void OpenROS();
-	void ChangeROSCameraView(int index);
-	void ChangeEndEffector(int index);
-	void ChangeRobotVersion(int index);
-	void AddObjectsToROS(std::vector<cv::RotatedRect> ObjectContainer);
-	void DeleteAllObjectsInROS();
 
     // ----- Object Detecting ----
     void StartContinuousCapture(bool isCheck);
@@ -472,8 +469,6 @@ private:
 
     // ---- Display ----
     bool openConnectionDialog(QSerialPort* comPort, QTcpSocket* socket,QPushButton* connectButton, QLabel* comNameInfo = NULL);
-
-	void hideExampleWidgets();
 
     // ---- Encoder/Conveyor ----
 

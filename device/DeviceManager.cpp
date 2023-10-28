@@ -200,7 +200,7 @@ void DeviceManager::RequestDeviceInfo(int deviceType)
 {
     if (deviceType == ROBOT)
     {
-        if (SelectedRobotID > Robots.count() - 1)
+        while (SelectedRobotID > Robots.count() - 1)
         {
             AddRobot();
         }
@@ -210,7 +210,7 @@ void DeviceManager::RequestDeviceInfo(int deviceType)
 
     if (deviceType == SLIDER)
     {
-        if (SelectedSliderID > Sliders.count() - 1)
+        while (SelectedSliderID > Sliders.count() - 1)
         {
             AddSlider();
         }
@@ -220,7 +220,7 @@ void DeviceManager::RequestDeviceInfo(int deviceType)
 
     if (deviceType == CONVEYOR)
     {
-        if (SelectedConveyorID > Conveyors.count() - 1)
+        while (SelectedConveyorID > Conveyors.count() - 1)
         {
             AddConveyor();
         }
@@ -229,7 +229,7 @@ void DeviceManager::RequestDeviceInfo(int deviceType)
 
     if (deviceType == ENCODER)
     {
-        if (SelectedEncoderID > Encoders.count() - 1)
+        while (SelectedEncoderID > Encoders.count() - 1)
         {
             AddEncoder();
         }
@@ -340,10 +340,6 @@ void DeviceManager::SendGcode(QString deviceName, QString gcode)
             QMetaObject::invokeMethod(Encoders[id], "WriteData", Qt::QueuedConnection, Q_ARG(QString, gcode));
 
             emit Log(QString("Encoder %1").arg(id), gcode, 1);
-        }
-        else
-        {
-            emit GotEncoderPosition(id, std::numeric_limits<float>::quiet_NaN());
         }
     }
 }

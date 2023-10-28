@@ -745,13 +745,13 @@ void TaskNode::doVisibleObjectsWork()
     {
         inputObjects[i].Map(inputMatrix);
 
-        QMutex mux;
-        mux.lock();
+//        QMutex mux;
+//        mux.lock();
 
-        inputObjects[i].X.Real += inputPoint.x();
-        inputObjects[i].Y.Real += inputPoint.y();
+//        inputObjects[i].X.Real += inputPoint.x();
+//        inputObjects[i].Y.Real += inputPoint.y();
 
-        mux.unlock();
+//        mux.unlock();
 
 //        emit DebugEvent();
 

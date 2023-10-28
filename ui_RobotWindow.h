@@ -37,9 +37,9 @@
 #include <QtWidgets/QTreeView>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
-#include <RobotSimulator.h>
 #include <codeeditor.h>
 #include <imageviewer.h>
+#include "RobotSimulator.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -174,7 +174,7 @@ public:
     QComboBox *cbSourceForImageProvider;
     QSpacerItem *horizontalSpacer_44;
     QLabel *label_6;
-    QComboBox *cbEncoderForCamera;
+    QComboBox *cbTrackingThreadForCamera;
     QFrame *fWebcamSource;
     QHBoxLayout *horizontalLayout_11;
     QToolButton *pbLoadCamera;
@@ -2069,7 +2069,7 @@ public:
         saObjectDetecting->setWidgetResizable(true);
         wObjectDetecting = new QWidget();
         wObjectDetecting->setObjectName(QString::fromUtf8("wObjectDetecting"));
-        wObjectDetecting->setGeometry(QRect(0, -296, 586, 1800));
+        wObjectDetecting->setGeometry(QRect(0, 0, 586, 1800));
         wObjectDetecting->setMinimumSize(QSize(100, 1800));
         wObjectDetecting->setStyleSheet(QString::fromUtf8("QWidget#wObjectDetecting\n"
 "{	\n"
@@ -2109,6 +2109,7 @@ public:
         sizePolicy10.setVerticalStretch(0);
         sizePolicy10.setHeightForWidth(cbSelectedDetecting->sizePolicy().hasHeightForWidth());
         cbSelectedDetecting->setSizePolicy(sizePolicy10);
+        cbSelectedDetecting->setMinimumSize(QSize(100, 0));
 
         horizontalLayout_17->addWidget(cbSelectedDetecting);
 
@@ -2483,15 +2484,15 @@ public:
 
         horizontalLayout_10->addWidget(label_6);
 
-        cbEncoderForCamera = new QComboBox(fImageProvider);
-        cbEncoderForCamera->addItem(QString());
-        cbEncoderForCamera->addItem(QString());
-        cbEncoderForCamera->addItem(QString());
-        cbEncoderForCamera->addItem(QString());
-        cbEncoderForCamera->setObjectName(QString::fromUtf8("cbEncoderForCamera"));
-        cbEncoderForCamera->setMinimumSize(QSize(100, 0));
+        cbTrackingThreadForCamera = new QComboBox(fImageProvider);
+        cbTrackingThreadForCamera->addItem(QString());
+        cbTrackingThreadForCamera->addItem(QString());
+        cbTrackingThreadForCamera->addItem(QString());
+        cbTrackingThreadForCamera->addItem(QString());
+        cbTrackingThreadForCamera->setObjectName(QString::fromUtf8("cbTrackingThreadForCamera"));
+        cbTrackingThreadForCamera->setMinimumSize(QSize(100, 0));
 
-        horizontalLayout_10->addWidget(cbEncoderForCamera);
+        horizontalLayout_10->addWidget(cbTrackingThreadForCamera);
 
 
         verticalLayout_51->addLayout(horizontalLayout_10);
@@ -3611,7 +3612,7 @@ public:
         saPointTool->setWidgetResizable(true);
         wPointTool = new QWidget();
         wPointTool->setObjectName(QString::fromUtf8("wPointTool"));
-        wPointTool->setGeometry(QRect(0, -514, 574, 1900));
+        wPointTool->setGeometry(QRect(0, 0, 574, 1900));
         wPointTool->setMinimumSize(QSize(0, 1900));
         wPointTool->setStyleSheet(QString::fromUtf8("QWidget#wPointTool\n"
 "{	\n"
@@ -8786,10 +8787,10 @@ public:
         QObject::connect(gbTrackingManager, SIGNAL(toggled(bool)), fTrackingManager, SLOT(setVisible(bool)));
 
         twDeltaManager->setCurrentIndex(0);
-        twModule->setCurrentIndex(2);
+        twModule->setCurrentIndex(1);
         pbImageMapping->setDefault(false);
         cbImageSource->setCurrentIndex(0);
-        twDevices->setCurrentIndex(2);
+        twDevices->setCurrentIndex(3);
         pbPump->setDefault(false);
         pbLaser->setDefault(false);
         pbGrip->setDefault(false);
@@ -8944,9 +8945,9 @@ public:
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\"> </span></p></body></html>", nullptr));
         twModule->setTabText(twModule->indexOf(tGcodeEditor), QCoreApplication::translate("RobotWindow", "Gcode Editor", nullptr));
         label_191->setText(QCoreApplication::translate("RobotWindow", "Detecting Thread", nullptr));
-        cbSelectedDetecting->setItemText(0, QCoreApplication::translate("RobotWindow", "0", nullptr));
-        cbSelectedDetecting->setItemText(1, QCoreApplication::translate("RobotWindow", "1", nullptr));
-        cbSelectedDetecting->setItemText(2, QCoreApplication::translate("RobotWindow", "2", nullptr));
+        cbSelectedDetecting->setItemText(0, QCoreApplication::translate("RobotWindow", "detect0", nullptr));
+        cbSelectedDetecting->setItemText(1, QCoreApplication::translate("RobotWindow", "detect1", nullptr));
+        cbSelectedDetecting->setItemText(2, QCoreApplication::translate("RobotWindow", "detect2", nullptr));
         cbSelectedDetecting->setItemText(3, QCoreApplication::translate("RobotWindow", "+", nullptr));
 
         gbImageViewer->setTitle(QCoreApplication::translate("RobotWindow", "Image Viewer", nullptr));
@@ -9002,11 +9003,11 @@ public:
         cbSourceForImageProvider->setItemText(2, QCoreApplication::translate("RobotWindow", "Images", nullptr));
         cbSourceForImageProvider->setItemText(3, QCoreApplication::translate("RobotWindow", "Socket", nullptr));
 
-        label_6->setText(QCoreApplication::translate("RobotWindow", "Encoder", nullptr));
-        cbEncoderForCamera->setItemText(0, QCoreApplication::translate("RobotWindow", "encoder0", nullptr));
-        cbEncoderForCamera->setItemText(1, QCoreApplication::translate("RobotWindow", "encoder1", nullptr));
-        cbEncoderForCamera->setItemText(2, QCoreApplication::translate("RobotWindow", "encoder2", nullptr));
-        cbEncoderForCamera->setItemText(3, QCoreApplication::translate("RobotWindow", "+", nullptr));
+        label_6->setText(QCoreApplication::translate("RobotWindow", "Tracking Thread", nullptr));
+        cbTrackingThreadForCamera->setItemText(0, QCoreApplication::translate("RobotWindow", "thread0", nullptr));
+        cbTrackingThreadForCamera->setItemText(1, QCoreApplication::translate("RobotWindow", "thread1", nullptr));
+        cbTrackingThreadForCamera->setItemText(2, QCoreApplication::translate("RobotWindow", "thread2", nullptr));
+        cbTrackingThreadForCamera->setItemText(3, QCoreApplication::translate("RobotWindow", "+", nullptr));
 
 #if QT_CONFIG(tooltip)
         pbLoadCamera->setToolTip(QCoreApplication::translate("RobotWindow", "Load Camera", nullptr));
@@ -9162,9 +9163,9 @@ public:
         leDetectingObjectListName->setText(QCoreApplication::translate("RobotWindow", "#Objects", nullptr));
         twModule->setTabText(twModule->indexOf(tObjectDetecting), QCoreApplication::translate("RobotWindow", "Object Detecting", nullptr));
         gbTrackingManager->setTitle(QCoreApplication::translate("RobotWindow", "Tracking Manager", nullptr));
-        cbSelectedTracking->setItemText(0, QCoreApplication::translate("RobotWindow", "0", nullptr));
-        cbSelectedTracking->setItemText(1, QCoreApplication::translate("RobotWindow", "1", nullptr));
-        cbSelectedTracking->setItemText(2, QCoreApplication::translate("RobotWindow", "2", nullptr));
+        cbSelectedTracking->setItemText(0, QCoreApplication::translate("RobotWindow", "tracking0", nullptr));
+        cbSelectedTracking->setItemText(1, QCoreApplication::translate("RobotWindow", "tracking1", nullptr));
+        cbSelectedTracking->setItemText(2, QCoreApplication::translate("RobotWindow", "tracking2", nullptr));
         cbSelectedTracking->setItemText(3, QCoreApplication::translate("RobotWindow", "+", nullptr));
 
         label_144->setText(QCoreApplication::translate("RobotWindow", "Object List", nullptr));
@@ -9632,9 +9633,9 @@ public:
         label->setText(QCoreApplication::translate("RobotWindow", "Selected Conveyor", nullptr));
         checkBox->setText(QCoreApplication::translate("RobotWindow", "Auto Scan", nullptr));
         pbConveyorConnect->setText(QCoreApplication::translate("RobotWindow", "Connect", nullptr));
-        cbSelectedConveyor->setItemText(0, QCoreApplication::translate("RobotWindow", "0", nullptr));
-        cbSelectedConveyor->setItemText(1, QCoreApplication::translate("RobotWindow", "1", nullptr));
-        cbSelectedConveyor->setItemText(2, QCoreApplication::translate("RobotWindow", "2", nullptr));
+        cbSelectedConveyor->setItemText(0, QCoreApplication::translate("RobotWindow", "conveyor0", nullptr));
+        cbSelectedConveyor->setItemText(1, QCoreApplication::translate("RobotWindow", "conveyor1", nullptr));
+        cbSelectedConveyor->setItemText(2, QCoreApplication::translate("RobotWindow", "conveyor2", nullptr));
         cbSelectedConveyor->setItemText(3, QCoreApplication::translate("RobotWindow", "+", nullptr));
 
         groupBox_10->setTitle(QCoreApplication::translate("RobotWindow", "COM", nullptr));
@@ -9784,9 +9785,9 @@ public:
         label_15->setText(QCoreApplication::translate("RobotWindow", "Selected Encoder", nullptr));
         checkBox_5->setText(QCoreApplication::translate("RobotWindow", "Auto Scan", nullptr));
         pbSlidingConnect->setText(QCoreApplication::translate("RobotWindow", "Connect", nullptr));
-        cbSelectedSlider->setItemText(0, QCoreApplication::translate("RobotWindow", "0", nullptr));
-        cbSelectedSlider->setItemText(1, QCoreApplication::translate("RobotWindow", "1", nullptr));
-        cbSelectedSlider->setItemText(2, QCoreApplication::translate("RobotWindow", "2", nullptr));
+        cbSelectedSlider->setItemText(0, QCoreApplication::translate("RobotWindow", "slider0", nullptr));
+        cbSelectedSlider->setItemText(1, QCoreApplication::translate("RobotWindow", "slider1", nullptr));
+        cbSelectedSlider->setItemText(2, QCoreApplication::translate("RobotWindow", "slider2", nullptr));
         cbSelectedSlider->setItemText(3, QCoreApplication::translate("RobotWindow", "+", nullptr));
 
         groupBox_19->setTitle(QCoreApplication::translate("RobotWindow", "COM", nullptr));
@@ -9812,12 +9813,12 @@ public:
         label_37->setText(QCoreApplication::translate("RobotWindow", "Position", nullptr));
         label_58->setText(QCoreApplication::translate("RobotWindow", "mm/s", nullptr));
         twDevices->setTabText(twDevices->indexOf(SliderTab), QCoreApplication::translate("RobotWindow", "Slider", nullptr));
-        label_16->setText(QCoreApplication::translate("RobotWindow", "Selected Encoder", nullptr));
+        label_16->setText(QCoreApplication::translate("RobotWindow", "Selected Device", nullptr));
         checkBox_6->setText(QCoreApplication::translate("RobotWindow", "Auto Scan", nullptr));
         pbExternalControllerConnect->setText(QCoreApplication::translate("RobotWindow", "Connect", nullptr));
-        cbSelectedDevice->setItemText(0, QCoreApplication::translate("RobotWindow", "0", nullptr));
-        cbSelectedDevice->setItemText(1, QCoreApplication::translate("RobotWindow", "1", nullptr));
-        cbSelectedDevice->setItemText(2, QCoreApplication::translate("RobotWindow", "2", nullptr));
+        cbSelectedDevice->setItemText(0, QCoreApplication::translate("RobotWindow", "device0", nullptr));
+        cbSelectedDevice->setItemText(1, QCoreApplication::translate("RobotWindow", "device1", nullptr));
+        cbSelectedDevice->setItemText(2, QCoreApplication::translate("RobotWindow", "device2", nullptr));
         cbSelectedDevice->setItemText(3, QCoreApplication::translate("RobotWindow", "+", nullptr));
 
         groupBox_21->setTitle(QCoreApplication::translate("RobotWindow", "COM", nullptr));

@@ -18,6 +18,8 @@ void Camera::GetImageFromExternal(cv::Mat mat)
 
 void Camera::GeneralCapture()
 {
+    emit StartedCapture(trackingThreadId);
+
     if (Source == "Webcam")
     {
         CaptureWebcam();
@@ -35,6 +37,11 @@ void Camera::GeneralCapture()
 void Camera::CaptureAndDetect()
 {
     GeneralCapture();
+}
+
+void Camera::SetTracking(int id)
+{
+    trackingThreadId = id;
 }
 
 void Camera::CaptureWebcam()

@@ -24,6 +24,7 @@ public:
     float CameraTimerInterval = 500;
     QString Source = "Webcam";
 signals:
+    void StartedCapture(int tracking);
     void GotImage(cv::Mat);
     void RequestCapture();
     void StopCameraRequest();
@@ -33,6 +34,11 @@ public slots:
     void GeneralCapture();
     void CaptureWebcam();
     void CaptureAndDetect();
+    void SetTracking(int id);
+
+ private:
+
+    int trackingThreadId = 0;
 };
 
 #endif // CAMERA_H

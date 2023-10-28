@@ -39,6 +39,41 @@ bool XCamBasler::Connect()
     width = (int)w->GetValue();
     height = (int)h->GetValue();
 
+    GenApi::CFloatPtr exposureTimeNode = nodemap.GetNode("ExposureTime");
+    if (IsReadable(exposureTimeNode))
+    {
+        double exposureTimeValue = exposureTimeNode->GetValue();
+        qDebug() << "Exposure Time:" << exposureTimeValue << "us";
+    }
+    else
+    {
+        qDebug() << "Exposure Time is not readable.";
+    }
+
+    // Đọc thông số Gain
+    GenApi::CFloatPtr gainNode = nodemap.GetNode("Gain");
+    if (IsReadable(gainNode))
+    {
+        double gainValue = gainNode->GetValue();
+        qDebug() << "Gain: " << gainValue;
+    }
+    else
+    {
+        qDebug() << "Gain is not readable.";
+    }
+
+    // Đọc thông số Gamma
+    GenApi::CFloatPtr gammaNode = nodemap.GetNode("Gamma");
+    if (IsReadable(gammaNode))
+    {
+        double gammaValue = gammaNode->GetValue();
+        qDebug() << "Gamma: " << gammaValue;
+    }
+    else
+    {
+        qDebug() << "Gamma is not readable.";
+    }
+
     return true;
 }
 

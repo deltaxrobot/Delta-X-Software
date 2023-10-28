@@ -4,6 +4,7 @@
 #include "xcam.h"
 #include <pylon/PylonIncludes.h>
 #include <pylon/gige/BaslerGigECamera.h>
+#include <QDebug>
 
 using namespace Pylon;
 

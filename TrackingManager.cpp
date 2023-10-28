@@ -8,12 +8,6 @@ Tracking::Tracking(QObject *parent)
 
 void Tracking::OnReceivceEncoderPosition(float value)
 {
-    if (std::isnan(value))
-    {
-        emit GotCaptureDetectOffset(QPointF(0, 0));
-        return;
-    }
-
     if (IsReverse == true)
     {
         value = value * - 1;
@@ -27,7 +21,7 @@ void Tracking::OnReceivceEncoderPosition(float value)
         return;
     }
 
-    float distance = value - lastPosition;
+    float distance = currentPosition - lastPosition;
     lastPosition = value;
 
     QPointF offset = calculateMoved(distance);
@@ -42,8 +36,6 @@ void Tracking::OnReceivceEncoderPosition(float value)
     {
         detectPosition = currentPosition;
         ReadPurpose = "Update";
-        QPointF offset = calculateMoved(currentPosition - capturePosition);
-        emit GotCaptureDetectOffset(offset);
     }
 }
 
@@ -54,15 +46,13 @@ void Tracking::GetVirtualEncoderPosition()
 
 void Tracking::ReadEncoder()
 {
-    QString encoderName = "encoder";
-    encoderName = encoderName + QString::number(EncoderID);
     if (EncoderType == "Encoder X")
     {
-        emit SendGcodeRequest(encoderName, "M317");
+        emit SendGcodeRequest(EncoderName, "M317");
     }
     else if (EncoderType == "Sub Encoder")
     {
-        emit SendGcodeRequest(encoderName, QString("M422 C%1").arg(EncoderID + 1));
+        emit SendGcodeRequest(EncoderName, QString("M422 C%1").arg(EncoderName.replace("encoder", "").toInt() + 1));
     }
     else if (EncoderType == "Virtual Encoder")
     {
@@ -201,7 +191,7 @@ void TrackingManager::SetEncoderPosition(int id, float value)
 {
     for(int i = 0; i < Trackings.count(); i++)
     {
-        if (Trackings.at(i)->EncoderID == id)
+        if (Trackings.at(i)->EncoderName.replace("encoder", "").toInt() == id)
         {
             QMetaObject::invokeMethod(Trackings.at(i), "OnReceivceEncoderPosition", Qt::QueuedConnection, Q_ARG(float, value));
         }

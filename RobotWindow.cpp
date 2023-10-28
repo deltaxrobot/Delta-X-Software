@@ -11,12 +11,12 @@ RobotWindow::RobotWindow(QWidget *parent, QString projectName) :
 
     this->ProjectName = projectName;
 
+    // 1.Device
+    // 2.Module
+
     InitVariables();
     InitOtherThreadObjects();
     InitEvents();
-
-    hideExampleWidgets();
-//    CheckSettingsSpeed();
 }
 
 RobotWindow::~RobotWindow()
@@ -33,15 +33,14 @@ RobotWindow::~RobotWindow()
     TrackingManagerInstance->thread()->quit();
     TrackingManagerInstance->thread()->wait();
 
+    ConnectionManager->thread()->quit();
+    ConnectionManager->thread()->wait();
+
     ImageProcessingThread->thread()->quit();
     ImageProcessingThread->thread()->wait();
 
     CameraInstance->thread()->quit();
     CameraInstance->thread()->wait();
-
-    DeltaConnectionManager->thread()->quit();
-    DeltaConnectionManager->thread()->wait();
-
 
     for (int i = 0; i < GcodeScripts.count(); i++)
     {
@@ -67,10 +66,10 @@ void RobotWindow::InitOtherThreadObjects()
     QMetaObject::invokeMethod(DeviceManagerInstance, "AddRobot", Qt::QueuedConnection);
 
     connect(DeviceManagerInstance, SIGNAL(GotDeviceInfo(QString)), this, SLOT(GetDeviceInfo(QString)));
-    connect(this, SIGNAL(ChangeDeviceState(int, bool, QString)), DeviceManagerInstance, SLOT(SetDeviceState(int, bool, QString)));
-    connect(DeviceManagerInstance, SIGNAL(Log(QString, QString, int)), this, SLOT(UpdateTermite(QString, QString, int)));
-    connect(DeviceManagerInstance, SIGNAL(DeviceResponded(QString, QString)), this, SLOT(GetDeviceResponse(QString, QString)));
-    connect(this, SIGNAL(Send(int, QString)), DeviceManagerInstance, SLOT(SendGcode(int, QString)));
+    connect(this, SIGNAL(ChangeDeviceState(int,bool,QString)), DeviceManagerInstance, SLOT(SetDeviceState(int,bool,QString)));
+    connect(DeviceManagerInstance, SIGNAL(Log(QString,QString,int)), this, SLOT(UpdateTermite(QString,QString,int)));
+    connect(DeviceManagerInstance, SIGNAL(DeviceResponded(QString,QString)), this, SLOT(GetDeviceResponse(QString,QString)));
+    connect(this, SIGNAL(Send(int,QString)), DeviceManagerInstance, SLOT(SendGcode(int,QString)));
 
     for (int i = 0; i < 3; i++)
     {
@@ -91,6 +90,9 @@ void RobotWindow::InitOtherThreadObjects()
     connect(CameraInstance, SIGNAL(GotImage(cv::Mat)), ImageProcessingThread->GetNode("GetImageNode"), SLOT(Input(cv::Mat)));
     connect(&CameraTimer, SIGNAL(timeout()), CameraInstance, SLOT(GeneralCapture()));
     SelectImageProviderOption(0);
+
+    connect(ui->cbTrackingThreadForCamera, SIGNAL(currentIndexChanged(int)), CameraInstance, SLOT(setTracking(int)));
+
         //-------- Robot ---------
     connect(ui->pbConnect, SIGNAL(clicked(bool)), this, SLOT(ConnectRobot()));
     connect(ui->cbSelectedRobot, SIGNAL(currentIndexChanged(int)), this, SLOT(ChangeSelectedRobot(int)));
@@ -141,7 +143,6 @@ void RobotWindow::InitOtherThreadObjects()
 
         //-------- MCU --------
     connect(ui->pbExternalControllerConnect, SIGNAL(clicked(bool)), this, SLOT(ConnectExternalMCU()));
-//    connect(DeltaConnectionManager, SIGNAL(ExternalMCUTransmitText(QString)), this, SLOT(DisplayTextFromExternalMCU(QString)));
     connect(ui->leTransmitToMCU, SIGNAL(returnPressed()), this, SLOT(TransmitTextToExternalMCU()));
 
     //----- Tracking -----
@@ -160,8 +161,6 @@ void RobotWindow::InitOtherThreadObjects()
 
 void RobotWindow::InitVariables()
 {
-    QElapsedTimer time;
-    qint64 start = time.elapsed();
     //---------- Connection -----------
     InitConnectionModule();
 
@@ -170,15 +169,9 @@ void RobotWindow::InitVariables()
     CloseDialog->SetType(CloseDialog->CLOSE_DIALOG);
 
     //--------- Init Plugin ----------
-//    QTimer::singleShot(1000, [this](){
-//        LoadPlugin();
-//    });
+
 
     // ---- Init UI ----
-    ui->lbBaudrate->setText(QString::number(DeltaConnectionManager->GetBaudrate()));
-
-    ui->leIP->setText(DeltaConnectionManager->TCPConnection->GetIP());
-    ui->lePort->setText(QString::number(DeltaConnectionManager->TCPConnection->Port));
 
     InitParseNames();
 
@@ -230,7 +223,10 @@ void RobotWindow::InitVariables()
         float x = ui->leObjectX->text().toFloat();
         float y = ui->leObjectY->text().toFloat();
         float z = ui->leObjectZ->text().toFloat();
-        int angle = qrand() % ((180 + 1) - (-180)) + (-180);
+
+        std::default_random_engine generator;  // You can seed it if you want: generator(seed);
+        std::uniform_int_distribution<int> distribution(-180, 180);
+        int angle = distribution(generator);
 
         if (ui->leObjectListName->text() == TrackingManagerInstance->Trackings.at(selectedEncoderID)->ListName)
         {
@@ -329,71 +325,20 @@ void RobotWindow::InitVariables()
     InitObjectDetectingModule();
     InitCalibration();
 
-    //----------------ROS-------------------
-#ifdef Q_OS_WIN
-//    DeltaXROS = new ROS(this, ui->frameROS, "/ros/Delta X Ros.exe");
-//	DeltaXROS->SetConnectionManager(DeltaConnectionManager->TCPConnection);
-    //DeltaXROS->Run();
-#endif
-    //---------------Socket------------------------
-
-
-    //------------ UI ----------------
-
-    //------------------- Linux -----------------
-
-
-    //----- Process ------
-//    ExternalScriptProcess = new QProcess(this);
-
     LoadSettings();
 }
 
 void RobotWindow::InitConnectionModule()
 {
-    DeltaConnectionManager = new ConnectionManager();
-    DeltaConnectionManager->moveToThread(new QThread(this));
-
-    DeltaConnectionManager->thread()->start();
-
-    DeltaConnectionManager->SetBaudrate(DefaultBaudrate);
-
-
-//    connect(this, &RobotWindow::Send, DeltaConnectionManager, &ConnectionManager::Send);
-
-    connect(this, &RobotWindow::ScanAndConnectRobot, DeltaConnectionManager, &ConnectionManager::FindDeltaRobot);
-    connect(this, &RobotWindow::DisconnectRobot, DeltaConnectionManager, &ConnectionManager::DisconnectRobot);
-    connect(DeltaConnectionManager->thread(), SIGNAL(finished()), DeltaConnectionManager, SLOT(deleteLater()));
-
-    connect(DeltaConnectionManager, SIGNAL(Log(QString)), this, SLOT(UpdateTermite(QString)));
-
-    connect(DeltaConnectionManager, SIGNAL(ReceiveInputIO(QString)), this, SLOT(GetValueInput(QString)));
-
-    connect(DeltaConnectionManager, SIGNAL(DeltaResponeReady()), this, SLOT(NoticeConnected()));
-    connect(DeltaConnectionManager, SIGNAL(InHomePosition(float, float, float, float, float, float)), this, SLOT(ReceiveHomePosition(float, float, float, float, float, float)));
-
-    connect(DeltaConnectionManager, SIGNAL(RequestVariableValue(QIODevice*, QString)), this, SLOT(RespondVariableValue(QIODevice*, QString)));
-
-    connect(DeltaConnectionManager, SIGNAL(ReceiveRequestsFromExternal(QString)), this, SLOT(ExecuteRequestsFromExternal(QString)));
-
-
-    connect(DeltaConnectionManager, SIGNAL(ReceiveObjectInfoFromExternalAI(QString)), this, SLOT(ProcessDetectedObjectFromExternalAI(QString)));
-//    connect(DeltaConnectionManager, SIGNAL(ExternalScriptOpened(QTcpSocket*)), DeltaImageProcesser, SLOT(GetExternalScriptSocket(QTcpSocket*)));
-    connect(DeltaConnectionManager, SIGNAL(ReceiveDisplayObjectFromExternalScript(QString)), this, SLOT(AddDisplayObjectFromExternalScript(QString)));
-
-//    connect(DeltaConnectionManager->TCPConnection, SIGNAL(ReceivePosition(float, float, float, float, float, float)), this, SLOT(UpdateTextboxFrom3DControl(float, float, float, float, float, float)));
-
-//    connect(DeltaConnectionManager->TCPConnection, SIGNAL(ReceiveOk()), this, SLOT(ROSResponse()));
-
-    connect(DeltaConnectionManager, SIGNAL(FinishFindingRobot()), this, SLOT(CloseLoadingPopup()));
-
-    connect(DeltaConnectionManager, SIGNAL(ReceivedEncoderPosition(float)), this, SLOT(ProcessEncoderValue(float)));
-
-
-
-//    connect(DeltaConnectionManager, SIGNAL(ReceiveCaptureSignalFromExternalAI()), Encoder1, SLOT(MarkPosition()));
-
     // ---------- Server ---------
+
+    ConnectionManager = new SocketConnectionManager(ui->leIP->text(), ui->lePort->text().toInt(), this);
+    if (ConnectionManager->IsServerOpen())
+    {
+        ui->leIP->setText(ConnectionManager->server->serverAddress().toString());
+        ui->lePort->setText(QString::number(ConnectionManager->server->serverPort()));
+    }
+
     connect(ui->tbServerConfig, &QPushButton::clicked, [=](bool checked)
     {
         ui->leIP->setFrame(true);
@@ -447,7 +392,6 @@ void RobotWindow::InitObjectDetectingModule()
     ImageProcessingThread->CreatTaskNode("ColorFilterNode", TaskNode::COLOR_FILTER_NODE, "CropImageNode");
     ImageProcessingThread->CreatTaskNode("GetObjectsNode", TaskNode::GET_OBJECTS_NODE, "ColorFilterNode");
     ImageProcessingThread->CreatTaskNode("VisibleObjectsNode", TaskNode::VISIBLE_OBJECTS_NODE, "GetObjectsNode|MappingMatrixNode");
-    ImageProcessingThread->CreatTaskNode("TrackingObjectsNode", TaskNode::TRACKING_OBJECTS_NODE, "VisibleObjectsNode");
 
     ImageProcessingThread->CreatTaskNode("DisplayImageNode", TaskNode::DISPLAY_IMAGE_NODE, "CropImageNode");
 
@@ -543,7 +487,8 @@ void RobotWindow::InitObjectDetectingModule()
     connect(ui->pbViewDataObjects, SIGNAL(clicked(bool)), TrackingObjectTable, SLOT(DisplayDialog()));
     connect(ui->pbClearObject, &QPushButton::clicked, [=](bool checked)
     {
-        QMetaObject::invokeMethod(ImageProcessingThread->GetNode("TrackingObjectsNode"), "ClearVariable", Qt::QueuedConnection, Q_ARG(QString, "outputObjects"));
+//        QMetaObject::invokeMethod(ImageProcessingThread->GetNode("TrackingObjectsNode"), "ClearVariable", Qt::QueuedConnection, Q_ARG(QString, "outputObjects"));
+
         QTimer::singleShot(300, [this](){
             ui->pbCapture->clicked();
         });
@@ -566,7 +511,7 @@ void RobotWindow::InitObjectDetectingModule()
 
     connect(ui->leObjectOverlay, &QLineEdit::returnPressed,
     [=] (){
-        QMetaObject::invokeMethod(ImageProcessingThread->GetNode("TrackingObjectsNode"), "Input", Qt::QueuedConnection, Q_ARG(float, ui->leObjectOverlay->text().toFloat()));
+//        QMetaObject::invokeMethod(ImageProcessingThread->GetNode("TrackingObjectsNode"), "Input", Qt::QueuedConnection, Q_ARG(float, ui->leObjectOverlay->text().toFloat()));
     });
 
     // ---------- Image Provider -------
@@ -622,16 +567,17 @@ void RobotWindow::InitObjectDetectingModule()
     connect(this, SIGNAL(GotOjectFilterInfo(Object)), ImageProcessingThread->GetNode("GetObjectsNode"), SLOT(Input(Object)));
 
     connect(ImageProcessingThread->GetNode("VisibleObjectsNode"), SIGNAL(HadOutput(QList<Object>&)), this, SLOT(UpdateObjectsToImageViewer(QList<Object>&)));
-    connect(ImageProcessingThread->GetNode("GetObjectsNode"), &TaskNode::Done, [=]()
-    {
-        int id = ui->cbEncoderForCamera->currentText().toInt();
-        QMetaObject::invokeMethod(TrackingManagerInstance, "SaveDetectPosition", Qt::QueuedConnection, Q_ARG(int, id));
-    });
+//    connect(ImageProcessingThread->GetNode("GetObjectsNode"), &TaskNode::Done, [=]()
+//    {
+//        int id = ui->cbTrackingThreadForCamera->currentIndex();
+//        QMetaObject::invokeMethod(TrackingManagerInstance, "SaveDetectPosition", Qt::QueuedConnection, Q_ARG(int, id));
+//    });
 
-    connect(ImageProcessingThread->GetNode("TrackingObjectsNode"), SIGNAL(HadOutput(QList<Object>&)), TrackingObjectTable, SLOT(UpdateTable(QList<Object>&)));
-    QTimer::singleShot(1000, [this](){
-        connect(ImageProcessingThread->GetNode("TrackingObjectsNode"), SIGNAL(Done()), TrackingManagerInstance, SLOT(OnDoneUpdateTracking()));
-    });
+//    connect(ImageProcessingThread->GetNode("TrackingObjectsNode"), SIGNAL(HadOutput(QList<Object>&)), TrackingObjectTable, SLOT(UpdateTable(QList<Object>&)));
+//    QTimer::singleShot(1000, [this](){
+//        connect(ImageProcessingThread->GetNode("TrackingObjectsNode"), SIGNAL(Done()), TrackingManagerInstance, SLOT(OnDoneUpdateTracking()));
+//    });
+
     RearrangeTaskFlow();
 
     ImageProcessingThread->thread()->start();    
@@ -770,14 +716,6 @@ void RobotWindow::InitEvents()
     connect(ui->cbDx, SIGNAL(clicked(bool)), this, SLOT(SetOnOffOutput(bool)));
     connect(ui->cbRx, SIGNAL(clicked(bool)), this, SLOT(SetOnOffOutput(bool)));
 
-//    connect(ui->leP0Value, SIGNAL(returnPressed()), this, SLOT(SetValueOutput()));
-//    connect(ui->leP1Value, SIGNAL(returnPressed()), this, SLOT(SetValueOutput()));
-//    connect(ui->lePxValue, SIGNAL(returnPressed()), this, SLOT(SetValueOutput()));
-
-//    connect(ui->leS0Value, SIGNAL(returnPressed()), this, SLOT(SetValueOutput()));
-//    connect(ui->leS1Value, SIGNAL(returnPressed()), this, SLOT(SetValueOutput()));
-//    connect(ui->leSxValue, SIGNAL(returnPressed()), this, SLOT(SetValueOutput()));
-
     connect(ui->pbReadI0, SIGNAL(clicked()), this, SLOT(RequestValueInput()));
     connect(ui->pbReadI1, SIGNAL(clicked()), this, SLOT(RequestValueInput()));
     connect(ui->pbReadI2, SIGNAL(clicked()), this, SLOT(RequestValueInput()));
@@ -790,27 +728,8 @@ void RobotWindow::InitEvents()
 
 
     //------------- 2D control ----------------
-//	connect(ui->vsZAdjsution, SIGNAL(valueChanged(int)), this, SLOT(UpdateZLineEditValue(int)));
-//	connect(ui->vsZAdjsution, SIGNAL(sliderReleased()), this, SLOT(UpdateDeltaPositionFromLineEditValue()));
-//    connect(ui->vsAngleAdjsution, SIGNAL(valueChanged(int)), this, SLOT(UpdateAngleLineEditValue(int)));
-//	connect(ui->vsAngleAdjsution, SIGNAL(sliderReleased()), this, SLOT(UpdateDeltaPositionFromLineEditValue()));
-//    connect(ui->vs5AxisAdjsution, SIGNAL(valueChanged(int)), this, SLOT(UpdateAngleLineEditValue(int)));
-//    connect(ui->vs5AxisAdjsution, SIGNAL(sliderReleased()), this, SLOT(UpdateDeltaPositionFromLineEditValue()));
-//    connect(ui->vs6AxisAdjsution, SIGNAL(valueChanged(int)), this, SLOT(UpdateAngleLineEditValue(int)));
-//    connect(ui->vs6AxisAdjsution, SIGNAL(sliderReleased()), this, SLOT(UpdateDeltaPositionFromLineEditValue()));
-//    connect(Delta2DVisualizer, SIGNAL(Moved(float, float, float, float, float, float)), this, SLOT(UpdateTextboxFrom2DControl(float, float, float, float, float, float)));
-
-
-//	connect(Delta2DVisualizer, SIGNAL(FinishMoving()), this, SLOT(UpdateDeltaPositionFromLineEditValue()));
-    //connect(Delta2DVisualizer, SIGNAL(CursorMoved(float, float)), SLOT(UpdateCursorPosition(float, float)));
 
     //------------- 3D control -------------------
-//	connect(ui->pbTurnOnROS, SIGNAL(clicked(bool)), this, SLOT(OpenROS()));
-//	connect(ui->cbROSCameraView, SIGNAL(currentIndexChanged(int)), this, SLOT(ChangeROSCameraView(int)));
-//	connect(ui->cbEndEffector, SIGNAL(currentIndexChanged(int)), this, SLOT(ChangeEndEffector(int)));
-//	connect(ui->cbRobotVersion, SIGNAL(currentIndexChanged(int)), this, SLOT(ChangeRobotVersion(int)));
-//	connect(ui->btDeleteAllObjects, SIGNAL(clicked(bool)), this, SLOT(DeleteAllObjectsInROS()));
-//	connect(ui->pbClearDetectObjects, SIGNAL(clicked(bool)), this, SLOT(DeleteAllObjectsInROS()));
 
 #ifdef Q_OS_WIN
     #ifdef JOY_STICK
@@ -843,13 +762,6 @@ void RobotWindow::InitEvents()
 
 
     //---------- Menu -----------
-	connect(ui->actionBaudrate, SIGNAL(triggered()), this, SLOT(ConfigConnection()));
-	connect(ui->actionGcode, SIGNAL(triggered()), this, SLOT(OpenGcodeReference()));
-    connect(ui->pbOpenGcodeDocs, SIGNAL(clicked(bool)), this, SLOT(OpenGcodeReference()));
-
-	connect(ui->actionExecute_All, SIGNAL(triggered()), this, SLOT(ExecuteSelectPrograms()));
-	connect(ui->actionExecute, SIGNAL(triggered()), this, SLOT(ExecuteProgram()));
-    connect(ui->actionScale, SIGNAL(triggered(bool)), this, SLOT(ScaleUI()));
 
     //----------- Drawing -----------
 	connect(ui->pbOpenPicture, SIGNAL(clicked(bool)), DeltaDrawingExporter, SLOT(OpenImage()));
@@ -911,40 +823,6 @@ void RobotWindow::ExportBlocklyToGcode()
 	{
 		ui->pteGcodeArea->setText(result);
 	});*/
-}
-
-void RobotWindow::OpenROS()
-{
-#ifdef Q_OS_WIN
-//    if (DeltaXROS->IsRunning())
-//    {
-//        DeltaXROS->Close();
-//        ui->pbTurnOnROS->setText("Turn on ROS");
-//    }
-//    else
-//    {
-//        DeltaXROS->Run();
-//        ui->pbTurnOnROS->setText("Turn off ROS");
-//    }
-#else
-    QMessageBox::information(this, "Noti", "Currently, ROS is not available on Linux");
-#endif
-}
-
-
-void RobotWindow::ChangeROSCameraView(int index)
-{
-	DeltaConnectionManager->TCPConnection->SendMessageToROS(QString("update camera_position ") + QString::number(index));
-}
-
-void RobotWindow::ChangeEndEffector(int index)
-{
-	DeltaConnectionManager->TCPConnection->SendMessageToROS(QString("update end_effector ") + QString::number(index));
-}
-
-void RobotWindow::ChangeRobotVersion(int index)
-{
-	DeltaConnectionManager->TCPConnection->SendMessageToROS(QString("update robot ") + QString::number(index));
 }
 
 void RobotWindow::ScaleUI()
@@ -1286,33 +1164,6 @@ void RobotWindow::closeEvent(QCloseEvent * event)
     }
 }
 
-bool RobotWindow::Run()
-{
-    if (!DeltaConnectionManager->RobotPort->isOpen())
-    {
-        if (DeltaConnectionManager->RobotPort->open(QIODevice::ReadWrite))
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
-
-    return true;
-}
-
-bool RobotWindow::Stop()
-{
-    if (DeltaConnectionManager->RobotPort->isOpen())
-    {
-        DeltaConnectionManager->RobotPort->close();
-    }
-
-    return true;
-}
-
 void RobotWindow::LoadPlugin()
 {
     pluginList = new QList<DeltaXPlugin*>();
@@ -1345,7 +1196,6 @@ void RobotWindow::AddScriptThread()
 
     connect(GcodeScriptThread->thread(), SIGNAL(finished()), GcodeScriptThread, SLOT(deleteLater()));
     connect(DeviceManagerInstance, SIGNAL(DeviceResponded(QString, QString)), GcodeScriptThread, SLOT(GetResponse(QString, QString)));
-    connect(DeltaConnectionManager, SIGNAL(FailTransmit()), GcodeScriptThread, SLOT(TransmitNextGcode()));
 
     connect(GcodeScriptThread, SIGNAL(Moved(int)), this, SLOT(HighLineCurrentLine(int)));
     connect(GcodeScriptThread, SIGNAL(SendGcodeToDevice(QString, QString)), DeviceManagerInstance, SLOT(SendGcode(QString, QString)));
@@ -1355,8 +1205,8 @@ void RobotWindow::AddScriptThread()
 
 //    connect(GcodeScriptThread, SIGNAL(DeleteAllObjects()), this, SLOT(ClearObjectsToVariableTable()));
 //    connect(GcodeScriptThread, SIGNAL(DeleteObject1()), this, SLOT(DeleteFirstVariable()));
-    connect(GcodeScriptThread, SIGNAL(DeleteAllObjects()), ImageProcessingThread->GetNode("TrackingObjectsNode"), SLOT(ClearOutput()));
-    connect(GcodeScriptThread, SIGNAL(DeleteObject(int)), ImageProcessingThread->GetNode("TrackingObjectsNode"), SLOT(DeleteOutput(int)));
+//    connect(GcodeScriptThread, SIGNAL(DeleteAllObjects()), ImageProcessingThread->GetNode("TrackingObjectsNode"), SLOT(ClearOutput()));
+//    connect(GcodeScriptThread, SIGNAL(DeleteObject(int)), ImageProcessingThread->GetNode("TrackingObjectsNode"), SLOT(DeleteOutput(int)));
 
     connect(GcodeScriptThread, &GcodeScript::PauseCamera, [=](){ CameraTimer.stop();});
     connect(GcodeScriptThread, &GcodeScript::ResumeCamera, [=](){ CameraTimer.start(ui->leCaptureInterval->text().toInt());});
@@ -1387,12 +1237,11 @@ void RobotWindow::InitTrackingThread()
     QThread* thread = new QThread(this);
     TrackingManagerInstance->moveToThread(thread);
     connect(thread, &QThread::finished, TrackingManagerInstance, &QObject::deleteLater);
-    connect(DeviceManagerInstance, SIGNAL(GotEncoderPosition(int , float)), TrackingManagerInstance, SLOT(SetEncoderPosition(int, float)));
     thread->start();
 
     AddTrackingThread();
 
-    connect(TrackingManagerInstance->Trackings[0], SIGNAL(GotCaptureDetectOffset(QPointF)), ImageProcessingThread->GetNode("VisibleObjectsNode"), SLOT(Input(QPointF)));
+    connect(CameraInstance, SIGNAL(GotCaptureDetectOffset(int)), TrackingManagerInstance, SLOT(SaveCapturePosition(int)));
 }
 
 void RobotWindow::AddTrackingThread()
@@ -1405,8 +1254,8 @@ void RobotWindow::AddTrackingThread()
     connect(ui->pbSaveTrackingManager, &QPushButton::clicked, [=](){tracking->VelocityVector = VariableManager::instance().getVariable(ui->leVelocityVector->text()).value<QVector3D>(); tracking->VectorName = ui->leVectorName->text();});
     connect(ui->cbReverseEncoderValue, SIGNAL(clicked(bool)), tracking, SLOT(SetEncoderReverse(bool)));
 
-    tracking->DetectDelayOffsetPoint = ImageProcessingThread->GetNode("VisibleObjectsNode")->GetInputPointPointer();
-    connect(tracking, SIGNAL(DistanceMoved(QPointF)), ImageProcessingThread->GetNode("TrackingObjectsNode"), SLOT(Input(QPointF)));
+//    tracking->DetectDelayOffsetPoint = ImageProcessingThread->GetNode("VisibleObjectsNode")->GetInputPointPointer();
+//    connect(tracking, SIGNAL(DistanceMoved(QPointF)), ImageProcessingThread->GetNode("TrackingObjectsNode"), SLOT(Input(QPointF)));
     connect(tracking, SIGNAL(SendGcodeRequest(QString, QString)), DeviceManagerInstance, SLOT(SendGcode(QString, QString)));
 
     trackingThread->start();
@@ -1419,7 +1268,7 @@ void RobotWindow::LoadTrackingThread()
 {
     int id = ui->cbSelectedTracking->currentIndex();
     ui->leSelectedTrackingObjectList->setText(TrackingManagerInstance->Trackings.at(id)->ListName);
-    ui->cbTrackingEncoderSource->setCurrentText(QString::number(TrackingManagerInstance->Trackings.at(id)->EncoderID));
+    ui->cbTrackingEncoderSource->setCurrentText(TrackingManagerInstance->Trackings.at(id)->EncoderName);
     ui->leVectorName->setText(TrackingManagerInstance->Trackings.at(id)->VectorName);
 
 }
@@ -1484,28 +1333,14 @@ void RobotWindow::LoadGeneralSettings(QSettings *setting)
     int port = setting->value("TCPPort").toInt();
     bool state = setting->value("RobotState", false).toBool();
 
-    DeltaConnectionManager->RobotPort->setPortName(comName);
-    DeltaConnectionManager->RobotPort->setBaudRate(defaultBaudrate);
-    DeltaConnectionManager->TCPConnection->ServerName = ip;
-    DeltaConnectionManager->TCPConnection->Port = port;
-
     if (state == true)
     {
-//        if (DeltaConnectionManager->RobotPort->open((QIODevice::ReadWrite)) == true)
-//        {
-//            connect(DeltaConnectionManager->RobotPort, SIGNAL(readyRead()), DeltaConnectionManager, SLOT(ReadData()));
-//            ui->pbConnect->setText("Disconnect");
-//        }
+
     }
 
     ui->lbComName->setText(comName);
     ui->lbBaudrate->setText(QString::number(defaultBaudrate));
     ui->cbRobotModel->setCurrentText(setting->value("RobotModel").toString());
-
-    DeltaConnectionManager->RobotPort->setBaudRate(ui->lbBaudrate->text().toInt());
-    DeltaConnectionManager->RobotPort->setPortName(ui->lbComName->text());
-    DeltaConnectionManager->TCPConnection->ServerName = ui->lbComName->text();
-    DeltaConnectionManager->TCPConnection->Port = ui->lePort->text().toInt();
 
     GcodeScripts.at(ui->cbProgramThreadID->currentIndex())->ProjectName = ProjectName;
 
@@ -1541,16 +1376,9 @@ void RobotWindow::LoadExternalDeviceSettings(QSettings *setting)
     ui->cbConveyorValueType->setCurrentText(setting->value("MovingMode").toString());
     ui->leConveyorXPosition->setText(setting->value("MovingValue").toString());
 
-    DeltaConnectionManager->ConveyorPort->setPortName(comPort);
-    DeltaConnectionManager->ConveyorPort->setBaudRate(baudrate);
-
     if (connectionState == true)
     {
-        if (DeltaConnectionManager->ConveyorPort->open(QIODevice::ReadWrite) == true)
-        {
-            ui->pbConveyorConnect->setText("Disconnect");
-            ui->lbConveyorCOMName->setText(comPort);
-        }
+
     }
 
     setting->endGroup();
@@ -1562,9 +1390,6 @@ void RobotWindow::LoadExternalDeviceSettings(QSettings *setting)
     connectionState = setting->value("State", false).toBool();
     comPort = setting->value("ComPort", "").toString();
     baudrate = setting->value("Baudrate", 115200).toInt();
-
-    DeltaConnectionManager->EncoderPort->setPortName(comPort);
-    DeltaConnectionManager->EncoderPort->setBaudRate(baudrate);
 
     if (connectionState == true && comPort != "")
     {
@@ -1581,16 +1406,9 @@ void RobotWindow::LoadExternalDeviceSettings(QSettings *setting)
     comPort = setting->value("ComPort", "COM1").toString();
     baudrate = setting->value("Baudrate", 115200).toInt();
 
-    DeltaConnectionManager->SlidingPort->setPortName(comPort);
-    DeltaConnectionManager->SlidingPort->setBaudRate(baudrate);
-
     if (connectionState == true)
     {
-        if (DeltaConnectionManager->SlidingPort->open((QIODevice::ReadWrite)) == true)
-        {
-            ui->pbSlidingConnect->setText("Disconnect");
-            ui->lbSliderCOMName->setText(comPort);
-        }
+
     }
 
     setting->endGroup();
@@ -1603,16 +1421,9 @@ void RobotWindow::LoadExternalDeviceSettings(QSettings *setting)
     comPort = setting->value("ComPort", "COM1").toString();
     baudrate = setting->value("Baudrate", 115200).toInt();
 
-    DeltaConnectionManager->ExternalControllerPort->setPortName(comPort);
-    DeltaConnectionManager->ExternalControllerPort->setBaudRate(baudrate);
-
     if (connectionState == true)
     {
-        if (DeltaConnectionManager->ExternalControllerPort->open((QIODevice::ReadWrite)) == true)
-        {
-            ui->pbExternalControllerConnect->setText("Disconnect");
-            ui->lbExternalCOMName->setText(comPort);
-        }
+
     }
 
     setting->endGroup();
@@ -1762,9 +1573,6 @@ void RobotWindow::SaveGeneralSettings(QSettings *setting)
         setting->setValue("RobotState", DeviceManagerInstance->Robots.at(i)->IsOpen());
     }
 
-    setting->setValue("IP", DeltaConnectionManager->TCPConnection->GetIP());
-    setting->setValue("TCPPort", DeltaConnectionManager->TCPConnection->Port);
-
 }
 
 void RobotWindow::SaveJoggingSettings(QSettings *setting)
@@ -1788,69 +1596,7 @@ void RobotWindow::Save3DSettings(QSettings *setting)
 
 void RobotWindow::SaveExternalDeviceSettings(QSettings *setting)
 {
-    setting->beginGroup("ExternalDevice");
 
-    //---- Conveyor -----
-    setting->beginGroup("Conveyor");
-
-    bool connectionState = DeltaConnectionManager->ConveyorPort->isOpen();
-    QString comPort = DeltaConnectionManager->ConveyorPort->portName();
-    int baudrate = DeltaConnectionManager->ConveyorPort->baudRate();
-
-    setting->setValue("State", connectionState);
-    setting->setValue("ComPort", comPort);
-    setting->setValue("Baudrate", baudrate);
-    setting->setValue("ControlMode", ui->cbConveyorMode->currentText());
-    setting->setValue("MovingMode", ui->cbConveyorValueType->currentText());
-    setting->setValue("MovingValue", ui->leConveyorXPosition->text());
-
-    setting->endGroup();
-
-    //---- Encoder -----
-
-    setting->beginGroup("Encoder");
-
-    connectionState = DeltaConnectionManager->EncoderPort->isOpen();
-    comPort = DeltaConnectionManager->EncoderPort->portName();
-    baudrate = DeltaConnectionManager->EncoderPort->baudRate();
-
-    setting->setValue("State", connectionState);
-    setting->setValue("ComPort", comPort);
-    setting->setValue("Baudrate", baudrate);
-
-    setting->endGroup();
-
-    //---- Slider -----
-
-    setting->beginGroup("Slider");
-
-    connectionState = DeltaConnectionManager->SlidingPort->isOpen();
-    comPort = DeltaConnectionManager->SlidingPort->portName();
-    baudrate = DeltaConnectionManager->SlidingPort->baudRate();
-
-    setting->setValue("State", connectionState);
-    setting->setValue("ComPort", comPort);
-    setting->setValue("Baudrate", baudrate);
-
-    setting->endGroup();
-
-    //---- MCU -----
-
-    setting->beginGroup("MCU");
-
-    connectionState = DeltaConnectionManager->ExternalControllerPort->isOpen();
-    comPort = DeltaConnectionManager->ExternalControllerPort->portName();
-    baudrate = DeltaConnectionManager->ExternalControllerPort->baudRate();
-
-    setting->setValue("State", connectionState);
-    setting->setValue("ComPort", comPort);
-    setting->setValue("Baudrate", baudrate);
-
-    setting->endGroup();
-
-    //-------------
-
-    setting->endGroup();
 }
 
 void RobotWindow::SaveTerminalSettings(QSettings *setting)
@@ -2193,9 +1939,13 @@ void RobotWindow::UpdateVarToModel(QStandardItem *parent, QString fullKey, QStri
     }
 }
 
+void RobotWindow::Load3DComponents()
+{
+
+}
+
 void RobotWindow::ConnectRobot()
 {
-    //    openConnectionDialog(DeltaConnectionManager->ConveyorPort, DeltaConnectionManager->ConveyorSocket, ui->pbConveyorConnect, ui->lbConveyorCOMName);
     if (ui->tbAutoScanRobot->isChecked() == true)
     {
         OpenLoadingPopup();
@@ -2428,16 +2178,6 @@ void RobotWindow::OpenGcodeReference()
     QDesktopServices::openUrl(myUrl);
 }
 
-void RobotWindow::ConfigConnection()
-{
-	bool ok;
-	QString text = QInputDialog::getText(this, tr("Baudrate for COM"),
-		tr("Baudrate:"), QLineEdit::Normal,
-		QString::number(DeltaConnectionManager->GetBaudrate()), &ok);
-	if (ok && !text.isEmpty())
-        DeltaConnectionManager->SetBaudrate(text.toInt());
-}
-
 void RobotWindow::ChangeSelectedRobot(int id)
 {
     if (ui->cbSelectedRobot->currentText() == "+")
@@ -2633,142 +2373,6 @@ void RobotWindow::HighLineCurrentLine(int pos)
     ui->pteGcodeArea->highlightCurrentLine();
 }
 
-//void RobotWindow::UpdateZLineEditValue(int z)
-//{
-//	ui->leZ->setText(QString::number(Delta2DVisualizer->ZHome - z));
-//}
-
-//void RobotWindow::UpdateAngleLineEditValue(int w)
-//{
-//    ui->leW->setText(QString::number(ui->vsAngleAdjsution->value()));
-//    ui->leU->setText(QString::number(ui->vs5AxisAdjsution->value()));
-//    ui->leV->setText(QString::number(ui->vs6AxisAdjsution->value()));
-
-//    ui->lb4AxisValue->setText(QString::number(ui->vsAngleAdjsution->value()));
-//    ui->lb5AxisValue->setText(QString::number(ui->vs5AxisAdjsution->value()));
-//    ui->lb6AxisValue->setText(QString::number(ui->vs6AxisAdjsution->value()));
-//}
-
-//void RobotWindow::UpdateDeltaPositionFromLineEditValue()
-//{
-//    DisablePositionUpdatingEvents();
-
-//    //---- 1. Delta 2D Visualizer Values----
-//    if (positionEmitter != "Delta2DVisualizer")
-//    {
-//        Delta2DVisualizer->X = ui->leX->text().toFloat();
-//        Delta2DVisualizer->Y = ui->leY->text().toFloat();
-//        Delta2DVisualizer->Z = ui->leZ->text().toFloat();
-//        Delta2DVisualizer->W = ui->leW->text().toFloat();
-//        Delta2DVisualizer->U = ui->leU->text().toFloat();
-//        Delta2DVisualizer->V = ui->leV->text().toFloat();
-//    }
-
-//    //---- 2. Z Slider -----
-//	ui->vsZAdjsution->setValue(Delta2DVisualizer->ZHome - Delta2DVisualizer->Z);
-
-//    //---- 3. Delta 2D Visualizer Display ------
-//    Delta2DVisualizer->ChangeXY(ui->leX->text().toFloat(), ui->leY->text().toFloat());
-
-//    //---- 4. Position Label ---
-//    UpdatePositionToLabel();
-
-//    //---- 5. Gcode Editor Para ----
-
-//    QString gcode = QString("G01 X%1 Y%2 Z%3 W%4 U%5 V%6\n").arg(Delta2DVisualizer->X).arg(Delta2DVisualizer->Y).arg(Delta2DVisualizer->Z).arg(Delta2DVisualizer->W).arg(Delta2DVisualizer->U).arg(Delta2DVisualizer->V);
-
-//    DeltaConnectionManager->SendToRobot(gcode);
-
-//    EnablePositionUpdatingEvents();
-
-//    positionEmitter = "";
-//}
-
-//void RobotWindow::UpdateTextboxFrom2DControl(float x, float y, float z, float w, float u, float v)
-//{
-//    positionEmitter = "Delta2DVisualizer";
-
-//    DisablePositionUpdatingEvents();
-//	ui->leX->setText(QString::number(x));
-//	ui->leY->setText(QString::number(y));
-//	ui->leZ->setText(QString::number(z));
-//	ui->leW->setText(QString::number(w));
-//    ui->leU->setText(QString::number(u));
-//    ui->leV->setText(QString::number(v));
-//    EnablePositionUpdatingEvents();
-
-//    UpdateDeltaPositionFromLineEditValue();
-//}
-
-//void RobotWindow::UpdateTextboxFrom3DControl(float x, float y, float z, float w, float u, float v)
-//{
-//    positionEmitter = "Delta3DVisualizer";
-//    DisablePositionUpdatingEvents();
-
-//	if (x != NULL_NUMBER)
-//	{
-//		ui->leX->setText(QString::number(x));
-//	}
-//	if (y != NULL_NUMBER)
-//	{
-//		ui->leY->setText(QString::number(y));
-//	}
-	
-//	if (z != NULL_NUMBER)
-//	{
-//		ui->leZ->setText(QString::number(z + Delta2DVisualizer->ZHome));
-//	}
-//	if (w != NULL_NUMBER)
-//	{
-//		ui->leW->setText(QString::number(w));
-//	}
-//    EnablePositionUpdatingEvents();
-
-//	UpdateDeltaPositionFromLineEditValue();
-//}
-
-//void RobotWindow::UpdatePositionControl(float x, float y, float z, float w, float u, float v, float f, float a, float s, float e)
-//{
-//    DisablePositionUpdatingEvents();
-
-//    if (x == 0 && y == 0 && z == 0 && w == 0 && u == 0 && v == 0)
-//	{
-//		x = Delta2DVisualizer->XHome;
-//		y = Delta2DVisualizer->YHome;
-//		z = Delta2DVisualizer->ZHome;
-//		w = Delta2DVisualizer->WHome;
-//        u = Delta2DVisualizer->UHome;
-//        v = Delta2DVisualizer->VHome;
-//	}
-
-//	ui->leX->setText(QString::number(x));
-//	ui->leY->setText(QString::number(y));
-//	ui->leZ->setText(QString::number(z));
-//	ui->leW->setText(QString::number(w));
-//    ui->leU->setText(QString::number(u));
-//    ui->leV->setText(QString::number(v));
-//	ui->leVelocity->setText(QString::number(f));
-//	ui->leAccel->setText(QString::number(a));
-//    ui->leStartSpeed->setText(QString::number(s));
-//    ui->leEndSpeed->setText(QString::number(e));
-
-//	Delta2DVisualizer->X = x;
-//	Delta2DVisualizer->Y = y;
-//	Delta2DVisualizer->Z = z;
-//	Delta2DVisualizer->W = w;
-//    Delta2DVisualizer->U = u;
-//    Delta2DVisualizer->V = v;
-//    Delta2DVisualizer->F = f;
-//    Delta2DVisualizer->A = a;
-//    Delta2DVisualizer->S = s;
-//    Delta2DVisualizer->E = e;
-
-//	ui->vsZAdjsution->setValue(Delta2DVisualizer->ZHome - Delta2DVisualizer->Z);
-//	Delta2DVisualizer->ChangeXY(x, y);
-
-//    EnablePositionUpdatingEvents();
-//}
-
 void RobotWindow::UpdatePositionControl(RobotPara robotPara)
 {
     RobotParameters[RbID] = robotPara;
@@ -2937,7 +2541,7 @@ void RobotWindow::UpdateRobotPositionToUI()
 
     if (ui->cbEncoderType->currentText() == "Virtual Encoder")
     {
-        int selectedEncoderID = ui->cbSelectedEncoder->currentText().toInt() - 1;
+        int selectedEncoderID = ui->cbSelectedEncoder->currentIndex();
 
         ui->leEncoderCurrentPosition->setText(QString::number(TrackingManagerInstance->Trackings.at(selectedEncoderID)->VirEncoder.readPosition()));
 
@@ -3346,37 +2950,6 @@ void RobotWindow::UpdateCursorPosition(float x, float y)
 {
 //	ui->lbXCursor->setText(QString::number(x));
 //	ui->lbYCursor->setText(QString::number(y));
-}
-
-void RobotWindow::AddObjectsToROS(std::vector<cv::RotatedRect> ObjectContainer)
-{
-	for (int i = 0; i < ObjectContainer.size(); i++)
-	{
-		QString rosGcode = "update object O_" + QString::number(i) + " ";
-		rosGcode += ui->leWRec->text() + " ";
-		rosGcode += ui->leLRec->text() + " ";
-        rosGcode += "20 ";
-
-		rosGcode += QString::number(ObjectContainer.at(i).center.x) + " ";
-		rosGcode += QString::number(ObjectContainer.at(i).center.y) + " ";
-		rosGcode += "0 ";
-		
-		int angle = ObjectContainer.at(i).angle + 180;
-
-		if (ObjectContainer.at(i).size.width > ObjectContainer.at(i).size.height)
-		{
-			angle = ObjectContainer.at(i).angle + 90;
-		}
-
-		rosGcode += QString::number(angle);
-
-		DeltaConnectionManager->TCPConnection->SendMessageToROS(rosGcode);
-	}
-}
-
-void RobotWindow::DeleteAllObjectsInROS()
-{
-    DeltaConnectionManager->TCPConnection->SendMessageToROS("delete all");
 }
 
 void RobotWindow::StartContinuousCapture(bool isCheck)
@@ -3808,42 +3381,46 @@ void RobotWindow::SendImageToExternalScript(cv::Mat input)
     if (ui->cbDetectingAlgorithm->currentText() != "External Script")
         return;
 
-    if (DeltaConnectionManager->ExternalScriptSocket == NULL || input.empty())
-        return;
+    for (QTcpSocket* client : ConnectionManager->clients) {
+        if (client->objectName() == "ImageClient") {
 
-    int paras[3];
-    paras[0] = input.cols;
-    paras[1] = input.rows;
-    paras[2] = input.channels();
-
-    int len = 3 * sizeof(int);
-
-    DeltaConnectionManager->ExternalScriptSocket->write((char*)paras, len);
-
-    int colByte = input.cols*input.channels() * sizeof(uchar);
-    for (int i = 0; i < input.rows; i++)
-    {
-        char* data = (char*)input.ptr<uchar>(i); //first address of the i-th line
-        int sedNum = 0;
-        char buf[1024] = { 0 };
-
-        while (sedNum < colByte)
-        {
-            int sed = (1024 < colByte - sedNum) ? 1024 : (colByte - sedNum);
-            memcpy(buf, &data[sedNum], sed);
-            int SendSize = DeltaConnectionManager->ExternalScriptSocket->write(buf, sed);
-
-            if (SendSize == -1)
+            if (client == NULL || input.empty())
                 return;
-            sedNum += SendSize;
+
+            int paras[3];
+            paras[0] = input.cols;
+            paras[1] = input.rows;
+            paras[2] = input.channels();
+
+            int len = 3 * sizeof(int);
+
+            client->write((char*)paras, len);
+
+            int colByte = input.cols*input.channels() * sizeof(uchar);
+            for (int i = 0; i < input.rows; i++)
+            {
+                char* data = (char*)input.ptr<uchar>(i); //first address of the i-th line
+                int sedNum = 0;
+                char buf[1024] = { 0 };
+
+                while (sedNum < colByte)
+                {
+                    int sed = (1024 < colByte - sedNum) ? 1024 : (colByte - sedNum);
+                    memcpy(buf, &data[sedNum], sed);
+                    int SendSize = client->write(buf, sed);
+
+                    if (SendSize == -1)
+                        return;
+                    sedNum += SendSize;
+                }
+            }
         }
     }
+
 }
 
 void RobotWindow::ConnectConveyor()
 {
-//    openConnectionDialog(DeltaConnectionManager->ConveyorPort, DeltaConnectionManager->ConveyorSocket, ui->pbConveyorConnect, ui->lbConveyorCOMName);
-
     if (ui->pbConveyorConnect->text() != "Connect")
     {
         emit ChangeDeviceState(DeviceManager::CONVEYOR, false, "");
@@ -4013,23 +3590,20 @@ void RobotWindow::ChangeEncoderType(int index)
 {
     ui->pbConnectEncoder->setHidden(true);
     ui->pbSetEncoderVelocity->setHidden(true);
+    int selectedEncoderID = ui->cbSelectedEncoder->currentIndex();
     if (ui->cbEncoderType->currentText() == "Encoder X")
     {
-        int selectedEncoderID = ui->cbSelectedEncoder->currentText().toInt() - 1;
-
+        ui->pbSetEncoderVelocity->setHidden(false);
         TrackingManagerInstance->Trackings.at(selectedEncoderID)->VirEncoder.stop();
     }
     else if (ui->cbEncoderType->currentText() == "Sub Encoder")
     {
-        int selectedEncoderID = ui->cbSelectedEncoder->currentText().toInt() - 1;
-
+        ui->pbSetEncoderVelocity->setHidden(false);
         TrackingManagerInstance->Trackings.at(selectedEncoderID)->VirEncoder.stop();
     }
     else if (ui->cbEncoderType->currentText() == "Virtual Encoder")
     {
         ui->pbConnectEncoder->setHidden(false);
-        int selectedEncoderID = ui->cbSelectedEncoder->currentText().toInt() - 1;
-
         TrackingManagerInstance->Trackings.at(selectedEncoderID)->VirEncoder.start();
     }
 }
@@ -4096,8 +3670,7 @@ void RobotWindow::ChangeSelectedTracking(int id)
 
 void RobotWindow::ChangeSelectedTrackingEncoder(int id)
 {
-    int trackingID = ui->cbSelectedTracking->currentText().toInt();
-    TrackingManagerInstance->Trackings.at(trackingID)->EncoderID = id;
+    TrackingManagerInstance->Trackings.at(id)->EncoderName = ui->cbTrackingEncoderSource->currentText();
 }
 
 void RobotWindow::CalculateMappingMatrixTool()
@@ -4194,7 +3767,32 @@ void RobotWindow::ProcessProximitySensorValue(int value)
 
 void RobotWindow::ConnectSliding()
 {
-    openConnectionDialog(DeltaConnectionManager->SlidingPort, DeltaConnectionManager->SlidingSocket, ui->pbSlidingConnect, ui->lbSliderCOMName);
+    if (ui->pbSlidingConnect->text() != "Connect")
+    {
+        emit ChangeDeviceState(DeviceManager::SLIDER, false, "");
+        return;
+    }
+
+    QStringList items;
+
+    Q_FOREACH(QSerialPortInfo portInfo, QSerialPortInfo::availablePorts())
+    {
+        items << portInfo.portName() + " - " + portInfo.description();
+    }
+
+    bool ok;
+    QString item = QInputDialog::getItem(this, tr("COM Connection"), tr("COM Ports:"), items, 0, false, &ok);
+    QString comName = item.mid(0, item.indexOf(" - "));
+
+    if (ok && !item.isEmpty())
+    {
+        bool ok2;
+        QString baudrate = QInputDialog::getText(this, tr("Select Baudrate"), tr("Baudrate:"), QLineEdit::Normal, "115200", &ok2);
+        if (ok2 && !baudrate.isEmpty())
+        {
+            emit ChangeDeviceState(DeviceManager::SLIDER, (ui->pbSlidingConnect->text() == "Connect")?true:false, comName);
+        }
+    }
 }
 
 void RobotWindow::GoHomeSliding()
@@ -4219,7 +3817,6 @@ void RobotWindow::SetSlidingPosition()
 
 void RobotWindow::ConnectExternalMCU()
 {
-//    openConnectionDialog(DeltaConnectionManager->ExternalControllerPort, DeltaConnectionManager->ExternalControllerSocket, ui->pbExternalControllerConnect, ui->lbExternalCOMName);
     if (ui->pbExternalControllerConnect->text() != "Connect")
     {
         emit ChangeDeviceState(DeviceManager::DEVICE, false, "");
@@ -4320,18 +3917,6 @@ void RobotWindow::OpenExternalScriptFolder()
     QFileInfo fileInfo(filePath);
     QString folderPath = fileInfo.absolutePath();
     QDesktopServices::openUrl(QUrl::fromLocalFile(folderPath));
-}
-
-void RobotWindow::NoticeConnected()
-{
-//    DEBUG(DeltaConnectionManager->GetNamePort());
-    SoftwareLog(DeltaConnectionManager->GetNamePort());
-
-	ui->pbConnect->setText("Disconnect");
-
-    ui->lbComName->setText(DeltaConnectionManager->GetNamePort());
-
-    CloseLoadingPopup();
 }
 
 QString RobotWindow::boldKey(QString key, QString htmlText)
@@ -4518,10 +4103,6 @@ void RobotWindow::UpdateTermite(QString mess)
     ui->teDebug->moveCursor (QTextCursor::End);
     ui->teDebug->insertPlainText(mess);
     ui->teDebug->moveCursor(QTextCursor::End);
-}
-
-void RobotWindow::hideExampleWidgets()
-{
 }
 
 void RobotWindow::interpolateCircle()
@@ -4868,7 +4449,6 @@ void RobotWindow::initPlugins(QStringList plugins)
             // general init
             qRegisterMetaType< cv::Mat >("cv::Mat");
             connect(pluginWidget, SIGNAL(CapturedImage(cv::Mat)), CameraInstance, SLOT(GetImageFromExternal(cv::Mat)));
-            connect(pluginWidget, SIGNAL(StartedCapture()), TrackingManagerInstance->Trackings[0],SLOT(SaveCapturePosition()));
             connect(CameraInstance, &Camera::RequestCapture, pluginWidget, &DeltaXPlugin::RequestCapture);
 
         }

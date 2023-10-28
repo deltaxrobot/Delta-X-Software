@@ -62,11 +62,10 @@ public:
     QVector3D VelocityVector;
     QString VectorName = "#Vector1";
 
-    int EncoderID = 0;
+    QString EncoderName = "encoder0";
     QString EncoderType = "Encoder X";
     bool IsReverse = false;
     QString ListName = "#Objects";
-    QPointF* DetectDelayOffsetPoint = NULL;
 
     VirtualEncoder VirEncoder;
 

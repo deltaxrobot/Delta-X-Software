@@ -788,7 +788,7 @@ QToolBox QScrollArea&gt;QWidget&gt;QWidget
               <enum>QTabWidget::Rounded</enum>
              </property>
              <property name="currentIndex">
-              <number>2</number>
+              <number>1</number>
              </property>
              <property name="usesScrollButtons">
               <bool>true</bool>
@@ -1665,7 +1665,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
                   <property name="geometry">
                    <rect>
                     <x>0</x>
-                    <y>-296</y>
+                    <y>0</y>
                     <width>586</width>
                     <height>1800</height>
                    </rect>
@@ -1711,19 +1711,25 @@ li.checked::marker { content: &quot;\2612&quot;; }
                           <verstretch>0</verstretch>
                          </sizepolicy>
                         </property>
+                        <property name="minimumSize">
+                         <size>
+                          <width>100</width>
+                          <height>0</height>
+                         </size>
+                        </property>
                         <item>
                          <property name="text">
-                          <string>0</string>
+                          <string>detect0</string>
                          </property>
                         </item>
                         <item>
                          <property name="text">
-                          <string>1</string>
+                          <string>detect1</string>
                          </property>
                         </item>
                         <item>
                          <property name="text">
-                          <string>2</string>
+                          <string>detect2</string>
                          </property>
                         </item>
                         <item>
@@ -2597,12 +2603,12 @@ QFrame
                                <item>
                                 <widget class="QLabel" name="label_6">
                                  <property name="text">
-                                  <string>Encoder</string>
+                                  <string>Tracking Thread</string>
                                  </property>
                                 </widget>
                                </item>
                                <item>
-                                <widget class="QComboBox" name="cbEncoderForCamera">
+                                <widget class="QComboBox" name="cbTrackingThreadForCamera">
                                  <property name="minimumSize">
                                   <size>
                                    <width>100</width>
@@ -2611,17 +2617,17 @@ QFrame
                                  </property>
                                  <item>
                                   <property name="text">
-                                   <string>encoder0</string>
+                                   <string>thread0</string>
                                   </property>
                                  </item>
                                  <item>
                                   <property name="text">
-                                   <string>encoder1</string>
+                                   <string>thread1</string>
                                   </property>
                                  </item>
                                  <item>
                                   <property name="text">
-                                   <string>encoder2</string>
+                                   <string>thread2</string>
                                   </property>
                                  </item>
                                  <item>
@@ -5019,7 +5025,7 @@ QFrame
                   <property name="geometry">
                    <rect>
                     <x>0</x>
-                    <y>-514</y>
+                    <y>0</y>
                     <width>574</width>
                     <height>1900</height>
                    </rect>
@@ -5143,17 +5149,17 @@ QGroupBox::title
                               </property>
                               <item>
                                <property name="text">
-                                <string>0</string>
+                                <string>tracking0</string>
                                </property>
                               </item>
                               <item>
                                <property name="text">
-                                <string>1</string>
+                                <string>tracking1</string>
                                </property>
                               </item>
                               <item>
                                <property name="text">
-                                <string>2</string>
+                                <string>tracking2</string>
                                </property>
                               </item>
                               <item>
@@ -8475,7 +8481,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
               <enum>QTabWidget::North</enum>
              </property>
              <property name="currentIndex">
-              <number>2</number>
+              <number>3</number>
              </property>
              <property name="elideMode">
               <enum>Qt::ElideNone</enum>
@@ -12841,17 +12847,17 @@ QGroupBox
                        </property>
                        <item>
                         <property name="text">
-                         <string>0</string>
+                         <string>conveyor0</string>
                         </property>
                        </item>
                        <item>
                         <property name="text">
-                         <string>1</string>
+                         <string>conveyor1</string>
                         </property>
                        </item>
                        <item>
                         <property name="text">
-                         <string>2</string>
+                         <string>conveyor2</string>
                         </property>
                        </item>
                        <item>
@@ -14858,17 +14864,17 @@ QGroupBox
                        </property>
                        <item>
                         <property name="text">
-                         <string>0</string>
+                         <string>slider0</string>
                         </property>
                        </item>
                        <item>
                         <property name="text">
-                         <string>1</string>
+                         <string>slider1</string>
                         </property>
                        </item>
                        <item>
                         <property name="text">
-                         <string>2</string>
+                         <string>slider2</string>
                         </property>
                        </item>
                        <item>
@@ -15377,7 +15383,7 @@ QLabel
                      <item>
                       <widget class="QLabel" name="label_16">
                        <property name="text">
-                        <string>Selected Encoder</string>
+                        <string>Selected Device</string>
                        </property>
                       </widget>
                      </item>
@@ -15501,17 +15507,17 @@ QGroupBox
                        </property>
                        <item>
                         <property name="text">
-                         <string>0</string>
+                         <string>device0</string>
                         </property>
                        </item>
                        <item>
                         <property name="text">
-                         <string>1</string>
+                         <string>device1</string>
                         </property>
                        </item>
                        <item>
                         <property name="text">
-                         <string>2</string>
+                         <string>device2</string>
                         </property>
                        </item>
                        <item>
@@ -15754,7 +15760,7 @@ QGroupBox
   <customwidget>
    <class>RobotSimulator</class>
    <extends>QGraphicsView</extends>
-   <header location="global">RobotSimulator.h</header>
+   <header>RobotSimulator.h</header>
   </customwidget>
  </customwidgets>
  <resources>
