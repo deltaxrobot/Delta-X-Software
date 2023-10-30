@@ -213,7 +213,7 @@ VirtualEncoder::VirtualEncoder(float initialPosition, float velocity, QObject *p
     lastUpdateTime = QDateTime::currentMSecsSinceEpoch();
 
     connect(&timer, &QTimer::timeout, this, &VirtualEncoder::updatePosition);
-    timer.start(100);  // Cập nhật vị trí mỗi 100 ms
+//    timer.start(100);  // Cập nhật vị trí mỗi 100 ms
 }
 
 void VirtualEncoder::setVelocity(float newVelocity) {

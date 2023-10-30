@@ -1242,6 +1242,7 @@ void RobotWindow::InitTrackingThread()
     AddTrackingThread();
 
     connect(CameraInstance, SIGNAL(GotCaptureDetectOffset(int)), TrackingManagerInstance, SLOT(SaveCapturePosition(int)));
+    connect(DeviceManagerInstance, &DeviceManager::GotEncoderPosition, TrackingManagerInstance, &TrackingManager::SetEncoderPosition);
 }
 
 void RobotWindow::AddTrackingThread()
@@ -1890,10 +1891,10 @@ void RobotWindow::GetDeviceResponse(QString id, QString response)
         id = id.mid(7);
         if (response.contains("P"))
         {
-            int index = id.toInt() - 1;
+            int index = id.toInt();
             QString value = response.mid(1);
 
-            if (ui->cbSelectedEncoder->currentText() == id)
+            if (ui->cbSelectedEncoder->currentIndex() == index)
             {
                 ui->leEncoderCurrentPosition->setText(value);
             }
@@ -2865,7 +2866,10 @@ void RobotWindow::SetEncoderAutoRead()
     }
     if (ui->cbEncoderType->currentText() == "Encoder X")
     {
-        emit Send(DeviceManager::ENCODER, QString("M317 T%1").arg(interval));
+        if (interval > 0)
+            emit Send(DeviceManager::ENCODER, QString("M317 T%1").arg(interval));
+        else
+            emit Send(DeviceManager::ENCODER, QString("M317").arg(interval));
     }
     if (ui->cbEncoderType->currentText() == "Virtual Encoder")
     {
@@ -2875,7 +2879,10 @@ void RobotWindow::SetEncoderAutoRead()
             ui->leEncoderInterval->setText(QString::number(1000));
         }
 
-        TrackingManagerInstance->Trackings[id]->VirEncoder.start(interval);
+        if (interval > 0)
+            TrackingManagerInstance->Trackings[id]->VirEncoder.start(interval);
+        else
+            TrackingManagerInstance->Trackings[id]->VirEncoder.stop();
     }
 }
 

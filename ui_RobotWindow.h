@@ -8790,7 +8790,7 @@ public:
         twModule->setCurrentIndex(1);
         pbImageMapping->setDefault(false);
         cbImageSource->setCurrentIndex(0);
-        twDevices->setCurrentIndex(3);
+        twDevices->setCurrentIndex(2);
         pbPump->setDefault(false);
         pbLaser->setDefault(false);
         pbGrip->setDefault(false);
