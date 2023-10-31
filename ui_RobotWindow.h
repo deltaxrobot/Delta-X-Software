@@ -8787,7 +8787,7 @@ public:
         QObject::connect(gbTrackingManager, SIGNAL(toggled(bool)), fTrackingManager, SLOT(setVisible(bool)));
 
         twDeltaManager->setCurrentIndex(0);
-        twModule->setCurrentIndex(1);
+        twModule->setCurrentIndex(2);
         pbImageMapping->setDefault(false);
         cbImageSource->setCurrentIndex(0);
         twDevices->setCurrentIndex(2);

@@ -54,7 +54,6 @@ SOURCES += main.cpp\
     Layer.cpp \
     MainWindow.cpp \
     Object.cpp \
-    ObjectManager.cpp \
     ObjectVariableTable.cpp \
     Parameter.cpp \
     PointTool.cpp \
@@ -106,7 +105,6 @@ HEADERS  += \
     MainWindow.h \
     Object.h \
     ImageProcessing.h \
-    ObjectManager.h \
     ObjectVariableTable.h \
     Parameter.h \
     PointTool.h \

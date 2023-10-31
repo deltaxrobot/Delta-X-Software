@@ -150,7 +150,6 @@ void RobotWindow::InitOtherThreadObjects()
     connect(ui->cbSelectedTracking, SIGNAL(currentIndexChanged(int)), this, SLOT(ChangeSelectedTracking(int)));
     connect(ui->cbTrackingEncoderSource, SIGNAL(currentIndexChanged(int)), this, SLOT(ChangeSelectedTrackingEncoder(int)));
 
-
     //----- Gcode Programing----------
 
     InitGcodeEditorModule();
@@ -276,7 +275,7 @@ void RobotWindow::InitVariables()
     }
 
 
-    //-------- 2D controler ------------
+    //-------- 2Drawing Module ------------
 
     DeltaDrawingExporter = new DrawingExporter(this);
     DeltaDrawingExporter->SetDrawingParameterPointer(ui->lbImageForDrawing, ui->lbImageWidth, ui->lbImageHeight, ui->leHeightScale, ui->leWidthScale, ui->leSpace, ui->leDrawingThreshold, ui->hsDrawingThreshold, ui->cbReverseDrawing, ui->cbDrawMethod, ui->cbConversionTool);
@@ -1241,7 +1240,7 @@ void RobotWindow::InitTrackingThread()
 
     AddTrackingThread();
 
-    connect(CameraInstance, SIGNAL(GotCaptureDetectOffset(int)), TrackingManagerInstance, SLOT(SaveCapturePosition(int)));
+    connect(CameraInstance, SIGNAL(StartedCapture(int)), TrackingManagerInstance, SLOT(SaveCapturePosition(int)));
     connect(DeviceManagerInstance, &DeviceManager::GotEncoderPosition, TrackingManagerInstance, &TrackingManager::SetEncoderPosition);
 }
 

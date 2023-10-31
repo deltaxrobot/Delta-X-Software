@@ -45,9 +45,10 @@ public:
     double height;
     double angle;
     bool isPicked;  // Indicates if the object has been picked
+    QVector3D offset;
 
-    ObjectInfo(int id, QVector3D center, double width, double height, double angle, bool isPicked=false)
-        : id(id), center(center), width(width), height(height), angle(angle), isPicked(isPicked) {}
+    ObjectInfo(int id, QVector3D center, double width, double height, double angle, bool isPicked=false, QVector3D offset=QVector3D(0,0,0))
+        : id(id), center(center), width(width), height(height), angle(angle), isPicked(isPicked), offset(offset) {}
 };
 
 class Tracking : public QObject
@@ -77,9 +78,6 @@ public:
 
 signals:
     void DistanceMoved(QPointF offset);
-    void GotCaptureDetectOffset(QPointF offset);
-    void GotCapturedPosition(float value);
-    void GotDetectedPosition(float value);
     void SendGcodeRequest(QString deviceName, QString gcode);
 
 public slots:
@@ -93,7 +91,7 @@ public slots:
     void UpdateTrackedObjects(QList<ObjectInfo> detectedObjects, double displacement);
     void updatePositions(double displacement);
 private:
-    QPointF calculateMoved(float distance);
+    QVector3D calculateMoved(float distance);
     double similarity(ObjectInfo& obj1, ObjectInfo& obj2, double displacement);
     float lastPosition = 0;
     float capturePosition = 0;

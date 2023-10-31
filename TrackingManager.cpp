@@ -6,6 +6,24 @@ Tracking::Tracking(QObject *parent)
     connect(&VirEncoder, &VirtualEncoder::positionUpdated, this, &Tracking::OnReceivceEncoderPosition);
 }
 
+void Tracking::UpdateTrackedObjectsPosition(float moved)
+{
+    for (ObjectInfo &object : trackedObjects) {
+        if (object.offset == QVector3D(0, 0, 0)) {
+            QVector3D detectionPositionOffset = calculateMoved(detectPosition - capturePosition);
+            object.offset = detectionPositionOffset;
+            object.center += object.offset;
+        }
+        else
+        {
+            QVector3D conveyorPathTravelled = calculateMoved(moved);
+            object.center += conveyorPathTravelled;
+        }
+    }
+
+
+}
+
 void Tracking::OnReceivceEncoderPosition(float value)
 {
     if (IsReverse == true)
@@ -13,23 +31,12 @@ void Tracking::OnReceivceEncoderPosition(float value)
         value = value * - 1;
     }
 
+    lastPosition = currentPosition;
     currentPosition = value;
-    if (first == true)
-    {
-        first = false;
-        lastPosition = value;
-        return;
-    }
-
-    float distance = currentPosition - lastPosition;
-    lastPosition = value;
-
-    QPointF offset = calculateMoved(distance);
-    emit DistanceMoved(offset);
 
     if (ReadPurpose == "Capture")
     {
-        capturePosition = currentPosition;
+        capturePosition = detectPosition = currentPosition;
         ReadPurpose = "Update";
     }
     else if (ReadPurpose == "Detect")
@@ -37,6 +44,8 @@ void Tracking::OnReceivceEncoderPosition(float value)
         detectPosition = currentPosition;
         ReadPurpose = "Update";
     }
+
+    UpdateTrackedObjectsPosition(currentPosition - lastPosition);
 }
 
 void Tracking::GetVirtualEncoderPosition()
@@ -52,7 +61,7 @@ void Tracking::ReadEncoder()
     }
     else if (EncoderType == "Sub Encoder")
     {
-        emit SendGcodeRequest(EncoderName, QString("M422 C%1").arg(EncoderName.replace("encoder", "").toInt() + 1));
+        emit SendGcodeRequest(EncoderName, QString("M422 C%1").arg(EncoderName.mid(7).toInt() + 1));
     }
     else if (EncoderType == "Virtual Encoder")
     {
@@ -137,15 +146,17 @@ void Tracking::updatePositions(double displacement) {
     }
 }
 
-QPointF Tracking::calculateMoved(float distance)
+QVector3D Tracking::calculateMoved(float distance)
 {
-    QVector2D direction = QVector2D(VelocityVector.x(), VelocityVector.y()).normalized();
+    // Normalize the VelocityVector to get the direction
+    QVector3D direction = VelocityVector.normalized();
 
-    // Calculate the effective 2D displacement vector
-    QVector2D effectiveDisplacement = direction * distance;
+    // Calculate the effective 3D displacement vector
+    QVector3D effectiveDisplacement = direction * distance;
 
-    return effectiveDisplacement.toPointF();
+    return effectiveDisplacement;
 }
+
 
 double Tracking::similarity(ObjectInfo &obj1, ObjectInfo &obj2, double displacement) {
     // Calculate effective 3D displacement based on conveyor 3D velocity
@@ -191,7 +202,7 @@ void TrackingManager::SetEncoderPosition(int id, float value)
 {
     for(int i = 0; i < Trackings.count(); i++)
     {
-        if (Trackings.at(i)->EncoderName.replace("encoder", "").toInt() == id)
+        if (Trackings.at(i)->EncoderName.mid(7).toInt() == id)
         {
             QMetaObject::invokeMethod(Trackings.at(i), "OnReceivceEncoderPosition", Qt::QueuedConnection, Q_ARG(float, value));
         }

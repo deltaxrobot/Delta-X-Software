@@ -7800,10 +7800,10 @@ class Ui_RobotWindow(object):
         self.gbTrackingManager.toggled.connect(self.fTrackingManager.setVisible)
 
         self.twDeltaManager.setCurrentIndex(0)
-        self.twModule.setCurrentIndex(1)
+        self.twModule.setCurrentIndex(2)
         self.pbImageMapping.setDefault(False)
         self.cbImageSource.setCurrentIndex(0)
-        self.twDevices.setCurrentIndex(3)
+        self.twDevices.setCurrentIndex(2)
         self.pbPump.setDefault(False)
         self.pbLaser.setDefault(False)
         self.pbGrip.setDefault(False)
