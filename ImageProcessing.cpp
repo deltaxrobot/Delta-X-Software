@@ -47,3 +47,15 @@ TaskNode *ImageProcessing::GetNode(QString name)
 {
     return taskNodeList.value(name);
 }
+
+void ImageProcessing::GotVisibleObjects(QList<Object> objects)
+{
+    objectInfos.clear();
+    for(Object visibleObject : objects)
+    {
+        QVector3D position(visibleObject.X.Real, visibleObject.Y.Real, 0);
+        objectInfos.append(ObjectInfo(-1, position, visibleObject.Width.Real, visibleObject.Length.Real, visibleObject.Angle.Real));
+    }
+
+    emit mappedDetectedObjects(objectInfos, ObjectsName);
+}

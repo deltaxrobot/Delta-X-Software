@@ -12,6 +12,7 @@
 #include <QVector2D>
 #include <QDateTime>
 #include <VariableManager.h>
+#include <ObjectInfo.h>
 
 class VirtualEncoder : public QObject {
     Q_OBJECT
@@ -37,27 +38,15 @@ signals:
     void positionUpdated(float newPosition);
 };
 
-class ObjectInfo {
-public:
-    int id;
-    QVector3D center;  // X, Y, Z position
-    double width;
-    double height;
-    double angle;
-    bool isPicked;  // Indicates if the object has been picked
-    QVector3D offset;
-
-    ObjectInfo(int id, QVector3D center, double width, double height, double angle, bool isPicked=false, QVector3D offset=QVector3D(0,0,0))
-        : id(id), center(center), width(width), height(height), angle(angle), isPicked(isPicked), offset(offset) {}
-};
-
 class Tracking : public QObject
 {
     Q_OBJECT
 public:
     explicit Tracking(QObject *parent = nullptr);
+    void UpdateTrackedObjectsPosition(float moved);
 
     QList<ObjectInfo> trackedObjects;
+    float displacement;
     int nextID = 0;
 
     QVector3D VelocityVector;
@@ -88,8 +77,10 @@ public slots:
     void SaveCapturePosition();
     void SaveDetectPosition();
 
-    void UpdateTrackedObjects(QList<ObjectInfo> detectedObjects, double displacement);
+    void UpdateTrackedObjects(QList<ObjectInfo> detectedObjects, QString objectListName);
     void updatePositions(double displacement);
+    void ClearTrackedObjects();
+    void RemoveTrackedObjects(int id);
 private:
     QVector3D calculateMoved(float distance);
     double similarity(ObjectInfo& obj1, ObjectInfo& obj2, double displacement);

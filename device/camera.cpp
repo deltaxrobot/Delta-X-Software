@@ -5,6 +5,24 @@ Camera::Camera(QObject *parent) : QObject(parent)
     WebcamInstance = new cv::VideoCapture();
 }
 
+void Camera::OpenCamera(int id)
+{
+    if (WebcamInstance->open(id) == true)
+    {
+        WebcamInstance->set(cv::CAP_PROP_FRAME_WIDTH, Width);
+        WebcamInstance->set(cv::CAP_PROP_FRAME_HEIGHT, Height);
+
+        Width = WebcamInstance->get(cv::CAP_PROP_FRAME_WIDTH);
+        Height = WebcamInstance->get(cv::CAP_PROP_FRAME_HEIGHT);
+
+        emit connectedResult(true);
+    }
+    else
+    {
+        emit connectedResult(false);
+    }
+}
+
 void Camera::GetImageFromExternal(cv::Mat mat)
 {
     if (Source != "Industrial Camera")

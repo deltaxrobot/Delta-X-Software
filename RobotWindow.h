@@ -73,6 +73,7 @@
 #include "device/camera.h"
 #include "VarManager.h"
 #include "TrackingManager.h"
+#include"ObjectInfo.h"
 
 #include "PointTool.h"
 
@@ -111,7 +112,6 @@ public:
     void InitUIController();
     void InitCalibration();
     void LoadPlugin();
-    void InitParseNames();
     void InitScriptThread();
     void AddScriptThread();
     void LoadScriptThread();
@@ -381,6 +381,8 @@ public slots:
     // ---- ROS ----
 
     // ----- Object Detecting ----
+    void UpdateCameraConnectedState(bool isOpen);
+
     void StartContinuousCapture(bool isCheck);
     void ChangeOutputDisplay(QString outputName);
     void LoadWebcam();
@@ -397,7 +399,7 @@ public slots:
     void GetNewImageSize();
 
     void UnselectToolButtons();
-    void UpdateObjectsToImageViewer(QList<Object>& objects);
+    void UpdateObjectsToImageViewer(QList<Object> objects);
 //    void UpdateObjectsToVariableTable(QList<Object*>* objects);
     void EditImage(bool isWarp, bool isCropTool);
 
@@ -443,7 +445,7 @@ signals:
     // ---- Device ----
     void ChangeDeviceState(int deviceType, bool isOpen, QString address);
     // ----
-    void GotObjects(QList<Object>& objects);
+    void GotObjects(QList<Object> objects);
     void GotResizePara(cv::Size size);
     void GotResizeImage(cv::Mat mat);
     void GotChessboardSize(cv::Size size);

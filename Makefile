@@ -266,12 +266,6 @@ Makefile: DeltaRobotSoftware.pro C:\Qt\5.15.2\msvc2015_64\mkspecs\win32-msvc\qma
 		C:\Qt\5.15.2\msvc2015_64\lib\Qt5Widgets.prl \
 		C:\Qt\5.15.2\msvc2015_64\lib\Qt5Quick.prl \
 		C:\Qt\5.15.2\msvc2015_64\lib\Qt5Multimedia.prl \
-		C:\Qt\5.15.2\msvc2015_64\lib\Qt53DExtras.prl \
-		C:\Qt\5.15.2\msvc2015_64\lib\Qt53DRender.prl \
-		C:\Qt\5.15.2\msvc2015_64\lib\Qt53DInput.prl \
-		C:\Qt\5.15.2\msvc2015_64\lib\Qt53DLogic.prl \
-		C:\Qt\5.15.2\msvc2015_64\lib\Qt53DCore.prl \
-		C:\Qt\5.15.2\msvc2015_64\lib\Qt5Gamepad.prl \
 		C:\Qt\5.15.2\msvc2015_64\lib\Qt5Gui.prl \
 		C:\Qt\5.15.2\msvc2015_64\lib\Qt5SerialPort.prl \
 		C:\Qt\5.15.2\msvc2015_64\lib\Qt5QmlModels.prl \
@@ -287,12 +281,6 @@ Makefile: DeltaRobotSoftware.pro C:\Qt\5.15.2\msvc2015_64\mkspecs\win32-msvc\qma
 		C:\Qt\5.15.2\msvc2015_64\lib\Qt5Widgetsd.prl \
 		C:\Qt\5.15.2\msvc2015_64\lib\Qt5Quickd.prl \
 		C:\Qt\5.15.2\msvc2015_64\lib\Qt5Multimediad.prl \
-		C:\Qt\5.15.2\msvc2015_64\lib\Qt53DExtrasd.prl \
-		C:\Qt\5.15.2\msvc2015_64\lib\Qt53DRenderd.prl \
-		C:\Qt\5.15.2\msvc2015_64\lib\Qt53DInputd.prl \
-		C:\Qt\5.15.2\msvc2015_64\lib\Qt53DLogicd.prl \
-		C:\Qt\5.15.2\msvc2015_64\lib\Qt53DCored.prl \
-		C:\Qt\5.15.2\msvc2015_64\lib\Qt5Gamepadd.prl \
 		C:\Qt\5.15.2\msvc2015_64\lib\Qt5Guid.prl \
 		C:\Qt\5.15.2\msvc2015_64\lib\Qt5SerialPortd.prl \
 		C:\Qt\5.15.2\msvc2015_64\lib\Qt5QmlModelsd.prl \
@@ -483,12 +471,6 @@ C:\Qt\5.15.2\msvc2015_64\lib\Qt5PrintSupport.prl:
 C:\Qt\5.15.2\msvc2015_64\lib\Qt5Widgets.prl:
 C:\Qt\5.15.2\msvc2015_64\lib\Qt5Quick.prl:
 C:\Qt\5.15.2\msvc2015_64\lib\Qt5Multimedia.prl:
-C:\Qt\5.15.2\msvc2015_64\lib\Qt53DExtras.prl:
-C:\Qt\5.15.2\msvc2015_64\lib\Qt53DRender.prl:
-C:\Qt\5.15.2\msvc2015_64\lib\Qt53DInput.prl:
-C:\Qt\5.15.2\msvc2015_64\lib\Qt53DLogic.prl:
-C:\Qt\5.15.2\msvc2015_64\lib\Qt53DCore.prl:
-C:\Qt\5.15.2\msvc2015_64\lib\Qt5Gamepad.prl:
 C:\Qt\5.15.2\msvc2015_64\lib\Qt5Gui.prl:
 C:\Qt\5.15.2\msvc2015_64\lib\Qt5SerialPort.prl:
 C:\Qt\5.15.2\msvc2015_64\lib\Qt5QmlModels.prl:
@@ -504,12 +486,6 @@ C:\Qt\5.15.2\msvc2015_64\lib\Qt5PrintSupportd.prl:
 C:\Qt\5.15.2\msvc2015_64\lib\Qt5Widgetsd.prl:
 C:\Qt\5.15.2\msvc2015_64\lib\Qt5Quickd.prl:
 C:\Qt\5.15.2\msvc2015_64\lib\Qt5Multimediad.prl:
-C:\Qt\5.15.2\msvc2015_64\lib\Qt53DExtrasd.prl:
-C:\Qt\5.15.2\msvc2015_64\lib\Qt53DRenderd.prl:
-C:\Qt\5.15.2\msvc2015_64\lib\Qt53DInputd.prl:
-C:\Qt\5.15.2\msvc2015_64\lib\Qt53DLogicd.prl:
-C:\Qt\5.15.2\msvc2015_64\lib\Qt53DCored.prl:
-C:\Qt\5.15.2\msvc2015_64\lib\Qt5Gamepadd.prl:
 C:\Qt\5.15.2\msvc2015_64\lib\Qt5Guid.prl:
 C:\Qt\5.15.2\msvc2015_64\lib\Qt5SerialPortd.prl:
 C:\Qt\5.15.2\msvc2015_64\lib\Qt5QmlModelsd.prl:

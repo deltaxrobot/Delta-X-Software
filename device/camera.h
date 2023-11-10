@@ -22,14 +22,18 @@ public:
     cv::Mat CaptureImage;
     float CameraFPS = 2;
     float CameraTimerInterval = 500;
+    int Width = 800;
+    int Height = 600;
     QString Source = "Webcam";
 signals:
     void StartedCapture(int tracking);
     void GotImage(cv::Mat);
     void RequestCapture();
     void StopCameraRequest();
+    void connectedResult(bool isOpen);
 
 public slots:
+    void OpenCamera(int id);
     void GetImageFromExternal(cv::Mat mat);
     void GeneralCapture();
     void CaptureWebcam();

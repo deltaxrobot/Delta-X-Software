@@ -14,6 +14,8 @@
 #include <QMutexLocker>
 #include <VariableManager.h>
 #include <QElapsedTimer>
+#include <QSharedPointer>
+#include <ObjectInfo.h>
 
 #define RED_COLOR       cv::Scalar(0, 0, 255)
 #define GREEN_COLOR     cv::Scalar(0, 255, 0)
@@ -48,7 +50,6 @@ public:
         MAPPING_MATRIX_NODE,
         GET_OBJECTS_NODE,
         VISIBLE_OBJECTS_NODE,
-        TRACKING_OBJECTS_NODE
     };
 
     enum
@@ -78,7 +79,7 @@ public slots:
     void Input(cv::Size size);
     void Input(cv::Mat mat);
     void Input2(cv::Mat mat);
-    void Input(QList<Object>& objects);
+    void Input(QList<Object> objects);
     void Input(QList<int> paras);
     void Input(int para);
     void Input(bool value);
@@ -103,8 +104,9 @@ signals:
     void HadOutput(cv::Point2f outputPoints[]);
     void HadOutput(QPolygonF poly);
     void HadOutput(QPixmap pixmap);
-    void HadOutput(QPixmap pixmap, QList<Object>& objects);
-    void HadOutput(QList<Object>& objects);
+    void HadOutput(QPixmap pixmap, QList<Object> objects);
+    void HadOutput(QList<Object> objects);
+    void HadOutput(QList<ObjectInfo*> objects);
     void HadOutput(QMatrix matrix);
     void DebugEvent();
     void InputRequest();
@@ -158,11 +160,7 @@ private:
     void doMappingMatrixWork();
     void doGetObjectsWork();
     void doVisibleObjectsWork();
-    void doTrackingObjectsWork();
-
-    void clear(QList<Object>& objs);
-
-    void updateObjectsToVariableTable(QList<Object>&objects);
+    void clear(QList<Object> objs);
 };
 
 #endif

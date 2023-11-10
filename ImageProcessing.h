@@ -26,7 +26,8 @@
 #include <QMap>
 
 #include "TaskNode.h"
-
+#include "ObjectInfo.h"
+#include <QSharedPointer>
 
 
 class ImageProcessing : public QObject
@@ -42,8 +43,17 @@ public:
     TaskNode *CreatTaskNode(QString name, int type, QString previousTasks = "");
     TaskNode* GetNode(QString name);
 
+    QString ObjectsName = "#Objects";
+
+public slots:
+    void GotVisibleObjects(QList<Object> objects);
+
+signals:
+    void mappedDetectedObjects(QList<ObjectInfo> detectedObjects, QString objectListName);
+
 private:
     QMap<QString, TaskNode*> taskNodeList;
+    QList<ObjectInfo> objectInfos;
 };
 
 #endif

@@ -118,7 +118,7 @@ public:
 
 public slots:
 	void DisplayDialog();
-    void UpdateTable(QList<Object>& ObjectContainer);
+    void UpdateTable(QList<Object> ObjectContainer);
 
 signals:
     void TakeObjectPosition(float x, float y, float angle);

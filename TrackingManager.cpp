@@ -86,7 +86,11 @@ void Tracking::SaveDetectPosition()
     ReadEncoder();
 }
 
-void Tracking::UpdateTrackedObjects(QList<ObjectInfo> detectedObjects, double displacement) {
+void Tracking::UpdateTrackedObjects(QList<ObjectInfo> detectedObjects, QString objectNameList) {
+
+    if (objectNameList != ListName)
+        return;
+
     for (auto& detected : detectedObjects) {
         bool isTracked = false;
         double minSimilarity = 1e9;  // Initialize with a large value
@@ -146,6 +150,16 @@ void Tracking::updatePositions(double displacement) {
     }
 }
 
+void Tracking::ClearTrackedObjects()
+{
+    trackedObjects.clear();
+}
+
+void Tracking::RemoveTrackedObjects(int id)
+{
+
+}
+
 QVector3D Tracking::calculateMoved(float distance)
 {
     // Normalize the VelocityVector to get the direction
@@ -169,10 +183,10 @@ double Tracking::similarity(ObjectInfo &obj1, ObjectInfo &obj2, double displacem
     double positionError = (predictedCenter - obj2.center).length();
 
     double sizeDifference = std::abs(obj1.width * obj1.height - obj2.width * obj2.height);
-    double angleDifference = std::abs(obj1.angle - obj2.angle);
+//    double angleDifference = std::abs(obj1.angle - obj2.angle);
 
     // Compute a similarity score
-    double score = positionError + sizeDifference + angleDifference;
+    double score = positionError + sizeDifference;
 
     return score;
 }

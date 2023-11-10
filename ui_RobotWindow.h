@@ -39,7 +39,6 @@
 #include <QtWidgets/QWidget>
 #include <codeeditor.h>
 #include <imageviewer.h>
-#include "RobotSimulator.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -160,6 +159,8 @@ public:
     QComboBox *cbImageOutput;
     QLabel *lbDisplayRatio_2;
     QLabel *lbDisplayRatio_3;
+    QPushButton *pbZoomInCameraView;
+    QPushButton *pbZoomOutCameraView;
     QSpacerItem *verticalSpacer_10;
     QLabel *lbDisplayRatio;
     QLabel *lbMatSize;
@@ -590,8 +591,6 @@ public:
     QLabel *label_5;
     QLineEdit *leTerminal;
     QComboBox *cbDeviceSender;
-    QWidget *tSimulator;
-    RobotSimulator *graphicsView;
     QWidget *DeviceTabManagerWidget;
     QVBoxLayout *GeometryTabManagerLayout;
     QTabWidget *twDevices;
@@ -2069,7 +2068,7 @@ public:
         saObjectDetecting->setWidgetResizable(true);
         wObjectDetecting = new QWidget();
         wObjectDetecting->setObjectName(QString::fromUtf8("wObjectDetecting"));
-        wObjectDetecting->setGeometry(QRect(0, 0, 586, 1800));
+        wObjectDetecting->setGeometry(QRect(0, -90, 586, 1800));
         wObjectDetecting->setMinimumSize(QSize(100, 1800));
         wObjectDetecting->setStyleSheet(QString::fromUtf8("QWidget#wObjectDetecting\n"
 "{	\n"
@@ -2397,6 +2396,16 @@ public:
         lbDisplayRatio_3->setObjectName(QString::fromUtf8("lbDisplayRatio_3"));
 
         verticalLayout_10->addWidget(lbDisplayRatio_3);
+
+        pbZoomInCameraView = new QPushButton(frame_17);
+        pbZoomInCameraView->setObjectName(QString::fromUtf8("pbZoomInCameraView"));
+
+        verticalLayout_10->addWidget(pbZoomInCameraView);
+
+        pbZoomOutCameraView = new QPushButton(frame_17);
+        pbZoomOutCameraView->setObjectName(QString::fromUtf8("pbZoomOutCameraView"));
+
+        verticalLayout_10->addWidget(pbZoomOutCameraView);
 
         verticalSpacer_10 = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
 
@@ -5443,12 +5452,6 @@ public:
         verticalLayout_11->addWidget(saTermite);
 
         twModule->addTab(TermiteTab, QString());
-        tSimulator = new QWidget();
-        tSimulator->setObjectName(QString::fromUtf8("tSimulator"));
-        graphicsView = new RobotSimulator(tSimulator);
-        graphicsView->setObjectName(QString::fromUtf8("graphicsView"));
-        graphicsView->setGeometry(QRect(150, 198, 256, 192));
-        twModule->addTab(tSimulator, QString());
 
         ModuleTabManagerLayout->addWidget(twModule);
 
@@ -8778,19 +8781,19 @@ public:
         RobotWindow->setCentralWidget(centralWidget);
 
         retranslateUi(RobotWindow);
-        QObject::connect(pbCalibStep2, SIGNAL(toggled(bool)), fCalibStep2, SLOT(setVisible(bool)));
+        QObject::connect(pbCalibStep1, SIGNAL(toggled(bool)), fCalibStep1, SLOT(setVisible(bool)));
         QObject::connect(gbImageProvider, SIGNAL(toggled(bool)), fImageProvider, SLOT(setVisible(bool)));
         QObject::connect(gbCameraCalibration, SIGNAL(toggled(bool)), fCameraCalibrationFrame, SLOT(setVisible(bool)));
-        QObject::connect(pbCalibStep1, SIGNAL(toggled(bool)), fCalibStep1, SLOT(setVisible(bool)));
-        QObject::connect(gbCameraVariable, SIGNAL(toggled(bool)), fVisionVariableFrame, SLOT(setVisible(bool)));
         QObject::connect(gbCameraObject, SIGNAL(toggled(bool)), fVisionObjectFrame, SLOT(setVisible(bool)));
+        QObject::connect(gbCameraVariable, SIGNAL(toggled(bool)), fVisionVariableFrame, SLOT(setVisible(bool)));
+        QObject::connect(pbCalibStep2, SIGNAL(toggled(bool)), fCalibStep2, SLOT(setVisible(bool)));
         QObject::connect(gbTrackingManager, SIGNAL(toggled(bool)), fTrackingManager, SLOT(setVisible(bool)));
 
         twDeltaManager->setCurrentIndex(0);
-        twModule->setCurrentIndex(2);
+        twModule->setCurrentIndex(1);
         pbImageMapping->setDefault(false);
         cbImageSource->setCurrentIndex(0);
-        twDevices->setCurrentIndex(2);
+        twDevices->setCurrentIndex(0);
         pbPump->setDefault(false);
         pbLaser->setDefault(false);
         pbGrip->setDefault(false);
@@ -8994,6 +8997,8 @@ public:
 
         lbDisplayRatio_2->setText(QCoreApplication::translate("RobotWindow", "Zoom:", nullptr));
         lbDisplayRatio_3->setText(QCoreApplication::translate("RobotWindow", "Ctrl + Scroll", nullptr));
+        pbZoomInCameraView->setText(QCoreApplication::translate("RobotWindow", "Zoom In", nullptr));
+        pbZoomOutCameraView->setText(QCoreApplication::translate("RobotWindow", "Zoom Out", nullptr));
         lbDisplayRatio->setText(QCoreApplication::translate("RobotWindow", "Ratio: 100%", nullptr));
         lbMatSize->setText(QCoreApplication::translate("RobotWindow", "Re: 800x500", nullptr));
         gbImageProvider->setTitle(QCoreApplication::translate("RobotWindow", "Image Provider", nullptr));
@@ -9345,7 +9350,6 @@ public:
         cbDeviceSender->setItemText(5, QCoreApplication::translate("RobotWindow", "Encoder", nullptr));
 
         twModule->setTabText(twModule->indexOf(TermiteTab), QCoreApplication::translate("RobotWindow", "Termite", nullptr));
-        twModule->setTabText(twModule->indexOf(tSimulator), QCoreApplication::translate("RobotWindow", "Simulator", nullptr));
         label_158->setText(QCoreApplication::translate("RobotWindow", "Selected Robot", nullptr));
 #if QT_CONFIG(tooltip)
         tbAutoScanRobot->setToolTip(QCoreApplication::translate("RobotWindow", "Creat New Editor", nullptr));

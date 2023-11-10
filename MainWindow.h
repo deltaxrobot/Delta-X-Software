@@ -59,7 +59,7 @@ public slots:
     void Log(QString msg);
 
     void UpdateVarToTreeView(QString key, QVariant value);
-
+    void RemoveVarFromTreeView(const QString &key);
     void SetLoadingIconRun(bool isRun);
 
 private slots:

@@ -59,10 +59,13 @@ void MainWindow::InitVariables()
     teSoftwareLog = ui->teLoggingBox;
 
     //-------- Variable Table -----------
-    VariableTreeModel.setHorizontalHeaderLabels(QStringList() << "Name" << "Value");
-    connect(&VariableManager::instance(), SIGNAL(varUpdated(QString, QVariant)), this, SLOT(UpdateVarToTreeView(QString, QVariant)));
-    connect(&VariableManager::instance(), SIGNAL(varAdded(QString, QVariant)), this, SLOT(UpdateVarToTreeView(QString, QVariant)));
+//    VariableTreeModel.setHorizontalHeaderLabels(QStringList() << "Name" << "Value");
+//    connect(&VariableManager::instance(), SIGNAL(varUpdated(QString, QVariant)), this, SLOT(UpdateVarToTreeView(QString, QVariant)));
+//    connect(&VariableManager::instance(), SIGNAL(varAdded(QString, QVariant)), this, SLOT(UpdateVarToTreeView(QString, QVariant)));
+//    connect(&VariableManager::instance(), SIGNAL(varRemoved(QString)), this, SLOT(RemoveVarFromTreeView(QString)));
+
     ui->tvVariables->setModel(&VariableTreeModel);
+    VariableManager::instance().addItemModel(&VariableTreeModel);
 
     //------- Project Manager --------
     SoftwareProjectManager = new ProjectManager();
@@ -391,6 +394,36 @@ void MainWindow::UpdateVarToTreeView(QString key, QVariant value)
     }
     if (!found) {
         parent->appendRow(QList<QStandardItem*>() << new QStandardItem(parts.last()) << new QStandardItem(value.toString()));
+    }
+}
+
+void MainWindow::RemoveVarFromTreeView(const QString &key)
+{
+    QStandardItem *parent = VariableTreeModel.invisibleRootItem();
+    QStringList parts = key.split('.');
+
+    for (int i = 0; i < parts.count() - 1; ++i) {
+        QString part = parts[i];
+        QStandardItem *child = nullptr;
+        for (int j = 0; j < parent->rowCount(); ++j) {
+            if (parent->child(j)->text() == part) {
+                child = parent->child(j);
+                break;
+            }
+        }
+        if (!child) {
+            // Nếu không tìm thấy phần nào của key, thì thoát khỏi hàm
+            return;
+        }
+        parent = child;
+    }
+
+    // Tìm và xóa mục cần thiết
+    for (int i = 0; i < parent->rowCount(); ++i) {
+        if (parent->child(i)->text() == parts.last()) {
+            parent->removeRow(i);
+            break;
+        }
     }
 }
 

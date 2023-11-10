@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui serialport opengl network quickwidgets printsupport multimedia 3dcore 3drender 3dinput 3dextras
+QT       += core gui serialport opengl network quickwidgets printsupport multimedia
 
 windows {
     INCLUDEPATH += $$PWD\3rd-party\opencv\build\include
@@ -41,7 +41,6 @@ TEMPLATE = app
 SOURCES += main.cpp\
     AccountWindow.cpp \
     Authority.cpp \
-    CameraWidget.cpp \
     ComDevice.cpp \
     DrawingExporter.cpp \
     DrawingWidget.cpp \
@@ -54,11 +53,11 @@ SOURCES += main.cpp\
     Layer.cpp \
     MainWindow.cpp \
     Object.cpp \
+    ObjectInfo.cpp \
     ObjectVariableTable.cpp \
     Parameter.cpp \
     PointTool.cpp \
     ProjectManager.cpp \
-    RobotSimulator.cpp \
     RobotWindow.cpp \
     SmartDialog.cpp \
     SocketConnectionManager.cpp \
@@ -90,7 +89,6 @@ SOURCES += main.cpp\
 HEADERS  += \
     AccountWindow.h \
     Authority.h \
-    CameraWidget.h \
     ComDevice.h \
     DeltaVisualizer.h \
     DrawingExporter.h \
@@ -105,11 +103,11 @@ HEADERS  += \
     MainWindow.h \
     Object.h \
     ImageProcessing.h \
+    ObjectInfo.h \
     ObjectVariableTable.h \
     Parameter.h \
     PointTool.h \
     ProjectManager.h \
-    RobotSimulator.h \
     RobotWindow.h \
     ScurveInterpolator.h \
     SmartDialog.h \

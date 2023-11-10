@@ -44,7 +44,7 @@ ObjectVariableTable::~ObjectVariableTable()
 
 }
 
-void ObjectVariableTable::UpdateTable(QList<Object>& ObjectContainer)
+void ObjectVariableTable::UpdateTable(QList<Object> ObjectContainer)
 {
     for (int i = 0; i < ObjectContainer.size(); i++)
     {

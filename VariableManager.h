@@ -6,6 +6,7 @@
 #include <unordered_map>
 #include <mutex>
 #include <string>
+#include <QStandardItemModel>
 
 class VariableManager : public QObject
 {
@@ -13,6 +14,8 @@ class VariableManager : public QObject
 public:
     // Singleton instance
     static VariableManager& instance();
+
+    void addItemModel(QStandardItemModel* model);
 
     void addVar(const QString &key, const QVariant &value);
 
@@ -37,6 +40,9 @@ public:
 
     QString Prefix = "";
 
+public slots:
+    void UpdateVarToModel(QString key, QVariant value);
+
 signals:
     void varAdded(QString key, QVariant value);
     void varRemoved(QString key);
@@ -51,6 +57,7 @@ private:
     std::map<QString, QVariant> dataMap;
     std::mutex dataMutex;
     QSettings settings;
+    QList<QStandardItemModel*> itemModelList;
 };
 
 
