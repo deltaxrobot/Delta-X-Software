@@ -46,6 +46,7 @@ bool GcodeScript::IsRunning()
 void GcodeScript::ExecuteGcode(QString gcodes, int startMode)
 {
     isRunning = true;
+    SoftwareManager::GetInstance()->RunningScriptThreadNumber++;
 
     QList<QString> tempGcodeList = gcodes.split('\n');
 
@@ -65,6 +66,21 @@ void GcodeScript::ExecuteGcode(QString gcodes, int startMode)
         QString line = tempGcodeList.at(i);
 
         line = DeleteExcessSpace(line);
+
+        QList<QString> pairs = line.split(' ');
+        if (pairs.count() > 1)
+        {
+            if (pairs[0] != "")
+            {
+                if (pairs[0].at(0) == 'N')
+                {
+                    int id = -1;
+                    id = pairs[0].mid(1).toInt();
+
+                    gcodeNumberList.append(id);
+                }
+            }
+        }
 
         gcodeList.push_back(line);
     }
@@ -144,10 +160,56 @@ void GcodeScript::TransmitNextGcode()
 void GcodeScript::Stop()
 {
     isRunning = false;
+    SoftwareManager::GetInstance()->RunningScriptThreadNumber--;
     emit Finished();
 
     gcodeList.clear();
     gcodeOrder = 0;
+}
+
+void GcodeScript::prepareCurrentLine()
+{
+    currentLine = currentLine.replace("  ", " ");
+    currentLine = formatSpaces(currentLine);
+}
+
+bool GcodeScript::shouldSkipLine()
+{
+    if (currentLine.isEmpty() || currentLine.at(0) == ';') {
+        gcodeOrder++;
+        return true;
+    }
+    if(currentLine.contains(";")) {
+        currentLine = currentLine.split(";").at(0);
+    }
+    return false;
+}
+
+void GcodeScript::collapseGcodeLine()
+{
+    int openBracIndex = currentLine.indexOf('[');
+
+    while (openBracIndex != -1) {
+        int closeBracIndex = findClosingBracket(openBracIndex);
+        QString expressInBracket = currentLine.mid(openBracIndex, closeBracIndex - openBracIndex + 1);
+        QString resultInBracket = calculateExpressions(expressInBracket);
+
+        currentLine.replace(expressInBracket, resultInBracket);
+        openBracIndex = currentLine.indexOf('[');
+    }
+}
+
+int GcodeScript::findClosingBracket(int openIndex)
+{
+    int subBracNum = 1;
+    for (int i = openIndex + 1; i < currentLine.length(); i++) {
+        if (currentLine.at(i) == '[') subBracNum++;
+        if (currentLine.at(i) == ']') {
+            subBracNum--;
+            if (subBracNum == 0) return i;
+        }
+    }
+    return -1; // or throw an exception if unmatched bracket is an error
 }
 
 float GcodeScript::GetResultOfMathFunction(QString expression)
@@ -183,7 +245,7 @@ float GcodeScript::GetResultOfMathFunction(QString expression)
         {
             if (values.at(i).at(0) == '#')
             {
-                QString val = getValueOfVariable(values.at(i));
+                QString val = getValueAsString(values.at(i));
                 values.replace(i, val);
             }
         }
@@ -306,69 +368,13 @@ bool GcodeScript::findExeGcodeAndTransmit()
     if (elapsedTimer.restart() > 50 && gcodeList.count() > 1)
         emit Moved(currentGcodeEditorCursor);
 
-    currentLine = currentLine.replace("  ", " ");
-    currentLine = formatSpaces(currentLine);
+    prepareCurrentLine();
+    if (shouldSkipLine()) return false;
+    collapseGcodeLine();
 
-    if (currentLine == "")
-    {
-        gcodeOrder += 1;
-        return false;
-    }
+//    processVARIABLE();
 
-    if (currentLine.at(0) == ';')
-    {
-        gcodeOrder += 1;
-        return false;
-    }
-
-    if(currentLine.contains(";"))
-    {
-        currentLine = currentLine.split(";").at(0);
-    }
-
-    //-----------------------------------
-    int openBracIndex = currentLine.indexOf('[');
-    QString expressInBracket = "";
-    QString resultInBracket;
-    int subBracNum = 0;
-
-    // ------------- Conlapse Gcode Line by calculating all expression in [ ... ] ---------------
-
-    while (openBracIndex > -1)
-    {
-        /*int thenIndex = currentLine.indexOf("THEN");
-
-        if (thenIndex < -1)
-            thenIndex = currentLine.length();*/
-
-        for (int i = openBracIndex; i < currentLine.length(); i++)
-        {
-            expressInBracket += currentLine.at(i);
-
-            if (currentLine.at(i) == '[')
-            {
-                subBracNum++;
-            }
-
-            if (currentLine.at(i) == ']')
-            {
-                subBracNum--;
-            }
-
-            if (subBracNum == 0)
-                break;
-        }
-
-        resultInBracket = calculateExpressions(expressInBracket);
-
-        currentLine.replace(expressInBracket, resultInBracket);
-
-        expressInBracket = "";
-
-        openBracIndex = currentLine.indexOf('[');
-    }
-
-    //-------------- Find programing statement ------------------------
+    //-------------- Find macro ------------------------
 
     QList<QString> valuePairs = currentLine.split(' ');
     QString transmitGcode = currentLine;
@@ -377,70 +383,6 @@ bool GcodeScript::findExeGcodeAndTransmit()
     {
         if (valuePairs.at(i) == "")
             continue;
-        //------------ GOTO -----------
-
-        if (valuePairs.at(i) == "GOTO" && valuePairs.size() > (i + 1))
-        {
-            bool isNumber;
-            int goID;
-
-            goID = valuePairs[i + 1].toInt(&isNumber, 10);
-
-            if (isNumber == true)
-            {
-                for (int order = 0; order < gcodeList.size(); order++)
-                {
-                    QList<QString> pairs = gcodeList[order].split(' ');
-                    if (pairs.count() > 1)
-                    {
-                        if (pairs[0] != "")
-                        {
-                            if (pairs[0].at(0) == 'N')
-                            {
-                                int id = pairs[0].mid(1).toInt();
-
-                                if (id == goID)
-                                {
-                                    gcodeOrder = order;
-                                    //TransmitNextGcode();
-                                    return false;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        // --------------- IF ---------------------
-        if (valuePairs.at(i) == "IF" && valuePairs.size() > (i + 3))
-        {
-            if (valuePairs[i + 2] == "THEN")
-            {
-                QString statement = currentLine.mid(currentLine.indexOf("THEN") + 5);
-
-                bool result = false;
-
-                if (valuePairs[i + 1] == "1")
-                {
-                    result = true;
-                }
-
-                if (result == true)
-                {
-                    transmitGcode = statement;
-                    currentLine = transmitGcode;
-                    return findExeGcodeAndTransmit();
-                }
-                else
-                {
-                    gcodeOrder++;
-                    //TransmitNextGcode();
-                    return false;
-                }
-            }
-        }
-        //0765414444
 
         //------------ VARIABLE ------------
 
@@ -452,41 +394,130 @@ bool GcodeScript::findExeGcodeAndTransmit()
         {
             if (valuePairs[i + 1] == "=")
             {
-                QString varName = valuePairs.at(i).mid(1);
-                QString expression = currentLine.mid(currentLine.indexOf("=") + 2);
-                QString trimmedStr = expression;
+                QString rightExpression = currentLine.mid(currentLine.indexOf('=') + 1).trimmed();
 
-                trimmedStr = trimmedStr.replace(" ", "");  // Xóa khoảng trắng ở đầu và cuối chuỗi
-//                QRegExp rx("\\((-?\\d+(?:\\.\\d+)?),(-?\\d+(?:\\.\\d+)?)\\)");
-                QRegExp rx("\\((-?\\d+(?:\\.\\d+)?),(-?\\d+(?:\\.\\d+)?),?(-?\\d+(?:\\.\\d+)?)?\\)");
-
-                if (rx.indexIn(trimmedStr) != -1)
+                if(valuePairs[i + 2].contains(".Map("))
                 {
-                    QString x = rx.cap(1);
-                    QString y = rx.cap(2);
-                    QString z = rx.cap(4);
+                    if (rightExpression[0] == '#')
+                    {
+                        QRegularExpression regex("#(\\w+)\\.Map\\(([^)]+)\\)");
+                        QRegularExpressionMatch match = regex.match(rightExpression);
 
-                    saveVariable(varName + ".X", calculateExpressions(x));
-                    saveVariable(varName + ".Y", calculateExpressions(y));
+                        if (match.hasMatch()) {
+                            QString matrixName = match.captured(1);
+                            QString pointName = match.captured(2);
+                            QStringList paras = pointName.split(',');
+                            QVariant matrixVar = getValueAsQVariant(matrixName);
+                            QPointF point;
 
-                    if (!z.isEmpty()) {
-                        saveVariable(varName + ".Z", calculateExpressions(z));
+                            if (pointName[0] == '#')
+                            {
+//                                point.setX(getVariable(pointName + ".X").toFloat());
+//                                point.setY(getVariable(pointName + ".Y").toFloat());
+                                if (pointName.contains("."))
+                                {
+                                    bool result;
+                                    pointName.split('.')[1].toInt(&result);
+                                    if (result == true)
+                                    {
+                                        point.setX(getValueAsQVariant(pointName + ".X").toFloat());
+                                        point.setY(getValueAsQVariant(pointName + ".Y").toFloat());
+                                    }
+                                }
+                                else
+                                {
+                                    point = getValueAsQVariant(pointName).value<QPointF>();
+                                }
+                            }
+                            else if (paras.count() > 1)
+                            {
+                                point.setX(paras[0].toFloat());
+                                point.setY(paras[1].toFloat());
+                            }
+
+                            if (matrixVar.canConvert<QTransform>())
+                            {
+                                QTransform matrix = matrixVar.value<QTransform>();
+
+                                point = matrix.map(point);
+
+                                QString varName = valuePairs.at(i).mid(1);
+                                saveVariable(varName, point);
+//                                saveVariable(varName + ".X", QString::number(point.x()));
+//                                saveVariable(varName + ".Y", QString::number(point.y()));
+
+
+                                gcodeOrder++;
+                                return false;
+                            }
+                        }
+                    }
+                }
+                if (rightExpression.contains("#GetObjectInArea"))
+                {
+                    QRegularExpression regex("\\(([^)]+)\\)");
+                    QRegularExpressionMatch match = regex.match(rightExpression);
+
+                    if (match.hasMatch()) {
+                        QString ref = match.captured(1);
+                        QStringList paras = ref.split(',');
+                        QString objName = paras.at(0).trimmed();
+                        QStringList pair1 = paras.at(1).trimmed().split('=');
+                        QStringList pair2 = paras.at(2).trimmed().split('=');
+
+                        QString avaible_list = valuePairs[0];
+
+                        float min = pair1.at(1).toFloat();
+                        float max = pair2.at(1).toFloat();
+
+                        int objLength = getValueAsQVariant(objName + ".Count").toInt();
+                        int index = 0;
+
+                        for (int i = 0; i < objLength; i++)
+                        {
+                            float x = getValueAsQVariant(objName + "." + QString::number(i) + ".X").toFloat();
+                            float y = getValueAsQVariant(objName + "." + QString::number(i) + ".Y").toFloat();
+
+                            if (pair1.at(0) == "X_MIN")
+                            {
+                                if (x > min && x < max)
+                                {
+                                    QString name = avaible_list + '.' + QString::number(index);
+                                    bool isPicked = getValueAsQVariant(objName + "." + QString::number(i) + ".IsPicked").toBool();
+
+                                    saveVariable(name + ".X", x);
+                                    saveVariable(name + ".Y", y);
+                                    saveVariable(name + ".IsPicked", isPicked);
+                                    index++;
+                                }
+                            }
+                        }
                     }
                 }
                 else
                 {
-                    QString newVarValue = calculateExpressions(expression);
-
-                    saveVariable(varName, newVarValue);
+                    return handleVARIABLE(valuePairs, i);
                 }
 
-                gcodeOrder++;
-                return false;
             }
 
         }
 
-        // --------------- WHILE ------------------
+        //------------ GOTO -----------
+
+        if (valuePairs.at(i) == "GOTO" && valuePairs.size() > (i + 1))
+        {
+            return handleGOTO(valuePairs, i);
+        }
+
+        // --------------- IF ---------------------
+        if (valuePairs.at(i) == "IF" && valuePairs.size() > (i + 3))
+        {
+            if (valuePairs[i + 2] == "THEN")
+            {
+                return handleIF(valuePairs, i);
+            }
+        }        
 
         // --------------- DEFINE SUBPROGRAM ------
 
@@ -496,25 +527,7 @@ bool GcodeScript::findExeGcodeAndTransmit()
 
         if (valuePairs.at(i).at(0) == 'O')
         {
-            /*QString subProName = valuePairs.at(i).mid(1);
-
-            bool isNumber;
-            int subProID;
-
-            subProID = subProName.toInt(&isNumber, 10);
-
-            if (isNumber == true)
-            {*/
-                for (int order = gcodeOrder + 1; order < gcodeList.size(); order++)
-                {
-                    if (gcodeList[order].indexOf("M99") > -1)
-                    {
-                        gcodeOrder = order + 1;
-                        //TransmitNextGcode();
-                        return false;
-                    }
-                }
-            /*}*/
+            return handleDEFINE_SUBPROGRAM(valuePairs, i);
         }
 
         // --------------- CALL SUBPROGRAM --------
@@ -699,7 +712,6 @@ bool GcodeScript::findExeGcodeAndTransmit()
         {
             gcodeOrder = returnSubProPointer[returnPointerOrder] + 1;
             returnPointerOrder--;
-            //TransmitNextGcode();
             return false;
         }
 
@@ -712,6 +724,15 @@ bool GcodeScript::findExeGcodeAndTransmit()
                 for (int j = i + 2; j < valuePairs.count(); j++)
                 {
                     vector += valuePairs.at(j);
+                }
+
+                if (vector.at(0) == '#')
+                {
+                    QVector3D val = getValueAsQVariant(vector).value<QVector3D>();
+                    vector = QString("(%1, %2, %3)")
+                            .arg(val.x())
+                            .arg(val.y())
+                            .arg(val.z());
                 }
 
                 SendMsgToDevice(target, QString("SYNC ") + vector);
@@ -741,48 +762,177 @@ bool GcodeScript::findExeGcodeAndTransmit()
             return false;
         }
 
-
         //device0 msg;
 
-        QStringList deviceNames = {"robot", "device", "conveyor", "slider", "encoder"};
-        bool isSendDevice = false;
         for (int j = 0; j < deviceNames.count(); j++)
         {
             if (valuePairs.at(i).contains(deviceNames[j]))
             {
-                isSendDevice = true;
-                break;
+                handleSENT_TO_DEVICE(valuePairs, 0);
+                return true;
+            }
+        }
+    }    
+
+    return handleGCODE(transmitGcode);
+}
+
+void GcodeScript::processVARIABLE()
+{
+    QList<QChar> endCharList = {']', '=', '+', '-', '*', '/', '^', '%', ' ', '\n'};
+
+    QString varName = "";
+    bool isImporting = false;
+    QString newLine = "";
+
+    for (int i = 0; i < currentLine.length(); i++)
+    {
+        if (currentLine[i] == '#')
+            isImporting = true;
+        if (i < currentLine.length() - 1)
+        {
+            if (endCharList.contains(currentLine[i + 1]))
+            {
+                isImporting = false;
+                QVariant varValue = getValueAsQVariant(varName);
+
+            }
+            else if (currentLine[i + 1] == '(')
+            {
+                QString paraLine = currentLine.mid(i + 1, currentLine.indexOf(')') - i);
+                QStringList paras = paraLine.split(',');
+
+                processFUNCTION(varName, paras);
             }
         }
 
-        if (isSendDevice == true)
+        if (isImporting == true)
+            varName += currentLine[i];
+        else
+            newLine += currentLine[i];
+    }
+
+    currentLine = newLine;
+}
+
+QString GcodeScript::processFUNCTION(QString funcName, QStringList paras)
+{
+    return "";
+}
+
+bool GcodeScript::handleGOTO(QList<QString> valuePairs, int i)
+{
+    bool isNumber;
+    int goID;
+
+    goID = valuePairs[i + 1].toInt(&isNumber, 10);
+
+    if (isNumber == true)
+    {
+        for (int order = 0; order < gcodeList.size(); order++)
         {
-            QString msg = valuePairs[i + 1];;
-
-            QString deviceName = valuePairs.at(i);
-            for (int j = i + 2; j < valuePairs.count(); j++)
+            QList<QString> pairs = gcodeList[order].split(' ');
+            if (pairs.count() > 1)
             {
-                msg += QString(" ") + valuePairs[j];
+                if (pairs[0] != "")
+                {
+                    if (pairs[0].at(0) == 'N')
+                    {
+                        int id = pairs[0].mid(1).toInt();
+
+                        if (id == goID)
+                        {
+                            gcodeOrder = order;
+                            return false;
+                        }
+                    }
+                }
             }
-
-            if (deviceName.contains("robot"))
-                DefaultRobot = deviceName;
-            else if (deviceName.contains("conveyor"))
-                DefaultConveyor = deviceName;
-            else if (deviceName.contains("encoder"))
-                DefaultEncoder = deviceName;
-            else if (deviceName.contains("slider"))
-                DefaultSlider = deviceName;
-            else if (deviceName.contains("device"))
-                DefaultDevice = deviceName;
-
-            SendMsgToDevice(deviceName, msg);
-
-            gcodeOrder++;
-            return true;
         }
     }
 
+    return false;
+}
+
+bool GcodeScript::handleIF(QList<QString> valuePairs, int i)
+{
+    QString statement = currentLine.mid(currentLine.indexOf("THEN") + 5);
+
+    bool result = false;
+
+    if (valuePairs[i + 1] == "1")
+    {
+        result = true;
+    }
+
+    if (result == true)
+    {
+        currentLine = statement;
+        return findExeGcodeAndTransmit();
+    }
+    else
+    {
+        gcodeOrder++;
+        return false;
+    }
+
+}
+
+bool GcodeScript::handleVARIABLE(QList<QString> valuePairs, int i)
+{
+    QString varName = valuePairs.at(i).mid(1);
+    QString expression = currentLine.mid(currentLine.indexOf("=") + 2);
+    QString trimmedStr = expression;
+
+    trimmedStr = trimmedStr.replace(" ", "");
+    QRegExp rx("\\((-?\\d+(?:\\.\\d+)?),(-?\\d+(?:\\.\\d+)?),?(-?\\d+(?:\\.\\d+)?)?\\)");
+
+    if (rx.indexIn(trimmedStr) != -1)
+    {
+        QString x = rx.cap(1);
+        QString y = rx.cap(2);
+        QString z = rx.cap(4);
+
+//        saveVariable(varName + ".X", calculateExpressions(x));
+//        saveVariable(varName + ".Y", calculateExpressions(y));
+
+
+
+        if (!z.isEmpty()) {
+//            saveVariable(varName + ".Z", calculateExpressions(z));
+            saveVariable(varName, QVector3D(calculateExpressions(x).toFloat(), calculateExpressions(y).toFloat(), calculateExpressions(z).toFloat()));
+        }
+        else
+        {
+            saveVariable(varName, QPointF(calculateExpressions(x).toFloat(), calculateExpressions(y).toFloat()));
+        }
+    }
+    else
+    {
+        QString newVarValue = calculateExpressions(expression);
+
+        saveVariable(varName, newVarValue);
+    }
+
+    gcodeOrder++;
+    return false;
+}
+
+bool GcodeScript::handleDEFINE_SUBPROGRAM(QList<QString> valuePairs, int i)
+{
+    for (int order = gcodeOrder + 1; order < gcodeList.size(); order++)
+    {
+        if (gcodeList[order].indexOf("M99") > -1)
+        {
+            gcodeOrder = order + 1;
+            return false;
+        }
+    }
+    return false;
+}
+
+bool GcodeScript::handleGCODE(QString transmitGcode)
+{
     if (isConveyorGcode(transmitGcode))
     {
         gcodeOrder++;
@@ -790,27 +940,53 @@ bool GcodeScript::findExeGcodeAndTransmit()
         return true;
     }
 
-    if (isSlidingGcode(transmitGcode))
+    else if (isSlidingGcode(transmitGcode))
     {
         gcodeOrder++;
         SendMsgToDevice(DefaultSlider, transmitGcode);
         return true;
     }
 
-    if (isEncoderGcode(transmitGcode))
+    else if (isEncoderGcode(transmitGcode))
     {
         gcodeOrder++;
         SendMsgToDevice(DefaultEncoder, transmitGcode);
         return true;
     }
+    else
+    {
+        SendMsgToDevice(DefaultRobot, transmitGcode);
+        gcodeOrder += 1;
+        return true;
+    }
 
-    transmitGcode = convertGcodeToSyncConveyor(transmitGcode);
+    false;
+}
 
-//    updatePositionIntoSystemVariable(transmitGcode);
+void GcodeScript::handleSENT_TO_DEVICE(QList<QString> valuePairs, int i)
+{
+    QString msg = valuePairs[i + 1];
 
-    SendMsgToDevice(DefaultRobot, transmitGcode);
-    gcodeOrder += 1;
-    return true;
+    QString deviceName = valuePairs.at(i);
+    for (int j = i + 2; j < valuePairs.count(); j++)
+    {
+        msg += QString(" ") + valuePairs[j];
+    }
+
+    if (deviceName.contains("robot"))
+        DefaultRobot = deviceName;
+    else if (deviceName.contains("conveyor"))
+        DefaultConveyor = deviceName;
+    else if (deviceName.contains("encoder"))
+        DefaultEncoder = deviceName;
+    else if (deviceName.contains("slider"))
+        DefaultSlider = deviceName;
+    else if (deviceName.contains("device"))
+        DefaultDevice = deviceName;
+
+    SendMsgToDevice(deviceName, msg);
+
+    gcodeOrder++;
 }
 
 QString GcodeScript::calculateExpressions2(QString expression)
@@ -863,8 +1039,8 @@ QString GcodeScript::calculateExpressions2(QString expression)
         QString value1S = expression.left(operatorPosition).trimmed();
         QString value2S = expression.right(expression.size() - operatorPosition - operators[operatorIndex].size()).trimmed();
 
-        value1S = getValueOfVariable(value1S);
-        value2S = getValueOfVariable(value2S);
+        value1S = getValueAsString(value1S);
+        value2S = getValueAsString(value2S);
 
         float value1 = value1S.toFloat();
         float value2 = value2S.toFloat();
@@ -941,8 +1117,6 @@ QString GcodeScript::calculateExpressions2(QString expression)
 
 QString GcodeScript::calculateExpressions(QString expression)
 {
-//    QMutexLocker ml(&mMutex);
-
     expression = expression.replace("  ", " ");
 
     int loopNumber = 100;
@@ -1034,8 +1208,8 @@ QString GcodeScript::calculateExpressions(QString expression)
             QString value1S = getLeftWord(expression, operaIndex);
             QString value2S = getRightWord(expression, operaIndex);
 
-            QString value1Val = getValueOfVariable(value1S);
-            QString value2Val = getValueOfVariable(value2S);
+            QString value1Val = getValueAsString(value1S);
+            QString value2Val = getValueAsString(value2S);
 
             float value1 = value1Val.toFloat();
             float value2 = value2Val.toFloat();
@@ -1133,9 +1307,9 @@ QString GcodeScript::calculateExpressions(QString expression)
             value2S = getRightWord(expression, operatorIndex);
 
 
-            value1 = getValueOfVariable(value1S).toFloat();
+            value1 = getValueAsString(value1S).toFloat();
 
-            value2 = getValueOfVariable(value2S).toFloat();
+            value2 = getValueAsString(value2S).toFloat();
 
 
             int returnValue = -1;
@@ -1162,7 +1336,7 @@ QString GcodeScript::calculateExpressions(QString expression)
         else
         {
 
-            float value = getValueOfVariable(deleteSpaces(expression)).toFloat();
+            float value = getValueAsString(deleteSpaces(expression)).toFloat();
 
 
             if (deleteSpaces(expression) == "NULL")
@@ -1289,7 +1463,7 @@ bool GcodeScript::isNotNegative(QString s)
     return !isNumeric;
 }
 
-QString GcodeScript::getValueOfVariable(QString name)
+QString GcodeScript::getValueAsString(QString name)
 {
     name = name.replace("#", "");
 //    name = name.replace("_", ".");
@@ -1311,16 +1485,62 @@ QString GcodeScript::getValueOfVariable(QString name)
 
 //    qDebug() << "Full name: " + fullName;
 
+
+    if (fullName.endsWith(".X", Qt::CaseInsensitive) || fullName.endsWith(".Y", Qt::CaseInsensitive))
+    {
+        QString pointName = fullName.left(fullName.length() - 2);
+        QVariant pointVar = getValueAsQVariant(pointName);
+        if (pointVar.canConvert<QPointF>())
+        {
+            QPointF point = pointVar.value<QPointF>();
+            emit CatchVariable2(pointName, pointVar);
+
+            if (fullName.endsWith(".X", Qt::CaseInsensitive))
+            {
+                return QString::number(point.x());
+            }
+            else
+            {
+                return QString::number(point.y());
+            }
+
+        }
+    }
+
     if (VariableManager::instance().contains(fullName) == true)
     {
         QVariant var = VariableManager::instance().getVar(fullName);
-        emit CatchVariable(name, var.toString());
+        emit CatchVariable2(name, var);
+//        emit CatchVariable(name, var.toString());
         return var.toString();
     }
     else
     {
         return name;
     }
+}
+
+QVariant GcodeScript::getValueAsQVariant(QString key)
+{
+    key = key.replace("#", "");
+//    name = name.replace("_", ".");
+
+    QString fullName = key;
+
+    QStringList paras = key.split('.');
+
+    if (paras[0] != ProjectName)
+    {
+        VariableManager::instance().Prefix = ProjectName;
+    }
+    else
+    {
+        VariableManager::instance().Prefix = "";
+    }
+
+    fullName = fullName.replace(" ", "");
+
+    return VariableManager::instance().getVar(fullName);
 }
 
 void GcodeScript::updateVariables(QString str)
@@ -1345,7 +1565,25 @@ void GcodeScript::saveVariable(QString name, QString value)
 {
 //    name = name.replace("_", ".");
 
-    emit CatchVariable(name, value);
+    emit CatchVariable2(name, value);
+
+    QStringList paras = name.split('.');
+
+    if (paras[0] != ProjectName)
+    {
+        VariableManager::instance().Prefix = ProjectName;
+    }
+    else
+    {
+        VariableManager::instance().Prefix = "";
+    }
+
+    VariableManager::instance().addVar(name, value);
+}
+
+void GcodeScript::saveVariable(QString name, QVariant value)
+{
+    emit CatchVariable2(name, value);
 
     QStringList paras = name.split('.');
 
@@ -1405,21 +1643,21 @@ QString GcodeScript::convertGcodeToSyncConveyor(QString gcode)
     if (!(gcode.indexOf("G01 ") > -1 || gcode.indexOf("G1 ") > -1 || gcode.indexOf("G0 ") > -1 || gcode.indexOf("G00 ") > -1 || gcode.indexOf("G04 ") > -1 || gcode.indexOf("G4 ") > -1))
         return gcode;
 
-    float velocity = getValueOfVariable("F").toFloat();
-    float accel = getValueOfVariable("A").toFloat();
-    float startSpeed = getValueOfVariable("S").toFloat();
-    float endSpeed = getValueOfVariable("E").toFloat();
-    float conveyorSpeed = getValueOfVariable("ConveyorSpeed").toFloat();
+    float velocity = getValueAsString("F").toFloat();
+    float accel = getValueAsString("A").toFloat();
+    float startSpeed = getValueAsString("S").toFloat();
+    float endSpeed = getValueAsString("E").toFloat();
+    float conveyorSpeed = getValueAsString("ConveyorSpeed").toFloat();
 
     if (conveyorSpeed == 0)
         return gcode;
 
-    QString conveyorDirection = (getValueOfVariable("ConveyorDirection").toFloat() == 0) ? "X":"Y";
+    QString conveyorDirection = (getValueAsString("ConveyorDirection").toFloat() == 0) ? "X":"Y";
 
-    float currentX = getValueOfVariable("X").toFloat();
+    float currentX = getValueAsString("X").toFloat();
     //qDebug() << "current X: " << currentX;
-    float currentY = getValueOfVariable("Y").toFloat();
-    float currentZ = getValueOfVariable("Z").toFloat();
+    float currentY = getValueAsString("Y").toFloat();
+    float currentZ = getValueAsString("Z").toFloat();
 
     float time = 1;
 

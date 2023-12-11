@@ -86,6 +86,10 @@ public:
     QVBoxLayout *verticalLayout_4;
     QFrame *frame_4;
     QHBoxLayout *horizontalLayout_14;
+    QLabel *label_12;
+    QLineEdit *leUpdateKey;
+    QLabel *label_13;
+    QLineEdit *leUpdateValue;
     QPushButton *pbUpdateVarDisplay;
     QSpacerItem *horizontalSpacer_7;
     QTreeView *tvVariables;
@@ -671,6 +675,26 @@ public:
         horizontalLayout_14->setSpacing(6);
         horizontalLayout_14->setContentsMargins(11, 11, 11, 11);
         horizontalLayout_14->setObjectName(QString::fromUtf8("horizontalLayout_14"));
+        label_12 = new QLabel(frame_4);
+        label_12->setObjectName(QString::fromUtf8("label_12"));
+
+        horizontalLayout_14->addWidget(label_12);
+
+        leUpdateKey = new QLineEdit(frame_4);
+        leUpdateKey->setObjectName(QString::fromUtf8("leUpdateKey"));
+
+        horizontalLayout_14->addWidget(leUpdateKey);
+
+        label_13 = new QLabel(frame_4);
+        label_13->setObjectName(QString::fromUtf8("label_13"));
+
+        horizontalLayout_14->addWidget(label_13);
+
+        leUpdateValue = new QLineEdit(frame_4);
+        leUpdateValue->setObjectName(QString::fromUtf8("leUpdateValue"));
+
+        horizontalLayout_14->addWidget(leUpdateValue);
+
         pbUpdateVarDisplay = new QPushButton(frame_4);
         pbUpdateVarDisplay->setObjectName(QString::fromUtf8("pbUpdateVarDisplay"));
 
@@ -709,7 +733,7 @@ public:
         scrollArea_2->setWidgetResizable(true);
         scrollAreaWidgetContents_2 = new QWidget();
         scrollAreaWidgetContents_2->setObjectName(QString::fromUtf8("scrollAreaWidgetContents_2"));
-        scrollAreaWidgetContents_2->setGeometry(QRect(0, 0, 636, 188));
+        scrollAreaWidgetContents_2->setGeometry(QRect(0, 0, 601, 171));
         verticalLayout_10 = new QVBoxLayout(scrollAreaWidgetContents_2);
         verticalLayout_10->setSpacing(6);
         verticalLayout_10->setContentsMargins(11, 11, 11, 11);
@@ -1060,7 +1084,7 @@ public:
         scrollArea->setWidgetResizable(true);
         scrollAreaWidgetContents = new QWidget();
         scrollAreaWidgetContents->setObjectName(QString::fromUtf8("scrollAreaWidgetContents"));
-        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 588, 700));
+        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 571, 700));
         scrollAreaWidgetContents->setMinimumSize(QSize(0, 700));
         verticalLayout_7 = new QVBoxLayout(scrollAreaWidgetContents);
         verticalLayout_7->setSpacing(6);
@@ -1512,6 +1536,8 @@ public:
         tbCommunity->setText(QCoreApplication::translate("MainWindow", "Community", nullptr));
         tbAuthority->setText(QCoreApplication::translate("MainWindow", "Admin", nullptr));
         tbSetting->setText(QCoreApplication::translate("MainWindow", "Setting", nullptr));
+        label_12->setText(QCoreApplication::translate("MainWindow", "Key", nullptr));
+        label_13->setText(QCoreApplication::translate("MainWindow", "Value", nullptr));
         pbUpdateVarDisplay->setText(QCoreApplication::translate("MainWindow", "Update", nullptr));
         label_21->setText(QCoreApplication::translate("MainWindow", "Operator", nullptr));
         lbOperatorTitile->setText(QCoreApplication::translate("MainWindow", "Delta Robot System", nullptr));

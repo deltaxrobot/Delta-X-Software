@@ -44,6 +44,11 @@ void Camera::GeneralCapture()
     }
     if (Source == "Images")
     {
+        CaptureImage = CaptureImages.at(FrameID);
+        FrameID++;
+        if (CaptureImages.count() <= FrameID)
+            FrameID = 0;
+
         emit GotImage(CaptureImage);
     }
     else if (Source == "Industrial Camera")

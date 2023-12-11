@@ -10,13 +10,15 @@ RobotWindow::RobotWindow(QWidget *parent, QString projectName) :
     ui->setupUi(this);
 
     this->ProjectName = projectName;
-
+    // 0.Server, UI, Pointer,
     // 1.Device
     // 2.Module
 
     InitVariables();
     InitOtherThreadObjects();
     InitEvents();
+
+    LoadSettings();
 }
 
 RobotWindow::~RobotWindow()
@@ -76,6 +78,9 @@ void RobotWindow::InitVariables()
         }
     });
 
+    ObjectModel = new ObjectInfoModel(this);
+    ui->tvObjectTable->setModel(ObjectModel);
+
     //---- Init pointer --------
     initInputValueLabels();
 
@@ -91,7 +96,29 @@ void RobotWindow::InitVariables()
 #endif
 
     // -------- Point Tool -------
+    connect(ui->pbMoveTestTrackingPoint, &QPushButton::clicked, [=]()
+    {
+        QVector3D initialPoint;
+        initialPoint.setX(ui->leTestTrackingPointX->text().toFloat());
+        initialPoint.setY(ui->leTestTrackingPointY->text().toFloat());
+        initialPoint.setZ(ui->leTestTrackingPointZ->text().toFloat());
 
+        QVector3D direction = VariableManager::instance().getVar(ui->leVelocityVector->text()).value<QVector3D>();
+        if (initialPoint.z() == 0)
+        {
+            direction.setZ(0);
+        }
+
+        double distance = ui->leMovingValue->text().toFloat();
+
+        QVector3D normalizedDirection = direction.normalized();
+
+        // Tính tọa độ mới
+        QVector3D newPoint = initialPoint + normalizedDirection * distance;
+        ui->leTestTrackingPointX->setText(QString::number(newPoint.x()));
+        ui->leTestTrackingPointY->setText(QString::number(newPoint.y()));
+        ui->leTestTrackingPointZ->setText(QString::number(newPoint.z()));
+    });
     connect(ui->pbCalculateMappingMatrixTool, SIGNAL(clicked(bool)), this, SLOT(CalculateMappingMatrixTool()));
     connect(ui->pbCalculatePointMatrixTool, SIGNAL(clicked(bool)), this, SLOT(CalculatePointMatrixTool()));
     connect(ui->pbCalculateTestPoint, SIGNAL(clicked(bool)), this, SLOT(CalculateTestPoint()));
@@ -100,9 +127,39 @@ void RobotWindow::InitVariables()
     connect(ui->pbAnglePoint1, &QPushButton::clicked, [=](){ ui->lePointAtT1X->setText(QString::number(RobotParameters[RbID].X)); ui->lePointAtT1Y->setText(QString::number(RobotParameters[RbID].Y)); ui->lePointAtT1Z->setText(QString::number(RobotParameters[RbID].Z)); UpdateRealPositionOfCalibPoints();});
     connect(ui->pbAnglePoint2, &QPushButton::clicked, [=](){ ui->lePointAtT2X->setText(QString::number(RobotParameters[RbID].X)); ui->lePointAtT2Y->setText(QString::number(RobotParameters[RbID].Y)); ui->lePointAtT2Z->setText(QString::number(RobotParameters[RbID].Z)); UpdateRealPositionOfCalibPoints();});
 
-    connect(ui->pbAddMappingMatrix, &QPushButton::clicked, [=](){VariableManager::instance().addVar(ui->leMatrixName->text(), CalculatingTransform);ui->lwMappingMatrixList->addItem(ui->lbMatrixDisplay->text());});
-    connect(ui->pbAddPointMatrix, &QPushButton::clicked, [=](){VariableManager::instance().addVar(ui->lePointMatrixName->text(), PointMatrix);ui->lwPointMatrixList->addItem(ui->lbPointMatrixDisplay->text());});
-    connect(ui->pbAddVector, &QPushButton::clicked, [=](){VariableManager::instance().addVar(ui->leVectorName->text(), CalVector);ui->lwVectorList->addItem(ui->leVectorName->text());});
+    connect(ui->pbAddMappingMatrix, &QPushButton::clicked, [=]()
+    {
+        VariableManager::instance().addVar(ui->leMatrixName->text(), CalculatingTransform);
+
+        if (!isItemExit(ui->lwMappingMatrixList, ui->leMatrixName->text())) {
+            ui->lwMappingMatrixList->addItem(ui->leMatrixName->text());
+        }
+    });
+
+    connect(ui->pbAddPointMatrix, &QPushButton::clicked, [=]()
+    {
+        VariableManager::instance().addVar(ui->lePointMatrixName->text(), PointMatrix);
+
+        if (!isItemExit(ui->lwPointMatrixList, ui->lePointMatrixName->text()))
+        {
+            ui->lwPointMatrixList->addItem(ui->lePointMatrixName->text());
+        }
+    });
+
+    connect(ui->pbAddVector, &QPushButton::clicked, [=]()
+    {
+        CalVector.setX(ui->leVectorX->text().toFloat());
+        CalVector.setY(ui->leVectorY->text().toFloat());
+        CalVector.setZ(ui->leVectorZ->text().toFloat());
+
+        VariableManager::instance().addVar(ui->leVectorName->text(), QVector3D(CalVector.x(), CalVector.y(), CalVector.z()));
+
+        if (!isItemExit(ui->lwVectorList, ui->leVectorName->text())) {
+            ui->lwVectorList->addItem(ui->leVectorName->text());
+        }
+
+    });
+
 
     connect(ui->pbAddVariablePoint, &QPushButton::clicked, [=]()
     {
@@ -199,16 +256,26 @@ void RobotWindow::InitVariables()
 
     TrackingObjectTable = new ObjectVariableTable(this);
 
-    ui->gbCameraCalibration->setChecked(false);
-    ui->gbCameraObject->setChecked(false);
-    ui->gbCameraVariable->setChecked(false);
+    connect(ui->pbUpdateObjectToView, &QPushButton::clicked, [=](){
+        for (int i = 0; i < TrackingManagerInstance->Trackings.count();i++)
+        {
+            if (ui->leDetectingObjectListName->text() == TrackingManagerInstance->Trackings.at(i)->ListName)
+            {
+                ObjectModel->setObjectInfoList(TrackingManagerInstance->Trackings.at(i)->trackedObjects);
+            }
+        }
+    });
+
+//    ui->gbCameraCalibration->setChecked(false);
+//    ui->gbCameraObject->setChecked(false);
+//    ui->gbCameraVariable->setChecked(false);
 
     //------- New image processing thread --------
 
     InitObjectDetectingModule();
     InitCalibration();
 
-    LoadSettings();
+
 }
 
 void RobotWindow::InitOtherThreadObjects()
@@ -681,6 +748,21 @@ void RobotWindow::InitCalibration()
     connect(ui->pbCalibPoint2, &QPushButton::clicked, [=](){ ui->leRealityPoint2X->setText(QString::number(RobotParameters[RbID].X)); ui->leRealityPoint2Y->setText(QString::number(RobotParameters[RbID].Y)); UpdateRealPositionOfCalibPoints();});
     connect(ui->pbImageMapping, &QPushButton::clicked, this, &RobotWindow::UpdateRealPositionOfCalibPoints);
 
+    QObject::connect(ui->cbCalibType, QOverload<int>::of(&QComboBox::currentIndexChanged), [this](int index) {
+            QString selectedText = ui->cbCalibType->itemText(index);
+            if (index == 1)
+            {
+                ui->leCalibOffset_X->setText("-230");
+                ui->leCalibOffset_Y->setText("0");
+                ui->leRealityP1P2Distance->setText("80");
+            }
+            else if (index == 0)
+            {
+                ui->leCalibOffset_X->setText("0");
+                ui->leCalibOffset_Y->setText("0");
+                ui->leRealityP1P2Distance->setText("100");
+            }
+        });
 }
 
 void RobotWindow::InitEvents()
@@ -823,37 +905,6 @@ void RobotWindow::ExportBlocklyToGcode()
 	{
 		ui->pteGcodeArea->setText(result);
 	});*/
-}
-
-void RobotWindow::ScaleUI()
-{
-	QSettings settings("setting.ini", QSettings::IniFormat);
-
-	UIScale = settings.value("scale").toFloat();
-
-	bool ok;
-	QString text = QInputDialog::getText(this, tr("Scale"),
-	tr("Value:"), QLineEdit::Normal,
-	QString::number(UIScale), &ok);
-	if (ok && !text.isEmpty())
-	{
-		float scale = text.toFloat();
-
-		if (scale < 1.0f)
-		{
-			QMessageBox::information(this, "Refuse", "The scale value must be >= 1.0");
-			return;
-		}
-
-		std::string scaleAsString = text.toStdString();
-		QByteArray scaleAsQByteArray(scaleAsString.c_str(), scaleAsString.length());
-		qputenv("QT_SCALE_FACTOR", scaleAsQByteArray);
-
-		settings.setValue("scale", text);
-
-		qApp->quit();
-		QProcess::startDetached(qApp->arguments()[0], qApp->arguments());
-	}
 }
 
 void RobotWindow::ExecuteRequestsFromExternal(QString request)
@@ -1216,7 +1267,7 @@ void RobotWindow::AddScriptThread()
 
     GcodeScripts.append(GcodeScriptThread);
 
-    connect(GcodeScriptThread, &GcodeScript::CatchVariable, this, &RobotWindow::UpdateVarToView);
+    connect(GcodeScriptThread, &GcodeScript::CatchVariable2, this, &RobotWindow::UpdateVarToView);
 }
 
 void RobotWindow::LoadScriptThread()
@@ -1235,6 +1286,8 @@ void RobotWindow::InitTrackingThread()
     thread->start();
 
     AddTrackingThread();
+
+    ObjectModel->setObjectInfoList(TrackingManagerInstance->Trackings.at(0)->trackedObjects);
 
     connect(CameraInstance, SIGNAL(StartedCapture(int)), TrackingManagerInstance, SLOT(SaveCapturePosition(int)));
     connect(DeviceManagerInstance, &DeviceManager::GotEncoderPosition, TrackingManagerInstance, &TrackingManager::SetEncoderPosition);
@@ -1277,36 +1330,17 @@ void RobotWindow::LoadTrackingThread()
 }
 
 void RobotWindow::LoadSettings()
-{    
-    //------ Robot -------
-//    ui->cbRobotModel->setCurrentText(VariableManager::instance().getVar("RobotModel").toString());
-
-    //------ Image Detecting Module -----
-    ui->gvImageViewer->LoadSetting();
-    QPointF calibPoint1 = VariableManager::instance().getVar("RealCalibPoint1").toPointF();
-    QPointF calibPoint2 = VariableManager::instance().getVar("RealCalibPoint2").toPointF();
-    ui->leRealityPoint1X->setText(QString::number(calibPoint1.x()));
-    ui->leRealityPoint1Y->setText(QString::number(calibPoint1.y()));
-    ui->leRealityPoint2X->setText(QString::number(calibPoint2.x()));
-    ui->leRealityPoint2Y->setText(QString::number(calibPoint2.y()));
-
-    UpdateRealPositionOfCalibPoints();
-
-    //------------
-}
-
-void RobotWindow::LoadSettings(QSettings *setting)
 {
-    LoadGeneralSettings(setting);
-    LoadJoggingSettings(setting);
-    Load2DSettings(setting);
-    Load3DSettings(setting);
-    LoadExternalDeviceSettings(setting);
-    LoadTerminalSettings(setting);
-    LoadGcodeEditorSettings(setting);
-    LoadObjectDetectorSetting(setting);
-    LoadDrawingSetting(setting);
-    LoadPluginSetting(setting);
+//    LoadGeneralSettings(setting);
+//    LoadJoggingSettings(setting);
+//    Load2DSettings(setting);
+//    Load3DSettings(setting);
+//    LoadExternalDeviceSettings(setting);
+//    LoadTerminalSettings(setting);
+//    LoadGcodeEditorSettings(setting);
+    LoadObjectDetectorSetting();
+//    LoadDrawingSetting(setting);
+//    LoadPluginSetting(setting);
 }
 
 void RobotWindow::LoadGeneralSettings(QSettings *setting)
@@ -1448,84 +1482,96 @@ void RobotWindow::LoadGcodeEditorSettings(QSettings *setting)
     setting->endGroup();
 }
 
-void RobotWindow::LoadObjectDetectorSetting(QSettings *setting)
+void RobotWindow::LoadObjectDetectorSetting()
 {
-    setting->beginGroup("ObjectDetector");
+    ui->gvImageViewer->LoadSetting();
 
-    if (setting->value("WarpEnable", false).toBool() == true)
-    {
-        ui->pbWarpTool->clicked(true);
-        ui->pbWarpTool->setChecked(true);
-    }
-    else
-    {
-        ui->pbWarpTool->clicked(false);
-        ui->pbWarpTool->setChecked(false);
-    }
-
-    ui->cbSourceForImageProvider->setCurrentText(setting->value("ImageSource", ui->cbSourceForImageProvider->currentText()).toString());
-
-
-    ui->leCaptureInterval->setText(setting->value("WebcamInterval", ui->leCaptureInterval->text()).toString());
-
-    ui->leImageWidth->setText(setting->value("ResizeWidth", ui->leImageWidth->text()).toString());
-    ui->leImageHeight->setText(setting->value("ResizeHeight", ui->leImageHeight->text()).toString());
-
-    emit GotResizePara(cv::Size(ui->leImageWidth->text().toInt(), ui->leImageHeight->text().toInt()));
-
-    Object& obj = ImageProcessingThread->GetNode("GetObjectsNode")->GetInputObject();
-
-    obj.Width.Image = setting->value("ObjectWidth", obj.Width.Image).toFloat();
-    obj.Length.Image = setting->value("ObjectLength", obj.Length.Image).toFloat();
-
-    obj.Width.Real = setting->value("RealObjectWidth", ui->leWRec->text()).toFloat();
-    obj.Length.Real = setting->value("RealObjectLength", ui->leLRec->text()).toFloat();
-
-
-    obj.RangeWidth.Max.Image = setting->value("ImageMaxObjectWidth", ui->leMaxWRec->text()).toFloat();
-    obj.RangeWidth.Min.Image = setting->value("ImageMinObjectWidth", ui->leMinWRec->text()).toFloat();
-    obj.RangeLength.Max.Image = setting->value("ImageMaxObjectLength", ui->leMaxLRec->text()).toFloat();
-    obj.RangeLength.Min.Image = setting->value("ImageMinObjectLength", ui->leMinLRec->text()).toFloat();
-
-    ui->leWRec->setText(QString::number(obj.Width.Real));
-    ui->leLRec->setText(QString::number(obj.Length.Real));
-
-
-    obj.RangeWidth.Max.Real = setting->value("MaxObjectWidth", ui->leMaxWRec->text()).toFloat();
-    obj.RangeWidth.Min.Real = setting->value("MinObjectWidth", ui->leMinWRec->text()).toFloat();
-    obj.RangeLength.Max.Real = setting->value("MaxObjectLength", ui->leMaxLRec->text()).toFloat();
-    obj.RangeLength.Min.Real = setting->value("MinObjectLength", ui->leMinLRec->text()).toFloat();
-
-    ui->leMinWRec->setText(QString::number(obj.RangeWidth.Min.Real));
-    ui->leMaxWRec->setText(QString::number(obj.RangeWidth.Max.Real));
-    ui->leMinLRec->setText(QString::number(obj.RangeLength.Min.Real));
-    ui->leMaxLRec->setText(QString::number(obj.RangeLength.Max.Real));
-
-    emit GotOjectFilterInfo(obj);
-
-    ui->leObjectOverlay->setText(setting->value("TrackingError", ui->leObjectOverlay->text()).toString());
-
-
-    QPointF calibPoint1 = setting->value("RealCalibPoint1", QPointF(ui->leRealityPoint1X->text().toFloat(), ui->leRealityPoint1Y->text().toFloat())).toPointF();
-    QPointF calibPoint2 = setting->value("RealCalibPoint2", QPointF(ui->leRealityPoint2X->text().toFloat(), ui->leRealityPoint2Y->text().toFloat())).toPointF();
+    QPointF calibPoint1 = VariableManager::instance().getVar("RealCalibPoint1").toPointF();
+    QPointF calibPoint2 = VariableManager::instance().getVar("RealCalibPoint2").toPointF();
     ui->leRealityPoint1X->setText(QString::number(calibPoint1.x()));
     ui->leRealityPoint1Y->setText(QString::number(calibPoint1.y()));
     ui->leRealityPoint2X->setText(QString::number(calibPoint2.x()));
     ui->leRealityPoint2Y->setText(QString::number(calibPoint2.y()));
 
-    ui->cbDetectingAlgorithm->setCurrentText(setting->value("Algorithm", ui->cbDetectingAlgorithm->currentText()).toString());
+    UpdateRealPositionOfCalibPoints();
 
-    ui->lePythonUrl->setText(setting->value("ExternalScriptUrl", ui->lePythonUrl->text()).toString());
-    ui->cbImageSource->setCurrentText(setting->value("TransmissionImageSource", ui->cbImageSource->currentText()).toString());
+    //------------
+//    setting->beginGroup("ObjectDetector");
 
-    ui->leEdgeThreshold->setText(setting->value("EdgeThreshold", ui->leEdgeThreshold->text()).toString());
-    ui->leCenterThreshold->setText(setting->value("CenterThreshold", ui->leCenterThreshold->text()).toString());
-    ui->leMinRadius->setText(setting->value("MinRadius", ui->leMinRadius->text()).toString());
-    ui->leMaxRadius->setText(setting->value("MaxRadius", ui->leMaxRadius->text()).toString());
+//    if (setting->value("WarpEnable", false).toBool() == true)
+//    {
+//        ui->pbWarpTool->clicked(true);
+//        ui->pbWarpTool->setChecked(true);
+//    }
+//    else
+//    {
+//        ui->pbWarpTool->clicked(false);
+//        ui->pbWarpTool->setChecked(false);
+//    }
 
-    ParameterPanel->RequestValue();
+//    ui->cbSourceForImageProvider->setCurrentText(setting->value("ImageSource", ui->cbSourceForImageProvider->currentText()).toString());
 
-    setting->endGroup();
+
+//    ui->leCaptureInterval->setText(setting->value("WebcamInterval", ui->leCaptureInterval->text()).toString());
+
+//    ui->leImageWidth->setText(setting->value("ResizeWidth", ui->leImageWidth->text()).toString());
+//    ui->leImageHeight->setText(setting->value("ResizeHeight", ui->leImageHeight->text()).toString());
+
+//    emit GotResizePara(cv::Size(ui->leImageWidth->text().toInt(), ui->leImageHeight->text().toInt()));
+
+//    Object& obj = ImageProcessingThread->GetNode("GetObjectsNode")->GetInputObject();
+
+//    obj.Width.Image = setting->value("ObjectWidth", obj.Width.Image).toFloat();
+//    obj.Length.Image = setting->value("ObjectLength", obj.Length.Image).toFloat();
+
+//    obj.Width.Real = setting->value("RealObjectWidth", ui->leWRec->text()).toFloat();
+//    obj.Length.Real = setting->value("RealObjectLength", ui->leLRec->text()).toFloat();
+
+
+//    obj.RangeWidth.Max.Image = setting->value("ImageMaxObjectWidth", ui->leMaxWRec->text()).toFloat();
+//    obj.RangeWidth.Min.Image = setting->value("ImageMinObjectWidth", ui->leMinWRec->text()).toFloat();
+//    obj.RangeLength.Max.Image = setting->value("ImageMaxObjectLength", ui->leMaxLRec->text()).toFloat();
+//    obj.RangeLength.Min.Image = setting->value("ImageMinObjectLength", ui->leMinLRec->text()).toFloat();
+
+//    ui->leWRec->setText(QString::number(obj.Width.Real));
+//    ui->leLRec->setText(QString::number(obj.Length.Real));
+
+
+//    obj.RangeWidth.Max.Real = setting->value("MaxObjectWidth", ui->leMaxWRec->text()).toFloat();
+//    obj.RangeWidth.Min.Real = setting->value("MinObjectWidth", ui->leMinWRec->text()).toFloat();
+//    obj.RangeLength.Max.Real = setting->value("MaxObjectLength", ui->leMaxLRec->text()).toFloat();
+//    obj.RangeLength.Min.Real = setting->value("MinObjectLength", ui->leMinLRec->text()).toFloat();
+
+//    ui->leMinWRec->setText(QString::number(obj.RangeWidth.Min.Real));
+//    ui->leMaxWRec->setText(QString::number(obj.RangeWidth.Max.Real));
+//    ui->leMinLRec->setText(QString::number(obj.RangeLength.Min.Real));
+//    ui->leMaxLRec->setText(QString::number(obj.RangeLength.Max.Real));
+
+//    emit GotOjectFilterInfo(obj);
+
+//    ui->leObjectOverlay->setText(setting->value("TrackingError", ui->leObjectOverlay->text()).toString());
+
+
+//    QPointF calibPoint1 = setting->value("RealCalibPoint1", QPointF(ui->leRealityPoint1X->text().toFloat(), ui->leRealityPoint1Y->text().toFloat())).toPointF();
+//    QPointF calibPoint2 = setting->value("RealCalibPoint2", QPointF(ui->leRealityPoint2X->text().toFloat(), ui->leRealityPoint2Y->text().toFloat())).toPointF();
+//    ui->leRealityPoint1X->setText(QString::number(calibPoint1.x()));
+//    ui->leRealityPoint1Y->setText(QString::number(calibPoint1.y()));
+//    ui->leRealityPoint2X->setText(QString::number(calibPoint2.x()));
+//    ui->leRealityPoint2Y->setText(QString::number(calibPoint2.y()));
+
+//    ui->cbDetectingAlgorithm->setCurrentText(setting->value("Algorithm", ui->cbDetectingAlgorithm->currentText()).toString());
+
+//    ui->lePythonUrl->setText(setting->value("ExternalScriptUrl", ui->lePythonUrl->text()).toString());
+//    ui->cbImageSource->setCurrentText(setting->value("TransmissionImageSource", ui->cbImageSource->currentText()).toString());
+
+//    ui->leEdgeThreshold->setText(setting->value("EdgeThreshold", ui->leEdgeThreshold->text()).toString());
+//    ui->leCenterThreshold->setText(setting->value("CenterThreshold", ui->leCenterThreshold->text()).toString());
+//    ui->leMinRadius->setText(setting->value("MinRadius", ui->leMinRadius->text()).toString());
+//    ui->leMaxRadius->setText(setting->value("MaxRadius", ui->leMaxRadius->text()).toString());
+
+//    ParameterPanel->RequestValue();
+
+//    setting->endGroup();
 }
 
 void RobotWindow::LoadDrawingSetting(QSettings *setting)
@@ -1904,15 +1950,31 @@ void RobotWindow::GetDeviceResponse(QString id, QString response)
     }
 }
 
-void RobotWindow::UpdateVarToView(QString fullKey, QString value)
+void RobotWindow::UpdateVarToView(QString fullKey, QVariant value)
 {
     QStandardItem *parent = VarViewModel.invisibleRootItem();
     UpdateVarToModel(parent, fullKey, value);
 }
 
-void RobotWindow::UpdateVarToModel(QStandardItem *parent, QString fullKey, QString value)
+void RobotWindow::UpdateVarToModel(QStandardItem *parent, QString fullKey, QVariant value)
 {
     QStringList parts = fullKey.split('.');
+    QString valueString = value.toString();
+    if (value.canConvert<QVector3D>())
+    {
+        QVector3D vector = value.value<QVector3D>();
+        valueString = QString("(%1, %2, %3)")
+                .arg(vector.x())
+                .arg(vector.y())
+                .arg(vector.z());
+    }
+    if (value.canConvert<QPointF>())
+    {
+        QPointF point = value.value<QPointF>();
+        valueString = QString("(%1, %2)")
+                .arg(point.x())
+                .arg(point.y());
+    }
 
     for (int i = 0; i < parts.count() - 1; ++i) {
         QString part = parts[i];
@@ -1932,13 +1994,13 @@ void RobotWindow::UpdateVarToModel(QStandardItem *parent, QString fullKey, QStri
     bool found = false;
     for (int i = 0; i < parent->rowCount(); ++i) {
         if (parent->child(i)->text() == parts.last()) {
-            parent->child(i, 1)->setText(value);
+            parent->child(i, 1)->setText(valueString);
             found = true;
             break;
         }
     }
     if (!found) {
-        parent->appendRow(QList<QStandardItem*>() << new QStandardItem(parts.last()) << new QStandardItem(value));
+        parent->appendRow(QList<QStandardItem*>() << new QStandardItem(parts.last()) << new QStandardItem(valueString));
     }
 }
 
@@ -3042,22 +3104,22 @@ void RobotWindow::LoadWebcam()
 
 void RobotWindow::LoadImages()
 {
-    QString imageName;
-    imageName = QFileDialog::getOpenFileName(this, tr("Open Image/Video"), "", tr("Image Files (*.png *.jpg *.bmp *.avi *.mp4)"));
+    QStringList imageNames;
+    imageNames = QFileDialog::getOpenFileNames(this, tr("Open Image/Video"), "", tr("Image Files (*.png *.jpg *.bmp *.avi *.mp4)"));
 
-    if (imageName == "")
+    if (imageNames.empty())
         return;
 
-    if (imageName.contains(".avi") || imageName.contains(".mp4"))
+    if (imageNames.at(0).contains(".avi") || imageNames.at(0).contains(".mp4"))
     {
-        CameraInstance->WebcamInstance->open(imageName.toStdString());
+        CameraInstance->WebcamInstance->open(imageNames.at(0).toStdString());
 
         if (!CameraInstance->WebcamInstance->isOpened())
         {
             return;
         }
 
-        CameraInstance->WebcamInstance->open(imageName.toStdString());
+        CameraInstance->WebcamInstance->open(imageNames.at(0).toStdString());
         CameraInstance->WebcamInstance->set(cv::CAP_PROP_FRAME_WIDTH, ui->leImageWidth->text().toInt());
         CameraInstance->WebcamInstance->set(cv::CAP_PROP_FRAME_HEIGHT, ui->leImageHeight->text().toInt());
 
@@ -3068,21 +3130,31 @@ void RobotWindow::LoadImages()
     }
     else
     {
-        if (imageName.isEmpty())
-        {
-            qDebug() << "Không chọn ảnh";
-            return;
+//        if (imageName.isEmpty())
+//        {
+//            qDebug() << "Không chọn ảnh";
+//            return;
+//        }
+
+        for (const QString &imageName : imageNames) {
+            QImage qImage(imageName);
+            if (!qImage.isNull()) {
+                CameraInstance->CaptureImages.append(ImageTool::QImageToCvMat(qImage, true));
+            }
         }
 
-        QImage qImage(imageName);
+        CameraInstance->CaptureImage = CameraInstance->CaptureImages.at(0);
+        CameraInstance->FrameID = 0;
 
-        if (qImage.isNull())
-        {
-            qDebug() << "Không thể đọc ảnh";
-            return;
-        }
+//        QImage qImage(imageName);
 
-        CameraInstance->CaptureImage = ImageTool::QImageToCvMat(qImage, true);
+//        if (qImage.isNull())
+//        {
+//            qDebug() << "Không thể đọc ảnh";
+//            return;
+//        }
+
+//        CameraInstance->CaptureImage = ImageTool::QImageToCvMat(qImage, true);
         ui->pbCapture->clicked();
         ui->pbStartAcquisition->setChecked(true);
         ui->pbStartAcquisition->clicked(true);
@@ -3183,13 +3255,30 @@ void RobotWindow::GetCalibPointsFromImage(QPointF p1, QPointF p2)
     float yy1 = ui->leRealityPoint1Y->text().toFloat();
     float xx2 = ui->leRealityPoint2X->text().toFloat();
     float yy2 = ui->leRealityPoint2Y->text().toFloat();
+    float ox = ui->leCalibOffset_X->text().toFloat();
+    float oy = ui->leCalibOffset_Y->text().toFloat();
+
+    QPointF _p1(xx1, yy1);
+    QPointF _p2(xx2, yy2);
+
+    if (ui->cbCalibType->currentIndex() == 1)
+    {
+        QPointF offset(ox,oy);
+        QTransform transform = PointTool::calculateTransform(QPointF(0, 0), offset, _p1, _p2);
+        _p1 = transform.map(_p1);
+        _p2 = transform.map(_p1);
+    }
+
+    VariableManager::instance().updateVar("Point1", p1);
+    VariableManager::instance().updateVar("Point2", p2);
+
 
     QPolygonF poly;
 
     poly.append(p1);
     poly.append(p2);
-    poly.append(QPointF(xx1, yy1));
-    poly.append(QPointF(xx2, yy2));
+    poly.append(_p1);
+    poly.append(_p2);
 
     emit GotCalibPoints(poly);
 }
@@ -3201,6 +3290,17 @@ void RobotWindow::UpdateRealPositionOfCalibPoints()
 
     VariableManager::instance().updateVar("RealCalibPoint1", rpoint1);
     VariableManager::instance().updateVar("RealCalibPoint2", rpoint2);
+
+    if (ui->cbCalibType->currentIndex() == 1)
+    {
+        float ox = ui->leCalibOffset_X->text().toFloat();
+        float oy = ui->leCalibOffset_Y->text().toFloat();
+
+        QPointF offset(ox,oy);
+        QTransform transform = PointTool::calculateTransform(QPointF(0, 0), offset, rpoint1, rpoint2);
+        rpoint1 = transform.map(rpoint1);
+        rpoint2 = transform.map(rpoint2);
+    }
 
     QString p1Text = QString("P1: X = %1, Y = %2").arg(rpoint1.x()).arg(rpoint1.y());
     QString p2Text = QString("P2: X = %1, Y = %2").arg(rpoint2.x()).arg(rpoint2.y());
@@ -3667,8 +3767,11 @@ void RobotWindow::CalculateMappingMatrixTool()
     QPointF tp1(ui->leDestinationPoint1X->text().toFloat(), ui->leDestinationPoint1Y->text().toFloat());
     QPointF tp2(ui->leDestinationPoint2X->text().toFloat(), ui->leDestinationPoint2Y->text().toFloat());
 
-    QTransform transformMatrix = calculateTransformMatrix(sp1, sp2, tp1, tp2);
-    CalculatingTransform = PointTool::calculateTransform(sp1, sp2, tp1, tp2);
+//    CalculatingTransform = PointTool::calculateTransform(sp1, sp2, tp1, tp2);
+    CalculatingTransform2 = PointTool::calculateTransform2(sp1, sp2, tp1, tp2);
+    CalculatingTransform.setMatrix(CalculatingTransform2.m11(), CalculatingTransform2.m12(), 0,
+                                   CalculatingTransform2.m21(), CalculatingTransform2.m22(), 0,
+                                   CalculatingTransform2.dx(), CalculatingTransform2.dy(), 1);
 
     QString transformAsString = QString("Matrix:\n"
                                         "| %1, %2, %3 |\n"
@@ -3731,7 +3834,7 @@ void RobotWindow::CalculateVector()
     QVector3D P2(ui->lePointAtT2X->text().toFloat(), ui->lePointAtT2Y->text().toFloat(), ui->lePointAtT2Z->text().toFloat());
     float vectorValue = ui->leVectorValue->text().toFloat();
 
-    QVector3D deltaPosition = P1 - P2;
+    QVector3D deltaPosition = P2 - P1;
 
     // Tính độ lớn của deltaPosition
     double deltaMagnitude = deltaPosition.length();
@@ -3740,11 +3843,11 @@ void RobotWindow::CalculateVector()
     QVector3D unitVector = deltaPosition / deltaMagnitude;
 
     // Tính vector vận tốc của băng tải
-    QVector3D vector = unitVector * vectorValue;
+    CalVector = unitVector * vectorValue;
 
-    ui->leVectorX->setText(QString::number(vector.x()));
-    ui->leVectorY->setText(QString::number(vector.y()));
-    ui->leVectorZ->setText(QString::number(vector.z()));
+    ui->leVectorX->setText(QString::number(CalVector.x()));
+    ui->leVectorY->setText(QString::number(CalVector.y()));
+    ui->leVectorZ->setText(QString::number(CalVector.z()));
 }
 
 void RobotWindow::ProcessProximitySensorValue(int value)
@@ -4182,15 +4285,17 @@ void RobotWindow::plugValue(QLineEdit *le, float value)
     le->setText(QString::number(le->text().toFloat() + value));
 }
 
-QTransform RobotWindow::calculateTransformMatrix(QPointF sourcePoint1, QPointF sourcePoint2, QPointF targetPoint1, QPointF targetPoint2)
+bool RobotWindow::isItemExit(QListWidget *lw, QString item)
 {
-    qreal a = (targetPoint2.y() - targetPoint1.y()) / (sourcePoint2.y() - sourcePoint1.y());
-    qreal b = (targetPoint2.x() - a * sourcePoint2.x()) - targetPoint1.x();
-    qreal c = (targetPoint2.x() - targetPoint1.x()) / (sourcePoint2.x() - sourcePoint1.x());
-    qreal d = (targetPoint2.y() - c * sourcePoint2.y()) - targetPoint1.y();
+    bool itemExists = false;
+    for (int i = 0; i < lw->count(); ++i) {
+        if (lw->item(i)->text() == item) {
+            itemExists = true;
+            break;
+        }
+    }
 
-    QTransform transformMatrix(a, c, b, d, 0, 0);
-    return transformMatrix;
+    return itemExists;
 }
 
 void RobotWindow::runPythonFile(QString filePath)

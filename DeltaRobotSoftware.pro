@@ -68,7 +68,6 @@ SOURCES += main.cpp\
     TestCode.cpp \
     TextLayer.cpp \
     TrackingManager.cpp \
-    VarManager.cpp \
     VariableManager.cpp \
     VersionManager.cpp \
     codeeditor.cpp \
@@ -104,6 +103,7 @@ HEADERS  += \
     Object.h \
     ImageProcessing.h \
     ObjectInfo.h \
+    ObjectInfoModel.h \
     ObjectVariableTable.h \
     Parameter.h \
     PointTool.h \
@@ -118,7 +118,6 @@ HEADERS  += \
     TaskNode.h \
     TextLayer.h \
     TrackingManager.h \
-    VarManager.h \
     VariableManager.h \
     VersionManager.h \
     codeeditor.h \

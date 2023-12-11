@@ -8,7 +8,6 @@
 #include <RobotWindow.h>
 #include <QVBoxLayout>
 #include <QGraphicsView>
-#include "VarManager.h"
 
 class Authority : public QObject
 {

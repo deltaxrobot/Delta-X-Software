@@ -11,7 +11,9 @@
 #include "Parameter.h"
 #include "SoftwareManager.h"
 #include <QFileInfo>
-#include "VarManager.h"
+#include <QVector3D>
+#include <QMatrix>
+#include <QTransform>
 
 class GcodeScript : public QObject
 {
@@ -36,7 +38,7 @@ public:
     QString DefaultEncoder = "encoder0";
     QString DefaultSlider = "slider0";
     QString DefaultDevice = "device0";
-    QString ID = "thread";
+    QString ID = "thread0";
 
     void SetGcodeScript(QString gcode);
     QString GetGcodeScript();
@@ -71,6 +73,7 @@ signals:
     void SendToDevice(QString deviceName, QString gcode);
 
     void CatchVariable(QString key, QString value);
+    void CatchVariable2(QString key, QVariant value);
 private:
     bool isRunning = false;
     QString gcodeScript = "";
@@ -80,7 +83,10 @@ private:
     QString transmitDeviceId = DefaultRobot;
     QString transmitMsg = "";
 
+    QStringList deviceNames = {"robot", "device", "conveyor", "slider", "encoder"};
+
     QList<QString> gcodeList;
+    QVector<int> gcodeNumberList;
     int gcodeOrder = 0;
     int currentGcodeEditorCursor = 0;
     int returnSubProPointer[20];
@@ -99,13 +105,32 @@ private:
 
     QElapsedTimer elapsedTimer;
 
+    void prepareCurrentLine();
+    bool shouldSkipLine();
+    void collapseGcodeLine();
+    int findClosingBracket(int openIndex);
+
+    void processGOTOStatement(const QList<QString>& valuePairs);
+
     float GetResultOfMathFunction(QString expression);
     bool isGlobalVariable(QString name);
     bool isConveyorGcode(QString gcode);
     bool isSlidingGcode(QString gcode);
     bool isEncoderGcode(QString gcode);
     bool isMovingGcode(QString gcode);
+
     bool findExeGcodeAndTransmit();
+
+    void processVARIABLE();
+    QString processFUNCTION(QString funcName, QStringList paras);
+
+    bool handleGOTO(QList<QString> valuePairs, int i);
+    bool handleIF(QList<QString> valuePairs, int i);
+    bool handleVARIABLE(QList<QString> valuePairs, int i);
+    bool handleDEFINE_SUBPROGRAM(QList<QString> valuePairs, int i);
+    bool handleGCODE(QString transmitGcode);
+    void handleSENT_TO_DEVICE(QList<QString> valuePairs, int i);
+
     QString calculateExpressions(QString expression);
     QString calculateExpressions2(QString expression);
     QString getLeftWord(QString s, int pos);
@@ -113,9 +138,11 @@ private:
     QString deleteSpaces(QString s);
     QString formatSpaces(QString s);
     bool isNotNegative(QString s);
-    QString getValueOfVariable(QString var);
+    QString getValueAsString(QString var);
+    QVariant getValueAsQVariant(QString key);
     void updateVariables(QString str);
     void saveVariable(QString name, QString value);
+    void saveVariable(QString name, QVariant value);
     void processResponse(QString response);
     bool checkExclution(QString response);
 

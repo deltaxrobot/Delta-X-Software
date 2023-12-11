@@ -153,6 +153,7 @@ void Tracking::updatePositions(double displacement) {
 void Tracking::ClearTrackedObjects()
 {
     trackedObjects.clear();
+    nextID = 0;
 }
 
 void Tracking::RemoveTrackedObjects(int id)

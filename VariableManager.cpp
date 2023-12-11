@@ -85,6 +85,7 @@ void VariableManager::loadFromQSettings()
     for(const QString& key : keys)
     {
         dataMap[key] = settings.value(key);
+        emit varAdded(key, settings.value(key));
     }
 }
 
@@ -96,6 +97,23 @@ QSettings *VariableManager::getSettings()
 
 void VariableManager::UpdateVarToModel(QString key, QVariant value)
 {
+    QString valueString = value.toString();
+    if (value.canConvert<QVector3D>())
+    {
+        QVector3D vector = value.value<QVector3D>();
+        valueString = QString("(%1, %2, %3)")
+                .arg(vector.x())
+                .arg(vector.y())
+                .arg(vector.z());
+    }
+    else if (value.canConvert<QPointF>())
+    {
+        QPointF point = value.value<QPointF>();
+        valueString = QString("(%1, %2)")
+                .arg(point.x())
+                .arg(point.y());
+    }
+
     for (QStandardItemModel* model : itemModelList)
     {
         QStandardItem *parent = model->invisibleRootItem();
@@ -119,13 +137,14 @@ void VariableManager::UpdateVarToModel(QString key, QVariant value)
         bool found = false;
         for (int i = 0; i < parent->rowCount(); ++i) {
             if (parent->child(i)->text() == parts.last()) {
-                parent->child(i, 1)->setText(value.toString());
+
+                parent->child(i, 1)->setText(valueString);
                 found = true;
                 break;
             }
         }
         if (!found) {
-            parent->appendRow(QList<QStandardItem*>() << new QStandardItem(parts.last()) << new QStandardItem(value.toString()));
+            parent->appendRow(QList<QStandardItem*>() << new QStandardItem(parts.last()) << new QStandardItem(valueString));
         }
     }
 }

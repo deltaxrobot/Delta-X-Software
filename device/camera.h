@@ -20,11 +20,13 @@ public:
     bool IsCameraPause = false;
     cv::VideoCapture* WebcamInstance;
     cv::Mat CaptureImage;
+    QList<cv::Mat> CaptureImages;
     float CameraFPS = 2;
     float CameraTimerInterval = 500;
     int Width = 800;
     int Height = 600;
     QString Source = "Webcam";
+    int FrameID = -1;
 signals:
     void StartedCapture(int tracking);
     void GotImage(cv::Mat);

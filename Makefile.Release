@@ -80,7 +80,6 @@ SOURCES       = main.cpp \
 		TestCode.cpp \
 		TextLayer.cpp \
 		TrackingManager.cpp \
-		VarManager.cpp \
 		VariableManager.cpp \
 		VersionManager.cpp \
 		codeeditor.cpp \
@@ -110,6 +109,7 @@ SOURCES       = main.cpp \
 		release\moc_Layer.cpp \
 		release\moc_MainWindow.cpp \
 		release\moc_ImageProcessing.cpp \
+		release\moc_ObjectInfoModel.cpp \
 		release\moc_ObjectVariableTable.cpp \
 		release\moc_PointTool.cpp \
 		release\moc_ProjectManager.cpp \
@@ -121,7 +121,6 @@ SOURCES       = main.cpp \
 		release\moc_TaskNode.cpp \
 		release\moc_TextLayer.cpp \
 		release\moc_TrackingManager.cpp \
-		release\moc_VarManager.cpp \
 		release\moc_VariableManager.cpp \
 		release\moc_VersionManager.cpp \
 		release\moc_codeeditor.cpp \
@@ -167,7 +166,6 @@ OBJECTS       = release\main.obj \
 		release\TestCode.obj \
 		release\TextLayer.obj \
 		release\TrackingManager.obj \
-		release\VarManager.obj \
 		release\VariableManager.obj \
 		release\VersionManager.obj \
 		release\codeeditor.obj \
@@ -198,6 +196,7 @@ OBJECTS       = release\main.obj \
 		release\moc_Layer.obj \
 		release\moc_MainWindow.obj \
 		release\moc_ImageProcessing.obj \
+		release\moc_ObjectInfoModel.obj \
 		release\moc_ObjectVariableTable.obj \
 		release\moc_PointTool.obj \
 		release\moc_ProjectManager.obj \
@@ -209,7 +208,6 @@ OBJECTS       = release\main.obj \
 		release\moc_TaskNode.obj \
 		release\moc_TextLayer.obj \
 		release\moc_TrackingManager.obj \
-		release\moc_VarManager.obj \
 		release\moc_VariableManager.obj \
 		release\moc_VersionManager.obj \
 		release\moc_codeeditor.obj \
@@ -243,6 +241,7 @@ DIST          =  AccountWindow.h \
 		Object.h \
 		ImageProcessing.h \
 		ObjectInfo.h \
+		ObjectInfoModel.h \
 		ObjectVariableTable.h \
 		Parameter.h \
 		PointTool.h \
@@ -257,7 +256,6 @@ DIST          =  AccountWindow.h \
 		TaskNode.h \
 		TextLayer.h \
 		TrackingManager.h \
-		VarManager.h \
 		VariableManager.h \
 		VersionManager.h \
 		codeeditor.h \
@@ -304,7 +302,6 @@ DIST          =  AccountWindow.h \
 		TestCode.cpp \
 		TextLayer.cpp \
 		TrackingManager.cpp \
-		VarManager.cpp \
 		VariableManager.cpp \
 		VersionManager.cpp \
 		codeeditor.cpp \
@@ -397,9 +394,9 @@ all: Makefile.Release  release\DeltaRobotSoftware.exe
 
 release\DeltaRobotSoftware.exe: C:\Qt\5.15.2\msvc2015_64\lib\Qt5OpenGL.lib C:\Qt\5.15.2\msvc2015_64\lib\Qt5QuickWidgets.lib C:\Qt\5.15.2\msvc2015_64\lib\Qt5PrintSupport.lib C:\Qt\5.15.2\msvc2015_64\lib\Qt5Widgets.lib C:\Qt\5.15.2\msvc2015_64\lib\Qt5Quick.lib C:\Qt\5.15.2\msvc2015_64\lib\Qt5Multimedia.lib C:\Qt\5.15.2\msvc2015_64\lib\Qt5Gui.lib C:\Qt\5.15.2\msvc2015_64\lib\Qt5SerialPort.lib C:\Qt\5.15.2\msvc2015_64\lib\Qt5QmlModels.lib C:\Qt\5.15.2\msvc2015_64\lib\Qt5Qml.lib C:\Qt\5.15.2\msvc2015_64\lib\Qt5Network.lib C:\Qt\5.15.2\msvc2015_64\lib\Qt5Core.lib C:\Qt\5.15.2\msvc2015_64\lib\qtmain.lib ui_AccountWindow.h ui_FilterWindow.h ui_MainWindow.h ui_RobotWindow.h ui_GcodeReference.h ui_testwindow.h $(OBJECTS) release\DeltaRobotSoftware_resource.res
 	$(LINKER) $(LFLAGS) /MANIFEST:embed /OUT:$(DESTDIR_TARGET) @<<
-release\main.obj release\AccountWindow.obj release\Authority.obj release\ComDevice.obj release\DrawingExporter.obj release\DrawingWidget.obj release\FilterWindow.obj release\GcodeHighlighter.obj release\GcodeReference.obj release\GcodeScript.obj release\ImageProcessing.obj release\ImageViewer.obj release\Layer.obj release\MainWindow.obj release\Object.obj release\ObjectInfo.obj release\ObjectVariableTable.obj release\Parameter.obj release\PointTool.obj release\ProjectManager.obj release\RobotWindow.obj release\SmartDialog.obj release\SocketConnectionManager.obj release\SoftwareManager.obj release\TCPConnectionManager.obj release\TabDashboard.obj release\TaskNode.obj release\TestCode.obj release\TextLayer.obj release\TrackingManager.obj release\VarManager.obj release\VariableManager.obj release\VersionManager.obj release\codeeditor.obj release\DeltaVisualizer.obj release\UnityTool.obj release\DeviceManager.obj release\camera.obj release\conveyor.obj release\device.obj release\encoder.obj
-release\robot.obj release\slider.obj release\geisttextedit.obj release\global.obj release\highlighter.obj release\testwindow.obj release\qrc_resource.obj release\moc_AccountWindow.obj release\moc_Authority.obj release\moc_ComDevice.obj release\moc_DeltaVisualizer.obj release\moc_DrawingExporter.obj release\moc_DrawingWidget.obj release\moc_FilterWindow.obj release\moc_GcodeReference.obj release\moc_GcodeScript.obj release\moc_ImageViewer.obj release\moc_Layer.obj release\moc_MainWindow.obj release\moc_ImageProcessing.obj release\moc_ObjectVariableTable.obj release\moc_PointTool.obj release\moc_ProjectManager.obj release\moc_RobotWindow.obj release\moc_SmartDialog.obj release\moc_SocketConnectionManager.obj release\moc_TCPConnectionManager.obj release\moc_TabDashboard.obj release\moc_TaskNode.obj release\moc_TextLayer.obj release\moc_TrackingManager.obj release\moc_VarManager.obj release\moc_VariableManager.obj release\moc_VersionManager.obj release\moc_codeeditor.obj
-release\moc_DeviceManager.obj release\moc_camera.obj release\moc_conveyor.obj release\moc_device.obj release\moc_encoder.obj release\moc_robot.obj release\moc_slider.obj release\moc_geisttextedit.obj release\moc_global.obj release\moc_highlighter.obj release\moc_DeltaXPlugin.obj release\moc_testwindow.obj
+release\main.obj release\AccountWindow.obj release\Authority.obj release\ComDevice.obj release\DrawingExporter.obj release\DrawingWidget.obj release\FilterWindow.obj release\GcodeHighlighter.obj release\GcodeReference.obj release\GcodeScript.obj release\ImageProcessing.obj release\ImageViewer.obj release\Layer.obj release\MainWindow.obj release\Object.obj release\ObjectInfo.obj release\ObjectVariableTable.obj release\Parameter.obj release\PointTool.obj release\ProjectManager.obj release\RobotWindow.obj release\SmartDialog.obj release\SocketConnectionManager.obj release\SoftwareManager.obj release\TCPConnectionManager.obj release\TabDashboard.obj release\TaskNode.obj release\TestCode.obj release\TextLayer.obj release\TrackingManager.obj release\VariableManager.obj release\VersionManager.obj release\codeeditor.obj release\DeltaVisualizer.obj release\UnityTool.obj release\DeviceManager.obj release\camera.obj release\conveyor.obj release\device.obj release\encoder.obj release\robot.obj
+release\slider.obj release\geisttextedit.obj release\global.obj release\highlighter.obj release\testwindow.obj release\qrc_resource.obj release\moc_AccountWindow.obj release\moc_Authority.obj release\moc_ComDevice.obj release\moc_DeltaVisualizer.obj release\moc_DrawingExporter.obj release\moc_DrawingWidget.obj release\moc_FilterWindow.obj release\moc_GcodeReference.obj release\moc_GcodeScript.obj release\moc_ImageViewer.obj release\moc_Layer.obj release\moc_MainWindow.obj release\moc_ImageProcessing.obj release\moc_ObjectInfoModel.obj release\moc_ObjectVariableTable.obj release\moc_PointTool.obj release\moc_ProjectManager.obj release\moc_RobotWindow.obj release\moc_SmartDialog.obj release\moc_SocketConnectionManager.obj release\moc_TCPConnectionManager.obj release\moc_TabDashboard.obj release\moc_TaskNode.obj release\moc_TextLayer.obj release\moc_TrackingManager.obj release\moc_VariableManager.obj release\moc_VersionManager.obj release\moc_codeeditor.obj release\moc_DeviceManager.obj
+release\moc_camera.obj release\moc_conveyor.obj release\moc_device.obj release\moc_encoder.obj release\moc_robot.obj release\moc_slider.obj release\moc_geisttextedit.obj release\moc_global.obj release\moc_highlighter.obj release\moc_DeltaXPlugin.obj release\moc_testwindow.obj
 $(LIBS)
 <<
 
@@ -412,11 +409,11 @@ qmake: FORCE
 qmake_all: FORCE
 
 dist:
-	$(ZIP) DeltaRobotSoftware.zip $(SOURCES) $(DIST) DeltaRobotSoftware.pro C:\Qt\5.15.2\msvc2015_64\mkspecs\features\spec_pre.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\common\angle.conf C:\Qt\5.15.2\msvc2015_64\mkspecs\common\windows-desktop.conf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\win32\windows_vulkan_sdk.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\common\windows-vulkan.conf C:\Qt\5.15.2\msvc2015_64\mkspecs\common\msvc-desktop.conf C:\Qt\5.15.2\msvc2015_64\mkspecs\qconfig.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3danimation.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3danimation_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dcore.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dcore_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dextras.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dextras_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dinput.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dinput_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dlogic.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dlogic_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dquick.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dquick_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dquickanimation.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dquickanimation_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dquickextras.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dquickextras_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dquickinput.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dquickinput_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dquickrender.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dquickrender_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dquickscene2d.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dquickscene2d_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3drender.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3drender_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_accessibility_support_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_axbase.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_axbase_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_axcontainer.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_axcontainer_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_axserver.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_axserver_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_bluetooth.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_bluetooth_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_bootstrap_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_concurrent.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_concurrent_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_core.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_core_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_dbus.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_dbus_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_designer.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_designer_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_designercomponents_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_devicediscovery_support_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_edid_support_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_egl_support_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_eventdispatcher_support_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_fb_support_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_fontdatabase_support_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_gamepad.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_gamepad_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_gui.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_gui_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_help.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_help_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_location.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_location_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_multimedia.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_multimedia_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_multimediawidgets.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_multimediawidgets_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_network.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_network_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_nfc.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_nfc_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_opengl.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_opengl_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_openglextensions.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_openglextensions_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_packetprotocol_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_platformcompositor_support_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_positioning.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_positioning_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_positioningquick.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_positioningquick_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_printsupport.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_printsupport_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_qml.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_qml_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_qmldebug_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_qmldevtools_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_qmlmodels.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_qmlmodels_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_qmltest.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_qmltest_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_qmlworkerscript.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_qmlworkerscript_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_qtmultimediaquicktools_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quick.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quick_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quickcontrols2.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quickcontrols2_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quickparticles_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quickshapes_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quicktemplates2.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quicktemplates2_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quickwidgets.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quickwidgets_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_remoteobjects.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_remoteobjects_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_repparser.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_repparser_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_scxml.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_scxml_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_sensors.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_sensors_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_serialbus.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_serialbus_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_serialport.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_serialport_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_sql.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_sql_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_svg.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_svg_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_testlib.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_testlib_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_texttospeech.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_texttospeech_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_theme_support_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_uiplugin.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_uitools.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_uitools_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_vulkan_support_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_webchannel.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_webchannel_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_websockets.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_websockets_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_webview.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_webview_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_widgets.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_widgets_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_windowsuiautomation_support_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_winextras.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_winextras_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_xml.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_xml_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_xmlpatterns.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_xmlpatterns_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_zlib_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\features\qt_functions.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\qt_config.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\win32-msvc\qmake.conf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\spec_post.prf .qmake.stash C:\Qt\5.15.2\msvc2015_64\mkspecs\features\exclusive_builds.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\common\msvc-version.conf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\toolchain.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\default_pre.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\win32\default_pre.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\resolve_config.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\exclusive_builds_post.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\default_post.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\build_pass.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\qml_debug.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\precompile_header.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\warn_on.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\qt.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\resources_functions.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\resources.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\moc.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\win32\opengl.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\uic.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\qmake_use.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\file_copies.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\win32\windows.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\testcase_targets.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\exceptions.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\yacc.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\lex.prf DeltaRobotSoftware.pro resource.qrc C:\Qt\5.15.2\msvc2015_64\lib\Qt5OpenGL.prl C:\Qt\5.15.2\msvc2015_64\lib\Qt5QuickWidgets.prl C:\Qt\5.15.2\msvc2015_64\lib\Qt5PrintSupport.prl C:\Qt\5.15.2\msvc2015_64\lib\Qt5Widgets.prl C:\Qt\5.15.2\msvc2015_64\lib\Qt5Quick.prl C:\Qt\5.15.2\msvc2015_64\lib\Qt5Multimedia.prl C:\Qt\5.15.2\msvc2015_64\lib\Qt5Gui.prl C:\Qt\5.15.2\msvc2015_64\lib\Qt5SerialPort.prl C:\Qt\5.15.2\msvc2015_64\lib\Qt5QmlModels.prl C:\Qt\5.15.2\msvc2015_64\lib\Qt5Qml.prl C:\Qt\5.15.2\msvc2015_64\lib\Qt5Network.prl C:\Qt\5.15.2\msvc2015_64\lib\Qt5Core.prl C:\Qt\5.15.2\msvc2015_64\lib\qtmain.prl   resource.qrc C:\Qt\5.15.2\msvc2015_64\mkspecs\features\data\dummy.cpp AccountWindow.h Authority.h ComDevice.h DeltaVisualizer.h DrawingExporter.h DrawingWidget.h FilterWindow.h GcodeHighlighter.h GcodeReference.h GcodeScript.h ImageUnity.h ImageViewer.h Layer.h MainWindow.h Object.h ImageProcessing.h ObjectInfo.h ObjectVariableTable.h Parameter.h PointTool.h ProjectManager.h RobotWindow.h ScurveInterpolator.h SmartDialog.h SocketConnectionManager.h SoftwareManager.h TCPConnectionManager.h TabDashboard.h TaskNode.h TextLayer.h TrackingManager.h VarManager.h VariableManager.h VersionManager.h codeeditor.h device\DeviceManager.h device\camera.h device\conveyor.h device\device.h device\encoder.h device\robot.h device\slider.h geisttextedit.h global.h highlighter.h GcodeReference.h sdk\DeltaXPlugin.h testcode.h testwindow.h  main.cpp AccountWindow.cpp Authority.cpp ComDevice.cpp DrawingExporter.cpp DrawingWidget.cpp FilterWindow.cpp GcodeHighlighter.cpp GcodeReference.cpp GcodeScript.cpp ImageProcessing.cpp ImageViewer.cpp Layer.cpp MainWindow.cpp Object.cpp ObjectInfo.cpp ObjectVariableTable.cpp Parameter.cpp PointTool.cpp ProjectManager.cpp RobotWindow.cpp SmartDialog.cpp SocketConnectionManager.cpp SoftwareManager.cpp TCPConnectionManager.cpp TabDashboard.cpp TaskNode.cpp TestCode.cpp TextLayer.cpp TrackingManager.cpp VarManager.cpp VariableManager.cpp VersionManager.cpp codeeditor.cpp DeltaVisualizer.cpp UnityTool.cpp device\DeviceManager.cpp device\camera.cpp device\conveyor.cpp device\device.cpp device\encoder.cpp device\robot.cpp device\slider.cpp geisttextedit.cpp global.cpp highlighter.cpp testwindow.cpp AccountWindow.ui FilterWindow.ui MainWindow.ui RobotWindow.ui GcodeReference.ui testwindow.ui    
+	$(ZIP) DeltaRobotSoftware.zip $(SOURCES) $(DIST) DeltaRobotSoftware.pro C:\Qt\5.15.2\msvc2015_64\mkspecs\features\spec_pre.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\common\angle.conf C:\Qt\5.15.2\msvc2015_64\mkspecs\common\windows-desktop.conf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\win32\windows_vulkan_sdk.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\common\windows-vulkan.conf C:\Qt\5.15.2\msvc2015_64\mkspecs\common\msvc-desktop.conf C:\Qt\5.15.2\msvc2015_64\mkspecs\qconfig.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3danimation.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3danimation_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dcore.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dcore_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dextras.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dextras_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dinput.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dinput_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dlogic.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dlogic_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dquick.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dquick_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dquickanimation.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dquickanimation_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dquickextras.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dquickextras_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dquickinput.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dquickinput_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dquickrender.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dquickrender_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dquickscene2d.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3dquickscene2d_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3drender.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_3drender_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_accessibility_support_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_axbase.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_axbase_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_axcontainer.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_axcontainer_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_axserver.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_axserver_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_bluetooth.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_bluetooth_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_bootstrap_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_concurrent.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_concurrent_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_core.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_core_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_dbus.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_dbus_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_designer.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_designer_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_designercomponents_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_devicediscovery_support_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_edid_support_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_egl_support_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_eventdispatcher_support_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_fb_support_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_fontdatabase_support_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_gamepad.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_gamepad_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_gui.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_gui_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_help.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_help_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_location.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_location_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_multimedia.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_multimedia_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_multimediawidgets.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_multimediawidgets_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_network.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_network_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_nfc.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_nfc_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_opengl.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_opengl_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_openglextensions.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_openglextensions_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_packetprotocol_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_platformcompositor_support_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_positioning.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_positioning_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_positioningquick.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_positioningquick_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_printsupport.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_printsupport_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_qml.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_qml_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_qmldebug_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_qmldevtools_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_qmlmodels.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_qmlmodels_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_qmltest.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_qmltest_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_qmlworkerscript.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_qmlworkerscript_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_qtmultimediaquicktools_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quick.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quick_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quickcontrols2.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quickcontrols2_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quickparticles_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quickshapes_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quicktemplates2.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quicktemplates2_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quickwidgets.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_quickwidgets_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_remoteobjects.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_remoteobjects_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_repparser.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_repparser_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_scxml.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_scxml_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_sensors.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_sensors_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_serialbus.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_serialbus_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_serialport.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_serialport_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_sql.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_sql_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_svg.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_svg_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_testlib.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_testlib_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_texttospeech.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_texttospeech_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_theme_support_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_uiplugin.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_uitools.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_uitools_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_vulkan_support_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_webchannel.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_webchannel_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_websockets.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_websockets_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_webview.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_webview_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_widgets.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_widgets_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_windowsuiautomation_support_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_winextras.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_winextras_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_xml.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_xml_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_xmlpatterns.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_xmlpatterns_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\modules\qt_lib_zlib_private.pri C:\Qt\5.15.2\msvc2015_64\mkspecs\features\qt_functions.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\qt_config.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\win32-msvc\qmake.conf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\spec_post.prf .qmake.stash C:\Qt\5.15.2\msvc2015_64\mkspecs\features\exclusive_builds.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\common\msvc-version.conf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\toolchain.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\default_pre.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\win32\default_pre.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\resolve_config.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\exclusive_builds_post.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\default_post.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\build_pass.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\qml_debug.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\precompile_header.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\warn_on.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\qt.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\resources_functions.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\resources.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\moc.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\win32\opengl.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\uic.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\qmake_use.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\file_copies.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\win32\windows.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\testcase_targets.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\exceptions.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\yacc.prf C:\Qt\5.15.2\msvc2015_64\mkspecs\features\lex.prf DeltaRobotSoftware.pro resource.qrc C:\Qt\5.15.2\msvc2015_64\lib\Qt5OpenGL.prl C:\Qt\5.15.2\msvc2015_64\lib\Qt5QuickWidgets.prl C:\Qt\5.15.2\msvc2015_64\lib\Qt5PrintSupport.prl C:\Qt\5.15.2\msvc2015_64\lib\Qt5Widgets.prl C:\Qt\5.15.2\msvc2015_64\lib\Qt5Quick.prl C:\Qt\5.15.2\msvc2015_64\lib\Qt5Multimedia.prl C:\Qt\5.15.2\msvc2015_64\lib\Qt5Gui.prl C:\Qt\5.15.2\msvc2015_64\lib\Qt5SerialPort.prl C:\Qt\5.15.2\msvc2015_64\lib\Qt5QmlModels.prl C:\Qt\5.15.2\msvc2015_64\lib\Qt5Qml.prl C:\Qt\5.15.2\msvc2015_64\lib\Qt5Network.prl C:\Qt\5.15.2\msvc2015_64\lib\Qt5Core.prl C:\Qt\5.15.2\msvc2015_64\lib\qtmain.prl   resource.qrc C:\Qt\5.15.2\msvc2015_64\mkspecs\features\data\dummy.cpp AccountWindow.h Authority.h ComDevice.h DeltaVisualizer.h DrawingExporter.h DrawingWidget.h FilterWindow.h GcodeHighlighter.h GcodeReference.h GcodeScript.h ImageUnity.h ImageViewer.h Layer.h MainWindow.h Object.h ImageProcessing.h ObjectInfo.h ObjectInfoModel.h ObjectVariableTable.h Parameter.h PointTool.h ProjectManager.h RobotWindow.h ScurveInterpolator.h SmartDialog.h SocketConnectionManager.h SoftwareManager.h TCPConnectionManager.h TabDashboard.h TaskNode.h TextLayer.h TrackingManager.h VariableManager.h VersionManager.h codeeditor.h device\DeviceManager.h device\camera.h device\conveyor.h device\device.h device\encoder.h device\robot.h device\slider.h geisttextedit.h global.h highlighter.h GcodeReference.h sdk\DeltaXPlugin.h testcode.h testwindow.h  main.cpp AccountWindow.cpp Authority.cpp ComDevice.cpp DrawingExporter.cpp DrawingWidget.cpp FilterWindow.cpp GcodeHighlighter.cpp GcodeReference.cpp GcodeScript.cpp ImageProcessing.cpp ImageViewer.cpp Layer.cpp MainWindow.cpp Object.cpp ObjectInfo.cpp ObjectVariableTable.cpp Parameter.cpp PointTool.cpp ProjectManager.cpp RobotWindow.cpp SmartDialog.cpp SocketConnectionManager.cpp SoftwareManager.cpp TCPConnectionManager.cpp TabDashboard.cpp TaskNode.cpp TestCode.cpp TextLayer.cpp TrackingManager.cpp VariableManager.cpp VersionManager.cpp codeeditor.cpp DeltaVisualizer.cpp UnityTool.cpp device\DeviceManager.cpp device\camera.cpp device\conveyor.cpp device\device.cpp device\encoder.cpp device\robot.cpp device\slider.cpp geisttextedit.cpp global.cpp highlighter.cpp testwindow.cpp AccountWindow.ui FilterWindow.ui MainWindow.ui RobotWindow.ui GcodeReference.ui testwindow.ui    
 
 clean: compiler_clean 
-	-$(DEL_FILE) release\main.obj release\AccountWindow.obj release\Authority.obj release\ComDevice.obj release\DrawingExporter.obj release\DrawingWidget.obj release\FilterWindow.obj release\GcodeHighlighter.obj release\GcodeReference.obj release\GcodeScript.obj release\ImageProcessing.obj release\ImageViewer.obj release\Layer.obj release\MainWindow.obj release\Object.obj release\ObjectInfo.obj release\ObjectVariableTable.obj release\Parameter.obj release\PointTool.obj release\ProjectManager.obj release\RobotWindow.obj release\SmartDialog.obj release\SocketConnectionManager.obj release\SoftwareManager.obj release\TCPConnectionManager.obj release\TabDashboard.obj release\TaskNode.obj release\TestCode.obj release\TextLayer.obj release\TrackingManager.obj release\VarManager.obj release\VariableManager.obj release\VersionManager.obj release\codeeditor.obj release\DeltaVisualizer.obj release\UnityTool.obj release\DeviceManager.obj release\camera.obj release\conveyor.obj release\device.obj release\encoder.obj release\robot.obj release\slider.obj release\geisttextedit.obj release\global.obj release\highlighter.obj release\testwindow.obj release\qrc_resource.obj release\moc_AccountWindow.obj release\moc_Authority.obj release\moc_ComDevice.obj release\moc_DeltaVisualizer.obj release\moc_DrawingExporter.obj release\moc_DrawingWidget.obj release\moc_FilterWindow.obj release\moc_GcodeReference.obj release\moc_GcodeScript.obj release\moc_ImageViewer.obj release\moc_Layer.obj release\moc_MainWindow.obj release\moc_ImageProcessing.obj release\moc_ObjectVariableTable.obj release\moc_PointTool.obj release\moc_ProjectManager.obj release\moc_RobotWindow.obj release\moc_SmartDialog.obj release\moc_SocketConnectionManager.obj release\moc_TCPConnectionManager.obj release\moc_TabDashboard.obj release\moc_TaskNode.obj release\moc_TextLayer.obj release\moc_TrackingManager.obj release\moc_VarManager.obj release\moc_VariableManager.obj release\moc_VersionManager.obj release\moc_codeeditor.obj release\moc_DeviceManager.obj
-	-$(DEL_FILE) release\moc_camera.obj release\moc_conveyor.obj release\moc_device.obj release\moc_encoder.obj release\moc_robot.obj release\moc_slider.obj release\moc_geisttextedit.obj release\moc_global.obj release\moc_highlighter.obj release\moc_DeltaXPlugin.obj release\moc_testwindow.obj
+	-$(DEL_FILE) release\main.obj release\AccountWindow.obj release\Authority.obj release\ComDevice.obj release\DrawingExporter.obj release\DrawingWidget.obj release\FilterWindow.obj release\GcodeHighlighter.obj release\GcodeReference.obj release\GcodeScript.obj release\ImageProcessing.obj release\ImageViewer.obj release\Layer.obj release\MainWindow.obj release\Object.obj release\ObjectInfo.obj release\ObjectVariableTable.obj release\Parameter.obj release\PointTool.obj release\ProjectManager.obj release\RobotWindow.obj release\SmartDialog.obj release\SocketConnectionManager.obj release\SoftwareManager.obj release\TCPConnectionManager.obj release\TabDashboard.obj release\TaskNode.obj release\TestCode.obj release\TextLayer.obj release\TrackingManager.obj release\VariableManager.obj release\VersionManager.obj release\codeeditor.obj release\DeltaVisualizer.obj release\UnityTool.obj release\DeviceManager.obj release\camera.obj release\conveyor.obj release\device.obj release\encoder.obj release\robot.obj release\slider.obj release\geisttextedit.obj release\global.obj release\highlighter.obj release\testwindow.obj release\qrc_resource.obj release\moc_AccountWindow.obj release\moc_Authority.obj release\moc_ComDevice.obj release\moc_DeltaVisualizer.obj release\moc_DrawingExporter.obj release\moc_DrawingWidget.obj release\moc_FilterWindow.obj release\moc_GcodeReference.obj release\moc_GcodeScript.obj release\moc_ImageViewer.obj release\moc_Layer.obj release\moc_MainWindow.obj release\moc_ImageProcessing.obj release\moc_ObjectInfoModel.obj release\moc_ObjectVariableTable.obj release\moc_PointTool.obj release\moc_ProjectManager.obj release\moc_RobotWindow.obj release\moc_SmartDialog.obj release\moc_SocketConnectionManager.obj release\moc_TCPConnectionManager.obj release\moc_TabDashboard.obj release\moc_TaskNode.obj release\moc_TextLayer.obj release\moc_TrackingManager.obj release\moc_VariableManager.obj release\moc_VersionManager.obj release\moc_codeeditor.obj release\moc_DeviceManager.obj release\moc_camera.obj
+	-$(DEL_FILE) release\moc_conveyor.obj release\moc_device.obj release\moc_encoder.obj release\moc_robot.obj release\moc_slider.obj release\moc_geisttextedit.obj release\moc_global.obj release\moc_highlighter.obj release\moc_DeltaXPlugin.obj release\moc_testwindow.obj
 	-$(DEL_FILE) release\DeltaRobotSoftware_resource.res
 
 distclean: clean 
@@ -595,9 +592,9 @@ compiler_moc_predefs_clean:
 release\moc_predefs.h: C:\Qt\5.15.2\msvc2015_64\mkspecs\features\data\dummy.cpp
 	cl -BxC:\Qt\5.15.2\msvc2015_64\bin\qmake.exe -nologo -Zc:wchar_t -FS -Zc:rvalueCast -Zc:inline -Zc:strictStrings -Zc:throwingNew -O2 -MD -W3 -w34100 -w34189 -w44996 -w44456 -w44457 -w44458 -wd4577 -wd4467 -E C:\Qt\5.15.2\msvc2015_64\mkspecs\features\data\dummy.cpp 2>NUL >release\moc_predefs.h
 
-compiler_moc_header_make_all: release\moc_AccountWindow.cpp release\moc_Authority.cpp release\moc_ComDevice.cpp release\moc_DeltaVisualizer.cpp release\moc_DrawingExporter.cpp release\moc_DrawingWidget.cpp release\moc_FilterWindow.cpp release\moc_GcodeReference.cpp release\moc_GcodeScript.cpp release\moc_ImageViewer.cpp release\moc_Layer.cpp release\moc_MainWindow.cpp release\moc_ImageProcessing.cpp release\moc_ObjectVariableTable.cpp release\moc_PointTool.cpp release\moc_ProjectManager.cpp release\moc_RobotWindow.cpp release\moc_SmartDialog.cpp release\moc_SocketConnectionManager.cpp release\moc_TCPConnectionManager.cpp release\moc_TabDashboard.cpp release\moc_TaskNode.cpp release\moc_TextLayer.cpp release\moc_TrackingManager.cpp release\moc_VarManager.cpp release\moc_VariableManager.cpp release\moc_VersionManager.cpp release\moc_codeeditor.cpp release\moc_DeviceManager.cpp release\moc_camera.cpp release\moc_conveyor.cpp release\moc_device.cpp release\moc_encoder.cpp release\moc_robot.cpp release\moc_slider.cpp release\moc_geisttextedit.cpp release\moc_global.cpp release\moc_highlighter.cpp release\moc_GcodeReference.cpp release\moc_DeltaXPlugin.cpp release\moc_testwindow.cpp
+compiler_moc_header_make_all: release\moc_AccountWindow.cpp release\moc_Authority.cpp release\moc_ComDevice.cpp release\moc_DeltaVisualizer.cpp release\moc_DrawingExporter.cpp release\moc_DrawingWidget.cpp release\moc_FilterWindow.cpp release\moc_GcodeReference.cpp release\moc_GcodeScript.cpp release\moc_ImageViewer.cpp release\moc_Layer.cpp release\moc_MainWindow.cpp release\moc_ImageProcessing.cpp release\moc_ObjectInfoModel.cpp release\moc_ObjectVariableTable.cpp release\moc_PointTool.cpp release\moc_ProjectManager.cpp release\moc_RobotWindow.cpp release\moc_SmartDialog.cpp release\moc_SocketConnectionManager.cpp release\moc_TCPConnectionManager.cpp release\moc_TabDashboard.cpp release\moc_TaskNode.cpp release\moc_TextLayer.cpp release\moc_TrackingManager.cpp release\moc_VariableManager.cpp release\moc_VersionManager.cpp release\moc_codeeditor.cpp release\moc_DeviceManager.cpp release\moc_camera.cpp release\moc_conveyor.cpp release\moc_device.cpp release\moc_encoder.cpp release\moc_robot.cpp release\moc_slider.cpp release\moc_geisttextedit.cpp release\moc_global.cpp release\moc_highlighter.cpp release\moc_GcodeReference.cpp release\moc_DeltaXPlugin.cpp release\moc_testwindow.cpp
 compiler_moc_header_clean:
-	-$(DEL_FILE) release\moc_AccountWindow.cpp release\moc_Authority.cpp release\moc_ComDevice.cpp release\moc_DeltaVisualizer.cpp release\moc_DrawingExporter.cpp release\moc_DrawingWidget.cpp release\moc_FilterWindow.cpp release\moc_GcodeReference.cpp release\moc_GcodeScript.cpp release\moc_ImageViewer.cpp release\moc_Layer.cpp release\moc_MainWindow.cpp release\moc_ImageProcessing.cpp release\moc_ObjectVariableTable.cpp release\moc_PointTool.cpp release\moc_ProjectManager.cpp release\moc_RobotWindow.cpp release\moc_SmartDialog.cpp release\moc_SocketConnectionManager.cpp release\moc_TCPConnectionManager.cpp release\moc_TabDashboard.cpp release\moc_TaskNode.cpp release\moc_TextLayer.cpp release\moc_TrackingManager.cpp release\moc_VarManager.cpp release\moc_VariableManager.cpp release\moc_VersionManager.cpp release\moc_codeeditor.cpp release\moc_DeviceManager.cpp release\moc_camera.cpp release\moc_conveyor.cpp release\moc_device.cpp release\moc_encoder.cpp release\moc_robot.cpp release\moc_slider.cpp release\moc_geisttextedit.cpp release\moc_global.cpp release\moc_highlighter.cpp release\moc_GcodeReference.cpp release\moc_DeltaXPlugin.cpp release\moc_testwindow.cpp
+	-$(DEL_FILE) release\moc_AccountWindow.cpp release\moc_Authority.cpp release\moc_ComDevice.cpp release\moc_DeltaVisualizer.cpp release\moc_DrawingExporter.cpp release\moc_DrawingWidget.cpp release\moc_FilterWindow.cpp release\moc_GcodeReference.cpp release\moc_GcodeScript.cpp release\moc_ImageViewer.cpp release\moc_Layer.cpp release\moc_MainWindow.cpp release\moc_ImageProcessing.cpp release\moc_ObjectInfoModel.cpp release\moc_ObjectVariableTable.cpp release\moc_PointTool.cpp release\moc_ProjectManager.cpp release\moc_RobotWindow.cpp release\moc_SmartDialog.cpp release\moc_SocketConnectionManager.cpp release\moc_TCPConnectionManager.cpp release\moc_TabDashboard.cpp release\moc_TaskNode.cpp release\moc_TextLayer.cpp release\moc_TrackingManager.cpp release\moc_VariableManager.cpp release\moc_VersionManager.cpp release\moc_codeeditor.cpp release\moc_DeviceManager.cpp release\moc_camera.cpp release\moc_conveyor.cpp release\moc_device.cpp release\moc_encoder.cpp release\moc_robot.cpp release\moc_slider.cpp release\moc_geisttextedit.cpp release\moc_global.cpp release\moc_highlighter.cpp release\moc_GcodeReference.cpp release\moc_DeltaXPlugin.cpp release\moc_testwindow.cpp
 release\moc_AccountWindow.cpp: AccountWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QMainWindow \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qmainwindow.h \
@@ -1334,8 +1331,13 @@ release\moc_Authority.cpp: Authority.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QThread \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutexLocker \
 		VariableManager.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
 		GcodeReference.h \
 		ui_GcodeReference.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QApplication \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGridLayout \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QListWidget \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QTextEdit \
 		DrawingExporter.h \
 		DrawingWidget.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLineEdit \
@@ -1371,7 +1373,6 @@ release\moc_Authority.cpp: Authority.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QCloseEvent \
 		ObjectVariableTable.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QSpacerItem \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGridLayout \
 		Object.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QScrollArea \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QProcess \
@@ -1403,6 +1404,9 @@ release\moc_Authority.cpp: Authority.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QTextCharFormat \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QFont \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QColor \
+		ObjectInfoModel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QAbstractTableModel \
+		ObjectInfo.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		ImageProcessing.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QCheckBox \
@@ -1410,14 +1414,13 @@ release\moc_Authority.cpp: Authority.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QRadioButton \
 		TaskNode.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSharedPointer \
-		ObjectInfo.h \
 		GcodeScript.h \
 		ScurveInterpolator.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QtMath \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutex \
 		Parameter.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QFileInfo \
-		VarManager.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QMatrix \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QDialogButtonBox \
 		device\DeviceManager.h \
 		device\robot.h \
@@ -1442,7 +1445,6 @@ release\moc_Authority.cpp: Authority.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDateTime \
 		PointTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPolygonF \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QMatrix \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGraphicsView \
 		release\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2015_64\bin\moc.exe
@@ -2444,10 +2446,15 @@ release\moc_FilterWindow.cpp: FilterWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutexLocker \
 		VariableManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QVariant \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qstandarditemmodel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qabstractitemmodel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qicon.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QVector3D \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qvector3d.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QPushButton \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qpushbutton.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qabstractbutton.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qicon.h \
 		release\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2015_64\bin\moc.exe
 	C:\Qt\5.15.2\msvc2015_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include "E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware/release/moc_predefs.h" -IC:/Qt/5.15.2/msvc2015_64/mkspecs/win32-msvc -I"E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware" -I"E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware/3rd-party/opencv/build/include" -IC:/Qt/5.15.2/msvc2015_64/include -IC:/Qt/5.15.2/msvc2015_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2015_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2015_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtQuick -IC:/Qt/5.15.2/msvc2015_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2015_64/include/QtGui -IC:/Qt/5.15.2/msvc2015_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2015_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2015_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2015_64/include/QtQml -IC:/Qt/5.15.2/msvc2015_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2015_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" FilterWindow.h -o release\moc_FilterWindow.cpp
@@ -2557,6 +2564,48 @@ release\moc_GcodeReference.cpp: GcodeReference.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qvector2d.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtouchdevice.h \
 		ui_GcodeReference.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QVariant \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QApplication \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qapplication.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qcoreapplication.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qeventloop.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qdesktopwidget.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qguiapplication.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qinputmethod.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGridLayout \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qgridlayout.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qlayout.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qlayoutitem.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qboxlayout.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QHBoxLayout \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QListWidget \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qlistwidget.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qlistview.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qabstractitemview.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qabstractscrollarea.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qframe.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qabstractitemmodel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qitemselectionmodel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qabstractitemdelegate.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qstyleoption.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qabstractspinbox.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qvalidator.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qregularexpression.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qicon.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qslider.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qabstractslider.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qstyle.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qtabbar.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qtabwidget.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qrubberband.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QTextEdit \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qtextedit.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtextdocument.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtextoption.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtextcursor.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtextformat.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpen.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QVBoxLayout \
 		release\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2015_64\bin\moc.exe
 	C:\Qt\5.15.2\msvc2015_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include "E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware/release/moc_predefs.h" -IC:/Qt/5.15.2/msvc2015_64/mkspecs/win32-msvc -I"E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware" -I"E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware/3rd-party/opencv/build/include" -IC:/Qt/5.15.2/msvc2015_64/include -IC:/Qt/5.15.2/msvc2015_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2015_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2015_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtQuick -IC:/Qt/5.15.2/msvc2015_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2015_64/include/QtGui -IC:/Qt/5.15.2/msvc2015_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2015_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2015_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2015_64/include/QtQml -IC:/Qt/5.15.2/msvc2015_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2015_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" GcodeReference.h -o release\moc_GcodeReference.cpp
@@ -3191,8 +3240,13 @@ release\moc_GcodeScript.cpp: GcodeScript.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QThread \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutexLocker \
 		VariableManager.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
 		GcodeReference.h \
 		ui_GcodeReference.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QApplication \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGridLayout \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QListWidget \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QTextEdit \
 		DrawingExporter.h \
 		DrawingWidget.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLineEdit \
@@ -3228,7 +3282,6 @@ release\moc_GcodeScript.cpp: GcodeScript.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QCloseEvent \
 		ObjectVariableTable.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QSpacerItem \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGridLayout \
 		Object.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QScrollArea \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QProcess \
@@ -3260,16 +3313,18 @@ release\moc_GcodeScript.cpp: GcodeScript.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QTextCharFormat \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QFont \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QColor \
+		ObjectInfoModel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QAbstractTableModel \
+		ObjectInfo.h \
 		ImageProcessing.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QCheckBox \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QToolButton \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QRadioButton \
 		TaskNode.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSharedPointer \
-		ObjectInfo.h \
 		GcodeScript.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QFileInfo \
-		VarManager.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QMatrix \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QDialogButtonBox \
 		device\DeviceManager.h \
 		device\robot.h \
@@ -3294,7 +3349,6 @@ release\moc_GcodeScript.cpp: GcodeScript.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDateTime \
 		PointTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPolygonF \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QMatrix \
 		release\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2015_64\bin\moc.exe
 	C:\Qt\5.15.2\msvc2015_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include "E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware/release/moc_predefs.h" -IC:/Qt/5.15.2/msvc2015_64/mkspecs/win32-msvc -I"E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware" -I"E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware/3rd-party/opencv/build/include" -IC:/Qt/5.15.2/msvc2015_64/include -IC:/Qt/5.15.2/msvc2015_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2015_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2015_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtQuick -IC:/Qt/5.15.2/msvc2015_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2015_64/include/QtGui -IC:/Qt/5.15.2/msvc2015_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2015_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2015_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2015_64/include/QtQml -IC:/Qt/5.15.2/msvc2015_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2015_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" GcodeScript.h -o release\moc_GcodeScript.cpp
@@ -3781,6 +3835,7 @@ release\moc_ImageViewer.cpp: ImageViewer.h \
 		UnityTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QElapsedTimer \
 		VariableManager.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
 		release\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2015_64\bin\moc.exe
 	C:\Qt\5.15.2\msvc2015_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include "E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware/release/moc_predefs.h" -IC:/Qt/5.15.2/msvc2015_64/mkspecs/win32-msvc -I"E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware" -I"E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware/3rd-party/opencv/build/include" -IC:/Qt/5.15.2/msvc2015_64/include -IC:/Qt/5.15.2/msvc2015_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2015_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2015_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtQuick -IC:/Qt/5.15.2/msvc2015_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2015_64/include/QtGui -IC:/Qt/5.15.2/msvc2015_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2015_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2015_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2015_64/include/QtQml -IC:/Qt/5.15.2/msvc2015_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2015_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" ImageViewer.h -o release\moc_ImageViewer.cpp
@@ -4522,8 +4577,13 @@ release\moc_MainWindow.cpp: MainWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QThread \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutexLocker \
 		VariableManager.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
 		GcodeReference.h \
 		ui_GcodeReference.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QApplication \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGridLayout \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QListWidget \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QTextEdit \
 		DrawingExporter.h \
 		DrawingWidget.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLineEdit \
@@ -4559,7 +4619,6 @@ release\moc_MainWindow.cpp: MainWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QCloseEvent \
 		ObjectVariableTable.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QSpacerItem \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGridLayout \
 		Object.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QScrollArea \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QProcess \
@@ -4591,20 +4650,22 @@ release\moc_MainWindow.cpp: MainWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QTextCharFormat \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QFont \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QColor \
+		ObjectInfoModel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QAbstractTableModel \
+		ObjectInfo.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		ImageProcessing.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QCheckBox \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QRadioButton \
 		TaskNode.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSharedPointer \
-		ObjectInfo.h \
 		GcodeScript.h \
 		ScurveInterpolator.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QtMath \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutex \
 		Parameter.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QFileInfo \
-		VarManager.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QMatrix \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QDialogButtonBox \
 		device\DeviceManager.h \
 		device\robot.h \
@@ -4629,10 +4690,8 @@ release\moc_MainWindow.cpp: MainWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDateTime \
 		PointTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPolygonF \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QMatrix \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGraphicsView \
 		VersionManager.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QApplication \
 		release\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2015_64\bin\moc.exe
 	C:\Qt\5.15.2\msvc2015_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include "E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware/release/moc_predefs.h" -IC:/Qt/5.15.2/msvc2015_64/mkspecs/win32-msvc -I"E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware" -I"E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware/3rd-party/opencv/build/include" -IC:/Qt/5.15.2/msvc2015_64/include -IC:/Qt/5.15.2/msvc2015_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2015_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2015_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtQuick -IC:/Qt/5.15.2/msvc2015_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2015_64/include/QtGui -IC:/Qt/5.15.2/msvc2015_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2015_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2015_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2015_64/include/QtQml -IC:/Qt/5.15.2/msvc2015_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2015_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" MainWindow.h -o release\moc_MainWindow.cpp
@@ -4906,13 +4965,93 @@ release\moc_ImageProcessing.cpp: ImageProcessing.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSettings \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsettings.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QVariant \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSharedPointer \
-		ObjectInfo.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qstandarditemmodel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qabstractitemmodel.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QVector3D \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qvector3d.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSharedPointer \
+		ObjectInfo.h \
 		release\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2015_64\bin\moc.exe
 	C:\Qt\5.15.2\msvc2015_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include "E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware/release/moc_predefs.h" -IC:/Qt/5.15.2/msvc2015_64/mkspecs/win32-msvc -I"E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware" -I"E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware/3rd-party/opencv/build/include" -IC:/Qt/5.15.2/msvc2015_64/include -IC:/Qt/5.15.2/msvc2015_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2015_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2015_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtQuick -IC:/Qt/5.15.2/msvc2015_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2015_64/include/QtGui -IC:/Qt/5.15.2/msvc2015_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2015_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2015_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2015_64/include/QtQml -IC:/Qt/5.15.2/msvc2015_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2015_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" ImageProcessing.h -o release\moc_ImageProcessing.cpp
+
+release\moc_ObjectInfoModel.cpp: ObjectInfoModel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QAbstractTableModel \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qabstractitemmodel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qvariant.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qatomic.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qglobal.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qconfig-bootstrapped.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qconfig.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qtcore-config.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsystemdetection.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qprocessordetection.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qcompilerdetection.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qtypeinfo.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsysinfo.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qlogging.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qflags.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qglobalstatic.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qmutex.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qnumeric.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qversiontagging.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qbasicatomic.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qatomic_bootstrap.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qgenericatomic.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qatomic_cxx11.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qatomic_msvc.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qbytearray.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qrefcount.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qnamespace.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qarraydata.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qlist.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qalgorithms.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qiterator.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qhashfunctions.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qstring.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qchar.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qstringliteral.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qstringalgorithms.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qstringview.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qstringbuilder.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qpair.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qvector.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qcontainertools_impl.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qpoint.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qbytearraylist.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qstringlist.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qregexp.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qstringmatcher.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qmetatype.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qvarlengtharray.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qcontainerfwd.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qobjectdefs.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qobjectdefs_impl.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qmap.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qdebug.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qhash.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qtextstream.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qiodevice.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qobject.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qcoreevent.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qscopedpointer.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qobject_impl.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qlocale.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qshareddata.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qset.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qcontiguouscache.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsharedpointer.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsharedpointer_impl.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QVector3D \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qvector3d.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtguiglobal.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtgui-config.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QList \
+		ObjectInfo.h \
+		release\moc_predefs.h \
+		C:\Qt\5.15.2\msvc2015_64\bin\moc.exe
+	C:\Qt\5.15.2\msvc2015_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include "E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware/release/moc_predefs.h" -IC:/Qt/5.15.2/msvc2015_64/mkspecs/win32-msvc -I"E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware" -I"E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware/3rd-party/opencv/build/include" -IC:/Qt/5.15.2/msvc2015_64/include -IC:/Qt/5.15.2/msvc2015_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2015_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2015_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtQuick -IC:/Qt/5.15.2/msvc2015_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2015_64/include/QtGui -IC:/Qt/5.15.2/msvc2015_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2015_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2015_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2015_64/include/QtQml -IC:/Qt/5.15.2/msvc2015_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2015_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" ObjectInfoModel.h -o release\moc_ObjectInfoModel.cpp
 
 release\moc_ObjectVariableTable.cpp: ObjectVariableTable.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QObject \
@@ -5331,6 +5470,7 @@ release\moc_PointTool.cpp: PointTool.h \
 		3rd-party\opencv\build\include\opencv2\video.hpp \
 		3rd-party\opencv\build\include\opencv2\video\tracking.hpp \
 		3rd-party\opencv\build\include\opencv2\video\background_segm.hpp \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qmath.h \
 		release\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2015_64\bin\moc.exe
 	C:\Qt\5.15.2\msvc2015_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include "E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware/release/moc_predefs.h" -IC:/Qt/5.15.2/msvc2015_64/mkspecs/win32-msvc -I"E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware" -I"E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware/3rd-party/opencv/build/include" -IC:/Qt/5.15.2/msvc2015_64/include -IC:/Qt/5.15.2/msvc2015_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2015_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2015_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtQuick -IC:/Qt/5.15.2/msvc2015_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2015_64/include/QtGui -IC:/Qt/5.15.2/msvc2015_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2015_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2015_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2015_64/include/QtQml -IC:/Qt/5.15.2/msvc2015_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2015_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" PointTool.h -o release\moc_PointTool.cpp
@@ -5958,8 +6098,13 @@ release\moc_ProjectManager.cpp: ProjectManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QThread \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutexLocker \
 		VariableManager.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
 		GcodeReference.h \
 		ui_GcodeReference.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QApplication \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGridLayout \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QListWidget \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QTextEdit \
 		DrawingExporter.h \
 		DrawingWidget.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLineEdit \
@@ -5995,7 +6140,6 @@ release\moc_ProjectManager.cpp: ProjectManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QCloseEvent \
 		ObjectVariableTable.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QSpacerItem \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGridLayout \
 		Object.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QScrollArea \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QProcess \
@@ -6027,6 +6171,9 @@ release\moc_ProjectManager.cpp: ProjectManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QTextCharFormat \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QFont \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QColor \
+		ObjectInfoModel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QAbstractTableModel \
+		ObjectInfo.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		ImageProcessing.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QCheckBox \
@@ -6034,7 +6181,6 @@ release\moc_ProjectManager.cpp: ProjectManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QRadioButton \
 		TaskNode.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSharedPointer \
-		ObjectInfo.h \
 		GcodeScript.h \
 		ScurveInterpolator.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QtMath \
@@ -6043,7 +6189,7 @@ release\moc_ProjectManager.cpp: ProjectManager.h \
 		SoftwareManager.h \
 		ProjectManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QFileInfo \
-		VarManager.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QMatrix \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QDialogButtonBox \
 		device\DeviceManager.h \
 		device\robot.h \
@@ -6068,7 +6214,6 @@ release\moc_ProjectManager.cpp: ProjectManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDateTime \
 		PointTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPolygonF \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QMatrix \
 		release\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2015_64\bin\moc.exe
 	C:\Qt\5.15.2\msvc2015_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include "E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware/release/moc_predefs.h" -IC:/Qt/5.15.2/msvc2015_64/mkspecs/win32-msvc -I"E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware" -I"E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware/3rd-party/opencv/build/include" -IC:/Qt/5.15.2/msvc2015_64/include -IC:/Qt/5.15.2/msvc2015_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2015_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2015_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtQuick -IC:/Qt/5.15.2/msvc2015_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2015_64/include/QtGui -IC:/Qt/5.15.2/msvc2015_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2015_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2015_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2015_64/include/QtQml -IC:/Qt/5.15.2/msvc2015_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2015_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" ProjectManager.h -o release\moc_ProjectManager.cpp
@@ -6689,9 +6834,14 @@ release\moc_RobotWindow.cpp: RobotWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QThread \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutexLocker \
 		VariableManager.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QPushButton \
 		GcodeReference.h \
 		ui_GcodeReference.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QApplication \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGridLayout \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QListWidget \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QTextEdit \
 		DrawingExporter.h \
 		DrawingWidget.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLineEdit \
@@ -6729,7 +6879,6 @@ release\moc_RobotWindow.cpp: RobotWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QCloseEvent \
 		ObjectVariableTable.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QSpacerItem \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGridLayout \
 		Object.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QScrollArea \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QProcess \
@@ -6761,6 +6910,9 @@ release\moc_RobotWindow.cpp: RobotWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QTextCharFormat \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QFont \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QColor \
+		ObjectInfoModel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QAbstractTableModel \
+		ObjectInfo.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QStackedWidget \
 		ImageProcessing.h \
@@ -6769,7 +6921,6 @@ release\moc_RobotWindow.cpp: RobotWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QRadioButton \
 		TaskNode.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSharedPointer \
-		ObjectInfo.h \
 		GcodeScript.h \
 		ScurveInterpolator.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QtMath \
@@ -6798,7 +6949,6 @@ release\moc_RobotWindow.cpp: RobotWindow.h \
 		device\conveyor.h \
 		device\encoder.h \
 		device\camera.h \
-		VarManager.h \
 		TrackingManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QLineF \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QVector2D \
@@ -7779,8 +7929,13 @@ release\moc_TabDashboard.cpp: TabDashboard.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QThread \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutexLocker \
 		VariableManager.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
 		GcodeReference.h \
 		ui_GcodeReference.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QApplication \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGridLayout \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QListWidget \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QTextEdit \
 		DrawingExporter.h \
 		DrawingWidget.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLineEdit \
@@ -7816,7 +7971,6 @@ release\moc_TabDashboard.cpp: TabDashboard.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QCloseEvent \
 		ObjectVariableTable.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QSpacerItem \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGridLayout \
 		Object.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QScrollArea \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QProcess \
@@ -7848,20 +8002,22 @@ release\moc_TabDashboard.cpp: TabDashboard.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QTextCharFormat \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QFont \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QColor \
+		ObjectInfoModel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QAbstractTableModel \
+		ObjectInfo.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		ImageProcessing.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QCheckBox \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QRadioButton \
 		TaskNode.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSharedPointer \
-		ObjectInfo.h \
 		GcodeScript.h \
 		ScurveInterpolator.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QtMath \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutex \
 		Parameter.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QFileInfo \
-		VarManager.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QMatrix \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QDialogButtonBox \
 		device\DeviceManager.h \
 		device\robot.h \
@@ -7886,7 +8042,6 @@ release\moc_TabDashboard.cpp: TabDashboard.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDateTime \
 		PointTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPolygonF \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QMatrix \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGraphicsView \
 		release\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2015_64\bin\moc.exe
@@ -8132,10 +8287,13 @@ release\moc_TaskNode.cpp: TaskNode.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSettings \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsettings.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QVariant \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSharedPointer \
-		ObjectInfo.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qstandarditemmodel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qabstractitemmodel.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QVector3D \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qvector3d.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSharedPointer \
+		ObjectInfo.h \
 		release\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2015_64\bin\moc.exe
 	C:\Qt\5.15.2\msvc2015_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include "E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware/release/moc_predefs.h" -IC:/Qt/5.15.2/msvc2015_64/mkspecs/win32-msvc -I"E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware" -I"E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware/3rd-party/opencv/build/include" -IC:/Qt/5.15.2/msvc2015_64/include -IC:/Qt/5.15.2/msvc2015_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2015_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2015_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtQuick -IC:/Qt/5.15.2/msvc2015_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2015_64/include/QtGui -IC:/Qt/5.15.2/msvc2015_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2015_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2015_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2015_64/include/QtQml -IC:/Qt/5.15.2/msvc2015_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2015_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" TaskNode.h -o release\moc_TaskNode.cpp
@@ -8343,82 +8501,33 @@ release\moc_TrackingManager.cpp: TrackingManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSettings \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsettings.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QVariant \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qstandarditemmodel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qabstractitemmodel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qbrush.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qcolor.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qrgb.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qrgba64.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qmatrix.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpolygon.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qrect.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qmargins.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsize.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qregion.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qwindowdefs.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qwindowdefs_win.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qdatastream.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtransform.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qimage.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpaintdevice.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpixelformat.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpixmap.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qfont.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qicon.h \
 		ObjectInfo.h \
 		release\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2015_64\bin\moc.exe
 	C:\Qt\5.15.2\msvc2015_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include "E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware/release/moc_predefs.h" -IC:/Qt/5.15.2/msvc2015_64/mkspecs/win32-msvc -I"E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware" -I"E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware/3rd-party/opencv/build/include" -IC:/Qt/5.15.2/msvc2015_64/include -IC:/Qt/5.15.2/msvc2015_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2015_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2015_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtQuick -IC:/Qt/5.15.2/msvc2015_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2015_64/include/QtGui -IC:/Qt/5.15.2/msvc2015_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2015_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2015_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2015_64/include/QtQml -IC:/Qt/5.15.2/msvc2015_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2015_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" TrackingManager.h -o release\moc_TrackingManager.cpp
-
-release\moc_VarManager.cpp: VarManager.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QObject \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qobject.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qobjectdefs.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qnamespace.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qglobal.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qconfig-bootstrapped.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qconfig.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qtcore-config.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsystemdetection.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qprocessordetection.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qcompilerdetection.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qtypeinfo.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsysinfo.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qlogging.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qflags.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qatomic.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qbasicatomic.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qatomic_bootstrap.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qgenericatomic.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qatomic_cxx11.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qatomic_msvc.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qglobalstatic.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qmutex.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qnumeric.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qversiontagging.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qobjectdefs_impl.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qstring.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qchar.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qbytearray.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qrefcount.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qarraydata.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qstringliteral.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qstringalgorithms.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qstringview.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qstringbuilder.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qlist.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qalgorithms.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qiterator.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qhashfunctions.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qpair.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qvector.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qcontainertools_impl.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qpoint.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qbytearraylist.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qstringlist.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qregexp.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qstringmatcher.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qcoreevent.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qscopedpointer.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qmetatype.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qvarlengtharray.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qcontainerfwd.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qobject_impl.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSettings \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsettings.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qvariant.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qmap.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qdebug.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qhash.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qtextstream.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qiodevice.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qlocale.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qshareddata.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qset.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qcontiguouscache.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsharedpointer.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsharedpointer_impl.h \
-		release\moc_predefs.h \
-		C:\Qt\5.15.2\msvc2015_64\bin\moc.exe
-	C:\Qt\5.15.2\msvc2015_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include "E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware/release/moc_predefs.h" -IC:/Qt/5.15.2/msvc2015_64/mkspecs/win32-msvc -I"E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware" -I"E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware/3rd-party/opencv/build/include" -IC:/Qt/5.15.2/msvc2015_64/include -IC:/Qt/5.15.2/msvc2015_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2015_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2015_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtQuick -IC:/Qt/5.15.2/msvc2015_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2015_64/include/QtGui -IC:/Qt/5.15.2/msvc2015_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2015_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2015_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2015_64/include/QtQml -IC:/Qt/5.15.2/msvc2015_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2015_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" VarManager.h -o release\moc_VarManager.cpp
 
 release\moc_VariableManager.cpp: VariableManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSettings \
@@ -8488,6 +8597,34 @@ release\moc_VariableManager.cpp: VariableManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsharedpointer.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsharedpointer_impl.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QVariant \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qstandarditemmodel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtguiglobal.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtgui-config.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qabstractitemmodel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qbrush.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qcolor.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qrgb.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qrgba64.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qmatrix.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpolygon.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qrect.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qmargins.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsize.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qregion.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qwindowdefs.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qwindowdefs_win.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qdatastream.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qline.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtransform.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qimage.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpaintdevice.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpixelformat.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpixmap.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qfont.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qicon.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QVector3D \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qvector3d.h \
 		release\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2015_64\bin\moc.exe
 	C:\Qt\5.15.2\msvc2015_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include "E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware/release/moc_predefs.h" -IC:/Qt/5.15.2/msvc2015_64/mkspecs/win32-msvc -I"E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware" -I"E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware/3rd-party/opencv/build/include" -IC:/Qt/5.15.2/msvc2015_64/include -IC:/Qt/5.15.2/msvc2015_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2015_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2015_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtQuick -IC:/Qt/5.15.2/msvc2015_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2015_64/include/QtGui -IC:/Qt/5.15.2/msvc2015_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2015_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2015_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2015_64/include/QtQml -IC:/Qt/5.15.2/msvc2015_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2015_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" VariableManager.h -o release\moc_VariableManager.cpp
@@ -8874,6 +9011,30 @@ release\moc_DeviceManager.cpp: device\DeviceManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSettings \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsettings.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QVariant \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qstandarditemmodel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qabstractitemmodel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qbrush.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qcolor.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qrgb.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qrgba64.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qmatrix.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpolygon.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qrect.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qmargins.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsize.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qregion.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qwindowdefs.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qwindowdefs_win.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qdatastream.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qline.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtransform.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qimage.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpaintdevice.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpixelformat.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpixmap.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qfont.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qicon.h \
 		device\slider.h \
 		device\conveyor.h \
 		device\encoder.h \
@@ -9524,6 +9685,30 @@ release\moc_robot.cpp: device\robot.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSettings \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsettings.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QVariant \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qstandarditemmodel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qabstractitemmodel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qbrush.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qcolor.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qrgb.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qrgba64.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qmatrix.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpolygon.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qrect.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qmargins.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsize.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qregion.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qwindowdefs.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qwindowdefs_win.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qdatastream.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qline.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtransform.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qimage.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpaintdevice.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpixelformat.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpixmap.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qfont.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qicon.h \
 		release\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2015_64\bin\moc.exe
 	C:\Qt\5.15.2\msvc2015_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include "E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware/release/moc_predefs.h" -IC:/Qt/5.15.2/msvc2015_64/mkspecs/win32-msvc -I"E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware" -I"E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware/3rd-party/opencv/build/include" -IC:/Qt/5.15.2/msvc2015_64/include -IC:/Qt/5.15.2/msvc2015_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2015_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2015_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtQuick -IC:/Qt/5.15.2/msvc2015_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2015_64/include/QtGui -IC:/Qt/5.15.2/msvc2015_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2015_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2015_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2015_64/include/QtQml -IC:/Qt/5.15.2/msvc2015_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2015_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" device\robot.h -o release\moc_robot.cpp
@@ -10117,6 +10302,48 @@ release\moc_GcodeReference.cpp: GcodeReference.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qvector2d.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtouchdevice.h \
 		ui_GcodeReference.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QVariant \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QApplication \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qapplication.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qcoreapplication.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qeventloop.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qdesktopwidget.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qguiapplication.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qinputmethod.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGridLayout \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qgridlayout.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qlayout.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qlayoutitem.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qboxlayout.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QHBoxLayout \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QListWidget \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qlistwidget.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qlistview.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qabstractitemview.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qabstractscrollarea.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qframe.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qabstractitemmodel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qitemselectionmodel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qabstractitemdelegate.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qstyleoption.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qabstractspinbox.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qvalidator.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qregularexpression.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qicon.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qslider.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qabstractslider.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qstyle.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qtabbar.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qtabwidget.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qrubberband.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QTextEdit \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qtextedit.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtextdocument.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtextoption.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtextcursor.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtextformat.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpen.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QVBoxLayout \
 		release\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2015_64\bin\moc.exe
 	C:\Qt\5.15.2\msvc2015_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include "E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware/release/moc_predefs.h" -IC:/Qt/5.15.2/msvc2015_64/mkspecs/win32-msvc -I"E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware" -I"E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware/3rd-party/opencv/build/include" -IC:/Qt/5.15.2/msvc2015_64/include -IC:/Qt/5.15.2/msvc2015_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2015_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2015_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtQuick -IC:/Qt/5.15.2/msvc2015_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2015_64/include/QtGui -IC:/Qt/5.15.2/msvc2015_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2015_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2015_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2015_64/include/QtQml -IC:/Qt/5.15.2/msvc2015_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2015_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" GcodeReference.h -o release\moc_GcodeReference.cpp
@@ -11247,7 +11474,8 @@ ui_RobotWindow.h: RobotWindow.ui \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSettings \
 		UnityTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QElapsedTimer \
-		VariableManager.h
+		VariableManager.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel
 	C:\Qt\5.15.2\msvc2015_64\bin\uic.exe RobotWindow.ui -o ui_RobotWindow.h
 
 ui_GcodeReference.h: GcodeReference.ui \
@@ -11886,9 +12114,14 @@ release\main.obj: main.cpp RobotWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QThread \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutexLocker \
 		VariableManager.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QPushButton \
 		GcodeReference.h \
 		ui_GcodeReference.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QApplication \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGridLayout \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QListWidget \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QTextEdit \
 		DrawingExporter.h \
 		DrawingWidget.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLineEdit \
@@ -11926,7 +12159,6 @@ release\main.obj: main.cpp RobotWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QCloseEvent \
 		ObjectVariableTable.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QSpacerItem \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGridLayout \
 		Object.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QScrollArea \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QProcess \
@@ -11958,6 +12190,9 @@ release\main.obj: main.cpp RobotWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QTextCharFormat \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QFont \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QColor \
+		ObjectInfoModel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QAbstractTableModel \
+		ObjectInfo.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QStackedWidget \
 		ImageProcessing.h \
@@ -11966,7 +12201,6 @@ release\main.obj: main.cpp RobotWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QRadioButton \
 		TaskNode.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSharedPointer \
-		ObjectInfo.h \
 		GcodeScript.h \
 		ScurveInterpolator.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QtMath \
@@ -11977,7 +12211,7 @@ release\main.obj: main.cpp RobotWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QTabWidget \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QTabBar \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QFileInfo \
-		VarManager.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QMatrix \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QDialogButtonBox \
 		device\DeviceManager.h \
 		device\robot.h \
@@ -12002,13 +12236,11 @@ release\main.obj: main.cpp RobotWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDateTime \
 		PointTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPolygonF \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QMatrix \
 		MainWindow.h \
 		TabDashboard.h \
 		Authority.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGraphicsView \
 		VersionManager.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QApplication \
 		AccountWindow.h \
 		testwindow.h \
 		testcode.h \
@@ -12122,7 +12354,41 @@ release\AccountWindow.obj: AccountWindow.cpp AccountWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtouchdevice.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qtabwidget.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qicon.h \
-		ui_AccountWindow.h
+		ui_AccountWindow.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QVariant \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QAction \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qaction.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qactiongroup.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QApplication \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qapplication.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qcoreapplication.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qeventloop.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qdesktopwidget.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qguiapplication.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qinputmethod.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QFrame \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qframe.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QMenu \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qmenu.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QMenuBar \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qmenubar.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QPushButton \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qpushbutton.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qabstractbutton.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QRadioButton \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qradiobutton.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QSplitter \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qsplitter.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QStatusBar \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qstatusbar.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QToolButton \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qtoolbutton.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QVBoxLayout \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qboxlayout.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qlayout.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qlayoutitem.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qgridlayout.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QWidget
 
 release\Authority.obj: Authority.cpp Authority.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QObject \
@@ -12749,8 +13015,13 @@ release\Authority.obj: Authority.cpp Authority.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QThread \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutexLocker \
 		VariableManager.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
 		GcodeReference.h \
 		ui_GcodeReference.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QApplication \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGridLayout \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QListWidget \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QTextEdit \
 		DrawingExporter.h \
 		DrawingWidget.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLineEdit \
@@ -12786,7 +13057,6 @@ release\Authority.obj: Authority.cpp Authority.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QCloseEvent \
 		ObjectVariableTable.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QSpacerItem \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGridLayout \
 		Object.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QScrollArea \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QProcess \
@@ -12818,6 +13088,9 @@ release\Authority.obj: Authority.cpp Authority.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QTextCharFormat \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QFont \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QColor \
+		ObjectInfoModel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QAbstractTableModel \
+		ObjectInfo.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		ImageProcessing.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QCheckBox \
@@ -12825,14 +13098,13 @@ release\Authority.obj: Authority.cpp Authority.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QRadioButton \
 		TaskNode.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSharedPointer \
-		ObjectInfo.h \
 		GcodeScript.h \
 		ScurveInterpolator.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QtMath \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutex \
 		Parameter.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QFileInfo \
-		VarManager.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QMatrix \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QDialogButtonBox \
 		device\DeviceManager.h \
 		device\robot.h \
@@ -12857,7 +13129,6 @@ release\Authority.obj: Authority.cpp Authority.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDateTime \
 		PointTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPolygonF \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QMatrix \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGraphicsView
 
 release\ComDevice.obj: ComDevice.cpp ComDevice.h \
@@ -13714,11 +13985,49 @@ release\FilterWindow.obj: FilterWindow.cpp FilterWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutexLocker \
 		VariableManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QVariant \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qstandarditemmodel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qabstractitemmodel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qicon.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QVector3D \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qvector3d.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QPushButton \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qpushbutton.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qabstractbutton.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qicon.h \
-		ui_FilterWindow.h
+		ui_FilterWindow.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QApplication \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qapplication.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qcoreapplication.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qeventloop.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qdesktopwidget.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qguiapplication.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qinputmethod.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QCheckBox \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qcheckbox.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QComboBox \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qcombobox.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qabstractitemdelegate.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qstyleoption.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qabstractspinbox.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qvalidator.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qregularexpression.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qstyle.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qtabbar.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qtabwidget.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qrubberband.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QFrame \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGridLayout \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qgridlayout.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qlayout.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qlayoutitem.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qboxlayout.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGroupBox \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qgroupbox.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QHBoxLayout \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLabel \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QSlider \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QSpacerItem \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QVBoxLayout
 
 release\GcodeHighlighter.obj: GcodeHighlighter.cpp GcodeHighlighter.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QSyntaxHighlighter \
@@ -13936,7 +14245,49 @@ release\GcodeReference.obj: GcodeReference.cpp GcodeReference.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qfiledevice.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qvector2d.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtouchdevice.h \
-		ui_GcodeReference.h
+		ui_GcodeReference.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QVariant \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QApplication \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qapplication.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qcoreapplication.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qeventloop.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qdesktopwidget.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qguiapplication.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qinputmethod.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGridLayout \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qgridlayout.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qlayout.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qlayoutitem.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qboxlayout.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QHBoxLayout \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QListWidget \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qlistwidget.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qlistview.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qabstractitemview.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qabstractscrollarea.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qframe.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qabstractitemmodel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qitemselectionmodel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qabstractitemdelegate.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qstyleoption.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qabstractspinbox.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qvalidator.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qregularexpression.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qicon.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qslider.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qabstractslider.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qstyle.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qtabbar.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qtabwidget.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qrubberband.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QTextEdit \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qtextedit.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtextdocument.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtextoption.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtextcursor.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtextformat.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpen.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QVBoxLayout
 
 release\GcodeScript.obj: GcodeScript.cpp GcodeScript.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QObject \
@@ -14568,8 +14919,13 @@ release\GcodeScript.obj: GcodeScript.cpp GcodeScript.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QThread \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutexLocker \
 		VariableManager.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
 		GcodeReference.h \
 		ui_GcodeReference.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QApplication \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGridLayout \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QListWidget \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QTextEdit \
 		DrawingExporter.h \
 		DrawingWidget.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLineEdit \
@@ -14605,7 +14961,6 @@ release\GcodeScript.obj: GcodeScript.cpp GcodeScript.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QCloseEvent \
 		ObjectVariableTable.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QSpacerItem \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGridLayout \
 		Object.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QScrollArea \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QProcess \
@@ -14637,13 +14992,15 @@ release\GcodeScript.obj: GcodeScript.cpp GcodeScript.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QTextCharFormat \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QFont \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QColor \
+		ObjectInfoModel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QAbstractTableModel \
+		ObjectInfo.h \
 		ImageProcessing.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QCheckBox \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QToolButton \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QRadioButton \
 		TaskNode.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSharedPointer \
-		ObjectInfo.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QDialogButtonBox \
 		device\DeviceManager.h \
 		device\robot.h \
@@ -14662,7 +15019,6 @@ release\GcodeScript.obj: GcodeScript.cpp GcodeScript.h \
 		device\conveyor.h \
 		device\encoder.h \
 		device\camera.h \
-		VarManager.h \
 		TrackingManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QLineF \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QVector2D \
@@ -14941,10 +15297,13 @@ release\ImageProcessing.obj: ImageProcessing.cpp ImageProcessing.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSettings \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsettings.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QVariant \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSharedPointer \
-		ObjectInfo.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qstandarditemmodel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qabstractitemmodel.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QVector3D \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qvector3d.h
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qvector3d.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSharedPointer \
+		ObjectInfo.h
 
 release\ImageViewer.obj: ImageViewer.cpp ImageViewer.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGraphicsView \
@@ -15427,7 +15786,8 @@ release\ImageViewer.obj: ImageViewer.cpp ImageViewer.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSettings \
 		UnityTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QElapsedTimer \
-		VariableManager.h
+		VariableManager.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel
 
 release\Layer.obj: Layer.cpp Layer.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QFrame \
@@ -16163,8 +16523,13 @@ release\MainWindow.obj: MainWindow.cpp MainWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QThread \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutexLocker \
 		VariableManager.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
 		GcodeReference.h \
 		ui_GcodeReference.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QApplication \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGridLayout \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QListWidget \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QTextEdit \
 		DrawingExporter.h \
 		DrawingWidget.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLineEdit \
@@ -16200,7 +16565,6 @@ release\MainWindow.obj: MainWindow.cpp MainWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QCloseEvent \
 		ObjectVariableTable.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QSpacerItem \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGridLayout \
 		Object.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QScrollArea \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QProcess \
@@ -16232,20 +16596,22 @@ release\MainWindow.obj: MainWindow.cpp MainWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QTextCharFormat \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QFont \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QColor \
+		ObjectInfoModel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QAbstractTableModel \
+		ObjectInfo.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		ImageProcessing.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QCheckBox \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QRadioButton \
 		TaskNode.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSharedPointer \
-		ObjectInfo.h \
 		GcodeScript.h \
 		ScurveInterpolator.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QtMath \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutex \
 		Parameter.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QFileInfo \
-		VarManager.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QMatrix \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QDialogButtonBox \
 		device\DeviceManager.h \
 		device\robot.h \
@@ -16270,11 +16636,18 @@ release\MainWindow.obj: MainWindow.cpp MainWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDateTime \
 		PointTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPolygonF \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QMatrix \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGraphicsView \
 		VersionManager.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QApplication \
-		ui_MainWindow.h
+		ui_MainWindow.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QIcon \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QAction \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QFrame \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGroupBox \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QHeaderView \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QPlainTextEdit \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QTableWidget \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QTreeView \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QTreeWidget
 
 release\Object.obj: Object.cpp 
 
@@ -16695,7 +17068,8 @@ release\PointTool.obj: PointTool.cpp PointTool.h \
 		3rd-party\opencv\build\include\opencv2\stitching\detail\blenders.hpp \
 		3rd-party\opencv\build\include\opencv2\video.hpp \
 		3rd-party\opencv\build\include\opencv2\video\tracking.hpp \
-		3rd-party\opencv\build\include\opencv2\video\background_segm.hpp
+		3rd-party\opencv\build\include\opencv2\video\background_segm.hpp \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qmath.h
 
 release\ProjectManager.obj: ProjectManager.cpp ProjectManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QWidget \
@@ -17320,8 +17694,13 @@ release\ProjectManager.obj: ProjectManager.cpp ProjectManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QThread \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutexLocker \
 		VariableManager.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
 		GcodeReference.h \
 		ui_GcodeReference.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QApplication \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGridLayout \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QListWidget \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QTextEdit \
 		DrawingExporter.h \
 		DrawingWidget.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLineEdit \
@@ -17357,7 +17736,6 @@ release\ProjectManager.obj: ProjectManager.cpp ProjectManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QCloseEvent \
 		ObjectVariableTable.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QSpacerItem \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGridLayout \
 		Object.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QScrollArea \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QProcess \
@@ -17389,6 +17767,9 @@ release\ProjectManager.obj: ProjectManager.cpp ProjectManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QTextCharFormat \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QFont \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QColor \
+		ObjectInfoModel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QAbstractTableModel \
+		ObjectInfo.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		ImageProcessing.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QCheckBox \
@@ -17396,7 +17777,6 @@ release\ProjectManager.obj: ProjectManager.cpp ProjectManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QRadioButton \
 		TaskNode.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSharedPointer \
-		ObjectInfo.h \
 		GcodeScript.h \
 		ScurveInterpolator.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QtMath \
@@ -17404,7 +17784,7 @@ release\ProjectManager.obj: ProjectManager.cpp ProjectManager.h \
 		Parameter.h \
 		SoftwareManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QFileInfo \
-		VarManager.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QMatrix \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QDialogButtonBox \
 		device\DeviceManager.h \
 		device\robot.h \
@@ -17428,8 +17808,7 @@ release\ProjectManager.obj: ProjectManager.cpp ProjectManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QVector2D \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDateTime \
 		PointTool.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPolygonF \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QMatrix
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPolygonF
 
 release\RobotWindow.obj: RobotWindow.cpp RobotWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QMainWindow \
@@ -18047,9 +18426,14 @@ release\RobotWindow.obj: RobotWindow.cpp RobotWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QThread \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutexLocker \
 		VariableManager.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QPushButton \
 		GcodeReference.h \
 		ui_GcodeReference.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QApplication \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGridLayout \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QListWidget \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QTextEdit \
 		DrawingExporter.h \
 		DrawingWidget.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLineEdit \
@@ -18087,7 +18471,6 @@ release\RobotWindow.obj: RobotWindow.cpp RobotWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QCloseEvent \
 		ObjectVariableTable.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QSpacerItem \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGridLayout \
 		Object.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QScrollArea \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QProcess \
@@ -18119,6 +18502,9 @@ release\RobotWindow.obj: RobotWindow.cpp RobotWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QTextCharFormat \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QFont \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QColor \
+		ObjectInfoModel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QAbstractTableModel \
+		ObjectInfo.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QStackedWidget \
 		ImageProcessing.h \
@@ -18127,7 +18513,6 @@ release\RobotWindow.obj: RobotWindow.cpp RobotWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QRadioButton \
 		TaskNode.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSharedPointer \
-		ObjectInfo.h \
 		GcodeScript.h \
 		ScurveInterpolator.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QtMath \
@@ -18138,7 +18523,7 @@ release\RobotWindow.obj: RobotWindow.cpp RobotWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QTabWidget \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QTabBar \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QFileInfo \
-		VarManager.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QMatrix \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QDialogButtonBox \
 		device\DeviceManager.h \
 		device\robot.h \
@@ -18163,14 +18548,26 @@ release\RobotWindow.obj: RobotWindow.cpp RobotWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDateTime \
 		PointTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPolygonF \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QMatrix \
 		ui_RobotWindow.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QIcon \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QAction \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QFrame \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGroupBox \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QHeaderView \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QSlider \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QSplitter \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QTableView \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QTreeView \
+		codeeditor.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QTextDocument \
+		imageviewer.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGraphicsView \
+		C:\Qt\5.15.2\msvc2015_64\include\QtPrintSupport\qtprintsupportglobal.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtPrintSupport\qtprintsupport-config.h \
 		MainWindow.h \
 		TabDashboard.h \
 		Authority.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGraphicsView \
-		VersionManager.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QApplication
+		VersionManager.h
 
 release\SmartDialog.obj: SmartDialog.cpp SmartDialog.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QWidget \
@@ -19001,8 +19398,13 @@ release\SoftwareManager.obj: SoftwareManager.cpp SoftwareManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QThread \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutexLocker \
 		VariableManager.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
 		GcodeReference.h \
 		ui_GcodeReference.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QApplication \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGridLayout \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QListWidget \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QTextEdit \
 		DrawingExporter.h \
 		DrawingWidget.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLineEdit \
@@ -19038,7 +19440,6 @@ release\SoftwareManager.obj: SoftwareManager.cpp SoftwareManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QCloseEvent \
 		ObjectVariableTable.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QSpacerItem \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGridLayout \
 		Object.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QScrollArea \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QProcess \
@@ -19070,6 +19471,9 @@ release\SoftwareManager.obj: SoftwareManager.cpp SoftwareManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QTextCharFormat \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QFont \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QColor \
+		ObjectInfoModel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QAbstractTableModel \
+		ObjectInfo.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		ImageProcessing.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QCheckBox \
@@ -19077,14 +19481,13 @@ release\SoftwareManager.obj: SoftwareManager.cpp SoftwareManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QRadioButton \
 		TaskNode.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSharedPointer \
-		ObjectInfo.h \
 		GcodeScript.h \
 		ScurveInterpolator.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QtMath \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutex \
 		Parameter.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QFileInfo \
-		VarManager.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QMatrix \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QDialogButtonBox \
 		device\DeviceManager.h \
 		device\robot.h \
@@ -19109,13 +19512,11 @@ release\SoftwareManager.obj: SoftwareManager.cpp SoftwareManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDateTime \
 		PointTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPolygonF \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QMatrix \
 		MainWindow.h \
 		TabDashboard.h \
 		Authority.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGraphicsView \
-		VersionManager.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QApplication
+		VersionManager.h
 
 release\TCPConnectionManager.obj: TCPConnectionManager.cpp TCPConnectionManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QObject \
@@ -19871,8 +20272,13 @@ release\TabDashboard.obj: TabDashboard.cpp TabDashboard.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QThread \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutexLocker \
 		VariableManager.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
 		GcodeReference.h \
 		ui_GcodeReference.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QApplication \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGridLayout \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QListWidget \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QTextEdit \
 		DrawingExporter.h \
 		DrawingWidget.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLineEdit \
@@ -19908,7 +20314,6 @@ release\TabDashboard.obj: TabDashboard.cpp TabDashboard.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QCloseEvent \
 		ObjectVariableTable.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QSpacerItem \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGridLayout \
 		Object.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QScrollArea \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QProcess \
@@ -19940,20 +20345,22 @@ release\TabDashboard.obj: TabDashboard.cpp TabDashboard.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QTextCharFormat \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QFont \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QColor \
+		ObjectInfoModel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QAbstractTableModel \
+		ObjectInfo.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		ImageProcessing.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QCheckBox \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QRadioButton \
 		TaskNode.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSharedPointer \
-		ObjectInfo.h \
 		GcodeScript.h \
 		ScurveInterpolator.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QtMath \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutex \
 		Parameter.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QFileInfo \
-		VarManager.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QMatrix \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QDialogButtonBox \
 		device\DeviceManager.h \
 		device\robot.h \
@@ -19978,7 +20385,6 @@ release\TabDashboard.obj: TabDashboard.cpp TabDashboard.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDateTime \
 		PointTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPolygonF \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QMatrix \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGraphicsView
 
 release\TaskNode.obj: TaskNode.cpp TaskNode.h \
@@ -20221,10 +20627,13 @@ release\TaskNode.obj: TaskNode.cpp TaskNode.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSettings \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsettings.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QVariant \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSharedPointer \
-		ObjectInfo.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qstandarditemmodel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qabstractitemmodel.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QVector3D \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qvector3d.h
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qvector3d.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSharedPointer \
+		ObjectInfo.h
 
 release\TestCode.obj: TestCode.cpp testcode.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QObject \
@@ -20498,76 +20907,30 @@ release\TrackingManager.obj: TrackingManager.cpp TrackingManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSettings \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsettings.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QVariant \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qstandarditemmodel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qabstractitemmodel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qbrush.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qcolor.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qrgb.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qrgba64.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qmatrix.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpolygon.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qrect.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qmargins.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsize.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qregion.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qwindowdefs.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qwindowdefs_win.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qdatastream.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtransform.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qimage.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpaintdevice.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpixelformat.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpixmap.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qfont.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qicon.h \
 		ObjectInfo.h
-
-release\VarManager.obj: VarManager.cpp VarManager.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QObject \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qobject.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qobjectdefs.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qnamespace.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qglobal.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qconfig-bootstrapped.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qconfig.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qtcore-config.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsystemdetection.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qprocessordetection.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qcompilerdetection.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qtypeinfo.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsysinfo.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qlogging.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qflags.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qatomic.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qbasicatomic.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qatomic_bootstrap.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qgenericatomic.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qatomic_cxx11.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qatomic_msvc.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qglobalstatic.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qmutex.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qnumeric.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qversiontagging.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qobjectdefs_impl.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qstring.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qchar.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qbytearray.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qrefcount.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qarraydata.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qstringliteral.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qstringalgorithms.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qstringview.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qstringbuilder.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qlist.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qalgorithms.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qiterator.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qhashfunctions.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qpair.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qvector.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qcontainertools_impl.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qpoint.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qbytearraylist.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qstringlist.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qregexp.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qstringmatcher.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qcoreevent.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qscopedpointer.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qmetatype.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qvarlengtharray.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qcontainerfwd.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qobject_impl.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSettings \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsettings.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qvariant.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qmap.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qdebug.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qhash.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qtextstream.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qiodevice.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qlocale.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qshareddata.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qset.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qcontiguouscache.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsharedpointer.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsharedpointer_impl.h
 
 release\VariableManager.obj: VariableManager.cpp VariableManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSettings \
@@ -20636,7 +20999,35 @@ release\VariableManager.obj: VariableManager.cpp VariableManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qcontiguouscache.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsharedpointer.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsharedpointer_impl.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QVariant
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QVariant \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qstandarditemmodel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtguiglobal.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtgui-config.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qabstractitemmodel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qbrush.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qcolor.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qrgb.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qrgba64.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qmatrix.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpolygon.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qrect.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qmargins.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsize.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qregion.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qwindowdefs.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qwindowdefs_win.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qdatastream.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qline.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtransform.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qimage.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpaintdevice.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpixelformat.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpixmap.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qfont.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qicon.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QVector3D \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qvector3d.h
 
 release\VersionManager.obj: VersionManager.cpp VersionManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QWidget \
@@ -22011,9 +22402,14 @@ release\UnityTool.obj: UnityTool.cpp UnityTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QThread \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutexLocker \
 		VariableManager.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QPushButton \
 		GcodeReference.h \
 		ui_GcodeReference.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QApplication \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGridLayout \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QListWidget \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QTextEdit \
 		DrawingExporter.h \
 		DrawingWidget.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLineEdit \
@@ -22051,7 +22447,6 @@ release\UnityTool.obj: UnityTool.cpp UnityTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QCloseEvent \
 		ObjectVariableTable.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QSpacerItem \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGridLayout \
 		Object.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QScrollArea \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QProcess \
@@ -22083,6 +22478,9 @@ release\UnityTool.obj: UnityTool.cpp UnityTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QTextCharFormat \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QFont \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QColor \
+		ObjectInfoModel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QAbstractTableModel \
+		ObjectInfo.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QStackedWidget \
 		ImageProcessing.h \
@@ -22091,7 +22489,6 @@ release\UnityTool.obj: UnityTool.cpp UnityTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QRadioButton \
 		TaskNode.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSharedPointer \
-		ObjectInfo.h \
 		GcodeScript.h \
 		ScurveInterpolator.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QtMath \
@@ -22102,7 +22499,7 @@ release\UnityTool.obj: UnityTool.cpp UnityTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QTabWidget \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QTabBar \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QFileInfo \
-		VarManager.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QMatrix \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QDialogButtonBox \
 		device\DeviceManager.h \
 		device\robot.h \
@@ -22126,8 +22523,7 @@ release\UnityTool.obj: UnityTool.cpp UnityTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QVector2D \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDateTime \
 		PointTool.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPolygonF \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QMatrix
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPolygonF
 
 release\DeviceManager.obj: device\DeviceManager.cpp device\DeviceManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QObject \
@@ -22240,6 +22636,30 @@ release\DeviceManager.obj: device\DeviceManager.cpp device\DeviceManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSettings \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsettings.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QVariant \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qstandarditemmodel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qabstractitemmodel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qbrush.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qcolor.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qrgb.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qrgba64.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qmatrix.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpolygon.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qrect.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qmargins.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsize.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qregion.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qwindowdefs.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qwindowdefs_win.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qdatastream.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qline.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtransform.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qimage.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpaintdevice.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpixelformat.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpixmap.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qfont.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qicon.h \
 		device\slider.h \
 		device\conveyor.h \
 		device\encoder.h
@@ -22874,7 +23294,31 @@ release\robot.obj: device\robot.cpp device\robot.h \
 		VariableManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSettings \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsettings.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QVariant
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QVariant \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qstandarditemmodel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qabstractitemmodel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qbrush.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qcolor.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qrgb.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qrgba64.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qmatrix.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpolygon.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qrect.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qmargins.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsize.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qregion.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qwindowdefs.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qwindowdefs_win.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qdatastream.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qline.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtransform.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qimage.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpaintdevice.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpixelformat.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpixmap.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qfont.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qicon.h
 
 release\slider.obj: device\slider.cpp device\slider.h \
 		device\device.h \
@@ -23692,7 +24136,33 @@ release\testwindow.obj: testwindow.cpp testwindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qthread.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qdeadlinetimer.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qelapsedtimer.h \
-		ui_testwindow.h
+		ui_testwindow.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QVariant \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QApplication \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qapplication.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qcoreapplication.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qeventloop.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qdesktopwidget.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qguiapplication.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qinputmethod.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QFrame \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qframe.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QMenuBar \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qmenubar.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qmenu.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qaction.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qactiongroup.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QSplitter \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qsplitter.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QStatusBar \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qstatusbar.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QTabWidget \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QVBoxLayout \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qboxlayout.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qlayout.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qlayoutitem.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qgridlayout.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QWidget
 
 release\qrc_resource.obj: release\qrc_resource.cpp 
 
@@ -23722,6 +24192,8 @@ release\moc_MainWindow.obj: release\moc_MainWindow.cpp
 
 release\moc_ImageProcessing.obj: release\moc_ImageProcessing.cpp 
 
+release\moc_ObjectInfoModel.obj: release\moc_ObjectInfoModel.cpp 
+
 release\moc_ObjectVariableTable.obj: release\moc_ObjectVariableTable.cpp 
 
 release\moc_PointTool.obj: release\moc_PointTool.cpp 
@@ -23743,8 +24215,6 @@ release\moc_TaskNode.obj: release\moc_TaskNode.cpp
 release\moc_TextLayer.obj: release\moc_TextLayer.cpp 
 
 release\moc_TrackingManager.obj: release\moc_TrackingManager.cpp 
-
-release\moc_VarManager.obj: release\moc_VarManager.cpp 
 
 release\moc_VariableManager.obj: release\moc_VariableManager.cpp 
 

@@ -15,7 +15,7 @@
 
 #include <QSettings>
 #include <QElapsedTimer>
-#include "VarManager.h"
+#include <QTimer>
 
 namespace Ui {
 class MainWindow;
@@ -90,6 +90,8 @@ private slots:
     void on_pbUpdateVarDisplay_clicked();
 
 private:
+    QTimer timer1;
+
     void openProject(QString fullName);
 
     Ui::MainWindow *ui;

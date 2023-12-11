@@ -28,6 +28,7 @@ public:
     ProjectManager* SoftwareProjectManager;
 
     QString SoftwarePath = "";
+    int RunningScriptThreadNumber = 0;
 };
 
 #endif // SOFTWAREMANAGER_H

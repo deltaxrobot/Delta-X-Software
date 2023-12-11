@@ -242,17 +242,25 @@ bool Robot::checkSetSyncPathCmd(QString cmd)
     if (list[1] != "") {
         speed = list[1].toFloat();
         angle = list[2].toFloat();
+
+        double angleRadians = qDegreesToRadians(angle);
+
+        // Tính toán tọa độ X và Y
+        double x = speed * qCos(angleRadians);
+        double y = speed * qSin(angleRadians);
+
+        sync_vector = QVector3D(x, y, 0);
     }
 
     // Extract the values of X, Y, and Z from the command string, if present
     if (list[4] != "")
     {
-        float x = list[4].toFloat();
-        float y = list[5].toFloat();
-        float z = list[6].toFloat();
+        float x = list[3].toFloat();
+        float y = list[4].toFloat();
+        float z = list[5].toFloat();
         sync_vector = QVector3D(x, y, z);
         speed = sync_vector.length();
-        angle2 = qRadiansToDegrees(qAcos(x / speed));
+        angle = qRadiansToDegrees(qAcos(x / speed));
         angle2 = qRadiansToDegrees(qAcos(z / speed));
     }
 
@@ -338,9 +346,10 @@ QString Robot::syncGcode(QString cmd)
             float distance;
             float new_x, new_y;
 
-            distance = path_vel * (float(time_ms) / 1000);
-            new_x = X + distance * cos(path_rad_angle);
-            new_y = Y + distance * sin(path_rad_angle);
+//            distance = path_vel * (float(time_ms) / 1000);
+            QVector3D moving = sync_vector * (float(time_ms) / 1000);
+            new_x = X + moving.x();
+            new_y = Y + moving.y();
 
             isSyncDelay = true;
 
@@ -368,7 +377,7 @@ QVector3D Robot::calculateSyncPosition(QVector3D robotPos, QVector3D objectPos, 
 
     do {
         // Cập nhật vị trí mới của vật
-        estimatedObjectPos = objectPos + beltVelocity * t;
+        estimatedObjectPos = objectPos + sync_vector * t;
 
         // Tính khoảng cách mới
         distance_new = (estimatedObjectPos - robotPos).length();

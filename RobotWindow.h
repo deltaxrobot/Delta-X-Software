@@ -49,6 +49,7 @@
 #include "GcodeHighlighter.h"
 #include <QList>
 #include <random>
+#include <ObjectInfoModel.h>
 
 //#define JOY_STICK
 
@@ -71,7 +72,6 @@
 #include <QDialogButtonBox>
 #include <device/DeviceManager.h>
 #include "device/camera.h"
-#include "VarManager.h"
 #include "TrackingManager.h"
 #include"ObjectInfo.h"
 
@@ -120,7 +120,6 @@ public:
     void LoadTrackingThread();
 
     void LoadSettings();
-    void LoadSettings(QSettings* setting);
     void LoadGeneralSettings(QSettings* setting);
     void LoadJoggingSettings(QSettings* setting);
     void Load2DSettings(QSettings* setting);
@@ -128,7 +127,7 @@ public:
     void LoadExternalDeviceSettings(QSettings* setting);
     void LoadTerminalSettings(QSettings* setting);
     void LoadGcodeEditorSettings(QSettings* setting);
-    void LoadObjectDetectorSetting(QSettings* setting);
+    void LoadObjectDetectorSetting();
     void LoadDrawingSetting(QSettings* setting);
     void LoadPluginSetting(QSettings* setting);
 
@@ -239,8 +238,10 @@ public:
     QMap<QString, QString> ParseNames;
 
     QStandardItemModel VarViewModel;
+    ObjectInfoModel *ObjectModel;
 //    QMap<QString, QString>* GcodeVariables;
     QTransform CalculatingTransform;
+    QMatrix CalculatingTransform2;
     QMatrix PointMatrix;
     QVector3D CalVector;
 
@@ -248,8 +249,8 @@ public slots:
     // ---- View update ----
     void GetDeviceInfo(QString json);
     void GetDeviceResponse(QString id, QString response);
-    void UpdateVarToView(QString fullKey, QString value);
-    void UpdateVarToModel(QStandardItem *parent, QString fullKey, QString value);
+    void UpdateVarToView(QString fullKey, QVariant value);
+    void UpdateVarToModel(QStandardItem *parent, QString fullKey, QVariant value);
 
     //----- 3D -----
     void Load3DComponents();
@@ -418,8 +419,6 @@ public slots:
 
     // ----- Display ----
 
-    void ScaleUI();
-
     void OpenLoadingPopup();
     void CloseLoadingPopup();
 
@@ -491,9 +490,9 @@ private:
     QObject* getObjectByName(QObject* parent, QString name);
     void initInputValueLabels();
     void plugValue(QLineEdit* le, float value);
+    bool isItemExit(QListWidget* lw, QString item);
 
     //--------- Tool -------
-    QTransform calculateTransformMatrix(QPointF sourcePoint1, QPointF sourcePoint2, QPointF targetPoint1, QPointF targetPoint2);
 
     void runPythonFile(QString filePath);
     QProcess *process = nullptr;

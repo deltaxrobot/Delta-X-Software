@@ -19,12 +19,15 @@ void MainWindow::InitVariables()
     QElapsedTimer time;
     qint64 start = time.elapsed();
 
+    connect(&timer1, &QTimer::timeout, this, &MainWindow::SaveProjectToFile);
+    timer1.start(5000);
+
     SetLoadingIconRun(true);
 
     // ---- Check software version ----
 
     DeltaXVersionManager = new VersionManager(this);
-    DeltaXVersionManager->CurrentVersion = "1.0 Beta";
+    DeltaXVersionManager->CurrentVersion = "1.2 Beta";
     DeltaXVersionManager->SoftwareName = "DeltaXSoftware";
     DeltaXVersionManager->CheckVersionUrl = "http://imwi.space/admin/server.php";
     DeltaXVersionManager->NewVersionSoftwareUrl = "https://sourceforge.net/projects/delta-x-software/files/";
@@ -66,6 +69,7 @@ void MainWindow::InitVariables()
 
     ui->tvVariables->setModel(&VariableTreeModel);
     VariableManager::instance().addItemModel(&VariableTreeModel);
+    VariableManager::instance().loadFromQSettings();
 
     //------- Project Manager --------
     SoftwareProjectManager = new ProjectManager();
@@ -317,28 +321,10 @@ void MainWindow::OpenProjectFromFile()
 
 void MainWindow::SaveProjectToFile()
 {
-//    QDir dir = QCoreApplication::applicationDirPath() + "/project/";
-//    if (!dir.exists())
-//        dir.mkpath(".");
-
-//    QFileDialog dialog(this);
-//    dialog.setFileMode(QFileDialog::AnyFile);
-//    dialog.setNameFilter(tr("Delta X Project (*.prx)"));
-//    dialog.setViewMode(QFileDialog::Detail);
-//    QString fileName;
-//    fileName = dialog.getSaveFileName(this, "Save delta robot project", dir.path(), "Delta X Project (*.prx)");
+    if (SoftwareManager::GetInstance()->RunningScriptThreadNumber > 0)
+        return;
 
     VariableManager::instance().saveToQSettings();
-
-//    QFile file(QCoreApplication::applicationDirPath() + "/customUI.ini");
-//    if (!file.exists())
-//    {
-//        file.open(QIODevice::WriteOnly);
-//        file.close();
-//    }
-
-//    QSettings settings2("customUI.ini", QSettings::IniFormat);
-//    settings2.setValue("LastProject", fileName);
 
     SaveOperatorSettings();
 }
@@ -634,44 +620,10 @@ void MainWindow::on_tbExpandLoggingBox_clicked()
         ui->teLoggingBox->setMinimumHeight(0);
     else
         ui->teLoggingBox->setMinimumHeight(300);
-
 }
-
 
 void MainWindow::on_pbUpdateVarDisplay_clicked()
 {
-    VariableTreeModel.clear();
-    VariableTreeModel.setHorizontalHeaderLabels(QStringList() << "Name" << "Value");
-    QStandardItem *rootItem = VariableTreeModel.invisibleRootItem();
-    QSettings* settings = VariableManager::instance().getSettings();
-    QStringList keys = settings->allKeys();
-    for (QString key : keys) {
-        key = key.replace('/', '.');
-        key = key.replace('_', '.');
-        QStringList parts = key.split('.');
-        QStandardItem *parent = rootItem;
-        for (int i = 0; i < parts.count() - 1; i++) {
-            QString part = parts[i];
-            QStandardItem *child = nullptr;
-            for (int j = 0; j < parent->rowCount(); j++) {
-                if (parent->child(j)->text() == part) {
-                    child = parent->child(j);
-                    break;
-                }
-            }
-            if (!child) {
-                child = new QStandardItem(part);
-                parent->appendRow(child);
-            }
-            parent = child;
-        }
-        QString value = settings->value(key).toString();
-        QStandardItem *valueItem = new QStandardItem(value);
-        parent->appendRow(QList<QStandardItem*>() << new QStandardItem(parts.last()) << valueItem);
-    }
-
-    QTreeView* treeView = ui->tvVariables;
-    treeView->setModel(&VariableTreeModel);
-    treeView->show();
+    VariableManager::instance().updateVar(ui->leUpdateKey->text(), ui->leUpdateValue->text());
 }
 

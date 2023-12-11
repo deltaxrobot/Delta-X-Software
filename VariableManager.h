@@ -7,6 +7,7 @@
 #include <mutex>
 #include <string>
 #include <QStandardItemModel>
+#include <QVector3D>
 
 class VariableManager : public QObject
 {
@@ -53,7 +54,10 @@ signals:
 private:
     const QString getFullKey(const QString key);
 
-    VariableManager() : settings("./settings.ini", QSettings::IniFormat) {}
+    VariableManager() : settings("./settings.ini", QSettings::IniFormat)
+    {
+
+    }
     std::map<QString, QVariant> dataMap;
     std::mutex dataMutex;
     QSettings settings;

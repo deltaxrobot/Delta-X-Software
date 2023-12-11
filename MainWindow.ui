@@ -744,6 +744,26 @@ border-right: 5px solid rgb(24, 70, 139);</string>
                 </property>
                 <layout class="QHBoxLayout" name="horizontalLayout_14">
                  <item>
+                  <widget class="QLabel" name="label_12">
+                   <property name="text">
+                    <string>Key</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QLineEdit" name="leUpdateKey"/>
+                 </item>
+                 <item>
+                  <widget class="QLabel" name="label_13">
+                   <property name="text">
+                    <string>Value</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QLineEdit" name="leUpdateValue"/>
+                 </item>
+                 <item>
                   <widget class="QPushButton" name="pbUpdateVarDisplay">
                    <property name="text">
                     <string>Update</string>
@@ -796,8 +816,8 @@ border-right: 5px solid rgb(24, 70, 139);</string>
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>636</width>
-                   <height>188</height>
+                   <width>601</width>
+                   <height>171</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_10">
@@ -1398,7 +1418,7 @@ QPushButton:pressed
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>588</width>
+                       <width>571</width>
                        <height>700</height>
                       </rect>
                      </property>

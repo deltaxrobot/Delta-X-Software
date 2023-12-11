@@ -39,7 +39,7 @@ void Device::Connect()
 
             if (serialPort->open(QIODevice::ReadWrite)) {
                 int counter = 0;
-                for (int i = 0; i < 10; i++)
+                for (int j = 0; j < 10; j++)
                 {
                     QThread::msleep(50);
                     serialPort->blockSignals(true);
