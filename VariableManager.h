@@ -3,7 +3,8 @@
 
 #include <QSettings>
 #include <QVariant>
-#include <unordered_map>
+//#include <unordered_map>
+#include <QHash>
 #include <mutex>
 #include <string>
 #include <QStandardItemModel>
@@ -58,7 +59,8 @@ private:
     {
 
     }
-    std::map<QString, QVariant> dataMap;
+//    std::map<QString, QVariant> dataMap;
+    QHash<QString, QVariant> dataMap;
     std::mutex dataMutex;
     QSettings settings;
     QList<QStandardItemModel*> itemModelList;

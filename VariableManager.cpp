@@ -58,7 +58,7 @@ void VariableManager::removeVar(const QString &key)
 {
     const QString fullKey = getFullKey(key);
     std::lock_guard<std::mutex> lock(dataMutex);
-    dataMap.erase(fullKey);
+    dataMap.remove(fullKey);
     emit varRemoved(fullKey);
 }
 
@@ -72,9 +72,14 @@ bool VariableManager::contains(const QString &key)
 void VariableManager::saveToQSettings()
 {
     std::lock_guard<std::mutex> lock(dataMutex);
-    for(const auto& kv : dataMap)
+//    for(const auto& kv : dataMap)
+//    {
+//        settings.setValue(kv.first, kv.second);
+//    }
+
+    foreach (const QString &key, dataMap.keys())
     {
-        settings.setValue(kv.first, kv.second);
+        settings.setValue(key, dataMap[key]);
     }
 }
 
