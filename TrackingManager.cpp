@@ -48,6 +48,22 @@ void Tracking::OnReceivceEncoderPosition(float value)
     UpdateTrackedObjectsPosition(currentPosition - lastPosition);
 }
 
+void Tracking::ChangeObjectInfo(QString cmd)
+{
+    QStringList paras1 = cmd.split('=');
+    QStringList paras2 = paras1.at(0).trimmed().split('.');
+
+    int i = paras1.at(1).toInt();
+
+    if (paras2.at(2) == "IsPicked")
+    {
+        if (paras1.at(1).trimmed() == "True")
+            trackedObjects[i].isPicked = true;
+        else
+            trackedObjects[i].isPicked = false;
+    }
+}
+
 void Tracking::GetVirtualEncoderPosition()
 {
     OnReceivceEncoderPosition(VirEncoder.readPosition());
@@ -211,6 +227,87 @@ void TrackingManager::UpdateTracking(int id)
 {
     currentTrackingRequest = id;
     QMetaObject::invokeMethod(Trackings.at(id), "ReadEncoder", Qt::QueuedConnection);
+}
+
+void TrackingManager::UpdateVariable(QString cmd)
+{
+    QStringList paras1 = cmd.split('=');
+    QStringList paras2 = paras1.at(0).split('.');
+
+    for(int i = 0; i < Trackings.count(); i++)
+    {
+        if (Trackings.at(i)->ListName == paras2.at(0))
+        {
+            QMetaObject::invokeMethod(Trackings.at(i), "ChangeObjectInfo", Qt::QueuedConnection, Q_ARG(QString, cmd));
+        }
+    }
+}
+
+void TrackingManager::AddObject(QString listName, QList<QStringList> list)
+{
+    QList<ObjectInfo> objectList;
+    // Duyệt qua từng phần tử của paras
+    for (int i = 0; i < list.count(); i++)
+    {
+        QStringList paras = list.at(i);
+
+        int id = 0;
+        float x = 0;
+        float y = 0;
+        float z = 0;
+        float w = 20;
+        float l = 40;
+        float a = 90;
+        bool isPicked = false;
+
+        for (int j = 0; j < paras.count(); j++)
+        {
+            if (j == 0)
+            {
+                id = paras.at(0).toInt();
+            }
+            else if (j == 1)
+            {
+                x = paras.at(1).toFloat();
+            }
+            else if (j == 2)
+            {
+                y = paras.at(2).toFloat();
+            }
+            else if (j == 3)
+            {
+                z = paras.at(3).toFloat();
+            }
+            else if (j == 4)
+            {
+                w = paras.at(4).toFloat();
+            }
+            else if (j == 5)
+            {
+                l = paras.at(5).toFloat();
+            }
+            else if (j == 6)
+            {
+                a = paras.at(6).toFloat();
+            }
+            else if (j == 7)
+            {
+                isPicked = paras.at(7).toInt();
+            }
+        }
+        
+        ObjectInfo obj(id, QVector3D(x, y, z), w, l, a, isPicked);
+
+        objectList.append(obj);
+    }
+
+    for(int i = 0; i < Trackings.count(); i++)
+    {
+        if (Trackings.at(i)->ListName == listName)
+        {
+//            QMetaObject::invokeMethod(Trackings.at(i), "UpdateTrackedObjects", Qt::QueuedConnection, Q_ARG(QList<ObjectInfo>, objectList), Q_ARG(QString, listName));
+        }
+    }
 }
 
 void TrackingManager::SetEncoderPosition(int id, float value)

@@ -21,11 +21,10 @@ from PySide6.QtWidgets import (QApplication, QCheckBox, QComboBox, QFrame,
     QLabel, QLineEdit, QListWidget, QListWidgetItem,
     QMainWindow, QPushButton, QRadioButton, QScrollArea,
     QSizePolicy, QSlider, QSpacerItem, QSplitter,
-    QTabWidget, QTextEdit, QToolButton, QTreeView,
-    QVBoxLayout, QWidget)
+    QTabWidget, QTableView, QTextEdit, QToolButton,
+    QTreeView, QVBoxLayout, QWidget)
 
 from DrawingWidget import DrawingWidget
-from RobotSimulator import RobotSimulator
 from codeeditor import CodeEditor
 from imageviewer import ImageViewer
 import resource_rc
@@ -433,6 +432,7 @@ class Ui_RobotWindow(object):
         sizePolicy2.setHeightForWidth(self.pbReadI0_3.sizePolicy().hasHeightForWidth())
         self.pbReadI0_3.setSizePolicy(sizePolicy2)
         self.pbReadI0_3.setMinimumSize(QSize(50, 0))
+        self.pbReadI0_3.setFlat(False)
 
         self.horizontalLayout_34.addWidget(self.pbReadI0_3)
 
@@ -1082,8 +1082,8 @@ class Ui_RobotWindow(object):
         self.saObjectDetecting.setWidgetResizable(True)
         self.wObjectDetecting = QWidget()
         self.wObjectDetecting.setObjectName(u"wObjectDetecting")
-        self.wObjectDetecting.setGeometry(QRect(0, 0, 586, 1800))
-        self.wObjectDetecting.setMinimumSize(QSize(100, 1800))
+        self.wObjectDetecting.setGeometry(QRect(0, -1250, 586, 2500))
+        self.wObjectDetecting.setMinimumSize(QSize(100, 2500))
         self.wObjectDetecting.setStyleSheet(u"QWidget#wObjectDetecting\n"
 "{	\n"
 "	background-color: #1E1E20;\n"
@@ -1410,6 +1410,16 @@ class Ui_RobotWindow(object):
         self.lbDisplayRatio_3.setObjectName(u"lbDisplayRatio_3")
 
         self.verticalLayout_10.addWidget(self.lbDisplayRatio_3)
+
+        self.pbZoomInCameraView = QPushButton(self.frame_17)
+        self.pbZoomInCameraView.setObjectName(u"pbZoomInCameraView")
+
+        self.verticalLayout_10.addWidget(self.pbZoomInCameraView)
+
+        self.pbZoomOutCameraView = QPushButton(self.frame_17)
+        self.pbZoomOutCameraView.setObjectName(u"pbZoomOutCameraView")
+
+        self.verticalLayout_10.addWidget(self.pbZoomOutCameraView)
 
         self.verticalSpacer_10 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
 
@@ -1828,145 +1838,61 @@ class Ui_RobotWindow(object):
         self.gridLayout_26.setSpacing(10)
         self.gridLayout_26.setContentsMargins(11, 11, 11, 11)
         self.gridLayout_26.setObjectName(u"gridLayout_26")
-        self.leRealityPoint2X = QLineEdit(self.fCalibStep2)
-        self.leRealityPoint2X.setObjectName(u"leRealityPoint2X")
-        sizePolicy.setHeightForWidth(self.leRealityPoint2X.sizePolicy().hasHeightForWidth())
-        self.leRealityPoint2X.setSizePolicy(sizePolicy)
-        self.leRealityPoint2X.setMinimumSize(QSize(0, 0))
-        self.leRealityPoint2X.setMaximumSize(QSize(100, 16777215))
+        self.lbCalibType_3 = QLabel(self.fCalibStep2)
+        self.lbCalibType_3.setObjectName(u"lbCalibType_3")
 
-        self.gridLayout_26.addWidget(self.leRealityPoint2X, 5, 3, 1, 1)
-
-        self.label_132 = QLabel(self.fCalibStep2)
-        self.label_132.setObjectName(u"label_132")
-        self.label_132.setMinimumSize(QSize(0, 30))
-
-        self.gridLayout_26.addWidget(self.label_132, 4, 4, 1, 1)
-
-        self.label_140 = QLabel(self.fCalibStep2)
-        self.label_140.setObjectName(u"label_140")
-        self.label_140.setMinimumSize(QSize(0, 30))
-
-        self.gridLayout_26.addWidget(self.label_140, 5, 6, 1, 1)
-
-        self.label_10 = QLabel(self.fCalibStep2)
-        self.label_10.setObjectName(u"label_10")
-
-        self.gridLayout_26.addWidget(self.label_10, 6, 1, 1, 1)
-
-        self.label_133 = QLabel(self.fCalibStep2)
-        self.label_133.setObjectName(u"label_133")
-        self.label_133.setMinimumSize(QSize(0, 30))
-
-        self.gridLayout_26.addWidget(self.label_133, 4, 6, 1, 1)
-
-        self.horizontalSpacer_3 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
-
-        self.gridLayout_26.addItem(self.horizontalSpacer_3, 4, 8, 1, 1)
-
-        self.leRealityPoint1Y = QLineEdit(self.fCalibStep2)
-        self.leRealityPoint1Y.setObjectName(u"leRealityPoint1Y")
-        sizePolicy.setHeightForWidth(self.leRealityPoint1Y.sizePolicy().hasHeightForWidth())
-        self.leRealityPoint1Y.setSizePolicy(sizePolicy)
-        self.leRealityPoint1Y.setMinimumSize(QSize(0, 0))
-        self.leRealityPoint1Y.setMaximumSize(QSize(100, 16777215))
-
-        self.gridLayout_26.addWidget(self.leRealityPoint1Y, 4, 5, 1, 1)
+        self.gridLayout_26.addWidget(self.lbCalibType_3, 11, 1, 1, 1)
 
         self.leRealityPoint2Y = QLineEdit(self.fCalibStep2)
         self.leRealityPoint2Y.setObjectName(u"leRealityPoint2Y")
         sizePolicy.setHeightForWidth(self.leRealityPoint2Y.sizePolicy().hasHeightForWidth())
         self.leRealityPoint2Y.setSizePolicy(sizePolicy)
         self.leRealityPoint2Y.setMinimumSize(QSize(0, 0))
-        self.leRealityPoint2Y.setMaximumSize(QSize(100, 16777215))
+        self.leRealityPoint2Y.setMaximumSize(QSize(50, 16777215))
 
-        self.gridLayout_26.addWidget(self.leRealityPoint2Y, 5, 5, 1, 1)
+        self.gridLayout_26.addWidget(self.leRealityPoint2Y, 6, 4, 1, 1)
 
-        self.label_39 = QLabel(self.fCalibStep2)
-        self.label_39.setObjectName(u"label_39")
-        self.label_39.setAlignment(Qt.AlignCenter)
+        self.lbCalibType_2 = QLabel(self.fCalibStep2)
+        self.lbCalibType_2.setObjectName(u"lbCalibType_2")
 
-        self.gridLayout_26.addWidget(self.label_39, 3, 5, 1, 1)
+        self.gridLayout_26.addWidget(self.lbCalibType_2, 8, 1, 1, 1)
 
-        self.pbImageMapping = QPushButton(self.fCalibStep2)
-        self.pbImageMapping.setObjectName(u"pbImageMapping")
-        sizePolicy.setHeightForWidth(self.pbImageMapping.sizePolicy().hasHeightForWidth())
-        self.pbImageMapping.setSizePolicy(sizePolicy)
-        self.pbImageMapping.setMinimumSize(QSize(0, 45))
-        self.pbImageMapping.setMaximumSize(QSize(200, 16777215))
-        self.pbImageMapping.setAutoFillBackground(False)
-        self.pbImageMapping.setStyleSheet(u"QPushButton\n"
-"{	\n"
-"	padding-left:5px;\n"
-"	padding-right:5px;\n"
-"}")
+        self.label_140 = QLabel(self.fCalibStep2)
+        self.label_140.setObjectName(u"label_140")
+        self.label_140.setMinimumSize(QSize(0, 30))
+
+        self.gridLayout_26.addWidget(self.label_140, 6, 5, 1, 1)
+
+        self.tbPastePoint2 = QToolButton(self.fCalibStep2)
+        self.tbPastePoint2.setObjectName(u"tbPastePoint2")
         icon24 = QIcon()
-        icon24.addFile(u":/icon/icons8_grid_3_48px_1.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.pbImageMapping.setIcon(icon24)
-        self.pbImageMapping.setIconSize(QSize(30, 30))
-        self.pbImageMapping.setCheckable(True)
-        self.pbImageMapping.setChecked(False)
-        self.pbImageMapping.setAutoDefault(False)
-        self.pbImageMapping.setFlat(False)
+        icon24.addFile(u":/icon/Paste.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.tbPastePoint2.setIcon(icon24)
+        self.tbPastePoint2.setIconSize(QSize(24, 24))
 
-        self.gridLayout_26.addWidget(self.pbImageMapping, 7, 1, 1, 1)
+        self.gridLayout_26.addWidget(self.tbPastePoint2, 6, 7, 1, 1)
 
-        self.label_40 = QLabel(self.fCalibStep2)
-        self.label_40.setObjectName(u"label_40")
-        self.label_40.setMinimumSize(QSize(0, 0))
+        self.label_38 = QLabel(self.fCalibStep2)
+        self.label_38.setObjectName(u"label_38")
+        self.label_38.setMinimumSize(QSize(0, 0))
         font9 = QFont()
         font9.setBold(False)
         font9.setItalic(False)
         font9.setUnderline(False)
         font9.setStrikeOut(False)
         font9.setKerning(True)
-        self.label_40.setFont(font9)
-        self.label_40.setMouseTracking(True)
-        self.label_40.setTextFormat(Qt.AutoText)
-        self.label_40.setAlignment(Qt.AlignCenter)
-
-        self.gridLayout_26.addWidget(self.label_40, 4, 2, 1, 1)
-
-        self.label_139 = QLabel(self.fCalibStep2)
-        self.label_139.setObjectName(u"label_139")
-        self.label_139.setMinimumSize(QSize(0, 30))
-
-        self.gridLayout_26.addWidget(self.label_139, 5, 4, 1, 1)
-
-        self.pbCalibPoint1 = QPushButton(self.fCalibStep2)
-        self.pbCalibPoint1.setObjectName(u"pbCalibPoint1")
-        sizePolicy6.setHeightForWidth(self.pbCalibPoint1.sizePolicy().hasHeightForWidth())
-        self.pbCalibPoint1.setSizePolicy(sizePolicy6)
-        self.pbCalibPoint1.setFlat(True)
-
-        self.gridLayout_26.addWidget(self.pbCalibPoint1, 4, 1, 1, 1)
-
-        self.label_38 = QLabel(self.fCalibStep2)
-        self.label_38.setObjectName(u"label_38")
-        self.label_38.setMinimumSize(QSize(0, 0))
         self.label_38.setFont(font9)
         self.label_38.setMouseTracking(True)
         self.label_38.setTextFormat(Qt.AutoText)
         self.label_38.setAlignment(Qt.AlignCenter)
 
-        self.gridLayout_26.addWidget(self.label_38, 3, 3, 1, 1)
+        self.gridLayout_26.addWidget(self.label_38, 3, 2, 1, 1)
 
-        self.leRealityPoint1X = QLineEdit(self.fCalibStep2)
-        self.leRealityPoint1X.setObjectName(u"leRealityPoint1X")
-        sizePolicy.setHeightForWidth(self.leRealityPoint1X.sizePolicy().hasHeightForWidth())
-        self.leRealityPoint1X.setSizePolicy(sizePolicy)
-        self.leRealityPoint1X.setMinimumSize(QSize(0, 0))
-        self.leRealityPoint1X.setMaximumSize(QSize(100, 16777215))
+        self.label_142 = QLabel(self.fCalibStep2)
+        self.label_142.setObjectName(u"label_142")
+        self.label_142.setMinimumSize(QSize(0, 30))
 
-        self.gridLayout_26.addWidget(self.leRealityPoint1X, 4, 3, 1, 1)
-
-        self.pbCalibPoint2 = QPushButton(self.fCalibStep2)
-        self.pbCalibPoint2.setObjectName(u"pbCalibPoint2")
-        sizePolicy6.setHeightForWidth(self.pbCalibPoint2.sizePolicy().hasHeightForWidth())
-        self.pbCalibPoint2.setSizePolicy(sizePolicy6)
-        self.pbCalibPoint2.setFlat(True)
-
-        self.gridLayout_26.addWidget(self.pbCalibPoint2, 5, 1, 1, 1)
+        self.gridLayout_26.addWidget(self.label_142, 9, 5, 1, 1)
 
         self.label_41 = QLabel(self.fCalibStep2)
         self.label_41.setObjectName(u"label_41")
@@ -1974,25 +1900,174 @@ class Ui_RobotWindow(object):
         self.label_41.setFont(font9)
         self.label_41.setMouseTracking(True)
         self.label_41.setTextFormat(Qt.AutoText)
-        self.label_41.setAlignment(Qt.AlignCenter)
+        self.label_41.setAlignment(Qt.AlignLeading|Qt.AlignLeft|Qt.AlignVCenter)
 
-        self.gridLayout_26.addWidget(self.label_41, 5, 2, 1, 1)
+        self.gridLayout_26.addWidget(self.label_41, 6, 1, 1, 1)
+
+        self.leRealityPoint2X = QLineEdit(self.fCalibStep2)
+        self.leRealityPoint2X.setObjectName(u"leRealityPoint2X")
+        sizePolicy.setHeightForWidth(self.leRealityPoint2X.sizePolicy().hasHeightForWidth())
+        self.leRealityPoint2X.setSizePolicy(sizePolicy)
+        self.leRealityPoint2X.setMinimumSize(QSize(0, 0))
+        self.leRealityPoint2X.setMaximumSize(QSize(50, 16777215))
+
+        self.gridLayout_26.addWidget(self.leRealityPoint2X, 6, 2, 1, 1)
+
+        self.label_10 = QLabel(self.fCalibStep2)
+        self.label_10.setObjectName(u"label_10")
+
+        self.gridLayout_26.addWidget(self.label_10, 12, 1, 1, 9)
+
+        self.label_132 = QLabel(self.fCalibStep2)
+        self.label_132.setObjectName(u"label_132")
+        self.label_132.setMinimumSize(QSize(0, 30))
+
+        self.gridLayout_26.addWidget(self.label_132, 5, 3, 1, 1)
+
+        self.leRealityPoint1Y = QLineEdit(self.fCalibStep2)
+        self.leRealityPoint1Y.setObjectName(u"leRealityPoint1Y")
+        sizePolicy.setHeightForWidth(self.leRealityPoint1Y.sizePolicy().hasHeightForWidth())
+        self.leRealityPoint1Y.setSizePolicy(sizePolicy)
+        self.leRealityPoint1Y.setMinimumSize(QSize(0, 0))
+        self.leRealityPoint1Y.setMaximumSize(QSize(50, 16777215))
+
+        self.gridLayout_26.addWidget(self.leRealityPoint1Y, 5, 4, 1, 1)
+
+        self.pbCalibPoint2 = QPushButton(self.fCalibStep2)
+        self.pbCalibPoint2.setObjectName(u"pbCalibPoint2")
+        sizePolicy6.setHeightForWidth(self.pbCalibPoint2.sizePolicy().hasHeightForWidth())
+        self.pbCalibPoint2.setSizePolicy(sizePolicy6)
+        self.pbCalibPoint2.setFlat(True)
+
+        self.gridLayout_26.addWidget(self.pbCalibPoint2, 6, 6, 1, 1)
+
+        self.label_40 = QLabel(self.fCalibStep2)
+        self.label_40.setObjectName(u"label_40")
+        self.label_40.setMinimumSize(QSize(0, 0))
+        self.label_40.setFont(font9)
+        self.label_40.setMouseTracking(True)
+        self.label_40.setTextFormat(Qt.AutoText)
+        self.label_40.setAlignment(Qt.AlignLeading|Qt.AlignLeft|Qt.AlignVCenter)
+
+        self.gridLayout_26.addWidget(self.label_40, 5, 1, 1, 1)
+
+        self.pbCalibPoint1 = QPushButton(self.fCalibStep2)
+        self.pbCalibPoint1.setObjectName(u"pbCalibPoint1")
+        sizePolicy6.setHeightForWidth(self.pbCalibPoint1.sizePolicy().hasHeightForWidth())
+        self.pbCalibPoint1.setSizePolicy(sizePolicy6)
+        self.pbCalibPoint1.setMinimumSize(QSize(180, 0))
+        self.pbCalibPoint1.setFlat(True)
+
+        self.gridLayout_26.addWidget(self.pbCalibPoint1, 5, 6, 1, 1)
+
+        self.label_141 = QLabel(self.fCalibStep2)
+        self.label_141.setObjectName(u"label_141")
+        self.label_141.setMinimumSize(QSize(0, 30))
+
+        self.gridLayout_26.addWidget(self.label_141, 9, 3, 1, 1)
+
+        self.lbCalibType = QLabel(self.fCalibStep2)
+        self.lbCalibType.setObjectName(u"lbCalibType")
+
+        self.gridLayout_26.addWidget(self.lbCalibType, 9, 1, 1, 1)
+
+        self.pbImageMapping = QPushButton(self.fCalibStep2)
+        self.pbImageMapping.setObjectName(u"pbImageMapping")
+        sizePolicy.setHeightForWidth(self.pbImageMapping.sizePolicy().hasHeightForWidth())
+        self.pbImageMapping.setSizePolicy(sizePolicy)
+        self.pbImageMapping.setMinimumSize(QSize(0, 45))
+        self.pbImageMapping.setMaximumSize(QSize(16777215, 16777215))
+        self.pbImageMapping.setAutoFillBackground(False)
+        self.pbImageMapping.setStyleSheet(u"QPushButton\n"
+"{	\n"
+"	padding-left:5px;\n"
+"	padding-right:5px;\n"
+"}")
+        icon25 = QIcon()
+        icon25.addFile(u":/icon/icons8_grid_3_48px_1.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.pbImageMapping.setIcon(icon25)
+        self.pbImageMapping.setIconSize(QSize(30, 30))
+        self.pbImageMapping.setCheckable(True)
+        self.pbImageMapping.setChecked(False)
+        self.pbImageMapping.setAutoDefault(False)
+        self.pbImageMapping.setFlat(False)
+
+        self.gridLayout_26.addWidget(self.pbImageMapping, 13, 1, 1, 2)
+
+        self.label_133 = QLabel(self.fCalibStep2)
+        self.label_133.setObjectName(u"label_133")
+        self.label_133.setMinimumSize(QSize(0, 30))
+
+        self.gridLayout_26.addWidget(self.label_133, 5, 5, 1, 1)
+
+        self.label_39 = QLabel(self.fCalibStep2)
+        self.label_39.setObjectName(u"label_39")
+        self.label_39.setAlignment(Qt.AlignCenter)
+
+        self.gridLayout_26.addWidget(self.label_39, 3, 4, 1, 1)
+
+        self.leRealityPoint1X = QLineEdit(self.fCalibStep2)
+        self.leRealityPoint1X.setObjectName(u"leRealityPoint1X")
+        sizePolicy.setHeightForWidth(self.leRealityPoint1X.sizePolicy().hasHeightForWidth())
+        self.leRealityPoint1X.setSizePolicy(sizePolicy)
+        self.leRealityPoint1X.setMinimumSize(QSize(0, 0))
+        self.leRealityPoint1X.setMaximumSize(QSize(50, 16777215))
+
+        self.gridLayout_26.addWidget(self.leRealityPoint1X, 5, 2, 1, 1)
+
+        self.label_139 = QLabel(self.fCalibStep2)
+        self.label_139.setObjectName(u"label_139")
+        self.label_139.setMinimumSize(QSize(0, 30))
+
+        self.gridLayout_26.addWidget(self.label_139, 6, 3, 1, 1)
+
+        self.leCalibOffset_X = QLineEdit(self.fCalibStep2)
+        self.leCalibOffset_X.setObjectName(u"leCalibOffset_X")
+        sizePolicy.setHeightForWidth(self.leCalibOffset_X.sizePolicy().hasHeightForWidth())
+        self.leCalibOffset_X.setSizePolicy(sizePolicy)
+        self.leCalibOffset_X.setMinimumSize(QSize(0, 0))
+        self.leCalibOffset_X.setMaximumSize(QSize(50, 16777215))
+
+        self.gridLayout_26.addWidget(self.leCalibOffset_X, 9, 2, 1, 1)
+
+        self.leCalibOffset_Y = QLineEdit(self.fCalibStep2)
+        self.leCalibOffset_Y.setObjectName(u"leCalibOffset_Y")
+        sizePolicy.setHeightForWidth(self.leCalibOffset_Y.sizePolicy().hasHeightForWidth())
+        self.leCalibOffset_Y.setSizePolicy(sizePolicy)
+        self.leCalibOffset_Y.setMinimumSize(QSize(0, 0))
+        self.leCalibOffset_Y.setMaximumSize(QSize(50, 16777215))
+
+        self.gridLayout_26.addWidget(self.leCalibOffset_Y, 9, 4, 1, 1)
 
         self.tbPastePoint1 = QToolButton(self.fCalibStep2)
         self.tbPastePoint1.setObjectName(u"tbPastePoint1")
-        icon25 = QIcon()
-        icon25.addFile(u":/icon/Paste.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.tbPastePoint1.setIcon(icon25)
+        self.tbPastePoint1.setIcon(icon24)
         self.tbPastePoint1.setIconSize(QSize(24, 24))
 
-        self.gridLayout_26.addWidget(self.tbPastePoint1, 4, 7, 1, 1)
+        self.gridLayout_26.addWidget(self.tbPastePoint1, 5, 7, 1, 1)
 
-        self.tbPastePoint2 = QToolButton(self.fCalibStep2)
-        self.tbPastePoint2.setObjectName(u"tbPastePoint2")
-        self.tbPastePoint2.setIcon(icon25)
-        self.tbPastePoint2.setIconSize(QSize(24, 24))
+        self.leRealityP1P2Distance = QLineEdit(self.fCalibStep2)
+        self.leRealityP1P2Distance.setObjectName(u"leRealityP1P2Distance")
+        sizePolicy.setHeightForWidth(self.leRealityP1P2Distance.sizePolicy().hasHeightForWidth())
+        self.leRealityP1P2Distance.setSizePolicy(sizePolicy)
+        self.leRealityP1P2Distance.setMinimumSize(QSize(0, 0))
+        self.leRealityP1P2Distance.setMaximumSize(QSize(50, 16777215))
 
-        self.gridLayout_26.addWidget(self.tbPastePoint2, 5, 7, 1, 1)
+        self.gridLayout_26.addWidget(self.leRealityP1P2Distance, 11, 2, 1, 1)
+
+        self.label_148 = QLabel(self.fCalibStep2)
+        self.label_148.setObjectName(u"label_148")
+        self.label_148.setMinimumSize(QSize(0, 30))
+
+        self.gridLayout_26.addWidget(self.label_148, 11, 3, 1, 1)
+
+        self.cbCalibType = QComboBox(self.fCalibStep2)
+        self.cbCalibType.addItem("")
+        self.cbCalibType.addItem("")
+        self.cbCalibType.setObjectName(u"cbCalibType")
+        self.cbCalibType.setMaximumSize(QSize(16777215, 16777215))
+
+        self.gridLayout_26.addWidget(self.cbCalibType, 8, 2, 1, 4)
 
 
         self.verticalLayout_52.addWidget(self.fCalibStep2)
@@ -2083,54 +2158,14 @@ class Ui_RobotWindow(object):
         self.gridLayout_14.setSpacing(6)
         self.gridLayout_14.setContentsMargins(11, 11, 11, 11)
         self.gridLayout_14.setObjectName(u"gridLayout_14")
-        self.label_163 = QLabel(self.fBlobPanel)
-        self.label_163.setObjectName(u"label_163")
+        self.leLRec = QLineEdit(self.fBlobPanel)
+        self.leLRec.setObjectName(u"leLRec")
+        sizePolicy6.setHeightForWidth(self.leLRec.sizePolicy().hasHeightForWidth())
+        self.leLRec.setSizePolicy(sizePolicy6)
+        self.leLRec.setMinimumSize(QSize(0, 30))
+        self.leLRec.setMaximumSize(QSize(50, 16777215))
 
-        self.gridLayout_14.addWidget(self.label_163, 0, 1, 1, 1)
-
-        self.label_173 = QLabel(self.fBlobPanel)
-        self.label_173.setObjectName(u"label_173")
-        self.label_173.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
-
-        self.gridLayout_14.addWidget(self.label_173, 3, 8, 1, 1)
-
-        self.label_42 = QLabel(self.fBlobPanel)
-        self.label_42.setObjectName(u"label_42")
-
-        self.gridLayout_14.addWidget(self.label_42, 3, 1, 1, 1)
-
-        self.leMaxWRec = QLineEdit(self.fBlobPanel)
-        self.leMaxWRec.setObjectName(u"leMaxWRec")
-        sizePolicy6.setHeightForWidth(self.leMaxWRec.sizePolicy().hasHeightForWidth())
-        self.leMaxWRec.setSizePolicy(sizePolicy6)
-        self.leMaxWRec.setMinimumSize(QSize(0, 20))
-        self.leMaxWRec.setMaximumSize(QSize(50, 16777215))
-
-        self.gridLayout_14.addWidget(self.leMaxWRec, 3, 9, 1, 1)
-
-        self.label_54 = QLabel(self.fBlobPanel)
-        self.label_54.setObjectName(u"label_54")
-
-        self.gridLayout_14.addWidget(self.label_54, 3, 3, 1, 1)
-
-        self.horizontalSpacer_66 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
-
-        self.gridLayout_14.addItem(self.horizontalSpacer_66, 3, 10, 1, 1)
-
-        self.leMinWRec = QLineEdit(self.fBlobPanel)
-        self.leMinWRec.setObjectName(u"leMinWRec")
-        sizePolicy6.setHeightForWidth(self.leMinWRec.sizePolicy().hasHeightForWidth())
-        self.leMinWRec.setSizePolicy(sizePolicy6)
-        self.leMinWRec.setMinimumSize(QSize(0, 20))
-        self.leMinWRec.setMaximumSize(QSize(50, 16777215))
-
-        self.gridLayout_14.addWidget(self.leMinWRec, 3, 7, 1, 1)
-
-        self.label_174 = QLabel(self.fBlobPanel)
-        self.label_174.setObjectName(u"label_174")
-        self.label_174.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
-
-        self.gridLayout_14.addWidget(self.label_174, 4, 6, 1, 1)
+        self.gridLayout_14.addWidget(self.leLRec, 4, 2, 1, 1)
 
         self.leMaxLRec = QLineEdit(self.fBlobPanel)
         self.leMaxLRec.setObjectName(u"leMaxLRec")
@@ -2141,6 +2176,19 @@ class Ui_RobotWindow(object):
 
         self.gridLayout_14.addWidget(self.leMaxLRec, 4, 9, 1, 1)
 
+        self.horizontalSpacer_67 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+
+        self.gridLayout_14.addItem(self.horizontalSpacer_67, 3, 4, 1, 1)
+
+        self.leWRec = QLineEdit(self.fBlobPanel)
+        self.leWRec.setObjectName(u"leWRec")
+        sizePolicy6.setHeightForWidth(self.leWRec.sizePolicy().hasHeightForWidth())
+        self.leWRec.setSizePolicy(sizePolicy6)
+        self.leWRec.setMinimumSize(QSize(0, 30))
+        self.leWRec.setMaximumSize(QSize(50, 16777215))
+
+        self.gridLayout_14.addWidget(self.leWRec, 3, 2, 1, 1)
+
         self.leMinLRec = QLineEdit(self.fBlobPanel)
         self.leMinLRec.setObjectName(u"leMinLRec")
         sizePolicy6.setHeightForWidth(self.leMinLRec.sizePolicy().hasHeightForWidth())
@@ -2150,14 +2198,20 @@ class Ui_RobotWindow(object):
 
         self.gridLayout_14.addWidget(self.leMinLRec, 4, 7, 1, 1)
 
-        self.leLRec = QLineEdit(self.fBlobPanel)
-        self.leLRec.setObjectName(u"leLRec")
-        sizePolicy6.setHeightForWidth(self.leLRec.sizePolicy().hasHeightForWidth())
-        self.leLRec.setSizePolicy(sizePolicy6)
-        self.leLRec.setMinimumSize(QSize(0, 30))
-        self.leLRec.setMaximumSize(QSize(50, 16777215))
+        self.label_42 = QLabel(self.fBlobPanel)
+        self.label_42.setObjectName(u"label_42")
 
-        self.gridLayout_14.addWidget(self.leLRec, 4, 2, 1, 1)
+        self.gridLayout_14.addWidget(self.label_42, 3, 1, 1, 1)
+
+        self.label_175 = QLabel(self.fBlobPanel)
+        self.label_175.setObjectName(u"label_175")
+        self.label_175.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
+
+        self.gridLayout_14.addWidget(self.label_175, 4, 8, 1, 1)
+
+        self.horizontalSpacer_66 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+
+        self.gridLayout_14.addItem(self.horizontalSpacer_66, 3, 10, 1, 1)
 
         self.cbObjectType = QComboBox(self.fBlobPanel)
         self.cbObjectType.addItem("")
@@ -2172,14 +2226,37 @@ class Ui_RobotWindow(object):
 
         self.gridLayout_14.addWidget(self.cbObjectType, 0, 2, 1, 1)
 
-        self.leWRec = QLineEdit(self.fBlobPanel)
-        self.leWRec.setObjectName(u"leWRec")
-        sizePolicy6.setHeightForWidth(self.leWRec.sizePolicy().hasHeightForWidth())
-        self.leWRec.setSizePolicy(sizePolicy6)
-        self.leWRec.setMinimumSize(QSize(0, 30))
-        self.leWRec.setMaximumSize(QSize(50, 16777215))
+        self.label_43 = QLabel(self.fBlobPanel)
+        self.label_43.setObjectName(u"label_43")
 
-        self.gridLayout_14.addWidget(self.leWRec, 3, 2, 1, 1)
+        self.gridLayout_14.addWidget(self.label_43, 4, 1, 1, 1)
+
+        self.label_163 = QLabel(self.fBlobPanel)
+        self.label_163.setObjectName(u"label_163")
+
+        self.gridLayout_14.addWidget(self.label_163, 0, 1, 1, 1)
+
+        self.label_173 = QLabel(self.fBlobPanel)
+        self.label_173.setObjectName(u"label_173")
+        self.label_173.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
+
+        self.gridLayout_14.addWidget(self.label_173, 3, 8, 1, 1)
+
+        self.label_174 = QLabel(self.fBlobPanel)
+        self.label_174.setObjectName(u"label_174")
+        self.label_174.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
+
+        self.gridLayout_14.addWidget(self.label_174, 4, 6, 1, 1)
+
+        self.label_55 = QLabel(self.fBlobPanel)
+        self.label_55.setObjectName(u"label_55")
+
+        self.gridLayout_14.addWidget(self.label_55, 4, 3, 1, 1)
+
+        self.label_54 = QLabel(self.fBlobPanel)
+        self.label_54.setObjectName(u"label_54")
+
+        self.gridLayout_14.addWidget(self.label_54, 3, 3, 1, 1)
 
         self.label_172 = QLabel(self.fBlobPanel)
         self.label_172.setObjectName(u"label_172")
@@ -2187,25 +2264,23 @@ class Ui_RobotWindow(object):
 
         self.gridLayout_14.addWidget(self.label_172, 3, 6, 1, 1)
 
-        self.label_175 = QLabel(self.fBlobPanel)
-        self.label_175.setObjectName(u"label_175")
-        self.label_175.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
+        self.leMaxWRec = QLineEdit(self.fBlobPanel)
+        self.leMaxWRec.setObjectName(u"leMaxWRec")
+        sizePolicy6.setHeightForWidth(self.leMaxWRec.sizePolicy().hasHeightForWidth())
+        self.leMaxWRec.setSizePolicy(sizePolicy6)
+        self.leMaxWRec.setMinimumSize(QSize(0, 20))
+        self.leMaxWRec.setMaximumSize(QSize(50, 16777215))
 
-        self.gridLayout_14.addWidget(self.label_175, 4, 8, 1, 1)
+        self.gridLayout_14.addWidget(self.leMaxWRec, 3, 9, 1, 1)
 
-        self.label_43 = QLabel(self.fBlobPanel)
-        self.label_43.setObjectName(u"label_43")
+        self.leMinWRec = QLineEdit(self.fBlobPanel)
+        self.leMinWRec.setObjectName(u"leMinWRec")
+        sizePolicy6.setHeightForWidth(self.leMinWRec.sizePolicy().hasHeightForWidth())
+        self.leMinWRec.setSizePolicy(sizePolicy6)
+        self.leMinWRec.setMinimumSize(QSize(0, 20))
+        self.leMinWRec.setMaximumSize(QSize(50, 16777215))
 
-        self.gridLayout_14.addWidget(self.label_43, 4, 1, 1, 1)
-
-        self.label_55 = QLabel(self.fBlobPanel)
-        self.label_55.setObjectName(u"label_55")
-
-        self.gridLayout_14.addWidget(self.label_55, 4, 3, 1, 1)
-
-        self.horizontalSpacer_67 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
-
-        self.gridLayout_14.addItem(self.horizontalSpacer_67, 3, 4, 1, 1)
+        self.gridLayout_14.addWidget(self.leMinWRec, 3, 7, 1, 1)
 
 
         self.verticalLayout_31.addWidget(self.fBlobPanel)
@@ -2466,11 +2541,24 @@ class Ui_RobotWindow(object):
 
         self.horizontalLayout_31.addItem(self.horizontalSpacer_50)
 
-        self.pbViewDataObjects = QPushButton(self.gbCameraVariable)
-        self.pbViewDataObjects.setObjectName(u"pbViewDataObjects")
+        self.pbUpdateObjectToView = QPushButton(self.gbCameraVariable)
+        self.pbUpdateObjectToView.setObjectName(u"pbUpdateObjectToView")
         sizePolicy16 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Minimum)
         sizePolicy16.setHorizontalStretch(0)
         sizePolicy16.setVerticalStretch(0)
+        sizePolicy16.setHeightForWidth(self.pbUpdateObjectToView.sizePolicy().hasHeightForWidth())
+        self.pbUpdateObjectToView.setSizePolicy(sizePolicy16)
+        self.pbUpdateObjectToView.setMinimumSize(QSize(0, 0))
+        self.pbUpdateObjectToView.setMaximumSize(QSize(16777215, 16777215))
+        self.pbUpdateObjectToView.setStyleSheet(u"")
+        icon28 = QIcon()
+        icon28.addFile(u":/icon/icons8_replay_48px.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.pbUpdateObjectToView.setIcon(icon28)
+
+        self.horizontalLayout_31.addWidget(self.pbUpdateObjectToView)
+
+        self.pbViewDataObjects = QPushButton(self.gbCameraVariable)
+        self.pbViewDataObjects.setObjectName(u"pbViewDataObjects")
         sizePolicy16.setHeightForWidth(self.pbViewDataObjects.sizePolicy().hasHeightForWidth())
         self.pbViewDataObjects.setSizePolicy(sizePolicy16)
         self.pbViewDataObjects.setMinimumSize(QSize(0, 0))
@@ -2492,6 +2580,12 @@ class Ui_RobotWindow(object):
 
 
         self.verticalLayout_34.addLayout(self.horizontalLayout_31)
+
+        self.tvObjectTable = QTableView(self.gbCameraVariable)
+        self.tvObjectTable.setObjectName(u"tvObjectTable")
+        self.tvObjectTable.setMinimumSize(QSize(0, 400))
+
+        self.verticalLayout_34.addWidget(self.tvObjectTable)
 
         self.fVisionVariableFrame = QFrame(self.gbCameraVariable)
         self.fVisionVariableFrame.setObjectName(u"fVisionVariableFrame")
@@ -2768,11 +2862,29 @@ class Ui_RobotWindow(object):
         self.gridLayout.setObjectName(u"gridLayout")
         self.gridLayout.setVerticalSpacing(10)
         self.gridLayout.setContentsMargins(-1, 0, -1, 0)
-        self.label_230 = QLabel(self.frame)
-        self.label_230.setObjectName(u"label_230")
-        self.label_230.setAlignment(Qt.AlignCenter)
+        self.pbMoveTestTrackingPoint = QPushButton(self.frame)
+        self.pbMoveTestTrackingPoint.setObjectName(u"pbMoveTestTrackingPoint")
+        sizePolicy10.setHeightForWidth(self.pbMoveTestTrackingPoint.sizePolicy().hasHeightForWidth())
+        self.pbMoveTestTrackingPoint.setSizePolicy(sizePolicy10)
+        self.pbMoveTestTrackingPoint.setMinimumSize(QSize(0, 20))
 
-        self.gridLayout.addWidget(self.label_230, 0, 2, 1, 1)
+        self.gridLayout.addWidget(self.pbMoveTestTrackingPoint, 2, 0, 1, 1)
+
+        self.leTestTrackingPointX = QLineEdit(self.frame)
+        self.leTestTrackingPointX.setObjectName(u"leTestTrackingPointX")
+
+        self.gridLayout.addWidget(self.leTestTrackingPointX, 1, 1, 1, 1)
+
+        self.label_231 = QLabel(self.frame)
+        self.label_231.setObjectName(u"label_231")
+        self.label_231.setAlignment(Qt.AlignCenter)
+
+        self.gridLayout.addWidget(self.label_231, 0, 1, 1, 1)
+
+        self.leTestTrackingPointZ = QLineEdit(self.frame)
+        self.leTestTrackingPointZ.setObjectName(u"leTestTrackingPointZ")
+
+        self.gridLayout.addWidget(self.leTestTrackingPointZ, 1, 4, 1, 1)
 
         self.label_11 = QLabel(self.frame)
         self.label_11.setObjectName(u"label_11")
@@ -2785,47 +2897,40 @@ class Ui_RobotWindow(object):
 
         self.gridLayout.addWidget(self.label_232, 2, 2, 1, 1)
 
-        self.label_231 = QLabel(self.frame)
-        self.label_231.setObjectName(u"label_231")
-        self.label_231.setAlignment(Qt.AlignCenter)
+        self.label_230 = QLabel(self.frame)
+        self.label_230.setObjectName(u"label_230")
+        self.label_230.setAlignment(Qt.AlignCenter)
 
-        self.gridLayout.addWidget(self.label_231, 0, 1, 1, 1)
+        self.gridLayout.addWidget(self.label_230, 0, 2, 1, 1)
 
         self.leTestTrackingPointY = QLineEdit(self.frame)
         self.leTestTrackingPointY.setObjectName(u"leTestTrackingPointY")
 
         self.gridLayout.addWidget(self.leTestTrackingPointY, 1, 2, 1, 1)
 
-        self.pbMoveTestTrackingPoint = QPushButton(self.frame)
-        self.pbMoveTestTrackingPoint.setObjectName(u"pbMoveTestTrackingPoint")
-        sizePolicy10.setHeightForWidth(self.pbMoveTestTrackingPoint.sizePolicy().hasHeightForWidth())
-        self.pbMoveTestTrackingPoint.setSizePolicy(sizePolicy10)
-        self.pbMoveTestTrackingPoint.setMinimumSize(QSize(0, 20))
-
-        self.gridLayout.addWidget(self.pbMoveTestTrackingPoint, 2, 0, 1, 1)
-
-        self.horizontalSpacer_9 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
-
-        self.gridLayout.addItem(self.horizontalSpacer_9, 1, 4, 1, 1)
-
         self.leMovingValue = QLineEdit(self.frame)
         self.leMovingValue.setObjectName(u"leMovingValue")
 
         self.gridLayout.addWidget(self.leMovingValue, 2, 1, 1, 1)
 
-        self.leTestTrackingPointX = QLineEdit(self.frame)
-        self.leTestTrackingPointX.setObjectName(u"leTestTrackingPointX")
+        self.horizontalSpacer_9 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
 
-        self.gridLayout.addWidget(self.leTestTrackingPointX, 1, 1, 1, 1)
+        self.gridLayout.addItem(self.horizontalSpacer_9, 1, 6, 1, 1)
 
         self.tbCopyTestTrackingPoint = QToolButton(self.frame)
         self.tbCopyTestTrackingPoint.setObjectName(u"tbCopyTestTrackingPoint")
-        icon28 = QIcon()
-        icon28.addFile(u":/icon/Copy.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.tbCopyTestTrackingPoint.setIcon(icon28)
+        icon29 = QIcon()
+        icon29.addFile(u":/icon/Copy.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.tbCopyTestTrackingPoint.setIcon(icon29)
         self.tbCopyTestTrackingPoint.setIconSize(QSize(24, 24))
 
-        self.gridLayout.addWidget(self.tbCopyTestTrackingPoint, 1, 3, 1, 1)
+        self.gridLayout.addWidget(self.tbCopyTestTrackingPoint, 1, 5, 1, 1)
+
+        self.label_236 = QLabel(self.frame)
+        self.label_236.setObjectName(u"label_236")
+        self.label_236.setAlignment(Qt.AlignCenter)
+
+        self.gridLayout.addWidget(self.label_236, 0, 4, 1, 1)
 
 
         self.verticalLayout_60.addWidget(self.frame)
@@ -2851,91 +2956,6 @@ class Ui_RobotWindow(object):
         self.gridLayout_44.setSpacing(6)
         self.gridLayout_44.setContentsMargins(11, 11, 11, 11)
         self.gridLayout_44.setObjectName(u"gridLayout_44")
-        self.leVectorY = QLineEdit(self.frame_19)
-        self.leVectorY.setObjectName(u"leVectorY")
-
-        self.gridLayout_44.addWidget(self.leVectorY, 8, 5, 1, 1)
-
-        self.lePointAtT1X = QLineEdit(self.frame_19)
-        self.lePointAtT1X.setObjectName(u"lePointAtT1X")
-
-        self.gridLayout_44.addWidget(self.lePointAtT1X, 2, 3, 1, 1)
-
-        self.lePointAtT1Z = QLineEdit(self.frame_19)
-        self.lePointAtT1Z.setObjectName(u"lePointAtT1Z")
-
-        self.gridLayout_44.addWidget(self.lePointAtT1Z, 2, 6, 1, 1)
-
-        self.leVectorZ = QLineEdit(self.frame_19)
-        self.leVectorZ.setObjectName(u"leVectorZ")
-
-        self.gridLayout_44.addWidget(self.leVectorZ, 8, 6, 1, 1)
-
-        self.label_229 = QLabel(self.frame_19)
-        self.label_229.setObjectName(u"label_229")
-        self.label_229.setAlignment(Qt.AlignCenter)
-
-        self.gridLayout_44.addWidget(self.label_229, 7, 2, 1, 1)
-
-        self.lePointAtT2X = QLineEdit(self.frame_19)
-        self.lePointAtT2X.setObjectName(u"lePointAtT2X")
-
-        self.gridLayout_44.addWidget(self.lePointAtT2X, 4, 3, 1, 1)
-
-        self.label_226 = QLabel(self.frame_19)
-        self.label_226.setObjectName(u"label_226")
-        self.label_226.setAlignment(Qt.AlignCenter)
-
-        self.gridLayout_44.addWidget(self.label_226, 7, 3, 1, 1)
-
-        self.label_206 = QLabel(self.frame_19)
-        self.label_206.setObjectName(u"label_206")
-        self.label_206.setAlignment(Qt.AlignCenter)
-
-        self.gridLayout_44.addWidget(self.label_206, 1, 5, 1, 1)
-
-        self.horizontalSpacer_13 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
-
-        self.gridLayout_44.addItem(self.horizontalSpacer_13, 2, 7, 1, 1)
-
-        self.lePointAtT1Y = QLineEdit(self.frame_19)
-        self.lePointAtT1Y.setObjectName(u"lePointAtT1Y")
-
-        self.gridLayout_44.addWidget(self.lePointAtT1Y, 2, 5, 1, 1)
-
-        self.label_228 = QLabel(self.frame_19)
-        self.label_228.setObjectName(u"label_228")
-        self.label_228.setAlignment(Qt.AlignCenter)
-
-        self.gridLayout_44.addWidget(self.label_228, 7, 6, 1, 1)
-
-        self.pbAnglePoint2 = QPushButton(self.frame_19)
-        self.pbAnglePoint2.setObjectName(u"pbAnglePoint2")
-        self.pbAnglePoint2.setMinimumSize(QSize(0, 20))
-        self.pbAnglePoint2.setFlat(True)
-
-        self.gridLayout_44.addWidget(self.pbAnglePoint2, 4, 2, 1, 1)
-
-        self.label_208 = QLabel(self.frame_19)
-        self.label_208.setObjectName(u"label_208")
-        self.label_208.setAlignment(Qt.AlignCenter)
-
-        self.gridLayout_44.addWidget(self.label_208, 1, 6, 1, 1)
-
-        self.label_197 = QLabel(self.frame_19)
-        self.label_197.setObjectName(u"label_197")
-        self.label_197.setAlignment(Qt.AlignCenter)
-
-        self.gridLayout_44.addWidget(self.label_197, 5, 2, 1, 1)
-
-        self.pbCalVector = QPushButton(self.frame_19)
-        self.pbCalVector.setObjectName(u"pbCalVector")
-        sizePolicy6.setHeightForWidth(self.pbCalVector.sizePolicy().hasHeightForWidth())
-        self.pbCalVector.setSizePolicy(sizePolicy6)
-        self.pbCalVector.setMinimumSize(QSize(80, 20))
-
-        self.gridLayout_44.addWidget(self.pbCalVector, 6, 2, 1, 1)
-
         self.pbAddVector = QPushButton(self.frame_19)
         self.pbAddVector.setObjectName(u"pbAddVector")
         sizePolicy13.setHeightForWidth(self.pbAddVector.sizePolicy().hasHeightForWidth())
@@ -2944,27 +2964,37 @@ class Ui_RobotWindow(object):
 
         self.gridLayout_44.addWidget(self.pbAddVector, 8, 7, 1, 1)
 
-        self.label_227 = QLabel(self.frame_19)
-        self.label_227.setObjectName(u"label_227")
-        self.label_227.setAlignment(Qt.AlignCenter)
+        self.label_197 = QLabel(self.frame_19)
+        self.label_197.setObjectName(u"label_197")
+        self.label_197.setAlignment(Qt.AlignCenter)
 
-        self.gridLayout_44.addWidget(self.label_227, 7, 5, 1, 1)
+        self.gridLayout_44.addWidget(self.label_197, 5, 2, 1, 1)
 
-        self.label_189 = QLabel(self.frame_19)
-        self.label_189.setObjectName(u"label_189")
-        self.label_189.setAlignment(Qt.AlignCenter)
+        self.leVectorZ = QLineEdit(self.frame_19)
+        self.leVectorZ.setObjectName(u"leVectorZ")
 
-        self.gridLayout_44.addWidget(self.label_189, 1, 3, 1, 1)
+        self.gridLayout_44.addWidget(self.leVectorZ, 8, 6, 1, 1)
 
-        self.lePointAtT2Y = QLineEdit(self.frame_19)
-        self.lePointAtT2Y.setObjectName(u"lePointAtT2Y")
+        self.lePointAtT1Z = QLineEdit(self.frame_19)
+        self.lePointAtT1Z.setObjectName(u"lePointAtT1Z")
 
-        self.gridLayout_44.addWidget(self.lePointAtT2Y, 4, 5, 1, 1)
+        self.gridLayout_44.addWidget(self.lePointAtT1Z, 2, 6, 1, 1)
 
-        self.leVectorX = QLineEdit(self.frame_19)
-        self.leVectorX.setObjectName(u"leVectorX")
+        self.horizontalSpacer_13 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
 
-        self.gridLayout_44.addWidget(self.leVectorX, 8, 3, 1, 1)
+        self.gridLayout_44.addItem(self.horizontalSpacer_13, 2, 7, 1, 1)
+
+        self.label_206 = QLabel(self.frame_19)
+        self.label_206.setObjectName(u"label_206")
+        self.label_206.setAlignment(Qt.AlignCenter)
+
+        self.gridLayout_44.addWidget(self.label_206, 1, 5, 1, 1)
+
+        self.label_229 = QLabel(self.frame_19)
+        self.label_229.setObjectName(u"label_229")
+        self.label_229.setAlignment(Qt.AlignCenter)
+
+        self.gridLayout_44.addWidget(self.label_229, 7, 2, 1, 1)
 
         self.pbAnglePoint1 = QPushButton(self.frame_19)
         self.pbAnglePoint1.setObjectName(u"pbAnglePoint1")
@@ -2978,23 +3008,81 @@ class Ui_RobotWindow(object):
 
         self.gridLayout_44.addWidget(self.pbAnglePoint1, 2, 2, 1, 1)
 
-        self.leVectorName = QLineEdit(self.frame_19)
-        self.leVectorName.setObjectName(u"leVectorName")
+        self.pbCalVector = QPushButton(self.frame_19)
+        self.pbCalVector.setObjectName(u"pbCalVector")
+        sizePolicy6.setHeightForWidth(self.pbCalVector.sizePolicy().hasHeightForWidth())
+        self.pbCalVector.setSizePolicy(sizePolicy6)
+        self.pbCalVector.setMinimumSize(QSize(80, 20))
 
-        self.gridLayout_44.addWidget(self.leVectorName, 8, 2, 1, 1)
+        self.gridLayout_44.addWidget(self.pbCalVector, 6, 2, 1, 1)
 
-        self.leVectorValue = QLineEdit(self.frame_19)
-        self.leVectorValue.setObjectName(u"leVectorValue")
+        self.leVectorY = QLineEdit(self.frame_19)
+        self.leVectorY.setObjectName(u"leVectorY")
 
-        self.gridLayout_44.addWidget(self.leVectorValue, 5, 3, 1, 1)
+        self.gridLayout_44.addWidget(self.leVectorY, 8, 5, 1, 1)
+
+        self.lePointAtT1Y = QLineEdit(self.frame_19)
+        self.lePointAtT1Y.setObjectName(u"lePointAtT1Y")
+
+        self.gridLayout_44.addWidget(self.lePointAtT1Y, 2, 5, 1, 1)
+
+        self.label_226 = QLabel(self.frame_19)
+        self.label_226.setObjectName(u"label_226")
+        self.label_226.setAlignment(Qt.AlignCenter)
+
+        self.gridLayout_44.addWidget(self.label_226, 7, 3, 1, 1)
+
+        self.label_228 = QLabel(self.frame_19)
+        self.label_228.setObjectName(u"label_228")
+        self.label_228.setAlignment(Qt.AlignCenter)
+
+        self.gridLayout_44.addWidget(self.label_228, 7, 6, 1, 1)
 
         self.lePointAtT2Z = QLineEdit(self.frame_19)
         self.lePointAtT2Z.setObjectName(u"lePointAtT2Z")
 
         self.gridLayout_44.addWidget(self.lePointAtT2Z, 4, 6, 1, 1)
 
+        self.label_208 = QLabel(self.frame_19)
+        self.label_208.setObjectName(u"label_208")
+        self.label_208.setAlignment(Qt.AlignCenter)
+
+        self.gridLayout_44.addWidget(self.label_208, 1, 6, 1, 1)
+
+        self.leVectorName = QLineEdit(self.frame_19)
+        self.leVectorName.setObjectName(u"leVectorName")
+
+        self.gridLayout_44.addWidget(self.leVectorName, 8, 2, 1, 1)
+
+        self.lePointAtT2X = QLineEdit(self.frame_19)
+        self.lePointAtT2X.setObjectName(u"lePointAtT2X")
+
+        self.gridLayout_44.addWidget(self.lePointAtT2X, 4, 3, 1, 1)
+
+        self.lePointAtT2Y = QLineEdit(self.frame_19)
+        self.lePointAtT2Y.setObjectName(u"lePointAtT2Y")
+
+        self.gridLayout_44.addWidget(self.lePointAtT2Y, 4, 5, 1, 1)
+
+        self.label_227 = QLabel(self.frame_19)
+        self.label_227.setObjectName(u"label_227")
+        self.label_227.setAlignment(Qt.AlignCenter)
+
+        self.gridLayout_44.addWidget(self.label_227, 7, 5, 1, 1)
+
+        self.pbAnglePoint2 = QPushButton(self.frame_19)
+        self.pbAnglePoint2.setObjectName(u"pbAnglePoint2")
+        self.pbAnglePoint2.setMinimumSize(QSize(0, 20))
+        self.pbAnglePoint2.setFlat(True)
+
+        self.gridLayout_44.addWidget(self.pbAnglePoint2, 4, 2, 1, 1)
+
+        self.leVectorValue = QLineEdit(self.frame_19)
+        self.leVectorValue.setObjectName(u"leVectorValue")
+
+        self.gridLayout_44.addWidget(self.leVectorValue, 5, 3, 1, 1)
+
         self.lwVectorList = QListWidget(self.frame_19)
-        QListWidgetItem(self.lwVectorList)
         self.lwVectorList.setObjectName(u"lwVectorList")
         sizePolicy18 = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.MinimumExpanding)
         sizePolicy18.setHorizontalStretch(0)
@@ -3009,6 +3097,22 @@ class Ui_RobotWindow(object):
 "padding: 5px;")
 
         self.gridLayout_44.addWidget(self.lwVectorList, 9, 6, 1, 2)
+
+        self.label_189 = QLabel(self.frame_19)
+        self.label_189.setObjectName(u"label_189")
+        self.label_189.setAlignment(Qt.AlignCenter)
+
+        self.gridLayout_44.addWidget(self.label_189, 1, 3, 1, 1)
+
+        self.lePointAtT1X = QLineEdit(self.frame_19)
+        self.lePointAtT1X.setObjectName(u"lePointAtT1X")
+
+        self.gridLayout_44.addWidget(self.lePointAtT1X, 2, 3, 1, 1)
+
+        self.leVectorX = QLineEdit(self.frame_19)
+        self.leVectorX.setObjectName(u"leVectorX")
+
+        self.gridLayout_44.addWidget(self.leVectorX, 8, 3, 1, 1)
 
 
         self.verticalLayout_63.addWidget(self.frame_19)
@@ -3148,7 +3252,6 @@ class Ui_RobotWindow(object):
         self.gridLayout_41.addWidget(self.label_200, 5, 3, 1, 1)
 
         self.lwMappingMatrixList = QListWidget(self.frame_18)
-        QListWidgetItem(self.lwMappingMatrixList)
         self.lwMappingMatrixList.setObjectName(u"lwMappingMatrixList")
         sizePolicy18.setHeightForWidth(self.lwMappingMatrixList.sizePolicy().hasHeightForWidth())
         self.lwMappingMatrixList.setSizePolicy(sizePolicy18)
@@ -3442,7 +3545,6 @@ class Ui_RobotWindow(object):
         self.gridLayout_42.addWidget(self.leSPoint3X, 4, 3, 1, 1)
 
         self.lwPointMatrixList = QListWidget(self.frame_20)
-        QListWidgetItem(self.lwPointMatrixList)
         self.lwPointMatrixList.setObjectName(u"lwPointMatrixList")
         sizePolicy18.setHeightForWidth(self.lwPointMatrixList.sizePolicy().hasHeightForWidth())
         self.lwPointMatrixList.setSizePolicy(sizePolicy18)
@@ -3641,9 +3743,9 @@ class Ui_RobotWindow(object):
         font11.setBold(False)
         self.pbOpenPicture.setFont(font11)
         self.pbOpenPicture.setLayoutDirection(Qt.LeftToRight)
-        icon29 = QIcon()
-        icon29.addFile(u":/icon/icons8_image_96px.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.pbOpenPicture.setIcon(icon29)
+        icon30 = QIcon()
+        icon30.addFile(u":/icon/icons8_image_96px.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.pbOpenPicture.setIcon(icon30)
         self.pbOpenPicture.setIconSize(QSize(64, 64))
         self.pbOpenPicture.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
         self.pbOpenPicture.setAutoRaise(False)
@@ -3812,9 +3914,9 @@ class Ui_RobotWindow(object):
         self.pbPainting.setMinimumSize(QSize(0, 0))
         self.pbPainting.setMaximumSize(QSize(16777215, 16777215))
         self.pbPainting.setFont(font11)
-        icon30 = QIcon()
-        icon30.addFile(u":/icon/icons8_pencil_drawing_96px.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.pbPainting.setIcon(icon30)
+        icon31 = QIcon()
+        icon31.addFile(u":/icon/icons8_pencil_drawing_96px.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.pbPainting.setIcon(icon31)
         self.pbPainting.setIconSize(QSize(64, 64))
         self.pbPainting.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
         self.pbPainting.setAutoRaise(False)
@@ -4053,9 +4155,9 @@ class Ui_RobotWindow(object):
         self.pbDrawLine.setSizePolicy(sizePolicy19)
         self.pbDrawLine.setMinimumSize(QSize(0, 0))
         self.pbDrawLine.setMaximumSize(QSize(70, 16777215))
-        icon31 = QIcon()
-        icon31.addFile(u":/icon/Line_16px.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.pbDrawLine.setIcon(icon31)
+        icon32 = QIcon()
+        icon32.addFile(u":/icon/Line_16px.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.pbDrawLine.setIcon(icon32)
         self.pbDrawLine.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
         self.pbDrawLine.setAutoRaise(True)
 
@@ -4067,9 +4169,9 @@ class Ui_RobotWindow(object):
         self.pbDrawRectangle.setSizePolicy(sizePolicy19)
         self.pbDrawRectangle.setMinimumSize(QSize(0, 0))
         self.pbDrawRectangle.setMaximumSize(QSize(70, 16777215))
-        icon32 = QIcon()
-        icon32.addFile(u":/icon/Rectangular_16px.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.pbDrawRectangle.setIcon(icon32)
+        icon33 = QIcon()
+        icon33.addFile(u":/icon/Rectangular_16px.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.pbDrawRectangle.setIcon(icon33)
         self.pbDrawRectangle.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
         self.pbDrawRectangle.setAutoRaise(True)
 
@@ -4081,9 +4183,9 @@ class Ui_RobotWindow(object):
         self.pbZoomIn.setSizePolicy(sizePolicy19)
         self.pbZoomIn.setMinimumSize(QSize(0, 0))
         self.pbZoomIn.setMaximumSize(QSize(70, 16777215))
-        icon33 = QIcon()
-        icon33.addFile(u":/icon/Zoom In_16px.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.pbZoomIn.setIcon(icon33)
+        icon34 = QIcon()
+        icon34.addFile(u":/icon/Zoom In_16px.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.pbZoomIn.setIcon(icon34)
         self.pbZoomIn.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
         self.pbZoomIn.setAutoRaise(True)
 
@@ -4095,9 +4197,9 @@ class Ui_RobotWindow(object):
         self.pbCursor.setSizePolicy(sizePolicy19)
         self.pbCursor.setMinimumSize(QSize(0, 0))
         self.pbCursor.setMaximumSize(QSize(70, 16777215))
-        icon34 = QIcon()
-        icon34.addFile(u":/icon/Cursor-color_16px.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.pbCursor.setIcon(icon34)
+        icon35 = QIcon()
+        icon35.addFile(u":/icon/Cursor-color_16px.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.pbCursor.setIcon(icon35)
         self.pbCursor.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
         self.pbCursor.setAutoRaise(True)
 
@@ -4109,9 +4211,9 @@ class Ui_RobotWindow(object):
         self.pbDrawArc.setSizePolicy(sizePolicy19)
         self.pbDrawArc.setMinimumSize(QSize(0, 0))
         self.pbDrawArc.setMaximumSize(QSize(70, 16777215))
-        icon35 = QIcon()
-        icon35.addFile(u":/icon/Circled Notch_16px.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.pbDrawArc.setIcon(icon35)
+        icon36 = QIcon()
+        icon36.addFile(u":/icon/Circled Notch_16px.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.pbDrawArc.setIcon(icon36)
         self.pbDrawArc.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
         self.pbDrawArc.setAutoRaise(True)
 
@@ -4123,9 +4225,9 @@ class Ui_RobotWindow(object):
         self.pbDrawCircle.setSizePolicy(sizePolicy19)
         self.pbDrawCircle.setMinimumSize(QSize(0, 0))
         self.pbDrawCircle.setMaximumSize(QSize(70, 16777215))
-        icon36 = QIcon()
-        icon36.addFile(u":/icon/Circle_16px.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.pbDrawCircle.setIcon(icon36)
+        icon37 = QIcon()
+        icon37.addFile(u":/icon/Circle_16px.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.pbDrawCircle.setIcon(icon37)
         self.pbDrawCircle.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
         self.pbDrawCircle.setAutoRaise(True)
 
@@ -4137,9 +4239,9 @@ class Ui_RobotWindow(object):
         self.pbZoomOut.setSizePolicy(sizePolicy19)
         self.pbZoomOut.setMinimumSize(QSize(0, 0))
         self.pbZoomOut.setMaximumSize(QSize(70, 16777215))
-        icon37 = QIcon()
-        icon37.addFile(u":/icon/Zoom Out_16px.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.pbZoomOut.setIcon(icon37)
+        icon38 = QIcon()
+        icon38.addFile(u":/icon/Zoom Out_16px.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.pbZoomOut.setIcon(icon38)
         self.pbZoomOut.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
         self.pbZoomOut.setAutoRaise(True)
 
@@ -4184,9 +4286,9 @@ class Ui_RobotWindow(object):
         self.pbExportDrawingGcodes.setMinimumSize(QSize(185, 65))
         self.pbExportDrawingGcodes.setMaximumSize(QSize(16777215, 16777215))
         self.pbExportDrawingGcodes.setFont(font11)
-        icon38 = QIcon()
-        icon38.addFile(u":/icon/icons8_code_96px.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.pbExportDrawingGcodes.setIcon(icon38)
+        icon39 = QIcon()
+        icon39.addFile(u":/icon/icons8_code_96px.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.pbExportDrawingGcodes.setIcon(icon39)
         self.pbExportDrawingGcodes.setIconSize(QSize(64, 64))
         self.pbExportDrawingGcodes.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
         self.pbExportDrawingGcodes.setAutoRaise(False)
@@ -4456,12 +4558,6 @@ class Ui_RobotWindow(object):
         self.verticalLayout_11.addWidget(self.saTermite)
 
         self.twModule.addTab(self.TermiteTab, "")
-        self.tSimulator = QWidget()
-        self.tSimulator.setObjectName(u"tSimulator")
-        self.graphicsView = RobotSimulator(self.tSimulator)
-        self.graphicsView.setObjectName(u"graphicsView")
-        self.graphicsView.setGeometry(QRect(150, 198, 256, 192))
-        self.twModule.addTab(self.tSimulator, "")
 
         self.ModuleTabManagerLayout.addWidget(self.twModule)
 
@@ -4478,7 +4574,7 @@ class Ui_RobotWindow(object):
         self.GeometryTabManagerLayout.setContentsMargins(0, 0, 0, 0)
         self.twDevices = QTabWidget(self.DeviceTabManagerWidget)
         self.twDevices.setObjectName(u"twDevices")
-        self.twDevices.setMinimumSize(QSize(0, 0))
+        self.twDevices.setMinimumSize(QSize(0, 28))
         self.twDevices.setFont(font3)
         self.twDevices.setStyleSheet(u"")
         self.twDevices.setTabPosition(QTabWidget.North)
@@ -4579,7 +4675,8 @@ class Ui_RobotWindow(object):
         self.horizontalLayout_36.setContentsMargins(-1, 0, -1, 0)
         self.label_158 = QLabel(self.robotTitile)
         self.label_158.setObjectName(u"label_158")
-        self.label_158.setMaximumSize(QSize(100, 16777215))
+        self.label_158.setMinimumSize(QSize(100, 0))
+        self.label_158.setMaximumSize(QSize(200, 16777215))
         self.label_158.setFont(font11)
         self.label_158.setAlignment(Qt.AlignCenter)
 
@@ -4598,11 +4695,11 @@ class Ui_RobotWindow(object):
 "{\n"
 "	background: transparent;\n"
 "}")
-        icon39 = QIcon()
-        icon39.addFile(u":/icon/icons8_switch_off_52px.png", QSize(), QIcon.Normal, QIcon.Off)
-        icon39.addFile(u":/icon/icons8_switch_on_52px.png", QSize(), QIcon.Normal, QIcon.On)
-        icon39.addFile(u":/icon/icons8_switch_on_52px.png", QSize(), QIcon.Active, QIcon.On)
-        self.tbAutoScanRobot.setIcon(icon39)
+        icon40 = QIcon()
+        icon40.addFile(u":/icon/icons8_switch_off_52px.png", QSize(), QIcon.Normal, QIcon.Off)
+        icon40.addFile(u":/icon/icons8_switch_on_52px.png", QSize(), QIcon.Normal, QIcon.On)
+        icon40.addFile(u":/icon/icons8_switch_on_52px.png", QSize(), QIcon.Active, QIcon.On)
+        self.tbAutoScanRobot.setIcon(icon40)
         self.tbAutoScanRobot.setIconSize(QSize(16, 16))
         self.tbAutoScanRobot.setCheckable(True)
         self.tbAutoScanRobot.setChecked(True)
@@ -4633,10 +4730,10 @@ class Ui_RobotWindow(object):
 "	background-color: rgb(81, 176, 255);\n"
 "}\n"
 "")
-        icon40 = QIcon()
-        icon40.addFile(u"C:/Users/Admin/.designer/backup/icon/disconnected.png", QSize(), QIcon.Normal, QIcon.Off)
-        icon40.addFile(u"C:/Users/Admin/.designer/backup/icon/connected.png", QSize(), QIcon.Normal, QIcon.On)
-        self.pbConnect.setIcon(icon40)
+        icon41 = QIcon()
+        icon41.addFile(u"C:/Users/Admin/.designer/backup/icon/disconnected.png", QSize(), QIcon.Normal, QIcon.Off)
+        icon41.addFile(u"C:/Users/Admin/.designer/backup/icon/connected.png", QSize(), QIcon.Normal, QIcon.On)
+        self.pbConnect.setIcon(icon41)
         self.pbConnect.setIconSize(QSize(30, 20))
         self.pbConnect.setCheckable(True)
 
@@ -4839,7 +4936,7 @@ class Ui_RobotWindow(object):
 "{\n"
 "	background: transparent;\n"
 "}")
-        self.tbDisableRobot.setIcon(icon39)
+        self.tbDisableRobot.setIcon(icon40)
         self.tbDisableRobot.setIconSize(QSize(16, 16))
         self.tbDisableRobot.setCheckable(True)
         self.tbDisableRobot.setChecked(True)
@@ -4894,9 +4991,9 @@ class Ui_RobotWindow(object):
         self.pbHome.setObjectName(u"pbHome")
         self.pbHome.setMinimumSize(QSize(0, 0))
         self.pbHome.setFont(font4)
-        icon41 = QIcon()
-        icon41.addFile(u":/icon/home.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.pbHome.setIcon(icon41)
+        icon42 = QIcon()
+        icon42.addFile(u":/icon/home.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.pbHome.setIcon(icon42)
         self.pbHome.setIconSize(QSize(20, 20))
         self.pbHome.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
 
@@ -5549,10 +5646,10 @@ class Ui_RobotWindow(object):
         self.pbPump.setObjectName(u"pbPump")
         self.pbPump.setMinimumSize(QSize(100, 30))
         self.pbPump.setAutoFillBackground(False)
-        icon42 = QIcon()
-        icon42.addFile(u":/icon/Toggle Off_16px.png", QSize(), QIcon.Normal, QIcon.Off)
-        icon42.addFile(u":/icon/Toggle On_16px.png", QSize(), QIcon.Normal, QIcon.On)
-        self.pbPump.setIcon(icon42)
+        icon43 = QIcon()
+        icon43.addFile(u":/icon/Toggle Off_16px.png", QSize(), QIcon.Normal, QIcon.Off)
+        icon43.addFile(u":/icon/Toggle On_16px.png", QSize(), QIcon.Normal, QIcon.On)
+        self.pbPump.setIcon(icon43)
         self.pbPump.setIconSize(QSize(16, 16))
         self.pbPump.setCheckable(True)
         self.pbPump.setChecked(False)
@@ -5565,7 +5662,7 @@ class Ui_RobotWindow(object):
         self.pbLaser.setObjectName(u"pbLaser")
         self.pbLaser.setMinimumSize(QSize(100, 30))
         self.pbLaser.setAutoFillBackground(False)
-        self.pbLaser.setIcon(icon42)
+        self.pbLaser.setIcon(icon43)
         self.pbLaser.setIconSize(QSize(16, 16))
         self.pbLaser.setCheckable(True)
         self.pbLaser.setChecked(False)
@@ -6369,6 +6466,7 @@ class Ui_RobotWindow(object):
         self.horizontalLayout_84.setSpacing(6)
         self.horizontalLayout_84.setContentsMargins(11, 11, 11, 11)
         self.horizontalLayout_84.setObjectName(u"horizontalLayout_84")
+        self.horizontalLayout_84.setContentsMargins(-1, 0, -1, 0)
         self.label = QLabel(self.robotTitile_7)
         self.label.setObjectName(u"label")
 
@@ -6387,7 +6485,7 @@ class Ui_RobotWindow(object):
         self.pbConveyorConnect.setObjectName(u"pbConveyorConnect")
         sizePolicy.setHeightForWidth(self.pbConveyorConnect.sizePolicy().hasHeightForWidth())
         self.pbConveyorConnect.setSizePolicy(sizePolicy)
-        self.pbConveyorConnect.setMinimumSize(QSize(80, 0))
+        self.pbConveyorConnect.setMinimumSize(QSize(0, 28))
         self.pbConveyorConnect.setMaximumSize(QSize(16777215, 16777215))
         self.pbConveyorConnect.setFont(font4)
         self.pbConveyorConnect.setStyleSheet(u"QPushButton\n"
@@ -6395,6 +6493,8 @@ class Ui_RobotWindow(object):
 "	background-color: #3195EF;\n"
 "	color: rgb(255, 255, 255);\n"
 "	border: none;\n"
+"	padding-left: 20px;\n"
+"	padding-right: 20px;\n"
 "}\n"
 "QPushButton:hover\n"
 "{	\n"
@@ -6959,6 +7059,7 @@ class Ui_RobotWindow(object):
         self.horizontalLayout_88.setSpacing(6)
         self.horizontalLayout_88.setContentsMargins(11, 11, 11, 11)
         self.horizontalLayout_88.setObjectName(u"horizontalLayout_88")
+        self.horizontalLayout_88.setContentsMargins(-1, 0, -1, 0)
         self.label_9 = QLabel(self.robotTitile_10)
         self.label_9.setObjectName(u"label_9")
 
@@ -6977,7 +7078,7 @@ class Ui_RobotWindow(object):
         self.pbConnectEncoder.setObjectName(u"pbConnectEncoder")
         sizePolicy.setHeightForWidth(self.pbConnectEncoder.sizePolicy().hasHeightForWidth())
         self.pbConnectEncoder.setSizePolicy(sizePolicy)
-        self.pbConnectEncoder.setMinimumSize(QSize(80, 0))
+        self.pbConnectEncoder.setMinimumSize(QSize(0, 28))
         self.pbConnectEncoder.setMaximumSize(QSize(16777215, 16777215))
         self.pbConnectEncoder.setFont(font4)
         self.pbConnectEncoder.setStyleSheet(u"QPushButton\n"
@@ -6985,6 +7086,8 @@ class Ui_RobotWindow(object):
 "	background-color: #3195EF;\n"
 "	color: rgb(255, 255, 255);\n"
 "	border: none;\n"
+"	padding-left: 20px;\n"
+"	padding-right: 20px;\n"
 "}\n"
 "QPushButton:hover\n"
 "{	\n"
@@ -7307,6 +7410,7 @@ class Ui_RobotWindow(object):
         self.horizontalLayout_105.setSpacing(6)
         self.horizontalLayout_105.setContentsMargins(11, 11, 11, 11)
         self.horizontalLayout_105.setObjectName(u"horizontalLayout_105")
+        self.horizontalLayout_105.setContentsMargins(-1, 0, -1, 0)
         self.label_15 = QLabel(self.robotTitile_13)
         self.label_15.setObjectName(u"label_15")
 
@@ -7325,7 +7429,7 @@ class Ui_RobotWindow(object):
         self.pbSlidingConnect.setObjectName(u"pbSlidingConnect")
         sizePolicy.setHeightForWidth(self.pbSlidingConnect.sizePolicy().hasHeightForWidth())
         self.pbSlidingConnect.setSizePolicy(sizePolicy)
-        self.pbSlidingConnect.setMinimumSize(QSize(80, 0))
+        self.pbSlidingConnect.setMinimumSize(QSize(0, 0))
         self.pbSlidingConnect.setMaximumSize(QSize(16777215, 16777215))
         self.pbSlidingConnect.setFont(font4)
         self.pbSlidingConnect.setStyleSheet(u"QPushButton\n"
@@ -7333,6 +7437,8 @@ class Ui_RobotWindow(object):
 "	background-color: #3195EF;\n"
 "	color: rgb(255, 255, 255);\n"
 "	border: none;\n"
+"	padding-left: 20px;\n"
+"	padding-right: 20px;\n"
 "}\n"
 "QPushButton:hover\n"
 "{	\n"
@@ -7517,9 +7623,9 @@ class Ui_RobotWindow(object):
         font16 = QFont()
         font16.setPointSize(11)
         self.pbSlidingHome.setFont(font16)
-        icon43 = QIcon()
-        icon43.addFile(u"icon/icons8-home-32.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.pbSlidingHome.setIcon(icon43)
+        icon44 = QIcon()
+        icon44.addFile(u"icon/icons8-home-32.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.pbSlidingHome.setIcon(icon44)
 
         self.gridLayout_8.addWidget(self.pbSlidingHome, 1, 1, 1, 1)
 
@@ -7550,9 +7656,9 @@ class Ui_RobotWindow(object):
         self.pbSlidingDisable.setMinimumSize(QSize(0, 0))
         self.pbSlidingDisable.setMaximumSize(QSize(200, 40))
         self.pbSlidingDisable.setFont(font16)
-        icon44 = QIcon()
-        icon44.addFile(u"icon/icons8-sleeping-in-bed-32.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.pbSlidingDisable.setIcon(icon44)
+        icon45 = QIcon()
+        icon45.addFile(u"icon/icons8-sleeping-in-bed-32.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.pbSlidingDisable.setIcon(icon45)
 
         self.gridLayout_8.addWidget(self.pbSlidingDisable, 0, 1, 1, 1)
 
@@ -7624,6 +7730,7 @@ class Ui_RobotWindow(object):
         self.horizontalLayout_110.setSpacing(6)
         self.horizontalLayout_110.setContentsMargins(11, 11, 11, 11)
         self.horizontalLayout_110.setObjectName(u"horizontalLayout_110")
+        self.horizontalLayout_110.setContentsMargins(-1, 0, -1, 0)
         self.label_16 = QLabel(self.robotTitile_15)
         self.label_16.setObjectName(u"label_16")
 
@@ -7642,7 +7749,7 @@ class Ui_RobotWindow(object):
         self.pbExternalControllerConnect.setObjectName(u"pbExternalControllerConnect")
         sizePolicy.setHeightForWidth(self.pbExternalControllerConnect.sizePolicy().hasHeightForWidth())
         self.pbExternalControllerConnect.setSizePolicy(sizePolicy)
-        self.pbExternalControllerConnect.setMinimumSize(QSize(80, 0))
+        self.pbExternalControllerConnect.setMinimumSize(QSize(0, 0))
         self.pbExternalControllerConnect.setMaximumSize(QSize(16777215, 16777215))
         self.pbExternalControllerConnect.setFont(font4)
         self.pbExternalControllerConnect.setStyleSheet(u"QPushButton\n"
@@ -7650,6 +7757,8 @@ class Ui_RobotWindow(object):
 "	background-color: #3195EF;\n"
 "	color: rgb(255, 255, 255);\n"
 "	border: none;\n"
+"	padding-left: 20px;\n"
+"	padding-right: 20px;\n"
 "}\n"
 "QPushButton:hover\n"
 "{	\n"
@@ -7791,19 +7900,20 @@ class Ui_RobotWindow(object):
         RobotWindow.setCentralWidget(self.centralWidget)
 
         self.retranslateUi(RobotWindow)
-        self.pbCalibStep2.toggled.connect(self.fCalibStep2.setVisible)
+        self.pbCalibStep1.toggled.connect(self.fCalibStep1.setVisible)
         self.gbImageProvider.toggled.connect(self.fImageProvider.setVisible)
         self.gbCameraCalibration.toggled.connect(self.fCameraCalibrationFrame.setVisible)
-        self.pbCalibStep1.toggled.connect(self.fCalibStep1.setVisible)
-        self.gbCameraVariable.toggled.connect(self.fVisionVariableFrame.setVisible)
         self.gbCameraObject.toggled.connect(self.fVisionObjectFrame.setVisible)
+        self.gbCameraVariable.toggled.connect(self.fVisionVariableFrame.setVisible)
+        self.pbCalibStep2.toggled.connect(self.fCalibStep2.setVisible)
         self.gbTrackingManager.toggled.connect(self.fTrackingManager.setVisible)
 
         self.twDeltaManager.setCurrentIndex(0)
-        self.twModule.setCurrentIndex(2)
+        self.pbReadI0_3.setDefault(False)
+        self.twModule.setCurrentIndex(1)
         self.pbImageMapping.setDefault(False)
         self.cbImageSource.setCurrentIndex(0)
-        self.twDevices.setCurrentIndex(2)
+        self.twDevices.setCurrentIndex(0)
         self.pbPump.setDefault(False)
         self.pbLaser.setDefault(False)
         self.pbGrip.setDefault(False)
@@ -7813,7 +7923,7 @@ class Ui_RobotWindow(object):
     # setupUi
 
     def retranslateUi(self, RobotWindow):
-        RobotWindow.setWindowTitle(QCoreApplication.translate("RobotWindow", u"Delta X Software - Version 0.9.5", None))
+        RobotWindow.setWindowTitle(QCoreApplication.translate("RobotWindow", u"Delta X Software - Version 1.2", None))
         self.actionAdd.setText(QCoreApplication.translate("RobotWindow", u"Add New", None))
         self.actionRemove.setText(QCoreApplication.translate("RobotWindow", u"Remove", None))
         self.actionAbout.setText(QCoreApplication.translate("RobotWindow", u"About", None))
@@ -7955,7 +8065,7 @@ class Ui_RobotWindow(object):
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2'; color:#d"
                         "bdbdc;\">N85 </span><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600; color:#dbdbdc;\">G28</span></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\"> </span></p></body></html>", None))
-        self.twModule.setTabText(self.twModule.indexOf(self.tGcodeEditor), QCoreApplication.translate("RobotWindow", u"Gcode Editor", None))
+        self.twModule.setTabText(self.twModule.indexOf(self.tGcodeEditor), QCoreApplication.translate("RobotWindow", u"G-Script", None))
         self.label_191.setText(QCoreApplication.translate("RobotWindow", u"Detecting Thread", None))
         self.cbSelectedDetecting.setItemText(0, QCoreApplication.translate("RobotWindow", u"detect0", None))
         self.cbSelectedDetecting.setItemText(1, QCoreApplication.translate("RobotWindow", u"detect1", None))
@@ -8006,6 +8116,8 @@ class Ui_RobotWindow(object):
 
         self.lbDisplayRatio_2.setText(QCoreApplication.translate("RobotWindow", u"Zoom:", None))
         self.lbDisplayRatio_3.setText(QCoreApplication.translate("RobotWindow", u"Ctrl + Scroll", None))
+        self.pbZoomInCameraView.setText(QCoreApplication.translate("RobotWindow", u"Zoom In", None))
+        self.pbZoomOutCameraView.setText(QCoreApplication.translate("RobotWindow", u"Zoom Out", None))
         self.lbDisplayRatio.setText(QCoreApplication.translate("RobotWindow", u"Ratio: 100%", None))
         self.lbMatSize.setText(QCoreApplication.translate("RobotWindow", u"Re: 800x500", None))
         self.gbImageProvider.setTitle(QCoreApplication.translate("RobotWindow", u"Image Provider", None))
@@ -8052,42 +8164,54 @@ class Ui_RobotWindow(object):
         self.label_2.setText(QCoreApplication.translate("RobotWindow", u"2.1 Select two points on the camera", None))
         self.lbCalibGuide.setText("")
         self.label_7.setText(QCoreApplication.translate("RobotWindow", u"2.2 Enter the actual coordinates of points P1 and P2", None))
-        self.leRealityPoint2X.setText(QCoreApplication.translate("RobotWindow", u"100", None))
-        self.label_132.setText(QCoreApplication.translate("RobotWindow", u"mm", None))
-        self.label_140.setText(QCoreApplication.translate("RobotWindow", u"mm", None))
-        self.label_10.setText(QCoreApplication.translate("RobotWindow", u"2.3 Press the button to calculate the transformation matrix", None))
-        self.label_133.setText(QCoreApplication.translate("RobotWindow", u"mm", None))
-        self.leRealityPoint1Y.setText(QCoreApplication.translate("RobotWindow", u"0", None))
+        self.lbCalibType_3.setText(QCoreApplication.translate("RobotWindow", u"P1' & P2' Distance", None))
 #if QT_CONFIG(tooltip)
         self.leRealityPoint2Y.setToolTip("")
 #endif // QT_CONFIG(tooltip)
         self.leRealityPoint2Y.setText(QCoreApplication.translate("RobotWindow", u"100", None))
-        self.label_39.setText(QCoreApplication.translate("RobotWindow", u"Y", None))
-#if QT_CONFIG(tooltip)
-        self.pbImageMapping.setToolTip(QCoreApplication.translate("RobotWindow", u"Perspective Transformation", None))
-#endif // QT_CONFIG(tooltip)
-        self.pbImageMapping.setText(QCoreApplication.translate("RobotWindow", u"Calculate Mapping Matrix", None))
-        self.label_40.setText(QCoreApplication.translate("RobotWindow", u"P1'", None))
-        self.label_139.setText(QCoreApplication.translate("RobotWindow", u"mm", None))
-        self.pbCalibPoint1.setText(QCoreApplication.translate("RobotWindow", u"Save Robot Position To P1'", None))
-#if QT_CONFIG(shortcut)
-        self.pbCalibPoint1.setShortcut(QCoreApplication.translate("RobotWindow", u"!", None))
-#endif // QT_CONFIG(shortcut)
-        self.label_38.setText(QCoreApplication.translate("RobotWindow", u"X", None))
-        self.leRealityPoint1X.setText(QCoreApplication.translate("RobotWindow", u"0", None))
-        self.pbCalibPoint2.setText(QCoreApplication.translate("RobotWindow", u"Save Robot Position To P2'", None))
-#if QT_CONFIG(shortcut)
-        self.pbCalibPoint2.setShortcut(QCoreApplication.translate("RobotWindow", u"@", None))
-#endif // QT_CONFIG(shortcut)
-        self.label_41.setText(QCoreApplication.translate("RobotWindow", u"P2'", None))
-#if QT_CONFIG(tooltip)
-        self.tbPastePoint1.setToolTip(QCoreApplication.translate("RobotWindow", u"Paste", None))
-#endif // QT_CONFIG(tooltip)
-        self.tbPastePoint1.setText("")
+        self.lbCalibType_2.setText(QCoreApplication.translate("RobotWindow", u"Calib Tool", None))
+        self.label_140.setText(QCoreApplication.translate("RobotWindow", u"mm", None))
 #if QT_CONFIG(tooltip)
         self.tbPastePoint2.setToolTip(QCoreApplication.translate("RobotWindow", u"Paste", None))
 #endif // QT_CONFIG(tooltip)
         self.tbPastePoint2.setText("")
+        self.label_38.setText(QCoreApplication.translate("RobotWindow", u"X", None))
+        self.label_142.setText(QCoreApplication.translate("RobotWindow", u"mm", None))
+        self.label_41.setText(QCoreApplication.translate("RobotWindow", u"P2'", None))
+        self.leRealityPoint2X.setText(QCoreApplication.translate("RobotWindow", u"100", None))
+        self.label_10.setText(QCoreApplication.translate("RobotWindow", u"2.3 Press the button to calculate the transformation matrix", None))
+        self.label_132.setText(QCoreApplication.translate("RobotWindow", u"mm", None))
+        self.leRealityPoint1Y.setText(QCoreApplication.translate("RobotWindow", u"0", None))
+        self.pbCalibPoint2.setText(QCoreApplication.translate("RobotWindow", u"Save Robot Position To P2'", None))
+#if QT_CONFIG(shortcut)
+        self.pbCalibPoint2.setShortcut(QCoreApplication.translate("RobotWindow", u"@", None))
+#endif // QT_CONFIG(shortcut)
+        self.label_40.setText(QCoreApplication.translate("RobotWindow", u"P1'", None))
+        self.pbCalibPoint1.setText(QCoreApplication.translate("RobotWindow", u"Save Robot Position To P1'", None))
+#if QT_CONFIG(shortcut)
+        self.pbCalibPoint1.setShortcut(QCoreApplication.translate("RobotWindow", u"!", None))
+#endif // QT_CONFIG(shortcut)
+        self.label_141.setText(QCoreApplication.translate("RobotWindow", u"mm", None))
+        self.lbCalibType.setText(QCoreApplication.translate("RobotWindow", u"Offset", None))
+#if QT_CONFIG(tooltip)
+        self.pbImageMapping.setToolTip(QCoreApplication.translate("RobotWindow", u"Perspective Transformation", None))
+#endif // QT_CONFIG(tooltip)
+        self.pbImageMapping.setText(QCoreApplication.translate("RobotWindow", u"Calculate Mapping Matrix", None))
+        self.label_133.setText(QCoreApplication.translate("RobotWindow", u"mm", None))
+        self.label_39.setText(QCoreApplication.translate("RobotWindow", u"Y", None))
+        self.leRealityPoint1X.setText(QCoreApplication.translate("RobotWindow", u"0", None))
+        self.label_139.setText(QCoreApplication.translate("RobotWindow", u"mm", None))
+        self.leCalibOffset_X.setText(QCoreApplication.translate("RobotWindow", u"0", None))
+        self.leCalibOffset_Y.setText(QCoreApplication.translate("RobotWindow", u"0", None))
+#if QT_CONFIG(tooltip)
+        self.tbPastePoint1.setToolTip(QCoreApplication.translate("RobotWindow", u"Paste", None))
+#endif // QT_CONFIG(tooltip)
+        self.tbPastePoint1.setText("")
+        self.leRealityP1P2Distance.setText(QCoreApplication.translate("RobotWindow", u"80", None))
+        self.label_148.setText(QCoreApplication.translate("RobotWindow", u"mm", None))
+        self.cbCalibType.setItemText(0, QCoreApplication.translate("RobotWindow", u"None", None))
+        self.cbCalibType.setItemText(1, QCoreApplication.translate("RobotWindow", u"Calib Paper 0.1", None))
+
         self.gbCameraObject.setTitle(QCoreApplication.translate("RobotWindow", u"Object", None))
         self.label_126.setText(QCoreApplication.translate("RobotWindow", u"Detecting algorithm", None))
         self.cbDetectingAlgorithm.setItemText(0, QCoreApplication.translate("RobotWindow", u"Find Blobs", None))
@@ -8096,16 +8220,12 @@ class Ui_RobotWindow(object):
 
         self.label_45.setText(QCoreApplication.translate("RobotWindow", u"Overlay", None))
         self.leObjectOverlay.setText(QCoreApplication.translate("RobotWindow", u"1.0", None))
-        self.label_163.setText(QCoreApplication.translate("RobotWindow", u"Type", None))
-        self.label_173.setText(QCoreApplication.translate("RobotWindow", u"Max", None))
-        self.label_42.setText(QCoreApplication.translate("RobotWindow", u"Width", None))
-        self.leMaxWRec.setText(QCoreApplication.translate("RobotWindow", u"1.5", None))
-        self.label_54.setText(QCoreApplication.translate("RobotWindow", u"pixel", None))
-        self.leMinWRec.setText(QCoreApplication.translate("RobotWindow", u"0.5", None))
-        self.label_174.setText(QCoreApplication.translate("RobotWindow", u"Min", None))
-        self.leMaxLRec.setText(QCoreApplication.translate("RobotWindow", u"1.5", None))
-        self.leMinLRec.setText(QCoreApplication.translate("RobotWindow", u"0.5", None))
         self.leLRec.setText(QCoreApplication.translate("RobotWindow", u"50", None))
+        self.leMaxLRec.setText(QCoreApplication.translate("RobotWindow", u"1.5", None))
+        self.leWRec.setText(QCoreApplication.translate("RobotWindow", u"30", None))
+        self.leMinLRec.setText(QCoreApplication.translate("RobotWindow", u"0.5", None))
+        self.label_42.setText(QCoreApplication.translate("RobotWindow", u"Width", None))
+        self.label_175.setText(QCoreApplication.translate("RobotWindow", u"Max", None))
         self.cbObjectType.setItemText(0, QCoreApplication.translate("RobotWindow", u"1", None))
         self.cbObjectType.setItemText(1, QCoreApplication.translate("RobotWindow", u"2", None))
         self.cbObjectType.setItemText(2, QCoreApplication.translate("RobotWindow", u"3", None))
@@ -8113,11 +8233,15 @@ class Ui_RobotWindow(object):
         self.cbObjectType.setItemText(4, QCoreApplication.translate("RobotWindow", u"5", None))
         self.cbObjectType.setItemText(5, QCoreApplication.translate("RobotWindow", u"+", None))
 
-        self.leWRec.setText(QCoreApplication.translate("RobotWindow", u"30", None))
-        self.label_172.setText(QCoreApplication.translate("RobotWindow", u"Min", None))
-        self.label_175.setText(QCoreApplication.translate("RobotWindow", u"Max", None))
         self.label_43.setText(QCoreApplication.translate("RobotWindow", u"Length", None))
+        self.label_163.setText(QCoreApplication.translate("RobotWindow", u"Type", None))
+        self.label_173.setText(QCoreApplication.translate("RobotWindow", u"Max", None))
+        self.label_174.setText(QCoreApplication.translate("RobotWindow", u"Min", None))
         self.label_55.setText(QCoreApplication.translate("RobotWindow", u"pixel", None))
+        self.label_54.setText(QCoreApplication.translate("RobotWindow", u"pixel", None))
+        self.label_172.setText(QCoreApplication.translate("RobotWindow", u"Min", None))
+        self.leMaxWRec.setText(QCoreApplication.translate("RobotWindow", u"1.5", None))
+        self.leMinWRec.setText(QCoreApplication.translate("RobotWindow", u"0.5", None))
         self.pbRunExternalScript.setText("")
         self.label_145.setText(QCoreApplication.translate("RobotWindow", u"Python Url", None))
         self.pbExternalScriptOpen.setText("")
@@ -8150,6 +8274,7 @@ class Ui_RobotWindow(object):
         self.label_198.setText(QCoreApplication.translate("RobotWindow", u"max 250", None))
         self.label_199.setText(QCoreApplication.translate("RobotWindow", u"max 250", None))
         self.gbCameraVariable.setTitle(QCoreApplication.translate("RobotWindow", u"Variable", None))
+        self.pbUpdateObjectToView.setText(QCoreApplication.translate("RobotWindow", u"Update", None))
         self.pbViewDataObjects.setText(QCoreApplication.translate("RobotWindow", u"Object Table", None))
 #if QT_CONFIG(tooltip)
         self.pbClearDetectObjects.setToolTip(QCoreApplication.translate("RobotWindow", u"<html><head/><body><p>Clear All Objects in Memory</p><p>M98 PclearObjects --&gt; Clear All</p><p>M98 PdeleteFirstObject --&gt; Delete First</p></body></html>", None))
@@ -8173,7 +8298,7 @@ class Ui_RobotWindow(object):
         self.label_196.setText(QCoreApplication.translate("RobotWindow", u"Object List", None))
         self.label_44.setText(QCoreApplication.translate("RobotWindow", u"Limit Area", None))
         self.leDetectingObjectListName.setText(QCoreApplication.translate("RobotWindow", u"#Objects", None))
-        self.twModule.setTabText(self.twModule.indexOf(self.tObjectDetecting), QCoreApplication.translate("RobotWindow", u"Object Detecting", None))
+        self.twModule.setTabText(self.twModule.indexOf(self.tObjectDetecting), QCoreApplication.translate("RobotWindow", u"Object Detector", None))
         self.gbTrackingManager.setTitle(QCoreApplication.translate("RobotWindow", u"Tracking Manager", None))
         self.cbSelectedTracking.setItemText(0, QCoreApplication.translate("RobotWindow", u"tracking0", None))
         self.cbSelectedTracking.setItemText(1, QCoreApplication.translate("RobotWindow", u"tracking1", None))
@@ -8192,34 +8317,28 @@ class Ui_RobotWindow(object):
 
         self.label_160.setText(QCoreApplication.translate("RobotWindow", u"Tracking Thread", None))
         self.label_168.setText(QCoreApplication.translate("RobotWindow", u"Velocity Vector", None))
-        self.label_230.setText(QCoreApplication.translate("RobotWindow", u"Y", None))
+        self.pbMoveTestTrackingPoint.setText(QCoreApplication.translate("RobotWindow", u"Move", None))
+        self.label_231.setText(QCoreApplication.translate("RobotWindow", u"X", None))
         self.label_11.setText(QCoreApplication.translate("RobotWindow", u"Test Tracking Point", None))
         self.label_232.setText(QCoreApplication.translate("RobotWindow", u"(mm)", None))
-        self.label_231.setText(QCoreApplication.translate("RobotWindow", u"X", None))
-        self.pbMoveTestTrackingPoint.setText(QCoreApplication.translate("RobotWindow", u"Move", None))
+        self.label_230.setText(QCoreApplication.translate("RobotWindow", u"Y", None))
         self.leMovingValue.setText(QCoreApplication.translate("RobotWindow", u"200", None))
         self.tbCopyTestTrackingPoint.setText("")
+        self.label_236.setText(QCoreApplication.translate("RobotWindow", u"Z", None))
         self.gbCameraCalibration_3.setTitle(QCoreApplication.translate("RobotWindow", u"Vector", None))
-        self.label_229.setText(QCoreApplication.translate("RobotWindow", u"Name", None))
-        self.label_226.setText(QCoreApplication.translate("RobotWindow", u"X", None))
-        self.label_206.setText(QCoreApplication.translate("RobotWindow", u"Y", None))
-        self.label_228.setText(QCoreApplication.translate("RobotWindow", u"Z", None))
-        self.pbAnglePoint2.setText(QCoreApplication.translate("RobotWindow", u"Point 2", None))
-        self.label_208.setText(QCoreApplication.translate("RobotWindow", u"Z", None))
+        self.pbAddVector.setText(QCoreApplication.translate("RobotWindow", u"Save", None))
         self.label_197.setText(QCoreApplication.translate("RobotWindow", u"Value", None))
-        self.pbCalVector.setText(QCoreApplication.translate("RobotWindow", u"Calculate", None))
-        self.pbAddVector.setText(QCoreApplication.translate("RobotWindow", u"Add Vector", None))
-        self.label_227.setText(QCoreApplication.translate("RobotWindow", u"Y", None))
-        self.label_189.setText(QCoreApplication.translate("RobotWindow", u"X", None))
+        self.label_206.setText(QCoreApplication.translate("RobotWindow", u"Y", None))
+        self.label_229.setText(QCoreApplication.translate("RobotWindow", u"Name", None))
         self.pbAnglePoint1.setText(QCoreApplication.translate("RobotWindow", u"Point 1", None))
+        self.pbCalVector.setText(QCoreApplication.translate("RobotWindow", u"Calculate", None))
+        self.label_226.setText(QCoreApplication.translate("RobotWindow", u"X", None))
+        self.label_228.setText(QCoreApplication.translate("RobotWindow", u"Z", None))
+        self.label_208.setText(QCoreApplication.translate("RobotWindow", u"Z", None))
         self.leVectorName.setText(QCoreApplication.translate("RobotWindow", u"#Vector1", None))
-
-        __sortingEnabled = self.lwVectorList.isSortingEnabled()
-        self.lwVectorList.setSortingEnabled(False)
-        ___qlistwidgetitem = self.lwVectorList.item(0)
-        ___qlistwidgetitem.setText(QCoreApplication.translate("RobotWindow", u"#Vector1", None));
-        self.lwVectorList.setSortingEnabled(__sortingEnabled)
-
+        self.label_227.setText(QCoreApplication.translate("RobotWindow", u"Y", None))
+        self.pbAnglePoint2.setText(QCoreApplication.translate("RobotWindow", u"Point 2", None))
+        self.label_189.setText(QCoreApplication.translate("RobotWindow", u"X", None))
         self.gbCameraCalibration_2.setTitle(QCoreApplication.translate("RobotWindow", u"Matrix", None))
         self.label_205.setText(QCoreApplication.translate("RobotWindow", u"Point 2", None))
         self.label_201.setText(QCoreApplication.translate("RobotWindow", u"Point 2", None))
@@ -8233,13 +8352,6 @@ class Ui_RobotWindow(object):
         self.label_177.setText(QCoreApplication.translate("RobotWindow", u"X", None))
         self.pbAddMappingMatrix.setText(QCoreApplication.translate("RobotWindow", u"Add Matrix", None))
         self.label_200.setText(QCoreApplication.translate("RobotWindow", u"Destination", None))
-
-        __sortingEnabled1 = self.lwMappingMatrixList.isSortingEnabled()
-        self.lwMappingMatrixList.setSortingEnabled(False)
-        ___qlistwidgetitem1 = self.lwMappingMatrixList.item(0)
-        ___qlistwidgetitem1.setText(QCoreApplication.translate("RobotWindow", u"#MappingMatrix1", None));
-        self.lwMappingMatrixList.setSortingEnabled(__sortingEnabled1)
-
         self.lbMatrixDisplay.setText(QCoreApplication.translate("RobotWindow", u"<html><head/><body><p>|m11 , m12, m13 |</p><p>|m21, m22, m23 |</p><p>|m31, m32, m33 |</p></body></html>", None))
         self.gbCameraObject_2.setTitle(QCoreApplication.translate("RobotWindow", u"Object", None))
         self.label_136.setText(QCoreApplication.translate("RobotWindow", u"Object List", None))
@@ -8266,13 +8378,6 @@ class Ui_RobotWindow(object):
         self.label_167.setText(QCoreApplication.translate("RobotWindow", u"Source", None))
         self.pbCalculatePointMatrixTool.setText(QCoreApplication.translate("RobotWindow", u"Calculate", None))
         self.label_233.setText(QCoreApplication.translate("RobotWindow", u"Point 2", None))
-
-        __sortingEnabled2 = self.lwPointMatrixList.isSortingEnabled()
-        self.lwPointMatrixList.setSortingEnabled(False)
-        ___qlistwidgetitem2 = self.lwPointMatrixList.item(0)
-        ___qlistwidgetitem2.setText(QCoreApplication.translate("RobotWindow", u"#MappingMatrix1", None));
-        self.lwPointMatrixList.setSortingEnabled(__sortingEnabled2)
-
         self.gbCameraObject_4.setTitle(QCoreApplication.translate("RobotWindow", u"Test", None))
         self.label_223.setText(QCoreApplication.translate("RobotWindow", u"multiply", None))
         self.leTestMatrixName.setText(QCoreApplication.translate("RobotWindow", u"#MappingMatrix1", None))
@@ -8357,7 +8462,6 @@ class Ui_RobotWindow(object):
         self.cbDeviceSender.setItemText(5, QCoreApplication.translate("RobotWindow", u"Encoder", None))
 
         self.twModule.setTabText(self.twModule.indexOf(self.TermiteTab), QCoreApplication.translate("RobotWindow", u"Termite", None))
-        self.twModule.setTabText(self.twModule.indexOf(self.tSimulator), QCoreApplication.translate("RobotWindow", u"Simulator", None))
         self.label_158.setText(QCoreApplication.translate("RobotWindow", u"Selected Robot", None))
 #if QT_CONFIG(tooltip)
         self.tbAutoScanRobot.setToolTip(QCoreApplication.translate("RobotWindow", u"Creat New Editor", None))

@@ -1,0 +1,17 @@
+{
+    "files.associations": {
+        "*.json.liquid": "json",
+        "*.yaml.liquid": "yaml",
+        "*.md.liquid": "markdown",
+        "*.js.liquid": "liquid-javascript",
+        "*.css.liquid": "liquid-css",
+        "*.scss.liquid": "liquid-scss",
+        "locale": "cpp",
+        "thread": "cpp",
+        "xlocale": "cpp",
+        "xlocmes": "cpp",
+        "xlocmon": "cpp",
+        "xlocnum": "cpp",
+        "xloctime": "cpp"
+    }
+}

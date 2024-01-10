@@ -881,7 +881,6 @@ protected:
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
-    void paintEvent(QPaintEvent *event) override;
 
     void changeToolIconInArea(QIcon icon);
     QPoint getMousePositionOnImage(QMouseEvent *event);
@@ -946,5 +945,57 @@ protected:
     int processPointOrder = -1;
     bool isFirstLoad = true;
 };
+
+class ImageViewer2 : public QGraphicsView
+{
+    Q_OBJECT
+public:
+    ImageViewer2(QWidget *parent = 0){
+        ViewerScene = new CustomScene();
+        setScene(ViewerScene);
+
+        ImageItem = new QGraphicsPixmapItem();
+        ImageItem->setZValue(-1);
+
+        ViewerScene->addItem(ImageItem);
+    }
+    ~ImageViewer2()
+    {
+
+    }
+    void ZoomIn(qreal value)
+    {
+        QTransform matrix;
+        CurrentZoom /= 1.25f;
+        matrix.scale(CurrentZoom, CurrentZoom);
+
+        setTransform(matrix);
+    }
+    void ZoomOut(qreal value)
+    {
+        QTransform matrix;
+        CurrentZoom *= 1.25f;
+        matrix.scale(CurrentZoom, CurrentZoom);
+
+        setTransform(matrix);
+    }
+
+    qreal CurrentZoom = 1;
+
+    QGraphicsPixmapItem* ImageItem = NULL;
+
+    CustomScene* ViewerScene;
+
+public slots:
+
+    void SetImage(QPixmap pixmap)
+    {
+        ImageItem->setPixmap(pixmap);
+    }
+
+signals:
+
+};
+
 
 #endif // IMAGEVIEWER_H

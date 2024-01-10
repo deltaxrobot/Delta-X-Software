@@ -3,6 +3,7 @@
 #include <qlabel.h>
 #include <qtextedit.h>
 #include <QElapsedTimer>
+#include <QStandardItem>
 
 #define NULL_NUMBER -6789
 
@@ -22,3 +23,9 @@ bool IsInRange(QPolygonF poly);
 void Debug(QString msg);
 void Debug(int id, QString msg);
 void SoftwareLog(QString msg, bool isNewLine = true);
+
+namespace UnityTool
+{
+    void UpdateVarToModel(QStandardItem *parent, QString fullKey, QVariant value);
+}
+

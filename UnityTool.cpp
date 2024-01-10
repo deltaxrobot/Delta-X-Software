@@ -104,3 +104,77 @@ bool IsInRange(QPolygonF poly)
 
     return true;
 }
+
+namespace UnityTool
+{
+    void UpdateVarToModel(QStandardItem *parent, QString fullKey, QVariant value)
+    {
+        QStringList parts = fullKey.split('.');
+        QString valueString = value.toString();
+        if (value.canConvert<QVector3D>())
+        {
+            QVector3D vector = value.value<QVector3D>();
+            valueString = QString("(%1, %2, %3)")
+                    .arg(vector.x())
+                    .arg(vector.y())
+                    .arg(vector.z());
+        }
+        else if (value.canConvert<QPointF>())
+        {
+            QPointF point = value.value<QPointF>();
+            valueString = QString("(%1, %2)")
+                    .arg(point.x())
+                    .arg(point.y());
+        }
+        else if (value.canConvert<QPolygonF>())
+        {
+            QPolygonF poly = value.value<QPolygonF>();
+            valueString = "";
+            for (const QPointF &point : poly) {
+                valueString += QString("(%1, %2)")
+                        .arg(point.x())
+                        .arg(point.y());
+            }
+        }
+        else if (value.canConvert<QRectF>())
+        {
+            QRectF rect = value.value<QRectF>();
+            valueString = "";
+            valueString += QString("(x:%1, y:%2), (h:%3, w:%4)")
+                        .arg(rect.x())
+                        .arg(rect.y())
+                        .arg(rect.height())
+                        .arg(rect.width());
+
+        }
+
+        for (int i = 0; i < parts.count() - 1; ++i) {
+            QString part = parts[i];
+            QStandardItem *child = nullptr;
+            for (int j = 0; j < parent->rowCount(); ++j) {
+                if (parent->child(j)->text() == part) {
+                    child = parent->child(j);
+                    break;
+                }
+            }
+            if (!child) {
+                child = new QStandardItem(part);
+                parent->appendRow(child);
+            }
+            parent = child;
+        }
+        bool found = false;
+        for (int i = 0; i < parent->rowCount(); ++i) {
+            if (parent->child(i)->text() == parts.last()) {
+                parent->child(i, 1)->setText(valueString);
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            parent->appendRow(QList<QStandardItem*>() << new QStandardItem(parts.last()) << new QStandardItem(valueString));
+        }
+    }
+}
+
+

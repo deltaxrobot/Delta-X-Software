@@ -50,6 +50,7 @@
 #include <QList>
 #include <random>
 #include <ObjectInfoModel.h>
+#include <QRandomGenerator>
 
 //#define JOY_STICK
 
@@ -250,7 +251,6 @@ public slots:
     void GetDeviceInfo(QString json);
     void GetDeviceResponse(QString id, QString response);
     void UpdateVarToView(QString fullKey, QVariant value);
-    void UpdateVarToModel(QStandardItem *parent, QString fullKey, QVariant value);
 
     //----- 3D -----
     void Load3DComponents();
@@ -323,7 +323,7 @@ public slots:
     void GetValueInput(QString response);
 
     //----- Variable -----
-    void UpdateVariable(QString key, QString value);
+    void UpdateVariable(QString key, QVariant value);
     void UpdateVariables(QString cmd);
     void RespondVariableValue(QIODevice* s, QString name);
 

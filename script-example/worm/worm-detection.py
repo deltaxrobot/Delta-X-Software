@@ -179,25 +179,24 @@ def draw_intersection_and_midpoint(image, binary_image, contour):
 
     return image
 
-# # Load the image
-# image = cv2.imread('test/py/giun1.jpg')
+def main2():
+    # Load the image
+    image = cv2.imread('giun1.jpg')
 
-# # Get the original image size
-# height, width, _ = image.shape
+    # Get the original image size
+    height, width, _ = image.shape
 
-# # Specify the new size
-# new_height = 600
-# new_width = int(width * new_height / height)
+    # Specify the new size
+    new_height = 600
+    new_width = int(width * new_height / height)
 
-# # Resize the image
-# image = cv2.resize(image, (new_width, new_height), interpolation=cv2.INTER_LINEAR)
-# cv2.imshow("origin", image)
+    # Resize the image
+    image = cv2.resize(image, (new_width, new_height), interpolation=cv2.INTER_LINEAR)
+    cv2.imshow("origin", image)
 
-# find_worm_pick_position(image)
+    find_worm_pick_position(image)
 
-
-
-# cv2.waitKey(0)
+    cv2.waitKey(0)
 
 def main():
     HOST = "192.168.101.135"

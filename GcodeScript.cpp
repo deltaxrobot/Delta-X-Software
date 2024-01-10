@@ -496,7 +496,12 @@ bool GcodeScript::findExeGcodeAndTransmit()
                 }
                 else
                 {
+                    if (currentLine.contains("IsPicked"))
+                    {
+                        emit ChangeExternalVariable(currentLine);
+                    }
                     return handleVARIABLE(valuePairs, i);
+
                 }
 
             }
@@ -534,8 +539,46 @@ bool GcodeScript::findExeGcodeAndTransmit()
 
         // N50 M98 P2000
 
+
+
         if (valuePairs.at(i) == "M98" && valuePairs.size() > (i + 1))
         {
+            QRegularExpression regex("M98\\s+([A-Za-z]+)(?:\\((.*)\\))?");
+            QRegularExpressionMatch match = regex.match(currentLine.replace('_', ""));
+
+            if (match.hasMatch()) {
+                QString functionName = match.captured(1);
+                QString params = match.captured(2);
+
+                if (functionName.at(0) == 'P')
+                    functionName.remove(0, 1);
+
+                functionName.toLower();
+
+                QStringList paramList;
+
+                if (!params.isEmpty()) {
+                    paramList = params.split(',', QString::SkipEmptyParts);
+                    for (QString &param : paramList) {
+                        param = param.trimmed();
+                    }
+                }
+
+                if (functionName == "addobject")
+                {                    
+                    QString listName = paramList.at(0);
+                    QStringList objectInfo;
+                    // Thêm tất cả phần tử từ paramList vào paras trừ phần tử đầu tiên
+                    objectInfo.append(paramList.mid(1));
+                    QList<QStringList> objects;
+                    objects.append(objectInfo);
+
+                    emit AddObject(listName, objects);
+                    gcodeOrder++;
+                    return false;
+                }
+            }
+
             if (valuePairs[i + 1].at(0) == 'P')
             {
                 QString subProName = valuePairs[i + 1].mid(1);
@@ -880,6 +923,7 @@ bool GcodeScript::handleIF(QList<QString> valuePairs, int i)
 
 bool GcodeScript::handleVARIABLE(QList<QString> valuePairs, int i)
 {
+
     QString varName = valuePairs.at(i).mid(1);
     QString expression = currentLine.mid(currentLine.indexOf("=") + 2);
     QString trimmedStr = expression;

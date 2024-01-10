@@ -9,6 +9,7 @@
 #include <string>
 #include <QStandardItemModel>
 #include <QVector3D>
+#include <UnityTool.h>
 
 class VariableManager : public QObject
 {

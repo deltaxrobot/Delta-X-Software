@@ -5,6 +5,24 @@ bool SocketConnectionManager::IsServerOpen()
     return server->isListening();
 }
 
+QString SocketConnectionManager::printLocalIpAddresses() {
+    const QHostAddress &localhost = QHostAddress(QHostAddress::LocalHost);
+    for (const QNetworkInterface &interface : QNetworkInterface::allInterfaces()) {
+        // Kiểm tra xem giao diện mạng có hoạt động không và không phải là loopback
+        if (interface.flags().testFlag(QNetworkInterface::IsUp) &&
+                !interface.flags().testFlag(QNetworkInterface::IsLoopBack)) {
+
+            for (const QNetworkAddressEntry &entry : interface.addressEntries()) {
+                // Loại trừ địa chỉ IPv6 và loopback
+                if (entry.ip().protocol() == QAbstractSocket::IPv4Protocol &&
+                        entry.ip() != localhost) {
+                    return entry.ip().toString();
+                }
+            }
+        }
+    }
+}
+
 SocketConnectionManager::SocketConnectionManager(const QString &address, int port, QObject *parent)
     : QObject(parent), hostAddress(address), port(port) {
 
@@ -32,14 +50,26 @@ void SocketConnectionManager::newClientConnected() {
     clients.append(clientSocket);
 
     connect(clientSocket, &QTcpSocket::readyRead, this, &SocketConnectionManager::readFromClient);
+
+    // Gửi "deltax\n" cho client
+    clientSocket->write("deltax\n");
 }
 
 void SocketConnectionManager::readFromClient() {
     QTcpSocket* senderSocket = static_cast<QTcpSocket*>(sender());
     QByteArray data = senderSocket->readAll();
 
+    qDebug() << "Received data from client: " << data;
+
     if (data.startsWith("ExternalScript\n")) {
         senderSocket->setObjectName("ImageClient");
+        return;
+    }
+
+    // kiểm tra nếu client gửi thông điệp ClientName=tên thì đặt tên cho nó
+    if (data.startsWith("ClientName=")) {
+        QString clientName = QString(data).split("=")[1];
+        senderSocket->setObjectName(clientName);
         return;
     }
 
@@ -56,8 +86,24 @@ void SocketConnectionManager::readFromClient() {
             // if(varName == "counter") {
             //     counter = value.toInt();
             // }
+            if (varName.contains("Objects"))
+            {
+                QList<QStringList> objects;
+                QStringList objectsString = value.split(";");
+                for (int i = 0; i < objectsString.size(); i++)
+                {
+                    QStringList objectString = objectsString[i].split(",");
+                    
+                    objects.append(objectString);
+                }
 
-            emit variableChanged(varName, value);
+                emit objectUpdated(varName, objects);
+            }
+            else
+            {
+                VariableManager::instance().UpdateVarToModel(varName, value);
+                emit variableChanged(varName, value);
+            }
         }
     } else if (!data.isEmpty()) {
         // Call a function by its name using Qt's meta-object system
@@ -66,15 +112,32 @@ void SocketConnectionManager::readFromClient() {
 }
 
 void SocketConnectionManager::sendImageToImageClients(const QImage &image) {
-//    QByteArray byteArray;
-//    QBuffer buffer(&byteArray);
-//    buffer.open(QIODevice::WriteOnly);
-//    image.save(&buffer, "JPG");
+    QByteArray data;
+    QBuffer buffer(&data);
+    buffer.open(QIODevice::WriteOnly);
+    image.save(&buffer, "JPG");
 
-//    for (QTcpSocket* client : clients) {
-//        if (client->objectName() == "ImageClient") {
-//            client->write(byteArray);
-//            client->waitForBytesWritten();
-//        }
-//    }
+    for (QTcpSocket* client : clients) {
+        if (client->objectName().contains("ImageClient")) {
+            client->write("Image\n" + data);
+            client->flush();
+        }
+    }
+}
+
+void SocketConnectionManager::sendImageToImageClients(cv::Mat mat)
+{
+//    // Chuyển mat sang QImage
+//    QImage image = QImage((uchar*)mat.data, mat.cols, mat.rows, mat.step, QImage::Format_RGB888);
+//    sendImageToImageClients(image);
+    std::vector<uchar> buf;
+    cv::imencode(".png", mat, buf);
+    QByteArray data(reinterpret_cast<const char*>(buf.data()), buf.size());
+    for (QTcpSocket* client : clients) {
+        if (client->objectName().contains("ImageClient")) {
+            client->write("Image\n" + data);
+            client->flush();
+        }
+    }
+
 }

@@ -14,6 +14,7 @@
 #include <QVector3D>
 #include <QMatrix>
 #include <QTransform>
+#include <QVariant>
 
 class GcodeScript : public QObject
 {
@@ -74,6 +75,9 @@ signals:
 
     void CatchVariable(QString key, QString value);
     void CatchVariable2(QString key, QVariant value);
+
+    void ChangeExternalVariable(QString cmd);
+    void AddObject(QString listName, QList<QStringList> list);
 private:
     bool isRunning = false;
     QString gcodeScript = "";

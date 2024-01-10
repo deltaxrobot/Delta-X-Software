@@ -1219,6 +1219,7 @@ debug\moc_Authority.cpp: Authority.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMetaObject \
 		UnityTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QElapsedTimer \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItem \
 		DeltaVisualizer.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLabel \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPainter \
@@ -1332,6 +1333,7 @@ debug\moc_Authority.cpp: Authority.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QThread \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutexLocker \
 		VariableManager.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QHash \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
 		GcodeReference.h \
 		ui_GcodeReference.h \
@@ -1408,6 +1410,7 @@ debug\moc_Authority.cpp: Authority.h \
 		ObjectInfoModel.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QAbstractTableModel \
 		ObjectInfo.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QRandomGenerator \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		ImageProcessing.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QCheckBox \
@@ -2447,12 +2450,23 @@ debug\moc_FilterWindow.cpp: FilterWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutexLocker \
 		VariableManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QVariant \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QHash \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qstandarditemmodel.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qabstractitemmodel.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qicon.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QVector3D \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qvector3d.h \
+		UnityTool.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qtextedit.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qabstractscrollarea.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtextdocument.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtextoption.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtextcursor.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtextformat.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpen.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QElapsedTimer \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItem \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QPushButton \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qpushbutton.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qabstractbutton.h \
@@ -2727,6 +2741,10 @@ debug\moc_GcodeScript.cpp: GcodeScript.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpen.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QElapsedTimer \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qelapsedtimer.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItem \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qstandarditemmodel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qabstractitemmodel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qicon.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		ScurveInterpolator.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QtMath \
@@ -2739,7 +2757,6 @@ debug\moc_GcodeScript.cpp: GcodeScript.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QWidget \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QTabWidget \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qtabwidget.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qicon.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QPushButton \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qpushbutton.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qabstractbutton.h \
@@ -2770,7 +2787,6 @@ debug\moc_GcodeScript.cpp: GcodeScript.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qabstractanimation.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qabstracteventdispatcher.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qeventloop.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qabstractitemmodel.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qabstractnativeeventfilter.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qabstractproxymodel.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qabstractstate.h \
@@ -2979,7 +2995,6 @@ debug\moc_GcodeScript.cpp: GcodeScript.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSizeF \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QTransform \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qsessionmanager.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qstandarditemmodel.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qstatictext.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qstylehints.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qsyntaxhighlighter.h \
@@ -3241,6 +3256,7 @@ debug\moc_GcodeScript.cpp: GcodeScript.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QThread \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutexLocker \
 		VariableManager.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QHash \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
 		GcodeReference.h \
 		ui_GcodeReference.h \
@@ -3317,6 +3333,7 @@ debug\moc_GcodeScript.cpp: GcodeScript.h \
 		ObjectInfoModel.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QAbstractTableModel \
 		ObjectInfo.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QRandomGenerator \
 		ImageProcessing.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QCheckBox \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QToolButton \
@@ -3835,7 +3852,9 @@ debug\moc_ImageViewer.cpp: ImageViewer.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSettings \
 		UnityTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QElapsedTimer \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItem \
 		VariableManager.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QHash \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
 		debug\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2015_64\bin\moc.exe
@@ -4465,6 +4484,7 @@ debug\moc_MainWindow.cpp: MainWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMetaObject \
 		UnityTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QElapsedTimer \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItem \
 		DeltaVisualizer.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLabel \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPainter \
@@ -4578,6 +4598,7 @@ debug\moc_MainWindow.cpp: MainWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QThread \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutexLocker \
 		VariableManager.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QHash \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
 		GcodeReference.h \
 		ui_GcodeReference.h \
@@ -4654,6 +4675,7 @@ debug\moc_MainWindow.cpp: MainWindow.h \
 		ObjectInfoModel.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QAbstractTableModel \
 		ObjectInfo.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QRandomGenerator \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		ImageProcessing.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QCheckBox \
@@ -4865,6 +4887,9 @@ debug\moc_ImageProcessing.cpp: ImageProcessing.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtextdocument.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QElapsedTimer \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qelapsedtimer.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItem \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qstandarditemmodel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qabstractitemmodel.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QToolButton \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qtoolbutton.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QRadioButton \
@@ -4966,9 +4991,8 @@ debug\moc_ImageProcessing.cpp: ImageProcessing.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSettings \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsettings.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QVariant \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QHash \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qstandarditemmodel.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qabstractitemmodel.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QVector3D \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qvector3d.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSharedPointer \
@@ -5272,11 +5296,14 @@ debug\moc_ObjectVariableTable.cpp: ObjectVariableTable.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpen.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QElapsedTimer \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qelapsedtimer.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItem \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qstandarditemmodel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qabstractitemmodel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qicon.h \
 		Object.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QPushButton \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qpushbutton.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qabstractbutton.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qicon.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QVBoxLayout \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDebug \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLineEdit \
@@ -5986,6 +6013,7 @@ debug\moc_ProjectManager.cpp: ProjectManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMetaObject \
 		UnityTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QElapsedTimer \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItem \
 		DeltaVisualizer.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLabel \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPainter \
@@ -6099,6 +6127,7 @@ debug\moc_ProjectManager.cpp: ProjectManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QThread \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutexLocker \
 		VariableManager.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QHash \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
 		GcodeReference.h \
 		ui_GcodeReference.h \
@@ -6175,6 +6204,7 @@ debug\moc_ProjectManager.cpp: ProjectManager.h \
 		ObjectInfoModel.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QAbstractTableModel \
 		ObjectInfo.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QRandomGenerator \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		ImageProcessing.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QCheckBox \
@@ -6721,6 +6751,7 @@ debug\moc_RobotWindow.cpp: RobotWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMetaObject \
 		UnityTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QElapsedTimer \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItem \
 		DeltaVisualizer.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLabel \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPainter \
@@ -6835,6 +6866,7 @@ debug\moc_RobotWindow.cpp: RobotWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QThread \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutexLocker \
 		VariableManager.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QHash \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QPushButton \
 		GcodeReference.h \
@@ -6914,6 +6946,7 @@ debug\moc_RobotWindow.cpp: RobotWindow.h \
 		ObjectInfoModel.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QAbstractTableModel \
 		ObjectInfo.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QRandomGenerator \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QStackedWidget \
 		ImageProcessing.h \
@@ -7295,6 +7328,10 @@ debug\moc_TCPConnectionManager.cpp: TCPConnectionManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpen.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QElapsedTimer \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qelapsedtimer.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItem \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qstandarditemmodel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qabstractitemmodel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qicon.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QHostInfo \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qhostinfo.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QNetworkInterface \
@@ -7817,6 +7854,7 @@ debug\moc_TabDashboard.cpp: TabDashboard.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMetaObject \
 		UnityTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QElapsedTimer \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItem \
 		DeltaVisualizer.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLabel \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPainter \
@@ -7930,6 +7968,7 @@ debug\moc_TabDashboard.cpp: TabDashboard.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QThread \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutexLocker \
 		VariableManager.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QHash \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
 		GcodeReference.h \
 		ui_GcodeReference.h \
@@ -8006,6 +8045,7 @@ debug\moc_TabDashboard.cpp: TabDashboard.h \
 		ObjectInfoModel.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QAbstractTableModel \
 		ObjectInfo.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QRandomGenerator \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		ImageProcessing.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QCheckBox \
@@ -8272,10 +8312,13 @@ debug\moc_TaskNode.cpp: TaskNode.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpen.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QElapsedTimer \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qelapsedtimer.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItem \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qstandarditemmodel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qabstractitemmodel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qicon.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QPushButton \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qpushbutton.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qabstractbutton.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qicon.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QVBoxLayout \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qboxlayout.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qlayout.h \
@@ -8288,9 +8331,8 @@ debug\moc_TaskNode.cpp: TaskNode.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSettings \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsettings.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QVariant \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QHash \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qstandarditemmodel.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qabstractitemmodel.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QVector3D \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qvector3d.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSharedPointer \
@@ -8502,6 +8544,7 @@ debug\moc_TrackingManager.cpp: TrackingManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSettings \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsettings.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QVariant \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QHash \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qstandarditemmodel.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qabstractitemmodel.h \
@@ -8525,6 +8568,32 @@ debug\moc_TrackingManager.cpp: TrackingManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpixmap.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qfont.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qicon.h \
+		UnityTool.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qlabel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qtwidgetsglobal.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qtwidgets-config.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qframe.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qwidget.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpalette.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qfontmetrics.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qfontinfo.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qsizepolicy.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qcursor.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qkeysequence.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qevent.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qurl.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qurlquery.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qfile.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qfiledevice.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtouchdevice.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qtextedit.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qabstractscrollarea.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtextdocument.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtextoption.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtextcursor.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtextformat.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpen.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItem \
 		ObjectInfo.h \
 		debug\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2015_64\bin\moc.exe
@@ -8598,6 +8667,7 @@ debug\moc_VariableManager.cpp: VariableManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsharedpointer.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsharedpointer_impl.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QVariant \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QHash \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qstandarditemmodel.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtguiglobal.h \
@@ -8626,6 +8696,35 @@ debug\moc_VariableManager.cpp: VariableManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qicon.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QVector3D \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qvector3d.h \
+		UnityTool.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qlabel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qtwidgetsglobal.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qtwidgets-config.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qframe.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qwidget.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpalette.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qfontmetrics.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qfontinfo.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qsizepolicy.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qcursor.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qkeysequence.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qevent.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qurl.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qurlquery.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qfile.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qfiledevice.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qvector2d.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtouchdevice.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qtextedit.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qabstractscrollarea.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtextdocument.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtextoption.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtextcursor.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtextformat.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpen.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QElapsedTimer \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qelapsedtimer.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItem \
 		debug\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2015_64\bin\moc.exe
 	C:\Qt\5.15.2\msvc2015_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include "E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware/debug/moc_predefs.h" -IC:/Qt/5.15.2/msvc2015_64/mkspecs/win32-msvc -I"E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware" -I"E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware/3rd-party/opencv/build/include" -IC:/Qt/5.15.2/msvc2015_64/include -IC:/Qt/5.15.2/msvc2015_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2015_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2015_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtQuick -IC:/Qt/5.15.2/msvc2015_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2015_64/include/QtGui -IC:/Qt/5.15.2/msvc2015_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2015_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2015_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2015_64/include/QtQml -IC:/Qt/5.15.2/msvc2015_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2015_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" VariableManager.h -o debug\moc_VariableManager.cpp
@@ -9012,6 +9111,7 @@ debug\moc_DeviceManager.cpp: device\DeviceManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSettings \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsettings.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QVariant \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QHash \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qstandarditemmodel.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qabstractitemmodel.h \
@@ -9036,6 +9136,31 @@ debug\moc_DeviceManager.cpp: device\DeviceManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpixmap.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qfont.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qicon.h \
+		UnityTool.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qlabel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qtwidgetsglobal.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qtwidgets-config.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qframe.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qwidget.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpalette.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qfontmetrics.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qfontinfo.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qsizepolicy.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qcursor.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qkeysequence.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qevent.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qfile.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qfiledevice.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qvector2d.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtouchdevice.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qtextedit.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qabstractscrollarea.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtextdocument.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtextoption.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtextcursor.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtextformat.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpen.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItem \
 		device\slider.h \
 		device\conveyor.h \
 		device\encoder.h \
@@ -9686,6 +9811,7 @@ debug\moc_robot.cpp: device\robot.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSettings \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsettings.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QVariant \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QHash \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qstandarditemmodel.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qabstractitemmodel.h \
@@ -9710,6 +9836,31 @@ debug\moc_robot.cpp: device\robot.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpixmap.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qfont.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qicon.h \
+		UnityTool.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qlabel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qtwidgetsglobal.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qtwidgets-config.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qframe.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qwidget.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpalette.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qfontmetrics.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qfontinfo.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qsizepolicy.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qcursor.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qkeysequence.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qevent.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qfile.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qfiledevice.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qvector2d.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtouchdevice.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qtextedit.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qabstractscrollarea.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtextdocument.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtextoption.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtextcursor.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtextformat.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpen.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItem \
 		debug\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2015_64\bin\moc.exe
 	C:\Qt\5.15.2\msvc2015_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include "E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware/debug/moc_predefs.h" -IC:/Qt/5.15.2/msvc2015_64/mkspecs/win32-msvc -I"E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware" -I"E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware/3rd-party/opencv/build/include" -IC:/Qt/5.15.2/msvc2015_64/include -IC:/Qt/5.15.2/msvc2015_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2015_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2015_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtQuick -IC:/Qt/5.15.2/msvc2015_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2015_64/include/QtGui -IC:/Qt/5.15.2/msvc2015_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2015_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2015_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2015_64/include/QtQml -IC:/Qt/5.15.2/msvc2015_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2015_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" device\robot.h -o debug\moc_robot.cpp
@@ -11475,7 +11626,9 @@ ui_RobotWindow.h: RobotWindow.ui \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSettings \
 		UnityTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QElapsedTimer \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItem \
 		VariableManager.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QHash \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel
 	C:\Qt\5.15.2\msvc2015_64\bin\uic.exe RobotWindow.ui -o ui_RobotWindow.h
 
@@ -12001,6 +12154,7 @@ debug\main.obj: main.cpp RobotWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMetaObject \
 		UnityTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QElapsedTimer \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItem \
 		DeltaVisualizer.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLabel \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPainter \
@@ -12115,6 +12269,7 @@ debug\main.obj: main.cpp RobotWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QThread \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutexLocker \
 		VariableManager.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QHash \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QPushButton \
 		GcodeReference.h \
@@ -12194,6 +12349,7 @@ debug\main.obj: main.cpp RobotWindow.h \
 		ObjectInfoModel.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QAbstractTableModel \
 		ObjectInfo.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QRandomGenerator \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QStackedWidget \
 		ImageProcessing.h \
@@ -12903,6 +13059,7 @@ debug\Authority.obj: Authority.cpp Authority.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMetaObject \
 		UnityTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QElapsedTimer \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItem \
 		DeltaVisualizer.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLabel \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPainter \
@@ -13016,6 +13173,7 @@ debug\Authority.obj: Authority.cpp Authority.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QThread \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutexLocker \
 		VariableManager.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QHash \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
 		GcodeReference.h \
 		ui_GcodeReference.h \
@@ -13092,6 +13250,7 @@ debug\Authority.obj: Authority.cpp Authority.h \
 		ObjectInfoModel.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QAbstractTableModel \
 		ObjectInfo.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QRandomGenerator \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		ImageProcessing.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QCheckBox \
@@ -13986,12 +14145,23 @@ debug\FilterWindow.obj: FilterWindow.cpp FilterWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutexLocker \
 		VariableManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QVariant \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QHash \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qstandarditemmodel.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qabstractitemmodel.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qicon.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QVector3D \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qvector3d.h \
+		UnityTool.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qtextedit.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qabstractscrollarea.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtextdocument.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtextoption.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtextcursor.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtextformat.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpen.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QElapsedTimer \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItem \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QPushButton \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qpushbutton.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qabstractbutton.h \
@@ -14406,6 +14576,10 @@ debug\GcodeScript.obj: GcodeScript.cpp GcodeScript.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpen.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QElapsedTimer \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qelapsedtimer.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItem \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qstandarditemmodel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qabstractitemmodel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qicon.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		ScurveInterpolator.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QtMath \
@@ -14418,7 +14592,6 @@ debug\GcodeScript.obj: GcodeScript.cpp GcodeScript.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QWidget \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QTabWidget \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qtabwidget.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qicon.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QPushButton \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qpushbutton.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qabstractbutton.h \
@@ -14449,7 +14622,6 @@ debug\GcodeScript.obj: GcodeScript.cpp GcodeScript.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qabstractanimation.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qabstracteventdispatcher.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qeventloop.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qabstractitemmodel.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qabstractnativeeventfilter.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qabstractproxymodel.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qabstractstate.h \
@@ -14658,7 +14830,6 @@ debug\GcodeScript.obj: GcodeScript.cpp GcodeScript.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSizeF \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QTransform \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qsessionmanager.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qstandarditemmodel.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qstatictext.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qstylehints.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qsyntaxhighlighter.h \
@@ -14920,6 +15091,7 @@ debug\GcodeScript.obj: GcodeScript.cpp GcodeScript.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QThread \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutexLocker \
 		VariableManager.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QHash \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
 		GcodeReference.h \
 		ui_GcodeReference.h \
@@ -14996,6 +15168,7 @@ debug\GcodeScript.obj: GcodeScript.cpp GcodeScript.h \
 		ObjectInfoModel.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QAbstractTableModel \
 		ObjectInfo.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QRandomGenerator \
 		ImageProcessing.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QCheckBox \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QToolButton \
@@ -15197,6 +15370,9 @@ debug\ImageProcessing.obj: ImageProcessing.cpp ImageProcessing.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtextdocument.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QElapsedTimer \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qelapsedtimer.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItem \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qstandarditemmodel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qabstractitemmodel.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QToolButton \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qtoolbutton.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QRadioButton \
@@ -15298,9 +15474,8 @@ debug\ImageProcessing.obj: ImageProcessing.cpp ImageProcessing.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSettings \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsettings.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QVariant \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QHash \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qstandarditemmodel.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qabstractitemmodel.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QVector3D \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qvector3d.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSharedPointer \
@@ -15787,7 +15962,9 @@ debug\ImageViewer.obj: ImageViewer.cpp ImageViewer.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSettings \
 		UnityTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QElapsedTimer \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItem \
 		VariableManager.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QHash \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel
 
 debug\Layer.obj: Layer.cpp Layer.h \
@@ -16411,6 +16588,7 @@ debug\MainWindow.obj: MainWindow.cpp MainWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMetaObject \
 		UnityTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QElapsedTimer \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItem \
 		DeltaVisualizer.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLabel \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPainter \
@@ -16524,6 +16702,7 @@ debug\MainWindow.obj: MainWindow.cpp MainWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QThread \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutexLocker \
 		VariableManager.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QHash \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
 		GcodeReference.h \
 		ui_GcodeReference.h \
@@ -16600,6 +16779,7 @@ debug\MainWindow.obj: MainWindow.cpp MainWindow.h \
 		ObjectInfoModel.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QAbstractTableModel \
 		ObjectInfo.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QRandomGenerator \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		ImageProcessing.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QCheckBox \
@@ -16872,11 +17052,14 @@ debug\ObjectVariableTable.obj: ObjectVariableTable.cpp ObjectVariableTable.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpen.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QElapsedTimer \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qelapsedtimer.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItem \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qstandarditemmodel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qabstractitemmodel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qicon.h \
 		Object.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QPushButton \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qpushbutton.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qabstractbutton.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qicon.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QVBoxLayout \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDebug \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLineEdit \
@@ -17582,6 +17765,7 @@ debug\ProjectManager.obj: ProjectManager.cpp ProjectManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMetaObject \
 		UnityTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QElapsedTimer \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItem \
 		DeltaVisualizer.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLabel \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPainter \
@@ -17695,6 +17879,7 @@ debug\ProjectManager.obj: ProjectManager.cpp ProjectManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QThread \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutexLocker \
 		VariableManager.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QHash \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
 		GcodeReference.h \
 		ui_GcodeReference.h \
@@ -17771,6 +17956,7 @@ debug\ProjectManager.obj: ProjectManager.cpp ProjectManager.h \
 		ObjectInfoModel.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QAbstractTableModel \
 		ObjectInfo.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QRandomGenerator \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		ImageProcessing.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QCheckBox \
@@ -18313,6 +18499,7 @@ debug\RobotWindow.obj: RobotWindow.cpp RobotWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMetaObject \
 		UnityTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QElapsedTimer \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItem \
 		DeltaVisualizer.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLabel \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPainter \
@@ -18427,6 +18614,7 @@ debug\RobotWindow.obj: RobotWindow.cpp RobotWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QThread \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutexLocker \
 		VariableManager.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QHash \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QPushButton \
 		GcodeReference.h \
@@ -18506,6 +18694,7 @@ debug\RobotWindow.obj: RobotWindow.cpp RobotWindow.h \
 		ObjectInfoModel.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QAbstractTableModel \
 		ObjectInfo.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QRandomGenerator \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QStackedWidget \
 		ImageProcessing.h \
@@ -19286,6 +19475,7 @@ debug\SoftwareManager.obj: SoftwareManager.cpp SoftwareManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMetaObject \
 		UnityTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QElapsedTimer \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItem \
 		DeltaVisualizer.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLabel \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPainter \
@@ -19399,6 +19589,7 @@ debug\SoftwareManager.obj: SoftwareManager.cpp SoftwareManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QThread \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutexLocker \
 		VariableManager.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QHash \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
 		GcodeReference.h \
 		ui_GcodeReference.h \
@@ -19475,6 +19666,7 @@ debug\SoftwareManager.obj: SoftwareManager.cpp SoftwareManager.h \
 		ObjectInfoModel.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QAbstractTableModel \
 		ObjectInfo.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QRandomGenerator \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		ImageProcessing.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QCheckBox \
@@ -19641,6 +19833,10 @@ debug\TCPConnectionManager.obj: TCPConnectionManager.cpp TCPConnectionManager.h 
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpen.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QElapsedTimer \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qelapsedtimer.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItem \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qstandarditemmodel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qabstractitemmodel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qicon.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QHostInfo \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qhostinfo.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QNetworkInterface \
@@ -20160,6 +20356,7 @@ debug\TabDashboard.obj: TabDashboard.cpp TabDashboard.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMetaObject \
 		UnityTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QElapsedTimer \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItem \
 		DeltaVisualizer.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLabel \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPainter \
@@ -20273,6 +20470,7 @@ debug\TabDashboard.obj: TabDashboard.cpp TabDashboard.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QThread \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutexLocker \
 		VariableManager.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QHash \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
 		GcodeReference.h \
 		ui_GcodeReference.h \
@@ -20349,6 +20547,7 @@ debug\TabDashboard.obj: TabDashboard.cpp TabDashboard.h \
 		ObjectInfoModel.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QAbstractTableModel \
 		ObjectInfo.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QRandomGenerator \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		ImageProcessing.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QCheckBox \
@@ -20612,10 +20811,13 @@ debug\TaskNode.obj: TaskNode.cpp TaskNode.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpen.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QElapsedTimer \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qelapsedtimer.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItem \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qstandarditemmodel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qabstractitemmodel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qicon.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QPushButton \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qpushbutton.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qabstractbutton.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qicon.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QVBoxLayout \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qboxlayout.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qlayout.h \
@@ -20628,9 +20830,8 @@ debug\TaskNode.obj: TaskNode.cpp TaskNode.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSettings \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsettings.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QVariant \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QHash \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qstandarditemmodel.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qabstractitemmodel.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QVector3D \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qvector3d.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSharedPointer \
@@ -20908,6 +21109,7 @@ debug\TrackingManager.obj: TrackingManager.cpp TrackingManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSettings \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsettings.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QVariant \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QHash \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qstandarditemmodel.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qabstractitemmodel.h \
@@ -20931,6 +21133,32 @@ debug\TrackingManager.obj: TrackingManager.cpp TrackingManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpixmap.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qfont.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qicon.h \
+		UnityTool.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qlabel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qtwidgetsglobal.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qtwidgets-config.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qframe.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qwidget.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpalette.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qfontmetrics.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qfontinfo.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qsizepolicy.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qcursor.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qkeysequence.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qevent.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qurl.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qurlquery.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qfile.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qfiledevice.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtouchdevice.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qtextedit.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qabstractscrollarea.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtextdocument.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtextoption.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtextcursor.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtextformat.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpen.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItem \
 		ObjectInfo.h
 
 debug\VariableManager.obj: VariableManager.cpp VariableManager.h \
@@ -21001,6 +21229,7 @@ debug\VariableManager.obj: VariableManager.cpp VariableManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsharedpointer.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsharedpointer_impl.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QVariant \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QHash \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qstandarditemmodel.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtguiglobal.h \
@@ -21028,7 +21257,36 @@ debug\VariableManager.obj: VariableManager.cpp VariableManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qfont.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qicon.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QVector3D \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qvector3d.h
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qvector3d.h \
+		UnityTool.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qlabel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qtwidgetsglobal.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qtwidgets-config.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qframe.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qwidget.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpalette.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qfontmetrics.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qfontinfo.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qsizepolicy.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qcursor.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qkeysequence.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qevent.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qurl.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qurlquery.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qfile.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qfiledevice.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qvector2d.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtouchdevice.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qtextedit.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qabstractscrollarea.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtextdocument.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtextoption.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtextcursor.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtextformat.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpen.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QElapsedTimer \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qelapsedtimer.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItem
 
 debug\VersionManager.obj: VersionManager.cpp VersionManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QWidget \
@@ -21901,11 +22159,14 @@ debug\UnityTool.obj: UnityTool.cpp UnityTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpen.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QElapsedTimer \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qelapsedtimer.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItem \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qstandarditemmodel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qabstractitemmodel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qicon.h \
 		RobotWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QMainWindow \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qmainwindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qtabwidget.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qicon.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtOpenGL\QtOpenGL \
 		C:\Qt\5.15.2\msvc2015_64\include\QtOpenGL\QtOpenGLDepends \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QtCore \
@@ -21913,7 +22174,6 @@ debug\UnityTool.obj: UnityTool.cpp UnityTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qabstractanimation.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qabstracteventdispatcher.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qeventloop.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qabstractitemmodel.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qabstractnativeeventfilter.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qabstractproxymodel.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qabstractstate.h \
@@ -22126,7 +22386,6 @@ debug\UnityTool.obj: UnityTool.cpp UnityTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSizeF \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QTransform \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qsessionmanager.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qstandarditemmodel.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qstatictext.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qstylehints.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qsyntaxhighlighter.h \
@@ -22403,6 +22662,7 @@ debug\UnityTool.obj: UnityTool.cpp UnityTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QThread \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutexLocker \
 		VariableManager.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QHash \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QPushButton \
 		GcodeReference.h \
@@ -22482,6 +22742,7 @@ debug\UnityTool.obj: UnityTool.cpp UnityTool.h \
 		ObjectInfoModel.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QAbstractTableModel \
 		ObjectInfo.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QRandomGenerator \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QStackedWidget \
 		ImageProcessing.h \
@@ -22637,6 +22898,7 @@ debug\DeviceManager.obj: device\DeviceManager.cpp device\DeviceManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSettings \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsettings.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QVariant \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QHash \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qstandarditemmodel.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qabstractitemmodel.h \
@@ -22661,6 +22923,31 @@ debug\DeviceManager.obj: device\DeviceManager.cpp device\DeviceManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpixmap.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qfont.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qicon.h \
+		UnityTool.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qlabel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qtwidgetsglobal.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qtwidgets-config.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qframe.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qwidget.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpalette.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qfontmetrics.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qfontinfo.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qsizepolicy.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qcursor.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qkeysequence.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qevent.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qfile.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qfiledevice.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qvector2d.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtouchdevice.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qtextedit.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qabstractscrollarea.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtextdocument.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtextoption.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtextcursor.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtextformat.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpen.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItem \
 		device\slider.h \
 		device\conveyor.h \
 		device\encoder.h
@@ -23296,6 +23583,7 @@ debug\robot.obj: device\robot.cpp device\robot.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSettings \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsettings.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QVariant \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QHash \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qstandarditemmodel.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qabstractitemmodel.h \
@@ -23319,7 +23607,32 @@ debug\robot.obj: device\robot.cpp device\robot.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpixelformat.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpixmap.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qfont.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qicon.h
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qicon.h \
+		UnityTool.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qlabel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qtwidgetsglobal.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qtwidgets-config.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qframe.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qwidget.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpalette.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qfontmetrics.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qfontinfo.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qsizepolicy.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qcursor.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qkeysequence.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qevent.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qfile.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qfiledevice.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qvector2d.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtouchdevice.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qtextedit.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qabstractscrollarea.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtextdocument.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtextoption.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtextcursor.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtextformat.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpen.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItem
 
 debug\slider.obj: device\slider.cpp device\slider.h \
 		device\device.h \

@@ -55,6 +55,9 @@ RobotWindow::~RobotWindow()
 
 void RobotWindow::InitVariables()
 {
+    //--------- Register ----------
+    qRegisterMetaType< QList<QStringList>>("QList<QStringList>");
+
     //---------- Connection -----------
     InitConnectionModule();
 
@@ -164,9 +167,10 @@ void RobotWindow::InitVariables()
     connect(ui->pbAddVariablePoint, &QPushButton::clicked, [=]()
     {
         int selectedEncoderID = ui->cbSelectedTracking->currentText().toInt();
-        float x = ui->leObjectX->text().toFloat();
-        float y = ui->leObjectY->text().toFloat();
-        float z = ui->leObjectZ->text().toFloat();
+
+        float x = ui->leObjectX->text().isEmpty() ? QRandomGenerator::global()->generate() % 1000 : ui->leObjectX->text().toFloat();
+        float y = ui->leObjectY->text().isEmpty() ? QRandomGenerator::global()->generate() % 1000 : ui->leObjectY->text().toFloat();
+        float z = ui->leObjectZ->text().isEmpty() ? QRandomGenerator::global()->generate() % 1000 : ui->leObjectZ->text().toFloat();
 
         std::default_random_engine generator;  // You can seed it if you want: generator(seed);
         std::uniform_int_distribution<int> distribution(-180, 180);
@@ -391,7 +395,18 @@ void RobotWindow::InitConnectionModule()
 {
     // ---------- Server ---------
 
-    ConnectionManager = new SocketConnectionManager(ui->leIP->text(), ui->lePort->text().toInt(), this);
+    // Tìm ip local của máy
+    QString localIP = SocketConnectionManager::printLocalIpAddresses();
+    ui->leIP->setText(localIP);
+
+    ConnectionManager = new SocketConnectionManager(localIP, ui->lePort->text().toInt(), this);
+    /// Chuyển ConnectionManager vào một thread mới
+    ConnectionManager->moveToThread(new QThread(this));
+    /// Kết nối sự kiện khi thread kết thúc với việc xóa ConnectionManager
+    connect(ConnectionManager->thread(), &QThread::finished, ConnectionManager, &QObject::deleteLater);
+    /// Khởi động thread
+    ConnectionManager->thread()->start();    
+
     if (ConnectionManager->IsServerOpen())
     {
         ui->leIP->setText(ConnectionManager->server->serverAddress().toString());
@@ -471,7 +486,7 @@ void RobotWindow::InitObjectDetectingModule()
 
     ui->gvImageViewer->ProjectName = ProjectName;
 
-    ui->gvImageViewer->setViewport(new QGLWidget(QGLFormat(QGL::SampleBuffers)));
+//    ui->gvImageViewer->setViewport(new QGLWidget(QGLFormat(QGL::SampleBuffers)));
 
     connect(ui->pbCalibPointTool, &QPushButton::clicked, [=](bool checked)
     {
@@ -572,10 +587,12 @@ void RobotWindow::InitObjectDetectingModule()
     connect(ui->pbZoomInCameraView, &QPushButton::clicked, [=](bool checked)
     {
         ui->gvImageViewer->ZoomIn(2);
+//        ui->graphicsView->ZoomIn(2);
     });
     connect(ui->pbZoomOutCameraView, &QPushButton::clicked, [=](bool checked)
     {
         ui->gvImageViewer->ZoomOut(2);
+//        ui->graphicsView->ZoomOut(2);
     });
 
     // ---------- Image Provider -------
@@ -589,7 +606,9 @@ void RobotWindow::InitObjectDetectingModule()
     connect(ui->gvImageViewer, SIGNAL(changedQuadrangle(QPolygonF)), ImageProcessingThread->GetNode("GetPerspectiveNode"), SLOT(Input(QPolygonF)));
 
     connect(ui->gvImageViewer, SIGNAL(changedArea(QRectF)), ImageProcessingThread->GetNode("CropImageNode"), SLOT(Input(QRectF)));
-    connect(ImageProcessingThread->GetNode("CropImageNode"), SIGNAL(HadOutput(cv::Mat)), this, SLOT(SendImageToExternalScript(cv::Mat)));
+//    connect(ImageProcessingThread->GetNode("CropImageNode"), SIGNAL(HadOutput(cv::Mat)), this, SLOT(SendImageToExternalScript(cv::Mat)));
+//    connect(ImageProcessingThread->GetNode("CropImageNode"), SIGNAL(HadOutput(cv::Mat)), ConnectionManager, SLOT(sendImageToImageClients(cv::Mat)));
+
 //    connect(ImageProcessingThread->GetNode("ColorFilterNode"), SIGNAL(HadOutput(cv::Mat)), this, SLOT(SendImageToExternalScript(cv::Mat)));
 
     connect(ui->leImageWidth, &QLineEdit::returnPressed,
@@ -618,6 +637,7 @@ void RobotWindow::InitObjectDetectingModule()
     });
 
     connect(ImageProcessingThread->GetNode("DisplayImageNode"), SIGNAL(HadOutput(QPixmap)), ui->gvImageViewer, SLOT(SetImage(QPixmap)));
+//    connect(ImageProcessingThread->GetNode("DisplayImageNode"), SIGNAL(HadOutput(QPixmap)), ui->graphicsView, SLOT(SetImage(QPixmap)));
 
     connect(ParameterPanel, SIGNAL(ColorFilterValueChanged(QList<int>)), ImageProcessingThread->GetNode("ColorFilterNode"), SLOT(Input(QList<int>)));
     connect(ParameterPanel, SIGNAL(BlurSizeChanged(int)), ImageProcessingThread->GetNode("ColorFilterNode"), SLOT(Input(int)));
@@ -1260,6 +1280,9 @@ void RobotWindow::AddScriptThread()
     connect(GcodeScriptThread, &GcodeScript::CaptureAndDetectRequest, CameraInstance, &Camera::CaptureAndDetect);
 
     connect(GcodeScriptThread, &GcodeScript::UpdateTrackingRequest, TrackingManagerInstance, &TrackingManager::UpdateTracking);
+    connect(GcodeScriptThread, &GcodeScript::ChangeExternalVariable, TrackingManagerInstance, &TrackingManager::UpdateVariable);
+    connect(GcodeScriptThread, &GcodeScript::AddObject, TrackingManagerInstance, &TrackingManager::AddObject);
+    connect(ConnectionManager, &SocketConnectionManager::objectUpdated, TrackingManagerInstance, &TrackingManager::AddObject);
 
     connect(TrackingManagerInstance, &TrackingManager::GotResponse, GcodeScriptThread, &GcodeScript::GetResponse);
 
@@ -1813,6 +1836,11 @@ void RobotWindow::GetDeviceInfo(QString json)
 
     int id = jsonObject.value("id").toInt();
     QString device = jsonObject.value("device").toString();
+    QString com_name = jsonObject.value("com_name").toString();
+    QString state = jsonObject.value("state").toString();
+
+    UpdateVariable(device + QString::number(id) + "." + "COM.Name", com_name);
+    UpdateVariable(device + QString::number(id) + "." + "COM.State", state);
 
     if (device == "robot" && id == ui->cbSelectedRobot->currentIndex())
     {
@@ -1839,7 +1867,6 @@ void RobotWindow::GetDeviceInfo(QString json)
         RobotParameters[RbID].U = u;
         RobotParameters[RbID].V = v;
 
-        QString state = jsonObject.value("state").toString();
         if (state == "open")
         {
             ui->pbConnect->setText("Disconnect");
@@ -1851,12 +1878,11 @@ void RobotWindow::GetDeviceInfo(QString json)
 
         ui->lbComName->setText(jsonObject.value("com_name").toString());
 
+
     }
 
     else if (device == "device" && id == ui->cbSelectedDevice->currentText().toInt())
     {
-
-        QString state = jsonObject.value("state").toString();
         if (state == "open")
         {
             ui->pbExternalControllerConnect->setText("Disconnect");
@@ -1872,7 +1898,6 @@ void RobotWindow::GetDeviceInfo(QString json)
 
     else if (device == "conveyor" && id == ui->cbSelectedConveyor->currentText().toInt())
     {
-        QString state = jsonObject.value("state").toString();
         if (state == "open")
         {
             ui->pbConveyorConnect->setText("Disconnect");
@@ -1887,7 +1912,6 @@ void RobotWindow::GetDeviceInfo(QString json)
 
     else if (device == "encoder" && id == ui->cbSelectedEncoder->currentText().toInt())
     {
-        QString state = jsonObject.value("state").toString();
         if (state == "open")
         {
             ui->pbConnectEncoder->setText("Disconnect");
@@ -1953,55 +1977,7 @@ void RobotWindow::GetDeviceResponse(QString id, QString response)
 void RobotWindow::UpdateVarToView(QString fullKey, QVariant value)
 {
     QStandardItem *parent = VarViewModel.invisibleRootItem();
-    UpdateVarToModel(parent, fullKey, value);
-}
-
-void RobotWindow::UpdateVarToModel(QStandardItem *parent, QString fullKey, QVariant value)
-{
-    QStringList parts = fullKey.split('.');
-    QString valueString = value.toString();
-    if (value.canConvert<QVector3D>())
-    {
-        QVector3D vector = value.value<QVector3D>();
-        valueString = QString("(%1, %2, %3)")
-                .arg(vector.x())
-                .arg(vector.y())
-                .arg(vector.z());
-    }
-    if (value.canConvert<QPointF>())
-    {
-        QPointF point = value.value<QPointF>();
-        valueString = QString("(%1, %2)")
-                .arg(point.x())
-                .arg(point.y());
-    }
-
-    for (int i = 0; i < parts.count() - 1; ++i) {
-        QString part = parts[i];
-        QStandardItem *child = nullptr;
-        for (int j = 0; j < parent->rowCount(); ++j) {
-            if (parent->child(j)->text() == part) {
-                child = parent->child(j);
-                break;
-            }
-        }
-        if (!child) {
-            child = new QStandardItem(part);
-            parent->appendRow(child);
-        }
-        parent = child;
-    }
-    bool found = false;
-    for (int i = 0; i < parent->rowCount(); ++i) {
-        if (parent->child(i)->text() == parts.last()) {
-            parent->child(i, 1)->setText(valueString);
-            found = true;
-            break;
-        }
-    }
-    if (!found) {
-        parent->appendRow(QList<QStandardItem*>() << new QStandardItem(parts.last()) << new QStandardItem(valueString));
-    }
+    UnityTool::UpdateVarToModel(parent, fullKey, value);
 }
 
 void RobotWindow::Load3DComponents()
@@ -2028,7 +2004,12 @@ void RobotWindow::ConnectRobot()
 
     Q_FOREACH(QSerialPortInfo portInfo, QSerialPortInfo::availablePorts())
     {
-        items << portInfo.portName() + " - " + portInfo.description();
+        QSerialPort serial(portInfo);
+        if(serial.open(QIODevice::ReadWrite))
+        {
+            items << portInfo.portName() + " - " + portInfo.description();
+            serial.close();
+        }
     }
 
     bool ok;
@@ -2783,7 +2764,7 @@ void RobotWindow::GetValueInput(QString response)
     lbValue->setText(value);
 }
 
-void RobotWindow::UpdateVariable(QString key, QString value)
+void RobotWindow::UpdateVariable(QString key, QVariant value)
 {
     VariableManager::instance().Prefix = ProjectName;
 
@@ -2882,7 +2863,12 @@ void RobotWindow::ConnectEncoder()
 
     Q_FOREACH(QSerialPortInfo portInfo, QSerialPortInfo::availablePorts())
     {
-        items << portInfo.portName() + " - " + portInfo.description();
+        QSerialPort serial(portInfo);
+        if(serial.open(QIODevice::ReadWrite))
+        {
+            items << portInfo.portName() + " - " + portInfo.description();
+            serial.close();
+        }
     }
 
     bool ok;
@@ -3191,6 +3177,7 @@ void RobotWindow::SelectObjectDetectingAlgorithm(int algorithm)
     ui->fCirclePanel->setHidden(true);
 
     QString text = ui->cbDetectingAlgorithm->itemText(algorithm);
+    disconnect(ImageProcessingThread->GetNode("CropImageNode"), SIGNAL(HadOutput(cv::Mat)), ConnectionManager, SLOT(sendImageToImageClients(cv::Mat)));
 
     if (text == "Find Blobs")
     {
@@ -3203,6 +3190,7 @@ void RobotWindow::SelectObjectDetectingAlgorithm(int algorithm)
     if (text == "External Script")
     {
         ui->fExternalScriptPanel->setHidden(false);
+        connect(ImageProcessingThread->GetNode("CropImageNode"), SIGNAL(HadOutput(cv::Mat)), ConnectionManager, SLOT(sendImageToImageClients(cv::Mat)));
     }
 }
 
@@ -3349,6 +3337,13 @@ void RobotWindow::GetMappingPointFromImage(QPointF point)
     QMatrix matrix = ImageProcessingThread->GetNode("VisibleObjectsNode")->GetMatrix();
     QPointF realPoint = matrix.map(point);
 
+    //Làm tròn realPoint đến 2 chữ số thập phân
+    realPoint.setX(((float)((int)(realPoint.x() * 100))) / 100);
+    realPoint.setY(((float)((int)(realPoint.y() * 100))) / 100);    
+
+    UpdateVariable("#Test_Point.X", realPoint.x());
+    UpdateVariable("#Test_Point.Y", realPoint.y());
+
     ui->gvImageViewer->SetMappingPointTitle(QString("X=%1,Y=%2").arg(realPoint.x()).arg(realPoint.y()));
 }
 
@@ -3393,9 +3388,14 @@ void RobotWindow::UnselectToolButtons()
 
 void RobotWindow::UpdateObjectsToImageViewer(QList<Object> objects)
 {
+    return;
     QList<QPolygonF> polys;
     QMap<QString, QPointF> texts;
     int counter = 0;
+
+    if (objects.isEmpty()) {
+        return;
+    }
 
     foreach(Object obj, objects)
     {
@@ -3518,7 +3518,12 @@ void RobotWindow::ConnectConveyor()
 
     Q_FOREACH(QSerialPortInfo portInfo, QSerialPortInfo::availablePorts())
     {
-        items << portInfo.portName() + " - " + portInfo.description();
+        QSerialPort serial(portInfo);
+        if(serial.open(QIODevice::ReadWrite))
+        {
+            items << portInfo.portName() + " - " + portInfo.description();
+            serial.close();
+        }
     }
 
     bool ok;
@@ -3867,7 +3872,12 @@ void RobotWindow::ConnectSliding()
 
     Q_FOREACH(QSerialPortInfo portInfo, QSerialPortInfo::availablePorts())
     {
-        items << portInfo.portName() + " - " + portInfo.description();
+        QSerialPort serial(portInfo);
+        if(serial.open(QIODevice::ReadWrite))
+        {
+            items << portInfo.portName() + " - " + portInfo.description();
+            serial.close();
+        }
     }
 
     bool ok;
@@ -3917,7 +3927,12 @@ void RobotWindow::ConnectExternalMCU()
 
     Q_FOREACH(QSerialPortInfo portInfo, QSerialPortInfo::availablePorts())
     {
-        items << portInfo.portName() + " - " + portInfo.description();
+        QSerialPort serial(portInfo);
+        if(serial.open(QIODevice::ReadWrite))
+        {
+            items << portInfo.portName() + " - " + portInfo.description();
+            serial.close();
+        }
     }
 
     bool ok;
@@ -4132,7 +4147,12 @@ bool RobotWindow::openConnectionDialog(QSerialPort * comPort, QTcpSocket* socket
 
 			Q_FOREACH(QSerialPortInfo portInfo, QSerialPortInfo::availablePorts())
 			{
-                items << portInfo.portName() + " - " + portInfo.description();
+                QSerialPort serial(portInfo);
+                if(serial.open(QIODevice::ReadWrite))
+                {
+                    items << portInfo.portName() + " - " + portInfo.description();
+                    serial.close();
+                }
 			}
 
 			bool ok;

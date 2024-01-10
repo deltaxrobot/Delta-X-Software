@@ -71,6 +71,7 @@ signals:
 
 public slots:
     void OnReceivceEncoderPosition(float value);
+    void ChangeObjectInfo(QString cmd);
     void GetVirtualEncoderPosition();
     void ReadEncoder();
     void SetEncoderReverse(bool isReverse);
@@ -78,6 +79,7 @@ public slots:
     void SaveDetectPosition();
 
     void UpdateTrackedObjects(QList<ObjectInfo> detectedObjects, QString objectListName);
+
     void updatePositions(double displacement);
     void ClearTrackedObjects();
     void RemoveTrackedObjects(int id);
@@ -106,6 +108,8 @@ public slots:
     void SaveCapturePosition(int id);
     void SaveDetectPosition(int id);
     void UpdateTracking(int id);
+    void UpdateVariable(QString cmd);
+    void AddObject(QString listName, QList<QStringList> list);
     void SetEncoderPosition(int id, float value);
     void ReadEncoderWhenSensorActive(int id);
     void OnDoneUpdateTracking();

@@ -40,7 +40,7 @@ ImageViewer::ImageViewer(QWidget *parent) :
         ViewerScene->addItem(textItem);
     }
 
-//    LoadSetting();
+    LoadSetting();
 }
 
 ImageViewer::~ImageViewer()
@@ -183,6 +183,8 @@ void ImageViewer::SetImage(QPixmap pixmap)
         imgWidth = pixmap.width();
         imgHeight = pixmap.height();
     }
+
+    update();
 }
 
 void ImageViewer::SetQuadrangle(QPolygonF poly)
@@ -572,22 +574,6 @@ void ImageViewer::mouseReleaseEvent(QMouseEvent *event)
     }
 
     update();
-}
-
-void ImageViewer::paintEvent(QPaintEvent *event)
-{
-    QGraphicsView::paintEvent(event);
-
-//    QPoint mousePosOnImage = ImageItem->mapFromScene(QCursor::pos()).toPoint();
-
-//    if (cArea.IsOverPoint(mousePosOnImage))
-//    {
-//        setMoveHand(true);
-//    }
-//    else
-//    {
-//        setMoveHand(false);
-//    }
 }
 
 void ImageViewer::changeToolIconInArea(QIcon icon)

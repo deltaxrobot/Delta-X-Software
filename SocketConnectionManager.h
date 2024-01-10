@@ -6,6 +6,9 @@
 #include <QImage>
 #include <QBuffer>
 #include <QMetaObject>
+#include <QNetworkInterface>
+#include <VariableManager.h>
+#include <opencv2/opencv.hpp>
 
 class SocketConnectionManager : public QObject
 {
@@ -18,10 +21,12 @@ public:
     int port;
 
     bool IsServerOpen();
+    static QString printLocalIpAddresses();
 
 public:
     SocketConnectionManager(const QString& address = "127.0.0.1", int port = 12345, QObject* parent = nullptr);
     bool Connect(QString address = "127.0.0.1", int port = 8844);
+
 private slots:
     void newClientConnected();
 
@@ -29,9 +34,11 @@ private slots:
 
 public slots:
     void sendImageToImageClients(const QImage& image);
+    void sendImageToImageClients(cv::Mat);
 
 signals:
     void variableChanged(const QString& varName, const QVariant& value);
+    void objectUpdated(QString listName, QList<QStringList> list);
 };
 
 #endif // SOCKETCONNECTIONMANAGER_H

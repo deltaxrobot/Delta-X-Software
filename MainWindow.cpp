@@ -20,7 +20,7 @@ void MainWindow::InitVariables()
     qint64 start = time.elapsed();
 
     connect(&timer1, &QTimer::timeout, this, &MainWindow::SaveProjectToFile);
-    timer1.start(5000);
+//    timer1.start(5000);
 
     SetLoadingIconRun(true);
 

@@ -301,6 +301,12 @@ void DeviceManager::SendGcode(QString deviceName, QString gcode)
 
 //            emit Log(QString("Robot %1").arg(id), gcode, 1);
         }
+        else
+        {
+            // Delay 100ms
+            QThread::msleep(100);
+            emit DeviceResponded(deviceName, "Ok");
+        }
     }
 
     if (device.toLower() == "slider")

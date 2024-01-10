@@ -462,6 +462,12 @@ QLabel
          <property name="text">
           <string>Server</string>
          </property>
+         <property name="default">
+          <bool>false</bool>
+         </property>
+         <property name="flat">
+          <bool>false</bool>
+         </property>
         </widget>
        </item>
        <item>
@@ -788,7 +794,7 @@ QToolBox QScrollArea&gt;QWidget&gt;QWidget
               <enum>QTabWidget::Rounded</enum>
              </property>
              <property name="currentIndex">
-              <number>2</number>
+              <number>1</number>
              </property>
              <property name="usesScrollButtons">
               <bool>true</bool>
@@ -1665,8 +1671,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
                   <property name="geometry">
                    <rect>
                     <x>0</x>
-                    <y>0</y>
-                    <width>586</width>
+                    <y>-578</y>
+                    <width>655</width>
                     <height>2500</height>
                    </rect>
                   </property>
@@ -2380,7 +2386,7 @@ QFrame
                                   <bool>false</bool>
                                  </property>
                                  <property name="sizePolicy">
-                                  <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                                  <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                                    <horstretch>0</horstretch>
                                    <verstretch>0</verstretch>
                                   </sizepolicy>
@@ -3401,158 +3407,8 @@ QFrame
                                 <property name="spacing">
                                  <number>10</number>
                                 </property>
-                                <item row="11" column="1">
-                                 <widget class="QLabel" name="lbCalibType_3">
-                                  <property name="text">
-                                   <string>P1' &amp; P2' Distance</string>
-                                  </property>
-                                 </widget>
-                                </item>
-                                <item row="6" column="4">
-                                 <widget class="QLineEdit" name="leRealityPoint2Y">
-                                  <property name="sizePolicy">
-                                   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                                    <horstretch>0</horstretch>
-                                    <verstretch>0</verstretch>
-                                   </sizepolicy>
-                                  </property>
-                                  <property name="minimumSize">
-                                   <size>
-                                    <width>0</width>
-                                    <height>0</height>
-                                   </size>
-                                  </property>
-                                  <property name="maximumSize">
-                                   <size>
-                                    <width>50</width>
-                                    <height>16777215</height>
-                                   </size>
-                                  </property>
-                                  <property name="toolTip">
-                                   <string/>
-                                  </property>
-                                  <property name="text">
-                                   <string>100</string>
-                                  </property>
-                                 </widget>
-                                </item>
-                                <item row="8" column="1">
-                                 <widget class="QLabel" name="lbCalibType_2">
-                                  <property name="text">
-                                   <string>Calib Tool</string>
-                                  </property>
-                                 </widget>
-                                </item>
-                                <item row="6" column="5">
-                                 <widget class="QLabel" name="label_140">
-                                  <property name="minimumSize">
-                                   <size>
-                                    <width>0</width>
-                                    <height>30</height>
-                                   </size>
-                                  </property>
-                                  <property name="text">
-                                   <string>mm</string>
-                                  </property>
-                                 </widget>
-                                </item>
-                                <item row="6" column="7">
-                                 <widget class="QToolButton" name="tbPastePoint2">
-                                  <property name="toolTip">
-                                   <string>Paste</string>
-                                  </property>
-                                  <property name="text">
-                                   <string/>
-                                  </property>
-                                  <property name="icon">
-                                   <iconset resource="resource.qrc">
-                                    <normaloff>:/icon/Paste.png</normaloff>:/icon/Paste.png</iconset>
-                                  </property>
-                                  <property name="iconSize">
-                                   <size>
-                                    <width>24</width>
-                                    <height>24</height>
-                                   </size>
-                                  </property>
-                                 </widget>
-                                </item>
-                                <item row="3" column="2">
-                                 <widget class="QLabel" name="label_38">
-                                  <property name="minimumSize">
-                                   <size>
-                                    <width>0</width>
-                                    <height>0</height>
-                                   </size>
-                                  </property>
-                                  <property name="font">
-                                   <font>
-                                    <italic>false</italic>
-                                    <bold>false</bold>
-                                    <underline>false</underline>
-                                    <strikeout>false</strikeout>
-                                    <kerning>true</kerning>
-                                   </font>
-                                  </property>
-                                  <property name="mouseTracking">
-                                   <bool>true</bool>
-                                  </property>
-                                  <property name="text">
-                                   <string>X</string>
-                                  </property>
-                                  <property name="textFormat">
-                                   <enum>Qt::AutoText</enum>
-                                  </property>
-                                  <property name="alignment">
-                                   <set>Qt::AlignCenter</set>
-                                  </property>
-                                 </widget>
-                                </item>
-                                <item row="9" column="5">
-                                 <widget class="QLabel" name="label_142">
-                                  <property name="minimumSize">
-                                   <size>
-                                    <width>0</width>
-                                    <height>30</height>
-                                   </size>
-                                  </property>
-                                  <property name="text">
-                                   <string>mm</string>
-                                  </property>
-                                 </widget>
-                                </item>
-                                <item row="6" column="1">
-                                 <widget class="QLabel" name="label_41">
-                                  <property name="minimumSize">
-                                   <size>
-                                    <width>0</width>
-                                    <height>0</height>
-                                   </size>
-                                  </property>
-                                  <property name="font">
-                                   <font>
-                                    <italic>false</italic>
-                                    <bold>false</bold>
-                                    <underline>false</underline>
-                                    <strikeout>false</strikeout>
-                                    <kerning>true</kerning>
-                                   </font>
-                                  </property>
-                                  <property name="mouseTracking">
-                                   <bool>true</bool>
-                                  </property>
-                                  <property name="text">
-                                   <string>P2'</string>
-                                  </property>
-                                  <property name="textFormat">
-                                   <enum>Qt::AutoText</enum>
-                                  </property>
-                                  <property name="alignment">
-                                   <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-                                  </property>
-                                 </widget>
-                                </item>
-                                <item row="6" column="2">
-                                 <widget class="QLineEdit" name="leRealityPoint2X">
+                                <item row="11" column="2">
+                                 <widget class="QLineEdit" name="leRealityP1P2Distance">
                                   <property name="sizePolicy">
                                    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                                     <horstretch>0</horstretch>
@@ -3572,32 +3428,12 @@ QFrame
                                    </size>
                                   </property>
                                   <property name="text">
-                                   <string>100</string>
+                                   <string>80</string>
                                   </property>
                                  </widget>
                                 </item>
-                                <item row="12" column="1" colspan="9">
-                                 <widget class="QLabel" name="label_10">
-                                  <property name="text">
-                                   <string>2.3 Press the button to calculate the transformation matrix</string>
-                                  </property>
-                                 </widget>
-                                </item>
-                                <item row="5" column="3">
-                                 <widget class="QLabel" name="label_132">
-                                  <property name="minimumSize">
-                                   <size>
-                                    <width>0</width>
-                                    <height>30</height>
-                                   </size>
-                                  </property>
-                                  <property name="text">
-                                   <string>mm</string>
-                                  </property>
-                                 </widget>
-                                </item>
-                                <item row="5" column="4">
-                                 <widget class="QLineEdit" name="leRealityPoint1Y">
+                                <item row="9" column="2">
+                                 <widget class="QLineEdit" name="leCalibOffset_X">
                                   <property name="sizePolicy">
                                    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                                     <horstretch>0</horstretch>
@@ -3621,83 +3457,8 @@ QFrame
                                   </property>
                                  </widget>
                                 </item>
-                                <item row="6" column="6">
-                                 <widget class="QPushButton" name="pbCalibPoint2">
-                                  <property name="sizePolicy">
-                                   <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-                                    <horstretch>0</horstretch>
-                                    <verstretch>0</verstretch>
-                                   </sizepolicy>
-                                  </property>
-                                  <property name="text">
-                                   <string>Save Robot Position To P2'</string>
-                                  </property>
-                                  <property name="shortcut">
-                                   <string>@</string>
-                                  </property>
-                                  <property name="flat">
-                                   <bool>true</bool>
-                                  </property>
-                                 </widget>
-                                </item>
-                                <item row="5" column="1">
-                                 <widget class="QLabel" name="label_40">
-                                  <property name="minimumSize">
-                                   <size>
-                                    <width>0</width>
-                                    <height>0</height>
-                                   </size>
-                                  </property>
-                                  <property name="font">
-                                   <font>
-                                    <italic>false</italic>
-                                    <bold>false</bold>
-                                    <underline>false</underline>
-                                    <strikeout>false</strikeout>
-                                    <kerning>true</kerning>
-                                   </font>
-                                  </property>
-                                  <property name="mouseTracking">
-                                   <bool>true</bool>
-                                  </property>
-                                  <property name="text">
-                                   <string>P1'</string>
-                                  </property>
-                                  <property name="textFormat">
-                                   <enum>Qt::AutoText</enum>
-                                  </property>
-                                  <property name="alignment">
-                                   <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-                                  </property>
-                                 </widget>
-                                </item>
-                                <item row="5" column="6">
-                                 <widget class="QPushButton" name="pbCalibPoint1">
-                                  <property name="sizePolicy">
-                                   <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-                                    <horstretch>0</horstretch>
-                                    <verstretch>0</verstretch>
-                                   </sizepolicy>
-                                  </property>
-                                  <property name="minimumSize">
-                                   <size>
-                                    <width>180</width>
-                                    <height>0</height>
-                                   </size>
-                                  </property>
-                                  <property name="text">
-                                   <string>Save Robot Position To P1'</string>
-                                  </property>
-                                  <property name="shortcut">
-                                   <string>!</string>
-                                  </property>
-                                  <property name="flat">
-                                   <bool>true</bool>
-                                  </property>
-                                 </widget>
-                                </item>
-                                <item row="9" column="3">
-                                 <widget class="QLabel" name="label_141">
+                                <item row="11" column="3">
+                                 <widget class="QLabel" name="label_148">
                                   <property name="minimumSize">
                                    <size>
                                     <width>0</width>
@@ -3709,10 +3470,23 @@ QFrame
                                   </property>
                                  </widget>
                                 </item>
-                                <item row="9" column="1">
-                                 <widget class="QLabel" name="lbCalibType">
+                                <item row="5" column="7">
+                                 <widget class="QToolButton" name="tbPastePoint1">
+                                  <property name="toolTip">
+                                   <string>Paste</string>
+                                  </property>
                                   <property name="text">
-                                   <string>Offset</string>
+                                   <string/>
+                                  </property>
+                                  <property name="icon">
+                                   <iconset resource="resource.qrc">
+                                    <normaloff>:/icon/Paste.png</normaloff>:/icon/Paste.png</iconset>
+                                  </property>
+                                  <property name="iconSize">
+                                   <size>
+                                    <width>24</width>
+                                    <height>24</height>
+                                   </size>
                                   </property>
                                  </widget>
                                 </item>
@@ -3779,19 +3553,6 @@ QFrame
                                   </property>
                                  </widget>
                                 </item>
-                                <item row="5" column="5">
-                                 <widget class="QLabel" name="label_133">
-                                  <property name="minimumSize">
-                                   <size>
-                                    <width>0</width>
-                                    <height>30</height>
-                                   </size>
-                                  </property>
-                                  <property name="text">
-                                   <string>mm</string>
-                                  </property>
-                                 </widget>
-                                </item>
                                 <item row="3" column="4">
                                  <widget class="QLabel" name="label_39">
                                   <property name="text">
@@ -3799,6 +3560,79 @@ QFrame
                                   </property>
                                   <property name="alignment">
                                    <set>Qt::AlignCenter</set>
+                                  </property>
+                                 </widget>
+                                </item>
+                                <item row="6" column="4">
+                                 <widget class="QLineEdit" name="leRealityPoint2Y">
+                                  <property name="sizePolicy">
+                                   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                   </sizepolicy>
+                                  </property>
+                                  <property name="minimumSize">
+                                   <size>
+                                    <width>0</width>
+                                    <height>0</height>
+                                   </size>
+                                  </property>
+                                  <property name="maximumSize">
+                                   <size>
+                                    <width>50</width>
+                                    <height>16777215</height>
+                                   </size>
+                                  </property>
+                                  <property name="toolTip">
+                                   <string/>
+                                  </property>
+                                  <property name="text">
+                                   <string>100</string>
+                                  </property>
+                                 </widget>
+                                </item>
+                                <item row="6" column="7">
+                                 <widget class="QToolButton" name="tbPastePoint2">
+                                  <property name="toolTip">
+                                   <string>Paste</string>
+                                  </property>
+                                  <property name="text">
+                                   <string/>
+                                  </property>
+                                  <property name="icon">
+                                   <iconset resource="resource.qrc">
+                                    <normaloff>:/icon/Paste.png</normaloff>:/icon/Paste.png</iconset>
+                                  </property>
+                                  <property name="iconSize">
+                                   <size>
+                                    <width>24</width>
+                                    <height>24</height>
+                                   </size>
+                                  </property>
+                                 </widget>
+                                </item>
+                                <item row="5" column="6">
+                                 <widget class="QPushButton" name="pbCalibPoint1">
+                                  <property name="sizePolicy">
+                                   <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                   </sizepolicy>
+                                  </property>
+                                  <property name="minimumSize">
+                                   <size>
+                                    <width>180</width>
+                                    <height>0</height>
+                                   </size>
+                                  </property>
+                                  <property name="text">
+                                   <string>Save Robot Position To P1'</string>
+                                  </property>
+                                  <property name="shortcut">
+                                   <string>!</string>
+                                  </property>
+                                  <property name="flat">
+                                   <bool>true</bool>
                                   </property>
                                  </widget>
                                 </item>
@@ -3827,6 +3661,107 @@ QFrame
                                   </property>
                                  </widget>
                                 </item>
+                                <item row="5" column="5">
+                                 <widget class="QLabel" name="label_133">
+                                  <property name="minimumSize">
+                                   <size>
+                                    <width>0</width>
+                                    <height>30</height>
+                                   </size>
+                                  </property>
+                                  <property name="text">
+                                   <string>mm</string>
+                                  </property>
+                                 </widget>
+                                </item>
+                                <item row="3" column="2">
+                                 <widget class="QLabel" name="label_38">
+                                  <property name="minimumSize">
+                                   <size>
+                                    <width>0</width>
+                                    <height>0</height>
+                                   </size>
+                                  </property>
+                                  <property name="font">
+                                   <font>
+                                    <italic>false</italic>
+                                    <bold>false</bold>
+                                    <underline>false</underline>
+                                    <strikeout>false</strikeout>
+                                    <kerning>true</kerning>
+                                   </font>
+                                  </property>
+                                  <property name="mouseTracking">
+                                   <bool>true</bool>
+                                  </property>
+                                  <property name="text">
+                                   <string>X</string>
+                                  </property>
+                                  <property name="textFormat">
+                                   <enum>Qt::AutoText</enum>
+                                  </property>
+                                  <property name="alignment">
+                                   <set>Qt::AlignCenter</set>
+                                  </property>
+                                 </widget>
+                                </item>
+                                <item row="12" column="1" colspan="10">
+                                 <widget class="QLabel" name="label_10">
+                                  <property name="text">
+                                   <string>2.3 Press the button to calculate the transformation matrix</string>
+                                  </property>
+                                 </widget>
+                                </item>
+                                <item row="6" column="6">
+                                 <widget class="QPushButton" name="pbCalibPoint2">
+                                  <property name="sizePolicy">
+                                   <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                   </sizepolicy>
+                                  </property>
+                                  <property name="text">
+                                   <string>Save Robot Position To P2'</string>
+                                  </property>
+                                  <property name="shortcut">
+                                   <string>@</string>
+                                  </property>
+                                  <property name="flat">
+                                   <bool>true</bool>
+                                  </property>
+                                 </widget>
+                                </item>
+                                <item row="5" column="1">
+                                 <widget class="QLabel" name="label_40">
+                                  <property name="minimumSize">
+                                   <size>
+                                    <width>0</width>
+                                    <height>0</height>
+                                   </size>
+                                  </property>
+                                  <property name="font">
+                                   <font>
+                                    <italic>false</italic>
+                                    <bold>false</bold>
+                                    <underline>false</underline>
+                                    <strikeout>false</strikeout>
+                                    <kerning>true</kerning>
+                                   </font>
+                                  </property>
+                                  <property name="mouseTracking">
+                                   <bool>true</bool>
+                                  </property>
+                                  <property name="text">
+                                   <string>P1'</string>
+                                  </property>
+                                  <property name="textFormat">
+                                   <enum>Qt::AutoText</enum>
+                                  </property>
+                                  <property name="alignment">
+                                   <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                                  </property>
+                                 </widget>
+                                </item>
                                 <item row="6" column="3">
                                  <widget class="QLabel" name="label_139">
                                   <property name="minimumSize">
@@ -3840,8 +3775,35 @@ QFrame
                                   </property>
                                  </widget>
                                 </item>
-                                <item row="9" column="2">
-                                 <widget class="QLineEdit" name="leCalibOffset_X">
+                                <item row="9" column="5">
+                                 <widget class="QLabel" name="label_142">
+                                  <property name="minimumSize">
+                                   <size>
+                                    <width>0</width>
+                                    <height>30</height>
+                                   </size>
+                                  </property>
+                                  <property name="text">
+                                   <string>mm</string>
+                                  </property>
+                                 </widget>
+                                </item>
+                                <item row="9" column="1">
+                                 <widget class="QLabel" name="lbCalibType">
+                                  <property name="text">
+                                   <string>Offset</string>
+                                  </property>
+                                 </widget>
+                                </item>
+                                <item row="8" column="1">
+                                 <widget class="QLabel" name="lbCalibType_2">
+                                  <property name="text">
+                                   <string>Calib Tool</string>
+                                  </property>
+                                 </widget>
+                                </item>
+                                <item row="5" column="4">
+                                 <widget class="QLineEdit" name="leRealityPoint1Y">
                                   <property name="sizePolicy">
                                    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                                     <horstretch>0</horstretch>
@@ -3862,6 +3824,108 @@ QFrame
                                   </property>
                                   <property name="text">
                                    <string>0</string>
+                                  </property>
+                                 </widget>
+                                </item>
+                                <item row="11" column="1">
+                                 <widget class="QLabel" name="lbCalibType_3">
+                                  <property name="text">
+                                   <string>P1' &amp; P2' Distance</string>
+                                  </property>
+                                 </widget>
+                                </item>
+                                <item row="6" column="2">
+                                 <widget class="QLineEdit" name="leRealityPoint2X">
+                                  <property name="sizePolicy">
+                                   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                   </sizepolicy>
+                                  </property>
+                                  <property name="minimumSize">
+                                   <size>
+                                    <width>0</width>
+                                    <height>0</height>
+                                   </size>
+                                  </property>
+                                  <property name="maximumSize">
+                                   <size>
+                                    <width>50</width>
+                                    <height>16777215</height>
+                                   </size>
+                                  </property>
+                                  <property name="text">
+                                   <string>100</string>
+                                  </property>
+                                 </widget>
+                                </item>
+                                <item row="9" column="3">
+                                 <widget class="QLabel" name="label_141">
+                                  <property name="minimumSize">
+                                   <size>
+                                    <width>0</width>
+                                    <height>30</height>
+                                   </size>
+                                  </property>
+                                  <property name="text">
+                                   <string>mm</string>
+                                  </property>
+                                 </widget>
+                                </item>
+                                <item row="5" column="3">
+                                 <widget class="QLabel" name="label_132">
+                                  <property name="minimumSize">
+                                   <size>
+                                    <width>0</width>
+                                    <height>30</height>
+                                   </size>
+                                  </property>
+                                  <property name="text">
+                                   <string>mm</string>
+                                  </property>
+                                 </widget>
+                                </item>
+                                <item row="6" column="5">
+                                 <widget class="QLabel" name="label_140">
+                                  <property name="minimumSize">
+                                   <size>
+                                    <width>0</width>
+                                    <height>30</height>
+                                   </size>
+                                  </property>
+                                  <property name="text">
+                                   <string>mm</string>
+                                  </property>
+                                 </widget>
+                                </item>
+                                <item row="6" column="1">
+                                 <widget class="QLabel" name="label_41">
+                                  <property name="minimumSize">
+                                   <size>
+                                    <width>0</width>
+                                    <height>0</height>
+                                   </size>
+                                  </property>
+                                  <property name="font">
+                                   <font>
+                                    <italic>false</italic>
+                                    <bold>false</bold>
+                                    <underline>false</underline>
+                                    <strikeout>false</strikeout>
+                                    <kerning>true</kerning>
+                                   </font>
+                                  </property>
+                                  <property name="mouseTracking">
+                                   <bool>true</bool>
+                                  </property>
+                                  <property name="text">
+                                   <string>P2'</string>
+                                  </property>
+                                  <property name="textFormat">
+                                   <enum>Qt::AutoText</enum>
+                                  </property>
+                                  <property name="alignment">
+                                   <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
                                   </property>
                                  </widget>
                                 </item>
@@ -3890,66 +3954,27 @@ QFrame
                                   </property>
                                  </widget>
                                 </item>
-                                <item row="5" column="7">
-                                 <widget class="QToolButton" name="tbPastePoint1">
-                                  <property name="toolTip">
-                                   <string>Paste</string>
+                                <item row="5" column="8">
+                                 <spacer name="horizontalSpacer_3">
+                                  <property name="orientation">
+                                   <enum>Qt::Horizontal</enum>
                                   </property>
-                                  <property name="text">
-                                   <string/>
-                                  </property>
-                                  <property name="icon">
-                                   <iconset resource="resource.qrc">
-                                    <normaloff>:/icon/Paste.png</normaloff>:/icon/Paste.png</iconset>
-                                  </property>
-                                  <property name="iconSize">
+                                  <property name="sizeHint" stdset="0">
                                    <size>
-                                    <width>24</width>
-                                    <height>24</height>
+                                    <width>40</width>
+                                    <height>20</height>
                                    </size>
                                   </property>
-                                 </widget>
+                                 </spacer>
                                 </item>
-                                <item row="11" column="2">
-                                 <widget class="QLineEdit" name="leRealityP1P2Distance">
+                                <item row="8" column="2" colspan="2">
+                                 <widget class="QComboBox" name="cbCalibType">
                                   <property name="sizePolicy">
                                    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                                     <horstretch>0</horstretch>
                                     <verstretch>0</verstretch>
                                    </sizepolicy>
                                   </property>
-                                  <property name="minimumSize">
-                                   <size>
-                                    <width>0</width>
-                                    <height>0</height>
-                                   </size>
-                                  </property>
-                                  <property name="maximumSize">
-                                   <size>
-                                    <width>50</width>
-                                    <height>16777215</height>
-                                   </size>
-                                  </property>
-                                  <property name="text">
-                                   <string>80</string>
-                                  </property>
-                                 </widget>
-                                </item>
-                                <item row="11" column="3">
-                                 <widget class="QLabel" name="label_148">
-                                  <property name="minimumSize">
-                                   <size>
-                                    <width>0</width>
-                                    <height>30</height>
-                                   </size>
-                                  </property>
-                                  <property name="text">
-                                   <string>mm</string>
-                                  </property>
-                                 </widget>
-                                </item>
-                                <item row="8" column="2" colspan="4">
-                                 <widget class="QComboBox" name="cbCalibType">
                                   <property name="maximumSize">
                                    <size>
                                     <width>16777215</width>
@@ -5229,8 +5254,8 @@ QFrame
                   <property name="geometry">
                    <rect>
                     <x>0</x>
-                    <y>-673</y>
-                    <width>574</width>
+                    <y>0</y>
+                    <width>643</width>
                     <height>1900</height>
                    </rect>
                   </property>
@@ -6733,7 +6758,7 @@ padding: 5px;</string>
                    <rect>
                     <x>0</x>
                     <y>0</y>
-                    <width>574</width>
+                    <width>643</width>
                     <height>1600</height>
                    </rect>
                   </property>
@@ -8492,7 +8517,7 @@ QToolButton::hover
                    <rect>
                     <x>0</x>
                     <y>0</y>
-                    <width>588</width>
+                    <width>657</width>
                     <height>684</height>
                    </rect>
                   </property>
@@ -8652,7 +8677,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
              <property name="minimumSize">
               <size>
                <width>0</width>
-               <height>0</height>
+               <height>28</height>
               </size>
              </property>
              <property name="font">
@@ -8709,7 +8734,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
                    <rect>
                     <x>0</x>
                     <y>0</y>
-                    <width>564</width>
+                    <width>495</width>
                     <height>1500</height>
                    </rect>
                   </property>
@@ -12913,6 +12938,12 @@ QLabel
                      <enum>QFrame::Raised</enum>
                     </property>
                     <layout class="QHBoxLayout" name="horizontalLayout_84">
+                     <property name="topMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="bottomMargin">
+                      <number>0</number>
+                     </property>
                      <item>
                       <widget class="QLabel" name="label">
                        <property name="text">
@@ -12950,8 +12981,8 @@ QLabel
                        </property>
                        <property name="minimumSize">
                         <size>
-                         <width>80</width>
-                         <height>0</height>
+                         <width>0</width>
+                         <height>28</height>
                         </size>
                        </property>
                        <property name="maximumSize">
@@ -12971,6 +13002,8 @@ QLabel
 	background-color: #3195EF;
 	color: rgb(255, 255, 255);
 	border: none;
+	padding-left: 20px;
+	padding-right: 20px;
 }
 QPushButton:hover
 {	
@@ -14303,6 +14336,12 @@ QLabel
                      <enum>QFrame::Raised</enum>
                     </property>
                     <layout class="QHBoxLayout" name="horizontalLayout_88">
+                     <property name="topMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="bottomMargin">
+                      <number>0</number>
+                     </property>
                      <item>
                       <widget class="QLabel" name="label_9">
                        <property name="text">
@@ -14340,8 +14379,8 @@ QLabel
                        </property>
                        <property name="minimumSize">
                         <size>
-                         <width>80</width>
-                         <height>0</height>
+                         <width>0</width>
+                         <height>28</height>
                         </size>
                        </property>
                        <property name="maximumSize">
@@ -14361,6 +14400,8 @@ QLabel
 	background-color: #3195EF;
 	color: rgb(255, 255, 255);
 	border: none;
+	padding-left: 20px;
+	padding-right: 20px;
 }
 QPushButton:hover
 {	
@@ -14930,6 +14971,12 @@ QLabel
                      <enum>QFrame::Raised</enum>
                     </property>
                     <layout class="QHBoxLayout" name="horizontalLayout_105">
+                     <property name="topMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="bottomMargin">
+                      <number>0</number>
+                     </property>
                      <item>
                       <widget class="QLabel" name="label_15">
                        <property name="text">
@@ -14967,7 +15014,7 @@ QLabel
                        </property>
                        <property name="minimumSize">
                         <size>
-                         <width>80</width>
+                         <width>0</width>
                          <height>0</height>
                         </size>
                        </property>
@@ -14988,6 +15035,8 @@ QLabel
 	background-color: #3195EF;
 	color: rgb(255, 255, 255);
 	border: none;
+	padding-left: 20px;
+	padding-right: 20px;
 }
 QPushButton:hover
 {	
@@ -15573,6 +15622,12 @@ QLabel
                      <enum>QFrame::Raised</enum>
                     </property>
                     <layout class="QHBoxLayout" name="horizontalLayout_110">
+                     <property name="topMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="bottomMargin">
+                      <number>0</number>
+                     </property>
                      <item>
                       <widget class="QLabel" name="label_16">
                        <property name="text">
@@ -15610,7 +15665,7 @@ QLabel
                        </property>
                        <property name="minimumSize">
                         <size>
-                         <width>80</width>
+                         <width>0</width>
                          <height>0</height>
                         </size>
                        </property>
@@ -15631,6 +15686,8 @@ QLabel
 	background-color: #3195EF;
 	color: rgb(255, 255, 255);
 	border: none;
+	padding-left: 20px;
+	padding-right: 20px;
 }
 QPushButton:hover
 {	
