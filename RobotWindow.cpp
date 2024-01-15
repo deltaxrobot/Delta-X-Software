@@ -274,9 +274,6 @@ void RobotWindow::InitVariables()
 //    ui->gbCameraObject->setChecked(false);
 //    ui->gbCameraVariable->setChecked(false);
 
-    //------- New image processing thread --------
-
-    InitObjectDetectingModule();
     InitCalibration();
 
 
@@ -284,6 +281,8 @@ void RobotWindow::InitVariables()
 
 void RobotWindow::InitOtherThreadObjects()
 {
+    //------- New image processing thread --------
+    InitObjectDetectingModule();
 
     //------ Device Managers ----------
     DeviceManagerInstance = new DeviceManager();
@@ -649,7 +648,7 @@ void RobotWindow::InitObjectDetectingModule()
     connect(this, SIGNAL(GotOjectFilterInfo(Object)), ImageProcessingThread->GetNode("GetObjectsNode"), SLOT(Input(Object)));
 
     connect(ImageProcessingThread->GetNode("GetObjectsNode"), SIGNAL(HadOutput(QList<Object>)), this, SLOT(UpdateObjectsToImageViewer(QList<Object>)));
-    connect(ImageProcessingThread->GetNode("VisibleObjectsNode"), SIGNAL(HadOutput(QList<ObjectInfo>)), ImageProcessingThread, SLOT(GotVisibleObjects2(QList<ObjectInfo>)));
+//    connect(ImageProcessingThread->GetNode("VisibleObjectsNode"), SIGNAL(HadOutput(QList<ObjectInfo>)), ImageProcessingThread, SLOT(GotVisibleObjects2(QList<ObjectInfo>)));
     connect(ImageProcessingThread->GetNode("VisibleObjectsNode"), SIGNAL(HadOutput(QList<Object>)), ImageProcessingThread, SLOT(GotVisibleObjects(QList<Object>)));
 
     connect(ui->leDetectingObjectListName, &QLineEdit::returnPressed, this, [=](){ImageProcessingThread->ObjectsName = ui->leDetectingObjectListName->text();});
@@ -2439,35 +2438,40 @@ void RobotWindow::ReceiveHomePosition(float x, float y, float z, float w, float 
 void RobotWindow::UpdateVelocity()
 {
     QString value = ui->leVelocity->text();
-//    UpdateVariable("F", value);
+    RobotParameters[RbID].Set("F", value.toFloat());
+    UpdateVariable("F", value);
     emit Send(DeviceManager::ROBOT, QString("G01 F") + value);
 }
 
 void RobotWindow::UpdateAccel()
 {
     QString value = ui->leAccel->text();
-//    UpdateVariable("A", value);
+    RobotParameters[RbID].Set("A", value.toFloat());
+    UpdateVariable("A", value);
     emit Send(DeviceManager::ROBOT, QString("M204 A") + ui->leAccel->text());
 }
 
 void RobotWindow::UpdateStartSpeed()
 {
     QString value = ui->leStartSpeed->text();
-//    UpdateVariable("S", value);
+    RobotParameters[RbID].Set("S", value.toFloat());
+    UpdateVariable("S", value);
     emit Send(DeviceManager::ROBOT, QString("M205 S") + ui->leStartSpeed->text());
 }
 
 void RobotWindow::UpdateEndSpeed()
 {
     QString value = ui->leEndSpeed->text();
-//    UpdateVariable("E", value);
+    RobotParameters[RbID].Set("E", value.toFloat());
+    UpdateVariable("E", value);
     emit Send(DeviceManager::ROBOT, QString("G01 E") + ui->leEndSpeed->text());
 }
 
 void RobotWindow::UpdateJerk()
 {
     QString value = ui->leJerk->text();
-//    UpdateVariable("E", value);
+    RobotParameters[RbID].Set("J", value.toFloat());
+    UpdateVariable("J", value);
     emit Send(DeviceManager::ROBOT, QString("G01 J") + ui->leJerk->text());
 }
 
@@ -2515,7 +2519,7 @@ void RobotWindow::MoveRobot(QString gcode)
         return;
     }
 
-    QString prefixS = "X Y Z W U V F A S E";
+    QString prefixS = "X Y Z W U V F A S E J";
     QStringList prefixs = prefixS.split(' ');
 
     foreach(QString prefix, prefixs)
@@ -2583,6 +2587,26 @@ void RobotWindow::UpdateRobotPositionToUI()
     if (!ui->leV->hasFocus())
     {
         ui->leV->setText(QString::number(RobotParameters[RbID].V));
+    }
+    if (!ui->leVelocity->hasFocus())
+    {
+        ui->leVelocity->setText(QString::number(RobotParameters[RbID].F));
+    }
+    if (!ui->leAccel->hasFocus())
+    {
+        ui->leAccel->setText(QString::number(RobotParameters[RbID].A));
+    }
+    if (!ui->leJerk->hasFocus())
+    {
+        ui->leJerk->setText(QString::number(RobotParameters[RbID].J));
+    }
+    if (!ui->leStartSpeed->hasFocus())
+    {
+        ui->leStartSpeed->setText(QString::number(RobotParameters[RbID].S));
+    }
+    if (!ui->leEndSpeed->hasFocus())
+    {
+        ui->leEndSpeed->setText(QString::number(RobotParameters[RbID].E));
     }
 
     if (ui->cbEncoderType->currentText() == "Virtual Encoder")
@@ -3388,7 +3412,6 @@ void RobotWindow::UnselectToolButtons()
 
 void RobotWindow::UpdateObjectsToImageViewer(QList<Object> objects)
 {
-    return;
     QList<QPolygonF> polys;
     QMap<QString, QPointF> texts;
     int counter = 0;
@@ -3682,6 +3705,8 @@ void RobotWindow::ChangeEncoderType(int index)
 {
     ui->pbConnectEncoder->setHidden(true);
     ui->pbSetEncoderVelocity->setHidden(true);
+    ui->cbLinkToConveyorX->setHidden(true);
+    ui->cbConveyorForVirtualEncoder->setHidden(true);
     int selectedEncoderID = ui->cbSelectedEncoder->currentIndex();
     if (ui->cbEncoderType->currentText() == "Encoder X")
     {
@@ -3697,6 +3722,8 @@ void RobotWindow::ChangeEncoderType(int index)
     {
         ui->pbConnectEncoder->setHidden(false);
         TrackingManagerInstance->Trackings.at(selectedEncoderID)->VirEncoder.start();
+        ui->cbLinkToConveyorX->setHidden(false);
+        ui->cbConveyorForVirtualEncoder->setHidden(false);
     }
 }
 

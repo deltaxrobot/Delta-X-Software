@@ -1671,7 +1671,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
                   <property name="geometry">
                    <rect>
                     <x>0</x>
-                    <y>-578</y>
+                    <y>0</y>
                     <width>655</width>
                     <height>2500</height>
                    </rect>
@@ -8693,7 +8693,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
               <enum>QTabWidget::North</enum>
              </property>
              <property name="currentIndex">
-              <number>0</number>
+              <number>2</number>
              </property>
              <property name="elideMode">
               <enum>Qt::ElideNone</enum>
@@ -8733,7 +8733,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
                   <property name="geometry">
                    <rect>
                     <x>0</x>
-                    <y>0</y>
+                    <y>-480</y>
                     <width>495</width>
                     <height>1500</height>
                    </rect>
@@ -8790,6 +8790,12 @@ QToolButton {
 QToolButton:hover
 {
 	border: 2px solid #FFFFFF;
+}
+
+QFrame[Func=Title]
+{
+	padding-top: 6px;
+	padding-bottom:6px;
 }</string>
                   </property>
                   <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -9563,6 +9569,12 @@ QGroupBox
                              <pointsize>10</pointsize>
                             </font>
                            </property>
+                           <property name="styleSheet">
+                            <string notr="true">QToolButton
+{
+	padding: 5px;
+}</string>
+                           </property>
                            <property name="text">
                             <string>Homing</string>
                            </property>
@@ -9938,7 +9950,16 @@ QGroupBox
                         <property name="frameShadow">
                          <enum>QFrame::Raised</enum>
                         </property>
+                        <property name="Func" stdset="0">
+                         <string>Title</string>
+                        </property>
                         <layout class="QHBoxLayout" name="horizontalLayout_77">
+                         <property name="topMargin">
+                          <number>0</number>
+                         </property>
+                         <property name="bottomMargin">
+                          <number>0</number>
+                         </property>
                          <item>
                           <widget class="QLabel" name="label_271">
                            <property name="maximumSize">
@@ -10036,6 +10057,11 @@ QToolButton:pressed
 {	
 	background-color: rgb(81, 176, 255);
 }
+
+QToolButton[Func='Jogging'] 
+{
+	padding: 10px;
+}
 </string>
                         </property>
                         <property name="frameShape">
@@ -10045,60 +10071,6 @@ QToolButton:pressed
                          <enum>QFrame::Raised</enum>
                         </property>
                         <layout class="QGridLayout" name="gridLayout_56">
-                         <item row="3" column="11">
-                          <widget class="QLineEdit" name="leJerk">
-                           <property name="sizePolicy">
-                            <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
-                             <horstretch>0</horstretch>
-                             <verstretch>0</verstretch>
-                            </sizepolicy>
-                           </property>
-                           <property name="minimumSize">
-                            <size>
-                             <width>0</width>
-                             <height>0</height>
-                            </size>
-                           </property>
-                           <property name="maximumSize">
-                            <size>
-                             <width>60</width>
-                             <height>16777215</height>
-                            </size>
-                           </property>
-                           <property name="text">
-                            <string/>
-                           </property>
-                           <property name="placeholderText">
-                            <string>None</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="1" column="10">
-                          <widget class="QLabel" name="label_29">
-                           <property name="maximumSize">
-                            <size>
-                             <width>60</width>
-                             <height>16777215</height>
-                            </size>
-                           </property>
-                           <property name="text">
-                            <string>F</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="2" column="10">
-                          <widget class="QLabel" name="label_31">
-                           <property name="maximumSize">
-                            <size>
-                             <width>60</width>
-                             <height>16777215</height>
-                            </size>
-                           </property>
-                           <property name="text">
-                            <string>A</string>
-                           </property>
-                          </widget>
-                         </item>
                          <item row="2" column="0">
                           <widget class="QToolButton" name="pbLeft">
                            <property name="toolTip">
@@ -10122,33 +10094,8 @@ QToolButton:pressed
                            <property name="toolButtonStyle">
                             <enum>Qt::ToolButtonTextUnderIcon</enum>
                            </property>
-                          </widget>
-                         </item>
-                         <item row="1" column="11">
-                          <widget class="QLineEdit" name="leVelocity">
-                           <property name="sizePolicy">
-                            <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
-                             <horstretch>0</horstretch>
-                             <verstretch>0</verstretch>
-                            </sizepolicy>
-                           </property>
-                           <property name="minimumSize">
-                            <size>
-                             <width>0</width>
-                             <height>0</height>
-                            </size>
-                           </property>
-                           <property name="maximumSize">
-                            <size>
-                             <width>60</width>
-                             <height>16777215</height>
-                            </size>
-                           </property>
-                           <property name="text">
-                            <string/>
-                           </property>
-                           <property name="placeholderText">
-                            <string>None</string>
+                           <property name="Func" stdset="0">
+                            <string>Jogging</string>
                            </property>
                           </widget>
                          </item>
@@ -10175,18 +10122,8 @@ QToolButton:pressed
                            <property name="toolButtonStyle">
                             <enum>Qt::ToolButtonTextUnderIcon</enum>
                            </property>
-                          </widget>
-                         </item>
-                         <item row="3" column="10">
-                          <widget class="QLabel" name="label_47">
-                           <property name="maximumSize">
-                            <size>
-                             <width>60</width>
-                             <height>16777215</height>
-                            </size>
-                           </property>
-                           <property name="text">
-                            <string>J</string>
+                           <property name="Func" stdset="0">
+                            <string>Jogging</string>
                            </property>
                           </widget>
                          </item>
@@ -10200,7 +10137,8 @@ QToolButton:pressed
                            </property>
                            <property name="font">
                             <font>
-                             <bold>true</bold>
+                             <pointsize>8</pointsize>
+                             <bold>false</bold>
                             </font>
                            </property>
                            <property name="text">
@@ -10229,38 +10167,13 @@ QToolButton:pressed
                             </size>
                            </property>
                            <property name="shortcut">
-                            <string>Shift+D</string>
+                            <string>Shift+G</string>
                            </property>
                            <property name="toolButtonStyle">
                             <enum>Qt::ToolButtonTextUnderIcon</enum>
                            </property>
-                          </widget>
-                         </item>
-                         <item row="1" column="14">
-                          <widget class="QLineEdit" name="leStartSpeed">
-                           <property name="sizePolicy">
-                            <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
-                             <horstretch>0</horstretch>
-                             <verstretch>0</verstretch>
-                            </sizepolicy>
-                           </property>
-                           <property name="minimumSize">
-                            <size>
-                             <width>0</width>
-                             <height>0</height>
-                            </size>
-                           </property>
-                           <property name="maximumSize">
-                            <size>
-                             <width>60</width>
-                             <height>16777215</height>
-                            </size>
-                           </property>
-                           <property name="text">
-                            <string/>
-                           </property>
-                           <property name="placeholderText">
-                            <string>None</string>
+                           <property name="Func" stdset="0">
+                            <string>Jogging</string>
                            </property>
                           </widget>
                          </item>
@@ -10274,7 +10187,8 @@ QToolButton:pressed
                            </property>
                            <property name="font">
                             <font>
-                             <bold>true</bold>
+                             <pointsize>8</pointsize>
+                             <bold>false</bold>
                             </font>
                            </property>
                            <property name="text">
@@ -10303,64 +10217,13 @@ QToolButton:pressed
                             </size>
                            </property>
                            <property name="shortcut">
-                            <string>Shift+A</string>
+                            <string>Shift+U</string>
                            </property>
                            <property name="toolButtonStyle">
                             <enum>Qt::ToolButtonTextUnderIcon</enum>
                            </property>
-                          </widget>
-                         </item>
-                         <item row="1" column="13">
-                          <widget class="QLabel" name="label_62">
-                           <property name="maximumSize">
-                            <size>
-                             <width>60</width>
-                             <height>16777215</height>
-                            </size>
-                           </property>
-                           <property name="text">
-                            <string>S</string>
-                           </property>
-                           <property name="alignment">
-                            <set>Qt::AlignCenter</set>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="2" column="14">
-                          <widget class="QLineEdit" name="leEndSpeed">
-                           <property name="sizePolicy">
-                            <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
-                             <horstretch>0</horstretch>
-                             <verstretch>0</verstretch>
-                            </sizepolicy>
-                           </property>
-                           <property name="minimumSize">
-                            <size>
-                             <width>0</width>
-                             <height>0</height>
-                            </size>
-                           </property>
-                           <property name="maximumSize">
-                            <size>
-                             <width>60</width>
-                             <height>16777215</height>
-                            </size>
-                           </property>
-                           <property name="text">
-                            <string/>
-                           </property>
-                           <property name="placeholderText">
-                            <string>None</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="1" column="12">
-                          <widget class="QLabel" name="label_30">
-                           <property name="styleSheet">
-                            <string notr="true">color: rgb(95, 95, 95);</string>
-                           </property>
-                           <property name="text">
-                            <string>mm/s</string>
+                           <property name="Func" stdset="0">
+                            <string>Jogging</string>
                            </property>
                           </widget>
                          </item>
@@ -10382,10 +10245,13 @@ QToolButton:pressed
                             </size>
                            </property>
                            <property name="shortcut">
-                            <string>Shift+A</string>
+                            <string>Shift+T</string>
                            </property>
                            <property name="toolButtonStyle">
                             <enum>Qt::ToolButtonTextUnderIcon</enum>
+                           </property>
+                           <property name="Func" stdset="0">
+                            <string>Jogging</string>
                            </property>
                           </widget>
                          </item>
@@ -10415,25 +10281,8 @@ QToolButton:pressed
                            <property name="autoRaise">
                             <bool>false</bool>
                            </property>
-                          </widget>
-                         </item>
-                         <item row="3" column="12">
-                          <widget class="QLabel" name="label_64">
-                           <property name="styleSheet">
-                            <string notr="true">color: rgb(95, 95, 95);</string>
-                           </property>
-                           <property name="text">
-                            <string>mm/s3</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="2" column="12">
-                          <widget class="QLabel" name="label_32">
-                           <property name="styleSheet">
-                            <string notr="true">color: rgb(95, 95, 95);</string>
-                           </property>
-                           <property name="text">
-                            <string>mm/s2</string>
+                           <property name="Func" stdset="0">
+                            <string>Jogging</string>
                            </property>
                           </widget>
                          </item>
@@ -10459,6 +10308,9 @@ QToolButton:pressed
                            </property>
                            <property name="toolButtonStyle">
                             <enum>Qt::ToolButtonTextUnderIcon</enum>
+                           </property>
+                           <property name="Func" stdset="0">
+                            <string>Jogging</string>
                            </property>
                           </widget>
                          </item>
@@ -10494,6 +10346,9 @@ QToolButton:pressed
                            <property name="toolButtonStyle">
                             <enum>Qt::ToolButtonTextUnderIcon</enum>
                            </property>
+                           <property name="Func" stdset="0">
+                            <string>Jogging</string>
+                           </property>
                           </widget>
                          </item>
                          <item row="2" column="3">
@@ -10519,6 +10374,9 @@ QToolButton:pressed
                            <property name="toolButtonStyle">
                             <enum>Qt::ToolButtonTextUnderIcon</enum>
                            </property>
+                           <property name="Func" stdset="0">
+                            <string>Jogging</string>
+                           </property>
                           </widget>
                          </item>
                          <item row="3" column="8">
@@ -10539,10 +10397,13 @@ QToolButton:pressed
                             </size>
                            </property>
                            <property name="shortcut">
-                            <string>Shift+D</string>
+                            <string>Shift+J</string>
                            </property>
                            <property name="toolButtonStyle">
                             <enum>Qt::ToolButtonTextUnderIcon</enum>
+                           </property>
+                           <property name="Func" stdset="0">
+                            <string>Jogging</string>
                            </property>
                           </widget>
                          </item>
@@ -10564,38 +10425,13 @@ QToolButton:pressed
                             </size>
                            </property>
                            <property name="shortcut">
-                            <string>Shift+A</string>
+                            <string>Shift+Y</string>
                            </property>
                            <property name="toolButtonStyle">
                             <enum>Qt::ToolButtonTextUnderIcon</enum>
                            </property>
-                          </widget>
-                         </item>
-                         <item row="2" column="11">
-                          <widget class="QLineEdit" name="leAccel">
-                           <property name="sizePolicy">
-                            <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
-                             <horstretch>0</horstretch>
-                             <verstretch>0</verstretch>
-                            </sizepolicy>
-                           </property>
-                           <property name="minimumSize">
-                            <size>
-                             <width>0</width>
-                             <height>0</height>
-                            </size>
-                           </property>
-                           <property name="maximumSize">
-                            <size>
-                             <width>60</width>
-                             <height>16777215</height>
-                            </size>
-                           </property>
-                           <property name="text">
-                            <string/>
-                           </property>
-                           <property name="placeholderText">
-                            <string>None</string>
+                           <property name="Func" stdset="0">
+                            <string>Jogging</string>
                            </property>
                           </widget>
                          </item>
@@ -10622,27 +10458,12 @@ QToolButton:pressed
                            </property>
                            <property name="font">
                             <font>
-                             <bold>true</bold>
+                             <pointsize>8</pointsize>
+                             <bold>false</bold>
                             </font>
                            </property>
                            <property name="text">
                             <string>4-axis</string>
-                           </property>
-                           <property name="alignment">
-                            <set>Qt::AlignCenter</set>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="2" column="13">
-                          <widget class="QLabel" name="label_116">
-                           <property name="maximumSize">
-                            <size>
-                             <width>60</width>
-                             <height>16777215</height>
-                            </size>
-                           </property>
-                           <property name="text">
-                            <string>E</string>
                            </property>
                            <property name="alignment">
                             <set>Qt::AlignCenter</set>
@@ -10667,30 +10488,13 @@ QToolButton:pressed
                             </size>
                            </property>
                            <property name="shortcut">
-                            <string>Shift+D</string>
+                            <string>Shift+H</string>
                            </property>
                            <property name="toolButtonStyle">
                             <enum>Qt::ToolButtonTextUnderIcon</enum>
                            </property>
-                          </widget>
-                         </item>
-                         <item row="1" column="15">
-                          <widget class="QLabel" name="label_63">
-                           <property name="styleSheet">
-                            <string notr="true">color: rgb(95, 95, 95);</string>
-                           </property>
-                           <property name="text">
-                            <string>mm/s</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="2" column="15">
-                          <widget class="QLabel" name="label_117">
-                           <property name="styleSheet">
-                            <string notr="true">color: rgb(95, 95, 95);</string>
-                           </property>
-                           <property name="text">
-                            <string>mm/s</string>
+                           <property name="Func" stdset="0">
+                            <string>Jogging</string>
                            </property>
                           </widget>
                          </item>
@@ -10721,7 +10525,7 @@ QToolButton:pressed
 QRadioButton {
     background-color: #434347;
     padding: 5px;
-	 width:25px;
+	 width:30px;
     border: 1px solid #646469;
 	color: #D0D0D1;
 }
@@ -10866,6 +10670,391 @@ QRadioButton:disabled {
                     </widget>
                    </item>
                    <item>
+                    <widget class="QFrame" name="frame_22">
+                     <property name="minimumSize">
+                      <size>
+                       <width>0</width>
+                       <height>0</height>
+                      </size>
+                     </property>
+                     <property name="frameShape">
+                      <enum>QFrame::StyledPanel</enum>
+                     </property>
+                     <property name="frameShadow">
+                      <enum>QFrame::Raised</enum>
+                     </property>
+                     <layout class="QVBoxLayout" name="verticalLayout_12">
+                      <property name="spacing">
+                       <number>0</number>
+                      </property>
+                      <property name="leftMargin">
+                       <number>0</number>
+                      </property>
+                      <property name="topMargin">
+                       <number>0</number>
+                      </property>
+                      <property name="rightMargin">
+                       <number>0</number>
+                      </property>
+                      <property name="bottomMargin">
+                       <number>0</number>
+                      </property>
+                      <item>
+                       <widget class="QFrame" name="">
+                        <property name="styleSheet">
+                         <string notr="true">QLabel
+{
+	padding-left: 6px;
+}</string>
+                        </property>
+                        <layout class="QHBoxLayout" name="horizontalLayout_12">
+                         <property name="leftMargin">
+                          <number>1</number>
+                         </property>
+                         <item>
+                          <widget class="QLabel" name="label_272">
+                           <property name="maximumSize">
+                            <size>
+                             <width>16777215</width>
+                             <height>16777215</height>
+                            </size>
+                           </property>
+                           <property name="font">
+                            <font>
+                             <pointsize>10</pointsize>
+                             <bold>false</bold>
+                            </font>
+                           </property>
+                           <property name="text">
+                            <string>Motion Parameters</string>
+                           </property>
+                           <property name="alignment">
+                            <set>Qt::AlignCenter</set>
+                           </property>
+                          </widget>
+                         </item>
+                         <item>
+                          <spacer name="horizontalSpacer_96">
+                           <property name="orientation">
+                            <enum>Qt::Horizontal</enum>
+                           </property>
+                           <property name="sizeHint" stdset="0">
+                            <size>
+                             <width>466</width>
+                             <height>17</height>
+                            </size>
+                           </property>
+                          </spacer>
+                         </item>
+                        </layout>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QFrame" name="frame_24">
+                        <property name="minimumSize">
+                         <size>
+                          <width>0</width>
+                          <height>50</height>
+                         </size>
+                        </property>
+                        <property name="styleSheet">
+                         <string notr="true">QFrame
+{
+	border-radius:0px;
+	background: #262629;
+}</string>
+                        </property>
+                        <property name="frameShape">
+                         <enum>QFrame::StyledPanel</enum>
+                        </property>
+                        <property name="frameShadow">
+                         <enum>QFrame::Raised</enum>
+                        </property>
+                        <layout class="QGridLayout" name="gridLayout_3">
+                         <property name="horizontalSpacing">
+                          <number>10</number>
+                         </property>
+                         <item row="2" column="4">
+                          <widget class="QLineEdit" name="leEndSpeed">
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
+                             <horstretch>0</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
+                           <property name="minimumSize">
+                            <size>
+                             <width>0</width>
+                             <height>0</height>
+                            </size>
+                           </property>
+                           <property name="maximumSize">
+                            <size>
+                             <width>60</width>
+                             <height>16777215</height>
+                            </size>
+                           </property>
+                           <property name="text">
+                            <string/>
+                           </property>
+                           <property name="placeholderText">
+                            <string>None</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="1" column="3">
+                          <widget class="QLabel" name="label_62">
+                           <property name="maximumSize">
+                            <size>
+                             <width>60</width>
+                             <height>16777215</height>
+                            </size>
+                           </property>
+                           <property name="text">
+                            <string>S</string>
+                           </property>
+                           <property name="alignment">
+                            <set>Qt::AlignCenter</set>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="2" column="1">
+                          <widget class="QLineEdit" name="leAccel">
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
+                             <horstretch>0</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
+                           <property name="minimumSize">
+                            <size>
+                             <width>0</width>
+                             <height>0</height>
+                            </size>
+                           </property>
+                           <property name="maximumSize">
+                            <size>
+                             <width>60</width>
+                             <height>16777215</height>
+                            </size>
+                           </property>
+                           <property name="text">
+                            <string/>
+                           </property>
+                           <property name="placeholderText">
+                            <string>None</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="1" column="1">
+                          <widget class="QLineEdit" name="leVelocity">
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
+                             <horstretch>0</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
+                           <property name="minimumSize">
+                            <size>
+                             <width>0</width>
+                             <height>0</height>
+                            </size>
+                           </property>
+                           <property name="maximumSize">
+                            <size>
+                             <width>60</width>
+                             <height>16777215</height>
+                            </size>
+                           </property>
+                           <property name="text">
+                            <string/>
+                           </property>
+                           <property name="placeholderText">
+                            <string>None</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="1" column="0">
+                          <widget class="QLabel" name="label_29">
+                           <property name="maximumSize">
+                            <size>
+                             <width>60</width>
+                             <height>16777215</height>
+                            </size>
+                           </property>
+                           <property name="text">
+                            <string>F</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="1" column="7">
+                          <spacer name="horizontalSpacer_61">
+                           <property name="orientation">
+                            <enum>Qt::Horizontal</enum>
+                           </property>
+                           <property name="sizeHint" stdset="0">
+                            <size>
+                             <width>40</width>
+                             <height>20</height>
+                            </size>
+                           </property>
+                          </spacer>
+                         </item>
+                         <item row="1" column="4">
+                          <widget class="QLineEdit" name="leStartSpeed">
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
+                             <horstretch>0</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
+                           <property name="minimumSize">
+                            <size>
+                             <width>0</width>
+                             <height>0</height>
+                            </size>
+                           </property>
+                           <property name="maximumSize">
+                            <size>
+                             <width>60</width>
+                             <height>16777215</height>
+                            </size>
+                           </property>
+                           <property name="text">
+                            <string/>
+                           </property>
+                           <property name="placeholderText">
+                            <string>None</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="2" column="2">
+                          <widget class="QLabel" name="label_32">
+                           <property name="styleSheet">
+                            <string notr="true">color: rgb(95, 95, 95);</string>
+                           </property>
+                           <property name="text">
+                            <string>mm/s2</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="1" column="2">
+                          <widget class="QLabel" name="label_30">
+                           <property name="styleSheet">
+                            <string notr="true">color: rgb(95, 95, 95);</string>
+                           </property>
+                           <property name="text">
+                            <string>mm/s</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="2" column="0">
+                          <widget class="QLabel" name="label_31">
+                           <property name="maximumSize">
+                            <size>
+                             <width>60</width>
+                             <height>16777215</height>
+                            </size>
+                           </property>
+                           <property name="text">
+                            <string>A</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="1" column="5">
+                          <widget class="QLabel" name="label_63">
+                           <property name="styleSheet">
+                            <string notr="true">color: rgb(95, 95, 95);</string>
+                           </property>
+                           <property name="text">
+                            <string>mm/s</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="2" column="3">
+                          <widget class="QLabel" name="label_116">
+                           <property name="maximumSize">
+                            <size>
+                             <width>60</width>
+                             <height>16777215</height>
+                            </size>
+                           </property>
+                           <property name="text">
+                            <string>E</string>
+                           </property>
+                           <property name="alignment">
+                            <set>Qt::AlignCenter</set>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="2" column="5">
+                          <widget class="QLabel" name="label_117">
+                           <property name="styleSheet">
+                            <string notr="true">color: rgb(95, 95, 95);</string>
+                           </property>
+                           <property name="text">
+                            <string>mm/s</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="3" column="1">
+                          <widget class="QLineEdit" name="leJerk">
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
+                             <horstretch>0</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
+                           <property name="minimumSize">
+                            <size>
+                             <width>0</width>
+                             <height>0</height>
+                            </size>
+                           </property>
+                           <property name="maximumSize">
+                            <size>
+                             <width>60</width>
+                             <height>16777215</height>
+                            </size>
+                           </property>
+                           <property name="text">
+                            <string/>
+                           </property>
+                           <property name="placeholderText">
+                            <string>None</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="3" column="2">
+                          <widget class="QLabel" name="label_64">
+                           <property name="styleSheet">
+                            <string notr="true">color: rgb(95, 95, 95);</string>
+                           </property>
+                           <property name="text">
+                            <string>mm/s3</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="3" column="0">
+                          <widget class="QLabel" name="label_47">
+                           <property name="maximumSize">
+                            <size>
+                             <width>60</width>
+                             <height>16777215</height>
+                            </size>
+                           </property>
+                           <property name="text">
+                            <string>J</string>
+                           </property>
+                          </widget>
+                         </item>
+                        </layout>
+                       </widget>
+                      </item>
+                     </layout>
+                    </widget>
+                   </item>
+                   <item>
                     <widget class="QFrame" name="frame_34">
                      <property name="minimumSize">
                       <size>
@@ -10925,7 +11114,16 @@ QRadioButton:disabled {
                         <property name="frameShadow">
                          <enum>QFrame::Raised</enum>
                         </property>
+                        <property name="Func" stdset="0">
+                         <string>Title</string>
+                        </property>
                         <layout class="QHBoxLayout" name="horizontalLayout_78">
+                         <property name="topMargin">
+                          <number>0</number>
+                         </property>
+                         <property name="bottomMargin">
+                          <number>0</number>
+                         </property>
                          <item>
                           <widget class="QLabel" name="label_279">
                            <property name="maximumSize">
@@ -14647,6 +14845,12 @@ QGroupBox
                      </item>
                      <item>
                       <widget class="QComboBox" name="cbEncoderType">
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
                        <property name="minimumSize">
                         <size>
                          <width>100</width>
@@ -14856,6 +15060,47 @@ QGroupBox
                          </property>
                          <property name="text">
                           <string>Read</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="0" column="1">
+                        <widget class="QComboBox" name="cbConveyorForVirtualEncoder">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                         <property name="minimumSize">
+                          <size>
+                           <width>100</width>
+                           <height>0</height>
+                          </size>
+                         </property>
+                         <item>
+                          <property name="text">
+                           <string>conveyor0</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>conveyor1</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>conveyor2</string>
+                          </property>
+                         </item>
+                        </widget>
+                       </item>
+                       <item row="0" column="0">
+                        <widget class="QCheckBox" name="cbLinkToConveyorX">
+                         <property name="text">
+                          <string>Link to Conveyor X</string>
+                         </property>
+                         <property name="checked">
+                          <bool>true</bool>
                          </property>
                         </widget>
                        </item>

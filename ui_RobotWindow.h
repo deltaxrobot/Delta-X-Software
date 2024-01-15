@@ -676,37 +676,22 @@ public:
     QSpacerItem *horizontalSpacer_94;
     QFrame *frame_31;
     QGridLayout *gridLayout_56;
-    QLineEdit *leJerk;
-    QLabel *label_29;
-    QLabel *label_31;
     QToolButton *pbLeft;
-    QLineEdit *leVelocity;
     QToolButton *pbBackward;
-    QLabel *label_47;
     QLabel *label_275;
     QToolButton *pbPlusRoll;
-    QLineEdit *leStartSpeed;
     QLabel *label_274;
     QToolButton *pbSubPitch;
-    QLabel *label_62;
-    QLineEdit *leEndSpeed;
-    QLabel *label_30;
     QToolButton *pbSubRoll;
     QToolButton *pbUp;
-    QLabel *label_64;
-    QLabel *label_32;
     QToolButton *pbDown;
     QToolButton *pbForward;
     QToolButton *pbRight;
     QToolButton *pbPlusPitch;
     QToolButton *pbSubYaw;
-    QLineEdit *leAccel;
     QSpacerItem *horizontalSpacer_4;
     QLabel *label_276;
-    QLabel *label_116;
     QToolButton *pbPlusYaw;
-    QLabel *label_63;
-    QLabel *label_117;
     QFrame *frame_32;
     QHBoxLayout *horizontalLayout_81;
     QLabel *label_33;
@@ -719,6 +704,30 @@ public:
     QRadioButton *rb1000;
     QLabel *label_273;
     QSpacerItem *horizontalSpacer_27;
+    QFrame *frame_22;
+    QVBoxLayout *verticalLayout_12;
+    QFrame *frame1;
+    QHBoxLayout *horizontalLayout_12;
+    QLabel *label_272;
+    QSpacerItem *horizontalSpacer_96;
+    QFrame *frame_24;
+    QGridLayout *gridLayout_3;
+    QLineEdit *leEndSpeed;
+    QLabel *label_62;
+    QLineEdit *leAccel;
+    QLineEdit *leVelocity;
+    QLabel *label_29;
+    QSpacerItem *horizontalSpacer_61;
+    QLineEdit *leStartSpeed;
+    QLabel *label_32;
+    QLabel *label_30;
+    QLabel *label_31;
+    QLabel *label_63;
+    QLabel *label_116;
+    QLabel *label_117;
+    QLineEdit *leJerk;
+    QLabel *label_64;
+    QLabel *label_47;
     QFrame *frame_34;
     QVBoxLayout *verticalLayout_44;
     QFrame *robotTitile_3;
@@ -965,6 +974,8 @@ public:
     QLineEdit *leEncoderVelocity;
     QSpacerItem *horizontalSpacer_23;
     QPushButton *pbReadEncoder;
+    QComboBox *cbConveyorForVirtualEncoder;
+    QCheckBox *cbLinkToConveyorX;
     QSpacerItem *horizontalSpacer;
     QSpacerItem *verticalSpacer_14;
     QWidget *SliderTab;
@@ -2084,7 +2095,7 @@ public:
         saObjectDetecting->setWidgetResizable(true);
         wObjectDetecting = new QWidget();
         wObjectDetecting->setObjectName(QString::fromUtf8("wObjectDetecting"));
-        wObjectDetecting->setGeometry(QRect(0, -578, 655, 2500));
+        wObjectDetecting->setGeometry(QRect(0, 0, 655, 2500));
         wObjectDetecting->setMinimumSize(QSize(100, 2500));
         wObjectDetecting->setStyleSheet(QString::fromUtf8("QWidget#wObjectDetecting\n"
 "{	\n"
@@ -5598,7 +5609,7 @@ public:
         scrollArea_2->setWidgetResizable(true);
         wgJoggingScrollWidget = new QWidget();
         wgJoggingScrollWidget->setObjectName(QString::fromUtf8("wgJoggingScrollWidget"));
-        wgJoggingScrollWidget->setGeometry(QRect(0, 0, 495, 1500));
+        wgJoggingScrollWidget->setGeometry(QRect(0, -480, 495, 1500));
         wgJoggingScrollWidget->setMinimumSize(QSize(0, 1500));
         wgJoggingScrollWidget->setMaximumSize(QSize(16777215, 16777215));
         wgJoggingScrollWidget->setStyleSheet(QString::fromUtf8("QWidget#wgJoggingScrollWidget\n"
@@ -5640,6 +5651,12 @@ public:
 "QToolButton:hover\n"
 "{\n"
 "	border: 2px solid #FFFFFF;\n"
+"}\n"
+"\n"
+"QFrame[Func=Title]\n"
+"{\n"
+"	padding-top: 6px;\n"
+"	padding-bottom:6px;\n"
 "}"));
         verticalLayout_5 = new QVBoxLayout(wgJoggingScrollWidget);
         verticalLayout_5->setSpacing(10);
@@ -5996,6 +6013,10 @@ public:
         pbHome->setObjectName(QString::fromUtf8("pbHome"));
         pbHome->setMinimumSize(QSize(0, 0));
         pbHome->setFont(font4);
+        pbHome->setStyleSheet(QString::fromUtf8("QToolButton\n"
+"{\n"
+"	padding: 5px;\n"
+"}"));
         QIcon icon42;
         icon42.addFile(QString::fromUtf8(":/icon/home.png"), QSize(), QIcon::Normal, QIcon::Off);
         pbHome->setIcon(icon42);
@@ -6161,6 +6182,7 @@ public:
         horizontalLayout_77->setSpacing(6);
         horizontalLayout_77->setContentsMargins(11, 11, 11, 11);
         horizontalLayout_77->setObjectName(QString::fromUtf8("horizontalLayout_77"));
+        horizontalLayout_77->setContentsMargins(-1, 0, -1, 0);
         label_271 = new QLabel(robotTitile_4);
         label_271->setObjectName(QString::fromUtf8("label_271"));
         label_271->setMaximumSize(QSize(100, 16777215));
@@ -6223,6 +6245,11 @@ public:
 "{	\n"
 "	background-color: rgb(81, 176, 255);\n"
 "}\n"
+"\n"
+"QToolButton[Func='Jogging'] \n"
+"{\n"
+"	padding: 10px;\n"
+"}\n"
 ""));
         frame_31->setFrameShape(QFrame::StyledPanel);
         frame_31->setFrameShadow(QFrame::Raised);
@@ -6230,48 +6257,12 @@ public:
         gridLayout_56->setSpacing(6);
         gridLayout_56->setContentsMargins(11, 11, 11, 11);
         gridLayout_56->setObjectName(QString::fromUtf8("gridLayout_56"));
-        leJerk = new QLineEdit(frame_31);
-        leJerk->setObjectName(QString::fromUtf8("leJerk"));
-        QSizePolicy sizePolicy22(QSizePolicy::Expanding, QSizePolicy::Maximum);
-        sizePolicy22.setHorizontalStretch(0);
-        sizePolicy22.setVerticalStretch(0);
-        sizePolicy22.setHeightForWidth(leJerk->sizePolicy().hasHeightForWidth());
-        leJerk->setSizePolicy(sizePolicy22);
-        leJerk->setMinimumSize(QSize(0, 0));
-        leJerk->setMaximumSize(QSize(60, 16777215));
-
-        gridLayout_56->addWidget(leJerk, 3, 11, 1, 1);
-
-        label_29 = new QLabel(frame_31);
-        label_29->setObjectName(QString::fromUtf8("label_29"));
-        label_29->setMaximumSize(QSize(60, 16777215));
-
-        gridLayout_56->addWidget(label_29, 1, 10, 1, 1);
-
-        label_31 = new QLabel(frame_31);
-        label_31->setObjectName(QString::fromUtf8("label_31"));
-        label_31->setMaximumSize(QSize(60, 16777215));
-
-        gridLayout_56->addWidget(label_31, 2, 10, 1, 1);
-
         pbLeft = new QToolButton(frame_31);
         pbLeft->setObjectName(QString::fromUtf8("pbLeft"));
         pbLeft->setIconSize(QSize(40, 40));
         pbLeft->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 
         gridLayout_56->addWidget(pbLeft, 2, 0, 1, 1);
-
-        leVelocity = new QLineEdit(frame_31);
-        leVelocity->setObjectName(QString::fromUtf8("leVelocity"));
-        QSizePolicy sizePolicy23(QSizePolicy::Minimum, QSizePolicy::Maximum);
-        sizePolicy23.setHorizontalStretch(0);
-        sizePolicy23.setVerticalStretch(0);
-        sizePolicy23.setHeightForWidth(leVelocity->sizePolicy().hasHeightForWidth());
-        leVelocity->setSizePolicy(sizePolicy23);
-        leVelocity->setMinimumSize(QSize(0, 0));
-        leVelocity->setMaximumSize(QSize(60, 16777215));
-
-        gridLayout_56->addWidget(leVelocity, 1, 11, 1, 1);
 
         pbBackward = new QToolButton(frame_31);
         pbBackward->setObjectName(QString::fromUtf8("pbBackward"));
@@ -6280,16 +6271,10 @@ public:
 
         gridLayout_56->addWidget(pbBackward, 3, 1, 1, 1);
 
-        label_47 = new QLabel(frame_31);
-        label_47->setObjectName(QString::fromUtf8("label_47"));
-        label_47->setMaximumSize(QSize(60, 16777215));
-
-        gridLayout_56->addWidget(label_47, 3, 10, 1, 1);
-
         label_275 = new QLabel(frame_31);
         label_275->setObjectName(QString::fromUtf8("label_275"));
         label_275->setMinimumSize(QSize(0, 20));
-        label_275->setFont(font10);
+        label_275->setFont(font7);
         label_275->setAlignment(Qt::AlignCenter);
 
         gridLayout_56->addWidget(label_275, 2, 7, 1, 1);
@@ -6301,19 +6286,10 @@ public:
 
         gridLayout_56->addWidget(pbPlusRoll, 3, 6, 1, 1);
 
-        leStartSpeed = new QLineEdit(frame_31);
-        leStartSpeed->setObjectName(QString::fromUtf8("leStartSpeed"));
-        sizePolicy22.setHeightForWidth(leStartSpeed->sizePolicy().hasHeightForWidth());
-        leStartSpeed->setSizePolicy(sizePolicy22);
-        leStartSpeed->setMinimumSize(QSize(0, 0));
-        leStartSpeed->setMaximumSize(QSize(60, 16777215));
-
-        gridLayout_56->addWidget(leStartSpeed, 1, 14, 1, 1);
-
         label_274 = new QLabel(frame_31);
         label_274->setObjectName(QString::fromUtf8("label_274"));
         label_274->setMinimumSize(QSize(0, 20));
-        label_274->setFont(font10);
+        label_274->setFont(font7);
         label_274->setAlignment(Qt::AlignCenter);
 
         gridLayout_56->addWidget(label_274, 2, 8, 1, 1);
@@ -6324,28 +6300,6 @@ public:
         pbSubPitch->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 
         gridLayout_56->addWidget(pbSubPitch, 1, 8, 1, 1);
-
-        label_62 = new QLabel(frame_31);
-        label_62->setObjectName(QString::fromUtf8("label_62"));
-        label_62->setMaximumSize(QSize(60, 16777215));
-        label_62->setAlignment(Qt::AlignCenter);
-
-        gridLayout_56->addWidget(label_62, 1, 13, 1, 1);
-
-        leEndSpeed = new QLineEdit(frame_31);
-        leEndSpeed->setObjectName(QString::fromUtf8("leEndSpeed"));
-        sizePolicy22.setHeightForWidth(leEndSpeed->sizePolicy().hasHeightForWidth());
-        leEndSpeed->setSizePolicy(sizePolicy22);
-        leEndSpeed->setMinimumSize(QSize(0, 0));
-        leEndSpeed->setMaximumSize(QSize(60, 16777215));
-
-        gridLayout_56->addWidget(leEndSpeed, 2, 14, 1, 1);
-
-        label_30 = new QLabel(frame_31);
-        label_30->setObjectName(QString::fromUtf8("label_30"));
-        label_30->setStyleSheet(QString::fromUtf8("color: rgb(95, 95, 95);"));
-
-        gridLayout_56->addWidget(label_30, 1, 12, 1, 1);
 
         pbSubRoll = new QToolButton(frame_31);
         pbSubRoll->setObjectName(QString::fromUtf8("pbSubRoll"));
@@ -6361,18 +6315,6 @@ public:
         pbUp->setAutoRaise(false);
 
         gridLayout_56->addWidget(pbUp, 1, 5, 1, 1);
-
-        label_64 = new QLabel(frame_31);
-        label_64->setObjectName(QString::fromUtf8("label_64"));
-        label_64->setStyleSheet(QString::fromUtf8("color: rgb(95, 95, 95);"));
-
-        gridLayout_56->addWidget(label_64, 3, 12, 1, 1);
-
-        label_32 = new QLabel(frame_31);
-        label_32->setObjectName(QString::fromUtf8("label_32"));
-        label_32->setStyleSheet(QString::fromUtf8("color: rgb(95, 95, 95);"));
-
-        gridLayout_56->addWidget(label_32, 2, 12, 1, 1);
 
         pbDown = new QToolButton(frame_31);
         pbDown->setObjectName(QString::fromUtf8("pbDown"));
@@ -6412,15 +6354,6 @@ public:
 
         gridLayout_56->addWidget(pbSubYaw, 1, 7, 1, 1);
 
-        leAccel = new QLineEdit(frame_31);
-        leAccel->setObjectName(QString::fromUtf8("leAccel"));
-        sizePolicy22.setHeightForWidth(leAccel->sizePolicy().hasHeightForWidth());
-        leAccel->setSizePolicy(sizePolicy22);
-        leAccel->setMinimumSize(QSize(0, 0));
-        leAccel->setMaximumSize(QSize(60, 16777215));
-
-        gridLayout_56->addWidget(leAccel, 2, 11, 1, 1);
-
         horizontalSpacer_4 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
         gridLayout_56->addItem(horizontalSpacer_4, 2, 9, 1, 1);
@@ -6428,17 +6361,10 @@ public:
         label_276 = new QLabel(frame_31);
         label_276->setObjectName(QString::fromUtf8("label_276"));
         label_276->setMinimumSize(QSize(0, 20));
-        label_276->setFont(font10);
+        label_276->setFont(font7);
         label_276->setAlignment(Qt::AlignCenter);
 
         gridLayout_56->addWidget(label_276, 2, 6, 1, 1);
-
-        label_116 = new QLabel(frame_31);
-        label_116->setObjectName(QString::fromUtf8("label_116"));
-        label_116->setMaximumSize(QSize(60, 16777215));
-        label_116->setAlignment(Qt::AlignCenter);
-
-        gridLayout_56->addWidget(label_116, 2, 13, 1, 1);
 
         pbPlusYaw = new QToolButton(frame_31);
         pbPlusYaw->setObjectName(QString::fromUtf8("pbPlusYaw"));
@@ -6446,18 +6372,6 @@ public:
         pbPlusYaw->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 
         gridLayout_56->addWidget(pbPlusYaw, 3, 7, 1, 1);
-
-        label_63 = new QLabel(frame_31);
-        label_63->setObjectName(QString::fromUtf8("label_63"));
-        label_63->setStyleSheet(QString::fromUtf8("color: rgb(95, 95, 95);"));
-
-        gridLayout_56->addWidget(label_63, 1, 15, 1, 1);
-
-        label_117 = new QLabel(frame_31);
-        label_117->setObjectName(QString::fromUtf8("label_117"));
-        label_117->setStyleSheet(QString::fromUtf8("color: rgb(95, 95, 95);"));
-
-        gridLayout_56->addWidget(label_117, 2, 15, 1, 1);
 
 
         verticalLayout_73->addWidget(frame_31);
@@ -6475,7 +6389,7 @@ public:
 "QRadioButton {\n"
 "    background-color: #434347;\n"
 "    padding: 5px;\n"
-"	 width:25px;\n"
+"	 width:30px;\n"
 "    border: 1px solid #646469;\n"
 "	color: #D0D0D1;\n"
 "}\n"
@@ -6564,6 +6478,180 @@ public:
 
         verticalLayout_5->addWidget(frame_30);
 
+        frame_22 = new QFrame(wgJoggingScrollWidget);
+        frame_22->setObjectName(QString::fromUtf8("frame_22"));
+        frame_22->setMinimumSize(QSize(0, 0));
+        frame_22->setFrameShape(QFrame::StyledPanel);
+        frame_22->setFrameShadow(QFrame::Raised);
+        verticalLayout_12 = new QVBoxLayout(frame_22);
+        verticalLayout_12->setSpacing(0);
+        verticalLayout_12->setContentsMargins(11, 11, 11, 11);
+        verticalLayout_12->setObjectName(QString::fromUtf8("verticalLayout_12"));
+        verticalLayout_12->setContentsMargins(0, 0, 0, 0);
+        frame1 = new QFrame(frame_22);
+        frame1->setObjectName(QString::fromUtf8("frame1"));
+        frame1->setStyleSheet(QString::fromUtf8("QLabel\n"
+"{\n"
+"	padding-left: 6px;\n"
+"}"));
+        horizontalLayout_12 = new QHBoxLayout(frame1);
+        horizontalLayout_12->setSpacing(6);
+        horizontalLayout_12->setContentsMargins(11, 11, 11, 11);
+        horizontalLayout_12->setObjectName(QString::fromUtf8("horizontalLayout_12"));
+        horizontalLayout_12->setContentsMargins(1, -1, -1, -1);
+        label_272 = new QLabel(frame1);
+        label_272->setObjectName(QString::fromUtf8("label_272"));
+        label_272->setMaximumSize(QSize(16777215, 16777215));
+        label_272->setFont(font11);
+        label_272->setAlignment(Qt::AlignCenter);
+
+        horizontalLayout_12->addWidget(label_272);
+
+        horizontalSpacer_96 = new QSpacerItem(466, 17, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        horizontalLayout_12->addItem(horizontalSpacer_96);
+
+
+        verticalLayout_12->addWidget(frame1);
+
+        frame_24 = new QFrame(frame_22);
+        frame_24->setObjectName(QString::fromUtf8("frame_24"));
+        frame_24->setMinimumSize(QSize(0, 50));
+        frame_24->setStyleSheet(QString::fromUtf8("QFrame\n"
+"{\n"
+"	border-radius:0px;\n"
+"	background: #262629;\n"
+"}"));
+        frame_24->setFrameShape(QFrame::StyledPanel);
+        frame_24->setFrameShadow(QFrame::Raised);
+        gridLayout_3 = new QGridLayout(frame_24);
+        gridLayout_3->setSpacing(6);
+        gridLayout_3->setContentsMargins(11, 11, 11, 11);
+        gridLayout_3->setObjectName(QString::fromUtf8("gridLayout_3"));
+        gridLayout_3->setHorizontalSpacing(10);
+        leEndSpeed = new QLineEdit(frame_24);
+        leEndSpeed->setObjectName(QString::fromUtf8("leEndSpeed"));
+        QSizePolicy sizePolicy22(QSizePolicy::Expanding, QSizePolicy::Maximum);
+        sizePolicy22.setHorizontalStretch(0);
+        sizePolicy22.setVerticalStretch(0);
+        sizePolicy22.setHeightForWidth(leEndSpeed->sizePolicy().hasHeightForWidth());
+        leEndSpeed->setSizePolicy(sizePolicy22);
+        leEndSpeed->setMinimumSize(QSize(0, 0));
+        leEndSpeed->setMaximumSize(QSize(60, 16777215));
+
+        gridLayout_3->addWidget(leEndSpeed, 2, 4, 1, 1);
+
+        label_62 = new QLabel(frame_24);
+        label_62->setObjectName(QString::fromUtf8("label_62"));
+        label_62->setMaximumSize(QSize(60, 16777215));
+        label_62->setAlignment(Qt::AlignCenter);
+
+        gridLayout_3->addWidget(label_62, 1, 3, 1, 1);
+
+        leAccel = new QLineEdit(frame_24);
+        leAccel->setObjectName(QString::fromUtf8("leAccel"));
+        sizePolicy22.setHeightForWidth(leAccel->sizePolicy().hasHeightForWidth());
+        leAccel->setSizePolicy(sizePolicy22);
+        leAccel->setMinimumSize(QSize(0, 0));
+        leAccel->setMaximumSize(QSize(60, 16777215));
+
+        gridLayout_3->addWidget(leAccel, 2, 1, 1, 1);
+
+        leVelocity = new QLineEdit(frame_24);
+        leVelocity->setObjectName(QString::fromUtf8("leVelocity"));
+        QSizePolicy sizePolicy23(QSizePolicy::Minimum, QSizePolicy::Maximum);
+        sizePolicy23.setHorizontalStretch(0);
+        sizePolicy23.setVerticalStretch(0);
+        sizePolicy23.setHeightForWidth(leVelocity->sizePolicy().hasHeightForWidth());
+        leVelocity->setSizePolicy(sizePolicy23);
+        leVelocity->setMinimumSize(QSize(0, 0));
+        leVelocity->setMaximumSize(QSize(60, 16777215));
+
+        gridLayout_3->addWidget(leVelocity, 1, 1, 1, 1);
+
+        label_29 = new QLabel(frame_24);
+        label_29->setObjectName(QString::fromUtf8("label_29"));
+        label_29->setMaximumSize(QSize(60, 16777215));
+
+        gridLayout_3->addWidget(label_29, 1, 0, 1, 1);
+
+        horizontalSpacer_61 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        gridLayout_3->addItem(horizontalSpacer_61, 1, 7, 1, 1);
+
+        leStartSpeed = new QLineEdit(frame_24);
+        leStartSpeed->setObjectName(QString::fromUtf8("leStartSpeed"));
+        sizePolicy22.setHeightForWidth(leStartSpeed->sizePolicy().hasHeightForWidth());
+        leStartSpeed->setSizePolicy(sizePolicy22);
+        leStartSpeed->setMinimumSize(QSize(0, 0));
+        leStartSpeed->setMaximumSize(QSize(60, 16777215));
+
+        gridLayout_3->addWidget(leStartSpeed, 1, 4, 1, 1);
+
+        label_32 = new QLabel(frame_24);
+        label_32->setObjectName(QString::fromUtf8("label_32"));
+        label_32->setStyleSheet(QString::fromUtf8("color: rgb(95, 95, 95);"));
+
+        gridLayout_3->addWidget(label_32, 2, 2, 1, 1);
+
+        label_30 = new QLabel(frame_24);
+        label_30->setObjectName(QString::fromUtf8("label_30"));
+        label_30->setStyleSheet(QString::fromUtf8("color: rgb(95, 95, 95);"));
+
+        gridLayout_3->addWidget(label_30, 1, 2, 1, 1);
+
+        label_31 = new QLabel(frame_24);
+        label_31->setObjectName(QString::fromUtf8("label_31"));
+        label_31->setMaximumSize(QSize(60, 16777215));
+
+        gridLayout_3->addWidget(label_31, 2, 0, 1, 1);
+
+        label_63 = new QLabel(frame_24);
+        label_63->setObjectName(QString::fromUtf8("label_63"));
+        label_63->setStyleSheet(QString::fromUtf8("color: rgb(95, 95, 95);"));
+
+        gridLayout_3->addWidget(label_63, 1, 5, 1, 1);
+
+        label_116 = new QLabel(frame_24);
+        label_116->setObjectName(QString::fromUtf8("label_116"));
+        label_116->setMaximumSize(QSize(60, 16777215));
+        label_116->setAlignment(Qt::AlignCenter);
+
+        gridLayout_3->addWidget(label_116, 2, 3, 1, 1);
+
+        label_117 = new QLabel(frame_24);
+        label_117->setObjectName(QString::fromUtf8("label_117"));
+        label_117->setStyleSheet(QString::fromUtf8("color: rgb(95, 95, 95);"));
+
+        gridLayout_3->addWidget(label_117, 2, 5, 1, 1);
+
+        leJerk = new QLineEdit(frame_24);
+        leJerk->setObjectName(QString::fromUtf8("leJerk"));
+        sizePolicy22.setHeightForWidth(leJerk->sizePolicy().hasHeightForWidth());
+        leJerk->setSizePolicy(sizePolicy22);
+        leJerk->setMinimumSize(QSize(0, 0));
+        leJerk->setMaximumSize(QSize(60, 16777215));
+
+        gridLayout_3->addWidget(leJerk, 3, 1, 1, 1);
+
+        label_64 = new QLabel(frame_24);
+        label_64->setObjectName(QString::fromUtf8("label_64"));
+        label_64->setStyleSheet(QString::fromUtf8("color: rgb(95, 95, 95);"));
+
+        gridLayout_3->addWidget(label_64, 3, 2, 1, 1);
+
+        label_47 = new QLabel(frame_24);
+        label_47->setObjectName(QString::fromUtf8("label_47"));
+        label_47->setMaximumSize(QSize(60, 16777215));
+
+        gridLayout_3->addWidget(label_47, 3, 0, 1, 1);
+
+
+        verticalLayout_12->addWidget(frame_24);
+
+
+        verticalLayout_5->addWidget(frame_22);
+
         frame_34 = new QFrame(wgJoggingScrollWidget);
         frame_34->setObjectName(QString::fromUtf8("frame_34"));
         frame_34->setMinimumSize(QSize(0, 100));
@@ -6595,6 +6683,7 @@ public:
         horizontalLayout_78->setSpacing(6);
         horizontalLayout_78->setContentsMargins(11, 11, 11, 11);
         horizontalLayout_78->setObjectName(QString::fromUtf8("horizontalLayout_78"));
+        horizontalLayout_78->setContentsMargins(-1, 0, -1, 0);
         label_279 = new QLabel(robotTitile_3);
         label_279->setObjectName(QString::fromUtf8("label_279"));
         label_279->setMaximumSize(QSize(100, 16777215));
@@ -8233,6 +8322,8 @@ public:
         cbEncoderType->addItem(QString());
         cbEncoderType->addItem(QString());
         cbEncoderType->setObjectName(QString::fromUtf8("cbEncoderType"));
+        sizePolicy.setHeightForWidth(cbEncoderType->sizePolicy().hasHeightForWidth());
+        cbEncoderType->setSizePolicy(sizePolicy);
         cbEncoderType->setMinimumSize(QSize(100, 0));
 
         horizontalLayout_98->addWidget(cbEncoderType);
@@ -8351,6 +8442,23 @@ public:
         pbReadEncoder->setSizePolicy(sizePolicy6);
 
         gridLayout_21->addWidget(pbReadEncoder, 4, 2, 1, 1);
+
+        cbConveyorForVirtualEncoder = new QComboBox(frame_44);
+        cbConveyorForVirtualEncoder->addItem(QString());
+        cbConveyorForVirtualEncoder->addItem(QString());
+        cbConveyorForVirtualEncoder->addItem(QString());
+        cbConveyorForVirtualEncoder->setObjectName(QString::fromUtf8("cbConveyorForVirtualEncoder"));
+        sizePolicy.setHeightForWidth(cbConveyorForVirtualEncoder->sizePolicy().hasHeightForWidth());
+        cbConveyorForVirtualEncoder->setSizePolicy(sizePolicy);
+        cbConveyorForVirtualEncoder->setMinimumSize(QSize(100, 0));
+
+        gridLayout_21->addWidget(cbConveyorForVirtualEncoder, 0, 1, 1, 1);
+
+        cbLinkToConveyorX = new QCheckBox(frame_44);
+        cbLinkToConveyorX->setObjectName(QString::fromUtf8("cbLinkToConveyorX"));
+        cbLinkToConveyorX->setChecked(true);
+
+        gridLayout_21->addWidget(cbLinkToConveyorX, 0, 0, 1, 1);
 
 
         horizontalLayout_99->addLayout(gridLayout_21);
@@ -8918,7 +9026,7 @@ public:
         twModule->setCurrentIndex(1);
         pbImageMapping->setDefault(false);
         cbImageSource->setCurrentIndex(0);
-        twDevices->setCurrentIndex(0);
+        twDevices->setCurrentIndex(2);
         pbPump->setDefault(false);
         pbLaser->setDefault(false);
         pbGrip->setDefault(false);
@@ -9514,11 +9622,8 @@ public:
         leX->setText(QString());
         label_277->setText(QCoreApplication::translate("RobotWindow", " (mm) ", nullptr));
         label_278->setText(QCoreApplication::translate("RobotWindow", " (degree) ", nullptr));
+        robotTitile_4->setProperty("Func", QVariant(QCoreApplication::translate("RobotWindow", "Title", nullptr)));
         label_271->setText(QCoreApplication::translate("RobotWindow", "Jogging", nullptr));
-        leJerk->setText(QString());
-        leJerk->setPlaceholderText(QCoreApplication::translate("RobotWindow", "None", nullptr));
-        label_29->setText(QCoreApplication::translate("RobotWindow", "F", nullptr));
-        label_31->setText(QCoreApplication::translate("RobotWindow", "A", nullptr));
 #if QT_CONFIG(tooltip)
         pbLeft->setToolTip(QCoreApplication::translate("RobotWindow", "Left (shift + w)", nullptr));
 #endif // QT_CONFIG(tooltip)
@@ -9529,8 +9634,7 @@ public:
 #if QT_CONFIG(shortcut)
         pbLeft->setShortcut(QCoreApplication::translate("RobotWindow", "Shift+A", nullptr));
 #endif // QT_CONFIG(shortcut)
-        leVelocity->setText(QString());
-        leVelocity->setPlaceholderText(QCoreApplication::translate("RobotWindow", "None", nullptr));
+        pbLeft->setProperty("Func", QVariant(QCoreApplication::translate("RobotWindow", "Jogging", nullptr)));
 #if QT_CONFIG(tooltip)
         pbBackward->setToolTip(QCoreApplication::translate("RobotWindow", "Backward (shift + s)", nullptr));
 #endif // QT_CONFIG(tooltip)
@@ -9541,7 +9645,7 @@ public:
 #if QT_CONFIG(shortcut)
         pbBackward->setShortcut(QCoreApplication::translate("RobotWindow", "Shift+S", nullptr));
 #endif // QT_CONFIG(shortcut)
-        label_47->setText(QCoreApplication::translate("RobotWindow", "J", nullptr));
+        pbBackward->setProperty("Func", QVariant(QCoreApplication::translate("RobotWindow", "Jogging", nullptr)));
         label_275->setText(QCoreApplication::translate("RobotWindow", "5-axis", nullptr));
 #if QT_CONFIG(tooltip)
         pbPlusRoll->setToolTip(QCoreApplication::translate("RobotWindow", "Right (Shift +d)", nullptr));
@@ -9551,10 +9655,9 @@ public:
 #endif // QT_CONFIG(statustip)
         pbPlusRoll->setText(QCoreApplication::translate("RobotWindow", "W+", nullptr));
 #if QT_CONFIG(shortcut)
-        pbPlusRoll->setShortcut(QCoreApplication::translate("RobotWindow", "Shift+D", nullptr));
+        pbPlusRoll->setShortcut(QCoreApplication::translate("RobotWindow", "Shift+G", nullptr));
 #endif // QT_CONFIG(shortcut)
-        leStartSpeed->setText(QString());
-        leStartSpeed->setPlaceholderText(QCoreApplication::translate("RobotWindow", "None", nullptr));
+        pbPlusRoll->setProperty("Func", QVariant(QCoreApplication::translate("RobotWindow", "Jogging", nullptr)));
         label_274->setText(QCoreApplication::translate("RobotWindow", "6-axis", nullptr));
 #if QT_CONFIG(tooltip)
         pbSubPitch->setToolTip(QCoreApplication::translate("RobotWindow", "Left (shift + w)", nullptr));
@@ -9564,12 +9667,9 @@ public:
 #endif // QT_CONFIG(statustip)
         pbSubPitch->setText(QCoreApplication::translate("RobotWindow", "V-", nullptr));
 #if QT_CONFIG(shortcut)
-        pbSubPitch->setShortcut(QCoreApplication::translate("RobotWindow", "Shift+A", nullptr));
+        pbSubPitch->setShortcut(QCoreApplication::translate("RobotWindow", "Shift+U", nullptr));
 #endif // QT_CONFIG(shortcut)
-        label_62->setText(QCoreApplication::translate("RobotWindow", "S", nullptr));
-        leEndSpeed->setText(QString());
-        leEndSpeed->setPlaceholderText(QCoreApplication::translate("RobotWindow", "None", nullptr));
-        label_30->setText(QCoreApplication::translate("RobotWindow", "mm/s", nullptr));
+        pbSubPitch->setProperty("Func", QVariant(QCoreApplication::translate("RobotWindow", "Jogging", nullptr)));
 #if QT_CONFIG(tooltip)
         pbSubRoll->setToolTip(QCoreApplication::translate("RobotWindow", "Left (shift + w)", nullptr));
 #endif // QT_CONFIG(tooltip)
@@ -9578,8 +9678,9 @@ public:
 #endif // QT_CONFIG(statustip)
         pbSubRoll->setText(QCoreApplication::translate("RobotWindow", "W-", nullptr));
 #if QT_CONFIG(shortcut)
-        pbSubRoll->setShortcut(QCoreApplication::translate("RobotWindow", "Shift+A", nullptr));
+        pbSubRoll->setShortcut(QCoreApplication::translate("RobotWindow", "Shift+T", nullptr));
 #endif // QT_CONFIG(shortcut)
+        pbSubRoll->setProperty("Func", QVariant(QCoreApplication::translate("RobotWindow", "Jogging", nullptr)));
 #if QT_CONFIG(tooltip)
         pbUp->setToolTip(QCoreApplication::translate("RobotWindow", "Up (shift + r)", nullptr));
 #endif // QT_CONFIG(tooltip)
@@ -9590,8 +9691,7 @@ public:
 #if QT_CONFIG(shortcut)
         pbUp->setShortcut(QCoreApplication::translate("RobotWindow", "Shift+R", nullptr));
 #endif // QT_CONFIG(shortcut)
-        label_64->setText(QCoreApplication::translate("RobotWindow", "mm/s3", nullptr));
-        label_32->setText(QCoreApplication::translate("RobotWindow", "mm/s2", nullptr));
+        pbUp->setProperty("Func", QVariant(QCoreApplication::translate("RobotWindow", "Jogging", nullptr)));
 #if QT_CONFIG(tooltip)
         pbDown->setToolTip(QCoreApplication::translate("RobotWindow", "Down (shift + f)", nullptr));
 #endif // QT_CONFIG(tooltip)
@@ -9602,6 +9702,7 @@ public:
 #if QT_CONFIG(shortcut)
         pbDown->setShortcut(QCoreApplication::translate("RobotWindow", "Shift+F", nullptr));
 #endif // QT_CONFIG(shortcut)
+        pbDown->setProperty("Func", QVariant(QCoreApplication::translate("RobotWindow", "Jogging", nullptr)));
 #if QT_CONFIG(tooltip)
         pbForward->setToolTip(QCoreApplication::translate("RobotWindow", "Forward (Shift + w)", nullptr));
 #endif // QT_CONFIG(tooltip)
@@ -9612,6 +9713,7 @@ public:
 #if QT_CONFIG(shortcut)
         pbForward->setShortcut(QCoreApplication::translate("RobotWindow", "Shift+W", nullptr));
 #endif // QT_CONFIG(shortcut)
+        pbForward->setProperty("Func", QVariant(QCoreApplication::translate("RobotWindow", "Jogging", nullptr)));
 #if QT_CONFIG(tooltip)
         pbRight->setToolTip(QCoreApplication::translate("RobotWindow", "Right (Shift +d)", nullptr));
 #endif // QT_CONFIG(tooltip)
@@ -9622,6 +9724,7 @@ public:
 #if QT_CONFIG(shortcut)
         pbRight->setShortcut(QCoreApplication::translate("RobotWindow", "Shift+D", nullptr));
 #endif // QT_CONFIG(shortcut)
+        pbRight->setProperty("Func", QVariant(QCoreApplication::translate("RobotWindow", "Jogging", nullptr)));
 #if QT_CONFIG(tooltip)
         pbPlusPitch->setToolTip(QCoreApplication::translate("RobotWindow", "Right (Shift +d)", nullptr));
 #endif // QT_CONFIG(tooltip)
@@ -9630,8 +9733,9 @@ public:
 #endif // QT_CONFIG(statustip)
         pbPlusPitch->setText(QCoreApplication::translate("RobotWindow", "V+", nullptr));
 #if QT_CONFIG(shortcut)
-        pbPlusPitch->setShortcut(QCoreApplication::translate("RobotWindow", "Shift+D", nullptr));
+        pbPlusPitch->setShortcut(QCoreApplication::translate("RobotWindow", "Shift+J", nullptr));
 #endif // QT_CONFIG(shortcut)
+        pbPlusPitch->setProperty("Func", QVariant(QCoreApplication::translate("RobotWindow", "Jogging", nullptr)));
 #if QT_CONFIG(tooltip)
         pbSubYaw->setToolTip(QCoreApplication::translate("RobotWindow", "Left (shift + w)", nullptr));
 #endif // QT_CONFIG(tooltip)
@@ -9640,12 +9744,10 @@ public:
 #endif // QT_CONFIG(statustip)
         pbSubYaw->setText(QCoreApplication::translate("RobotWindow", "U-", nullptr));
 #if QT_CONFIG(shortcut)
-        pbSubYaw->setShortcut(QCoreApplication::translate("RobotWindow", "Shift+A", nullptr));
+        pbSubYaw->setShortcut(QCoreApplication::translate("RobotWindow", "Shift+Y", nullptr));
 #endif // QT_CONFIG(shortcut)
-        leAccel->setText(QString());
-        leAccel->setPlaceholderText(QCoreApplication::translate("RobotWindow", "None", nullptr));
+        pbSubYaw->setProperty("Func", QVariant(QCoreApplication::translate("RobotWindow", "Jogging", nullptr)));
         label_276->setText(QCoreApplication::translate("RobotWindow", "4-axis", nullptr));
-        label_116->setText(QCoreApplication::translate("RobotWindow", "E", nullptr));
 #if QT_CONFIG(tooltip)
         pbPlusYaw->setToolTip(QCoreApplication::translate("RobotWindow", "Right (Shift +d)", nullptr));
 #endif // QT_CONFIG(tooltip)
@@ -9654,10 +9756,9 @@ public:
 #endif // QT_CONFIG(statustip)
         pbPlusYaw->setText(QCoreApplication::translate("RobotWindow", "U+", nullptr));
 #if QT_CONFIG(shortcut)
-        pbPlusYaw->setShortcut(QCoreApplication::translate("RobotWindow", "Shift+D", nullptr));
+        pbPlusYaw->setShortcut(QCoreApplication::translate("RobotWindow", "Shift+H", nullptr));
 #endif // QT_CONFIG(shortcut)
-        label_63->setText(QCoreApplication::translate("RobotWindow", "mm/s", nullptr));
-        label_117->setText(QCoreApplication::translate("RobotWindow", "mm/s", nullptr));
+        pbPlusYaw->setProperty("Func", QVariant(QCoreApplication::translate("RobotWindow", "Jogging", nullptr)));
         label_33->setText(QCoreApplication::translate("RobotWindow", "  Step  ", nullptr));
         rb01->setText(QCoreApplication::translate("RobotWindow", "0.1", nullptr));
         rb05->setText(QCoreApplication::translate("RobotWindow", "0.5", nullptr));
@@ -9667,6 +9768,28 @@ public:
         rb500->setText(QCoreApplication::translate("RobotWindow", "50", nullptr));
         rb1000->setText(QCoreApplication::translate("RobotWindow", "100", nullptr));
         label_273->setText(QCoreApplication::translate("RobotWindow", " (mm) ", nullptr));
+        label_272->setText(QCoreApplication::translate("RobotWindow", "Motion Parameters", nullptr));
+        leEndSpeed->setText(QString());
+        leEndSpeed->setPlaceholderText(QCoreApplication::translate("RobotWindow", "None", nullptr));
+        label_62->setText(QCoreApplication::translate("RobotWindow", "S", nullptr));
+        leAccel->setText(QString());
+        leAccel->setPlaceholderText(QCoreApplication::translate("RobotWindow", "None", nullptr));
+        leVelocity->setText(QString());
+        leVelocity->setPlaceholderText(QCoreApplication::translate("RobotWindow", "None", nullptr));
+        label_29->setText(QCoreApplication::translate("RobotWindow", "F", nullptr));
+        leStartSpeed->setText(QString());
+        leStartSpeed->setPlaceholderText(QCoreApplication::translate("RobotWindow", "None", nullptr));
+        label_32->setText(QCoreApplication::translate("RobotWindow", "mm/s2", nullptr));
+        label_30->setText(QCoreApplication::translate("RobotWindow", "mm/s", nullptr));
+        label_31->setText(QCoreApplication::translate("RobotWindow", "A", nullptr));
+        label_63->setText(QCoreApplication::translate("RobotWindow", "mm/s", nullptr));
+        label_116->setText(QCoreApplication::translate("RobotWindow", "E", nullptr));
+        label_117->setText(QCoreApplication::translate("RobotWindow", "mm/s", nullptr));
+        leJerk->setText(QString());
+        leJerk->setPlaceholderText(QCoreApplication::translate("RobotWindow", "None", nullptr));
+        label_64->setText(QCoreApplication::translate("RobotWindow", "mm/s3", nullptr));
+        label_47->setText(QCoreApplication::translate("RobotWindow", "J", nullptr));
+        robotTitile_3->setProperty("Func", QVariant(QCoreApplication::translate("RobotWindow", "Title", nullptr)));
         label_279->setText(QCoreApplication::translate("RobotWindow", "Output", nullptr));
         groupBox_9->setTitle(QCoreApplication::translate("RobotWindow", "Delta X 1 / Delta X 2", nullptr));
         pbPump->setText(QCoreApplication::translate("RobotWindow", "  Vacuum", nullptr));
@@ -9903,6 +10026,11 @@ public:
         label_130->setText(QCoreApplication::translate("RobotWindow", "Current Position (mm)", nullptr));
         leEncoderVelocity->setText(QCoreApplication::translate("RobotWindow", "100", nullptr));
         pbReadEncoder->setText(QCoreApplication::translate("RobotWindow", "Read", nullptr));
+        cbConveyorForVirtualEncoder->setItemText(0, QCoreApplication::translate("RobotWindow", "conveyor0", nullptr));
+        cbConveyorForVirtualEncoder->setItemText(1, QCoreApplication::translate("RobotWindow", "conveyor1", nullptr));
+        cbConveyorForVirtualEncoder->setItemText(2, QCoreApplication::translate("RobotWindow", "conveyor2", nullptr));
+
+        cbLinkToConveyorX->setText(QCoreApplication::translate("RobotWindow", "Link to Conveyor X", nullptr));
         twDevices->setTabText(twDevices->indexOf(EncoderTab), QCoreApplication::translate("RobotWindow", "Encoder", nullptr));
         label_15->setText(QCoreApplication::translate("RobotWindow", "Selected Encoder", nullptr));
         checkBox_5->setText(QCoreApplication::translate("RobotWindow", "Auto Scan", nullptr));

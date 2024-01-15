@@ -1217,16 +1217,14 @@ debug\moc_Authority.cpp: Authority.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qtcpsocket.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QBuffer \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMetaObject \
+		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QNetworkInterface \
+		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qnetworkinterface.h \
+		VariableManager.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QHash \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
 		UnityTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QElapsedTimer \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItem \
-		DeltaVisualizer.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLabel \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPainter \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPixmap \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QMouseEvent \
-		FilterWindow.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QDialog \
 		3rd-party\opencv\build\include\opencv2\opencv.hpp \
 		3rd-party\opencv\build\include\opencv2\opencv_modules.hpp \
 		3rd-party\opencv\build\include\opencv2\core.hpp \
@@ -1323,6 +1321,13 @@ debug\moc_Authority.cpp: Authority.h \
 		3rd-party\opencv\build\include\opencv2\video.hpp \
 		3rd-party\opencv\build\include\opencv2\video\tracking.hpp \
 		3rd-party\opencv\build\include\opencv2\video\background_segm.hpp \
+		DeltaVisualizer.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLabel \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPainter \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPixmap \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QMouseEvent \
+		FilterWindow.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QDialog \
 		ImageUnity.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDebug \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QtGlobal \
@@ -1332,9 +1337,6 @@ debug\moc_Authority.cpp: Authority.h \
 		3rd-party\opencv\build\include\opencv2\core\types_c.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QThread \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutexLocker \
-		VariableManager.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QHash \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
 		GcodeReference.h \
 		ui_GcodeReference.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QApplication \
@@ -1371,8 +1373,6 @@ debug\moc_Authority.cpp: Authority.h \
 		TCPConnectionManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QHostInfo \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qhostinfo.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QNetworkInterface \
-		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qnetworkinterface.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QCloseEvent \
 		ObjectVariableTable.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QSpacerItem \
@@ -3143,13 +3143,11 @@ debug\moc_GcodeScript.cpp: GcodeScript.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qtcpsocket.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QBuffer \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMetaObject \
-		DeltaVisualizer.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLabel \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPainter \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPixmap \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QMouseEvent \
-		FilterWindow.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QDialog \
+		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QNetworkInterface \
+		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qnetworkinterface.h \
+		VariableManager.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QHash \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
 		3rd-party\opencv\build\include\opencv2\opencv.hpp \
 		3rd-party\opencv\build\include\opencv2\opencv_modules.hpp \
 		3rd-party\opencv\build\include\opencv2\core.hpp \
@@ -3246,6 +3244,13 @@ debug\moc_GcodeScript.cpp: GcodeScript.h \
 		3rd-party\opencv\build\include\opencv2\video.hpp \
 		3rd-party\opencv\build\include\opencv2\video\tracking.hpp \
 		3rd-party\opencv\build\include\opencv2\video\background_segm.hpp \
+		DeltaVisualizer.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLabel \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPainter \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPixmap \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QMouseEvent \
+		FilterWindow.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QDialog \
 		ImageUnity.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDebug \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QtGlobal \
@@ -3255,9 +3260,6 @@ debug\moc_GcodeScript.cpp: GcodeScript.h \
 		3rd-party\opencv\build\include\opencv2\core\types_c.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QThread \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutexLocker \
-		VariableManager.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QHash \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
 		GcodeReference.h \
 		ui_GcodeReference.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QApplication \
@@ -3294,8 +3296,6 @@ debug\moc_GcodeScript.cpp: GcodeScript.h \
 		TCPConnectionManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QHostInfo \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qhostinfo.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QNetworkInterface \
-		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qnetworkinterface.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QCloseEvent \
 		ObjectVariableTable.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QSpacerItem \
@@ -4482,16 +4482,14 @@ debug\moc_MainWindow.cpp: MainWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qtcpsocket.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QBuffer \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMetaObject \
+		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QNetworkInterface \
+		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qnetworkinterface.h \
+		VariableManager.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QHash \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
 		UnityTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QElapsedTimer \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItem \
-		DeltaVisualizer.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLabel \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPainter \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPixmap \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QMouseEvent \
-		FilterWindow.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QDialog \
 		3rd-party\opencv\build\include\opencv2\opencv.hpp \
 		3rd-party\opencv\build\include\opencv2\opencv_modules.hpp \
 		3rd-party\opencv\build\include\opencv2\core.hpp \
@@ -4588,6 +4586,13 @@ debug\moc_MainWindow.cpp: MainWindow.h \
 		3rd-party\opencv\build\include\opencv2\video.hpp \
 		3rd-party\opencv\build\include\opencv2\video\tracking.hpp \
 		3rd-party\opencv\build\include\opencv2\video\background_segm.hpp \
+		DeltaVisualizer.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLabel \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPainter \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPixmap \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QMouseEvent \
+		FilterWindow.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QDialog \
 		ImageUnity.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDebug \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QtGlobal \
@@ -4597,9 +4602,6 @@ debug\moc_MainWindow.cpp: MainWindow.h \
 		3rd-party\opencv\build\include\opencv2\core\types_c.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QThread \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutexLocker \
-		VariableManager.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QHash \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
 		GcodeReference.h \
 		ui_GcodeReference.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QApplication \
@@ -4636,8 +4638,6 @@ debug\moc_MainWindow.cpp: MainWindow.h \
 		TCPConnectionManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QHostInfo \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qhostinfo.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QNetworkInterface \
-		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qnetworkinterface.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QCloseEvent \
 		ObjectVariableTable.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QSpacerItem \
@@ -6011,16 +6011,14 @@ debug\moc_ProjectManager.cpp: ProjectManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qtcpsocket.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QBuffer \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMetaObject \
+		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QNetworkInterface \
+		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qnetworkinterface.h \
+		VariableManager.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QHash \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
 		UnityTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QElapsedTimer \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItem \
-		DeltaVisualizer.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLabel \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPainter \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPixmap \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QMouseEvent \
-		FilterWindow.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QDialog \
 		3rd-party\opencv\build\include\opencv2\opencv.hpp \
 		3rd-party\opencv\build\include\opencv2\opencv_modules.hpp \
 		3rd-party\opencv\build\include\opencv2\core.hpp \
@@ -6117,6 +6115,13 @@ debug\moc_ProjectManager.cpp: ProjectManager.h \
 		3rd-party\opencv\build\include\opencv2\video.hpp \
 		3rd-party\opencv\build\include\opencv2\video\tracking.hpp \
 		3rd-party\opencv\build\include\opencv2\video\background_segm.hpp \
+		DeltaVisualizer.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLabel \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPainter \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPixmap \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QMouseEvent \
+		FilterWindow.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QDialog \
 		ImageUnity.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDebug \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QtGlobal \
@@ -6126,9 +6131,6 @@ debug\moc_ProjectManager.cpp: ProjectManager.h \
 		3rd-party\opencv\build\include\opencv2\core\types_c.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QThread \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutexLocker \
-		VariableManager.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QHash \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
 		GcodeReference.h \
 		ui_GcodeReference.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QApplication \
@@ -6165,8 +6167,6 @@ debug\moc_ProjectManager.cpp: ProjectManager.h \
 		TCPConnectionManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QHostInfo \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qhostinfo.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QNetworkInterface \
-		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qnetworkinterface.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QCloseEvent \
 		ObjectVariableTable.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QSpacerItem \
@@ -6749,17 +6749,15 @@ debug\moc_RobotWindow.cpp: RobotWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qtcpsocket.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QBuffer \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMetaObject \
+		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QNetworkInterface \
+		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qnetworkinterface.h \
+		VariableManager.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSettings \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QHash \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
 		UnityTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QElapsedTimer \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItem \
-		DeltaVisualizer.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLabel \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPainter \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPixmap \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QMouseEvent \
-		FilterWindow.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QDialog \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSettings \
 		3rd-party\opencv\build\include\opencv2\opencv.hpp \
 		3rd-party\opencv\build\include\opencv2\opencv_modules.hpp \
 		3rd-party\opencv\build\include\opencv2\core.hpp \
@@ -6856,6 +6854,13 @@ debug\moc_RobotWindow.cpp: RobotWindow.h \
 		3rd-party\opencv\build\include\opencv2\video.hpp \
 		3rd-party\opencv\build\include\opencv2\video\tracking.hpp \
 		3rd-party\opencv\build\include\opencv2\video\background_segm.hpp \
+		DeltaVisualizer.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLabel \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPainter \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPixmap \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QMouseEvent \
+		FilterWindow.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QDialog \
 		ImageUnity.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDebug \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QtGlobal \
@@ -6865,9 +6870,6 @@ debug\moc_RobotWindow.cpp: RobotWindow.h \
 		3rd-party\opencv\build\include\opencv2\core\types_c.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QThread \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutexLocker \
-		VariableManager.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QHash \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QPushButton \
 		GcodeReference.h \
 		ui_GcodeReference.h \
@@ -6907,8 +6909,6 @@ debug\moc_RobotWindow.cpp: RobotWindow.h \
 		TCPConnectionManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QHostInfo \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qhostinfo.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QNetworkInterface \
-		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qnetworkinterface.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QCloseEvent \
 		ObjectVariableTable.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QSpacerItem \
@@ -7202,6 +7202,147 @@ debug\moc_SocketConnectionManager.cpp: SocketConnectionManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QBuffer \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qbuffer.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMetaObject \
+		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QNetworkInterface \
+		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qnetworkinterface.h \
+		VariableManager.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSettings \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsettings.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QVariant \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QHash \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qstandarditemmodel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qabstractitemmodel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qbrush.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpixmap.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qfont.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qicon.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QVector3D \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qvector3d.h \
+		UnityTool.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qlabel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qtwidgetsglobal.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qtwidgets-config.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qframe.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qwidget.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpalette.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qfontmetrics.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qfontinfo.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qsizepolicy.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qcursor.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qkeysequence.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qevent.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qurl.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qurlquery.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qfile.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qfiledevice.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qvector2d.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtouchdevice.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qtextedit.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qabstractscrollarea.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtextdocument.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtextoption.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtextcursor.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtextformat.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpen.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QElapsedTimer \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qelapsedtimer.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItem \
+		3rd-party\opencv\build\include\opencv2\opencv.hpp \
+		3rd-party\opencv\build\include\opencv2\opencv_modules.hpp \
+		3rd-party\opencv\build\include\opencv2\core.hpp \
+		3rd-party\opencv\build\include\opencv2\core\cvdef.h \
+		3rd-party\opencv\build\include\opencv2\core\hal\interface.h \
+		3rd-party\opencv\build\include\opencv2\core\cv_cpu_dispatch.h \
+		3rd-party\opencv\build\include\opencv2\core\cv_cpu_helper.h \
+		3rd-party\opencv\build\include\opencv2\core\fast_math.hpp \
+		3rd-party\opencv\build\include\opencv2\core\version.hpp \
+		3rd-party\opencv\build\include\opencv2\core\base.hpp \
+		3rd-party\opencv\build\include\opencv2\core\cvstd.hpp \
+		3rd-party\opencv\build\include\opencv2\core\cvstd_wrapper.hpp \
+		3rd-party\opencv\build\include\opencv2\core\neon_utils.hpp \
+		3rd-party\opencv\build\include\opencv2\core\vsx_utils.hpp \
+		3rd-party\opencv\build\include\opencv2\core\check.hpp \
+		3rd-party\opencv\build\include\opencv2\core\traits.hpp \
+		3rd-party\opencv\build\include\opencv2\core\matx.hpp \
+		3rd-party\opencv\build\include\opencv2\core\saturate.hpp \
+		3rd-party\opencv\build\include\opencv2\core\types.hpp \
+		3rd-party\opencv\build\include\opencv2\core\mat.hpp \
+		3rd-party\opencv\build\include\opencv2\core\bufferpool.hpp \
+		3rd-party\opencv\build\include\opencv2\core\mat.inl.hpp \
+		3rd-party\opencv\build\include\opencv2\core\persistence.hpp \
+		3rd-party\opencv\build\include\opencv2\core\operations.hpp \
+		3rd-party\opencv\build\include\opencv2\core\cvstd.inl.hpp \
+		3rd-party\opencv\build\include\opencv2\core\utility.hpp \
+		3rd-party\opencv\build\include\opencv2\core\optim.hpp \
+		3rd-party\opencv\build\include\opencv2\core\ovx.hpp \
+		3rd-party\opencv\build\include\opencv2\calib3d.hpp \
+		3rd-party\opencv\build\include\opencv2\features2d.hpp \
+		3rd-party\opencv\build\include\opencv2\flann\miniflann.hpp \
+		3rd-party\opencv\build\include\opencv2\flann\defines.h \
+		3rd-party\opencv\build\include\opencv2\flann\config.h \
+		3rd-party\opencv\build\include\opencv2\core\affine.hpp \
+		3rd-party\opencv\build\include\opencv2\dnn.hpp \
+		3rd-party\opencv\build\include\opencv2\dnn\dnn.hpp \
+		3rd-party\opencv\build\include\opencv2\dnn\version.hpp \
+		3rd-party\opencv\build\include\opencv2\dnn\dict.hpp \
+		3rd-party\opencv\build\include\opencv2\dnn\layer.hpp \
+		3rd-party\opencv\build\include\opencv2\dnn\dnn.inl.hpp \
+		3rd-party\opencv\build\include\opencv2\flann.hpp \
+		3rd-party\opencv\build\include\opencv2\flann\flann_base.hpp \
+		3rd-party\opencv\build\include\opencv2\flann\general.h \
+		3rd-party\opencv\build\include\opencv2\flann\matrix.h \
+		3rd-party\opencv\build\include\opencv2\flann\params.h \
+		3rd-party\opencv\build\include\opencv2\flann\any.h \
+		3rd-party\opencv\build\include\opencv2\flann\saving.h \
+		3rd-party\opencv\build\include\opencv2\flann\nn_index.h \
+		3rd-party\opencv\build\include\opencv2\flann\result_set.h \
+		3rd-party\opencv\build\include\opencv2\flann\all_indices.h \
+		3rd-party\opencv\build\include\opencv2\flann\kdtree_index.h \
+		3rd-party\opencv\build\include\opencv2\flann\dynamic_bitset.h \
+		3rd-party\opencv\build\include\opencv2\flann\dist.h \
+		3rd-party\opencv\build\include\opencv2\flann\heap.h \
+		3rd-party\opencv\build\include\opencv2\flann\allocator.h \
+		3rd-party\opencv\build\include\opencv2\flann\random.h \
+		3rd-party\opencv\build\include\opencv2\flann\kdtree_single_index.h \
+		3rd-party\opencv\build\include\opencv2\flann\kmeans_index.h \
+		3rd-party\opencv\build\include\opencv2\flann\logger.h \
+		3rd-party\opencv\build\include\opencv2\flann\composite_index.h \
+		3rd-party\opencv\build\include\opencv2\flann\linear_index.h \
+		3rd-party\opencv\build\include\opencv2\flann\hierarchical_clustering_index.h \
+		3rd-party\opencv\build\include\opencv2\flann\lsh_index.h \
+		3rd-party\opencv\build\include\opencv2\flann\lsh_table.h \
+		3rd-party\opencv\build\include\opencv2\flann\autotuned_index.h \
+		3rd-party\opencv\build\include\opencv2\flann\ground_truth.h \
+		3rd-party\opencv\build\include\opencv2\flann\index_testing.h \
+		3rd-party\opencv\build\include\opencv2\flann\timer.h \
+		3rd-party\opencv\build\include\opencv2\flann\sampling.h \
+		3rd-party\opencv\build\include\opencv2\highgui.hpp \
+		3rd-party\opencv\build\include\opencv2\imgcodecs.hpp \
+		3rd-party\opencv\build\include\opencv2\videoio.hpp \
+		3rd-party\opencv\build\include\opencv2\imgproc.hpp \
+		3rd-party\opencv\build\include\opencv2\ml.hpp \
+		3rd-party\opencv\build\include\opencv2\ml\ml.inl.hpp \
+		3rd-party\opencv\build\include\opencv2\objdetect.hpp \
+		3rd-party\opencv\build\include\opencv2\objdetect\detection_based_tracker.hpp \
+		3rd-party\opencv\build\include\opencv2\photo.hpp \
+		3rd-party\opencv\build\include\opencv2\stitching.hpp \
+		3rd-party\opencv\build\include\opencv2\stitching\warpers.hpp \
+		3rd-party\opencv\build\include\opencv2\stitching\detail\warpers.hpp \
+		3rd-party\opencv\build\include\opencv2\core\cuda.hpp \
+		3rd-party\opencv\build\include\opencv2\core\cuda_types.hpp \
+		3rd-party\opencv\build\include\opencv2\core\cuda.inl.hpp \
+		3rd-party\opencv\build\include\opencv2\stitching\detail\warpers_inl.hpp \
+		3rd-party\opencv\build\include\opencv2\stitching\detail\matchers.hpp \
+		3rd-party\opencv\build\include\opencv2\stitching\detail\motion_estimators.hpp \
+		3rd-party\opencv\build\include\opencv2\stitching\detail\util.hpp \
+		3rd-party\opencv\build\include\opencv2\stitching\detail\util_inl.hpp \
+		3rd-party\opencv\build\include\opencv2\stitching\detail\camera.hpp \
+		3rd-party\opencv\build\include\opencv2\stitching\detail\exposure_compensate.hpp \
+		3rd-party\opencv\build\include\opencv2\stitching\detail\seam_finders.hpp \
+		3rd-party\opencv\build\include\opencv2\stitching\detail\blenders.hpp \
+		3rd-party\opencv\build\include\opencv2\video.hpp \
+		3rd-party\opencv\build\include\opencv2\video\tracking.hpp \
+		3rd-party\opencv\build\include\opencv2\video\background_segm.hpp \
 		debug\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2015_64\bin\moc.exe
 	C:\Qt\5.15.2\msvc2015_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include "E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware/debug/moc_predefs.h" -IC:/Qt/5.15.2/msvc2015_64/mkspecs/win32-msvc -I"E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware" -I"E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware/3rd-party/opencv/build/include" -IC:/Qt/5.15.2/msvc2015_64/include -IC:/Qt/5.15.2/msvc2015_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2015_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2015_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtQuick -IC:/Qt/5.15.2/msvc2015_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2015_64/include/QtGui -IC:/Qt/5.15.2/msvc2015_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2015_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2015_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2015_64/include/QtQml -IC:/Qt/5.15.2/msvc2015_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2015_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" SocketConnectionManager.h -o debug\moc_SocketConnectionManager.cpp
@@ -7852,16 +7993,14 @@ debug\moc_TabDashboard.cpp: TabDashboard.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qtcpsocket.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QBuffer \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMetaObject \
+		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QNetworkInterface \
+		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qnetworkinterface.h \
+		VariableManager.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QHash \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
 		UnityTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QElapsedTimer \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItem \
-		DeltaVisualizer.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLabel \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPainter \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPixmap \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QMouseEvent \
-		FilterWindow.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QDialog \
 		3rd-party\opencv\build\include\opencv2\opencv.hpp \
 		3rd-party\opencv\build\include\opencv2\opencv_modules.hpp \
 		3rd-party\opencv\build\include\opencv2\core.hpp \
@@ -7958,6 +8097,13 @@ debug\moc_TabDashboard.cpp: TabDashboard.h \
 		3rd-party\opencv\build\include\opencv2\video.hpp \
 		3rd-party\opencv\build\include\opencv2\video\tracking.hpp \
 		3rd-party\opencv\build\include\opencv2\video\background_segm.hpp \
+		DeltaVisualizer.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLabel \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPainter \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPixmap \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QMouseEvent \
+		FilterWindow.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QDialog \
 		ImageUnity.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDebug \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QtGlobal \
@@ -7967,9 +8113,6 @@ debug\moc_TabDashboard.cpp: TabDashboard.h \
 		3rd-party\opencv\build\include\opencv2\core\types_c.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QThread \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutexLocker \
-		VariableManager.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QHash \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
 		GcodeReference.h \
 		ui_GcodeReference.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QApplication \
@@ -8006,8 +8149,6 @@ debug\moc_TabDashboard.cpp: TabDashboard.h \
 		TCPConnectionManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QHostInfo \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qhostinfo.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QNetworkInterface \
-		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qnetworkinterface.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QCloseEvent \
 		ObjectVariableTable.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QSpacerItem \
@@ -12152,17 +12293,15 @@ debug\main.obj: main.cpp RobotWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qtcpsocket.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QBuffer \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMetaObject \
+		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QNetworkInterface \
+		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qnetworkinterface.h \
+		VariableManager.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSettings \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QHash \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
 		UnityTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QElapsedTimer \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItem \
-		DeltaVisualizer.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLabel \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPainter \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPixmap \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QMouseEvent \
-		FilterWindow.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QDialog \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSettings \
 		3rd-party\opencv\build\include\opencv2\opencv.hpp \
 		3rd-party\opencv\build\include\opencv2\opencv_modules.hpp \
 		3rd-party\opencv\build\include\opencv2\core.hpp \
@@ -12259,6 +12398,13 @@ debug\main.obj: main.cpp RobotWindow.h \
 		3rd-party\opencv\build\include\opencv2\video.hpp \
 		3rd-party\opencv\build\include\opencv2\video\tracking.hpp \
 		3rd-party\opencv\build\include\opencv2\video\background_segm.hpp \
+		DeltaVisualizer.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLabel \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPainter \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPixmap \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QMouseEvent \
+		FilterWindow.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QDialog \
 		ImageUnity.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDebug \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QtGlobal \
@@ -12268,9 +12414,6 @@ debug\main.obj: main.cpp RobotWindow.h \
 		3rd-party\opencv\build\include\opencv2\core\types_c.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QThread \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutexLocker \
-		VariableManager.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QHash \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QPushButton \
 		GcodeReference.h \
 		ui_GcodeReference.h \
@@ -12310,8 +12453,6 @@ debug\main.obj: main.cpp RobotWindow.h \
 		TCPConnectionManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QHostInfo \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qhostinfo.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QNetworkInterface \
-		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qnetworkinterface.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QCloseEvent \
 		ObjectVariableTable.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QSpacerItem \
@@ -13057,16 +13198,14 @@ debug\Authority.obj: Authority.cpp Authority.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qtcpsocket.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QBuffer \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMetaObject \
+		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QNetworkInterface \
+		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qnetworkinterface.h \
+		VariableManager.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QHash \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
 		UnityTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QElapsedTimer \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItem \
-		DeltaVisualizer.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLabel \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPainter \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPixmap \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QMouseEvent \
-		FilterWindow.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QDialog \
 		3rd-party\opencv\build\include\opencv2\opencv.hpp \
 		3rd-party\opencv\build\include\opencv2\opencv_modules.hpp \
 		3rd-party\opencv\build\include\opencv2\core.hpp \
@@ -13163,6 +13302,13 @@ debug\Authority.obj: Authority.cpp Authority.h \
 		3rd-party\opencv\build\include\opencv2\video.hpp \
 		3rd-party\opencv\build\include\opencv2\video\tracking.hpp \
 		3rd-party\opencv\build\include\opencv2\video\background_segm.hpp \
+		DeltaVisualizer.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLabel \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPainter \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPixmap \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QMouseEvent \
+		FilterWindow.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QDialog \
 		ImageUnity.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDebug \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QtGlobal \
@@ -13172,9 +13318,6 @@ debug\Authority.obj: Authority.cpp Authority.h \
 		3rd-party\opencv\build\include\opencv2\core\types_c.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QThread \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutexLocker \
-		VariableManager.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QHash \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
 		GcodeReference.h \
 		ui_GcodeReference.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QApplication \
@@ -13211,8 +13354,6 @@ debug\Authority.obj: Authority.cpp Authority.h \
 		TCPConnectionManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QHostInfo \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qhostinfo.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QNetworkInterface \
-		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qnetworkinterface.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QCloseEvent \
 		ObjectVariableTable.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QSpacerItem \
@@ -14978,13 +15119,11 @@ debug\GcodeScript.obj: GcodeScript.cpp GcodeScript.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qtcpsocket.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QBuffer \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMetaObject \
-		DeltaVisualizer.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLabel \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPainter \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPixmap \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QMouseEvent \
-		FilterWindow.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QDialog \
+		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QNetworkInterface \
+		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qnetworkinterface.h \
+		VariableManager.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QHash \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
 		3rd-party\opencv\build\include\opencv2\opencv.hpp \
 		3rd-party\opencv\build\include\opencv2\opencv_modules.hpp \
 		3rd-party\opencv\build\include\opencv2\core.hpp \
@@ -15081,6 +15220,13 @@ debug\GcodeScript.obj: GcodeScript.cpp GcodeScript.h \
 		3rd-party\opencv\build\include\opencv2\video.hpp \
 		3rd-party\opencv\build\include\opencv2\video\tracking.hpp \
 		3rd-party\opencv\build\include\opencv2\video\background_segm.hpp \
+		DeltaVisualizer.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLabel \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPainter \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPixmap \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QMouseEvent \
+		FilterWindow.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QDialog \
 		ImageUnity.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDebug \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QtGlobal \
@@ -15090,9 +15236,6 @@ debug\GcodeScript.obj: GcodeScript.cpp GcodeScript.h \
 		3rd-party\opencv\build\include\opencv2\core\types_c.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QThread \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutexLocker \
-		VariableManager.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QHash \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
 		GcodeReference.h \
 		ui_GcodeReference.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QApplication \
@@ -15129,8 +15272,6 @@ debug\GcodeScript.obj: GcodeScript.cpp GcodeScript.h \
 		TCPConnectionManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QHostInfo \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qhostinfo.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QNetworkInterface \
-		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qnetworkinterface.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QCloseEvent \
 		ObjectVariableTable.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QSpacerItem \
@@ -16586,16 +16727,14 @@ debug\MainWindow.obj: MainWindow.cpp MainWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qtcpsocket.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QBuffer \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMetaObject \
+		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QNetworkInterface \
+		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qnetworkinterface.h \
+		VariableManager.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QHash \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
 		UnityTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QElapsedTimer \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItem \
-		DeltaVisualizer.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLabel \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPainter \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPixmap \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QMouseEvent \
-		FilterWindow.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QDialog \
 		3rd-party\opencv\build\include\opencv2\opencv.hpp \
 		3rd-party\opencv\build\include\opencv2\opencv_modules.hpp \
 		3rd-party\opencv\build\include\opencv2\core.hpp \
@@ -16692,6 +16831,13 @@ debug\MainWindow.obj: MainWindow.cpp MainWindow.h \
 		3rd-party\opencv\build\include\opencv2\video.hpp \
 		3rd-party\opencv\build\include\opencv2\video\tracking.hpp \
 		3rd-party\opencv\build\include\opencv2\video\background_segm.hpp \
+		DeltaVisualizer.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLabel \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPainter \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPixmap \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QMouseEvent \
+		FilterWindow.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QDialog \
 		ImageUnity.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDebug \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QtGlobal \
@@ -16701,9 +16847,6 @@ debug\MainWindow.obj: MainWindow.cpp MainWindow.h \
 		3rd-party\opencv\build\include\opencv2\core\types_c.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QThread \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutexLocker \
-		VariableManager.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QHash \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
 		GcodeReference.h \
 		ui_GcodeReference.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QApplication \
@@ -16740,8 +16883,6 @@ debug\MainWindow.obj: MainWindow.cpp MainWindow.h \
 		TCPConnectionManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QHostInfo \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qhostinfo.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QNetworkInterface \
-		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qnetworkinterface.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QCloseEvent \
 		ObjectVariableTable.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QSpacerItem \
@@ -17763,16 +17904,14 @@ debug\ProjectManager.obj: ProjectManager.cpp ProjectManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qtcpsocket.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QBuffer \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMetaObject \
+		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QNetworkInterface \
+		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qnetworkinterface.h \
+		VariableManager.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QHash \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
 		UnityTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QElapsedTimer \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItem \
-		DeltaVisualizer.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLabel \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPainter \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPixmap \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QMouseEvent \
-		FilterWindow.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QDialog \
 		3rd-party\opencv\build\include\opencv2\opencv.hpp \
 		3rd-party\opencv\build\include\opencv2\opencv_modules.hpp \
 		3rd-party\opencv\build\include\opencv2\core.hpp \
@@ -17869,6 +18008,13 @@ debug\ProjectManager.obj: ProjectManager.cpp ProjectManager.h \
 		3rd-party\opencv\build\include\opencv2\video.hpp \
 		3rd-party\opencv\build\include\opencv2\video\tracking.hpp \
 		3rd-party\opencv\build\include\opencv2\video\background_segm.hpp \
+		DeltaVisualizer.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLabel \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPainter \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPixmap \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QMouseEvent \
+		FilterWindow.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QDialog \
 		ImageUnity.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDebug \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QtGlobal \
@@ -17878,9 +18024,6 @@ debug\ProjectManager.obj: ProjectManager.cpp ProjectManager.h \
 		3rd-party\opencv\build\include\opencv2\core\types_c.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QThread \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutexLocker \
-		VariableManager.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QHash \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
 		GcodeReference.h \
 		ui_GcodeReference.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QApplication \
@@ -17917,8 +18060,6 @@ debug\ProjectManager.obj: ProjectManager.cpp ProjectManager.h \
 		TCPConnectionManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QHostInfo \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qhostinfo.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QNetworkInterface \
-		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qnetworkinterface.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QCloseEvent \
 		ObjectVariableTable.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QSpacerItem \
@@ -18497,17 +18638,15 @@ debug\RobotWindow.obj: RobotWindow.cpp RobotWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qtcpsocket.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QBuffer \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMetaObject \
+		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QNetworkInterface \
+		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qnetworkinterface.h \
+		VariableManager.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSettings \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QHash \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
 		UnityTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QElapsedTimer \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItem \
-		DeltaVisualizer.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLabel \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPainter \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPixmap \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QMouseEvent \
-		FilterWindow.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QDialog \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSettings \
 		3rd-party\opencv\build\include\opencv2\opencv.hpp \
 		3rd-party\opencv\build\include\opencv2\opencv_modules.hpp \
 		3rd-party\opencv\build\include\opencv2\core.hpp \
@@ -18604,6 +18743,13 @@ debug\RobotWindow.obj: RobotWindow.cpp RobotWindow.h \
 		3rd-party\opencv\build\include\opencv2\video.hpp \
 		3rd-party\opencv\build\include\opencv2\video\tracking.hpp \
 		3rd-party\opencv\build\include\opencv2\video\background_segm.hpp \
+		DeltaVisualizer.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLabel \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPainter \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPixmap \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QMouseEvent \
+		FilterWindow.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QDialog \
 		ImageUnity.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDebug \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QtGlobal \
@@ -18613,9 +18759,6 @@ debug\RobotWindow.obj: RobotWindow.cpp RobotWindow.h \
 		3rd-party\opencv\build\include\opencv2\core\types_c.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QThread \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutexLocker \
-		VariableManager.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QHash \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QPushButton \
 		GcodeReference.h \
 		ui_GcodeReference.h \
@@ -18655,8 +18798,6 @@ debug\RobotWindow.obj: RobotWindow.cpp RobotWindow.h \
 		TCPConnectionManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QHostInfo \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qhostinfo.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QNetworkInterface \
-		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qnetworkinterface.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QCloseEvent \
 		ObjectVariableTable.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QSpacerItem \
@@ -18962,7 +19103,148 @@ debug\SocketConnectionManager.obj: SocketConnectionManager.cpp SocketConnectionM
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qline.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QBuffer \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qbuffer.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMetaObject
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMetaObject \
+		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QNetworkInterface \
+		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qnetworkinterface.h \
+		VariableManager.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSettings \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsettings.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QVariant \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QHash \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qstandarditemmodel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qabstractitemmodel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qbrush.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpixmap.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qfont.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qicon.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QVector3D \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qvector3d.h \
+		UnityTool.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qlabel.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qtwidgetsglobal.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qtwidgets-config.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qframe.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qwidget.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpalette.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qfontmetrics.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qfontinfo.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qsizepolicy.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qcursor.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qkeysequence.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qevent.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qurl.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qurlquery.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qfile.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qfiledevice.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qvector2d.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtouchdevice.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qtextedit.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qabstractscrollarea.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtextdocument.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtextoption.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtextcursor.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtextformat.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpen.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QElapsedTimer \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qelapsedtimer.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItem \
+		3rd-party\opencv\build\include\opencv2\opencv.hpp \
+		3rd-party\opencv\build\include\opencv2\opencv_modules.hpp \
+		3rd-party\opencv\build\include\opencv2\core.hpp \
+		3rd-party\opencv\build\include\opencv2\core\cvdef.h \
+		3rd-party\opencv\build\include\opencv2\core\hal\interface.h \
+		3rd-party\opencv\build\include\opencv2\core\cv_cpu_dispatch.h \
+		3rd-party\opencv\build\include\opencv2\core\cv_cpu_helper.h \
+		3rd-party\opencv\build\include\opencv2\core\fast_math.hpp \
+		3rd-party\opencv\build\include\opencv2\core\version.hpp \
+		3rd-party\opencv\build\include\opencv2\core\base.hpp \
+		3rd-party\opencv\build\include\opencv2\core\cvstd.hpp \
+		3rd-party\opencv\build\include\opencv2\core\cvstd_wrapper.hpp \
+		3rd-party\opencv\build\include\opencv2\core\neon_utils.hpp \
+		3rd-party\opencv\build\include\opencv2\core\vsx_utils.hpp \
+		3rd-party\opencv\build\include\opencv2\core\check.hpp \
+		3rd-party\opencv\build\include\opencv2\core\traits.hpp \
+		3rd-party\opencv\build\include\opencv2\core\matx.hpp \
+		3rd-party\opencv\build\include\opencv2\core\saturate.hpp \
+		3rd-party\opencv\build\include\opencv2\core\types.hpp \
+		3rd-party\opencv\build\include\opencv2\core\mat.hpp \
+		3rd-party\opencv\build\include\opencv2\core\bufferpool.hpp \
+		3rd-party\opencv\build\include\opencv2\core\mat.inl.hpp \
+		3rd-party\opencv\build\include\opencv2\core\persistence.hpp \
+		3rd-party\opencv\build\include\opencv2\core\operations.hpp \
+		3rd-party\opencv\build\include\opencv2\core\cvstd.inl.hpp \
+		3rd-party\opencv\build\include\opencv2\core\utility.hpp \
+		3rd-party\opencv\build\include\opencv2\core\optim.hpp \
+		3rd-party\opencv\build\include\opencv2\core\ovx.hpp \
+		3rd-party\opencv\build\include\opencv2\calib3d.hpp \
+		3rd-party\opencv\build\include\opencv2\features2d.hpp \
+		3rd-party\opencv\build\include\opencv2\flann\miniflann.hpp \
+		3rd-party\opencv\build\include\opencv2\flann\defines.h \
+		3rd-party\opencv\build\include\opencv2\flann\config.h \
+		3rd-party\opencv\build\include\opencv2\core\affine.hpp \
+		3rd-party\opencv\build\include\opencv2\dnn.hpp \
+		3rd-party\opencv\build\include\opencv2\dnn\dnn.hpp \
+		3rd-party\opencv\build\include\opencv2\dnn\version.hpp \
+		3rd-party\opencv\build\include\opencv2\dnn\dict.hpp \
+		3rd-party\opencv\build\include\opencv2\dnn\layer.hpp \
+		3rd-party\opencv\build\include\opencv2\dnn\dnn.inl.hpp \
+		3rd-party\opencv\build\include\opencv2\flann.hpp \
+		3rd-party\opencv\build\include\opencv2\flann\flann_base.hpp \
+		3rd-party\opencv\build\include\opencv2\flann\general.h \
+		3rd-party\opencv\build\include\opencv2\flann\matrix.h \
+		3rd-party\opencv\build\include\opencv2\flann\params.h \
+		3rd-party\opencv\build\include\opencv2\flann\any.h \
+		3rd-party\opencv\build\include\opencv2\flann\saving.h \
+		3rd-party\opencv\build\include\opencv2\flann\nn_index.h \
+		3rd-party\opencv\build\include\opencv2\flann\result_set.h \
+		3rd-party\opencv\build\include\opencv2\flann\all_indices.h \
+		3rd-party\opencv\build\include\opencv2\flann\kdtree_index.h \
+		3rd-party\opencv\build\include\opencv2\flann\dynamic_bitset.h \
+		3rd-party\opencv\build\include\opencv2\flann\dist.h \
+		3rd-party\opencv\build\include\opencv2\flann\heap.h \
+		3rd-party\opencv\build\include\opencv2\flann\allocator.h \
+		3rd-party\opencv\build\include\opencv2\flann\random.h \
+		3rd-party\opencv\build\include\opencv2\flann\kdtree_single_index.h \
+		3rd-party\opencv\build\include\opencv2\flann\kmeans_index.h \
+		3rd-party\opencv\build\include\opencv2\flann\logger.h \
+		3rd-party\opencv\build\include\opencv2\flann\composite_index.h \
+		3rd-party\opencv\build\include\opencv2\flann\linear_index.h \
+		3rd-party\opencv\build\include\opencv2\flann\hierarchical_clustering_index.h \
+		3rd-party\opencv\build\include\opencv2\flann\lsh_index.h \
+		3rd-party\opencv\build\include\opencv2\flann\lsh_table.h \
+		3rd-party\opencv\build\include\opencv2\flann\autotuned_index.h \
+		3rd-party\opencv\build\include\opencv2\flann\ground_truth.h \
+		3rd-party\opencv\build\include\opencv2\flann\index_testing.h \
+		3rd-party\opencv\build\include\opencv2\flann\timer.h \
+		3rd-party\opencv\build\include\opencv2\flann\sampling.h \
+		3rd-party\opencv\build\include\opencv2\highgui.hpp \
+		3rd-party\opencv\build\include\opencv2\imgcodecs.hpp \
+		3rd-party\opencv\build\include\opencv2\videoio.hpp \
+		3rd-party\opencv\build\include\opencv2\imgproc.hpp \
+		3rd-party\opencv\build\include\opencv2\ml.hpp \
+		3rd-party\opencv\build\include\opencv2\ml\ml.inl.hpp \
+		3rd-party\opencv\build\include\opencv2\objdetect.hpp \
+		3rd-party\opencv\build\include\opencv2\objdetect\detection_based_tracker.hpp \
+		3rd-party\opencv\build\include\opencv2\photo.hpp \
+		3rd-party\opencv\build\include\opencv2\stitching.hpp \
+		3rd-party\opencv\build\include\opencv2\stitching\warpers.hpp \
+		3rd-party\opencv\build\include\opencv2\stitching\detail\warpers.hpp \
+		3rd-party\opencv\build\include\opencv2\core\cuda.hpp \
+		3rd-party\opencv\build\include\opencv2\core\cuda_types.hpp \
+		3rd-party\opencv\build\include\opencv2\core\cuda.inl.hpp \
+		3rd-party\opencv\build\include\opencv2\stitching\detail\warpers_inl.hpp \
+		3rd-party\opencv\build\include\opencv2\stitching\detail\matchers.hpp \
+		3rd-party\opencv\build\include\opencv2\stitching\detail\motion_estimators.hpp \
+		3rd-party\opencv\build\include\opencv2\stitching\detail\util.hpp \
+		3rd-party\opencv\build\include\opencv2\stitching\detail\util_inl.hpp \
+		3rd-party\opencv\build\include\opencv2\stitching\detail\camera.hpp \
+		3rd-party\opencv\build\include\opencv2\stitching\detail\exposure_compensate.hpp \
+		3rd-party\opencv\build\include\opencv2\stitching\detail\seam_finders.hpp \
+		3rd-party\opencv\build\include\opencv2\stitching\detail\blenders.hpp \
+		3rd-party\opencv\build\include\opencv2\video.hpp \
+		3rd-party\opencv\build\include\opencv2\video\tracking.hpp \
+		3rd-party\opencv\build\include\opencv2\video\background_segm.hpp
 
 debug\SoftwareManager.obj: SoftwareManager.cpp SoftwareManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QList \
@@ -19473,16 +19755,14 @@ debug\SoftwareManager.obj: SoftwareManager.cpp SoftwareManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qtcpsocket.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QBuffer \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMetaObject \
+		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QNetworkInterface \
+		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qnetworkinterface.h \
+		VariableManager.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QHash \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
 		UnityTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QElapsedTimer \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItem \
-		DeltaVisualizer.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLabel \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPainter \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPixmap \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QMouseEvent \
-		FilterWindow.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QDialog \
 		3rd-party\opencv\build\include\opencv2\opencv.hpp \
 		3rd-party\opencv\build\include\opencv2\opencv_modules.hpp \
 		3rd-party\opencv\build\include\opencv2\core.hpp \
@@ -19579,6 +19859,13 @@ debug\SoftwareManager.obj: SoftwareManager.cpp SoftwareManager.h \
 		3rd-party\opencv\build\include\opencv2\video.hpp \
 		3rd-party\opencv\build\include\opencv2\video\tracking.hpp \
 		3rd-party\opencv\build\include\opencv2\video\background_segm.hpp \
+		DeltaVisualizer.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLabel \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPainter \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPixmap \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QMouseEvent \
+		FilterWindow.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QDialog \
 		ImageUnity.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDebug \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QtGlobal \
@@ -19588,9 +19875,6 @@ debug\SoftwareManager.obj: SoftwareManager.cpp SoftwareManager.h \
 		3rd-party\opencv\build\include\opencv2\core\types_c.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QThread \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutexLocker \
-		VariableManager.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QHash \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
 		GcodeReference.h \
 		ui_GcodeReference.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QApplication \
@@ -19627,8 +19911,6 @@ debug\SoftwareManager.obj: SoftwareManager.cpp SoftwareManager.h \
 		TCPConnectionManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QHostInfo \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qhostinfo.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QNetworkInterface \
-		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qnetworkinterface.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QCloseEvent \
 		ObjectVariableTable.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QSpacerItem \
@@ -20354,16 +20636,14 @@ debug\TabDashboard.obj: TabDashboard.cpp TabDashboard.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qtcpsocket.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QBuffer \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMetaObject \
+		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QNetworkInterface \
+		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qnetworkinterface.h \
+		VariableManager.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QHash \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
 		UnityTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QElapsedTimer \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItem \
-		DeltaVisualizer.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLabel \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPainter \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPixmap \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QMouseEvent \
-		FilterWindow.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QDialog \
 		3rd-party\opencv\build\include\opencv2\opencv.hpp \
 		3rd-party\opencv\build\include\opencv2\opencv_modules.hpp \
 		3rd-party\opencv\build\include\opencv2\core.hpp \
@@ -20460,6 +20740,13 @@ debug\TabDashboard.obj: TabDashboard.cpp TabDashboard.h \
 		3rd-party\opencv\build\include\opencv2\video.hpp \
 		3rd-party\opencv\build\include\opencv2\video\tracking.hpp \
 		3rd-party\opencv\build\include\opencv2\video\background_segm.hpp \
+		DeltaVisualizer.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLabel \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPainter \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPixmap \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QMouseEvent \
+		FilterWindow.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QDialog \
 		ImageUnity.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDebug \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QtGlobal \
@@ -20469,9 +20756,6 @@ debug\TabDashboard.obj: TabDashboard.cpp TabDashboard.h \
 		3rd-party\opencv\build\include\opencv2\core\types_c.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QThread \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutexLocker \
-		VariableManager.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QHash \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
 		GcodeReference.h \
 		ui_GcodeReference.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QApplication \
@@ -20508,8 +20792,6 @@ debug\TabDashboard.obj: TabDashboard.cpp TabDashboard.h \
 		TCPConnectionManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QHostInfo \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qhostinfo.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QNetworkInterface \
-		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qnetworkinterface.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QCloseEvent \
 		ObjectVariableTable.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QSpacerItem \
@@ -22548,14 +22830,12 @@ debug\UnityTool.obj: UnityTool.cpp UnityTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qtcpsocket.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QBuffer \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMetaObject \
-		DeltaVisualizer.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLabel \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPainter \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPixmap \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QMouseEvent \
-		FilterWindow.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QDialog \
+		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QNetworkInterface \
+		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qnetworkinterface.h \
+		VariableManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSettings \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QHash \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
 		3rd-party\opencv\build\include\opencv2\opencv.hpp \
 		3rd-party\opencv\build\include\opencv2\opencv_modules.hpp \
 		3rd-party\opencv\build\include\opencv2\core.hpp \
@@ -22652,6 +22932,13 @@ debug\UnityTool.obj: UnityTool.cpp UnityTool.h \
 		3rd-party\opencv\build\include\opencv2\video.hpp \
 		3rd-party\opencv\build\include\opencv2\video\tracking.hpp \
 		3rd-party\opencv\build\include\opencv2\video\background_segm.hpp \
+		DeltaVisualizer.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLabel \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPainter \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPixmap \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QMouseEvent \
+		FilterWindow.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QDialog \
 		ImageUnity.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDebug \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QtGlobal \
@@ -22661,9 +22948,6 @@ debug\UnityTool.obj: UnityTool.cpp UnityTool.h \
 		3rd-party\opencv\build\include\opencv2\core\types_c.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QThread \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutexLocker \
-		VariableManager.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QHash \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QPushButton \
 		GcodeReference.h \
 		ui_GcodeReference.h \
@@ -22703,8 +22987,6 @@ debug\UnityTool.obj: UnityTool.cpp UnityTool.h \
 		TCPConnectionManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QHostInfo \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qhostinfo.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QNetworkInterface \
-		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qnetworkinterface.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QCloseEvent \
 		ObjectVariableTable.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QSpacerItem \

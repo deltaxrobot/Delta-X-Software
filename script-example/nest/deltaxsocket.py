@@ -11,7 +11,7 @@ import numpy as np
 import cv2
 
 # Thay đổi các giá trị này cho phù hợp với server của bạn
-HOST = '192.168.1.5'
+HOST = '192.168.1.8'
 PORT = 8844
 
 # Lấy giá trị HOST và PORT từ file config.txt, nếu config.txt không tồn tại thì tạo mới
@@ -72,6 +72,7 @@ def Canny(img):
 def Send_Object_Info(objects):
     if len(objects) == 0:
         return
+    # #Object=x1,y1,z1,w1,l1,a1;x2,y2,z2,w2,l2,a2;...;xn,yn,zn,wn,ln,an
     message = "#Objects="
     for object in objects:
         message += str(object[0]) + ',' + str(object[1]) + ',' + str(object[2]) + ',' + str(object[3]) + ',' + str(object[4]) + ',' + str(object[5]) + ';'

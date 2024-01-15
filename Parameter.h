@@ -15,6 +15,7 @@ struct RobotPara
     float A = 1200;
     float S = 50;
     float E = 50;
+    float J = 300000;
 
     float XHome = 0;
     float YHome = 0;
@@ -66,6 +67,10 @@ struct RobotPara
         {
             E = value;
         }
+        if (key == "J")
+        {
+            J = value;
+        }
     }
 
     float Get(QString key)
@@ -109,6 +114,10 @@ struct RobotPara
         if (key == "E")
         {
             return E;
+        }
+        if (key == "J")
+        {
+            return J;
         }
 
         return 0;
