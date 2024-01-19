@@ -92,6 +92,8 @@ public slots:
     void Input(QRectF rect);
     void Input(Object obj);
 
+    void Input(QStringList objects);
+
     void DoWork();
 
     void ClearOutput();

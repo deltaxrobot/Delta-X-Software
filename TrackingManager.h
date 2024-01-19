@@ -46,7 +46,8 @@ public:
     void UpdateTrackedObjectsPosition(float moved);
 
     QList<ObjectInfo> trackedObjects;
-    float displacement;
+    float displacement = 0;
+    float minScore = 3;
     int nextID = 0;
 
     QVector3D VelocityVector;
@@ -64,6 +65,8 @@ public:
 
     int ID = 0;
     QString ReadPurpose = "Update";
+    float X_max = 1200, X_min = -300, Y_max = 400, Y_min = -400; // Boundary coordinates
+
 
 signals:
     void DistanceMoved(QPointF offset);
@@ -91,7 +94,6 @@ private:
     float detectPosition = 0;
     float currentPosition = 0;
     bool first = true;
-    double X_max, X_min, Y_max, Y_min; // Boundary coordinates
 
 };
 
@@ -110,6 +112,7 @@ public slots:
     void UpdateTracking(int id);
     void UpdateVariable(QString cmd);
     void AddObject(QString listName, QList<QStringList> list);
+    void ClearObjects(QString listName);
     void SetEncoderPosition(int id, float value);
     void ReadEncoderWhenSensorActive(int id);
     void OnDoneUpdateTracking();

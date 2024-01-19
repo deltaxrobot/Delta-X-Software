@@ -20,8 +20,6 @@ void Tracking::UpdateTrackedObjectsPosition(float moved)
             object.center += conveyorPathTravelled;
         }
     }
-
-
 }
 
 void Tracking::OnReceivceEncoderPosition(float value)
@@ -44,8 +42,8 @@ void Tracking::OnReceivceEncoderPosition(float value)
         detectPosition = currentPosition;
         ReadPurpose = "Update";
     }
-
-    UpdateTrackedObjectsPosition(currentPosition - lastPosition);
+    updatePositions(currentPosition - lastPosition);
+//    UpdateTrackedObjectsPosition(currentPosition - lastPosition);
 }
 
 void Tracking::ChangeObjectInfo(QString cmd)
@@ -81,7 +79,7 @@ void Tracking::ReadEncoder()
     }
     else if (EncoderType == "Virtual Encoder")
     {
-
+        GetVirtualEncoderPosition();
     }
 }
 
@@ -121,7 +119,7 @@ void Tracking::UpdateTrackedObjects(QList<ObjectInfo> detectedObjects, QString o
             }
         }
 
-        if (minSimilarity < 50 /* Similarity threshold */) {
+        if (minSimilarity < minScore /* Similarity threshold */) {
             // Update the tracked object's info
             bestMatch->center = detected.center;
             bestMatch->width = detected.width;
@@ -150,7 +148,7 @@ void Tracking::UpdateTrackedObjects(QList<ObjectInfo> detectedObjects, QString o
 }
 
 void Tracking::updatePositions(double displacement) {
-    QVector3D effectiveDisplacement = VelocityVector * displacement;
+    QVector3D effectiveDisplacement = calculateMoved(displacement);
 
     for (auto it = trackedObjects.begin(); it != trackedObjects.end(); ) {
         if (!it->isPicked) {
@@ -168,8 +166,21 @@ void Tracking::updatePositions(double displacement) {
 
 void Tracking::ClearTrackedObjects()
 {
+    for (int i = 0; i < trackedObjects.count(); i++)
+    {
+        VariableManager::instance().removeVar((ListName + ".%1.X").arg(trackedObjects.at(i).id));
+        VariableManager::instance().removeVar((ListName + ".%1.Y").arg(trackedObjects.at(i).id));
+        VariableManager::instance().removeVar((ListName + ".%1.Z").arg(trackedObjects.at(i).id));
+        VariableManager::instance().removeVar((ListName + ".%1.W").arg(trackedObjects.at(i).id));
+        VariableManager::instance().removeVar((ListName + ".%1.L").arg(trackedObjects.at(i).id));
+        VariableManager::instance().removeVar((ListName + ".%1.A").arg(trackedObjects.at(i).id));
+        VariableManager::instance().removeVar((ListName + ".%1.IsPicked").arg(trackedObjects.at(i).id));
+    }
+    VariableManager::instance().setVariable(ListName + ".Count", 0);
     trackedObjects.clear();
     nextID = 0;
+
+
 }
 
 void Tracking::RemoveTrackedObjects(int id)
@@ -306,6 +317,17 @@ void TrackingManager::AddObject(QString listName, QList<QStringList> list)
         if (Trackings.at(i)->ListName == listName)
         {
 //            QMetaObject::invokeMethod(Trackings.at(i), "UpdateTrackedObjects", Qt::QueuedConnection, Q_ARG(QList<ObjectInfo>, objectList), Q_ARG(QString, listName));
+        }
+    }
+}
+
+void TrackingManager::ClearObjects(QString listName)
+{
+    for(int i = 0; i < Trackings.count(); i++)
+    {
+        if (Trackings.at(i)->ListName == listName)
+        {
+            QMetaObject::invokeMethod(Trackings.at(i), "ClearTrackedObjects", Qt::QueuedConnection);
         }
     }
 }

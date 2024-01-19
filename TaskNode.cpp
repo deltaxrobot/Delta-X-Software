@@ -240,6 +240,51 @@ void TaskNode::Input(Object obj)
     inputObject.CopyFrom(obj);
 }
 
+void TaskNode::Input(QStringList objects)
+{
+    outputObjects.clear();
+
+    foreach(QString obj, objects)
+    {
+        QStringList objInfo = obj.split(",");
+        Object object;
+
+        for(int i = 0; i < objInfo.count(); i++)
+        {       
+            if (i == 0)
+            {
+                object.Type = objInfo[0];
+            }
+            else if (i == 1)
+            {
+                object.X.Image = objInfo[1].toFloat();
+            }
+            else if (i == 2)
+            {
+                object.Y.Image = objInfo[2].toFloat();
+            }
+            else if (i == 3)
+            {
+                object.Length.Image = objInfo[3].toFloat();
+            }
+            else if (i == 4)
+            {
+                object.Width.Image = objInfo[4].toFloat();
+            }            
+            else if (i == 5)
+            {
+                object.Angle.Image = objInfo[5].toFloat();
+            }
+            
+
+        }
+        outputObjects.append(object);
+    }
+
+    emit HadOutput(outputObjects);
+    emit Done();
+}
+
 void TaskNode::DoWork()
 {
     if (type == GET_IMAGE_NODE)

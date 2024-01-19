@@ -1082,7 +1082,7 @@ class Ui_RobotWindow(object):
         self.saObjectDetecting.setWidgetResizable(True)
         self.wObjectDetecting = QWidget()
         self.wObjectDetecting.setObjectName(u"wObjectDetecting")
-        self.wObjectDetecting.setGeometry(QRect(0, 0, 655, 2500))
+        self.wObjectDetecting.setGeometry(QRect(0, -1809, 655, 2500))
         self.wObjectDetecting.setMinimumSize(QSize(100, 2500))
         self.wObjectDetecting.setStyleSheet(u"QWidget#wObjectDetecting\n"
 "{	\n"
@@ -4596,7 +4596,7 @@ class Ui_RobotWindow(object):
         self.scrollArea_2.setWidgetResizable(True)
         self.wgJoggingScrollWidget = QWidget()
         self.wgJoggingScrollWidget.setObjectName(u"wgJoggingScrollWidget")
-        self.wgJoggingScrollWidget.setGeometry(QRect(0, -480, 495, 1500))
+        self.wgJoggingScrollWidget.setGeometry(QRect(0, 0, 495, 1500))
         self.wgJoggingScrollWidget.setMinimumSize(QSize(0, 1500))
         self.wgJoggingScrollWidget.setMaximumSize(QSize(16777215, 16777215))
         self.wgJoggingScrollWidget.setStyleSheet(u"QWidget#wgJoggingScrollWidget\n"
@@ -8013,7 +8013,7 @@ class Ui_RobotWindow(object):
         self.twModule.setCurrentIndex(1)
         self.pbImageMapping.setDefault(False)
         self.cbImageSource.setCurrentIndex(0)
-        self.twDevices.setCurrentIndex(2)
+        self.twDevices.setCurrentIndex(0)
         self.pbPump.setDefault(False)
         self.pbLaser.setDefault(False)
         self.pbGrip.setDefault(False)
@@ -9005,7 +9005,7 @@ class Ui_RobotWindow(object):
         self.leEncoderCurrentPosition.setText(QCoreApplication.translate("RobotWindow", u"100", None))
         self.pbSetEncoderInterval.setText(QCoreApplication.translate("RobotWindow", u"Set", None))
         self.label_129.setText(QCoreApplication.translate("RobotWindow", u"Velocity (mm/s)", None))
-        self.leEncoderInterval.setText(QCoreApplication.translate("RobotWindow", u"100", None))
+        self.leEncoderInterval.setText(QCoreApplication.translate("RobotWindow", u"1000", None))
         self.label_125.setText(QCoreApplication.translate("RobotWindow", u"Timer (ms)", None))
         self.pbResetEncoder.setText(QCoreApplication.translate("RobotWindow", u"Reset", None))
         self.pbSetEncoderVelocity.setText(QCoreApplication.translate("RobotWindow", u"Set", None))

@@ -1671,7 +1671,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
                   <property name="geometry">
                    <rect>
                     <x>0</x>
-                    <y>0</y>
+                    <y>-1809</y>
                     <width>655</width>
                     <height>2500</height>
                    </rect>
@@ -8693,7 +8693,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
               <enum>QTabWidget::North</enum>
              </property>
              <property name="currentIndex">
-              <number>2</number>
+              <number>0</number>
              </property>
              <property name="elideMode">
               <enum>Qt::ElideNone</enum>
@@ -8733,7 +8733,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
                   <property name="geometry">
                    <rect>
                     <x>0</x>
-                    <y>-480</y>
+                    <y>0</y>
                     <width>495</width>
                     <height>1500</height>
                    </rect>
@@ -10700,7 +10700,7 @@ QRadioButton:disabled {
                        <number>0</number>
                       </property>
                       <item>
-                       <widget class="QFrame" name="">
+                       <widget class="QFrame" name="frame">
                         <property name="styleSheet">
                          <string notr="true">QLabel
 {
@@ -14980,7 +14980,7 @@ QGroupBox
                           </sizepolicy>
                          </property>
                          <property name="text">
-                          <string>100</string>
+                          <string>1000</string>
                          </property>
                         </widget>
                        </item>

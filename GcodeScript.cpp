@@ -588,7 +588,16 @@ bool GcodeScript::findExeGcodeAndTransmit()
 
                 if (subProName == "clearobjects")
                 {
-                    emit DeleteAllObjects();
+                    // M98 PclearObjects listName
+                    if (valuePairs.size() > (i + 2))
+                    {
+                        QString listName = valuePairs[i + 2];
+                        emit DeleteAllObjects(listName);
+                    }
+                    else
+                    {
+                        emit DeleteAllObjects();
+                    }
                     gcodeOrder++;
                     return false;
                 }

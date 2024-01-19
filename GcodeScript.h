@@ -62,6 +62,7 @@ signals:
     void RobotMoved(QString gcode);
 
     void DeleteAllObjects();
+    void DeleteAllObjects(QString listName);
     void DeleteObject(int id);
     void PauseCamera();
     void CaptureCamera();

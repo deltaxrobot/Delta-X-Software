@@ -99,6 +99,12 @@ void SocketConnectionManager::readFromClient() {
 
                 emit objectUpdated(varName, objects);
             }
+            else if (varName.contains("Blobs"))
+            {
+                QStringList blobs = value.split(";");
+
+                emit blobUpdated(blobs);
+            }
             else
             {
                 VariableManager::instance().UpdateVarToModel(varName, value);

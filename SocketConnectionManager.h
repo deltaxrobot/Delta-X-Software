@@ -39,6 +39,7 @@ public slots:
 signals:
     void variableChanged(const QString& varName, const QVariant& value);
     void objectUpdated(QString listName, QList<QStringList> list);
+    void blobUpdated(QStringList blobs);
 };
 
 #endif // SOCKETCONNECTIONMANAGER_H

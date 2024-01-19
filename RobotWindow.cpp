@@ -275,8 +275,6 @@ void RobotWindow::InitVariables()
 //    ui->gbCameraVariable->setChecked(false);
 
     InitCalibration();
-
-
 }
 
 void RobotWindow::InitOtherThreadObjects()
@@ -361,7 +359,7 @@ void RobotWindow::InitOtherThreadObjects()
     connect(ui->pbReadEncoder, SIGNAL(clicked(bool)), this, SLOT(ReadEncoder()));
     connect(ui->pbSetEncoderInterval, SIGNAL(clicked(bool)), this, SLOT(SetEncoderAutoRead()));
     connect(ui->pbResetEncoder, SIGNAL(clicked(bool)), this, SLOT(ResetEncoderPosition()));
-    connect(ui->pbSetEncoderVelocity, SIGNAL(clicked(bool)), this, SLOT(ResetEncoderPosition()));
+    connect(ui->pbSetEncoderVelocity, SIGNAL(clicked(bool)), this, SLOT(SetEncoderVelocity()));
 
     connect(ui->cbEncoderType, SIGNAL(currentIndexChanged(int)), this, SLOT(ChangeEncoderType(int)));
 
@@ -593,6 +591,24 @@ void RobotWindow::InitObjectDetectingModule()
         ui->gvImageViewer->ZoomOut(2);
 //        ui->graphicsView->ZoomOut(2);
     });
+
+    connect(ui->leLimitMinX, &QLineEdit::returnPressed,
+    [=] (){
+        TrackingManagerInstance->Trackings.at(0)->X_min = ui->leLimitMinX->text().toFloat();
+    });
+    connect(ui->leLimitMaxX, &QLineEdit::returnPressed,
+    [=] (){
+        TrackingManagerInstance->Trackings.at(0)->X_max = ui->leLimitMaxX->text().toFloat();
+    });
+    connect(ui->leLimitMinY, &QLineEdit::returnPressed,
+    [=] (){
+        TrackingManagerInstance->Trackings.at(0)->Y_min = ui->leLimitMinY->text().toFloat();
+    });
+    connect(ui->leLimitMaxY, &QLineEdit::returnPressed,
+    [=] (){
+        TrackingManagerInstance->Trackings.at(0)->Y_max = ui->leLimitMaxY->text().toFloat();
+    });
+
 
     // ---------- Image Provider -------
 
@@ -1281,7 +1297,10 @@ void RobotWindow::AddScriptThread()
     connect(GcodeScriptThread, &GcodeScript::UpdateTrackingRequest, TrackingManagerInstance, &TrackingManager::UpdateTracking);
     connect(GcodeScriptThread, &GcodeScript::ChangeExternalVariable, TrackingManagerInstance, &TrackingManager::UpdateVariable);
     connect(GcodeScriptThread, &GcodeScript::AddObject, TrackingManagerInstance, &TrackingManager::AddObject);
+    connect(GcodeScriptThread, SIGNAL(DeleteAllObjects(QString)), TrackingManagerInstance, SLOT(ClearObjects(QString)));
     connect(ConnectionManager, &SocketConnectionManager::objectUpdated, TrackingManagerInstance, &TrackingManager::AddObject);
+    connect(ConnectionManager, SIGNAL(blobUpdated(QStringList)), ImageProcessingThread->GetNode("GetObjectsNode"), SLOT(Input(QStringList)));
+
 
     connect(TrackingManagerInstance, &TrackingManager::GotResponse, GcodeScriptThread, &GcodeScript::GetResponse);
 
@@ -2963,7 +2982,7 @@ void RobotWindow::SetEncoderAutoRead()
 void RobotWindow::ResetEncoderPosition()
 {
     QString interval = ui->leEncoderInterval->text();
-    int selectedEncoderID = ui->cbSelectedEncoder->currentText().toInt() - 1;
+    int selectedEncoderID = ui->cbSelectedEncoder->currentIndex();
 
     if (ui->cbEncoderType->currentText() == "Sub Encoder")
     {
@@ -2985,7 +3004,7 @@ void RobotWindow::ResetEncoderPosition()
 
 void RobotWindow::SetEncoderVelocity()
 {
-    int selectedEncoderID = ui->cbSelectedEncoder->currentText().toInt() - 1;
+    int selectedEncoderID = ui->cbSelectedEncoder->currentIndex();
 
     TrackingManagerInstance->Trackings[selectedEncoderID]->VirEncoder.setVelocity(ui->leEncoderVelocity->text().toFloat());
 }
@@ -3710,12 +3729,12 @@ void RobotWindow::ChangeEncoderType(int index)
     int selectedEncoderID = ui->cbSelectedEncoder->currentIndex();
     if (ui->cbEncoderType->currentText() == "Encoder X")
     {
-        ui->pbSetEncoderVelocity->setHidden(false);
+        ui->pbSetEncoderVelocity->setHidden(true);
         TrackingManagerInstance->Trackings.at(selectedEncoderID)->VirEncoder.stop();
     }
     else if (ui->cbEncoderType->currentText() == "Sub Encoder")
     {
-        ui->pbSetEncoderVelocity->setHidden(false);
+        ui->pbSetEncoderVelocity->setHidden(true);
         TrackingManagerInstance->Trackings.at(selectedEncoderID)->VirEncoder.stop();
     }
     else if (ui->cbEncoderType->currentText() == "Virtual Encoder")
@@ -3724,6 +3743,7 @@ void RobotWindow::ChangeEncoderType(int index)
         TrackingManagerInstance->Trackings.at(selectedEncoderID)->VirEncoder.start();
         ui->cbLinkToConveyorX->setHidden(false);
         ui->cbConveyorForVirtualEncoder->setHidden(false);
+        ui->pbSetEncoderVelocity->setHidden(false);
     }
 }
 

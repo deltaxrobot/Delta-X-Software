@@ -2095,7 +2095,7 @@ public:
         saObjectDetecting->setWidgetResizable(true);
         wObjectDetecting = new QWidget();
         wObjectDetecting->setObjectName(QString::fromUtf8("wObjectDetecting"));
-        wObjectDetecting->setGeometry(QRect(0, 0, 655, 2500));
+        wObjectDetecting->setGeometry(QRect(0, -1809, 655, 2500));
         wObjectDetecting->setMinimumSize(QSize(100, 2500));
         wObjectDetecting->setStyleSheet(QString::fromUtf8("QWidget#wObjectDetecting\n"
 "{	\n"
@@ -5609,7 +5609,7 @@ public:
         scrollArea_2->setWidgetResizable(true);
         wgJoggingScrollWidget = new QWidget();
         wgJoggingScrollWidget->setObjectName(QString::fromUtf8("wgJoggingScrollWidget"));
-        wgJoggingScrollWidget->setGeometry(QRect(0, -480, 495, 1500));
+        wgJoggingScrollWidget->setGeometry(QRect(0, 0, 495, 1500));
         wgJoggingScrollWidget->setMinimumSize(QSize(0, 1500));
         wgJoggingScrollWidget->setMaximumSize(QSize(16777215, 16777215));
         wgJoggingScrollWidget->setStyleSheet(QString::fromUtf8("QWidget#wgJoggingScrollWidget\n"
@@ -9026,7 +9026,7 @@ public:
         twModule->setCurrentIndex(1);
         pbImageMapping->setDefault(false);
         cbImageSource->setCurrentIndex(0);
-        twDevices->setCurrentIndex(2);
+        twDevices->setCurrentIndex(0);
         pbPump->setDefault(false);
         pbLaser->setDefault(false);
         pbGrip->setDefault(false);
@@ -10019,7 +10019,7 @@ public:
         leEncoderCurrentPosition->setText(QCoreApplication::translate("RobotWindow", "100", nullptr));
         pbSetEncoderInterval->setText(QCoreApplication::translate("RobotWindow", "Set", nullptr));
         label_129->setText(QCoreApplication::translate("RobotWindow", "Velocity (mm/s)", nullptr));
-        leEncoderInterval->setText(QCoreApplication::translate("RobotWindow", "100", nullptr));
+        leEncoderInterval->setText(QCoreApplication::translate("RobotWindow", "1000", nullptr));
         label_125->setText(QCoreApplication::translate("RobotWindow", "Timer (ms)", nullptr));
         pbResetEncoder->setText(QCoreApplication::translate("RobotWindow", "Reset", nullptr));
         pbSetEncoderVelocity->setText(QCoreApplication::translate("RobotWindow", "Set", nullptr));
