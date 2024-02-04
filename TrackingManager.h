@@ -45,9 +45,11 @@ public:
     explicit Tracking(QObject *parent = nullptr);
     void UpdateTrackedObjectsPosition(float moved);
 
-    QList<ObjectInfo> trackedObjects;
+    QList<ObjectInfo> TrackedObjects;
+    QList<ObjectInfo> DetectedObjects;
+
     float displacement = 0;
-    float minScore = 3;
+    float SimilarityThreshold =20;
     int nextID = 0;
 
     QVector3D VelocityVector;

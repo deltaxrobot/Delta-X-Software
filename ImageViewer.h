@@ -370,6 +370,8 @@ private:
     }
 
     QRectF rect;
+    QRectF minRect;
+    QRectF maxRect;
     QLineF diagonalLine;
     QGraphicsRectItem* whiteRectItem;
     QGraphicsRectItem* blackRectItem;
@@ -916,14 +918,6 @@ protected:
     CameraPointItem cMappingPoint;
     CameraQuadangleItem cQuadangle;
     CameraAreaItem cArea;
-
-//    QLineF mLine;
-//    QRect mRect;
-//    QPoint mPoint;
-//    QPoint mPoint2;
-//    QPoint mQuadrangle[4];
-//    QRect mArea;
-//    QPoint mMappingPoint;
 
     float imgWidth = 0;
     float imgHeight = 0;

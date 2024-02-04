@@ -1373,10 +1373,6 @@ release\moc_Authority.cpp: Authority.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QHostInfo \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qhostinfo.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QCloseEvent \
-		ObjectVariableTable.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QSpacerItem \
-		Object.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QScrollArea \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QProcess \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\QCameraInfo \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\qcamerainfo.h \
@@ -1416,6 +1412,7 @@ release\moc_Authority.cpp: Authority.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QToolButton \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QRadioButton \
 		TaskNode.h \
+		Object.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSharedPointer \
 		GcodeScript.h \
 		ScurveInterpolator.h \
@@ -3296,10 +3293,6 @@ release\moc_GcodeScript.cpp: GcodeScript.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QHostInfo \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qhostinfo.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QCloseEvent \
-		ObjectVariableTable.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QSpacerItem \
-		Object.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QScrollArea \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QProcess \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\QCameraInfo \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\qcamerainfo.h \
@@ -3338,6 +3331,7 @@ release\moc_GcodeScript.cpp: GcodeScript.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QToolButton \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QRadioButton \
 		TaskNode.h \
+		Object.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSharedPointer \
 		GcodeScript.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QFileInfo \
@@ -4638,10 +4632,6 @@ release\moc_MainWindow.cpp: MainWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QHostInfo \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qhostinfo.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QCloseEvent \
-		ObjectVariableTable.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QSpacerItem \
-		Object.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QScrollArea \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QProcess \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\QCameraInfo \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\qcamerainfo.h \
@@ -4680,6 +4670,7 @@ release\moc_MainWindow.cpp: MainWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QCheckBox \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QRadioButton \
 		TaskNode.h \
+		Object.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSharedPointer \
 		GcodeScript.h \
 		ScurveInterpolator.h \
@@ -6167,10 +6158,6 @@ release\moc_ProjectManager.cpp: ProjectManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QHostInfo \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qhostinfo.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QCloseEvent \
-		ObjectVariableTable.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QSpacerItem \
-		Object.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QScrollArea \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QProcess \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\QCameraInfo \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\qcamerainfo.h \
@@ -6210,6 +6197,7 @@ release\moc_ProjectManager.cpp: ProjectManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QToolButton \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QRadioButton \
 		TaskNode.h \
+		Object.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSharedPointer \
 		GcodeScript.h \
 		ScurveInterpolator.h \
@@ -6909,10 +6897,6 @@ release\moc_RobotWindow.cpp: RobotWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QHostInfo \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qhostinfo.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QCloseEvent \
-		ObjectVariableTable.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QSpacerItem \
-		Object.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QScrollArea \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QProcess \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\QCameraInfo \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\qcamerainfo.h \
@@ -6953,6 +6937,7 @@ release\moc_RobotWindow.cpp: RobotWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QToolButton \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QRadioButton \
 		TaskNode.h \
+		Object.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSharedPointer \
 		GcodeScript.h \
 		ScurveInterpolator.h \
@@ -8149,10 +8134,6 @@ release\moc_TabDashboard.cpp: TabDashboard.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QHostInfo \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qhostinfo.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QCloseEvent \
-		ObjectVariableTable.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QSpacerItem \
-		Object.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QScrollArea \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QProcess \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\QCameraInfo \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\qcamerainfo.h \
@@ -8191,6 +8172,7 @@ release\moc_TabDashboard.cpp: TabDashboard.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QCheckBox \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QRadioButton \
 		TaskNode.h \
+		Object.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSharedPointer \
 		GcodeScript.h \
 		ScurveInterpolator.h \
@@ -12453,10 +12435,6 @@ release\main.obj: main.cpp RobotWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QHostInfo \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qhostinfo.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QCloseEvent \
-		ObjectVariableTable.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QSpacerItem \
-		Object.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QScrollArea \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QProcess \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\QCameraInfo \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\qcamerainfo.h \
@@ -12497,6 +12475,7 @@ release\main.obj: main.cpp RobotWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QToolButton \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QRadioButton \
 		TaskNode.h \
+		Object.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSharedPointer \
 		GcodeScript.h \
 		ScurveInterpolator.h \
@@ -13354,10 +13333,6 @@ release\Authority.obj: Authority.cpp Authority.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QHostInfo \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qhostinfo.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QCloseEvent \
-		ObjectVariableTable.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QSpacerItem \
-		Object.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QScrollArea \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QProcess \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\QCameraInfo \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\qcamerainfo.h \
@@ -13397,6 +13372,7 @@ release\Authority.obj: Authority.cpp Authority.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QToolButton \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QRadioButton \
 		TaskNode.h \
+		Object.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSharedPointer \
 		GcodeScript.h \
 		ScurveInterpolator.h \
@@ -15272,10 +15248,6 @@ release\GcodeScript.obj: GcodeScript.cpp GcodeScript.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QHostInfo \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qhostinfo.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QCloseEvent \
-		ObjectVariableTable.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QSpacerItem \
-		Object.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QScrollArea \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QProcess \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\QCameraInfo \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\qcamerainfo.h \
@@ -15314,6 +15286,7 @@ release\GcodeScript.obj: GcodeScript.cpp GcodeScript.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QToolButton \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QRadioButton \
 		TaskNode.h \
+		Object.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSharedPointer \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QDialogButtonBox \
 		device\DeviceManager.h \
@@ -16883,10 +16856,6 @@ release\MainWindow.obj: MainWindow.cpp MainWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QHostInfo \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qhostinfo.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QCloseEvent \
-		ObjectVariableTable.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QSpacerItem \
-		Object.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QScrollArea \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QProcess \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\QCameraInfo \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\qcamerainfo.h \
@@ -16925,6 +16894,7 @@ release\MainWindow.obj: MainWindow.cpp MainWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QCheckBox \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QRadioButton \
 		TaskNode.h \
+		Object.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSharedPointer \
 		GcodeScript.h \
 		ScurveInterpolator.h \
@@ -16966,6 +16936,8 @@ release\MainWindow.obj: MainWindow.cpp MainWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGroupBox \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QHeaderView \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QPlainTextEdit \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QScrollArea \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QSpacerItem \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QTableWidget \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QTreeView \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QTreeWidget
@@ -18060,10 +18032,6 @@ release\ProjectManager.obj: ProjectManager.cpp ProjectManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QHostInfo \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qhostinfo.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QCloseEvent \
-		ObjectVariableTable.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QSpacerItem \
-		Object.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QScrollArea \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QProcess \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\QCameraInfo \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\qcamerainfo.h \
@@ -18103,6 +18071,7 @@ release\ProjectManager.obj: ProjectManager.cpp ProjectManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QToolButton \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QRadioButton \
 		TaskNode.h \
+		Object.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSharedPointer \
 		GcodeScript.h \
 		ScurveInterpolator.h \
@@ -18798,10 +18767,6 @@ release\RobotWindow.obj: RobotWindow.cpp RobotWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QHostInfo \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qhostinfo.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QCloseEvent \
-		ObjectVariableTable.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QSpacerItem \
-		Object.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QScrollArea \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QProcess \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\QCameraInfo \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\qcamerainfo.h \
@@ -18842,6 +18807,7 @@ release\RobotWindow.obj: RobotWindow.cpp RobotWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QToolButton \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QRadioButton \
 		TaskNode.h \
+		Object.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSharedPointer \
 		GcodeScript.h \
 		ScurveInterpolator.h \
@@ -18884,7 +18850,9 @@ release\RobotWindow.obj: RobotWindow.cpp RobotWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QFrame \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGroupBox \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QHeaderView \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QScrollArea \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QSlider \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QSpacerItem \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QSplitter \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QTableView \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QTreeView \
@@ -19911,10 +19879,6 @@ release\SoftwareManager.obj: SoftwareManager.cpp SoftwareManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QHostInfo \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qhostinfo.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QCloseEvent \
-		ObjectVariableTable.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QSpacerItem \
-		Object.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QScrollArea \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QProcess \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\QCameraInfo \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\qcamerainfo.h \
@@ -19954,6 +19918,7 @@ release\SoftwareManager.obj: SoftwareManager.cpp SoftwareManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QToolButton \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QRadioButton \
 		TaskNode.h \
+		Object.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSharedPointer \
 		GcodeScript.h \
 		ScurveInterpolator.h \
@@ -20792,10 +20757,6 @@ release\TabDashboard.obj: TabDashboard.cpp TabDashboard.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QHostInfo \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qhostinfo.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QCloseEvent \
-		ObjectVariableTable.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QSpacerItem \
-		Object.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QScrollArea \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QProcess \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\QCameraInfo \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\qcamerainfo.h \
@@ -20834,6 +20795,7 @@ release\TabDashboard.obj: TabDashboard.cpp TabDashboard.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QCheckBox \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QRadioButton \
 		TaskNode.h \
+		Object.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSharedPointer \
 		GcodeScript.h \
 		ScurveInterpolator.h \
@@ -22987,10 +22949,6 @@ release\UnityTool.obj: UnityTool.cpp UnityTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QHostInfo \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\qhostinfo.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QCloseEvent \
-		ObjectVariableTable.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QSpacerItem \
-		Object.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QScrollArea \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QProcess \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\QCameraInfo \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\qcamerainfo.h \
@@ -23031,6 +22989,7 @@ release\UnityTool.obj: UnityTool.cpp UnityTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QToolButton \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QRadioButton \
 		TaskNode.h \
+		Object.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSharedPointer \
 		GcodeScript.h \
 		ScurveInterpolator.h \

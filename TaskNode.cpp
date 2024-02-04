@@ -753,7 +753,6 @@ void TaskNode::doGetObjectsWork()
     }
 
     emit HadOutput(outputObjects);
-    emit Done();
 }
 
 void TaskNode::doVisibleObjectsWork()
@@ -766,6 +765,7 @@ void TaskNode::doVisibleObjectsWork()
         outputObjects.append(inputObjects[i]);
     }
     emit HadOutput(outputObjects);
+    emit Done(defaultThreadId);
 }
 
 void TaskNode::clear(QList<Object> objs)

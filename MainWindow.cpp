@@ -71,6 +71,9 @@ void MainWindow::InitVariables()
     VariableManager::instance().addItemModel(&VariableTreeModel);
     VariableManager::instance().loadFromQSettings();
 
+    connect(ui->tvVariables, &QTreeView::clicked, this, &MainWindow::onTreeViewItemClicked);
+
+
     //------- Project Manager --------
     SoftwareProjectManager = new ProjectManager();
     SoftwareProjectManager->InitTabManager(ui->twProjectManager);
@@ -436,6 +439,22 @@ void MainWindow::SetLoadingIconRun(bool isRun)
 
 }
 
+void MainWindow::onTreeViewItemClicked(const QModelIndex &index)
+{
+    QStandardItem *item = VariableTreeModel.itemFromIndex(index);
+    QString key = item->parent()->child(index.row(), 0)->text();
+    // Lấy tên của các item cha của item hiện tại và gán lại thành mẫu như sau "item1.item2.item3"
+    for (QStandardItem *parent = item->parent(); parent != nullptr; parent = parent->parent()) {
+        key = parent->text() + "." + key;
+    }
+
+    QString value = item->parent()->child(index.row(), 1)->text();
+
+    ui->leUpdateKey->setText(key);
+    ui->leUpdateValue->setText(value);
+
+}
+
 MainWindow::~MainWindow()
 {
     delete ui;
@@ -625,5 +644,27 @@ void MainWindow::on_tbExpandLoggingBox_clicked()
 void MainWindow::on_pbUpdateVarDisplay_clicked()
 {
     VariableManager::instance().updateVar(ui->leUpdateKey->text(), ui->leUpdateValue->text());
+}
+
+
+void MainWindow::on_pbDeleteSelectedVar_clicked()
+{
+    QModelIndexList selectedIndexes = ui->tvVariables->selectionModel()->selectedIndexes();
+    if(!selectedIndexes.isEmpty())
+    {
+        // Assuming you are using QStandardItemModel
+        QStandardItemModel* model = qobject_cast<QStandardItemModel*>(ui->tvVariables->model());
+        if(model)
+        {
+            // Get the index of the selected item
+            QModelIndex index = selectedIndexes.first();
+            // Get the item of the model
+            QStandardItem* item = model->itemFromIndex(index);
+            // Remove the item
+            model->removeRow(item->row(), index.parent());
+
+            VariableManager::instance().removeVar(ui->leUpdateKey->text());
+        }
+    }
 }
 

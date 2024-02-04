@@ -91,6 +91,7 @@ public:
     QLabel *label_13;
     QLineEdit *leUpdateValue;
     QPushButton *pbUpdateVarDisplay;
+    QPushButton *pbDeleteSelectedVar;
     QSpacerItem *horizontalSpacer_7;
     QTreeView *tvVariables;
     QWidget *pOperator;
@@ -700,6 +701,11 @@ public:
 
         horizontalLayout_14->addWidget(pbUpdateVarDisplay);
 
+        pbDeleteSelectedVar = new QPushButton(frame_4);
+        pbDeleteSelectedVar->setObjectName(QString::fromUtf8("pbDeleteSelectedVar"));
+
+        horizontalLayout_14->addWidget(pbDeleteSelectedVar);
+
         horizontalSpacer_7 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
         horizontalLayout_14->addItem(horizontalSpacer_7);
@@ -1084,7 +1090,7 @@ public:
         scrollArea->setWidgetResizable(true);
         scrollAreaWidgetContents = new QWidget();
         scrollAreaWidgetContents->setObjectName(QString::fromUtf8("scrollAreaWidgetContents"));
-        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 1089, 700));
+        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 571, 700));
         scrollAreaWidgetContents->setMinimumSize(QSize(0, 700));
         verticalLayout_7 = new QVBoxLayout(scrollAreaWidgetContents);
         verticalLayout_7->setSpacing(6);
@@ -1498,7 +1504,7 @@ public:
         retranslateUi(MainWindow);
 
         stackedWidget->setCurrentIndex(0);
-        swPageStack->setCurrentIndex(1);
+        swPageStack->setCurrentIndex(8);
         swAuthority->setCurrentIndex(0);
         twProjectManager->setCurrentIndex(0);
 
@@ -1539,6 +1545,7 @@ public:
         label_12->setText(QCoreApplication::translate("MainWindow", "Key", nullptr));
         label_13->setText(QCoreApplication::translate("MainWindow", "Value", nullptr));
         pbUpdateVarDisplay->setText(QCoreApplication::translate("MainWindow", "Update", nullptr));
+        pbDeleteSelectedVar->setText(QCoreApplication::translate("MainWindow", "Delete", nullptr));
         label_21->setText(QCoreApplication::translate("MainWindow", "Operator", nullptr));
         lbOperatorTitile->setText(QCoreApplication::translate("MainWindow", "Delta Robot System", nullptr));
         pbStartSystem->setText(QCoreApplication::translate("MainWindow", "Start", nullptr));

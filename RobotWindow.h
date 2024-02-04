@@ -35,7 +35,7 @@
 #include <TCPConnectionManager.h>
 //#include <ROS.h>
 #include <QCloseEvent>
-#include <ObjectVariableTable.h>
+//#include <ObjectVariableTable.h>
 #include <QProcess>
 #include <QSettings>
 #include <QtMultimedia/QCameraInfo>
@@ -107,7 +107,7 @@ public:
     void InitOtherThreadObjects();
 	void InitEvents();
     void InitVariables();
-    void InitConnectionModule();
+    void InitSocketConnection();
     void InitObjectDetectingModule();
     void InitGcodeEditorModule();
     void InitUIController();
@@ -145,6 +145,8 @@ public:
     void SavePluginSetting(QSettings* setting);
 
     void SetID(QString id);
+
+    void InitDefaultValue();
 
     // ----- Event ----
     void DisablePositionUpdatingEvents();
@@ -196,7 +198,7 @@ public:
     ImageProcessing* ImageProcessingThread;
     FilterWindow* ParameterPanel;
 
-    ObjectVariableTable* TrackingObjectTable;
+//    ObjectVariableTable* TrackingObjectTable;
     QTimer* ConvenyorTimer;
 
     Encoder* Encoder1;
@@ -240,7 +242,6 @@ public:
 
     QStandardItemModel VarViewModel;
     ObjectInfoModel *ObjectModel;
-//    QMap<QString, QString>* GcodeVariables;
     QTransform CalculatingTransform;
     QMatrix CalculatingTransform2;
     QMatrix PointMatrix;
@@ -251,6 +252,7 @@ public slots:
     void GetDeviceInfo(QString json);
     void GetDeviceResponse(QString id, QString response);
     void UpdateVarToView(QString fullKey, QVariant value);
+    void UpdateObjectsToView();
 
     //----- 3D -----
     void Load3DComponents();
@@ -515,6 +517,9 @@ private:
     // ---- Gcode Editor ----
     QFileSystemModel explorerModel;
     GCodeHighlighter *highlighter;
+
+    // ---- Last Values ----
+    float encoderLastValue = 0;
 
 public:
     Ui::RobotWindow *ui;

@@ -25,6 +25,7 @@ public:
 
     void lineNumberAreaPaintEvent(QPaintEvent *event);
     int lineNumberAreaWidth();
+    void setTabWidth(int width);
 
 protected:
     void resizeEvent(QResizeEvent *event) override;
@@ -40,6 +41,8 @@ private:
     QWidget *lineNumberArea;
 
     void commentSelectedLines();
+    void indentText();
+    void deleleIndentText();
 };
 
 //![codeeditordefinition]

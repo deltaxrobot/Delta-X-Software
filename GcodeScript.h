@@ -29,8 +29,6 @@ public:
         CURSOR_POSITION,
     };
 
-    QMap<QString, QString> *GcodeVariables = NULL;
-
     QString ProjectName = "project0";
     Scurve_Interpolator DeltaXSMoving;
 
@@ -49,11 +47,13 @@ public:
     bool IsRunning();
 
 public slots:
-    void ExecuteGcode(QString gcodes, int position);
+    void ExecuteGcode(QString gcodes, int position, QString functions = "");
     void GetResponse(QString deviceId, QString response);
     void SendMsgToDevice(QString deviceId, QString msg);
     void TransmitNextGcode();
+    void ExecuteFunction(QString functionName, QStringList paras);
     void Stop();
+    void ReceivedGcode(QString gcode);
 
 signals:
     void Finished();
@@ -91,6 +91,8 @@ private:
     QStringList deviceNames = {"robot", "device", "conveyor", "slider", "encoder"};
 
     QList<QString> gcodeList;
+    QString functionScripts = "";
+
     QVector<int> gcodeNumberList;
     int gcodeOrder = 0;
     int currentGcodeEditorCursor = 0;
@@ -151,7 +153,6 @@ private:
     void processResponse(QString response);
     bool checkExclution(QString response);
 
-    QString convertGcodeToSyncConveyor(QString gcode);
 };
 
 #endif

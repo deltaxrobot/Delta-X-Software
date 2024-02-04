@@ -515,6 +515,11 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_14.addWidget(self.pbUpdateVarDisplay)
 
+        self.pbDeleteSelectedVar = QPushButton(self.frame_4)
+        self.pbDeleteSelectedVar.setObjectName(u"pbDeleteSelectedVar")
+
+        self.horizontalLayout_14.addWidget(self.pbDeleteSelectedVar)
+
         self.horizontalSpacer_7 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
 
         self.horizontalLayout_14.addItem(self.horizontalSpacer_7)
@@ -899,7 +904,7 @@ class Ui_MainWindow(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollAreaWidgetContents = QWidget()
         self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
-        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 1089, 700))
+        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 571, 700))
         self.scrollAreaWidgetContents.setMinimumSize(QSize(0, 700))
         self.verticalLayout_7 = QVBoxLayout(self.scrollAreaWidgetContents)
         self.verticalLayout_7.setSpacing(6)
@@ -1313,7 +1318,7 @@ class Ui_MainWindow(object):
         self.retranslateUi(MainWindow)
 
         self.stackedWidget.setCurrentIndex(0)
-        self.swPageStack.setCurrentIndex(1)
+        self.swPageStack.setCurrentIndex(8)
         self.swAuthority.setCurrentIndex(0)
         self.twProjectManager.setCurrentIndex(0)
 
@@ -1353,6 +1358,7 @@ class Ui_MainWindow(object):
         self.label_12.setText(QCoreApplication.translate("MainWindow", u"Key", None))
         self.label_13.setText(QCoreApplication.translate("MainWindow", u"Value", None))
         self.pbUpdateVarDisplay.setText(QCoreApplication.translate("MainWindow", u"Update", None))
+        self.pbDeleteSelectedVar.setText(QCoreApplication.translate("MainWindow", u"Delete", None))
         self.label_21.setText(QCoreApplication.translate("MainWindow", u"Operator", None))
         self.lbOperatorTitile.setText(QCoreApplication.translate("MainWindow", u"Delta Robot System", None))
         self.pbStartSystem.setText(QCoreApplication.translate("MainWindow", u"Start", None))

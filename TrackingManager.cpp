@@ -8,7 +8,7 @@ Tracking::Tracking(QObject *parent)
 
 void Tracking::UpdateTrackedObjectsPosition(float moved)
 {
-    for (ObjectInfo &object : trackedObjects) {
+    for (ObjectInfo &object : TrackedObjects) {
         if (object.offset == QVector3D(0, 0, 0)) {
             QVector3D detectionPositionOffset = calculateMoved(detectPosition - capturePosition);
             object.offset = detectionPositionOffset;
@@ -41,6 +41,7 @@ void Tracking::OnReceivceEncoderPosition(float value)
     {
         detectPosition = currentPosition;
         ReadPurpose = "Update";
+        UpdateTrackedObjects(DetectedObjects, ListName);
     }
     updatePositions(currentPosition - lastPosition);
 //    UpdateTrackedObjectsPosition(currentPosition - lastPosition);
@@ -56,9 +57,9 @@ void Tracking::ChangeObjectInfo(QString cmd)
     if (paras2.at(2) == "IsPicked")
     {
         if (paras1.at(1).trimmed() == "True")
-            trackedObjects[i].isPicked = true;
+            TrackedObjects[i].isPicked = true;
         else
-            trackedObjects[i].isPicked = false;
+            TrackedObjects[i].isPicked = false;
     }
 }
 
@@ -105,12 +106,19 @@ void Tracking::UpdateTrackedObjects(QList<ObjectInfo> detectedObjects, QString o
     if (objectNameList != ListName)
         return;
 
+    if (ReadPurpose == "Detect")
+    {
+        // Copy detected objects vào DetectedObjects theo cách để dữ liệu không bị mất đi khi kết thúc hàm
+        DetectedObjects = detectedObjects;
+        return;
+    }
+
     for (auto& detected : detectedObjects) {
         bool isTracked = false;
         double minSimilarity = 1e9;  // Initialize with a large value
         ObjectInfo* bestMatch = nullptr;
 
-        for (auto& tracked : trackedObjects) {
+        for (auto& tracked : TrackedObjects) {
             double score = similarity(tracked, detected, displacement);
 
             if (score < minSimilarity) {
@@ -119,7 +127,7 @@ void Tracking::UpdateTrackedObjects(QList<ObjectInfo> detectedObjects, QString o
             }
         }
 
-        if (minSimilarity < minScore /* Similarity threshold */) {
+        if (minSimilarity < SimilarityThreshold /* Similarity threshold */) {
             // Update the tracked object's info
             bestMatch->center = detected.center;
             bestMatch->width = detected.width;
@@ -130,7 +138,7 @@ void Tracking::UpdateTrackedObjects(QList<ObjectInfo> detectedObjects, QString o
 
         if (!isTracked) {
             // This is a new object
-            trackedObjects.append(ObjectInfo(nextID, detected.center, detected.width, detected.height, detected.angle));
+            TrackedObjects.append(ObjectInfo(nextID, detected.center, detected.width, detected.height, detected.angle));
 
             VariableManager::instance().addVar((ListName + ".%1.X").arg(nextID), detected.center.x());
             VariableManager::instance().addVar((ListName + ".%1.Y").arg(nextID), detected.center.y());
@@ -150,14 +158,18 @@ void Tracking::UpdateTrackedObjects(QList<ObjectInfo> detectedObjects, QString o
 void Tracking::updatePositions(double displacement) {
     QVector3D effectiveDisplacement = calculateMoved(displacement);
 
-    for (auto it = trackedObjects.begin(); it != trackedObjects.end(); ) {
+    for (auto it = TrackedObjects.begin(); it != TrackedObjects.end(); ) {
         if (!it->isPicked) {
             it->center += effectiveDisplacement;
+
+            VariableManager::instance().updateVar((ListName + ".%1.X").arg(it->id), it->center.x());
+            VariableManager::instance().updateVar((ListName + ".%1.Y").arg(it->id), it->center.y());
+
         }
 
         // Remove object if it goes out of boundary
         if (it->center.x() > X_max || it->center.x() < X_min || it->center.y() > Y_max || it->center.y() < Y_min) {
-            it = trackedObjects.erase(it);
+            it = TrackedObjects.erase(it);
         } else {
             ++it;
         }
@@ -166,18 +178,18 @@ void Tracking::updatePositions(double displacement) {
 
 void Tracking::ClearTrackedObjects()
 {
-    for (int i = 0; i < trackedObjects.count(); i++)
+    for (int i = 0; i < TrackedObjects.count(); i++)
     {
-        VariableManager::instance().removeVar((ListName + ".%1.X").arg(trackedObjects.at(i).id));
-        VariableManager::instance().removeVar((ListName + ".%1.Y").arg(trackedObjects.at(i).id));
-        VariableManager::instance().removeVar((ListName + ".%1.Z").arg(trackedObjects.at(i).id));
-        VariableManager::instance().removeVar((ListName + ".%1.W").arg(trackedObjects.at(i).id));
-        VariableManager::instance().removeVar((ListName + ".%1.L").arg(trackedObjects.at(i).id));
-        VariableManager::instance().removeVar((ListName + ".%1.A").arg(trackedObjects.at(i).id));
-        VariableManager::instance().removeVar((ListName + ".%1.IsPicked").arg(trackedObjects.at(i).id));
+        VariableManager::instance().removeVar((ListName + ".%1.X").arg(TrackedObjects.at(i).id));
+        VariableManager::instance().removeVar((ListName + ".%1.Y").arg(TrackedObjects.at(i).id));
+        VariableManager::instance().removeVar((ListName + ".%1.Z").arg(TrackedObjects.at(i).id));
+        VariableManager::instance().removeVar((ListName + ".%1.W").arg(TrackedObjects.at(i).id));
+        VariableManager::instance().removeVar((ListName + ".%1.L").arg(TrackedObjects.at(i).id));
+        VariableManager::instance().removeVar((ListName + ".%1.A").arg(TrackedObjects.at(i).id));
+        VariableManager::instance().removeVar((ListName + ".%1.IsPicked").arg(TrackedObjects.at(i).id));
     }
     VariableManager::instance().setVariable(ListName + ".Count", 0);
-    trackedObjects.clear();
+    TrackedObjects.clear();
     nextID = 0;
 
 

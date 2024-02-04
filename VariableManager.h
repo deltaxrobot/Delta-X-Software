@@ -45,13 +45,10 @@ public:
 
 public slots:
     void UpdateVarToModel(QString key, QVariant value);
-
 signals:
     void varAdded(QString key, QVariant value);
     void varRemoved(QString key);
     void varUpdated(QString key, QVariant value);
-
-
 
 private:
     const QString getFullKey(const QString key);

@@ -147,6 +147,18 @@ namespace UnityTool
                         .arg(rect.width());
 
         }
+        else if (value.canConvert<QTransform>())
+        {
+            QTransform transform = value.value<QTransform>();
+            valueString = "";
+            valueString += QString("(%1, %2, %3, %4, %5, %6)")
+                        .arg(transform.m11())
+                        .arg(transform.m12())
+                        .arg(transform.m13())
+                        .arg(transform.m21())
+                        .arg(transform.m22())
+                        .arg(transform.m23());
+        }
 
         for (int i = 0; i < parts.count() - 1; ++i) {
             QString part = parts[i];

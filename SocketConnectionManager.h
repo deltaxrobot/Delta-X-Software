@@ -40,6 +40,7 @@ signals:
     void variableChanged(const QString& varName, const QVariant& value);
     void objectUpdated(QString listName, QList<QStringList> list);
     void blobUpdated(QStringList blobs);
+    void gcodeReceived(QString gcode);
 };
 
 #endif // SOCKETCONNECTIONMANAGER_H

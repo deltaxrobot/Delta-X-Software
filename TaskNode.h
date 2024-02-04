@@ -112,7 +112,7 @@ signals:
     void HadOutput(QMatrix matrix);
     void DebugEvent();
     void InputRequest();
-    void Done();
+    void Done(int id);
 
 private:
     QString name;
@@ -148,6 +148,7 @@ private:
     QList<TaskNode*> previousTaskNodes;
     QList<TaskNode*> nextTaskNodes;
 
+    int defaultThreadId = 0;
 
     void connectInOutNode(TaskNode* previous, TaskNode *next);
 

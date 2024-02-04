@@ -43,10 +43,14 @@ bool GcodeScript::IsRunning()
     return isRunning;
 }
 
-void GcodeScript::ExecuteGcode(QString gcodes, int startMode)
+void GcodeScript::ExecuteGcode(QString gcodes, int startMode, QString functions)
 {
     isRunning = true;
     SoftwareManager::GetInstance()->RunningScriptThreadNumber++;
+
+    functionScripts = functions;
+
+    gcodes += QString("\n") + functionScripts;
 
     QList<QString> tempGcodeList = gcodes.split('\n');
 
@@ -157,6 +161,11 @@ void GcodeScript::TransmitNextGcode()
     }
 }
 
+void GcodeScript::ExecuteFunction(QString functionName, QStringList paras)
+{
+
+}
+
 void GcodeScript::Stop()
 {
     isRunning = false;
@@ -167,9 +176,15 @@ void GcodeScript::Stop()
     gcodeOrder = 0;
 }
 
+void GcodeScript::ReceivedGcode(QString gcode)
+{
+    ExecuteGcode(gcode, BEGIN, functionScripts);
+}
+
 void GcodeScript::prepareCurrentLine()
 {
     currentLine = currentLine.replace("  ", " ");
+    currentLine = currentLine.replace("\t", "");
     currentLine = formatSpaces(currentLine);
 }
 
@@ -740,7 +755,7 @@ bool GcodeScript::findExeGcodeAndTransmit()
 
                 for (int order = 0; order < gcodeList.size(); order++)
                 {
-                    if (gcodeList[order].indexOf(QString("O") + subProName) > -1)
+                    if (gcodeList[order].contains(QString("O") + subProName))
                     {
                         returnPointerOrder++;
                         returnSubProPointer[returnPointerOrder] = gcodeOrder;
@@ -1686,190 +1701,4 @@ bool GcodeScript::checkExclution(QString response)
     return false;
 }
 
-QString GcodeScript::convertGcodeToSyncConveyor(QString gcode)
-{
-//    QMutexLocker ml(&mMutex);
 
-    if (IsConveyorSync == false)
-        return gcode;
-
-    if (!(gcode.indexOf("G01 ") > -1 || gcode.indexOf("G1 ") > -1 || gcode.indexOf("G0 ") > -1 || gcode.indexOf("G00 ") > -1 || gcode.indexOf("G04 ") > -1 || gcode.indexOf("G4 ") > -1))
-        return gcode;
-
-    float velocity = getValueAsString("F").toFloat();
-    float accel = getValueAsString("A").toFloat();
-    float startSpeed = getValueAsString("S").toFloat();
-    float endSpeed = getValueAsString("E").toFloat();
-    float conveyorSpeed = getValueAsString("ConveyorSpeed").toFloat();
-
-    if (conveyorSpeed == 0)
-        return gcode;
-
-    QString conveyorDirection = (getValueAsString("ConveyorDirection").toFloat() == 0) ? "X":"Y";
-
-    float currentX = getValueAsString("X").toFloat();
-    //qDebug() << "current X: " << currentX;
-    float currentY = getValueAsString("Y").toFloat();
-    float currentZ = getValueAsString("Z").toFloat();
-
-    float time = 1;
-
-    float desireX = currentX;
-    float desireY = currentY;
-    float desireZ = currentZ;
-
-    float xy = 0;
-    float xyz = 0;
-
-    QString newGcode = "";
-
-    if (gcode.indexOf("G01 ") > -1 || gcode.indexOf("G1 ") > -1 || gcode.indexOf("G0 ") > -1 || gcode.indexOf("G00 ") > -1)
-    {
-        QStringList paras = gcode.split(' ');
-
-        for(int i = 0; i < paras.size(); i++)
-        {
-            if (paras.at(i).at(0) == 'X')
-            {
-                desireX = paras.at(i).mid(1).toFloat();
-                //qDebug() << "desire X: " << desireX;
-            }
-            if (paras.at(i).at(0) == 'Y')
-            {
-                desireY = paras.at(i).mid(1).toFloat();
-            }
-            if (paras.at(i).at(0) == 'Z')
-            {
-                desireZ = paras.at(i).mid(1).toFloat();
-            }
-            if (paras.at(i).at(0) == 'F')
-            {
-                velocity = paras.at(i).mid(1).toFloat();
-            }
-            if (paras.at(i).at(0) == 'A')
-            {
-                accel = paras.at(i).mid(1).toFloat();
-            }
-            if (paras.at(i).at(0) == 'S')
-            {
-                startSpeed = paras.at(i).mid(1).toFloat();
-            }
-            if (paras.at(i).at(0) == 'E')
-            {
-                endSpeed = paras.at(i).mid(1).toFloat();
-            }
-        }
-
-        DeltaXSMoving.setMaxAcc(accel);
-        DeltaXSMoving.setVelEnd(endSpeed);
-        DeltaXSMoving.setVelStart(startSpeed);
-        DeltaXSMoving.setMaxVel(velocity);
-
-        float distanceConveyor = 0;
-        float distanceRobot = 0;
-        float increaseValue = conveyorSpeed / abs(conveyorSpeed);
-
-
-
-        while (abs(distanceConveyor) < 2000)
-        {
-            xy = qSqrt(qPow(desireX - currentX, 2) + qPow(desireY - currentY, 2));
-            xyz = qSqrt(qPow(xy, 2) + qPow(desireZ - currentZ, 2));
-
-            distanceConveyor += increaseValue;
-
-            //qDebug() << "distance+: " << distanceConveyor;
-
-            // S2 = S1^2 - 2.S.S1.cos(alpha) + S^2
-            float alpha = atan(abs(desireY - currentY) / abs(desireX - currentX));
-            distanceRobot = sqrt(pow(distanceConveyor, 2) - 2 * xyz * distanceConveyor * cos(alpha) + pow(xyz, 2));
-
-            time = abs(distanceConveyor) / abs(conveyorSpeed);
-            //qDebug() << "time: " << time;
-
-            DeltaXSMoving.setTarget(distanceRobot);
-
-            DeltaXSMoving.start();
-
-            //qDebug() << "target: " << DeltaXSMoving.t_target + 0.005;
-
-            if ((time) > (DeltaXSMoving.t_target + 0.005))
-            {
-                break;
-            }
-        }
-
-        //qDebug() << "distance: " << distanceConveyor;
-
-        if (conveyorDirection == "X")
-        {
-            desireX += distanceConveyor;
-            //qDebug() << "desire X + distance: " << desireX;
-        }
-        if (conveyorDirection == "Y")
-        {
-            desireY += distanceConveyor;
-        }
-
-        for(int i = 0; i < paras.size(); i++)
-        {
-            if (paras.at(i).at(0) == 'X')
-            {
-                paras.replace(i, QString("X%1").arg(desireX));
-            }
-            if (paras.at(i).at(0) == 'Y')
-            {
-                paras.replace(i, QString("Y%1").arg(desireY));
-            }
-            if (paras.at(i).at(0) == 'Z')
-            {
-                paras.replace(i, QString("Z%1").arg(desireZ));
-            }
-
-            newGcode += paras.at(i) + " ";
-        }
-
-        if (newGcode.indexOf('X') == -1)
-        {
-            newGcode += QString(" X%1").arg(desireX);;
-        }
-
-        if (newGcode.indexOf('Y') == -1)
-        {
-            newGcode += QString(" Y%1").arg(desireY);;
-        }
-
-        //newGcode = QString("G01 X%1 Y%2 Z%3 F%4 A%5 S%6 E%7").arg(desireX).arg(desireY).arg(desireZ).arg(velocity).arg(accel).arg(startSpeed).arg(endSpeed);
-    }
-
-    if (gcode.indexOf("G04 ") > -1 || gcode.indexOf("G4 ") > -1)
-    {
-        QStringList paras = gcode.split(' ');
-
-        for(int i = 0; i < paras.size(); i++)
-        {
-            if (paras.at(i).at(0) == 'P')
-            {
-                time = paras.at(i).mid(1).toFloat() / 1000;
-            }
-        }
-
-        float distanceConveyor = time * conveyorSpeed;
-
-        //qDebug() << "distance: " << distanceConveyor;
-
-        if (conveyorDirection == "X")
-        {
-            desireX += distanceConveyor;
-            //qDebug() << "desire X G04: " << desireX;
-            newGcode = QString("G01 X%1 F%2").arg(desireX).arg(abs(conveyorSpeed));
-        }
-        if (conveyorDirection == "Y")
-        {
-            desireY += distanceConveyor;
-            newGcode = QString("G01 Y%1 F%2").arg(desireY).arg(abs(conveyorSpeed));;
-        }
-    }
-
-    return newGcode;
-}

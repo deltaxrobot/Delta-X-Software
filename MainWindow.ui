@@ -721,7 +721,7 @@ border-right: 5px solid rgb(24, 70, 139);</string>
              <number>1</number>
             </property>
             <property name="currentIndex">
-             <number>1</number>
+             <number>8</number>
             </property>
             <widget class="QWidget" name="pVariable">
              <property name="styleSheet">
@@ -767,6 +767,13 @@ border-right: 5px solid rgb(24, 70, 139);</string>
                   <widget class="QPushButton" name="pbUpdateVarDisplay">
                    <property name="text">
                     <string>Update</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="pbDeleteSelectedVar">
+                   <property name="text">
+                    <string>Delete</string>
                    </property>
                   </widget>
                  </item>
@@ -1418,7 +1425,7 @@ QPushButton:pressed
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>1089</width>
+                       <width>571</width>
                        <height>700</height>
                       </rect>
                      </property>

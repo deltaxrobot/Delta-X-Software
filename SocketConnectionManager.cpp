@@ -105,13 +105,22 @@ void SocketConnectionManager::readFromClient() {
 
                 emit blobUpdated(blobs);
             }
+            else if (varName.contains("GScript"))
+            {
+                emit gcodeReceived(value);
+            }
             else
             {
                 VariableManager::instance().UpdateVarToModel(varName, value);
                 emit variableChanged(varName, value);
             }
         }
-    } else if (!data.isEmpty()) {
+    } /*
+    else if (data.contains("M98"))
+    {
+        emit gcodeReceived(data);
+    }*/
+    else if (!data.isEmpty()) {
         // Call a function by its name using Qt's meta-object system
         QMetaObject::invokeMethod(this, data.trimmed().toStdString().c_str());
     }

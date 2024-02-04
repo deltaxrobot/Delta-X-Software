@@ -1046,7 +1046,7 @@ class Ui_RobotWindow(object):
         sizePolicy9.setVerticalStretch(0)
         sizePolicy9.setHeightForWidth(self.pteGcodeArea.sizePolicy().hasHeightForWidth())
         self.pteGcodeArea.setSizePolicy(sizePolicy9)
-        self.pteGcodeArea.setMinimumSize(QSize(310, 500))
+        self.pteGcodeArea.setMinimumSize(QSize(310, 300))
         self.pteGcodeArea.setFont(font5)
         self.pteGcodeArea.setStyleSheet(u"")
         self.pteGcodeArea.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
@@ -1055,6 +1055,54 @@ class Ui_RobotWindow(object):
         self.pteGcodeArea.setTextInteractionFlags(Qt.TextEditorInteraction)
 
         self.verticalLayout_3.addWidget(self.pteGcodeArea)
+
+        self.frame_25 = QFrame(self.frame_55)
+        self.frame_25.setObjectName(u"frame_25")
+        self.frame_25.setMinimumSize(QSize(0, 0))
+        self.frame_25.setStyleSheet(u"QFrame\n"
+"{	\n"
+"	background-color: #333337;\n"
+"}")
+        self.frame_25.setFrameShape(QFrame.StyledPanel)
+        self.frame_25.setFrameShadow(QFrame.Raised)
+        self.horizontalLayout_30 = QHBoxLayout(self.frame_25)
+        self.horizontalLayout_30.setSpacing(5)
+        self.horizontalLayout_30.setContentsMargins(11, 11, 11, 11)
+        self.horizontalLayout_30.setObjectName(u"horizontalLayout_30")
+        self.horizontalLayout_30.setContentsMargins(5, 5, 5, 5)
+        self.lbSelectedProgram_3 = QLabel(self.frame_25)
+        self.lbSelectedProgram_3.setObjectName(u"lbSelectedProgram_3")
+
+        self.horizontalLayout_30.addWidget(self.lbSelectedProgram_3)
+
+        self.pbSaveFunctionScripts = QToolButton(self.frame_25)
+        self.pbSaveFunctionScripts.setObjectName(u"pbSaveFunctionScripts")
+        sizePolicy.setHeightForWidth(self.pbSaveFunctionScripts.sizePolicy().hasHeightForWidth())
+        self.pbSaveFunctionScripts.setSizePolicy(sizePolicy)
+        self.pbSaveFunctionScripts.setMinimumSize(QSize(0, 0))
+        self.pbSaveFunctionScripts.setMaximumSize(QSize(20, 20))
+        self.pbSaveFunctionScripts.setIcon(icon8)
+        self.pbSaveFunctionScripts.setIconSize(QSize(32, 32))
+        self.pbSaveFunctionScripts.setAutoRaise(True)
+
+        self.horizontalLayout_30.addWidget(self.pbSaveFunctionScripts)
+
+
+        self.verticalLayout_3.addWidget(self.frame_25)
+
+        self.pteScriptFunction = CodeEditor(self.frame_55)
+        self.pteScriptFunction.setObjectName(u"pteScriptFunction")
+        sizePolicy9.setHeightForWidth(self.pteScriptFunction.sizePolicy().hasHeightForWidth())
+        self.pteScriptFunction.setSizePolicy(sizePolicy9)
+        self.pteScriptFunction.setMinimumSize(QSize(310, 100))
+        self.pteScriptFunction.setFont(font5)
+        self.pteScriptFunction.setStyleSheet(u"")
+        self.pteScriptFunction.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
+        self.pteScriptFunction.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
+        self.pteScriptFunction.setReadOnly(False)
+        self.pteScriptFunction.setTextInteractionFlags(Qt.TextEditorInteraction)
+
+        self.verticalLayout_3.addWidget(self.pteScriptFunction)
 
 
         self.horizontalLayout_2.addLayout(self.verticalLayout_3)
@@ -1082,7 +1130,7 @@ class Ui_RobotWindow(object):
         self.saObjectDetecting.setWidgetResizable(True)
         self.wObjectDetecting = QWidget()
         self.wObjectDetecting.setObjectName(u"wObjectDetecting")
-        self.wObjectDetecting.setGeometry(QRect(0, -1809, 655, 2500))
+        self.wObjectDetecting.setGeometry(QRect(0, -1065, 655, 2500))
         self.wObjectDetecting.setMinimumSize(QSize(100, 2500))
         self.wObjectDetecting.setStyleSheet(u"QWidget#wObjectDetecting\n"
 "{	\n"
@@ -1307,6 +1355,7 @@ class Ui_RobotWindow(object):
         icon17.addFile(u":/icon/icons8_page_size_64px.png", QSize(), QIcon.Normal, QIcon.Off)
         self.pbGetSizeTool.setIcon(icon17)
         self.pbGetSizeTool.setIconSize(QSize(24, 24))
+        self.pbGetSizeTool.setCheckable(True)
         self.pbGetSizeTool.setFlat(True)
 
         self.horizontalLayout_4.addWidget(self.pbGetSizeTool)
@@ -1328,32 +1377,6 @@ class Ui_RobotWindow(object):
         self.horizontalLayout_13.setContentsMargins(11, 11, 11, 11)
         self.horizontalLayout_13.setObjectName(u"horizontalLayout_13")
         self.horizontalLayout_13.setContentsMargins(0, 0, 0, 0)
-        self.pbClearObject = QPushButton(self.frame_15)
-        self.pbClearObject.setObjectName(u"pbClearObject")
-        sizePolicy5.setHeightForWidth(self.pbClearObject.sizePolicy().hasHeightForWidth())
-        self.pbClearObject.setSizePolicy(sizePolicy5)
-        self.pbClearObject.setMinimumSize(QSize(0, 30))
-        icon18 = QIcon()
-        icon18.addFile(u":/icon/Eraser_16px.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.pbClearObject.setIcon(icon18)
-        self.pbClearObject.setIconSize(QSize(24, 24))
-        self.pbClearObject.setFlat(True)
-
-        self.horizontalLayout_13.addWidget(self.pbClearObject)
-
-        self.pbOpenObjectTable = QPushButton(self.frame_15)
-        self.pbOpenObjectTable.setObjectName(u"pbOpenObjectTable")
-        sizePolicy5.setHeightForWidth(self.pbOpenObjectTable.sizePolicy().hasHeightForWidth())
-        self.pbOpenObjectTable.setSizePolicy(sizePolicy5)
-        self.pbOpenObjectTable.setMinimumSize(QSize(0, 30))
-        icon19 = QIcon()
-        icon19.addFile(u":/icon/icons8-object-48.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.pbOpenObjectTable.setIcon(icon19)
-        self.pbOpenObjectTable.setIconSize(QSize(24, 24))
-        self.pbOpenObjectTable.setFlat(True)
-
-        self.horizontalLayout_13.addWidget(self.pbOpenObjectTable)
-
         self.horizontalSpacer_14 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
 
         self.horizontalLayout_13.addItem(self.horizontalSpacer_14)
@@ -1541,9 +1564,9 @@ class Ui_RobotWindow(object):
         font7.setPointSize(8)
         font7.setBold(False)
         self.pbLoadCamera.setFont(font7)
-        icon20 = QIcon()
-        icon20.addFile(u":/icon/webcam.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.pbLoadCamera.setIcon(icon20)
+        icon18 = QIcon()
+        icon18.addFile(u":/icon/webcam.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.pbLoadCamera.setIcon(icon18)
         self.pbLoadCamera.setIconSize(QSize(30, 30))
         self.pbLoadCamera.setCheckable(True)
         self.pbLoadCamera.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
@@ -1582,9 +1605,9 @@ class Ui_RobotWindow(object):
         font8 = QFont()
         font8.setPointSize(8)
         self.pbLoadTestImage.setFont(font8)
-        icon21 = QIcon()
-        icon21.addFile(u":/icon/icons8_image_30px_1.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.pbLoadTestImage.setIcon(icon21)
+        icon19 = QIcon()
+        icon19.addFile(u":/icon/icons8_image_30px_1.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.pbLoadTestImage.setIcon(icon19)
         self.pbLoadTestImage.setIconSize(QSize(30, 30))
         self.pbLoadTestImage.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
         self.pbLoadTestImage.setAutoRaise(True)
@@ -1684,11 +1707,11 @@ class Ui_RobotWindow(object):
         self.pbStartAcquisition.setSizePolicy(sizePolicy)
         self.pbStartAcquisition.setMinimumSize(QSize(0, 0))
         self.pbStartAcquisition.setFont(font8)
-        icon22 = QIcon()
-        icon22.addFile(u":/icon/icons8-play-48.png", QSize(), QIcon.Normal, QIcon.Off)
-        icon22.addFile(u":/icon/icons8-pause-48.png", QSize(), QIcon.Normal, QIcon.On)
-        icon22.addFile(u"icon/icons8-play-48.png", QSize(), QIcon.Selected, QIcon.Off)
-        self.pbStartAcquisition.setIcon(icon22)
+        icon20 = QIcon()
+        icon20.addFile(u":/icon/icons8-play-48.png", QSize(), QIcon.Normal, QIcon.Off)
+        icon20.addFile(u":/icon/icons8-pause-48.png", QSize(), QIcon.Normal, QIcon.On)
+        icon20.addFile(u"icon/icons8-play-48.png", QSize(), QIcon.Selected, QIcon.Off)
+        self.pbStartAcquisition.setIcon(icon20)
         self.pbStartAcquisition.setIconSize(QSize(30, 30))
         self.pbStartAcquisition.setCheckable(True)
         self.pbStartAcquisition.setChecked(False)
@@ -1702,9 +1725,9 @@ class Ui_RobotWindow(object):
         self.pbCapture.setEnabled(True)
         self.pbCapture.setMinimumSize(QSize(0, 0))
         self.pbCapture.setFont(font8)
-        icon23 = QIcon()
-        icon23.addFile(u":/icon/icons8-screenshot-40.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.pbCapture.setIcon(icon23)
+        icon21 = QIcon()
+        icon21.addFile(u":/icon/icons8-screenshot-40.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.pbCapture.setIcon(icon21)
         self.pbCapture.setIconSize(QSize(30, 30))
         self.pbCapture.setCheckable(False)
         self.pbCapture.setChecked(False)
@@ -1861,9 +1884,9 @@ class Ui_RobotWindow(object):
 
         self.tbPastePoint1 = QToolButton(self.fCalibStep2)
         self.tbPastePoint1.setObjectName(u"tbPastePoint1")
-        icon24 = QIcon()
-        icon24.addFile(u":/icon/Paste.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.tbPastePoint1.setIcon(icon24)
+        icon22 = QIcon()
+        icon22.addFile(u":/icon/Paste.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.tbPastePoint1.setIcon(icon22)
         self.tbPastePoint1.setIconSize(QSize(24, 24))
 
         self.gridLayout_26.addWidget(self.tbPastePoint1, 5, 7, 1, 1)
@@ -1880,9 +1903,9 @@ class Ui_RobotWindow(object):
 "	padding-left:5px;\n"
 "	padding-right:5px;\n"
 "}")
-        icon25 = QIcon()
-        icon25.addFile(u":/icon/icons8_grid_3_48px_1.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.pbImageMapping.setIcon(icon25)
+        icon23 = QIcon()
+        icon23.addFile(u":/icon/icons8_grid_3_48px_1.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.pbImageMapping.setIcon(icon23)
         self.pbImageMapping.setIconSize(QSize(30, 30))
         self.pbImageMapping.setCheckable(True)
         self.pbImageMapping.setChecked(False)
@@ -1908,7 +1931,7 @@ class Ui_RobotWindow(object):
 
         self.tbPastePoint2 = QToolButton(self.fCalibStep2)
         self.tbPastePoint2.setObjectName(u"tbPastePoint2")
-        self.tbPastePoint2.setIcon(icon24)
+        self.tbPastePoint2.setIcon(icon22)
         self.tbPastePoint2.setIconSize(QSize(24, 24))
 
         self.gridLayout_26.addWidget(self.tbPastePoint2, 6, 7, 1, 1)
@@ -2136,14 +2159,14 @@ class Ui_RobotWindow(object):
 
         self.horizontalLayout_26.addWidget(self.label_45)
 
-        self.leObjectOverlay = QLineEdit(self.frame_13)
-        self.leObjectOverlay.setObjectName(u"leObjectOverlay")
-        sizePolicy6.setHeightForWidth(self.leObjectOverlay.sizePolicy().hasHeightForWidth())
-        self.leObjectOverlay.setSizePolicy(sizePolicy6)
-        self.leObjectOverlay.setMinimumSize(QSize(0, 30))
-        self.leObjectOverlay.setMaximumSize(QSize(50, 16777215))
+        self.leSimilarityThreshold = QLineEdit(self.frame_13)
+        self.leSimilarityThreshold.setObjectName(u"leSimilarityThreshold")
+        sizePolicy6.setHeightForWidth(self.leSimilarityThreshold.sizePolicy().hasHeightForWidth())
+        self.leSimilarityThreshold.setSizePolicy(sizePolicy6)
+        self.leSimilarityThreshold.setMinimumSize(QSize(0, 30))
+        self.leSimilarityThreshold.setMaximumSize(QSize(50, 16777215))
 
-        self.horizontalLayout_26.addWidget(self.leObjectOverlay)
+        self.horizontalLayout_26.addWidget(self.leSimilarityThreshold)
 
 
         self.verticalLayout_31.addWidget(self.frame_13)
@@ -2306,10 +2329,10 @@ class Ui_RobotWindow(object):
         sizePolicy6.setHeightForWidth(self.pbRunExternalScript.sizePolicy().hasHeightForWidth())
         self.pbRunExternalScript.setSizePolicy(sizePolicy6)
         self.pbRunExternalScript.setMaximumSize(QSize(30, 16777215))
-        icon26 = QIcon()
-        icon26.addFile(u":/icon/icons8_play_48px.png", QSize(), QIcon.Normal, QIcon.Off)
-        icon26.addFile(u":/icon/Pause_96px.png", QSize(), QIcon.Normal, QIcon.On)
-        self.pbRunExternalScript.setIcon(icon26)
+        icon24 = QIcon()
+        icon24.addFile(u":/icon/icons8_play_48px.png", QSize(), QIcon.Normal, QIcon.Off)
+        icon24.addFile(u":/icon/Pause_96px.png", QSize(), QIcon.Normal, QIcon.On)
+        self.pbRunExternalScript.setIcon(icon24)
         self.pbRunExternalScript.setCheckable(True)
 
         self.gridLayout_28.addWidget(self.pbRunExternalScript, 1, 3, 1, 1)
@@ -2324,9 +2347,9 @@ class Ui_RobotWindow(object):
         sizePolicy6.setHeightForWidth(self.pbExternalScriptOpen.sizePolicy().hasHeightForWidth())
         self.pbExternalScriptOpen.setSizePolicy(sizePolicy6)
         self.pbExternalScriptOpen.setMaximumSize(QSize(30, 16777215))
-        icon27 = QIcon()
-        icon27.addFile(u":/icon/icons8_folder_64px.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.pbExternalScriptOpen.setIcon(icon27)
+        icon25 = QIcon()
+        icon25.addFile(u":/icon/icons8_folder_64px.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.pbExternalScriptOpen.setIcon(icon25)
 
         self.gridLayout_28.addWidget(self.pbExternalScriptOpen, 1, 2, 1, 1)
 
@@ -2544,6 +2567,18 @@ class Ui_RobotWindow(object):
 
         self.horizontalLayout_31.addItem(self.horizontalSpacer_50)
 
+        self.label_34 = QLabel(self.gbCameraVariable)
+        self.label_34.setObjectName(u"label_34")
+
+        self.horizontalLayout_31.addWidget(self.label_34)
+
+        self.cbAutoUpdateObjectsDisplay = QComboBox(self.gbCameraVariable)
+        self.cbAutoUpdateObjectsDisplay.addItem("")
+        self.cbAutoUpdateObjectsDisplay.addItem("")
+        self.cbAutoUpdateObjectsDisplay.setObjectName(u"cbAutoUpdateObjectsDisplay")
+
+        self.horizontalLayout_31.addWidget(self.cbAutoUpdateObjectsDisplay)
+
         self.pbUpdateObjectToView = QPushButton(self.gbCameraVariable)
         self.pbUpdateObjectToView.setObjectName(u"pbUpdateObjectToView")
         sizePolicy15 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Minimum)
@@ -2554,22 +2589,11 @@ class Ui_RobotWindow(object):
         self.pbUpdateObjectToView.setMinimumSize(QSize(0, 0))
         self.pbUpdateObjectToView.setMaximumSize(QSize(16777215, 16777215))
         self.pbUpdateObjectToView.setStyleSheet(u"")
-        icon28 = QIcon()
-        icon28.addFile(u":/icon/icons8_replay_48px.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.pbUpdateObjectToView.setIcon(icon28)
+        icon26 = QIcon()
+        icon26.addFile(u":/icon/icons8_replay_48px.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.pbUpdateObjectToView.setIcon(icon26)
 
         self.horizontalLayout_31.addWidget(self.pbUpdateObjectToView)
-
-        self.pbViewDataObjects = QPushButton(self.gbCameraVariable)
-        self.pbViewDataObjects.setObjectName(u"pbViewDataObjects")
-        sizePolicy15.setHeightForWidth(self.pbViewDataObjects.sizePolicy().hasHeightForWidth())
-        self.pbViewDataObjects.setSizePolicy(sizePolicy15)
-        self.pbViewDataObjects.setMinimumSize(QSize(0, 0))
-        self.pbViewDataObjects.setMaximumSize(QSize(16777215, 16777215))
-        self.pbViewDataObjects.setStyleSheet(u"")
-        self.pbViewDataObjects.setIcon(icon19)
-
-        self.horizontalLayout_31.addWidget(self.pbViewDataObjects)
 
         self.pbClearDetectObjects = QPushButton(self.gbCameraVariable)
         self.pbClearDetectObjects.setObjectName(u"pbClearDetectObjects")
@@ -2577,7 +2601,9 @@ class Ui_RobotWindow(object):
         self.pbClearDetectObjects.setSizePolicy(sizePolicy)
         self.pbClearDetectObjects.setMinimumSize(QSize(0, 0))
         self.pbClearDetectObjects.setMaximumSize(QSize(16777215, 16777215))
-        self.pbClearDetectObjects.setIcon(icon18)
+        icon27 = QIcon()
+        icon27.addFile(u":/icon/Eraser_16px.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.pbClearDetectObjects.setIcon(icon27)
 
         self.horizontalLayout_31.addWidget(self.pbClearDetectObjects)
 
@@ -2722,7 +2748,7 @@ class Ui_RobotWindow(object):
         self.saPointTool.setWidgetResizable(True)
         self.wPointTool = QWidget()
         self.wPointTool.setObjectName(u"wPointTool")
-        self.wPointTool.setGeometry(QRect(0, 0, 643, 1900))
+        self.wPointTool.setGeometry(QRect(0, -371, 643, 1900))
         self.wPointTool.setMinimumSize(QSize(0, 1900))
         self.wPointTool.setStyleSheet(u"QWidget#wPointTool\n"
 "{	\n"
@@ -2922,9 +2948,9 @@ class Ui_RobotWindow(object):
 
         self.tbCopyTestTrackingPoint = QToolButton(self.frame)
         self.tbCopyTestTrackingPoint.setObjectName(u"tbCopyTestTrackingPoint")
-        icon29 = QIcon()
-        icon29.addFile(u":/icon/Copy.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.tbCopyTestTrackingPoint.setIcon(icon29)
+        icon28 = QIcon()
+        icon28.addFile(u":/icon/Copy.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.tbCopyTestTrackingPoint.setIcon(icon28)
         self.tbCopyTestTrackingPoint.setIconSize(QSize(24, 24))
 
         self.gridLayout.addWidget(self.tbCopyTestTrackingPoint, 1, 5, 1, 1)
@@ -3746,9 +3772,9 @@ class Ui_RobotWindow(object):
         font11.setBold(False)
         self.pbOpenPicture.setFont(font11)
         self.pbOpenPicture.setLayoutDirection(Qt.LeftToRight)
-        icon30 = QIcon()
-        icon30.addFile(u":/icon/icons8_image_96px.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.pbOpenPicture.setIcon(icon30)
+        icon29 = QIcon()
+        icon29.addFile(u":/icon/icons8_image_96px.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.pbOpenPicture.setIcon(icon29)
         self.pbOpenPicture.setIconSize(QSize(64, 64))
         self.pbOpenPicture.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
         self.pbOpenPicture.setAutoRaise(False)
@@ -3917,9 +3943,9 @@ class Ui_RobotWindow(object):
         self.pbPainting.setMinimumSize(QSize(0, 0))
         self.pbPainting.setMaximumSize(QSize(16777215, 16777215))
         self.pbPainting.setFont(font11)
-        icon31 = QIcon()
-        icon31.addFile(u":/icon/icons8_pencil_drawing_96px.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.pbPainting.setIcon(icon31)
+        icon30 = QIcon()
+        icon30.addFile(u":/icon/icons8_pencil_drawing_96px.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.pbPainting.setIcon(icon30)
         self.pbPainting.setIconSize(QSize(64, 64))
         self.pbPainting.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
         self.pbPainting.setAutoRaise(False)
@@ -4158,9 +4184,9 @@ class Ui_RobotWindow(object):
         self.pbDrawLine.setSizePolicy(sizePolicy18)
         self.pbDrawLine.setMinimumSize(QSize(0, 0))
         self.pbDrawLine.setMaximumSize(QSize(70, 16777215))
-        icon32 = QIcon()
-        icon32.addFile(u":/icon/Line_16px.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.pbDrawLine.setIcon(icon32)
+        icon31 = QIcon()
+        icon31.addFile(u":/icon/Line_16px.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.pbDrawLine.setIcon(icon31)
         self.pbDrawLine.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
         self.pbDrawLine.setAutoRaise(True)
 
@@ -4172,9 +4198,9 @@ class Ui_RobotWindow(object):
         self.pbDrawRectangle.setSizePolicy(sizePolicy18)
         self.pbDrawRectangle.setMinimumSize(QSize(0, 0))
         self.pbDrawRectangle.setMaximumSize(QSize(70, 16777215))
-        icon33 = QIcon()
-        icon33.addFile(u":/icon/Rectangular_16px.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.pbDrawRectangle.setIcon(icon33)
+        icon32 = QIcon()
+        icon32.addFile(u":/icon/Rectangular_16px.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.pbDrawRectangle.setIcon(icon32)
         self.pbDrawRectangle.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
         self.pbDrawRectangle.setAutoRaise(True)
 
@@ -4186,9 +4212,9 @@ class Ui_RobotWindow(object):
         self.pbZoomIn.setSizePolicy(sizePolicy18)
         self.pbZoomIn.setMinimumSize(QSize(0, 0))
         self.pbZoomIn.setMaximumSize(QSize(70, 16777215))
-        icon34 = QIcon()
-        icon34.addFile(u":/icon/Zoom In_16px.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.pbZoomIn.setIcon(icon34)
+        icon33 = QIcon()
+        icon33.addFile(u":/icon/Zoom In_16px.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.pbZoomIn.setIcon(icon33)
         self.pbZoomIn.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
         self.pbZoomIn.setAutoRaise(True)
 
@@ -4200,9 +4226,9 @@ class Ui_RobotWindow(object):
         self.pbCursor.setSizePolicy(sizePolicy18)
         self.pbCursor.setMinimumSize(QSize(0, 0))
         self.pbCursor.setMaximumSize(QSize(70, 16777215))
-        icon35 = QIcon()
-        icon35.addFile(u":/icon/Cursor-color_16px.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.pbCursor.setIcon(icon35)
+        icon34 = QIcon()
+        icon34.addFile(u":/icon/Cursor-color_16px.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.pbCursor.setIcon(icon34)
         self.pbCursor.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
         self.pbCursor.setAutoRaise(True)
 
@@ -4214,9 +4240,9 @@ class Ui_RobotWindow(object):
         self.pbDrawArc.setSizePolicy(sizePolicy18)
         self.pbDrawArc.setMinimumSize(QSize(0, 0))
         self.pbDrawArc.setMaximumSize(QSize(70, 16777215))
-        icon36 = QIcon()
-        icon36.addFile(u":/icon/Circled Notch_16px.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.pbDrawArc.setIcon(icon36)
+        icon35 = QIcon()
+        icon35.addFile(u":/icon/Circled Notch_16px.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.pbDrawArc.setIcon(icon35)
         self.pbDrawArc.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
         self.pbDrawArc.setAutoRaise(True)
 
@@ -4228,9 +4254,9 @@ class Ui_RobotWindow(object):
         self.pbDrawCircle.setSizePolicy(sizePolicy18)
         self.pbDrawCircle.setMinimumSize(QSize(0, 0))
         self.pbDrawCircle.setMaximumSize(QSize(70, 16777215))
-        icon37 = QIcon()
-        icon37.addFile(u":/icon/Circle_16px.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.pbDrawCircle.setIcon(icon37)
+        icon36 = QIcon()
+        icon36.addFile(u":/icon/Circle_16px.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.pbDrawCircle.setIcon(icon36)
         self.pbDrawCircle.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
         self.pbDrawCircle.setAutoRaise(True)
 
@@ -4242,9 +4268,9 @@ class Ui_RobotWindow(object):
         self.pbZoomOut.setSizePolicy(sizePolicy18)
         self.pbZoomOut.setMinimumSize(QSize(0, 0))
         self.pbZoomOut.setMaximumSize(QSize(70, 16777215))
-        icon38 = QIcon()
-        icon38.addFile(u":/icon/Zoom Out_16px.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.pbZoomOut.setIcon(icon38)
+        icon37 = QIcon()
+        icon37.addFile(u":/icon/Zoom Out_16px.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.pbZoomOut.setIcon(icon37)
         self.pbZoomOut.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
         self.pbZoomOut.setAutoRaise(True)
 
@@ -4289,9 +4315,9 @@ class Ui_RobotWindow(object):
         self.pbExportDrawingGcodes.setMinimumSize(QSize(185, 65))
         self.pbExportDrawingGcodes.setMaximumSize(QSize(16777215, 16777215))
         self.pbExportDrawingGcodes.setFont(font11)
-        icon39 = QIcon()
-        icon39.addFile(u":/icon/icons8_code_96px.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.pbExportDrawingGcodes.setIcon(icon39)
+        icon38 = QIcon()
+        icon38.addFile(u":/icon/icons8_code_96px.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.pbExportDrawingGcodes.setIcon(icon38)
         self.pbExportDrawingGcodes.setIconSize(QSize(64, 64))
         self.pbExportDrawingGcodes.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
         self.pbExportDrawingGcodes.setAutoRaise(False)
@@ -4704,11 +4730,11 @@ class Ui_RobotWindow(object):
 "{\n"
 "	background: transparent;\n"
 "}")
-        icon40 = QIcon()
-        icon40.addFile(u":/icon/icons8_switch_off_52px.png", QSize(), QIcon.Normal, QIcon.Off)
-        icon40.addFile(u":/icon/icons8_switch_on_52px.png", QSize(), QIcon.Normal, QIcon.On)
-        icon40.addFile(u":/icon/icons8_switch_on_52px.png", QSize(), QIcon.Active, QIcon.On)
-        self.tbAutoScanRobot.setIcon(icon40)
+        icon39 = QIcon()
+        icon39.addFile(u":/icon/icons8_switch_off_52px.png", QSize(), QIcon.Normal, QIcon.Off)
+        icon39.addFile(u":/icon/icons8_switch_on_52px.png", QSize(), QIcon.Normal, QIcon.On)
+        icon39.addFile(u":/icon/icons8_switch_on_52px.png", QSize(), QIcon.Active, QIcon.On)
+        self.tbAutoScanRobot.setIcon(icon39)
         self.tbAutoScanRobot.setIconSize(QSize(16, 16))
         self.tbAutoScanRobot.setCheckable(True)
         self.tbAutoScanRobot.setChecked(True)
@@ -4739,10 +4765,10 @@ class Ui_RobotWindow(object):
 "	background-color: rgb(81, 176, 255);\n"
 "}\n"
 "")
-        icon41 = QIcon()
-        icon41.addFile(u"C:/Users/Admin/.designer/backup/icon/disconnected.png", QSize(), QIcon.Normal, QIcon.Off)
-        icon41.addFile(u"C:/Users/Admin/.designer/backup/icon/connected.png", QSize(), QIcon.Normal, QIcon.On)
-        self.pbConnect.setIcon(icon41)
+        icon40 = QIcon()
+        icon40.addFile(u"C:/Users/Admin/.designer/backup/icon/disconnected.png", QSize(), QIcon.Normal, QIcon.Off)
+        icon40.addFile(u"C:/Users/Admin/.designer/backup/icon/connected.png", QSize(), QIcon.Normal, QIcon.On)
+        self.pbConnect.setIcon(icon40)
         self.pbConnect.setIconSize(QSize(30, 20))
         self.pbConnect.setCheckable(True)
 
@@ -4945,7 +4971,7 @@ class Ui_RobotWindow(object):
 "{\n"
 "	background: transparent;\n"
 "}")
-        self.tbDisableRobot.setIcon(icon40)
+        self.tbDisableRobot.setIcon(icon39)
         self.tbDisableRobot.setIconSize(QSize(16, 16))
         self.tbDisableRobot.setCheckable(True)
         self.tbDisableRobot.setChecked(True)
@@ -5004,9 +5030,9 @@ class Ui_RobotWindow(object):
 "{\n"
 "	padding: 5px;\n"
 "}")
-        icon42 = QIcon()
-        icon42.addFile(u":/icon/home.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.pbHome.setIcon(icon42)
+        icon41 = QIcon()
+        icon41.addFile(u":/icon/home.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.pbHome.setIcon(icon41)
         self.pbHome.setIconSize(QSize(20, 20))
         self.pbHome.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
 
@@ -5727,10 +5753,10 @@ class Ui_RobotWindow(object):
         self.pbPump.setObjectName(u"pbPump")
         self.pbPump.setMinimumSize(QSize(100, 30))
         self.pbPump.setAutoFillBackground(False)
-        icon43 = QIcon()
-        icon43.addFile(u":/icon/Toggle Off_16px.png", QSize(), QIcon.Normal, QIcon.Off)
-        icon43.addFile(u":/icon/Toggle On_16px.png", QSize(), QIcon.Normal, QIcon.On)
-        self.pbPump.setIcon(icon43)
+        icon42 = QIcon()
+        icon42.addFile(u":/icon/Toggle Off_16px.png", QSize(), QIcon.Normal, QIcon.Off)
+        icon42.addFile(u":/icon/Toggle On_16px.png", QSize(), QIcon.Normal, QIcon.On)
+        self.pbPump.setIcon(icon42)
         self.pbPump.setIconSize(QSize(16, 16))
         self.pbPump.setCheckable(True)
         self.pbPump.setChecked(False)
@@ -5743,7 +5769,7 @@ class Ui_RobotWindow(object):
         self.pbLaser.setObjectName(u"pbLaser")
         self.pbLaser.setMinimumSize(QSize(100, 30))
         self.pbLaser.setAutoFillBackground(False)
-        self.pbLaser.setIcon(icon43)
+        self.pbLaser.setIcon(icon42)
         self.pbLaser.setIconSize(QSize(16, 16))
         self.pbLaser.setCheckable(True)
         self.pbLaser.setChecked(False)
@@ -7723,9 +7749,9 @@ class Ui_RobotWindow(object):
         font16 = QFont()
         font16.setPointSize(11)
         self.pbSlidingHome.setFont(font16)
-        icon44 = QIcon()
-        icon44.addFile(u"icon/icons8-home-32.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.pbSlidingHome.setIcon(icon44)
+        icon43 = QIcon()
+        icon43.addFile(u"icon/icons8-home-32.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.pbSlidingHome.setIcon(icon43)
 
         self.gridLayout_8.addWidget(self.pbSlidingHome, 1, 1, 1, 1)
 
@@ -7756,9 +7782,9 @@ class Ui_RobotWindow(object):
         self.pbSlidingDisable.setMinimumSize(QSize(0, 0))
         self.pbSlidingDisable.setMaximumSize(QSize(200, 40))
         self.pbSlidingDisable.setFont(font16)
-        icon45 = QIcon()
-        icon45.addFile(u"icon/icons8-sleeping-in-bed-32.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.pbSlidingDisable.setIcon(icon45)
+        icon44 = QIcon()
+        icon44.addFile(u"icon/icons8-sleeping-in-bed-32.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.pbSlidingDisable.setIcon(icon44)
 
         self.gridLayout_8.addWidget(self.pbSlidingDisable, 0, 1, 1, 1)
 
@@ -8165,6 +8191,27 @@ class Ui_RobotWindow(object):
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2'; color:#d"
                         "bdbdc;\">N85 </span><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600; color:#dbdbdc;\">G28</span></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\"> </span></p></body></html>", None))
+        self.lbSelectedProgram_3.setText(QCoreApplication.translate("RobotWindow", u"Function", None))
+#if QT_CONFIG(tooltip)
+        self.pbSaveFunctionScripts.setToolTip(QCoreApplication.translate("RobotWindow", u"Save Gcode Into File", None))
+#endif // QT_CONFIG(tooltip)
+        self.pbSaveFunctionScripts.setText("")
+        self.pteScriptFunction.setHtml(QCoreApplication.translate("RobotWindow", u"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"hr { height: 1px; border-width: 0; }\n"
+"li.unchecked::marker { content: \"\\2610\"; }\n"
+"li.checked::marker { content: \"\\2612\"; }\n"
+"</style></head><body style=\" font-family:'Segoe UI'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600; color:#dbdbdc;\">O2001</span></p>\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; color:#dbdbdc;\"><br /></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent"
+                        ":0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600; color:#dbdbdc;\">G01</span><span style=\" font-family:'MS Shell Dlg 2'; color:#dbdbdc;\"> Z[#robot0.HOME_Z - 50]</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600; color:#dbdbdc;\">G01</span><span style=\" font-family:'MS Shell Dlg 2'; color:#dbdbdc;\"> Z[#robot0.HOME_Z - 30]</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600; color:#dbdbdc;\">G01</span><span style=\" font-family:'MS Shell Dlg 2'; color:#dbdbdc;\"> Z[#robot0.HOME_Z - 50]</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600; color:#"
+                        "dbdbdc;\">G01</span><span style=\" font-family:'MS Shell Dlg 2'; color:#dbdbdc;\"> Z[#robot0.HOME_Z - 30]</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2'; color:#dbdbdc;\">M99</span></p></body></html>", None))
         self.twModule.setTabText(self.twModule.indexOf(self.tGcodeEditor), QCoreApplication.translate("RobotWindow", u"G-Script", None))
         self.label_191.setText(QCoreApplication.translate("RobotWindow", u"Detecting Thread", None))
         self.cbSelectedDetecting.setItemText(0, QCoreApplication.translate("RobotWindow", u"detect0", None))
@@ -8201,14 +8248,6 @@ class Ui_RobotWindow(object):
         self.pbGetSizeTool.setToolTip(QCoreApplication.translate("RobotWindow", u"Blob Filter", None))
 #endif // QT_CONFIG(tooltip)
         self.pbGetSizeTool.setText(QCoreApplication.translate("RobotWindow", u"Object Size Tool", None))
-#if QT_CONFIG(tooltip)
-        self.pbClearObject.setToolTip(QCoreApplication.translate("RobotWindow", u"Clear All Objects", None))
-#endif // QT_CONFIG(tooltip)
-        self.pbClearObject.setText(QCoreApplication.translate("RobotWindow", u"Clear Objects", None))
-#if QT_CONFIG(tooltip)
-        self.pbOpenObjectTable.setToolTip(QCoreApplication.translate("RobotWindow", u"Open Object Table", None))
-#endif // QT_CONFIG(tooltip)
-        self.pbOpenObjectTable.setText(QCoreApplication.translate("RobotWindow", u"ObjectList", None))
         self.label_213.setText(QCoreApplication.translate("RobotWindow", u"Output", None))
         self.cbImageOutput.setItemText(0, QCoreApplication.translate("RobotWindow", u"Calibrating", None))
         self.cbImageOutput.setItemText(1, QCoreApplication.translate("RobotWindow", u"Detecting", None))
@@ -8318,8 +8357,8 @@ class Ui_RobotWindow(object):
         self.cbDetectingAlgorithm.setItemText(1, QCoreApplication.translate("RobotWindow", u"Find Circles", None))
         self.cbDetectingAlgorithm.setItemText(2, QCoreApplication.translate("RobotWindow", u"External Script", None))
 
-        self.label_45.setText(QCoreApplication.translate("RobotWindow", u"Overlay", None))
-        self.leObjectOverlay.setText(QCoreApplication.translate("RobotWindow", u"1.0", None))
+        self.label_45.setText(QCoreApplication.translate("RobotWindow", u"Similarity Threshold", None))
+        self.leSimilarityThreshold.setText(QCoreApplication.translate("RobotWindow", u"20", None))
         self.leLRec.setText(QCoreApplication.translate("RobotWindow", u"50", None))
         self.leMaxLRec.setText(QCoreApplication.translate("RobotWindow", u"1.5", None))
         self.leWRec.setText(QCoreApplication.translate("RobotWindow", u"30", None))
@@ -8374,8 +8413,11 @@ class Ui_RobotWindow(object):
         self.label_198.setText(QCoreApplication.translate("RobotWindow", u"max 250", None))
         self.label_199.setText(QCoreApplication.translate("RobotWindow", u"max 250", None))
         self.gbCameraVariable.setTitle(QCoreApplication.translate("RobotWindow", u"Variable", None))
+        self.label_34.setText(QCoreApplication.translate("RobotWindow", u"Auto Update", None))
+        self.cbAutoUpdateObjectsDisplay.setItemText(0, QCoreApplication.translate("RobotWindow", u"No", None))
+        self.cbAutoUpdateObjectsDisplay.setItemText(1, QCoreApplication.translate("RobotWindow", u"500 ms", None))
+
         self.pbUpdateObjectToView.setText(QCoreApplication.translate("RobotWindow", u"Update", None))
-        self.pbViewDataObjects.setText(QCoreApplication.translate("RobotWindow", u"Object Table", None))
 #if QT_CONFIG(tooltip)
         self.pbClearDetectObjects.setToolTip(QCoreApplication.translate("RobotWindow", u"<html><head/><body><p>Clear All Objects in Memory</p><p>M98 PclearObjects --&gt; Clear All</p><p>M98 PdeleteFirstObject --&gt; Delete First</p></body></html>", None))
 #endif // QT_CONFIG(tooltip)

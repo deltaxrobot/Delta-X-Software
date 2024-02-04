@@ -62,6 +62,8 @@ public slots:
     void RemoveVarFromTreeView(const QString &key);
     void SetLoadingIconRun(bool isRun);
 
+    void onTreeViewItemClicked(const QModelIndex &index);
+
 private slots:
     void on_pbApplyOperator_clicked();
 
@@ -88,6 +90,8 @@ private slots:
     void on_tbExpandLoggingBox_clicked();
 
     void on_pbUpdateVarDisplay_clicked();
+
+    void on_pbDeleteSelectedVar_clicked();
 
 private:
     QTimer timer1;

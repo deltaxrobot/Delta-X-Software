@@ -84,6 +84,12 @@ int CodeEditor::lineNumberAreaWidth()
     return space;
 }
 
+void CodeEditor::setTabWidth(int width)
+{
+    QFontMetrics metrics(font());
+    setTabStopWidth(width * metrics.width(' '));
+}
+
 //![extraAreaWidth]
 
 //![slotUpdateExtraAreaWidth]
@@ -158,6 +164,69 @@ void CodeEditor::commentSelectedLines()
     cursor.endEditBlock();
 }
 
+void CodeEditor::indentText()
+{
+    QTextCursor cursor = textCursor();
+    if (!cursor.selectedText().isEmpty()) {
+        cursor.beginEditBlock();
+
+        int startPos = cursor.selectionStart();
+        int endPos = cursor.selectionEnd();
+
+        cursor.setPosition(startPos, QTextCursor::MoveAnchor);
+        cursor.movePosition(QTextCursor::StartOfLine);
+
+        while (cursor.position() <= endPos) {
+            cursor.insertText("\t");
+            cursor.movePosition(QTextCursor::Down);
+            cursor.movePosition(QTextCursor::StartOfLine);
+        }
+
+        cursor.endEditBlock();
+    }
+    else
+    {
+        // Chèn một tab vào vị trí của cursor
+        cursor.insertText("\t");
+
+        // Cập nhật cursor của QTextEdit
+        setTextCursor(cursor);
+    }
+}
+
+void CodeEditor::deleleIndentText()
+{
+    QTextCursor cursor = textCursor();
+    if (!cursor.selectedText().isEmpty()) {
+        cursor.beginEditBlock();
+
+        int startPos = cursor.selectionStart();
+        int endPos = cursor.selectionEnd();
+
+        cursor.setPosition(startPos, QTextCursor::MoveAnchor);
+        cursor.movePosition(QTextCursor::StartOfLine);
+
+        while (cursor.position() <= endPos) {
+            // nếu dòng hiện tại có ký tự tab thì xóa ký tự tab đó
+            if (cursor.block().text().startsWith("\t"))
+                cursor.deleteChar();
+            cursor.movePosition(QTextCursor::Down);
+            cursor.movePosition(QTextCursor::StartOfLine);
+        }
+
+        cursor.endEditBlock();
+    }
+    else
+    {
+        // nếu dòng hiện tại có ký tự tab thì xóa ký tự tab đó
+        if (cursor.block().text().startsWith("\t"))
+            cursor.deletePreviousChar();
+
+        // Cập nhật cursor của QTextEdit
+        setTextCursor(cursor);
+    }
+}
+
 //![slotUpdateRequest]
 
 //![resizeEvent]
@@ -174,7 +243,16 @@ void CodeEditor::keyPressEvent(QKeyEvent *event)
 {
     if (event->modifiers() == Qt::ControlModifier && event->key() == Qt::Key_Slash) {
         commentSelectedLines();
-    } else {
+    }
+    else if (event->key() == Qt::Key_Tab)
+    {
+        indentText();
+    }
+    else if (event->key() == Qt::Key_Backtab)
+    {
+        deleleIndentText();
+    }
+    else {
         QTextEdit::keyPressEvent(event);
     }
 }
