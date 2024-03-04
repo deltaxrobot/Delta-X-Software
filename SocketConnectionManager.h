@@ -20,6 +20,8 @@ public:
     QString hostAddress;
     int port;
 
+    int imageSendingMethod = 0;
+
     bool IsServerOpen();
     static QString printLocalIpAddresses();
 
@@ -35,6 +37,7 @@ private slots:
 public slots:
     void sendImageToImageClients(const QImage& image);
     void sendImageToImageClients(cv::Mat);
+    void sendImageToExternalScript(cv::Mat input);
 
 signals:
     void variableChanged(const QString& varName, const QVariant& value);

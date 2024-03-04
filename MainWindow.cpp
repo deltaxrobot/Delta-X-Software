@@ -69,7 +69,6 @@ void MainWindow::InitVariables()
 
     ui->tvVariables->setModel(&VariableTreeModel);
     VariableManager::instance().addItemModel(&VariableTreeModel);
-    VariableManager::instance().loadFromQSettings();
 
     connect(ui->tvVariables, &QTreeView::clicked, this, &MainWindow::onTreeViewItemClicked);
 

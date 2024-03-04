@@ -78,6 +78,8 @@
 
 #include "PointTool.h"
 
+#include <QSvgWidget>
+
 #define DEFAULT_BAUDRATE 115200
 
 #define DEFAULT_FPS			2
@@ -238,6 +240,7 @@ public:
     QStackedWidget* SubWindowStackedWidget;
 
     // ----- Data ----
+    QString copiedRobotPos[6];
     QMap<QString, QString> ParseNames;
 
     QStandardItemModel VarViewModel;
@@ -341,6 +344,7 @@ public slots:
     void SetConveyorMovingMode(int mode);
     void SetConveyorSpeed();
     void SetConveyorPosition();
+    void SetConveyorAbsolutePosition();
 
     void UpdatePointPositionOnConveyor(QLineEdit* x, QLineEdit* y, float angle, float distance);
 
@@ -480,6 +484,10 @@ private:
 	void makeEffectExample();
 
     // ---- Tool ----
+    QString checkAndCreateDir(const QString& path);
+    bool saveImageWithUniqueName(const cv::Mat& image, const QString& dirPath);
+    void loadImages(const QString& dirPath, QListWidget* lwImageList);
+    void onImageItemClicked(QListWidgetItem* item);
 
     //--------- Controller -------
 #ifdef Q_OS_WIN
@@ -493,6 +501,7 @@ private:
     void initInputValueLabels();
     void plugValue(QLineEdit* le, float value);
     bool isItemExit(QListWidget* lw, QString item);
+    int getIDfromName(QString fullName);
 
     //--------- Tool -------
 

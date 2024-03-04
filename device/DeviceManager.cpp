@@ -2,7 +2,13 @@
 
 DeviceManager::DeviceManager()
 {
-
+    for (int var = 0; var < 3; ++var) {
+        AddRobot("auto");
+        AddConveyor("auto");
+        AddEncoder("auto");
+        AddSlider("auto");
+        AddDevice("auto");
+    }
 }
 
 DeviceManager::~DeviceManager()
@@ -33,6 +39,12 @@ DeviceManager::~DeviceManager()
         Encoders.at(i)->thread()->quit();
         Encoders.at(i)->thread()->wait();
         delete Encoders.at(i);
+    }
+    for (int i = 0; i < Devices.count(); i++)
+    {
+        Devices.at(i)->thread()->quit();
+        Devices.at(i)->thread()->wait();
+        delete Devices.at(i);
     }
 }
 
@@ -254,7 +266,7 @@ void DeviceManager::SendGcode(int deviceType, QString gcode)
         if (Devices.count() > SelectedDeviceID)
         {
             QMetaObject::invokeMethod(Devices[SelectedDeviceID], "WriteData", Qt::QueuedConnection, Q_ARG(QString, gcode));
-            emit Log(QString("Device %1").arg(SelectedDeviceID), gcode, 1);
+            emit Log(QString("device%1").arg(SelectedDeviceID), gcode, 1);
         }
     }
 
@@ -263,7 +275,7 @@ void DeviceManager::SendGcode(int deviceType, QString gcode)
         if (Conveyors.count() > SelectedConveyorID)
         {
             QMetaObject::invokeMethod(Conveyors[SelectedConveyorID], "WriteData", Qt::QueuedConnection, Q_ARG(QString, gcode));
-            emit Log(QString("Conveyor %1").arg(SelectedConveyorID), gcode, 1);
+            emit Log(QString("conveyor%1").arg(SelectedConveyorID), gcode, 1);
         }
     }
 
@@ -271,8 +283,16 @@ void DeviceManager::SendGcode(int deviceType, QString gcode)
     {
         if (Encoders.count() > SelectedEncoderID)
         {
-            QMetaObject::invokeMethod(Encoders[SelectedEncoderID], "WriteData", Qt::QueuedConnection, Q_ARG(QString, gcode));
-            emit Log(QString("Encoder %1").arg(SelectedEncoderID), gcode, 1);
+            if (Encoders[SelectedEncoderID]->LinkedConveyor == -1)
+            {
+                QMetaObject::invokeMethod(Encoders[SelectedEncoderID], "WriteData", Qt::QueuedConnection, Q_ARG(QString, gcode));
+                emit Log(QString("encoder%1").arg(SelectedEncoderID), gcode, 1);
+            }
+            else
+            {
+                QMetaObject::invokeMethod(Conveyors[Encoders[SelectedEncoderID]->LinkedConveyor], "WriteData", Qt::QueuedConnection, Q_ARG(QString, gcode));
+                emit Log(QString("conveyor%1").arg(SelectedEncoderID), gcode, 1);
+            }
         }
     }
 }
@@ -315,7 +335,7 @@ void DeviceManager::SendGcode(QString deviceName, QString gcode)
         {
             QMetaObject::invokeMethod(Sliders[id], "SendGcode", Qt::QueuedConnection, Q_ARG(QString, gcode));
 
-            emit Log(QString("Slider %1").arg(id), gcode, 1);
+            emit Log(QString("slider%1").arg(id), gcode, 1);
         }
     }
 
@@ -325,7 +345,7 @@ void DeviceManager::SendGcode(QString deviceName, QString gcode)
         {
             QMetaObject::invokeMethod(Devices[id], "WriteData", Qt::QueuedConnection, Q_ARG(QString, gcode));
 
-            emit Log(QString("Device %1").arg(id), gcode, 1);
+            emit Log(QString("device%1").arg(id), gcode, 1);
         }
     }
 
@@ -335,7 +355,7 @@ void DeviceManager::SendGcode(QString deviceName, QString gcode)
         {
             QMetaObject::invokeMethod(Conveyors[id], "WriteData", Qt::QueuedConnection, Q_ARG(QString, gcode));
 
-            emit Log(QString("Conveyor %1").arg(id), gcode, 1);
+            emit Log(QString("conveyor%1").arg(id), gcode, 1);
         }
     }
 
@@ -345,7 +365,7 @@ void DeviceManager::SendGcode(QString deviceName, QString gcode)
         {
             QMetaObject::invokeMethod(Encoders[id], "WriteData", Qt::QueuedConnection, Q_ARG(QString, gcode));
 
-            emit Log(QString("Encoder %1").arg(id), gcode, 1);
+            emit Log(QString("encoder%1").arg(id), gcode, 1);
         }
     }
 }

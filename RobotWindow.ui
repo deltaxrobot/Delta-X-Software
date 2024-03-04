@@ -794,7 +794,7 @@ QToolBox QScrollArea&gt;QWidget&gt;QWidget
               <enum>QTabWidget::Rounded</enum>
              </property>
              <property name="currentIndex">
-              <number>1</number>
+              <number>3</number>
              </property>
              <property name="usesScrollButtons">
               <bool>true</bool>
@@ -902,17 +902,17 @@ QRadioButton:disabled {
                     </property>
                     <item>
                      <property name="text">
-                      <string>0</string>
+                      <string>program0</string>
                      </property>
                     </item>
                     <item>
                      <property name="text">
-                      <string>1</string>
+                      <string>program1</string>
                      </property>
                     </item>
                     <item>
                      <property name="text">
-                      <string>2</string>
+                      <string>program2</string>
                      </property>
                     </item>
                     <item>
@@ -1812,8 +1812,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
                   <property name="geometry">
                    <rect>
                     <x>0</x>
-                    <y>-1065</y>
-                    <width>655</width>
+                    <y>-170</y>
+                    <width>586</width>
                     <height>2500</height>
                    </rect>
                   </property>
@@ -1994,6 +1994,9 @@ QFrame
                        </property>
                        <item>
                         <widget class="QFrame" name="fImageViewer">
+                         <property name="styleSheet">
+                          <string notr="true"/>
+                         </property>
                          <property name="frameShape">
                           <enum>QFrame::StyledPanel</enum>
                          </property>
@@ -2089,6 +2092,11 @@ QFrame
                                <property name="toolTip">
                                 <string>Warp Perspective</string>
                                </property>
+                               <property name="styleSheet">
+                                <string notr="true">QPushButton:checked {
+  border: 2px solid rgb(54, 178, 242);
+}</string>
+                               </property>
                                <property name="text">
                                 <string>Crop Area</string>
                                </property>
@@ -2127,6 +2135,11 @@ QFrame
                                <property name="toolTip">
                                 <string>Set Calib Point</string>
                                </property>
+                               <property name="styleSheet">
+                                <string notr="true">QPushButton:checked {
+  border: 2px solid rgb(54, 178, 242);
+}</string>
+                               </property>
                                <property name="text">
                                 <string>Select Calibration Points</string>
                                </property>
@@ -2164,6 +2177,11 @@ QFrame
                                </property>
                                <property name="toolTip">
                                 <string>Check Point Position On Camera</string>
+                               </property>
+                               <property name="styleSheet">
+                                <string notr="true">QPushButton:checked {
+  border: 2px solid rgb(54, 178, 242);
+}</string>
                                </property>
                                <property name="text">
                                 <string>Test Calibration Point</string>
@@ -2249,6 +2267,11 @@ QFrame
                                <property name="toolTip">
                                 <string>Warp Perspective</string>
                                </property>
+                               <property name="styleSheet">
+                                <string notr="true">QPushButton:checked {
+  border: 2px solid rgb(54, 178, 242);
+}</string>
+                               </property>
                                <property name="text">
                                 <string>Transform Image</string>
                                </property>
@@ -2321,6 +2344,11 @@ QFrame
                                </property>
                                <property name="toolTip">
                                 <string>Blob Filter</string>
+                               </property>
+                               <property name="styleSheet">
+                                <string notr="true">QPushButton:checked {
+  border: 2px solid rgb(54, 178, 242);
+}</string>
                                </property>
                                <property name="text">
                                 <string>Object Size Tool</string>
@@ -2424,6 +2452,13 @@ QFrame
                                 <width>30</width>
                                 <height>0</height>
                                </size>
+                              </property>
+                              <property name="styleSheet">
+                               <string notr="true">QPushButton
+{
+	padding-left: 10px;
+	padding-right: 10px;
+}</string>
                               </property>
                               <property name="frameShape">
                                <enum>QFrame::StyledPanel</enum>
@@ -2979,6 +3014,58 @@ QFrame
                                  <number>5</number>
                                 </property>
                                 <item>
+                                 <widget class="QToolButton" name="tbAutoResizeImage">
+                                  <property name="sizePolicy">
+                                   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                   </sizepolicy>
+                                  </property>
+                                  <property name="minimumSize">
+                                   <size>
+                                    <width>20</width>
+                                    <height>20</height>
+                                   </size>
+                                  </property>
+                                  <property name="toolTip">
+                                   <string>Creat New Editor</string>
+                                  </property>
+                                  <property name="styleSheet">
+                                   <string notr="true">QToolButton
+{
+	background: transparent;
+}</string>
+                                  </property>
+                                  <property name="text">
+                                   <string>Resize</string>
+                                  </property>
+                                  <property name="icon">
+                                   <iconset resource="resource.qrc">
+                                    <normaloff>:/icon/icons8_switch_off_52px.png</normaloff>
+                                    <normalon>:/icon/icons8_switch_on_52px.png</normalon>
+                                    <activeon>:/icon/icons8_switch_on_52px.png</activeon>:/icon/icons8_switch_off_52px.png</iconset>
+                                  </property>
+                                  <property name="iconSize">
+                                   <size>
+                                    <width>16</width>
+                                    <height>16</height>
+                                   </size>
+                                  </property>
+                                  <property name="checkable">
+                                   <bool>true</bool>
+                                  </property>
+                                  <property name="checked">
+                                   <bool>true</bool>
+                                  </property>
+                                  <property name="toolButtonStyle">
+                                   <enum>Qt::ToolButtonTextBesideIcon</enum>
+                                  </property>
+                                  <property name="autoRaise">
+                                   <bool>true</bool>
+                                  </property>
+                                 </widget>
+                                </item>
+                                <item>
                                  <widget class="QLabel" name="label_178">
                                   <property name="font">
                                    <font>
@@ -3278,10 +3365,192 @@ QFrame
                                   </property>
                                  </spacer>
                                 </item>
+                                <item>
+                                 <widget class="QToolButton" name="pbSaveImage">
+                                  <property name="enabled">
+                                   <bool>true</bool>
+                                  </property>
+                                  <property name="minimumSize">
+                                   <size>
+                                    <width>0</width>
+                                    <height>0</height>
+                                   </size>
+                                  </property>
+                                  <property name="font">
+                                   <font>
+                                    <pointsize>8</pointsize>
+                                   </font>
+                                  </property>
+                                  <property name="toolTip">
+                                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Capture&lt;/p&gt;&lt;p&gt;M98 PcaptureCamera&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                                  </property>
+                                  <property name="text">
+                                   <string/>
+                                  </property>
+                                  <property name="icon">
+                                   <iconset resource="resource.qrc">
+                                    <normaloff>:/icon/save.png</normaloff>:/icon/save.png</iconset>
+                                  </property>
+                                  <property name="iconSize">
+                                   <size>
+                                    <width>30</width>
+                                    <height>30</height>
+                                   </size>
+                                  </property>
+                                  <property name="checkable">
+                                   <bool>false</bool>
+                                  </property>
+                                  <property name="checked">
+                                   <bool>false</bool>
+                                  </property>
+                                  <property name="toolButtonStyle">
+                                   <enum>Qt::ToolButtonTextBesideIcon</enum>
+                                  </property>
+                                  <property name="autoRaise">
+                                   <bool>true</bool>
+                                  </property>
+                                 </widget>
+                                </item>
                                </layout>
                               </widget>
                              </item>
                             </layout>
+                           </widget>
+                          </item>
+                          <item>
+                           <widget class="QFrame" name="frame_26">
+                            <property name="minimumSize">
+                             <size>
+                              <width>0</width>
+                              <height>0</height>
+                             </size>
+                            </property>
+                            <property name="frameShape">
+                             <enum>QFrame::StyledPanel</enum>
+                            </property>
+                            <property name="frameShadow">
+                             <enum>QFrame::Raised</enum>
+                            </property>
+                            <layout class="QHBoxLayout" name="horizontalLayout_16">
+                             <item>
+                              <widget class="QToolButton" name="tbOpenSaveFolder">
+                               <property name="text">
+                                <string>...</string>
+                               </property>
+                               <property name="icon">
+                                <iconset resource="resource.qrc">
+                                 <normaloff>:/icon/icons8_folder_52px.png</normaloff>:/icon/icons8_folder_52px.png</iconset>
+                               </property>
+                              </widget>
+                             </item>
+                             <item>
+                              <widget class="QLabel" name="label_12">
+                               <property name="text">
+                                <string>Image Folder</string>
+                               </property>
+                              </widget>
+                             </item>
+                             <item>
+                              <widget class="QLineEdit" name="leImageFolder">
+                               <property name="text">
+                                <string>/Images</string>
+                               </property>
+                              </widget>
+                             </item>
+                             <item>
+                              <widget class="QPushButton" name="pbEditSavefolder">
+                               <property name="minimumSize">
+                                <size>
+                                 <width>20</width>
+                                 <height>0</height>
+                                </size>
+                               </property>
+                               <property name="text">
+                                <string>...</string>
+                               </property>
+                              </widget>
+                             </item>
+                             <item>
+                              <spacer name="horizontalSpacer_62">
+                               <property name="orientation">
+                                <enum>Qt::Horizontal</enum>
+                               </property>
+                               <property name="sizeHint" stdset="0">
+                                <size>
+                                 <width>219</width>
+                                 <height>20</height>
+                                </size>
+                               </property>
+                              </spacer>
+                             </item>
+                             <item>
+                              <widget class="QToolButton" name="pbRefreshImageFolder">
+                               <property name="enabled">
+                                <bool>true</bool>
+                               </property>
+                               <property name="minimumSize">
+                                <size>
+                                 <width>0</width>
+                                 <height>0</height>
+                                </size>
+                               </property>
+                               <property name="font">
+                                <font>
+                                 <pointsize>8</pointsize>
+                                </font>
+                               </property>
+                               <property name="toolTip">
+                                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Capture&lt;/p&gt;&lt;p&gt;M98 PcaptureCamera&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                               </property>
+                               <property name="text">
+                                <string/>
+                               </property>
+                               <property name="icon">
+                                <iconset resource="resource.qrc">
+                                 <normaloff>:/icon/icons8_replay_48px.png</normaloff>:/icon/icons8_replay_48px.png</iconset>
+                               </property>
+                               <property name="iconSize">
+                                <size>
+                                 <width>20</width>
+                                 <height>20</height>
+                                </size>
+                               </property>
+                               <property name="checkable">
+                                <bool>false</bool>
+                               </property>
+                               <property name="checked">
+                                <bool>false</bool>
+                               </property>
+                               <property name="toolButtonStyle">
+                                <enum>Qt::ToolButtonTextBesideIcon</enum>
+                               </property>
+                               <property name="autoRaise">
+                                <bool>true</bool>
+                               </property>
+                              </widget>
+                             </item>
+                            </layout>
+                           </widget>
+                          </item>
+                          <item>
+                           <widget class="QListWidget" name="lwImageList">
+                            <property name="maximumSize">
+                             <size>
+                              <width>16777215</width>
+                              <height>50</height>
+                             </size>
+                            </property>
+                            <property name="styleSheet">
+                             <string notr="true">QListWidget
+{	
+	background-color: #1E1E20;
+	
+	color: rgb(255, 255, 255);
+}</string>
+                            </property>
+                            <property name="flow">
+                             <enum>QListView::LeftToRight</enum>
+                            </property>
                            </widget>
                           </item>
                          </layout>
@@ -3497,7 +3766,7 @@ QFrame
                                   </property>
                                   <property name="maximumSize">
                                    <size>
-                                    <width>50</width>
+                                    <width>80</width>
                                     <height>16777215</height>
                                    </size>
                                   </property>
@@ -3522,7 +3791,7 @@ QFrame
                                   </property>
                                   <property name="maximumSize">
                                    <size>
-                                    <width>50</width>
+                                    <width>80</width>
                                     <height>16777215</height>
                                    </size>
                                   </property>
@@ -3541,26 +3810,6 @@ QFrame
                                   </property>
                                   <property name="text">
                                    <string>mm</string>
-                                  </property>
-                                 </widget>
-                                </item>
-                                <item row="5" column="7">
-                                 <widget class="QToolButton" name="tbPastePoint1">
-                                  <property name="toolTip">
-                                   <string>Paste</string>
-                                  </property>
-                                  <property name="text">
-                                   <string/>
-                                  </property>
-                                  <property name="icon">
-                                   <iconset resource="resource.qrc">
-                                    <normaloff>:/icon/Paste.png</normaloff>:/icon/Paste.png</iconset>
-                                  </property>
-                                  <property name="iconSize">
-                                   <size>
-                                    <width>24</width>
-                                    <height>24</height>
-                                   </size>
                                   </property>
                                  </widget>
                                 </item>
@@ -3653,7 +3902,7 @@ QFrame
                                   </property>
                                   <property name="maximumSize">
                                    <size>
-                                    <width>50</width>
+                                    <width>80</width>
                                     <height>16777215</height>
                                    </size>
                                   </property>
@@ -3662,51 +3911,6 @@ QFrame
                                   </property>
                                   <property name="text">
                                    <string>100</string>
-                                  </property>
-                                 </widget>
-                                </item>
-                                <item row="6" column="7">
-                                 <widget class="QToolButton" name="tbPastePoint2">
-                                  <property name="toolTip">
-                                   <string>Paste</string>
-                                  </property>
-                                  <property name="text">
-                                   <string/>
-                                  </property>
-                                  <property name="icon">
-                                   <iconset resource="resource.qrc">
-                                    <normaloff>:/icon/Paste.png</normaloff>:/icon/Paste.png</iconset>
-                                  </property>
-                                  <property name="iconSize">
-                                   <size>
-                                    <width>24</width>
-                                    <height>24</height>
-                                   </size>
-                                  </property>
-                                 </widget>
-                                </item>
-                                <item row="5" column="6">
-                                 <widget class="QPushButton" name="pbCalibPoint1">
-                                  <property name="sizePolicy">
-                                   <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-                                    <horstretch>0</horstretch>
-                                    <verstretch>0</verstretch>
-                                   </sizepolicy>
-                                  </property>
-                                  <property name="minimumSize">
-                                   <size>
-                                    <width>180</width>
-                                    <height>0</height>
-                                   </size>
-                                  </property>
-                                  <property name="text">
-                                   <string>Save Robot Position To P1'</string>
-                                  </property>
-                                  <property name="shortcut">
-                                   <string>!</string>
-                                  </property>
-                                  <property name="flat">
-                                   <bool>true</bool>
                                   </property>
                                  </widget>
                                 </item>
@@ -3726,7 +3930,7 @@ QFrame
                                   </property>
                                   <property name="maximumSize">
                                    <size>
-                                    <width>50</width>
+                                    <width>80</width>
                                     <height>16777215</height>
                                    </size>
                                   </property>
@@ -3783,25 +3987,6 @@ QFrame
                                  <widget class="QLabel" name="label_10">
                                   <property name="text">
                                    <string>2.3 Press the button to calculate the transformation matrix</string>
-                                  </property>
-                                 </widget>
-                                </item>
-                                <item row="6" column="6">
-                                 <widget class="QPushButton" name="pbCalibPoint2">
-                                  <property name="sizePolicy">
-                                   <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-                                    <horstretch>0</horstretch>
-                                    <verstretch>0</verstretch>
-                                   </sizepolicy>
-                                  </property>
-                                  <property name="text">
-                                   <string>Save Robot Position To P2'</string>
-                                  </property>
-                                  <property name="shortcut">
-                                   <string>@</string>
-                                  </property>
-                                  <property name="flat">
-                                   <bool>true</bool>
                                   </property>
                                  </widget>
                                 </item>
@@ -3892,7 +4077,7 @@ QFrame
                                   </property>
                                   <property name="maximumSize">
                                    <size>
-                                    <width>50</width>
+                                    <width>80</width>
                                     <height>16777215</height>
                                    </size>
                                   </property>
@@ -3924,7 +4109,7 @@ QFrame
                                   </property>
                                   <property name="maximumSize">
                                    <size>
-                                    <width>50</width>
+                                    <width>80</width>
                                     <height>16777215</height>
                                    </size>
                                   </property>
@@ -4019,7 +4204,7 @@ QFrame
                                   </property>
                                   <property name="maximumSize">
                                    <size>
-                                    <width>50</width>
+                                    <width>80</width>
                                     <height>16777215</height>
                                    </size>
                                   </property>
@@ -4027,19 +4212,6 @@ QFrame
                                    <string>0</string>
                                   </property>
                                  </widget>
-                                </item>
-                                <item row="5" column="8">
-                                 <spacer name="horizontalSpacer_3">
-                                  <property name="orientation">
-                                   <enum>Qt::Horizontal</enum>
-                                  </property>
-                                  <property name="sizeHint" stdset="0">
-                                   <size>
-                                    <width>40</width>
-                                    <height>20</height>
-                                   </size>
-                                  </property>
-                                 </spacer>
                                 </item>
                                 <item row="8" column="2" colspan="2">
                                  <widget class="QComboBox" name="cbCalibType">
@@ -4066,6 +4238,79 @@ QFrame
                                    </property>
                                   </item>
                                  </widget>
+                                </item>
+                                <item row="9" column="6">
+                                 <widget class="QToolButton" name="tbPasteOffsetPoint">
+                                  <property name="toolTip">
+                                   <string>Paste</string>
+                                  </property>
+                                  <property name="text">
+                                   <string/>
+                                  </property>
+                                  <property name="icon">
+                                   <iconset resource="resource.qrc">
+                                    <normaloff>:/icon/Paste.png</normaloff>:/icon/Paste.png</iconset>
+                                  </property>
+                                  <property name="iconSize">
+                                   <size>
+                                    <width>24</width>
+                                    <height>24</height>
+                                   </size>
+                                  </property>
+                                 </widget>
+                                </item>
+                                <item row="5" column="6">
+                                 <widget class="QToolButton" name="tbPastePoint1">
+                                  <property name="toolTip">
+                                   <string>Paste</string>
+                                  </property>
+                                  <property name="text">
+                                   <string/>
+                                  </property>
+                                  <property name="icon">
+                                   <iconset resource="resource.qrc">
+                                    <normaloff>:/icon/Paste.png</normaloff>:/icon/Paste.png</iconset>
+                                  </property>
+                                  <property name="iconSize">
+                                   <size>
+                                    <width>24</width>
+                                    <height>24</height>
+                                   </size>
+                                  </property>
+                                 </widget>
+                                </item>
+                                <item row="6" column="6">
+                                 <widget class="QToolButton" name="tbPastePoint2">
+                                  <property name="toolTip">
+                                   <string>Paste</string>
+                                  </property>
+                                  <property name="text">
+                                   <string/>
+                                  </property>
+                                  <property name="icon">
+                                   <iconset resource="resource.qrc">
+                                    <normaloff>:/icon/Paste.png</normaloff>:/icon/Paste.png</iconset>
+                                  </property>
+                                  <property name="iconSize">
+                                   <size>
+                                    <width>24</width>
+                                    <height>24</height>
+                                   </size>
+                                  </property>
+                                 </widget>
+                                </item>
+                                <item row="5" column="7" colspan="2">
+                                 <spacer name="horizontalSpacer_3">
+                                  <property name="orientation">
+                                   <enum>Qt::Horizontal</enum>
+                                  </property>
+                                  <property name="sizeHint" stdset="0">
+                                   <size>
+                                    <width>40</width>
+                                    <height>20</height>
+                                   </size>
+                                  </property>
+                                 </spacer>
                                 </item>
                                </layout>
                               </widget>
@@ -4190,12 +4435,44 @@ QFrame
                                 <item>
                                  <widget class="QLabel" name="label_45">
                                   <property name="text">
-                                   <string>Similarity Threshold</string>
+                                   <string>IoU Threshold</string>
                                   </property>
                                  </widget>
                                 </item>
                                 <item>
-                                 <widget class="QLineEdit" name="leSimilarityThreshold">
+                                 <widget class="QLineEdit" name="leIoUThreshold">
+                                  <property name="sizePolicy">
+                                   <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                   </sizepolicy>
+                                  </property>
+                                  <property name="minimumSize">
+                                   <size>
+                                    <width>0</width>
+                                    <height>30</height>
+                                   </size>
+                                  </property>
+                                  <property name="maximumSize">
+                                   <size>
+                                    <width>50</width>
+                                    <height>16777215</height>
+                                   </size>
+                                  </property>
+                                  <property name="text">
+                                   <string>20</string>
+                                  </property>
+                                 </widget>
+                                </item>
+                                <item>
+                                 <widget class="QLabel" name="label_46">
+                                  <property name="text">
+                                   <string>Distance Threshold</string>
+                                  </property>
+                                 </widget>
+                                </item>
+                                <item>
+                                 <widget class="QLineEdit" name="leDistanceThreshold">
                                   <property name="sizePolicy">
                                    <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
                                     <horstretch>0</horstretch>
@@ -4399,6 +4676,11 @@ QFrame
                                   </property>
                                   <item>
                                    <property name="text">
+                                    <string>0</string>
+                                   </property>
+                                  </item>
+                                  <item>
+                                   <property name="text">
                                     <string>1</string>
                                    </property>
                                   </item>
@@ -4415,11 +4697,6 @@ QFrame
                                   <item>
                                    <property name="text">
                                     <string>4</string>
-                                   </property>
-                                  </item>
-                                  <item>
-                                   <property name="text">
-                                    <string>5</string>
                                    </property>
                                   </item>
                                   <item>
@@ -4561,6 +4838,186 @@ QFrame
                                 <enum>QFrame::Raised</enum>
                                </property>
                                <layout class="QGridLayout" name="gridLayout_28">
+                                <item row="5" column="1">
+                                 <widget class="QLabel" name="label_209">
+                                  <property name="text">
+                                   <string>v2 byte: &quot;Image\n&quot; + data</string>
+                                  </property>
+                                 </widget>
+                                </item>
+                                <item row="2" column="1">
+                                 <widget class="QComboBox" name="cbImageSource">
+                                  <property name="currentIndex">
+                                   <number>0</number>
+                                  </property>
+                                  <item>
+                                   <property name="text">
+                                    <string>Origin Image</string>
+                                   </property>
+                                  </item>
+                                  <item>
+                                   <property name="text">
+                                    <string>Calibrated Image</string>
+                                   </property>
+                                  </item>
+                                  <item>
+                                   <property name="text">
+                                    <string>Color Filtered Image</string>
+                                   </property>
+                                  </item>
+                                 </widget>
+                                </item>
+                                <item row="1" column="1">
+                                 <widget class="QLineEdit" name="lePythonUrl">
+                                  <property name="sizePolicy">
+                                   <sizepolicy hsizetype="Ignored" vsizetype="Preferred">
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                   </sizepolicy>
+                                  </property>
+                                  <property name="minimumSize">
+                                   <size>
+                                    <width>0</width>
+                                    <height>30</height>
+                                   </size>
+                                  </property>
+                                  <property name="maximumSize">
+                                   <size>
+                                    <width>16777215</width>
+                                    <height>16777215</height>
+                                   </size>
+                                  </property>
+                                  <property name="text">
+                                   <string>script-example/yolov8_detect.py</string>
+                                  </property>
+                                 </widget>
+                                </item>
+                                <item row="1" column="4">
+                                 <widget class="QPushButton" name="pbExternalScriptHelp">
+                                  <property name="sizePolicy">
+                                   <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                   </sizepolicy>
+                                  </property>
+                                  <property name="maximumSize">
+                                   <size>
+                                    <width>30</width>
+                                    <height>16777215</height>
+                                   </size>
+                                  </property>
+                                  <property name="text">
+                                   <string>?</string>
+                                  </property>
+                                 </widget>
+                                </item>
+                                <item row="1" column="0">
+                                 <widget class="QLabel" name="label_145">
+                                  <property name="text">
+                                   <string>Python Url</string>
+                                  </property>
+                                 </widget>
+                                </item>
+                                <item row="6" column="1" colspan="3">
+                                 <widget class="QLabel" name="label_187">
+                                  <property name="text">
+                                   <string>string: &quot;#Object = [id],[x],[y],[width],[height],[angle];&quot;</string>
+                                  </property>
+                                 </widget>
+                                </item>
+                                <item row="6" column="0">
+                                 <widget class="QLabel" name="label_185">
+                                  <property name="text">
+                                   <string>Receive format</string>
+                                  </property>
+                                 </widget>
+                                </item>
+                                <item row="3" column="0">
+                                 <widget class="QLabel" name="label_149">
+                                  <property name="text">
+                                   <string>Method</string>
+                                  </property>
+                                 </widget>
+                                </item>
+                                <item row="0" column="0">
+                                 <widget class="QPushButton" name="pbOpenScriptExample">
+                                  <property name="sizePolicy">
+                                   <sizepolicy hsizetype="Maximum" vsizetype="Minimum">
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                   </sizepolicy>
+                                  </property>
+                                  <property name="minimumSize">
+                                   <size>
+                                    <width>0</width>
+                                    <height>30</height>
+                                   </size>
+                                  </property>
+                                  <property name="styleSheet">
+                                   <string notr="true">QPushButton
+{
+	padding: 5px;
+}</string>
+                                  </property>
+                                  <property name="text">
+                                   <string>Open script example</string>
+                                  </property>
+                                 </widget>
+                                </item>
+                                <item row="1" column="2">
+                                 <widget class="QPushButton" name="pbExternalScriptOpen">
+                                  <property name="sizePolicy">
+                                   <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                   </sizepolicy>
+                                  </property>
+                                  <property name="maximumSize">
+                                   <size>
+                                    <width>30</width>
+                                    <height>16777215</height>
+                                   </size>
+                                  </property>
+                                  <property name="text">
+                                   <string/>
+                                  </property>
+                                  <property name="icon">
+                                   <iconset resource="resource.qrc">
+                                    <normaloff>:/icon/icons8_folder_64px.png</normaloff>:/icon/icons8_folder_64px.png</iconset>
+                                  </property>
+                                 </widget>
+                                </item>
+                                <item row="4" column="0">
+                                 <widget class="QLabel" name="label_184">
+                                  <property name="text">
+                                   <string>Sending format</string>
+                                  </property>
+                                 </widget>
+                                </item>
+                                <item row="4" column="1">
+                                 <widget class="QLabel" name="label_186">
+                                  <property name="text">
+                                   <string>v1 byte:  &quot;[width][height][channel][data]&quot;</string>
+                                  </property>
+                                 </widget>
+                                </item>
+                                <item row="3" column="1">
+                                 <widget class="QComboBox" name="cbSendingImageMethod">
+                                  <property name="currentIndex">
+                                   <number>0</number>
+                                  </property>
+                                  <item>
+                                   <property name="text">
+                                    <string>v1</string>
+                                   </property>
+                                  </item>
+                                  <item>
+                                   <property name="text">
+                                    <string>v2</string>
+                                   </property>
+                                  </item>
+                                 </widget>
+                                </item>
                                 <item row="1" column="3">
                                  <widget class="QPushButton" name="pbRunExternalScript">
                                   <property name="sizePolicy">
@@ -4588,90 +5045,6 @@ QFrame
                                   </property>
                                  </widget>
                                 </item>
-                                <item row="1" column="0">
-                                 <widget class="QLabel" name="label_145">
-                                  <property name="text">
-                                   <string>Python Url</string>
-                                  </property>
-                                 </widget>
-                                </item>
-                                <item row="1" column="2">
-                                 <widget class="QPushButton" name="pbExternalScriptOpen">
-                                  <property name="sizePolicy">
-                                   <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-                                    <horstretch>0</horstretch>
-                                    <verstretch>0</verstretch>
-                                   </sizepolicy>
-                                  </property>
-                                  <property name="maximumSize">
-                                   <size>
-                                    <width>30</width>
-                                    <height>16777215</height>
-                                   </size>
-                                  </property>
-                                  <property name="text">
-                                   <string/>
-                                  </property>
-                                  <property name="icon">
-                                   <iconset resource="resource.qrc">
-                                    <normaloff>:/icon/icons8_folder_64px.png</normaloff>:/icon/icons8_folder_64px.png</iconset>
-                                  </property>
-                                 </widget>
-                                </item>
-                                <item row="1" column="1">
-                                 <widget class="QLineEdit" name="lePythonUrl">
-                                  <property name="sizePolicy">
-                                   <sizepolicy hsizetype="Ignored" vsizetype="Preferred">
-                                    <horstretch>0</horstretch>
-                                    <verstretch>0</verstretch>
-                                   </sizepolicy>
-                                  </property>
-                                  <property name="minimumSize">
-                                   <size>
-                                    <width>0</width>
-                                    <height>30</height>
-                                   </size>
-                                  </property>
-                                  <property name="maximumSize">
-                                   <size>
-                                    <width>16777215</width>
-                                    <height>16777215</height>
-                                   </size>
-                                  </property>
-                                  <property name="text">
-                                   <string>script-example/mushroom-2.0.py</string>
-                                  </property>
-                                 </widget>
-                                </item>
-                                <item row="2" column="1">
-                                 <widget class="QComboBox" name="cbImageSource">
-                                  <property name="currentIndex">
-                                   <number>0</number>
-                                  </property>
-                                  <item>
-                                   <property name="text">
-                                    <string>Origin Image</string>
-                                   </property>
-                                  </item>
-                                  <item>
-                                   <property name="text">
-                                    <string>Calibrated Image</string>
-                                   </property>
-                                  </item>
-                                  <item>
-                                   <property name="text">
-                                    <string>Color Filtered Image</string>
-                                   </property>
-                                  </item>
-                                 </widget>
-                                </item>
-                                <item row="3" column="0">
-                                 <widget class="QLabel" name="label_180">
-                                  <property name="text">
-                                   <string>Host IP</string>
-                                  </property>
-                                 </widget>
-                                </item>
                                 <item row="2" column="0">
                                  <widget class="QLabel" name="label_146">
                                   <property name="text">
@@ -4679,96 +5052,10 @@ QFrame
                                   </property>
                                  </widget>
                                 </item>
-                                <item row="4" column="1">
-                                 <widget class="QLabel" name="label_186">
+                                <item row="7" column="1">
+                                 <widget class="QLabel" name="label_224">
                                   <property name="text">
-                                   <string>byte: &quot;[width][height][channel][data]&quot;</string>
-                                  </property>
-                                 </widget>
-                                </item>
-                                <item row="3" column="3" colspan="2">
-                                 <widget class="QLabel" name="label_183">
-                                  <property name="text">
-                                   <string>8844</string>
-                                  </property>
-                                 </widget>
-                                </item>
-                                <item row="4" column="0">
-                                 <widget class="QLabel" name="label_184">
-                                  <property name="text">
-                                   <string>Sending format</string>
-                                  </property>
-                                 </widget>
-                                </item>
-                                <item row="5" column="0">
-                                 <widget class="QLabel" name="label_185">
-                                  <property name="text">
-                                   <string>Receive format</string>
-                                  </property>
-                                 </widget>
-                                </item>
-                                <item row="5" column="1" colspan="3">
-                                 <widget class="QLabel" name="label_187">
-                                  <property name="text">
-                                   <string>string: &quot;#Object = [x],[y],[width],[height],[angle];&quot;</string>
-                                  </property>
-                                 </widget>
-                                </item>
-                                <item row="1" column="4">
-                                 <widget class="QPushButton" name="pbExternalScriptHelp">
-                                  <property name="sizePolicy">
-                                   <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-                                    <horstretch>0</horstretch>
-                                    <verstretch>0</verstretch>
-                                   </sizepolicy>
-                                  </property>
-                                  <property name="maximumSize">
-                                   <size>
-                                    <width>30</width>
-                                    <height>16777215</height>
-                                   </size>
-                                  </property>
-                                  <property name="text">
-                                   <string>?</string>
-                                  </property>
-                                 </widget>
-                                </item>
-                                <item row="3" column="2">
-                                 <widget class="QLabel" name="label_182">
-                                  <property name="text">
-                                   <string>Port</string>
-                                  </property>
-                                 </widget>
-                                </item>
-                                <item row="3" column="1">
-                                 <widget class="QLabel" name="label_181">
-                                  <property name="text">
-                                   <string>127.0.0.1</string>
-                                  </property>
-                                 </widget>
-                                </item>
-                                <item row="0" column="0">
-                                 <widget class="QPushButton" name="pbOpenScriptExample">
-                                  <property name="sizePolicy">
-                                   <sizepolicy hsizetype="Maximum" vsizetype="Minimum">
-                                    <horstretch>0</horstretch>
-                                    <verstretch>0</verstretch>
-                                   </sizepolicy>
-                                  </property>
-                                  <property name="minimumSize">
-                                   <size>
-                                    <width>0</width>
-                                    <height>30</height>
-                                   </size>
-                                  </property>
-                                  <property name="styleSheet">
-                                   <string notr="true">QPushButton
-{
-	padding: 5px;
-}</string>
-                                  </property>
-                                  <property name="text">
-                                   <string>Open script example</string>
+                                   <string>or string: &quot;#Blobs = [id],[x],[y],[width],[height],[angle];&quot;</string>
                                   </property>
                                  </widget>
                                 </item>
@@ -5317,8 +5604,8 @@ QFrame
                   <property name="geometry">
                    <rect>
                     <x>0</x>
-                    <y>-371</y>
-                    <width>643</width>
+                    <y>0</y>
+                    <width>574</width>
                     <height>1900</height>
                    </rect>
                   </property>
@@ -5712,6 +5999,58 @@ QGroupBox::title
                               </property>
                              </widget>
                             </item>
+                            <item row="2" column="3">
+                             <widget class="QToolButton" name="tbAutoMove">
+                              <property name="sizePolicy">
+                               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                                <horstretch>0</horstretch>
+                                <verstretch>0</verstretch>
+                               </sizepolicy>
+                              </property>
+                              <property name="minimumSize">
+                               <size>
+                                <width>20</width>
+                                <height>20</height>
+                               </size>
+                              </property>
+                              <property name="toolTip">
+                               <string>Creat New Editor</string>
+                              </property>
+                              <property name="styleSheet">
+                               <string notr="true">QToolButton
+{
+	background: transparent;
+}</string>
+                              </property>
+                              <property name="text">
+                               <string>  Auto Move</string>
+                              </property>
+                              <property name="icon">
+                               <iconset resource="resource.qrc">
+                                <normaloff>:/icon/icons8_switch_off_52px.png</normaloff>
+                                <normalon>:/icon/icons8_switch_on_52px.png</normalon>
+                                <activeon>:/icon/icons8_switch_on_52px.png</activeon>:/icon/icons8_switch_off_52px.png</iconset>
+                              </property>
+                              <property name="iconSize">
+                               <size>
+                                <width>16</width>
+                                <height>16</height>
+                               </size>
+                              </property>
+                              <property name="checkable">
+                               <bool>true</bool>
+                              </property>
+                              <property name="checked">
+                               <bool>false</bool>
+                              </property>
+                              <property name="toolButtonStyle">
+                               <enum>Qt::ToolButtonTextBesideIcon</enum>
+                              </property>
+                              <property name="autoRaise">
+                               <bool>true</bool>
+                              </property>
+                             </widget>
+                            </item>
                            </layout>
                           </widget>
                          </item>
@@ -5751,68 +6090,84 @@ QGroupBox::title
                             <enum>QFrame::Raised</enum>
                            </property>
                            <layout class="QGridLayout" name="gridLayout_44">
-                            <item row="8" column="7">
-                             <widget class="QPushButton" name="pbAddVector">
+                            <item row="7" column="3">
+                             <widget class="QLabel" name="label_226">
+                              <property name="text">
+                               <string>X</string>
+                              </property>
+                              <property name="alignment">
+                               <set>Qt::AlignCenter</set>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="5" column="3">
+                             <widget class="QLineEdit" name="leVectorValue"/>
+                            </item>
+                            <item row="2" column="6">
+                             <widget class="QLineEdit" name="lePointAtT1Z"/>
+                            </item>
+                            <item row="7" column="6">
+                             <widget class="QLabel" name="label_228">
+                              <property name="text">
+                               <string>Z</string>
+                              </property>
+                              <property name="alignment">
+                               <set>Qt::AlignCenter</set>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="9" column="6" colspan="3">
+                             <widget class="QListWidget" name="lwVectorList">
                               <property name="sizePolicy">
-                               <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+                               <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
                                 <horstretch>0</horstretch>
                                 <verstretch>0</verstretch>
                                </sizepolicy>
                               </property>
                               <property name="minimumSize">
                                <size>
-                                <width>80</width>
-                                <height>20</height>
+                                <width>0</width>
+                                <height>70</height>
                                </size>
                               </property>
-                              <property name="text">
-                               <string>Save</string>
+                              <property name="maximumSize">
+                               <size>
+                                <width>16777215</width>
+                                <height>100</height>
+                               </size>
+                              </property>
+                              <property name="styleSheet">
+                               <string notr="true">background-color: rgb(118, 118, 118);
+color: rgb(241, 241, 241);
+border-radius: 5px;
+padding: 5px;</string>
                               </property>
                              </widget>
                             </item>
-                            <item row="5" column="2">
-                             <widget class="QLabel" name="label_197">
+                            <item row="8" column="3">
+                             <widget class="QLineEdit" name="leVectorX"/>
+                            </item>
+                            <item row="1" column="6">
+                             <widget class="QLabel" name="label_208">
                               <property name="text">
-                               <string>Value</string>
+                               <string>Z</string>
                               </property>
                               <property name="alignment">
                                <set>Qt::AlignCenter</set>
                               </property>
                              </widget>
                             </item>
-                            <item row="8" column="6">
-                             <widget class="QLineEdit" name="leVectorZ"/>
-                            </item>
-                            <item row="2" column="6">
-                             <widget class="QLineEdit" name="lePointAtT1Z"/>
-                            </item>
-                            <item row="2" column="7">
-                             <spacer name="horizontalSpacer_13">
-                              <property name="orientation">
-                               <enum>Qt::Horizontal</enum>
+                            <item row="8" column="2">
+                             <widget class="QLineEdit" name="leVectorName">
+                              <property name="text">
+                               <string>#Vector1</string>
                               </property>
-                              <property name="sizeHint" stdset="0">
-                               <size>
-                                <width>40</width>
-                                <height>20</height>
-                               </size>
-                              </property>
-                             </spacer>
+                             </widget>
                             </item>
-                            <item row="1" column="5">
-                             <widget class="QLabel" name="label_206">
+                            <item row="7" column="5">
+                             <widget class="QLabel" name="label_227">
                               <property name="text">
                                <string>Y</string>
-                              </property>
-                              <property name="alignment">
-                               <set>Qt::AlignCenter</set>
-                              </property>
-                             </widget>
-                            </item>
-                            <item row="7" column="2">
-                             <widget class="QLabel" name="label_229">
-                              <property name="text">
-                               <string>Name</string>
                               </property>
                               <property name="alignment">
                                <set>Qt::AlignCenter</set>
@@ -5841,6 +6196,41 @@ QGroupBox::title
                               </property>
                              </widget>
                             </item>
+                            <item row="2" column="5">
+                             <widget class="QLineEdit" name="lePointAtT1Y"/>
+                            </item>
+                            <item row="1" column="5">
+                             <widget class="QLabel" name="label_206">
+                              <property name="text">
+                               <string>Y</string>
+                              </property>
+                              <property name="alignment">
+                               <set>Qt::AlignCenter</set>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="8" column="8">
+                             <widget class="QPushButton" name="pbAddVector">
+                              <property name="sizePolicy">
+                               <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+                                <horstretch>0</horstretch>
+                                <verstretch>0</verstretch>
+                               </sizepolicy>
+                              </property>
+                              <property name="minimumSize">
+                               <size>
+                                <width>80</width>
+                                <height>20</height>
+                               </size>
+                              </property>
+                              <property name="text">
+                               <string>Save</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="8" column="6">
+                             <widget class="QLineEdit" name="leVectorZ"/>
+                            </item>
                             <item row="6" column="2">
                              <widget class="QPushButton" name="pbCalVector">
                               <property name="sizePolicy">
@@ -5860,14 +6250,30 @@ QGroupBox::title
                               </property>
                              </widget>
                             </item>
+                            <item row="4" column="3">
+                             <widget class="QLineEdit" name="lePointAtT2X"/>
+                            </item>
+                            <item row="7" column="2">
+                             <widget class="QLabel" name="label_229">
+                              <property name="text">
+                               <string>Name</string>
+                              </property>
+                              <property name="alignment">
+                               <set>Qt::AlignCenter</set>
+                              </property>
+                             </widget>
+                            </item>
                             <item row="8" column="5">
                              <widget class="QLineEdit" name="leVectorY"/>
                             </item>
-                            <item row="2" column="5">
-                             <widget class="QLineEdit" name="lePointAtT1Y"/>
+                            <item row="4" column="6">
+                             <widget class="QLineEdit" name="lePointAtT2Z"/>
                             </item>
-                            <item row="7" column="3">
-                             <widget class="QLabel" name="label_226">
+                            <item row="4" column="5">
+                             <widget class="QLineEdit" name="lePointAtT2Y"/>
+                            </item>
+                            <item row="1" column="3">
+                             <widget class="QLabel" name="label_189">
                               <property name="text">
                                <string>X</string>
                               </property>
@@ -5876,46 +6282,26 @@ QGroupBox::title
                               </property>
                              </widget>
                             </item>
-                            <item row="7" column="6">
-                             <widget class="QLabel" name="label_228">
+                            <item row="2" column="3">
+                             <widget class="QLineEdit" name="lePointAtT1X"/>
+                            </item>
+                            <item row="2" column="8">
+                             <spacer name="horizontalSpacer_13">
+                              <property name="orientation">
+                               <enum>Qt::Horizontal</enum>
+                              </property>
+                              <property name="sizeHint" stdset="0">
+                               <size>
+                                <width>40</width>
+                                <height>20</height>
+                               </size>
+                              </property>
+                             </spacer>
+                            </item>
+                            <item row="5" column="2">
+                             <widget class="QLabel" name="label_197">
                               <property name="text">
-                               <string>Z</string>
-                              </property>
-                              <property name="alignment">
-                               <set>Qt::AlignCenter</set>
-                              </property>
-                             </widget>
-                            </item>
-                            <item row="4" column="6">
-                             <widget class="QLineEdit" name="lePointAtT2Z"/>
-                            </item>
-                            <item row="1" column="6">
-                             <widget class="QLabel" name="label_208">
-                              <property name="text">
-                               <string>Z</string>
-                              </property>
-                              <property name="alignment">
-                               <set>Qt::AlignCenter</set>
-                              </property>
-                             </widget>
-                            </item>
-                            <item row="8" column="2">
-                             <widget class="QLineEdit" name="leVectorName">
-                              <property name="text">
-                               <string>#Vector1</string>
-                              </property>
-                             </widget>
-                            </item>
-                            <item row="4" column="3">
-                             <widget class="QLineEdit" name="lePointAtT2X"/>
-                            </item>
-                            <item row="4" column="5">
-                             <widget class="QLineEdit" name="lePointAtT2Y"/>
-                            </item>
-                            <item row="7" column="5">
-                             <widget class="QLabel" name="label_227">
-                              <property name="text">
-                               <string>Y</string>
+                               <string>Value</string>
                               </property>
                               <property name="alignment">
                                <set>Qt::AlignCenter</set>
@@ -5938,52 +6324,45 @@ QGroupBox::title
                               </property>
                              </widget>
                             </item>
-                            <item row="5" column="3">
-                             <widget class="QLineEdit" name="leVectorValue"/>
-                            </item>
-                            <item row="9" column="6" colspan="2">
-                             <widget class="QListWidget" name="lwVectorList">
-                              <property name="sizePolicy">
-                               <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
-                                <horstretch>0</horstretch>
-                                <verstretch>0</verstretch>
-                               </sizepolicy>
+                            <item row="2" column="7">
+                             <widget class="QToolButton" name="tbPasteVectorPoint1">
+                              <property name="toolTip">
+                               <string>Paste</string>
                               </property>
-                              <property name="minimumSize">
-                               <size>
-                                <width>0</width>
-                                <height>70</height>
-                               </size>
-                              </property>
-                              <property name="maximumSize">
-                               <size>
-                                <width>16777215</width>
-                                <height>100</height>
-                               </size>
-                              </property>
-                              <property name="styleSheet">
-                               <string notr="true">background-color: rgb(118, 118, 118);
-color: rgb(241, 241, 241);
-border-radius: 5px;
-padding: 5px;</string>
-                              </property>
-                             </widget>
-                            </item>
-                            <item row="1" column="3">
-                             <widget class="QLabel" name="label_189">
                               <property name="text">
-                               <string>X</string>
+                               <string/>
                               </property>
-                              <property name="alignment">
-                               <set>Qt::AlignCenter</set>
+                              <property name="icon">
+                               <iconset resource="resource.qrc">
+                                <normaloff>:/icon/Paste.png</normaloff>:/icon/Paste.png</iconset>
+                              </property>
+                              <property name="iconSize">
+                               <size>
+                                <width>24</width>
+                                <height>24</height>
+                               </size>
                               </property>
                              </widget>
                             </item>
-                            <item row="2" column="3">
-                             <widget class="QLineEdit" name="lePointAtT1X"/>
-                            </item>
-                            <item row="8" column="3">
-                             <widget class="QLineEdit" name="leVectorX"/>
+                            <item row="4" column="7">
+                             <widget class="QToolButton" name="tbPasteVectorPoint2">
+                              <property name="toolTip">
+                               <string>Paste</string>
+                              </property>
+                              <property name="text">
+                               <string/>
+                              </property>
+                              <property name="icon">
+                               <iconset resource="resource.qrc">
+                                <normaloff>:/icon/Paste.png</normaloff>:/icon/Paste.png</iconset>
+                              </property>
+                              <property name="iconSize">
+                               <size>
+                                <width>24</width>
+                                <height>24</height>
+                               </size>
+                              </property>
+                             </widget>
                             </item>
                            </layout>
                           </widget>
@@ -6821,7 +7200,7 @@ padding: 5px;</string>
                    <rect>
                     <x>0</x>
                     <y>0</y>
-                    <width>643</width>
+                    <width>574</width>
                     <height>1600</height>
                    </rect>
                   </property>
@@ -6836,6 +7215,33 @@ padding: 5px;</string>
                     <width>16777215</width>
                     <height>16777215</height>
                    </size>
+                  </property>
+                  <property name="styleSheet">
+                   <string notr="true">QWidget[background='container']
+{	
+	background-color: #1E1E20;
+}
+
+QFrame
+{
+	border: none;
+}
+
+QGroupBox
+{
+	background-color: rgb(51, 51, 55);
+}
+
+QGroupBox::title
+{
+	
+	color: rgb(208, 208, 209);
+}
+
+</string>
+                  </property>
+                  <property name="background" stdset="0">
+                   <string>container</string>
                   </property>
                   <layout class="QVBoxLayout" name="verticalLayout_38">
                    <item>
@@ -6861,7 +7267,7 @@ padding: 5px;</string>
                         </size>
                        </property>
                        <property name="styleSheet">
-                        <string notr="true">QFrame
+                        <string notr="true">/*QFrame
 {
 	background-color: rgb(255, 255, 255);
 }
@@ -6876,7 +7282,7 @@ QToolButton::hover
 {
 	border: 1px solid rgb(32, 140, 255);
 	background-color: rgb(217, 240, 255);
-}</string>
+}*/</string>
                        </property>
                        <property name="frameShape">
                         <enum>QFrame::StyledPanel</enum>
@@ -7228,7 +7634,7 @@ QLabel
                         </size>
                        </property>
                        <property name="styleSheet">
-                        <string notr="true">QFrame
+                        <string notr="true">/*QFrame
 {
 	background-color: rgb(255, 255, 255);
 }
@@ -7243,7 +7649,7 @@ QToolButton::hover
 {
 	border: 1px solid rgb(32, 140, 255);
 	background-color: rgb(217, 240, 255);
-}</string>
+}*/</string>
                        </property>
                        <property name="frameShape">
                         <enum>QFrame::StyledPanel</enum>
@@ -7524,7 +7930,7 @@ QLabel
                        <item>
                         <widget class="QWidget" name="widget_11" native="true">
                          <property name="styleSheet">
-                          <string notr="true">background-color: rgb(234, 234, 234);</string>
+                          <string notr="true"/>
                          </property>
                          <layout class="QHBoxLayout" name="horizontalLayout_22">
                           <item>
@@ -7562,7 +7968,7 @@ QLabel
                        <item>
                         <widget class="QWidget" name="widget_10" native="true">
                          <property name="styleSheet">
-                          <string notr="true">background-color: rgb(234, 234, 234);</string>
+                          <string notr="true"/>
                          </property>
                          <layout class="QHBoxLayout" name="horizontalLayout_21">
                           <item>
@@ -7607,7 +8013,7 @@ QLabel
                        <item>
                         <widget class="QWidget" name="widget_9" native="true">
                          <property name="styleSheet">
-                          <string notr="true">background-color: rgb(234, 234, 234);</string>
+                          <string notr="true"/>
                          </property>
                          <layout class="QHBoxLayout" name="horizontalLayout_20">
                           <item>
@@ -7645,7 +8051,7 @@ QLabel
                        <item>
                         <widget class="QWidget" name="widget_8" native="true">
                          <property name="styleSheet">
-                          <string notr="true">background-color: rgb(234, 234, 234);</string>
+                          <string notr="true"/>
                          </property>
                          <layout class="QHBoxLayout" name="horizontalLayout_19">
                           <item>
@@ -7683,7 +8089,7 @@ QLabel
                        <item>
                         <widget class="QWidget" name="widget_7" native="true">
                          <property name="styleSheet">
-                          <string notr="true">background-color: rgb(234, 234, 234);</string>
+                          <string notr="true"/>
                          </property>
                          <layout class="QHBoxLayout" name="horizontalLayout_18">
                           <item>
@@ -8009,22 +8415,7 @@ QLabel
                         </size>
                        </property>
                        <property name="styleSheet">
-                        <string notr="true">QFrame
-{
-	background-color: rgb(255, 255, 255);
-}
-
-QToolButton
-{
-	border: 1px solid rgb(131, 131, 131);
-	border-radius: 5px;
-}
-
-QToolButton::hover
-{
-	border: 1px solid rgb(32, 140, 255);
-	background-color: rgb(217, 240, 255);
-}</string>
+                        <string notr="true"/>
                        </property>
                        <property name="frameShape">
                         <enum>QFrame::StyledPanel</enum>
@@ -8580,7 +8971,7 @@ QToolButton::hover
                    <rect>
                     <x>0</x>
                     <y>0</y>
-                    <width>657</width>
+                    <width>588</width>
                     <height>684</height>
                    </rect>
                   </property>
@@ -8797,7 +9188,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
                    <rect>
                     <x>0</x>
                     <y>0</y>
-                    <width>495</width>
+                    <width>564</width>
                     <height>1500</height>
                    </rect>
                   </property>
@@ -9009,7 +9400,7 @@ QFrame[Func=Title]
 }</string>
                            </property>
                            <property name="text">
-                            <string>  Auto Scan</string>
+                            <string>Auto</string>
                            </property>
                            <property name="icon">
                             <iconset resource="resource.qrc">
@@ -9941,6 +10332,23 @@ QGroupBox
                               </property>
                               <property name="text">
                                <string> (degree) </string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="1" column="0">
+                             <widget class="QToolButton" name="tbCopyRobotPosition">
+                              <property name="text">
+                               <string/>
+                              </property>
+                              <property name="icon">
+                               <iconset resource="resource.qrc">
+                                <normaloff>:/icon/Copy.png</normaloff>:/icon/Copy.png</iconset>
+                              </property>
+                              <property name="iconSize">
+                               <size>
+                                <width>24</width>
+                                <height>24</height>
+                               </size>
                               </property>
                              </widget>
                             </item>
@@ -13472,6 +13880,12 @@ QGroupBox
                   <enum>QFrame::Raised</enum>
                  </property>
                  <layout class="QHBoxLayout" name="horizontalLayout_94">
+                  <property name="topMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="bottomMargin">
+                   <number>0</number>
+                  </property>
                   <item>
                    <widget class="QLabel" name="label_8">
                     <property name="text">
@@ -13481,6 +13895,12 @@ QGroupBox
                   </item>
                   <item>
                    <widget class="QComboBox" name="cbConveyorType">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
                     <property name="minimumSize">
                      <size>
                       <width>100</width>
@@ -13489,7 +13909,12 @@ QGroupBox
                     </property>
                     <item>
                      <property name="text">
-                      <string>Conveyor X</string>
+                      <string>Desktop Conveyor</string>
+                     </property>
+                    </item>
+                    <item>
+                     <property name="text">
+                      <string>X Conveyor</string>
                      </property>
                     </item>
                     <item>
@@ -13527,6 +13952,12 @@ QGroupBox
 {	
 	background: #262629;
 	border: none;
+}
+
+QPushButton
+{
+	padding-left: 10px;
+	padding-right: 10px;
 }</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_7" rowstretch="0,0,0,0,0">
@@ -13548,7 +13979,70 @@ QGroupBox
                   <property name="verticalSpacing">
                    <number>10</number>
                   </property>
-                  <item row="4" column="1">
+                  <item row="3" column="3">
+                   <widget class="QPushButton" name="pbMoveConveyorByDistance">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="text">
+                     <string>Move by Distance</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="0">
+                   <widget class="QLabel" name="label_57">
+                    <property name="text">
+                     <string>Speed</string>
+                    </property>
+                    <property name="alignment">
+                     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="3" column="0">
+                   <widget class="QLabel" name="lbConveyorPosition">
+                    <property name="text">
+                     <string>Move Distance</string>
+                    </property>
+                    <property name="alignment">
+                     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="2">
+                   <widget class="QLabel" name="lbSpeedOfPositionMode">
+                    <property name="enabled">
+                     <bool>false</bool>
+                    </property>
+                    <property name="font">
+                     <font>
+                      <pointsize>8</pointsize>
+                      <bold>false</bold>
+                      <kerning>true</kerning>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>mm/s2</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="3" column="4">
+                   <spacer name="horizontalSpacer_28">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item row="3" column="1">
                    <widget class="QLineEdit" name="leConveyorXPosition">
                     <property name="minimumSize">
                      <size>
@@ -13570,40 +14064,27 @@ QGroupBox
                      </font>
                     </property>
                     <property name="toolTip">
-                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a name=&quot;32&quot;/&gt;&lt;span style=&quot; font-family:'-apple-system','BlinkMacSystemFont','Segoe UI','Roboto','Helvetica Neue','Arial','Noto Sans','sans-serif','Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'; font-weight:600; color:#212529;&quot;&gt;M&lt;/span&gt;&lt;span style=&quot; font-family:'-apple-system','BlinkMacSystemFont','Segoe UI','Roboto','Helvetica Neue','Arial','Noto Sans','sans-serif','Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'; font-weight:600; color:#212529;&quot;&gt;311 – Set Speed&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-family:'-apple-system','BlinkMacSystemFont','Segoe UI','Roboto','Helvetica Neue','Arial','Noto Sans','sans-serif','Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'; color:#212529; background-color:#ffffff;&quot;&gt;Description:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-family:'-apple-system','BlinkMacSystemFont','Segoe UI','Roboto','Helvetica Neue','Arial','Noto Sans','sans-serif','Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'; color:#212529; background-color:#ffffff;&quot;&gt;Usage: M311 [&amp;lt;value&amp;gt;]&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-family:'-apple-system','BlinkMacSystemFont','Segoe UI','Roboto','Helvetica Neue','Arial','Noto Sans','sans-serif','Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'; color:#212529; background-color:#ffffff;&quot;&gt;Parameters:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-family:'-apple-system','BlinkMacSystemFont','Segoe UI','Roboto','Helvetica Neue','Arial','Noto Sans','sans-serif','Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'; color:#212529; background-color:#ffffff;&quot;&gt;[&amp;lt;value&amp;gt;]: Speed in mm/s&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;&lt;a name=&quot;33&quot;/&gt;&lt;span style=&quot; font-family:'-apple-system','BlinkMacSystemFont','Segoe UI','Roboto','Helvetica Neue','Arial','Noto Sans','sans-serif','Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'; font-weight:600; color:#212529;&quot;&gt;M&lt;/span&gt;&lt;span style=&quot; font-family:'-apple-system','BlinkMacSystemFont','Segoe UI','Roboto','Helvetica Neue','Arial','Noto Sans','sans-serif','Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'; font-weight:600; color:#212529;&quot;&gt;312 - Set Position&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-family:'-apple-system','BlinkMacSystemFont','Segoe UI','Roboto','Helvetica Neue','Arial','Noto Sans','sans-serif','Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'; color:#212529; background-color:#ffffff;&quot;&gt;Description:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-family:'-apple-system','BlinkMacSystemFont','Segoe UI','Roboto','Helvetica Neue','Arial','Noto Sans','sans-serif','Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'; color:#212529; background-color:#ffffff;&quot;&gt;Usage: M312 [&amp;lt;value&amp;gt;]&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-family:'-apple-system','BlinkMacSystemFont','Segoe UI','Roboto','Helvetica Neue','Arial','Noto Sans','sans-serif','Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'; color:#212529; background-color:#ffffff;&quot;&gt;Parameters:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-family:'-apple-system','BlinkMacSystemFont','Segoe UI','Roboto','Helvetica Neue','Arial','Noto Sans','sans-serif','Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'; color:#212529; background-color:#ffffff;&quot;&gt;[&amp;lt;value&amp;gt;]: Position in mm&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                     </property>
                     <property name="text">
-                     <string>-100</string>
+                     <string>0</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="4" column="0">
-                   <widget class="QLabel" name="label_12">
+                  <item row="3" column="2">
+                   <widget class="QLabel" name="lbUnitOfConveyorMoving">
+                    <property name="enabled">
+                     <bool>false</bool>
+                    </property>
+                    <property name="font">
+                     <font>
+                      <pointsize>8</pointsize>
+                      <bold>false</bold>
+                      <kerning>true</kerning>
+                     </font>
+                    </property>
                     <property name="text">
-                     <string>Position</string>
-                    </property>
-                    <property name="alignment">
-                     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="0">
-                   <widget class="QLabel" name="label_52">
-                    <property name="text">
-                     <string>Control Mode</string>
-                    </property>
-                    <property name="alignment">
-                     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="3" column="0">
-                   <widget class="QLabel" name="label_57">
-                    <property name="text">
-                     <string>Speed</string>
-                    </property>
-                    <property name="alignment">
-                     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                     <string>mm</string>
                     </property>
                    </widget>
                   </item>
@@ -13633,87 +14114,27 @@ QGroupBox
                     </property>
                     <item>
                      <property name="text">
-                      <string>Manual</string>
+                      <string>Manual Control</string>
                      </property>
                     </item>
                     <item>
                      <property name="text">
-                      <string>UART</string>
+                      <string>Velocity Control</string>
+                     </property>
+                    </item>
+                    <item>
+                     <property name="text">
+                      <string>Position Control</string>
+                     </property>
+                    </item>
+                    <item>
+                     <property name="text">
+                      <string>Output Control</string>
                      </property>
                     </item>
                    </widget>
                   </item>
                   <item row="2" column="1">
-                   <widget class="QComboBox" name="cbConveyorValueType">
-                    <property name="minimumSize">
-                     <size>
-                      <width>0</width>
-                      <height>30</height>
-                     </size>
-                    </property>
-                    <property name="maximumSize">
-                     <size>
-                      <width>200</width>
-                      <height>16777215</height>
-                     </size>
-                    </property>
-                    <property name="font">
-                     <font>
-                      <pointsize>11</pointsize>
-                      <bold>false</bold>
-                      <kerning>true</kerning>
-                     </font>
-                    </property>
-                    <property name="styleSheet">
-                     <string notr="true"/>
-                    </property>
-                    <item>
-                     <property name="text">
-                      <string>Continuous</string>
-                     </property>
-                    </item>
-                    <item>
-                     <property name="text">
-                      <string>Position</string>
-                     </property>
-                    </item>
-                   </widget>
-                  </item>
-                  <item row="4" column="2">
-                   <widget class="QLabel" name="lbUnitOfConveyorMoving">
-                    <property name="enabled">
-                     <bool>false</bool>
-                    </property>
-                    <property name="font">
-                     <font>
-                      <pointsize>8</pointsize>
-                      <bold>false</bold>
-                      <kerning>true</kerning>
-                     </font>
-                    </property>
-                    <property name="text">
-                     <string>mm</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="3" column="2">
-                   <widget class="QLabel" name="lbSpeedOfPositionMode">
-                    <property name="enabled">
-                     <bool>false</bool>
-                    </property>
-                    <property name="font">
-                     <font>
-                      <pointsize>8</pointsize>
-                      <bold>false</bold>
-                      <kerning>true</kerning>
-                     </font>
-                    </property>
-                    <property name="text">
-                     <string>mm/s2</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="3" column="1">
                    <widget class="QLineEdit" name="leConveyorXSpeed">
                     <property name="enabled">
                      <bool>true</bool>
@@ -13748,13 +14169,105 @@ QGroupBox
                     </property>
                    </widget>
                   </item>
-                  <item row="2" column="0">
-                   <widget class="QLabel" name="label_46">
+                  <item row="1" column="0">
+                   <widget class="QLabel" name="label_52">
                     <property name="text">
-                     <string>Moving Mode</string>
+                     <string>Control Mode</string>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="4" column="1">
+                   <widget class="QLineEdit" name="leConveyorXAbsolutePosition">
+                    <property name="minimumSize">
+                     <size>
+                      <width>0</width>
+                      <height>30</height>
+                     </size>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>200</width>
+                      <height>16777215</height>
+                     </size>
+                    </property>
+                    <property name="font">
+                     <font>
+                      <pointsize>11</pointsize>
+                      <bold>false</bold>
+                      <kerning>true</kerning>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>0</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="4" column="0">
+                   <widget class="QLabel" name="lbConveyorAbsolutePosition">
+                    <property name="text">
+                     <string>Target Position</string>
+                    </property>
+                    <property name="alignment">
+                     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="4" column="3">
+                   <widget class="QPushButton" name="pbMoveConveyorPosition">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="text">
+                     <string>Move to Position</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="4" column="2">
+                   <widget class="QLabel" name="lbUnitOfConveyorMoving2">
+                    <property name="enabled">
+                     <bool>false</bool>
+                    </property>
+                    <property name="font">
+                     <font>
+                      <pointsize>8</pointsize>
+                      <bold>false</bold>
+                      <kerning>true</kerning>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>mm</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="3">
+                   <widget class="QPushButton" name="pbSetConveyorSpeed">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="text">
+                     <string>Set</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="3">
+                   <widget class="QPushButton" name="pbSetConveyorMode">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="text">
+                     <string>Set</string>
                     </property>
                    </widget>
                   </item>
@@ -14899,6 +15412,12 @@ QGroupBox
                      <enum>QFrame::Raised</enum>
                     </property>
                     <layout class="QHBoxLayout" name="horizontalLayout_98">
+                     <property name="topMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="bottomMargin">
+                      <number>0</number>
+                     </property>
                      <item>
                       <widget class="QLabel" name="label_124">
                        <property name="text">
@@ -14922,7 +15441,7 @@ QGroupBox
                        </property>
                        <item>
                         <property name="text">
-                         <string>Encoder X</string>
+                         <string>X Encoder</string>
                         </property>
                        </item>
                        <item>
@@ -14952,6 +15471,12 @@ QGroupBox
                      </item>
                      <item>
                       <widget class="QCheckBox" name="cbEncoderActive">
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
                        <property name="text">
                         <string>Active</string>
                        </property>
@@ -15127,7 +15652,7 @@ QGroupBox
                         </widget>
                        </item>
                        <item row="0" column="1">
-                        <widget class="QComboBox" name="cbConveyorForVirtualEncoder">
+                        <widget class="QComboBox" name="cbConveyorLinkToEncoder">
                          <property name="sizePolicy">
                           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                            <horstretch>0</horstretch>
@@ -15160,10 +15685,10 @@ QGroupBox
                        <item row="0" column="0">
                         <widget class="QCheckBox" name="cbLinkToConveyorX">
                          <property name="text">
-                          <string>Link to Conveyor X</string>
+                          <string>Link to X Conveyor</string>
                          </property>
                          <property name="checked">
-                          <bool>true</bool>
+                          <bool>false</bool>
                          </property>
                         </widget>
                        </item>

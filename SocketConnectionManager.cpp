@@ -99,7 +99,7 @@ void SocketConnectionManager::readFromClient() {
 
                 emit objectUpdated(varName, objects);
             }
-            else if (varName.contains("Blobs"))
+            else if (varName.contains("Blobs") || varName.contains("Object"))
             {
                 QStringList blobs = value.split(";");
 
@@ -142,16 +142,63 @@ void SocketConnectionManager::sendImageToImageClients(const QImage &image) {
 
 void SocketConnectionManager::sendImageToImageClients(cv::Mat mat)
 {
-//    // Chuyển mat sang QImage
-//    QImage image = QImage((uchar*)mat.data, mat.cols, mat.rows, mat.step, QImage::Format_RGB888);
-//    sendImageToImageClients(image);
-    std::vector<uchar> buf;
-    cv::imencode(".png", mat, buf);
-    QByteArray data(reinterpret_cast<const char*>(buf.data()), buf.size());
+    if (imageSendingMethod == 0)
+    {
+        sendImageToExternalScript(mat);
+    }
+    else
+    {
+        std::vector<uchar> buf;
+        cv::imencode(".png", mat, buf);
+        QByteArray data(reinterpret_cast<const char*>(buf.data()), buf.size());
+        for (QTcpSocket* client : clients) {
+            if (client->isOpen() == false)
+                continue;
+            if (client->objectName().contains("ImageClient")) {
+                client->write("Image\n" + data);
+                client->flush();
+            }
+        }
+    }
+}
+
+void SocketConnectionManager::sendImageToExternalScript(cv::Mat input)
+{
     for (QTcpSocket* client : clients) {
+        if (client->isOpen() == false)
+            continue;
         if (client->objectName().contains("ImageClient")) {
-            client->write("Image\n" + data);
-            client->flush();
+
+            if (client == NULL || input.empty())
+                return;
+
+            int paras[3];
+            paras[0] = input.cols;
+            paras[1] = input.rows;
+            paras[2] = input.channels();
+
+            int len = 3 * sizeof(int);
+
+            client->write((char*)paras, len);
+
+            int colByte = input.cols*input.channels() * sizeof(uchar);
+            for (int i = 0; i < input.rows; i++)
+            {
+                char* data = (char*)input.ptr<uchar>(i); //first address of the i-th line
+                int sedNum = 0;
+                char buf[1024] = { 0 };
+
+                while (sedNum < colByte)
+                {
+                    int sed = (1024 < colByte - sedNum) ? 1024 : (colByte - sedNum);
+                    memcpy(buf, &data[sedNum], sed);
+                    int SendSize = client->write(buf, sed);
+
+                    if (SendSize == -1)
+                        return;
+                    sedNum += SendSize;
+                }
+            }
         }
     }
 

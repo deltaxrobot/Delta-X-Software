@@ -50,13 +50,15 @@ public:
 
     float displacement = 0;
     float SimilarityThreshold =20;
+    float IoUThreshold = 0.7;
+    float DistanceThreshold = 3;
     int nextID = 0;
 
-    QVector3D VelocityVector;
+    QVector3D VelocityVector = QVector3D(100, 0, 0);
     QString VectorName = "#Vector1";
 
     QString EncoderName = "encoder0";
-    QString EncoderType = "Encoder X";
+    QString EncoderType = "X Encoder";
     bool IsReverse = false;
     QString ListName = "#Objects";
 
@@ -91,6 +93,8 @@ public slots:
 private:
     QVector3D calculateMoved(float distance);
     double similarity(ObjectInfo& obj1, ObjectInfo& obj2, double displacement);
+    double calculateIoU(ObjectInfo& obj1, ObjectInfo& obj2);
+    bool isSameObject(ObjectInfo& object1, ObjectInfo& object2);
     float lastPosition = 0;
     float capturePosition = 0;
     float detectPosition = 0;

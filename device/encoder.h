@@ -9,7 +9,7 @@ class Encoder : public Device
     Q_OBJECT
 public:
     explicit Encoder(QString COM = "auto", int baudrate = 115200, bool is_open = true, QObject *parent = nullptr);
-
+    int LinkedConveyor = -1;
 signals:
     void GotPosition(int id, float value);
 public slots:

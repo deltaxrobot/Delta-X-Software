@@ -1,14 +1,13 @@
 #include "FilterWindow.h"
 #include "ui_FilterWindow.h"
 
-FilterWindow::FilterWindow(QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::FilterWindow)
+FilterWindow::FilterWindow(QWidget *parent) : QDialog(parent),
+                                              ui(new Ui::FilterWindow)
 {
     ui->setupUi(this);
 
-	InitVariables();
-	InitEvents();
+    InitVariables();
+    InitEvents();
     LoadSetting();
     RequestValue();
 }
@@ -23,21 +22,21 @@ FilterWindow::~FilterWindow()
 
 void FilterWindow::InitVariables()
 {
-	sPara[0] = ui->hsminH;
-	sPara[1] = ui->hsmaxH;
-	sPara[2] = ui->hsminS;
-	sPara[3] = ui->hsmaxS;
-	sPara[4] = ui->hsminV;
-	sPara[5] = ui->hsmaxV;
+    sPara[0] = ui->hsminH;
+    sPara[1] = ui->hsmaxH;
+    sPara[2] = ui->hsminS;
+    sPara[3] = ui->hsmaxS;
+    sPara[4] = ui->hsminV;
+    sPara[5] = ui->hsmaxV;
 
-	lbPara[0] = ui->lbminH;
-	lbPara[1] = ui->lbmaxH;
-	lbPara[2] = ui->lbminS;
-	lbPara[3] = ui->lbmaxS;
-	lbPara[4] = ui->lbminV;
-	lbPara[5] = ui->lbmaxV;
+    lbPara[0] = ui->lbminH;
+    lbPara[1] = ui->lbmaxH;
+    lbPara[2] = ui->lbminS;
+    lbPara[3] = ui->lbmaxS;
+    lbPara[4] = ui->lbminV;
+    lbPara[5] = ui->lbmaxV;
 
-	lbOriginImage = ui->lbOriginImage;
+    lbOriginImage = ui->lbOriginImage;
     lbProcessImage = ui->lbProcessImage;
 
     FilterJob = new FilterWork();
@@ -48,7 +47,7 @@ void FilterWindow::InitVariables()
 
 void FilterWindow::InitEvents()
 {
-    qRegisterMetaType< cv::Mat >("cv::Mat");
+    qRegisterMetaType<cv::Mat>("cv::Mat");
 
     for (int i = 0; i < 6; i++)
     {
@@ -62,17 +61,19 @@ void FilterWindow::InitEvents()
     connect(this, &FilterWindow::requestFilter, FilterJob, &FilterWork::DoFilter);
 
     connect(FilterJob->thread(), SIGNAL(finished()), FilterJob->thread(), SLOT(deleteLater()));
-    connect(FilterJob, &FilterWork::FinishedFilter, ui->lbProcessImage, &QLabel::setPixmap);
-
-    connect(ui->pbSaveFilter, &QPushButton::clicked, this, &FilterWindow::SaveSetting);
-
+    connect(FilterJob, &FilterWork::FinishedFilter, [=](cv::Mat mat)
+    {
+        QPixmap pixmap = ImageTool::cvMatToQPixmap(mat);
+        pixmap = pixmap.scaled(lbOriginImage->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+        ui->lbProcessImage->setPixmap(pixmap);
+    });
 }
 
 void FilterWindow::SaveSetting()
 {
     QList<QVariant> hsvParas;
 
-    for(int i = 0; i < 6; i++)
+    for (int i = 0; i < 6; i++)
     {
         hsvParas.append(sPara[i]->value());
     }
@@ -81,11 +82,11 @@ void FilterWindow::SaveSetting()
 
     VariableManager::instance().Prefix = ProjectName;
 
-    VariableManager::instance().updateVar(filterName + "hsvV", hsvParas);
-    VariableManager::instance().updateVar(filterName + "thresV", ui->hsThreshold->value());
-    VariableManager::instance().updateVar(filterName + "blurV", ui->hsBlurSize->value());
-    VariableManager::instance().updateVar(filterName + "invert", ui->cbInvert->isChecked());
-    VariableManager::instance().updateVar(filterName + "algorithm", FilterJob->CurrentFilter);
+    VariableManager::instance().updateVar(Prefix + filterName + "hsvV", hsvParas);
+    VariableManager::instance().updateVar(Prefix + filterName + "thresV", ui->hsThreshold->value());
+    VariableManager::instance().updateVar(Prefix + filterName + "blurV", ui->hsBlurSize->value());
+    VariableManager::instance().updateVar(Prefix + filterName + "invert", ui->cbInvert->isChecked());
+    VariableManager::instance().updateVar(Prefix + filterName + "algorithm", FilterJob->CurrentFilter);
 }
 
 void FilterWindow::LoadSetting()
@@ -93,23 +94,23 @@ void FilterWindow::LoadSetting()
     VariableManager::instance().Prefix = ProjectName;
 
     QString filterName = QString("filter%1").arg(ui->cbObjectType->currentText());
-    QList<QVariant> hsvParas = VariableManager::instance().getVar(filterName + "hsvV").toList();
+    QList<QVariant> hsvParas = VariableManager::instance().getVar(Prefix + filterName + "hsvV").toList();
 
-    for(int i = 0; i < hsvParas.count(); i++)
+    for (int i = 0; i < hsvParas.count(); i++)
     {
         sPara[i]->setValue(hsvParas.at(i).toInt());
         lbPara[i]->setText(QString::number(hsvParas.at(i).toInt()));
     }
 
-    ui->hsThreshold->setValue(VariableManager::instance().getVar(filterName + "thresV", 100).toInt());
+    ui->hsThreshold->setValue(VariableManager::instance().getVar(Prefix + filterName + "thresV", 100).toInt());
     ui->lbThreshold->setText(QString::number(ui->hsThreshold->value()));
 
-    ui->hsBlurSize->setValue(VariableManager::instance().getVar(filterName + "blurV", 1).toInt());
+    ui->hsBlurSize->setValue(VariableManager::instance().getVar(Prefix + filterName + "blurV", 1).toInt());
     ui->lbBlurSize->setText(QString::number(ui->hsBlurSize->value()));
 
-    ui->cbInvert->setChecked(VariableManager::instance().getVar(filterName + "invert", false).toBool());
+    ui->cbInvert->setChecked(VariableManager::instance().getVar(Prefix + filterName + "invert", false).toBool());
 
-    FilterJob->CurrentFilter = VariableManager::instance().getVar(filterName + "algorithm", FilterJob->CurrentFilter).toInt();
+    FilterJob->CurrentFilter = VariableManager::instance().getVar(Prefix + filterName + "algorithm", FilterJob->CurrentFilter).toInt();
 }
 
 void FilterWindow::SetImage(cv::Mat mat)
@@ -121,7 +122,11 @@ void FilterWindow::SetImage(cv::Mat mat)
     OriginMat = mat.clone();
     mux.unlock();
 
-    ui->lbOriginImage->setPixmap(ImageTool::cvMatToQPixmap(mat));
+    QPixmap pixmap = ImageTool::cvMatToQPixmap(mat);
+
+    pixmap = pixmap.scaled(lbOriginImage->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+
+    ui->lbOriginImage->setPixmap(pixmap);
 
     RequestValue();
 }
@@ -140,13 +145,13 @@ void FilterWindow::RequestValue()
 
 bool FilterWindow::IsInvertBinary()
 {
-	return ui->cbInvert->isChecked();
+    return ui->cbInvert->isChecked();
 }
 
 void FilterWindow::ProcessValueFromUI()
 {
     if (sender() == ui->hsThreshold)
-	{
+    {
         intParas.clear();
 
         int value = ui->hsThreshold->value();
@@ -165,15 +170,13 @@ void FilterWindow::ProcessValueFromUI()
         }
     }
 
-
     int blurSize = ui->hsBlurSize->value();
-    blurSize = (blurSize / 2)  * 2 + 1;
+    blurSize = (blurSize / 2) * 2 + 1;
 
     ui->lbBlurSize->setText(QString::number(blurSize));
 
     SaveSetting();
 
-//    emit ValueChanged(intParas, ui->cbInvert->isChecked(), ui->hsBlurSize->value());
     emit ColorFilterValueChanged(intParas);
     emit ColorInverted(ui->cbInvert->isChecked());
     emit BlurSizeChanged(blurSize);

@@ -11,6 +11,8 @@ Software_Socket = None
 def ConnectToSoftware(host, port):
     global Software_Socket
 
+    HOST = host
+    PORT = port
     # if Software_Socket == None or Software_Socket.fileno() < 0:
     try:
         Software_Socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -44,7 +46,7 @@ def Recv_All(sock, count):
         pass
 
 def Send_Init_Message():
-    Software_Socket.sendall(b'ExternalScript\n')
+    Software_Socket.sendall(b'ClientName=ImageClient\n')
 
     # pass b'deltax'
     # deltax_mess = str(Software_Socket.recv(4096))
@@ -70,6 +72,8 @@ def Get_Image():
     try:
         wid, hig, channels, totalNum = Get_Data_Size()
 
+        print("w: {0} h: {1} c: {2}", wid, hig, channels)
+
         stringData = Recv_All(Software_Socket, int(totalNum))
 
         data = np.frombuffer(stringData, dtype='uint8')
@@ -79,6 +83,30 @@ def Get_Image():
         return mat
     except:
         pass
+
+def Get_Image2():
+    data = b''
+    while True:
+        # print('reading data')
+        packet = Software_Socket.recv(4096)
+        if not packet: break
+        data += packet
+        if len(packet) < 4096: break
+
+    if data:
+        print('Received data')
+        
+        if data.startswith(b'Image\n'):
+            try:
+                print('Received image')
+                image_data = data[6:]
+                nparr = np.frombuffer(image_data, np.uint8)
+                img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+                return img
+            except Exception as e:
+                print('Error receiving image:', e)
+        else:
+            print(data)
 
 def find_circles(img):
     img_copy = np.copy(img)
@@ -125,13 +153,13 @@ def get_objects(image):
 def Loop_Event():
     while True:  
         try:      
-            ConnectToSoftware("127.0.0.1", 8844)
+            ConnectToSoftware("192.168.1.8", 8844)
             while True:
                 try:
                     image = Get_Image()
-                    get_objects(image)
-                    # cv2.imshow("Image", image)
-                    # cv2.waitKey(1)
+                    # get_objects(image)
+                    cv2.imshow("Image", image)
+                    cv2.waitKey(1)
                 except:
                     break
         except socket.timeout:

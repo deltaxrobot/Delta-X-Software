@@ -83,10 +83,6 @@ bool VariableManager::contains(const QString &key)
 void VariableManager::saveToQSettings()
 {
     std::lock_guard<std::mutex> lock(dataMutex);
-//    for(const auto& kv : dataMap)
-//    {
-//        settings.setValue(kv.first, kv.second);
-//    }
 
     settings.clear();
 

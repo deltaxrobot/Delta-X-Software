@@ -78,7 +78,7 @@ QString Robot::SendGcode(QString gcode, bool is_wait, int time_out)
 }
 
 void Robot::ProcessResponse(QString id, QString response) {
-    emit Log(idName, response, 0);
+//    emit Log(idName, response, 0);
     if (now_gcode.count("G28") > 0 || now_gcode.count("M85"))
     {
         SendGcode("Position");

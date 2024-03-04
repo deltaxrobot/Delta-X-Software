@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui serialport opengl network quickwidgets printsupport multimedia
+QT       += core gui serialport opengl network quickwidgets printsupport multimedia svg
 
 windows {
     INCLUDEPATH += $$PWD\3rd-party\opencv\build\include

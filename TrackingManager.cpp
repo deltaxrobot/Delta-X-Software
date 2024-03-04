@@ -70,7 +70,7 @@ void Tracking::GetVirtualEncoderPosition()
 
 void Tracking::ReadEncoder()
 {
-    if (EncoderType == "Encoder X")
+    if (EncoderType == "X Encoder")
     {
         emit SendGcodeRequest(EncoderName, "M317");
     }
@@ -114,44 +114,33 @@ void Tracking::UpdateTrackedObjects(QList<ObjectInfo> detectedObjects, QString o
     }
 
     for (auto& detected : detectedObjects) {
-        bool isTracked = false;
-        double minSimilarity = 1e9;  // Initialize with a large value
-        ObjectInfo* bestMatch = nullptr;
+        bool isSame = false;
 
         for (auto& tracked : TrackedObjects) {
-            double score = similarity(tracked, detected, displacement);
+            isSame = isSameObject(detected, tracked);
 
-            if (score < minSimilarity) {
-                minSimilarity = score;
-                bestMatch = &tracked;
-            }
+            if (isSame == true)
+                break;
         }
 
-        if (minSimilarity < SimilarityThreshold /* Similarity threshold */) {
-            // Update the tracked object's info
-            bestMatch->center = detected.center;
-            bestMatch->width = detected.width;
-            bestMatch->height = detected.height;
-            bestMatch->angle = detected.angle;
-            isTracked = true;
-        }
+        if (isSame == true)
+            continue;
 
-        if (!isTracked) {
-            // This is a new object
-            TrackedObjects.append(ObjectInfo(nextID, detected.center, detected.width, detected.height, detected.angle));
+        // This is a new object
+        TrackedObjects.append(ObjectInfo(nextID, 0, detected.center, detected.width, detected.height, detected.angle));
 
-            VariableManager::instance().addVar((ListName + ".%1.X").arg(nextID), detected.center.x());
-            VariableManager::instance().addVar((ListName + ".%1.Y").arg(nextID), detected.center.y());
-            VariableManager::instance().addVar((ListName + ".%1.Z").arg(nextID), detected.center.z());
-            VariableManager::instance().addVar((ListName + ".%1.W").arg(nextID), detected.width);
-            VariableManager::instance().addVar((ListName + ".%1.L").arg(nextID), detected.height);
-            VariableManager::instance().addVar((ListName + ".%1.A").arg(nextID), detected.angle);
-            VariableManager::instance().addVar((ListName + ".%1.IsPicked").arg(nextID), detected.isPicked);
+        VariableManager::instance().updateVar((ListName + ".%1.X").arg(nextID), detected.center.x());
+        VariableManager::instance().updateVar((ListName + ".%1.Y").arg(nextID), detected.center.y());
+        VariableManager::instance().updateVar((ListName + ".%1.Z").arg(nextID), detected.center.z());
+        VariableManager::instance().updateVar((ListName + ".%1.W").arg(nextID), detected.width);
+        VariableManager::instance().updateVar((ListName + ".%1.L").arg(nextID), detected.height);
+        VariableManager::instance().updateVar((ListName + ".%1.A").arg(nextID), detected.angle);
+        VariableManager::instance().updateVar((ListName + ".%1.IsPicked").arg(nextID), detected.isPicked);
 
-            ++nextID;
+        ++nextID;
 
-            VariableManager::instance().addVar(ListName + ".Count", nextID);
-        }
+        VariableManager::instance().updateVar(ListName + ".Count", nextID);
+
     }
 }
 
@@ -229,6 +218,46 @@ double Tracking::similarity(ObjectInfo &obj1, ObjectInfo &obj2, double displacem
     double score = positionError + sizeDifference;
 
     return score;
+}
+
+double Tracking::calculateIoU(ObjectInfo &object1, ObjectInfo &object2)
+{
+    // 1. Calculate overlap area
+    double x_overlap = std::max(0.0, std::min(object1.center.x() + object1.width / 2, object2.center.x() + object2.width / 2) -
+                                      std::max(object1.center.x() - object1.width / 2, object2.center.x() - object2.width / 2));
+    double y_overlap = std::max(0.0, std::min(object1.center.y() + object1.height / 2, object2.center.y() + object2.height / 2) -
+                                      std::max(object1.center.y() - object1.height / 2, object2.center.y() - object2.height / 2));
+    double overlapArea = x_overlap * y_overlap;
+
+    // 2. Calculate union area
+    double box1Area = object1.width * object1.height;
+    double box2Area = object2.width * object2.height;
+    double unionArea = box1Area + box2Area - overlapArea;
+
+    // 3. Calculate IoU
+    double iou = overlapArea / unionArea;
+
+    return iou;
+}
+
+bool Tracking::isSameObject(ObjectInfo &object1, ObjectInfo &object2)
+{
+    // 1. Kiểm tra IoU
+    double iou = calculateIoU(object1, object2);
+    if (iou < IoUThreshold) {
+        return false;
+    }
+
+    // 2. Kiểm tra khoảng cách
+    double distance = object1.center.distanceToPoint(object2.center);
+    if (distance > DistanceThreshold) {
+        return false;
+    }
+
+    // 3. Kiểm tra các yếu tố khác (tùy chọn)
+    // ...
+
+    return true;
 }
 
 TrackingManager::TrackingManager(QObject *parent)
@@ -319,7 +348,7 @@ void TrackingManager::AddObject(QString listName, QList<QStringList> list)
             }
         }
         
-        ObjectInfo obj(id, QVector3D(x, y, z), w, l, a, isPicked);
+        ObjectInfo obj(id, 0, QVector3D(x, y, z), w, l, a, isPicked);
 
         objectList.append(obj);
     }

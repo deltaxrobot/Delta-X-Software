@@ -55,15 +55,23 @@ DrawingExporter::~DrawingExporter()
 void DrawingExporter::OpenImage()
 {
 	QString imageName;
-	imageName = QFileDialog::getOpenFileName(this, tr("Open Image"), "", tr("Image Files (*.png *.jpg *.bmp)"));
+    imageName = QFileDialog::getOpenFileName(this, tr("Open Image"), "", tr("Image Files (*.png *.jpg *.bmp *.svg)"));
 
 	if (imageName == "")
 		return;
 
-	originPixmap = new QPixmap(imageName);
-	effectPixmap = new QPixmap(imageName);
+    if (imageName.contains(".svg"))
+    {
+        ConvertSVGToArea(imageName);
+    }
+    else
+    {
+        originPixmap = new QPixmap(imageName);
+        effectPixmap = new QPixmap(imageName);
 
-	ApplyConversion();
+        ApplyConversion();
+    }
+
 }
 
 void DrawingExporter::ConvertToDrawingArea()
@@ -148,6 +156,15 @@ void DrawingExporter::ConvertToDrawingArea()
 
 		drawingArea->AddImage(x, y, wS, hS, *effectPixmap, leSpace->text().toFloat(), cbDrawMethod->currentText(), cbConversion->currentText());
     }
+}
+
+void DrawingExporter::ConvertSVGToArea(QString fileName)
+{
+    // Load file SVG
+    svgWidget.load(fileName);
+
+    // Hiển thị widget
+    svgWidget.show();
 }
 
 void DrawingExporter::ExportGcodes()

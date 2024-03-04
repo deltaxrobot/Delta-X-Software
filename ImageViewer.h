@@ -812,7 +812,7 @@ public:
     ~ImageViewer();
     void InitParameter();
     void SaveSetting(QSettings* setting);
-    void LoadSetting();
+    void LoadSetting(QString prefix);
     void ZoomIn(qreal value);
     void ZoomOut(qreal value);
     void Zoom(qreal value);
@@ -839,6 +839,8 @@ public:
     CustomScene* ViewerScene;
 
     QString ProjectName = "project0";
+
+    QString Prefix = "project0.detect0.";
 
     enum CameraTool
     {

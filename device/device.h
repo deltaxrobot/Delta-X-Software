@@ -29,6 +29,8 @@ public:
     bool IsOpen();
     int ID();
     void SetIDName(QString idName);
+    QSerialPort* GetPort();
+    void SetPortInstance(QSerialPort* port);
 
     QString ProjectName = "project0";
 

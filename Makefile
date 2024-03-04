@@ -263,6 +263,7 @@ Makefile: DeltaRobotSoftware.pro C:\Qt\5.15.2\msvc2015_64\mkspecs\win32-msvc\qma
 		C:\Qt\5.15.2\msvc2015_64\lib\Qt5OpenGL.prl \
 		C:\Qt\5.15.2\msvc2015_64\lib\Qt5QuickWidgets.prl \
 		C:\Qt\5.15.2\msvc2015_64\lib\Qt5PrintSupport.prl \
+		C:\Qt\5.15.2\msvc2015_64\lib\Qt5Svg.prl \
 		C:\Qt\5.15.2\msvc2015_64\lib\Qt5Widgets.prl \
 		C:\Qt\5.15.2\msvc2015_64\lib\Qt5Quick.prl \
 		C:\Qt\5.15.2\msvc2015_64\lib\Qt5Multimedia.prl \
@@ -278,6 +279,7 @@ Makefile: DeltaRobotSoftware.pro C:\Qt\5.15.2\msvc2015_64\mkspecs\win32-msvc\qma
 		C:\Qt\5.15.2\msvc2015_64\lib\Qt5OpenGLd.prl \
 		C:\Qt\5.15.2\msvc2015_64\lib\Qt5QuickWidgetsd.prl \
 		C:\Qt\5.15.2\msvc2015_64\lib\Qt5PrintSupportd.prl \
+		C:\Qt\5.15.2\msvc2015_64\lib\Qt5Svgd.prl \
 		C:\Qt\5.15.2\msvc2015_64\lib\Qt5Widgetsd.prl \
 		C:\Qt\5.15.2\msvc2015_64\lib\Qt5Quickd.prl \
 		C:\Qt\5.15.2\msvc2015_64\lib\Qt5Multimediad.prl \
@@ -468,6 +470,7 @@ DeltaRobotSoftware.pro:
 C:\Qt\5.15.2\msvc2015_64\lib\Qt5OpenGL.prl:
 C:\Qt\5.15.2\msvc2015_64\lib\Qt5QuickWidgets.prl:
 C:\Qt\5.15.2\msvc2015_64\lib\Qt5PrintSupport.prl:
+C:\Qt\5.15.2\msvc2015_64\lib\Qt5Svg.prl:
 C:\Qt\5.15.2\msvc2015_64\lib\Qt5Widgets.prl:
 C:\Qt\5.15.2\msvc2015_64\lib\Qt5Quick.prl:
 C:\Qt\5.15.2\msvc2015_64\lib\Qt5Multimedia.prl:
@@ -483,6 +486,7 @@ resource.qrc:
 C:\Qt\5.15.2\msvc2015_64\lib\Qt5OpenGLd.prl:
 C:\Qt\5.15.2\msvc2015_64\lib\Qt5QuickWidgetsd.prl:
 C:\Qt\5.15.2\msvc2015_64\lib\Qt5PrintSupportd.prl:
+C:\Qt\5.15.2\msvc2015_64\lib\Qt5Svgd.prl:
 C:\Qt\5.15.2\msvc2015_64\lib\Qt5Widgetsd.prl:
 C:\Qt\5.15.2\msvc2015_64\lib\Qt5Quickd.prl:
 C:\Qt\5.15.2\msvc2015_64\lib\Qt5Multimediad.prl:

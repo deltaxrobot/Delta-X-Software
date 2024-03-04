@@ -27,6 +27,7 @@ public:
     int Height = 600;
     QString Source = "Webcam";
     int FrameID = -1;
+
 signals:
     void StartedCapture(int tracking);
     void GotImage(cv::Mat);

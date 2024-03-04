@@ -15,6 +15,7 @@
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc.hpp>
 #include <ImageUnity.h>
+#include <QSvgWidget>
 
 class DrawingExporter : public QWidget
 {
@@ -33,6 +34,7 @@ public:
 public slots:
 	void OpenImage();
 	void ConvertToDrawingArea();
+    void ConvertSVGToArea(QString fileName);
     void ExportGcodes();
 	void ApplyConversion();
 	void ChangeSize();
@@ -41,6 +43,7 @@ public slots:
 private:
 	void initEnvent();
 
+    QSvgWidget svgWidget;
     QTextEdit* pteGcodeEditor;
     QComboBox* cbDrawingEffector;
 

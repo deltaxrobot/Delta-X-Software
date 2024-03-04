@@ -54,7 +54,7 @@ void ImageProcessing::GotVisibleObjects(QList<Object> objects)
     for(Object visibleObject : objects)
     {
         QVector3D position(visibleObject.X.Real, visibleObject.Y.Real, 0);
-        objectInfos.append(ObjectInfo(-1, position, visibleObject.Width.Real, visibleObject.Length.Real, visibleObject.Angle.Real));
+        objectInfos.append(ObjectInfo(-1, 0, position, visibleObject.Width.Real, visibleObject.Length.Real, visibleObject.Angle.Real));
     }
 
     emit mappedDetectedObjects(objectInfos, ObjectsName);

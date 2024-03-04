@@ -100,6 +100,11 @@ cv::Mat TaskNode::GetOutputImage()
     return outputMat;
 }
 
+cv::Mat TaskNode::GetInputImage()
+{
+    return inputMat.clone();
+}
+
 Object& TaskNode::GetInputObject()
 {
     return inputObject;
@@ -114,7 +119,6 @@ bool TaskNode::ClearVariable(QString name)
 {
     if (name.toLower() == QString("outputObjects").toLower())
     {
-        VariableManager::instance().removeVar("Objects");
         clear(outputObjects);
 
         HadOutput(outputObjects);
@@ -282,7 +286,7 @@ void TaskNode::Input(QStringList objects)
     }
 
     emit HadOutput(outputObjects);
-    emit Done();
+    emit Done(defaultThreadId);
 }
 
 void TaskNode::DoWork()
@@ -452,7 +456,7 @@ void TaskNode::doResizeWork()
 }
 
 void TaskNode::doFindChessboardWork()
-{
+{    
     int width = size.width;
     int height = size.height;
 
@@ -565,6 +569,12 @@ void TaskNode::doGetPerspectiveWork()
 
 void TaskNode::doWarpWork()
 {
+    if (IsPass == true)
+    {
+        emit HadOutput(inputMat);
+        return;
+    }
+
     if (inputMat.empty() || inputMat2.empty())
     {
         outputMat.release();
@@ -582,6 +592,12 @@ void TaskNode::doWarpWork()
 
 void TaskNode::doCropWork()
 {
+    if (IsPass == true)
+    {
+        emit HadOutput(inputMat);
+        return;
+    }
+
     outputMat.release();
     outputMat = inputMat.clone();
 
@@ -601,20 +617,6 @@ void TaskNode::doCropWork()
 
 void TaskNode::doDisplayImageWork()
 {
-//    outputMat = inputMat.clone();
-
-//    foreach(Object obj, inputObjects)
-//    {
-//        cv::Point2f* points = obj.ToPoints();
-
-//        for (int j = 0; j < 4; j++)
-//            cv::line(outputMat, points[j], points[(j + 1) % 4], RED_COLOR, 2, 8);
-
-//        putText(outputMat, std::to_string((int)obj.X) + "," + std::to_string((int)obj.Y) + "," + std::to_string((int)obj.Angle), cv::Point(obj.X - 40, obj.Y), cv::FONT_HERSHEY_SIMPLEX, 0.4, BLACK_COLOR, 2);
-//        putText(outputMat, std::to_string((int)obj.X) + "," + std::to_string((int)obj.Y) + "," + std::to_string((int)obj.Angle), cv::Point(obj.Y - 40, obj.Y), cv::FONT_HERSHEY_SIMPLEX, 0.4, WHITE_COLOR, 1);
-
-//    }
-
     QPixmap pixmap = ImageTool::cvMatToQPixmap(inputMat);
 
     emit HadOutput(pixmap);

@@ -15,7 +15,11 @@ Device::Device(QString COM, int baudrate, QString confirm_cmd, QString rev_msg, 
 
 Device::~Device()
 {
+    if (serialPort != NULL)
+        if (serialPort->isOpen())
+            serialPort->close();
 
+        delete serialPort;
 }
 
 void Device::SetSerialPortName(QString name)
@@ -183,6 +187,26 @@ int Device::ID()
 void Device::SetIDName(QString idName)
 {
     this->idName = idName;
+}
+
+QSerialPort *Device::GetPort()
+{
+    return serialPort;
+}
+
+void Device::SetPortInstance(QSerialPort *port)
+{
+    serialPort = port;
+
+    jsonObject["id"] = ID();
+    jsonObject["state"] = (serialPort->isOpen())?"open":"close";
+    jsonObject["com_name"] = serialPort->portName();
+    jsonObject["baudrate"] = serialPort->baudRate();
+
+    QJsonDocument jsonDocument;
+    jsonDocument.setObject(jsonObject);
+    QString jsonString = jsonDocument.toJson(QJsonDocument::Indented);
+    emit infoReady(jsonString);
 }
 
 void Device::Run()

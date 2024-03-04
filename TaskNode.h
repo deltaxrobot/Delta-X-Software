@@ -61,6 +61,7 @@ public:
     static QElapsedTimer DebugTimer;
 
     QString ProjectName = "project0";
+    bool IsPass = false;
 
     void SetNextNode(TaskNode* next);
     void SetPreviousNode(TaskNode* previous);
@@ -70,6 +71,7 @@ public:
     QSize GetImageSize();
     QMatrix GetMatrix();
     cv::Mat GetOutputImage();
+    cv::Mat GetInputImage();
     Object& GetInputObject();
     QPointF *GetInputPointPointer();
 
@@ -113,6 +115,7 @@ signals:
     void DebugEvent();
     void InputRequest();
     void Done(int id);
+    void Done();
 
 private:
     QString name;
