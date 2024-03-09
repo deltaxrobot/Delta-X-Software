@@ -11,13 +11,16 @@ software_socket = None
 
 angle = 0
 # Lấy giá trị x, y, z từ file, nếu file không tồn tại thì để giá trị mặc định
-try:
-    with open('coordinates.txt', 'r') as f:
-        x = float(f.readline().strip())
-        y = float(f.readline().strip())
-        z = float(f.readline().strip())
-except:
-    x , y, z = 79, 37, -645.503
+# try:
+#     with open('coordinates.txt', 'r') as f:
+#         x = float(f.readline().strip())
+#         y = float(f.readline().strip())
+#         z = float(f.readline().strip())
+# except:
+#     x , y, z = 79, 37, -645.503
+
+x , y, z = 3, 6, -732
+
 steps = [0.1, 0.5, 1, 5, 10]
 step_id = 2
 step = steps[step_id]
@@ -29,9 +32,9 @@ response = True
 
 gripper = False
 
-min_z = -635
+# min_z = -635
 
-cam_pos = (-24, 61.5, -613)
+# cam_pos = (-24, 61.5, -613)
 
 def calculate_sphere_coordinates(x, y, radius, sphere_center=(0, 0, 0)):
     # Kiểm tra xem điểm có nằm ngoài hình cầu hay không. Nếu có thì gán z = sphere_center[2]
@@ -84,14 +87,15 @@ def send_joystick_data(axis, value):
 def process_joystick_button(button):
     global angle, step_id, step, x, y, z, gripper, response, last_time
 
-    # print("Button:", button)
+    print("Button:", button)
     if button in [1, 2]:
-        if button == 1:
-            angle+=step
-        elif button == 2:
-            angle-=step
+        # if button == 1:
+        #     angle+=step
+        # elif button == 2:
+        #     angle-=step
 
-        software_socket.sendall(f"GScript = device0 M322 {angle}\n".encode())
+        # software_socket.sendall(f"GScript = device0 M322 {angle}\n".encode())
+        pass
     elif button in [3, 0]:
         if button == 3:
             step_id+= 1
@@ -104,41 +108,45 @@ def process_joystick_button(button):
                 step_id = 0
             step = steps[step_id]
     elif button in [13, 14]:
-        # if button == 11:
-        #     y+=step
-        # elif button == 12:
-        #     y-=step
-        if button == 13:
-            x-=step
-        elif button == 14:
-            x+=step
+        # # if button == 11:
+        # #     y+=step
+        # # elif button == 12:
+        # #     y-=step
+        # if button == 13:
+        #     x-=step
+        # elif button == 14:
+        #     x+=step
 
-        software_socket.sendall(f"GScript = G01 X{x} Y{sphere_center[1]}\n".encode())
+        # software_socket.sendall(f"GScript = G01 X{x} Y{sphere_center[1]}\n".encode())
+        pass
     elif button in [11, 12]:           
         if button == 11:
             z+=step
         elif button == 12:
             z-=step
 
-        point = calculate_sphere_coordinates(x, y, radius, sphere_center)
+        # point = calculate_sphere_coordinates(x, y, radius, sphere_center)
 
-        if z < point[2]:
-            z = point[2]
+        # if z < point[2]:
+        #     z = point[2]
 
         software_socket.sendall(f"GScript = G01 Z{z}\n".encode())
+        pass
 
     elif button == 6:
-        software_socket.sendall(f"GScript = device0 M320\n".encode())
+        # software_socket.sendall(f"GScript = device0 M320\n".encode())
+        pass
     elif button == 4:
         software_socket.sendall(f"GScript = G28\n".encode())
 
     elif button == 10:
-        point = calculate_sphere_coordinates(x, y, radius, sphere_center)
-        print(point)
-        z = point[2]
+        # point = calculate_sphere_coordinates(x, y, radius, sphere_center)
+        # print(point)
+        # z = point[2]
 
-        software_socket.sendall(f"GScript = G01 Z{z}\nG01 Z{min_z}".encode())
-        z = min_z
+        # software_socket.sendall(f"GScript = G01 Z{z}\nG01 Z{min_z}".encode())
+        # z = min_z
+        pass
     elif button == 9:
         gripper = not gripper
         if gripper:
@@ -147,9 +155,11 @@ def process_joystick_button(button):
             software_socket.sendall(f"GScript = M05 D4\n".encode())
     
     elif button == 7:
-        software_socket.sendall(f"GScript = G01 X{cam_pos[0]} Y{cam_pos[1]} Z{cam_pos[2]}\n".encode())
+        # software_socket.sendall(f"GScript = G01 X{cam_pos[0]} Y{cam_pos[1]} Z{cam_pos[2]}\n".encode())
+        pass
     elif button == 8:
-        software_socket.sendall(f"GScript = G01 X{x} Y{y} Z{z}\n".encode())
+        # software_socket.sendall(f"GScript = G01 X{x} Y{y} Z{z}\n".encode())
+        pass
 
     # Lưu x, y, z vào file, nếu file không tồn tại thì tạo mới
     with open('coordinates.txt', 'w') as f:

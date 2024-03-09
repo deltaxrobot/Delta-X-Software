@@ -9,6 +9,7 @@
 #include <QNetworkInterface>
 #include <VariableManager.h>
 #include <opencv2/opencv.hpp>
+#include <QFile>
 
 class SocketConnectionManager : public QObject
 {
@@ -16,11 +17,13 @@ class SocketConnectionManager : public QObject
 
 public:
     QTcpServer* server;
+    QTcpServer* webserver;
     QList<QTcpSocket*> clients;
     QString hostAddress;
     int port;
 
     int imageSendingMethod = 0;
+    QString indexPath = "index.html";
 
     bool IsServerOpen();
     static QString printLocalIpAddresses();
@@ -31,6 +34,7 @@ public:
 
 private slots:
     void newClientConnected();
+    void newWebClientConnected();
 
     void readFromClient();
 

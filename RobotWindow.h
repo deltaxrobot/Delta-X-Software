@@ -468,6 +468,9 @@ private:
     // ----- Check Performence ----
     void CheckSettingsSpeed();
 
+    // ----- Decting ------
+    void SaveDetectingUI();
+
     // ---- Gcode Editor -----
 	QString boldKey(QString key, QString htmlText);
 	QString boldPlusKey(QString key, QString plus, QString htmlText);

@@ -108,6 +108,23 @@ void RobotWindow::InitVariables()
 
     });
 
+    connect(ui->tbPasteTestTrackingPoint, &QPushButton::clicked, [=]()
+    {
+        // Lấy dữ liệu từ clipboard
+        QClipboard *clipboard = QApplication::clipboard();
+        QString data = clipboard->text();
+        // data = "%1, %2, %3"
+        QStringList list = data.split(", ");
+        // list = ["%1", "%2", "%3"]
+        QString x = list[0];
+        QString y = list[1];
+        QString z = list[2];
+
+        ui->leTestTrackingPointX->setText(QString::number(x.toFloat()));
+        ui->leTestTrackingPointY->setText(QString::number(y.toFloat()));
+        ui->leTestTrackingPointZ->setText(QString::number(z.toFloat()));
+    });
+
     connect(ui->pbMoveTestTrackingPoint, &QPushButton::clicked, [=]()
     {
         QVector3D initialPoint;
@@ -116,10 +133,10 @@ void RobotWindow::InitVariables()
         initialPoint.setZ(ui->leTestTrackingPointZ->text().toFloat());
 
         QVector3D direction = VariableManager::instance().getVar(ui->leVelocityVector->text()).value<QVector3D>();
-        if (initialPoint.z() == 0)
-        {
-            direction.setZ(0);
-        }
+//        if (initialPoint.z() == 0)
+//        {
+//            direction.setZ(0);
+//        }
 
         double distance = ui->leMovingValue->text().toFloat();
 
@@ -168,9 +185,9 @@ void RobotWindow::InitVariables()
         QString y = list[1];
         QString z = list[2];
         
-        ui->lePointAtT1X->setText(QString::number(x.toFloat()));
-        ui->lePointAtT1Y->setText(QString::number(y.toFloat()));
-        ui->lePointAtT1Z->setText(QString::number(z.toFloat()));
+        ui->lePointAtT2X->setText(QString::number(x.toFloat()));
+        ui->lePointAtT2Y->setText(QString::number(y.toFloat()));
+        ui->lePointAtT2Z->setText(QString::number(z.toFloat()));
     });
 
     connect(ui->pbAddMappingMatrix, &QPushButton::clicked, [=]()
@@ -463,6 +480,9 @@ void RobotWindow::InitSocketConnection()
     ui->leIP->setText(localIP);
 
     ConnectionManager = new SocketConnectionManager(localIP, ui->lePort->text().toInt(), this);
+    QString appDirPath = QCoreApplication::applicationDirPath();
+    ConnectionManager->indexPath = appDirPath + "/script-example/webpage/websocket.html";
+
     /// Chuyển ConnectionManager vào một thread mới
     ConnectionManager->moveToThread(new QThread(this));
     /// Kết nối sự kiện khi thread kết thúc với việc xóa ConnectionManager
@@ -578,8 +598,10 @@ void RobotWindow::InitObjectDetectingModule()
     {
         if (checked == true)
         {
-            UnselectToolButtons();
-//            ui->pbGetSizeTool->setChecked(true);
+            ui->pbCalibPointTool->setChecked(false);
+            ui->pbFindChessboardTool->setChecked(false);
+            ui->pbMappingPointTool->setChecked(false);
+
             ui->gvImageViewer->SelectRectTool();
 
             ui->pbCapture->clicked();
@@ -587,7 +609,6 @@ void RobotWindow::InitObjectDetectingModule()
         else
         {
             ui->gvImageViewer->SelectNoTool();
-            UnselectToolButtons();
         }
     });
     connect(ui->pbFindChessboardTool, &QPushButton::clicked,  [=](bool checked)
@@ -613,8 +634,10 @@ void RobotWindow::InitObjectDetectingModule()
     {
         if (checked == true)
         {
-            UnselectToolButtons();
-            ui->pbMappingPointTool->setChecked(true);
+            ui->pbCalibPointTool->setChecked(false);
+            ui->pbFindChessboardTool->setChecked(false);
+            ui->pbGetSizeTool->setChecked(false);
+
             ui->gvImageViewer->SelectMappingTool();
         }
         else
@@ -747,6 +770,8 @@ void RobotWindow::InitObjectDetectingModule()
         ui->leImageHeight->setText(QString::number(newH));
 
         emit GotResizePara(cv::Size(newW, newH));
+
+        SaveDetectingUI();
     });
     connect(ui->leImageHeight, &QLineEdit::returnPressed,
     [=] (){
@@ -759,6 +784,8 @@ void RobotWindow::InitObjectDetectingModule()
         ui->leImageWidth->setText(QString::number(newW));
 
         emit GotResizePara(cv::Size(newW, newH));
+
+        SaveDetectingUI();
     });
 
     connect(ui->tbAutoResizeImage, &QToolButton::toggled, [=](bool checked)
@@ -1728,10 +1755,10 @@ void RobotWindow::LoadObjectDetectorSetting()
 
 //    ui->leCaptureInterval->setText(setting->value("WebcamInterval", ui->leCaptureInterval->text()).toString());
 
-//    ui->leImageWidth->setText(setting->value("ResizeWidth", ui->leImageWidth->text()).toString());
-//    ui->leImageHeight->setText(setting->value("ResizeHeight", ui->leImageHeight->text()).toString());
+    ui->leImageWidth->setText(VariableManager::instance().getVar(prefix + "ResizeWidth", ui->leImageWidth->text()).toString());
+    ui->leImageHeight->setText(VariableManager::instance().getVar(prefix + "ResizeHeight", ui->leImageHeight->text()).toString());
 
-//    emit GotResizePara(cv::Size(ui->leImageWidth->text().toInt(), ui->leImageHeight->text().toInt()));
+    emit GotResizePara(cv::Size(ui->leImageWidth->text().toInt(), ui->leImageHeight->text().toInt()));
 
 //    Object& obj = ImageProcessingThread->GetNode("GetObjectsNode")->GetInputObject();
 
@@ -3672,9 +3699,6 @@ void RobotWindow::UpdateObjectsToImageViewer(QList<Object> objects)
     {
         int counter = 0;
 
-        if (objects.empty())
-            return;
-
         foreach(Object obj, objects)
         {
             counter++;
@@ -4925,6 +4949,13 @@ void RobotWindow::ProcessUIEvent()
     {
         UpdateObjectsToView();
     }
+}
+
+void RobotWindow::SaveDetectingUI()
+{
+    QString prefix = ProjectName + "." + ui->cbSelectedDetecting->currentText() + ".";
+    VariableManager::instance().updateVar(prefix + "ResizeWidth", ui->leImageWidth->text());
+    VariableManager::instance().updateVar(prefix + "ResizeHeight", ui->leImageHeight->text());
 }
 
 QStringList RobotWindow::getPlugins(QString path)

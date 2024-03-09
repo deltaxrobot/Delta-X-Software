@@ -23,8 +23,6 @@ Robot::Robot(QString COM, int baudrate, bool is_open, QObject *parent) : Device(
 
     path_type = "line";
     path_vel = 100;
-    path_angle = 0;
-    path_rad_angle = 0;
 
     jsonObject["device"] = "robot";
 
@@ -236,18 +234,15 @@ bool Robot::checkSetSyncPathCmd(QString cmd)
     }
 
     QStringList list = rx.capturedTexts();
-    float speed = 0;
-    float angle = 0;
-    float angle2 = 90;
     if (list[1] != "") {
-        speed = list[1].toFloat();
-        angle = list[2].toFloat();
+        path_vel = list[1].toFloat();
+        path_angle = list[2].toFloat();
 
-        double angleRadians = qDegreesToRadians(angle);
+        path_angle = qDegreesToRadians(path_angle);
 
         // Tính toán tọa độ X và Y
-        double x = speed * qCos(angleRadians);
-        double y = speed * qSin(angleRadians);
+        double x = path_vel * qCos(path_angle);
+        double y = path_vel * qSin(path_angle);
 
         sync_vector = QVector3D(x, y, 0);
     }
@@ -259,15 +254,12 @@ bool Robot::checkSetSyncPathCmd(QString cmd)
         float y = list[4].toFloat();
         float z = list[5].toFloat();
         sync_vector = QVector3D(x, y, z);
-        speed = sync_vector.length();
-        angle = qRadiansToDegrees(qAcos(x / speed));
-        angle2 = qRadiansToDegrees(qAcos(z / speed));
+        path_vel = sync_vector.length();
+        path_angle = qAcos(x / path_vel);
     }
 
-    SetSyncPath("line", speed, angle, angle2);
-
     // Print the results
-    qDebug() << "Speed: " << speed << ", Angle: " << angle << " degrees.";
+    qDebug() << "Speed: " << path_vel << ", Angle: " << qRadiansToDegrees(path_angle) << " degrees.";
     return true;
 }
 
@@ -346,7 +338,6 @@ QString Robot::syncGcode(QString cmd)
             float distance;
             float new_x, new_y;
 
-//            distance = path_vel * (float(time_ms) / 1000);
             QVector3D moving = sync_vector * (float(time_ms) / 1000);
             new_x = X + moving.x();
             new_y = Y + moving.y();
@@ -377,7 +368,7 @@ QVector3D Robot::calculateSyncPosition(QVector3D robotPos, QVector3D objectPos, 
 
     do {
         // Cập nhật vị trí mới của vật
-        estimatedObjectPos = objectPos + sync_vector * t;
+        estimatedObjectPos = objectPos + beltVelocity * t;
 
         // Tính khoảng cách mới
         distance_new = (estimatedObjectPos - robotPos).length();
@@ -489,13 +480,12 @@ void Robot::Sleep(int time_ms=1000, bool sync=false)
     }
     else
     {
-        float distance;
         float new_x, new_y;
         float old_F;
 
-        distance = path_vel * (float(time_ms) / 1000);
-        new_x = X + distance * cos(path_rad_angle);
-        new_y = Y + distance * sin(path_rad_angle);
+        QVector3D moving = sync_vector * (float(time_ms) / 1000);
+        new_x = X + moving.x();
+        new_y = Y + moving.y();
         old_F = F;
         Move(round(float(new_x)), round(float(new_y)), NULL, NULL, NULL, NULL, F, NULL, NULL, NULL, NULL, false, 0);
         F = old_F;
@@ -617,13 +607,4 @@ void Robot::MoveStep(QString direction, float step) {
 void Robot::MovePoint(QVector3D point)
 {
     Move(point.x(), point.y(), point.z());
-}
-
-void Robot::SetSyncPath(QString path = "line", float con_vel = 100, float con_angle = 0, float con_angle2 = 90)
-{
-    path_type = path;
-    path_vel = con_vel;
-    path_angle = con_angle;
-    path_angle2 = con_angle2;
-    path_rad_angle = qDegreesToRadians(con_angle);
 }

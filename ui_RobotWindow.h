@@ -335,22 +335,22 @@ public:
     QVBoxLayout *verticalLayout_35;
     QHBoxLayout *horizontalLayout_25;
     QGridLayout *gridLayout_15;
-    QLineEdit *leLimitMinX;
-    QLabel *label_162;
-    QLabel *label_155;
-    QLineEdit *leLimitMaxX;
-    QLabel *label_170;
-    QSpacerItem *horizontalSpacer_25;
-    QLineEdit *leLimitMaxY;
-    QLabel *label_171;
-    QLabel *label_56;
     QLabel *label_156;
-    QLineEdit *leLimitMinY;
-    QLabel *label_159;
-    QLabel *label_157;
-    QLabel *label_196;
-    QLabel *label_44;
+    QLabel *label_56;
+    QLabel *label_162;
     QLineEdit *leDetectingObjectListName;
+    QLabel *label_44;
+    QSpacerItem *horizontalSpacer_25;
+    QLabel *label_155;
+    QLabel *label_170;
+    QLabel *label_157;
+    QLineEdit *leLimitMaxX;
+    QLineEdit *leLimitMaxY;
+    QLabel *label_196;
+    QLineEdit *leLimitMinY;
+    QLabel *label_171;
+    QLineEdit *leLimitMinX;
+    QLabel *label_159;
     QSpacerItem *verticalSpacer_11;
     QWidget *tPointTool;
     QVBoxLayout *verticalLayout_14;
@@ -376,19 +376,20 @@ public:
     QLabel *label_168;
     QFrame *frame;
     QGridLayout *gridLayout;
-    QPushButton *pbMoveTestTrackingPoint;
-    QLineEdit *leTestTrackingPointX;
-    QLabel *label_231;
-    QLineEdit *leTestTrackingPointZ;
     QLabel *label_11;
-    QLabel *label_232;
     QLabel *label_230;
     QLineEdit *leTestTrackingPointY;
-    QLineEdit *leMovingValue;
     QSpacerItem *horizontalSpacer_9;
-    QToolButton *tbCopyTestTrackingPoint;
     QLabel *label_236;
+    QPushButton *pbMoveTestTrackingPoint;
+    QLineEdit *leMovingValue;
     QToolButton *tbAutoMove;
+    QToolButton *tbCopyTestTrackingPoint;
+    QLabel *label_231;
+    QLabel *label_232;
+    QLineEdit *leTestTrackingPointX;
+    QToolButton *tbPasteTestTrackingPoint;
+    QLineEdit *leTestTrackingPointZ;
     QGroupBox *gbCameraCalibration_3;
     QVBoxLayout *verticalLayout_63;
     QFrame *frame_19;
@@ -696,7 +697,6 @@ public:
     QSpacerItem *horizontalSpacer_94;
     QFrame *frame_31;
     QGridLayout *gridLayout_56;
-    QToolButton *pbLeft;
     QToolButton *pbBackward;
     QLabel *label_275;
     QToolButton *pbPlusRoll;
@@ -712,6 +712,7 @@ public:
     QSpacerItem *horizontalSpacer_4;
     QLabel *label_276;
     QToolButton *pbPlusYaw;
+    QToolButton *pbLeft;
     QFrame *frame_32;
     QHBoxLayout *horizontalLayout_81;
     QLabel *label_33;
@@ -2169,7 +2170,7 @@ public:
         saObjectDetecting->setWidgetResizable(true);
         wObjectDetecting = new QWidget();
         wObjectDetecting->setObjectName(QString::fromUtf8("wObjectDetecting"));
-        wObjectDetecting->setGeometry(QRect(0, -170, 586, 2500));
+        wObjectDetecting->setGeometry(QRect(0, 0, 655, 2500));
         wObjectDetecting->setMinimumSize(QSize(100, 2500));
         wObjectDetecting->setStyleSheet(QString::fromUtf8("QWidget#wObjectDetecting\n"
 "{	\n"
@@ -3804,84 +3805,84 @@ public:
         gridLayout_15 = new QGridLayout();
         gridLayout_15->setSpacing(6);
         gridLayout_15->setObjectName(QString::fromUtf8("gridLayout_15"));
-        leLimitMinX = new QLineEdit(fVisionVariableFrame);
-        leLimitMinX->setObjectName(QString::fromUtf8("leLimitMinX"));
+        label_156 = new QLabel(fVisionVariableFrame);
+        label_156->setObjectName(QString::fromUtf8("label_156"));
 
-        gridLayout_15->addWidget(leLimitMinX, 1, 2, 1, 1);
-
-        label_162 = new QLabel(fVisionVariableFrame);
-        label_162->setObjectName(QString::fromUtf8("label_162"));
-
-        gridLayout_15->addWidget(label_162, 2, 3, 1, 1);
-
-        label_155 = new QLabel(fVisionVariableFrame);
-        label_155->setObjectName(QString::fromUtf8("label_155"));
-
-        gridLayout_15->addWidget(label_155, 1, 5, 1, 1);
-
-        leLimitMaxX = new QLineEdit(fVisionVariableFrame);
-        leLimitMaxX->setObjectName(QString::fromUtf8("leLimitMaxX"));
-
-        gridLayout_15->addWidget(leLimitMaxX, 1, 6, 1, 1);
-
-        label_170 = new QLabel(fVisionVariableFrame);
-        label_170->setObjectName(QString::fromUtf8("label_170"));
-
-        gridLayout_15->addWidget(label_170, 1, 7, 1, 1);
-
-        horizontalSpacer_25 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-
-        gridLayout_15->addItem(horizontalSpacer_25, 1, 4, 1, 1);
-
-        leLimitMaxY = new QLineEdit(fVisionVariableFrame);
-        leLimitMaxY->setObjectName(QString::fromUtf8("leLimitMaxY"));
-
-        gridLayout_15->addWidget(leLimitMaxY, 2, 6, 1, 1);
-
-        label_171 = new QLabel(fVisionVariableFrame);
-        label_171->setObjectName(QString::fromUtf8("label_171"));
-
-        gridLayout_15->addWidget(label_171, 2, 7, 1, 1);
+        gridLayout_15->addWidget(label_156, 2, 1, 1, 1);
 
         label_56 = new QLabel(fVisionVariableFrame);
         label_56->setObjectName(QString::fromUtf8("label_56"));
 
         gridLayout_15->addWidget(label_56, 1, 1, 1, 1);
 
-        label_156 = new QLabel(fVisionVariableFrame);
-        label_156->setObjectName(QString::fromUtf8("label_156"));
+        label_162 = new QLabel(fVisionVariableFrame);
+        label_162->setObjectName(QString::fromUtf8("label_162"));
 
-        gridLayout_15->addWidget(label_156, 2, 1, 1, 1);
+        gridLayout_15->addWidget(label_162, 2, 3, 1, 1);
 
-        leLimitMinY = new QLineEdit(fVisionVariableFrame);
-        leLimitMinY->setObjectName(QString::fromUtf8("leLimitMinY"));
+        leDetectingObjectListName = new QLineEdit(fVisionVariableFrame);
+        leDetectingObjectListName->setObjectName(QString::fromUtf8("leDetectingObjectListName"));
 
-        gridLayout_15->addWidget(leLimitMinY, 2, 2, 1, 1);
-
-        label_159 = new QLabel(fVisionVariableFrame);
-        label_159->setObjectName(QString::fromUtf8("label_159"));
-
-        gridLayout_15->addWidget(label_159, 1, 3, 1, 1);
-
-        label_157 = new QLabel(fVisionVariableFrame);
-        label_157->setObjectName(QString::fromUtf8("label_157"));
-
-        gridLayout_15->addWidget(label_157, 2, 5, 1, 1);
-
-        label_196 = new QLabel(fVisionVariableFrame);
-        label_196->setObjectName(QString::fromUtf8("label_196"));
-
-        gridLayout_15->addWidget(label_196, 0, 0, 1, 1);
+        gridLayout_15->addWidget(leDetectingObjectListName, 0, 2, 1, 1);
 
         label_44 = new QLabel(fVisionVariableFrame);
         label_44->setObjectName(QString::fromUtf8("label_44"));
 
         gridLayout_15->addWidget(label_44, 1, 0, 1, 1);
 
-        leDetectingObjectListName = new QLineEdit(fVisionVariableFrame);
-        leDetectingObjectListName->setObjectName(QString::fromUtf8("leDetectingObjectListName"));
+        horizontalSpacer_25 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
-        gridLayout_15->addWidget(leDetectingObjectListName, 0, 2, 1, 1);
+        gridLayout_15->addItem(horizontalSpacer_25, 1, 4, 1, 1);
+
+        label_155 = new QLabel(fVisionVariableFrame);
+        label_155->setObjectName(QString::fromUtf8("label_155"));
+
+        gridLayout_15->addWidget(label_155, 1, 5, 1, 1);
+
+        label_170 = new QLabel(fVisionVariableFrame);
+        label_170->setObjectName(QString::fromUtf8("label_170"));
+
+        gridLayout_15->addWidget(label_170, 1, 7, 1, 1);
+
+        label_157 = new QLabel(fVisionVariableFrame);
+        label_157->setObjectName(QString::fromUtf8("label_157"));
+
+        gridLayout_15->addWidget(label_157, 2, 5, 1, 1);
+
+        leLimitMaxX = new QLineEdit(fVisionVariableFrame);
+        leLimitMaxX->setObjectName(QString::fromUtf8("leLimitMaxX"));
+
+        gridLayout_15->addWidget(leLimitMaxX, 1, 6, 1, 1);
+
+        leLimitMaxY = new QLineEdit(fVisionVariableFrame);
+        leLimitMaxY->setObjectName(QString::fromUtf8("leLimitMaxY"));
+
+        gridLayout_15->addWidget(leLimitMaxY, 2, 6, 1, 1);
+
+        label_196 = new QLabel(fVisionVariableFrame);
+        label_196->setObjectName(QString::fromUtf8("label_196"));
+
+        gridLayout_15->addWidget(label_196, 0, 0, 1, 1);
+
+        leLimitMinY = new QLineEdit(fVisionVariableFrame);
+        leLimitMinY->setObjectName(QString::fromUtf8("leLimitMinY"));
+
+        gridLayout_15->addWidget(leLimitMinY, 2, 2, 1, 1);
+
+        label_171 = new QLabel(fVisionVariableFrame);
+        label_171->setObjectName(QString::fromUtf8("label_171"));
+
+        gridLayout_15->addWidget(label_171, 2, 7, 1, 1);
+
+        leLimitMinX = new QLineEdit(fVisionVariableFrame);
+        leLimitMinX->setObjectName(QString::fromUtf8("leLimitMinX"));
+
+        gridLayout_15->addWidget(leLimitMinX, 1, 2, 1, 1);
+
+        label_159 = new QLabel(fVisionVariableFrame);
+        label_159->setObjectName(QString::fromUtf8("label_159"));
+
+        gridLayout_15->addWidget(label_159, 1, 3, 1, 1);
 
 
         verticalLayout_35->addLayout(gridLayout_15);
@@ -3917,7 +3918,7 @@ public:
         saPointTool->setWidgetResizable(true);
         wPointTool = new QWidget();
         wPointTool->setObjectName(QString::fromUtf8("wPointTool"));
-        wPointTool->setGeometry(QRect(0, 0, 574, 1900));
+        wPointTool->setGeometry(QRect(0, 0, 643, 1900));
         wPointTool->setMinimumSize(QSize(0, 1900));
         wPointTool->setStyleSheet(QString::fromUtf8("QWidget#wPointTool\n"
 "{	\n"
@@ -4060,40 +4061,10 @@ public:
         gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
         gridLayout->setVerticalSpacing(10);
         gridLayout->setContentsMargins(-1, 0, -1, 0);
-        pbMoveTestTrackingPoint = new QPushButton(frame);
-        pbMoveTestTrackingPoint->setObjectName(QString::fromUtf8("pbMoveTestTrackingPoint"));
-        sizePolicy10.setHeightForWidth(pbMoveTestTrackingPoint->sizePolicy().hasHeightForWidth());
-        pbMoveTestTrackingPoint->setSizePolicy(sizePolicy10);
-        pbMoveTestTrackingPoint->setMinimumSize(QSize(0, 20));
-
-        gridLayout->addWidget(pbMoveTestTrackingPoint, 2, 0, 1, 1);
-
-        leTestTrackingPointX = new QLineEdit(frame);
-        leTestTrackingPointX->setObjectName(QString::fromUtf8("leTestTrackingPointX"));
-
-        gridLayout->addWidget(leTestTrackingPointX, 1, 1, 1, 1);
-
-        label_231 = new QLabel(frame);
-        label_231->setObjectName(QString::fromUtf8("label_231"));
-        label_231->setAlignment(Qt::AlignCenter);
-
-        gridLayout->addWidget(label_231, 0, 1, 1, 1);
-
-        leTestTrackingPointZ = new QLineEdit(frame);
-        leTestTrackingPointZ->setObjectName(QString::fromUtf8("leTestTrackingPointZ"));
-
-        gridLayout->addWidget(leTestTrackingPointZ, 1, 4, 1, 1);
-
         label_11 = new QLabel(frame);
         label_11->setObjectName(QString::fromUtf8("label_11"));
 
         gridLayout->addWidget(label_11, 1, 0, 1, 1);
-
-        label_232 = new QLabel(frame);
-        label_232->setObjectName(QString::fromUtf8("label_232"));
-        label_232->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
-
-        gridLayout->addWidget(label_232, 2, 2, 1, 1);
 
         label_230 = new QLabel(frame);
         label_230->setObjectName(QString::fromUtf8("label_230"));
@@ -4106,29 +4077,28 @@ public:
 
         gridLayout->addWidget(leTestTrackingPointY, 1, 2, 1, 1);
 
-        leMovingValue = new QLineEdit(frame);
-        leMovingValue->setObjectName(QString::fromUtf8("leMovingValue"));
-
-        gridLayout->addWidget(leMovingValue, 2, 1, 1, 1);
-
         horizontalSpacer_9 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
-        gridLayout->addItem(horizontalSpacer_9, 1, 6, 1, 1);
-
-        tbCopyTestTrackingPoint = new QToolButton(frame);
-        tbCopyTestTrackingPoint->setObjectName(QString::fromUtf8("tbCopyTestTrackingPoint"));
-        QIcon icon30;
-        icon30.addFile(QString::fromUtf8(":/icon/Copy.png"), QSize(), QIcon::Normal, QIcon::Off);
-        tbCopyTestTrackingPoint->setIcon(icon30);
-        tbCopyTestTrackingPoint->setIconSize(QSize(24, 24));
-
-        gridLayout->addWidget(tbCopyTestTrackingPoint, 1, 5, 1, 1);
+        gridLayout->addItem(horizontalSpacer_9, 1, 7, 1, 1);
 
         label_236 = new QLabel(frame);
         label_236->setObjectName(QString::fromUtf8("label_236"));
         label_236->setAlignment(Qt::AlignCenter);
 
         gridLayout->addWidget(label_236, 0, 4, 1, 1);
+
+        pbMoveTestTrackingPoint = new QPushButton(frame);
+        pbMoveTestTrackingPoint->setObjectName(QString::fromUtf8("pbMoveTestTrackingPoint"));
+        sizePolicy10.setHeightForWidth(pbMoveTestTrackingPoint->sizePolicy().hasHeightForWidth());
+        pbMoveTestTrackingPoint->setSizePolicy(sizePolicy10);
+        pbMoveTestTrackingPoint->setMinimumSize(QSize(0, 20));
+
+        gridLayout->addWidget(pbMoveTestTrackingPoint, 2, 0, 1, 1);
+
+        leMovingValue = new QLineEdit(frame);
+        leMovingValue->setObjectName(QString::fromUtf8("leMovingValue"));
+
+        gridLayout->addWidget(leMovingValue, 2, 1, 1, 1);
 
         tbAutoMove = new QToolButton(frame);
         tbAutoMove->setObjectName(QString::fromUtf8("tbAutoMove"));
@@ -4147,6 +4117,44 @@ public:
         tbAutoMove->setAutoRaise(true);
 
         gridLayout->addWidget(tbAutoMove, 2, 3, 1, 1);
+
+        tbCopyTestTrackingPoint = new QToolButton(frame);
+        tbCopyTestTrackingPoint->setObjectName(QString::fromUtf8("tbCopyTestTrackingPoint"));
+        QIcon icon30;
+        icon30.addFile(QString::fromUtf8(":/icon/Copy.png"), QSize(), QIcon::Normal, QIcon::Off);
+        tbCopyTestTrackingPoint->setIcon(icon30);
+        tbCopyTestTrackingPoint->setIconSize(QSize(24, 24));
+
+        gridLayout->addWidget(tbCopyTestTrackingPoint, 1, 5, 1, 1);
+
+        label_231 = new QLabel(frame);
+        label_231->setObjectName(QString::fromUtf8("label_231"));
+        label_231->setAlignment(Qt::AlignCenter);
+
+        gridLayout->addWidget(label_231, 0, 1, 1, 1);
+
+        label_232 = new QLabel(frame);
+        label_232->setObjectName(QString::fromUtf8("label_232"));
+        label_232->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
+
+        gridLayout->addWidget(label_232, 2, 2, 1, 1);
+
+        leTestTrackingPointX = new QLineEdit(frame);
+        leTestTrackingPointX->setObjectName(QString::fromUtf8("leTestTrackingPointX"));
+
+        gridLayout->addWidget(leTestTrackingPointX, 1, 1, 1, 1);
+
+        tbPasteTestTrackingPoint = new QToolButton(frame);
+        tbPasteTestTrackingPoint->setObjectName(QString::fromUtf8("tbPasteTestTrackingPoint"));
+        tbPasteTestTrackingPoint->setIcon(icon26);
+        tbPasteTestTrackingPoint->setIconSize(QSize(24, 24));
+
+        gridLayout->addWidget(tbPasteTestTrackingPoint, 1, 6, 1, 1);
+
+        leTestTrackingPointZ = new QLineEdit(frame);
+        leTestTrackingPointZ->setObjectName(QString::fromUtf8("leTestTrackingPointZ"));
+
+        gridLayout->addWidget(leTestTrackingPointZ, 1, 3, 1, 1);
 
 
         verticalLayout_60->addWidget(frame);
@@ -4920,7 +4928,7 @@ public:
         scrollArea_6->setWidgetResizable(true);
         scrollAreaWidgetContents_6 = new QWidget();
         scrollAreaWidgetContents_6->setObjectName(QString::fromUtf8("scrollAreaWidgetContents_6"));
-        scrollAreaWidgetContents_6->setGeometry(QRect(0, 0, 574, 1600));
+        scrollAreaWidgetContents_6->setGeometry(QRect(0, 0, 643, 1600));
         scrollAreaWidgetContents_6->setMinimumSize(QSize(450, 1600));
         scrollAreaWidgetContents_6->setMaximumSize(QSize(16777215, 16777215));
         scrollAreaWidgetContents_6->setStyleSheet(QString::fromUtf8("QWidget[background='container']\n"
@@ -5735,7 +5743,7 @@ public:
         saTermite->setWidgetResizable(true);
         wgTermite = new QWidget();
         wgTermite->setObjectName(QString::fromUtf8("wgTermite"));
-        wgTermite->setGeometry(QRect(0, 0, 588, 684));
+        wgTermite->setGeometry(QRect(0, 0, 657, 684));
         wgTermite->setStyleSheet(QString::fromUtf8("QWidget#wgTermite\n"
 "{\n"
 "	\n"
@@ -5830,7 +5838,7 @@ public:
         scrollArea_2->setWidgetResizable(true);
         wgJoggingScrollWidget = new QWidget();
         wgJoggingScrollWidget->setObjectName(QString::fromUtf8("wgJoggingScrollWidget"));
-        wgJoggingScrollWidget->setGeometry(QRect(0, 0, 564, 1500));
+        wgJoggingScrollWidget->setGeometry(QRect(0, 0, 495, 1500));
         wgJoggingScrollWidget->setMinimumSize(QSize(0, 1500));
         wgJoggingScrollWidget->setMaximumSize(QSize(16777215, 16777215));
         wgJoggingScrollWidget->setStyleSheet(QString::fromUtf8("QWidget#wgJoggingScrollWidget\n"
@@ -6481,13 +6489,6 @@ public:
         gridLayout_56->setSpacing(6);
         gridLayout_56->setContentsMargins(11, 11, 11, 11);
         gridLayout_56->setObjectName(QString::fromUtf8("gridLayout_56"));
-        pbLeft = new QToolButton(frame_31);
-        pbLeft->setObjectName(QString::fromUtf8("pbLeft"));
-        pbLeft->setIconSize(QSize(40, 40));
-        pbLeft->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-
-        gridLayout_56->addWidget(pbLeft, 2, 0, 1, 1);
-
         pbBackward = new QToolButton(frame_31);
         pbBackward->setObjectName(QString::fromUtf8("pbBackward"));
         pbBackward->setIconSize(QSize(40, 40));
@@ -6596,6 +6597,13 @@ public:
         pbPlusYaw->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 
         gridLayout_56->addWidget(pbPlusYaw, 3, 7, 1, 1);
+
+        pbLeft = new QToolButton(frame_31);
+        pbLeft->setObjectName(QString::fromUtf8("pbLeft"));
+        pbLeft->setIconSize(QSize(40, 40));
+        pbLeft->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+
+        gridLayout_56->addWidget(pbLeft, 2, 0, 1, 1);
 
 
         verticalLayout_73->addWidget(frame_31);
@@ -9298,7 +9306,7 @@ public:
 
         twDeltaManager->setCurrentIndex(0);
         pbReadI0_3->setDefault(false);
-        twModule->setCurrentIndex(3);
+        twModule->setCurrentIndex(1);
         pbImageMapping->setDefault(false);
         cbImageSource->setCurrentIndex(0);
         cbSendingImageMethod->setCurrentIndex(0);
@@ -9705,21 +9713,21 @@ public:
         pbClearDetectObjects->setStatusTip(QString());
 #endif // QT_CONFIG(statustip)
         pbClearDetectObjects->setText(QCoreApplication::translate("RobotWindow", "Clear Objects", nullptr));
-        leLimitMinX->setText(QCoreApplication::translate("RobotWindow", "-300", nullptr));
-        label_162->setText(QCoreApplication::translate("RobotWindow", "(mm)", nullptr));
-        label_155->setText(QCoreApplication::translate("RobotWindow", "Max X", nullptr));
-        leLimitMaxX->setText(QCoreApplication::translate("RobotWindow", "1200", nullptr));
-        label_170->setText(QCoreApplication::translate("RobotWindow", "(mm)", nullptr));
-        leLimitMaxY->setText(QCoreApplication::translate("RobotWindow", "400", nullptr));
-        label_171->setText(QCoreApplication::translate("RobotWindow", "(mm)", nullptr));
-        label_56->setText(QCoreApplication::translate("RobotWindow", "Min X", nullptr));
         label_156->setText(QCoreApplication::translate("RobotWindow", "Min Y", nullptr));
-        leLimitMinY->setText(QCoreApplication::translate("RobotWindow", "-400", nullptr));
-        label_159->setText(QCoreApplication::translate("RobotWindow", "(mm)", nullptr));
-        label_157->setText(QCoreApplication::translate("RobotWindow", "Max Y", nullptr));
-        label_196->setText(QCoreApplication::translate("RobotWindow", "Object List", nullptr));
-        label_44->setText(QCoreApplication::translate("RobotWindow", "Limit Area", nullptr));
+        label_56->setText(QCoreApplication::translate("RobotWindow", "Min X", nullptr));
+        label_162->setText(QCoreApplication::translate("RobotWindow", "(mm)", nullptr));
         leDetectingObjectListName->setText(QCoreApplication::translate("RobotWindow", "#Objects", nullptr));
+        label_44->setText(QCoreApplication::translate("RobotWindow", "Limit Area", nullptr));
+        label_155->setText(QCoreApplication::translate("RobotWindow", "Max X", nullptr));
+        label_170->setText(QCoreApplication::translate("RobotWindow", "(mm)", nullptr));
+        label_157->setText(QCoreApplication::translate("RobotWindow", "Max Y", nullptr));
+        leLimitMaxX->setText(QCoreApplication::translate("RobotWindow", "1200", nullptr));
+        leLimitMaxY->setText(QCoreApplication::translate("RobotWindow", "400", nullptr));
+        label_196->setText(QCoreApplication::translate("RobotWindow", "Object List", nullptr));
+        leLimitMinY->setText(QCoreApplication::translate("RobotWindow", "-400", nullptr));
+        label_171->setText(QCoreApplication::translate("RobotWindow", "(mm)", nullptr));
+        leLimitMinX->setText(QCoreApplication::translate("RobotWindow", "-300", nullptr));
+        label_159->setText(QCoreApplication::translate("RobotWindow", "(mm)", nullptr));
         twModule->setTabText(twModule->indexOf(tObjectDetecting), QCoreApplication::translate("RobotWindow", "Object Detector", nullptr));
         gbTrackingManager->setTitle(QCoreApplication::translate("RobotWindow", "Tracking Manager", nullptr));
         cbSelectedTracking->setItemText(0, QCoreApplication::translate("RobotWindow", "tracking0", nullptr));
@@ -9732,25 +9740,29 @@ public:
         pbSaveTrackingManager->setText(QCoreApplication::translate("RobotWindow", "Save", nullptr));
         label_164->setText(QCoreApplication::translate("RobotWindow", "Encoder", nullptr));
         leSelectedTrackingObjectList->setText(QCoreApplication::translate("RobotWindow", "#Objects", nullptr));
-        leVelocityVector->setText(QCoreApplication::translate("RobotWindow", "#Vector1", nullptr));
+        leVelocityVector->setText(QCoreApplication::translate("RobotWindow", "#tracking0.Vector1", nullptr));
         cbTrackingEncoderSource->setItemText(0, QCoreApplication::translate("RobotWindow", "encoder0", nullptr));
         cbTrackingEncoderSource->setItemText(1, QCoreApplication::translate("RobotWindow", "encoder1", nullptr));
         cbTrackingEncoderSource->setItemText(2, QCoreApplication::translate("RobotWindow", "encoder2", nullptr));
 
         label_160->setText(QCoreApplication::translate("RobotWindow", "Tracking Thread", nullptr));
         label_168->setText(QCoreApplication::translate("RobotWindow", "Velocity Vector", nullptr));
-        pbMoveTestTrackingPoint->setText(QCoreApplication::translate("RobotWindow", "Move", nullptr));
-        label_231->setText(QCoreApplication::translate("RobotWindow", "X", nullptr));
         label_11->setText(QCoreApplication::translate("RobotWindow", "Test Tracking Point", nullptr));
-        label_232->setText(QCoreApplication::translate("RobotWindow", "(mm)", nullptr));
         label_230->setText(QCoreApplication::translate("RobotWindow", "Y", nullptr));
-        leMovingValue->setText(QCoreApplication::translate("RobotWindow", "200", nullptr));
-        tbCopyTestTrackingPoint->setText(QString());
         label_236->setText(QCoreApplication::translate("RobotWindow", "Z", nullptr));
+        pbMoveTestTrackingPoint->setText(QCoreApplication::translate("RobotWindow", "Move", nullptr));
+        leMovingValue->setText(QCoreApplication::translate("RobotWindow", "200", nullptr));
 #if QT_CONFIG(tooltip)
         tbAutoMove->setToolTip(QCoreApplication::translate("RobotWindow", "Creat New Editor", nullptr));
 #endif // QT_CONFIG(tooltip)
         tbAutoMove->setText(QCoreApplication::translate("RobotWindow", "  Auto Move", nullptr));
+        tbCopyTestTrackingPoint->setText(QString());
+        label_231->setText(QCoreApplication::translate("RobotWindow", "X", nullptr));
+        label_232->setText(QCoreApplication::translate("RobotWindow", "(mm)", nullptr));
+#if QT_CONFIG(tooltip)
+        tbPasteTestTrackingPoint->setToolTip(QCoreApplication::translate("RobotWindow", "Paste", nullptr));
+#endif // QT_CONFIG(tooltip)
+        tbPasteTestTrackingPoint->setText(QString());
         gbCameraCalibration_3->setTitle(QCoreApplication::translate("RobotWindow", "Vector", nullptr));
         label_226->setText(QCoreApplication::translate("RobotWindow", "X", nullptr));
         label_228->setText(QCoreApplication::translate("RobotWindow", "Z", nullptr));
@@ -9947,17 +9959,6 @@ public:
         robotTitile_4->setProperty("Func", QVariant(QCoreApplication::translate("RobotWindow", "Title", nullptr)));
         label_271->setText(QCoreApplication::translate("RobotWindow", "Jogging", nullptr));
 #if QT_CONFIG(tooltip)
-        pbLeft->setToolTip(QCoreApplication::translate("RobotWindow", "Left (shift + w)", nullptr));
-#endif // QT_CONFIG(tooltip)
-#if QT_CONFIG(statustip)
-        pbLeft->setStatusTip(QString());
-#endif // QT_CONFIG(statustip)
-        pbLeft->setText(QCoreApplication::translate("RobotWindow", "X-", nullptr));
-#if QT_CONFIG(shortcut)
-        pbLeft->setShortcut(QCoreApplication::translate("RobotWindow", "Shift+A", nullptr));
-#endif // QT_CONFIG(shortcut)
-        pbLeft->setProperty("Func", QVariant(QCoreApplication::translate("RobotWindow", "Jogging", nullptr)));
-#if QT_CONFIG(tooltip)
         pbBackward->setToolTip(QCoreApplication::translate("RobotWindow", "Backward (shift + s)", nullptr));
 #endif // QT_CONFIG(tooltip)
 #if QT_CONFIG(statustip)
@@ -10081,6 +10082,17 @@ public:
         pbPlusYaw->setShortcut(QCoreApplication::translate("RobotWindow", "Shift+H", nullptr));
 #endif // QT_CONFIG(shortcut)
         pbPlusYaw->setProperty("Func", QVariant(QCoreApplication::translate("RobotWindow", "Jogging", nullptr)));
+#if QT_CONFIG(tooltip)
+        pbLeft->setToolTip(QCoreApplication::translate("RobotWindow", "Left (shift + w)", nullptr));
+#endif // QT_CONFIG(tooltip)
+#if QT_CONFIG(statustip)
+        pbLeft->setStatusTip(QString());
+#endif // QT_CONFIG(statustip)
+        pbLeft->setText(QCoreApplication::translate("RobotWindow", "X-", nullptr));
+#if QT_CONFIG(shortcut)
+        pbLeft->setShortcut(QCoreApplication::translate("RobotWindow", "Shift+A", nullptr));
+#endif // QT_CONFIG(shortcut)
+        pbLeft->setProperty("Func", QVariant(QCoreApplication::translate("RobotWindow", "Jogging", nullptr)));
         label_33->setText(QCoreApplication::translate("RobotWindow", "  Step  ", nullptr));
         rb01->setText(QCoreApplication::translate("RobotWindow", "0.1", nullptr));
         rb05->setText(QCoreApplication::translate("RobotWindow", "0.5", nullptr));

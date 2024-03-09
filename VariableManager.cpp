@@ -51,7 +51,7 @@ QVariant VariableManager::getVariable(const QString &key, QVariant defaultValue)
 
 QVariant VariableManager::getVar(const QString &key, QVariant defaultValue)
 {
-    return getVariable(key);
+    return getVariable(key, defaultValue);
 }
 
 void VariableManager::removeVar(const QString &key)

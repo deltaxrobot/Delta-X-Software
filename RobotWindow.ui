@@ -794,7 +794,7 @@ QToolBox QScrollArea&gt;QWidget&gt;QWidget
               <enum>QTabWidget::Rounded</enum>
              </property>
              <property name="currentIndex">
-              <number>3</number>
+              <number>0</number>
              </property>
              <property name="usesScrollButtons">
               <bool>true</bool>
@@ -1812,8 +1812,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
                   <property name="geometry">
                    <rect>
                     <x>0</x>
-                    <y>-170</y>
-                    <width>586</width>
+                    <y>0</y>
+                    <width>655</width>
                     <height>2500</height>
                    </rect>
                   </property>
@@ -5438,10 +5438,17 @@ QFrame
                              </item>
                              <item>
                               <layout class="QGridLayout" name="gridLayout_15">
-                               <item row="1" column="2">
-                                <widget class="QLineEdit" name="leLimitMinX">
+                               <item row="2" column="1">
+                                <widget class="QLabel" name="label_156">
                                  <property name="text">
-                                  <string>-300</string>
+                                  <string>Min Y</string>
+                                 </property>
+                                </widget>
+                               </item>
+                               <item row="1" column="1">
+                                <widget class="QLabel" name="label_56">
+                                 <property name="text">
+                                  <string>Min X</string>
                                  </property>
                                 </widget>
                                </item>
@@ -5452,24 +5459,17 @@ QFrame
                                  </property>
                                 </widget>
                                </item>
-                               <item row="1" column="5">
-                                <widget class="QLabel" name="label_155">
+                               <item row="0" column="2">
+                                <widget class="QLineEdit" name="leDetectingObjectListName">
                                  <property name="text">
-                                  <string>Max X</string>
+                                  <string>#Objects</string>
                                  </property>
                                 </widget>
                                </item>
-                               <item row="1" column="6">
-                                <widget class="QLineEdit" name="leLimitMaxX">
+                               <item row="1" column="0">
+                                <widget class="QLabel" name="label_44">
                                  <property name="text">
-                                  <string>1200</string>
-                                 </property>
-                                </widget>
-                               </item>
-                               <item row="1" column="7">
-                                <widget class="QLabel" name="label_170">
-                                 <property name="text">
-                                  <string>(mm)</string>
+                                  <string>Limit Area</string>
                                  </property>
                                 </widget>
                                </item>
@@ -5486,43 +5486,15 @@ QFrame
                                  </property>
                                 </spacer>
                                </item>
-                               <item row="2" column="6">
-                                <widget class="QLineEdit" name="leLimitMaxY">
+                               <item row="1" column="5">
+                                <widget class="QLabel" name="label_155">
                                  <property name="text">
-                                  <string>400</string>
+                                  <string>Max X</string>
                                  </property>
                                 </widget>
                                </item>
-                               <item row="2" column="7">
-                                <widget class="QLabel" name="label_171">
-                                 <property name="text">
-                                  <string>(mm)</string>
-                                 </property>
-                                </widget>
-                               </item>
-                               <item row="1" column="1">
-                                <widget class="QLabel" name="label_56">
-                                 <property name="text">
-                                  <string>Min X</string>
-                                 </property>
-                                </widget>
-                               </item>
-                               <item row="2" column="1">
-                                <widget class="QLabel" name="label_156">
-                                 <property name="text">
-                                  <string>Min Y</string>
-                                 </property>
-                                </widget>
-                               </item>
-                               <item row="2" column="2">
-                                <widget class="QLineEdit" name="leLimitMinY">
-                                 <property name="text">
-                                  <string>-400</string>
-                                 </property>
-                                </widget>
-                               </item>
-                               <item row="1" column="3">
-                                <widget class="QLabel" name="label_159">
+                               <item row="1" column="7">
+                                <widget class="QLabel" name="label_170">
                                  <property name="text">
                                   <string>(mm)</string>
                                  </property>
@@ -5535,6 +5507,20 @@ QFrame
                                  </property>
                                 </widget>
                                </item>
+                               <item row="1" column="6">
+                                <widget class="QLineEdit" name="leLimitMaxX">
+                                 <property name="text">
+                                  <string>1200</string>
+                                 </property>
+                                </widget>
+                               </item>
+                               <item row="2" column="6">
+                                <widget class="QLineEdit" name="leLimitMaxY">
+                                 <property name="text">
+                                  <string>400</string>
+                                 </property>
+                                </widget>
+                               </item>
                                <item row="0" column="0">
                                 <widget class="QLabel" name="label_196">
                                  <property name="text">
@@ -5542,17 +5528,31 @@ QFrame
                                  </property>
                                 </widget>
                                </item>
-                               <item row="1" column="0">
-                                <widget class="QLabel" name="label_44">
+                               <item row="2" column="2">
+                                <widget class="QLineEdit" name="leLimitMinY">
                                  <property name="text">
-                                  <string>Limit Area</string>
+                                  <string>-400</string>
                                  </property>
                                 </widget>
                                </item>
-                               <item row="0" column="2">
-                                <widget class="QLineEdit" name="leDetectingObjectListName">
+                               <item row="2" column="7">
+                                <widget class="QLabel" name="label_171">
                                  <property name="text">
-                                  <string>#Objects</string>
+                                  <string>(mm)</string>
+                                 </property>
+                                </widget>
+                               </item>
+                               <item row="1" column="2">
+                                <widget class="QLineEdit" name="leLimitMinX">
+                                 <property name="text">
+                                  <string>-300</string>
+                                 </property>
+                                </widget>
+                               </item>
+                               <item row="1" column="3">
+                                <widget class="QLabel" name="label_159">
+                                 <property name="text">
+                                  <string>(mm)</string>
                                  </property>
                                 </widget>
                                </item>
@@ -5605,7 +5605,7 @@ QFrame
                    <rect>
                     <x>0</x>
                     <y>0</y>
-                    <width>574</width>
+                    <width>643</width>
                     <height>1900</height>
                    </rect>
                   </property>
@@ -5798,7 +5798,7 @@ QGroupBox::title
                             <item row="3" column="2">
                              <widget class="QLineEdit" name="leVelocityVector">
                               <property name="text">
-                               <string>#Vector1</string>
+                               <string>#tracking0.Vector1</string>
                               </property>
                              </widget>
                             </item>
@@ -5887,6 +5887,49 @@ QGroupBox::title
                             <property name="verticalSpacing">
                              <number>10</number>
                             </property>
+                            <item row="1" column="0">
+                             <widget class="QLabel" name="label_11">
+                              <property name="text">
+                               <string>Test Tracking Point</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="0" column="2">
+                             <widget class="QLabel" name="label_230">
+                              <property name="text">
+                               <string>Y</string>
+                              </property>
+                              <property name="alignment">
+                               <set>Qt::AlignCenter</set>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="1" column="2">
+                             <widget class="QLineEdit" name="leTestTrackingPointY"/>
+                            </item>
+                            <item row="1" column="7">
+                             <spacer name="horizontalSpacer_9">
+                              <property name="orientation">
+                               <enum>Qt::Horizontal</enum>
+                              </property>
+                              <property name="sizeHint" stdset="0">
+                               <size>
+                                <width>40</width>
+                                <height>20</height>
+                               </size>
+                              </property>
+                             </spacer>
+                            </item>
+                            <item row="0" column="4">
+                             <widget class="QLabel" name="label_236">
+                              <property name="text">
+                               <string>Z</string>
+                              </property>
+                              <property name="alignment">
+                               <set>Qt::AlignCenter</set>
+                              </property>
+                             </widget>
+                            </item>
                             <item row="2" column="0">
                              <widget class="QPushButton" name="pbMoveTestTrackingPoint">
                               <property name="sizePolicy">
@@ -5906,96 +5949,10 @@ QGroupBox::title
                               </property>
                              </widget>
                             </item>
-                            <item row="1" column="1">
-                             <widget class="QLineEdit" name="leTestTrackingPointX"/>
-                            </item>
-                            <item row="0" column="1">
-                             <widget class="QLabel" name="label_231">
-                              <property name="text">
-                               <string>X</string>
-                              </property>
-                              <property name="alignment">
-                               <set>Qt::AlignCenter</set>
-                              </property>
-                             </widget>
-                            </item>
-                            <item row="1" column="4">
-                             <widget class="QLineEdit" name="leTestTrackingPointZ"/>
-                            </item>
-                            <item row="1" column="0">
-                             <widget class="QLabel" name="label_11">
-                              <property name="text">
-                               <string>Test Tracking Point</string>
-                              </property>
-                             </widget>
-                            </item>
-                            <item row="2" column="2">
-                             <widget class="QLabel" name="label_232">
-                              <property name="text">
-                               <string>(mm)</string>
-                              </property>
-                              <property name="alignment">
-                               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-                              </property>
-                             </widget>
-                            </item>
-                            <item row="0" column="2">
-                             <widget class="QLabel" name="label_230">
-                              <property name="text">
-                               <string>Y</string>
-                              </property>
-                              <property name="alignment">
-                               <set>Qt::AlignCenter</set>
-                              </property>
-                             </widget>
-                            </item>
-                            <item row="1" column="2">
-                             <widget class="QLineEdit" name="leTestTrackingPointY"/>
-                            </item>
                             <item row="2" column="1">
                              <widget class="QLineEdit" name="leMovingValue">
                               <property name="text">
                                <string>200</string>
-                              </property>
-                             </widget>
-                            </item>
-                            <item row="1" column="6">
-                             <spacer name="horizontalSpacer_9">
-                              <property name="orientation">
-                               <enum>Qt::Horizontal</enum>
-                              </property>
-                              <property name="sizeHint" stdset="0">
-                               <size>
-                                <width>40</width>
-                                <height>20</height>
-                               </size>
-                              </property>
-                             </spacer>
-                            </item>
-                            <item row="1" column="5">
-                             <widget class="QToolButton" name="tbCopyTestTrackingPoint">
-                              <property name="text">
-                               <string/>
-                              </property>
-                              <property name="icon">
-                               <iconset resource="resource.qrc">
-                                <normaloff>:/icon/Copy.png</normaloff>:/icon/Copy.png</iconset>
-                              </property>
-                              <property name="iconSize">
-                               <size>
-                                <width>24</width>
-                                <height>24</height>
-                               </size>
-                              </property>
-                             </widget>
-                            </item>
-                            <item row="0" column="4">
-                             <widget class="QLabel" name="label_236">
-                              <property name="text">
-                               <string>Z</string>
-                              </property>
-                              <property name="alignment">
-                               <set>Qt::AlignCenter</set>
                               </property>
                              </widget>
                             </item>
@@ -6050,6 +6007,69 @@ QGroupBox::title
                                <bool>true</bool>
                               </property>
                              </widget>
+                            </item>
+                            <item row="1" column="5">
+                             <widget class="QToolButton" name="tbCopyTestTrackingPoint">
+                              <property name="text">
+                               <string/>
+                              </property>
+                              <property name="icon">
+                               <iconset resource="resource.qrc">
+                                <normaloff>:/icon/Copy.png</normaloff>:/icon/Copy.png</iconset>
+                              </property>
+                              <property name="iconSize">
+                               <size>
+                                <width>24</width>
+                                <height>24</height>
+                               </size>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="0" column="1">
+                             <widget class="QLabel" name="label_231">
+                              <property name="text">
+                               <string>X</string>
+                              </property>
+                              <property name="alignment">
+                               <set>Qt::AlignCenter</set>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="2" column="2">
+                             <widget class="QLabel" name="label_232">
+                              <property name="text">
+                               <string>(mm)</string>
+                              </property>
+                              <property name="alignment">
+                               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="1" column="1">
+                             <widget class="QLineEdit" name="leTestTrackingPointX"/>
+                            </item>
+                            <item row="1" column="6">
+                             <widget class="QToolButton" name="tbPasteTestTrackingPoint">
+                              <property name="toolTip">
+                               <string>Paste</string>
+                              </property>
+                              <property name="text">
+                               <string/>
+                              </property>
+                              <property name="icon">
+                               <iconset resource="resource.qrc">
+                                <normaloff>:/icon/Paste.png</normaloff>:/icon/Paste.png</iconset>
+                              </property>
+                              <property name="iconSize">
+                               <size>
+                                <width>24</width>
+                                <height>24</height>
+                               </size>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="1" column="3">
+                             <widget class="QLineEdit" name="leTestTrackingPointZ"/>
                             </item>
                            </layout>
                           </widget>
@@ -7200,7 +7220,7 @@ padding: 5px;</string>
                    <rect>
                     <x>0</x>
                     <y>0</y>
-                    <width>574</width>
+                    <width>643</width>
                     <height>1600</height>
                    </rect>
                   </property>
@@ -8971,7 +8991,7 @@ QLabel
                    <rect>
                     <x>0</x>
                     <y>0</y>
-                    <width>588</width>
+                    <width>657</width>
                     <height>684</height>
                    </rect>
                   </property>
@@ -9188,7 +9208,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
                    <rect>
                     <x>0</x>
                     <y>0</y>
-                    <width>564</width>
+                    <width>495</width>
                     <height>1500</height>
                    </rect>
                   </property>
@@ -10220,7 +10240,7 @@ QGroupBox
                               </property>
                               <property name="maximumSize">
                                <size>
-                                <width>70</width>
+                                <width>90</width>
                                 <height>16777215</height>
                                </size>
                               </property>
@@ -10239,7 +10259,7 @@ QGroupBox
                               </property>
                               <property name="maximumSize">
                                <size>
-                                <width>70</width>
+                                <width>90</width>
                                 <height>16777215</height>
                                </size>
                               </property>
@@ -10255,7 +10275,7 @@ QGroupBox
                               </property>
                               <property name="maximumSize">
                                <size>
-                                <width>70</width>
+                                <width>90</width>
                                 <height>16777215</height>
                                </size>
                               </property>
@@ -10271,7 +10291,7 @@ QGroupBox
                               </property>
                               <property name="maximumSize">
                                <size>
-                                <width>70</width>
+                                <width>90</width>
                                 <height>16777215</height>
                                </size>
                               </property>
@@ -10287,7 +10307,7 @@ QGroupBox
                               </property>
                               <property name="maximumSize">
                                <size>
-                                <width>70</width>
+                                <width>90</width>
                                 <height>16777215</height>
                                </size>
                               </property>
@@ -10303,7 +10323,7 @@ QGroupBox
                               </property>
                               <property name="maximumSize">
                                <size>
-                                <width>70</width>
+                                <width>90</width>
                                 <height>16777215</height>
                                </size>
                               </property>
@@ -10542,34 +10562,6 @@ QToolButton[Func='Jogging']
                          <enum>QFrame::Raised</enum>
                         </property>
                         <layout class="QGridLayout" name="gridLayout_56">
-                         <item row="2" column="0">
-                          <widget class="QToolButton" name="pbLeft">
-                           <property name="toolTip">
-                            <string>Left (shift + w)</string>
-                           </property>
-                           <property name="statusTip">
-                            <string/>
-                           </property>
-                           <property name="text">
-                            <string>X-</string>
-                           </property>
-                           <property name="iconSize">
-                            <size>
-                             <width>40</width>
-                             <height>40</height>
-                            </size>
-                           </property>
-                           <property name="shortcut">
-                            <string>Shift+A</string>
-                           </property>
-                           <property name="toolButtonStyle">
-                            <enum>Qt::ToolButtonTextUnderIcon</enum>
-                           </property>
-                           <property name="Func" stdset="0">
-                            <string>Jogging</string>
-                           </property>
-                          </widget>
-                         </item>
                          <item row="3" column="1">
                           <widget class="QToolButton" name="pbBackward">
                            <property name="toolTip">
@@ -10960,6 +10952,34 @@ QToolButton[Func='Jogging']
                            </property>
                            <property name="shortcut">
                             <string>Shift+H</string>
+                           </property>
+                           <property name="toolButtonStyle">
+                            <enum>Qt::ToolButtonTextUnderIcon</enum>
+                           </property>
+                           <property name="Func" stdset="0">
+                            <string>Jogging</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="2" column="0">
+                          <widget class="QToolButton" name="pbLeft">
+                           <property name="toolTip">
+                            <string>Left (shift + w)</string>
+                           </property>
+                           <property name="statusTip">
+                            <string/>
+                           </property>
+                           <property name="text">
+                            <string>X-</string>
+                           </property>
+                           <property name="iconSize">
+                            <size>
+                             <width>40</width>
+                             <height>40</height>
+                            </size>
+                           </property>
+                           <property name="shortcut">
+                            <string>Shift+A</string>
                            </property>
                            <property name="toolButtonStyle">
                             <enum>Qt::ToolButtonTextUnderIcon</enum>

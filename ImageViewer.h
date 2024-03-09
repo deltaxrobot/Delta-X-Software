@@ -91,8 +91,8 @@ public:
         whiteLineItem->setPen(QPen(Qt::white, value * 2));
         blackLineItem->setPen(QPen(Qt::black, value));
 
-        whiteTextItem->setPen(QPen(Qt::white, value * 2));
-        blackTextItem->setPen(QPen(Qt::black, value));
+        whiteTextItem->setPen(QPen(Qt::white, value));
+        blackTextItem->setPen(QPen(Qt::black, value * 2));
 
         updateVisual();
     }

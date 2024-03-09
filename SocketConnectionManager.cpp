@@ -28,6 +28,10 @@ SocketConnectionManager::SocketConnectionManager(const QString &address, int por
 
     server = new QTcpServer(this);
     Connect(address, port);
+
+    webserver = new QTcpServer(this);
+    webserver->listen(QHostAddress(hostAddress), 80);
+    connect(webserver, &QTcpServer::newConnection, this, &SocketConnectionManager::newWebClientConnected);
 }
 
 bool SocketConnectionManager::Connect(QString address, int port)
@@ -55,6 +59,26 @@ void SocketConnectionManager::newClientConnected() {
     clientSocket->write("deltax\n");
 }
 
+void SocketConnectionManager::newWebClientConnected()
+{
+    QTcpSocket *socket = webserver->nextPendingConnection();
+    connect(socket, &QTcpSocket::readyRead, [this, socket]() {
+        QFile file(indexPath);
+        if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+            qDebug() << "Could not open HTML file";
+            socket->disconnectFromHost();
+            return;
+        }
+
+        QTextStream in(&file);
+        QString response = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n" + in.readAll();
+        socket->write(response.toUtf8());
+        socket->flush();
+        socket->waitForBytesWritten();
+        socket->disconnectFromHost();
+    });
+}
+
 void SocketConnectionManager::readFromClient() {
     QTcpSocket* senderSocket = static_cast<QTcpSocket*>(sender());
     QByteArray data = senderSocket->readAll();
@@ -71,6 +95,15 @@ void SocketConnectionManager::readFromClient() {
         QString clientName = QString(data).split("=")[1];
         senderSocket->setObjectName(clientName);
         return;
+    }
+
+    // Tìm vị trí của dòng trống giữa headers và body
+    int headerEnd = data.indexOf("\r\n\r\n") + 4;
+    QByteArray body = data.mid(headerEnd);
+
+    if (data.contains("POST"))
+    {
+        data = body;
     }
 
     // Handling variable assignment

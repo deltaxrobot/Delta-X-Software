@@ -23,7 +23,6 @@ public:
     QString SetInput(int pin);
     void SetOutput(int pin, bool state);
     void MovePoint(QVector3D point);
-    void SetSyncPath(QString path, float con_vel, float con_angle, float con_angle2);
 
     float X,Y,Z,W,U,V,F,S,E,A,J,O;
 
@@ -41,14 +40,11 @@ public slots:
 
 private:
     QString done_msg;
-    QString path_type;
     QString last_gcode;
     QString now_gcode;
+    QString path_type;
     float path_vel;
     float path_angle;
-    float path_angle2;
-    float path_rad_angle;
-    float path_rad_angle2;
     QVector3D sync_vector;
     Device* port;
     Scurve_Interpolator scurve_tool;

@@ -405,10 +405,9 @@ void ImageViewer::SelectMappingTool()
 
     selectedTool = MAPPING_TOOL;
 
-//    QPushButton* bt = qobject_cast<QPushButton*>(sender());
-//    changeToolIconInArea(bt->icon());
-
     TurnOnTool(false);
+
+    setMoveHand(false);
 
     cMappingPoint.SetVisible(true);
 }
