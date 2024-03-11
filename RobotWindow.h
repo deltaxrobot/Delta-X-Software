@@ -123,7 +123,7 @@ public:
     void LoadTrackingThread();
 
     void LoadSettings();
-    void LoadGeneralSettings(QSettings* setting);
+    void LoadGeneralSettings();
     void LoadJoggingSettings(QSettings* setting);
     void Load2DSettings(QSettings* setting);
     void Load3DSettings(QSettings* setting);
@@ -422,6 +422,7 @@ public slots:
     void CalculatePointMatrixTool();
     void CalculateTestPoint();
     void CalculateVector();
+    void UpdateTestPoint(QVector3D testPoint);
 
     // ----- Display ----
 
@@ -486,12 +487,6 @@ private:
 	void interpolateCircle();
 	void makeEffectExample();
 
-    // ---- Tool ----
-    QString checkAndCreateDir(const QString& path);
-    bool saveImageWithUniqueName(const cv::Mat& image, const QString& dirPath);
-    void loadImages(const QString& dirPath, QListWidget* lwImageList);
-    void onImageItemClicked(QListWidgetItem* item);
-
     //--------- Controller -------
 #ifdef Q_OS_WIN
     #ifdef JOY_STICK
@@ -505,6 +500,13 @@ private:
     void plugValue(QLineEdit* le, float value);
     bool isItemExit(QListWidget* lw, QString item);
     int getIDfromName(QString fullName);
+
+    QString checkAndCreateDir(const QString& path);
+    bool saveImageWithUniqueName(const cv::Mat& image, const QString& dirPath);
+    void loadImages(const QString& dirPath, QListWidget* lwImageList);
+    void onImageItemClicked(QListWidgetItem* item);
+
+    void pastePointValues(QLineEdit* leX, QLineEdit* leY, QLineEdit* leZ);
 
     //--------- Tool -------
 

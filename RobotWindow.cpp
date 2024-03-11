@@ -110,19 +110,7 @@ void RobotWindow::InitVariables()
 
     connect(ui->tbPasteTestTrackingPoint, &QPushButton::clicked, [=]()
     {
-        // Lấy dữ liệu từ clipboard
-        QClipboard *clipboard = QApplication::clipboard();
-        QString data = clipboard->text();
-        // data = "%1, %2, %3"
-        QStringList list = data.split(", ");
-        // list = ["%1", "%2", "%3"]
-        QString x = list[0];
-        QString y = list[1];
-        QString z = list[2];
-
-        ui->leTestTrackingPointX->setText(QString::number(x.toFloat()));
-        ui->leTestTrackingPointY->setText(QString::number(y.toFloat()));
-        ui->leTestTrackingPointZ->setText(QString::number(z.toFloat()));
+        pastePointValues(ui->leTestTrackingPointX, ui->leTestTrackingPointY, ui->leTestTrackingPointZ);
     });
 
     connect(ui->pbMoveTestTrackingPoint, &QPushButton::clicked, [=]()
@@ -133,10 +121,6 @@ void RobotWindow::InitVariables()
         initialPoint.setZ(ui->leTestTrackingPointZ->text().toFloat());
 
         QVector3D direction = VariableManager::instance().getVar(ui->leVelocityVector->text()).value<QVector3D>();
-//        if (initialPoint.z() == 0)
-//        {
-//            direction.setZ(0);
-//        }
 
         double distance = ui->leMovingValue->text().toFloat();
 
@@ -148,6 +132,12 @@ void RobotWindow::InitVariables()
         ui->leTestTrackingPointY->setText(QString::number(newPoint.y()));
         ui->leTestTrackingPointZ->setText(QString::number(newPoint.z()));
     });
+
+    connect(ui->tbAutoMove, &QToolButton::toggled, [=](bool checked)
+    {
+        TrackingManagerInstance->Trackings.at(0)->IsUpateTestPoint = checked;
+    });
+
     connect(ui->pbCalculateMappingMatrixTool, SIGNAL(clicked(bool)), this, SLOT(CalculateMappingMatrixTool()));
     connect(ui->pbCalculatePointMatrixTool, SIGNAL(clicked(bool)), this, SLOT(CalculatePointMatrixTool()));
     connect(ui->pbCalculateTestPoint, SIGNAL(clicked(bool)), this, SLOT(CalculateTestPoint()));
@@ -158,36 +148,29 @@ void RobotWindow::InitVariables()
 
     connect(ui->tbPasteVectorPoint1, &QPushButton::clicked, [=]()
     { 
-        // Lấy dữ liệu từ clipboard
-        QClipboard *clipboard = QApplication::clipboard();
-        QString data = clipboard->text();
-        // data = "%1, %2, %3"
-        QStringList list = data.split(", ");
-        // list = ["%1", "%2", "%3"]
-        QString x = list[0];
-        QString y = list[1];
-        QString z = list[2];
-        
-        ui->lePointAtT1X->setText(QString::number(x.toFloat()));
-        ui->lePointAtT1Y->setText(QString::number(y.toFloat()));
-        ui->lePointAtT1Z->setText(QString::number(z.toFloat()));
+        pastePointValues(ui->lePointAtT1X, ui->lePointAtT1Y, ui->lePointAtT1Z);
     });
 
     connect(ui->tbPasteVectorPoint2, &QPushButton::clicked, [=]()
     { 
-        // Lấy dữ liệu từ clipboard
-        QClipboard *clipboard = QApplication::clipboard();
-        QString data = clipboard->text();
-        // data = "%1, %2, %3"
-        QStringList list = data.split(", ");
-        // list = ["%1", "%2", "%3"]
-        QString x = list[0];
-        QString y = list[1];
-        QString z = list[2];
-        
-        ui->lePointAtT2X->setText(QString::number(x.toFloat()));
-        ui->lePointAtT2Y->setText(QString::number(y.toFloat()));
-        ui->lePointAtT2Z->setText(QString::number(z.toFloat()));
+        pastePointValues(ui->lePointAtT2X, ui->lePointAtT2Y, ui->lePointAtT2Z);
+    });
+
+    connect(ui->tbPasteSourcePoint1, &QPushButton::clicked, [=]()
+    {
+        pastePointValues(ui->leSourcePoint1X, ui->leSourcePoint1Y, NULL);
+    });
+    connect(ui->tbPasteSourcePoint2, &QPushButton::clicked, [=]()
+    {
+        pastePointValues(ui->leSourcePoint2X, ui->leSourcePoint2Y, NULL);
+    });
+    connect(ui->tbPasteDestinationPoint1, &QPushButton::clicked, [=]()
+    {
+        pastePointValues(ui->leDestinationPoint1X, ui->leDestinationPoint1Y, NULL);
+    });
+    connect(ui->tbPasteDestinationPoint2, &QPushButton::clicked, [=]()
+    {
+        pastePointValues(ui->leDestinationPoint2X, ui->leDestinationPoint2Y, NULL);
     });
 
     connect(ui->pbAddMappingMatrix, &QPushButton::clicked, [=]()
@@ -625,11 +608,6 @@ void RobotWindow::InitObjectDetectingModule()
         }
 
     });
-    connect(ui->pbAreaTool, &QPushButton::clicked, [=](bool checked)
-    {
-        EditImage(ui->pbWarpTool->isChecked(), ui->pbAreaTool->isChecked());
-
-    });
     connect(ui->pbMappingPointTool, &QPushButton::clicked, [=](bool checked)
     {
         if (checked == true)
@@ -646,13 +624,16 @@ void RobotWindow::InitObjectDetectingModule()
         }
 
     });
+    connect(ui->pbCropTool, &QPushButton::clicked, [=](bool checked)
+    {
+        EditImage(ui->pbWarpTool->isChecked(), ui->pbCropTool->isChecked());
+
+    });
 
     connect(ui->pbWarpTool, &QPushButton::clicked, [=](bool checked)
     {
-        EditImage(ui->pbWarpTool->isChecked(), ui->pbAreaTool->isChecked());
+        EditImage(ui->pbWarpTool->isChecked(), ui->pbCropTool->isChecked());
     });
-
-//    ui->pbWarpTool->click();
 
     connect(ui->pbFilterTool, SIGNAL(clicked(bool)), this, SLOT(OpenColorFilterWindow()));
 //    connect(ui->pbViewDataObjects, SIGNAL(clicked(bool)), TrackingObjectTable, SLOT(DisplayDialog()));
@@ -790,9 +771,15 @@ void RobotWindow::InitObjectDetectingModule()
 
     connect(ui->tbAutoResizeImage, &QToolButton::toggled, [=](bool checked)
     {
+        TaskNode* resizeImageNode = ImageProcessingThread->GetNode("ResizeImageNode");
+
         if (checked)
         {
-            
+            resizeImageNode->IsPass = false;
+        }
+        else
+        {
+            resizeImageNode->IsPass = true;
         }
     });
         
@@ -952,49 +939,22 @@ void RobotWindow::InitCalibration()
 
     connect(ui->tbPastePoint1, &QPushButton::clicked, [=]()
     { 
-        // Lấy dữ liệu từ clipboard
-        QClipboard *clipboard = QApplication::clipboard();
-        QString data = clipboard->text();
-        // data = "%1, %2, %3"
-        QStringList list = data.split(", ");
-        // list = ["%1", "%2", "%3"]
-        QString x = list[0];
-        QString y = list[1];
-        
-        ui->leRealityPoint1X->setText(QString::number(x.toFloat()));
-        ui->leRealityPoint1Y->setText(QString::number(y.toFloat())); 
+        pastePointValues(ui->leRealityPoint1X, ui->leRealityPoint1Y, NULL);
+
         UpdateRealPositionOfCalibPoints();
     });
 
     connect(ui->tbPastePoint2, &QPushButton::clicked, [=]()
     { 
-        // Lấy dữ liệu từ clipboard
-        QClipboard *clipboard = QApplication::clipboard();
-        QString data = clipboard->text();
-        // data = "%1, %2, %3"
-        QStringList list = data.split(", ");
-        // list = ["%1", "%2", "%3"]
-        QString x = list[0];
-        QString y = list[1];
+        pastePointValues(ui->leRealityPoint2X, ui->leRealityPoint2Y, NULL);
 
-        ui->leRealityPoint2X->setText(QString::number(x.toFloat()));
-        ui->leRealityPoint2Y->setText(QString::number(y.toFloat()));
         UpdateRealPositionOfCalibPoints();
     });
 
     connect(ui->tbPasteOffsetPoint, &QPushButton::clicked, [=]()
     { 
-        // Lấy dữ liệu từ clipboard
-        QClipboard *clipboard = QApplication::clipboard();
-        QString data = clipboard->text();
-        // data = "%1, %2, %3"
-        QStringList list = data.split(", ");
-        // list = ["%1", "%2", "%3"]
-        QString x = list[0];
-        QString y = list[1];
-        
-        ui->leCalibOffset_X->setText(QString::number(x.toFloat()));
-        ui->leCalibOffset_Y->setText(QString::number(y.toFloat())); 
+        pastePointValues(ui->leCalibOffset_X, ui->leCalibOffset_Y, NULL);
+
         UpdateRealPositionOfCalibPoints();
     });
 }
@@ -1551,6 +1511,7 @@ void RobotWindow::AddTrackingThread()
 
     connect(tracking, SIGNAL(SendGcodeRequest(QString, QString)), DeviceManagerInstance, SLOT(SendGcode(QString, QString)));
     connect(ImageProcessingThread, SIGNAL(mappedDetectedObjects(QList<ObjectInfo>, QString)), tracking, SLOT(UpdateTrackedObjects(QList<ObjectInfo>, QString)));
+    connect(tracking, SIGNAL(TestPointUpdated(QVector3D)), this, SLOT(UpdateTestPoint(QVector3D)));
 
     trackingThread->start();
 
@@ -1571,7 +1532,7 @@ void RobotWindow::LoadTrackingThread()
 
 void RobotWindow::LoadSettings()
 {
-//    LoadGeneralSettings(setting);
+    LoadGeneralSettings();
 //    LoadJoggingSettings(setting);
 //    Load2DSettings(setting);
 //    Load3DSettings(setting);
@@ -1583,44 +1544,34 @@ void RobotWindow::LoadSettings()
 //    LoadPluginSetting(setting);
 }
 
-void RobotWindow::LoadGeneralSettings(QSettings *setting)
+void RobotWindow::LoadGeneralSettings()
 {
-//    UpdateVariable("X", "0");
-//    UpdateVariable("Y", "0");
-//    UpdateVariable("Z", "0");
-//    UpdateVariable("W", "0");
-//    UpdateVariable("U", "0");
-//    UpdateVariable("V", "0");
-//    UpdateVariable("F", "200");
-//    UpdateVariable("A", "1200");
-//    UpdateVariable("S", "12");
-//    UpdateVariable("E", "12");
-//    UpdateVariable("ConveyorSpeed", "0");
-//    UpdateVariable("ConveyorDirection", "0");
+    QStringList devices = QStringList() << "robot" << "conveyor" << "encoder" << "slider" << "device";
 
-//    UpdateVariable("O0.X", QString::number(NULL_NUMBER));
-//    UpdateVariable("O0.Y", QString::number(NULL_NUMBER));
-//    UpdateVariable("O0.A", QString::number(NULL_NUMBER));
-//    UpdateVariable("O0.W", QString::number(NULL_NUMBER));
-//    UpdateVariable("O0.L", QString::number(NULL_NUMBER));
+    for (int i = 0; i < devices.count(); i++)
+    {
+        QString device = devices.at(i);
+        
+        for (int id = 0; id < 20; id++)
+        {
+            QString prefix = ProjectName + "." + device + QString::number(id);
 
-//    QString comName = setting->value("ComName", "None").toString();
-//    int defaultBaudrate = setting->value("DefaultBaudrate", 115200).toInt();
-//    QString ip = setting->value("IP").toString();
-//    int port = setting->value("TCPPort").toInt();
-//    bool state = setting->value("RobotState", false).toBool();
+            if (VariableManager::instance().containsSubKey(prefix))
+            {
+                QString comName = VariableManager::instance().getVar(prefix + ".COM.Name", "NONE").toString();
+                QString state = VariableManager::instance().getVar(prefix + ".COM.State", false).toString();
 
-//    if (state == true)
-//    {
-
-//    }
-
-//    ui->lbComName->setText(comName);
-//    ui->lbBaudrate->setText(QString::number(defaultBaudrate));
-//    ui->cbRobotModel->setCurrentText(setting->value("RobotModel").toString());
-
-//    GcodeScripts.at(ui->cbProgramThreadID->currentIndex())->ProjectName = ProjectName;
-
+                if (state == "open" && comName != "NONE")
+                {
+                    emit ChangeDeviceState(i, true, comName);
+                }
+            }
+            else
+            {
+                break;
+            }
+        }
+    }
 }
 
 void RobotWindow::LoadJoggingSettings(QSettings *setting)
@@ -1737,28 +1688,39 @@ void RobotWindow::LoadObjectDetectorSetting()
     UpdateRealPositionOfCalibPoints();
 
     //------------
-//    setting->beginGroup("ObjectDetector");
 
-//    if (setting->value("WarpEnable", false).toBool() == true)
-//    {
-//        ui->pbWarpTool->clicked(true);
-//        ui->pbWarpTool->setChecked(true);
-//    }
-//    else
-//    {
-//        ui->pbWarpTool->clicked(false);
-//        ui->pbWarpTool->setChecked(false);
-//    }
+    if (VariableManager::instance().getVar(prefix + "WarpEnable", false).toBool() == true)
+    {
+        ui->pbWarpTool->setChecked(true);
+        ui->pbWarpTool->click();
+    }
+    else
+    {
+        ui->pbWarpTool->setChecked(false);
+        ui->pbWarpTool->click();
+    }
 
-//    ui->cbSourceForImageProvider->setCurrentText(setting->value("ImageSource", ui->cbSourceForImageProvider->currentText()).toString());
+    if (VariableManager::instance().getVar(prefix + "CropEnable", false).toBool() == true)
+    {
+        ui->pbCropTool->setChecked(true);
+        ui->pbCropTool->click();
+    }
+    else
+    {
+        ui->pbCropTool->setChecked(false);
+        ui->pbCropTool->click();
+    }
 
+    ui->cbSourceForImageProvider->setCurrentText(VariableManager::instance().getVar(prefix + "ImageSource", ui->cbSourceForImageProvider->currentText()).toString());
 
-//    ui->leCaptureInterval->setText(setting->value("WebcamInterval", ui->leCaptureInterval->text()).toString());
+    ui->leCaptureInterval->setText(VariableManager::instance().getVar(prefix + "WebcamInterval", ui->leCaptureInterval->text()).toString());
 
     ui->leImageWidth->setText(VariableManager::instance().getVar(prefix + "ResizeWidth", ui->leImageWidth->text()).toString());
     ui->leImageHeight->setText(VariableManager::instance().getVar(prefix + "ResizeHeight", ui->leImageHeight->text()).toString());
 
     emit GotResizePara(cv::Size(ui->leImageWidth->text().toInt(), ui->leImageHeight->text().toInt()));
+
+
 
 //    Object& obj = ImageProcessingThread->GetNode("GetObjectsNode")->GetInputObject();
 
@@ -1800,10 +1762,10 @@ void RobotWindow::LoadObjectDetectorSetting()
 //    ui->leRealityPoint2X->setText(QString::number(calibPoint2.x()));
 //    ui->leRealityPoint2Y->setText(QString::number(calibPoint2.y()));
 
-//    ui->cbDetectingAlgorithm->setCurrentText(setting->value("Algorithm", ui->cbDetectingAlgorithm->currentText()).toString());
+    ui->cbDetectingAlgorithm->setCurrentText(VariableManager::instance().getVariable(prefix + "DetectAlgorithm", ui->cbDetectingAlgorithm->currentText()).toString());
 
 //    ui->lePythonUrl->setText(setting->value("ExternalScriptUrl", ui->lePythonUrl->text()).toString());
-//    ui->cbImageSource->setCurrentText(setting->value("TransmissionImageSource", ui->cbImageSource->currentText()).toString());
+    ui->cbImageSource->setCurrentText(VariableManager::instance().getVariable(prefix + "ImageSource", ui->cbImageSource->currentText()).toString());
 
 //    ui->leEdgeThreshold->setText(setting->value("EdgeThreshold", ui->leEdgeThreshold->text()).toString());
 //    ui->leCenterThreshold->setText(setting->value("CenterThreshold", ui->leCenterThreshold->text()).toString());
@@ -2068,6 +2030,8 @@ void RobotWindow::GetDeviceInfo(QString json)
     UpdateVariable(device + QString::number(id) + "." + "COM.Name", com_name);
     UpdateVariable(device + QString::number(id) + "." + "COM.State", state);
 
+    QString prefix = ProjectName + "." + device + QString::number(id) + ".";
+
     if (device == "robot" && id == ui->cbSelectedRobot->currentIndex())
     {
         float x = jsonObject.value("x").toDouble();
@@ -2104,7 +2068,8 @@ void RobotWindow::GetDeviceInfo(QString json)
 
         ui->lbComName->setText(jsonObject.value("com_name").toString());
 
-
+//        VariableManager::instance().updateVar(prefix + "Port", com_name);
+//        VariableManager::instance().updateVar(prefix + "State", state);
     }
 
     else if (device == "device" && id == getIDfromName(ui->cbSelectedDevice->currentText()))
@@ -2170,10 +2135,6 @@ void RobotWindow::GetDeviceResponse(QString idName, QString response)
     {
         if (response.contains("P"))
         {
-//            static QTime previousConveyorUITime;
-//            if (previousConveyorUITime.msecsTo(QTime::currentTime()) < 500)
-//                return;
-
             int id = response.mid(1,1).toInt();
             float value = response.mid(3).toFloat();
 
@@ -2278,6 +2239,9 @@ void RobotWindow::SelectImageProviderOption(int option)
     ui->fWebcamSource->setHidden(false);
 
     QString text = ui->cbSourceForImageProvider->itemText(option);
+
+    QString prefix = ProjectName + "." + ui->cbSelectedDetecting->currentText() + ".";
+    VariableManager::instance().updateVar(prefix + "ImageSource",text);
 
     if (text == "Webcam")
     {
@@ -3474,6 +3438,9 @@ void RobotWindow::SelectObjectDetectingAlgorithm(int algorithm)
     QString text = ui->cbDetectingAlgorithm->itemText(algorithm);
     disconnect(ImageProcessingThread->GetNode("CropImageNode"), SIGNAL(HadOutput(cv::Mat)), ConnectionManager, SLOT(sendImageToImageClients(cv::Mat)));
 
+    QString prefix = ProjectName + "." + ui->cbSelectedDetecting->currentText() + ".";
+    VariableManager::instance().updateVar(prefix + "DetectAlgorithm",text);
+
     if (text == "Find Blobs")
     {
         ui->fBlobPanel->setHidden(false);
@@ -3491,8 +3458,8 @@ void RobotWindow::SelectObjectDetectingAlgorithm(int algorithm)
 
 void RobotWindow::ConfigChessboard()
 {
-    if (ui->pbAreaTool->isChecked() == true)
-        ui->pbAreaTool->click();
+    if (ui->pbCropTool->isChecked() == true)
+        ui->pbCropTool->click();
     if (ui->pbWarpTool->isChecked() == true)
         ui->pbWarpTool->click();
 
@@ -3650,6 +3617,10 @@ void RobotWindow::GetMappingPointFromImage(QPointF point)
     UpdateVariable("#Test_Point.Y", realPoint.y());
 
     ui->gvImageViewer->SetMappingPointTitle(QString("X=%1,Y=%2").arg(realPoint.x()).arg(realPoint.y()));
+
+    QString text = QString("%1, %2, %3").arg(QString::number(realPoint.x())).arg(QString::number(realPoint.y())).arg(QString::number(0));
+    QClipboard *clipboard = QApplication::clipboard();
+    clipboard->setText(text);
 }
 
 void RobotWindow::GetNewImageSize()
@@ -3719,6 +3690,11 @@ void RobotWindow::UpdateObjectsToImageViewer(QList<Object> objects)
 
 void RobotWindow::EditImage(bool isWarp, bool isCropTool)
 {
+    QString prefix = ProjectName + "." + ui->cbSelectedDetecting->currentText() + ".";
+
+    VariableManager::instance().updateVar(prefix + "WarpEnable", isWarp);
+    VariableManager::instance().updateVar(prefix + "CropEnable", isCropTool);
+
     TaskNode* cropImageNode = ImageProcessingThread->GetNode("CropImageNode");
     TaskNode* warpImageNode = ImageProcessingThread->GetNode("WarpImageNode");
 
@@ -4189,6 +4165,19 @@ void RobotWindow::CalculateVector()
     ui->leVectorX->setText(QString::number(CalVector.x()));
     ui->leVectorY->setText(QString::number(CalVector.y()));
     ui->leVectorZ->setText(QString::number(CalVector.z()));
+}
+
+void RobotWindow::UpdateTestPoint(QVector3D testPoint)
+{
+    if (ui->tbAutoMove->isChecked() == false)
+        return;
+
+    QVector3D currentTestPoint(ui->leTestTrackingPointX->text().toFloat(), ui->leTestTrackingPointY->text().toFloat(), ui->leTestTrackingPointZ->text().toFloat());
+    currentTestPoint += testPoint;
+
+    ui->leTestTrackingPointX->setText(QString::number(currentTestPoint.x()));
+    ui->leTestTrackingPointY->setText(QString::number(currentTestPoint.y()));
+    ui->leTestTrackingPointZ->setText(QString::number(currentTestPoint.z()));
 }
 
 void RobotWindow::ProcessProximitySensorValue(int value)
@@ -4665,6 +4654,33 @@ void RobotWindow::loadImages(const QString &dirPath, QListWidget *lwImageList)
 void RobotWindow::onImageItemClicked(QListWidgetItem *item)
 {
     QString imagePath = item->data(Qt::UserRole).toString();
+}
+
+void RobotWindow::pastePointValues(QLineEdit *leX, QLineEdit *leY, QLineEdit *leZ)
+{
+    QClipboard *clipboard = QApplication::clipboard();
+    QString data = clipboard->text();
+    // data = "%1, %2, %3"
+    QStringList list = data.split(", ");
+
+    if (list.count() == 2 || leZ == NULL )
+    {
+        QString x = list[0];
+        QString y = list[1];
+
+        leX->setText(QString::number(x.toFloat()));
+        leY->setText(QString::number(y.toFloat()));
+    }
+    else if (list.count() == 3 && leZ != NULL)
+    {
+        QString x = list[0];
+        QString y = list[1];
+        QString z = list[2];
+
+        leX->setText(QString::number(x.toFloat()));
+        leY->setText(QString::number(y.toFloat()));
+        leZ->setText(QString::number(z.toFloat()));
+    }
 }
 
 void RobotWindow::sendGcode(QString prefix, QString para1, QString para2)

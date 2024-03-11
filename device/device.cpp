@@ -19,7 +19,7 @@ Device::~Device()
         if (serialPort->isOpen())
             serialPort->close();
 
-        delete serialPort;
+    delete serialPort;
 }
 
 void Device::SetSerialPortName(QString name)

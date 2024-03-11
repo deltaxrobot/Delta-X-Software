@@ -1575,7 +1575,7 @@ QString GcodeScript::getValueAsString(QString name)
         }
     }
 
-    if (VariableManager::instance().contains(fullName) == true)
+    if (VariableManager::instance().containsFullKey(fullName) == true)
     {
         QVariant var = VariableManager::instance().getVar(fullName);
         emit CatchVariable2(name, var);

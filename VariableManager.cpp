@@ -73,11 +73,25 @@ void VariableManager::removeVar(const QString &key)
     }
 }
 
-bool VariableManager::contains(const QString &key)
+bool VariableManager::containsSubKey(const QString &key)
 {
     const QString fullKey = getFullKey(key);
     std::lock_guard<std::mutex> lock(dataMutex);
-    return (dataMap.find(fullKey) != dataMap.end());
+    for (auto it = dataMap.begin(); it != dataMap.end(); ++it)
+    {
+        if (it.key().startsWith(fullKey))
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool VariableManager::containsFullKey(const QString &key)
+{
+    const QString fullKey = getFullKey(key);
+    std::lock_guard<std::mutex> lock(dataMutex);
+     return (dataMap.find(fullKey) != dataMap.end());
 }
 
 void VariableManager::saveToQSettings()

@@ -441,6 +441,12 @@ void TaskNode::doResizeWork()
     if (inputMat.empty())
         return;
 
+    if (IsPass == true)
+    {
+        emit HadOutput(inputMat);
+        return;
+    }
+
     if (size != cv::Size(0, 0))
     {
         size.height = size.width * ((float)inputMat.rows / inputMat.cols);

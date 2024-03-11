@@ -26,8 +26,8 @@ public:
 
     int columnCount(const QModelIndex &parent = QModelIndex()) const override {
         Q_UNUSED(parent)
-        // Có 9 cột: id, type, X, Y, Z, width, height, angle, isPicked
-        return 9;
+        // Có 10 cột: id, type, X, Y, Z, width, height, angle, isPicked, offset
+        return 10;
     }
 
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override {
@@ -46,6 +46,7 @@ public:
             case 6: return info.height;
             case 7: return info.angle;
             case 8: return info.isPicked;
+            case 9: return info.offset;
             default: return QVariant();
         }
     }
@@ -64,6 +65,7 @@ public:
             case 6: return QStringLiteral("Height");
             case 7: return QStringLiteral("Angle");
             case 8: return QStringLiteral("Is Picked");
+            case 9: return QStringLiteral("Offset");
             default: return QVariant();
         }
     }

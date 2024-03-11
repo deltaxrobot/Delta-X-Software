@@ -31,7 +31,8 @@ public:
     QVariant getVar(const QString &key, QVariant defaultValue = NULL);
 
     void removeVar(const QString &key);
-    bool contains(const QString &key);
+    bool containsSubKey(const QString &key);
+    bool containsFullKey(const QString &key);
 
     // Save all variables to QSettings explicitly
     void saveToQSettings();

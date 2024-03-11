@@ -13,6 +13,7 @@
 #include <QDateTime>
 #include <VariableManager.h>
 #include <ObjectInfo.h>
+#include <QList>
 
 class VirtualEncoder : public QObject {
     Q_OBJECT
@@ -46,16 +47,18 @@ public:
     void UpdateTrackedObjectsPosition(float moved);
 
     QList<ObjectInfo> TrackedObjects;
-    QList<ObjectInfo> DetectedObjects;
 
     float displacement = 0;
-    float SimilarityThreshold =20;
+    float SimilarityThreshold = 20;
     float IoUThreshold = 0.7;
     float DistanceThreshold = 3;
     int nextID = 0;
 
     QVector3D VelocityVector = QVector3D(100, 0, 0);
     QString VectorName = "#Vector1";
+
+    QVector3D TestPointOffset = QVector3D(0, 0, 0);
+    bool IsUpateTestPoint = false;
 
     QString EncoderName = "encoder0";
     QString EncoderType = "X Encoder";
@@ -74,6 +77,7 @@ public:
 
 signals:
     void DistanceMoved(QPointF offset);
+    void TestPointUpdated(QVector3D testPointOffset);
     void SendGcodeRequest(QString deviceName, QString gcode);
 
 public slots:
@@ -86,6 +90,7 @@ public slots:
     void SaveDetectPosition();
 
     void UpdateTrackedObjects(QList<ObjectInfo> detectedObjects, QString objectListName);
+    void UpdateTrackedObjectOffsets(QVector3D offset);
 
     void updatePositions(double displacement);
     void ClearTrackedObjects();
@@ -100,6 +105,7 @@ private:
     float detectPosition = 0;
     float currentPosition = 0;
     bool first = true;
+    QList<int> updatedObjectIDList;
 
 };
 

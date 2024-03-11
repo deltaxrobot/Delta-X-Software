@@ -41,10 +41,10 @@ void Tracking::OnReceivceEncoderPosition(float value)
     {
         detectPosition = currentPosition;
         ReadPurpose = "Update";
-        UpdateTrackedObjects(DetectedObjects, ListName);
+        UpdateTrackedObjectOffsets(calculateMoved(detectPosition - capturePosition));
     }
+
     updatePositions(currentPosition - lastPosition);
-//    UpdateTrackedObjectsPosition(currentPosition - lastPosition);
 }
 
 void Tracking::ChangeObjectInfo(QString cmd)
@@ -106,12 +106,7 @@ void Tracking::UpdateTrackedObjects(QList<ObjectInfo> detectedObjects, QString o
     if (objectNameList != ListName)
         return;
 
-    if (ReadPurpose == "Detect")
-    {
-        // Copy detected objects vào DetectedObjects theo cách để dữ liệu không bị mất đi khi kết thúc hàm
-        DetectedObjects = detectedObjects;
-        return;
-    }
+    updatedObjectIDList.clear();
 
     for (auto& detected : detectedObjects) {
         bool isSame = false;
@@ -128,6 +123,7 @@ void Tracking::UpdateTrackedObjects(QList<ObjectInfo> detectedObjects, QString o
 
         // This is a new object
         TrackedObjects.append(ObjectInfo(nextID, 0, detected.center, detected.width, detected.height, detected.angle));
+        updatedObjectIDList.append(nextID);
 
         VariableManager::instance().updateVar((ListName + ".%1.X").arg(nextID), detected.center.x());
         VariableManager::instance().updateVar((ListName + ".%1.Y").arg(nextID), detected.center.y());
@@ -142,10 +138,41 @@ void Tracking::UpdateTrackedObjects(QList<ObjectInfo> detectedObjects, QString o
         VariableManager::instance().updateVar(ListName + ".Count", nextID);
 
     }
+
+    SaveDetectPosition();
+}
+
+void Tracking::UpdateTrackedObjectOffsets(QVector3D offset)
+{
+
+    for (int i = 0; i < updatedObjectIDList.count(); i++)
+    {
+        for (auto it = TrackedObjects.begin(); it != TrackedObjects.end(); )
+        {
+            if (updatedObjectIDList.at(i) == it->id)
+            {
+                it->offset = offset;
+                it->center += offset;
+
+                VariableManager::instance().updateVar((ListName + ".%1.Offset").arg(it->id), it->offset);
+
+                VariableManager::instance().updateVar((ListName + ".%1.X").arg(it->id), it->center.x());
+                VariableManager::instance().updateVar((ListName + ".%1.Y").arg(it->id), it->center.y());
+
+                continue;
+            }
+        }
+    }
 }
 
 void Tracking::updatePositions(double displacement) {
     QVector3D effectiveDisplacement = calculateMoved(displacement);
+
+    if (IsUpateTestPoint)
+    {
+        TestPointOffset = effectiveDisplacement;
+        emit TestPointUpdated(TestPointOffset);
+    }
 
     for (auto it = TrackedObjects.begin(); it != TrackedObjects.end(); ) {
         if (!it->isPicked) {

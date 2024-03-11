@@ -14,6 +14,12 @@
         "xlocnum": "cpp",
         "xloctime": "cpp",
         "format": "cpp",
-        "complex": "cpp"
+        "complex": "cpp",
+        "array": "cpp",
+        "deque": "cpp",
+        "map": "cpp",
+        "unordered_map": "cpp",
+        "vector": "cpp",
+        "xstring": "cpp"
     }
 }
