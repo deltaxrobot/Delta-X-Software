@@ -110,6 +110,8 @@ signals:
     void HadOutput(QPixmap pixmap);
     void HadOutput(QPixmap pixmap, QList<Object> objects);
     void HadOutput(QList<Object> objects);
+    void HadOutput(QList<QSharedPointer<Object>> objects);
+    void HadOutput(QList<QPolygonF> polys);
     void HadOutput(QList<ObjectInfo*> objects);
     void HadOutput(QMatrix matrix);
     void DebugEvent();
@@ -136,6 +138,8 @@ private:
     QRectF inputRect;
 
     QList<Object> outputObjects;
+    QList<QSharedPointer<Object>> sharedObjects;
+    QList<QPolygonF> outputPolys;
     QList<int> intParas;
     int intPara;
     float floatPara;

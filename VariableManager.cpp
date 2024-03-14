@@ -8,9 +8,7 @@ VariableManager &VariableManager::instance()
 
 void VariableManager::addItemModel(QStandardItemModel *model)
 {
-    model->setHorizontalHeaderLabels(QStringList() << "Name" << "Value");
-    connect(&instance(), SIGNAL(varUpdated(QString, QVariant)), this, SLOT(UpdateVarToModel(QString, QVariant)));
-    connect(&instance(), SIGNAL(varAdded(QString, QVariant)), this, SLOT(UpdateVarToModel(QString, QVariant)));
+    model->setHorizontalHeaderLabels(QStringList() << "Name" << "Value");    
     itemModelList.append(model);
 }
 
@@ -108,6 +106,9 @@ void VariableManager::saveToQSettings()
 
 void VariableManager::loadFromQSettings()
 {
+    connect(&instance(), SIGNAL(varUpdated(QString, QVariant)), this, SLOT(UpdateVarToModel(QString, QVariant)));
+    connect(&instance(), SIGNAL(varAdded(QString, QVariant)), this, SLOT(UpdateVarToModel(QString, QVariant)));
+
     std::lock_guard<std::mutex> lock(dataMutex);
     QStringList keys = settings.allKeys();
     for(const QString& key : keys)

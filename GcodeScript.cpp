@@ -415,20 +415,29 @@ bool GcodeScript::findExeGcodeAndTransmit()
                 {
                     if (rightExpression[0] == '#')
                     {
-                        QRegularExpression regex("#(\\w+)\\.Map\\(([^)]+)\\)");
-                        QRegularExpressionMatch match = regex.match(rightExpression);
+                        QString matrix;
+                        QString point;
 
-                        if (match.hasMatch()) {
-                            QString matrixName = match.captured(1);
-                            QString pointName = match.captured(2);
+                        int mapIndex = rightExpression.indexOf(".Map(");
+                        int pointIndex = rightExpression.indexOf('(', mapIndex);
+                        int pointIndex2 = rightExpression.indexOf(')', pointIndex);
+
+                        if (pointIndex != -1)
+                        {
+                            matrix = rightExpression.mid(0, mapIndex);
+                            point = rightExpression.mid(pointIndex + 1, pointIndex2 - pointIndex - 1);
+                        }
+
+                        if (matrix != "" && point != "")
+                        {
+                            QString matrixName = matrix;
+                            QString pointName = point;
                             QStringList paras = pointName.split(',');
                             QVariant matrixVar = getValueAsQVariant(matrixName);
                             QPointF point;
 
                             if (pointName[0] == '#')
                             {
-//                                point.setX(getVariable(pointName + ".X").toFloat());
-//                                point.setY(getVariable(pointName + ".Y").toFloat());
                                 if (pointName.contains("."))
                                 {
                                     bool result;
@@ -458,9 +467,6 @@ bool GcodeScript::findExeGcodeAndTransmit()
 
                                 QString varName = valuePairs.at(i).mid(1);
                                 saveVariable(varName, point);
-//                                saveVariable(varName + ".X", QString::number(point.x()));
-//                                saveVariable(varName + ".Y", QString::number(point.y()));
-
 
                                 gcodeOrder++;
                                 return false;
@@ -488,14 +494,34 @@ bool GcodeScript::findExeGcodeAndTransmit()
                         int objLength = getValueAsQVariant(objName + ".Count").toInt();
                         int index = 0;
 
+                        bool isXdirection = false;
+
+                        if (ref.contains("X_MIN") && ref.contains("X_MAX"))
+                        {
+                            isXdirection = true;
+                        }
+
                         for (int i = 0; i < objLength; i++)
                         {
                             float x = getValueAsQVariant(objName + "." + QString::number(i) + ".X").toFloat();
                             float y = getValueAsQVariant(objName + "." + QString::number(i) + ".Y").toFloat();
 
-                            if (pair1.at(0) == "X_MIN")
+                            if (isXdirection == true)
                             {
                                 if (x > min && x < max)
+                                {
+                                    QString name = avaible_list + '.' + QString::number(index);
+                                    bool isPicked = getValueAsQVariant(objName + "." + QString::number(i) + ".IsPicked").toBool();
+
+                                    saveVariable(name + ".X", x);
+                                    saveVariable(name + ".Y", y);
+                                    saveVariable(name + ".IsPicked", isPicked);
+                                    index++;
+                                }
+                            }
+                            else
+                            {
+                                if (y > min && y < max)
                                 {
                                     QString name = avaible_list + '.' + QString::number(index);
                                     bool isPicked = getValueAsQVariant(objName + "." + QString::number(i) + ".IsPicked").toBool();
@@ -955,6 +981,7 @@ bool GcodeScript::handleVARIABLE(QList<QString> valuePairs, int i)
     trimmedStr = trimmedStr.replace(" ", "");
     QRegExp rx("\\((-?\\d+(?:\\.\\d+)?),(-?\\d+(?:\\.\\d+)?),?(-?\\d+(?:\\.\\d+)?)?\\)");
 
+    // TODO: chưa gán 2 point với nhau được
     if (rx.indexIn(trimmedStr) != -1)
     {
         QString x = rx.cap(1);

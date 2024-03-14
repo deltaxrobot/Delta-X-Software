@@ -36,7 +36,11 @@ void Conveyor::ProcessResponse(QString idName, QString response)
     if (response.contains("P"))
     {
         int id = response.mid(1,1).toInt() - 1;
+        if (id < 0)
+            id = 0;
         float value = response.mid(3).toFloat();
+
+        Position = value;
 
         emit GotEncoderPosition(id, value);
     }

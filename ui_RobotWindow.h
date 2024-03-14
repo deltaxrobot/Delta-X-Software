@@ -269,6 +269,7 @@ public:
     QLineEdit *leIoUThreshold;
     QLabel *label_46;
     QLineEdit *leDistanceThreshold;
+    QLabel *label_48;
     QFrame *fBlobPanel;
     QGridLayout *gridLayout_14;
     QLineEdit *leLRec;
@@ -3342,6 +3343,11 @@ public:
 
         horizontalLayout_26->addWidget(leDistanceThreshold);
 
+        label_48 = new QLabel(frame_13);
+        label_48->setObjectName(QString::fromUtf8("label_48"));
+
+        horizontalLayout_26->addWidget(label_48);
+
 
         verticalLayout_31->addWidget(frame_13);
 
@@ -3922,7 +3928,7 @@ public:
         saPointTool->setWidgetResizable(true);
         wPointTool = new QWidget();
         wPointTool->setObjectName(QString::fromUtf8("wPointTool"));
-        wPointTool->setGeometry(QRect(0, -566, 643, 1900));
+        wPointTool->setGeometry(QRect(0, 0, 643, 1900));
         wPointTool->setMinimumSize(QSize(0, 1900));
         wPointTool->setStyleSheet(QString::fromUtf8("QWidget#wPointTool\n"
 "{	\n"
@@ -9338,7 +9344,7 @@ public:
 
         twDeltaManager->setCurrentIndex(0);
         pbReadI0_3->setDefault(false);
-        twModule->setCurrentIndex(2);
+        twModule->setCurrentIndex(0);
         pbImageMapping->setDefault(false);
         cbImageSource->setCurrentIndex(0);
         cbSendingImageMethod->setCurrentIndex(0);
@@ -9674,9 +9680,10 @@ public:
         cbDetectingAlgorithm->setItemText(2, QCoreApplication::translate("RobotWindow", "External Script", nullptr));
 
         label_45->setText(QCoreApplication::translate("RobotWindow", "IoU Threshold", nullptr));
-        leIoUThreshold->setText(QCoreApplication::translate("RobotWindow", "20", nullptr));
+        leIoUThreshold->setText(QCoreApplication::translate("RobotWindow", "0.7", nullptr));
         label_46->setText(QCoreApplication::translate("RobotWindow", "Distance Threshold", nullptr));
-        leDistanceThreshold->setText(QCoreApplication::translate("RobotWindow", "20", nullptr));
+        leDistanceThreshold->setText(QCoreApplication::translate("RobotWindow", "3", nullptr));
+        label_48->setText(QCoreApplication::translate("RobotWindow", "mm", nullptr));
         leLRec->setText(QCoreApplication::translate("RobotWindow", "50", nullptr));
         leMaxLRec->setText(QCoreApplication::translate("RobotWindow", "1.5", nullptr));
         leWRec->setText(QCoreApplication::translate("RobotWindow", "30", nullptr));
@@ -9754,7 +9761,7 @@ public:
         label_170->setText(QCoreApplication::translate("RobotWindow", "(mm)", nullptr));
         label_157->setText(QCoreApplication::translate("RobotWindow", "Max Y", nullptr));
         leLimitMaxX->setText(QCoreApplication::translate("RobotWindow", "1200", nullptr));
-        leLimitMaxY->setText(QCoreApplication::translate("RobotWindow", "400", nullptr));
+        leLimitMaxY->setText(QCoreApplication::translate("RobotWindow", "1200", nullptr));
         label_196->setText(QCoreApplication::translate("RobotWindow", "Object List", nullptr));
         leLimitMinY->setText(QCoreApplication::translate("RobotWindow", "-400", nullptr));
         label_171->setText(QCoreApplication::translate("RobotWindow", "(mm)", nullptr));
@@ -9874,7 +9881,7 @@ public:
         label_233->setText(QCoreApplication::translate("RobotWindow", "Point 2", nullptr));
         gbCameraObject_4->setTitle(QCoreApplication::translate("RobotWindow", "Test", nullptr));
         label_223->setText(QCoreApplication::translate("RobotWindow", "multiply", nullptr));
-        leTestMatrixName->setText(QCoreApplication::translate("RobotWindow", "#MappingMatrix1", nullptr));
+        leTestMatrixName->setText(QCoreApplication::translate("RobotWindow", "#tracking0.MappingMatrix1", nullptr));
         label_214->setText(QCoreApplication::translate("RobotWindow", "Y", nullptr));
         label_215->setText(QCoreApplication::translate("RobotWindow", "Point", nullptr));
         pbCalculateTestPoint->setText(QCoreApplication::translate("RobotWindow", "Calculate", nullptr));
@@ -9978,6 +9985,7 @@ public:
         cbRobotModel->setItemText(2, QCoreApplication::translate("RobotWindow", "Delta X S", nullptr));
         cbRobotModel->setItemText(3, QCoreApplication::translate("RobotWindow", "Custom", nullptr));
 
+        cbRobotModel->setCurrentText(QCoreApplication::translate("RobotWindow", "Delta X 1", nullptr));
         groupBox_4->setTitle(QCoreApplication::translate("RobotWindow", "DOF", nullptr));
         cbRobotDOF->setItemText(0, QCoreApplication::translate("RobotWindow", "3 DOF", nullptr));
         cbRobotDOF->setItemText(1, QCoreApplication::translate("RobotWindow", "4 DOF", nullptr));
@@ -10404,12 +10412,12 @@ public:
         leEncoderCurrentPosition->setText(QCoreApplication::translate("RobotWindow", "100", nullptr));
         pbSetEncoderInterval->setText(QCoreApplication::translate("RobotWindow", "Set", nullptr));
         label_129->setText(QCoreApplication::translate("RobotWindow", "Velocity (mm/s)", nullptr));
-        leEncoderInterval->setText(QCoreApplication::translate("RobotWindow", "1000", nullptr));
+        leEncoderInterval->setText(QCoreApplication::translate("RobotWindow", "100", nullptr));
         label_125->setText(QCoreApplication::translate("RobotWindow", "Timer (ms)", nullptr));
         pbResetEncoder->setText(QCoreApplication::translate("RobotWindow", "Reset", nullptr));
         pbSetEncoderVelocity->setText(QCoreApplication::translate("RobotWindow", "Set", nullptr));
         label_130->setText(QCoreApplication::translate("RobotWindow", "Current Position (mm)", nullptr));
-        leEncoderVelocity->setText(QCoreApplication::translate("RobotWindow", "100", nullptr));
+        leEncoderVelocity->setText(QCoreApplication::translate("RobotWindow", "0", nullptr));
         pbReadEncoder->setText(QCoreApplication::translate("RobotWindow", "Read", nullptr));
         cbConveyorLinkToEncoder->setItemText(0, QCoreApplication::translate("RobotWindow", "conveyor0", nullptr));
         cbConveyorLinkToEncoder->setItemText(1, QCoreApplication::translate("RobotWindow", "conveyor1", nullptr));

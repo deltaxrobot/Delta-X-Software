@@ -15,11 +15,11 @@ Device::Device(QString COM, int baudrate, QString confirm_cmd, QString rev_msg, 
 
 Device::~Device()
 {
-    if (serialPort != NULL)
-        if (serialPort->isOpen())
-            serialPort->close();
+//    if (serialPort != NULL)
+//        if (serialPort.isOpen())
+//            serialPort.close();
 
-    delete serialPort;
+//    delete serialPort;
 }
 
 void Device::SetSerialPortName(QString name)
@@ -29,7 +29,7 @@ void Device::SetSerialPortName(QString name)
 
 void Device::Connect()
 {
-    if (serialPort->isOpen())
+    if (serialPort.isOpen())
         return;
 
     if (serialPortName.toLower() == "auto" && confirmRequest != "")
@@ -38,22 +38,22 @@ void Device::Connect()
 
         for (int i = 0; i < availablePorts.size(); ++i)
         {
-            serialPort->setPortName(availablePorts.at(i).portName());
-            serialPort->setBaudRate(baudrate);
+            serialPort.setPortName(availablePorts.at(i).portName());
+            serialPort.setBaudRate(baudrate);
 
-            if (serialPort->open(QIODevice::ReadWrite)) {
+            if (serialPort.open(QIODevice::ReadWrite)) {
                 int counter = 0;
                 for (int j = 0; j < 10; j++)
                 {
                     QThread::msleep(50);
-                    serialPort->blockSignals(true);
-                    serialPort->write((confirmRequest + "\n").toLocal8Bit());
-                    serialPort->waitForReadyRead(50);
-                    QString response = QString(serialPort->readLine());
+                    serialPort.blockSignals(true);
+                    serialPort.write((confirmRequest + "\n").toLocal8Bit());
+                    serialPort.waitForReadyRead(50);
+                    QString response = QString(serialPort.readLine());
                     if (response.indexOf(confirmResponse) > -1) {
                         qDebug() << availablePorts.at(i).portName() << "is connected";
-                        readDataConnection = connect(serialPort, SIGNAL(readyRead()), this, SLOT(ReadData()));                        
-                        serialPort->blockSignals(false);
+                        readDataConnection = connect(&serialPort, SIGNAL(readyRead()), this, SLOT(ReadData()));
+                        serialPort.blockSignals(false);
                         break;
                     }
                     else {
@@ -63,11 +63,11 @@ void Device::Connect()
 
                 if (counter == 10)
                 {
-                    serialPort->close();
+                    serialPort.close();
                 }
                 else
                 {
-                    serialPort->readAll();
+                    serialPort.readAll();
                 }
             }
         }
@@ -75,13 +75,13 @@ void Device::Connect()
 
     if (serialPortName.toLower() != "auto")
     {
-        serialPort->setPortName(serialPortName);
-        serialPort->setBaudRate(baudrate);
+        serialPort.setPortName(serialPortName);
+        serialPort.setBaudRate(baudrate);
 
-        if (serialPort->open(QIODevice::ReadWrite))
+        if (serialPort.open(QIODevice::ReadWrite))
         {
             qDebug() << serialPortName << "is connected";
-            readDataConnection = connect(serialPort, SIGNAL(readyRead()), this, SLOT(ReadData()));
+            readDataConnection = connect(&serialPort, SIGNAL(readyRead()), this, SLOT(ReadData()));
         }
         else
         {
@@ -90,9 +90,9 @@ void Device::Connect()
     }
 
     jsonObject["id"] = ID();
-    jsonObject["state"] = (serialPort->isOpen())?"open":"close";
-    jsonObject["com_name"] = serialPort->portName();
-    jsonObject["baudrate"] = serialPort->baudRate();
+    jsonObject["state"] = (serialPort.isOpen())?"open":"close";
+    jsonObject["com_name"] = serialPort.portName();
+    jsonObject["baudrate"] = serialPort.baudRate();
 
     QJsonDocument jsonDocument;
     jsonDocument.setObject(jsonObject);
@@ -103,9 +103,9 @@ void Device::Connect()
 
 void Device::Disconnect()
 {
-    if (serialPort->isOpen())
+    if (serialPort.isOpen())
     {
-        serialPort->close();
+        serialPort.close();
         jsonObject["state"] = "close";
 
         QJsonDocument jsonDocument;
@@ -125,8 +125,8 @@ QString Device::GetResponse(int timeout_ms) {
     QElapsedTimer timer;
     timer.start();
     while (timer.elapsed() < timeout_ms) {
-        serialPort->waitForReadyRead(1);
-        if (serialPort->canReadLine() == true) {
+        serialPort.waitForReadyRead(1);
+        if (serialPort.canReadLine() == true) {
             break;
         }
     }
@@ -141,20 +141,20 @@ void Device::WriteData(QString data)
 
 //    qDebug() << "Write time:" << DebugTimer.elapsed();
 //    qDebug() << data;
-    if (this->serialPort->isOpen())
-        this->serialPort->write(data.toLocal8Bit());
+    if (this->serialPort.isOpen())
+        this->serialPort.write(data.toLocal8Bit());
 }
 
 void Device::ReadData()
 {
-    if (serialPort->canReadLine())
+    if (serialPort.canReadLine())
     {
         ReadLine();
     }
 }
 
 QString Device::ReadLine(){
-    QString data = QString(serialPort->readLine());
+    QString data = QString(serialPort.readLine());
 
     data.replace("\n", "").replace("\r", "");
 //    qDebug() << "Start:" << DebugTimer.restart();
@@ -174,7 +174,7 @@ int Device::GetSerialPortBaudrate()
 
 bool Device::IsOpen()
 {
-    return serialPort->isOpen();
+    return serialPort.isOpen();
 }
 
 int Device::ID()
@@ -191,28 +191,12 @@ void Device::SetIDName(QString idName)
 
 QSerialPort *Device::GetPort()
 {
-    return serialPort;
-}
-
-void Device::SetPortInstance(QSerialPort *port)
-{
-    serialPort = port;
-
-    jsonObject["id"] = ID();
-    jsonObject["state"] = (serialPort->isOpen())?"open":"close";
-    jsonObject["com_name"] = serialPort->portName();
-    jsonObject["baudrate"] = serialPort->baudRate();
-
-    QJsonDocument jsonDocument;
-    jsonDocument.setObject(jsonObject);
-    QString jsonString = jsonDocument.toJson(QJsonDocument::Indented);
-    emit infoReady(jsonString);
+    return &serialPort;
 }
 
 void Device::Run()
 {
     qDebug() << "Device run";
-    serialPort = new QSerialPort();
 
     feedback  = "";
 }

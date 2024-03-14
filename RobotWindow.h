@@ -239,6 +239,8 @@ public:
 
     QStackedWidget* SubWindowStackedWidget;
 
+    QTime performanceTimer;
+
     // ----- Data ----
     QString copiedRobotPos[6];
     QMap<QString, QString> ParseNames;
@@ -274,7 +276,7 @@ public slots:
     void ImportGcodeFilesFromComputer();
 
 	void ExecuteSelectPrograms();
-    void ExecuteCurrentLine();
+    void ExecuteCurrentLine(int, QString);
     void HighLineCurrentLine(int pos);
 
     void RunSmartEditor();
@@ -406,7 +408,9 @@ public slots:
     void GetNewImageSize();
 
     void UnselectToolButtons();
-    void UpdateObjectsToImageViewer(QList<Object> objects);
+//    void UpdateObjectsToImageViewer(QList<Object> objects);
+//    void UpdateObjectsToImageViewer(QList<QSharedPointer<Object>>);
+//    void UpdateObjectsToImageViewer(QList<QPolygonF> polys);
 //    void UpdateObjectsToVariableTable(QList<Object*>* objects);
     void EditImage(bool isWarp, bool isCropTool);
 
@@ -464,6 +468,9 @@ signals:
     void Send(int device, QString msg);
     void ScanAndConnectRobot();
     void DisconnectRobot();
+
+protected:
+    void paintEvent(QPaintEvent *event) override;
 
 private:
     // ----- Check Performence ----
@@ -534,6 +541,7 @@ private:
 
     // ---- Last Values ----
     float encoderLastValue = 0;
+    QElapsedTimer encoderUpdateTimer;
 
 public:
     Ui::RobotWindow *ui;

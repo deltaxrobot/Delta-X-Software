@@ -794,7 +794,7 @@ QToolBox QScrollArea&gt;QWidget&gt;QWidget
               <enum>QTabWidget::Rounded</enum>
              </property>
              <property name="currentIndex">
-              <number>2</number>
+              <number>0</number>
              </property>
              <property name="usesScrollButtons">
               <bool>true</bool>
@@ -4460,7 +4460,7 @@ QFrame
                                    </size>
                                   </property>
                                   <property name="text">
-                                   <string>20</string>
+                                   <string>0.7</string>
                                   </property>
                                  </widget>
                                 </item>
@@ -4492,7 +4492,14 @@ QFrame
                                    </size>
                                   </property>
                                   <property name="text">
-                                   <string>20</string>
+                                   <string>3</string>
+                                  </property>
+                                 </widget>
+                                </item>
+                                <item>
+                                 <widget class="QLabel" name="label_48">
+                                  <property name="text">
+                                   <string>mm</string>
                                   </property>
                                  </widget>
                                 </item>
@@ -5517,7 +5524,7 @@ QFrame
                                <item row="2" column="6">
                                 <widget class="QLineEdit" name="leLimitMaxY">
                                  <property name="text">
-                                  <string>400</string>
+                                  <string>1200</string>
                                  </property>
                                 </widget>
                                </item>
@@ -5604,7 +5611,7 @@ QFrame
                   <property name="geometry">
                    <rect>
                     <x>0</x>
-                    <y>-566</y>
+                    <y>0</y>
                     <width>643</width>
                     <height>1900</height>
                    </rect>
@@ -7161,7 +7168,7 @@ padding: 5px;</string>
                                </size>
                               </property>
                               <property name="text">
-                               <string>#MappingMatrix1</string>
+                               <string>#tracking0.MappingMatrix1</string>
                               </property>
                              </widget>
                             </item>
@@ -9772,6 +9779,9 @@ QGroupBox
                                 <width>80</width>
                                 <height>0</height>
                                </size>
+                              </property>
+                              <property name="currentText">
+                               <string>Delta X 1</string>
                               </property>
                               <item>
                                <property name="text">
@@ -15668,7 +15678,7 @@ QGroupBox
                           </sizepolicy>
                          </property>
                          <property name="text">
-                          <string>1000</string>
+                          <string>100</string>
                          </property>
                         </widget>
                        </item>
@@ -15721,7 +15731,7 @@ QGroupBox
                           </sizepolicy>
                          </property>
                          <property name="text">
-                          <string>100</string>
+                          <string>0</string>
                          </property>
                         </widget>
                        </item>

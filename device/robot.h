@@ -23,6 +23,7 @@ public:
     QString SetInput(int pin);
     void SetOutput(int pin, bool state);
     void MovePoint(QVector3D point);
+    void SetRobotModel(QString robot);
 
     float X,Y,Z,W,U,V,F,S,E,A,J,O;
 
@@ -53,6 +54,8 @@ private:
     float old_X, old_Y, old_Z;
     QTimer* timer;
     bool isSyncDelay = false;
+
+    QString robotModel = "Delta X 2";
 
     void saveParaVar();
     bool getPara(QString gcode);

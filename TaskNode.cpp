@@ -740,6 +740,8 @@ void TaskNode::doGetObjectsWork()
         return;
 
     outputObjects.clear();
+    sharedObjects.clear();
+    outputPolys.clear();
 
     std::vector<std::vector<cv::Point> > contoursContainer;
     findContours(inputMat, contoursContainer, cv::RETR_LIST, cv::CHAIN_APPROX_SIMPLE);
@@ -757,10 +759,14 @@ void TaskNode::doGetObjectsWork()
         {
             Object obPointer(rectObject);
             outputObjects.append(obPointer);
+            sharedObjects.append(QSharedPointer<Object>::create(rectObject));
+            outputPolys.append(obPointer.ToPolygon());
         }
     }
 
     emit HadOutput(outputObjects);
+    emit HadOutput(sharedObjects);
+    emit HadOutput(outputPolys);
 }
 
 void TaskNode::doVisibleObjectsWork()

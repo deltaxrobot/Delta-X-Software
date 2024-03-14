@@ -45,6 +45,12 @@ void Tracking::OnReceivceEncoderPosition(float value)
     }
 
     updatePositions(currentPosition - lastPosition);
+
+    if (clientWaiting == true)
+    {
+        emit UpdateTrackingDone();
+        clientWaiting = false;
+    }
 }
 
 void Tracking::ChangeObjectInfo(QString cmd)
@@ -106,6 +112,10 @@ void Tracking::UpdateTrackedObjects(QList<ObjectInfo> detectedObjects, QString o
     if (objectNameList != ListName)
         return;
 
+    DetectedObjects = detectedObjects;
+    SaveDetectPosition();
+    return;
+
     updatedObjectIDList.clear();
 
     for (auto& detected : detectedObjects) {
@@ -144,24 +154,58 @@ void Tracking::UpdateTrackedObjects(QList<ObjectInfo> detectedObjects, QString o
 
 void Tracking::UpdateTrackedObjectOffsets(QVector3D offset)
 {
+//    for (int i = 0; i < updatedObjectIDList.count(); i++)
+//    {
+//        for (auto it = TrackedObjects.begin(); it != TrackedObjects.end(); )
+//        {
+//            // FIXME: loi bo nho
 
-    for (int i = 0; i < updatedObjectIDList.count(); i++)
-    {
-        for (auto it = TrackedObjects.begin(); it != TrackedObjects.end(); )
-        {
-            if (updatedObjectIDList.at(i) == it->id)
-            {
-                it->offset = offset;
-                it->center += offset;
+//            if (updatedObjectIDList.at(i) == it->id)
+//            {
+//                it->offset = offset;
+//                it->center += offset;
 
-                VariableManager::instance().updateVar((ListName + ".%1.Offset").arg(it->id), it->offset);
+//                VariableManager::instance().updateVar((ListName + ".%1.Offset").arg(it->id), it->offset);
 
-                VariableManager::instance().updateVar((ListName + ".%1.X").arg(it->id), it->center.x());
-                VariableManager::instance().updateVar((ListName + ".%1.Y").arg(it->id), it->center.y());
+//                VariableManager::instance().updateVar((ListName + ".%1.X").arg(it->id), it->center.x());
+//                VariableManager::instance().updateVar((ListName + ".%1.Y").arg(it->id), it->center.y());
 
-                continue;
-            }
+//                break;
+//            }
+
+//        }
+//    }
+    for (auto& detected : DetectedObjects) {
+        bool isSame = false;
+
+        detected.center += offset;
+        detected.offset = offset;
+
+        for (auto& tracked : TrackedObjects) {
+            isSame = isSameObject(detected, tracked);
+
+            if (isSame == true)
+                break;
         }
+
+        if (isSame == true)
+            continue;
+
+        // This is a new object
+        TrackedObjects.append(ObjectInfo(nextID, 0, detected.center, detected.width, detected.height, detected.angle));
+
+        VariableManager::instance().updateVar((ListName + ".%1.X").arg(nextID), detected.center.x());
+        VariableManager::instance().updateVar((ListName + ".%1.Y").arg(nextID), detected.center.y());
+        VariableManager::instance().updateVar((ListName + ".%1.Z").arg(nextID), detected.center.z());
+        VariableManager::instance().updateVar((ListName + ".%1.W").arg(nextID), detected.width);
+        VariableManager::instance().updateVar((ListName + ".%1.L").arg(nextID), detected.height);
+        VariableManager::instance().updateVar((ListName + ".%1.A").arg(nextID), detected.angle);
+        VariableManager::instance().updateVar((ListName + ".%1.IsPicked").arg(nextID), detected.isPicked);
+
+        ++nextID;
+
+        VariableManager::instance().updateVar(ListName + ".Count", nextID);
+
     }
 }
 
@@ -305,6 +349,7 @@ void TrackingManager::SaveDetectPosition(int id)
 void TrackingManager::UpdateTracking(int id)
 {
     currentTrackingRequest = id;
+    Trackings.at(id)->clientWaiting = true;
     QMetaObject::invokeMethod(Trackings.at(id), "ReadEncoder", Qt::QueuedConnection);
 }
 
@@ -384,7 +429,7 @@ void TrackingManager::AddObject(QString listName, QList<QStringList> list)
     {
         if (Trackings.at(i)->ListName == listName)
         {
-//            QMetaObject::invokeMethod(Trackings.at(i), "UpdateTrackedObjects", Qt::QueuedConnection, Q_ARG(QList<ObjectInfo>, objectList), Q_ARG(QString, listName));
+            QMetaObject::invokeMethod(Trackings.at(i), "UpdateTrackedObjects", Qt::QueuedConnection, Q_ARG(QList<ObjectInfo>, objectList), Q_ARG(QString, listName));
         }
     }
 }
@@ -406,7 +451,8 @@ void TrackingManager::SetEncoderPosition(int id, float value)
     {
         if (Trackings.at(i)->EncoderName.mid(7).toInt() == id)
         {
-            QMetaObject::invokeMethod(Trackings.at(i), "OnReceivceEncoderPosition", Qt::QueuedConnection, Q_ARG(float, value));
+//            QMetaObject::invokeMethod(Trackings.at(i), "OnReceivceEncoderPosition", Qt::QueuedConnection, Q_ARG(float, value));
+            Trackings.at(i)->OnReceivceEncoderPosition(value);
         }
     }
 }
@@ -433,13 +479,21 @@ void VirtualEncoder::setVelocity(float newVelocity) {
     velocity = newVelocity;
 }
 
+void VirtualEncoder::setPosition(float newPos)
+{
+    currentPosition = newPos;
+}
+
 void VirtualEncoder::stop() {
     timer.stop();
+    isRun = false;
 }
 
 void VirtualEncoder::start(int interval) {
     lastUpdateTime = QDateTime::currentMSecsSinceEpoch();
-    timer.start(interval);
+    timer.setInterval(interval);
+    timer.start();
+    isRun = true;
 }
 
 void VirtualEncoder::reset()
@@ -469,4 +523,14 @@ float VirtualEncoder::readPosition() {
     currentPosition += velocity * (deltaTime / 1000.0);
 
     return currentPosition;
+}
+
+int VirtualEncoder::readInterval()
+{
+    return timer.interval();
+}
+
+bool VirtualEncoder::IsActive()
+{
+    return isRun;
 }

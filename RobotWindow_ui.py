@@ -2298,6 +2298,11 @@ class Ui_RobotWindow(object):
 
         self.horizontalLayout_26.addWidget(self.leDistanceThreshold)
 
+        self.label_48 = QLabel(self.frame_13)
+        self.label_48.setObjectName(u"label_48")
+
+        self.horizontalLayout_26.addWidget(self.label_48)
+
 
         self.verticalLayout_31.addWidget(self.frame_13)
 
@@ -2878,7 +2883,7 @@ class Ui_RobotWindow(object):
         self.saPointTool.setWidgetResizable(True)
         self.wPointTool = QWidget()
         self.wPointTool.setObjectName(u"wPointTool")
-        self.wPointTool.setGeometry(QRect(0, -566, 643, 1900))
+        self.wPointTool.setGeometry(QRect(0, 0, 643, 1900))
         self.wPointTool.setMinimumSize(QSize(0, 1900))
         self.wPointTool.setStyleSheet(u"QWidget#wPointTool\n"
 "{	\n"
@@ -4826,7 +4831,7 @@ class Ui_RobotWindow(object):
         self.scrollArea_2.setWidgetResizable(True)
         self.wgJoggingScrollWidget = QWidget()
         self.wgJoggingScrollWidget.setObjectName(u"wgJoggingScrollWidget")
-        self.wgJoggingScrollWidget.setGeometry(QRect(0, 0, 495, 1500))
+        self.wgJoggingScrollWidget.setGeometry(QRect(0, 0, 509, 1500))
         self.wgJoggingScrollWidget.setMinimumSize(QSize(0, 1500))
         self.wgJoggingScrollWidget.setMaximumSize(QSize(16777215, 16777215))
         self.wgJoggingScrollWidget.setStyleSheet(u"QWidget#wgJoggingScrollWidget\n"
@@ -8294,11 +8299,11 @@ class Ui_RobotWindow(object):
 
         self.twDeltaManager.setCurrentIndex(0)
         self.pbReadI0_3.setDefault(False)
-        self.twModule.setCurrentIndex(2)
+        self.twModule.setCurrentIndex(0)
         self.pbImageMapping.setDefault(False)
         self.cbImageSource.setCurrentIndex(0)
         self.cbSendingImageMethod.setCurrentIndex(0)
-        self.twDevices.setCurrentIndex(0)
+        self.twDevices.setCurrentIndex(2)
         self.pbPump.setDefault(False)
         self.pbLaser.setDefault(False)
         self.pbGrip.setDefault(False)
@@ -8629,9 +8634,10 @@ class Ui_RobotWindow(object):
         self.cbDetectingAlgorithm.setItemText(2, QCoreApplication.translate("RobotWindow", u"External Script", None))
 
         self.label_45.setText(QCoreApplication.translate("RobotWindow", u"IoU Threshold", None))
-        self.leIoUThreshold.setText(QCoreApplication.translate("RobotWindow", u"20", None))
+        self.leIoUThreshold.setText(QCoreApplication.translate("RobotWindow", u"0.7", None))
         self.label_46.setText(QCoreApplication.translate("RobotWindow", u"Distance Threshold", None))
-        self.leDistanceThreshold.setText(QCoreApplication.translate("RobotWindow", u"20", None))
+        self.leDistanceThreshold.setText(QCoreApplication.translate("RobotWindow", u"3", None))
+        self.label_48.setText(QCoreApplication.translate("RobotWindow", u"mm", None))
         self.leLRec.setText(QCoreApplication.translate("RobotWindow", u"50", None))
         self.leMaxLRec.setText(QCoreApplication.translate("RobotWindow", u"1.5", None))
         self.leWRec.setText(QCoreApplication.translate("RobotWindow", u"30", None))
@@ -8709,7 +8715,7 @@ class Ui_RobotWindow(object):
         self.label_170.setText(QCoreApplication.translate("RobotWindow", u"(mm)", None))
         self.label_157.setText(QCoreApplication.translate("RobotWindow", u"Max Y", None))
         self.leLimitMaxX.setText(QCoreApplication.translate("RobotWindow", u"1200", None))
-        self.leLimitMaxY.setText(QCoreApplication.translate("RobotWindow", u"400", None))
+        self.leLimitMaxY.setText(QCoreApplication.translate("RobotWindow", u"1200", None))
         self.label_196.setText(QCoreApplication.translate("RobotWindow", u"Object List", None))
         self.leLimitMinY.setText(QCoreApplication.translate("RobotWindow", u"-400", None))
         self.label_171.setText(QCoreApplication.translate("RobotWindow", u"(mm)", None))
@@ -8829,7 +8835,7 @@ class Ui_RobotWindow(object):
         self.label_233.setText(QCoreApplication.translate("RobotWindow", u"Point 2", None))
         self.gbCameraObject_4.setTitle(QCoreApplication.translate("RobotWindow", u"Test", None))
         self.label_223.setText(QCoreApplication.translate("RobotWindow", u"multiply", None))
-        self.leTestMatrixName.setText(QCoreApplication.translate("RobotWindow", u"#MappingMatrix1", None))
+        self.leTestMatrixName.setText(QCoreApplication.translate("RobotWindow", u"#tracking0.MappingMatrix1", None))
         self.label_214.setText(QCoreApplication.translate("RobotWindow", u"Y", None))
         self.label_215.setText(QCoreApplication.translate("RobotWindow", u"Point", None))
         self.pbCalculateTestPoint.setText(QCoreApplication.translate("RobotWindow", u"Calculate", None))
@@ -8933,6 +8939,7 @@ class Ui_RobotWindow(object):
         self.cbRobotModel.setItemText(2, QCoreApplication.translate("RobotWindow", u"Delta X S", None))
         self.cbRobotModel.setItemText(3, QCoreApplication.translate("RobotWindow", u"Custom", None))
 
+        self.cbRobotModel.setCurrentText(QCoreApplication.translate("RobotWindow", u"Delta X 1", None))
         self.groupBox_4.setTitle(QCoreApplication.translate("RobotWindow", u"DOF", None))
         self.cbRobotDOF.setItemText(0, QCoreApplication.translate("RobotWindow", u"3 DOF", None))
         self.cbRobotDOF.setItemText(1, QCoreApplication.translate("RobotWindow", u"4 DOF", None))
@@ -9359,12 +9366,12 @@ class Ui_RobotWindow(object):
         self.leEncoderCurrentPosition.setText(QCoreApplication.translate("RobotWindow", u"100", None))
         self.pbSetEncoderInterval.setText(QCoreApplication.translate("RobotWindow", u"Set", None))
         self.label_129.setText(QCoreApplication.translate("RobotWindow", u"Velocity (mm/s)", None))
-        self.leEncoderInterval.setText(QCoreApplication.translate("RobotWindow", u"1000", None))
+        self.leEncoderInterval.setText(QCoreApplication.translate("RobotWindow", u"100", None))
         self.label_125.setText(QCoreApplication.translate("RobotWindow", u"Timer (ms)", None))
         self.pbResetEncoder.setText(QCoreApplication.translate("RobotWindow", u"Reset", None))
         self.pbSetEncoderVelocity.setText(QCoreApplication.translate("RobotWindow", u"Set", None))
         self.label_130.setText(QCoreApplication.translate("RobotWindow", u"Current Position (mm)", None))
-        self.leEncoderVelocity.setText(QCoreApplication.translate("RobotWindow", u"100", None))
+        self.leEncoderVelocity.setText(QCoreApplication.translate("RobotWindow", u"0", None))
         self.pbReadEncoder.setText(QCoreApplication.translate("RobotWindow", u"Read", None))
         self.cbConveyorLinkToEncoder.setItemText(0, QCoreApplication.translate("RobotWindow", u"conveyor0", None))
         self.cbConveyorLinkToEncoder.setItemText(1, QCoreApplication.translate("RobotWindow", u"conveyor1", None))

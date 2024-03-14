@@ -22,12 +22,16 @@ private:
     qint64 lastUpdateTime;
     float velocity;  // Đơn vị: mm/giây
     float currentPosition;  // Đơn vị: mm
+    bool isRun = false;
 
 public:
     VirtualEncoder(float initialPosition = 0.0, float velocity = 0.0, QObject* parent = nullptr);
 
     void setVelocity(float newVelocity);
+    void setPosition(float newPos);
     float readPosition();
+    int readInterval();
+    bool IsActive();
 public slots:
     void stop();
     // Phương thức để khởi động lại encoder
@@ -72,13 +76,15 @@ public:
 
     int ID = 0;
     QString ReadPurpose = "Update";
-    float X_max = 1200, X_min = -300, Y_max = 400, Y_min = -400; // Boundary coordinates
+    bool clientWaiting = false;
+    float X_max = 1200, X_min = -300, Y_max = 1200, Y_min = -400; // Boundary coordinates
 
 
 signals:
     void DistanceMoved(QPointF offset);
     void TestPointUpdated(QVector3D testPointOffset);
     void SendGcodeRequest(QString deviceName, QString gcode);
+    void UpdateTrackingDone();
 
 public slots:
     void OnReceivceEncoderPosition(float value);
@@ -106,6 +112,7 @@ private:
     float currentPosition = 0;
     bool first = true;
     QList<int> updatedObjectIDList;
+    QList<ObjectInfo> DetectedObjects;
 
 };
 

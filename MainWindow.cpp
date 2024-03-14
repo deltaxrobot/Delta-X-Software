@@ -14,7 +14,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
 void MainWindow::InitVariables()
 {
-    VariableManager::instance().loadFromQSettings();
 
     QElapsedTimer time;
     qint64 start = time.elapsed();
@@ -62,13 +61,12 @@ void MainWindow::InitVariables()
     teSoftwareLog = ui->teLoggingBox;
 
     //-------- Variable Table -----------
-//    VariableTreeModel.setHorizontalHeaderLabels(QStringList() << "Name" << "Value");
-//    connect(&VariableManager::instance(), SIGNAL(varUpdated(QString, QVariant)), this, SLOT(UpdateVarToTreeView(QString, QVariant)));
-//    connect(&VariableManager::instance(), SIGNAL(varAdded(QString, QVariant)), this, SLOT(UpdateVarToTreeView(QString, QVariant)));
-//    connect(&VariableManager::instance(), SIGNAL(varRemoved(QString)), this, SLOT(RemoveVarFromTreeView(QString)));
 
     ui->tvVariables->setModel(&VariableTreeModel);
     VariableManager::instance().addItemModel(&VariableTreeModel);
+
+
+    VariableManager::instance().loadFromQSettings();
 
     connect(ui->tvVariables, &QTreeView::clicked, this, &MainWindow::onTreeViewItemClicked);
 

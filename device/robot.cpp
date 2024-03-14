@@ -55,7 +55,7 @@ QString Robot::SendGcode(QString gcode, bool is_wait, int time_out)
 
     if (is_wait)
     {
-        serialPort->blockSignals(true);
+        serialPort.blockSignals(true);
         if (isMovingGcode)
         {
             this->calMoveTime();
@@ -64,7 +64,7 @@ QString Robot::SendGcode(QString gcode, bool is_wait, int time_out)
 
         QString response = this->GetResponse(time_out);
         qDebug() << response;
-        serialPort->blockSignals(false);
+        serialPort.blockSignals(false);
         return response;
     }
     else
@@ -324,7 +324,14 @@ QString Robot::syncGcode(QString cmd)
 
         QVector3D newPosition = calculateSyncPosition(QVector3D(old_X, old_Y, old_Z), QVector3D(X, Y, Z), sync_vector);
 
-        return QString("G01 X%1 Y%2 Z%3 W%4 F%5 A%6 S%7 E%8 J%9").arg(newPosition.x()).arg(newPosition.y()).arg(newPosition.z()).arg(W).arg(F).arg(A).arg(S).arg(E).arg(J);
+        if (robotModel == "Delta X S")
+        {
+            return QString("G01 X%1 Y%2 Z%3 W%4 F%5 A%6 S%7 E%8 J%9").arg(newPosition.x()).arg(newPosition.y()).arg(newPosition.z()).arg(W).arg(F).arg(A).arg(S).arg(E).arg(J);
+        }
+        else if (robotModel == "Delta X 2")
+        {
+            return QString("G01 X%1 Y%2 Z%3").arg(newPosition.x()).arg(newPosition.y()).arg(newPosition.z());
+        }
     }
     else if (cmd.contains("G04"))
     {
@@ -352,10 +359,51 @@ QString Robot::syncGcode(QString cmd)
 
 double Robot::calculateMovingTime(double distance)
 {
-    scurve_tool.p_target = distance;
-    scurve_tool.start();
+    if (robotModel == "Delta X S")
+    {
+        scurve_tool.p_target = distance;
+        scurve_tool.start();
 
-    return scurve_tool.t_target;
+        return scurve_tool.t_target;
+    }
+    else if (robotModel == "Delta X 2")
+    {
+        // robot di chuyển theo quy trình tăng tốc từ vận tốc bắt đầu đến vận tốc lớn nhất, chạy một thời gian rồi giảm về vận tốc kết thúc. Tính thời gian di chuyển
+        float t1, t2, t3, t_total;
+        float v_max = F;
+        float a_max = A;
+        float s = distance;
+        float v_start = S;
+        float v_end = E;
+
+        t1 = (v_max - v_start) / a_max;
+        t3 = (v_max - v_end) / a_max;
+        
+        float s1 = (v_max - v_start) / (2 * a_max);
+        float s2 = (v_max - v_end) / (2 * a_max);
+        float s3 = s - s1 - s2;
+        t2 = s3 / v_max;
+
+        t_total = t1 + t2 + t3;
+
+        return t_total;
+    }
+    else
+    {
+        // robot di chuyển theo quy trình tăng tốc từ 0 đến vận tốc lớn nhất, chạy một thời gian rồi giảm về vận tốc 0. Tính thời gian di chuyển
+        float t1, t2, t_total;
+        float v_max = F;
+        float a_max = A;
+        float s = distance;
+
+        t1 = v_max / a_max;
+        t2 = (s - v_max * t1) / v_max;
+
+        t_total = t1 + t2;
+
+        return t_total;
+    }
+    
 }
 
 QVector3D Robot::calculateSyncPosition(QVector3D robotPos, QVector3D objectPos, QVector3D beltVelocity, double tolerance) {
@@ -607,4 +655,9 @@ void Robot::MoveStep(QString direction, float step) {
 void Robot::MovePoint(QVector3D point)
 {
     Move(point.x(), point.y(), point.z());
+}
+
+void Robot::SetRobotModel(QString robot)
+{
+    robotModel = robot;
 }

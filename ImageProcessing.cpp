@@ -51,7 +51,7 @@ TaskNode *ImageProcessing::GetNode(QString name)
 void ImageProcessing::GotVisibleObjects(QList<Object> objects)
 {
     objectInfos.clear();
-    for(Object visibleObject : objects)
+    for(const Object& visibleObject : objects)
     {
         QVector3D position(visibleObject.X.Real, visibleObject.Y.Real, 0);
         objectInfos.append(ObjectInfo(-1, 0, position, visibleObject.Width.Real, visibleObject.Length.Real, visibleObject.Angle.Real));

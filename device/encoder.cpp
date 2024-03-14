@@ -12,7 +12,18 @@ void Encoder::ProcessResponse(QString id, QString response)
 {
     if (response.contains("P"))
     {
-        float value = response.mid(1).toFloat();
+        float value;
+        if (response.contains(":"))
+        {
+            value = response.mid(3).toFloat();
+        }
+        else
+        {
+            value = response.mid(1).toFloat();
+        }
+
+        Position = value;
+
         emit GotPosition(ID(), value);
     }
 }

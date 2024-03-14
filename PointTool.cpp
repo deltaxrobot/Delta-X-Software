@@ -118,3 +118,14 @@ QMatrix PointTool::calculateMatrix(const QPolygonF &sourcePolygon, const QPolygo
 
     return qtMatrix;
 }
+
+QPointF PointTool::GetCenterOfPolygon(const QPolygonF &polygon)
+{
+    QPointF center;
+    for (int i = 0; i < polygon.size(); ++i)
+    {
+        center += polygon[i];
+    }
+    center /= polygon.size();
+    return center;
+}

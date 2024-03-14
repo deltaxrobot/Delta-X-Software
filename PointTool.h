@@ -21,6 +21,7 @@ public:
     static QTransform calculateTransform(const QPointF &P1, const QPointF &P2, const QPointF &P1_prime, const QPointF &P2_prime);
     static QMatrix calculateTransform2(const QPointF &P1, const QPointF &P2, const QPointF &P1_prime, const QPointF &P2_prime);
     static QMatrix calculateMatrix(const QPolygonF &sourcePolygon, const QPolygonF &destPolygon);
+    static QPointF GetCenterOfPolygon(const QPolygonF &polygon);
 };
 
 #endif // POINTTOOL_H

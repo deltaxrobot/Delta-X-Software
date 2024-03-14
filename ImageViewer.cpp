@@ -222,6 +222,25 @@ void ImageViewer::SetQuadrangle(QPolygonF poly)
     SelectQuadrangleTool();
 }
 
+void ImageViewer::DrawObjects(QList<QPolygonF> polygons) {
+    QList<QPolygonF> pls;
+    QMap<QString, QPointF> texts;
+
+    int count = qMin(polygons.size(), 100); // Chỉ xử lý tối đa 100 phần tử
+
+    for(int i = 0; i < count; ++i) {
+        const QPolygonF& poly = polygons[i];
+        pls.append(poly);
+
+        // Tìm tâm của poly
+        QPointF center = PointTool::GetCenterOfPolygon(poly);
+        texts.insert(QString::number(i), QPointF(center.x(), center.y()));
+    }
+
+    DrawPolygons(pls);
+    DrawTexts(texts);
+}
+
 void ImageViewer::DrawRecangles(QList<QRect> rects)
 {
     for(int i = 0; i < rectItems.count(); i++)

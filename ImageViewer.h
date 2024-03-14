@@ -9,6 +9,7 @@
 #include <QSettings>
 #include <UnityTool.h>
 #include <VariableManager.h>
+#include <PointTool.h>
 
 class CustomScene : public QGraphicsScene
 {
@@ -866,6 +867,8 @@ public slots:
     void SetImage(QPixmap pixmap);
 
     void SetQuadrangle(QPolygonF poly);
+
+    void DrawObjects(QList<QPolygonF> polygons);
 
 signals:
 
