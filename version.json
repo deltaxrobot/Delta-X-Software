@@ -1,0 +1,14 @@
+{
+  "latest": "1.2.7",
+  "versions": {
+    "1.2.7": {
+      "url": "https://sourceforge.net/projects/delta-x-software/files/1.2.5/DeltaXSoftware-setup.exe/download"
+    },
+    "1.2.5": {
+      "url": "https://sourceforge.net/projects/delta-x-software/files/1.2.5/DeltaXSoftware-setup.exe/download"
+    },
+    "0.9.5": {
+      "url": "https://example.com/path/to/version/2.0.0.zip"
+    }
+  }
+}
