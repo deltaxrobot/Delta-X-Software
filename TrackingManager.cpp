@@ -4,6 +4,8 @@ Tracking::Tracking(QObject *parent)
     : QObject{parent}
 {
     connect(&VirEncoder, &VirtualEncoder::positionUpdated, this, &Tracking::OnReceivceEncoderPosition);
+
+    connect(this, &Tracking::UpdateVar, &VariableManager::instance(), &VariableManager::updateVar);
 }
 
 void Tracking::UpdateTrackedObjectsPosition(float moved)
@@ -24,6 +26,9 @@ void Tracking::UpdateTrackedObjectsPosition(float moved)
 
 void Tracking::OnReceivceEncoderPosition(float value)
 {
+//    qDebug() << "Response: " << QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss.zzz");
+//    qDebug() << "Encoder: " << value;
+
     if (IsReverse == true)
     {
         value = value * - 1;
@@ -107,74 +112,20 @@ void Tracking::SaveDetectPosition()
     ReadEncoder();
 }
 
-void Tracking::UpdateTrackedObjects(QList<ObjectInfo> detectedObjects, QString objectNameList) {
+void Tracking::UpdateTrackedObjects(QVector<ObjectInfo> detectedObjects, QString objectNameList) {
 
     if (objectNameList != ListName)
         return;
 
     DetectedObjects = detectedObjects;
     SaveDetectPosition();
-    return;
+//    qDebug() << "Detect: " << QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss.zzz");
 
-    updatedObjectIDList.clear();
-
-    for (auto& detected : detectedObjects) {
-        bool isSame = false;
-
-        for (auto& tracked : TrackedObjects) {
-            isSame = isSameObject(detected, tracked);
-
-            if (isSame == true)
-                break;
-        }
-
-        if (isSame == true)
-            continue;
-
-        // This is a new object
-        TrackedObjects.append(ObjectInfo(nextID, 0, detected.center, detected.width, detected.height, detected.angle));
-        updatedObjectIDList.append(nextID);
-
-        VariableManager::instance().updateVar((ListName + ".%1.X").arg(nextID), detected.center.x());
-        VariableManager::instance().updateVar((ListName + ".%1.Y").arg(nextID), detected.center.y());
-        VariableManager::instance().updateVar((ListName + ".%1.Z").arg(nextID), detected.center.z());
-        VariableManager::instance().updateVar((ListName + ".%1.W").arg(nextID), detected.width);
-        VariableManager::instance().updateVar((ListName + ".%1.L").arg(nextID), detected.height);
-        VariableManager::instance().updateVar((ListName + ".%1.A").arg(nextID), detected.angle);
-        VariableManager::instance().updateVar((ListName + ".%1.IsPicked").arg(nextID), detected.isPicked);
-
-        ++nextID;
-
-        VariableManager::instance().updateVar(ListName + ".Count", nextID);
-
-    }
-
-    SaveDetectPosition();
 }
 
 void Tracking::UpdateTrackedObjectOffsets(QVector3D offset)
 {
-//    for (int i = 0; i < updatedObjectIDList.count(); i++)
-//    {
-//        for (auto it = TrackedObjects.begin(); it != TrackedObjects.end(); )
-//        {
-//            // FIXME: loi bo nho
 
-//            if (updatedObjectIDList.at(i) == it->id)
-//            {
-//                it->offset = offset;
-//                it->center += offset;
-
-//                VariableManager::instance().updateVar((ListName + ".%1.Offset").arg(it->id), it->offset);
-
-//                VariableManager::instance().updateVar((ListName + ".%1.X").arg(it->id), it->center.x());
-//                VariableManager::instance().updateVar((ListName + ".%1.Y").arg(it->id), it->center.y());
-
-//                break;
-//            }
-
-//        }
-//    }
     for (auto& detected : DetectedObjects) {
         bool isSame = false;
 
@@ -192,20 +143,61 @@ void Tracking::UpdateTrackedObjectOffsets(QVector3D offset)
             continue;
 
         // This is a new object
-        TrackedObjects.append(ObjectInfo(nextID, 0, detected.center, detected.width, detected.height, detected.angle));
+        TrackedObjects.append(ObjectInfo(nextID, detected.type, detected.center, detected.width, detected.height, detected.angle));
 
-        VariableManager::instance().updateVar((ListName + ".%1.X").arg(nextID), detected.center.x());
-        VariableManager::instance().updateVar((ListName + ".%1.Y").arg(nextID), detected.center.y());
-        VariableManager::instance().updateVar((ListName + ".%1.Z").arg(nextID), detected.center.z());
-        VariableManager::instance().updateVar((ListName + ".%1.W").arg(nextID), detected.width);
-        VariableManager::instance().updateVar((ListName + ".%1.L").arg(nextID), detected.height);
-        VariableManager::instance().updateVar((ListName + ".%1.A").arg(nextID), detected.angle);
-        VariableManager::instance().updateVar((ListName + ".%1.IsPicked").arg(nextID), detected.isPicked);
+        //TODO: tim cach cap nhat vao bien nhung van dam bao toc do
+//        VariableManager::instance().updateVar((ListName + ".%1.X").arg(nextID), detected.center.x());
+//        VariableManager::instance().updateVar((ListName + ".%1.Y").arg(nextID), detected.center.y());
+//        VariableManager::instance().updateVar((ListName + ".%1.Z").arg(nextID), detected.center.z());
+//        VariableManager::instance().updateVar((ListName + ".%1.W").arg(nextID), detected.width);
+//        VariableManager::instance().updateVar((ListName + ".%1.L").arg(nextID), detected.height);
+//        VariableManager::instance().updateVar((ListName + ".%1.A").arg(nextID), detected.angle);
+//        VariableManager::instance().updateVar((ListName + ".%1.IsPicked").arg(nextID), detected.isPicked);
+//        VariableManager::instance().updateVar((ListName + ".%1.Offset").arg(nextID), detected.offset);
+
+//        emit UpdateVar((ListName + ".%1.X").arg(nextID), detected.center.x());
+//        emit UpdateVar((ListName + ".%1.Y").arg(nextID), detected.center.y());
+//        emit UpdateVar((ListName + ".%1.Z").arg(nextID), detected.center.z());
+//        emit UpdateVar((ListName + ".%1.W").arg(nextID), detected.width);
+//        emit UpdateVar((ListName + ".%1.L").arg(nextID), detected.height);
+//        emit UpdateVar((ListName + ".%1.A").arg(nextID), detected.angle);
+//        emit UpdateVar((ListName + ".%1.IsPicked").arg(nextID), detected.isPicked);
+//        emit UpdateVar((ListName + ".%1.Offset").arg(nextID), detected.offset);
 
         ++nextID;
 
         VariableManager::instance().updateVar(ListName + ".Count", nextID);
 
+    }
+
+}
+
+void Tracking::GetObjectsInArea(QString inAreaListName, float min, float max, bool isXdirection)
+{
+    int index = 0;
+    for (auto& tracked : TrackedObjects)
+    {
+        if (isXdirection == true)
+        {
+            if (tracked.center.x() < min || tracked.center.x() > max)
+                continue;
+        }
+        else
+        {
+            if (tracked.center.y() < min || tracked.center.y() > max)
+                continue;
+        }
+
+        if (tracked.isPicked == true)
+            continue;
+
+        QString name = inAreaListName + '.' + QString::number(index);
+
+        VariableManager::instance().updateVar(name + ".X", tracked.center.x());
+        VariableManager::instance().updateVar(name + ".Y", tracked.center.y());
+        VariableManager::instance().updateVar(name + ".IsPicked", tracked.isPicked);
+        VariableManager::instance().updateVar(inAreaListName + ".Count", index + 1);
+        index++;
     }
 }
 
@@ -218,37 +210,55 @@ void Tracking::updatePositions(double displacement) {
         emit TestPointUpdated(TestPointOffset);
     }
 
-    for (auto it = TrackedObjects.begin(); it != TrackedObjects.end(); ) {
-        if (!it->isPicked) {
-            it->center += effectiveDisplacement;
+    TrackedObjects.erase(std::remove_if(TrackedObjects.begin(), TrackedObjects.end(),
+        [&](auto& obj) {
+            if (!obj.isPicked) {
+                obj.center += effectiveDisplacement;
 
-            VariableManager::instance().updateVar((ListName + ".%1.X").arg(it->id), it->center.x());
-            VariableManager::instance().updateVar((ListName + ".%1.Y").arg(it->id), it->center.y());
+//                QString xVarName = ListName + "." + QString::number(obj.id) + ".X";
+//                QString yVarName = ListName + "." + QString::number(obj.id) + ".Y";
 
-        }
+                //TODO: tim cach cap nhat vao bien nhung van dam bao toc do
+//                emit UpdateVar(xVarName, obj.center.x());
+//                emit UpdateVar(yVarName, obj.center.y());
+            }
 
-        // Remove object if it goes out of boundary
-        if (it->center.x() > X_max || it->center.x() < X_min || it->center.y() > Y_max || it->center.y() < Y_min) {
-            it = TrackedObjects.erase(it);
-        } else {
-            ++it;
-        }
-    }
+            return obj.center.x() > X_max || obj.center.x() < X_min || obj.center.y() > Y_max || obj.center.y() < Y_min;
+        }),
+        TrackedObjects.end());
+
+//    for (auto it = TrackedObjects.begin(); it != TrackedObjects.end(); ) {
+//        if (!it->isPicked) {
+//            it->center += effectiveDisplacement;
+
+//            QString xVarName = ListName + "." + QString::number(it->id) + ".X";
+//            QString yVarName = ListName + "." + QString::number(it->id) + ".Y";
+
+//            VariableManager::instance().updateVar(xVarName, it->center.x());
+//            VariableManager::instance().updateVar(yVarName, it->center.y());
+//        }
+
+//        if (it->center.x() > X_max || it->center.x() < X_min || it->center.y() > Y_max || it->center.y() < Y_min) {
+//            it = TrackedObjects.erase(it);
+//        } else {
+//            ++it;
+//        }
+//    }
 }
 
 void Tracking::ClearTrackedObjects()
 {
-    for (int i = 0; i < TrackedObjects.count(); i++)
-    {
-        VariableManager::instance().removeVar((ListName + ".%1.X").arg(TrackedObjects.at(i).id));
-        VariableManager::instance().removeVar((ListName + ".%1.Y").arg(TrackedObjects.at(i).id));
-        VariableManager::instance().removeVar((ListName + ".%1.Z").arg(TrackedObjects.at(i).id));
-        VariableManager::instance().removeVar((ListName + ".%1.W").arg(TrackedObjects.at(i).id));
-        VariableManager::instance().removeVar((ListName + ".%1.L").arg(TrackedObjects.at(i).id));
-        VariableManager::instance().removeVar((ListName + ".%1.A").arg(TrackedObjects.at(i).id));
-        VariableManager::instance().removeVar((ListName + ".%1.IsPicked").arg(TrackedObjects.at(i).id));
-    }
-    VariableManager::instance().setVariable(ListName + ".Count", 0);
+//    for (int i = 0; i < TrackedObjects.count(); i++)
+//    {
+//        VariableManager::instance().removeVar((ListName + ".%1.X").arg(TrackedObjects.at(i).id));
+//        VariableManager::instance().removeVar((ListName + ".%1.Y").arg(TrackedObjects.at(i).id));
+//        VariableManager::instance().removeVar((ListName + ".%1.Z").arg(TrackedObjects.at(i).id));
+//        VariableManager::instance().removeVar((ListName + ".%1.W").arg(TrackedObjects.at(i).id));
+//        VariableManager::instance().removeVar((ListName + ".%1.L").arg(TrackedObjects.at(i).id));
+//        VariableManager::instance().removeVar((ListName + ".%1.A").arg(TrackedObjects.at(i).id));
+//        VariableManager::instance().removeVar((ListName + ".%1.IsPicked").arg(TrackedObjects.at(i).id));
+//    }
+    VariableManager::instance().updateVar(ListName + ".Count", 0);
     TrackedObjects.clear();
     nextID = 0;
 
@@ -315,20 +325,20 @@ bool Tracking::isSameObject(ObjectInfo &object1, ObjectInfo &object2)
 {
     // 1. Kiểm tra IoU
     double iou = calculateIoU(object1, object2);
-    if (iou < IoUThreshold) {
-        return false;
+    if (iou >= IoUThreshold) {
+        return true;
     }
 
     // 2. Kiểm tra khoảng cách
     double distance = object1.center.distanceToPoint(object2.center);
-    if (distance > DistanceThreshold) {
-        return false;
+    if (distance <= DistanceThreshold) {
+        return true;
     }
 
     // 3. Kiểm tra các yếu tố khác (tùy chọn)
     // ...
 
-    return true;
+    return false;
 }
 
 TrackingManager::TrackingManager(QObject *parent)
@@ -353,6 +363,13 @@ void TrackingManager::UpdateTracking(int id)
     QMetaObject::invokeMethod(Trackings.at(id), "ReadEncoder", Qt::QueuedConnection);
 }
 
+void TrackingManager::GetObjectsInArea(int trackingID, QString inAreaListName, float min, float max, bool isXDirection)
+{
+    Trackings.at(trackingID)->GetObjectsInArea(inAreaListName, min, max, isXDirection);
+
+    emit GotResponse(QString("tracking") + QString::number(trackingID), "Done");
+}
+
 void TrackingManager::UpdateVariable(QString cmd)
 {
     QStringList paras1 = cmd.split('=');
@@ -369,7 +386,7 @@ void TrackingManager::UpdateVariable(QString cmd)
 
 void TrackingManager::AddObject(QString listName, QList<QStringList> list)
 {
-    QList<ObjectInfo> objectList;
+    QVector<ObjectInfo> objectList;
     // Duyệt qua từng phần tử của paras
     for (int i = 0; i < list.count(); i++)
     {
@@ -429,7 +446,7 @@ void TrackingManager::AddObject(QString listName, QList<QStringList> list)
     {
         if (Trackings.at(i)->ListName == listName)
         {
-            QMetaObject::invokeMethod(Trackings.at(i), "UpdateTrackedObjects", Qt::QueuedConnection, Q_ARG(QList<ObjectInfo>, objectList), Q_ARG(QString, listName));
+            QMetaObject::invokeMethod(Trackings.at(i), "UpdateTrackedObjects", Qt::QueuedConnection, Q_ARG(QVector<ObjectInfo>, objectList), Q_ARG(QString, listName));
         }
     }
 }

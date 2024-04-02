@@ -25,7 +25,7 @@ public:
     void MovePoint(QVector3D point);
     void SetRobotModel(QString robot);
 
-    float X,Y,Z,W,U,V,F,S,E,A,J,O;
+    float X,Y,Z,W,U,V,F,S,E,A,J;
 
 signals:
     void Log(QString device, QString msg, int direction);

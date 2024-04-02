@@ -46,14 +46,20 @@ public:
     QString ObjectsName = "#Objects";
 
 public slots:
-    void GotVisibleObjects(QList<Object> objects);
+    void GotVisibleObjects(QVector<Object> objects);
+    void GotImage(cv::Mat mat);
+    void GotResizeValue(cv::Size size);
+    void GotPerspectiveMatrix(cv::Mat matrix);
 
 signals:
-    void mappedDetectedObjects(QList<ObjectInfo> detectedObjects, QString objectListName);
+    void mappedDetectedObjects(QVector<ObjectInfo> detectedObjects, QString objectListName);
 
 private:
     QMap<QString, TaskNode*> taskNodeList;
-    QList<ObjectInfo> objectInfos;
+    QVector<ObjectInfo> objectInfos;
+
+    cv::Size resizeValue;
+    cv::Mat perspectiveMatrix;
 };
 
 #endif

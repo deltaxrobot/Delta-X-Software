@@ -12,10 +12,11 @@
 #include <qmath.h>
 #include "Object.h"
 #include <QMutexLocker>
-#include <VariableManager.h>
 #include <QElapsedTimer>
 #include <QSharedPointer>
 #include <ObjectInfo.h>
+#include <QThread>
+#include <QDateTime>
 
 #define RED_COLOR       cv::Scalar(0, 0, 255)
 #define GREEN_COLOR     cv::Scalar(0, 255, 0)
@@ -81,7 +82,7 @@ public slots:
     void Input(cv::Size size);
     void Input(cv::Mat mat);
     void Input2(cv::Mat mat);
-    void Input(QList<Object> objects);
+    void Input(QVector<Object> objects);
     void Input(QList<int> paras);
     void Input(int para);
     void Input(bool value);
@@ -108,11 +109,11 @@ signals:
     void HadOutput(cv::Point2f outputPoints[]);
     void HadOutput(QPolygonF poly);
     void HadOutput(QPixmap pixmap);
-    void HadOutput(QPixmap pixmap, QList<Object> objects);
-    void HadOutput(QList<Object> objects);
-    void HadOutput(QList<QSharedPointer<Object>> objects);
+    void HadOutput(QPixmap pixmap, QVector<Object> objects);
+    void HadOutput(QVector<Object> objects);
+    void HadOutput(QVector<QSharedPointer<Object>> objects);
     void HadOutput(QList<QPolygonF> polys);
-    void HadOutput(QList<ObjectInfo*> objects);
+    void HadOutput(QVector<ObjectInfo*> objects);
     void HadOutput(QMatrix matrix);
     void DebugEvent();
     void InputRequest();
@@ -128,7 +129,7 @@ private:
     cv::Mat outputMat;
     cv::Mat inputMat;
     cv::Mat inputMat2;
-    QList<Object> inputObjects;
+    QVector<Object> inputObjects;
 
     cv::Point2f inputPoints[4];
     cv::Point2f outputPoints[4];
@@ -137,8 +138,8 @@ private:
     QPolygonF outputPoly;
     QRectF inputRect;
 
-    QList<Object> outputObjects;
-    QList<QSharedPointer<Object>> sharedObjects;
+    QVector<Object> outputObjects;
+    QVector<QSharedPointer<Object>> sharedObjects;
     QList<QPolygonF> outputPolys;
     QList<int> intParas;
     int intPara;
@@ -170,7 +171,7 @@ private:
     void doMappingMatrixWork();
     void doGetObjectsWork();
     void doVisibleObjectsWork();
-    void clear(QList<Object> objs);
+    void clear(QVector<Object> objs);
 };
 
 #endif

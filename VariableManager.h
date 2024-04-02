@@ -10,6 +10,7 @@
 #include <QStandardItemModel>
 #include <QVector3D>
 #include <UnityTool.h>
+#include <ObjectInfo.h>
 
 class VariableManager : public QObject
 {
@@ -23,26 +24,24 @@ public:
     void addVar(const QString &key, const QVariant &value);
 
     // Set variable
-    void setVariable(const QString &key, const QVariant &value);
     void updateVar(const QString &key, const QVariant& value);
 
     // Get variable
-    QVariant getVariable(const QString &key, QVariant defaultValue = NULL);
     QVariant getVar(const QString &key, QVariant defaultValue = NULL);
 
     void removeVar(const QString &key);
     bool containsSubKey(const QString &key);
     bool containsFullKey(const QString &key);
 
-    // Save all variables to QSettings explicitly
     void saveToQSettings();
 
-    // Load all variables from QSettings explicitly
     void loadFromQSettings();
 
     QSettings *getSettings();
 
     QString Prefix = "";
+
+    QHash<QString, QVector<ObjectInfo>*> ObjectInfos;
 
 public slots:
     void UpdateVarToModel(QString key, QVariant value);

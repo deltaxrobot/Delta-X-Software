@@ -4,7 +4,6 @@
 #include <QObject>
 #include "UnityTool.h"
 #include <QMap>
-#include "ScurveInterpolator.h"
 #include <QtMath>
 #include <QMutex>
 #include <QElapsedTimer>
@@ -30,7 +29,6 @@ public:
     };
 
     QString ProjectName = "project0";
-    Scurve_Interpolator DeltaXSMoving;
 
     QString DefaultRobot = "robot0";
     QString DefaultConveyor = "conveyor0";
@@ -69,6 +67,7 @@ signals:
     void ResumeCamera();
 
     void UpdateTrackingRequest(int id);
+    void GetObjectsRequest(int trackingID, QString inAreaListName, float min, float max, bool isXDirection);
     void CaptureAndDetectRequest();
 
     void SendGcodeToDevice(QString deviceName, QString gcode);
@@ -80,6 +79,7 @@ signals:
     void ChangeExternalVariable(QString cmd);
     void AddObject(QString listName, QList<QStringList> list);
 private:
+
     bool isRunning = false;
     QString gcodeScript = "";
     QString programPath = "";

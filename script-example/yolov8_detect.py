@@ -20,14 +20,14 @@ def get_objects(image):
     # View results
     for r in results:
         for box in r.boxes.xywhn:
-            id = 0
+            id = int(r.boxes.cls[0])
             x = int(box[0] * img_width)
             y = int(box[1] * img_height)
             w = int(box[2] * img_width)
             h = int(box[3] * img_height)
             angle = 0
 
-            resultString += str(int(id)) + ',' + str(x) + ',' + str(y)  + ',' + str(w) + ',' + str(h) + ',' + str(angle)  + ";"
+            resultString += str(id) + ',' + str(x) + ',' + str(y)  + ',' + str(w) + ',' + str(h) + ',' + str(angle)  + ";"
        
     # Visualize the results on the frame
     annotated_frame = results[0].plot()

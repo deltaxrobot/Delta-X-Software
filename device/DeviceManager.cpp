@@ -50,10 +50,10 @@ DeviceManager::~DeviceManager()
 
 void DeviceManager::AddRobot(QString address="auto")
 {
-    qDebug() << "Add robot";
+//    qDebug() << "Add robot";
     Robot* robot = new Robot(address, 115200, false);
     robot->ProjectName = ProjectName;
-    robot->SetIDName(QString("robot") + QString::number(SelectedRobotID));
+    robot->SetIDName(QString("robot") + QString::number(Robots.count()));
     Robots.append(robot);
     QThread* robotThread = new QThread(this);
     robot->moveToThread(robotThread);
@@ -67,10 +67,10 @@ void DeviceManager::AddRobot(QString address="auto")
 
 void DeviceManager::AddConveyor(QString address="auto")
 {
-    qDebug() << "Add Conveyor";
+//    qDebug() << "Add Conveyor";
     Conveyor* conveyor = new Conveyor(address, 115200, false);
     conveyor->ProjectName = ProjectName;
-    conveyor->SetIDName(QString("conveyor") + QString::number(SelectedConveyorID));
+    conveyor->SetIDName(QString("conveyor") + QString::number(Conveyors.count()));
     Conveyors.append(conveyor);
     QThread* conveyorThread = new QThread(this);
     conveyor->moveToThread(conveyorThread);
@@ -84,10 +84,10 @@ void DeviceManager::AddConveyor(QString address="auto")
 
 void DeviceManager::AddEncoder(QString address = "auto")
 {
-    qDebug() << "Add Encoder";
+//    qDebug() << "Add Encoder";
     Encoder* encoder = new Encoder(address, 115200, false);
     encoder->ProjectName = ProjectName;
-    encoder->SetIDName(QString("encoder") + QString::number(SelectedEncoderID));
+    encoder->SetIDName(QString("encoder") + QString::number(Encoders.count()));
     Encoders.append(encoder);
     QThread* encoderThread = new QThread(this);
     encoder->moveToThread(encoderThread);
@@ -101,10 +101,10 @@ void DeviceManager::AddEncoder(QString address = "auto")
 
 void DeviceManager::AddSlider(QString address="auto")
 {
-    qDebug() << "Add slider";
+//    qDebug() << "Add slider";
     Slider* slider = new Slider(address, 115200, false);
     slider->ProjectName = ProjectName;
-    slider->SetIDName(QString("slider") + QString::number(SelectedSliderID));
+    slider->SetIDName(QString("slider") + QString::number(Sliders.count()));
     Sliders.append(slider);
     QThread* sliderThread = new QThread(this);
     slider->moveToThread(sliderThread);
@@ -117,7 +117,7 @@ void DeviceManager::AddSlider(QString address="auto")
 
 void DeviceManager::AddDevice(QString address)
 {
-    qDebug() << "Add device";
+//    qDebug() << "Add device";
     Device* device = new Device(address);
     device->ProjectName = ProjectName;
     device->SetIDName(QString("device") + QString::number(SelectedDeviceID));
@@ -132,78 +132,82 @@ void DeviceManager::AddDevice(QString address)
     deviceThread->start();
 }
 
-void DeviceManager::SetDeviceState(int deviceType, bool isOpen, QString address = "auto")
+void DeviceManager::SetDeviceState(QString deviceName, bool isOpen, QString address = "auto")
 {
-    if (deviceType == ROBOT)
+    // deviceName = "robot0", deviceName = "conveyor12"
+    QRegularExpression re("(\\D+)(\\d+)");
+    QRegularExpressionMatch match = re.match(deviceName);
+
+    QString device = match.captured(1);
+    int id = match.captured(2).toInt();
+
+    if (device == "robot")
     {
-        if (SelectedRobotID > Robots.count() - 1)
+        if (id > Robots.count() - 1)
         {
             AddRobot(address);
         }
 
         if (isOpen == true)
-            QMetaObject::invokeMethod(Robots[SelectedRobotID], "Connect", Qt::QueuedConnection);
+            QMetaObject::invokeMethod(Robots[id], "Connect", Qt::QueuedConnection);
         else
-            QMetaObject::invokeMethod(Robots[SelectedRobotID], "Disconnect", Qt::QueuedConnection);
+            QMetaObject::invokeMethod(Robots[id], "Disconnect", Qt::QueuedConnection);
     }
 
-    if (deviceType == SLIDER)
+    if (device == "slider")
     {
-        if (SelectedSliderID > Sliders.count() - 1)
+        if (id > Sliders.count() - 1)
         {
             AddSlider(address);
         }
 
         if (isOpen == true)
-            QMetaObject::invokeMethod(Sliders[SelectedSliderID], "Connect", Qt::QueuedConnection);
+            QMetaObject::invokeMethod(Sliders[id], "Connect", Qt::QueuedConnection);
         else
-            QMetaObject::invokeMethod(Sliders[SelectedSliderID], "Disconnect", Qt::QueuedConnection);
+            QMetaObject::invokeMethod(Sliders[id], "Disconnect", Qt::QueuedConnection);
     }
 
-    if (deviceType == DEVICE)
+    if (device == "conveyor")
     {
-        if (SelectedDeviceID > Devices.count() - 1)
-        {
-            AddDevice(address);
-        }
-
-        if (isOpen == true)
-            QMetaObject::invokeMethod(Devices[SelectedDeviceID], "Connect", Qt::QueuedConnection);
-        else
-            QMetaObject::invokeMethod(Devices[SelectedDeviceID], "Disconnect", Qt::QueuedConnection);
-    }
-
-    if (deviceType == CONVEYOR)
-    {
-        if (SelectedConveyorID > Conveyors.count() - 1)
+        if (id > Conveyors.count() - 1)
         {
             AddConveyor(address);
         }
 
         if (isOpen == true)
-        {
-            Conveyors[SelectedConveyorID]->SetSerialPortName(address);
-            QMetaObject::invokeMethod(Conveyors[SelectedConveyorID], "Connect", Qt::QueuedConnection);
-        }
+            QMetaObject::invokeMethod(Conveyors[id], "Connect", Qt::QueuedConnection);
         else
-            QMetaObject::invokeMethod(Conveyors[SelectedConveyorID], "Disconnect", Qt::QueuedConnection);
+            QMetaObject::invokeMethod(Conveyors[id], "Disconnect", Qt::QueuedConnection);
     }
 
-    if (deviceType == ENCODER)
+    if (device == "device")
     {
-        if (SelectedEncoderID > Encoders.count() - 1)
+        if (id > Devices.count() - 1)
+        {
+            AddDevice(address);
+        }
+
+        if (isOpen == true)
+            QMetaObject::invokeMethod(Devices[id], "Connect", Qt::QueuedConnection);
+        else
+            QMetaObject::invokeMethod(Devices[id], "Disconnect", Qt::QueuedConnection);
+    }
+
+    if (device == "encoder")
+    {
+        if (id > Encoders.count() - 1)
         {
             AddEncoder(address);
         }
 
         if (isOpen == true)
         {
-            Encoders[SelectedEncoderID]->SetSerialPortName(address);
-            QMetaObject::invokeMethod(Encoders[SelectedEncoderID], "Connect", Qt::QueuedConnection);
+            Encoders[id]->SetSerialPortName(address);
+            QMetaObject::invokeMethod(Encoders[id], "Connect", Qt::QueuedConnection);
         }
         else
         {
-            QMetaObject::invokeMethod(Encoders[SelectedEncoderID], "Disconnect", Qt::QueuedConnection);
+            QMetaObject::invokeMethod(Encoders[id], "Disconnect", Qt::QueuedConnection);
         }
     }
 }

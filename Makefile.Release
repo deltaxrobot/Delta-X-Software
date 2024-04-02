@@ -1443,10 +1443,10 @@ release\moc_Authority.cpp: Authority.h \
 		device\conveyor.h \
 		device\encoder.h \
 		device\camera.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDateTime \
 		TrackingManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QLineF \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QVector2D \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDateTime \
 		PointTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPolygonF \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGraphicsView \
@@ -3365,10 +3365,10 @@ release\moc_GcodeScript.cpp: GcodeScript.h \
 		device\conveyor.h \
 		device\encoder.h \
 		device\camera.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDateTime \
 		TrackingManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QLineF \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QVector2D \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDateTime \
 		PointTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPolygonF \
 		release\moc_predefs.h \
@@ -4811,10 +4811,10 @@ release\moc_MainWindow.cpp: MainWindow.h \
 		device\conveyor.h \
 		device\encoder.h \
 		device\camera.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDateTime \
 		TrackingManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QLineF \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QVector2D \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDateTime \
 		PointTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPolygonF \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGraphicsView \
@@ -6344,10 +6344,10 @@ release\moc_ProjectManager.cpp: ProjectManager.h \
 		device\conveyor.h \
 		device\encoder.h \
 		device\camera.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDateTime \
 		TrackingManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QLineF \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QVector2D \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDateTime \
 		PointTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPolygonF \
 		release\moc_predefs.h \
@@ -7089,10 +7089,10 @@ release\moc_RobotWindow.cpp: RobotWindow.h \
 		device\conveyor.h \
 		device\encoder.h \
 		device\camera.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDateTime \
 		TrackingManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QLineF \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QVector2D \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDateTime \
 		PointTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPolygonF \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QMatrix \
@@ -8326,10 +8326,10 @@ release\moc_TabDashboard.cpp: TabDashboard.h \
 		device\conveyor.h \
 		device\encoder.h \
 		device\camera.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDateTime \
 		TrackingManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QLineF \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QVector2D \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDateTime \
 		PointTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPolygonF \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGraphicsView \
@@ -9639,6 +9639,9 @@ release\moc_camera.cpp: device\camera.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\qcameraviewfindersettings.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\qvideoframe.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\qabstractvideobuffer.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDateTime \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qdatetime.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDebug \
 		release\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2015_64\bin\moc.exe
 	C:\Qt\5.15.2\msvc2015_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include "E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware/release/moc_predefs.h" -IC:/Qt/5.15.2/msvc2015_64/mkspecs/win32-msvc -I"E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware" -I"E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware/3rd-party/opencv/build/include" -IC:/Qt/5.15.2/msvc2015_64/include -IC:/Qt/5.15.2/msvc2015_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2015_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2015_64/include/QtSvg -IC:/Qt/5.15.2/msvc2015_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtQuick -IC:/Qt/5.15.2/msvc2015_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2015_64/include/QtGui -IC:/Qt/5.15.2/msvc2015_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2015_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2015_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2015_64/include/QtQml -IC:/Qt/5.15.2/msvc2015_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2015_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" device\camera.h -o release\moc_camera.cpp
@@ -12737,10 +12740,10 @@ release\main.obj: main.cpp RobotWindow.h \
 		device\conveyor.h \
 		device\encoder.h \
 		device\camera.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDateTime \
 		TrackingManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QLineF \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QVector2D \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDateTime \
 		PointTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPolygonF \
 		MainWindow.h \
@@ -13633,10 +13636,10 @@ release\Authority.obj: Authority.cpp Authority.h \
 		device\conveyor.h \
 		device\encoder.h \
 		device\camera.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDateTime \
 		TrackingManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QLineF \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QVector2D \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDateTime \
 		PointTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPolygonF \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGraphicsView
@@ -15547,10 +15550,10 @@ release\GcodeScript.obj: GcodeScript.cpp GcodeScript.h \
 		device\conveyor.h \
 		device\encoder.h \
 		device\camera.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDateTime \
 		TrackingManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QLineF \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QVector2D \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDateTime \
 		PointTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPolygonF \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QMatrix \
@@ -17265,10 +17268,10 @@ release\MainWindow.obj: MainWindow.cpp MainWindow.h \
 		device\conveyor.h \
 		device\encoder.h \
 		device\camera.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDateTime \
 		TrackingManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QLineF \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QVector2D \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDateTime \
 		PointTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPolygonF \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGraphicsView \
@@ -18447,10 +18450,10 @@ release\ProjectManager.obj: ProjectManager.cpp ProjectManager.h \
 		device\conveyor.h \
 		device\encoder.h \
 		device\camera.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDateTime \
 		TrackingManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QLineF \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QVector2D \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDateTime \
 		PointTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPolygonF
 
@@ -19190,10 +19193,10 @@ release\RobotWindow.obj: RobotWindow.cpp RobotWindow.h \
 		device\conveyor.h \
 		device\encoder.h \
 		device\camera.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDateTime \
 		TrackingManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QLineF \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QVector2D \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDateTime \
 		PointTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPolygonF \
 		ui_RobotWindow.h \
@@ -20302,10 +20305,10 @@ release\SoftwareManager.obj: SoftwareManager.cpp SoftwareManager.h \
 		device\conveyor.h \
 		device\encoder.h \
 		device\camera.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDateTime \
 		TrackingManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QLineF \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QVector2D \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDateTime \
 		PointTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPolygonF \
 		MainWindow.h \
@@ -21183,10 +21186,10 @@ release\TabDashboard.obj: TabDashboard.cpp TabDashboard.h \
 		device\conveyor.h \
 		device\encoder.h \
 		device\camera.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDateTime \
 		TrackingManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QLineF \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QVector2D \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDateTime \
 		PointTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPolygonF \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGraphicsView
@@ -23386,10 +23389,10 @@ release\UnityTool.obj: UnityTool.cpp UnityTool.h \
 		device\conveyor.h \
 		device\encoder.h \
 		device\camera.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDateTime \
 		TrackingManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QLineF \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QVector2D \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDateTime \
 		PointTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPolygonF
 
@@ -23778,7 +23781,10 @@ release\camera.obj: device\camera.cpp device\camera.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\qcameraimageprocessing.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\qcameraviewfindersettings.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\qvideoframe.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\qabstractvideobuffer.h
+		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\qabstractvideobuffer.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDateTime \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qdatetime.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDebug
 
 release\conveyor.obj: device\conveyor.cpp device\conveyor.h \
 		device\device.h \

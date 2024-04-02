@@ -3,7 +3,7 @@
 
 #include <QAbstractTableModel>
 #include <QVector3D>
-#include <QList>
+#include <QVector>
 #include <ObjectInfo.h>
 
 class ObjectInfoModel : public QAbstractTableModel {
@@ -13,7 +13,7 @@ public:
     ObjectInfoModel(QObject *parent = nullptr)
         : QAbstractTableModel(parent) {}
 
-    void setObjectInfoList(const QList<ObjectInfo> &objectInfos) {
+    void setObjectInfoList(const QVector<ObjectInfo> &objectInfos) {
         beginResetModel();
         this->objectInfos = objectInfos;
         endResetModel();
@@ -46,7 +46,7 @@ public:
             case 6: return info.height;
             case 7: return info.angle;
             case 8: return info.isPicked;
-            case 9: return info.offset;
+            case 9: return QString("%1, %2").arg(info.offset.x()).arg(info.offset.y());
             default: return QVariant();
         }
     }
@@ -71,7 +71,7 @@ public:
     }
 
 private:
-    QList<ObjectInfo> objectInfos;
+    QVector<ObjectInfo> objectInfos;
 };
 
 

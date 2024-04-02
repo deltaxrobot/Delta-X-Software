@@ -55,6 +55,11 @@ void SocketConnectionManager::newClientConnected() {
 
     connect(clientSocket, &QTcpSocket::readyRead, this, &SocketConnectionManager::readFromClient);
 
+    // Nếu client bị hủy thì xóa nó khỏi danh sách
+    connect(clientSocket, &QTcpSocket::disconnected, [this, clientSocket]() {
+        clients.removeOne(clientSocket);
+    });
+
     // Gửi "deltax\n" cho client
     clientSocket->write("deltax\n");
 }
@@ -65,13 +70,14 @@ void SocketConnectionManager::newWebClientConnected()
     connect(socket, &QTcpSocket::readyRead, [this, socket]() {
         QFile file(indexPath);
         if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-            qDebug() << "Could not open HTML file";
+//            qDebug() << "Could not open HTML file";
             socket->disconnectFromHost();
             return;
         }
 
         QTextStream in(&file);
         QString response = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n" + in.readAll();
+        response.replace("127.0.0.1", hostAddress);
         socket->write(response.toUtf8());
         socket->flush();
         socket->waitForBytesWritten();
@@ -104,6 +110,8 @@ void SocketConnectionManager::readFromClient() {
     if (data.contains("POST"))
     {
         data = body;
+        senderSocket->close();
+        clients.removeOne(senderSocket);
     }
 
     // Handling variable assignment
@@ -141,6 +149,12 @@ void SocketConnectionManager::readFromClient() {
             else if (varName.contains("GScript"))
             {
                 emit gcodeReceived(value);
+            }
+            else if (varName.contains("Event"))
+            {
+                // value = "type,name,action
+                QStringList values = value.split(",");
+                emit eventReceived(values.at(0).trimmed(), values.at(1).trimmed(), values.at(2).trimmed());
             }
             else
             {

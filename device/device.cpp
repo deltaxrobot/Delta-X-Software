@@ -43,8 +43,8 @@ void Device::Connect()
 
             if (serialPort.open(QIODevice::ReadWrite)) {
                 int counter = 0;
-                for (int j = 0; j < 10; j++)
-                {
+//                for (int j = 0; j < 10; j++)
+//                {
                     QThread::msleep(50);
                     serialPort.blockSignals(true);
                     serialPort.write((confirmRequest + "\n").toLocal8Bit());
@@ -56,19 +56,19 @@ void Device::Connect()
                         serialPort.blockSignals(false);
                         break;
                     }
-                    else {
-                        counter++;
-                    }
-                }
+//                    else {
+//                        counter++;
+//                    }
+//                }
 
-                if (counter == 10)
-                {
+//                if (counter == 10)
+//                {
                     serialPort.close();
-                }
-                else
-                {
-                    serialPort.readAll();
-                }
+//                }
+//                else
+//                {
+//                    serialPort.readAll();
+//                }
             }
         }
     }
@@ -80,12 +80,12 @@ void Device::Connect()
 
         if (serialPort.open(QIODevice::ReadWrite))
         {
-            qDebug() << serialPortName << "is connected";
+//            qDebug() << serialPortName << "is connected";
             readDataConnection = connect(&serialPort, SIGNAL(readyRead()), this, SLOT(ReadData()));
         }
         else
         {
-            qDebug() << serialPortName << "is not connected";
+//            qDebug() << serialPortName << "is not connected";
         }
     }
 
@@ -154,11 +154,17 @@ void Device::ReadData()
 }
 
 QString Device::ReadLine(){
-    QString data = QString(serialPort.readLine());
+    QString data = QString(serialPort.readAll());
+    QStringList lines = data.split("\n");
+    foreach(QString line, lines)
+    {
+        line.replace("\n", "").replace("\r", "");
 
-    data.replace("\n", "").replace("\r", "");
-//    qDebug() << "Start:" << DebugTimer.restart();
-    emit receivedMsg(idName, data);
+        if (line == "")
+            continue;
+
+        emit receivedMsg(idName, line);
+    }
     return data;
 }
 
@@ -187,6 +193,7 @@ int Device::ID()
 void Device::SetIDName(QString idName)
 {
     this->idName = idName;
+    jsonObject["id"] = ID();
 }
 
 QSerialPort *Device::GetPort()
@@ -196,7 +203,7 @@ QSerialPort *Device::GetPort()
 
 void Device::Run()
 {
-    qDebug() << "Device run";
+//    qDebug() << "Device run";
 
     feedback  = "";
 }

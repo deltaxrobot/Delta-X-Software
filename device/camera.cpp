@@ -37,6 +37,7 @@ void Camera::GetImageFromExternal(cv::Mat mat)
 void Camera::GeneralCapture()
 {
     emit StartedCapture(trackingThreadId);
+//    qDebug() << "Capture: " << QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss.zzz");
 
     if (Source == "Webcam")
     {

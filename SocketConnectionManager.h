@@ -48,6 +48,7 @@ signals:
     void objectUpdated(QString listName, QList<QStringList> list);
     void blobUpdated(QStringList blobs);
     void gcodeReceived(QString gcode);
+    void eventReceived(QString type, QString name, QString action);
 };
 
 #endif // SOCKETCONNECTIONMANAGER_H

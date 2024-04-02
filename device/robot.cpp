@@ -2,7 +2,7 @@
 
 Robot::Robot(QString COM, int baudrate, bool is_open, QObject *parent) : Device(COM, baudrate, "IsDelta", "YesDelta", is_open, parent)
 {
-    qDebug() << "Robot init";
+//    qDebug() << "Robot init";
     connect(this, SIGNAL(receivedMsg(QString, QString)), this, SLOT(ProcessResponse(QString, QString)));
     this->scurve_tool = Scurve_Interpolator();
 
@@ -17,7 +17,6 @@ Robot::Robot(QString COM, int baudrate, bool is_open, QObject *parent) : Device(
     S = 30;
     E = 40;
     J = 255000;
-    O = 0;
 
     done_msg = "Ok";
 
@@ -63,7 +62,7 @@ QString Robot::SendGcode(QString gcode, bool is_wait, int time_out)
         }
 
         QString response = this->GetResponse(time_out);
-        qDebug() << response;
+//        qDebug() << response;
         serialPort.blockSignals(false);
         return response;
     }
@@ -83,7 +82,7 @@ void Robot::ProcessResponse(QString id, QString response) {
         return;
     }
 
-    qDebug() << response;
+//    qDebug() << response;
 
     if (now_gcode.count("Position") > 0) {
         if (response.count(",") > 1) {
@@ -171,34 +170,28 @@ bool Robot::getPara(QString gcode)
 
         if (para[0] == 'X')
             X = value;
-        if (para[0] == 'Y')
+        else if (para[0] == 'Y')
             Y = value;
-        if (para[0] == 'Z')
+        else if (para[0] == 'Z')
             Z = value;
-        if (para[0] == 'W')
+        else if (para[0] == 'W')
             W = value;
-        if (para[0] == 'U')
+        else if (para[0] == 'U')
             U = value;
-        if (para[0] == 'V')
+        else if (para[0] == 'V')
             V = value;
-        if (para[0] == 'F')
+        else if (para[0] == 'F')
         {
-            if (isSyncDelay == false)
-                F = value;
-            else
-                isSyncDelay = true;
+//            if (isSyncDelay == false)
+            F = value;
         }
-        if (para[0] == 'A')
+        else if (para[0] == 'A')
             A = value;
-        if (para[0] == 'S')
+        else if (para[0] == 'S')
             S = value;
-        if (para[0] == 'E')
+        else if (para[0] == 'E')
             E = value;
-        if (para[0] == 'S')
-            S = value;
-        if (para[0] == 'E')
-            E = value;
-        if (para[0] == 'J')
+        else if (para[0] == 'J')
             J = value;
     }
 
@@ -259,7 +252,7 @@ bool Robot::checkSetSyncPathCmd(QString cmd)
     }
 
     // Print the results
-    qDebug() << "Speed: " << path_vel << ", Angle: " << qRadiansToDegrees(path_angle) << " degrees.";
+//    qDebug() << "Speed: " << path_vel << ", Angle: " << qRadiansToDegrees(path_angle) << " degrees.";
     return true;
 }
 
@@ -349,7 +342,7 @@ QString Robot::syncGcode(QString cmd)
             new_x = X + moving.x();
             new_y = Y + moving.y();
 
-            isSyncDelay = true;
+//            isSyncDelay = true;
 
             return QString("G01 X%1 Y%2 F%3").arg(new_x).arg(new_y).arg(abs(path_vel));
         }
@@ -368,38 +361,70 @@ double Robot::calculateMovingTime(double distance)
     }
     else if (robotModel == "Delta X 2")
     {
-        // robot di chuyển theo quy trình tăng tốc từ vận tốc bắt đầu đến vận tốc lớn nhất, chạy một thời gian rồi giảm về vận tốc kết thúc. Tính thời gian di chuyển
         float t1, t2, t3, t_total;
         float v_max = F;
         float a_max = A;
         float s = distance;
         float v_start = S;
-        float v_end = E;
+        float v_end = S;
+
+        if (v_max > 900)
+            v_max = 900;
+        if (a_max > 3000)
+            a_max = 3000;
 
         t1 = (v_max - v_start) / a_max;
         t3 = (v_max - v_end) / a_max;
         
-        float s1 = (v_max - v_start) / (2 * a_max);
-        float s2 = (v_max - v_end) / (2 * a_max);
-        float s3 = s - s1 - s2;
-        t2 = s3 / v_max;
+        float s1, s3;
+        s1 = s3 = v_start * t1 + 0.5 * a_max * t1 * t1;
 
-        t_total = t1 + t2 + t3;
+        if (s > s1 + s3)
+        {
+            float s2 = s - s1 - s3;
+            t2 = s2 / v_max;
+
+            t_total = t1 + t2 + t3;
+        }
+        else
+        {
+            s1 = s3 = s/2;
+            float new_v_max = sqrt(v_start * v_start + 2 * a_max * s1);
+            float t1 = (new_v_max - v_start) / a_max;
+
+            t_total = t1 * 2;
+        }
 
         return t_total;
     }
     else
     {
-        // robot di chuyển theo quy trình tăng tốc từ 0 đến vận tốc lớn nhất, chạy một thời gian rồi giảm về vận tốc 0. Tính thời gian di chuyển
-        float t1, t2, t_total;
+        float t1, t2, t3, t_total;
         float v_max = F;
         float a_max = A;
         float s = distance;
 
-        t1 = v_max / a_max;
-        t2 = (s - v_max * t1) / v_max;
+        t1 = (v_max) / a_max;
+        t3 = (v_max) / a_max;
 
-        t_total = t1 + t2;
+        float s1, s3;
+        s1 = s3 = 0.5 * a_max * t1 * t1;
+
+        if (s > s1 + s3)
+        {
+            float s2 = s - s1 - s3;
+            t2 = s2 / v_max;
+
+            t_total = t1 + t2 + t3;
+        }
+        else
+        {
+            s1 = s3 = s/2;
+            float new_v_max = sqrt(2 * a_max * s1);
+            float t1 = (new_v_max) / a_max;
+
+            t_total = t1 * 2;
+        }
 
         return t_total;
     }
@@ -484,7 +509,6 @@ void Robot::saveParaVar()
     VariableManager::instance().addVar(QString("%1.OLD_X").arg(idName), old_X);
     VariableManager::instance().addVar(QString("%1.OLD_Y").arg(idName), old_Y);
     VariableManager::instance().addVar(QString("%1.OLD_Z").arg(idName), old_Z);
-    VariableManager::instance().addVar(QString("%1.O").arg(idName), O);
 
 }
 

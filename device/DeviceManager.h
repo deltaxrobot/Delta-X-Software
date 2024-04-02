@@ -50,7 +50,7 @@ public slots:
     void AddEncoder(QString address);
     void AddSlider(QString address);
     void AddDevice(QString address);
-    void SetDeviceState(int deviceType, bool isOpen, QString address);
+    void SetDeviceState(QString deviceName, bool isOpen, QString address);
     void RequestDeviceInfo(int deviceType);
     void SendGcode(int deviceType, QString gcode);
     void SendGcode(QString deviceName, QString gcode);

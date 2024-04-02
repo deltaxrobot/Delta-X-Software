@@ -1,10 +1,12 @@
 #include "FilterWindow.h"
 #include "ui_FilterWindow.h"
 
-FilterWindow::FilterWindow(QWidget *parent) : QDialog(parent),
+FilterWindow::FilterWindow(QWidget *parent, QString projectName) : QDialog(parent),
                                               ui(new Ui::FilterWindow)
 {
     ui->setupUi(this);
+
+    ProjectName = projectName;
 
     InitVariables();
     InitEvents();
@@ -78,7 +80,7 @@ void FilterWindow::SaveSetting()
         hsvParas.append(sPara[i]->value());
     }
 
-    QString filterName = QString("filter%1").arg(ui->cbObjectType->currentText());
+    QString filterName = QString(".filter%1.").arg(ui->cbObjectType->currentText());
 
     VariableManager::instance().Prefix = ProjectName;
 
@@ -93,7 +95,7 @@ void FilterWindow::LoadSetting()
 {
     VariableManager::instance().Prefix = ProjectName;
 
-    QString filterName = QString("filter%1").arg(ui->cbObjectType->currentText());
+    QString filterName = QString(".filter%1.").arg(ui->cbObjectType->currentText());
     QList<QVariant> hsvParas = VariableManager::instance().getVar(Prefix + filterName + "hsvV").toList();
 
     for (int i = 0; i < hsvParas.count(); i++)

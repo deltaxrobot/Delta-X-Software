@@ -197,7 +197,7 @@ public:
     int SentCommandIndex = 0;
 
     // ---- Vision ----
-    ImageProcessing* ImageProcessingThread;
+    ImageProcessing* ImageProcessingInstance;
     FilterWindow* ParameterPanel;
 
 //    ObjectVariableTable* TrackingObjectTable;
@@ -249,10 +249,15 @@ public:
     ObjectInfoModel *ObjectModel;
     QTransform CalculatingTransform;
     QMatrix CalculatingTransform2;
-    QMatrix PointMatrix;
+    cv::Mat PointMatrix;
     QVector3D CalVector;
 
 public slots:
+
+    // ---- External Control ---
+    void ActivateButtonByName(const QString &buttonName);
+    void ActiveWidgetByName(QString type, QString name, QString action);
+
     // ---- View update ----
     void GetDeviceInfo(QString json);
     void GetDeviceResponse(QString id, QString response);
@@ -397,7 +402,6 @@ public slots:
     void LoadWebcam();
     void LoadImages();
     void StopCapture();
-    void RearrangeTaskFlow();
     void OpenColorFilterWindow();
     void SelectObjectDetectingAlgorithm(int algorithm);
     void ConfigChessboard();
@@ -453,9 +457,9 @@ public slots:
 
 signals:
     // ---- Device ----
-    void ChangeDeviceState(int deviceType, bool isOpen, QString address);
+    void ChangeDeviceState(QString deviceName, bool isOpen, QString address);
     // ----
-    void GotObjects(QList<Object> objects);
+    void GotObjects(QVector<Object> objects);
     void GotResizePara(cv::Size size);
     void GotResizeImage(cv::Mat mat);
     void GotChessboardSize(cv::Size size);

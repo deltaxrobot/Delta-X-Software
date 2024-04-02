@@ -471,6 +471,48 @@ bool GcodeScript::findExeGcodeAndTransmit()
                                 gcodeOrder++;
                                 return false;
                             }
+                            else if (matrixVar.canConvert<QMatrix>())
+                            {
+                                QMatrix matrix = matrixVar.value<QMatrix>();
+
+                                point = matrix.map(point);
+
+                                QString varName = valuePairs.at(i).mid(1);
+                                saveVariable(varName, point);
+
+                                gcodeOrder++;
+                                return false;
+                            }
+                            else if (matrixVar.canConvert<std::vector<double>>()) {
+                                std::vector<double> matrixArray = matrixVar.value<std::vector<double>>();
+                                if (matrixArray.size() == 9) {
+                                    cv::Mat transformMatrix = cv::Mat(matrixArray).reshape(1, 3);
+                                    // Chuyển đổi QPointF thành cv::Point2f
+                                    cv::Point2f cvInputPoint(point.x(), point.y());
+
+                                    // Tạo một mảng các điểm đầu vào
+                                    std::vector<cv::Point2f> inputPoints;
+                                    inputPoints.push_back(cvInputPoint);
+
+                                    // Mảng để lưu trữ các điểm đầu ra
+                                    std::vector<cv::Point2f> outputPoints;
+
+                                    // Áp dụng phép biến đổi perspective cho các điểm đầu vào
+                                    cv::perspectiveTransform(inputPoints, outputPoints, transformMatrix);
+
+                                    // Lấy điểm đầu ra đã được biến đổi
+                                    cv::Point2f cvOutputPoint = outputPoints[0];
+
+                                    // Chuyển đổi cv::Point2f thành QPointF
+                                    QPointF outputPoint(cvOutputPoint.x, cvOutputPoint.y);
+
+                                    QString varName = valuePairs.at(i).mid(1);
+                                    saveVariable(varName, outputPoint);
+
+                                    gcodeOrder++;
+                                    return false;
+                                }
+                            }
                         }
                     }
                 }
@@ -482,7 +524,7 @@ bool GcodeScript::findExeGcodeAndTransmit()
                     if (match.hasMatch()) {
                         QString ref = match.captured(1);
                         QStringList paras = ref.split(',');
-                        QString objName = paras.at(0).trimmed();
+                        QString trackingID = paras.at(0).trimmed();
                         QStringList pair1 = paras.at(1).trimmed().split('=');
                         QStringList pair2 = paras.at(2).trimmed().split('=');
 
@@ -491,7 +533,6 @@ bool GcodeScript::findExeGcodeAndTransmit()
                         float min = pair1.at(1).toFloat();
                         float max = pair2.at(1).toFloat();
 
-                        int objLength = getValueAsQVariant(objName + ".Count").toInt();
                         int index = 0;
 
                         bool isXdirection = false;
@@ -501,38 +542,11 @@ bool GcodeScript::findExeGcodeAndTransmit()
                             isXdirection = true;
                         }
 
-                        for (int i = 0; i < objLength; i++)
-                        {
-                            float x = getValueAsQVariant(objName + "." + QString::number(i) + ".X").toFloat();
-                            float y = getValueAsQVariant(objName + "." + QString::number(i) + ".Y").toFloat();
+                        transmitDeviceId = QString("tracking") + trackingID;
+                        emit GetObjectsRequest(trackingID.toInt(), avaible_list, min, max, isXdirection);
 
-                            if (isXdirection == true)
-                            {
-                                if (x > min && x < max)
-                                {
-                                    QString name = avaible_list + '.' + QString::number(index);
-                                    bool isPicked = getValueAsQVariant(objName + "." + QString::number(i) + ".IsPicked").toBool();
-
-                                    saveVariable(name + ".X", x);
-                                    saveVariable(name + ".Y", y);
-                                    saveVariable(name + ".IsPicked", isPicked);
-                                    index++;
-                                }
-                            }
-                            else
-                            {
-                                if (y > min && y < max)
-                                {
-                                    QString name = avaible_list + '.' + QString::number(index);
-                                    bool isPicked = getValueAsQVariant(objName + "." + QString::number(i) + ".IsPicked").toBool();
-
-                                    saveVariable(name + ".X", x);
-                                    saveVariable(name + ".Y", y);
-                                    saveVariable(name + ".IsPicked", isPicked);
-                                    index++;
-                                }
-                            }
-                        }
+                        gcodeOrder++;
+                        return true;
                     }
                 }
                 else
@@ -986,7 +1000,7 @@ bool GcodeScript::handleVARIABLE(QList<QString> valuePairs, int i)
     {
         QString x = rx.cap(1);
         QString y = rx.cap(2);
-        QString z = rx.cap(4);
+        QString z = rx.cap(3);
 
 //        saveVariable(varName + ".X", calculateExpressions(x));
 //        saveVariable(varName + ".Y", calculateExpressions(y));
@@ -1431,16 +1445,16 @@ QString GcodeScript::calculateExpressions(QString expression)
         else
         {
 
-            float value = getValueAsString(deleteSpaces(expression)).toFloat();
+            QString value = getValueAsString(deleteSpaces(expression));
 
 
             if (deleteSpaces(expression) == "NULL")
             {
-                value = NULL_NUMBER;
+                value = "NULL";
             }
 
 
-            return QString::number(value);
+            return value;
         }
 
 
@@ -1561,7 +1575,6 @@ bool GcodeScript::isNotNegative(QString s)
 QString GcodeScript::getValueAsString(QString name)
 {
     name = name.replace("#", "");
-//    name = name.replace("_", ".");
 
     QString fullName = name;
 
@@ -1577,9 +1590,6 @@ QString GcodeScript::getValueAsString(QString name)
     }
 
     fullName = fullName.replace(" ", "");
-
-//    qDebug() << "Full name: " + fullName;
-
 
     if (fullName.endsWith(".X", Qt::CaseInsensitive) || fullName.endsWith(".Y", Qt::CaseInsensitive))
     {
@@ -1606,7 +1616,6 @@ QString GcodeScript::getValueAsString(QString name)
     {
         QVariant var = VariableManager::instance().getVar(fullName);
         emit CatchVariable2(name, var);
-//        emit CatchVariable(name, var.toString());
         return var.toString();
     }
     else

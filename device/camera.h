@@ -8,6 +8,8 @@
 #include <opencv2/imgproc.hpp>
 #include <QPushButton>
 #include <QCameraInfo>
+#include <QDateTime>
+#include <QDebug>
 
 
 class Camera : public QObject

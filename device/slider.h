@@ -19,7 +19,7 @@ public:
     ~Slider(){};
 
 public slots:
-    void ProcessResponse(QString response = "");
+    void ProcessResponse(QString id, QString response = "");
     QString SendGcode(QString gcode = "M320", bool is_wait = false, int time_out = 10000);
 
 private:

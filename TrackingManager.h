@@ -13,7 +13,8 @@
 #include <QDateTime>
 #include <VariableManager.h>
 #include <ObjectInfo.h>
-#include <QList>
+#include <QVector>
+#include <algorithm>
 
 class VirtualEncoder : public QObject {
     Q_OBJECT
@@ -50,15 +51,15 @@ public:
     explicit Tracking(QObject *parent = nullptr);
     void UpdateTrackedObjectsPosition(float moved);
 
-    QList<ObjectInfo> TrackedObjects;
+    QVector<ObjectInfo> TrackedObjects;
 
     float displacement = 0;
     float SimilarityThreshold = 20;
-    float IoUThreshold = 0.7;
-    float DistanceThreshold = 3;
+    float IoUThreshold = 0.3;
+    float DistanceThreshold = 7;
     int nextID = 0;
 
-    QVector3D VelocityVector = QVector3D(100, 0, 0);
+    QVector3D VelocityVector = QVector3D(0, 100, 0);
     QString VectorName = "#Vector1";
 
     QVector3D TestPointOffset = QVector3D(0, 0, 0);
@@ -85,6 +86,7 @@ signals:
     void TestPointUpdated(QVector3D testPointOffset);
     void SendGcodeRequest(QString deviceName, QString gcode);
     void UpdateTrackingDone();
+    void UpdateVar(QString name, QVariant value);
 
 public slots:
     void OnReceivceEncoderPosition(float value);
@@ -95,8 +97,9 @@ public slots:
     void SaveCapturePosition();
     void SaveDetectPosition();
 
-    void UpdateTrackedObjects(QList<ObjectInfo> detectedObjects, QString objectListName);
+    void UpdateTrackedObjects(QVector<ObjectInfo> detectedObjects, QString objectListName);
     void UpdateTrackedObjectOffsets(QVector3D offset);
+    void GetObjectsInArea(QString inAreaListName, float min, float max, bool isXDirection = true);
 
     void updatePositions(double displacement);
     void ClearTrackedObjects();
@@ -112,7 +115,7 @@ private:
     float currentPosition = 0;
     bool first = true;
     QList<int> updatedObjectIDList;
-    QList<ObjectInfo> DetectedObjects;
+    QVector<ObjectInfo> DetectedObjects;
 
 };
 
@@ -129,6 +132,7 @@ public slots:
     void SaveCapturePosition(int id);
     void SaveDetectPosition(int id);
     void UpdateTracking(int id);
+    void GetObjectsInArea(int trackingID, QString inAreaListName, float min, float max, bool isXDirection = true);
     void UpdateVariable(QString cmd);
     void AddObject(QString listName, QList<QStringList> list);
     void ClearObjects(QString listName);

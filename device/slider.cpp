@@ -2,14 +2,14 @@
 
 Slider::Slider(QString COM, int baudrate, bool is_open, QObject *parent) : Device(COM, baudrate, "M323", "Ok", is_open, parent)
 {
-    qDebug() << "Slider init";
-    connect(this, SIGNAL(receivedMsg(QString)), this, SLOT(ProcessResponse(QString)));
+//    qDebug() << "Slider init";
+    connect(this, SIGNAL(receivedMsg(QString, QString)), this, SLOT(ProcessResponse(QString, QString)));
 
 }
 
-void Slider::ProcessResponse(QString response)
+void Slider::ProcessResponse(QString id, QString response)
 {
-    qDebug() << response;
+//    qDebug() << response;
 }
 
 QString Slider::SendGcode(QString gcode, bool is_wait, int time_out)
@@ -17,7 +17,7 @@ QString Slider::SendGcode(QString gcode, bool is_wait, int time_out)
     if (!gcode.endsWith("\n"))
         gcode.append("\n");
 
-    qDebug() << gcode;
+//    qDebug() << gcode;
 
     if (this->serialPort.isOpen())
         this->serialPort.write(gcode.toLocal8Bit());
@@ -27,7 +27,7 @@ QString Slider::SendGcode(QString gcode, bool is_wait, int time_out)
         serialPort.blockSignals(true);
 
         QString response = this->GetResponse(time_out);
-        qDebug() << response;
+//        qDebug() << response;
         serialPort.blockSignals(false);
         return response;
     }

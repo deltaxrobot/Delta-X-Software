@@ -7,9 +7,9 @@ TaskNode::TaskNode(QString name, int type)
     this->type = type;
     this->name = name;
 
-    qRegisterMetaType< QList<Object>* >("QList<Object>*");
-    qRegisterMetaType< QList<Object>>("QList<Object>");
-    qRegisterMetaType< QList<Object>>("QList<QSharedPointer<Object>>");
+    qRegisterMetaType< QVector<Object>* >("QVector<Object>*");
+    qRegisterMetaType< QVector<Object>>("QVector<Object>");
+    qRegisterMetaType< QVector<Object>>("QVector<QSharedPointer<Object>>");
 
 
     if (type == RESIZE_IMAGE_NODE)
@@ -155,7 +155,7 @@ void TaskNode::Input2(cv::Mat mat)
     inputMat2 = mat;
 }
 
-void TaskNode::Input(QList<Object> objects)
+void TaskNode::Input(QVector<Object> objects)
 {
     this->inputObjects = objects;
     inputType = "objects";
@@ -247,9 +247,13 @@ void TaskNode::Input(Object obj)
 void TaskNode::Input(QStringList objects)
 {
     outputObjects.clear();
+    outputPolys.clear();
 
     foreach(QString obj, objects)
     {
+        if (obj.trimmed().isEmpty())
+            continue;
+
         QStringList objInfo = obj.split(",");
         Object object;
 
@@ -283,9 +287,11 @@ void TaskNode::Input(QStringList objects)
 
         }
         outputObjects.append(object);
+        outputPolys.append(object.ToPolygon());
     }
 
     emit HadOutput(outputObjects);
+    emit HadOutput(outputPolys);
     emit Done(defaultThreadId);
 }
 
@@ -413,7 +419,7 @@ void TaskNode::connectInOutNode(TaskNode* previous, TaskNode *next)
     if (next->type == TaskNode::VISIBLE_OBJECTS_NODE)
     {
         if (previous->type == GET_OBJECTS_NODE)
-            next->InputConnections << connect(previous, SIGNAL(HadOutput(QList<Object>)), next, SLOT(Input(QList<Object>)));
+            next->InputConnections << connect(previous, SIGNAL(HadOutput(QVector<Object>)), next, SLOT(Input(QVector<Object>)));
 
         if (previous->type == MAPPING_MATRIX_NODE)
             next->InputConnections << connect(previous, SIGNAL(HadOutput(QMatrix)), next, SLOT(Input(QMatrix)));
@@ -590,7 +596,9 @@ void TaskNode::doWarpWork()
     }
     else
     {
+//        qDebug() << "Warp start: " << QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss.zzz");
         cv::warpPerspective(inputMat, outputMat, inputMat2, inputMat.size(), cv::INTER_NEAREST);
+//        qDebug() << "Warp end: " << QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss.zzz");
 
         emit HadOutput(outputMat);
     }
@@ -740,7 +748,7 @@ void TaskNode::doGetObjectsWork()
         return;
 
     outputObjects.clear();
-    sharedObjects.clear();
+//    sharedObjects.clear();
     outputPolys.clear();
 
     std::vector<std::vector<cv::Point> > contoursContainer;
@@ -759,20 +767,20 @@ void TaskNode::doGetObjectsWork()
         {
             Object obPointer(rectObject);
             outputObjects.append(obPointer);
-            sharedObjects.append(QSharedPointer<Object>::create(rectObject));
+//            sharedObjects.append(QSharedPointer<Object>::create(rectObject));
             outputPolys.append(obPointer.ToPolygon());
         }
     }
 
     emit HadOutput(outputObjects);
-    emit HadOutput(sharedObjects);
+//    emit HadOutput(sharedObjects);
     emit HadOutput(outputPolys);
 }
 
 void TaskNode::doVisibleObjectsWork()
 {
     outputObjects.clear();
-    QList<ObjectInfo*> infoObjects;
+    QVector<ObjectInfo*> infoObjects;
     for (int i = 0; i < inputObjects.count(); i++)
     {
         inputObjects[i].Map(inputMatrix);
@@ -782,7 +790,7 @@ void TaskNode::doVisibleObjectsWork()
     emit Done(defaultThreadId);
 }
 
-void TaskNode::clear(QList<Object> objs)
+void TaskNode::clear(QVector<Object> objs)
 {
     objs.clear();
 }

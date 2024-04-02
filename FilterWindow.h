@@ -88,7 +88,7 @@ class FilterWindow : public QDialog
     Q_OBJECT
 
 public:
-    explicit FilterWindow(QWidget *parent = 0);
+    explicit FilterWindow(QWidget *parent = 0, QString projectName = "project0");
     ~FilterWindow();
 
 	void InitEvents();
@@ -109,7 +109,7 @@ public:
     FilterWork* FilterJob;
     QString ProjectName = "project0";
 
-    QString Prefix = "project0.detect0.";
+    QString Prefix = "detect0";
 
 public slots:
     void ProcessValueFromUI();

@@ -60,7 +60,12 @@ void MainWindow::InitVariables()
 
     teSoftwareLog = ui->teLoggingBox;
 
-    //-------- Variable Table -----------
+    //-------- Variable -----------
+//    QThread* thread = new QThread;
+//    VariableManager* manager = &VariableManager::instance();
+//    manager->moveToThread(thread);
+
+//    thread->start();
 
     ui->tvVariables->setModel(&VariableTreeModel);
     VariableManager::instance().addItemModel(&VariableTreeModel);
@@ -121,7 +126,7 @@ void MainWindow::InitVariables()
 
     SetLoadingIconRun(false);
 
-    qDebug() << time.elapsed() - start;
+//    qDebug() << time.elapsed() - start;
 }
 
 bool MainWindow::IsLastProject()
@@ -454,6 +459,10 @@ void MainWindow::onTreeViewItemClicked(const QModelIndex &index)
 
 MainWindow::~MainWindow()
 {
+    VariableManager::instance().thread()->quit();
+    VariableManager::instance().thread()->wait();
+    delete VariableManager::instance().thread();
+
     delete ui;
 }
 
