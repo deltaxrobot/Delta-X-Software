@@ -32,7 +32,6 @@ public:
     ~MainWindow();
 
     void InitVariables();
-    bool IsLastProject();
     void closeEvent(QCloseEvent *event);
     void InitProjectUX();
     void InitVisible();
@@ -45,8 +44,6 @@ public:
     VersionManager* DeltaXVersionManager;
     SmartDialog* CloseDialog;
     Authority* SoftwareAuthority;
-
-    QString LastProject = "";
 
     QStandardItemModel VariableTreeModel;
 

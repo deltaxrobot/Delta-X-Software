@@ -1,8 +1,14 @@
 #include "SocketConnectionManager.h"
 
+SocketConnectionManager::~SocketConnectionManager()
+{
+    delete Server;
+    delete WebServer;
+}
+
 bool SocketConnectionManager::IsServerOpen()
 {
-    return server->isListening();
+    return Server->isListening();
 }
 
 QString SocketConnectionManager::printLocalIpAddresses() {
@@ -26,22 +32,22 @@ QString SocketConnectionManager::printLocalIpAddresses() {
 SocketConnectionManager::SocketConnectionManager(const QString &address, int port, QObject *parent)
     : QObject(parent), hostAddress(address), port(port) {
 
-    server = new QTcpServer(this);
-    Connect(address, port);
+    Server = new QTcpServer(this);
+    Connect(hostAddress, port);
 
-    webserver = new QTcpServer(this);
-    webserver->listen(QHostAddress(hostAddress), 80);
-    connect(webserver, &QTcpServer::newConnection, this, &SocketConnectionManager::newWebClientConnected);
+    WebServer = new QTcpServer(this);
+    WebServer->listen(QHostAddress(hostAddress), 80);
+    connect(WebServer, &QTcpServer::newConnection, this, &SocketConnectionManager::newWebClientConnected);
 }
 
 bool SocketConnectionManager::Connect(QString address, int port)
 {
     for (int i = 0; i < 10; i++)
     {
-        bool isSuccess = server->listen(QHostAddress(hostAddress), port + i);
+        bool isSuccess = Server->listen(QHostAddress(hostAddress), port + i);
         if (isSuccess == true)
         {
-            connect(server, &QTcpServer::newConnection, this, &SocketConnectionManager::newClientConnected);
+            connect(Server, &QTcpServer::newConnection, this, &SocketConnectionManager::newClientConnected);
             return true;
         }
     }
@@ -50,7 +56,7 @@ bool SocketConnectionManager::Connect(QString address, int port)
 }
 
 void SocketConnectionManager::newClientConnected() {
-    QTcpSocket* clientSocket = server->nextPendingConnection();
+    QTcpSocket* clientSocket = Server->nextPendingConnection();
     clients.append(clientSocket);
 
     connect(clientSocket, &QTcpSocket::readyRead, this, &SocketConnectionManager::readFromClient);
@@ -66,7 +72,7 @@ void SocketConnectionManager::newClientConnected() {
 
 void SocketConnectionManager::newWebClientConnected()
 {
-    QTcpSocket *socket = webserver->nextPendingConnection();
+    QTcpSocket *socket = WebServer->nextPendingConnection();
     connect(socket, &QTcpSocket::readyRead, [this, socket]() {
         QFile file(indexPath);
         if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {

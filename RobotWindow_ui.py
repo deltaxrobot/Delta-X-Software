@@ -1130,7 +1130,7 @@ class Ui_RobotWindow(object):
         self.saObjectDetecting.setWidgetResizable(True)
         self.wObjectDetecting = QWidget()
         self.wObjectDetecting.setObjectName(u"wObjectDetecting")
-        self.wObjectDetecting.setGeometry(QRect(0, 0, 655, 2900))
+        self.wObjectDetecting.setGeometry(QRect(0, -412, 655, 2900))
         self.wObjectDetecting.setMinimumSize(QSize(100, 2900))
         self.wObjectDetecting.setStyleSheet(u"QWidget#wObjectDetecting\n"
 "{	\n"
@@ -2946,7 +2946,7 @@ class Ui_RobotWindow(object):
         self.saPointTool.setWidgetResizable(True)
         self.wPointTool = QWidget()
         self.wPointTool.setObjectName(u"wPointTool")
-        self.wPointTool.setGeometry(QRect(0, -575, 643, 1900))
+        self.wPointTool.setGeometry(QRect(0, 0, 643, 1900))
         self.wPointTool.setMinimumSize(QSize(0, 1900))
         self.wPointTool.setStyleSheet(u"QWidget#wPointTool\n"
 "{	\n"
@@ -8367,7 +8367,7 @@ class Ui_RobotWindow(object):
 
         self.twDeltaManager.setCurrentIndex(0)
         self.pbReadI0_3.setDefault(False)
-        self.twModule.setCurrentIndex(2)
+        self.twModule.setCurrentIndex(1)
         self.pbImageMapping.setDefault(False)
         self.cbImageSource.setCurrentIndex(0)
         self.cbSendingImageMethod.setCurrentIndex(0)

@@ -739,7 +739,7 @@ public:
         scrollArea_2->setWidgetResizable(true);
         scrollAreaWidgetContents_2 = new QWidget();
         scrollAreaWidgetContents_2->setObjectName(QString::fromUtf8("scrollAreaWidgetContents_2"));
-        scrollAreaWidgetContents_2->setGeometry(QRect(0, 0, 1099, 620));
+        scrollAreaWidgetContents_2->setGeometry(QRect(0, 0, 601, 171));
         verticalLayout_10 = new QVBoxLayout(scrollAreaWidgetContents_2);
         verticalLayout_10->setSpacing(6);
         verticalLayout_10->setContentsMargins(11, 11, 11, 11);
@@ -1514,7 +1514,7 @@ public:
 
     void retranslateUi(QMainWindow *MainWindow)
     {
-        MainWindow->setWindowTitle(QCoreApplication::translate("MainWindow", "Delta X Software - Version 0.9.7", nullptr));
+        MainWindow->setWindowTitle(QCoreApplication::translate("MainWindow", "Delta X Software - Version 1.2.7", nullptr));
         actionAdd->setText(QCoreApplication::translate("MainWindow", "Add New", nullptr));
         actionRemove->setText(QCoreApplication::translate("MainWindow", "Remove", nullptr));
         actionAbout->setText(QCoreApplication::translate("MainWindow", "About", nullptr));

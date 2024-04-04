@@ -16,8 +16,8 @@ class SocketConnectionManager : public QObject
     Q_OBJECT
 
 public:
-    QTcpServer* server;
-    QTcpServer* webserver;
+    QTcpServer* Server;
+    QTcpServer* WebServer;
     QList<QTcpSocket*> clients;
     QString hostAddress;
     int port;
@@ -25,6 +25,7 @@ public:
     int imageSendingMethod = 0;
     QString indexPath = "index.html";
 
+    ~SocketConnectionManager();
     bool IsServerOpen();
     static QString printLocalIpAddresses();
 

@@ -19,16 +19,16 @@ QString Slider::SendGcode(QString gcode, bool is_wait, int time_out)
 
 //    qDebug() << gcode;
 
-    if (this->serialPort.isOpen())
-        this->serialPort.write(gcode.toLocal8Bit());
+    if (this->serialPort->isOpen())
+        this->serialPort->write(gcode.toLocal8Bit());
 
     if (is_wait)
     {
-        serialPort.blockSignals(true);
+        serialPort->blockSignals(true);
 
         QString response = this->GetResponse(time_out);
 //        qDebug() << response;
-        serialPort.blockSignals(false);
+        serialPort->blockSignals(false);
         return response;
     }
     else

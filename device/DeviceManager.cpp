@@ -57,6 +57,7 @@ void DeviceManager::AddRobot(QString address="auto")
     Robots.append(robot);
     QThread* robotThread = new QThread(this);
     robot->moveToThread(robotThread);
+
     connect(robotThread, SIGNAL(started()), robot, SLOT(Run()));
     connect(robot, &Robot::receivedMsg, [=](QString id, QString response){ emit DeviceResponded(id, response); });
     connect(robot, &Robot::infoReady, this, &DeviceManager::GotDeviceInfo);
@@ -72,8 +73,10 @@ void DeviceManager::AddConveyor(QString address="auto")
     conveyor->ProjectName = ProjectName;
     conveyor->SetIDName(QString("conveyor") + QString::number(Conveyors.count()));
     Conveyors.append(conveyor);
+
     QThread* conveyorThread = new QThread(this);
     conveyor->moveToThread(conveyorThread);
+
     connect(conveyorThread, SIGNAL(started()), conveyor, SLOT(Run()));
     connect(conveyor, &Conveyor::receivedMsg, [=](QString id, QString response){ emit DeviceResponded(id, response); });
     connect(conveyor, &Conveyor::infoReady, this, &DeviceManager::GotDeviceInfo);
@@ -89,8 +92,10 @@ void DeviceManager::AddEncoder(QString address = "auto")
     encoder->ProjectName = ProjectName;
     encoder->SetIDName(QString("encoder") + QString::number(Encoders.count()));
     Encoders.append(encoder);
+
     QThread* encoderThread = new QThread(this);
     encoder->moveToThread(encoderThread);
+
     connect(encoderThread, SIGNAL(started()), encoder, SLOT(Run()));
     connect(encoder, &Encoder::receivedMsg, [=](QString id, QString response){ emit DeviceResponded(id, response); });
     connect(encoder, &Encoder::infoReady, this, &DeviceManager::GotDeviceInfo);
@@ -106,8 +111,10 @@ void DeviceManager::AddSlider(QString address="auto")
     slider->ProjectName = ProjectName;
     slider->SetIDName(QString("slider") + QString::number(Sliders.count()));
     Sliders.append(slider);
+
     QThread* sliderThread = new QThread(this);
     slider->moveToThread(sliderThread);
+
     connect(sliderThread, SIGNAL(started()), slider, SLOT(Run()));
     connect(slider, &Slider::receivedMsg, [=](QString id, QString response){ emit DeviceResponded(id, response); });
     connect(slider, &Slider::infoReady, this, &DeviceManager::GotDeviceInfo);
@@ -125,6 +132,7 @@ void DeviceManager::AddDevice(QString address)
 
     QThread* deviceThread = new QThread(this);
     device->moveToThread(deviceThread);
+
     connect(deviceThread, SIGNAL(started()), device, SLOT(Run()));
     connect(device, &Device::receivedMsg, [=](QString id, QString response){ emit DeviceResponded(id, response); });
     connect(device, &Device::infoReady, this, &DeviceManager::GotDeviceInfo);

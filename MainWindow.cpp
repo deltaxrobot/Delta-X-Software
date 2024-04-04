@@ -14,6 +14,17 @@ MainWindow::MainWindow(QWidget *parent) :
 
 void MainWindow::InitVariables()
 {
+    //-------- Variable -----------
+
+    ui->tvVariables->setModel(&VariableTreeModel);
+    VariableManager::instance().addItemModel(&VariableTreeModel);
+
+
+    VariableManager::instance().loadFromQSettings();
+
+    connect(ui->tvVariables, &QTreeView::clicked, this, &MainWindow::onTreeViewItemClicked);
+
+    // -------------------------
 
     QElapsedTimer time;
     qint64 start = time.elapsed();
@@ -28,13 +39,10 @@ void MainWindow::InitVariables()
     DeltaXVersionManager = new VersionManager(this);
     DeltaXVersionManager->CurrentVersion = "1.2 Beta";
     DeltaXVersionManager->SoftwareName = "DeltaXSoftware";
-    DeltaXVersionManager->CheckVersionUrl = "http://imwi.space/admin/server.php";
-    DeltaXVersionManager->NewVersionSoftwareUrl = "https://sourceforge.net/projects/delta-x-software/files/";
-//    DeltaXVersionManager->CheckNewVersion(true);
+    DeltaXVersionManager->CheckNewVersion(true);
 
     // ----- Init Pointer -----
     SoftwareManager::GetInstance()->SoftwarePointer = this;
-//    ui->tvVariables->setModel(&SoftwareManager::GetInstance()->SoftwarePointer->VariableTreeModel);
     SoftwareManager::GetInstance()->SoftwarePath = QApplication::applicationDirPath();
 
     //------- Dasboard --------
@@ -60,20 +68,7 @@ void MainWindow::InitVariables()
 
     teSoftwareLog = ui->teLoggingBox;
 
-    //-------- Variable -----------
-//    QThread* thread = new QThread;
-//    VariableManager* manager = &VariableManager::instance();
-//    manager->moveToThread(thread);
 
-//    thread->start();
-
-    ui->tvVariables->setModel(&VariableTreeModel);
-    VariableManager::instance().addItemModel(&VariableTreeModel);
-
-
-    VariableManager::instance().loadFromQSettings();
-
-    connect(ui->tvVariables, &QTreeView::clicked, this, &MainWindow::onTreeViewItemClicked);
 
 
     //------- Project Manager --------
@@ -86,14 +81,25 @@ void MainWindow::InitVariables()
 
     connect(SoftwareProjectManager, SIGNAL(NewTab_Signal(int)), SLOT(AddNewProjectAndRobot(int)));
 
-    if (!IsLastProject())
+    QString projectPrefix = "project";
+    for (int i = 0; i < 10; i++)
     {
-        RobotWindow* robotWindow = AddNewProjectAndRobot(0);
-    }
-    else
-    {
-        openProject(LastProject);
-    }
+        QString projectName = projectPrefix + QString::number(i);
+
+        VariableManager::instance().Prefix = projectName;
+
+        if (VariableManager::instance().containsSubKey(projectName) == true)
+        {
+            RobotWindow* robotWindow = AddNewProjectAndRobot(i);
+        }
+        else
+        {
+            QString projectName = projectPrefix + QString::number(i - 1);
+
+            VariableManager::instance().Prefix = projectName;
+            break;
+        }
+    }    
 
     InitProjectUX();
 
@@ -120,28 +126,13 @@ void MainWindow::InitVariables()
 
     Dashboard->SoftwareAuthority = SoftwareAuthority;
 
-    InitProjectToOperator();
+//    InitProjectToOperator();
 
 //    on_pbApplyOperator_clicked();
 
     SetLoadingIconRun(false);
 
 //    qDebug() << time.elapsed() - start;
-}
-
-bool MainWindow::IsLastProject()
-{
-    QSettings settings("customUI.ini", QSettings::IniFormat);
-    LastProject = settings.value("LastProject", "").toString();
-
-    if(QFileInfo::exists(LastProject))
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
@@ -177,17 +168,17 @@ void MainWindow::InitVisible()
     ui->tbOpenProject->setVisible(false);
 
     // ----- Load custom UI ----
-    QSettings settings("customUI.ini", QSettings::IniFormat);
-    QString softwareName = settings.value("SoftwareName", "Delta X Software").toString();
+//    QSettings settings("customUI.ini", QSettings::IniFormat);
+//    QString softwareName = settings.value("SoftwareName", "Delta X Software").toString();
 
-    softwareName = QString("%1 - %2").arg(softwareName).arg(DeltaXVersionManager->CurrentVersion);
-    this->setWindowTitle(softwareName);
+//    softwareName = QString("%1 - %2").arg(softwareName).arg(DeltaXVersionManager->CurrentVersion);
+//    this->setWindowTitle(softwareName);
 
-    QString systemName = settings.value("SystemName", "Delta Robot System").toString();
-    ui->leOperatorTitle->setText(systemName);
-    ui->lbOperatorTitile->setText(systemName);
+//    QString systemName = settings.value("SystemName", "Delta Robot System").toString();
+//    ui->leOperatorTitle->setText(systemName);
+//    ui->lbOperatorTitile->setText(systemName);
 
-    LoadOperatorSettings();
+//    LoadOperatorSettings();
 }
 
 void MainWindow::InitProjectToOperator()

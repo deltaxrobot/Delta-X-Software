@@ -10,6 +10,7 @@ RobotWindow::RobotWindow(QWidget *parent, QString projectName) :
     ui->setupUi(this);
 
     this->ProjectName = projectName;
+    VariableManager::instance().Prefix = ProjectName;
 
     InitVariables();
     InitOtherThreadObjects();
@@ -355,8 +356,6 @@ void RobotWindow::InitOtherThreadObjects()
     connect(thread, &QThread::finished, DeviceManagerInstance, &QObject::deleteLater);
     thread->start();
 
-    QMetaObject::invokeMethod(DeviceManagerInstance, "AddRobot", Qt::QueuedConnection);
-
     connect(DeviceManagerInstance, SIGNAL(GotDeviceInfo(QString)), this, SLOT(GetDeviceInfo(QString)));
     connect(this, SIGNAL(ChangeDeviceState(QString,bool,QString)), DeviceManagerInstance, SLOT(SetDeviceState(QString,bool,QString)));
     connect(DeviceManagerInstance, SIGNAL(Log(QString,QString,int)), this, SLOT(UpdateTermite(QString,QString,int)));
@@ -382,7 +381,7 @@ void RobotWindow::InitOtherThreadObjects()
     connect(CameraInstance, &Camera::connectedResult, this, &RobotWindow::UpdateCameraConnectedState);
 
     connect(&CameraTimer, SIGNAL(timeout()), CameraInstance, SLOT(GeneralCapture()));
-    SelectImageProviderOption(0);
+//    SelectImageProviderOption(0);
 
 //    connect(ui->cbTrackingThreadForCamera, SIGNAL(currentIndexChanged(int)), CameraInstance, SLOT(setTracking(int)));
 
@@ -488,23 +487,24 @@ void RobotWindow::InitSocketConnection()
     QString localIP = SocketConnectionManager::printLocalIpAddresses();
     ui->leIP->setText(localIP);
 
-    ConnectionManager = new SocketConnectionManager(localIP, ui->lePort->text().toInt(), this);
+    ConnectionManager = new SocketConnectionManager(localIP, ui->lePort->text().toInt());
     QString appDirPath = QCoreApplication::applicationDirPath();
     ConnectionManager->indexPath = appDirPath + "/script-example/webpage/websocket.html";
 
-    /// Chuyển ConnectionManager vào một thread mới
-    ConnectionManager->moveToThread(new QThread(this));
-    /// Kết nối sự kiện khi thread kết thúc với việc xóa ConnectionManager
+    QThread* thread = new QThread(this);
+
+    ConnectionManager->moveToThread(thread);
+
     connect(ConnectionManager->thread(), &QThread::finished, ConnectionManager, &QObject::deleteLater);
-    /// Khởi động thread
-    ConnectionManager->thread()->start();
+
+    thread->start();
 
     connect(ConnectionManager, &SocketConnectionManager::eventReceived, this, &RobotWindow::ActiveWidgetByName);
 
     if (ConnectionManager->IsServerOpen())
     {
-        ui->leIP->setText(ConnectionManager->server->serverAddress().toString());
-        ui->lePort->setText(QString::number(ConnectionManager->server->serverPort()));
+        ui->leIP->setText(ConnectionManager->Server->serverAddress().toString());
+        ui->lePort->setText(QString::number(ConnectionManager->Server->serverPort()));
     }
 
     connect(ui->tbServerConfig, &QPushButton::clicked, [=](bool checked)
@@ -815,9 +815,6 @@ void RobotWindow::InitObjectDetectingModule()
         ImageProcessingInstance->ObjectsName = ui->leDetectingObjectListName->text();
     });
 
-//    ImageProcessingInstance->MoveToThread(new QThread(this));
-//    connect(ImageProcessingInstance->thread(), &QThread::finished, ImageProcessingInstance, &QObject::deleteLater);
-//    ImageProcessingInstance->thread()->start();
 
     // Khai báo và khởi tạo luồng
     QThread* thread = new QThread;
@@ -1743,7 +1740,9 @@ void RobotWindow::LoadObjectDetectorSetting()
 
     EditImage(ui->pbWarpTool->isChecked(), ui->pbCropTool->isChecked());
 
-    ui->cbSourceForImageProvider->setCurrentText(VariableManager::instance().getVar(prefix + "ImageSource", ui->cbSourceForImageProvider->currentText()).toString());
+    QString imageSource = VariableManager::instance().getVar(prefix + "ImageSource", ui->cbSourceForImageProvider->currentText()).toString();
+
+    ui->cbSourceForImageProvider->setCurrentText(imageSource);
 
     ui->leCaptureInterval->setText(VariableManager::instance().getVar(prefix + "WebcamInterval", ui->leCaptureInterval->text()).toString());
 
@@ -2326,7 +2325,8 @@ void RobotWindow::SelectImageProviderOption(int option)
     QString text = ui->cbSourceForImageProvider->itemText(option);
 
     QString prefix = ProjectName + "." + ui->cbSelectedDetecting->currentText() + ".";
-    VariableManager::instance().updateVar(prefix + "ImageSource",text);
+    UpdateVariable(prefix + "ImageSource", text);
+//    VariableManager::instance().updateVar(prefix + "ImageSource",text);
 
     if (text == "Webcam")
     {

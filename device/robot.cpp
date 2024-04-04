@@ -54,7 +54,7 @@ QString Robot::SendGcode(QString gcode, bool is_wait, int time_out)
 
     if (is_wait)
     {
-        serialPort.blockSignals(true);
+        serialPort->blockSignals(true);
         if (isMovingGcode)
         {
             this->calMoveTime();
@@ -63,7 +63,7 @@ QString Robot::SendGcode(QString gcode, bool is_wait, int time_out)
 
         QString response = this->GetResponse(time_out);
 //        qDebug() << response;
-        serialPort.blockSignals(false);
+        serialPort->blockSignals(false);
         return response;
     }
     else

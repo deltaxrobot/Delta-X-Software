@@ -14,16 +14,6 @@ ImageProcessing::~ImageProcessing()
     }
 }
 
-void ImageProcessing::MoveToThread(QThread *thread)
-{
-    moveToThread(thread);
-
-    foreach(TaskNode* taskNode, taskNodeList)
-    {
-        taskNode->moveToThread(thread);
-    }
-}
-
 TaskNode *ImageProcessing::CreatTaskNode(QString name, int type, QString previousTasks)
 {
     TaskNode* taskNode = new TaskNode(name, type);

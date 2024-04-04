@@ -31,6 +31,8 @@ public:
     void SetIDName(QString idName);
     QSerialPort* GetPort();
 
+    void MoveToThread(QThread* thread);
+
     QString ProjectName = "project0";
 
     static QElapsedTimer DebugTimer;
@@ -52,7 +54,7 @@ public slots:
     QString ReadLine();
 
 protected:
-    QSerialPort serialPort;
+    QSerialPort* serialPort = nullptr;
     QMetaObject::Connection readDataConnection;
     QJsonObject jsonObject;
     QString idName;

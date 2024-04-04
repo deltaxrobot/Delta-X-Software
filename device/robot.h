@@ -47,7 +47,6 @@ private:
     float path_vel;
     float path_angle;
     QVector3D sync_vector;
-    Device* port;
     Scurve_Interpolator scurve_tool;
 
     float home_X, home_Y, home_Z, home_W, home_U, home_V;

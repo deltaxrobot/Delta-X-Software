@@ -553,7 +553,7 @@ class Ui_MainWindow(object):
         self.scrollArea_2.setWidgetResizable(True)
         self.scrollAreaWidgetContents_2 = QWidget()
         self.scrollAreaWidgetContents_2.setObjectName(u"scrollAreaWidgetContents_2")
-        self.scrollAreaWidgetContents_2.setGeometry(QRect(0, 0, 1099, 620))
+        self.scrollAreaWidgetContents_2.setGeometry(QRect(0, 0, 601, 171))
         self.verticalLayout_10 = QVBoxLayout(self.scrollAreaWidgetContents_2)
         self.verticalLayout_10.setSpacing(6)
         self.verticalLayout_10.setContentsMargins(11, 11, 11, 11)
@@ -1327,7 +1327,7 @@ class Ui_MainWindow(object):
     # setupUi
 
     def retranslateUi(self, MainWindow):
-        MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"Delta X Software - Version 0.9.7", None))
+        MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"Delta X Software - Version 1.2.7", None))
         self.actionAdd.setText(QCoreApplication.translate("MainWindow", u"Add New", None))
         self.actionRemove.setText(QCoreApplication.translate("MainWindow", u"Remove", None))
         self.actionAbout.setText(QCoreApplication.translate("MainWindow", u"About", None))

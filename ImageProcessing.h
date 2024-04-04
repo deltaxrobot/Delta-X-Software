@@ -38,8 +38,6 @@ public:
     ~ImageProcessing();
     QString ProjectName = "project0";
 
-    void MoveToThread(QThread* thread);
-
     TaskNode *CreatTaskNode(QString name, int type, QString previousTasks = "");
     TaskNode* GetNode(QString name);
 

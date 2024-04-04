@@ -189,6 +189,7 @@ public:
     QTimer UpdateUITimer;
 
     QString ProjectName = "project0";
+    QString ProjectTitile = "Project 0";
 
     int DefaultBaudrate = DEFAULT_BAUDRATE;
 
