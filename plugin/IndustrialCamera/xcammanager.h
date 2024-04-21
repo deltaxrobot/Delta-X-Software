@@ -41,7 +41,7 @@ public:
     unsigned char *Capture();
 
     QList<XCam*> CameraList;
-    XCam* CurrentCamera;
+    XCam* CurrentCamera = NULL;
 
 private:
     QString getStringFromUnsignedChar(unsigned char *str);

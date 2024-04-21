@@ -42,7 +42,7 @@ model = YOLO('yolov8n.pt')
 
 def main():
     HOST = "192.168.1.8"
-    PORT = 8844
+    PORT = 8846
 
     while True:
         try:

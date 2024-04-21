@@ -20,6 +20,8 @@ public:
     virtual void LoadSettings(QSettings* setting) = 0;
     virtual void SaveSettings(QSettings* setting) = 0;
 
+    QString ProjectName = "";
+
 public slots:
     virtual void ProcessCommand(QString cmd) = 0;
 
@@ -28,6 +30,7 @@ signals:
     virtual void CapturedImage(cv::Mat mat) = 0;
     virtual void StartedCapture() = 0;
     virtual void RequestCapture() = 0;
+    virtual void RequestConnect(int id) = 0;
 };
 
 QT_BEGIN_NAMESPACE

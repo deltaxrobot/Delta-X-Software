@@ -34,15 +34,26 @@ QStringList XCamManager::FindBaslerCameraList()
     CTlFactory::GetInstance().EnumerateDevices(baslerDeviceInfoList);
     for(size_t i = 0; i < baslerDeviceInfoList.size(); i++)
     {
-        baslerDeviceQStringList.append(baslerDeviceInfoList.at(i).GetModelName().c_str());
+        try
+        {
+            // Cố gắng tạo một camera từ thiết bị
+            IPylonDevice* pDevice = CTlFactory::GetInstance().CreateDevice(baslerDeviceInfoList[i]);
+            CInstantCamera* camera = new CInstantCamera(pDevice);
 
-        CInstantCamera* camera = new CInstantCamera(CTlFactory::GetInstance().CreateDevice(baslerDeviceInfoList.at(i)));
-
-        CameraList.append(new XCamBasler(camera));
+            // Nếu camera được tạo thành công, thêm vào danh sách
+            baslerDeviceQStringList.append(baslerDeviceInfoList.at(i).GetModelName().c_str());
+            CameraList.append(new XCamBasler(camera));
+        }
+        catch (const GenericException& e)
+        {
+            continue;
+        }
     }
 
     return baslerDeviceQStringList;
 }
+
+
 
 QStringList XCamManager::FindHIKCameraList()
 {
@@ -88,7 +99,7 @@ int XCamManager::Width()
 
 bool XCamManager::ConnectCamera(int id)
 {
-    if (id > CameraList.length())
+    if (id >= CameraList.length())
         return false;
 
     CurrentCamera = CameraList.at(id);
@@ -137,6 +148,9 @@ int XCamManager::GetExposureTime()
 
 unsigned char *XCamManager::Capture()
 {
+    if (CurrentCamera == NULL)
+        return NULL;
+
     return CurrentCamera->Capture();
 }
 

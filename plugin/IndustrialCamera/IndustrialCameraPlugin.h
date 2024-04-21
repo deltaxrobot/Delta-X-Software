@@ -27,6 +27,7 @@ signals:
     void CapturedImage(cv::Mat mat);
     void StartedCapture();
     void RequestCapture();
+    void RequestConnect(int id);
 private:
     Form* pluginForm;
 

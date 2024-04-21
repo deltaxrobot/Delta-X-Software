@@ -28,6 +28,7 @@ Form::Form(QWidget *parent) :
     connect(CameraDisplayUpdatingTimer, SIGNAL(timeout()), this, SLOT(intervalFunction()));
 
     QTimer::singleShot(2000, this, SLOT(on_pbRefresh_clicked()));
+//    emit RequestCameraList();
 
 }
 

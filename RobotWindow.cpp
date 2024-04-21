@@ -291,7 +291,7 @@ void RobotWindow::InitVariables()
         ui->rb1000
     };
 
-    // Sử dụng vòng lặp để kết nối tất cả
+
     for (auto* rb : stepRBs) {
         connect(rb, &QRadioButton::toggled, [=](bool checked) {
             if (checked) RobotParameters[RbID].Step = rb->text().toFloat();
@@ -1750,6 +1750,21 @@ void RobotWindow::LoadObjectDetectorSetting()
     ui->leImageHeight->setText(VariableManager::instance().getVar(prefix + "ResizeHeight", ui->leImageHeight->text()).toString());
 
     emit GotResizePara(cv::Size(ui->leImageWidth->text().toInt(), ui->leImageHeight->text().toInt()));
+
+    bool IsCameraOpen = VariableManager::instance().getVar(prefix + "IsOpen", false).toBool();
+    int cameraID = VariableManager::instance().getVar(prefix + "CameraID", 0).toInt();
+
+    if (IsCameraOpen == true)
+    {
+//        for (int i = 0; i < pluginList->count(); i++)
+//        {
+//            DeltaXPlugin* plugin = pluginList->at(i);
+
+//            QTimer::singleShot(2000, [plugin, cameraID]() {
+//                emit plugin->RequestConnect(cameraID);
+//            });
+//        }
+    }
 
 
 
@@ -3374,13 +3389,20 @@ void RobotWindow::StartContinuousCapture(bool isCheck)
         ui->lbCameraState->setEnabled(true);
         CameraInstance->IsCameraPause = false;
         CameraTimer.start(ui->leCaptureInterval->text().toInt());
+
+        QString prefix = ProjectName + "." + ui->cbSelectedDetecting->currentText() + ".";
+        UpdateVariable(prefix + "IsOpen", true);
     }
     else
     {
         CameraInstance->IsCameraPause = true;
 
         CameraTimer.stop();
+
+        QString prefix = ProjectName + "." + ui->cbSelectedDetecting->currentText() + ".";
+        UpdateVariable(prefix + "IsOpen", false);
     }
+
 }
 
 void RobotWindow::ChangeOutputDisplay(QString outputName)
@@ -3432,6 +3454,9 @@ void RobotWindow::LoadWebcam()
 
             QMetaObject::invokeMethod(CameraInstance, "OpenCamera", Qt::QueuedConnection, Q_ARG(int, cameraID));
             OpenLoadingPopup();
+
+            QString prefix = ProjectName + "." + ui->cbSelectedDetecting->currentText() + ".";
+            UpdateVariable(prefix + "CameraID", cameraID);
         }
         else
         {
@@ -3515,6 +3540,9 @@ void RobotWindow::StopCapture()
     ui->pbStartAcquisition->setChecked(false);
 
     CameraTimer.stop();
+
+    QString prefix = ProjectName + "." + ui->cbSelectedDetecting->currentText() + ".";
+    UpdateVariable(prefix + "IsOpen", false);
 }
 
 void RobotWindow::OpenColorFilterWindow()
@@ -5181,8 +5209,6 @@ void RobotWindow::initPlugins(QStringList plugins)
 {
     foreach (QString file,plugins)
     {
-        //qInfo() << "Loading: " << file;
-
         QPluginLoader loader(file);
         if(!loader.load())
         {
@@ -5192,7 +5218,7 @@ void RobotWindow::initPlugins(QStringList plugins)
             continue;
         }
 
-        qInfo() << "Loaded: " << loader.fileName();
+//        qInfo() << "Loaded: " << loader.fileName();
 
         DeltaXPlugin* pluginWidget = qobject_cast<DeltaXPlugin*>(loader.instance());
 
@@ -5207,7 +5233,7 @@ void RobotWindow::initPlugins(QStringList plugins)
         }
         else
         {
-            qInfo() << "load fail";
+//            qInfo() << "load fail";
         }
     }
 }

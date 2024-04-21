@@ -1225,6 +1225,7 @@ debug\moc_Authority.cpp: Authority.h \
 		UnityTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QElapsedTimer \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItem \
+		ObjectInfo.h \
 		3rd-party\opencv\build\include\opencv2\opencv.hpp \
 		3rd-party\opencv\build\include\opencv2\opencv_modules.hpp \
 		3rd-party\opencv\build\include\opencv2\core.hpp \
@@ -1409,7 +1410,6 @@ debug\moc_Authority.cpp: Authority.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QColor \
 		ObjectInfoModel.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QAbstractTableModel \
-		ObjectInfo.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QRandomGenerator \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		ImageProcessing.h \
@@ -1419,8 +1419,8 @@ debug\moc_Authority.cpp: Authority.h \
 		TaskNode.h \
 		Object.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSharedPointer \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDateTime \
 		GcodeScript.h \
-		ScurveInterpolator.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QtMath \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutex \
 		Parameter.h \
@@ -1440,11 +1440,11 @@ debug\moc_Authority.cpp: Authority.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QJsonDocument \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QJsonObject \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QJsonArray \
+		ScurveInterpolator.h \
 		device\slider.h \
 		device\conveyor.h \
 		device\encoder.h \
 		device\camera.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDateTime \
 		TrackingManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QLineF \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QVector2D \
@@ -2471,6 +2471,7 @@ debug\moc_FilterWindow.cpp: FilterWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpen.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QElapsedTimer \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItem \
+		ObjectInfo.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QPushButton \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qpushbutton.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qabstractbutton.h \
@@ -2750,7 +2751,6 @@ debug\moc_GcodeScript.cpp: GcodeScript.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qabstractitemmodel.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qicon.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
-		ScurveInterpolator.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QtMath \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qmath.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutex \
@@ -3152,6 +3152,7 @@ debug\moc_GcodeScript.cpp: GcodeScript.h \
 		VariableManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QHash \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
+		ObjectInfo.h \
 		3rd-party\opencv\build\include\opencv2\opencv.hpp \
 		3rd-party\opencv\build\include\opencv2\opencv_modules.hpp \
 		3rd-party\opencv\build\include\opencv2\core.hpp \
@@ -3336,7 +3337,6 @@ debug\moc_GcodeScript.cpp: GcodeScript.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QColor \
 		ObjectInfoModel.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QAbstractTableModel \
-		ObjectInfo.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QRandomGenerator \
 		ImageProcessing.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QCheckBox \
@@ -3345,6 +3345,7 @@ debug\moc_GcodeScript.cpp: GcodeScript.h \
 		TaskNode.h \
 		Object.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSharedPointer \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDateTime \
 		GcodeScript.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QFileInfo \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QMatrix \
@@ -3362,11 +3363,11 @@ debug\moc_GcodeScript.cpp: GcodeScript.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QJsonDocument \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QJsonObject \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QJsonArray \
+		ScurveInterpolator.h \
 		device\slider.h \
 		device\conveyor.h \
 		device\encoder.h \
 		device\camera.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDateTime \
 		TrackingManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QLineF \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QVector2D \
@@ -3861,6 +3862,7 @@ debug\moc_ImageViewer.cpp: ImageViewer.h \
 		VariableManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QHash \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
+		ObjectInfo.h \
 		PointTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPolygonF \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QMatrix \
@@ -4594,6 +4596,7 @@ debug\moc_MainWindow.cpp: MainWindow.h \
 		UnityTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QElapsedTimer \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItem \
+		ObjectInfo.h \
 		3rd-party\opencv\build\include\opencv2\opencv.hpp \
 		3rd-party\opencv\build\include\opencv2\opencv_modules.hpp \
 		3rd-party\opencv\build\include\opencv2\core.hpp \
@@ -4778,7 +4781,6 @@ debug\moc_MainWindow.cpp: MainWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QColor \
 		ObjectInfoModel.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QAbstractTableModel \
-		ObjectInfo.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QRandomGenerator \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		ImageProcessing.h \
@@ -4787,8 +4789,8 @@ debug\moc_MainWindow.cpp: MainWindow.h \
 		TaskNode.h \
 		Object.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSharedPointer \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDateTime \
 		GcodeScript.h \
-		ScurveInterpolator.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QtMath \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutex \
 		Parameter.h \
@@ -4808,11 +4810,11 @@ debug\moc_MainWindow.cpp: MainWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QJsonDocument \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QJsonObject \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QJsonArray \
+		ScurveInterpolator.h \
 		device\slider.h \
 		device\conveyor.h \
 		device\encoder.h \
 		device\camera.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDateTime \
 		TrackingManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QLineF \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QVector2D \
@@ -4820,6 +4822,7 @@ debug\moc_MainWindow.cpp: MainWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPolygonF \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGraphicsView \
 		VersionManager.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QSslSocket \
 		debug\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2015_64\bin\moc.exe
 	C:\Qt\5.15.2\msvc2015_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include "E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware/debug/moc_predefs.h" -IC:/Qt/5.15.2/msvc2015_64/mkspecs/win32-msvc -I"E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware" -I"E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware/3rd-party/opencv/build/include" -IC:/Qt/5.15.2/msvc2015_64/include -IC:/Qt/5.15.2/msvc2015_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2015_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2015_64/include/QtSvg -IC:/Qt/5.15.2/msvc2015_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtQuick -IC:/Qt/5.15.2/msvc2015_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2015_64/include/QtGui -IC:/Qt/5.15.2/msvc2015_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2015_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2015_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2015_64/include/QtQml -IC:/Qt/5.15.2/msvc2015_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2015_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" MainWindow.h -o debug\moc_MainWindow.cpp
@@ -5092,16 +5095,12 @@ debug\moc_ImageProcessing.cpp: ImageProcessing.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qgridlayout.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLineEdit \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutexLocker \
-		VariableManager.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSettings \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsettings.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QVariant \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QHash \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QVector3D \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qvector3d.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSharedPointer \
 		ObjectInfo.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QVector3D \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qvector3d.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDateTime \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qdatetime.h \
 		debug\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2015_64\bin\moc.exe
 	C:\Qt\5.15.2\msvc2015_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include "E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware/debug/moc_predefs.h" -IC:/Qt/5.15.2/msvc2015_64/mkspecs/win32-msvc -I"E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware" -I"E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware/3rd-party/opencv/build/include" -IC:/Qt/5.15.2/msvc2015_64/include -IC:/Qt/5.15.2/msvc2015_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2015_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2015_64/include/QtSvg -IC:/Qt/5.15.2/msvc2015_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtQuick -IC:/Qt/5.15.2/msvc2015_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2015_64/include/QtGui -IC:/Qt/5.15.2/msvc2015_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2015_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2015_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2015_64/include/QtQml -IC:/Qt/5.15.2/msvc2015_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2015_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" ImageProcessing.h -o debug\moc_ImageProcessing.cpp
@@ -5177,7 +5176,7 @@ debug\moc_ObjectInfoModel.cpp: ObjectInfoModel.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qvector3d.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtguiglobal.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtgui-config.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QList \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QVector \
 		ObjectInfo.h \
 		debug\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2015_64\bin\moc.exe
@@ -6124,6 +6123,7 @@ debug\moc_ProjectManager.cpp: ProjectManager.h \
 		UnityTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QElapsedTimer \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItem \
+		ObjectInfo.h \
 		3rd-party\opencv\build\include\opencv2\opencv.hpp \
 		3rd-party\opencv\build\include\opencv2\opencv_modules.hpp \
 		3rd-party\opencv\build\include\opencv2\core.hpp \
@@ -6308,7 +6308,6 @@ debug\moc_ProjectManager.cpp: ProjectManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QColor \
 		ObjectInfoModel.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QAbstractTableModel \
-		ObjectInfo.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QRandomGenerator \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		ImageProcessing.h \
@@ -6318,8 +6317,8 @@ debug\moc_ProjectManager.cpp: ProjectManager.h \
 		TaskNode.h \
 		Object.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSharedPointer \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDateTime \
 		GcodeScript.h \
-		ScurveInterpolator.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QtMath \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutex \
 		Parameter.h \
@@ -6341,11 +6340,11 @@ debug\moc_ProjectManager.cpp: ProjectManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QJsonDocument \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QJsonObject \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QJsonArray \
+		ScurveInterpolator.h \
 		device\slider.h \
 		device\conveyor.h \
 		device\encoder.h \
 		device\camera.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDateTime \
 		TrackingManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QLineF \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QVector2D \
@@ -6864,6 +6863,7 @@ debug\moc_RobotWindow.cpp: RobotWindow.h \
 		UnityTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QElapsedTimer \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItem \
+		ObjectInfo.h \
 		3rd-party\opencv\build\include\opencv2\opencv.hpp \
 		3rd-party\opencv\build\include\opencv2\opencv_modules.hpp \
 		3rd-party\opencv\build\include\opencv2\core.hpp \
@@ -7051,7 +7051,6 @@ debug\moc_RobotWindow.cpp: RobotWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QColor \
 		ObjectInfoModel.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QAbstractTableModel \
-		ObjectInfo.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QRandomGenerator \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QStackedWidget \
@@ -7062,8 +7061,8 @@ debug\moc_RobotWindow.cpp: RobotWindow.h \
 		TaskNode.h \
 		Object.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSharedPointer \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDateTime \
 		GcodeScript.h \
-		ScurveInterpolator.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QtMath \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutex \
 		Parameter.h \
@@ -7086,11 +7085,11 @@ debug\moc_RobotWindow.cpp: RobotWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QJsonDocument \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QJsonObject \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QJsonArray \
+		ScurveInterpolator.h \
 		device\slider.h \
 		device\conveyor.h \
 		device\encoder.h \
 		device\camera.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDateTime \
 		TrackingManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QLineF \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QVector2D \
@@ -7354,6 +7353,7 @@ debug\moc_SocketConnectionManager.cpp: SocketConnectionManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QElapsedTimer \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qelapsedtimer.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItem \
+		ObjectInfo.h \
 		3rd-party\opencv\build\include\opencv2\opencv.hpp \
 		3rd-party\opencv\build\include\opencv2\opencv_modules.hpp \
 		3rd-party\opencv\build\include\opencv2\core.hpp \
@@ -8109,6 +8109,7 @@ debug\moc_TabDashboard.cpp: TabDashboard.h \
 		UnityTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QElapsedTimer \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItem \
+		ObjectInfo.h \
 		3rd-party\opencv\build\include\opencv2\opencv.hpp \
 		3rd-party\opencv\build\include\opencv2\opencv_modules.hpp \
 		3rd-party\opencv\build\include\opencv2\core.hpp \
@@ -8293,7 +8294,6 @@ debug\moc_TabDashboard.cpp: TabDashboard.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QColor \
 		ObjectInfoModel.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QAbstractTableModel \
-		ObjectInfo.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QRandomGenerator \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		ImageProcessing.h \
@@ -8302,8 +8302,8 @@ debug\moc_TabDashboard.cpp: TabDashboard.h \
 		TaskNode.h \
 		Object.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSharedPointer \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDateTime \
 		GcodeScript.h \
-		ScurveInterpolator.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QtMath \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutex \
 		Parameter.h \
@@ -8323,11 +8323,11 @@ debug\moc_TabDashboard.cpp: TabDashboard.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QJsonDocument \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QJsonObject \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QJsonArray \
+		ScurveInterpolator.h \
 		device\slider.h \
 		device\conveyor.h \
 		device\encoder.h \
 		device\camera.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDateTime \
 		TrackingManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QLineF \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QVector2D \
@@ -8577,16 +8577,15 @@ debug\moc_TaskNode.cpp: TaskNode.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLineEdit \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qlineedit.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutexLocker \
-		VariableManager.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSettings \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsettings.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QVariant \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QHash \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QVector3D \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qvector3d.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSharedPointer \
 		ObjectInfo.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QVector3D \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qvector3d.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QThread \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qthread.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qdeadlinetimer.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDateTime \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qdatetime.h \
 		debug\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2015_64\bin\moc.exe
 	C:\Qt\5.15.2\msvc2015_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include "E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware/debug/moc_predefs.h" -IC:/Qt/5.15.2/msvc2015_64/mkspecs/win32-msvc -I"E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware" -I"E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware/3rd-party/opencv/build/include" -IC:/Qt/5.15.2/msvc2015_64/include -IC:/Qt/5.15.2/msvc2015_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2015_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2015_64/include/QtSvg -IC:/Qt/5.15.2/msvc2015_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtQuick -IC:/Qt/5.15.2/msvc2015_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2015_64/include/QtGui -IC:/Qt/5.15.2/msvc2015_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2015_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2015_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2015_64/include/QtQml -IC:/Qt/5.15.2/msvc2015_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2015_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" TaskNode.h -o debug\moc_TaskNode.cpp
@@ -8845,7 +8844,7 @@ debug\moc_TrackingManager.cpp: TrackingManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpen.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItem \
 		ObjectInfo.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QList \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QVector \
 		debug\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2015_64\bin\moc.exe
 	C:\Qt\5.15.2\msvc2015_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include "E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware/debug/moc_predefs.h" -IC:/Qt/5.15.2/msvc2015_64/mkspecs/win32-msvc -I"E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware" -I"E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware/3rd-party/opencv/build/include" -IC:/Qt/5.15.2/msvc2015_64/include -IC:/Qt/5.15.2/msvc2015_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2015_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2015_64/include/QtSvg -IC:/Qt/5.15.2/msvc2015_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtQuick -IC:/Qt/5.15.2/msvc2015_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2015_64/include/QtGui -IC:/Qt/5.15.2/msvc2015_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2015_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2015_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2015_64/include/QtQml -IC:/Qt/5.15.2/msvc2015_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2015_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" TrackingManager.h -o debug\moc_TrackingManager.cpp
@@ -8976,6 +8975,7 @@ debug\moc_VariableManager.cpp: VariableManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QElapsedTimer \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qelapsedtimer.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItem \
+		ObjectInfo.h \
 		debug\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2015_64\bin\moc.exe
 	C:\Qt\5.15.2\msvc2015_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include "E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware/debug/moc_predefs.h" -IC:/Qt/5.15.2/msvc2015_64/mkspecs/win32-msvc -I"E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware" -I"E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware/3rd-party/opencv/build/include" -IC:/Qt/5.15.2/msvc2015_64/include -IC:/Qt/5.15.2/msvc2015_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2015_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2015_64/include/QtSvg -IC:/Qt/5.15.2/msvc2015_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtQuick -IC:/Qt/5.15.2/msvc2015_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2015_64/include/QtGui -IC:/Qt/5.15.2/msvc2015_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2015_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2015_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2015_64/include/QtQml -IC:/Qt/5.15.2/msvc2015_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2015_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" VariableManager.h -o debug\moc_VariableManager.cpp
@@ -9129,6 +9129,17 @@ debug\moc_VersionManager.cpp: VersionManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qdesktopwidget.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qguiapplication.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qinputmethod.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QJsonDocument \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qjsondocument.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qjsonvalue.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qcborvalue.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qcborcommon.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qregularexpression.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\quuid.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QJsonObject \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qjsonobject.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QSslSocket \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDebug \
 		debug\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2015_64\bin\moc.exe
 	C:\Qt\5.15.2\msvc2015_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include "E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware/debug/moc_predefs.h" -IC:/Qt/5.15.2/msvc2015_64/mkspecs/win32-msvc -I"E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware" -I"E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware/3rd-party/opencv/build/include" -IC:/Qt/5.15.2/msvc2015_64/include -IC:/Qt/5.15.2/msvc2015_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2015_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2015_64/include/QtSvg -IC:/Qt/5.15.2/msvc2015_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtQuick -IC:/Qt/5.15.2/msvc2015_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2015_64/include/QtGui -IC:/Qt/5.15.2/msvc2015_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2015_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2015_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2015_64/include/QtQml -IC:/Qt/5.15.2/msvc2015_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2015_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" VersionManager.h -o debug\moc_VersionManager.cpp
@@ -9412,6 +9423,7 @@ debug\moc_DeviceManager.cpp: device\DeviceManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtextformat.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpen.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItem \
+		ObjectInfo.h \
 		device\slider.h \
 		device\conveyor.h \
 		device\encoder.h \
@@ -10115,6 +10127,7 @@ debug\moc_robot.cpp: device\robot.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtextformat.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpen.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItem \
+		ObjectInfo.h \
 		debug\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2015_64\bin\moc.exe
 	C:\Qt\5.15.2\msvc2015_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include "E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware/debug/moc_predefs.h" -IC:/Qt/5.15.2/msvc2015_64/mkspecs/win32-msvc -I"E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware" -I"E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware/3rd-party/opencv/build/include" -IC:/Qt/5.15.2/msvc2015_64/include -IC:/Qt/5.15.2/msvc2015_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2015_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2015_64/include/QtSvg -IC:/Qt/5.15.2/msvc2015_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtQuick -IC:/Qt/5.15.2/msvc2015_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2015_64/include/QtGui -IC:/Qt/5.15.2/msvc2015_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2015_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2015_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2015_64/include/QtQml -IC:/Qt/5.15.2/msvc2015_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2015_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" device\robot.h -o debug\moc_robot.cpp
@@ -11884,6 +11897,7 @@ ui_RobotWindow.h: RobotWindow.ui \
 		VariableManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QHash \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
+		ObjectInfo.h \
 		PointTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPolygonF \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QMatrix \
@@ -12514,6 +12528,7 @@ debug\main.obj: main.cpp RobotWindow.h \
 		UnityTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QElapsedTimer \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItem \
+		ObjectInfo.h \
 		3rd-party\opencv\build\include\opencv2\opencv.hpp \
 		3rd-party\opencv\build\include\opencv2\opencv_modules.hpp \
 		3rd-party\opencv\build\include\opencv2\core.hpp \
@@ -12701,7 +12716,6 @@ debug\main.obj: main.cpp RobotWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QColor \
 		ObjectInfoModel.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QAbstractTableModel \
-		ObjectInfo.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QRandomGenerator \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QStackedWidget \
@@ -12712,8 +12726,8 @@ debug\main.obj: main.cpp RobotWindow.h \
 		TaskNode.h \
 		Object.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSharedPointer \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDateTime \
 		GcodeScript.h \
-		ScurveInterpolator.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QtMath \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutex \
 		Parameter.h \
@@ -12737,11 +12751,11 @@ debug\main.obj: main.cpp RobotWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QJsonDocument \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QJsonObject \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QJsonArray \
+		ScurveInterpolator.h \
 		device\slider.h \
 		device\conveyor.h \
 		device\encoder.h \
 		device\camera.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDateTime \
 		TrackingManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QLineF \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QVector2D \
@@ -12752,6 +12766,7 @@ debug\main.obj: main.cpp RobotWindow.h \
 		Authority.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGraphicsView \
 		VersionManager.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QSslSocket \
 		AccountWindow.h \
 		testwindow.h \
 		testcode.h \
@@ -13418,6 +13433,7 @@ debug\Authority.obj: Authority.cpp Authority.h \
 		UnityTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QElapsedTimer \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItem \
+		ObjectInfo.h \
 		3rd-party\opencv\build\include\opencv2\opencv.hpp \
 		3rd-party\opencv\build\include\opencv2\opencv_modules.hpp \
 		3rd-party\opencv\build\include\opencv2\core.hpp \
@@ -13602,7 +13618,6 @@ debug\Authority.obj: Authority.cpp Authority.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QColor \
 		ObjectInfoModel.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QAbstractTableModel \
-		ObjectInfo.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QRandomGenerator \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		ImageProcessing.h \
@@ -13612,8 +13627,8 @@ debug\Authority.obj: Authority.cpp Authority.h \
 		TaskNode.h \
 		Object.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSharedPointer \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDateTime \
 		GcodeScript.h \
-		ScurveInterpolator.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QtMath \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutex \
 		Parameter.h \
@@ -13633,11 +13648,11 @@ debug\Authority.obj: Authority.cpp Authority.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QJsonDocument \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QJsonObject \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QJsonArray \
+		ScurveInterpolator.h \
 		device\slider.h \
 		device\conveyor.h \
 		device\encoder.h \
 		device\camera.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDateTime \
 		TrackingManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QLineF \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QVector2D \
@@ -14519,6 +14534,7 @@ debug\FilterWindow.obj: FilterWindow.cpp FilterWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpen.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QElapsedTimer \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItem \
+		ObjectInfo.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QPushButton \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qpushbutton.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qabstractbutton.h \
@@ -14938,7 +14954,6 @@ debug\GcodeScript.obj: GcodeScript.cpp GcodeScript.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qabstractitemmodel.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qicon.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
-		ScurveInterpolator.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QtMath \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qmath.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutex \
@@ -15340,6 +15355,7 @@ debug\GcodeScript.obj: GcodeScript.cpp GcodeScript.h \
 		VariableManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QHash \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
+		ObjectInfo.h \
 		3rd-party\opencv\build\include\opencv2\opencv.hpp \
 		3rd-party\opencv\build\include\opencv2\opencv_modules.hpp \
 		3rd-party\opencv\build\include\opencv2\core.hpp \
@@ -15524,7 +15540,6 @@ debug\GcodeScript.obj: GcodeScript.cpp GcodeScript.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QColor \
 		ObjectInfoModel.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QAbstractTableModel \
-		ObjectInfo.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QRandomGenerator \
 		ImageProcessing.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QCheckBox \
@@ -15533,6 +15548,7 @@ debug\GcodeScript.obj: GcodeScript.cpp GcodeScript.h \
 		TaskNode.h \
 		Object.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSharedPointer \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDateTime \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QDialogButtonBox \
 		device\DeviceManager.h \
 		device\robot.h \
@@ -15547,11 +15563,11 @@ debug\GcodeScript.obj: GcodeScript.cpp GcodeScript.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QJsonDocument \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QJsonObject \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QJsonArray \
+		ScurveInterpolator.h \
 		device\slider.h \
 		device\conveyor.h \
 		device\encoder.h \
 		device\camera.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDateTime \
 		TrackingManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QLineF \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QVector2D \
@@ -15828,16 +15844,12 @@ debug\ImageProcessing.obj: ImageProcessing.cpp ImageProcessing.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qgridlayout.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLineEdit \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutexLocker \
-		VariableManager.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSettings \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsettings.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QVariant \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QHash \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSharedPointer \
+		ObjectInfo.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QVector3D \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qvector3d.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSharedPointer \
-		ObjectInfo.h
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDateTime \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qdatetime.h
 
 debug\ImageViewer.obj: ImageViewer.cpp ImageViewer.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGraphicsView \
@@ -16324,6 +16336,7 @@ debug\ImageViewer.obj: ImageViewer.cpp ImageViewer.h \
 		VariableManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QHash \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
+		ObjectInfo.h \
 		PointTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPolygonF \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QMatrix \
@@ -17051,6 +17064,7 @@ debug\MainWindow.obj: MainWindow.cpp MainWindow.h \
 		UnityTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QElapsedTimer \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItem \
+		ObjectInfo.h \
 		3rd-party\opencv\build\include\opencv2\opencv.hpp \
 		3rd-party\opencv\build\include\opencv2\opencv_modules.hpp \
 		3rd-party\opencv\build\include\opencv2\core.hpp \
@@ -17235,7 +17249,6 @@ debug\MainWindow.obj: MainWindow.cpp MainWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QColor \
 		ObjectInfoModel.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QAbstractTableModel \
-		ObjectInfo.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QRandomGenerator \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		ImageProcessing.h \
@@ -17244,8 +17257,8 @@ debug\MainWindow.obj: MainWindow.cpp MainWindow.h \
 		TaskNode.h \
 		Object.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSharedPointer \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDateTime \
 		GcodeScript.h \
-		ScurveInterpolator.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QtMath \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutex \
 		Parameter.h \
@@ -17265,11 +17278,11 @@ debug\MainWindow.obj: MainWindow.cpp MainWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QJsonDocument \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QJsonObject \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QJsonArray \
+		ScurveInterpolator.h \
 		device\slider.h \
 		device\conveyor.h \
 		device\encoder.h \
 		device\camera.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDateTime \
 		TrackingManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QLineF \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QVector2D \
@@ -17277,6 +17290,7 @@ debug\MainWindow.obj: MainWindow.cpp MainWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPolygonF \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGraphicsView \
 		VersionManager.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QSslSocket \
 		ui_MainWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QIcon \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QAction \
@@ -18231,6 +18245,7 @@ debug\ProjectManager.obj: ProjectManager.cpp ProjectManager.h \
 		UnityTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QElapsedTimer \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItem \
+		ObjectInfo.h \
 		3rd-party\opencv\build\include\opencv2\opencv.hpp \
 		3rd-party\opencv\build\include\opencv2\opencv_modules.hpp \
 		3rd-party\opencv\build\include\opencv2\core.hpp \
@@ -18415,7 +18430,6 @@ debug\ProjectManager.obj: ProjectManager.cpp ProjectManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QColor \
 		ObjectInfoModel.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QAbstractTableModel \
-		ObjectInfo.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QRandomGenerator \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		ImageProcessing.h \
@@ -18425,8 +18439,8 @@ debug\ProjectManager.obj: ProjectManager.cpp ProjectManager.h \
 		TaskNode.h \
 		Object.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSharedPointer \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDateTime \
 		GcodeScript.h \
-		ScurveInterpolator.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QtMath \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutex \
 		Parameter.h \
@@ -18447,11 +18461,11 @@ debug\ProjectManager.obj: ProjectManager.cpp ProjectManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QJsonDocument \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QJsonObject \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QJsonArray \
+		ScurveInterpolator.h \
 		device\slider.h \
 		device\conveyor.h \
 		device\encoder.h \
 		device\camera.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDateTime \
 		TrackingManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QLineF \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QVector2D \
@@ -18967,6 +18981,7 @@ debug\RobotWindow.obj: RobotWindow.cpp RobotWindow.h \
 		UnityTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QElapsedTimer \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItem \
+		ObjectInfo.h \
 		3rd-party\opencv\build\include\opencv2\opencv.hpp \
 		3rd-party\opencv\build\include\opencv2\opencv_modules.hpp \
 		3rd-party\opencv\build\include\opencv2\core.hpp \
@@ -19154,7 +19169,6 @@ debug\RobotWindow.obj: RobotWindow.cpp RobotWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QColor \
 		ObjectInfoModel.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QAbstractTableModel \
-		ObjectInfo.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QRandomGenerator \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QStackedWidget \
@@ -19165,8 +19179,8 @@ debug\RobotWindow.obj: RobotWindow.cpp RobotWindow.h \
 		TaskNode.h \
 		Object.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSharedPointer \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDateTime \
 		GcodeScript.h \
-		ScurveInterpolator.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QtMath \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutex \
 		Parameter.h \
@@ -19190,11 +19204,11 @@ debug\RobotWindow.obj: RobotWindow.cpp RobotWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QJsonDocument \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QJsonObject \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QJsonArray \
+		ScurveInterpolator.h \
 		device\slider.h \
 		device\conveyor.h \
 		device\encoder.h \
 		device\camera.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDateTime \
 		TrackingManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QLineF \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QVector2D \
@@ -19221,7 +19235,8 @@ debug\RobotWindow.obj: RobotWindow.cpp RobotWindow.h \
 		MainWindow.h \
 		TabDashboard.h \
 		Authority.h \
-		VersionManager.h
+		VersionManager.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QSslSocket
 
 debug\SmartDialog.obj: SmartDialog.cpp SmartDialog.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QWidget \
@@ -19472,6 +19487,7 @@ debug\SocketConnectionManager.obj: SocketConnectionManager.cpp SocketConnectionM
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QElapsedTimer \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qelapsedtimer.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItem \
+		ObjectInfo.h \
 		3rd-party\opencv\build\include\opencv2\opencv.hpp \
 		3rd-party\opencv\build\include\opencv2\opencv_modules.hpp \
 		3rd-party\opencv\build\include\opencv2\core.hpp \
@@ -20087,6 +20103,7 @@ debug\SoftwareManager.obj: SoftwareManager.cpp SoftwareManager.h \
 		UnityTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QElapsedTimer \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItem \
+		ObjectInfo.h \
 		3rd-party\opencv\build\include\opencv2\opencv.hpp \
 		3rd-party\opencv\build\include\opencv2\opencv_modules.hpp \
 		3rd-party\opencv\build\include\opencv2\core.hpp \
@@ -20271,7 +20288,6 @@ debug\SoftwareManager.obj: SoftwareManager.cpp SoftwareManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QColor \
 		ObjectInfoModel.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QAbstractTableModel \
-		ObjectInfo.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QRandomGenerator \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		ImageProcessing.h \
@@ -20281,8 +20297,8 @@ debug\SoftwareManager.obj: SoftwareManager.cpp SoftwareManager.h \
 		TaskNode.h \
 		Object.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSharedPointer \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDateTime \
 		GcodeScript.h \
-		ScurveInterpolator.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QtMath \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutex \
 		Parameter.h \
@@ -20302,11 +20318,11 @@ debug\SoftwareManager.obj: SoftwareManager.cpp SoftwareManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QJsonDocument \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QJsonObject \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QJsonArray \
+		ScurveInterpolator.h \
 		device\slider.h \
 		device\conveyor.h \
 		device\encoder.h \
 		device\camera.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDateTime \
 		TrackingManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QLineF \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QVector2D \
@@ -20316,7 +20332,8 @@ debug\SoftwareManager.obj: SoftwareManager.cpp SoftwareManager.h \
 		TabDashboard.h \
 		Authority.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGraphicsView \
-		VersionManager.h
+		VersionManager.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QSslSocket
 
 debug\TCPConnectionManager.obj: TCPConnectionManager.cpp TCPConnectionManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QObject \
@@ -20969,6 +20986,7 @@ debug\TabDashboard.obj: TabDashboard.cpp TabDashboard.h \
 		UnityTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QElapsedTimer \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItem \
+		ObjectInfo.h \
 		3rd-party\opencv\build\include\opencv2\opencv.hpp \
 		3rd-party\opencv\build\include\opencv2\opencv_modules.hpp \
 		3rd-party\opencv\build\include\opencv2\core.hpp \
@@ -21153,7 +21171,6 @@ debug\TabDashboard.obj: TabDashboard.cpp TabDashboard.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QColor \
 		ObjectInfoModel.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QAbstractTableModel \
-		ObjectInfo.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QRandomGenerator \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		ImageProcessing.h \
@@ -21162,8 +21179,8 @@ debug\TabDashboard.obj: TabDashboard.cpp TabDashboard.h \
 		TaskNode.h \
 		Object.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSharedPointer \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDateTime \
 		GcodeScript.h \
-		ScurveInterpolator.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QtMath \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutex \
 		Parameter.h \
@@ -21183,11 +21200,11 @@ debug\TabDashboard.obj: TabDashboard.cpp TabDashboard.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QJsonDocument \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QJsonObject \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QJsonArray \
+		ScurveInterpolator.h \
 		device\slider.h \
 		device\conveyor.h \
 		device\encoder.h \
 		device\camera.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDateTime \
 		TrackingManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QLineF \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QVector2D \
@@ -21434,16 +21451,15 @@ debug\TaskNode.obj: TaskNode.cpp TaskNode.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLineEdit \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qlineedit.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutexLocker \
-		VariableManager.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSettings \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsettings.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QVariant \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QHash \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSharedPointer \
+		ObjectInfo.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QVector3D \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qvector3d.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSharedPointer \
-		ObjectInfo.h
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QThread \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qthread.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qdeadlinetimer.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDateTime \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qdatetime.h
 
 debug\TestCode.obj: TestCode.cpp testcode.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QObject \
@@ -21768,7 +21784,7 @@ debug\TrackingManager.obj: TrackingManager.cpp TrackingManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpen.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItem \
 		ObjectInfo.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QList
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QVector
 
 debug\VariableManager.obj: VariableManager.cpp VariableManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSettings \
@@ -21895,7 +21911,8 @@ debug\VariableManager.obj: VariableManager.cpp VariableManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpen.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QElapsedTimer \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qelapsedtimer.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItem
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItem \
+		ObjectInfo.h
 
 debug\VersionManager.obj: VersionManager.cpp VersionManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QWidget \
@@ -22045,7 +22062,18 @@ debug\VersionManager.obj: VersionManager.cpp VersionManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qeventloop.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qdesktopwidget.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qguiapplication.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qinputmethod.h
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qinputmethod.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QJsonDocument \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qjsondocument.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qjsonvalue.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qcborvalue.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qcborcommon.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qregularexpression.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\quuid.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QJsonObject \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qjsonobject.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QSslSocket \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDebug
 
 debug\codeeditor.obj: codeeditor.cpp C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QtWidgets \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QtWidgetsDepends \
@@ -23163,6 +23191,7 @@ debug\UnityTool.obj: UnityTool.cpp UnityTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSettings \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QHash \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
+		ObjectInfo.h \
 		3rd-party\opencv\build\include\opencv2\opencv.hpp \
 		3rd-party\opencv\build\include\opencv2\opencv_modules.hpp \
 		3rd-party\opencv\build\include\opencv2\core.hpp \
@@ -23350,7 +23379,6 @@ debug\UnityTool.obj: UnityTool.cpp UnityTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QColor \
 		ObjectInfoModel.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QAbstractTableModel \
-		ObjectInfo.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QRandomGenerator \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMap \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QStackedWidget \
@@ -23361,8 +23389,8 @@ debug\UnityTool.obj: UnityTool.cpp UnityTool.h \
 		TaskNode.h \
 		Object.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSharedPointer \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDateTime \
 		GcodeScript.h \
-		ScurveInterpolator.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QtMath \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QMutex \
 		Parameter.h \
@@ -23386,11 +23414,11 @@ debug\UnityTool.obj: UnityTool.cpp UnityTool.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QJsonDocument \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QJsonObject \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QJsonArray \
+		ScurveInterpolator.h \
 		device\slider.h \
 		device\conveyor.h \
 		device\encoder.h \
 		device\camera.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDateTime \
 		TrackingManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QLineF \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QVector2D \
@@ -23558,6 +23586,7 @@ debug\DeviceManager.obj: device\DeviceManager.cpp device\DeviceManager.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtextformat.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpen.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItem \
+		ObjectInfo.h \
 		device\slider.h \
 		device\conveyor.h \
 		device\encoder.h
@@ -24245,7 +24274,8 @@ debug\robot.obj: device\robot.cpp device\robot.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtextcursor.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtextformat.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qpen.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItem
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItem \
+		ObjectInfo.h
 
 debug\slider.obj: device\slider.cpp device\slider.h \
 		device\device.h \

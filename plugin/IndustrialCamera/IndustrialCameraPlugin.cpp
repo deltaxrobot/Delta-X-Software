@@ -11,8 +11,8 @@ QWidget *IndustrialCameraPlugin::GetUI()
     connect(pluginForm, SIGNAL(EmitEventFromUI(QString)), this, SLOT(TranferEmit(QString)));
     connect(pluginForm->CameraReaderWork, &CameraReader::CapturedImage, this, &IndustrialCameraPlugin::CapturedImage);
     connect(pluginForm->CameraReaderWork, &CameraReader::StartedCapture, this, &IndustrialCameraPlugin::StartedCapture);
-//    connect(this, &IndustrialCameraPlugin::RequestCapture, pluginForm, &Form::RequestImage);
     connect(this, &IndustrialCameraPlugin::RequestCapture, pluginForm->CameraReaderWork, &CameraReader::ShotImage);
+    connect(this, &IndustrialCameraPlugin::RequestConnect, pluginForm->CameraReaderWork, &CameraReader::ConnectCamera);
     return pluginForm;
 }
 
