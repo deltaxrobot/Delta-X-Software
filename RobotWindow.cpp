@@ -435,24 +435,8 @@ void RobotWindow::InitOtherThreadObjects()
     connect(ui->pbSetEncoderVelocity, SIGNAL(clicked(bool)), this, SLOT(SetEncoderVelocity()));
 
     connect(ui->cbEncoderType, SIGNAL(currentIndexChanged(int)), this, SLOT(ChangeEncoderType(int)));
+    connect(ui->cbLinkToConveyorX, SIGNAL(stateChanged(int)), this, SLOT(ChangeConveyorLinkToEncoder(int)));
 
-    connect(ui->cbLinkToConveyorX, &QCheckBox::stateChanged, [=](int state){
-        if(state == Qt::Checked)
-        {
-            int conid = getIDfromName(ui->cbConveyorLinkToEncoder->currentText());
-            int enid = getIDfromName(ui->cbConveyorLinkToEncoder->currentText());
-
-            DeviceManagerInstance->Encoders.at(enid)->LinkedConveyor = conid;
-            ui->pbConnectEncoder->setHidden(true);
-        } else
-        {
-            int enid = getIDfromName(ui->cbConveyorLinkToEncoder->currentText());
-
-            DeviceManagerInstance->Encoders.at(enid)->LinkedConveyor = -1;
-            ui->pbConnectEncoder->setHidden(false);
-        }
-    });
-    
 
     //-------- Slider --------
 
@@ -1563,7 +1547,7 @@ void RobotWindow::LoadSettings()
 //    LoadJoggingSettings(setting);
 //    Load2DSettings(setting);
 //    Load3DSettings(setting);
-//    LoadExternalDeviceSettings(setting);
+    LoadExternalDeviceSettings();
 //    LoadTerminalSettings(setting);
 //    LoadGcodeEditorSettings(setting);
     LoadObjectDetectorSetting();
@@ -1616,75 +1600,27 @@ void RobotWindow::Load3DSettings(QSettings *setting)
 
 }
 
-void RobotWindow::LoadExternalDeviceSettings(QSettings *setting)
+void RobotWindow::LoadExternalDeviceSettings()
 {
-    setting->beginGroup("ExternalDevice");
-
     //---- Conveyor -----
-    setting->beginGroup("Conveyor");
+    QString prefix = ProjectName + "." + ui->cbSelectedConveyor->currentText() + ".";
 
-    bool connectionState = setting->value("State", false).toBool();
-    QString comPort = setting->value("ComPort", "COM1").toString();
-    int baudrate = setting->value("Baudrate", 115200).toInt();
-
-    ui->cbConveyorMode->setCurrentText(setting->value("ControlMode").toString());
-    ui->leConveyorXPosition->setText(setting->value("MovingValue").toString());
-
-    if (connectionState == true)
-    {
-
-    }
-
-    setting->endGroup();
+    ui->cbConveyorType->setCurrentIndex(VariableManager::instance().getVar(prefix + "ConveyorType").toInt());
+    ui->cbConveyorMode->setCurrentIndex(VariableManager::instance().getVar(prefix + "ConveyorMode").toInt());
+    ui->leConveyorXSpeed->setText(VariableManager::instance().getVar(prefix + "ConveyorSpeed").toString());
+    ui->leConveyorXPosition->setText(VariableManager::instance().getVar(prefix + "ConveyorPosition").toString());
+    ui->leConveyorXAbsolutePosition->setText(VariableManager::instance().getVar(prefix + "ConveyorAbsolutePosition").toString());
 
     //---- Encoder -----
 
-    setting->beginGroup("Encoder");
+    prefix = ProjectName + "." + ui->cbSelectedEncoder->currentText() + ".";
 
-    connectionState = setting->value("State", false).toBool();
-    comPort = setting->value("ComPort", "").toString();
-    baudrate = setting->value("Baudrate", 115200).toInt();
+    ui->cbEncoderType->setCurrentIndex(VariableManager::instance().getVar(prefix + "EncoderType").toInt());
+    Qt::CheckState checkState = static_cast<Qt::CheckState>(VariableManager::instance().getVar(prefix + "ConveyorLinkToEncoder").toInt());
+    ui->cbLinkToConveyorX->setCheckState(checkState);
+    ui->leEncoderInterval->setText(VariableManager::instance().getVar(prefix + "Interval").toString());
+    ui->leEncoderVelocity->setText(VariableManager::instance().getVar(prefix + "Velocity").toString());
 
-    if (connectionState == true && comPort != "")
-    {
-
-    }
-
-    setting->endGroup();
-
-    //---- Slider -----
-
-    setting->beginGroup("Slider");
-
-    connectionState = setting->value("State", false).toBool();
-    comPort = setting->value("ComPort", "COM1").toString();
-    baudrate = setting->value("Baudrate", 115200).toInt();
-
-    if (connectionState == true)
-    {
-
-    }
-
-    setting->endGroup();
-
-    //---- MCU -----
-
-    setting->beginGroup("MCU");
-
-    connectionState = setting->value("State", false).toBool();
-    comPort = setting->value("ComPort", "COM1").toString();
-    baudrate = setting->value("Baudrate", 115200).toInt();
-
-    if (connectionState == true)
-    {
-
-    }
-
-    setting->endGroup();
-
-    //-------------
-
-    setting->endGroup();
 }
 
 void RobotWindow::LoadTerminalSettings(QSettings *setting)
@@ -1719,23 +1655,19 @@ void RobotWindow::LoadObjectDetectorSetting()
     if (VariableManager::instance().getVar(prefix + "WarpEnable", false).toBool() == true)
     {
         ui->pbWarpTool->setChecked(true);
-//        ui->pbWarpTool->click();
     }
     else
     {
         ui->pbWarpTool->setChecked(false);
-//        ui->pbWarpTool->click();
     }
 
     if (VariableManager::instance().getVar(prefix + "CropEnable", false).toBool() == true)
     {
         ui->pbCropTool->setChecked(true);
-//        ui->pbCropTool->click();
     }
     else
     {
         ui->pbCropTool->setChecked(false);
-//        ui->pbCropTool->click();
     }
 
     EditImage(ui->pbWarpTool->isChecked(), ui->pbCropTool->isChecked());
@@ -1756,14 +1688,11 @@ void RobotWindow::LoadObjectDetectorSetting()
 
     if (IsCameraOpen == true)
     {
-//        for (int i = 0; i < pluginList->count(); i++)
-//        {
-//            DeltaXPlugin* plugin = pluginList->at(i);
+        DeltaXPlugin* camera = industrialCameraPlugin;
+        QTimer::singleShot(2000, [camera, cameraID]() {
+            emit camera->RequestConnect(cameraID);
+        });
 
-//            QTimer::singleShot(2000, [plugin, cameraID]() {
-//                emit plugin->RequestConnect(cameraID);
-//            });
-//        }
     }
 
 
@@ -3166,6 +3095,9 @@ void RobotWindow::UpdateGcodeValueToDeviceUI(QString deviceName, QString gcode)
 
 void RobotWindow::ChangeConveyorType(int index)
 {
+    QString prefix = ProjectName + "." + ui->cbSelectedConveyor->currentText() + ".";
+    UpdateVariable(prefix + "ConveyorType", index);
+
     ui->fConveyorX->setHidden(true);
     ui->fConveyorXHub->setHidden(true);
     ui->fConveyorCustom->setHidden(true);
@@ -3279,6 +3211,9 @@ void RobotWindow::ReadEncoder()
 
 void RobotWindow::SetEncoderAutoRead()
 {
+    QString prefix = ProjectName + "." + ui->cbSelectedEncoder->currentText() + ".";
+    UpdateVariable(prefix + "Interval", ui->leEncoderInterval->text());
+
     int interval = ui->leEncoderInterval->text().toInt();
     int id = ui->cbSelectedEncoder->currentText().toInt();
 
@@ -3334,6 +3269,8 @@ void RobotWindow::ResetEncoderPosition()
 
 void RobotWindow::SetEncoderVelocity()
 {
+    QString prefix = ProjectName + "." + ui->cbSelectedEncoder->currentText() + ".";
+    UpdateVariable(prefix + "Velocity", ui->leEncoderVelocity->text());
     int selectedEncoderID = ui->cbSelectedEncoder->currentIndex();
 
     TrackingManagerInstance->Trackings[selectedEncoderID]->VirEncoder.setVelocity(ui->leEncoderVelocity->text().toFloat());
@@ -3999,6 +3936,9 @@ void RobotWindow::ConnectConveyor()
 
 void RobotWindow::SetConveyorMode(int mode)
 {
+    QString prefix = ProjectName + "." + ui->cbSelectedConveyor->currentText() + ".";
+    UpdateVariable(prefix + "ConveyorMode", mode);
+
     if (ui->cbConveyorType->currentText().contains("Desktop Conveyor"))
     {
         if (mode > 0)
@@ -4044,6 +3984,9 @@ void RobotWindow::SetConveyorMovingMode(int mode)
 
 void RobotWindow::SetConveyorSpeed()
 {
+    QString prefix = ProjectName + "." + ui->cbSelectedConveyor->currentText() + ".";
+    UpdateVariable(prefix + "ConveyorSpeed", ui->leConveyorXSpeed->text());
+
     if (ui->cbLinkToConveyorX->isChecked() == true && ui->cbEncoderType->currentText() == "Virtual Encoder")
     {
         ui->leEncoderVelocity->setText(ui->leConveyorXSpeed->text());
@@ -4127,6 +4070,9 @@ void RobotWindow::SetConveyorSpeed()
 
 void RobotWindow::SetConveyorPosition()
 {
+    QString prefix = ProjectName + "." + ui->cbSelectedConveyor->currentText() + ".";
+    UpdateVariable(prefix + "ConveyorPosition", ui->leConveyorXPosition->text());
+
     if (ui->cbLinkToConveyorX->isChecked() == true && ui->cbEncoderType->currentText() == "Virtual Encoder")
     {
         float moving = ui->leConveyorXPosition->text().toFloat();
@@ -4164,6 +4110,9 @@ void RobotWindow::SetConveyorPosition()
 
 void RobotWindow::SetConveyorAbsolutePosition()
 {
+    QString prefix = ProjectName + "." + ui->cbSelectedConveyor->currentText() + ".";
+    UpdateVariable(prefix + "ConveyorAbsolutePosition", ui->leConveyorXAbsolutePosition->text());
+
     if (ui->cbConveyorType->currentText() == "X Conveyor")
     {
         emit Send(DeviceManager::CONVEYOR, QString("M312 ") + ui->leConveyorXAbsolutePosition->text());
@@ -4177,6 +4126,9 @@ void RobotWindow::ProcessShortcutKey()
 
 void RobotWindow::ChangeEncoderType(int index)
 {
+    QString prefix = ProjectName + "." + ui->cbSelectedEncoder->currentText() + ".";
+    UpdateVariable(prefix + "EncoderType", index);
+
     ui->pbConnectEncoder->setHidden(true);
     ui->pbSetEncoderVelocity->setHidden(true);
     ui->cbLinkToConveyorX->setHidden(true);
@@ -4206,6 +4158,27 @@ void RobotWindow::ChangeEncoderType(int index)
         ui->cbLinkToConveyorX->setHidden(false);
         ui->cbConveyorLinkToEncoder->setHidden(false);
         ui->pbSetEncoderVelocity->setHidden(false);
+    }
+}
+
+void RobotWindow::ChangeConveyorLinkToEncoder(int state)
+{
+    QString prefix = ProjectName + "." + ui->cbSelectedEncoder->currentText() + ".";
+    UpdateVariable(prefix + "ConveyorLinkToEncoder", state);
+
+    if(state == Qt::Checked)
+    {
+        int conid = getIDfromName(ui->cbConveyorLinkToEncoder->currentText());
+        int enid = getIDfromName(ui->cbConveyorLinkToEncoder->currentText());
+
+        DeviceManagerInstance->Encoders.at(enid)->LinkedConveyor = conid;
+        ui->pbConnectEncoder->setHidden(true);
+    } else
+    {
+        int enid = getIDfromName(ui->cbConveyorLinkToEncoder->currentText());
+
+        DeviceManagerInstance->Encoders.at(enid)->LinkedConveyor = -1;
+        ui->pbConnectEncoder->setHidden(false);
     }
 }
 
@@ -5227,8 +5200,16 @@ void RobotWindow::initPlugins(QStringList plugins)
             ui->twModule->addTab(pluginWidget->GetUI(), pluginWidget->GetTitle());
 
             pluginList->append(pluginWidget);
-            connect(pluginWidget, SIGNAL(CapturedImage(cv::Mat)), CameraInstance, SLOT(GetImageFromExternal(cv::Mat)));
-            connect(CameraInstance, &Camera::RequestCapture, pluginWidget, &DeltaXPlugin::RequestCapture);
+
+            QString pluginName = pluginWidget->GetName();
+
+            if (pluginName == "industrialcamera")
+            {
+                industrialCameraPlugin = pluginWidget;
+                connect(pluginWidget, SIGNAL(CapturedImage(cv::Mat)), CameraInstance, SLOT(GetImageFromExternal(cv::Mat)));
+                connect(CameraInstance, &Camera::RequestCapture, pluginWidget, &DeltaXPlugin::RequestCapture);
+
+            }
 
         }
         else

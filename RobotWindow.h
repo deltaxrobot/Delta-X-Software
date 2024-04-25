@@ -127,7 +127,7 @@ public:
     void LoadJoggingSettings(QSettings* setting);
     void Load2DSettings(QSettings* setting);
     void Load3DSettings(QSettings* setting);
-    void LoadExternalDeviceSettings(QSettings* setting);
+    void LoadExternalDeviceSettings();
     void LoadTerminalSettings(QSettings* setting);
     void LoadGcodeEditorSettings(QSettings* setting);
     void LoadObjectDetectorSetting();
@@ -363,6 +363,7 @@ public slots:
 
     //----- Encoder -----
     void ChangeEncoderType(int index);
+    void ChangeConveyorLinkToEncoder(int);
 
     void ConnectEncoder();
     void ReadEncoder();
@@ -531,6 +532,7 @@ private:
     QList<DeltaXPlugin*>* getPluginList();
 
     QList<DeltaXPlugin*>* pluginList;
+    DeltaXPlugin* industrialCameraPlugin;
 
     //---- Widget Pointer ----
 

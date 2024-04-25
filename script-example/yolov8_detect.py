@@ -1,8 +1,3 @@
-'''
-    >> label:0 x:100 Y:250 w:50 h:30 angle:135
-'''
-
-
 import cv2
 import sys
 import detect_socket
