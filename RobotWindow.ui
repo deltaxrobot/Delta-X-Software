@@ -1812,7 +1812,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
                   <property name="geometry">
                    <rect>
                     <x>0</x>
-                    <y>0</y>
+                    <y>-276</y>
                     <width>655</width>
                     <height>2900</height>
                    </rect>
@@ -9371,7 +9371,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
               <enum>QTabWidget::North</enum>
              </property>
              <property name="currentIndex">
-              <number>2</number>
+              <number>0</number>
              </property>
              <property name="elideMode">
               <enum>Qt::ElideNone</enum>

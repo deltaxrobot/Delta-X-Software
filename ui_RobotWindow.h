@@ -2184,7 +2184,7 @@ public:
         saObjectDetecting->setWidgetResizable(true);
         wObjectDetecting = new QWidget();
         wObjectDetecting->setObjectName(QString::fromUtf8("wObjectDetecting"));
-        wObjectDetecting->setGeometry(QRect(0, 0, 655, 2900));
+        wObjectDetecting->setGeometry(QRect(0, -276, 655, 2900));
         wObjectDetecting->setMinimumSize(QSize(100, 2900));
         wObjectDetecting->setStyleSheet(QString::fromUtf8("QWidget#wObjectDetecting\n"
 "{	\n"
@@ -9425,7 +9425,7 @@ public:
         pbImageMapping->setDefault(false);
         cbImageSource->setCurrentIndex(0);
         cbSendingImageMethod->setCurrentIndex(0);
-        twDevices->setCurrentIndex(2);
+        twDevices->setCurrentIndex(0);
         pbPump->setDefault(false);
         pbLaser->setDefault(false);
         pbGrip->setDefault(false);

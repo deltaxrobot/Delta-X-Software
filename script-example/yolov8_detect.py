@@ -4,6 +4,12 @@ import detect_socket
 import time
 from ultralytics import YOLO
 
+# Lấy tham số từ bên ngoài, gồm có ip, port, và đường dẫn đến file model theo format: python yolov8_detect.py -ip <ip> -p <port> -m <model_path>
+ip = sys.argv[sys.argv.index("-ip") + 1]
+port = int(sys.argv[sys.argv.index("-p") + 1)
+
+
+
 def get_objects(image):
     # Run YOLOv8 inference on the frame
     results = model(image)

@@ -48,6 +48,9 @@ QString Robot::SendGcode(QString gcode, bool is_wait, int time_out)
 
     last_gcode = now_gcode;
     now_gcode = gcode;
+
+    jsonObject["gcode"] = now_gcode;
+
     bool isMovingGcode = this->getPara(gcode);
 
     GetInfo();
@@ -75,7 +78,10 @@ QString Robot::SendGcode(QString gcode, bool is_wait, int time_out)
 }
 
 void Robot::ProcessResponse(QString id, QString response) {
+
+    jsonObject["response"] = response;
 //    emit Log(idName, response, 0);
+
     if (now_gcode.count("G28") > 0 || now_gcode.count("M85"))
     {
         SendGcode("Position");

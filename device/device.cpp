@@ -46,34 +46,30 @@ void Device::Connect()
             serialPort->setPortName(availablePorts.at(i).portName());
             serialPort->setBaudRate(baudrate);
 
-            if (serialPort->open(QIODevice::ReadWrite)) {
+            if (serialPort->open(QIODevice::ReadWrite))
+            {
                 int counter = 0;
-//                for (int j = 0; j < 10; j++)
-//                {
-                    QThread::msleep(50);
-                    serialPort->blockSignals(true);
-                    serialPort->write((confirmRequest + "\n").toLocal8Bit());
-                    serialPort->waitForReadyRead(50);
-                    QString response = QString(serialPort->readLine());
-                    if (response.indexOf(confirmResponse) > -1) {
-                        qDebug() << availablePorts.at(i).portName() << "is connected";
-                        readDataConnection = connect(serialPort, SIGNAL(readyRead()), this, SLOT(ReadData()));
-                        serialPort->blockSignals(false);
-                        break;
-                    }
-//                    else {
-//                        counter++;
-//                    }
-//                }
-
-//                if (counter == 10)
-//                {
-                    serialPort->close();
-//                }
-//                else
-//                {
+                QThread::msleep(200);
+                serialPort->blockSignals(true);
+                serialPort->write((confirmRequest + "\n").toLocal8Bit());
+                serialPort->waitForReadyRead(50);
+                QString response = QString(serialPort->readLine());
+                if (response.contains("Init"))
+                {
+                    response = QString(serialPort->readLine());
+                }
+                if (response.indexOf(confirmResponse) > -1) {
+                    qDebug() << availablePorts.at(i).portName() << "is connected";
+                    readDataConnection = connect(serialPort, SIGNAL(readyRead()), this, SLOT(ReadData()));
+                    serialPort->blockSignals(false);
 //                    serialPort->readAll();
-//                }
+                    break;
+                }
+                else
+                {
+                    return;
+                }
+
             }
         }
     }
@@ -98,6 +94,7 @@ void Device::Connect()
     jsonObject["state"] = (serialPort->isOpen())?"open":"close";
     jsonObject["com_name"] = serialPort->portName();
     jsonObject["baudrate"] = serialPort->baudRate();
+    jsonObject["gcode"] = "connect";
 
     QJsonDocument jsonDocument;
     jsonDocument.setObject(jsonObject);

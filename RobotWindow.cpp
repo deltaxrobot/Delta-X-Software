@@ -1036,6 +1036,8 @@ void RobotWindow::InitEvents()
 
     connect(ui->cbSourceForImageProvider, SIGNAL(currentIndexChanged(int)), this, SLOT(SelectImageProviderOption(int)));
 
+    SelectImageProviderOption(0);
+
     // ---- Setting ----
 
     //----------- Camera -----------
@@ -1674,7 +1676,8 @@ void RobotWindow::LoadObjectDetectorSetting()
 
     QString imageSource = VariableManager::instance().getVar(prefix + "ImageSource", ui->cbSourceForImageProvider->currentText()).toString();
 
-    ui->cbSourceForImageProvider->setCurrentText(imageSource);
+    int index = ui->cbSourceForImageProvider->findText(imageSource);
+    ui->cbSourceForImageProvider->setCurrentIndex(index);
 
     ui->leCaptureInterval->setText(VariableManager::instance().getVar(prefix + "WebcamInterval", ui->leCaptureInterval->text()).toString());
 
@@ -1688,11 +1691,17 @@ void RobotWindow::LoadObjectDetectorSetting()
 
     if (IsCameraOpen == true)
     {
-        DeltaXPlugin* camera = industrialCameraPlugin;
-        QTimer::singleShot(2000, [camera, cameraID]() {
-            emit camera->RequestConnect(cameraID);
-        });
-
+        if (imageSource == "Industrial Camera")
+        {
+            DeltaXPlugin* camera = industrialCameraPlugin;
+            QTimer::singleShot(2000, [camera, cameraID]() {
+                emit camera->RequestConnect(cameraID);
+            });
+        }
+        else if (imageSource == "Webcam")
+        {
+            QMetaObject::invokeMethod(CameraInstance, "OpenCamera", Qt::QueuedConnection, Q_ARG(int, cameraID));
+        }
     }
 
 
@@ -2046,6 +2055,8 @@ void RobotWindow::GetDeviceInfo(QString json)
     QString device = jsonObject.value("device").toString();
     QString com_name = jsonObject.value("com_name").toString();
     QString state = jsonObject.value("state").toString();
+    QString response = jsonObject.value("response").toString();
+    QString gcode = jsonObject.value("gcode").toString();
 
     UpdateVariable(device + QString::number(id) + "." + "COM.Name", com_name);
     UpdateVariable(device + QString::number(id) + "." + "COM.State", state);
@@ -2087,6 +2098,13 @@ void RobotWindow::GetDeviceInfo(QString json)
         }
 
         ui->lbComName->setText(jsonObject.value("com_name").toString());
+
+        if (gcode.contains("connect"))
+        {
+            emit Send(DeviceManager::ROBOT, "Position");
+        }
+
+
 
 //        VariableManager::instance().updateVar(prefix + "Port", com_name);
 //        VariableManager::instance().updateVar(prefix + "State", state);
@@ -2264,7 +2282,7 @@ void RobotWindow::ConnectRobot()
 void RobotWindow::SelectImageProviderOption(int option)
 {
     ui->fImageSource->setHidden(true);
-    ui->fWebcamSource->setHidden(false);
+    ui->fWebcamSource->setHidden(true);
 
     QString text = ui->cbSourceForImageProvider->itemText(option);
 
