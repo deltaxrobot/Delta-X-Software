@@ -168,11 +168,15 @@ void SocketConnectionManager::readFromClient() {
                 emit variableChanged(varName, value);
             }
         }
-    } /*
-    else if (data.contains("M98"))
+    }
+    else if (data.length() >= 2)
     {
-        emit gcodeReceived(data);
-    }*/
+        if (data.at(0) == '#')
+        {
+            QString value = VariableManager::instance().getVar(QString(data)).toString();
+            senderSocket->write((value + "\n").toUtf8());
+        }
+    }
     else if (!data.isEmpty()) {
         // Call a function by its name using Qt's meta-object system
         QMetaObject::invokeMethod(this, data.trimmed().toStdString().c_str());

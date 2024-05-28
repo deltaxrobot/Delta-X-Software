@@ -5048,6 +5048,12 @@ debug\moc_ImageProcessing.cpp: ImageProcessing.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qvector3d.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDateTime \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qdatetime.h \
+		VariableManager.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSettings \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsettings.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QVariant \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QHash \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
 		debug\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2015_64\bin\moc.exe
 	C:\Qt\5.15.2\msvc2015_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include "E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware/debug/moc_predefs.h" -IC:/Qt/5.15.2/msvc2015_64/mkspecs/win32-msvc -I"E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware" -I"E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware/3rd-party/opencv/build/include" -IC:/Qt/5.15.2/msvc2015_64/include -IC:/Qt/5.15.2/msvc2015_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2015_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2015_64/include/QtSvg -IC:/Qt/5.15.2/msvc2015_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtQuick -IC:/Qt/5.15.2/msvc2015_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2015_64/include/QtGui -IC:/Qt/5.15.2/msvc2015_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2015_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2015_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2015_64/include/QtQml -IC:/Qt/5.15.2/msvc2015_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2015_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" ImageProcessing.h -o debug\moc_ImageProcessing.cpp
@@ -8521,6 +8527,12 @@ debug\moc_TaskNode.cpp: TaskNode.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qdeadlinetimer.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDateTime \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qdatetime.h \
+		VariableManager.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSettings \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsettings.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QVariant \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QHash \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel \
 		debug\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2015_64\bin\moc.exe
 	C:\Qt\5.15.2\msvc2015_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include "E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware/debug/moc_predefs.h" -IC:/Qt/5.15.2/msvc2015_64/mkspecs/win32-msvc -I"E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware" -I"E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware/3rd-party/opencv/build/include" -IC:/Qt/5.15.2/msvc2015_64/include -IC:/Qt/5.15.2/msvc2015_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2015_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2015_64/include/QtSvg -IC:/Qt/5.15.2/msvc2015_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtQuick -IC:/Qt/5.15.2/msvc2015_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2015_64/include/QtGui -IC:/Qt/5.15.2/msvc2015_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2015_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2015_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2015_64/include/QtQml -IC:/Qt/5.15.2/msvc2015_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2015_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" TaskNode.h -o debug\moc_TaskNode.cpp
@@ -15622,7 +15634,13 @@ debug\ImageProcessing.obj: ImageProcessing.cpp ImageProcessing.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QVector3D \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qvector3d.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDateTime \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qdatetime.h
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qdatetime.h \
+		VariableManager.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSettings \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsettings.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QVariant \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QHash \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel
 
 debug\ImageViewer.obj: ImageViewer.cpp ImageViewer.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QGraphicsView \
@@ -21188,7 +21206,13 @@ debug\TaskNode.obj: TaskNode.cpp TaskNode.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qthread.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qdeadlinetimer.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDateTime \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qdatetime.h
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qdatetime.h \
+		VariableManager.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QSettings \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qsettings.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QVariant \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QHash \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QStandardItemModel
 
 debug\TestCode.obj: TestCode.cpp testcode.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QObject \

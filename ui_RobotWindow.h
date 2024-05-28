@@ -1003,20 +1003,31 @@ public:
     QFrame *frame_44;
     QHBoxLayout *horizontalLayout_99;
     QGridLayout *gridLayout_21;
-    QLabel *label_129;
-    QPushButton *pbResetEncoder;
-    QPushButton *pbSetEncoderVelocity;
     QSpacerItem *horizontalSpacer_23;
-    QPushButton *pbReadEncoder;
     QComboBox *cbConveyorLinkToEncoder;
-    QPushButton *pbSetEncoderInterval;
-    QLineEdit *leEncoderCurrentPosition;
-    QLineEdit *leEncoderVelocity;
     QCheckBox *cbLinkToConveyorX;
-    QLineEdit *leEncoderInterval;
-    QLabel *label_130;
     QLabel *label_125;
+    QLineEdit *leEncoderInterval;
+    QPushButton *pbSetEncoderInterval;
+    QLabel *label_129;
+    QLineEdit *leEncoderVelocity;
+    QPushButton *pbSetEncoderVelocity;
+    QLabel *label_130;
+    QLineEdit *leEncoderCurrentPosition;
     QToolButton *tbCopyEncoderPosition;
+    QPushButton *pbReadEncoder;
+    QPushButton *pbResetEncoder;
+    QFrame *robotTitile_12;
+    QVBoxLayout *verticalLayout_13;
+    QLabel *label_127;
+    QFrame *frame_47;
+    QHBoxLayout *horizontalLayout_32;
+    QLabel *label_131;
+    QLineEdit *leScheduledDistance;
+    QLabel *label_134;
+    QLineEdit *leScheduledGcode;
+    QSpacerItem *horizontalSpacer_63;
+    QPushButton *pbStartScheduledEncoder;
     QSpacerItem *horizontalSpacer;
     QSpacerItem *verticalSpacer_14;
     QWidget *SliderTab;
@@ -2184,7 +2195,7 @@ public:
         saObjectDetecting->setWidgetResizable(true);
         wObjectDetecting = new QWidget();
         wObjectDetecting->setObjectName(QString::fromUtf8("wObjectDetecting"));
-        wObjectDetecting->setGeometry(QRect(0, -276, 655, 2900));
+        wObjectDetecting->setGeometry(QRect(0, -842, 645, 2900));
         wObjectDetecting->setMinimumSize(QSize(100, 2900));
         wObjectDetecting->setStyleSheet(QString::fromUtf8("QWidget#wObjectDetecting\n"
 "{	\n"
@@ -4000,7 +4011,7 @@ public:
         saPointTool->setWidgetResizable(true);
         wPointTool = new QWidget();
         wPointTool->setObjectName(QString::fromUtf8("wPointTool"));
-        wPointTool->setGeometry(QRect(0, 0, 643, 1900));
+        wPointTool->setGeometry(QRect(0, -488, 633, 1900));
         wPointTool->setMinimumSize(QSize(0, 1900));
         wPointTool->setStyleSheet(QString::fromUtf8("QWidget#wPointTool\n"
 "{	\n"
@@ -5035,7 +5046,7 @@ public:
         scrollArea_6->setWidgetResizable(true);
         scrollAreaWidgetContents_6 = new QWidget();
         scrollAreaWidgetContents_6->setObjectName(QString::fromUtf8("scrollAreaWidgetContents_6"));
-        scrollAreaWidgetContents_6->setGeometry(QRect(0, 0, 643, 1600));
+        scrollAreaWidgetContents_6->setGeometry(QRect(0, 0, 633, 1600));
         scrollAreaWidgetContents_6->setMinimumSize(QSize(450, 1600));
         scrollAreaWidgetContents_6->setMaximumSize(QSize(16777215, 16777215));
         scrollAreaWidgetContents_6->setStyleSheet(QString::fromUtf8("QWidget[background='container']\n"
@@ -5850,7 +5861,7 @@ public:
         saTermite->setWidgetResizable(true);
         wgTermite = new QWidget();
         wgTermite->setObjectName(QString::fromUtf8("wgTermite"));
-        wgTermite->setGeometry(QRect(0, 0, 657, 684));
+        wgTermite->setGeometry(QRect(0, 0, 647, 684));
         wgTermite->setStyleSheet(QString::fromUtf8("QWidget#wgTermite\n"
 "{\n"
 "	\n"
@@ -5945,7 +5956,7 @@ public:
         scrollArea_2->setWidgetResizable(true);
         wgJoggingScrollWidget = new QWidget();
         wgJoggingScrollWidget->setObjectName(QString::fromUtf8("wgJoggingScrollWidget"));
-        wgJoggingScrollWidget->setGeometry(QRect(0, 0, 495, 1500));
+        wgJoggingScrollWidget->setGeometry(QRect(0, 0, 505, 1500));
         wgJoggingScrollWidget->setMinimumSize(QSize(0, 1500));
         wgJoggingScrollWidget->setMaximumSize(QSize(16777215, 16777215));
         wgJoggingScrollWidget->setStyleSheet(QString::fromUtf8("QWidget#wgJoggingScrollWidget\n"
@@ -8672,7 +8683,7 @@ public:
 
         frame_43 = new QFrame(EncoderTab);
         frame_43->setObjectName(QString::fromUtf8("frame_43"));
-        frame_43->setMinimumSize(QSize(0, 100));
+        frame_43->setMinimumSize(QSize(0, 0));
         frame_43->setStyleSheet(QString::fromUtf8("QFrame\n"
 "{\n"
 "	border: 1px solid rgb(20, 20, 20);\n"
@@ -8762,35 +8773,9 @@ public:
         gridLayout_21->setSpacing(10);
         gridLayout_21->setObjectName(QString::fromUtf8("gridLayout_21"));
         gridLayout_21->setContentsMargins(10, -1, -1, -1);
-        label_129 = new QLabel(frame_44);
-        label_129->setObjectName(QString::fromUtf8("label_129"));
-
-        gridLayout_21->addWidget(label_129, 3, 0, 1, 1);
-
-        pbResetEncoder = new QPushButton(frame_44);
-        pbResetEncoder->setObjectName(QString::fromUtf8("pbResetEncoder"));
-        sizePolicy8.setHeightForWidth(pbResetEncoder->sizePolicy().hasHeightForWidth());
-        pbResetEncoder->setSizePolicy(sizePolicy8);
-
-        gridLayout_21->addWidget(pbResetEncoder, 4, 4, 1, 1);
-
-        pbSetEncoderVelocity = new QPushButton(frame_44);
-        pbSetEncoderVelocity->setObjectName(QString::fromUtf8("pbSetEncoderVelocity"));
-        sizePolicy6.setHeightForWidth(pbSetEncoderVelocity->sizePolicy().hasHeightForWidth());
-        pbSetEncoderVelocity->setSizePolicy(sizePolicy6);
-
-        gridLayout_21->addWidget(pbSetEncoderVelocity, 3, 3, 1, 1);
-
         horizontalSpacer_23 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
         gridLayout_21->addItem(horizontalSpacer_23, 2, 5, 1, 1);
-
-        pbReadEncoder = new QPushButton(frame_44);
-        pbReadEncoder->setObjectName(QString::fromUtf8("pbReadEncoder"));
-        sizePolicy6.setHeightForWidth(pbReadEncoder->sizePolicy().hasHeightForWidth());
-        pbReadEncoder->setSizePolicy(sizePolicy6);
-
-        gridLayout_21->addWidget(pbReadEncoder, 4, 3, 1, 1);
 
         cbConveyorLinkToEncoder = new QComboBox(frame_44);
         cbConveyorLinkToEncoder->addItem(QString());
@@ -8803,6 +8788,24 @@ public:
 
         gridLayout_21->addWidget(cbConveyorLinkToEncoder, 0, 1, 1, 1);
 
+        cbLinkToConveyorX = new QCheckBox(frame_44);
+        cbLinkToConveyorX->setObjectName(QString::fromUtf8("cbLinkToConveyorX"));
+        cbLinkToConveyorX->setChecked(false);
+
+        gridLayout_21->addWidget(cbLinkToConveyorX, 0, 0, 1, 1);
+
+        label_125 = new QLabel(frame_44);
+        label_125->setObjectName(QString::fromUtf8("label_125"));
+
+        gridLayout_21->addWidget(label_125, 1, 0, 1, 1);
+
+        leEncoderInterval = new QLineEdit(frame_44);
+        leEncoderInterval->setObjectName(QString::fromUtf8("leEncoderInterval"));
+        sizePolicy.setHeightForWidth(leEncoderInterval->sizePolicy().hasHeightForWidth());
+        leEncoderInterval->setSizePolicy(sizePolicy);
+
+        gridLayout_21->addWidget(leEncoderInterval, 1, 1, 1, 1);
+
         pbSetEncoderInterval = new QPushButton(frame_44);
         pbSetEncoderInterval->setObjectName(QString::fromUtf8("pbSetEncoderInterval"));
         QSizePolicy sizePolicy25(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
@@ -8810,53 +8813,65 @@ public:
         sizePolicy25.setVerticalStretch(0);
         sizePolicy25.setHeightForWidth(pbSetEncoderInterval->sizePolicy().hasHeightForWidth());
         pbSetEncoderInterval->setSizePolicy(sizePolicy25);
+        pbSetEncoderInterval->setMaximumSize(QSize(16777215, 20));
 
-        gridLayout_21->addWidget(pbSetEncoderInterval, 2, 3, 1, 1);
+        gridLayout_21->addWidget(pbSetEncoderInterval, 1, 3, 1, 1);
 
-        leEncoderCurrentPosition = new QLineEdit(frame_44);
-        leEncoderCurrentPosition->setObjectName(QString::fromUtf8("leEncoderCurrentPosition"));
-        sizePolicy.setHeightForWidth(leEncoderCurrentPosition->sizePolicy().hasHeightForWidth());
-        leEncoderCurrentPosition->setSizePolicy(sizePolicy);
+        label_129 = new QLabel(frame_44);
+        label_129->setObjectName(QString::fromUtf8("label_129"));
 
-        gridLayout_21->addWidget(leEncoderCurrentPosition, 4, 1, 1, 1);
+        gridLayout_21->addWidget(label_129, 2, 0, 1, 1);
 
         leEncoderVelocity = new QLineEdit(frame_44);
         leEncoderVelocity->setObjectName(QString::fromUtf8("leEncoderVelocity"));
         sizePolicy.setHeightForWidth(leEncoderVelocity->sizePolicy().hasHeightForWidth());
         leEncoderVelocity->setSizePolicy(sizePolicy);
 
-        gridLayout_21->addWidget(leEncoderVelocity, 3, 1, 1, 1);
+        gridLayout_21->addWidget(leEncoderVelocity, 2, 1, 1, 1);
 
-        cbLinkToConveyorX = new QCheckBox(frame_44);
-        cbLinkToConveyorX->setObjectName(QString::fromUtf8("cbLinkToConveyorX"));
-        cbLinkToConveyorX->setChecked(false);
+        pbSetEncoderVelocity = new QPushButton(frame_44);
+        pbSetEncoderVelocity->setObjectName(QString::fromUtf8("pbSetEncoderVelocity"));
+        sizePolicy6.setHeightForWidth(pbSetEncoderVelocity->sizePolicy().hasHeightForWidth());
+        pbSetEncoderVelocity->setSizePolicy(sizePolicy6);
+        pbSetEncoderVelocity->setMaximumSize(QSize(16777215, 20));
 
-        gridLayout_21->addWidget(cbLinkToConveyorX, 0, 0, 1, 1);
-
-        leEncoderInterval = new QLineEdit(frame_44);
-        leEncoderInterval->setObjectName(QString::fromUtf8("leEncoderInterval"));
-        sizePolicy.setHeightForWidth(leEncoderInterval->sizePolicy().hasHeightForWidth());
-        leEncoderInterval->setSizePolicy(sizePolicy);
-
-        gridLayout_21->addWidget(leEncoderInterval, 2, 1, 1, 1);
+        gridLayout_21->addWidget(pbSetEncoderVelocity, 2, 3, 1, 1);
 
         label_130 = new QLabel(frame_44);
         label_130->setObjectName(QString::fromUtf8("label_130"));
 
-        gridLayout_21->addWidget(label_130, 4, 0, 1, 1);
+        gridLayout_21->addWidget(label_130, 3, 0, 1, 1);
 
-        label_125 = new QLabel(frame_44);
-        label_125->setObjectName(QString::fromUtf8("label_125"));
+        leEncoderCurrentPosition = new QLineEdit(frame_44);
+        leEncoderCurrentPosition->setObjectName(QString::fromUtf8("leEncoderCurrentPosition"));
+        sizePolicy.setHeightForWidth(leEncoderCurrentPosition->sizePolicy().hasHeightForWidth());
+        leEncoderCurrentPosition->setSizePolicy(sizePolicy);
 
-        gridLayout_21->addWidget(label_125, 2, 0, 1, 1);
+        gridLayout_21->addWidget(leEncoderCurrentPosition, 3, 1, 1, 1);
 
         tbCopyEncoderPosition = new QToolButton(frame_44);
         tbCopyEncoderPosition->setObjectName(QString::fromUtf8("tbCopyEncoderPosition"));
         tbCopyEncoderPosition->setIcon(icon30);
-        tbCopyEncoderPosition->setIconSize(QSize(24, 24));
+        tbCopyEncoderPosition->setIconSize(QSize(16, 16));
         tbCopyEncoderPosition->setAutoRaise(true);
 
-        gridLayout_21->addWidget(tbCopyEncoderPosition, 4, 2, 1, 1);
+        gridLayout_21->addWidget(tbCopyEncoderPosition, 3, 2, 1, 1);
+
+        pbReadEncoder = new QPushButton(frame_44);
+        pbReadEncoder->setObjectName(QString::fromUtf8("pbReadEncoder"));
+        sizePolicy6.setHeightForWidth(pbReadEncoder->sizePolicy().hasHeightForWidth());
+        pbReadEncoder->setSizePolicy(sizePolicy6);
+        pbReadEncoder->setMaximumSize(QSize(16777215, 20));
+
+        gridLayout_21->addWidget(pbReadEncoder, 3, 3, 1, 1);
+
+        pbResetEncoder = new QPushButton(frame_44);
+        pbResetEncoder->setObjectName(QString::fromUtf8("pbResetEncoder"));
+        sizePolicy25.setHeightForWidth(pbResetEncoder->sizePolicy().hasHeightForWidth());
+        pbResetEncoder->setSizePolicy(sizePolicy25);
+        pbResetEncoder->setMaximumSize(QSize(16777215, 20));
+
+        gridLayout_21->addWidget(pbResetEncoder, 3, 4, 1, 1);
 
 
         horizontalLayout_99->addLayout(gridLayout_21);
@@ -8866,6 +8881,101 @@ public:
 
 
         verticalLayout_8->addWidget(frame_43);
+
+        robotTitile_12 = new QFrame(EncoderTab);
+        robotTitile_12->setObjectName(QString::fromUtf8("robotTitile_12"));
+        robotTitile_12->setMinimumSize(QSize(0, 0));
+        robotTitile_12->setMaximumSize(QSize(16777215, 16777215));
+        robotTitile_12->setStyleSheet(QString::fromUtf8("QFrame\n"
+"{\n"
+"	\n"
+"	background-color: rgb(51, 51, 55);\n"
+"	border: none;\n"
+"}"));
+        robotTitile_12->setFrameShape(QFrame::StyledPanel);
+        robotTitile_12->setFrameShadow(QFrame::Raised);
+        verticalLayout_13 = new QVBoxLayout(robotTitile_12);
+        verticalLayout_13->setSpacing(0);
+        verticalLayout_13->setContentsMargins(11, 11, 11, 11);
+        verticalLayout_13->setObjectName(QString::fromUtf8("verticalLayout_13"));
+        verticalLayout_13->setContentsMargins(0, 0, 0, 0);
+        label_127 = new QLabel(robotTitile_12);
+        label_127->setObjectName(QString::fromUtf8("label_127"));
+        label_127->setMinimumSize(QSize(0, 0));
+        label_127->setMaximumSize(QSize(16777215, 25));
+        label_127->setStyleSheet(QString::fromUtf8("padding: 6px;"));
+
+        verticalLayout_13->addWidget(label_127);
+
+        frame_47 = new QFrame(robotTitile_12);
+        frame_47->setObjectName(QString::fromUtf8("frame_47"));
+        frame_47->setStyleSheet(QString::fromUtf8("QFrame\n"
+"{	\n"
+"	background: #262629;\n"
+"	border: none;\n"
+"}\n"
+"\n"
+"QLabel\n"
+"{\n"
+"	background-color: transparent;\n"
+"}\n"
+"\n"
+"QGroupBox\n"
+"{\n"
+"	background-color: transparent;\n"
+"	border-radius: 5px;\n"
+"	border: 1px solid #4A4A4F;\n"
+"	\n"
+"	color: rgb(219, 219, 220);\n"
+"}"));
+        frame_47->setFrameShape(QFrame::StyledPanel);
+        frame_47->setFrameShadow(QFrame::Raised);
+        horizontalLayout_32 = new QHBoxLayout(frame_47);
+        horizontalLayout_32->setSpacing(6);
+        horizontalLayout_32->setContentsMargins(11, 11, 11, 11);
+        horizontalLayout_32->setObjectName(QString::fromUtf8("horizontalLayout_32"));
+        label_131 = new QLabel(frame_47);
+        label_131->setObjectName(QString::fromUtf8("label_131"));
+
+        horizontalLayout_32->addWidget(label_131);
+
+        leScheduledDistance = new QLineEdit(frame_47);
+        leScheduledDistance->setObjectName(QString::fromUtf8("leScheduledDistance"));
+        sizePolicy.setHeightForWidth(leScheduledDistance->sizePolicy().hasHeightForWidth());
+        leScheduledDistance->setSizePolicy(sizePolicy);
+
+        horizontalLayout_32->addWidget(leScheduledDistance);
+
+        label_134 = new QLabel(frame_47);
+        label_134->setObjectName(QString::fromUtf8("label_134"));
+        label_134->setMinimumSize(QSize(100, 0));
+        label_134->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+
+        horizontalLayout_32->addWidget(label_134);
+
+        leScheduledGcode = new QLineEdit(frame_47);
+        leScheduledGcode->setObjectName(QString::fromUtf8("leScheduledGcode"));
+        sizePolicy.setHeightForWidth(leScheduledGcode->sizePolicy().hasHeightForWidth());
+        leScheduledGcode->setSizePolicy(sizePolicy);
+
+        horizontalLayout_32->addWidget(leScheduledGcode);
+
+        horizontalSpacer_63 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        horizontalLayout_32->addItem(horizontalSpacer_63);
+
+        pbStartScheduledEncoder = new QPushButton(frame_47);
+        pbStartScheduledEncoder->setObjectName(QString::fromUtf8("pbStartScheduledEncoder"));
+        sizePolicy25.setHeightForWidth(pbStartScheduledEncoder->sizePolicy().hasHeightForWidth());
+        pbStartScheduledEncoder->setSizePolicy(sizePolicy25);
+
+        horizontalLayout_32->addWidget(pbStartScheduledEncoder);
+
+
+        verticalLayout_13->addWidget(frame_47);
+
+
+        verticalLayout_8->addWidget(robotTitile_12);
 
         horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
@@ -9421,11 +9531,11 @@ public:
 
         twDeltaManager->setCurrentIndex(0);
         pbReadI0_3->setDefault(false);
-        twModule->setCurrentIndex(1);
+        twModule->setCurrentIndex(2);
         pbImageMapping->setDefault(false);
         cbImageSource->setCurrentIndex(0);
         cbSendingImageMethod->setCurrentIndex(0);
-        twDevices->setCurrentIndex(0);
+        twDevices->setCurrentIndex(2);
         pbPump->setDefault(false);
         pbLaser->setDefault(false);
         pbGrip->setDefault(false);
@@ -10491,22 +10601,28 @@ public:
         cbEncoderType->setItemText(2, QCoreApplication::translate("RobotWindow", "Virtual Encoder", nullptr));
 
         cbEncoderActive->setText(QCoreApplication::translate("RobotWindow", "Active", nullptr));
-        label_129->setText(QCoreApplication::translate("RobotWindow", "Velocity (mm/s)", nullptr));
-        pbResetEncoder->setText(QCoreApplication::translate("RobotWindow", "Reset", nullptr));
-        pbSetEncoderVelocity->setText(QCoreApplication::translate("RobotWindow", "Set", nullptr));
-        pbReadEncoder->setText(QCoreApplication::translate("RobotWindow", "Read", nullptr));
         cbConveyorLinkToEncoder->setItemText(0, QCoreApplication::translate("RobotWindow", "conveyor0", nullptr));
         cbConveyorLinkToEncoder->setItemText(1, QCoreApplication::translate("RobotWindow", "conveyor1", nullptr));
         cbConveyorLinkToEncoder->setItemText(2, QCoreApplication::translate("RobotWindow", "conveyor2", nullptr));
 
-        pbSetEncoderInterval->setText(QCoreApplication::translate("RobotWindow", "Set", nullptr));
-        leEncoderCurrentPosition->setText(QCoreApplication::translate("RobotWindow", "100", nullptr));
-        leEncoderVelocity->setText(QCoreApplication::translate("RobotWindow", "0", nullptr));
         cbLinkToConveyorX->setText(QCoreApplication::translate("RobotWindow", "Link to X Conveyor", nullptr));
-        leEncoderInterval->setText(QCoreApplication::translate("RobotWindow", "100", nullptr));
-        label_130->setText(QCoreApplication::translate("RobotWindow", "Current Position (mm)", nullptr));
         label_125->setText(QCoreApplication::translate("RobotWindow", "Timer (ms)", nullptr));
+        leEncoderInterval->setText(QCoreApplication::translate("RobotWindow", "100", nullptr));
+        pbSetEncoderInterval->setText(QCoreApplication::translate("RobotWindow", "Set", nullptr));
+        label_129->setText(QCoreApplication::translate("RobotWindow", "Velocity (mm/s)", nullptr));
+        leEncoderVelocity->setText(QCoreApplication::translate("RobotWindow", "0", nullptr));
+        pbSetEncoderVelocity->setText(QCoreApplication::translate("RobotWindow", "Set", nullptr));
+        label_130->setText(QCoreApplication::translate("RobotWindow", "Current Position (mm)", nullptr));
+        leEncoderCurrentPosition->setText(QCoreApplication::translate("RobotWindow", "100", nullptr));
         tbCopyEncoderPosition->setText(QString());
+        pbReadEncoder->setText(QCoreApplication::translate("RobotWindow", "Read", nullptr));
+        pbResetEncoder->setText(QCoreApplication::translate("RobotWindow", "Reset", nullptr));
+        label_127->setText(QCoreApplication::translate("RobotWindow", "Scheduler                                ", nullptr));
+        label_131->setText(QCoreApplication::translate("RobotWindow", "Scheduled Distance (mm)", nullptr));
+        leScheduledDistance->setText(QCoreApplication::translate("RobotWindow", "150", nullptr));
+        label_134->setText(QCoreApplication::translate("RobotWindow", "Gcode Command", nullptr));
+        leScheduledGcode->setText(QCoreApplication::translate("RobotWindow", "robot0 M03 D0", nullptr));
+        pbStartScheduledEncoder->setText(QCoreApplication::translate("RobotWindow", "Start", nullptr));
         twDevices->setTabText(twDevices->indexOf(EncoderTab), QCoreApplication::translate("RobotWindow", "Encoder", nullptr));
         label_15->setText(QCoreApplication::translate("RobotWindow", "Selected Encoder", nullptr));
         checkBox_5->setText(QCoreApplication::translate("RobotWindow", "Auto Scan", nullptr));

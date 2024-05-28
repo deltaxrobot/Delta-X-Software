@@ -738,6 +738,16 @@ void TaskNode::doMappingMatrixWork()
     float dy = yy1 - (ScaleRotateMatrix.m12() * x1 + ScaleRotateMatrix.m22() * y1);
 
     outputMatrix.setMatrix(ScaleRotateMatrix.m11(), ScaleRotateMatrix.m12(), ScaleRotateMatrix.m21(), ScaleRotateMatrix.m22(), dx, dy);
+    QString prefix = ProjectName + "." + "tracking0" + ".";
+    QString matrixString = QString("%1,%2,%3,%4,%5,%6")
+                                   .arg(outputMatrix.m11())
+                                   .arg(outputMatrix.m12())
+                                   .arg(outputMatrix.m21())
+                                   .arg(outputMatrix.m22())
+                                   .arg(outputMatrix.dx())
+                                   .arg(outputMatrix.dy());
+    VariableManager::instance().updateVar(prefix + "ImageToRealWorldMatrixString", matrixString);
+    VariableManager::instance().updateVar(prefix + "ImageToRealWorldMatrix", outputMatrix);
 
     emit HadOutput(outputMatrix);
 }

@@ -31,7 +31,7 @@ void VariableManager::updateVar(const QString &key, const QVariant &value)
 
 QVariant VariableManager::getVar(const QString &key, QVariant defaultValue)
 {
-    const QString fullKey = getFullKey(key);
+    const QString fullKey = getFullKey(key.trimmed().replace("#", ""));
 
     QStringList objKeys = ObjectInfos.keys();
 

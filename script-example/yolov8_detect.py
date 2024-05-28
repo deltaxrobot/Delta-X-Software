@@ -2,13 +2,8 @@ import cv2
 import sys
 import detect_socket
 import time
+import argparse
 from ultralytics import YOLO
-
-# Lấy tham số từ bên ngoài, gồm có ip, port, và đường dẫn đến file model theo format: python yolov8_detect.py -ip <ip> -p <port> -m <model_path>
-ip = sys.argv[sys.argv.index("-ip") + 1]
-port = int(sys.argv[sys.argv.index("-p") + 1)
-
-
 
 def get_objects(image):
     # Run YOLOv8 inference on the frame
@@ -38,12 +33,26 @@ def get_objects(image):
 
     return resultString
 
-# Load the YOLOv8 model
-model = YOLO('yolov8n.pt')
+
+    # Load the YOLOv8 model
+model = None
 
 def main():
-    HOST = "192.168.1.8"
-    PORT = 8846
+    # Parse command-line arguments
+    parser = argparse.ArgumentParser(description="YOLOv8 Inference Script")
+    parser.add_argument("--host", type=str, default="192.168.1.8", help="IP address of the server")
+    parser.add_argument("--port", type=int, default=8844, help="Port number of the server")
+    parser.add_argument("--model-path", type=str, default='yolov8n.pt', help="Path to the YOLOv8 model file")
+
+    args = parser.parse_args()
+
+    HOST = args.host
+    PORT = args.port
+    MODEL_PATH = args.model_path
+
+    global model
+
+    model = YOLO(MODEL_PATH)
 
     while True:
         try:

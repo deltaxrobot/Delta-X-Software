@@ -22,6 +22,8 @@ public:
     QString hostAddress;
     int port;
 
+    QString ProjectName = "project0";
+
     int imageSendingMethod = 0;
     QString indexPath = "index.html";
 

@@ -43,7 +43,8 @@ void Device::Connect()
 
         for (int i = 0; i < availablePorts.size(); ++i)
         {
-            serialPort->setPortName(availablePorts.at(i).portName());
+            QString portName = availablePorts.at(i).portName();
+            serialPort->setPortName(portName);
             serialPort->setBaudRate(baudrate);
 
             if (serialPort->open(QIODevice::ReadWrite))
@@ -52,7 +53,7 @@ void Device::Connect()
                 QThread::msleep(200);
                 serialPort->blockSignals(true);
                 serialPort->write((confirmRequest + "\n").toLocal8Bit());
-                serialPort->waitForReadyRead(50);
+                serialPort->waitForReadyRead(200);
                 QString response = QString(serialPort->readLine());
                 if (response.contains("Init"))
                 {
@@ -67,7 +68,9 @@ void Device::Connect()
                 }
                 else
                 {
-                    return;
+                    serialPort->blockSignals(false);
+                    serialPort->close();
+                    continue;
                 }
 
             }

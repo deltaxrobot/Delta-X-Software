@@ -198,7 +198,19 @@ void RobotWindow::InitVariables()
     {
         QString prefix = ProjectName + "." + ui->cbSelectedTracking->currentText() + ".";
 
+        QString transformString = QString("%1,%2,%3,%4,%5,%6,%7,%8,%9")
+                .arg(CalculatingTransform.m11())
+                .arg(CalculatingTransform.m12())
+                .arg(CalculatingTransform.m13())
+                .arg(CalculatingTransform.m21())
+                .arg(CalculatingTransform.m22())
+                .arg(CalculatingTransform.m23())
+                .arg(CalculatingTransform.m31())
+                .arg(CalculatingTransform.m32())
+                .arg(CalculatingTransform.m33());
+
         VariableManager::instance().updateVar(prefix + ui->leMatrixName->text(), CalculatingTransform);
+        VariableManager::instance().updateVar(prefix + ui->leMatrixName->text() + "String", transformString);
 
         if (!isItemExit(ui->lwMappingMatrixList, ui->leMatrixName->text())) {
             ui->lwMappingMatrixList->addItem(ui->leMatrixName->text());
@@ -426,6 +438,22 @@ void RobotWindow::InitOtherThreadObjects()
     connect(ui->cbSubConveyor2Mode, SIGNAL(currentIndexChanged(int)), this, SLOT(SetConveyorMovingMode(int)));
     connect(ui->cbSubConveyor3Mode, SIGNAL(currentIndexChanged(int)), this, SLOT(SetConveyorMovingMode(int)));
 
+    connect(ui->pbStartCustomConveyor1, SIGNAL(clicked(bool)), this, SLOT(TriggedCustomConveyor()));
+    connect(ui->pbStartCustomConveyor1Command, SIGNAL(returnPressed()), this, SLOT(TriggedCustomConveyor()));
+    connect(ui->pbStartCustomConveyor2, SIGNAL(clicked(bool)), this, SLOT(TriggedCustomConveyor()));
+    connect(ui->pbStartCustomConveyor2Command, SIGNAL(returnPressed()), this, SLOT(TriggedCustomConveyor()));
+    connect(ui->pbStartCustomConveyor3, SIGNAL(clicked(bool)), this, SLOT(TriggedCustomConveyor()));
+    connect(ui->pbStartCustomConveyor3Command, SIGNAL(returnPressed()), this, SLOT(TriggedCustomConveyor()));
+
+    connect(ui->pbStopCustomConveyor1, SIGNAL(clicked(bool)), this, SLOT(TriggedCustomConveyor()));
+    connect(ui->pbStopCustomConveyor1Command, SIGNAL(returnPressed()), this, SLOT(TriggedCustomConveyor()));
+    connect(ui->pbStopCustomConveyor2, SIGNAL(clicked(bool)), this, SLOT(TriggedCustomConveyor()));
+    connect(ui->pbStopCustomConveyor2Command, SIGNAL(returnPressed()), this, SLOT(TriggedCustomConveyor()));
+    connect(ui->pbStopCustomConveyor3, SIGNAL(clicked(bool)), this, SLOT(TriggedCustomConveyor()));
+    connect(ui->pbStopCustomConveyor3Command, SIGNAL(returnPressed()), this, SLOT(TriggedCustomConveyor()));
+
+
+
         //-------- Encoder --------
     connect(ui->pbConnectEncoder, SIGNAL(clicked(bool)), this, SLOT(ConnectEncoder()));
 
@@ -437,6 +465,7 @@ void RobotWindow::InitOtherThreadObjects()
     connect(ui->cbEncoderType, SIGNAL(currentIndexChanged(int)), this, SLOT(ChangeEncoderType(int)));
     connect(ui->cbLinkToConveyorX, SIGNAL(stateChanged(int)), this, SLOT(ChangeConveyorLinkToEncoder(int)));
 
+    connect(ui->pbStartScheduledEncoder, SIGNAL(clicked(bool)), this, SLOT(StartScheduledEncoder()));
 
     //-------- Slider --------
 
@@ -472,6 +501,7 @@ void RobotWindow::InitSocketConnection()
     ui->leIP->setText(localIP);
 
     ConnectionManager = new SocketConnectionManager(localIP, ui->lePort->text().toInt());
+    ConnectionManager->ProjectName = ProjectName;
     QString appDirPath = QCoreApplication::applicationDirPath();
     ConnectionManager->indexPath = appDirPath + "/script-example/webpage/websocket.html";
 
@@ -892,12 +922,24 @@ void RobotWindow::InitUIController()
         
     });
 
-    connect(ui->leX, &QLineEdit::returnPressed, this, [=](){RobotParameters[RbID].X = ui->leX->text().toFloat(); UpdateVariable("X", QString::number(RobotParameters[RbID].X)); emit Send(DeviceManager::ROBOT, QString("G01 X") + ui->leX->text());});
-    connect(ui->leY, &QLineEdit::returnPressed, this, [=](){RobotParameters[RbID].Y = ui->leY->text().toFloat(); UpdateVariable("Y", QString::number(RobotParameters[RbID].Y));emit Send(DeviceManager::ROBOT, QString("G01 Y") + ui->leY->text());});
-    connect(ui->leZ, &QLineEdit::returnPressed, this, [=](){RobotParameters[RbID].Z = ui->leZ->text().toFloat(); UpdateVariable("Z", QString::number(RobotParameters[RbID].Z));emit Send(DeviceManager::ROBOT, QString("G01 Z") + ui->leZ->text());});
-    connect(ui->leW, &QLineEdit::returnPressed, this, [=](){RobotParameters[RbID].W = ui->leW->text().toFloat(); UpdateVariable("W", QString::number(RobotParameters[RbID].W));emit Send(DeviceManager::ROBOT, QString("G01 W") + ui->leW->text());});
-    connect(ui->leU, &QLineEdit::returnPressed, this, [=](){RobotParameters[RbID].U = ui->leU->text().toFloat(); UpdateVariable("U", QString::number(RobotParameters[RbID].U));emit Send(DeviceManager::ROBOT, QString("G01 U") + ui->leU->text());});
-    connect(ui->leV, &QLineEdit::returnPressed, this, [=](){RobotParameters[RbID].V = ui->leV->text().toFloat(); UpdateVariable("V", QString::number(RobotParameters[RbID].V));emit Send(DeviceManager::ROBOT, QString("G01 V") + ui->leV->text());});
+    connect(ui->leX, &QLineEdit::returnPressed, this, [=](){RobotParameters[RbID].X = ui->leX->text().toFloat();
+//        UpdateVariable("X", QString::number(RobotParameters[RbID].X));
+        emit Send(DeviceManager::ROBOT, QString("G01 X") + ui->leX->text());});
+    connect(ui->leY, &QLineEdit::returnPressed, this, [=](){RobotParameters[RbID].Y = ui->leY->text().toFloat();
+//        UpdateVariable("Y", QString::number(RobotParameters[RbID].Y));
+        emit Send(DeviceManager::ROBOT, QString("G01 Y") + ui->leY->text());});
+    connect(ui->leZ, &QLineEdit::returnPressed, this, [=](){RobotParameters[RbID].Z = ui->leZ->text().toFloat();
+//        UpdateVariable("Z", QString::number(RobotParameters[RbID].Z));
+        emit Send(DeviceManager::ROBOT, QString("G01 Z") + ui->leZ->text());});
+    connect(ui->leW, &QLineEdit::returnPressed, this, [=](){RobotParameters[RbID].W = ui->leW->text().toFloat();
+//        UpdateVariable("W", QString::number(RobotParameters[RbID].W));
+        emit Send(DeviceManager::ROBOT, QString("G01 W") + ui->leW->text());});
+    connect(ui->leU, &QLineEdit::returnPressed, this, [=](){RobotParameters[RbID].U = ui->leU->text().toFloat();
+//        UpdateVariable("U", QString::number(RobotParameters[RbID].U));
+        emit Send(DeviceManager::ROBOT, QString("G01 U") + ui->leU->text());});
+    connect(ui->leV, &QLineEdit::returnPressed, this, [=](){RobotParameters[RbID].V = ui->leV->text().toFloat();
+//        UpdateVariable("V", QString::number(RobotParameters[RbID].V));
+        emit Send(DeviceManager::ROBOT, QString("G01 V") + ui->leV->text());});
 
     connect(ui->pbSubPitch, &QPushButton::clicked, [=](){MoveRobot("V", 0 - RobotParameters[RbID].Step);});
     connect(ui->pbPlusPitch, &QPushButton::clicked, [=](){MoveRobot("V", RobotParameters[RbID].Step);});
@@ -2206,6 +2248,15 @@ void RobotWindow::GetDeviceResponse(QString idName, QString response)
 
             if (ui->cbSelectedEncoder->currentIndex() == index)
             {
+                // ----- Scheduled Encoder ---------
+                if (abs(value.toFloat() - scheduledStartEncoderValue) > ui->leScheduledDistance->text().toFloat() && isScheduledEncoder == true)
+                {
+                    QMetaObject::invokeMethod(DeviceManagerInstance, "GetCommand", Qt::QueuedConnection, Q_ARG(QString, ui->leScheduledGcode->text()));
+                    isScheduledEncoder = false;
+                    ui->pbStartScheduledEncoder->setText("Start");
+                }
+                // ---------------------------------
+
                 ui->leEncoderCurrentPosition->setText(value);
                 float velocity = (value.toFloat() - encoderLastValue) * 1000 / timeDiff;
                 encoderLastValue = value.toFloat();
@@ -3602,6 +3653,7 @@ void RobotWindow::GetCalibPointsFromImage(QPointF p1, QPointF p2)
     {
         QPointF offset(ox,oy);
         QTransform transform = PointTool::calculateTransform(QPointF(0, 0), offset, _p1, _p2);
+
         _p1 = transform.map(_p1);
         _p2 = transform.map(_p1);
     }
@@ -3639,6 +3691,7 @@ void RobotWindow::UpdateRealPositionOfCalibPoints()
 
         QPointF offset(ox,oy);
         QTransform transform = PointTool::calculateTransform(QPointF(0, 0), offset, rpoint1, rpoint2);
+
         rpoint1 = transform.map(rpoint1);
         rpoint2 = transform.map(rpoint2);
     }
@@ -4137,6 +4190,36 @@ void RobotWindow::SetConveyorAbsolutePosition()
     }
 }
 
+void RobotWindow::TriggedCustomConveyor()
+{
+    QObject *senderObj = sender(); // Lấy đối tượng kích hoạt
+
+    if (qobject_cast<QPushButton*>(senderObj) == ui->pbStartCustomConveyor1 || qobject_cast<QLineEdit*>(senderObj) == ui->pbStartCustomConveyor1Command)
+    {
+        QMetaObject::invokeMethod(DeviceManagerInstance, "GetCommand", Qt::QueuedConnection, Q_ARG(QString, ui->pbStartCustomConveyor1Command->text()));
+
+    }
+    else if (qobject_cast<QPushButton*>(senderObj) == ui->pbStartCustomConveyor2 || qobject_cast<QLineEdit*>(senderObj) == ui->pbStartCustomConveyor2Command)
+    {
+        QMetaObject::invokeMethod(DeviceManagerInstance, "GetCommand", Qt::QueuedConnection, Q_ARG(QString, ui->pbStartCustomConveyor2Command->text()));
+    }
+    else if (qobject_cast<QPushButton*>(senderObj) == ui->pbStartCustomConveyor3 || qobject_cast<QLineEdit*>(senderObj) == ui->pbStartCustomConveyor3Command)
+    {
+        QMetaObject::invokeMethod(DeviceManagerInstance, "GetCommand", Qt::QueuedConnection, Q_ARG(QString, ui->pbStartCustomConveyor3Command->text()));
+    }
+    if (qobject_cast<QPushButton*>(senderObj) == ui->pbStopCustomConveyor1 || qobject_cast<QLineEdit*>(senderObj) == ui->pbStopCustomConveyor1Command)
+    {
+        QMetaObject::invokeMethod(DeviceManagerInstance, "GetCommand", Qt::QueuedConnection, Q_ARG(QString, ui->pbStopCustomConveyor1Command->text()));
+
+    } else if (qobject_cast<QPushButton*>(senderObj) == ui->pbStopCustomConveyor2 || qobject_cast<QLineEdit*>(senderObj) == ui->pbStopCustomConveyor2Command)
+    {
+        QMetaObject::invokeMethod(DeviceManagerInstance, "GetCommand", Qt::QueuedConnection, Q_ARG(QString, ui->pbStopCustomConveyor2Command->text()));
+    } else if (qobject_cast<QPushButton*>(senderObj) == ui->pbStopCustomConveyor3 || qobject_cast<QLineEdit*>(senderObj) == ui->pbStopCustomConveyor3Command)
+    {
+        QMetaObject::invokeMethod(DeviceManagerInstance, "GetCommand", Qt::QueuedConnection, Q_ARG(QString, ui->pbStopCustomConveyor1Command->text()));
+    }
+}
+
 void RobotWindow::ProcessShortcutKey()
 {
 
@@ -4233,8 +4316,6 @@ void RobotWindow::AddDisplayObjectFromExternalScript(QString msg)
             object.Type = paras[0];
 
             object.ToPoints();
-
-//            object->Offset = Encoder1->CalculateOffset(Encoder1->GetMeasuredDistance());
 
             Objects.append(object);
 
@@ -4376,6 +4457,22 @@ void RobotWindow::UpdateTestPoint(QVector3D testPoint)
 
 void RobotWindow::ProcessProximitySensorValue(int value)
 {
+
+}
+
+void RobotWindow::StartScheduledEncoder()
+{
+    if (ui->pbStartScheduledEncoder->text() == "Start")
+    {
+        scheduledStartEncoderValue = ui->leEncoderCurrentPosition->text().toFloat();
+        isScheduledEncoder = true;
+        ui->pbStartScheduledEncoder->setText("Stop");
+    }
+    else
+    {
+        isScheduledEncoder = false;
+        ui->pbStartScheduledEncoder->setText("Start");
+    }
 
 }
 

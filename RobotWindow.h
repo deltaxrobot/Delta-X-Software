@@ -201,11 +201,7 @@ public:
     ImageProcessing* ImageProcessingInstance;
     FilterWindow* ParameterPanel;
 
-//    ObjectVariableTable* TrackingObjectTable;
     QTimer* ConvenyorTimer;
-
-    Encoder* Encoder1;
-    Encoder* Encoder2;
 
     QWidget* ImageViewerWindow = NULL;
 
@@ -354,6 +350,8 @@ public slots:
     void SetConveyorPosition();
     void SetConveyorAbsolutePosition();
 
+    void TriggedCustomConveyor();
+
     void UpdatePointPositionOnConveyor(QLineEdit* x, QLineEdit* y, float angle, float distance);
 
 
@@ -372,6 +370,7 @@ public slots:
     void SetEncoderVelocity();
     void CalculateEncoderVelocity(int id, float value);
     void ProcessProximitySensorValue(int value);
+    void StartScheduledEncoder();
 	
     // ---- Slider ----
 	void ConnectSliding();
@@ -546,8 +545,11 @@ private:
     QFileSystemModel explorerModel;
     GCodeHighlighter *highlighter;
 
-    // ---- Last Values ----
+    // ---- Buffer Value ----
     float encoderLastValue = 0;
+    float scheduledStartEncoderValue = 0;
+    bool isScheduledEncoder = false;
+
     QElapsedTimer encoderUpdateTimer;
 
 public:

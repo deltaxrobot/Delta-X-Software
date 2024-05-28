@@ -434,19 +434,53 @@ void MainWindow::SetLoadingIconRun(bool isRun)
 
 void MainWindow::onTreeViewItemClicked(const QModelIndex &index)
 {
+    if (!index.isValid()) {
+        return;
+    }
+
     QStandardItem *item = VariableTreeModel.itemFromIndex(index);
-    QString key = item->parent()->child(index.row(), 0)->text();
+    if (!item) {
+        return;
+    }
+
+    QStandardItem *parentItem = item->parent();
+    if (!parentItem) {
+        return;
+    }
+
+    if (index.row() < 0 || index.row() >= parentItem->rowCount() || parentItem->columnCount() < 2) {
+        return;
+    }
+
+    QStandardItem *keyItem = parentItem->child(index.row(), 0);
+    if (!keyItem) {
+        return;
+    }
+
+    QString key = keyItem->text();
+    if (key.isEmpty()) {
+        return;
+    }
+
     // Lấy tên của các item cha của item hiện tại và gán lại thành mẫu như sau "item1.item2.item3"
-    for (QStandardItem *parent = item->parent(); parent != nullptr; parent = parent->parent()) {
+    for (QStandardItem *parent = parentItem; parent != nullptr; parent = parent->parent()) {
         key = parent->text() + "." + key;
     }
 
-    QString value = item->parent()->child(index.row(), 1)->text();
+    QStandardItem *valueItem = parentItem->child(index.row(), 1);
+    if (!valueItem) {
+        return;
+    }
+
+    QString value = valueItem->text();
+    if (value.isEmpty()) {
+        return;
+    }
 
     ui->leUpdateKey->setText(key);
     ui->leUpdateValue->setText(value);
-
 }
+
 
 MainWindow::~MainWindow()
 {
