@@ -3434,7 +3434,7 @@ void RobotWindow::ChangeOutputDisplay(QString outputName)
 
 void RobotWindow::LoadWebcam()
 {
-    if (ui->pbLoadCamera->isChecked())
+    if (!ui->pbLoadCamera->isChecked() || ui->pbLoadCamera->text() == "Load Camera")
     {
         QStringList cameraItems;
 
