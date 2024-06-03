@@ -1130,7 +1130,7 @@ class Ui_RobotWindow(object):
         self.saObjectDetecting.setWidgetResizable(True)
         self.wObjectDetecting = QWidget()
         self.wObjectDetecting.setObjectName(u"wObjectDetecting")
-        self.wObjectDetecting.setGeometry(QRect(0, -1468, 655, 2900))
+        self.wObjectDetecting.setGeometry(QRect(0, -842, 645, 2900))
         self.wObjectDetecting.setMinimumSize(QSize(100, 2900))
         self.wObjectDetecting.setStyleSheet(u"QWidget#wObjectDetecting\n"
 "{	\n"
@@ -2946,7 +2946,7 @@ class Ui_RobotWindow(object):
         self.saPointTool.setWidgetResizable(True)
         self.wPointTool = QWidget()
         self.wPointTool.setObjectName(u"wPointTool")
-        self.wPointTool.setGeometry(QRect(0, 0, 643, 1900))
+        self.wPointTool.setGeometry(QRect(0, -488, 633, 1900))
         self.wPointTool.setMinimumSize(QSize(0, 1900))
         self.wPointTool.setStyleSheet(u"QWidget#wPointTool\n"
 "{	\n"
@@ -3981,7 +3981,7 @@ class Ui_RobotWindow(object):
         self.scrollArea_6.setWidgetResizable(True)
         self.scrollAreaWidgetContents_6 = QWidget()
         self.scrollAreaWidgetContents_6.setObjectName(u"scrollAreaWidgetContents_6")
-        self.scrollAreaWidgetContents_6.setGeometry(QRect(0, 0, 643, 1600))
+        self.scrollAreaWidgetContents_6.setGeometry(QRect(0, 0, 633, 1600))
         self.scrollAreaWidgetContents_6.setMinimumSize(QSize(450, 1600))
         self.scrollAreaWidgetContents_6.setMaximumSize(QSize(16777215, 16777215))
         self.scrollAreaWidgetContents_6.setStyleSheet(u"QWidget[background='container']\n"
@@ -4796,7 +4796,7 @@ class Ui_RobotWindow(object):
         self.saTermite.setWidgetResizable(True)
         self.wgTermite = QWidget()
         self.wgTermite.setObjectName(u"wgTermite")
-        self.wgTermite.setGeometry(QRect(0, 0, 657, 684))
+        self.wgTermite.setGeometry(QRect(0, 0, 647, 684))
         self.wgTermite.setStyleSheet(u"QWidget#wgTermite\n"
 "{\n"
 "	\n"
@@ -4891,7 +4891,7 @@ class Ui_RobotWindow(object):
         self.scrollArea_2.setWidgetResizable(True)
         self.wgJoggingScrollWidget = QWidget()
         self.wgJoggingScrollWidget.setObjectName(u"wgJoggingScrollWidget")
-        self.wgJoggingScrollWidget.setGeometry(QRect(0, 0, 495, 1500))
+        self.wgJoggingScrollWidget.setGeometry(QRect(0, 0, 505, 1500))
         self.wgJoggingScrollWidget.setMinimumSize(QSize(0, 1500))
         self.wgJoggingScrollWidget.setMaximumSize(QSize(16777215, 16777215))
         self.wgJoggingScrollWidget.setStyleSheet(u"QWidget#wgJoggingScrollWidget\n"
@@ -7618,7 +7618,7 @@ class Ui_RobotWindow(object):
 
         self.frame_43 = QFrame(self.EncoderTab)
         self.frame_43.setObjectName(u"frame_43")
-        self.frame_43.setMinimumSize(QSize(0, 100))
+        self.frame_43.setMinimumSize(QSize(0, 0))
         self.frame_43.setStyleSheet(u"QFrame\n"
 "{\n"
 "	border: 1px solid rgb(20, 20, 20);\n"
@@ -7708,35 +7708,9 @@ class Ui_RobotWindow(object):
         self.gridLayout_21.setSpacing(10)
         self.gridLayout_21.setObjectName(u"gridLayout_21")
         self.gridLayout_21.setContentsMargins(10, -1, -1, -1)
-        self.label_129 = QLabel(self.frame_44)
-        self.label_129.setObjectName(u"label_129")
-
-        self.gridLayout_21.addWidget(self.label_129, 3, 0, 1, 1)
-
-        self.pbResetEncoder = QPushButton(self.frame_44)
-        self.pbResetEncoder.setObjectName(u"pbResetEncoder")
-        sizePolicy8.setHeightForWidth(self.pbResetEncoder.sizePolicy().hasHeightForWidth())
-        self.pbResetEncoder.setSizePolicy(sizePolicy8)
-
-        self.gridLayout_21.addWidget(self.pbResetEncoder, 4, 4, 1, 1)
-
-        self.pbSetEncoderVelocity = QPushButton(self.frame_44)
-        self.pbSetEncoderVelocity.setObjectName(u"pbSetEncoderVelocity")
-        sizePolicy6.setHeightForWidth(self.pbSetEncoderVelocity.sizePolicy().hasHeightForWidth())
-        self.pbSetEncoderVelocity.setSizePolicy(sizePolicy6)
-
-        self.gridLayout_21.addWidget(self.pbSetEncoderVelocity, 3, 3, 1, 1)
-
         self.horizontalSpacer_23 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
 
         self.gridLayout_21.addItem(self.horizontalSpacer_23, 2, 5, 1, 1)
-
-        self.pbReadEncoder = QPushButton(self.frame_44)
-        self.pbReadEncoder.setObjectName(u"pbReadEncoder")
-        sizePolicy6.setHeightForWidth(self.pbReadEncoder.sizePolicy().hasHeightForWidth())
-        self.pbReadEncoder.setSizePolicy(sizePolicy6)
-
-        self.gridLayout_21.addWidget(self.pbReadEncoder, 4, 3, 1, 1)
 
         self.cbConveyorLinkToEncoder = QComboBox(self.frame_44)
         self.cbConveyorLinkToEncoder.addItem("")
@@ -7749,6 +7723,24 @@ class Ui_RobotWindow(object):
 
         self.gridLayout_21.addWidget(self.cbConveyorLinkToEncoder, 0, 1, 1, 1)
 
+        self.cbLinkToConveyorX = QCheckBox(self.frame_44)
+        self.cbLinkToConveyorX.setObjectName(u"cbLinkToConveyorX")
+        self.cbLinkToConveyorX.setChecked(False)
+
+        self.gridLayout_21.addWidget(self.cbLinkToConveyorX, 0, 0, 1, 1)
+
+        self.label_125 = QLabel(self.frame_44)
+        self.label_125.setObjectName(u"label_125")
+
+        self.gridLayout_21.addWidget(self.label_125, 1, 0, 1, 1)
+
+        self.leEncoderInterval = QLineEdit(self.frame_44)
+        self.leEncoderInterval.setObjectName(u"leEncoderInterval")
+        sizePolicy.setHeightForWidth(self.leEncoderInterval.sizePolicy().hasHeightForWidth())
+        self.leEncoderInterval.setSizePolicy(sizePolicy)
+
+        self.gridLayout_21.addWidget(self.leEncoderInterval, 1, 1, 1, 1)
+
         self.pbSetEncoderInterval = QPushButton(self.frame_44)
         self.pbSetEncoderInterval.setObjectName(u"pbSetEncoderInterval")
         sizePolicy25 = QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.Minimum)
@@ -7756,53 +7748,65 @@ class Ui_RobotWindow(object):
         sizePolicy25.setVerticalStretch(0)
         sizePolicy25.setHeightForWidth(self.pbSetEncoderInterval.sizePolicy().hasHeightForWidth())
         self.pbSetEncoderInterval.setSizePolicy(sizePolicy25)
+        self.pbSetEncoderInterval.setMaximumSize(QSize(16777215, 20))
 
-        self.gridLayout_21.addWidget(self.pbSetEncoderInterval, 2, 3, 1, 1)
+        self.gridLayout_21.addWidget(self.pbSetEncoderInterval, 1, 3, 1, 1)
 
-        self.leEncoderCurrentPosition = QLineEdit(self.frame_44)
-        self.leEncoderCurrentPosition.setObjectName(u"leEncoderCurrentPosition")
-        sizePolicy.setHeightForWidth(self.leEncoderCurrentPosition.sizePolicy().hasHeightForWidth())
-        self.leEncoderCurrentPosition.setSizePolicy(sizePolicy)
+        self.label_129 = QLabel(self.frame_44)
+        self.label_129.setObjectName(u"label_129")
 
-        self.gridLayout_21.addWidget(self.leEncoderCurrentPosition, 4, 1, 1, 1)
+        self.gridLayout_21.addWidget(self.label_129, 2, 0, 1, 1)
 
         self.leEncoderVelocity = QLineEdit(self.frame_44)
         self.leEncoderVelocity.setObjectName(u"leEncoderVelocity")
         sizePolicy.setHeightForWidth(self.leEncoderVelocity.sizePolicy().hasHeightForWidth())
         self.leEncoderVelocity.setSizePolicy(sizePolicy)
 
-        self.gridLayout_21.addWidget(self.leEncoderVelocity, 3, 1, 1, 1)
+        self.gridLayout_21.addWidget(self.leEncoderVelocity, 2, 1, 1, 1)
 
-        self.cbLinkToConveyorX = QCheckBox(self.frame_44)
-        self.cbLinkToConveyorX.setObjectName(u"cbLinkToConveyorX")
-        self.cbLinkToConveyorX.setChecked(False)
+        self.pbSetEncoderVelocity = QPushButton(self.frame_44)
+        self.pbSetEncoderVelocity.setObjectName(u"pbSetEncoderVelocity")
+        sizePolicy6.setHeightForWidth(self.pbSetEncoderVelocity.sizePolicy().hasHeightForWidth())
+        self.pbSetEncoderVelocity.setSizePolicy(sizePolicy6)
+        self.pbSetEncoderVelocity.setMaximumSize(QSize(16777215, 20))
 
-        self.gridLayout_21.addWidget(self.cbLinkToConveyorX, 0, 0, 1, 1)
-
-        self.leEncoderInterval = QLineEdit(self.frame_44)
-        self.leEncoderInterval.setObjectName(u"leEncoderInterval")
-        sizePolicy.setHeightForWidth(self.leEncoderInterval.sizePolicy().hasHeightForWidth())
-        self.leEncoderInterval.setSizePolicy(sizePolicy)
-
-        self.gridLayout_21.addWidget(self.leEncoderInterval, 2, 1, 1, 1)
+        self.gridLayout_21.addWidget(self.pbSetEncoderVelocity, 2, 3, 1, 1)
 
         self.label_130 = QLabel(self.frame_44)
         self.label_130.setObjectName(u"label_130")
 
-        self.gridLayout_21.addWidget(self.label_130, 4, 0, 1, 1)
+        self.gridLayout_21.addWidget(self.label_130, 3, 0, 1, 1)
 
-        self.label_125 = QLabel(self.frame_44)
-        self.label_125.setObjectName(u"label_125")
+        self.leEncoderCurrentPosition = QLineEdit(self.frame_44)
+        self.leEncoderCurrentPosition.setObjectName(u"leEncoderCurrentPosition")
+        sizePolicy.setHeightForWidth(self.leEncoderCurrentPosition.sizePolicy().hasHeightForWidth())
+        self.leEncoderCurrentPosition.setSizePolicy(sizePolicy)
 
-        self.gridLayout_21.addWidget(self.label_125, 2, 0, 1, 1)
+        self.gridLayout_21.addWidget(self.leEncoderCurrentPosition, 3, 1, 1, 1)
 
         self.tbCopyEncoderPosition = QToolButton(self.frame_44)
         self.tbCopyEncoderPosition.setObjectName(u"tbCopyEncoderPosition")
         self.tbCopyEncoderPosition.setIcon(icon30)
-        self.tbCopyEncoderPosition.setIconSize(QSize(24, 24))
+        self.tbCopyEncoderPosition.setIconSize(QSize(16, 16))
         self.tbCopyEncoderPosition.setAutoRaise(True)
 
-        self.gridLayout_21.addWidget(self.tbCopyEncoderPosition, 4, 2, 1, 1)
+        self.gridLayout_21.addWidget(self.tbCopyEncoderPosition, 3, 2, 1, 1)
+
+        self.pbReadEncoder = QPushButton(self.frame_44)
+        self.pbReadEncoder.setObjectName(u"pbReadEncoder")
+        sizePolicy6.setHeightForWidth(self.pbReadEncoder.sizePolicy().hasHeightForWidth())
+        self.pbReadEncoder.setSizePolicy(sizePolicy6)
+        self.pbReadEncoder.setMaximumSize(QSize(16777215, 20))
+
+        self.gridLayout_21.addWidget(self.pbReadEncoder, 3, 3, 1, 1)
+
+        self.pbResetEncoder = QPushButton(self.frame_44)
+        self.pbResetEncoder.setObjectName(u"pbResetEncoder")
+        sizePolicy25.setHeightForWidth(self.pbResetEncoder.sizePolicy().hasHeightForWidth())
+        self.pbResetEncoder.setSizePolicy(sizePolicy25)
+        self.pbResetEncoder.setMaximumSize(QSize(16777215, 20))
+
+        self.gridLayout_21.addWidget(self.pbResetEncoder, 3, 4, 1, 1)
 
 
         self.horizontalLayout_99.addLayout(self.gridLayout_21)
@@ -7812,6 +7816,101 @@ class Ui_RobotWindow(object):
 
 
         self.verticalLayout_8.addWidget(self.frame_43)
+
+        self.robotTitile_12 = QFrame(self.EncoderTab)
+        self.robotTitile_12.setObjectName(u"robotTitile_12")
+        self.robotTitile_12.setMinimumSize(QSize(0, 0))
+        self.robotTitile_12.setMaximumSize(QSize(16777215, 16777215))
+        self.robotTitile_12.setStyleSheet(u"QFrame\n"
+"{\n"
+"	\n"
+"	background-color: rgb(51, 51, 55);\n"
+"	border: none;\n"
+"}")
+        self.robotTitile_12.setFrameShape(QFrame.StyledPanel)
+        self.robotTitile_12.setFrameShadow(QFrame.Raised)
+        self.verticalLayout_13 = QVBoxLayout(self.robotTitile_12)
+        self.verticalLayout_13.setSpacing(0)
+        self.verticalLayout_13.setContentsMargins(11, 11, 11, 11)
+        self.verticalLayout_13.setObjectName(u"verticalLayout_13")
+        self.verticalLayout_13.setContentsMargins(0, 0, 0, 0)
+        self.label_127 = QLabel(self.robotTitile_12)
+        self.label_127.setObjectName(u"label_127")
+        self.label_127.setMinimumSize(QSize(0, 0))
+        self.label_127.setMaximumSize(QSize(16777215, 25))
+        self.label_127.setStyleSheet(u"padding: 6px;")
+
+        self.verticalLayout_13.addWidget(self.label_127)
+
+        self.frame_47 = QFrame(self.robotTitile_12)
+        self.frame_47.setObjectName(u"frame_47")
+        self.frame_47.setStyleSheet(u"QFrame\n"
+"{	\n"
+"	background: #262629;\n"
+"	border: none;\n"
+"}\n"
+"\n"
+"QLabel\n"
+"{\n"
+"	background-color: transparent;\n"
+"}\n"
+"\n"
+"QGroupBox\n"
+"{\n"
+"	background-color: transparent;\n"
+"	border-radius: 5px;\n"
+"	border: 1px solid #4A4A4F;\n"
+"	\n"
+"	color: rgb(219, 219, 220);\n"
+"}")
+        self.frame_47.setFrameShape(QFrame.StyledPanel)
+        self.frame_47.setFrameShadow(QFrame.Raised)
+        self.horizontalLayout_32 = QHBoxLayout(self.frame_47)
+        self.horizontalLayout_32.setSpacing(6)
+        self.horizontalLayout_32.setContentsMargins(11, 11, 11, 11)
+        self.horizontalLayout_32.setObjectName(u"horizontalLayout_32")
+        self.label_131 = QLabel(self.frame_47)
+        self.label_131.setObjectName(u"label_131")
+
+        self.horizontalLayout_32.addWidget(self.label_131)
+
+        self.leScheduledDistance = QLineEdit(self.frame_47)
+        self.leScheduledDistance.setObjectName(u"leScheduledDistance")
+        sizePolicy.setHeightForWidth(self.leScheduledDistance.sizePolicy().hasHeightForWidth())
+        self.leScheduledDistance.setSizePolicy(sizePolicy)
+
+        self.horizontalLayout_32.addWidget(self.leScheduledDistance)
+
+        self.label_134 = QLabel(self.frame_47)
+        self.label_134.setObjectName(u"label_134")
+        self.label_134.setMinimumSize(QSize(100, 0))
+        self.label_134.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
+
+        self.horizontalLayout_32.addWidget(self.label_134)
+
+        self.leScheduledGcode = QLineEdit(self.frame_47)
+        self.leScheduledGcode.setObjectName(u"leScheduledGcode")
+        sizePolicy.setHeightForWidth(self.leScheduledGcode.sizePolicy().hasHeightForWidth())
+        self.leScheduledGcode.setSizePolicy(sizePolicy)
+
+        self.horizontalLayout_32.addWidget(self.leScheduledGcode)
+
+        self.horizontalSpacer_63 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+
+        self.horizontalLayout_32.addItem(self.horizontalSpacer_63)
+
+        self.pbStartScheduledEncoder = QPushButton(self.frame_47)
+        self.pbStartScheduledEncoder.setObjectName(u"pbStartScheduledEncoder")
+        sizePolicy25.setHeightForWidth(self.pbStartScheduledEncoder.sizePolicy().hasHeightForWidth())
+        self.pbStartScheduledEncoder.setSizePolicy(sizePolicy25)
+
+        self.horizontalLayout_32.addWidget(self.pbStartScheduledEncoder)
+
+
+        self.verticalLayout_13.addWidget(self.frame_47)
+
+
+        self.verticalLayout_8.addWidget(self.robotTitile_12)
 
         self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
 
@@ -8367,11 +8466,11 @@ class Ui_RobotWindow(object):
 
         self.twDeltaManager.setCurrentIndex(0)
         self.pbReadI0_3.setDefault(False)
-        self.twModule.setCurrentIndex(1)
+        self.twModule.setCurrentIndex(2)
         self.pbImageMapping.setDefault(False)
         self.cbImageSource.setCurrentIndex(0)
         self.cbSendingImageMethod.setCurrentIndex(0)
-        self.twDevices.setCurrentIndex(0)
+        self.twDevices.setCurrentIndex(2)
         self.pbPump.setDefault(False)
         self.pbLaser.setDefault(False)
         self.pbGrip.setDefault(False)
@@ -9436,22 +9535,28 @@ class Ui_RobotWindow(object):
         self.cbEncoderType.setItemText(2, QCoreApplication.translate("RobotWindow", u"Virtual Encoder", None))
 
         self.cbEncoderActive.setText(QCoreApplication.translate("RobotWindow", u"Active", None))
-        self.label_129.setText(QCoreApplication.translate("RobotWindow", u"Velocity (mm/s)", None))
-        self.pbResetEncoder.setText(QCoreApplication.translate("RobotWindow", u"Reset", None))
-        self.pbSetEncoderVelocity.setText(QCoreApplication.translate("RobotWindow", u"Set", None))
-        self.pbReadEncoder.setText(QCoreApplication.translate("RobotWindow", u"Read", None))
         self.cbConveyorLinkToEncoder.setItemText(0, QCoreApplication.translate("RobotWindow", u"conveyor0", None))
         self.cbConveyorLinkToEncoder.setItemText(1, QCoreApplication.translate("RobotWindow", u"conveyor1", None))
         self.cbConveyorLinkToEncoder.setItemText(2, QCoreApplication.translate("RobotWindow", u"conveyor2", None))
 
-        self.pbSetEncoderInterval.setText(QCoreApplication.translate("RobotWindow", u"Set", None))
-        self.leEncoderCurrentPosition.setText(QCoreApplication.translate("RobotWindow", u"100", None))
-        self.leEncoderVelocity.setText(QCoreApplication.translate("RobotWindow", u"0", None))
         self.cbLinkToConveyorX.setText(QCoreApplication.translate("RobotWindow", u"Link to X Conveyor", None))
-        self.leEncoderInterval.setText(QCoreApplication.translate("RobotWindow", u"100", None))
-        self.label_130.setText(QCoreApplication.translate("RobotWindow", u"Current Position (mm)", None))
         self.label_125.setText(QCoreApplication.translate("RobotWindow", u"Timer (ms)", None))
+        self.leEncoderInterval.setText(QCoreApplication.translate("RobotWindow", u"100", None))
+        self.pbSetEncoderInterval.setText(QCoreApplication.translate("RobotWindow", u"Set", None))
+        self.label_129.setText(QCoreApplication.translate("RobotWindow", u"Velocity (mm/s)", None))
+        self.leEncoderVelocity.setText(QCoreApplication.translate("RobotWindow", u"0", None))
+        self.pbSetEncoderVelocity.setText(QCoreApplication.translate("RobotWindow", u"Set", None))
+        self.label_130.setText(QCoreApplication.translate("RobotWindow", u"Current Position (mm)", None))
+        self.leEncoderCurrentPosition.setText(QCoreApplication.translate("RobotWindow", u"100", None))
         self.tbCopyEncoderPosition.setText("")
+        self.pbReadEncoder.setText(QCoreApplication.translate("RobotWindow", u"Read", None))
+        self.pbResetEncoder.setText(QCoreApplication.translate("RobotWindow", u"Reset", None))
+        self.label_127.setText(QCoreApplication.translate("RobotWindow", u"Scheduler                                ", None))
+        self.label_131.setText(QCoreApplication.translate("RobotWindow", u"Scheduled Distance (mm)", None))
+        self.leScheduledDistance.setText(QCoreApplication.translate("RobotWindow", u"150", None))
+        self.label_134.setText(QCoreApplication.translate("RobotWindow", u"Gcode Command", None))
+        self.leScheduledGcode.setText(QCoreApplication.translate("RobotWindow", u"robot0 M03 D0", None))
+        self.pbStartScheduledEncoder.setText(QCoreApplication.translate("RobotWindow", u"Start", None))
         self.twDevices.setTabText(self.twDevices.indexOf(self.EncoderTab), QCoreApplication.translate("RobotWindow", u"Encoder", None))
         self.label_15.setText(QCoreApplication.translate("RobotWindow", u"Selected Encoder", None))
         self.checkBox_5.setText(QCoreApplication.translate("RobotWindow", u"Auto Scan", None))

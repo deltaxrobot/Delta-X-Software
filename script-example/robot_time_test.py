@@ -45,19 +45,25 @@ def calculate_movement_time(v_start, v_max, a_max, v_end, distance):
 
     # Tính quãng đường giảm tốc
     d_dec = v_max * t_dec - 0.5 * a_max * t_dec**2
+    print("d_dec: ", d_dec)
 
     # Tính quãng đường di chuyển với vận tốc lớn nhất
     d_max = distance - d_acc - d_dec
 
-    if d_max < 0:
+    print("d_max: ", d_max)
+
+    if d_max <= 0:
         # Không đạt vận tốc lớn nhất
         t_max = 0
         v_max = math.sqrt(v_start**2 + a_max * distance)
-        t_acc = (v_max - v_start) / a_max
-        t_dec = (v_max - v_end) / a_max
+        t_acc = (v_max * 1.5 - v_start * 1.5) / (a_max * 1.5)
+        t_dec = t_acc
+
+        print("t_acc: ", t_acc)
     else:
         # Tính thời gian di chuyển với vận tốc lớn nhất
         t_max = d_max / v_max
+        print("t_max: ", t_max)
 
     # Tính tổng thời gian di chuyển
     total_time = t_acc + t_max + t_dec
@@ -65,11 +71,13 @@ def calculate_movement_time(v_start, v_max, a_max, v_end, distance):
     return total_time
 
 # Ví dụ sử dụng
-v_start = 200  # Vận tốc bắt đầu (m/s)
-v_max = 700    # Vận tốc lớn nhất (m/s)
+v_start = 100  # Vận tốc bắt đầu (m/s)
+v_max = 300    # Vận tốc lớn nhất (m/s)
 a_max = 1000    # Gia tốc lớn nhất (m/s^2)
 v_end = v_start   # Vận tốc kết thúc (m/s)
-distance = 180 # Quãng đường di chuyển (m)
+distance = 80 # Quãng đường di chuyển (m)
+
+# 0.4
 
 # Ví dụ sử dụng hàm:
 initial_velocity = v_start
@@ -77,14 +85,14 @@ max_velocity = v_max
 final_velocity = v_start
 acceleration = a_max
 
-result = calculate_move_time(initial_velocity, max_velocity, final_velocity, acceleration, distance)
-print(f"Thời gian di chuyển dự đoán: {result} giây")
+# result = calculate_move_time(initial_velocity, max_velocity, final_velocity, acceleration, distance)
+# print(f"Thời gian di chuyển dự đoán: {result} giây")
 
 movement_time = calculate_movement_time(v_start, v_max, a_max, v_end, distance)
-print(f"Thời gian di chuyển: {movement_time:.2f} giây")
+print(f"Thời gian di chuyển: {movement_time:.4f} giây")
 
 # Kết nối với cổng COM18
-ser = serial.Serial('COM4', 115200, timeout=1)
+ser = serial.Serial('COM5', 115200, timeout=1)
 
 # Đợi 2 giây để Arduino khởi động 
 time.sleep(2)
@@ -110,12 +118,12 @@ send_gcode_command(ser, "G01 X90 Z-325 F{v_max}\n".format(v_max=v_max))
 
 start_time = time.time()
 
-send_gcode_command(ser, "G01 X-90 Z-325\n")
+send_gcode_command(ser, "G01 X10 Z-325\n")
 
 end_time = time.time()
 
 execution_time = end_time - start_time
 
-print(f"Thời gian thực hiện lệnh: {execution_time:.2f} giây")
+print(f"Thời gian thực hiện lệnh: {execution_time:.4f} giây")
 
 ser.close()
