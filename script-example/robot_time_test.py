@@ -70,32 +70,7 @@ def calculate_movement_time(v_start, v_max, a_max, v_end, distance):
 
     return total_time
 
-# Ví dụ sử dụng
-v_start = 100  # Vận tốc bắt đầu (m/s)
-v_max = 300    # Vận tốc lớn nhất (m/s)
-a_max = 1000    # Gia tốc lớn nhất (m/s^2)
-v_end = v_start   # Vận tốc kết thúc (m/s)
-distance = 80 # Quãng đường di chuyển (m)
 
-# 0.4
-
-# Ví dụ sử dụng hàm:
-initial_velocity = v_start
-max_velocity = v_max
-final_velocity = v_start
-acceleration = a_max
-
-# result = calculate_move_time(initial_velocity, max_velocity, final_velocity, acceleration, distance)
-# print(f"Thời gian di chuyển dự đoán: {result} giây")
-
-movement_time = calculate_movement_time(v_start, v_max, a_max, v_end, distance)
-print(f"Thời gian di chuyển: {movement_time:.4f} giây")
-
-# Kết nối với cổng COM18
-ser = serial.Serial('COM5', 115200, timeout=1)
-
-# Đợi 2 giây để Arduino khởi động 
-time.sleep(2)
 
 def send_gcode_command(ser, command):
     ser.write(command.encode())
@@ -107,23 +82,98 @@ def send_gcode_command(ser, command):
 
     print(f"Đã nhận phản hồi: {response}")
 
-send_gcode_command(ser, "G28\n")
+def test1():
+    # Ví dụ sử dụng
+    v_start = 100  # Vận tốc bắt đầu (m/s)
+    v_max = 300    # Vận tốc lớn nhất (m/s)
+    a_max = 1000    # Gia tốc lớn nhất (m/s^2)
+    v_end = v_start   # Vận tốc kết thúc (m/s)
+    distance = 80 # Quãng đường di chuyển (m)
 
-#Gửi gcode thay đổi gia tốc dựa vào biến a_max
-send_gcode_command(ser, "M204 A{a_max}\n".format(a_max=a_max))
+    # 0.4
 
-send_gcode_command(ser, "M205 S{v_start}\n".format(v_start=v_start))
+    # Ví dụ sử dụng hàm:
+    initial_velocity = v_start
+    max_velocity = v_max
+    final_velocity = v_start
+    acceleration = a_max
 
-send_gcode_command(ser, "G01 X90 Z-325 F{v_max}\n".format(v_max=v_max))
+    # result = calculate_move_time(initial_velocity, max_velocity, final_velocity, acceleration, distance)
+    # print(f"Thời gian di chuyển dự đoán: {result} giây")
 
-start_time = time.time()
+    movement_time = calculate_movement_time(v_start, v_max, a_max, v_end, distance)
+    print(f"Thời gian di chuyển: {movement_time:.4f} giây")
 
-send_gcode_command(ser, "G01 X10 Z-325\n")
+    # Kết nối với cổng COM18
+    ser = serial.Serial('COM5', 115200, timeout=1)
 
-end_time = time.time()
+    # Đợi 2 giây để Arduino khởi động 
+    time.sleep(2)
 
-execution_time = end_time - start_time
+    send_gcode_command(ser, "G28\n")
 
-print(f"Thời gian thực hiện lệnh: {execution_time:.4f} giây")
+    #Gửi gcode thay đổi gia tốc dựa vào biến a_max
+    send_gcode_command(ser, "M204 A{a_max}\n".format(a_max=a_max))
 
-ser.close()
+    send_gcode_command(ser, "M205 S{v_start}\n".format(v_start=v_start))
+
+    send_gcode_command(ser, "G01 X90 Z-325 F{v_max}\n".format(v_max=v_max))
+
+    start_time = time.time()
+
+    send_gcode_command(ser, "G01 X10 Z-325\n")
+
+    end_time = time.time()
+
+    execution_time = end_time - start_time
+
+    print(f"Thời gian thực hiện lệnh: {execution_time:.4f} giây")
+
+    ser.close()
+
+import pandas as pd
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error, r2_score
+
+# Load dataset
+file_path = r'script-example\datatable.csv'  # Thay đổi đường dẫn tới file dataset của bạn
+dataset = pd.read_csv(file_path)
+
+# Filter the rows where distance_to_move is 100
+filtered_dataset = dataset[dataset['distance_to_move'] == 100]
+
+# Adjust the unit of time to milliseconds
+filtered_dataset['execute_time'] = filtered_dataset['execute_time']
+
+# Split data into features and target
+X_filtered = filtered_dataset[['begin_velocity', 'desired_velocity', 'acceleration']]
+y_filtered = filtered_dataset['execute_time']
+
+# Train linear regression model
+model_filtered = LinearRegression()
+model_filtered.fit(X_filtered, y_filtered)
+
+# Predict on the filtered data
+y_pred_filtered = model_filtered.predict(X_filtered)
+
+# Evaluate model
+mse_filtered = mean_squared_error(y_filtered, y_pred_filtered)
+r2_filtered = r2_score(y_filtered, y_pred_filtered)
+
+print("Mean Squared Error:", mse_filtered)
+print("R-squared:", r2_filtered)
+
+# Extract coefficients
+coefficients = model_filtered.coef_
+intercept = model_filtered.intercept_
+
+print("Coefficients:", coefficients)
+print("Intercept:", intercept)
+
+# Function to predict execution time based on the fitted model
+def predict_execution_time(begin_velocity, desired_velocity, acceleration):
+    return coefficients[0] * begin_velocity + coefficients[1] * desired_velocity + coefficients[2] * acceleration + intercept
+
+# Example usage
+predicted_time = predict_execution_time(20, 200, 1000)
+print("Predicted execution time:", predicted_time/1000)

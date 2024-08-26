@@ -63,14 +63,22 @@ void Tracking::ChangeObjectInfo(QString cmd)
     QStringList paras1 = cmd.split('=');
     QStringList paras2 = paras1.at(0).trimmed().split('.');
 
+
     int i = paras1.at(1).toInt();
 
-    if (paras2.at(2) == "IsPicked")
+    if (paras2.count() >= 3)
     {
-        if (paras1.at(1).trimmed() == "True")
-            TrackedObjects[i].isPicked = true;
-        else
-            TrackedObjects[i].isPicked = false;
+        if (paras2.at(2) == "IsPicked")
+        {
+            QString objName = paras2.at(0) + paras2.at(1);
+
+            int i = VariableManager::instance().getVar(QString("project0.tracking0.") + objName + ".UID").toInt();
+
+            if (paras1.at(1).trimmed().toLower() == "true")
+                TrackedObjects[i].isPicked = true;
+            else
+                TrackedObjects[i].isPicked = false;
+        }
     }
 }
 
@@ -196,6 +204,8 @@ void Tracking::GetObjectsInArea(QString inAreaListName, float min, float max, bo
         VariableManager::instance().updateVar(name + ".X", tracked.center.x());
         VariableManager::instance().updateVar(name + ".Y", tracked.center.y());
         VariableManager::instance().updateVar(name + ".IsPicked", tracked.isPicked);
+        VariableManager::instance().updateVar(name + ".Type", tracked.type);
+        VariableManager::instance().updateVar(name + ".UID", tracked.id);
         VariableManager::instance().updateVar(inAreaListName + ".Count", index + 1);
         index++;
     }
@@ -375,13 +385,15 @@ void TrackingManager::UpdateVariable(QString cmd)
     QStringList paras1 = cmd.split('=');
     QStringList paras2 = paras1.at(0).split('.');
 
-    for(int i = 0; i < Trackings.count(); i++)
-    {
-        if (Trackings.at(i)->ListName == paras2.at(0))
-        {
-            QMetaObject::invokeMethod(Trackings.at(i), "ChangeObjectInfo", Qt::QueuedConnection, Q_ARG(QString, cmd));
-        }
-    }
+    QMetaObject::invokeMethod(Trackings.at(0), "ChangeObjectInfo", Qt::QueuedConnection, Q_ARG(QString, cmd));
+
+//    for(int i = 0; i < Trackings.count(); i++)
+//    {
+//        if (Trackings.at(i)->ListName == paras2.at(0))
+//        {
+//            QMetaObject::invokeMethod(Trackings.at(i), "ChangeObjectInfo", Qt::QueuedConnection, Q_ARG(QString, cmd));
+//        }
+//    }
 }
 
 void TrackingManager::AddObject(QString listName, QList<QStringList> list)

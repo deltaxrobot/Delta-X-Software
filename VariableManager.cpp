@@ -67,6 +67,10 @@ QVariant VariableManager::getVar(const QString &key, QVariant defaultValue)
                 {
                     return ObjectInfos[objKey]->at(index).center.y();
                 }
+                else if (last == "Type")
+                {
+                    return ObjectInfos[objKey]->at(index).type;
+                }
             }
         }
     }

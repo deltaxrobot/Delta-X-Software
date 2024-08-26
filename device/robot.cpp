@@ -358,7 +358,7 @@ QString Robot::syncGcode(QString cmd)
 
 double Robot::calculateMovingTime(double distance)
 {
-    if (robotModel == "Delta X S")
+    if (robotModel == "Delta X S" || robotModel == "Delta X 2 Plus")
     {
         scurve_tool.p_target = distance;
         scurve_tool.start();

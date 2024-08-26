@@ -347,6 +347,7 @@ public slots:
     void SetConveyorMode(int mode);
     void SetConveyorMovingMode(int mode);
     void SetConveyorSpeed();
+    void StopConveyor();
     void SetConveyorPosition();
     void SetConveyorAbsolutePosition();
 

@@ -109,61 +109,24 @@ cv::Mat PointTool::calculateMatrix(const QPolygonF &sourcePolygon, const QPolygo
     // Tính toán ma trận chuyển đổi bằng OpenCV.
     cv::Mat transformMatrix = cv::getPerspectiveTransform(srcPoints, dstPoints);
 
-//    // Chuyển đổi ma trận từ OpenCV sang QTransform.
-//    QTransform qtTransform(
-//        transformMatrix.at<double>(0, 0), transformMatrix.at<double>(0, 1), transformMatrix.at<double>(0, 2),
-//        transformMatrix.at<double>(1, 0), transformMatrix.at<double>(1, 1), transformMatrix.at<double>(1, 2),
-//        transformMatrix.at<double>(2, 0), transformMatrix.at<double>(2, 1), transformMatrix.at<double>(2, 2)
-//    );
-
     return transformMatrix;
 }
 
-//QTransform PointTool::calculateMatrix(const QPolygonF &sourcePolygon, const QPolygonF &destPolygon)
-//{
-//    // Tính toán điểm trung tâm của các điểm nguồn và điểm đích
-//    QPointF srcCenter = std::accumulate(sourcePolygon.begin(), sourcePolygon.end(), QPointF(0, 0)) / sourcePolygon.size();
-//    QPointF dstCenter = std::accumulate(destPolygon.begin(), destPolygon.end(), QPointF(0, 0)) / destPolygon.size();
+cv::Mat PointTool::performAffineTransformation(const QPolygonF &sourcePolygon, const QPolygonF &destPolygon)
+{
+        // Convert QPolygonF to std::vector<cv::Point2f>
+        std::vector<cv::Point2f> sourcePoints, targetPoints;
+        for (const QPointF &point : sourcePolygon)
+            sourcePoints.push_back(cv::Point2f(point.x(), point.y()));
+        for (const QPointF &point : destPolygon)
+            targetPoints.push_back(cv::Point2f(point.x(), point.y()));
+    // Perform least squares regression
+    cv::Mat transformationMatrix = cv::estimateAffine2D(sourcePoints, targetPoints);
 
-//    // Dịch chuyển các điểm nguồn và điểm đích về gốc tọa độ
-//    QPolygonF normalizedSrcPoly = sourcePolygon.translated(-srcCenter);
-//    QPolygonF normalizedDstPoly = destPolygon.translated(-dstCenter);
+    return transformationMatrix;
+}
 
-//    // Tính toán tỉ lệ tỷ lệ giữa các điểm nguồn và điểm đích
-//    QRectF srcBoundingRect = normalizedSrcPoly.boundingRect();
-//    QRectF dstBoundingRect = normalizedDstPoly.boundingRect();
-//    qreal srcScale = qMax(srcBoundingRect.width(), srcBoundingRect.height());
-//    qreal dstScale = qMax(dstBoundingRect.width(), dstBoundingRect.height());
-//    qreal scale = dstScale / srcScale;
 
-//    // Chia tỷ lệ các điểm nguồn và điểm đích
-//    normalizedSrcPoly = QTransform::fromScale(1.0 / scale, 1.0 / scale).map(normalizedSrcPoly);
-//    normalizedDstPoly = QTransform::fromScale(scale, scale).map(normalizedDstPoly);
-
-//    // Chuyển đổi từ QPolygonF sang std::vector<cv::Point2f>
-//    std::vector<cv::Point2f> srcPoints, dstPoints;
-//    for (int i = 0; i < normalizedSrcPoly.size() && i < normalizedDstPoly.size(); ++i) {
-//        srcPoints.push_back(cv::Point2f(normalizedSrcPoly[i].x(), normalizedSrcPoly[i].y()));
-//        dstPoints.push_back(cv::Point2f(normalizedDstPoly[i].x(), normalizedDstPoly[i].y()));
-//    }
-
-//    // Tính toán ma trận biến đổi bằng OpenCV
-//    cv::Mat transformMatrix = cv::getPerspectiveTransform(srcPoints, dstPoints);
-
-//    // Chuyển đổi ma trận từ OpenCV sang QTransform
-//    QTransform qtTransform(
-//        transformMatrix.at<double>(0, 0), transformMatrix.at<double>(0, 1), transformMatrix.at<double>(0, 2),
-//        transformMatrix.at<double>(1, 0), transformMatrix.at<double>(1, 1), transformMatrix.at<double>(1, 2),
-//        transformMatrix.at<double>(2, 0), transformMatrix.at<double>(2, 1), transformMatrix.at<double>(2, 2)
-//    );
-
-//    // Kết hợp các phép biến đổi
-//    QTransform translateMatrix = QTransform::fromTranslate(-srcCenter.x(), -srcCenter.y());
-//    QTransform scaleMatrix = QTransform::fromScale(scale, scale);
-//    QTransform finalTransform = scaleMatrix * qtTransform * translateMatrix;
-
-//    return finalTransform;
-//}
 
 QPointF PointTool::GetCenterOfPolygon(const QPolygonF &polygon)
 {

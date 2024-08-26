@@ -423,6 +423,7 @@ void RobotWindow::InitOtherThreadObjects()
     connect(ui->pbMoveConveyorPosition, SIGNAL(clicked(bool)), this, SLOT(SetConveyorAbsolutePosition()));
     connect(ui->leConveyorXSpeed, SIGNAL(returnPressed()), this, SLOT(SetConveyorSpeed()));
     connect(ui->pbSetConveyorSpeed, SIGNAL(clicked(bool)), this, SLOT(SetConveyorSpeed()));
+    connect(ui->pbStopConveyor, SIGNAL(clicked(bool)), this, SLOT(StopConveyor()));
     connect(ui->cbConveyorType, SIGNAL(currentIndexChanged(int)), this, SLOT(ChangeConveyorType(int)));
     ChangeConveyorType(0);
 
@@ -1078,7 +1079,7 @@ void RobotWindow::InitEvents()
 
     connect(ui->cbSourceForImageProvider, SIGNAL(currentIndexChanged(int)), this, SLOT(SelectImageProviderOption(int)));
 
-    SelectImageProviderOption(0);
+//    SelectImageProviderOption(0);
 
     // ---- Setting ----
 
@@ -1716,7 +1717,8 @@ void RobotWindow::LoadObjectDetectorSetting()
 
     EditImage(ui->pbWarpTool->isChecked(), ui->pbCropTool->isChecked());
 
-    QString imageSource = VariableManager::instance().getVar(prefix + "ImageSource", ui->cbSourceForImageProvider->currentText()).toString();
+//    QString imageSource = VariableManager::instance().getVar(prefix + "ImageSource", ui->cbSourceForImageProvider->currentText()).toString();
+    QString imageSource = VariableManager::instance().getVar(prefix + "ImageSource", "source").toString();
 
     int index = ui->cbSourceForImageProvider->findText(imageSource);
     ui->cbSourceForImageProvider->setCurrentIndex(index);
@@ -1731,20 +1733,20 @@ void RobotWindow::LoadObjectDetectorSetting()
     bool IsCameraOpen = VariableManager::instance().getVar(prefix + "IsOpen", false).toBool();
     int cameraID = VariableManager::instance().getVar(prefix + "CameraID", 0).toInt();
 
-    if (IsCameraOpen == true)
-    {
-        if (imageSource == "Industrial Camera")
-        {
-            DeltaXPlugin* camera = industrialCameraPlugin;
-            QTimer::singleShot(2000, [camera, cameraID]() {
-                emit camera->RequestConnect(cameraID);
-            });
-        }
-        else if (imageSource == "Webcam")
-        {
-            QMetaObject::invokeMethod(CameraInstance, "OpenCamera", Qt::QueuedConnection, Q_ARG(int, cameraID));
-        }
-    }
+//    if (IsCameraOpen == true)
+//    {
+//        if (imageSource == "Industrial Camera")
+//        {
+//            DeltaXPlugin* camera = industrialCameraPlugin;
+//            QTimer::singleShot(2000, [camera, cameraID]() {
+//                emit camera->RequestConnect(cameraID);
+//            });
+//        }
+//        else if (imageSource == "Webcam")
+//        {
+//            QMetaObject::invokeMethod(CameraInstance, "OpenCamera", Qt::QueuedConnection, Q_ARG(int, cameraID));
+//        }
+//    }
 
 
 
@@ -1986,6 +1988,9 @@ void RobotWindow::InitDefaultValue()
     ChangeEncoderType(0);
 
     ui->pbSaveTrackingManager->click();
+
+    ui->twModule->setCurrentIndex(0);
+    ui->twDevices->setCurrentIndex(0);
 }
 
 void RobotWindow::SetMainStackedWidgetAndPages(QStackedWidget *mainStack, QWidget *mainPage, QWidget *fullDisplayPage, QLayout *fullDisplayLayout)
@@ -3293,9 +3298,11 @@ void RobotWindow::SetEncoderAutoRead()
     }
     if (ui->cbEncoderType->currentText() == "X Encoder")
     {
-        if (interval > 0)
-            emit Send(DeviceManager::ENCODER, QString("M317 T%1").arg(interval));
-        else
+        if (interval < 0)
+            interval = 0;
+        emit Send(DeviceManager::ENCODER, QString("M317 T%1").arg(interval));
+
+        if (interval == 0)
             emit Send(DeviceManager::ENCODER, QString("M317").arg(interval));
     }
     if (ui->cbEncoderType->currentText() == "Virtual Encoder")
@@ -4137,6 +4144,12 @@ void RobotWindow::SetConveyorSpeed()
         }
 
     }
+}
+
+void RobotWindow::StopConveyor()
+{
+    ui->leConveyorXSpeed->setText("0");
+    SetConveyorSpeed();
 }
 
 void RobotWindow::SetConveyorPosition()

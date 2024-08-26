@@ -1724,7 +1724,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
                          <property name="minimumSize">
                           <size>
                            <width>310</width>
-                           <height>100</height>
+                           <height>0</height>
                           </size>
                          </property>
                          <property name="font">
@@ -9371,7 +9371,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
               <enum>QTabWidget::North</enum>
              </property>
              <property name="currentIndex">
-              <number>2</number>
+              <number>0</number>
              </property>
              <property name="elideMode">
               <enum>Qt::ElideNone</enum>
@@ -9908,6 +9908,11 @@ QGroupBox
                               <item>
                                <property name="text">
                                 <string>Delta X 2</string>
+                               </property>
+                              </item>
+                              <item>
+                               <property name="text">
+                                <string>Delta X 2 Plus</string>
                                </property>
                               </item>
                               <item>
@@ -14498,6 +14503,19 @@ QPushButton
                     </property>
                    </widget>
                   </item>
+                  <item row="2" column="4">
+                   <widget class="QPushButton" name="pbStopConveyor">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="text">
+                     <string>Stop</string>
+                    </property>
+                   </widget>
+                  </item>
                  </layout>
                 </widget>
                </item>
@@ -15753,57 +15771,16 @@ QGroupBox
                        <property name="spacing">
                         <number>10</number>
                        </property>
-                       <item row="2" column="5">
-                        <spacer name="horizontalSpacer_23">
-                         <property name="orientation">
-                          <enum>Qt::Horizontal</enum>
-                         </property>
-                         <property name="sizeHint" stdset="0">
-                          <size>
-                           <width>40</width>
-                           <height>20</height>
-                          </size>
-                         </property>
-                        </spacer>
-                       </item>
-                       <item row="0" column="1">
-                        <widget class="QComboBox" name="cbConveyorLinkToEncoder">
+                       <item row="3" column="1">
+                        <widget class="QLineEdit" name="leEncoderCurrentPosition">
                          <property name="sizePolicy">
                           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                            <horstretch>0</horstretch>
                            <verstretch>0</verstretch>
                           </sizepolicy>
                          </property>
-                         <property name="minimumSize">
-                          <size>
-                           <width>100</width>
-                           <height>0</height>
-                          </size>
-                         </property>
-                         <item>
-                          <property name="text">
-                           <string>conveyor0</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>conveyor1</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>conveyor2</string>
-                          </property>
-                         </item>
-                        </widget>
-                       </item>
-                       <item row="0" column="0">
-                        <widget class="QCheckBox" name="cbLinkToConveyorX">
                          <property name="text">
-                          <string>Link to X Conveyor</string>
-                         </property>
-                         <property name="checked">
-                          <bool>false</bool>
+                          <string>100</string>
                          </property>
                         </widget>
                        </item>
@@ -15824,104 +15801,6 @@ QGroupBox
                          </property>
                          <property name="text">
                           <string>100</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="1" column="3">
-                        <widget class="QPushButton" name="pbSetEncoderInterval">
-                         <property name="sizePolicy">
-                          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
-                           <horstretch>0</horstretch>
-                           <verstretch>0</verstretch>
-                          </sizepolicy>
-                         </property>
-                         <property name="maximumSize">
-                          <size>
-                           <width>16777215</width>
-                           <height>20</height>
-                          </size>
-                         </property>
-                         <property name="text">
-                          <string>Set</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="2" column="0">
-                        <widget class="QLabel" name="label_129">
-                         <property name="text">
-                          <string>Velocity (mm/s)</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="2" column="1">
-                        <widget class="QLineEdit" name="leEncoderVelocity">
-                         <property name="sizePolicy">
-                          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                           <horstretch>0</horstretch>
-                           <verstretch>0</verstretch>
-                          </sizepolicy>
-                         </property>
-                         <property name="text">
-                          <string>0</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="2" column="3">
-                        <widget class="QPushButton" name="pbSetEncoderVelocity">
-                         <property name="sizePolicy">
-                          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-                           <horstretch>0</horstretch>
-                           <verstretch>0</verstretch>
-                          </sizepolicy>
-                         </property>
-                         <property name="maximumSize">
-                          <size>
-                           <width>16777215</width>
-                           <height>20</height>
-                          </size>
-                         </property>
-                         <property name="text">
-                          <string>Set</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="3" column="0">
-                        <widget class="QLabel" name="label_130">
-                         <property name="text">
-                          <string>Current Position (mm)</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="3" column="1">
-                        <widget class="QLineEdit" name="leEncoderCurrentPosition">
-                         <property name="sizePolicy">
-                          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                           <horstretch>0</horstretch>
-                           <verstretch>0</verstretch>
-                          </sizepolicy>
-                         </property>
-                         <property name="text">
-                          <string>100</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="3" column="2">
-                        <widget class="QToolButton" name="tbCopyEncoderPosition">
-                         <property name="text">
-                          <string/>
-                         </property>
-                         <property name="icon">
-                          <iconset resource="resource.qrc">
-                           <normaloff>:/icon/Copy.png</normaloff>:/icon/Copy.png</iconset>
-                         </property>
-                         <property name="iconSize">
-                          <size>
-                           <width>16</width>
-                           <height>16</height>
-                          </size>
-                         </property>
-                         <property name="autoRaise">
-                          <bool>true</bool>
                          </property>
                         </widget>
                        </item>
@@ -15960,6 +15839,145 @@ QGroupBox
                          </property>
                          <property name="text">
                           <string>Reset</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="3" column="2">
+                        <widget class="QToolButton" name="tbCopyEncoderPosition">
+                         <property name="text">
+                          <string/>
+                         </property>
+                         <property name="icon">
+                          <iconset resource="resource.qrc">
+                           <normaloff>:/icon/Copy.png</normaloff>:/icon/Copy.png</iconset>
+                         </property>
+                         <property name="iconSize">
+                          <size>
+                           <width>16</width>
+                           <height>16</height>
+                          </size>
+                         </property>
+                         <property name="autoRaise">
+                          <bool>true</bool>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="2" column="0">
+                        <widget class="QLabel" name="label_129">
+                         <property name="text">
+                          <string>Velocity (mm/s)</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="3" column="0">
+                        <widget class="QLabel" name="label_130">
+                         <property name="text">
+                          <string>Current Position (mm)</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="0" column="0">
+                        <widget class="QCheckBox" name="cbLinkToConveyorX">
+                         <property name="text">
+                          <string>Link to X Conveyor</string>
+                         </property>
+                         <property name="checked">
+                          <bool>false</bool>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="2" column="5">
+                        <spacer name="horizontalSpacer_23">
+                         <property name="orientation">
+                          <enum>Qt::Horizontal</enum>
+                         </property>
+                         <property name="sizeHint" stdset="0">
+                          <size>
+                           <width>40</width>
+                           <height>20</height>
+                          </size>
+                         </property>
+                        </spacer>
+                       </item>
+                       <item row="2" column="1">
+                        <widget class="QLineEdit" name="leEncoderVelocity">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                         <property name="text">
+                          <string>0</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="2" column="3">
+                        <widget class="QPushButton" name="pbSetEncoderVelocity">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                         <property name="maximumSize">
+                          <size>
+                           <width>16777215</width>
+                           <height>20</height>
+                          </size>
+                         </property>
+                         <property name="text">
+                          <string>Set</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="0" column="1">
+                        <widget class="QComboBox" name="cbConveyorLinkToEncoder">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                         <property name="minimumSize">
+                          <size>
+                           <width>100</width>
+                           <height>0</height>
+                          </size>
+                         </property>
+                         <item>
+                          <property name="text">
+                           <string>conveyor0</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>conveyor1</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>conveyor2</string>
+                          </property>
+                         </item>
+                        </widget>
+                       </item>
+                       <item row="1" column="3">
+                        <widget class="QPushButton" name="pbSetEncoderInterval">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                         <property name="maximumSize">
+                          <size>
+                           <width>16777215</width>
+                           <height>20</height>
+                          </size>
+                         </property>
+                         <property name="text">
+                          <string>Set</string>
                          </property>
                         </widget>
                        </item>
