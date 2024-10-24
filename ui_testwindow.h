@@ -12,8 +12,10 @@
 #include <QtCore/QVariant>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QFrame>
+#include <QtWidgets/QLabel>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenuBar>
+#include <QtWidgets/QPushButton>
 #include <QtWidgets/QSplitter>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QTabWidget>
@@ -27,6 +29,7 @@ class Ui_TestWindow
 public:
     QWidget *centralwidget;
     QVBoxLayout *verticalLayout_4;
+    QPushButton *openCameraButton;
     QSplitter *splitter;
     QFrame *frame_2;
     QVBoxLayout *verticalLayout;
@@ -34,6 +37,8 @@ public:
     QWidget *tab;
     QVBoxLayout *verticalLayout_3;
     QFrame *frame_3;
+    QVBoxLayout *verticalLayout_5;
+    QLabel *cameraLabel;
     QWidget *tab_2;
     QFrame *frame;
     QVBoxLayout *verticalLayout_2;
@@ -52,6 +57,11 @@ public:
         centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
         verticalLayout_4 = new QVBoxLayout(centralwidget);
         verticalLayout_4->setObjectName(QString::fromUtf8("verticalLayout_4"));
+        openCameraButton = new QPushButton(centralwidget);
+        openCameraButton->setObjectName(QString::fromUtf8("openCameraButton"));
+
+        verticalLayout_4->addWidget(openCameraButton);
+
         splitter = new QSplitter(centralwidget);
         splitter->setObjectName(QString::fromUtf8("splitter"));
         splitter->setOrientation(Qt::Horizontal);
@@ -72,6 +82,13 @@ public:
         frame_3->setMinimumSize(QSize(400, 0));
         frame_3->setFrameShape(QFrame::StyledPanel);
         frame_3->setFrameShadow(QFrame::Raised);
+        verticalLayout_5 = new QVBoxLayout(frame_3);
+        verticalLayout_5->setObjectName(QString::fromUtf8("verticalLayout_5"));
+        cameraLabel = new QLabel(frame_3);
+        cameraLabel->setObjectName(QString::fromUtf8("cameraLabel"));
+
+        verticalLayout_5->addWidget(cameraLabel);
+
 
         verticalLayout_3->addWidget(frame_3);
 
@@ -121,6 +138,8 @@ public:
     void retranslateUi(QMainWindow *TestWindow)
     {
         TestWindow->setWindowTitle(QCoreApplication::translate("TestWindow", "MainWindow", nullptr));
+        openCameraButton->setText(QCoreApplication::translate("TestWindow", "PushButton", nullptr));
+        cameraLabel->setText(QCoreApplication::translate("TestWindow", "TextLabel", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(tab), QCoreApplication::translate("TestWindow", "Tab 1", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(tab_2), QCoreApplication::translate("TestWindow", "Tab 2", nullptr));
         tabWidget_2->setTabText(tabWidget_2->indexOf(tab_3), QCoreApplication::translate("TestWindow", "Tab 1", nullptr));

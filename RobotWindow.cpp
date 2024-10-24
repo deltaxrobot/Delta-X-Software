@@ -40,8 +40,9 @@ RobotWindow::~RobotWindow()
     ImageProcessingInstance->thread()->quit();
     ImageProcessingInstance->thread()->wait();
 
-    CameraInstance->thread()->quit();
-    CameraInstance->thread()->wait();
+    CameraThread->quit();
+    CameraThread->wait();
+    delete CameraThread;
 
     for (int i = 0; i < GcodeScripts.count(); i++)
     {
@@ -384,11 +385,12 @@ void RobotWindow::InitOtherThreadObjects()
 
         //-------- Camera --------
     CameraInstance = new Camera();
-    CameraInstance->moveToThread(new QThread(this));
-    connect(CameraInstance->thread(), &QThread::finished, CameraInstance, &QObject::deleteLater);
+    CameraThread = new QThread(this);
+    CameraInstance->moveToThread(CameraThread);
+    connect(CameraThread, &QThread::finished, CameraInstance, &QObject::deleteLater);
     connect(CameraInstance, &Camera::StopCameraRequest, this, &RobotWindow::StopCapture);
 
-    CameraInstance->thread()->start();
+    CameraThread->start();
 
     connect(CameraInstance, &Camera::connectedResult, this, &RobotWindow::UpdateCameraConnectedState);
 
@@ -1009,14 +1011,13 @@ void RobotWindow::InitEvents()
 //    connect(ui->tbExpandLogBox, &QToolButton::toggled, this, &RobotWindow::ExpandLogBox);
 
 
-    // ------------- --------------
+    // ----------GScript----------
     connect(ui->pbSaveGcode, SIGNAL(clicked(bool)), this, SLOT(SaveProgram()));
-    connect(ui->pbSaveFunctionScripts, SIGNAL(clicked(bool)), this, SLOT(SaveProgram()));
 
 
     connect(ui->pbExecuteGcodes, SIGNAL(clicked(bool)), this, SLOT(ExecuteProgram()));
     connect(ui->pteGcodeArea, SIGNAL(lineClicked(int, QString)), this, SLOT(ExecuteCurrentLine(int, QString)));
-
+    connect(ui->pteGcodeArea, SIGNAL(textChanged()), this, SLOT(OnEditorTextChanged()));
     // ------------ Jogging -----------
 
     //---------- End effector -----------
@@ -1070,6 +1071,7 @@ void RobotWindow::InitEvents()
 	connect(ui->pbFormat, SIGNAL(clicked(bool)), this, SLOT(StandardFormatEditor()));
 
     connect(ui->cbEditGcodeLock, SIGNAL(stateChanged(int)), ui->pteGcodeArea, SLOT(setLockState(int)));
+    connect(ui->cbGScriptEditorZoom, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &RobotWindow::changeFontSize);
 
     //------------ Image Processing -----------
 
@@ -1287,7 +1289,12 @@ void RobotWindow::LoadGcodeFromFileToEditor(const QModelIndex &index)
         ui->pbExecuteGcodes->click();
     }
 
-    SaveProgram();
+    if (IsGcodeEditorTextChanged == true)
+    {
+        SaveProgram();
+    }
+
+
 
     QString filePath = explorerModel.filePath(index);
     LoadGcode(filePath);
@@ -1310,7 +1317,7 @@ void RobotWindow::LoadGcode(QString filePath)
 
         QFileInfo fileInfo(filePath);
         QString fileName = fileInfo.fileName();
-        ui->lbSelectedProgram->setText(fileName);
+        ui->twGcodeEditor->setTabText(0, fileName);
 
         ui->pbFormat->click();
     }
@@ -1901,7 +1908,7 @@ void RobotWindow::SaveObjectDetectorSetting(QSettings *setting)
 
 
     setting->setValue("WarpEnable", ui->pbWarpTool->isChecked());
-    setting->setValue("DisplayOutput", ui->cbImageOutput->currentText());
+//    setting->setValue("DisplayOutput", ui->cbImageOutput->currentText());
 
 
 //----------
@@ -1991,6 +1998,12 @@ void RobotWindow::InitDefaultValue()
 
     ui->twModule->setCurrentIndex(0);
     ui->twDevices->setCurrentIndex(0);
+
+    IsGcodeEditorTextChanged = false;
+    baseFontSize = ui->cbGScriptEditorZoom->font().pointSize();
+
+    ChangeRobotModel(ui->cbRobotModel->currentIndex());
+    SelectImageProviderOption(0);
 }
 
 void RobotWindow::SetMainStackedWidgetAndPages(QStackedWidget *mainStack, QWidget *mainPage, QWidget *fullDisplayPage, QLayout *fullDisplayLayout)
@@ -2588,13 +2601,15 @@ void RobotWindow::ChangeRobotModel(int id)
 {
     DeviceManagerInstance->Robots.at(ui->cbSelectedRobot->currentIndex())->SetRobotModel(ui->cbRobotModel->currentText());
 
-    if (id == 0 || id == 1)
+    if (id == 0 || id == 1 || id == 2)
     {
+        ui->gbX1->setVisible(true);
         ui->gbOutput->setVisible(false);
         ui->gbInput->setVisible(false);
     }
-    else if (id == 2)
+    else if (id == 3)
     {
+        ui->gbX1->setVisible(false);
         ui->gbOutput->setVisible(true);
         ui->gbInput->setVisible(true);
     }
@@ -2625,6 +2640,8 @@ void RobotWindow::SaveProgram()
 
     }
     SaveGcodeFile(name, ui->pteGcodeArea->toPlainText());
+
+    IsGcodeEditorTextChanged = false;
 }
 
 void RobotWindow::ExecuteProgram()
@@ -2649,10 +2666,10 @@ void RobotWindow::ExecuteProgram()
 
     int startMode = GcodeScript::BEGIN;
 
-    if (ui->rbEditorStart->isChecked() != true)
-    {
-        startMode = GcodeScript::CURSOR_POSITION;
-    }
+//    if (ui->rbEditorStart->isChecked() != true)
+//    {
+//        startMode = GcodeScript::CURSOR_POSITION;
+//    }
 
     if (ui->pbExecuteGcodes->isChecked() == false)
     {
@@ -2736,6 +2753,34 @@ void RobotWindow::HighLineCurrentLine(int pos)
     textCursor.movePosition(QTextCursor::Down, QTextCursor::MoveAnchor, pos);
     ui->pteGcodeArea->setTextCursor(textCursor);
     ui->pteGcodeArea->highlightCurrentLine();
+}
+
+void RobotWindow::OnEditorTextChanged()
+{
+    if (ChangedCounter > 0)
+        IsGcodeEditorTextChanged = true;
+
+    ChangedCounter++;
+}
+
+void RobotWindow::changeFontSize(int index)
+{
+    // Lấy nội dung text từ QComboBox
+    QString text = ui->cbGScriptEditorZoom->currentText();
+
+    // Loại bỏ dấu % và chuyển thành số nguyên
+    text.chop(1);  // Xóa ký tự '%' cuối cùng
+    bool ok;
+    int percentage = text.toInt(&ok);
+
+    // Nếu chuyển đổi thành công, tính toán tỷ lệ phần trăm
+    if (ok) {
+        qreal scaleFactor = percentage / 100.0;
+        QTextCursor cursor = ui->pteGcodeArea->textCursor();
+        ui->pteGcodeArea->selectAll(); // Chọn toàn bộ văn bản
+        ui->pteGcodeArea->setFontPointSize(baseFontSize * scaleFactor); // Thay đổi kích thước chữ
+        ui->pteGcodeArea->setTextCursor(cursor); // Đặt lại con trỏ văn bản
+    }
 }
 
 void RobotWindow::UpdatePositionControl(RobotPara robotPara)
@@ -3465,7 +3510,7 @@ void RobotWindow::LoadWebcam()
             CameraInstance->Width = ui->leImageWidth->text().toInt();
             CameraInstance->Height = ui->leImageHeight->text().toInt();
 
-            QMetaObject::invokeMethod(CameraInstance, "OpenCamera", Qt::QueuedConnection, Q_ARG(int, cameraID));
+            QMetaObject::invokeMethod(CameraInstance, "OpenCamera", Q_ARG(int, cameraID));
             OpenLoadingPopup();
 
             QString prefix = ProjectName + "." + ui->cbSelectedDetecting->currentText() + ".";

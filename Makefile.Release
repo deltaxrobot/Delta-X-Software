@@ -9665,6 +9665,13 @@ release\moc_camera.cpp: device\camera.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\qabstractvideobuffer.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDateTime \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qdatetime.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QThread \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qthread.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qdeadlinetimer.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qelapsedtimer.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QCoreApplication \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qcoreapplication.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qeventloop.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDebug \
 		release\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2015_64\bin\moc.exe
@@ -11025,13 +11032,110 @@ release\moc_testwindow.cpp: testwindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtouchdevice.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qtabwidget.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qicon.h \
-		testcode.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QObject \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDebug \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QThread \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qthread.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qdeadlinetimer.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qelapsedtimer.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QTimer \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qtimer.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qbasictimer.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QImage \
+		3rd-party\opencv\build\include\opencv2\opencv.hpp \
+		3rd-party\opencv\build\include\opencv2\opencv_modules.hpp \
+		3rd-party\opencv\build\include\opencv2\core.hpp \
+		3rd-party\opencv\build\include\opencv2\core\cvdef.h \
+		3rd-party\opencv\build\include\opencv2\core\hal\interface.h \
+		3rd-party\opencv\build\include\opencv2\core\cv_cpu_dispatch.h \
+		3rd-party\opencv\build\include\opencv2\core\cv_cpu_helper.h \
+		3rd-party\opencv\build\include\opencv2\core\fast_math.hpp \
+		3rd-party\opencv\build\include\opencv2\core\version.hpp \
+		3rd-party\opencv\build\include\opencv2\core\base.hpp \
+		3rd-party\opencv\build\include\opencv2\core\cvstd.hpp \
+		3rd-party\opencv\build\include\opencv2\core\cvstd_wrapper.hpp \
+		3rd-party\opencv\build\include\opencv2\core\neon_utils.hpp \
+		3rd-party\opencv\build\include\opencv2\core\vsx_utils.hpp \
+		3rd-party\opencv\build\include\opencv2\core\check.hpp \
+		3rd-party\opencv\build\include\opencv2\core\traits.hpp \
+		3rd-party\opencv\build\include\opencv2\core\matx.hpp \
+		3rd-party\opencv\build\include\opencv2\core\saturate.hpp \
+		3rd-party\opencv\build\include\opencv2\core\types.hpp \
+		3rd-party\opencv\build\include\opencv2\core\mat.hpp \
+		3rd-party\opencv\build\include\opencv2\core\bufferpool.hpp \
+		3rd-party\opencv\build\include\opencv2\core\mat.inl.hpp \
+		3rd-party\opencv\build\include\opencv2\core\persistence.hpp \
+		3rd-party\opencv\build\include\opencv2\core\operations.hpp \
+		3rd-party\opencv\build\include\opencv2\core\cvstd.inl.hpp \
+		3rd-party\opencv\build\include\opencv2\core\utility.hpp \
+		3rd-party\opencv\build\include\opencv2\core\optim.hpp \
+		3rd-party\opencv\build\include\opencv2\core\ovx.hpp \
+		3rd-party\opencv\build\include\opencv2\calib3d.hpp \
+		3rd-party\opencv\build\include\opencv2\features2d.hpp \
+		3rd-party\opencv\build\include\opencv2\flann\miniflann.hpp \
+		3rd-party\opencv\build\include\opencv2\flann\defines.h \
+		3rd-party\opencv\build\include\opencv2\flann\config.h \
+		3rd-party\opencv\build\include\opencv2\core\affine.hpp \
+		3rd-party\opencv\build\include\opencv2\dnn.hpp \
+		3rd-party\opencv\build\include\opencv2\dnn\dnn.hpp \
+		3rd-party\opencv\build\include\opencv2\dnn\version.hpp \
+		3rd-party\opencv\build\include\opencv2\dnn\dict.hpp \
+		3rd-party\opencv\build\include\opencv2\dnn\layer.hpp \
+		3rd-party\opencv\build\include\opencv2\dnn\dnn.inl.hpp \
+		3rd-party\opencv\build\include\opencv2\flann.hpp \
+		3rd-party\opencv\build\include\opencv2\flann\flann_base.hpp \
+		3rd-party\opencv\build\include\opencv2\flann\general.h \
+		3rd-party\opencv\build\include\opencv2\flann\matrix.h \
+		3rd-party\opencv\build\include\opencv2\flann\params.h \
+		3rd-party\opencv\build\include\opencv2\flann\any.h \
+		3rd-party\opencv\build\include\opencv2\flann\saving.h \
+		3rd-party\opencv\build\include\opencv2\flann\nn_index.h \
+		3rd-party\opencv\build\include\opencv2\flann\result_set.h \
+		3rd-party\opencv\build\include\opencv2\flann\all_indices.h \
+		3rd-party\opencv\build\include\opencv2\flann\kdtree_index.h \
+		3rd-party\opencv\build\include\opencv2\flann\dynamic_bitset.h \
+		3rd-party\opencv\build\include\opencv2\flann\dist.h \
+		3rd-party\opencv\build\include\opencv2\flann\heap.h \
+		3rd-party\opencv\build\include\opencv2\flann\allocator.h \
+		3rd-party\opencv\build\include\opencv2\flann\random.h \
+		3rd-party\opencv\build\include\opencv2\flann\kdtree_single_index.h \
+		3rd-party\opencv\build\include\opencv2\flann\kmeans_index.h \
+		3rd-party\opencv\build\include\opencv2\flann\logger.h \
+		3rd-party\opencv\build\include\opencv2\flann\composite_index.h \
+		3rd-party\opencv\build\include\opencv2\flann\linear_index.h \
+		3rd-party\opencv\build\include\opencv2\flann\hierarchical_clustering_index.h \
+		3rd-party\opencv\build\include\opencv2\flann\lsh_index.h \
+		3rd-party\opencv\build\include\opencv2\flann\lsh_table.h \
+		3rd-party\opencv\build\include\opencv2\flann\autotuned_index.h \
+		3rd-party\opencv\build\include\opencv2\flann\ground_truth.h \
+		3rd-party\opencv\build\include\opencv2\flann\index_testing.h \
+		3rd-party\opencv\build\include\opencv2\flann\timer.h \
+		3rd-party\opencv\build\include\opencv2\flann\sampling.h \
+		3rd-party\opencv\build\include\opencv2\highgui.hpp \
+		3rd-party\opencv\build\include\opencv2\imgcodecs.hpp \
+		3rd-party\opencv\build\include\opencv2\videoio.hpp \
+		3rd-party\opencv\build\include\opencv2\imgproc.hpp \
+		3rd-party\opencv\build\include\opencv2\ml.hpp \
+		3rd-party\opencv\build\include\opencv2\ml\ml.inl.hpp \
+		3rd-party\opencv\build\include\opencv2\objdetect.hpp \
+		3rd-party\opencv\build\include\opencv2\objdetect\detection_based_tracker.hpp \
+		3rd-party\opencv\build\include\opencv2\photo.hpp \
+		3rd-party\opencv\build\include\opencv2\stitching.hpp \
+		3rd-party\opencv\build\include\opencv2\stitching\warpers.hpp \
+		3rd-party\opencv\build\include\opencv2\stitching\detail\warpers.hpp \
+		3rd-party\opencv\build\include\opencv2\core\cuda.hpp \
+		3rd-party\opencv\build\include\opencv2\core\cuda_types.hpp \
+		3rd-party\opencv\build\include\opencv2\core\cuda.inl.hpp \
+		3rd-party\opencv\build\include\opencv2\stitching\detail\warpers_inl.hpp \
+		3rd-party\opencv\build\include\opencv2\stitching\detail\matchers.hpp \
+		3rd-party\opencv\build\include\opencv2\stitching\detail\motion_estimators.hpp \
+		3rd-party\opencv\build\include\opencv2\stitching\detail\util.hpp \
+		3rd-party\opencv\build\include\opencv2\stitching\detail\util_inl.hpp \
+		3rd-party\opencv\build\include\opencv2\stitching\detail\camera.hpp \
+		3rd-party\opencv\build\include\opencv2\stitching\detail\exposure_compensate.hpp \
+		3rd-party\opencv\build\include\opencv2\stitching\detail\seam_finders.hpp \
+		3rd-party\opencv\build\include\opencv2\stitching\detail\blenders.hpp \
+		3rd-party\opencv\build\include\opencv2\video.hpp \
+		3rd-party\opencv\build\include\opencv2\video\tracking.hpp \
+		3rd-party\opencv\build\include\opencv2\video\background_segm.hpp \
 		release\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2015_64\bin\moc.exe
 	C:\Qt\5.15.2\msvc2015_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include "E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware/release/moc_predefs.h" -IC:/Qt/5.15.2/msvc2015_64/mkspecs/win32-msvc -I"E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware" -I"E:/Professional/Developer Role/Project Type/Work/Delta X Software/DeltaXSoftware/3rd-party/opencv/build/include" -IC:/Qt/5.15.2/msvc2015_64/include -IC:/Qt/5.15.2/msvc2015_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2015_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2015_64/include/QtSvg -IC:/Qt/5.15.2/msvc2015_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2015_64/include/QtQuick -IC:/Qt/5.15.2/msvc2015_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2015_64/include/QtGui -IC:/Qt/5.15.2/msvc2015_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2015_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2015_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2015_64/include/QtQml -IC:/Qt/5.15.2/msvc2015_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2015_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" testwindow.h -o release\moc_testwindow.cpp
@@ -12780,7 +12884,6 @@ release\main.obj: main.cpp RobotWindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtNetwork\QSslSocket \
 		AccountWindow.h \
 		testwindow.h \
-		testcode.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QtDebug
 
 release\AccountWindow.obj: AccountWindow.cpp AccountWindow.h \
@@ -23837,6 +23940,13 @@ release\camera.obj: device\camera.cpp device\camera.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtMultimedia\qabstractvideobuffer.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDateTime \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qdatetime.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QThread \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qthread.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qdeadlinetimer.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qelapsedtimer.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QCoreApplication \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qcoreapplication.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qeventloop.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDebug
 
 release\conveyor.obj: device\conveyor.cpp device\conveyor.h \
@@ -25109,13 +25219,110 @@ release\testwindow.obj: testwindow.cpp testwindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qtouchdevice.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qtabwidget.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qicon.h \
-		testcode.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QObject \
-		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDebug \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QThread \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qthread.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qdeadlinetimer.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qelapsedtimer.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QTimer \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qtimer.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\qbasictimer.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QImage \
+		3rd-party\opencv\build\include\opencv2\opencv.hpp \
+		3rd-party\opencv\build\include\opencv2\opencv_modules.hpp \
+		3rd-party\opencv\build\include\opencv2\core.hpp \
+		3rd-party\opencv\build\include\opencv2\core\cvdef.h \
+		3rd-party\opencv\build\include\opencv2\core\hal\interface.h \
+		3rd-party\opencv\build\include\opencv2\core\cv_cpu_dispatch.h \
+		3rd-party\opencv\build\include\opencv2\core\cv_cpu_helper.h \
+		3rd-party\opencv\build\include\opencv2\core\fast_math.hpp \
+		3rd-party\opencv\build\include\opencv2\core\version.hpp \
+		3rd-party\opencv\build\include\opencv2\core\base.hpp \
+		3rd-party\opencv\build\include\opencv2\core\cvstd.hpp \
+		3rd-party\opencv\build\include\opencv2\core\cvstd_wrapper.hpp \
+		3rd-party\opencv\build\include\opencv2\core\neon_utils.hpp \
+		3rd-party\opencv\build\include\opencv2\core\vsx_utils.hpp \
+		3rd-party\opencv\build\include\opencv2\core\check.hpp \
+		3rd-party\opencv\build\include\opencv2\core\traits.hpp \
+		3rd-party\opencv\build\include\opencv2\core\matx.hpp \
+		3rd-party\opencv\build\include\opencv2\core\saturate.hpp \
+		3rd-party\opencv\build\include\opencv2\core\types.hpp \
+		3rd-party\opencv\build\include\opencv2\core\mat.hpp \
+		3rd-party\opencv\build\include\opencv2\core\bufferpool.hpp \
+		3rd-party\opencv\build\include\opencv2\core\mat.inl.hpp \
+		3rd-party\opencv\build\include\opencv2\core\persistence.hpp \
+		3rd-party\opencv\build\include\opencv2\core\operations.hpp \
+		3rd-party\opencv\build\include\opencv2\core\cvstd.inl.hpp \
+		3rd-party\opencv\build\include\opencv2\core\utility.hpp \
+		3rd-party\opencv\build\include\opencv2\core\optim.hpp \
+		3rd-party\opencv\build\include\opencv2\core\ovx.hpp \
+		3rd-party\opencv\build\include\opencv2\calib3d.hpp \
+		3rd-party\opencv\build\include\opencv2\features2d.hpp \
+		3rd-party\opencv\build\include\opencv2\flann\miniflann.hpp \
+		3rd-party\opencv\build\include\opencv2\flann\defines.h \
+		3rd-party\opencv\build\include\opencv2\flann\config.h \
+		3rd-party\opencv\build\include\opencv2\core\affine.hpp \
+		3rd-party\opencv\build\include\opencv2\dnn.hpp \
+		3rd-party\opencv\build\include\opencv2\dnn\dnn.hpp \
+		3rd-party\opencv\build\include\opencv2\dnn\version.hpp \
+		3rd-party\opencv\build\include\opencv2\dnn\dict.hpp \
+		3rd-party\opencv\build\include\opencv2\dnn\layer.hpp \
+		3rd-party\opencv\build\include\opencv2\dnn\dnn.inl.hpp \
+		3rd-party\opencv\build\include\opencv2\flann.hpp \
+		3rd-party\opencv\build\include\opencv2\flann\flann_base.hpp \
+		3rd-party\opencv\build\include\opencv2\flann\general.h \
+		3rd-party\opencv\build\include\opencv2\flann\matrix.h \
+		3rd-party\opencv\build\include\opencv2\flann\params.h \
+		3rd-party\opencv\build\include\opencv2\flann\any.h \
+		3rd-party\opencv\build\include\opencv2\flann\saving.h \
+		3rd-party\opencv\build\include\opencv2\flann\nn_index.h \
+		3rd-party\opencv\build\include\opencv2\flann\result_set.h \
+		3rd-party\opencv\build\include\opencv2\flann\all_indices.h \
+		3rd-party\opencv\build\include\opencv2\flann\kdtree_index.h \
+		3rd-party\opencv\build\include\opencv2\flann\dynamic_bitset.h \
+		3rd-party\opencv\build\include\opencv2\flann\dist.h \
+		3rd-party\opencv\build\include\opencv2\flann\heap.h \
+		3rd-party\opencv\build\include\opencv2\flann\allocator.h \
+		3rd-party\opencv\build\include\opencv2\flann\random.h \
+		3rd-party\opencv\build\include\opencv2\flann\kdtree_single_index.h \
+		3rd-party\opencv\build\include\opencv2\flann\kmeans_index.h \
+		3rd-party\opencv\build\include\opencv2\flann\logger.h \
+		3rd-party\opencv\build\include\opencv2\flann\composite_index.h \
+		3rd-party\opencv\build\include\opencv2\flann\linear_index.h \
+		3rd-party\opencv\build\include\opencv2\flann\hierarchical_clustering_index.h \
+		3rd-party\opencv\build\include\opencv2\flann\lsh_index.h \
+		3rd-party\opencv\build\include\opencv2\flann\lsh_table.h \
+		3rd-party\opencv\build\include\opencv2\flann\autotuned_index.h \
+		3rd-party\opencv\build\include\opencv2\flann\ground_truth.h \
+		3rd-party\opencv\build\include\opencv2\flann\index_testing.h \
+		3rd-party\opencv\build\include\opencv2\flann\timer.h \
+		3rd-party\opencv\build\include\opencv2\flann\sampling.h \
+		3rd-party\opencv\build\include\opencv2\highgui.hpp \
+		3rd-party\opencv\build\include\opencv2\imgcodecs.hpp \
+		3rd-party\opencv\build\include\opencv2\videoio.hpp \
+		3rd-party\opencv\build\include\opencv2\imgproc.hpp \
+		3rd-party\opencv\build\include\opencv2\ml.hpp \
+		3rd-party\opencv\build\include\opencv2\ml\ml.inl.hpp \
+		3rd-party\opencv\build\include\opencv2\objdetect.hpp \
+		3rd-party\opencv\build\include\opencv2\objdetect\detection_based_tracker.hpp \
+		3rd-party\opencv\build\include\opencv2\photo.hpp \
+		3rd-party\opencv\build\include\opencv2\stitching.hpp \
+		3rd-party\opencv\build\include\opencv2\stitching\warpers.hpp \
+		3rd-party\opencv\build\include\opencv2\stitching\detail\warpers.hpp \
+		3rd-party\opencv\build\include\opencv2\core\cuda.hpp \
+		3rd-party\opencv\build\include\opencv2\core\cuda_types.hpp \
+		3rd-party\opencv\build\include\opencv2\core\cuda.inl.hpp \
+		3rd-party\opencv\build\include\opencv2\stitching\detail\warpers_inl.hpp \
+		3rd-party\opencv\build\include\opencv2\stitching\detail\matchers.hpp \
+		3rd-party\opencv\build\include\opencv2\stitching\detail\motion_estimators.hpp \
+		3rd-party\opencv\build\include\opencv2\stitching\detail\util.hpp \
+		3rd-party\opencv\build\include\opencv2\stitching\detail\util_inl.hpp \
+		3rd-party\opencv\build\include\opencv2\stitching\detail\camera.hpp \
+		3rd-party\opencv\build\include\opencv2\stitching\detail\exposure_compensate.hpp \
+		3rd-party\opencv\build\include\opencv2\stitching\detail\seam_finders.hpp \
+		3rd-party\opencv\build\include\opencv2\stitching\detail\blenders.hpp \
+		3rd-party\opencv\build\include\opencv2\video.hpp \
+		3rd-party\opencv\build\include\opencv2\video\tracking.hpp \
+		3rd-party\opencv\build\include\opencv2\video\background_segm.hpp \
 		ui_testwindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QVariant \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QApplication \
@@ -25142,7 +25349,12 @@ release\testwindow.obj: testwindow.cpp testwindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qlayout.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qlayoutitem.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qgridlayout.h \
-		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QWidget
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QWidget \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QMessageBox \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qmessagebox.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qdialog.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtGui\QPixmap \
+		C:\Qt\5.15.2\msvc2015_64\include\QtCore\QDebug
 
 release\qrc_resource.obj: release\qrc_resource.cpp 
 

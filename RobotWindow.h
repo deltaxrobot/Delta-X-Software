@@ -180,6 +180,9 @@ public:
     // ---- Gcode ----
     QList<GcodeScript*> GcodeScripts;
     QTimer* UIEvent;
+    int ChangedCounter = 0;
+    bool IsGcodeEditorTextChanged = false;
+    int baseFontSize;
 
     // ---- Robot ----
     int RbID = 0;
@@ -206,6 +209,7 @@ public:
     QWidget* ImageViewerWindow = NULL;
 
     Camera* CameraInstance;
+    QThread* CameraThread;
 
     QTimer CameraTimer;
 
@@ -280,6 +284,8 @@ public slots:
 	void ExecuteSelectPrograms();
     void ExecuteCurrentLine(int, QString);
     void HighLineCurrentLine(int pos);
+    void OnEditorTextChanged();
+    void changeFontSize(int index);
 
     void RunSmartEditor();
     void StandardFormatEditor();

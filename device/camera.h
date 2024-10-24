@@ -9,7 +9,11 @@
 #include <QPushButton>
 #include <QCameraInfo>
 #include <QDateTime>
+
+#include <QThread>
+#include <QCoreApplication>
 #include <QDebug>
+
 
 
 class Camera : public QObject
