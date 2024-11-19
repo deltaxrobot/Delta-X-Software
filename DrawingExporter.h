@@ -8,6 +8,7 @@
 #include <qcombobox.h>
 #include <qcheckbox.h>
 #include <DrawingWidget.h>
+#include <QSvgWidget>
 
 
 #include <opencv2/opencv.hpp>
@@ -15,7 +16,6 @@
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc.hpp>
 #include <ImageUnity.h>
-#include <QSvgWidget>
 
 class DrawingExporter : public QWidget
 {

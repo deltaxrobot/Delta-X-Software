@@ -25,8 +25,8 @@ from PySide6.QtWidgets import (QApplication, QCheckBox, QComboBox, QFrame,
     QToolButton, QTreeView, QVBoxLayout, QWidget)
 
 from DrawingWidget import DrawingWidget
+from ImageViewer import ImageViewer
 from codeeditor import CodeEditor
-from imageviewer import ImageViewer
 import resource_rc
 
 class Ui_RobotWindow(object):
@@ -3990,7 +3990,7 @@ class Ui_RobotWindow(object):
         self.scrollArea_6.setWidgetResizable(True)
         self.scrollAreaWidgetContents_6 = QWidget()
         self.scrollAreaWidgetContents_6.setObjectName(u"scrollAreaWidgetContents_6")
-        self.scrollAreaWidgetContents_6.setGeometry(QRect(0, -17, 635, 1600))
+        self.scrollAreaWidgetContents_6.setGeometry(QRect(0, 0, 635, 1600))
         self.scrollAreaWidgetContents_6.setMinimumSize(QSize(450, 1600))
         self.scrollAreaWidgetContents_6.setMaximumSize(QSize(16777215, 16777215))
         self.scrollAreaWidgetContents_6.setStyleSheet(u"QWidget[background='container']\n"
@@ -8412,7 +8412,7 @@ class Ui_RobotWindow(object):
 
         self.twDeltaManager.setCurrentIndex(1)
         self.pbReadI0_3.setDefault(False)
-        self.twModule.setCurrentIndex(3)
+        self.twModule.setCurrentIndex(1)
         self.twGcodeEditor.setCurrentIndex(0)
         self.pbImageMapping.setDefault(False)
         self.cbImageSource.setCurrentIndex(0)

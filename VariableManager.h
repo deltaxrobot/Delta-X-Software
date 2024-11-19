@@ -27,7 +27,7 @@ public:
     void updateVar(const QString &key, const QVariant& value);
 
     // Get variable
-    QVariant getVar(const QString &key, QVariant defaultValue = NULL);
+    QVariant getVar(const QString &key, QVariant defaultValue = QVariant());
 
     void removeVar(const QString &key);
     bool containsSubKey(const QString &key);

@@ -11163,7 +11163,7 @@ ui_RobotWindow.h: RobotWindow.ui \
 		C:\Qt\5.15.2\msvc2015_64\bin\uic.exe \
 		DrawingWidget.h \
 		codeeditor.h \
-		imageviewer.h \
+		ImageViewer.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLabel \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qlabel.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qtwidgetsglobal.h \
@@ -25334,11 +25334,16 @@ release\testwindow.obj: testwindow.cpp testwindow.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtGui\qinputmethod.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QFrame \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qframe.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QLabel \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qlabel.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QMenuBar \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qmenubar.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qmenu.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qaction.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qactiongroup.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QPushButton \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qpushbutton.h \
+		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qabstractbutton.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QSplitter \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\qsplitter.h \
 		C:\Qt\5.15.2\msvc2015_64\include\QtWidgets\QStatusBar \

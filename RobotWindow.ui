@@ -794,7 +794,7 @@ QToolBox QScrollArea&gt;QWidget&gt;QWidget
               <enum>QTabWidget::Rounded</enum>
              </property>
              <property name="currentIndex">
-              <number>3</number>
+              <number>1</number>
              </property>
              <property name="usesScrollButtons">
               <bool>true</bool>
@@ -7406,7 +7406,7 @@ padding: 5px;</string>
                   <property name="geometry">
                    <rect>
                     <x>0</x>
-                    <y>-17</y>
+                    <y>0</y>
                     <width>635</width>
                     <height>1600</height>
                    </rect>
@@ -17171,7 +17171,7 @@ QGroupBox
   <customwidget>
    <class>ImageViewer</class>
    <extends>QGraphicsView</extends>
-   <header location="global">imageviewer.h</header>
+   <header location="global">ImageViewer.h</header>
   </customwidget>
  </customwidgets>
  <resources>

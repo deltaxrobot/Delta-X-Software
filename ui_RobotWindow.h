@@ -10,6 +10,7 @@
 #define UI_ROBOTWINDOW_H
 
 #include <DrawingWidget.h>
+#include <ImageViewer.h>
 #include <QtCore/QVariant>
 #include <QtGui/QIcon>
 #include <QtWidgets/QAction>
@@ -39,7 +40,6 @@
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
 #include <codeeditor.h>
-#include <imageviewer.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -5044,7 +5044,7 @@ public:
         scrollArea_6->setWidgetResizable(true);
         scrollAreaWidgetContents_6 = new QWidget();
         scrollAreaWidgetContents_6->setObjectName(QString::fromUtf8("scrollAreaWidgetContents_6"));
-        scrollAreaWidgetContents_6->setGeometry(QRect(0, -17, 635, 1600));
+        scrollAreaWidgetContents_6->setGeometry(QRect(0, 0, 635, 1600));
         scrollAreaWidgetContents_6->setMinimumSize(QSize(450, 1600));
         scrollAreaWidgetContents_6->setMaximumSize(QSize(16777215, 16777215));
         scrollAreaWidgetContents_6->setStyleSheet(QString::fromUtf8("QWidget[background='container']\n"
@@ -9466,7 +9466,7 @@ public:
 
         twDeltaManager->setCurrentIndex(1);
         pbReadI0_3->setDefault(false);
-        twModule->setCurrentIndex(3);
+        twModule->setCurrentIndex(1);
         twGcodeEditor->setCurrentIndex(0);
         pbImageMapping->setDefault(false);
         cbImageSource->setCurrentIndex(0);

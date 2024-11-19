@@ -77,7 +77,6 @@
 #include"ObjectInfo.h"
 
 #include "PointTool.h"
-
 #include <QSvgWidget>
 
 #define DEFAULT_BAUDRATE 115200
