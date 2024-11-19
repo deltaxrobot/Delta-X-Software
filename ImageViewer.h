@@ -9,6 +9,7 @@
 #include <QSettings>
 #include <UnityTool.h>
 #include <VariableManager.h>
+#include <PointTool.h>
 
 class CustomScene : public QGraphicsScene
 {
@@ -91,8 +92,8 @@ public:
         whiteLineItem->setPen(QPen(Qt::white, value * 2));
         blackLineItem->setPen(QPen(Qt::black, value));
 
-        whiteTextItem->setPen(QPen(Qt::white, value * 2));
-        blackTextItem->setPen(QPen(Qt::black, value));
+        whiteTextItem->setPen(QPen(Qt::white, value));
+        blackTextItem->setPen(QPen(Qt::black, value * 2));
 
         updateVisual();
     }
@@ -812,7 +813,7 @@ public:
     ~ImageViewer();
     void InitParameter();
     void SaveSetting(QSettings* setting);
-    void LoadSetting();
+    void LoadSetting(QString prefix);
     void ZoomIn(qreal value);
     void ZoomOut(qreal value);
     void Zoom(qreal value);
@@ -840,6 +841,8 @@ public:
 
     QString ProjectName = "project0";
 
+    QString Prefix = "project0.detect0.";
+
     enum CameraTool
     {
         NO_TOOL = 0,
@@ -864,6 +867,8 @@ public slots:
     void SetImage(QPixmap pixmap);
 
     void SetQuadrangle(QPolygonF poly);
+
+    void DrawObjects(QList<QPolygonF> polygons);
 
 signals:
 

@@ -7,9 +7,9 @@ TaskNode::TaskNode(QString name, int type)
     this->type = type;
     this->name = name;
 
-    qRegisterMetaType< QList<Object>* >("QList<Object>*");
-    qRegisterMetaType< QList<Object>>("QList<Object>");
-    qRegisterMetaType< QList<Object>>("QList<QSharedPointer<Object>>");
+    qRegisterMetaType< QVector<Object>* >("QVector<Object>*");
+    qRegisterMetaType< QVector<Object>>("QVector<Object>");
+    qRegisterMetaType< QVector<Object>>("QVector<QSharedPointer<Object>>");
 
 
     if (type == RESIZE_IMAGE_NODE)
@@ -100,6 +100,11 @@ cv::Mat TaskNode::GetOutputImage()
     return outputMat;
 }
 
+cv::Mat TaskNode::GetInputImage()
+{
+    return inputMat.clone();
+}
+
 Object& TaskNode::GetInputObject()
 {
     return inputObject;
@@ -114,7 +119,6 @@ bool TaskNode::ClearVariable(QString name)
 {
     if (name.toLower() == QString("outputObjects").toLower())
     {
-        VariableManager::instance().removeVar("Objects");
         clear(outputObjects);
 
         HadOutput(outputObjects);
@@ -151,7 +155,7 @@ void TaskNode::Input2(cv::Mat mat)
     inputMat2 = mat;
 }
 
-void TaskNode::Input(QList<Object> objects)
+void TaskNode::Input(QVector<Object> objects)
 {
     this->inputObjects = objects;
     inputType = "objects";
@@ -243,9 +247,13 @@ void TaskNode::Input(Object obj)
 void TaskNode::Input(QStringList objects)
 {
     outputObjects.clear();
+    outputPolys.clear();
 
     foreach(QString obj, objects)
     {
+        if (obj.trimmed().isEmpty())
+            continue;
+
         QStringList objInfo = obj.split(",");
         Object object;
 
@@ -279,9 +287,11 @@ void TaskNode::Input(QStringList objects)
 
         }
         outputObjects.append(object);
+        outputPolys.append(object.ToPolygon());
     }
 
     emit HadOutput(outputObjects);
+    emit HadOutput(outputPolys);
     emit Done(defaultThreadId);
 }
 
@@ -409,7 +419,7 @@ void TaskNode::connectInOutNode(TaskNode* previous, TaskNode *next)
     if (next->type == TaskNode::VISIBLE_OBJECTS_NODE)
     {
         if (previous->type == GET_OBJECTS_NODE)
-            next->InputConnections << connect(previous, SIGNAL(HadOutput(QList<Object>)), next, SLOT(Input(QList<Object>)));
+            next->InputConnections << connect(previous, SIGNAL(HadOutput(QVector<Object>)), next, SLOT(Input(QVector<Object>)));
 
         if (previous->type == MAPPING_MATRIX_NODE)
             next->InputConnections << connect(previous, SIGNAL(HadOutput(QMatrix)), next, SLOT(Input(QMatrix)));
@@ -437,6 +447,12 @@ void TaskNode::doResizeWork()
     if (inputMat.empty())
         return;
 
+    if (IsPass == true)
+    {
+        emit HadOutput(inputMat);
+        return;
+    }
+
     if (size != cv::Size(0, 0))
     {
         size.height = size.width * ((float)inputMat.rows / inputMat.cols);
@@ -452,7 +468,7 @@ void TaskNode::doResizeWork()
 }
 
 void TaskNode::doFindChessboardWork()
-{
+{    
     int width = size.width;
     int height = size.height;
 
@@ -565,6 +581,12 @@ void TaskNode::doGetPerspectiveWork()
 
 void TaskNode::doWarpWork()
 {
+    if (IsPass == true)
+    {
+        emit HadOutput(inputMat);
+        return;
+    }
+
     if (inputMat.empty() || inputMat2.empty())
     {
         outputMat.release();
@@ -574,7 +596,9 @@ void TaskNode::doWarpWork()
     }
     else
     {
+//        qDebug() << "Warp start: " << QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss.zzz");
         cv::warpPerspective(inputMat, outputMat, inputMat2, inputMat.size(), cv::INTER_NEAREST);
+//        qDebug() << "Warp end: " << QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss.zzz");
 
         emit HadOutput(outputMat);
     }
@@ -582,6 +606,12 @@ void TaskNode::doWarpWork()
 
 void TaskNode::doCropWork()
 {
+    if (IsPass == true)
+    {
+        emit HadOutput(inputMat);
+        return;
+    }
+
     outputMat.release();
     outputMat = inputMat.clone();
 
@@ -601,20 +631,6 @@ void TaskNode::doCropWork()
 
 void TaskNode::doDisplayImageWork()
 {
-//    outputMat = inputMat.clone();
-
-//    foreach(Object obj, inputObjects)
-//    {
-//        cv::Point2f* points = obj.ToPoints();
-
-//        for (int j = 0; j < 4; j++)
-//            cv::line(outputMat, points[j], points[(j + 1) % 4], RED_COLOR, 2, 8);
-
-//        putText(outputMat, std::to_string((int)obj.X) + "," + std::to_string((int)obj.Y) + "," + std::to_string((int)obj.Angle), cv::Point(obj.X - 40, obj.Y), cv::FONT_HERSHEY_SIMPLEX, 0.4, BLACK_COLOR, 2);
-//        putText(outputMat, std::to_string((int)obj.X) + "," + std::to_string((int)obj.Y) + "," + std::to_string((int)obj.Angle), cv::Point(obj.Y - 40, obj.Y), cv::FONT_HERSHEY_SIMPLEX, 0.4, WHITE_COLOR, 1);
-
-//    }
-
     QPixmap pixmap = ImageTool::cvMatToQPixmap(inputMat);
 
     emit HadOutput(pixmap);
@@ -722,6 +738,16 @@ void TaskNode::doMappingMatrixWork()
     float dy = yy1 - (ScaleRotateMatrix.m12() * x1 + ScaleRotateMatrix.m22() * y1);
 
     outputMatrix.setMatrix(ScaleRotateMatrix.m11(), ScaleRotateMatrix.m12(), ScaleRotateMatrix.m21(), ScaleRotateMatrix.m22(), dx, dy);
+    QString prefix = ProjectName + "." + "tracking0" + ".";
+    QString matrixString = QString("%1,%2,%3,%4,%5,%6")
+                                   .arg(outputMatrix.m11())
+                                   .arg(outputMatrix.m12())
+                                   .arg(outputMatrix.m21())
+                                   .arg(outputMatrix.m22())
+                                   .arg(outputMatrix.dx())
+                                   .arg(outputMatrix.dy());
+    VariableManager::instance().updateVar(prefix + "ImageToRealWorldMatrixString", matrixString);
+    VariableManager::instance().updateVar(prefix + "ImageToRealWorldMatrix", outputMatrix);
 
     emit HadOutput(outputMatrix);
 }
@@ -732,6 +758,8 @@ void TaskNode::doGetObjectsWork()
         return;
 
     outputObjects.clear();
+//    sharedObjects.clear();
+    outputPolys.clear();
 
     std::vector<std::vector<cv::Point> > contoursContainer;
     findContours(inputMat, contoursContainer, cv::RETR_LIST, cv::CHAIN_APPROX_SIMPLE);
@@ -749,16 +777,20 @@ void TaskNode::doGetObjectsWork()
         {
             Object obPointer(rectObject);
             outputObjects.append(obPointer);
+//            sharedObjects.append(QSharedPointer<Object>::create(rectObject));
+            outputPolys.append(obPointer.ToPolygon());
         }
     }
 
     emit HadOutput(outputObjects);
+//    emit HadOutput(sharedObjects);
+    emit HadOutput(outputPolys);
 }
 
 void TaskNode::doVisibleObjectsWork()
 {
     outputObjects.clear();
-    QList<ObjectInfo*> infoObjects;
+    QVector<ObjectInfo*> infoObjects;
     for (int i = 0; i < inputObjects.count(); i++)
     {
         inputObjects[i].Map(inputMatrix);
@@ -768,7 +800,7 @@ void TaskNode::doVisibleObjectsWork()
     emit Done(defaultThreadId);
 }
 
-void TaskNode::clear(QList<Object> objs)
+void TaskNode::clear(QVector<Object> objs)
 {
     objs.clear();
 }

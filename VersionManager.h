@@ -7,9 +7,13 @@
 #include <QUrlQuery>
 #include <QMessageBox>
 #include <QVersionNumber>
-#include <QVersionNumber>
 #include <QDesktopServices>
 #include <QApplication>
+#include <QUrl>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QSslSocket>
+#include <QDebug>
 
 class VersionManager : public QWidget
 {

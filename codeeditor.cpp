@@ -115,9 +115,9 @@ void CodeEditor::updateLineNumberArea(const QRect &rect, int dy)
         updateLineNumberAreaWidth(0);*/
 }
 
-void CodeEditor::setLockState(bool state)
+void CodeEditor::setLockState(int state)
 {
-    if (state == true)
+    if (state == Qt::Checked)
         setTextInteractionFlags(Qt::TextBrowserInteraction);
     else
         setTextInteractionFlags(Qt::TextEditorInteraction);
@@ -255,6 +255,17 @@ void CodeEditor::keyPressEvent(QKeyEvent *event)
     else {
         QTextEdit::keyPressEvent(event);
     }
+}
+
+void CodeEditor::mousePressEvent(QMouseEvent *event)
+{
+    QTextEdit::mousePressEvent(event);
+    QTextCursor cursor = cursorForPosition(event->pos());
+    int lineNumber = cursor.blockNumber();
+
+    QString lineText = cursor.block().text();
+
+    emit lineClicked(lineNumber, lineText);
 }
 
 //![resizeEvent]

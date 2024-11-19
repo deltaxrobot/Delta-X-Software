@@ -8,6 +8,12 @@
 #include <opencv2/imgproc.hpp>
 #include <QPushButton>
 #include <QCameraInfo>
+#include <QDateTime>
+
+#include <QThread>
+#include <QCoreApplication>
+#include <QDebug>
+
 
 
 class Camera : public QObject
@@ -27,6 +33,7 @@ public:
     int Height = 600;
     QString Source = "Webcam";
     int FrameID = -1;
+
 signals:
     void StartedCapture(int tracking);
     void GotImage(cv::Mat);

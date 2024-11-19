@@ -1,4 +1,5 @@
 #include "VariableManager.h"
+#include "qglobal.h"
 
 VariableManager &VariableManager::instance()
 {
@@ -8,21 +9,11 @@ VariableManager &VariableManager::instance()
 
 void VariableManager::addItemModel(QStandardItemModel *model)
 {
-    model->setHorizontalHeaderLabels(QStringList() << "Name" << "Value");
-    connect(&instance(), SIGNAL(varUpdated(QString, QVariant)), this, SLOT(UpdateVarToModel(QString, QVariant)));
-    connect(&instance(), SIGNAL(varAdded(QString, QVariant)), this, SLOT(UpdateVarToModel(QString, QVariant)));
+    model->setHorizontalHeaderLabels(QStringList() << "Name" << "Value");    
     itemModelList.append(model);
 }
 
 void VariableManager::addVar(const QString &key, const QVariant &value)
-{
-    const QString fullKey = getFullKey(key);
-    std::lock_guard<std::mutex> lock(dataMutex);
-    dataMap[fullKey] = value;
-    emit varAdded(fullKey, value);
-}
-
-void VariableManager::setVariable(const QString &key, const QVariant &value)
 {
     const QString fullKey = getFullKey(key);
     std::lock_guard<std::mutex> lock(dataMutex);
@@ -38,20 +29,58 @@ void VariableManager::updateVar(const QString &key, const QVariant &value)
     emit varUpdated(fullKey, value);
 }
 
-QVariant VariableManager::getVariable(const QString &key, QVariant defaultValue)
+QVariant VariableManager::getVar(const QString &key, QVariant defaultValue)
 {
-    const QString fullKey = getFullKey(key);
+    const QString fullKey = getFullKey(key.trimmed().replace("#", ""));
+
+    QStringList objKeys = ObjectInfos.keys();
+
+    foreach (QString objKey, objKeys)
+    {
+        if (fullKey.contains(objKey))
+        {
+            // key = "#project0.Objects.0"
+            QStringList paras = fullKey.split(".");
+            QString last = paras[paras.size() - 1];
+            // Kiểm tra nếu last là một số nguyên
+            bool isInt = false;
+            int index = last.toInt(&isInt);
+
+            if (index >= ObjectInfos[objKey]->size())
+                continue;
+
+            if (isInt)
+            {
+                return QPointF(ObjectInfos[objKey]->at(index).center.x(), ObjectInfos[objKey]->at(index).center.y());
+            }
+
+            QString indexS = paras[paras.size() - 2];
+            index = indexS.toInt(&isInt);
+
+            if (isInt)
+            {
+                if (last == "X")
+                {
+                    return ObjectInfos[objKey]->at(index).center.x();
+                }
+                else if (last == "Y")
+                {
+                    return ObjectInfos[objKey]->at(index).center.y();
+                }
+                else if (last == "Type")
+                {
+                    return ObjectInfos[objKey]->at(index).type;
+                }
+            }
+        }
+    }
+
     std::lock_guard<std::mutex> lock(dataMutex);
     if(dataMap.find(fullKey) != dataMap.end())
     {
         return dataMap[fullKey];
     }
     return defaultValue;
-}
-
-QVariant VariableManager::getVar(const QString &key, QVariant defaultValue)
-{
-    return getVariable(key);
 }
 
 void VariableManager::removeVar(const QString &key)
@@ -73,20 +102,30 @@ void VariableManager::removeVar(const QString &key)
     }
 }
 
-bool VariableManager::contains(const QString &key)
+bool VariableManager::containsSubKey(const QString &key)
 {
     const QString fullKey = getFullKey(key);
     std::lock_guard<std::mutex> lock(dataMutex);
-    return (dataMap.find(fullKey) != dataMap.end());
+    for (auto it = dataMap.begin(); it != dataMap.end(); ++it)
+    {
+        if (it.key().startsWith(fullKey))
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool VariableManager::containsFullKey(const QString &key)
+{
+    const QString fullKey = getFullKey(key);
+    std::lock_guard<std::mutex> lock(dataMutex);
+     return (dataMap.find(fullKey) != dataMap.end());
 }
 
 void VariableManager::saveToQSettings()
 {
     std::lock_guard<std::mutex> lock(dataMutex);
-//    for(const auto& kv : dataMap)
-//    {
-//        settings.setValue(kv.first, kv.second);
-//    }
 
     settings.clear();
 
@@ -98,6 +137,9 @@ void VariableManager::saveToQSettings()
 
 void VariableManager::loadFromQSettings()
 {
+    connect(&instance(), SIGNAL(varUpdated(QString, QVariant)), this, SLOT(UpdateVarToModel(QString, QVariant)));
+    connect(&instance(), SIGNAL(varAdded(QString, QVariant)), this, SLOT(UpdateVarToModel(QString, QVariant)));
+
     std::lock_guard<std::mutex> lock(dataMutex);
     QStringList keys = settings.allKeys();
     for(const QString& key : keys)

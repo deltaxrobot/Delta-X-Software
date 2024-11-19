@@ -14,7 +14,17 @@ MainWindow::MainWindow(QWidget *parent) :
 
 void MainWindow::InitVariables()
 {
+    //-------- Variable -----------
+
+    ui->tvVariables->setModel(&VariableTreeModel);
+    VariableManager::instance().addItemModel(&VariableTreeModel);
+
+
     VariableManager::instance().loadFromQSettings();
+
+    connect(ui->tvVariables, &QTreeView::clicked, this, &MainWindow::onTreeViewItemClicked);
+
+    // -------------------------
 
     QElapsedTimer time;
     qint64 start = time.elapsed();
@@ -29,13 +39,10 @@ void MainWindow::InitVariables()
     DeltaXVersionManager = new VersionManager(this);
     DeltaXVersionManager->CurrentVersion = "1.2 Beta";
     DeltaXVersionManager->SoftwareName = "DeltaXSoftware";
-    DeltaXVersionManager->CheckVersionUrl = "http://imwi.space/admin/server.php";
-    DeltaXVersionManager->NewVersionSoftwareUrl = "https://sourceforge.net/projects/delta-x-software/files/";
-//    DeltaXVersionManager->CheckNewVersion(true);
+    DeltaXVersionManager->CheckNewVersion(true);
 
     // ----- Init Pointer -----
     SoftwareManager::GetInstance()->SoftwarePointer = this;
-//    ui->tvVariables->setModel(&SoftwareManager::GetInstance()->SoftwarePointer->VariableTreeModel);
     SoftwareManager::GetInstance()->SoftwarePath = QApplication::applicationDirPath();
 
     //------- Dasboard --------
@@ -61,17 +68,7 @@ void MainWindow::InitVariables()
 
     teSoftwareLog = ui->teLoggingBox;
 
-    //-------- Variable Table -----------
-//    VariableTreeModel.setHorizontalHeaderLabels(QStringList() << "Name" << "Value");
-//    connect(&VariableManager::instance(), SIGNAL(varUpdated(QString, QVariant)), this, SLOT(UpdateVarToTreeView(QString, QVariant)));
-//    connect(&VariableManager::instance(), SIGNAL(varAdded(QString, QVariant)), this, SLOT(UpdateVarToTreeView(QString, QVariant)));
-//    connect(&VariableManager::instance(), SIGNAL(varRemoved(QString)), this, SLOT(RemoveVarFromTreeView(QString)));
 
-    ui->tvVariables->setModel(&VariableTreeModel);
-    VariableManager::instance().addItemModel(&VariableTreeModel);
-    VariableManager::instance().loadFromQSettings();
-
-    connect(ui->tvVariables, &QTreeView::clicked, this, &MainWindow::onTreeViewItemClicked);
 
 
     //------- Project Manager --------
@@ -84,14 +81,25 @@ void MainWindow::InitVariables()
 
     connect(SoftwareProjectManager, SIGNAL(NewTab_Signal(int)), SLOT(AddNewProjectAndRobot(int)));
 
-    if (!IsLastProject())
+    QString projectPrefix = "project";
+    for (int i = 0; i < 10; i++)
     {
-        RobotWindow* robotWindow = AddNewProjectAndRobot(0);
-    }
-    else
-    {
-        openProject(LastProject);
-    }
+        QString projectName = projectPrefix + QString::number(i);
+
+        VariableManager::instance().Prefix = projectName;
+
+        if (VariableManager::instance().containsSubKey(projectName) == true)
+        {
+            RobotWindow* robotWindow = AddNewProjectAndRobot(i);
+        }
+        else
+        {
+            QString projectName = projectPrefix + QString::number(i - 1);
+
+            VariableManager::instance().Prefix = projectName;
+            break;
+        }
+    }    
 
     InitProjectUX();
 
@@ -118,28 +126,13 @@ void MainWindow::InitVariables()
 
     Dashboard->SoftwareAuthority = SoftwareAuthority;
 
-    InitProjectToOperator();
+//    InitProjectToOperator();
 
 //    on_pbApplyOperator_clicked();
 
     SetLoadingIconRun(false);
 
-    qDebug() << time.elapsed() - start;
-}
-
-bool MainWindow::IsLastProject()
-{
-    QSettings settings("customUI.ini", QSettings::IniFormat);
-    LastProject = settings.value("LastProject", "").toString();
-
-    if(QFileInfo::exists(LastProject))
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
+//    qDebug() << time.elapsed() - start;
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
@@ -175,17 +168,17 @@ void MainWindow::InitVisible()
     ui->tbOpenProject->setVisible(false);
 
     // ----- Load custom UI ----
-    QSettings settings("customUI.ini", QSettings::IniFormat);
-    QString softwareName = settings.value("SoftwareName", "Delta X Software").toString();
+//    QSettings settings("customUI.ini", QSettings::IniFormat);
+//    QString softwareName = settings.value("SoftwareName", "Delta X Software").toString();
 
-    softwareName = QString("%1 - %2").arg(softwareName).arg(DeltaXVersionManager->CurrentVersion);
-    this->setWindowTitle(softwareName);
+//    softwareName = QString("%1 - %2").arg(softwareName).arg(DeltaXVersionManager->CurrentVersion);
+//    this->setWindowTitle(softwareName);
 
-    QString systemName = settings.value("SystemName", "Delta Robot System").toString();
-    ui->leOperatorTitle->setText(systemName);
-    ui->lbOperatorTitile->setText(systemName);
+//    QString systemName = settings.value("SystemName", "Delta Robot System").toString();
+//    ui->leOperatorTitle->setText(systemName);
+//    ui->lbOperatorTitile->setText(systemName);
 
-    LoadOperatorSettings();
+//    LoadOperatorSettings();
 }
 
 void MainWindow::InitProjectToOperator()
@@ -441,22 +434,60 @@ void MainWindow::SetLoadingIconRun(bool isRun)
 
 void MainWindow::onTreeViewItemClicked(const QModelIndex &index)
 {
+    if (!index.isValid()) {
+        return;
+    }
+
     QStandardItem *item = VariableTreeModel.itemFromIndex(index);
-    QString key = item->parent()->child(index.row(), 0)->text();
+    if (!item) {
+        return;
+    }
+
+    QStandardItem *parentItem = item->parent();
+    if (!parentItem) {
+        return;
+    }
+
+    if (index.row() < 0 || index.row() >= parentItem->rowCount() || parentItem->columnCount() < 2) {
+        return;
+    }
+
+    QStandardItem *keyItem = parentItem->child(index.row(), 0);
+    if (!keyItem) {
+        return;
+    }
+
+    QString key = keyItem->text();
+    if (key.isEmpty()) {
+        return;
+    }
+
     // Lấy tên của các item cha của item hiện tại và gán lại thành mẫu như sau "item1.item2.item3"
-    for (QStandardItem *parent = item->parent(); parent != nullptr; parent = parent->parent()) {
+    for (QStandardItem *parent = parentItem; parent != nullptr; parent = parent->parent()) {
         key = parent->text() + "." + key;
     }
 
-    QString value = item->parent()->child(index.row(), 1)->text();
+    QStandardItem *valueItem = parentItem->child(index.row(), 1);
+    if (!valueItem) {
+        return;
+    }
+
+    QString value = valueItem->text();
+    if (value.isEmpty()) {
+        return;
+    }
 
     ui->leUpdateKey->setText(key);
     ui->leUpdateValue->setText(value);
-
 }
+
 
 MainWindow::~MainWindow()
 {
+    VariableManager::instance().thread()->quit();
+    VariableManager::instance().thread()->wait();
+    delete VariableManager::instance().thread();
+
     delete ui;
 }
 

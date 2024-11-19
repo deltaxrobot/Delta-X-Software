@@ -77,6 +77,7 @@
 #include"ObjectInfo.h"
 
 #include "PointTool.h"
+#include <QSvgWidget>
 
 #define DEFAULT_BAUDRATE 115200
 
@@ -121,11 +122,11 @@ public:
     void LoadTrackingThread();
 
     void LoadSettings();
-    void LoadGeneralSettings(QSettings* setting);
+    void LoadGeneralSettings();
     void LoadJoggingSettings(QSettings* setting);
     void Load2DSettings(QSettings* setting);
     void Load3DSettings(QSettings* setting);
-    void LoadExternalDeviceSettings(QSettings* setting);
+    void LoadExternalDeviceSettings();
     void LoadTerminalSettings(QSettings* setting);
     void LoadGcodeEditorSettings(QSettings* setting);
     void LoadObjectDetectorSetting();
@@ -178,6 +179,9 @@ public:
     // ---- Gcode ----
     QList<GcodeScript*> GcodeScripts;
     QTimer* UIEvent;
+    int ChangedCounter = 0;
+    bool IsGcodeEditorTextChanged = false;
+    int baseFontSize;
 
     // ---- Robot ----
     int RbID = 0;
@@ -187,6 +191,7 @@ public:
     QTimer UpdateUITimer;
 
     QString ProjectName = "project0";
+    QString ProjectTitile = "Project 0";
 
     int DefaultBaudrate = DEFAULT_BAUDRATE;
 
@@ -195,18 +200,15 @@ public:
     int SentCommandIndex = 0;
 
     // ---- Vision ----
-    ImageProcessing* ImageProcessingThread;
+    ImageProcessing* ImageProcessingInstance;
     FilterWindow* ParameterPanel;
 
-//    ObjectVariableTable* TrackingObjectTable;
     QTimer* ConvenyorTimer;
-
-    Encoder* Encoder1;
-    Encoder* Encoder2;
 
     QWidget* ImageViewerWindow = NULL;
 
     Camera* CameraInstance;
+    QThread* CameraThread;
 
     QTimer CameraTimer;
 
@@ -237,17 +239,25 @@ public:
 
     QStackedWidget* SubWindowStackedWidget;
 
+    QTime performanceTimer;
+
     // ----- Data ----
+    QString copiedRobotPos[6];
     QMap<QString, QString> ParseNames;
 
     QStandardItemModel VarViewModel;
     ObjectInfoModel *ObjectModel;
     QTransform CalculatingTransform;
     QMatrix CalculatingTransform2;
-    QMatrix PointMatrix;
+    cv::Mat PointMatrix;
     QVector3D CalVector;
 
 public slots:
+
+    // ---- External Control ---
+    void ActivateButtonByName(const QString &buttonName);
+    void ActiveWidgetByName(QString type, QString name, QString action);
+
     // ---- View update ----
     void GetDeviceInfo(QString json);
     void GetDeviceResponse(QString id, QString response);
@@ -271,8 +281,10 @@ public slots:
     void ImportGcodeFilesFromComputer();
 
 	void ExecuteSelectPrograms();
-    void ExecuteCurrentLine();
+    void ExecuteCurrentLine(int, QString);
     void HighLineCurrentLine(int pos);
+    void OnEditorTextChanged();
+    void changeFontSize(int index);
 
     void RunSmartEditor();
     void StandardFormatEditor();
@@ -340,7 +352,11 @@ public slots:
     void SetConveyorMode(int mode);
     void SetConveyorMovingMode(int mode);
     void SetConveyorSpeed();
+    void StopConveyor();
     void SetConveyorPosition();
+    void SetConveyorAbsolutePosition();
+
+    void TriggedCustomConveyor();
 
     void UpdatePointPositionOnConveyor(QLineEdit* x, QLineEdit* y, float angle, float distance);
 
@@ -351,6 +367,7 @@ public slots:
 
     //----- Encoder -----
     void ChangeEncoderType(int index);
+    void ChangeConveyorLinkToEncoder(int);
 
     void ConnectEncoder();
     void ReadEncoder();
@@ -359,6 +376,7 @@ public slots:
     void SetEncoderVelocity();
     void CalculateEncoderVelocity(int id, float value);
     void ProcessProximitySensorValue(int value);
+    void StartScheduledEncoder();
 	
     // ---- Slider ----
 	void ConnectSliding();
@@ -391,7 +409,6 @@ public slots:
     void LoadWebcam();
     void LoadImages();
     void StopCapture();
-    void RearrangeTaskFlow();
     void OpenColorFilterWindow();
     void SelectObjectDetectingAlgorithm(int algorithm);
     void ConfigChessboard();
@@ -402,7 +419,9 @@ public slots:
     void GetNewImageSize();
 
     void UnselectToolButtons();
-    void UpdateObjectsToImageViewer(QList<Object> objects);
+//    void UpdateObjectsToImageViewer(QList<Object> objects);
+//    void UpdateObjectsToImageViewer(QList<QSharedPointer<Object>>);
+//    void UpdateObjectsToImageViewer(QList<QPolygonF> polys);
 //    void UpdateObjectsToVariableTable(QList<Object*>* objects);
     void EditImage(bool isWarp, bool isCropTool);
 
@@ -418,6 +437,7 @@ public slots:
     void CalculatePointMatrixTool();
     void CalculateTestPoint();
     void CalculateVector();
+    void UpdateTestPoint(QVector3D testPoint);
 
     // ----- Display ----
 
@@ -444,9 +464,9 @@ public slots:
 
 signals:
     // ---- Device ----
-    void ChangeDeviceState(int deviceType, bool isOpen, QString address);
+    void ChangeDeviceState(QString deviceName, bool isOpen, QString address);
     // ----
-    void GotObjects(QList<Object> objects);
+    void GotObjects(QVector<Object> objects);
     void GotResizePara(cv::Size size);
     void GotResizeImage(cv::Mat mat);
     void GotChessboardSize(cv::Size size);
@@ -460,9 +480,15 @@ signals:
     void ScanAndConnectRobot();
     void DisconnectRobot();
 
+protected:
+    void paintEvent(QPaintEvent *event) override;
+
 private:
     // ----- Check Performence ----
     void CheckSettingsSpeed();
+
+    // ----- Decting ------
+    void SaveDetectingUI();
 
     // ---- Gcode Editor -----
 	QString boldKey(QString key, QString htmlText);
@@ -479,8 +505,6 @@ private:
 	void interpolateCircle();
 	void makeEffectExample();
 
-    // ---- Tool ----
-
     //--------- Controller -------
 #ifdef Q_OS_WIN
     #ifdef JOY_STICK
@@ -493,6 +517,14 @@ private:
     void initInputValueLabels();
     void plugValue(QLineEdit* le, float value);
     bool isItemExit(QListWidget* lw, QString item);
+    int getIDfromName(QString fullName);
+
+    QString checkAndCreateDir(const QString& path);
+    bool saveImageWithUniqueName(const cv::Mat& image, const QString& dirPath);
+    void loadImages(const QString& dirPath, QListWidget* lwImageList);
+    void onImageItemClicked(QListWidgetItem* item);
+
+    void pastePointValues(QLineEdit* leX, QLineEdit* leY, QLineEdit* leZ);
 
     //--------- Tool -------
 
@@ -505,6 +537,7 @@ private:
     QList<DeltaXPlugin*>* getPluginList();
 
     QList<DeltaXPlugin*>* pluginList;
+    DeltaXPlugin* industrialCameraPlugin;
 
     //---- Widget Pointer ----
 
@@ -518,8 +551,12 @@ private:
     QFileSystemModel explorerModel;
     GCodeHighlighter *highlighter;
 
-    // ---- Last Values ----
+    // ---- Buffer Value ----
     float encoderLastValue = 0;
+    float scheduledStartEncoderValue = 0;
+    bool isScheduledEncoder = false;
+
+    QElapsedTimer encoderUpdateTimer;
 
 public:
     Ui::RobotWindow *ui;

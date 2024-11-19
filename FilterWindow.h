@@ -76,11 +76,11 @@ public slots:
 
         cv::medianBlur(mat, mat, BlurSize);
 
-        emit FinishedFilter(ImageTool::cvMatToQPixmap(mat));
+        emit FinishedFilter(mat);
     }
 
 signals:
-    void FinishedFilter(QPixmap pixmap);
+    void FinishedFilter(cv::Mat);
 };
 
 class FilterWindow : public QDialog
@@ -88,7 +88,7 @@ class FilterWindow : public QDialog
     Q_OBJECT
 
 public:
-    explicit FilterWindow(QWidget *parent = 0);
+    explicit FilterWindow(QWidget *parent = 0, QString projectName = "project0");
     ~FilterWindow();
 
 	void InitEvents();
@@ -108,6 +108,8 @@ public:
     cv::Mat OriginMat;
     FilterWork* FilterJob;
     QString ProjectName = "project0";
+
+    QString Prefix = "detect0";
 
 public slots:
     void ProcessValueFromUI();

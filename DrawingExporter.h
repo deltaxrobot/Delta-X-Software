@@ -9,6 +9,8 @@
 #include <qcheckbox.h>
 #include <DrawingWidget.h>
 
+#include <QSvgWidget>
+
 
 #include <opencv2/opencv.hpp>
 #include <opencv2/highgui.hpp>
@@ -33,6 +35,7 @@ public:
 public slots:
 	void OpenImage();
 	void ConvertToDrawingArea();
+    void ConvertSVGToArea(QString fileName);
     void ExportGcodes();
 	void ApplyConversion();
 	void ChangeSize();
@@ -41,6 +44,7 @@ public slots:
 private:
 	void initEnvent();
 
+    QSvgWidget svgWidget;
     QTextEdit* pteGcodeEditor;
     QComboBox* cbDrawingEffector;
 

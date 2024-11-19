@@ -130,14 +130,11 @@ void ProjectManager::CloseProject(int tabIndex)
     if (reply == QMessageBox::Yes)
     {
         twProjectManager->removeTab(tabIndex);
-//        foreach(RobotWindow* robotWindow, RobotManagers.at(tabIndex)->RobotWindows)
-//        {
-//            delete robotWindow;
-//        }
 
-        //delete RobotManagers.at(tabIndex);
+        VariableManager::instance().removeVar(QString("project") + QString::number(tabIndex));
+        delete SoftwareManager::GetInstance()->SoftwareProjectManager->RobotWindows.at(tabIndex);
 
-//        RobotManagers.removeAt(tabIndex);
+        SoftwareManager::GetInstance()->SoftwareProjectManager->RobotWindows.removeAt(tabIndex);
     }
     else
     {

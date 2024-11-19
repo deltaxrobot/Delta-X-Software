@@ -12,7 +12,9 @@ public:
     ~Conveyor();
 
     void SetType(QString type);
-    QString GetType();
+    QString GetType();    
+
+    float Position = 0;
 
 public slots:
     QString GetInfo();

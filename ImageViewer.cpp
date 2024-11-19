@@ -40,7 +40,7 @@ ImageViewer::ImageViewer(QWidget *parent) :
         ViewerScene->addItem(textItem);
     }
 
-    LoadSetting();
+    LoadSetting(Prefix);
 }
 
 ImageViewer::~ImageViewer()
@@ -88,6 +88,8 @@ void ImageViewer::InitParameter()
 
         cQuadangle.SetPolygon(poly);
 
+        VariableManager::instance().updateVar(Prefix + "Quadangle", cQuadangle.GetPolygon());
+
         emit changedQuadrangle(poly);
     }
 
@@ -96,12 +98,16 @@ void ImageViewer::InitParameter()
         cArea.SetTopLeft(QPointF(areaOffset, areaOffset));
         cArea.SetBottomRight(QPointF(imgWidth - areaOffset, imgHeight - areaOffset));
 
+        VariableManager::instance().updateVar(Prefix + "Area", cArea.GetValue());
+
         emit changedArea(cArea.GetValue());
     }
 
     if (cRect.GetValue() == QRectF(0, 0, 0, 0))
     {
         cRect.SetValue(QRectF(200, 200, 30, 15));
+
+        VariableManager::instance().updateVar(Prefix + "Rectangle", cRect.GetValue());
 
         emit changedRect(cRect.GetValue());
     }
@@ -114,23 +120,24 @@ void ImageViewer::SaveSetting(QSettings *setting)
 
     VariableManager::instance().Prefix = ProjectName;
 
-    VariableManager::instance().updateVar("Point1", p1);
-    VariableManager::instance().updateVar("Point2", p2);
-    VariableManager::instance().updateVar("Quadangle", cQuadangle.GetPolygon());
-    VariableManager::instance().updateVar("Area", cArea.GetValue());
-    VariableManager::instance().updateVar("Rectangle", cRect.GetValue());
+    VariableManager::instance().updateVar(Prefix + "Point1", p1);
+    VariableManager::instance().updateVar(Prefix + "Point2", p2);
+    VariableManager::instance().updateVar(Prefix + "Quadangle", cQuadangle.GetPolygon());
+    VariableManager::instance().updateVar(Prefix + "Area", cArea.GetValue());
+    VariableManager::instance().updateVar(Prefix + "Rectangle", cRect.GetValue());
 }
 
-void ImageViewer::LoadSetting()
+void ImageViewer::LoadSetting(QString prefix = "detect0.")
 {
+    Prefix = prefix;
     VariableManager::instance().Prefix = ProjectName;
 
-    cPoint.SetValue(VariableManager::instance().getVar("Point1").toPointF());
-    cPoint2.SetValue(VariableManager::instance().getVar("Point2").toPointF());
+    cPoint.SetValue(VariableManager::instance().getVar(prefix + "Point1").toPointF());
+    cPoint2.SetValue(VariableManager::instance().getVar(prefix + "Point2").toPointF());
 
-    cQuadangle.SetPolygon(VariableManager::instance().getVar("Quadangle").value<QPolygonF>());
-    cArea.SetValue(VariableManager::instance().getVar("Area").toRectF());
-    cRect.SetValue(VariableManager::instance().getVar("Rectangle").toRectF());
+    cQuadangle.SetPolygon(VariableManager::instance().getVar(prefix + "Quadangle").value<QPolygonF>());
+    cArea.SetValue(VariableManager::instance().getVar(prefix + "Area").toRectF());
+    cRect.SetValue(VariableManager::instance().getVar(prefix + "Rectangle").toRectF());
 
     emit changedPoints(cPoint.GetValue(), cPoint2.GetValue());
     emit changedQuadrangle(cQuadangle.GetPolygon());
@@ -210,7 +217,28 @@ void ImageViewer::SetQuadrangle(QPolygonF poly)
         }
     }
 
+    VariableManager::instance().updateVar(Prefix + "Quadangle", cQuadangle.GetPolygon());
 
+    SelectQuadrangleTool();
+}
+
+void ImageViewer::DrawObjects(QList<QPolygonF> polygons) {
+    QList<QPolygonF> pls;
+    QMap<QString, QPointF> texts;
+
+    int count = qMin(polygons.size(), 100); // Chỉ xử lý tối đa 100 phần tử
+
+    for(int i = 0; i < count; ++i) {
+        const QPolygonF& poly = polygons[i];
+        pls.append(poly);
+
+        // Tìm tâm của poly
+        QPointF center = PointTool::GetCenterOfPolygon(poly);
+        texts.insert(QString::number(i), QPointF(center.x(), center.y()));
+    }
+
+    DrawPolygons(pls);
+    DrawTexts(texts);
 }
 
 void ImageViewer::DrawRecangles(QList<QRect> rects)
@@ -396,10 +424,9 @@ void ImageViewer::SelectMappingTool()
 
     selectedTool = MAPPING_TOOL;
 
-//    QPushButton* bt = qobject_cast<QPushButton*>(sender());
-//    changeToolIconInArea(bt->icon());
-
     TurnOnTool(false);
+
+    setMoveHand(false);
 
     cMappingPoint.SetVisible(true);
 }
@@ -548,7 +575,7 @@ void ImageViewer::mouseReleaseEvent(QMouseEvent *event)
 
     if (selectedTool == RECTANGLE_TOOL)
     {
-        VariableManager::instance().updateVar("Rectangle", cRect.GetValue());
+        VariableManager::instance().updateVar(Prefix + "Rectangle", cRect.GetValue());
         emit changedRect(cRect.GetValue());
     }
 
@@ -559,13 +586,13 @@ void ImageViewer::mouseReleaseEvent(QMouseEvent *event)
 
     if (selectedTool == QUADRANGLE_TOOL)
     {
-        VariableManager::instance().updateVar("Quadangle", cQuadangle.GetPolygon());
+        VariableManager::instance().updateVar(Prefix + "Quadangle", cQuadangle.GetPolygon());
         emit changedQuadrangle(cQuadangle.GetPolygon());
     }
 
     if (selectedTool == AREA_TOOL)
     {
-        VariableManager::instance().updateVar("Area", cArea.GetValue());
+        VariableManager::instance().updateVar(Prefix + "Area", cArea.GetValue());
         emit changedArea(cArea.GetValue());
 
 //        SoftwareLog(QString("Crop top left: x = %1, y = %2").arg(cArea.GetValue().topLeft().x()).arg(cArea.GetValue().topLeft().y()));
@@ -609,6 +636,7 @@ void ImageViewer::setMoveHand(bool value)
     if (value == false)
     {
         setDragMode(QGraphicsView::NoDrag);
+        QApplication::restoreOverrideCursor();
 //        setInteractive(true);
     }
     else

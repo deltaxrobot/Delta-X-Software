@@ -40,7 +40,6 @@
 #endif
 
 namespace ImageTool {
-   // NOTE: This does not cover all cases - it should be easy to add new ones as required.
    inline QImage  cvMatToQImage( const cv::Mat &inMat )
    {
       switch ( inMat.type() )
@@ -113,10 +112,6 @@ namespace ImageTool {
       return QPixmap::fromImage( cvMatToQImage( inMat ) );
    }
 
-   // If inImage exists for the lifetime of the resulting cv::Mat, pass false to inCloneImageData to share inImage's
-   // data with the cv::Mat directly
-   //    NOTE: Format_RGB888 is an exception since we need to use a local QImage and thus must clone the data regardless
-   //    NOTE: This does not cover all cases - it should be easy to add new ones as required.
    inline cv::Mat QImageToCvMat( const QImage &inImage, bool inCloneImageData = true )
    {
       switch ( inImage.format() )
@@ -192,9 +187,6 @@ namespace ImageTool {
       return cv::Mat();
    }
 
-   // If inPixmap exists for the lifetime of the resulting cv::Mat, pass false to inCloneImageData to share inPixmap's data
-   // with the cv::Mat directly
-   //    NOTE: Format_RGB888 is an exception since we need to use a local QImage and thus must clone the data regardless
    inline cv::Mat QPixmapToCvMat( const QPixmap &inPixmap, bool inCloneImageData = true )
    {
       return QImageToCvMat( inPixmap.toImage(), inCloneImageData );

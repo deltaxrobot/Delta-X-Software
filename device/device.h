@@ -29,6 +29,9 @@ public:
     bool IsOpen();
     int ID();
     void SetIDName(QString idName);
+    QSerialPort* GetPort();
+
+    void MoveToThread(QThread* thread);
 
     QString ProjectName = "project0";
 
@@ -51,7 +54,7 @@ public slots:
     QString ReadLine();
 
 protected:
-    QSerialPort* serialPort = NULL;
+    QSerialPort* serialPort = nullptr;
     QMetaObject::Connection readDataConnection;
     QJsonObject jsonObject;
     QString idName;

@@ -10,9 +10,7 @@ RobotWindow::RobotWindow(QWidget *parent, QString projectName) :
     ui->setupUi(this);
 
     this->ProjectName = projectName;
-    // 0.Server, UI, Pointer,
-    // 1.Device
-    // 2.Module
+    VariableManager::instance().Prefix = ProjectName;
 
     InitVariables();
     InitOtherThreadObjects();
@@ -39,11 +37,12 @@ RobotWindow::~RobotWindow()
     ConnectionManager->thread()->quit();
     ConnectionManager->thread()->wait();
 
-    ImageProcessingThread->thread()->quit();
-    ImageProcessingThread->thread()->wait();
+    ImageProcessingInstance->thread()->quit();
+    ImageProcessingInstance->thread()->wait();
 
-    CameraInstance->thread()->quit();
-    CameraInstance->thread()->wait();
+    CameraThread->quit();
+    CameraThread->wait();
+    delete CameraThread;
 
     for (int i = 0; i < GcodeScripts.count(); i++)
     {
@@ -58,6 +57,17 @@ void RobotWindow::InitVariables()
 {
     //--------- Register ----------
     qRegisterMetaType< QList<QStringList>>("QList<QStringList>");
+    qRegisterMetaType< QVector<Object> >("QVector<ObjectInfo>");
+    qRegisterMetaType< cv::Mat >("cv::Mat");
+    qRegisterMetaType< cv::Size >("cv::Size");
+    qRegisterMetaType< Object >("Object");
+    qRegisterMetaType< QVector<Object>* >("QVector<Object>*");
+    qRegisterMetaType< QVector<Object> >("QVector<Object>&");
+    qRegisterMetaType< QVector<Object>* >("QVector<Object>");
+    qRegisterMetaType< QVector<QSharedPointer<Object>> >("QVector<QSharedPointer<Object>>");
+    qRegisterMetaType< QList<QPolygonF> >("QList<QPolygonF>");
+    qRegisterMetaType< QVector<Object> >("QVector<ObjectInfo>");
+    qRegisterMetaType< QList<int> >("QList<int>");
 
     //---------- Connection -----------
     InitSocketConnection();
@@ -85,6 +95,8 @@ void RobotWindow::InitVariables()
     ObjectModel = new ObjectInfoModel(this);
     ui->tvObjectTable->setModel(ObjectModel);
 
+    performanceTimer.start();
+
 
     //---- Init pointer --------
     initInputValueLabels();
@@ -95,12 +107,34 @@ void RobotWindow::InitVariables()
         joystick = QJoysticks::getInstance();
         joystick->setVirtualJoystickRange(ui->leJoystickRange->text().toDouble());
         joystick->setVirtualJoystickAxisSensibility(ui->leJoystickSensibility->text().toDouble());
-        qDebug() << "joystick device: " << joystick->deviceNames();
+//        qDebug() << "joystick device: " << joystick->deviceNames();
         ui->cbJoystickDevice->addItems(joystick->deviceNames());
     #endif
 #endif
 
     // -------- Point Tool -------
+
+    connect(ui->tbCopyEncoderPosition, &QPushButton::clicked, [=]()
+    {
+        QClipboard *clipboard = QApplication::clipboard();
+        clipboard->setText(ui->leEncoderCurrentPosition->text());
+
+    });
+
+    connect(ui->tbCopyTestTrackingPoint, &QPushButton::clicked, [=]()
+    {
+        // Copy giá trị vào clipboard
+        QString text = QString("%1, %2, %3").arg(ui->leTestTrackingPointX->text()).arg(ui->leTestTrackingPointY->text()).arg(ui->leTestTrackingPointZ->text());
+        QClipboard *clipboard = QApplication::clipboard();
+        clipboard->setText(text);
+
+    });
+
+    connect(ui->tbPasteTestTrackingPoint, &QPushButton::clicked, [=]()
+    {
+        pastePointValues(ui->leTestTrackingPointX, ui->leTestTrackingPointY, ui->leTestTrackingPointZ);
+    });
+
     connect(ui->pbMoveTestTrackingPoint, &QPushButton::clicked, [=]()
     {
         QVector3D initialPoint;
@@ -109,10 +143,6 @@ void RobotWindow::InitVariables()
         initialPoint.setZ(ui->leTestTrackingPointZ->text().toFloat());
 
         QVector3D direction = VariableManager::instance().getVar(ui->leVelocityVector->text()).value<QVector3D>();
-        if (initialPoint.z() == 0)
-        {
-            direction.setZ(0);
-        }
 
         double distance = ui->leMovingValue->text().toFloat();
 
@@ -124,17 +154,64 @@ void RobotWindow::InitVariables()
         ui->leTestTrackingPointY->setText(QString::number(newPoint.y()));
         ui->leTestTrackingPointZ->setText(QString::number(newPoint.z()));
     });
+
+    connect(ui->tbAutoMove, &QToolButton::toggled, [=](bool checked)
+    {
+        TrackingManagerInstance->Trackings.at(0)->IsUpateTestPoint = checked;
+    });
+
     connect(ui->pbCalculateMappingMatrixTool, SIGNAL(clicked(bool)), this, SLOT(CalculateMappingMatrixTool()));
     connect(ui->pbCalculatePointMatrixTool, SIGNAL(clicked(bool)), this, SLOT(CalculatePointMatrixTool()));
     connect(ui->pbCalculateTestPoint, SIGNAL(clicked(bool)), this, SLOT(CalculateTestPoint()));
     connect(ui->pbCalVector, SIGNAL(clicked(bool)), this, SLOT(CalculateVector()));
 
-    connect(ui->pbAnglePoint1, &QPushButton::clicked, [=](){ ui->lePointAtT1X->setText(QString::number(RobotParameters[RbID].X)); ui->lePointAtT1Y->setText(QString::number(RobotParameters[RbID].Y)); ui->lePointAtT1Z->setText(QString::number(RobotParameters[RbID].Z)); UpdateRealPositionOfCalibPoints();});
-    connect(ui->pbAnglePoint2, &QPushButton::clicked, [=](){ ui->lePointAtT2X->setText(QString::number(RobotParameters[RbID].X)); ui->lePointAtT2Y->setText(QString::number(RobotParameters[RbID].Y)); ui->lePointAtT2Z->setText(QString::number(RobotParameters[RbID].Z)); UpdateRealPositionOfCalibPoints();});
+    connect(ui->pbAnglePoint1, &QPushButton::clicked, [=](){ ui->lePointAtT1X->setText(QString::number(RobotParameters[RbID].X)); ui->lePointAtT1Y->setText(QString::number(RobotParameters[RbID].Y)); ui->lePointAtT1Z->setText(QString::number(RobotParameters[RbID].Z));});
+    connect(ui->pbAnglePoint2, &QPushButton::clicked, [=](){ ui->lePointAtT2X->setText(QString::number(RobotParameters[RbID].X)); ui->lePointAtT2Y->setText(QString::number(RobotParameters[RbID].Y)); ui->lePointAtT2Z->setText(QString::number(RobotParameters[RbID].Z));});
+
+    connect(ui->tbPasteVectorPoint1, &QPushButton::clicked, [=]()
+    { 
+        pastePointValues(ui->lePointAtT1X, ui->lePointAtT1Y, ui->lePointAtT1Z);
+    });
+
+    connect(ui->tbPasteVectorPoint2, &QPushButton::clicked, [=]()
+    { 
+        pastePointValues(ui->lePointAtT2X, ui->lePointAtT2Y, ui->lePointAtT2Z);
+    });
+
+    connect(ui->tbPasteSourcePoint1, &QPushButton::clicked, [=]()
+    {
+        pastePointValues(ui->leSourcePoint1X, ui->leSourcePoint1Y, NULL);
+    });
+    connect(ui->tbPasteSourcePoint2, &QPushButton::clicked, [=]()
+    {
+        pastePointValues(ui->leSourcePoint2X, ui->leSourcePoint2Y, NULL);
+    });
+    connect(ui->tbPasteDestinationPoint1, &QPushButton::clicked, [=]()
+    {
+        pastePointValues(ui->leDestinationPoint1X, ui->leDestinationPoint1Y, NULL);
+    });
+    connect(ui->tbPasteDestinationPoint2, &QPushButton::clicked, [=]()
+    {
+        pastePointValues(ui->leDestinationPoint2X, ui->leDestinationPoint2Y, NULL);
+    });
 
     connect(ui->pbAddMappingMatrix, &QPushButton::clicked, [=]()
     {
-        VariableManager::instance().addVar(ui->leMatrixName->text(), CalculatingTransform);
+        QString prefix = ProjectName + "." + ui->cbSelectedTracking->currentText() + ".";
+
+        QString transformString = QString("%1,%2,%3,%4,%5,%6,%7,%8,%9")
+                .arg(CalculatingTransform.m11())
+                .arg(CalculatingTransform.m12())
+                .arg(CalculatingTransform.m13())
+                .arg(CalculatingTransform.m21())
+                .arg(CalculatingTransform.m22())
+                .arg(CalculatingTransform.m23())
+                .arg(CalculatingTransform.m31())
+                .arg(CalculatingTransform.m32())
+                .arg(CalculatingTransform.m33());
+
+        VariableManager::instance().updateVar(prefix + ui->leMatrixName->text(), CalculatingTransform);
+        VariableManager::instance().updateVar(prefix + ui->leMatrixName->text() + "String", transformString);
 
         if (!isItemExit(ui->lwMappingMatrixList, ui->leMatrixName->text())) {
             ui->lwMappingMatrixList->addItem(ui->leMatrixName->text());
@@ -143,7 +220,15 @@ void RobotWindow::InitVariables()
 
     connect(ui->pbAddPointMatrix, &QPushButton::clicked, [=]()
     {
-        VariableManager::instance().addVar(ui->lePointMatrixName->text(), PointMatrix);
+        QString prefix = ProjectName + "." + ui->cbSelectedTracking->currentText() + ".";
+
+        std::vector<double> matrixArray;
+        matrixArray.assign(PointMatrix.begin<double>(), PointMatrix.end<double>());
+
+        // Tạo một QVariant từ mảng và lưu trữ ma trận
+        QVariant matrixVariant = QVariant::fromValue(matrixArray);
+
+        VariableManager::instance().updateVar(prefix + ui->lePointMatrixName->text(), matrixVariant);
 
         if (!isItemExit(ui->lwPointMatrixList, ui->lePointMatrixName->text()))
         {
@@ -157,7 +242,9 @@ void RobotWindow::InitVariables()
         CalVector.setY(ui->leVectorY->text().toFloat());
         CalVector.setZ(ui->leVectorZ->text().toFloat());
 
-        VariableManager::instance().addVar(ui->leVectorName->text(), QVector3D(CalVector.x(), CalVector.y(), CalVector.z()));
+        QString prefix = ProjectName + "." + ui->cbSelectedTracking->currentText() + ".";
+
+        VariableManager::instance().updateVar(prefix + ui->leVectorName->text(), QVector3D(CalVector.x(), CalVector.y(), CalVector.z()));
 
         if (!isItemExit(ui->lwVectorList, ui->leVectorName->text())) {
             ui->lwVectorList->addItem(ui->leVectorName->text());
@@ -180,25 +267,25 @@ void RobotWindow::InitVariables()
 
         if (ui->leObjectListName->text() == TrackingManagerInstance->Trackings.at(selectedEncoderID)->ListName)
         {
-            QList<ObjectInfo> list;
+            QVector<ObjectInfo> list;
             QVector3D position(x, y, z);
 
-            ObjectInfo object(-1, position, 20, 40, angle);
+            ObjectInfo object(-1, 0, position, 20, 40, angle);
             list.append(object);
             TrackingManagerInstance->Trackings.at(selectedEncoderID)->UpdateTrackedObjects(list, ui->leObjectListName->text());
         }
         else
         {
             QString listName = ui->leObjectListName->text();
-            int counter = VariableManager::instance().getVariable(listName + ".Count", 0).toInt();
-            VariableManager::instance().addVar((listName + ".%1.X").arg(counter), x);
-            VariableManager::instance().addVar((listName + ".%1.Y").arg(counter), y);
-            VariableManager::instance().addVar((listName + ".%1.Z").arg(counter), z);
-            VariableManager::instance().addVar((listName + ".%1.W").arg(counter), 20);
-            VariableManager::instance().addVar((listName + ".%1.L").arg(counter), 40);
-            VariableManager::instance().addVar((listName + ".%1.A").arg(counter), angle);
+            int counter = VariableManager::instance().getVar(listName + ".Count", 0).toInt();
+            VariableManager::instance().updateVar((listName + ".%1.X").arg(counter), x);
+            VariableManager::instance().updateVar((listName + ".%1.Y").arg(counter), y);
+            VariableManager::instance().updateVar((listName + ".%1.Z").arg(counter), z);
+            VariableManager::instance().updateVar((listName + ".%1.W").arg(counter), 20);
+            VariableManager::instance().updateVar((listName + ".%1.L").arg(counter), 40);
+            VariableManager::instance().updateVar((listName + ".%1.A").arg(counter), angle);
 
-            VariableManager::instance().addVar(listName + ".Count", counter + 1);
+            VariableManager::instance().updateVar(listName + ".Count", counter + 1);
         }
     });
 
@@ -217,7 +304,7 @@ void RobotWindow::InitVariables()
         ui->rb1000
     };
 
-    // Sử dụng vòng lặp để kết nối tất cả
+
     for (auto* rb : stepRBs) {
         connect(rb, &QRadioButton::toggled, [=](bool checked) {
             if (checked) RobotParameters[RbID].Step = rb->text().toFloat();
@@ -273,9 +360,6 @@ void RobotWindow::InitVariables()
 
 void RobotWindow::InitOtherThreadObjects()
 {
-    //------- New image processing thread --------
-    InitObjectDetectingModule();
-
     //------ Device Managers ----------
     DeviceManagerInstance = new DeviceManager();
     DeviceManagerInstance->ProjectName = ProjectName;
@@ -285,10 +369,8 @@ void RobotWindow::InitOtherThreadObjects()
     connect(thread, &QThread::finished, DeviceManagerInstance, &QObject::deleteLater);
     thread->start();
 
-    QMetaObject::invokeMethod(DeviceManagerInstance, "AddRobot", Qt::QueuedConnection);
-
     connect(DeviceManagerInstance, SIGNAL(GotDeviceInfo(QString)), this, SLOT(GetDeviceInfo(QString)));
-    connect(this, SIGNAL(ChangeDeviceState(int,bool,QString)), DeviceManagerInstance, SLOT(SetDeviceState(int,bool,QString)));
+    connect(this, SIGNAL(ChangeDeviceState(QString,bool,QString)), DeviceManagerInstance, SLOT(SetDeviceState(QString,bool,QString)));
     connect(DeviceManagerInstance, SIGNAL(Log(QString,QString,int)), this, SLOT(UpdateTermite(QString,QString,int)));
     connect(DeviceManagerInstance, SIGNAL(DeviceResponded(QString,QString)), this, SLOT(GetDeviceResponse(QString,QString)));
     connect(this, SIGNAL(Send(int,QString)), DeviceManagerInstance, SLOT(SendGcode(int,QString)));
@@ -303,19 +385,22 @@ void RobotWindow::InitOtherThreadObjects()
 
         //-------- Camera --------
     CameraInstance = new Camera();
-    CameraInstance->moveToThread(new QThread(this));
-    connect(CameraInstance->thread(), &QThread::finished, CameraInstance, &QObject::deleteLater);
+    CameraThread = new QThread(this);
+    CameraInstance->moveToThread(CameraThread);
+    connect(CameraThread, &QThread::finished, CameraInstance, &QObject::deleteLater);
     connect(CameraInstance, &Camera::StopCameraRequest, this, &RobotWindow::StopCapture);
 
-    CameraInstance->thread()->start();
+    CameraThread->start();
 
     connect(CameraInstance, &Camera::connectedResult, this, &RobotWindow::UpdateCameraConnectedState);
-    connect(CameraInstance, SIGNAL(GotImage(cv::Mat)), ImageProcessingThread->GetNode("GetImageNode"), SLOT(Input(cv::Mat)));
+
     connect(&CameraTimer, SIGNAL(timeout()), CameraInstance, SLOT(GeneralCapture()));
-    SelectImageProviderOption(0);
+//    SelectImageProviderOption(0);
 
-    connect(ui->cbTrackingThreadForCamera, SIGNAL(currentIndexChanged(int)), CameraInstance, SLOT(setTracking(int)));
+//    connect(ui->cbTrackingThreadForCamera, SIGNAL(currentIndexChanged(int)), CameraInstance, SLOT(setTracking(int)));
 
+    //------- New image processing thread --------
+    InitObjectDetectingModule();
 
         //-------- Robot ---------
     connect(ui->pbConnect, SIGNAL(clicked(bool)), this, SLOT(ConnectRobot()));
@@ -329,9 +414,18 @@ void RobotWindow::InitOtherThreadObjects()
     connect(ui->cbSelectedConveyor, SIGNAL(currentIndexChanged(int)), this, SLOT(ChangeSelectedConveyor(int)));
     connect(ui->pbConveyorConnect, SIGNAL(clicked(bool)), this, SLOT(ConnectConveyor()));
     connect(ui->cbConveyorMode, SIGNAL(currentIndexChanged(int)), this, SLOT(SetConveyorMode(int)));
-    connect(ui->cbConveyorValueType, SIGNAL(currentIndexChanged(int)), this, SLOT(SetConveyorMovingMode(int)));
+    connect(ui->pbSetConveyorMode, &QPushButton::clicked, [=](bool checked)
+    {
+        SetConveyorMode(ui->cbConveyorMode->currentIndex());
+    });
+
     connect(ui->leConveyorXPosition, SIGNAL(returnPressed()), this, SLOT(SetConveyorPosition()));
+    connect(ui->pbMoveConveyorByDistance, SIGNAL(clicked(bool)), this, SLOT(SetConveyorPosition()));
+    connect(ui->leConveyorXAbsolutePosition, SIGNAL(returnPressed()), this, SLOT(SetConveyorAbsolutePosition()));
+    connect(ui->pbMoveConveyorPosition, SIGNAL(clicked(bool)), this, SLOT(SetConveyorAbsolutePosition()));
     connect(ui->leConveyorXSpeed, SIGNAL(returnPressed()), this, SLOT(SetConveyorSpeed()));
+    connect(ui->pbSetConveyorSpeed, SIGNAL(clicked(bool)), this, SLOT(SetConveyorSpeed()));
+    connect(ui->pbStopConveyor, SIGNAL(clicked(bool)), this, SLOT(StopConveyor()));
     connect(ui->cbConveyorType, SIGNAL(currentIndexChanged(int)), this, SLOT(ChangeConveyorType(int)));
     ChangeConveyorType(0);
 
@@ -347,6 +441,22 @@ void RobotWindow::InitOtherThreadObjects()
     connect(ui->cbSubConveyor2Mode, SIGNAL(currentIndexChanged(int)), this, SLOT(SetConveyorMovingMode(int)));
     connect(ui->cbSubConveyor3Mode, SIGNAL(currentIndexChanged(int)), this, SLOT(SetConveyorMovingMode(int)));
 
+    connect(ui->pbStartCustomConveyor1, SIGNAL(clicked(bool)), this, SLOT(TriggedCustomConveyor()));
+    connect(ui->pbStartCustomConveyor1Command, SIGNAL(returnPressed()), this, SLOT(TriggedCustomConveyor()));
+    connect(ui->pbStartCustomConveyor2, SIGNAL(clicked(bool)), this, SLOT(TriggedCustomConveyor()));
+    connect(ui->pbStartCustomConveyor2Command, SIGNAL(returnPressed()), this, SLOT(TriggedCustomConveyor()));
+    connect(ui->pbStartCustomConveyor3, SIGNAL(clicked(bool)), this, SLOT(TriggedCustomConveyor()));
+    connect(ui->pbStartCustomConveyor3Command, SIGNAL(returnPressed()), this, SLOT(TriggedCustomConveyor()));
+
+    connect(ui->pbStopCustomConveyor1, SIGNAL(clicked(bool)), this, SLOT(TriggedCustomConveyor()));
+    connect(ui->pbStopCustomConveyor1Command, SIGNAL(returnPressed()), this, SLOT(TriggedCustomConveyor()));
+    connect(ui->pbStopCustomConveyor2, SIGNAL(clicked(bool)), this, SLOT(TriggedCustomConveyor()));
+    connect(ui->pbStopCustomConveyor2Command, SIGNAL(returnPressed()), this, SLOT(TriggedCustomConveyor()));
+    connect(ui->pbStopCustomConveyor3, SIGNAL(clicked(bool)), this, SLOT(TriggedCustomConveyor()));
+    connect(ui->pbStopCustomConveyor3Command, SIGNAL(returnPressed()), this, SLOT(TriggedCustomConveyor()));
+
+
+
         //-------- Encoder --------
     connect(ui->pbConnectEncoder, SIGNAL(clicked(bool)), this, SLOT(ConnectEncoder()));
 
@@ -356,6 +466,9 @@ void RobotWindow::InitOtherThreadObjects()
     connect(ui->pbSetEncoderVelocity, SIGNAL(clicked(bool)), this, SLOT(SetEncoderVelocity()));
 
     connect(ui->cbEncoderType, SIGNAL(currentIndexChanged(int)), this, SLOT(ChangeEncoderType(int)));
+    connect(ui->cbLinkToConveyorX, SIGNAL(stateChanged(int)), this, SLOT(ChangeConveyorLinkToEncoder(int)));
+
+    connect(ui->pbStartScheduledEncoder, SIGNAL(clicked(bool)), this, SLOT(StartScheduledEncoder()));
 
     //-------- Slider --------
 
@@ -390,18 +503,25 @@ void RobotWindow::InitSocketConnection()
     QString localIP = SocketConnectionManager::printLocalIpAddresses();
     ui->leIP->setText(localIP);
 
-    ConnectionManager = new SocketConnectionManager(localIP, ui->lePort->text().toInt(), this);
-    /// Chuyển ConnectionManager vào một thread mới
-    ConnectionManager->moveToThread(new QThread(this));
-    /// Kết nối sự kiện khi thread kết thúc với việc xóa ConnectionManager
+    ConnectionManager = new SocketConnectionManager(localIP, ui->lePort->text().toInt());
+    ConnectionManager->ProjectName = ProjectName;
+    QString appDirPath = QCoreApplication::applicationDirPath();
+    ConnectionManager->indexPath = appDirPath + "/script-example/webpage/websocket.html";
+
+    QThread* thread = new QThread(this);
+
+    ConnectionManager->moveToThread(thread);
+
     connect(ConnectionManager->thread(), &QThread::finished, ConnectionManager, &QObject::deleteLater);
-    /// Khởi động thread
-    ConnectionManager->thread()->start();    
+
+    thread->start();
+
+    connect(ConnectionManager, &SocketConnectionManager::eventReceived, this, &RobotWindow::ActiveWidgetByName);
 
     if (ConnectionManager->IsServerOpen())
     {
-        ui->leIP->setText(ConnectionManager->server->serverAddress().toString());
-        ui->lePort->setText(QString::number(ConnectionManager->server->serverPort()));
+        ui->leIP->setText(ConnectionManager->Server->serverAddress().toString());
+        ui->lePort->setText(QString::number(ConnectionManager->Server->serverPort()));
     }
 
     connect(ui->tbServerConfig, &QPushButton::clicked, [=](bool checked)
@@ -430,54 +550,54 @@ void RobotWindow::InitSocketConnection()
 
 void RobotWindow::InitObjectDetectingModule()
 {
-    qRegisterMetaType< cv::Mat >("cv::Mat");
-    qRegisterMetaType< cv::Size >("cv::Size");
-    qRegisterMetaType< Object >("Object");
-    qRegisterMetaType< QList<Object>* >("QList<Object>*");
-    qRegisterMetaType< QList<Object> >("QList<Object>&");
-    qRegisterMetaType< QList<Object>* >("QList<Object>");
-    qRegisterMetaType< QList<Object> >("QList<ObjectInfo>");
-    qRegisterMetaType< QList<int> >("QList<int>");
-
     // ---------- Image Processing Thread ---------
 
-    ImageProcessingThread = new ImageProcessing();
-    ImageProcessingThread->ProjectName = ProjectName;
-    ImageProcessingThread->MoveToThread(new QThread(this));
-    connect(ImageProcessingThread->thread(), &QThread::finished, ImageProcessingThread, &QObject::deleteLater);
+    ImageProcessingInstance = new ImageProcessing();
+    ImageProcessingInstance->ProjectName = ProjectName;
 
     // --------- Init Task Node --------
 
-    ImageProcessingThread->CreatTaskNode("GetImageNode", TaskNode::GET_IMAGE_NODE);
-    ImageProcessingThread->CreatTaskNode("ResizeImageNode", TaskNode::RESIZE_IMAGE_NODE, "GetImageNode");
-    ImageProcessingThread->CreatTaskNode("FindChessboardNode", TaskNode::FIND_CHESSBOARD_NODE);
-    ImageProcessingThread->CreatTaskNode("GetPerspectiveNode", TaskNode::GET_PERSPECTIVE_NODE, "FindChessboardNode");
-    ImageProcessingThread->CreatTaskNode("WarpImageNode", TaskNode::WARP_IMAGE_NODE, "ResizeImageNode|GetPerspectiveNode");
-    ImageProcessingThread->CreatTaskNode("CropImageNode", TaskNode::CROP_IMAGE_NODE, "ResizeImageNode");
+    ImageProcessingInstance->CreatTaskNode("GetImageNode", TaskNode::GET_IMAGE_NODE);
+    ImageProcessingInstance->CreatTaskNode("ResizeImageNode", TaskNode::RESIZE_IMAGE_NODE, "GetImageNode");
+    ImageProcessingInstance->CreatTaskNode("FindChessboardNode", TaskNode::FIND_CHESSBOARD_NODE);
+    ImageProcessingInstance->CreatTaskNode("GetPerspectiveNode", TaskNode::GET_PERSPECTIVE_NODE, "FindChessboardNode");
+    ImageProcessingInstance->CreatTaskNode("WarpImageNode", TaskNode::WARP_IMAGE_NODE, "ResizeImageNode|GetPerspectiveNode");
+    ImageProcessingInstance->CreatTaskNode("CropImageNode", TaskNode::CROP_IMAGE_NODE, "WarpImageNode");
 
-    ImageProcessingThread->CreatTaskNode("MappingMatrixNode", TaskNode::MAPPING_MATRIX_NODE);
-    ImageProcessingThread->CreatTaskNode("ColorFilterNode", TaskNode::COLOR_FILTER_NODE, "CropImageNode");
-    ImageProcessingThread->CreatTaskNode("GetObjectsNode", TaskNode::GET_OBJECTS_NODE, "ColorFilterNode");
-    ImageProcessingThread->CreatTaskNode("VisibleObjectsNode", TaskNode::VISIBLE_OBJECTS_NODE, "GetObjectsNode|MappingMatrixNode");
+    ImageProcessingInstance->CreatTaskNode("MappingMatrixNode", TaskNode::MAPPING_MATRIX_NODE);
+    ImageProcessingInstance->CreatTaskNode("ColorFilterNode", TaskNode::COLOR_FILTER_NODE, "CropImageNode");
+    ImageProcessingInstance->CreatTaskNode("GetObjectsNode", TaskNode::GET_OBJECTS_NODE, "ColorFilterNode");
+    ImageProcessingInstance->CreatTaskNode("VisibleObjectsNode", TaskNode::VISIBLE_OBJECTS_NODE, "GetObjectsNode|MappingMatrixNode");
 
-    ImageProcessingThread->CreatTaskNode("DisplayImageNode", TaskNode::DISPLAY_IMAGE_NODE, "CropImageNode");
+    ImageProcessingInstance->CreatTaskNode("DisplayImageNode", TaskNode::DISPLAY_IMAGE_NODE, "CropImageNode");
+
+    ImageProcessingInstance->GetNode("WarpImageNode")->IsPass = true;
+    ImageProcessingInstance->GetNode("CropImageNode")->IsPass = true;
+
+    connect(CameraInstance, SIGNAL(GotImage(cv::Mat)), ImageProcessingInstance->GetNode("GetImageNode"), SLOT(Input(cv::Mat)));
+//    connect(CameraInstance, SIGNAL(GotImage(cv::Mat)), ImageProcessingInstance, SLOT(GotImage(cv::Mat)));
+//    connect(this, SIGNAL(GotResizePara(cv::Size)), ImageProcessingInstance, SLOT(GotResizeValue(cv::Size)));
+//    connect(ImageProcessingInstance->GetNode("GetPerspectiveNode"), SIGNAL(HadOutput(cv::Mat)), ImageProcessingInstance, SLOT(GotPerspectiveMatrix(cv::Mat)));
+
+
 
     // ---------- Blob Filter Window---------
-    ParameterPanel = new FilterWindow(this);
-    ParameterPanel->ProjectName = ProjectName;
+    ParameterPanel = new FilterWindow(this, ProjectName);
 
     // ---------- Main UI -------
-//    connect(ui->cbImageOutput, SIGNAL(currentTextChanged(QString)), this, SLOT(ChangeOutputDisplay()));
+
     connect(ui->pbLoadCamera, SIGNAL(clicked(bool)), this, SLOT(LoadWebcam()));
     connect(ui->pbLoadTestImage, SIGNAL(clicked(bool)), this, SLOT(LoadImages()));
     connect(ui->cbDetectingAlgorithm, SIGNAL(currentIndexChanged(int)), this, SLOT(SelectObjectDetectingAlgorithm(int)));
+
+    connect(ui->cbSendingImageMethod, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), [=](int index){
+        ConnectionManager->imageSendingMethod = index;
+    });
 
     ui->cbDetectingAlgorithm->setCurrentIndex(0);
     SelectObjectDetectingAlgorithm(0);
 
     ui->gvImageViewer->ProjectName = ProjectName;
-
-//    ui->gvImageViewer->setViewport(new QGLWidget(QGLFormat(QGL::SampleBuffers)));
 
     connect(ui->pbCalibPointTool, &QPushButton::clicked, [=](bool checked)
     {
@@ -497,8 +617,10 @@ void RobotWindow::InitObjectDetectingModule()
     {
         if (checked == true)
         {
-            UnselectToolButtons();
-//            ui->pbGetSizeTool->setChecked(true);
+            ui->pbCalibPointTool->setChecked(false);
+            ui->pbFindChessboardTool->setChecked(false);
+            ui->pbMappingPointTool->setChecked(false);
+
             ui->gvImageViewer->SelectRectTool();
 
             ui->pbCapture->clicked();
@@ -506,12 +628,11 @@ void RobotWindow::InitObjectDetectingModule()
         else
         {
             ui->gvImageViewer->SelectNoTool();
-            UnselectToolButtons();
         }
     });
     connect(ui->pbFindChessboardTool, &QPushButton::clicked,  [=](bool checked)
     {
-        if (checked == true)
+        if (ui->pbFindChessboardTool->isChecked() == true)
         {
             UnselectToolButtons();
             ui->pbFindChessboardTool->setChecked(true);
@@ -523,17 +644,14 @@ void RobotWindow::InitObjectDetectingModule()
         }
 
     });
-    connect(ui->pbAreaTool, &QPushButton::clicked, [=](bool checked)
-    {
-        EditImage(ui->pbWarpTool->isChecked(), checked);
-
-    });
     connect(ui->pbMappingPointTool, &QPushButton::clicked, [=](bool checked)
     {
         if (checked == true)
         {
-            UnselectToolButtons();
-            ui->pbMappingPointTool->setChecked(true);
+            ui->pbCalibPointTool->setChecked(false);
+            ui->pbFindChessboardTool->setChecked(false);
+            ui->pbGetSizeTool->setChecked(false);
+
             ui->gvImageViewer->SelectMappingTool();
         }
         else
@@ -542,29 +660,29 @@ void RobotWindow::InitObjectDetectingModule()
         }
 
     });
+    connect(ui->pbCropTool, &QPushButton::clicked, [=](bool checked)
+    {
+        EditImage(ui->pbWarpTool->isChecked(), ui->pbCropTool->isChecked());
+
+    });
 
     connect(ui->pbWarpTool, &QPushButton::clicked, [=](bool checked)
     {
-        EditImage(checked, ui->pbAreaTool->isChecked());
+        EditImage(ui->pbWarpTool->isChecked(), ui->pbCropTool->isChecked());
     });
 
-    ui->pbWarpTool->click();
-
     connect(ui->pbFilterTool, SIGNAL(clicked(bool)), this, SLOT(OpenColorFilterWindow()));
-//    connect(ui->pbViewDataObjects, SIGNAL(clicked(bool)), TrackingObjectTable, SLOT(DisplayDialog()));
+
     connect(ui->pbClearDetectObjects, &QPushButton::clicked, [=](bool checked)
     {
         int id = ui->cbTrackingThreadForCamera->currentIndex();
         QMetaObject::invokeMethod(TrackingManagerInstance->Trackings[id], "ClearTrackedObjects", Qt::QueuedConnection);
+        VariableManager::instance().removeVar(ui->leDetectingObjectListName->text());
 
         QTimer::singleShot(300, [this](){
             ui->pbCapture->clicked();
         });
     });
-//    connect(ui->pbOpenObjectTable, SIGNAL(clicked(bool)), TrackingObjectTable, SLOT(DisplayDialog()));
-//    connect(ui->pbClearDetectObjects, &QPushButton::clicked, ui->pbClearObject, &QPushButton::clicked);
-
-//    connect(TrackingObjectTable, SIGNAL(TakeObjectPosition(float, float, float)), this, SLOT(MoveRobotFollowObject(float, float, float)));
 
     connect(ui->gvImageViewer, &ImageViewer::selectedNoTool, this, &RobotWindow::UnselectToolButtons);
 
@@ -577,9 +695,13 @@ void RobotWindow::InitObjectDetectingModule()
     connect(ui->leRealityPoint2X, &QLineEdit::returnPressed, this, &RobotWindow::UpdateRealPositionOfCalibPoints);
     connect(ui->leRealityPoint2Y, &QLineEdit::returnPressed, this, &RobotWindow::UpdateRealPositionOfCalibPoints);
 
-    connect(ui->leSimilarityThreshold, &QLineEdit::returnPressed,
+    connect(ui->leIoUThreshold, &QLineEdit::returnPressed,
     [=] (){
-        TrackingManagerInstance->Trackings.at(0)->SimilarityThreshold = ui->leSimilarityThreshold->text().toFloat();
+        TrackingManagerInstance->Trackings.at(0)->IoUThreshold = ui->leIoUThreshold->text().toFloat();
+    });
+    connect(ui->leDistanceThreshold, &QLineEdit::returnPressed,
+    [=] (){
+        TrackingManagerInstance->Trackings.at(0)->DistanceThreshold = ui->leDistanceThreshold->text().toFloat();
     });
 
     connect(ui->pbZoomInCameraView, &QPushButton::clicked, [=](bool checked)
@@ -613,73 +735,116 @@ void RobotWindow::InitObjectDetectingModule()
 
     // ---------- Image Provider -------
 
-    connect(this, SIGNAL(GotResizePara(cv::Size)), ImageProcessingThread->GetNode("ResizeImageNode"), SLOT(Input(cv::Size)));
-    connect(ImageProcessingThread->GetNode("FindChessboardNode"), SIGNAL(HadOutput(QPolygonF)), ui->gvImageViewer, SLOT(SetQuadrangle(QPolygonF)));
-    connect(this, SIGNAL(GotChessboardSize(cv::Size)), ImageProcessingThread->GetNode("FindChessboardNode"), SLOT(Input(cv::Size)));
-    connect(this, SIGNAL(GotResizeImage(cv::Mat)), ImageProcessingThread->GetNode("FindChessboardNode"), SLOT(Input(cv::Mat)));
-    connect(this, SIGNAL(GotCalibPoints(QPolygonF)), ImageProcessingThread->GetNode("MappingMatrixNode"), SLOT(Input(QPolygonF)));
+    connect(ui->pbCapture, &QPushButton::clicked, CameraInstance, &Camera::GeneralCapture);
+    connect(ui->pbStartAcquisition, &QPushButton::clicked, this, &RobotWindow::StartContinuousCapture);
 
-    connect(ui->gvImageViewer, SIGNAL(changedQuadrangle(QPolygonF)), ImageProcessingThread->GetNode("GetPerspectiveNode"), SLOT(Input(QPolygonF)));
+    connect(ui->pbSaveImage, &QPushButton::clicked, [=](bool checked)
+    {
+        QString absolutePath = checkAndCreateDir(ui->leImageFolder->text());
 
-    connect(ui->gvImageViewer, SIGNAL(changedArea(QRectF)), ImageProcessingThread->GetNode("CropImageNode"), SLOT(Input(QRectF)));
-//    connect(ImageProcessingThread->GetNode("CropImageNode"), SIGNAL(HadOutput(cv::Mat)), this, SLOT(SendImageToExternalScript(cv::Mat)));
-//    connect(ImageProcessingThread->GetNode("CropImageNode"), SIGNAL(HadOutput(cv::Mat)), ConnectionManager, SLOT(sendImageToImageClients(cv::Mat)));
+        saveImageWithUniqueName(CameraInstance->CaptureImage, absolutePath);
+    });
 
-//    connect(ImageProcessingThread->GetNode("ColorFilterNode"), SIGNAL(HadOutput(cv::Mat)), this, SLOT(SendImageToExternalScript(cv::Mat)));
+    connect(ui->tbOpenSaveFolder, &QPushButton::clicked, [=](bool checked)
+    {
+        QString absolutePath = checkAndCreateDir(ui->leImageFolder->text());
+        QDesktopServices::openUrl(QUrl::fromLocalFile(absolutePath));
+    });
+
+    connect(ui->pbRefreshImageFolder, &QPushButton::clicked, [=](bool checked)
+    {
+        QString absolutePath = checkAndCreateDir(ui->leImageFolder->text());
+        loadImages(absolutePath, ui->lwImageList);
+    });
+
+    connect(ui->lwImageList, &QListWidget::itemClicked, this, &RobotWindow::onImageItemClicked);
+
+    connect(this, SIGNAL(GotResizePara(cv::Size)), ImageProcessingInstance->GetNode("ResizeImageNode"), SLOT(Input(cv::Size)));
+    connect(ImageProcessingInstance->GetNode("FindChessboardNode"), SIGNAL(HadOutput(QPolygonF)), ui->gvImageViewer, SLOT(SetQuadrangle(QPolygonF)));
+    connect(this, SIGNAL(GotChessboardSize(cv::Size)), ImageProcessingInstance->GetNode("FindChessboardNode"), SLOT(Input(cv::Size)));
+    connect(this, SIGNAL(GotResizeImage(cv::Mat)), ImageProcessingInstance->GetNode("FindChessboardNode"), SLOT(Input(cv::Mat)));
+    connect(this, SIGNAL(GotCalibPoints(QPolygonF)), ImageProcessingInstance->GetNode("MappingMatrixNode"), SLOT(Input(QPolygonF)));
+
+    connect(ui->gvImageViewer, SIGNAL(changedQuadrangle(QPolygonF)), ImageProcessingInstance->GetNode("GetPerspectiveNode"), SLOT(Input(QPolygonF)));
+
+    connect(ui->gvImageViewer, SIGNAL(changedArea(QRectF)), ImageProcessingInstance->GetNode("CropImageNode"), SLOT(Input(QRectF)));
 
     connect(ui->leImageWidth, &QLineEdit::returnPressed,
     [=] (){
         int newW = ui->leImageWidth->text().toInt();
 
-        QSize imageSize = ImageProcessingThread->GetNode("GetImageNode")->GetImageSize();
+        QSize imageSize = ImageProcessingInstance->GetNode("GetImageNode")->GetImageSize();
 
         int newH = ImageTool::Map(newW, imageSize.width(), imageSize.height());
 
         ui->leImageHeight->setText(QString::number(newH));
 
         emit GotResizePara(cv::Size(newW, newH));
+
+        SaveDetectingUI();
     });
+
     connect(ui->leImageHeight, &QLineEdit::returnPressed,
     [=] (){
         int newH = ui->leImageHeight->text().toInt();
 
-        QSize imageSize = ImageProcessingThread->GetNode("GetImageNode")->GetImageSize();
+        QSize imageSize = ImageProcessingInstance->GetNode("GetImageNode")->GetImageSize();
 
         int newW = ImageTool::Map(newH, imageSize.height(), imageSize.width());
 
         ui->leImageWidth->setText(QString::number(newW));
 
         emit GotResizePara(cv::Size(newW, newH));
+
+        SaveDetectingUI();
     });
 
-    connect(ImageProcessingThread->GetNode("DisplayImageNode"), SIGNAL(HadOutput(QPixmap)), ui->gvImageViewer, SLOT(SetImage(QPixmap)));
-//    connect(ImageProcessingThread->GetNode("DisplayImageNode"), SIGNAL(HadOutput(QPixmap)), ui->graphicsView, SLOT(SetImage(QPixmap)));
+    connect(ui->tbAutoResizeImage, &QToolButton::toggled, [=](bool checked)
+    {
+        TaskNode* resizeImageNode = ImageProcessingInstance->GetNode("ResizeImageNode");
 
-    connect(ParameterPanel, SIGNAL(ColorFilterValueChanged(QList<int>)), ImageProcessingThread->GetNode("ColorFilterNode"), SLOT(Input(QList<int>)));
-    connect(ParameterPanel, SIGNAL(BlurSizeChanged(int)), ImageProcessingThread->GetNode("ColorFilterNode"), SLOT(Input(int)));
-    connect(ParameterPanel, SIGNAL(ColorInverted(bool)), ImageProcessingThread->GetNode("ColorFilterNode"), SLOT(Input(bool)));
+        if (checked)
+        {
+            resizeImageNode->IsPass = false;
+        }
+        else
+        {
+            resizeImageNode->IsPass = true;
+        }
+    });
+        
+    connect(ImageProcessingInstance->GetNode("DisplayImageNode"), SIGNAL(HadOutput(QPixmap)), ui->gvImageViewer, SLOT(SetImage(QPixmap)));
 
-    connect(this, SIGNAL(GotObjects(QList<Object>)), ImageProcessingThread->GetNode("VisibleObjectsNode"), SLOT(Input(QList<Object>)));
+    connect(ParameterPanel, SIGNAL(ColorFilterValueChanged(QList<int>)), ImageProcessingInstance->GetNode("ColorFilterNode"), SLOT(Input(QList<int>)));
+    connect(ParameterPanel, SIGNAL(BlurSizeChanged(int)), ImageProcessingInstance->GetNode("ColorFilterNode"), SLOT(Input(int)));
+    connect(ParameterPanel, SIGNAL(ColorInverted(bool)), ImageProcessingInstance->GetNode("ColorFilterNode"), SLOT(Input(bool)));
 
-    connect(this, SIGNAL(GotMappingMatrix(QMatrix)), ImageProcessingThread->GetNode("VisibleObjectsNode"), SLOT(Input(QMatrix)));
-    connect(this, SIGNAL(GotOjectFilterInfo(Object)), ImageProcessingThread->GetNode("GetObjectsNode"), SLOT(Input(Object)));
+    connect(this, SIGNAL(GotObjects(QVector<Object>)), ImageProcessingInstance->GetNode("VisibleObjectsNode"), SLOT(Input(QVector<Object>)));
 
-    connect(ImageProcessingThread->GetNode("GetObjectsNode"), SIGNAL(HadOutput(QList<Object>)), this, SLOT(UpdateObjectsToImageViewer(QList<Object>)));
-//    connect(ImageProcessingThread->GetNode("VisibleObjectsNode"), SIGNAL(HadOutput(QList<ObjectInfo>)), ImageProcessingThread, SLOT(GotVisibleObjects2(QList<ObjectInfo>)));
-    connect(ImageProcessingThread->GetNode("VisibleObjectsNode"), SIGNAL(HadOutput(QList<Object>)), ImageProcessingThread, SLOT(GotVisibleObjects(QList<Object>)));
+    connect(this, SIGNAL(GotMappingMatrix(QMatrix)), ImageProcessingInstance->GetNode("VisibleObjectsNode"), SLOT(Input(QMatrix)));
+    connect(this, SIGNAL(GotOjectFilterInfo(Object)), ImageProcessingInstance->GetNode("GetObjectsNode"), SLOT(Input(Object)));
 
-    connect(ui->leDetectingObjectListName, &QLineEdit::returnPressed, this, [=](){ImageProcessingThread->ObjectsName = ui->leDetectingObjectListName->text();});
+    connect(ImageProcessingInstance->GetNode("GetObjectsNode"), SIGNAL(HadOutput(QList<QPolygonF>)), ui->gvImageViewer, SLOT(DrawObjects(QList<QPolygonF>)));
+    connect(ImageProcessingInstance->GetNode("VisibleObjectsNode"), SIGNAL(HadOutput(QVector<Object>)), ImageProcessingInstance, SLOT(GotVisibleObjects(QVector<Object>)));
 
-//    connect(ImageProcessingThread->GetNode("GetObjectsNode"), SIGNAL(Done(int)), TrackingManagerInstance, SLOT(SaveDetectPosition(int)));
+    connect(ui->leDetectingObjectListName, &QLineEdit::returnPressed, this, [=]()
+    {
+        ImageProcessingInstance->ObjectsName = ui->leDetectingObjectListName->text();
+    });
 
-//    connect(ImageProcessingThread->GetNode("TrackingObjectsNode"), SIGNAL(HadOutput(QList<Object>&)), TrackingObjectTable, SLOT(UpdateTable(QList<Object>&)));
-//    QTimer::singleShot(1000, [this](){
-//        connect(ImageProcessingThread->GetNode("TrackingObjectsNode"), SIGNAL(Done()), TrackingManagerInstance, SLOT(OnDoneUpdateTracking()));
-//    });
 
-    RearrangeTaskFlow();
+    // Khai báo và khởi tạo luồng
+    QThread* thread = new QThread;
+    ImageProcessingInstance->moveToThread(thread);
 
-    ImageProcessingThread->thread()->start();    
+    // Kết nối để đảm bảo sự sạch sẽ
+    connect(thread, &QThread::finished, ImageProcessingInstance, &QObject::deleteLater);
+    connect(thread, &QThread::finished, thread, &QObject::deleteLater); // Đảm bảo luồng cũng tự hủy khi kết thúc
+
+    // Bắt đầu luồng
+    thread->start();
+
+//    qDebug() << "Main Thread id: " << QThread::currentThreadId();
 
     ParameterPanel->RequestValue();
 
@@ -749,14 +914,35 @@ void RobotWindow::InitUIController()
     connect(&UpdateUITimer, &QTimer::timeout, this, &RobotWindow::UpdateRobotPositionToUI);
     UpdateUITimer.start(100);
 
-    connect(ui->pbHome, &QPushButton::clicked, this, [=](){emit Send(DeviceManager::ROBOT, "G28");});
+    connect(ui->pbHome, &QPushButton::clicked, this, [=](){emit Send(DeviceManager::ROBOT, "G28");});    
 
-    connect(ui->leX, &QLineEdit::returnPressed, this, [=](){RobotParameters[RbID].X = ui->leX->text().toFloat(); UpdateVariable("X", QString::number(RobotParameters[RbID].X)); emit Send(DeviceManager::ROBOT, QString("G01 X") + ui->leX->text());});
-    connect(ui->leY, &QLineEdit::returnPressed, this, [=](){RobotParameters[RbID].Y = ui->leY->text().toFloat(); UpdateVariable("Y", QString::number(RobotParameters[RbID].Y));emit Send(DeviceManager::ROBOT, QString("G01 Y") + ui->leY->text());});
-    connect(ui->leZ, &QLineEdit::returnPressed, this, [=](){RobotParameters[RbID].Z = ui->leZ->text().toFloat(); UpdateVariable("Z", QString::number(RobotParameters[RbID].Z));emit Send(DeviceManager::ROBOT, QString("G01 Z") + ui->leZ->text());});
-    connect(ui->leW, &QLineEdit::returnPressed, this, [=](){RobotParameters[RbID].W = ui->leW->text().toFloat(); UpdateVariable("W", QString::number(RobotParameters[RbID].W));emit Send(DeviceManager::ROBOT, QString("G01 W") + ui->leW->text());});
-    connect(ui->leU, &QLineEdit::returnPressed, this, [=](){RobotParameters[RbID].U = ui->leU->text().toFloat(); UpdateVariable("U", QString::number(RobotParameters[RbID].U));emit Send(DeviceManager::ROBOT, QString("G01 U") + ui->leU->text());});
-    connect(ui->leV, &QLineEdit::returnPressed, this, [=](){RobotParameters[RbID].V = ui->leV->text().toFloat(); UpdateVariable("V", QString::number(RobotParameters[RbID].V));emit Send(DeviceManager::ROBOT, QString("G01 V") + ui->leV->text());});
+    connect(ui->tbCopyRobotPosition, &QPushButton::clicked, [=]()
+    {
+        // Copy giá trị vào clipboard
+        QString text = QString("%1, %2, %3, %4, %5, %6").arg(ui->leX->text()).arg(ui->leY->text()).arg(ui->leZ->text()).arg(ui->leW->text()).arg(ui->leU->text()).arg(ui->leV->text());
+        QClipboard *clipboard = QApplication::clipboard();
+        clipboard->setText(text);
+        
+    });
+
+    connect(ui->leX, &QLineEdit::returnPressed, this, [=](){RobotParameters[RbID].X = ui->leX->text().toFloat();
+//        UpdateVariable("X", QString::number(RobotParameters[RbID].X));
+        emit Send(DeviceManager::ROBOT, QString("G01 X") + ui->leX->text());});
+    connect(ui->leY, &QLineEdit::returnPressed, this, [=](){RobotParameters[RbID].Y = ui->leY->text().toFloat();
+//        UpdateVariable("Y", QString::number(RobotParameters[RbID].Y));
+        emit Send(DeviceManager::ROBOT, QString("G01 Y") + ui->leY->text());});
+    connect(ui->leZ, &QLineEdit::returnPressed, this, [=](){RobotParameters[RbID].Z = ui->leZ->text().toFloat();
+//        UpdateVariable("Z", QString::number(RobotParameters[RbID].Z));
+        emit Send(DeviceManager::ROBOT, QString("G01 Z") + ui->leZ->text());});
+    connect(ui->leW, &QLineEdit::returnPressed, this, [=](){RobotParameters[RbID].W = ui->leW->text().toFloat();
+//        UpdateVariable("W", QString::number(RobotParameters[RbID].W));
+        emit Send(DeviceManager::ROBOT, QString("G01 W") + ui->leW->text());});
+    connect(ui->leU, &QLineEdit::returnPressed, this, [=](){RobotParameters[RbID].U = ui->leU->text().toFloat();
+//        UpdateVariable("U", QString::number(RobotParameters[RbID].U));
+        emit Send(DeviceManager::ROBOT, QString("G01 U") + ui->leU->text());});
+    connect(ui->leV, &QLineEdit::returnPressed, this, [=](){RobotParameters[RbID].V = ui->leV->text().toFloat();
+//        UpdateVariable("V", QString::number(RobotParameters[RbID].V));
+        emit Send(DeviceManager::ROBOT, QString("G01 V") + ui->leV->text());});
 
     connect(ui->pbSubPitch, &QPushButton::clicked, [=](){MoveRobot("V", 0 - RobotParameters[RbID].Step);});
     connect(ui->pbPlusPitch, &QPushButton::clicked, [=](){MoveRobot("V", RobotParameters[RbID].Step);});
@@ -779,8 +965,6 @@ void RobotWindow::InitUIController()
 
 void RobotWindow::InitCalibration()
 {
-    connect(ui->pbCalibPoint1, &QPushButton::clicked, [=](){ ui->leRealityPoint1X->setText(QString::number(RobotParameters[RbID].X)); ui->leRealityPoint1Y->setText(QString::number(RobotParameters[RbID].Y)); UpdateRealPositionOfCalibPoints();});
-    connect(ui->pbCalibPoint2, &QPushButton::clicked, [=](){ ui->leRealityPoint2X->setText(QString::number(RobotParameters[RbID].X)); ui->leRealityPoint2Y->setText(QString::number(RobotParameters[RbID].Y)); UpdateRealPositionOfCalibPoints();});
     connect(ui->pbImageMapping, &QPushButton::clicked, this, &RobotWindow::UpdateRealPositionOfCalibPoints);
 
     QObject::connect(ui->cbCalibType, QOverload<int>::of(&QComboBox::currentIndexChanged), [this](int index) {
@@ -798,6 +982,27 @@ void RobotWindow::InitCalibration()
                 ui->leRealityP1P2Distance->setText("100");
             }
         });
+
+    connect(ui->tbPastePoint1, &QPushButton::clicked, [=]()
+    { 
+        pastePointValues(ui->leRealityPoint1X, ui->leRealityPoint1Y, NULL);
+
+        UpdateRealPositionOfCalibPoints();
+    });
+
+    connect(ui->tbPastePoint2, &QPushButton::clicked, [=]()
+    { 
+        pastePointValues(ui->leRealityPoint2X, ui->leRealityPoint2Y, NULL);
+
+        UpdateRealPositionOfCalibPoints();
+    });
+
+    connect(ui->tbPasteOffsetPoint, &QPushButton::clicked, [=]()
+    { 
+        pastePointValues(ui->leCalibOffset_X, ui->leCalibOffset_Y, NULL);
+
+        UpdateRealPositionOfCalibPoints();
+    });
 }
 
 void RobotWindow::InitEvents()
@@ -806,14 +1011,13 @@ void RobotWindow::InitEvents()
 //    connect(ui->tbExpandLogBox, &QToolButton::toggled, this, &RobotWindow::ExpandLogBox);
 
 
-    // ------------- --------------
+    // ----------GScript----------
     connect(ui->pbSaveGcode, SIGNAL(clicked(bool)), this, SLOT(SaveProgram()));
-    connect(ui->pbSaveFunctionScripts, SIGNAL(clicked(bool)), this, SLOT(SaveProgram()));
 
 
     connect(ui->pbExecuteGcodes, SIGNAL(clicked(bool)), this, SLOT(ExecuteProgram()));
-	connect(ui->pteGcodeArea, SIGNAL(cursorPositionChanged()), this, SLOT(ExecuteCurrentLine()));
-
+    connect(ui->pteGcodeArea, SIGNAL(lineClicked(int, QString)), this, SLOT(ExecuteCurrentLine(int, QString)));
+    connect(ui->pteGcodeArea, SIGNAL(textChanged()), this, SLOT(OnEditorTextChanged()));
     // ------------ Jogging -----------
 
     //---------- End effector -----------
@@ -865,7 +1069,9 @@ void RobotWindow::InitEvents()
 
     //------------- Gcode Editor -------------
 	connect(ui->pbFormat, SIGNAL(clicked(bool)), this, SLOT(StandardFormatEditor()));
-    connect(ui->cbEditGcodeLock, SIGNAL(clicked(bool)), ui->pteGcodeArea, SLOT(setLockState(bool)));
+
+    connect(ui->cbEditGcodeLock, SIGNAL(stateChanged(int)), ui->pteGcodeArea, SLOT(setLockState(int)));
+    connect(ui->cbGScriptEditorZoom, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &RobotWindow::changeFontSize);
 
     //------------ Image Processing -----------
 
@@ -874,6 +1080,8 @@ void RobotWindow::InitEvents()
     connect(ui->pbExternalScriptOpen, SIGNAL(clicked(bool)), this, SLOT(OpenExternalScriptFolder()));
 
     connect(ui->cbSourceForImageProvider, SIGNAL(currentIndexChanged(int)), this, SLOT(SelectImageProviderOption(int)));
+
+//    SelectImageProviderOption(0);
 
     // ---- Setting ----
 
@@ -896,9 +1104,6 @@ void RobotWindow::InitEvents()
 
     connect(ui->pbExportDrawingGcodes, SIGNAL(clicked(bool)), DeltaDrawingExporter, SLOT(ExportGcodes()));
 
-    // ------ Ui to Detector ----
-    connect(ui->pbCapture, &QPushButton::clicked, CameraInstance, &Camera::GeneralCapture);
-    connect(ui->pbStartAcquisition, &QPushButton::clicked, this, &RobotWindow::StartContinuousCapture);
 }
 
 void RobotWindow::DisablePositionUpdatingEvents()
@@ -1084,7 +1289,12 @@ void RobotWindow::LoadGcodeFromFileToEditor(const QModelIndex &index)
         ui->pbExecuteGcodes->click();
     }
 
-    SaveProgram();
+    if (IsGcodeEditorTextChanged == true)
+    {
+        SaveProgram();
+    }
+
+
 
     QString filePath = explorerModel.filePath(index);
     LoadGcode(filePath);
@@ -1107,7 +1317,7 @@ void RobotWindow::LoadGcode(QString filePath)
 
         QFileInfo fileInfo(filePath);
         QString fileName = fileInfo.fileName();
-        ui->lbSelectedProgram->setText(fileName);
+        ui->twGcodeEditor->setTabText(0, fileName);
 
         ui->pbFormat->click();
     }
@@ -1210,7 +1420,7 @@ void RobotWindow::ChangeSelectedEditorThread(int id)
     {
         QStandardItemModel *model = qobject_cast<QStandardItemModel*>(ui->cbProgramThreadID->model());
         QStandardItem *item = model->item(id);
-        item->setText(QString::number(id));
+        item->setText(QString("program") + QString::number(id));
 
         AddScriptThread();
 
@@ -1284,24 +1494,25 @@ void RobotWindow::AddScriptThread()
     connect(GcodeScriptThread, SIGNAL(SendGcodeToDevice(QString, QString)), DeviceManagerInstance, SLOT(SendGcode(QString, QString)));
     connect(GcodeScriptThread, &GcodeScript::Finished, [=](){ ui->pbExecuteGcodes->setChecked(false);});
     connect(GcodeScriptThread, SIGNAL(SendGcodeToDevice(QString, QString)), this, SLOT(UpdateGcodeValueToDeviceUI(QString, QString)));
-    connect(GcodeScriptThread, SIGNAL(SaveVariable(QString, QString)), this, SLOT(UpdateVariable(QString, QString)));
+//    connect(GcodeScriptThread, SIGNAL(SaveVariable(QString, QString)), this, SLOT(UpdateVariable(QString, QString)));
 
 //    connect(GcodeScriptThread, SIGNAL(DeleteAllObjects()), this, SLOT(ClearObjectsToVariableTable()));
 //    connect(GcodeScriptThread, SIGNAL(DeleteObject1()), this, SLOT(DeleteFirstVariable()));
-//    connect(GcodeScriptThread, SIGNAL(DeleteAllObjects()), ImageProcessingThread->GetNode("TrackingObjectsNode"), SLOT(ClearOutput()));
-//    connect(GcodeScriptThread, SIGNAL(DeleteObject(int)), ImageProcessingThread->GetNode("TrackingObjectsNode"), SLOT(DeleteOutput(int)));
+//    connect(GcodeScriptThread, SIGNAL(DeleteAllObjects()), ImageProcessingInstance->GetNode("TrackingObjectsNode"), SLOT(ClearOutput()));
+//    connect(GcodeScriptThread, SIGNAL(DeleteObject(int)), ImageProcessingInstance->GetNode("TrackingObjectsNode"), SLOT(DeleteOutput(int)));
 
     connect(GcodeScriptThread, &GcodeScript::PauseCamera, [=](){ CameraTimer.stop();});
     connect(GcodeScriptThread, &GcodeScript::ResumeCamera, [=](){ CameraTimer.start(ui->leCaptureInterval->text().toInt());});
     connect(GcodeScriptThread, &GcodeScript::CaptureCamera, CameraInstance, &Camera::GeneralCapture);
     connect(GcodeScriptThread, &GcodeScript::CaptureAndDetectRequest, CameraInstance, &Camera::CaptureAndDetect);
 
+    connect(GcodeScriptThread, &GcodeScript::GetObjectsRequest, TrackingManagerInstance, &TrackingManager::GetObjectsInArea);
     connect(GcodeScriptThread, &GcodeScript::UpdateTrackingRequest, TrackingManagerInstance, &TrackingManager::UpdateTracking);
     connect(GcodeScriptThread, &GcodeScript::ChangeExternalVariable, TrackingManagerInstance, &TrackingManager::UpdateVariable);
     connect(GcodeScriptThread, &GcodeScript::AddObject, TrackingManagerInstance, &TrackingManager::AddObject);
     connect(GcodeScriptThread, SIGNAL(DeleteAllObjects(QString)), TrackingManagerInstance, SLOT(ClearObjects(QString)));
     connect(ConnectionManager, &SocketConnectionManager::objectUpdated, TrackingManagerInstance, &TrackingManager::AddObject);
-    connect(ConnectionManager, SIGNAL(blobUpdated(QStringList)), ImageProcessingThread->GetNode("GetObjectsNode"), SLOT(Input(QStringList)));
+    connect(ConnectionManager, SIGNAL(blobUpdated(QStringList)), ImageProcessingInstance->GetNode("GetObjectsNode"), SLOT(Input(QStringList)));
     connect(ConnectionManager, SIGNAL(gcodeReceived(QString)), GcodeScriptThread, SLOT(ReceivedGcode(QString)));
 
 
@@ -1344,24 +1555,33 @@ void RobotWindow::AddTrackingThread()
     tracking->moveToThread(trackingThread);
     connect(tracking->thread(), &QThread::finished, tracking, &QObject::deleteLater);
 
+
     connect(ui->pbSaveTrackingManager, &QPushButton::clicked, [=]()
     {
         int selectedEncoderID = ui->cbSelectedTracking->currentText().toInt();
 
-        TrackingManagerInstance->Trackings.at(selectedEncoderID)->VelocityVector = VariableManager::instance().getVariable(ui->leVelocityVector->text()).value<QVector3D>();
+        TrackingManagerInstance->Trackings.at(selectedEncoderID)->VelocityVector = VariableManager::instance().getVar(ui->leVelocityVector->text()).value<QVector3D>();
         TrackingManagerInstance->Trackings.at(selectedEncoderID)->VectorName = ui->leVectorName->text();
     });
     connect(ui->cbReverseEncoderValue, SIGNAL(clicked(bool)), tracking, SLOT(SetEncoderReverse(bool)));
 
     connect(tracking, SIGNAL(SendGcodeRequest(QString, QString)), DeviceManagerInstance, SLOT(SendGcode(QString, QString)));
-    connect(ImageProcessingThread, SIGNAL(mappedDetectedObjects(QList<ObjectInfo>, QString)), tracking, SLOT(UpdateTrackedObjects(QList<ObjectInfo>, QString)));
+    connect(tracking, SIGNAL(UpdateTrackingDone()), TrackingManagerInstance, SLOT(OnDoneUpdateTracking()));
+
+    connect(ImageProcessingInstance, SIGNAL(mappedDetectedObjects(QVector<ObjectInfo>, QString)), tracking, SLOT(UpdateTrackedObjects(QVector<ObjectInfo>, QString)));
+    connect(tracking, SIGNAL(TestPointUpdated(QVector3D)), this, SLOT(UpdateTestPoint(QVector3D)));
 
     trackingThread->start();
 
     tracking->ID = TrackingManagerInstance->Trackings.count();
     TrackingManagerInstance->Trackings.append(tracking);
 
+    if (tracking->ID > 0)
+    {
+        tracking->ListName = QString("#Objects") + QString::number(tracking->ID + 1);
+    }
 
+    VariableManager::instance().ObjectInfos.insert(tracking->ListName.mid(1), &tracking->TrackedObjects);
 }
 
 void RobotWindow::LoadTrackingThread()
@@ -1375,11 +1595,11 @@ void RobotWindow::LoadTrackingThread()
 
 void RobotWindow::LoadSettings()
 {
-//    LoadGeneralSettings(setting);
+    LoadGeneralSettings();
 //    LoadJoggingSettings(setting);
 //    Load2DSettings(setting);
 //    Load3DSettings(setting);
-//    LoadExternalDeviceSettings(setting);
+    LoadExternalDeviceSettings();
 //    LoadTerminalSettings(setting);
 //    LoadGcodeEditorSettings(setting);
     LoadObjectDetectorSetting();
@@ -1387,44 +1607,34 @@ void RobotWindow::LoadSettings()
 //    LoadPluginSetting(setting);
 }
 
-void RobotWindow::LoadGeneralSettings(QSettings *setting)
+void RobotWindow::LoadGeneralSettings()
 {
-//    UpdateVariable("X", "0");
-//    UpdateVariable("Y", "0");
-//    UpdateVariable("Z", "0");
-//    UpdateVariable("W", "0");
-//    UpdateVariable("U", "0");
-//    UpdateVariable("V", "0");
-//    UpdateVariable("F", "200");
-//    UpdateVariable("A", "1200");
-//    UpdateVariable("S", "12");
-//    UpdateVariable("E", "12");
-//    UpdateVariable("ConveyorSpeed", "0");
-//    UpdateVariable("ConveyorDirection", "0");
+    QStringList devices = QStringList() << "robot" << "conveyor" << "encoder" << "slider" << "device";
 
-//    UpdateVariable("O0.X", QString::number(NULL_NUMBER));
-//    UpdateVariable("O0.Y", QString::number(NULL_NUMBER));
-//    UpdateVariable("O0.A", QString::number(NULL_NUMBER));
-//    UpdateVariable("O0.W", QString::number(NULL_NUMBER));
-//    UpdateVariable("O0.L", QString::number(NULL_NUMBER));
+    for (int i = 0; i < devices.count(); i++)
+    {
+        QString device = devices.at(i);
+        
+        for (int id = 0; id < 20; id++)
+        {
+            QString prefix = ProjectName + "." + device + QString::number(id);
 
-//    QString comName = setting->value("ComName", "None").toString();
-//    int defaultBaudrate = setting->value("DefaultBaudrate", 115200).toInt();
-//    QString ip = setting->value("IP").toString();
-//    int port = setting->value("TCPPort").toInt();
-//    bool state = setting->value("RobotState", false).toBool();
+            if (VariableManager::instance().containsSubKey(prefix))
+            {
+                QString comName = VariableManager::instance().getVar(prefix + ".COM.Name", "NONE").toString();
+                QString state = VariableManager::instance().getVar(prefix + ".COM.State", false).toString();
 
-//    if (state == true)
-//    {
-
-//    }
-
-//    ui->lbComName->setText(comName);
-//    ui->lbBaudrate->setText(QString::number(defaultBaudrate));
-//    ui->cbRobotModel->setCurrentText(setting->value("RobotModel").toString());
-
-//    GcodeScripts.at(ui->cbProgramThreadID->currentIndex())->ProjectName = ProjectName;
-
+                if (state == "open" && comName != "NONE")
+                {
+                    emit ChangeDeviceState(device + QString::number(id), true, comName);
+                }
+            }
+            else
+            {
+                break;
+            }
+        }
+    }
 }
 
 void RobotWindow::LoadJoggingSettings(QSettings *setting)
@@ -1442,76 +1652,27 @@ void RobotWindow::Load3DSettings(QSettings *setting)
 
 }
 
-void RobotWindow::LoadExternalDeviceSettings(QSettings *setting)
+void RobotWindow::LoadExternalDeviceSettings()
 {
-    setting->beginGroup("ExternalDevice");
-
     //---- Conveyor -----
-    setting->beginGroup("Conveyor");
+    QString prefix = ProjectName + "." + ui->cbSelectedConveyor->currentText() + ".";
 
-    bool connectionState = setting->value("State", false).toBool();
-    QString comPort = setting->value("ComPort", "COM1").toString();
-    int baudrate = setting->value("Baudrate", 115200).toInt();
-
-    ui->cbConveyorMode->setCurrentText(setting->value("ControlMode").toString());
-    ui->cbConveyorValueType->setCurrentText(setting->value("MovingMode").toString());
-    ui->leConveyorXPosition->setText(setting->value("MovingValue").toString());
-
-    if (connectionState == true)
-    {
-
-    }
-
-    setting->endGroup();
+    ui->cbConveyorType->setCurrentIndex(VariableManager::instance().getVar(prefix + "ConveyorType").toInt());
+    ui->cbConveyorMode->setCurrentIndex(VariableManager::instance().getVar(prefix + "ConveyorMode").toInt());
+    ui->leConveyorXSpeed->setText(VariableManager::instance().getVar(prefix + "ConveyorSpeed").toString());
+    ui->leConveyorXPosition->setText(VariableManager::instance().getVar(prefix + "ConveyorPosition").toString());
+    ui->leConveyorXAbsolutePosition->setText(VariableManager::instance().getVar(prefix + "ConveyorAbsolutePosition").toString());
 
     //---- Encoder -----
 
-    setting->beginGroup("Encoder");
+    prefix = ProjectName + "." + ui->cbSelectedEncoder->currentText() + ".";
 
-    connectionState = setting->value("State", false).toBool();
-    comPort = setting->value("ComPort", "").toString();
-    baudrate = setting->value("Baudrate", 115200).toInt();
+    ui->cbEncoderType->setCurrentIndex(VariableManager::instance().getVar(prefix + "EncoderType").toInt());
+    Qt::CheckState checkState = static_cast<Qt::CheckState>(VariableManager::instance().getVar(prefix + "ConveyorLinkToEncoder").toInt());
+    ui->cbLinkToConveyorX->setCheckState(checkState);
+    ui->leEncoderInterval->setText(VariableManager::instance().getVar(prefix + "Interval").toString());
+    ui->leEncoderVelocity->setText(VariableManager::instance().getVar(prefix + "Velocity").toString());
 
-    if (connectionState == true && comPort != "")
-    {
-
-    }
-
-    setting->endGroup();
-
-    //---- Slider -----
-
-    setting->beginGroup("Slider");
-
-    connectionState = setting->value("State", false).toBool();
-    comPort = setting->value("ComPort", "COM1").toString();
-    baudrate = setting->value("Baudrate", 115200).toInt();
-
-    if (connectionState == true)
-    {
-
-    }
-
-    setting->endGroup();
-
-    //---- MCU -----
-
-    setting->beginGroup("MCU");
-
-    connectionState = setting->value("State", false).toBool();
-    comPort = setting->value("ComPort", "COM1").toString();
-    baudrate = setting->value("Baudrate", 115200).toInt();
-
-    if (connectionState == true)
-    {
-
-    }
-
-    setting->endGroup();
-
-    //-------------
-
-    setting->endGroup();
 }
 
 void RobotWindow::LoadTerminalSettings(QSettings *setting)
@@ -1528,10 +1689,12 @@ void RobotWindow::LoadGcodeEditorSettings(QSettings *setting)
 
 void RobotWindow::LoadObjectDetectorSetting()
 {
-    ui->gvImageViewer->LoadSetting();
+    QString prefix = ProjectName + "." + ui->cbSelectedDetecting->currentText() + ".";
 
-    QPointF calibPoint1 = VariableManager::instance().getVar("RealCalibPoint1").toPointF();
-    QPointF calibPoint2 = VariableManager::instance().getVar("RealCalibPoint2").toPointF();
+    ui->gvImageViewer->LoadSetting(prefix);
+
+    QPointF calibPoint1 = VariableManager::instance().getVar(prefix + "RealCalibPoint1").toPointF();
+    QPointF calibPoint2 = VariableManager::instance().getVar(prefix + "RealCalibPoint2").toPointF();
     ui->leRealityPoint1X->setText(QString::number(calibPoint1.x()));
     ui->leRealityPoint1Y->setText(QString::number(calibPoint1.y()));
     ui->leRealityPoint2X->setText(QString::number(calibPoint2.x()));
@@ -1540,30 +1703,61 @@ void RobotWindow::LoadObjectDetectorSetting()
     UpdateRealPositionOfCalibPoints();
 
     //------------
-//    setting->beginGroup("ObjectDetector");
 
-//    if (setting->value("WarpEnable", false).toBool() == true)
+    if (VariableManager::instance().getVar(prefix + "WarpEnable", false).toBool() == true)
+    {
+        ui->pbWarpTool->setChecked(true);
+    }
+    else
+    {
+        ui->pbWarpTool->setChecked(false);
+    }
+
+    if (VariableManager::instance().getVar(prefix + "CropEnable", false).toBool() == true)
+    {
+        ui->pbCropTool->setChecked(true);
+    }
+    else
+    {
+        ui->pbCropTool->setChecked(false);
+    }
+
+    EditImage(ui->pbWarpTool->isChecked(), ui->pbCropTool->isChecked());
+
+//    QString imageSource = VariableManager::instance().getVar(prefix + "ImageSource", ui->cbSourceForImageProvider->currentText()).toString();
+    QString imageSource = VariableManager::instance().getVar(prefix + "ImageSource", "source").toString();
+
+    int index = ui->cbSourceForImageProvider->findText(imageSource);
+    ui->cbSourceForImageProvider->setCurrentIndex(index);
+
+    ui->leCaptureInterval->setText(VariableManager::instance().getVar(prefix + "WebcamInterval", ui->leCaptureInterval->text()).toString());
+
+    ui->leImageWidth->setText(VariableManager::instance().getVar(prefix + "ResizeWidth", ui->leImageWidth->text()).toString());
+    ui->leImageHeight->setText(VariableManager::instance().getVar(prefix + "ResizeHeight", ui->leImageHeight->text()).toString());
+
+    emit GotResizePara(cv::Size(ui->leImageWidth->text().toInt(), ui->leImageHeight->text().toInt()));
+
+    bool IsCameraOpen = VariableManager::instance().getVar(prefix + "IsOpen", false).toBool();
+    int cameraID = VariableManager::instance().getVar(prefix + "CameraID", 0).toInt();
+
+//    if (IsCameraOpen == true)
 //    {
-//        ui->pbWarpTool->clicked(true);
-//        ui->pbWarpTool->setChecked(true);
+//        if (imageSource == "Industrial Camera")
+//        {
+//            DeltaXPlugin* camera = industrialCameraPlugin;
+//            QTimer::singleShot(2000, [camera, cameraID]() {
+//                emit camera->RequestConnect(cameraID);
+//            });
+//        }
+//        else if (imageSource == "Webcam")
+//        {
+//            QMetaObject::invokeMethod(CameraInstance, "OpenCamera", Qt::QueuedConnection, Q_ARG(int, cameraID));
+//        }
 //    }
-//    else
-//    {
-//        ui->pbWarpTool->clicked(false);
-//        ui->pbWarpTool->setChecked(false);
-//    }
-
-//    ui->cbSourceForImageProvider->setCurrentText(setting->value("ImageSource", ui->cbSourceForImageProvider->currentText()).toString());
 
 
-//    ui->leCaptureInterval->setText(setting->value("WebcamInterval", ui->leCaptureInterval->text()).toString());
 
-//    ui->leImageWidth->setText(setting->value("ResizeWidth", ui->leImageWidth->text()).toString());
-//    ui->leImageHeight->setText(setting->value("ResizeHeight", ui->leImageHeight->text()).toString());
-
-//    emit GotResizePara(cv::Size(ui->leImageWidth->text().toInt(), ui->leImageHeight->text().toInt()));
-
-//    Object& obj = ImageProcessingThread->GetNode("GetObjectsNode")->GetInputObject();
+//    Object& obj = ImageProcessingInstance->GetNode("GetObjectsNode")->GetInputObject();
 
 //    obj.Width.Image = setting->value("ObjectWidth", obj.Width.Image).toFloat();
 //    obj.Length.Image = setting->value("ObjectLength", obj.Length.Image).toFloat();
@@ -1603,10 +1797,10 @@ void RobotWindow::LoadObjectDetectorSetting()
 //    ui->leRealityPoint2X->setText(QString::number(calibPoint2.x()));
 //    ui->leRealityPoint2Y->setText(QString::number(calibPoint2.y()));
 
-//    ui->cbDetectingAlgorithm->setCurrentText(setting->value("Algorithm", ui->cbDetectingAlgorithm->currentText()).toString());
+    ui->cbDetectingAlgorithm->setCurrentText(VariableManager::instance().getVar(prefix + "DetectAlgorithm", ui->cbDetectingAlgorithm->currentText()).toString());
 
 //    ui->lePythonUrl->setText(setting->value("ExternalScriptUrl", ui->lePythonUrl->text()).toString());
-//    ui->cbImageSource->setCurrentText(setting->value("TransmissionImageSource", ui->cbImageSource->currentText()).toString());
+    ui->cbImageSource->setCurrentText(VariableManager::instance().getVar(prefix + "ImageSource", ui->cbImageSource->currentText()).toString());
 
 //    ui->leEdgeThreshold->setText(setting->value("EdgeThreshold", ui->leEdgeThreshold->text()).toString());
 //    ui->leCenterThreshold->setText(setting->value("CenterThreshold", ui->leCenterThreshold->text()).toString());
@@ -1714,7 +1908,7 @@ void RobotWindow::SaveObjectDetectorSetting(QSettings *setting)
 
 
     setting->setValue("WarpEnable", ui->pbWarpTool->isChecked());
-    setting->setValue("DisplayOutput", ui->cbImageOutput->currentText());
+//    setting->setValue("DisplayOutput", ui->cbImageOutput->currentText());
 
 
 //----------
@@ -1725,7 +1919,7 @@ void RobotWindow::SaveObjectDetectorSetting(QSettings *setting)
     setting->setValue("ResizeWidth", ui->leImageWidth->text());
     setting->setValue("ResizeHeight", ui->leImageHeight->text());
 
-    Object& obj = ImageProcessingThread->GetNode("GetObjectsNode")->GetInputObject();
+    Object& obj = ImageProcessingInstance->GetNode("GetObjectsNode")->GetInputObject();
 
     setting->setValue("ObjectWidth", obj.Width.Image);
     setting->setValue("ObjectLength", obj.Length.Image);
@@ -1744,7 +1938,8 @@ void RobotWindow::SaveObjectDetectorSetting(QSettings *setting)
     setting->setValue("MinObjectLength", ui->leMinLRec->text());
     setting->setValue("MaxObjectLength", ui->leMaxLRec->text());
 
-    setting->setValue("TrackingError", ui->leSimilarityThreshold->text());
+    setting->setValue("IoUThreshold", ui->leIoUThreshold->text());
+    setting->setValue("DistanceThreshold", ui->leDistanceThreshold->text());
 
     setting->setValue("RealCalibPoint1", QPointF(ui->leRealityPoint1X->text().toFloat(), ui->leRealityPoint1Y->text().toFloat()));
     setting->setValue("RealCalibPoint2", QPointF(ui->leRealityPoint2X->text().toFloat(), ui->leRealityPoint2Y->text().toFloat()));
@@ -1800,6 +1995,15 @@ void RobotWindow::InitDefaultValue()
     ChangeEncoderType(0);
 
     ui->pbSaveTrackingManager->click();
+
+    ui->twModule->setCurrentIndex(0);
+    ui->twDevices->setCurrentIndex(0);
+
+    IsGcodeEditorTextChanged = false;
+    baseFontSize = ui->cbGScriptEditorZoom->font().pointSize();
+
+    ChangeRobotModel(ui->cbRobotModel->currentIndex());
+    SelectImageProviderOption(0);
 }
 
 void RobotWindow::SetMainStackedWidgetAndPages(QStackedWidget *mainStack, QWidget *mainPage, QWidget *fullDisplayPage, QLayout *fullDisplayLayout)
@@ -1856,6 +2060,51 @@ QStringList RobotWindow::GetShareDisplayWidgetNames()
     return list;
 }
 
+void RobotWindow::ActivateButtonByName(const QString &buttonName)
+{
+    QPushButton *button = findChild<QPushButton*>(buttonName);
+    if (button) {
+        button->click();
+    }
+}
+
+void RobotWindow::ActiveWidgetByName(QString type, QString name, QString action)
+{
+    if (type == "QToolButton")
+    {
+        QToolButton *button = findChild<QToolButton*>(name);
+        if (button && action == "click")
+        {
+            button->click();
+        }
+    }
+    else if (type == "QRadioButton")
+    {
+        QRadioButton *button = findChild<QRadioButton*>(name);
+        if (button && action == "toggle")
+        {
+            button->toggle();
+        }
+    }
+    else if (type == "QLineEdit")
+    {
+        QLineEdit *lineEdit = findChild<QLineEdit*>(name);
+        if (lineEdit)
+        {
+            lineEdit->setText(action);
+            lineEdit->returnPressed();
+        }
+    }
+    else if (type == "QComboBox")
+    {
+        QComboBox *comboBox = findChild<QComboBox*>(name);
+        if (comboBox)
+        {
+            comboBox->setCurrentText(action);
+        }
+    }
+}
+
 void RobotWindow::GetDeviceInfo(QString json)
 {
     CloseLoadingPopup();
@@ -1866,9 +2115,13 @@ void RobotWindow::GetDeviceInfo(QString json)
     QString device = jsonObject.value("device").toString();
     QString com_name = jsonObject.value("com_name").toString();
     QString state = jsonObject.value("state").toString();
+    QString response = jsonObject.value("response").toString();
+    QString gcode = jsonObject.value("gcode").toString();
 
     UpdateVariable(device + QString::number(id) + "." + "COM.Name", com_name);
     UpdateVariable(device + QString::number(id) + "." + "COM.State", state);
+
+    QString prefix = ProjectName + "." + device + QString::number(id) + ".";
 
     if (device == "robot" && id == ui->cbSelectedRobot->currentIndex())
     {
@@ -1906,10 +2159,18 @@ void RobotWindow::GetDeviceInfo(QString json)
 
         ui->lbComName->setText(jsonObject.value("com_name").toString());
 
+        if (gcode.contains("connect"))
+        {
+            emit Send(DeviceManager::ROBOT, "Position");
+        }
 
+
+
+//        VariableManager::instance().updateVar(prefix + "Port", com_name);
+//        VariableManager::instance().updateVar(prefix + "State", state);
     }
 
-    else if (device == "device" && id == ui->cbSelectedDevice->currentText().toInt())
+    else if (device == "device" && id == getIDfromName(ui->cbSelectedDevice->currentText()))
     {
         if (state == "open")
         {
@@ -1924,7 +2185,7 @@ void RobotWindow::GetDeviceInfo(QString json)
 
     }
 
-    else if (device == "conveyor" && id == ui->cbSelectedConveyor->currentText().toInt())
+    else if (device == "conveyor" && id == getIDfromName(ui->cbSelectedConveyor->currentText()))
     {
         if (state == "open")
         {
@@ -1938,7 +2199,7 @@ void RobotWindow::GetDeviceInfo(QString json)
         ui->lbConveyorCOMName->setText(jsonObject.value("com_name").toString());
     }
 
-    else if (device == "encoder" && id == ui->cbSelectedEncoder->currentText().toInt())
+    else if (device == "encoder" && id == getIDfromName(ui->cbSelectedEncoder->currentText()))
     {
         if (state == "open")
         {
@@ -1953,9 +2214,9 @@ void RobotWindow::GetDeviceInfo(QString json)
     }
 }
 
-void RobotWindow::GetDeviceResponse(QString id, QString response)
+void RobotWindow::GetDeviceResponse(QString idName, QString response)
 {
-//    UpdateTermite(id, response, 1);
+    UpdateTermite(idName, response, 0);
 
     static QTime previousEncoderUITime = QTime::currentTime();
     int timeDiff = previousEncoderUITime.msecsTo(QTime::currentTime());
@@ -1963,23 +2224,19 @@ void RobotWindow::GetDeviceResponse(QString id, QString response)
         return;
     previousEncoderUITime = QTime::currentTime();
 
-    if (id.contains("device"))
+    if (idName.contains("device"))
     {
         DisplayTextFromExternalMCU(response);
     }
 
-    if (id.contains("conveyor"))
+    if (idName.contains("conveyor"))
     {
         if (response.contains("P"))
         {
-            static QTime previousConveyorUITime;
-            if (previousConveyorUITime.msecsTo(QTime::currentTime()) < 500)
-                return;
-
-            int id = response.mid(1,1).toInt() - 1;
+            int id = response.mid(1,1).toInt();
             float value = response.mid(3).toFloat();
 
-            if (ui->cbSelectedEncoder->currentText() == QString::number(id))
+            if (getIDfromName(ui->cbSelectedEncoder->currentText()) == id)
             {
                 ui->leEncoderCurrentPosition->setText(QString::number(value));
                 float velocity = (value - encoderLastValue) * 1000/ timeDiff;
@@ -1989,18 +2246,35 @@ void RobotWindow::GetDeviceResponse(QString id, QString response)
         }
     }
 
-    if (id.contains("encoder"))
+    if (idName.contains("encoder"))
     {
 
 
-        id = id.mid(7);
+        idName = idName.mid(7);
         if (response.contains("P"))
         {
-            int index = id.toInt();
-            QString value = response.mid(1);
+            int index = idName.toInt();
+            QString value;
+            if (response.contains(":"))
+            {
+                value = response.mid(3);
+            }
+            else
+            {
+                value = response.mid(1);
+            }
 
             if (ui->cbSelectedEncoder->currentIndex() == index)
             {
+                // ----- Scheduled Encoder ---------
+                if (abs(value.toFloat() - scheduledStartEncoderValue) > ui->leScheduledDistance->text().toFloat() && isScheduledEncoder == true)
+                {
+                    QMetaObject::invokeMethod(DeviceManagerInstance, "GetCommand", Qt::QueuedConnection, Q_ARG(QString, ui->leScheduledGcode->text()));
+                    isScheduledEncoder = false;
+                    ui->pbStartScheduledEncoder->setText("Start");
+                }
+                // ---------------------------------
+
                 ui->leEncoderCurrentPosition->setText(value);
                 float velocity = (value.toFloat() - encoderLastValue) * 1000 / timeDiff;
                 encoderLastValue = value.toFloat();
@@ -2037,13 +2311,13 @@ void RobotWindow::ConnectRobot()
     if (ui->tbAutoScanRobot->isChecked() == true)
     {
         OpenLoadingPopup();
-        emit ChangeDeviceState(DeviceManager::ROBOT, (ui->pbConnect->text() == "Connect")?true:false, "auto");
+        emit ChangeDeviceState(ui->cbSelectedRobot->currentText(), (ui->pbConnect->text() == "Connect")?true:false, "auto");
         return;
     }
 
     if (ui->pbConnect->text() != "Connect")
     {
-        emit ChangeDeviceState(DeviceManager::ROBOT, false, "");
+        emit ChangeDeviceState(ui->cbSelectedRobot->currentText(), false, "");
         return;
     }
 
@@ -2069,7 +2343,7 @@ void RobotWindow::ConnectRobot()
         QString baudrate = QInputDialog::getText(this, tr("Select Baudrate"), tr("Baudrate:"), QLineEdit::Normal, "115200", &ok2);
         if (ok2 && !baudrate.isEmpty())
         {
-            emit ChangeDeviceState(DeviceManager::ROBOT, (ui->pbConnect->text() == "Connect")?true:false, comName);
+            emit ChangeDeviceState(ui->cbSelectedRobot->currentText(), (ui->pbConnect->text() == "Connect")?true:false, comName);
         }
     }
 }
@@ -2077,9 +2351,13 @@ void RobotWindow::ConnectRobot()
 void RobotWindow::SelectImageProviderOption(int option)
 {
     ui->fImageSource->setHidden(true);
-    ui->fWebcamSource->setHidden(false);
+    ui->fWebcamSource->setHidden(true);
 
     QString text = ui->cbSourceForImageProvider->itemText(option);
+
+    QString prefix = ProjectName + "." + ui->cbSelectedDetecting->currentText() + ".";
+    UpdateVariable(prefix + "ImageSource", text);
+//    VariableManager::instance().updateVar(prefix + "ImageSource",text);
 
     if (text == "Webcam")
     {
@@ -2277,7 +2555,7 @@ void RobotWindow::ChangeSelectedRobot(int id)
     {
         QStandardItemModel *model = qobject_cast<QStandardItemModel*>(ui->cbSelectedRobot->model());
         QStandardItem *item = model->item(id);
-        item->setText(QString::number(id));
+        item->setText(QString("robot") + QString::number(id));
 
         RobotPara robotPara;
         RobotParameters.append(robotPara);
@@ -2321,13 +2599,17 @@ void RobotWindow::ChangeRobotDOF(int id)
 
 void RobotWindow::ChangeRobotModel(int id)
 {
-    if (id == 0 || id == 1)
+    DeviceManagerInstance->Robots.at(ui->cbSelectedRobot->currentIndex())->SetRobotModel(ui->cbRobotModel->currentText());
+
+    if (id == 0 || id == 1 || id == 2)
     {
+        ui->gbX1->setVisible(true);
         ui->gbOutput->setVisible(false);
         ui->gbInput->setVisible(false);
     }
-    else if (id == 2)
+    else if (id == 3)
     {
+        ui->gbX1->setVisible(false);
         ui->gbOutput->setVisible(true);
         ui->gbInput->setVisible(true);
     }
@@ -2358,21 +2640,31 @@ void RobotWindow::SaveProgram()
 
     }
     SaveGcodeFile(name, ui->pteGcodeArea->toPlainText());
+
+    IsGcodeEditorTextChanged = false;
 }
 
 void RobotWindow::ExecuteProgram()
 {
 //    SaveProgram();
 
+    // if (ui->leZ->text().toFloat() > -200)
+    // {
+    //     QMessageBox::information(
+    //             this,
+    //             tr("Required Action"),
+    //             tr("The robot must return to Home before running the program.")
+    //         );
+
+    //     ui->pbExecuteGcodes->setChecked(false);
+
+    //     return;
+    // }
+
     int threadId = ui->cbProgramThreadID->currentIndex();
     GcodeScript* currentScript = GcodeScripts.at(threadId);
 
     int startMode = GcodeScript::BEGIN;
-
-    if (ui->rbEditorStart->isChecked() != true)
-    {
-        startMode = GcodeScript::CURSOR_POSITION;
-    }
 
     if (ui->pbExecuteGcodes->isChecked() == false)
     {
@@ -2382,10 +2674,10 @@ void RobotWindow::ExecuteProgram()
     }
 
     currentScript->DefaultRobot = ui->cbSelectedRobot->currentText();
-    currentScript->DefaultConveyor = QString("conveyor") + ui->cbSelectedConveyor->currentText();
-    currentScript->DefaultEncoder = QString("encoder") + ui->cbSelectedEncoder->currentText();
-    currentScript->DefaultSlider = QString("slider") + ui->cbSelectedSlider->currentText();
-    currentScript->DefaultDevice = QString("device") + ui->cbSelectedDevice->currentText();
+    currentScript->DefaultConveyor = ui->cbSelectedConveyor->currentText();
+    currentScript->DefaultEncoder = ui->cbSelectedEncoder->currentText();
+    currentScript->DefaultSlider = ui->cbSelectedSlider->currentText();
+    currentScript->DefaultDevice = ui->cbSelectedDevice->currentText();
 
     QMetaObject::invokeMethod(currentScript, "ExecuteGcode", Qt::QueuedConnection, Q_ARG(QString, ui->pteGcodeArea->toPlainText()), Q_ARG(int, startMode), Q_ARG(QString, ui->pteScriptFunction->toPlainText()));
 
@@ -2430,7 +2722,7 @@ void RobotWindow::ExecuteSelectPrograms()
 
 }
 
-void RobotWindow::ExecuteCurrentLine()
+void RobotWindow::ExecuteCurrentLine(int linNumber, QString lineText)
 {
     int threadId = ui->cbProgramThreadID->currentIndex();
     GcodeScript* currentScript = GcodeScripts.at(threadId);
@@ -2440,15 +2732,7 @@ void RobotWindow::ExecuteCurrentLine()
 		return;
 	}
 
-	QTextCursor cursor;
-	QString line;
-
-	cursor = ui->pteGcodeArea->textCursor();
-	cursor.movePosition(QTextCursor::StartOfBlock);
-	cursor.movePosition(QTextCursor::EndOfBlock, QTextCursor::KeepAnchor);
-    line = cursor.selectedText();
-
-    QMetaObject::invokeMethod(currentScript, "ExecuteGcode", Qt::QueuedConnection, Q_ARG(QString, line), Q_ARG(int, GcodeScript::BEGIN), Q_ARG(QString, ui->pteScriptFunction->toPlainText()));
+    QMetaObject::invokeMethod(currentScript, "ExecuteGcode", Qt::QueuedConnection, Q_ARG(QString, lineText), Q_ARG(int, GcodeScript::BEGIN), Q_ARG(QString, ui->pteScriptFunction->toPlainText()));
 
 }
 
@@ -2464,6 +2748,34 @@ void RobotWindow::HighLineCurrentLine(int pos)
     textCursor.movePosition(QTextCursor::Down, QTextCursor::MoveAnchor, pos);
     ui->pteGcodeArea->setTextCursor(textCursor);
     ui->pteGcodeArea->highlightCurrentLine();
+}
+
+void RobotWindow::OnEditorTextChanged()
+{
+    if (ChangedCounter > 0)
+        IsGcodeEditorTextChanged = true;
+
+    ChangedCounter++;
+}
+
+void RobotWindow::changeFontSize(int index)
+{
+    // Lấy nội dung text từ QComboBox
+    QString text = ui->cbGScriptEditorZoom->currentText();
+
+    // Loại bỏ dấu % và chuyển thành số nguyên
+    text.chop(1);  // Xóa ký tự '%' cuối cùng
+    bool ok;
+    int percentage = text.toInt(&ok);
+
+    // Nếu chuyển đổi thành công, tính toán tỷ lệ phần trăm
+    if (ok) {
+        qreal scaleFactor = percentage / 100.0;
+        QTextCursor cursor = ui->pteGcodeArea->textCursor();
+        ui->pteGcodeArea->selectAll(); // Chọn toàn bộ văn bản
+        ui->pteGcodeArea->setFontPointSize(baseFontSize * scaleFactor); // Thay đổi kích thước chữ
+        ui->pteGcodeArea->setTextCursor(cursor); // Đặt lại con trỏ văn bản
+    }
 }
 
 void RobotWindow::UpdatePositionControl(RobotPara robotPara)
@@ -2659,10 +2971,17 @@ void RobotWindow::UpdateRobotPositionToUI()
 
     if (ui->cbEncoderType->currentText() == "Virtual Encoder")
     {
-        int selectedEncoderID = ui->cbSelectedEncoder->currentIndex();
+        int id = ui->cbSelectedEncoder->currentText().toInt();
+        if (TrackingManagerInstance->Trackings[id]->VirEncoder.IsActive() == true)
+        {
+            if (encoderUpdateTimer.elapsed() >= TrackingManagerInstance->Trackings[id]->VirEncoder.readInterval())
+            {
+                encoderUpdateTimer.restart();
 
-        ui->leEncoderCurrentPosition->setText(QString::number(TrackingManagerInstance->Trackings.at(selectedEncoderID)->VirEncoder.readPosition()));
-
+                int selectedEncoderID = ui->cbSelectedEncoder->currentIndex();
+                ui->leEncoderCurrentPosition->setText(QString::number(TrackingManagerInstance->Trackings.at(selectedEncoderID)->VirEncoder.readPosition()));
+            }
+        }
     }
 
     EnablePositionUpdatingEvents();
@@ -2840,7 +3159,7 @@ void RobotWindow::UpdateVariable(QString key, QVariant value)
 {
     VariableManager::instance().Prefix = ProjectName;
 
-    VariableManager::instance().addVar(key, value);
+    VariableManager::instance().updateVar(key, value);
 }
 
 void RobotWindow::UpdateVariables(QString cmd)
@@ -2890,14 +3209,42 @@ void RobotWindow::UpdateGcodeValueToDeviceUI(QString deviceName, QString gcode)
 
 void RobotWindow::ChangeConveyorType(int index)
 {
+    QString prefix = ProjectName + "." + ui->cbSelectedConveyor->currentText() + ".";
+    UpdateVariable(prefix + "ConveyorType", index);
+
     ui->fConveyorX->setHidden(true);
     ui->fConveyorXHub->setHidden(true);
     ui->fConveyorCustom->setHidden(true);
+
+    ui->leConveyorXAbsolutePosition->setEnabled(false);
+    ui->lbConveyorAbsolutePosition->setEnabled(false);
+    ui->lbUnitOfConveyorMoving2->setEnabled(false);
+    ui->pbMoveConveyorPosition->setEnabled(false);
+
+    ui->leConveyorXPosition->setEnabled(false);
+    ui->lbConveyorPosition->setEnabled(false);
+    ui->lbUnitOfConveyorMoving->setEnabled(false);
+    ui->pbMoveConveyorByDistance->setEnabled(false);
+
     if (index == 0)
     {
         ui->fConveyorX->setHidden(false);
+
+        ui->leConveyorXPosition->setEnabled(true);
+        ui->lbConveyorPosition->setEnabled(true);
+        ui->lbUnitOfConveyorMoving->setEnabled(true);
+        ui->pbMoveConveyorByDistance->setEnabled(true);
     }
     else if (index == 1)
+    {
+        ui->fConveyorX->setHidden(false);
+
+        ui->leConveyorXAbsolutePosition->setEnabled(true);
+        ui->lbConveyorAbsolutePosition->setEnabled(true);
+        ui->lbUnitOfConveyorMoving2->setEnabled(true);
+        ui->pbMoveConveyorPosition->setEnabled(true);
+    }
+    else if (index == 2)
     {
         ui->fConveyorXHub->setHidden(false);
     }
@@ -2927,7 +3274,7 @@ void RobotWindow::ConnectEncoder()
 {
     if (ui->pbConnectEncoder->text() != "Connect")
     {
-        emit ChangeDeviceState(DeviceManager::ENCODER, false, "");
+        emit ChangeDeviceState(ui->cbSelectedEncoder->currentText(), false, "");
         return;
     }
 
@@ -2953,7 +3300,7 @@ void RobotWindow::ConnectEncoder()
         QString baudrate = QInputDialog::getText(this, tr("Select Baudrate"), tr("Baudrate:"), QLineEdit::Normal, "115200", &ok2);
         if (ok2 && !baudrate.isEmpty())
         {
-            emit ChangeDeviceState(DeviceManager::ENCODER, (ui->pbConnectEncoder->text() == "Connect")?true:false, comName);
+            emit ChangeDeviceState(ui->cbSelectedEncoder->currentText(), (ui->pbConnectEncoder->text() == "Connect")?true:false, comName);
         }
     }
 }
@@ -2966,7 +3313,7 @@ void RobotWindow::ReadEncoder()
         QString cmd = QString("M422 C%1").arg(id + 1);
         emit Send(DeviceManager::CONVEYOR, cmd);
     }
-    if (ui->cbEncoderType->currentText() == "Encoder X")
+    if (ui->cbEncoderType->currentText() == "X Encoder")
     {
         emit Send(DeviceManager::ENCODER, "M317");
     }
@@ -2978,6 +3325,9 @@ void RobotWindow::ReadEncoder()
 
 void RobotWindow::SetEncoderAutoRead()
 {
+    QString prefix = ProjectName + "." + ui->cbSelectedEncoder->currentText() + ".";
+    UpdateVariable(prefix + "Interval", ui->leEncoderInterval->text());
+
     int interval = ui->leEncoderInterval->text().toInt();
     int id = ui->cbSelectedEncoder->currentText().toInt();
 
@@ -2986,19 +3336,21 @@ void RobotWindow::SetEncoderAutoRead()
         QString cmd = QString("M421 C%1:%2").arg(id + 1).arg(interval);
         emit Send(DeviceManager::CONVEYOR, cmd);
     }
-    if (ui->cbEncoderType->currentText() == "Encoder X")
+    if (ui->cbEncoderType->currentText() == "X Encoder")
     {
-        if (interval > 0)
-            emit Send(DeviceManager::ENCODER, QString("M317 T%1").arg(interval));
-        else
+        if (interval < 0)
+            interval = 0;
+        emit Send(DeviceManager::ENCODER, QString("M317 T%1").arg(interval));
+
+        if (interval == 0)
             emit Send(DeviceManager::ENCODER, QString("M317").arg(interval));
     }
     if (ui->cbEncoderType->currentText() == "Virtual Encoder")
     {
-        if (interval < 1000)
+        if (interval < 100 && interval > 0)
         {
-            interval = 1000;
-            ui->leEncoderInterval->setText(QString::number(1000));
+            interval = 100;
+            ui->leEncoderInterval->setText(QString::number(interval));
         }
 
         if (interval > 0)
@@ -3020,7 +3372,7 @@ void RobotWindow::ResetEncoderPosition()
         QString cmd = QString("M423 C%1").arg(name);
         emit Send(DeviceManager::CONVEYOR, cmd);
     }
-    if (ui->cbEncoderType->currentText() == "Encoder X")
+    if (ui->cbEncoderType->currentText() == "X Encoder")
     {
         emit Send(DeviceManager::ENCODER, "M316 0");
 //        ui->pbSetEncoderInterval->clicked(true);
@@ -3033,6 +3385,8 @@ void RobotWindow::ResetEncoderPosition()
 
 void RobotWindow::SetEncoderVelocity()
 {
+    QString prefix = ProjectName + "." + ui->cbSelectedEncoder->currentText() + ".";
+    UpdateVariable(prefix + "Velocity", ui->leEncoderVelocity->text());
     int selectedEncoderID = ui->cbSelectedEncoder->currentIndex();
 
     TrackingManagerInstance->Trackings[selectedEncoderID]->VirEncoder.setVelocity(ui->leEncoderVelocity->text().toFloat());
@@ -3088,13 +3442,20 @@ void RobotWindow::StartContinuousCapture(bool isCheck)
         ui->lbCameraState->setEnabled(true);
         CameraInstance->IsCameraPause = false;
         CameraTimer.start(ui->leCaptureInterval->text().toInt());
+
+        QString prefix = ProjectName + "." + ui->cbSelectedDetecting->currentText() + ".";
+        UpdateVariable(prefix + "IsOpen", true);
     }
     else
     {
         CameraInstance->IsCameraPause = true;
 
         CameraTimer.stop();
+
+        QString prefix = ProjectName + "." + ui->cbSelectedDetecting->currentText() + ".";
+        UpdateVariable(prefix + "IsOpen", false);
     }
+
 }
 
 void RobotWindow::ChangeOutputDisplay(QString outputName)
@@ -3120,7 +3481,7 @@ void RobotWindow::ChangeOutputDisplay(QString outputName)
 
 void RobotWindow::LoadWebcam()
 {
-    if (ui->pbLoadCamera->isChecked())
+    if (!ui->pbLoadCamera->isChecked() || ui->pbLoadCamera->text() == "Load Camera")
     {
         QStringList cameraItems;
 
@@ -3144,8 +3505,11 @@ void RobotWindow::LoadWebcam()
             CameraInstance->Width = ui->leImageWidth->text().toInt();
             CameraInstance->Height = ui->leImageHeight->text().toInt();
 
-            QMetaObject::invokeMethod(CameraInstance, "OpenCamera", Qt::QueuedConnection, Q_ARG(int, cameraID));
+            QMetaObject::invokeMethod(CameraInstance, "OpenCamera", Q_ARG(int, cameraID));
             OpenLoadingPopup();
+
+            QString prefix = ProjectName + "." + ui->cbSelectedDetecting->currentText() + ".";
+            UpdateVariable(prefix + "CameraID", cameraID);
         }
         else
         {
@@ -3229,16 +3593,14 @@ void RobotWindow::StopCapture()
     ui->pbStartAcquisition->setChecked(false);
 
     CameraTimer.stop();
-}
 
-void RobotWindow::RearrangeTaskFlow()
-{
-
+    QString prefix = ProjectName + "." + ui->cbSelectedDetecting->currentText() + ".";
+    UpdateVariable(prefix + "IsOpen", false);
 }
 
 void RobotWindow::OpenColorFilterWindow()
 {
-    ParameterPanel->SetImage(CameraInstance->CaptureImage);
+    ParameterPanel->SetImage(ImageProcessingInstance->GetNode("ColorFilterNode")->GetInputImage());
     ParameterPanel->show();
 }
 
@@ -3249,32 +3611,43 @@ void RobotWindow::SelectObjectDetectingAlgorithm(int algorithm)
     ui->fCirclePanel->setHidden(true);
 
     QString text = ui->cbDetectingAlgorithm->itemText(algorithm);
-    disconnect(ImageProcessingThread->GetNode("CropImageNode"), SIGNAL(HadOutput(cv::Mat)), ConnectionManager, SLOT(sendImageToImageClients(cv::Mat)));
+    disconnect(ImageProcessingInstance->GetNode("CropImageNode"), SIGNAL(HadOutput(cv::Mat)), ConnectionManager, SLOT(sendImageToImageClients(cv::Mat)));
+    disconnect(ImageProcessingInstance->GetNode("ColorFilterNode"), SIGNAL(HadOutput(cv::Mat)), ImageProcessingInstance->GetNode("GetObjectsNode"), SLOT(Input(cv::Mat)));
+
+    QString prefix = ProjectName + "." + ui->cbSelectedDetecting->currentText() + ".";
+    VariableManager::instance().updateVar(prefix + "DetectAlgorithm",text);
 
     if (text == "Find Blobs")
     {
         ui->fBlobPanel->setHidden(false);
+        connect(ImageProcessingInstance->GetNode("ColorFilterNode"), SIGNAL(HadOutput(cv::Mat)), ImageProcessingInstance->GetNode("GetObjectsNode"), SLOT(Input(cv::Mat)));
     }
     if (text == "Find Circles")
     {
         ui->fCirclePanel->setHidden(false);
+        connect(ImageProcessingInstance->GetNode("ColorFilterNode"), SIGNAL(HadOutput(cv::Mat)), ImageProcessingInstance->GetNode("GetObjectsNode"), SLOT(Input(cv::Mat)));
     }
     if (text == "External Script")
     {
         ui->fExternalScriptPanel->setHidden(false);
-        connect(ImageProcessingThread->GetNode("CropImageNode"), SIGNAL(HadOutput(cv::Mat)), ConnectionManager, SLOT(sendImageToImageClients(cv::Mat)));
+        connect(ImageProcessingInstance->GetNode("CropImageNode"), SIGNAL(HadOutput(cv::Mat)), ConnectionManager, SLOT(sendImageToImageClients(cv::Mat)));
     }
 }
 
 void RobotWindow::ConfigChessboard()
 {
-    ui->pbAreaTool->clicked(true);
-    ui->pbWarpTool->clicked(false);
+    if (ui->pbCropTool->isChecked() == true)
+        ui->pbCropTool->click();
+    if (ui->pbWarpTool->isChecked() == true)
+        ui->pbWarpTool->click();
+
     QMessageBox box;
 
     box.setText("Chessboard will be used to correct the distortion of the image due to perspective.");
 
+
     QPushButton* FindBt = box.addButton("Find new chessboard", QMessageBox::AcceptRole);
+
     QPushButton* EditBt = box.addButton("Edit chessboard", QMessageBox::RejectRole);
 
     int result = box.exec();
@@ -3291,10 +3664,10 @@ void RobotWindow::ConfigChessboard()
             QStringList paras = text.split("x");
             cv::Size size(paras[0].toInt(), paras[1].toInt());
 
-//            ImageProcessingThread->GetNode("FindChessboardNode")->Input(size);
+//            ImageProcessingInstance->GetNode("FindChessboardNode")->Input(size);
             emit GotChessboardSize(size);
 
-            emit GotResizeImage(ImageProcessingThread->GetNode("ResizeImageNode")->GetOutputImage());
+            emit GotResizeImage(ImageProcessingInstance->GetNode("ResizeImageNode")->GetOutputImage());
 
             if (ui->pbWarpTool->isChecked() == false)
             {
@@ -3305,6 +3678,8 @@ void RobotWindow::ConfigChessboard()
     }
     else // Edit
     {
+        ui->pbWarpTool->setChecked(true);
+        ui->pbWarpTool->click();
         ui->gvImageViewer->SelectQuadrangleTool();
     }
 }
@@ -3325,12 +3700,15 @@ void RobotWindow::GetCalibPointsFromImage(QPointF p1, QPointF p2)
     {
         QPointF offset(ox,oy);
         QTransform transform = PointTool::calculateTransform(QPointF(0, 0), offset, _p1, _p2);
+
         _p1 = transform.map(_p1);
         _p2 = transform.map(_p1);
     }
 
-    VariableManager::instance().updateVar("Point1", p1);
-    VariableManager::instance().updateVar("Point2", p2);
+    QString prefix = ProjectName + "." + ui->cbSelectedDetecting->currentText() + ".";
+
+    VariableManager::instance().updateVar(prefix + "Point1", p1);
+    VariableManager::instance().updateVar(prefix + "Point2", p2);
 
 
     QPolygonF poly;
@@ -3348,8 +3726,10 @@ void RobotWindow::UpdateRealPositionOfCalibPoints()
     QPointF rpoint1(ui->leRealityPoint1X->text().toFloat(), ui->leRealityPoint1Y->text().toFloat());
     QPointF rpoint2(ui->leRealityPoint2X->text().toFloat(), ui->leRealityPoint2Y->text().toFloat());
 
-    VariableManager::instance().updateVar("RealCalibPoint1", rpoint1);
-    VariableManager::instance().updateVar("RealCalibPoint2", rpoint2);
+    QString prefix = ProjectName + "." + ui->cbSelectedDetecting->currentText() + ".";
+
+    VariableManager::instance().updateVar(prefix + "RealCalibPoint1", rpoint1);
+    VariableManager::instance().updateVar(prefix + "RealCalibPoint2", rpoint2);
 
     if (ui->cbCalibType->currentIndex() == 1)
     {
@@ -3358,6 +3738,7 @@ void RobotWindow::UpdateRealPositionOfCalibPoints()
 
         QPointF offset(ox,oy);
         QTransform transform = PointTool::calculateTransform(QPointF(0, 0), offset, rpoint1, rpoint2);
+
         rpoint1 = transform.map(rpoint1);
         rpoint2 = transform.map(rpoint2);
     }
@@ -3386,7 +3767,6 @@ void RobotWindow::GetObjectSizeFromImage(QRectF rect)
 
     if (rect.height() < rect.width())
     {
-
         length = rect.height();
         width = rect.width();
     }
@@ -3406,7 +3786,7 @@ void RobotWindow::GetMappingPointFromImage(QPointF point)
 {
     point.setY(0 - point.y());
 
-    QMatrix matrix = ImageProcessingThread->GetNode("VisibleObjectsNode")->GetMatrix();
+    QMatrix matrix = ImageProcessingInstance->GetNode("VisibleObjectsNode")->GetMatrix();
     QPointF realPoint = matrix.map(point);
 
     //Làm tròn realPoint đến 2 chữ số thập phân
@@ -3417,6 +3797,10 @@ void RobotWindow::GetMappingPointFromImage(QPointF point)
     UpdateVariable("#Test_Point.Y", realPoint.y());
 
     ui->gvImageViewer->SetMappingPointTitle(QString("X=%1,Y=%2").arg(realPoint.x()).arg(realPoint.y()));
+
+    QString text = QString("%1, %2, %3").arg(QString::number(realPoint.x())).arg(QString::number(realPoint.y())).arg(QString::number(0));
+    QClipboard *clipboard = QApplication::clipboard();
+    clipboard->setText(text);
 }
 
 void RobotWindow::GetNewImageSize()
@@ -3427,7 +3811,7 @@ void RobotWindow::GetNewImageSize()
     {
         int newW = ui->leImageWidth->text().toInt();
 
-        QSize imageSize = ImageProcessingThread->GetNode("GetImageNode")->GetImageSize();
+        QSize imageSize = ImageProcessingInstance->GetNode("GetImageNode")->GetImageSize();
 
         int newH = ImageTool::Map(newW, imageSize.width(), imageSize.height());
 
@@ -3439,7 +3823,7 @@ void RobotWindow::GetNewImageSize()
     {
         int newH = ui->leImageHeight->text().toInt();
 
-        QSize imageSize = ImageProcessingThread->GetNode("GetImageNode")->GetImageSize();
+        QSize imageSize = ImageProcessingInstance->GetNode("GetImageNode")->GetImageSize();
 
         int newW = ImageTool::Map(newH, imageSize.height(), imageSize.width());
 
@@ -3452,76 +3836,136 @@ void RobotWindow::GetNewImageSize()
 void RobotWindow::UnselectToolButtons()
 {
     ui->pbCalibPointTool->setChecked(false);
-    ui->pbAreaTool->setChecked(false);
     ui->pbFindChessboardTool->setChecked(false);
     ui->pbGetSizeTool->setChecked(false);
     ui->pbMappingPointTool->setChecked(false);
 }
 
-void RobotWindow::UpdateObjectsToImageViewer(QList<Object> objects)
-{
-    QList<QPolygonF> polys;
-    QMap<QString, QPointF> texts;
-    int counter = 0;
+//void RobotWindow::UpdateObjectsToImageViewer(QList<Object> objects)
+//{
+//    QList<QPolygonF> polys;
+//    QMap<QString, QPointF> texts;
 
-    foreach(Object obj, objects)
-    {
-        counter++;
-        if (counter > 100)
-            return;
-        polys.append(obj.ToPolygon());
-//        texts.insert(QString("X=%1\nY=%2\nA=%3").arg(obj.X.Real, 0, 'f', 2).arg(obj.Y.Real, 0, 'f', 2).arg(obj.Angle.Real, 0, 'f', 2), QPointF(obj.X.Image, obj.Y.Image));
-        texts.insert(QString::number(counter - 1), QPointF(obj.X.Image, obj.Y.Image));
-    }
+//    try
+//    {
+//        int counter = 0;
 
-    ui->gvImageViewer->DrawPolygons(polys);
-    ui->gvImageViewer->DrawTexts(texts);
-}
+//        foreach(Object obj, objects)
+//        {
+//            counter++;
+//            if (counter > 100)
+//                return;
+//            polys.append(obj.ToPolygon());
+//            texts.insert(QString::number(counter - 1), QPointF(obj.X.Image, obj.Y.Image));
+//        }
+//    }
+//    catch(const std::exception& e)
+//    {
+//        std::cerr << e.what() << '\n';
+//    }
+
+//    ui->gvImageViewer->DrawPolygons(polys);
+//    ui->gvImageViewer->DrawTexts(texts);
+//}
+
+//void RobotWindow::UpdateObjectsToImageViewer(QList<QSharedPointer<Object>> objects)
+//{
+//    QList<QPolygonF> polys;
+//    QMap<QString, QPointF> texts;
+
+//    try
+//    {
+//        int counter = 0;
+
+//        foreach(const QSharedPointer<Object>& obj, objects) {
+//            counter++;
+//            if (counter > 100)
+//                return;
+//            polys.append(obj->ToPolygon());
+//            texts.insert(QString::number(counter - 1), QPointF(obj->X.Image, obj->Y.Image));
+//        }
+//    }
+//    catch(const std::exception& e)
+//    {
+//        std::cerr << e.what() << '\n';
+//    }
+
+//    ui->gvImageViewer->DrawPolygons(polys);
+//    ui->gvImageViewer->DrawTexts(texts);
+//}
+
+//void RobotWindow::UpdateObjectsToImageViewer(QList<QPolygonF> polys)
+//{
+//    QList<QPolygonF> pls;
+//    QMap<QString, QPointF> texts;
+
+//    try
+//    {
+//        int counter = 0;
+
+//        foreach(QPolygonF poly, polys) {
+//            counter++;
+//            if (counter > 100)
+//                return;
+//            pls.append(poly);
+//            // Tìm tâm của poly
+//            QPointF center = PointTool::GetCenterOfPolygon(poly);
+//            texts.insert(QString::number(counter - 1), QPointF(center.x(), center.y()));
+//        }
+//    }
+//    catch(const std::exception& e)
+//    {
+//        std::cerr << e.what() << '\n';
+//    }
+
+//    ui->gvImageViewer->DrawPolygons(pls);
+//    ui->gvImageViewer->DrawTexts(texts);
+//}
 
 void RobotWindow::EditImage(bool isWarp, bool isCropTool)
 {
-    TaskNode* cropImageNode = ImageProcessingThread->GetNode("CropImageNode");
-    cropImageNode->ClearInputConnections();
+    QString prefix = ProjectName + "." + ui->cbSelectedDetecting->currentText() + ".";
 
-    TaskNode* displayImageNode = ImageProcessingThread->GetNode("DisplayImageNode");
-    displayImageNode->ClearInputConnections();
+    VariableManager::instance().updateVar(prefix + "WarpEnable", isWarp);
+    VariableManager::instance().updateVar(prefix + "CropEnable", isCropTool);
 
-    if (isWarp == false && isCropTool == false)
+    TaskNode* cropImageNode = ImageProcessingInstance->GetNode("CropImageNode");
+    TaskNode* warpImageNode = ImageProcessingInstance->GetNode("WarpImageNode");
+
+    if (isWarp == false && isCropTool == true)
     {
-        cropImageNode->SetPreviousNode(ImageProcessingThread->GetNode("ResizeImageNode"));
-        displayImageNode->SetPreviousNode(ImageProcessingThread->GetNode("CropImageNode"));
+        warpImageNode->IsPass = true;
+        cropImageNode->IsPass = false;
 
         ui->gvImageViewer->SelectNoTool();
 
         ui->gvImageViewer->TurnOnObjects(true);
     }
-    else if (isWarp == true && isCropTool == false)
+    else if (isWarp == true && isCropTool == true)
     {
-        cropImageNode->SetPreviousNode(ImageProcessingThread->GetNode("WarpImageNode"));
-        displayImageNode->SetPreviousNode(ImageProcessingThread->GetNode("CropImageNode"));
+        warpImageNode->IsPass = false;
+        cropImageNode->IsPass = false;
 
         ui->gvImageViewer->SelectNoTool();
 
         ui->gvImageViewer->TurnOnObjects(true);
     }
-    else if (isWarp == false && isCropTool == true)
+    else if (isWarp == false && isCropTool == false)
     {
-        cropImageNode->SetPreviousNode(ImageProcessingThread->GetNode("ResizeImageNode"));
-        displayImageNode->SetPreviousNode(ImageProcessingThread->GetNode("ResizeImageNode"));
+        warpImageNode->IsPass = true;
+        cropImageNode->IsPass = true;
 
         UnselectToolButtons();
-        ui->pbAreaTool->setChecked(true);
         ui->gvImageViewer->SelectAreaTool();
 
         ui->gvImageViewer->TurnOnObjects(false);
     }
-    else if (isWarp == true && isCropTool == true)
+    else if (isWarp == true && isCropTool == false)
     {
-        cropImageNode->SetPreviousNode(ImageProcessingThread->GetNode("WarpImageNode"));
-        displayImageNode->SetPreviousNode(ImageProcessingThread->GetNode("WarpImageNode"));
+        warpImageNode->IsPass = false;
+        cropImageNode->IsPass = true;
 
         UnselectToolButtons();
-        ui->pbAreaTool->setChecked(true);
         ui->gvImageViewer->SelectAreaTool();
 
         ui->gvImageViewer->TurnOnObjects(false);
@@ -3577,7 +4021,7 @@ void RobotWindow::ConnectConveyor()
 {
     if (ui->pbConveyorConnect->text() != "Connect")
     {
-        emit ChangeDeviceState(DeviceManager::CONVEYOR, false, "");
+        emit ChangeDeviceState(ui->cbSelectedConveyor->currentText(), false, "");
         return;
     }
 
@@ -3603,19 +4047,29 @@ void RobotWindow::ConnectConveyor()
         QString baudrate = QInputDialog::getText(this, tr("Select Baudrate"), tr("Baudrate:"), QLineEdit::Normal, "115200", &ok2);
         if (ok2 && !baudrate.isEmpty())
         {
-            emit ChangeDeviceState(DeviceManager::CONVEYOR, (ui->pbConveyorConnect->text() == "Connect")?true:false, comName);
+            emit ChangeDeviceState(ui->cbSelectedConveyor->currentText(), (ui->pbConveyorConnect->text() == "Connect")?true:false, comName);
         }
     }
 }
 
 void RobotWindow::SetConveyorMode(int mode)
 {
-    emit Send(DeviceManager::CONVEYOR, QString("M310 ") + QString::number(mode));
+    QString prefix = ProjectName + "." + ui->cbSelectedConveyor->currentText() + ".";
+    UpdateVariable(prefix + "ConveyorMode", mode);
+
+    if (ui->cbConveyorType->currentText().contains("Desktop Conveyor"))
+    {
+        if (mode > 0)
+            mode = 1;
+        emit Send(DeviceManager::CONVEYOR, QString("M310 ") + QString::number(mode));
+    }
+    else
+        emit Send(DeviceManager::CONVEYOR, QString("M310 ") + QString::number(3 - mode));
 }
 
 void RobotWindow::SetConveyorMovingMode(int mode)
 {
-    if (ui->cbConveyorType->currentText() == "Conveyor X")
+    if (ui->cbConveyorType->currentText() == "Desktop Conveyor")
     {
         if (mode == 0)
         {
@@ -3648,13 +4102,33 @@ void RobotWindow::SetConveyorMovingMode(int mode)
 
 void RobotWindow::SetConveyorSpeed()
 {
-    if (ui->cbConveyorType->currentText() == "Conveyor X")
+    QString prefix = ProjectName + "." + ui->cbSelectedConveyor->currentText() + ".";
+    UpdateVariable(prefix + "ConveyorSpeed", ui->leConveyorXSpeed->text());
+
+    if (ui->cbLinkToConveyorX->isChecked() == true && ui->cbEncoderType->currentText() == "Virtual Encoder")
     {
-        if (ui->cbConveyorValueType->currentIndex() == 0)
+        ui->leEncoderVelocity->setText(ui->leConveyorXSpeed->text());
+        ui->pbSetEncoderVelocity->click();
+    }
+
+    if (ui->cbConveyorType->currentText() == "Desktop Conveyor")
+    {
+        if (ui->cbConveyorMode->currentIndex() == 1)
         {
             emit Send(DeviceManager::CONVEYOR, QString("M311 ") + ui->leConveyorXSpeed->text());
         }
-        else
+        else if (ui->cbConveyorMode->currentIndex() == 2)
+        {
+            emit Send(DeviceManager::CONVEYOR, QString("M313 ") + ui->leConveyorXSpeed->text());
+        }
+    }
+    else if (ui->cbConveyorType->currentText() == "X Conveyor")
+    {
+        if (ui->cbConveyorMode->currentIndex() == 1)
+        {
+            emit Send(DeviceManager::CONVEYOR, QString("M311 ") + ui->leConveyorXSpeed->text());
+        }
+        else if (ui->cbConveyorMode->currentIndex() == 2)
         {
             emit Send(DeviceManager::CONVEYOR, QString("M313 ") + ui->leConveyorXSpeed->text());
         }
@@ -3712,9 +4186,27 @@ void RobotWindow::SetConveyorSpeed()
     }
 }
 
+void RobotWindow::StopConveyor()
+{
+    ui->leConveyorXSpeed->setText("0");
+    SetConveyorSpeed();
+}
+
 void RobotWindow::SetConveyorPosition()
 {
-    if (ui->cbConveyorType->currentText() == "Conveyor X")
+    QString prefix = ProjectName + "." + ui->cbSelectedConveyor->currentText() + ".";
+    UpdateVariable(prefix + "ConveyorPosition", ui->leConveyorXPosition->text());
+
+    if (ui->cbLinkToConveyorX->isChecked() == true && ui->cbEncoderType->currentText() == "Virtual Encoder")
+    {
+        float moving = ui->leConveyorXPosition->text().toFloat();
+        float currentPos = ui->leEncoderCurrentPosition->text().toFloat() + moving;
+        ui->leEncoderCurrentPosition->setText(QString::number(currentPos));
+
+        TrackingManagerInstance->Trackings.at(0)->VirEncoder.setPosition(currentPos);
+    }
+
+    if (ui->cbConveyorType->currentText() == "Desktop Conveyor")
     {
         emit Send(DeviceManager::CONVEYOR, QString("M312 ") + ui->leConveyorXPosition->text());
     }
@@ -3740,6 +4232,47 @@ void RobotWindow::SetConveyorPosition()
     }
 }
 
+void RobotWindow::SetConveyorAbsolutePosition()
+{
+    QString prefix = ProjectName + "." + ui->cbSelectedConveyor->currentText() + ".";
+    UpdateVariable(prefix + "ConveyorAbsolutePosition", ui->leConveyorXAbsolutePosition->text());
+
+    if (ui->cbConveyorType->currentText() == "X Conveyor")
+    {
+        emit Send(DeviceManager::CONVEYOR, QString("M312 ") + ui->leConveyorXAbsolutePosition->text());
+    }
+}
+
+void RobotWindow::TriggedCustomConveyor()
+{
+    QObject *senderObj = sender(); // Lấy đối tượng kích hoạt
+
+    if (qobject_cast<QPushButton*>(senderObj) == ui->pbStartCustomConveyor1 || qobject_cast<QLineEdit*>(senderObj) == ui->pbStartCustomConveyor1Command)
+    {
+        QMetaObject::invokeMethod(DeviceManagerInstance, "GetCommand", Qt::QueuedConnection, Q_ARG(QString, ui->pbStartCustomConveyor1Command->text()));
+
+    }
+    else if (qobject_cast<QPushButton*>(senderObj) == ui->pbStartCustomConveyor2 || qobject_cast<QLineEdit*>(senderObj) == ui->pbStartCustomConveyor2Command)
+    {
+        QMetaObject::invokeMethod(DeviceManagerInstance, "GetCommand", Qt::QueuedConnection, Q_ARG(QString, ui->pbStartCustomConveyor2Command->text()));
+    }
+    else if (qobject_cast<QPushButton*>(senderObj) == ui->pbStartCustomConveyor3 || qobject_cast<QLineEdit*>(senderObj) == ui->pbStartCustomConveyor3Command)
+    {
+        QMetaObject::invokeMethod(DeviceManagerInstance, "GetCommand", Qt::QueuedConnection, Q_ARG(QString, ui->pbStartCustomConveyor3Command->text()));
+    }
+    if (qobject_cast<QPushButton*>(senderObj) == ui->pbStopCustomConveyor1 || qobject_cast<QLineEdit*>(senderObj) == ui->pbStopCustomConveyor1Command)
+    {
+        QMetaObject::invokeMethod(DeviceManagerInstance, "GetCommand", Qt::QueuedConnection, Q_ARG(QString, ui->pbStopCustomConveyor1Command->text()));
+
+    } else if (qobject_cast<QPushButton*>(senderObj) == ui->pbStopCustomConveyor2 || qobject_cast<QLineEdit*>(senderObj) == ui->pbStopCustomConveyor2Command)
+    {
+        QMetaObject::invokeMethod(DeviceManagerInstance, "GetCommand", Qt::QueuedConnection, Q_ARG(QString, ui->pbStopCustomConveyor2Command->text()));
+    } else if (qobject_cast<QPushButton*>(senderObj) == ui->pbStopCustomConveyor3 || qobject_cast<QLineEdit*>(senderObj) == ui->pbStopCustomConveyor3Command)
+    {
+        QMetaObject::invokeMethod(DeviceManagerInstance, "GetCommand", Qt::QueuedConnection, Q_ARG(QString, ui->pbStopCustomConveyor1Command->text()));
+    }
+}
+
 void RobotWindow::ProcessShortcutKey()
 {
 
@@ -3747,30 +4280,59 @@ void RobotWindow::ProcessShortcutKey()
 
 void RobotWindow::ChangeEncoderType(int index)
 {
+    QString prefix = ProjectName + "." + ui->cbSelectedEncoder->currentText() + ".";
+    UpdateVariable(prefix + "EncoderType", index);
+
     ui->pbConnectEncoder->setHidden(true);
     ui->pbSetEncoderVelocity->setHidden(true);
     ui->cbLinkToConveyorX->setHidden(true);
-    ui->cbConveyorForVirtualEncoder->setHidden(true);
+    ui->cbConveyorLinkToEncoder->setHidden(true);
     int selectedEncoderID = ui->cbSelectedEncoder->currentIndex();
-    if (ui->cbEncoderType->currentText() == "Encoder X")
+    if (ui->cbEncoderType->currentText() == "X Encoder")
     {
+        ui->cbLinkToConveyorX->setHidden(false);
+        ui->cbConveyorLinkToEncoder->setHidden(false);
         ui->pbConnectEncoder->setHidden(false);
         ui->pbSetEncoderVelocity->setHidden(true);
+
+        TrackingManagerInstance->Trackings.at(selectedEncoderID)->EncoderType = "X Encoder";
         TrackingManagerInstance->Trackings.at(selectedEncoderID)->VirEncoder.stop();
     }
     else if (ui->cbEncoderType->currentText() == "Sub Encoder")
     {
         ui->pbConnectEncoder->setHidden(false);
         ui->pbSetEncoderVelocity->setHidden(true);
+        TrackingManagerInstance->Trackings.at(selectedEncoderID)->EncoderType = "Sub Encoder";
         TrackingManagerInstance->Trackings.at(selectedEncoderID)->VirEncoder.stop();
     }
     else if (ui->cbEncoderType->currentText() == "Virtual Encoder")
     {
-
+        TrackingManagerInstance->Trackings.at(selectedEncoderID)->EncoderType = "Virtual Encoder";
         TrackingManagerInstance->Trackings.at(selectedEncoderID)->VirEncoder.start();
         ui->cbLinkToConveyorX->setHidden(false);
-        ui->cbConveyorForVirtualEncoder->setHidden(false);
+        ui->cbConveyorLinkToEncoder->setHidden(false);
         ui->pbSetEncoderVelocity->setHidden(false);
+    }
+}
+
+void RobotWindow::ChangeConveyorLinkToEncoder(int state)
+{
+    QString prefix = ProjectName + "." + ui->cbSelectedEncoder->currentText() + ".";
+    UpdateVariable(prefix + "ConveyorLinkToEncoder", state);
+
+    if(state == Qt::Checked)
+    {
+        int conid = getIDfromName(ui->cbConveyorLinkToEncoder->currentText());
+        int enid = getIDfromName(ui->cbConveyorLinkToEncoder->currentText());
+
+        DeviceManagerInstance->Encoders.at(enid)->LinkedConveyor = conid;
+        ui->pbConnectEncoder->setHidden(true);
+    } else
+    {
+        int enid = getIDfromName(ui->cbConveyorLinkToEncoder->currentText());
+
+        DeviceManagerInstance->Encoders.at(enid)->LinkedConveyor = -1;
+        ui->pbConnectEncoder->setHidden(false);
     }
 }
 
@@ -3785,7 +4347,7 @@ void RobotWindow::AddDisplayObjectFromExternalScript(QString msg)
 
     QStringList objectInfos = msg.split(";");
 
-    QList<Object> Objects;
+    QVector<Object> Objects;
 
     foreach(QString objectInfo, objectInfos)
     {
@@ -3807,8 +4369,6 @@ void RobotWindow::AddDisplayObjectFromExternalScript(QString msg)
             object.Type = paras[0];
 
             object.ToPoints();
-
-//            object->Offset = Encoder1->CalculateOffset(Encoder1->GetMeasuredDistance());
 
             Objects.append(object);
 
@@ -3884,12 +4444,18 @@ void RobotWindow::CalculatePointMatrixTool()
 
     PointMatrix = PointTool::calculateMatrix(source, dest);
 
-    qreal m11 = PointMatrix.m11();  // x scaling
-    qreal m12 = PointMatrix.m12();  // y rotation
-    qreal m21 = PointMatrix.m21();  // x rotation
-    qreal m22 = PointMatrix.m22();  // y scaling
-    qreal dx = PointMatrix.dx();    // x translation
-    qreal dy = PointMatrix.dy();    // y translation
+    QTransform qtTransform(
+        PointMatrix.at<double>(0, 0), PointMatrix.at<double>(0, 1), PointMatrix.at<double>(0, 2),
+        PointMatrix.at<double>(1, 0), PointMatrix.at<double>(1, 1), PointMatrix.at<double>(1, 2),
+        PointMatrix.at<double>(2, 0), PointMatrix.at<double>(2, 1), PointMatrix.at<double>(2, 2)
+    );
+
+    qreal m11 = qtTransform.m11();  // x scaling
+    qreal m12 = qtTransform.m12();  // y rotation
+    qreal m21 = qtTransform.m21();  // x rotation
+    qreal m22 = qtTransform.m22();  // y scaling
+    qreal dx = qtTransform.dx();    // x translation
+    qreal dy = qtTransform.dy();    // y translation
 
     QString matrixString = QString("m11: %1, m12: %2\nm21: %3, m22: %4\ndx: %5, dy: %6")
                              .arg(m11).arg(m12).arg(m21).arg(m22).arg(dx).arg(dy);
@@ -3929,8 +4495,37 @@ void RobotWindow::CalculateVector()
     ui->leVectorZ->setText(QString::number(CalVector.z()));
 }
 
+void RobotWindow::UpdateTestPoint(QVector3D testPoint)
+{
+    if (ui->tbAutoMove->isChecked() == false)
+        return;
+
+    QVector3D currentTestPoint(ui->leTestTrackingPointX->text().toFloat(), ui->leTestTrackingPointY->text().toFloat(), ui->leTestTrackingPointZ->text().toFloat());
+    currentTestPoint += testPoint;
+
+    ui->leTestTrackingPointX->setText(QString::number(currentTestPoint.x()));
+    ui->leTestTrackingPointY->setText(QString::number(currentTestPoint.y()));
+    ui->leTestTrackingPointZ->setText(QString::number(currentTestPoint.z()));
+}
+
 void RobotWindow::ProcessProximitySensorValue(int value)
 {
+
+}
+
+void RobotWindow::StartScheduledEncoder()
+{
+    if (ui->pbStartScheduledEncoder->text() == "Start")
+    {
+        scheduledStartEncoderValue = ui->leEncoderCurrentPosition->text().toFloat();
+        isScheduledEncoder = true;
+        ui->pbStartScheduledEncoder->setText("Stop");
+    }
+    else
+    {
+        isScheduledEncoder = false;
+        ui->pbStartScheduledEncoder->setText("Start");
+    }
 
 }
 
@@ -3938,7 +4533,7 @@ void RobotWindow::ConnectSliding()
 {
     if (ui->pbSlidingConnect->text() != "Connect")
     {
-        emit ChangeDeviceState(DeviceManager::SLIDER, false, "");
+        emit ChangeDeviceState(ui->cbSelectedSlider->currentText(), false, "");
         return;
     }
 
@@ -3964,7 +4559,7 @@ void RobotWindow::ConnectSliding()
         QString baudrate = QInputDialog::getText(this, tr("Select Baudrate"), tr("Baudrate:"), QLineEdit::Normal, "115200", &ok2);
         if (ok2 && !baudrate.isEmpty())
         {
-            emit ChangeDeviceState(DeviceManager::SLIDER, (ui->pbSlidingConnect->text() == "Connect")?true:false, comName);
+            emit ChangeDeviceState(ui->cbSelectedSlider->currentText(), (ui->pbSlidingConnect->text() == "Connect")?true:false, comName);
         }
     }
 }
@@ -3993,7 +4588,7 @@ void RobotWindow::ConnectExternalMCU()
 {
     if (ui->pbExternalControllerConnect->text() != "Connect")
     {
-        emit ChangeDeviceState(DeviceManager::DEVICE, false, "");
+        emit ChangeDeviceState(ui->cbSelectedDevice->currentText(), false, "");
         return;
     }
 
@@ -4019,7 +4614,7 @@ void RobotWindow::ConnectExternalMCU()
         QString baudrate = QInputDialog::getText(this, tr("Select Baudrate"), tr("Baudrate:"), QLineEdit::Normal, "115200", &ok2);
         if (ok2 && !baudrate.isEmpty())
         {
-            emit ChangeDeviceState(DeviceManager::DEVICE, (ui->pbExternalControllerConnect->text() == "Connect")?true:false, comName);
+            emit ChangeDeviceState(ui->cbSelectedDevice->currentText(), (ui->pbExternalControllerConnect->text() == "Connect")?true:false, comName);
         }
     }
 
@@ -4336,6 +4931,105 @@ void RobotWindow::makeEffectExample()
     ui->lbDrawingArea->setCursor(cursorTarget);
 }
 
+QString RobotWindow::checkAndCreateDir(const QString &path)
+{
+    QString appDirPath = QCoreApplication::applicationDirPath();
+    QDir imagesDir(appDirPath + "/Images");
+
+    if (imagesDir.exists()) {
+    return imagesDir.absolutePath();  // Return absolute path if it exists
+    }
+
+    // The directory doesn't exist, create it.
+    bool success = imagesDir.mkdir(".");
+    if (!success) {
+    return QString(); // Return an empty string if creation fails
+    }
+
+    return imagesDir.absolutePath();  // Return absolute path after creation
+
+}
+
+bool RobotWindow::saveImageWithUniqueName(const cv::Mat &image, const QString &dirPath) {
+  // Check if the directory exists, create if not.
+  if (!QDir(dirPath).exists()) {
+    QDir().mkdir(dirPath);
+  }
+
+  // Generate a unique filename with increasing number.
+  int count = 1;
+  QString fileName;
+  do {
+    fileName = QString("%1/%2.png").arg(dirPath).arg(count);
+    count++;
+  } while (QFile::exists(fileName));
+
+  // Save the image.
+  bool success = cv::imwrite(fileName.toStdString(), image);
+
+  return success;
+}
+
+void RobotWindow::loadImages(const QString &dirPath, QListWidget *lwImageList)
+{
+    if (!QDir(dirPath).exists()) {
+    return;
+    }
+
+    lwImageList->clear();
+
+      QDir dir(dirPath);
+      foreach (const QFileInfo& fileInfo, dir.entryInfoList()) {
+        if (!fileInfo.isDir()) {
+          QListWidgetItem* item = new QListWidgetItem(lwImageList);
+
+          QString fileName = fileInfo.fileName();
+
+          item->setText(fileName);
+
+          item->setData(Qt::UserRole, fileInfo.absoluteFilePath());
+
+           QPixmap pixmap(fileInfo.absoluteFilePath());
+           item->setIcon(pixmap.scaled(QSize(64, 64), Qt::KeepAspectRatio));
+        }
+      }
+}
+
+void RobotWindow::onImageItemClicked(QListWidgetItem *item)
+{
+    QString imagePath = item->data(Qt::UserRole).toString();
+}
+
+void RobotWindow::pastePointValues(QLineEdit *leX, QLineEdit *leY, QLineEdit *leZ)
+{
+    QClipboard *clipboard = QApplication::clipboard();
+    QString data = clipboard->text();
+    // data = "%1, %2, %3"
+    QStringList list = data.split(", ");
+
+    if (list.count() < 2)
+        return;
+
+    if (list.count() == 2 || leZ == NULL )
+    {
+        QString x = list[0];
+        QString y = list[1];
+
+        leX->setText(QString::number(x.toFloat()));
+        leY->setText(QString::number(y.toFloat()));
+    }
+    else if (leZ != NULL)
+    {
+        QString x = list[0];
+        QString y = list[1];
+        QString z = list[2];
+
+        leX->setText(QString::number(x.toFloat()));
+        leY->setText(QString::number(y.toFloat()));
+        leZ->setText(QString::number(z.toFloat()));
+    }
+}
+
 void RobotWindow::sendGcode(QString prefix, QString para1, QString para2)
 {
     if (para1 != "")
@@ -4390,6 +5084,12 @@ bool RobotWindow::isItemExit(QListWidget *lw, QString item)
     }
 
     return itemExists;
+}
+
+int RobotWindow::getIDfromName(QString fullName)
+{
+    QString id = fullName.split(QRegExp("[^\\d]")).last();
+    return id.toInt();
 }
 
 void RobotWindow::runPythonFile(QString filePath)
@@ -4529,15 +5229,15 @@ void RobotWindow::CheckSettingsSpeed()
     QElapsedTimer elapse;
     elapse.start();
 
-    QList<Object> objects;
+    QVector<Object> objects;
 
     for (int counter = 0; counter < 1000; counter++)
     {
-//        VariableManager::instance().addVar(QString("ObjectTests.%1.X").arg(counter), 12);
-//        VariableManager::instance().addVar(QString("ObjectTests.%1.Y").arg(counter), 143);
-//        VariableManager::instance().addVar(QString("ObjectTests.%1.W").arg(counter), 21);
-//        VariableManager::instance().addVar(QString("ObjectTests.%1.L").arg(counter), 33);
-//        VariableManager::instance().addVar(QString("ObjectTests.%1.A").arg(counter), 100);
+//        VariableManager::instance().updateVar(QString("ObjectTests.%1.X").arg(counter), 12);
+//        VariableManager::instance().updateVar(QString("ObjectTests.%1.Y").arg(counter), 143);
+//        VariableManager::instance().updateVar(QString("ObjectTests.%1.W").arg(counter), 21);
+//        VariableManager::instance().updateVar(QString("ObjectTests.%1.L").arg(counter), 33);
+//        VariableManager::instance().updateVar(QString("ObjectTests.%1.A").arg(counter), 100);
 
         Object object;
         object.X.Real = 34;
@@ -4549,7 +5249,7 @@ void RobotWindow::CheckSettingsSpeed()
         objects.append(object);
     }
 
-    qDebug() << "var" << elapse.elapsed();
+//    qDebug() << "var" << elapse.elapsed();
 }
     #endif
 #endif
@@ -4602,15 +5302,32 @@ void RobotWindow::ProcessUIEvent()
         ui->vlImageViewer->addWidget(ui->fImageViewer);
     }
 
-    QSize size = ui->gvImageViewer->GetImageSize();
+    int width = CameraInstance->CaptureImage.cols;
+    int height = CameraInstance->CaptureImage.rows;
     float ratio = ui->gvImageViewer->GetRatio() * 100;
-    ui->lbMatSize->setText(QString("Re: %1x%2").arg(size.width()).arg(size.height()));
+    ui->lbMatSize->setText(QString("Re: %1x%2").arg(width).arg(height));
     ui->lbDisplayRatio->setText(QString("Ratio: %1%").arg(ratio));
 
     if (ui->cbAutoUpdateObjectsDisplay->currentIndex() == 1)
     {
         UpdateObjectsToView();
     }
+}
+
+void RobotWindow::paintEvent(QPaintEvent *event)
+{
+    QMainWindow::paintEvent(event); // Gọi hàm cơ bản
+
+//    int elapsed = performanceTimer.elapsed(); // Lấy thời gian đã trôi qua từ lần cuối
+//    qDebug() << "Thời gian giữa hai lần gọi paintEvent:" << elapsed << "milliseconds";
+//    performanceTimer.restart(); // Khởi động lại timer cho lần gọi kế tiếp
+}
+
+void RobotWindow::SaveDetectingUI()
+{
+    QString prefix = ProjectName + "." + ui->cbSelectedDetecting->currentText() + ".";
+    VariableManager::instance().updateVar(prefix + "ResizeWidth", ui->leImageWidth->text());
+    VariableManager::instance().updateVar(prefix + "ResizeHeight", ui->leImageHeight->text());
 }
 
 QStringList RobotWindow::getPlugins(QString path)
@@ -4633,18 +5350,16 @@ void RobotWindow::initPlugins(QStringList plugins)
 {
     foreach (QString file,plugins)
     {
-        //qInfo() << "Loading: " << file;
-
         QPluginLoader loader(file);
         if(!loader.load())
         {
             QString msg = "";
             msg += "Error: " +  loader.fileName() + " Error: " + loader.errorString();
-            SoftwareLog(msg);
+//            SoftwareLog(msg);
             continue;
         }
 
-        qInfo() << "Loaded: " << loader.fileName();
+//        qInfo() << "Loaded: " << loader.fileName();
 
         DeltaXPlugin* pluginWidget = qobject_cast<DeltaXPlugin*>(loader.instance());
 
@@ -4653,15 +5368,21 @@ void RobotWindow::initPlugins(QStringList plugins)
             ui->twModule->addTab(pluginWidget->GetUI(), pluginWidget->GetTitle());
 
             pluginList->append(pluginWidget);
-            // general init
-            qRegisterMetaType< cv::Mat >("cv::Mat");
-            connect(pluginWidget, SIGNAL(CapturedImage(cv::Mat)), CameraInstance, SLOT(GetImageFromExternal(cv::Mat)));
-            connect(CameraInstance, &Camera::RequestCapture, pluginWidget, &DeltaXPlugin::RequestCapture);
+
+            QString pluginName = pluginWidget->GetName();
+
+            if (pluginName == "industrialcamera")
+            {
+                industrialCameraPlugin = pluginWidget;
+                connect(pluginWidget, SIGNAL(CapturedImage(cv::Mat)), CameraInstance, SLOT(GetImageFromExternal(cv::Mat)));
+                connect(CameraInstance, &Camera::RequestCapture, pluginWidget, &DeltaXPlugin::RequestCapture);
+
+            }
 
         }
         else
         {
-            qInfo() << "load fail";
+//            qInfo() << "load fail";
         }
     }
 }

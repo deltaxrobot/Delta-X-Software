@@ -21,7 +21,7 @@ QTransform PointTool::calculateTransform(const QPointF &P1, const QPointF &P2, c
     transform.rotate(angle);
     transform.translate(dx, dy);
 
-    qDebug() << transform.map(P1);
+//    qDebug() << transform.map(P1);
 
     return transform;
 }
@@ -87,12 +87,12 @@ QMatrix PointTool::calculateTransform2(const QPointF &P1, const QPointF &P2, con
     QMatrix matrix;
     matrix.setMatrix(ScaleRotateMatrix.m11(), ScaleRotateMatrix.m12(), ScaleRotateMatrix.m21(), ScaleRotateMatrix.m22(), dx, dy);
 
-    qDebug() << matrix.map(P1);
+//    qDebug() << matrix.map(P1);
 
     return matrix;
 }
 
-QMatrix PointTool::calculateMatrix(const QPolygonF &sourcePolygon, const QPolygonF &destPolygon)
+cv::Mat PointTool::calculateMatrix(const QPolygonF &sourcePolygon, const QPolygonF &destPolygon)
 {
     // Kiểm tra điều kiện.
     if (sourcePolygon.size() < 4 || destPolygon.size() < 4) {
@@ -101,7 +101,7 @@ QMatrix PointTool::calculateMatrix(const QPolygonF &sourcePolygon, const QPolygo
 
     // Chuyển đổi từ QPolygonF sang std::vector<cv::Point2f>.
     std::vector<cv::Point2f> srcPoints, dstPoints;
-    for (int i = 0; i < 4; ++i) {
+    for (int i = 0; i < sourcePolygon.size() && i < destPolygon.size(); ++i) {
         srcPoints.push_back(cv::Point2f(sourcePolygon[i].x(), sourcePolygon[i].y()));
         dstPoints.push_back(cv::Point2f(destPolygon[i].x(), destPolygon[i].y()));
     }
@@ -109,12 +109,32 @@ QMatrix PointTool::calculateMatrix(const QPolygonF &sourcePolygon, const QPolygo
     // Tính toán ma trận chuyển đổi bằng OpenCV.
     cv::Mat transformMatrix = cv::getPerspectiveTransform(srcPoints, dstPoints);
 
-    // Chuyển đổi ma trận từ OpenCV sang QMatrix.
-    QMatrix qtMatrix(
-                transformMatrix.at<double>(0, 0), transformMatrix.at<double>(0, 1),
-                transformMatrix.at<double>(1, 0), transformMatrix.at<double>(1, 1),
-                transformMatrix.at<double>(0, 2), transformMatrix.at<double>(1, 2)
-                );
+    return transformMatrix;
+}
 
-    return qtMatrix;
+cv::Mat PointTool::performAffineTransformation(const QPolygonF &sourcePolygon, const QPolygonF &destPolygon)
+{
+        // Convert QPolygonF to std::vector<cv::Point2f>
+        std::vector<cv::Point2f> sourcePoints, targetPoints;
+        for (const QPointF &point : sourcePolygon)
+            sourcePoints.push_back(cv::Point2f(point.x(), point.y()));
+        for (const QPointF &point : destPolygon)
+            targetPoints.push_back(cv::Point2f(point.x(), point.y()));
+    // Perform least squares regression
+    cv::Mat transformationMatrix = cv::estimateAffine2D(sourcePoints, targetPoints);
+
+    return transformationMatrix;
+}
+
+
+
+QPointF PointTool::GetCenterOfPolygon(const QPolygonF &polygon)
+{
+    QPointF center;
+    for (int i = 0; i < polygon.size(); ++i)
+    {
+        center += polygon[i];
+    }
+    center /= polygon.size();
+    return center;
 }

@@ -30,12 +30,13 @@ public:
 protected:
     void resizeEvent(QResizeEvent *event) override;
     void keyPressEvent(QKeyEvent *event) override;
+    void mousePressEvent(QMouseEvent *event) override;
 
 public slots:
     void updateLineNumberAreaWidth(int newBlockCount);
     void highlightCurrentLine();
     void updateLineNumberArea(const QRect &, int);
-    void setLockState(bool state);
+    void setLockState(int state);
 
 private:
     QWidget *lineNumberArea;
@@ -43,6 +44,9 @@ private:
     void commentSelectedLines();
     void indentText();
     void deleleIndentText();
+
+signals:
+    void lineClicked(int lineNumber, QString lineText);
 };
 
 //![codeeditordefinition]
