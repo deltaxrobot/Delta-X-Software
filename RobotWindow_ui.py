@@ -1094,7 +1094,7 @@ class Ui_RobotWindow(object):
         self.saTermite.setWidgetResizable(True)
         self.wgTermite = QWidget()
         self.wgTermite.setObjectName(u"wgTermite")
-        self.wgTermite.setGeometry(QRect(0, 0, 494, 138))
+        self.wgTermite.setGeometry(QRect(0, 0, 491, 138))
         self.wgTermite.setStyleSheet(u"QWidget#wgTermite\n"
 "{\n"
 "	\n"
@@ -1185,7 +1185,7 @@ class Ui_RobotWindow(object):
         self.saObjectDetecting.setWidgetResizable(True)
         self.wObjectDetecting = QWidget()
         self.wObjectDetecting.setObjectName(u"wObjectDetecting")
-        self.wObjectDetecting.setGeometry(QRect(0, 0, 651, 2900))
+        self.wObjectDetecting.setGeometry(QRect(0, 0, 647, 2900))
         self.wObjectDetecting.setMinimumSize(QSize(100, 2900))
         self.wObjectDetecting.setStyleSheet(u"QWidget#wObjectDetecting\n"
 "{	\n"
@@ -2955,7 +2955,7 @@ class Ui_RobotWindow(object):
         self.saPointTool.setWidgetResizable(True)
         self.wPointTool = QWidget()
         self.wPointTool.setObjectName(u"wPointTool")
-        self.wPointTool.setGeometry(QRect(0, 0, 639, 1900))
+        self.wPointTool.setGeometry(QRect(0, 0, 635, 1900))
         self.wPointTool.setMinimumSize(QSize(0, 1900))
         self.wPointTool.setStyleSheet(u"QWidget#wPointTool\n"
 "{	\n"
@@ -3990,7 +3990,7 @@ class Ui_RobotWindow(object):
         self.scrollArea_6.setWidgetResizable(True)
         self.scrollAreaWidgetContents_6 = QWidget()
         self.scrollAreaWidgetContents_6.setObjectName(u"scrollAreaWidgetContents_6")
-        self.scrollAreaWidgetContents_6.setGeometry(QRect(0, 0, 639, 1600))
+        self.scrollAreaWidgetContents_6.setGeometry(QRect(0, -17, 635, 1600))
         self.scrollAreaWidgetContents_6.setMinimumSize(QSize(450, 1600))
         self.scrollAreaWidgetContents_6.setMaximumSize(QSize(16777215, 16777215))
         self.scrollAreaWidgetContents_6.setStyleSheet(u"QWidget[background='container']\n"
@@ -4829,7 +4829,7 @@ class Ui_RobotWindow(object):
         self.scrollArea_2.setWidgetResizable(True)
         self.wgJoggingScrollWidget = QWidget()
         self.wgJoggingScrollWidget.setObjectName(u"wgJoggingScrollWidget")
-        self.wgJoggingScrollWidget.setGeometry(QRect(0, -403, 499, 1500))
+        self.wgJoggingScrollWidget.setGeometry(QRect(0, 0, 503, 1500))
         self.wgJoggingScrollWidget.setMinimumSize(QSize(0, 1500))
         self.wgJoggingScrollWidget.setMaximumSize(QSize(16777215, 16777215))
         self.wgJoggingScrollWidget.setStyleSheet(u"QWidget#wgJoggingScrollWidget\n"
@@ -8412,7 +8412,7 @@ class Ui_RobotWindow(object):
 
         self.twDeltaManager.setCurrentIndex(1)
         self.pbReadI0_3.setDefault(False)
-        self.twModule.setCurrentIndex(0)
+        self.twModule.setCurrentIndex(3)
         self.twGcodeEditor.setCurrentIndex(0)
         self.pbImageMapping.setDefault(False)
         self.cbImageSource.setCurrentIndex(0)

@@ -2148,7 +2148,7 @@ public:
         saTermite->setWidgetResizable(true);
         wgTermite = new QWidget();
         wgTermite->setObjectName(QString::fromUtf8("wgTermite"));
-        wgTermite->setGeometry(QRect(0, 0, 494, 138));
+        wgTermite->setGeometry(QRect(0, 0, 491, 138));
         wgTermite->setStyleSheet(QString::fromUtf8("QWidget#wgTermite\n"
 "{\n"
 "	\n"
@@ -2239,7 +2239,7 @@ public:
         saObjectDetecting->setWidgetResizable(true);
         wObjectDetecting = new QWidget();
         wObjectDetecting->setObjectName(QString::fromUtf8("wObjectDetecting"));
-        wObjectDetecting->setGeometry(QRect(0, 0, 651, 2900));
+        wObjectDetecting->setGeometry(QRect(0, 0, 647, 2900));
         wObjectDetecting->setMinimumSize(QSize(100, 2900));
         wObjectDetecting->setStyleSheet(QString::fromUtf8("QWidget#wObjectDetecting\n"
 "{	\n"
@@ -4009,7 +4009,7 @@ public:
         saPointTool->setWidgetResizable(true);
         wPointTool = new QWidget();
         wPointTool->setObjectName(QString::fromUtf8("wPointTool"));
-        wPointTool->setGeometry(QRect(0, 0, 639, 1900));
+        wPointTool->setGeometry(QRect(0, 0, 635, 1900));
         wPointTool->setMinimumSize(QSize(0, 1900));
         wPointTool->setStyleSheet(QString::fromUtf8("QWidget#wPointTool\n"
 "{	\n"
@@ -5044,7 +5044,7 @@ public:
         scrollArea_6->setWidgetResizable(true);
         scrollAreaWidgetContents_6 = new QWidget();
         scrollAreaWidgetContents_6->setObjectName(QString::fromUtf8("scrollAreaWidgetContents_6"));
-        scrollAreaWidgetContents_6->setGeometry(QRect(0, 0, 639, 1600));
+        scrollAreaWidgetContents_6->setGeometry(QRect(0, -17, 635, 1600));
         scrollAreaWidgetContents_6->setMinimumSize(QSize(450, 1600));
         scrollAreaWidgetContents_6->setMaximumSize(QSize(16777215, 16777215));
         scrollAreaWidgetContents_6->setStyleSheet(QString::fromUtf8("QWidget[background='container']\n"
@@ -5883,7 +5883,7 @@ public:
         scrollArea_2->setWidgetResizable(true);
         wgJoggingScrollWidget = new QWidget();
         wgJoggingScrollWidget->setObjectName(QString::fromUtf8("wgJoggingScrollWidget"));
-        wgJoggingScrollWidget->setGeometry(QRect(0, -403, 499, 1500));
+        wgJoggingScrollWidget->setGeometry(QRect(0, 0, 503, 1500));
         wgJoggingScrollWidget->setMinimumSize(QSize(0, 1500));
         wgJoggingScrollWidget->setMaximumSize(QSize(16777215, 16777215));
         wgJoggingScrollWidget->setStyleSheet(QString::fromUtf8("QWidget#wgJoggingScrollWidget\n"
@@ -9466,7 +9466,7 @@ public:
 
         twDeltaManager->setCurrentIndex(1);
         pbReadI0_3->setDefault(false);
-        twModule->setCurrentIndex(0);
+        twModule->setCurrentIndex(3);
         twGcodeEditor->setCurrentIndex(0);
         pbImageMapping->setDefault(false);
         cbImageSource->setCurrentIndex(0);

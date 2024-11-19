@@ -2648,28 +2648,23 @@ void RobotWindow::ExecuteProgram()
 {
 //    SaveProgram();
 
-    if (ui->leZ->text().toFloat() > -200)
-    {
-        QMessageBox::information(
-                this,
-                tr("Required Action"),
-                tr("The robot must return to Home before running the program.")
-            );
+    // if (ui->leZ->text().toFloat() > -200)
+    // {
+    //     QMessageBox::information(
+    //             this,
+    //             tr("Required Action"),
+    //             tr("The robot must return to Home before running the program.")
+    //         );
 
-        ui->pbExecuteGcodes->setChecked(false);
+    //     ui->pbExecuteGcodes->setChecked(false);
 
-        return;
-    }
+    //     return;
+    // }
 
     int threadId = ui->cbProgramThreadID->currentIndex();
     GcodeScript* currentScript = GcodeScripts.at(threadId);
 
     int startMode = GcodeScript::BEGIN;
-
-//    if (ui->rbEditorStart->isChecked() != true)
-//    {
-//        startMode = GcodeScript::CURSOR_POSITION;
-//    }
 
     if (ui->pbExecuteGcodes->isChecked() == false)
     {
