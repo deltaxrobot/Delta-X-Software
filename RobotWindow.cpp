@@ -741,6 +741,9 @@ void RobotWindow::InitObjectDetectingModule()
 
     connect(ui->pbSaveImage, &QPushButton::clicked, [=](bool checked)
     {
+        ui->fCapturingImages->setVisible(true);
+        ui->lwImageList->setVisible(true);
+
         QString absolutePath = checkAndCreateDir(ui->leImageFolder->text());
 
         saveImageWithUniqueName(CameraInstance->CaptureImage, absolutePath);
@@ -754,6 +757,9 @@ void RobotWindow::InitObjectDetectingModule()
 
     connect(ui->pbRefreshImageFolder, &QPushButton::clicked, [=](bool checked)
     {
+        ui->fCapturingImages->setVisible(true);
+        ui->lwImageList->setVisible(true);
+
         QString absolutePath = checkAndCreateDir(ui->leImageFolder->text());
         loadImages(absolutePath, ui->lwImageList);
     });
@@ -2018,6 +2024,10 @@ void RobotWindow::InitDefaultValue()
 
     ChangeRobotModel(ui->cbRobotModel->currentIndex());
     SelectImageProviderOption(0);
+
+    //------ Hide UI ----
+    ui->fCapturingImages->setVisible(false);
+    ui->lwImageList->setVisible(false);
 }
 
 void RobotWindow::SetMainStackedWidgetAndPages(QStackedWidget *mainStack, QWidget *mainPage, QWidget *fullDisplayPage, QLayout *fullDisplayLayout)
@@ -2388,6 +2398,7 @@ void RobotWindow::SelectImageProviderOption(int option)
         ui->fImageSource->setHidden(false);
         ui->fWebcamSource->setHidden(true);
         CameraInstance->Source = "Images";
+
     }
     else
     {
@@ -4981,6 +4992,15 @@ bool RobotWindow::saveImageWithUniqueName(const cv::Mat &image, const QString &d
   // Save the image.
   bool success = cv::imwrite(fileName.toStdString(), image);
 
+
+  QListWidgetItem* item = new QListWidgetItem(ui->lwImageList);
+  // Tách tên ảnh từ fileName
+    QString imageName = QFileInfo(fileName).fileName();
+  item->setText(imageName);
+  item->setData(Qt::UserRole, fileName);
+  QPixmap pixmap(fileName);
+  item->setIcon(pixmap.scaled(QSize(64, 64), Qt::KeepAspectRatio));
+
   return success;
 }
 
@@ -5012,6 +5032,27 @@ void RobotWindow::loadImages(const QString &dirPath, QListWidget *lwImageList)
 void RobotWindow::onImageItemClicked(QListWidgetItem *item)
 {
     QString imagePath = item->data(Qt::UserRole).toString();
+
+    // Hiển thị ảnh từ imagePath trên cửa sổ ImageLabel, 
+    // khi người dùng chọn một ảnh khác thì ảnh được load vào cửa sổ đó
+    // Khi người dùng tắt thì xóa cửa sổ đó
+
+
+    if (ImageLabel == NULL)
+    {
+        ImageLabel = new QLabel();
+        ImageLabel->setWindowTitle("Image Viewer");
+        ImageLabel->setAttribute(Qt::WA_DeleteOnClose);
+        ImageLabel->show();
+    }
+
+    ImageLabel->hide();
+
+    ImageLabel->setPixmap(QPixmap(imagePath));
+    // Chỉnh cửa sổ ImageLabel sao cho vừa với ảnh
+    ImageLabel->adjustSize();
+    //Hiển thị cửa sổ ImageLabel (QLabel) trên cửa sổ chính
+    ImageLabel->show();;
 }
 
 void RobotWindow::pastePointValues(QLineEdit *leX, QLineEdit *leY, QLineEdit *leZ)

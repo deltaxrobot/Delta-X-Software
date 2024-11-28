@@ -794,7 +794,7 @@ QToolBox QScrollArea&gt;QWidget&gt;QWidget
               <enum>QTabWidget::Rounded</enum>
              </property>
              <property name="currentIndex">
-              <number>3</number>
+              <number>1</number>
              </property>
              <property name="usesScrollButtons">
               <bool>true</bool>
@@ -1931,7 +1931,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
                   <property name="geometry">
                    <rect>
                     <x>0</x>
-                    <y>0</y>
+                    <y>-13</y>
                     <width>647</width>
                     <height>2900</height>
                    </rect>
@@ -2840,11 +2840,57 @@ li.checked::marker { content: &quot;\2612&quot;; }
                               </property>
                              </widget>
                             </item>
+                            <item>
+                             <widget class="QToolButton" name="pbRefreshImageFolder">
+                              <property name="enabled">
+                               <bool>true</bool>
+                              </property>
+                              <property name="minimumSize">
+                               <size>
+                                <width>0</width>
+                                <height>0</height>
+                               </size>
+                              </property>
+                              <property name="font">
+                               <font>
+                                <pointsize>8</pointsize>
+                               </font>
+                              </property>
+                              <property name="toolTip">
+                               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Capture&lt;/p&gt;&lt;p&gt;M98 PcaptureCamera&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                              </property>
+                              <property name="text">
+                               <string/>
+                              </property>
+                              <property name="icon">
+                               <iconset resource="resource.qrc">
+                                <normaloff>:/icon/icons8_replay_48px.png</normaloff>:/icon/icons8_replay_48px.png</iconset>
+                              </property>
+                              <property name="iconSize">
+                               <size>
+                                <width>20</width>
+                                <height>20</height>
+                               </size>
+                              </property>
+                              <property name="checkable">
+                               <bool>false</bool>
+                              </property>
+                              <property name="checked">
+                               <bool>false</bool>
+                              </property>
+                              <property name="toolButtonStyle">
+                               <enum>Qt::ToolButtonTextBesideIcon</enum>
+                              </property>
+                              <property name="autoRaise">
+                               <bool>true</bool>
+                              </property>
+                             </widget>
+                            </item>
                            </layout>
                           </widget>
                          </item>
                          <item>
-                          <widget class="QFrame" name="frame_26">
+                          <widget class="QFrame" name="fCapturingImages">
                            <property name="sizePolicy">
                             <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
                              <horstretch>0</horstretch>
@@ -2914,52 +2960,6 @@ li.checked::marker { content: &quot;\2612&quot;; }
                                </size>
                               </property>
                              </spacer>
-                            </item>
-                            <item>
-                             <widget class="QToolButton" name="pbRefreshImageFolder">
-                              <property name="enabled">
-                               <bool>true</bool>
-                              </property>
-                              <property name="minimumSize">
-                               <size>
-                                <width>0</width>
-                                <height>0</height>
-                               </size>
-                              </property>
-                              <property name="font">
-                               <font>
-                                <pointsize>8</pointsize>
-                               </font>
-                              </property>
-                              <property name="toolTip">
-                               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Capture&lt;/p&gt;&lt;p&gt;M98 PcaptureCamera&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                              </property>
-                              <property name="text">
-                               <string/>
-                              </property>
-                              <property name="icon">
-                               <iconset resource="resource.qrc">
-                                <normaloff>:/icon/icons8_replay_48px.png</normaloff>:/icon/icons8_replay_48px.png</iconset>
-                              </property>
-                              <property name="iconSize">
-                               <size>
-                                <width>20</width>
-                                <height>20</height>
-                               </size>
-                              </property>
-                              <property name="checkable">
-                               <bool>false</bool>
-                              </property>
-                              <property name="checked">
-                               <bool>false</bool>
-                              </property>
-                              <property name="toolButtonStyle">
-                               <enum>Qt::ToolButtonTextBesideIcon</enum>
-                              </property>
-                              <property name="autoRaise">
-                               <bool>true</bool>
-                              </property>
-                             </widget>
                             </item>
                            </layout>
                           </widget>

@@ -178,14 +178,14 @@ public:
     QLabel *lbCameraState;
     QSpacerItem *horizontalSpacer_65;
     QToolButton *pbSaveImage;
-    QFrame *frame_26;
+    QToolButton *pbRefreshImageFolder;
+    QFrame *fCapturingImages;
     QHBoxLayout *horizontalLayout_16;
     QToolButton *tbOpenSaveFolder;
     QLabel *label_12;
     QLineEdit *leImageFolder;
     QPushButton *pbEditSavefolder;
     QSpacerItem *horizontalSpacer_62;
-    QToolButton *pbRefreshImageFolder;
     QListWidget *lwImageList;
     QSplitter *splitter;
     QGroupBox *gbImageViewer;
@@ -2247,7 +2247,7 @@ public:
         saObjectDetecting->setWidgetResizable(true);
         wObjectDetecting = new QWidget();
         wObjectDetecting->setObjectName(QString::fromUtf8("wObjectDetecting"));
-        wObjectDetecting->setGeometry(QRect(0, 0, 647, 2900));
+        wObjectDetecting->setGeometry(QRect(0, -13, 647, 2900));
         wObjectDetecting->setMinimumSize(QSize(100, 2900));
         wObjectDetecting->setStyleSheet(QString::fromUtf8("QWidget#wObjectDetecting\n"
 "{	\n"
@@ -2634,47 +2634,7 @@ public:
 
         horizontalLayout_28->addWidget(pbSaveImage);
 
-
-        verticalLayout_51->addWidget(fCameraPara);
-
-        frame_26 = new QFrame(fImageProvider);
-        frame_26->setObjectName(QString::fromUtf8("frame_26"));
-        sizePolicy10.setHeightForWidth(frame_26->sizePolicy().hasHeightForWidth());
-        frame_26->setSizePolicy(sizePolicy10);
-        frame_26->setMinimumSize(QSize(0, 0));
-        frame_26->setFrameShape(QFrame::StyledPanel);
-        frame_26->setFrameShadow(QFrame::Raised);
-        horizontalLayout_16 = new QHBoxLayout(frame_26);
-        horizontalLayout_16->setSpacing(6);
-        horizontalLayout_16->setContentsMargins(11, 11, 11, 11);
-        horizontalLayout_16->setObjectName(QString::fromUtf8("horizontalLayout_16"));
-        tbOpenSaveFolder = new QToolButton(frame_26);
-        tbOpenSaveFolder->setObjectName(QString::fromUtf8("tbOpenSaveFolder"));
-        tbOpenSaveFolder->setIcon(icon3);
-
-        horizontalLayout_16->addWidget(tbOpenSaveFolder);
-
-        label_12 = new QLabel(frame_26);
-        label_12->setObjectName(QString::fromUtf8("label_12"));
-
-        horizontalLayout_16->addWidget(label_12);
-
-        leImageFolder = new QLineEdit(frame_26);
-        leImageFolder->setObjectName(QString::fromUtf8("leImageFolder"));
-
-        horizontalLayout_16->addWidget(leImageFolder);
-
-        pbEditSavefolder = new QPushButton(frame_26);
-        pbEditSavefolder->setObjectName(QString::fromUtf8("pbEditSavefolder"));
-        pbEditSavefolder->setMinimumSize(QSize(20, 0));
-
-        horizontalLayout_16->addWidget(pbEditSavefolder);
-
-        horizontalSpacer_62 = new QSpacerItem(219, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-
-        horizontalLayout_16->addItem(horizontalSpacer_62);
-
-        pbRefreshImageFolder = new QToolButton(frame_26);
+        pbRefreshImageFolder = new QToolButton(fCameraPara);
         pbRefreshImageFolder->setObjectName(QString::fromUtf8("pbRefreshImageFolder"));
         pbRefreshImageFolder->setEnabled(true);
         pbRefreshImageFolder->setMinimumSize(QSize(0, 0));
@@ -2688,10 +2648,50 @@ public:
         pbRefreshImageFolder->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
         pbRefreshImageFolder->setAutoRaise(true);
 
-        horizontalLayout_16->addWidget(pbRefreshImageFolder);
+        horizontalLayout_28->addWidget(pbRefreshImageFolder);
 
 
-        verticalLayout_51->addWidget(frame_26);
+        verticalLayout_51->addWidget(fCameraPara);
+
+        fCapturingImages = new QFrame(fImageProvider);
+        fCapturingImages->setObjectName(QString::fromUtf8("fCapturingImages"));
+        sizePolicy10.setHeightForWidth(fCapturingImages->sizePolicy().hasHeightForWidth());
+        fCapturingImages->setSizePolicy(sizePolicy10);
+        fCapturingImages->setMinimumSize(QSize(0, 0));
+        fCapturingImages->setFrameShape(QFrame::StyledPanel);
+        fCapturingImages->setFrameShadow(QFrame::Raised);
+        horizontalLayout_16 = new QHBoxLayout(fCapturingImages);
+        horizontalLayout_16->setSpacing(6);
+        horizontalLayout_16->setContentsMargins(11, 11, 11, 11);
+        horizontalLayout_16->setObjectName(QString::fromUtf8("horizontalLayout_16"));
+        tbOpenSaveFolder = new QToolButton(fCapturingImages);
+        tbOpenSaveFolder->setObjectName(QString::fromUtf8("tbOpenSaveFolder"));
+        tbOpenSaveFolder->setIcon(icon3);
+
+        horizontalLayout_16->addWidget(tbOpenSaveFolder);
+
+        label_12 = new QLabel(fCapturingImages);
+        label_12->setObjectName(QString::fromUtf8("label_12"));
+
+        horizontalLayout_16->addWidget(label_12);
+
+        leImageFolder = new QLineEdit(fCapturingImages);
+        leImageFolder->setObjectName(QString::fromUtf8("leImageFolder"));
+
+        horizontalLayout_16->addWidget(leImageFolder);
+
+        pbEditSavefolder = new QPushButton(fCapturingImages);
+        pbEditSavefolder->setObjectName(QString::fromUtf8("pbEditSavefolder"));
+        pbEditSavefolder->setMinimumSize(QSize(20, 0));
+
+        horizontalLayout_16->addWidget(pbEditSavefolder);
+
+        horizontalSpacer_62 = new QSpacerItem(219, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        horizontalLayout_16->addItem(horizontalSpacer_62);
+
+
+        verticalLayout_51->addWidget(fCapturingImages);
 
         lwImageList = new QListWidget(fImageProvider);
         lwImageList->setObjectName(QString::fromUtf8("lwImageList"));
@@ -9531,7 +9531,7 @@ public:
 
         twDeltaManager->setCurrentIndex(1);
         pbReadI0_3->setDefault(false);
-        twModule->setCurrentIndex(3);
+        twModule->setCurrentIndex(1);
         twGcodeEditor->setCurrentIndex(0);
         pbImageMapping->setDefault(false);
         cbImageSource->setCurrentIndex(0);
@@ -9781,14 +9781,14 @@ public:
         pbSaveImage->setToolTip(QCoreApplication::translate("RobotWindow", "<html><head/><body><p>Capture</p><p>M98 PcaptureCamera</p></body></html>", nullptr));
 #endif // QT_CONFIG(tooltip)
         pbSaveImage->setText(QString());
-        tbOpenSaveFolder->setText(QCoreApplication::translate("RobotWindow", "...", nullptr));
-        label_12->setText(QCoreApplication::translate("RobotWindow", "Image Folder", nullptr));
-        leImageFolder->setText(QCoreApplication::translate("RobotWindow", "/Images", nullptr));
-        pbEditSavefolder->setText(QCoreApplication::translate("RobotWindow", "...", nullptr));
 #if QT_CONFIG(tooltip)
         pbRefreshImageFolder->setToolTip(QCoreApplication::translate("RobotWindow", "<html><head/><body><p>Capture</p><p>M98 PcaptureCamera</p></body></html>", nullptr));
 #endif // QT_CONFIG(tooltip)
         pbRefreshImageFolder->setText(QString());
+        tbOpenSaveFolder->setText(QCoreApplication::translate("RobotWindow", "...", nullptr));
+        label_12->setText(QCoreApplication::translate("RobotWindow", "Image Folder", nullptr));
+        leImageFolder->setText(QCoreApplication::translate("RobotWindow", "/Images", nullptr));
+        pbEditSavefolder->setText(QCoreApplication::translate("RobotWindow", "...", nullptr));
         gbImageViewer->setTitle(QCoreApplication::translate("RobotWindow", "Image Viewer", nullptr));
 #if QT_CONFIG(tooltip)
         pbFindChessboardTool->setToolTip(QCoreApplication::translate("RobotWindow", "Warp Perspective", nullptr));

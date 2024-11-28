@@ -1185,7 +1185,7 @@ class Ui_RobotWindow(object):
         self.saObjectDetecting.setWidgetResizable(True)
         self.wObjectDetecting = QWidget()
         self.wObjectDetecting.setObjectName(u"wObjectDetecting")
-        self.wObjectDetecting.setGeometry(QRect(0, 0, 647, 2900))
+        self.wObjectDetecting.setGeometry(QRect(0, -13, 647, 2900))
         self.wObjectDetecting.setMinimumSize(QSize(100, 2900))
         self.wObjectDetecting.setStyleSheet(u"QWidget#wObjectDetecting\n"
 "{	\n"
@@ -1572,47 +1572,7 @@ class Ui_RobotWindow(object):
 
         self.horizontalLayout_28.addWidget(self.pbSaveImage)
 
-
-        self.verticalLayout_51.addWidget(self.fCameraPara)
-
-        self.frame_26 = QFrame(self.fImageProvider)
-        self.frame_26.setObjectName(u"frame_26")
-        sizePolicy10.setHeightForWidth(self.frame_26.sizePolicy().hasHeightForWidth())
-        self.frame_26.setSizePolicy(sizePolicy10)
-        self.frame_26.setMinimumSize(QSize(0, 0))
-        self.frame_26.setFrameShape(QFrame.StyledPanel)
-        self.frame_26.setFrameShadow(QFrame.Raised)
-        self.horizontalLayout_16 = QHBoxLayout(self.frame_26)
-        self.horizontalLayout_16.setSpacing(6)
-        self.horizontalLayout_16.setContentsMargins(11, 11, 11, 11)
-        self.horizontalLayout_16.setObjectName(u"horizontalLayout_16")
-        self.tbOpenSaveFolder = QToolButton(self.frame_26)
-        self.tbOpenSaveFolder.setObjectName(u"tbOpenSaveFolder")
-        self.tbOpenSaveFolder.setIcon(icon3)
-
-        self.horizontalLayout_16.addWidget(self.tbOpenSaveFolder)
-
-        self.label_12 = QLabel(self.frame_26)
-        self.label_12.setObjectName(u"label_12")
-
-        self.horizontalLayout_16.addWidget(self.label_12)
-
-        self.leImageFolder = QLineEdit(self.frame_26)
-        self.leImageFolder.setObjectName(u"leImageFolder")
-
-        self.horizontalLayout_16.addWidget(self.leImageFolder)
-
-        self.pbEditSavefolder = QPushButton(self.frame_26)
-        self.pbEditSavefolder.setObjectName(u"pbEditSavefolder")
-        self.pbEditSavefolder.setMinimumSize(QSize(20, 0))
-
-        self.horizontalLayout_16.addWidget(self.pbEditSavefolder)
-
-        self.horizontalSpacer_62 = QSpacerItem(219, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
-
-        self.horizontalLayout_16.addItem(self.horizontalSpacer_62)
-
-        self.pbRefreshImageFolder = QToolButton(self.frame_26)
+        self.pbRefreshImageFolder = QToolButton(self.fCameraPara)
         self.pbRefreshImageFolder.setObjectName(u"pbRefreshImageFolder")
         self.pbRefreshImageFolder.setEnabled(True)
         self.pbRefreshImageFolder.setMinimumSize(QSize(0, 0))
@@ -1626,10 +1586,50 @@ class Ui_RobotWindow(object):
         self.pbRefreshImageFolder.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
         self.pbRefreshImageFolder.setAutoRaise(True)
 
-        self.horizontalLayout_16.addWidget(self.pbRefreshImageFolder)
+        self.horizontalLayout_28.addWidget(self.pbRefreshImageFolder)
 
 
-        self.verticalLayout_51.addWidget(self.frame_26)
+        self.verticalLayout_51.addWidget(self.fCameraPara)
+
+        self.fCapturingImages = QFrame(self.fImageProvider)
+        self.fCapturingImages.setObjectName(u"fCapturingImages")
+        sizePolicy10.setHeightForWidth(self.fCapturingImages.sizePolicy().hasHeightForWidth())
+        self.fCapturingImages.setSizePolicy(sizePolicy10)
+        self.fCapturingImages.setMinimumSize(QSize(0, 0))
+        self.fCapturingImages.setFrameShape(QFrame.StyledPanel)
+        self.fCapturingImages.setFrameShadow(QFrame.Raised)
+        self.horizontalLayout_16 = QHBoxLayout(self.fCapturingImages)
+        self.horizontalLayout_16.setSpacing(6)
+        self.horizontalLayout_16.setContentsMargins(11, 11, 11, 11)
+        self.horizontalLayout_16.setObjectName(u"horizontalLayout_16")
+        self.tbOpenSaveFolder = QToolButton(self.fCapturingImages)
+        self.tbOpenSaveFolder.setObjectName(u"tbOpenSaveFolder")
+        self.tbOpenSaveFolder.setIcon(icon3)
+
+        self.horizontalLayout_16.addWidget(self.tbOpenSaveFolder)
+
+        self.label_12 = QLabel(self.fCapturingImages)
+        self.label_12.setObjectName(u"label_12")
+
+        self.horizontalLayout_16.addWidget(self.label_12)
+
+        self.leImageFolder = QLineEdit(self.fCapturingImages)
+        self.leImageFolder.setObjectName(u"leImageFolder")
+
+        self.horizontalLayout_16.addWidget(self.leImageFolder)
+
+        self.pbEditSavefolder = QPushButton(self.fCapturingImages)
+        self.pbEditSavefolder.setObjectName(u"pbEditSavefolder")
+        self.pbEditSavefolder.setMinimumSize(QSize(20, 0))
+
+        self.horizontalLayout_16.addWidget(self.pbEditSavefolder)
+
+        self.horizontalSpacer_62 = QSpacerItem(219, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+
+        self.horizontalLayout_16.addItem(self.horizontalSpacer_62)
+
+
+        self.verticalLayout_51.addWidget(self.fCapturingImages)
 
         self.lwImageList = QListWidget(self.fImageProvider)
         self.lwImageList.setObjectName(u"lwImageList")
@@ -8469,7 +8469,7 @@ class Ui_RobotWindow(object):
 
         self.twDeltaManager.setCurrentIndex(1)
         self.pbReadI0_3.setDefault(False)
-        self.twModule.setCurrentIndex(3)
+        self.twModule.setCurrentIndex(1)
         self.twGcodeEditor.setCurrentIndex(0)
         self.pbImageMapping.setDefault(False)
         self.cbImageSource.setCurrentIndex(0)
@@ -8718,14 +8718,14 @@ class Ui_RobotWindow(object):
         self.pbSaveImage.setToolTip(QCoreApplication.translate("RobotWindow", u"<html><head/><body><p>Capture</p><p>M98 PcaptureCamera</p></body></html>", None))
 #endif // QT_CONFIG(tooltip)
         self.pbSaveImage.setText("")
-        self.tbOpenSaveFolder.setText(QCoreApplication.translate("RobotWindow", u"...", None))
-        self.label_12.setText(QCoreApplication.translate("RobotWindow", u"Image Folder", None))
-        self.leImageFolder.setText(QCoreApplication.translate("RobotWindow", u"/Images", None))
-        self.pbEditSavefolder.setText(QCoreApplication.translate("RobotWindow", u"...", None))
 #if QT_CONFIG(tooltip)
         self.pbRefreshImageFolder.setToolTip(QCoreApplication.translate("RobotWindow", u"<html><head/><body><p>Capture</p><p>M98 PcaptureCamera</p></body></html>", None))
 #endif // QT_CONFIG(tooltip)
         self.pbRefreshImageFolder.setText("")
+        self.tbOpenSaveFolder.setText(QCoreApplication.translate("RobotWindow", u"...", None))
+        self.label_12.setText(QCoreApplication.translate("RobotWindow", u"Image Folder", None))
+        self.leImageFolder.setText(QCoreApplication.translate("RobotWindow", u"/Images", None))
+        self.pbEditSavefolder.setText(QCoreApplication.translate("RobotWindow", u"...", None))
         self.gbImageViewer.setTitle(QCoreApplication.translate("RobotWindow", u"Image Viewer", None))
 #if QT_CONFIG(tooltip)
         self.pbFindChessboardTool.setToolTip(QCoreApplication.translate("RobotWindow", u"Warp Perspective", None))

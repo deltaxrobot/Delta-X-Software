@@ -237,6 +237,8 @@ public:
     QWidget* FullDisplayPage;
     QLayout* FullDisplayLayout;
 
+    QLabel* ImageLabel = NULL;
+
     QStackedWidget* SubWindowStackedWidget;
 
     QTime performanceTimer;
