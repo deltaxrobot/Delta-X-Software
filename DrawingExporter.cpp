@@ -33,6 +33,13 @@ void DrawingExporter::SetGcodeExportParameterPointer(QLineEdit *safeZHeight, QLi
     leDrawingAcceleration = drawingAcceleration;
 }
 
+void DrawingExporter::SetDrawingPointInPlane(QLineEdit *point1, QLineEdit *point2, QLineEdit *point3)
+{
+    lePoint1 = point1;
+    lePoint2 = point2;
+    lePoint3 = point3;
+}
+
 void DrawingExporter::SetDrawingAreaWidget(DrawingWidget * drawingWidget)
 {
     drawingArea = drawingWidget;
@@ -169,6 +176,46 @@ void DrawingExporter::ConvertSVGToArea(QString fileName)
 
 void DrawingExporter::ExportGcodes()
 {
+    // Lấy giá trị từ QLineEdit và phân tích tọa độ
+    QStringList point1 = lePoint1->text().split(",");
+    QStringList point2 = lePoint2->text().split(",");
+    QStringList point3 = lePoint3->text().split(",");
+
+    if (point1.size() < 3 || point2.size() < 3 || point3.size() < 3) {
+        qDebug(nullptr, "Error", "Invalid coordinates for points A, B, or C.");
+        return;
+    }
+
+    float xA = point1[0].toFloat();
+    float yA = point1[1].toFloat();
+    float zA = point1[2].toFloat();
+
+    float xB = point2[0].toFloat();
+    float yB = point2[1].toFloat();
+    float zB = point2[2].toFloat();
+
+    float xC = point3[0].toFloat();
+    float yC = point3[1].toFloat();
+    float zC = point3[2].toFloat();
+
+    // Tính vector pháp tuyến của mặt phẳng
+    QVector3D v1(xB - xA, yB - yA, zB - zA);
+    QVector3D v2(xC - xA, yC - yA, zC - zA);
+    QVector3D normal = QVector3D::crossProduct(v1, v2);
+
+    float A = normal.x();
+    float B = normal.y();
+    float C = normal.z();
+    float D = -(A * xA + B * yA + C * zA);
+
+    // Hàm tính toán giá trị Z trên mặt phẳng
+    auto calculateZ = [&](float x, float y) -> float {
+        if (C == 0.0f) return zA; // Trường hợp mặt phẳng không hợp lệ
+        return -(A * x + B * y + D) / C;
+    };
+
+    pteGcodeEditor->setPlainText("");
+
     float downZ = leSafeZHeight->text().toFloat();
     float upZ = downZ + 10;
     float safeZ = downZ + 50;
@@ -203,6 +250,9 @@ void DrawingExporter::ExportGcodes()
     QString startDrawing = zDown;
     QString finishDrawing = zUp;
 
+    pteGcodeEditor->append(gcodes);
+    gcodes = "";
+
     if (cbDrawingEffector->currentText() == "Laser")
     {
         startDrawing = laserOn;
@@ -211,10 +261,6 @@ void DrawingExporter::ExportGcodes()
 
     if (drawingArea->Vectors.empty() == false)
     {
-
-        float curXf = 0;
-        float curYf = 0;
-
         foreach(QVector<QPointF> points, drawingArea->Vectors)
         {
             gcodes += finishDrawing;
@@ -225,10 +271,14 @@ void DrawingExporter::ExportGcodes()
 
             foreach(QPointF point, points)
             {
-                curXf = point.x();
-                curYf = -point.y();
+                float curXf = point.x();
+                float curYf = -point.y();
+                float curZf = calculateZ(curXf, curYf); // Tính Z dựa trên mặt phẳng
 
-                gcodes += QString("G01") + " X" + QString::number(curXf, 'f', 1) + " Y" + QString::number(curYf, 'f', 1) + "\n";
+                gcodes += QString("G01") +
+                          " X" + QString::number(curXf, 'f', 1) +
+                          " Y" + QString::number(curYf, 'f', 1) +
+                          " Z" + QString::number(curZf, 'f', 1) + "\n";
 
                 if (index == begin)
                 {
@@ -241,6 +291,9 @@ void DrawingExporter::ExportGcodes()
 
                 index++;
             }
+
+            pteGcodeEditor->append(gcodes);
+            gcodes = "";
         }
     }
 
@@ -302,7 +355,12 @@ void DrawingExporter::ExportGcodes()
 
                             if (isWhite == true || realX == 0)
                             {
-                                gcodes += QString("G01") + " X" + QString::number(xPos, 'f', 1) + " Y" + QString::number(yPos, 'f', 1) + "\n";
+                                float zPos = calculateZ(xPos, yPos); // Tính Z dựa trên mặt phẳng
+
+                                gcodes += QString("G01") +
+                                          " X" + QString::number(xPos, 'f', 1) +
+                                          " Y" + QString::number(yPos, 'f', 1) +
+                                          " Z" + QString::number(zPos, 'f', 1) + "\n";
                                 gcodes += startDrawing + "\n";
                                 isWhite = false;
                             }
@@ -312,8 +370,13 @@ void DrawingExporter::ExportGcodes()
                             binaries += "1";
 
                             if (isWhite == false)
-                            {
-                                gcodes += QString("G01") + " X" + QString::number(lastX, 'f', 1) + " Y" + QString::number(yPos, 'f', 1) + "\n";
+                            {                                
+                                float zPos = calculateZ(lastX, yPos); // Tính Z dựa trên mặt phẳng
+
+                                gcodes += QString("G01") +
+                                          " X" + QString::number(lastX, 'f', 1) +
+                                          " Y" + QString::number(yPos, 'f', 1) +
+                                          " Z" + QString::number(zPos, 'f', 1) + "\n";
                                 gcodes += finishDrawing + "\n";
                                 isWhite = true;
                             }
@@ -328,7 +391,12 @@ void DrawingExporter::ExportGcodes()
                         // Black point
                         if (red == 0 && green == 0 && blue == 0 && alpha == 255)
                         {
-                            gcodes += QString("G01") + " X" + QString::number(xPos) + " Y" + QString::number(yPos) + "\n";;
+                            float zPos = calculateZ(xPos, yPos); // Tính Z dựa trên mặt phẳng
+                            gcodes += QString("G01") +
+                                      " X" + QString::number(xPos, 'f', 1) +
+                                      " Y" + QString::number(yPos, 'f', 1) +
+                                      " Z" + QString::number(zPos, 'f', 1) + "\n";
+
                             gcodes += startDrawing + "\n";
                             gcodes += finishDrawing + "\n";
                         }
@@ -338,22 +406,28 @@ void DrawingExporter::ExportGcodes()
                 {
                     if (distance < lastImage.LineSpace)
                         continue;
-                    gcodes += QString("G01") + " X" + QString::number(xPos) + " Y" + QString::number(yPos) + "\n";
+                    float zPos = calculateZ(xPos, yPos); // Tính Z dựa trên mặt phẳng
+                    gcodes += QString("G01") +
+                              " X" + QString::number(xPos, 'f', 1) +
+                              " Y" + QString::number(yPos, 'f', 1) +
+                              " Z" + QString::number(zPos, 'f', 1) + "\n";
                     gcodes += "#100 = " + QString::number(colorValue.black()) + "\n";
                     gcodes += startDrawing + "\n";
+
                 }
 
                 lastX = xPos;
                 lastY = yPos;
 
                 j = realX;
+
+                pteGcodeEditor->append(gcodes);
+                gcodes = "";
             }
             binaries += "\n";
         }
     }
-
-    gcodes += finishDrawing + "\n";
-    pteGcodeEditor->setPlainText(gcodes);
+    pteGcodeEditor->append(finishDrawing + "\n");
 }
 
 void DrawingExporter::ApplyConversion()
@@ -446,7 +520,7 @@ void DrawingExporter::ApplyConversion()
 				QColor color = image.pixelColor(QPoint(i, j));
 
 				if (color.black() == 0)
-					image.setPixel(i, j, qRgba(255, 255, 255, 0));
+                    image.setPixel(i, j, qRgba(255, 255, 255, 255));
 			}
 		}
 	}
@@ -470,15 +544,15 @@ void DrawingExporter::ApplyConversion()
                     value = grayValue > thresh ? 255 : 0;
                 }
 
-				int alpha = 255 - value;
+//				int alpha = 255 - value;
 
-				if (color.alpha() == 0)
-				{
-					value = 255;
-					alpha = 0;
-				}
+//				if (color.alpha() == 0)
+//				{
+//					value = 255;
+//					alpha = 0;
+//				}
 
-				image.setPixel(i, j, qRgba(value, value, value, alpha));
+                image.setPixel(i, j, qRgba(value, value, value, 255));
 			}
 		}
 	}

@@ -320,6 +320,7 @@ void RobotWindow::InitVariables()
     DeltaDrawingExporter->SetGcodeEditor(ui->pteGcodeArea);
     DeltaDrawingExporter->SetEffector(ui->cbDrawingEffector);
     DeltaDrawingExporter->SetGcodeExportParameterPointer(ui->leSafeZHeight, ui->leTravelSpeed, ui->leDrawingSpeed, ui->leDrawingAcceleration);
+    DeltaDrawingExporter->SetDrawingPointInPlane(ui->leADrawingPoint, ui->leBDrawingPoint, ui->leCDrawingPoint);
 
     // --------- UI Update -------
 
@@ -1103,6 +1104,19 @@ void RobotWindow::InitEvents()
 	connect(ui->pbCursor, SIGNAL(clicked(bool)), ui->lbDrawingArea, SLOT(SelectCursor()));
 
     connect(ui->pbExportDrawingGcodes, SIGNAL(clicked(bool)), DeltaDrawingExporter, SLOT(ExportGcodes()));
+    connect(ui->pbGetPlaneAPoint, &QPushButton::clicked, [=]()
+    {
+        pastePointValues(ui->leADrawingPoint);
+    });
+    connect(ui->pbGetPlaneBPoint, &QPushButton::clicked, [=]()
+    {
+        pastePointValues(ui->leBDrawingPoint);
+    });
+    connect(ui->pbGetPlaneCPoint, &QPushButton::clicked, [=]()
+    {
+        pastePointValues(ui->leCDrawingPoint);
+    });
+
 
 }
 
@@ -2992,7 +3006,7 @@ void RobotWindow::SetPump(bool value)
     emit Send(DeviceManager::ROBOT, QString("M360 E0"));
 	if (value == true)
 	{
-        emit Send(DeviceManager::ROBOT, QString("M04"));
+        emit Send(DeviceManager::ROBOT, QString("M03"));
 	}
 	else
 	{
@@ -3005,7 +3019,7 @@ void RobotWindow::SetLaser(bool value)
     emit Send(DeviceManager::ROBOT, QString("M360 E3"));
 	if (value == true)
 	{
-        emit Send(DeviceManager::ROBOT, QString("M04"));
+        emit Send(DeviceManager::ROBOT, QString("M03"));
 	}
 	else
 	{
@@ -5028,6 +5042,17 @@ void RobotWindow::pastePointValues(QLineEdit *leX, QLineEdit *leY, QLineEdit *le
         leY->setText(QString::number(y.toFloat()));
         leZ->setText(QString::number(z.toFloat()));
     }
+}
+
+void RobotWindow::pastePointValues(QLineEdit *lePoint)
+{
+    QString x = ui->leX->text();
+    QString y = ui->leY->text();
+    QString z = ui->leZ->text();
+
+    // convert x, y z to text "x,y,z"
+    QString pointText = QString("%1, %2, %3").arg(x).arg(y).arg(z);
+    lePoint->setText(pointText);
 }
 
 void RobotWindow::sendGcode(QString prefix, QString para1, QString para2)

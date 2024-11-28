@@ -525,6 +525,7 @@ private:
     void onImageItemClicked(QListWidgetItem* item);
 
     void pastePointValues(QLineEdit* leX, QLineEdit* leY, QLineEdit* leZ);
+    void pastePointValues(QLineEdit* lePoint);
 
     //--------- Tool -------
 

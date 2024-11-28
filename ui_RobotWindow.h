@@ -539,6 +539,7 @@ public:
     QFrame *frame_4;
     QVBoxLayout *verticalLayout_21;
     QToolButton *pbOpenPicture;
+    QWidget *ImageFrame;
     QHBoxLayout *horizontalLayout_24;
     QFrame *frame_2;
     QLabel *lbImageForDrawing;
@@ -606,26 +607,33 @@ public:
     QVBoxLayout *verticalLayout_48;
     QToolButton *pbExportDrawingGcodes;
     QGridLayout *gridLayout_22;
-    QLabel *label_96;
-    QLabel *label_101;
-    QLabel *label_13;
-    QSpacerItem *horizontalSpacer_33;
-    QLabel *label_97;
-    QLineEdit *leTravelSpeed;
     QComboBox *cbDrawMethod;
-    QComboBox *cbDrawingEffector;
-    QLineEdit *leSafeZHeight;
-    QLineEdit *leDrawingAcceleration;
-    QLabel *label_102;
-    QLabel *label_93;
-    QLabel *label_95;
     QLabel *label_100;
-    QLabel *label_98;
-    QLineEdit *leDrawingSpeed;
-    QLabel *label_99;
-    QLabel *label_23;
+    QSpacerItem *horizontalSpacer_33;
     QLineEdit *leSpace;
+    QLabel *label_96;
+    QLineEdit *leADrawingPoint;
+    QLineEdit *leTravelSpeed;
+    QLabel *label_93;
+    QLabel *label_106;
     QLabel *label_103;
+    QLineEdit *leCDrawingPoint;
+    QLabel *label_23;
+    QLineEdit *leSafeZHeight;
+    QLabel *label_95;
+    QLabel *label_98;
+    QComboBox *cbDrawingEffector;
+    QLineEdit *leDrawingSpeed;
+    QLabel *label_101;
+    QLabel *label_102;
+    QLineEdit *leDrawingAcceleration;
+    QLineEdit *leBDrawingPoint;
+    QLabel *label_99;
+    QLabel *label_97;
+    QLabel *label_13;
+    QPushButton *pbGetPlaneAPoint;
+    QPushButton *pbGetPlaneBPoint;
+    QPushButton *pbGetPlaneCPoint;
     QSpacerItem *verticalSpacer_6;
     QWidget *DeviceTabManagerWidget;
     QVBoxLayout *GeometryTabManagerLayout;
@@ -5119,6 +5127,7 @@ public:
         font13.setBold(false);
         pbOpenPicture->setFont(font13);
         pbOpenPicture->setLayoutDirection(Qt::LeftToRight);
+        pbOpenPicture->setStyleSheet(QString::fromUtf8(""));
         QIcon icon31;
         icon31.addFile(QString::fromUtf8(":/icon/icons8_image_96px.png"), QSize(), QIcon::Normal, QIcon::Off);
         pbOpenPicture->setIcon(icon31);
@@ -5131,14 +5140,19 @@ public:
 
         verticalLayout_37->addWidget(frame_4);
 
-        horizontalLayout_24 = new QHBoxLayout();
+        ImageFrame = new QWidget(scrollAreaWidgetContents_6);
+        ImageFrame->setObjectName(QString::fromUtf8("ImageFrame"));
+        ImageFrame->setStyleSheet(QString::fromUtf8(""));
+        horizontalLayout_24 = new QHBoxLayout(ImageFrame);
         horizontalLayout_24->setSpacing(6);
+        horizontalLayout_24->setContentsMargins(11, 11, 11, 11);
         horizontalLayout_24->setObjectName(QString::fromUtf8("horizontalLayout_24"));
-        frame_2 = new QFrame(scrollAreaWidgetContents_6);
+        frame_2 = new QFrame(ImageFrame);
         frame_2->setObjectName(QString::fromUtf8("frame_2"));
         sizePolicy.setHeightForWidth(frame_2->sizePolicy().hasHeightForWidth());
         frame_2->setSizePolicy(sizePolicy);
         frame_2->setMinimumSize(QSize(0, 250));
+        frame_2->setStyleSheet(QString::fromUtf8(""));
         frame_2->setFrameShape(QFrame::StyledPanel);
         frame_2->setFrameShadow(QFrame::Raised);
         lbImageForDrawing = new QLabel(frame_2);
@@ -5158,7 +5172,7 @@ public:
 
         horizontalLayout_24->addWidget(frame_2);
 
-        widget1 = new QWidget(scrollAreaWidgetContents_6);
+        widget1 = new QWidget(ImageFrame);
         widget1->setObjectName(QString::fromUtf8("widget1"));
         widget1->setMaximumSize(QSize(100, 16777215));
         verticalLayout_36 = new QVBoxLayout(widget1);
@@ -5197,7 +5211,7 @@ public:
         horizontalLayout_24->addWidget(widget1);
 
 
-        verticalLayout_37->addLayout(horizontalLayout_24);
+        verticalLayout_37->addWidget(ImageFrame);
 
         widget_2 = new QWidget(scrollAreaWidgetContents_6);
         widget_2->setObjectName(QString::fromUtf8("widget_2"));
@@ -5663,6 +5677,38 @@ public:
         gridLayout_22->setSpacing(15);
         gridLayout_22->setObjectName(QString::fromUtf8("gridLayout_22"));
         gridLayout_22->setContentsMargins(-1, 5, -1, 5);
+        cbDrawMethod = new QComboBox(scrollAreaWidgetContents_6);
+        cbDrawMethod->addItem(QString());
+        cbDrawMethod->addItem(QString());
+        cbDrawMethod->setObjectName(QString::fromUtf8("cbDrawMethod"));
+        cbDrawMethod->setMinimumSize(QSize(0, 30));
+        cbDrawMethod->setMaximumSize(QSize(150, 16777215));
+
+        gridLayout_22->addWidget(cbDrawMethod, 1, 1, 1, 1);
+
+        label_100 = new QLabel(scrollAreaWidgetContents_6);
+        label_100->setObjectName(QString::fromUtf8("label_100"));
+        sizePolicy.setHeightForWidth(label_100->sizePolicy().hasHeightForWidth());
+        label_100->setSizePolicy(sizePolicy);
+        label_100->setMinimumSize(QSize(0, 0));
+        QFont font14;
+        font14.setItalic(false);
+        label_100->setFont(font14);
+        label_100->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
+
+        gridLayout_22->addWidget(label_100, 4, 2, 1, 1);
+
+        horizontalSpacer_33 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        gridLayout_22->addItem(horizontalSpacer_33, 0, 2, 1, 1);
+
+        leSpace = new QLineEdit(scrollAreaWidgetContents_6);
+        leSpace->setObjectName(QString::fromUtf8("leSpace"));
+        leSpace->setMinimumSize(QSize(0, 30));
+        leSpace->setMaximumSize(QSize(150, 16777215));
+
+        gridLayout_22->addWidget(leSpace, 2, 1, 1, 1);
+
         label_96 = new QLabel(scrollAreaWidgetContents_6);
         label_96->setObjectName(QString::fromUtf8("label_96"));
         sizePolicy6.setHeightForWidth(label_96->sizePolicy().hasHeightForWidth());
@@ -5672,37 +5718,12 @@ public:
 
         gridLayout_22->addWidget(label_96, 4, 0, 1, 1);
 
-        label_101 = new QLabel(scrollAreaWidgetContents_6);
-        label_101->setObjectName(QString::fromUtf8("label_101"));
-        sizePolicy.setHeightForWidth(label_101->sizePolicy().hasHeightForWidth());
-        label_101->setSizePolicy(sizePolicy);
-        label_101->setMinimumSize(QSize(0, 0));
-        QFont font14;
-        font14.setItalic(false);
-        label_101->setFont(font14);
-        label_101->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
+        leADrawingPoint = new QLineEdit(scrollAreaWidgetContents_6);
+        leADrawingPoint->setObjectName(QString::fromUtf8("leADrawingPoint"));
+        leADrawingPoint->setMinimumSize(QSize(0, 30));
+        leADrawingPoint->setMaximumSize(QSize(150, 16777215));
 
-        gridLayout_22->addWidget(label_101, 6, 2, 1, 1);
-
-        label_13 = new QLabel(scrollAreaWidgetContents_6);
-        label_13->setObjectName(QString::fromUtf8("label_13"));
-        label_13->setFont(font4);
-        label_13->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
-
-        gridLayout_22->addWidget(label_13, 1, 0, 1, 1);
-
-        horizontalSpacer_33 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-
-        gridLayout_22->addItem(horizontalSpacer_33, 0, 2, 1, 1);
-
-        label_97 = new QLabel(scrollAreaWidgetContents_6);
-        label_97->setObjectName(QString::fromUtf8("label_97"));
-        sizePolicy6.setHeightForWidth(label_97->sizePolicy().hasHeightForWidth());
-        label_97->setSizePolicy(sizePolicy6);
-        label_97->setMinimumSize(QSize(0, 0));
-        label_97->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
-
-        gridLayout_22->addWidget(label_97, 6, 0, 1, 1);
+        gridLayout_22->addWidget(leADrawingPoint, 9, 1, 1, 1);
 
         leTravelSpeed = new QLineEdit(scrollAreaWidgetContents_6);
         leTravelSpeed->setObjectName(QString::fromUtf8("leTravelSpeed"));
@@ -5711,14 +5732,72 @@ public:
 
         gridLayout_22->addWidget(leTravelSpeed, 4, 1, 1, 1);
 
-        cbDrawMethod = new QComboBox(scrollAreaWidgetContents_6);
-        cbDrawMethod->addItem(QString());
-        cbDrawMethod->addItem(QString());
-        cbDrawMethod->setObjectName(QString::fromUtf8("cbDrawMethod"));
-        cbDrawMethod->setMinimumSize(QSize(0, 30));
-        cbDrawMethod->setMaximumSize(QSize(150, 16777215));
+        label_93 = new QLabel(scrollAreaWidgetContents_6);
+        label_93->setObjectName(QString::fromUtf8("label_93"));
+        sizePolicy2.setHeightForWidth(label_93->sizePolicy().hasHeightForWidth());
+        label_93->setSizePolicy(sizePolicy2);
+        label_93->setMinimumSize(QSize(0, 0));
+        label_93->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
 
-        gridLayout_22->addWidget(cbDrawMethod, 1, 1, 1, 1);
+        gridLayout_22->addWidget(label_93, 0, 0, 1, 1);
+
+        label_106 = new QLabel(scrollAreaWidgetContents_6);
+        label_106->setObjectName(QString::fromUtf8("label_106"));
+        sizePolicy6.setHeightForWidth(label_106->sizePolicy().hasHeightForWidth());
+        label_106->setSizePolicy(sizePolicy6);
+        label_106->setMinimumSize(QSize(0, 0));
+        label_106->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+
+        gridLayout_22->addWidget(label_106, 8, 0, 1, 1);
+
+        label_103 = new QLabel(scrollAreaWidgetContents_6);
+        label_103->setObjectName(QString::fromUtf8("label_103"));
+        sizePolicy.setHeightForWidth(label_103->sizePolicy().hasHeightForWidth());
+        label_103->setSizePolicy(sizePolicy);
+        label_103->setMinimumSize(QSize(0, 0));
+        label_103->setFont(font14);
+        label_103->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
+
+        gridLayout_22->addWidget(label_103, 2, 2, 1, 1);
+
+        leCDrawingPoint = new QLineEdit(scrollAreaWidgetContents_6);
+        leCDrawingPoint->setObjectName(QString::fromUtf8("leCDrawingPoint"));
+        leCDrawingPoint->setMinimumSize(QSize(0, 30));
+        leCDrawingPoint->setMaximumSize(QSize(150, 16777215));
+
+        gridLayout_22->addWidget(leCDrawingPoint, 11, 1, 1, 1);
+
+        label_23 = new QLabel(scrollAreaWidgetContents_6);
+        label_23->setObjectName(QString::fromUtf8("label_23"));
+        label_23->setFont(font4);
+        label_23->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+
+        gridLayout_22->addWidget(label_23, 2, 0, 1, 1);
+
+        leSafeZHeight = new QLineEdit(scrollAreaWidgetContents_6);
+        leSafeZHeight->setObjectName(QString::fromUtf8("leSafeZHeight"));
+        leSafeZHeight->setMinimumSize(QSize(0, 30));
+        leSafeZHeight->setMaximumSize(QSize(150, 16777215));
+
+        gridLayout_22->addWidget(leSafeZHeight, 3, 1, 1, 1);
+
+        label_95 = new QLabel(scrollAreaWidgetContents_6);
+        label_95->setObjectName(QString::fromUtf8("label_95"));
+        sizePolicy6.setHeightForWidth(label_95->sizePolicy().hasHeightForWidth());
+        label_95->setSizePolicy(sizePolicy6);
+        label_95->setMinimumSize(QSize(0, 0));
+        label_95->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+
+        gridLayout_22->addWidget(label_95, 3, 0, 1, 1);
+
+        label_98 = new QLabel(scrollAreaWidgetContents_6);
+        label_98->setObjectName(QString::fromUtf8("label_98"));
+        sizePolicy6.setHeightForWidth(label_98->sizePolicy().hasHeightForWidth());
+        label_98->setSizePolicy(sizePolicy6);
+        label_98->setMinimumSize(QSize(0, 0));
+        label_98->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+
+        gridLayout_22->addWidget(label_98, 7, 0, 1, 1);
 
         cbDrawingEffector = new QComboBox(scrollAreaWidgetContents_6);
         cbDrawingEffector->addItem(QString());
@@ -5731,19 +5810,22 @@ public:
 
         gridLayout_22->addWidget(cbDrawingEffector, 0, 1, 1, 1);
 
-        leSafeZHeight = new QLineEdit(scrollAreaWidgetContents_6);
-        leSafeZHeight->setObjectName(QString::fromUtf8("leSafeZHeight"));
-        leSafeZHeight->setMinimumSize(QSize(0, 30));
-        leSafeZHeight->setMaximumSize(QSize(150, 16777215));
+        leDrawingSpeed = new QLineEdit(scrollAreaWidgetContents_6);
+        leDrawingSpeed->setObjectName(QString::fromUtf8("leDrawingSpeed"));
+        leDrawingSpeed->setMinimumSize(QSize(0, 30));
+        leDrawingSpeed->setMaximumSize(QSize(150, 16777215));
 
-        gridLayout_22->addWidget(leSafeZHeight, 3, 1, 1, 1);
+        gridLayout_22->addWidget(leDrawingSpeed, 6, 1, 1, 1);
 
-        leDrawingAcceleration = new QLineEdit(scrollAreaWidgetContents_6);
-        leDrawingAcceleration->setObjectName(QString::fromUtf8("leDrawingAcceleration"));
-        leDrawingAcceleration->setMinimumSize(QSize(0, 30));
-        leDrawingAcceleration->setMaximumSize(QSize(150, 16777215));
+        label_101 = new QLabel(scrollAreaWidgetContents_6);
+        label_101->setObjectName(QString::fromUtf8("label_101"));
+        sizePolicy.setHeightForWidth(label_101->sizePolicy().hasHeightForWidth());
+        label_101->setSizePolicy(sizePolicy);
+        label_101->setMinimumSize(QSize(0, 0));
+        label_101->setFont(font14);
+        label_101->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
 
-        gridLayout_22->addWidget(leDrawingAcceleration, 7, 1, 1, 1);
+        gridLayout_22->addWidget(label_101, 6, 2, 1, 1);
 
         label_102 = new QLabel(scrollAreaWidgetContents_6);
         label_102->setObjectName(QString::fromUtf8("label_102"));
@@ -5755,49 +5837,19 @@ public:
 
         gridLayout_22->addWidget(label_102, 7, 2, 1, 1);
 
-        label_93 = new QLabel(scrollAreaWidgetContents_6);
-        label_93->setObjectName(QString::fromUtf8("label_93"));
-        sizePolicy2.setHeightForWidth(label_93->sizePolicy().hasHeightForWidth());
-        label_93->setSizePolicy(sizePolicy2);
-        label_93->setMinimumSize(QSize(0, 0));
-        label_93->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+        leDrawingAcceleration = new QLineEdit(scrollAreaWidgetContents_6);
+        leDrawingAcceleration->setObjectName(QString::fromUtf8("leDrawingAcceleration"));
+        leDrawingAcceleration->setMinimumSize(QSize(0, 30));
+        leDrawingAcceleration->setMaximumSize(QSize(150, 16777215));
 
-        gridLayout_22->addWidget(label_93, 0, 0, 1, 1);
+        gridLayout_22->addWidget(leDrawingAcceleration, 7, 1, 1, 1);
 
-        label_95 = new QLabel(scrollAreaWidgetContents_6);
-        label_95->setObjectName(QString::fromUtf8("label_95"));
-        sizePolicy6.setHeightForWidth(label_95->sizePolicy().hasHeightForWidth());
-        label_95->setSizePolicy(sizePolicy6);
-        label_95->setMinimumSize(QSize(0, 0));
-        label_95->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+        leBDrawingPoint = new QLineEdit(scrollAreaWidgetContents_6);
+        leBDrawingPoint->setObjectName(QString::fromUtf8("leBDrawingPoint"));
+        leBDrawingPoint->setMinimumSize(QSize(0, 30));
+        leBDrawingPoint->setMaximumSize(QSize(150, 16777215));
 
-        gridLayout_22->addWidget(label_95, 3, 0, 1, 1);
-
-        label_100 = new QLabel(scrollAreaWidgetContents_6);
-        label_100->setObjectName(QString::fromUtf8("label_100"));
-        sizePolicy.setHeightForWidth(label_100->sizePolicy().hasHeightForWidth());
-        label_100->setSizePolicy(sizePolicy);
-        label_100->setMinimumSize(QSize(0, 0));
-        label_100->setFont(font14);
-        label_100->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
-
-        gridLayout_22->addWidget(label_100, 4, 2, 1, 1);
-
-        label_98 = new QLabel(scrollAreaWidgetContents_6);
-        label_98->setObjectName(QString::fromUtf8("label_98"));
-        sizePolicy6.setHeightForWidth(label_98->sizePolicy().hasHeightForWidth());
-        label_98->setSizePolicy(sizePolicy6);
-        label_98->setMinimumSize(QSize(0, 0));
-        label_98->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
-
-        gridLayout_22->addWidget(label_98, 7, 0, 1, 1);
-
-        leDrawingSpeed = new QLineEdit(scrollAreaWidgetContents_6);
-        leDrawingSpeed->setObjectName(QString::fromUtf8("leDrawingSpeed"));
-        leDrawingSpeed->setMinimumSize(QSize(0, 30));
-        leDrawingSpeed->setMaximumSize(QSize(150, 16777215));
-
-        gridLayout_22->addWidget(leDrawingSpeed, 6, 1, 1, 1);
+        gridLayout_22->addWidget(leBDrawingPoint, 10, 1, 1, 1);
 
         label_99 = new QLabel(scrollAreaWidgetContents_6);
         label_99->setObjectName(QString::fromUtf8("label_99"));
@@ -5809,29 +5861,42 @@ public:
 
         gridLayout_22->addWidget(label_99, 3, 2, 1, 1);
 
-        label_23 = new QLabel(scrollAreaWidgetContents_6);
-        label_23->setObjectName(QString::fromUtf8("label_23"));
-        label_23->setFont(font4);
-        label_23->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+        label_97 = new QLabel(scrollAreaWidgetContents_6);
+        label_97->setObjectName(QString::fromUtf8("label_97"));
+        sizePolicy6.setHeightForWidth(label_97->sizePolicy().hasHeightForWidth());
+        label_97->setSizePolicy(sizePolicy6);
+        label_97->setMinimumSize(QSize(0, 0));
+        label_97->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
 
-        gridLayout_22->addWidget(label_23, 2, 0, 1, 1);
+        gridLayout_22->addWidget(label_97, 6, 0, 1, 1);
 
-        leSpace = new QLineEdit(scrollAreaWidgetContents_6);
-        leSpace->setObjectName(QString::fromUtf8("leSpace"));
-        leSpace->setMinimumSize(QSize(0, 30));
-        leSpace->setMaximumSize(QSize(150, 16777215));
+        label_13 = new QLabel(scrollAreaWidgetContents_6);
+        label_13->setObjectName(QString::fromUtf8("label_13"));
+        label_13->setFont(font4);
+        label_13->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
 
-        gridLayout_22->addWidget(leSpace, 2, 1, 1, 1);
+        gridLayout_22->addWidget(label_13, 1, 0, 1, 1);
 
-        label_103 = new QLabel(scrollAreaWidgetContents_6);
-        label_103->setObjectName(QString::fromUtf8("label_103"));
-        sizePolicy.setHeightForWidth(label_103->sizePolicy().hasHeightForWidth());
-        label_103->setSizePolicy(sizePolicy);
-        label_103->setMinimumSize(QSize(0, 0));
-        label_103->setFont(font14);
-        label_103->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
+        pbGetPlaneAPoint = new QPushButton(scrollAreaWidgetContents_6);
+        pbGetPlaneAPoint->setObjectName(QString::fromUtf8("pbGetPlaneAPoint"));
+        sizePolicy7.setHeightForWidth(pbGetPlaneAPoint->sizePolicy().hasHeightForWidth());
+        pbGetPlaneAPoint->setSizePolicy(sizePolicy7);
 
-        gridLayout_22->addWidget(label_103, 2, 2, 1, 1);
+        gridLayout_22->addWidget(pbGetPlaneAPoint, 9, 0, 1, 1);
+
+        pbGetPlaneBPoint = new QPushButton(scrollAreaWidgetContents_6);
+        pbGetPlaneBPoint->setObjectName(QString::fromUtf8("pbGetPlaneBPoint"));
+        sizePolicy7.setHeightForWidth(pbGetPlaneBPoint->sizePolicy().hasHeightForWidth());
+        pbGetPlaneBPoint->setSizePolicy(sizePolicy7);
+
+        gridLayout_22->addWidget(pbGetPlaneBPoint, 10, 0, 1, 1);
+
+        pbGetPlaneCPoint = new QPushButton(scrollAreaWidgetContents_6);
+        pbGetPlaneCPoint->setObjectName(QString::fromUtf8("pbGetPlaneCPoint"));
+        sizePolicy7.setHeightForWidth(pbGetPlaneCPoint->sizePolicy().hasHeightForWidth());
+        pbGetPlaneCPoint->setSizePolicy(sizePolicy7);
+
+        gridLayout_22->addWidget(pbGetPlaneCPoint, 11, 0, 1, 1);
 
 
         verticalLayout_37->addLayout(gridLayout_22);
@@ -9466,7 +9531,7 @@ public:
 
         twDeltaManager->setCurrentIndex(1);
         pbReadI0_3->setDefault(false);
-        twModule->setCurrentIndex(1);
+        twModule->setCurrentIndex(3);
         twGcodeEditor->setCurrentIndex(0);
         pbImageMapping->setDefault(false);
         cbImageSource->setCurrentIndex(0);
@@ -10066,25 +10131,29 @@ public:
         pbDrawCircle->setText(QCoreApplication::translate("RobotWindow", "Circle", nullptr));
         pbZoomOut->setText(QCoreApplication::translate("RobotWindow", "Zoom Out", nullptr));
         pbExportDrawingGcodes->setText(QCoreApplication::translate("RobotWindow", "Export G-code", nullptr));
-        label_96->setText(QCoreApplication::translate("RobotWindow", "Travel Speed", nullptr));
-        label_101->setText(QCoreApplication::translate("RobotWindow", "mm/s", nullptr));
-        label_13->setText(QCoreApplication::translate("RobotWindow", "Move Type", nullptr));
-        label_97->setText(QCoreApplication::translate("RobotWindow", "Drawing Speed", nullptr));
         cbDrawMethod->setItemText(0, QCoreApplication::translate("RobotWindow", "Line", nullptr));
         cbDrawMethod->setItemText(1, QCoreApplication::translate("RobotWindow", "Dot", nullptr));
 
+        label_100->setText(QCoreApplication::translate("RobotWindow", "mm/s", nullptr));
+        leSpace->setText(QCoreApplication::translate("RobotWindow", "1", nullptr));
+        label_96->setText(QCoreApplication::translate("RobotWindow", "Travel Speed", nullptr));
+        label_93->setText(QCoreApplication::translate("RobotWindow", "Drawing Tool", nullptr));
+        label_106->setText(QCoreApplication::translate("RobotWindow", "Plane", nullptr));
+        label_103->setText(QCoreApplication::translate("RobotWindow", "mm/dot(line)", nullptr));
+        label_23->setText(QCoreApplication::translate("RobotWindow", "Density", nullptr));
+        label_95->setText(QCoreApplication::translate("RobotWindow", "Drawing Z Height", nullptr));
+        label_98->setText(QCoreApplication::translate("RobotWindow", "Acceleration", nullptr));
         cbDrawingEffector->setItemText(0, QCoreApplication::translate("RobotWindow", "Laser", nullptr));
         cbDrawingEffector->setItemText(1, QCoreApplication::translate("RobotWindow", "Pen", nullptr));
 
+        label_101->setText(QCoreApplication::translate("RobotWindow", "mm/s", nullptr));
         label_102->setText(QCoreApplication::translate("RobotWindow", "mm/s2", nullptr));
-        label_93->setText(QCoreApplication::translate("RobotWindow", "Drawing Tool", nullptr));
-        label_95->setText(QCoreApplication::translate("RobotWindow", "Drawing Z Height", nullptr));
-        label_100->setText(QCoreApplication::translate("RobotWindow", "mm/s", nullptr));
-        label_98->setText(QCoreApplication::translate("RobotWindow", "Acceleration", nullptr));
         label_99->setText(QCoreApplication::translate("RobotWindow", "mm", nullptr));
-        label_23->setText(QCoreApplication::translate("RobotWindow", "Density", nullptr));
-        leSpace->setText(QCoreApplication::translate("RobotWindow", "1", nullptr));
-        label_103->setText(QCoreApplication::translate("RobotWindow", "mm/dot(line)", nullptr));
+        label_97->setText(QCoreApplication::translate("RobotWindow", "Drawing Speed", nullptr));
+        label_13->setText(QCoreApplication::translate("RobotWindow", "Move Type", nullptr));
+        pbGetPlaneAPoint->setText(QCoreApplication::translate("RobotWindow", "A", nullptr));
+        pbGetPlaneBPoint->setText(QCoreApplication::translate("RobotWindow", "B", nullptr));
+        pbGetPlaneCPoint->setText(QCoreApplication::translate("RobotWindow", "C", nullptr));
         twModule->setTabText(twModule->indexOf(tDrawing), QCoreApplication::translate("RobotWindow", "Drawing", nullptr));
         label_158->setText(QCoreApplication::translate("RobotWindow", "Selected Robot", nullptr));
 #if QT_CONFIG(tooltip)

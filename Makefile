@@ -272,6 +272,7 @@ Makefile: DeltaRobotSoftware.pro C:\Qt\5.15.2\msvc2015_64\mkspecs\win32-msvc\qma
 		C:\Qt\5.15.2\msvc2015_64\lib\Qt5QmlModels.prl \
 		C:\Qt\5.15.2\msvc2015_64\lib\Qt5Qml.prl \
 		C:\Qt\5.15.2\msvc2015_64\lib\Qt5Network.prl \
+		C:\Qt\5.15.2\msvc2015_64\lib\Qt5Concurrent.prl \
 		C:\Qt\5.15.2\msvc2015_64\lib\Qt5Core.prl \
 		C:\Qt\5.15.2\msvc2015_64\lib\qtmain.prl \
 		C:\Qt\5.15.2\msvc2015_64\mkspecs\features\build_pass.prf \
@@ -288,6 +289,7 @@ Makefile: DeltaRobotSoftware.pro C:\Qt\5.15.2\msvc2015_64\mkspecs\win32-msvc\qma
 		C:\Qt\5.15.2\msvc2015_64\lib\Qt5QmlModelsd.prl \
 		C:\Qt\5.15.2\msvc2015_64\lib\Qt5Qmld.prl \
 		C:\Qt\5.15.2\msvc2015_64\lib\Qt5Networkd.prl \
+		C:\Qt\5.15.2\msvc2015_64\lib\Qt5Concurrentd.prl \
 		C:\Qt\5.15.2\msvc2015_64\lib\Qt5Cored.prl \
 		C:\Qt\5.15.2\msvc2015_64\lib\qtmaind.prl
 	$(QMAKE) -o Makefile DeltaRobotSoftware.pro -spec win32-msvc "CONFIG+=debug" "CONFIG+=qml_debug"
@@ -479,6 +481,7 @@ C:\Qt\5.15.2\msvc2015_64\lib\Qt5SerialPort.prl:
 C:\Qt\5.15.2\msvc2015_64\lib\Qt5QmlModels.prl:
 C:\Qt\5.15.2\msvc2015_64\lib\Qt5Qml.prl:
 C:\Qt\5.15.2\msvc2015_64\lib\Qt5Network.prl:
+C:\Qt\5.15.2\msvc2015_64\lib\Qt5Concurrent.prl:
 C:\Qt\5.15.2\msvc2015_64\lib\Qt5Core.prl:
 C:\Qt\5.15.2\msvc2015_64\lib\qtmain.prl:
 C:\Qt\5.15.2\msvc2015_64\mkspecs\features\build_pass.prf:
@@ -495,6 +498,7 @@ C:\Qt\5.15.2\msvc2015_64\lib\Qt5SerialPortd.prl:
 C:\Qt\5.15.2\msvc2015_64\lib\Qt5QmlModelsd.prl:
 C:\Qt\5.15.2\msvc2015_64\lib\Qt5Qmld.prl:
 C:\Qt\5.15.2\msvc2015_64\lib\Qt5Networkd.prl:
+C:\Qt\5.15.2\msvc2015_64\lib\Qt5Concurrentd.prl:
 C:\Qt\5.15.2\msvc2015_64\lib\Qt5Cored.prl:
 C:\Qt\5.15.2\msvc2015_64\lib\qtmaind.prl:
 qmake: FORCE

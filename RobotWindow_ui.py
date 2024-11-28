@@ -4065,6 +4065,7 @@ class Ui_RobotWindow(object):
         font13.setBold(False)
         self.pbOpenPicture.setFont(font13)
         self.pbOpenPicture.setLayoutDirection(Qt.LeftToRight)
+        self.pbOpenPicture.setStyleSheet(u"")
         icon31 = QIcon()
         icon31.addFile(u":/icon/icons8_image_96px.png", QSize(), QIcon.Normal, QIcon.Off)
         self.pbOpenPicture.setIcon(icon31)
@@ -4077,14 +4078,19 @@ class Ui_RobotWindow(object):
 
         self.verticalLayout_37.addWidget(self.frame_4)
 
-        self.horizontalLayout_24 = QHBoxLayout()
+        self.ImageFrame = QWidget(self.scrollAreaWidgetContents_6)
+        self.ImageFrame.setObjectName(u"ImageFrame")
+        self.ImageFrame.setStyleSheet(u"")
+        self.horizontalLayout_24 = QHBoxLayout(self.ImageFrame)
         self.horizontalLayout_24.setSpacing(6)
+        self.horizontalLayout_24.setContentsMargins(11, 11, 11, 11)
         self.horizontalLayout_24.setObjectName(u"horizontalLayout_24")
-        self.frame_2 = QFrame(self.scrollAreaWidgetContents_6)
+        self.frame_2 = QFrame(self.ImageFrame)
         self.frame_2.setObjectName(u"frame_2")
         sizePolicy.setHeightForWidth(self.frame_2.sizePolicy().hasHeightForWidth())
         self.frame_2.setSizePolicy(sizePolicy)
         self.frame_2.setMinimumSize(QSize(0, 250))
+        self.frame_2.setStyleSheet(u"")
         self.frame_2.setFrameShape(QFrame.StyledPanel)
         self.frame_2.setFrameShadow(QFrame.Raised)
         self.lbImageForDrawing = QLabel(self.frame_2)
@@ -4104,7 +4110,7 @@ class Ui_RobotWindow(object):
 
         self.horizontalLayout_24.addWidget(self.frame_2)
 
-        self.widget1 = QWidget(self.scrollAreaWidgetContents_6)
+        self.widget1 = QWidget(self.ImageFrame)
         self.widget1.setObjectName(u"widget1")
         self.widget1.setMaximumSize(QSize(100, 16777215))
         self.verticalLayout_36 = QVBoxLayout(self.widget1)
@@ -4143,7 +4149,7 @@ class Ui_RobotWindow(object):
         self.horizontalLayout_24.addWidget(self.widget1)
 
 
-        self.verticalLayout_37.addLayout(self.horizontalLayout_24)
+        self.verticalLayout_37.addWidget(self.ImageFrame)
 
         self.widget_2 = QWidget(self.scrollAreaWidgetContents_6)
         self.widget_2.setObjectName(u"widget_2")
@@ -4609,6 +4615,38 @@ class Ui_RobotWindow(object):
         self.gridLayout_22.setSpacing(15)
         self.gridLayout_22.setObjectName(u"gridLayout_22")
         self.gridLayout_22.setContentsMargins(-1, 5, -1, 5)
+        self.cbDrawMethod = QComboBox(self.scrollAreaWidgetContents_6)
+        self.cbDrawMethod.addItem("")
+        self.cbDrawMethod.addItem("")
+        self.cbDrawMethod.setObjectName(u"cbDrawMethod")
+        self.cbDrawMethod.setMinimumSize(QSize(0, 30))
+        self.cbDrawMethod.setMaximumSize(QSize(150, 16777215))
+
+        self.gridLayout_22.addWidget(self.cbDrawMethod, 1, 1, 1, 1)
+
+        self.label_100 = QLabel(self.scrollAreaWidgetContents_6)
+        self.label_100.setObjectName(u"label_100")
+        sizePolicy.setHeightForWidth(self.label_100.sizePolicy().hasHeightForWidth())
+        self.label_100.setSizePolicy(sizePolicy)
+        self.label_100.setMinimumSize(QSize(0, 0))
+        font14 = QFont()
+        font14.setItalic(False)
+        self.label_100.setFont(font14)
+        self.label_100.setAlignment(Qt.AlignLeading|Qt.AlignLeft|Qt.AlignVCenter)
+
+        self.gridLayout_22.addWidget(self.label_100, 4, 2, 1, 1)
+
+        self.horizontalSpacer_33 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+
+        self.gridLayout_22.addItem(self.horizontalSpacer_33, 0, 2, 1, 1)
+
+        self.leSpace = QLineEdit(self.scrollAreaWidgetContents_6)
+        self.leSpace.setObjectName(u"leSpace")
+        self.leSpace.setMinimumSize(QSize(0, 30))
+        self.leSpace.setMaximumSize(QSize(150, 16777215))
+
+        self.gridLayout_22.addWidget(self.leSpace, 2, 1, 1, 1)
+
         self.label_96 = QLabel(self.scrollAreaWidgetContents_6)
         self.label_96.setObjectName(u"label_96")
         sizePolicy6.setHeightForWidth(self.label_96.sizePolicy().hasHeightForWidth())
@@ -4618,37 +4656,12 @@ class Ui_RobotWindow(object):
 
         self.gridLayout_22.addWidget(self.label_96, 4, 0, 1, 1)
 
-        self.label_101 = QLabel(self.scrollAreaWidgetContents_6)
-        self.label_101.setObjectName(u"label_101")
-        sizePolicy.setHeightForWidth(self.label_101.sizePolicy().hasHeightForWidth())
-        self.label_101.setSizePolicy(sizePolicy)
-        self.label_101.setMinimumSize(QSize(0, 0))
-        font14 = QFont()
-        font14.setItalic(False)
-        self.label_101.setFont(font14)
-        self.label_101.setAlignment(Qt.AlignLeading|Qt.AlignLeft|Qt.AlignVCenter)
+        self.leADrawingPoint = QLineEdit(self.scrollAreaWidgetContents_6)
+        self.leADrawingPoint.setObjectName(u"leADrawingPoint")
+        self.leADrawingPoint.setMinimumSize(QSize(0, 30))
+        self.leADrawingPoint.setMaximumSize(QSize(150, 16777215))
 
-        self.gridLayout_22.addWidget(self.label_101, 6, 2, 1, 1)
-
-        self.label_13 = QLabel(self.scrollAreaWidgetContents_6)
-        self.label_13.setObjectName(u"label_13")
-        self.label_13.setFont(font4)
-        self.label_13.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
-
-        self.gridLayout_22.addWidget(self.label_13, 1, 0, 1, 1)
-
-        self.horizontalSpacer_33 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
-
-        self.gridLayout_22.addItem(self.horizontalSpacer_33, 0, 2, 1, 1)
-
-        self.label_97 = QLabel(self.scrollAreaWidgetContents_6)
-        self.label_97.setObjectName(u"label_97")
-        sizePolicy6.setHeightForWidth(self.label_97.sizePolicy().hasHeightForWidth())
-        self.label_97.setSizePolicy(sizePolicy6)
-        self.label_97.setMinimumSize(QSize(0, 0))
-        self.label_97.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
-
-        self.gridLayout_22.addWidget(self.label_97, 6, 0, 1, 1)
+        self.gridLayout_22.addWidget(self.leADrawingPoint, 9, 1, 1, 1)
 
         self.leTravelSpeed = QLineEdit(self.scrollAreaWidgetContents_6)
         self.leTravelSpeed.setObjectName(u"leTravelSpeed")
@@ -4657,14 +4670,72 @@ class Ui_RobotWindow(object):
 
         self.gridLayout_22.addWidget(self.leTravelSpeed, 4, 1, 1, 1)
 
-        self.cbDrawMethod = QComboBox(self.scrollAreaWidgetContents_6)
-        self.cbDrawMethod.addItem("")
-        self.cbDrawMethod.addItem("")
-        self.cbDrawMethod.setObjectName(u"cbDrawMethod")
-        self.cbDrawMethod.setMinimumSize(QSize(0, 30))
-        self.cbDrawMethod.setMaximumSize(QSize(150, 16777215))
+        self.label_93 = QLabel(self.scrollAreaWidgetContents_6)
+        self.label_93.setObjectName(u"label_93")
+        sizePolicy2.setHeightForWidth(self.label_93.sizePolicy().hasHeightForWidth())
+        self.label_93.setSizePolicy(sizePolicy2)
+        self.label_93.setMinimumSize(QSize(0, 0))
+        self.label_93.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
 
-        self.gridLayout_22.addWidget(self.cbDrawMethod, 1, 1, 1, 1)
+        self.gridLayout_22.addWidget(self.label_93, 0, 0, 1, 1)
+
+        self.label_106 = QLabel(self.scrollAreaWidgetContents_6)
+        self.label_106.setObjectName(u"label_106")
+        sizePolicy6.setHeightForWidth(self.label_106.sizePolicy().hasHeightForWidth())
+        self.label_106.setSizePolicy(sizePolicy6)
+        self.label_106.setMinimumSize(QSize(0, 0))
+        self.label_106.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
+
+        self.gridLayout_22.addWidget(self.label_106, 8, 0, 1, 1)
+
+        self.label_103 = QLabel(self.scrollAreaWidgetContents_6)
+        self.label_103.setObjectName(u"label_103")
+        sizePolicy.setHeightForWidth(self.label_103.sizePolicy().hasHeightForWidth())
+        self.label_103.setSizePolicy(sizePolicy)
+        self.label_103.setMinimumSize(QSize(0, 0))
+        self.label_103.setFont(font14)
+        self.label_103.setAlignment(Qt.AlignLeading|Qt.AlignLeft|Qt.AlignVCenter)
+
+        self.gridLayout_22.addWidget(self.label_103, 2, 2, 1, 1)
+
+        self.leCDrawingPoint = QLineEdit(self.scrollAreaWidgetContents_6)
+        self.leCDrawingPoint.setObjectName(u"leCDrawingPoint")
+        self.leCDrawingPoint.setMinimumSize(QSize(0, 30))
+        self.leCDrawingPoint.setMaximumSize(QSize(150, 16777215))
+
+        self.gridLayout_22.addWidget(self.leCDrawingPoint, 11, 1, 1, 1)
+
+        self.label_23 = QLabel(self.scrollAreaWidgetContents_6)
+        self.label_23.setObjectName(u"label_23")
+        self.label_23.setFont(font4)
+        self.label_23.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
+
+        self.gridLayout_22.addWidget(self.label_23, 2, 0, 1, 1)
+
+        self.leSafeZHeight = QLineEdit(self.scrollAreaWidgetContents_6)
+        self.leSafeZHeight.setObjectName(u"leSafeZHeight")
+        self.leSafeZHeight.setMinimumSize(QSize(0, 30))
+        self.leSafeZHeight.setMaximumSize(QSize(150, 16777215))
+
+        self.gridLayout_22.addWidget(self.leSafeZHeight, 3, 1, 1, 1)
+
+        self.label_95 = QLabel(self.scrollAreaWidgetContents_6)
+        self.label_95.setObjectName(u"label_95")
+        sizePolicy6.setHeightForWidth(self.label_95.sizePolicy().hasHeightForWidth())
+        self.label_95.setSizePolicy(sizePolicy6)
+        self.label_95.setMinimumSize(QSize(0, 0))
+        self.label_95.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
+
+        self.gridLayout_22.addWidget(self.label_95, 3, 0, 1, 1)
+
+        self.label_98 = QLabel(self.scrollAreaWidgetContents_6)
+        self.label_98.setObjectName(u"label_98")
+        sizePolicy6.setHeightForWidth(self.label_98.sizePolicy().hasHeightForWidth())
+        self.label_98.setSizePolicy(sizePolicy6)
+        self.label_98.setMinimumSize(QSize(0, 0))
+        self.label_98.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
+
+        self.gridLayout_22.addWidget(self.label_98, 7, 0, 1, 1)
 
         self.cbDrawingEffector = QComboBox(self.scrollAreaWidgetContents_6)
         self.cbDrawingEffector.addItem("")
@@ -4677,19 +4748,22 @@ class Ui_RobotWindow(object):
 
         self.gridLayout_22.addWidget(self.cbDrawingEffector, 0, 1, 1, 1)
 
-        self.leSafeZHeight = QLineEdit(self.scrollAreaWidgetContents_6)
-        self.leSafeZHeight.setObjectName(u"leSafeZHeight")
-        self.leSafeZHeight.setMinimumSize(QSize(0, 30))
-        self.leSafeZHeight.setMaximumSize(QSize(150, 16777215))
+        self.leDrawingSpeed = QLineEdit(self.scrollAreaWidgetContents_6)
+        self.leDrawingSpeed.setObjectName(u"leDrawingSpeed")
+        self.leDrawingSpeed.setMinimumSize(QSize(0, 30))
+        self.leDrawingSpeed.setMaximumSize(QSize(150, 16777215))
 
-        self.gridLayout_22.addWidget(self.leSafeZHeight, 3, 1, 1, 1)
+        self.gridLayout_22.addWidget(self.leDrawingSpeed, 6, 1, 1, 1)
 
-        self.leDrawingAcceleration = QLineEdit(self.scrollAreaWidgetContents_6)
-        self.leDrawingAcceleration.setObjectName(u"leDrawingAcceleration")
-        self.leDrawingAcceleration.setMinimumSize(QSize(0, 30))
-        self.leDrawingAcceleration.setMaximumSize(QSize(150, 16777215))
+        self.label_101 = QLabel(self.scrollAreaWidgetContents_6)
+        self.label_101.setObjectName(u"label_101")
+        sizePolicy.setHeightForWidth(self.label_101.sizePolicy().hasHeightForWidth())
+        self.label_101.setSizePolicy(sizePolicy)
+        self.label_101.setMinimumSize(QSize(0, 0))
+        self.label_101.setFont(font14)
+        self.label_101.setAlignment(Qt.AlignLeading|Qt.AlignLeft|Qt.AlignVCenter)
 
-        self.gridLayout_22.addWidget(self.leDrawingAcceleration, 7, 1, 1, 1)
+        self.gridLayout_22.addWidget(self.label_101, 6, 2, 1, 1)
 
         self.label_102 = QLabel(self.scrollAreaWidgetContents_6)
         self.label_102.setObjectName(u"label_102")
@@ -4701,49 +4775,19 @@ class Ui_RobotWindow(object):
 
         self.gridLayout_22.addWidget(self.label_102, 7, 2, 1, 1)
 
-        self.label_93 = QLabel(self.scrollAreaWidgetContents_6)
-        self.label_93.setObjectName(u"label_93")
-        sizePolicy2.setHeightForWidth(self.label_93.sizePolicy().hasHeightForWidth())
-        self.label_93.setSizePolicy(sizePolicy2)
-        self.label_93.setMinimumSize(QSize(0, 0))
-        self.label_93.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
+        self.leDrawingAcceleration = QLineEdit(self.scrollAreaWidgetContents_6)
+        self.leDrawingAcceleration.setObjectName(u"leDrawingAcceleration")
+        self.leDrawingAcceleration.setMinimumSize(QSize(0, 30))
+        self.leDrawingAcceleration.setMaximumSize(QSize(150, 16777215))
 
-        self.gridLayout_22.addWidget(self.label_93, 0, 0, 1, 1)
+        self.gridLayout_22.addWidget(self.leDrawingAcceleration, 7, 1, 1, 1)
 
-        self.label_95 = QLabel(self.scrollAreaWidgetContents_6)
-        self.label_95.setObjectName(u"label_95")
-        sizePolicy6.setHeightForWidth(self.label_95.sizePolicy().hasHeightForWidth())
-        self.label_95.setSizePolicy(sizePolicy6)
-        self.label_95.setMinimumSize(QSize(0, 0))
-        self.label_95.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
+        self.leBDrawingPoint = QLineEdit(self.scrollAreaWidgetContents_6)
+        self.leBDrawingPoint.setObjectName(u"leBDrawingPoint")
+        self.leBDrawingPoint.setMinimumSize(QSize(0, 30))
+        self.leBDrawingPoint.setMaximumSize(QSize(150, 16777215))
 
-        self.gridLayout_22.addWidget(self.label_95, 3, 0, 1, 1)
-
-        self.label_100 = QLabel(self.scrollAreaWidgetContents_6)
-        self.label_100.setObjectName(u"label_100")
-        sizePolicy.setHeightForWidth(self.label_100.sizePolicy().hasHeightForWidth())
-        self.label_100.setSizePolicy(sizePolicy)
-        self.label_100.setMinimumSize(QSize(0, 0))
-        self.label_100.setFont(font14)
-        self.label_100.setAlignment(Qt.AlignLeading|Qt.AlignLeft|Qt.AlignVCenter)
-
-        self.gridLayout_22.addWidget(self.label_100, 4, 2, 1, 1)
-
-        self.label_98 = QLabel(self.scrollAreaWidgetContents_6)
-        self.label_98.setObjectName(u"label_98")
-        sizePolicy6.setHeightForWidth(self.label_98.sizePolicy().hasHeightForWidth())
-        self.label_98.setSizePolicy(sizePolicy6)
-        self.label_98.setMinimumSize(QSize(0, 0))
-        self.label_98.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
-
-        self.gridLayout_22.addWidget(self.label_98, 7, 0, 1, 1)
-
-        self.leDrawingSpeed = QLineEdit(self.scrollAreaWidgetContents_6)
-        self.leDrawingSpeed.setObjectName(u"leDrawingSpeed")
-        self.leDrawingSpeed.setMinimumSize(QSize(0, 30))
-        self.leDrawingSpeed.setMaximumSize(QSize(150, 16777215))
-
-        self.gridLayout_22.addWidget(self.leDrawingSpeed, 6, 1, 1, 1)
+        self.gridLayout_22.addWidget(self.leBDrawingPoint, 10, 1, 1, 1)
 
         self.label_99 = QLabel(self.scrollAreaWidgetContents_6)
         self.label_99.setObjectName(u"label_99")
@@ -4755,29 +4799,42 @@ class Ui_RobotWindow(object):
 
         self.gridLayout_22.addWidget(self.label_99, 3, 2, 1, 1)
 
-        self.label_23 = QLabel(self.scrollAreaWidgetContents_6)
-        self.label_23.setObjectName(u"label_23")
-        self.label_23.setFont(font4)
-        self.label_23.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
+        self.label_97 = QLabel(self.scrollAreaWidgetContents_6)
+        self.label_97.setObjectName(u"label_97")
+        sizePolicy6.setHeightForWidth(self.label_97.sizePolicy().hasHeightForWidth())
+        self.label_97.setSizePolicy(sizePolicy6)
+        self.label_97.setMinimumSize(QSize(0, 0))
+        self.label_97.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
 
-        self.gridLayout_22.addWidget(self.label_23, 2, 0, 1, 1)
+        self.gridLayout_22.addWidget(self.label_97, 6, 0, 1, 1)
 
-        self.leSpace = QLineEdit(self.scrollAreaWidgetContents_6)
-        self.leSpace.setObjectName(u"leSpace")
-        self.leSpace.setMinimumSize(QSize(0, 30))
-        self.leSpace.setMaximumSize(QSize(150, 16777215))
+        self.label_13 = QLabel(self.scrollAreaWidgetContents_6)
+        self.label_13.setObjectName(u"label_13")
+        self.label_13.setFont(font4)
+        self.label_13.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
 
-        self.gridLayout_22.addWidget(self.leSpace, 2, 1, 1, 1)
+        self.gridLayout_22.addWidget(self.label_13, 1, 0, 1, 1)
 
-        self.label_103 = QLabel(self.scrollAreaWidgetContents_6)
-        self.label_103.setObjectName(u"label_103")
-        sizePolicy.setHeightForWidth(self.label_103.sizePolicy().hasHeightForWidth())
-        self.label_103.setSizePolicy(sizePolicy)
-        self.label_103.setMinimumSize(QSize(0, 0))
-        self.label_103.setFont(font14)
-        self.label_103.setAlignment(Qt.AlignLeading|Qt.AlignLeft|Qt.AlignVCenter)
+        self.pbGetPlaneAPoint = QPushButton(self.scrollAreaWidgetContents_6)
+        self.pbGetPlaneAPoint.setObjectName(u"pbGetPlaneAPoint")
+        sizePolicy7.setHeightForWidth(self.pbGetPlaneAPoint.sizePolicy().hasHeightForWidth())
+        self.pbGetPlaneAPoint.setSizePolicy(sizePolicy7)
 
-        self.gridLayout_22.addWidget(self.label_103, 2, 2, 1, 1)
+        self.gridLayout_22.addWidget(self.pbGetPlaneAPoint, 9, 0, 1, 1)
+
+        self.pbGetPlaneBPoint = QPushButton(self.scrollAreaWidgetContents_6)
+        self.pbGetPlaneBPoint.setObjectName(u"pbGetPlaneBPoint")
+        sizePolicy7.setHeightForWidth(self.pbGetPlaneBPoint.sizePolicy().hasHeightForWidth())
+        self.pbGetPlaneBPoint.setSizePolicy(sizePolicy7)
+
+        self.gridLayout_22.addWidget(self.pbGetPlaneBPoint, 10, 0, 1, 1)
+
+        self.pbGetPlaneCPoint = QPushButton(self.scrollAreaWidgetContents_6)
+        self.pbGetPlaneCPoint.setObjectName(u"pbGetPlaneCPoint")
+        sizePolicy7.setHeightForWidth(self.pbGetPlaneCPoint.sizePolicy().hasHeightForWidth())
+        self.pbGetPlaneCPoint.setSizePolicy(sizePolicy7)
+
+        self.gridLayout_22.addWidget(self.pbGetPlaneCPoint, 11, 0, 1, 1)
 
 
         self.verticalLayout_37.addLayout(self.gridLayout_22)
@@ -8412,7 +8469,7 @@ class Ui_RobotWindow(object):
 
         self.twDeltaManager.setCurrentIndex(1)
         self.pbReadI0_3.setDefault(False)
-        self.twModule.setCurrentIndex(1)
+        self.twModule.setCurrentIndex(3)
         self.twGcodeEditor.setCurrentIndex(0)
         self.pbImageMapping.setDefault(False)
         self.cbImageSource.setCurrentIndex(0)
@@ -9011,25 +9068,29 @@ class Ui_RobotWindow(object):
         self.pbDrawCircle.setText(QCoreApplication.translate("RobotWindow", u"Circle", None))
         self.pbZoomOut.setText(QCoreApplication.translate("RobotWindow", u"Zoom Out", None))
         self.pbExportDrawingGcodes.setText(QCoreApplication.translate("RobotWindow", u"Export G-code", None))
-        self.label_96.setText(QCoreApplication.translate("RobotWindow", u"Travel Speed", None))
-        self.label_101.setText(QCoreApplication.translate("RobotWindow", u"mm/s", None))
-        self.label_13.setText(QCoreApplication.translate("RobotWindow", u"Move Type", None))
-        self.label_97.setText(QCoreApplication.translate("RobotWindow", u"Drawing Speed", None))
         self.cbDrawMethod.setItemText(0, QCoreApplication.translate("RobotWindow", u"Line", None))
         self.cbDrawMethod.setItemText(1, QCoreApplication.translate("RobotWindow", u"Dot", None))
 
+        self.label_100.setText(QCoreApplication.translate("RobotWindow", u"mm/s", None))
+        self.leSpace.setText(QCoreApplication.translate("RobotWindow", u"1", None))
+        self.label_96.setText(QCoreApplication.translate("RobotWindow", u"Travel Speed", None))
+        self.label_93.setText(QCoreApplication.translate("RobotWindow", u"Drawing Tool", None))
+        self.label_106.setText(QCoreApplication.translate("RobotWindow", u"Plane", None))
+        self.label_103.setText(QCoreApplication.translate("RobotWindow", u"mm/dot(line)", None))
+        self.label_23.setText(QCoreApplication.translate("RobotWindow", u"Density", None))
+        self.label_95.setText(QCoreApplication.translate("RobotWindow", u"Drawing Z Height", None))
+        self.label_98.setText(QCoreApplication.translate("RobotWindow", u"Acceleration", None))
         self.cbDrawingEffector.setItemText(0, QCoreApplication.translate("RobotWindow", u"Laser", None))
         self.cbDrawingEffector.setItemText(1, QCoreApplication.translate("RobotWindow", u"Pen", None))
 
+        self.label_101.setText(QCoreApplication.translate("RobotWindow", u"mm/s", None))
         self.label_102.setText(QCoreApplication.translate("RobotWindow", u"mm/s2", None))
-        self.label_93.setText(QCoreApplication.translate("RobotWindow", u"Drawing Tool", None))
-        self.label_95.setText(QCoreApplication.translate("RobotWindow", u"Drawing Z Height", None))
-        self.label_100.setText(QCoreApplication.translate("RobotWindow", u"mm/s", None))
-        self.label_98.setText(QCoreApplication.translate("RobotWindow", u"Acceleration", None))
         self.label_99.setText(QCoreApplication.translate("RobotWindow", u"mm", None))
-        self.label_23.setText(QCoreApplication.translate("RobotWindow", u"Density", None))
-        self.leSpace.setText(QCoreApplication.translate("RobotWindow", u"1", None))
-        self.label_103.setText(QCoreApplication.translate("RobotWindow", u"mm/dot(line)", None))
+        self.label_97.setText(QCoreApplication.translate("RobotWindow", u"Drawing Speed", None))
+        self.label_13.setText(QCoreApplication.translate("RobotWindow", u"Move Type", None))
+        self.pbGetPlaneAPoint.setText(QCoreApplication.translate("RobotWindow", u"A", None))
+        self.pbGetPlaneBPoint.setText(QCoreApplication.translate("RobotWindow", u"B", None))
+        self.pbGetPlaneCPoint.setText(QCoreApplication.translate("RobotWindow", u"C", None))
         self.twModule.setTabText(self.twModule.indexOf(self.tDrawing), QCoreApplication.translate("RobotWindow", u"Drawing", None))
         self.label_158.setText(QCoreApplication.translate("RobotWindow", u"Selected Robot", None))
 #if QT_CONFIG(tooltip)

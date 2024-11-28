@@ -25,6 +25,7 @@ public:
 	DrawingExporter(QWidget *parent);
     void SetDrawingParameterPointer(QLabel *ImageForDrawing, QLabel *wImage, QLabel *hImage, QLineEdit *heightScale, QLineEdit *widthScale, QLineEdit *scale, QLineEdit *drawingThresValue, QSlider* drawingThresSlider, QCheckBox* inverse ,QComboBox* drawMethod, QComboBox* conversionTool);
     void SetGcodeExportParameterPointer(QLineEdit* safeZHeight, QLineEdit* travelSpeed, QLineEdit* drawingSpeed, QLineEdit* drawingAcceleration);
+    void SetDrawingPointInPlane(QLineEdit* point1, QLineEdit* point2, QLineEdit* point3);
 
     void SetDrawingAreaWidget(DrawingWidget* drawingWidget);
     void SetGcodeEditor(QTextEdit* gcodeEditor);
@@ -51,6 +52,10 @@ private:
     QLineEdit* leTravelSpeed;
     QLineEdit* leDrawingSpeed;
     QLineEdit* leDrawingAcceleration;
+
+    QLineEdit* lePoint1;
+    QLineEdit* lePoint2;
+    QLineEdit* lePoint3;
 
 	QLabel *lbWImage;
 	QLabel *lbHImage;

@@ -794,7 +794,7 @@ QToolBox QScrollArea&gt;QWidget&gt;QWidget
               <enum>QTabWidget::Rounded</enum>
              </property>
              <property name="currentIndex">
-              <number>1</number>
+              <number>3</number>
              </property>
              <property name="usesScrollButtons">
               <bool>true</bool>
@@ -7542,6 +7542,9 @@ QToolButton::hover
                           <property name="layoutDirection">
                            <enum>Qt::LeftToRight</enum>
                           </property>
+                          <property name="styleSheet">
+                           <string notr="true"/>
+                          </property>
                           <property name="text">
                            <string>Load Image</string>
                           </property>
@@ -7567,36 +7570,13 @@ QToolButton::hover
                       </widget>
                      </item>
                      <item>
-                      <layout class="QHBoxLayout" name="horizontalLayout_24">
-                       <item>
-                        <widget class="QFrame" name="frame_2">
-                         <property name="sizePolicy">
-                          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                           <horstretch>0</horstretch>
-                           <verstretch>0</verstretch>
-                          </sizepolicy>
-                         </property>
-                         <property name="minimumSize">
-                          <size>
-                           <width>0</width>
-                           <height>250</height>
-                          </size>
-                         </property>
-                         <property name="frameShape">
-                          <enum>QFrame::StyledPanel</enum>
-                         </property>
-                         <property name="frameShadow">
-                          <enum>QFrame::Raised</enum>
-                         </property>
-                         <widget class="QLabel" name="lbImageForDrawing">
-                          <property name="geometry">
-                           <rect>
-                            <x>10</x>
-                            <y>10</y>
-                            <width>281</width>
-                            <height>226</height>
-                           </rect>
-                          </property>
+                      <widget class="QWidget" name="ImageFrame" native="true">
+                       <property name="styleSheet">
+                        <string notr="true"/>
+                       </property>
+                       <layout class="QHBoxLayout" name="horizontalLayout_24">
+                        <item>
+                         <widget class="QFrame" name="frame_2">
                           <property name="sizePolicy">
                            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                             <horstretch>0</horstretch>
@@ -7606,96 +7586,127 @@ QToolButton::hover
                           <property name="minimumSize">
                            <size>
                             <width>0</width>
-                            <height>0</height>
+                            <height>250</height>
                            </size>
                           </property>
                           <property name="styleSheet">
-                           <string notr="true">/*background-color: rgb(142, 254, 255);*/
+                           <string notr="true"/>
+                          </property>
+                          <property name="frameShape">
+                           <enum>QFrame::StyledPanel</enum>
+                          </property>
+                          <property name="frameShadow">
+                           <enum>QFrame::Raised</enum>
+                          </property>
+                          <widget class="QLabel" name="lbImageForDrawing">
+                           <property name="geometry">
+                            <rect>
+                             <x>10</x>
+                             <y>10</y>
+                             <width>281</width>
+                             <height>226</height>
+                            </rect>
+                           </property>
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                             <horstretch>0</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
+                           <property name="minimumSize">
+                            <size>
+                             <width>0</width>
+                             <height>0</height>
+                            </size>
+                           </property>
+                           <property name="styleSheet">
+                            <string notr="true">/*background-color: rgb(142, 254, 255);*/
 QLabel
 {
 	/*background-color: rgb(255, 255, 255);*/
 	border: 1px solid rgb(140, 140, 140);
 	border-radius: 5px;
 }</string>
-                          </property>
-                          <property name="text">
-                           <string/>
-                          </property>
-                          <property name="scaledContents">
-                           <bool>false</bool>
-                          </property>
+                           </property>
+                           <property name="text">
+                            <string/>
+                           </property>
+                           <property name="scaledContents">
+                            <bool>false</bool>
+                           </property>
+                          </widget>
                          </widget>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QWidget" name="widget" native="true">
-                         <property name="maximumSize">
-                          <size>
-                           <width>100</width>
-                           <height>16777215</height>
-                          </size>
-                         </property>
-                         <layout class="QVBoxLayout" name="verticalLayout_36">
-                          <item>
-                           <widget class="QWidget" name="widget_3" native="true">
-                            <property name="styleSheet">
-                             <string notr="true"/>
-                            </property>
-                            <layout class="QGridLayout" name="gridLayout_23">
-                             <item row="0" column="0">
-                              <widget class="QLabel" name="lbImageWidth">
-                               <property name="font">
-                                <font>
-                                 <pointsize>8</pointsize>
-                                 <bold>false</bold>
-                                 <kerning>true</kerning>
-                                </font>
-                               </property>
-                               <property name="styleSheet">
-                                <string notr="true"/>
-                               </property>
-                               <property name="text">
-                                <string>W: 300</string>
-                               </property>
-                              </widget>
-                             </item>
-                             <item row="1" column="0">
-                              <widget class="QLabel" name="lbImageHeight">
-                               <property name="font">
-                                <font>
-                                 <pointsize>8</pointsize>
-                                 <bold>false</bold>
-                                 <kerning>true</kerning>
-                                </font>
-                               </property>
-                               <property name="styleSheet">
-                                <string notr="true"/>
-                               </property>
-                               <property name="text">
-                                <string>H: 100</string>
-                               </property>
-                              </widget>
-                             </item>
-                             <item row="2" column="0">
-                              <spacer name="verticalSpacer_4">
-                               <property name="orientation">
-                                <enum>Qt::Vertical</enum>
-                               </property>
-                               <property name="sizeHint" stdset="0">
-                                <size>
-                                 <width>20</width>
-                                 <height>40</height>
-                                </size>
-                               </property>
-                              </spacer>
-                             </item>
-                            </layout>
-                           </widget>
-                          </item>
-                         </layout>
-                        </widget>
-                       </item>
-                      </layout>
+                        </item>
+                        <item>
+                         <widget class="QWidget" name="widget" native="true">
+                          <property name="maximumSize">
+                           <size>
+                            <width>100</width>
+                            <height>16777215</height>
+                           </size>
+                          </property>
+                          <layout class="QVBoxLayout" name="verticalLayout_36">
+                           <item>
+                            <widget class="QWidget" name="widget_3" native="true">
+                             <property name="styleSheet">
+                              <string notr="true"/>
+                             </property>
+                             <layout class="QGridLayout" name="gridLayout_23">
+                              <item row="0" column="0">
+                               <widget class="QLabel" name="lbImageWidth">
+                                <property name="font">
+                                 <font>
+                                  <pointsize>8</pointsize>
+                                  <bold>false</bold>
+                                  <kerning>true</kerning>
+                                 </font>
+                                </property>
+                                <property name="styleSheet">
+                                 <string notr="true"/>
+                                </property>
+                                <property name="text">
+                                 <string>W: 300</string>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="1" column="0">
+                               <widget class="QLabel" name="lbImageHeight">
+                                <property name="font">
+                                 <font>
+                                  <pointsize>8</pointsize>
+                                  <bold>false</bold>
+                                  <kerning>true</kerning>
+                                 </font>
+                                </property>
+                                <property name="styleSheet">
+                                 <string notr="true"/>
+                                </property>
+                                <property name="text">
+                                 <string>H: 100</string>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="2" column="0">
+                               <spacer name="verticalSpacer_4">
+                                <property name="orientation">
+                                 <enum>Qt::Vertical</enum>
+                                </property>
+                                <property name="sizeHint" stdset="0">
+                                 <size>
+                                  <width>20</width>
+                                  <height>40</height>
+                                 </size>
+                                </property>
+                               </spacer>
+                              </item>
+                             </layout>
+                            </widget>
+                           </item>
+                          </layout>
+                         </widget>
+                        </item>
+                       </layout>
+                      </widget>
                      </item>
                      <item>
                       <widget class="QWidget" name="widget_2" native="true">
@@ -8707,30 +8718,34 @@ QLabel
                        <property name="spacing">
                         <number>15</number>
                        </property>
-                       <item row="4" column="0">
-                        <widget class="QLabel" name="label_96">
-                         <property name="sizePolicy">
-                          <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
-                           <horstretch>0</horstretch>
-                           <verstretch>0</verstretch>
-                          </sizepolicy>
-                         </property>
+                       <item row="1" column="1">
+                        <widget class="QComboBox" name="cbDrawMethod">
                          <property name="minimumSize">
                           <size>
                            <width>0</width>
-                           <height>0</height>
+                           <height>30</height>
                           </size>
                          </property>
-                         <property name="text">
-                          <string>Travel Speed</string>
+                         <property name="maximumSize">
+                          <size>
+                           <width>150</width>
+                           <height>16777215</height>
+                          </size>
                          </property>
-                         <property name="alignment">
-                          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                         </property>
+                         <item>
+                          <property name="text">
+                           <string>Line</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>Dot</string>
+                          </property>
+                         </item>
                         </widget>
                        </item>
-                       <item row="6" column="2">
-                        <widget class="QLabel" name="label_101">
+                       <item row="4" column="2">
+                        <widget class="QLabel" name="label_100">
                          <property name="sizePolicy">
                           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                            <horstretch>0</horstretch>
@@ -8756,23 +8771,6 @@ QLabel
                          </property>
                         </widget>
                        </item>
-                       <item row="1" column="0">
-                        <widget class="QLabel" name="label_13">
-                         <property name="font">
-                          <font>
-                           <pointsize>8</pointsize>
-                           <bold>false</bold>
-                           <kerning>true</kerning>
-                          </font>
-                         </property>
-                         <property name="text">
-                          <string>Move Type</string>
-                         </property>
-                         <property name="alignment">
-                          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                         </property>
-                        </widget>
-                       </item>
                        <item row="0" column="2">
                         <spacer name="horizontalSpacer_33">
                          <property name="orientation">
@@ -8786,8 +8784,27 @@ QLabel
                          </property>
                         </spacer>
                        </item>
-                       <item row="6" column="0">
-                        <widget class="QLabel" name="label_97">
+                       <item row="2" column="1">
+                        <widget class="QLineEdit" name="leSpace">
+                         <property name="minimumSize">
+                          <size>
+                           <width>0</width>
+                           <height>30</height>
+                          </size>
+                         </property>
+                         <property name="maximumSize">
+                          <size>
+                           <width>150</width>
+                           <height>16777215</height>
+                          </size>
+                         </property>
+                         <property name="text">
+                          <string>1</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="4" column="0">
+                        <widget class="QLabel" name="label_96">
                          <property name="sizePolicy">
                           <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
                            <horstretch>0</horstretch>
@@ -8801,10 +8818,26 @@ QLabel
                           </size>
                          </property>
                          <property name="text">
-                          <string>Drawing Speed</string>
+                          <string>Travel Speed</string>
                          </property>
                          <property name="alignment">
                           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="9" column="1">
+                        <widget class="QLineEdit" name="leADrawingPoint">
+                         <property name="minimumSize">
+                          <size>
+                           <width>0</width>
+                           <height>30</height>
+                          </size>
+                         </property>
+                         <property name="maximumSize">
+                          <size>
+                           <width>150</width>
+                           <height>16777215</height>
+                          </size>
                          </property>
                         </widget>
                        </item>
@@ -8824,8 +8857,79 @@ QLabel
                          </property>
                         </widget>
                        </item>
-                       <item row="1" column="1">
-                        <widget class="QComboBox" name="cbDrawMethod">
+                       <item row="0" column="0">
+                        <widget class="QLabel" name="label_93">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                         <property name="minimumSize">
+                          <size>
+                           <width>0</width>
+                           <height>0</height>
+                          </size>
+                         </property>
+                         <property name="text">
+                          <string>Drawing Tool</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="8" column="0">
+                        <widget class="QLabel" name="label_106">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                         <property name="minimumSize">
+                          <size>
+                           <width>0</width>
+                           <height>0</height>
+                          </size>
+                         </property>
+                         <property name="text">
+                          <string>Plane</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="2" column="2">
+                        <widget class="QLabel" name="label_103">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                         <property name="minimumSize">
+                          <size>
+                           <width>0</width>
+                           <height>0</height>
+                          </size>
+                         </property>
+                         <property name="font">
+                          <font>
+                           <italic>false</italic>
+                          </font>
+                         </property>
+                         <property name="text">
+                          <string>mm/dot(line)</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="11" column="1">
+                        <widget class="QLineEdit" name="leCDrawingPoint">
                          <property name="minimumSize">
                           <size>
                            <width>0</width>
@@ -8838,16 +8942,83 @@ QLabel
                            <height>16777215</height>
                           </size>
                          </property>
-                         <item>
-                          <property name="text">
-                           <string>Line</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>Dot</string>
-                          </property>
-                         </item>
+                        </widget>
+                       </item>
+                       <item row="2" column="0">
+                        <widget class="QLabel" name="label_23">
+                         <property name="font">
+                          <font>
+                           <pointsize>8</pointsize>
+                           <bold>false</bold>
+                           <kerning>true</kerning>
+                          </font>
+                         </property>
+                         <property name="text">
+                          <string>Density</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="3" column="1">
+                        <widget class="QLineEdit" name="leSafeZHeight">
+                         <property name="minimumSize">
+                          <size>
+                           <width>0</width>
+                           <height>30</height>
+                          </size>
+                         </property>
+                         <property name="maximumSize">
+                          <size>
+                           <width>150</width>
+                           <height>16777215</height>
+                          </size>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="3" column="0">
+                        <widget class="QLabel" name="label_95">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                         <property name="minimumSize">
+                          <size>
+                           <width>0</width>
+                           <height>0</height>
+                          </size>
+                         </property>
+                         <property name="text">
+                          <string>Drawing Z Height</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="7" column="0">
+                        <widget class="QLabel" name="label_98">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                         <property name="minimumSize">
+                          <size>
+                           <width>0</width>
+                           <height>0</height>
+                          </size>
+                         </property>
+                         <property name="text">
+                          <string>Acceleration</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                         </property>
                         </widget>
                        </item>
                        <item row="0" column="1">
@@ -8882,8 +9053,8 @@ QLabel
                          </item>
                         </widget>
                        </item>
-                       <item row="3" column="1">
-                        <widget class="QLineEdit" name="leSafeZHeight">
+                       <item row="6" column="1">
+                        <widget class="QLineEdit" name="leDrawingSpeed">
                          <property name="minimumSize">
                           <size>
                            <width>0</width>
@@ -8898,19 +9069,30 @@ QLabel
                          </property>
                         </widget>
                        </item>
-                       <item row="7" column="1">
-                        <widget class="QLineEdit" name="leDrawingAcceleration">
+                       <item row="6" column="2">
+                        <widget class="QLabel" name="label_101">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
                          <property name="minimumSize">
                           <size>
                            <width>0</width>
-                           <height>30</height>
+                           <height>0</height>
                           </size>
                          </property>
-                         <property name="maximumSize">
-                          <size>
-                           <width>150</width>
-                           <height>16777215</height>
-                          </size>
+                         <property name="font">
+                          <font>
+                           <italic>false</italic>
+                          </font>
+                         </property>
+                         <property name="text">
+                          <string>mm/s</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
                          </property>
                         </widget>
                        </item>
@@ -8941,101 +9123,24 @@ QLabel
                          </property>
                         </widget>
                        </item>
-                       <item row="0" column="0">
-                        <widget class="QLabel" name="label_93">
-                         <property name="sizePolicy">
-                          <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                           <horstretch>0</horstretch>
-                           <verstretch>0</verstretch>
-                          </sizepolicy>
-                         </property>
+                       <item row="7" column="1">
+                        <widget class="QLineEdit" name="leDrawingAcceleration">
                          <property name="minimumSize">
                           <size>
                            <width>0</width>
-                           <height>0</height>
+                           <height>30</height>
                           </size>
                          </property>
-                         <property name="text">
-                          <string>Drawing Tool</string>
-                         </property>
-                         <property name="alignment">
-                          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="3" column="0">
-                        <widget class="QLabel" name="label_95">
-                         <property name="sizePolicy">
-                          <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
-                           <horstretch>0</horstretch>
-                           <verstretch>0</verstretch>
-                          </sizepolicy>
-                         </property>
-                         <property name="minimumSize">
+                         <property name="maximumSize">
                           <size>
-                           <width>0</width>
-                           <height>0</height>
+                           <width>150</width>
+                           <height>16777215</height>
                           </size>
-                         </property>
-                         <property name="text">
-                          <string>Drawing Z Height</string>
-                         </property>
-                         <property name="alignment">
-                          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                          </property>
                         </widget>
                        </item>
-                       <item row="4" column="2">
-                        <widget class="QLabel" name="label_100">
-                         <property name="sizePolicy">
-                          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                           <horstretch>0</horstretch>
-                           <verstretch>0</verstretch>
-                          </sizepolicy>
-                         </property>
-                         <property name="minimumSize">
-                          <size>
-                           <width>0</width>
-                           <height>0</height>
-                          </size>
-                         </property>
-                         <property name="font">
-                          <font>
-                           <italic>false</italic>
-                          </font>
-                         </property>
-                         <property name="text">
-                          <string>mm/s</string>
-                         </property>
-                         <property name="alignment">
-                          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="7" column="0">
-                        <widget class="QLabel" name="label_98">
-                         <property name="sizePolicy">
-                          <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
-                           <horstretch>0</horstretch>
-                           <verstretch>0</verstretch>
-                          </sizepolicy>
-                         </property>
-                         <property name="minimumSize">
-                          <size>
-                           <width>0</width>
-                           <height>0</height>
-                          </size>
-                         </property>
-                         <property name="text">
-                          <string>Acceleration</string>
-                         </property>
-                         <property name="alignment">
-                          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="6" column="1">
-                        <widget class="QLineEdit" name="leDrawingSpeed">
+                       <item row="10" column="1">
+                        <widget class="QLineEdit" name="leBDrawingPoint">
                          <property name="minimumSize">
                           <size>
                            <width>0</width>
@@ -9077,46 +9182,10 @@ QLabel
                          </property>
                         </widget>
                        </item>
-                       <item row="2" column="0">
-                        <widget class="QLabel" name="label_23">
-                         <property name="font">
-                          <font>
-                           <pointsize>8</pointsize>
-                           <bold>false</bold>
-                           <kerning>true</kerning>
-                          </font>
-                         </property>
-                         <property name="text">
-                          <string>Density</string>
-                         </property>
-                         <property name="alignment">
-                          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="2" column="1">
-                        <widget class="QLineEdit" name="leSpace">
-                         <property name="minimumSize">
-                          <size>
-                           <width>0</width>
-                           <height>30</height>
-                          </size>
-                         </property>
-                         <property name="maximumSize">
-                          <size>
-                           <width>150</width>
-                           <height>16777215</height>
-                          </size>
-                         </property>
-                         <property name="text">
-                          <string>1</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="2" column="2">
-                        <widget class="QLabel" name="label_103">
+                       <item row="6" column="0">
+                        <widget class="QLabel" name="label_97">
                          <property name="sizePolicy">
-                          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                          <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
                            <horstretch>0</horstretch>
                            <verstretch>0</verstretch>
                           </sizepolicy>
@@ -9127,16 +9196,67 @@ QLabel
                            <height>0</height>
                           </size>
                          </property>
+                         <property name="text">
+                          <string>Drawing Speed</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="1" column="0">
+                        <widget class="QLabel" name="label_13">
                          <property name="font">
                           <font>
-                           <italic>false</italic>
+                           <pointsize>8</pointsize>
+                           <bold>false</bold>
+                           <kerning>true</kerning>
                           </font>
                          </property>
                          <property name="text">
-                          <string>mm/dot(line)</string>
+                          <string>Move Type</string>
                          </property>
                          <property name="alignment">
-                          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="9" column="0">
+                        <widget class="QPushButton" name="pbGetPlaneAPoint">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                         <property name="text">
+                          <string>A</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="10" column="0">
+                        <widget class="QPushButton" name="pbGetPlaneBPoint">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                         <property name="text">
+                          <string>B</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="11" column="0">
+                        <widget class="QPushButton" name="pbGetPlaneCPoint">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                         <property name="text">
+                          <string>C</string>
                          </property>
                         </widget>
                        </item>

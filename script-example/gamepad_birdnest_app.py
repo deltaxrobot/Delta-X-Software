@@ -11,7 +11,7 @@ software_socket = None
 
 angle = 0
 
-x , y, z = 0, 0, -238
+x , y, z = 3, 6, -732
 
 steps = [0.1, 0.5, 1, 5, 10]
 step_id = 2
@@ -64,21 +64,11 @@ def send_init_message():
         print("Error sending message:", e)
 
 def send_joystick_data(axis, value):
-    # Hàm sẽ thoát nên giữa hai lần gọi dưới 0.1s
-    global last_time
-    if time.time() - last_time < 0.2:
-        return
-    global x,y
     try:
         message = f"Axis: {axis}, Value: {value}\n"
-        # if abs(value) > 0.1:
-        #     if axis == 0:
-        #         x+=step * value * 0.1
-        #     elif axis == 1:
-        #         y+=step * value * 0.1
-        #     gcode = f"GScript = G01 X{x} Y{y} F200\n"
-        #     software_socket.sendall(gcode.encode())
-        #     print(gcode)
+        if abs(value) > 0.1:
+            # software_socket.sendall(message.encode())
+            print(message)
     except Exception as e:
         print("Error sending joystick data:", e)
 
@@ -86,7 +76,15 @@ def process_joystick_button(button):
     global angle, step_id, step, x, y, z, gripper, response, last_time
 
     print("Button:", button)
-    if button in [3, 0]:
+    if button in [1, 2]:
+        # if button == 1:
+        #     angle+=step
+        # elif button == 2:
+        #     angle-=step
+
+        # software_socket.sendall(f"GScript = device0 M322 {angle}\n".encode())
+        pass
+    elif button in [3, 0]:
         if button == 3:
             step_id+= 1
             if step_id >= len(steps):
@@ -97,31 +95,47 @@ def process_joystick_button(button):
             if step_id < 0:
                 step_id = 0
             step = steps[step_id]
-    elif button in [11, 12, 13, 14]:
-        if button == 11:
-            y+=step
-        elif button == 12:
-            y-=step
-        if button == 13:
-            x-=step
-        elif button == 14:
-            x+=step
+    elif button in [13, 14]:
+        # # if button == 11:
+        # #     y+=step
+        # # elif button == 12:
+        # #     y-=step
+        # if button == 13:
+        #     x-=step
+        # elif button == 14:
+        #     x+=step
 
-        software_socket.sendall(f"GScript = G01 X{x} Y{y}\n".encode())
+        # software_socket.sendall(f"GScript = G01 X{x} Y{sphere_center[1]}\n".encode())
         pass
-    elif button in [9, 10]:           
-        if button == 9:
+    elif button in [11, 12]:           
+        if button == 11:
             z+=step
-        elif button == 10:
+        elif button == 12:
             z-=step
+
+        # point = calculate_sphere_coordinates(x, y, radius, sphere_center)
+
+        # if z < point[2]:
+        #     z = point[2]
 
         software_socket.sendall(f"GScript = G01 Z{z}\n".encode())
         pass
 
-    elif button == 2:
+    elif button == 6:
+        # software_socket.sendall(f"GScript = device0 M320\n".encode())
+        pass
+    elif button == 4:
         software_socket.sendall(f"GScript = G28\n".encode())
 
-    elif button == 6:
+    elif button == 10:
+        # point = calculate_sphere_coordinates(x, y, radius, sphere_center)
+        # print(point)
+        # z = point[2]
+
+        # software_socket.sendall(f"GScript = G01 Z{z}\nG01 Z{min_z}".encode())
+        # z = min_z
+        pass
+    elif button == 9:
         gripper = not gripper
         if gripper:
             software_socket.sendall(f"GScript = M03 D4\n".encode())
@@ -161,7 +175,7 @@ def handle_joystick_events():
             if event.type == pygame.QUIT:
                 running = False
             elif event.type == pygame.JOYAXISMOTION:
-                send_joystick_data(event.axis, event.value)
+                # send_joystick_data(event.axis, event.value)
                 pass
             elif event.type in [pygame.JOYBUTTONDOWN, pygame.JOYBUTTONUP]:
                 if event.type == pygame.JOYBUTTONDOWN and is_release == False:
