@@ -44,122 +44,7 @@ class Ui_MainWindow(object):
         icon = QIcon()
         icon.addFile(u":/delta_x_logo_96x96.ico", QSize(), QIcon.Normal, QIcon.Off)
         MainWindow.setWindowIcon(icon)
-        MainWindow.setStyleSheet(u"/*QWidget{\n"
-"background-color: rgb(255, 255, 255);\n"
-"}*/\n"
-"/*\n"
-"QPushButton {\n"
-"    \n"
-"	background-color: rgba(255, 255, 255, 0);\n"
-"	color: rgb(118, 118, 118);\n"
-"    border-radius: 3px;\n"
-"	border: 1px solid rgb(118, 118, 118);\n"
-"    min-height: 10px;\n"
-"    padding: 0px 10px 2px 10px;\n"
-"	margin-left:5px;\n"
-"	margin-right:5px;\n"
-"	margin-top:2px;\n"
-"	margin-bottom:2px;\n"
-"}\n"
-"\n"
-"QPushButton:pressed{\n"
-"	\n"
-"	color: rgb(255, 255, 255);\n"
-"	background-color: rgb(54, 178, 242);\n"
-"	border-color: rgb(255, 255, 255);\n"
-"}\n"
-"*/\n"
-"\n"
-"/*QWidget\n"
-"{	\n"
-"	color:rgb(60, 60, 60);\n"
-"}*/\n"
-"\n"
-"/*QWidget\n"
-"{	\n"
-"	background-color: rgb(255, 255, 255);\n"
-"}*/\n"
-"\n"
-"/*------- Combo Box---------*/\n"
-"/*QComboBox\n"
-"{	\n"
-"	color: rgb(79, 79, 79);\n"
-"	border: 1px solid rgb(79, 79, 79);\n"
-"	border-radius: 2px;\n"
-"}\n"
-"\n"
-"QComboBox:drop-down\n"
-"{\n"
-"	subcontrol-origin: padding;\n"
-"    subcontrol-position: top right;\n"
-"    width: 25px;\n"
-"\n"
-"    border-left-widt"
-                        "h: 1px;\n"
-"    border-left-color: darkgray;\n"
-"    border-left-style: solid;\n"
-"    border-top-right-radius: 3px;\n"
-"    border-bottom-right-radius: 3px;	\n"
-"}\n"
-"\n"
-"QComboBox::down-arrow {\n"
-"    image: url(:/icon/icons8_expand_arrow_16px.png);\n"
-"}*/\n"
-"\n"
-"/* --------- Tab ----------*/\n"
-"\n"
-"/*\n"
-"QTabBar::tab {\n"
-"    background: rgb(0, 132, 255);\n"
-"	\n"
-"	color: rgb(255, 255, 255);\n"
-"    border: 1px solid #C4C4C3;\n"
-"	padding: 5px 10px 5px 10px;\n"
-"	\n"
-"}\n"
-"\n"
-"QTabBar::tab:selected, QTabBar::tab:hover {\n"
-"    background: rgb(24, 70, 139);\n"
-"	color: rgb(255, 255, 255);\n"
-"}\n"
-"\n"
-"QPushButton\n"
-"{	\n"
-"	color: rgb(50, 50, 50);\n"
-"	border: 1px solid rgb(50, 50, 50);\n"
-"	background: none;\n"
-"}\n"
-"\n"
-"QPushButton:hover\n"
-"{	\n"
-"	color: rgb(255, 255, 255);\n"
-"	background: rgb(50, 50, 50);\n"
-"}\n"
-"\n"
-"QPushButton:pressed\n"
-"{	\n"
-"	color: rgb(50, 50, 50);\n"
-"	background: none;\n"
-"}\n"
-"*/\n"
-"/*----- Scroll Bar ------*/\n"
-"/*\n"
-"QScrollBar:horizontal {\n"
-"   "
-                        " background: rgb(185, 185, 185);\n"
-"}\n"
-"QScrollBar::handle:vertical {	\n"
-"	background-color: rgb(172, 172, 172);\n"
-"}\n"
-"\n"
-"QScrollBar:vertical {\n"
-"    background: rgb(185, 185, 185);\n"
-"}\n"
-"\n"
-"QScrollBar::handle:horizontal {	\n"
-"	background-color: rgb(172, 172, 172);\n"
-"}\n"
-"*/")
+        MainWindow.setStyleSheet(u"")
         self.actionAdd = QAction(MainWindow)
         self.actionAdd.setObjectName(u"actionAdd")
         self.actionRemove = QAction(MainWindow)
@@ -476,46 +361,53 @@ class Ui_MainWindow(object):
         self.swPageStack.setLineWidth(1)
         self.pVariable = QWidget()
         self.pVariable.setObjectName(u"pVariable")
-        self.pVariable.setStyleSheet(u"")
+        self.pVariable.setStyleSheet(u"#pVariable\n"
+"{	\n"
+"	background-color: rgb(40, 40, 43);\n"
+"}")
         self.verticalLayout_4 = QVBoxLayout(self.pVariable)
         self.verticalLayout_4.setSpacing(6)
         self.verticalLayout_4.setContentsMargins(11, 11, 11, 11)
         self.verticalLayout_4.setObjectName(u"verticalLayout_4")
-        self.frame_4 = QFrame(self.pVariable)
-        self.frame_4.setObjectName(u"frame_4")
-        self.frame_4.setMinimumSize(QSize(0, 25))
-        self.frame_4.setFrameShape(QFrame.StyledPanel)
-        self.frame_4.setFrameShadow(QFrame.Raised)
-        self.horizontalLayout_14 = QHBoxLayout(self.frame_4)
+        self.fVar = QFrame(self.pVariable)
+        self.fVar.setObjectName(u"fVar")
+        self.fVar.setMinimumSize(QSize(0, 25))
+        self.fVar.setStyleSheet(u"QLabel\n"
+"{	\n"
+"	color: rgb(255, 255, 255);\n"
+"}")
+        self.fVar.setFrameShape(QFrame.StyledPanel)
+        self.fVar.setFrameShadow(QFrame.Raised)
+        self.horizontalLayout_14 = QHBoxLayout(self.fVar)
         self.horizontalLayout_14.setSpacing(6)
         self.horizontalLayout_14.setContentsMargins(11, 11, 11, 11)
         self.horizontalLayout_14.setObjectName(u"horizontalLayout_14")
-        self.label_12 = QLabel(self.frame_4)
+        self.label_12 = QLabel(self.fVar)
         self.label_12.setObjectName(u"label_12")
 
         self.horizontalLayout_14.addWidget(self.label_12)
 
-        self.leUpdateKey = QLineEdit(self.frame_4)
+        self.leUpdateKey = QLineEdit(self.fVar)
         self.leUpdateKey.setObjectName(u"leUpdateKey")
 
         self.horizontalLayout_14.addWidget(self.leUpdateKey)
 
-        self.label_13 = QLabel(self.frame_4)
+        self.label_13 = QLabel(self.fVar)
         self.label_13.setObjectName(u"label_13")
 
         self.horizontalLayout_14.addWidget(self.label_13)
 
-        self.leUpdateValue = QLineEdit(self.frame_4)
+        self.leUpdateValue = QLineEdit(self.fVar)
         self.leUpdateValue.setObjectName(u"leUpdateValue")
 
         self.horizontalLayout_14.addWidget(self.leUpdateValue)
 
-        self.pbUpdateVarDisplay = QPushButton(self.frame_4)
+        self.pbUpdateVarDisplay = QPushButton(self.fVar)
         self.pbUpdateVarDisplay.setObjectName(u"pbUpdateVarDisplay")
 
         self.horizontalLayout_14.addWidget(self.pbUpdateVarDisplay)
 
-        self.pbDeleteSelectedVar = QPushButton(self.frame_4)
+        self.pbDeleteSelectedVar = QPushButton(self.fVar)
         self.pbDeleteSelectedVar.setObjectName(u"pbDeleteSelectedVar")
 
         self.horizontalLayout_14.addWidget(self.pbDeleteSelectedVar)
@@ -525,7 +417,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_14.addItem(self.horizontalSpacer_7)
 
 
-        self.verticalLayout_4.addWidget(self.frame_4)
+        self.verticalLayout_4.addWidget(self.fVar)
 
         self.tvVariables = QTreeView(self.pVariable)
         self.tvVariables.setObjectName(u"tvVariables")
@@ -553,7 +445,7 @@ class Ui_MainWindow(object):
         self.scrollArea_2.setWidgetResizable(True)
         self.scrollAreaWidgetContents_2 = QWidget()
         self.scrollAreaWidgetContents_2.setObjectName(u"scrollAreaWidgetContents_2")
-        self.scrollAreaWidgetContents_2.setGeometry(QRect(0, 0, 601, 171))
+        self.scrollAreaWidgetContents_2.setGeometry(QRect(0, 0, 1099, 614))
         self.verticalLayout_10 = QVBoxLayout(self.scrollAreaWidgetContents_2)
         self.verticalLayout_10.setSpacing(6)
         self.verticalLayout_10.setContentsMargins(11, 11, 11, 11)
@@ -904,7 +796,7 @@ class Ui_MainWindow(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollAreaWidgetContents = QWidget()
         self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
-        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 571, 700))
+        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 1085, 700))
         self.scrollAreaWidgetContents.setMinimumSize(QSize(0, 700))
         self.verticalLayout_7 = QVBoxLayout(self.scrollAreaWidgetContents)
         self.verticalLayout_7.setSpacing(6)

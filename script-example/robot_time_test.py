@@ -70,6 +70,81 @@ def calculate_movement_time(v_start, v_max, a_max, v_end, distance):
 
     return total_time
 
+def compute_move_time(v0, v_end, vmax, a, s):
+    """
+    Tính thời gian di chuyển của robot dựa trên quỹ đạo vận tốc dạng bậc thang (trapezoidal).
+    - v0: vận tốc ban đầu (m/s)
+    - v_end: vận tốc cuối (m/s)
+    - vmax: vận tốc tối đa (m/s)
+    - a: gia tốc (m/s^2)
+    - s: quãng đường cần di chuyển (m)
+    
+    Trả về: tổng thời gian di chuyển (s)
+    """
+    
+    # Tính quãng đường cần để tăng tốc từ v0 lên vmax
+    # s1 = (vmax^2 - v0^2) / (2a)
+    s1 = (vmax**2 - v0**2) / (2 * a)
+    
+    # Tính quãng đường cần để giảm tốc từ vmax xuống v_end
+    # s3 = (vmax^2 - v_end^2) / (2a)
+    s3 = (vmax**2 - v_end**2) / (2 * a)
+    
+    # Nếu tổng quãng đường s lớn hơn s1 + s3, robot sẽ có giai đoạn chạy đều ở vmax
+    if s > s1 + s3:
+        # Giai đoạn trapezoidal
+        # Thời gian tăng tốc:
+        # t1 = (vmax - v0) / a
+        t1 = (vmax - v0) / a
+        
+        # Thời gian giảm tốc:
+        # t3 = (vmax - v_end) / a
+        t3 = (vmax - v_end) / a
+        
+        # Quãng đường chạy đều:
+        s2 = s - (s1 + s3)
+        
+        # Thời gian chạy đều:
+        # t2 = s2 / vmax
+        t2 = s2 / vmax
+        
+        # Tổng thời gian:
+        T = t1 + t2 + t3
+        # in thời gian tăng tốc, giảm tốc, chạy đều
+        print("t1: ", t1)
+        print("t2: ", t2)
+        print("t3: ", t3)
+        return T
+    
+    else:
+        # Quãng đường không đủ để đạt vmax, quỹ đạo dạng tam giác
+        # Ta cần tìm vpeak (vận tốc đỉnh) từ công thức:
+        # s = (vpeak^2 - v0^2)/(2a) + (vpeak^2 - v_end^2)/(2a)
+        # => 2a s = 2vpeak^2 - (v0^2 + v_end^2)
+        # => vpeak^2 = a s + (v0^2 + v_end^2)/2
+        # Lấy căn bậc 2:
+        
+        vpeak_squared = a*s + (v0**2 + v_end**2)/2
+        if vpeak_squared < 0:
+            # Trường hợp này không thực tế, vì a, s, v0, v_end ≥ 0
+            # nhưng ta cứ kiểm tra để tránh lỗi toán học.
+            raise ValueError("Dữ liệu đầu vào không hợp lệ.")
+        
+        vpeak = math.sqrt(vpeak_squared)
+        
+        # Thời gian tăng tốc đến vpeak
+        t1 = (vpeak - v0) / a
+        
+        # Thời gian giảm tốc từ vpeak xuống v_end
+        t3 = (vpeak - v_end) / a
+        
+        # Tổng thời gian trong trường hợp tam giác
+        T = t1 + t3
+        # in thời gian tăng tốc, giảm tốc
+        print("t1: ", t1)
+        print("t3: ", t3)
+        return T
+
 
 
 def send_gcode_command(ser, command):
@@ -82,15 +157,13 @@ def send_gcode_command(ser, command):
 
     print(f"Đã nhận phản hồi: {response}")
 
-def test1():
+def test1(ser):
     # Ví dụ sử dụng
-    v_start = 100  # Vận tốc bắt đầu (m/s)
-    v_max = 300    # Vận tốc lớn nhất (m/s)
-    a_max = 1000    # Gia tốc lớn nhất (m/s^2)
+    v_start = 200  # Vận tốc bắt đầu (m/s)
+    v_max = 200    # Vận tốc lớn nhất (m/s)
+    a_max = 1200    # Gia tốc lớn nhất (m/s^2)
     v_end = v_start   # Vận tốc kết thúc (m/s)
-    distance = 80 # Quãng đường di chuyển (m)
-
-    # 0.4
+    distance = 25 # Quãng đường di chuyển (m)
 
     # Ví dụ sử dụng hàm:
     initial_velocity = v_start
@@ -101,14 +174,7 @@ def test1():
     # result = calculate_move_time(initial_velocity, max_velocity, final_velocity, acceleration, distance)
     # print(f"Thời gian di chuyển dự đoán: {result} giây")
 
-    movement_time = calculate_movement_time(v_start, v_max, a_max, v_end, distance)
-    print(f"Thời gian di chuyển: {movement_time:.4f} giây")
-
-    # Kết nối với cổng COM18
-    ser = serial.Serial('COM5', 115200, timeout=1)
-
-    # Đợi 2 giây để Arduino khởi động 
-    time.sleep(2)
+    
 
     send_gcode_command(ser, "G28\n")
 
@@ -117,63 +183,105 @@ def test1():
 
     send_gcode_command(ser, "M205 S{v_start}\n".format(v_start=v_start))
 
-    send_gcode_command(ser, "G01 X90 Z-325 F{v_max}\n".format(v_max=v_max))
+    send_gcode_command(ser, "G01 X0 Y0 Z-300 F{v_max}\n".format(v_max=v_max))
 
     start_time = time.time()
 
-    send_gcode_command(ser, "G01 X10 Z-325\n")
+    send_gcode_command(ser, "G01 X0 Y0 Z-325\n")
 
     end_time = time.time()
 
     execution_time = end_time - start_time
 
-    print(f"Thời gian thực hiện lệnh: {execution_time:.4f} giây")
+    # movement_time = calculate_movement_time(v_start, v_max, a_max, v_end, distance)
+    movement_time = compute_move_time(v_start, v_end, v_max, a_max, distance)
+    print(f"Thời gian tính toán: {movement_time:.4f} giây")
+    print(f"Thời gian robot phản hồi: {execution_time:.4f} giây")
 
     ser.close()
+
+import serial.tools.list_ports
+
+def find_and_connect_robot(baudrate=115200, timeout=1):
+    # Liệt kê tất cả các cổng COM đang có
+    ports = serial.tools.list_ports.comports()
+    
+    for port_info in ports:
+        port_name = port_info.device
+        try:
+            print(f"Đang thử mở cổng {port_name}...")
+            # Thử mở cổng và gửi lệnh kiểm tra
+            ser = serial.Serial(port=port_name, baudrate=baudrate, timeout=timeout)
+            response = ser.readline().decode('utf-8', errors='replace').strip()
+            print(f"Phản hồi: {response}")
+            # Gửi lệnh "IsDelta\n" đến robot
+            ser.write(b"IsDelta\n")
+            
+            # Đọc phản hồi
+            response = ser.readline().decode('utf-8', errors='replace').strip()
+            print(f"Phản hồi: {response}")
+            
+            # Kiểm tra phản hồi có chứa "YesDelta" hay không
+            if "YesDelta" in response:
+                print(f"Đã tìm thấy robot ở cổng {port_name}")
+                return ser  # Trả về đối tượng Serial đã kết nối với robot
+            else:
+                ser.close()
+        except (serial.SerialException, OSError):
+            # Nếu có lỗi khi mở cổng hoặc giao tiếp, ta bỏ qua và thử cổng khác
+            pass
+
+    
+    # Nếu không tìm thấy robot ở bất kỳ cổng nào
+    print("Không tìm thấy robot trên bất cứ cổng COM nào.")
+    return None
+
+robot_com = find_and_connect_robot()
+test1(robot_com)
 
 import pandas as pd
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error, r2_score
 
-# Load dataset
-file_path = r'script-example\datatable.csv'  # Thay đổi đường dẫn tới file dataset của bạn
-dataset = pd.read_csv(file_path)
+# # Load dataset
+# file_path = r'script-example\datatable.csv'  # Thay đổi đường dẫn tới file dataset của bạn
+# dataset = pd.read_csv(file_path)
 
-# Filter the rows where distance_to_move is 100
-filtered_dataset = dataset[dataset['distance_to_move'] == 100]
+# # Filter the rows where distance_to_move is 100
+# filtered_dataset = dataset[dataset['distance_to_move'] == 100]
 
-# Adjust the unit of time to milliseconds
-filtered_dataset['execute_time'] = filtered_dataset['execute_time']
+# # Adjust the unit of time to milliseconds
+# filtered_dataset['execute_time'] = filtered_dataset['execute_time']
 
-# Split data into features and target
-X_filtered = filtered_dataset[['begin_velocity', 'desired_velocity', 'acceleration']]
-y_filtered = filtered_dataset['execute_time']
+# # Split data into features and target
+# X_filtered = filtered_dataset[['begin_velocity', 'desired_velocity', 'acceleration']]
+# y_filtered = filtered_dataset['execute_time']
 
-# Train linear regression model
-model_filtered = LinearRegression()
-model_filtered.fit(X_filtered, y_filtered)
+# # Train linear regression model
+# model_filtered = LinearRegression()
+# model_filtered.fit(X_filtered, y_filtered)
 
-# Predict on the filtered data
-y_pred_filtered = model_filtered.predict(X_filtered)
+# # Predict on the filtered data
+# y_pred_filtered = model_filtered.predict(X_filtered)
 
-# Evaluate model
-mse_filtered = mean_squared_error(y_filtered, y_pred_filtered)
-r2_filtered = r2_score(y_filtered, y_pred_filtered)
+# # Evaluate model
+# mse_filtered = mean_squared_error(y_filtered, y_pred_filtered)
+# r2_filtered = r2_score(y_filtered, y_pred_filtered)
 
-print("Mean Squared Error:", mse_filtered)
-print("R-squared:", r2_filtered)
+# print("Mean Squared Error:", mse_filtered)
+# print("R-squared:", r2_filtered)
 
-# Extract coefficients
-coefficients = model_filtered.coef_
-intercept = model_filtered.intercept_
+# # Extract coefficients
+# coefficients = model_filtered.coef_
+# intercept = model_filtered.intercept_
 
-print("Coefficients:", coefficients)
-print("Intercept:", intercept)
+# print("Coefficients:", coefficients)
+# print("Intercept:", intercept)
 
-# Function to predict execution time based on the fitted model
-def predict_execution_time(begin_velocity, desired_velocity, acceleration):
-    return coefficients[0] * begin_velocity + coefficients[1] * desired_velocity + coefficients[2] * acceleration + intercept
+# # Function to predict execution time based on the fitted model
+# def predict_execution_time(begin_velocity, desired_velocity, acceleration):
+#     return coefficients[0] * begin_velocity + coefficients[1] * desired_velocity + coefficients[2] * acceleration + intercept
 
-# Example usage
-predicted_time = predict_execution_time(20, 200, 1000)
-print("Predicted execution time:", predicted_time/1000)
+# # Example usage
+# predicted_time = predict_execution_time(20, 200, 1000)
+# print("Predicted execution time:", predicted_time/1000)

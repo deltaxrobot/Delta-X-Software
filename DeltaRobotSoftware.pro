@@ -59,7 +59,6 @@ SOURCES += main.cpp\
     SmartDialog.cpp \
     SocketConnectionManager.cpp \
     SoftwareManager.cpp \
-    TCPConnectionManager.cpp \
     TabDashboard.cpp \
     TaskNode.cpp \
     TestCode.cpp \
@@ -110,7 +109,6 @@ HEADERS  += \
     SmartDialog.h \
     SocketConnectionManager.h \
     SoftwareManager.h \
-    TCPConnectionManager.h \
     TabDashboard.h \
     TaskNode.h \
     TextLayer.h \

@@ -84,7 +84,7 @@ public:
     QStackedWidget *swPageStack;
     QWidget *pVariable;
     QVBoxLayout *verticalLayout_4;
-    QFrame *frame_4;
+    QFrame *fVar;
     QHBoxLayout *horizontalLayout_14;
     QLabel *label_12;
     QLineEdit *leUpdateKey;
@@ -230,122 +230,7 @@ public:
         QIcon icon;
         icon.addFile(QString::fromUtf8(":/delta_x_logo_96x96.ico"), QSize(), QIcon::Normal, QIcon::Off);
         MainWindow->setWindowIcon(icon);
-        MainWindow->setStyleSheet(QString::fromUtf8("/*QWidget{\n"
-"background-color: rgb(255, 255, 255);\n"
-"}*/\n"
-"/*\n"
-"QPushButton {\n"
-"    \n"
-"	background-color: rgba(255, 255, 255, 0);\n"
-"	color: rgb(118, 118, 118);\n"
-"    border-radius: 3px;\n"
-"	border: 1px solid rgb(118, 118, 118);\n"
-"    min-height: 10px;\n"
-"    padding: 0px 10px 2px 10px;\n"
-"	margin-left:5px;\n"
-"	margin-right:5px;\n"
-"	margin-top:2px;\n"
-"	margin-bottom:2px;\n"
-"}\n"
-"\n"
-"QPushButton:pressed{\n"
-"	\n"
-"	color: rgb(255, 255, 255);\n"
-"	background-color: rgb(54, 178, 242);\n"
-"	border-color: rgb(255, 255, 255);\n"
-"}\n"
-"*/\n"
-"\n"
-"/*QWidget\n"
-"{	\n"
-"	color:rgb(60, 60, 60);\n"
-"}*/\n"
-"\n"
-"/*QWidget\n"
-"{	\n"
-"	background-color: rgb(255, 255, 255);\n"
-"}*/\n"
-"\n"
-"/*------- Combo Box---------*/\n"
-"/*QComboBox\n"
-"{	\n"
-"	color: rgb(79, 79, 79);\n"
-"	border: 1px solid rgb(79, 79, 79);\n"
-"	border-radius: 2px;\n"
-"}\n"
-"\n"
-"QComboBox:drop-down\n"
-"{\n"
-"	subcontrol-origin: padding;\n"
-"    subcontrol-position: top right;\n"
-"    width: 25px;\n"
-"\n"
-"    border-left-widt"
-                        "h: 1px;\n"
-"    border-left-color: darkgray;\n"
-"    border-left-style: solid;\n"
-"    border-top-right-radius: 3px;\n"
-"    border-bottom-right-radius: 3px;	\n"
-"}\n"
-"\n"
-"QComboBox::down-arrow {\n"
-"    image: url(:/icon/icons8_expand_arrow_16px.png);\n"
-"}*/\n"
-"\n"
-"/* --------- Tab ----------*/\n"
-"\n"
-"/*\n"
-"QTabBar::tab {\n"
-"    background: rgb(0, 132, 255);\n"
-"	\n"
-"	color: rgb(255, 255, 255);\n"
-"    border: 1px solid #C4C4C3;\n"
-"	padding: 5px 10px 5px 10px;\n"
-"	\n"
-"}\n"
-"\n"
-"QTabBar::tab:selected, QTabBar::tab:hover {\n"
-"    background: rgb(24, 70, 139);\n"
-"	color: rgb(255, 255, 255);\n"
-"}\n"
-"\n"
-"QPushButton\n"
-"{	\n"
-"	color: rgb(50, 50, 50);\n"
-"	border: 1px solid rgb(50, 50, 50);\n"
-"	background: none;\n"
-"}\n"
-"\n"
-"QPushButton:hover\n"
-"{	\n"
-"	color: rgb(255, 255, 255);\n"
-"	background: rgb(50, 50, 50);\n"
-"}\n"
-"\n"
-"QPushButton:pressed\n"
-"{	\n"
-"	color: rgb(50, 50, 50);\n"
-"	background: none;\n"
-"}\n"
-"*/\n"
-"/*----- Scroll Bar ------*/\n"
-"/*\n"
-"QScrollBar:horizontal {\n"
-"   "
-                        " background: rgb(185, 185, 185);\n"
-"}\n"
-"QScrollBar::handle:vertical {	\n"
-"	background-color: rgb(172, 172, 172);\n"
-"}\n"
-"\n"
-"QScrollBar:vertical {\n"
-"    background: rgb(185, 185, 185);\n"
-"}\n"
-"\n"
-"QScrollBar::handle:horizontal {	\n"
-"	background-color: rgb(172, 172, 172);\n"
-"}\n"
-"*/"));
+        MainWindow->setStyleSheet(QString::fromUtf8(""));
         actionAdd = new QAction(MainWindow);
         actionAdd->setObjectName(QString::fromUtf8("actionAdd"));
         actionRemove = new QAction(MainWindow);
@@ -662,46 +547,53 @@ public:
         swPageStack->setLineWidth(1);
         pVariable = new QWidget();
         pVariable->setObjectName(QString::fromUtf8("pVariable"));
-        pVariable->setStyleSheet(QString::fromUtf8(""));
+        pVariable->setStyleSheet(QString::fromUtf8("#pVariable\n"
+"{	\n"
+"	background-color: rgb(40, 40, 43);\n"
+"}"));
         verticalLayout_4 = new QVBoxLayout(pVariable);
         verticalLayout_4->setSpacing(6);
         verticalLayout_4->setContentsMargins(11, 11, 11, 11);
         verticalLayout_4->setObjectName(QString::fromUtf8("verticalLayout_4"));
-        frame_4 = new QFrame(pVariable);
-        frame_4->setObjectName(QString::fromUtf8("frame_4"));
-        frame_4->setMinimumSize(QSize(0, 25));
-        frame_4->setFrameShape(QFrame::StyledPanel);
-        frame_4->setFrameShadow(QFrame::Raised);
-        horizontalLayout_14 = new QHBoxLayout(frame_4);
+        fVar = new QFrame(pVariable);
+        fVar->setObjectName(QString::fromUtf8("fVar"));
+        fVar->setMinimumSize(QSize(0, 25));
+        fVar->setStyleSheet(QString::fromUtf8("QLabel\n"
+"{	\n"
+"	color: rgb(255, 255, 255);\n"
+"}"));
+        fVar->setFrameShape(QFrame::StyledPanel);
+        fVar->setFrameShadow(QFrame::Raised);
+        horizontalLayout_14 = new QHBoxLayout(fVar);
         horizontalLayout_14->setSpacing(6);
         horizontalLayout_14->setContentsMargins(11, 11, 11, 11);
         horizontalLayout_14->setObjectName(QString::fromUtf8("horizontalLayout_14"));
-        label_12 = new QLabel(frame_4);
+        label_12 = new QLabel(fVar);
         label_12->setObjectName(QString::fromUtf8("label_12"));
 
         horizontalLayout_14->addWidget(label_12);
 
-        leUpdateKey = new QLineEdit(frame_4);
+        leUpdateKey = new QLineEdit(fVar);
         leUpdateKey->setObjectName(QString::fromUtf8("leUpdateKey"));
 
         horizontalLayout_14->addWidget(leUpdateKey);
 
-        label_13 = new QLabel(frame_4);
+        label_13 = new QLabel(fVar);
         label_13->setObjectName(QString::fromUtf8("label_13"));
 
         horizontalLayout_14->addWidget(label_13);
 
-        leUpdateValue = new QLineEdit(frame_4);
+        leUpdateValue = new QLineEdit(fVar);
         leUpdateValue->setObjectName(QString::fromUtf8("leUpdateValue"));
 
         horizontalLayout_14->addWidget(leUpdateValue);
 
-        pbUpdateVarDisplay = new QPushButton(frame_4);
+        pbUpdateVarDisplay = new QPushButton(fVar);
         pbUpdateVarDisplay->setObjectName(QString::fromUtf8("pbUpdateVarDisplay"));
 
         horizontalLayout_14->addWidget(pbUpdateVarDisplay);
 
-        pbDeleteSelectedVar = new QPushButton(frame_4);
+        pbDeleteSelectedVar = new QPushButton(fVar);
         pbDeleteSelectedVar->setObjectName(QString::fromUtf8("pbDeleteSelectedVar"));
 
         horizontalLayout_14->addWidget(pbDeleteSelectedVar);
@@ -711,7 +603,7 @@ public:
         horizontalLayout_14->addItem(horizontalSpacer_7);
 
 
-        verticalLayout_4->addWidget(frame_4);
+        verticalLayout_4->addWidget(fVar);
 
         tvVariables = new QTreeView(pVariable);
         tvVariables->setObjectName(QString::fromUtf8("tvVariables"));
@@ -739,7 +631,7 @@ public:
         scrollArea_2->setWidgetResizable(true);
         scrollAreaWidgetContents_2 = new QWidget();
         scrollAreaWidgetContents_2->setObjectName(QString::fromUtf8("scrollAreaWidgetContents_2"));
-        scrollAreaWidgetContents_2->setGeometry(QRect(0, 0, 601, 171));
+        scrollAreaWidgetContents_2->setGeometry(QRect(0, 0, 1099, 614));
         verticalLayout_10 = new QVBoxLayout(scrollAreaWidgetContents_2);
         verticalLayout_10->setSpacing(6);
         verticalLayout_10->setContentsMargins(11, 11, 11, 11);
@@ -1090,7 +982,7 @@ public:
         scrollArea->setWidgetResizable(true);
         scrollAreaWidgetContents = new QWidget();
         scrollAreaWidgetContents->setObjectName(QString::fromUtf8("scrollAreaWidgetContents"));
-        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 571, 700));
+        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 1085, 700));
         scrollAreaWidgetContents->setMinimumSize(QSize(0, 700));
         verticalLayout_7 = new QVBoxLayout(scrollAreaWidgetContents);
         verticalLayout_7->setSpacing(6);

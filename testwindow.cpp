@@ -1,66 +1,94 @@
 #include "testwindow.h"
-#include "ui_testwindow.h"
-
-#include <QMessageBox>
-#include <QImage>
-#include <QPixmap>
 #include <QDebug>
 
-TestWindow::TestWindow(QWidget *parent)
-    : QMainWindow(parent), ui(new Ui::TestWindow), timer(new QTimer(this)) {
-    ui->setupUi(this);
+TestWindow::TestWindow(QWidget *parent) : QMainWindow(parent) {
+    // Khởi tạo camera và ffmpeg
+    setupCamera();
+    setupFFmpeg();
 
-    // Kết nối sự kiện nút bấm mở camera
-    connect(ui->openCameraButton, &QPushButton::clicked, this, &TestWindow::onOpenCameraButtonClicked);
-    connect(timer, &QTimer::timeout, this, &TestWindow::captureFrame);
-
-    // Thiết lập timer với thời gian lấy khung hình là 30ms (~33 fps)
-    timer->setInterval(30);
+    // Bắt đầu camera
+    camera->start();
 }
 
 TestWindow::~TestWindow() {
-    if (webcam.isOpened()) {
-        webcam.release();
+    if (camera) {
+        camera->stop();
+        delete camera;
     }
-    delete ui;
+    if (probe) {
+        delete probe;
+    }
+    ffmpegProcess.close();
 }
 
-void TestWindow::onOpenCameraButtonClicked() {
-    if (webcam.isOpened()) {
-        // Đóng camera nếu đang mở
-        webcam.release();
-        timer->stop();
-        ui->openCameraButton->setText("Open Camera");
-        qDebug() << "Camera closed.";
-    } else {
-        // Mở camera với ID = 0
-        if (webcam.open(0)) {
-            ui->openCameraButton->setText("Close Camera");
-            timer->start();  // Bắt đầu lấy khung hình
-            qDebug() << "Camera opened successfully.";
-        } else {
-            QMessageBox::warning(this, "Error", "Failed to open the camera.");
-        }
-    }
-}
+void TestWindow::setupCamera() {
+    // Khởi tạo camera
+    camera = new QCamera;
+    probe = new QVideoProbe;
 
-void TestWindow::captureFrame() {
-    if (!webcam.isOpened()) {
+    // Kết nối probe để bắt frame
+    if (!probe->setSource(camera)) {
+        qCritical() << "Không thể kết nối probe với camera!";
         return;
     }
 
-    cv::Mat frame;
-    if (webcam.read(frame)) {
-        // Chuyển đổi BGR (OpenCV) sang RGB (Qt)
-        cv::cvtColor(frame, frame, cv::COLOR_BGR2RGB);
-        QImage qimg(frame.data, frame.cols, frame.rows, frame.step, QImage::Format_RGB888);
-        displayFrame(qimg);
-    } else {
-        qDebug() << "Failed to capture frame.";
+    connect(probe, &QVideoProbe::videoFrameProbed, this, &TestWindow::captureFrame);
+}
+
+void TestWindow::setupFFmpeg() {
+    // Cấu hình đường dẫn RTMP
+    QString rtmpUrl = "rtmp://13.88.44.47/stream/live";
+
+    // Thông số giả định, bạn có thể thay đổi theo camera
+    int width = 640;
+    int height = 480;
+    int fps = 30;
+
+    // Thiết lập lệnh ffmpeg
+    QStringList args;
+    args << "-y"
+         << "-f" << "rawvideo"
+         << "-vcodec" << "rawvideo"
+         << "-pix_fmt" << "bgr24"
+         << "-s" << QString("%1x%2").arg(width).arg(height)
+         << "-r" << QString::number(fps)
+         << "-i" << "-"
+         << "-c:v" << "libx264"
+         << "-pix_fmt" << "yuv420p"
+         << "-preset" << "veryfast"
+         << "-tune" << "zerolatency"
+         << "-f" << "flv"
+         << rtmpUrl;
+
+    // Khởi chạy ffmpeg
+    ffmpegProcess.setProcessChannelMode(QProcess::MergedChannels);
+    ffmpegProcess.start("ffmpeg", args);
+
+    if (!ffmpegProcess.waitForStarted()) {
+        qCritical() << "Không thể khởi động ffmpeg!";
     }
 }
 
-void TestWindow::displayFrame(const QImage &frame) {
-    // Hiển thị hình ảnh trên QLabel
-    ui->cameraLabel->setPixmap(QPixmap::fromImage(frame));
+void TestWindow::captureFrame(const QVideoFrame &frame) {
+    if (!frame.isValid()) {
+        qWarning() << "Frame không hợp lệ!";
+        return;
+    }
+
+    QVideoFrame cloneFrame(frame);
+    cloneFrame.map(QAbstractVideoBuffer::ReadOnly); // Đảm bảo frame được ánh xạ đúng cách
+
+    // Chuyển frame thành QImage
+    QImage::Format imgFormat = QVideoFrame::imageFormatFromPixelFormat(cloneFrame.pixelFormat());
+    QImage image((uchar *)cloneFrame.bits(0), cloneFrame.width(), cloneFrame.height(), cloneFrame.bytesPerLine(0), imgFormat);
+
+    // Chuyển đổi sang RGB888 nếu cần
+    QImage rgbImage = image.convertToFormat(QImage::Format_RGB888);
+
+    // Gửi dữ liệu thô vào ffmpeg qua stdin
+    uchar *data = rgbImage.bits();
+    int dataSize = rgbImage.sizeInBytes(); // Thay thế byteCount() bằng sizeInBytes()
+    ffmpegProcess.write((const char *)data, dataSize);
+
+    cloneFrame.unmap(); // Giải phóng frame
 }

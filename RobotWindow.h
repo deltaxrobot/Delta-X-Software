@@ -32,7 +32,7 @@
 #include <QMessageBox>
 #include <QInputDialog>
 #include <QUrl>
-#include <TCPConnectionManager.h>
+//#include <TCPConnectionManager.h>
 //#include <ROS.h>
 #include <QCloseEvent>
 //#include <ObjectVariableTable.h>
@@ -355,6 +355,8 @@ public slots:
     void SetConveyorMovingMode(int mode);
     void SetConveyorSpeed();
     void StopConveyor();
+    void ForwardConveyor();
+    void BackwardConveyor();
     void SetConveyorPosition();
     void SetConveyorAbsolutePosition();
 
@@ -433,6 +435,7 @@ public slots:
     //------ Tracking --------
     void ChangeSelectedTracking(int id);
     void ChangeSelectedTrackingEncoder(int id);
+    void SaveTrackingManager();
 
     //------ Point Tool -----
     void CalculateMappingMatrixTool();
@@ -440,6 +443,7 @@ public slots:
     void CalculateTestPoint();
     void CalculateVector();
     void UpdateTestPoint(QVector3D testPoint);
+    void MoveTestTrackingPoint();
 
     // ----- Display ----
 

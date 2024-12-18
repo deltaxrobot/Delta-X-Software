@@ -40,7 +40,7 @@ model = None
 def main():
     # Parse command-line arguments
     parser = argparse.ArgumentParser(description="YOLOv8 Inference Script")
-    parser.add_argument("--host", type=str, default="192.168.1.8", help="IP address of the server")
+    parser.add_argument("--host", type=str, default="192.168.50.246", help="IP address of the server")
     parser.add_argument("--port", type=int, default=8844, help="Port number of the server")
     parser.add_argument("--model-path", type=str, default='yolov8n.pt', help="Path to the YOLOv8 model file")
 

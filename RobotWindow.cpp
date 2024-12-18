@@ -112,183 +112,6 @@ void RobotWindow::InitVariables()
     #endif
 #endif
 
-    // -------- Point Tool -------
-
-    connect(ui->tbCopyEncoderPosition, &QPushButton::clicked, [=]()
-    {
-        QClipboard *clipboard = QApplication::clipboard();
-        clipboard->setText(ui->leEncoderCurrentPosition->text());
-
-    });
-
-    connect(ui->tbCopyTestTrackingPoint, &QPushButton::clicked, [=]()
-    {
-        // Copy giá trị vào clipboard
-        QString text = QString("%1, %2, %3").arg(ui->leTestTrackingPointX->text()).arg(ui->leTestTrackingPointY->text()).arg(ui->leTestTrackingPointZ->text());
-        QClipboard *clipboard = QApplication::clipboard();
-        clipboard->setText(text);
-
-    });
-
-    connect(ui->tbPasteTestTrackingPoint, &QPushButton::clicked, [=]()
-    {
-        pastePointValues(ui->leTestTrackingPointX, ui->leTestTrackingPointY, ui->leTestTrackingPointZ);
-    });
-
-    connect(ui->pbMoveTestTrackingPoint, &QPushButton::clicked, [=]()
-    {
-        QVector3D initialPoint;
-        initialPoint.setX(ui->leTestTrackingPointX->text().toFloat());
-        initialPoint.setY(ui->leTestTrackingPointY->text().toFloat());
-        initialPoint.setZ(ui->leTestTrackingPointZ->text().toFloat());
-
-        QVector3D direction = VariableManager::instance().getVar(ui->leVelocityVector->text()).value<QVector3D>();
-
-        double distance = ui->leMovingValue->text().toFloat();
-
-        QVector3D normalizedDirection = direction.normalized();
-
-        // Tính tọa độ mới
-        QVector3D newPoint = initialPoint + normalizedDirection * distance;
-        ui->leTestTrackingPointX->setText(QString::number(newPoint.x()));
-        ui->leTestTrackingPointY->setText(QString::number(newPoint.y()));
-        ui->leTestTrackingPointZ->setText(QString::number(newPoint.z()));
-    });
-
-    connect(ui->tbAutoMove, &QToolButton::toggled, [=](bool checked)
-    {
-        TrackingManagerInstance->Trackings.at(0)->IsUpateTestPoint = checked;
-    });
-
-    connect(ui->pbCalculateMappingMatrixTool, SIGNAL(clicked(bool)), this, SLOT(CalculateMappingMatrixTool()));
-    connect(ui->pbCalculatePointMatrixTool, SIGNAL(clicked(bool)), this, SLOT(CalculatePointMatrixTool()));
-    connect(ui->pbCalculateTestPoint, SIGNAL(clicked(bool)), this, SLOT(CalculateTestPoint()));
-    connect(ui->pbCalVector, SIGNAL(clicked(bool)), this, SLOT(CalculateVector()));
-
-    connect(ui->pbAnglePoint1, &QPushButton::clicked, [=](){ ui->lePointAtT1X->setText(QString::number(RobotParameters[RbID].X)); ui->lePointAtT1Y->setText(QString::number(RobotParameters[RbID].Y)); ui->lePointAtT1Z->setText(QString::number(RobotParameters[RbID].Z));});
-    connect(ui->pbAnglePoint2, &QPushButton::clicked, [=](){ ui->lePointAtT2X->setText(QString::number(RobotParameters[RbID].X)); ui->lePointAtT2Y->setText(QString::number(RobotParameters[RbID].Y)); ui->lePointAtT2Z->setText(QString::number(RobotParameters[RbID].Z));});
-
-    connect(ui->tbPasteVectorPoint1, &QPushButton::clicked, [=]()
-    { 
-        pastePointValues(ui->lePointAtT1X, ui->lePointAtT1Y, ui->lePointAtT1Z);
-    });
-
-    connect(ui->tbPasteVectorPoint2, &QPushButton::clicked, [=]()
-    { 
-        pastePointValues(ui->lePointAtT2X, ui->lePointAtT2Y, ui->lePointAtT2Z);
-    });
-
-    connect(ui->tbPasteSourcePoint1, &QPushButton::clicked, [=]()
-    {
-        pastePointValues(ui->leSourcePoint1X, ui->leSourcePoint1Y, NULL);
-    });
-    connect(ui->tbPasteSourcePoint2, &QPushButton::clicked, [=]()
-    {
-        pastePointValues(ui->leSourcePoint2X, ui->leSourcePoint2Y, NULL);
-    });
-    connect(ui->tbPasteDestinationPoint1, &QPushButton::clicked, [=]()
-    {
-        pastePointValues(ui->leDestinationPoint1X, ui->leDestinationPoint1Y, NULL);
-    });
-    connect(ui->tbPasteDestinationPoint2, &QPushButton::clicked, [=]()
-    {
-        pastePointValues(ui->leDestinationPoint2X, ui->leDestinationPoint2Y, NULL);
-    });
-
-    connect(ui->pbAddMappingMatrix, &QPushButton::clicked, [=]()
-    {
-        QString prefix = ProjectName + "." + ui->cbSelectedTracking->currentText() + ".";
-
-        QString transformString = QString("%1,%2,%3,%4,%5,%6,%7,%8,%9")
-                .arg(CalculatingTransform.m11())
-                .arg(CalculatingTransform.m12())
-                .arg(CalculatingTransform.m13())
-                .arg(CalculatingTransform.m21())
-                .arg(CalculatingTransform.m22())
-                .arg(CalculatingTransform.m23())
-                .arg(CalculatingTransform.m31())
-                .arg(CalculatingTransform.m32())
-                .arg(CalculatingTransform.m33());
-
-        VariableManager::instance().updateVar(prefix + ui->leMatrixName->text(), CalculatingTransform);
-        VariableManager::instance().updateVar(prefix + ui->leMatrixName->text() + "String", transformString);
-
-        if (!isItemExit(ui->lwMappingMatrixList, ui->leMatrixName->text())) {
-            ui->lwMappingMatrixList->addItem(ui->leMatrixName->text());
-        }
-    });
-
-    connect(ui->pbAddPointMatrix, &QPushButton::clicked, [=]()
-    {
-        QString prefix = ProjectName + "." + ui->cbSelectedTracking->currentText() + ".";
-
-        std::vector<double> matrixArray;
-        matrixArray.assign(PointMatrix.begin<double>(), PointMatrix.end<double>());
-
-        // Tạo một QVariant từ mảng và lưu trữ ma trận
-        QVariant matrixVariant = QVariant::fromValue(matrixArray);
-
-        VariableManager::instance().updateVar(prefix + ui->lePointMatrixName->text(), matrixVariant);
-
-        if (!isItemExit(ui->lwPointMatrixList, ui->lePointMatrixName->text()))
-        {
-            ui->lwPointMatrixList->addItem(ui->lePointMatrixName->text());
-        }
-    });
-
-    connect(ui->pbAddVector, &QPushButton::clicked, [=]()
-    {
-        CalVector.setX(ui->leVectorX->text().toFloat());
-        CalVector.setY(ui->leVectorY->text().toFloat());
-        CalVector.setZ(ui->leVectorZ->text().toFloat());
-
-        QString prefix = ProjectName + "." + ui->cbSelectedTracking->currentText() + ".";
-
-        VariableManager::instance().updateVar(prefix + ui->leVectorName->text(), QVector3D(CalVector.x(), CalVector.y(), CalVector.z()));
-
-        if (!isItemExit(ui->lwVectorList, ui->leVectorName->text())) {
-            ui->lwVectorList->addItem(ui->leVectorName->text());
-        }
-
-    });
-
-
-    connect(ui->pbAddVariablePoint, &QPushButton::clicked, [=]()
-    {
-        int selectedEncoderID = ui->cbSelectedTracking->currentText().toInt();
-
-        float x = ui->leObjectX->text().isEmpty() ? QRandomGenerator::global()->generate() % 1000 : ui->leObjectX->text().toFloat();
-        float y = ui->leObjectY->text().isEmpty() ? QRandomGenerator::global()->generate() % 1000 : ui->leObjectY->text().toFloat();
-        float z = ui->leObjectZ->text().isEmpty() ? QRandomGenerator::global()->generate() % 1000 : ui->leObjectZ->text().toFloat();
-
-        std::default_random_engine generator;  // You can seed it if you want: generator(seed);
-        std::uniform_int_distribution<int> distribution(-180, 180);
-        int angle = distribution(generator);
-
-        if (ui->leObjectListName->text() == TrackingManagerInstance->Trackings.at(selectedEncoderID)->ListName)
-        {
-            QVector<ObjectInfo> list;
-            QVector3D position(x, y, z);
-
-            ObjectInfo object(-1, 0, position, 20, 40, angle);
-            list.append(object);
-            TrackingManagerInstance->Trackings.at(selectedEncoderID)->UpdateTrackedObjects(list, ui->leObjectListName->text());
-        }
-        else
-        {
-            QString listName = ui->leObjectListName->text();
-            int counter = VariableManager::instance().getVar(listName + ".Count", 0).toInt();
-            VariableManager::instance().updateVar((listName + ".%1.X").arg(counter), x);
-            VariableManager::instance().updateVar((listName + ".%1.Y").arg(counter), y);
-            VariableManager::instance().updateVar((listName + ".%1.Z").arg(counter), z);
-            VariableManager::instance().updateVar((listName + ".%1.W").arg(counter), 20);
-            VariableManager::instance().updateVar((listName + ".%1.L").arg(counter), 40);
-            VariableManager::instance().updateVar((listName + ".%1.A").arg(counter), angle);
-
-            VariableManager::instance().updateVar(listName + ".Count", counter + 1);
-        }
-    });
-
     // ------- Log and Debug -----
     Debugs.push_back(ui->teDebug);
 
@@ -429,6 +252,10 @@ void RobotWindow::InitOtherThreadObjects()
     connect(ui->pbStopConveyor, SIGNAL(clicked(bool)), this, SLOT(StopConveyor()));
     connect(ui->cbConveyorType, SIGNAL(currentIndexChanged(int)), this, SLOT(ChangeConveyorType(int)));
     ChangeConveyorType(0);
+    connect(ui->pbForwardConveyor, SIGNAL(pressed()), this, SLOT(ForwardConveyor()));
+    connect(ui->pbForwardConveyor, SIGNAL(released()), this, SLOT(StopConveyor()));
+    connect(ui->pbBackwardConveyor, SIGNAL(pressed()), this, SLOT(BackwardConveyor()));
+    connect(ui->pbBackwardConveyor, SIGNAL(released()), this, SLOT(StopConveyor()));
 
     connect(ui->leSubConveyor1Speed, SIGNAL(returnPressed()), this, SLOT(SetConveyorSpeed()));
     connect(ui->leSubConveyor2Speed, SIGNAL(returnPressed()), this, SLOT(SetConveyorSpeed()));
@@ -1090,6 +917,165 @@ void RobotWindow::InitEvents()
 
 //    SelectImageProviderOption(0);
 
+    // -------- Point Tool -------
+
+    connect(ui->tbCopyEncoderPosition, &QPushButton::clicked, [=]()
+    {
+        QClipboard *clipboard = QApplication::clipboard();
+        clipboard->setText(ui->leEncoderCurrentPosition->text());
+
+    });
+
+    connect(ui->tbCopyTestTrackingPoint, &QPushButton::clicked, [=]()
+    {
+        // Copy giá trị vào clipboard
+        QString text = QString("%1, %2, %3").arg(ui->leTestTrackingPointX->text()).arg(ui->leTestTrackingPointY->text()).arg(ui->leTestTrackingPointZ->text());
+        QClipboard *clipboard = QApplication::clipboard();
+        clipboard->setText(text);
+
+    });
+
+    connect(ui->tbPasteTestTrackingPoint, &QPushButton::clicked, [=]()
+    {
+        pastePointValues(ui->leTestTrackingPointX, ui->leTestTrackingPointY, ui->leTestTrackingPointZ);
+    });
+
+    connect(ui->pbMoveTestTrackingPoint, &QPushButton::clicked, this, &RobotWindow::MoveTestTrackingPoint);
+
+    connect(ui->tbAutoMove, &QToolButton::toggled, [=](bool checked)
+    {
+        TrackingManagerInstance->Trackings.at(0)->IsUpateTestPoint = checked;
+    });
+
+    connect(ui->pbCalculateMappingMatrixTool, SIGNAL(clicked(bool)), this, SLOT(CalculateMappingMatrixTool()));
+    connect(ui->pbCalculatePointMatrixTool, SIGNAL(clicked(bool)), this, SLOT(CalculatePointMatrixTool()));
+    connect(ui->pbCalculateTestPoint, SIGNAL(clicked(bool)), this, SLOT(CalculateTestPoint()));
+    connect(ui->pbCalVector, SIGNAL(clicked(bool)), this, SLOT(CalculateVector()));
+
+    connect(ui->pbAnglePoint1, &QPushButton::clicked, [=](){ ui->lePointAtT1X->setText(QString::number(RobotParameters[RbID].X)); ui->lePointAtT1Y->setText(QString::number(RobotParameters[RbID].Y)); ui->lePointAtT1Z->setText(QString::number(RobotParameters[RbID].Z));});
+    connect(ui->pbAnglePoint2, &QPushButton::clicked, [=](){ ui->lePointAtT2X->setText(QString::number(RobotParameters[RbID].X)); ui->lePointAtT2Y->setText(QString::number(RobotParameters[RbID].Y)); ui->lePointAtT2Z->setText(QString::number(RobotParameters[RbID].Z));});
+
+    connect(ui->tbPasteVectorPoint1, &QPushButton::clicked, [=]()
+    {
+        pastePointValues(ui->lePointAtT1X, ui->lePointAtT1Y, ui->lePointAtT1Z);
+    });
+
+    connect(ui->tbPasteVectorPoint2, &QPushButton::clicked, [=]()
+    {
+        pastePointValues(ui->lePointAtT2X, ui->lePointAtT2Y, ui->lePointAtT2Z);
+    });
+
+    connect(ui->tbPasteSourcePoint1, &QPushButton::clicked, [=]()
+    {
+        pastePointValues(ui->leSourcePoint1X, ui->leSourcePoint1Y, NULL);
+    });
+    connect(ui->tbPasteSourcePoint2, &QPushButton::clicked, [=]()
+    {
+        pastePointValues(ui->leSourcePoint2X, ui->leSourcePoint2Y, NULL);
+    });
+    connect(ui->tbPasteDestinationPoint1, &QPushButton::clicked, [=]()
+    {
+        pastePointValues(ui->leDestinationPoint1X, ui->leDestinationPoint1Y, NULL);
+    });
+    connect(ui->tbPasteDestinationPoint2, &QPushButton::clicked, [=]()
+    {
+        pastePointValues(ui->leDestinationPoint2X, ui->leDestinationPoint2Y, NULL);
+    });
+
+    connect(ui->pbAddMappingMatrix, &QPushButton::clicked, [=]()
+    {
+        QString prefix = ProjectName + "." + ui->cbSelectedTracking->currentText() + ".";
+
+        QString transformString = QString("%1,%2,%3,%4,%5,%6,%7,%8,%9")
+                .arg(CalculatingTransform.m11())
+                .arg(CalculatingTransform.m12())
+                .arg(CalculatingTransform.m13())
+                .arg(CalculatingTransform.m21())
+                .arg(CalculatingTransform.m22())
+                .arg(CalculatingTransform.m23())
+                .arg(CalculatingTransform.m31())
+                .arg(CalculatingTransform.m32())
+                .arg(CalculatingTransform.m33());
+
+        VariableManager::instance().updateVar(prefix + ui->leMatrixName->text(), CalculatingTransform);
+        VariableManager::instance().updateVar(prefix + ui->leMatrixName->text() + "String", transformString);
+
+        if (!isItemExit(ui->lwMappingMatrixList, ui->leMatrixName->text())) {
+            ui->lwMappingMatrixList->addItem(ui->leMatrixName->text());
+        }
+    });
+
+    connect(ui->pbAddPointMatrix, &QPushButton::clicked, [=]()
+    {
+        QString prefix = ProjectName + "." + ui->cbSelectedTracking->currentText() + ".";
+
+        std::vector<double> matrixArray;
+        matrixArray.assign(PointMatrix.begin<double>(), PointMatrix.end<double>());
+
+        // Tạo một QVariant từ mảng và lưu trữ ma trận
+        QVariant matrixVariant = QVariant::fromValue(matrixArray);
+
+        VariableManager::instance().updateVar(prefix + ui->lePointMatrixName->text(), matrixVariant);
+
+        if (!isItemExit(ui->lwPointMatrixList, ui->lePointMatrixName->text()))
+        {
+            ui->lwPointMatrixList->addItem(ui->lePointMatrixName->text());
+        }
+    });
+
+    connect(ui->pbAddVector, &QPushButton::clicked, [=]()
+    {
+        CalVector.setX(ui->leVectorX->text().toFloat());
+        CalVector.setY(ui->leVectorY->text().toFloat());
+        CalVector.setZ(ui->leVectorZ->text().toFloat());
+
+        QString prefix = ProjectName + "." + ui->cbSelectedTracking->currentText() + ".";
+
+        VariableManager::instance().updateVar(prefix + ui->leVectorName->text(), QVector3D(CalVector.x(), CalVector.y(), CalVector.z()));
+
+        if (!isItemExit(ui->lwVectorList, ui->leVectorName->text())) {
+            ui->lwVectorList->addItem(ui->leVectorName->text());
+        }
+
+    });
+
+
+    connect(ui->pbAddVariablePoint, &QPushButton::clicked, [=]()
+    {
+        int selectedEncoderID = ui->cbSelectedTracking->currentText().toInt();
+
+        float x = ui->leObjectX->text().isEmpty() ? QRandomGenerator::global()->generate() % 1000 : ui->leObjectX->text().toFloat();
+        float y = ui->leObjectY->text().isEmpty() ? QRandomGenerator::global()->generate() % 1000 : ui->leObjectY->text().toFloat();
+        float z = ui->leObjectZ->text().isEmpty() ? QRandomGenerator::global()->generate() % 1000 : ui->leObjectZ->text().toFloat();
+
+        std::default_random_engine generator;  // You can seed it if you want: generator(seed);
+        std::uniform_int_distribution<int> distribution(-180, 180);
+        int angle = distribution(generator);
+
+        if (ui->leObjectListName->text() == TrackingManagerInstance->Trackings.at(selectedEncoderID)->ListName)
+        {
+            QVector<ObjectInfo> list;
+            QVector3D position(x, y, z);
+
+            ObjectInfo object(-1, 0, position, 20, 40, angle);
+            list.append(object);
+            TrackingManagerInstance->Trackings.at(selectedEncoderID)->UpdateTrackedObjects(list, ui->leObjectListName->text());
+        }
+        else
+        {
+            QString listName = ui->leObjectListName->text();
+            int counter = VariableManager::instance().getVar(listName + ".Count", 0).toInt();
+            VariableManager::instance().updateVar((listName + ".%1.X").arg(counter), x);
+            VariableManager::instance().updateVar((listName + ".%1.Y").arg(counter), y);
+            VariableManager::instance().updateVar((listName + ".%1.Z").arg(counter), z);
+            VariableManager::instance().updateVar((listName + ".%1.W").arg(counter), 20);
+            VariableManager::instance().updateVar((listName + ".%1.L").arg(counter), 40);
+            VariableManager::instance().updateVar((listName + ".%1.A").arg(counter), angle);
+
+            VariableManager::instance().updateVar(listName + ".Count", counter + 1);
+        }
+    });
+
     // ---- Setting ----
 
     //----------- Camera -----------
@@ -1576,13 +1562,7 @@ void RobotWindow::AddTrackingThread()
     connect(tracking->thread(), &QThread::finished, tracking, &QObject::deleteLater);
 
 
-    connect(ui->pbSaveTrackingManager, &QPushButton::clicked, [=]()
-    {
-        int selectedEncoderID = ui->cbSelectedTracking->currentText().toInt();
-
-        TrackingManagerInstance->Trackings.at(selectedEncoderID)->VelocityVector = VariableManager::instance().getVar(ui->leVelocityVector->text()).value<QVector3D>();
-        TrackingManagerInstance->Trackings.at(selectedEncoderID)->VectorName = ui->leVectorName->text();
-    });
+    connect(ui->pbSaveTrackingManager, &QPushButton::clicked, this, &RobotWindow::SaveTrackingManager);
     connect(ui->cbReverseEncoderValue, SIGNAL(clicked(bool)), tracking, SLOT(SetEncoderReverse(bool)));
 
     connect(tracking, SIGNAL(SendGcodeRequest(QString, QString)), DeviceManagerInstance, SLOT(SendGcode(QString, QString)));
@@ -2028,6 +2008,9 @@ void RobotWindow::InitDefaultValue()
     //------ Hide UI ----
     ui->fCapturingImages->setVisible(false);
     ui->lwImageList->setVisible(false);
+
+    // ------- Tracking -------
+    SaveTrackingManager();
 }
 
 void RobotWindow::SetMainStackedWidgetAndPages(QStackedWidget *mainStack, QWidget *mainPage, QWidget *fullDisplayPage, QLayout *fullDisplayLayout)
@@ -3242,12 +3225,12 @@ void RobotWindow::ChangeConveyorType(int index)
     ui->fConveyorCustom->setHidden(true);
 
     ui->leConveyorXAbsolutePosition->setEnabled(false);
-    ui->lbConveyorAbsolutePosition->setEnabled(false);
+//    ui->lbConveyorAbsolutePosition->setEnabled(false);
     ui->lbUnitOfConveyorMoving2->setEnabled(false);
     ui->pbMoveConveyorPosition->setEnabled(false);
 
     ui->leConveyorXPosition->setEnabled(false);
-    ui->lbConveyorPosition->setEnabled(false);
+//    ui->lbConveyorPosition->setEnabled(false);
     ui->lbUnitOfConveyorMoving->setEnabled(false);
     ui->pbMoveConveyorByDistance->setEnabled(false);
 
@@ -3256,7 +3239,7 @@ void RobotWindow::ChangeConveyorType(int index)
         ui->fConveyorX->setHidden(false);
 
         ui->leConveyorXPosition->setEnabled(true);
-        ui->lbConveyorPosition->setEnabled(true);
+//        ui->lbConveyorPosition->setEnabled(true);
         ui->lbUnitOfConveyorMoving->setEnabled(true);
         ui->pbMoveConveyorByDistance->setEnabled(true);
     }
@@ -3265,7 +3248,7 @@ void RobotWindow::ChangeConveyorType(int index)
         ui->fConveyorX->setHidden(false);
 
         ui->leConveyorXAbsolutePosition->setEnabled(true);
-        ui->lbConveyorAbsolutePosition->setEnabled(true);
+//        ui->lbConveyorAbsolutePosition->setEnabled(true);
         ui->lbUnitOfConveyorMoving2->setEnabled(true);
         ui->pbMoveConveyorPosition->setEnabled(true);
     }
@@ -4217,6 +4200,35 @@ void RobotWindow::StopConveyor()
     SetConveyorSpeed();
 }
 
+void RobotWindow::ForwardConveyor()
+{
+    float speed = ui->leConveyorXSpeed->text().toFloat();
+    if (speed == 0)
+    {
+        speed = 50;
+    }
+
+    speed = abs(speed);
+    ui->leConveyorXSpeed->setText(QString::number(speed));
+
+    SetConveyorSpeed();
+}
+
+void RobotWindow::BackwardConveyor()
+{
+    float speed = ui->leConveyorXSpeed->text().toFloat();
+    if (speed == 0)
+    {
+        ui->leConveyorXSpeed->setText("50");
+        speed = 50;
+    }
+
+    speed = abs(speed) * -1;
+
+    ui->leConveyorXSpeed->setText(QString::number(speed));
+    SetConveyorSpeed();
+}
+
 void RobotWindow::SetConveyorPosition()
 {
     QString prefix = ProjectName + "." + ui->cbSelectedConveyor->currentText() + ".";
@@ -4424,6 +4436,14 @@ void RobotWindow::ChangeSelectedTrackingEncoder(int id)
     TrackingManagerInstance->Trackings.at(id)->EncoderName = ui->cbTrackingEncoderSource->currentText();
 }
 
+void RobotWindow::SaveTrackingManager()
+{
+    int selectedEncoderID = ui->cbSelectedTracking->currentText().toInt();
+
+    TrackingManagerInstance->Trackings.at(selectedEncoderID)->VelocityVector = VariableManager::instance().getVar(ui->leVelocityVector->text()).value<QVector3D>();
+    TrackingManagerInstance->Trackings.at(selectedEncoderID)->VectorName = ui->leVectorName->text();
+}
+
 void RobotWindow::CalculateMappingMatrixTool()
 {
     QPointF sp1(ui->leSourcePoint1X->text().toFloat(), ui->leSourcePoint1Y->text().toFloat());
@@ -4531,6 +4551,26 @@ void RobotWindow::UpdateTestPoint(QVector3D testPoint)
     ui->leTestTrackingPointX->setText(QString::number(currentTestPoint.x()));
     ui->leTestTrackingPointY->setText(QString::number(currentTestPoint.y()));
     ui->leTestTrackingPointZ->setText(QString::number(currentTestPoint.z()));
+}
+
+void RobotWindow::MoveTestTrackingPoint()
+{
+    QVector3D initialPoint;
+    initialPoint.setX(ui->leTestTrackingPointX->text().toFloat());
+    initialPoint.setY(ui->leTestTrackingPointY->text().toFloat());
+    initialPoint.setZ(ui->leTestTrackingPointZ->text().toFloat());
+
+    QVector3D direction = VariableManager::instance().getVar(ui->leVelocityVector->text()).value<QVector3D>();
+
+    double distance = ui->leMovingValue->text().toFloat();
+
+    QVector3D normalizedDirection = direction.normalized();
+
+    // Tính tọa độ mới
+    QVector3D newPoint = initialPoint + normalizedDirection * distance;
+    ui->leTestTrackingPointX->setText(QString::number(newPoint.x()));
+    ui->leTestTrackingPointY->setText(QString::number(newPoint.y()));
+    ui->leTestTrackingPointZ->setText(QString::number(newPoint.z()));
 }
 
 void RobotWindow::ProcessProximitySensorValue(int value)

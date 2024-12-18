@@ -36,120 +36,7 @@
     <normaloff>:/delta_x_logo_96x96.ico</normaloff>:/delta_x_logo_96x96.ico</iconset>
   </property>
   <property name="styleSheet">
-   <string notr="true">/*QWidget{
-background-color: rgb(255, 255, 255);
-}*/
-/*
-QPushButton {
-    
-	background-color: rgba(255, 255, 255, 0);
-	color: rgb(118, 118, 118);
-    border-radius: 3px;
-	border: 1px solid rgb(118, 118, 118);
-    min-height: 10px;
-    padding: 0px 10px 2px 10px;
-	margin-left:5px;
-	margin-right:5px;
-	margin-top:2px;
-	margin-bottom:2px;
-}
-
-QPushButton:pressed{
-	
-	color: rgb(255, 255, 255);
-	background-color: rgb(54, 178, 242);
-	border-color: rgb(255, 255, 255);
-}
-*/
-
-/*QWidget
-{	
-	color:rgb(60, 60, 60);
-}*/
-
-/*QWidget
-{	
-	background-color: rgb(255, 255, 255);
-}*/
-
-/*------- Combo Box---------*/
-/*QComboBox
-{	
-	color: rgb(79, 79, 79);
-	border: 1px solid rgb(79, 79, 79);
-	border-radius: 2px;
-}
-
-QComboBox:drop-down
-{
-	subcontrol-origin: padding;
-    subcontrol-position: top right;
-    width: 25px;
-
-    border-left-width: 1px;
-    border-left-color: darkgray;
-    border-left-style: solid;
-    border-top-right-radius: 3px;
-    border-bottom-right-radius: 3px;	
-}
-
-QComboBox::down-arrow {
-    image: url(:/icon/icons8_expand_arrow_16px.png);
-}*/
-
-/* --------- Tab ----------*/
-
-/*
-QTabBar::tab {
-    background: rgb(0, 132, 255);
-	
-	color: rgb(255, 255, 255);
-    border: 1px solid #C4C4C3;
-	padding: 5px 10px 5px 10px;
-	
-}
-
-QTabBar::tab:selected, QTabBar::tab:hover {
-    background: rgb(24, 70, 139);
-	color: rgb(255, 255, 255);
-}
-
-QPushButton
-{	
-	color: rgb(50, 50, 50);
-	border: 1px solid rgb(50, 50, 50);
-	background: none;
-}
-
-QPushButton:hover
-{	
-	color: rgb(255, 255, 255);
-	background: rgb(50, 50, 50);
-}
-
-QPushButton:pressed
-{	
-	color: rgb(50, 50, 50);
-	background: none;
-}
-*/
-/*----- Scroll Bar ------*/
-/*
-QScrollBar:horizontal {
-    background: rgb(185, 185, 185);
-}
-QScrollBar::handle:vertical {	
-	background-color: rgb(172, 172, 172);
-}
-
-QScrollBar:vertical {
-    background: rgb(185, 185, 185);
-}
-
-QScrollBar::handle:horizontal {	
-	background-color: rgb(172, 172, 172);
-}
-*/</string>
+   <string notr="true"/>
   </property>
   <widget class="QWidget" name="centralWidget">
    <property name="styleSheet">
@@ -725,16 +612,25 @@ border-right: 5px solid rgb(24, 70, 139);</string>
             </property>
             <widget class="QWidget" name="pVariable">
              <property name="styleSheet">
-              <string notr="true"/>
+              <string notr="true">#pVariable
+{	
+	background-color: rgb(40, 40, 43);
+}</string>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_4">
               <item>
-               <widget class="QFrame" name="frame_4">
+               <widget class="QFrame" name="fVar">
                 <property name="minimumSize">
                  <size>
                   <width>0</width>
                   <height>25</height>
                  </size>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true">QLabel
+{	
+	color: rgb(255, 255, 255);
+}</string>
                 </property>
                 <property name="frameShape">
                  <enum>QFrame::StyledPanel</enum>
@@ -823,8 +719,8 @@ border-right: 5px solid rgb(24, 70, 139);</string>
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>601</width>
-                   <height>171</height>
+                   <width>1099</width>
+                   <height>614</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_10">
@@ -1425,7 +1321,7 @@ QPushButton:pressed
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>571</width>
+                       <width>1085</width>
                        <height>700</height>
                       </rect>
                      </property>

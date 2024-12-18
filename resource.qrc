@@ -148,5 +148,7 @@
         <file>icon/Collapse Arrow.png</file>
         <file>icon/Paste.png</file>
         <file>icon/Copy.png</file>
+        <file>icon/Distance-Threshold.png</file>
+        <file>icon/IoU-threshold.png</file>
     </qresource>
 </RCC>

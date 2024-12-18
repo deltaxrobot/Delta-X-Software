@@ -2,14 +2,11 @@
 #define TESTWINDOW_H
 
 #include <QMainWindow>
-#include <QThread>
-#include <QTimer>
+#include <QCamera>
+#include <QVideoProbe>
+#include <QVideoFrame>
+#include <QProcess>
 #include <QImage>
-#include <opencv2/opencv.hpp>
-
-namespace Ui {
-class TestWindow;
-}
 
 class TestWindow : public QMainWindow {
     Q_OBJECT
@@ -18,16 +15,16 @@ public:
     explicit TestWindow(QWidget *parent = nullptr);
     ~TestWindow();
 
-private slots:
-    void onOpenCameraButtonClicked();
-    void captureFrame();
-    void displayFrame(const QImage &frame);
-
 private:
-    Ui::TestWindow *ui;
-    cv::VideoCapture webcam;
-    QTimer *timer;
-    QThread *cameraThread;
+    QCamera *camera;          // Camera object
+    QVideoProbe *probe;       // Video probe to capture frames
+    QProcess ffmpegProcess;   // Process for FFmpeg
+
+    void setupCamera();       // Setup camera and probe
+    void setupFFmpeg();       // Setup FFmpeg process
+
+private slots:
+    void captureFrame(const QVideoFrame &frame); // Slot to handle frame capture
 };
 
 #endif // TESTWINDOW_H

@@ -327,7 +327,7 @@ QString Robot::syncGcode(QString cmd)
         {
             return QString("G01 X%1 Y%2 Z%3 W%4 F%5 A%6 S%7 E%8 J%9").arg(newPosition.x()).arg(newPosition.y()).arg(newPosition.z()).arg(W).arg(F).arg(A).arg(S).arg(E).arg(J);
         }
-        else if (robotModel == "Delta X 2")
+        else if (robotModel == "Delta X 2" || robotModel == "Delta X 1")
         {
             return QString("G01 X%1 Y%2 Z%3").arg(newPosition.x()).arg(newPosition.y()).arg(newPosition.z());
         }
@@ -353,12 +353,12 @@ QString Robot::syncGcode(QString cmd)
             return QString("G01 X%1 Y%2 F%3").arg(new_x).arg(new_y).arg(abs(path_vel));
         }
     }
-
+    return cmd;
 }
 
 double Robot::calculateMovingTime(double distance)
 {
-    if (robotModel == "Delta X S" || robotModel == "Delta X 2 Plus")
+    if (robotModel == "Delta X S" || robotModel == "Delta X 3")
     {
         scurve_tool.p_target = distance;
         scurve_tool.start();
@@ -394,8 +394,8 @@ double Robot::calculateMovingTime(double distance)
         }
         else
         {
-            s1 = s3 = s/2;
-            float new_v_max = sqrt(v_start * v_start + 2 * a_max * s1);
+            float vpeak_squared = a_max * s + (v_start*v_start + v_end*v_end) / 2.0;
+            float new_v_max = sqrt(vpeak_squared);
             float t1 = (new_v_max - v_start) / a_max;
 
             t_total = t1 * 2;
@@ -425,8 +425,7 @@ double Robot::calculateMovingTime(double distance)
         }
         else
         {
-            s1 = s3 = s/2;
-            float new_v_max = sqrt(2 * a_max * s1);
+            float new_v_max = sqrt(a_max * s);
             float t1 = (new_v_max) / a_max;
 
             t_total = t1 * 2;
