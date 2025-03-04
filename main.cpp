@@ -11,7 +11,7 @@
 
 #define NEW_WINDOW
 #define JOY_STICK
-#define TEST
+// #define TEST
 
 using namespace std;
 using namespace cv;
