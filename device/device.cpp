@@ -50,10 +50,10 @@ void Device::Connect()
             if (serialPort->open(QIODevice::ReadWrite))
             {
                 int counter = 0;
-                QThread::msleep(200);
+                QThread::msleep(500);
                 serialPort->blockSignals(true);
                 serialPort->write((confirmRequest + "\n").toLocal8Bit());
-                serialPort->waitForReadyRead(200);
+                serialPort->waitForReadyRead(500);
                 QString response = QString(serialPort->readLine());
                 if (response.contains("Init"))
                 {

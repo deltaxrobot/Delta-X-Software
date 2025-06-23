@@ -903,6 +903,7 @@ void RobotWindow::InitEvents()
 
     //------------- Gcode Editor -------------
 	connect(ui->pbFormat, SIGNAL(clicked(bool)), this, SLOT(StandardFormatEditor()));
+	connect(ui->pbOpenGcodeDocs, SIGNAL(clicked(bool)), this, SLOT(OpenGcodeReference()));
 
     connect(ui->cbEditGcodeLock, SIGNAL(stateChanged(int)), ui->pteGcodeArea, SLOT(setLockState(int)));
     connect(ui->cbGScriptEditorZoom, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &RobotWindow::changeFontSize);
