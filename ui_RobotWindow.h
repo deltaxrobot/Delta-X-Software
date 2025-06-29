@@ -790,7 +790,7 @@ public:
     QSlider *hsGripperAngle;
     QLabel *lbGripperValue;
     QSpacerItem *horizontalSpacer_46;
-    QGroupBox *gbOutput;
+    QGroupBox *gbOutputXS;
     QVBoxLayout *verticalLayout_42;
     QWidget *wgDigitalOutput;
     QGridLayout *gridLayout_34;
@@ -818,6 +818,21 @@ public:
     QCheckBox *cbDx;
     QLineEdit *leRx;
     QCheckBox *cbRx;
+    QGroupBox *gbOutputX3;
+    QVBoxLayout *verticalLayout_45;
+    QWidget *wgDigitalOutput_2;
+    QGridLayout *gridLayout_35;
+    QLabel *label_107;
+    QCheckBox *cbX3D2;
+    QCheckBox *cbX3D3;
+    QSpacerItem *horizontalSpacer_72;
+    QLabel *label_57;
+    QLabel *label_65;
+    QCheckBox *cbX3D1;
+    QLabel *label_52;
+    QLabel *label_108;
+    QCheckBox *cbX3D0;
+    QPushButton *pbPumpX3;
     QFrame *frame_36;
     QVBoxLayout *verticalLayout_54;
     QFrame *robotTitile_6;
@@ -825,10 +840,10 @@ public:
     QLabel *label_280;
     QSpacerItem *horizontalSpacer_102;
     QFrame *frame_37;
-    QHBoxLayout *horizontalLayout_83;
+    QVBoxLayout *verticalLayout_11;
     QFrame *fRobotPosition_4;
     QGridLayout *gridLayout_20;
-    QGroupBox *gbInput;
+    QGroupBox *gbInputXS;
     QVBoxLayout *verticalLayout_43;
     QHBoxLayout *horizontalLayout_37;
     QPushButton *pbReadI0;
@@ -894,6 +909,56 @@ public:
     QSpacerItem *horizontalSpacer_39;
     QLineEdit *leAxDelay;
     QSpacerItem *horizontalSpacer_60;
+    QGroupBox *gbInputX3;
+    QVBoxLayout *verticalLayout_50;
+    QHBoxLayout *horizontalLayout_60;
+    QPushButton *pbReadI0X3;
+    QLabel *label_111;
+    QSpacerItem *horizontalSpacer_101;
+    QLabel *lbI0ValueX3;
+    QSpacerItem *horizontalSpacer_104;
+    QCheckBox *cbToggle0X3;
+    QSpacerItem *horizontalSpacer_105;
+    QHBoxLayout *horizontalLayout_61;
+    QPushButton *pbReadI1X3;
+    QLabel *label_112;
+    QSpacerItem *horizontalSpacer_110;
+    QLabel *lbI1ValueX3;
+    QSpacerItem *horizontalSpacer_111;
+    QCheckBox *cbToggle1X3;
+    QSpacerItem *horizontalSpacer_112;
+    QHBoxLayout *horizontalLayout_62;
+    QPushButton *pbReadI2X3;
+    QLabel *label_113;
+    QSpacerItem *horizontalSpacer_119;
+    QLabel *lbI2ValueX3;
+    QSpacerItem *horizontalSpacer_120;
+    QCheckBox *cbToggle2X3;
+    QSpacerItem *horizontalSpacer_121;
+    QHBoxLayout *horizontalLayout_63;
+    QPushButton *pbReadI3X3;
+    QLabel *label_118;
+    QSpacerItem *horizontalSpacer_123;
+    QLabel *lbI3ValueX3;
+    QSpacerItem *horizontalSpacer_124;
+    QCheckBox *cbToggle3X3;
+    QSpacerItem *horizontalSpacer_125;
+    QHBoxLayout *horizontalLayout_66;
+    QPushButton *pbReadA0X3;
+    QLabel *label_120;
+    QSpacerItem *horizontalSpacer_132;
+    QLabel *lbA0ValueX3;
+    QSpacerItem *horizontalSpacer_133;
+    QLineEdit *leA0DelayX3;
+    QSpacerItem *horizontalSpacer_134;
+    QHBoxLayout *horizontalLayout_64;
+    QPushButton *pbReadA1X3;
+    QLabel *label_119;
+    QSpacerItem *horizontalSpacer_126;
+    QLabel *lbA1ValueX3;
+    QSpacerItem *horizontalSpacer_127;
+    QLineEdit *leA1DelayX3;
+    QSpacerItem *horizontalSpacer_128;
     QSpacerItem *verticalSpacer;
     QWidget *ConveyorTab;
     QVBoxLayout *verticalLayout_22;
@@ -2119,7 +2184,7 @@ public:
         saTermite->setWidgetResizable(true);
         wgTermite = new QWidget();
         wgTermite->setObjectName(QString::fromUtf8("wgTermite"));
-        wgTermite->setGeometry(QRect(0, 0, 312, 145));
+        wgTermite->setGeometry(QRect(0, 0, 408, 135));
         wgTermite->setStyleSheet(QString::fromUtf8("QWidget#wgTermite\n"
 "{\n"
 "	\n"
@@ -2210,7 +2275,7 @@ public:
         saObjectDetecting->setWidgetResizable(true);
         wObjectDetecting = new QWidget();
         wObjectDetecting->setObjectName(QString::fromUtf8("wObjectDetecting"));
-        wObjectDetecting->setGeometry(QRect(0, 0, 532, 2900));
+        wObjectDetecting->setGeometry(QRect(0, 0, 590, 2900));
         wObjectDetecting->setMinimumSize(QSize(100, 2900));
         wObjectDetecting->setStyleSheet(QString::fromUtf8("QWidget#wObjectDetecting\n"
 "{	\n"
@@ -3986,7 +4051,7 @@ public:
         saPointTool->setWidgetResizable(true);
         wPointTool = new QWidget();
         wPointTool->setObjectName(QString::fromUtf8("wPointTool"));
-        wPointTool->setGeometry(QRect(0, 0, 510, 1900));
+        wPointTool->setGeometry(QRect(0, 0, 572, 1900));
         wPointTool->setMinimumSize(QSize(0, 1900));
         wPointTool->setStyleSheet(QString::fromUtf8("QWidget#wPointTool\n"
 "{	\n"
@@ -5098,7 +5163,7 @@ public:
         scrollArea_6->setWidgetResizable(true);
         scrollAreaWidgetContents_6 = new QWidget();
         scrollAreaWidgetContents_6->setObjectName(QString::fromUtf8("scrollAreaWidgetContents_6"));
-        scrollAreaWidgetContents_6->setGeometry(QRect(0, 0, 510, 1600));
+        scrollAreaWidgetContents_6->setGeometry(QRect(0, 0, 572, 1600));
         scrollAreaWidgetContents_6->setMinimumSize(QSize(450, 1600));
         scrollAreaWidgetContents_6->setMaximumSize(QSize(16777215, 16777215));
         scrollAreaWidgetContents_6->setStyleSheet(QString::fromUtf8("QWidget[background='container']\n"
@@ -5988,8 +6053,8 @@ public:
         scrollArea_2->setWidgetResizable(true);
         wgJoggingScrollWidget = new QWidget();
         wgJoggingScrollWidget->setObjectName(QString::fromUtf8("wgJoggingScrollWidget"));
-        wgJoggingScrollWidget->setGeometry(QRect(0, 0, 625, 1500));
-        wgJoggingScrollWidget->setMinimumSize(QSize(0, 1500));
+        wgJoggingScrollWidget->setGeometry(QRect(0, -1254, 554, 2000));
+        wgJoggingScrollWidget->setMinimumSize(QSize(0, 2000));
         wgJoggingScrollWidget->setMaximumSize(QSize(16777215, 16777215));
         wgJoggingScrollWidget->setStyleSheet(QString::fromUtf8("QWidget#wgJoggingScrollWidget\n"
 "{\n"
@@ -7253,19 +7318,19 @@ public:
 
         verticalLayout_53->addWidget(gbX1);
 
-        gbOutput = new QGroupBox(frame_35);
-        gbOutput->setObjectName(QString::fromUtf8("gbOutput"));
-        gbOutput->setMinimumSize(QSize(0, 0));
+        gbOutputXS = new QGroupBox(frame_35);
+        gbOutputXS->setObjectName(QString::fromUtf8("gbOutputXS"));
+        gbOutputXS->setMinimumSize(QSize(0, 0));
         QFont font13;
         font13.setPointSize(9);
         font13.setBold(false);
-        gbOutput->setFont(font13);
-        verticalLayout_42 = new QVBoxLayout(gbOutput);
+        gbOutputXS->setFont(font13);
+        verticalLayout_42 = new QVBoxLayout(gbOutputXS);
         verticalLayout_42->setSpacing(6);
         verticalLayout_42->setContentsMargins(11, 11, 11, 11);
         verticalLayout_42->setObjectName(QString::fromUtf8("verticalLayout_42"));
         verticalLayout_42->setContentsMargins(-1, 20, -1, -1);
-        wgDigitalOutput = new QWidget(gbOutput);
+        wgDigitalOutput = new QWidget(gbOutputXS);
         wgDigitalOutput->setObjectName(QString::fromUtf8("wgDigitalOutput"));
         wgDigitalOutput->setMinimumSize(QSize(0, 0));
         gridLayout_34 = new QGridLayout(wgDigitalOutput);
@@ -7427,7 +7492,105 @@ public:
         verticalLayout_42->addWidget(wgDigitalOutput);
 
 
-        verticalLayout_53->addWidget(gbOutput);
+        verticalLayout_53->addWidget(gbOutputXS);
+
+        gbOutputX3 = new QGroupBox(frame_35);
+        gbOutputX3->setObjectName(QString::fromUtf8("gbOutputX3"));
+        gbOutputX3->setMinimumSize(QSize(0, 0));
+        gbOutputX3->setFont(font13);
+        verticalLayout_45 = new QVBoxLayout(gbOutputX3);
+        verticalLayout_45->setSpacing(6);
+        verticalLayout_45->setContentsMargins(11, 11, 11, 11);
+        verticalLayout_45->setObjectName(QString::fromUtf8("verticalLayout_45"));
+        verticalLayout_45->setContentsMargins(-1, 20, -1, -1);
+        wgDigitalOutput_2 = new QWidget(gbOutputX3);
+        wgDigitalOutput_2->setObjectName(QString::fromUtf8("wgDigitalOutput_2"));
+        wgDigitalOutput_2->setMinimumSize(QSize(0, 0));
+        gridLayout_35 = new QGridLayout(wgDigitalOutput_2);
+        gridLayout_35->setSpacing(6);
+        gridLayout_35->setContentsMargins(11, 11, 11, 11);
+        gridLayout_35->setObjectName(QString::fromUtf8("gridLayout_35"));
+        label_107 = new QLabel(wgDigitalOutput_2);
+        label_107->setObjectName(QString::fromUtf8("label_107"));
+        label_107->setMinimumSize(QSize(30, 0));
+        label_107->setMaximumSize(QSize(16777215, 16777215));
+
+        gridLayout_35->addWidget(label_107, 1, 6, 1, 1);
+
+        cbX3D2 = new QCheckBox(wgDigitalOutput_2);
+        cbX3D2->setObjectName(QString::fromUtf8("cbX3D2"));
+        cbX3D2->setMinimumSize(QSize(40, 0));
+
+        gridLayout_35->addWidget(cbX3D2, 1, 7, 1, 1);
+
+        cbX3D3 = new QCheckBox(wgDigitalOutput_2);
+        cbX3D3->setObjectName(QString::fromUtf8("cbX3D3"));
+        cbX3D3->setMinimumSize(QSize(40, 0));
+
+        gridLayout_35->addWidget(cbX3D3, 1, 9, 1, 1);
+
+        horizontalSpacer_72 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        gridLayout_35->addItem(horizontalSpacer_72, 1, 14, 1, 1);
+
+        label_57 = new QLabel(wgDigitalOutput_2);
+        label_57->setObjectName(QString::fromUtf8("label_57"));
+        label_57->setMinimumSize(QSize(30, 0));
+        label_57->setMaximumSize(QSize(16777215, 16777215));
+
+        gridLayout_35->addWidget(label_57, 1, 3, 1, 1);
+
+        label_65 = new QLabel(wgDigitalOutput_2);
+        label_65->setObjectName(QString::fromUtf8("label_65"));
+        label_65->setMinimumSize(QSize(30, 0));
+        label_65->setMaximumSize(QSize(16777215, 16777215));
+
+        gridLayout_35->addWidget(label_65, 1, 8, 1, 1);
+
+        cbX3D1 = new QCheckBox(wgDigitalOutput_2);
+        cbX3D1->setObjectName(QString::fromUtf8("cbX3D1"));
+        cbX3D1->setMinimumSize(QSize(40, 0));
+
+        gridLayout_35->addWidget(cbX3D1, 1, 5, 1, 1);
+
+        label_52 = new QLabel(wgDigitalOutput_2);
+        label_52->setObjectName(QString::fromUtf8("label_52"));
+        label_52->setMinimumSize(QSize(30, 0));
+        label_52->setMaximumSize(QSize(16777215, 16777215));
+
+        gridLayout_35->addWidget(label_52, 1, 1, 1, 1);
+
+        label_108 = new QLabel(wgDigitalOutput_2);
+        label_108->setObjectName(QString::fromUtf8("label_108"));
+        label_108->setMinimumSize(QSize(70, 0));
+        label_108->setFont(font1);
+
+        gridLayout_35->addWidget(label_108, 1, 0, 1, 1);
+
+        cbX3D0 = new QCheckBox(wgDigitalOutput_2);
+        cbX3D0->setObjectName(QString::fromUtf8("cbX3D0"));
+        cbX3D0->setMinimumSize(QSize(40, 0));
+
+        gridLayout_35->addWidget(cbX3D0, 1, 2, 1, 1);
+
+        pbPumpX3 = new QPushButton(wgDigitalOutput_2);
+        pbPumpX3->setObjectName(QString::fromUtf8("pbPumpX3"));
+        pbPumpX3->setMinimumSize(QSize(100, 30));
+        pbPumpX3->setAutoFillBackground(false);
+        pbPumpX3->setIcon(icon44);
+        pbPumpX3->setIconSize(QSize(16, 16));
+        pbPumpX3->setCheckable(true);
+        pbPumpX3->setChecked(false);
+        pbPumpX3->setAutoDefault(false);
+        pbPumpX3->setFlat(false);
+
+        gridLayout_35->addWidget(pbPumpX3, 0, 0, 1, 1);
+
+
+        verticalLayout_45->addWidget(wgDigitalOutput_2);
+
+
+        verticalLayout_53->addWidget(gbOutputX3);
 
 
         verticalLayout_44->addWidget(frame_35);
@@ -7504,10 +7667,10 @@ public:
 "}"));
         frame_37->setFrameShape(QFrame::StyledPanel);
         frame_37->setFrameShadow(QFrame::Raised);
-        horizontalLayout_83 = new QHBoxLayout(frame_37);
-        horizontalLayout_83->setSpacing(6);
-        horizontalLayout_83->setContentsMargins(11, 11, 11, 11);
-        horizontalLayout_83->setObjectName(QString::fromUtf8("horizontalLayout_83"));
+        verticalLayout_11 = new QVBoxLayout(frame_37);
+        verticalLayout_11->setSpacing(6);
+        verticalLayout_11->setContentsMargins(11, 11, 11, 11);
+        verticalLayout_11->setObjectName(QString::fromUtf8("verticalLayout_11"));
         fRobotPosition_4 = new QFrame(frame_37);
         fRobotPosition_4->setObjectName(QString::fromUtf8("fRobotPosition_4"));
         fRobotPosition_4->setMinimumSize(QSize(0, 40));
@@ -7518,11 +7681,11 @@ public:
         gridLayout_20->setContentsMargins(11, 11, 11, 11);
         gridLayout_20->setObjectName(QString::fromUtf8("gridLayout_20"));
         gridLayout_20->setContentsMargins(0, 0, -1, 0);
-        gbInput = new QGroupBox(fRobotPosition_4);
-        gbInput->setObjectName(QString::fromUtf8("gbInput"));
-        gbInput->setMinimumSize(QSize(0, 380));
-        gbInput->setFont(font13);
-        verticalLayout_43 = new QVBoxLayout(gbInput);
+        gbInputXS = new QGroupBox(fRobotPosition_4);
+        gbInputXS->setObjectName(QString::fromUtf8("gbInputXS"));
+        gbInputXS->setMinimumSize(QSize(0, 380));
+        gbInputXS->setFont(font13);
+        verticalLayout_43 = new QVBoxLayout(gbInputXS);
         verticalLayout_43->setSpacing(6);
         verticalLayout_43->setContentsMargins(11, 11, 11, 11);
         verticalLayout_43->setObjectName(QString::fromUtf8("verticalLayout_43"));
@@ -7530,13 +7693,13 @@ public:
         horizontalLayout_37 = new QHBoxLayout();
         horizontalLayout_37->setSpacing(6);
         horizontalLayout_37->setObjectName(QString::fromUtf8("horizontalLayout_37"));
-        pbReadI0 = new QPushButton(gbInput);
+        pbReadI0 = new QPushButton(gbInputXS);
         pbReadI0->setObjectName(QString::fromUtf8("pbReadI0"));
         pbReadI0->setMinimumSize(QSize(50, 0));
 
         horizontalLayout_37->addWidget(pbReadI0);
 
-        label_70 = new QLabel(gbInput);
+        label_70 = new QLabel(gbInputXS);
         label_70->setObjectName(QString::fromUtf8("label_70"));
         label_70->setMinimumSize(QSize(30, 0));
         label_70->setMaximumSize(QSize(25, 16777215));
@@ -7548,7 +7711,7 @@ public:
 
         horizontalLayout_37->addItem(horizontalSpacer_16);
 
-        lbI0Value = new QLabel(gbInput);
+        lbI0Value = new QLabel(gbInputXS);
         lbI0Value->setObjectName(QString::fromUtf8("lbI0Value"));
 
         horizontalLayout_37->addWidget(lbI0Value);
@@ -7557,7 +7720,7 @@ public:
 
         horizontalLayout_37->addItem(horizontalSpacer_15);
 
-        cbToggle0 = new QCheckBox(gbInput);
+        cbToggle0 = new QCheckBox(gbInputXS);
         cbToggle0->setObjectName(QString::fromUtf8("cbToggle0"));
         cbToggle0->setMinimumSize(QSize(110, 0));
         cbToggle0->setMaximumSize(QSize(110, 16777215));
@@ -7574,13 +7737,13 @@ public:
         horizontalLayout_38 = new QHBoxLayout();
         horizontalLayout_38->setSpacing(6);
         horizontalLayout_38->setObjectName(QString::fromUtf8("horizontalLayout_38"));
-        pbReadI1 = new QPushButton(gbInput);
+        pbReadI1 = new QPushButton(gbInputXS);
         pbReadI1->setObjectName(QString::fromUtf8("pbReadI1"));
         pbReadI1->setMinimumSize(QSize(50, 0));
 
         horizontalLayout_38->addWidget(pbReadI1);
 
-        label_74 = new QLabel(gbInput);
+        label_74 = new QLabel(gbInputXS);
         label_74->setObjectName(QString::fromUtf8("label_74"));
         label_74->setMinimumSize(QSize(30, 0));
         label_74->setMaximumSize(QSize(25, 16777215));
@@ -7592,7 +7755,7 @@ public:
 
         horizontalLayout_38->addItem(horizontalSpacer_17);
 
-        lbI1Value = new QLabel(gbInput);
+        lbI1Value = new QLabel(gbInputXS);
         lbI1Value->setObjectName(QString::fromUtf8("lbI1Value"));
 
         horizontalLayout_38->addWidget(lbI1Value);
@@ -7601,7 +7764,7 @@ public:
 
         horizontalLayout_38->addItem(horizontalSpacer_18);
 
-        cbToggle1 = new QCheckBox(gbInput);
+        cbToggle1 = new QCheckBox(gbInputXS);
         cbToggle1->setObjectName(QString::fromUtf8("cbToggle1"));
         cbToggle1->setMinimumSize(QSize(110, 0));
         cbToggle1->setMaximumSize(QSize(110, 16777215));
@@ -7618,13 +7781,13 @@ public:
         horizontalLayout_39 = new QHBoxLayout();
         horizontalLayout_39->setSpacing(6);
         horizontalLayout_39->setObjectName(QString::fromUtf8("horizontalLayout_39"));
-        pbReadI2 = new QPushButton(gbInput);
+        pbReadI2 = new QPushButton(gbInputXS);
         pbReadI2->setObjectName(QString::fromUtf8("pbReadI2"));
         pbReadI2->setMinimumSize(QSize(50, 0));
 
         horizontalLayout_39->addWidget(pbReadI2);
 
-        label_76 = new QLabel(gbInput);
+        label_76 = new QLabel(gbInputXS);
         label_76->setObjectName(QString::fromUtf8("label_76"));
         label_76->setMinimumSize(QSize(30, 0));
         label_76->setMaximumSize(QSize(25, 16777215));
@@ -7636,7 +7799,7 @@ public:
 
         horizontalLayout_39->addItem(horizontalSpacer_19);
 
-        lbI2Value = new QLabel(gbInput);
+        lbI2Value = new QLabel(gbInputXS);
         lbI2Value->setObjectName(QString::fromUtf8("lbI2Value"));
 
         horizontalLayout_39->addWidget(lbI2Value);
@@ -7645,7 +7808,7 @@ public:
 
         horizontalLayout_39->addItem(horizontalSpacer_20);
 
-        cbToggle2 = new QCheckBox(gbInput);
+        cbToggle2 = new QCheckBox(gbInputXS);
         cbToggle2->setObjectName(QString::fromUtf8("cbToggle2"));
         cbToggle2->setMinimumSize(QSize(110, 0));
         cbToggle2->setMaximumSize(QSize(110, 16777215));
@@ -7662,13 +7825,13 @@ public:
         horizontalLayout_40 = new QHBoxLayout();
         horizontalLayout_40->setSpacing(6);
         horizontalLayout_40->setObjectName(QString::fromUtf8("horizontalLayout_40"));
-        pbReadI3 = new QPushButton(gbInput);
+        pbReadI3 = new QPushButton(gbInputXS);
         pbReadI3->setObjectName(QString::fromUtf8("pbReadI3"));
         pbReadI3->setMinimumSize(QSize(50, 0));
 
         horizontalLayout_40->addWidget(pbReadI3);
 
-        label_78 = new QLabel(gbInput);
+        label_78 = new QLabel(gbInputXS);
         label_78->setObjectName(QString::fromUtf8("label_78"));
         label_78->setMinimumSize(QSize(30, 0));
         label_78->setMaximumSize(QSize(25, 16777215));
@@ -7680,7 +7843,7 @@ public:
 
         horizontalLayout_40->addItem(horizontalSpacer_21);
 
-        lbI3Value = new QLabel(gbInput);
+        lbI3Value = new QLabel(gbInputXS);
         lbI3Value->setObjectName(QString::fromUtf8("lbI3Value"));
 
         horizontalLayout_40->addWidget(lbI3Value);
@@ -7689,7 +7852,7 @@ public:
 
         horizontalLayout_40->addItem(horizontalSpacer_22);
 
-        cbToggle3 = new QCheckBox(gbInput);
+        cbToggle3 = new QCheckBox(gbInputXS);
         cbToggle3->setObjectName(QString::fromUtf8("cbToggle3"));
         cbToggle3->setMinimumSize(QSize(110, 0));
         cbToggle3->setMaximumSize(QSize(110, 16777215));
@@ -7706,13 +7869,13 @@ public:
         horizontalLayout_43 = new QHBoxLayout();
         horizontalLayout_43->setSpacing(6);
         horizontalLayout_43->setObjectName(QString::fromUtf8("horizontalLayout_43"));
-        pbReadIx = new QPushButton(gbInput);
+        pbReadIx = new QPushButton(gbInputXS);
         pbReadIx->setObjectName(QString::fromUtf8("pbReadIx"));
         pbReadIx->setMinimumSize(QSize(50, 0));
 
         horizontalLayout_43->addWidget(pbReadIx);
 
-        leIx = new QLineEdit(gbInput);
+        leIx = new QLineEdit(gbInputXS);
         leIx->setObjectName(QString::fromUtf8("leIx"));
         leIx->setMinimumSize(QSize(30, 0));
         leIx->setMaximumSize(QSize(25, 16777215));
@@ -7724,7 +7887,7 @@ public:
 
         horizontalLayout_43->addItem(horizontalSpacer_29);
 
-        lbIxValue = new QLabel(gbInput);
+        lbIxValue = new QLabel(gbInputXS);
         lbIxValue->setObjectName(QString::fromUtf8("lbIxValue"));
 
         horizontalLayout_43->addWidget(lbIxValue);
@@ -7733,7 +7896,7 @@ public:
 
         horizontalLayout_43->addItem(horizontalSpacer_30);
 
-        cbTogglex = new QCheckBox(gbInput);
+        cbTogglex = new QCheckBox(gbInputXS);
         cbTogglex->setObjectName(QString::fromUtf8("cbTogglex"));
         cbTogglex->setMinimumSize(QSize(110, 0));
         cbTogglex->setMaximumSize(QSize(110, 16777215));
@@ -7750,13 +7913,13 @@ public:
         horizontalLayout_45 = new QHBoxLayout();
         horizontalLayout_45->setSpacing(6);
         horizontalLayout_45->setObjectName(QString::fromUtf8("horizontalLayout_45"));
-        pbReadA0 = new QPushButton(gbInput);
+        pbReadA0 = new QPushButton(gbInputXS);
         pbReadA0->setObjectName(QString::fromUtf8("pbReadA0"));
         pbReadA0->setMinimumSize(QSize(50, 0));
 
         horizontalLayout_45->addWidget(pbReadA0);
 
-        label_83 = new QLabel(gbInput);
+        label_83 = new QLabel(gbInputXS);
         label_83->setObjectName(QString::fromUtf8("label_83"));
         label_83->setMinimumSize(QSize(30, 0));
         label_83->setMaximumSize(QSize(25, 16777215));
@@ -7768,7 +7931,7 @@ public:
 
         horizontalLayout_45->addItem(horizontalSpacer_34);
 
-        lbA0Value = new QLabel(gbInput);
+        lbA0Value = new QLabel(gbInputXS);
         lbA0Value->setObjectName(QString::fromUtf8("lbA0Value"));
 
         horizontalLayout_45->addWidget(lbA0Value);
@@ -7777,7 +7940,7 @@ public:
 
         horizontalLayout_45->addItem(horizontalSpacer_35);
 
-        leA0Delay = new QLineEdit(gbInput);
+        leA0Delay = new QLineEdit(gbInputXS);
         leA0Delay->setObjectName(QString::fromUtf8("leA0Delay"));
         leA0Delay->setMinimumSize(QSize(110, 0));
         leA0Delay->setMaximumSize(QSize(110, 16777215));
@@ -7794,13 +7957,13 @@ public:
         horizontalLayout_46 = new QHBoxLayout();
         horizontalLayout_46->setSpacing(6);
         horizontalLayout_46->setObjectName(QString::fromUtf8("horizontalLayout_46"));
-        pbReadA1 = new QPushButton(gbInput);
+        pbReadA1 = new QPushButton(gbInputXS);
         pbReadA1->setObjectName(QString::fromUtf8("pbReadA1"));
         pbReadA1->setMinimumSize(QSize(50, 0));
 
         horizontalLayout_46->addWidget(pbReadA1);
 
-        label_85 = new QLabel(gbInput);
+        label_85 = new QLabel(gbInputXS);
         label_85->setObjectName(QString::fromUtf8("label_85"));
         label_85->setMinimumSize(QSize(30, 0));
         label_85->setMaximumSize(QSize(25, 16777215));
@@ -7812,7 +7975,7 @@ public:
 
         horizontalLayout_46->addItem(horizontalSpacer_36);
 
-        lbA1Value = new QLabel(gbInput);
+        lbA1Value = new QLabel(gbInputXS);
         lbA1Value->setObjectName(QString::fromUtf8("lbA1Value"));
 
         horizontalLayout_46->addWidget(lbA1Value);
@@ -7821,7 +7984,7 @@ public:
 
         horizontalLayout_46->addItem(horizontalSpacer_37);
 
-        leA1Delay = new QLineEdit(gbInput);
+        leA1Delay = new QLineEdit(gbInputXS);
         leA1Delay->setObjectName(QString::fromUtf8("leA1Delay"));
         leA1Delay->setMinimumSize(QSize(110, 0));
         leA1Delay->setMaximumSize(QSize(110, 16777215));
@@ -7838,13 +8001,13 @@ public:
         horizontalLayout_47 = new QHBoxLayout();
         horizontalLayout_47->setSpacing(6);
         horizontalLayout_47->setObjectName(QString::fromUtf8("horizontalLayout_47"));
-        pbReadAx = new QPushButton(gbInput);
+        pbReadAx = new QPushButton(gbInputXS);
         pbReadAx->setObjectName(QString::fromUtf8("pbReadAx"));
         pbReadAx->setMinimumSize(QSize(50, 0));
 
         horizontalLayout_47->addWidget(pbReadAx);
 
-        leAx = new QLineEdit(gbInput);
+        leAx = new QLineEdit(gbInputXS);
         leAx->setObjectName(QString::fromUtf8("leAx"));
         leAx->setMinimumSize(QSize(30, 0));
         leAx->setMaximumSize(QSize(25, 16777215));
@@ -7856,7 +8019,7 @@ public:
 
         horizontalLayout_47->addItem(horizontalSpacer_38);
 
-        lbAxValue = new QLabel(gbInput);
+        lbAxValue = new QLabel(gbInputXS);
         lbAxValue->setObjectName(QString::fromUtf8("lbAxValue"));
 
         horizontalLayout_47->addWidget(lbAxValue);
@@ -7865,7 +8028,7 @@ public:
 
         horizontalLayout_47->addItem(horizontalSpacer_39);
 
-        leAxDelay = new QLineEdit(gbInput);
+        leAxDelay = new QLineEdit(gbInputXS);
         leAxDelay->setObjectName(QString::fromUtf8("leAxDelay"));
         leAxDelay->setMinimumSize(QSize(110, 0));
         leAxDelay->setMaximumSize(QSize(110, 16777215));
@@ -7880,10 +8043,286 @@ public:
         verticalLayout_43->addLayout(horizontalLayout_47);
 
 
-        gridLayout_20->addWidget(gbInput, 0, 0, 1, 1);
+        gridLayout_20->addWidget(gbInputXS, 0, 0, 1, 1);
 
 
-        horizontalLayout_83->addWidget(fRobotPosition_4);
+        verticalLayout_11->addWidget(fRobotPosition_4);
+
+        gbInputX3 = new QGroupBox(frame_37);
+        gbInputX3->setObjectName(QString::fromUtf8("gbInputX3"));
+        gbInputX3->setMinimumSize(QSize(0, 200));
+        gbInputX3->setFont(font13);
+        verticalLayout_50 = new QVBoxLayout(gbInputX3);
+        verticalLayout_50->setSpacing(6);
+        verticalLayout_50->setContentsMargins(11, 11, 11, 11);
+        verticalLayout_50->setObjectName(QString::fromUtf8("verticalLayout_50"));
+        verticalLayout_50->setContentsMargins(-1, 20, -1, -1);
+        horizontalLayout_60 = new QHBoxLayout();
+        horizontalLayout_60->setSpacing(6);
+        horizontalLayout_60->setObjectName(QString::fromUtf8("horizontalLayout_60"));
+        pbReadI0X3 = new QPushButton(gbInputX3);
+        pbReadI0X3->setObjectName(QString::fromUtf8("pbReadI0X3"));
+        pbReadI0X3->setMinimumSize(QSize(50, 0));
+
+        horizontalLayout_60->addWidget(pbReadI0X3);
+
+        label_111 = new QLabel(gbInputX3);
+        label_111->setObjectName(QString::fromUtf8("label_111"));
+        label_111->setMinimumSize(QSize(30, 0));
+        label_111->setMaximumSize(QSize(25, 16777215));
+        label_111->setFont(font1);
+
+        horizontalLayout_60->addWidget(label_111);
+
+        horizontalSpacer_101 = new QSpacerItem(40, 20, QSizePolicy::Maximum, QSizePolicy::Minimum);
+
+        horizontalLayout_60->addItem(horizontalSpacer_101);
+
+        lbI0ValueX3 = new QLabel(gbInputX3);
+        lbI0ValueX3->setObjectName(QString::fromUtf8("lbI0ValueX3"));
+
+        horizontalLayout_60->addWidget(lbI0ValueX3);
+
+        horizontalSpacer_104 = new QSpacerItem(40, 20, QSizePolicy::Maximum, QSizePolicy::Minimum);
+
+        horizontalLayout_60->addItem(horizontalSpacer_104);
+
+        cbToggle0X3 = new QCheckBox(gbInputX3);
+        cbToggle0X3->setObjectName(QString::fromUtf8("cbToggle0X3"));
+        cbToggle0X3->setMinimumSize(QSize(110, 0));
+        cbToggle0X3->setMaximumSize(QSize(110, 16777215));
+
+        horizontalLayout_60->addWidget(cbToggle0X3);
+
+        horizontalSpacer_105 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        horizontalLayout_60->addItem(horizontalSpacer_105);
+
+
+        verticalLayout_50->addLayout(horizontalLayout_60);
+
+        horizontalLayout_61 = new QHBoxLayout();
+        horizontalLayout_61->setSpacing(6);
+        horizontalLayout_61->setObjectName(QString::fromUtf8("horizontalLayout_61"));
+        pbReadI1X3 = new QPushButton(gbInputX3);
+        pbReadI1X3->setObjectName(QString::fromUtf8("pbReadI1X3"));
+        pbReadI1X3->setMinimumSize(QSize(50, 0));
+
+        horizontalLayout_61->addWidget(pbReadI1X3);
+
+        label_112 = new QLabel(gbInputX3);
+        label_112->setObjectName(QString::fromUtf8("label_112"));
+        label_112->setMinimumSize(QSize(30, 0));
+        label_112->setMaximumSize(QSize(25, 16777215));
+        label_112->setFont(font1);
+
+        horizontalLayout_61->addWidget(label_112);
+
+        horizontalSpacer_110 = new QSpacerItem(40, 20, QSizePolicy::Maximum, QSizePolicy::Minimum);
+
+        horizontalLayout_61->addItem(horizontalSpacer_110);
+
+        lbI1ValueX3 = new QLabel(gbInputX3);
+        lbI1ValueX3->setObjectName(QString::fromUtf8("lbI1ValueX3"));
+
+        horizontalLayout_61->addWidget(lbI1ValueX3);
+
+        horizontalSpacer_111 = new QSpacerItem(40, 20, QSizePolicy::Maximum, QSizePolicy::Minimum);
+
+        horizontalLayout_61->addItem(horizontalSpacer_111);
+
+        cbToggle1X3 = new QCheckBox(gbInputX3);
+        cbToggle1X3->setObjectName(QString::fromUtf8("cbToggle1X3"));
+        cbToggle1X3->setMinimumSize(QSize(110, 0));
+        cbToggle1X3->setMaximumSize(QSize(110, 16777215));
+
+        horizontalLayout_61->addWidget(cbToggle1X3);
+
+        horizontalSpacer_112 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        horizontalLayout_61->addItem(horizontalSpacer_112);
+
+
+        verticalLayout_50->addLayout(horizontalLayout_61);
+
+        horizontalLayout_62 = new QHBoxLayout();
+        horizontalLayout_62->setSpacing(6);
+        horizontalLayout_62->setObjectName(QString::fromUtf8("horizontalLayout_62"));
+        pbReadI2X3 = new QPushButton(gbInputX3);
+        pbReadI2X3->setObjectName(QString::fromUtf8("pbReadI2X3"));
+        pbReadI2X3->setMinimumSize(QSize(50, 0));
+
+        horizontalLayout_62->addWidget(pbReadI2X3);
+
+        label_113 = new QLabel(gbInputX3);
+        label_113->setObjectName(QString::fromUtf8("label_113"));
+        label_113->setMinimumSize(QSize(30, 0));
+        label_113->setMaximumSize(QSize(25, 16777215));
+        label_113->setFont(font1);
+
+        horizontalLayout_62->addWidget(label_113);
+
+        horizontalSpacer_119 = new QSpacerItem(40, 20, QSizePolicy::Maximum, QSizePolicy::Minimum);
+
+        horizontalLayout_62->addItem(horizontalSpacer_119);
+
+        lbI2ValueX3 = new QLabel(gbInputX3);
+        lbI2ValueX3->setObjectName(QString::fromUtf8("lbI2ValueX3"));
+
+        horizontalLayout_62->addWidget(lbI2ValueX3);
+
+        horizontalSpacer_120 = new QSpacerItem(40, 20, QSizePolicy::Maximum, QSizePolicy::Minimum);
+
+        horizontalLayout_62->addItem(horizontalSpacer_120);
+
+        cbToggle2X3 = new QCheckBox(gbInputX3);
+        cbToggle2X3->setObjectName(QString::fromUtf8("cbToggle2X3"));
+        cbToggle2X3->setMinimumSize(QSize(110, 0));
+        cbToggle2X3->setMaximumSize(QSize(110, 16777215));
+
+        horizontalLayout_62->addWidget(cbToggle2X3);
+
+        horizontalSpacer_121 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        horizontalLayout_62->addItem(horizontalSpacer_121);
+
+
+        verticalLayout_50->addLayout(horizontalLayout_62);
+
+        horizontalLayout_63 = new QHBoxLayout();
+        horizontalLayout_63->setSpacing(6);
+        horizontalLayout_63->setObjectName(QString::fromUtf8("horizontalLayout_63"));
+        pbReadI3X3 = new QPushButton(gbInputX3);
+        pbReadI3X3->setObjectName(QString::fromUtf8("pbReadI3X3"));
+        pbReadI3X3->setMinimumSize(QSize(50, 0));
+
+        horizontalLayout_63->addWidget(pbReadI3X3);
+
+        label_118 = new QLabel(gbInputX3);
+        label_118->setObjectName(QString::fromUtf8("label_118"));
+        label_118->setMinimumSize(QSize(30, 0));
+        label_118->setMaximumSize(QSize(25, 16777215));
+        label_118->setFont(font1);
+
+        horizontalLayout_63->addWidget(label_118);
+
+        horizontalSpacer_123 = new QSpacerItem(40, 20, QSizePolicy::Maximum, QSizePolicy::Minimum);
+
+        horizontalLayout_63->addItem(horizontalSpacer_123);
+
+        lbI3ValueX3 = new QLabel(gbInputX3);
+        lbI3ValueX3->setObjectName(QString::fromUtf8("lbI3ValueX3"));
+
+        horizontalLayout_63->addWidget(lbI3ValueX3);
+
+        horizontalSpacer_124 = new QSpacerItem(40, 20, QSizePolicy::Maximum, QSizePolicy::Minimum);
+
+        horizontalLayout_63->addItem(horizontalSpacer_124);
+
+        cbToggle3X3 = new QCheckBox(gbInputX3);
+        cbToggle3X3->setObjectName(QString::fromUtf8("cbToggle3X3"));
+        cbToggle3X3->setMinimumSize(QSize(110, 0));
+        cbToggle3X3->setMaximumSize(QSize(110, 16777215));
+
+        horizontalLayout_63->addWidget(cbToggle3X3);
+
+        horizontalSpacer_125 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        horizontalLayout_63->addItem(horizontalSpacer_125);
+
+
+        verticalLayout_50->addLayout(horizontalLayout_63);
+
+        horizontalLayout_66 = new QHBoxLayout();
+        horizontalLayout_66->setSpacing(6);
+        horizontalLayout_66->setObjectName(QString::fromUtf8("horizontalLayout_66"));
+        pbReadA0X3 = new QPushButton(gbInputX3);
+        pbReadA0X3->setObjectName(QString::fromUtf8("pbReadA0X3"));
+        pbReadA0X3->setMinimumSize(QSize(50, 0));
+
+        horizontalLayout_66->addWidget(pbReadA0X3);
+
+        label_120 = new QLabel(gbInputX3);
+        label_120->setObjectName(QString::fromUtf8("label_120"));
+        label_120->setMinimumSize(QSize(30, 0));
+        label_120->setMaximumSize(QSize(25, 16777215));
+        label_120->setFont(font1);
+
+        horizontalLayout_66->addWidget(label_120);
+
+        horizontalSpacer_132 = new QSpacerItem(40, 20, QSizePolicy::Maximum, QSizePolicy::Minimum);
+
+        horizontalLayout_66->addItem(horizontalSpacer_132);
+
+        lbA0ValueX3 = new QLabel(gbInputX3);
+        lbA0ValueX3->setObjectName(QString::fromUtf8("lbA0ValueX3"));
+
+        horizontalLayout_66->addWidget(lbA0ValueX3);
+
+        horizontalSpacer_133 = new QSpacerItem(40, 20, QSizePolicy::Maximum, QSizePolicy::Minimum);
+
+        horizontalLayout_66->addItem(horizontalSpacer_133);
+
+        leA0DelayX3 = new QLineEdit(gbInputX3);
+        leA0DelayX3->setObjectName(QString::fromUtf8("leA0DelayX3"));
+        leA0DelayX3->setMinimumSize(QSize(110, 0));
+        leA0DelayX3->setMaximumSize(QSize(110, 16777215));
+
+        horizontalLayout_66->addWidget(leA0DelayX3);
+
+        horizontalSpacer_134 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        horizontalLayout_66->addItem(horizontalSpacer_134);
+
+
+        verticalLayout_50->addLayout(horizontalLayout_66);
+
+        horizontalLayout_64 = new QHBoxLayout();
+        horizontalLayout_64->setSpacing(6);
+        horizontalLayout_64->setObjectName(QString::fromUtf8("horizontalLayout_64"));
+        pbReadA1X3 = new QPushButton(gbInputX3);
+        pbReadA1X3->setObjectName(QString::fromUtf8("pbReadA1X3"));
+        pbReadA1X3->setMinimumSize(QSize(50, 0));
+
+        horizontalLayout_64->addWidget(pbReadA1X3);
+
+        label_119 = new QLabel(gbInputX3);
+        label_119->setObjectName(QString::fromUtf8("label_119"));
+        label_119->setMinimumSize(QSize(30, 0));
+        label_119->setMaximumSize(QSize(25, 16777215));
+        label_119->setFont(font1);
+
+        horizontalLayout_64->addWidget(label_119);
+
+        horizontalSpacer_126 = new QSpacerItem(40, 20, QSizePolicy::Maximum, QSizePolicy::Minimum);
+
+        horizontalLayout_64->addItem(horizontalSpacer_126);
+
+        lbA1ValueX3 = new QLabel(gbInputX3);
+        lbA1ValueX3->setObjectName(QString::fromUtf8("lbA1ValueX3"));
+
+        horizontalLayout_64->addWidget(lbA1ValueX3);
+
+        horizontalSpacer_127 = new QSpacerItem(40, 20, QSizePolicy::Maximum, QSizePolicy::Minimum);
+
+        horizontalLayout_64->addItem(horizontalSpacer_127);
+
+        leA1DelayX3 = new QLineEdit(gbInputX3);
+        leA1DelayX3->setObjectName(QString::fromUtf8("leA1DelayX3"));
+        leA1DelayX3->setMinimumSize(QSize(110, 0));
+        leA1DelayX3->setMaximumSize(QSize(110, 16777215));
+
+        horizontalLayout_64->addWidget(leA1DelayX3);
+
+        horizontalSpacer_128 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        horizontalLayout_64->addItem(horizontalSpacer_128);
+
+
+        verticalLayout_50->addLayout(horizontalLayout_64);
+
+
+        verticalLayout_11->addWidget(gbInputX3);
 
 
         verticalLayout_54->addWidget(frame_37);
@@ -9582,6 +10021,7 @@ public:
         pbPump->setDefault(false);
         pbLaser->setDefault(false);
         pbGrip->setDefault(false);
+        pbPumpX3->setDefault(false);
 
 
         QMetaObject::connectSlotsByName(RobotWindow);
@@ -10423,7 +10863,7 @@ public:
         leGripperMin->setText(QCoreApplication::translate("RobotWindow", "5", nullptr));
         leGripperMax->setText(QCoreApplication::translate("RobotWindow", "100", nullptr));
         lbGripperValue->setText(QCoreApplication::translate("RobotWindow", "100", nullptr));
-        gbOutput->setTitle(QCoreApplication::translate("RobotWindow", "Delta X S Output", nullptr));
+        gbOutputXS->setTitle(QCoreApplication::translate("RobotWindow", "Delta X S", nullptr));
         cbD3->setText(QString());
         cbD0->setText(QString());
         label_71->setText(QCoreApplication::translate("RobotWindow", "D6", nullptr));
@@ -10446,8 +10886,19 @@ public:
         cbDx->setText(QString());
         leRx->setText(QCoreApplication::translate("RobotWindow", "R0", nullptr));
         cbRx->setText(QString());
+        gbOutputX3->setTitle(QCoreApplication::translate("RobotWindow", "Delta X 3", nullptr));
+        label_107->setText(QCoreApplication::translate("RobotWindow", "D2", nullptr));
+        cbX3D2->setText(QString());
+        cbX3D3->setText(QString());
+        label_57->setText(QCoreApplication::translate("RobotWindow", "D1", nullptr));
+        label_65->setText(QCoreApplication::translate("RobotWindow", "D3", nullptr));
+        cbX3D1->setText(QString());
+        label_52->setText(QCoreApplication::translate("RobotWindow", "D0", nullptr));
+        label_108->setText(QCoreApplication::translate("RobotWindow", "Digital", nullptr));
+        cbX3D0->setText(QString());
+        pbPumpX3->setText(QCoreApplication::translate("RobotWindow", "  Vacuum", nullptr));
         label_280->setText(QCoreApplication::translate("RobotWindow", "Input", nullptr));
-        gbInput->setTitle(QCoreApplication::translate("RobotWindow", "Delta X S Input", nullptr));
+        gbInputXS->setTitle(QCoreApplication::translate("RobotWindow", "Delta X S", nullptr));
         pbReadI0->setText(QCoreApplication::translate("RobotWindow", "read", nullptr));
         label_70->setText(QCoreApplication::translate("RobotWindow", "I0", nullptr));
         lbI0Value->setText(QCoreApplication::translate("RobotWindow", "null", nullptr));
@@ -10497,6 +10948,43 @@ public:
         leAx->setPlaceholderText(QCoreApplication::translate("RobotWindow", "I", nullptr));
         lbAxValue->setText(QCoreApplication::translate("RobotWindow", "null", nullptr));
         leAxDelay->setPlaceholderText(QCoreApplication::translate("RobotWindow", "0 ms", nullptr));
+        gbInputX3->setTitle(QCoreApplication::translate("RobotWindow", "Delta X 3", nullptr));
+        pbReadI0X3->setText(QCoreApplication::translate("RobotWindow", "read", nullptr));
+        label_111->setText(QCoreApplication::translate("RobotWindow", "I0", nullptr));
+        lbI0ValueX3->setText(QCoreApplication::translate("RobotWindow", "null", nullptr));
+#if QT_CONFIG(tooltip)
+        cbToggle0X3->setToolTip(QCoreApplication::translate("RobotWindow", "The robot will respond when the value of digital input pin changes", nullptr));
+#endif // QT_CONFIG(tooltip)
+        cbToggle0X3->setText(QCoreApplication::translate("RobotWindow", "wait toggle", nullptr));
+        pbReadI1X3->setText(QCoreApplication::translate("RobotWindow", "read", nullptr));
+        label_112->setText(QCoreApplication::translate("RobotWindow", "I1", nullptr));
+        lbI1ValueX3->setText(QCoreApplication::translate("RobotWindow", "null", nullptr));
+#if QT_CONFIG(tooltip)
+        cbToggle1X3->setToolTip(QCoreApplication::translate("RobotWindow", "The robot will respond when the value of digital input pin changes", nullptr));
+#endif // QT_CONFIG(tooltip)
+        cbToggle1X3->setText(QCoreApplication::translate("RobotWindow", "wait toggle", nullptr));
+        pbReadI2X3->setText(QCoreApplication::translate("RobotWindow", "read", nullptr));
+        label_113->setText(QCoreApplication::translate("RobotWindow", "I2", nullptr));
+        lbI2ValueX3->setText(QCoreApplication::translate("RobotWindow", "null", nullptr));
+#if QT_CONFIG(tooltip)
+        cbToggle2X3->setToolTip(QCoreApplication::translate("RobotWindow", "The robot will respond when the value of digital input pin changes", nullptr));
+#endif // QT_CONFIG(tooltip)
+        cbToggle2X3->setText(QCoreApplication::translate("RobotWindow", "wait toggle", nullptr));
+        pbReadI3X3->setText(QCoreApplication::translate("RobotWindow", "read", nullptr));
+        label_118->setText(QCoreApplication::translate("RobotWindow", "I3", nullptr));
+        lbI3ValueX3->setText(QCoreApplication::translate("RobotWindow", "null", nullptr));
+#if QT_CONFIG(tooltip)
+        cbToggle3X3->setToolTip(QCoreApplication::translate("RobotWindow", "The robot will respond when the value of digital input pin changes", nullptr));
+#endif // QT_CONFIG(tooltip)
+        cbToggle3X3->setText(QCoreApplication::translate("RobotWindow", "wait toggle", nullptr));
+        pbReadA0X3->setText(QCoreApplication::translate("RobotWindow", "read", nullptr));
+        label_120->setText(QCoreApplication::translate("RobotWindow", "A0", nullptr));
+        lbA0ValueX3->setText(QCoreApplication::translate("RobotWindow", "null", nullptr));
+        leA0DelayX3->setPlaceholderText(QCoreApplication::translate("RobotWindow", "0 ms", nullptr));
+        pbReadA1X3->setText(QCoreApplication::translate("RobotWindow", "read", nullptr));
+        label_119->setText(QCoreApplication::translate("RobotWindow", "A1", nullptr));
+        lbA1ValueX3->setText(QCoreApplication::translate("RobotWindow", "null", nullptr));
+        leA1DelayX3->setPlaceholderText(QCoreApplication::translate("RobotWindow", "0 ms", nullptr));
         twDevices->setTabText(twDevices->indexOf(tRobot), QCoreApplication::translate("RobotWindow", "Robot", nullptr));
         label->setText(QCoreApplication::translate("RobotWindow", "Selected Conveyor", nullptr));
         checkBox->setText(QCoreApplication::translate("RobotWindow", "Auto Scan", nullptr));

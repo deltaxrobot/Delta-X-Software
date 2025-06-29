@@ -858,7 +858,21 @@ void RobotWindow::InitEvents()
 	connect(ui->hsGripperAngle, SIGNAL(valueChanged(int)), this, SLOT(AdjustGripperAngle(int)));
 	connect(ui->pbGrip, SIGNAL(clicked(bool)), this, SLOT(Grip()));
 	connect(ui->pbPump, SIGNAL(clicked(bool)), this, SLOT(SetPump(bool)));
+    connect(ui->pbPumpX3, SIGNAL(clicked(bool)), this, SLOT(SetPump(bool)));
 	connect(ui->pbLaser, SIGNAL(clicked(bool)), this, SLOT(SetLaser(bool)));
+
+    //----- Delta X 3 IO -----
+    connect(ui->cbX3D0, SIGNAL(clicked(bool)), this, SLOT(SetOutputX3(bool)));
+    connect(ui->cbX3D1, SIGNAL(clicked(bool)), this, SLOT(SetOutputX3(bool)));
+    connect(ui->cbX3D2, SIGNAL(clicked(bool)), this, SLOT(SetOutputX3(bool)));
+    connect(ui->cbX3D3, SIGNAL(clicked(bool)), this, SLOT(SetOutputX3(bool)));
+
+    connect(ui->pbReadI0X3, SIGNAL(clicked()), this, SLOT(GetInputX3()));
+    connect(ui->pbReadI1X3, SIGNAL(clicked()), this, SLOT(GetInputX3()));
+    connect(ui->pbReadI2X3, SIGNAL(clicked()), this, SLOT(GetInputX3()));
+    connect(ui->pbReadI3X3, SIGNAL(clicked()), this, SLOT(GetInputX3()));
+    connect(ui->pbReadA0X3, SIGNAL(clicked()), this, SLOT(GetInputX3()));
+    connect(ui->pbReadA1X3, SIGNAL(clicked()), this, SLOT(GetInputX3()));
 
     //----- Delta X S IO -----
     connect(ui->cbD0, SIGNAL(clicked(bool)), this, SLOT(SetOnOffOutput(bool)));
@@ -882,6 +896,8 @@ void RobotWindow::InitEvents()
     connect(ui->pbReadA0, SIGNAL(clicked()), this, SLOT(RequestValueInput()));
     connect(ui->pbReadA1, SIGNAL(clicked()), this, SLOT(RequestValueInput()));
     connect(ui->pbReadAx, SIGNAL(clicked()), this, SLOT(RequestValueInput()));
+
+
 
 
     //------------- 2D control ----------------
@@ -2610,17 +2626,29 @@ void RobotWindow::ChangeRobotModel(int id)
 {
     DeviceManagerInstance->Robots.at(ui->cbSelectedRobot->currentIndex())->SetRobotModel(ui->cbRobotModel->currentText());
 
-    if (id == 0 || id == 1 || id == 2)
+    if (id == 0 || id == 1)
     {
         ui->gbX1->setVisible(true);
-        ui->gbOutput->setVisible(false);
-        ui->gbInput->setVisible(false);
+        ui->gbOutputXS->setVisible(false);
+        ui->gbInputXS->setVisible(false);
+        ui->gbOutputX3->setVisible(false);
+        ui->gbInputX3->setVisible(false);
+    }
+    else if (id == 2)
+    {
+        ui->gbX1->setVisible(false);
+        ui->gbOutputXS->setVisible(false);
+        ui->gbInputXS->setVisible(false);
+        ui->gbOutputX3->setVisible(true);
+        ui->gbInputX3->setVisible(true);
     }
     else if (id == 3)
     {
         ui->gbX1->setVisible(false);
-        ui->gbOutput->setVisible(true);
-        ui->gbInput->setVisible(true);
+        ui->gbOutputXS->setVisible(true);
+        ui->gbInputXS->setVisible(true);
+        ui->gbOutputX3->setVisible(false);
+        ui->gbInputX3->setVisible(false);
     }
 }
 
@@ -3068,6 +3096,24 @@ void RobotWindow::SetOnOffOutput(bool result)
     }
 }
 
+void RobotWindow::SetOutputX3(bool state)
+{
+    QString widgetName = sender()->objectName();
+    if (widgetName.indexOf("X3D") > -1)
+    {
+        QString outputName = widgetName.mid(4);
+
+        if (state == true)
+        {
+            sendGcode("M03", outputName, "");
+        }
+        else
+        {
+            sendGcode("M05", outputName, "");
+        }
+    }
+}
+
 void RobotWindow::SetValueOutput()
 {
     // lePxValue, leSxValue, leP0Value, leS0Value, ...
@@ -3120,6 +3166,38 @@ void RobotWindow::RequestValueInput()
         }
     }
 
+}
+
+void RobotWindow::GetInputX3()
+{
+    QString inputName = sender()->objectName().mid(6, 2);
+    QString inputID = inputName.mid(1);
+    QCheckBox* cbInputType = (QCheckBox*)getObjectByName(sender()->parent(), QString("cbToggle") + inputID + QString("X3"));
+    QLineEdit* leDelay = (QLineEdit*)getObjectByName(sender()->parent(), QString("leA") + inputID + "Delay" + QString("X3"));
+    QLineEdit* leInputName;
+
+    if (inputName.indexOf("I") > -1)
+    {
+        if (cbInputType->isChecked() == true)
+        {
+            emit Send(DeviceManager::ROBOT, "M08 " + inputName);
+        }
+        else
+        {
+            emit Send(DeviceManager::ROBOT, "M07 " + inputName);
+        }
+    }
+    else
+    {
+        if (leDelay->text() == "")
+        {
+            emit Send(DeviceManager::ROBOT, "M08 " + inputName);
+        }
+        else
+        {
+            emit Send(DeviceManager::ROBOT, "M08 " + inputName + " W" + leDelay->text());
+        }
+    }
 }
 
 void RobotWindow::GetValueInput(QString response)

@@ -334,8 +334,10 @@ public slots:
 	void SetPump(bool value);
     void SetLaser(bool value);
     void SetOnOffOutput(bool result);
+    void SetOutputX3(bool state);
     void SetValueOutput();
     void RequestValueInput();
+    void GetInputX3();
     void GetValueInput(QString response);
 
     //----- Variable -----

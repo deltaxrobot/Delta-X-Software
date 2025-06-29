@@ -19,7 +19,7 @@ CXXFLAGS      = -nologo -Zc:wchar_t -FS -Zc:rvalueCast -Zc:inline -Zc:strictStri
 INCPATH       = -I. -I3rd-party\opencv\build\include -IC:\Qt\5.15.2\msvc2019_64\include -IC:\Qt\5.15.2\msvc2019_64\include\QtOpenGL -IC:\Qt\5.15.2\msvc2019_64\include\QtQuickWidgets -IC:\Qt\5.15.2\msvc2019_64\include\QtPrintSupport -IC:\Qt\5.15.2\msvc2019_64\include\QtSvg -IC:\Qt\5.15.2\msvc2019_64\include\QtWidgets -IC:\Qt\5.15.2\msvc2019_64\include\QtQuick -IC:\Qt\5.15.2\msvc2019_64\include\QtMultimedia -IC:\Qt\5.15.2\msvc2019_64\include\QtGui -IC:\Qt\5.15.2\msvc2019_64\include\QtANGLE -IC:\Qt\5.15.2\msvc2019_64\include\QtSerialPort -IC:\Qt\5.15.2\msvc2019_64\include\QtQmlModels -IC:\Qt\5.15.2\msvc2019_64\include\QtQml -IC:\Qt\5.15.2\msvc2019_64\include\QtNetwork -IC:\Qt\5.15.2\msvc2019_64\include\QtConcurrent -IC:\Qt\5.15.2\msvc2019_64\include\QtCore -Idebug -I. -I/include -IC:\Qt\5.15.2\msvc2019_64\mkspecs\win32-msvc 
 LINKER        = link
 LFLAGS        = /NOLOGO /DYNAMICBASE /NXCOMPAT /DEBUG /SUBSYSTEM:WINDOWS "/MANIFESTDEPENDENCY:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' publicKeyToken='6595b64144ccf1df' language='*' processorArchitecture='*'"
-LIBS          = E:\Working\Source\Delta-X-Software\3rd-party\opencv\build\x64\vc15\lib\opencv_world400.lib E:\Working\Source\Delta-X-Software\3rd-party\opencv\build\x64\vc15\lib\opencv_world400d.lib C:\Qt\5.15.2\msvc2019_64\lib\Qt5OpenGLd.lib C:\Qt\5.15.2\msvc2019_64\lib\Qt5QuickWidgetsd.lib C:\Qt\5.15.2\msvc2019_64\lib\Qt5PrintSupportd.lib C:\Qt\5.15.2\msvc2019_64\lib\Qt5Svgd.lib C:\Qt\5.15.2\msvc2019_64\lib\Qt5Widgetsd.lib C:\Qt\5.15.2\msvc2019_64\lib\Qt5Quickd.lib C:\Qt\5.15.2\msvc2019_64\lib\Qt5Multimediad.lib C:\Qt\5.15.2\msvc2019_64\lib\Qt5Guid.lib C:\Qt\5.15.2\msvc2019_64\lib\Qt5SerialPortd.lib C:\Qt\5.15.2\msvc2019_64\lib\Qt5QmlModelsd.lib C:\Qt\5.15.2\msvc2019_64\lib\Qt5Qmld.lib C:\Qt\5.15.2\msvc2019_64\lib\Qt5Networkd.lib C:\Qt\5.15.2\msvc2019_64\lib\Qt5Concurrentd.lib C:\Qt\5.15.2\msvc2019_64\lib\Qt5Cored.lib debug\DeltaRobotSoftware_resource.res  C:\Qt\5.15.2\msvc2019_64\lib\qtmaind.lib /LIBPATH:C:\openssl\lib /LIBPATH:C:\Utils\my_sql\mysql-5.7.25-winx64\lib /LIBPATH:C:\Utils\postgresql\pgsql\lib shell32.lib 
+LIBS          = D:\working\source\Delta-X-Software\3rd-party\opencv\build\x64\vc15\lib\opencv_world400.lib D:\working\source\Delta-X-Software\3rd-party\opencv\build\x64\vc15\lib\opencv_world400d.lib C:\Qt\5.15.2\msvc2019_64\lib\Qt5OpenGLd.lib C:\Qt\5.15.2\msvc2019_64\lib\Qt5QuickWidgetsd.lib C:\Qt\5.15.2\msvc2019_64\lib\Qt5PrintSupportd.lib C:\Qt\5.15.2\msvc2019_64\lib\Qt5Svgd.lib C:\Qt\5.15.2\msvc2019_64\lib\Qt5Widgetsd.lib C:\Qt\5.15.2\msvc2019_64\lib\Qt5Quickd.lib C:\Qt\5.15.2\msvc2019_64\lib\Qt5Multimediad.lib C:\Qt\5.15.2\msvc2019_64\lib\Qt5Guid.lib C:\Qt\5.15.2\msvc2019_64\lib\Qt5SerialPortd.lib C:\Qt\5.15.2\msvc2019_64\lib\Qt5QmlModelsd.lib C:\Qt\5.15.2\msvc2019_64\lib\Qt5Qmld.lib C:\Qt\5.15.2\msvc2019_64\lib\Qt5Networkd.lib C:\Qt\5.15.2\msvc2019_64\lib\Qt5Concurrentd.lib C:\Qt\5.15.2\msvc2019_64\lib\Qt5Cored.lib debug\DeltaRobotSoftware_resource.res  C:\Qt\5.15.2\msvc2019_64\lib\qtmaind.lib /LIBPATH:C:\openssl\lib /LIBPATH:C:\Utils\my_sql\mysql-5.7.25-winx64\lib /LIBPATH:C:\Utils\postgresql\pgsql\lib shell32.lib 
 QMAKE         = C:\Qt\5.15.2\msvc2019_64\bin\qmake.exe
 DEL_FILE      = del
 CHK_DIR_EXISTS= if not exist
@@ -700,7 +700,7 @@ debug\moc_AccountWindow.cpp: AccountWindow.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qicon.h \
 		debug\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2019_64\bin\moc.exe
-	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include E:/Working/Source/Delta-X-Software/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -IE:/Working/Source/Delta-X-Software -IE:/Working/Source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" AccountWindow.h -o debug\moc_AccountWindow.cpp
+	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include D:/working/source/Delta-X-Software/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -ID:/working/source/Delta-X-Software -ID:/working/source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" AccountWindow.h -o debug\moc_AccountWindow.cpp
 
 debug\moc_Authority.cpp: Authority.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QObject \
@@ -1336,10 +1336,6 @@ debug\moc_Authority.cpp: Authority.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QMutexLocker \
 		GcodeReference.h \
 		ui_GcodeReference.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QApplication \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QGridLayout \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QListWidget \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QTextEdit \
 		DrawingExporter.h \
 		DrawingWidget.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QLineEdit \
@@ -1445,7 +1441,7 @@ debug\moc_Authority.cpp: Authority.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QGraphicsView \
 		debug\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2019_64\bin\moc.exe
-	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include E:/Working/Source/Delta-X-Software/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -IE:/Working/Source/Delta-X-Software -IE:/Working/Source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" Authority.h -o debug\moc_Authority.cpp
+	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include D:/working/source/Delta-X-Software/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -ID:/working/source/Delta-X-Software -ID:/working/source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" Authority.h -o debug\moc_Authority.cpp
 
 debug\moc_ComDevice.cpp: ComDevice.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QWidget \
@@ -1567,7 +1563,7 @@ debug\moc_ComDevice.cpp: ComDevice.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qdialog.h \
 		debug\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2019_64\bin\moc.exe
-	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include E:/Working/Source/Delta-X-Software/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -IE:/Working/Source/Delta-X-Software -IE:/Working/Source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" ComDevice.h -o debug\moc_ComDevice.cpp
+	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include D:/working/source/Delta-X-Software/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -ID:/working/source/Delta-X-Software -ID:/working/source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" ComDevice.h -o debug\moc_ComDevice.cpp
 
 debug\moc_DeltaVisualizer.cpp: DeltaVisualizer.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qslider.h \
@@ -1700,7 +1696,7 @@ debug\moc_DeltaVisualizer.cpp: DeltaVisualizer.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QMouseEvent \
 		debug\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2019_64\bin\moc.exe
-	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include E:/Working/Source/Delta-X-Software/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -IE:/Working/Source/Delta-X-Software -IE:/Working/Source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" DeltaVisualizer.h -o debug\moc_DeltaVisualizer.cpp
+	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include D:/working/source/Delta-X-Software/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -ID:/working/source/Delta-X-Software -ID:/working/source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" DeltaVisualizer.h -o debug\moc_DeltaVisualizer.cpp
 
 debug\moc_DrawingExporter.cpp: DrawingExporter.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QWidget \
@@ -1965,7 +1961,7 @@ debug\moc_DrawingExporter.cpp: DrawingExporter.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtSvg\qtsvgglobal.h \
 		debug\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2019_64\bin\moc.exe
-	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include E:/Working/Source/Delta-X-Software/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -IE:/Working/Source/Delta-X-Software -IE:/Working/Source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" DrawingExporter.h -o debug\moc_DrawingExporter.cpp
+	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include D:/working/source/Delta-X-Software/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -ID:/working/source/Delta-X-Software -ID:/working/source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" DrawingExporter.h -o debug\moc_DrawingExporter.cpp
 
 debug\moc_DrawingWidget.cpp: DrawingWidget.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QLabel \
@@ -2221,7 +2217,7 @@ debug\moc_DrawingWidget.cpp: DrawingWidget.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qeventloop.h \
 		debug\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2019_64\bin\moc.exe
-	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include E:/Working/Source/Delta-X-Software/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -IE:/Working/Source/Delta-X-Software -IE:/Working/Source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" DrawingWidget.h -o debug\moc_DrawingWidget.cpp
+	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include D:/working/source/Delta-X-Software/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -ID:/working/source/Delta-X-Software -ID:/working/source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" DrawingWidget.h -o debug\moc_DrawingWidget.cpp
 
 debug\moc_FilterWindow.cpp: FilterWindow.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QDialog \
@@ -2469,7 +2465,7 @@ debug\moc_FilterWindow.cpp: FilterWindow.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qabstractbutton.h \
 		debug\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2019_64\bin\moc.exe
-	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include E:/Working/Source/Delta-X-Software/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -IE:/Working/Source/Delta-X-Software -IE:/Working/Source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" FilterWindow.h -o debug\moc_FilterWindow.cpp
+	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include D:/working/source/Delta-X-Software/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -ID:/working/source/Delta-X-Software -ID:/working/source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" FilterWindow.h -o debug\moc_FilterWindow.cpp
 
 debug\moc_GcodeReference.cpp: GcodeReference.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QWidget \
@@ -2576,51 +2572,9 @@ debug\moc_GcodeReference.cpp: GcodeReference.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qvector2d.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qtouchdevice.h \
 		ui_GcodeReference.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QVariant \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QApplication \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qapplication.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qcoreapplication.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qeventloop.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qdesktopwidget.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qguiapplication.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qinputmethod.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QGridLayout \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qgridlayout.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qlayout.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qlayoutitem.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qboxlayout.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QHBoxLayout \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QListWidget \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qlistwidget.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qlistview.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qabstractitemview.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qabstractscrollarea.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qframe.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qabstractitemmodel.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qitemselectionmodel.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qabstractitemdelegate.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qstyleoption.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qabstractspinbox.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qvalidator.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qregularexpression.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qicon.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qslider.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qabstractslider.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qstyle.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qtabbar.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qtabwidget.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qrubberband.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QTextEdit \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qtextedit.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qtextdocument.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qtextoption.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qtextcursor.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qtextformat.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qpen.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QVBoxLayout \
 		debug\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2019_64\bin\moc.exe
-	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include E:/Working/Source/Delta-X-Software/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -IE:/Working/Source/Delta-X-Software -IE:/Working/Source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" GcodeReference.h -o debug\moc_GcodeReference.cpp
+	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include D:/working/source/Delta-X-Software/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -ID:/working/source/Delta-X-Software -ID:/working/source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" GcodeReference.h -o debug\moc_GcodeReference.cpp
 
 debug\moc_GcodeScript.cpp: GcodeScript.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QObject \
@@ -3260,10 +3214,6 @@ debug\moc_GcodeScript.cpp: GcodeScript.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QMutexLocker \
 		GcodeReference.h \
 		ui_GcodeReference.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QApplication \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QGridLayout \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QListWidget \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QTextEdit \
 		DrawingExporter.h \
 		DrawingWidget.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QLineEdit \
@@ -3364,7 +3314,7 @@ debug\moc_GcodeScript.cpp: GcodeScript.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QPolygonF \
 		debug\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2019_64\bin\moc.exe
-	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include E:/Working/Source/Delta-X-Software/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -IE:/Working/Source/Delta-X-Software -IE:/Working/Source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" GcodeScript.h -o debug\moc_GcodeScript.cpp
+	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include D:/working/source/Delta-X-Software/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -ID:/working/source/Delta-X-Software -ID:/working/source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" GcodeScript.h -o debug\moc_GcodeScript.cpp
 
 debug\moc_ImageViewer.cpp: ImageViewer.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QGraphicsView \
@@ -3953,7 +3903,7 @@ debug\moc_ImageViewer.cpp: ImageViewer.h \
 		3rd-party\opencv\build\include\opencv2\video\background_segm.hpp \
 		debug\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2019_64\bin\moc.exe
-	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include E:/Working/Source/Delta-X-Software/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -IE:/Working/Source/Delta-X-Software -IE:/Working/Source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" ImageViewer.h -o debug\moc_ImageViewer.cpp
+	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include D:/working/source/Delta-X-Software/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -ID:/working/source/Delta-X-Software -ID:/working/source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" ImageViewer.h -o debug\moc_ImageViewer.cpp
 
 debug\moc_Layer.cpp: Layer.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QFrame \
@@ -4062,7 +4012,7 @@ debug\moc_Layer.cpp: Layer.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qtouchdevice.h \
 		debug\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2019_64\bin\moc.exe
-	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include E:/Working/Source/Delta-X-Software/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -IE:/Working/Source/Delta-X-Software -IE:/Working/Source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" Layer.h -o debug\moc_Layer.cpp
+	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include D:/working/source/Delta-X-Software/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -ID:/working/source/Delta-X-Software -ID:/working/source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" Layer.h -o debug\moc_Layer.cpp
 
 debug\moc_MainWindow.cpp: MainWindow.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QMainWindow \
@@ -4701,10 +4651,6 @@ debug\moc_MainWindow.cpp: MainWindow.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QMutexLocker \
 		GcodeReference.h \
 		ui_GcodeReference.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QApplication \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QGridLayout \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QListWidget \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QTextEdit \
 		DrawingExporter.h \
 		DrawingWidget.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QLineEdit \
@@ -4808,10 +4754,11 @@ debug\moc_MainWindow.cpp: MainWindow.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QPolygonF \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QGraphicsView \
 		VersionManager.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QApplication \
 		C:\Qt\5.15.2\msvc2019_64\include\QtNetwork\QSslSocket \
 		debug\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2019_64\bin\moc.exe
-	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include E:/Working/Source/Delta-X-Software/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -IE:/Working/Source/Delta-X-Software -IE:/Working/Source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" MainWindow.h -o debug\moc_MainWindow.cpp
+	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include D:/working/source/Delta-X-Software/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -ID:/working/source/Delta-X-Software -ID:/working/source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" MainWindow.h -o debug\moc_MainWindow.cpp
 
 debug\moc_ImageProcessing.cpp: ImageProcessing.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QObject \
@@ -5095,7 +5042,7 @@ debug\moc_ImageProcessing.cpp: ImageProcessing.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QStandardItemModel \
 		debug\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2019_64\bin\moc.exe
-	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include E:/Working/Source/Delta-X-Software/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -IE:/Working/Source/Delta-X-Software -IE:/Working/Source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" ImageProcessing.h -o debug\moc_ImageProcessing.cpp
+	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include D:/working/source/Delta-X-Software/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -ID:/working/source/Delta-X-Software -ID:/working/source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" ImageProcessing.h -o debug\moc_ImageProcessing.cpp
 
 debug\moc_ObjectInfoModel.cpp: ObjectInfoModel.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QAbstractTableModel \
@@ -5172,7 +5119,7 @@ debug\moc_ObjectInfoModel.cpp: ObjectInfoModel.h \
 		ObjectInfo.h \
 		debug\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2019_64\bin\moc.exe
-	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include E:/Working/Source/Delta-X-Software/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -IE:/Working/Source/Delta-X-Software -IE:/Working/Source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" ObjectInfoModel.h -o debug\moc_ObjectInfoModel.cpp
+	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include D:/working/source/Delta-X-Software/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -ID:/working/source/Delta-X-Software -ID:/working/source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" ObjectInfoModel.h -o debug\moc_ObjectInfoModel.cpp
 
 debug\moc_ObjectVariableTable.cpp: ObjectVariableTable.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QObject \
@@ -5408,7 +5355,7 @@ debug\moc_ObjectVariableTable.cpp: ObjectVariableTable.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qscrollarea.h \
 		debug\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2019_64\bin\moc.exe
-	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include E:/Working/Source/Delta-X-Software/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -IE:/Working/Source/Delta-X-Software -IE:/Working/Source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" ObjectVariableTable.h -o debug\moc_ObjectVariableTable.cpp
+	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include D:/working/source/Delta-X-Software/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -ID:/working/source/Delta-X-Software -ID:/working/source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" ObjectVariableTable.h -o debug\moc_ObjectVariableTable.cpp
 
 debug\moc_PointTool.cpp: PointTool.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QTransform \
@@ -5597,7 +5544,7 @@ debug\moc_PointTool.cpp: PointTool.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qmath.h \
 		debug\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2019_64\bin\moc.exe
-	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include E:/Working/Source/Delta-X-Software/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -IE:/Working/Source/Delta-X-Software -IE:/Working/Source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" PointTool.h -o debug\moc_PointTool.cpp
+	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include D:/working/source/Delta-X-Software/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -ID:/working/source/Delta-X-Software -ID:/working/source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" PointTool.h -o debug\moc_PointTool.cpp
 
 debug\moc_ProjectManager.cpp: ProjectManager.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QWidget \
@@ -6231,10 +6178,6 @@ debug\moc_ProjectManager.cpp: ProjectManager.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QMutexLocker \
 		GcodeReference.h \
 		ui_GcodeReference.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QApplication \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QGridLayout \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QListWidget \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QTextEdit \
 		DrawingExporter.h \
 		DrawingWidget.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QLineEdit \
@@ -6341,7 +6284,7 @@ debug\moc_ProjectManager.cpp: ProjectManager.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QPolygonF \
 		debug\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2019_64\bin\moc.exe
-	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include E:/Working/Source/Delta-X-Software/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -IE:/Working/Source/Delta-X-Software -IE:/Working/Source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" ProjectManager.h -o debug\moc_ProjectManager.cpp
+	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include D:/working/source/Delta-X-Software/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -ID:/working/source/Delta-X-Software -ID:/working/source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" ProjectManager.h -o debug\moc_ProjectManager.cpp
 
 debug\moc_RobotWindow.cpp: RobotWindow.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QMainWindow \
@@ -6969,10 +6912,6 @@ debug\moc_RobotWindow.cpp: RobotWindow.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QPushButton \
 		GcodeReference.h \
 		ui_GcodeReference.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QApplication \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QGridLayout \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QListWidget \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QTextEdit \
 		DrawingExporter.h \
 		DrawingWidget.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QLineEdit \
@@ -7085,7 +7024,7 @@ debug\moc_RobotWindow.cpp: RobotWindow.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QFileInfo \
 		debug\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2019_64\bin\moc.exe
-	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include E:/Working/Source/Delta-X-Software/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -IE:/Working/Source/Delta-X-Software -IE:/Working/Source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" RobotWindow.h -o debug\moc_RobotWindow.cpp
+	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include D:/working/source/Delta-X-Software/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -ID:/working/source/Delta-X-Software -ID:/working/source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" RobotWindow.h -o debug\moc_RobotWindow.cpp
 
 debug\moc_SmartDialog.cpp: SmartDialog.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QWidget \
@@ -7196,7 +7135,7 @@ debug\moc_SmartDialog.cpp: SmartDialog.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qdialog.h \
 		debug\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2019_64\bin\moc.exe
-	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include E:/Working/Source/Delta-X-Software/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -IE:/Working/Source/Delta-X-Software -IE:/Working/Source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" SmartDialog.h -o debug\moc_SmartDialog.cpp
+	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include D:/working/source/Delta-X-Software/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -ID:/working/source/Delta-X-Software -ID:/working/source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" SmartDialog.h -o debug\moc_SmartDialog.cpp
 
 debug\moc_SocketConnectionManager.cpp: SocketConnectionManager.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtNetwork\QTcpServer \
@@ -7439,7 +7378,7 @@ debug\moc_SocketConnectionManager.cpp: SocketConnectionManager.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QFile \
 		debug\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2019_64\bin\moc.exe
-	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include E:/Working/Source/Delta-X-Software/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -IE:/Working/Source/Delta-X-Software -IE:/Working/Source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" SocketConnectionManager.h -o debug\moc_SocketConnectionManager.cpp
+	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include D:/working/source/Delta-X-Software/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -ID:/working/source/Delta-X-Software -ID:/working/source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" SocketConnectionManager.h -o debug\moc_SocketConnectionManager.cpp
 
 debug\moc_TabDashboard.cpp: TabDashboard.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QWidget \
@@ -8077,10 +8016,6 @@ debug\moc_TabDashboard.cpp: TabDashboard.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QMutexLocker \
 		GcodeReference.h \
 		ui_GcodeReference.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QApplication \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QGridLayout \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QListWidget \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QTextEdit \
 		DrawingExporter.h \
 		DrawingWidget.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QLineEdit \
@@ -8185,7 +8120,7 @@ debug\moc_TabDashboard.cpp: TabDashboard.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QGraphicsView \
 		debug\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2019_64\bin\moc.exe
-	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include E:/Working/Source/Delta-X-Software/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -IE:/Working/Source/Delta-X-Software -IE:/Working/Source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" TabDashboard.h -o debug\moc_TabDashboard.cpp
+	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include D:/working/source/Delta-X-Software/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -ID:/working/source/Delta-X-Software -ID:/working/source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" TabDashboard.h -o debug\moc_TabDashboard.cpp
 
 debug\moc_TaskNode.cpp: TaskNode.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QObject \
@@ -8443,7 +8378,7 @@ debug\moc_TaskNode.cpp: TaskNode.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QStandardItemModel \
 		debug\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2019_64\bin\moc.exe
-	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include E:/Working/Source/Delta-X-Software/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -IE:/Working/Source/Delta-X-Software -IE:/Working/Source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" TaskNode.h -o debug\moc_TaskNode.cpp
+	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include D:/working/source/Delta-X-Software/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -ID:/working/source/Delta-X-Software -ID:/working/source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" TaskNode.h -o debug\moc_TaskNode.cpp
 
 debug\moc_TextLayer.cpp: TextLayer.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QLineEdit \
@@ -8557,7 +8492,7 @@ debug\moc_TextLayer.cpp: TextLayer.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qtextoption.h \
 		debug\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2019_64\bin\moc.exe
-	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include E:/Working/Source/Delta-X-Software/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -IE:/Working/Source/Delta-X-Software -IE:/Working/Source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" TextLayer.h -o debug\moc_TextLayer.cpp
+	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include D:/working/source/Delta-X-Software/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -ID:/working/source/Delta-X-Software -ID:/working/source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" TextLayer.h -o debug\moc_TextLayer.cpp
 
 debug\moc_TrackingManager.cpp: TrackingManager.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QObject \
@@ -8702,7 +8637,7 @@ debug\moc_TrackingManager.cpp: TrackingManager.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QVector \
 		debug\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2019_64\bin\moc.exe
-	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include E:/Working/Source/Delta-X-Software/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -IE:/Working/Source/Delta-X-Software -IE:/Working/Source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" TrackingManager.h -o debug\moc_TrackingManager.cpp
+	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include D:/working/source/Delta-X-Software/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -ID:/working/source/Delta-X-Software -ID:/working/source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" TrackingManager.h -o debug\moc_TrackingManager.cpp
 
 debug\moc_VariableManager.cpp: VariableManager.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QSettings \
@@ -8833,7 +8768,7 @@ debug\moc_VariableManager.cpp: VariableManager.h \
 		ObjectInfo.h \
 		debug\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2019_64\bin\moc.exe
-	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include E:/Working/Source/Delta-X-Software/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -IE:/Working/Source/Delta-X-Software -IE:/Working/Source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" VariableManager.h -o debug\moc_VariableManager.cpp
+	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include D:/working/source/Delta-X-Software/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -ID:/working/source/Delta-X-Software -ID:/working/source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" VariableManager.h -o debug\moc_VariableManager.cpp
 
 debug\moc_VersionManager.cpp: VersionManager.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QWidget \
@@ -8997,7 +8932,7 @@ debug\moc_VersionManager.cpp: VersionManager.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QDebug \
 		debug\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2019_64\bin\moc.exe
-	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include E:/Working/Source/Delta-X-Software/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -IE:/Working/Source/Delta-X-Software -IE:/Working/Source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" VersionManager.h -o debug\moc_VersionManager.cpp
+	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include D:/working/source/Delta-X-Software/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -ID:/working/source/Delta-X-Software -ID:/working/source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" VersionManager.h -o debug\moc_VersionManager.cpp
 
 debug\moc_codeeditor.cpp: codeeditor.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QTextEdit \
@@ -9115,7 +9050,7 @@ debug\moc_codeeditor.cpp: codeeditor.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QObject \
 		debug\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2019_64\bin\moc.exe
-	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include E:/Working/Source/Delta-X-Software/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -IE:/Working/Source/Delta-X-Software -IE:/Working/Source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" codeeditor.h -o debug\moc_codeeditor.cpp
+	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include D:/working/source/Delta-X-Software/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -ID:/working/source/Delta-X-Software -ID:/working/source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" codeeditor.h -o debug\moc_codeeditor.cpp
 
 debug\moc_DeviceManager.cpp: device\DeviceManager.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QObject \
@@ -9284,7 +9219,7 @@ debug\moc_DeviceManager.cpp: device\DeviceManager.h \
 		device\encoder.h \
 		debug\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2019_64\bin\moc.exe
-	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include E:/Working/Source/Delta-X-Software/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -IE:/Working/Source/Delta-X-Software -IE:/Working/Source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" device\DeviceManager.h -o debug\moc_DeviceManager.cpp
+	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include D:/working/source/Delta-X-Software/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -ID:/working/source/Delta-X-Software -ID:/working/source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" device\DeviceManager.h -o debug\moc_DeviceManager.cpp
 
 debug\moc_camera.cpp: device\camera.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QObject \
@@ -9519,7 +9454,7 @@ debug\moc_camera.cpp: device\camera.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QDebug \
 		debug\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2019_64\bin\moc.exe
-	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include E:/Working/Source/Delta-X-Software/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -IE:/Working/Source/Delta-X-Software -IE:/Working/Source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" device\camera.h -o debug\moc_camera.cpp
+	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include D:/working/source/Delta-X-Software/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -ID:/working/source/Delta-X-Software -ID:/working/source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" device\camera.h -o debug\moc_camera.cpp
 
 debug\moc_conveyor.cpp: device\conveyor.h \
 		device\device.h \
@@ -9622,7 +9557,7 @@ debug\moc_conveyor.cpp: device\conveyor.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qdeadlinetimer.h \
 		debug\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2019_64\bin\moc.exe
-	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include E:/Working/Source/Delta-X-Software/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -IE:/Working/Source/Delta-X-Software -IE:/Working/Source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" device\conveyor.h -o debug\moc_conveyor.cpp
+	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include D:/working/source/Delta-X-Software/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -ID:/working/source/Delta-X-Software -ID:/working/source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" device\conveyor.h -o debug\moc_conveyor.cpp
 
 debug\moc_device.cpp: device\device.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QObject \
@@ -9724,7 +9659,7 @@ debug\moc_device.cpp: device\device.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qdeadlinetimer.h \
 		debug\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2019_64\bin\moc.exe
-	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include E:/Working/Source/Delta-X-Software/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -IE:/Working/Source/Delta-X-Software -IE:/Working/Source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" device\device.h -o debug\moc_device.cpp
+	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include D:/working/source/Delta-X-Software/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -ID:/working/source/Delta-X-Software -ID:/working/source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" device\device.h -o debug\moc_device.cpp
 
 debug\moc_encoder.cpp: device\encoder.h \
 		device\device.h \
@@ -9827,7 +9762,7 @@ debug\moc_encoder.cpp: device\encoder.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qdeadlinetimer.h \
 		debug\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2019_64\bin\moc.exe
-	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include E:/Working/Source/Delta-X-Software/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -IE:/Working/Source/Delta-X-Software -IE:/Working/Source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" device\encoder.h -o debug\moc_encoder.cpp
+	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include D:/working/source/Delta-X-Software/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -ID:/working/source/Delta-X-Software -ID:/working/source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" device\encoder.h -o debug\moc_encoder.cpp
 
 debug\moc_robot.cpp: device\robot.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QObject \
@@ -9992,7 +9927,7 @@ debug\moc_robot.cpp: device\robot.h \
 		ObjectInfo.h \
 		debug\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2019_64\bin\moc.exe
-	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include E:/Working/Source/Delta-X-Software/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -IE:/Working/Source/Delta-X-Software -IE:/Working/Source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" device\robot.h -o debug\moc_robot.cpp
+	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include D:/working/source/Delta-X-Software/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -ID:/working/source/Delta-X-Software -ID:/working/source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" device\robot.h -o debug\moc_robot.cpp
 
 debug\moc_slider.cpp: device\slider.h \
 		device\device.h \
@@ -10102,7 +10037,7 @@ debug\moc_slider.cpp: device\slider.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qtgui-config.h \
 		debug\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2019_64\bin\moc.exe
-	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include E:/Working/Source/Delta-X-Software/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -IE:/Working/Source/Delta-X-Software -IE:/Working/Source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" device\slider.h -o debug\moc_slider.cpp
+	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include D:/working/source/Delta-X-Software/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -ID:/working/source/Delta-X-Software -ID:/working/source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" device\slider.h -o debug\moc_slider.cpp
 
 debug\moc_geisttextedit.cpp: geisttextedit.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QPlainTextEdit \
@@ -10254,7 +10189,7 @@ debug\moc_geisttextedit.cpp: geisttextedit.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QTextBlockFormat \
 		debug\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2019_64\bin\moc.exe
-	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include E:/Working/Source/Delta-X-Software/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -IE:/Working/Source/Delta-X-Software -IE:/Working/Source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" geisttextedit.h -o debug\moc_geisttextedit.cpp
+	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include D:/working/source/Delta-X-Software/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -ID:/working/source/Delta-X-Software -ID:/working/source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" geisttextedit.h -o debug\moc_geisttextedit.cpp
 
 debug\moc_global.cpp: global.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QObject \
@@ -10364,7 +10299,7 @@ debug\moc_global.cpp: global.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QMap \
 		debug\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2019_64\bin\moc.exe
-	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include E:/Working/Source/Delta-X-Software/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -IE:/Working/Source/Delta-X-Software -IE:/Working/Source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" global.h -o debug\moc_global.cpp
+	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include D:/working/source/Delta-X-Software/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -ID:/working/source/Delta-X-Software -ID:/working/source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" global.h -o debug\moc_global.cpp
 
 debug\moc_highlighter.cpp: highlighter.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QSyntaxHighlighter \
@@ -10476,7 +10411,7 @@ debug\moc_highlighter.cpp: highlighter.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QTextCharFormat \
 		debug\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2019_64\bin\moc.exe
-	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include E:/Working/Source/Delta-X-Software/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -IE:/Working/Source/Delta-X-Software -IE:/Working/Source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" highlighter.h -o debug\moc_highlighter.cpp
+	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include D:/working/source/Delta-X-Software/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -ID:/working/source/Delta-X-Software -ID:/working/source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" highlighter.h -o debug\moc_highlighter.cpp
 
 debug\moc_GcodeReference.cpp: GcodeReference.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QWidget \
@@ -10583,51 +10518,9 @@ debug\moc_GcodeReference.cpp: GcodeReference.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qvector2d.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qtouchdevice.h \
 		ui_GcodeReference.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QVariant \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QApplication \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qapplication.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qcoreapplication.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qeventloop.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qdesktopwidget.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qguiapplication.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qinputmethod.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QGridLayout \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qgridlayout.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qlayout.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qlayoutitem.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qboxlayout.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QHBoxLayout \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QListWidget \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qlistwidget.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qlistview.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qabstractitemview.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qabstractscrollarea.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qframe.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qabstractitemmodel.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qitemselectionmodel.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qabstractitemdelegate.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qstyleoption.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qabstractspinbox.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qvalidator.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qregularexpression.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qicon.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qslider.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qabstractslider.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qstyle.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qtabbar.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qtabwidget.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qrubberband.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QTextEdit \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qtextedit.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qtextdocument.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qtextoption.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qtextcursor.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qtextformat.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qpen.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QVBoxLayout \
 		debug\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2019_64\bin\moc.exe
-	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include E:/Working/Source/Delta-X-Software/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -IE:/Working/Source/Delta-X-Software -IE:/Working/Source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" GcodeReference.h -o debug\moc_GcodeReference.cpp
+	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include D:/working/source/Delta-X-Software/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -ID:/working/source/Delta-X-Software -ID:/working/source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" GcodeReference.h -o debug\moc_GcodeReference.cpp
 
 debug\moc_DeltaXPlugin.cpp: sdk\DeltaXPlugin.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QObject \
@@ -10767,7 +10660,7 @@ debug\moc_DeltaXPlugin.cpp: sdk\DeltaXPlugin.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qsettings.h \
 		debug\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2019_64\bin\moc.exe
-	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include E:/Working/Source/Delta-X-Software/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -IE:/Working/Source/Delta-X-Software -IE:/Working/Source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" sdk\DeltaXPlugin.h -o debug\moc_DeltaXPlugin.cpp
+	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include D:/working/source/Delta-X-Software/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -ID:/working/source/Delta-X-Software -ID:/working/source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" sdk\DeltaXPlugin.h -o debug\moc_DeltaXPlugin.cpp
 
 debug\moc_testwindow.cpp: testwindow.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QMainWindow \
@@ -10901,7 +10794,7 @@ debug\moc_testwindow.cpp: testwindow.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QImage \
 		debug\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2019_64\bin\moc.exe
-	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include E:/Working/Source/Delta-X-Software/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -IE:/Working/Source/Delta-X-Software -IE:/Working/Source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" testwindow.h -o debug\moc_testwindow.cpp
+	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include D:/working/source/Delta-X-Software/debug/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -ID:/working/source/Delta-X-Software -ID:/working/source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" testwindow.h -o debug\moc_testwindow.cpp
 
 compiler_moc_objc_header_make_all:
 compiler_moc_objc_header_clean:
@@ -12523,10 +12416,6 @@ debug\main.obj: main.cpp RobotWindow.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QPushButton \
 		GcodeReference.h \
 		ui_GcodeReference.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QApplication \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QGridLayout \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QListWidget \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QTextEdit \
 		DrawingExporter.h \
 		DrawingWidget.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QLineEdit \
@@ -12641,6 +12530,7 @@ debug\main.obj: main.cpp RobotWindow.h \
 		Authority.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QGraphicsView \
 		VersionManager.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QApplication \
 		C:\Qt\5.15.2\msvc2019_64\include\QtNetwork\QSslSocket \
 		AccountWindow.h \
 		testwindow.h \
@@ -12757,41 +12647,7 @@ debug\AccountWindow.obj: AccountWindow.cpp AccountWindow.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qtouchdevice.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qtabwidget.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qicon.h \
-		ui_AccountWindow.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QVariant \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QAction \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qaction.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qactiongroup.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QApplication \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qapplication.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qcoreapplication.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qeventloop.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qdesktopwidget.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qguiapplication.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qinputmethod.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QFrame \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qframe.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QMenu \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qmenu.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QMenuBar \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qmenubar.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QPushButton \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qpushbutton.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qabstractbutton.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QRadioButton \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qradiobutton.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QSplitter \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qsplitter.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QStatusBar \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qstatusbar.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QToolButton \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qtoolbutton.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QVBoxLayout \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qboxlayout.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qlayout.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qlayoutitem.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qgridlayout.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QWidget
+		ui_AccountWindow.h
 
 debug\Authority.obj: Authority.cpp Authority.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QObject \
@@ -13427,10 +13283,6 @@ debug\Authority.obj: Authority.cpp Authority.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QMutexLocker \
 		GcodeReference.h \
 		ui_GcodeReference.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QApplication \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QGridLayout \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QListWidget \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QTextEdit \
 		DrawingExporter.h \
 		DrawingWidget.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QLineEdit \
@@ -14413,40 +14265,7 @@ debug\FilterWindow.obj: FilterWindow.cpp FilterWindow.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QPushButton \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qpushbutton.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qabstractbutton.h \
-		ui_FilterWindow.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QApplication \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qapplication.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qcoreapplication.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qeventloop.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qdesktopwidget.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qguiapplication.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qinputmethod.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QCheckBox \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qcheckbox.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QComboBox \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qcombobox.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qabstractitemdelegate.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qstyleoption.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qabstractspinbox.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qvalidator.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qregularexpression.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qstyle.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qtabbar.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qtabwidget.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qrubberband.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QFrame \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QGridLayout \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qgridlayout.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qlayout.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qlayoutitem.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qboxlayout.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QGroupBox \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qgroupbox.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QHBoxLayout \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QLabel \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QSlider \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QSpacerItem \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QVBoxLayout
+		ui_FilterWindow.h
 
 debug\GcodeHighlighter.obj: GcodeHighlighter.cpp GcodeHighlighter.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QSyntaxHighlighter \
@@ -14664,49 +14483,7 @@ debug\GcodeReference.obj: GcodeReference.cpp GcodeReference.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qfiledevice.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qvector2d.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qtouchdevice.h \
-		ui_GcodeReference.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QVariant \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QApplication \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qapplication.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qcoreapplication.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qeventloop.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qdesktopwidget.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qguiapplication.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qinputmethod.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QGridLayout \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qgridlayout.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qlayout.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qlayoutitem.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qboxlayout.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QHBoxLayout \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QListWidget \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qlistwidget.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qlistview.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qabstractitemview.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qabstractscrollarea.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qframe.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qabstractitemmodel.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qitemselectionmodel.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qabstractitemdelegate.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qstyleoption.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qabstractspinbox.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qvalidator.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qregularexpression.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qicon.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qslider.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qabstractslider.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qstyle.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qtabbar.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qtabwidget.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qrubberband.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QTextEdit \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qtextedit.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qtextdocument.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qtextoption.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qtextcursor.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qtextformat.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qpen.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QVBoxLayout
+		ui_GcodeReference.h
 
 debug\GcodeScript.obj: GcodeScript.cpp GcodeScript.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QObject \
@@ -15346,10 +15123,6 @@ debug\GcodeScript.obj: GcodeScript.cpp GcodeScript.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QMutexLocker \
 		GcodeReference.h \
 		ui_GcodeReference.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QApplication \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QGridLayout \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QListWidget \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QTextEdit \
 		DrawingExporter.h \
 		DrawingWidget.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QLineEdit \
@@ -17058,10 +16831,6 @@ debug\MainWindow.obj: MainWindow.cpp MainWindow.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QMutexLocker \
 		GcodeReference.h \
 		ui_GcodeReference.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QApplication \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QGridLayout \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QListWidget \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QTextEdit \
 		DrawingExporter.h \
 		DrawingWidget.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QLineEdit \
@@ -17165,19 +16934,9 @@ debug\MainWindow.obj: MainWindow.cpp MainWindow.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QPolygonF \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QGraphicsView \
 		VersionManager.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QApplication \
 		C:\Qt\5.15.2\msvc2019_64\include\QtNetwork\QSslSocket \
-		ui_MainWindow.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QIcon \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QAction \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QFrame \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QGroupBox \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QHeaderView \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QPlainTextEdit \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QScrollArea \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QSpacerItem \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QTableWidget \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QTreeView \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QTreeWidget
+		ui_MainWindow.h
 
 debug\Object.obj: Object.cpp 
 
@@ -18236,10 +17995,6 @@ debug\ProjectManager.obj: ProjectManager.cpp ProjectManager.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QMutexLocker \
 		GcodeReference.h \
 		ui_GcodeReference.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QApplication \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QGridLayout \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QListWidget \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QTextEdit \
 		DrawingExporter.h \
 		DrawingWidget.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QLineEdit \
@@ -18970,10 +18725,6 @@ debug\RobotWindow.obj: RobotWindow.cpp RobotWindow.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QPushButton \
 		GcodeReference.h \
 		ui_GcodeReference.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QApplication \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QGridLayout \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QListWidget \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QTextEdit \
 		DrawingExporter.h \
 		DrawingWidget.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QLineEdit \
@@ -19084,27 +18835,12 @@ debug\RobotWindow.obj: RobotWindow.cpp RobotWindow.h \
 		PointTool.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QPolygonF \
 		ui_RobotWindow.h \
-		ImageViewer.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QGraphicsView \
-		C:\Qt\5.15.2\msvc2019_64\include\QtPrintSupport\qtprintsupportglobal.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtPrintSupport\qtprintsupport-config.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QIcon \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QAction \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QFrame \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QGroupBox \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QHeaderView \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QScrollArea \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QSlider \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QSpacerItem \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QSplitter \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QTableView \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QTreeView \
-		codeeditor.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QTextDocument \
 		MainWindow.h \
 		TabDashboard.h \
 		Authority.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QGraphicsView \
 		VersionManager.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QApplication \
 		C:\Qt\5.15.2\msvc2019_64\include\QtNetwork\QSslSocket
 
 debug\SmartDialog.obj: SmartDialog.cpp SmartDialog.h \
@@ -20088,10 +19824,6 @@ debug\SoftwareManager.obj: SoftwareManager.cpp SoftwareManager.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QMutexLocker \
 		GcodeReference.h \
 		ui_GcodeReference.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QApplication \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QGridLayout \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QListWidget \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QTextEdit \
 		DrawingExporter.h \
 		DrawingWidget.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QLineEdit \
@@ -20199,6 +19931,7 @@ debug\SoftwareManager.obj: SoftwareManager.cpp SoftwareManager.h \
 		Authority.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QGraphicsView \
 		VersionManager.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QApplication \
 		C:\Qt\5.15.2\msvc2019_64\include\QtNetwork\QSslSocket
 
 debug\TabDashboard.obj: TabDashboard.cpp TabDashboard.h \
@@ -20837,10 +20570,6 @@ debug\TabDashboard.obj: TabDashboard.cpp TabDashboard.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QMutexLocker \
 		GcodeReference.h \
 		ui_GcodeReference.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QApplication \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QGridLayout \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QListWidget \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QTextEdit \
 		DrawingExporter.h \
 		DrawingWidget.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QLineEdit \
@@ -23046,10 +22775,6 @@ debug\UnityTool.obj: UnityTool.cpp UnityTool.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QPushButton \
 		GcodeReference.h \
 		ui_GcodeReference.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QApplication \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QGridLayout \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QListWidget \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QTextEdit \
 		DrawingExporter.h \
 		DrawingWidget.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QLineEdit \

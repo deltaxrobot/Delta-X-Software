@@ -1687,8 +1687,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
                               <rect>
                                <x>0</x>
                                <y>0</y>
-                               <width>312</width>
-                               <height>145</height>
+                               <width>408</width>
+                               <height>135</height>
                               </rect>
                              </property>
                              <property name="styleSheet">
@@ -1865,7 +1865,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
                    <rect>
                     <x>0</x>
                     <y>0</y>
-                    <width>532</width>
+                    <width>590</width>
                     <height>2900</height>
                    </rect>
                   </property>
@@ -5690,7 +5690,7 @@ QFrame
                    <rect>
                     <x>0</x>
                     <y>0</y>
-                    <width>510</width>
+                    <width>572</width>
                     <height>1900</height>
                    </rect>
                   </property>
@@ -7583,7 +7583,7 @@ padding: 5px;</string>
                    <rect>
                     <x>0</x>
                     <y>0</y>
-                    <width>510</width>
+                    <width>572</width>
                     <height>1600</height>
                    </rect>
                   </property>
@@ -9556,15 +9556,15 @@ QLabel
                   <property name="geometry">
                    <rect>
                     <x>0</x>
-                    <y>0</y>
-                    <width>625</width>
-                    <height>1500</height>
+                    <y>-1254</y>
+                    <width>554</width>
+                    <height>2000</height>
                    </rect>
                   </property>
                   <property name="minimumSize">
                    <size>
                     <width>0</width>
-                    <height>1500</height>
+                    <height>2000</height>
                    </size>
                   </property>
                   <property name="maximumSize">
@@ -12383,7 +12383,7 @@ QGroupBox
                           </widget>
                          </item>
                          <item>
-                          <widget class="QGroupBox" name="gbOutput">
+                          <widget class="QGroupBox" name="gbOutputXS">
                            <property name="minimumSize">
                             <size>
                              <width>0</width>
@@ -12397,7 +12397,7 @@ QGroupBox
                             </font>
                            </property>
                            <property name="title">
-                            <string>Delta X S Output</string>
+                            <string>Delta X S</string>
                            </property>
                            <layout class="QVBoxLayout" name="verticalLayout_42">
                             <property name="topMargin">
@@ -12794,6 +12794,243 @@ QGroupBox
                            </layout>
                           </widget>
                          </item>
+                         <item>
+                          <widget class="QGroupBox" name="gbOutputX3">
+                           <property name="minimumSize">
+                            <size>
+                             <width>0</width>
+                             <height>0</height>
+                            </size>
+                           </property>
+                           <property name="font">
+                            <font>
+                             <pointsize>9</pointsize>
+                             <bold>false</bold>
+                            </font>
+                           </property>
+                           <property name="title">
+                            <string>Delta X 3</string>
+                           </property>
+                           <layout class="QVBoxLayout" name="verticalLayout_45">
+                            <property name="topMargin">
+                             <number>20</number>
+                            </property>
+                            <item>
+                             <widget class="QWidget" name="wgDigitalOutput_2" native="true">
+                              <property name="minimumSize">
+                               <size>
+                                <width>0</width>
+                                <height>0</height>
+                               </size>
+                              </property>
+                              <layout class="QGridLayout" name="gridLayout_35">
+                               <item row="1" column="6">
+                                <widget class="QLabel" name="label_107">
+                                 <property name="minimumSize">
+                                  <size>
+                                   <width>30</width>
+                                   <height>0</height>
+                                  </size>
+                                 </property>
+                                 <property name="maximumSize">
+                                  <size>
+                                   <width>16777215</width>
+                                   <height>16777215</height>
+                                  </size>
+                                 </property>
+                                 <property name="text">
+                                  <string>D2</string>
+                                 </property>
+                                </widget>
+                               </item>
+                               <item row="1" column="7">
+                                <widget class="QCheckBox" name="cbX3D2">
+                                 <property name="minimumSize">
+                                  <size>
+                                   <width>40</width>
+                                   <height>0</height>
+                                  </size>
+                                 </property>
+                                 <property name="text">
+                                  <string/>
+                                 </property>
+                                </widget>
+                               </item>
+                               <item row="1" column="9">
+                                <widget class="QCheckBox" name="cbX3D3">
+                                 <property name="minimumSize">
+                                  <size>
+                                   <width>40</width>
+                                   <height>0</height>
+                                  </size>
+                                 </property>
+                                 <property name="text">
+                                  <string/>
+                                 </property>
+                                </widget>
+                               </item>
+                               <item row="1" column="14">
+                                <spacer name="horizontalSpacer_72">
+                                 <property name="orientation">
+                                  <enum>Qt::Horizontal</enum>
+                                 </property>
+                                 <property name="sizeHint" stdset="0">
+                                  <size>
+                                   <width>40</width>
+                                   <height>20</height>
+                                  </size>
+                                 </property>
+                                </spacer>
+                               </item>
+                               <item row="1" column="3">
+                                <widget class="QLabel" name="label_57">
+                                 <property name="minimumSize">
+                                  <size>
+                                   <width>30</width>
+                                   <height>0</height>
+                                  </size>
+                                 </property>
+                                 <property name="maximumSize">
+                                  <size>
+                                   <width>16777215</width>
+                                   <height>16777215</height>
+                                  </size>
+                                 </property>
+                                 <property name="text">
+                                  <string>D1</string>
+                                 </property>
+                                </widget>
+                               </item>
+                               <item row="1" column="8">
+                                <widget class="QLabel" name="label_65">
+                                 <property name="minimumSize">
+                                  <size>
+                                   <width>30</width>
+                                   <height>0</height>
+                                  </size>
+                                 </property>
+                                 <property name="maximumSize">
+                                  <size>
+                                   <width>16777215</width>
+                                   <height>16777215</height>
+                                  </size>
+                                 </property>
+                                 <property name="text">
+                                  <string>D3</string>
+                                 </property>
+                                </widget>
+                               </item>
+                               <item row="1" column="5">
+                                <widget class="QCheckBox" name="cbX3D1">
+                                 <property name="minimumSize">
+                                  <size>
+                                   <width>40</width>
+                                   <height>0</height>
+                                  </size>
+                                 </property>
+                                 <property name="text">
+                                  <string/>
+                                 </property>
+                                </widget>
+                               </item>
+                               <item row="1" column="1">
+                                <widget class="QLabel" name="label_52">
+                                 <property name="minimumSize">
+                                  <size>
+                                   <width>30</width>
+                                   <height>0</height>
+                                  </size>
+                                 </property>
+                                 <property name="maximumSize">
+                                  <size>
+                                   <width>16777215</width>
+                                   <height>16777215</height>
+                                  </size>
+                                 </property>
+                                 <property name="text">
+                                  <string>D0</string>
+                                 </property>
+                                </widget>
+                               </item>
+                               <item row="1" column="0">
+                                <widget class="QLabel" name="label_108">
+                                 <property name="minimumSize">
+                                  <size>
+                                   <width>70</width>
+                                   <height>0</height>
+                                  </size>
+                                 </property>
+                                 <property name="font">
+                                  <font>
+                                   <bold>false</bold>
+                                  </font>
+                                 </property>
+                                 <property name="text">
+                                  <string>Digital</string>
+                                 </property>
+                                </widget>
+                               </item>
+                               <item row="1" column="2">
+                                <widget class="QCheckBox" name="cbX3D0">
+                                 <property name="minimumSize">
+                                  <size>
+                                   <width>40</width>
+                                   <height>0</height>
+                                  </size>
+                                 </property>
+                                 <property name="text">
+                                  <string/>
+                                 </property>
+                                </widget>
+                               </item>
+                               <item row="0" column="0">
+                                <widget class="QPushButton" name="pbPumpX3">
+                                 <property name="minimumSize">
+                                  <size>
+                                   <width>100</width>
+                                   <height>30</height>
+                                  </size>
+                                 </property>
+                                 <property name="autoFillBackground">
+                                  <bool>false</bool>
+                                 </property>
+                                 <property name="text">
+                                  <string>  Vacuum</string>
+                                 </property>
+                                 <property name="icon">
+                                  <iconset resource="resource.qrc">
+                                   <normaloff>:/icon/Toggle Off_16px.png</normaloff>
+                                   <normalon>:/icon/Toggle On_16px.png</normalon>:/icon/Toggle Off_16px.png</iconset>
+                                 </property>
+                                 <property name="iconSize">
+                                  <size>
+                                   <width>16</width>
+                                   <height>16</height>
+                                  </size>
+                                 </property>
+                                 <property name="checkable">
+                                  <bool>true</bool>
+                                 </property>
+                                 <property name="checked">
+                                  <bool>false</bool>
+                                 </property>
+                                 <property name="autoDefault">
+                                  <bool>false</bool>
+                                 </property>
+                                 <property name="default">
+                                  <bool>false</bool>
+                                 </property>
+                                 <property name="flat">
+                                  <bool>false</bool>
+                                 </property>
+                                </widget>
+                               </item>
+                              </layout>
+                             </widget>
+                            </item>
+                           </layout>
+                          </widget>
+                         </item>
                         </layout>
                        </widget>
                       </item>
@@ -12928,7 +13165,7 @@ QGroupBox
                         <property name="frameShadow">
                          <enum>QFrame::Raised</enum>
                         </property>
-                        <layout class="QHBoxLayout" name="horizontalLayout_83">
+                        <layout class="QVBoxLayout" name="verticalLayout_11">
                          <item>
                           <widget class="QFrame" name="fRobotPosition_4">
                            <property name="minimumSize">
@@ -12960,7 +13197,7 @@ QGroupBox
                              <number>7</number>
                             </property>
                             <item row="0" column="0">
-                             <widget class="QGroupBox" name="gbInput">
+                             <widget class="QGroupBox" name="gbInputXS">
                               <property name="minimumSize">
                                <size>
                                 <width>0</width>
@@ -12974,7 +13211,7 @@ QGroupBox
                                </font>
                               </property>
                               <property name="title">
-                               <string>Delta X S Input</string>
+                               <string>Delta X S</string>
                               </property>
                               <layout class="QVBoxLayout" name="verticalLayout_43">
                                <property name="topMargin">
@@ -13899,6 +14136,714 @@ QGroupBox
                                </item>
                               </layout>
                              </widget>
+                            </item>
+                           </layout>
+                          </widget>
+                         </item>
+                         <item>
+                          <widget class="QGroupBox" name="gbInputX3">
+                           <property name="minimumSize">
+                            <size>
+                             <width>0</width>
+                             <height>200</height>
+                            </size>
+                           </property>
+                           <property name="font">
+                            <font>
+                             <pointsize>9</pointsize>
+                             <bold>false</bold>
+                            </font>
+                           </property>
+                           <property name="title">
+                            <string>Delta X 3</string>
+                           </property>
+                           <layout class="QVBoxLayout" name="verticalLayout_50">
+                            <property name="topMargin">
+                             <number>20</number>
+                            </property>
+                            <item>
+                             <layout class="QHBoxLayout" name="horizontalLayout_60">
+                              <item>
+                               <widget class="QPushButton" name="pbReadI0X3">
+                                <property name="minimumSize">
+                                 <size>
+                                  <width>50</width>
+                                  <height>0</height>
+                                 </size>
+                                </property>
+                                <property name="text">
+                                 <string>read</string>
+                                </property>
+                               </widget>
+                              </item>
+                              <item>
+                               <widget class="QLabel" name="label_111">
+                                <property name="minimumSize">
+                                 <size>
+                                  <width>30</width>
+                                  <height>0</height>
+                                 </size>
+                                </property>
+                                <property name="maximumSize">
+                                 <size>
+                                  <width>25</width>
+                                  <height>16777215</height>
+                                 </size>
+                                </property>
+                                <property name="font">
+                                 <font>
+                                  <bold>false</bold>
+                                 </font>
+                                </property>
+                                <property name="text">
+                                 <string>I0</string>
+                                </property>
+                               </widget>
+                              </item>
+                              <item>
+                               <spacer name="horizontalSpacer_101">
+                                <property name="orientation">
+                                 <enum>Qt::Horizontal</enum>
+                                </property>
+                                <property name="sizeType">
+                                 <enum>QSizePolicy::Maximum</enum>
+                                </property>
+                                <property name="sizeHint" stdset="0">
+                                 <size>
+                                  <width>40</width>
+                                  <height>20</height>
+                                 </size>
+                                </property>
+                               </spacer>
+                              </item>
+                              <item>
+                               <widget class="QLabel" name="lbI0ValueX3">
+                                <property name="text">
+                                 <string>null</string>
+                                </property>
+                               </widget>
+                              </item>
+                              <item>
+                               <spacer name="horizontalSpacer_104">
+                                <property name="orientation">
+                                 <enum>Qt::Horizontal</enum>
+                                </property>
+                                <property name="sizeType">
+                                 <enum>QSizePolicy::Maximum</enum>
+                                </property>
+                                <property name="sizeHint" stdset="0">
+                                 <size>
+                                  <width>40</width>
+                                  <height>20</height>
+                                 </size>
+                                </property>
+                               </spacer>
+                              </item>
+                              <item>
+                               <widget class="QCheckBox" name="cbToggle0X3">
+                                <property name="minimumSize">
+                                 <size>
+                                  <width>110</width>
+                                  <height>0</height>
+                                 </size>
+                                </property>
+                                <property name="maximumSize">
+                                 <size>
+                                  <width>110</width>
+                                  <height>16777215</height>
+                                 </size>
+                                </property>
+                                <property name="toolTip">
+                                 <string>The robot will respond when the value of digital input pin changes</string>
+                                </property>
+                                <property name="text">
+                                 <string>wait toggle</string>
+                                </property>
+                               </widget>
+                              </item>
+                              <item>
+                               <spacer name="horizontalSpacer_105">
+                                <property name="orientation">
+                                 <enum>Qt::Horizontal</enum>
+                                </property>
+                                <property name="sizeHint" stdset="0">
+                                 <size>
+                                  <width>40</width>
+                                  <height>20</height>
+                                 </size>
+                                </property>
+                               </spacer>
+                              </item>
+                             </layout>
+                            </item>
+                            <item>
+                             <layout class="QHBoxLayout" name="horizontalLayout_61">
+                              <item>
+                               <widget class="QPushButton" name="pbReadI1X3">
+                                <property name="minimumSize">
+                                 <size>
+                                  <width>50</width>
+                                  <height>0</height>
+                                 </size>
+                                </property>
+                                <property name="text">
+                                 <string>read</string>
+                                </property>
+                               </widget>
+                              </item>
+                              <item>
+                               <widget class="QLabel" name="label_112">
+                                <property name="minimumSize">
+                                 <size>
+                                  <width>30</width>
+                                  <height>0</height>
+                                 </size>
+                                </property>
+                                <property name="maximumSize">
+                                 <size>
+                                  <width>25</width>
+                                  <height>16777215</height>
+                                 </size>
+                                </property>
+                                <property name="font">
+                                 <font>
+                                  <bold>false</bold>
+                                 </font>
+                                </property>
+                                <property name="text">
+                                 <string>I1</string>
+                                </property>
+                               </widget>
+                              </item>
+                              <item>
+                               <spacer name="horizontalSpacer_110">
+                                <property name="orientation">
+                                 <enum>Qt::Horizontal</enum>
+                                </property>
+                                <property name="sizeType">
+                                 <enum>QSizePolicy::Maximum</enum>
+                                </property>
+                                <property name="sizeHint" stdset="0">
+                                 <size>
+                                  <width>40</width>
+                                  <height>20</height>
+                                 </size>
+                                </property>
+                               </spacer>
+                              </item>
+                              <item>
+                               <widget class="QLabel" name="lbI1ValueX3">
+                                <property name="text">
+                                 <string>null</string>
+                                </property>
+                               </widget>
+                              </item>
+                              <item>
+                               <spacer name="horizontalSpacer_111">
+                                <property name="orientation">
+                                 <enum>Qt::Horizontal</enum>
+                                </property>
+                                <property name="sizeType">
+                                 <enum>QSizePolicy::Maximum</enum>
+                                </property>
+                                <property name="sizeHint" stdset="0">
+                                 <size>
+                                  <width>40</width>
+                                  <height>20</height>
+                                 </size>
+                                </property>
+                               </spacer>
+                              </item>
+                              <item>
+                               <widget class="QCheckBox" name="cbToggle1X3">
+                                <property name="minimumSize">
+                                 <size>
+                                  <width>110</width>
+                                  <height>0</height>
+                                 </size>
+                                </property>
+                                <property name="maximumSize">
+                                 <size>
+                                  <width>110</width>
+                                  <height>16777215</height>
+                                 </size>
+                                </property>
+                                <property name="toolTip">
+                                 <string>The robot will respond when the value of digital input pin changes</string>
+                                </property>
+                                <property name="text">
+                                 <string>wait toggle</string>
+                                </property>
+                               </widget>
+                              </item>
+                              <item>
+                               <spacer name="horizontalSpacer_112">
+                                <property name="orientation">
+                                 <enum>Qt::Horizontal</enum>
+                                </property>
+                                <property name="sizeHint" stdset="0">
+                                 <size>
+                                  <width>40</width>
+                                  <height>20</height>
+                                 </size>
+                                </property>
+                               </spacer>
+                              </item>
+                             </layout>
+                            </item>
+                            <item>
+                             <layout class="QHBoxLayout" name="horizontalLayout_62">
+                              <item>
+                               <widget class="QPushButton" name="pbReadI2X3">
+                                <property name="minimumSize">
+                                 <size>
+                                  <width>50</width>
+                                  <height>0</height>
+                                 </size>
+                                </property>
+                                <property name="text">
+                                 <string>read</string>
+                                </property>
+                               </widget>
+                              </item>
+                              <item>
+                               <widget class="QLabel" name="label_113">
+                                <property name="minimumSize">
+                                 <size>
+                                  <width>30</width>
+                                  <height>0</height>
+                                 </size>
+                                </property>
+                                <property name="maximumSize">
+                                 <size>
+                                  <width>25</width>
+                                  <height>16777215</height>
+                                 </size>
+                                </property>
+                                <property name="font">
+                                 <font>
+                                  <bold>false</bold>
+                                 </font>
+                                </property>
+                                <property name="text">
+                                 <string>I2</string>
+                                </property>
+                               </widget>
+                              </item>
+                              <item>
+                               <spacer name="horizontalSpacer_119">
+                                <property name="orientation">
+                                 <enum>Qt::Horizontal</enum>
+                                </property>
+                                <property name="sizeType">
+                                 <enum>QSizePolicy::Maximum</enum>
+                                </property>
+                                <property name="sizeHint" stdset="0">
+                                 <size>
+                                  <width>40</width>
+                                  <height>20</height>
+                                 </size>
+                                </property>
+                               </spacer>
+                              </item>
+                              <item>
+                               <widget class="QLabel" name="lbI2ValueX3">
+                                <property name="text">
+                                 <string>null</string>
+                                </property>
+                               </widget>
+                              </item>
+                              <item>
+                               <spacer name="horizontalSpacer_120">
+                                <property name="orientation">
+                                 <enum>Qt::Horizontal</enum>
+                                </property>
+                                <property name="sizeType">
+                                 <enum>QSizePolicy::Maximum</enum>
+                                </property>
+                                <property name="sizeHint" stdset="0">
+                                 <size>
+                                  <width>40</width>
+                                  <height>20</height>
+                                 </size>
+                                </property>
+                               </spacer>
+                              </item>
+                              <item>
+                               <widget class="QCheckBox" name="cbToggle2X3">
+                                <property name="minimumSize">
+                                 <size>
+                                  <width>110</width>
+                                  <height>0</height>
+                                 </size>
+                                </property>
+                                <property name="maximumSize">
+                                 <size>
+                                  <width>110</width>
+                                  <height>16777215</height>
+                                 </size>
+                                </property>
+                                <property name="toolTip">
+                                 <string>The robot will respond when the value of digital input pin changes</string>
+                                </property>
+                                <property name="text">
+                                 <string>wait toggle</string>
+                                </property>
+                               </widget>
+                              </item>
+                              <item>
+                               <spacer name="horizontalSpacer_121">
+                                <property name="orientation">
+                                 <enum>Qt::Horizontal</enum>
+                                </property>
+                                <property name="sizeHint" stdset="0">
+                                 <size>
+                                  <width>40</width>
+                                  <height>20</height>
+                                 </size>
+                                </property>
+                               </spacer>
+                              </item>
+                             </layout>
+                            </item>
+                            <item>
+                             <layout class="QHBoxLayout" name="horizontalLayout_63">
+                              <item>
+                               <widget class="QPushButton" name="pbReadI3X3">
+                                <property name="minimumSize">
+                                 <size>
+                                  <width>50</width>
+                                  <height>0</height>
+                                 </size>
+                                </property>
+                                <property name="text">
+                                 <string>read</string>
+                                </property>
+                               </widget>
+                              </item>
+                              <item>
+                               <widget class="QLabel" name="label_118">
+                                <property name="minimumSize">
+                                 <size>
+                                  <width>30</width>
+                                  <height>0</height>
+                                 </size>
+                                </property>
+                                <property name="maximumSize">
+                                 <size>
+                                  <width>25</width>
+                                  <height>16777215</height>
+                                 </size>
+                                </property>
+                                <property name="font">
+                                 <font>
+                                  <bold>false</bold>
+                                 </font>
+                                </property>
+                                <property name="text">
+                                 <string>I3</string>
+                                </property>
+                               </widget>
+                              </item>
+                              <item>
+                               <spacer name="horizontalSpacer_123">
+                                <property name="orientation">
+                                 <enum>Qt::Horizontal</enum>
+                                </property>
+                                <property name="sizeType">
+                                 <enum>QSizePolicy::Maximum</enum>
+                                </property>
+                                <property name="sizeHint" stdset="0">
+                                 <size>
+                                  <width>40</width>
+                                  <height>20</height>
+                                 </size>
+                                </property>
+                               </spacer>
+                              </item>
+                              <item>
+                               <widget class="QLabel" name="lbI3ValueX3">
+                                <property name="text">
+                                 <string>null</string>
+                                </property>
+                               </widget>
+                              </item>
+                              <item>
+                               <spacer name="horizontalSpacer_124">
+                                <property name="orientation">
+                                 <enum>Qt::Horizontal</enum>
+                                </property>
+                                <property name="sizeType">
+                                 <enum>QSizePolicy::Maximum</enum>
+                                </property>
+                                <property name="sizeHint" stdset="0">
+                                 <size>
+                                  <width>40</width>
+                                  <height>20</height>
+                                 </size>
+                                </property>
+                               </spacer>
+                              </item>
+                              <item>
+                               <widget class="QCheckBox" name="cbToggle3X3">
+                                <property name="minimumSize">
+                                 <size>
+                                  <width>110</width>
+                                  <height>0</height>
+                                 </size>
+                                </property>
+                                <property name="maximumSize">
+                                 <size>
+                                  <width>110</width>
+                                  <height>16777215</height>
+                                 </size>
+                                </property>
+                                <property name="toolTip">
+                                 <string>The robot will respond when the value of digital input pin changes</string>
+                                </property>
+                                <property name="text">
+                                 <string>wait toggle</string>
+                                </property>
+                               </widget>
+                              </item>
+                              <item>
+                               <spacer name="horizontalSpacer_125">
+                                <property name="orientation">
+                                 <enum>Qt::Horizontal</enum>
+                                </property>
+                                <property name="sizeHint" stdset="0">
+                                 <size>
+                                  <width>40</width>
+                                  <height>20</height>
+                                 </size>
+                                </property>
+                               </spacer>
+                              </item>
+                             </layout>
+                            </item>
+                            <item>
+                             <layout class="QHBoxLayout" name="horizontalLayout_66">
+                              <item>
+                               <widget class="QPushButton" name="pbReadA0X3">
+                                <property name="minimumSize">
+                                 <size>
+                                  <width>50</width>
+                                  <height>0</height>
+                                 </size>
+                                </property>
+                                <property name="text">
+                                 <string>read</string>
+                                </property>
+                               </widget>
+                              </item>
+                              <item>
+                               <widget class="QLabel" name="label_120">
+                                <property name="minimumSize">
+                                 <size>
+                                  <width>30</width>
+                                  <height>0</height>
+                                 </size>
+                                </property>
+                                <property name="maximumSize">
+                                 <size>
+                                  <width>25</width>
+                                  <height>16777215</height>
+                                 </size>
+                                </property>
+                                <property name="font">
+                                 <font>
+                                  <bold>false</bold>
+                                 </font>
+                                </property>
+                                <property name="text">
+                                 <string>A0</string>
+                                </property>
+                               </widget>
+                              </item>
+                              <item>
+                               <spacer name="horizontalSpacer_132">
+                                <property name="orientation">
+                                 <enum>Qt::Horizontal</enum>
+                                </property>
+                                <property name="sizeType">
+                                 <enum>QSizePolicy::Maximum</enum>
+                                </property>
+                                <property name="sizeHint" stdset="0">
+                                 <size>
+                                  <width>40</width>
+                                  <height>20</height>
+                                 </size>
+                                </property>
+                               </spacer>
+                              </item>
+                              <item>
+                               <widget class="QLabel" name="lbA0ValueX3">
+                                <property name="text">
+                                 <string>null</string>
+                                </property>
+                               </widget>
+                              </item>
+                              <item>
+                               <spacer name="horizontalSpacer_133">
+                                <property name="orientation">
+                                 <enum>Qt::Horizontal</enum>
+                                </property>
+                                <property name="sizeType">
+                                 <enum>QSizePolicy::Maximum</enum>
+                                </property>
+                                <property name="sizeHint" stdset="0">
+                                 <size>
+                                  <width>40</width>
+                                  <height>20</height>
+                                 </size>
+                                </property>
+                               </spacer>
+                              </item>
+                              <item>
+                               <widget class="QLineEdit" name="leA0DelayX3">
+                                <property name="minimumSize">
+                                 <size>
+                                  <width>110</width>
+                                  <height>0</height>
+                                 </size>
+                                </property>
+                                <property name="maximumSize">
+                                 <size>
+                                  <width>110</width>
+                                  <height>16777215</height>
+                                 </size>
+                                </property>
+                                <property name="placeholderText">
+                                 <string>0 ms</string>
+                                </property>
+                               </widget>
+                              </item>
+                              <item>
+                               <spacer name="horizontalSpacer_134">
+                                <property name="orientation">
+                                 <enum>Qt::Horizontal</enum>
+                                </property>
+                                <property name="sizeHint" stdset="0">
+                                 <size>
+                                  <width>40</width>
+                                  <height>20</height>
+                                 </size>
+                                </property>
+                               </spacer>
+                              </item>
+                             </layout>
+                            </item>
+                            <item>
+                             <layout class="QHBoxLayout" name="horizontalLayout_64">
+                              <item>
+                               <widget class="QPushButton" name="pbReadA1X3">
+                                <property name="minimumSize">
+                                 <size>
+                                  <width>50</width>
+                                  <height>0</height>
+                                 </size>
+                                </property>
+                                <property name="text">
+                                 <string>read</string>
+                                </property>
+                               </widget>
+                              </item>
+                              <item>
+                               <widget class="QLabel" name="label_119">
+                                <property name="minimumSize">
+                                 <size>
+                                  <width>30</width>
+                                  <height>0</height>
+                                 </size>
+                                </property>
+                                <property name="maximumSize">
+                                 <size>
+                                  <width>25</width>
+                                  <height>16777215</height>
+                                 </size>
+                                </property>
+                                <property name="font">
+                                 <font>
+                                  <bold>false</bold>
+                                 </font>
+                                </property>
+                                <property name="text">
+                                 <string>A1</string>
+                                </property>
+                               </widget>
+                              </item>
+                              <item>
+                               <spacer name="horizontalSpacer_126">
+                                <property name="orientation">
+                                 <enum>Qt::Horizontal</enum>
+                                </property>
+                                <property name="sizeType">
+                                 <enum>QSizePolicy::Maximum</enum>
+                                </property>
+                                <property name="sizeHint" stdset="0">
+                                 <size>
+                                  <width>40</width>
+                                  <height>20</height>
+                                 </size>
+                                </property>
+                               </spacer>
+                              </item>
+                              <item>
+                               <widget class="QLabel" name="lbA1ValueX3">
+                                <property name="text">
+                                 <string>null</string>
+                                </property>
+                               </widget>
+                              </item>
+                              <item>
+                               <spacer name="horizontalSpacer_127">
+                                <property name="orientation">
+                                 <enum>Qt::Horizontal</enum>
+                                </property>
+                                <property name="sizeType">
+                                 <enum>QSizePolicy::Maximum</enum>
+                                </property>
+                                <property name="sizeHint" stdset="0">
+                                 <size>
+                                  <width>40</width>
+                                  <height>20</height>
+                                 </size>
+                                </property>
+                               </spacer>
+                              </item>
+                              <item>
+                               <widget class="QLineEdit" name="leA1DelayX3">
+                                <property name="minimumSize">
+                                 <size>
+                                  <width>110</width>
+                                  <height>0</height>
+                                 </size>
+                                </property>
+                                <property name="maximumSize">
+                                 <size>
+                                  <width>110</width>
+                                  <height>16777215</height>
+                                 </size>
+                                </property>
+                                <property name="placeholderText">
+                                 <string>0 ms</string>
+                                </property>
+                               </widget>
+                              </item>
+                              <item>
+                               <spacer name="horizontalSpacer_128">
+                                <property name="orientation">
+                                 <enum>Qt::Horizontal</enum>
+                                </property>
+                                <property name="sizeHint" stdset="0">
+                                 <size>
+                                  <width>40</width>
+                                  <height>20</height>
+                                 </size>
+                                </property>
+                               </spacer>
+                              </item>
+                             </layout>
                             </item>
                            </layout>
                           </widget>
