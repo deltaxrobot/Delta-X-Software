@@ -334,7 +334,7 @@ void RobotWindow::InitSocketConnection()
     ConnectionManager = new SocketConnectionManager(localIP, ui->lePort->text().toInt());
     ConnectionManager->ProjectName = ProjectName;
     QString appDirPath = QCoreApplication::applicationDirPath();
-    ConnectionManager->indexPath = appDirPath + "/script-example/webpage/websocket.html";
+    ConnectionManager->indexPath = appDirPath + "/Jogging.html";
 
     QThread* thread = new QThread(this);
 
@@ -2078,12 +2078,37 @@ void RobotWindow::ActivateButtonByName(const QString &buttonName)
 
 void RobotWindow::ActiveWidgetByName(QString type, QString name, QString action)
 {
-    if (type == "QToolButton")
+    qDebug() << "ActiveWidgetByName called:" << type << name << action;
+    
+    if (type == "QPushButton")
+    {
+        QPushButton *button = findChild<QPushButton*>(name);
+        if (button && action == "click")
+        {
+            qDebug() << "Clicking QPushButton:" << name;
+            button->click();
+        }
+        else
+        {
+            qDebug() << "QPushButton not found or invalid action:" << name << action;
+        }
+    }
+    else if (type == "QToolButton")
     {
         QToolButton *button = findChild<QToolButton*>(name);
         if (button && action == "click")
         {
+            qDebug() << "Clicking QToolButton:" << name;
             button->click();
+        }
+        else if (button && action == "toggle")
+        {
+            qDebug() << "Toggling QToolButton:" << name;
+            button->setChecked(!button->isChecked());
+        }
+        else
+        {
+            qDebug() << "QToolButton not found or invalid action:" << name << action;
         }
     }
     else if (type == "QRadioButton")
@@ -2091,7 +2116,35 @@ void RobotWindow::ActiveWidgetByName(QString type, QString name, QString action)
         QRadioButton *button = findChild<QRadioButton*>(name);
         if (button && action == "toggle")
         {
+            qDebug() << "Toggling QRadioButton:" << name;
             button->toggle();
+        }
+        else if (button && action == "check")
+        {
+            qDebug() << "Checking QRadioButton:" << name;
+            button->setChecked(true);
+        }
+        else
+        {
+            qDebug() << "QRadioButton not found or invalid action:" << name << action;
+        }
+    }
+    else if (type == "QCheckBox")
+    {
+        QCheckBox *checkBox = findChild<QCheckBox*>(name);
+        if (checkBox && action == "toggle")
+        {
+            qDebug() << "Toggling QCheckBox:" << name;
+            checkBox->toggle();
+        }
+        else if (checkBox && (action == "true" || action == "false"))
+        {
+            qDebug() << "Setting QCheckBox:" << name << "to" << action;
+            checkBox->setChecked(action == "true");
+        }
+        else
+        {
+            qDebug() << "QCheckBox not found or invalid action:" << name << action;
         }
     }
     else if (type == "QLineEdit")
@@ -2099,8 +2152,13 @@ void RobotWindow::ActiveWidgetByName(QString type, QString name, QString action)
         QLineEdit *lineEdit = findChild<QLineEdit*>(name);
         if (lineEdit)
         {
+            qDebug() << "Setting QLineEdit:" << name << "to" << action;
             lineEdit->setText(action);
-            lineEdit->returnPressed();
+            emit lineEdit->returnPressed();
+        }
+        else
+        {
+            qDebug() << "QLineEdit not found:" << name;
         }
     }
     else if (type == "QComboBox")
@@ -2108,8 +2166,103 @@ void RobotWindow::ActiveWidgetByName(QString type, QString name, QString action)
         QComboBox *comboBox = findChild<QComboBox*>(name);
         if (comboBox)
         {
-            comboBox->setCurrentText(action);
+            // Try to set by text first
+            int index = comboBox->findText(action);
+            if (index >= 0)
+            {
+                qDebug() << "Setting QComboBox:" << name << "to text:" << action;
+                comboBox->setCurrentIndex(index);
+            }
+            else
+            {
+                // Try to set by index
+                bool ok;
+                int indexValue = action.toInt(&ok);
+                if (ok && indexValue >= 0 && indexValue < comboBox->count())
+                {
+                    qDebug() << "Setting QComboBox:" << name << "to index:" << indexValue;
+                    comboBox->setCurrentIndex(indexValue);
+                }
+                else
+                {
+                    qDebug() << "QComboBox invalid value:" << name << action;
+                }
+            }
         }
+        else
+        {
+            qDebug() << "QComboBox not found:" << name;
+        }
+    }
+    else if (type == "QSpinBox")
+    {
+        QSpinBox *spinBox = findChild<QSpinBox*>(name);
+        if (spinBox)
+        {
+            bool ok;
+            int value = action.toInt(&ok);
+            if (ok)
+            {
+                qDebug() << "Setting QSpinBox:" << name << "to" << value;
+                spinBox->setValue(value);
+            }
+            else
+            {
+                qDebug() << "QSpinBox invalid value:" << name << action;
+            }
+        }
+        else
+        {
+            qDebug() << "QSpinBox not found:" << name;
+        }
+    }
+    else if (type == "QDoubleSpinBox")
+    {
+        QDoubleSpinBox *doubleSpinBox = findChild<QDoubleSpinBox*>(name);
+        if (doubleSpinBox)
+        {
+            bool ok;
+            double value = action.toDouble(&ok);
+            if (ok)
+            {
+                qDebug() << "Setting QDoubleSpinBox:" << name << "to" << value;
+                doubleSpinBox->setValue(value);
+            }
+            else
+            {
+                qDebug() << "QDoubleSpinBox invalid value:" << name << action;
+            }
+        }
+        else
+        {
+            qDebug() << "QDoubleSpinBox not found:" << name;
+        }
+    }
+    else if (type == "QSlider")
+    {
+        QSlider *slider = findChild<QSlider*>(name);
+        if (slider)
+        {
+            bool ok;
+            int value = action.toInt(&ok);
+            if (ok)
+            {
+                qDebug() << "Setting QSlider:" << name << "to" << value;
+                slider->setValue(value);
+            }
+            else
+            {
+                qDebug() << "QSlider invalid value:" << name << action;
+            }
+        }
+        else
+        {
+            qDebug() << "QSlider not found:" << name;
+        }
+    }
+    else
+    {
+        qDebug() << "Unsupported widget type:" << type;
     }
 }
 
