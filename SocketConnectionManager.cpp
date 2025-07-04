@@ -36,7 +36,7 @@ SocketConnectionManager::SocketConnectionManager(const QString &address, int por
     Connect(hostAddress, port);
 
     WebServer = new QTcpServer(this);
-    bool result = WebServer->listen(QHostAddress(hostAddress), 3000);
+    bool result = WebServer->listen(QHostAddress(hostAddress), 5000);
     qDebug() << "Create web server: " << result;
     connect(WebServer, &QTcpServer::newConnection, this, &SocketConnectionManager::newWebClientConnected);
 }

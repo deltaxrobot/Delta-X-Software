@@ -1,92 +1,85 @@
 #ifndef ROBOTWINDOW_H
 #define ROBOTWINDOW_H
 
-#include <QMainWindow>
-#include <QtOpenGL>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QTimer>
+// ========== SYSTEM INCLUDES ==========
 #include <stdio.h>
+#include <random>
 
-#include <SocketConnectionManager.h>
-
-#include <UnityTool.h>
-#include <DeltaVisualizer.h>
-#include <qmath.h>
-#include <FilterWindow.h>
+// ========== QT INCLUDES ==========
+#include <QCloseEvent>
+#include <QComboBox>
+#include <QDesktopServices>
+#include <QDialogButtonBox>
+#include <QElapsedTimer>
+#include <QHBoxLayout>
+#include <QInputDialog>
+#include <QLayout>
+#include <QList>
+#include <QMainWindow>
+#include <QMap>
+#include <QMessageBox>
+#include <QMovie>
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
+#include <QPluginLoader>
+#include <QProcess>
+#include <QRandomGenerator>
+#include <QSettings>
+#include <QStackedWidget>
+#include <QSvgWidget>
+#include <QTimer>
+#include <QUrl>
+#include <QUrlQuery>
+#include <QVBoxLayout>
+#include <QVersionNumber>
+#include <QtMultimedia/QCameraInfo>
+#include <QtOpenGL>
 #include <qfiledialog.h>
+#include <qmath.h>
+
+// ========== OPENCV INCLUDES ==========
 #include <opencv2/opencv.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc.hpp>
+
+// ========== PROJECT INCLUDES ==========
+#include <SocketConnectionManager.h>
+#include <UnityTool.h>
+#include <DeltaVisualizer.h>
+#include <FilterWindow.h>
 #include <ImageUnity.h>
-//#include "ObjectDetector.h"
 #include <GcodeReference.h>
 #include <DrawingExporter.h>
-#include <QNetworkAccessManager>
-#include <QNetworkReply>
-#include <QUrlQuery>
-#include <QVersionNumber>
-#include <QDesktopServices>
-#include <QUrl>
-#include <QMessageBox>
-#include <QInputDialog>
-#include <QUrl>
-//#include <TCPConnectionManager.h>
-//#include <ROS.h>
-#include <QCloseEvent>
-//#include <ObjectVariableTable.h>
-#include <QProcess>
-#include <QSettings>
-#include <QtMultimedia/QCameraInfo>
-#include <QMovie>
+#include <device/DeviceManager.h>
+#include "device/camera.h"
+#include "TrackingManager.h"
+#include "ObjectInfo.h"
+#include "PointTool.h"
 #include "sdk/DeltaXPlugin.h"
-#include <QPluginLoader>
 #include "SmartDialog.h"
-#include <QElapsedTimer>
-#include <QProcess>
-#include <QComboBox>
 #include "GcodeHighlighter.h"
-#include <QList>
-#include <random>
-#include <ObjectInfoModel.h>
-#include <QRandomGenerator>
+#include "ObjectInfoModel.h"
+#include "ImageProcessing.h"
+#include "GcodeScript.h"
+
+// ========== DEFINES AND CONSTANTS ==========
+#define DEFAULT_BAUDRATE 115200
+#define DEFAULT_FPS			2
+#define DEFAULT_INTERVAL	1000/DEFAULT_FPS
 
 //#define JOY_STICK
 
+// ========== CONDITIONAL INCLUDES ==========
 #ifdef Q_OS_WIN
     #ifdef JOY_STICK
         #include <QJoysticks.h>
     #endif
 #endif
 
-#include <QMap>
-#include <QLayout>
-#include <QStackedWidget>
-
-//#include "SoftwareManager.h"
-
-#include "ImageProcessing.h"
-
-#include "GcodeScript.h"
-
-#include <QDialogButtonBox>
-#include <device/DeviceManager.h>
-#include "device/camera.h"
-#include "TrackingManager.h"
-#include"ObjectInfo.h"
-
-#include "PointTool.h"
-#include <QSvgWidget>
-
-#define DEFAULT_BAUDRATE 115200
-
-#define DEFAULT_FPS			2
-#define DEFAULT_INTERVAL	1000/DEFAULT_FPS
-
+// ========== FORWARD DECLARATIONS ==========
 class GcodeProgramManager;
 class ObjectDetector;
-
 class GcodeVariable;
 class ROS;
 class GcodeScript;
@@ -96,15 +89,23 @@ namespace Ui {
     class RobotWindow;
 }
 
+// ========== MAIN CLASS DEFINITION ==========
 class RobotWindow : public QMainWindow
 {
 	Q_OBJECT
 
 public:
+    // ========== CONSTRUCTORS/DESTRUCTORS ==========
     explicit RobotWindow(QWidget *parent = 0, QString projectName = "project0");
     ~RobotWindow();
 
-    //----- Init ----
+    // ========== INITIALIZATION METHODS ==========
+    void setupUiBasic();           // Phase-0
+    void createCoreManagers();     // Phase-1
+    void initModules();            // Phase-2
+    void wireUiEvents();           // Phase-3
+    void loadSettings();
+
     void InitOtherThreadObjects();
 	void InitEvents();
     void InitVariables();
@@ -120,7 +121,9 @@ public:
     void InitTrackingThread();
     void AddTrackingThread();
     void LoadTrackingThread();
+    void InitDefaultValue();
 
+    // ========== SETTINGS MANAGEMENT ==========
     void LoadSettings();
     void LoadGeneralSettings();
     void LoadJoggingSettings(QSettings* setting);
@@ -145,169 +148,98 @@ public:
     void SaveDrawingSetting(QSettings* setting);
     void SavePluginSetting(QSettings* setting);
 
+    // ========== UI MANAGEMENT ==========
     void SetID(QString id);
-
-    void InitDefaultValue();
-
-    // ----- Event ----
-    void DisablePositionUpdatingEvents();
-    void EnablePositionUpdatingEvents();
-    void closeEvent(QCloseEvent *event);
-
-    // ---- UI pointer -----
     void SetMainStackedWidgetAndPages(QStackedWidget* mainStack, QWidget* mainPage, QWidget* fullDisplayPage, QLayout* fullDisplayLayout);
     void SetSubStackedWidget(QStackedWidget* subStackedWidget);
-
     QWidget* GetWidget(QString name);
     QString GetRealNameWidget(QString name);
     QString GetRedefineNameWidget(QString name);
     QStringList GetShareDisplayWidgetNames();
 
-    // ---- Server ----
+    // ========== EVENT HANDLING ==========
+    void DisablePositionUpdatingEvents();
+    void EnablePositionUpdatingEvents();
+    void closeEvent(QCloseEvent *event);
+
+    // ========== PUBLIC MEMBER VARIABLES ==========
     SocketConnectionManager* ConnectionManager;
-
-    //---- Object in other threads ----
     DeviceManager* DeviceManagerInstance;
-
-    //---- Connection ----
     QNetworkAccessManager HttpManager;
-
-    //---- Process -----
-
     QProcess* ExternalScriptProcess;
-
-    // ---- Gcode ----
+    
     QList<GcodeScript*> GcodeScripts;
     QTimer* UIEvent;
     int ChangedCounter = 0;
     bool IsGcodeEditorTextChanged = false;
     int baseFontSize;
-
-    // ---- Robot ----
+    
     int RbID = 0;
     QVector<RobotPara> RobotParameters;
     QTimer* ShortcutKeyTimer;
-
     QTimer UpdateUITimer;
-
+    
     QString ProjectName = "project0";
     QString ProjectTitile = "Project 0";
-
     int DefaultBaudrate = DEFAULT_BAUDRATE;
-
-    //----- Termite ------
+    
     QStringList SentCommands;
     int SentCommandIndex = 0;
-
-    // ---- Vision ----
+    
     ImageProcessing* ImageProcessingInstance;
     FilterWindow* ParameterPanel;
-
     QTimer* ConvenyorTimer;
-
     QWidget* ImageViewerWindow = NULL;
-
     Camera* CameraInstance;
     QThread* CameraThread;
-
     QTimer CameraTimer;
-
-    // ----- Tracking -----
+    
     TrackingManager* TrackingManagerInstance;
-
-    // ---- Drawing ----
     DrawingExporter* DeltaDrawingExporter;
-
-    // ---- ROS ----
 	ROS* DeltaXROS;
-
-    // ---- Loading ----
+    
     QLabel* lbLoadingPopup;
     QMovie *mvLoadingPopup;
-
-    // ---- Menu ----
 	QAction* SelectedAction = NULL;
-
-    // ---- Display -----
+    
 	float UIScale = 1;
     SmartDialog* CloseDialog;
-
     QStackedWidget* MainWindowStackedWidget;
     QWidget* MainWindowPage;
     QWidget* FullDisplayPage;
     QLayout* FullDisplayLayout;
-
     QLabel* ImageLabel = NULL;
-
     QStackedWidget* SubWindowStackedWidget;
-
     QTime performanceTimer;
-
-    // ----- Data ----
+    
     QString copiedRobotPos[6];
     QMap<QString, QString> ParseNames;
-
     QStandardItemModel VarViewModel;
     ObjectInfoModel *ObjectModel;
     QTransform CalculatingTransform;
     QMatrix CalculatingTransform2;
     cv::Mat PointMatrix;
     QVector3D CalVector;
+    
+    Ui::RobotWindow *ui;
 
 public slots:
-
-    // ---- External Control ---
+    // ========== EXTERNAL CONTROL SLOTS ==========
     void ActivateButtonByName(const QString &buttonName);
     void ActiveWidgetByName(QString type, QString name, QString action);
 
-    // ---- View update ----
+    // ========== VIEW UPDATE SLOTS ==========
     void GetDeviceInfo(QString json);
     void GetDeviceResponse(QString id, QString response);
     void UpdateVarToView(QString fullKey, QVariant value);
     void UpdateObjectsToView();
-
-    //----- 3D -----
     void Load3DComponents();
 
-    // ---- Robot ----
+    // ========== ROBOT CONTROL SLOTS ==========
     void ConnectRobot();
-
     void ChangeSelectedRobot(int id);
     void ChangeRobotDOF(int id);
     void ChangeRobotModel(int id);
-
-    // ---- Gcode Editor ----
-	void SaveProgram();
-	void ExecuteProgram();
-    void ClickExecuteButton(bool val);
-    void ImportGcodeFilesFromComputer();
-
-	void ExecuteSelectPrograms();
-    void ExecuteCurrentLine(int, QString);
-    void HighLineCurrentLine(int pos);
-    void OnEditorTextChanged();
-    void changeFontSize(int index);
-
-    void RunSmartEditor();
-    void StandardFormatEditor();
-
-    void OpenGcodeReference();
-    void ExportBlocklyToGcode();
-    void ExecuteRequestsFromExternal(QString request);
-
-    void AddGcodeLine(QString gcode);
-    void LoadGcodeFromFileToEditor(const QModelIndex &index);
-    void LoadGcode(QString filePath);
-    void SelectGcodeExplorer();
-    void BackParentExplorer();
-    void CreateNewGcodeFile();
-    void SaveGcodeFile(QString fileName, QString content);
-    void RefreshExplorer();
-    void DeleteGcodeFile();
-
-    void ChangeSelectedEditorThread(int id);
-
-    // ---- Robot Controller ----
     void SetRobotState(bool isHold);
     void RequestPosition();
     void Home();
@@ -320,17 +252,13 @@ public slots:
     void UpdateJerk();
 	void AdjustGripperAngle(int angle);
 	void Grip();
-
     void MoveRobot(QString gcode);
     void MoveRobot(QString axis, float step);
-
     void MoveRobotFollowObject(float x, float y, float angle);
     void DoADemo();
-    // ------ Robot Position -----
-
     void UpdateRobotPositionToUI();
 
-    //------ End Effector Robot -------
+    // ========== END EFFECTOR SLOTS ==========
 	void SetPump(bool value);
     void SetLaser(bool value);
     void SetOnOffOutput(bool result);
@@ -340,18 +268,41 @@ public slots:
     void GetInputX3();
     void GetValueInput(QString response);
 
-    //----- Variable -----
+    // ========== GCODE EDITOR SLOTS ==========
+	void SaveProgram();
+	void ExecuteProgram();
+    void ClickExecuteButton(bool val);
+    void ImportGcodeFilesFromComputer();
+	void ExecuteSelectPrograms();
+    void ExecuteCurrentLine(int, QString);
+    void HighLineCurrentLine(int pos);
+    void OnEditorTextChanged();
+    void changeFontSize(int index);
+    void RunSmartEditor();
+    void StandardFormatEditor();
+    void OpenGcodeReference();
+    void ExportBlocklyToGcode();
+    void ExecuteRequestsFromExternal(QString request);
+    void AddGcodeLine(QString gcode);
+    void LoadGcodeFromFileToEditor(const QModelIndex &index);
+    void LoadGcode(QString filePath);
+    void SelectGcodeExplorer();
+    void BackParentExplorer();
+    void CreateNewGcodeFile();
+    void SaveGcodeFile(QString fileName, QString content);
+    void RefreshExplorer();
+    void DeleteGcodeFile();
+    void ChangeSelectedEditorThread(int id);
+
+    // ========== VARIABLE MANAGEMENT SLOTS ==========
     void UpdateVariable(QString key, QVariant value);
     void UpdateVariables(QString cmd);
     void RespondVariableValue(QIODevice* s, QString name);
-
-    //----- Device ----
     void UpdateGcodeValueToDeviceUI(QString deviceName, QString gcode);
 
-    // ---- Conveyor ----
+    // ========== CONVEYOR CONTROL SLOTS ==========
     void ChangeConveyorType(int index);
     void ChangeSelectedConveyor(int id);
-
     void ConnectConveyor();
     void SetConveyorMode(int mode);
     void SetConveyorMovingMode(int mode);
@@ -361,20 +312,14 @@ public slots:
     void BackwardConveyor();
     void SetConveyorPosition();
     void SetConveyorAbsolutePosition();
-
     void TriggedCustomConveyor();
-
     void UpdatePointPositionOnConveyor(QLineEdit* x, QLineEdit* y, float angle, float distance);
-
-
     void UpdateCursorPosition(float x, float y);
-
     void ProcessShortcutKey();
 
-    //----- Encoder -----
+    // ========== ENCODER CONTROL SLOTS ==========
     void ChangeEncoderType(int index);
     void ChangeConveyorLinkToEncoder(int);
-
     void ConnectEncoder();
     void ReadEncoder();
     void SetEncoderAutoRead();
@@ -383,33 +328,28 @@ public slots:
     void CalculateEncoderVelocity(int id, float value);
     void ProcessProximitySensorValue(int value);
     void StartScheduledEncoder();
-	
-    // ---- Slider ----
+
+    // ========== SLIDER CONTROL SLOTS ==========
 	void ConnectSliding();
 	void GoHomeSliding();
 	void DisableSliding();
 	void SetSlidingSpeed();
 	void SetSlidingPosition();
 
-    // ---- External Device ----
+    // ========== EXTERNAL DEVICE SLOTS ==========
 	void ConnectExternalMCU();
 	void TransmitTextToExternalMCU();
     void DisplayTextFromExternalMCU(QString text);
 
-    // ---- Termite ----
+    // ========== TERMINAL SLOTS ==========
     void TerminalTransmit();
     void RunExternalScript();
     void OpenExternalScriptFolder();
     void UpdateTermite(QString device, QString mess, int direction);
     void UpdateTermite(QString mess);
 
-    // ---- Connection ----
-
-    // ---- ROS ----
-
-    // ----- Object Detecting ----
+    // ========== OBJECT DETECTION SLOTS ==========
     void UpdateCameraConnectedState(bool isOpen);
-
     void StartContinuousCapture(bool isCheck);
     void ChangeOutputDisplay(QString outputName);
     void LoadWebcam();
@@ -423,23 +363,17 @@ public slots:
     void GetObjectSizeFromImage(QRectF rect);
     void GetMappingPointFromImage(QPointF point);
     void GetNewImageSize();
-
     void UnselectToolButtons();
-//    void UpdateObjectsToImageViewer(QList<Object> objects);
-//    void UpdateObjectsToImageViewer(QList<QSharedPointer<Object>>);
-//    void UpdateObjectsToImageViewer(QList<QPolygonF> polys);
-//    void UpdateObjectsToVariableTable(QList<Object*>* objects);
     void EditImage(bool isWarp, bool isCropTool);
-
     void SendImageToExternalScript(cv::Mat input);
     void AddDisplayObjectFromExternalScript(QString msg);
 
-    //------ Tracking --------
+    // ========== TRACKING SLOTS ==========
     void ChangeSelectedTracking(int id);
     void ChangeSelectedTrackingEncoder(int id);
     void SaveTrackingManager();
 
-    //------ Point Tool -----
+    // ========== POINT TOOL SLOTS ==========
     void CalculateMappingMatrixTool();
     void CalculatePointMatrixTool();
     void CalculateTestPoint();
@@ -447,33 +381,33 @@ public slots:
     void UpdateTestPoint(QVector3D testPoint);
     void MoveTestTrackingPoint();
 
-    // ----- Display ----
-
+    // ========== DISPLAY SLOTS ==========
     void OpenLoadingPopup();
     void CloseLoadingPopup();
-
     void MaximizeTab(int index);
-
     void OpenCameraWindow();
-
     void SelectImageProviderOption(int option);
 
-    // ------ Timer -----
+    // ========== TIMER SLOTS ==========
     void ProcessUIEvent();
 
 #ifdef Q_OS_WIN
     #ifdef JOY_STICK
-        //--------Joystick-----------
-        void ProcessJoystickButton(const QJoystickButtonEvent& event);
-        void ProcessJoystickAxis(const QJoystickAxisEvent& event);
-        void ProcessJoystickPOV(const QJoystickPOVEvent& event);
+    // ========== JOYSTICK SLOTS ==========
+    void ProcessJoystickButton(const QJoystickButtonEvent& event);
+    void ProcessJoystickAxis(const QJoystickAxisEvent& event);
+    void ProcessJoystickPOV(const QJoystickPOVEvent& event);
     #endif
 #endif
 
 signals:
-    // ---- Device ----
+    // ========== DEVICE SIGNALS ==========
     void ChangeDeviceState(QString deviceName, bool isOpen, QString address);
-    // ----
+    void Send(int device, QString msg);
+    void ScanAndConnectRobot();
+    void DisconnectRobot();
+
+    // ========== OBJECT DETECTION SIGNALS ==========
     void GotObjects(QVector<Object> objects);
     void GotResizePara(cv::Size size);
     void GotResizeImage(cv::Mat mat);
@@ -484,92 +418,79 @@ signals:
     void RequestClearObjects();
     void RequestDeleteObject(int index);
     void RequestFindChessboard();
-    void Send(int device, QString msg);
-    void ScanAndConnectRobot();
-    void DisconnectRobot();
 
 protected:
+    // ========== PROTECTED METHODS ==========
     void paintEvent(QPaintEvent *event) override;
 
 private:
-    // ----- Check Performence ----
+    // ========== PERFORMANCE & TESTING ==========
     void CheckSettingsSpeed();
-
-    // ----- Decting ------
     void SaveDetectingUI();
+	void interpolateCircle();
+	void makeEffectExample();
 
-    // ---- Gcode Editor -----
+    // ========== GCODE EDITOR PRIVATE METHODS ==========
 	QString boldKey(QString key, QString htmlText);
 	QString boldPlusKey(QString key, QString plus, QString htmlText);
 	QString italyKey(QString key, QString htmlText);
 	QString replaceHtmlSection(QString start, int offset, int maxlen, QString finish, QString beforeSection, QString afterSection, QString htmlText);
 
-    // ---- Display ----
+    // ========== DIALOG & UI PRIVATE METHODS ==========
     bool openConnectionDialog(QSerialPort* comPort, QTcpSocket* socket,QPushButton* connectButton, QLabel* comNameInfo = NULL);
 
-    // ---- Encoder/Conveyor ----
-
-    // ---- Test ----
-	void interpolateCircle();
-	void makeEffectExample();
-
-    //--------- Controller -------
-#ifdef Q_OS_WIN
-    #ifdef JOY_STICK
-        QJoysticks *joystick;
-    #endif
-#endif
-    //--------- Utils ----------
+    // ========== UTILITY PRIVATE METHODS ==========
     void sendGcode(QString prefix, QString para1, QString para2);
     QObject* getObjectByName(QObject* parent, QString name);
     void initInputValueLabels();
     void plugValue(QLineEdit* le, float value);
     bool isItemExit(QListWidget* lw, QString item);
     int getIDfromName(QString fullName);
-
     QString checkAndCreateDir(const QString& path);
     bool saveImageWithUniqueName(const cv::Mat& image, const QString& dirPath);
     void loadImages(const QString& dirPath, QListWidget* lwImageList);
     void onImageItemClicked(QListWidgetItem* item);
-
     void pastePointValues(QLineEdit* leX, QLineEdit* leY, QLineEdit* leZ);
     void pastePointValues(QLineEdit* lePoint);
-
-    //--------- Tool -------
-
     void runPythonFile(QString filePath);
-    QProcess *process = nullptr;
 
-    //--------- Plugin -----------
+    // ========== PLUGIN PRIVATE METHODS ==========
     QStringList getPlugins(QString path);
     void initPlugins(QStringList plugins);
     QList<DeltaXPlugin*>* getPluginList();
 
+    // ========== PRIVATE MEMBER VARIABLES ==========
+    
+    // Controller
+#ifdef Q_OS_WIN
+    #ifdef JOY_STICK
+    QJoysticks *joystick;
+    #endif
+#endif
+
+    // Process
+    QProcess *process = nullptr;
+
+    // Plugin Management
     QList<DeltaXPlugin*>* pluginList;
     DeltaXPlugin* industrialCameraPlugin;
 
-    //---- Widget Pointer ----
-
+    // Widget Pointers
     QList<QLabel*>* lbInputValues;
     QLineEdit* leChessPoints[4][2];
 
-    //----- Event Robot Controller ----
+    // Event Management
     QString positionEmitter = "";
 
-    // ---- Gcode Editor ----
+    // Gcode Editor
     QFileSystemModel explorerModel;
     GCodeHighlighter *highlighter;
 
-    // ---- Buffer Value ----
+    // Buffer Values
     float encoderLastValue = 0;
     float scheduledStartEncoderValue = 0;
     bool isScheduledEncoder = false;
-
     QElapsedTimer encoderUpdateTimer;
-
-public:
-    Ui::RobotWindow *ui;
 };
-
 
 #endif // ROBOTWINDOW_H
