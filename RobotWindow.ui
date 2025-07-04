@@ -423,12 +423,12 @@ QLabel
          </property>
          <property name="minimumSize">
           <size>
-           <width>100</width>
+           <width>150</width>
            <height>0</height>
           </size>
          </property>
          <property name="text">
-          <string>127.0.0.1</string>
+          <string>127.0.0.1:8484</string>
          </property>
          <property name="frame">
           <bool>false</bool>
@@ -445,22 +445,32 @@ QLabel
         </widget>
        </item>
        <item>
-        <widget class="QLabel" name="label_123">
-         <property name="font">
-          <font>
-           <bold>false</bold>
-          </font>
+        <widget class="QPushButton" name="pbRunServer_2">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>50</width>
+           <height>0</height>
+          </size>
          </property>
          <property name="text">
-          <string>Port</string>
+          <string>Web</string>
          </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
+         <property name="default">
+          <bool>false</bool>
+         </property>
+         <property name="flat">
+          <bool>false</bool>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QLineEdit" name="lePort">
+        <widget class="QLineEdit" name="lePort_2">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
            <horstretch>0</horstretch>
@@ -474,7 +484,7 @@ QLabel
           </size>
          </property>
          <property name="text">
-          <string>8844</string>
+          <string>500</string>
          </property>
          <property name="frame">
           <bool>false</bool>

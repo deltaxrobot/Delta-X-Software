@@ -64,8 +64,8 @@ public:
     QPushButton *pbRunServer;
     QLabel *label_161;
     QLineEdit *leIP;
-    QLabel *label_123;
-    QLineEdit *lePort;
+    QPushButton *pbRunServer_2;
+    QLineEdit *lePort_2;
     QToolButton *tbServerConfig;
     QWidget *tabManagerLayout;
     QVBoxLayout *verticalLayout_46;
@@ -1472,7 +1472,7 @@ public:
         sizePolicy2.setVerticalStretch(0);
         sizePolicy2.setHeightForWidth(leIP->sizePolicy().hasHeightForWidth());
         leIP->setSizePolicy(sizePolicy2);
-        leIP->setMinimumSize(QSize(100, 0));
+        leIP->setMinimumSize(QSize(150, 0));
         leIP->setFrame(false);
         leIP->setDragEnabled(false);
         leIP->setReadOnly(true);
@@ -1480,24 +1480,26 @@ public:
 
         horizontalLayout_34->addWidget(leIP);
 
-        label_123 = new QLabel(SocketFrame);
-        label_123->setObjectName(QString::fromUtf8("label_123"));
-        label_123->setFont(font1);
-        label_123->setAlignment(Qt::AlignCenter);
+        pbRunServer_2 = new QPushButton(SocketFrame);
+        pbRunServer_2->setObjectName(QString::fromUtf8("pbRunServer_2"));
+        sizePolicy1.setHeightForWidth(pbRunServer_2->sizePolicy().hasHeightForWidth());
+        pbRunServer_2->setSizePolicy(sizePolicy1);
+        pbRunServer_2->setMinimumSize(QSize(50, 0));
+        pbRunServer_2->setFlat(false);
 
-        horizontalLayout_34->addWidget(label_123);
+        horizontalLayout_34->addWidget(pbRunServer_2);
 
-        lePort = new QLineEdit(SocketFrame);
-        lePort->setObjectName(QString::fromUtf8("lePort"));
-        sizePolicy.setHeightForWidth(lePort->sizePolicy().hasHeightForWidth());
-        lePort->setSizePolicy(sizePolicy);
-        lePort->setMinimumSize(QSize(60, 0));
-        lePort->setFrame(false);
-        lePort->setDragEnabled(false);
-        lePort->setReadOnly(true);
-        lePort->setClearButtonEnabled(false);
+        lePort_2 = new QLineEdit(SocketFrame);
+        lePort_2->setObjectName(QString::fromUtf8("lePort_2"));
+        sizePolicy.setHeightForWidth(lePort_2->sizePolicy().hasHeightForWidth());
+        lePort_2->setSizePolicy(sizePolicy);
+        lePort_2->setMinimumSize(QSize(60, 0));
+        lePort_2->setFrame(false);
+        lePort_2->setDragEnabled(false);
+        lePort_2->setReadOnly(true);
+        lePort_2->setClearButtonEnabled(false);
 
-        horizontalLayout_34->addWidget(lePort);
+        horizontalLayout_34->addWidget(lePort_2);
 
         tbServerConfig = new QToolButton(SocketFrame);
         tbServerConfig->setObjectName(QString::fromUtf8("tbServerConfig"));
@@ -9573,6 +9575,7 @@ public:
         QObject::connect(gbTrackingManager, SIGNAL(toggled(bool)), fTrackingManager, SLOT(setVisible(bool)));
 
         pbRunServer->setDefault(false);
+        pbRunServer_2->setDefault(false);
         twModule->setCurrentIndex(0);
         twGcodeEditor->setCurrentIndex(0);
         pbImageMapping->setDefault(false);
@@ -9602,9 +9605,9 @@ public:
         actionScale->setText(QCoreApplication::translate("RobotWindow", "Scale", nullptr));
         pbRunServer->setText(QCoreApplication::translate("RobotWindow", "Server", nullptr));
         label_161->setText(QCoreApplication::translate("RobotWindow", "IP", nullptr));
-        leIP->setText(QCoreApplication::translate("RobotWindow", "127.0.0.1", nullptr));
-        label_123->setText(QCoreApplication::translate("RobotWindow", "Port", nullptr));
-        lePort->setText(QCoreApplication::translate("RobotWindow", "8844", nullptr));
+        leIP->setText(QCoreApplication::translate("RobotWindow", "127.0.0.1:8484", nullptr));
+        pbRunServer_2->setText(QCoreApplication::translate("RobotWindow", "Web", nullptr));
+        lePort_2->setText(QCoreApplication::translate("RobotWindow", "500", nullptr));
 #if QT_CONFIG(tooltip)
         tbServerConfig->setToolTip(QCoreApplication::translate("RobotWindow", "Config", nullptr));
 #endif // QT_CONFIG(tooltip)

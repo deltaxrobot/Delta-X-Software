@@ -329,9 +329,11 @@ void RobotWindow::InitSocketConnection()
 
     // Tìm ip local của máy
     QString localIP = SocketConnectionManager::printLocalIpAddresses();
-    ui->leIP->setText(localIP);
+    // localhost:8844
+    QStringList ipAndPort = ui->leIP->text().split(":");
+    QString port = ipAndPort.at(1);
 
-    ConnectionManager = new SocketConnectionManager(localIP, ui->lePort->text().toInt());
+    ConnectionManager = new SocketConnectionManager(localIP, port.toInt());
     ConnectionManager->ProjectName = ProjectName;
     QString appDirPath = QCoreApplication::applicationDirPath();
     ConnectionManager->indexPath = appDirPath + "/Jogging.html";
@@ -348,31 +350,19 @@ void RobotWindow::InitSocketConnection()
 
     if (ConnectionManager->IsServerOpen())
     {
-        ui->leIP->setText(ConnectionManager->Server->serverAddress().toString());
-        ui->lePort->setText(QString::number(ConnectionManager->Server->serverPort()));
+        ui->leIP->setText(ConnectionManager->Server->serverAddress().toString() + ":" + QString::number(ConnectionManager->Server->serverPort()));
     }
 
     connect(ui->tbServerConfig, &QPushButton::clicked, [=](bool checked)
     {
         ui->leIP->setFrame(true);
         ui->leIP->setReadOnly(false);
-        ui->lePort->setFrame(true);
-        ui->lePort->setReadOnly(false);
     });
 
     connect(ui->leIP, &QLineEdit::returnPressed, [=]()
     {
         ui->leIP->setFrame(false);
-        ui->lePort->setFrame(false);
         ui->leIP->setReadOnly(true);
-        ui->lePort->setReadOnly(true);
-    });
-    connect(ui->lePort, &QLineEdit::returnPressed, [=]()
-    {
-        ui->leIP->setFrame(false);
-        ui->lePort->setFrame(false);
-        ui->leIP->setReadOnly(true);
-        ui->lePort->setReadOnly(true);
     });
 }
 
@@ -2182,7 +2172,7 @@ void RobotWindow::ActiveWidgetByName(QString type, QString name, QString action)
                 {
                     qDebug() << "Setting QComboBox:" << name << "to index:" << indexValue;
                     comboBox->setCurrentIndex(indexValue);
-                }
+        }
                 else
                 {
                     qDebug() << "QComboBox invalid value:" << name << action;
