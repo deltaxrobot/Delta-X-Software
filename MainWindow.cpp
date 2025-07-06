@@ -72,6 +72,9 @@ void MainWindow::InitVariables()
     connect(Dashboard, &TabDashboard::TabChanged, this, &MainWindow::SelectedTab);
 
     InitVisible();
+    
+    // Set Project page as default startup page
+    SetDefaultPage(PAGE_PROJECT);
 
 //    ui->tbHome->click();
 
@@ -707,6 +710,73 @@ void MainWindow::on_pbDeleteSelectedVar_clicked()
 
             VariableManager::instance().removeVar(ui->leUpdateKey->text());
         }
+    }
+}
+
+void MainWindow::SetDefaultPage(PageType pageType)
+{
+    QWidget* targetPage = nullptr;
+    QAbstractButton* targetButton = nullptr;
+    
+    switch (pageType) {
+        case PAGE_VARIABLE:
+            targetPage = ui->pVariable;
+            targetButton = ui->tbVariable;
+            break;
+        case PAGE_OPERATOR:
+            targetPage = ui->pOperator;
+            targetButton = ui->tbHome; // Note: tbHome shows Operator page
+            break;
+        case PAGE_HOME:
+            // PAGE_HOME is not implemented in current UI
+            break;
+        case PAGE_MARKET:
+            targetPage = ui->pMarket;
+            targetButton = ui->tbMarket;
+            break;
+        case PAGE_DOCUMENT:
+            targetPage = ui->pDocument;
+            targetButton = ui->tbDocument;
+            break;
+        case PAGE_AUTHORITY:
+            targetPage = ui->pAuthority;
+            targetButton = ui->tbAuthority;
+            break;
+        case PAGE_COMMUNITY:
+            targetPage = ui->pCommunity;
+            targetButton = ui->tbCommunity;
+            break;
+        case PAGE_SETTING:
+            targetPage = ui->pSetting;
+            targetButton = ui->tbSetting;
+            break;
+        case PAGE_PROJECT:
+            targetPage = ui->pProject;
+            targetButton = ui->tbProject;
+            break;
+        default:
+            targetPage = ui->pProject; // Default fallback
+            targetButton = ui->tbProject;
+            break;
+    }
+    
+    if (targetPage) {
+        ui->swPageStack->setCurrentWidget(targetPage);
+    }
+    
+    if (targetButton) {
+        // Clear all button styles first
+        ui->tbHome->setStyleSheet("");
+        ui->tbProject->setStyleSheet("");
+        ui->tbVariable->setStyleSheet("");
+        ui->tbSetting->setStyleSheet("");
+        ui->tbMarket->setStyleSheet("");
+        ui->tbDocument->setStyleSheet("");
+        ui->tbCommunity->setStyleSheet("");
+        ui->tbAuthority->setStyleSheet("");
+        
+        // Apply selected state to target button
+        targetButton->setStyleSheet("background-color: rgb(24, 70, 139);");
     }
 }
 

@@ -1650,6 +1650,40 @@ void RobotWindow::LoadGeneralSettings()
             }
         }
     }
+    
+    // Load robot settings after general settings
+    LoadRobotSettings();
+}
+
+void RobotWindow::LoadRobotSettings()
+{
+    // Set flag to prevent saving while loading
+    isLoadingSettings = true;
+    
+    // Load robot model and DOF settings for the currently selected robot
+    int currentRobotId = ui->cbSelectedRobot->currentIndex();
+    QString robotPrefix = ProjectName + ".robot" + QString::number(currentRobotId);
+    
+    // Load robot model
+    int savedModelIndex = VariableManager::instance().getVar(robotPrefix + ".Model", 0).toInt();
+    if (savedModelIndex >= 0 && savedModelIndex < ui->cbRobotModel->count())
+    {
+        ui->cbRobotModel->setCurrentIndex(savedModelIndex);
+        // Apply model changes without saving again
+        ChangeRobotModel(savedModelIndex);
+    }
+    
+    // Load robot DOF
+    int savedDOFIndex = VariableManager::instance().getVar(robotPrefix + ".DOF", 0).toInt();
+    if (savedDOFIndex >= 0 && savedDOFIndex < ui->cbRobotDOF->count())
+    {
+        ui->cbRobotDOF->setCurrentIndex(savedDOFIndex);
+        // Apply DOF changes without saving again
+        ChangeRobotDOF(savedDOFIndex);
+    }
+    
+    // Reset flag after loading
+    isLoadingSettings = false;
 }
 
 void RobotWindow::LoadJoggingSettings(QSettings *setting)
@@ -2816,6 +2850,9 @@ void RobotWindow::ChangeSelectedRobot(int id)
     RbID = id;
 
     QMetaObject::invokeMethod(DeviceManagerInstance, "RequestDeviceInfo", Qt::QueuedConnection, Q_ARG(int, DeviceManager::ROBOT));
+    
+    // Load robot settings for the newly selected robot
+    LoadRobotSettings();
 }
 
 void RobotWindow::ChangeRobotDOF(int id)
@@ -2843,6 +2880,14 @@ void RobotWindow::ChangeRobotDOF(int id)
         emit Send(DeviceManager::ROBOT, QString("M60 D1"));
         emit Send(DeviceManager::ROBOT, QString("M61 D1"));
         emit Send(DeviceManager::ROBOT, QString("M62 D1"));
+    }
+    
+    // Save robot DOF setting to VariableManager (only if not loading)
+    if (!isLoadingSettings)
+    {
+        int currentRobotId = ui->cbSelectedRobot->currentIndex();
+        QString robotPrefix = ProjectName + ".robot" + QString::number(currentRobotId);
+        VariableManager::instance().updateVar(robotPrefix + ".DOF", id);
     }
 }
 
@@ -2873,6 +2918,14 @@ void RobotWindow::ChangeRobotModel(int id)
         ui->gbInputXS->setVisible(true);
         ui->gbOutputX3->setVisible(false);
         ui->gbInputX3->setVisible(false);
+    }
+    
+    // Save robot model setting to VariableManager (only if not loading)
+    if (!isLoadingSettings)
+    {
+        int currentRobotId = ui->cbSelectedRobot->currentIndex();
+        QString robotPrefix = ProjectName + ".robot" + QString::number(currentRobotId);
+        VariableManager::instance().updateVar(robotPrefix + ".Model", id);
     }
 }
 

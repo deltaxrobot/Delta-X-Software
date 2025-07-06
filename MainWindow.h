@@ -30,6 +30,19 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
+    // Page identifiers for better code readability
+    enum PageType {
+        PAGE_VARIABLE = 0,
+        PAGE_OPERATOR = 1,
+        PAGE_HOME = 2,
+        PAGE_MARKET = 3,
+        PAGE_DOCUMENT = 4,
+        PAGE_AUTHORITY = 5,
+        PAGE_COMMUNITY = 6,
+        PAGE_SETTING = 7,
+        PAGE_PROJECT = 8
+    };
+
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
@@ -40,6 +53,7 @@ public:
     void InitProjectToOperator();
     void SaveOperatorSettings();
     void LoadOperatorSettings();
+    void SetDefaultPage(PageType pageType);
 
     TabDashboard* Dashboard;
     ProjectManager* SoftwareProjectManager;

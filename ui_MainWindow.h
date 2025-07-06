@@ -1876,7 +1876,7 @@ public:
         retranslateUi(MainWindow);
 
         stackedWidget->setCurrentIndex(0);
-        swPageStack->setCurrentIndex(7);
+        swPageStack->setCurrentWidget(pProject);
         swAuthority->setCurrentIndex(0);
         twSettingsCategories->setCurrentIndex(4);
         twProjectManager->setCurrentIndex(0);

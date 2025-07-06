@@ -445,7 +445,7 @@ QLabel
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="pbRunServer_2">
+        <widget class="QPushButton" name="pbOpenWebControl">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
            <horstretch>0</horstretch>
@@ -454,48 +454,17 @@ QLabel
          </property>
          <property name="minimumSize">
           <size>
-           <width>50</width>
+           <width>100</width>
            <height>0</height>
           </size>
          </property>
          <property name="text">
-          <string>Web</string>
+          <string>Web Control</string>
          </property>
          <property name="default">
           <bool>false</bool>
          </property>
          <property name="flat">
-          <bool>false</bool>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLineEdit" name="lePort_2">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>60</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="text">
-          <string>500</string>
-         </property>
-         <property name="frame">
-          <bool>false</bool>
-         </property>
-         <property name="dragEnabled">
-          <bool>false</bool>
-         </property>
-         <property name="readOnly">
-          <bool>true</bool>
-         </property>
-         <property name="clearButtonEnabled">
           <bool>false</bool>
          </property>
         </widget>

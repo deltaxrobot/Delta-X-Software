@@ -64,8 +64,7 @@ public:
     QPushButton *pbRunServer;
     QLabel *label_161;
     QLineEdit *leIP;
-    QPushButton *pbRunServer_2;
-    QLineEdit *lePort_2;
+    QPushButton *pbOpenWebControl;
     QToolButton *tbServerConfig;
     QWidget *tabManagerLayout;
     QVBoxLayout *verticalLayout_46;
@@ -1545,26 +1544,14 @@ public:
 
         horizontalLayout_34->addWidget(leIP);
 
-        pbRunServer_2 = new QPushButton(SocketFrame);
-        pbRunServer_2->setObjectName(QString::fromUtf8("pbRunServer_2"));
-        sizePolicy1.setHeightForWidth(pbRunServer_2->sizePolicy().hasHeightForWidth());
-        pbRunServer_2->setSizePolicy(sizePolicy1);
-        pbRunServer_2->setMinimumSize(QSize(50, 0));
-        pbRunServer_2->setFlat(false);
+        pbOpenWebControl = new QPushButton(SocketFrame);
+        pbOpenWebControl->setObjectName(QString::fromUtf8("pbOpenWebControl"));
+        sizePolicy1.setHeightForWidth(pbOpenWebControl->sizePolicy().hasHeightForWidth());
+        pbOpenWebControl->setSizePolicy(sizePolicy1);
+        pbOpenWebControl->setMinimumSize(QSize(100, 0));
+        pbOpenWebControl->setFlat(false);
 
-        horizontalLayout_34->addWidget(pbRunServer_2);
-
-        lePort_2 = new QLineEdit(SocketFrame);
-        lePort_2->setObjectName(QString::fromUtf8("lePort_2"));
-        sizePolicy.setHeightForWidth(lePort_2->sizePolicy().hasHeightForWidth());
-        lePort_2->setSizePolicy(sizePolicy);
-        lePort_2->setMinimumSize(QSize(60, 0));
-        lePort_2->setFrame(false);
-        lePort_2->setDragEnabled(false);
-        lePort_2->setReadOnly(true);
-        lePort_2->setClearButtonEnabled(false);
-
-        horizontalLayout_34->addWidget(lePort_2);
+        horizontalLayout_34->addWidget(pbOpenWebControl);
 
         tbServerConfig = new QToolButton(SocketFrame);
         tbServerConfig->setObjectName(QString::fromUtf8("tbServerConfig"));
@@ -10014,7 +10001,7 @@ public:
         QObject::connect(gbTrackingManager, SIGNAL(toggled(bool)), fTrackingManager, SLOT(setVisible(bool)));
 
         pbRunServer->setDefault(false);
-        pbRunServer_2->setDefault(false);
+        pbOpenWebControl->setDefault(false);
         twModule->setCurrentIndex(0);
         twGcodeEditor->setCurrentIndex(0);
         pbImageMapping->setDefault(false);
@@ -10046,8 +10033,7 @@ public:
         pbRunServer->setText(QCoreApplication::translate("RobotWindow", "Server", nullptr));
         label_161->setText(QCoreApplication::translate("RobotWindow", "IP", nullptr));
         leIP->setText(QCoreApplication::translate("RobotWindow", "127.0.0.1:8484", nullptr));
-        pbRunServer_2->setText(QCoreApplication::translate("RobotWindow", "Web", nullptr));
-        lePort_2->setText(QCoreApplication::translate("RobotWindow", "500", nullptr));
+        pbOpenWebControl->setText(QCoreApplication::translate("RobotWindow", "Web Control", nullptr));
 #if QT_CONFIG(tooltip)
         tbServerConfig->setToolTip(QCoreApplication::translate("RobotWindow", "Config", nullptr));
 #endif // QT_CONFIG(tooltip)

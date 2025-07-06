@@ -130,6 +130,7 @@ public:
     void Load2DSettings(QSettings* setting);
     void Load3DSettings(QSettings* setting);
     void LoadExternalDeviceSettings();
+    void LoadRobotSettings();
     void LoadTerminalSettings(QSettings* setting);
     void LoadGcodeEditorSettings(QSettings* setting);
     void LoadObjectDetectorSetting();
@@ -178,6 +179,7 @@ public:
     QVector<RobotPara> RobotParameters;
     QTimer* ShortcutKeyTimer;
     QTimer UpdateUITimer;
+    bool isLoadingSettings = false;
     
     QString ProjectName = "project0";
     QString ProjectTitile = "Project 0";
