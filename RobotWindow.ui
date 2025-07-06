@@ -706,7 +706,7 @@ QToolBox QScrollArea&gt;QWidget&gt;QWidget
               <enum>QTabWidget::Rounded</enum>
              </property>
              <property name="currentIndex">
-              <number>1</number>
+              <number>0</number>
              </property>
              <property name="usesScrollButtons">
               <bool>true</bool>
@@ -1458,7 +1458,7 @@ QTreeView::header {
                        <item>
                         <widget class="QTabWidget" name="twGcodeEditor">
                          <property name="currentIndex">
-                          <number>0</number>
+                          <number>1</number>
                          </property>
                          <widget class="QWidget" name="tab">
                           <attribute name="title">
@@ -1843,7 +1843,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
                   <property name="geometry">
                    <rect>
                     <x>0</x>
-                    <y>-180</y>
+                    <y>-269</y>
                     <width>590</width>
                     <height>2900</height>
                    </rect>
@@ -5668,7 +5668,7 @@ QFrame
                   <property name="geometry">
                    <rect>
                     <x>0</x>
-                    <y>0</y>
+                    <y>-937</y>
                     <width>572</width>
                     <height>1900</height>
                    </rect>
@@ -9535,7 +9535,7 @@ QLabel
                   <property name="geometry">
                    <rect>
                     <x>0</x>
-                    <y>0</y>
+                    <y>-21</y>
                     <width>554</width>
                     <height>2000</height>
                    </rect>
@@ -18927,12 +18927,12 @@ QGroupBox
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>488</x>
-     <y>754</y>
+     <x>515</x>
+     <y>874</y>
     </hint>
     <hint type="destinationlabel">
-     <x>468</x>
-     <y>779</y>
+     <x>495</x>
+     <y>989</y>
     </hint>
    </hints>
   </connection>
@@ -18943,12 +18943,12 @@ QGroupBox
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>492</x>
-     <y>614</y>
+     <x>500</x>
+     <y>447</y>
     </hint>
     <hint type="destinationlabel">
-     <x>480</x>
-     <y>602</y>
+     <x>498</x>
+     <y>435</y>
     </hint>
    </hints>
   </connection>
@@ -18991,12 +18991,12 @@ QGroupBox
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>498</x>
-     <y>1860</y>
+     <x>506</x>
+     <y>2954</y>
     </hint>
     <hint type="destinationlabel">
-     <x>508</x>
-     <y>2222</y>
+     <x>526</x>
+     <y>2944</y>
     </hint>
    </hints>
   </connection>
@@ -19007,8 +19007,8 @@ QGroupBox
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>488</x>
-     <y>872</y>
+     <x>515</x>
+     <y>1020</y>
     </hint>
     <hint type="destinationlabel">
      <x>488</x>
@@ -19023,12 +19023,12 @@ QGroupBox
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>308</x>
-     <y>90</y>
+     <x>316</x>
+     <y>168</y>
     </hint>
     <hint type="destinationlabel">
-     <x>326</x>
-     <y>120</y>
+     <x>344</x>
+     <y>226</y>
     </hint>
    </hints>
   </connection>

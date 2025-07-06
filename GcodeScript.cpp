@@ -1,5 +1,8 @@
 #include "GcodeScript.h"
 
+// Initialize static regex patterns for better performance
+const QRegularExpression GcodeScript::m98Regex("M98\\s+([A-Za-z]+)(?:\\((.*)\\))?", QRegularExpression::OptimizeOnFirstUsageOption);
+const QRegularExpression GcodeScript::objectInAreaRegex("\\(([^)]+)\\)", QRegularExpression::OptimizeOnFirstUsageOption);
 
 GcodeScript::GcodeScript()
 {
@@ -55,6 +58,7 @@ void GcodeScript::ExecuteGcode(QString gcodes, int startMode, QString functions)
     QList<QString> tempGcodeList = gcodes.split('\n');
 
     gcodeList.clear();
+    lineNumberCacheValid = false;  // Invalidate cache when gcodeList changes
 
     if (startMode == BEGIN)
     {
@@ -64,11 +68,12 @@ void GcodeScript::ExecuteGcode(QString gcodes, int startMode, QString functions)
     {
         gcodeOrder = currentGcodeEditorCursor;
     }
-
+    
     for (int i = 0; i < tempGcodeList.size(); i++)
     {
         QString line = tempGcodeList.at(i);
 
+        // Revert to original simple processing
         line = DeleteExcessSpace(line);
 
         QList<QString> pairs = line.split(' ');
@@ -90,7 +95,7 @@ void GcodeScript::ExecuteGcode(QString gcodes, int startMode, QString functions)
     }
 
     tempGcodeList.clear();
-
+    
     TransmitNextGcode();
 }
 
@@ -136,12 +141,15 @@ void GcodeScript::TransmitNextGcode()
         }
         else
         {
-            QString firstPair = currentLine.split(' ').at(0);
+            QStringList tokens = currentLine.split(' ');
+            if (!tokens.isEmpty()) {
+                QString firstPair = tokens.at(0);
 
-            if (firstPair.at(0) == 'N')
-            {
-                QString line = currentLine;
-                currentLine = line.replace(firstPair + " ", "");
+                if (!firstPair.isEmpty() && firstPair.at(0) == 'N')
+                {
+                    QString line = currentLine;
+                    currentLine = line.replace(firstPair + " ", "");
+                }
             }
 
             isGcode = findExeGcodeAndTransmit();
@@ -183,8 +191,13 @@ void GcodeScript::ReceivedGcode(QString gcode)
 
 void GcodeScript::prepareCurrentLine()
 {
+    // Revert to original simple processing to fix script not running
     currentLine = currentLine.replace("  ", " ");
     currentLine = currentLine.replace("\t", "");
+    
+    // Add spaces around operators for proper parsing
+    normalizeOperators();
+    
     currentLine = formatSpaces(currentLine);
 }
 
@@ -207,7 +220,12 @@ void GcodeScript::collapseGcodeLine()
     while (openBracIndex != -1) {
         int closeBracIndex = findClosingBracket(openBracIndex);
         QString expressInBracket = currentLine.mid(openBracIndex, closeBracIndex - openBracIndex + 1);
-        QString resultInBracket = calculateExpressions(expressInBracket);
+        
+        // Normalize operators in the expression before calculating
+        QString normalizedExpression = expressInBracket;
+        normalizeExpressionOperators(normalizedExpression);
+        
+        QString resultInBracket = calculateExpressions(normalizedExpression);
 
         currentLine.replace(expressInBracket, resultInBracket);
         openBracIndex = currentLine.indexOf('[');
@@ -227,12 +245,151 @@ int GcodeScript::findClosingBracket(int openIndex)
     return -1; // or throw an exception if unmatched bracket is an error
 }
 
+void GcodeScript::normalizeOperators()
+{
+    // Handle variable assignments first
+    // Find variable assignments starting with # and containing =
+    if (currentLine.contains('#') && currentLine.contains('=')) {
+        // Use simple string replacement for variable assignments
+        QRegularExpression varAssignRegex("(#[a-zA-Z_][a-zA-Z0-9_.]*)=([^\\s].*)");
+        currentLine.replace(varAssignRegex, "\\1 = \\2");
+    }
+    
+    // Comprehensive normalization of all operators in the entire line
+    // Handle ALL cases of missing spaces around operators
+    
+    // 1. Handle comparison operators first (longer operators first to avoid conflicts)
+    currentLine.replace(QRegularExpression("([^\\s])<=([^\\s])"), "\\1 <= \\2");  // both missing
+    currentLine.replace(QRegularExpression("([^\\s])<=\\s"), "\\1 <= ");          // missing before
+    currentLine.replace(QRegularExpression("\\s<=([^\\s])"), " <= \\1");          // missing after
+    
+    currentLine.replace(QRegularExpression("([^\\s])>=([^\\s])"), "\\1 >= \\2");
+    currentLine.replace(QRegularExpression("([^\\s])>=\\s"), "\\1 >= ");
+    currentLine.replace(QRegularExpression("\\s>=([^\\s])"), " >= \\1");
+    
+    currentLine.replace(QRegularExpression("([^\\s])!=([^\\s])"), "\\1 != \\2");
+    currentLine.replace(QRegularExpression("([^\\s])!=\\s"), "\\1 != ");
+    currentLine.replace(QRegularExpression("\\s!=([^\\s])"), " != \\1");
+    
+    currentLine.replace(QRegularExpression("([^\\s])==([^\\s])"), "\\1 == \\2");
+    currentLine.replace(QRegularExpression("([^\\s])==\\s"), "\\1 == ");
+    currentLine.replace(QRegularExpression("\\s==([^\\s])"), " == \\1");
+    
+    // 2. Handle arithmetic operators
+    currentLine.replace(QRegularExpression("([^\\s])\\*([^\\s])"), "\\1 * \\2");
+    currentLine.replace(QRegularExpression("([^\\s])\\*\\s"), "\\1 * ");
+    currentLine.replace(QRegularExpression("\\s\\*([^\\s])"), " * \\1");
+    
+    currentLine.replace(QRegularExpression("([^\\s])/([^\\s])"), "\\1 / \\2");
+    currentLine.replace(QRegularExpression("([^\\s])/\\s"), "\\1 / ");
+    currentLine.replace(QRegularExpression("\\s/([^\\s])"), " / \\1");
+    
+    currentLine.replace(QRegularExpression("([^\\s])%([^\\s])"), "\\1 % \\2");
+    currentLine.replace(QRegularExpression("([^\\s])%\\s"), "\\1 % ");
+    currentLine.replace(QRegularExpression("\\s%([^\\s])"), " % \\1");
+    
+    currentLine.replace(QRegularExpression("([^\\s])\\+([^\\s])"), "\\1 + \\2");
+    currentLine.replace(QRegularExpression("([^\\s])\\+\\s"), "\\1 + ");
+    currentLine.replace(QRegularExpression("\\s\\+([^\\s])"), " + \\1");
+    
+    // 3. Handle subtraction carefully - avoid breaking negative numbers
+    // Only add spaces if it's clearly a subtraction operation (not a negative number)
+    currentLine.replace(QRegularExpression("([a-zA-Z0-9_\\.\\]])\\-([a-zA-Z0-9_\\.\\#])"), "\\1 - \\2");
+    currentLine.replace(QRegularExpression("([a-zA-Z0-9_\\.\\]])\\-\\s"), "\\1 - ");
+    currentLine.replace(QRegularExpression("\\s\\-([a-zA-Z0-9_\\.\\#])"), " - \\1");
+    
+    // 4. Handle single < and > (after handling <= and >=)
+    currentLine.replace(QRegularExpression("([^\\s<])(<)([^\\s=])"), "\\1 \\2 \\3");
+    currentLine.replace(QRegularExpression("([^\\s<])(<)\\s"), "\\1 \\2 ");
+    currentLine.replace(QRegularExpression("\\s(<)([^\\s=])"), " \\1 \\2");
+    
+    currentLine.replace(QRegularExpression("([^\\s>])(>)([^\\s=])"), "\\1 \\2 \\3");
+    currentLine.replace(QRegularExpression("([^\\s>])(>)\\s"), "\\1 \\2 ");
+    currentLine.replace(QRegularExpression("\\s(>)([^\\s=])"), " \\1 \\2");
+    
+    // Clean up multiple spaces that might be created
+    while (currentLine.contains("  ")) {
+        currentLine.replace("  ", " ");
+    }
+}
+
+void GcodeScript::normalizeExpressionOperators(QString& expression)
+{
+    // This method normalizes operators specifically for expressions in brackets [...]
+    // It handles ALL cases of missing spaces around operators comprehensively
+    
+    // Remove the brackets first to work with the content
+    if (expression.startsWith('[') && expression.endsWith(']')) {
+        expression = expression.mid(1, expression.length() - 2);
+    }
+    
+    // Comprehensive normalization of all operators
+    // Handle each operator type to ensure spaces before AND after
+    
+    // 1. Handle comparison operators first (longer operators first to avoid conflicts)
+    expression.replace(QRegularExpression("([^\\s])<=([^\\s])"), "\\1 <= \\2");  // both missing
+    expression.replace(QRegularExpression("([^\\s])<=\\s"), "\\1 <= ");          // missing before
+    expression.replace(QRegularExpression("\\s<=([^\\s])"), " <= \\1");          // missing after
+    
+    expression.replace(QRegularExpression("([^\\s])>=([^\\s])"), "\\1 >= \\2");
+    expression.replace(QRegularExpression("([^\\s])>=\\s"), "\\1 >= ");
+    expression.replace(QRegularExpression("\\s>=([^\\s])"), " >= \\1");
+    
+    expression.replace(QRegularExpression("([^\\s])!=([^\\s])"), "\\1 != \\2");
+    expression.replace(QRegularExpression("([^\\s])!=\\s"), "\\1 != ");
+    expression.replace(QRegularExpression("\\s!=([^\\s])"), " != \\1");
+    
+    expression.replace(QRegularExpression("([^\\s=])=([^\\s=])"), "\\1 = \\2");
+    expression.replace(QRegularExpression("([^\\s=])=\\s"), "\\1 = ");
+    expression.replace(QRegularExpression("\\s=([^\\s=])"), " = \\1");
+    
+    expression.replace(QRegularExpression("([^\\s])\\*([^\\s])"), "\\1 * \\2");
+    expression.replace(QRegularExpression("([^\\s])\\*\\s"), "\\1 * ");
+    expression.replace(QRegularExpression("\\s\\*([^\\s])"), " * \\1");
+    
+    expression.replace(QRegularExpression("([^\\s])/([^\\s])"), "\\1 / \\2");
+    expression.replace(QRegularExpression("([^\\s])/\\s"), "\\1 / ");
+    expression.replace(QRegularExpression("\\s/([^\\s])"), " / \\1");
+    
+    expression.replace(QRegularExpression("([^\\s])%([^\\s])"), "\\1 % \\2");
+    expression.replace(QRegularExpression("([^\\s])%\\s"), "\\1 % ");
+    expression.replace(QRegularExpression("\\s%([^\\s])"), " % \\1");
+    
+    expression.replace(QRegularExpression("([^\\s])\\+([^\\s])"), "\\1 + \\2");
+    expression.replace(QRegularExpression("([^\\s])\\+\\s"), "\\1 + ");
+    expression.replace(QRegularExpression("\\s\\+([^\\s])"), " + \\1");
+    
+    // 2. Handle subtraction carefully - avoid breaking negative numbers
+    // Only add spaces if it's clearly a subtraction operation (not a negative number)
+    // Pattern: letter/digit/dot/bracket followed by minus followed by letter/digit/dot/#
+    expression.replace(QRegularExpression("([a-zA-Z0-9_\\.\\]])\\-([a-zA-Z0-9_\\.\\#])"), "\\1 - \\2");
+    expression.replace(QRegularExpression("([a-zA-Z0-9_\\.\\]])\\-\\s"), "\\1 - ");
+    expression.replace(QRegularExpression("\\s\\-([a-zA-Z0-9_\\.\\#])"), " - \\1");
+    
+    // 3. Handle single < and > (after handling <= and >=)
+    expression.replace(QRegularExpression("([^\\s<])(<)([^\\s=])"), "\\1 \\2 \\3");
+    expression.replace(QRegularExpression("([^\\s<])(<)\\s"), "\\1 \\2 ");
+    expression.replace(QRegularExpression("\\s(<)([^\\s=])"), " \\1 \\2");
+    
+    expression.replace(QRegularExpression("([^\\s>])(>)([^\\s=])"), "\\1 \\2 \\3");
+    expression.replace(QRegularExpression("([^\\s>])(>)\\s"), "\\1 \\2 ");
+    expression.replace(QRegularExpression("\\s(>)([^\\s=])"), " \\1 \\2");
+    
+    // Clean up multiple spaces that might be created
+    while (expression.contains("  ")) {
+        expression.replace("  ", " ");
+    }
+    
+    // Put the brackets back
+    expression = "[" + expression + "]";
+}
+
 float GcodeScript::GetResultOfMathFunction(QString expression)
 {
-    if (expression == "")
+    if (expression.isEmpty())
         return NULL_NUMBER;
 
-    if (expression.at(0) != '#')
+    if (expression.isEmpty() || expression.at(0) != '#')
         return NULL_NUMBER;
 
     int p1 = expression.indexOf('(');
@@ -256,9 +413,9 @@ float GcodeScript::GetResultOfMathFunction(QString expression)
 
     for (int i = 0; i < values.size(); i++)
     {
-        if (values.at(i) != "")
+        if (!values.at(i).isEmpty())
         {
-            if (values.at(i).at(0) == '#')
+            if (!values.at(i).isEmpty() && values.at(i).at(0) == '#')
             {
                 QString val = getValueAsString(values.at(i));
                 values.replace(i, val);
@@ -384,6 +541,7 @@ bool GcodeScript::findExeGcodeAndTransmit()
         emit Moved(currentGcodeEditorCursor);
 
     prepareCurrentLine();
+    
     if (shouldSkipLine()) return false;
     collapseGcodeLine();
 
@@ -391,13 +549,15 @@ bool GcodeScript::findExeGcodeAndTransmit()
 
     //-------------- Find macro ------------------------
 
-    QList<QString> valuePairs = currentLine.split(' ');
-    QString transmitGcode = currentLine;
+    // Cache string operations for better performance
+    const QStringList valuePairs = currentLine.split(' ', Qt::SkipEmptyParts);
+    const QString transmitGcode = currentLine;
+    const int valuePairsSize = valuePairs.size();
 
-    for (int i = 0; i < valuePairs.size(); i++)
+    for (int i = 0; i < valuePairsSize; i++)
     {
-        if (valuePairs.at(i) == "")
-            continue;
+        // Skip empty tokens (already handled by Qt::SkipEmptyParts above)
+        const QString& currentToken = valuePairs[i];  // Use reference to avoid copy
 
         //------------ VARIABLE ------------
 
@@ -405,7 +565,7 @@ bool GcodeScript::findExeGcodeAndTransmit()
         // #100 = #100 + 2
         // #100 = #101 - #102
 
-        if (valuePairs.at(i).at(0) == '#' && valuePairs.size() > (i + 2))
+        if (!currentToken.isEmpty() && currentToken[0] == '#' && valuePairsSize > (i + 2))
         {
             if (valuePairs[i + 1] == "=")
             {
@@ -413,7 +573,7 @@ bool GcodeScript::findExeGcodeAndTransmit()
 
                 if(valuePairs[i + 2].contains(".Map("))
                 {
-                    if (rightExpression[0] == '#')
+                    if (!rightExpression.isEmpty() && rightExpression[0] == '#')
                     {
                         QString matrix;
                         QString point;
@@ -436,7 +596,7 @@ bool GcodeScript::findExeGcodeAndTransmit()
                             QVariant matrixVar = getValueAsQVariant(matrixName);
                             QPointF point;
 
-                            if (pointName[0] == '#')
+                            if (!pointName.isEmpty() && pointName[0] == '#')
                             {
                                 if (pointName.contains("."))
                                 {
@@ -465,7 +625,7 @@ bool GcodeScript::findExeGcodeAndTransmit()
 
                                 point = matrix.map(point);
 
-                                QString varName = valuePairs.at(i).mid(1);
+                                QString varName = currentToken.mid(1);
                                 saveVariable(varName, point);
 
                                 gcodeOrder++;
@@ -477,7 +637,7 @@ bool GcodeScript::findExeGcodeAndTransmit()
 
                                 point = matrix.map(point);
 
-                                QString varName = valuePairs.at(i).mid(1);
+                                QString varName = currentToken.mid(1);
                                 saveVariable(varName, point);
 
                                 gcodeOrder++;
@@ -506,7 +666,7 @@ bool GcodeScript::findExeGcodeAndTransmit()
                                     // Chuyển đổi cv::Point2f thành QPointF
                                     QPointF outputPoint(cvOutputPoint.x, cvOutputPoint.y);
 
-                                    QString varName = valuePairs.at(i).mid(1);
+                                    QString varName = currentToken.mid(1);
                                     saveVariable(varName, outputPoint);
 
                                     gcodeOrder++;
@@ -518,8 +678,7 @@ bool GcodeScript::findExeGcodeAndTransmit()
                 }
                 if (rightExpression.contains("#GetObjectInArea"))
                 {
-                    QRegularExpression regex("\\(([^)]+)\\)");
-                    QRegularExpressionMatch match = regex.match(rightExpression);
+                    QRegularExpressionMatch match = objectInAreaRegex.match(rightExpression);
 
                     if (match.hasMatch()) {
                         QString ref = match.captured(1);
@@ -565,13 +724,13 @@ bool GcodeScript::findExeGcodeAndTransmit()
 
         //------------ GOTO -----------
 
-        if (valuePairs.at(i) == "GOTO" && valuePairs.size() > (i + 1))
+        if (currentToken == "GOTO" && valuePairsSize > (i + 1))
         {
             return handleGOTO(valuePairs, i);
         }
 
         // --------------- IF ---------------------
-        if (valuePairs.at(i) == "IF" && valuePairs.size() > (i + 3))
+        if (currentToken == "IF" && valuePairsSize > (i + 3))
         {
             if (valuePairs[i + 2] == "THEN")
             {
@@ -585,7 +744,7 @@ bool GcodeScript::findExeGcodeAndTransmit()
         // ....
         // N45 M99
 
-        if (valuePairs.at(i).at(0) == 'O')
+        if (!currentToken.isEmpty() && currentToken[0] == 'O')
         {
             return handleDEFINE_SUBPROGRAM(valuePairs, i);
         }
@@ -596,16 +755,15 @@ bool GcodeScript::findExeGcodeAndTransmit()
 
 
 
-        if (valuePairs.at(i) == "M98" && valuePairs.size() > (i + 1))
+        if (currentToken == "M98" && valuePairsSize > (i + 1))
         {
-            QRegularExpression regex("M98\\s+([A-Za-z]+)(?:\\((.*)\\))?");
-            QRegularExpressionMatch match = regex.match(currentLine.replace('_', ""));
+            QRegularExpressionMatch match = m98Regex.match(currentLine.replace('_', ""));
 
             if (match.hasMatch()) {
                 QString functionName = match.captured(1);
                 QString params = match.captured(2);
 
-                if (functionName.at(0) == 'P')
+                if (!functionName.isEmpty() && functionName.at(0) == 'P')
                     functionName.remove(0, 1);
 
                 functionName.toLower();
@@ -634,7 +792,7 @@ bool GcodeScript::findExeGcodeAndTransmit()
                 }
             }
 
-            if (valuePairs[i + 1].at(0) == 'P')
+            if (!valuePairs[i + 1].isEmpty() && valuePairs[i + 1].at(0) == 'P')
             {
                 QString subProName = valuePairs[i + 1].mid(1);
                 subProName = subProName.remove("_").toLower();
@@ -809,22 +967,22 @@ bool GcodeScript::findExeGcodeAndTransmit()
                 }
             }
 
-            if (valuePairs[i + 1].at(0) == 'F')
+            if (!valuePairs[i + 1].isEmpty() && valuePairs[i + 1].at(0) == 'F')
             {
                 QString subProName = valuePairs[i + 1].mid(1);
             }
         }
 
-        if (valuePairs.at(i) == "M99")
+        if (currentToken == "M99")
         {
             gcodeOrder = returnSubProPointer[returnPointerOrder] + 1;
             returnPointerOrder--;
             return false;
         }
 
-        if (valuePairs.at(i) == "SYNC")
+        if (currentToken == "SYNC")
         {
-            QString target = valuePairs.at(i + 1);
+            QString target = valuePairs[i + 1];
             if (target.contains("robot") && valuePairs.count() > i + 2)
             {
                 QString vector = "";
@@ -850,19 +1008,19 @@ bool GcodeScript::findExeGcodeAndTransmit()
             }
         }
 
-        if (valuePairs.at(i) == "SELECT")
+        if (currentToken == "SELECT")
         {
-            QString selectedDevice = valuePairs.at(i + 1);
+            const QString& selectedDevice = valuePairs[i + 1];
             if (selectedDevice.contains("robot"))
-                DefaultRobot = valuePairs.at(i + 1);
+                DefaultRobot = selectedDevice;
             else if (selectedDevice.contains("conveyor"))
-                DefaultConveyor = valuePairs.at(i + 1);
+                DefaultConveyor = selectedDevice;
             else if (selectedDevice.contains("encoder"))
-                DefaultEncoder = valuePairs.at(i + 1);
+                DefaultEncoder = selectedDevice;
             else if (selectedDevice.contains("slider"))
-                DefaultSlider = valuePairs.at(i + 1);
+                DefaultSlider = selectedDevice;
             else if (selectedDevice.contains("device"))
-                DefaultDevice = valuePairs.at(i + 1);
+                DefaultDevice = selectedDevice;
 
             gcodeOrder++;
 
@@ -873,7 +1031,7 @@ bool GcodeScript::findExeGcodeAndTransmit()
 
         for (int j = 0; j < deviceNames.count(); j++)
         {
-            if (valuePairs.at(i).contains(deviceNames[j]))
+            if (currentToken.contains(deviceNames[j]))
             {
                 handleSENT_TO_DEVICE(valuePairs, 0);
                 return true;
@@ -894,7 +1052,7 @@ void GcodeScript::processVARIABLE()
 
     for (int i = 0; i < currentLine.length(); i++)
     {
-        if (currentLine[i] == '#')
+        if (i < currentLine.length() && currentLine[i] == '#')
             isImporting = true;
         if (i < currentLine.length() - 1)
         {
@@ -913,9 +1071,9 @@ void GcodeScript::processVARIABLE()
             }
         }
 
-        if (isImporting == true)
+        if (isImporting == true && i < currentLine.length())
             varName += currentLine[i];
-        else
+        else if (i < currentLine.length())
             newLine += currentLine[i];
     }
 
@@ -930,32 +1088,10 @@ QString GcodeScript::processFUNCTION(QString funcName, QStringList paras)
 bool GcodeScript::handleGOTO(QList<QString> valuePairs, int i)
 {
     bool isNumber;
-    int goID;
+    int goID = valuePairs[i + 1].toInt(&isNumber, 10);
 
-    goID = valuePairs[i + 1].toInt(&isNumber, 10);
-
-    if (isNumber == true)
-    {
-        for (int order = 0; order < gcodeList.size(); order++)
-        {
-            QList<QString> pairs = gcodeList[order].split(' ');
-            if (pairs.count() > 1)
-            {
-                if (pairs[0] != "")
-                {
-                    if (pairs[0].at(0) == 'N')
-                    {
-                        int id = pairs[0].mid(1).toInt();
-
-                        if (id == goID)
-                        {
-                            gcodeOrder = order;
-                            return false;
-                        }
-                    }
-                }
-            }
-        }
+    if (isNumber) {
+        return handleGOTO_Optimized(goID);  // Use optimized O(1) version
     }
 
     return false;
@@ -1464,6 +1600,37 @@ QString GcodeScript::calculateExpressions(QString expression)
     return expression;
 }
 
+// Performance optimization: Build cache of line numbers for O(1) GOTO lookups
+void GcodeScript::buildLineNumberCache()
+{
+    if (lineNumberCacheValid) return;  // Already built
+    
+    lineNumberCache.clear();
+    for (int i = 0; i < gcodeList.size(); i++) {
+        const QStringList tokens = gcodeList[i].split(' ', Qt::SkipEmptyParts);
+        if (!tokens.isEmpty() && tokens[0].startsWith('N')) {
+            bool ok;
+            int lineNum = tokens[0].mid(1).toInt(&ok);
+            if (ok) {
+                lineNumberCache[lineNum] = i;
+            }
+        }
+    }
+    lineNumberCacheValid = true;
+}
+
+// Optimized GOTO handler using cached line numbers - O(1) instead of O(n)
+bool GcodeScript::handleGOTO_Optimized(int goID)
+{
+    buildLineNumberCache();  // Ensure cache is built
+    
+    auto it = lineNumberCache.find(goID);
+    if (it != lineNumberCache.end()) {
+        gcodeOrder = it.value();
+        return false;
+    }
+    return false;  // Line not found
+}
 
 QString GcodeScript::getLeftWord(QString s, int pos)
 {
@@ -1562,6 +1729,20 @@ QString GcodeScript::formatSpaces(QString s)
     s.replace(opRegExp, " \\1 ");
 
     return s;
+}
+
+// Advanced whitespace normalization for better performance and cleaner parsing
+QString GcodeScript::normalizeWhitespace(const QString& line)
+{
+    // Temporarily disabled - using simple processing instead
+    return line;
+}
+
+// Preprocess entire gcode script for maximum optimization
+void GcodeScript::preprocessGcodeScript()
+{
+    // Temporarily disabled to fix script execution issues
+    return;
 }
 
 bool GcodeScript::isNotNegative(QString s)

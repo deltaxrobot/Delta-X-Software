@@ -14,6 +14,7 @@
 #include <QMatrix>
 #include <QTransform>
 #include <QVariant>
+#include <QRegularExpression>
 
 class GcodeScript : public QObject
 {
@@ -95,6 +96,10 @@ private:
 
     QVector<int> gcodeNumberList;
     int gcodeOrder = 0;
+    
+    // Performance optimization: Cache line numbers for O(1) GOTO lookups
+    QMap<int, int> lineNumberCache;  // lineNumber -> gcodeOrder mapping
+    bool lineNumberCacheValid = false;
     int currentGcodeEditorCursor = 0;
     int returnSubProPointer[20];
     int returnPointerOrder = -1;
@@ -111,11 +116,23 @@ private:
     QMutex mMutex;
 
     QElapsedTimer elapsedTimer;
+    
+    // Pre-compiled regex patterns for better performance
+    static const QRegularExpression m98Regex;
+    static const QRegularExpression objectInAreaRegex;
 
     void prepareCurrentLine();
     bool shouldSkipLine();
     void collapseGcodeLine();
     int findClosingBracket(int openIndex);
+    void normalizeOperators();
+    void normalizeExpressionOperators(QString& expression);
+    
+    // Performance optimization methods
+    void buildLineNumberCache();
+    bool handleGOTO_Optimized(int goID);
+    QString normalizeWhitespace(const QString& line);
+    void preprocessGcodeScript();  // Normalize entire script once
 
     void processGOTOStatement(const QList<QString>& valuePairs);
 
