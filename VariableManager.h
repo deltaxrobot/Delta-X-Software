@@ -51,7 +51,11 @@ signals:
     void varUpdated(QString key, QVariant value);
 
 private:
-    const QString getFullKey(const QString key);
+    // Helper methods for better code organization
+    QVariant getObjectInfoValue(const QString &fullKey) const;
+    QVariant getVariableFromMap(const QString &fullKey, const QVariant &defaultValue) const;
+    bool isValidKey(const QString &key) const;
+    const QString getFullKey(const QString key) const;
 
     VariableManager() : settings("./settings.ini", QSettings::IniFormat)
     {
@@ -59,7 +63,8 @@ private:
     }
 //    std::map<QString, QVariant> dataMap;
     QHash<QString, QVariant> dataMap;
-    std::mutex dataMutex;
+    mutable std::mutex dataMutex;
+    mutable std::mutex objectInfosMutex; // Thread safety for ObjectInfos
     QSettings settings;
     QList<QStandardItemModel*> itemModelList;
 };
