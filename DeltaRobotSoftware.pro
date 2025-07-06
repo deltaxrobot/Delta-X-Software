@@ -81,7 +81,9 @@ SOURCES += main.cpp\
     geisttextedit.cpp \
     global.cpp \
     highlighter.cpp \
-    testwindow.cpp
+    testwindow.cpp \
+    ModernDialog.cpp \
+    CameraSelectionDialog.cpp
 
 HEADERS  += \
     AccountWindow.h \
@@ -133,7 +135,9 @@ HEADERS  += \
     GcodeReference.h \
     sdk/DeltaXPlugin.h \
     testcode.h \
-    testwindow.h
+    testwindow.h \
+    ModernDialog.h \
+    CameraSelectionDialog.h
 
 FORMS    += \
     AccountWindow.ui \

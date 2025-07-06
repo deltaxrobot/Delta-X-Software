@@ -189,6 +189,11 @@ void MainWindow::closeEvent(QCloseEvent *event)
     }
     else
     {
+        // Auto-save settings before closing
+        if (m_settingsPanel) {
+            m_settingsPanel->autoSaveSettings();
+        }
+        
         qApp->exit();
         event->accept();
     }
@@ -548,6 +553,11 @@ void MainWindow::onTreeViewItemClicked(const QModelIndex &index)
 
 MainWindow::~MainWindow()
 {
+    // Auto-save settings before destroying
+    if (m_settingsPanel) {
+        m_settingsPanel->autoSaveSettings();
+    }
+    
     VariableManager::instance().thread()->quit();
     VariableManager::instance().thread()->wait();
     delete VariableManager::instance().thread();

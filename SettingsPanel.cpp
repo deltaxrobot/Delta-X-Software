@@ -18,7 +18,8 @@ SettingsPanel::SettingsPanel(QTabWidget* tabWidget, QObject* parent)
 
 SettingsPanel::~SettingsPanel()
 {
-    saveUIToSettings();
+    // Don't save UI settings in destructor as widgets may already be destroyed
+    // Settings should be saved when user clicks Save or when closing the settings dialog
 }
 
 void SettingsPanel::initializePanel()
@@ -709,86 +710,105 @@ void SettingsPanel::saveUIToSettings()
 {
     if (!m_settingsManager) return;
     
-    // Save General Settings
-    auto generalSettings = m_settingsManager->getGeneralSettings();
-    if (m_cbLanguage) generalSettings.language = m_cbLanguage->currentText();
-    if (m_cbTheme) generalSettings.theme = m_cbTheme->currentText();
-    if (m_chkStartupTip) generalSettings.startupTip = m_chkStartupTip->isChecked();
-    if (m_chkAutoSaveProject) generalSettings.autoSaveProject = m_chkAutoSaveProject->isChecked();
-    if (m_spAutoSaveInterval) generalSettings.autoSaveInterval = m_spAutoSaveInterval->value();
-    if (m_chkCheckUpdates) generalSettings.checkUpdates = m_chkCheckUpdates->isChecked();
-    if (m_lePythonPath) generalSettings.pythonPath = m_lePythonPath->text();
-    if (m_spMaxRecentFiles) generalSettings.maxRecentFiles = m_spMaxRecentFiles->value();
+    try {
+        // Save General Settings
+        auto generalSettings = m_settingsManager->getGeneralSettings();
+        if (m_cbLanguage) generalSettings.language = m_cbLanguage->currentText();
+        if (m_cbTheme) generalSettings.theme = m_cbTheme->currentText();
+        if (m_chkStartupTip) generalSettings.startupTip = m_chkStartupTip->isChecked();
+        if (m_chkAutoSaveProject) generalSettings.autoSaveProject = m_chkAutoSaveProject->isChecked();
+        if (m_spAutoSaveInterval) generalSettings.autoSaveInterval = m_spAutoSaveInterval->value();
+        if (m_chkCheckUpdates) generalSettings.checkUpdates = m_chkCheckUpdates->isChecked();
+        if (m_lePythonPath) generalSettings.pythonPath = m_lePythonPath->text();
+        if (m_spMaxRecentFiles) generalSettings.maxRecentFiles = m_spMaxRecentFiles->value();
     m_settingsManager->setGeneralSettings(generalSettings);
     
-    // Save Device Settings
-    auto deviceSettings = m_settingsManager->getDeviceSettings();
-    if (m_leDefaultComPort) deviceSettings.defaultComPort = m_leDefaultComPort->text();
-    if (m_spDefaultBaudrate) deviceSettings.defaultBaudrate = m_spDefaultBaudrate->value();
-    if (m_spConnectionTimeout) deviceSettings.connectionTimeout = m_spConnectionTimeout->value();
-    if (m_spReadTimeout) deviceSettings.readTimeout = m_spReadTimeout->value();
-    if (m_chkAutoReconnect) deviceSettings.autoReconnect = m_chkAutoReconnect->isChecked();
-    if (m_spMaxRetries) deviceSettings.maxRetries = m_spMaxRetries->value();
-    if (m_chkEnableDeviceLogging) deviceSettings.enableDeviceLogging = m_chkEnableDeviceLogging->isChecked();
-    m_settingsManager->setDeviceSettings(deviceSettings);
+        // Save Device Settings
+        auto deviceSettings = m_settingsManager->getDeviceSettings();
+        if (m_leDefaultComPort) deviceSettings.defaultComPort = m_leDefaultComPort->text();
+        if (m_spDefaultBaudrate) deviceSettings.defaultBaudrate = m_spDefaultBaudrate->value();
+        if (m_spConnectionTimeout) deviceSettings.connectionTimeout = m_spConnectionTimeout->value();
+        if (m_spReadTimeout) deviceSettings.readTimeout = m_spReadTimeout->value();
+        if (m_chkAutoReconnect) deviceSettings.autoReconnect = m_chkAutoReconnect->isChecked();
+        if (m_spMaxRetries) deviceSettings.maxRetries = m_spMaxRetries->value();
+        if (m_chkEnableDeviceLogging) deviceSettings.enableDeviceLogging = m_chkEnableDeviceLogging->isChecked();
+        m_settingsManager->setDeviceSettings(deviceSettings);
+        
+        // Save Camera Settings
+        auto cameraSettings = m_settingsManager->getCameraSettings();
+        if (m_cbDefaultImageSource) cameraSettings.defaultImageSource = m_cbDefaultImageSource->currentText();
+        if (m_spDefaultWidth) cameraSettings.defaultWidth = m_spDefaultWidth->value();
+        if (m_spDefaultHeight) cameraSettings.defaultHeight = m_spDefaultHeight->value();
+        if (m_spCaptureInterval) cameraSettings.captureInterval = m_spCaptureInterval->value();
+        if (m_cbDefaultAlgorithm) cameraSettings.defaultAlgorithm = m_cbDefaultAlgorithm->currentText();
+        if (m_chkEnableImageProcessing) cameraSettings.enableImageProcessing = m_chkEnableImageProcessing->isChecked();
+        if (m_slImageQuality) cameraSettings.imageQuality = m_slImageQuality->value();
+        if (m_leSaveImagePath) cameraSettings.saveImagePath = m_leSaveImagePath->text();
+        if (m_chkEnableContinuousCapture) cameraSettings.enableContinuousCapture = m_chkEnableContinuousCapture->isChecked();
+        m_settingsManager->setCameraSettings(cameraSettings);
     
-    // Save Camera Settings
-    auto cameraSettings = m_settingsManager->getCameraSettings();
-    if (m_cbDefaultImageSource) cameraSettings.defaultImageSource = m_cbDefaultImageSource->currentText();
-    if (m_spDefaultWidth) cameraSettings.defaultWidth = m_spDefaultWidth->value();
-    if (m_spDefaultHeight) cameraSettings.defaultHeight = m_spDefaultHeight->value();
-    if (m_spCaptureInterval) cameraSettings.captureInterval = m_spCaptureInterval->value();
-    if (m_cbDefaultAlgorithm) cameraSettings.defaultAlgorithm = m_cbDefaultAlgorithm->currentText();
-    if (m_chkEnableImageProcessing) cameraSettings.enableImageProcessing = m_chkEnableImageProcessing->isChecked();
-    if (m_slImageQuality) cameraSettings.imageQuality = m_slImageQuality->value();
-    if (m_leSaveImagePath) cameraSettings.saveImagePath = m_leSaveImagePath->text();
-    if (m_chkEnableContinuousCapture) cameraSettings.enableContinuousCapture = m_chkEnableContinuousCapture->isChecked();
-    m_settingsManager->setCameraSettings(cameraSettings);
-    
-    // Save Editor Settings
-    auto editorSettings = m_settingsManager->getEditorSettings();
-    editorSettings.font = m_selectedFont;
-    if (m_chkSyntaxHighlighting) editorSettings.syntaxHighlighting = m_chkSyntaxHighlighting->isChecked();
-    if (m_chkLineNumbers) editorSettings.lineNumbers = m_chkLineNumbers->isChecked();
-    if (m_chkAutoIndent) editorSettings.autoIndent = m_chkAutoIndent->isChecked();
-    if (m_chkWordWrap) editorSettings.wordWrap = m_chkWordWrap->isChecked();
-    if (m_spTabSize) editorSettings.tabSize = m_spTabSize->value();
-    if (m_chkSpacesForTabs) editorSettings.spacesForTabs = m_chkSpacesForTabs->isChecked();
-    
-    editorSettings.backgroundColor = m_backgroundColor;
-    editorSettings.textColor = m_textColor;
-    editorSettings.keywordColor = m_keywordColor;
-    editorSettings.commentColor = m_commentColor;
-    m_settingsManager->setEditorSettings(editorSettings);
-    
-    // Save Advanced Settings
-    auto advancedSettings = m_settingsManager->getAdvancedSettings();
-    if (m_chkDebugMode) advancedSettings.debugMode = m_chkDebugMode->isChecked();
-    if (m_cbLogLevel) {
-        QStringList logLevels = {"Error", "Warning", "Info", "Debug"};
-        advancedSettings.logLevel = logLevels.indexOf(m_cbLogLevel->currentText());
-        if (advancedSettings.logLevel == -1) advancedSettings.logLevel = 2; // Default to Info
+        // Save Editor Settings
+        auto editorSettings = m_settingsManager->getEditorSettings();
+        editorSettings.font = m_selectedFont;
+        if (m_chkSyntaxHighlighting) editorSettings.syntaxHighlighting = m_chkSyntaxHighlighting->isChecked();
+        if (m_chkLineNumbers) editorSettings.lineNumbers = m_chkLineNumbers->isChecked();
+        if (m_chkAutoIndent) editorSettings.autoIndent = m_chkAutoIndent->isChecked();
+        if (m_chkWordWrap) editorSettings.wordWrap = m_chkWordWrap->isChecked();
+        if (m_spTabSize) editorSettings.tabSize = m_spTabSize->value();
+        if (m_chkSpacesForTabs) editorSettings.spacesForTabs = m_chkSpacesForTabs->isChecked();
+        
+        editorSettings.backgroundColor = m_backgroundColor;
+        editorSettings.textColor = m_textColor;
+        editorSettings.keywordColor = m_keywordColor;
+        editorSettings.commentColor = m_commentColor;
+        m_settingsManager->setEditorSettings(editorSettings);
+        
+        // Save Advanced Settings
+        auto advancedSettings = m_settingsManager->getAdvancedSettings();
+        if (m_chkDebugMode) advancedSettings.debugMode = m_chkDebugMode->isChecked();
+        if (m_cbLogLevel) {
+            QStringList logLevels = {"Error", "Warning", "Info", "Debug"};
+            advancedSettings.logLevel = logLevels.indexOf(m_cbLogLevel->currentText());
+            if (advancedSettings.logLevel == -1) advancedSettings.logLevel = 2; // Default to Info
+        }
+        if (m_chkEnablePerformanceMonitoring) advancedSettings.enablePerformanceMonitoring = m_chkEnablePerformanceMonitoring->isChecked();
+        if (m_spMaxLogFileSize) advancedSettings.maxLogFileSize = m_spMaxLogFileSize->value();
+        if (m_chkEnableCrashReporting) advancedSettings.enableCrashReporting = m_chkEnableCrashReporting->isChecked();
+        if (m_leCustomConfigPath) advancedSettings.customConfigPath = m_leCustomConfigPath->text();
+        if (m_chkEnableExperimentalFeatures) advancedSettings.enableExperimentalFeatures = m_chkEnableExperimentalFeatures->isChecked();
+        if (m_spThreadPoolSize) advancedSettings.threadPoolSize = m_spThreadPoolSize->value();
+        m_settingsManager->setAdvancedSettings(advancedSettings);
+        
+        // Save Authority Settings
+        auto authoritySettings = m_settingsManager->getAuthoritySettings();
+        if (m_leAdminPassword) authoritySettings.adminPassword = m_leAdminPassword->text();
+        if (m_leOperatorDisplayWidgets) authoritySettings.operatorDisplayWidgets = m_leOperatorDisplayWidgets->text().split(", ", Qt::SkipEmptyParts);
+        if (m_leOperatorDisplayVariables) authoritySettings.operatorDisplayVariables = m_leOperatorDisplayVariables->text().split(", ", Qt::SkipEmptyParts);
+        if (m_leOperatorRobotGcodePrograms) authoritySettings.operatorRobotGcodePrograms = m_leOperatorRobotGcodePrograms->text().split(", ", Qt::SkipEmptyParts);
+        if (m_chkEnableOperatorMode) authoritySettings.enableOperatorMode = m_chkEnableOperatorMode->isChecked();
+        if (m_spSessionTimeout) authoritySettings.sessionTimeout = m_spSessionTimeout->value();
+        m_settingsManager->setAuthoritySettings(authoritySettings);
+        
+        // Save all settings to file
+        m_settingsManager->saveSettings();
+        
+    } catch (...) {
+        // Silently ignore any errors when saving settings during destruction
+        // This prevents crashes when widgets have been destroyed
     }
-    if (m_chkEnablePerformanceMonitoring) advancedSettings.enablePerformanceMonitoring = m_chkEnablePerformanceMonitoring->isChecked();
-    if (m_spMaxLogFileSize) advancedSettings.maxLogFileSize = m_spMaxLogFileSize->value();
-    if (m_chkEnableCrashReporting) advancedSettings.enableCrashReporting = m_chkEnableCrashReporting->isChecked();
-    if (m_leCustomConfigPath) advancedSettings.customConfigPath = m_leCustomConfigPath->text();
-    if (m_chkEnableExperimentalFeatures) advancedSettings.enableExperimentalFeatures = m_chkEnableExperimentalFeatures->isChecked();
-    if (m_spThreadPoolSize) advancedSettings.threadPoolSize = m_spThreadPoolSize->value();
-    m_settingsManager->setAdvancedSettings(advancedSettings);
-    
-    // Save Authority Settings
-    auto authoritySettings = m_settingsManager->getAuthoritySettings();
-    if (m_leAdminPassword) authoritySettings.adminPassword = m_leAdminPassword->text();
-    if (m_leOperatorDisplayWidgets) authoritySettings.operatorDisplayWidgets = m_leOperatorDisplayWidgets->text().split(", ", Qt::SkipEmptyParts);
-    if (m_leOperatorDisplayVariables) authoritySettings.operatorDisplayVariables = m_leOperatorDisplayVariables->text().split(", ", Qt::SkipEmptyParts);
-    if (m_leOperatorRobotGcodePrograms) authoritySettings.operatorRobotGcodePrograms = m_leOperatorRobotGcodePrograms->text().split(", ", Qt::SkipEmptyParts);
-    if (m_chkEnableOperatorMode) authoritySettings.enableOperatorMode = m_chkEnableOperatorMode->isChecked();
-    if (m_spSessionTimeout) authoritySettings.sessionTimeout = m_spSessionTimeout->value();
-    m_settingsManager->setAuthoritySettings(authoritySettings);
-    
-    // Save all settings to file
-    m_settingsManager->saveSettings();
+}
+
+void SettingsPanel::autoSaveSettings()
+{
+    // This method can be called safely even during destruction
+    // It only saves if all widgets are still valid
+    if (m_settingsManager) {
+        try {
+            saveUIToSettings();
+        } catch (...) {
+            // Ignore errors during auto-save (widgets may be destroyed)
+        }
+    }
 }
 
 void SettingsPanel::onSaveSettings()

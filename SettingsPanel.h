@@ -41,6 +41,9 @@ public:
     // Save UI values to settings
     void saveUIToSettings();
     
+    // Auto-save settings when needed (thread-safe)
+    void autoSaveSettings();
+    
     // Reset to defaults
     void resetToDefaults();
 

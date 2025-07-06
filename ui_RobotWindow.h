@@ -10140,7 +10140,7 @@ public:
 
         pbRunServer->setDefault(false);
         pbOpenWebControl->setDefault(false);
-        twModule->setCurrentIndex(0);
+        twModule->setCurrentIndex(1);
         twGcodeEditor->setCurrentIndex(0);
         pbImageMapping->setDefault(false);
         cbImageSource->setCurrentIndex(0);

@@ -2,6 +2,8 @@
 #include "ui_RobotWindow.h"
 #include "SoftwareManager.h"
 #include "MainWindow.h"
+#include "ModernDialog.h"
+#include "CameraSelectionDialog.h"
 
 RobotWindow::RobotWindow(QWidget *parent, QString projectName) :
     QMainWindow(parent),
@@ -11,6 +13,8 @@ RobotWindow::RobotWindow(QWidget *parent, QString projectName) :
     m_batchUpdateTimer(new QTimer(this))
 {
     ui->setupUi(this);
+
+    SoftwareLog("Load project: " + ProjectName);
     
     // Initialize batch update timer
     m_batchUpdateTimer->setSingleShot(true);
@@ -3864,23 +3868,11 @@ void RobotWindow::LoadWebcam()
 {
     if (!ui->pbLoadCamera->isChecked() || ui->pbLoadCamera->text() == "Load Camera")
     {
-        QStringList cameraItems;
-
-        QList<QCameraInfo> cameras = QCameraInfo::availableCameras();
-        for (int i = 0; i < cameras.size(); i++)
-        {
-            cameraItems.append(QString::number(i) + QString(" - ") + cameras[i].description());
-        }
-
         bool ok;
-        QString text = QInputDialog::getItem(this, tr("Open camera"), tr("Camera ID: "), cameraItems, 0, false, &ok);
+        int cameraID = CameraSelectionDialog::getCameraID(this, &ok);
 
-        if (ok && !text.isEmpty())
+        if (ok && cameraID >= 0)
         {
-            // Get webcam ID
-            QString cameraIDText = text.mid(0, text.indexOf(" - "));
-            int cameraID = cameraIDText.toInt();
-
             CameraInstance->RunningCamera = cameraID;
 
             CameraInstance->Width = ui->leImageWidth->text().toInt();
