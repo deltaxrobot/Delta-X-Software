@@ -160,7 +160,6 @@ public:
     QSpacerItem *horizontalSpacer_64;
     QFrame *fCameraPara;
     QHBoxLayout *horizontalLayout_28;
-    QLabel *lbMatSize;
     QToolButton *tbAutoResizeImage;
     QLabel *label_178;
     QLineEdit *leImageWidth;
@@ -202,6 +201,7 @@ public:
     QPushButton *pbFilterTool;
     QPushButton *pbGetSizeTool;
     QLabel *lbDisplayRatio;
+    QLabel *lbMatSize;
     QPushButton *pbZoomInCameraView;
     QPushButton *pbZoomOutCameraView;
     QLabel *lbDisplayRatio_3;
@@ -2276,7 +2276,7 @@ public:
         saObjectDetecting->setWidgetResizable(true);
         wObjectDetecting = new QWidget();
         wObjectDetecting->setObjectName(QString::fromUtf8("wObjectDetecting"));
-        wObjectDetecting->setGeometry(QRect(0, 0, 590, 2900));
+        wObjectDetecting->setGeometry(QRect(0, -180, 590, 2900));
         wObjectDetecting->setMinimumSize(QSize(100, 2900));
         wObjectDetecting->setStyleSheet(QString::fromUtf8("QWidget#wObjectDetecting\n"
 "{	\n"
@@ -2495,11 +2495,6 @@ public:
         horizontalLayout_28->setContentsMargins(11, 11, 11, 11);
         horizontalLayout_28->setObjectName(QString::fromUtf8("horizontalLayout_28"));
         horizontalLayout_28->setContentsMargins(5, 5, 5, 5);
-        lbMatSize = new QLabel(fCameraPara);
-        lbMatSize->setObjectName(QString::fromUtf8("lbMatSize"));
-
-        horizontalLayout_28->addWidget(lbMatSize);
-
         tbAutoResizeImage = new QToolButton(fCameraPara);
         tbAutoResizeImage->setObjectName(QString::fromUtf8("tbAutoResizeImage"));
         sizePolicy.setHeightForWidth(tbAutoResizeImage->sizePolicy().hasHeightForWidth());
@@ -2943,6 +2938,11 @@ public:
         lbDisplayRatio->setObjectName(QString::fromUtf8("lbDisplayRatio"));
 
         verticalLayout_10->addWidget(lbDisplayRatio);
+
+        lbMatSize = new QLabel(frame_17);
+        lbMatSize->setObjectName(QString::fromUtf8("lbMatSize"));
+
+        verticalLayout_10->addWidget(lbMatSize);
 
         pbZoomInCameraView = new QPushButton(frame_17);
         pbZoomInCameraView->setObjectName(QString::fromUtf8("pbZoomInCameraView"));
@@ -10363,7 +10363,6 @@ public:
         pbLoadTestImage->setToolTip(QCoreApplication::translate("RobotWindow", "Load Image", nullptr));
 #endif // QT_CONFIG(tooltip)
         pbLoadTestImage->setText(QCoreApplication::translate("RobotWindow", "Load Image", nullptr));
-        lbMatSize->setText(QCoreApplication::translate("RobotWindow", "Re: 800x500", nullptr));
 #if QT_CONFIG(tooltip)
         tbAutoResizeImage->setToolTip(QCoreApplication::translate("RobotWindow", "Creat New Editor", nullptr));
 #endif // QT_CONFIG(tooltip)
@@ -10420,6 +10419,7 @@ public:
 #endif // QT_CONFIG(tooltip)
         pbGetSizeTool->setText(QCoreApplication::translate("RobotWindow", "Object Size Tool", nullptr));
         lbDisplayRatio->setText(QCoreApplication::translate("RobotWindow", "Ratio: 100%", nullptr));
+        lbMatSize->setText(QCoreApplication::translate("RobotWindow", "Re: 800x500", nullptr));
         pbZoomInCameraView->setText(QCoreApplication::translate("RobotWindow", "Zoom In", nullptr));
         pbZoomOutCameraView->setText(QCoreApplication::translate("RobotWindow", "Zoom Out", nullptr));
         lbDisplayRatio_3->setText(QCoreApplication::translate("RobotWindow", "Ctrl + Scroll", nullptr));

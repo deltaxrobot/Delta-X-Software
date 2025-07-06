@@ -180,6 +180,7 @@ public:
     QTimer* ShortcutKeyTimer;
     QTimer UpdateUITimer;
     bool isLoadingSettings = false;
+    bool isCameraLoaded = false;  // Track camera state internally
     
     QString ProjectName = "project0";
     QString ProjectTitile = "Project 0";

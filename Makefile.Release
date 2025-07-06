@@ -1409,10 +1409,6 @@ release\moc_Authority.cpp: Authority.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QMutexLocker \
 		GcodeReference.h \
 		ui_GcodeReference.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QApplication \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QGridLayout \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QListWidget \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QTextEdit \
 		DrawingExporter.h \
 		DrawingWidget.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QLineEdit \
@@ -2600,48 +2596,6 @@ release\moc_GcodeReference.cpp: GcodeReference.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qvector2d.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qtouchdevice.h \
 		ui_GcodeReference.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QVariant \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QApplication \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qapplication.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qcoreapplication.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qeventloop.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qdesktopwidget.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qguiapplication.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qinputmethod.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QGridLayout \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qgridlayout.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qlayout.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qlayoutitem.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qboxlayout.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QHBoxLayout \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QListWidget \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qlistwidget.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qlistview.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qabstractitemview.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qabstractscrollarea.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qframe.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qabstractitemmodel.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qitemselectionmodel.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qabstractitemdelegate.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qstyleoption.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qabstractspinbox.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qvalidator.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qregularexpression.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qicon.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qslider.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qabstractslider.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qstyle.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qtabbar.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qtabwidget.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qrubberband.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QTextEdit \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qtextedit.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qtextdocument.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qtextoption.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qtextcursor.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qtextformat.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qpen.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QVBoxLayout \
 		release\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2019_64\bin\moc.exe
 	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include D:/working/source/Delta-X-Software/release/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -ID:/working/source/Delta-X-Software -ID:/working/source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" GcodeReference.h -o release\moc_GcodeReference.cpp
@@ -3332,10 +3286,6 @@ release\moc_GcodeScript.cpp: GcodeScript.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QMutexLocker \
 		GcodeReference.h \
 		ui_GcodeReference.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QApplication \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QGridLayout \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QListWidget \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QTextEdit \
 		DrawingExporter.h \
 		DrawingWidget.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QLineEdit \
@@ -4774,10 +4724,6 @@ release\moc_MainWindow.cpp: MainWindow.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QMutexLocker \
 		GcodeReference.h \
 		ui_GcodeReference.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QApplication \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QGridLayout \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QListWidget \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QTextEdit \
 		DrawingExporter.h \
 		DrawingWidget.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QLineEdit \
@@ -4832,6 +4778,7 @@ release\moc_MainWindow.cpp: MainWindow.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QFileInfo \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QGraphicsView \
 		VersionManager.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QApplication \
 		C:\Qt\5.15.2\msvc2019_64\include\QtNetwork\QSslSocket \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QHeaderView \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QAbstractItemView \
@@ -6308,10 +6255,6 @@ release\moc_ProjectManager.cpp: ProjectManager.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QMutexLocker \
 		GcodeReference.h \
 		ui_GcodeReference.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QApplication \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QGridLayout \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QListWidget \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QTextEdit \
 		DrawingExporter.h \
 		DrawingWidget.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QLineEdit \
@@ -7049,10 +6992,6 @@ release\moc_RobotWindow.cpp: RobotWindow.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QPushButton \
 		GcodeReference.h \
 		ui_GcodeReference.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QApplication \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QGridLayout \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QListWidget \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QTextEdit \
 		DrawingExporter.h \
 		DrawingWidget.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QLineEdit \
@@ -8439,10 +8378,6 @@ release\moc_TabDashboard.cpp: TabDashboard.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QMutexLocker \
 		GcodeReference.h \
 		ui_GcodeReference.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QApplication \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QGridLayout \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QListWidget \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QTextEdit \
 		DrawingExporter.h \
 		DrawingWidget.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QLineEdit \
@@ -10896,48 +10831,6 @@ release\moc_GcodeReference.cpp: GcodeReference.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qvector2d.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qtouchdevice.h \
 		ui_GcodeReference.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QVariant \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QApplication \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qapplication.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qcoreapplication.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qeventloop.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qdesktopwidget.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qguiapplication.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qinputmethod.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QGridLayout \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qgridlayout.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qlayout.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qlayoutitem.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qboxlayout.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QHBoxLayout \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QListWidget \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qlistwidget.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qlistview.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qabstractitemview.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qabstractscrollarea.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qframe.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qabstractitemmodel.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qitemselectionmodel.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qabstractitemdelegate.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qstyleoption.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qabstractspinbox.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qvalidator.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qregularexpression.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qicon.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qslider.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qabstractslider.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qstyle.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qtabbar.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qtabwidget.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qrubberband.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QTextEdit \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qtextedit.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qtextdocument.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qtextoption.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qtextcursor.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qtextformat.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qpen.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QVBoxLayout \
 		release\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2019_64\bin\moc.exe
 	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include D:/working/source/Delta-X-Software/release/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -ID:/working/source/Delta-X-Software -ID:/working/source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" GcodeReference.h -o release\moc_GcodeReference.cpp
@@ -13207,10 +13100,6 @@ release\main.obj: main.cpp RobotWindow.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QPushButton \
 		GcodeReference.h \
 		ui_GcodeReference.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QApplication \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QGridLayout \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QListWidget \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QTextEdit \
 		DrawingExporter.h \
 		DrawingWidget.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QLineEdit \
@@ -13273,6 +13162,7 @@ release\main.obj: main.cpp RobotWindow.h \
 		Authority.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QGraphicsView \
 		VersionManager.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QApplication \
 		C:\Qt\5.15.2\msvc2019_64\include\QtNetwork\QSslSocket \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QHeaderView \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QAbstractItemView \
@@ -13393,41 +13283,7 @@ release\AccountWindow.obj: AccountWindow.cpp AccountWindow.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qtouchdevice.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qtabwidget.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qicon.h \
-		ui_AccountWindow.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QVariant \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QAction \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qaction.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qactiongroup.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QApplication \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qapplication.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qcoreapplication.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qeventloop.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qdesktopwidget.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qguiapplication.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qinputmethod.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QFrame \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qframe.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QMenu \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qmenu.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QMenuBar \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qmenubar.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QPushButton \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qpushbutton.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qabstractbutton.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QRadioButton \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qradiobutton.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QSplitter \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qsplitter.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QStatusBar \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qstatusbar.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QToolButton \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qtoolbutton.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QVBoxLayout \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qboxlayout.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qlayout.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qlayoutitem.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qgridlayout.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QWidget
+		ui_AccountWindow.h
 
 release\Authority.obj: Authority.cpp Authority.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QObject \
@@ -14112,10 +13968,6 @@ release\Authority.obj: Authority.cpp Authority.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QMutexLocker \
 		GcodeReference.h \
 		ui_GcodeReference.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QApplication \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QGridLayout \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QListWidget \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QTextEdit \
 		DrawingExporter.h \
 		DrawingWidget.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QLineEdit \
@@ -15049,40 +14901,7 @@ release\FilterWindow.obj: FilterWindow.cpp FilterWindow.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QPushButton \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qpushbutton.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qabstractbutton.h \
-		ui_FilterWindow.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QApplication \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qapplication.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qcoreapplication.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qeventloop.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qdesktopwidget.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qguiapplication.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qinputmethod.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QCheckBox \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qcheckbox.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QComboBox \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qcombobox.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qabstractitemdelegate.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qstyleoption.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qabstractspinbox.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qvalidator.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qregularexpression.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qstyle.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qtabbar.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qtabwidget.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qrubberband.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QFrame \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QGridLayout \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qgridlayout.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qlayout.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qlayoutitem.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qboxlayout.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QGroupBox \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qgroupbox.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QHBoxLayout \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QLabel \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QSlider \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QSpacerItem \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QVBoxLayout
+		ui_FilterWindow.h
 
 release\GcodeHighlighter.obj: GcodeHighlighter.cpp GcodeHighlighter.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QSyntaxHighlighter \
@@ -15300,49 +15119,7 @@ release\GcodeReference.obj: GcodeReference.cpp GcodeReference.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qfiledevice.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qvector2d.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qtouchdevice.h \
-		ui_GcodeReference.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QVariant \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QApplication \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qapplication.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qcoreapplication.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qeventloop.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qdesktopwidget.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qguiapplication.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qinputmethod.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QGridLayout \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qgridlayout.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qlayout.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qlayoutitem.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qboxlayout.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QHBoxLayout \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QListWidget \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qlistwidget.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qlistview.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qabstractitemview.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qabstractscrollarea.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qframe.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qabstractitemmodel.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qitemselectionmodel.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qabstractitemdelegate.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qstyleoption.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qabstractspinbox.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qvalidator.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qregularexpression.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qicon.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qslider.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qabstractslider.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qstyle.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qtabbar.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qtabwidget.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qrubberband.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QTextEdit \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qtextedit.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qtextdocument.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qtextoption.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qtextcursor.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qtextformat.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qpen.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QVBoxLayout
+		ui_GcodeReference.h
 
 release\GcodeScript.obj: GcodeScript.cpp GcodeScript.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QObject \
@@ -16030,10 +15807,6 @@ release\GcodeScript.obj: GcodeScript.cpp GcodeScript.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QMutexLocker \
 		GcodeReference.h \
 		ui_GcodeReference.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QApplication \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QGridLayout \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QListWidget \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QTextEdit \
 		DrawingExporter.h \
 		DrawingWidget.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QLineEdit \
@@ -17743,10 +17516,6 @@ release\MainWindow.obj: MainWindow.cpp MainWindow.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QMutexLocker \
 		GcodeReference.h \
 		ui_GcodeReference.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QApplication \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QGridLayout \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QListWidget \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QTextEdit \
 		DrawingExporter.h \
 		DrawingWidget.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QLineEdit \
@@ -17801,31 +17570,27 @@ release\MainWindow.obj: MainWindow.cpp MainWindow.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QFileInfo \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QGraphicsView \
 		VersionManager.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QApplication \
 		C:\Qt\5.15.2\msvc2019_64\include\QtNetwork\QSslSocket \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QHeaderView \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QAbstractItemView \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QAction \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QClipboard \
 		ui_MainWindow.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QIcon \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QFrame \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QGroupBox \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QPlainTextEdit \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QScrollArea \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QSpacerItem \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QTreeView \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QTreeWidget \
 		SettingsManager.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QPoint \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QStandardPaths \
 		SettingsPanel.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QGridLayout \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QFormLayout \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QSpinBox \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QDoubleSpinBox \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QFontDialog \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QColorDialog \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QFileDialog \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QSlider
+		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QGroupBox \
+		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QSlider \
+		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QScrollArea
 
 release\Object.obj: Object.cpp 
 
@@ -18933,10 +18698,6 @@ release\ProjectManager.obj: ProjectManager.cpp ProjectManager.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QMutexLocker \
 		GcodeReference.h \
 		ui_GcodeReference.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QApplication \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QGridLayout \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QListWidget \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QTextEdit \
 		DrawingExporter.h \
 		DrawingWidget.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QLineEdit \
@@ -19670,10 +19431,6 @@ release\RobotWindow.obj: RobotWindow.cpp RobotWindow.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QPushButton \
 		GcodeReference.h \
 		ui_GcodeReference.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QApplication \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QGridLayout \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QListWidget \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QTextEdit \
 		DrawingExporter.h \
 		DrawingWidget.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QLineEdit \
@@ -19732,35 +19489,24 @@ release\RobotWindow.obj: RobotWindow.cpp RobotWindow.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QTabBar \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QFileInfo \
 		ui_RobotWindow.h \
-		ImageViewer.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QGraphicsView \
-		C:\Qt\5.15.2\msvc2019_64\include\QtPrintSupport\qtprintsupportglobal.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtPrintSupport\qtprintsupport-config.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QIcon \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QAction \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QFrame \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QGroupBox \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QHeaderView \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QScrollArea \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QSlider \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QSpacerItem \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QSplitter \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QTableView \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QTreeView \
-		codeeditor.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QTextDocument \
 		MainWindow.h \
 		TabDashboard.h \
 		Authority.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QGraphicsView \
 		VersionManager.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QApplication \
 		C:\Qt\5.15.2\msvc2019_64\include\QtNetwork\QSslSocket \
+		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QHeaderView \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QAbstractItemView \
+		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QAction \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QClipboard \
 		ModernDialog.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QListWidget \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QFontMetrics \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QGraphicsDropShadowEffect \
 		CameraSelectionDialog.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QListWidgetItem
+		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QListWidgetItem \
+		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QIcon
 
 release\SettingsManager.obj: SettingsManager.cpp SettingsManager.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QObject \
@@ -21123,10 +20869,6 @@ release\SoftwareManager.obj: SoftwareManager.cpp SoftwareManager.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QMutexLocker \
 		GcodeReference.h \
 		ui_GcodeReference.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QApplication \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QGridLayout \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QListWidget \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QTextEdit \
 		DrawingExporter.h \
 		DrawingWidget.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QLineEdit \
@@ -21185,6 +20927,7 @@ release\SoftwareManager.obj: SoftwareManager.cpp SoftwareManager.h \
 		Authority.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QGraphicsView \
 		VersionManager.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QApplication \
 		C:\Qt\5.15.2\msvc2019_64\include\QtNetwork\QSslSocket \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QHeaderView \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QAbstractItemView \
@@ -21876,10 +21619,6 @@ release\TabDashboard.obj: TabDashboard.cpp TabDashboard.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QMutexLocker \
 		GcodeReference.h \
 		ui_GcodeReference.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QApplication \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QGridLayout \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QListWidget \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QTextEdit \
 		DrawingExporter.h \
 		DrawingWidget.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QLineEdit \
@@ -24089,10 +23828,6 @@ release\UnityTool.obj: UnityTool.cpp UnityTool.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QPushButton \
 		GcodeReference.h \
 		ui_GcodeReference.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QApplication \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QGridLayout \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QListWidget \
-		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QTextEdit \
 		DrawingExporter.h \
 		DrawingWidget.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QLineEdit \

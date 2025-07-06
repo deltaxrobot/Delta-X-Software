@@ -1701,6 +1701,7 @@ void RobotWindow::LoadRobotSettings()
     
     // Reset flag after loading
     isLoadingSettings = false;
+    isCameraLoaded = false;
 }
 
 void RobotWindow::LoadJoggingSettings(QSettings *setting)
@@ -3822,25 +3823,52 @@ void RobotWindow::UpdateCursorPosition(float x, float y)
 
 void RobotWindow::StartContinuousCapture(bool isCheck)
 {
-    if (isCheck == true)
-    {
-        ui->lbCameraState->setEnabled(true);
-        CameraInstance->IsCameraPause = false;
-        CameraTimer.start(ui->leCaptureInterval->text().toInt());
-
+    try {
         QString prefix = ProjectName + "." + ui->cbSelectedDetecting->currentText() + ".";
-        UpdateVariable(prefix + "IsOpen", true);
+        
+        if (isCheck == true)
+        {
+            // Check if camera is loaded first
+            if (CameraInstance->RunningCamera == -1 && CameraInstance->Source == "Webcam")
+            {
+                SoftwareLog("Warning: No camera loaded. Please load a camera first.");
+                ui->pbStartAcquisition->setChecked(false);
+                return;
+            }
+            
+            // Start continuous capture
+            ui->lbCameraState->setEnabled(true);
+            CameraInstance->IsCameraPause = false;
+            
+            // Validate capture interval
+            int interval = ui->leCaptureInterval->text().toInt();
+            if (interval < 10 || interval > 10000)
+            {
+                interval = 500; // Default to 500ms
+                ui->leCaptureInterval->setText("500");
+                SoftwareLog("Invalid capture interval, reset to 500ms");
+            }
+            
+            CameraTimer.start(interval);
+            UpdateVariable(prefix + "IsOpen", true);
+            SoftwareLog(QString("Continuous capture started with %1ms interval").arg(interval));
+        }
+        else
+        {
+            // Stop continuous capture
+            CameraInstance->IsCameraPause = true;
+            CameraTimer.stop();
+            UpdateVariable(prefix + "IsOpen", false);
+            SoftwareLog("Continuous capture stopped");
+        }
+        
+    } catch (const std::exception& e) {
+        SoftwareLog(QString("Error in StartContinuousCapture: %1").arg(e.what()));
+        ui->pbStartAcquisition->setChecked(false);
+    } catch (...) {
+        SoftwareLog("Unknown error in StartContinuousCapture");
+        ui->pbStartAcquisition->setChecked(false);
     }
-    else
-    {
-        CameraInstance->IsCameraPause = true;
-
-        CameraTimer.stop();
-
-        QString prefix = ProjectName + "." + ui->cbSelectedDetecting->currentText() + ".";
-        UpdateVariable(prefix + "IsOpen", false);
-    }
-
 }
 
 void RobotWindow::ChangeOutputDisplay(QString outputName)
@@ -3866,15 +3894,39 @@ void RobotWindow::ChangeOutputDisplay(QString outputName)
 
 void RobotWindow::LoadWebcam()
 {
-    if (!ui->pbLoadCamera->isChecked() || ui->pbLoadCamera->text() == "Load Camera")
+    // Debug: Log current button state
+    SoftwareLog(QString("LoadWebcam called - Button text: '%1', Checked: %2, isCameraLoaded: %3")
+                .arg(ui->pbLoadCamera->text())
+                .arg(ui->pbLoadCamera->isChecked() ? "true" : "false")
+                .arg(isCameraLoaded ? "true" : "false"));
+    
+    // Check if camera is currently loaded using internal flag
+    if (isCameraLoaded)
     {
+        // Stop camera
+        SoftwareLog("Stopping camera...");
+        
+        if (CameraTimer.isActive())
+        {
+            SoftwareLog("Stopping active camera capture...");
+        }
+        
+        // Call the improved StopCapture function
+        StopCapture();
+    }
+    else
+    {
+        // Load camera
+        SoftwareLog("Loading camera...");
+        
         bool ok;
         int cameraID = CameraSelectionDialog::getCameraID(this, &ok);
 
         if (ok && cameraID >= 0)
         {
+            SoftwareLog(QString("Loading camera %1...").arg(cameraID));
+            
             CameraInstance->RunningCamera = cameraID;
-
             CameraInstance->Width = ui->leImageWidth->text().toInt();
             CameraInstance->Height = ui->leImageHeight->text().toInt();
 
@@ -3886,14 +3938,21 @@ void RobotWindow::LoadWebcam()
         }
         else
         {
+            // User cancelled or invalid camera
             ui->pbLoadCamera->setChecked(false);
             CameraInstance->IsCameraPause = false;
             CameraInstance->RunningCamera = -1;
+            isCameraLoaded = false;  // Reset internal flag
+            
+            if (!ok)
+            {
+                SoftwareLog("Camera selection cancelled");
+            }
+            else
+            {
+                SoftwareLog("Invalid camera ID selected");
+            }
         }
-    }
-    else
-    {
-        StopCapture();
     }
 }
 
@@ -3958,17 +4017,55 @@ void RobotWindow::LoadImages()
 
 void RobotWindow::StopCapture()
 {
-    ui->lbCameraState->setEnabled(false);
-    CameraInstance->WebcamInstance->release();
-    CameraInstance->RunningCamera = -1;
-    CameraInstance->IsCameraPause = false;
-    ui->pbLoadCamera->setText("Load Camera");
-    ui->pbStartAcquisition->setChecked(false);
-
-    CameraTimer.stop();
-
-    QString prefix = ProjectName + "." + ui->cbSelectedDetecting->currentText() + ".";
-    UpdateVariable(prefix + "IsOpen", false);
+    try {
+        // Stop camera timer first
+        CameraTimer.stop();
+        
+        // Update UI state
+        ui->lbCameraState->setEnabled(false);
+        ui->pbLoadCamera->setText("Load Camera");
+        ui->pbStartAcquisition->setChecked(false);
+        
+        // Stop different camera types safely
+        if (CameraInstance->Source == "Webcam")
+        {
+            // Thread-safe webcam release
+            QMetaObject::invokeMethod(CameraInstance, [this]() {
+                if (CameraInstance->WebcamInstance && CameraInstance->WebcamInstance->isOpened())
+                {
+                    CameraInstance->WebcamInstance->release();
+                }
+            }, Qt::QueuedConnection);
+        }
+        else if (CameraInstance->Source == "Industrial Camera")
+        {
+            // Stop industrial camera if plugin exists
+            if (industrialCameraPlugin)
+            {
+                QMetaObject::invokeMethod(industrialCameraPlugin, "StopCapture", Qt::QueuedConnection);
+            }
+        }
+        
+        // Reset camera state
+        CameraInstance->RunningCamera = -1;
+        CameraInstance->IsCameraPause = false;
+        CameraInstance->OriginWidth = 0;
+        CameraInstance->OriginHeight = 0;
+        isCameraLoaded = false;  // Reset internal flag
+        
+        // Update settings
+        QString prefix = ProjectName + "." + ui->cbSelectedDetecting->currentText() + ".";
+        UpdateVariable(prefix + "IsOpen", false);
+        UpdateVariable(prefix + "CameraID", -1);
+        
+        // Log the action
+        SoftwareLog("Camera stopped successfully");
+        
+    } catch (const std::exception& e) {
+        SoftwareLog(QString("Error stopping camera: %1").arg(e.what()));
+    } catch (...) {
+        SoftwareLog("Unknown error occurred while stopping camera");
+    }
 }
 
 void RobotWindow::OpenColorFilterWindow()
@@ -5319,13 +5416,32 @@ void RobotWindow::UpdateCameraConnectedState(bool isOpen)
     if (isOpen == true)
     {
         ui->pbLoadCamera->setText("Stop Camera");
+        ui->pbLoadCamera->setChecked(true);  // Set button to checked state
+        isCameraLoaded = true;  // Set internal flag
 
-        ui->leImageWidth->setText(QString::number(CameraInstance->Width));
-        ui->leImageHeight->setText(QString::number(CameraInstance->Height));
+        // ui->leImageWidth->setText(QString::number(CameraInstance->Width));
+        // ui->leImageHeight->setText(QString::number(CameraInstance->Height));
+
+        QTimer::singleShot(2000, this, [this]() {
+            ui->leImageWidth->returnPressed();
+        });
+
+        // Log the resolution being used
+        SoftwareLog(QString("Camera resolution set to: %1x%2").arg(CameraInstance->Width).arg(CameraInstance->Height));
 
         ui->pbStartAcquisition->setChecked(true);
         ui->pbStartAcquisition->clicked(true);
 
+        SoftwareLog("Camera connected and ready to capture");
+    }
+    else
+    {
+        // Camera failed to connect
+        ui->pbLoadCamera->setText("Load Camera");
+        ui->pbLoadCamera->setChecked(false);
+        isCameraLoaded = false;  // Reset internal flag
+        
+        SoftwareLog("Camera connection failed");
     }
     CloseLoadingPopup();
 }
@@ -5773,10 +5889,24 @@ void RobotWindow::ProcessUIEvent()
         ui->vlImageViewer->addWidget(ui->fImageViewer);
     }
 
-    int width = CameraInstance->CaptureImage.cols;
-    int height = CameraInstance->CaptureImage.rows;
+    // Get actual image size from CaptureImage to ensure accuracy
+    int width = 0;
+    int height = 0;
+    
+    if (!CameraInstance->CaptureImage.empty())
+    {
+        width = CameraInstance->CaptureImage.cols;
+        height = CameraInstance->CaptureImage.rows;
+    }
+    else
+    {
+        // Fallback to stored origin size if CaptureImage is empty
+        width = CameraInstance->OriginWidth;
+        height = CameraInstance->OriginHeight;
+    }
+    
     float ratio = ui->gvImageViewer->GetRatio() * 100;
-    ui->lbMatSize->setText(QString("Re: %1x%2").arg(width).arg(height));
+    ui->lbMatSize->setText(QString("Original: %1x%2").arg(width).arg(height));
     ui->lbDisplayRatio->setText(QString("Ratio: %1%").arg(ratio));
 
     if (ui->cbAutoUpdateObjectsDisplay->currentIndex() == 1)

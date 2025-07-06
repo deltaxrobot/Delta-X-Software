@@ -29,8 +29,10 @@ public:
     QList<cv::Mat> CaptureImages;
     float CameraFPS = 2;
     float CameraTimerInterval = 500;
-    int Width = 800;
-    int Height = 600;
+    int OriginWidth = 0;
+    int OriginHeight = 0;
+    int Width = 0;
+    int Height = 0;
     QString Source = "Webcam";
     int FrameID = -1;
 
@@ -43,6 +45,7 @@ signals:
 
 public slots:
     void OpenCamera(int id);
+    void OpenCameraWithResolution(int id, int width, int height);
     void GetImageFromExternal(cv::Mat mat);
     void GeneralCapture();
     void CaptureWebcam();
@@ -50,7 +53,7 @@ public slots:
     void SetTracking(int id);
 
  private:
-
+    cv::Size GetMaxResolution(cv::VideoCapture* cap);
     int trackingThreadId = 0;
 };
 

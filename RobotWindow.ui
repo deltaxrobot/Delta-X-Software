@@ -1843,7 +1843,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
                   <property name="geometry">
                    <rect>
                     <x>0</x>
-                    <y>0</y>
+                    <y>-180</y>
                     <width>590</width>
                     <height>2900</height>
                    </rect>
@@ -2338,13 +2338,6 @@ li.checked::marker { content: &quot;\2612&quot;; }
                             <property name="bottomMargin">
                              <number>5</number>
                             </property>
-                            <item>
-                             <widget class="QLabel" name="lbMatSize">
-                              <property name="text">
-                               <string>Re: 800x500</string>
-                              </property>
-                             </widget>
-                            </item>
                             <item>
                              <widget class="QToolButton" name="tbAutoResizeImage">
                               <property name="sizePolicy">
@@ -3370,6 +3363,13 @@ QFrame
                                 <widget class="QLabel" name="lbDisplayRatio">
                                  <property name="text">
                                   <string>Ratio: 100%</string>
+                                 </property>
+                                </widget>
+                               </item>
+                               <item>
+                                <widget class="QLabel" name="lbMatSize">
+                                 <property name="text">
+                                  <string>Re: 800x500</string>
                                  </property>
                                 </widget>
                                </item>
