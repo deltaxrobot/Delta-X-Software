@@ -16,6 +16,13 @@
 #include <QSettings>
 #include <QElapsedTimer>
 #include <QTimer>
+#include <QHeaderView>
+#include <QAbstractItemView>
+#include <QAction>
+#include <QApplication>
+#include <QClipboard>
+#include <QColor>
+#include <QFont>
 
 class SettingsPanel;
 
@@ -54,6 +61,7 @@ public:
     void SaveOperatorSettings();
     void LoadOperatorSettings();
     void SetDefaultPage(PageType pageType);
+    void InitVariableTreeView();
 
     TabDashboard* Dashboard;
     ProjectManager* SoftwareProjectManager;

@@ -21,10 +21,39 @@ void MainWindow::InitVariables()
     ui->tvVariables->setModel(&VariableTreeModel);
     VariableManager::instance().addItemModel(&VariableTreeModel);
 
+    // Initialize and style the variable tree view
+    InitVariableTreeView();
 
     VariableManager::instance().loadFromQSettings();
 
     connect(ui->tvVariables, &QTreeView::clicked, this, &MainWindow::onTreeViewItemClicked);
+    
+    // Enable context menu for better user interaction
+    ui->tvVariables->setContextMenuPolicy(Qt::ActionsContextMenu);
+    
+    // Add context menu actions
+    QAction* expandAllAction = new QAction("Expand All", this);
+    QAction* collapseAllAction = new QAction("Collapse All", this);
+    QAction* copyKeyAction = new QAction("Copy Key", this);
+    QAction* copyValueAction = new QAction("Copy Value", this);
+    
+    ui->tvVariables->addAction(expandAllAction);
+    ui->tvVariables->addAction(collapseAllAction);
+    ui->tvVariables->addAction(copyKeyAction);
+    ui->tvVariables->addAction(copyValueAction);
+    
+    connect(expandAllAction, &QAction::triggered, ui->tvVariables, &QTreeView::expandAll);
+    connect(collapseAllAction, &QAction::triggered, ui->tvVariables, &QTreeView::collapseAll);
+    connect(copyKeyAction, &QAction::triggered, [this]() {
+        if (!ui->leUpdateKey->text().isEmpty()) {
+            QApplication::clipboard()->setText(ui->leUpdateKey->text());
+        }
+    });
+    connect(copyValueAction, &QAction::triggered, [this]() {
+        if (!ui->leUpdateValue->text().isEmpty()) {
+            QApplication::clipboard()->setText(ui->leUpdateValue->text());
+        }
+    });
 
     // -------------------------
 
@@ -118,7 +147,8 @@ void MainWindow::InitVariables()
     InitProjectUX();
 
     //------------- Init Widgets -----------
-    ui->tvVariables->expandAll();
+    // Expand only top level items for better performance
+    ui->tvVariables->expandToDepth(1);
 
     //--------- Init Dialog -------------
     CloseDialog = new SmartDialog(this);
@@ -376,6 +406,9 @@ void MainWindow::UpdateVarToTreeView(QString key, QVariant value)
         }
         if (!child) {
             child = new QStandardItem(part);
+            // Style parent/folder items
+            child->setForeground(QColor(150, 255, 150)); // Light green for folders
+            child->setFont(QFont("Consolas", 10, QFont::Bold));
             parent->appendRow(child);
         }
         parent = child;
@@ -383,13 +416,30 @@ void MainWindow::UpdateVarToTreeView(QString key, QVariant value)
     bool found = false;
     for (int i = 0; i < parent->rowCount(); ++i) {
         if (parent->child(i)->text() == parts.last()) {
-            parent->child(i, 1)->setText(value.toString());
+            // Update existing value with proper styling
+            QStandardItem* valueItem = parent->child(i, 1);
+            if (valueItem) {
+                valueItem->setText(value.toString());
+                valueItem->setForeground(QColor(255, 255, 180)); // Light yellow for values
+                valueItem->setFont(QFont("Consolas", 10, QFont::Normal));
+            }
             found = true;
             break;
         }
     }
     if (!found) {
-        parent->appendRow(QList<QStandardItem*>() << new QStandardItem(parts.last()) << new QStandardItem(value.toString()));
+        QStandardItem* keyItem = new QStandardItem(parts.last());
+        QStandardItem* valueItem = new QStandardItem(value.toString());
+        
+        // Style the key item
+        keyItem->setForeground(QColor(180, 180, 255)); // Light blue for keys
+        keyItem->setFont(QFont("Consolas", 10, QFont::Bold));
+        
+        // Style the value item  
+        valueItem->setForeground(QColor(255, 255, 180)); // Light yellow for values
+        valueItem->setFont(QFont("Consolas", 10, QFont::Normal));
+        
+        parent->appendRow(QList<QStandardItem*>() << keyItem << valueItem);
     }
 }
 
@@ -778,5 +828,104 @@ void MainWindow::SetDefaultPage(PageType pageType)
         // Apply selected state to target button
         targetButton->setStyleSheet("background-color: rgb(24, 70, 139);");
     }
+}
+
+void MainWindow::InitVariableTreeView()
+{
+    // Set up headers for the tree view
+    QStringList headers;
+    headers << "Variable Key" << "Value";
+    VariableTreeModel.setHorizontalHeaderLabels(headers);
+    
+    // Configure visual properties
+    ui->tvVariables->setAlternatingRowColors(true);
+    ui->tvVariables->setSelectionBehavior(QAbstractItemView::SelectRows);
+    ui->tvVariables->setSelectionMode(QAbstractItemView::SingleSelection);
+    ui->tvVariables->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    ui->tvVariables->setUniformRowHeights(true);
+    ui->tvVariables->setSortingEnabled(false);
+    
+    // Set header properties
+    ui->tvVariables->header()->setStretchLastSection(false);
+    ui->tvVariables->header()->setSectionResizeMode(0, QHeaderView::Interactive);
+    ui->tvVariables->header()->setSectionResizeMode(1, QHeaderView::Stretch);
+    ui->tvVariables->header()->setDefaultSectionSize(200);
+    ui->tvVariables->header()->setMinimumSectionSize(100);
+    
+    // Style the tree view with improved appearance
+    ui->tvVariables->setStyleSheet(
+        "QTreeView {"
+            "background-color: rgb(40, 40, 43);"
+            "alternate-background-color: rgb(45, 45, 48);"
+            "color: rgb(220, 220, 220);"
+            "border: 1px solid rgb(60, 60, 63);"
+            "gridline-color: rgb(60, 60, 63);"
+            "selection-background-color: rgb(0, 122, 255);"
+            "selection-color: white;"
+            "font-family: 'Consolas', 'Courier New', monospace;"
+            "font-size: 10pt;"
+            "padding: 2px;"
+        "}"
+        "QTreeView::item {"
+            "height: 22px;"
+            "border: none;"
+            "padding: 2px 4px;"
+        "}"
+        "QTreeView::item:hover {"
+            "background-color: rgb(55, 55, 58);"
+        "}"
+        "QTreeView::item:selected {"
+            "background-color: rgb(0, 122, 255);"
+            "color: white;"
+        "}"
+        "QTreeView::branch {"
+            "background: transparent;"
+        "}"
+        "QTreeView::branch:has-children:!has-siblings:closed,"
+        "QTreeView::branch:closed:has-children:has-siblings {"
+            "background: transparent;"
+            "border: none;"
+        "}"
+        "QTreeView::branch:open:has-children:!has-siblings,"
+        "QTreeView::branch:open:has-children:has-siblings {"
+            "background: transparent;"
+            "border: none;"
+        "}"
+        "QTreeView::branch:has-siblings:!adjoins-item {"
+            "background: transparent;"
+            "border: none;"
+        "}"
+        "QTreeView::branch:has-siblings:adjoins-item {"
+            "background: transparent;"
+            "border: none;"
+        "}"
+        "QTreeView::branch:!has-children:!has-siblings:adjoins-item {"
+            "background: transparent;"
+            "border: none;"
+        "}"
+        "QHeaderView::section {"
+            "background-color: rgb(50, 50, 53);"
+            "color: rgb(220, 220, 220);"
+            "border: 1px solid rgb(60, 60, 63);"
+            "padding: 4px 8px;"
+            "font-weight: bold;"
+            "font-size: 10pt;"
+        "}"
+        "QHeaderView::section:hover {"
+            "background-color: rgb(60, 60, 63);"
+        "}"
+    );
+    
+    // Set default column widths
+    ui->tvVariables->setColumnWidth(0, 300);  // Key column
+    ui->tvVariables->setColumnWidth(1, 200);  // Value column
+    
+    // Enable grid lines for better visibility
+    ui->tvVariables->setRootIsDecorated(true);
+    ui->tvVariables->setIndentation(20);
+    
+    // Add tooltips to headers
+    VariableTreeModel.setHeaderData(0, Qt::Horizontal, "Variable keys in hierarchical structure", Qt::ToolTipRole);
+    VariableTreeModel.setHeaderData(1, Qt::Horizontal, "Current values of the variables", Qt::ToolTipRole);
 }
 

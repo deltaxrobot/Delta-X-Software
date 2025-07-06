@@ -978,18 +978,18 @@ QWidget#pSetting QPushButton#pbSaveSetting {
              <number>1</number>
             </property>
             <property name="currentIndex">
-             <number>7</number>
+             <number>0</number>
             </property>
             <widget class="QWidget" name="pVariable">
              <layout class="QVBoxLayout" name="verticalLayout_4">
               <item>
-                               <widget class="QFrame" name="fVar">
-                 <property name="minimumSize">
-                  <size>
-                   <width>0</width>
-                   <height>25</height>
-                  </size>
-                 </property>
+               <widget class="QFrame" name="fVar">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>25</height>
+                 </size>
+                </property>
                 <property name="frameShape">
                  <enum>QFrame::StyledPanel</enum>
                 </property>
@@ -1078,18 +1078,18 @@ QWidget#pSetting QPushButton#pbSaveSetting {
                    <x>0</x>
                    <y>0</y>
                    <width>662</width>
-                   <height>197</height>
+                   <height>297</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_10">
                   <item>
-                                       <widget class="QLabel" name="lbOperatorTitile">
-                     <property name="font">
-                      <font>
-                       <pointsize>20</pointsize>
-                       <bold>true</bold>
-                      </font>
-                     </property>
+                   <widget class="QLabel" name="lbOperatorTitile">
+                    <property name="font">
+                     <font>
+                      <pointsize>20</pointsize>
+                      <bold>true</bold>
+                     </font>
+                    </property>
                     <property name="text">
                      <string>Delta Robot System</string>
                     </property>
@@ -1232,13 +1232,13 @@ QWidget#pSetting QPushButton#pbSaveSetting {
                          </property>
                          <layout class="QHBoxLayout" name="horizontalLayout_11">
                           <item>
-                                                       <widget class="QGraphicsView" name="gvOperatorViewer">
-                             <property name="sizePolicy">
-                              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                               <horstretch>0</horstretch>
-                               <verstretch>0</verstretch>
-                              </sizepolicy>
-                             </property>
+                           <widget class="QGraphicsView" name="gvOperatorViewer">
+                            <property name="sizePolicy">
+                             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                              <horstretch>0</horstretch>
+                              <verstretch>0</verstretch>
+                             </sizepolicy>
+                            </property>
                            </widget>
                           </item>
                          </layout>
@@ -1337,7 +1337,6 @@ QWidget#pSetting QPushButton#pbSaveSetting {
                   <bold>true</bold>
                  </font>
                 </property>
-
                 <property name="title">
                  <string>Project</string>
                 </property>
@@ -1565,10 +1564,8 @@ QWidget#pSetting QPushButton#pbSaveSetting {
               </item>
              </layout>
             </widget>
-            <widget class="QWidget" name="pMarket">
-            </widget>
-            <widget class="QWidget" name="pDocument">
-            </widget>
+            <widget class="QWidget" name="pMarket"/>
+            <widget class="QWidget" name="pDocument"/>
             <widget class="QWidget" name="pAuthority">
              <property name="styleSheet">
               <string notr="true"/>
@@ -2055,8 +2052,7 @@ QWidget#pSetting QPushButton#pbSaveSetting {
               </item>
              </layout>
             </widget>
-            <widget class="QWidget" name="pCommunity">
-            </widget>
+            <widget class="QWidget" name="pCommunity"/>
             <widget class="QWidget" name="pSetting">
              <layout class="QVBoxLayout" name="verticalLayout_12">
               <property name="spacing">
@@ -2075,26 +2071,26 @@ QWidget#pSetting QPushButton#pbSaveSetting {
                <number>10</number>
               </property>
               <item>
-                               <widget class="QLabel" name="lbSettingsTitle">
-                 <property name="font">
-                  <font>
-                   <pointsize>16</pointsize>
-                   <bold>true</bold>
-                  </font>
-                 </property>
+               <widget class="QLabel" name="lbSettingsTitle">
+                <property name="font">
+                 <font>
+                  <pointsize>16</pointsize>
+                  <bold>true</bold>
+                 </font>
+                </property>
                 <property name="text">
                  <string>Settings</string>
                 </property>
                </widget>
               </item>
               <item>
-                               <widget class="QFrame" name="frame_3">
-                 <property name="minimumSize">
-                  <size>
-                   <width>0</width>
-                   <height>50</height>
-                  </size>
-                 </property>
+               <widget class="QFrame" name="frame_3">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>50</height>
+                 </size>
+                </property>
                 <property name="frameShape">
                  <enum>QFrame::StyledPanel</enum>
                 </property>
@@ -2103,39 +2099,39 @@ QWidget#pSetting QPushButton#pbSaveSetting {
                 </property>
                 <layout class="QHBoxLayout" name="horizontalLayout_13">
                  <item>
-                                     <widget class="QPushButton" name="pbResetSettings">
-                    <property name="minimumSize">
-                     <size>
-                      <width>100</width>
-                      <height>30</height>
-                     </size>
-                    </property>
+                  <widget class="QPushButton" name="pbResetSettings">
+                   <property name="minimumSize">
+                    <size>
+                     <width>100</width>
+                     <height>30</height>
+                    </size>
+                   </property>
                    <property name="text">
                     <string>Reset to Defaults</string>
                    </property>
                   </widget>
                  </item>
                  <item>
-                                     <widget class="QPushButton" name="pbBackupSettings">
-                    <property name="minimumSize">
-                     <size>
-                      <width>100</width>
-                      <height>30</height>
-                     </size>
-                    </property>
+                  <widget class="QPushButton" name="pbBackupSettings">
+                   <property name="minimumSize">
+                    <size>
+                     <width>100</width>
+                     <height>30</height>
+                    </size>
+                   </property>
                    <property name="text">
                     <string>Backup Settings</string>
                    </property>
                   </widget>
                  </item>
                  <item>
-                                     <widget class="QPushButton" name="pbRestoreSettings">
-                    <property name="minimumSize">
-                     <size>
-                      <width>100</width>
-                      <height>30</height>
-                     </size>
-                    </property>
+                  <widget class="QPushButton" name="pbRestoreSettings">
+                   <property name="minimumSize">
+                    <size>
+                     <width>100</width>
+                     <height>30</height>
+                    </size>
+                   </property>
                    <property name="text">
                     <string>Restore Settings</string>
                    </property>
@@ -2155,13 +2151,13 @@ QWidget#pSetting QPushButton#pbSaveSetting {
                   </spacer>
                  </item>
                  <item>
-                                     <widget class="QPushButton" name="pbSaveSetting">
-                    <property name="minimumSize">
-                     <size>
-                      <width>120</width>
-                      <height>30</height>
-                     </size>
-                    </property>
+                  <widget class="QPushButton" name="pbSaveSetting">
+                   <property name="minimumSize">
+                    <size>
+                     <width>120</width>
+                     <height>30</height>
+                    </size>
+                   </property>
                    <property name="text">
                     <string>Save Settings</string>
                    </property>
@@ -2171,7 +2167,7 @@ QWidget#pSetting QPushButton#pbSaveSetting {
                </widget>
               </item>
               <item>
-                               <widget class="QTabWidget" name="twSettingsCategories">
+               <widget class="QTabWidget" name="twSettingsCategories">
                 <property name="currentIndex">
                  <number>4</number>
                 </property>
@@ -2181,7 +2177,7 @@ QWidget#pSetting QPushButton#pbSaveSetting {
                  </attribute>
                  <layout class="QVBoxLayout" name="vlGeneral">
                   <item>
-                                       <widget class="QScrollArea" name="saGeneral">
+                   <widget class="QScrollArea" name="saGeneral">
                     <property name="widgetResizable">
                      <bool>true</bool>
                     </property>
@@ -2190,8 +2186,8 @@ QWidget#pSetting QPushButton#pbSaveSetting {
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>1073</width>
-                       <height>462</height>
+                       <width>65</width>
+                       <height>18</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="vlGeneralContent"/>
@@ -2206,7 +2202,7 @@ QWidget#pSetting QPushButton#pbSaveSetting {
                  </attribute>
                  <layout class="QVBoxLayout" name="vlDevice">
                   <item>
-                                       <widget class="QScrollArea" name="saDevice">
+                   <widget class="QScrollArea" name="saDevice">
                     <property name="widgetResizable">
                      <bool>true</bool>
                     </property>
@@ -2215,8 +2211,8 @@ QWidget#pSetting QPushButton#pbSaveSetting {
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>1073</width>
-                       <height>462</height>
+                       <width>65</width>
+                       <height>18</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="vlDeviceContent"/>
@@ -2231,7 +2227,7 @@ QWidget#pSetting QPushButton#pbSaveSetting {
                  </attribute>
                  <layout class="QVBoxLayout" name="vlCamera">
                   <item>
-                                       <widget class="QScrollArea" name="saCamera">
+                   <widget class="QScrollArea" name="saCamera">
                     <property name="widgetResizable">
                      <bool>true</bool>
                     </property>
@@ -2240,8 +2236,8 @@ QWidget#pSetting QPushButton#pbSaveSetting {
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>1073</width>
-                       <height>462</height>
+                       <width>65</width>
+                       <height>18</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="vlCameraContent"/>
@@ -2256,7 +2252,7 @@ QWidget#pSetting QPushButton#pbSaveSetting {
                  </attribute>
                  <layout class="QVBoxLayout" name="vlEditor">
                   <item>
-                                       <widget class="QScrollArea" name="saEditor">
+                   <widget class="QScrollArea" name="saEditor">
                     <property name="widgetResizable">
                      <bool>true</bool>
                     </property>
@@ -2265,8 +2261,8 @@ QWidget#pSetting QPushButton#pbSaveSetting {
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>1073</width>
-                       <height>462</height>
+                       <width>65</width>
+                       <height>18</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="vlEditorContent"/>
@@ -2281,7 +2277,7 @@ QWidget#pSetting QPushButton#pbSaveSetting {
                  </attribute>
                  <layout class="QVBoxLayout" name="vlAdvanced">
                   <item>
-                                       <widget class="QScrollArea" name="saAdvanced">
+                   <widget class="QScrollArea" name="saAdvanced">
                     <property name="widgetResizable">
                      <bool>true</bool>
                     </property>
@@ -2306,7 +2302,7 @@ QWidget#pSetting QPushButton#pbSaveSetting {
                  </attribute>
                  <layout class="QVBoxLayout" name="vlAuthority">
                   <item>
-                                       <widget class="QScrollArea" name="saAuthority">
+                   <widget class="QScrollArea" name="saAuthority">
                     <property name="widgetResizable">
                      <bool>true</bool>
                     </property>
@@ -2315,8 +2311,8 @@ QWidget#pSetting QPushButton#pbSaveSetting {
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>1073</width>
-                       <height>462</height>
+                       <width>65</width>
+                       <height>18</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="vlAuthorityContent"/>
@@ -2445,25 +2441,25 @@ QWidget#pSetting QPushButton#pbSaveSetting {
               <number>0</number>
              </property>
              <item>
-                             <widget class="QTextEdit" name="teLoggingBox">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Expanding" vsizetype="Ignored">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="minimumSize">
-                 <size>
-                  <width>0</width>
-                  <height>0</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>16777215</width>
-                  <height>16777215</height>
-                 </size>
-                </property>
+              <widget class="QTextEdit" name="teLoggingBox">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Expanding" vsizetype="Ignored">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>16777215</width>
+                 <height>16777215</height>
+                </size>
+               </property>
                <property name="html">
                 <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;meta charset=&quot;utf-8&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;

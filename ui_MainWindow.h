@@ -1041,7 +1041,7 @@ public:
         scrollArea_2->setWidgetResizable(true);
         scrollAreaWidgetContents_2 = new QWidget();
         scrollAreaWidgetContents_2->setObjectName(QString::fromUtf8("scrollAreaWidgetContents_2"));
-        scrollAreaWidgetContents_2->setGeometry(QRect(0, 0, 662, 197));
+        scrollAreaWidgetContents_2->setGeometry(QRect(0, 0, 662, 297));
         verticalLayout_10 = new QVBoxLayout(scrollAreaWidgetContents_2);
         verticalLayout_10->setSpacing(6);
         verticalLayout_10->setContentsMargins(11, 11, 11, 11);
@@ -1663,7 +1663,7 @@ public:
         saGeneral->setWidgetResizable(true);
         swGeneral = new QWidget();
         swGeneral->setObjectName(QString::fromUtf8("swGeneral"));
-        swGeneral->setGeometry(QRect(0, 0, 1073, 462));
+        swGeneral->setGeometry(QRect(0, 0, 65, 18));
         vlGeneralContent = new QVBoxLayout(swGeneral);
         vlGeneralContent->setSpacing(6);
         vlGeneralContent->setContentsMargins(11, 11, 11, 11);
@@ -1684,7 +1684,7 @@ public:
         saDevice->setWidgetResizable(true);
         swDevice = new QWidget();
         swDevice->setObjectName(QString::fromUtf8("swDevice"));
-        swDevice->setGeometry(QRect(0, 0, 1073, 462));
+        swDevice->setGeometry(QRect(0, 0, 65, 18));
         vlDeviceContent = new QVBoxLayout(swDevice);
         vlDeviceContent->setSpacing(6);
         vlDeviceContent->setContentsMargins(11, 11, 11, 11);
@@ -1705,7 +1705,7 @@ public:
         saCamera->setWidgetResizable(true);
         swCamera = new QWidget();
         swCamera->setObjectName(QString::fromUtf8("swCamera"));
-        swCamera->setGeometry(QRect(0, 0, 1073, 462));
+        swCamera->setGeometry(QRect(0, 0, 65, 18));
         vlCameraContent = new QVBoxLayout(swCamera);
         vlCameraContent->setSpacing(6);
         vlCameraContent->setContentsMargins(11, 11, 11, 11);
@@ -1726,7 +1726,7 @@ public:
         saEditor->setWidgetResizable(true);
         swEditor = new QWidget();
         swEditor->setObjectName(QString::fromUtf8("swEditor"));
-        swEditor->setGeometry(QRect(0, 0, 1073, 462));
+        swEditor->setGeometry(QRect(0, 0, 65, 18));
         vlEditorContent = new QVBoxLayout(swEditor);
         vlEditorContent->setSpacing(6);
         vlEditorContent->setContentsMargins(11, 11, 11, 11);
@@ -1768,7 +1768,7 @@ public:
         saAuthority->setWidgetResizable(true);
         swAuthority1 = new QWidget();
         swAuthority1->setObjectName(QString::fromUtf8("swAuthority1"));
-        swAuthority1->setGeometry(QRect(0, 0, 1073, 462));
+        swAuthority1->setGeometry(QRect(0, 0, 65, 18));
         vlAuthorityContent = new QVBoxLayout(swAuthority1);
         vlAuthorityContent->setSpacing(6);
         vlAuthorityContent->setContentsMargins(11, 11, 11, 11);
@@ -1876,7 +1876,7 @@ public:
         retranslateUi(MainWindow);
 
         stackedWidget->setCurrentIndex(0);
-        swPageStack->setCurrentWidget(pProject);
+        swPageStack->setCurrentIndex(0);
         swAuthority->setCurrentIndex(0);
         twSettingsCategories->setCurrentIndex(4);
         twProjectManager->setCurrentIndex(0);
