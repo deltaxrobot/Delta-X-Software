@@ -711,22 +711,34 @@ public:
     QSpacerItem *horizontalSpacer_94;
     QFrame *frame_31;
     QGridLayout *gridLayout_56;
-    QToolButton *pbBackward;
-    QLabel *label_275;
-    QToolButton *pbPlusRoll;
-    QLabel *label_274;
-    QToolButton *pbSubPitch;
-    QToolButton *pbSubRoll;
     QToolButton *pbUp;
-    QToolButton *pbDown;
-    QToolButton *pbForward;
-    QToolButton *pbRight;
-    QToolButton *pbPlusPitch;
+    QToolButton *pbContinuousBackward;
+    QToolButton *pbSubRoll;
     QToolButton *pbSubYaw;
-    QSpacerItem *horizontalSpacer_4;
-    QLabel *label_276;
-    QToolButton *pbPlusYaw;
+    QToolButton *pbBackward;
+    QToolButton *pbContinuousLeft;
+    QToolButton *pbRight;
     QToolButton *pbLeft;
+    QLabel *label_275;
+    QLabel *label_274;
+    QToolButton *pbPlusYaw;
+    QSpacerItem *horizontalSpacer_4;
+    QToolButton *pbSubPitch;
+    QToolButton *pbContinuousRight;
+    QToolButton *pbForward;
+    QLabel *label_276;
+    QToolButton *pbPlusRoll;
+    QToolButton *pbPlusPitch;
+    QToolButton *pbDown;
+    QToolButton *pbContinuousUp;
+    QToolButton *pbContinuousDown;
+    QToolButton *pbContinuous4Plus;
+    QToolButton *pbContinuous4Sub;
+    QToolButton *pbContinuous5Plus;
+    QToolButton *pbContinuous6Plus;
+    QToolButton *pbContinuous5Sub;
+    QToolButton *pbContinuous6Sub;
+    QToolButton *pbContinuousForward;
     QFrame *frame_32;
     QHBoxLayout *horizontalLayout_81;
     QLabel *label_33;
@@ -6694,12 +6706,67 @@ public:
         gridLayout_56->setSpacing(6);
         gridLayout_56->setContentsMargins(11, 11, 11, 11);
         gridLayout_56->setObjectName(QString::fromUtf8("gridLayout_56"));
+        pbUp = new QToolButton(frame_31);
+        pbUp->setObjectName(QString::fromUtf8("pbUp"));
+        pbUp->setIconSize(QSize(20, 20));
+        pbUp->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+        pbUp->setAutoRaise(false);
+
+        gridLayout_56->addWidget(pbUp, 1, 6, 1, 1);
+
+        pbContinuousBackward = new QToolButton(frame_31);
+        pbContinuousBackward->setObjectName(QString::fromUtf8("pbContinuousBackward"));
+        sizePolicy20.setHeightForWidth(pbContinuousBackward->sizePolicy().hasHeightForWidth());
+        pbContinuousBackward->setSizePolicy(sizePolicy20);
+        pbContinuousBackward->setMaximumSize(QSize(16777215, 10));
+        pbContinuousBackward->setStyleSheet(QString::fromUtf8(""));
+        pbContinuousBackward->setIconSize(QSize(20, 20));
+        pbContinuousBackward->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+
+        gridLayout_56->addWidget(pbContinuousBackward, 4, 2, 1, 1);
+
+        pbSubRoll = new QToolButton(frame_31);
+        pbSubRoll->setObjectName(QString::fromUtf8("pbSubRoll"));
+        pbSubRoll->setIconSize(QSize(40, 40));
+        pbSubRoll->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+
+        gridLayout_56->addWidget(pbSubRoll, 1, 7, 1, 1);
+
+        pbSubYaw = new QToolButton(frame_31);
+        pbSubYaw->setObjectName(QString::fromUtf8("pbSubYaw"));
+        pbSubYaw->setIconSize(QSize(40, 40));
+        pbSubYaw->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+
+        gridLayout_56->addWidget(pbSubYaw, 1, 8, 1, 1);
+
         pbBackward = new QToolButton(frame_31);
         pbBackward->setObjectName(QString::fromUtf8("pbBackward"));
         pbBackward->setIconSize(QSize(40, 40));
         pbBackward->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 
-        gridLayout_56->addWidget(pbBackward, 3, 1, 1, 1);
+        gridLayout_56->addWidget(pbBackward, 3, 2, 1, 1);
+
+        pbContinuousLeft = new QToolButton(frame_31);
+        pbContinuousLeft->setObjectName(QString::fromUtf8("pbContinuousLeft"));
+        pbContinuousLeft->setMaximumSize(QSize(10, 16777215));
+        pbContinuousLeft->setIconSize(QSize(40, 40));
+        pbContinuousLeft->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+
+        gridLayout_56->addWidget(pbContinuousLeft, 2, 0, 1, 1);
+
+        pbRight = new QToolButton(frame_31);
+        pbRight->setObjectName(QString::fromUtf8("pbRight"));
+        pbRight->setIconSize(QSize(40, 40));
+        pbRight->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+
+        gridLayout_56->addWidget(pbRight, 2, 4, 1, 1);
+
+        pbLeft = new QToolButton(frame_31);
+        pbLeft->setObjectName(QString::fromUtf8("pbLeft"));
+        pbLeft->setIconSize(QSize(40, 40));
+        pbLeft->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+
+        gridLayout_56->addWidget(pbLeft, 2, 1, 1, 1);
 
         label_275 = new QLabel(frame_31);
         label_275->setObjectName(QString::fromUtf8("label_275"));
@@ -6707,14 +6774,7 @@ public:
         label_275->setFont(font8);
         label_275->setAlignment(Qt::AlignCenter);
 
-        gridLayout_56->addWidget(label_275, 2, 7, 1, 1);
-
-        pbPlusRoll = new QToolButton(frame_31);
-        pbPlusRoll->setObjectName(QString::fromUtf8("pbPlusRoll"));
-        pbPlusRoll->setIconSize(QSize(40, 40));
-        pbPlusRoll->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-
-        gridLayout_56->addWidget(pbPlusRoll, 3, 6, 1, 1);
+        gridLayout_56->addWidget(label_275, 2, 8, 1, 1);
 
         label_274 = new QLabel(frame_31);
         label_274->setObjectName(QString::fromUtf8("label_274"));
@@ -6722,36 +6782,33 @@ public:
         label_274->setFont(font8);
         label_274->setAlignment(Qt::AlignCenter);
 
-        gridLayout_56->addWidget(label_274, 2, 8, 1, 1);
+        gridLayout_56->addWidget(label_274, 2, 9, 1, 1);
+
+        pbPlusYaw = new QToolButton(frame_31);
+        pbPlusYaw->setObjectName(QString::fromUtf8("pbPlusYaw"));
+        pbPlusYaw->setIconSize(QSize(40, 40));
+        pbPlusYaw->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+
+        gridLayout_56->addWidget(pbPlusYaw, 3, 8, 1, 1);
+
+        horizontalSpacer_4 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        gridLayout_56->addItem(horizontalSpacer_4, 2, 10, 1, 1);
 
         pbSubPitch = new QToolButton(frame_31);
         pbSubPitch->setObjectName(QString::fromUtf8("pbSubPitch"));
         pbSubPitch->setIconSize(QSize(40, 40));
         pbSubPitch->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 
-        gridLayout_56->addWidget(pbSubPitch, 1, 8, 1, 1);
+        gridLayout_56->addWidget(pbSubPitch, 1, 9, 1, 1);
 
-        pbSubRoll = new QToolButton(frame_31);
-        pbSubRoll->setObjectName(QString::fromUtf8("pbSubRoll"));
-        pbSubRoll->setIconSize(QSize(40, 40));
-        pbSubRoll->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+        pbContinuousRight = new QToolButton(frame_31);
+        pbContinuousRight->setObjectName(QString::fromUtf8("pbContinuousRight"));
+        pbContinuousRight->setMaximumSize(QSize(10, 16777215));
+        pbContinuousRight->setIconSize(QSize(40, 40));
+        pbContinuousRight->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 
-        gridLayout_56->addWidget(pbSubRoll, 1, 6, 1, 1);
-
-        pbUp = new QToolButton(frame_31);
-        pbUp->setObjectName(QString::fromUtf8("pbUp"));
-        pbUp->setIconSize(QSize(20, 20));
-        pbUp->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-        pbUp->setAutoRaise(false);
-
-        gridLayout_56->addWidget(pbUp, 1, 5, 1, 1);
-
-        pbDown = new QToolButton(frame_31);
-        pbDown->setObjectName(QString::fromUtf8("pbDown"));
-        pbDown->setIconSize(QSize(40, 40));
-        pbDown->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-
-        gridLayout_56->addWidget(pbDown, 3, 5, 1, 1);
+        gridLayout_56->addWidget(pbContinuousRight, 2, 5, 1, 1);
 
         pbForward = new QToolButton(frame_31);
         pbForward->setObjectName(QString::fromUtf8("pbForward"));
@@ -6761,32 +6818,7 @@ public:
         pbForward->setIconSize(QSize(20, 20));
         pbForward->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 
-        gridLayout_56->addWidget(pbForward, 1, 1, 1, 1);
-
-        pbRight = new QToolButton(frame_31);
-        pbRight->setObjectName(QString::fromUtf8("pbRight"));
-        pbRight->setIconSize(QSize(40, 40));
-        pbRight->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-
-        gridLayout_56->addWidget(pbRight, 2, 3, 1, 1);
-
-        pbPlusPitch = new QToolButton(frame_31);
-        pbPlusPitch->setObjectName(QString::fromUtf8("pbPlusPitch"));
-        pbPlusPitch->setIconSize(QSize(40, 40));
-        pbPlusPitch->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-
-        gridLayout_56->addWidget(pbPlusPitch, 3, 8, 1, 1);
-
-        pbSubYaw = new QToolButton(frame_31);
-        pbSubYaw->setObjectName(QString::fromUtf8("pbSubYaw"));
-        pbSubYaw->setIconSize(QSize(40, 40));
-        pbSubYaw->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-
-        gridLayout_56->addWidget(pbSubYaw, 1, 7, 1, 1);
-
-        horizontalSpacer_4 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-
-        gridLayout_56->addItem(horizontalSpacer_4, 2, 9, 1, 1);
+        gridLayout_56->addWidget(pbForward, 1, 2, 1, 1);
 
         label_276 = new QLabel(frame_31);
         label_276->setObjectName(QString::fromUtf8("label_276"));
@@ -6794,21 +6826,127 @@ public:
         label_276->setFont(font8);
         label_276->setAlignment(Qt::AlignCenter);
 
-        gridLayout_56->addWidget(label_276, 2, 6, 1, 1);
+        gridLayout_56->addWidget(label_276, 2, 7, 1, 1);
 
-        pbPlusYaw = new QToolButton(frame_31);
-        pbPlusYaw->setObjectName(QString::fromUtf8("pbPlusYaw"));
-        pbPlusYaw->setIconSize(QSize(40, 40));
-        pbPlusYaw->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+        pbPlusRoll = new QToolButton(frame_31);
+        pbPlusRoll->setObjectName(QString::fromUtf8("pbPlusRoll"));
+        pbPlusRoll->setIconSize(QSize(40, 40));
+        pbPlusRoll->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 
-        gridLayout_56->addWidget(pbPlusYaw, 3, 7, 1, 1);
+        gridLayout_56->addWidget(pbPlusRoll, 3, 7, 1, 1);
 
-        pbLeft = new QToolButton(frame_31);
-        pbLeft->setObjectName(QString::fromUtf8("pbLeft"));
-        pbLeft->setIconSize(QSize(40, 40));
-        pbLeft->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+        pbPlusPitch = new QToolButton(frame_31);
+        pbPlusPitch->setObjectName(QString::fromUtf8("pbPlusPitch"));
+        pbPlusPitch->setIconSize(QSize(40, 40));
+        pbPlusPitch->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 
-        gridLayout_56->addWidget(pbLeft, 2, 0, 1, 1);
+        gridLayout_56->addWidget(pbPlusPitch, 3, 9, 1, 1);
+
+        pbDown = new QToolButton(frame_31);
+        pbDown->setObjectName(QString::fromUtf8("pbDown"));
+        pbDown->setIconSize(QSize(40, 40));
+        pbDown->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+
+        gridLayout_56->addWidget(pbDown, 3, 6, 1, 1);
+
+        pbContinuousUp = new QToolButton(frame_31);
+        pbContinuousUp->setObjectName(QString::fromUtf8("pbContinuousUp"));
+        sizePolicy20.setHeightForWidth(pbContinuousUp->sizePolicy().hasHeightForWidth());
+        pbContinuousUp->setSizePolicy(sizePolicy20);
+        pbContinuousUp->setMaximumSize(QSize(16777215, 10));
+        pbContinuousUp->setStyleSheet(QString::fromUtf8(""));
+        pbContinuousUp->setIconSize(QSize(20, 20));
+        pbContinuousUp->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+
+        gridLayout_56->addWidget(pbContinuousUp, 0, 6, 1, 1);
+
+        pbContinuousDown = new QToolButton(frame_31);
+        pbContinuousDown->setObjectName(QString::fromUtf8("pbContinuousDown"));
+        sizePolicy20.setHeightForWidth(pbContinuousDown->sizePolicy().hasHeightForWidth());
+        pbContinuousDown->setSizePolicy(sizePolicy20);
+        pbContinuousDown->setMaximumSize(QSize(16777215, 10));
+        pbContinuousDown->setStyleSheet(QString::fromUtf8(""));
+        pbContinuousDown->setIconSize(QSize(20, 20));
+        pbContinuousDown->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+
+        gridLayout_56->addWidget(pbContinuousDown, 4, 6, 1, 1);
+
+        pbContinuous4Plus = new QToolButton(frame_31);
+        pbContinuous4Plus->setObjectName(QString::fromUtf8("pbContinuous4Plus"));
+        sizePolicy20.setHeightForWidth(pbContinuous4Plus->sizePolicy().hasHeightForWidth());
+        pbContinuous4Plus->setSizePolicy(sizePolicy20);
+        pbContinuous4Plus->setMaximumSize(QSize(16777215, 10));
+        pbContinuous4Plus->setStyleSheet(QString::fromUtf8(""));
+        pbContinuous4Plus->setIconSize(QSize(20, 20));
+        pbContinuous4Plus->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+
+        gridLayout_56->addWidget(pbContinuous4Plus, 0, 7, 1, 1);
+
+        pbContinuous4Sub = new QToolButton(frame_31);
+        pbContinuous4Sub->setObjectName(QString::fromUtf8("pbContinuous4Sub"));
+        sizePolicy20.setHeightForWidth(pbContinuous4Sub->sizePolicy().hasHeightForWidth());
+        pbContinuous4Sub->setSizePolicy(sizePolicy20);
+        pbContinuous4Sub->setMaximumSize(QSize(16777215, 10));
+        pbContinuous4Sub->setStyleSheet(QString::fromUtf8(""));
+        pbContinuous4Sub->setIconSize(QSize(20, 20));
+        pbContinuous4Sub->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+
+        gridLayout_56->addWidget(pbContinuous4Sub, 4, 7, 1, 1);
+
+        pbContinuous5Plus = new QToolButton(frame_31);
+        pbContinuous5Plus->setObjectName(QString::fromUtf8("pbContinuous5Plus"));
+        sizePolicy20.setHeightForWidth(pbContinuous5Plus->sizePolicy().hasHeightForWidth());
+        pbContinuous5Plus->setSizePolicy(sizePolicy20);
+        pbContinuous5Plus->setMaximumSize(QSize(16777215, 10));
+        pbContinuous5Plus->setStyleSheet(QString::fromUtf8(""));
+        pbContinuous5Plus->setIconSize(QSize(20, 20));
+        pbContinuous5Plus->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+
+        gridLayout_56->addWidget(pbContinuous5Plus, 0, 8, 1, 1);
+
+        pbContinuous6Plus = new QToolButton(frame_31);
+        pbContinuous6Plus->setObjectName(QString::fromUtf8("pbContinuous6Plus"));
+        sizePolicy20.setHeightForWidth(pbContinuous6Plus->sizePolicy().hasHeightForWidth());
+        pbContinuous6Plus->setSizePolicy(sizePolicy20);
+        pbContinuous6Plus->setMaximumSize(QSize(16777215, 10));
+        pbContinuous6Plus->setStyleSheet(QString::fromUtf8(""));
+        pbContinuous6Plus->setIconSize(QSize(20, 20));
+        pbContinuous6Plus->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+
+        gridLayout_56->addWidget(pbContinuous6Plus, 0, 9, 1, 1);
+
+        pbContinuous5Sub = new QToolButton(frame_31);
+        pbContinuous5Sub->setObjectName(QString::fromUtf8("pbContinuous5Sub"));
+        sizePolicy20.setHeightForWidth(pbContinuous5Sub->sizePolicy().hasHeightForWidth());
+        pbContinuous5Sub->setSizePolicy(sizePolicy20);
+        pbContinuous5Sub->setMaximumSize(QSize(16777215, 10));
+        pbContinuous5Sub->setStyleSheet(QString::fromUtf8(""));
+        pbContinuous5Sub->setIconSize(QSize(20, 20));
+        pbContinuous5Sub->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+
+        gridLayout_56->addWidget(pbContinuous5Sub, 4, 8, 1, 1);
+
+        pbContinuous6Sub = new QToolButton(frame_31);
+        pbContinuous6Sub->setObjectName(QString::fromUtf8("pbContinuous6Sub"));
+        sizePolicy20.setHeightForWidth(pbContinuous6Sub->sizePolicy().hasHeightForWidth());
+        pbContinuous6Sub->setSizePolicy(sizePolicy20);
+        pbContinuous6Sub->setMaximumSize(QSize(16777215, 10));
+        pbContinuous6Sub->setStyleSheet(QString::fromUtf8(""));
+        pbContinuous6Sub->setIconSize(QSize(20, 20));
+        pbContinuous6Sub->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+
+        gridLayout_56->addWidget(pbContinuous6Sub, 4, 9, 1, 1);
+
+        pbContinuousForward = new QToolButton(frame_31);
+        pbContinuousForward->setObjectName(QString::fromUtf8("pbContinuousForward"));
+        sizePolicy20.setHeightForWidth(pbContinuousForward->sizePolicy().hasHeightForWidth());
+        pbContinuousForward->setSizePolicy(sizePolicy20);
+        pbContinuousForward->setMaximumSize(QSize(16777215, 10));
+        pbContinuousForward->setStyleSheet(QString::fromUtf8(""));
+        pbContinuousForward->setIconSize(QSize(20, 20));
+        pbContinuousForward->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+
+        gridLayout_56->addWidget(pbContinuousForward, 0, 2, 1, 1);
 
 
         verticalLayout_73->addWidget(frame_31);
@@ -10677,40 +10815,27 @@ public:
         robotTitile_4->setProperty("Func", QVariant(QCoreApplication::translate("RobotWindow", "Title", nullptr)));
         label_271->setText(QCoreApplication::translate("RobotWindow", "Jogging", nullptr));
 #if QT_CONFIG(tooltip)
-        pbBackward->setToolTip(QCoreApplication::translate("RobotWindow", "Backward (shift + s)", nullptr));
+        pbUp->setToolTip(QCoreApplication::translate("RobotWindow", "Up (shift + r)", nullptr));
 #endif // QT_CONFIG(tooltip)
 #if QT_CONFIG(statustip)
-        pbBackward->setStatusTip(QString());
+        pbUp->setStatusTip(QString());
 #endif // QT_CONFIG(statustip)
-        pbBackward->setText(QCoreApplication::translate("RobotWindow", "Y-", nullptr));
+        pbUp->setText(QCoreApplication::translate("RobotWindow", "Z+", nullptr));
 #if QT_CONFIG(shortcut)
-        pbBackward->setShortcut(QCoreApplication::translate("RobotWindow", "Shift+S", nullptr));
+        pbUp->setShortcut(QCoreApplication::translate("RobotWindow", "Shift+R", nullptr));
 #endif // QT_CONFIG(shortcut)
-        pbBackward->setProperty("Func", QVariant(QCoreApplication::translate("RobotWindow", "Jogging", nullptr)));
-        label_275->setText(QCoreApplication::translate("RobotWindow", "5-axis", nullptr));
+        pbUp->setProperty("Func", QVariant(QCoreApplication::translate("RobotWindow", "Jogging", nullptr)));
 #if QT_CONFIG(tooltip)
-        pbPlusRoll->setToolTip(QCoreApplication::translate("RobotWindow", "Right (Shift +d)", nullptr));
+        pbContinuousBackward->setToolTip(QCoreApplication::translate("RobotWindow", "Forward (Shift + w)", nullptr));
 #endif // QT_CONFIG(tooltip)
 #if QT_CONFIG(statustip)
-        pbPlusRoll->setStatusTip(QString());
+        pbContinuousBackward->setStatusTip(QString());
 #endif // QT_CONFIG(statustip)
-        pbPlusRoll->setText(QCoreApplication::translate("RobotWindow", "W+", nullptr));
+        pbContinuousBackward->setText(QString());
 #if QT_CONFIG(shortcut)
-        pbPlusRoll->setShortcut(QCoreApplication::translate("RobotWindow", "Shift+G", nullptr));
+        pbContinuousBackward->setShortcut(QCoreApplication::translate("RobotWindow", "Shift+W", nullptr));
 #endif // QT_CONFIG(shortcut)
-        pbPlusRoll->setProperty("Func", QVariant(QCoreApplication::translate("RobotWindow", "Jogging", nullptr)));
-        label_274->setText(QCoreApplication::translate("RobotWindow", "6-axis", nullptr));
-#if QT_CONFIG(tooltip)
-        pbSubPitch->setToolTip(QCoreApplication::translate("RobotWindow", "Left (shift + w)", nullptr));
-#endif // QT_CONFIG(tooltip)
-#if QT_CONFIG(statustip)
-        pbSubPitch->setStatusTip(QString());
-#endif // QT_CONFIG(statustip)
-        pbSubPitch->setText(QCoreApplication::translate("RobotWindow", "V-", nullptr));
-#if QT_CONFIG(shortcut)
-        pbSubPitch->setShortcut(QCoreApplication::translate("RobotWindow", "Shift+U", nullptr));
-#endif // QT_CONFIG(shortcut)
-        pbSubPitch->setProperty("Func", QVariant(QCoreApplication::translate("RobotWindow", "Jogging", nullptr)));
+        pbContinuousBackward->setProperty("Func", QVariant(QCoreApplication::translate("RobotWindow", "Jogging", nullptr)));
 #if QT_CONFIG(tooltip)
         pbSubRoll->setToolTip(QCoreApplication::translate("RobotWindow", "Left (shift + w)", nullptr));
 #endif // QT_CONFIG(tooltip)
@@ -10723,38 +10848,38 @@ public:
 #endif // QT_CONFIG(shortcut)
         pbSubRoll->setProperty("Func", QVariant(QCoreApplication::translate("RobotWindow", "Jogging", nullptr)));
 #if QT_CONFIG(tooltip)
-        pbUp->setToolTip(QCoreApplication::translate("RobotWindow", "Up (shift + r)", nullptr));
+        pbSubYaw->setToolTip(QCoreApplication::translate("RobotWindow", "Left (shift + w)", nullptr));
 #endif // QT_CONFIG(tooltip)
 #if QT_CONFIG(statustip)
-        pbUp->setStatusTip(QString());
+        pbSubYaw->setStatusTip(QString());
 #endif // QT_CONFIG(statustip)
-        pbUp->setText(QCoreApplication::translate("RobotWindow", "Z+", nullptr));
+        pbSubYaw->setText(QCoreApplication::translate("RobotWindow", "U-", nullptr));
 #if QT_CONFIG(shortcut)
-        pbUp->setShortcut(QCoreApplication::translate("RobotWindow", "Shift+R", nullptr));
+        pbSubYaw->setShortcut(QCoreApplication::translate("RobotWindow", "Shift+Y", nullptr));
 #endif // QT_CONFIG(shortcut)
-        pbUp->setProperty("Func", QVariant(QCoreApplication::translate("RobotWindow", "Jogging", nullptr)));
+        pbSubYaw->setProperty("Func", QVariant(QCoreApplication::translate("RobotWindow", "Jogging", nullptr)));
 #if QT_CONFIG(tooltip)
-        pbDown->setToolTip(QCoreApplication::translate("RobotWindow", "Down (shift + f)", nullptr));
+        pbBackward->setToolTip(QCoreApplication::translate("RobotWindow", "Backward (shift + s)", nullptr));
 #endif // QT_CONFIG(tooltip)
 #if QT_CONFIG(statustip)
-        pbDown->setStatusTip(QString());
+        pbBackward->setStatusTip(QString());
 #endif // QT_CONFIG(statustip)
-        pbDown->setText(QCoreApplication::translate("RobotWindow", "Z-", nullptr));
+        pbBackward->setText(QCoreApplication::translate("RobotWindow", "Y-", nullptr));
 #if QT_CONFIG(shortcut)
-        pbDown->setShortcut(QCoreApplication::translate("RobotWindow", "Shift+F", nullptr));
+        pbBackward->setShortcut(QCoreApplication::translate("RobotWindow", "Shift+S", nullptr));
 #endif // QT_CONFIG(shortcut)
-        pbDown->setProperty("Func", QVariant(QCoreApplication::translate("RobotWindow", "Jogging", nullptr)));
+        pbBackward->setProperty("Func", QVariant(QCoreApplication::translate("RobotWindow", "Jogging", nullptr)));
 #if QT_CONFIG(tooltip)
-        pbForward->setToolTip(QCoreApplication::translate("RobotWindow", "Forward (Shift + w)", nullptr));
+        pbContinuousLeft->setToolTip(QCoreApplication::translate("RobotWindow", "Left (shift + w)", nullptr));
 #endif // QT_CONFIG(tooltip)
 #if QT_CONFIG(statustip)
-        pbForward->setStatusTip(QString());
+        pbContinuousLeft->setStatusTip(QString());
 #endif // QT_CONFIG(statustip)
-        pbForward->setText(QCoreApplication::translate("RobotWindow", "Y+", nullptr));
+        pbContinuousLeft->setText(QString());
 #if QT_CONFIG(shortcut)
-        pbForward->setShortcut(QCoreApplication::translate("RobotWindow", "Shift+W", nullptr));
+        pbContinuousLeft->setShortcut(QCoreApplication::translate("RobotWindow", "Shift+A", nullptr));
 #endif // QT_CONFIG(shortcut)
-        pbForward->setProperty("Func", QVariant(QCoreApplication::translate("RobotWindow", "Jogging", nullptr)));
+        pbContinuousLeft->setProperty("Func", QVariant(QCoreApplication::translate("RobotWindow", "Jogging", nullptr)));
 #if QT_CONFIG(tooltip)
         pbRight->setToolTip(QCoreApplication::translate("RobotWindow", "Right (Shift +d)", nullptr));
 #endif // QT_CONFIG(tooltip)
@@ -10767,28 +10892,18 @@ public:
 #endif // QT_CONFIG(shortcut)
         pbRight->setProperty("Func", QVariant(QCoreApplication::translate("RobotWindow", "Jogging", nullptr)));
 #if QT_CONFIG(tooltip)
-        pbPlusPitch->setToolTip(QCoreApplication::translate("RobotWindow", "Right (Shift +d)", nullptr));
+        pbLeft->setToolTip(QCoreApplication::translate("RobotWindow", "Left (shift + w)", nullptr));
 #endif // QT_CONFIG(tooltip)
 #if QT_CONFIG(statustip)
-        pbPlusPitch->setStatusTip(QString());
+        pbLeft->setStatusTip(QString());
 #endif // QT_CONFIG(statustip)
-        pbPlusPitch->setText(QCoreApplication::translate("RobotWindow", "V+", nullptr));
+        pbLeft->setText(QCoreApplication::translate("RobotWindow", "X-", nullptr));
 #if QT_CONFIG(shortcut)
-        pbPlusPitch->setShortcut(QCoreApplication::translate("RobotWindow", "Shift+J", nullptr));
+        pbLeft->setShortcut(QCoreApplication::translate("RobotWindow", "Shift+A", nullptr));
 #endif // QT_CONFIG(shortcut)
-        pbPlusPitch->setProperty("Func", QVariant(QCoreApplication::translate("RobotWindow", "Jogging", nullptr)));
-#if QT_CONFIG(tooltip)
-        pbSubYaw->setToolTip(QCoreApplication::translate("RobotWindow", "Left (shift + w)", nullptr));
-#endif // QT_CONFIG(tooltip)
-#if QT_CONFIG(statustip)
-        pbSubYaw->setStatusTip(QString());
-#endif // QT_CONFIG(statustip)
-        pbSubYaw->setText(QCoreApplication::translate("RobotWindow", "U-", nullptr));
-#if QT_CONFIG(shortcut)
-        pbSubYaw->setShortcut(QCoreApplication::translate("RobotWindow", "Shift+Y", nullptr));
-#endif // QT_CONFIG(shortcut)
-        pbSubYaw->setProperty("Func", QVariant(QCoreApplication::translate("RobotWindow", "Jogging", nullptr)));
-        label_276->setText(QCoreApplication::translate("RobotWindow", "4-axis", nullptr));
+        pbLeft->setProperty("Func", QVariant(QCoreApplication::translate("RobotWindow", "Jogging", nullptr)));
+        label_275->setText(QCoreApplication::translate("RobotWindow", "5-axis", nullptr));
+        label_274->setText(QCoreApplication::translate("RobotWindow", "6-axis", nullptr));
 #if QT_CONFIG(tooltip)
         pbPlusYaw->setToolTip(QCoreApplication::translate("RobotWindow", "Right (Shift +d)", nullptr));
 #endif // QT_CONFIG(tooltip)
@@ -10801,16 +10916,171 @@ public:
 #endif // QT_CONFIG(shortcut)
         pbPlusYaw->setProperty("Func", QVariant(QCoreApplication::translate("RobotWindow", "Jogging", nullptr)));
 #if QT_CONFIG(tooltip)
-        pbLeft->setToolTip(QCoreApplication::translate("RobotWindow", "Left (shift + w)", nullptr));
+        pbSubPitch->setToolTip(QCoreApplication::translate("RobotWindow", "Left (shift + w)", nullptr));
 #endif // QT_CONFIG(tooltip)
 #if QT_CONFIG(statustip)
-        pbLeft->setStatusTip(QString());
+        pbSubPitch->setStatusTip(QString());
 #endif // QT_CONFIG(statustip)
-        pbLeft->setText(QCoreApplication::translate("RobotWindow", "X-", nullptr));
+        pbSubPitch->setText(QCoreApplication::translate("RobotWindow", "V-", nullptr));
 #if QT_CONFIG(shortcut)
-        pbLeft->setShortcut(QCoreApplication::translate("RobotWindow", "Shift+A", nullptr));
+        pbSubPitch->setShortcut(QCoreApplication::translate("RobotWindow", "Shift+U", nullptr));
 #endif // QT_CONFIG(shortcut)
-        pbLeft->setProperty("Func", QVariant(QCoreApplication::translate("RobotWindow", "Jogging", nullptr)));
+        pbSubPitch->setProperty("Func", QVariant(QCoreApplication::translate("RobotWindow", "Jogging", nullptr)));
+#if QT_CONFIG(tooltip)
+        pbContinuousRight->setToolTip(QCoreApplication::translate("RobotWindow", "Right (Shift +d)", nullptr));
+#endif // QT_CONFIG(tooltip)
+#if QT_CONFIG(statustip)
+        pbContinuousRight->setStatusTip(QString());
+#endif // QT_CONFIG(statustip)
+        pbContinuousRight->setText(QString());
+#if QT_CONFIG(shortcut)
+        pbContinuousRight->setShortcut(QCoreApplication::translate("RobotWindow", "Shift+D", nullptr));
+#endif // QT_CONFIG(shortcut)
+        pbContinuousRight->setProperty("Func", QVariant(QCoreApplication::translate("RobotWindow", "Jogging", nullptr)));
+#if QT_CONFIG(tooltip)
+        pbForward->setToolTip(QCoreApplication::translate("RobotWindow", "Forward (Shift + w)", nullptr));
+#endif // QT_CONFIG(tooltip)
+#if QT_CONFIG(statustip)
+        pbForward->setStatusTip(QString());
+#endif // QT_CONFIG(statustip)
+        pbForward->setText(QCoreApplication::translate("RobotWindow", "Y+", nullptr));
+#if QT_CONFIG(shortcut)
+        pbForward->setShortcut(QCoreApplication::translate("RobotWindow", "Shift+W", nullptr));
+#endif // QT_CONFIG(shortcut)
+        pbForward->setProperty("Func", QVariant(QCoreApplication::translate("RobotWindow", "Jogging", nullptr)));
+        label_276->setText(QCoreApplication::translate("RobotWindow", "4-axis", nullptr));
+#if QT_CONFIG(tooltip)
+        pbPlusRoll->setToolTip(QCoreApplication::translate("RobotWindow", "Right (Shift +d)", nullptr));
+#endif // QT_CONFIG(tooltip)
+#if QT_CONFIG(statustip)
+        pbPlusRoll->setStatusTip(QString());
+#endif // QT_CONFIG(statustip)
+        pbPlusRoll->setText(QCoreApplication::translate("RobotWindow", "W+", nullptr));
+#if QT_CONFIG(shortcut)
+        pbPlusRoll->setShortcut(QCoreApplication::translate("RobotWindow", "Shift+G", nullptr));
+#endif // QT_CONFIG(shortcut)
+        pbPlusRoll->setProperty("Func", QVariant(QCoreApplication::translate("RobotWindow", "Jogging", nullptr)));
+#if QT_CONFIG(tooltip)
+        pbPlusPitch->setToolTip(QCoreApplication::translate("RobotWindow", "Right (Shift +d)", nullptr));
+#endif // QT_CONFIG(tooltip)
+#if QT_CONFIG(statustip)
+        pbPlusPitch->setStatusTip(QString());
+#endif // QT_CONFIG(statustip)
+        pbPlusPitch->setText(QCoreApplication::translate("RobotWindow", "V+", nullptr));
+#if QT_CONFIG(shortcut)
+        pbPlusPitch->setShortcut(QCoreApplication::translate("RobotWindow", "Shift+J", nullptr));
+#endif // QT_CONFIG(shortcut)
+        pbPlusPitch->setProperty("Func", QVariant(QCoreApplication::translate("RobotWindow", "Jogging", nullptr)));
+#if QT_CONFIG(tooltip)
+        pbDown->setToolTip(QCoreApplication::translate("RobotWindow", "Down (shift + f)", nullptr));
+#endif // QT_CONFIG(tooltip)
+#if QT_CONFIG(statustip)
+        pbDown->setStatusTip(QString());
+#endif // QT_CONFIG(statustip)
+        pbDown->setText(QCoreApplication::translate("RobotWindow", "Z-", nullptr));
+#if QT_CONFIG(shortcut)
+        pbDown->setShortcut(QCoreApplication::translate("RobotWindow", "Shift+F", nullptr));
+#endif // QT_CONFIG(shortcut)
+        pbDown->setProperty("Func", QVariant(QCoreApplication::translate("RobotWindow", "Jogging", nullptr)));
+#if QT_CONFIG(tooltip)
+        pbContinuousUp->setToolTip(QCoreApplication::translate("RobotWindow", "Forward (Shift + w)", nullptr));
+#endif // QT_CONFIG(tooltip)
+#if QT_CONFIG(statustip)
+        pbContinuousUp->setStatusTip(QString());
+#endif // QT_CONFIG(statustip)
+        pbContinuousUp->setText(QString());
+#if QT_CONFIG(shortcut)
+        pbContinuousUp->setShortcut(QCoreApplication::translate("RobotWindow", "Shift+W", nullptr));
+#endif // QT_CONFIG(shortcut)
+        pbContinuousUp->setProperty("Func", QVariant(QCoreApplication::translate("RobotWindow", "Jogging", nullptr)));
+#if QT_CONFIG(tooltip)
+        pbContinuousDown->setToolTip(QCoreApplication::translate("RobotWindow", "Forward (Shift + w)", nullptr));
+#endif // QT_CONFIG(tooltip)
+#if QT_CONFIG(statustip)
+        pbContinuousDown->setStatusTip(QString());
+#endif // QT_CONFIG(statustip)
+        pbContinuousDown->setText(QString());
+#if QT_CONFIG(shortcut)
+        pbContinuousDown->setShortcut(QCoreApplication::translate("RobotWindow", "Shift+W", nullptr));
+#endif // QT_CONFIG(shortcut)
+        pbContinuousDown->setProperty("Func", QVariant(QCoreApplication::translate("RobotWindow", "Jogging", nullptr)));
+#if QT_CONFIG(tooltip)
+        pbContinuous4Plus->setToolTip(QCoreApplication::translate("RobotWindow", "Forward (Shift + w)", nullptr));
+#endif // QT_CONFIG(tooltip)
+#if QT_CONFIG(statustip)
+        pbContinuous4Plus->setStatusTip(QString());
+#endif // QT_CONFIG(statustip)
+        pbContinuous4Plus->setText(QString());
+#if QT_CONFIG(shortcut)
+        pbContinuous4Plus->setShortcut(QCoreApplication::translate("RobotWindow", "Shift+W", nullptr));
+#endif // QT_CONFIG(shortcut)
+        pbContinuous4Plus->setProperty("Func", QVariant(QCoreApplication::translate("RobotWindow", "Jogging", nullptr)));
+#if QT_CONFIG(tooltip)
+        pbContinuous4Sub->setToolTip(QCoreApplication::translate("RobotWindow", "Forward (Shift + w)", nullptr));
+#endif // QT_CONFIG(tooltip)
+#if QT_CONFIG(statustip)
+        pbContinuous4Sub->setStatusTip(QString());
+#endif // QT_CONFIG(statustip)
+        pbContinuous4Sub->setText(QString());
+#if QT_CONFIG(shortcut)
+        pbContinuous4Sub->setShortcut(QCoreApplication::translate("RobotWindow", "Shift+W", nullptr));
+#endif // QT_CONFIG(shortcut)
+        pbContinuous4Sub->setProperty("Func", QVariant(QCoreApplication::translate("RobotWindow", "Jogging", nullptr)));
+#if QT_CONFIG(tooltip)
+        pbContinuous5Plus->setToolTip(QCoreApplication::translate("RobotWindow", "Forward (Shift + w)", nullptr));
+#endif // QT_CONFIG(tooltip)
+#if QT_CONFIG(statustip)
+        pbContinuous5Plus->setStatusTip(QString());
+#endif // QT_CONFIG(statustip)
+        pbContinuous5Plus->setText(QString());
+#if QT_CONFIG(shortcut)
+        pbContinuous5Plus->setShortcut(QCoreApplication::translate("RobotWindow", "Shift+W", nullptr));
+#endif // QT_CONFIG(shortcut)
+        pbContinuous5Plus->setProperty("Func", QVariant(QCoreApplication::translate("RobotWindow", "Jogging", nullptr)));
+#if QT_CONFIG(tooltip)
+        pbContinuous6Plus->setToolTip(QCoreApplication::translate("RobotWindow", "Forward (Shift + w)", nullptr));
+#endif // QT_CONFIG(tooltip)
+#if QT_CONFIG(statustip)
+        pbContinuous6Plus->setStatusTip(QString());
+#endif // QT_CONFIG(statustip)
+        pbContinuous6Plus->setText(QString());
+#if QT_CONFIG(shortcut)
+        pbContinuous6Plus->setShortcut(QCoreApplication::translate("RobotWindow", "Shift+W", nullptr));
+#endif // QT_CONFIG(shortcut)
+        pbContinuous6Plus->setProperty("Func", QVariant(QCoreApplication::translate("RobotWindow", "Jogging", nullptr)));
+#if QT_CONFIG(tooltip)
+        pbContinuous5Sub->setToolTip(QCoreApplication::translate("RobotWindow", "Forward (Shift + w)", nullptr));
+#endif // QT_CONFIG(tooltip)
+#if QT_CONFIG(statustip)
+        pbContinuous5Sub->setStatusTip(QString());
+#endif // QT_CONFIG(statustip)
+        pbContinuous5Sub->setText(QString());
+#if QT_CONFIG(shortcut)
+        pbContinuous5Sub->setShortcut(QCoreApplication::translate("RobotWindow", "Shift+W", nullptr));
+#endif // QT_CONFIG(shortcut)
+        pbContinuous5Sub->setProperty("Func", QVariant(QCoreApplication::translate("RobotWindow", "Jogging", nullptr)));
+#if QT_CONFIG(tooltip)
+        pbContinuous6Sub->setToolTip(QCoreApplication::translate("RobotWindow", "Forward (Shift + w)", nullptr));
+#endif // QT_CONFIG(tooltip)
+#if QT_CONFIG(statustip)
+        pbContinuous6Sub->setStatusTip(QString());
+#endif // QT_CONFIG(statustip)
+        pbContinuous6Sub->setText(QString());
+#if QT_CONFIG(shortcut)
+        pbContinuous6Sub->setShortcut(QCoreApplication::translate("RobotWindow", "Shift+W", nullptr));
+#endif // QT_CONFIG(shortcut)
+        pbContinuous6Sub->setProperty("Func", QVariant(QCoreApplication::translate("RobotWindow", "Jogging", nullptr)));
+#if QT_CONFIG(tooltip)
+        pbContinuousForward->setToolTip(QCoreApplication::translate("RobotWindow", "Forward (Shift + w)", nullptr));
+#endif // QT_CONFIG(tooltip)
+#if QT_CONFIG(statustip)
+        pbContinuousForward->setStatusTip(QString());
+#endif // QT_CONFIG(statustip)
+        pbContinuousForward->setText(QString());
+#if QT_CONFIG(shortcut)
+        pbContinuousForward->setShortcut(QCoreApplication::translate("RobotWindow", "Shift+W", nullptr));
+#endif // QT_CONFIG(shortcut)
+        pbContinuousForward->setProperty("Func", QVariant(QCoreApplication::translate("RobotWindow", "Jogging", nullptr)));
         label_33->setText(QCoreApplication::translate("RobotWindow", "  Step  ", nullptr));
         rb01->setText(QCoreApplication::translate("RobotWindow", "0.1", nullptr));
         rb05->setText(QCoreApplication::translate("RobotWindow", "0.5", nullptr));

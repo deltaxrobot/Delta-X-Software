@@ -24,6 +24,7 @@ public:
     void SetOutput(int pin, bool state);
     void MovePoint(QVector3D point);
     void SetRobotModel(QString robot);
+    void ProcessNextMove();
 
     float X,Y,Z,W,U,V,F,S,E,A,J;
 
@@ -40,6 +41,7 @@ public slots:
     QString GetInfo();
 
 private:
+    QVector3D StepVector;
     QString done_msg;
     QString last_gcode;
     QString now_gcode;
@@ -60,6 +62,7 @@ private:
     bool getPara(QString gcode);
     void calMoveTime();
     bool checkSetSyncPathCmd(QString cmd);
+    bool checkJoggingCmd(QString cmd);
     QString syncGcode(QString cmd);
     double calculateMovingTime(double distance);
     QVector3D calculateSyncPosition(QVector3D robotPos, QVector3D objectPos, QVector3D beltVelocity, double tolerance = 1e-3);

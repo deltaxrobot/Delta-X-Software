@@ -6,6 +6,8 @@ Robot::Robot(QString COM, int baudrate, bool is_open, QObject *parent) : Device(
     connect(this, SIGNAL(receivedMsg(QString, QString)), this, SLOT(ProcessResponse(QString, QString)));
     this->scurve_tool = Scurve_Interpolator();
 
+    StepVector = QVector3D(0, 0, 0);
+
     X = 0;
     Y = 0;
     Z = 0;
@@ -35,8 +37,16 @@ Robot::~Robot()
 
 QString Robot::SendGcode(QString gcode, bool is_wait, int time_out)
 {
+    if (checkJoggingCmd(gcode))
+    {
+        IsGcodeDone = true;
+        emit receivedMsg(idName, "Ok");
+        return "";
+    }
+
     if (checkSetSyncPathCmd(gcode))
     {
+        IsGcodeDone = true;
         emit receivedMsg(idName, "Ok");
         return "";
     }
@@ -81,6 +91,8 @@ void Robot::ProcessResponse(QString id, QString response) {
 
     jsonObject["response"] = response;
 //    emit Log(idName, response, 0);
+
+    ProcessNextMove();
 
     if (now_gcode.count("G28") > 0 || now_gcode.count("M85"))
     {
@@ -690,3 +702,37 @@ void Robot::SetRobotModel(QString robot)
 {
     robotModel = robot;
 }
+
+bool Robot::checkJoggingCmd(QString cmd)
+{
+    QRegularExpression re("^\\s*jogging\\s*\\(\\s*([+-]?\\d+(?:\\.\\d+)?)\\s*,\\s*([+-]?\\d+(?:\\.\\d+)?)\\s*,\\s*([+-]?\\d+(?:\\.\\d+)?)\\s*\\)\\s*$");
+
+    QRegularExpressionMatch match = re.match(cmd);
+    if (!match.hasMatch()) {
+        // Không đúng format
+        return false;
+    }
+
+    // Nếu match, chuyển sang số thực
+    float x = match.captured(1).toDouble();
+    float y = match.captured(2).toDouble();
+    float z = match.captured(3).toDouble();
+
+    StepVector.setX(x);
+    StepVector.setY(y);
+    StepVector.setZ(z);
+
+    return true;
+}
+
+
+
+void Robot::ProcessNextMove()
+{
+    if (IsGcodeDone == false || StepVector == QVector3D(0,0,0))
+        return;
+
+    QVector3D desPoint = StepVector + QVector3D(X, Y, Z);
+    MovePoint(desPoint);
+}
+

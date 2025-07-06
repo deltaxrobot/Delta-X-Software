@@ -793,6 +793,19 @@ void RobotWindow::InitUIController()
     connect(ui->leStartSpeed, &QLineEdit::returnPressed, this, &RobotWindow::UpdateStartSpeed);
     connect(ui->leEndSpeed, &QLineEdit::returnPressed, this, &RobotWindow::UpdateEndSpeed);
     connect(ui->leJerk, &QLineEdit::returnPressed, this, &RobotWindow::UpdateJerk);
+
+    connect(ui->pbContinuousLeft, &QPushButton::pressed, [=](){Jogging("left", true);});
+    connect(ui->pbContinuousLeft, &QPushButton::released, [=](){Jogging("left", false);});
+    connect(ui->pbContinuousRight, &QPushButton::pressed, [=](){Jogging("right", true);});
+    connect(ui->pbContinuousRight, &QPushButton::released, [=](){Jogging("right", false);});
+    connect(ui->pbContinuousForward, &QPushButton::pressed, [=](){Jogging("forward", true);});
+    connect(ui->pbContinuousForward, &QPushButton::released, [=](){Jogging("forward", false);});
+    connect(ui->pbContinuousBackward, &QPushButton::pressed, [=](){Jogging("backward", true);});
+    connect(ui->pbContinuousBackward, &QPushButton::released, [=](){Jogging("backward", false);});
+    connect(ui->pbContinuousUp, &QPushButton::pressed, [=](){Jogging("up", true);});
+    connect(ui->pbContinuousUp, &QPushButton::released, [=](){Jogging("up", false);});
+    connect(ui->pbContinuousDown, &QPushButton::pressed, [=](){Jogging("down", true);});
+    connect(ui->pbContinuousDown, &QPushButton::released, [=](){Jogging("down", false);});
 }
 
 void RobotWindow::InitCalibration()
@@ -5968,5 +5981,42 @@ void RobotWindow::flushPendingUpdates()
     if (m_batchUpdateTimer->isActive())
         m_batchUpdateTimer->stop();
     processBatchUpdates();
+}
+
+
+
+void RobotWindow::Jogging(QString direction, bool isMove)
+{
+    float step = RobotParameters[RbID].Step;
+    if (isMove == false)
+    {
+        step = 0;
+    }
+
+    if (direction.contains("left"))
+    {
+        //format: jogging (step, 0, 0)
+        emit Send(DeviceManager::ROBOT, QString("jogging (%1, 0, 0)").arg(-step));
+    }
+    else if (direction.contains("right"))
+    {
+        emit Send(DeviceManager::ROBOT, QString("jogging (%1, 0, 0)").arg(step));
+    }
+    else if (direction.contains("forward"))
+    {
+        emit Send(DeviceManager::ROBOT, QString("jogging (0, %1, 0)").arg(step));
+    }
+    else if (direction.contains("backward"))
+    {
+        emit Send(DeviceManager::ROBOT, QString("jogging (0, %1, 0)").arg(-step));
+    }
+    else if (direction.contains("up"))
+    {
+        emit Send(DeviceManager::ROBOT, QString("jogging (0, 0, %1)").arg(step));
+    }
+    else if (direction.contains("down"))
+    {
+        emit Send(DeviceManager::ROBOT, QString("jogging (0, 0, %1)").arg(-step));
+    }
 }
 

@@ -35,6 +35,8 @@ public:
 
     QString ProjectName = "project0";
 
+    bool IsGcodeDone = true;
+
     static QElapsedTimer DebugTimer;
 
 signals:

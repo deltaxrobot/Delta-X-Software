@@ -10911,163 +10911,7 @@ QToolButton[Func='Jogging']
                          <enum>QFrame::Raised</enum>
                         </property>
                         <layout class="QGridLayout" name="gridLayout_56">
-                         <item row="3" column="1">
-                          <widget class="QToolButton" name="pbBackward">
-                           <property name="toolTip">
-                            <string>Backward (shift + s)</string>
-                           </property>
-                           <property name="statusTip">
-                            <string/>
-                           </property>
-                           <property name="text">
-                            <string>Y-</string>
-                           </property>
-                           <property name="iconSize">
-                            <size>
-                             <width>40</width>
-                             <height>40</height>
-                            </size>
-                           </property>
-                           <property name="shortcut">
-                            <string>Shift+S</string>
-                           </property>
-                           <property name="toolButtonStyle">
-                            <enum>Qt::ToolButtonTextUnderIcon</enum>
-                           </property>
-                           <property name="Func" stdset="0">
-                            <string>Jogging</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="2" column="7">
-                          <widget class="QLabel" name="label_275">
-                           <property name="minimumSize">
-                            <size>
-                             <width>0</width>
-                             <height>20</height>
-                            </size>
-                           </property>
-                           <property name="font">
-                            <font>
-                             <pointsize>8</pointsize>
-                             <bold>false</bold>
-                            </font>
-                           </property>
-                           <property name="text">
-                            <string>5-axis</string>
-                           </property>
-                           <property name="alignment">
-                            <set>Qt::AlignCenter</set>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="3" column="6">
-                          <widget class="QToolButton" name="pbPlusRoll">
-                           <property name="toolTip">
-                            <string>Right (Shift +d)</string>
-                           </property>
-                           <property name="statusTip">
-                            <string/>
-                           </property>
-                           <property name="text">
-                            <string>W+</string>
-                           </property>
-                           <property name="iconSize">
-                            <size>
-                             <width>40</width>
-                             <height>40</height>
-                            </size>
-                           </property>
-                           <property name="shortcut">
-                            <string>Shift+G</string>
-                           </property>
-                           <property name="toolButtonStyle">
-                            <enum>Qt::ToolButtonTextUnderIcon</enum>
-                           </property>
-                           <property name="Func" stdset="0">
-                            <string>Jogging</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="2" column="8">
-                          <widget class="QLabel" name="label_274">
-                           <property name="minimumSize">
-                            <size>
-                             <width>0</width>
-                             <height>20</height>
-                            </size>
-                           </property>
-                           <property name="font">
-                            <font>
-                             <pointsize>8</pointsize>
-                             <bold>false</bold>
-                            </font>
-                           </property>
-                           <property name="text">
-                            <string>6-axis</string>
-                           </property>
-                           <property name="alignment">
-                            <set>Qt::AlignCenter</set>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="1" column="8">
-                          <widget class="QToolButton" name="pbSubPitch">
-                           <property name="toolTip">
-                            <string>Left (shift + w)</string>
-                           </property>
-                           <property name="statusTip">
-                            <string/>
-                           </property>
-                           <property name="text">
-                            <string>V-</string>
-                           </property>
-                           <property name="iconSize">
-                            <size>
-                             <width>40</width>
-                             <height>40</height>
-                            </size>
-                           </property>
-                           <property name="shortcut">
-                            <string>Shift+U</string>
-                           </property>
-                           <property name="toolButtonStyle">
-                            <enum>Qt::ToolButtonTextUnderIcon</enum>
-                           </property>
-                           <property name="Func" stdset="0">
-                            <string>Jogging</string>
-                           </property>
-                          </widget>
-                         </item>
                          <item row="1" column="6">
-                          <widget class="QToolButton" name="pbSubRoll">
-                           <property name="toolTip">
-                            <string>Left (shift + w)</string>
-                           </property>
-                           <property name="statusTip">
-                            <string/>
-                           </property>
-                           <property name="text">
-                            <string>W-</string>
-                           </property>
-                           <property name="iconSize">
-                            <size>
-                             <width>40</width>
-                             <height>40</height>
-                            </size>
-                           </property>
-                           <property name="shortcut">
-                            <string>Shift+T</string>
-                           </property>
-                           <property name="toolButtonStyle">
-                            <enum>Qt::ToolButtonTextUnderIcon</enum>
-                           </property>
-                           <property name="Func" stdset="0">
-                            <string>Jogging</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="1" column="5">
                           <widget class="QToolButton" name="pbUp">
                            <property name="toolTip">
                             <string>Up (shift + r)</string>
@@ -11098,25 +10942,40 @@ QToolButton[Func='Jogging']
                            </property>
                           </widget>
                          </item>
-                         <item row="3" column="5">
-                          <widget class="QToolButton" name="pbDown">
+                         <item row="4" column="2">
+                          <widget class="QToolButton" name="pbContinuousBackward">
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                             <horstretch>0</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
+                           <property name="maximumSize">
+                            <size>
+                             <width>16777215</width>
+                             <height>10</height>
+                            </size>
+                           </property>
                            <property name="toolTip">
-                            <string>Down (shift + f)</string>
+                            <string>Forward (Shift + w)</string>
                            </property>
                            <property name="statusTip">
                             <string/>
                            </property>
+                           <property name="styleSheet">
+                            <string notr="true"/>
+                           </property>
                            <property name="text">
-                            <string>Z-</string>
+                            <string/>
                            </property>
                            <property name="iconSize">
                             <size>
-                             <width>40</width>
-                             <height>40</height>
+                             <width>20</width>
+                             <height>20</height>
                             </size>
                            </property>
                            <property name="shortcut">
-                            <string>Shift+F</string>
+                            <string>Shift+W</string>
                            </property>
                            <property name="toolButtonStyle">
                             <enum>Qt::ToolButtonTextUnderIcon</enum>
@@ -11126,7 +10985,328 @@ QToolButton[Func='Jogging']
                            </property>
                           </widget>
                          </item>
-                         <item row="1" column="1">
+                         <item row="1" column="7">
+                          <widget class="QToolButton" name="pbSubRoll">
+                           <property name="toolTip">
+                            <string>Left (shift + w)</string>
+                           </property>
+                           <property name="statusTip">
+                            <string/>
+                           </property>
+                           <property name="text">
+                            <string>W-</string>
+                           </property>
+                           <property name="iconSize">
+                            <size>
+                             <width>40</width>
+                             <height>40</height>
+                            </size>
+                           </property>
+                           <property name="shortcut">
+                            <string>Shift+T</string>
+                           </property>
+                           <property name="toolButtonStyle">
+                            <enum>Qt::ToolButtonTextUnderIcon</enum>
+                           </property>
+                           <property name="Func" stdset="0">
+                            <string>Jogging</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="1" column="8">
+                          <widget class="QToolButton" name="pbSubYaw">
+                           <property name="toolTip">
+                            <string>Left (shift + w)</string>
+                           </property>
+                           <property name="statusTip">
+                            <string/>
+                           </property>
+                           <property name="text">
+                            <string>U-</string>
+                           </property>
+                           <property name="iconSize">
+                            <size>
+                             <width>40</width>
+                             <height>40</height>
+                            </size>
+                           </property>
+                           <property name="shortcut">
+                            <string>Shift+Y</string>
+                           </property>
+                           <property name="toolButtonStyle">
+                            <enum>Qt::ToolButtonTextUnderIcon</enum>
+                           </property>
+                           <property name="Func" stdset="0">
+                            <string>Jogging</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="3" column="2">
+                          <widget class="QToolButton" name="pbBackward">
+                           <property name="toolTip">
+                            <string>Backward (shift + s)</string>
+                           </property>
+                           <property name="statusTip">
+                            <string/>
+                           </property>
+                           <property name="text">
+                            <string>Y-</string>
+                           </property>
+                           <property name="iconSize">
+                            <size>
+                             <width>40</width>
+                             <height>40</height>
+                            </size>
+                           </property>
+                           <property name="shortcut">
+                            <string>Shift+S</string>
+                           </property>
+                           <property name="toolButtonStyle">
+                            <enum>Qt::ToolButtonTextUnderIcon</enum>
+                           </property>
+                           <property name="Func" stdset="0">
+                            <string>Jogging</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="2" column="0">
+                          <widget class="QToolButton" name="pbContinuousLeft">
+                           <property name="maximumSize">
+                            <size>
+                             <width>10</width>
+                             <height>16777215</height>
+                            </size>
+                           </property>
+                           <property name="toolTip">
+                            <string>Left (shift + w)</string>
+                           </property>
+                           <property name="statusTip">
+                            <string/>
+                           </property>
+                           <property name="text">
+                            <string/>
+                           </property>
+                           <property name="iconSize">
+                            <size>
+                             <width>40</width>
+                             <height>40</height>
+                            </size>
+                           </property>
+                           <property name="shortcut">
+                            <string>Shift+A</string>
+                           </property>
+                           <property name="toolButtonStyle">
+                            <enum>Qt::ToolButtonTextUnderIcon</enum>
+                           </property>
+                           <property name="Func" stdset="0">
+                            <string>Jogging</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="2" column="4">
+                          <widget class="QToolButton" name="pbRight">
+                           <property name="toolTip">
+                            <string>Right (Shift +d)</string>
+                           </property>
+                           <property name="statusTip">
+                            <string/>
+                           </property>
+                           <property name="text">
+                            <string>X+</string>
+                           </property>
+                           <property name="iconSize">
+                            <size>
+                             <width>40</width>
+                             <height>40</height>
+                            </size>
+                           </property>
+                           <property name="shortcut">
+                            <string>Shift+D</string>
+                           </property>
+                           <property name="toolButtonStyle">
+                            <enum>Qt::ToolButtonTextUnderIcon</enum>
+                           </property>
+                           <property name="Func" stdset="0">
+                            <string>Jogging</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="2" column="1">
+                          <widget class="QToolButton" name="pbLeft">
+                           <property name="toolTip">
+                            <string>Left (shift + w)</string>
+                           </property>
+                           <property name="statusTip">
+                            <string/>
+                           </property>
+                           <property name="text">
+                            <string>X-</string>
+                           </property>
+                           <property name="iconSize">
+                            <size>
+                             <width>40</width>
+                             <height>40</height>
+                            </size>
+                           </property>
+                           <property name="shortcut">
+                            <string>Shift+A</string>
+                           </property>
+                           <property name="toolButtonStyle">
+                            <enum>Qt::ToolButtonTextUnderIcon</enum>
+                           </property>
+                           <property name="Func" stdset="0">
+                            <string>Jogging</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="2" column="8">
+                          <widget class="QLabel" name="label_275">
+                           <property name="minimumSize">
+                            <size>
+                             <width>0</width>
+                             <height>20</height>
+                            </size>
+                           </property>
+                           <property name="font">
+                            <font>
+                             <pointsize>8</pointsize>
+                             <bold>false</bold>
+                            </font>
+                           </property>
+                           <property name="text">
+                            <string>5-axis</string>
+                           </property>
+                           <property name="alignment">
+                            <set>Qt::AlignCenter</set>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="2" column="9">
+                          <widget class="QLabel" name="label_274">
+                           <property name="minimumSize">
+                            <size>
+                             <width>0</width>
+                             <height>20</height>
+                            </size>
+                           </property>
+                           <property name="font">
+                            <font>
+                             <pointsize>8</pointsize>
+                             <bold>false</bold>
+                            </font>
+                           </property>
+                           <property name="text">
+                            <string>6-axis</string>
+                           </property>
+                           <property name="alignment">
+                            <set>Qt::AlignCenter</set>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="3" column="8">
+                          <widget class="QToolButton" name="pbPlusYaw">
+                           <property name="toolTip">
+                            <string>Right (Shift +d)</string>
+                           </property>
+                           <property name="statusTip">
+                            <string/>
+                           </property>
+                           <property name="text">
+                            <string>U+</string>
+                           </property>
+                           <property name="iconSize">
+                            <size>
+                             <width>40</width>
+                             <height>40</height>
+                            </size>
+                           </property>
+                           <property name="shortcut">
+                            <string>Shift+H</string>
+                           </property>
+                           <property name="toolButtonStyle">
+                            <enum>Qt::ToolButtonTextUnderIcon</enum>
+                           </property>
+                           <property name="Func" stdset="0">
+                            <string>Jogging</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="2" column="10">
+                          <spacer name="horizontalSpacer_4">
+                           <property name="orientation">
+                            <enum>Qt::Horizontal</enum>
+                           </property>
+                           <property name="sizeHint" stdset="0">
+                            <size>
+                             <width>40</width>
+                             <height>20</height>
+                            </size>
+                           </property>
+                          </spacer>
+                         </item>
+                         <item row="1" column="9">
+                          <widget class="QToolButton" name="pbSubPitch">
+                           <property name="toolTip">
+                            <string>Left (shift + w)</string>
+                           </property>
+                           <property name="statusTip">
+                            <string/>
+                           </property>
+                           <property name="text">
+                            <string>V-</string>
+                           </property>
+                           <property name="iconSize">
+                            <size>
+                             <width>40</width>
+                             <height>40</height>
+                            </size>
+                           </property>
+                           <property name="shortcut">
+                            <string>Shift+U</string>
+                           </property>
+                           <property name="toolButtonStyle">
+                            <enum>Qt::ToolButtonTextUnderIcon</enum>
+                           </property>
+                           <property name="Func" stdset="0">
+                            <string>Jogging</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="2" column="5">
+                          <widget class="QToolButton" name="pbContinuousRight">
+                           <property name="maximumSize">
+                            <size>
+                             <width>10</width>
+                             <height>16777215</height>
+                            </size>
+                           </property>
+                           <property name="toolTip">
+                            <string>Right (Shift +d)</string>
+                           </property>
+                           <property name="statusTip">
+                            <string/>
+                           </property>
+                           <property name="text">
+                            <string/>
+                           </property>
+                           <property name="iconSize">
+                            <size>
+                             <width>40</width>
+                             <height>40</height>
+                            </size>
+                           </property>
+                           <property name="shortcut">
+                            <string>Shift+D</string>
+                           </property>
+                           <property name="toolButtonStyle">
+                            <enum>Qt::ToolButtonTextUnderIcon</enum>
+                           </property>
+                           <property name="Func" stdset="0">
+                            <string>Jogging</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="1" column="2">
                           <widget class="QToolButton" name="pbForward">
                            <property name="sizePolicy">
                             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -11163,8 +11343,30 @@ QToolButton[Func='Jogging']
                            </property>
                           </widget>
                          </item>
-                         <item row="2" column="3">
-                          <widget class="QToolButton" name="pbRight">
+                         <item row="2" column="7">
+                          <widget class="QLabel" name="label_276">
+                           <property name="minimumSize">
+                            <size>
+                             <width>0</width>
+                             <height>20</height>
+                            </size>
+                           </property>
+                           <property name="font">
+                            <font>
+                             <pointsize>8</pointsize>
+                             <bold>false</bold>
+                            </font>
+                           </property>
+                           <property name="text">
+                            <string>4-axis</string>
+                           </property>
+                           <property name="alignment">
+                            <set>Qt::AlignCenter</set>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="3" column="7">
+                          <widget class="QToolButton" name="pbPlusRoll">
                            <property name="toolTip">
                             <string>Right (Shift +d)</string>
                            </property>
@@ -11172,7 +11374,7 @@ QToolButton[Func='Jogging']
                             <string/>
                            </property>
                            <property name="text">
-                            <string>X+</string>
+                            <string>W+</string>
                            </property>
                            <property name="iconSize">
                             <size>
@@ -11181,7 +11383,7 @@ QToolButton[Func='Jogging']
                             </size>
                            </property>
                            <property name="shortcut">
-                            <string>Shift+D</string>
+                            <string>Shift+G</string>
                            </property>
                            <property name="toolButtonStyle">
                             <enum>Qt::ToolButtonTextUnderIcon</enum>
@@ -11191,7 +11393,7 @@ QToolButton[Func='Jogging']
                            </property>
                           </widget>
                          </item>
-                         <item row="3" column="8">
+                         <item row="3" column="9">
                           <widget class="QToolButton" name="pbPlusPitch">
                            <property name="toolTip">
                             <string>Right (Shift +d)</string>
@@ -11219,16 +11421,16 @@ QToolButton[Func='Jogging']
                            </property>
                           </widget>
                          </item>
-                         <item row="1" column="7">
-                          <widget class="QToolButton" name="pbSubYaw">
+                         <item row="3" column="6">
+                          <widget class="QToolButton" name="pbDown">
                            <property name="toolTip">
-                            <string>Left (shift + w)</string>
+                            <string>Down (shift + f)</string>
                            </property>
                            <property name="statusTip">
                             <string/>
                            </property>
                            <property name="text">
-                            <string>U-</string>
+                            <string>Z-</string>
                            </property>
                            <property name="iconSize">
                             <size>
@@ -11237,7 +11439,7 @@ QToolButton[Func='Jogging']
                             </size>
                            </property>
                            <property name="shortcut">
-                            <string>Shift+Y</string>
+                            <string>Shift+F</string>
                            </property>
                            <property name="toolButtonStyle">
                             <enum>Qt::ToolButtonTextUnderIcon</enum>
@@ -11247,60 +11449,40 @@ QToolButton[Func='Jogging']
                            </property>
                           </widget>
                          </item>
-                         <item row="2" column="9">
-                          <spacer name="horizontalSpacer_4">
-                           <property name="orientation">
-                            <enum>Qt::Horizontal</enum>
+                         <item row="0" column="6">
+                          <widget class="QToolButton" name="pbContinuousUp">
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                             <horstretch>0</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
                            </property>
-                           <property name="sizeHint" stdset="0">
+                           <property name="maximumSize">
                             <size>
-                             <width>40</width>
-                             <height>20</height>
+                             <width>16777215</width>
+                             <height>10</height>
                             </size>
                            </property>
-                          </spacer>
-                         </item>
-                         <item row="2" column="6">
-                          <widget class="QLabel" name="label_276">
-                           <property name="minimumSize">
-                            <size>
-                             <width>0</width>
-                             <height>20</height>
-                            </size>
-                           </property>
-                           <property name="font">
-                            <font>
-                             <pointsize>8</pointsize>
-                             <bold>false</bold>
-                            </font>
-                           </property>
-                           <property name="text">
-                            <string>4-axis</string>
-                           </property>
-                           <property name="alignment">
-                            <set>Qt::AlignCenter</set>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="3" column="7">
-                          <widget class="QToolButton" name="pbPlusYaw">
                            <property name="toolTip">
-                            <string>Right (Shift +d)</string>
+                            <string>Forward (Shift + w)</string>
                            </property>
                            <property name="statusTip">
                             <string/>
                            </property>
+                           <property name="styleSheet">
+                            <string notr="true"/>
+                           </property>
                            <property name="text">
-                            <string>U+</string>
+                            <string/>
                            </property>
                            <property name="iconSize">
                             <size>
-                             <width>40</width>
-                             <height>40</height>
+                             <width>20</width>
+                             <height>20</height>
                             </size>
                            </property>
                            <property name="shortcut">
-                            <string>Shift+H</string>
+                            <string>Shift+W</string>
                            </property>
                            <property name="toolButtonStyle">
                             <enum>Qt::ToolButtonTextUnderIcon</enum>
@@ -11310,25 +11492,341 @@ QToolButton[Func='Jogging']
                            </property>
                           </widget>
                          </item>
-                         <item row="2" column="0">
-                          <widget class="QToolButton" name="pbLeft">
+                         <item row="4" column="6">
+                          <widget class="QToolButton" name="pbContinuousDown">
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                             <horstretch>0</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
+                           <property name="maximumSize">
+                            <size>
+                             <width>16777215</width>
+                             <height>10</height>
+                            </size>
+                           </property>
                            <property name="toolTip">
-                            <string>Left (shift + w)</string>
+                            <string>Forward (Shift + w)</string>
                            </property>
                            <property name="statusTip">
                             <string/>
                            </property>
+                           <property name="styleSheet">
+                            <string notr="true"/>
+                           </property>
                            <property name="text">
-                            <string>X-</string>
+                            <string/>
                            </property>
                            <property name="iconSize">
                             <size>
-                             <width>40</width>
-                             <height>40</height>
+                             <width>20</width>
+                             <height>20</height>
                             </size>
                            </property>
                            <property name="shortcut">
-                            <string>Shift+A</string>
+                            <string>Shift+W</string>
+                           </property>
+                           <property name="toolButtonStyle">
+                            <enum>Qt::ToolButtonTextUnderIcon</enum>
+                           </property>
+                           <property name="Func" stdset="0">
+                            <string>Jogging</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="0" column="7">
+                          <widget class="QToolButton" name="pbContinuous4Plus">
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                             <horstretch>0</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
+                           <property name="maximumSize">
+                            <size>
+                             <width>16777215</width>
+                             <height>10</height>
+                            </size>
+                           </property>
+                           <property name="toolTip">
+                            <string>Forward (Shift + w)</string>
+                           </property>
+                           <property name="statusTip">
+                            <string/>
+                           </property>
+                           <property name="styleSheet">
+                            <string notr="true"/>
+                           </property>
+                           <property name="text">
+                            <string/>
+                           </property>
+                           <property name="iconSize">
+                            <size>
+                             <width>20</width>
+                             <height>20</height>
+                            </size>
+                           </property>
+                           <property name="shortcut">
+                            <string>Shift+W</string>
+                           </property>
+                           <property name="toolButtonStyle">
+                            <enum>Qt::ToolButtonTextUnderIcon</enum>
+                           </property>
+                           <property name="Func" stdset="0">
+                            <string>Jogging</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="4" column="7">
+                          <widget class="QToolButton" name="pbContinuous4Sub">
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                             <horstretch>0</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
+                           <property name="maximumSize">
+                            <size>
+                             <width>16777215</width>
+                             <height>10</height>
+                            </size>
+                           </property>
+                           <property name="toolTip">
+                            <string>Forward (Shift + w)</string>
+                           </property>
+                           <property name="statusTip">
+                            <string/>
+                           </property>
+                           <property name="styleSheet">
+                            <string notr="true"/>
+                           </property>
+                           <property name="text">
+                            <string/>
+                           </property>
+                           <property name="iconSize">
+                            <size>
+                             <width>20</width>
+                             <height>20</height>
+                            </size>
+                           </property>
+                           <property name="shortcut">
+                            <string>Shift+W</string>
+                           </property>
+                           <property name="toolButtonStyle">
+                            <enum>Qt::ToolButtonTextUnderIcon</enum>
+                           </property>
+                           <property name="Func" stdset="0">
+                            <string>Jogging</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="0" column="8">
+                          <widget class="QToolButton" name="pbContinuous5Plus">
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                             <horstretch>0</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
+                           <property name="maximumSize">
+                            <size>
+                             <width>16777215</width>
+                             <height>10</height>
+                            </size>
+                           </property>
+                           <property name="toolTip">
+                            <string>Forward (Shift + w)</string>
+                           </property>
+                           <property name="statusTip">
+                            <string/>
+                           </property>
+                           <property name="styleSheet">
+                            <string notr="true"/>
+                           </property>
+                           <property name="text">
+                            <string/>
+                           </property>
+                           <property name="iconSize">
+                            <size>
+                             <width>20</width>
+                             <height>20</height>
+                            </size>
+                           </property>
+                           <property name="shortcut">
+                            <string>Shift+W</string>
+                           </property>
+                           <property name="toolButtonStyle">
+                            <enum>Qt::ToolButtonTextUnderIcon</enum>
+                           </property>
+                           <property name="Func" stdset="0">
+                            <string>Jogging</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="0" column="9">
+                          <widget class="QToolButton" name="pbContinuous6Plus">
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                             <horstretch>0</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
+                           <property name="maximumSize">
+                            <size>
+                             <width>16777215</width>
+                             <height>10</height>
+                            </size>
+                           </property>
+                           <property name="toolTip">
+                            <string>Forward (Shift + w)</string>
+                           </property>
+                           <property name="statusTip">
+                            <string/>
+                           </property>
+                           <property name="styleSheet">
+                            <string notr="true"/>
+                           </property>
+                           <property name="text">
+                            <string/>
+                           </property>
+                           <property name="iconSize">
+                            <size>
+                             <width>20</width>
+                             <height>20</height>
+                            </size>
+                           </property>
+                           <property name="shortcut">
+                            <string>Shift+W</string>
+                           </property>
+                           <property name="toolButtonStyle">
+                            <enum>Qt::ToolButtonTextUnderIcon</enum>
+                           </property>
+                           <property name="Func" stdset="0">
+                            <string>Jogging</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="4" column="8">
+                          <widget class="QToolButton" name="pbContinuous5Sub">
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                             <horstretch>0</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
+                           <property name="maximumSize">
+                            <size>
+                             <width>16777215</width>
+                             <height>10</height>
+                            </size>
+                           </property>
+                           <property name="toolTip">
+                            <string>Forward (Shift + w)</string>
+                           </property>
+                           <property name="statusTip">
+                            <string/>
+                           </property>
+                           <property name="styleSheet">
+                            <string notr="true"/>
+                           </property>
+                           <property name="text">
+                            <string/>
+                           </property>
+                           <property name="iconSize">
+                            <size>
+                             <width>20</width>
+                             <height>20</height>
+                            </size>
+                           </property>
+                           <property name="shortcut">
+                            <string>Shift+W</string>
+                           </property>
+                           <property name="toolButtonStyle">
+                            <enum>Qt::ToolButtonTextUnderIcon</enum>
+                           </property>
+                           <property name="Func" stdset="0">
+                            <string>Jogging</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="4" column="9">
+                          <widget class="QToolButton" name="pbContinuous6Sub">
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                             <horstretch>0</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
+                           <property name="maximumSize">
+                            <size>
+                             <width>16777215</width>
+                             <height>10</height>
+                            </size>
+                           </property>
+                           <property name="toolTip">
+                            <string>Forward (Shift + w)</string>
+                           </property>
+                           <property name="statusTip">
+                            <string/>
+                           </property>
+                           <property name="styleSheet">
+                            <string notr="true"/>
+                           </property>
+                           <property name="text">
+                            <string/>
+                           </property>
+                           <property name="iconSize">
+                            <size>
+                             <width>20</width>
+                             <height>20</height>
+                            </size>
+                           </property>
+                           <property name="shortcut">
+                            <string>Shift+W</string>
+                           </property>
+                           <property name="toolButtonStyle">
+                            <enum>Qt::ToolButtonTextUnderIcon</enum>
+                           </property>
+                           <property name="Func" stdset="0">
+                            <string>Jogging</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="0" column="2">
+                          <widget class="QToolButton" name="pbContinuousForward">
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                             <horstretch>0</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
+                           <property name="maximumSize">
+                            <size>
+                             <width>16777215</width>
+                             <height>10</height>
+                            </size>
+                           </property>
+                           <property name="toolTip">
+                            <string>Forward (Shift + w)</string>
+                           </property>
+                           <property name="statusTip">
+                            <string/>
+                           </property>
+                           <property name="styleSheet">
+                            <string notr="true"/>
+                           </property>
+                           <property name="text">
+                            <string/>
+                           </property>
+                           <property name="iconSize">
+                            <size>
+                             <width>20</width>
+                             <height>20</height>
+                            </size>
+                           </property>
+                           <property name="shortcut">
+                            <string>Shift+W</string>
                            </property>
                            <property name="toolButtonStyle">
                             <enum>Qt::ToolButtonTextUnderIcon</enum>

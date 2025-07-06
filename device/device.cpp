@@ -152,7 +152,10 @@ void Device::WriteData(QString data)
 //    qDebug() << "Write time:" << DebugTimer.elapsed();
 //    qDebug() << data;
     if (this->serialPort->isOpen())
+    {
+        IsGcodeDone = false;
         this->serialPort->write(data.toLocal8Bit());
+    }
 }
 
 void Device::ReadData()
@@ -173,6 +176,7 @@ QString Device::ReadLine(){
         if (line == "")
             continue;
 
+        IsGcodeDone = true;
         emit receivedMsg(idName, line);
     }
     return data;
