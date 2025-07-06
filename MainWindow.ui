@@ -40,49 +40,448 @@
   </property>
   <widget class="QWidget" name="centralWidget">
    <property name="styleSheet">
-    <string notr="true">QWidget#centralWidget
-{
-	background-color: rgb(30, 30, 32);
+    <string notr="true">/* ===========================================
+   MAIN APPLICATION STYLES - Delta X Software
+   =========================================== */
+
+/* Global Dark Theme */
+QWidget#centralWidget {
+    background-color: rgb(30, 30, 32);
 }
 
-QTabWidget::pane { /* The tab widget frame */
+
+
+/* ===========================================
+   TAB WIDGET STYLES
+   =========================================== */
+QTabWidget::pane {
     border: none;
 }
 
-QTabWidget::tab-bar 
-{
-
-}
-
-QTabBar::tab 
-{
+QTabBar::tab {
     background: #3f3f3f;
-	color: #f5f5f5;
-   /* border-radius: 13px;*/
-	border: 1px solid rgb(90, 90, 90);
+    color: #f5f5f5;
+    border: 1px solid rgb(90, 90, 90);
     height: 25px;
     padding: 0px 10px 2px 10px;
 }
 
 QTabBar::tab:selected {
     background: #007cd6;	
-	color: rgb(255, 255, 255);
-	/*border-radius: 13px;*/
+    color: rgb(255, 255, 255);
 }
 
 QTabBar::tab:hover {
     background: #6f6f6f;	
-	color: rgb(255, 255, 255);
-	/*border-radius: 13px;*/
+    color: rgb(255, 255, 255);
 }
 
-QTabBar::tab:selected {
-
+/* ===========================================
+   LEFT PANEL NAVIGATION
+   =========================================== */
+QWidget#wgLeftPanel {
+    background-color: #28282B;
+    border: 1px solid #565659;
 }
 
-QTabBar::tab:!selected {
+QWidget#wgLeftPanel QToolButton {
+    border: 0px;
+    font-size: 14px;
+    color: rgb(255, 255, 255);
 }
-</string>
+
+QWidget#wgLeftPanel QToolButton:hover {
+    background-color: #353538;
+}
+
+QWidget#wgLeftPanel QToolButton:pressed {
+    background-color: #3F3F42;
+}
+
+/* Active/Selected Navigation Button */
+QToolButton#tbProject {
+    background-color: #3F3F42;
+    border-right: 5px solid rgb(24, 70, 139);
+}
+
+/* ===========================================
+   PAGE SPECIFIC STYLES
+   =========================================== */
+/* Variable Page */
+QWidget#pVariable {
+    background-color: rgb(40, 40, 43);
+}
+
+QWidget#pVariable QLabel {
+    color: rgb(255, 255, 255);
+}
+
+/* Market Page */
+QWidget#pMarket {
+    background-color: rgb(85, 170, 255);
+}
+
+/* Document Page */
+QWidget#pDocument {
+    background-color: rgb(255, 170, 255);
+}
+
+/* Community Page */
+QWidget#pCommunity {
+    background-color: rgb(255, 170, 127);
+}
+
+/* Project Page */
+QWidget#pProject {
+    alternate-background-color: rgb(255, 235, 15);
+}
+
+/* ===========================================
+   SETTINGS PAGE STYLES
+   =========================================== */
+QWidget#pSetting {
+    background-color: rgb(30, 30, 32);
+    color: rgb(255, 255, 255);
+}
+
+QWidget#pSetting QLabel#lbSettingsTitle {
+    color: rgb(255, 255, 255);
+    margin-bottom: 10px;
+}
+
+/* Settings Action Buttons Frame */
+QWidget#pSetting QFrame#frame_3 {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
+    padding: 5px;
+}
+
+/* Settings Buttons */
+QWidget#pSetting QPushButton#pbResetSettings {
+    background-color: #6C5C99;
+    border-radius: 5px;
+    padding: 8px 16px;
+    color: rgb(255, 255, 255);
+    font-weight: bold;
+}
+
+QWidget#pSetting QPushButton#pbResetSettings:hover {
+    background-color: #7D6DAD;
+    border: 2px solid #FFFFFF;
+}
+
+QWidget#pSetting QPushButton#pbResetSettings:pressed {
+    background-color: #5B4B88;
+}
+
+QWidget#pSetting QPushButton#pbBackupSettings {
+    background-color: #4A7C59;
+    border-radius: 5px;
+    padding: 8px 16px;
+    color: rgb(255, 255, 255);
+    font-weight: bold;
+}
+
+QWidget#pSetting QPushButton#pbBackupSettings:hover {
+    background-color: #5A8B68;
+    border: 2px solid #FFFFFF;
+}
+
+QWidget#pSetting QPushButton#pbBackupSettings:pressed {
+    background-color: #3A6A49;
+}
+
+QWidget#pSetting QPushButton#pbRestoreSettings {
+    background-color: #B8860B;
+    border-radius: 5px;
+    padding: 8px 16px;
+    color: rgb(255, 255, 255);
+    font-weight: bold;
+}
+
+QWidget#pSetting QPushButton#pbRestoreSettings:hover {
+    background-color: #DAA520;
+    border: 2px solid #FFFFFF;
+}
+
+QWidget#pSetting QPushButton#pbRestoreSettings:pressed {
+    background-color: #996F0B;
+}
+
+QWidget#pSetting QPushButton#pbSaveSetting {
+    background-color: #007ACC;
+    border-radius: 5px;
+    padding: 8px 16px;
+    color: rgb(255, 255, 255);
+    font-weight: bold;
+}
+
+QWidget#pSetting QPushButton#pbSaveSetting:hover {
+    background-color: #1E90FF;
+    border: 2px solid #FFFFFF;
+}
+
+QWidget#pSetting QPushButton#pbSaveSetting:pressed {
+    background-color: #005299;
+}
+
+/* Settings Tab Widget */
+QWidget#pSetting QTabWidget#twSettingsCategories::pane {
+    border: 1px solid #444444;
+    border-radius: 5px;
+}
+
+QWidget#pSetting QTabWidget#twSettingsCategories QTabBar::tab {
+    background: rgb(68, 68, 68);
+    color: #f5f5f5;
+    border: 1px solid rgb(90, 90, 90);
+    height: 30px;
+    padding: 5px 15px;
+    margin-right: 2px;
+}
+
+QWidget#pSetting QTabWidget#twSettingsCategories QTabBar::tab:selected {
+    background: #007cd6;
+    color: rgb(255, 255, 255);
+}
+
+QWidget#pSetting QTabWidget#twSettingsCategories QTabBar::tab:hover {
+    background: #6f6f6f;
+    color: rgb(255, 255, 255);
+}
+
+/* Settings Scroll Areas */
+QWidget#pSetting QScrollArea {
+    border: none;
+    background: transparent;
+}
+
+/* Settings Content Widgets - Fix White Background */
+QWidget#pSetting QScrollArea QWidget {
+    background-color: rgb(40, 40, 43);
+    color: rgb(255, 255, 255);
+}
+
+/* Specific Content Widgets */
+QWidget#swGeneral, QWidget#swDevice, QWidget#swCamera, 
+QWidget#swEditor, QWidget#swAdvanced, QWidget#swAuthority {
+    background-color: rgb(40, 40, 43);
+    color: rgb(255, 255, 255);
+}
+
+/* Settings Form Elements */
+QWidget#pSetting QGroupBox {
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
+    margin-top: 10px;
+    padding-top: 10px;
+    color: rgb(255, 255, 255);
+}
+
+QWidget#pSetting QGroupBox::title {
+    subcontrol-origin: margin;
+    left: 10px;
+    padding: 0 5px 0 5px;
+    color: rgb(255, 255, 255);
+    font-weight: bold;
+}
+
+QWidget#pSetting QLabel {
+    color: rgb(255, 255, 255);
+    background: transparent;
+}
+
+QWidget#pSetting QLineEdit {
+    background-color: rgb(60, 60, 65);
+    border: 1px solid rgb(90, 90, 90);
+    border-radius: 3px;
+    padding: 5px;
+    color: rgb(255, 255, 255);
+}
+
+QWidget#pSetting QLineEdit:focus {
+    border: 2px solid #007cd6;
+}
+
+QWidget#pSetting QComboBox {
+    background-color: rgb(60, 60, 65);
+    border: 1px solid rgb(90, 90, 90);
+    border-radius: 3px;
+    padding: 5px;
+    color: rgb(255, 255, 255);
+}
+
+QWidget#pSetting QComboBox::drop-down {
+    border: none;
+    background: rgb(80, 80, 85);
+}
+
+QWidget#pSetting QComboBox::down-arrow {
+    image: url(:/icon/Arrow Pointing Down_16px.png);
+}
+
+QWidget#pSetting QComboBox QAbstractItemView {
+    background-color: rgb(60, 60, 65);
+    border: 1px solid rgb(90, 90, 90);
+    selection-background-color: #007cd6;
+    color: rgb(255, 255, 255);
+}
+
+QWidget#pSetting QCheckBox {
+    color: rgb(255, 255, 255);
+    background: transparent;
+}
+
+QWidget#pSetting QCheckBox::indicator {
+    width: 16px;
+    height: 16px;
+    border: 1px solid rgb(90, 90, 90);
+    border-radius: 2px;
+    background-color: rgb(60, 60, 65);
+}
+
+QWidget#pSetting QCheckBox::indicator:checked {
+    background-color: #007cd6;
+    border: 1px solid #007cd6;
+}
+
+QWidget#pSetting QSpinBox {
+    background-color: rgb(60, 60, 65);
+    border: 1px solid rgb(90, 90, 90);
+    border-radius: 3px;
+    padding: 5px;
+    color: rgb(255, 255, 255);
+}
+
+QWidget#pSetting QSlider::groove:horizontal {
+    border: 1px solid rgb(90, 90, 90);
+    height: 8px;
+    background: rgb(60, 60, 65);
+    border-radius: 4px;
+}
+
+QWidget#pSetting QSlider::handle:horizontal {
+    background: #007cd6;
+    border: 1px solid #007cd6;
+    width: 18px;
+    border-radius: 9px;
+    margin: -5px 0;
+}
+
+QWidget#pSetting QSlider::sub-page:horizontal {
+    background: #007cd6;
+    border-radius: 4px;
+}
+
+/* Additional Dark Theme Fixes */
+QWidget#pSetting QFrame {
+    background-color: transparent;
+    border: none;
+}
+
+QWidget#pSetting QWidget {
+    background-color: rgb(40, 40, 43);
+    color: rgb(255, 255, 255);
+}
+
+/* Override for specific button groups */
+QWidget#pSetting QFrame#frame_3 {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
+    padding: 5px;
+}
+
+/* ===========================================
+   OPERATOR PAGE STYLES
+   =========================================== */
+QWidget#lbOperatorTitile {
+    padding: 50%;
+}
+
+QWidget#wgOperatorDisplay {
+    background-color: rgb(0, 170, 255);
+}
+
+QWidget#gvOperatorViewer {
+    background-color: rgb(238, 238, 238);
+}
+
+/* Operator Control Buttons */
+QPushButton#pbStartSystem {
+    background-color: rgb(0, 255, 157);
+    color: rgb(74, 74, 74);
+    border: none;
+}
+
+QPushButton#pbStartSystem:hover {
+    color: rgb(255, 255, 255);
+}
+
+QPushButton#pbStartSystem:pressed {
+    background-color: rgb(0, 136, 255);
+    border: 3px solid;
+}
+
+QPushButton#pbStopSystem {
+    background-color: rgb(255, 76, 76);
+    color: rgb(74, 74, 74);
+    border: none;
+}
+
+QPushButton#pbStopSystem:hover {
+    color: rgb(255, 255, 255);
+}
+
+QPushButton#pbStopSystem:pressed {
+    background-color: rgb(0, 136, 255);
+    border: 3px solid;
+}
+
+/* ===========================================
+   HOME PAGE STYLES
+   =========================================== */
+QWidget#pHome QLabel:hover {
+    color: rgb(0, 102, 255);
+}
+
+/* ===========================================
+   LOGGING SECTION
+   =========================================== */
+QTextEdit#teLoggingBox {
+    color: #CDCDCD;
+    border: none;
+    background-color: #434347;
+}
+
+/* ===========================================
+   FINAL OVERRIDE FOR SETTINGS WHITE BACKGROUND
+   =========================================== */
+QWidget#pSetting * {
+    background-color: rgb(40, 40, 43);
+    color: rgb(255, 255, 255);
+}
+
+/* Keep button styles intact */
+QWidget#pSetting QPushButton#pbResetSettings {
+    background-color: #6C5C99;
+    color: rgb(255, 255, 255);
+}
+
+QWidget#pSetting QPushButton#pbBackupSettings {
+    background-color: #4A7C59;
+    color: rgb(255, 255, 255);
+}
+
+QWidget#pSetting QPushButton#pbRestoreSettings {
+    background-color: #B8860B;
+    color: rgb(255, 255, 255);
+}
+
+QWidget#pSetting QPushButton#pbSaveSetting {
+    background-color: #007ACC;
+    color: rgb(255, 255, 255);
+}</string>
    </property>
    <layout class="QHBoxLayout" name="horizontalLayout">
     <property name="spacing">
@@ -111,8 +510,7 @@ QTabBar::tab:!selected {
       <widget class="QWidget" name="page">
        <property name="styleSheet">
         <string notr="true">#page
-{
-	
+{	
 	background-color: rgb(30, 30, 32);
 }</string>
        </property>
@@ -145,30 +543,6 @@ QTabBar::tab:!selected {
             <width>80</width>
             <height>16777215</height>
            </size>
-          </property>
-          <property name="styleSheet">
-           <string notr="true">QWidget#wgLeftPanel
-{
-	background-color: #28282B;
-	border: 1px solid #565659;
-}
-
-QToolButton
-{
-	border: 0px;
-	font-size:14px;
-	color: rgb(255, 255, 255);
-}
-QToolButton:hover
-{	
-	
-	background-color: #353538;
-}
-QToolButton::pressed
-{	
-	background-color: #3F3F42;
-}
-</string>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout">
            <property name="spacing">
@@ -330,10 +704,6 @@ QToolButton::pressed
                <width>80</width>
                <height>0</height>
               </size>
-             </property>
-             <property name="styleSheet">
-              <string notr="true">background-color: #3F3F42;
-border-right: 5px solid rgb(24, 70, 139);</string>
              </property>
              <property name="text">
               <string>Project</string>
@@ -608,30 +978,18 @@ border-right: 5px solid rgb(24, 70, 139);</string>
              <number>1</number>
             </property>
             <property name="currentIndex">
-             <number>8</number>
+             <number>7</number>
             </property>
             <widget class="QWidget" name="pVariable">
-             <property name="styleSheet">
-              <string notr="true">#pVariable
-{	
-	background-color: rgb(40, 40, 43);
-}</string>
-             </property>
              <layout class="QVBoxLayout" name="verticalLayout_4">
               <item>
-               <widget class="QFrame" name="fVar">
-                <property name="minimumSize">
-                 <size>
-                  <width>0</width>
-                  <height>25</height>
-                 </size>
-                </property>
-                <property name="styleSheet">
-                 <string notr="true">QLabel
-{	
-	color: rgb(255, 255, 255);
-}</string>
-                </property>
+                               <widget class="QFrame" name="fVar">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>25</height>
+                  </size>
+                 </property>
                 <property name="frameShape">
                  <enum>QFrame::StyledPanel</enum>
                 </property>
@@ -719,25 +1077,19 @@ border-right: 5px solid rgb(24, 70, 139);</string>
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>1099</width>
-                   <height>614</height>
+                   <width>662</width>
+                   <height>197</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_10">
                   <item>
-                   <widget class="QLabel" name="lbOperatorTitile">
-                    <property name="font">
-                     <font>
-                      <pointsize>20</pointsize>
-                      <bold>true</bold>
-                     </font>
-                    </property>
-                    <property name="styleSheet">
-                     <string notr="true">QLabel
-{
-	pading: 50%;
-}</string>
-                    </property>
+                                       <widget class="QLabel" name="lbOperatorTitile">
+                     <property name="font">
+                      <font>
+                       <pointsize>20</pointsize>
+                       <bold>true</bold>
+                      </font>
+                     </property>
                     <property name="text">
                      <string>Delta Robot System</string>
                     </property>
@@ -807,25 +1159,6 @@ border-right: 5px solid rgb(24, 70, 139);</string>
                               <bold>true</bold>
                              </font>
                             </property>
-                            <property name="styleSheet">
-                             <string notr="true">QPushButton
-{
-	background-color: rgb(0, 255, 157);
-	color: rgb(74, 74, 74);
-	border: none;
-}
-QPushButton:hover
-{
-	
-	color: rgb(255, 255, 255);
-}
-QPushButton:pressed
-{
-	background-color: rgb(0, 136, 255);
-	border: 3px solid;
-}
-</string>
-                            </property>
                             <property name="text">
                              <string>Start</string>
                             </property>
@@ -850,25 +1183,6 @@ QPushButton:pressed
                               <pointsize>20</pointsize>
                               <bold>true</bold>
                              </font>
-                            </property>
-                            <property name="styleSheet">
-                             <string notr="true">QPushButton
-{
-	background-color: rgb(255, 76, 76);
-	color: rgb(74, 74, 74);
-	border: none;
-}
-QPushButton:hover
-{
-	
-	color: rgb(255, 255, 255);
-}
-QPushButton:pressed
-{
-	background-color: rgb(0, 136, 255);
-	border: 3px solid;
-}
-</string>
                             </property>
                             <property name="text">
                              <string>Stop</string>
@@ -916,21 +1230,15 @@ QPushButton:pressed
                            <height>400</height>
                           </size>
                          </property>
-                         <property name="styleSheet">
-                          <string notr="true">background-color: rgb(0, 170, 255);</string>
-                         </property>
                          <layout class="QHBoxLayout" name="horizontalLayout_11">
                           <item>
-                           <widget class="QGraphicsView" name="gvOperatorViewer">
-                            <property name="sizePolicy">
-                             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                              <horstretch>0</horstretch>
-                              <verstretch>0</verstretch>
-                             </sizepolicy>
-                            </property>
-                            <property name="styleSheet">
-                             <string notr="true">background-color: rgb(238, 238, 238);</string>
-                            </property>
+                                                       <widget class="QGraphicsView" name="gvOperatorViewer">
+                             <property name="sizePolicy">
+                              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                               <horstretch>0</horstretch>
+                               <verstretch>0</verstretch>
+                              </sizepolicy>
+                             </property>
                            </widget>
                           </item>
                          </layout>
@@ -1029,12 +1337,7 @@ QPushButton:pressed
                   <bold>true</bold>
                  </font>
                 </property>
-                <property name="styleSheet">
-                 <string notr="true">QLabel:hover
-{
-	color: rgb(0, 102, 255);
-}</string>
-                </property>
+
                 <property name="title">
                  <string>Project</string>
                 </property>
@@ -1263,14 +1566,8 @@ QPushButton:pressed
              </layout>
             </widget>
             <widget class="QWidget" name="pMarket">
-             <property name="styleSheet">
-              <string notr="true">background-color: rgb(85, 170, 255);</string>
-             </property>
             </widget>
             <widget class="QWidget" name="pDocument">
-             <property name="styleSheet">
-              <string notr="true">background-color: rgb(255, 170, 255);</string>
-             </property>
             </widget>
             <widget class="QWidget" name="pAuthority">
              <property name="styleSheet">
@@ -1321,7 +1618,7 @@ QPushButton:pressed
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>1085</width>
+                       <width>593</width>
                        <height>700</height>
                       </rect>
                      </property>
@@ -1759,23 +2056,45 @@ QPushButton:pressed
              </layout>
             </widget>
             <widget class="QWidget" name="pCommunity">
-             <property name="styleSheet">
-              <string notr="true">background-color: rgb(255, 170, 127);</string>
-             </property>
             </widget>
             <widget class="QWidget" name="pSetting">
-             <property name="styleSheet">
-              <string notr="true"/>
-             </property>
              <layout class="QVBoxLayout" name="verticalLayout_12">
+              <property name="spacing">
+               <number>5</number>
+              </property>
+              <property name="leftMargin">
+               <number>10</number>
+              </property>
+              <property name="topMargin">
+               <number>10</number>
+              </property>
+              <property name="rightMargin">
+               <number>10</number>
+              </property>
+              <property name="bottomMargin">
+               <number>10</number>
+              </property>
               <item>
-               <widget class="QFrame" name="frame_3">
-                <property name="minimumSize">
-                 <size>
-                  <width>0</width>
-                  <height>50</height>
-                 </size>
+                               <widget class="QLabel" name="lbSettingsTitle">
+                 <property name="font">
+                  <font>
+                   <pointsize>16</pointsize>
+                   <bold>true</bold>
+                  </font>
+                 </property>
+                <property name="text">
+                 <string>Settings</string>
                 </property>
+               </widget>
+              </item>
+              <item>
+                               <widget class="QFrame" name="frame_3">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>50</height>
+                  </size>
+                 </property>
                 <property name="frameShape">
                  <enum>QFrame::StyledPanel</enum>
                 </property>
@@ -1783,6 +2102,45 @@ QPushButton:pressed
                  <enum>QFrame::Raised</enum>
                 </property>
                 <layout class="QHBoxLayout" name="horizontalLayout_13">
+                 <item>
+                                     <widget class="QPushButton" name="pbResetSettings">
+                    <property name="minimumSize">
+                     <size>
+                      <width>100</width>
+                      <height>30</height>
+                     </size>
+                    </property>
+                   <property name="text">
+                    <string>Reset to Defaults</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                                     <widget class="QPushButton" name="pbBackupSettings">
+                    <property name="minimumSize">
+                     <size>
+                      <width>100</width>
+                      <height>30</height>
+                     </size>
+                    </property>
+                   <property name="text">
+                    <string>Backup Settings</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                                     <widget class="QPushButton" name="pbRestoreSettings">
+                    <property name="minimumSize">
+                     <size>
+                      <width>100</width>
+                      <height>30</height>
+                     </size>
+                    </property>
+                   <property name="text">
+                    <string>Restore Settings</string>
+                   </property>
+                  </widget>
+                 </item>
                  <item>
                   <spacer name="horizontalSpacer">
                    <property name="orientation">
@@ -1797,23 +2155,15 @@ QPushButton:pressed
                   </spacer>
                  </item>
                  <item>
-                  <widget class="QPushButton" name="pbSaveSetting">
-                   <property name="styleSheet">
-                    <string notr="true">/* Áp dụng cho một phần tử cụ thể, ví dụ QPushButton */
-QPushButton {
-    background-color: #4A4A4F;
-    border-radius: 5px;
-    padding:5px;
-	color: rgb(208, 208, 209);
-}
-
-QPushButton:hover
-{
-	border: 2px solid #FFFFFF;
-}</string>
-                   </property>
+                                     <widget class="QPushButton" name="pbSaveSetting">
+                    <property name="minimumSize">
+                     <size>
+                      <width>120</width>
+                      <height>30</height>
+                     </size>
+                    </property>
                    <property name="text">
-                    <string>Save</string>
+                    <string>Save Settings</string>
                    </property>
                   </widget>
                  </item>
@@ -1821,55 +2171,165 @@ QPushButton:hover
                </widget>
               </item>
               <item>
-               <widget class="QTableWidget" name="twSetting">
-                <property name="maximumSize">
-                 <size>
-                  <width>1101</width>
-                  <height>16777215</height>
-                 </size>
+                               <widget class="QTabWidget" name="twSettingsCategories">
+                <property name="currentIndex">
+                 <number>4</number>
                 </property>
-                <attribute name="horizontalHeaderCascadingSectionResizes">
-                 <bool>true</bool>
-                </attribute>
-                <attribute name="horizontalHeaderDefaultSectionSize">
-                 <number>100</number>
-                </attribute>
-                <attribute name="horizontalHeaderStretchLastSection">
-                 <bool>true</bool>
-                </attribute>
-                <row>
-                 <property name="text">
-                  <string/>
-                 </property>
-                </row>
-                <column>
-                 <property name="text">
-                  <string>Name</string>
-                 </property>
-                </column>
-                <column>
-                 <property name="text">
-                  <string>Value</string>
-                 </property>
-                </column>
-                <item row="0" column="0">
-                 <property name="text">
-                  <string>Python</string>
-                 </property>
-                </item>
-                <item row="0" column="1">
-                 <property name="text">
-                  <string>/lib/Python38/python.exe</string>
-                 </property>
-                </item>
+                <widget class="QWidget" name="tabGeneral">
+                 <attribute name="title">
+                  <string>General</string>
+                 </attribute>
+                 <layout class="QVBoxLayout" name="vlGeneral">
+                  <item>
+                                       <widget class="QScrollArea" name="saGeneral">
+                    <property name="widgetResizable">
+                     <bool>true</bool>
+                    </property>
+                    <widget class="QWidget" name="swGeneral">
+                     <property name="geometry">
+                      <rect>
+                       <x>0</x>
+                       <y>0</y>
+                       <width>1073</width>
+                       <height>462</height>
+                      </rect>
+                     </property>
+                     <layout class="QVBoxLayout" name="vlGeneralContent"/>
+                    </widget>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+                <widget class="QWidget" name="tabDevice">
+                 <attribute name="title">
+                  <string>Device</string>
+                 </attribute>
+                 <layout class="QVBoxLayout" name="vlDevice">
+                  <item>
+                                       <widget class="QScrollArea" name="saDevice">
+                    <property name="widgetResizable">
+                     <bool>true</bool>
+                    </property>
+                    <widget class="QWidget" name="swDevice">
+                     <property name="geometry">
+                      <rect>
+                       <x>0</x>
+                       <y>0</y>
+                       <width>1073</width>
+                       <height>462</height>
+                      </rect>
+                     </property>
+                     <layout class="QVBoxLayout" name="vlDeviceContent"/>
+                    </widget>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+                <widget class="QWidget" name="tabCamera">
+                 <attribute name="title">
+                  <string>Camera</string>
+                 </attribute>
+                 <layout class="QVBoxLayout" name="vlCamera">
+                  <item>
+                                       <widget class="QScrollArea" name="saCamera">
+                    <property name="widgetResizable">
+                     <bool>true</bool>
+                    </property>
+                    <widget class="QWidget" name="swCamera">
+                     <property name="geometry">
+                      <rect>
+                       <x>0</x>
+                       <y>0</y>
+                       <width>1073</width>
+                       <height>462</height>
+                      </rect>
+                     </property>
+                     <layout class="QVBoxLayout" name="vlCameraContent"/>
+                    </widget>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+                <widget class="QWidget" name="tabEditor">
+                 <attribute name="title">
+                  <string>Editor</string>
+                 </attribute>
+                 <layout class="QVBoxLayout" name="vlEditor">
+                  <item>
+                                       <widget class="QScrollArea" name="saEditor">
+                    <property name="widgetResizable">
+                     <bool>true</bool>
+                    </property>
+                    <widget class="QWidget" name="swEditor">
+                     <property name="geometry">
+                      <rect>
+                       <x>0</x>
+                       <y>0</y>
+                       <width>1073</width>
+                       <height>462</height>
+                      </rect>
+                     </property>
+                     <layout class="QVBoxLayout" name="vlEditorContent"/>
+                    </widget>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+                <widget class="QWidget" name="tabAdvanced">
+                 <attribute name="title">
+                  <string>Advanced</string>
+                 </attribute>
+                 <layout class="QVBoxLayout" name="vlAdvanced">
+                  <item>
+                                       <widget class="QScrollArea" name="saAdvanced">
+                    <property name="widgetResizable">
+                     <bool>true</bool>
+                    </property>
+                    <widget class="QWidget" name="swAdvanced">
+                     <property name="geometry">
+                      <rect>
+                       <x>0</x>
+                       <y>0</y>
+                       <width>1073</width>
+                       <height>462</height>
+                      </rect>
+                     </property>
+                     <layout class="QVBoxLayout" name="vlAdvancedContent"/>
+                    </widget>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+                <widget class="QWidget" name="tabAuthority">
+                 <attribute name="title">
+                  <string>Authority</string>
+                 </attribute>
+                 <layout class="QVBoxLayout" name="vlAuthority">
+                  <item>
+                                       <widget class="QScrollArea" name="saAuthority">
+                    <property name="widgetResizable">
+                     <bool>true</bool>
+                    </property>
+                    <widget class="QWidget" name="swAuthority">
+                     <property name="geometry">
+                      <rect>
+                       <x>0</x>
+                       <y>0</y>
+                       <width>1073</width>
+                       <height>462</height>
+                      </rect>
+                     </property>
+                     <layout class="QVBoxLayout" name="vlAuthorityContent"/>
+                    </widget>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
                </widget>
               </item>
              </layout>
             </widget>
             <widget class="QWidget" name="pProject">
-             <property name="styleSheet">
-              <string notr="true">alternate-background-color: rgb(255, 235, 15);</string>
-             </property>
              <layout class="QVBoxLayout" name="verticalLayout_2">
               <property name="spacing">
                <number>0</number>
@@ -1985,33 +2445,25 @@ QPushButton:hover
               <number>0</number>
              </property>
              <item>
-              <widget class="QTextEdit" name="teLoggingBox">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Expanding" vsizetype="Ignored">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="minimumSize">
-                <size>
-                 <width>0</width>
-                 <height>0</height>
-                </size>
-               </property>
-               <property name="maximumSize">
-                <size>
-                 <width>16777215</width>
-                 <height>16777215</height>
-                </size>
-               </property>
-               <property name="styleSheet">
-                <string notr="true">QTextEdit
-{
-	color: #CDCDCD;
-	border: none;
-	background-color: #434347;
-}</string>
-               </property>
+                             <widget class="QTextEdit" name="teLoggingBox">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Ignored">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
                <property name="html">
                 <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;meta charset=&quot;utf-8&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;

@@ -56,6 +56,8 @@ SOURCES += main.cpp\
     PointTool.cpp \
     ProjectManager.cpp \
     RobotWindow.cpp \
+    SettingsManager.cpp \
+    SettingsPanel.cpp \
     SmartDialog.cpp \
     SocketConnectionManager.cpp \
     SoftwareManager.cpp \
@@ -106,6 +108,8 @@ HEADERS  += \
     ProjectManager.h \
     RobotWindow.h \
     ScurveInterpolator.h \
+    SettingsManager.h \
+    SettingsPanel.h \
     SmartDialog.h \
     SocketConnectionManager.h \
     SoftwareManager.h \

@@ -1,6 +1,8 @@
 #include "MainWindow.h"
 #include "SoftwareManager.h"
 #include "ui_MainWindow.h"
+#include "SettingsManager.h"
+#include "SettingsPanel.h"
 
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -44,6 +46,15 @@ void MainWindow::InitVariables()
     // ----- Init Pointer -----
     SoftwareManager::GetInstance()->SoftwarePointer = this;
     SoftwareManager::GetInstance()->SoftwarePath = QApplication::applicationDirPath();
+
+    // ----- Init Settings Panel -----
+    m_settingsPanel = new SettingsPanel(ui->twSettingsCategories, this);
+    
+    // Connect settings buttons
+    connect(ui->pbSaveSetting, &QPushButton::clicked, m_settingsPanel, &SettingsPanel::onSaveSettings);
+    connect(ui->pbResetSettings, &QPushButton::clicked, m_settingsPanel, &SettingsPanel::onResetSettings);
+    connect(ui->pbBackupSettings, &QPushButton::clicked, m_settingsPanel, &SettingsPanel::onBackupSettings);
+    connect(ui->pbRestoreSettings, &QPushButton::clicked, m_settingsPanel, &SettingsPanel::onRestoreSettings);
 
     //------- Dasboard --------
     Dashboard = new TabDashboard();
@@ -322,7 +333,7 @@ void MainWindow::SaveProjectToFile()
 
     VariableManager::instance().saveToQSettings();
 
-    SaveOperatorSettings();
+    // SaveOperatorSettings();
 }
 
 void MainWindow::SelectedTab(QAbstractButton *tabButton)

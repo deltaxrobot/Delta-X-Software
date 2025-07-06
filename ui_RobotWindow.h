@@ -656,7 +656,7 @@ public:
     QLabel *label_158;
     QSpacerItem *horizontalSpacer_31;
     QToolButton *tbAutoScanRobot;
-    QPushButton *pbConnect;
+    QPushButton *pbConnectRobot;
     QFrame *frame_23;
     QHBoxLayout *horizontalLayout_41;
     QComboBox *cbSelectedRobot;
@@ -6055,7 +6055,7 @@ public:
         scrollArea_2->setWidgetResizable(true);
         wgJoggingScrollWidget = new QWidget();
         wgJoggingScrollWidget->setObjectName(QString::fromUtf8("wgJoggingScrollWidget"));
-        wgJoggingScrollWidget->setGeometry(QRect(0, -1254, 554, 2000));
+        wgJoggingScrollWidget->setGeometry(QRect(0, 0, 554, 2000));
         wgJoggingScrollWidget->setMinimumSize(QSize(0, 2000));
         wgJoggingScrollWidget->setMaximumSize(QSize(16777215, 16777215));
         wgJoggingScrollWidget->setStyleSheet(QString::fromUtf8("QWidget#wgJoggingScrollWidget\n"
@@ -6173,13 +6173,13 @@ public:
 
         horizontalLayout_36->addWidget(tbAutoScanRobot);
 
-        pbConnect = new QPushButton(robotTitile);
-        pbConnect->setObjectName(QString::fromUtf8("pbConnect"));
-        sizePolicy.setHeightForWidth(pbConnect->sizePolicy().hasHeightForWidth());
-        pbConnect->setSizePolicy(sizePolicy);
-        pbConnect->setMinimumSize(QSize(0, 28));
-        pbConnect->setFont(font7);
-        pbConnect->setStyleSheet(QString::fromUtf8("QPushButton\n"
+        pbConnectRobot = new QPushButton(robotTitile);
+        pbConnectRobot->setObjectName(QString::fromUtf8("pbConnectRobot"));
+        sizePolicy.setHeightForWidth(pbConnectRobot->sizePolicy().hasHeightForWidth());
+        pbConnectRobot->setSizePolicy(sizePolicy);
+        pbConnectRobot->setMinimumSize(QSize(0, 28));
+        pbConnectRobot->setFont(font7);
+        pbConnectRobot->setStyleSheet(QString::fromUtf8("QPushButton\n"
 "{\n"
 "	background-color: #3195EF;\n"
 "	color: rgb(255, 255, 255);\n"
@@ -6198,11 +6198,11 @@ public:
         QIcon icon42;
         icon42.addFile(QString::fromUtf8("C:/Users/Admin/.designer/backup/icon/disconnected.png"), QSize(), QIcon::Normal, QIcon::Off);
         icon42.addFile(QString::fromUtf8("C:/Users/Admin/.designer/backup/icon/connected.png"), QSize(), QIcon::Normal, QIcon::On);
-        pbConnect->setIcon(icon42);
-        pbConnect->setIconSize(QSize(30, 20));
-        pbConnect->setCheckable(true);
+        pbConnectRobot->setIcon(icon42);
+        pbConnectRobot->setIconSize(QSize(30, 20));
+        pbConnectRobot->setCheckable(true);
 
-        horizontalLayout_36->addWidget(pbConnect);
+        horizontalLayout_36->addWidget(pbConnectRobot);
 
 
         verticalLayout_28->addWidget(robotTitile);
@@ -10644,7 +10644,7 @@ public:
         tbAutoScanRobot->setToolTip(QCoreApplication::translate("RobotWindow", "Creat New Editor", nullptr));
 #endif // QT_CONFIG(tooltip)
         tbAutoScanRobot->setText(QCoreApplication::translate("RobotWindow", "Auto", nullptr));
-        pbConnect->setText(QCoreApplication::translate("RobotWindow", "Connect", nullptr));
+        pbConnectRobot->setText(QCoreApplication::translate("RobotWindow", "Connect", nullptr));
         cbSelectedRobot->setItemText(0, QCoreApplication::translate("RobotWindow", "robot0", nullptr));
         cbSelectedRobot->setItemText(1, QCoreApplication::translate("RobotWindow", "robot1", nullptr));
         cbSelectedRobot->setItemText(2, QCoreApplication::translate("RobotWindow", "robot2", nullptr));

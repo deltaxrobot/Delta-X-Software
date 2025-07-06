@@ -5,12 +5,20 @@
 
 RobotWindow::RobotWindow(QWidget *parent, QString projectName) :
     QMainWindow(parent),
-    ui(new Ui::RobotWindow)
+    ui(new Ui::RobotWindow),
+    ProjectName(projectName),
+    m_variableManager(&VariableManager::instance()),
+    m_batchUpdateTimer(new QTimer(this))
 {
     ui->setupUi(this);
-
-    this->ProjectName = projectName;
-    VariableManager::instance().Prefix = ProjectName;
+    
+    // Initialize batch update timer
+    m_batchUpdateTimer->setSingleShot(true);
+    m_batchUpdateTimer->setInterval(50); // 50ms batching window
+    connect(m_batchUpdateTimer, &QTimer::timeout, this, &RobotWindow::processBatchUpdates);
+    
+    // Set prefix once for this window
+    m_variableManager->Prefix = ProjectName;
 
     InitVariables();
     InitOtherThreadObjects();
@@ -227,7 +235,7 @@ void RobotWindow::InitOtherThreadObjects()
     InitObjectDetectingModule();
 
         //-------- Robot ---------
-    connect(ui->pbConnect, SIGNAL(clicked(bool)), this, SLOT(ConnectRobot()));
+    connect(ui->pbConnectRobot, SIGNAL(clicked(bool)), this, SLOT(ConnectRobot()));
     connect(ui->cbSelectedRobot, SIGNAL(currentIndexChanged(int)), this, SLOT(ChangeSelectedRobot(int)));
     connect(ui->tbDisableRobot, SIGNAL(clicked(bool)), this, SLOT(SetRobotState(bool)));
     connect(ui->tbRequestPosition, SIGNAL(clicked(bool)), this, SLOT(RequestPosition()));
@@ -2285,10 +2293,13 @@ void RobotWindow::GetDeviceInfo(QString json)
     QString response = jsonObject.value("response").toString();
     QString gcode = jsonObject.value("gcode").toString();
 
-    UpdateVariable(device + QString::number(id) + "." + "COM.Name", com_name);
-    UpdateVariable(device + QString::number(id) + "." + "COM.State", state);
+            QString devicePrefix = getDevicePrefix(device, id);
+        QHash<QString, QVariant> deviceUpdates;
+        deviceUpdates["COM.Name"] = com_name;
+        deviceUpdates["COM.State"] = state;
+        batchUpdateVariables(devicePrefix, deviceUpdates);
 
-    QString prefix = ProjectName + "." + device + QString::number(id) + ".";
+    QString prefix = devicePrefix;
 
     if (device == "robot" && id == ui->cbSelectedRobot->currentIndex())
     {
@@ -2317,11 +2328,13 @@ void RobotWindow::GetDeviceInfo(QString json)
 
         if (state == "open")
         {
-            ui->pbConnect->setText("Disconnect");
+            ui->pbConnectRobot->setText("Disconnect");
+            ui->pbConnectRobot->setEnabled(true);
         }
         else
         {
-            ui->pbConnect->setText("Connect");
+            ui->pbConnectRobot->setText("Connect");
+            ui->pbConnectRobot->setEnabled(true);
         }
 
         ui->lbComName->setText(jsonObject.value("com_name").toString());
@@ -2475,43 +2488,111 @@ void RobotWindow::Load3DComponents()
 
 void RobotWindow::ConnectRobot()
 {
-    if (ui->tbAutoScanRobot->isChecked() == true)
-    {
-        OpenLoadingPopup();
-        emit ChangeDeviceState(ui->cbSelectedRobot->currentText(), (ui->pbConnect->text() == "Connect")?true:false, "auto");
-        return;
-    }
-
-    if (ui->pbConnect->text() != "Connect")
-    {
-        emit ChangeDeviceState(ui->cbSelectedRobot->currentText(), false, "");
-        return;
-    }
-
-    QStringList items;
-
-    Q_FOREACH(QSerialPortInfo portInfo, QSerialPortInfo::availablePorts())
-    {
-        QSerialPort serial(portInfo);
-        if(serial.open(QIODevice::ReadWrite))
+    try {
+        if (ui->tbAutoScanRobot->isChecked() == true)
         {
-            items << portInfo.portName() + " - " + portInfo.description();
-            serial.close();
+            OpenLoadingPopup();
+            emit ChangeDeviceState(ui->cbSelectedRobot->currentText(), (ui->pbConnectRobot->text() == "Connect")?true:false, "auto");
+            return;
         }
-    }
 
-    bool ok;
-    QString item = QInputDialog::getItem(this, tr("COM Connection"), tr("COM Ports:"), items, 0, false, &ok);
-    QString comName = item.mid(0, item.indexOf(" - "));
+        if (ui->pbConnectRobot->text() != "Connect")
+        {
+            emit ChangeDeviceState(ui->cbSelectedRobot->currentText(), false, "");
+            return;
+        }
 
-    if (ok && !item.isEmpty())
-    {
+        QStringList items;
+        bool hasAvailablePorts = false;
+
+        Q_FOREACH(QSerialPortInfo portInfo, QSerialPortInfo::availablePorts())
+        {
+            QSerialPort serial(portInfo);
+            if(serial.open(QIODevice::ReadWrite))
+            {
+                items << portInfo.portName() + " - " + portInfo.description();
+                serial.close();
+                hasAvailablePorts = true;
+            }
+        }
+
+        if (!hasAvailablePorts)
+        {
+            QMessageBox::warning(this, tr("Connection Error"), 
+                                tr("No available COM ports found. Please check your device connections."));
+            return;
+        }
+
+        bool ok;
+        QString item = QInputDialog::getItem(this, tr("COM Connection"), tr("COM Ports:"), items, 0, false, &ok);
+        
+        if (!ok || item.isEmpty())
+        {
+            return; // User cancelled
+        }
+
+        // Validate COM port name
+        int separatorIndex = item.indexOf(" - ");
+        if (separatorIndex == -1)
+        {
+            QMessageBox::warning(this, tr("Connection Error"), tr("Invalid COM port format."));
+            return;
+        }
+        
+        QString comName = item.mid(0, separatorIndex);
+        if (comName.isEmpty())
+        {
+            QMessageBox::warning(this, tr("Connection Error"), tr("Empty COM port name."));
+            return;
+        }
+
         bool ok2;
         QString baudrate = QInputDialog::getText(this, tr("Select Baudrate"), tr("Baudrate:"), QLineEdit::Normal, "115200", &ok2);
-        if (ok2 && !baudrate.isEmpty())
+        
+        if (!ok2 || baudrate.isEmpty())
         {
-            emit ChangeDeviceState(ui->cbSelectedRobot->currentText(), (ui->pbConnect->text() == "Connect")?true:false, comName);
+            return; // User cancelled
         }
+
+        // Validate baudrate
+        bool validBaudrate = false;
+        int baudrateValue = baudrate.toInt(&validBaudrate);
+        if (!validBaudrate || baudrateValue <= 0)
+        {
+            QMessageBox::warning(this, tr("Connection Error"), tr("Invalid baudrate value."));
+            return;
+        }
+
+        // Disable button during connection attempt
+        ui->pbConnectRobot->setEnabled(false);
+        ui->pbConnectRobot->setText("Connecting...");
+
+        emit ChangeDeviceState(ui->cbSelectedRobot->currentText(), true, comName);
+
+        // Re-enable button after a timeout (will be updated by device response)
+        QTimer::singleShot(5000, [this]() {
+            if (ui->pbConnectRobot->text() == "Connecting...")
+            {
+                ui->pbConnectRobot->setEnabled(true);
+                ui->pbConnectRobot->setText("Connect");
+                QMessageBox::warning(this, tr("Connection Timeout"), 
+                                    tr("Connection attempt timed out. Please try again."));
+            }
+        });
+    }
+    catch (const std::exception& e)
+    {
+        QMessageBox::critical(this, tr("Connection Error"), 
+                             tr("An error occurred while connecting: %1").arg(e.what()));
+        ui->pbConnectRobot->setEnabled(true);
+        ui->pbConnectRobot->setText("Connect");
+    }
+    catch (...)
+    {
+        QMessageBox::critical(this, tr("Connection Error"), 
+                             tr("An unknown error occurred while connecting."));
+        ui->pbConnectRobot->setEnabled(true);
+        ui->pbConnectRobot->setText("Connect");
     }
 }
 
@@ -3387,27 +3468,31 @@ void RobotWindow::GetValueInput(QString response)
 
 void RobotWindow::UpdateVariable(QString key, QVariant value)
 {
-    VariableManager::instance().Prefix = ProjectName;
-
-    VariableManager::instance().updateVar(key, value);
+    // Use optimized version
+    updateVariableOptimized(key, value);
 }
 
 void RobotWindow::UpdateVariables(QString cmd)
 {
-    if (cmd == "")
+    if (cmd.isEmpty())
         return;
 
     QStringList vars = cmd.split(';');
+    QHash<QString, QVariant> batchUpdates;
 
     foreach(QString var, vars)
     {
         var = var.replace(" ", "");
         QStringList paras = var.split('=');
         if (paras.count() < 2)
-            return;
+            continue; // Skip invalid entries instead of returning
 
-        UpdateVariable(paras.at(0), paras.at(1));
+        batchUpdates[paras.at(0)] = paras.at(1);
     }
+
+    // Batch update all variables at once
+    if (!batchUpdates.isEmpty())
+        updateVariablesOptimized(batchUpdates);
 }
 
 void RobotWindow::RespondVariableValue(QIODevice *s, QString name)
@@ -3439,8 +3524,8 @@ void RobotWindow::UpdateGcodeValueToDeviceUI(QString deviceName, QString gcode)
 
 void RobotWindow::ChangeConveyorType(int index)
 {
-    QString prefix = ProjectName + "." + ui->cbSelectedConveyor->currentText() + ".";
-    UpdateVariable(prefix + "ConveyorType", index);
+    QString prefix = getSelectedDevicePrefix("Conveyor");
+    updateVariableOptimized(prefix + "ConveyorType", index);
 
     ui->fConveyorX->setHidden(true);
     ui->fConveyorXHub->setHidden(true);
@@ -3555,8 +3640,8 @@ void RobotWindow::ReadEncoder()
 
 void RobotWindow::SetEncoderAutoRead()
 {
-    QString prefix = ProjectName + "." + ui->cbSelectedEncoder->currentText() + ".";
-    UpdateVariable(prefix + "Interval", ui->leEncoderInterval->text());
+    QString prefix = getSelectedDevicePrefix("Encoder");
+    updateVariableOptimized(prefix + "Interval", ui->leEncoderInterval->text());
 
     int interval = ui->leEncoderInterval->text().toInt();
     int id = ui->cbSelectedEncoder->currentText().toInt();
@@ -5653,9 +5738,12 @@ void RobotWindow::paintEvent(QPaintEvent *event)
 
 void RobotWindow::SaveDetectingUI()
 {
-    QString prefix = ProjectName + "." + ui->cbSelectedDetecting->currentText() + ".";
-    VariableManager::instance().updateVar(prefix + "ResizeWidth", ui->leImageWidth->text());
-    VariableManager::instance().updateVar(prefix + "ResizeHeight", ui->leImageHeight->text());
+    QString prefix = getSelectedDevicePrefix("Detecting");
+    QHash<QString, QVariant> updates;
+    updates["ResizeWidth"] = ui->leImageWidth->text();
+    updates["ResizeHeight"] = ui->leImageHeight->text();
+    
+    batchUpdateVariables(prefix, updates);
 }
 
 QStringList RobotWindow::getPlugins(QString path)
@@ -5718,5 +5806,114 @@ void RobotWindow::initPlugins(QStringList plugins)
 QList<DeltaXPlugin*> *RobotWindow::getPluginList()
 {
     return pluginList;
+}
+
+// ===========================================
+// OPTIMIZED VARIABLE MANAGEMENT METHODS
+// ===========================================
+
+QString RobotWindow::getDevicePrefix(const QString& deviceType, int id) const
+{
+    QString key = deviceType + QString::number(id);
+    return getCachedPrefix(key);
+}
+
+QString RobotWindow::getSelectedDevicePrefix(const QString& deviceType) const
+{
+    QString deviceName;
+    if (deviceType == "Conveyor")
+        deviceName = ui->cbSelectedConveyor->currentText();
+    else if (deviceType == "Encoder")
+        deviceName = ui->cbSelectedEncoder->currentText();
+    else if (deviceType == "Detecting")
+        deviceName = ui->cbSelectedDetecting->currentText();
+    else if (deviceType == "Tracking")
+        deviceName = ui->cbSelectedTracking->currentText();
+    else
+        deviceName = deviceType;
+
+    QString key = deviceType + "_" + deviceName;
+    return getCachedPrefix(key);
+}
+
+QString RobotWindow::getCachedPrefix(const QString& key) const
+{
+    if (m_prefixCache.contains(key))
+        return m_prefixCache[key];
+
+    QString prefix = ProjectName + "." + key + ".";
+    m_prefixCache[key] = prefix;
+    return prefix;
+}
+
+void RobotWindow::updateVariableOptimized(const QString& key, const QVariant& value)
+{
+    if (key.isEmpty())
+        return;
+
+    // Add to pending updates for batching
+    m_pendingUpdates[key] = value;
+    scheduleBatchUpdate();
+}
+
+void RobotWindow::updateVariablesOptimized(const QHash<QString, QVariant>& variables)
+{
+    if (variables.isEmpty())
+        return;
+
+    // Add all to pending updates
+    for (auto it = variables.begin(); it != variables.end(); ++it)
+    {
+        m_pendingUpdates[it.key()] = it.value();
+    }
+    scheduleBatchUpdate();
+}
+
+void RobotWindow::batchUpdateVariables(const QString& prefix, const QHash<QString, QVariant>& variables)
+{
+    if (variables.isEmpty())
+        return;
+
+    for (auto it = variables.begin(); it != variables.end(); ++it)
+    {
+        QString fullKey = prefix + it.key();
+        m_pendingUpdates[fullKey] = it.value();
+    }
+    scheduleBatchUpdate();
+}
+
+QVariant RobotWindow::getVariableOptimized(const QString& key, const QVariant& defaultValue) const
+{
+    if (key.isEmpty())
+        return defaultValue;
+
+    return m_variableManager->getVar(key, defaultValue);
+}
+
+void RobotWindow::scheduleBatchUpdate()
+{
+    if (!m_batchUpdateTimer->isActive())
+        m_batchUpdateTimer->start();
+}
+
+void RobotWindow::processBatchUpdates()
+{
+    if (m_pendingUpdates.isEmpty())
+        return;
+
+    // Process all pending updates in one batch
+    for (auto it = m_pendingUpdates.begin(); it != m_pendingUpdates.end(); ++it)
+    {
+        m_variableManager->updateVar(it.key(), it.value());
+    }
+
+    m_pendingUpdates.clear();
+}
+
+void RobotWindow::flushPendingUpdates()
+{
+    if (m_batchUpdateTimer->isActive())
+        m_batchUpdateTimer->stop();
+    processBatchUpdates();
 }
 

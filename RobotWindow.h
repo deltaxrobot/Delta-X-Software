@@ -491,6 +491,30 @@ private:
     float scheduledStartEncoderValue = 0;
     bool isScheduledEncoder = false;
     QElapsedTimer encoderUpdateTimer;
+
+    // Optimized Variable Management
+    VariableManager* m_variableManager;
+    mutable QHash<QString, QString> m_prefixCache;
+    mutable QHash<QString, QVariant> m_pendingUpdates;
+    mutable QTimer* m_batchUpdateTimer;
+    
+    // Prefix generation helpers
+    QString getDevicePrefix(const QString& deviceType, int id = -1) const;
+    QString getSelectedDevicePrefix(const QString& deviceType) const;
+    QString getCachedPrefix(const QString& key) const;
+    
+    // Optimized variable operations
+    void updateVariableOptimized(const QString& key, const QVariant& value);
+    void updateVariablesOptimized(const QHash<QString, QVariant>& variables);
+    void batchUpdateVariables(const QString& prefix, const QHash<QString, QVariant>& variables);
+    QVariant getVariableOptimized(const QString& key, const QVariant& defaultValue = QVariant()) const;
+    
+    // Batch processing
+    void flushPendingUpdates();
+    void scheduleBatchUpdate();
+
+private slots:
+    void processBatchUpdates();
 };
 
 #endif // ROBOTWINDOW_H

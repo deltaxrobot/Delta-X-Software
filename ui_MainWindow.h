@@ -30,7 +30,6 @@
 #include <QtWidgets/QSpacerItem>
 #include <QtWidgets/QStackedWidget>
 #include <QtWidgets/QTabWidget>
-#include <QtWidgets/QTableWidget>
 #include <QtWidgets/QTextEdit>
 #include <QtWidgets/QToolButton>
 #include <QtWidgets/QTreeView>
@@ -196,11 +195,45 @@ public:
     QWidget *pCommunity;
     QWidget *pSetting;
     QVBoxLayout *verticalLayout_12;
+    QLabel *lbSettingsTitle;
     QFrame *frame_3;
     QHBoxLayout *horizontalLayout_13;
+    QPushButton *pbResetSettings;
+    QPushButton *pbBackupSettings;
+    QPushButton *pbRestoreSettings;
     QSpacerItem *horizontalSpacer;
     QPushButton *pbSaveSetting;
-    QTableWidget *twSetting;
+    QTabWidget *twSettingsCategories;
+    QWidget *tabGeneral;
+    QVBoxLayout *vlGeneral;
+    QScrollArea *saGeneral;
+    QWidget *swGeneral;
+    QVBoxLayout *vlGeneralContent;
+    QWidget *tabDevice;
+    QVBoxLayout *vlDevice;
+    QScrollArea *saDevice;
+    QWidget *swDevice;
+    QVBoxLayout *vlDeviceContent;
+    QWidget *tabCamera;
+    QVBoxLayout *vlCamera;
+    QScrollArea *saCamera;
+    QWidget *swCamera;
+    QVBoxLayout *vlCameraContent;
+    QWidget *tabEditor;
+    QVBoxLayout *vlEditor;
+    QScrollArea *saEditor;
+    QWidget *swEditor;
+    QVBoxLayout *vlEditorContent;
+    QWidget *tabAdvanced;
+    QVBoxLayout *vlAdvanced;
+    QScrollArea *saAdvanced;
+    QWidget *swAdvanced;
+    QVBoxLayout *vlAdvancedContent;
+    QWidget *tabAuthority;
+    QVBoxLayout *vlAuthority;
+    QScrollArea *saAuthority;
+    QWidget *swAuthority1;
+    QVBoxLayout *vlAuthorityContent;
     QWidget *pProject;
     QVBoxLayout *verticalLayout_2;
     QTabWidget *twProjectManager;
@@ -269,49 +302,459 @@ public:
         actionNew->setObjectName(QString::fromUtf8("actionNew"));
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
-        centralWidget->setStyleSheet(QString::fromUtf8("QWidget#centralWidget\n"
-"{\n"
-"	background-color: rgb(30, 30, 32);\n"
+        centralWidget->setStyleSheet(QString::fromUtf8("/* ===========================================\n"
+"   MAIN APPLICATION STYLES - Delta X Software\n"
+"   =========================================== */\n"
+"\n"
+"/* Global Dark Theme */\n"
+"QWidget#centralWidget {\n"
+"    background-color: rgb(30, 30, 32);\n"
 "}\n"
 "\n"
-"QTabWidget::pane { /* The tab widget frame */\n"
+"\n"
+"\n"
+"/* ===========================================\n"
+"   TAB WIDGET STYLES\n"
+"   =========================================== */\n"
+"QTabWidget::pane {\n"
 "    border: none;\n"
 "}\n"
 "\n"
-"QTabWidget::tab-bar \n"
-"{\n"
-"\n"
-"}\n"
-"\n"
-"QTabBar::tab \n"
-"{\n"
+"QTabBar::tab {\n"
 "    background: #3f3f3f;\n"
-"	color: #f5f5f5;\n"
-"   /* border-radius: 13px;*/\n"
-"	border: 1px solid rgb(90, 90, 90);\n"
+"    color: #f5f5f5;\n"
+"    border: 1px solid rgb(90, 90, 90);\n"
 "    height: 25px;\n"
 "    padding: 0px 10px 2px 10px;\n"
 "}\n"
 "\n"
 "QTabBar::tab:selected {\n"
 "    background: #007cd6;	\n"
-"	color: rgb(255, 255, 255);\n"
-"	/*border-radius: 13px;*/\n"
+"    color: rgb(255, 255, 255);\n"
 "}\n"
 "\n"
 "QTabBar::tab:hover {\n"
 "    background: #6f6f6f;	\n"
-"	color: rgb(255, 255, 255);\n"
-"	/*border-radius: 13px;*/\n"
+"    color: rgb(255, 255, 255);\n"
 "}\n"
 "\n"
-"QTabBar::tab:selected {\n"
-"\n"
+"/* ===========================================\n"
+"   LEFT PANEL NAVIGATION\n"
+"   =========================================== */\n"
+"QWidget#wgLeftPanel {\n"
+"    backgr"
+                        "ound-color: #28282B;\n"
+"    border: 1px solid #565659;\n"
 "}\n"
 "\n"
-"QTabBar::tab:!selected {\n"
+"QWidget#wgLeftPanel QToolButton {\n"
+"    border: 0px;\n"
+"    font-size: 14px;\n"
+"    color: rgb(255, 255, 255);\n"
 "}\n"
-""));
+"\n"
+"QWidget#wgLeftPanel QToolButton:hover {\n"
+"    background-color: #353538;\n"
+"}\n"
+"\n"
+"QWidget#wgLeftPanel QToolButton:pressed {\n"
+"    background-color: #3F3F42;\n"
+"}\n"
+"\n"
+"/* Active/Selected Navigation Button */\n"
+"QToolButton#tbProject {\n"
+"    background-color: #3F3F42;\n"
+"    border-right: 5px solid rgb(24, 70, 139);\n"
+"}\n"
+"\n"
+"/* ===========================================\n"
+"   PAGE SPECIFIC STYLES\n"
+"   =========================================== */\n"
+"/* Variable Page */\n"
+"QWidget#pVariable {\n"
+"    background-color: rgb(40, 40, 43);\n"
+"}\n"
+"\n"
+"QWidget#pVariable QLabel {\n"
+"    color: rgb(255, 255, 255);\n"
+"}\n"
+"\n"
+"/* Market Page */\n"
+"QWidget#pMarket {\n"
+"    background-color: rgb(85, 170, 255);\n"
+"}\n"
+"\n"
+"/* Document Page */\n"
+"QWidget#pDocument {\n"
+"    background"
+                        "-color: rgb(255, 170, 255);\n"
+"}\n"
+"\n"
+"/* Community Page */\n"
+"QWidget#pCommunity {\n"
+"    background-color: rgb(255, 170, 127);\n"
+"}\n"
+"\n"
+"/* Project Page */\n"
+"QWidget#pProject {\n"
+"    alternate-background-color: rgb(255, 235, 15);\n"
+"}\n"
+"\n"
+"/* ===========================================\n"
+"   SETTINGS PAGE STYLES\n"
+"   =========================================== */\n"
+"QWidget#pSetting {\n"
+"    background-color: rgb(30, 30, 32);\n"
+"    color: rgb(255, 255, 255);\n"
+"}\n"
+"\n"
+"QWidget#pSetting QLabel#lbSettingsTitle {\n"
+"    color: rgb(255, 255, 255);\n"
+"    margin-bottom: 10px;\n"
+"}\n"
+"\n"
+"/* Settings Action Buttons Frame */\n"
+"QWidget#pSetting QFrame#frame_3 {\n"
+"    background-color: rgba(255, 255, 255, 0.1);\n"
+"    border-radius: 5px;\n"
+"    padding: 5px;\n"
+"}\n"
+"\n"
+"/* Settings Buttons */\n"
+"QWidget#pSetting QPushButton#pbResetSettings {\n"
+"    background-color: #6C5C99;\n"
+"    border-radius: 5px;\n"
+"    padding: 8px 16px;\n"
+"    color: rgb(255, 255, 255);\n"
+"   "
+                        " font-weight: bold;\n"
+"}\n"
+"\n"
+"QWidget#pSetting QPushButton#pbResetSettings:hover {\n"
+"    background-color: #7D6DAD;\n"
+"    border: 2px solid #FFFFFF;\n"
+"}\n"
+"\n"
+"QWidget#pSetting QPushButton#pbResetSettings:pressed {\n"
+"    background-color: #5B4B88;\n"
+"}\n"
+"\n"
+"QWidget#pSetting QPushButton#pbBackupSettings {\n"
+"    background-color: #4A7C59;\n"
+"    border-radius: 5px;\n"
+"    padding: 8px 16px;\n"
+"    color: rgb(255, 255, 255);\n"
+"    font-weight: bold;\n"
+"}\n"
+"\n"
+"QWidget#pSetting QPushButton#pbBackupSettings:hover {\n"
+"    background-color: #5A8B68;\n"
+"    border: 2px solid #FFFFFF;\n"
+"}\n"
+"\n"
+"QWidget#pSetting QPushButton#pbBackupSettings:pressed {\n"
+"    background-color: #3A6A49;\n"
+"}\n"
+"\n"
+"QWidget#pSetting QPushButton#pbRestoreSettings {\n"
+"    background-color: #B8860B;\n"
+"    border-radius: 5px;\n"
+"    padding: 8px 16px;\n"
+"    color: rgb(255, 255, 255);\n"
+"    font-weight: bold;\n"
+"}\n"
+"\n"
+"QWidget#pSetting QPushButton#pbRestoreSettings:hover {\n"
+"    backgrou"
+                        "nd-color: #DAA520;\n"
+"    border: 2px solid #FFFFFF;\n"
+"}\n"
+"\n"
+"QWidget#pSetting QPushButton#pbRestoreSettings:pressed {\n"
+"    background-color: #996F0B;\n"
+"}\n"
+"\n"
+"QWidget#pSetting QPushButton#pbSaveSetting {\n"
+"    background-color: #007ACC;\n"
+"    border-radius: 5px;\n"
+"    padding: 8px 16px;\n"
+"    color: rgb(255, 255, 255);\n"
+"    font-weight: bold;\n"
+"}\n"
+"\n"
+"QWidget#pSetting QPushButton#pbSaveSetting:hover {\n"
+"    background-color: #1E90FF;\n"
+"    border: 2px solid #FFFFFF;\n"
+"}\n"
+"\n"
+"QWidget#pSetting QPushButton#pbSaveSetting:pressed {\n"
+"    background-color: #005299;\n"
+"}\n"
+"\n"
+"/* Settings Tab Widget */\n"
+"QWidget#pSetting QTabWidget#twSettingsCategories::pane {\n"
+"    border: 1px solid #444444;\n"
+"    border-radius: 5px;\n"
+"}\n"
+"\n"
+"QWidget#pSetting QTabWidget#twSettingsCategories QTabBar::tab {\n"
+"    background: rgb(68, 68, 68);\n"
+"    color: #f5f5f5;\n"
+"    border: 1px solid rgb(90, 90, 90);\n"
+"    height: 30px;\n"
+"    padding: 5px 15px;\n"
+"    margin-r"
+                        "ight: 2px;\n"
+"}\n"
+"\n"
+"QWidget#pSetting QTabWidget#twSettingsCategories QTabBar::tab:selected {\n"
+"    background: #007cd6;\n"
+"    color: rgb(255, 255, 255);\n"
+"}\n"
+"\n"
+"QWidget#pSetting QTabWidget#twSettingsCategories QTabBar::tab:hover {\n"
+"    background: #6f6f6f;\n"
+"    color: rgb(255, 255, 255);\n"
+"}\n"
+"\n"
+"/* Settings Scroll Areas */\n"
+"QWidget#pSetting QScrollArea {\n"
+"    border: none;\n"
+"    background: transparent;\n"
+"}\n"
+"\n"
+"/* Settings Content Widgets - Fix White Background */\n"
+"QWidget#pSetting QScrollArea QWidget {\n"
+"    background-color: rgb(40, 40, 43);\n"
+"    color: rgb(255, 255, 255);\n"
+"}\n"
+"\n"
+"/* Specific Content Widgets */\n"
+"QWidget#swGeneral, QWidget#swDevice, QWidget#swCamera, \n"
+"QWidget#swEditor, QWidget#swAdvanced, QWidget#swAuthority {\n"
+"    background-color: rgb(40, 40, 43);\n"
+"    color: rgb(255, 255, 255);\n"
+"}\n"
+"\n"
+"/* Settings Form Elements */\n"
+"QWidget#pSetting QGroupBox {\n"
+"    background-color: rgba(255, 255, 255, 0.05);\n"
+"    bord"
+                        "er: 1px solid rgba(255, 255, 255, 0.1);\n"
+"    border-radius: 5px;\n"
+"    margin-top: 10px;\n"
+"    padding-top: 10px;\n"
+"    color: rgb(255, 255, 255);\n"
+"}\n"
+"\n"
+"QWidget#pSetting QGroupBox::title {\n"
+"    subcontrol-origin: margin;\n"
+"    left: 10px;\n"
+"    padding: 0 5px 0 5px;\n"
+"    color: rgb(255, 255, 255);\n"
+"    font-weight: bold;\n"
+"}\n"
+"\n"
+"QWidget#pSetting QLabel {\n"
+"    color: rgb(255, 255, 255);\n"
+"    background: transparent;\n"
+"}\n"
+"\n"
+"QWidget#pSetting QLineEdit {\n"
+"    background-color: rgb(60, 60, 65);\n"
+"    border: 1px solid rgb(90, 90, 90);\n"
+"    border-radius: 3px;\n"
+"    padding: 5px;\n"
+"    color: rgb(255, 255, 255);\n"
+"}\n"
+"\n"
+"QWidget#pSetting QLineEdit:focus {\n"
+"    border: 2px solid #007cd6;\n"
+"}\n"
+"\n"
+"QWidget#pSetting QComboBox {\n"
+"    background-color: rgb(60, 60, 65);\n"
+"    border: 1px solid rgb(90, 90, 90);\n"
+"    border-radius: 3px;\n"
+"    padding: 5px;\n"
+"    color: rgb(255, 255, 255);\n"
+"}\n"
+"\n"
+"QWidget#pSetting QComboBox::drop"
+                        "-down {\n"
+"    border: none;\n"
+"    background: rgb(80, 80, 85);\n"
+"}\n"
+"\n"
+"QWidget#pSetting QComboBox::down-arrow {\n"
+"    image: url(:/icon/Arrow Pointing Down_16px.png);\n"
+"}\n"
+"\n"
+"QWidget#pSetting QComboBox QAbstractItemView {\n"
+"    background-color: rgb(60, 60, 65);\n"
+"    border: 1px solid rgb(90, 90, 90);\n"
+"    selection-background-color: #007cd6;\n"
+"    color: rgb(255, 255, 255);\n"
+"}\n"
+"\n"
+"QWidget#pSetting QCheckBox {\n"
+"    color: rgb(255, 255, 255);\n"
+"    background: transparent;\n"
+"}\n"
+"\n"
+"QWidget#pSetting QCheckBox::indicator {\n"
+"    width: 16px;\n"
+"    height: 16px;\n"
+"    border: 1px solid rgb(90, 90, 90);\n"
+"    border-radius: 2px;\n"
+"    background-color: rgb(60, 60, 65);\n"
+"}\n"
+"\n"
+"QWidget#pSetting QCheckBox::indicator:checked {\n"
+"    background-color: #007cd6;\n"
+"    border: 1px solid #007cd6;\n"
+"}\n"
+"\n"
+"QWidget#pSetting QSpinBox {\n"
+"    background-color: rgb(60, 60, 65);\n"
+"    border: 1px solid rgb(90, 90, 90);\n"
+"    border-radius: 3px;\n"
+""
+                        "    padding: 5px;\n"
+"    color: rgb(255, 255, 255);\n"
+"}\n"
+"\n"
+"QWidget#pSetting QSlider::groove:horizontal {\n"
+"    border: 1px solid rgb(90, 90, 90);\n"
+"    height: 8px;\n"
+"    background: rgb(60, 60, 65);\n"
+"    border-radius: 4px;\n"
+"}\n"
+"\n"
+"QWidget#pSetting QSlider::handle:horizontal {\n"
+"    background: #007cd6;\n"
+"    border: 1px solid #007cd6;\n"
+"    width: 18px;\n"
+"    border-radius: 9px;\n"
+"    margin: -5px 0;\n"
+"}\n"
+"\n"
+"QWidget#pSetting QSlider::sub-page:horizontal {\n"
+"    background: #007cd6;\n"
+"    border-radius: 4px;\n"
+"}\n"
+"\n"
+"/* Additional Dark Theme Fixes */\n"
+"QWidget#pSetting QFrame {\n"
+"    background-color: transparent;\n"
+"    border: none;\n"
+"}\n"
+"\n"
+"QWidget#pSetting QWidget {\n"
+"    background-color: rgb(40, 40, 43);\n"
+"    color: rgb(255, 255, 255);\n"
+"}\n"
+"\n"
+"/* Override for specific button groups */\n"
+"QWidget#pSetting QFrame#frame_3 {\n"
+"    background-color: rgba(255, 255, 255, 0.1);\n"
+"    border-radius: 5px;\n"
+"    padding: 5px;\n"
+"}\n"
+""
+                        "\n"
+"/* ===========================================\n"
+"   OPERATOR PAGE STYLES\n"
+"   =========================================== */\n"
+"QWidget#lbOperatorTitile {\n"
+"    padding: 50%;\n"
+"}\n"
+"\n"
+"QWidget#wgOperatorDisplay {\n"
+"    background-color: rgb(0, 170, 255);\n"
+"}\n"
+"\n"
+"QWidget#gvOperatorViewer {\n"
+"    background-color: rgb(238, 238, 238);\n"
+"}\n"
+"\n"
+"/* Operator Control Buttons */\n"
+"QPushButton#pbStartSystem {\n"
+"    background-color: rgb(0, 255, 157);\n"
+"    color: rgb(74, 74, 74);\n"
+"    border: none;\n"
+"}\n"
+"\n"
+"QPushButton#pbStartSystem:hover {\n"
+"    color: rgb(255, 255, 255);\n"
+"}\n"
+"\n"
+"QPushButton#pbStartSystem:pressed {\n"
+"    background-color: rgb(0, 136, 255);\n"
+"    border: 3px solid;\n"
+"}\n"
+"\n"
+"QPushButton#pbStopSystem {\n"
+"    background-color: rgb(255, 76, 76);\n"
+"    color: rgb(74, 74, 74);\n"
+"    border: none;\n"
+"}\n"
+"\n"
+"QPushButton#pbStopSystem:hover {\n"
+"    color: rgb(255, 255, 255);\n"
+"}\n"
+"\n"
+"QPushButton#pbStopSystem:pressed {\n"
+"    "
+                        "background-color: rgb(0, 136, 255);\n"
+"    border: 3px solid;\n"
+"}\n"
+"\n"
+"/* ===========================================\n"
+"   HOME PAGE STYLES\n"
+"   =========================================== */\n"
+"QWidget#pHome QLabel:hover {\n"
+"    color: rgb(0, 102, 255);\n"
+"}\n"
+"\n"
+"/* ===========================================\n"
+"   LOGGING SECTION\n"
+"   =========================================== */\n"
+"QTextEdit#teLoggingBox {\n"
+"    color: #CDCDCD;\n"
+"    border: none;\n"
+"    background-color: #434347;\n"
+"}\n"
+"\n"
+"/* ===========================================\n"
+"   FINAL OVERRIDE FOR SETTINGS WHITE BACKGROUND\n"
+"   =========================================== */\n"
+"QWidget#pSetting * {\n"
+"    background-color: rgb(40, 40, 43);\n"
+"    color: rgb(255, 255, 255);\n"
+"}\n"
+"\n"
+"/* Keep button styles intact */\n"
+"QWidget#pSetting QPushButton#pbResetSettings {\n"
+"    background-color: #6C5C99;\n"
+"    color: rgb(255, 255, 255);\n"
+"}\n"
+"\n"
+"QWidget#pSetting QPushButton#pbBackupSettings {\n"
+" "
+                        "   background-color: #4A7C59;\n"
+"    color: rgb(255, 255, 255);\n"
+"}\n"
+"\n"
+"QWidget#pSetting QPushButton#pbRestoreSettings {\n"
+"    background-color: #B8860B;\n"
+"    color: rgb(255, 255, 255);\n"
+"}\n"
+"\n"
+"QWidget#pSetting QPushButton#pbSaveSetting {\n"
+"    background-color: #007ACC;\n"
+"    color: rgb(255, 255, 255);\n"
+"}"));
         horizontalLayout = new QHBoxLayout(centralWidget);
         horizontalLayout->setSpacing(0);
         horizontalLayout->setContentsMargins(11, 11, 11, 11);
@@ -323,8 +766,7 @@ public:
         page = new QWidget();
         page->setObjectName(QString::fromUtf8("page"));
         page->setStyleSheet(QString::fromUtf8("#page\n"
-"{\n"
-"	\n"
+"{	\n"
 "	background-color: rgb(30, 30, 32);\n"
 "}"));
         horizontalLayout_2 = new QHBoxLayout(page);
@@ -336,28 +778,6 @@ public:
         wgLeftPanel->setObjectName(QString::fromUtf8("wgLeftPanel"));
         wgLeftPanel->setMinimumSize(QSize(80, 0));
         wgLeftPanel->setMaximumSize(QSize(80, 16777215));
-        wgLeftPanel->setStyleSheet(QString::fromUtf8("QWidget#wgLeftPanel\n"
-"{\n"
-"	background-color: #28282B;\n"
-"	border: 1px solid #565659;\n"
-"}\n"
-"\n"
-"QToolButton\n"
-"{\n"
-"	border: 0px;\n"
-"	font-size:14px;\n"
-"	color: rgb(255, 255, 255);\n"
-"}\n"
-"QToolButton:hover\n"
-"{	\n"
-"	\n"
-"	background-color: #353538;\n"
-"}\n"
-"QToolButton::pressed\n"
-"{	\n"
-"	background-color: #3F3F42;\n"
-"}\n"
-""));
         verticalLayout = new QVBoxLayout(wgLeftPanel);
         verticalLayout->setSpacing(0);
         verticalLayout->setContentsMargins(11, 11, 11, 11);
@@ -422,8 +842,6 @@ public:
         sizePolicy1.setHeightForWidth(tbProject->sizePolicy().hasHeightForWidth());
         tbProject->setSizePolicy(sizePolicy1);
         tbProject->setMinimumSize(QSize(80, 0));
-        tbProject->setStyleSheet(QString::fromUtf8("background-color: #3F3F42;\n"
-"border-right: 5px solid rgb(24, 70, 139);"));
         QIcon icon4;
         icon4.addFile(QString::fromUtf8(":/icon/project_64px.png"), QSize(), QIcon::Normal, QIcon::Off);
         tbProject->setIcon(icon4);
@@ -547,10 +965,6 @@ public:
         swPageStack->setLineWidth(1);
         pVariable = new QWidget();
         pVariable->setObjectName(QString::fromUtf8("pVariable"));
-        pVariable->setStyleSheet(QString::fromUtf8("#pVariable\n"
-"{	\n"
-"	background-color: rgb(40, 40, 43);\n"
-"}"));
         verticalLayout_4 = new QVBoxLayout(pVariable);
         verticalLayout_4->setSpacing(6);
         verticalLayout_4->setContentsMargins(11, 11, 11, 11);
@@ -558,10 +972,6 @@ public:
         fVar = new QFrame(pVariable);
         fVar->setObjectName(QString::fromUtf8("fVar"));
         fVar->setMinimumSize(QSize(0, 25));
-        fVar->setStyleSheet(QString::fromUtf8("QLabel\n"
-"{	\n"
-"	color: rgb(255, 255, 255);\n"
-"}"));
         fVar->setFrameShape(QFrame::StyledPanel);
         fVar->setFrameShadow(QFrame::Raised);
         horizontalLayout_14 = new QHBoxLayout(fVar);
@@ -631,7 +1041,7 @@ public:
         scrollArea_2->setWidgetResizable(true);
         scrollAreaWidgetContents_2 = new QWidget();
         scrollAreaWidgetContents_2->setObjectName(QString::fromUtf8("scrollAreaWidgetContents_2"));
-        scrollAreaWidgetContents_2->setGeometry(QRect(0, 0, 1099, 614));
+        scrollAreaWidgetContents_2->setGeometry(QRect(0, 0, 662, 197));
         verticalLayout_10 = new QVBoxLayout(scrollAreaWidgetContents_2);
         verticalLayout_10->setSpacing(6);
         verticalLayout_10->setContentsMargins(11, 11, 11, 11);
@@ -642,10 +1052,6 @@ public:
         font2.setPointSize(20);
         font2.setBold(true);
         lbOperatorTitile->setFont(font2);
-        lbOperatorTitile->setStyleSheet(QString::fromUtf8("QLabel\n"
-"{\n"
-"	pading: 50%;\n"
-"}"));
         lbOperatorTitile->setAlignment(Qt::AlignCenter);
 
         verticalLayout_10->addWidget(lbOperatorTitile);
@@ -681,23 +1087,6 @@ public:
         pbStartSystem->setSizePolicy(sizePolicy3);
         pbStartSystem->setMaximumSize(QSize(200, 100));
         pbStartSystem->setFont(font2);
-        pbStartSystem->setStyleSheet(QString::fromUtf8("QPushButton\n"
-"{\n"
-"	background-color: rgb(0, 255, 157);\n"
-"	color: rgb(74, 74, 74);\n"
-"	border: none;\n"
-"}\n"
-"QPushButton:hover\n"
-"{\n"
-"	\n"
-"	color: rgb(255, 255, 255);\n"
-"}\n"
-"QPushButton:pressed\n"
-"{\n"
-"	background-color: rgb(0, 136, 255);\n"
-"	border: 3px solid;\n"
-"}\n"
-""));
 
         verticalLayout_9->addWidget(pbStartSystem);
 
@@ -707,23 +1096,6 @@ public:
         pbStopSystem->setSizePolicy(sizePolicy3);
         pbStopSystem->setMaximumSize(QSize(200, 100));
         pbStopSystem->setFont(font2);
-        pbStopSystem->setStyleSheet(QString::fromUtf8("QPushButton\n"
-"{\n"
-"	background-color: rgb(255, 76, 76);\n"
-"	color: rgb(74, 74, 74);\n"
-"	border: none;\n"
-"}\n"
-"QPushButton:hover\n"
-"{\n"
-"	\n"
-"	color: rgb(255, 255, 255);\n"
-"}\n"
-"QPushButton:pressed\n"
-"{\n"
-"	background-color: rgb(0, 136, 255);\n"
-"	border: 3px solid;\n"
-"}\n"
-""));
 
         verticalLayout_9->addWidget(pbStopSystem);
 
@@ -749,7 +1121,6 @@ public:
         wgOperatorDisplay = new QWidget(frame_2);
         wgOperatorDisplay->setObjectName(QString::fromUtf8("wgOperatorDisplay"));
         wgOperatorDisplay->setMinimumSize(QSize(400, 400));
-        wgOperatorDisplay->setStyleSheet(QString::fromUtf8("background-color: rgb(0, 170, 255);"));
         horizontalLayout_11 = new QHBoxLayout(wgOperatorDisplay);
         horizontalLayout_11->setSpacing(6);
         horizontalLayout_11->setContentsMargins(11, 11, 11, 11);
@@ -758,7 +1129,6 @@ public:
         gvOperatorViewer->setObjectName(QString::fromUtf8("gvOperatorViewer"));
         sizePolicy.setHeightForWidth(gvOperatorViewer->sizePolicy().hasHeightForWidth());
         gvOperatorViewer->setSizePolicy(sizePolicy);
-        gvOperatorViewer->setStyleSheet(QString::fromUtf8("background-color: rgb(238, 238, 238);"));
 
         horizontalLayout_11->addWidget(gvOperatorViewer);
 
@@ -812,10 +1182,6 @@ public:
         QFont font3;
         font3.setBold(true);
         groupBox_4->setFont(font3);
-        groupBox_4->setStyleSheet(QString::fromUtf8("QLabel:hover\n"
-"{\n"
-"	color: rgb(0, 102, 255);\n"
-"}"));
         gridLayout_3 = new QGridLayout(groupBox_4);
         gridLayout_3->setSpacing(6);
         gridLayout_3->setContentsMargins(11, 11, 11, 11);
@@ -949,11 +1315,9 @@ public:
         swPageStack->addWidget(pHome);
         pMarket = new QWidget();
         pMarket->setObjectName(QString::fromUtf8("pMarket"));
-        pMarket->setStyleSheet(QString::fromUtf8("background-color: rgb(85, 170, 255);"));
         swPageStack->addWidget(pMarket);
         pDocument = new QWidget();
         pDocument->setObjectName(QString::fromUtf8("pDocument"));
-        pDocument->setStyleSheet(QString::fromUtf8("background-color: rgb(255, 170, 255);"));
         swPageStack->addWidget(pDocument);
         pAuthority = new QWidget();
         pAuthority->setObjectName(QString::fromUtf8("pAuthority"));
@@ -982,7 +1346,7 @@ public:
         scrollArea->setWidgetResizable(true);
         scrollAreaWidgetContents = new QWidget();
         scrollAreaWidgetContents->setObjectName(QString::fromUtf8("scrollAreaWidgetContents"));
-        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 1085, 700));
+        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 593, 700));
         scrollAreaWidgetContents->setMinimumSize(QSize(0, 700));
         verticalLayout_7 = new QVBoxLayout(scrollAreaWidgetContents);
         verticalLayout_7->setSpacing(6);
@@ -1229,15 +1593,23 @@ public:
         swPageStack->addWidget(pAuthority);
         pCommunity = new QWidget();
         pCommunity->setObjectName(QString::fromUtf8("pCommunity"));
-        pCommunity->setStyleSheet(QString::fromUtf8("background-color: rgb(255, 170, 127);"));
         swPageStack->addWidget(pCommunity);
         pSetting = new QWidget();
         pSetting->setObjectName(QString::fromUtf8("pSetting"));
-        pSetting->setStyleSheet(QString::fromUtf8(""));
         verticalLayout_12 = new QVBoxLayout(pSetting);
-        verticalLayout_12->setSpacing(6);
+        verticalLayout_12->setSpacing(5);
         verticalLayout_12->setContentsMargins(11, 11, 11, 11);
         verticalLayout_12->setObjectName(QString::fromUtf8("verticalLayout_12"));
+        verticalLayout_12->setContentsMargins(10, 10, 10, 10);
+        lbSettingsTitle = new QLabel(pSetting);
+        lbSettingsTitle->setObjectName(QString::fromUtf8("lbSettingsTitle"));
+        QFont font5;
+        font5.setPointSize(16);
+        font5.setBold(true);
+        lbSettingsTitle->setFont(font5);
+
+        verticalLayout_12->addWidget(lbSettingsTitle);
+
         frame_3 = new QFrame(pSetting);
         frame_3->setObjectName(QString::fromUtf8("frame_3"));
         frame_3->setMinimumSize(QSize(0, 50));
@@ -1247,57 +1619,171 @@ public:
         horizontalLayout_13->setSpacing(6);
         horizontalLayout_13->setContentsMargins(11, 11, 11, 11);
         horizontalLayout_13->setObjectName(QString::fromUtf8("horizontalLayout_13"));
+        pbResetSettings = new QPushButton(frame_3);
+        pbResetSettings->setObjectName(QString::fromUtf8("pbResetSettings"));
+        pbResetSettings->setMinimumSize(QSize(100, 30));
+
+        horizontalLayout_13->addWidget(pbResetSettings);
+
+        pbBackupSettings = new QPushButton(frame_3);
+        pbBackupSettings->setObjectName(QString::fromUtf8("pbBackupSettings"));
+        pbBackupSettings->setMinimumSize(QSize(100, 30));
+
+        horizontalLayout_13->addWidget(pbBackupSettings);
+
+        pbRestoreSettings = new QPushButton(frame_3);
+        pbRestoreSettings->setObjectName(QString::fromUtf8("pbRestoreSettings"));
+        pbRestoreSettings->setMinimumSize(QSize(100, 30));
+
+        horizontalLayout_13->addWidget(pbRestoreSettings);
+
         horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
         horizontalLayout_13->addItem(horizontalSpacer);
 
         pbSaveSetting = new QPushButton(frame_3);
         pbSaveSetting->setObjectName(QString::fromUtf8("pbSaveSetting"));
-        pbSaveSetting->setStyleSheet(QString::fromUtf8("/* \303\201p d\341\273\245ng cho m\341\273\231t ph\341\272\247n t\341\273\255 c\341\273\245 th\341\273\203, v\303\255 d\341\273\245 QPushButton */\n"
-"QPushButton {\n"
-"    background-color: #4A4A4F;\n"
-"    border-radius: 5px;\n"
-"    padding:5px;\n"
-"	color: rgb(208, 208, 209);\n"
-"}\n"
-"\n"
-"QPushButton:hover\n"
-"{\n"
-"	border: 2px solid #FFFFFF;\n"
-"}"));
+        pbSaveSetting->setMinimumSize(QSize(120, 30));
 
         horizontalLayout_13->addWidget(pbSaveSetting);
 
 
         verticalLayout_12->addWidget(frame_3);
 
-        twSetting = new QTableWidget(pSetting);
-        if (twSetting->columnCount() < 2)
-            twSetting->setColumnCount(2);
-        QTableWidgetItem *__qtablewidgetitem = new QTableWidgetItem();
-        twSetting->setHorizontalHeaderItem(0, __qtablewidgetitem);
-        QTableWidgetItem *__qtablewidgetitem1 = new QTableWidgetItem();
-        twSetting->setHorizontalHeaderItem(1, __qtablewidgetitem1);
-        if (twSetting->rowCount() < 1)
-            twSetting->setRowCount(1);
-        QTableWidgetItem *__qtablewidgetitem2 = new QTableWidgetItem();
-        twSetting->setVerticalHeaderItem(0, __qtablewidgetitem2);
-        QTableWidgetItem *__qtablewidgetitem3 = new QTableWidgetItem();
-        twSetting->setItem(0, 0, __qtablewidgetitem3);
-        QTableWidgetItem *__qtablewidgetitem4 = new QTableWidgetItem();
-        twSetting->setItem(0, 1, __qtablewidgetitem4);
-        twSetting->setObjectName(QString::fromUtf8("twSetting"));
-        twSetting->setMaximumSize(QSize(1101, 16777215));
-        twSetting->horizontalHeader()->setCascadingSectionResizes(true);
-        twSetting->horizontalHeader()->setDefaultSectionSize(100);
-        twSetting->horizontalHeader()->setStretchLastSection(true);
+        twSettingsCategories = new QTabWidget(pSetting);
+        twSettingsCategories->setObjectName(QString::fromUtf8("twSettingsCategories"));
+        tabGeneral = new QWidget();
+        tabGeneral->setObjectName(QString::fromUtf8("tabGeneral"));
+        vlGeneral = new QVBoxLayout(tabGeneral);
+        vlGeneral->setSpacing(6);
+        vlGeneral->setContentsMargins(11, 11, 11, 11);
+        vlGeneral->setObjectName(QString::fromUtf8("vlGeneral"));
+        saGeneral = new QScrollArea(tabGeneral);
+        saGeneral->setObjectName(QString::fromUtf8("saGeneral"));
+        saGeneral->setWidgetResizable(true);
+        swGeneral = new QWidget();
+        swGeneral->setObjectName(QString::fromUtf8("swGeneral"));
+        swGeneral->setGeometry(QRect(0, 0, 1073, 462));
+        vlGeneralContent = new QVBoxLayout(swGeneral);
+        vlGeneralContent->setSpacing(6);
+        vlGeneralContent->setContentsMargins(11, 11, 11, 11);
+        vlGeneralContent->setObjectName(QString::fromUtf8("vlGeneralContent"));
+        saGeneral->setWidget(swGeneral);
 
-        verticalLayout_12->addWidget(twSetting);
+        vlGeneral->addWidget(saGeneral);
+
+        twSettingsCategories->addTab(tabGeneral, QString());
+        tabDevice = new QWidget();
+        tabDevice->setObjectName(QString::fromUtf8("tabDevice"));
+        vlDevice = new QVBoxLayout(tabDevice);
+        vlDevice->setSpacing(6);
+        vlDevice->setContentsMargins(11, 11, 11, 11);
+        vlDevice->setObjectName(QString::fromUtf8("vlDevice"));
+        saDevice = new QScrollArea(tabDevice);
+        saDevice->setObjectName(QString::fromUtf8("saDevice"));
+        saDevice->setWidgetResizable(true);
+        swDevice = new QWidget();
+        swDevice->setObjectName(QString::fromUtf8("swDevice"));
+        swDevice->setGeometry(QRect(0, 0, 1073, 462));
+        vlDeviceContent = new QVBoxLayout(swDevice);
+        vlDeviceContent->setSpacing(6);
+        vlDeviceContent->setContentsMargins(11, 11, 11, 11);
+        vlDeviceContent->setObjectName(QString::fromUtf8("vlDeviceContent"));
+        saDevice->setWidget(swDevice);
+
+        vlDevice->addWidget(saDevice);
+
+        twSettingsCategories->addTab(tabDevice, QString());
+        tabCamera = new QWidget();
+        tabCamera->setObjectName(QString::fromUtf8("tabCamera"));
+        vlCamera = new QVBoxLayout(tabCamera);
+        vlCamera->setSpacing(6);
+        vlCamera->setContentsMargins(11, 11, 11, 11);
+        vlCamera->setObjectName(QString::fromUtf8("vlCamera"));
+        saCamera = new QScrollArea(tabCamera);
+        saCamera->setObjectName(QString::fromUtf8("saCamera"));
+        saCamera->setWidgetResizable(true);
+        swCamera = new QWidget();
+        swCamera->setObjectName(QString::fromUtf8("swCamera"));
+        swCamera->setGeometry(QRect(0, 0, 1073, 462));
+        vlCameraContent = new QVBoxLayout(swCamera);
+        vlCameraContent->setSpacing(6);
+        vlCameraContent->setContentsMargins(11, 11, 11, 11);
+        vlCameraContent->setObjectName(QString::fromUtf8("vlCameraContent"));
+        saCamera->setWidget(swCamera);
+
+        vlCamera->addWidget(saCamera);
+
+        twSettingsCategories->addTab(tabCamera, QString());
+        tabEditor = new QWidget();
+        tabEditor->setObjectName(QString::fromUtf8("tabEditor"));
+        vlEditor = new QVBoxLayout(tabEditor);
+        vlEditor->setSpacing(6);
+        vlEditor->setContentsMargins(11, 11, 11, 11);
+        vlEditor->setObjectName(QString::fromUtf8("vlEditor"));
+        saEditor = new QScrollArea(tabEditor);
+        saEditor->setObjectName(QString::fromUtf8("saEditor"));
+        saEditor->setWidgetResizable(true);
+        swEditor = new QWidget();
+        swEditor->setObjectName(QString::fromUtf8("swEditor"));
+        swEditor->setGeometry(QRect(0, 0, 1073, 462));
+        vlEditorContent = new QVBoxLayout(swEditor);
+        vlEditorContent->setSpacing(6);
+        vlEditorContent->setContentsMargins(11, 11, 11, 11);
+        vlEditorContent->setObjectName(QString::fromUtf8("vlEditorContent"));
+        saEditor->setWidget(swEditor);
+
+        vlEditor->addWidget(saEditor);
+
+        twSettingsCategories->addTab(tabEditor, QString());
+        tabAdvanced = new QWidget();
+        tabAdvanced->setObjectName(QString::fromUtf8("tabAdvanced"));
+        vlAdvanced = new QVBoxLayout(tabAdvanced);
+        vlAdvanced->setSpacing(6);
+        vlAdvanced->setContentsMargins(11, 11, 11, 11);
+        vlAdvanced->setObjectName(QString::fromUtf8("vlAdvanced"));
+        saAdvanced = new QScrollArea(tabAdvanced);
+        saAdvanced->setObjectName(QString::fromUtf8("saAdvanced"));
+        saAdvanced->setWidgetResizable(true);
+        swAdvanced = new QWidget();
+        swAdvanced->setObjectName(QString::fromUtf8("swAdvanced"));
+        swAdvanced->setGeometry(QRect(0, 0, 1073, 462));
+        vlAdvancedContent = new QVBoxLayout(swAdvanced);
+        vlAdvancedContent->setSpacing(6);
+        vlAdvancedContent->setContentsMargins(11, 11, 11, 11);
+        vlAdvancedContent->setObjectName(QString::fromUtf8("vlAdvancedContent"));
+        saAdvanced->setWidget(swAdvanced);
+
+        vlAdvanced->addWidget(saAdvanced);
+
+        twSettingsCategories->addTab(tabAdvanced, QString());
+        tabAuthority = new QWidget();
+        tabAuthority->setObjectName(QString::fromUtf8("tabAuthority"));
+        vlAuthority = new QVBoxLayout(tabAuthority);
+        vlAuthority->setSpacing(6);
+        vlAuthority->setContentsMargins(11, 11, 11, 11);
+        vlAuthority->setObjectName(QString::fromUtf8("vlAuthority"));
+        saAuthority = new QScrollArea(tabAuthority);
+        saAuthority->setObjectName(QString::fromUtf8("saAuthority"));
+        saAuthority->setWidgetResizable(true);
+        swAuthority1 = new QWidget();
+        swAuthority1->setObjectName(QString::fromUtf8("swAuthority1"));
+        swAuthority1->setGeometry(QRect(0, 0, 1073, 462));
+        vlAuthorityContent = new QVBoxLayout(swAuthority1);
+        vlAuthorityContent->setSpacing(6);
+        vlAuthorityContent->setContentsMargins(11, 11, 11, 11);
+        vlAuthorityContent->setObjectName(QString::fromUtf8("vlAuthorityContent"));
+        saAuthority->setWidget(swAuthority1);
+
+        vlAuthority->addWidget(saAuthority);
+
+        twSettingsCategories->addTab(tabAuthority, QString());
+
+        verticalLayout_12->addWidget(twSettingsCategories);
 
         swPageStack->addWidget(pSetting);
         pProject = new QWidget();
         pProject->setObjectName(QString::fromUtf8("pProject"));
-        pProject->setStyleSheet(QString::fromUtf8("alternate-background-color: rgb(255, 235, 15);"));
         verticalLayout_2 = new QVBoxLayout(pProject);
         verticalLayout_2->setSpacing(0);
         verticalLayout_2->setContentsMargins(11, 11, 11, 11);
@@ -1308,11 +1794,11 @@ public:
         twProjectManager->setEnabled(true);
         twProjectManager->setMinimumSize(QSize(0, 0));
         twProjectManager->setMaximumSize(QSize(16777215, 16777215));
-        QFont font5;
-        font5.setPointSize(12);
-        font5.setBold(false);
-        font5.setKerning(true);
-        twProjectManager->setFont(font5);
+        QFont font6;
+        font6.setPointSize(12);
+        font6.setBold(false);
+        font6.setKerning(true);
+        twProjectManager->setFont(font6);
         twProjectManager->setStyleSheet(QString::fromUtf8(""));
         twProjectManager->setIconSize(QSize(32, 32));
         twProjectManager->setElideMode(Qt::ElideNone);
@@ -1354,12 +1840,6 @@ public:
         teLoggingBox->setSizePolicy(sizePolicy7);
         teLoggingBox->setMinimumSize(QSize(0, 0));
         teLoggingBox->setMaximumSize(QSize(16777215, 16777215));
-        teLoggingBox->setStyleSheet(QString::fromUtf8("QTextEdit\n"
-"{\n"
-"	color: #CDCDCD;\n"
-"	border: none;\n"
-"	background-color: #434347;\n"
-"}"));
 
         horizontalLayout_10->addWidget(teLoggingBox);
 
@@ -1396,8 +1876,9 @@ public:
         retranslateUi(MainWindow);
 
         stackedWidget->setCurrentIndex(0);
-        swPageStack->setCurrentIndex(8);
+        swPageStack->setCurrentIndex(7);
         swAuthority->setCurrentIndex(0);
+        twSettingsCategories->setCurrentIndex(4);
         twProjectManager->setCurrentIndex(0);
 
 
@@ -1496,20 +1977,17 @@ public:
         pbAddOperatorGcodeProgram->setText(QCoreApplication::translate("MainWindow", "Add", nullptr));
         pbDeleteOperatorDisplayWidget->setText(QCoreApplication::translate("MainWindow", "x", nullptr));
         pbDeleteOperatorGcodeProgram->setText(QCoreApplication::translate("MainWindow", "x", nullptr));
-        pbSaveSetting->setText(QCoreApplication::translate("MainWindow", "Save", nullptr));
-        QTableWidgetItem *___qtablewidgetitem = twSetting->horizontalHeaderItem(0);
-        ___qtablewidgetitem->setText(QCoreApplication::translate("MainWindow", "Name", nullptr));
-        QTableWidgetItem *___qtablewidgetitem1 = twSetting->horizontalHeaderItem(1);
-        ___qtablewidgetitem1->setText(QCoreApplication::translate("MainWindow", "Value", nullptr));
-
-        const bool __sortingEnabled = twSetting->isSortingEnabled();
-        twSetting->setSortingEnabled(false);
-        QTableWidgetItem *___qtablewidgetitem2 = twSetting->item(0, 0);
-        ___qtablewidgetitem2->setText(QCoreApplication::translate("MainWindow", "Python", nullptr));
-        QTableWidgetItem *___qtablewidgetitem3 = twSetting->item(0, 1);
-        ___qtablewidgetitem3->setText(QCoreApplication::translate("MainWindow", "/lib/Python38/python.exe", nullptr));
-        twSetting->setSortingEnabled(__sortingEnabled);
-
+        lbSettingsTitle->setText(QCoreApplication::translate("MainWindow", "Settings", nullptr));
+        pbResetSettings->setText(QCoreApplication::translate("MainWindow", "Reset to Defaults", nullptr));
+        pbBackupSettings->setText(QCoreApplication::translate("MainWindow", "Backup Settings", nullptr));
+        pbRestoreSettings->setText(QCoreApplication::translate("MainWindow", "Restore Settings", nullptr));
+        pbSaveSetting->setText(QCoreApplication::translate("MainWindow", "Save Settings", nullptr));
+        twSettingsCategories->setTabText(twSettingsCategories->indexOf(tabGeneral), QCoreApplication::translate("MainWindow", "General", nullptr));
+        twSettingsCategories->setTabText(twSettingsCategories->indexOf(tabDevice), QCoreApplication::translate("MainWindow", "Device", nullptr));
+        twSettingsCategories->setTabText(twSettingsCategories->indexOf(tabCamera), QCoreApplication::translate("MainWindow", "Camera", nullptr));
+        twSettingsCategories->setTabText(twSettingsCategories->indexOf(tabEditor), QCoreApplication::translate("MainWindow", "Editor", nullptr));
+        twSettingsCategories->setTabText(twSettingsCategories->indexOf(tabAdvanced), QCoreApplication::translate("MainWindow", "Advanced", nullptr));
+        twSettingsCategories->setTabText(twSettingsCategories->indexOf(tabAuthority), QCoreApplication::translate("MainWindow", "Authority", nullptr));
         twProjectManager->setTabText(twProjectManager->indexOf(tabAddNewButton), QCoreApplication::translate("MainWindow", "+", nullptr));
         teLoggingBox->setHtml(QCoreApplication::translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\n"

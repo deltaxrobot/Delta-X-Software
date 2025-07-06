@@ -9566,7 +9566,7 @@ QLabel
                   <property name="geometry">
                    <rect>
                     <x>0</x>
-                    <y>-1254</y>
+                    <y>0</y>
                     <width>554</width>
                     <height>2000</height>
                    </rect>
@@ -9809,7 +9809,7 @@ QFrame[Func=Title]
                           </widget>
                          </item>
                          <item>
-                          <widget class="QPushButton" name="pbConnect">
+                          <widget class="QPushButton" name="pbConnectRobot">
                            <property name="sizePolicy">
                             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                              <horstretch>0</horstretch>

@@ -17,6 +17,8 @@
 #include <QElapsedTimer>
 #include <QTimer>
 
+class SettingsPanel;
+
 namespace Ui {
 class MainWindow;
 }
@@ -44,6 +46,7 @@ public:
     VersionManager* DeltaXVersionManager;
     SmartDialog* CloseDialog;
     Authority* SoftwareAuthority;
+    SettingsPanel* m_settingsPanel;
 
     QStandardItemModel VariableTreeModel;
 
