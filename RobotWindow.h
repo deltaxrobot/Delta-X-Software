@@ -284,6 +284,7 @@ public slots:
     void changeFontSize(int index);
     void RunSmartEditor();
     void StandardFormatEditor();
+    void CleanTextFormatting();
     void OpenGcodeReference();
     void ExportBlocklyToGcode();
     void ExecuteRequestsFromExternal(QString request);

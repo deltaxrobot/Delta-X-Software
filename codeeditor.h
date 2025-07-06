@@ -31,6 +31,7 @@ protected:
     void resizeEvent(QResizeEvent *event) override;
     void keyPressEvent(QKeyEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;
+    void insertFromMimeData(const QMimeData *source) override;
 
 public slots:
     void updateLineNumberAreaWidth(int newBlockCount);

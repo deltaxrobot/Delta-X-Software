@@ -49,6 +49,7 @@
 ****************************************************************************/
 
 #include <QtWidgets>
+#include <QMimeData>
 
 #include "codeeditor.h"
 
@@ -326,4 +327,21 @@ void CodeEditor::lineNumberAreaPaintEvent(QPaintEvent *event)
     }*/
 }
 //![extraAreaPaintEvent_2]
+
+void CodeEditor::insertFromMimeData(const QMimeData *source)
+{
+    // Override to ensure only plain text is inserted, preventing rich text formatting issues
+    if (source->hasText()) {
+        QString plainText = source->text();
+        
+        // Clean the text to remove any unwanted characters
+        plainText = plainText.replace('\r', ""); // Remove carriage returns
+        
+        // Insert only plain text to avoid formatting conflicts with syntax highlighter
+        textCursor().insertText(plainText);
+    } else {
+        // Fallback to default behavior if no text is available
+        QTextEdit::insertFromMimeData(source);
+    }
+}
 

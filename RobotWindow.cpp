@@ -2691,8 +2691,25 @@ void RobotWindow::RunSmartEditor()
 
 void RobotWindow::StandardFormatEditor()
 {
-    // ---- Number -----
+    // ---- Clean Rich Text First -----
+    // Get plain text to ensure no rich formatting remains
     QString editorText = ui->pteGcodeArea->toPlainText();
+    
+    // Clear the editor completely and set plain text to ensure clean state
+    ui->pteGcodeArea->clear();
+    ui->pteGcodeArea->setPlainText(editorText);
+    
+    // Reset text formatting to ensure clean state
+    QTextCursor cursor = ui->pteGcodeArea->textCursor();
+    cursor.select(QTextCursor::Document);
+    QTextCharFormat format;
+    format.setForeground(QColor("#DBDBDC")); // Set default text color
+    cursor.setCharFormat(format);
+    cursor.clearSelection();
+    ui->pteGcodeArea->setTextCursor(cursor);
+
+    // ---- Number -----
+    editorText = ui->pteGcodeArea->toPlainText();
 
     // Xóa các dòng trống không có kí tự
     editorText.replace(QRegularExpression("(\\n[ \\t]*){3,}"), "\n\n");
@@ -2799,47 +2816,67 @@ void RobotWindow::StandardFormatEditor()
         }
     }
 
+    // Set the formatted text as plain text to ensure clean state
+    ui->pteGcodeArea->clear();
     ui->pteGcodeArea->setPlainText(editorText);
 
+    // Reset palette to ensure proper text color
     QPalette p = ui->pteGcodeArea->palette();
-
-    // Thiết lập màu cho văn bản
     p.setColor(QPalette::Text, QColor("#DBDBDC"));
-
-    // Áp dụng QPalette mới cho textEdit
     ui->pteGcodeArea->setPalette(p);
+    
+    // Reset document formatting completely to ensure syntax highlighter works properly
+    QTextDocument* doc = ui->pteGcodeArea->document();
+    QTextCursor docCursor(doc);
+    docCursor.select(QTextCursor::Document);
+    QTextCharFormat defaultFormat;
+    defaultFormat.setForeground(QColor("#DBDBDC"));
+    docCursor.setCharFormat(defaultFormat);
+    docCursor.clearSelection();
+    
+    // Force syntax highlighter to re-highlight the entire document
+    if (highlighter) {
+        highlighter->rehighlight();
+    }
+    
+    // Move cursor to beginning
+    QTextCursor finalCursor = ui->pteGcodeArea->textCursor();
+    finalCursor.movePosition(QTextCursor::Start);
+    ui->pteGcodeArea->setTextCursor(finalCursor);
+}
 
-    // ---- Color ----
-//	QTextCharFormat reset;
-//	ui->pteGcodeArea->setCurrentCharFormat(reset);
-//	ui->pteGcodeArea->currentCharFormat();
-
-//	if (ui->cbFormatColor->isChecked() == true)
-//	{
-//		QString htmlText = ui->pteGcodeArea->toHtml();
-
-//		htmlText = replaceHtmlSection(">;", 1, 200, "<", "<span style=\"font-style:italic;color:#00aa00;\">", "</span>", htmlText);
-//		htmlText = replaceHtmlSection(" O", 1, 50, "<", "<span style =\"font-weight:600;\">", "</span>", htmlText);
-//		htmlText = replaceHtmlSection("#", 0, 6, "&&&", "<span style=\"font-style:italic;\">", "</span>", htmlText);
-
-//		htmlText = boldKey("G01", htmlText);
-//		htmlText = boldKey("G02", htmlText);
-//		htmlText = boldKey("G03", htmlText);
-//		htmlText = boldKey("G04", htmlText);
-//		htmlText = boldKey("G28", htmlText);
-//		htmlText = boldKey("M204", htmlText);
-//		htmlText = boldKey("M360", htmlText);
-//		htmlText = boldPlusKey("GOTO", "color:#ff5500;", htmlText);
-//		htmlText = boldPlusKey("IF", "color:#00aa00;", htmlText);
-//		htmlText = boldPlusKey("THEN", "color:#00aa00;", htmlText);
-//		htmlText = boldKey("M99", htmlText);
-//		htmlText = boldKey("M98", htmlText);
-//		htmlText = boldKey("M05", htmlText);
-//		htmlText = boldKey("M04", htmlText);
-//		htmlText = boldKey("M03", htmlText);
-
-//		ui->pteGcodeArea->setHtml(htmlText);
-//    }
+void RobotWindow::CleanTextFormatting()
+{
+    // Get current text as plain text
+    QString plainText = ui->pteGcodeArea->toPlainText();
+    
+    // Clear the editor completely and set plain text to ensure clean state
+    ui->pteGcodeArea->clear();
+    ui->pteGcodeArea->setPlainText(plainText);
+    
+    // Reset palette to default colors
+    QPalette p = ui->pteGcodeArea->palette();
+    p.setColor(QPalette::Text, QColor("#DBDBDC"));
+    ui->pteGcodeArea->setPalette(p);
+    
+    // Reset document formatting completely
+    QTextDocument* doc = ui->pteGcodeArea->document();
+    QTextCursor docCursor(doc);
+    docCursor.select(QTextCursor::Document);
+    QTextCharFormat defaultFormat;
+    defaultFormat.setForeground(QColor("#DBDBDC"));
+    docCursor.setCharFormat(defaultFormat);
+    docCursor.clearSelection();
+    
+    // Force syntax highlighter to re-highlight the entire document
+    if (highlighter) {
+        highlighter->rehighlight();
+    }
+    
+    // Move cursor to beginning
+    QTextCursor finalCursor = ui->pteGcodeArea->textCursor();
+    finalCursor.movePosition(QTextCursor::Start);
+    ui->pteGcodeArea->setTextCursor(finalCursor);
 }
 
 void RobotWindow::OpenGcodeReference()

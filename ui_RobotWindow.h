@@ -34,6 +34,7 @@
 #include <QtWidgets/QSplitter>
 #include <QtWidgets/QTabWidget>
 #include <QtWidgets/QTableView>
+#include <QtWidgets/QTextBrowser>
 #include <QtWidgets/QTextEdit>
 #include <QtWidgets/QToolButton>
 #include <QtWidgets/QTreeView>
@@ -119,6 +120,9 @@ public:
     QWidget *tab_2;
     QVBoxLayout *verticalLayout_18;
     CodeEditor *pteScriptFunction;
+    QWidget *tab_3;
+    QVBoxLayout *verticalLayout_20;
+    QTextBrowser *tbGcodeScriptHelp;
     QFrame *fTermite;
     QVBoxLayout *verticalLayout_19;
     QScrollArea *saTermite;
@@ -2167,6 +2171,19 @@ public:
         verticalLayout_18->addWidget(pteScriptFunction);
 
         twGcodeEditor->addTab(tab_2, QString());
+        tab_3 = new QWidget();
+        tab_3->setObjectName(QString::fromUtf8("tab_3"));
+        tab_3->setStyleSheet(QString::fromUtf8("background-color: rgb(56, 56, 56);"));
+        verticalLayout_20 = new QVBoxLayout(tab_3);
+        verticalLayout_20->setSpacing(6);
+        verticalLayout_20->setContentsMargins(11, 11, 11, 11);
+        verticalLayout_20->setObjectName(QString::fromUtf8("verticalLayout_20"));
+        tbGcodeScriptHelp = new QTextBrowser(tab_3);
+        tbGcodeScriptHelp->setObjectName(QString::fromUtf8("tbGcodeScriptHelp"));
+
+        verticalLayout_20->addWidget(tbGcodeScriptHelp);
+
+        twGcodeEditor->addTab(tab_3, QString());
 
         verticalLayout_3->addWidget(twGcodeEditor);
 
@@ -10141,7 +10158,7 @@ public:
         pbRunServer->setDefault(false);
         pbOpenWebControl->setDefault(false);
         twModule->setCurrentIndex(0);
-        twGcodeEditor->setCurrentIndex(1);
+        twGcodeEditor->setCurrentIndex(2);
         pbImageMapping->setDefault(false);
         cbImageSource->setCurrentIndex(0);
         cbSendingImageMethod->setCurrentIndex(0);
@@ -10319,6 +10336,7 @@ public:
                         "dbdbdc;\">G01</span><span style=\" font-family:'MS Shell Dlg 2'; color:#dbdbdc;\"> Z[#robot0.HOME_Z - 30]</span></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2'; color:#dbdbdc;\">M99</span></p></body></html>", nullptr));
         twGcodeEditor->setTabText(twGcodeEditor->indexOf(tab_2), QCoreApplication::translate("RobotWindow", "Function", nullptr));
+        twGcodeEditor->setTabText(twGcodeEditor->indexOf(tab_3), QCoreApplication::translate("RobotWindow", "Help", nullptr));
         label_5->setText(QCoreApplication::translate("RobotWindow", "Termite_", nullptr));
         cbDeviceSender->setItemText(0, QCoreApplication::translate("RobotWindow", "Software", nullptr));
         cbDeviceSender->setItemText(1, QCoreApplication::translate("RobotWindow", "Robot", nullptr));

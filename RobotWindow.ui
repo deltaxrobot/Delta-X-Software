@@ -1458,7 +1458,7 @@ QTreeView::header {
                        <item>
                         <widget class="QTabWidget" name="twGcodeEditor">
                          <property name="currentIndex">
-                          <number>1</number>
+                          <number>2</number>
                          </property>
                          <widget class="QWidget" name="tab">
                           <attribute name="title">
@@ -1630,6 +1630,19 @@ li.checked::marker { content: &quot;\2612&quot;; }
                               <set>Qt::TextEditorInteraction</set>
                              </property>
                             </widget>
+                           </item>
+                          </layout>
+                         </widget>
+                         <widget class="QWidget" name="tab_3">
+                          <property name="styleSheet">
+                           <string notr="true">background-color: rgb(56, 56, 56);</string>
+                          </property>
+                          <attribute name="title">
+                           <string>Help</string>
+                          </attribute>
+                          <layout class="QVBoxLayout" name="verticalLayout_20">
+                           <item>
+                            <widget class="QTextBrowser" name="tbGcodeScriptHelp"/>
                            </item>
                           </layout>
                          </widget>
