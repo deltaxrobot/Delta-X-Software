@@ -6,7 +6,6 @@ CameraSelectionDialog::CameraSelectionDialog(QWidget* parent)
     : QDialog(parent)
     , m_mainLayout(nullptr)
     , m_titleLabel(nullptr)
-    , m_descriptionLabel(nullptr)
     , m_cameraList(nullptr)
     , m_okButton(nullptr)
     , m_cancelButton(nullptr)
@@ -20,7 +19,7 @@ CameraSelectionDialog::CameraSelectionDialog(QWidget* parent)
     // Set dialog properties
     setWindowFlags(Qt::Dialog | Qt::CustomizeWindowHint | Qt::WindowTitleHint);
     setModal(true);
-    resize(480, 400);
+    resize(320, 220);
     
     // Center the dialog
     if (parent) {
@@ -48,34 +47,26 @@ void CameraSelectionDialog::loadAvailableCameras()
     m_cameraList->clear();
     
     if (m_availableCameras.isEmpty()) {
-        m_statusLabel->setText("❌ No cameras found");
-        m_statusLabel->setStyleSheet("color: #ff6b6b; font-weight: bold;");
+        m_statusLabel->setText("No cameras found");
+        m_statusLabel->setStyleSheet("color: #ff6b6b;");
         m_okButton->setEnabled(false);
         return;
     }
-    
-    QIcon cameraIcon = createCameraIcon();
     
     for (int i = 0; i < m_availableCameras.size(); ++i) {
         const QCameraInfo& camera = m_availableCameras[i];
         
         QListWidgetItem* item = new QListWidgetItem();
-        item->setIcon(cameraIcon);
         
-        // Create display text for camera info
-        QString cameraName = QString("📹 Camera %1").arg(i);
-        QString cameraDesc = QString("   %1").arg(camera.description());
-        QString displayText = cameraName + "\n" + cameraDesc;
+        // Simple display text
+        QString displayText = QString("Camera %1").arg(i);
+        if (!camera.description().isEmpty()) {
+            displayText += QString(" (%1)").arg(camera.description().left(20));
+        }
         
         item->setText(displayText);
         item->setData(Qt::UserRole, i); // Store camera ID
-        item->setSizeHint(QSize(0, 70));
-        
-        // Set font for better readability
-        QFont itemFont;
-        itemFont.setPointSize(10);
-        itemFont.setFamily("Segoe UI");
-        item->setFont(itemFont);
+        item->setSizeHint(QSize(0, 28));
         
         // Set tooltip with full camera info
         item->setToolTip(QString("Camera ID: %1\nDevice: %2").arg(i).arg(camera.description()));
@@ -87,8 +78,8 @@ void CameraSelectionDialog::loadAvailableCameras()
     if (m_cameraList->count() > 0) {
         m_cameraList->setCurrentRow(0);
         m_selectedCameraID = 0;
-        m_statusLabel->setText(QString("📹 %1 camera(s) available").arg(m_availableCameras.size()));
-        m_statusLabel->setStyleSheet("color: #4caf50; font-weight: bold;");
+        m_statusLabel->setText(QString("%1 found").arg(m_availableCameras.size()));
+        m_statusLabel->setStyleSheet("color: #4caf50;");
         m_okButton->setEnabled(true);
     }
 }
@@ -118,10 +109,9 @@ void CameraSelectionDialog::onCameraItemClicked(QListWidgetItem* item)
         m_selectedCameraID = item->data(Qt::UserRole).toInt();
         m_okButton->setEnabled(true);
         
-        // Update status with selected camera info
-        const QCameraInfo& camera = m_availableCameras[m_selectedCameraID];
-        m_statusLabel->setText(QString("✅ Selected: %1").arg(camera.description()));
-        m_statusLabel->setStyleSheet("color: #4caf50; font-weight: bold;");
+        // Update status
+        m_statusLabel->setText("Ready to connect");
+        m_statusLabel->setStyleSheet("color: #4caf50;");
     }
 }
 
@@ -148,36 +138,20 @@ void CameraSelectionDialog::createTitleBar()
 {
     // Title bar
     QWidget* titleBar = new QWidget();
-    titleBar->setFixedHeight(60);
+    titleBar->setFixedHeight(40);
     titleBar->setObjectName("titleBar");
     
     QHBoxLayout* titleLayout = new QHBoxLayout(titleBar);
-    titleLayout->setContentsMargins(20, 15, 20, 15);
+    titleLayout->setContentsMargins(12, 8, 12, 8);
     
-    // Camera icon in title
-    QLabel* iconLabel = new QLabel();
-    iconLabel->setPixmap(createCameraIcon().pixmap(32, 32));
-    titleLayout->addWidget(iconLabel);
-    
-    QVBoxLayout* titleTextLayout = new QVBoxLayout();
-    titleTextLayout->setSpacing(2);
-    
-    m_titleLabel = new QLabel("Camera Selection");
+    m_titleLabel = new QLabel("🎥 Camera Selection");
     m_titleLabel->setObjectName("titleLabel");
     QFont titleFont = m_titleLabel->font();
-    titleFont.setPointSize(16);
+    titleFont.setPointSize(12);
     titleFont.setBold(true);
     m_titleLabel->setFont(titleFont);
     
-    QLabel* subtitleLabel = new QLabel("Choose a camera device for video capture");
-    subtitleLabel->setObjectName("subtitleLabel");
-    QFont subtitleFont = subtitleLabel->font();
-    subtitleFont.setPointSize(10);
-    subtitleLabel->setFont(subtitleFont);
-    
-    titleTextLayout->addWidget(m_titleLabel);
-    titleTextLayout->addWidget(subtitleLabel);
-    titleLayout->addLayout(titleTextLayout);
+    titleLayout->addWidget(m_titleLabel);
     titleLayout->addStretch();
     
     m_mainLayout->addWidget(titleBar);
@@ -190,17 +164,8 @@ void CameraSelectionDialog::createContent()
     contentWidget->setObjectName("contentWidget");
     
     QVBoxLayout* contentLayout = new QVBoxLayout(contentWidget);
-    contentLayout->setContentsMargins(20, 20, 20, 15);
-    contentLayout->setSpacing(15);
-    
-    // Description
-    m_descriptionLabel = new QLabel("Available camera devices:");
-    m_descriptionLabel->setObjectName("descriptionLabel");
-    QFont labelFont = m_descriptionLabel->font();
-    labelFont.setPointSize(11);
-    labelFont.setBold(true);
-    m_descriptionLabel->setFont(labelFont);
-    contentLayout->addWidget(m_descriptionLabel);
+    contentLayout->setContentsMargins(12, 10, 12, 8);
+    contentLayout->setSpacing(8);
     
     // Camera list
     m_cameraList = new QListWidget();
@@ -218,10 +183,10 @@ void CameraSelectionDialog::createContent()
     contentLayout->addWidget(m_cameraList);
     
     // Status label
-    m_statusLabel = new QLabel("Scanning for cameras...");
+    m_statusLabel = new QLabel("Scanning...");
     m_statusLabel->setObjectName("statusLabel");
     QFont statusFont = m_statusLabel->font();
-    statusFont.setPointSize(10);
+    statusFont.setPointSize(8);
     m_statusLabel->setFont(statusFont);
     contentLayout->addWidget(m_statusLabel);
     
@@ -233,25 +198,25 @@ void CameraSelectionDialog::createButtons()
     // Button area
     QWidget* buttonWidget = new QWidget();
     buttonWidget->setObjectName("buttonWidget");
-    buttonWidget->setFixedHeight(70);
+    buttonWidget->setFixedHeight(50);
     
     QHBoxLayout* buttonLayout = new QHBoxLayout(buttonWidget);
-    buttonLayout->setContentsMargins(20, 15, 20, 15);
-    buttonLayout->setSpacing(10);
+    buttonLayout->setContentsMargins(12, 8, 12, 8);
+    buttonLayout->setSpacing(8);
     
     buttonLayout->addStretch();
     
     // Cancel button
     m_cancelButton = new QPushButton("Cancel");
     m_cancelButton->setObjectName("cancelButton");
-    m_cancelButton->setFixedSize(120, 40);
+    m_cancelButton->setFixedSize(80, 30);
     connect(m_cancelButton, &QPushButton::clicked, this, &CameraSelectionDialog::onCancelClicked);
     buttonLayout->addWidget(m_cancelButton);
     
     // OK button
-    m_okButton = new QPushButton("Connect Camera");
+    m_okButton = new QPushButton("Connect");
     m_okButton->setObjectName("okButton");
-    m_okButton->setFixedSize(150, 40);
+    m_okButton->setFixedSize(80, 30);
     m_okButton->setDefault(true);
     m_okButton->setEnabled(false);
     connect(m_okButton, &QPushButton::clicked, this, &CameraSelectionDialog::onOkClicked);
@@ -260,35 +225,7 @@ void CameraSelectionDialog::createButtons()
     m_mainLayout->addWidget(buttonWidget);
 }
 
-QIcon CameraSelectionDialog::createCameraIcon()
-{
-    // Create a simple camera icon using QPainter
-    QPixmap pixmap(48, 48);
-    pixmap.fill(Qt::transparent);
-    
-    QPainter painter(&pixmap);
-    painter.setRenderHint(QPainter::Antialiasing);
-    
-    // Camera body
-    painter.setBrush(QColor("#0078d4"));
-    painter.setPen(QPen(QColor("#005a9e"), 2));
-    painter.drawRoundedRect(8, 16, 32, 20, 4, 4);
-    
-    // Camera lens
-    painter.setBrush(QColor("#333333"));
-    painter.setPen(QPen(QColor("#222222"), 1));
-    painter.drawEllipse(14, 22, 8, 8);
-    
-    // Lens center
-    painter.setBrush(QColor("#666666"));
-    painter.drawEllipse(16, 24, 4, 4);
-    
-    // Flash
-    painter.setBrush(QColor("#ffffff"));
-    painter.drawEllipse(30, 18, 4, 4);
-    
-    return QIcon(pixmap);
-}
+
 
 void CameraSelectionDialog::applyDarkTheme()
 {
@@ -320,11 +257,6 @@ void CameraSelectionDialog::applyDarkTheme()
             background-color: #2b2b2b;
         }
         
-        QLabel#descriptionLabel {
-            color: #ffffff;
-            background: transparent;
-        }
-        
         QLabel#statusLabel {
             color: #999999;
             background: transparent;
@@ -335,22 +267,22 @@ void CameraSelectionDialog::applyDarkTheme()
         QListWidget#cameraList {
             background-color: #333333;
             border: 1px solid #555555;
-            border-radius: 8px;
+            border-radius: 6px;
             color: #ffffff;
             selection-background-color: #0078d4;
             selection-color: #ffffff;
             alternate-background-color: #383838;
-            font-size: 11px;
-            padding: 8px;
+            font-size: 9px;
+            padding: 4px;
         }
         
         QListWidget#cameraList::item {
-            padding: 12px 15px;
-            border-radius: 6px;
-            margin: 2px;
+            padding: 6px 10px;
+            border-radius: 4px;
+            margin: 1px;
             border: 1px solid transparent;
             text-align: left;
-            line-height: 1.4;
+            line-height: 1.2;
         }
         
         QListWidget#cameraList::item:hover {
@@ -375,9 +307,9 @@ void CameraSelectionDialog::applyDarkTheme()
             background-color: #0078d4;
             color: #ffffff;
             border: none;
-            border-radius: 8px;
+            border-radius: 6px;
             font-weight: bold;
-            font-size: 12px;
+            font-size: 10px;
         }
         
         QPushButton#okButton:hover {
@@ -397,8 +329,8 @@ void CameraSelectionDialog::applyDarkTheme()
             background-color: #404040;
             color: #ffffff;
             border: 1px solid #666666;
-            border-radius: 8px;
-            font-size: 12px;
+            border-radius: 6px;
+            font-size: 10px;
         }
         
         QPushButton#cancelButton:hover {

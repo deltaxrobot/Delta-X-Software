@@ -112,6 +112,7 @@ public:
     void InitSocketConnection();
     void InitObjectDetectingModule();
     void InitGcodeEditorModule();
+    void InitGScriptHelp();
     void InitUIController();
     void InitCalibration();
     void LoadPlugin();

@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GScript User Guide - Delta X Software</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 30px;
+        }
+        h2 {
+            font-size: 1.8em;
+            margin-top: 40px;
+        }
+        h3 {
+            font-size: 1.4em;
+            margin-top: 25px;
+            border-bottom: 1px solid #bdc3c7;
+        }
+        .code-block {
+            background-color: #f8f9fa;
+            color: #2d3748;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            margin: 20px 0;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            font-size: 14px;
+            line-height: 1.6;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .inline-code {
+            background-color: #ecf0f1;
+            color: #2c3e50;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+        .example {
+            background-color: #e8f5e8;
+            border-left: 4px solid #27ae60;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .warning {
+            background-color: #fdf2e6;
+            border-left: 4px solid #f39c12;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .error {
+            background-color: #fdeaea;
+            border-left: 4px solid #e74c3c;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .table-container {
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        th, td {
+            border: 1px solid #bdc3c7;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #3498db;
+            color: white;
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        .toc {
+            background-color: #ecf0f1;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 30px;
+        }
+        .toc ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .toc ul ul {
+            padding-left: 20px;
+        }
+        .toc a {
+            text-decoration: none;
+            color: #2c3e50;
+        }
+        .toc a:hover {
+            color: #3498db;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🤖 GScript User Guide</h1>
+        <p><strong>Delta X Software - Automated Robot Programming Language</strong></p>
+
+        <div class="toc">
+            <h3>📋 Table of Contents</h3>
+            <ul>
+                <li><a href="#introduction">1. Introduction to GScript</a></li>
+                <li><a href="#syntax">2. Basic Syntax</a>
+                    <ul>
+                        <li><a href="#variables">2.1. Variables</a></li>
+                        <li><a href="#comments">2.2. Comments</a></li>
+                        <li><a href="#expressions">2.3. Mathematical Expressions</a></li>
+                    </ul>
+                </li>
+                <li><a href="#control-flow">3. Control Flow</a>
+                    <ul>
+                        <li><a href="#goto">3.1. GOTO - Jump to Line</a></li>
+                        <li><a href="#if-then">3.2. IF...THEN - Conditional</a></li>
+                    </ul>
+                </li>
+                <li><a href="#subprograms">4. Subprograms</a></li>
+                <li><a href="#math-functions">5. Mathematical Functions</a></li>
+                <li><a href="#device-control">6. Device Control</a></li>
+                <li><a href="#examples">7. Practical Examples</a></li>
+            </ul>
+        </div>
+
+        <h2 id="introduction">1. 🌟 Introduction to GScript</h2>
+        <p><strong>GScript</strong> is a programming language integrated into Delta X Software, specifically designed to control Delta X robots and automation devices.</p>
+
+        <div class="example">
+            <h4>✅ Main Advantages:</h4>
+            <ul>
+                <li>🎯 Easy to learn, simple syntax</li>
+                <li>🔧 Built-in robot control</li>
+                <li>📊 Variable and mathematical expression support</li>
+                <li>🔄 Subroutines and loops</li>
+                <li>📷 Integrated image processing</li>
+            </ul>
+        </div>
+
+        <h2 id="syntax">2. 📝 Basic Syntax</h2>
+
+        <h3 id="variables">2.1. 🔢 Variables</h3>
+        <p>Variables in GScript start with <span class="inline-code">#</span> and can store numbers, strings, points, vectors.</p>
+
+        <div class="code-block">; Declare and assign numeric variables
+#counter = 0
+#speed = 100.5
+#robot_name = "Delta_X"
+
+; 2D point variable
+#point2d = (150, 200)
+
+; 3D point variable  
+#point3d = (150, 200, 80)
+
+; Access point components
+#x_pos = #point3d.X
+#y_pos = #point3d.Y
+#z_pos = #point3d.Z</div>
+
+        <div class="warning">
+            <strong>⚠️ Note:</strong> Variable names can contain letters, numbers, and underscores. Cannot start with a number.
+        </div>
+
+        <h3 id="comments">2.2. 💬 Comments</h3>
+        <p>Use <span class="inline-code">;</span> to add comments to your code:</p>
+
+        <div class="code-block">; This is a full line comment
+G01 X100 Y200 ; End of line comment</div>
+
+        <h3 id="expressions">2.3. 🧮 Mathematical Expressions</h3>
+        <p>GScript supports basic and advanced mathematical operations:</p>
+
+        <div class="table-container">
+            <table>
+                <tr>
+                    <th>Operator</th>
+                    <th>Description</th>
+                    <th>Example</th>
+                </tr>
+                <tr>
+                    <td><span class="inline-code">+</span></td>
+                    <td>Addition</td>
+                    <td><span class="inline-code">#result = #a + #b</span></td>
+                </tr>
+                <tr>
+                    <td><span class="inline-code">-</span></td>
+                    <td>Subtraction</td>
+                    <td><span class="inline-code">#result = #a - #b</span></td>
+                </tr>
+                <tr>
+                    <td><span class="inline-code">*</span></td>
+                    <td>Multiplication</td>
+                    <td><span class="inline-code">#result = #a * #b</span></td>
+                </tr>
+                <tr>
+                    <td><span class="inline-code">/</span></td>
+                    <td>Division</td>
+                    <td><span class="inline-code">#result = #a / #b</span></td>
+                </tr>
+                <tr>
+                    <td><span class="inline-code">%</span></td>
+                    <td>Modulo</td>
+                    <td><span class="inline-code">#result = #a % #b</span></td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="code-block">; Mathematical expression examples
+#radius = 50
+#height = #robot0.HOME_Z - 80
+#position_x = #center_x + #radius * 2
+
+; Use in G-code
+G01 X[#position_x] Y[#center_y] Z[#height]</div>
+
+        <h2 id="control-flow">3. 🔄 Control Flow</h2>
+
+        <h3 id="goto">3.1. ➡️ GOTO - Jump to Line</h3>
+        <p>The <span class="inline-code">GOTO</span> command allows jumping to another line in the program:</p>
+
+        <div class="code-block">N05 #counter = 0
+N10 #counter = #counter + 1
+N15 G01 X[#counter * 10] Y100
+N20 GOTO 10 ; Jump to line N10</div>
+
+        <div class="warning">
+            <strong>⚠️ Caution:</strong> Using GOTO can create infinite loops. Always have stop conditions.
+        </div>
+
+        <h3 id="if-then">3.2. ❓ IF...THEN - Conditional</h3>
+        <p>Execute commands based on conditions:</p>
+
+        <div class="code-block">; Syntax: IF [condition] THEN [command]
+IF #counter == 5 THEN GOTO 100
+IF #sensor_value > 50 THEN M05</div>
+
+        <div class="table-container">
+            <table>
+                <tr>
+                    <th>Comparison Operator</th>
+                    <th>Description</th>
+                    <th>Example</th>
+                </tr>
+                <tr>
+                    <td><span class="inline-code">==</span></td>
+                    <td>Equal</td>
+                    <td><span class="inline-code">IF #a == 5 THEN GOTO 100</span></td>
+                </tr>
+                <tr>
+                    <td><span class="inline-code">!=</span></td>
+                    <td>Not equal</td>
+                    <td><span class="inline-code">IF #a != 0 THEN M03</span></td>
+                </tr>
+                <tr>
+                    <td><span class="inline-code">></span></td>
+                    <td>Greater than</td>
+                    <td><span class="inline-code">IF #temp > 60 THEN M05</span></td>
+                </tr>
+                <tr>
+                    <td><span class="inline-code"><</span></td>
+                    <td>Less than</td>
+                    <td><span class="inline-code">IF #speed < 100 THEN G01 F200</span></td>
+                </tr>
+                <tr>
+                    <td><span class="inline-code">>=</span></td>
+                    <td>Greater than or equal</td>
+                    <td><span class="inline-code">IF #counter >= 10 THEN GOTO 50</span></td>
+                </tr>
+                <tr>
+                    <td><span class="inline-code"><=</span></td>
+                    <td>Less than or equal</td>
+                    <td><span class="inline-code">IF #pressure <= 30 THEN M04</span></td>
+                </tr>
+            </table>
+        </div>
+
+        <h2 id="subprograms">4. 🔧 Subprograms</h2>
+        <p>Use subprograms to reuse code and organize programs better:</p>
+
+        <h3>4.1. Define Subprogram</h3>
+        <div class="code-block">; Define subprogram
+O2001 ; Start subprogram number 2001
+    G01 Z[#robot0.HOME_Z - 50]
+    M03 ; Turn on gripper
+    G04 P1000 ; Wait 1 second
+    M05 ; Turn off gripper
+M99 ; End subprogram</div>
+
+        <h3>4.2. Call Subprogram</h3>
+        <div class="code-block">; Call subprogram
+M98 P2001 ; Call subprogram O2001</div>
+
+        <h3>4.3. Macro Functions</h3>
+        <p>GScript supports built-in macro functions:</p>
+
+        <div class="table-container">
+            <table>
+                <tr>
+                    <th>Function</th>
+                    <th>Description</th>
+                    <th>Example</th>
+                </tr>
+                <tr>
+                    <td><span class="inline-code">M98 PclearObjects</span></td>
+                    <td>Clear all objects</td>
+                    <td><span class="inline-code">M98 PclearObjects listName</span></td>
+                </tr>
+                <tr>
+                    <td><span class="inline-code">M98 PpauseCamera</span></td>
+                    <td>Pause camera</td>
+                    <td><span class="inline-code">M98 PpauseCamera</span></td>
+                </tr>
+                <tr>
+                    <td><span class="inline-code">M98 PcaptureCamera</span></td>
+                    <td>Capture image</td>
+                    <td><span class="inline-code">M98 PcaptureCamera</span></td>
+                </tr>
+                <tr>
+                    <td><span class="inline-code">M98 PresumeCamera</span></td>
+                    <td>Resume camera</td>
+                    <td><span class="inline-code">M98 PresumeCamera</span></td>
+                </tr>
+                <tr>
+                    <td><span class="inline-code">M98 Pdelay(ms)</span></td>
+                    <td>Delay time</td>
+                    <td><span class="inline-code">M98 Pdelay(2000)</span></td>
+                </tr>
+            </table>
+        </div>
+
+        <h2 id="math-functions">5. 📐 Mathematical Functions</h2>
+        <p>GScript provides built-in mathematical functions:</p>
+
+        <div class="table-container">
+            <table>
+                <tr>
+                    <th>Function</th>
+                    <th>Description</th>
+                    <th>Example</th>
+                </tr>
+                <tr>
+                    <td><span class="inline-code">#sin(angle)</span></td>
+                    <td>Sine (degrees)</td>
+                    <td><span class="inline-code">#y = #sin(30)</span></td>
+                </tr>
+                <tr>
+                    <td><span class="inline-code">#cos(angle)</span></td>
+                    <td>Cosine (degrees)</td>
+                    <td><span class="inline-code">#x = #cos(45)</span></td>
+                </tr>
+                <tr>
+                    <td><span class="inline-code">#tan(angle)</span></td>
+                    <td>Tangent (degrees)</td>
+                    <td><span class="inline-code">#slope = #tan(60)</span></td>
+                </tr>
+                <tr>
+                    <td><span class="inline-code">#atan(value)</span></td>
+                    <td>Arctangent (to degrees)</td>
+                    <td><span class="inline-code">#angle = #atan(1)</span></td>
+                </tr>
+                <tr>
+                    <td><span class="inline-code">#atan2(y,x)</span></td>
+                    <td>Arctangent2 (to degrees)</td>
+                    <td><span class="inline-code">#angle = #atan2(1,1)</span></td>
+                </tr>
+                <tr>
+                    <td><span class="inline-code">#abs(value)</span></td>
+                    <td>Absolute value</td>
+                    <td><span class="inline-code">#dist = #abs(-5)</span></td>
+                </tr>
+                <tr>
+                    <td><span class="inline-code">#sqrt(value)</span></td>
+                    <td>Square root</td>
+                    <td><span class="inline-code">#hyp = #sqrt(25)</span></td>
+                </tr>
+                <tr>
+                    <td><span class="inline-code">#pow(base,exp)</span></td>
+                    <td>Power</td>
+                    <td><span class="inline-code">#result = #pow(2,3)</span></td>
+                </tr>
+                <tr>
+                    <td><span class="inline-code">#round(value)</span></td>
+                    <td>Round</td>
+                    <td><span class="inline-code">#int = #round(3.7)</span></td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="example">
+            <h4>Example: Calculate position on a circle:</h4>
+            <div class="code-block">#center_x = 100
+#center_y = 150
+#radius = 50
+#angle = 45
+
+#x = #center_x + #radius * #cos(#angle)
+#y = #center_y + #radius * #sin(#angle)
+
+G01 X[#x] Y[#y]</div>
+        </div>
+
+        <h2 id="device-control">6. 🎛️ Device Control</h2>
+
+        <h3>6.1. Robot Control</h3>
+        <div class="table-container">
+            <table>
+                <tr>
+                    <th>Command</th>
+                    <th>Description</th>
+                    <th>Example</th>
+                </tr>
+                <tr>
+                    <td><span class="inline-code">G28</span></td>
+                    <td>Home</td>
+                    <td><span class="inline-code">G28</span></td>
+                </tr>
+                <tr>
+                    <td><span class="inline-code">G01</span></td>
+                    <td>Linear movement</td>
+                    <td><span class="inline-code">G01 X100 Y200 Z50 F1000</span></td>
+                </tr>
+                <tr>
+                    <td><span class="inline-code">G02</span></td>
+                    <td>Clockwise arc movement</td>
+                    <td><span class="inline-code">G02 X100 Y100 I50 J0</span></td>
+                </tr>
+                <tr>
+                    <td><span class="inline-code">G03</span></td>
+                    <td>Counter-clockwise arc movement</td>
+                    <td><span class="inline-code">G03 X100 Y100 I50 J0</span></td>
+                </tr>
+                <tr>
+                    <td><span class="inline-code">G04</span></td>
+                    <td>Pause (ms)</td>
+                    <td><span class="inline-code">G04 P1000</span></td>
+                </tr>
+            </table>
+        </div>
+
+        <h3>6.2. End Effector Control</h3>
+        <div class="table-container">
+            <table>
+                <tr>
+                    <th>Command</th>
+                    <th>Description</th>
+                    <th>Example</th>
+                </tr>
+                <tr>
+                    <td><span class="inline-code">M03</span></td>
+                    <td>Turn on Gripper/Laser</td>
+                    <td><span class="inline-code">M03 S100</span></td>
+                </tr>
+                <tr>
+                    <td><span class="inline-code">M04</span></td>
+                    <td>Turn on Gripper reverse</td>
+                    <td><span class="inline-code">M04 S50</span></td>
+                </tr>
+                <tr>
+                    <td><span class="inline-code">M05</span></td>
+                    <td>Turn off Gripper/Laser</td>
+                    <td><span class="inline-code">M05</span></td>
+                </tr>
+                <tr>
+                    <td><span class="inline-code">M360</span></td>
+                    <td>Select End Effector</td>
+                    <td><span class="inline-code">M360 E1</span></td>
+                </tr>
+            </table>
+        </div>
+
+        <h3>6.3. Conveyor Control</h3>
+        <div class="table-container">
+            <table>
+                <tr>
+                    <th>Command</th>
+                    <th>Description</th>
+                    <th>Example</th>
+                </tr>
+                <tr>
+                    <td><span class="inline-code">M310</span></td>
+                    <td>Select speed mode</td>
+                    <td><span class="inline-code">M310 S1</span></td>
+                </tr>
+                <tr>
+                    <td><span class="inline-code">M311</span></td>
+                    <td>Set speed</td>
+                    <td><span class="inline-code">M311 S100</span></td>
+                </tr>
+                <tr>
+                    <td><span class="inline-code">M312</span></td>
+                    <td>Set position</td>
+                    <td><span class="inline-code">M312 X100</span></td>
+                </tr>
+                <tr>
+                    <td><span class="inline-code">M313</span></td>
+                    <td>Speed for position movement</td>
+                    <td><span class="inline-code">M313 S200</span></td>
+                </tr>
+            </table>
+        </div>
+
+        <h3>6.4. Device Selection</h3>
+        <div class="code-block">; Select default device
+SELECT robot0 ; Select robot
+SELECT conveyor0 ; Select conveyor
+SELECT device0 ; Select device
+
+; Send command to specific device
+robot0 G01 X100 Y200
+conveyor0 M311 S100</div>
+
+        <h2 id="examples">7. 🎯 Practical Examples</h2>
+
+        <h3>7.1. Basic Pick & Place Program</h3>
+        <div class="example">
+            <div class="code-block">; Simple Pick & Place program
+G28 ; Home
+G01 F1000 ; Set feedrate
+
+; Pick position
+#pick_x = 100
+#pick_y = 200
+#pick_z = -150
+
+; Place position
+#place_x = 300
+#place_y = 200
+#place_z = -150
+
+; Move to pick position
+G01 X[#pick_x] Y[#pick_y] Z-50
+G01 Z[#pick_z]
+M03 ; Turn on gripper
+G04 P1000 ; Wait 1 second
+G01 Z-50
+
+; Move to place position
+G01 X[#place_x] Y[#place_y]
+G01 Z[#place_z]
+M05 ; Turn off gripper
+G04 P500
+G01 Z-50
+G28 ; Home</div>
+        </div>
+
+        <h3>7.2. Loop with Condition</h3>
+        <div class="example">
+            <div class="code-block">; Loop to pick 5 objects
+#counter = 0
+#max_objects = 5
+
+N10 ; Loop label
+    IF #counter >= #max_objects THEN GOTO 100
+    
+    ; Calculate next object position
+    #x_pos = 100 + #counter * 50
+    
+    ; Pick object
+    G01 X[#x_pos] Y200 Z-50
+    G01 Z-150
+    M03
+    G04 P1000
+    G01 Z-50
+    
+    ; Place object
+    G01 X300 Y[200 + #counter * 30]
+    G01 Z-150
+    M05
+    G01 Z-50
+    
+    #counter = #counter + 1
+    GOTO 10
+
+N100 ; End
+G28</div>
+        </div>
+
+        <h3>7.3. Using Vision and Tracking</h3>
+        <div class="example">
+            <div class="code-block">; Program with vision tracking
+M98 PcaptureCamera ; Capture image
+M98 PupdateTracking(0) ; Update tracking
+
+; Get first object in list
+#object_x = #objects.0.X
+#object_y = #objects.0.Y
+#object_angle = #objects.0.A
+
+; Move to object
+G01 X[#object_x] Y[#object_y] W[#object_angle]
+G01 Z-150
+M03
+
+; Delete picked object
+M98 PdeleteFirstObject</div>
+        </div>
+
+        <h3>7.4. Matrix Transformation</h3>
+        <div class="example">
+            <div class="code-block">; Using transformation matrix
+#source_point = (100, 150)
+#transform_matrix = #project0.tracking0.calibMatrix
+
+; Apply transformation
+#target_point = #transform_matrix.Map(#source_point)
+
+; Move to transformed point
+G01 X[#target_point.X] Y[#target_point.Y]</div>
+        </div>
+
+        <div class="warning">
+            <h4>⚠️ Important Notes:</h4>
+            <ul>
+                <li>Always test programs in safe mode before running</li>
+                <li>Ensure robot is homed before starting</li>
+                <li>Check robot workspace limits</li>
+                <li>Use low speed when testing new programs</li>
+                <li>Always have Emergency Stop ready</li>
+            </ul>
+        </div>
+
+        <div class="example">
+            <h4>💡 Tips and Tricks:</h4>
+            <ul>
+                <li>🔧 Use subprograms to reuse code</li>
+                <li>📝 Add comments to make code easy to understand</li>
+                <li>🔢 Use variables to make code more flexible</li>
+                <li>⚡ Optimize by reducing unnecessary movements</li>
+                <li>🧪 Test small parts before assembling</li>
+            </ul>
+        </div>
+
+        <hr>
+        <footer style="text-align: center; margin-top: 40px; color: #7f8c8d;">
+            <p><strong>Delta X Software</strong> - Automation Made Simple<br>
+            © 2024 - GScript User Guide</p>
+        </footer>
+    </div>
+</body>
+</html> 

@@ -204,6 +204,7 @@ public:
     QPushButton *pbMappingPointTool;
     QPushButton *pbFilterTool;
     QPushButton *pbGetSizeTool;
+    QSpacerItem *verticalSpacer_5;
     QLabel *lbDisplayRatio;
     QLabel *lbMatSize;
     QPushButton *pbZoomInCameraView;
@@ -2173,7 +2174,7 @@ public:
         twGcodeEditor->addTab(tab_2, QString());
         tab_3 = new QWidget();
         tab_3->setObjectName(QString::fromUtf8("tab_3"));
-        tab_3->setStyleSheet(QString::fromUtf8("background-color: rgb(56, 56, 56);"));
+        tab_3->setStyleSheet(QString::fromUtf8("background-color: rgb(39, 39, 39);"));
         verticalLayout_20 = new QVBoxLayout(tab_3);
         verticalLayout_20->setSpacing(6);
         verticalLayout_20->setContentsMargins(11, 11, 11, 11);
@@ -2293,7 +2294,7 @@ public:
         saObjectDetecting->setWidgetResizable(true);
         wObjectDetecting = new QWidget();
         wObjectDetecting->setObjectName(QString::fromUtf8("wObjectDetecting"));
-        wObjectDetecting->setGeometry(QRect(0, -269, 590, 2900));
+        wObjectDetecting->setGeometry(QRect(0, -397, 590, 2900));
         wObjectDetecting->setMinimumSize(QSize(100, 2900));
         wObjectDetecting->setStyleSheet(QString::fromUtf8("QWidget#wObjectDetecting\n"
 "{	\n"
@@ -2951,6 +2952,10 @@ public:
 
         verticalLayout_10->addWidget(pbGetSizeTool);
 
+        verticalSpacer_5 = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+
+        verticalLayout_10->addItem(verticalSpacer_5);
+
         lbDisplayRatio = new QLabel(frame_17);
         lbDisplayRatio->setObjectName(QString::fromUtf8("lbDisplayRatio"));
 
@@ -2974,6 +2979,8 @@ public:
 
         horizontalLayout_7->addWidget(frame_17);
 
+        horizontalLayout_7->setStretch(0, 3);
+        horizontalLayout_7->setStretch(1, 1);
 
         verticalLayout_7->addLayout(horizontalLayout_7);
 
@@ -4069,7 +4076,7 @@ public:
         saPointTool->setWidgetResizable(true);
         wPointTool = new QWidget();
         wPointTool->setObjectName(QString::fromUtf8("wPointTool"));
-        wPointTool->setGeometry(QRect(0, -937, 572, 1900));
+        wPointTool->setGeometry(QRect(0, 0, 572, 1900));
         wPointTool->setMinimumSize(QSize(0, 1900));
         wPointTool->setStyleSheet(QString::fromUtf8("QWidget#wPointTool\n"
 "{	\n"
@@ -6071,7 +6078,7 @@ public:
         scrollArea_2->setWidgetResizable(true);
         wgJoggingScrollWidget = new QWidget();
         wgJoggingScrollWidget->setObjectName(QString::fromUtf8("wgJoggingScrollWidget"));
-        wgJoggingScrollWidget->setGeometry(QRect(0, -21, 554, 2000));
+        wgJoggingScrollWidget->setGeometry(QRect(0, 0, 554, 2000));
         wgJoggingScrollWidget->setMinimumSize(QSize(0, 2000));
         wgJoggingScrollWidget->setMaximumSize(QSize(16777215, 16777215));
         wgJoggingScrollWidget->setStyleSheet(QString::fromUtf8("QWidget#wgJoggingScrollWidget\n"
@@ -10157,7 +10164,7 @@ public:
 
         pbRunServer->setDefault(false);
         pbOpenWebControl->setDefault(false);
-        twModule->setCurrentIndex(0);
+        twModule->setCurrentIndex(1);
         twGcodeEditor->setCurrentIndex(2);
         pbImageMapping->setDefault(false);
         cbImageSource->setCurrentIndex(0);

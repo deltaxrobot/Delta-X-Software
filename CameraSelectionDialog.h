@@ -10,9 +10,6 @@
 #include <QListWidgetItem>
 #include <QCameraInfo>
 #include <QGraphicsDropShadowEffect>
-#include <QIcon>
-#include <QPixmap>
-#include <QPainter>
 
 class CameraSelectionDialog : public QDialog
 {
@@ -39,12 +36,10 @@ private:
     void createTitleBar();
     void createContent();
     void createButtons();
-    QIcon createCameraIcon();
     
     // UI Components
     QVBoxLayout* m_mainLayout;
     QLabel* m_titleLabel;
-    QLabel* m_descriptionLabel;
     QListWidget* m_cameraList;
     QPushButton* m_okButton;
     QPushButton* m_cancelButton;
