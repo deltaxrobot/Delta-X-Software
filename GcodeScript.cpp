@@ -1,4 +1,6 @@
 #include "GcodeScript.h"
+#include <cstdlib>
+#include <ctime>
 
 // Initialize static regex patterns for better performance
 const QRegularExpression GcodeScript::m98Regex("M98\\s+([A-Za-z]+)(?:\\((.*)\\))?", QRegularExpression::OptimizeOnFirstUsageOption);
@@ -6,7 +8,8 @@ const QRegularExpression GcodeScript::objectInAreaRegex("\\(([^)]+)\\)", QRegula
 
 GcodeScript::GcodeScript()
 {
-
+    // Khởi tạo seed cho random number generator
+    srand(static_cast<unsigned int>(time(nullptr)));
 }
 
 GcodeScript::~GcodeScript()
@@ -400,12 +403,14 @@ float GcodeScript::GetResultOfMathFunction(QString expression)
 
     QString functionName = expression.mid(1, p1 - 1);
     QString value = expression.mid(p1 + 1,  p2 - p1 - 1);
-    QStringList values = value.replace(" ", "").split(',');
+    QString cleanValue = value.replace(" ", "");  // Tạo bản sao để xử lý
+    QStringList values = cleanValue.split(',');
 
-    if (value.lastIndexOf(',') < value.lastIndexOf(')'))
+    // Xử lý trường hợp không có dấu phẩy (hàm 1 tham số hoặc không tham số)
+    if (value.indexOf(',') == -1 && !value.isEmpty())
     {
         values.clear();
-        values.append(value);
+        values.append(cleanValue);
     }
 
     values.append("0");
@@ -479,6 +484,56 @@ float GcodeScript::GetResultOfMathFunction(QString expression)
     {
         return round(values[0].toInt());
     }
+
+    if (functionName.toLower() == "random")
+    {
+        // #random() - Trả về số ngẫu nhiên từ 0.0 đến 1.0
+        return static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
+    }
+
+    if (functionName.toLower() == "randomrange")
+    {
+        // #randomRange(min, max) - Trả về số ngẫu nhiên trong khoảng [min, max]
+        if (values.length() >= 2)
+        {
+            float min = values[0].toFloat();
+            float max = values[1].toFloat();
+            if (min > max) {
+                // Hoán đổi nếu min > max
+                float temp = min;
+                min = max;
+                max = temp;
+            }
+            return min + static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * (max - min);
+        }
+        else
+        {
+            return NULL_NUMBER;
+        }
+    }
+
+    if (functionName.toLower() == "randomint")
+    {
+        // #randomInt(min, max) - Trả về số nguyên ngẫu nhiên trong khoảng [min, max]
+        if (values.length() >= 2)
+        {
+            int min = values[0].toInt();
+            int max = values[1].toInt();
+            if (min > max) {
+                // Hoán đổi nếu min > max
+                int temp = min;
+                min = max;
+                max = temp;
+            }
+            return min + rand() % (max - min + 1);
+        }
+        else
+        {
+            return NULL_NUMBER;
+        }
+    }
+
+
 
     return NULL_NUMBER;
 }
@@ -1436,7 +1491,7 @@ QString GcodeScript::calculateExpressions(QString expression)
 
             continue;
         }
-        else if ((multiplyIndex > -1 || divideIndex > -1 || moduloIndex > -1 || plusIndex > -1 || subIndex > -1 || andIndex > -1 || orIndex > -1 || xorIndex > -1) && isNotNegative(expression))
+        else if ((multiplyIndex > -1 || divideIndex > -1 || moduloIndex > -1 || plusIndex > -1 || subIndex > -1 || andIndex > -1 || orIndex > -1 || xorIndex > -1) && isNotNegative(expression) && !expression.contains('('))
         {
             // 3 + 2 * 5 - 4 / 2
 
@@ -1531,7 +1586,7 @@ QString GcodeScript::calculateExpressions(QString expression)
             continue;
         }
 
-        else if (eqIndex > -1 || ltIndex > -1 || gtIndex > -1 || neIndex > -1 || leIndex > -1 || geIndex > -1)
+        else if ((eqIndex > -1 || ltIndex > -1 || gtIndex > -1 || neIndex > -1 || leIndex > -1 || geIndex > -1) && !expression.contains('('))
         {
             QString value1S;
             QString opeS;
@@ -1580,15 +1635,22 @@ QString GcodeScript::calculateExpressions(QString expression)
 
         else
         {
+            // Kiểm tra xem có phải hàm toán học không
+            if (expression.contains('(') && expression.contains(')') && expression.startsWith('#'))
+            {
+                float result = GetResultOfMathFunction(expression);
+                if (result != NULL_NUMBER)
+                {
+                    return QString::number(result);
+                }
+            }
 
             QString value = getValueAsString(deleteSpaces(expression));
-
 
             if (deleteSpaces(expression) == "NULL")
             {
                 value = "NULL";
             }
-
 
             return value;
         }
@@ -1755,6 +1817,16 @@ bool GcodeScript::isNotNegative(QString s)
 
 QString GcodeScript::getValueAsString(QString name)
 {
+    // Kiểm tra xem có phải hàm toán học không (có dấu ngoặc đơn)
+    if (name.contains('(') && name.contains(')'))
+    {
+        float result = GetResultOfMathFunction(name);
+        if (result != NULL_NUMBER)
+        {
+            return QString::number(result);
+        }
+    }
+
     name = name.replace("#", "");
 
     QString fullName = name;

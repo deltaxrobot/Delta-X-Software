@@ -706,7 +706,7 @@ QToolBox QScrollArea&gt;QWidget&gt;QWidget
               <enum>QTabWidget::Rounded</enum>
              </property>
              <property name="currentIndex">
-              <number>2</number>
+              <number>0</number>
              </property>
              <property name="usesScrollButtons">
               <bool>true</bool>
@@ -1679,8 +1679,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
                               <rect>
                                <x>0</x>
                                <y>0</y>
-                               <width>408</width>
-                               <height>135</height>
+                               <width>312</width>
+                               <height>145</height>
                               </rect>
                              </property>
                              <property name="styleSheet">
@@ -1857,7 +1857,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
                    <rect>
                     <x>0</x>
                     <y>0</y>
-                    <width>590</width>
+                    <width>532</width>
                     <height>2900</height>
                    </rect>
                   </property>
@@ -5695,7 +5695,7 @@ QFrame
                    <rect>
                     <x>0</x>
                     <y>0</y>
-                    <width>572</width>
+                    <width>510</width>
                     <height>2100</height>
                    </rect>
                   </property>
@@ -7588,7 +7588,7 @@ padding: 5px;</string>
                    <rect>
                     <x>0</x>
                     <y>0</y>
-                    <width>572</width>
+                    <width>510</width>
                     <height>1600</height>
                    </rect>
                   </property>
@@ -9521,7 +9521,7 @@ QLabel
               <enum>QTabWidget::North</enum>
              </property>
              <property name="currentIndex">
-              <number>0</number>
+              <number>3</number>
              </property>
              <property name="elideMode">
               <enum>Qt::ElideNone</enum>
@@ -9562,7 +9562,7 @@ QLabel
                    <rect>
                     <x>0</x>
                     <y>0</y>
-                    <width>554</width>
+                    <width>625</width>
                     <height>2000</height>
                    </rect>
                   </property>
@@ -18342,7 +18342,7 @@ QPushButton
                       </widget>
                      </item>
                      <item>
-                      <widget class="QComboBox" name="cbEncoderType_2">
+                      <widget class="QComboBox" name="cbSliderType">
                        <property name="minimumSize">
                         <size>
                          <width>100</width>
@@ -18351,17 +18351,12 @@ QPushButton
                        </property>
                        <item>
                         <property name="text">
-                         <string>Encoder X</string>
+                         <string>V1</string>
                         </property>
                        </item>
                        <item>
                         <property name="text">
-                         <string>Sub Encoder</string>
-                        </property>
-                       </item>
-                       <item>
-                        <property name="text">
-                         <string>Virtual Encoder</string>
+                         <string>V2</string>
                         </property>
                        </item>
                       </widget>
@@ -18378,16 +18373,6 @@ QPushButton
                         </size>
                        </property>
                       </spacer>
-                     </item>
-                     <item>
-                      <widget class="QCheckBox" name="cbEncoderActive_2">
-                       <property name="text">
-                        <string>Active</string>
-                       </property>
-                       <property name="checked">
-                        <bool>true</bool>
-                       </property>
-                      </widget>
                      </item>
                     </layout>
                    </widget>

@@ -1145,9 +1145,8 @@ public:
     QFrame *robotTitile_14;
     QHBoxLayout *horizontalLayout_109;
     QLabel *label_284;
-    QComboBox *cbEncoderType_2;
+    QComboBox *cbSliderType;
     QSpacerItem *horizontalSpacer_115;
-    QCheckBox *cbEncoderActive_2;
     QGridLayout *gridLayout_8;
     QLabel *label_36;
     QPushButton *pbSlidingHome;
@@ -2211,7 +2210,7 @@ public:
         saTermite->setWidgetResizable(true);
         wgTermite = new QWidget();
         wgTermite->setObjectName(QString::fromUtf8("wgTermite"));
-        wgTermite->setGeometry(QRect(0, 0, 408, 135));
+        wgTermite->setGeometry(QRect(0, 0, 312, 145));
         wgTermite->setStyleSheet(QString::fromUtf8("QWidget#wgTermite\n"
 "{\n"
 "	\n"
@@ -2302,7 +2301,7 @@ public:
         saObjectDetecting->setWidgetResizable(true);
         wObjectDetecting = new QWidget();
         wObjectDetecting->setObjectName(QString::fromUtf8("wObjectDetecting"));
-        wObjectDetecting->setGeometry(QRect(0, 0, 590, 2900));
+        wObjectDetecting->setGeometry(QRect(0, 0, 532, 2900));
         wObjectDetecting->setMinimumSize(QSize(100, 2900));
         wObjectDetecting->setStyleSheet(QString::fromUtf8("QWidget#wObjectDetecting\n"
 "{	\n"
@@ -4084,7 +4083,7 @@ public:
         saPointTool->setWidgetResizable(true);
         wPointTool = new QWidget();
         wPointTool->setObjectName(QString::fromUtf8("wPointTool"));
-        wPointTool->setGeometry(QRect(0, 0, 572, 2100));
+        wPointTool->setGeometry(QRect(0, 0, 510, 2100));
         wPointTool->setMinimumSize(QSize(0, 2100));
         wPointTool->setStyleSheet(QString::fromUtf8("QWidget#wPointTool\n"
 "{	\n"
@@ -5196,7 +5195,7 @@ public:
         scrollArea_6->setWidgetResizable(true);
         scrollAreaWidgetContents_6 = new QWidget();
         scrollAreaWidgetContents_6->setObjectName(QString::fromUtf8("scrollAreaWidgetContents_6"));
-        scrollAreaWidgetContents_6->setGeometry(QRect(0, 0, 572, 1600));
+        scrollAreaWidgetContents_6->setGeometry(QRect(0, 0, 510, 1600));
         scrollAreaWidgetContents_6->setMinimumSize(QSize(450, 1600));
         scrollAreaWidgetContents_6->setMaximumSize(QSize(16777215, 16777215));
         scrollAreaWidgetContents_6->setStyleSheet(QString::fromUtf8("QWidget[background='container']\n"
@@ -6086,7 +6085,7 @@ public:
         scrollArea_2->setWidgetResizable(true);
         wgJoggingScrollWidget = new QWidget();
         wgJoggingScrollWidget->setObjectName(QString::fromUtf8("wgJoggingScrollWidget"));
-        wgJoggingScrollWidget->setGeometry(QRect(0, 0, 554, 2000));
+        wgJoggingScrollWidget->setGeometry(QRect(0, 0, 625, 2000));
         wgJoggingScrollWidget->setMinimumSize(QSize(0, 2000));
         wgJoggingScrollWidget->setMaximumSize(QSize(16777215, 16777215));
         wgJoggingScrollWidget->setStyleSheet(QString::fromUtf8("QWidget#wgJoggingScrollWidget\n"
@@ -9900,24 +9899,17 @@ public:
 
         horizontalLayout_109->addWidget(label_284);
 
-        cbEncoderType_2 = new QComboBox(robotTitile_14);
-        cbEncoderType_2->addItem(QString());
-        cbEncoderType_2->addItem(QString());
-        cbEncoderType_2->addItem(QString());
-        cbEncoderType_2->setObjectName(QString::fromUtf8("cbEncoderType_2"));
-        cbEncoderType_2->setMinimumSize(QSize(100, 0));
+        cbSliderType = new QComboBox(robotTitile_14);
+        cbSliderType->addItem(QString());
+        cbSliderType->addItem(QString());
+        cbSliderType->setObjectName(QString::fromUtf8("cbSliderType"));
+        cbSliderType->setMinimumSize(QSize(100, 0));
 
-        horizontalLayout_109->addWidget(cbEncoderType_2);
+        horizontalLayout_109->addWidget(cbSliderType);
 
         horizontalSpacer_115 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
         horizontalLayout_109->addItem(horizontalSpacer_115);
-
-        cbEncoderActive_2 = new QCheckBox(robotTitile_14);
-        cbEncoderActive_2->setObjectName(QString::fromUtf8("cbEncoderActive_2"));
-        cbEncoderActive_2->setChecked(true);
-
-        horizontalLayout_109->addWidget(cbEncoderActive_2);
 
 
         verticalLayout_80->addWidget(robotTitile_14);
@@ -10229,12 +10221,12 @@ public:
 
         pbRunServer->setDefault(false);
         pbOpenWebControl->setDefault(false);
-        twModule->setCurrentIndex(2);
+        twModule->setCurrentIndex(0);
         twGcodeEditor->setCurrentIndex(2);
         pbImageMapping->setDefault(false);
         cbImageSource->setCurrentIndex(0);
         cbSendingImageMethod->setCurrentIndex(0);
-        twDevices->setCurrentIndex(0);
+        twDevices->setCurrentIndex(3);
         pbPump->setDefault(false);
         pbLaser->setDefault(false);
         pbGrip->setDefault(false);
@@ -11515,11 +11507,9 @@ public:
         groupBox_20->setTitle(QCoreApplication::translate("RobotWindow", "Baudrate", nullptr));
         lbBaudrate_7->setText(QCoreApplication::translate("RobotWindow", "115200", nullptr));
         label_284->setText(QCoreApplication::translate("RobotWindow", "Type", nullptr));
-        cbEncoderType_2->setItemText(0, QCoreApplication::translate("RobotWindow", "Encoder X", nullptr));
-        cbEncoderType_2->setItemText(1, QCoreApplication::translate("RobotWindow", "Sub Encoder", nullptr));
-        cbEncoderType_2->setItemText(2, QCoreApplication::translate("RobotWindow", "Virtual Encoder", nullptr));
+        cbSliderType->setItemText(0, QCoreApplication::translate("RobotWindow", "V1", nullptr));
+        cbSliderType->setItemText(1, QCoreApplication::translate("RobotWindow", "V2", nullptr));
 
-        cbEncoderActive_2->setText(QCoreApplication::translate("RobotWindow", "Active", nullptr));
         label_36->setText(QCoreApplication::translate("RobotWindow", "Speed", nullptr));
 #if QT_CONFIG(tooltip)
         pbSlidingHome->setToolTip(QString());

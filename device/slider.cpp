@@ -4,7 +4,7 @@ Slider::Slider(QString COM, int baudrate, bool is_open, QObject *parent) : Devic
 {
 //    qDebug() << "Slider init";
     connect(this, SIGNAL(receivedMsg(QString, QString)), this, SLOT(ProcessResponse(QString, QString)));
-
+    jsonObject["device"] = "slider";
 }
 
 void Slider::ProcessResponse(QString id, QString response)

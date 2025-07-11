@@ -2516,6 +2516,20 @@ void RobotWindow::GetDeviceInfo(QString json)
 
         ui->lbEncoderCOMname->setText(jsonObject.value("com_name").toString());
     }
+
+    else if (device == "slider" && id == getIDfromName(ui->cbSelectedSlider->currentText()))
+    {
+        if (state == "open")
+        {
+            ui->pbSlidingConnect->setText("Disconnect");
+        }
+        else
+        {
+            ui->pbSlidingConnect->setText("Connect");
+        }
+
+        ui->lbSliderCOMName->setText(jsonObject.value("com_name").toString());
+    }
 }
 
 void RobotWindow::GetDeviceResponse(QString idName, QString response)

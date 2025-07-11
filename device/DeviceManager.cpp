@@ -282,6 +282,15 @@ void DeviceManager::SendGcode(int deviceType, QString gcode)
         }
     }
 
+    if (deviceType == SLIDER)
+    {
+        if (Sliders.count() > SelectedSliderID)
+        {
+            QMetaObject::invokeMethod(Sliders[SelectedSliderID], "WriteData", Qt::QueuedConnection, Q_ARG(QString, gcode));
+            emit Log(QString("slider%1").arg(SelectedSliderID), gcode, 1);
+        }
+    }
+
     if (deviceType == CONVEYOR)
     {
         if (Conveyors.count() > SelectedConveyorID)
