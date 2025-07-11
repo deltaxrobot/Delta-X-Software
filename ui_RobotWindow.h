@@ -408,24 +408,24 @@ public:
     QGridLayout *gridLayout_44;
     QLabel *label_197;
     QLabel *label_227;
-    QLineEdit *lePointAtT2X;
+    QLineEdit *leVectorPoint2X;
     QLineEdit *leVectorY;
     QLineEdit *leVectorX;
-    QLineEdit *lePointAtT2Z;
+    QLineEdit *leVectorPoint2Z;
     QLineEdit *leVectorValue;
     QToolButton *tbPasteVectorPoint2;
     QLabel *label_213;
     QLabel *label_228;
-    QLineEdit *lePointAtT1Y;
+    QLineEdit *leVectorPoint1Y;
     QLabel *label_189;
     QLabel *label_231;
     QLineEdit *leVectorZ;
-    QLineEdit *lePointAtT2Y;
-    QLineEdit *lePointAtT1X;
+    QLineEdit *leVectorPoint2Y;
+    QLineEdit *leVectorPoint1X;
     QLabel *label_208;
     QPushButton *pbCalVector;
     QLabel *label_206;
-    QLineEdit *lePointAtT1Z;
+    QLineEdit *leVectorPoint1Z;
     QPushButton *pbAnglePoint2;
     QLabel *label_226;
     QPushButton *pbAnglePoint1;
@@ -484,11 +484,11 @@ public:
     QVBoxLayout *verticalLayout_65;
     QFrame *frame_20;
     QGridLayout *gridLayout_42;
-    QLineEdit *leDPoint1Y;
+    QLineEdit *leDestinationPoint1Y1;
     QListWidget *lwPointMatrixList;
-    QLineEdit *leSPoint2X;
-    QLineEdit *leDPoint1X;
-    QLineEdit *leSPoint4Y;
+    QLineEdit *leSourcePoint2X1;
+    QLineEdit *leDestinationPoint1X1;
+    QLineEdit *leSourcePoint4Y;
     QLabel *label_217;
     QLabel *label_234;
     QLabel *label_235;
@@ -498,25 +498,25 @@ public:
     QLabel *label_233;
     QLabel *label_220;
     QLabel *label_212;
-    QLineEdit *leDPoint2X;
-    QLineEdit *leDPoint3Y;
+    QLineEdit *leDestinationPoint2X1;
+    QLineEdit *leDestinationPoint3Y;
     QLabel *lbPointMatrixDisplay;
     QLabel *label_216;
-    QLineEdit *leSPoint2Y;
+    QLineEdit *leSourcePoint2Y1;
     QLabel *label_207;
-    QLineEdit *leDPoint2Y;
-    QLineEdit *leDPoint4X;
-    QLineEdit *leSPoint3Y;
-    QLineEdit *leSPoint3X;
+    QLineEdit *leDestinationPoint2Y1;
+    QLineEdit *leDestinationPoint4X;
+    QLineEdit *leSourcePoint3Y;
+    QLineEdit *leSourcePoint3X;
     QLabel *label_219;
-    QLineEdit *leDPoint4Y;
-    QLineEdit *leSPoint4X;
+    QLineEdit *leDestinationPoint4Y;
+    QLineEdit *leSourcePoint4X;
     QLabel *label_232;
     QPushButton *pbCalculatePointMatrixTool;
     QLabel *label_238;
-    QLineEdit *leDPoint3X;
-    QLineEdit *leSPoint1X;
-    QLineEdit *leSPoint1Y;
+    QLineEdit *leDestinationPoint3X;
+    QLineEdit *leSourcePoint1X1;
+    QLineEdit *leSourcePoint1Y1;
     QLabel *label_211;
     QLabel *label_167;
     QLabel *label_218;
@@ -780,6 +780,14 @@ public:
     QLineEdit *leJerk;
     QLabel *label_64;
     QLabel *label_47;
+    QFrame *frame_25;
+    QVBoxLayout *verticalLayout_30;
+    QFrame *frame_8;
+    QHBoxLayout *horizontalLayout_30;
+    QLabel *lbRobotMapping;
+    QSpacerItem *horizontalSpacer_98;
+    QFrame *fRobotMappingPanel;
+    QGridLayout *gridLayout_5;
     QFrame *frame_34;
     QVBoxLayout *verticalLayout_44;
     QFrame *robotTitile_3;
@@ -2294,7 +2302,7 @@ public:
         saObjectDetecting->setWidgetResizable(true);
         wObjectDetecting = new QWidget();
         wObjectDetecting->setObjectName(QString::fromUtf8("wObjectDetecting"));
-        wObjectDetecting->setGeometry(QRect(0, -397, 590, 2900));
+        wObjectDetecting->setGeometry(QRect(0, 0, 590, 2900));
         wObjectDetecting->setMinimumSize(QSize(100, 2900));
         wObjectDetecting->setStyleSheet(QString::fromUtf8("QWidget#wObjectDetecting\n"
 "{	\n"
@@ -4076,8 +4084,8 @@ public:
         saPointTool->setWidgetResizable(true);
         wPointTool = new QWidget();
         wPointTool->setObjectName(QString::fromUtf8("wPointTool"));
-        wPointTool->setGeometry(QRect(0, 0, 572, 1900));
-        wPointTool->setMinimumSize(QSize(0, 1900));
+        wPointTool->setGeometry(QRect(0, 0, 572, 2100));
+        wPointTool->setMinimumSize(QSize(0, 2100));
         wPointTool->setStyleSheet(QString::fromUtf8("QWidget#wPointTool\n"
 "{	\n"
 "	background-color: #1E1E20;\n"
@@ -4363,10 +4371,10 @@ public:
 
         gridLayout_44->addWidget(label_227, 8, 4, 1, 1);
 
-        lePointAtT2X = new QLineEdit(frame_19);
-        lePointAtT2X->setObjectName(QString::fromUtf8("lePointAtT2X"));
+        leVectorPoint2X = new QLineEdit(frame_19);
+        leVectorPoint2X->setObjectName(QString::fromUtf8("leVectorPoint2X"));
 
-        gridLayout_44->addWidget(lePointAtT2X, 4, 3, 1, 1);
+        gridLayout_44->addWidget(leVectorPoint2X, 4, 3, 1, 1);
 
         leVectorY = new QLineEdit(frame_19);
         leVectorY->setObjectName(QString::fromUtf8("leVectorY"));
@@ -4378,10 +4386,10 @@ public:
 
         gridLayout_44->addWidget(leVectorX, 9, 3, 1, 1);
 
-        lePointAtT2Z = new QLineEdit(frame_19);
-        lePointAtT2Z->setObjectName(QString::fromUtf8("lePointAtT2Z"));
+        leVectorPoint2Z = new QLineEdit(frame_19);
+        leVectorPoint2Z->setObjectName(QString::fromUtf8("leVectorPoint2Z"));
 
-        gridLayout_44->addWidget(lePointAtT2Z, 4, 5, 1, 1);
+        gridLayout_44->addWidget(leVectorPoint2Z, 4, 5, 1, 1);
 
         leVectorValue = new QLineEdit(frame_19);
         leVectorValue->setObjectName(QString::fromUtf8("leVectorValue"));
@@ -4407,10 +4415,10 @@ public:
 
         gridLayout_44->addWidget(label_228, 8, 5, 1, 1);
 
-        lePointAtT1Y = new QLineEdit(frame_19);
-        lePointAtT1Y->setObjectName(QString::fromUtf8("lePointAtT1Y"));
+        leVectorPoint1Y = new QLineEdit(frame_19);
+        leVectorPoint1Y->setObjectName(QString::fromUtf8("leVectorPoint1Y"));
 
-        gridLayout_44->addWidget(lePointAtT1Y, 2, 4, 1, 1);
+        gridLayout_44->addWidget(leVectorPoint1Y, 2, 4, 1, 1);
 
         label_189 = new QLabel(frame_19);
         label_189->setObjectName(QString::fromUtf8("label_189"));
@@ -4429,15 +4437,15 @@ public:
 
         gridLayout_44->addWidget(leVectorZ, 9, 5, 1, 1);
 
-        lePointAtT2Y = new QLineEdit(frame_19);
-        lePointAtT2Y->setObjectName(QString::fromUtf8("lePointAtT2Y"));
+        leVectorPoint2Y = new QLineEdit(frame_19);
+        leVectorPoint2Y->setObjectName(QString::fromUtf8("leVectorPoint2Y"));
 
-        gridLayout_44->addWidget(lePointAtT2Y, 4, 4, 1, 1);
+        gridLayout_44->addWidget(leVectorPoint2Y, 4, 4, 1, 1);
 
-        lePointAtT1X = new QLineEdit(frame_19);
-        lePointAtT1X->setObjectName(QString::fromUtf8("lePointAtT1X"));
+        leVectorPoint1X = new QLineEdit(frame_19);
+        leVectorPoint1X->setObjectName(QString::fromUtf8("leVectorPoint1X"));
 
-        gridLayout_44->addWidget(lePointAtT1X, 2, 3, 1, 1);
+        gridLayout_44->addWidget(leVectorPoint1X, 2, 3, 1, 1);
 
         label_208 = new QLabel(frame_19);
         label_208->setObjectName(QString::fromUtf8("label_208"));
@@ -4459,10 +4467,10 @@ public:
 
         gridLayout_44->addWidget(label_206, 1, 4, 1, 1);
 
-        lePointAtT1Z = new QLineEdit(frame_19);
-        lePointAtT1Z->setObjectName(QString::fromUtf8("lePointAtT1Z"));
+        leVectorPoint1Z = new QLineEdit(frame_19);
+        leVectorPoint1Z->setObjectName(QString::fromUtf8("leVectorPoint1Z"));
 
-        gridLayout_44->addWidget(lePointAtT1Z, 2, 5, 1, 1);
+        gridLayout_44->addWidget(leVectorPoint1Z, 2, 5, 1, 1);
 
         pbAnglePoint2 = new QPushButton(frame_19);
         pbAnglePoint2->setObjectName(QString::fromUtf8("pbAnglePoint2"));
@@ -4830,11 +4838,11 @@ public:
         gridLayout_42->setSpacing(6);
         gridLayout_42->setContentsMargins(11, 11, 11, 11);
         gridLayout_42->setObjectName(QString::fromUtf8("gridLayout_42"));
-        leDPoint1Y = new QLineEdit(frame_20);
-        leDPoint1Y->setObjectName(QString::fromUtf8("leDPoint1Y"));
-        leDPoint1Y->setAlignment(Qt::AlignCenter);
+        leDestinationPoint1Y1 = new QLineEdit(frame_20);
+        leDestinationPoint1Y1->setObjectName(QString::fromUtf8("leDestinationPoint1Y1"));
+        leDestinationPoint1Y1->setAlignment(Qt::AlignCenter);
 
-        gridLayout_42->addWidget(leDPoint1Y, 11, 5, 1, 1);
+        gridLayout_42->addWidget(leDestinationPoint1Y1, 11, 5, 1, 1);
 
         lwPointMatrixList = new QListWidget(frame_20);
         lwPointMatrixList->setObjectName(QString::fromUtf8("lwPointMatrixList"));
@@ -4849,21 +4857,21 @@ public:
 
         gridLayout_42->addWidget(lwPointMatrixList, 16, 3, 1, 3);
 
-        leSPoint2X = new QLineEdit(frame_20);
-        leSPoint2X->setObjectName(QString::fromUtf8("leSPoint2X"));
+        leSourcePoint2X1 = new QLineEdit(frame_20);
+        leSourcePoint2X1->setObjectName(QString::fromUtf8("leSourcePoint2X1"));
 
-        gridLayout_42->addWidget(leSPoint2X, 4, 3, 1, 1);
+        gridLayout_42->addWidget(leSourcePoint2X1, 4, 3, 1, 1);
 
-        leDPoint1X = new QLineEdit(frame_20);
-        leDPoint1X->setObjectName(QString::fromUtf8("leDPoint1X"));
-        leDPoint1X->setAlignment(Qt::AlignCenter);
+        leDestinationPoint1X1 = new QLineEdit(frame_20);
+        leDestinationPoint1X1->setObjectName(QString::fromUtf8("leDestinationPoint1X1"));
+        leDestinationPoint1X1->setAlignment(Qt::AlignCenter);
 
-        gridLayout_42->addWidget(leDPoint1X, 11, 3, 1, 1);
+        gridLayout_42->addWidget(leDestinationPoint1X1, 11, 3, 1, 1);
 
-        leSPoint4Y = new QLineEdit(frame_20);
-        leSPoint4Y->setObjectName(QString::fromUtf8("leSPoint4Y"));
+        leSourcePoint4Y = new QLineEdit(frame_20);
+        leSourcePoint4Y->setObjectName(QString::fromUtf8("leSourcePoint4Y"));
 
-        gridLayout_42->addWidget(leSPoint4Y, 7, 5, 1, 1);
+        gridLayout_42->addWidget(leSourcePoint4Y, 7, 5, 1, 1);
 
         label_217 = new QLabel(frame_20);
         label_217->setObjectName(QString::fromUtf8("label_217"));
@@ -4910,17 +4918,17 @@ public:
 
         gridLayout_42->addWidget(label_212, 6, 2, 1, 1);
 
-        leDPoint2X = new QLineEdit(frame_20);
-        leDPoint2X->setObjectName(QString::fromUtf8("leDPoint2X"));
-        leDPoint2X->setAlignment(Qt::AlignCenter);
+        leDestinationPoint2X1 = new QLineEdit(frame_20);
+        leDestinationPoint2X1->setObjectName(QString::fromUtf8("leDestinationPoint2X1"));
+        leDestinationPoint2X1->setAlignment(Qt::AlignCenter);
 
-        gridLayout_42->addWidget(leDPoint2X, 12, 3, 1, 1);
+        gridLayout_42->addWidget(leDestinationPoint2X1, 12, 3, 1, 1);
 
-        leDPoint3Y = new QLineEdit(frame_20);
-        leDPoint3Y->setObjectName(QString::fromUtf8("leDPoint3Y"));
-        leDPoint3Y->setAlignment(Qt::AlignCenter);
+        leDestinationPoint3Y = new QLineEdit(frame_20);
+        leDestinationPoint3Y->setObjectName(QString::fromUtf8("leDestinationPoint3Y"));
+        leDestinationPoint3Y->setAlignment(Qt::AlignCenter);
 
-        gridLayout_42->addWidget(leDPoint3Y, 13, 5, 1, 1);
+        gridLayout_42->addWidget(leDestinationPoint3Y, 13, 5, 1, 1);
 
         lbPointMatrixDisplay = new QLabel(frame_20);
         lbPointMatrixDisplay->setObjectName(QString::fromUtf8("lbPointMatrixDisplay"));
@@ -4932,10 +4940,10 @@ public:
 
         gridLayout_42->addWidget(label_216, 0, 2, 1, 1);
 
-        leSPoint2Y = new QLineEdit(frame_20);
-        leSPoint2Y->setObjectName(QString::fromUtf8("leSPoint2Y"));
+        leSourcePoint2Y1 = new QLineEdit(frame_20);
+        leSourcePoint2Y1->setObjectName(QString::fromUtf8("leSourcePoint2Y1"));
 
-        gridLayout_42->addWidget(leSPoint2Y, 4, 5, 1, 1);
+        gridLayout_42->addWidget(leSourcePoint2Y1, 4, 5, 1, 1);
 
         label_207 = new QLabel(frame_20);
         label_207->setObjectName(QString::fromUtf8("label_207"));
@@ -4943,43 +4951,43 @@ public:
 
         gridLayout_42->addWidget(label_207, 10, 2, 1, 1);
 
-        leDPoint2Y = new QLineEdit(frame_20);
-        leDPoint2Y->setObjectName(QString::fromUtf8("leDPoint2Y"));
-        leDPoint2Y->setAlignment(Qt::AlignCenter);
+        leDestinationPoint2Y1 = new QLineEdit(frame_20);
+        leDestinationPoint2Y1->setObjectName(QString::fromUtf8("leDestinationPoint2Y1"));
+        leDestinationPoint2Y1->setAlignment(Qt::AlignCenter);
 
-        gridLayout_42->addWidget(leDPoint2Y, 12, 5, 1, 1);
+        gridLayout_42->addWidget(leDestinationPoint2Y1, 12, 5, 1, 1);
 
-        leDPoint4X = new QLineEdit(frame_20);
-        leDPoint4X->setObjectName(QString::fromUtf8("leDPoint4X"));
-        leDPoint4X->setAlignment(Qt::AlignCenter);
+        leDestinationPoint4X = new QLineEdit(frame_20);
+        leDestinationPoint4X->setObjectName(QString::fromUtf8("leDestinationPoint4X"));
+        leDestinationPoint4X->setAlignment(Qt::AlignCenter);
 
-        gridLayout_42->addWidget(leDPoint4X, 14, 3, 1, 1);
+        gridLayout_42->addWidget(leDestinationPoint4X, 14, 3, 1, 1);
 
-        leSPoint3Y = new QLineEdit(frame_20);
-        leSPoint3Y->setObjectName(QString::fromUtf8("leSPoint3Y"));
+        leSourcePoint3Y = new QLineEdit(frame_20);
+        leSourcePoint3Y->setObjectName(QString::fromUtf8("leSourcePoint3Y"));
 
-        gridLayout_42->addWidget(leSPoint3Y, 6, 5, 1, 1);
+        gridLayout_42->addWidget(leSourcePoint3Y, 6, 5, 1, 1);
 
-        leSPoint3X = new QLineEdit(frame_20);
-        leSPoint3X->setObjectName(QString::fromUtf8("leSPoint3X"));
+        leSourcePoint3X = new QLineEdit(frame_20);
+        leSourcePoint3X->setObjectName(QString::fromUtf8("leSourcePoint3X"));
 
-        gridLayout_42->addWidget(leSPoint3X, 6, 3, 1, 1);
+        gridLayout_42->addWidget(leSourcePoint3X, 6, 3, 1, 1);
 
         label_219 = new QLabel(frame_20);
         label_219->setObjectName(QString::fromUtf8("label_219"));
 
         gridLayout_42->addWidget(label_219, 7, 2, 1, 1);
 
-        leDPoint4Y = new QLineEdit(frame_20);
-        leDPoint4Y->setObjectName(QString::fromUtf8("leDPoint4Y"));
-        leDPoint4Y->setAlignment(Qt::AlignCenter);
+        leDestinationPoint4Y = new QLineEdit(frame_20);
+        leDestinationPoint4Y->setObjectName(QString::fromUtf8("leDestinationPoint4Y"));
+        leDestinationPoint4Y->setAlignment(Qt::AlignCenter);
 
-        gridLayout_42->addWidget(leDPoint4Y, 14, 5, 1, 1);
+        gridLayout_42->addWidget(leDestinationPoint4Y, 14, 5, 1, 1);
 
-        leSPoint4X = new QLineEdit(frame_20);
-        leSPoint4X->setObjectName(QString::fromUtf8("leSPoint4X"));
+        leSourcePoint4X = new QLineEdit(frame_20);
+        leSourcePoint4X->setObjectName(QString::fromUtf8("leSourcePoint4X"));
 
-        gridLayout_42->addWidget(leSPoint4X, 7, 3, 1, 1);
+        gridLayout_42->addWidget(leSourcePoint4X, 7, 3, 1, 1);
 
         label_232 = new QLabel(frame_20);
         label_232->setObjectName(QString::fromUtf8("label_232"));
@@ -4999,21 +5007,21 @@ public:
 
         gridLayout_42->addWidget(label_238, 10, 5, 1, 1);
 
-        leDPoint3X = new QLineEdit(frame_20);
-        leDPoint3X->setObjectName(QString::fromUtf8("leDPoint3X"));
-        leDPoint3X->setAlignment(Qt::AlignCenter);
+        leDestinationPoint3X = new QLineEdit(frame_20);
+        leDestinationPoint3X->setObjectName(QString::fromUtf8("leDestinationPoint3X"));
+        leDestinationPoint3X->setAlignment(Qt::AlignCenter);
 
-        gridLayout_42->addWidget(leDPoint3X, 13, 3, 1, 1);
+        gridLayout_42->addWidget(leDestinationPoint3X, 13, 3, 1, 1);
 
-        leSPoint1X = new QLineEdit(frame_20);
-        leSPoint1X->setObjectName(QString::fromUtf8("leSPoint1X"));
+        leSourcePoint1X1 = new QLineEdit(frame_20);
+        leSourcePoint1X1->setObjectName(QString::fromUtf8("leSourcePoint1X1"));
 
-        gridLayout_42->addWidget(leSPoint1X, 3, 3, 1, 1);
+        gridLayout_42->addWidget(leSourcePoint1X1, 3, 3, 1, 1);
 
-        leSPoint1Y = new QLineEdit(frame_20);
-        leSPoint1Y->setObjectName(QString::fromUtf8("leSPoint1Y"));
+        leSourcePoint1Y1 = new QLineEdit(frame_20);
+        leSourcePoint1Y1->setObjectName(QString::fromUtf8("leSourcePoint1Y1"));
 
-        gridLayout_42->addWidget(leSPoint1Y, 3, 5, 1, 1);
+        gridLayout_42->addWidget(leSourcePoint1Y1, 3, 5, 1, 1);
 
         label_211 = new QLabel(frame_20);
         label_211->setObjectName(QString::fromUtf8("label_211"));
@@ -7250,6 +7258,63 @@ public:
 
 
         verticalLayout_5->addWidget(frame_22);
+
+        frame_25 = new QFrame(wgJoggingScrollWidget);
+        frame_25->setObjectName(QString::fromUtf8("frame_25"));
+        frame_25->setMinimumSize(QSize(0, 0));
+        frame_25->setFrameShape(QFrame::StyledPanel);
+        frame_25->setFrameShadow(QFrame::Raised);
+        verticalLayout_30 = new QVBoxLayout(frame_25);
+        verticalLayout_30->setSpacing(0);
+        verticalLayout_30->setContentsMargins(11, 11, 11, 11);
+        verticalLayout_30->setObjectName(QString::fromUtf8("verticalLayout_30"));
+        verticalLayout_30->setContentsMargins(0, 0, 0, 0);
+        frame_8 = new QFrame(frame_25);
+        frame_8->setObjectName(QString::fromUtf8("frame_8"));
+        frame_8->setStyleSheet(QString::fromUtf8("QLabel\n"
+"{\n"
+"	padding-left: 6px;\n"
+"}"));
+        horizontalLayout_30 = new QHBoxLayout(frame_8);
+        horizontalLayout_30->setSpacing(6);
+        horizontalLayout_30->setContentsMargins(11, 11, 11, 11);
+        horizontalLayout_30->setObjectName(QString::fromUtf8("horizontalLayout_30"));
+        horizontalLayout_30->setContentsMargins(1, -1, -1, -1);
+        lbRobotMapping = new QLabel(frame_8);
+        lbRobotMapping->setObjectName(QString::fromUtf8("lbRobotMapping"));
+        lbRobotMapping->setMaximumSize(QSize(16777215, 16777215));
+        lbRobotMapping->setFont(font7);
+        lbRobotMapping->setAlignment(Qt::AlignCenter);
+
+        horizontalLayout_30->addWidget(lbRobotMapping);
+
+        horizontalSpacer_98 = new QSpacerItem(466, 17, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        horizontalLayout_30->addItem(horizontalSpacer_98);
+
+
+        verticalLayout_30->addWidget(frame_8);
+
+        fRobotMappingPanel = new QFrame(frame_25);
+        fRobotMappingPanel->setObjectName(QString::fromUtf8("fRobotMappingPanel"));
+        fRobotMappingPanel->setMinimumSize(QSize(0, 50));
+        fRobotMappingPanel->setStyleSheet(QString::fromUtf8("QFrame\n"
+"{\n"
+"	border-radius:0px;\n"
+"	background: #262629;\n"
+"}"));
+        fRobotMappingPanel->setFrameShape(QFrame::StyledPanel);
+        fRobotMappingPanel->setFrameShadow(QFrame::Raised);
+        gridLayout_5 = new QGridLayout(fRobotMappingPanel);
+        gridLayout_5->setSpacing(6);
+        gridLayout_5->setContentsMargins(11, 11, 11, 11);
+        gridLayout_5->setObjectName(QString::fromUtf8("gridLayout_5"));
+        gridLayout_5->setHorizontalSpacing(10);
+
+        verticalLayout_30->addWidget(fRobotMappingPanel);
+
+
+        verticalLayout_5->addWidget(frame_25);
 
         frame_34 = new QFrame(wgJoggingScrollWidget);
         frame_34->setObjectName(QString::fromUtf8("frame_34"));
@@ -10164,7 +10229,7 @@ public:
 
         pbRunServer->setDefault(false);
         pbOpenWebControl->setDefault(false);
-        twModule->setCurrentIndex(1);
+        twModule->setCurrentIndex(2);
         twGcodeEditor->setCurrentIndex(2);
         pbImageMapping->setDefault(false);
         cbImageSource->setCurrentIndex(0);
@@ -10658,7 +10723,7 @@ public:
         tbPasteVectorPoint1->setText(QString());
         label_229->setText(QCoreApplication::translate("RobotWindow", "Name", nullptr));
         pbAddVector->setText(QCoreApplication::translate("RobotWindow", "Save", nullptr));
-        gbCameraCalibration_2->setTitle(QCoreApplication::translate("RobotWindow", "Matrix", nullptr));
+        gbCameraCalibration_2->setTitle(QCoreApplication::translate("RobotWindow", "Mapping Matrix", nullptr));
         label_177->setText(QCoreApplication::translate("RobotWindow", "X", nullptr));
         label_200->setText(QCoreApplication::translate("RobotWindow", "Destination", nullptr));
         label_165->setText(QCoreApplication::translate("RobotWindow", "Name", nullptr));
@@ -10688,14 +10753,14 @@ public:
         lbMatrixDisplay->setText(QCoreApplication::translate("RobotWindow", "<html><head/><body><p>|m11 , m12, m13 |</p><p>|m21, m22, m23 |</p><p>|m31, m32, m33 |</p></body></html>", nullptr));
         leMatrixName->setText(QCoreApplication::translate("RobotWindow", "#MappingMatrix1", nullptr));
         pbAddMappingMatrix->setText(QCoreApplication::translate("RobotWindow", "Add Matrix", nullptr));
-        gbCameraObject_2->setTitle(QCoreApplication::translate("RobotWindow", "Object", nullptr));
+        gbCameraObject_2->setTitle(QCoreApplication::translate("RobotWindow", "Point Manager", nullptr));
         label_136->setText(QCoreApplication::translate("RobotWindow", "Object List", nullptr));
         leObjectListName->setText(QCoreApplication::translate("RobotWindow", "#Objects", nullptr));
         label_137->setText(QCoreApplication::translate("RobotWindow", "X", nullptr));
         label_138->setText(QCoreApplication::translate("RobotWindow", "Y", nullptr));
         label_143->setText(QCoreApplication::translate("RobotWindow", "Z", nullptr));
         pbAddVariablePoint->setText(QCoreApplication::translate("RobotWindow", "Add Point", nullptr));
-        gbCameraObject_3->setTitle(QCoreApplication::translate("RobotWindow", "Point Matrix", nullptr));
+        gbCameraObject_3->setTitle(QCoreApplication::translate("RobotWindow", "Perspective Matrix", nullptr));
         label_217->setText(QCoreApplication::translate("RobotWindow", "Point 2", nullptr));
         label_234->setText(QCoreApplication::translate("RobotWindow", "Point 3", nullptr));
         label_235->setText(QCoreApplication::translate("RobotWindow", "Point 4", nullptr));
@@ -10715,7 +10780,7 @@ public:
         label_167->setText(QCoreApplication::translate("RobotWindow", "Source", nullptr));
         label_218->setText(QCoreApplication::translate("RobotWindow", "X", nullptr));
         label_210->setText(QCoreApplication::translate("RobotWindow", "Y", nullptr));
-        gbCameraObject_4->setTitle(QCoreApplication::translate("RobotWindow", "Test", nullptr));
+        gbCameraObject_4->setTitle(QCoreApplication::translate("RobotWindow", "Transform Test", nullptr));
         label_221->setText(QCoreApplication::translate("RobotWindow", "Output Point X", nullptr));
         label_239->setText(QCoreApplication::translate("RobotWindow", "Input Point X", nullptr));
         leTestMatrixName->setText(QCoreApplication::translate("RobotWindow", "#tracking0.MappingMatrix1", nullptr));
@@ -11136,6 +11201,7 @@ public:
         leJerk->setPlaceholderText(QCoreApplication::translate("RobotWindow", "None", nullptr));
         label_64->setText(QCoreApplication::translate("RobotWindow", "mm/s3", nullptr));
         label_47->setText(QCoreApplication::translate("RobotWindow", "J", nullptr));
+        lbRobotMapping->setText(QCoreApplication::translate("RobotWindow", "Mapping", nullptr));
         robotTitile_3->setProperty("Func", QVariant(QCoreApplication::translate("RobotWindow", "Title", nullptr)));
         label_279->setText(QCoreApplication::translate("RobotWindow", "Output", nullptr));
         gbX1->setTitle(QCoreApplication::translate("RobotWindow", "Delta X 1 / Delta X 2", nullptr));

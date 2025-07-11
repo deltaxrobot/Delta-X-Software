@@ -68,7 +68,7 @@ void GcodeScript::ExecuteGcode(QString gcodes, int startMode, QString functions)
     {
         gcodeOrder = currentGcodeEditorCursor;
     }
-    
+
     for (int i = 0; i < tempGcodeList.size(); i++)
     {
         QString line = tempGcodeList.at(i);
@@ -95,7 +95,7 @@ void GcodeScript::ExecuteGcode(QString gcodes, int startMode, QString functions)
     }
 
     tempGcodeList.clear();
-    
+
     TransmitNextGcode();
 }
 
@@ -146,9 +146,9 @@ void GcodeScript::TransmitNextGcode()
                 QString firstPair = tokens.at(0);
 
                 if (!firstPair.isEmpty() && firstPair.at(0) == 'N')
-                {
-                    QString line = currentLine;
-                    currentLine = line.replace(firstPair + " ", "");
+            {
+                QString line = currentLine;
+                currentLine = line.replace(firstPair + " ", "");
                 }
             }
 

@@ -26,33 +26,33 @@ QTransform PointTool::calculateTransform(const QPointF &P1, const QPointF &P2, c
     return transform;
 }
 
-QMatrix PointTool::calculateTransform2(const QPointF &P1, const QPointF &P2, const QPointF &P1_prime, const QPointF &P2_prime)
+QMatrix PointTool::calculateTransformMatrix(const QPointF &P1, const QPointF &P2, const QPointF &P1_prime, const QPointF &P2_prime)
 {
-    float x1 = P1.x();
-    float y1 = P1.y();
-    float x2 = P2.x();
-    float y2 = P2.y();
+    float sourcePoint1X = P1.x();
+    float sourcePoint1Y = P1.y();
+    float sourcePoint2X = P2.x();
+    float sourcePoint2Y = P2.y();
 
-    float xx1 = P1_prime.x();
-    float yy1 = P1_prime.y();
-    float xx2 = P2_prime.x();
-    float yy2 = P2_prime.y();
+    float targetPoint1X = P1_prime.x();
+    float targetPoint1Y = P1_prime.y();
+    float targetPoint2X = P2_prime.x();
+    float targetPoint2Y = P2_prime.y();
 
-    float a1 = x2 - x1;
-    float b1 = y2 - y1;
-    float a2 = xx2 -xx1;
-    float b2 = yy2 - yy1;
+    float sourceVectorX = sourcePoint2X - sourcePoint1X;
+    float sourceVectorY = sourcePoint2Y - sourcePoint1Y;
+    float targetVectorX = targetPoint2X - targetPoint1X;
+    float targetVectorY = targetPoint2Y - targetPoint1Y;
 
-    float n1n2 = a1 * a2 + b1 * b2;
-    float _n1 = qSqrt(qPow(a1, 2) + qPow(b1, 2));
-    float _n2 = qSqrt(qPow(a2, 2) + qPow(b2, 2));
-    float ratio = _n2/_n1;
+    float dotProduct = sourceVectorX * targetVectorX + sourceVectorY * targetVectorY;
+    float sourceNorm = qSqrt(qPow(sourceVectorX, 2) + qPow(sourceVectorY, 2));
+    float targetNorm = qSqrt(qPow(targetVectorX, 2) + qPow(targetVectorY, 2));
+    float scaleFactor = targetNorm / sourceNorm;
 
-    float _n1_n2_ = _n1 * _n2;
+    float normProduct = sourceNorm * targetNorm;
 
-    float cosTheta = n1n2 / _n1_n2_;
-    //float cosTheta = a2 / _n2;
-    float tanTheta = (a1 * b2 - b1 * a2) / (a1 * a2 + b1 * b2);
+    float cosTheta = dotProduct / normProduct;
+    //float cosTheta = targetVectorX / targetNorm;
+    float tanTheta = (sourceVectorX * targetVectorY - sourceVectorY * targetVectorX) / (sourceVectorX * targetVectorX + sourceVectorY * targetVectorY);
     float theta = qAcos(cosTheta);
 
     if (cosTheta < 0)
@@ -72,20 +72,20 @@ QMatrix PointTool::calculateTransform2(const QPointF &P1, const QPointF &P2, con
 
     float angle = 0 - theta * (180 / M_PI);
 
-    QMatrix RotateMatrix(qCos(theta), qSin(theta), -qSin(theta), qCos(theta), 0, 0);
+    QMatrix rotationMatrix(qCos(theta), qSin(theta), -qSin(theta), qCos(theta), 0, 0);
 
-    QMatrix ScaleMatrix(ratio, 0, 0, ratio, 0, 0);
+    QMatrix scaleMatrix(scaleFactor, 0, 0, scaleFactor, 0, 0);
 
-    QMatrix ScaleRotateMatrix = ScaleMatrix * RotateMatrix;
+    QMatrix scaleRotateMatrix = scaleMatrix * rotationMatrix;
 
     // x' = m11 * x + m21 * y + dx   --> dx = x' - (m11 * x + m21 * y)
     // y' = m12 * x + m22 * y + dy   --> dy = y' - (m12 * x + m22 * y)
 
-    float dx = xx1 - (ScaleRotateMatrix.m11() * x1 + ScaleRotateMatrix.m21() * y1);
-    float dy = yy1 - (ScaleRotateMatrix.m12() * x1 + ScaleRotateMatrix.m22() * y1);
+    float translationX = targetPoint1X - (scaleRotateMatrix.m11() * sourcePoint1X + scaleRotateMatrix.m21() * sourcePoint1Y);
+    float translationY = targetPoint1Y - (scaleRotateMatrix.m12() * sourcePoint1X + scaleRotateMatrix.m22() * sourcePoint1Y);
 
     QMatrix matrix;
-    matrix.setMatrix(ScaleRotateMatrix.m11(), ScaleRotateMatrix.m12(), ScaleRotateMatrix.m21(), ScaleRotateMatrix.m22(), dx, dy);
+    matrix.setMatrix(scaleRotateMatrix.m11(), scaleRotateMatrix.m12(), scaleRotateMatrix.m21(), scaleRotateMatrix.m22(), translationX, translationY);
 
 //    qDebug() << matrix.map(P1);
 
@@ -128,8 +128,12 @@ cv::Mat PointTool::performAffineTransformation(const QPolygonF &sourcePolygon, c
 
 
 
-QPointF PointTool::GetCenterOfPolygon(const QPolygonF &polygon)
+QPointF PointTool::getCenterOfPolygon(const QPolygonF &polygon)
 {
+    if (polygon.isEmpty()) {
+        return QPointF();
+    }
+    
     QPointF center;
     for (int i = 0; i < polygon.size(); ++i)
     {

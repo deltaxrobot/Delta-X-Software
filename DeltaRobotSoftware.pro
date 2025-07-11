@@ -54,6 +54,9 @@ SOURCES += main.cpp\
     ObjectVariableTable.cpp \
     Parameter.cpp \
     PointTool.cpp \
+    PointCalculator.cpp \
+    PointToolController.cpp \
+    InputValidator.cpp \
     ProjectManager.cpp \
     RobotWindow.cpp \
     SettingsManager.cpp \
@@ -107,6 +110,9 @@ HEADERS  += \
     ObjectVariableTable.h \
     Parameter.h \
     PointTool.h \
+    PointCalculator.h \
+    PointToolController.h \
+    InputValidator.h \
     ProjectManager.h \
     RobotWindow.h \
     ScurveInterpolator.h \

@@ -6,18 +6,25 @@
 #include <random>
 
 // ========== QT INCLUDES ==========
+#include <QAction>
+#include <QApplication>
+#include <QClipboard>
 #include <QCloseEvent>
 #include <QComboBox>
+#include <QDateTime>
 #include <QDesktopServices>
 #include <QDialogButtonBox>
 #include <QElapsedTimer>
+#include <QFileDialog>
 #include <QHBoxLayout>
 #include <QInputDialog>
 #include <QLayout>
 #include <QList>
 #include <QMainWindow>
 #include <QMap>
+#include <QMenu>
 #include <QMessageBox>
+#include <QModelIndex>
 #include <QMovie>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
@@ -27,6 +34,7 @@
 #include <QSettings>
 #include <QStackedWidget>
 #include <QSvgWidget>
+#include <QTextStream>
 #include <QTimer>
 #include <QUrl>
 #include <QUrlQuery>
@@ -56,6 +64,9 @@
 #include "TrackingManager.h"
 #include "ObjectInfo.h"
 #include "PointTool.h"
+#include "PointCalculator.h"
+#include "PointToolController.h"
+#include "InputValidator.h"
 #include "sdk/DeltaXPlugin.h"
 #include "SmartDialog.h"
 #include "GcodeHighlighter.h"
@@ -220,10 +231,10 @@ public:
     QMap<QString, QString> ParseNames;
     QStandardItemModel VarViewModel;
     ObjectInfoModel *ObjectModel;
-    QTransform CalculatingTransform;
-    QMatrix CalculatingTransform2;
-    cv::Mat PointMatrix;
-    QVector3D CalVector;
+    QTransform m_currentMappingTransform;
+    QMatrix m_currentMappingMatrix;
+    cv::Mat m_currentPerspectiveMatrix;
+    QVector3D m_currentCalculatedVector;
     
     Ui::RobotWindow *ui;
 
@@ -373,6 +384,16 @@ public slots:
     void EditImage(bool isWarp, bool isCropTool);
     void SendImageToExternalScript(cv::Mat input);
     void AddDisplayObjectFromExternalScript(QString msg);
+    
+    // ========== OBJECT TABLE CONTEXT MENU SLOTS ==========
+    void showObjectTableContextMenu(const QPoint& pos);
+    void copyCellValue();
+    void copyRowData();
+    void goToObject();
+    void togglePickedStatus();
+    void deleteObject();
+    void showObjectDetails();
+    void exportObjectData();
 
     // ========== TRACKING SLOTS ==========
     void ChangeSelectedTracking(int id);
@@ -449,6 +470,7 @@ private:
     void sendGcode(QString prefix, QString para1, QString para2);
     QObject* getObjectByName(QObject* parent, QString name);
     void initInputValueLabels();
+    void initObjectTableContextMenu();
     void plugValue(QLineEdit* le, float value);
     bool isItemExit(QListWidget* lw, QString item);
     int getIDfromName(QString fullName);
@@ -467,7 +489,19 @@ private:
 
     // ========== PRIVATE MEMBER VARIABLES ==========
     
-    // Controller
+    // Context Menu Actions
+    QAction* actionCopyCellValue;
+    QAction* actionCopyRowData;
+    QAction* actionGoToObject;
+    QAction* actionTogglePickedStatus;
+    QAction* actionDeleteObject;
+    QAction* actionShowObjectDetails;
+    QAction* actionExportObjectData;
+    QModelIndex contextMenuIndex;
+    
+    // Controllers
+    PointToolController* m_pointToolController;
+    
 #ifdef Q_OS_WIN
     #ifdef JOY_STICK
     QJoysticks *joystick;

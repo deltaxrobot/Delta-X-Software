@@ -65,6 +65,9 @@ RobotWindow::~RobotWindow()
         GcodeScripts.at(i)->thread()->wait();
     }
 
+    // Clean up Point Tool Controller
+    delete m_pointToolController;
+
     delete ui;
 }
 
@@ -109,6 +112,9 @@ void RobotWindow::InitVariables()
 
     ObjectModel = new ObjectInfoModel(this);
     ui->tvObjectTable->setModel(ObjectModel);
+    
+    // Initialize context menu for object table
+    initObjectTableContextMenu();
 
     performanceTimer.start();
 
@@ -195,6 +201,9 @@ void RobotWindow::InitVariables()
 //    ui->gbCameraVariable->setChecked(false);
 
     InitCalibration();
+
+    // Initialize Point Tool Controller
+    m_pointToolController = new PointToolController(this);
 }
 
 void RobotWindow::InitOtherThreadObjects()
@@ -1010,7 +1019,9 @@ void RobotWindow::InitEvents()
 
     connect(ui->tbPasteTestTrackingPoint, &QPushButton::clicked, [=]()
     {
-        pastePointValues(ui->leTestTrackingPointX, ui->leTestTrackingPointY, ui->leTestTrackingPointZ);
+        if (m_pointToolController) {
+            m_pointToolController->pastePointValues(ui->leTestTrackingPointX, ui->leTestTrackingPointY, ui->leTestTrackingPointZ);
+        }
     });
 
     connect(ui->pbMoveTestTrackingPoint, &QPushButton::clicked, this, &RobotWindow::MoveTestTrackingPoint);
@@ -1025,34 +1036,54 @@ void RobotWindow::InitEvents()
     connect(ui->pbCalculateTestPoint, SIGNAL(clicked(bool)), this, SLOT(CalculateTestPoint()));
     connect(ui->pbCalVector, SIGNAL(clicked(bool)), this, SLOT(CalculateVector()));
 
-    connect(ui->pbAnglePoint1, &QPushButton::clicked, [=](){ ui->lePointAtT1X->setText(QString::number(RobotParameters[RbID].X)); ui->lePointAtT1Y->setText(QString::number(RobotParameters[RbID].Y)); ui->lePointAtT1Z->setText(QString::number(RobotParameters[RbID].Z));});
-    connect(ui->pbAnglePoint2, &QPushButton::clicked, [=](){ ui->lePointAtT2X->setText(QString::number(RobotParameters[RbID].X)); ui->lePointAtT2Y->setText(QString::number(RobotParameters[RbID].Y)); ui->lePointAtT2Z->setText(QString::number(RobotParameters[RbID].Z));});
+    connect(ui->pbAnglePoint1, &QPushButton::clicked, [=](){
+        if (m_pointToolController) {
+            m_pointToolController->setCurrentRobotPosition(ui->leVectorPoint1X, ui->leVectorPoint1Y, ui->leVectorPoint1Z);
+        }
+    });
+    connect(ui->pbAnglePoint2, &QPushButton::clicked, [=](){
+        if (m_pointToolController) {
+            m_pointToolController->setCurrentRobotPosition(ui->leVectorPoint2X, ui->leVectorPoint2Y, ui->leVectorPoint2Z);
+        }
+    });
 
     connect(ui->tbPasteVectorPoint1, &QPushButton::clicked, [=]()
     {
-        pastePointValues(ui->lePointAtT1X, ui->lePointAtT1Y, ui->lePointAtT1Z);
+        if (m_pointToolController) {
+            m_pointToolController->pastePointValues(ui->leVectorPoint1X, ui->leVectorPoint1Y, ui->leVectorPoint1Z);
+        }
     });
 
     connect(ui->tbPasteVectorPoint2, &QPushButton::clicked, [=]()
     {
-        pastePointValues(ui->lePointAtT2X, ui->lePointAtT2Y, ui->lePointAtT2Z);
+        if (m_pointToolController) {
+            m_pointToolController->pastePointValues(ui->leVectorPoint2X, ui->leVectorPoint2Y, ui->leVectorPoint2Z);
+        }
     });
 
     connect(ui->tbPasteSourcePoint1, &QPushButton::clicked, [=]()
     {
-        pastePointValues(ui->leSourcePoint1X, ui->leSourcePoint1Y, NULL);
+        if (m_pointToolController) {
+            m_pointToolController->pastePointValues(ui->leSourcePoint1X, ui->leSourcePoint1Y, nullptr);
+        }
     });
     connect(ui->tbPasteSourcePoint2, &QPushButton::clicked, [=]()
     {
-        pastePointValues(ui->leSourcePoint2X, ui->leSourcePoint2Y, NULL);
+        if (m_pointToolController) {
+            m_pointToolController->pastePointValues(ui->leSourcePoint2X, ui->leSourcePoint2Y, nullptr);
+        }
     });
     connect(ui->tbPasteDestinationPoint1, &QPushButton::clicked, [=]()
     {
-        pastePointValues(ui->leDestinationPoint1X, ui->leDestinationPoint1Y, NULL);
+        if (m_pointToolController) {
+            m_pointToolController->pastePointValues(ui->leDestinationPoint1X, ui->leDestinationPoint1Y, nullptr);
+        }
     });
     connect(ui->tbPasteDestinationPoint2, &QPushButton::clicked, [=]()
     {
-        pastePointValues(ui->leDestinationPoint2X, ui->leDestinationPoint2Y, NULL);
+        if (m_pointToolController) {
+            m_pointToolController->pastePointValues(ui->leDestinationPoint2X, ui->leDestinationPoint2Y, nullptr);
+        }
     });
 
     connect(ui->pbAddMappingMatrix, &QPushButton::clicked, [=]()
@@ -1060,17 +1091,17 @@ void RobotWindow::InitEvents()
         QString prefix = ProjectName + "." + ui->cbSelectedTracking->currentText() + ".";
 
         QString transformString = QString("%1,%2,%3,%4,%5,%6,%7,%8,%9")
-                .arg(CalculatingTransform.m11())
-                .arg(CalculatingTransform.m12())
-                .arg(CalculatingTransform.m13())
-                .arg(CalculatingTransform.m21())
-                .arg(CalculatingTransform.m22())
-                .arg(CalculatingTransform.m23())
-                .arg(CalculatingTransform.m31())
-                .arg(CalculatingTransform.m32())
-                .arg(CalculatingTransform.m33());
+                .arg(m_currentMappingTransform.m11())
+                .arg(m_currentMappingTransform.m12())
+                .arg(m_currentMappingTransform.m13())
+                .arg(m_currentMappingTransform.m21())
+                .arg(m_currentMappingTransform.m22())
+                .arg(m_currentMappingTransform.m23())
+                .arg(m_currentMappingTransform.m31())
+                .arg(m_currentMappingTransform.m32())
+                .arg(m_currentMappingTransform.m33());
 
-        VariableManager::instance().updateVar(prefix + ui->leMatrixName->text(), CalculatingTransform);
+        VariableManager::instance().updateVar(prefix + ui->leMatrixName->text(), m_currentMappingTransform);
         VariableManager::instance().updateVar(prefix + ui->leMatrixName->text() + "String", transformString);
 
         if (!isItemExit(ui->lwMappingMatrixList, ui->leMatrixName->text())) {
@@ -1083,7 +1114,7 @@ void RobotWindow::InitEvents()
         QString prefix = ProjectName + "." + ui->cbSelectedTracking->currentText() + ".";
 
         std::vector<double> matrixArray;
-        matrixArray.assign(PointMatrix.begin<double>(), PointMatrix.end<double>());
+        matrixArray.assign(m_currentPerspectiveMatrix.begin<double>(), m_currentPerspectiveMatrix.end<double>());
 
         // Tạo một QVariant từ mảng và lưu trữ ma trận
         QVariant matrixVariant = QVariant::fromValue(matrixArray);
@@ -1098,13 +1129,13 @@ void RobotWindow::InitEvents()
 
     connect(ui->pbAddVector, &QPushButton::clicked, [=]()
     {
-        CalVector.setX(ui->leVectorX->text().toFloat());
-        CalVector.setY(ui->leVectorY->text().toFloat());
-        CalVector.setZ(ui->leVectorZ->text().toFloat());
+        m_currentCalculatedVector.setX(ui->leVectorX->text().toFloat());
+        m_currentCalculatedVector.setY(ui->leVectorY->text().toFloat());
+        m_currentCalculatedVector.setZ(ui->leVectorZ->text().toFloat());
 
         QString prefix = ProjectName + "." + ui->cbSelectedTracking->currentText() + ".";
 
-        VariableManager::instance().updateVar(prefix + ui->leVectorName->text(), QVector3D(CalVector.x(), CalVector.y(), CalVector.z()));
+        VariableManager::instance().updateVar(prefix + ui->leVectorName->text(), QVector3D(m_currentCalculatedVector.x(), m_currentCalculatedVector.y(), m_currentCalculatedVector.z()));
 
         if (!isItemExit(ui->lwVectorList, ui->leVectorName->text())) {
             ui->lwVectorList->addItem(ui->leVectorName->text());
@@ -2582,29 +2613,29 @@ void RobotWindow::Load3DComponents()
 void RobotWindow::ConnectRobot()
 {
     try {
-        if (ui->tbAutoScanRobot->isChecked() == true)
-        {
-            OpenLoadingPopup();
+    if (ui->tbAutoScanRobot->isChecked() == true)
+    {
+        OpenLoadingPopup();
             emit ChangeDeviceState(ui->cbSelectedRobot->currentText(), (ui->pbConnectRobot->text() == "Connect")?true:false, "auto");
-            return;
-        }
+        return;
+    }
 
         if (ui->pbConnectRobot->text() != "Connect")
-        {
-            emit ChangeDeviceState(ui->cbSelectedRobot->currentText(), false, "");
-            return;
-        }
+    {
+        emit ChangeDeviceState(ui->cbSelectedRobot->currentText(), false, "");
+        return;
+    }
 
-        QStringList items;
+    QStringList items;
         bool hasAvailablePorts = false;
 
-        Q_FOREACH(QSerialPortInfo portInfo, QSerialPortInfo::availablePorts())
+    Q_FOREACH(QSerialPortInfo portInfo, QSerialPortInfo::availablePorts())
+    {
+        QSerialPort serial(portInfo);
+        if(serial.open(QIODevice::ReadWrite))
         {
-            QSerialPort serial(portInfo);
-            if(serial.open(QIODevice::ReadWrite))
-            {
-                items << portInfo.portName() + " - " + portInfo.description();
-                serial.close();
+            items << portInfo.portName() + " - " + portInfo.description();
+            serial.close();
                 hasAvailablePorts = true;
             }
         }
@@ -2614,10 +2645,10 @@ void RobotWindow::ConnectRobot()
             QMessageBox::warning(this, tr("Connection Error"), 
                                 tr("No available COM ports found. Please check your device connections."));
             return;
-        }
+    }
 
-        bool ok;
-        QString item = QInputDialog::getItem(this, tr("COM Connection"), tr("COM Ports:"), items, 0, false, &ok);
+    bool ok;
+    QString item = QInputDialog::getItem(this, tr("COM Connection"), tr("COM Ports:"), items, 0, false, &ok);
         
         if (!ok || item.isEmpty())
         {
@@ -2634,7 +2665,7 @@ void RobotWindow::ConnectRobot()
         
         QString comName = item.mid(0, separatorIndex);
         if (comName.isEmpty())
-        {
+    {
             QMessageBox::warning(this, tr("Connection Error"), tr("Empty COM port name."));
             return;
         }
@@ -2670,7 +2701,7 @@ void RobotWindow::ConnectRobot()
                 ui->pbConnectRobot->setText("Connect");
                 QMessageBox::warning(this, tr("Connection Timeout"), 
                                     tr("Connection attempt timed out. Please try again."));
-            }
+        }
         });
     }
     catch (const std::exception& e)
@@ -2865,7 +2896,7 @@ void RobotWindow::StandardFormatEditor()
     QPalette p = ui->pteGcodeArea->palette();
     p.setColor(QPalette::Text, QColor("#DBDBDC"));
     ui->pteGcodeArea->setPalette(p);
-    
+
     // Reset document formatting completely to ensure syntax highlighter works properly
     QTextDocument* doc = ui->pteGcodeArea->document();
     QTextCursor docCursor(doc);
@@ -2874,7 +2905,7 @@ void RobotWindow::StandardFormatEditor()
     defaultFormat.setForeground(QColor("#DBDBDC"));
     docCursor.setCharFormat(defaultFormat);
     docCursor.clearSelection();
-    
+
     // Force syntax highlighter to re-highlight the entire document
     if (highlighter) {
         highlighter->rehighlight();
@@ -2894,7 +2925,7 @@ void RobotWindow::CleanTextFormatting()
     // Clear the editor completely and set plain text to ensure clean state
     ui->pteGcodeArea->clear();
     ui->pteGcodeArea->setPlainText(plainText);
-    
+
     // Reset palette to default colors
     QPalette p = ui->pteGcodeArea->palette();
     p.setColor(QPalette::Text, QColor("#DBDBDC"));
@@ -3904,8 +3935,8 @@ void RobotWindow::StartContinuousCapture(bool isCheck)
     try {
         QString prefix = ProjectName + "." + ui->cbSelectedDetecting->currentText() + ".";
         
-        if (isCheck == true)
-        {
+    if (isCheck == true)
+    {
             // Check if camera is loaded first
             if (CameraInstance->RunningCamera == -1 && CameraInstance->Source == "Webcam")
             {
@@ -3915,8 +3946,8 @@ void RobotWindow::StartContinuousCapture(bool isCheck)
             }
             
             // Start continuous capture
-            ui->lbCameraState->setEnabled(true);
-            CameraInstance->IsCameraPause = false;
+        ui->lbCameraState->setEnabled(true);
+        CameraInstance->IsCameraPause = false;
             
             // Validate capture interval
             int interval = ui->leCaptureInterval->text().toInt();
@@ -3928,15 +3959,15 @@ void RobotWindow::StartContinuousCapture(bool isCheck)
             }
             
             CameraTimer.start(interval);
-            UpdateVariable(prefix + "IsOpen", true);
+        UpdateVariable(prefix + "IsOpen", true);
             SoftwareLog(QString("Continuous capture started with %1ms interval").arg(interval));
-        }
-        else
-        {
+    }
+    else
+    {
             // Stop continuous capture
-            CameraInstance->IsCameraPause = true;
-            CameraTimer.stop();
-            UpdateVariable(prefix + "IsOpen", false);
+        CameraInstance->IsCameraPause = true;
+        CameraTimer.stop();
+        UpdateVariable(prefix + "IsOpen", false);
             SoftwareLog("Continuous capture stopped");
         }
         
@@ -3996,14 +4027,14 @@ void RobotWindow::LoadWebcam()
     {
         // Load camera
         SoftwareLog("Loading camera...");
-        
+
         bool ok;
         int cameraID = CameraSelectionDialog::getCameraID(this, &ok);
 
         if (ok && cameraID >= 0)
         {
             SoftwareLog(QString("Loading camera %1...").arg(cameraID));
-            
+
             CameraInstance->RunningCamera = cameraID;
             CameraInstance->Width = ui->leImageWidth->text().toInt();
             CameraInstance->Height = ui->leImageHeight->text().toInt();
@@ -4025,9 +4056,9 @@ void RobotWindow::LoadWebcam()
             if (!ok)
             {
                 SoftwareLog("Camera selection cancelled");
-            }
-            else
-            {
+    }
+    else
+    {
                 SoftwareLog("Invalid camera ID selected");
             }
         }
@@ -4100,10 +4131,10 @@ void RobotWindow::StopCapture()
         CameraTimer.stop();
         
         // Update UI state
-        ui->lbCameraState->setEnabled(false);
-        ui->pbLoadCamera->setText("Load Camera");
-        ui->pbStartAcquisition->setChecked(false);
-        
+    ui->lbCameraState->setEnabled(false);
+    ui->pbLoadCamera->setText("Load Camera");
+    ui->pbStartAcquisition->setChecked(false);
+
         // Stop different camera types safely
         if (CameraInstance->Source == "Webcam")
         {
@@ -4132,8 +4163,8 @@ void RobotWindow::StopCapture()
         isCameraLoaded = false;  // Reset internal flag
         
         // Update settings
-        QString prefix = ProjectName + "." + ui->cbSelectedDetecting->currentText() + ".";
-        UpdateVariable(prefix + "IsOpen", false);
+    QString prefix = ProjectName + "." + ui->cbSelectedDetecting->currentText() + ".";
+    UpdateVariable(prefix + "IsOpen", false);
         UpdateVariable(prefix + "CameraID", -1);
         
         // Log the action
@@ -4986,131 +5017,44 @@ void RobotWindow::SaveTrackingManager()
 
 void RobotWindow::CalculateMappingMatrixTool()
 {
-    QPointF sp1(ui->leSourcePoint1X->text().toFloat(), ui->leSourcePoint1Y->text().toFloat());
-    QPointF sp2(ui->leSourcePoint2X->text().toFloat(), ui->leSourcePoint2Y->text().toFloat());
-    QPointF tp1(ui->leDestinationPoint1X->text().toFloat(), ui->leDestinationPoint1Y->text().toFloat());
-    QPointF tp2(ui->leDestinationPoint2X->text().toFloat(), ui->leDestinationPoint2Y->text().toFloat());
-
-//    CalculatingTransform = PointTool::calculateTransform(sp1, sp2, tp1, tp2);
-    CalculatingTransform2 = PointTool::calculateTransform2(sp1, sp2, tp1, tp2);
-    CalculatingTransform.setMatrix(CalculatingTransform2.m11(), CalculatingTransform2.m12(), 0,
-                                   CalculatingTransform2.m21(), CalculatingTransform2.m22(), 0,
-                                   CalculatingTransform2.dx(), CalculatingTransform2.dy(), 1);
-
-    QString transformAsString = QString("Matrix:\n"
-                                        "| %1, %2, %3 |\n"
-                                        "| %4, %5, %6 |\n"
-                                        "| %7, %8, %9 |")
-                                    .arg(CalculatingTransform.m11()).arg(CalculatingTransform.m12()).arg(CalculatingTransform.m13())
-                                    .arg(CalculatingTransform.m21()).arg(CalculatingTransform.m22()).arg(CalculatingTransform.m23())
-                                    .arg(CalculatingTransform.m31()).arg(CalculatingTransform.m32()).arg(CalculatingTransform.m33());
-
-    ui->lbMatrixDisplay->setText(transformAsString);
-
+    if (m_pointToolController) {
+        m_pointToolController->calculateMappingMatrix();
+    }
 }
 
 void RobotWindow::CalculatePointMatrixTool()
 {
-    QPointF sp1(ui->leSPoint1X->text().toFloat(), ui->leSPoint1Y->text().toFloat());
-    QPointF sp2(ui->leSPoint2X->text().toFloat(), ui->leSPoint2Y->text().toFloat());
-    QPointF sp3(ui->leSPoint3X->text().toFloat(), ui->leSPoint3Y->text().toFloat());
-    QPointF sp4(ui->leSPoint4X->text().toFloat(), ui->leSPoint4Y->text().toFloat());
-
-    QPointF dp1(ui->leDPoint1X->text().toFloat(), ui->leDPoint1Y->text().toFloat());
-    QPointF dp2(ui->leDPoint2X->text().toFloat(), ui->leDPoint2Y->text().toFloat());
-    QPointF dp3(ui->leDPoint3X->text().toFloat(), ui->leDPoint3Y->text().toFloat());
-    QPointF dp4(ui->leDPoint4X->text().toFloat(), ui->leDPoint4Y->text().toFloat());
-
-    QPolygonF source;
-    source << sp1 << sp2 << sp3 << sp4;
-
-    QPolygonF dest;
-    dest << dp1 << dp2 << dp3 << dp4;
-
-    PointMatrix = PointTool::calculateMatrix(source, dest);
-
-    QTransform qtTransform(
-        PointMatrix.at<double>(0, 0), PointMatrix.at<double>(0, 1), PointMatrix.at<double>(0, 2),
-        PointMatrix.at<double>(1, 0), PointMatrix.at<double>(1, 1), PointMatrix.at<double>(1, 2),
-        PointMatrix.at<double>(2, 0), PointMatrix.at<double>(2, 1), PointMatrix.at<double>(2, 2)
-    );
-
-    qreal m11 = qtTransform.m11();  // x scaling
-    qreal m12 = qtTransform.m12();  // y rotation
-    qreal m21 = qtTransform.m21();  // x rotation
-    qreal m22 = qtTransform.m22();  // y scaling
-    qreal dx = qtTransform.dx();    // x translation
-    qreal dy = qtTransform.dy();    // y translation
-
-    QString matrixString = QString("m11: %1, m12: %2\nm21: %3, m22: %4\ndx: %5, dy: %6")
-                             .arg(m11).arg(m12).arg(m21).arg(m22).arg(dx).arg(dy);
-
-    ui->lbPointMatrixDisplay->setText(matrixString);
+    if (m_pointToolController) {
+        m_pointToolController->calculatePerspectiveMatrix();
+    }
 }
 
 void RobotWindow::CalculateTestPoint()
 {
-    QTransform matrix = VariableManager::instance().getVar(ui->leTestMatrixName->text()).value<QTransform>();
-
-    QPointF testPoint(ui->leTestPointX->text().toFloat(), ui->leTestPointY->text().toFloat());
-    QPointF target = matrix.map(testPoint);
-    ui->leTargetTestPointX->setText(QString::number(target.x()));
-    ui->leTargetTestPointY->setText(QString::number(target.y()));
+    if (m_pointToolController) {
+        m_pointToolController->calculateTestPoint();
+    }
 }
 
 void RobotWindow::CalculateVector()
 {
-    QVector3D P1(ui->lePointAtT1X->text().toFloat(), ui->lePointAtT1Y->text().toFloat(), ui->lePointAtT1Z->text().toFloat());
-    QVector3D P2(ui->lePointAtT2X->text().toFloat(), ui->lePointAtT2Y->text().toFloat(), ui->lePointAtT2Z->text().toFloat());
-    float vectorValue = ui->leVectorValue->text().toFloat();
-
-    QVector3D deltaPosition = P2 - P1;
-
-    // Tính độ lớn của deltaPosition
-    double deltaMagnitude = deltaPosition.length();
-
-    // Tính vector đơn vị
-    QVector3D unitVector = deltaPosition / deltaMagnitude;
-
-    // Tính vector vận tốc của băng tải
-    CalVector = unitVector * vectorValue;
-
-    ui->leVectorX->setText(QString::number(CalVector.x()));
-    ui->leVectorY->setText(QString::number(CalVector.y()));
-    ui->leVectorZ->setText(QString::number(CalVector.z()));
+    if (m_pointToolController) {
+        m_pointToolController->calculateVector();
+    }
 }
 
 void RobotWindow::UpdateTestPoint(QVector3D testPoint)
 {
-    if (ui->tbAutoMove->isChecked() == false)
-        return;
-
-    QVector3D currentTestPoint(ui->leTestTrackingPointX->text().toFloat(), ui->leTestTrackingPointY->text().toFloat(), ui->leTestTrackingPointZ->text().toFloat());
-    currentTestPoint += testPoint;
-
-    ui->leTestTrackingPointX->setText(QString::number(currentTestPoint.x()));
-    ui->leTestTrackingPointY->setText(QString::number(currentTestPoint.y()));
-    ui->leTestTrackingPointZ->setText(QString::number(currentTestPoint.z()));
+    if (m_pointToolController) {
+        m_pointToolController->updateTestPoint(testPoint);
+    }
 }
 
 void RobotWindow::MoveTestTrackingPoint()
 {
-    QVector3D initialPoint;
-    initialPoint.setX(ui->leTestTrackingPointX->text().toFloat());
-    initialPoint.setY(ui->leTestTrackingPointY->text().toFloat());
-    initialPoint.setZ(ui->leTestTrackingPointZ->text().toFloat());
-
-    QVector3D direction = VariableManager::instance().getVar(ui->leVelocityVector->text()).value<QVector3D>();
-
-    double distance = ui->leMovingValue->text().toFloat();
-
-    QVector3D normalizedDirection = direction.normalized();
-
-    // Tính tọa độ mới
-    QVector3D newPoint = initialPoint + normalizedDirection * distance;
-    ui->leTestTrackingPointX->setText(QString::number(newPoint.x()));
-    ui->leTestTrackingPointY->setText(QString::number(newPoint.y()));
-    ui->leTestTrackingPointZ->setText(QString::number(newPoint.z()));
+    if (m_pointToolController) {
+        m_pointToolController->moveTestTrackingPoint();
+    }
 }
 
 void RobotWindow::ProcessProximitySensorValue(int value)
@@ -6184,6 +6128,293 @@ void RobotWindow::flushPendingUpdates()
 }
 
 
+
+// ===========================================
+// OBJECT TABLE CONTEXT MENU METHODS
+// ===========================================
+
+void RobotWindow::initObjectTableContextMenu()
+{
+    // Set context menu policy for table view
+    ui->tvObjectTable->setContextMenuPolicy(Qt::CustomContextMenu);
+    
+    // Connect context menu signal
+    connect(ui->tvObjectTable, &QTableView::customContextMenuRequested, 
+            this, &RobotWindow::showObjectTableContextMenu);
+    
+    // Create context menu actions
+    actionCopyCellValue = new QAction("Copy Cell Value", this);
+    actionCopyCellValue->setShortcut(QKeySequence::Copy);
+    connect(actionCopyCellValue, &QAction::triggered, this, &RobotWindow::copyCellValue);
+    
+    actionCopyRowData = new QAction("Copy Row Data", this);
+    actionCopyRowData->setShortcut(QKeySequence("Ctrl+Shift+C"));
+    connect(actionCopyRowData, &QAction::triggered, this, &RobotWindow::copyRowData);
+    
+    actionGoToObject = new QAction("Go to Object", this);
+    actionGoToObject->setShortcut(QKeySequence("Ctrl+G"));
+    connect(actionGoToObject, &QAction::triggered, this, &RobotWindow::goToObject);
+    
+    actionTogglePickedStatus = new QAction("Toggle Picked Status", this);
+    actionTogglePickedStatus->setShortcut(QKeySequence("Ctrl+P"));
+    connect(actionTogglePickedStatus, &QAction::triggered, this, &RobotWindow::togglePickedStatus);
+    
+    actionDeleteObject = new QAction("Delete Object", this);
+    actionDeleteObject->setShortcut(QKeySequence::Delete);
+    connect(actionDeleteObject, &QAction::triggered, this, &RobotWindow::deleteObject);
+    
+    actionShowObjectDetails = new QAction("Show Details", this);
+    actionShowObjectDetails->setShortcut(QKeySequence("Ctrl+I"));
+    connect(actionShowObjectDetails, &QAction::triggered, this, &RobotWindow::showObjectDetails);
+    
+    actionExportObjectData = new QAction("Export Object Data", this);
+    actionExportObjectData->setShortcut(QKeySequence("Ctrl+E"));
+    connect(actionExportObjectData, &QAction::triggered, this, &RobotWindow::exportObjectData);
+    
+    // Add actions to table view for keyboard shortcuts
+    ui->tvObjectTable->addAction(actionCopyCellValue);
+    ui->tvObjectTable->addAction(actionCopyRowData);
+    ui->tvObjectTable->addAction(actionGoToObject);
+    ui->tvObjectTable->addAction(actionTogglePickedStatus);
+    ui->tvObjectTable->addAction(actionDeleteObject);
+    ui->tvObjectTable->addAction(actionShowObjectDetails);
+    ui->tvObjectTable->addAction(actionExportObjectData);
+}
+
+void RobotWindow::showObjectTableContextMenu(const QPoint& pos)
+{
+    QModelIndex index = ui->tvObjectTable->indexAt(pos);
+    if (!index.isValid())
+        return;
+    
+    // Store the context menu index for use in actions
+    contextMenuIndex = index;
+    
+    // Create and show context menu
+    QMenu contextMenu(this);
+    
+    // Add actions to menu
+    contextMenu.addAction(actionCopyCellValue);
+    contextMenu.addAction(actionCopyRowData);
+    contextMenu.addSeparator();
+    contextMenu.addAction(actionGoToObject);
+    contextMenu.addAction(actionTogglePickedStatus);
+    contextMenu.addSeparator();
+    contextMenu.addAction(actionDeleteObject);
+    contextMenu.addSeparator();
+    contextMenu.addAction(actionShowObjectDetails);
+    contextMenu.addAction(actionExportObjectData);
+    
+    // Update action states based on selection
+    bool hasSelection = index.isValid();
+    actionCopyCellValue->setEnabled(hasSelection);
+    actionCopyRowData->setEnabled(hasSelection);
+    actionGoToObject->setEnabled(hasSelection);
+    actionTogglePickedStatus->setEnabled(hasSelection);
+    actionDeleteObject->setEnabled(hasSelection);
+    actionShowObjectDetails->setEnabled(hasSelection);
+    actionExportObjectData->setEnabled(hasSelection);
+    
+    // Show context menu
+    contextMenu.exec(ui->tvObjectTable->mapToGlobal(pos));
+}
+
+void RobotWindow::copyCellValue()
+{
+    if (!contextMenuIndex.isValid())
+        return;
+    
+    QVariant data = ObjectModel->data(contextMenuIndex);
+    QString text = data.toString();
+    
+    QApplication::clipboard()->setText(text);
+    
+    // Show status message
+    UpdateTermite(QString("Copied cell value: %1").arg(text));
+}
+
+void RobotWindow::copyRowData()
+{
+    if (!contextMenuIndex.isValid())
+        return;
+    
+    int row = contextMenuIndex.row();
+    QStringList rowData;
+    
+    // Get data from all columns in the row
+    for (int col = 0; col < ObjectModel->columnCount(); ++col)
+    {
+        QModelIndex index = ObjectModel->index(row, col);
+        QVariant data = ObjectModel->data(index);
+        rowData << data.toString();
+    }
+    
+    // Create formatted string
+    QString text = rowData.join("\t"); // Tab-separated for easy pasting into spreadsheet
+    
+    QApplication::clipboard()->setText(text);
+    
+    // Show status message
+    UpdateTermite(QString("Copied row data: %1 values").arg(rowData.size()));
+}
+
+void RobotWindow::goToObject()
+{
+    if (!contextMenuIndex.isValid())
+        return;
+    
+    int row = contextMenuIndex.row();
+    
+    // Get object coordinates
+    QModelIndex xIndex = ObjectModel->index(row, 2); // X column
+    QModelIndex yIndex = ObjectModel->index(row, 3); // Y column
+    QModelIndex angleIndex = ObjectModel->index(row, 7); // Angle column
+    
+    if (!xIndex.isValid() || !yIndex.isValid() || !angleIndex.isValid())
+        return;
+    
+    float x = ObjectModel->data(xIndex).toFloat();
+    float y = ObjectModel->data(yIndex).toFloat();
+    float angle = ObjectModel->data(angleIndex).toFloat();
+    
+    // Move robot to object position
+    MoveRobotFollowObject(x, y, angle);
+    
+    // Show status message
+    UpdateTermite(QString("Moving to object at position: X=%1, Y=%2, Angle=%3").arg(x).arg(y).arg(angle));
+}
+
+void RobotWindow::togglePickedStatus()
+{
+    if (!contextMenuIndex.isValid())
+        return;
+    
+    int row = contextMenuIndex.row();
+    QModelIndex pickedIndex = ObjectModel->index(row, 8); // Is Picked column
+    
+    if (!pickedIndex.isValid())
+        return;
+    
+    bool currentStatus = ObjectModel->data(pickedIndex).toBool();
+    bool newStatus = !currentStatus;
+    
+    // Update the model (assuming ObjectInfoModel has a method to update picked status)
+    // This would require adding a method to ObjectInfoModel to modify data
+    // For now, we'll just show a message
+    
+    QString statusText = newStatus ? "Picked" : "Not Picked";
+    UpdateTermite(QString("Object %1 status changed to: %2").arg(row).arg(statusText));
+    
+    // TODO: Implement actual status update in ObjectInfoModel
+    // ObjectModel->setData(pickedIndex, newStatus);
+}
+
+void RobotWindow::deleteObject()
+{
+    if (!contextMenuIndex.isValid())
+        return;
+    
+    int row = contextMenuIndex.row();
+    
+    // Show confirmation dialog
+    QMessageBox msgBox;
+    msgBox.setIcon(QMessageBox::Question);
+    msgBox.setWindowTitle("Delete Object");
+    msgBox.setText(QString("Are you sure you want to delete object at row %1?").arg(row + 1));
+    msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+    msgBox.setDefaultButton(QMessageBox::No);
+    
+    if (msgBox.exec() == QMessageBox::Yes)
+    {
+        // Emit signal to delete object
+        emit RequestDeleteObject(row);
+        
+        UpdateTermite(QString("Object %1 deleted").arg(row + 1));
+    }
+}
+
+void RobotWindow::showObjectDetails()
+{
+    if (!contextMenuIndex.isValid())
+        return;
+    
+    int row = contextMenuIndex.row();
+    
+    // Get all object data
+    QStringList details;
+    QStringList headers;
+    
+    // Get headers
+    for (int col = 0; col < ObjectModel->columnCount(); ++col)
+    {
+        headers << ObjectModel->headerData(col, Qt::Horizontal).toString();
+    }
+    
+    // Get row data
+    for (int col = 0; col < ObjectModel->columnCount(); ++col)
+    {
+        QModelIndex index = ObjectModel->index(row, col);
+        QVariant data = ObjectModel->data(index);
+        details << QString("%1: %2").arg(headers[col]).arg(data.toString());
+    }
+    
+    // Show details dialog
+    QMessageBox msgBox;
+    msgBox.setIcon(QMessageBox::Information);
+    msgBox.setWindowTitle(QString("Object Details - Row %1").arg(row + 1));
+    msgBox.setText(details.join("\n"));
+    msgBox.setStandardButtons(QMessageBox::Ok);
+    msgBox.exec();
+}
+
+void RobotWindow::exportObjectData()
+{
+    if (!contextMenuIndex.isValid())
+        return;
+    
+    // Get save file path
+    QString fileName = QFileDialog::getSaveFileName(this, 
+        "Export Object Data", 
+        QString("object_data_%1.csv").arg(QDateTime::currentDateTime().toString("yyyyMMdd_hhmmss")),
+        "CSV Files (*.csv);;Text Files (*.txt)");
+    
+    if (fileName.isEmpty())
+        return;
+    
+    QFile file(fileName);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+        QMessageBox::warning(this, "Export Error", "Could not open file for writing.");
+        return;
+    }
+    
+    QTextStream stream(&file);
+    
+    // Write headers
+    QStringList headers;
+    for (int col = 0; col < ObjectModel->columnCount(); ++col)
+    {
+        headers << ObjectModel->headerData(col, Qt::Horizontal).toString();
+    }
+    stream << headers.join(",") << "\n";
+    
+    // Write all rows
+    for (int row = 0; row < ObjectModel->rowCount(); ++row)
+    {
+        QStringList rowData;
+        for (int col = 0; col < ObjectModel->columnCount(); ++col)
+        {
+            QModelIndex index = ObjectModel->index(row, col);
+            QVariant data = ObjectModel->data(index);
+            rowData << data.toString();
+        }
+        stream << rowData.join(",") << "\n";
+    }
+    
+    file.close();
+    
+    UpdateTermite(QString("Object data exported to: %1").arg(fileName));
+}
 
 void RobotWindow::Jogging(QString direction, bool isMove)
 {

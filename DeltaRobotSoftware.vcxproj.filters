@@ -1,5 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Form Files">
       <UniqueIdentifier>{99349809-55BA-4b9d-BF79-8FDBB0286EB3}</UniqueIdentifier>
@@ -26,175 +26,1120 @@
     <Filter Include="Header Files">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
-    </Filter>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
     <Filter Include="Resource Files">
       <UniqueIdentifier>{D9D6E242-F8AF-46E4-B9FD-80ECBC20BA3E}</UniqueIdentifier>
       <Extensions>qrc;*</Extensions>
       <ParseFiles>false</ParseFiles>
     </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{D9D6E242-F8AF-46E4-B9FD-80ECBC20BA3E}</UniqueIdentifier>
+      <Extensions>qrc;*</Extensions>
+      <ParseFiles>false</ParseFiles>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ConnectionManager.cpp">
+    <ClCompile Include="AccountWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="main.cpp">
+    <ClCompile Include="Authority.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="mainwindow.cpp">
+    <ClCompile Include="CameraSelectionDialog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GcodeProgramManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GcodeProgram.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="UnityTool.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="hsvwindow.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ImageProcesser.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CameraWidget.cpp">
+    <ClCompile Include="ComDevice.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="DeltaVisualizer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GcodeReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="BlobManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Layer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="TextLayer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="DrawingWidget.cpp">
+    <ClCompile Include="device\DeviceManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="DrawingExporter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="codeeditor.cpp">
+    <ClCompile Include="DrawingWidget.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TCPConnectionManager.cpp">
+    <ClCompile Include="FilterWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ROS.cpp">
+    <ClCompile Include="GcodeHighlighter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GcodeReference.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GcodeScript.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageProcessing.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageViewer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="InputValidator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Layer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MainWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ModernDialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Object.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectInfo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ObjectVariableTable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Parameter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PointCalculator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PointTool.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PointToolController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ProjectManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RobotWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SettingsManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SettingsPanel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SmartDialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SocketConnectionManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SoftwareManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TabDashboard.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TaskNode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TextLayer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TrackingManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UnityTool.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="VariableManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="VersionManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="device\camera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="codeeditor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="device\conveyor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="device\device.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="device\encoder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="geisttextedit.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="global.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="highlighter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="device\robot.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="device\slider.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="testwindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="mainwindow.h">
+    <CustomBuild Include="AccountWindow.h">
       <Filter>Header Files</Filter>
-    </QtMoc>
-    <ClInclude Include="UnityTool.h">
+    </CustomBuild>
+    <CustomBuild Include="Authority.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CameraSelectionDialog.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="ComDevice.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="DeltaVisualizer.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="sdk\DeltaXPlugin.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="device\DeviceManager.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="DrawingExporter.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="DrawingWidget.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="FilterWindow.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <ClInclude Include="GcodeHighlighter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <QtMoc Include="ConnectionManager.h">
+    <CustomBuild Include="GcodeReference.h">
       <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="ImageProcesser.h">
+    </CustomBuild>
+    <CustomBuild Include="GcodeScript.h">
       <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="hsvwindow.h">
+    </CustomBuild>
+    <CustomBuild Include="ImageProcessing.h">
       <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="CameraWidget.h">
+    </CustomBuild>
+    <ClInclude Include="ImageUnity.h">
       <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="DeltaVisualizer.h">
+    </ClInclude>
+    <CustomBuild Include="ImageViewer.h">
       <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="GcodeReference.h">
+    </CustomBuild>
+    <ClInclude Include="InputValidator.h">
       <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="BlobManager.h">
+    </ClInclude>
+    <CustomBuild Include="Layer.h">
       <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="Layer.h">
+    </CustomBuild>
+    <CustomBuild Include="MainWindow.h">
       <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="TextLayer.h">
+    </CustomBuild>
+    <CustomBuild Include="ModernDialog.h">
       <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="DrawingWidget.h">
+    </CustomBuild>
+    <ClInclude Include="Object.h">
       <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="DrawingExporter.h">
+    </ClInclude>
+    <ClInclude Include="ObjectInfo.h">
       <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="codeeditor.h">
+    </ClInclude>
+    <CustomBuild Include="ObjectInfoModel.h">
       <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="TCPConnectionManager.h">
+    </CustomBuild>
+    <CustomBuild Include="ObjectVariableTable.h">
       <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="ROS.h">
+    </CustomBuild>
+    <ClInclude Include="Parameter.h">
       <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="ObjectVariableTable.h">
+    </ClInclude>
+    <ClInclude Include="PointCalculator.h">
       <Filter>Header Files</Filter>
-    </QtMoc>
+    </ClInclude>
+    <CustomBuild Include="PointTool.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="PointToolController.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="ProjectManager.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="RobotWindow.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <ClInclude Include="ScurveInterpolator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <CustomBuild Include="SettingsManager.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="SettingsPanel.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="SmartDialog.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="SocketConnectionManager.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <ClInclude Include="SoftwareManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <CustomBuild Include="TabDashboard.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="TaskNode.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="TextLayer.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="TrackingManager.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="VariableManager.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="VersionManager.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="device\camera.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="codeeditor.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="device\conveyor.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="device\device.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="device\encoder.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="geisttextedit.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="global.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="highlighter.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="device\robot.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="device\slider.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <ClInclude Include="testcode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <CustomBuild Include="testwindow.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ui_mainwindow.h">
+    <ClCompile Include="debug\moc_AccountWindow.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="release\moc_AccountWindow.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="debug\moc_Authority.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="release\moc_Authority.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="debug\moc_CameraSelectionDialog.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="release\moc_CameraSelectionDialog.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="debug\moc_ComDevice.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="release\moc_ComDevice.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="debug\moc_DeltaVisualizer.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="release\moc_DeltaVisualizer.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="debug\moc_DeltaXPlugin.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="release\moc_DeltaXPlugin.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="debug\moc_DeviceManager.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="release\moc_DeviceManager.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="debug\moc_DrawingExporter.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="release\moc_DrawingExporter.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="debug\moc_DrawingWidget.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="release\moc_DrawingWidget.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="debug\moc_FilterWindow.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="release\moc_FilterWindow.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="debug\moc_GcodeReference.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="release\moc_GcodeReference.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="debug\moc_GcodeScript.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="release\moc_GcodeScript.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="debug\moc_ImageProcessing.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="release\moc_ImageProcessing.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="debug\moc_ImageViewer.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="release\moc_ImageViewer.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="debug\moc_Layer.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="release\moc_Layer.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="debug\moc_MainWindow.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="release\moc_MainWindow.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="debug\moc_ModernDialog.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="release\moc_ModernDialog.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="debug\moc_ObjectInfoModel.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="release\moc_ObjectInfoModel.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="debug\moc_ObjectVariableTable.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="release\moc_ObjectVariableTable.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="debug\moc_PointTool.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="release\moc_PointTool.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="debug\moc_PointToolController.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="release\moc_PointToolController.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="debug\moc_ProjectManager.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="release\moc_ProjectManager.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="debug\moc_RobotWindow.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="release\moc_RobotWindow.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="debug\moc_SettingsManager.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="release\moc_SettingsManager.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="debug\moc_SettingsPanel.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="release\moc_SettingsPanel.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="debug\moc_SmartDialog.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="release\moc_SmartDialog.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="debug\moc_SocketConnectionManager.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="release\moc_SocketConnectionManager.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="debug\moc_TabDashboard.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="release\moc_TabDashboard.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="debug\moc_TaskNode.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="release\moc_TaskNode.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="debug\moc_TextLayer.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="release\moc_TextLayer.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="debug\moc_TrackingManager.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="release\moc_TrackingManager.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="debug\moc_VariableManager.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="release\moc_VariableManager.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="debug\moc_VersionManager.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="release\moc_VersionManager.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="debug\moc_camera.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="release\moc_camera.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="debug\moc_codeeditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="release\moc_codeeditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="debug\moc_conveyor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="release\moc_conveyor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="debug\moc_device.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="release\moc_device.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="debug\moc_encoder.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="release\moc_encoder.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="debug\moc_geisttextedit.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="release\moc_geisttextedit.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="debug\moc_global.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="release\moc_global.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="debug\moc_highlighter.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="release\moc_highlighter.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <CustomBuild Include="debug\moc_predefs.h.cbt">
+      <Filter>Generated Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="release\moc_predefs.h.cbt">
+      <Filter>Generated Files</Filter>
+    </CustomBuild>
+    <ClCompile Include="debug\moc_robot.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="release\moc_robot.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="debug\moc_slider.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="release\moc_slider.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="debug\moc_testwindow.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="release\moc_testwindow.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="debug\qrc_resource.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="release\qrc_resource.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClInclude Include="ui_AccountWindow.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
-    <ClInclude Include="resource.h">
+    <ClInclude Include="ui_FilterWindow.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ui_GcodeReference.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ui_MainWindow.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ui_RobotWindow.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ui_testwindow.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <QtUic Include="mainwindow.ui">
+    <CustomBuild Include="AccountWindow.ui">
       <Filter>Form Files</Filter>
-    </QtUic>
-    <QtUic Include="HSVWindow.ui">
+    </CustomBuild>
+    <CustomBuild Include="FilterWindow.ui">
       <Filter>Form Files</Filter>
-    </QtUic>
-    <QtUic Include="GcodeReference.ui">
+    </CustomBuild>
+    <CustomBuild Include="GcodeReference.ui">
       <Filter>Form Files</Filter>
-    </QtUic>
-    <QtUic Include="LightUI.ui">
+    </CustomBuild>
+    <CustomBuild Include="MainWindow.ui">
       <Filter>Form Files</Filter>
-    </QtUic>
+    </CustomBuild>
+    <CustomBuild Include="RobotWindow.ui">
+      <Filter>Form Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="testwindow.ui">
+      <Filter>Form Files</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="GcodeProgram.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="GcodeProgramManager.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="DeltaRobotSoftware.rc" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="delta_x_logo_96x96.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <CustomBuild Include="icon\icon.qrc">
+    <None Include="icon\Arrow Pointing Down_16px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\Axis_64px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\Below_16px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\Circle-limit.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\Circle_16px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\Circled Notch_16px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\Circled Right_16px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\Collapse Arrow.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\Copy.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\Copy_16px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\Cursor-color_16px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\Cursor_16px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\Distance-Threshold.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\Eraser_16px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\Forward Button_16px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\Full Image_16px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\Go Back_16px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\Help_16px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\IoU-threshold.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\Line_16px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\Paint_16px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\Paste.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\Pause_96px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\Pencil Drawing_16px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\Play_96px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\Rectangle_16px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\Rectangular_16px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\Restart_16px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\Right Arrow_16px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\Ruler2_16px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\Ruler_16px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\Save_16px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\Scatter Plot_16px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\Search_16px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\Slider 2_16px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\Slider _16px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\Sort_16px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\Speed_16px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\Toggle Off_16px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\Toggle On_16px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\Trash_16px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\Upward Arrow_16px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\Width_16px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\Workflow_16px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\Zoom In_16px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\Zoom Out_16px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\account_64px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\blue_project_64px_1.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\camera.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\charity_64px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\collapse.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\connected.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\delete.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="delta_x_logo_96x96.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\deltaicon.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\deltax-loading.gif">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\disconnected.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\divider_50px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\document_64px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\expand.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\grid-1-pixel.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\grid-10-pixel-2.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\grid-10-pixel-3.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\grid-10-pixel.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\grid-5-pixel.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\grid-axis-2.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\grid-axis.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\home.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\home_64px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\icons8-back-48.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\icons8-collapse-arrow-48.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\icons8-connection-status-on-48.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\icons8-download-from-cloud-48.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\icons8-expand-48.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\icons8-expand-arrow-48.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\icons8-forward-48.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\icons8-home-32.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\icons8-load-resume-template-64.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\icons8-maximize-window-48.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\icons8-next-page-48.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\icons8-object-48.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\icons8-pause-48.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\icons8-play-48.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\icons8-save-64.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\icons8-screenshot-40.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\icons8-sleeping-in-bed-32.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\icons8-upload-to-cloud-48.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\icons8_3d_model_48px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\icons8_add_new_52px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\icons8_back_52px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\icons8_camcorder_48px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\icons8_chessboard_48px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\icons8_close_52px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\icons8_code_96px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\icons8_collapse_arrow_10px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\icons8_collapse_arrow_20px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\icons8_collapse_arrow_20px_1.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\icons8_connected_48px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\icons8_edit_52px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\icons8_expand_arrow_10px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\icons8_expand_arrow_16px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\icons8_expand_arrow_20px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\icons8_expand_arrow_20px_1.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\icons8_file_52px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\icons8_folder_52px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\icons8_folder_64px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\icons8_google_images_48px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\icons8_grid_3_48px_1.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\icons8_help_52px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\icons8_image_30px_1.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\icons8_image_48px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\icons8_image_96px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\icons8_image_gallery_48px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\icons8_lens_48px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\icons8_line_48px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\icons8_lipids_48px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\icons8_my_location_52px_1.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\icons8_opacity_48px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\icons8_page_size_64px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\icons8_pause_48px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\icons8_pencil_drawing_96px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\icons8_play_48px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\icons8_record_48px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\icons8_rectangle_64px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\icons8_refresh_52px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\icons8_replay_48px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\icons8_reset_48px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\icons8_save_52px_1.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\icons8_select_48px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\icons8_sleep_52px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\icons8_split_vertical_32px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\icons8_split_vertical_64px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\icons8_switch_off_52px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\icons8_switch_on_52px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\icons8_target_48px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\icons8_view_details_52px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\icons8_zoom_48px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\image.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\index.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\logo.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\moving-base.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\new.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\play.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\project_64px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <CustomBuild Include="resource.qrc">
       <Filter>Resource Files</Filter>
     </CustomBuild>
+    <None Include="icon\save.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\settings_64px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\shopping_cart_promotion_64px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\stop.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\variable_64px.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icon\webcam.png">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="D:\working\source\Delta-X-Software\DeltaRobotSoftware_resource.rc" />
   </ItemGroup>
 </Project>
