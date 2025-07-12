@@ -1,5 +1,6 @@
 ﻿#include "RobotWindow.h"
 #include "ui_RobotWindow.h"
+#include "ChessboardConfigDialog.h"
 #include "SoftwareManager.h"
 #include "MainWindow.h"
 #include "ModernDialog.h"
@@ -409,7 +410,8 @@ void RobotWindow::InitObjectDetectingModule()
     ImageProcessingInstance->CreateTaskNode("MappingMatrixNode", TaskNode::MAPPING_MATRIX_NODE);
     ImageProcessingInstance->CreateTaskNode("ColorFilterNode", TaskNode::COLOR_FILTER_NODE, "CropImageNode");
     ImageProcessingInstance->CreateTaskNode("GetObjectsNode", TaskNode::GET_OBJECTS_NODE, "ColorFilterNode");
-    ImageProcessingInstance->CreateTaskNode("VisibleObjectsNode", TaskNode::VISIBLE_OBJECTS_NODE, "GetObjectsNode|MappingMatrixNode");
+    ImageProcessingInstance->CreateTaskNode("FindCirclesNode", TaskNode::FIND_CIRCLES_NODE, "ColorFilterNode");
+    ImageProcessingInstance->CreateTaskNode("VisibleObjectsNode", TaskNode::VISIBLE_OBJECTS_NODE, "GetObjectsNode|FindCirclesNode|MappingMatrixNode");
 
     ImageProcessingInstance->CreateTaskNode("DisplayImageNode", TaskNode::DISPLAY_IMAGE_NODE, "CropImageNode");
 
@@ -673,12 +675,25 @@ void RobotWindow::InitObjectDetectingModule()
     connect(this, SIGNAL(GotOjectFilterInfo(Object)), ImageProcessingInstance->GetNode("GetObjectsNode"), SLOT(Input(Object)));
 
     connect(ImageProcessingInstance->GetNode("GetObjectsNode"), SIGNAL(HadOutput(QList<QPolygonF>)), ui->gvImageViewer, SLOT(DrawObjects(QList<QPolygonF>)));
+    connect(ImageProcessingInstance->GetNode("FindCirclesNode"), SIGNAL(HadOutput(QList<QPolygonF>)), ui->gvImageViewer, SLOT(DrawObjects(QList<QPolygonF>)));
     connect(ImageProcessingInstance->GetNode("VisibleObjectsNode"), SIGNAL(HadOutput(QVector<Object>)), ImageProcessingInstance, SLOT(GotVisibleObjects(QVector<Object>)));
 
     connect(ui->leDetectingObjectListName, &QLineEdit::returnPressed, this, [=]()
     {
         ImageProcessingInstance->ObjectsName = ui->leDetectingObjectListName->text();
     });
+
+    // ========== CIRCLE DETECTION PARAMETERS ==========
+    connect(ui->leEdgeThreshold, &QLineEdit::returnPressed, this, &RobotWindow::UpdateCircleParameters);
+    connect(ui->leCenterThreshold, &QLineEdit::returnPressed, this, &RobotWindow::UpdateCircleParameters);
+    connect(ui->leMinRadius, &QLineEdit::returnPressed, this, &RobotWindow::UpdateCircleParameters);
+    connect(ui->leMaxRadius, &QLineEdit::returnPressed, this, &RobotWindow::UpdateCircleParameters);
+    
+    // Load default circle parameters
+    ui->leEdgeThreshold->setText("100");
+    ui->leCenterThreshold->setText("30"); 
+    ui->leMinRadius->setText("10");
+    ui->leMaxRadius->setText("100");
 
 
     // Khai báo và khởi tạo luồng
@@ -4203,8 +4218,11 @@ void RobotWindow::SelectObjectDetectingAlgorithm(int algorithm)
     ui->fCirclePanel->setHidden(true);
 
     QString text = ui->cbDetectingAlgorithm->itemText(algorithm);
+    
+    // Disconnect all previous connections
     disconnect(ImageProcessingInstance->GetNode("CropImageNode"), SIGNAL(HadOutput(cv::Mat)), ConnectionManager, SLOT(sendImageToImageClients(cv::Mat)));
     disconnect(ImageProcessingInstance->GetNode("ColorFilterNode"), SIGNAL(HadOutput(cv::Mat)), ImageProcessingInstance->GetNode("GetObjectsNode"), SLOT(Input(cv::Mat)));
+    disconnect(ImageProcessingInstance->GetNode("ColorFilterNode"), SIGNAL(HadOutput(cv::Mat)), ImageProcessingInstance->GetNode("FindCirclesNode"), SLOT(Input(cv::Mat)));
 
     QString prefix = ProjectName + "." + ui->cbSelectedDetecting->currentText() + ".";
     VariableManager::instance().updateVar(prefix + "DetectAlgorithm",text);
@@ -4217,13 +4235,43 @@ void RobotWindow::SelectObjectDetectingAlgorithm(int algorithm)
     if (text == "Find Circles")
     {
         ui->fCirclePanel->setHidden(false);
-        connect(ImageProcessingInstance->GetNode("ColorFilterNode"), SIGNAL(HadOutput(cv::Mat)), ImageProcessingInstance->GetNode("GetObjectsNode"), SLOT(Input(cv::Mat)));
+        connect(ImageProcessingInstance->GetNode("ColorFilterNode"), SIGNAL(HadOutput(cv::Mat)), ImageProcessingInstance->GetNode("FindCirclesNode"), SLOT(Input(cv::Mat)));
+        
+        // Apply current circle parameters
+        UpdateCircleParameters();
     }
     if (text == "External Script")
     {
         ui->fExternalScriptPanel->setHidden(false);
         connect(ImageProcessingInstance->GetNode("CropImageNode"), SIGNAL(HadOutput(cv::Mat)), ConnectionManager, SLOT(sendImageToImageClients(cv::Mat)));
     }
+}
+
+void RobotWindow::UpdateCircleParameters()
+{
+    if (!ImageProcessingInstance || !ImageProcessingInstance->GetNode("FindCirclesNode"))
+        return;
+
+    int edgeThreshold = ui->leEdgeThreshold->text().toInt();
+    int centerThreshold = ui->leCenterThreshold->text().toInt();
+    int minRadius = ui->leMinRadius->text().toInt(); 
+    int maxRadius = ui->leMaxRadius->text().toInt();
+
+    // Validate parameters
+    if (edgeThreshold <= 0) edgeThreshold = 100;
+    if (centerThreshold <= 0) centerThreshold = 30;
+    if (minRadius <= 0) minRadius = 10;
+    if (maxRadius <= minRadius) maxRadius = minRadius + 50;
+
+    // Apply parameters to FindCirclesNode
+    ImageProcessingInstance->GetNode("FindCirclesNode")->Input(edgeThreshold, centerThreshold, minRadius, maxRadius);
+    
+    // Save parameters to variables
+    QString prefix = ProjectName + "." + ui->cbSelectedDetecting->currentText() + ".";
+    VariableManager::instance().updateVar(prefix + "EdgeThreshold", edgeThreshold);
+    VariableManager::instance().updateVar(prefix + "CenterThreshold", centerThreshold);
+    VariableManager::instance().updateVar(prefix + "MinRadius", minRadius);
+    VariableManager::instance().updateVar(prefix + "MaxRadius", maxRadius);
 }
 
 void RobotWindow::ConfigChessboard()
@@ -4246,26 +4294,28 @@ void RobotWindow::ConfigChessboard()
 
     if (result == QMessageBox::AcceptRole) // Find
     {
-        bool ok;
-        QString chessboardSize = QString("7x7");
-        QString text = QInputDialog::getText(this, tr("Find Chessboard"),
-                                             tr("Chessboard size:"), QLineEdit::Normal,
-                                             chessboardSize, &ok);
-        if (ok && !text.isEmpty())
+        ChessboardConfigDialog dialog(this);
+        if (dialog.exec() == QDialog::Accepted)
         {
-            QStringList paras = text.split("x");
-            cv::Size size(paras[0].toInt(), paras[1].toInt());
-
-//            ImageProcessingInstance->GetNode("FindChessboardNode")->Input(size);
-            emit GotChessboardSize(size);
-
-            emit GotResizeImage(ImageProcessingInstance->GetNode("ResizeImageNode")->GetOutputImage());
-
-            if (ui->pbWarpTool->isChecked() == false)
+            QString text = dialog.getChessboardSize();
+            if (!text.isEmpty())
             {
-                ui->gvImageViewer->SelectQuadrangleTool();
-            }
+                QStringList paras = text.split("x");
+                if (paras.size() == 2)
+                {
+                    cv::Size size(paras[0].toInt(), paras[1].toInt());
 
+//                    ImageProcessingInstance->GetNode("FindChessboardNode")->Input(size);
+                    emit GotChessboardSize(size);
+
+                    emit GotResizeImage(ImageProcessingInstance->GetNode("ResizeImageNode")->GetOutputImage());
+
+                    if (ui->pbWarpTool->isChecked() == false)
+                    {
+                        ui->gvImageViewer->SelectQuadrangleTool();
+                    }
+                }
+            }
         }
     }
     else // Edit

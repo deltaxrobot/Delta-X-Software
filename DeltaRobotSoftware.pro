@@ -38,6 +38,7 @@ TEMPLATE = app
 SOURCES += main.cpp\
     AccountWindow.cpp \
     Authority.cpp \
+    ChessboardConfigDialog.cpp \
     ComDevice.cpp \
     DrawingExporter.cpp \
     DrawingWidget.cpp \
@@ -91,6 +92,7 @@ SOURCES += main.cpp\
 HEADERS  += \
     AccountWindow.h \
     Authority.h \
+    ChessboardConfigDialog.h \
     ComDevice.h \
     DeltaVisualizer.h \
     DrawingExporter.h \

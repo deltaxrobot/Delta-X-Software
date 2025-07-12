@@ -51,6 +51,7 @@ public:
         COLOR_FILTER_NODE,
         MAPPING_MATRIX_NODE,
         GET_OBJECTS_NODE,
+        FIND_CIRCLES_NODE,
         VISIBLE_OBJECTS_NODE,
     };
 
@@ -95,6 +96,7 @@ public slots:
     void Input(QPolygonF poly);
     void Input(QRectF rect);
     void Input(Object obj);
+    void Input(int edgeThresh, int centerThresh, int minRad, int maxRad);
 
     void Input(QStringList objects);
 
@@ -146,6 +148,12 @@ private:
     int intPara;
     float floatPara;
     bool boolPara;
+    
+    // Circle detection parameters
+    int edgeThreshold = 100;
+    int centerThreshold = 30;
+    int minRadius = 10;
+    int maxRadius = 100;
     QPointF inputPoint;
     QMatrix inputMatrix;
     QMatrix outputMatrix;
@@ -171,6 +179,7 @@ private:
     void doColorFilterWork();
     void doMappingMatrixWork();
     void doGetObjectsWork();
+    void doFindCirclesWork();
     void doVisibleObjectsWork();
     void clear(QVector<Object>& objs);
 };

@@ -253,6 +253,14 @@ void TaskNode::Input(Object obj)
     inputObject.CopyFrom(obj);
 }
 
+void TaskNode::Input(int edgeThresh, int centerThresh, int minRad, int maxRad)
+{
+    edgeThreshold = edgeThresh;
+    centerThreshold = centerThresh;
+    minRadius = minRad;
+    maxRadius = maxRad;
+}
+
 void TaskNode::Input(QStringList objects)
 {
     outputObjects.clear();
@@ -347,6 +355,11 @@ void TaskNode::DoWork()
     if (type == GET_OBJECTS_NODE)
     {
         doGetObjectsWork();
+    }
+
+    if (type == FIND_CIRCLES_NODE)
+    {
+        doFindCirclesWork();
     }
 
     if (type == VISIBLE_OBJECTS_NODE)
@@ -837,6 +850,78 @@ void TaskNode::doGetObjectsWork()
     emit HadOutput(outputObjects);
 //    emit HadOutput(sharedObjects);
     emit HadOutput(outputPolys);
+}
+
+void TaskNode::doFindCirclesWork()
+{
+    if (inputMat.empty())
+        return;
+
+    outputObjects.clear();
+    outputPolys.clear();
+
+    try {
+        cv::Mat grayMat;
+        
+        // Convert to grayscale if needed
+        if (inputMat.channels() == 3)
+            cv::cvtColor(inputMat, grayMat, cv::COLOR_BGR2GRAY);
+        else
+            grayMat = inputMat.clone();
+
+        // Apply Gaussian blur to reduce noise
+        cv::GaussianBlur(grayMat, grayMat, cv::Size(5, 5), 0);
+
+        std::vector<cv::Vec3f> circles;
+        
+        // Use HoughCircles to detect circles
+        cv::HoughCircles(grayMat, circles, cv::HOUGH_GRADIENT, 1, 
+                        std::max(minRadius * 2, 30),  // minDist between circle centers
+                        edgeThreshold,                 // higher threshold for edge detection
+                        centerThreshold,               // accumulator threshold for center detection
+                        minRadius,                     // minimum radius
+                        maxRadius);                    // maximum radius
+
+        const int borderMargin = 5;
+
+        for (size_t i = 0; i < circles.size(); i++)
+        {
+            cv::Point center(cvRound(circles[i][0]), cvRound(circles[i][1]));
+            int radius = cvRound(circles[i][2]);
+
+            // Check if circle is within image bounds with margin
+            if (center.x - radius <= borderMargin || center.y - radius <= borderMargin ||
+                center.x + radius >= (inputMat.cols - borderMargin) || 
+                center.y + radius >= (inputMat.rows - borderMargin))
+                continue;
+
+            // Create Object from circle
+            cv::RotatedRect rectObject(
+                cv::Point2f(center.x, center.y),    // center
+                cv::Size2f(radius * 2, radius * 2), // size (diameter)
+                0                                    // angle
+            );
+
+            Object obj(rectObject);
+            
+            // Apply object filtering if needed
+            if (inputObject.Type.isEmpty() || inputObject.IsSameType(obj))
+            {
+                Object circleObject(rectObject);
+                outputObjects.append(circleObject);
+                outputPolys.append(circleObject.ToPolygon());
+            }
+        }
+    }
+    catch (const cv::Exception& e)
+    {
+        qDebug() << "OpenCV error in doFindCirclesWork:" << e.what();
+        return;
+    }
+
+    emit HadOutput(outputObjects);
+    emit HadOutput(outputPolys);
+    emit Done(defaultThreadId);
 }
 
 void TaskNode::doVisibleObjectsWork()

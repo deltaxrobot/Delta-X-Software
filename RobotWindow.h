@@ -374,6 +374,7 @@ public slots:
     void StopCapture();
     void OpenColorFilterWindow();
     void SelectObjectDetectingAlgorithm(int algorithm);
+    void UpdateCircleParameters();
     void ConfigChessboard();
     void GetCalibPointsFromImage(QPointF p1, QPointF p2);
     void UpdateRealPositionOfCalibPoints();

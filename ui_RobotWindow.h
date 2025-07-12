@@ -262,22 +262,6 @@ public:
     QLabel *label_126;
     QComboBox *cbDetectingAlgorithm;
     QSpacerItem *horizontalSpacer_6;
-    QFrame *fCheckSameObjectPanel;
-    QGridLayout *gridLayout_17;
-    QLabel *label_4;
-    QLabel *label_46;
-    QLineEdit *leDistanceThreshold_Y;
-    QLabel *label_183;
-    QLabel *label_182;
-    QLabel *label_225;
-    QLabel *label_45;
-    QLabel *label_237;
-    QSpacerItem *horizontalSpacer_11;
-    QSpacerItem *horizontalSpacer_68;
-    QLineEdit *leIoUThreshold;
-    QLineEdit *leDistanceThreshold;
-    QSpacerItem *horizontalSpacer_70;
-    QLabel *label_35;
     QFrame *fBlobPanel;
     QGridLayout *gridLayout_14;
     QLabel *label_173;
@@ -300,22 +284,22 @@ public:
     QLineEdit *leWRec;
     QFrame *fExternalScriptPanel;
     QGridLayout *gridLayout_28;
+    QLabel *label_149;
     QLabel *label_209;
-    QComboBox *cbImageSource;
+    QLabel *label_185;
+    QPushButton *pbOpenScriptExample;
+    QLabel *label_184;
     QLineEdit *lePythonUrl;
+    QLabel *label_186;
+    QPushButton *pbExternalScriptOpen;
+    QLabel *label_224;
+    QLabel *label_146;
+    QPushButton *pbRunExternalScript;
     QPushButton *pbExternalScriptHelp;
     QLabel *label_145;
     QLabel *label_187;
-    QLabel *label_185;
-    QLabel *label_149;
-    QPushButton *pbOpenScriptExample;
-    QPushButton *pbExternalScriptOpen;
-    QLabel *label_184;
-    QLabel *label_186;
+    QComboBox *cbImageSource;
     QComboBox *cbSendingImageMethod;
-    QPushButton *pbRunExternalScript;
-    QLabel *label_146;
-    QLabel *label_224;
     QFrame *fCirclePanel;
     QGridLayout *gridLayout_29;
     QLineEdit *leCenterThreshold;
@@ -331,6 +315,29 @@ public:
     QLabel *label_188;
     QLabel *label_198;
     QLabel *label_199;
+    QGroupBox *gbTracking;
+    QVBoxLayout *verticalLayout_41;
+    QFrame *fTracking;
+    QVBoxLayout *verticalLayout_49;
+    QTabWidget *tabWidget;
+    QWidget *widgetMatching;
+    QVBoxLayout *verticalLayout_18;
+    QFrame *fCheckSameObjectPanel;
+    QGridLayout *gridLayout_17;
+    QLabel *label_4;
+    QLabel *label_46;
+    QLineEdit *leDistanceThreshold_Y;
+    QLabel *label_183;
+    QLabel *label_182;
+    QLabel *label_225;
+    QLabel *label_45;
+    QLabel *label_237;
+    QSpacerItem *horizontalSpacer_11;
+    QSpacerItem *horizontalSpacer_68;
+    QLineEdit *leIoUThreshold;
+    QLineEdit *leDistanceThreshold;
+    QSpacerItem *horizontalSpacer_70;
+    QLabel *label_35;
     QGroupBox *gbCameraVariable;
     QVBoxLayout *verticalLayout_34;
     QHBoxLayout *horizontalLayout_31;
@@ -2276,7 +2283,7 @@ public:
         saObjectDetecting->setWidgetResizable(true);
         wObjectDetecting = new QWidget();
         wObjectDetecting->setObjectName(QString::fromUtf8("wObjectDetecting"));
-        wObjectDetecting->setGeometry(QRect(0, 0, 590, 2900));
+        wObjectDetecting->setGeometry(QRect(0, -119, 590, 2900));
         wObjectDetecting->setMinimumSize(QSize(100, 2900));
         wObjectDetecting->setStyleSheet(QString::fromUtf8("QWidget#wObjectDetecting\n"
 "{	\n"
@@ -2760,7 +2767,7 @@ public:
         sizePolicy13.setVerticalStretch(0);
         sizePolicy13.setHeightForWidth(gbImageViewer->sizePolicy().hasHeightForWidth());
         gbImageViewer->setSizePolicy(sizePolicy13);
-        gbImageViewer->setMinimumSize(QSize(0, 300));
+        gbImageViewer->setMinimumSize(QSize(0, 0));
         gbImageViewer->setMaximumSize(QSize(16777215, 16777215));
         gbImageViewer->setFont(font7);
         gbImageViewer->setStyleSheet(QString::fromUtf8("QPushButton\n"
@@ -2776,6 +2783,7 @@ public:
         vlImageViewer->setContentsMargins(0, 0, 0, 0);
         fImageViewer = new QFrame(gbImageViewer);
         fImageViewer->setObjectName(QString::fromUtf8("fImageViewer"));
+        fImageViewer->setMinimumSize(QSize(0, 0));
         fImageViewer->setStyleSheet(QString::fromUtf8(""));
         fImageViewer->setFrameShape(QFrame::StyledPanel);
         fImageViewer->setFrameShadow(QFrame::Raised);
@@ -3379,117 +3387,6 @@ public:
 
         verticalLayout_31->addWidget(frame_13);
 
-        fCheckSameObjectPanel = new QFrame(fVisionObjectFrame);
-        fCheckSameObjectPanel->setObjectName(QString::fromUtf8("fCheckSameObjectPanel"));
-        fCheckSameObjectPanel->setMinimumSize(QSize(0, 0));
-        fCheckSameObjectPanel->setStyleSheet(QString::fromUtf8(""));
-        fCheckSameObjectPanel->setFrameShape(QFrame::StyledPanel);
-        fCheckSameObjectPanel->setFrameShadow(QFrame::Raised);
-        gridLayout_17 = new QGridLayout(fCheckSameObjectPanel);
-        gridLayout_17->setSpacing(6);
-        gridLayout_17->setContentsMargins(11, 11, 11, 11);
-        gridLayout_17->setObjectName(QString::fromUtf8("gridLayout_17"));
-        label_4 = new QLabel(fCheckSameObjectPanel);
-        label_4->setObjectName(QString::fromUtf8("label_4"));
-        sizePolicy6.setHeightForWidth(label_4->sizePolicy().hasHeightForWidth());
-        label_4->setSizePolicy(sizePolicy6);
-        label_4->setMaximumSize(QSize(300, 100));
-        label_4->setPixmap(QPixmap(QString::fromUtf8(":/icon/IoU-threshold.png")));
-        label_4->setScaledContents(true);
-
-        gridLayout_17->addWidget(label_4, 2, 1, 1, 5);
-
-        label_46 = new QLabel(fCheckSameObjectPanel);
-        label_46->setObjectName(QString::fromUtf8("label_46"));
-
-        gridLayout_17->addWidget(label_46, 4, 1, 1, 1);
-
-        leDistanceThreshold_Y = new QLineEdit(fCheckSameObjectPanel);
-        leDistanceThreshold_Y->setObjectName(QString::fromUtf8("leDistanceThreshold_Y"));
-        sizePolicy6.setHeightForWidth(leDistanceThreshold_Y->sizePolicy().hasHeightForWidth());
-        leDistanceThreshold_Y->setSizePolicy(sizePolicy6);
-        leDistanceThreshold_Y->setMinimumSize(QSize(0, 30));
-        leDistanceThreshold_Y->setMaximumSize(QSize(50, 16777215));
-        leDistanceThreshold_Y->setAlignment(Qt::AlignCenter);
-
-        gridLayout_17->addWidget(leDistanceThreshold_Y, 5, 3, 1, 1);
-
-        label_183 = new QLabel(fCheckSameObjectPanel);
-        label_183->setObjectName(QString::fromUtf8("label_183"));
-        label_183->setMinimumSize(QSize(30, 0));
-        label_183->setAlignment(Qt::AlignCenter);
-
-        gridLayout_17->addWidget(label_183, 4, 2, 1, 1);
-
-        label_182 = new QLabel(fCheckSameObjectPanel);
-        label_182->setObjectName(QString::fromUtf8("label_182"));
-        label_182->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
-
-        gridLayout_17->addWidget(label_182, 4, 4, 1, 1);
-
-        label_225 = new QLabel(fCheckSameObjectPanel);
-        label_225->setObjectName(QString::fromUtf8("label_225"));
-        label_225->setAlignment(Qt::AlignCenter);
-
-        gridLayout_17->addWidget(label_225, 5, 2, 1, 1);
-
-        label_45 = new QLabel(fCheckSameObjectPanel);
-        label_45->setObjectName(QString::fromUtf8("label_45"));
-        label_45->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
-
-        gridLayout_17->addWidget(label_45, 1, 1, 1, 1);
-
-        label_237 = new QLabel(fCheckSameObjectPanel);
-        label_237->setObjectName(QString::fromUtf8("label_237"));
-        label_237->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
-
-        gridLayout_17->addWidget(label_237, 5, 4, 1, 1);
-
-        horizontalSpacer_11 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-
-        gridLayout_17->addItem(horizontalSpacer_11, 2, 6, 1, 1);
-
-        horizontalSpacer_68 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-
-        gridLayout_17->addItem(horizontalSpacer_68, 4, 6, 1, 1);
-
-        leIoUThreshold = new QLineEdit(fCheckSameObjectPanel);
-        leIoUThreshold->setObjectName(QString::fromUtf8("leIoUThreshold"));
-        sizePolicy6.setHeightForWidth(leIoUThreshold->sizePolicy().hasHeightForWidth());
-        leIoUThreshold->setSizePolicy(sizePolicy6);
-        leIoUThreshold->setMinimumSize(QSize(0, 30));
-        leIoUThreshold->setMaximumSize(QSize(50, 16777215));
-        leIoUThreshold->setAlignment(Qt::AlignCenter);
-
-        gridLayout_17->addWidget(leIoUThreshold, 1, 3, 1, 1);
-
-        leDistanceThreshold = new QLineEdit(fCheckSameObjectPanel);
-        leDistanceThreshold->setObjectName(QString::fromUtf8("leDistanceThreshold"));
-        sizePolicy6.setHeightForWidth(leDistanceThreshold->sizePolicy().hasHeightForWidth());
-        leDistanceThreshold->setSizePolicy(sizePolicy6);
-        leDistanceThreshold->setMinimumSize(QSize(0, 30));
-        leDistanceThreshold->setMaximumSize(QSize(50, 16777215));
-        leDistanceThreshold->setAlignment(Qt::AlignCenter);
-
-        gridLayout_17->addWidget(leDistanceThreshold, 4, 3, 1, 1);
-
-        horizontalSpacer_70 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-
-        gridLayout_17->addItem(horizontalSpacer_70, 6, 6, 1, 1);
-
-        label_35 = new QLabel(fCheckSameObjectPanel);
-        label_35->setObjectName(QString::fromUtf8("label_35"));
-        sizePolicy6.setHeightForWidth(label_35->sizePolicy().hasHeightForWidth());
-        label_35->setSizePolicy(sizePolicy6);
-        label_35->setMaximumSize(QSize(300, 100));
-        label_35->setPixmap(QPixmap(QString::fromUtf8(":/icon/Distance-Threshold.png")));
-        label_35->setScaledContents(true);
-
-        gridLayout_17->addWidget(label_35, 6, 1, 1, 5);
-
-
-        verticalLayout_31->addWidget(fCheckSameObjectPanel);
-
         fBlobPanel = new QFrame(fVisionObjectFrame);
         fBlobPanel->setObjectName(QString::fromUtf8("fBlobPanel"));
         fBlobPanel->setMinimumSize(QSize(0, 0));
@@ -3637,30 +3534,91 @@ public:
         gridLayout_28->setSpacing(6);
         gridLayout_28->setContentsMargins(11, 11, 11, 11);
         gridLayout_28->setObjectName(QString::fromUtf8("gridLayout_28"));
+        label_149 = new QLabel(fExternalScriptPanel);
+        label_149->setObjectName(QString::fromUtf8("label_149"));
+
+        gridLayout_28->addWidget(label_149, 3, 0, 1, 1);
+
         label_209 = new QLabel(fExternalScriptPanel);
         label_209->setObjectName(QString::fromUtf8("label_209"));
 
         gridLayout_28->addWidget(label_209, 5, 1, 1, 1);
 
-        cbImageSource = new QComboBox(fExternalScriptPanel);
-        cbImageSource->addItem(QString());
-        cbImageSource->addItem(QString());
-        cbImageSource->addItem(QString());
-        cbImageSource->setObjectName(QString::fromUtf8("cbImageSource"));
+        label_185 = new QLabel(fExternalScriptPanel);
+        label_185->setObjectName(QString::fromUtf8("label_185"));
 
-        gridLayout_28->addWidget(cbImageSource, 2, 1, 1, 1);
+        gridLayout_28->addWidget(label_185, 6, 0, 1, 1);
+
+        pbOpenScriptExample = new QPushButton(fExternalScriptPanel);
+        pbOpenScriptExample->setObjectName(QString::fromUtf8("pbOpenScriptExample"));
+        QSizePolicy sizePolicy15(QSizePolicy::Maximum, QSizePolicy::Minimum);
+        sizePolicy15.setHorizontalStretch(0);
+        sizePolicy15.setVerticalStretch(0);
+        sizePolicy15.setHeightForWidth(pbOpenScriptExample->sizePolicy().hasHeightForWidth());
+        pbOpenScriptExample->setSizePolicy(sizePolicy15);
+        pbOpenScriptExample->setMinimumSize(QSize(0, 30));
+        pbOpenScriptExample->setStyleSheet(QString::fromUtf8("QPushButton\n"
+"{\n"
+"	padding: 5px;\n"
+"}"));
+
+        gridLayout_28->addWidget(pbOpenScriptExample, 0, 0, 1, 1);
+
+        label_184 = new QLabel(fExternalScriptPanel);
+        label_184->setObjectName(QString::fromUtf8("label_184"));
+
+        gridLayout_28->addWidget(label_184, 4, 0, 1, 1);
 
         lePythonUrl = new QLineEdit(fExternalScriptPanel);
         lePythonUrl->setObjectName(QString::fromUtf8("lePythonUrl"));
-        QSizePolicy sizePolicy15(QSizePolicy::Ignored, QSizePolicy::Preferred);
-        sizePolicy15.setHorizontalStretch(0);
-        sizePolicy15.setVerticalStretch(0);
-        sizePolicy15.setHeightForWidth(lePythonUrl->sizePolicy().hasHeightForWidth());
-        lePythonUrl->setSizePolicy(sizePolicy15);
+        QSizePolicy sizePolicy16(QSizePolicy::Ignored, QSizePolicy::Preferred);
+        sizePolicy16.setHorizontalStretch(0);
+        sizePolicy16.setVerticalStretch(0);
+        sizePolicy16.setHeightForWidth(lePythonUrl->sizePolicy().hasHeightForWidth());
+        lePythonUrl->setSizePolicy(sizePolicy16);
         lePythonUrl->setMinimumSize(QSize(0, 30));
         lePythonUrl->setMaximumSize(QSize(16777215, 16777215));
 
         gridLayout_28->addWidget(lePythonUrl, 1, 1, 1, 1);
+
+        label_186 = new QLabel(fExternalScriptPanel);
+        label_186->setObjectName(QString::fromUtf8("label_186"));
+
+        gridLayout_28->addWidget(label_186, 4, 1, 1, 1);
+
+        pbExternalScriptOpen = new QPushButton(fExternalScriptPanel);
+        pbExternalScriptOpen->setObjectName(QString::fromUtf8("pbExternalScriptOpen"));
+        sizePolicy6.setHeightForWidth(pbExternalScriptOpen->sizePolicy().hasHeightForWidth());
+        pbExternalScriptOpen->setSizePolicy(sizePolicy6);
+        pbExternalScriptOpen->setMaximumSize(QSize(30, 16777215));
+        QIcon icon27;
+        icon27.addFile(QString::fromUtf8(":/icon/icons8_folder_64px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbExternalScriptOpen->setIcon(icon27);
+
+        gridLayout_28->addWidget(pbExternalScriptOpen, 1, 2, 1, 1);
+
+        label_224 = new QLabel(fExternalScriptPanel);
+        label_224->setObjectName(QString::fromUtf8("label_224"));
+
+        gridLayout_28->addWidget(label_224, 7, 1, 1, 1);
+
+        label_146 = new QLabel(fExternalScriptPanel);
+        label_146->setObjectName(QString::fromUtf8("label_146"));
+
+        gridLayout_28->addWidget(label_146, 2, 0, 1, 1);
+
+        pbRunExternalScript = new QPushButton(fExternalScriptPanel);
+        pbRunExternalScript->setObjectName(QString::fromUtf8("pbRunExternalScript"));
+        sizePolicy6.setHeightForWidth(pbRunExternalScript->sizePolicy().hasHeightForWidth());
+        pbRunExternalScript->setSizePolicy(sizePolicy6);
+        pbRunExternalScript->setMaximumSize(QSize(30, 16777215));
+        QIcon icon28;
+        icon28.addFile(QString::fromUtf8(":/icon/icons8_play_48px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        icon28.addFile(QString::fromUtf8(":/icon/Pause_96px.png"), QSize(), QIcon::Normal, QIcon::On);
+        pbRunExternalScript->setIcon(icon28);
+        pbRunExternalScript->setCheckable(true);
+
+        gridLayout_28->addWidget(pbRunExternalScript, 1, 3, 1, 1);
 
         pbExternalScriptHelp = new QPushButton(fExternalScriptPanel);
         pbExternalScriptHelp->setObjectName(QString::fromUtf8("pbExternalScriptHelp"));
@@ -3680,51 +3638,13 @@ public:
 
         gridLayout_28->addWidget(label_187, 6, 1, 1, 3);
 
-        label_185 = new QLabel(fExternalScriptPanel);
-        label_185->setObjectName(QString::fromUtf8("label_185"));
+        cbImageSource = new QComboBox(fExternalScriptPanel);
+        cbImageSource->addItem(QString());
+        cbImageSource->addItem(QString());
+        cbImageSource->addItem(QString());
+        cbImageSource->setObjectName(QString::fromUtf8("cbImageSource"));
 
-        gridLayout_28->addWidget(label_185, 6, 0, 1, 1);
-
-        label_149 = new QLabel(fExternalScriptPanel);
-        label_149->setObjectName(QString::fromUtf8("label_149"));
-
-        gridLayout_28->addWidget(label_149, 3, 0, 1, 1);
-
-        pbOpenScriptExample = new QPushButton(fExternalScriptPanel);
-        pbOpenScriptExample->setObjectName(QString::fromUtf8("pbOpenScriptExample"));
-        QSizePolicy sizePolicy16(QSizePolicy::Maximum, QSizePolicy::Minimum);
-        sizePolicy16.setHorizontalStretch(0);
-        sizePolicy16.setVerticalStretch(0);
-        sizePolicy16.setHeightForWidth(pbOpenScriptExample->sizePolicy().hasHeightForWidth());
-        pbOpenScriptExample->setSizePolicy(sizePolicy16);
-        pbOpenScriptExample->setMinimumSize(QSize(0, 30));
-        pbOpenScriptExample->setStyleSheet(QString::fromUtf8("QPushButton\n"
-"{\n"
-"	padding: 5px;\n"
-"}"));
-
-        gridLayout_28->addWidget(pbOpenScriptExample, 0, 0, 1, 1);
-
-        pbExternalScriptOpen = new QPushButton(fExternalScriptPanel);
-        pbExternalScriptOpen->setObjectName(QString::fromUtf8("pbExternalScriptOpen"));
-        sizePolicy6.setHeightForWidth(pbExternalScriptOpen->sizePolicy().hasHeightForWidth());
-        pbExternalScriptOpen->setSizePolicy(sizePolicy6);
-        pbExternalScriptOpen->setMaximumSize(QSize(30, 16777215));
-        QIcon icon27;
-        icon27.addFile(QString::fromUtf8(":/icon/icons8_folder_64px.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbExternalScriptOpen->setIcon(icon27);
-
-        gridLayout_28->addWidget(pbExternalScriptOpen, 1, 2, 1, 1);
-
-        label_184 = new QLabel(fExternalScriptPanel);
-        label_184->setObjectName(QString::fromUtf8("label_184"));
-
-        gridLayout_28->addWidget(label_184, 4, 0, 1, 1);
-
-        label_186 = new QLabel(fExternalScriptPanel);
-        label_186->setObjectName(QString::fromUtf8("label_186"));
-
-        gridLayout_28->addWidget(label_186, 4, 1, 1, 1);
+        gridLayout_28->addWidget(cbImageSource, 2, 1, 1, 1);
 
         cbSendingImageMethod = new QComboBox(fExternalScriptPanel);
         cbSendingImageMethod->addItem(QString());
@@ -3732,29 +3652,6 @@ public:
         cbSendingImageMethod->setObjectName(QString::fromUtf8("cbSendingImageMethod"));
 
         gridLayout_28->addWidget(cbSendingImageMethod, 3, 1, 1, 1);
-
-        pbRunExternalScript = new QPushButton(fExternalScriptPanel);
-        pbRunExternalScript->setObjectName(QString::fromUtf8("pbRunExternalScript"));
-        sizePolicy6.setHeightForWidth(pbRunExternalScript->sizePolicy().hasHeightForWidth());
-        pbRunExternalScript->setSizePolicy(sizePolicy6);
-        pbRunExternalScript->setMaximumSize(QSize(30, 16777215));
-        QIcon icon28;
-        icon28.addFile(QString::fromUtf8(":/icon/icons8_play_48px.png"), QSize(), QIcon::Normal, QIcon::Off);
-        icon28.addFile(QString::fromUtf8(":/icon/Pause_96px.png"), QSize(), QIcon::Normal, QIcon::On);
-        pbRunExternalScript->setIcon(icon28);
-        pbRunExternalScript->setCheckable(true);
-
-        gridLayout_28->addWidget(pbRunExternalScript, 1, 3, 1, 1);
-
-        label_146 = new QLabel(fExternalScriptPanel);
-        label_146->setObjectName(QString::fromUtf8("label_146"));
-
-        gridLayout_28->addWidget(label_146, 2, 0, 1, 1);
-
-        label_224 = new QLabel(fExternalScriptPanel);
-        label_224->setObjectName(QString::fromUtf8("label_224"));
-
-        gridLayout_28->addWidget(label_224, 7, 1, 1, 1);
 
 
         verticalLayout_31->addWidget(fExternalScriptPanel);
@@ -3858,6 +3755,162 @@ public:
 
 
         verticalLayout_32->addWidget(gbCameraObject);
+
+        gbTracking = new QGroupBox(fObjectDetectingTool);
+        gbTracking->setObjectName(QString::fromUtf8("gbTracking"));
+        gbTracking->setFont(font7);
+        gbTracking->setStyleSheet(QString::fromUtf8("QPushButton\n"
+"{\n"
+"	padding:5px;\n"
+"}"));
+        gbTracking->setFlat(false);
+        gbTracking->setCheckable(true);
+        verticalLayout_41 = new QVBoxLayout(gbTracking);
+        verticalLayout_41->setSpacing(6);
+        verticalLayout_41->setContentsMargins(11, 11, 11, 11);
+        verticalLayout_41->setObjectName(QString::fromUtf8("verticalLayout_41"));
+        fTracking = new QFrame(gbTracking);
+        fTracking->setObjectName(QString::fromUtf8("fTracking"));
+        fTracking->setMinimumSize(QSize(0, 200));
+        fTracking->setFrameShape(QFrame::StyledPanel);
+        fTracking->setFrameShadow(QFrame::Raised);
+        verticalLayout_49 = new QVBoxLayout(fTracking);
+        verticalLayout_49->setSpacing(6);
+        verticalLayout_49->setContentsMargins(11, 11, 11, 11);
+        verticalLayout_49->setObjectName(QString::fromUtf8("verticalLayout_49"));
+        verticalLayout_49->setContentsMargins(0, 0, 0, 0);
+        tabWidget = new QTabWidget(fTracking);
+        tabWidget->setObjectName(QString::fromUtf8("tabWidget"));
+        tabWidget->setStyleSheet(QString::fromUtf8("#widgetMatching\n"
+"{\n"
+"	background-color: rgb(38, 38, 41);\n"
+"}"));
+        widgetMatching = new QWidget();
+        widgetMatching->setObjectName(QString::fromUtf8("widgetMatching"));
+        verticalLayout_18 = new QVBoxLayout(widgetMatching);
+        verticalLayout_18->setSpacing(6);
+        verticalLayout_18->setContentsMargins(11, 11, 11, 11);
+        verticalLayout_18->setObjectName(QString::fromUtf8("verticalLayout_18"));
+        fCheckSameObjectPanel = new QFrame(widgetMatching);
+        fCheckSameObjectPanel->setObjectName(QString::fromUtf8("fCheckSameObjectPanel"));
+        fCheckSameObjectPanel->setMinimumSize(QSize(0, 0));
+        fCheckSameObjectPanel->setStyleSheet(QString::fromUtf8(""));
+        fCheckSameObjectPanel->setFrameShape(QFrame::StyledPanel);
+        fCheckSameObjectPanel->setFrameShadow(QFrame::Raised);
+        gridLayout_17 = new QGridLayout(fCheckSameObjectPanel);
+        gridLayout_17->setSpacing(6);
+        gridLayout_17->setContentsMargins(11, 11, 11, 11);
+        gridLayout_17->setObjectName(QString::fromUtf8("gridLayout_17"));
+        label_4 = new QLabel(fCheckSameObjectPanel);
+        label_4->setObjectName(QString::fromUtf8("label_4"));
+        sizePolicy6.setHeightForWidth(label_4->sizePolicy().hasHeightForWidth());
+        label_4->setSizePolicy(sizePolicy6);
+        label_4->setMaximumSize(QSize(300, 100));
+        label_4->setPixmap(QPixmap(QString::fromUtf8(":/icon/IoU-threshold.png")));
+        label_4->setScaledContents(true);
+
+        gridLayout_17->addWidget(label_4, 2, 1, 1, 5);
+
+        label_46 = new QLabel(fCheckSameObjectPanel);
+        label_46->setObjectName(QString::fromUtf8("label_46"));
+
+        gridLayout_17->addWidget(label_46, 4, 1, 1, 1);
+
+        leDistanceThreshold_Y = new QLineEdit(fCheckSameObjectPanel);
+        leDistanceThreshold_Y->setObjectName(QString::fromUtf8("leDistanceThreshold_Y"));
+        sizePolicy6.setHeightForWidth(leDistanceThreshold_Y->sizePolicy().hasHeightForWidth());
+        leDistanceThreshold_Y->setSizePolicy(sizePolicy6);
+        leDistanceThreshold_Y->setMinimumSize(QSize(0, 30));
+        leDistanceThreshold_Y->setMaximumSize(QSize(50, 16777215));
+        leDistanceThreshold_Y->setAlignment(Qt::AlignCenter);
+
+        gridLayout_17->addWidget(leDistanceThreshold_Y, 5, 3, 1, 1);
+
+        label_183 = new QLabel(fCheckSameObjectPanel);
+        label_183->setObjectName(QString::fromUtf8("label_183"));
+        label_183->setMinimumSize(QSize(30, 0));
+        label_183->setAlignment(Qt::AlignCenter);
+
+        gridLayout_17->addWidget(label_183, 4, 2, 1, 1);
+
+        label_182 = new QLabel(fCheckSameObjectPanel);
+        label_182->setObjectName(QString::fromUtf8("label_182"));
+        label_182->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+
+        gridLayout_17->addWidget(label_182, 4, 4, 1, 1);
+
+        label_225 = new QLabel(fCheckSameObjectPanel);
+        label_225->setObjectName(QString::fromUtf8("label_225"));
+        label_225->setAlignment(Qt::AlignCenter);
+
+        gridLayout_17->addWidget(label_225, 5, 2, 1, 1);
+
+        label_45 = new QLabel(fCheckSameObjectPanel);
+        label_45->setObjectName(QString::fromUtf8("label_45"));
+        label_45->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+
+        gridLayout_17->addWidget(label_45, 1, 1, 1, 1);
+
+        label_237 = new QLabel(fCheckSameObjectPanel);
+        label_237->setObjectName(QString::fromUtf8("label_237"));
+        label_237->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+
+        gridLayout_17->addWidget(label_237, 5, 4, 1, 1);
+
+        horizontalSpacer_11 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        gridLayout_17->addItem(horizontalSpacer_11, 2, 6, 1, 1);
+
+        horizontalSpacer_68 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        gridLayout_17->addItem(horizontalSpacer_68, 4, 6, 1, 1);
+
+        leIoUThreshold = new QLineEdit(fCheckSameObjectPanel);
+        leIoUThreshold->setObjectName(QString::fromUtf8("leIoUThreshold"));
+        sizePolicy6.setHeightForWidth(leIoUThreshold->sizePolicy().hasHeightForWidth());
+        leIoUThreshold->setSizePolicy(sizePolicy6);
+        leIoUThreshold->setMinimumSize(QSize(0, 30));
+        leIoUThreshold->setMaximumSize(QSize(50, 16777215));
+        leIoUThreshold->setAlignment(Qt::AlignCenter);
+
+        gridLayout_17->addWidget(leIoUThreshold, 1, 3, 1, 1);
+
+        leDistanceThreshold = new QLineEdit(fCheckSameObjectPanel);
+        leDistanceThreshold->setObjectName(QString::fromUtf8("leDistanceThreshold"));
+        sizePolicy6.setHeightForWidth(leDistanceThreshold->sizePolicy().hasHeightForWidth());
+        leDistanceThreshold->setSizePolicy(sizePolicy6);
+        leDistanceThreshold->setMinimumSize(QSize(0, 30));
+        leDistanceThreshold->setMaximumSize(QSize(50, 16777215));
+        leDistanceThreshold->setAlignment(Qt::AlignCenter);
+
+        gridLayout_17->addWidget(leDistanceThreshold, 4, 3, 1, 1);
+
+        horizontalSpacer_70 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        gridLayout_17->addItem(horizontalSpacer_70, 6, 6, 1, 1);
+
+        label_35 = new QLabel(fCheckSameObjectPanel);
+        label_35->setObjectName(QString::fromUtf8("label_35"));
+        sizePolicy6.setHeightForWidth(label_35->sizePolicy().hasHeightForWidth());
+        label_35->setSizePolicy(sizePolicy6);
+        label_35->setMaximumSize(QSize(300, 100));
+        label_35->setPixmap(QPixmap(QString::fromUtf8(":/icon/Distance-Threshold.png")));
+        label_35->setScaledContents(true);
+
+        gridLayout_17->addWidget(label_35, 6, 1, 1, 5);
+
+
+        verticalLayout_18->addWidget(fCheckSameObjectPanel);
+
+        tabWidget->addTab(widgetMatching, QString());
+
+        verticalLayout_49->addWidget(tabWidget);
+
+
+        verticalLayout_41->addWidget(fTracking);
+
+
+        verticalLayout_32->addWidget(gbTracking);
 
         gbCameraVariable = new QGroupBox(fObjectDetectingTool);
         gbCameraVariable->setObjectName(QString::fromUtf8("gbCameraVariable"));
@@ -10193,14 +10246,17 @@ public:
         QObject::connect(gbCameraVariable, SIGNAL(toggled(bool)), fVisionVariableFrame, SLOT(setVisible(bool)));
         QObject::connect(pbCalibStep2, SIGNAL(toggled(bool)), fCalibStep2, SLOT(setVisible(bool)));
         QObject::connect(gbTrackingManager, SIGNAL(toggled(bool)), fTrackingManager, SLOT(setVisible(bool)));
+        QObject::connect(gbTracking, SIGNAL(toggled(bool)), fTracking, SLOT(setVisible(bool)));
+        QObject::connect(gbImageViewer, SIGNAL(toggled(bool)), fImageViewer, SLOT(setVisible(bool)));
 
         pbRunServer->setDefault(false);
         pbOpenWebControl->setDefault(false);
-        twModule->setCurrentIndex(0);
+        twModule->setCurrentIndex(1);
         twGcodeEditor->setCurrentIndex(0);
         pbImageMapping->setDefault(false);
         cbImageSource->setCurrentIndex(0);
         cbSendingImageMethod->setCurrentIndex(0);
+        tabWidget->setCurrentIndex(0);
         twDevices->setCurrentIndex(3);
         pbPump->setDefault(false);
         pbLaser->setDefault(false);
@@ -10520,17 +10576,6 @@ public:
         cbDetectingAlgorithm->setItemText(1, QCoreApplication::translate("RobotWindow", "Find Circles", nullptr));
         cbDetectingAlgorithm->setItemText(2, QCoreApplication::translate("RobotWindow", "External Script", nullptr));
 
-        label_4->setText(QString());
-        label_46->setText(QCoreApplication::translate("RobotWindow", "Distance Threshold", nullptr));
-        leDistanceThreshold_Y->setText(QCoreApplication::translate("RobotWindow", "7", nullptr));
-        label_183->setText(QCoreApplication::translate("RobotWindow", "X", nullptr));
-        label_182->setText(QCoreApplication::translate("RobotWindow", "mm", nullptr));
-        label_225->setText(QCoreApplication::translate("RobotWindow", "Y", nullptr));
-        label_45->setText(QCoreApplication::translate("RobotWindow", "IoU Threshold", nullptr));
-        label_237->setText(QCoreApplication::translate("RobotWindow", "mm", nullptr));
-        leIoUThreshold->setText(QCoreApplication::translate("RobotWindow", "0.3", nullptr));
-        leDistanceThreshold->setText(QCoreApplication::translate("RobotWindow", "2", nullptr));
-        label_35->setText(QString());
         label_173->setText(QCoreApplication::translate("RobotWindow", "Max", nullptr));
         label_172->setText(QCoreApplication::translate("RobotWindow", "Min", nullptr));
         label_42->setText(QCoreApplication::translate("RobotWindow", "Width", nullptr));
@@ -10553,27 +10598,27 @@ public:
         label_163->setText(QCoreApplication::translate("RobotWindow", "Type", nullptr));
         label_43->setText(QCoreApplication::translate("RobotWindow", "Length", nullptr));
         leWRec->setText(QCoreApplication::translate("RobotWindow", "30", nullptr));
+        label_149->setText(QCoreApplication::translate("RobotWindow", "Method", nullptr));
         label_209->setText(QCoreApplication::translate("RobotWindow", "v2 byte: \"Image\\n\" + data", nullptr));
+        label_185->setText(QCoreApplication::translate("RobotWindow", "Receive format", nullptr));
+        pbOpenScriptExample->setText(QCoreApplication::translate("RobotWindow", "Open script example", nullptr));
+        label_184->setText(QCoreApplication::translate("RobotWindow", "Sending format", nullptr));
+        lePythonUrl->setText(QCoreApplication::translate("RobotWindow", "script-example/yolov8_detect.py", nullptr));
+        label_186->setText(QCoreApplication::translate("RobotWindow", "v1 byte:  \"[width][height][channel][data]\"", nullptr));
+        pbExternalScriptOpen->setText(QString());
+        label_224->setText(QCoreApplication::translate("RobotWindow", "or string: \"#Blobs = [id],[x],[y],[width],[height],[angle];\"", nullptr));
+        label_146->setText(QCoreApplication::translate("RobotWindow", "Transmission Image", nullptr));
+        pbRunExternalScript->setText(QString());
+        pbExternalScriptHelp->setText(QCoreApplication::translate("RobotWindow", "?", nullptr));
+        label_145->setText(QCoreApplication::translate("RobotWindow", "Python Url", nullptr));
+        label_187->setText(QCoreApplication::translate("RobotWindow", "string: \"#Object = [id],[x],[y],[width],[height],[angle];\"", nullptr));
         cbImageSource->setItemText(0, QCoreApplication::translate("RobotWindow", "Origin Image", nullptr));
         cbImageSource->setItemText(1, QCoreApplication::translate("RobotWindow", "Calibrated Image", nullptr));
         cbImageSource->setItemText(2, QCoreApplication::translate("RobotWindow", "Color Filtered Image", nullptr));
 
-        lePythonUrl->setText(QCoreApplication::translate("RobotWindow", "script-example/yolov8_detect.py", nullptr));
-        pbExternalScriptHelp->setText(QCoreApplication::translate("RobotWindow", "?", nullptr));
-        label_145->setText(QCoreApplication::translate("RobotWindow", "Python Url", nullptr));
-        label_187->setText(QCoreApplication::translate("RobotWindow", "string: \"#Object = [id],[x],[y],[width],[height],[angle];\"", nullptr));
-        label_185->setText(QCoreApplication::translate("RobotWindow", "Receive format", nullptr));
-        label_149->setText(QCoreApplication::translate("RobotWindow", "Method", nullptr));
-        pbOpenScriptExample->setText(QCoreApplication::translate("RobotWindow", "Open script example", nullptr));
-        pbExternalScriptOpen->setText(QString());
-        label_184->setText(QCoreApplication::translate("RobotWindow", "Sending format", nullptr));
-        label_186->setText(QCoreApplication::translate("RobotWindow", "v1 byte:  \"[width][height][channel][data]\"", nullptr));
         cbSendingImageMethod->setItemText(0, QCoreApplication::translate("RobotWindow", "v1", nullptr));
         cbSendingImageMethod->setItemText(1, QCoreApplication::translate("RobotWindow", "v2", nullptr));
 
-        pbRunExternalScript->setText(QString());
-        label_146->setText(QCoreApplication::translate("RobotWindow", "Transmission Image", nullptr));
-        label_224->setText(QCoreApplication::translate("RobotWindow", "or string: \"#Blobs = [id],[x],[y],[width],[height],[angle];\"", nullptr));
         leCenterThreshold->setText(QCoreApplication::translate("RobotWindow", "30", nullptr));
         leEdgeThreshold->setText(QCoreApplication::translate("RobotWindow", "100", nullptr));
         label_193->setText(QCoreApplication::translate("RobotWindow", "mm", nullptr));
@@ -10586,6 +10631,19 @@ public:
         label_188->setText(QCoreApplication::translate("RobotWindow", "Edge Threshold", nullptr));
         label_198->setText(QCoreApplication::translate("RobotWindow", "max 250", nullptr));
         label_199->setText(QCoreApplication::translate("RobotWindow", "max 250", nullptr));
+        gbTracking->setTitle(QCoreApplication::translate("RobotWindow", "Tracking", nullptr));
+        label_4->setText(QString());
+        label_46->setText(QCoreApplication::translate("RobotWindow", "Distance Threshold", nullptr));
+        leDistanceThreshold_Y->setText(QCoreApplication::translate("RobotWindow", "7", nullptr));
+        label_183->setText(QCoreApplication::translate("RobotWindow", "X", nullptr));
+        label_182->setText(QCoreApplication::translate("RobotWindow", "mm", nullptr));
+        label_225->setText(QCoreApplication::translate("RobotWindow", "Y", nullptr));
+        label_45->setText(QCoreApplication::translate("RobotWindow", "IoU Threshold", nullptr));
+        label_237->setText(QCoreApplication::translate("RobotWindow", "mm", nullptr));
+        leIoUThreshold->setText(QCoreApplication::translate("RobotWindow", "0.3", nullptr));
+        leDistanceThreshold->setText(QCoreApplication::translate("RobotWindow", "2", nullptr));
+        label_35->setText(QString());
+        tabWidget->setTabText(tabWidget->indexOf(widgetMatching), QCoreApplication::translate("RobotWindow", "Matching", nullptr));
         gbCameraVariable->setTitle(QCoreApplication::translate("RobotWindow", "Variable", nullptr));
         label_34->setText(QCoreApplication::translate("RobotWindow", "Auto Update", nullptr));
         cbAutoUpdateObjectsDisplay->setItemText(0, QCoreApplication::translate("RobotWindow", "No", nullptr));
