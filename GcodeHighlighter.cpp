@@ -35,7 +35,7 @@ GCodeHighlighter::GCodeHighlighter(QTextDocument *parent) : QSyntaxHighlighter(p
     QTextCharFormat ifthenFormat;
     ifthenFormat.setForeground(QColor("#3195EF"));
     ifthenFormat.setFontWeight(QFont::Bold);
-    QRegularExpression ifRegex("\\bIF\\b|\\bTHEN\\b");
+    QRegularExpression ifRegex("\\bIF\\b|\\bTHEN\\b|\\bELIF\\b|\\bELSE\\b|\\bENDIF\\b");
     rule = {ifRegex, ifthenFormat};
     highlightRules.append(rule);
 

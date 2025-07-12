@@ -256,12 +256,48 @@ N20 GOTO 10 ; Jump to line N10</div>
             <strong>⚠️ Caution:</strong> Using GOTO can create infinite loops. Always have stop conditions.
         </div>
 
-        <h3 id="if-then">3.2. ❓ IF...THEN - Conditional</h3>
-        <p>Execute commands based on conditions:</p>
+        <h3 id="if-then">3.2. ❓ IF...ELIF...ELSE...ENDIF - Conditional</h3>
+        <p>GScript supports complete conditional structure with IF-ELIF-ELSE-ENDIF:</p>
 
+        <h4>3.2.1. Single-line syntax:</h4>
         <div class="code-block">; Syntax: IF [condition] THEN [command]
 IF #counter == 5 THEN GOTO 100
-IF #sensor_value > 50 THEN M05</div>
+IF #sensor_value > 50 THEN M05
+
+; With ELIF and ELSE
+IF #temp > 80 THEN M05
+ELIF #temp > 60 THEN M04
+ELSE M03</div>
+
+        <h4>3.2.2. Multi-line block syntax:</h4>
+        <div class="code-block">; Complete block syntax
+IF #counter < 5 THEN
+    G01 X[#counter * 10] Y100
+    M03
+    G04 P1000
+ELIF #counter < 10 THEN
+    G01 X[#counter * 5] Y200
+    M04
+ELSE
+    G01 X300 Y300
+    M05
+ENDIF</div>
+
+        <h4>3.2.3. Nested IF:</h4>
+        <div class="code-block">IF #mode == 1 THEN
+    IF #counter > 5 THEN
+        G01 X100 Y100
+        M03
+    ELSE
+        G01 X200 Y200
+        M04
+    ENDIF
+ELIF #mode == 2 THEN
+    G01 X300 Y300
+    M05
+ELSE
+    G28 ; Home
+ENDIF</div>
 
         <div class="table-container">
             <table>

@@ -15,6 +15,7 @@
 #include <QTransform>
 #include <QVariant>
 #include <QRegularExpression>
+#include <QStack>
 
 class GcodeScript : public QObject
 {
@@ -117,6 +118,19 @@ private:
 
     QElapsedTimer elapsedTimer;
     
+    // IF-ELIF-ELSE-ENDIF block state tracking
+    struct IfBlockState {
+        bool conditionMet;      // True if any IF/ELIF condition was met
+        bool insideBlock;       // True if we're inside this IF block
+        int startLine;          // Line number where this IF block started
+        int endLine;            // Line number where this IF block ends (ENDIF)
+        
+        IfBlockState() : conditionMet(false), insideBlock(false), startLine(-1), endLine(-1) {}
+        IfBlockState(bool met, bool inside, int start) : conditionMet(met), insideBlock(inside), startLine(start), endLine(-1) {}
+    };
+    
+    QStack<IfBlockState> ifBlockStack;  // Stack to handle nested IF blocks
+    
     // Pre-compiled regex patterns for better performance
     static const QRegularExpression m98Regex;
     static const QRegularExpression objectInAreaRegex;
@@ -150,6 +164,10 @@ private:
 
     bool handleGOTO(QList<QString> valuePairs, int i);
     bool handleIF(QList<QString> valuePairs, int i);
+    bool handleELIF(QList<QString> valuePairs, int i);
+    bool handleELSE(QList<QString> valuePairs, int i);
+    bool handleENDIF(QList<QString> valuePairs, int i);
+    void skipToNextConditional(); // Skip to next ELIF, ELSE, or ENDIF
     bool handleVARIABLE(QList<QString> valuePairs, int i);
     bool handleDEFINE_SUBPROGRAM(QList<QString> valuePairs, int i);
     bool handleGCODE(QString transmitGcode);

@@ -106,14 +106,57 @@ N20 GOTO 10 ; Nhảy về dòng N10
 
 > ⚠️ **Cẩn thận:** Sử dụng GOTO có thể tạo vòng lặp vô hạn. Luôn có điều kiện dừng.
 
-### 3.2. ❓ IF...THEN - Điều kiện
+### 3.2. ❓ IF...ELIF...ELSE...ENDIF - Điều kiện
 
-Thực hiện lệnh dựa trên điều kiện:
+GScript hỗ trợ cấu trúc điều kiện hoàn chỉnh với IF-ELIF-ELSE-ENDIF:
+
+#### 3.2.1. Cú pháp đơn giản (Single-line):
 
 ```gcode
 ; Cú pháp: IF [điều kiện] THEN [lệnh]
 IF #counter == 5 THEN GOTO 100
 IF #sensor_value > 50 THEN M05
+
+; Với ELIF và ELSE
+IF #temp > 80 THEN M05
+ELIF #temp > 60 THEN M04
+ELSE M03
+```
+
+#### 3.2.2. Cú pháp khối (Multi-line):
+
+```gcode
+; Cú pháp khối hoàn chỉnh
+IF #counter < 5 THEN
+    G01 X[#counter * 10] Y100
+    M03
+    G04 P1000
+ELIF #counter < 10 THEN
+    G01 X[#counter * 5] Y200
+    M04
+ELSE
+    G01 X300 Y300
+    M05
+ENDIF
+```
+
+#### 3.2.3. Nested IF (IF lồng nhau):
+
+```gcode
+IF #mode == 1 THEN
+    IF #counter > 5 THEN
+        G01 X100 Y100
+        M03
+    ELSE
+        G01 X200 Y200
+        M04
+    ENDIF
+ELIF #mode == 2 THEN
+    G01 X300 Y300
+    M05
+ELSE
+    G28 ; Về Home
+ENDIF
 ```
 
 | Toán tử so sánh | Mô tả | Ví dụ |
@@ -340,6 +383,97 @@ M98 PdeleteFirstObject
 
 ; Di chuyển đến điểm đã biến đổi
 G01 X[#target_point.X] Y[#target_point.Y]
+```
+
+### 7.5. Sử dụng IF-ELIF-ELSE-ENDIF nâng cao
+
+```gcode
+; Chương trình phân loại và xử lý objects theo kích thước
+G28 ; Về Home
+M98 PcaptureAndDetect ; Chụp ảnh và phát hiện objects
+
+#object_count = 0
+#max_objects = 20
+
+N500 ; Vòng lặp chính
+    ; Kiểm tra xem còn objects không
+    IF #objects.0.X == NULL THEN
+        GOTO 999 ; Kết thúc nếu hết objects
+    ENDIF
+    
+    ; Lấy kích thước object
+    #object_width = #objects.0.W
+    #object_length = #objects.0.L
+    #object_area = #object_width * #object_length
+    
+    ; Phân loại object theo kích thước
+    IF #object_area > 2000 THEN
+        ; Object lớn - đặt vào khu vực A
+        G01 X[100 + #object_count * 40] Y100
+        G01 Z-150
+        M03 ; Bật gripper
+        G04 P1000
+        G01 Z-50
+        
+        ; Đặt vào khu vực A
+        G01 X500 Y100
+        G01 Z-150
+        M05 ; Tắt gripper
+        G01 Z-50
+        
+    ELIF #object_area > 1000 THEN
+        ; Object trung bình - đặt vào khu vực B
+        G01 X[100 + #object_count * 40] Y200
+        G01 Z-150
+        M03
+        G04 P1000
+        G01 Z-50
+        
+        ; Đặt vào khu vực B
+        G01 X500 Y200
+        G01 Z-150
+        M05
+        G01 Z-50
+        
+    ELIF #object_area > 500 THEN
+        ; Object nhỏ - đặt vào khu vực C
+        G01 X[100 + #object_count * 40] Y300
+        G01 Z-150
+        M03
+        G04 P1000
+        G01 Z-50
+        
+        ; Đặt vào khu vực C
+        G01 X500 Y300
+        G01 Z-150
+        M05
+        G01 Z-50
+        
+    ELSE
+        ; Object quá nhỏ - bỏ qua hoặc loại bỏ
+        G01 X[100 + #object_count * 40] Y400
+        G01 Z-150
+        M03
+        G04 P500 ; Chờ ngắn hơn
+        G01 Z-50
+        
+        ; Đặt vào khu vực loại bỏ
+        G01 X600 Y400
+        G01 Z-150
+        M05
+        G01 Z-50
+    ENDIF
+    
+    ; Xóa object đã xử lý
+    M98 PdeleteFirstObject
+    
+    #object_count = #object_count + 1
+    IF #object_count < #max_objects THEN
+        GOTO 500
+    ENDIF
+
+N999 ; Kết thúc
+G28 ; Về Home
 ```
 
 ---

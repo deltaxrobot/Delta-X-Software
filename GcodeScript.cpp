@@ -58,6 +58,9 @@ void GcodeScript::ExecuteGcode(QString gcodes, int startMode)
 
     gcodeList.clear();
     lineNumberCacheValid = false;  // Invalidate cache when gcodeList changes
+    
+    // Clear IF block stack when starting new script
+    ifBlockStack.clear();
 
     if (startMode == BEGIN)
     {
@@ -181,6 +184,9 @@ void GcodeScript::Stop()
 
     gcodeList.clear();
     gcodeOrder = 0;
+    
+    // Clear IF block stack on stop
+    ifBlockStack.clear();
 }
 
 void GcodeScript::ReceivedGcode(QString gcode)
@@ -291,11 +297,13 @@ void GcodeScript::normalizeOperators()
     currentLine.replace(QRegularExpression("([^\\s])\\+\\s"), "\\1 + ");
     currentLine.replace(QRegularExpression("\\s\\+([^\\s])"), " + \\1");
     
-    // 3. Handle subtraction carefully - avoid breaking negative numbers
-    // Only add spaces if it's clearly a subtraction operation (not a negative number)
-    currentLine.replace(QRegularExpression("([a-zA-Z0-9_\\.\\]])\\-([a-zA-Z0-9_\\.\\#])"), "\\1 - \\2");
-    currentLine.replace(QRegularExpression("([a-zA-Z0-9_\\.\\]])\\-\\s"), "\\1 - ");
-    currentLine.replace(QRegularExpression("\\s\\-([a-zA-Z0-9_\\.\\#])"), " - \\1");
+    // 3. Handle subtraction carefully - avoid breaking negative numbers and G-code coordinates
+    // Only add spaces if it's clearly a subtraction operation (not a negative number or G-code coordinate)
+    // Don't add spaces for G-code coordinates like X-10, Y-20, Z-430, etc.
+    // Use negative lookahead to avoid matching single letter followed by minus and digit
+    currentLine.replace(QRegularExpression("(?<![A-Z])([a-zA-Z0-9_\\.\\]])\\-(?![0-9])([a-zA-Z0-9_\\.\\#])"), "\\1 - \\2");
+    currentLine.replace(QRegularExpression("(?<![A-Z])([a-zA-Z0-9_\\.\\]])\\-\\s"), "\\1 - ");
+    currentLine.replace(QRegularExpression("\\s\\-(?![0-9])([a-zA-Z0-9_\\.\\#])"), " - \\1");
     
     // 4. Handle single < and > (after handling <= and >=)
     currentLine.replace(QRegularExpression("([^\\s<])(<)([^\\s=])"), "\\1 \\2 \\3");
@@ -358,12 +366,12 @@ void GcodeScript::normalizeExpressionOperators(QString& expression)
     expression.replace(QRegularExpression("([^\\s])\\+\\s"), "\\1 + ");
     expression.replace(QRegularExpression("\\s\\+([^\\s])"), " + \\1");
     
-    // 2. Handle subtraction carefully - avoid breaking negative numbers
-    // Only add spaces if it's clearly a subtraction operation (not a negative number)
-    // Pattern: letter/digit/dot/bracket followed by minus followed by letter/digit/dot/#
-    expression.replace(QRegularExpression("([a-zA-Z0-9_\\.\\]])\\-([a-zA-Z0-9_\\.\\#])"), "\\1 - \\2");
-    expression.replace(QRegularExpression("([a-zA-Z0-9_\\.\\]])\\-\\s"), "\\1 - ");
-    expression.replace(QRegularExpression("\\s\\-([a-zA-Z0-9_\\.\\#])"), " - \\1");
+    // 2. Handle subtraction carefully - avoid breaking negative numbers and G-code coordinates
+    // Only add spaces if it's clearly a subtraction operation (not a negative number or G-code coordinate)
+    // Use negative lookahead to avoid matching single letter followed by minus and digit
+    expression.replace(QRegularExpression("(?<![A-Z])([a-zA-Z0-9_\\.\\]])\\-(?![0-9])([a-zA-Z0-9_\\.\\#])"), "\\1 - \\2");
+    expression.replace(QRegularExpression("(?<![A-Z])([a-zA-Z0-9_\\.\\]])\\-\\s"), "\\1 - ");
+    expression.replace(QRegularExpression("\\s\\-(?![0-9])([a-zA-Z0-9_\\.\\#])"), " - \\1");
     
     // 3. Handle single < and > (after handling <= and >=)
     expression.replace(QRegularExpression("([^\\s<])(<)([^\\s=])"), "\\1 \\2 \\3");
@@ -780,13 +788,34 @@ bool GcodeScript::findExeGcodeAndTransmit()
             return handleGOTO(valuePairs, i);
         }
 
-        // --------------- IF ---------------------
-        if (currentToken == "IF" && valuePairsSize > (i + 3))
+        // --------------- IF-ELIF-ELSE-ENDIF ---------------------
+        if (currentToken == "IF" && valuePairsSize > (i + 2))
         {
             if (valuePairs[i + 2] == "THEN")
             {
                 return handleIF(valuePairs, i);
             }
+        }
+        
+        // --------------- ELIF ---------------------
+        if (currentToken == "ELIF" && valuePairsSize > (i + 2))
+        {
+            if (valuePairs[i + 2] == "THEN")
+            {
+                return handleELIF(valuePairs, i);
+            }
+        }
+        
+        // --------------- ELSE ---------------------
+        if (currentToken == "ELSE")
+        {
+            return handleELSE(valuePairs, i);
+        }
+        
+        // --------------- ENDIF ---------------------
+        if (currentToken == "ENDIF")
+        {
+            return handleENDIF(valuePairs, i);
         }        
 
         // --------------- DEFINE SUBPROGRAM ------
@@ -1150,26 +1179,49 @@ bool GcodeScript::handleGOTO(QList<QString> valuePairs, int i)
 
 bool GcodeScript::handleIF(QList<QString> valuePairs, int i)
 {
-    QString statement = currentLine.mid(currentLine.indexOf("THEN") + 5);
-
-    bool result = false;
-
-    if (valuePairs[i + 1] == "1")
+    // Evaluate condition
+    QString conditionStr = valuePairs[i + 1];
+    bool conditionResult = (calculateExpressions(conditionStr).toFloat() != 0);
+    
+    // Check if there's a single-line THEN statement
+    QString statement = currentLine.mid(currentLine.indexOf("THEN") + 5).trimmed();
+    
+    // Create new IF block state
+    IfBlockState newBlock(conditionResult, conditionResult, gcodeOrder);
+    ifBlockStack.push(newBlock);
+    
+    if (!statement.isEmpty())
     {
-        result = true;
-    }
-
-    if (result == true)
-    {
-        currentLine = statement;
-        return findExeGcodeAndTransmit();
+        // Single-line IF THEN statement (backward compatibility)
+        if (conditionResult)
+        {
+            currentLine = statement;
+            gcodeOrder++; // Move to next line after executing
+            ifBlockStack.pop(); // Remove the IF block as it's completed
+            return findExeGcodeAndTransmit();
+        }
+        else
+        {
+            // Look for ELIF, ELSE, or just skip to next line
+            gcodeOrder++;
+            return false;
+        }
     }
     else
     {
-        gcodeOrder++;
+        // Multi-line IF block
+        if (!conditionResult)
+        {
+            // Skip to next ELIF, ELSE, or ENDIF
+            skipToNextConditional();
+        }
+        else
+        {
+            // Continue to next line to execute IF block
+            gcodeOrder++;
+        }
         return false;
     }
-
 }
 
 bool GcodeScript::handleVARIABLE(QList<QString> valuePairs, int i)
@@ -1984,6 +2036,170 @@ bool GcodeScript::checkExclution(QString response)
 //    }
 
     return false;
+}
+
+bool GcodeScript::handleELIF(QList<QString> valuePairs, int i)
+{
+    if (ifBlockStack.isEmpty())
+    {
+        // ELIF without IF - error, skip line
+        gcodeOrder++;
+        return false;
+    }
+    
+    IfBlockState& currentBlock = ifBlockStack.top();
+    
+    // If any previous condition was met, skip this ELIF
+    if (currentBlock.conditionMet)
+    {
+        skipToNextConditional();
+        return false;
+    }
+    
+    // Evaluate ELIF condition
+    QString conditionStr = valuePairs[i + 1];
+    bool conditionResult = (calculateExpressions(conditionStr).toFloat() != 0);
+    
+    // Check if there's a single-line THEN statement
+    QString statement = currentLine.mid(currentLine.indexOf("THEN") + 5).trimmed();
+    
+    if (!statement.isEmpty())
+    {
+        // Single-line ELIF THEN statement
+        if (conditionResult)
+        {
+            currentBlock.conditionMet = true;
+            currentBlock.insideBlock = true;
+            currentLine = statement;
+            gcodeOrder++;
+            return findExeGcodeAndTransmit();
+        }
+        else
+        {
+            gcodeOrder++;
+            return false;
+        }
+    }
+    else
+    {
+        // Multi-line ELIF block
+        if (conditionResult)
+        {
+            currentBlock.conditionMet = true;
+            currentBlock.insideBlock = true;
+            gcodeOrder++;
+        }
+        else
+        {
+            skipToNextConditional();
+        }
+        return false;
+    }
+}
+
+bool GcodeScript::handleELSE(QList<QString> valuePairs, int i)
+{
+    if (ifBlockStack.isEmpty())
+    {
+        // ELSE without IF - error, skip line
+        gcodeOrder++;
+        return false;
+    }
+    
+    IfBlockState& currentBlock = ifBlockStack.top();
+    
+    // Check if there's a single-line ELSE statement
+    QString statement = currentLine.mid(currentLine.indexOf("ELSE") + 4).trimmed();
+    
+    if (!statement.isEmpty())
+    {
+        // Single-line ELSE statement
+        if (!currentBlock.conditionMet)
+        {
+            currentBlock.conditionMet = true;
+            currentBlock.insideBlock = true;
+            currentLine = statement;
+            gcodeOrder++;
+            return findExeGcodeAndTransmit();
+        }
+        else
+        {
+            gcodeOrder++;
+            return false;
+        }
+    }
+    else
+    {
+        // Multi-line ELSE block
+        if (!currentBlock.conditionMet)
+        {
+            currentBlock.conditionMet = true;
+            currentBlock.insideBlock = true;
+            gcodeOrder++;
+        }
+        else
+        {
+            // Skip to ENDIF
+            skipToNextConditional();
+        }
+        return false;
+    }
+}
+
+bool GcodeScript::handleENDIF(QList<QString> valuePairs, int i)
+{
+    if (ifBlockStack.isEmpty())
+    {
+        // ENDIF without IF - error, skip line
+        gcodeOrder++;
+        return false;
+    }
+    
+    // Pop the current IF block
+    ifBlockStack.pop();
+    gcodeOrder++;
+    return false;
+}
+
+void GcodeScript::skipToNextConditional()
+{
+    int nestedLevel = 1;
+    int originalOrder = gcodeOrder;
+    
+    for (int i = gcodeOrder + 1; i < gcodeList.size(); i++)
+    {
+        QString line = gcodeList[i].trimmed();
+        if (line.isEmpty() || line.startsWith(";"))
+            continue;
+            
+        QStringList tokens = line.split(' ', Qt::SkipEmptyParts);
+        if (tokens.isEmpty())
+            continue;
+            
+        QString firstToken = tokens[0].toUpper();
+        
+        if (firstToken == "IF")
+        {
+            nestedLevel++;
+        }
+        else if (firstToken == "ENDIF")
+        {
+            nestedLevel--;
+            if (nestedLevel == 0)
+            {
+                gcodeOrder = i;
+                return;
+            }
+        }
+        else if (nestedLevel == 1 && (firstToken == "ELIF" || firstToken == "ELSE"))
+        {
+            gcodeOrder = i;
+            return;
+        }
+    }
+    
+    // If we reach here, no matching conditional found
+    gcodeOrder = gcodeList.size();
 }
 
 
