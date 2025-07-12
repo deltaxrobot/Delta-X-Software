@@ -405,6 +405,27 @@ public:
 
             whiteLineItems[i]->setZValue(1);
             blackLineItems[i]->setZValue(1.1f);
+
+            // Thêm text items để hiển thị số thứ tự
+            whiteTextItems[i] = new QGraphicsSimpleTextItem;
+            blackTextItems[i] = new QGraphicsSimpleTextItem;
+
+            whiteTextItems[i]->setBrush(QBrush(Qt::white));
+            blackTextItems[i]->setBrush(QBrush(Qt::black));
+
+            whiteTextItems[i]->setZValue(1.2f);
+            blackTextItems[i]->setZValue(1.3f);
+
+            // Thiết lập font cho text
+            QFont font;
+            font.setPointSize(12);
+            font.setBold(true);
+            whiteTextItems[i]->setFont(font);
+            blackTextItems[i]->setFont(font);
+
+            // Thiết lập text hiển thị số thứ tự (1-4)
+            whiteTextItems[i]->setText(QString::number(i + 1));
+            blackTextItems[i]->setText(QString::number(i + 1));
         }
 
         updateVisual();
@@ -418,6 +439,8 @@ public:
             delete blackRectItems[i];
             delete whiteLineItems[i];
             delete blackLineItems[i];
+            delete whiteTextItems[i];
+            delete blackTextItems[i];
         }
     }
 
@@ -510,6 +533,13 @@ public:
 
             whiteLineItems[i]->setPen(QPen(Qt::white, value * 2));
             blackLineItems[i]->setPen(QPen(Qt::black, value));
+
+            // Cập nhật kích thước font theo scale
+            QFont font;
+            font.setPointSize(qMax(8, (int)(12 * value)));
+            font.setBold(true);
+            whiteTextItems[i]->setFont(font);
+            blackTextItems[i]->setFont(font);
         }
 
         pointsToRects();
@@ -526,6 +556,9 @@ public:
 
             scene->addItem(blackRectItems[i]);
             scene->addItem(whiteRectItems[i]);
+
+            scene->addItem(blackTextItems[i]);
+            scene->addItem(whiteTextItems[i]);
         }
     }
 
@@ -538,6 +571,9 @@ public:
 
             whiteRectItems[i]->setVisible(value);
             blackRectItems[i]->setVisible(value);
+
+            whiteTextItems[i]->setVisible(value);
+            blackTextItems[i]->setVisible(value);
         }
     }
 
@@ -554,9 +590,31 @@ private:
 
             whiteRectItems[i]->setRect(rects[i]);
             blackRectItems[i]->setRect(rects[i]);
+
+            // Cập nhật vị trí text - đặt ở bên cạnh ô vuông thay vì đè lên
+            QPointF textOffset;
+            
+            // Đặt text ở 4 vị trí khác nhau cho mỗi góc để tránh đè lên ô vuông
+            switch(i) {
+                case 0: // Góc 1: bên trái
+                    textOffset = QPointF(-size/2 - 15, -5);
+                    break;
+                case 1: // Góc 2: bên phải  
+                    textOffset = QPointF(size/2 + 5, -5);
+                    break;
+                case 2: // Góc 3: bên phải
+                    textOffset = QPointF(size/2 + 5, -5);
+                    break;
+                case 3: // Góc 4: bên trái
+                    textOffset = QPointF(-size/2 - 15, -5);
+                    break;
+            }
+            
+            QPointF textPos = points[i] + textOffset;
+            
+            whiteTextItems[i]->setPos(textPos);
+            blackTextItems[i]->setPos(textPos + QPointF(1, 1)); // Offset shadow effect
         }
-
-
     }
 
     void pointsToLines()
@@ -597,6 +655,9 @@ private:
 
     QGraphicsRectItem* whiteRectItems[4];
     QGraphicsRectItem* blackRectItems[4];
+
+    QGraphicsSimpleTextItem* whiteTextItems[4];
+    QGraphicsSimpleTextItem* blackTextItems[4];
 };
 
 class CameraAreaItem : public QObject

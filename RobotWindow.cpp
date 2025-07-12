@@ -399,19 +399,19 @@ void RobotWindow::InitObjectDetectingModule()
 
     // --------- Init Task Node --------
 
-    ImageProcessingInstance->CreatTaskNode("GetImageNode", TaskNode::GET_IMAGE_NODE);
-    ImageProcessingInstance->CreatTaskNode("ResizeImageNode", TaskNode::RESIZE_IMAGE_NODE, "GetImageNode");
-    ImageProcessingInstance->CreatTaskNode("FindChessboardNode", TaskNode::FIND_CHESSBOARD_NODE);
-    ImageProcessingInstance->CreatTaskNode("GetPerspectiveNode", TaskNode::GET_PERSPECTIVE_NODE, "FindChessboardNode");
-    ImageProcessingInstance->CreatTaskNode("WarpImageNode", TaskNode::WARP_IMAGE_NODE, "ResizeImageNode|GetPerspectiveNode");
-    ImageProcessingInstance->CreatTaskNode("CropImageNode", TaskNode::CROP_IMAGE_NODE, "WarpImageNode");
+    ImageProcessingInstance->CreateTaskNode("GetImageNode", TaskNode::GET_IMAGE_NODE);
+    ImageProcessingInstance->CreateTaskNode("ResizeImageNode", TaskNode::RESIZE_IMAGE_NODE, "GetImageNode");
+    ImageProcessingInstance->CreateTaskNode("FindChessboardNode", TaskNode::FIND_CHESSBOARD_NODE);
+    ImageProcessingInstance->CreateTaskNode("GetPerspectiveNode", TaskNode::GET_PERSPECTIVE_NODE, "FindChessboardNode");
+    ImageProcessingInstance->CreateTaskNode("WarpImageNode", TaskNode::WARP_IMAGE_NODE, "ResizeImageNode|GetPerspectiveNode");
+    ImageProcessingInstance->CreateTaskNode("CropImageNode", TaskNode::CROP_IMAGE_NODE, "WarpImageNode");
 
-    ImageProcessingInstance->CreatTaskNode("MappingMatrixNode", TaskNode::MAPPING_MATRIX_NODE);
-    ImageProcessingInstance->CreatTaskNode("ColorFilterNode", TaskNode::COLOR_FILTER_NODE, "CropImageNode");
-    ImageProcessingInstance->CreatTaskNode("GetObjectsNode", TaskNode::GET_OBJECTS_NODE, "ColorFilterNode");
-    ImageProcessingInstance->CreatTaskNode("VisibleObjectsNode", TaskNode::VISIBLE_OBJECTS_NODE, "GetObjectsNode|MappingMatrixNode");
+    ImageProcessingInstance->CreateTaskNode("MappingMatrixNode", TaskNode::MAPPING_MATRIX_NODE);
+    ImageProcessingInstance->CreateTaskNode("ColorFilterNode", TaskNode::COLOR_FILTER_NODE, "CropImageNode");
+    ImageProcessingInstance->CreateTaskNode("GetObjectsNode", TaskNode::GET_OBJECTS_NODE, "ColorFilterNode");
+    ImageProcessingInstance->CreateTaskNode("VisibleObjectsNode", TaskNode::VISIBLE_OBJECTS_NODE, "GetObjectsNode|MappingMatrixNode");
 
-    ImageProcessingInstance->CreatTaskNode("DisplayImageNode", TaskNode::DISPLAY_IMAGE_NODE, "CropImageNode");
+    ImageProcessingInstance->CreateTaskNode("DisplayImageNode", TaskNode::DISPLAY_IMAGE_NODE, "CropImageNode");
 
     ImageProcessingInstance->GetNode("WarpImageNode")->IsPass = true;
     ImageProcessingInstance->GetNode("CropImageNode")->IsPass = true;

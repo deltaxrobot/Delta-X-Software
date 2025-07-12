@@ -38,7 +38,7 @@ public:
     ~ImageProcessing();
     QString ProjectName = "project0";
 
-    TaskNode *CreatTaskNode(QString name, int type, QString previousTasks = "");
+    TaskNode *CreateTaskNode(QString name, int type, QString previousTasks = "");
     TaskNode* GetNode(QString name);
 
     QString ObjectsName = "#Objects";

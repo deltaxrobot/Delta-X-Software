@@ -172,7 +172,7 @@ private:
     void doMappingMatrixWork();
     void doGetObjectsWork();
     void doVisibleObjectsWork();
-    void clear(QVector<Object> objs);
+    void clear(QVector<Object>& objs);
 };
 
 #endif

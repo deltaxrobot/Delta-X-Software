@@ -1,4 +1,5 @@
 #include "TaskNode.h"
+#include <vector>
 
 QElapsedTimer TaskNode::DebugTimer;
 
@@ -20,9 +21,9 @@ TaskNode::TaskNode(QString name, int type)
     if (type == WARP_IMAGE_NODE)
     {
         inputPoints[0] = cv::Point2f(0.2f, 0.8f);
-        inputPoints[0] = cv::Point2f(0.2f, 0.2f);
-        inputPoints[0] = cv::Point2f(0.8f, 0.2f);
-        inputPoints[0] = cv::Point2f(0.8f, 0.8f);
+        inputPoints[1] = cv::Point2f(0.2f, 0.2f);
+        inputPoints[2] = cv::Point2f(0.8f, 0.2f);
+        inputPoints[3] = cv::Point2f(0.8f, 0.8f);
     }
 
     if (type == COLOR_FILTER_NODE)
@@ -46,6 +47,14 @@ TaskNode::TaskNode(QString name, int type)
 
 TaskNode::~TaskNode()
 {
+    // Clean up connections
+    ClearInputConnections();
+    ClearOutputConnections();
+    
+    // Release OpenCV mats
+    inputMat.release();
+    inputMat2.release();
+    outputMat.release();
 }
 
 void TaskNode::SetNextNode(TaskNode *next)
@@ -255,37 +264,30 @@ void TaskNode::Input(QStringList objects)
             continue;
 
         QStringList objInfo = obj.split(",");
+        
+        // Validate minimum required fields (at least Type, X, Y)
+        if (objInfo.count() < 3)
+        {
+            qDebug() << "Warning: Object data has insufficient fields:" << obj;
+            continue;
+        }
+
         Object object;
 
-        for(int i = 0; i < objInfo.count(); i++)
-        {       
-            if (i == 0)
-            {
-                object.Type = objInfo[0];
-            }
-            else if (i == 1)
-            {
-                object.X.Image = objInfo[1].toFloat();
-            }
-            else if (i == 2)
-            {
-                object.Y.Image = objInfo[2].toFloat();
-            }
-            else if (i == 3)
-            {
-                object.Length.Image = objInfo[3].toFloat();
-            }
-            else if (i == 4)
-            {
-                object.Width.Image = objInfo[4].toFloat();
-            }            
-            else if (i == 5)
-            {
-                object.Angle.Image = objInfo[5].toFloat();
-            }
-            
+        // Safe parsing with bounds checking
+        if (objInfo.count() > 0)
+            object.Type = objInfo[0];
+        if (objInfo.count() > 1)
+            object.X.Image = objInfo[1].toFloat();
+        if (objInfo.count() > 2)
+            object.Y.Image = objInfo[2].toFloat();
+        if (objInfo.count() > 3)
+            object.Length.Image = objInfo[3].toFloat();
+        if (objInfo.count() > 4)
+            object.Width.Image = objInfo[4].toFloat();
+        if (objInfo.count() > 5)
+            object.Angle.Image = objInfo[5].toFloat();
 
-        }
         outputObjects.append(object);
         outputPolys.append(object.ToPolygon());
     }
@@ -499,20 +501,54 @@ void TaskNode::doFindChessboardWork()
         points.push_back(cv::Point(corners[width * height - 1].x, corners[width * height - 1].y));
         }
 
-        if (points[2].x < points[0].x)
-        {
-          outputPoints[0] = points[3];
-          outputPoints[1] = points[2];
-          outputPoints[2] = points[1];
-          outputPoints[3] = points[0];
+        // Sắp xếp 4 điểm theo thứ tự: top-left, top-right, bottom-right, bottom-left
+        // Để đảm bảo điểm số 1 luôn là góc trên-trái
+        
+        // Tìm điểm top-left (x + y nhỏ nhất)
+        int topLeftIndex = 0;
+        float minSum = points[0].x + points[0].y;
+        for (int i = 1; i < 4; i++) {
+            float sum = points[i].x + points[i].y;
+            if (sum < minSum) {
+                minSum = sum;
+                topLeftIndex = i;
+            }
         }
-        else
-        {
-          outputPoints[0] = points[0];
-          outputPoints[1] = points[3];
-          outputPoints[2] = points[2];
-          outputPoints[3] = points[1];
+        
+        // Tìm điểm bottom-right (x + y lớn nhất)
+        int bottomRightIndex = 0;
+        float maxSum = points[0].x + points[0].y;
+        for (int i = 1; i < 4; i++) {
+            float sum = points[i].x + points[i].y;
+            if (sum > maxSum) {
+                maxSum = sum;
+                bottomRightIndex = i;
+            }
         }
+        
+        // Tìm top-right và bottom-left từ 2 điểm còn lại
+        std::vector<int> remainingIndices;
+        for (int i = 0; i < 4; i++) {
+            if (i != topLeftIndex && i != bottomRightIndex) {
+                remainingIndices.push_back(i);
+            }
+        }
+        
+        int topRightIndex, bottomLeftIndex;
+        // Top-right có x lớn hơn, y nhỏ hơn so với bottom-left
+        if (points[remainingIndices[0]].x > points[remainingIndices[1]].x) {
+            topRightIndex = remainingIndices[0];
+            bottomLeftIndex = remainingIndices[1];
+        } else {
+            topRightIndex = remainingIndices[1];
+            bottomLeftIndex = remainingIndices[0];
+        }
+        
+                 // Gán theo thứ tự chiều kim đồng hồ: top-left, bottom-left, bottom-right, top-right
+         outputPoints[0] = points[topLeftIndex];      // Điểm số 1: top-left
+         outputPoints[1] = points[bottomLeftIndex];   // Điểm số 2: bottom-left  
+         outputPoints[2] = points[bottomRightIndex];  // Điểm số 3: bottom-right
+         outputPoints[3] = points[topRightIndex];     // Điểm số 4: top-right
 
         outputPoly.clear();
 
@@ -651,16 +687,12 @@ void TaskNode::doColorFilterWork()
 
     if (intParas.count() == 6)
     {
-        if (intParas.count() == 6)
-        {
-            cv::cvtColor(inputMat, outputMat, CV_BGR2HSV);
+        cv::cvtColor(inputMat, outputMat, CV_BGR2HSV);
 
-            cv::Scalar minScalar(intParas[0], intParas[2], intParas[4]);
-            cv::Scalar maxScalar(intParas[1], intParas[3], intParas[5]);
+        cv::Scalar minScalar(intParas[0], intParas[2], intParas[4]);
+        cv::Scalar maxScalar(intParas[1], intParas[3], intParas[5]);
 
-            cv::inRange(outputMat, minScalar, maxScalar, outputMat);
-        }
-
+        cv::inRange(outputMat, minScalar, maxScalar, outputMat);
     }
 
     if (boolPara == true)
@@ -761,25 +793,45 @@ void TaskNode::doGetObjectsWork()
 //    sharedObjects.clear();
     outputPolys.clear();
 
-    std::vector<std::vector<cv::Point> > contoursContainer;
-    findContours(inputMat, contoursContainer, cv::RETR_LIST, cv::CHAIN_APPROX_SIMPLE);
+    try {
+        std::vector<std::vector<cv::Point> > contoursContainer;
+        findContours(inputMat, contoursContainer, cv::RETR_LIST, cv::CHAIN_APPROX_SIMPLE);
 
-    for (size_t i = 0; i < contoursContainer.size(); i++)
-    {
+        const int borderMargin = 5; // Make magic number a named constant
 
-        cv::RotatedRect rectObject = cv::minAreaRect(cv::Mat(contoursContainer[i]));
-        cv::Rect box = cv::boundingRect(contoursContainer[i]);
-        if (box.y <= 5 || (box.y + box.height) >= inputMat.rows - 5 || box.x <= 5 || (box.x + box.width) >= inputMat.cols - 5)
-            continue;
-
-        Object obj(rectObject);
-        if (inputObject.IsSameType(obj))
+        for (size_t i = 0; i < contoursContainer.size(); i++)
         {
-            Object obPointer(rectObject);
-            outputObjects.append(obPointer);
-//            sharedObjects.append(QSharedPointer<Object>::create(rectObject));
-            outputPolys.append(obPointer.ToPolygon());
+            // Validate contour has enough points
+            if (contoursContainer[i].size() < 3)
+                continue;
+
+            cv::RotatedRect rectObject = cv::minAreaRect(cv::Mat(contoursContainer[i]));
+            cv::Rect box = cv::boundingRect(contoursContainer[i]);
+            
+            // Check bounds with safer validation
+            if (box.x <= borderMargin || box.y <= borderMargin || 
+                (box.x + box.width) >= (inputMat.cols - borderMargin) || 
+                (box.y + box.height) >= (inputMat.rows - borderMargin))
+                continue;
+
+            // Validate rect dimensions
+            if (rectObject.size.width <= 0 || rectObject.size.height <= 0)
+                continue;
+
+            Object obj(rectObject);
+            if (inputObject.IsSameType(obj))
+            {
+                Object obPointer(rectObject);
+                outputObjects.append(obPointer);
+//                sharedObjects.append(QSharedPointer<Object>::create(rectObject));
+                outputPolys.append(obPointer.ToPolygon());
+            }
         }
+    }
+    catch (const cv::Exception& e)
+    {
+        qDebug() << "OpenCV error in doGetObjectsWork:" << e.what();
+        return;
     }
 
     emit HadOutput(outputObjects);
@@ -800,7 +852,7 @@ void TaskNode::doVisibleObjectsWork()
     emit Done(defaultThreadId);
 }
 
-void TaskNode::clear(QVector<Object> objs)
+void TaskNode::clear(QVector<Object>& objs)
 {
     objs.clear();
 }

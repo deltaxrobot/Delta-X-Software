@@ -14,7 +14,7 @@ ImageProcessing::~ImageProcessing()
     }
 }
 
-TaskNode *ImageProcessing::CreatTaskNode(QString name, int type, QString previousTasks)
+TaskNode *ImageProcessing::CreateTaskNode(QString name, int type, QString previousTasks)
 {
     TaskNode* taskNode = new TaskNode(name, type);
 
@@ -44,6 +44,11 @@ TaskNode *ImageProcessing::CreatTaskNode(QString name, int type, QString previou
 
 TaskNode *ImageProcessing::GetNode(QString name)
 {
+    if (!taskNodeList.contains(name))
+    {
+        qDebug() << "Warning: TaskNode with name" << name << "not found!";
+        return nullptr;
+    }
     return taskNodeList.value(name);
 }
 
@@ -61,22 +66,37 @@ void ImageProcessing::GotVisibleObjects(QVector<Object> objects)
 
 void ImageProcessing::GotImage(cv::Mat image)
 {
+    // Validate input image
+    if (image.empty())
+    {
+        qDebug() << "Warning: Received empty image in ImageProcessing::GotImage";
+        return;
+    }
+
     cv::Mat mat = image.clone();
 //    qDebug() << "Image Thread id: " << QThread::currentThreadId();
 
     qDebug() << "In thread start: " << QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss.zzz");
 
-    if (resizeValue != cv::Size(0, 0))
-    {
-        resizeValue.height = resizeValue.width * ((float)mat.rows / mat.cols);
+    try {
+        if (resizeValue != cv::Size(0, 0))
+        {
+            resizeValue.height = resizeValue.width * ((float)mat.rows / mat.cols);
+            cv::resize(mat, mat, resizeValue, cv::INTER_NEAREST);
+        }
 
-        cv::resize(mat, mat, resizeValue, cv::INTER_NEAREST);
+        if (!perspectiveMatrix.empty())
+        {
+            cv::warpPerspective(mat, mat, perspectiveMatrix, mat.size(), cv::INTER_NEAREST);
+        }
+    }
+    catch (const cv::Exception& e)
+    {
+        qDebug() << "OpenCV error in ImageProcessing::GotImage:" << e.what();
+        return;
     }
 
-    cv::warpPerspective(mat, mat, perspectiveMatrix, mat.size(), cv::INTER_NEAREST);
-
-
-    QThread::sleep(1);
+    // Remove blocking sleep - replaced with debug timing only
     qDebug() << "In thread end: " << QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss.zzz");
 }
 
