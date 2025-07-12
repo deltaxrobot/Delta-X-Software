@@ -117,9 +117,6 @@ public:
     QWidget *tab;
     QVBoxLayout *verticalLayout_16;
     CodeEditor *pteGcodeArea;
-    QWidget *tab_2;
-    QVBoxLayout *verticalLayout_18;
-    CodeEditor *pteScriptFunction;
     QWidget *tab_3;
     QVBoxLayout *verticalLayout_20;
     QTextBrowser *tbGcodeScriptHelp;
@@ -2157,28 +2154,6 @@ public:
         verticalLayout_16->addWidget(pteGcodeArea);
 
         twGcodeEditor->addTab(tab, QString());
-        tab_2 = new QWidget();
-        tab_2->setObjectName(QString::fromUtf8("tab_2"));
-        verticalLayout_18 = new QVBoxLayout(tab_2);
-        verticalLayout_18->setSpacing(6);
-        verticalLayout_18->setContentsMargins(11, 11, 11, 11);
-        verticalLayout_18->setObjectName(QString::fromUtf8("verticalLayout_18"));
-        verticalLayout_18->setContentsMargins(0, 0, 0, 0);
-        pteScriptFunction = new CodeEditor(tab_2);
-        pteScriptFunction->setObjectName(QString::fromUtf8("pteScriptFunction"));
-        sizePolicy7.setHeightForWidth(pteScriptFunction->sizePolicy().hasHeightForWidth());
-        pteScriptFunction->setSizePolicy(sizePolicy7);
-        pteScriptFunction->setMinimumSize(QSize(310, 0));
-        pteScriptFunction->setFont(font3);
-        pteScriptFunction->setStyleSheet(QString::fromUtf8(""));
-        pteScriptFunction->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
-        pteScriptFunction->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
-        pteScriptFunction->setReadOnly(false);
-        pteScriptFunction->setTextInteractionFlags(Qt::TextEditorInteraction);
-
-        verticalLayout_18->addWidget(pteScriptFunction);
-
-        twGcodeEditor->addTab(tab_2, QString());
         tab_3 = new QWidget();
         tab_3->setObjectName(QString::fromUtf8("tab_3"));
         tab_3->setStyleSheet(QString::fromUtf8("background-color: rgb(39, 39, 39);"));
@@ -2210,7 +2185,7 @@ public:
         saTermite->setWidgetResizable(true);
         wgTermite = new QWidget();
         wgTermite->setObjectName(QString::fromUtf8("wgTermite"));
-        wgTermite->setGeometry(QRect(0, 0, 312, 145));
+        wgTermite->setGeometry(QRect(0, 0, 408, 135));
         wgTermite->setStyleSheet(QString::fromUtf8("QWidget#wgTermite\n"
 "{\n"
 "	\n"
@@ -2301,7 +2276,7 @@ public:
         saObjectDetecting->setWidgetResizable(true);
         wObjectDetecting = new QWidget();
         wObjectDetecting->setObjectName(QString::fromUtf8("wObjectDetecting"));
-        wObjectDetecting->setGeometry(QRect(0, 0, 532, 2900));
+        wObjectDetecting->setGeometry(QRect(0, 0, 590, 2900));
         wObjectDetecting->setMinimumSize(QSize(100, 2900));
         wObjectDetecting->setStyleSheet(QString::fromUtf8("QWidget#wObjectDetecting\n"
 "{	\n"
@@ -4083,7 +4058,7 @@ public:
         saPointTool->setWidgetResizable(true);
         wPointTool = new QWidget();
         wPointTool->setObjectName(QString::fromUtf8("wPointTool"));
-        wPointTool->setGeometry(QRect(0, 0, 510, 2100));
+        wPointTool->setGeometry(QRect(0, 0, 572, 2100));
         wPointTool->setMinimumSize(QSize(0, 2100));
         wPointTool->setStyleSheet(QString::fromUtf8("QWidget#wPointTool\n"
 "{	\n"
@@ -5195,7 +5170,7 @@ public:
         scrollArea_6->setWidgetResizable(true);
         scrollAreaWidgetContents_6 = new QWidget();
         scrollAreaWidgetContents_6->setObjectName(QString::fromUtf8("scrollAreaWidgetContents_6"));
-        scrollAreaWidgetContents_6->setGeometry(QRect(0, 0, 510, 1600));
+        scrollAreaWidgetContents_6->setGeometry(QRect(0, 0, 572, 1600));
         scrollAreaWidgetContents_6->setMinimumSize(QSize(450, 1600));
         scrollAreaWidgetContents_6->setMaximumSize(QSize(16777215, 16777215));
         scrollAreaWidgetContents_6->setStyleSheet(QString::fromUtf8("QWidget[background='container']\n"
@@ -6085,7 +6060,7 @@ public:
         scrollArea_2->setWidgetResizable(true);
         wgJoggingScrollWidget = new QWidget();
         wgJoggingScrollWidget->setObjectName(QString::fromUtf8("wgJoggingScrollWidget"));
-        wgJoggingScrollWidget->setGeometry(QRect(0, 0, 625, 2000));
+        wgJoggingScrollWidget->setGeometry(QRect(0, 0, 554, 2000));
         wgJoggingScrollWidget->setMinimumSize(QSize(0, 2000));
         wgJoggingScrollWidget->setMaximumSize(QSize(16777215, 16777215));
         wgJoggingScrollWidget->setStyleSheet(QString::fromUtf8("QWidget#wgJoggingScrollWidget\n"
@@ -10222,7 +10197,7 @@ public:
         pbRunServer->setDefault(false);
         pbOpenWebControl->setDefault(false);
         twModule->setCurrentIndex(0);
-        twGcodeEditor->setCurrentIndex(2);
+        twGcodeEditor->setCurrentIndex(0);
         pbImageMapping->setDefault(false);
         cbImageSource->setCurrentIndex(0);
         cbSendingImageMethod->setCurrentIndex(0);
@@ -10383,23 +10358,6 @@ public:
                         "bdbdc;\">N85 </span><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600; color:#dbdbdc;\">G28</span></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\"> </span></p></body></html>", nullptr));
         twGcodeEditor->setTabText(twGcodeEditor->indexOf(tab), QCoreApplication::translate("RobotWindow", "Main Program", nullptr));
-        pteScriptFunction->setHtml(QCoreApplication::translate("RobotWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\n"
-"p, li { white-space: pre-wrap; }\n"
-"hr { height: 1px; border-width: 0; }\n"
-"li.unchecked::marker { content: \"\\2610\"; }\n"
-"li.checked::marker { content: \"\\2612\"; }\n"
-"</style></head><body style=\" font-family:'Segoe UI'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600; color:#dbdbdc;\">O2001</span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; color:#dbdbdc;\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent"
-                        ":0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600; color:#dbdbdc;\">G01</span><span style=\" font-family:'MS Shell Dlg 2'; color:#dbdbdc;\"> Z[#robot0.HOME_Z - 50]</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600; color:#dbdbdc;\">G01</span><span style=\" font-family:'MS Shell Dlg 2'; color:#dbdbdc;\"> Z[#robot0.HOME_Z - 30]</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600; color:#dbdbdc;\">G01</span><span style=\" font-family:'MS Shell Dlg 2'; color:#dbdbdc;\"> Z[#robot0.HOME_Z - 50]</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2'; font-weight:600; color:#"
-                        "dbdbdc;\">G01</span><span style=\" font-family:'MS Shell Dlg 2'; color:#dbdbdc;\"> Z[#robot0.HOME_Z - 30]</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2'; color:#dbdbdc;\">M99</span></p></body></html>", nullptr));
-        twGcodeEditor->setTabText(twGcodeEditor->indexOf(tab_2), QCoreApplication::translate("RobotWindow", "Function", nullptr));
         twGcodeEditor->setTabText(twGcodeEditor->indexOf(tab_3), QCoreApplication::translate("RobotWindow", "Help", nullptr));
         label_5->setText(QCoreApplication::translate("RobotWindow", "Termite_", nullptr));
         cbDeviceSender->setItemText(0, QCoreApplication::translate("RobotWindow", "Software", nullptr));

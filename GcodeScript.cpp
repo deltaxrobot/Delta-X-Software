@@ -49,14 +49,10 @@ bool GcodeScript::IsRunning()
     return isRunning;
 }
 
-void GcodeScript::ExecuteGcode(QString gcodes, int startMode, QString functions)
+void GcodeScript::ExecuteGcode(QString gcodes, int startMode)
 {
     isRunning = true;
     SoftwareManager::GetInstance()->RunningScriptThreadNumber++;
-
-    functionScripts = functions;
-
-    gcodes += QString("\n") + functionScripts;
 
     QList<QString> tempGcodeList = gcodes.split('\n');
 
@@ -189,7 +185,7 @@ void GcodeScript::Stop()
 
 void GcodeScript::ReceivedGcode(QString gcode)
 {
-    ExecuteGcode(gcode, BEGIN, functionScripts);
+    ExecuteGcode(gcode, BEGIN);
 }
 
 void GcodeScript::prepareCurrentLine()
@@ -1187,7 +1183,7 @@ bool GcodeScript::handleVARIABLE(QList<QString> valuePairs, int i)
     QRegExp rx("\\((-?\\d+(?:\\.\\d+)?),(-?\\d+(?:\\.\\d+)?),?(-?\\d+(?:\\.\\d+)?)?\\)");
 
     // TODO: chưa gán 2 point với nhau được
-    if (rx.indexIn(trimmedStr) != -1)
+    if (trimmedStr.startsWith("(") && rx.indexIn(trimmedStr) == 0)
     {
         QString x = rx.cap(1);
         QString y = rx.cap(2);

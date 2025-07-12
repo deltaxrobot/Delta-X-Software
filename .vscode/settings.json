@@ -21,6 +21,7 @@
         "unordered_map": "cpp",
         "vector": "cpp",
         "xstring": "cpp",
-        "stdexcept": "cpp"
+        "stdexcept": "cpp",
+        "algorithm": "cpp"
     }
 }

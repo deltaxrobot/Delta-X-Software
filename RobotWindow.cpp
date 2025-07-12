@@ -722,7 +722,6 @@ void RobotWindow::InitGcodeEditorModule()
     highlighter = new GCodeHighlighter(ui->pteGcodeArea->document());
 
     ui->pteGcodeArea->setTabWidth(4);
-    ui->pteScriptFunction->setTabWidth(4);
 
     // ------- Gcode Explorer -----
 
@@ -3103,18 +3102,18 @@ void RobotWindow::ExecuteProgram()
 {
 //    SaveProgram();
 
-    // if (ui->leZ->text().toFloat() > -200)
-    // {
-    //     QMessageBox::information(
-    //             this,
-    //             tr("Required Action"),
-    //             tr("The robot must return to Home before running the program.")
-    //         );
+    if (ui->leZ->text().toFloat() > -200 && ui->pbConnectRobot->text() == "Disconnect")
+    {
+        QMessageBox::information(
+                this,
+                tr("Required Action"),
+                tr("The robot must return to Home before running the program.")
+            );
 
-    //     ui->pbExecuteGcodes->setChecked(false);
+        ui->pbExecuteGcodes->setChecked(false);
 
-    //     return;
-    // }
+        return;
+    }
 
     int threadId = ui->cbProgramThreadID->currentIndex();
     GcodeScript* currentScript = GcodeScripts.at(threadId);
@@ -3134,7 +3133,7 @@ void RobotWindow::ExecuteProgram()
     currentScript->DefaultSlider = ui->cbSelectedSlider->currentText();
     currentScript->DefaultDevice = ui->cbSelectedDevice->currentText();
 
-    QMetaObject::invokeMethod(currentScript, "ExecuteGcode", Qt::QueuedConnection, Q_ARG(QString, ui->pteGcodeArea->toPlainText()), Q_ARG(int, startMode), Q_ARG(QString, ui->pteScriptFunction->toPlainText()));
+    QMetaObject::invokeMethod(currentScript, "ExecuteGcode", Qt::QueuedConnection, Q_ARG(QString, ui->pteGcodeArea->toPlainText()), Q_ARG(int, startMode));
 
 }
 
@@ -3187,7 +3186,7 @@ void RobotWindow::ExecuteCurrentLine(int linNumber, QString lineText)
 		return;
 	}
 
-    QMetaObject::invokeMethod(currentScript, "ExecuteGcode", Qt::QueuedConnection, Q_ARG(QString, lineText), Q_ARG(int, GcodeScript::BEGIN), Q_ARG(QString, ui->pteScriptFunction->toPlainText()));
+    QMetaObject::invokeMethod(currentScript, "ExecuteGcode", Qt::QueuedConnection, Q_ARG(QString, lineText), Q_ARG(int, GcodeScript::BEGIN));
 
 }
 

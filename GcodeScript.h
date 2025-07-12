@@ -46,7 +46,7 @@ public:
     bool IsRunning();
 
 public slots:
-    void ExecuteGcode(QString gcodes, int position, QString functions = "");
+    void ExecuteGcode(QString gcodes, int position);
     void GetResponse(QString deviceId, QString response);
     void SendMsgToDevice(QString deviceId, QString msg);
     void TransmitNextGcode();
