@@ -35,7 +35,7 @@ GCodeHighlighter::GCodeHighlighter(QTextDocument *parent) : QSyntaxHighlighter(p
     QTextCharFormat ifthenFormat;
     ifthenFormat.setForeground(QColor("#3195EF"));
     ifthenFormat.setFontWeight(QFont::Bold);
-    QRegularExpression ifRegex("\\bIF\\b|\\bTHEN\\b|\\bELIF\\b|\\bELSE\\b|\\bENDIF\\b");
+    QRegularExpression ifRegex("\\bIF\\b|\\bTHEN\\b|\\bELIF\\b|\\bELSE\\b|\\bENDIF\\b|\\bFOR\\b|\\bENDFOR\\b|\\bEACH\\b|\\bIN\\b|\\bTO\\b|\\bSTEP\\b|\\bFUNCTION\\b|\\bENDFUNCTION\\b|\\bRETURN\\b");
     rule = {ifRegex, ifthenFormat};
     highlightRules.append(rule);
 

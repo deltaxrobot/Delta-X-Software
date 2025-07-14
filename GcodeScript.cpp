@@ -61,6 +61,13 @@ void GcodeScript::ExecuteGcode(QString gcodes, int startMode)
     
     // Clear IF block stack when starting new script
     ifBlockStack.clear();
+    
+    // Clear FOR loop stack when starting new script
+    forLoopStack.clear();
+    
+    // Clear function definitions when starting new script
+    functionDefinitions.clear();
+    returnFunctionOrder = -1;
 
     if (startMode == BEGIN)
     {
@@ -187,6 +194,13 @@ void GcodeScript::Stop()
     
     // Clear IF block stack on stop
     ifBlockStack.clear();
+    
+    // Clear FOR loop stack on stop
+    forLoopStack.clear();
+    
+    // Clear function definitions on stop
+    functionDefinitions.clear();
+    returnFunctionOrder = -1;
 }
 
 void GcodeScript::ReceivedGcode(QString gcode)
@@ -629,7 +643,25 @@ bool GcodeScript::findExeGcodeAndTransmit()
             if (valuePairs[i + 1] == "=")
             {
                 QString rightExpression = currentLine.mid(currentLine.indexOf('=') + 1).trimmed();
-
+                
+                // Check if right side is a function call
+                QStringList arguments;
+                QString functionName = parseFunctionCall(rightExpression, arguments);
+                
+                if (!functionName.isEmpty() && functionDefinitions.contains(functionName))
+                {
+                    // Handle function call with return value assignment
+                    QString varName = currentToken.mid(1); // Remove #
+                    
+                    // Store variable name for return value assignment
+                    saveVariable(QString("__RETURN_VAR__"), varName);
+                    
+                    // Call function
+                    callFunction(functionName, arguments);
+                    return false;
+                }
+                
+                // Handle regular variable assignment
                 if(valuePairs[i + 2].contains(".Map("))
                 {
                     if (!rightExpression.isEmpty() && rightExpression[0] == '#')
@@ -816,6 +848,36 @@ bool GcodeScript::findExeGcodeAndTransmit()
         if (currentToken == "ENDIF")
         {
             return handleENDIF(valuePairs, i);
+        }
+        
+        // --------------- FOR LOOPS ---------------------
+        if (currentToken == "FOR" && valuePairsSize > (i + 1))
+        {
+            return handleFOR(valuePairs, i);
+        }
+        
+        // --------------- ENDFOR ---------------------
+        if (currentToken == "ENDFOR")
+        {
+            return handleENDFOR(valuePairs, i);
+        }
+        
+        // --------------- FUNCTION DECLARATION ---------------------
+        if (currentToken == "FUNCTION" && valuePairsSize > (i + 1))
+        {
+            return handleFUNCTION(valuePairs, i);
+        }
+        
+        // --------------- ENDFUNCTION ---------------------
+        if (currentToken == "ENDFUNCTION")
+        {
+            return handleENDFUNCTION(valuePairs, i);
+        }
+        
+        // --------------- RETURN ---------------------
+        if (currentToken == "RETURN")
+        {
+            return handleRETURN(valuePairs, i);
         }        
 
         // --------------- DEFINE SUBPROGRAM ------
@@ -1117,7 +1179,75 @@ bool GcodeScript::findExeGcodeAndTransmit()
                 return true;
             }
         }
-    }    
+    } // End of main for loop
+    
+    // Check for standalone function calls
+    if (isFunctionCall(currentLine))
+    {
+        QStringList arguments;
+        QString functionName = parseFunctionCall(currentLine, arguments);
+        
+        if (!functionName.isEmpty() && functionDefinitions.contains(functionName))
+        {
+            callFunction(functionName, arguments);
+            return false;
+        }
+        else
+        {
+            // Function call failed, skip line
+            gcodeOrder++;
+            return false;
+        }
+    }
+
+    // Check for function call assignment: #var = functionName(args)
+    if (currentLine.contains("=") && !currentLine.contains("IF") && !currentLine.contains("FOR"))
+    {
+        QStringList parts = currentLine.split('=');
+        if (parts.size() == 2)
+        {
+            QString leftPart = parts[0].trimmed();
+            QString rightPart = parts[1].trimmed();
+            
+            // Check if right part is a function call
+            if (isFunctionCall(rightPart))
+            {
+                QStringList arguments;
+                QString functionName = parseFunctionCall(rightPart, arguments);
+                
+                if (!functionName.isEmpty() && functionDefinitions.contains(functionName))
+                {
+                    // Store variable name for return value
+                    if (leftPart.startsWith("#"))
+                        leftPart = leftPart.mid(1);
+                    saveVariable("__RETURN_VAR__", leftPart);
+                    
+                    // Call function
+                    callFunction(functionName, arguments);
+                    return false;
+                }
+            }
+        }
+    }
+    
+    // Check for simple function call
+    if (isFunctionCall(currentLine))
+    {
+        QStringList arguments;
+        QString functionName = parseFunctionCall(currentLine, arguments);
+        
+        if (!functionName.isEmpty() && functionDefinitions.contains(functionName))
+        {
+            callFunction(functionName, arguments);
+            return false;
+        }
+        else
+        {
+            // Function call failed, skip line
+            gcodeOrder++;
+            return false;
+        }
+    }
 
     return handleGCODE(transmitGcode);
 }
@@ -1686,6 +1816,10 @@ QString GcodeScript::calculateExpressions(QString expression)
             // Kiểm tra xem có phải hàm toán học không
             if (expression.contains('(') && expression.contains(')') && expression.startsWith('#'))
             {
+                // Function calls will be handled at statement level, not in expression evaluation
+                // Just treat unknown functions as variables for now
+                
+                // Nếu không phải user-defined function, kiểm tra built-in math functions
                 float result = GetResultOfMathFunction(expression);
                 if (result != NULL_NUMBER)
                 {
@@ -2178,6 +2312,19 @@ void GcodeScript::skipToNextConditional()
             
         QString firstToken = tokens[0].toUpper();
         
+        // Skip line numbers (N10, N20, etc.)
+        if (firstToken.startsWith("N") && firstToken.length() > 1)
+        {
+            if (tokens.size() > 1)
+            {
+                firstToken = tokens[1].toUpper();
+            }
+            else
+            {
+                continue;
+            }
+        }
+        
         if (firstToken == "IF")
         {
             nestedLevel++;
@@ -2200,6 +2347,537 @@ void GcodeScript::skipToNextConditional()
     
     // If we reach here, no matching conditional found
     gcodeOrder = gcodeList.size();
+}
+
+bool GcodeScript::handleFOR(QList<QString> valuePairs, int i)
+{
+    if (valuePairs.size() < (i + 2))
+        return false;
+    
+    // Check for FOREACH syntax: FOR EACH item IN list
+    if (valuePairs[i + 1].toUpper() == "EACH" && valuePairs.size() >= (i + 5))
+    {
+        if (valuePairs[i + 3].toUpper() == "IN")
+        {
+            QString counterVar = valuePairs[i + 2];
+            QString listName = valuePairs[i + 4];
+            
+            // Remove # from variable name if present
+            if (counterVar.startsWith("#"))
+                counterVar = counterVar.mid(1);
+            if (listName.startsWith("#"))
+                listName = listName.mid(1);
+                
+            // Find ENDFOR line
+            int endForLine = findEndForLine(gcodeOrder);
+            if (endForLine == -1)
+            {
+                // ENDFOR not found - skip this FOR
+                gcodeOrder++;
+                return false;
+            }
+            
+            // Create FOREACH loop state
+            ForLoopState newLoop(FOREACH_FOR, counterVar, listName, gcodeOrder);
+            newLoop.endForLine = endForLine;
+            forLoopStack.push(newLoop);
+            
+            // Start first iteration
+            return executeForLoopIteration();
+        }
+    }
+    
+    // Check for numeric FOR syntax: FOR var = start TO end [STEP step]
+    if (valuePairs.size() >= (i + 5))
+    {
+        QString counterVar = valuePairs[i + 1];
+        
+        if (valuePairs[i + 2] == "=" && valuePairs[i + 4].toUpper() == "TO")
+        {
+            // Remove # from variable name if present
+            if (counterVar.startsWith("#"))
+                counterVar = counterVar.mid(1);
+            
+            QString startStr = valuePairs[i + 3];
+            QString endStr = valuePairs[i + 5];
+            QString stepStr = "1"; // Default step
+            
+            // Check for STEP clause
+            if (valuePairs.size() >= (i + 8) && valuePairs[i + 6].toUpper() == "STEP")
+            {
+                stepStr = valuePairs[i + 7];
+            }
+            
+            // Evaluate expressions
+            float startValue = calculateExpressions(startStr).toFloat();
+            float endValue = calculateExpressions(endStr).toFloat();
+            float stepValue = calculateExpressions(stepStr).toFloat();
+            
+            // Validate step value
+            if (stepValue == 0)
+            {
+                // Invalid step - skip this FOR
+                gcodeOrder++;
+                return false;
+            }
+            
+            // Find ENDFOR line
+            int endForLine = findEndForLine(gcodeOrder);
+            if (endForLine == -1)
+            {
+                // ENDFOR not found - skip this FOR
+                gcodeOrder++;
+                return false;
+            }
+            
+            // Create numeric FOR loop state
+            ForLoopState newLoop(NUMERIC_FOR, counterVar, startValue, endValue, stepValue, gcodeOrder);
+            newLoop.endForLine = endForLine;
+            forLoopStack.push(newLoop);
+            
+            // Check if loop should run at least once
+            bool shouldRun = false;
+            if (stepValue > 0)
+            {
+                shouldRun = (startValue <= endValue);
+            }
+            else
+            {
+                shouldRun = (startValue >= endValue);
+            }
+            
+            if (shouldRun)
+            {
+                // Set initial counter value and start first iteration
+                saveVariable(counterVar, QString::number(startValue));
+
+                gcodeOrder++;
+                return false;
+            }
+            else
+            {
+                // Skip loop - go to ENDFOR
+                forLoopStack.pop();
+                gcodeOrder = endForLine + 1;
+                return false;
+            }
+        }
+    }
+    
+    // Invalid FOR syntax - skip line
+    gcodeOrder++;
+    return false;
+}
+
+bool GcodeScript::handleENDFOR(QList<QString> valuePairs, int i)
+{
+    if (forLoopStack.isEmpty())
+    {
+        // ENDFOR without FOR - error, skip line
+        gcodeOrder++;
+        return false;
+    }
+    
+    ForLoopState& currentLoop = forLoopStack.top();
+    
+    if (currentLoop.type == NUMERIC_FOR)
+    {
+        // Update counter for next iteration
+        currentLoop.currentValue += currentLoop.stepValue;
+        
+        // Check if loop should continue with the updated counter
+        bool continueLoop = false;
+        if (currentLoop.stepValue > 0)
+        {
+            continueLoop = (currentLoop.currentValue <= currentLoop.endValue);
+        }
+        else
+        {
+            continueLoop = (currentLoop.currentValue >= currentLoop.endValue);
+        }
+        
+
+        if (continueLoop)
+        {
+            // Continue loop - update counter variable and jump back to start
+            saveVariable(currentLoop.counterVar, QString::number(currentLoop.currentValue));
+            forLoopStack.top() = currentLoop; // Update the stack
+
+            gcodeOrder = currentLoop.startLine + 1;
+            return false;
+        }
+        else
+        {
+            // Loop finished - pop from stack and continue
+            forLoopStack.pop();
+            gcodeOrder++;
+            return false;
+        }
+    }
+    else if (currentLoop.type == FOREACH_FOR)
+    {
+        // Move to next item in list
+        currentLoop.currentIndex++;
+        
+        // Check if there are more objects
+        QString objectVar = currentLoop.listName + "." + QString::number(currentLoop.currentIndex) + ".X";
+        QString objectExists = getValueAsString(objectVar);
+        
+        if (objectExists != objectVar && objectExists != "NULL" && !objectExists.isEmpty())
+        {
+            // Continue loop with next object
+            forLoopStack.top() = currentLoop; // Update the stack
+            return executeForLoopIteration();
+        }
+        else
+        {
+            // Loop finished - pop from stack and continue
+            forLoopStack.pop();
+            gcodeOrder++;
+            return false;
+        }
+    }
+    
+    // Should never reach here
+    gcodeOrder++;
+    return false;
+}
+
+bool GcodeScript::executeForLoopIteration()
+{
+    if (forLoopStack.isEmpty())
+        return false;
+        
+    ForLoopState& currentLoop = forLoopStack.top();
+    
+    if (currentLoop.type == FOREACH_FOR)
+    {
+        // Set loop variable to current object index
+        saveVariable(currentLoop.counterVar, QString::number(currentLoop.currentIndex));
+        
+        // Set convenience variables for current object
+        QString objectPrefix = currentLoop.listName + "." + QString::number(currentLoop.currentIndex);
+        QString currentObjPrefix = currentLoop.counterVar + "_current";
+        
+        // Copy object properties to current object variables
+        saveVariable(currentObjPrefix + "_X", getValueAsString(objectPrefix + ".X"));
+        saveVariable(currentObjPrefix + "_Y", getValueAsString(objectPrefix + ".Y"));
+        saveVariable(currentObjPrefix + "_Z", getValueAsString(objectPrefix + ".Z"));
+        saveVariable(currentObjPrefix + "_W", getValueAsString(objectPrefix + ".W"));
+        saveVariable(currentObjPrefix + "_L", getValueAsString(objectPrefix + ".L"));
+        saveVariable(currentObjPrefix + "_A", getValueAsString(objectPrefix + ".A"));
+        
+        // Start executing loop body
+        gcodeOrder = currentLoop.startLine + 1;
+        return false;
+    }
+    
+    return false;
+}
+
+int GcodeScript::findEndForLine(int startLine)
+{
+    int nestedLevel = 1;
+    
+    for (int i = startLine + 1; i < gcodeList.size(); i++)
+    {
+        QString line = gcodeList[i].trimmed();
+        if (line.isEmpty() || line.startsWith(";"))
+            continue;
+            
+        QStringList tokens = line.split(' ', Qt::SkipEmptyParts);
+        if (tokens.isEmpty())
+            continue;
+            
+        QString firstToken = tokens[0].toUpper();
+        
+        // Skip line numbers (N10, N20, etc.)
+        if (firstToken.startsWith("N") && firstToken.length() > 1)
+        {
+            if (tokens.size() > 1)
+            {
+                firstToken = tokens[1].toUpper();
+            }
+            else
+            {
+                continue;
+            }
+        }
+        
+        if (firstToken == "FOR")
+        {
+            nestedLevel++;
+        }
+        else if (firstToken == "ENDFOR")
+        {
+            nestedLevel--;
+            if (nestedLevel == 0)
+            {
+                return i;
+            }
+        }
+    }
+    
+    return -1; // ENDFOR not found
+}
+
+void GcodeScript::skipToEndFor()
+{
+    int endForLine = findEndForLine(gcodeOrder);
+    if (endForLine != -1)
+    {
+        gcodeOrder = endForLine;
+    }
+    else
+    {
+        gcodeOrder = gcodeList.size();
+    }
+}
+
+// ============== FUNCTION HANDLING METHODS ==============
+
+bool GcodeScript::handleFUNCTION(QList<QString> valuePairs, int i)
+{
+    if (valuePairs.size() <= i + 1)
+        return false;
+    
+    QString functionName = valuePairs[i + 1];
+    QStringList parameters;
+    
+    // Parse parameters from function name if contains parentheses
+    if (functionName.contains('('))
+    {
+        int openParen = functionName.indexOf('(');
+        int closeParen = functionName.lastIndexOf(')');
+        
+        if (openParen != -1 && closeParen != -1 && closeParen > openParen)
+        {
+            QString paramStr = functionName.mid(openParen + 1, closeParen - openParen - 1);
+            functionName = functionName.left(openParen);
+            
+            // Parse parameters
+            if (!paramStr.trimmed().isEmpty())
+            {
+                QStringList paramTokens = paramStr.split(',');
+                for (QString param : paramTokens)
+                {
+                    param = param.trimmed();
+                    // Remove # from parameter name if present
+                    if (param.startsWith("#"))
+                        param = param.mid(1);
+                    parameters.append(param);
+                }
+            }
+        }
+    }
+    else if (currentLine.contains('('))
+    {
+        // Parameters in same line: FUNCTION functionName (param1, param2)
+        int openParen = currentLine.indexOf('(');
+        int closeParen = currentLine.lastIndexOf(')');
+        
+        if (openParen != -1 && closeParen != -1 && closeParen > openParen)
+        {
+            QString paramStr = currentLine.mid(openParen + 1, closeParen - openParen - 1);
+            
+            if (!paramStr.trimmed().isEmpty())
+            {
+                QStringList paramTokens = paramStr.split(',');
+                for (QString param : paramTokens)
+                {
+                    param = param.trimmed();
+                    // Remove # from parameter name if present
+                    if (param.startsWith("#"))
+                        param = param.mid(1);
+                    parameters.append(param);
+                }
+            }
+        }
+    }
+    
+    if (functionName.startsWith("#"))
+        functionName = functionName.mid(1);
+    
+    // Store function definition
+    SimpleFunctionDef newFunction(functionName, parameters, gcodeOrder);
+    functionDefinitions[functionName] = newFunction;
+    
+    // Skip to ENDFUNCTION
+    for (int order = gcodeOrder + 1; order < gcodeList.size(); order++)
+    {
+        QString line = gcodeList[order];
+        if (line.contains("ENDFUNCTION"))
+        {
+            gcodeOrder = order + 1;
+            return false;
+        }
+    }
+    
+    return false;
+}
+
+bool GcodeScript::handleENDFUNCTION(QList<QString> valuePairs, int i)
+{
+    // Simply skip ENDFUNCTION when encountered during function definition
+    gcodeOrder++;
+    return false;
+}
+
+bool GcodeScript::handleRETURN(QList<QString> valuePairs, int i)
+{
+    // Handle return value if provided
+    if (valuePairs.size() > (i + 1))
+    {
+        QString returnExpr = currentLine.mid(currentLine.indexOf("RETURN") + 6).trimmed();
+        if (!returnExpr.isEmpty())
+        {
+            QString returnValue = calculateExpressions(returnExpr);
+            saveVariable("__RETURN_VALUE__", returnValue);
+            
+            // Check if there's a variable to assign return value to
+            QString returnVar = getValueAsString("__RETURN_VAR__");
+            if (returnVar != "__RETURN_VAR__" && !returnVar.isEmpty())
+            {
+                saveVariable(returnVar, returnValue);
+                saveVariable(QString("__RETURN_VAR__"), QString("")); // Clear return var
+            }
+        }
+    }
+    
+    // Similar to M99 - return to caller
+    if (returnFunctionOrder >= 0)
+    {
+        gcodeOrder = returnFunctionPointer[returnFunctionOrder] + 1;
+        returnFunctionOrder--;
+    }
+    else
+    {
+        gcodeOrder++;
+    }
+    return false;
+}
+
+bool GcodeScript::callFunction(QString functionName, QStringList arguments)
+{
+    // Check if function exists
+    if (!functionDefinitions.contains(functionName))
+    {
+        return false;
+    }
+    
+    SimpleFunctionDef& funcDef = functionDefinitions[functionName];
+    
+    // Bind parameters to variables (simple binding)
+    for (int i = 0; i < funcDef.parameters.size() && i < arguments.size(); i++)
+    {
+        QString paramName = funcDef.parameters[i];
+        QString argValue = calculateExpressions(arguments[i]);
+        saveVariable(paramName, argValue);
+    }
+    
+    // Similar to M98 - save return address and jump to function
+    returnFunctionOrder++;
+    returnFunctionPointer[returnFunctionOrder] = gcodeOrder;
+    
+    // Jump to function definition (skip FUNCTION line)
+    gcodeOrder = funcDef.startLine + 1;
+    
+    return false;
+}
+
+bool GcodeScript::isFunctionCall(QString line)
+{
+    // Check if line contains a function call
+    QStringList tokens = line.split(' ', QString::SkipEmptyParts);
+    
+    if (tokens.isEmpty())
+        return false;
+    
+    QString firstToken = tokens[0].toUpper();
+    
+    // Skip line numbers
+    if (firstToken.startsWith("N") && firstToken.length() > 1)
+    {
+        if (tokens.size() > 1)
+            firstToken = tokens[1].toUpper();
+        else
+            return false;
+    }
+    
+    // Extract function name from token (remove parameters if present)
+    QString functionName = firstToken;
+    if (functionName.contains('('))
+    {
+        functionName = functionName.left(functionName.indexOf('('));
+    }
+    
+    // Check if it's a function call
+    return functionDefinitions.contains(functionName);
+}
+
+QString GcodeScript::parseFunctionCall(QString line, QStringList& arguments)
+{
+    // Parse function call and extract function name and arguments
+    arguments.clear();
+    
+    QStringList tokens = line.split(' ', QString::SkipEmptyParts);
+    
+    if (tokens.isEmpty())
+        return "";
+    
+    QString functionName = tokens[0].toUpper();
+    
+    // Skip line numbers
+    if (functionName.startsWith("N") && functionName.length() > 1)
+    {
+        if (tokens.size() > 1)
+            functionName = tokens[1].toUpper();
+        else
+            return "";
+    }
+    
+    // Check if function name contains parameters
+    if (functionName.contains('('))
+    {
+        int openParen = functionName.indexOf('(');
+        int closeParen = functionName.lastIndexOf(')');
+        
+        if (openParen != -1 && closeParen != -1 && closeParen > openParen)
+        {
+            QString paramStr = functionName.mid(openParen + 1, closeParen - openParen - 1);
+            functionName = functionName.left(openParen);
+            
+            if (!paramStr.trimmed().isEmpty())
+            {
+                arguments = paramStr.split(',', QString::SkipEmptyParts);
+                for (QString& arg : arguments)
+                {
+                    arg = arg.trimmed();
+                }
+            }
+        }
+    }
+    else if (line.contains('(') && line.contains(')'))
+    {
+        // Parameters in same line: functionName (arg1, arg2, ...)
+        int openParen = line.indexOf('(');
+        int closeParen = line.lastIndexOf(')');
+        
+        if (openParen < closeParen)
+        {
+            QString paramStr = line.mid(openParen + 1, closeParen - openParen - 1);
+            if (!paramStr.trimmed().isEmpty())
+            {
+                arguments = paramStr.split(',', QString::SkipEmptyParts);
+                for (QString& arg : arguments)
+                {
+                    arg = arg.trimmed();
+                }
+            }
+        }
+    }
+    
+    return functionName;
 }
 
 

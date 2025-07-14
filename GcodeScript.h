@@ -131,6 +131,53 @@ private:
     
     QStack<IfBlockState> ifBlockStack;  // Stack to handle nested IF blocks
     
+    // FOR loop state tracking
+    enum ForLoopType {
+        NUMERIC_FOR,    // FOR i = start TO end STEP step
+        FOREACH_FOR     // FOR EACH item IN list
+    };
+    
+    struct ForLoopState {
+        ForLoopType type;           // Type of FOR loop
+        QString counterVar;         // Counter variable name (without #)
+        float startValue;           // Start value for numeric FOR
+        float endValue;             // End value for numeric FOR
+        float stepValue;            // Step value for numeric FOR
+        float currentValue;         // Current counter value
+        QString listName;           // List name for FOREACH
+        int currentIndex;           // Current index for FOREACH
+        int startLine;              // Line where FOR starts
+        int endForLine;             // Line where ENDFOR is located
+        
+        ForLoopState() : type(NUMERIC_FOR), startValue(0), endValue(0), stepValue(1), 
+                        currentValue(0), currentIndex(0), startLine(-1), endForLine(-1) {}
+        ForLoopState(ForLoopType t, QString var, float start, float end, float step, int line) 
+            : type(t), counterVar(var), startValue(start), endValue(end), stepValue(step), 
+              currentValue(start), currentIndex(0), startLine(line), endForLine(-1) {}
+        ForLoopState(ForLoopType t, QString var, QString list, int line)
+            : type(t), counterVar(var), listName(list), startValue(0), endValue(0), stepValue(1),
+              currentValue(0), currentIndex(0), startLine(line), endForLine(-1) {}
+    };
+    
+    QStack<ForLoopState> forLoopStack;  // Stack to handle nested FOR loops
+    
+    // Simple function system similar to M98/M99
+    int returnFunctionPointer[20];
+    int returnFunctionOrder = -1;
+    
+    // Simple function definition struct
+    struct SimpleFunctionDef {
+        QString name;
+        QStringList parameters;  // Parameter names (without #)
+        int startLine;
+        
+        SimpleFunctionDef() : startLine(-1) {}
+        SimpleFunctionDef(QString n, QStringList params, int line) 
+            : name(n), parameters(params), startLine(line) {}
+    };
+    
+    QMap<QString, SimpleFunctionDef> functionDefinitions; // function name -> definition
+
     // Pre-compiled regex patterns for better performance
     static const QRegularExpression m98Regex;
     static const QRegularExpression objectInAreaRegex;
@@ -168,6 +215,20 @@ private:
     bool handleELSE(QList<QString> valuePairs, int i);
     bool handleENDIF(QList<QString> valuePairs, int i);
     void skipToNextConditional(); // Skip to next ELIF, ELSE, or ENDIF
+    bool handleFOR(QList<QString> valuePairs, int i);
+    bool handleENDFOR(QList<QString> valuePairs, int i);
+    void skipToEndFor(); // Skip to ENDFOR
+    bool executeForLoopIteration(); // Execute next iteration of FOR loop
+    int findEndForLine(int startLine); // Find matching ENDFOR line
+    
+    // Simple function methods
+    bool handleFUNCTION(QList<QString> valuePairs, int i);
+    bool handleENDFUNCTION(QList<QString> valuePairs, int i);
+    bool handleRETURN(QList<QString> valuePairs, int i);
+    bool callFunction(QString functionName, QStringList arguments);
+    bool isFunctionCall(QString line);
+    QString parseFunctionCall(QString line, QStringList& arguments);
+
     bool handleVARIABLE(QList<QString> valuePairs, int i);
     bool handleDEFINE_SUBPROGRAM(QList<QString> valuePairs, int i);
     bool handleGCODE(QString transmitGcode);

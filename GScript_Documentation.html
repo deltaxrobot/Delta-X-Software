@@ -141,7 +141,8 @@
                 <li><a href="#control-flow">3. Control Flow</a>
                     <ul>
                         <li><a href="#goto">3.1. GOTO - Jump to Line</a></li>
-                        <li><a href="#if-then">3.2. IF...THEN - Conditional</a></li>
+                        <li><a href="#if-then">3.2. IF...ELIF...ELSE...ENDIF - Conditional</a></li>
+                        <li><a href="#for-loops">3.3. FOR...ENDFOR - Loops</a></li>
                     </ul>
                 </li>
                 <li><a href="#subprograms">4. Subprograms</a></li>
@@ -338,6 +339,78 @@ ENDIF</div>
                 </tr>
             </table>
         </div>
+
+        <h2 id="for-loops">3.3. 🔄 FOR...ENDFOR - Loops</h2>
+        <p>GScript supports two types of FOR loops:</p>
+
+        <h4>3.3.1. Numeric FOR loops:</h4>
+        <div class="code-block">; Syntax: FOR var = start TO end [STEP step]
+FOR #i = 1 TO 5
+    G01 X[#i * 10] Y100
+    M03
+    G04 P1000
+    M05
+ENDFOR
+
+; With custom STEP
+FOR #i = 0 TO 100 STEP 10
+    G01 X[#i] Y200
+    G04 P500
+ENDFOR
+
+; Reverse loop
+FOR #i = 10 TO 1 STEP -1
+    G01 X[#i * 15] Y300
+    G04 P200
+ENDFOR</div>
+
+        <h4>3.3.2. FOREACH loops (for objects):</h4>
+        <div class="code-block">; Syntax: FOR EACH var IN listName
+FOR EACH #obj IN objects
+    ; Variable #obj contains current object index
+    ; Automatically creates convenience variables:
+    ; #obj_current_X, #obj_current_Y, #obj_current_Z
+    ; #obj_current_W, #obj_current_L, #obj_current_A
+    
+    G01 X[#obj_current_X] Y[#obj_current_Y]
+    G01 Z-150
+    M03
+    G04 P1000
+    G01 Z-50
+ENDFOR</div>
+
+        <h4>3.3.3. Nested FOR loops:</h4>
+        <div class="code-block">; Nested loops
+FOR #row = 1 TO 5
+    FOR #col = 1 TO 3
+        #x_pos = #col * 30
+        #y_pos = #row * 40
+        
+        G01 X[#x_pos] Y[#y_pos]
+        G01 Z-150
+        M03
+        G04 P500
+        M05
+        G01 Z-50
+    ENDFOR
+ENDFOR</div>
+
+        <h4>3.3.4. FOR combined with IF:</h4>
+        <div class="code-block">; Conditional processing in loops
+FOR #i = 1 TO 10
+    IF #i % 2 == 0 THEN
+        ; Process even numbers
+        G01 X[#i * 10] Y100
+        M03
+    ELSE
+        ; Process odd numbers
+        G01 X[#i * 10] Y200
+        M04
+    ENDIF
+    
+    G04 P800
+    M05
+ENDFOR</div>
 
         <h2 id="subprograms">4. 🔧 Subprograms</h2>
         <p>Use subprograms to reuse code and organize programs better:</p>
@@ -575,6 +648,57 @@ robot0 G01 X100 Y200
 conveyor0 M311 S100</div>
 
         <h2 id="examples">7. 🎯 Practical Examples</h2>
+
+        <h2 id="functions">8. 🔧 Functions (Hàm)</h2>
+        <p>GScript hỗ trợ tạo và gọi hàm tùy chỉnh để tái sử dụng code và tổ chức chương trình tốt hơn.</p>
+
+        <h3>8.1. Khai báo hàm</h3>
+        <div class="code-block">; Cú pháp: FUNCTION functionName(param1, param2, ...)
+FUNCTION pickObject(x, y, z)
+    G01 X[x] Y[y] Z-50 F1000
+    G01 Z[z]
+    M03 ; Bật gripper
+    G04 P1000
+    G01 Z-50
+ENDFUNCTION</div>
+
+        <h3>8.2. Gọi hàm</h3>
+        <div class="code-block">; Gọi hàm không có giá trị trả về
+#pickObject(100, 200, -150)
+
+; Gọi hàm với biến
+#pick_x = 150
+#pick_y = 250
+#pick_z = -140
+#pickObject(#pick_x, #pick_y, #pick_z)</div>
+
+        <h3>8.3. Hàm có giá trị trả về</h3>
+        <div class="code-block">; Hàm tính khoảng cách giữa hai điểm
+FUNCTION calculateDistance(x1, y1, x2, y2)
+    #dx = x2 - x1
+    #dy = y2 - y1
+    #distance = #sqrt(#dx * #dx + #dy * #dy)
+    RETURN #distance
+ENDFUNCTION
+
+; Sử dụng hàm với giá trị trả về
+#dist = #calculateDistance(0, 0, 100, 100)
+IF #dist > 50 THEN
+    G01 F500 ; Tốc độ chậm cho khoảng cách xa
+ELSE
+    G01 F1000 ; Tốc độ nhanh cho khoảng cách gần
+ENDIF</div>
+
+        <div class="warning">
+            <h4>⚠️ Lưu ý về Functions:</h4>
+            <ul>
+                <li>Functions có thể gọi lẫn nhau (bao gồm đệ quy)</li>
+                <li>Biến local trong function không ảnh hưởng đến biến global</li>
+                <li>Parameters được truyền theo giá trị (pass by value)</li>
+                <li>Luôn sử dụng RETURN để kết thúc function rõ ràng</li>
+                <li>Function calls phải có dấu # phía trước: #functionName(...)</li>
+            </ul>
+        </div>
 
         <h3>7.1. Basic Pick & Place Program</h3>
         <div class="example">

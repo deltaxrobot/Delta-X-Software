@@ -11,7 +11,8 @@
    - [2.3. Biểu thức toán học](#23-biểu-thức-toán-học)
 3. [Luồng điều khiển](#3-luồng-điều-khiển)
    - [3.1. GOTO - Nhảy dòng](#31-goto---nhảy-dòng)
-   - [3.2. IF...THEN - Điều kiện](#32-ifthen---điều-kiện)
+   - [3.2. IF...ELIF...ELSE...ENDIF - Điều kiện](#32-ifelifelseendif---điều-kiện)
+   - [3.3. FOR...ENDFOR - Vòng lặp](#33-forendfor---vòng-lặp)
 4. [Chương trình con](#4-chương-trình-con)
 5. [Hàm toán học](#5-hàm-toán-học)
 6. [Điều khiển thiết bị](#6-điều-khiển-thiết-bị)
@@ -167,6 +168,91 @@ ENDIF
 | `<` | Nhỏ hơn | `IF #speed < 100 THEN G01 F200` |
 | `>=` | Lớn hơn hoặc bằng | `IF #counter >= 10 THEN GOTO 50` |
 | `<=` | Nhỏ hơn hoặc bằng | `IF #pressure <= 30 THEN M04` |
+
+### 3.3. 🔄 FOR...ENDFOR - Vòng lặp
+
+GScript hỗ trợ hai loại vòng lặp FOR:
+
+#### 3.3.1. Vòng lặp số (Numeric FOR):
+
+```gcode
+; Cú pháp: FOR var = start TO end [STEP step]
+FOR #i = 1 TO 5
+    G01 X[#i * 10] Y100
+    M03
+    G04 P1000
+    M05
+ENDFOR
+
+; Với STEP tùy chỉnh
+FOR #i = 0 TO 100 STEP 10
+    G01 X[#i] Y200
+    G04 P500
+ENDFOR
+
+; Vòng lặp ngược
+FOR #i = 10 TO 1 STEP -1
+    G01 X[#i * 15] Y300
+    G04 P200
+ENDFOR
+```
+
+#### 3.3.2. Vòng lặp qua objects (FOREACH):
+
+```gcode
+; Cú pháp: FOR EACH var IN listName
+FOR EACH #obj IN objects
+    ; Biến #obj chứa index của object hiện tại
+    ; Tự động tạo các biến convenience:
+    ; #obj_current_X, #obj_current_Y, #obj_current_Z
+    ; #obj_current_W, #obj_current_L, #obj_current_A
+    
+    G01 X[#obj_current_X] Y[#obj_current_Y]
+    G01 Z-150
+    M03
+    G04 P1000
+    G01 Z-50
+ENDFOR
+```
+
+#### 3.3.3. Nested FOR loops (FOR lồng nhau):
+
+```gcode
+; Vòng lặp lồng nhau
+FOR #row = 1 TO 5
+    FOR #col = 1 TO 3
+        #x_pos = #col * 30
+        #y_pos = #row * 40
+        
+        G01 X[#x_pos] Y[#y_pos]
+        G01 Z-150
+        M03
+        G04 P500
+        M05
+        G01 Z-50
+    ENDFOR
+ENDFOR
+```
+
+#### 3.3.4. FOR kết hợp với IF:
+
+```gcode
+; Xử lý có điều kiện trong vòng lặp
+FOR #i = 1 TO 10
+    IF #i % 2 == 0 THEN
+        ; Xử lý số chẵn
+        G01 X[#i * 10] Y100
+        M03
+    ELSE
+        ; Xử lý số lẻ  
+        G01 X[#i * 10] Y200
+        M04
+    ENDIF
+    
+    G04 P800
+    M05
+ENDFOR
+```
 
 ---
 
@@ -476,6 +562,97 @@ N999 ; Kết thúc
 G28 ; Về Home
 ```
 
+### 7.6. Sử dụng FOR loops trong thực tế
+
+```gcode
+; Chương trình pick & place sử dụng FOR loop
+G28 ; Về Home
+
+; Ví dụ 1: Pick multiple objects với FOR numeric
+#pick_count = 8
+FOR #i = 1 TO #pick_count
+    ; Tính vị trí pick
+    #pick_x = 50 + (#i - 1) * 25
+    #pick_y = 100
+    
+    ; Tính vị trí place
+    #place_x = 300 + (#i - 1) * 20
+    #place_y = 150
+    
+    ; Pick object
+    G01 X[#pick_x] Y[#pick_y] Z-50 F1000
+    G01 Z-150
+    M03 ; Bật gripper
+    G04 P800
+    G01 Z-50
+    
+    ; Place object
+    G01 X[#place_x] Y[#place_y]
+    G01 Z-150
+    M05 ; Tắt gripper
+    G04 P500
+    G01 Z-50
+ENDFOR
+
+; Ví dụ 2: Xử lý objects với FOR EACH
+M98 PcaptureAndDetect ; Chụp ảnh và phát hiện
+M98 PupdateTracking(0)
+
+FOR EACH #obj IN objects
+    ; Kiểm tra kích thước object
+    #obj_area = #obj_current_W * #obj_current_L
+    
+    IF #obj_area > 1000 THEN
+        ; Object lớn - xử lý đặc biệt
+        G01 X[#obj_current_X] Y[#obj_current_Y] W[#obj_current_A] F800
+        G01 Z-140
+        M03 S100 ; Gripper mạnh hơn
+        G04 P1200
+        G01 Z-50
+        
+        ; Đặt vào khu vực A
+        G01 X400 Y100
+        G01 Z-140
+        M05
+        G01 Z-50
+    ELSE
+        ; Object nhỏ - xử lý thường
+        G01 X[#obj_current_X] Y[#obj_current_Y] W[#obj_current_A] F1000
+        G01 Z-150
+        M03 S80
+        G04 P1000
+        G01 Z-50
+        
+        ; Đặt vào khu vực B
+        G01 X400 Y300
+        G01 Z-150
+        M05
+        G01 Z-50
+    ENDIF
+ENDFOR
+
+; Ví dụ 3: Nested FOR loop - Quét lưới
+FOR #row = 1 TO 4
+    FOR #col = 1 TO 6
+        #scan_x = 100 + (#col - 1) * 30
+        #scan_y = 150 + (#row - 1) * 40
+        
+        ; Di chuyển đến vị trí quét
+        G01 X[#scan_x] Y[#scan_y] Z-100 F2000
+        
+        ; Quét với laser hoặc sensor
+        M03 S50 ; Bật laser nhẹ
+        G04 P300 ; Chờ đọc sensor
+        M05
+        
+        ; Lưu kết quả (giả sử có sensor feedback)
+        #scan_result.[#row].[#col] = #sensor_value
+    ENDFOR
+ENDFOR
+
+G28 ; Về Home
+```
+
 ---
 
 ## ⚠️ Lưu ý quan trọng:
@@ -493,6 +670,287 @@ G28 ; Về Home
 - 🔢 Sử dụng biến để code linh hoạt hơn
 - ⚡ Optimize bằng cách giảm số lần di chuyển không cần thiết
 - 🧪 Test từng phần nhỏ trước khi ghép lại
+
+---
+
+## 8. 🔧 Functions (Hàm)
+
+GScript hỗ trợ tạo và gọi hàm tùy chỉnh để tái sử dụng code và tổ chức chương trình tốt hơn.
+
+### 8.1. Khai báo hàm
+
+```gcode
+; Cú pháp: FUNCTION functionName(param1, param2, ...)
+FUNCTION pickObject(x, y, z)
+    G01 X[x] Y[y] Z-50 F1000
+    G01 Z[z]
+    M03 ; Bật gripper
+    G04 P1000
+    G01 Z-50
+ENDFUNCTION
+```
+
+### 8.2. Gọi hàm
+
+```gcode
+; Gọi hàm không có giá trị trả về
+#pickObject(100, 200, -150)
+
+; Gọi hàm với biến
+#pick_x = 150
+#pick_y = 250
+#pick_z = -140
+#pickObject(#pick_x, #pick_y, #pick_z)
+```
+
+### 8.3. Hàm có giá trị trả về
+
+```gcode
+; Hàm tính khoảng cách giữa hai điểm
+FUNCTION calculateDistance(x1, y1, x2, y2)
+    #dx = x2 - x1
+    #dy = y2 - y1
+    #distance = #sqrt(#dx * #dx + #dy * #dy)
+    RETURN #distance
+ENDFUNCTION
+
+; Sử dụng hàm với giá trị trả về
+#dist = #calculateDistance(0, 0, 100, 100)
+IF #dist > 50 THEN
+    G01 F500 ; Tốc độ chậm cho khoảng cách xa
+ELSE
+    G01 F1000 ; Tốc độ nhanh cho khoảng cách gần
+ENDIF
+```
+
+### 8.4. Hàm với logic phức tạp
+
+```gcode
+; Hàm xử lý pick & place thông minh
+FUNCTION smartPickPlace(pick_x, pick_y, place_x, place_y)
+    ; Tính khoảng cách và chọn tốc độ
+    #distance = #calculateDistance(pick_x, pick_y, place_x, place_y)
+    
+    IF #distance > 200 THEN
+        #speed = 2000
+    ELIF #distance > 100 THEN
+        #speed = 1500
+    ELSE
+        #speed = 1000
+    ENDIF
+    
+    ; Pick object
+    G01 X[pick_x] Y[pick_y] Z-50 F[#speed]
+    G01 Z-150
+    M03
+    G04 P1000
+    G01 Z-50
+    
+    ; Place object
+    G01 X[place_x] Y[place_y]
+    G01 Z-150
+    M05
+    G04 P500
+    G01 Z-50
+    
+    RETURN 1 ; Thành công
+ENDFUNCTION
+```
+
+### 8.5. Hàm đệ quy
+
+```gcode
+; Hàm tính giai thừa (factorial)
+FUNCTION factorial(n)
+    IF n <= 1 THEN
+        RETURN 1
+    ELSE
+        #prev = #factorial(n - 1)
+        RETURN n * #prev
+    ENDIF
+ENDFUNCTION
+
+; Sử dụng hàm đệ quy
+#result = #factorial(5) ; Kết quả: 120
+```
+
+### 8.6. Ví dụ thực tế - Hệ thống hàm cho automation
+
+```gcode
+; Hàm di chuyển an toàn với kiểm tra giới hạn
+FUNCTION safeMove(target_x, target_y, target_z)
+    ; Kiểm tra giới hạn workspace
+    IF target_x < 0 OR target_x > 500 THEN
+        RETURN 0 ; Lỗi: vượt giới hạn X
+    ENDIF
+    
+    IF target_y < 0 OR target_y > 400 THEN
+        RETURN 0 ; Lỗi: vượt giới hạn Y
+    ENDIF
+    
+    IF target_z < -200 OR target_z > 0 THEN
+        RETURN 0 ; Lỗi: vượt giới hạn Z
+    ENDIF
+    
+    ; Di chuyển an toàn
+    G01 X[target_x] Y[target_y] Z[target_z] F1000
+    RETURN 1 ; Thành công
+ENDFUNCTION
+
+; Hàm pick object với kiểm tra
+FUNCTION safePick(x, y, z, grip_time)
+    #result = #safeMove(x, y, -50)
+    IF #result == 0 THEN
+        RETURN 0 ; Lỗi di chuyển
+    ENDIF
+    
+    #result = #safeMove(x, y, z)
+    IF #result == 0 THEN
+        RETURN 0 ; Lỗi di chuyển
+    ENDIF
+    
+    M03 ; Bật gripper
+    G04 P[grip_time]
+    
+    #result = #safeMove(x, y, -50)
+    RETURN #result
+ENDFUNCTION
+
+; Hàm place object
+FUNCTION safePlace(x, y, z, release_time)
+    #result = #safeMove(x, y, -50)
+    IF #result == 0 THEN
+        RETURN 0
+    ENDIF
+    
+    #result = #safeMove(x, y, z)
+    IF #result == 0 THEN
+        RETURN 0
+    ENDIF
+    
+    M05 ; Tắt gripper
+    G04 P[release_time]
+    
+    #result = #safeMove(x, y, -50)
+    RETURN #result
+ENDFUNCTION
+
+; Chương trình chính sử dụng các hàm
+G28 ; Về Home
+
+FOR #i = 1 TO 5
+    #pick_x = 100 + #i * 50
+    #pick_y = 200
+    #pick_z = -150
+    
+    #place_x = 400
+    #place_y = 100 + #i * 40
+    #place_z = -160
+    
+    ; Pick object
+    #pick_result = #safePick(#pick_x, #pick_y, #pick_z, 1000)
+    IF #pick_result == 0 THEN
+        ; Xử lý lỗi pick
+        GOTO 999
+    ENDIF
+    
+    ; Place object
+    #place_result = #safePlace(#place_x, #place_y, #place_z, 500)
+    IF #place_result == 0 THEN
+        ; Xử lý lỗi place
+        GOTO 999
+    ENDIF
+ENDFOR
+
+GOTO 1000 ; Kết thúc thành công
+
+N999 ; Xử lý lỗi
+    G28 ; Về Home an toàn
+    ; Log lỗi hoặc dừng chương trình
+
+N1000 ; Kết thúc
+    G28 ; Về Home
+```
+
+### 8.7. Best Practices cho Functions
+
+#### 8.7.1. Đặt tên hàm rõ ràng:
+```gcode
+; Tốt
+FUNCTION calculatePickPosition(row, col)
+FUNCTION validateObjectSize(width, length)
+FUNCTION executePickSequence(object_list)
+
+; Không tốt
+FUNCTION func1(a, b)
+FUNCTION process(x)
+```
+
+#### 8.7.2. Sử dụng parameters thay vì global variables:
+```gcode
+; Tốt - sử dụng parameters
+FUNCTION moveToPosition(x, y, z, speed)
+    G01 X[x] Y[y] Z[z] F[speed]
+ENDFUNCTION
+
+; Không tốt - phụ thuộc global variables
+FUNCTION moveToPosition()
+    G01 X[#global_x] Y[#global_y] Z[#global_z] F[#global_speed]
+ENDFUNCTION
+```
+
+#### 8.7.3. Luôn có return value để báo trạng thái:
+```gcode
+FUNCTION criticalOperation(param1, param2)
+    ; Thực hiện operation
+    IF error_condition THEN
+        RETURN 0 ; Lỗi
+    ENDIF
+    
+    ; Thực hiện thành công
+    RETURN 1 ; Thành công
+ENDFUNCTION
+```
+
+#### 8.7.4. Tổ chức functions theo module:
+```gcode
+; === MOVEMENT FUNCTIONS ===
+FUNCTION safeMove(x, y, z)
+    ; Implementation
+ENDFUNCTION
+
+FUNCTION fastMove(x, y, z)
+    ; Implementation
+ENDFUNCTION
+
+; === GRIPPER FUNCTIONS ===
+FUNCTION gripObject(grip_time)
+    ; Implementation
+ENDFUNCTION
+
+FUNCTION releaseObject(release_time)
+    ; Implementation
+ENDFUNCTION
+
+; === VISION FUNCTIONS ===
+FUNCTION detectObjects()
+    ; Implementation
+ENDFUNCTION
+
+FUNCTION filterObjects(min_size, max_size)
+    ; Implementation
+ENDFUNCTION
+```
+
+---
+
+⚠️ **Lưu ý về Functions:**
+
+- Functions có thể gọi lẫn nhau (bao gồm đệ quy)
+- Biến local trong function không ảnh hưởng đến biến global
+- Parameters được truyền theo giá trị (pass by value)
+- Luôn sử dụng RETURN để kết thúc function rõ ràng
+- Tránh function quá dài (> 50 dòng), nên chia nhỏ
 
 ---
 
