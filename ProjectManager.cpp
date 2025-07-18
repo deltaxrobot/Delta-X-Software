@@ -1,4 +1,5 @@
 #include "ProjectManager.h"
+#include "SoftwareManager.h"
 
 ProjectManager::ProjectManager(QWidget* parent) : QWidget(parent)
 {

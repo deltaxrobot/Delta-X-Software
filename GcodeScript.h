@@ -8,7 +8,6 @@
 #include <QMutex>
 #include <QElapsedTimer>
 #include "Parameter.h"
-#include "SoftwareManager.h"
 #include <QFileInfo>
 #include <QVector3D>
 #include <QMatrix>
@@ -16,6 +15,10 @@
 #include <QVariant>
 #include <QRegularExpression>
 #include <QStack>
+
+// Forward declarations for cloud point mapping
+class CloudPointMapper;
+class SoftwareManager;
 
 class GcodeScript : public QObject
 {
@@ -72,61 +75,170 @@ signals:
     void GetObjectsRequest(int trackingID, QString inAreaListName, float min, float max, bool isXDirection);
     void CaptureAndDetectRequest();
 
-    void SendGcodeToDevice(QString deviceName, QString gcode);
-    void SendToDevice(QString deviceName, QString gcode);
+    void SendGcodeToDevice(QString deviceId, QString gcode);
 
-    void CatchVariable(QString key, QString value);
-    void CatchVariable2(QString key, QVariant value);
+    void AddObject(QString listName, QList<QStringList> objectsInfo);
+    void AddObjectArray(QString listName, QList<QStringList> objectsInfo);
+    void AddObjectArray2D(QString listName, QList<QStringList> objectsInfo, int rows, int cols);
+    void AddObjectArray3D(QString listName, QList<QStringList> objectsInfo, int layers, int rows, int cols);
 
-    void ChangeExternalVariable(QString cmd);
-    void AddObject(QString listName, QList<QStringList> list);
+    void MoveToObject(QString listName, int objectId, float offsetX, float offsetY, float offsetZ);
+    void MoveToObject3D(QString listName, int objectId, float offsetX, float offsetY, float offsetZ);
+    void MoveToObject2D(QString listName, int objectId, float offsetX, float offsetY, float offsetZ);
+    void MoveToFirstObject(QString listName);
+    void MoveToLastObject(QString listName);
+    void MoveToNearestObject(QString listName, float x, float y, float z);
+
+    void AdjustZAxis(QString listName, int objectId, float z);
+    void AdjustZAxis2D(QString listName, int objectId, float z);
+    void AdjustZAxis3D(QString listName, int objectId, float z);
+
+    void SetArrayMoveOrder(QString listName, int rows, int cols, int order);
+    void SetArrayMoveOrder3D(QString listName, int layers, int rows, int cols, int order);
+
+    void SetObjectNotPicked(QString listName, int objectId);
+    void SetObjectPicked(QString listName, int objectId);
+
+    void GetObjectValue(QString listName, int objectId, QString property);
+    void GetObjectsCount(QString listName);
+    void GetObjectsInArea(QString listName, QString inAreaListName, float min, float max, bool isXDirection);
+    void GetObjectsInArea2D(QString listName, QString inAreaListName, float minX, float maxX, float minY, float maxY);
+    void GetObjectsInArea3D(QString listName, QString inAreaListName, float minX, float maxX, float minY, float maxY, float minZ, float maxZ);
+
+    void GetObjectsInRadius(QString listName, QString inAreaListName, float centerX, float centerY, float radius);
+    void GetObjectsInRadius3D(QString listName, QString inAreaListName, float centerX, float centerY, float centerZ, float radius);
+
+    void GetObjectsInPolygon(QString listName, QString inAreaListName, QList<QPointF> polygon);
+    void GetObjectsInPolygon3D(QString listName, QString inAreaListName, QList<QVector3D> polygon);
+
+    void GetObjectsInLine(QString listName, QString inAreaListName, QPointF start, QPointF end, float width);
+    void GetObjectsInLine3D(QString listName, QString inAreaListName, QVector3D start, QVector3D end, float width);
+
+    void GetObjectsInDirection(QString listName, QString inAreaListName, QPointF start, QPointF direction, float length, float width);
+    void GetObjectsInDirection3D(QString listName, QString inAreaListName, QVector3D start, QVector3D direction, float length, float width);
+
+    void GetObjectsByProperty(QString listName, QString inAreaListName, QString property, QString value);
+    void GetObjectsByProperty2D(QString listName, QString inAreaListName, QString property, QString value);
+    void GetObjectsByProperty3D(QString listName, QString inAreaListName, QString property, QString value);
+
+    void SortObjects(QString listName, QString property, bool ascending);
+    void SortObjects2D(QString listName, QString property, bool ascending);
+    void SortObjects3D(QString listName, QString property, bool ascending);
+
+    void FilterObjects(QString listName, QString inAreaListName, QString property, float min, float max);
+    void FilterObjects2D(QString listName, QString inAreaListName, QString property, float min, float max);
+    void FilterObjects3D(QString listName, QString inAreaListName, QString property, float min, float max);
+
+    void GroupObjects(QString listName, QString inAreaListName, QString property);
+    void GroupObjects2D(QString listName, QString inAreaListName, QString property);
+    void GroupObjects3D(QString listName, QString inAreaListName, QString property);
+
+    void GetObjectsStatistics(QString listName, QString property);
+    void GetObjectsStatistics2D(QString listName, QString property);
+    void GetObjectsStatistics3D(QString listName, QString property);
+
+    void GetObjectsDistance(QString listName, int objectId1, int objectId2);
+    void GetObjectsDistance2D(QString listName, int objectId1, int objectId2);
+    void GetObjectsDistance3D(QString listName, int objectId1, int objectId2);
+
+    void GetObjectsAngle(QString listName, int objectId1, int objectId2);
+    void GetObjectsAngle2D(QString listName, int objectId1, int objectId2);
+    void GetObjectsAngle3D(QString listName, int objectId1, int objectId2);
+
+    void GetObjectsCenter(QString listName, QString inAreaListName);
+    void GetObjectsCenter2D(QString listName, QString inAreaListName);
+    void GetObjectsCenter3D(QString listName, QString inAreaListName);
+
+    void GetObjectsBounds(QString listName, QString inAreaListName);
+    void GetObjectsBounds2D(QString listName, QString inAreaListName);
+    void GetObjectsBounds3D(QString listName, QString inAreaListName);
+
+    void GetObjectsConvexHull(QString listName, QString inAreaListName);
+    void GetObjectsConvexHull2D(QString listName, QString inAreaListName);
+    void GetObjectsConvexHull3D(QString listName, QString inAreaListName);
+
+    void GetObjectsCluster(QString listName, QString inAreaListName, int clusterCount);
+    void GetObjectsCluster2D(QString listName, QString inAreaListName, int clusterCount);
+    void GetObjectsCluster3D(QString listName, QString inAreaListName, int clusterCount);
+
+    void GetObjectsPath(QString listName, QString inAreaListName, QString algorithm);
+    void GetObjectsPath2D(QString listName, QString inAreaListName, QString algorithm);
+    void GetObjectsPath3D(QString listName, QString inAreaListName, QString algorithm);
+
+    void GetObjectsOptimalPath(QString listName, QString inAreaListName);
+    void GetObjectsOptimalPath2D(QString listName, QString inAreaListName);
+    void GetObjectsOptimalPath3D(QString listName, QString inAreaListName);
+
+    void GetObjectsNearestNeighbor(QString listName, int objectId, int count);
+    void GetObjectsNearestNeighbor2D(QString listName, int objectId, int count);
+    void GetObjectsNearestNeighbor3D(QString listName, int objectId, int count);
+
+    void GetObjectsKMeans(QString listName, QString inAreaListName, int k);
+    void GetObjectsKMeans2D(QString listName, QString inAreaListName, int k);
+    void GetObjectsKMeans3D(QString listName, QString inAreaListName, int k);
+
+    void GetObjectsDBSCAN(QString listName, QString inAreaListName, float epsilon, int minPoints);
+    void GetObjectsDBSCAN2D(QString listName, QString inAreaListName, float epsilon, int minPoints);
+    void GetObjectsDBSCAN3D(QString listName, QString inAreaListName, float epsilon, int minPoints);
+
+    void GetObjectsDelaunayTriangulation(QString listName, QString inAreaListName);
+    void GetObjectsDelaunayTriangulation2D(QString listName, QString inAreaListName);
+    void GetObjectsDelaunayTriangulation3D(QString listName, QString inAreaListName);
+
+    void GetObjectsVoronoiDiagram(QString listName, QString inAreaListName);
+    void GetObjectsVoronoiDiagram2D(QString listName, QString inAreaListName);
+    void GetObjectsVoronoiDiagram3D(QString listName, QString inAreaListName);
+
+    void GetObjectsMinimumSpanningTree(QString listName, QString inAreaListName);
+    void GetObjectsMinimumSpanningTree2D(QString listName, QString inAreaListName);
+    void GetObjectsMinimumSpanningTree3D(QString listName, QString inAreaListName);
+
+    void GetObjectsTravelingSalesman(QString listName, QString inAreaListName);
+    void GetObjectsTravelingSalesman2D(QString listName, QString inAreaListName);
+    void GetObjectsTravelingSalesman3D(QString listName, QString inAreaListName);
+
+    void GetObjectsShortestPath(QString listName, int startObjectId, int endObjectId);
+    void GetObjectsShortestPath2D(QString listName, int startObjectId, int endObjectId);
+    void GetObjectsShortestPath3D(QString listName, int startObjectId, int endObjectId);
+    
+    // Variable management signals
+    void ChangeExternalVariable(QString value);
+    void CatchVariable2(QString name, QVariant value);
+
 private:
+    QString gcodeScript;
+    QString programPath;
+    QString programName;
+    bool isRunning;
 
-    bool isRunning = false;
-    QString gcodeScript = "";
-    QString programPath = "";
-    QString programName = "";
-
-    QString transmitDeviceId = DefaultRobot;
-    QString transmitMsg = "";
-
-    QStringList deviceNames = {"robot", "device", "conveyor", "slider", "encoder"};
+    //......... Global values
 
     QList<QString> gcodeList;
-    QString functionScripts = "";
-
-    QVector<int> gcodeNumberList;
-    int gcodeOrder = 0;
-    
-    // Performance optimization: Cache line numbers for O(1) GOTO lookups
-    QMap<int, int> lineNumberCache;  // lineNumber -> gcodeOrder mapping
-    bool lineNumberCacheValid = false;
-    int currentGcodeEditorCursor = 0;
-    int returnSubProPointer[20];
-    int returnPointerOrder = -1;
+    QList<int> gcodeNumberList;
+    int gcodeOrder;
+    int currentGcodeEditorCursor;
     QString currentLine;
-
-    QString response = "";
-
-    bool IsConveyorSync = false;
-    float syncStartArea = -100;
-    float syncEndArea = 100;
-
-    QMap<QString, QString>* vars;
-
-    QMutex mMutex;
-
+    QString response;
+    QString transmitMsg;
+    QString transmitDeviceId;
     QElapsedTimer elapsedTimer;
     
-    // IF-ELIF-ELSE-ENDIF block state tracking
+    // Cache for line numbers for optimized GOTO operations
+    QMap<int, int> lineNumberCache;  // lineNumber -> gcodeOrder
+    bool lineNumberCacheValid = false;
+
+    // Line number pattern for better performance
+    static const QRegularExpression lineNumberPattern;
+    
+    // IF block state tracking
     struct IfBlockState {
-        bool conditionMet;      // True if any IF/ELIF condition was met
-        bool insideBlock;       // True if we're inside this IF block
-        int startLine;          // Line number where this IF block started
-        int endLine;            // Line number where this IF block ends (ENDIF)
+        bool conditionMet;          // True if condition was met
+        bool isExecuting;           // True if currently executing this block
+        bool insideBlock;           // True if inside this block
+        int startLine;              // Line where IF starts
         
-        IfBlockState() : conditionMet(false), insideBlock(false), startLine(-1), endLine(-1) {}
-        IfBlockState(bool met, bool inside, int start) : conditionMet(met), insideBlock(inside), startLine(start), endLine(-1) {}
+        IfBlockState() : conditionMet(false), isExecuting(false), insideBlock(false), startLine(-1) {}
+        IfBlockState(bool met, bool exec, int line) : conditionMet(met), isExecuting(exec), insideBlock(false), startLine(line) {}
     };
     
     QStack<IfBlockState> ifBlockStack;  // Stack to handle nested IF blocks
@@ -164,6 +276,12 @@ private:
     // Simple function system similar to M98/M99
     int returnFunctionPointer[20];
     int returnFunctionOrder = -1;
+    
+    // Variables for program control
+    int returnPointerOrder;
+    int returnSubProPointer[20];  // Array for subprogram pointers
+    bool IsConveyorSync;
+    QStringList deviceNames;
     
     // Simple function definition struct
     struct SimpleFunctionDef {
@@ -208,7 +326,8 @@ private:
 
     void processVARIABLE();
     QString processFUNCTION(QString funcName, QStringList paras);
-
+    
+    // Missing function declarations
     bool handleGOTO(QList<QString> valuePairs, int i);
     bool handleIF(QList<QString> valuePairs, int i);
     bool handleELIF(QList<QString> valuePairs, int i);
@@ -217,7 +336,7 @@ private:
     void skipToNextConditional(); // Skip to next ELIF, ELSE, or ENDIF
     bool handleFOR(QList<QString> valuePairs, int i);
     bool handleENDFOR(QList<QString> valuePairs, int i);
-    void skipToEndFor(); // Skip to ENDFOR
+    void skipToEndFor();
     bool executeForLoopIteration(); // Execute next iteration of FOR loop
     int findEndForLine(int startLine); // Find matching ENDFOR line
     
@@ -249,6 +368,229 @@ private:
     void processResponse(QString response);
     bool checkExclution(QString response);
 
+    // Cloud Point Mapping Functions
+    /**
+     * @brief Add a calibration point to cloud mapping
+     * @param imageX Image X coordinate
+     * @param imageY Image Y coordinate
+     * @param imageZ Image Z coordinate
+     * @param realX Real X coordinate
+     * @param realY Real Y coordinate
+     * @param realZ Real Z coordinate
+     * @param confidence Confidence level (0.0-1.0)
+     * @param label Optional label
+     * @return Point index or -1 if failed
+     */
+    float cloudPointAddCalibration(float imageX, float imageY, float imageZ, float realX, float realY, float realZ, float confidence = 1.0f, QString label = "");
+
+    /**
+     * @brief Transform image coordinates to real coordinates using cloud mapping
+     * @param imageX Image X coordinate
+     * @param imageY Image Y coordinate
+     * @param imageZ Image Z coordinate
+     * @param method Interpolation method (0=Linear, 1=Bilinear, 2=Cubic, 3=Radial, 4=Kriging)
+     * @return Real X coordinate
+     */
+    float cloudPointTransformX(float imageX, float imageY, float imageZ, int method = 1);
+
+    /**
+     * @brief Transform image coordinates to real coordinates using cloud mapping
+     * @param imageX Image X coordinate
+     * @param imageY Image Y coordinate
+     * @param imageZ Image Z coordinate
+     * @param method Interpolation method (0=Linear, 1=Bilinear, 2=Cubic, 3=Radial, 4=Kriging)
+     * @return Real Y coordinate
+     */
+    float cloudPointTransformY(float imageX, float imageY, float imageZ, int method = 1);
+
+    /**
+     * @brief Transform image coordinates to real coordinates using cloud mapping
+     * @param imageX Image X coordinate
+     * @param imageY Image Y coordinate
+     * @param imageZ Image Z coordinate
+     * @param method Interpolation method (0=Linear, 1=Bilinear, 2=Cubic, 3=Radial, 4=Kriging)
+     * @return Real Z coordinate
+     */
+    float cloudPointTransformZ(float imageX, float imageY, float imageZ, int method = 1);
+
+    /**
+     * @brief Get transformation confidence for given image coordinates
+     * @param imageX Image X coordinate
+     * @param imageY Image Y coordinate
+     * @param imageZ Image Z coordinate
+     * @param method Interpolation method
+     * @return Confidence level (0.0-1.0)
+     */
+    float cloudPointGetConfidence(float imageX, float imageY, float imageZ, int method = 1);
+
+    /**
+     * @brief Get estimated error for given image coordinates
+     * @param imageX Image X coordinate
+     * @param imageY Image Y coordinate
+     * @param imageZ Image Z coordinate
+     * @param method Interpolation method
+     * @return Estimated error in mm
+     */
+    float cloudPointGetError(float imageX, float imageY, float imageZ, int method = 1);
+
+    /**
+     * @brief Get cloud mapping statistics
+     * @return Statistics string
+     */
+    QString cloudPointGetStats();
+
+    /**
+     * @brief Get number of calibration points
+     * @return Point count
+     */
+    float cloudPointGetCount();
+
+    /**
+     * @brief Check if cloud mapping is valid and ready for use
+     * @return 1 if valid, 0 if not valid
+     */
+    float cloudPointIsValid();
+
+    /**
+     * @brief Clear all calibration points
+     * @return 1 if successful, 0 if failed
+     */
+    float cloudPointClear();
+
+    /**
+     * @brief Build mapping grid with specified resolution
+     * @param resolution Grid resolution (cells per unit)
+     * @return 1 if successful, 0 if failed
+     */
+    float cloudPointBuildGrid(float resolution = 10.0f);
+
+    /**
+     * @brief Validate mapping accuracy
+     * @param validationRatio Ratio of points to use for validation (0.0-1.0)
+     * @return Average error in mm
+     */
+    float cloudPointValidate(float validationRatio = 0.2f);
+
+    /**
+     * @brief Save cloud mapping to file
+     * @param filename File path
+     * @return 1 if successful, 0 if failed
+     */
+    float cloudPointSave(QString filename);
+
+    /**
+     * @brief Load cloud mapping from file
+     * @param filename File path
+     * @return 1 if successful, 0 if failed
+     */
+    float cloudPointLoad(QString filename);
+
+    /**
+     * @brief Export cloud mapping to VariableManager
+     * @param variableName Variable name to use
+     * @return 1 if successful, 0 if failed
+     */
+    float cloudPointExport(QString variableName);
+
+    /**
+     * @brief Import cloud mapping from VariableManager
+     * @param variableName Variable name to load from
+     * @return 1 if successful, 0 if failed
+     */
+    float cloudPointImport(QString variableName);
+
+    /**
+     * @brief Remove a calibration point by index
+     * @param index Point index
+     * @return 1 if successful, 0 if failed
+     */
+    float cloudPointRemove(int index);
+
+    /**
+     * @brief Update a calibration point
+     * @param index Point index
+     * @param imageX New image X coordinate
+     * @param imageY New image Y coordinate
+     * @param imageZ New image Z coordinate
+     * @param realX New real X coordinate
+     * @param realY New real Y coordinate
+     * @param realZ New real Z coordinate
+     * @param confidence New confidence level
+     * @return 1 if successful, 0 if failed
+     */
+    float cloudPointUpdate(int index, float imageX, float imageY, float imageZ, float realX, float realY, float realZ, float confidence = 1.0f);
+
+    /**
+     * @brief Get calibration point image X coordinate
+     * @param index Point index
+     * @return Image X coordinate
+     */
+    float cloudPointGetImageX(int index);
+
+    /**
+     * @brief Get calibration point image Y coordinate
+     * @param index Point index
+     * @return Image Y coordinate
+     */
+    float cloudPointGetImageY(int index);
+
+    /**
+     * @brief Get calibration point image Z coordinate
+     * @param index Point index
+     * @return Image Z coordinate
+     */
+    float cloudPointGetImageZ(int index);
+
+    /**
+     * @brief Get calibration point real X coordinate
+     * @param index Point index
+     * @return Real X coordinate
+     */
+    float cloudPointGetRealX(int index);
+
+    /**
+     * @brief Get calibration point real Y coordinate
+     * @param index Point index
+     * @return Real Y coordinate
+     */
+    float cloudPointGetRealY(int index);
+
+    /**
+     * @brief Get calibration point real Z coordinate
+     * @param index Point index
+     * @return Real Z coordinate
+     */
+    float cloudPointGetRealZ(int index);
+
+    /**
+     * @brief Get calibration point confidence
+     * @param index Point index
+     * @return Confidence level (0.0-1.0)
+     */
+    float cloudPointGetPointConfidence(int index);
+
+    /**
+     * @brief Get calibration point error
+     * @param index Point index
+     * @return Error in mm
+     */
+    float cloudPointGetPointError(int index);
+
+    /**
+     * @brief Get calibration point label
+     * @param index Point index
+     * @return Label string
+     */
+    QString cloudPointGetLabel(int index);
+
+    // Helper methods for cloud point mapping
+    CloudPointMapper* getCloudPointMapper();
+    void initializeCloudPointMapper();
+    bool isCloudPointMapperAvailable();
+    
+    // Cloud point mapping instance
+    CloudPointMapper* m_cloudPointMapper;
+    bool m_cloudPointMapperInitialized;
 };
 
 #endif

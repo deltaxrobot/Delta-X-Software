@@ -1,20 +1,67 @@
 #include "GcodeScript.h"
-#include <cstdlib>
-#include <ctime>
+#include "CloudPointMapper.h"
+#include "VariableManager.h"
+#include "SoftwareManager.h"
+#include <QStandardPaths>
+#include <QDir>
 
 // Initialize static regex patterns for better performance
 const QRegularExpression GcodeScript::m98Regex("M98\\s+([A-Za-z]+)(?:\\((.*)\\))?", QRegularExpression::OptimizeOnFirstUsageOption);
 const QRegularExpression GcodeScript::objectInAreaRegex("\\(([^)]+)\\)", QRegularExpression::OptimizeOnFirstUsageOption);
 
+// Initialize cloud point mapper member variables
 GcodeScript::GcodeScript()
+    : m_cloudPointMapper(nullptr)
+    , m_cloudPointMapperInitialized(false)
+    , returnPointerOrder(-1)
+    , IsConveyorSync(false)
 {
-    // Khởi tạo seed cho random number generator
-    srand(static_cast<unsigned int>(time(nullptr)));
+    // Initialize array
+    for (int i = 0; i < 20; i++) {
+        returnSubProPointer[i] = -1;
+    }
+    
+    // Initialize cloud point mapper
+    initializeCloudPointMapper();
 }
 
 GcodeScript::~GcodeScript()
 {
+    if (m_cloudPointMapper) {
+        delete m_cloudPointMapper;
+    }
+}
 
+void GcodeScript::initializeCloudPointMapper()
+{
+    if (!m_cloudPointMapperInitialized) {
+        m_cloudPointMapper = new CloudPointMapper(this);
+        m_cloudPointMapperInitialized = true;
+        
+        // Try to import existing cloud mapping from variables
+        if (m_cloudPointMapper) {
+            m_cloudPointMapper->importFromVariableManager("CloudMapping");
+        }
+    }
+}
+
+CloudPointMapper* GcodeScript::getCloudPointMapper()
+{
+    if (!m_cloudPointMapperInitialized) {
+        initializeCloudPointMapper();
+    }
+    return m_cloudPointMapper;
+}
+
+bool GcodeScript::isCloudPointMapperAvailable()
+{
+    CloudPointMapper* mapper = getCloudPointMapper();
+    if (!mapper) {
+        return false;
+    }
+    
+    CloudPointMapper::MappingStats stats = mapper->getMappingStats();
+    return stats.isValid && mapper->getPointCount() >= 3;
 }
 
 void GcodeScript::SetGcodeScript(QString gcode)
@@ -446,6 +493,7 @@ float GcodeScript::GetResultOfMathFunction(QString expression)
         }
     }
 
+    // Built-in math functions
     if (functionName.toLower() == "sin")
     {
         return sin((values[0].toFloat()/180) * M_PI);
@@ -471,89 +519,652 @@ float GcodeScript::GetResultOfMathFunction(QString expression)
         return atan2(values[0].toFloat(), values.at(1).toFloat()) * 180 / M_PI;
     }
 
-    if (functionName.toLower() == "asin")
-    {
-        return asin(values[0].toFloat()) * 180 / M_PI;
-    }
-
-    if (functionName.toLower() == "abs")
-    {
-        return abs(values[0].toFloat());
-    }
-
     if (functionName.toLower() == "sqrt")
     {
         return sqrt(values[0].toFloat());
     }
 
-    if (functionName.toLower() == "pow")
+    if (functionName.toLower() == "abs")
     {
-        if (values.length() >= 2)
-        {
-            return pow(values[0].toFloat(), values.at(1).toFloat());
-        }
-        else
-        {
-            return NULL_NUMBER;
-        }
+        return fabs(values[0].toFloat());
     }
 
     if (functionName.toLower() == "round")
     {
-        return round(values[0].toInt());
+        return round(values[0].toFloat());
     }
 
-    if (functionName.toLower() == "random")
+    if (functionName.toLower() == "floor")
     {
-        // #random() - Trả về số ngẫu nhiên từ 0.0 đến 1.0
-        return static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
+        return floor(values[0].toFloat());
     }
 
-    if (functionName.toLower() == "randomrange")
+    if (functionName.toLower() == "ceil")
     {
-        // #randomRange(min, max) - Trả về số ngẫu nhiên trong khoảng [min, max]
-        if (values.length() >= 2)
-        {
-            float min = values[0].toFloat();
-            float max = values[1].toFloat();
-            if (min > max) {
-                // Hoán đổi nếu min > max
-                float temp = min;
-                min = max;
-                max = temp;
-            }
-            return min + static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * (max - min);
-        }
-        else
-        {
-            return NULL_NUMBER;
-        }
+        return ceil(values[0].toFloat());
     }
 
-    if (functionName.toLower() == "randomint")
+    if (functionName.toLower() == "min")
     {
-        // #randomInt(min, max) - Trả về số nguyên ngẫu nhiên trong khoảng [min, max]
-        if (values.length() >= 2)
-        {
-            int min = values[0].toInt();
-            int max = values[1].toInt();
-            if (min > max) {
-                // Hoán đổi nếu min > max
-                int temp = min;
-                min = max;
-                max = temp;
-            }
-            return min + rand() % (max - min + 1);
-        }
-        else
-        {
-            return NULL_NUMBER;
-        }
+        return qMin(values[0].toFloat(), values[1].toFloat());
     }
 
+    if (functionName.toLower() == "max")
+    {
+        return qMax(values[0].toFloat(), values[1].toFloat());
+    }
 
+    if (functionName.toLower() == "pow")
+    {
+        return pow(values[0].toFloat(), values[1].toFloat());
+    }
+
+    if (functionName.toLower() == "log")
+    {
+        return log(values[0].toFloat());
+    }
+
+    if (functionName.toLower() == "log10")
+    {
+        return log10(values[0].toFloat());
+    }
+
+    if (functionName.toLower() == "exp")
+    {
+        return exp(values[0].toFloat());
+    }
+
+    // ======== CLOUD POINT MAPPING FUNCTIONS ========
+
+    // Add calibration point: #cloudPointAddCalibration(imageX, imageY, imageZ, realX, realY, realZ, confidence, label)
+    if (functionName.toLower() == "cloudpointaddcalibration")
+    {
+        return cloudPointAddCalibration(
+            values[0].toFloat(),  // imageX
+            values[1].toFloat(),  // imageY  
+            values[2].toFloat(),  // imageZ
+            values[3].toFloat(),  // realX
+            values[4].toFloat(),  // realY
+            values[5].toFloat(),  // realZ
+            values.size() > 6 ? values[6].toFloat() : 1.0f,  // confidence
+            values.size() > 7 ? values[7] : ""  // label
+        );
+    }
+
+    // Transform functions: #cloudPointTransformX(imageX, imageY, imageZ, method)
+    if (functionName.toLower() == "cloudpointtransformx")
+    {
+        return cloudPointTransformX(
+            values[0].toFloat(),  // imageX
+            values[1].toFloat(),  // imageY
+            values[2].toFloat(),  // imageZ
+            values.size() > 3 ? values[3].toInt() : 1  // method
+        );
+    }
+
+    if (functionName.toLower() == "cloudpointtransformy")
+    {
+        return cloudPointTransformY(
+            values[0].toFloat(),  // imageX
+            values[1].toFloat(),  // imageY
+            values[2].toFloat(),  // imageZ
+            values.size() > 3 ? values[3].toInt() : 1  // method
+        );
+    }
+
+    if (functionName.toLower() == "cloudpointtransformz")
+    {
+        return cloudPointTransformZ(
+            values[0].toFloat(),  // imageX
+            values[1].toFloat(),  // imageY
+            values[2].toFloat(),  // imageZ
+            values.size() > 3 ? values[3].toInt() : 1  // method
+        );
+    }
+
+    // Confidence and error functions
+    if (functionName.toLower() == "cloudpointgetconfidence")
+    {
+        return cloudPointGetConfidence(
+            values[0].toFloat(),  // imageX
+            values[1].toFloat(),  // imageY
+            values[2].toFloat(),  // imageZ
+            values.size() > 3 ? values[3].toInt() : 1  // method
+        );
+    }
+
+    if (functionName.toLower() == "cloudpointgeterror")
+    {
+        return cloudPointGetError(
+            values[0].toFloat(),  // imageX
+            values[1].toFloat(),  // imageY
+            values[2].toFloat(),  // imageZ
+            values.size() > 3 ? values[3].toInt() : 1  // method
+        );
+    }
+
+    // Mapping information functions
+    if (functionName.toLower() == "cloudpointgetcount")
+    {
+        return cloudPointGetCount();
+    }
+
+    if (functionName.toLower() == "cloudpointisvalid")
+    {
+        return cloudPointIsValid();
+    }
+
+    if (functionName.toLower() == "cloudpointclear")
+    {
+        return cloudPointClear();
+    }
+
+    if (functionName.toLower() == "cloudpointbuildgrid")
+    {
+        return cloudPointBuildGrid(
+            values.size() > 0 ? values[0].toFloat() : 10.0f  // resolution
+        );
+    }
+
+    if (functionName.toLower() == "cloudpointvalidate")
+    {
+        return cloudPointValidate(
+            values.size() > 0 ? values[0].toFloat() : 0.2f  // validationRatio
+        );
+    }
+
+    if (functionName.toLower() == "cloudpointsave")
+    {
+        return cloudPointSave(
+            values.size() > 0 ? values[0] : ""  // filename
+        );
+    }
+
+    if (functionName.toLower() == "cloudpointload")
+    {
+        return cloudPointLoad(
+            values.size() > 0 ? values[0] : ""  // filename
+        );
+    }
+
+    if (functionName.toLower() == "cloudpointexport")
+    {
+        return cloudPointExport(
+            values.size() > 0 ? values[0] : "CloudMapping"  // variableName
+        );
+    }
+
+    if (functionName.toLower() == "cloudpointimport")
+    {
+        return cloudPointImport(
+            values.size() > 0 ? values[0] : "CloudMapping"  // variableName
+        );
+    }
+
+    if (functionName.toLower() == "cloudpointremove")
+    {
+        return cloudPointRemove(
+            values[0].toInt()  // index
+        );
+    }
+
+    if (functionName.toLower() == "cloudpointupdate")
+    {
+        return cloudPointUpdate(
+            values[0].toInt(),    // index
+            values[1].toFloat(),  // imageX
+            values[2].toFloat(),  // imageY
+            values[3].toFloat(),  // imageZ
+            values[4].toFloat(),  // realX
+            values[5].toFloat(),  // realY
+            values[6].toFloat(),  // realZ
+            values.size() > 7 ? values[7].toFloat() : 1.0f  // confidence
+        );
+    }
+
+    // Get calibration point data functions
+    if (functionName.toLower() == "cloudpointgetimagex")
+    {
+        return cloudPointGetImageX(values[0].toInt());
+    }
+
+    if (functionName.toLower() == "cloudpointgetimagey")
+    {
+        return cloudPointGetImageY(values[0].toInt());
+    }
+
+    if (functionName.toLower() == "cloudpointgetimagez")
+    {
+        return cloudPointGetImageZ(values[0].toInt());
+    }
+
+    if (functionName.toLower() == "cloudpointgetrealx")
+    {
+        return cloudPointGetRealX(values[0].toInt());
+    }
+
+    if (functionName.toLower() == "cloudpointgetrealy")
+    {
+        return cloudPointGetRealY(values[0].toInt());
+    }
+
+    if (functionName.toLower() == "cloudpointgetrealz")
+    {
+        return cloudPointGetRealZ(values[0].toInt());
+    }
+
+    if (functionName.toLower() == "cloudpointgetpointconfidence")
+    {
+        return cloudPointGetPointConfidence(values[0].toInt());
+    }
+
+    if (functionName.toLower() == "cloudpointgetpointerror")
+    {
+        return cloudPointGetPointError(values[0].toInt());
+    }
 
     return NULL_NUMBER;
+}
+
+// ======== CLOUD POINT MAPPING FUNCTIONS IMPLEMENTATION ========
+
+float GcodeScript::cloudPointAddCalibration(float imageX, float imageY, float imageZ, float realX, float realY, float realZ, float confidence, QString label)
+{
+    CloudPointMapper* mapper = getCloudPointMapper();
+    if (!mapper) {
+        return -1.0f;
+    }
+    
+    QVector3D imageCoord(imageX, imageY, imageZ);
+    QVector3D realCoord(realX, realY, realZ);
+    
+    int index = mapper->addCalibrationPoint(imageCoord, realCoord, confidence, label);
+    
+    // Auto-export to variables after adding point
+    if (index >= 0) {
+        mapper->exportToVariableManager("CloudMapping");
+    }
+    
+    return static_cast<float>(index);
+}
+
+float GcodeScript::cloudPointTransformX(float imageX, float imageY, float imageZ, int method)
+{
+    CloudPointMapper* mapper = getCloudPointMapper();
+    if (!mapper) {
+        return NULL_NUMBER;
+    }
+    
+    QVector3D imageCoord(imageX, imageY, imageZ);
+    CloudPointMapper::InterpolationMethod interpMethod = static_cast<CloudPointMapper::InterpolationMethod>(method);
+    
+    CloudPointMapper::MappingResult result = mapper->transformImageToReal(imageCoord, interpMethod);
+    
+    if (result.isValid) {
+        return result.transformedPoint.x();
+    }
+    
+    return NULL_NUMBER;
+}
+
+float GcodeScript::cloudPointTransformY(float imageX, float imageY, float imageZ, int method)
+{
+    CloudPointMapper* mapper = getCloudPointMapper();
+    if (!mapper) {
+        return NULL_NUMBER;
+    }
+    
+    QVector3D imageCoord(imageX, imageY, imageZ);
+    CloudPointMapper::InterpolationMethod interpMethod = static_cast<CloudPointMapper::InterpolationMethod>(method);
+    
+    CloudPointMapper::MappingResult result = mapper->transformImageToReal(imageCoord, interpMethod);
+    
+    if (result.isValid) {
+        return result.transformedPoint.y();
+    }
+    
+    return NULL_NUMBER;
+}
+
+float GcodeScript::cloudPointTransformZ(float imageX, float imageY, float imageZ, int method)
+{
+    CloudPointMapper* mapper = getCloudPointMapper();
+    if (!mapper) {
+        return NULL_NUMBER;
+    }
+    
+    QVector3D imageCoord(imageX, imageY, imageZ);
+    CloudPointMapper::InterpolationMethod interpMethod = static_cast<CloudPointMapper::InterpolationMethod>(method);
+    
+    CloudPointMapper::MappingResult result = mapper->transformImageToReal(imageCoord, interpMethod);
+    
+    if (result.isValid) {
+        return result.transformedPoint.z();
+    }
+    
+    return NULL_NUMBER;
+}
+
+float GcodeScript::cloudPointGetConfidence(float imageX, float imageY, float imageZ, int method)
+{
+    CloudPointMapper* mapper = getCloudPointMapper();
+    if (!mapper) {
+        return 0.0f;
+    }
+    
+    QVector3D imageCoord(imageX, imageY, imageZ);
+    CloudPointMapper::InterpolationMethod interpMethod = static_cast<CloudPointMapper::InterpolationMethod>(method);
+    
+    CloudPointMapper::MappingResult result = mapper->transformImageToReal(imageCoord, interpMethod);
+    
+    if (result.isValid) {
+        return result.confidence;
+    }
+    
+    return 0.0f;
+}
+
+float GcodeScript::cloudPointGetError(float imageX, float imageY, float imageZ, int method)
+{
+    CloudPointMapper* mapper = getCloudPointMapper();
+    if (!mapper) {
+        return 999.0f;
+    }
+    
+    QVector3D imageCoord(imageX, imageY, imageZ);
+    CloudPointMapper::InterpolationMethod interpMethod = static_cast<CloudPointMapper::InterpolationMethod>(method);
+    
+    CloudPointMapper::MappingResult result = mapper->transformImageToReal(imageCoord, interpMethod);
+    
+    if (result.isValid) {
+        return result.estimatedError;
+    }
+    
+    return 999.0f;
+}
+
+QString GcodeScript::cloudPointGetStats()
+{
+    CloudPointMapper* mapper = getCloudPointMapper();
+    if (!mapper) {
+        return "Cloud mapping not available";
+    }
+    
+    CloudPointMapper::MappingStats stats = mapper->getMappingStats();
+    
+    QString statsText;
+    statsText += QString("Points: %1, ").arg(stats.totalPoints);
+    statsText += QString("Avg Error: %1mm, ").arg(stats.averageError, 0, 'f', 2);
+    statsText += QString("Max Error: %1mm, ").arg(stats.maxError, 0, 'f', 2);
+    statsText += QString("Coverage: %1%, ").arg(stats.coverage, 0, 'f', 1);
+    statsText += QString("Valid: %1").arg(stats.isValid ? "Yes" : "No");
+    
+    return statsText;
+}
+
+float GcodeScript::cloudPointGetCount()
+{
+    CloudPointMapper* mapper = getCloudPointMapper();
+    if (!mapper) {
+        return 0.0f;
+    }
+    
+    return static_cast<float>(mapper->getPointCount());
+}
+
+float GcodeScript::cloudPointIsValid()
+{
+    CloudPointMapper* mapper = getCloudPointMapper();
+    if (!mapper) {
+        return 0.0f;
+    }
+    
+    CloudPointMapper::MappingStats stats = mapper->getMappingStats();
+    return stats.isValid ? 1.0f : 0.0f;
+}
+
+float GcodeScript::cloudPointClear()
+{
+    CloudPointMapper* mapper = getCloudPointMapper();
+    if (!mapper) {
+        return 0.0f;
+    }
+    
+    mapper->clearMapping();
+    return 1.0f;
+}
+
+float GcodeScript::cloudPointBuildGrid(float resolution)
+{
+    CloudPointMapper* mapper = getCloudPointMapper();
+    if (!mapper) {
+        return 0.0f;
+    }
+    
+    bool success = mapper->buildMappingGrid(resolution);
+    
+    if (success) {
+        // Auto-export to variables after building grid
+        mapper->exportToVariableManager("CloudMapping");
+    }
+    
+    return success ? 1.0f : 0.0f;
+}
+
+float GcodeScript::cloudPointValidate(float validationRatio)
+{
+    CloudPointMapper* mapper = getCloudPointMapper();
+    if (!mapper) {
+        return 999.0f;
+    }
+    
+    CloudPointMapper::MappingStats stats = mapper->validateMapping(validationRatio);
+    return stats.averageError;
+}
+
+float GcodeScript::cloudPointSave(QString filename)
+{
+    CloudPointMapper* mapper = getCloudPointMapper();
+    if (!mapper) {
+        return 0.0f;
+    }
+    
+    if (filename.isEmpty()) {
+        // Generate default filename
+        QString defaultPath = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
+        QDir().mkpath(defaultPath + "/CloudPointMappings");
+        filename = defaultPath + "/CloudPointMappings/mapping_" + QDateTime::currentDateTime().toString("yyyyMMdd_hhmmss") + ".json";
+    }
+    
+    bool success = mapper->saveToFile(filename);
+    return success ? 1.0f : 0.0f;
+}
+
+float GcodeScript::cloudPointLoad(QString filename)
+{
+    CloudPointMapper* mapper = getCloudPointMapper();
+    if (!mapper) {
+        return 0.0f;
+    }
+    
+    if (filename.isEmpty()) {
+        return 0.0f;
+    }
+    
+    bool success = mapper->loadFromFile(filename);
+    
+    if (success) {
+        // Auto-export to variables after loading
+        mapper->exportToVariableManager("CloudMapping");
+    }
+    
+    return success ? 1.0f : 0.0f;
+}
+
+float GcodeScript::cloudPointExport(QString variableName)
+{
+    CloudPointMapper* mapper = getCloudPointMapper();
+    if (!mapper) {
+        return 0.0f;
+    }
+    
+    if (variableName.isEmpty()) {
+        variableName = "CloudMapping";
+    }
+    
+    bool success = mapper->exportToVariableManager(variableName);
+    return success ? 1.0f : 0.0f;
+}
+
+float GcodeScript::cloudPointImport(QString variableName)
+{
+    CloudPointMapper* mapper = getCloudPointMapper();
+    if (!mapper) {
+        return 0.0f;
+    }
+    
+    if (variableName.isEmpty()) {
+        variableName = "CloudMapping";
+    }
+    
+    bool success = mapper->importFromVariableManager(variableName);
+    return success ? 1.0f : 0.0f;
+}
+
+float GcodeScript::cloudPointRemove(int index)
+{
+    CloudPointMapper* mapper = getCloudPointMapper();
+    if (!mapper) {
+        return 0.0f;
+    }
+    
+    bool success = mapper->removeCalibrationPoint(index);
+    
+    if (success) {
+        // Auto-export to variables after removing point
+        mapper->exportToVariableManager("CloudMapping");
+    }
+    
+    return success ? 1.0f : 0.0f;
+}
+
+float GcodeScript::cloudPointUpdate(int index, float imageX, float imageY, float imageZ, float realX, float realY, float realZ, float confidence)
+{
+    CloudPointMapper* mapper = getCloudPointMapper();
+    if (!mapper) {
+        return 0.0f;
+    }
+    
+    QVector3D imageCoord(imageX, imageY, imageZ);
+    QVector3D realCoord(realX, realY, realZ);
+    
+    bool success = mapper->updateCalibrationPoint(index, imageCoord, realCoord, confidence);
+    
+    if (success) {
+        // Auto-export to variables after updating point
+        mapper->exportToVariableManager("CloudMapping");
+    }
+    
+    return success ? 1.0f : 0.0f;
+}
+
+float GcodeScript::cloudPointGetImageX(int index)
+{
+    CloudPointMapper* mapper = getCloudPointMapper();
+    if (!mapper || index < 0 || index >= mapper->getPointCount()) {
+        return NULL_NUMBER;
+    }
+    
+    const CloudPointMapper::CalibrationPoint& point = mapper->getCalibrationPoint(index);
+    return point.imageCoord.x();
+}
+
+float GcodeScript::cloudPointGetImageY(int index)
+{
+    CloudPointMapper* mapper = getCloudPointMapper();
+    if (!mapper || index < 0 || index >= mapper->getPointCount()) {
+        return NULL_NUMBER;
+    }
+    
+    const CloudPointMapper::CalibrationPoint& point = mapper->getCalibrationPoint(index);
+    return point.imageCoord.y();
+}
+
+float GcodeScript::cloudPointGetImageZ(int index)
+{
+    CloudPointMapper* mapper = getCloudPointMapper();
+    if (!mapper || index < 0 || index >= mapper->getPointCount()) {
+        return NULL_NUMBER;
+    }
+    
+    const CloudPointMapper::CalibrationPoint& point = mapper->getCalibrationPoint(index);
+    return point.imageCoord.z();
+}
+
+float GcodeScript::cloudPointGetRealX(int index)
+{
+    CloudPointMapper* mapper = getCloudPointMapper();
+    if (!mapper || index < 0 || index >= mapper->getPointCount()) {
+        return NULL_NUMBER;
+    }
+    
+    const CloudPointMapper::CalibrationPoint& point = mapper->getCalibrationPoint(index);
+    return point.realCoord.x();
+}
+
+float GcodeScript::cloudPointGetRealY(int index)
+{
+    CloudPointMapper* mapper = getCloudPointMapper();
+    if (!mapper || index < 0 || index >= mapper->getPointCount()) {
+        return NULL_NUMBER;
+    }
+    
+    const CloudPointMapper::CalibrationPoint& point = mapper->getCalibrationPoint(index);
+    return point.realCoord.y();
+}
+
+float GcodeScript::cloudPointGetRealZ(int index)
+{
+    CloudPointMapper* mapper = getCloudPointMapper();
+    if (!mapper || index < 0 || index >= mapper->getPointCount()) {
+        return NULL_NUMBER;
+    }
+    
+    const CloudPointMapper::CalibrationPoint& point = mapper->getCalibrationPoint(index);
+    return point.realCoord.z();
+}
+
+float GcodeScript::cloudPointGetPointConfidence(int index)
+{
+    CloudPointMapper* mapper = getCloudPointMapper();
+    if (!mapper || index < 0 || index >= mapper->getPointCount()) {
+        return 0.0f;
+    }
+    
+    const CloudPointMapper::CalibrationPoint& point = mapper->getCalibrationPoint(index);
+    return point.confidence;
+}
+
+float GcodeScript::cloudPointGetPointError(int index)
+{
+    CloudPointMapper* mapper = getCloudPointMapper();
+    if (!mapper || index < 0 || index >= mapper->getPointCount()) {
+        return 999.0f;
+    }
+    
+    const CloudPointMapper::CalibrationPoint& point = mapper->getCalibrationPoint(index);
+    return point.error;
+}
+
+QString GcodeScript::cloudPointGetLabel(int index)
+{
+    CloudPointMapper* mapper = getCloudPointMapper();
+    if (!mapper || index < 0 || index >= mapper->getPointCount()) {
+        return "";
+    }
+    
+    const CloudPointMapper::CalibrationPoint& point = mapper->getCalibrationPoint(index);
+    return point.label;
 }
 
 bool GcodeScript::isGlobalVariable(QString name)
@@ -2879,5 +3490,8 @@ QString GcodeScript::parseFunctionCall(QString line, QStringList& arguments)
     
     return functionName;
 }
+
+// Missing function implementations
+
 
 

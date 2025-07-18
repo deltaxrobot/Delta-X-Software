@@ -31,9 +31,11 @@
 #include <QtWidgets/QScrollArea>
 #include <QtWidgets/QSlider>
 #include <QtWidgets/QSpacerItem>
+#include <QtWidgets/QSpinBox>
 #include <QtWidgets/QSplitter>
 #include <QtWidgets/QTabWidget>
 #include <QtWidgets/QTableView>
+#include <QtWidgets/QTableWidget>
 #include <QtWidgets/QTextBrowser>
 #include <QtWidgets/QTextEdit>
 #include <QtWidgets/QToolButton>
@@ -543,6 +545,64 @@ public:
     QSpacerItem *horizontalSpacer_56;
     QLabel *label_222;
     QPushButton *pbCalculateTestPoint;
+    QGroupBox *gbCloudPointMapping;
+    QVBoxLayout *verticalLayout_67;
+    QFrame *frame_22;
+    QVBoxLayout *verticalLayout_68;
+    QFrame *frameCloudPointSettings;
+    QGridLayout *gridLayout_45;
+    QLabel *label_242;
+    QComboBox *cbInterpolationMethod;
+    QLabel *label_243;
+    QSpinBox *sbGridResolution;
+    QCheckBox *cbAutoRebuild;
+    QSpacerItem *horizontalSpacer_57;
+    QFrame *frameCloudPointCalibration;
+    QVBoxLayout *verticalLayout_69;
+    QLabel *label_244;
+    QTableWidget *tableCalibrationPoints;
+    QFrame *frameCloudPointButtons;
+    QHBoxLayout *horizontalLayout_291;
+    QPushButton *pbAddCalibrationPoint;
+    QPushButton *pbRemoveCalibrationPoint;
+    QPushButton *pbClearCalibrationPoints;
+    QPushButton *pbRebuildMapping;
+    QPushButton *pbValidateMapping;
+    QSpacerItem *horizontalSpacer_58;
+    QFrame *frameCloudPointTest;
+    QGridLayout *gridLayout_46;
+    QLabel *label_245;
+    QLineEdit *leCloudTestInputX;
+    QLabel *label_246;
+    QLineEdit *leCloudTestInputY;
+    QPushButton *pbTransformCloudPoint;
+    QLabel *label_247;
+    QLineEdit *leCloudTestOutputX;
+    QLabel *label_248;
+    QLineEdit *leCloudTestOutputY;
+    QLabel *label_249;
+    QLineEdit *leCloudTestConfidence;
+    QLabel *label_250;
+    QLineEdit *leCloudTestError;
+    QSpacerItem *horizontalSpacer_59;
+    QFrame *frameCloudPointStats;
+    QGridLayout *gridLayout_47;
+    QLabel *label_251;
+    QLabel *lbPointCount;
+    QLabel *label_252;
+    QLabel *lbAvgError;
+    QLabel *label_253;
+    QLabel *lbMaxError;
+    QLabel *label_254;
+    QLabel *lbCoverage;
+    QSpacerItem *horizontalSpacer_60;
+    QFrame *frameCloudPointFiles;
+    QHBoxLayout *horizontalLayout_30;
+    QPushButton *pbSaveCloudMapping;
+    QPushButton *pbLoadCloudMapping;
+    QPushButton *pbExportToVariables;
+    QPushButton *pbImportFromVariables;
+    QSpacerItem *horizontalSpacer_61;
     QSpacerItem *verticalSpacer_18;
     QWidget *tDrawing;
     QVBoxLayout *verticalLayout_26;
@@ -760,7 +820,7 @@ public:
     QRadioButton *rb1000;
     QLabel *label_273;
     QSpacerItem *horizontalSpacer_27;
-    QFrame *frame_22;
+    QFrame *frame_221;
     QVBoxLayout *verticalLayout_12;
     QFrame *frame;
     QHBoxLayout *horizontalLayout_12;
@@ -773,7 +833,7 @@ public:
     QLineEdit *leAccel;
     QLineEdit *leVelocity;
     QLabel *label_29;
-    QSpacerItem *horizontalSpacer_61;
+    QSpacerItem *horizontalSpacer_611;
     QLineEdit *leStartSpeed;
     QLabel *label_32;
     QLabel *label_30;
@@ -787,7 +847,7 @@ public:
     QFrame *frame_25;
     QVBoxLayout *verticalLayout_30;
     QFrame *frame_8;
-    QHBoxLayout *horizontalLayout_30;
+    QHBoxLayout *horizontalLayout_301;
     QLabel *lbRobotMapping;
     QSpacerItem *horizontalSpacer_98;
     QFrame *fRobotMappingPanel;
@@ -912,7 +972,7 @@ public:
     QLabel *lbIxValue;
     QSpacerItem *horizontalSpacer_30;
     QCheckBox *cbTogglex;
-    QSpacerItem *horizontalSpacer_57;
+    QSpacerItem *horizontalSpacer_571;
     QHBoxLayout *horizontalLayout_45;
     QPushButton *pbReadA0;
     QLabel *label_83;
@@ -920,7 +980,7 @@ public:
     QLabel *lbA0Value;
     QSpacerItem *horizontalSpacer_35;
     QLineEdit *leA0Delay;
-    QSpacerItem *horizontalSpacer_58;
+    QSpacerItem *horizontalSpacer_581;
     QHBoxLayout *horizontalLayout_46;
     QPushButton *pbReadA1;
     QLabel *label_85;
@@ -928,7 +988,7 @@ public:
     QLabel *lbA1Value;
     QSpacerItem *horizontalSpacer_37;
     QLineEdit *leA1Delay;
-    QSpacerItem *horizontalSpacer_59;
+    QSpacerItem *horizontalSpacer_591;
     QHBoxLayout *horizontalLayout_47;
     QPushButton *pbReadAx;
     QLineEdit *leAx;
@@ -936,7 +996,7 @@ public:
     QLabel *lbAxValue;
     QSpacerItem *horizontalSpacer_39;
     QLineEdit *leAxDelay;
-    QSpacerItem *horizontalSpacer_60;
+    QSpacerItem *horizontalSpacer_601;
     QGroupBox *gbInputX3;
     QVBoxLayout *verticalLayout_50;
     QHBoxLayout *horizontalLayout_60;
@@ -2283,7 +2343,7 @@ public:
         saObjectDetecting->setWidgetResizable(true);
         wObjectDetecting = new QWidget();
         wObjectDetecting->setObjectName(QString::fromUtf8("wObjectDetecting"));
-        wObjectDetecting->setGeometry(QRect(0, -119, 590, 2900));
+        wObjectDetecting->setGeometry(QRect(0, 0, 590, 2900));
         wObjectDetecting->setMinimumSize(QSize(100, 2900));
         wObjectDetecting->setStyleSheet(QString::fromUtf8("QWidget#wObjectDetecting\n"
 "{	\n"
@@ -4111,8 +4171,8 @@ public:
         saPointTool->setWidgetResizable(true);
         wPointTool = new QWidget();
         wPointTool->setObjectName(QString::fromUtf8("wPointTool"));
-        wPointTool->setGeometry(QRect(0, 0, 572, 2100));
-        wPointTool->setMinimumSize(QSize(0, 2100));
+        wPointTool->setGeometry(QRect(0, -1926, 572, 2600));
+        wPointTool->setMinimumSize(QSize(0, 2600));
         wPointTool->setStyleSheet(QString::fromUtf8("QWidget#wPointTool\n"
 "{	\n"
 "	background-color: #1E1E20;\n"
@@ -5200,6 +5260,415 @@ public:
 
         verticalLayout_59->addWidget(gbCameraObject_4);
 
+        gbCloudPointMapping = new QGroupBox(fPointTool);
+        gbCloudPointMapping->setObjectName(QString::fromUtf8("gbCloudPointMapping"));
+        gbCloudPointMapping->setFont(font7);
+        gbCloudPointMapping->setCheckable(true);
+        gbCloudPointMapping->setChecked(false);
+        verticalLayout_67 = new QVBoxLayout(gbCloudPointMapping);
+        verticalLayout_67->setSpacing(6);
+        verticalLayout_67->setContentsMargins(11, 11, 11, 11);
+        verticalLayout_67->setObjectName(QString::fromUtf8("verticalLayout_67"));
+        verticalLayout_67->setContentsMargins(-1, 10, -1, -1);
+        frame_22 = new QFrame(gbCloudPointMapping);
+        frame_22->setObjectName(QString::fromUtf8("frame_22"));
+        frame_22->setMinimumSize(QSize(0, 0));
+        frame_22->setFrameShape(QFrame::StyledPanel);
+        frame_22->setFrameShadow(QFrame::Raised);
+        verticalLayout_68 = new QVBoxLayout(frame_22);
+        verticalLayout_68->setSpacing(5);
+        verticalLayout_68->setContentsMargins(11, 11, 11, 11);
+        verticalLayout_68->setObjectName(QString::fromUtf8("verticalLayout_68"));
+        frameCloudPointSettings = new QFrame(frame_22);
+        frameCloudPointSettings->setObjectName(QString::fromUtf8("frameCloudPointSettings"));
+        frameCloudPointSettings->setFrameShape(QFrame::StyledPanel);
+        frameCloudPointSettings->setFrameShadow(QFrame::Raised);
+        gridLayout_45 = new QGridLayout(frameCloudPointSettings);
+        gridLayout_45->setSpacing(5);
+        gridLayout_45->setContentsMargins(11, 11, 11, 11);
+        gridLayout_45->setObjectName(QString::fromUtf8("gridLayout_45"));
+        label_242 = new QLabel(frameCloudPointSettings);
+        label_242->setObjectName(QString::fromUtf8("label_242"));
+        label_242->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+
+        gridLayout_45->addWidget(label_242, 0, 0, 1, 1);
+
+        cbInterpolationMethod = new QComboBox(frameCloudPointSettings);
+        cbInterpolationMethod->addItem(QString());
+        cbInterpolationMethod->addItem(QString());
+        cbInterpolationMethod->addItem(QString());
+        cbInterpolationMethod->addItem(QString());
+        cbInterpolationMethod->addItem(QString());
+        cbInterpolationMethod->setObjectName(QString::fromUtf8("cbInterpolationMethod"));
+        sizePolicy4.setHeightForWidth(cbInterpolationMethod->sizePolicy().hasHeightForWidth());
+        cbInterpolationMethod->setSizePolicy(sizePolicy4);
+        cbInterpolationMethod->setMinimumSize(QSize(120, 0));
+
+        gridLayout_45->addWidget(cbInterpolationMethod, 0, 1, 1, 1);
+
+        label_243 = new QLabel(frameCloudPointSettings);
+        label_243->setObjectName(QString::fromUtf8("label_243"));
+        label_243->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+
+        gridLayout_45->addWidget(label_243, 0, 2, 1, 1);
+
+        sbGridResolution = new QSpinBox(frameCloudPointSettings);
+        sbGridResolution->setObjectName(QString::fromUtf8("sbGridResolution"));
+        sbGridResolution->setMinimum(10);
+        sbGridResolution->setMaximum(200);
+        sbGridResolution->setValue(50);
+
+        gridLayout_45->addWidget(sbGridResolution, 0, 3, 1, 1);
+
+        cbAutoRebuild = new QCheckBox(frameCloudPointSettings);
+        cbAutoRebuild->setObjectName(QString::fromUtf8("cbAutoRebuild"));
+        cbAutoRebuild->setChecked(true);
+
+        gridLayout_45->addWidget(cbAutoRebuild, 0, 4, 1, 1);
+
+        horizontalSpacer_57 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        gridLayout_45->addItem(horizontalSpacer_57, 0, 5, 1, 1);
+
+
+        verticalLayout_68->addWidget(frameCloudPointSettings);
+
+        frameCloudPointCalibration = new QFrame(frame_22);
+        frameCloudPointCalibration->setObjectName(QString::fromUtf8("frameCloudPointCalibration"));
+        frameCloudPointCalibration->setFrameShape(QFrame::StyledPanel);
+        frameCloudPointCalibration->setFrameShadow(QFrame::Raised);
+        verticalLayout_69 = new QVBoxLayout(frameCloudPointCalibration);
+        verticalLayout_69->setSpacing(5);
+        verticalLayout_69->setContentsMargins(11, 11, 11, 11);
+        verticalLayout_69->setObjectName(QString::fromUtf8("verticalLayout_69"));
+        label_244 = new QLabel(frameCloudPointCalibration);
+        label_244->setObjectName(QString::fromUtf8("label_244"));
+        label_244->setAlignment(Qt::AlignCenter);
+
+        verticalLayout_69->addWidget(label_244);
+
+        tableCalibrationPoints = new QTableWidget(frameCloudPointCalibration);
+        if (tableCalibrationPoints->columnCount() < 8)
+            tableCalibrationPoints->setColumnCount(8);
+        QTableWidgetItem *__qtablewidgetitem = new QTableWidgetItem();
+        tableCalibrationPoints->setHorizontalHeaderItem(0, __qtablewidgetitem);
+        QTableWidgetItem *__qtablewidgetitem1 = new QTableWidgetItem();
+        tableCalibrationPoints->setHorizontalHeaderItem(1, __qtablewidgetitem1);
+        QTableWidgetItem *__qtablewidgetitem2 = new QTableWidgetItem();
+        tableCalibrationPoints->setHorizontalHeaderItem(2, __qtablewidgetitem2);
+        QTableWidgetItem *__qtablewidgetitem3 = new QTableWidgetItem();
+        tableCalibrationPoints->setHorizontalHeaderItem(3, __qtablewidgetitem3);
+        QTableWidgetItem *__qtablewidgetitem4 = new QTableWidgetItem();
+        tableCalibrationPoints->setHorizontalHeaderItem(4, __qtablewidgetitem4);
+        QTableWidgetItem *__qtablewidgetitem5 = new QTableWidgetItem();
+        tableCalibrationPoints->setHorizontalHeaderItem(5, __qtablewidgetitem5);
+        QTableWidgetItem *__qtablewidgetitem6 = new QTableWidgetItem();
+        tableCalibrationPoints->setHorizontalHeaderItem(6, __qtablewidgetitem6);
+        QTableWidgetItem *__qtablewidgetitem7 = new QTableWidgetItem();
+        tableCalibrationPoints->setHorizontalHeaderItem(7, __qtablewidgetitem7);
+        tableCalibrationPoints->setObjectName(QString::fromUtf8("tableCalibrationPoints"));
+        sizePolicy3.setHeightForWidth(tableCalibrationPoints->sizePolicy().hasHeightForWidth());
+        tableCalibrationPoints->setSizePolicy(sizePolicy3);
+        tableCalibrationPoints->setMinimumSize(QSize(0, 150));
+        tableCalibrationPoints->setMaximumSize(QSize(16777215, 200));
+        tableCalibrationPoints->setStyleSheet(QString::fromUtf8("QTableWidget {\n"
+"    background-color: rgb(118, 118, 118);\n"
+"    color: rgb(241, 241, 241);\n"
+"    border-radius: 5px;\n"
+"    padding: 5px;\n"
+"    gridline-color: rgb(100, 100, 100);\n"
+"}\n"
+"\n"
+"QTableWidget::item {\n"
+"    padding: 3px;\n"
+"}\n"
+"\n"
+"QTableWidget::item:selected {\n"
+"    background-color: rgb(0, 120, 215);\n"
+"}\n"
+"\n"
+"QHeaderView::section {\n"
+"    background-color: rgb(78, 78, 78);\n"
+"    color: rgb(241, 241, 241);\n"
+"    padding: 3px;\n"
+"    border: 1px solid rgb(100, 100, 100);\n"
+"}"));
+        tableCalibrationPoints->setSelectionBehavior(QAbstractItemView::SelectRows);
+        tableCalibrationPoints->setSortingEnabled(true);
+
+        verticalLayout_69->addWidget(tableCalibrationPoints);
+
+        frameCloudPointButtons = new QFrame(frameCloudPointCalibration);
+        frameCloudPointButtons->setObjectName(QString::fromUtf8("frameCloudPointButtons"));
+        frameCloudPointButtons->setFrameShape(QFrame::StyledPanel);
+        frameCloudPointButtons->setFrameShadow(QFrame::Raised);
+        horizontalLayout_291 = new QHBoxLayout(frameCloudPointButtons);
+        horizontalLayout_291->setSpacing(5);
+        horizontalLayout_291->setContentsMargins(11, 11, 11, 11);
+        horizontalLayout_291->setObjectName(QString::fromUtf8("horizontalLayout_291"));
+        pbAddCalibrationPoint = new QPushButton(frameCloudPointButtons);
+        pbAddCalibrationPoint->setObjectName(QString::fromUtf8("pbAddCalibrationPoint"));
+        pbAddCalibrationPoint->setIcon(icon5);
+        pbAddCalibrationPoint->setIconSize(QSize(16, 16));
+
+        horizontalLayout_291->addWidget(pbAddCalibrationPoint);
+
+        pbRemoveCalibrationPoint = new QPushButton(frameCloudPointButtons);
+        pbRemoveCalibrationPoint->setObjectName(QString::fromUtf8("pbRemoveCalibrationPoint"));
+        pbRemoveCalibrationPoint->setIcon(icon7);
+        pbRemoveCalibrationPoint->setIconSize(QSize(16, 16));
+
+        horizontalLayout_291->addWidget(pbRemoveCalibrationPoint);
+
+        pbClearCalibrationPoints = new QPushButton(frameCloudPointButtons);
+        pbClearCalibrationPoints->setObjectName(QString::fromUtf8("pbClearCalibrationPoints"));
+        pbClearCalibrationPoints->setIcon(icon6);
+        pbClearCalibrationPoints->setIconSize(QSize(16, 16));
+
+        horizontalLayout_291->addWidget(pbClearCalibrationPoints);
+
+        pbRebuildMapping = new QPushButton(frameCloudPointButtons);
+        pbRebuildMapping->setObjectName(QString::fromUtf8("pbRebuildMapping"));
+        pbRebuildMapping->setIcon(icon9);
+        pbRebuildMapping->setIconSize(QSize(16, 16));
+
+        horizontalLayout_291->addWidget(pbRebuildMapping);
+
+        pbValidateMapping = new QPushButton(frameCloudPointButtons);
+        pbValidateMapping->setObjectName(QString::fromUtf8("pbValidateMapping"));
+        pbValidateMapping->setIcon(icon1);
+        pbValidateMapping->setIconSize(QSize(16, 16));
+
+        horizontalLayout_291->addWidget(pbValidateMapping);
+
+        horizontalSpacer_58 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        horizontalLayout_291->addItem(horizontalSpacer_58);
+
+
+        verticalLayout_69->addWidget(frameCloudPointButtons);
+
+
+        verticalLayout_68->addWidget(frameCloudPointCalibration);
+
+        frameCloudPointTest = new QFrame(frame_22);
+        frameCloudPointTest->setObjectName(QString::fromUtf8("frameCloudPointTest"));
+        frameCloudPointTest->setFrameShape(QFrame::StyledPanel);
+        frameCloudPointTest->setFrameShadow(QFrame::Raised);
+        gridLayout_46 = new QGridLayout(frameCloudPointTest);
+        gridLayout_46->setSpacing(5);
+        gridLayout_46->setContentsMargins(11, 11, 11, 11);
+        gridLayout_46->setObjectName(QString::fromUtf8("gridLayout_46"));
+        label_245 = new QLabel(frameCloudPointTest);
+        label_245->setObjectName(QString::fromUtf8("label_245"));
+        label_245->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+
+        gridLayout_46->addWidget(label_245, 0, 0, 1, 1);
+
+        leCloudTestInputX = new QLineEdit(frameCloudPointTest);
+        leCloudTestInputX->setObjectName(QString::fromUtf8("leCloudTestInputX"));
+        leCloudTestInputX->setAlignment(Qt::AlignCenter);
+
+        gridLayout_46->addWidget(leCloudTestInputX, 0, 1, 1, 1);
+
+        label_246 = new QLabel(frameCloudPointTest);
+        label_246->setObjectName(QString::fromUtf8("label_246"));
+        label_246->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+
+        gridLayout_46->addWidget(label_246, 0, 2, 1, 1);
+
+        leCloudTestInputY = new QLineEdit(frameCloudPointTest);
+        leCloudTestInputY->setObjectName(QString::fromUtf8("leCloudTestInputY"));
+        leCloudTestInputY->setAlignment(Qt::AlignCenter);
+
+        gridLayout_46->addWidget(leCloudTestInputY, 0, 3, 1, 1);
+
+        pbTransformCloudPoint = new QPushButton(frameCloudPointTest);
+        pbTransformCloudPoint->setObjectName(QString::fromUtf8("pbTransformCloudPoint"));
+        pbTransformCloudPoint->setIcon(icon31);
+        pbTransformCloudPoint->setIconSize(QSize(16, 16));
+
+        gridLayout_46->addWidget(pbTransformCloudPoint, 0, 4, 1, 1);
+
+        label_247 = new QLabel(frameCloudPointTest);
+        label_247->setObjectName(QString::fromUtf8("label_247"));
+        label_247->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+
+        gridLayout_46->addWidget(label_247, 1, 0, 1, 1);
+
+        leCloudTestOutputX = new QLineEdit(frameCloudPointTest);
+        leCloudTestOutputX->setObjectName(QString::fromUtf8("leCloudTestOutputX"));
+        leCloudTestOutputX->setAlignment(Qt::AlignCenter);
+        leCloudTestOutputX->setReadOnly(true);
+
+        gridLayout_46->addWidget(leCloudTestOutputX, 1, 1, 1, 1);
+
+        label_248 = new QLabel(frameCloudPointTest);
+        label_248->setObjectName(QString::fromUtf8("label_248"));
+        label_248->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+
+        gridLayout_46->addWidget(label_248, 1, 2, 1, 1);
+
+        leCloudTestOutputY = new QLineEdit(frameCloudPointTest);
+        leCloudTestOutputY->setObjectName(QString::fromUtf8("leCloudTestOutputY"));
+        leCloudTestOutputY->setAlignment(Qt::AlignCenter);
+        leCloudTestOutputY->setReadOnly(true);
+
+        gridLayout_46->addWidget(leCloudTestOutputY, 1, 3, 1, 1);
+
+        label_249 = new QLabel(frameCloudPointTest);
+        label_249->setObjectName(QString::fromUtf8("label_249"));
+        label_249->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+
+        gridLayout_46->addWidget(label_249, 1, 4, 1, 1);
+
+        leCloudTestConfidence = new QLineEdit(frameCloudPointTest);
+        leCloudTestConfidence->setObjectName(QString::fromUtf8("leCloudTestConfidence"));
+        leCloudTestConfidence->setAlignment(Qt::AlignCenter);
+        leCloudTestConfidence->setReadOnly(true);
+
+        gridLayout_46->addWidget(leCloudTestConfidence, 1, 5, 1, 1);
+
+        label_250 = new QLabel(frameCloudPointTest);
+        label_250->setObjectName(QString::fromUtf8("label_250"));
+        label_250->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+
+        gridLayout_46->addWidget(label_250, 1, 6, 1, 1);
+
+        leCloudTestError = new QLineEdit(frameCloudPointTest);
+        leCloudTestError->setObjectName(QString::fromUtf8("leCloudTestError"));
+        leCloudTestError->setAlignment(Qt::AlignCenter);
+        leCloudTestError->setReadOnly(true);
+
+        gridLayout_46->addWidget(leCloudTestError, 1, 7, 1, 1);
+
+        horizontalSpacer_59 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        gridLayout_46->addItem(horizontalSpacer_59, 0, 8, 1, 1);
+
+
+        verticalLayout_68->addWidget(frameCloudPointTest);
+
+        frameCloudPointStats = new QFrame(frame_22);
+        frameCloudPointStats->setObjectName(QString::fromUtf8("frameCloudPointStats"));
+        frameCloudPointStats->setFrameShape(QFrame::StyledPanel);
+        frameCloudPointStats->setFrameShadow(QFrame::Raised);
+        gridLayout_47 = new QGridLayout(frameCloudPointStats);
+        gridLayout_47->setSpacing(5);
+        gridLayout_47->setContentsMargins(11, 11, 11, 11);
+        gridLayout_47->setObjectName(QString::fromUtf8("gridLayout_47"));
+        label_251 = new QLabel(frameCloudPointStats);
+        label_251->setObjectName(QString::fromUtf8("label_251"));
+        label_251->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+
+        gridLayout_47->addWidget(label_251, 0, 0, 1, 1);
+
+        lbPointCount = new QLabel(frameCloudPointStats);
+        lbPointCount->setObjectName(QString::fromUtf8("lbPointCount"));
+        lbPointCount->setStyleSheet(QString::fromUtf8("color: rgb(0, 255, 0);"));
+        lbPointCount->setAlignment(Qt::AlignCenter);
+
+        gridLayout_47->addWidget(lbPointCount, 0, 1, 1, 1);
+
+        label_252 = new QLabel(frameCloudPointStats);
+        label_252->setObjectName(QString::fromUtf8("label_252"));
+        label_252->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+
+        gridLayout_47->addWidget(label_252, 0, 2, 1, 1);
+
+        lbAvgError = new QLabel(frameCloudPointStats);
+        lbAvgError->setObjectName(QString::fromUtf8("lbAvgError"));
+        lbAvgError->setStyleSheet(QString::fromUtf8("color: rgb(255, 255, 0);"));
+        lbAvgError->setAlignment(Qt::AlignCenter);
+
+        gridLayout_47->addWidget(lbAvgError, 0, 3, 1, 1);
+
+        label_253 = new QLabel(frameCloudPointStats);
+        label_253->setObjectName(QString::fromUtf8("label_253"));
+        label_253->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+
+        gridLayout_47->addWidget(label_253, 0, 4, 1, 1);
+
+        lbMaxError = new QLabel(frameCloudPointStats);
+        lbMaxError->setObjectName(QString::fromUtf8("lbMaxError"));
+        lbMaxError->setStyleSheet(QString::fromUtf8("color: rgb(255, 100, 100);"));
+        lbMaxError->setAlignment(Qt::AlignCenter);
+
+        gridLayout_47->addWidget(lbMaxError, 0, 5, 1, 1);
+
+        label_254 = new QLabel(frameCloudPointStats);
+        label_254->setObjectName(QString::fromUtf8("label_254"));
+        label_254->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+
+        gridLayout_47->addWidget(label_254, 0, 6, 1, 1);
+
+        lbCoverage = new QLabel(frameCloudPointStats);
+        lbCoverage->setObjectName(QString::fromUtf8("lbCoverage"));
+        lbCoverage->setStyleSheet(QString::fromUtf8("color: rgb(100, 200, 255);"));
+        lbCoverage->setAlignment(Qt::AlignCenter);
+
+        gridLayout_47->addWidget(lbCoverage, 0, 7, 1, 1);
+
+        horizontalSpacer_60 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        gridLayout_47->addItem(horizontalSpacer_60, 0, 8, 1, 1);
+
+
+        verticalLayout_68->addWidget(frameCloudPointStats);
+
+        frameCloudPointFiles = new QFrame(frame_22);
+        frameCloudPointFiles->setObjectName(QString::fromUtf8("frameCloudPointFiles"));
+        frameCloudPointFiles->setFrameShape(QFrame::StyledPanel);
+        frameCloudPointFiles->setFrameShadow(QFrame::Raised);
+        horizontalLayout_30 = new QHBoxLayout(frameCloudPointFiles);
+        horizontalLayout_30->setSpacing(5);
+        horizontalLayout_30->setContentsMargins(11, 11, 11, 11);
+        horizontalLayout_30->setObjectName(QString::fromUtf8("horizontalLayout_30"));
+        pbSaveCloudMapping = new QPushButton(frameCloudPointFiles);
+        pbSaveCloudMapping->setObjectName(QString::fromUtf8("pbSaveCloudMapping"));
+        pbSaveCloudMapping->setIcon(icon8);
+        pbSaveCloudMapping->setIconSize(QSize(16, 16));
+
+        horizontalLayout_30->addWidget(pbSaveCloudMapping);
+
+        pbLoadCloudMapping = new QPushButton(frameCloudPointFiles);
+        pbLoadCloudMapping->setObjectName(QString::fromUtf8("pbLoadCloudMapping"));
+        pbLoadCloudMapping->setIcon(icon3);
+        pbLoadCloudMapping->setIconSize(QSize(16, 16));
+
+        horizontalLayout_30->addWidget(pbLoadCloudMapping);
+
+        pbExportToVariables = new QPushButton(frameCloudPointFiles);
+        pbExportToVariables->setObjectName(QString::fromUtf8("pbExportToVariables"));
+        QIcon icon32;
+        icon32.addFile(QString::fromUtf8(":/icon/icons8_export_52px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbExportToVariables->setIcon(icon32);
+        pbExportToVariables->setIconSize(QSize(16, 16));
+
+        horizontalLayout_30->addWidget(pbExportToVariables);
+
+        pbImportFromVariables = new QPushButton(frameCloudPointFiles);
+        pbImportFromVariables->setObjectName(QString::fromUtf8("pbImportFromVariables"));
+        QIcon icon33;
+        icon33.addFile(QString::fromUtf8(":/icon/icons8_import_52px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbImportFromVariables->setIcon(icon33);
+        pbImportFromVariables->setIconSize(QSize(16, 16));
+
+        horizontalLayout_30->addWidget(pbImportFromVariables);
+
+        horizontalSpacer_61 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        horizontalLayout_30->addItem(horizontalSpacer_61);
+
+
+        verticalLayout_68->addWidget(frameCloudPointFiles);
+
+
+        verticalLayout_67->addWidget(frame_22);
+
+
+        verticalLayout_59->addWidget(gbCloudPointMapping);
+
         verticalSpacer_18 = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
 
         verticalLayout_59->addItem(verticalSpacer_18);
@@ -5296,9 +5765,9 @@ public:
         pbOpenPicture->setFont(font7);
         pbOpenPicture->setLayoutDirection(Qt::LeftToRight);
         pbOpenPicture->setStyleSheet(QString::fromUtf8(""));
-        QIcon icon32;
-        icon32.addFile(QString::fromUtf8(":/icon/icons8_image_96px.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbOpenPicture->setIcon(icon32);
+        QIcon icon34;
+        icon34.addFile(QString::fromUtf8(":/icon/icons8_image_96px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbOpenPicture->setIcon(icon34);
         pbOpenPicture->setIconSize(QSize(64, 64));
         pbOpenPicture->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
         pbOpenPicture->setAutoRaise(false);
@@ -5472,9 +5941,9 @@ public:
         pbPainting->setMinimumSize(QSize(0, 0));
         pbPainting->setMaximumSize(QSize(16777215, 16777215));
         pbPainting->setFont(font7);
-        QIcon icon33;
-        icon33.addFile(QString::fromUtf8(":/icon/icons8_pencil_drawing_96px.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbPainting->setIcon(icon33);
+        QIcon icon35;
+        icon35.addFile(QString::fromUtf8(":/icon/icons8_pencil_drawing_96px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbPainting->setIcon(icon35);
         pbPainting->setIconSize(QSize(64, 64));
         pbPainting->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
         pbPainting->setAutoRaise(false);
@@ -5710,9 +6179,9 @@ public:
         pbDrawLine->setSizePolicy(sizePolicy19);
         pbDrawLine->setMinimumSize(QSize(0, 0));
         pbDrawLine->setMaximumSize(QSize(70, 16777215));
-        QIcon icon34;
-        icon34.addFile(QString::fromUtf8(":/icon/Line_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbDrawLine->setIcon(icon34);
+        QIcon icon36;
+        icon36.addFile(QString::fromUtf8(":/icon/Line_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbDrawLine->setIcon(icon36);
         pbDrawLine->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
         pbDrawLine->setAutoRaise(true);
 
@@ -5724,9 +6193,9 @@ public:
         pbDrawRectangle->setSizePolicy(sizePolicy19);
         pbDrawRectangle->setMinimumSize(QSize(0, 0));
         pbDrawRectangle->setMaximumSize(QSize(70, 16777215));
-        QIcon icon35;
-        icon35.addFile(QString::fromUtf8(":/icon/Rectangular_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbDrawRectangle->setIcon(icon35);
+        QIcon icon37;
+        icon37.addFile(QString::fromUtf8(":/icon/Rectangular_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbDrawRectangle->setIcon(icon37);
         pbDrawRectangle->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
         pbDrawRectangle->setAutoRaise(true);
 
@@ -5738,9 +6207,9 @@ public:
         pbZoomIn->setSizePolicy(sizePolicy19);
         pbZoomIn->setMinimumSize(QSize(0, 0));
         pbZoomIn->setMaximumSize(QSize(70, 16777215));
-        QIcon icon36;
-        icon36.addFile(QString::fromUtf8(":/icon/Zoom In_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbZoomIn->setIcon(icon36);
+        QIcon icon38;
+        icon38.addFile(QString::fromUtf8(":/icon/Zoom In_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbZoomIn->setIcon(icon38);
         pbZoomIn->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
         pbZoomIn->setAutoRaise(true);
 
@@ -5752,9 +6221,9 @@ public:
         pbCursor->setSizePolicy(sizePolicy19);
         pbCursor->setMinimumSize(QSize(0, 0));
         pbCursor->setMaximumSize(QSize(70, 16777215));
-        QIcon icon37;
-        icon37.addFile(QString::fromUtf8(":/icon/Cursor-color_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbCursor->setIcon(icon37);
+        QIcon icon39;
+        icon39.addFile(QString::fromUtf8(":/icon/Cursor-color_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbCursor->setIcon(icon39);
         pbCursor->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
         pbCursor->setAutoRaise(true);
 
@@ -5766,9 +6235,9 @@ public:
         pbDrawArc->setSizePolicy(sizePolicy19);
         pbDrawArc->setMinimumSize(QSize(0, 0));
         pbDrawArc->setMaximumSize(QSize(70, 16777215));
-        QIcon icon38;
-        icon38.addFile(QString::fromUtf8(":/icon/Circled Notch_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbDrawArc->setIcon(icon38);
+        QIcon icon40;
+        icon40.addFile(QString::fromUtf8(":/icon/Circled Notch_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbDrawArc->setIcon(icon40);
         pbDrawArc->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
         pbDrawArc->setAutoRaise(true);
 
@@ -5780,9 +6249,9 @@ public:
         pbDrawCircle->setSizePolicy(sizePolicy19);
         pbDrawCircle->setMinimumSize(QSize(0, 0));
         pbDrawCircle->setMaximumSize(QSize(70, 16777215));
-        QIcon icon39;
-        icon39.addFile(QString::fromUtf8(":/icon/Circle_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbDrawCircle->setIcon(icon39);
+        QIcon icon41;
+        icon41.addFile(QString::fromUtf8(":/icon/Circle_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbDrawCircle->setIcon(icon41);
         pbDrawCircle->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
         pbDrawCircle->setAutoRaise(true);
 
@@ -5794,9 +6263,9 @@ public:
         pbZoomOut->setSizePolicy(sizePolicy19);
         pbZoomOut->setMinimumSize(QSize(0, 0));
         pbZoomOut->setMaximumSize(QSize(70, 16777215));
-        QIcon icon40;
-        icon40.addFile(QString::fromUtf8(":/icon/Zoom Out_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbZoomOut->setIcon(icon40);
+        QIcon icon42;
+        icon42.addFile(QString::fromUtf8(":/icon/Zoom Out_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbZoomOut->setIcon(icon42);
         pbZoomOut->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
         pbZoomOut->setAutoRaise(true);
 
@@ -5826,9 +6295,9 @@ public:
         pbExportDrawingGcodes->setMinimumSize(QSize(185, 65));
         pbExportDrawingGcodes->setMaximumSize(QSize(16777215, 16777215));
         pbExportDrawingGcodes->setFont(font7);
-        QIcon icon41;
-        icon41.addFile(QString::fromUtf8(":/icon/icons8_code_96px.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbExportDrawingGcodes->setIcon(icon41);
+        QIcon icon43;
+        icon43.addFile(QString::fromUtf8(":/icon/icons8_code_96px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbExportDrawingGcodes->setIcon(icon43);
         pbExportDrawingGcodes->setIconSize(QSize(64, 64));
         pbExportDrawingGcodes->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
         pbExportDrawingGcodes->setAutoRaise(false);
@@ -6253,10 +6722,10 @@ public:
 "	background-color: rgb(81, 176, 255);\n"
 "}\n"
 ""));
-        QIcon icon42;
-        icon42.addFile(QString::fromUtf8("C:/Users/Admin/.designer/backup/icon/disconnected.png"), QSize(), QIcon::Normal, QIcon::Off);
-        icon42.addFile(QString::fromUtf8("C:/Users/Admin/.designer/backup/icon/connected.png"), QSize(), QIcon::Normal, QIcon::On);
-        pbConnectRobot->setIcon(icon42);
+        QIcon icon44;
+        icon44.addFile(QString::fromUtf8("C:/Users/Admin/.designer/backup/icon/disconnected.png"), QSize(), QIcon::Normal, QIcon::Off);
+        icon44.addFile(QString::fromUtf8("C:/Users/Admin/.designer/backup/icon/connected.png"), QSize(), QIcon::Normal, QIcon::On);
+        pbConnectRobot->setIcon(icon44);
         pbConnectRobot->setIconSize(QSize(30, 20));
         pbConnectRobot->setCheckable(true);
 
@@ -6521,9 +6990,9 @@ public:
 "{\n"
 "	padding: 5px;\n"
 "}"));
-        QIcon icon43;
-        icon43.addFile(QString::fromUtf8(":/icon/home.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbHome->setIcon(icon43);
+        QIcon icon45;
+        icon45.addFile(QString::fromUtf8(":/icon/home.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbHome->setIcon(icon45);
         pbHome->setIconSize(QSize(20, 20));
         pbHome->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 
@@ -7112,17 +7581,17 @@ public:
 
         verticalLayout_5->addWidget(frame_30);
 
-        frame_22 = new QFrame(wgJoggingScrollWidget);
-        frame_22->setObjectName(QString::fromUtf8("frame_22"));
-        frame_22->setMinimumSize(QSize(0, 0));
-        frame_22->setFrameShape(QFrame::StyledPanel);
-        frame_22->setFrameShadow(QFrame::Raised);
-        verticalLayout_12 = new QVBoxLayout(frame_22);
+        frame_221 = new QFrame(wgJoggingScrollWidget);
+        frame_221->setObjectName(QString::fromUtf8("frame_221"));
+        frame_221->setMinimumSize(QSize(0, 0));
+        frame_221->setFrameShape(QFrame::StyledPanel);
+        frame_221->setFrameShadow(QFrame::Raised);
+        verticalLayout_12 = new QVBoxLayout(frame_221);
         verticalLayout_12->setSpacing(0);
         verticalLayout_12->setContentsMargins(11, 11, 11, 11);
         verticalLayout_12->setObjectName(QString::fromUtf8("verticalLayout_12"));
         verticalLayout_12->setContentsMargins(0, 0, 0, 0);
-        frame = new QFrame(frame_22);
+        frame = new QFrame(frame_221);
         frame->setObjectName(QString::fromUtf8("frame"));
         frame->setStyleSheet(QString::fromUtf8("QLabel\n"
 "{\n"
@@ -7148,7 +7617,7 @@ public:
 
         verticalLayout_12->addWidget(frame);
 
-        frame_24 = new QFrame(frame_22);
+        frame_24 = new QFrame(frame_221);
         frame_24->setObjectName(QString::fromUtf8("frame_24"));
         frame_24->setMinimumSize(QSize(0, 50));
         frame_24->setStyleSheet(QString::fromUtf8("QFrame\n"
@@ -7209,9 +7678,9 @@ public:
 
         gridLayout_3->addWidget(label_29, 1, 0, 1, 1);
 
-        horizontalSpacer_61 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+        horizontalSpacer_611 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
-        gridLayout_3->addItem(horizontalSpacer_61, 1, 7, 1, 1);
+        gridLayout_3->addItem(horizontalSpacer_611, 1, 7, 1, 1);
 
         leStartSpeed = new QLineEdit(frame_24);
         leStartSpeed->setObjectName(QString::fromUtf8("leStartSpeed"));
@@ -7284,7 +7753,7 @@ public:
         verticalLayout_12->addWidget(frame_24);
 
 
-        verticalLayout_5->addWidget(frame_22);
+        verticalLayout_5->addWidget(frame_221);
 
         frame_25 = new QFrame(wgJoggingScrollWidget);
         frame_25->setObjectName(QString::fromUtf8("frame_25"));
@@ -7302,22 +7771,22 @@ public:
 "{\n"
 "	padding-left: 6px;\n"
 "}"));
-        horizontalLayout_30 = new QHBoxLayout(frame_8);
-        horizontalLayout_30->setSpacing(6);
-        horizontalLayout_30->setContentsMargins(11, 11, 11, 11);
-        horizontalLayout_30->setObjectName(QString::fromUtf8("horizontalLayout_30"));
-        horizontalLayout_30->setContentsMargins(1, -1, -1, -1);
+        horizontalLayout_301 = new QHBoxLayout(frame_8);
+        horizontalLayout_301->setSpacing(6);
+        horizontalLayout_301->setContentsMargins(11, 11, 11, 11);
+        horizontalLayout_301->setObjectName(QString::fromUtf8("horizontalLayout_301"));
+        horizontalLayout_301->setContentsMargins(1, -1, -1, -1);
         lbRobotMapping = new QLabel(frame_8);
         lbRobotMapping->setObjectName(QString::fromUtf8("lbRobotMapping"));
         lbRobotMapping->setMaximumSize(QSize(16777215, 16777215));
         lbRobotMapping->setFont(font7);
         lbRobotMapping->setAlignment(Qt::AlignCenter);
 
-        horizontalLayout_30->addWidget(lbRobotMapping);
+        horizontalLayout_301->addWidget(lbRobotMapping);
 
         horizontalSpacer_98 = new QSpacerItem(466, 17, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
-        horizontalLayout_30->addItem(horizontalSpacer_98);
+        horizontalLayout_301->addItem(horizontalSpacer_98);
 
 
         verticalLayout_30->addWidget(frame_8);
@@ -7431,10 +7900,10 @@ public:
         pbPump->setObjectName(QString::fromUtf8("pbPump"));
         pbPump->setMinimumSize(QSize(100, 30));
         pbPump->setAutoFillBackground(false);
-        QIcon icon44;
-        icon44.addFile(QString::fromUtf8(":/icon/Toggle Off_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
-        icon44.addFile(QString::fromUtf8(":/icon/Toggle On_16px.png"), QSize(), QIcon::Normal, QIcon::On);
-        pbPump->setIcon(icon44);
+        QIcon icon46;
+        icon46.addFile(QString::fromUtf8(":/icon/Toggle Off_16px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        icon46.addFile(QString::fromUtf8(":/icon/Toggle On_16px.png"), QSize(), QIcon::Normal, QIcon::On);
+        pbPump->setIcon(icon46);
         pbPump->setIconSize(QSize(16, 16));
         pbPump->setCheckable(true);
         pbPump->setChecked(false);
@@ -7447,7 +7916,7 @@ public:
         pbLaser->setObjectName(QString::fromUtf8("pbLaser"));
         pbLaser->setMinimumSize(QSize(100, 30));
         pbLaser->setAutoFillBackground(false);
-        pbLaser->setIcon(icon44);
+        pbLaser->setIcon(icon46);
         pbLaser->setIconSize(QSize(16, 16));
         pbLaser->setCheckable(true);
         pbLaser->setChecked(false);
@@ -7820,7 +8289,7 @@ public:
         pbPumpX3->setObjectName(QString::fromUtf8("pbPumpX3"));
         pbPumpX3->setMinimumSize(QSize(100, 30));
         pbPumpX3->setAutoFillBackground(false);
-        pbPumpX3->setIcon(icon44);
+        pbPumpX3->setIcon(icon46);
         pbPumpX3->setIconSize(QSize(16, 16));
         pbPumpX3->setCheckable(true);
         pbPumpX3->setChecked(false);
@@ -8146,9 +8615,9 @@ public:
 
         horizontalLayout_43->addWidget(cbTogglex);
 
-        horizontalSpacer_57 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+        horizontalSpacer_571 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
-        horizontalLayout_43->addItem(horizontalSpacer_57);
+        horizontalLayout_43->addItem(horizontalSpacer_571);
 
 
         verticalLayout_43->addLayout(horizontalLayout_43);
@@ -8190,9 +8659,9 @@ public:
 
         horizontalLayout_45->addWidget(leA0Delay);
 
-        horizontalSpacer_58 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+        horizontalSpacer_581 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
-        horizontalLayout_45->addItem(horizontalSpacer_58);
+        horizontalLayout_45->addItem(horizontalSpacer_581);
 
 
         verticalLayout_43->addLayout(horizontalLayout_45);
@@ -8234,9 +8703,9 @@ public:
 
         horizontalLayout_46->addWidget(leA1Delay);
 
-        horizontalSpacer_59 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+        horizontalSpacer_591 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
-        horizontalLayout_46->addItem(horizontalSpacer_59);
+        horizontalLayout_46->addItem(horizontalSpacer_591);
 
 
         verticalLayout_43->addLayout(horizontalLayout_46);
@@ -8278,9 +8747,9 @@ public:
 
         horizontalLayout_47->addWidget(leAxDelay);
 
-        horizontalSpacer_60 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+        horizontalSpacer_601 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
-        horizontalLayout_47->addItem(horizontalSpacer_60);
+        horizontalLayout_47->addItem(horizontalSpacer_601);
 
 
         verticalLayout_43->addLayout(horizontalLayout_47);
@@ -9965,9 +10434,9 @@ public:
         QFont font15;
         font15.setPointSize(11);
         pbSlidingHome->setFont(font15);
-        QIcon icon45;
-        icon45.addFile(QString::fromUtf8("icon/icons8-home-32.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbSlidingHome->setIcon(icon45);
+        QIcon icon47;
+        icon47.addFile(QString::fromUtf8("icon/icons8-home-32.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbSlidingHome->setIcon(icon47);
 
         gridLayout_8->addWidget(pbSlidingHome, 1, 1, 1, 1);
 
@@ -9998,9 +10467,9 @@ public:
         pbSlidingDisable->setMinimumSize(QSize(0, 0));
         pbSlidingDisable->setMaximumSize(QSize(200, 40));
         pbSlidingDisable->setFont(font15);
-        QIcon icon46;
-        icon46.addFile(QString::fromUtf8("icon/icons8-sleeping-in-bed-32.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbSlidingDisable->setIcon(icon46);
+        QIcon icon48;
+        icon48.addFile(QString::fromUtf8("icon/icons8-sleeping-in-bed-32.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbSlidingDisable->setIcon(icon48);
 
         gridLayout_8->addWidget(pbSlidingDisable, 0, 1, 1, 1);
 
@@ -10251,7 +10720,7 @@ public:
 
         pbRunServer->setDefault(false);
         pbOpenWebControl->setDefault(false);
-        twModule->setCurrentIndex(1);
+        twModule->setCurrentIndex(2);
         twGcodeEditor->setCurrentIndex(0);
         pbImageMapping->setDefault(false);
         cbImageSource->setCurrentIndex(0);
@@ -10798,6 +11267,57 @@ public:
         label_241->setText(QCoreApplication::translate("RobotWindow", "=", nullptr));
         label_222->setText(QCoreApplication::translate("RobotWindow", "Matrix", nullptr));
         pbCalculateTestPoint->setText(QCoreApplication::translate("RobotWindow", "Calculate", nullptr));
+        gbCloudPointMapping->setTitle(QCoreApplication::translate("RobotWindow", "Cloud Point Mapping", nullptr));
+        label_242->setText(QCoreApplication::translate("RobotWindow", "Interpolation Method", nullptr));
+        cbInterpolationMethod->setItemText(0, QCoreApplication::translate("RobotWindow", "Linear", nullptr));
+        cbInterpolationMethod->setItemText(1, QCoreApplication::translate("RobotWindow", "Bilinear", nullptr));
+        cbInterpolationMethod->setItemText(2, QCoreApplication::translate("RobotWindow", "Cubic Spline", nullptr));
+        cbInterpolationMethod->setItemText(3, QCoreApplication::translate("RobotWindow", "Radial Basis", nullptr));
+        cbInterpolationMethod->setItemText(4, QCoreApplication::translate("RobotWindow", "Kriging", nullptr));
+
+        label_243->setText(QCoreApplication::translate("RobotWindow", "Grid Resolution", nullptr));
+        cbAutoRebuild->setText(QCoreApplication::translate("RobotWindow", "Auto Rebuild", nullptr));
+        label_244->setText(QCoreApplication::translate("RobotWindow", "Calibration Points", nullptr));
+        QTableWidgetItem *___qtablewidgetitem = tableCalibrationPoints->horizontalHeaderItem(0);
+        ___qtablewidgetitem->setText(QCoreApplication::translate("RobotWindow", "ID", nullptr));
+        QTableWidgetItem *___qtablewidgetitem1 = tableCalibrationPoints->horizontalHeaderItem(1);
+        ___qtablewidgetitem1->setText(QCoreApplication::translate("RobotWindow", "Source X", nullptr));
+        QTableWidgetItem *___qtablewidgetitem2 = tableCalibrationPoints->horizontalHeaderItem(2);
+        ___qtablewidgetitem2->setText(QCoreApplication::translate("RobotWindow", "Source Y", nullptr));
+        QTableWidgetItem *___qtablewidgetitem3 = tableCalibrationPoints->horizontalHeaderItem(3);
+        ___qtablewidgetitem3->setText(QCoreApplication::translate("RobotWindow", "Target X", nullptr));
+        QTableWidgetItem *___qtablewidgetitem4 = tableCalibrationPoints->horizontalHeaderItem(4);
+        ___qtablewidgetitem4->setText(QCoreApplication::translate("RobotWindow", "Target Y", nullptr));
+        QTableWidgetItem *___qtablewidgetitem5 = tableCalibrationPoints->horizontalHeaderItem(5);
+        ___qtablewidgetitem5->setText(QCoreApplication::translate("RobotWindow", "Confidence", nullptr));
+        QTableWidgetItem *___qtablewidgetitem6 = tableCalibrationPoints->horizontalHeaderItem(6);
+        ___qtablewidgetitem6->setText(QCoreApplication::translate("RobotWindow", "Error", nullptr));
+        QTableWidgetItem *___qtablewidgetitem7 = tableCalibrationPoints->horizontalHeaderItem(7);
+        ___qtablewidgetitem7->setText(QCoreApplication::translate("RobotWindow", "Label", nullptr));
+        pbAddCalibrationPoint->setText(QCoreApplication::translate("RobotWindow", "Add Point", nullptr));
+        pbRemoveCalibrationPoint->setText(QCoreApplication::translate("RobotWindow", "Remove", nullptr));
+        pbClearCalibrationPoints->setText(QCoreApplication::translate("RobotWindow", "Clear All", nullptr));
+        pbRebuildMapping->setText(QCoreApplication::translate("RobotWindow", "Rebuild", nullptr));
+        pbValidateMapping->setText(QCoreApplication::translate("RobotWindow", "Validate", nullptr));
+        label_245->setText(QCoreApplication::translate("RobotWindow", "Test Input X", nullptr));
+        label_246->setText(QCoreApplication::translate("RobotWindow", "Y", nullptr));
+        pbTransformCloudPoint->setText(QCoreApplication::translate("RobotWindow", "Transform", nullptr));
+        label_247->setText(QCoreApplication::translate("RobotWindow", "Output X", nullptr));
+        label_248->setText(QCoreApplication::translate("RobotWindow", "Y", nullptr));
+        label_249->setText(QCoreApplication::translate("RobotWindow", "Confidence", nullptr));
+        label_250->setText(QCoreApplication::translate("RobotWindow", "Error", nullptr));
+        label_251->setText(QCoreApplication::translate("RobotWindow", "Points", nullptr));
+        lbPointCount->setText(QCoreApplication::translate("RobotWindow", "0", nullptr));
+        label_252->setText(QCoreApplication::translate("RobotWindow", "Avg Error", nullptr));
+        lbAvgError->setText(QCoreApplication::translate("RobotWindow", "0.0", nullptr));
+        label_253->setText(QCoreApplication::translate("RobotWindow", "Max Error", nullptr));
+        lbMaxError->setText(QCoreApplication::translate("RobotWindow", "0.0", nullptr));
+        label_254->setText(QCoreApplication::translate("RobotWindow", "Coverage", nullptr));
+        lbCoverage->setText(QCoreApplication::translate("RobotWindow", "0%", nullptr));
+        pbSaveCloudMapping->setText(QCoreApplication::translate("RobotWindow", "Save", nullptr));
+        pbLoadCloudMapping->setText(QCoreApplication::translate("RobotWindow", "Load", nullptr));
+        pbExportToVariables->setText(QCoreApplication::translate("RobotWindow", "Export to Variables", nullptr));
+        pbImportFromVariables->setText(QCoreApplication::translate("RobotWindow", "Import from Variables", nullptr));
         twModule->setTabText(twModule->indexOf(tPointTool), QCoreApplication::translate("RobotWindow", "Point Tool", nullptr));
         scrollAreaWidgetContents_6->setProperty("background", QVariant(QCoreApplication::translate("RobotWindow", "container", nullptr)));
         pbOpenPicture->setText(QCoreApplication::translate("RobotWindow", "Load Image", nullptr));

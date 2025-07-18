@@ -39,6 +39,8 @@ SOURCES += main.cpp\
     AccountWindow.cpp \
     Authority.cpp \
     ChessboardConfigDialog.cpp \
+    CloudPointMapper.cpp \
+    CloudPointToolController.cpp \
     ComDevice.cpp \
     DrawingExporter.cpp \
     DrawingWidget.cpp \
@@ -93,6 +95,8 @@ HEADERS  += \
     AccountWindow.h \
     Authority.h \
     ChessboardConfigDialog.h \
+    CloudPointMapper.h \
+    CloudPointToolController.h \
     ComDevice.h \
     DeltaVisualizer.h \
     DrawingExporter.h \

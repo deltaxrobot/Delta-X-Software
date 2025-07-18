@@ -7,17 +7,24 @@
 #include <QClipboard>
 #include <QApplication>
 #include <QRegularExpression>
+#include <QMetaType>
+#include <opencv2/opencv.hpp>
 #include "PointCalculator.h"
 #include "InputValidator.h"
+#include "CloudPointToolController.h"
 
 // Forward declarations
 class RobotWindow;
+
+// Declare cv::Mat as Qt metatype
+Q_DECLARE_METATYPE(cv::Mat)
 
 /**
  * @brief Controller class for Point Tool UI operations
  * 
  * This class manages UI interactions and coordinates between
  * the UI components and business logic, following MVC pattern.
+ * Now includes integration with advanced Cloud Point Mapping.
  */
 class PointToolController : public QObject
 {
@@ -32,6 +39,18 @@ public:
      * @param parent Pointer to RobotWindow
      */
     void setParent(RobotWindow* parent);
+
+    /**
+     * @brief Initialize Point Tool UI with Cloud Point Mapping
+     * @param parentWidget Parent widget for UI setup
+     */
+    void initializeUI(QWidget* parentWidget);
+
+    /**
+     * @brief Get the cloud point tool controller
+     * @return CloudPointToolController pointer
+     */
+    CloudPointToolController* getCloudPointController() const;
 
     /**
      * @brief Handles mapping matrix calculation
@@ -77,7 +96,7 @@ public:
     void pastePointValues(QLineEdit* xEdit, QLineEdit* yEdit, QLineEdit* zEdit = nullptr);
 
     /**
-     * @brief Copies current robot position to specified controls
+     * @brief Sets current robot position to specified controls
      * @param xEdit X coordinate line edit
      * @param yEdit Y coordinate line edit
      * @param zEdit Z coordinate line edit
@@ -85,117 +104,84 @@ public:
     void setCurrentRobotPosition(QLineEdit* xEdit, QLineEdit* yEdit, QLineEdit* zEdit);
 
     /**
-     * @brief Gets stored transformation matrix by name
-     * @param matrixName Name of the stored matrix
-     * @return QTransform matrix or identity if not found
+     * @brief Transform point using cloud point mapping
+     * @param imageCoord Image coordinates
+     * @param method Interpolation method
+     * @return Transformed real-world coordinates
      */
-    QTransform getStoredMatrix(const QString& matrixName);
+    QVector3D transformPointUsingCloudMapping(const QVector3D& imageCoord, int method = 1);
 
     /**
-     * @brief Stores transformation matrix with given name
-     * @param matrixName Name to store matrix under
-     * @param transform Matrix to store
+     * @brief Check if cloud point mapping is available and valid
+     * @return true if cloud mapping can be used
      */
-    void storeMatrix(const QString& matrixName, const QTransform& transform);
+    bool isCloudMappingAvailable() const;
 
     /**
-     * @brief Gets stored vector by name
-     * @param vectorName Name of the stored vector
-     * @return QVector3D vector or zero vector if not found
+     * @brief Get mapping statistics from cloud point mapper
+     * @return Mapping statistics string
      */
-    QVector3D getStoredVector(const QString& vectorName);
+    QString getCloudMappingStats() const;
 
     /**
-     * @brief Stores vector with given name
-     * @param vectorName Name to store vector under
-     * @param vector Vector to store
+     * @brief Export cloud mapping to VariableManager with specified name
+     * @param variableName Variable name to use
+     * @return true if successful
      */
-    void storeVector(const QString& vectorName, const QVector3D& vector);
+    bool exportCloudMappingToVariables(const QString& variableName);
+
+    /**
+     * @brief Import cloud mapping from VariableManager
+     * @param variableName Variable name to load from
+     * @return true if successful
+     */
+    bool importCloudMappingFromVariables(const QString& variableName);
 
 private slots:
     /**
-     * @brief Internal slot for handling calculation results
+     * @brief Handle cloud mapping update
+     */
+    void onCloudMappingUpdated();
+
+    /**
+     * @brief Handle completion of async operations
      */
     void onCalculationCompleted();
 
 private:
-    /**
-     * @brief Shows error message to user
-     * @param message Error message to display
-     */
-    void showError(const QString& message);
-
-    /**
-     * @brief Shows success message to user
-     * @param message Success message to display
-     */
-    void showSuccess(const QString& message);
-
-    /**
-     * @brief Updates display label with result text
-     * @param label Label to update
-     * @param text Text to display
-     */
-    void updateDisplayLabel(QLabel* label, const QString& text);
-
-    /**
-     * @brief Validates and extracts 2D point from line edits
-     * @param xEdit X coordinate line edit
-     * @param yEdit Y coordinate line edit
-     * @param point Output point
-     * @param pointName Name for error messages
-     * @return true if validation succeeded
-     */
-    bool validateAndExtractPoint2D(QLineEdit* xEdit, QLineEdit* yEdit, QPointF& point, const QString& pointName);
-
-    /**
-     * @brief Validates and extracts 3D point from line edits
-     * @param xEdit X coordinate line edit
-     * @param yEdit Y coordinate line edit
-     * @param zEdit Z coordinate line edit
-     * @param point Output point
-     * @param pointName Name for error messages
-     * @return true if validation succeeded
-     */
-    bool validateAndExtractPoint3D(QLineEdit* xEdit, QLineEdit* yEdit, QLineEdit* zEdit, QVector3D& point, const QString& pointName);
-
-    /**
-     * @brief Validates and extracts float value from line edit
-     * @param edit Line edit control
-     * @param value Output value
-     * @param fieldName Name for error messages
-     * @return true if validation succeeded
-     */
-    bool validateAndExtractFloat(QLineEdit* edit, float& value, const QString& fieldName);
-
-    /**
-     * @brief Sets float value to line edit with formatting
-     * @param edit Line edit control
-     * @param value Value to set
-     * @param precision Decimal precision
-     */
-    void setFormattedValue(QLineEdit* edit, float value, int precision = 6);
-
-    /**
-     * @brief Parses clipboard content for point values
-     * @param text Clipboard text
-     * @param x Output X value
-     * @param y Output Y value
-     * @param z Output Z value
-     * @return true if parsing succeeded
-     */
-    bool parseClipboardPoint(const QString& text, float& x, float& y, float& z);
-
-private:
-    RobotWindow* m_parent;                  ///< Parent RobotWindow instance
-    PointCalculator* m_calculator;          ///< Business logic calculator
-    QClipboard* m_clipboard;                ///< System clipboard
+    RobotWindow* m_parent;                          ///< Parent window
+    PointCalculator* m_calculator;                  ///< Business logic calculator
+    CloudPointToolController* m_cloudPointController; ///< Cloud point mapping controller
+    QClipboard* m_clipboard;                        ///< System clipboard
     
     // Store global transformation data
-    QTransform m_lastMappingTransform;      ///< Last calculated mapping transform
-    QMatrix m_lastMappingMatrix;            ///< Last calculated mapping matrix
-    cv::Mat m_lastPerspectiveMatrix;        ///< Last calculated perspective matrix
-    QVector3D m_lastCalculatedVector;       ///< Last calculated vector
+    QTransform m_lastMappingTransform;              ///< Last calculated mapping transform
+    QMatrix m_lastMappingMatrix;                    ///< Last calculated mapping matrix
+    cv::Mat m_lastPerspectiveMatrix;                ///< Last calculated perspective matrix
+    QVector3D m_lastCalculatedVector;               ///< Last calculated vector
+    
+    // Cloud mapping integration
+    bool m_useCloudMapping;                         ///< Whether to use cloud mapping
+    QString m_defaultCloudMappingVariable;          ///< Default variable name for cloud mapping
+    
+    // Private methods
+    void showError(const QString& message);
+    void showSuccess(const QString& message);
+    void updateDisplayLabel(QLabel* label, const QString& text);
+    bool validateAndExtractPoint2D(QLineEdit* xEdit, QLineEdit* yEdit, QPointF& point, const QString& pointName);
+    bool validateAndExtractPoint3D(QLineEdit* xEdit, QLineEdit* yEdit, QLineEdit* zEdit, QVector3D& point, const QString& pointName);
+    bool validateAndExtractFloat(QLineEdit* edit, float& value, const QString& fieldName);
+    QTransform getStoredMatrix(const QString& matrixName);
+    void storeMatrix(const QString& matrixName, const QTransform& transform);
+    QVector3D getStoredVector(const QString& vectorName);
+    void storeVector(const QString& vectorName, const QVector3D& vector);
+    bool parseClipboardPoint(const QString& clipboardText, float& x, float& y, float& z);
+    void setFormattedValue(QLineEdit* edit, float value);
+    
+    // Cloud mapping helpers
+    void setupCloudMappingIntegration();
+    bool shouldUseCloudMapping() const;
+    QVector3D fallbackToTraditionalMapping(const QVector3D& imageCoord);
 };
 
 #endif // POINTTOOLCONTROLLER_H 
