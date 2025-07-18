@@ -272,8 +272,39 @@ private:
     };
     
     QStack<ForLoopState> forLoopStack;  // Stack to handle nested FOR loops
+
+    // WHILE loop state tracking
+    struct WhileLoopState {
+        QString condition;              // Condition expression
+        int startLine;                  // Line where WHILE starts
+        int endWhileLine;               // Line where ENDWHILE is located
+        
+        WhileLoopState() : startLine(-1), endWhileLine(-1) {}
+        WhileLoopState(QString cond, int line) : condition(cond), startLine(line), endWhileLine(-1) {}
+    };
     
-    // Simple function system similar to M98/M99
+    QStack<WhileLoopState> whileLoopStack;  // Stack to handle nested WHILE loops
+    
+    // SWITCH/CASE state tracking
+    struct SwitchCaseState {
+        QString switchVariable;         // Variable being switched on
+        QString switchValue;            // Current value of switch variable
+        int startLine;                  // Line where SWITCH starts
+        int endSwitchLine;              // Line where ENDSWITCH is located
+        bool caseMatched;               // Whether a case has been matched
+        bool defaultFound;              // Whether default case was found
+        
+        SwitchCaseState() : startLine(-1), endSwitchLine(-1), caseMatched(false), defaultFound(false) {}
+        SwitchCaseState(QString var, QString val, int line) : switchVariable(var), switchValue(val), startLine(line), endSwitchLine(-1), caseMatched(false), defaultFound(false) {}
+    };
+    
+    QStack<SwitchCaseState> switchCaseStack;  // Stack to handle nested SWITCH statements
+    
+    // Loop control flags
+    bool breakRequested;                // Flag for BREAK statement
+    bool continueRequested;             // Flag for CONTINUE statement
+
+    // Function related variables
     int returnFunctionPointer[20];
     int returnFunctionOrder = -1;
     
@@ -339,6 +370,32 @@ private:
     void skipToEndFor();
     bool executeForLoopIteration(); // Execute next iteration of FOR loop
     int findEndForLine(int startLine); // Find matching ENDFOR line
+    
+    // WHILE loop methods
+    bool handleWHILE(QList<QString> valuePairs, int i);
+    bool handleENDWHILE(QList<QString> valuePairs, int i);
+    void skipToEndWhile();
+    bool executeWhileLoopIteration(); // Execute next iteration of WHILE loop
+    int findEndWhileLine(int startLine); // Find matching ENDWHILE line
+    
+    // SWITCH/CASE methods
+    bool handleSWITCH(QList<QString> valuePairs, int i);
+    bool handleCASE(QList<QString> valuePairs, int i);
+    bool handleDEFAULT(QList<QString> valuePairs, int i);
+    bool handleENDSWITCH(QList<QString> valuePairs, int i);
+    void skipToNextCaseOrEndSwitch();
+    int findEndSwitchLine(int startLine); // Find matching ENDSWITCH line
+    
+    // Loop control methods
+    bool handleBREAK(QList<QString> valuePairs, int i);
+    bool handleCONTINUE(QList<QString> valuePairs, int i);
+    void executeBreak(); // Execute BREAK statement
+    void executeContinue(); // Execute CONTINUE statement
+    
+    // Enhanced condition evaluation with logical operators
+    bool evaluateCondition(QString condition);
+    bool evaluateLogicalExpression(QString expression);
+    QString parseLogicalOperators(QString expression);
     
     // Simple function methods
     bool handleFUNCTION(QList<QString> valuePairs, int i);

@@ -146,9 +146,22 @@
                     </ul>
                 </li>
                 <li><a href="#subprograms">4. Subprograms</a></li>
-                <li><a href="#math-functions">5. Mathematical Functions</a></li>
-                <li><a href="#device-control">6. Device Control</a></li>
-                <li><a href="#examples">7. Practical Examples</a></li>
+                <li><a href="#functions">5. Functions</a></li>
+                <li><a href="#math-functions">6. Mathematical Functions</a></li>
+                <li><a href="#device-control">7. Device Control</a></li>
+                <li><a href="#cloud-point-mapping">8. Cloud Point Mapping System</a>
+                    <ul>
+                        <li><a href="#cloud-point-intro">8.1. Introduction</a></li>
+                        <li><a href="#cloud-point-calibration">8.2. Calibration Functions</a></li>
+                        <li><a href="#cloud-point-transformation">8.3. Coordinate Transformation</a></li>
+                        <li><a href="#cloud-point-management">8.4. Point Management</a></li>
+                        <li><a href="#cloud-point-statistics">8.5. Statistics & Validation</a></li>
+                        <li><a href="#cloud-point-file-ops">8.6. File Operations</a></li>
+                        <li><a href="#cloud-point-examples">8.7. Examples</a></li>
+                    </ul>
+                </li>
+                <li><a href="#basic-object-processing">9. Basic Object Processing</a></li>
+                <li><a href="#examples">10. Practical Examples</a></li>
             </ul>
         </div>
 
@@ -163,6 +176,7 @@
                 <li>📊 Variable and mathematical expression support</li>
                 <li>🔄 Subroutines and loops</li>
                 <li>📷 Integrated image processing</li>
+                <li>📍 Advanced cloud point mapping</li>
             </ul>
         </div>
 
@@ -300,6 +314,7 @@ ELSE
     G28 ; Home
 ENDIF</div>
 
+        <h4>3.2.4. Comparison Operators:</h4>
         <div class="table-container">
             <table>
                 <tr>
@@ -340,7 +355,46 @@ ENDIF</div>
             </table>
         </div>
 
-        <h2 id="for-loops">3.3. 🔄 FOR...ENDFOR - Loops</h2>
+        <h4>3.2.5. Logical Operators:</h4>
+        <p>GScript supports logical operators for complex conditions:</p>
+        
+        <div class="table-container">
+            <table>
+                <tr>
+                    <th>Logical Operator</th>
+                    <th>Description</th>
+                    <th>Example</th>
+                </tr>
+                <tr>
+                    <td><span class="inline-code">AND</span></td>
+                    <td>Logical AND</td>
+                    <td><span class="inline-code">IF #temp > 60 AND #pressure < 100 THEN M05</span></td>
+                </tr>
+                <tr>
+                    <td><span class="inline-code">OR</span></td>
+                    <td>Logical OR</td>
+                    <td><span class="inline-code">IF #mode == 1 OR #mode == 2 THEN M03</span></td>
+                </tr>
+                <tr>
+                    <td><span class="inline-code">NOT</span></td>
+                    <td>Logical NOT</td>
+                    <td><span class="inline-code">IF NOT #sensor_active THEN M04</span></td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="code-block">; Complex logical conditions
+IF #temp > 60 AND #pressure < 100 THEN
+    M05 ; Emergency stop
+ELIF #mode == 1 OR #mode == 2 THEN
+    M03 ; Start operation
+ELIF NOT #sensor_active THEN
+    M04 ; Sensor not active
+ELSE
+    G28 ; Default action
+ENDIF</div>
+
+        <h3 id="for-loops">3.3. 🔄 FOR...ENDFOR - Loops</h3>
         <p>GScript supports two types of FOR loops:</p>
 
         <h4>3.3.1. Numeric FOR loops:</h4>
@@ -428,45 +482,58 @@ M99 ; End subprogram</div>
         <div class="code-block">; Call subprogram
 M98 P2001 ; Call subprogram O2001</div>
 
-        <h3>4.3. Macro Functions</h3>
-        <p>GScript supports built-in macro functions:</p>
+        <h2 id="functions">5. 🔧 Functions</h2>
+        <p>GScript supports creating and calling custom functions to reuse code and organize programs better.</p>
 
-        <div class="table-container">
-            <table>
-                <tr>
-                    <th>Function</th>
-                    <th>Description</th>
-                    <th>Example</th>
-                </tr>
-                <tr>
-                    <td><span class="inline-code">M98 PclearObjects</span></td>
-                    <td>Clear all objects</td>
-                    <td><span class="inline-code">M98 PclearObjects listName</span></td>
-                </tr>
-                <tr>
-                    <td><span class="inline-code">M98 PpauseCamera</span></td>
-                    <td>Pause camera</td>
-                    <td><span class="inline-code">M98 PpauseCamera</span></td>
-                </tr>
-                <tr>
-                    <td><span class="inline-code">M98 PcaptureCamera</span></td>
-                    <td>Capture image</td>
-                    <td><span class="inline-code">M98 PcaptureCamera</span></td>
-                </tr>
-                <tr>
-                    <td><span class="inline-code">M98 PresumeCamera</span></td>
-                    <td>Resume camera</td>
-                    <td><span class="inline-code">M98 PresumeCamera</span></td>
-                </tr>
-                <tr>
-                    <td><span class="inline-code">M98 Pdelay(ms)</span></td>
-                    <td>Delay time</td>
-                    <td><span class="inline-code">M98 Pdelay(2000)</span></td>
-                </tr>
-            </table>
+        <h3>5.1. Function Declaration</h3>
+        <div class="code-block">; Syntax: FUNCTION functionName(param1, param2, ...)
+FUNCTION pickObject(x, y, z)
+    G01 X[x] Y[y] Z-50 F1000
+    G01 Z[z]
+    M03 ; Turn on gripper
+    G04 P1000
+    G01 Z-50
+ENDFUNCTION</div>
+
+        <h3>5.2. Function Call</h3>
+        <div class="code-block">; Call function without return value
+pickObject(100, 200, -150)
+
+; Call function with variables
+#pick_x = 150
+#pick_y = 250
+#pick_z = -140
+pickObject(#pick_x, #pick_y, #pick_z)</div>
+
+        <h3>5.3. Functions with Return Values</h3>
+        <div class="code-block">; Function that calculates distance between two points
+FUNCTION calculateDistance(x1, y1, x2, y2)
+    #dx = x2 - x1
+    #dy = y2 - y1
+    #distance = #sqrt(#dx * #dx + #dy * #dy)
+    RETURN #distance
+ENDFUNCTION
+
+; Use function with return value
+#dist = calculateDistance(0, 0, 100, 100)
+IF #dist > 50 THEN
+    G01 F500 ; Slow speed for long distance
+ELSE
+    G01 F1000 ; Fast speed for short distance
+ENDIF</div>
+
+        <div class="warning">
+            <h4>⚠️ Important Notes about Functions:</h4>
+            <ul>
+                <li>Functions can call each other (including recursion)</li>
+                <li>Local variables in functions do not affect global variables</li>
+                <li>Parameters are passed by value</li>
+                <li>Always use RETURN to end functions clearly</li>
+                <li>Function calls must have # prefix: #functionName(...)</li>
+            </ul>
         </div>
 
-        <h2 id="math-functions">5. 📐 Mathematical Functions</h2>
+        <h2 id="math-functions">6. 📐 Mathematical Functions</h2>
         <p>GScript provides built-in mathematical functions:</p>
 
         <div class="table-container">
@@ -537,9 +604,9 @@ M98 P2001 ; Call subprogram O2001</div>
 G01 X[#x] Y[#y]</div>
         </div>
 
-        <h2 id="device-control">6. 🎛️ Device Control</h2>
+        <h2 id="device-control">7. 🎛️ Device Control</h2>
 
-        <h3>6.1. Robot Control</h3>
+        <h3>7.1. Robot Control</h3>
         <div class="table-container">
             <table>
                 <tr>
@@ -575,7 +642,7 @@ G01 X[#x] Y[#y]</div>
             </table>
         </div>
 
-        <h3>6.2. End Effector Control</h3>
+        <h3>7.2. End Effector Control</h3>
         <div class="table-container">
             <table>
                 <tr>
@@ -606,7 +673,7 @@ G01 X[#x] Y[#y]</div>
             </table>
         </div>
 
-        <h3>6.3. Conveyor Control</h3>
+        <h3>7.3. Conveyor Control</h3>
         <div class="table-container">
             <table>
                 <tr>
@@ -637,7 +704,7 @@ G01 X[#x] Y[#y]</div>
             </table>
         </div>
 
-        <h3>6.4. Device Selection</h3>
+        <h3>7.4. Device Selection</h3>
         <div class="code-block">; Select default device
 SELECT robot0 ; Select robot
 SELECT conveyor0 ; Select conveyor
@@ -647,60 +714,478 @@ SELECT device0 ; Select device
 robot0 G01 X100 Y200
 conveyor0 M311 S100</div>
 
-        <h2 id="examples">7. 🎯 Practical Examples</h2>
+        <h2 id="cloud-point-mapping">8. 📍 Cloud Point Mapping System</h2>
+        <p><strong>Cloud Point Mapping System (CPMS)</strong> is an advanced coordinate mapping system for Delta X robots, supporting coordinate transformation from camera/pixel coordinates to real-world coordinates with high precision.</p>
 
-        <h2 id="functions">8. 🔧 Functions (Hàm)</h2>
-        <p>GScript hỗ trợ tạo và gọi hàm tùy chỉnh để tái sử dụng code và tổ chức chương trình tốt hơn.</p>
+        <h3 id="cloud-point-intro">8.1. 🌟 Introduction</h3>
+        <p>CPMS provides 25+ functions for:</p>
+        <ul>
+            <li>📊 Managing calibration points (add, remove, update)</li>
+            <li>🎯 Coordinate transformation with 5 interpolation methods</li>
+            <li>📈 Mapping statistics and validation</li>
+            <li>💾 Save/load mapping configurations</li>
+            <li>🔄 Integration with VariableManager</li>
+        </ul>
 
-        <h3>8.1. Khai báo hàm</h3>
-        <div class="code-block">; Cú pháp: FUNCTION functionName(param1, param2, ...)
-FUNCTION pickObject(x, y, z)
-    G01 X[x] Y[y] Z-50 F1000
-    G01 Z[z]
-    M03 ; Bật gripper
-    G04 P1000
-    G01 Z-50
-ENDFUNCTION</div>
-
-        <h3>8.2. Gọi hàm</h3>
-        <div class="code-block">; Gọi hàm không có giá trị trả về
-#pickObject(100, 200, -150)
-
-; Gọi hàm với biến
-#pick_x = 150
-#pick_y = 250
-#pick_z = -140
-#pickObject(#pick_x, #pick_y, #pick_z)</div>
-
-        <h3>8.3. Hàm có giá trị trả về</h3>
-        <div class="code-block">; Hàm tính khoảng cách giữa hai điểm
-FUNCTION calculateDistance(x1, y1, x2, y2)
-    #dx = x2 - x1
-    #dy = y2 - y1
-    #distance = #sqrt(#dx * #dx + #dy * #dy)
-    RETURN #distance
-ENDFUNCTION
-
-; Sử dụng hàm với giá trị trả về
-#dist = #calculateDistance(0, 0, 100, 100)
-IF #dist > 50 THEN
-    G01 F500 ; Tốc độ chậm cho khoảng cách xa
-ELSE
-    G01 F1000 ; Tốc độ nhanh cho khoảng cách gần
-ENDIF</div>
-
-        <div class="warning">
-            <h4>⚠️ Lưu ý về Functions:</h4>
+        <div class="example">
+            <h4>✅ Interpolation Methods:</h4>
             <ul>
-                <li>Functions có thể gọi lẫn nhau (bao gồm đệ quy)</li>
-                <li>Biến local trong function không ảnh hưởng đến biến global</li>
-                <li>Parameters được truyền theo giá trị (pass by value)</li>
-                <li>Luôn sử dụng RETURN để kết thúc function rõ ràng</li>
-                <li>Function calls phải có dấu # phía trước: #functionName(...)</li>
+                <li><strong>0 = Linear:</strong> Fast and simple</li>
+                <li><strong>1 = Bilinear:</strong> Good for grid data (default)</li>
+                <li><strong>2 = Cubic Spline:</strong> Smooth, high accuracy</li>
+                <li><strong>3 = Radial Basis:</strong> Good for irregular data</li>
+                <li><strong>4 = Kriging:</strong> Best for statistical data</li>
             </ul>
         </div>
 
-        <h3>7.1. Basic Pick & Place Program</h3>
+        <h3 id="cloud-point-calibration">8.2. 🔧 Calibration Functions</h3>
+        <p>Functions for managing calibration points:</p>
+
+        <div class="table-container">
+            <table>
+                <tr>
+                    <th>Function</th>
+                    <th>Description</th>
+                    <th>Parameters</th>
+                    <th>Return</th>
+                </tr>
+                <tr>
+                    <td><span class="inline-code">#cloudPointAddCalibration(imageX, imageY, imageZ, realX, realY, realZ, confidence, label)</span></td>
+                    <td>Add new calibration point</td>
+                    <td>6 coordinates + confidence (0-1) + label (optional)</td>
+                    <td>Point index (-1 if error)</td>
+                </tr>
+                <tr>
+                    <td><span class="inline-code">#cloudPointRemove(index)</span></td>
+                    <td>Remove calibration point</td>
+                    <td>Point index to remove</td>
+                    <td>1 if successful, 0 if error</td>
+                </tr>
+                <tr>
+                    <td><span class="inline-code">#cloudPointUpdate(index, imageX, imageY, imageZ, realX, realY, realZ, confidence)</span></td>
+                    <td>Update calibration point</td>
+                    <td>Index + 6 coordinates + confidence</td>
+                    <td>1 if successful, 0 if error</td>
+                </tr>
+                <tr>
+                    <td><span class="inline-code">#cloudPointClear()</span></td>
+                    <td>Clear all calibration points</td>
+                    <td>None</td>
+                    <td>1 if successful</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="code-block">; Add calibration point
+#index = #cloudPointAddCalibration(100, 200, 0, 150.5, 250.3, -100, 0.95, "point1")
+
+; Update point
+#cloudPointUpdate(#index, 105, 205, 0, 152.1, 252.8, -98, 0.98)
+
+; Remove point
+#cloudPointRemove(#index)</div>
+
+        <h3 id="cloud-point-transformation">8.3. 🎯 Coordinate Transformation</h3>
+        <p>Functions for transforming coordinates from image/pixel to real-world:</p>
+
+        <div class="table-container">
+            <table>
+                <tr>
+                    <th>Function</th>
+                    <th>Description</th>
+                    <th>Parameters</th>
+                    <th>Return</th>
+                </tr>
+                <tr>
+                    <td><span class="inline-code">#cloudPointTransformX(imageX, imageY, imageZ, method)</span></td>
+                    <td>Transform to real X coordinate</td>
+                    <td>3 image coordinates + method (0-4)</td>
+                    <td>Real X coordinate</td>
+                </tr>
+                <tr>
+                    <td><span class="inline-code">#cloudPointTransformY(imageX, imageY, imageZ, method)</span></td>
+                    <td>Transform to real Y coordinate</td>
+                    <td>3 image coordinates + method (0-4)</td>
+                    <td>Real Y coordinate</td>
+                </tr>
+                <tr>
+                    <td><span class="inline-code">#cloudPointTransformZ(imageX, imageY, imageZ, method)</span></td>
+                    <td>Transform to real Z coordinate</td>
+                    <td>3 image coordinates + method (0-4)</td>
+                    <td>Real Z coordinate</td>
+                </tr>
+                <tr>
+                    <td><span class="inline-code">#cloudPointGetConfidence(imageX, imageY, imageZ, method)</span></td>
+                    <td>Get transformation confidence</td>
+                    <td>3 image coordinates + method (0-4)</td>
+                    <td>Confidence (0-1)</td>
+                </tr>
+                <tr>
+                    <td><span class="inline-code">#cloudPointGetError(imageX, imageY, imageZ, method)</span></td>
+                    <td>Get estimated error</td>
+                    <td>3 image coordinates + method (0-4)</td>
+                    <td>Error (mm)</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="code-block">; Transform coordinates from camera to robot
+#pixel_x = 320
+#pixel_y = 240 
+#pixel_z = 0
+
+; Use Bilinear interpolation (method = 1)
+#real_x = #cloudPointTransformX(#pixel_x, #pixel_y, #pixel_z, 1)
+#real_y = #cloudPointTransformY(#pixel_x, #pixel_y, #pixel_z, 1)
+#real_z = #cloudPointTransformZ(#pixel_x, #pixel_y, #pixel_z, 1)
+
+; Check confidence
+#confidence = #cloudPointGetConfidence(#pixel_x, #pixel_y, #pixel_z, 1)
+IF #confidence > 0.8 THEN
+    ; Move robot to position
+    G01 X[#real_x] Y[#real_y] Z[#real_z]
+ELSE
+    ; Low confidence, need more calibration
+    M98 PshowWarning("Low confidence transformation")
+ENDIF</div>
+
+        <h3 id="cloud-point-management">8.4. 📊 Point Management</h3>
+        <p>Functions for managing and querying point information:</p>
+
+        <div class="table-container">
+            <table>
+                <tr>
+                    <th>Function</th>
+                    <th>Description</th>
+                    <th>Parameters</th>
+                    <th>Return</th>
+                </tr>
+                <tr>
+                    <td><span class="inline-code">#cloudPointGetCount()</span></td>
+                    <td>Get number of calibration points</td>
+                    <td>None</td>
+                    <td>Number of points</td>
+                </tr>
+                <tr>
+                    <td><span class="inline-code">#cloudPointGetImageX(index)</span></td>
+                    <td>Get image X coordinate</td>
+                    <td>Point index</td>
+                    <td>Image X</td>
+                </tr>
+                <tr>
+                    <td><span class="inline-code">#cloudPointGetImageY(index)</span></td>
+                    <td>Get image Y coordinate</td>
+                    <td>Point index</td>
+                    <td>Image Y</td>
+                </tr>
+                <tr>
+                    <td><span class="inline-code">#cloudPointGetImageZ(index)</span></td>
+                    <td>Get image Z coordinate</td>
+                    <td>Point index</td>
+                    <td>Image Z</td>
+                </tr>
+                <tr>
+                    <td><span class="inline-code">#cloudPointGetRealX(index)</span></td>
+                    <td>Get real X coordinate</td>
+                    <td>Point index</td>
+                    <td>Real X</td>
+                </tr>
+                <tr>
+                    <td><span class="inline-code">#cloudPointGetRealY(index)</span></td>
+                    <td>Get real Y coordinate</td>
+                    <td>Point index</td>
+                    <td>Real Y</td>
+                </tr>
+                <tr>
+                    <td><span class="inline-code">#cloudPointGetRealZ(index)</span></td>
+                    <td>Get real Z coordinate</td>
+                    <td>Point index</td>
+                    <td>Real Z</td>
+                </tr>
+                <tr>
+                    <td><span class="inline-code">#cloudPointGetPointConfidence(index)</span></td>
+                    <td>Get point confidence</td>
+                    <td>Point index</td>
+                    <td>Confidence (0-1)</td>
+                </tr>
+                <tr>
+                    <td><span class="inline-code">#cloudPointGetPointError(index)</span></td>
+                    <td>Get point error</td>
+                    <td>Point index</td>
+                    <td>Error (mm)</td>
+                </tr>
+                <tr>
+                    <td><span class="inline-code">#cloudPointGetLabel(index)</span></td>
+                    <td>Get point label</td>
+                    <td>Point index</td>
+                    <td>Label string</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="code-block">; Iterate through all calibration points
+#total_points = #cloudPointGetCount()
+FOR #i = 0 TO #total_points - 1
+    #img_x = #cloudPointGetImageX(#i)
+    #img_y = #cloudPointGetImageY(#i)
+    #real_x = #cloudPointGetRealX(#i)
+    #real_y = #cloudPointGetRealY(#i)
+    #confidence = #cloudPointGetPointConfidence(#i)
+    #label = #cloudPointGetLabel(#i)
+    
+    ; Display point information
+    ; Note: showInfo function would need to be implemented
+ENDFOR</div>
+
+        <h3 id="cloud-point-statistics">8.5. 📈 Statistics & Validation</h3>
+        <p>Functions for statistics and validation of mapping system:</p>
+
+        <div class="table-container">
+            <table>
+                <tr>
+                    <th>Function</th>
+                    <th>Description</th>
+                    <th>Parameters</th>
+                    <th>Return</th>
+                </tr>
+                <tr>
+                    <td><span class="inline-code">#cloudPointBuildGrid(resolution)</span></td>
+                    <td>Build grid mapping</td>
+                    <td>Resolution (10.0 = default)</td>
+                    <td>1 if successful, 0 if error</td>
+                </tr>
+                <tr>
+                    <td><span class="inline-code">#cloudPointValidate(validationRatio)</span></td>
+                    <td>Validate mapping accuracy</td>
+                    <td>Ratio (0.2 = 20% points for validation)</td>
+                    <td>1 if valid, 0 if not</td>
+                </tr>
+                <tr>
+                    <td><span class="inline-code">#cloudPointGetStats()</span></td>
+                    <td>Get mapping statistics</td>
+                    <td>None</td>
+                    <td>String containing statistics</td>
+                </tr>
+                <tr>
+                    <td><span class="inline-code">#cloudPointIsValid()</span></td>
+                    <td>Check if mapping is valid</td>
+                    <td>None</td>
+                    <td>1 if valid, 0 if not</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="code-block">; Build and validate mapping
+#cloudPointBuildGrid(15.0) ; Grid resolution 15mm
+
+; Validate with 20% of points
+#validation_result = #cloudPointValidate(0.2)
+IF #validation_result == 1 THEN
+    #stats = #cloudPointGetStats()
+    ; Mapping validation successful
+ELSE
+    ; Mapping validation failed. Need more calibration points.
+ENDIF
+
+; Check if mapping is ready for use
+IF #cloudPointIsValid() == 1 THEN
+    ; Cloud Point Mapping ready for use
+ELSE
+    ; Cloud Point Mapping not ready. Add more calibration points.
+ENDIF</div>
+
+        <h3 id="cloud-point-file-ops">8.6. 💾 File Operations</h3>
+        <p>Functions for save/load and integration with VariableManager:</p>
+
+        <div class="table-container">
+            <table>
+                <tr>
+                    <th>Function</th>
+                    <th>Description</th>
+                    <th>Parameters</th>
+                    <th>Return</th>
+                </tr>
+                <tr>
+                    <td><span class="inline-code">#cloudPointSave(filename)</span></td>
+                    <td>Save mapping to file</td>
+                    <td>Filename (can include path)</td>
+                    <td>1 if successful, 0 if error</td>
+                </tr>
+                <tr>
+                    <td><span class="inline-code">#cloudPointLoad(filename)</span></td>
+                    <td>Load mapping from file</td>
+                    <td>Filename (can include path)</td>
+                    <td>1 if successful, 0 if error</td>
+                </tr>
+                <tr>
+                    <td><span class="inline-code">#cloudPointExport(variableName)</span></td>
+                    <td>Export mapping to VariableManager</td>
+                    <td>Variable name to save</td>
+                    <td>1 if successful, 0 if error</td>
+                </tr>
+                <tr>
+                    <td><span class="inline-code">#cloudPointImport(variableName)</span></td>
+                    <td>Import mapping from VariableManager</td>
+                    <td>Variable name to load</td>
+                    <td>1 if successful, 0 if error</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="code-block">; Save mapping to file
+#cloudPointSave("mapping_camera1.json")
+
+; Load mapping from file
+#cloudPointLoad("mapping_camera1.json")
+
+; Export to VariableManager for persistent storage
+#cloudPointExport("CameraMapping_Station1")
+
+; Import from VariableManager
+#cloudPointImport("CameraMapping_Station1")</div>
+
+        <h3 id="cloud-point-examples">8.7. 🎯 Examples</h3>
+        <div class="example">
+            <h4>Example 1: Basic Calibration & Transformation</h4>
+            <div class="code-block">; === CALIBRATION PHASE ===
+; Add some calibration points
+#cloudPointAddCalibration(100, 100, 0, 150.5, 200.3, -100, 1.0, "corner1")
+#cloudPointAddCalibration(200, 100, 0, 250.8, 200.1, -98, 0.95, "corner2")
+#cloudPointAddCalibration(100, 200, 0, 151.2, 300.5, -102, 0.98, "corner3")
+#cloudPointAddCalibration(200, 200, 0, 251.1, 300.2, -99, 0.97, "corner4")
+
+; Build grid and validate
+#cloudPointBuildGrid(10.0)
+#validation_result = #cloudPointValidate(0.2)
+
+IF #validation_result == 1 THEN
+    ; Calibration successful!
+    
+    ; === TRANSFORMATION PHASE ===
+    ; Transform object coordinates from camera
+    #object_pixel_x = 150
+    #object_pixel_y = 150
+    
+    ; Use Cubic Spline interpolation (method = 2)
+    #robot_x = #cloudPointTransformX(#object_pixel_x, #object_pixel_y, 0, 2)
+    #robot_y = #cloudPointTransformY(#object_pixel_x, #object_pixel_y, 0, 2)
+    #robot_z = #cloudPointTransformZ(#object_pixel_x, #object_pixel_y, 0, 2)
+    
+    ; Check confidence
+    #confidence = #cloudPointGetConfidence(#object_pixel_x, #object_pixel_y, 0, 2)
+    IF #confidence > 0.9 THEN
+        ; Move robot to object
+        G01 X[#robot_x] Y[#robot_y] Z[#robot_z] F1000
+        M03 ; Turn on gripper
+        G04 P1000
+        M05 ; Turn off gripper
+    ELSE
+        ; Low confidence
+    ENDIF
+ELSE
+    ; Calibration failed. Need more calibration points.
+ENDIF</div>
+        </div>
+
+        <div class="warning">
+            <h4>⚠️ Important Notes about Cloud Point Mapping:</h4>
+            <ul>
+                <li><strong>Minimum Points:</strong> Need at least 3 points for basic mapping, 5+ points for validation</li>
+                <li><strong>Calibration Quality:</strong> Ensure calibration points are evenly distributed in workspace</li>
+                <li><strong>Method Selection:</strong> Choose appropriate interpolation method for your data</li>
+                <li><strong>Confidence Check:</strong> Always check confidence before moving robot</li>
+                <li><strong>Error Tolerance:</strong> Set appropriate error threshold for required accuracy</li>
+                <li><strong>Regular Validation:</strong> Regularly validate mapping to ensure accuracy</li>
+            </ul>
+        </div>
+
+        <h2 id="basic-object-processing">9. 🎯 Basic Object Processing</h2>
+        <p>GScript provides basic object processing functions for managing objects detected by the vision system.</p>
+
+        <h3>9.1. Basic Object Management</h3>
+        <div class="table-container">
+            <table>
+                <tr>
+                    <th>Function</th>
+                    <th>Description</th>
+                    <th>Usage</th>
+                </tr>
+                <tr>
+                    <td><span class="inline-code">M98 PaddObject</span></td>
+                    <td>Add object to list</td>
+                    <td><span class="inline-code">M98 PaddObject objects objectData</span></td>
+                </tr>
+                <tr>
+                    <td><span class="inline-code">M98 PclearObjects</span></td>
+                    <td>Clear all objects</td>
+                    <td><span class="inline-code">M98 PclearObjects objects</span></td>
+                </tr>
+                <tr>
+                    <td><span class="inline-code">M98 PdeleteFirstObject</span></td>
+                    <td>Delete first object</td>
+                    <td><span class="inline-code">M98 PdeleteFirstObject</span></td>
+                </tr>
+                <tr>
+                    <td><span class="inline-code">M98 PdeleteObject</span></td>
+                    <td>Delete object by ID</td>
+                    <td><span class="inline-code">M98 PdeleteObject(5)</span></td>
+                </tr>
+            </table>
+        </div>
+
+        <h3>9.2. Camera Control</h3>
+        <div class="table-container">
+            <table>
+                <tr>
+                    <th>Function</th>
+                    <th>Description</th>
+                    <th>Usage</th>
+                </tr>
+                <tr>
+                    <td><span class="inline-code">M98 PpauseCamera</span></td>
+                    <td>Pause camera</td>
+                    <td><span class="inline-code">M98 PpauseCamera</span></td>
+                </tr>
+                <tr>
+                    <td><span class="inline-code">M98 PcaptureCamera</span></td>
+                    <td>Capture image</td>
+                    <td><span class="inline-code">M98 PcaptureCamera</span></td>
+                </tr>
+                <tr>
+                    <td><span class="inline-code">M98 PresumeCamera</span></td>
+                    <td>Resume camera</td>
+                    <td><span class="inline-code">M98 PresumeCamera</span></td>
+                </tr>
+                <tr>
+                    <td><span class="inline-code">M98 Pdelay(ms)</span></td>
+                    <td>Delay time</td>
+                    <td><span class="inline-code">M98 Pdelay(2000)</span></td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="code-block">; Basic object processing example
+M98 PclearObjects objects ; Clear all objects
+M98 PcaptureCamera ; Capture image
+; Object detection happens automatically
+; Access first object properties
+#first_obj_x = #objects.0.X
+#first_obj_y = #objects.0.Y
+#first_obj_angle = #objects.0.A
+
+; Move to first object
+G01 X[#first_obj_x] Y[#first_obj_y] W[#first_obj_angle]
+G01 Z-150
+M03 ; Turn on gripper
+G04 P1000
+G01 Z-50
+
+; Delete processed object
+M98 PdeleteFirstObject</div>
+
+        <h2 id="examples">10. 🎯 Practical Examples</h2>
+
+        <h3>10.1. Basic Pick & Place Program</h3>
         <div class="example">
             <div class="code-block">; Simple Pick & Place program
 G28 ; Home
@@ -732,7 +1217,59 @@ G01 Z-50
 G28 ; Home</div>
         </div>
 
-        <h3>7.2. Loop with Condition</h3>
+        <h3>10.2. Advanced Control Flow Example</h3>
+        <div class="example">
+            <h4>Using FOR loops with IF conditions:</h4>
+            <div class="code-block">; Advanced control flow example
+G28 ; Home
+#operation_mode = 1
+
+; Check operation mode
+IF #operation_mode == 1 THEN
+    ; Production mode
+    FOR #i = 1 TO 10
+        ; Skip defective parts (example: parts 3, 7)
+        IF #i == 3 OR #i == 7 THEN
+            ; Skip this iteration (would use CONTINUE if implemented)
+        ELSE
+            ; Process part
+            G01 X[#i * 50] Y100 Z-50 F1000
+            G01 Z-150
+            M03 ; Pick
+            G04 P500
+            G01 Z-50
+            
+            ; Place part
+            G01 X[300 + #i * 30] Y200
+            G01 Z-150
+            M05 ; Release
+            G04 P500
+            G01 Z-50
+        ENDIF
+    ENDFOR
+ELIF #operation_mode == 2 THEN
+    ; Testing mode
+    FOR #test_counter = 1 TO 5
+        ; Test movement
+        G01 X[#test_counter * 100] Y150 Z-50 F500
+        
+        ; Check if position is valid
+        IF #test_counter * 100 > 400 THEN
+            ; Position out of bounds - would use BREAK if implemented
+        ENDIF
+        
+        G04 P1000 ; Test delay
+    ENDFOR
+ELSE
+    ; Maintenance mode
+    G28 ; Home position
+    M05 ; Ensure gripper is off
+ENDIF
+
+G28 ; Final home</div>
+        </div>
+
+        <h3>10.3. Loop with Condition</h3>
         <div class="example">
             <div class="code-block">; Loop to pick 5 objects
 #counter = 0
@@ -764,11 +1301,11 @@ N100 ; End
 G28</div>
         </div>
 
-        <h3>7.3. Using Vision and Tracking</h3>
+        <h3>10.4. Using Vision and Tracking</h3>
         <div class="example">
             <div class="code-block">; Program with vision tracking
 M98 PcaptureCamera ; Capture image
-M98 PupdateTracking(0) ; Update tracking
+; Object detection happens automatically
 
 ; Get first object in list
 #object_x = #objects.0.X
@@ -784,17 +1321,35 @@ M03
 M98 PdeleteFirstObject</div>
         </div>
 
-        <h3>7.4. Matrix Transformation</h3>
+        <h3>10.5. Using Functions</h3>
         <div class="example">
-            <div class="code-block">; Using transformation matrix
-#source_point = (100, 150)
-#transform_matrix = #project0.tracking0.calibMatrix
+            <div class="code-block">; Define a pick and place function
+FUNCTION pickAndPlace(pickX, pickY, pickZ, placeX, placeY, placeZ)
+    ; Move to pick position
+    G01 X[pickX] Y[pickY] Z-50 F1000
+    G01 Z[pickZ]
+    M03 ; Turn on gripper
+    G04 P1000 ; Wait 1 second
+    G01 Z-50
+    
+    ; Move to place position
+    G01 X[placeX] Y[placeY]
+    G01 Z[placeZ]
+    M05 ; Turn off gripper
+    G04 P500
+    G01 Z-50
+    
+    RETURN 1
+ENDFUNCTION
 
-; Apply transformation
-#target_point = #transform_matrix.Map(#source_point)
-
-; Move to transformed point
-G01 X[#target_point.X] Y[#target_point.Y]</div>
+; Use the function
+G28 ; Home
+FOR #i = 1 TO 5
+    #pick_x = 100 + #i * 30
+    #place_x = 400 + #i * 30
+    pickAndPlace(#pick_x, 200, -150, #place_x, 200, -150)
+ENDFOR
+G28</div>
         </div>
 
         <div class="warning">
@@ -811,7 +1366,7 @@ G01 X[#target_point.X] Y[#target_point.Y]</div>
         <div class="example">
             <h4>💡 Tips and Tricks:</h4>
             <ul>
-                <li>🔧 Use subprograms to reuse code</li>
+                <li>🔧 Use subprograms and functions to reuse code</li>
                 <li>📝 Add comments to make code easy to understand</li>
                 <li>🔢 Use variables to make code more flexible</li>
                 <li>⚡ Optimize by reducing unnecessary movements</li>

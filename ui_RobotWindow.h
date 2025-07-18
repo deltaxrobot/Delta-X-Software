@@ -4171,7 +4171,7 @@ public:
         saPointTool->setWidgetResizable(true);
         wPointTool = new QWidget();
         wPointTool->setObjectName(QString::fromUtf8("wPointTool"));
-        wPointTool->setGeometry(QRect(0, -1926, 572, 2600));
+        wPointTool->setGeometry(QRect(0, 0, 572, 2600));
         wPointTool->setMinimumSize(QSize(0, 2600));
         wPointTool->setStyleSheet(QString::fromUtf8("QWidget#wPointTool\n"
 "{	\n"
@@ -10726,7 +10726,7 @@ public:
         cbImageSource->setCurrentIndex(0);
         cbSendingImageMethod->setCurrentIndex(0);
         tabWidget->setCurrentIndex(0);
-        twDevices->setCurrentIndex(3);
+        twDevices->setCurrentIndex(0);
         pbPump->setDefault(false);
         pbLaser->setDefault(false);
         pbGrip->setDefault(false);
@@ -11451,11 +11451,11 @@ public:
 #endif // QT_CONFIG(statustip)
         pbContinuousBackward->setText(QString());
 #if QT_CONFIG(shortcut)
-        pbContinuousBackward->setShortcut(QCoreApplication::translate("RobotWindow", "Shift+W", nullptr));
+        pbContinuousBackward->setShortcut(QCoreApplication::translate("RobotWindow", "Down", nullptr));
 #endif // QT_CONFIG(shortcut)
         pbContinuousBackward->setProperty("Func", QVariant(QCoreApplication::translate("RobotWindow", "Jogging", nullptr)));
 #if QT_CONFIG(tooltip)
-        pbSubRoll->setToolTip(QCoreApplication::translate("RobotWindow", "Left (shift + w)", nullptr));
+        pbSubRoll->setToolTip(QCoreApplication::translate("RobotWindow", "4-axis", nullptr));
 #endif // QT_CONFIG(tooltip)
 #if QT_CONFIG(statustip)
         pbSubRoll->setStatusTip(QString());
@@ -11466,7 +11466,7 @@ public:
 #endif // QT_CONFIG(shortcut)
         pbSubRoll->setProperty("Func", QVariant(QCoreApplication::translate("RobotWindow", "Jogging", nullptr)));
 #if QT_CONFIG(tooltip)
-        pbSubYaw->setToolTip(QCoreApplication::translate("RobotWindow", "Left (shift + w)", nullptr));
+        pbSubYaw->setToolTip(QCoreApplication::translate("RobotWindow", "5-axis", nullptr));
 #endif // QT_CONFIG(tooltip)
 #if QT_CONFIG(statustip)
         pbSubYaw->setStatusTip(QString());
@@ -11495,7 +11495,7 @@ public:
 #endif // QT_CONFIG(statustip)
         pbContinuousLeft->setText(QString());
 #if QT_CONFIG(shortcut)
-        pbContinuousLeft->setShortcut(QCoreApplication::translate("RobotWindow", "Shift+A", nullptr));
+        pbContinuousLeft->setShortcut(QCoreApplication::translate("RobotWindow", "Left", nullptr));
 #endif // QT_CONFIG(shortcut)
         pbContinuousLeft->setProperty("Func", QVariant(QCoreApplication::translate("RobotWindow", "Jogging", nullptr)));
 #if QT_CONFIG(tooltip)
@@ -11523,7 +11523,7 @@ public:
         label_275->setText(QCoreApplication::translate("RobotWindow", "5-axis", nullptr));
         label_274->setText(QCoreApplication::translate("RobotWindow", "6-axis", nullptr));
 #if QT_CONFIG(tooltip)
-        pbPlusYaw->setToolTip(QCoreApplication::translate("RobotWindow", "Right (Shift +d)", nullptr));
+        pbPlusYaw->setToolTip(QCoreApplication::translate("RobotWindow", "5-axis", nullptr));
 #endif // QT_CONFIG(tooltip)
 #if QT_CONFIG(statustip)
         pbPlusYaw->setStatusTip(QString());
@@ -11534,7 +11534,7 @@ public:
 #endif // QT_CONFIG(shortcut)
         pbPlusYaw->setProperty("Func", QVariant(QCoreApplication::translate("RobotWindow", "Jogging", nullptr)));
 #if QT_CONFIG(tooltip)
-        pbSubPitch->setToolTip(QCoreApplication::translate("RobotWindow", "Left (shift + w)", nullptr));
+        pbSubPitch->setToolTip(QCoreApplication::translate("RobotWindow", "6-axis", nullptr));
 #endif // QT_CONFIG(tooltip)
 #if QT_CONFIG(statustip)
         pbSubPitch->setStatusTip(QString());
@@ -11552,7 +11552,7 @@ public:
 #endif // QT_CONFIG(statustip)
         pbContinuousRight->setText(QString());
 #if QT_CONFIG(shortcut)
-        pbContinuousRight->setShortcut(QCoreApplication::translate("RobotWindow", "Shift+D", nullptr));
+        pbContinuousRight->setShortcut(QCoreApplication::translate("RobotWindow", "Right", nullptr));
 #endif // QT_CONFIG(shortcut)
         pbContinuousRight->setProperty("Func", QVariant(QCoreApplication::translate("RobotWindow", "Jogging", nullptr)));
 #if QT_CONFIG(tooltip)
@@ -11568,7 +11568,7 @@ public:
         pbForward->setProperty("Func", QVariant(QCoreApplication::translate("RobotWindow", "Jogging", nullptr)));
         label_276->setText(QCoreApplication::translate("RobotWindow", "4-axis", nullptr));
 #if QT_CONFIG(tooltip)
-        pbPlusRoll->setToolTip(QCoreApplication::translate("RobotWindow", "Right (Shift +d)", nullptr));
+        pbPlusRoll->setToolTip(QCoreApplication::translate("RobotWindow", "4-axis", nullptr));
 #endif // QT_CONFIG(tooltip)
 #if QT_CONFIG(statustip)
         pbPlusRoll->setStatusTip(QString());
@@ -11579,7 +11579,7 @@ public:
 #endif // QT_CONFIG(shortcut)
         pbPlusRoll->setProperty("Func", QVariant(QCoreApplication::translate("RobotWindow", "Jogging", nullptr)));
 #if QT_CONFIG(tooltip)
-        pbPlusPitch->setToolTip(QCoreApplication::translate("RobotWindow", "Right (Shift +d)", nullptr));
+        pbPlusPitch->setToolTip(QCoreApplication::translate("RobotWindow", "6-axis", nullptr));
 #endif // QT_CONFIG(tooltip)
 #if QT_CONFIG(statustip)
         pbPlusPitch->setStatusTip(QString());
@@ -11608,7 +11608,7 @@ public:
 #endif // QT_CONFIG(statustip)
         pbContinuousUp->setText(QString());
 #if QT_CONFIG(shortcut)
-        pbContinuousUp->setShortcut(QCoreApplication::translate("RobotWindow", "Shift+W", nullptr));
+        pbContinuousUp->setShortcut(QCoreApplication::translate("RobotWindow", "PgUp", nullptr));
 #endif // QT_CONFIG(shortcut)
         pbContinuousUp->setProperty("Func", QVariant(QCoreApplication::translate("RobotWindow", "Jogging", nullptr)));
 #if QT_CONFIG(tooltip)
@@ -11619,7 +11619,7 @@ public:
 #endif // QT_CONFIG(statustip)
         pbContinuousDown->setText(QString());
 #if QT_CONFIG(shortcut)
-        pbContinuousDown->setShortcut(QCoreApplication::translate("RobotWindow", "Shift+W", nullptr));
+        pbContinuousDown->setShortcut(QCoreApplication::translate("RobotWindow", "PgDown", nullptr));
 #endif // QT_CONFIG(shortcut)
         pbContinuousDown->setProperty("Func", QVariant(QCoreApplication::translate("RobotWindow", "Jogging", nullptr)));
 #if QT_CONFIG(tooltip)
@@ -11696,7 +11696,7 @@ public:
 #endif // QT_CONFIG(statustip)
         pbContinuousForward->setText(QString());
 #if QT_CONFIG(shortcut)
-        pbContinuousForward->setShortcut(QCoreApplication::translate("RobotWindow", "Shift+W", nullptr));
+        pbContinuousForward->setShortcut(QCoreApplication::translate("RobotWindow", "Up", nullptr));
 #endif // QT_CONFIG(shortcut)
         pbContinuousForward->setProperty("Func", QVariant(QCoreApplication::translate("RobotWindow", "Jogging", nullptr)));
         label_33->setText(QCoreApplication::translate("RobotWindow", "  Step  ", nullptr));

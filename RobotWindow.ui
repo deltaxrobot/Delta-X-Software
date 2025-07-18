@@ -5704,7 +5704,7 @@ QFrame
                   <property name="geometry">
                    <rect>
                     <x>0</x>
-                    <y>-1926</y>
+                    <y>0</y>
                     <width>572</width>
                     <height>2600</height>
                    </rect>
@@ -10293,7 +10293,7 @@ QLabel
               <enum>QTabWidget::North</enum>
              </property>
              <property name="currentIndex">
-              <number>3</number>
+              <number>0</number>
              </property>
              <property name="elideMode">
               <enum>Qt::ElideNone</enum>
@@ -11773,7 +11773,7 @@ QToolButton[Func='Jogging']
                             </size>
                            </property>
                            <property name="shortcut">
-                            <string>Shift+W</string>
+                            <string>Down</string>
                            </property>
                            <property name="toolButtonStyle">
                             <enum>Qt::ToolButtonTextUnderIcon</enum>
@@ -11786,7 +11786,7 @@ QToolButton[Func='Jogging']
                          <item row="1" column="7">
                           <widget class="QToolButton" name="pbSubRoll">
                            <property name="toolTip">
-                            <string>Left (shift + w)</string>
+                            <string>4-axis</string>
                            </property>
                            <property name="statusTip">
                             <string/>
@@ -11814,7 +11814,7 @@ QToolButton[Func='Jogging']
                          <item row="1" column="8">
                           <widget class="QToolButton" name="pbSubYaw">
                            <property name="toolTip">
-                            <string>Left (shift + w)</string>
+                            <string>5-axis</string>
                            </property>
                            <property name="statusTip">
                             <string/>
@@ -11891,7 +11891,7 @@ QToolButton[Func='Jogging']
                             </size>
                            </property>
                            <property name="shortcut">
-                            <string>Shift+A</string>
+                            <string>Left</string>
                            </property>
                            <property name="toolButtonStyle">
                             <enum>Qt::ToolButtonTextUnderIcon</enum>
@@ -12004,7 +12004,7 @@ QToolButton[Func='Jogging']
                          <item row="3" column="8">
                           <widget class="QToolButton" name="pbPlusYaw">
                            <property name="toolTip">
-                            <string>Right (Shift +d)</string>
+                            <string>5-axis</string>
                            </property>
                            <property name="statusTip">
                             <string/>
@@ -12045,7 +12045,7 @@ QToolButton[Func='Jogging']
                          <item row="1" column="9">
                           <widget class="QToolButton" name="pbSubPitch">
                            <property name="toolTip">
-                            <string>Left (shift + w)</string>
+                            <string>6-axis</string>
                            </property>
                            <property name="statusTip">
                             <string/>
@@ -12094,7 +12094,7 @@ QToolButton[Func='Jogging']
                             </size>
                            </property>
                            <property name="shortcut">
-                            <string>Shift+D</string>
+                            <string>Right</string>
                            </property>
                            <property name="toolButtonStyle">
                             <enum>Qt::ToolButtonTextUnderIcon</enum>
@@ -12166,7 +12166,7 @@ QToolButton[Func='Jogging']
                          <item row="3" column="7">
                           <widget class="QToolButton" name="pbPlusRoll">
                            <property name="toolTip">
-                            <string>Right (Shift +d)</string>
+                            <string>4-axis</string>
                            </property>
                            <property name="statusTip">
                             <string/>
@@ -12194,7 +12194,7 @@ QToolButton[Func='Jogging']
                          <item row="3" column="9">
                           <widget class="QToolButton" name="pbPlusPitch">
                            <property name="toolTip">
-                            <string>Right (Shift +d)</string>
+                            <string>6-axis</string>
                            </property>
                            <property name="statusTip">
                             <string/>
@@ -12280,7 +12280,7 @@ QToolButton[Func='Jogging']
                             </size>
                            </property>
                            <property name="shortcut">
-                            <string>Shift+W</string>
+                            <string>PgUp</string>
                            </property>
                            <property name="toolButtonStyle">
                             <enum>Qt::ToolButtonTextUnderIcon</enum>
@@ -12323,7 +12323,7 @@ QToolButton[Func='Jogging']
                             </size>
                            </property>
                            <property name="shortcut">
-                            <string>Shift+W</string>
+                            <string>PgDown</string>
                            </property>
                            <property name="toolButtonStyle">
                             <enum>Qt::ToolButtonTextUnderIcon</enum>
@@ -12624,7 +12624,7 @@ QToolButton[Func='Jogging']
                             </size>
                            </property>
                            <property name="shortcut">
-                            <string>Shift+W</string>
+                            <string>Up</string>
                            </property>
                            <property name="toolButtonStyle">
                             <enum>Qt::ToolButtonTextUnderIcon</enum>
