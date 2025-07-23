@@ -42,7 +42,7 @@ public slots:
 	void ScaleEffectImage();
 
 private:
-	void initEnvent();
+	void initEvent();
 
     QSvgWidget svgWidget;
     QTextEdit* pteGcodeEditor;

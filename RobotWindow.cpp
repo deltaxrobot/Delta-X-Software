@@ -71,6 +71,20 @@ RobotWindow::~RobotWindow()
         GcodeScripts.at(i)->thread()->wait();
     }
 
+    // Clean up Python process
+    if (process != nullptr && process->state() == QProcess::Running) {
+        qDebug() << "Terminating Python process on application close...";
+        process->terminate();
+        
+        // Đợi process terminate, nếu không thành công thì kill
+        if (!process->waitForFinished(2000)) { // Đợi 2 giây
+            process->kill();
+            process->waitForFinished(1000); // Đợi thêm 1 giây cho kill
+        }
+        
+        qDebug() << "Python process terminated";
+    }
+
     // Clean up Point Tool Controller
     delete m_pointToolController;
 
@@ -1972,7 +1986,13 @@ void RobotWindow::LoadObjectDetectorSetting()
 
     ui->cbDetectingAlgorithm->setCurrentText(VariableManager::instance().getVar(prefix + "DetectAlgorithm", ui->cbDetectingAlgorithm->currentText()).toString());
 
-//    ui->lePythonUrl->setText(setting->value("ExternalScriptUrl", ui->lePythonUrl->text()).toString());
+    //    ui->lePythonUrl->setText(setting->value("ExternalScriptUrl", ui->lePythonUrl->text()).toString());
+    
+    // Load model path setting (for future UI field)
+    // QString savedModelPath = setting->value("ExternalScript/ModelPath", "").toString();
+    // if (!savedModelPath.isEmpty()) {
+    //     qDebug() << "Loaded model path from settings:" << savedModelPath;
+    // }
     ui->cbImageSource->setCurrentText(VariableManager::instance().getVar(prefix + "ImageSource", ui->cbImageSource->currentText()).toString());
 
 //    ui->leEdgeThreshold->setText(setting->value("EdgeThreshold", ui->leEdgeThreshold->text()).toString());
@@ -2120,6 +2140,12 @@ void RobotWindow::SaveObjectDetectorSetting(QSettings *setting)
     setting->setValue("Algorithm", ui->cbDetectingAlgorithm->currentText());
 
     setting->setValue("ExternalScriptUrl", ui->lePythonUrl->text());
+    
+    // Save model path setting
+    QString currentModelPath = getModelPath();
+    if (!currentModelPath.isEmpty()) {
+        setting->setValue("ExternalScript/ModelPath", currentModelPath);
+    }
     setting->setValue("TransmissionImageSource", ui->cbImageSource->currentText());
 
     setting->setValue("EdgeThreshold", ui->leEdgeThreshold->text());
@@ -5352,7 +5378,35 @@ void RobotWindow::TerminalTransmit()
 
 void RobotWindow::RunExternalScript()
 {
-    runPythonFile(ui->lePythonUrl->text());
+    // Kiểm tra button state để quyết định action
+    if (ui->pbRunExternalScript->isChecked()) {
+        // Button được check - start Python script
+        QString pythonPath = ui->lePythonUrl->text();
+        
+        if (pythonPath.isEmpty()) {
+            // Không có path, uncheck button
+            ui->pbRunExternalScript->setChecked(false);
+            qDebug() << "No Python script path specified";
+            return;
+        }
+        
+        runPythonFile(pythonPath);
+    } else {
+        // Button được uncheck - stop Python script
+        if (process != nullptr && process->state() == QProcess::Running) {
+            qDebug() << "Stopping Python script...";
+            
+            process->terminate();
+            
+            // Đợi process terminate, nếu không thành công thì kill
+            if (!process->waitForFinished(3000)) { // Đợi 3 giây
+                process->kill();
+                process->waitForFinished(1000); // Đợi thêm 1 giây cho kill
+            }
+            
+            qDebug() << "Python script stopped";
+        }
+    }
 }
 
 void RobotWindow::OpenExternalScriptFolder()
@@ -5827,6 +5881,44 @@ void RobotWindow::runPythonFile(QString filePath)
     QString pythonExePath = "python"; // đường dẫn tới file python
     QStringList arguments;
     arguments << filePath;
+    
+    // Trích xuất IP và port từ UI
+    QStringList ipAndPort = ui->leIP->text().split(":");
+    if (ipAndPort.size() >= 2) {
+        QString host = ipAndPort.at(0);
+        QString port = ipAndPort.at(1);
+        
+        // Thêm các tham số cho Python script
+        arguments << "-ip" << host;
+        arguments << "-port" << port;
+        
+        // Thêm image source type
+        if (ui->cbImageSource) {
+            QString imageSource = ui->cbImageSource->currentText();
+            arguments << "-type" << imageSource;
+        }
+        
+        // Thêm model path - tự động detect từ project folder hoặc setting
+        QString modelPath = getModelPath();
+        if (!modelPath.isEmpty()) {
+            arguments << "-model" << modelPath;
+        }
+        
+        // Thêm object dimensions nếu có trong UI
+        if (ui->leWRec && ui->leLRec) {
+            QString objectWidth = ui->leWRec->text();
+            QString objectHeight = ui->leLRec->text();
+            if (!objectWidth.isEmpty() && !objectHeight.isEmpty()) {
+                arguments << "-ow" << objectWidth;
+                arguments << "-oh" << objectHeight;
+            }
+        }
+        
+        // Thêm project name
+        arguments << "-project" << ProjectName;
+        
+        qDebug() << "Running Python script with arguments:" << arguments;
+    }
 
     // Kiểm tra đường dẫn tương đối hay tuyệt đối
     QFileInfo fileInfo(filePath);
@@ -5838,13 +5930,98 @@ void RobotWindow::runPythonFile(QString filePath)
     // Nếu quá trình chạy file python đã tồn tại thì tắt nó
     if (process != nullptr && process->state() == QProcess::Running) {
         process->terminate();
-        process->waitForFinished();
+        
+        // Đợi process terminate, nếu không thành công thì kill
+        if (!process->waitForFinished(3000)) { // Đợi 3 giây
+            process->kill();
+            process->waitForFinished(1000); // Đợi thêm 1 giây cho kill
+        }
+        
+        // Cleanup process cũ
+        process->deleteLater();
+        process = nullptr;
+    }
+
+    // Cleanup process cũ nếu nó đã finished
+    if (process != nullptr && process->state() == QProcess::NotRunning) {
+        process->deleteLater();
+        process = nullptr;
     }
 
     // Tạo quá trình mới để chạy file python
-    process = new QProcess();
+    process = new QProcess(this); // Set parent để tự động cleanup
+    
+    // Connect signals để theo dõi process state
+    connect(process, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
+            [=](int exitCode, QProcess::ExitStatus exitStatus) {
+                qDebug() << "Python script finished with exit code:" << exitCode;
+                
+                // Update button state if needed
+                if (ui->pbRunExternalScript->isChecked()) {
+                    ui->pbRunExternalScript->setChecked(false);
+                }
+            });
+    
+    connect(process, QOverload<QProcess::ProcessError>::of(&QProcess::errorOccurred),
+            [=](QProcess::ProcessError error) {
+                qDebug() << "Python process error:" << error;
+                
+                // Update button state
+                if (ui->pbRunExternalScript->isChecked()) {
+                    ui->pbRunExternalScript->setChecked(false);
+                }
+            });
+    
     process->start(pythonExePath, arguments);
-    process->waitForStarted();
+    
+    // Kiểm tra xem process có start thành công không
+    if (!process->waitForStarted(5000)) { // Đợi 5 giây
+        qDebug() << "Failed to start Python script:" << process->errorString();
+        
+        // Update button state
+        if (ui->pbRunExternalScript->isChecked()) {
+            ui->pbRunExternalScript->setChecked(false);
+        }
+        
+        process->deleteLater();
+        process = nullptr;
+    } else {
+        qDebug() << "Python script started successfully";
+    }
+}
+
+QString RobotWindow::getModelPath()
+{
+    // 1. Kiểm tra từ setting trước
+    QSettings settings;
+    QString savedModelPath = settings.value("ExternalScript/ModelPath", "").toString();
+    if (!savedModelPath.isEmpty() && QFile::exists(savedModelPath)) {
+        return savedModelPath;
+    }
+    
+    // 2. Tự động detect từ project folder
+    QStringList possiblePaths = {
+        "models/best.pt",           // Relative to app directory
+        "models/yolov8n.pt",        // Common YOLO model
+        "models/model.pt",          // Generic model name
+        "script-example/best.pt",   // In script example folder
+        "../models/best.pt",        // Parent directory
+        "./best.pt"                 // Current directory
+    };
+    
+    QString appDirPath = QCoreApplication::applicationDirPath();
+    
+    for (const QString& relativePath : possiblePaths) {
+        QString fullPath = QDir(appDirPath).absoluteFilePath(relativePath);
+        if (QFile::exists(fullPath)) {
+            qDebug() << "Found model at:" << fullPath;
+            return fullPath;
+        }
+    }
+    
+    // 3. Fallback - return empty hoặc default path
+    qDebug() << "No model file found, using default path";
+    return "models/best.pt"; // Default fallback
 }
 
 void RobotWindow::OpenLoadingPopup()

@@ -21,6 +21,11 @@
 
 #include <QDir>
 #include <QCoreApplication>
+#include <cmath>
+
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
 
 #define ZOOM_IN_ICON		"icon/Zoom In_16px.png"
 #define ZOOM_OUT_ICON		"icon/Zoom Out_16px.png"

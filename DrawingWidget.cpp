@@ -135,7 +135,7 @@ void DrawingWidget::DrawLineFromStack()
         QLine line;
 
 
-        line.setP1(QPoint((l.x1() + xOffset) * ratio, (l.y1()) + yOffset) * ratio);
+        line.setP1(QPoint((l.x1() + xOffset) * ratio, (l.y1() + yOffset) * ratio));
         line.setP2(QPoint((l.x2() + xOffset) * ratio, (l.y2() + yOffset) * ratio));
 
 
@@ -173,6 +173,11 @@ void DrawingWidget::AddRectangle(QRect rec)
 void DrawingWidget::ClearShape()
 {
 	lines.clear();
+	rectangles.clear();
+	circles.clear();
+	arcs.clear();
+	Vectors.clear();
+	update(); // Trigger repaint to clear the display
 }
 
 void DrawingWidget::ClearImage()
@@ -231,22 +236,176 @@ void DrawingWidget::SelectCursor()
 
 void DrawingWidget::mousePressEvent(QMouseEvent * event)
 {
-
+    if (event->button() == Qt::LeftButton) {
+        switch (tool) {
+            case LINE:
+                // Start drawing line
+                if (lines.isEmpty() || lines.last().p2() != QPoint(-1, -1)) {
+                    QLine newLine;
+                    newLine.setP1(event->pos());
+                    newLine.setP2(QPoint(-1, -1)); // Temporary end point
+                    lines.append(newLine);
+                }
+                break;
+                
+            case RECTANGLE:
+                // Start drawing rectangle
+                if (rectangles.isEmpty() || rectangles.last().width() > 0) {
+                    QRect newRect;
+                    newRect.setTopLeft(event->pos());
+                    newRect.setBottomRight(event->pos());
+                    rectangles.append(newRect);
+                }
+                break;
+                
+            case CIRCLE:
+                // Start drawing circle
+                if (circles.isEmpty() || circles.last().z() > 0) {
+                    QVector3D newCircle;
+                    newCircle.setX(event->pos().x());
+                    newCircle.setY(event->pos().y());
+                    newCircle.setZ(0); // Radius will be set in mouse move
+                    circles.append(newCircle);
+                }
+                break;
+                
+            default:
+                break;
+        }
+    }
 }
 
 void DrawingWidget::mouseMoveEvent(QMouseEvent * event)
 {
-
+    switch (tool) {
+        case LINE:
+            // Update current line end point
+            if (!lines.isEmpty() && lines.last().p2() == QPoint(-1, -1)) {
+                lines.last().setP2(event->pos());
+                update(); // Trigger repaint
+            }
+            break;
+            
+        case RECTANGLE:
+            // Update current rectangle
+            if (!rectangles.isEmpty() && rectangles.last().width() == 0) {
+                rectangles.last().setBottomRight(event->pos());
+                update(); // Trigger repaint
+            }
+            break;
+            
+        case CIRCLE:
+            // Update current circle radius
+            if (!circles.isEmpty() && circles.last().z() == 0) {
+                QVector3D& circle = circles.last();
+                float radius = sqrt(pow(event->pos().x() - circle.x(), 2) + 
+                                  pow(event->pos().y() - circle.y(), 2));
+                circle.setZ(radius);
+                update(); // Trigger repaint
+            }
+            break;
+            
+        default:
+            break;
+    }
 }
 
 void DrawingWidget::mouseReleaseEvent(QMouseEvent * event)
 {
-
+    if (event->button() == Qt::LeftButton) {
+        switch (tool) {
+            case LINE:
+                // Finalize current line
+                if (!lines.isEmpty() && lines.last().p2() == QPoint(-1, -1)) {
+                    lines.last().setP2(event->pos());
+                    
+                    // Add line to vectors for G-code export
+                    QVector<QPointF> linePoints;
+                    linePoints.append(lines.last().p1());
+                    linePoints.append(lines.last().p2());
+                    Vectors.append(linePoints);
+                }
+                break;
+                
+            case RECTANGLE:
+                // Finalize current rectangle
+                if (!rectangles.isEmpty()) {
+                    QRect& rect = rectangles.last();
+                    rect.setBottomRight(event->pos());
+                    
+                    // Add rectangle as connected lines to vectors
+                    QVector<QPointF> rectPoints;
+                    rectPoints.append(rect.topLeft());
+                    rectPoints.append(rect.topRight());
+                    rectPoints.append(rect.bottomRight());
+                    rectPoints.append(rect.bottomLeft());
+                    rectPoints.append(rect.topLeft()); // Close the rectangle
+                    Vectors.append(rectPoints);
+                }
+                break;
+                
+            case CIRCLE:
+                // Finalize current circle
+                if (!circles.isEmpty()) {
+                    QVector3D& circle = circles.last();
+                    float radius = sqrt(pow(event->pos().x() - circle.x(), 2) + 
+                                      pow(event->pos().y() - circle.y(), 2));
+                    circle.setZ(radius);
+                    
+                    // Add circle as connected points to vectors
+                    QVector<QPointF> circlePoints;
+                    int segments = 36; // 36 segments for smooth circle
+                    for (int i = 0; i <= segments; i++) {
+                        float angle = (i * 2 * M_PI) / segments;
+                        float x = circle.x() + radius * cos(angle);
+                        float y = circle.y() + radius * sin(angle);
+                        circlePoints.append(QPointF(x, y));
+                    }
+                    Vectors.append(circlePoints);
+                }
+                break;
+                
+            default:
+                break;
+        }
+        
+        update(); // Final repaint
+    }
 }
 
 void DrawingWidget::paintEvent(QPaintEvent * event)
 {
 	QLabel::paintEvent(event);
+	
+	// Draw all shapes on top of the background
+	QPainter painter(this);
+	painter.setRenderHint(QPainter::Antialiasing);
+	
+	// Set pen for drawing
+	QPen pen(Qt::red, 2);
+	painter.setPen(pen);
+	
+	// Draw lines
+	foreach(const QLine& line, lines) {
+		if (line.p2() != QPoint(-1, -1)) { // Only draw complete lines
+			painter.drawLine(line);
+		}
+	}
+	
+	// Draw rectangles
+	foreach(const QRect& rect, rectangles) {
+		if (rect.width() > 0 && rect.height() > 0) { // Only draw valid rectangles
+			painter.drawRect(rect);
+		}
+	}
+	
+	// Draw circles
+	foreach(const QVector3D& circle, circles) {
+		if (circle.z() > 0) { // Only draw circles with valid radius
+			int radius = (int)circle.z();
+			painter.drawEllipse(QPoint((int)circle.x(), (int)circle.y()), radius, radius);
+		}
+	}
 }
 
 void DrawingWidget::changeToolIconInArea(QString filePath)

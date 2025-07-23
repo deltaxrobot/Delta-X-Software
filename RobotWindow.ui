@@ -428,7 +428,7 @@ QLabel
           </size>
          </property>
          <property name="text">
-          <string>127.0.0.1:8484</string>
+          <string>127.0.0.1:8844</string>
          </property>
          <property name="frame">
           <bool>false</bool>
@@ -706,7 +706,7 @@ QToolBox QScrollArea&gt;QWidget&gt;QWidget
               <enum>QTabWidget::Rounded</enum>
              </property>
              <property name="currentIndex">
-              <number>2</number>
+              <number>3</number>
              </property>
              <property name="usesScrollButtons">
               <bool>true</bool>
@@ -1606,8 +1606,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
                               <rect>
                                <x>0</x>
                                <y>0</y>
-                               <width>408</width>
-                               <height>135</height>
+                               <width>312</width>
+                               <height>145</height>
                               </rect>
                              </property>
                              <property name="styleSheet">
@@ -1784,7 +1784,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
                    <rect>
                     <x>0</x>
                     <y>0</y>
-                    <width>590</width>
+                    <width>532</width>
                     <height>2900</height>
                    </rect>
                   </property>
@@ -5704,8 +5704,8 @@ QFrame
                   <property name="geometry">
                    <rect>
                     <x>0</x>
-                    <y>-2084</y>
-                    <width>572</width>
+                    <y>0</y>
+                    <width>644</width>
                     <height>3000</height>
                    </rect>
                   </property>
@@ -8359,8 +8359,8 @@ QHeaderView::section {
                   <property name="geometry">
                    <rect>
                     <x>0</x>
-                    <y>0</y>
-                    <width>572</width>
+                    <y>-455</y>
+                    <width>510</width>
                     <height>1600</height>
                    </rect>
                   </property>
@@ -10334,7 +10334,7 @@ QLabel
                    <rect>
                     <x>0</x>
                     <y>0</y>
-                    <width>554</width>
+                    <width>625</width>
                     <height>2000</height>
                    </rect>
                   </property>

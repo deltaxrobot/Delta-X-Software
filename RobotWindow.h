@@ -482,6 +482,7 @@ private:
     void pastePointValues(QLineEdit* leX, QLineEdit* leY, QLineEdit* leZ);
     void pastePointValues(QLineEdit* lePoint);
     void runPythonFile(QString filePath);
+    QString getModelPath();
 
     // ========== PLUGIN PRIVATE METHODS ==========
     QStringList getPlugins(QString path);

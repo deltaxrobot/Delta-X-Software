@@ -22,7 +22,7 @@ void DrawingExporter::SetDrawingParameterPointer(QLabel *imageForDrawing, QLabel
 
 	lbImageForDrawing->setScaledContents(true);
 
-    initEnvent();
+    initEvent();
 }
 
 void DrawingExporter::SetGcodeExportParameterPointer(QLineEdit *safeZHeight, QLineEdit *travelSpeed, QLineEdit *drawingSpeed, QLineEdit *drawingAcceleration)
@@ -581,7 +581,7 @@ void DrawingExporter::ScaleEffectImage()
 
 }
 
-void DrawingExporter::initEnvent()
+void DrawingExporter::initEvent()
 {
     connect(hsDrawingThreshold, SIGNAL(sliderReleased()), this, SLOT(ApplyConversion()));
 	connect(leWidthScale, SIGNAL(textChanged(const QString &)), this, SLOT(ApplyConversion()));
