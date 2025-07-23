@@ -75,20 +75,72 @@ void SocketConnectionManager::newWebClientConnected()
 {
     QTcpSocket *socket = WebServer->nextPendingConnection();
     connect(socket, &QTcpSocket::readyRead, [this, socket]() {
-        QFile file(indexPath);
-        if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-//            qDebug() << "Could not open HTML file";
+        QByteArray requestData = socket->readAll();
+        QString request = QString::fromUtf8(requestData);
+        
+        qDebug() << "Web client request:" << request;
+        
+        // Check if it's a POST request
+        if (request.startsWith("POST")) {
+            // Extract the body from POST request
+            int bodyStart = request.indexOf("\r\n\r\n");
+            if (bodyStart != -1) {
+                QString body = request.mid(bodyStart + 4);
+                qDebug() << "POST body:" << body;
+                
+                // Process the POST data like a regular TCP client
+                processWebPostData(body);
+                
+                // Send HTTP response
+                QString httpResponse = "HTTP/1.1 200 OK\r\n";
+                httpResponse += "Content-Type: text/plain\r\n";
+                httpResponse += "Access-Control-Allow-Origin: *\r\n";
+                httpResponse += "Access-Control-Allow-Methods: POST, GET, OPTIONS\r\n";
+                httpResponse += "Access-Control-Allow-Headers: Content-Type\r\n";
+                httpResponse += "Content-Length: 2\r\n";
+                httpResponse += "\r\n";
+                httpResponse += "OK";
+                
+                socket->write(httpResponse.toUtf8());
+                socket->flush();
+                socket->waitForBytesWritten();
+            }
             socket->disconnectFromHost();
-            return;
         }
+        // Handle CORS preflight request
+        else if (request.startsWith("OPTIONS")) {
+            QString httpResponse = "HTTP/1.1 200 OK\r\n";
+            httpResponse += "Access-Control-Allow-Origin: *\r\n";
+            httpResponse += "Access-Control-Allow-Methods: POST, GET, OPTIONS\r\n";
+            httpResponse += "Access-Control-Allow-Headers: Content-Type\r\n";
+            httpResponse += "Content-Length: 0\r\n";
+            httpResponse += "\r\n";
+            
+            socket->write(httpResponse.toUtf8());
+            socket->flush();
+            socket->waitForBytesWritten();
+            socket->disconnectFromHost();
+        }
+        else {
+            // Handle GET request (serve HTML file)
+            QFile file(indexPath);
+            if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+                qDebug() << "Could not open HTML file:" << indexPath;
+                socket->disconnectFromHost();
+                return;
+            }
 
-        QTextStream in(&file);
-        QString response = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n" + in.readAll();
-        response.replace("127.0.0.1", hostAddress);
-        socket->write(response.toUtf8());
-        socket->flush();
-        socket->waitForBytesWritten();
-        socket->disconnectFromHost();
+            QTextStream in(&file);
+            QString htmlContent = in.readAll();
+            file.close();
+            
+            QString response = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n" + htmlContent;
+            response.replace("127.0.0.1", hostAddress);
+            socket->write(response.toUtf8());
+            socket->flush();
+            socket->waitForBytesWritten();
+            socket->disconnectFromHost();
+        }
     });
 }
 
@@ -195,6 +247,67 @@ void SocketConnectionManager::sendImageToImageClients(const QImage &image) {
             client->write("Image\n" + data);
             client->flush();
         }
+    }
+}
+
+void SocketConnectionManager::processWebPostData(const QString& data)
+{
+    qDebug() << "Processing web POST data:" << data;
+    
+    // Process the POST data using the same logic as readFromClient
+    // Handling variable assignment
+    if (data.contains('=')) {
+        QStringList parts = data.split('=');
+        if (parts.size() == 2) {
+            QString varName = parts[0].trimmed();
+            QString value = parts[1].trimmed();
+
+            if (varName.contains("Objects"))
+            {
+                QList<QStringList> objects;
+                QStringList objectsString = value.split(";");
+                for (int i = 0; i < objectsString.size(); i++)
+                {
+                    QStringList objectString = objectsString[i].split(",");
+                    objects.append(objectString);
+                }
+                emit objectUpdated(varName, objects);
+            }
+            else if (varName.contains("Blobs") || varName.contains("Object"))
+            {
+                QStringList blobs = value.split(";");
+                emit blobUpdated(blobs);
+            }
+            else if (varName.contains("GScript"))
+            {
+                emit gcodeReceived(value);
+            }
+            else if (varName.contains("Event"))
+            {
+                // value = "type,name,action
+                QStringList values = value.split(",");
+                qDebug() << "Emitting eventReceived:" << values;
+                emit eventReceived(values.at(0).trimmed(), values.at(1).trimmed(), values.at(2).trimmed());
+            }
+            else
+            {
+                VariableManager::instance().UpdateVarToModel(varName, value);
+                emit variableChanged(varName, value);
+            }
+        }
+    }
+    else if (data.length() >= 2)
+    {
+        if (data.at(0) == '#')
+        {
+            QString value = VariableManager::instance().getVar(QString(data)).toString();
+            // For web POST, we don't send response back as it's HTTP request
+            qDebug() << "Variable query result:" << value;
+        }
+    }
+    else if (!data.isEmpty()) {
+        // Call a function by its name using Qt's meta-object system
+        QMetaObject::invokeMethod(this, data.trimmed().toStdString().c_str());
     }
 }
 

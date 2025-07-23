@@ -34,6 +34,11 @@ RobotWindow::RobotWindow(QWidget *parent, QString projectName) :
 
     LoadSettings();
     InitDefaultValue();
+    
+    // Initialize Cloud Point Mapping UI after all other objects are ready
+    if (m_pointToolController) {
+        m_pointToolController->initializeUI(ui->tPointTool);
+    }
 }
 
 RobotWindow::~RobotWindow()
@@ -388,6 +393,21 @@ void RobotWindow::InitSocketConnection()
     {
         ui->leIP->setFrame(false);
         ui->leIP->setReadOnly(true);
+    });
+
+    // Connect Web Control button
+    connect(ui->pbOpenWebControl, &QPushButton::clicked, [=]()
+    {
+        if (ConnectionManager && ConnectionManager->WebServer->isListening())
+        {
+            QString webUrl = QString("http://%1:5000").arg(ConnectionManager->hostAddress);
+            QDesktopServices::openUrl(QUrl(webUrl));
+            SoftwareLog("Opening web control at: " + webUrl);
+        }
+        else
+        {
+            QMessageBox::warning(this, "Web Control", "Web server is not running. Please start the server first.");
+        }
     });
 }
 
@@ -2230,7 +2250,10 @@ void RobotWindow::ActivateButtonByName(const QString &buttonName)
 
 void RobotWindow::ActiveWidgetByName(QString type, QString name, QString action)
 {
+    SoftwareLog(QString("ActiveWidgetByName called: %1 %2 %3").arg(type).arg(name).arg(action));
     qDebug() << "ActiveWidgetByName called:" << type << name << action;
+    
+    bool buttonFound = false;
     
     if (type == "QPushButton")
     {
@@ -2238,11 +2261,22 @@ void RobotWindow::ActiveWidgetByName(QString type, QString name, QString action)
         if (button && action == "click")
         {
             qDebug() << "Clicking QPushButton:" << name;
+            SoftwareLog(QString("Successfully clicked QPushButton: %1").arg(name));
             button->click();
+            buttonFound = true;
         }
         else
         {
             qDebug() << "QPushButton not found or invalid action:" << name << action;
+            // Try as QToolButton fallback
+            QToolButton *toolButton = findChild<QToolButton*>(name);
+            if (toolButton && action == "click")
+            {
+                qDebug() << "Fallback: Clicking as QToolButton:" << name;
+                SoftwareLog(QString("Fallback: Successfully clicked QToolButton: %1").arg(name));
+                toolButton->click();
+                buttonFound = true;
+            }
         }
     }
     else if (type == "QToolButton")
@@ -2251,16 +2285,29 @@ void RobotWindow::ActiveWidgetByName(QString type, QString name, QString action)
         if (button && action == "click")
         {
             qDebug() << "Clicking QToolButton:" << name;
+            SoftwareLog(QString("Successfully clicked QToolButton: %1").arg(name));
             button->click();
+            buttonFound = true;
         }
         else if (button && action == "toggle")
         {
             qDebug() << "Toggling QToolButton:" << name;
+            SoftwareLog(QString("Successfully toggled QToolButton: %1").arg(name));
             button->setChecked(!button->isChecked());
+            buttonFound = true;
         }
         else
         {
             qDebug() << "QToolButton not found or invalid action:" << name << action;
+            // Try as QPushButton fallback
+            QPushButton *pushButton = findChild<QPushButton*>(name);
+            if (pushButton && action == "click")
+            {
+                qDebug() << "Fallback: Clicking as QPushButton:" << name;
+                SoftwareLog(QString("Fallback: Successfully clicked QPushButton: %1").arg(name));
+                pushButton->click();
+                buttonFound = true;
+            }
         }
     }
     else if (type == "QRadioButton")
@@ -2269,12 +2316,16 @@ void RobotWindow::ActiveWidgetByName(QString type, QString name, QString action)
         if (button && action == "toggle")
         {
             qDebug() << "Toggling QRadioButton:" << name;
+            SoftwareLog(QString("Successfully toggled QRadioButton: %1").arg(name));
             button->toggle();
+            buttonFound = true;
         }
         else if (button && action == "check")
         {
             qDebug() << "Checking QRadioButton:" << name;
+            SoftwareLog(QString("Successfully checked QRadioButton: %1").arg(name));
             button->setChecked(true);
+            buttonFound = true;
         }
         else
         {
@@ -2415,6 +2466,13 @@ void RobotWindow::ActiveWidgetByName(QString type, QString name, QString action)
     else
     {
         qDebug() << "Unsupported widget type:" << type;
+        SoftwareLog(QString("Unsupported widget type: %1 %2 %3").arg(type).arg(name).arg(action));
+    }
+    
+    // Log if no button was found
+    if (!buttonFound && (type == "QPushButton" || type == "QToolButton"))
+    {
+        SoftwareLog(QString("ERROR: Button not found: %1 %2 %3").arg(type).arg(name).arg(action));
     }
 }
 
@@ -5978,16 +6036,20 @@ void RobotWindow::ProcessUIEvent()
     int width = 0;
     int height = 0;
     
-    if (!CameraInstance->CaptureImage.empty())
+    // Add null check for CameraInstance to prevent memory access violation
+    if (CameraInstance != nullptr)
     {
-        width = CameraInstance->CaptureImage.cols;
-        height = CameraInstance->CaptureImage.rows;
-    }
-    else
-    {
-        // Fallback to stored origin size if CaptureImage is empty
-        width = CameraInstance->OriginWidth;
-        height = CameraInstance->OriginHeight;
+        if (!CameraInstance->CaptureImage.empty())
+        {
+            width = CameraInstance->CaptureImage.cols;
+            height = CameraInstance->CaptureImage.rows;
+        }
+        else
+        {
+            // Fallback to stored origin size if CaptureImage is empty
+            width = CameraInstance->OriginWidth;
+            height = CameraInstance->OriginHeight;
+        }
     }
     
     float ratio = ui->gvImageViewer->GetRatio() * 100;

@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Robot Jogging Control</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: #ecf0f1;
+            min-height: 100vh;
+            padding: 10px;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 0 10px;
+        }
+
+        .header {
+            text-align: center;
+            padding: 15px 0;
+            background: rgba(52, 73, 94, 0.8);
+            border-radius: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 300;
+            color: #3498db;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .section {
+            background: rgba(44, 62, 80, 0.9);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(52, 152, 219, 0.3);
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 500;
+            color: #3498db;
+            margin-bottom: 15px;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Jogging Controls */
+        .jogging-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-rows: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .jog-btn {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 18px;
+            font-weight: 600;
+            height: 60px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .jog-btn:active {
+            transform: scale(0.95);
+            box-shadow: 0 2px 8px rgba(52, 152, 219, 0.5);
+        }
+
+        .jog-btn:hover {
+            background: linear-gradient(135deg, #2980b9, #3498db);
+            box-shadow: 0 6px 16px rgba(52, 152, 219, 0.4);
+        }
+
+        .jog-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: all 0.3s ease;
+        }
+
+        .jog-btn:active::before {
+            width: 120px;
+            height: 120px;
+        }
+
+        .axis-labels {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 10px;
+            font-size: 14px;
+            color: #bdc3c7;
+        }
+
+        .axis-label {
+            background: rgba(52, 152, 219, 0.2);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+
+        /* Step Controls */
+        .step-controls {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .step-label {
+            font-weight: 600;
+            color: #3498db;
+            font-size: 16px;
+        }
+
+        .step-buttons {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .step-btn {
+            background: rgba(52, 152, 219, 0.2);
+            border: 2px solid #3498db;
+            color: #3498db;
+            padding: 8px 16px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            min-width: 50px;
+        }
+
+        .step-btn.active {
+            background: #3498db;
+            color: white;
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.4);
+        }
+
+        .step-btn:hover {
+            background: rgba(52, 152, 219, 0.3);
+        }
+
+        /* Motion Parameters */
+        .motion-params {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .param-group {
+            background: rgba(52, 73, 94, 0.6);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid rgba(52, 152, 219, 0.2);
+        }
+
+        .param-label {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #ecf0f1;
+        }
+
+        .param-unit {
+            font-size: 12px;
+            color: #95a5a6;
+        }
+
+        .param-input {
+            width: 100%;
+            background: rgba(44, 62, 80, 0.8);
+            border: 2px solid rgba(52, 152, 219, 0.3);
+            border-radius: 8px;
+            color: #ecf0f1;
+            padding: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+
+        .param-input:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 10px rgba(52, 152, 219, 0.3);
+        }
+
+        /* Output Section */
+        .output-section {
+            margin-top: 10px;
+        }
+
+        .output-group {
+            margin-bottom: 20px;
+        }
+
+        .output-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #3498db;
+            margin-bottom: 12px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid rgba(52, 152, 219, 0.3);
+        }
+
+        .output-controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            gap: 10px;
+        }
+
+        .output-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: rgba(52, 73, 94, 0.6);
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid rgba(52, 152, 219, 0.2);
+        }
+
+        .output-label {
+            font-size: 12px;
+            color: #bdc3c7;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 24px;
+            background: #34495e;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(52, 152, 219, 0.3);
+        }
+
+        .toggle-switch.active {
+            background: #3498db;
+            border-color: #3498db;
+        }
+
+        .toggle-switch::before {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 16px;
+            height: 16px;
+            background: white;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .toggle-switch.active::before {
+            left: 28px;
+        }
+
+        /* Input Section */
+        .input-section {
+            margin-top: 10px;
+        }
+
+        .input-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(52, 73, 94, 0.6);
+            padding: 12px 15px;
+            border-radius: 10px;
+            margin-bottom: 8px;
+            border: 1px solid rgba(52, 152, 219, 0.2);
+        }
+
+        .input-label {
+            font-weight: 600;
+            color: #ecf0f1;
+            min-width: 60px;
+        }
+
+        .input-status {
+            font-size: 14px;
+            color: #95a5a6;
+            margin: 0 15px;
+        }
+
+        .input-value {
+            background: rgba(44, 62, 80, 0.8);
+            border: 1px solid rgba(52, 152, 219, 0.3);
+            border-radius: 6px;
+            color: #ecf0f1;
+            padding: 6px 12px;
+            font-size: 14px;
+            width: 80px;
+            text-align: center;
+        }
+
+
+
+        /* Responsive Design */
+        @media (max-width: 400px) {
+            .container {
+                padding: 0 5px;
+            }
+            
+            .section {
+                padding: 15px;
+                margin-bottom: 10px;
+            }
+            
+            .jog-btn {
+                height: 50px;
+                font-size: 16px;
+            }
+            
+            .motion-params {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Touch feedback */
+        .touch-feedback {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .touch-feedback::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.4);
+            transform: translate(-50%, -50%);
+            transition: all 0.6s ease;
+        }
+
+        .touch-feedback.touched::after {
+            width: 200px;
+            height: 200px;
+        }
+
+        /* Home Button */
+        .home-btn {
+            background: linear-gradient(135deg, #e67e22, #d35400);
+            border: none;
+            border-radius: 15px;
+            color: white;
+            font-size: 18px;
+            font-weight: 600;
+            height: 60px;
+            width: 100%;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(230, 126, 34, 0.3);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .home-btn:active {
+            transform: scale(0.95);
+            box-shadow: 0 2px 8px rgba(230, 126, 34, 0.5);
+        }
+
+        .home-btn:hover {
+            background: linear-gradient(135deg, #d35400, #e67e22);
+            box-shadow: 0 6px 16px rgba(230, 126, 34, 0.4);
+        }
+
+        .home-icon {
+            font-size: 24px;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+        }
+
+        .home-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: all 0.3s ease;
+        }
+
+        .home-btn:active::before {
+            width: 120px;
+            height: 120px;
+        }
+    </style>
+</head>
+<body>
+
+    
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>Jogging</h1>
+        </div>
+
+        <!-- Jogging Controls -->
+        <div class="section">
+            <div class="jogging-grid">
+                <!-- Row 1 -->
+                <div></div>
+                <button class="jog-btn touch-feedback" data-axis="Y" data-dir="+" 
+                        onclick="startJog('Y+')">Y+</button>
+                <div></div>
+                
+                <!-- Row 2 -->
+                <button class="jog-btn touch-feedback" data-axis="X" data-dir="-" 
+                        onclick="startJog('X-')">X-</button>
+                <div></div>
+                <button class="jog-btn touch-feedback" data-axis="X" data-dir="+" 
+                        onclick="startJog('X+')">X+</button>
+                
+                <!-- Row 3 -->
+                <div></div>
+                <button class="jog-btn touch-feedback" data-axis="Y" data-dir="-" 
+                        onclick="startJog('Y-')">Y-</button>
+                <div></div>
+            </div>
+
+            <!-- Z-axis Controls -->
+            <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                <button class="jog-btn touch-feedback" style="flex: 1;" 
+                        onclick="startJog('Z+')">Z+</button>
+                <button class="jog-btn touch-feedback" style="flex: 1;" 
+                        onclick="startJog('Z-')">Z-</button>
+            </div>
+
+            <!-- Additional Axis Controls -->
+            <div style="display: flex; gap: 8px; margin-bottom: 15px;">
+                <button class="jog-btn touch-feedback" style="flex: 1; height: 45px; font-size: 14px;" 
+                        onclick="startJog('W+')">W+</button>
+                <button class="jog-btn touch-feedback" style="flex: 1; height: 45px; font-size: 14px;" 
+                        onclick="startJog('U+')">U+</button>
+                <button class="jog-btn touch-feedback" style="flex: 1; height: 45px; font-size: 14px;" 
+                        onclick="startJog('V+')">V+</button>
+            </div>
+            <div style="display: flex; gap: 8px; margin-bottom: 15px;">
+                <button class="jog-btn touch-feedback" style="flex: 1; height: 45px; font-size: 14px;" 
+                        onclick="startJog('W-')">W-</button>
+                <button class="jog-btn touch-feedback" style="flex: 1; height: 45px; font-size: 14px;" 
+                        onclick="startJog('U-')">U-</button>
+                <button class="jog-btn touch-feedback" style="flex: 1; height: 45px; font-size: 14px;" 
+                        onclick="startJog('V-')">V-</button>
+            </div>
+
+            <div class="axis-labels">
+                <span class="axis-label">4-axis</span>
+                <span class="axis-label">5-axis</span>
+                <span class="axis-label">6-axis</span>
+            </div>
+
+            <!-- Home Button -->
+            <div style="margin: 20px 0;">
+                <button class="home-btn touch-feedback" onclick="goHome()">                    
+                    <span>HOME</span>
+                </button>
+            </div>
+
+            <!-- Step Controls -->
+            <div class="step-controls">
+                <span class="step-label">Step</span>
+                <div class="step-buttons">
+                    <button class="step-btn" onclick="setStep(0.1, this)">0.1</button>
+                    <button class="step-btn" onclick="setStep(0.5, this)">0.5</button>
+                    <button class="step-btn active" onclick="setStep(1, this)">1</button>
+                    <button class="step-btn" onclick="setStep(5, this)">5</button>
+                    <button class="step-btn" onclick="setStep(10, this)">10</button>
+                    <button class="step-btn" onclick="setStep(50, this)">50</button>
+                    <button class="step-btn" onclick="setStep(100, this)">100</button>
+                    <span style="color: #bdc3c7; font-size: 14px; margin-left: 10px;">(mm)</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Motion Parameters -->
+        <div class="section">
+            <div class="section-title">Motion Parameters</div>
+            <div class="motion-params">
+                <div class="param-group">
+                    <div class="param-label">
+                        <span>F</span>
+                        <span class="param-unit">mm/s</span>
+                    </div>
+                    <input type="number" class="param-input" id="feedRate" value="200" min="1" max="1000">
+                </div>
+                <div class="param-group">
+                    <div class="param-label">
+                        <span>S</span>
+                        <span class="param-unit">mm/s</span>
+                    </div>
+                    <input type="number" class="param-input" id="speedRate" value="50" min="1" max="500">
+                </div>
+                <div class="param-group">
+                    <div class="param-label">
+                        <span>A</span>
+                        <span class="param-unit">mm/s²</span>
+                    </div>
+                    <input type="number" class="param-input" id="acceleration" value="1200" min="100" max="5000">
+                </div>
+                <div class="param-group">
+                    <div class="param-label">
+                        <span>J</span>
+                        <span class="param-unit">mm/s³</span>
+                    </div>
+                    <input type="number" class="param-input" id="jerk" value="300000" min="10000" max="1000000">
+                </div>
+            </div>
+        </div>
+
+        <!-- Output Section -->
+        <div class="section">
+            <div class="section-title">Output</div>
+            <div class="output-section">
+                <div class="output-group">
+                    <div class="output-title">Delta X S Output</div>
+                    <div style="margin-bottom: 15px;">
+                        <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 10px;">
+                            <span style="color: #ecf0f1; font-weight: 600;">Custom</span>
+                            <div class="output-item" style="flex-direction: row; gap: 10px;">
+                                <span class="output-label">D0</span>
+                                <div class="toggle-switch" onclick="toggleOutput('D0', this)"></div>
+                            </div>
+                            <div class="output-item" style="flex-direction: row; gap: 10px;">
+                                <span class="output-label">R0</span>
+                                <div class="toggle-switch" onclick="toggleOutput('R0', this)"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div style="color: #ecf0f1; font-weight: 600; margin-bottom: 10px;">Digital</div>
+                        <div class="output-controls">
+                            <div class="output-item">
+                                <span class="output-label">D0</span>
+                                <div class="toggle-switch" onclick="toggleOutput('D0', this)"></div>
+                            </div>
+                            <div class="output-item">
+                                <span class="output-label">D1</span>
+                                <div class="toggle-switch" onclick="toggleOutput('D1', this)"></div>
+                            </div>
+                            <div class="output-item">
+                                <span class="output-label">D2</span>
+                                <div class="toggle-switch" onclick="toggleOutput('D2', this)"></div>
+                            </div>
+                            <div class="output-item">
+                                <span class="output-label">D3</span>
+                                <div class="toggle-switch" onclick="toggleOutput('D3', this)"></div>
+                            </div>
+                            <div class="output-item">
+                                <span class="output-label">D4</span>
+                                <div class="toggle-switch" onclick="toggleOutput('D4', this)"></div>
+                            </div>
+                            <div class="output-item">
+                                <span class="output-label">D5</span>
+                                <div class="toggle-switch" onclick="toggleOutput('D5', this)"></div>
+                            </div>
+                            <div class="output-item">
+                                <span class="output-label">D6</span>
+                                <div class="toggle-switch" onclick="toggleOutput('D6', this)"></div>
+                            </div>
+                            <div class="output-item">
+                                <span class="output-label">D7</span>
+                                <div class="toggle-switch" onclick="toggleOutput('D7', this)"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Input Section -->
+        <div class="section">
+            <div class="section-title">Input</div>
+            <div class="input-section">
+                <div style="color: #3498db; font-weight: 600; margin-bottom: 12px; font-size: 16px;">Delta X S Input</div>
+                <div class="input-item">
+                    <span class="input-label">read I0</span>
+                    <span class="input-status">null</span>
+                    <div class="toggle-switch" onclick="toggleInput('I0', this)"></div>
+                    <span style="color: #bdc3c7; font-size: 12px; margin-left: 10px;">wait toggle</span>
+                </div>
+                <div class="input-item">
+                    <span class="input-label">read I1</span>
+                    <span class="input-status">null</span>
+                    <div class="toggle-switch" onclick="toggleInput('I1', this)"></div>
+                    <span style="color: #bdc3c7; font-size: 12px; margin-left: 10px;">wait toggle</span>
+                </div>
+                <div class="input-item">
+                    <span class="input-label">read I2</span>
+                    <span class="input-status">null</span>
+                    <div class="toggle-switch" onclick="toggleInput('I2', this)"></div>
+                    <span style="color: #bdc3c7; font-size: 12px; margin-left: 10px;">wait toggle</span>
+                </div>
+                <div class="input-item">
+                    <span class="input-label">read I3</span>
+                    <span class="input-status">null</span>
+                    <div class="toggle-switch" onclick="toggleInput('I3', this)"></div>
+                    <span style="color: #bdc3c7; font-size: 12px; margin-left: 10px;">wait toggle</span>
+                </div>
+                <div class="input-item">
+                    <span class="input-label">read I4</span>
+                    <span class="input-status">null</span>
+                    <div class="toggle-switch" onclick="toggleInput('I4', this)"></div>
+                    <span style="color: #bdc3c7; font-size: 12px; margin-left: 10px;">wait toggle</span>
+                </div>
+                <div class="input-item">
+                    <span class="input-label">read A0</span>
+                    <span class="input-status">null</span>
+                    <input type="text" class="input-value" placeholder="0 ms" readonly>
+                </div>
+                <div class="input-item">
+                    <span class="input-label">read A1</span>
+                    <span class="input-status">null</span>
+                    <input type="text" class="input-value" placeholder="0 ms" readonly>
+                </div>
+                <div class="input-item">
+                    <span class="input-label">read A2</span>
+                    <span class="input-status">null</span>
+                    <input type="text" class="input-value" placeholder="0 ms" readonly>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script>
+                 /*
+          * JOGGING CONTROL VIA SOFTWARE BUTTONS
+          * 
+          * This interface sends single button click events to the Delta-X software
+          * instead of sending G-code directly. Each click triggers one step movement.
+          * 
+          * Button mappings:
+          * - X+/X- : pbRight/pbLeft
+          * - Y+/Y- : pbForward/pbBackward
+          * - Z+/Z- : pbUp/pbDown
+          * - W+/W- : pbPlusRoll/pbSubRoll
+          * - U+/U- : pbPlusYaw/pbSubYaw
+          * - V+/V- : pbPlusPitch/pbSubPitch
+          * - HOME : pbHome
+          * 
+          * Step control maps to radio buttons rb01, rb05, rb10, rb50, rb100, rb500, rb1000
+          * Motion parameters map to leVelocity, leStartSpeed, leAccel, leJerk
+          * Output control maps to checkbox cbD0-cbD7, cbDx, cbRx
+          * 
+          * Each button click = one step movement in the selected direction
+          */
+        
+        // Server configuration
+        const SERVER_HOST = window.location.hostname || '127.0.0.1';
+        const SERVER_PORT = '5000';  // Use WebServer port instead of TCP Server port
+        
+        let currentStep = 1;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Prevent context menu on long press
+            document.addEventListener('contextmenu', function(e) {
+                e.preventDefault();
+            });
+            
+            // Add touch feedback
+            document.querySelectorAll('.touch-feedback').forEach(element => {
+                element.addEventListener('touchstart', function() {
+                    this.classList.add('touched');
+                    setTimeout(() => {
+                        this.classList.remove('touched');
+                    }, 600);
+                });
+            });
+        });
+
+        // Generic function to send data to server
+        function sendToServer(data) {
+            return new Promise((resolve, reject) => {
+                const xhr = new XMLHttpRequest();
+                xhr.open("POST", `http://${SERVER_HOST}:${SERVER_PORT}`, true);
+  xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                xhr.timeout = 3000;
+                
+  xhr.onreadystatechange = function() {
+                    if (this.readyState == 4) {
+                        if (this.status == 200) {
+                            console.log('Success:', this.responseText);
+                            resolve(this.responseText);
+                        } else {
+                            console.error('Error:', this.status);
+                            reject(new Error(`HTTP ${this.status}`));
+                        }
+                    }
+                };
+                
+                xhr.onerror = function() {
+                    reject(new Error('Network error'));
+                };
+                
+                xhr.ontimeout = function() {
+                    reject(new Error('Timeout'));
+                };
+                
+                xhr.send(data);
+                console.log('Sent:', data);
+            });
+        }
+
+
+
+        // Jogging functions
+        function startJog(direction) {
+            // Map direction to button names
+            const buttonMap = {
+                'X+': 'pbRight',
+                'X-': 'pbLeft', 
+                'Y+': 'pbForward',
+                'Y-': 'pbBackward',
+                'Z+': 'pbUp',
+                'Z-': 'pbDown',
+                'W+': 'pbPlusRoll',
+                'W-': 'pbSubRoll',
+                'U+': 'pbPlusYaw',
+                'U-': 'pbSubYaw',
+                'V+': 'pbPlusPitch',
+                'V-': 'pbSubPitch'
+            };
+            
+            const buttonName = buttonMap[direction];
+            if (!buttonName) return;
+            
+            // Send single button click event
+            sendToServer(`Event=QToolButton,${buttonName},click`);
+        }
+
+        function stopJog() {
+            // No need to do anything since we only send single clicks
+            // This function is kept for compatibility with the HTML event handlers
+        }
+
+        function sendJogCommand(direction) {
+            // This function is no longer needed as we're using button press events
+            // But keeping it for backward compatibility
+            const buttonMap = {
+                'X+': 'pbRight',
+                'X-': 'pbLeft', 
+                'Y+': 'pbForward',
+                'Y-': 'pbBackward',
+                'Z+': 'pbUp',
+                'Z-': 'pbDown',
+                'W+': 'pbPlusRoll',
+                'W-': 'pbSubRoll',
+                'U+': 'pbPlusYaw',
+                'U-': 'pbSubYaw',
+                'V+': 'pbPlusPitch',
+                'V-': 'pbSubPitch'
+            };
+            
+            const buttonName = buttonMap[direction];
+            if (buttonName) {
+                sendToServer(`Event=QToolButton,${buttonName},click`);
+            }
+        }
+
+        // Step control
+        function setStep(step, element) {
+            currentStep = step;
+            
+            // Update active button
+            document.querySelectorAll('.step-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Add active class to clicked button
+            if (element) {
+                element.classList.add('active');
+            } else {
+                // Fallback: find button by step value
+                document.querySelectorAll('.step-btn').forEach(btn => {
+                    if (btn.textContent == step.toString()) {
+                        btn.classList.add('active');
+                    }
+                });
+            }
+            
+            // Map step to corresponding radio button
+            const stepButtonMap = {
+                0.1: 'rb01',
+                0.5: 'rb05', 
+                1: 'rb10',
+                5: 'rb50',
+                10: 'rb100',
+                50: 'rb500',
+                100: 'rb1000'
+            };
+            
+            const radioButtonName = stepButtonMap[step];
+            if (radioButtonName) {
+                // Send radio button selection event
+                sendToServer(`Event=QRadioButton,${radioButtonName},check`);
+                console.log(`Step changed to ${step}mm, mapped to ${radioButtonName}`);
+            }
+        }
+
+        // Output control
+        function toggleOutput(outputName, element) {
+            const isActive = element.classList.contains('active');
+            element.classList.toggle('active');
+            
+            const state = !isActive;
+            // Send checkbox click event to software
+            sendToServer(`Event=QCheckBox,cb${outputName},click`);
+        }
+
+        // Input control
+        function toggleInput(inputName, element) {
+            element.classList.toggle('active');
+            // Send input read request to software
+            sendToServer(`#${inputName}`);
+        }
+
+        // Home function
+        function goHome() {
+            console.log('goHome() function called');
+            // Send home command to software - pbHome is QToolButton but connected as QPushButton
+            const command = 'Event=QToolButton,pbHome,click';
+            console.log('Sending command:', command);
+            console.log('To server:', `${SERVER_HOST}:${SERVER_PORT}`);
+            
+            sendToServer(command)
+                .then(response => {
+                    console.log('Home command successful:', response);
+                })
+                .catch(error => {
+                    console.error('Home command failed:', error);
+                });
+        }
+
+        // Motion parameter updates
+        document.getElementById('feedRate').addEventListener('change', function() {
+            // Set velocity (F parameter)
+            sendToServer(`leVelocity=${this.value}`);
+        });
+
+        document.getElementById('speedRate').addEventListener('change', function() {
+            // Set start speed (S parameter)
+            sendToServer(`leStartSpeed=${this.value}`);
+        });
+
+        document.getElementById('acceleration').addEventListener('change', function() {
+            // Set acceleration (A parameter)
+            sendToServer(`leAccel=${this.value}`);
+        });
+
+        document.getElementById('jerk').addEventListener('change', function() {
+            // Set jerk (J parameter)
+            sendToServer(`leJerk=${this.value}`);
+        });
+
+        // Prevent zoom on double tap
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', function (event) {
+            const now = (new Date()).getTime();
+            if (now - lastTouchEnd <= 300) {
+                event.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, false);
+
+        // Handle orientation change
+        window.addEventListener('orientationchange', function() {
+            setTimeout(() => {
+                window.scrollTo(0, 0);
+            }, 100);
+        });
+</script>
+</body>
+</html>
+
+
+<!-- <!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Điều khiển robot bằng webpage</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+</head>
+<body>
+  <h1>Điều khiển robot bằng webpage</h1>
+  <button id="btn-left">Di chuyển trái</button>
+  <button id="btn-right">Di chuyển phải</button>
+
+  <script>
+  $(document).ready(function() {
+    $("#btn-left").click(function() {
+      // Gửi thông điệp "move left" đến server
+      $.ajax({
+        url: "http://192.168.1.8:8844",
+        method: "POST",
+        data: {
+          command: "move left"
+        }
+      });
+    });
+
+    $("#btn-right").click(function() {
+      // Gửi thông điệp "move right" đến server
+      $.ajax({
+        url: "http://192.168.1.8:8844",
+        method: "POST",
+        data: {
+          command: "move right"
+        }
+      });
+    });
+  });
+  </script>
+</body>
+</html> -->

@@ -6,6 +6,28 @@
 #include <QStyleOption>
 #include <QPainter>
 #include <QRandomGenerator>
+#include <QMessageBox>
+#include <QFileDialog>
+#include <QStandardPaths>
+#include <QDebug>
+#include <QLabel>
+#include <QLineEdit>
+#include <QPushButton>
+#include <QSpinBox>
+#include <QDoubleSpinBox>
+#include <QComboBox>
+#include <QCheckBox>
+#include <QTableWidget>
+#include <QTextEdit>
+#include <QProgressBar>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QGridLayout>
+#include <QGroupBox>
+#include <QFrame>
+#include <QApplication>
+#include <QClipboard>
+#include <QInputDialog> // Added for input dialogs
 
 CloudPointToolController::CloudPointToolController(RobotWindow* parent)
     : QObject(parent)
@@ -20,6 +42,34 @@ CloudPointToolController::CloudPointToolController(RobotWindow* parent)
     , m_autoRebuildCheckBox(nullptr)
     , m_validationProgressBar(nullptr)
     , m_statsTextEdit(nullptr)
+    , m_testConfidenceEdit(nullptr)
+    , m_testErrorEdit(nullptr)
+    , m_testImageXEdit(nullptr)
+    , m_testImageYEdit(nullptr)
+    , m_testImageZEdit(nullptr)
+    , m_testRealXEdit(nullptr)
+    , m_testRealYEdit(nullptr)
+    , m_testRealZEdit(nullptr)
+    , m_testConfidenceLabel(nullptr)
+    , m_testErrorLabel(nullptr)
+    , m_addPointButton(nullptr)
+    , m_removePointButton(nullptr)
+    , m_updatePointButton(nullptr)
+    , m_clearAllButton(nullptr)
+    , m_buildGridButton(nullptr)
+    , m_validateButton(nullptr)
+    , m_transformTestButton(nullptr)
+    , m_saveButton(nullptr)
+    , m_loadButton(nullptr)
+    , m_exportButton(nullptr)
+    , m_importButton(nullptr)
+    , m_visualizeButton(nullptr)
+    , m_statsButton(nullptr)
+    , m_variableNameEdit(nullptr)
+    , m_autoCollectCountSpinBox(nullptr)
+    , m_autoCollectIntervalSpinBox(nullptr)
+    , m_autoCollectRandomCheckBox(nullptr)
+    , m_autoCollectButton(nullptr)
 {
     // Connect mapper signals
     connect(m_mapper, &CloudPointMapper::mappingUpdated, this, &CloudPointToolController::onMappingUpdated);
@@ -52,40 +102,118 @@ void CloudPointToolController::setParent(RobotWindow* parent)
 void CloudPointToolController::initializeUI(QWidget* parentWidget)
 {
     if (!parentWidget) {
-        showError("Invalid parent widget");
+        qDebug() << "CloudPointToolController: Invalid parent widget";
         return;
     }
     
-    // Create main UI
-    createUI();
-    
-    // Find the Point Tool area and add our controls
-    QVBoxLayout* layout = qobject_cast<QVBoxLayout*>(parentWidget->layout());
-    if (!layout) {
-        layout = new QVBoxLayout(parentWidget);
+    // Cast parentWidget to RobotWindow to access UI elements
+    RobotWindow* robotWindow = qobject_cast<RobotWindow*>(parentWidget->window());
+    if (!robotWindow) {
+        qDebug() << "CloudPointToolController: Cannot access RobotWindow UI elements";
+        return;
     }
     
-    // Add a splitter to separate traditional and cloud point tools
-    QSplitter* splitter = new QSplitter(Qt::Vertical, parentWidget);
+    // Find the existing Cloud Point Mapping group box from RobotWindow.ui
+    m_mainGroupBox = robotWindow->findChild<QGroupBox*>("gbCloudPointMapping");
+    if (!m_mainGroupBox) {
+        qDebug() << "CloudPointToolController: Cloud Point Mapping UI elements not found in RobotWindow.ui";
+        return;
+    }
     
-    // Add our cloud point group to the splitter
-    splitter->addWidget(m_mainGroupBox);
+    // Instead of clearing existing UI, find and connect to existing elements from .ui file
+    // Find existing UI elements from RobotWindow.ui
     
-    // Set splitter proportions
-    splitter->setStretchFactor(0, 1);
-    splitter->setStretchFactor(1, 1);
+    // Settings elements
+    m_interpolationMethodCombo = robotWindow->findChild<QComboBox*>("cbInterpolationMethod");
+    if (m_interpolationMethodCombo) {
+        // Populate interpolation method combo if found
+        if (m_interpolationMethodCombo->count() == 0) {
+            m_interpolationMethodCombo->addItems({
+                "Linear", "Bilinear", "Cubic Spline", "Radial Basis Function", "Kriging"
+            });
+        }
+    }
     
-    // Add splitter to layout
-    layout->addWidget(splitter);
+    m_gridResolutionSpinBox = robotWindow->findChild<QSpinBox*>("sbGridResolution");
+    m_autoRebuildCheckBox = robotWindow->findChild<QCheckBox*>("cbAutoRebuild");
     
-    // Connect all signals
+    // Calibration table and management
+    m_calibrationTable = robotWindow->findChild<QTableWidget*>("tableCalibrationPoints");
+    
+    // Calibration point management buttons
+    m_addPointButton = robotWindow->findChild<QPushButton*>("pbAddCalibrationPoint");
+    m_removePointButton = robotWindow->findChild<QPushButton*>("pbRemoveCalibrationPoint");
+    m_clearAllButton = robotWindow->findChild<QPushButton*>("pbClearCalibrationPoints");
+    m_buildGridButton = robotWindow->findChild<QPushButton*>("pbRebuildMapping");
+    m_validateButton = robotWindow->findChild<QPushButton*>("pbValidateMapping");
+    
+    // Test elements
+    m_testImageXEdit = robotWindow->findChild<QLineEdit*>("leCloudTestInputX");
+    m_testImageYEdit = robotWindow->findChild<QLineEdit*>("leCloudTestInputY");
+    m_testRealXEdit = robotWindow->findChild<QLineEdit*>("leCloudTestOutputX");
+    m_testRealYEdit = robotWindow->findChild<QLineEdit*>("leCloudTestOutputY");
+    
+    // These are readonly QLineEdit elements in the UI file - save as member variables
+    m_testConfidenceEdit = robotWindow->findChild<QLineEdit*>("leCloudTestConfidence");
+    m_testErrorEdit = robotWindow->findChild<QLineEdit*>("leCloudTestError");
+    m_transformTestButton = robotWindow->findChild<QPushButton*>("pbTransformCloudPoint");
+    
+    // File operation buttons
+    m_saveButton = robotWindow->findChild<QPushButton*>("pbSaveCloudMapping");
+    m_loadButton = robotWindow->findChild<QPushButton*>("pbLoadCloudMapping");
+    
+    // Find frames (for potential future use)
+    QFrame* calibrationFrame = robotWindow->findChild<QFrame*>("frameCloudPointCalibration");
+    QFrame* settingsFrame = robotWindow->findChild<QFrame*>("frameCloudPointSettings");
+    QFrame* testFrame = robotWindow->findChild<QFrame*>("frameCloudPointTest");
+    QFrame* statsFrame = robotWindow->findChild<QFrame*>("frameCloudPointStats");
+    QFrame* buttonsFrame = robotWindow->findChild<QFrame*>("frameCloudPointButtons");
+    QFrame* filesFrame = robotWindow->findChild<QFrame*>("frameCloudPointFiles");
+    
+    // Log what we found vs what we expected
+    qDebug() << "=== Cloud Point Mapping UI Elements Status ===";
+    qDebug() << "Settings:";
+    qDebug() << "  Interpolation combo:" << (m_interpolationMethodCombo != nullptr);
+    qDebug() << "  Grid resolution spinbox:" << (m_gridResolutionSpinBox != nullptr);
+    qDebug() << "  Auto rebuild checkbox:" << (m_autoRebuildCheckBox != nullptr);
+    
+    qDebug() << "Calibration Management:";
+    qDebug() << "  Calibration table:" << (m_calibrationTable != nullptr);
+    qDebug() << "  Add point button:" << (m_addPointButton != nullptr);
+    qDebug() << "  Remove point button:" << (m_removePointButton != nullptr);  
+    qDebug() << "  Clear all button:" << (m_clearAllButton != nullptr);
+    qDebug() << "  Build grid button:" << (m_buildGridButton != nullptr);
+    qDebug() << "  Validate button:" << (m_validateButton != nullptr);
+    
+    qDebug() << "Test Transform:";
+    qDebug() << "  Test input X/Y:" << (m_testImageXEdit != nullptr) << "/" << (m_testImageYEdit != nullptr);
+    qDebug() << "  Test output X/Y:" << (m_testRealXEdit != nullptr) << "/" << (m_testRealYEdit != nullptr);
+    qDebug() << "  Transform button:" << (m_transformTestButton != nullptr);
+    qDebug() << "  Confidence/Error displays:" << (m_testConfidenceEdit != nullptr) << "/" << (m_testErrorEdit != nullptr);
+    
+    qDebug() << "File Operations:";
+    qDebug() << "  Save/Load buttons:" << (m_saveButton != nullptr) << "/" << (m_loadButton != nullptr);
+    
+    qDebug() << "Frames:";
+    qDebug() << "  Settings/Calibration/Test/Stats/Buttons/Files:" << (settingsFrame != nullptr) 
+             << "/" << (calibrationFrame != nullptr) << "/" << (testFrame != nullptr) 
+             << "/" << (statsFrame != nullptr) << "/" << (buttonsFrame != nullptr) 
+             << "/" << (filesFrame != nullptr);
+    
+    qDebug() << "Missing Elements (need to be created dynamically or added to .ui):";
+    qDebug() << "  - Input fields for calibration point coordinates (Image X/Y/Z, Real X/Y/Z, Confidence, Label)";
+    qDebug() << "  - Export/Import to VariableManager buttons";
+    qDebug() << "  - Statistics display area";
+    qDebug() << "  - Progress bars for validation";
+    
+    // Connect all signals to existing UI elements
     connectSignals();
     
     // Initial UI update
     updateButtonStates();
     updateStatsDisplay();
     
-    showInfo("Cloud Point Mapping initialized. Add calibration points to begin mapping.");
+    qDebug() << "Cloud Point Mapping initialized successfully";
 }
 
 CloudPointMapper* CloudPointToolController::getMapper() const
@@ -93,32 +221,10 @@ CloudPointMapper* CloudPointToolController::getMapper() const
     return m_mapper;
 }
 
-void CloudPointToolController::createUI()
-{
-    // Create main group box
-    m_mainGroupBox = new QGroupBox("Cloud Point Mapping (Advanced)");
-    m_mainGroupBox->setObjectName("gbCloudPointMapping");
-    m_mainGroupBox->setStyleSheet(
-        "QGroupBox { background-color: rgb(51, 51, 55); color: rgb(208, 208, 209); }"
-        "QGroupBox::title { color: rgb(208, 208, 209); }"
-    );
-    
-    // Create main layout
-    QVBoxLayout* mainLayout = new QVBoxLayout(m_mainGroupBox);
-    
-    // Add groups to main layout
-    mainLayout->addWidget(createCalibrationPointsGroup());
-    mainLayout->addWidget(createMappingSettingsGroup());
-    mainLayout->addWidget(createTestPointGroup());
-    mainLayout->addWidget(createControlButtonsGroup());
-    mainLayout->addWidget(createStatsGroup());
-    mainLayout->addWidget(createVariableManagerGroup());
-    mainLayout->addWidget(createAutoCollectGroup());
-    
-    // Add stretch to prevent groups from expanding too much
-    mainLayout->addStretch();
-}
+// createUI() method removed - now using existing UI elements from RobotWindow.ui
 
+// Comment out all create*Group methods since we're using UI elements from .ui file
+/*
 QGroupBox* CloudPointToolController::createCalibrationPointsGroup()
 {
     QGroupBox* group = new QGroupBox("Calibration Points");
@@ -202,87 +308,40 @@ QGroupBox* CloudPointToolController::createCalibrationPointsGroup()
     m_getImagePosButton->setIcon(QIcon("icon/Camera_16px.png"));
     buttonLayout->addWidget(m_getImagePosButton);
     
-    inputLayout->addLayout(buttonLayout, 3, 0, 1, 6);
+    buttonLayout->addStretch();
     
+    // Add layouts to main layout
     layout->addLayout(inputLayout);
+    layout->addLayout(buttonLayout);
     
-    // Create calibration table
+    // Add calibration table
     setupCalibrationTable();
     layout->addWidget(m_calibrationTable);
     
     return group;
 }
+*/ 
 
-QGroupBox* CloudPointToolController::createMappingSettingsGroup()
-{
-    QGroupBox* group = new QGroupBox("Mapping Settings");
-    QGridLayout* layout = new QGridLayout(group);
-    
-    // Interpolation method
-    layout->addWidget(new QLabel("Interpolation Method:"), 0, 0);
-    m_interpolationMethodCombo = new QComboBox();
-    setupInterpolationMethodCombo();
-    layout->addWidget(m_interpolationMethodCombo, 0, 1);
-    
-    // Grid resolution
-    layout->addWidget(new QLabel("Grid Resolution:"), 0, 2);
-    m_gridResolutionSpinBox = new QDoubleSpinBox();
-    m_gridResolutionSpinBox->setRange(0.1, 100.0);
-    m_gridResolutionSpinBox->setValue(10.0);
-    m_gridResolutionSpinBox->setSingleStep(0.5);
-    m_gridResolutionSpinBox->setDecimals(1);
-    m_gridResolutionSpinBox->setSuffix(" px/cell");
-    layout->addWidget(m_gridResolutionSpinBox, 0, 3);
-    
-    // Auto-rebuild checkbox
-    m_autoRebuildCheckBox = new QCheckBox("Auto-rebuild Grid");
-    m_autoRebuildCheckBox->setChecked(true);
-    layout->addWidget(m_autoRebuildCheckBox, 0, 4);
-    
-    // Build grid button
-    m_buildGridButton = new QPushButton("Build Grid");
-    m_buildGridButton->setIcon(QIcon("icon/Grid_16px.png"));
-    layout->addWidget(m_buildGridButton, 0, 5);
-    
-    // Validation controls
-    layout->addWidget(new QLabel("Validation:"), 1, 0);
-    
-    m_validateButton = new QPushButton("Validate Mapping");
-    m_validateButton->setIcon(QIcon("icon/Checkmark_16px.png"));
-    layout->addWidget(m_validateButton, 1, 1);
-    
-    m_validationProgressBar = new QProgressBar();
-    m_validationProgressBar->setVisible(false);
-    layout->addWidget(m_validationProgressBar, 1, 2, 1, 2);
-    
-    m_visualizeButton = new QPushButton("Visualize");
-    m_visualizeButton->setIcon(QIcon("icon/Eye_16px.png"));
-    layout->addWidget(m_visualizeButton, 1, 4);
-    
-    m_statsButton = new QPushButton("Stats");
-    m_statsButton->setIcon(QIcon("icon/Statistics_16px.png"));
-    layout->addWidget(m_statsButton, 1, 5);
-    
-    return group;
-}
+// All other create*Group methods are also commented out since we use .ui file elements
 
+/*
 QGroupBox* CloudPointToolController::createTestPointGroup()
 {
-    QGroupBox* group = new QGroupBox("Test Point Transformation");
+    QGroupBox* group = new QGroupBox("Test Point");
     QGridLayout* layout = new QGridLayout(group);
     
-    // Test input coordinates
-    layout->addWidget(new QLabel("Test Image X:"), 0, 0);
+    // Input coordinates
+    layout->addWidget(new QLabel("Image X:"), 0, 0);
     m_testImageXEdit = new QLineEdit();
     m_testImageXEdit->setPlaceholderText("0.0");
     layout->addWidget(m_testImageXEdit, 0, 1);
     
-    layout->addWidget(new QLabel("Test Image Y:"), 0, 2);
+    layout->addWidget(new QLabel("Image Y:"), 0, 2);
     m_testImageYEdit = new QLineEdit();
     m_testImageYEdit->setPlaceholderText("0.0");
     layout->addWidget(m_testImageYEdit, 0, 3);
     
-    layout->addWidget(new QLabel("Test Image Z:"), 0, 4);
+    layout->addWidget(new QLabel("Image Z:"), 0, 4);
     m_testImageZEdit = new QLineEdit();
     m_testImageZEdit->setPlaceholderText("0.0");
     layout->addWidget(m_testImageZEdit, 0, 5);
@@ -292,34 +351,31 @@ QGroupBox* CloudPointToolController::createTestPointGroup()
     m_transformTestButton->setIcon(QIcon("icon/Transform_16px.png"));
     layout->addWidget(m_transformTestButton, 0, 6);
     
-    // Test result coordinates
-    layout->addWidget(new QLabel("Result Real X:"), 1, 0);
+    // Output coordinates (read-only)
+    layout->addWidget(new QLabel("Real X:"), 1, 0);
     m_testRealXEdit = new QLineEdit();
     m_testRealXEdit->setReadOnly(true);
-    m_testRealXEdit->setStyleSheet("background-color: rgb(70, 70, 75);");
     layout->addWidget(m_testRealXEdit, 1, 1);
     
-    layout->addWidget(new QLabel("Result Real Y:"), 1, 2);
+    layout->addWidget(new QLabel("Real Y:"), 1, 2);
     m_testRealYEdit = new QLineEdit();
     m_testRealYEdit->setReadOnly(true);
-    m_testRealYEdit->setStyleSheet("background-color: rgb(70, 70, 75);");
     layout->addWidget(m_testRealYEdit, 1, 3);
     
-    layout->addWidget(new QLabel("Result Real Z:"), 1, 4);
+    layout->addWidget(new QLabel("Real Z:"), 1, 4);
     m_testRealZEdit = new QLineEdit();
     m_testRealZEdit->setReadOnly(true);
-    m_testRealZEdit->setStyleSheet("background-color: rgb(70, 70, 75);");
     layout->addWidget(m_testRealZEdit, 1, 5);
     
     // Confidence and error display
     layout->addWidget(new QLabel("Confidence:"), 2, 0);
-    m_testConfidenceLabel = new QLabel("0.00");
-    m_testConfidenceLabel->setStyleSheet("color: rgb(255, 255, 255); font-weight: bold;");
+    m_testConfidenceLabel = new QLabel("---");
+    m_testConfidenceLabel->setStyleSheet("font-weight: bold;");
     layout->addWidget(m_testConfidenceLabel, 2, 1);
     
-    layout->addWidget(new QLabel("Est. Error:"), 2, 2);
-    m_testErrorLabel = new QLabel("0.00 mm");
-    m_testErrorLabel->setStyleSheet("color: rgb(255, 255, 255); font-weight: bold;");
+    layout->addWidget(new QLabel("Error:"), 2, 2);
+    m_testErrorLabel = new QLabel("---");
+    m_testErrorLabel->setStyleSheet("font-weight: bold;");
     layout->addWidget(m_testErrorLabel, 2, 3);
     
     return group;
@@ -327,20 +383,16 @@ QGroupBox* CloudPointToolController::createTestPointGroup()
 
 QGroupBox* CloudPointToolController::createControlButtonsGroup()
 {
-    QGroupBox* group = new QGroupBox("File Operations");
+    QGroupBox* group = new QGroupBox("Operations");
     QHBoxLayout* layout = new QHBoxLayout(group);
-    
-    m_saveButton = new QPushButton("Save Mapping");
-    m_saveButton->setIcon(QIcon("icon/Save_16px.png"));
-    layout->addWidget(m_saveButton);
-    
-    m_loadButton = new QPushButton("Load Mapping");
-    m_loadButton->setIcon(QIcon("icon/Open_16px.png"));
-    layout->addWidget(m_loadButton);
     
     m_clearAllButton = new QPushButton("Clear All");
     m_clearAllButton->setIcon(QIcon("icon/Clear_16px.png"));
     layout->addWidget(m_clearAllButton);
+    
+    m_visualizeButton = new QPushButton("Visualize");
+    m_visualizeButton->setIcon(QIcon("icon/View_16px.png"));
+    layout->addWidget(m_visualizeButton);
     
     layout->addStretch();
     
@@ -349,15 +401,16 @@ QGroupBox* CloudPointToolController::createControlButtonsGroup()
 
 QGroupBox* CloudPointToolController::createStatsGroup()
 {
-    QGroupBox* group = new QGroupBox("Mapping Statistics");
+    QGroupBox* group = new QGroupBox("Statistics");
     QVBoxLayout* layout = new QVBoxLayout(group);
+    
+    m_statsButton = new QPushButton("Show Statistics");
+    m_statsButton->setIcon(QIcon("icon/Stats_16px.png"));
+    layout->addWidget(m_statsButton);
     
     m_statsTextEdit = new QTextEdit();
     m_statsTextEdit->setMaximumHeight(100);
     m_statsTextEdit->setReadOnly(true);
-    m_statsTextEdit->setStyleSheet("background-color: rgb(40, 40, 45); color: rgb(255, 255, 255);");
-    m_statsTextEdit->setPlainText("No mapping data available. Add calibration points to begin.");
-    
     layout->addWidget(m_statsTextEdit);
     
     return group;
@@ -365,22 +418,21 @@ QGroupBox* CloudPointToolController::createStatsGroup()
 
 QGroupBox* CloudPointToolController::createVariableManagerGroup()
 {
-    QGroupBox* group = new QGroupBox("Variable Manager Integration");
+    QGroupBox* group = new QGroupBox("Variable Manager");
     QGridLayout* layout = new QGridLayout(group);
     
     layout->addWidget(new QLabel("Variable Name:"), 0, 0);
     m_variableNameEdit = new QLineEdit();
-    m_variableNameEdit->setPlaceholderText("CloudMapping");
     m_variableNameEdit->setText("CloudMapping");
-    layout->addWidget(m_variableNameEdit, 0, 1, 1, 2);
+    layout->addWidget(m_variableNameEdit, 0, 1);
     
-    m_exportButton = new QPushButton("Export to Variables");
+    m_exportButton = new QPushButton("Export");
     m_exportButton->setIcon(QIcon("icon/Export_16px.png"));
-    layout->addWidget(m_exportButton, 0, 3);
+    layout->addWidget(m_exportButton, 0, 2);
     
-    m_importButton = new QPushButton("Import from Variables");
+    m_importButton = new QPushButton("Import");
     m_importButton->setIcon(QIcon("icon/Import_16px.png"));
-    layout->addWidget(m_importButton, 0, 4);
+    layout->addWidget(m_importButton, 0, 3);
     
     return group;
 }
@@ -412,6 +464,7 @@ QGroupBox* CloudPointToolController::createAutoCollectGroup()
     
     return group;
 }
+*/
 
 void CloudPointToolController::setupCalibrationTable()
 {
@@ -468,63 +521,131 @@ void CloudPointToolController::setupInterpolationMethodCombo()
 
 void CloudPointToolController::connectSignals()
 {
-    // Point management
-    connect(m_addPointButton, &QPushButton::clicked, this, &CloudPointToolController::addCalibrationPoint);
-    connect(m_updatePointButton, &QPushButton::clicked, this, &CloudPointToolController::updateCalibrationPoint);
-    connect(m_removePointButton, &QPushButton::clicked, this, &CloudPointToolController::removeCalibrationPoint);
-    connect(m_clearAllButton, &QPushButton::clicked, this, &CloudPointToolController::clearAllPoints);
+    // Only connect signals for UI elements that exist in the .ui file
     
-    // Mapping operations
-    connect(m_buildGridButton, &QPushButton::clicked, this, &CloudPointToolController::buildMappingGrid);
-    connect(m_validateButton, &QPushButton::clicked, this, &CloudPointToolController::validateMapping);
-    connect(m_transformTestButton, &QPushButton::clicked, this, &CloudPointToolController::transformTestPoint);
+    // Transform test button (exists in UI)
+    if (m_transformTestButton) {
+        connect(m_transformTestButton, &QPushButton::clicked, this, &CloudPointToolController::transformTestPoint);
+    }
     
-    // File operations
-    connect(m_saveButton, &QPushButton::clicked, this, &CloudPointToolController::saveMapping);
-    connect(m_loadButton, &QPushButton::clicked, this, &CloudPointToolController::loadMapping);
+    // File operations (exist in UI)
+    if (m_saveButton) {
+        connect(m_saveButton, &QPushButton::clicked, this, &CloudPointToolController::saveMapping);
+    }
+    if (m_loadButton) {
+        connect(m_loadButton, &QPushButton::clicked, this, &CloudPointToolController::loadMapping);
+    }
     
-    // Variable Manager
-    connect(m_exportButton, &QPushButton::clicked, this, &CloudPointToolController::exportToVariableManager);
-    connect(m_importButton, &QPushButton::clicked, this, &CloudPointToolController::importFromVariableManager);
+    // Settings (exists in UI)
+    if (m_interpolationMethodCombo) {
+        connect(m_interpolationMethodCombo, QOverload<int>::of(&QComboBox::currentIndexChanged), 
+                this, &CloudPointToolController::onInterpolationMethodChanged);
+    }
+    if (m_gridResolutionSpinBox) {
+        connect(m_gridResolutionSpinBox, QOverload<int>::of(&QSpinBox::valueChanged), 
+                this, &CloudPointToolController::onGridResolutionChanged);
+    }
+    if (m_autoRebuildCheckBox) {
+        connect(m_autoRebuildCheckBox, &QCheckBox::toggled, this, &CloudPointToolController::onAutoRebuildToggled);
+    }
     
-    // Utility functions
-    connect(m_pasteButton, &QPushButton::clicked, this, &CloudPointToolController::pasteCoordinates);
-    connect(m_getRobotPosButton, &QPushButton::clicked, this, &CloudPointToolController::getCurrentRobotPosition);
-    connect(m_getImagePosButton, &QPushButton::clicked, this, &CloudPointToolController::getCurrentImagePosition);
-    connect(m_autoCollectButton, &QPushButton::clicked, this, &CloudPointToolController::autoCollectPoints);
-    connect(m_visualizeButton, &QPushButton::clicked, this, &CloudPointToolController::generateGridVisualization);
-    connect(m_statsButton, &QPushButton::clicked, this, &CloudPointToolController::showMappingStats);
+    // Calibration management (exists in UI)
+    if (m_addPointButton) {
+        connect(m_addPointButton, &QPushButton::clicked, this, &CloudPointToolController::addCalibrationPoint);
+    }
+    if (m_removePointButton) {
+        connect(m_removePointButton, &QPushButton::clicked, this, &CloudPointToolController::removeCalibrationPoint);
+    }
+    if (m_clearAllButton) {
+        connect(m_clearAllButton, &QPushButton::clicked, this, &CloudPointToolController::clearAllPoints);
+    }
+    if (m_buildGridButton) {
+        connect(m_buildGridButton, &QPushButton::clicked, this, &CloudPointToolController::buildMappingGrid);
+    }
+    if (m_validateButton) {
+        connect(m_validateButton, &QPushButton::clicked, this, &CloudPointToolController::validateMapping);
+    }
     
-    // Settings
-    connect(m_interpolationMethodCombo, QOverload<int>::of(&QComboBox::currentIndexChanged), 
-            this, &CloudPointToolController::onInterpolationMethodChanged);
-    connect(m_gridResolutionSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), 
-            this, &CloudPointToolController::onGridResolutionChanged);
-    connect(m_autoRebuildCheckBox, &QCheckBox::toggled, this, &CloudPointToolController::onAutoRebuildToggled);
+    // Test elements (exists in UI)
+    if (m_testImageXEdit) {
+        connect(m_testImageXEdit, &QLineEdit::textChanged, this, &CloudPointToolController::onTestInputChanged);
+    }
+    if (m_testImageYEdit) {
+        connect(m_testImageYEdit, &QLineEdit::textChanged, this, &CloudPointToolController::onTestInputChanged);
+    }
+    if (m_testRealXEdit) {
+        // m_testRealXEdit is readonly, so no textChanged signal
+    }
+    if (m_testRealYEdit) {
+        // m_testRealYEdit is readonly, so no textChanged signal
+    }
+    if (m_testConfidenceEdit) {
+        // m_testConfidenceEdit is readonly, so no textChanged signal
+    }
+    if (m_testErrorEdit) {
+        // m_testErrorEdit is readonly, so no textChanged signal
+    }
     
-    // Table events
-    connect(m_calibrationTable, &QTableWidget::itemSelectionChanged, this, &CloudPointToolController::onTableSelectionChanged);
-    connect(m_calibrationTable, &QTableWidget::itemDoubleClicked, this, &CloudPointToolController::onTableItemDoubleClicked);
+    // Calibration table (exists in UI)
+    if (m_calibrationTable) {
+        connect(m_calibrationTable, &QTableWidget::itemSelectionChanged, this, &CloudPointToolController::onTableSelectionChanged);
+        connect(m_calibrationTable, &QTableWidget::itemDoubleClicked, this, &CloudPointToolController::onTableItemDoubleClicked);
+    }
+    
+    qDebug() << "Connected signals for available UI elements";
 }
 
 // Public slots implementation
 
 void CloudPointToolController::addCalibrationPoint()
 {
-    if (!validateAllInputs()) {
-        return;
-    }
+    // Use input dialogs since UI file doesn't have input fields for calibration points
+    bool ok;
     
-    QVector3D imageCoord(getFloatValue(m_imageXEdit), getFloatValue(m_imageYEdit), getFloatValue(m_imageZEdit));
-    QVector3D realCoord(getFloatValue(m_realXEdit), getFloatValue(m_realYEdit), getFloatValue(m_realZEdit));
-    float confidence = m_confidenceSpinBox->value();
-    QString label = m_labelEdit->text().trimmed();
+    // Get Image coordinates
+    double imageX = QInputDialog::getDouble(m_parent, "Add Calibration Point", 
+                                           "Image X:", 0.0, -9999.0, 9999.0, 2, &ok);
+    if (!ok) return;
+    
+    double imageY = QInputDialog::getDouble(m_parent, "Add Calibration Point", 
+                                           "Image Y:", 0.0, -9999.0, 9999.0, 2, &ok);
+    if (!ok) return;
+    
+    double imageZ = QInputDialog::getDouble(m_parent, "Add Calibration Point", 
+                                           "Image Z:", 0.0, -9999.0, 9999.0, 2, &ok);
+    if (!ok) return;
+    
+    // Get Real coordinates
+    double realX = QInputDialog::getDouble(m_parent, "Add Calibration Point", 
+                                          "Real X:", 0.0, -9999.0, 9999.0, 2, &ok);
+    if (!ok) return;
+    
+    double realY = QInputDialog::getDouble(m_parent, "Add Calibration Point", 
+                                          "Real Y:", 0.0, -9999.0, 9999.0, 2, &ok);
+    if (!ok) return;
+    
+    double realZ = QInputDialog::getDouble(m_parent, "Add Calibration Point", 
+                                          "Real Z:", 0.0, -9999.0, 9999.0, 2, &ok);
+    if (!ok) return;
+    
+    // Get Confidence
+    double confidence = QInputDialog::getDouble(m_parent, "Add Calibration Point", 
+                                               "Confidence (0.0-1.0):", 1.0, 0.0, 1.0, 2, &ok);
+    if (!ok) return;
+    
+    // Get Label (optional)
+    QString label = QInputDialog::getText(m_parent, "Add Calibration Point", 
+                                         "Label (optional):", QLineEdit::Normal, "", &ok);
+    if (!ok) return;
+    
+    // Create calibration point
+    QVector3D imageCoord(imageX, imageY, imageZ);
+    QVector3D realCoord(realX, realY, realZ);
     
     int index = m_mapper->addCalibrationPoint(imageCoord, realCoord, confidence, label);
     
     if (index >= 0) {
         updateCalibrationTable();
-        clearInputs();
         showSuccess(QString("Added calibration point %1").arg(index));
     } else {
         showError("Failed to add calibration point");
@@ -556,17 +677,49 @@ void CloudPointToolController::updateCalibrationPoint()
         return;
     }
     
-    if (!validateAllInputs()) {
-        return;
-    }
+    // Get current calibration point data
+    const CloudPointMapper::CalibrationPoint& currentPoint = m_mapper->getCalibrationPoint(currentRow);
     
-    QVector3D imageCoord(getFloatValue(m_imageXEdit), getFloatValue(m_imageYEdit), getFloatValue(m_imageZEdit));
-    QVector3D realCoord(getFloatValue(m_realXEdit), getFloatValue(m_realYEdit), getFloatValue(m_realZEdit));
-    float confidence = m_confidenceSpinBox->value();
+    // Use input dialogs with current values as defaults
+    bool ok;
+    
+    // Get Image coordinates
+    double imageX = QInputDialog::getDouble(m_parent, "Update Calibration Point", 
+                                           "Image X:", currentPoint.imageCoord.x(), -9999.0, 9999.0, 2, &ok);
+    if (!ok) return;
+    
+    double imageY = QInputDialog::getDouble(m_parent, "Update Calibration Point", 
+                                           "Image Y:", currentPoint.imageCoord.y(), -9999.0, 9999.0, 2, &ok);
+    if (!ok) return;
+    
+    double imageZ = QInputDialog::getDouble(m_parent, "Update Calibration Point", 
+                                           "Image Z:", currentPoint.imageCoord.z(), -9999.0, 9999.0, 2, &ok);
+    if (!ok) return;
+    
+    // Get Real coordinates
+    double realX = QInputDialog::getDouble(m_parent, "Update Calibration Point", 
+                                          "Real X:", currentPoint.realCoord.x(), -9999.0, 9999.0, 2, &ok);
+    if (!ok) return;
+    
+    double realY = QInputDialog::getDouble(m_parent, "Update Calibration Point", 
+                                          "Real Y:", currentPoint.realCoord.y(), -9999.0, 9999.0, 2, &ok);
+    if (!ok) return;
+    
+    double realZ = QInputDialog::getDouble(m_parent, "Update Calibration Point", 
+                                          "Real Z:", currentPoint.realCoord.z(), -9999.0, 9999.0, 2, &ok);
+    if (!ok) return;
+    
+    // Get Confidence
+    double confidence = QInputDialog::getDouble(m_parent, "Update Calibration Point", 
+                                               "Confidence (0.0-1.0):", currentPoint.confidence, 0.0, 1.0, 2, &ok);
+    if (!ok) return;
+    
+    // Create updated calibration point
+    QVector3D imageCoord(imageX, imageY, imageZ);
+    QVector3D realCoord(realX, realY, realZ);
     
     if (m_mapper->updateCalibrationPoint(currentRow, imageCoord, realCoord, confidence)) {
         updateCalibrationTable();
-        clearInputs();
         showSuccess("Updated calibration point");
     } else {
         showError("Failed to update calibration point");
@@ -646,35 +799,52 @@ void CloudPointToolController::transformTestPoint()
         return;
     }
     
-    // Validate test inputs
-    if (!validateCoordinateInput(m_testImageXEdit, "Test Image X") ||
-        !validateCoordinateInput(m_testImageYEdit, "Test Image Y") ||
-        !validateCoordinateInput(m_testImageZEdit, "Test Image Z")) {
+    // Validate test inputs - only use available inputs from .ui file
+    if (!m_testImageXEdit || !m_testImageYEdit) {
+        showError("Test input fields not found");
         return;
     }
     
-    QVector3D testPoint(getFloatValue(m_testImageXEdit), getFloatValue(m_testImageYEdit), getFloatValue(m_testImageZEdit));
+    bool okX, okY;
+    float testX = m_testImageXEdit->text().toFloat(&okX);
+    float testY = m_testImageYEdit->text().toFloat(&okY);
+    
+    if (!okX || !okY) {
+        showError("Invalid test coordinate values");
+        return;
+    }
+    
+    // Use 0 for Z since we don't have Z input in current UI
+    QVector3D testPoint(testX, testY, 0.0f);
     
     CloudPointMapper::InterpolationMethod method = static_cast<CloudPointMapper::InterpolationMethod>(
-        m_interpolationMethodCombo->currentData().toInt());
+        m_interpolationMethodCombo ? m_interpolationMethodCombo->currentIndex() : 0);
     
     CloudPointMapper::MappingResult result = m_mapper->transformImageToReal(testPoint, method);
     
     if (result.isValid) {
-        setFormattedValue(m_testRealXEdit, result.transformedPoint.x());
-        setFormattedValue(m_testRealYEdit, result.transformedPoint.y());
-        setFormattedValue(m_testRealZEdit, result.transformedPoint.z());
+        // Update output fields if available
+        if (m_testRealXEdit) {
+            m_testRealXEdit->setText(QString::number(result.transformedPoint.x(), 'f', 2));
+        }
+        if (m_testRealYEdit) {
+            m_testRealYEdit->setText(QString::number(result.transformedPoint.y(), 'f', 2));
+        }
         
-        m_testConfidenceLabel->setText(QString::number(result.confidence, 'f', 3));
-        m_testErrorLabel->setText(QString::number(result.estimatedError, 'f', 2) + " mm");
+        // Update confidence and error displays using the local variables we found
+        if (m_testConfidenceEdit) {
+            m_testConfidenceEdit->setText(QString::number(result.confidence, 'f', 3));
+            QString confidenceColor = result.confidence > 0.7 ? "green" : (result.confidence > 0.4 ? "orange" : "red");
+            m_testConfidenceEdit->setStyleSheet(QString("color: %1; font-weight: bold;").arg(confidenceColor));
+        }
         
-        // Color-code confidence and error
-        QString confidenceColor = result.confidence > 0.7 ? "green" : (result.confidence > 0.4 ? "orange" : "red");
-        QString errorColor = result.estimatedError < 2.0 ? "green" : (result.estimatedError < 5.0 ? "orange" : "red");
+        if (m_testErrorEdit) {
+            m_testErrorEdit->setText(QString::number(result.estimatedError, 'f', 2) + " mm");
+            QString errorColor = result.estimatedError < 2.0 ? "green" : (result.estimatedError < 5.0 ? "orange" : "red");
+            m_testErrorEdit->setStyleSheet(QString("color: %1; font-weight: bold;").arg(errorColor));
+        }
         
-        m_testConfidenceLabel->setStyleSheet(QString("color: %1; font-weight: bold;").arg(confidenceColor));
-        m_testErrorLabel->setStyleSheet(QString("color: %1; font-weight: bold;").arg(errorColor));
-        
+        qDebug() << "Test point transformed successfully - X:" << result.transformedPoint.x() << "Y:" << result.transformedPoint.y();
         showSuccess("Test point transformed successfully");
     } else {
         showError(QString("Transformation failed: %1").arg(result.errorMessage));
@@ -843,24 +1013,20 @@ void CloudPointToolController::updateButtonStates()
 
 void CloudPointToolController::clearInputs()
 {
-    m_imageXEdit->clear();
-    m_imageYEdit->clear();
-    m_imageZEdit->clear();
-    m_realXEdit->clear();
-    m_realYEdit->clear();
-    m_realZEdit->clear();
-    m_confidenceSpinBox->setValue(1.0);
-    m_labelEdit->clear();
+    // m_imageXEdit->clear(); // These are now input dialogs
+    // m_imageYEdit->clear();
+    // m_imageZEdit->clear();
+    // m_realXEdit->clear();
+    // m_realYEdit->clear();
+    // m_realZEdit->clear();
+    // m_confidenceSpinBox->setValue(1.0);
+    // m_labelEdit->clear();
 }
 
 bool CloudPointToolController::validateAllInputs()
 {
-    return validateCoordinateInput(m_imageXEdit, "Image X") &&
-           validateCoordinateInput(m_imageYEdit, "Image Y") &&
-           validateCoordinateInput(m_imageZEdit, "Image Z") &&
-           validateCoordinateInput(m_realXEdit, "Real X") &&
-           validateCoordinateInput(m_realYEdit, "Real Y") &&
-           validateCoordinateInput(m_realZEdit, "Real Z");
+    // These are now input dialogs, so no direct validation here
+    return true;
 }
 
 bool CloudPointToolController::validateCoordinateInput(QLineEdit* edit, const QString& fieldName)
@@ -951,7 +1117,15 @@ void CloudPointToolController::onValidationComplete(const CloudPointMapper::Mapp
 
 void CloudPointToolController::onErrorOccurred(const QString& error)
 {
-    showError(error);
+    // Only show critical errors as popups, log others to debug console
+    if (error.contains("failed", Qt::CaseInsensitive) || 
+        error.contains("cannot", Qt::CaseInsensitive) ||
+        error.contains("invalid", Qt::CaseInsensitive)) {
+        showError(error);
+    } else {
+        // Non-critical errors like "No mapping data found" - just log to debug
+        qDebug() << "CloudPointMapper:" << error;
+    }
 }
 
 void CloudPointToolController::updateValidationProgress()
@@ -982,14 +1156,14 @@ void CloudPointToolController::loadInputsFromTableSelection()
     if (currentRow >= 0 && currentRow < m_mapper->getPointCount()) {
         const CloudPointMapper::CalibrationPoint& point = m_mapper->getCalibrationPoint(currentRow);
         
-        setFormattedValue(m_imageXEdit, point.imageCoord.x());
-        setFormattedValue(m_imageYEdit, point.imageCoord.y());
-        setFormattedValue(m_imageZEdit, point.imageCoord.z());
-        setFormattedValue(m_realXEdit, point.realCoord.x());
-        setFormattedValue(m_realYEdit, point.realCoord.y());
-        setFormattedValue(m_realZEdit, point.realCoord.z());
-        m_confidenceSpinBox->setValue(point.confidence);
-        m_labelEdit->setText(point.label);
+        // setFormattedValue(m_imageXEdit, point.imageCoord.x()); // These are now input dialogs
+        // setFormattedValue(m_imageYEdit, point.imageCoord.y());
+        // setFormattedValue(m_imageZEdit, point.imageCoord.z());
+        // setFormattedValue(m_realXEdit, point.realCoord.x());
+        // setFormattedValue(m_realYEdit, point.realCoord.y());
+        // setFormattedValue(m_realZEdit, point.realCoord.z());
+        // m_confidenceSpinBox->setValue(point.confidence);
+        // m_labelEdit->setText(point.label);
     }
 }
 
@@ -1006,14 +1180,38 @@ void CloudPointToolController::onInterpolationMethodChanged(int method)
     // This is handled during transform operations
 }
 
-void CloudPointToolController::onGridResolutionChanged(double resolution)
+void CloudPointToolController::onGridResolutionChanged(int resolution)
 {
-    m_mapper->setGridResolution(resolution);
+    m_mapper->setGridResolution(static_cast<float>(resolution));
 }
 
 void CloudPointToolController::onAutoRebuildToggled(bool enabled)
 {
-    m_mapper->setAutoRebuild(enabled);
+    if (enabled && m_mapper->getPointCount() >= 3) {
+        buildMappingGrid();
+    }
+}
+
+void CloudPointToolController::onTestInputChanged()
+{
+    // Auto-transform when test inputs change (optional feature)
+    // You can disable this if you prefer manual transform only
+    
+    if (!m_testImageXEdit || !m_testImageYEdit) return;
+    
+    QString xText = m_testImageXEdit->text();
+    QString yText = m_testImageYEdit->text();
+    
+    // Only auto-transform if both fields have valid numbers
+    bool okX, okY;
+    xText.toFloat(&okX);
+    yText.toFloat(&okY);
+    
+    if (okX && okY && !xText.isEmpty() && !yText.isEmpty() && m_mapper->getPointCount() >= 3) {
+        // Optional: Auto-transform on input change
+        // Uncomment the next line if you want this behavior
+        // transformTestPoint();
+    }
 }
 
 void CloudPointToolController::pasteCoordinates()
@@ -1028,12 +1226,12 @@ void CloudPointToolController::pasteCoordinates()
     QStringList parts = clipboardText.split(QRegExp("[,\\s]+"));
     if (parts.size() >= 6) {
         // Assume format: imageX, imageY, imageZ, realX, realY, realZ
-        m_imageXEdit->setText(parts[0]);
-        m_imageYEdit->setText(parts[1]);
-        m_imageZEdit->setText(parts[2]);
-        m_realXEdit->setText(parts[3]);
-        m_realYEdit->setText(parts[4]);
-        m_realZEdit->setText(parts[5]);
+        // m_imageXEdit->setText(parts[0]); // These are now input dialogs
+        // m_imageYEdit->setText(parts[1]);
+        // m_imageZEdit->setText(parts[2]);
+        // m_realXEdit->setText(parts[3]);
+        // m_realYEdit->setText(parts[4]);
+        // m_realZEdit->setText(parts[5]);
         showSuccess("Coordinates pasted successfully");
     } else {
         showError("Invalid clipboard format. Expected: imageX, imageY, imageZ, realX, realY, realZ");
@@ -1048,10 +1246,14 @@ void CloudPointToolController::getCurrentRobotPosition()
     int robotId = m_parent->RbID;
     if (robotId >= 0 && robotId < m_parent->RobotParameters.size()) {
         const auto& robotPara = m_parent->RobotParameters[robotId];
-        setFormattedValue(m_realXEdit, robotPara.X);
-        setFormattedValue(m_realYEdit, robotPara.Y);
-        setFormattedValue(m_realZEdit, robotPara.Z);
-        showSuccess("Got current robot position");
+        
+        // Show robot position in message box since we don't have input fields
+        QString message = QString("Current Robot Position:\nX: %1\nY: %2\nZ: %3")
+                         .arg(robotPara.X, 0, 'f', 2)
+                         .arg(robotPara.Y, 0, 'f', 2)
+                         .arg(robotPara.Z, 0, 'f', 2);
+        
+        QMessageBox::information(m_parent, "Robot Position", message);
     } else {
         showError("No robot position available");
     }
@@ -1063,20 +1265,25 @@ void CloudPointToolController::getCurrentImagePosition()
     
     // Get current image position from ImageViewer
     QPointF imagePos = m_parent->ui->gvImageViewer->GetPoint1();
-    setFormattedValue(m_imageXEdit, imagePos.x());
-    setFormattedValue(m_imageYEdit, imagePos.y());
-    setFormattedValue(m_imageZEdit, 0.0f); // Assume Z=0 for 2D image
-    showSuccess("Got current image position");
+    
+    // Show image position in message box since we don't have input fields
+    QString message = QString("Current Image Position:\nX: %1\nY: %2\nZ: 0.0")
+                     .arg(imagePos.x(), 0, 'f', 2)
+                     .arg(imagePos.y(), 0, 'f', 2);
+    
+    QMessageBox::information(m_parent, "Image Position", message);
 }
 
 void CloudPointToolController::autoCollectPoints()
 {
-    showInfo("Auto-collect functionality not yet implemented");
+    // showInfo("Auto-collect functionality not yet implemented");
+    qDebug() << "Auto-collect functionality not yet implemented";
 }
 
 void CloudPointToolController::generateGridVisualization()
 {
-    showInfo("Grid visualization functionality not yet implemented");
+    // showInfo("Grid visualization functionality not yet implemented");
+    qDebug() << "Grid visualization functionality not yet implemented";
 }
 
 void CloudPointToolController::showMappingStats()

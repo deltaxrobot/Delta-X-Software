@@ -38,10 +38,11 @@ void GcodeScript::initializeCloudPointMapper()
         m_cloudPointMapper = new CloudPointMapper(this);
         m_cloudPointMapperInitialized = true;
         
-        // Try to import existing cloud mapping from variables
-        if (m_cloudPointMapper) {
-            m_cloudPointMapper->importFromVariableManager("CloudMapping");
-        }
+        // Don't auto-import during initialization to avoid unnecessary error messages
+        // User can manually import when needed via UI or GScript commands
+        // if (m_cloudPointMapper) {
+        //     m_cloudPointMapper->importFromVariableManager("CloudMapping");
+        // }
     }
 }
 

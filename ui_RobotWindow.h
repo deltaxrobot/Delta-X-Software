@@ -547,7 +547,7 @@ public:
     QPushButton *pbCalculateTestPoint;
     QGroupBox *gbCloudPointMapping;
     QVBoxLayout *verticalLayout_67;
-    QFrame *frame_22;
+    QFrame *fCloudPointMapping;
     QVBoxLayout *verticalLayout_68;
     QFrame *frameCloudPointSettings;
     QGridLayout *gridLayout_45;
@@ -820,7 +820,7 @@ public:
     QRadioButton *rb1000;
     QLabel *label_273;
     QSpacerItem *horizontalSpacer_27;
-    QFrame *frame_221;
+    QFrame *frame_22;
     QVBoxLayout *verticalLayout_12;
     QFrame *frame;
     QHBoxLayout *horizontalLayout_12;
@@ -4171,8 +4171,8 @@ public:
         saPointTool->setWidgetResizable(true);
         wPointTool = new QWidget();
         wPointTool->setObjectName(QString::fromUtf8("wPointTool"));
-        wPointTool->setGeometry(QRect(0, 0, 572, 2600));
-        wPointTool->setMinimumSize(QSize(0, 2600));
+        wPointTool->setGeometry(QRect(0, -2084, 572, 3000));
+        wPointTool->setMinimumSize(QSize(0, 3000));
         wPointTool->setStyleSheet(QString::fromUtf8("QWidget#wPointTool\n"
 "{	\n"
 "	background-color: #1E1E20;\n"
@@ -5264,22 +5264,22 @@ public:
         gbCloudPointMapping->setObjectName(QString::fromUtf8("gbCloudPointMapping"));
         gbCloudPointMapping->setFont(font7);
         gbCloudPointMapping->setCheckable(true);
-        gbCloudPointMapping->setChecked(false);
+        gbCloudPointMapping->setChecked(true);
         verticalLayout_67 = new QVBoxLayout(gbCloudPointMapping);
         verticalLayout_67->setSpacing(6);
         verticalLayout_67->setContentsMargins(11, 11, 11, 11);
         verticalLayout_67->setObjectName(QString::fromUtf8("verticalLayout_67"));
         verticalLayout_67->setContentsMargins(-1, 10, -1, -1);
-        frame_22 = new QFrame(gbCloudPointMapping);
-        frame_22->setObjectName(QString::fromUtf8("frame_22"));
-        frame_22->setMinimumSize(QSize(0, 0));
-        frame_22->setFrameShape(QFrame::StyledPanel);
-        frame_22->setFrameShadow(QFrame::Raised);
-        verticalLayout_68 = new QVBoxLayout(frame_22);
+        fCloudPointMapping = new QFrame(gbCloudPointMapping);
+        fCloudPointMapping->setObjectName(QString::fromUtf8("fCloudPointMapping"));
+        fCloudPointMapping->setMinimumSize(QSize(0, 0));
+        fCloudPointMapping->setFrameShape(QFrame::StyledPanel);
+        fCloudPointMapping->setFrameShadow(QFrame::Raised);
+        verticalLayout_68 = new QVBoxLayout(fCloudPointMapping);
         verticalLayout_68->setSpacing(5);
         verticalLayout_68->setContentsMargins(11, 11, 11, 11);
         verticalLayout_68->setObjectName(QString::fromUtf8("verticalLayout_68"));
-        frameCloudPointSettings = new QFrame(frame_22);
+        frameCloudPointSettings = new QFrame(fCloudPointMapping);
         frameCloudPointSettings->setObjectName(QString::fromUtf8("frameCloudPointSettings"));
         frameCloudPointSettings->setFrameShape(QFrame::StyledPanel);
         frameCloudPointSettings->setFrameShadow(QFrame::Raised);
@@ -5333,7 +5333,7 @@ public:
 
         verticalLayout_68->addWidget(frameCloudPointSettings);
 
-        frameCloudPointCalibration = new QFrame(frame_22);
+        frameCloudPointCalibration = new QFrame(fCloudPointMapping);
         frameCloudPointCalibration->setObjectName(QString::fromUtf8("frameCloudPointCalibration"));
         frameCloudPointCalibration->setFrameShape(QFrame::StyledPanel);
         frameCloudPointCalibration->setFrameShadow(QFrame::Raised);
@@ -5451,7 +5451,7 @@ public:
 
         verticalLayout_68->addWidget(frameCloudPointCalibration);
 
-        frameCloudPointTest = new QFrame(frame_22);
+        frameCloudPointTest = new QFrame(fCloudPointMapping);
         frameCloudPointTest->setObjectName(QString::fromUtf8("frameCloudPointTest"));
         frameCloudPointTest->setFrameShape(QFrame::StyledPanel);
         frameCloudPointTest->setFrameShadow(QFrame::Raised);
@@ -5549,7 +5549,7 @@ public:
 
         verticalLayout_68->addWidget(frameCloudPointTest);
 
-        frameCloudPointStats = new QFrame(frame_22);
+        frameCloudPointStats = new QFrame(fCloudPointMapping);
         frameCloudPointStats->setObjectName(QString::fromUtf8("frameCloudPointStats"));
         frameCloudPointStats->setFrameShape(QFrame::StyledPanel);
         frameCloudPointStats->setFrameShadow(QFrame::Raised);
@@ -5616,7 +5616,7 @@ public:
 
         verticalLayout_68->addWidget(frameCloudPointStats);
 
-        frameCloudPointFiles = new QFrame(frame_22);
+        frameCloudPointFiles = new QFrame(fCloudPointMapping);
         frameCloudPointFiles->setObjectName(QString::fromUtf8("frameCloudPointFiles"));
         frameCloudPointFiles->setFrameShape(QFrame::StyledPanel);
         frameCloudPointFiles->setFrameShadow(QFrame::Raised);
@@ -5664,7 +5664,7 @@ public:
         verticalLayout_68->addWidget(frameCloudPointFiles);
 
 
-        verticalLayout_67->addWidget(frame_22);
+        verticalLayout_67->addWidget(fCloudPointMapping);
 
 
         verticalLayout_59->addWidget(gbCloudPointMapping);
@@ -7581,17 +7581,17 @@ public:
 
         verticalLayout_5->addWidget(frame_30);
 
-        frame_221 = new QFrame(wgJoggingScrollWidget);
-        frame_221->setObjectName(QString::fromUtf8("frame_221"));
-        frame_221->setMinimumSize(QSize(0, 0));
-        frame_221->setFrameShape(QFrame::StyledPanel);
-        frame_221->setFrameShadow(QFrame::Raised);
-        verticalLayout_12 = new QVBoxLayout(frame_221);
+        frame_22 = new QFrame(wgJoggingScrollWidget);
+        frame_22->setObjectName(QString::fromUtf8("frame_22"));
+        frame_22->setMinimumSize(QSize(0, 0));
+        frame_22->setFrameShape(QFrame::StyledPanel);
+        frame_22->setFrameShadow(QFrame::Raised);
+        verticalLayout_12 = new QVBoxLayout(frame_22);
         verticalLayout_12->setSpacing(0);
         verticalLayout_12->setContentsMargins(11, 11, 11, 11);
         verticalLayout_12->setObjectName(QString::fromUtf8("verticalLayout_12"));
         verticalLayout_12->setContentsMargins(0, 0, 0, 0);
-        frame = new QFrame(frame_221);
+        frame = new QFrame(frame_22);
         frame->setObjectName(QString::fromUtf8("frame"));
         frame->setStyleSheet(QString::fromUtf8("QLabel\n"
 "{\n"
@@ -7617,7 +7617,7 @@ public:
 
         verticalLayout_12->addWidget(frame);
 
-        frame_24 = new QFrame(frame_221);
+        frame_24 = new QFrame(frame_22);
         frame_24->setObjectName(QString::fromUtf8("frame_24"));
         frame_24->setMinimumSize(QSize(0, 50));
         frame_24->setStyleSheet(QString::fromUtf8("QFrame\n"
@@ -7753,7 +7753,7 @@ public:
         verticalLayout_12->addWidget(frame_24);
 
 
-        verticalLayout_5->addWidget(frame_221);
+        verticalLayout_5->addWidget(frame_22);
 
         frame_25 = new QFrame(wgJoggingScrollWidget);
         frame_25->setObjectName(QString::fromUtf8("frame_25"));
@@ -10717,6 +10717,7 @@ public:
         QObject::connect(gbTrackingManager, SIGNAL(toggled(bool)), fTrackingManager, SLOT(setVisible(bool)));
         QObject::connect(gbTracking, SIGNAL(toggled(bool)), fTracking, SLOT(setVisible(bool)));
         QObject::connect(gbImageViewer, SIGNAL(toggled(bool)), fImageViewer, SLOT(setVisible(bool)));
+        QObject::connect(gbCloudPointMapping, SIGNAL(toggled(bool)), fCloudPointMapping, SLOT(setVisible(bool)));
 
         pbRunServer->setDefault(false);
         pbOpenWebControl->setDefault(false);

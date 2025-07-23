@@ -5704,15 +5704,15 @@ QFrame
                   <property name="geometry">
                    <rect>
                     <x>0</x>
-                    <y>0</y>
+                    <y>-2084</y>
                     <width>572</width>
-                    <height>2600</height>
+                    <height>3000</height>
                    </rect>
                   </property>
                   <property name="minimumSize">
                    <size>
                     <width>0</width>
-                    <height>2600</height>
+                    <height>3000</height>
                    </size>
                   </property>
                   <property name="styleSheet">
@@ -7576,14 +7576,14 @@ padding: 5px;</string>
                          <bool>true</bool>
                         </property>
                         <property name="checked">
-                         <bool>false</bool>
+                         <bool>true</bool>
                         </property>
                         <layout class="QVBoxLayout" name="verticalLayout_67">
                          <property name="topMargin">
                           <number>10</number>
                          </property>
                          <item>
-                          <widget class="QFrame" name="frame_22">
+                          <widget class="QFrame" name="fCloudPointMapping">
                            <property name="minimumSize">
                             <size>
                              <width>0</width>
@@ -19955,6 +19955,22 @@ QGroupBox
     <hint type="destinationlabel">
      <x>303</x>
      <y>391</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>gbCloudPointMapping</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>fCloudPointMapping</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>303</x>
+     <y>452</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>303</x>
+     <y>461</y>
     </hint>
    </hints>
   </connection>

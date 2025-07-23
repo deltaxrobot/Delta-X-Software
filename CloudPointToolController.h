@@ -139,19 +139,24 @@ public slots:
      * @brief Handle interpolation method change
      * @param method New interpolation method
      */
-    void onInterpolationMethodChanged(int method);
+    void onInterpolationMethodChanged(int index);
 
     /**
      * @brief Handle grid resolution change
      * @param resolution New grid resolution
      */
-    void onGridResolutionChanged(double resolution);
+    void onGridResolutionChanged(int resolution);
 
     /**
      * @brief Handle auto-rebuild toggle
      * @param enabled Auto-rebuild flag
      */
     void onAutoRebuildToggled(bool enabled);
+
+    /**
+     * @brief Handle test input change
+     */
+    void onTestInputChanged();
 
     /**
      * @brief Handle table selection change
@@ -227,10 +232,14 @@ private:
     QGroupBox* m_mainGroupBox;                      ///< Main group box
     QTableWidget* m_calibrationTable;               ///< Calibration points table
     QComboBox* m_interpolationMethodCombo;          ///< Interpolation method selection
-    QDoubleSpinBox* m_gridResolutionSpinBox;        ///< Grid resolution input
+    QSpinBox* m_gridResolutionSpinBox;              ///< Grid resolution input
     QCheckBox* m_autoRebuildCheckBox;               ///< Auto-rebuild checkbox
     QProgressBar* m_validationProgressBar;          ///< Validation progress bar
     QTextEdit* m_statsTextEdit;                     ///< Statistics display
+    
+    // Test result displays
+    QLineEdit* m_testConfidenceEdit;                ///< Test confidence display  
+    QLineEdit* m_testErrorEdit;                     ///< Test error display
     
     // Input controls
     QLineEdit* m_imageXEdit;                        ///< Image X coordinate input
@@ -279,16 +288,15 @@ private:
     QSpinBox* m_autoCollectIntervalSpinBox;         ///< Auto-collect interval
     QCheckBox* m_autoCollectRandomCheckBox;         ///< Auto-collect random positions
     
-    // Private methods
-    void createUI();
-    QGroupBox* createCalibrationPointsGroup();
-    QGroupBox* createMappingSettingsGroup();
-    QGroupBox* createTestPointGroup();
-    QGroupBox* createControlButtonsGroup();
-    QGroupBox* createStatsGroup();
-    QGroupBox* createVariableManagerGroup();
-    QGroupBox* createAutoCollectGroup();
-    
+    // Private methods  
+    // QGroupBox* createCalibrationPointsGroup();        // Commented out - using .ui file
+    // QGroupBox* createMappingSettingsGroup();          // Commented out - using .ui file
+    // QGroupBox* createTestPointGroup();                // Commented out - using .ui file
+    // QGroupBox* createControlButtonsGroup();           // Commented out - using .ui file
+    // QGroupBox* createStatsGroup();                    // Commented out - using .ui file
+    // QGroupBox* createVariableManagerGroup();          // Commented out - using .ui file
+    // QGroupBox* createAutoCollectGroup();              // Commented out - using .ui file
+    // QGroupBox* createStepsGroup();                    // Commented out - not implemented
     void connectSignals();
     void setupCalibrationTable();
     void setupInterpolationMethodCombo();

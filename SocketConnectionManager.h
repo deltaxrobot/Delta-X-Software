@@ -40,6 +40,7 @@ private slots:
     void newWebClientConnected();
 
     void readFromClient();
+    void processWebPostData(const QString& data);
 
 public slots:
     void sendImageToImageClients(const QImage& image);

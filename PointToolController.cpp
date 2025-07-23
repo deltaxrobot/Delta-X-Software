@@ -44,10 +44,11 @@ void PointToolController::initializeUI(QWidget* parentWidget)
     // Initialize cloud point mapping UI
     m_cloudPointController->initializeUI(parentWidget);
     
-    // Try to load existing cloud mapping from variables
-    if (!importCloudMappingFromVariables(m_defaultCloudMappingVariable)) {
-        qDebug() << "No existing cloud mapping found in variables";
-    }
+    // Don't auto-import during initialization to avoid unnecessary error messages  
+    // User can manually import when needed via UI buttons
+    // if (!importCloudMappingFromVariables(m_defaultCloudMappingVariable)) {
+    //     qDebug() << "No existing cloud mapping found in variables";
+    // }
 }
 
 CloudPointToolController* PointToolController::getCloudPointController() const
