@@ -12,6 +12,7 @@
 #include <qmath.h>
 #include "Object.h"
 #include <QMutexLocker>
+#include <QMutex>
 #include <QElapsedTimer>
 #include <QSharedPointer>
 #include <ObjectInfo.h>
@@ -166,6 +167,9 @@ private:
     QList<TaskNode*> nextTaskNodes;
 
     int defaultThreadId = 0;
+    
+    // Thread safety
+    mutable QMutex dataMutex;
 
     void connectInOutNode(TaskNode* previous, TaskNode *next);
 

@@ -864,7 +864,7 @@ private:
     QGraphicsRectItem* blackRectItems[3];
 };
 
-#define MAX_DRAWING_OBJECT_NUMBER 100
+#define MAX_DRAWING_OBJECT_NUMBER 400
 
 class ImageViewer : public QGraphicsView
 {

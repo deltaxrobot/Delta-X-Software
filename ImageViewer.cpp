@@ -226,7 +226,7 @@ void ImageViewer::DrawObjects(QList<QPolygonF> polygons) {
     QList<QPolygonF> pls;
     QMap<QString, QPointF> texts;
 
-    int count = qMin(polygons.size(), 100); // Chỉ xử lý tối đa 100 phần tử
+    int count = qMin(polygons.size(), MAX_DRAWING_OBJECT_NUMBER); // Chỉ xử lý tối đa 100 phần tử
 
     for(int i = 0; i < count; ++i) {
         const QPolygonF& poly = polygons[i];

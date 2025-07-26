@@ -10,6 +10,9 @@ Tracking::Tracking(QObject *parent)
 
 void Tracking::UpdateTrackedObjectsPosition(float moved)
 {
+    // Thread-safe update of TrackedObjects
+    QMutexLocker locker(&dataMutex);
+    
     for (ObjectInfo &object : TrackedObjects) {
         if (object.offset == QVector3D(0, 0, 0)) {
             QVector3D detectionPositionOffset = calculateMoved(detectPosition - capturePosition);
@@ -74,10 +77,16 @@ void Tracking::ChangeObjectInfo(QString cmd)
 
             int i = VariableManager::instance().getVar(QString("project0.tracking0.") + objName + ".UID").toInt();
 
-            if (paras1.at(1).trimmed().toLower() == "true")
-                TrackedObjects[i].isPicked = true;
-            else
-                TrackedObjects[i].isPicked = false;
+            // Thread-safe update of TrackedObjects
+            {
+                QMutexLocker locker(&dataMutex);
+                if (i >= 0 && i < TrackedObjects.size()) {
+                    if (paras1.at(1).trimmed().toLower() == "true")
+                        TrackedObjects[i].isPicked = true;
+                    else
+                        TrackedObjects[i].isPicked = false;
+                }
+            }
         }
     }
 }
@@ -125,7 +134,12 @@ void Tracking::UpdateTrackedObjects(QVector<ObjectInfo> detectedObjects, QString
     if (objectNameList != ListName)
         return;
 
-    DetectedObjects = detectedObjects;
+    // Thread-safe update of DetectedObjects
+    {
+        QMutexLocker locker(&dataMutex);
+        DetectedObjects = detectedObjects;
+    }
+    
     SaveDetectPosition();
 //    qDebug() << "Detect: " << QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss.zzz");
 
@@ -133,8 +147,15 @@ void Tracking::UpdateTrackedObjects(QVector<ObjectInfo> detectedObjects, QString
 
 void Tracking::UpdateTrackedObjectOffsets(QVector3D offset)
 {
+    // Create working copy to avoid race conditions
+    QVector<ObjectInfo> workingDetectedObjects;
+    
+    {
+        QMutexLocker locker(&dataMutex);
+        workingDetectedObjects = DetectedObjects;
+    }
 
-    for (auto& detected : DetectedObjects) {
+    for (auto& detected : workingDetectedObjects) {
         bool isSame = false;
 
         detected.center += offset;
@@ -150,8 +171,12 @@ void Tracking::UpdateTrackedObjectOffsets(QVector3D offset)
         if (isSame == true)
             continue;
 
-        // This is a new object
-        TrackedObjects.append(ObjectInfo(nextID, detected.type, detected.center, detected.width, detected.height, detected.angle));
+        // This is a new object - Thread-safe append
+        {
+            QMutexLocker locker(&dataMutex);
+            TrackedObjects.append(ObjectInfo(nextID, detected.type, detected.center, detected.width, detected.height, detected.angle));
+            ++nextID;
+        }
 
         //TODO: tim cach cap nhat vao bien nhung van dam bao toc do
 //        VariableManager::instance().updateVar((ListName + ".%1.X").arg(nextID), detected.center.x());
@@ -172,8 +197,6 @@ void Tracking::UpdateTrackedObjectOffsets(QVector3D offset)
 //        emit UpdateVar((ListName + ".%1.IsPicked").arg(nextID), detected.isPicked);
 //        emit UpdateVar((ListName + ".%1.Offset").arg(nextID), detected.offset);
 
-        ++nextID;
-
         VariableManager::instance().updateVar(ListName + ".Count", nextID);
 
     }
@@ -182,8 +205,16 @@ void Tracking::UpdateTrackedObjectOffsets(QVector3D offset)
 
 void Tracking::GetObjectsInArea(QString inAreaListName, float min, float max, bool isXdirection)
 {
+    // Create working copy to avoid race conditions
+    QVector<ObjectInfo> workingTrackedObjects;
+    
+    {
+        QMutexLocker locker(&dataMutex);
+        workingTrackedObjects = TrackedObjects;
+    }
+
     int index = 0;
-    for (auto& tracked : TrackedObjects)
+    for (auto& tracked : workingTrackedObjects)
     {
         if (isXdirection == true)
         {
@@ -220,22 +251,26 @@ void Tracking::updatePositions(double displacement) {
         emit TestPointUpdated(TestPointOffset);
     }
 
-    TrackedObjects.erase(std::remove_if(TrackedObjects.begin(), TrackedObjects.end(),
-        [&](auto& obj) {
-            if (!obj.isPicked) {
-                obj.center += effectiveDisplacement;
+    // Thread-safe update and erase with mutex protection
+    {
+        QMutexLocker locker(&dataMutex);
+        TrackedObjects.erase(std::remove_if(TrackedObjects.begin(), TrackedObjects.end(),
+            [&](auto& obj) {
+                if (!obj.isPicked) {
+                    obj.center += effectiveDisplacement;
 
-//                QString xVarName = ListName + "." + QString::number(obj.id) + ".X";
-//                QString yVarName = ListName + "." + QString::number(obj.id) + ".Y";
+    //                QString xVarName = ListName + "." + QString::number(obj.id) + ".X";
+    //                QString yVarName = ListName + "." + QString::number(obj.id) + ".Y";
 
-                //TODO: tim cach cap nhat vao bien nhung van dam bao toc do
-//                emit UpdateVar(xVarName, obj.center.x());
-//                emit UpdateVar(yVarName, obj.center.y());
-            }
+                    //TODO: tim cach cap nhat vao bien nhung van dam bao toc do
+    //                emit UpdateVar(xVarName, obj.center.x());
+    //                emit UpdateVar(yVarName, obj.center.y());
+                }
 
-            return obj.center.x() > X_max || obj.center.x() < X_min || obj.center.y() > Y_max || obj.center.y() < Y_min;
-        }),
-        TrackedObjects.end());
+                return obj.center.x() > X_max || obj.center.x() < X_min || obj.center.y() > Y_max || obj.center.y() < Y_min;
+            }),
+            TrackedObjects.end());
+    }
 
 //    for (auto it = TrackedObjects.begin(); it != TrackedObjects.end(); ) {
 //        if (!it->isPicked) {
@@ -268,11 +303,15 @@ void Tracking::ClearTrackedObjects()
 //        VariableManager::instance().removeVar((ListName + ".%1.A").arg(TrackedObjects.at(i).id));
 //        VariableManager::instance().removeVar((ListName + ".%1.IsPicked").arg(TrackedObjects.at(i).id));
 //    }
+    
+    // Thread-safe clear
+    {
+        QMutexLocker locker(&dataMutex);
+        TrackedObjects.clear();
+        nextID = 0;
+    }
+    
     VariableManager::instance().updateVar(ListName + ".Count", 0);
-    TrackedObjects.clear();
-    nextID = 0;
-
-
 }
 
 void Tracking::RemoveTrackedObjects(int id)

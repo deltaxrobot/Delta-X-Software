@@ -15,6 +15,8 @@
 #include <ObjectInfo.h>
 #include <QVector>
 #include <algorithm>
+#include <QMutex>
+#include <QMutexLocker>
 
 class VirtualEncoder : public QObject {
     Q_OBJECT
@@ -116,6 +118,9 @@ private:
     bool first = true;
     QList<int> updatedObjectIDList;
     QVector<ObjectInfo> DetectedObjects;
+    
+    // Thread safety
+    mutable QMutex dataMutex;
 
 };
 

@@ -96,26 +96,33 @@ void TaskNode::ClearOutputConnections()
 
 QSize TaskNode::GetImageSize()
 {
+    QMutexLocker locker(&dataMutex);
     return QSize(inputMat.cols, inputMat.rows);
 }
 
 QMatrix TaskNode::GetMatrix()
 {
+    QMutexLocker locker(&dataMutex);
     return inputMatrix;
 }
 
 cv::Mat TaskNode::GetOutputImage()
 {
-    return outputMat;
+    QMutexLocker locker(&dataMutex);
+    return outputMat.clone();
 }
 
 cv::Mat TaskNode::GetInputImage()
 {
+    QMutexLocker locker(&dataMutex);
     return inputMat.clone();
 }
 
 Object& TaskNode::GetInputObject()
 {
+    // Note: Returning reference to member variable is inherently unsafe in multithreaded context
+    // Consider returning a copy instead if thread safety is critical for this method
+    QMutexLocker locker(&dataMutex);
     return inputObject;
 }
 
@@ -126,11 +133,17 @@ QPointF *TaskNode::GetInputPointPointer()
 
 bool TaskNode::ClearVariable(QString name)
 {
+    QMutexLocker locker(&dataMutex);
+    
     if (name.toLower() == QString("outputObjects").toLower())
     {
         clear(outputObjects);
-
-        HadOutput(outputObjects);
+        
+        // Create safe copy for signal emission
+        QVector<Object> safeCopy = outputObjects;
+        locker.unlock(); // Unlock before signal emission
+        
+        HadOutput(safeCopy);
 
         return true;
     }
@@ -147,114 +160,156 @@ bool TaskNode::ClearVariable(QString name)
 
 void TaskNode::Input(cv::Size size)
 {
-    this->size = size;
+    {
+        QMutexLocker locker(&dataMutex);
+        this->size = size;
+    }
 
     DoWork();
 }
 
 void TaskNode::Input(cv::Mat mat)
 {
-    inputMat = mat;
+    {
+        QMutexLocker locker(&dataMutex);
+        inputMat = mat;
+    }
 
     DoWork();
 }
 
 void TaskNode::Input2(cv::Mat mat)
 {
+    QMutexLocker locker(&dataMutex);
     inputMat2 = mat;
 }
 
 void TaskNode::Input(QVector<Object> objects)
 {
-    this->inputObjects = objects;
-    inputType = "objects";
+    {
+        QMutexLocker locker(&dataMutex);
+        this->inputObjects = objects;
+        inputType = "objects";
+    }
 
     DoWork();
 }
 
 void TaskNode::Input(QList<int> paras)
 {
-    intParas = paras;
+    {
+        QMutexLocker locker(&dataMutex);
+        intParas = paras;
+    }
 
     DoWork();
 }
 
 void TaskNode::Input(int para)
 {
-    intPara = para;
+    {
+        QMutexLocker locker(&dataMutex);
+        intPara = para;
+    }
 
     DoWork();
 }
 
 void TaskNode::Input(bool value)
 {
-    boolPara = value;
+    {
+        QMutexLocker locker(&dataMutex);
+        boolPara = value;
+    }
 
     DoWork();
 }
 
 void TaskNode::Input(float para)
 {
+    QMutexLocker locker(&dataMutex);
     this->floatPara = para;
 }
 
 void TaskNode::Input(QString name, Range range)
 {
+    QMutexLocker locker(&dataMutex);
     ranges.insert(name, range);
 }
 
 void TaskNode::Input(QMatrix matrix)
 {
-    this->inputMatrix = matrix;
+    {
+        QMutexLocker locker(&dataMutex);
+        this->inputMatrix = matrix;
+    }
 
     DoWork();
 }
 
 void TaskNode::Input(QPointF point)
 {
-    this->inputPoint = point;
-    this->inputType = "point";
+    {
+        QMutexLocker locker(&dataMutex);
+        this->inputPoint = point;
+        this->inputType = "point";
+    }
 
     DoWork();
 }
 
 void TaskNode::Input(cv::Point2f points[])
 {
-    this->inputPoints[0] = points[0];
-    this->inputPoints[1] = points[1];
-    this->inputPoints[2] = points[2];
-    this->inputPoints[3] = points[3];
+    {
+        QMutexLocker locker(&dataMutex);
+        this->inputPoints[0] = points[0];
+        this->inputPoints[1] = points[1];
+        this->inputPoints[2] = points[2];
+        this->inputPoints[3] = points[3];
+    }
 
     DoWork();
 }
 
 void TaskNode::Input(QPolygonF poly)
 {
-    inputPoly = poly;
-
-    if (poly.count() >= 4)
+    bool shouldDoWork = false;
+    
     {
-        this->inputPoints[0] = cv::Point2f(poly.at(0).x(), poly.at(0).y());
-        this->inputPoints[1] = cv::Point2f(poly.at(1).x(), poly.at(1).y());
-        this->inputPoints[2] = cv::Point2f(poly.at(2).x(), poly.at(2).y());
-        this->inputPoints[3] = cv::Point2f(poly.at(3).x(), poly.at(3).y());
+        QMutexLocker locker(&dataMutex);
+        inputPoly = poly;
 
+        if (poly.count() >= 4)
+        {
+            this->inputPoints[0] = cv::Point2f(poly.at(0).x(), poly.at(0).y());
+            this->inputPoints[1] = cv::Point2f(poly.at(1).x(), poly.at(1).y());
+            this->inputPoints[2] = cv::Point2f(poly.at(2).x(), poly.at(2).y());
+            this->inputPoints[3] = cv::Point2f(poly.at(3).x(), poly.at(3).y());
+            shouldDoWork = true;
+        }
+    }
+    
+    if (shouldDoWork)
+    {
         DoWork();
     }
 }
 
 void TaskNode::Input(QRectF rect)
 {
+    QMutexLocker locker(&dataMutex);
     inputRect = rect;
 }
 
 void TaskNode::Input(Object obj)
 {
+    QMutexLocker locker(&dataMutex);
     inputObject.CopyFrom(obj);
 }
 
 void TaskNode::Input(int edgeThresh, int centerThresh, int minRad, int maxRad)
 {
+    QMutexLocker locker(&dataMutex);
     edgeThreshold = edgeThresh;
     centerThreshold = centerThresh;
     minRadius = minRad;
@@ -263,9 +318,10 @@ void TaskNode::Input(int edgeThresh, int centerThresh, int minRad, int maxRad)
 
 void TaskNode::Input(QStringList objects)
 {
-    outputObjects.clear();
-    outputPolys.clear();
-
+    QVector<Object> tempObjects;
+    QList<QPolygonF> tempPolys;
+    
+    // Process data without holding mutex for long time
     foreach(QString obj, objects)
     {
         if (obj.trimmed().isEmpty())
@@ -296,12 +352,21 @@ void TaskNode::Input(QStringList objects)
         if (objInfo.count() > 5)
             object.Angle.Image = objInfo[5].toFloat();
 
-        outputObjects.append(object);
-        outputPolys.append(object.ToPolygon());
+        tempObjects.append(object);
+        tempPolys.append(object.ToPolygon());
+    }
+    
+    // Update output containers with mutex protection
+    {
+        QMutexLocker locker(&dataMutex);
+        outputObjects.clear();
+        outputPolys.clear();
+        outputObjects = tempObjects;
+        outputPolys = tempPolys;
     }
 
-    emit HadOutput(outputObjects);
-    emit HadOutput(outputPolys);
+    emit HadOutput(tempObjects);
+    emit HadOutput(tempPolys);
     emit Done(defaultThreadId);
 }
 
@@ -375,8 +440,22 @@ void TaskNode::ClearOutput()
 
 void TaskNode::DeleteOutput(int id)
 {
-    outputObjects.removeAt(id);
-    HadOutput(outputObjects);
+    QVector<Object> safeCopy;
+    
+    {
+        QMutexLocker locker(&dataMutex);
+        if (id >= 0 && id < outputObjects.size())
+        {
+            outputObjects.removeAt(id);
+            safeCopy = outputObjects;
+        }
+        else
+        {
+            return; // Invalid index
+        }
+    }
+    
+    HadOutput(safeCopy);
 }
 
 void TaskNode::connectInOutNode(TaskNode* previous, TaskNode *next)
@@ -451,10 +530,16 @@ void TaskNode::connectInOutNode(TaskNode* previous, TaskNode *next)
 void TaskNode::doGetImageWork()
 {
 //    qDebug() << "capture: " << DebugTimer.restart();
-    outputMat.release();
-    outputMat = inputMat;
+    cv::Mat safeMat;
+    
+    {
+        QMutexLocker locker(&dataMutex);
+        outputMat.release();
+        outputMat = inputMat;
+        safeMat = outputMat.clone();
+    }
 
-    emit HadOutput(outputMat);
+    emit HadOutput(safeMat);
 }
 
 void TaskNode::doResizeWork()
@@ -799,16 +884,34 @@ void TaskNode::doMappingMatrixWork()
 
 void TaskNode::doGetObjectsWork()
 {
-    if (inputMat.empty())
-        return;
-
-    outputObjects.clear();
-//    sharedObjects.clear();
-    outputPolys.clear();
+    // Create working copies to avoid race conditions
+    cv::Mat workingMat;
+    Object workingInputObject;
+    
+    {
+        QMutexLocker locker(&dataMutex);
+        if (inputMat.empty())
+            return;
+        
+        // Make safe copies of data
+        workingMat = inputMat.clone();
+        
+        // Validate clone was successful
+        if (workingMat.empty()) {
+            qDebug() << "Warning: workingMat is empty after clone in doGetObjectsWork";
+            return;
+        }
+        
+        workingInputObject.CopyFrom(inputObject);  // Use CopyFrom instead of assignment
+        
+        // Clear output containers under mutex protection
+        outputObjects.clear();
+        outputPolys.clear();
+    }
 
     try {
         std::vector<std::vector<cv::Point> > contoursContainer;
-        findContours(inputMat, contoursContainer, cv::RETR_LIST, cv::CHAIN_APPROX_SIMPLE);
+        findContours(workingMat, contoursContainer, cv::RETR_LIST, cv::CHAIN_APPROX_SIMPLE);
 
         const int borderMargin = 5; // Make magic number a named constant
 
@@ -823,8 +926,8 @@ void TaskNode::doGetObjectsWork()
             
             // Check bounds with safer validation
             if (box.x <= borderMargin || box.y <= borderMargin || 
-                (box.x + box.width) >= (inputMat.cols - borderMargin) || 
-                (box.y + box.height) >= (inputMat.rows - borderMargin))
+                (box.x + box.width) >= (workingMat.cols - borderMargin) || 
+                (box.y + box.height) >= (workingMat.rows - borderMargin))
                 continue;
 
             // Validate rect dimensions
@@ -832,12 +935,16 @@ void TaskNode::doGetObjectsWork()
                 continue;
 
             Object obj(rectObject);
-            if (inputObject.IsSameType(obj))
+            if (workingInputObject.IsSameType(obj))
             {
                 Object obPointer(rectObject);
-                outputObjects.append(obPointer);
-//                sharedObjects.append(QSharedPointer<Object>::create(rectObject));
-                outputPolys.append(obPointer.ToPolygon());
+                
+                // Thread-safe append
+                {
+                    QMutexLocker locker(&dataMutex);
+                    outputObjects.append(obPointer);
+                    outputPolys.append(obPointer.ToPolygon());
+                }
             }
         }
     }
@@ -847,27 +954,61 @@ void TaskNode::doGetObjectsWork()
         return;
     }
 
-    emit HadOutput(outputObjects);
-//    emit HadOutput(sharedObjects);
-    emit HadOutput(outputPolys);
+    // Emit signals with thread-safe copies
+    QVector<Object> safeOutputObjects;
+    QList<QPolygonF> safeOutputPolys;
+    
+    {
+        QMutexLocker locker(&dataMutex);
+        safeOutputObjects = outputObjects;
+        safeOutputPolys = outputPolys;
+    }
+    
+    emit HadOutput(safeOutputObjects);
+    emit HadOutput(safeOutputPolys);
 }
 
 void TaskNode::doFindCirclesWork()
 {
-    if (inputMat.empty())
-        return;
-
-    outputObjects.clear();
-    outputPolys.clear();
+    // Create working copies to avoid race conditions
+    cv::Mat workingMat;
+    Object workingInputObject;
+    int workingMinRadius, workingMaxRadius;
+    int workingEdgeThreshold, workingCenterThreshold;
+    
+    {
+        QMutexLocker locker(&dataMutex);
+        if (inputMat.empty())
+            return;
+        
+        // Make safe copies of data
+        workingMat = inputMat.clone();
+        
+        // Validate clone was successful
+        if (workingMat.empty()) {
+            qDebug() << "Warning: workingMat is empty after clone in doFindCirclesWork";
+            return;
+        }
+        
+        workingInputObject.CopyFrom(inputObject);  // Use CopyFrom instead of assignment
+        workingMinRadius = minRadius;
+        workingMaxRadius = maxRadius;
+        workingEdgeThreshold = edgeThreshold;
+        workingCenterThreshold = centerThreshold;
+        
+        // Clear output containers under mutex protection
+        outputObjects.clear();
+        outputPolys.clear();
+    }
 
     try {
         cv::Mat grayMat;
         
         // Convert to grayscale if needed
-        if (inputMat.channels() == 3)
-            cv::cvtColor(inputMat, grayMat, cv::COLOR_BGR2GRAY);
+        if (workingMat.channels() == 3)
+            cv::cvtColor(workingMat, grayMat, cv::COLOR_BGR2GRAY);
         else
-            grayMat = inputMat.clone();
+            grayMat = workingMat.clone();
 
         // Apply Gaussian blur to reduce noise
         cv::GaussianBlur(grayMat, grayMat, cv::Size(5, 5), 0);
@@ -876,11 +1017,11 @@ void TaskNode::doFindCirclesWork()
         
         // Use HoughCircles to detect circles
         cv::HoughCircles(grayMat, circles, cv::HOUGH_GRADIENT, 1, 
-                        std::max(minRadius * 2, 30),  // minDist between circle centers
-                        edgeThreshold,                 // higher threshold for edge detection
-                        centerThreshold,               // accumulator threshold for center detection
-                        minRadius,                     // minimum radius
-                        maxRadius);                    // maximum radius
+                        std::max(workingMinRadius * 2, 30),  // minDist between circle centers
+                        workingEdgeThreshold,                 // higher threshold for edge detection
+                        workingCenterThreshold,               // accumulator threshold for center detection
+                        workingMinRadius,                     // minimum radius
+                        workingMaxRadius);                    // maximum radius
 
         const int borderMargin = 5;
 
@@ -891,8 +1032,8 @@ void TaskNode::doFindCirclesWork()
 
             // Check if circle is within image bounds with margin
             if (center.x - radius <= borderMargin || center.y - radius <= borderMargin ||
-                center.x + radius >= (inputMat.cols - borderMargin) || 
-                center.y + radius >= (inputMat.rows - borderMargin))
+                center.x + radius >= (workingMat.cols - borderMargin) || 
+                center.y + radius >= (workingMat.rows - borderMargin))
                 continue;
 
             // Create Object from circle
@@ -905,11 +1046,16 @@ void TaskNode::doFindCirclesWork()
             Object obj(rectObject);
             
             // Apply object filtering if needed
-            if (inputObject.Type.isEmpty() || inputObject.IsSameType(obj))
+            if (workingInputObject.Type.isEmpty() || workingInputObject.IsSameType(obj))
             {
                 Object circleObject(rectObject);
-                outputObjects.append(circleObject);
-                outputPolys.append(circleObject.ToPolygon());
+                
+                // Thread-safe append
+                {
+                    QMutexLocker locker(&dataMutex);
+                    outputObjects.append(circleObject);
+                    outputPolys.append(circleObject.ToPolygon());
+                }
             }
         }
     }
@@ -919,8 +1065,18 @@ void TaskNode::doFindCirclesWork()
         return;
     }
 
-    emit HadOutput(outputObjects);
-    emit HadOutput(outputPolys);
+    // Emit signals with thread-safe copies
+    QVector<Object> safeOutputObjects;
+    QList<QPolygonF> safeOutputPolys;
+    
+    {
+        QMutexLocker locker(&dataMutex);
+        safeOutputObjects = outputObjects;
+        safeOutputPolys = outputPolys;
+    }
+    
+    emit HadOutput(safeOutputObjects);
+    emit HadOutput(safeOutputPolys);
     emit Done(defaultThreadId);
 }
 

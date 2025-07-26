@@ -706,7 +706,7 @@ QToolBox QScrollArea&gt;QWidget&gt;QWidget
               <enum>QTabWidget::Rounded</enum>
              </property>
              <property name="currentIndex">
-              <number>3</number>
+              <number>1</number>
              </property>
              <property name="usesScrollButtons">
               <bool>true</bool>
@@ -1606,8 +1606,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
                               <rect>
                                <x>0</x>
                                <y>0</y>
-                               <width>312</width>
-                               <height>145</height>
+                               <width>408</width>
+                               <height>135</height>
                               </rect>
                              </property>
                              <property name="styleSheet">
@@ -1783,8 +1783,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
                   <property name="geometry">
                    <rect>
                     <x>0</x>
-                    <y>0</y>
-                    <width>532</width>
+                    <y>-1265</y>
+                    <width>590</width>
                     <height>2900</height>
                    </rect>
                   </property>
@@ -5705,7 +5705,7 @@ QFrame
                    <rect>
                     <x>0</x>
                     <y>0</y>
-                    <width>644</width>
+                    <width>572</width>
                     <height>3000</height>
                    </rect>
                   </property>
@@ -8359,8 +8359,8 @@ QHeaderView::section {
                   <property name="geometry">
                    <rect>
                     <x>0</x>
-                    <y>-455</y>
-                    <width>510</width>
+                    <y>0</y>
+                    <width>572</width>
                     <height>1600</height>
                    </rect>
                   </property>
@@ -10334,7 +10334,7 @@ QLabel
                    <rect>
                     <x>0</x>
                     <y>0</y>
-                    <width>625</width>
+                    <width>554</width>
                     <height>2000</height>
                    </rect>
                   </property>
