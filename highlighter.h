@@ -44,6 +44,7 @@
 #include <QSyntaxHighlighter>
 #include <QHash>
 #include <QTextCharFormat>
+#include <QRegularExpression>
 
 class QTextDocument;
 
@@ -67,16 +68,19 @@ private:
     void setAsmRules();
     void setCssRules();
     void setSqlRules();
+    
+    // Helper method for safe regex pattern creation
+    bool addHighlightingRule(const QString &pattern, const QTextCharFormat &format);
 
     struct HighlightingRule
     {
-        QRegExp pattern;
+        QRegularExpression pattern;
         QTextCharFormat format;
     };
     QVector<HighlightingRule> highlightingRules;
 
-    QRegExp commentStartExpression;
-    QRegExp commentEndExpression;
+    QRegularExpression commentStartExpression;
+    QRegularExpression commentEndExpression;
 
     QTextCharFormat keywordFormat;
     QTextCharFormat numberFormat;

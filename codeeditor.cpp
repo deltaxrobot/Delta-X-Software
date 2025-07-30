@@ -74,13 +74,19 @@ CodeEditor::CodeEditor(QWidget *parent) : QTextEdit(parent)
 int CodeEditor::lineNumberAreaWidth()
 {
     int digits = 1;
-    int max = qMax(1, document()->blockCount());
+    QTextDocument *doc = document();
+    if (!doc) {
+        qDebug() << "Warning: Null document in lineNumberAreaWidth";
+        return 50; // Return reasonable default width
+    }
+    
+    int max = qMax(1, doc->blockCount());
     while (max >= 10) {
         max /= 10;
         ++digits;
     }
 
-    int space = 3 + fontMetrics().width(QLatin1Char('9')) * digits;
+    int space = 3 + fontMetrics().horizontalAdvance(QLatin1Char('9')) * digits;
 
     return space;
 }
@@ -88,7 +94,7 @@ int CodeEditor::lineNumberAreaWidth()
 void CodeEditor::setTabWidth(int width)
 {
     QFontMetrics metrics(font());
-    setTabStopWidth(width * metrics.width(' '));
+    setTabStopDistance(width * metrics.horizontalAdvance(' '));
 }
 
 //![extraAreaWidth]
@@ -127,29 +133,47 @@ void CodeEditor::setLockState(int state)
 void CodeEditor::commentSelectedLines()
 {
     QTextCursor cursor = textCursor();
+    if (cursor.isNull()) {
+        qDebug() << "Warning: Invalid cursor in commentSelectedLines";
+        return;
+    }
+    
     cursor.beginEditBlock();
 
     int startPos = cursor.selectionStart();
     int endPos = cursor.selectionEnd();
+    
+    // Validate selection positions
+    if (startPos < 0 || endPos < 0 || startPos > endPos) {
+        cursor.endEditBlock();
+        return;
+    }
 
     cursor.setPosition(startPos, QTextCursor::MoveAnchor);
     cursor.movePosition(QTextCursor::StartOfLine);
 
     bool allLinesCommented = true;
-    while (cursor.position() <= endPos) {
+    int previousPosition = -1;
+    while (cursor.position() <= endPos && cursor.position() != previousPosition) {
+        previousPosition = cursor.position();
         cursor.movePosition(QTextCursor::Right, QTextCursor::KeepAnchor, 1);
         if (cursor.selectedText() != ";") {
             allLinesCommented = false;
             break;
         }
-        cursor.movePosition(QTextCursor::Down);
+        if (!cursor.movePosition(QTextCursor::Down)) {
+            // Cannot move down, we're at the last line
+            break;
+        }
         cursor.movePosition(QTextCursor::StartOfLine);
     }
 
     cursor.setPosition(startPos, QTextCursor::MoveAnchor);
     cursor.movePosition(QTextCursor::StartOfLine);
 
-    while (cursor.position() <= endPos) {
+    previousPosition = -1;
+    while (cursor.position() <= endPos && cursor.position() != previousPosition) {
+        previousPosition = cursor.position();
         if (allLinesCommented) {
             cursor.movePosition(QTextCursor::Right, QTextCursor::KeepAnchor, 1);
             if (cursor.selectedText() == ";") {
@@ -158,7 +182,10 @@ void CodeEditor::commentSelectedLines()
         } else {
             cursor.insertText(";");
         }
-        cursor.movePosition(QTextCursor::Down);
+        if (!cursor.movePosition(QTextCursor::Down)) {
+            // Cannot move down, we're at the last line
+            break;
+        }
         cursor.movePosition(QTextCursor::StartOfLine);
     }
 
@@ -168,18 +195,34 @@ void CodeEditor::commentSelectedLines()
 void CodeEditor::indentText()
 {
     QTextCursor cursor = textCursor();
+    if (cursor.isNull()) {
+        qDebug() << "Warning: Invalid cursor in indentText";
+        return;
+    }
+    
     if (!cursor.selectedText().isEmpty()) {
         cursor.beginEditBlock();
 
         int startPos = cursor.selectionStart();
         int endPos = cursor.selectionEnd();
+        
+        // Validate selection positions
+        if (startPos < 0 || endPos < 0 || startPos > endPos) {
+            cursor.endEditBlock();
+            return;
+        }
 
         cursor.setPosition(startPos, QTextCursor::MoveAnchor);
         cursor.movePosition(QTextCursor::StartOfLine);
 
-        while (cursor.position() <= endPos) {
+        int previousPosition = -1;
+        while (cursor.position() <= endPos && cursor.position() != previousPosition) {
+            previousPosition = cursor.position();
             cursor.insertText("\t");
-            cursor.movePosition(QTextCursor::Down);
+            if (!cursor.movePosition(QTextCursor::Down)) {
+                // Cannot move down, we're at the last line
+                break;
+            }
             cursor.movePosition(QTextCursor::StartOfLine);
         }
 
@@ -198,20 +241,38 @@ void CodeEditor::indentText()
 void CodeEditor::deleleIndentText()
 {
     QTextCursor cursor = textCursor();
+    if (cursor.isNull()) {
+        qDebug() << "Warning: Invalid cursor in deleleIndentText";
+        return;
+    }
+    
     if (!cursor.selectedText().isEmpty()) {
         cursor.beginEditBlock();
 
         int startPos = cursor.selectionStart();
         int endPos = cursor.selectionEnd();
+        
+        // Validate selection positions
+        if (startPos < 0 || endPos < 0 || startPos > endPos) {
+            cursor.endEditBlock();
+            return;
+        }
 
         cursor.setPosition(startPos, QTextCursor::MoveAnchor);
         cursor.movePosition(QTextCursor::StartOfLine);
 
-        while (cursor.position() <= endPos) {
+        int previousPosition = -1;
+        while (cursor.position() <= endPos && cursor.position() != previousPosition) {
+            previousPosition = cursor.position();
             // nếu dòng hiện tại có ký tự tab thì xóa ký tự tab đó
-            if (cursor.block().text().startsWith("\t"))
+            QTextBlock currentBlock = cursor.block();
+            if (currentBlock.isValid() && currentBlock.text().startsWith("\t")) {
                 cursor.deleteChar();
-            cursor.movePosition(QTextCursor::Down);
+            }
+            if (!cursor.movePosition(QTextCursor::Down)) {
+                // Cannot move down, we're at the last line
+                break;
+            }
             cursor.movePosition(QTextCursor::StartOfLine);
         }
 
@@ -220,8 +281,10 @@ void CodeEditor::deleleIndentText()
     else
     {
         // nếu dòng hiện tại có ký tự tab thì xóa ký tự tab đó
-        if (cursor.block().text().startsWith("\t"))
+        QTextBlock currentBlock = cursor.block();
+        if (currentBlock.isValid() && currentBlock.text().startsWith("\t")) {
             cursor.deletePreviousChar();
+        }
 
         // Cập nhật cursor của QTextEdit
         setTextCursor(cursor);
@@ -260,10 +323,20 @@ void CodeEditor::keyPressEvent(QKeyEvent *event)
 
 void CodeEditor::mousePressEvent(QMouseEvent *event)
 {
+    if (!event) {
+        qDebug() << "Warning: Null event in mousePressEvent";
+        return;
+    }
+    
     QTextEdit::mousePressEvent(event);
     QTextCursor cursor = cursorForPosition(event->pos());
+    
+    if (cursor.isNull()) {
+        qDebug() << "Warning: Invalid cursor in mousePressEvent";
+        return;
+    }
+    
     int lineNumber = cursor.blockNumber();
-
     QString lineText = cursor.block().text();
 
     emit lineClicked(lineNumber, lineText);
@@ -277,6 +350,12 @@ void CodeEditor::highlightCurrentLine()
 {
     QList<QTextEdit::ExtraSelection> extraSelections;
 
+    QTextCursor cursor = textCursor();
+    if (cursor.isNull()) {
+        // If cursor is invalid, don't highlight anything
+        setExtraSelections(extraSelections);
+        return;
+    }
 
     QTextEdit::ExtraSelection selection;
 
@@ -285,8 +364,7 @@ void CodeEditor::highlightCurrentLine()
     selection.format.setBackground(lineColor);
     selection.format.setProperty(QTextFormat::FullWidthSelection, true);
 
-    selection.cursor = textCursor();
-
+    selection.cursor = cursor;
     selection.cursor.clearSelection();
     extraSelections.append(selection);
 
@@ -331,17 +409,27 @@ void CodeEditor::lineNumberAreaPaintEvent(QPaintEvent *event)
 void CodeEditor::insertFromMimeData(const QMimeData *source)
 {
     // Override to ensure only plain text is inserted, preventing rich text formatting issues
-    if (source->hasText()) {
+    if (source && source->hasText()) {
         QString plainText = source->text();
         
         // Clean the text to remove any unwanted characters
         plainText = plainText.replace('\r', ""); // Remove carriage returns
         
+        // Validate cursor before insertion
+        QTextCursor cursor = textCursor();
+        if (cursor.isNull()) {
+            qDebug() << "Warning: Invalid cursor in insertFromMimeData";
+            return;
+        }
+        
         // Insert only plain text to avoid formatting conflicts with syntax highlighter
-        textCursor().insertText(plainText);
-    } else {
+        cursor.insertText(plainText);
+        setTextCursor(cursor);
+    } else if (source) {
         // Fallback to default behavior if no text is available
         QTextEdit::insertFromMimeData(source);
+    } else {
+        qDebug() << "Warning: Null source in insertFromMimeData";
     }
 }
 

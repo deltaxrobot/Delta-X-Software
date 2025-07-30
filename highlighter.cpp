@@ -1,48 +1,67 @@
 #include <QtGui>
+#include <QRegularExpression>
+#include <QDebug>
 
 #include "highlighter.h"
 
 Highlighter::Highlighter(QString filetype, QString theme, QTextDocument *parent)
     : QSyntaxHighlighter(parent)
 {
-    commentStartExpression = QRegExp("");
-    commentEndExpression = QRegExp("");
+    // Initialize with invalid expressions
+    commentStartExpression = QRegularExpression();
+    commentEndExpression = QRegularExpression();
+    
+    // Validate input parameters
+    if (filetype.isEmpty()) {
+        qDebug() << "Warning: Empty filetype in Highlighter constructor";
+        filetype = "txt"; // Default fallback
+    }
+    if (theme.isEmpty()) {
+        qDebug() << "Warning: Empty theme in Highlighter constructor"; 
+        theme = "monokai"; // Default fallback
+    }
+    
     setupHighlighter(filetype, theme);
 }
 
 void Highlighter::setupHighlighter(QString filetype, QString theme){
+    // Clear existing rules first
+    highlightingRules.clear();
+    
     // Supported languages by type/syntax style
     compiledLanguages = QString("adb abs c cpp cs dart go h java m rs rlib swift vala vapi").split(" ");
     scriptingLanguages = QString("bat coffee hs js lua php pl ps1 py rb sh vb").split(" ");
     markupLanguages = QString("htm html json twig ui xml").split(" ");
 
+    // Validate and set color values
+    if (theme.isEmpty()) {
+        qDebug() << "Warning: Empty theme provided, using default";
+        theme = "monokai";
+    }
     setColorValues(theme);
 
-    if (compiledLanguages.contains(filetype)){
-
+    // Validate filetype and apply appropriate rules
+    if (filetype.isEmpty()) {
+        qDebug() << "Warning: Empty filetype provided, using compiled language rules as default";
         setCompiledLanguageRules();
-
-    } else if (scriptingLanguages.contains(filetype)){
-
+    } else if (compiledLanguages.contains(filetype.toLower())){
+        setCompiledLanguageRules();
+    } else if (scriptingLanguages.contains(filetype.toLower())){
         setScriptingLanguageRules();
-
-    } else if (markupLanguages.contains(filetype)){
-
+    } else if (markupLanguages.contains(filetype.toLower())){
         setMarkupLanguageRules();
-
-    } else if (filetype == "asm"){
-
+    } else if (filetype.toLower() == "asm"){
         setAsmRules();
-
-    } else if (filetype == "css"){
-
+    } else if (filetype.toLower() == "css"){
         setCssRules();
-
-    } else if (filetype == "sql"){
-
+    } else if (filetype.toLower() == "sql"){
         setSqlRules();
-
+    } else {
+        qDebug() << "Warning: Unknown filetype:" << filetype << "using compiled language rules as fallback";
+        setCompiledLanguageRules();
     }
+    
+    qDebug() << "Highlighter setup complete for filetype:" << filetype << "with" << highlightingRules.size() << "rules";
 }
 
 void Highlighter::setTheme(QString filetype, QString theme){
@@ -50,11 +69,34 @@ void Highlighter::setTheme(QString filetype, QString theme){
     rehighlight();
 }
 
+// Helper method to safely create regex patterns
+bool Highlighter::addHighlightingRule(const QString &pattern, const QTextCharFormat &format) {
+    QRegularExpression regex(pattern);
+    if (!regex.isValid()) {
+        qDebug() << "Warning: Invalid regex pattern:" << pattern << "Error:" << regex.errorString();
+        return false;
+    }
+    
+    HighlightingRule rule;
+    rule.pattern = regex;
+    rule.format = format;
+    highlightingRules.append(rule);
+    return true;
+}
+
 void Highlighter::setCompiledLanguageRules(){
     HighlightingRule rule;
+    
+    // Clear existing rules
+    highlightingRules.clear();
+    
     //Functions
     functionFormat.setForeground(functionsColor);
-    rule.pattern = QRegExp("\\b[A-Za-z0-9_]+(?=\\()");
+    rule.pattern = QRegularExpression("\\b[A-Za-z0-9_]+(?=\\()");
+    if (!rule.pattern.isValid()) {
+        qDebug() << "Warning: Invalid function pattern in setCompiledLanguageRules";
+        return;
+    }
     rule.format = functionFormat;
     highlightingRules.append(rule);
 
@@ -77,51 +119,65 @@ void Highlighter::setCompiledLanguageRules(){
                     << "\\btry\\b" << "\\bcatch\\b" << "\\bthrow\\b" << "\\bbreak\\b";
 
     foreach (const QString &pattern, keywordPatterns) {
-        rule.pattern = QRegExp(pattern);
+        rule.pattern = QRegularExpression(pattern);
+        if (!rule.pattern.isValid()) {
+            qDebug() << "Warning: Invalid keyword pattern:" << pattern;
+            continue;
+        }
         rule.format = keywordFormat;
         highlightingRules.append(rule);
     }
 
     //Nums :D
     numberFormat.setForeground(numColor);
-    rule.pattern = QRegExp("\\b[0-9\\.]+\\b");
+    rule.pattern = QRegularExpression("\\b[0-9\\.]+\\b");
+    if (!rule.pattern.isValid()) {
+        qDebug() << "Warning: Invalid number pattern in setCompiledLanguageRules";
+        return;
+    }
     rule.format = numberFormat;
     highlightingRules.append(rule);
 
     //Quotes
     quotationFormat.setForeground(valueColor);
-    rule.pattern = QRegExp("\".*\"");
-    rule.format = quotationFormat;
-    highlightingRules.append(rule);
+    rule.pattern = QRegularExpression("\".*\"");
+    if (rule.pattern.isValid()) {
+        rule.format = quotationFormat;
+        highlightingRules.append(rule);
+    }
 
     quotationFormat.setForeground(valueColor);
-    rule.pattern = QRegExp("'.*'");
-    rule.format = quotationFormat;
-    highlightingRules.append(rule);
+    rule.pattern = QRegularExpression("'.*'");
+    if (rule.pattern.isValid()) {
+        rule.format = quotationFormat;
+        highlightingRules.append(rule);
+    }
 
     //Format strings
     formatStringFormat.setForeground(formatStringColor);
-    rule.pattern = QRegExp("%[sdifFuoxXeEgGaAcpn]+\\b");
-    rule.format = formatStringFormat;
-    highlightingRules.append(rule);
+    rule.pattern = QRegularExpression("%[sdifFuoxXeEgGaAcpn]+\\b");
+    if (rule.pattern.isValid()) {
+        rule.format = formatStringFormat;
+        highlightingRules.append(rule);
+    }
 
     //Comments
     singleLineCommentFormat.setFontItalic(true);
     singleLineCommentFormat.setForeground(commentColor);
-    rule.pattern = QRegExp("//[^\n]*");
+    rule.pattern = QRegularExpression("//[^\n]*");
     rule.format = singleLineCommentFormat;
     highlightingRules.append(rule);
 
     singleLineCommentFormat.setForeground(commentColor);
-    rule.pattern = QRegExp("#[^\n]*");
+    rule.pattern = QRegularExpression("#[^\n]*");
     rule.format = singleLineCommentFormat;
     highlightingRules.append(rule);
 
     multiLineCommentFormat.setFontItalic(true);
     multiLineCommentFormat.setForeground(commentColor);
 
-    commentStartExpression = QRegExp("/\\*");
-    commentEndExpression = QRegExp("\\*/");
+    commentStartExpression = QRegularExpression("/\\*");
+    commentEndExpression = QRegularExpression("\\*/");
 }
 
 void Highlighter::setScriptingLanguageRules(){
@@ -129,7 +185,7 @@ void Highlighter::setScriptingLanguageRules(){
     //Functions
     functionFormat.setFontItalic(true);
     functionFormat.setForeground(functionsColor);
-    rule.pattern = QRegExp("\\b[A-Za-z0-9_]+(?=\\()");
+    rule.pattern = QRegularExpression("\\b[A-Za-z0-9_]+(?=\\()");
     rule.format = functionFormat;
     highlightingRules.append(rule);
 
@@ -145,73 +201,73 @@ void Highlighter::setScriptingLanguageRules(){
                     << "\\bprint\\b" << "\\becho\\b" << "\\btry\\b" << "\\bexcept\\b"
                     << "\\bend\\b";
     foreach (const QString &pattern, keywordPatterns) {
-        rule.pattern = QRegExp(pattern);
+        rule.pattern = QRegularExpression(pattern);
         rule.format = keywordFormat;
         highlightingRules.append(rule);
     }
 
     //Operators :D
     operatorFormat.setForeground(operatorColor);
-    rule.pattern = QRegExp("\\b[+-*/=<>]+\\b");
+    rule.pattern = QRegularExpression("\\b[+-*/=<>]+\\b");
     rule.format = operatorFormat;
     highlightingRules.append(rule);
 
     operatorFormat.setForeground(operatorColor);
-    rule.pattern = QRegExp("\\s[+-*/=<>]+\\s");
+    rule.pattern = QRegularExpression("\\s[+-*/=<>]+\\s");
     rule.format = operatorFormat;
     highlightingRules.append(rule);
 
     //php pl vars
     phpVarFormat.setForeground(varColor);
-    rule.pattern = QRegExp("\\$\\w+\\b");
+    rule.pattern = QRegularExpression("\\$\\w+\\b");
     rule.format = phpVarFormat;
     highlightingRules.append(rule);
 
     //Ruby class/instance vars
     rubyVarFormat.setForeground(varColor);
-    rule.pattern = QRegExp("@\\b\\w+\\b");
+    rule.pattern = QRegularExpression("@\\b\\w+\\b");
     rule.format = rubyVarFormat;
     highlightingRules.append(rule);
 
     rubyVarFormat.setForeground(varColor);
-    rule.pattern = QRegExp("@@\\b\\w+\\b");
+    rule.pattern = QRegularExpression("@@\\b\\w+\\b");
     rule.format = rubyVarFormat;
     highlightingRules.append(rule);
 
     //Nums :D
     numberFormat.setForeground(numColor);
-    rule.pattern = QRegExp("\\b[0-9\\.]+\\b");
+    rule.pattern = QRegularExpression("\\b[0-9\\.]+\\b");
     rule.format = numberFormat;
     highlightingRules.append(rule);
 
     //Quotes
     quotationFormat.setForeground(valueColor);
-    rule.pattern = QRegExp("\".*\"");
+    rule.pattern = QRegularExpression("\".*\"");
     rule.format = quotationFormat;
     highlightingRules.append(rule);
 
     quotationFormat.setForeground(valueColor);
-    rule.pattern = QRegExp("'.*'");
+    rule.pattern = QRegularExpression("'.*'");
     rule.format = quotationFormat;
     highlightingRules.append(rule);
 
     //Comments
     singleLineCommentFormat.setFontItalic(true);
     singleLineCommentFormat.setForeground(commentColor);
-    rule.pattern = QRegExp("//[^\n]*");
+    rule.pattern = QRegularExpression("//[^\n]*");
     rule.format = singleLineCommentFormat;
     highlightingRules.append(rule);
 
     singleLineCommentFormat.setForeground(commentColor);
-    rule.pattern = QRegExp("#[^\n]*");
+    rule.pattern = QRegularExpression("#[^\n]*");
     rule.format = singleLineCommentFormat;
     highlightingRules.append(rule);
 
     multiLineCommentFormat.setFontItalic(true);
     multiLineCommentFormat.setForeground(commentColor);
 
-    commentStartExpression = QRegExp("/\\*");
-    commentEndExpression = QRegExp("\\*/");
+    commentStartExpression = QRegularExpression("/\\*");
+    commentEndExpression = QRegularExpression("\\*/");
 }
 
 void Highlighter::setMarkupLanguageRules(){
@@ -219,23 +275,23 @@ void Highlighter::setMarkupLanguageRules(){
     //Functions
     functionFormat.setFontItalic(true);
     functionFormat.setForeground(functionsColor);
-    rule.pattern = QRegExp("\\b[A-Za-z0-9_]+(?=\\()");
+    rule.pattern = QRegularExpression("\\b[A-Za-z0-9_]+(?=\\()");
     rule.format = functionFormat;
     highlightingRules.append(rule);
 
     // Tags
     tagFormat.setForeground(tagColor);
-    rule.pattern = QRegExp("<\\w+\\s+[^>]*>");
+    rule.pattern = QRegularExpression("<\\w+\\s+[^>]*>");
     rule.format = tagFormat;
     highlightingRules.append(rule);
 
     tagFormat.setForeground(tagColor);
-    rule.pattern = QRegExp("<\\w+>");
+    rule.pattern = QRegularExpression("<\\w+>");
     rule.format = tagFormat;
     highlightingRules.append(rule);
 
     tagFormat.setForeground(tagColor);
-    rule.pattern = QRegExp("</\\b\\w+\\b>");
+    rule.pattern = QRegularExpression("</\\b\\w+\\b>");
     rule.format = tagFormat;
     highlightingRules.append(rule);
 
@@ -245,24 +301,24 @@ void Highlighter::setMarkupLanguageRules(){
                     << "\\blang\\b" << "\\bcharset\\b" << "\\bname\\b" << "\\bcontent\\b"
                     << "\\brel\\b" << "\\btype\\b";
     foreach (const QString &pattern, keywordPatterns) {
-        rule.pattern = QRegExp(pattern);
+        rule.pattern = QRegularExpression(pattern);
         rule.format = keywordFormat;
         highlightingRules.append(rule);
     }
 
 //    classFormat.setForeground(QColor(209, 84, 84));
-//    rule.pattern = QRegExp("\\bQ[A-Za-z]+\\b");
+//    rule.pattern = QRegularExpression("\\bQ[A-Za-z]+\\b");
 //    rule.format = classFormat;
 //    highlightingRules.append(rule);
 
     //Quotes
     quotationFormat.setForeground(valueColor);
-    rule.pattern = QRegExp("\".*\"");
+    rule.pattern = QRegularExpression("\".*\"");
     rule.format = quotationFormat;
     highlightingRules.append(rule);
 
     quotationFormat.setForeground(valueColor);
-    rule.pattern = QRegExp("'.*'");
+    rule.pattern = QRegularExpression("'.*'");
     rule.format = quotationFormat;
     highlightingRules.append(rule);
 
@@ -270,21 +326,21 @@ void Highlighter::setMarkupLanguageRules(){
     multiLineCommentFormat.setFontItalic(true);
     multiLineCommentFormat.setForeground(commentColor);
 
-    commentStartExpression = QRegExp("<!--");
-    commentEndExpression = QRegExp("-->");
+    commentStartExpression = QRegularExpression("<!--");
+    commentEndExpression = QRegularExpression("-->");
 }
 
 void Highlighter::setAsmRules(){
     HighlightingRule rule;
     //Functions
     functionFormat.setForeground(functionsColor);
-    rule.pattern = QRegExp("\\b[A-Za-z0-9_<>-@]+:");
+    rule.pattern = QRegularExpression("\\b[A-Za-z0-9_<>-@]+:");
     rule.format = functionFormat;
     highlightingRules.append(rule);
 
     //Nums :D
     numberFormat.setForeground(numColor);
-    rule.pattern = QRegExp("\\b[0-9a-fx\\.]+\\b");
+    rule.pattern = QRegularExpression("\\b[0-9a-fx\\.]+\\b");
     rule.format = numberFormat;
     highlightingRules.append(rule);
 
@@ -303,39 +359,39 @@ void Highlighter::setAsmRules(){
                     << "\\badd\\b" << "\\bsub\\b" << "\\bmul\\b" << "\\bdiv\\b";
 
     foreach (const QString &pattern, keywordPatterns) {
-        rule.pattern = QRegExp(pattern);
+        rule.pattern = QRegularExpression(pattern);
         rule.format = keywordFormat;
         highlightingRules.append(rule);
     }
 
     //Quotes
     quotationFormat.setForeground(valueColor);
-    rule.pattern = QRegExp("\".*\"");
+    rule.pattern = QRegularExpression("\".*\"");
     rule.format = quotationFormat;
     highlightingRules.append(rule);
 
     quotationFormat.setForeground(valueColor);
-    rule.pattern = QRegExp("'.*'");
+    rule.pattern = QRegularExpression("'.*'");
     rule.format = quotationFormat;
     highlightingRules.append(rule);
 
     //Comments
     singleLineCommentFormat.setFontItalic(true);
     singleLineCommentFormat.setForeground(commentColor);
-    rule.pattern = QRegExp("//[^\n]*");
+    rule.pattern = QRegularExpression("//[^\n]*");
     rule.format = singleLineCommentFormat;
     highlightingRules.append(rule);
 
     singleLineCommentFormat.setForeground(commentColor);
-    rule.pattern = QRegExp(";[^\n]*");
+    rule.pattern = QRegularExpression(";[^\n]*");
     rule.format = singleLineCommentFormat;
     highlightingRules.append(rule);
 
     multiLineCommentFormat.setFontItalic(true);
     multiLineCommentFormat.setForeground(commentColor);
 
-    commentStartExpression = QRegExp("/\\*");
-    commentEndExpression = QRegExp("\\*/");
+    commentStartExpression = QRegularExpression("/\\*");
+    commentEndExpression = QRegularExpression("\\*/");
 }
 
 void Highlighter::setCssRules(){
@@ -349,58 +405,58 @@ void Highlighter::setCssRules(){
                     << "\\bul\\b" << "\\bol\\b" << "\\bli\\b" << "\\bmain\\b" << "\\bnav\\b"
                     << "\\bmenu\\b" << "\\bmenuitem\\b" << "\\bq\\b" << "\\btable\\b" << "\\btd\\b";
     foreach (const QString &pattern, keywordPatterns) {
-        rule.pattern = QRegExp(pattern);
+        rule.pattern = QRegularExpression(pattern);
         rule.format = keywordFormat;
         highlightingRules.append(rule);
     }
 
     //Nums :D
     numberFormat.setForeground(numColor);
-    rule.pattern = QRegExp("\\b[0-9\\.]+\\b");
+    rule.pattern = QRegularExpression("\\b[0-9\\.]+\\b");
     rule.format = numberFormat;
     highlightingRules.append(rule);
 
     valueFormat.setForeground(valueColor);
-    rule.pattern = QRegExp("\\b[0-9\\.]+[pt|px]+\\b");
+    rule.pattern = QRegularExpression("\\b[0-9\\.]+[pt|px]+\\b");
     rule.format = valueFormat;
     highlightingRules.append(rule);
 
     // Attributes
     attributeFormat.setForeground(cssAttributesColor);
-    rule.pattern = QRegExp("\\w+:");
+    rule.pattern = QRegularExpression("\\w+:");
     rule.format = attributeFormat;
     highlightingRules.append(rule);
 
     attributeFormat.setForeground(cssAttributesColor);
-    rule.pattern = QRegExp("\\w+-\\w+:");
+    rule.pattern = QRegularExpression("\\w+-\\w+:");
     rule.format = attributeFormat;
     highlightingRules.append(rule);
 
     // IDs
     idFormat.setForeground(cssClassesIDsColor);
-    rule.pattern = QRegExp("#\\w+\\b");
+    rule.pattern = QRegularExpression("#\\w+\\b");
     rule.format = idFormat;
     highlightingRules.append(rule);
 
     // classes
     classFormat.setForeground(cssClassesIDsColor);
-    rule.pattern = QRegExp("\\.\\w+\\b");
+    rule.pattern = QRegularExpression("\\.\\w+\\b");
     rule.format = classFormat;
     highlightingRules.append(rule);
 
     //Quotes
     quotationFormat.setForeground(valueColor);
-    rule.pattern = QRegExp("\".*\"");
+    rule.pattern = QRegularExpression("\".*\"");
     rule.format = quotationFormat;
     highlightingRules.append(rule);
 
     quotationFormat.setForeground(valueColor);
-    rule.pattern = QRegExp("'.*'");
+    rule.pattern = QRegularExpression("'.*'");
     rule.format = quotationFormat;
     highlightingRules.append(rule);
 
-    commentStartExpression = QRegExp("/\\*");
-    commentEndExpression = QRegExp("\\*/");
+    commentStartExpression = QRegularExpression("/\\*");
+    commentEndExpression = QRegularExpression("\\*/");
 }
 
 void Highlighter::setSqlRules(){
@@ -415,24 +471,24 @@ void Highlighter::setSqlRules(){
                     << "\\bTABLE\\b" << "\\bAS\\b" << "\\bBY\\b" << "\\bFOR\\b"
                     << "\\bIF\\b" << "\\bNOT\\b" << "\\bEXISTS\\b";
     foreach (const QString &pattern, keywordPatterns) {
-        rule.pattern = QRegExp(pattern);
+        rule.pattern = QRegularExpression(pattern);
         rule.format = keywordFormat;
         highlightingRules.append(rule);
     }
 
     //Quotes
     quotationFormat.setForeground(valueColor);
-    rule.pattern = QRegExp("\".*\"");
+    rule.pattern = QRegularExpression("\".*\"");
     rule.format = quotationFormat;
     highlightingRules.append(rule);
 
     quotationFormat.setForeground(valueColor);
-    rule.pattern = QRegExp("'.*'");
+    rule.pattern = QRegularExpression("'.*'");
     rule.format = quotationFormat;
     highlightingRules.append(rule);
 
-    commentStartExpression = QRegExp("/\\*");
-    commentEndExpression = QRegExp("\\*/");
+    commentStartExpression = QRegularExpression("/\\*");
+    commentEndExpression = QRegularExpression("\\*/");
 }
 
 void Highlighter::setColorValues(QString theme){
@@ -501,34 +557,65 @@ void Highlighter::setColorValues(QString theme){
 
 void Highlighter::highlightBlock(const QString &text)
 {
+    // Validate input
+    if (text.isNull()) {
+        return;
+    }
+    
     foreach (const HighlightingRule &rule, highlightingRules) {
-        QRegExp expression(rule.pattern);
-        int index = expression.indexIn(text);
-        while (index >= 0) {
-            int length = expression.matchedLength();
+        // Skip invalid patterns
+        if (!rule.pattern.isValid()) {
+            continue;
+        }
+        
+        QRegularExpressionMatchIterator matchIterator = rule.pattern.globalMatch(text);
+        while (matchIterator.hasNext()) {
+            QRegularExpressionMatch match = matchIterator.next();
+            int index = match.capturedStart();
+            int length = match.capturedLength();
+            
+            // Safety check to prevent infinite loops
+            if (length <= 0) {
+                qDebug() << "Warning: Zero-length match detected, breaking";
+                break;
+            }
+            
             setFormat(index, length, rule.format);
-            index = expression.indexIn(text, index + length);
         }
     }
     setCurrentBlockState(0);
 
-    if (commentStartExpression != QRegExp("") && commentEndExpression != QRegExp("")) {
+    // Handle multiline comments with safer validation
+    if (commentStartExpression.isValid() && commentEndExpression.isValid()) {
         int startIndex = 0;
-        if (previousBlockState() != 1)
-            startIndex = commentStartExpression.indexIn(text);
+        if (previousBlockState() != 1) {
+            QRegularExpressionMatch startMatch = commentStartExpression.match(text);
+            startIndex = startMatch.hasMatch() ? startMatch.capturedStart() : -1;
+        }
 
         while (startIndex >= 0) {
-            int endIndex = commentEndExpression.indexIn(text, startIndex);
+            QRegularExpressionMatch endMatch = commentEndExpression.match(text, startIndex);
+            int endIndex = endMatch.hasMatch() ? endMatch.capturedStart() : -1;
             int commentLength;
+            
             if (endIndex == -1) {
                 setCurrentBlockState(1);
                 commentLength = text.length() - startIndex;
             } else {
-                commentLength = endIndex - startIndex
-                                + commentEndExpression.matchedLength();
+                commentLength = endIndex - startIndex + endMatch.capturedLength();
             }
+            
+            // Safety check
+            if (commentLength <= 0) {
+                qDebug() << "Warning: Invalid comment length, breaking";
+                break;
+            }
+            
             setFormat(startIndex, commentLength, multiLineCommentFormat);
-            startIndex = commentStartExpression.indexIn(text, startIndex + commentLength);
+            
+            // Find next comment start after current comment
+            QRegularExpressionMatch nextStartMatch = commentStartExpression.match(text, startIndex + commentLength);
+            startIndex = nextStartMatch.hasMatch() ? nextStartMatch.capturedStart() : -1;
         }
     }
 }

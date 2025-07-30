@@ -850,7 +850,7 @@ public:
     QHBoxLayout *horizontalLayout_301;
     QLabel *lbRobotMapping;
     QSpacerItem *horizontalSpacer_98;
-    QFrame *fRobotMappingPanel;
+    QFrame *fRobotWorkspacePanel;
     QGridLayout *gridLayout_5;
     QFrame *frame_34;
     QVBoxLayout *verticalLayout_44;
@@ -2343,7 +2343,7 @@ public:
         saObjectDetecting->setWidgetResizable(true);
         wObjectDetecting = new QWidget();
         wObjectDetecting->setObjectName(QString::fromUtf8("wObjectDetecting"));
-        wObjectDetecting->setGeometry(QRect(0, -1265, 590, 2900));
+        wObjectDetecting->setGeometry(QRect(0, 0, 590, 2900));
         wObjectDetecting->setMinimumSize(QSize(100, 2900));
         wObjectDetecting->setStyleSheet(QString::fromUtf8("QWidget#wObjectDetecting\n"
 "{	\n"
@@ -6582,7 +6582,7 @@ public:
         scrollArea_2->setWidgetResizable(true);
         wgJoggingScrollWidget = new QWidget();
         wgJoggingScrollWidget->setObjectName(QString::fromUtf8("wgJoggingScrollWidget"));
-        wgJoggingScrollWidget->setGeometry(QRect(0, 0, 554, 2000));
+        wgJoggingScrollWidget->setGeometry(QRect(0, -465, 554, 2000));
         wgJoggingScrollWidget->setMinimumSize(QSize(0, 2000));
         wgJoggingScrollWidget->setMaximumSize(QSize(16777215, 16777215));
         wgJoggingScrollWidget->setStyleSheet(QString::fromUtf8("QWidget#wgJoggingScrollWidget\n"
@@ -7791,23 +7791,23 @@ public:
 
         verticalLayout_30->addWidget(frame_8);
 
-        fRobotMappingPanel = new QFrame(frame_25);
-        fRobotMappingPanel->setObjectName(QString::fromUtf8("fRobotMappingPanel"));
-        fRobotMappingPanel->setMinimumSize(QSize(0, 50));
-        fRobotMappingPanel->setStyleSheet(QString::fromUtf8("QFrame\n"
+        fRobotWorkspacePanel = new QFrame(frame_25);
+        fRobotWorkspacePanel->setObjectName(QString::fromUtf8("fRobotWorkspacePanel"));
+        fRobotWorkspacePanel->setMinimumSize(QSize(0, 50));
+        fRobotWorkspacePanel->setStyleSheet(QString::fromUtf8("QFrame\n"
 "{\n"
 "	border-radius:0px;\n"
 "	background: #262629;\n"
 "}"));
-        fRobotMappingPanel->setFrameShape(QFrame::StyledPanel);
-        fRobotMappingPanel->setFrameShadow(QFrame::Raised);
-        gridLayout_5 = new QGridLayout(fRobotMappingPanel);
+        fRobotWorkspacePanel->setFrameShape(QFrame::StyledPanel);
+        fRobotWorkspacePanel->setFrameShadow(QFrame::Raised);
+        gridLayout_5 = new QGridLayout(fRobotWorkspacePanel);
         gridLayout_5->setSpacing(6);
         gridLayout_5->setContentsMargins(11, 11, 11, 11);
         gridLayout_5->setObjectName(QString::fromUtf8("gridLayout_5"));
         gridLayout_5->setHorizontalSpacing(10);
 
-        verticalLayout_30->addWidget(fRobotMappingPanel);
+        verticalLayout_30->addWidget(fRobotWorkspacePanel);
 
 
         verticalLayout_5->addWidget(frame_25);
@@ -10981,7 +10981,8 @@ public:
 #endif // QT_CONFIG(tooltip)
         pbFilterTool->setText(QCoreApplication::translate("RobotWindow", "Color Filter Tool", nullptr));
 #if QT_CONFIG(tooltip)
-        pbGetSizeTool->setToolTip(QCoreApplication::translate("RobotWindow", "Blob Filter", nullptr));
+        pbGetSizeTool->setToolTip(QCoreApplication::translate("RobotWindow", "Measure the dimensions of the object. Please highlight the object in the image.\n"
+"", nullptr));
 #endif // QT_CONFIG(tooltip)
         pbGetSizeTool->setText(QCoreApplication::translate("RobotWindow", "Object Size Tool", nullptr));
         lbDisplayRatio->setText(QCoreApplication::translate("RobotWindow", "Ratio: 100%", nullptr));
@@ -11730,7 +11731,7 @@ public:
         leJerk->setPlaceholderText(QCoreApplication::translate("RobotWindow", "None", nullptr));
         label_64->setText(QCoreApplication::translate("RobotWindow", "mm/s3", nullptr));
         label_47->setText(QCoreApplication::translate("RobotWindow", "J", nullptr));
-        lbRobotMapping->setText(QCoreApplication::translate("RobotWindow", "Mapping", nullptr));
+        lbRobotMapping->setText(QCoreApplication::translate("RobotWindow", "Workspace", nullptr));
         robotTitile_3->setProperty("Func", QVariant(QCoreApplication::translate("RobotWindow", "Title", nullptr)));
         label_279->setText(QCoreApplication::translate("RobotWindow", "Output", nullptr));
         gbX1->setTitle(QCoreApplication::translate("RobotWindow", "Delta X 1 / Delta X 2", nullptr));

@@ -1783,7 +1783,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
                   <property name="geometry">
                    <rect>
                     <x>0</x>
-                    <y>-1265</y>
+                    <y>0</y>
                     <width>590</width>
                     <height>2900</height>
                    </rect>
@@ -3277,7 +3277,8 @@ QFrame
                                   </size>
                                  </property>
                                  <property name="toolTip">
-                                  <string>Blob Filter</string>
+                                  <string>Measure the dimensions of the object. Please highlight the object in the image.
+</string>
                                  </property>
                                  <property name="styleSheet">
                                   <string notr="true">QPushButton:checked {
@@ -10333,7 +10334,7 @@ QLabel
                   <property name="geometry">
                    <rect>
                     <x>0</x>
-                    <y>0</y>
+                    <y>-465</y>
                     <width>554</width>
                     <height>2000</height>
                    </rect>
@@ -13247,7 +13248,7 @@ QRadioButton:disabled {
                             </font>
                            </property>
                            <property name="text">
-                            <string>Mapping</string>
+                            <string>Workspace</string>
                            </property>
                            <property name="alignment">
                             <set>Qt::AlignCenter</set>
@@ -13271,7 +13272,7 @@ QRadioButton:disabled {
                        </widget>
                       </item>
                       <item>
-                       <widget class="QFrame" name="fRobotMappingPanel">
+                       <widget class="QFrame" name="fRobotWorkspacePanel">
                         <property name="minimumSize">
                          <size>
                           <width>0</width>
