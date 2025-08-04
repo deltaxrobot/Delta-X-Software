@@ -100,6 +100,33 @@ namespace Ui {
     class RobotWindow;
 }
 
+// ========== Z-PLANE LIMITING STRUCTURES ==========
+struct ZPlanePoint {
+    double x, y, z;
+    ZPlanePoint(double x = 0.0, double y = 0.0, double z = 0.0) : x(x), y(y), z(z) {}
+};
+
+struct ZPlane {
+    ZPlanePoint p1, p2, p3;           // 3 defining points
+    double a, b, c, d;                // Plane equation: ax + by + cz + d = 0
+    bool isValid;                     // Whether plane is calculated and valid
+    bool isEnabled;                   // Whether Z-limiting is active
+    
+    ZPlane() : a(0), b(0), c(1), d(0), isValid(false), isEnabled(false) {}
+    
+    // Calculate Z for given X,Y on the plane
+    double calculateZ(double x, double y) const {
+        if (!isValid || std::abs(c) < 1e-10) return 0.0;
+        return -(a * x + b * y + d) / c;
+    }
+    
+    // Check if point is below the plane (unsafe zone)
+    bool isPointBelowPlane(double x, double y, double z) const {
+        if (!isValid) return false;
+        return (a * x + b * y + c * z + d) < 0;
+    }
+};
+
 // ========== MAIN CLASS DEFINITION ==========
 class RobotWindow : public QMainWindow
 {
@@ -488,6 +515,10 @@ private:
     QStringList getPlugins(QString path);
     void initPlugins(QStringList plugins);
     QList<DeltaXPlugin*>* getPluginList();
+    
+    // ✅ New safe plugin management methods
+    void connectPluginSignals(DeltaXPlugin* plugin);
+    DeltaXPlugin* findPluginByName(const QString& name);
 
     // ========== PRIVATE MEMBER VARIABLES ==========
     
@@ -534,6 +565,16 @@ private:
     bool isScheduledEncoder = false;
     QElapsedTimer encoderUpdateTimer;
 
+    // ========== Z-PLANE LIMITING ==========
+    ZPlane m_zPlane;                  // Current Z-plane configuration
+    
+    // Z-Plane Methods
+    bool calculateZPlane();           // Calculate plane from 3 points
+    void updateZPlaneEquationDisplay(); // Update UI equation display
+    QString filterGcodeForZPlane(const QString& gcode); // Filter G-code for Z-limiting
+    void LoadZPlaneSettings();        // Load Z-plane settings from variables
+    void SaveZPlaneSettings();        // Save Z-plane settings to variables
+    
     // Optimized Variable Management
     VariableManager* m_variableManager;
     mutable QHash<QString, QString> m_prefixCache;
@@ -554,6 +595,15 @@ private:
     // Batch processing
     void flushPendingUpdates();
     void scheduleBatchUpdate();
+
+public slots:
+    // ========== Z-PLANE LIMITING SLOTS ==========
+    void onGetCurrentPositionP1();     // Get current robot position for P1
+    void onGetCurrentPositionP2();     // Get current robot position for P2
+    void onGetCurrentPositionP3();     // Get current robot position for P3
+    void onCalculateZPlane();          // Calculate Z-plane from 3 points
+    void onTestZPlane();               // Test Z-plane with current position
+    void onZPlaneLimitingToggled(bool enabled); // Enable/disable Z-limiting
 
 private slots:
     void processBatchUpdates();

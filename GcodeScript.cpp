@@ -3494,5 +3494,92 @@ QString GcodeScript::parseFunctionCall(QString line, QStringList& arguments)
 
 // Missing function implementations
 
+// ===============================================================
+// Z-PLANE LIMITING IMPLEMENTATIONS
+// ===============================================================
+
+float GcodeScript::zPlaneCalculateZ(float x, float y)
+{
+    QString prefix = ProjectName + ".ZPlane.";
+    
+    // Check if Z-plane is enabled and valid
+    bool isEnabled = VariableManager::instance().getVar(prefix + "IsEnabled", false).toBool();
+    bool isValid = VariableManager::instance().getVar(prefix + "IsValid", false).toBool();
+    
+    if (!isEnabled || !isValid) {
+        return 0.0f; // Return 0 if plane is not available
+    }
+    
+    // Get plane equation coefficients: ax + by + cz + d = 0
+    double a = VariableManager::instance().getVar(prefix + "A", 0.0).toDouble();
+    double b = VariableManager::instance().getVar(prefix + "B", 0.0).toDouble();
+    double c = VariableManager::instance().getVar(prefix + "C", 1.0).toDouble();
+    double d = VariableManager::instance().getVar(prefix + "D", 0.0).toDouble();
+    
+    // Calculate Z: z = -(ax + by + d) / c
+    if (std::abs(c) < 1e-10) {
+        return 0.0f; // Avoid division by zero
+    }
+    
+    float z = static_cast<float>(-(a * x + b * y + d) / c);
+    return z;
+}
+
+bool GcodeScript::zPlaneIsEnabled()
+{
+    QString prefix = ProjectName + ".ZPlane.";
+    bool isEnabled = VariableManager::instance().getVar(prefix + "IsEnabled", false).toBool();
+    bool isValid = VariableManager::instance().getVar(prefix + "IsValid", false).toBool();
+    
+    return isEnabled && isValid;
+}
+
+bool GcodeScript::zPlaneIsPointBelow(float x, float y, float z)
+{
+    QString prefix = ProjectName + ".ZPlane.";
+    
+    // Check if Z-plane is enabled and valid
+    bool isEnabled = VariableManager::instance().getVar(prefix + "IsEnabled", false).toBool();
+    bool isValid = VariableManager::instance().getVar(prefix + "IsValid", false).toBool();
+    
+    if (!isEnabled || !isValid) {
+        return false; // No limiting if plane is not available
+    }
+    
+    // Get plane equation coefficients: ax + by + cz + d = 0
+    double a = VariableManager::instance().getVar(prefix + "A", 0.0).toDouble();
+    double b = VariableManager::instance().getVar(prefix + "B", 0.0).toDouble();
+    double c = VariableManager::instance().getVar(prefix + "C", 1.0).toDouble();
+    double d = VariableManager::instance().getVar(prefix + "D", 0.0).toDouble();
+    
+    // Calculate plane equation value: ax + by + cz + d
+    double planeValue = a * x + b * y + c * z + d;
+    
+    // Point is below plane if the equation value is negative
+    return planeValue < 0;
+}
+
+bool GcodeScript::zPlaneGetEquation(float& a, float& b, float& c, float& d)
+{
+    QString prefix = ProjectName + ".ZPlane.";
+    
+    // Check if Z-plane is valid
+    bool isValid = VariableManager::instance().getVar(prefix + "IsValid", false).toBool();
+    
+    if (!isValid) {
+        a = b = d = 0.0f;
+        c = 1.0f;
+        return false;
+    }
+    
+    // Get plane equation coefficients
+    a = static_cast<float>(VariableManager::instance().getVar(prefix + "A", 0.0).toDouble());
+    b = static_cast<float>(VariableManager::instance().getVar(prefix + "B", 0.0).toDouble());
+    c = static_cast<float>(VariableManager::instance().getVar(prefix + "C", 1.0).toDouble());
+    d = static_cast<float>(VariableManager::instance().getVar(prefix + "D", 0.0).toDouble());
+    
+    return true;
+}
+
 
 

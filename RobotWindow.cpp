@@ -5,9 +5,13 @@
 #include "MainWindow.h"
 #include "ModernDialog.h"
 #include "CameraSelectionDialog.h"
+#include "UnityTool.h"  // ✅ For SoftwareLog function
 #include <QFile>
 #include <QTextStream>
 #include <QCoreApplication>
+#include <cmath>      // ✅ For Z-plane calculations
+#include <QInputDialog>  // ✅ For test input dialog
+#include <QtMath>      // ✅ For qAbs function
 
 RobotWindow::RobotWindow(QWidget *parent, QString projectName) :
     QMainWindow(parent),
@@ -87,6 +91,24 @@ RobotWindow::~RobotWindow()
 
     // Clean up Point Tool Controller
     delete m_pointToolController;
+
+    // ✅ Fix: Cleanup plugins to prevent memory leak
+    if (pluginList) {
+        SoftwareLog(QString("Plugin System: Cleaning up %1 plugins").arg(pluginList->count()));
+        for (int i = 0; i < pluginList->count(); i++) {
+            DeltaXPlugin* plugin = pluginList->at(i);
+            if (plugin) {
+                qDebug() << "Cleaning up plugin:" << plugin->GetName();
+                SoftwareLog(QString("Cleaned up plugin: %1").arg(plugin->GetName()));
+                delete plugin;
+            }
+        }
+        delete pluginList;
+        pluginList = nullptr;
+    }
+    
+    // Reset plugin pointers
+    industrialCameraPlugin = nullptr;
 
     delete ui;
 }
@@ -913,6 +935,14 @@ void RobotWindow::InitUIController()
 void RobotWindow::InitCalibration()
 {
     connect(ui->pbImageMapping, &QPushButton::clicked, this, &RobotWindow::UpdateRealPositionOfCalibPoints);
+
+    // ========== Z-PLANE LIMITING CONNECTIONS ==========
+    connect(ui->pbGetCurrentP1, &QPushButton::clicked, this, &RobotWindow::onGetCurrentPositionP1);
+    connect(ui->pbGetCurrentP2, &QPushButton::clicked, this, &RobotWindow::onGetCurrentPositionP2);
+    connect(ui->pbGetCurrentP3, &QPushButton::clicked, this, &RobotWindow::onGetCurrentPositionP3);
+    connect(ui->pbCalculateZPlane, &QPushButton::clicked, this, &RobotWindow::onCalculateZPlane);
+    connect(ui->pbTestZPlane, &QPushButton::clicked, this, &RobotWindow::onTestZPlane);
+    connect(ui->gbZPlaneLimiting, &QGroupBox::toggled, this, &RobotWindow::onZPlaneLimitingToggled);
 
     QObject::connect(ui->cbCalibType, QOverload<int>::of(&QComboBox::currentIndexChanged), [this](int index) {
             QString selectedText = ui->cbCalibType->itemText(index);
@@ -1790,6 +1820,61 @@ void RobotWindow::LoadGeneralSettings()
     
     // Load robot settings after general settings
     LoadRobotSettings();
+    
+    // ========== LOAD Z-PLANE SETTINGS ==========
+    LoadZPlaneSettings();
+}
+
+void RobotWindow::LoadZPlaneSettings()
+{
+    if (!ui) return;
+    
+    QString prefix = ProjectName + ".ZPlane.";
+    
+    // Load Z-plane points
+    m_zPlane.p1.x = VariableManager::instance().getVar(prefix + "P1.X", 0.0).toDouble();
+    m_zPlane.p1.y = VariableManager::instance().getVar(prefix + "P1.Y", 0.0).toDouble();
+    m_zPlane.p1.z = VariableManager::instance().getVar(prefix + "P1.Z", 0.0).toDouble();
+    
+    m_zPlane.p2.x = VariableManager::instance().getVar(prefix + "P2.X", 100.0).toDouble();
+    m_zPlane.p2.y = VariableManager::instance().getVar(prefix + "P2.Y", 0.0).toDouble();
+    m_zPlane.p2.z = VariableManager::instance().getVar(prefix + "P2.Z", 0.0).toDouble();
+    
+    m_zPlane.p3.x = VariableManager::instance().getVar(prefix + "P3.X", 0.0).toDouble();
+    m_zPlane.p3.y = VariableManager::instance().getVar(prefix + "P3.Y", 100.0).toDouble();
+    m_zPlane.p3.z = VariableManager::instance().getVar(prefix + "P3.Z", 0.0).toDouble();
+    
+    // Load plane equation parameters
+    m_zPlane.a = VariableManager::instance().getVar(prefix + "A", 0.0).toDouble();
+    m_zPlane.b = VariableManager::instance().getVar(prefix + "B", 0.0).toDouble();
+    m_zPlane.c = VariableManager::instance().getVar(prefix + "C", 1.0).toDouble();
+    m_zPlane.d = VariableManager::instance().getVar(prefix + "D", 0.0).toDouble();
+    
+    // Load status flags
+    m_zPlane.isValid = VariableManager::instance().getVar(prefix + "IsValid", false).toBool();
+    m_zPlane.isEnabled = VariableManager::instance().getVar(prefix + "IsEnabled", false).toBool();
+    
+    // Update UI with loaded values
+    ui->leZPlaneP1X->setText(QString::number(m_zPlane.p1.x, 'f', 1));
+    ui->leZPlaneP1Y->setText(QString::number(m_zPlane.p1.y, 'f', 1));
+    ui->leZPlaneP1Z->setText(QString::number(m_zPlane.p1.z, 'f', 1));
+    
+    ui->leZPlaneP2X->setText(QString::number(m_zPlane.p2.x, 'f', 1));
+    ui->leZPlaneP2Y->setText(QString::number(m_zPlane.p2.y, 'f', 1));
+    ui->leZPlaneP2Z->setText(QString::number(m_zPlane.p2.z, 'f', 1));
+    
+    ui->leZPlaneP3X->setText(QString::number(m_zPlane.p3.x, 'f', 1));
+    ui->leZPlaneP3Y->setText(QString::number(m_zPlane.p3.y, 'f', 1));
+    ui->leZPlaneP3Z->setText(QString::number(m_zPlane.p3.z, 'f', 1));
+    
+    ui->gbZPlaneLimiting->setChecked(m_zPlane.isEnabled);
+    
+    // Update equation display
+    updateZPlaneEquationDisplay();
+    
+    SoftwareLog(QString("Z-Plane: Settings loaded - Valid=%1, Enabled=%2")
+               .arg(m_zPlane.isValid ? "true" : "false")
+               .arg(m_zPlane.isEnabled ? "true" : "false"));
 }
 
 void RobotWindow::LoadRobotSettings()
@@ -2012,20 +2097,37 @@ void RobotWindow::LoadDrawingSetting(QSettings *setting)
 
 void RobotWindow::LoadPluginSetting(QSettings *setting)
 {
+    if (!setting || !pluginList) {
+        qWarning() << "Cannot load plugin settings: null parameters";
+        return;
+    }
+    
     setting->beginGroup("Plugin");
-
-    int id = 0;
-
+    
     for (int i = 0; i < pluginList->count(); i++)
     {
         DeltaXPlugin* plugin = pluginList->at(i);
-        setting->beginGroup(plugin->GetName() + "-" + QString::number(id++));
-
-        plugin->LoadSettings(setting);
-
+        if (!plugin) {
+            qWarning() << "Null plugin at index" << i;
+            continue;
+        }
+        
+        // ✅ Fix: Consistent settings key format
+        QString settingKey = plugin->GetName() + "-" + QString::number(i);
+        setting->beginGroup(settingKey);
+        
+        try {
+            plugin->LoadSettings(setting);
+            qDebug() << "Loaded settings for plugin:" << plugin->GetName();
+        } catch (const std::exception& e) {
+            qWarning() << "Exception loading settings for plugin" << plugin->GetName() << ":" << e.what();
+        } catch (...) {
+            qWarning() << "Unknown exception loading settings for plugin" << plugin->GetName();
+        }
+        
         setting->endGroup();
     }
-
+    
     setting->endGroup();
 }
 
@@ -2041,6 +2143,9 @@ void RobotWindow::SaveSettings(QSettings *setting)
     SaveObjectDetectorSetting(setting);
     SaveDrawingSetting(setting);
     SavePluginSetting(setting);
+    
+    // ========== SAVE Z-PLANE SETTINGS ==========
+    SaveZPlaneSettings();
 }
 
 void RobotWindow::SaveGeneralSettings(QSettings *setting)
@@ -2171,21 +2276,37 @@ void RobotWindow::SaveDrawingSetting(QSettings *setting)
 
 void RobotWindow::SavePluginSetting(QSettings *setting)
 {
+    if (!setting || !pluginList) {
+        qWarning() << "Cannot save plugin settings: null parameters";
+        return;
+    }
+    
     setting->beginGroup("Plugin");
-
+    
     for (int i = 0; i < pluginList->count(); i++)
     {
         DeltaXPlugin* plugin = pluginList->at(i);
-
-        QString name = plugin->GetName();
-
-        setting->beginGroup(name + "-" + QString::number(i));
-
-        plugin->SaveSettings(setting);
-
+        if (!plugin) {
+            qWarning() << "Null plugin at index" << i;
+            continue;
+        }
+        
+        // ✅ Fix: Consistent settings key format (same as LoadPluginSetting)
+        QString settingKey = plugin->GetName() + "-" + QString::number(i);
+        setting->beginGroup(settingKey);
+        
+        try {
+            plugin->SaveSettings(setting);
+            qDebug() << "Saved settings for plugin:" << plugin->GetName();
+        } catch (const std::exception& e) {
+            qWarning() << "Exception saving settings for plugin" << plugin->GetName() << ":" << e.what();
+        } catch (...) {
+            qWarning() << "Unknown exception saving settings for plugin" << plugin->GetName();
+        }
+        
         setting->endGroup();
     }
-
+    
     setting->endGroup();
 }
 
@@ -2875,6 +2996,12 @@ void RobotWindow::RunSmartEditor()
 
 void RobotWindow::StandardFormatEditor()
 {
+    // Safety check for UI widget
+    if (!ui || !ui->pteGcodeArea) {
+        QMessageBox::warning(this, "Error", "G-code editor is not available.");
+        return;
+    }
+    
     // ---- Clean Rich Text First -----
     // Get plain text to ensure no rich formatting remains
     QString editorText = ui->pteGcodeArea->toPlainText();
@@ -2913,14 +3040,29 @@ void RobotWindow::StandardFormatEditor()
         QMessageBox::information(this, "Warning", "Too many g-code lines ( > 4000 ) will take time to format. You should divide the program into multiple files and use M98 F[filename] to execute each files.");
         return;
     }
+    
+    // Additional safety check for extremely large content
+    if (editorText.length() > 1000000) { // 1MB limit
+        QMessageBox::warning(this, "Error", "G-code content is too large to format safely. Please reduce file size.");
+        return;
+    }
 
     editorText = "";
 
     int i = 0;
+    const int lineIncrement = 5;  // Make increment configurable
+    int actualGcodeLines = 0;     // Track actual G-code lines
+    int controlStructureLines = 0; // Track control structure lines (FOR, IF, WHILE, etc.)
 
     foreach(QString line, lines)
     {
         line = line.trimmed();
+        
+        // Safety check for empty lines
+        if (line.isEmpty()) {
+            editorText += "\n";
+            continue;
+        }
 //        line = line.replace("  ", " ");
 //        oldNumber = "";
 //        while (1)
@@ -2935,13 +3077,17 @@ void RobotWindow::StandardFormatEditor()
 //            }
 //        }
 
-        if (line[0] == 'N')
+        // Safe bounds checking before accessing line[0]
+        if (!line.isEmpty() && line[0] == 'N')
         {
             int spacePos = line.indexOf(' ');
-            QString mS = line.mid(0, spacePos + 1);
-            oldNumber = line.mid(1, spacePos);
-
-            line.replace(mS, "");
+            // Validate spacePos before using it
+            if (spacePos > 0 && spacePos < line.length()) {
+                QString mS = line.mid(0, spacePos + 1);
+                oldNumber = line.mid(1, spacePos - 1);  // Fix bounds
+                line.replace(mS, "");
+                line = line.trimmed(); // Clean any extra spaces after removing number
+            }
         }
 
 //        while (1)
@@ -2956,48 +3102,133 @@ void RobotWindow::StandardFormatEditor()
 //            }
 //        }
 
-        if (line != "")
+        if (!line.isEmpty())
         {
-            if (line[0] != ';')
+            // Safe bounds checking before accessing line[0]
+            if (!line.isEmpty() && line[0] != ';')
             {
-                QString numberS = QString("N") + QString::number(i);
-                newNumbers.push_back(QString::number(i));
-                oldNumbers.push_back(oldNumber);
-                line = numberS + " " + line;
+                // Skip lines that are only whitespace or special characters
+                QString trimmedCheck = line.trimmed().toUpper();
+                if (!trimmedCheck.isEmpty() && 
+                    !trimmedCheck.startsWith("(") &&    // Skip parentheses comments
+                    !trimmedCheck.startsWith("%") &&    // Skip program markers
+                    !trimmedCheck.startsWith("FOR") &&    // Skip FOR loops
+                    !trimmedCheck.startsWith("ENDFOR") && // Skip ENDFOR statements
+                    !trimmedCheck.startsWith("IF") &&     // Skip IF statements
+                    !trimmedCheck.startsWith("ELSE") &&   // Skip ELSE statements  
+                    !trimmedCheck.startsWith("ENDIF") &&  // Skip ENDIF statements
+                    !trimmedCheck.startsWith("WHILE") &&  // Skip WHILE loops
+                    !trimmedCheck.startsWith("ENDWHILE")) // Skip ENDWHILE statements
+                {
+                    QString numberS = QString("N") + QString::number(i);
+                    newNumbers.push_back(QString::number(i));
+                    oldNumbers.push_back(oldNumber);
+                    line = numberS + " " + line;
+                    
+                    // Only increment counter for actual G-code lines (not comments)
+                    i += lineIncrement;
+                    actualGcodeLines++;
+                }
+                else
+                {
+                    // Check if this is a control structure line that we're intentionally skipping
+                    if (trimmedCheck.startsWith("FOR") || trimmedCheck.startsWith("ENDFOR") ||
+                        trimmedCheck.startsWith("IF") || trimmedCheck.startsWith("ELSE") || 
+                        trimmedCheck.startsWith("ENDIF") || trimmedCheck.startsWith("WHILE") || 
+                        trimmedCheck.startsWith("ENDWHILE"))
+                    {
+                        controlStructureLines++;
+                    }
+                }
             }
+        }
+        else
+        {
+            // Handle empty lines - don't increment counter
         }
 
         editorText += line + "\n";
-        i += 5;
     }
 
     int gotoCursor = 0;
     gotoCursor = editorText.indexOf("GOTO", gotoCursor);
+    
+    // Safe GOTO processing with bounds checking and infinite loop prevention
+    int maxIterations = 1000; // Prevent infinite loops
+    int currentIteration = 0;
 
-    while (gotoCursor > -1)
+    while (gotoCursor > -1 && currentIteration < maxIterations)
     {
+        currentIteration++;
+        
         //gotoEnd = editorText.indexOf("\n", gotoCursor);
         QString gotoIndexS = "";
+        
+        // Safe bounds checking for character extraction
+        int startPos = gotoCursor + 5; // Position after "GOTO "
+        if (startPos >= editorText.length()) {
+            break; // Invalid position, exit loop
+        }
+        
         for (int i = 0; i < 20; i++)
         {
-            QChar c = editorText.at(gotoCursor + 5 + i);
+            int charPos = startPos + i;
+            if (charPos >= editorText.length()) {
+                break; // Prevent out-of-bounds access
+            }
+            
+            QChar c = editorText.at(charPos);
             if (c.isDigit())
                 gotoIndexS += c;
             else
                 break;
         }
 
-        gotoCursor = editorText.indexOf("GOTO", gotoCursor + 5);
+        // Find next GOTO occurrence - safe advancement
+        int nextGoto = editorText.indexOf("GOTO", gotoCursor + 4);
+        if (nextGoto == gotoCursor) {
+            // Same position, force advancement to prevent infinite loop
+            nextGoto = editorText.indexOf("GOTO", gotoCursor + 5);
+        }
+        gotoCursor = nextGoto;
 
-        for (int i = 0; i < oldNumbers.size(); i++)
+        // Process number replacement only if we found a valid number
+        if (!gotoIndexS.isEmpty())
         {
-            if ((oldNumbers.at(i).toInt() == gotoIndexS.toInt()) && gotoIndexS != "")
+            for (int i = 0; i < oldNumbers.size(); i++)
             {
-                QString old = QString("GOTO ") + gotoIndexS;
-                QString replace = QString("GOTO ") + newNumbers.at(i);
-                editorText.replace(old, replace);
+                if (oldNumbers.at(i).toInt() == gotoIndexS.toInt())
+                {
+                    QString old = QString("GOTO ") + gotoIndexS;
+                    QString replace = QString("GOTO ") + newNumbers.at(i);
+                    editorText.replace(old, replace);
+                    break; // Exit inner loop after first match
+                }
             }
         }
+    }
+    
+    // Warning if we hit max iterations
+    if (currentIteration >= maxIterations) {
+        QMessageBox::warning(this, "Warning", "G-code formatting reached maximum iterations for GOTO processing. Some GOTO statements may not be updated correctly.");
+    }
+    
+    // Provide user feedback about formatting results
+    QString formatSummary = QString("G-code formatting completed:\n")
+                          + QString("• Total lines processed: %1\n").arg(lines.size())
+                          + QString("• G-code lines numbered: %1\n").arg(actualGcodeLines)
+                          + QString("• Control structures skipped: %1\n").arg(controlStructureLines)
+                          + QString("• Line increment: %1\n").arg(lineIncrement)
+                          + QString("• GOTO processing iterations: %1").arg(currentIteration);
+    
+    // Show summary in status bar or as tooltip (non-blocking)
+    if (this->statusBar()) {
+        this->statusBar()->showMessage(
+            QString("Formatted %1 G-code lines (skipped %2 control structures) with increment %3")
+            .arg(actualGcodeLines)
+            .arg(controlStructureLines)
+            .arg(lineIncrement), 
+            3000); // Show for 3 seconds
     }
 
     // Set the formatted text as plain text to ensure clean state
@@ -6276,41 +6507,89 @@ QStringList RobotWindow::getPlugins(QString path)
 
 void RobotWindow::initPlugins(QStringList plugins)
 {
-    foreach (QString file,plugins)
+    int successCount = 0;
+    QStringList failedPlugins;
+    
+    foreach (QString file, plugins)
     {
+        QFileInfo fileInfo(file);
+        QString pluginName = fileInfo.baseName();
+        
+        qDebug() << "Loading plugin:" << pluginName;
+        
         QPluginLoader loader(file);
-        if(!loader.load())
+        if (!loader.load())
         {
-            QString msg = "";
-            msg += "Error: " +  loader.fileName() + " Error: " + loader.errorString();
-//            SoftwareLog(msg);
+            QString error = QString("Failed to load plugin '%1': %2")
+                           .arg(pluginName)
+                           .arg(loader.errorString());
+            
+            qWarning() << error;
+            failedPlugins << pluginName;
             continue;
         }
 
-//        qInfo() << "Loaded: " << loader.fileName();
-
         DeltaXPlugin* pluginWidget = qobject_cast<DeltaXPlugin*>(loader.instance());
-
-        if(pluginWidget)
+        if (!pluginWidget)
         {
-            ui->twModule->addTab(pluginWidget->GetUI(), pluginWidget->GetTitle());
-
-            pluginList->append(pluginWidget);
-
-            QString pluginName = pluginWidget->GetName();
-
-            if (pluginName == "industrialcamera")
-            {
-                industrialCameraPlugin = pluginWidget;
-                connect(pluginWidget, SIGNAL(CapturedImage(cv::Mat)), CameraInstance, SLOT(GetImageFromExternal(cv::Mat)));
-                connect(CameraInstance, &Camera::RequestCapture, pluginWidget, &DeltaXPlugin::RequestCapture);
-
-            }
-
+            QString error = QString("Plugin '%1' does not implement DeltaXPlugin interface").arg(pluginName);
+            qWarning() << error;
+            failedPlugins << pluginName;
+            continue;
         }
-        else
+
+        // ✅ Safe UI creation with validation
+        QWidget* pluginUI = nullptr;
+        try {
+            pluginUI = pluginWidget->GetUI();
+        } catch (const std::exception& e) {
+            qWarning() << "Exception creating UI for plugin" << pluginWidget->GetName() << ":" << e.what();
+            failedPlugins << pluginWidget->GetName();
+            continue;
+        } catch (...) {
+            qWarning() << "Unknown exception creating UI for plugin" << pluginWidget->GetName();
+            failedPlugins << pluginWidget->GetName();
+            continue;
+        }
+        
+        if (!pluginUI)
         {
-//            qInfo() << "load fail";
+            qWarning() << "Plugin" << pluginWidget->GetName() << "returned null UI";
+            failedPlugins << pluginWidget->GetName();
+            continue;
+        }
+
+        // ✅ Success - add plugin safely
+        QString pluginTitle = pluginWidget->GetTitle();
+        if (pluginTitle.isEmpty()) {
+            pluginTitle = pluginWidget->GetName(); // Fallback to name
+        }
+        
+        ui->twModule->addTab(pluginUI, pluginTitle);
+        pluginList->append(pluginWidget);
+        
+        // ✅ Connect plugin signals safely
+        connectPluginSignals(pluginWidget);
+        
+        successCount++;
+        qInfo() << "Successfully loaded plugin:" << pluginWidget->GetName();
+        SoftwareLog(QString("Successfully loaded plugin: %1").arg(pluginWidget->GetName()));
+    }
+    
+    // ✅ User feedback
+    if (successCount > 0) {
+        qInfo() << QString("Successfully loaded %1 plugins").arg(successCount);
+        SoftwareLog(QString("Plugin System: Successfully loaded %1 plugins").arg(successCount));
+    }
+    
+    if (!failedPlugins.isEmpty()) {
+        QString failedList = failedPlugins.join(", ");
+        qWarning() << QString("Failed to load plugins: %1").arg(failedList);
+        
+        // ✅ Log failed plugins to software debug (no popup)
+        if (failedPlugins.size() > 0) {
+            SoftwareLog(QString("Plugin Loading Warning: Failed to load plugins: %1")
+                       .arg(failedList));
         }
     }
 }
@@ -6318,6 +6597,56 @@ void RobotWindow::initPlugins(QStringList plugins)
 QList<DeltaXPlugin*> *RobotWindow::getPluginList()
 {
     return pluginList;
+}
+
+// ✅ Safe plugin signal connection
+void RobotWindow::connectPluginSignals(DeltaXPlugin* plugin)
+{
+    if (!plugin) {
+        qWarning() << "Cannot connect signals for null plugin";
+        return;
+    }
+    
+    QString pluginName = plugin->GetName();
+    qDebug() << "Connecting signals for plugin:" << pluginName;
+    
+    try {
+        if (pluginName == "industrialcamera") {
+            industrialCameraPlugin = plugin;
+            
+            // Connect plugin to camera system
+            connect(plugin, &DeltaXPlugin::CapturedImage, 
+                    CameraInstance, &Camera::GetImageFromExternal);
+            connect(CameraInstance, &Camera::RequestCapture, 
+                    plugin, &DeltaXPlugin::RequestCapture);
+            
+            qDebug() << "Connected IndustrialCamera plugin signals";
+            SoftwareLog("Plugin System: Connected IndustrialCamera plugin signals");
+        }
+        // Add other plugin connections here as needed
+        
+    } catch (const std::exception& e) {
+        qWarning() << "Exception connecting signals for plugin" << pluginName << ":" << e.what();
+    } catch (...) {
+        qWarning() << "Unknown exception connecting signals for plugin" << pluginName;
+    }
+}
+
+// ✅ Find plugin by name safely
+DeltaXPlugin* RobotWindow::findPluginByName(const QString& name)
+{
+    if (!pluginList || name.isEmpty()) {
+        return nullptr;
+    }
+    
+    for (int i = 0; i < pluginList->count(); i++) {
+        DeltaXPlugin* plugin = pluginList->at(i);
+        if (plugin && plugin->GetName().compare(name, Qt::CaseInsensitive) == 0) {
+            return plugin;
+        }
+    }
+    
+    return nullptr;
 }
 
 // ===========================================
@@ -6751,5 +7080,322 @@ void RobotWindow::Jogging(QString direction, bool isMove)
     {
         emit Send(DeviceManager::ROBOT, QString("jogging (0, 0, %1)").arg(-step));
     }
+}
+
+// ===============================================================
+// Z-PLANE LIMITING IMPLEMENTATIONS
+// ===============================================================
+
+void RobotWindow::onGetCurrentPositionP1() {
+    if (!ui || !m_pointToolController) return;
+    
+    // Use PointToolController to set current robot position to P1 inputs
+    m_pointToolController->setCurrentRobotPosition(
+        ui->leZPlaneP1X, 
+        ui->leZPlaneP1Y, 
+        ui->leZPlaneP1Z
+    );
+    
+    SoftwareLog("Z-Plane: Set current robot position to Point 1");
+}
+
+void RobotWindow::onGetCurrentPositionP2() {
+    if (!ui || !m_pointToolController) return;
+    
+    // Use PointToolController to set current robot position to P2 inputs
+    m_pointToolController->setCurrentRobotPosition(
+        ui->leZPlaneP2X, 
+        ui->leZPlaneP2Y, 
+        ui->leZPlaneP2Z
+    );
+    
+    SoftwareLog("Z-Plane: Set current robot position to Point 2");
+}
+
+void RobotWindow::onGetCurrentPositionP3() {
+    if (!ui || !m_pointToolController) return;
+    
+    // Use PointToolController to set current robot position to P3 inputs
+    m_pointToolController->setCurrentRobotPosition(
+        ui->leZPlaneP3X, 
+        ui->leZPlaneP3Y, 
+        ui->leZPlaneP3Z
+    );
+    
+    SoftwareLog("Z-Plane: Set current robot position to Point 3");
+}
+
+bool RobotWindow::calculateZPlane() {
+    if (!ui) return false;
+    
+    try {
+        // Get coordinates from UI
+        m_zPlane.p1.x = ui->leZPlaneP1X->text().toDouble();
+        m_zPlane.p1.y = ui->leZPlaneP1Y->text().toDouble();
+        m_zPlane.p1.z = ui->leZPlaneP1Z->text().toDouble();
+        
+        m_zPlane.p2.x = ui->leZPlaneP2X->text().toDouble();
+        m_zPlane.p2.y = ui->leZPlaneP2Y->text().toDouble();
+        m_zPlane.p2.z = ui->leZPlaneP2Z->text().toDouble();
+        
+        m_zPlane.p3.x = ui->leZPlaneP3X->text().toDouble();
+        m_zPlane.p3.y = ui->leZPlaneP3Y->text().toDouble();
+        m_zPlane.p3.z = ui->leZPlaneP3Z->text().toDouble();
+        
+        // Calculate plane equation from 3 points
+        // Vector v1 = P2 - P1
+        double v1x = m_zPlane.p2.x - m_zPlane.p1.x;
+        double v1y = m_zPlane.p2.y - m_zPlane.p1.y;
+        double v1z = m_zPlane.p2.z - m_zPlane.p1.z;
+        
+        // Vector v2 = P3 - P1
+        double v2x = m_zPlane.p3.x - m_zPlane.p1.x;
+        double v2y = m_zPlane.p3.y - m_zPlane.p1.y;
+        double v2z = m_zPlane.p3.z - m_zPlane.p1.z;
+        
+        // Normal vector n = v1 × v2 (cross product)
+        m_zPlane.a = v1y * v2z - v1z * v2y;
+        m_zPlane.b = v1z * v2x - v1x * v2z;
+        m_zPlane.c = v1x * v2y - v1y * v2x;
+        
+        // Check if points are collinear (invalid plane)
+        double magnitude = sqrt(m_zPlane.a * m_zPlane.a + 
+                               m_zPlane.b * m_zPlane.b + 
+                               m_zPlane.c * m_zPlane.c);
+        
+        if (magnitude < 1e-10) {
+            SoftwareLog("Z-Plane: Error - Points are collinear, cannot define a plane");
+            m_zPlane.isValid = false;
+            return false;
+        }
+        
+        // Normalize the normal vector
+        m_zPlane.a /= magnitude;
+        m_zPlane.b /= magnitude;
+        m_zPlane.c /= magnitude;
+        
+        // Calculate d using point P1: ax + by + cz + d = 0
+        m_zPlane.d = -(m_zPlane.a * m_zPlane.p1.x + 
+                       m_zPlane.b * m_zPlane.p1.y + 
+                       m_zPlane.c * m_zPlane.p1.z);
+        
+        m_zPlane.isValid = true;
+        updateZPlaneEquationDisplay();
+        
+        SoftwareLog(QString("Z-Plane: Calculated successfully - a=%1, b=%2, c=%3, d=%4")
+                   .arg(m_zPlane.a, 0, 'f', 4)
+                   .arg(m_zPlane.b, 0, 'f', 4)
+                   .arg(m_zPlane.c, 0, 'f', 4)
+                   .arg(m_zPlane.d, 0, 'f', 4));
+        
+        return true;
+        
+    } catch (const std::exception& e) {
+        SoftwareLog(QString("Z-Plane: Calculation error - %1").arg(e.what()));
+        m_zPlane.isValid = false;
+        return false;
+    }
+}
+
+void RobotWindow::updateZPlaneEquationDisplay() {
+    if (!ui || !ui->lbPlaneEquation) return;
+    
+    if (!m_zPlane.isValid) {
+        ui->lbPlaneEquation->setText("Plane Equation: Invalid");
+        ui->lbPlaneEquation->setStyleSheet("color: rgb(255, 100, 100);");
+        return;
+    }
+    
+    // Format equation for display
+    QString equation;
+    if (std::abs(m_zPlane.c) > 1e-10) {
+        // Z-form: Z = (-ax - by - d) / c
+        double za = -m_zPlane.a / m_zPlane.c;
+        double zb = -m_zPlane.b / m_zPlane.c;
+        double zd = -m_zPlane.d / m_zPlane.c;
+        
+        equation = QString("Z = %1X %2 %3Y %4 %5")
+                   .arg(za, 0, 'f', 3)
+                   .arg(zb >= 0 ? "+" : "-")
+                   .arg(qAbs(zb), 0, 'f', 3)
+                   .arg(zd >= 0 ? "+" : "-")
+                   .arg(qAbs(zd), 0, 'f', 3);
+    } else {
+        // General form: ax + by + cz + d = 0
+        equation = QString("%1X %2 %3Y %4 %5Z %6 %7 = 0")
+                   .arg(m_zPlane.a, 0, 'f', 3)
+                   .arg(m_zPlane.b >= 0 ? "+" : "-")
+                   .arg(qAbs(m_zPlane.b), 0, 'f', 3)
+                   .arg(m_zPlane.c >= 0 ? "+" : "-")
+                   .arg(qAbs(m_zPlane.c), 0, 'f', 3)
+                   .arg(m_zPlane.d >= 0 ? "+" : "-")
+                   .arg(qAbs(m_zPlane.d), 0, 'f', 3);
+    }
+    
+    ui->lbPlaneEquation->setText("Plane: " + equation);
+    ui->lbPlaneEquation->setStyleSheet("color: rgb(100, 200, 255);");
+}
+
+void RobotWindow::onCalculateZPlane() {
+    SoftwareLog("Z-Plane: Starting plane calculation...");
+    
+    if (calculateZPlane()) {
+        SoftwareLog("Z-Plane: Plane calculated successfully");
+    } else {
+        SoftwareLog("Z-Plane: Failed to calculate plane");
+    }
+}
+
+void RobotWindow::onTestZPlane() {
+    if (!m_zPlane.isValid) {
+        SoftwareLog("Z-Plane: Cannot test - plane is not calculated");
+        return;
+    }
+    
+    // Get test point from user
+    bool ok;
+    QString input = QInputDialog::getText(this, "Test Z-Plane", 
+                                         "Enter test point (X,Y):", 
+                                         QLineEdit::Normal, "0,0", &ok);
+    
+    if (!ok || input.isEmpty()) return;
+    
+    QStringList coords = input.split(",");
+    if (coords.size() != 2) {
+        SoftwareLog("Z-Plane: Invalid input format. Use: X,Y");
+        return;
+    }
+    
+    double testX = coords[0].trimmed().toDouble(&ok);
+    if (!ok) {
+        SoftwareLog("Z-Plane: Invalid X coordinate");
+        return;
+    }
+    
+    double testY = coords[1].trimmed().toDouble(&ok);
+    if (!ok) {
+        SoftwareLog("Z-Plane: Invalid Y coordinate");
+        return;
+    }
+    
+    // Calculate Z on the plane
+    double planeZ = m_zPlane.calculateZ(testX, testY);
+    
+    SoftwareLog(QString("Z-Plane Test: At point (%1, %2), plane Z = %3")
+               .arg(testX, 0, 'f', 2)
+               .arg(testY, 0, 'f', 2)
+               .arg(planeZ, 0, 'f', 3));
+}
+
+void RobotWindow::onZPlaneLimitingToggled(bool enabled) {
+    m_zPlane.isEnabled = enabled;
+    
+    if (enabled && !m_zPlane.isValid) {
+        SoftwareLog("Z-Plane: Warning - Enabled but plane is not calculated");
+    }
+    
+    SoftwareLog(QString("Z-Plane Limiting: %1").arg(enabled ? "ENABLED" : "DISABLED"));
+}
+
+QString RobotWindow::filterGcodeForZPlane(const QString& gcode) {
+    if (!m_zPlane.isEnabled || !m_zPlane.isValid) {
+        return gcode; // No filtering needed
+    }
+    
+    QStringList lines = gcode.split('\n');
+    QStringList filteredLines;
+    
+    for (const QString& line : lines) {
+        QString trimmed = line.trimmed().toUpper();
+        
+        // Check for G-code movement commands (G0, G1, G2, G3)
+        if (trimmed.startsWith("G0 ") || trimmed.startsWith("G1 ") ||
+            trimmed.startsWith("G2 ") || trimmed.startsWith("G3 ")) {
+            
+            // Parse coordinates
+            double x = 0, y = 0, z = 0;
+            bool hasX = false, hasY = false, hasZ = false;
+            
+            // Extract X, Y, Z values
+            QRegularExpression xRegex("X([+-]?\\d*\\.?\\d+)");
+            QRegularExpression yRegex("Y([+-]?\\d*\\.?\\d+)");
+            QRegularExpression zRegex("Z([+-]?\\d*\\.?\\d+)");
+            
+            QRegularExpressionMatch xMatch = xRegex.match(trimmed);
+            QRegularExpressionMatch yMatch = yRegex.match(trimmed);
+            QRegularExpressionMatch zMatch = zRegex.match(trimmed);
+            
+            if (xMatch.hasMatch()) {
+                x = xMatch.captured(1).toDouble();
+                hasX = true;
+            }
+            if (yMatch.hasMatch()) {
+                y = yMatch.captured(1).toDouble();
+                hasY = true;
+            }
+            if (zMatch.hasMatch()) {
+                z = zMatch.captured(1).toDouble();
+                hasZ = true;
+            }
+            
+            // Apply Z-limiting if we have X, Y, Z coordinates
+            if (hasX && hasY && hasZ) {
+                double limitZ = m_zPlane.calculateZ(x, y);
+                
+                if (z < limitZ) {
+                    // Z is below the limiting plane, clamp it
+                    QString originalLine = line;
+                    QString modifiedLine = line;
+                    modifiedLine.replace(zRegex, QString("Z%1").arg(limitZ, 0, 'f', 3));
+                    
+                    filteredLines.append(modifiedLine);
+                    
+                    SoftwareLog(QString("Z-Plane: Limited Z from %1 to %2 at (%3, %4)")
+                               .arg(z, 0, 'f', 3)
+                               .arg(limitZ, 0, 'f', 3)
+                               .arg(x, 0, 'f', 2)
+                               .arg(y, 0, 'f', 2));
+                    continue;
+                }
+            }
+        }
+        
+        // No modification needed
+        filteredLines.append(line);
+    }
+    
+    return filteredLines.join('\n');
+}
+
+void RobotWindow::SaveZPlaneSettings()
+{
+    QString prefix = ProjectName + ".ZPlane.";
+    
+    // Save Z-plane points
+    VariableManager::instance().updateVar(prefix + "P1.X", m_zPlane.p1.x);
+    VariableManager::instance().updateVar(prefix + "P1.Y", m_zPlane.p1.y);
+    VariableManager::instance().updateVar(prefix + "P1.Z", m_zPlane.p1.z);
+    
+    VariableManager::instance().updateVar(prefix + "P2.X", m_zPlane.p2.x);
+    VariableManager::instance().updateVar(prefix + "P2.Y", m_zPlane.p2.y);
+    VariableManager::instance().updateVar(prefix + "P2.Z", m_zPlane.p2.z);
+    
+    VariableManager::instance().updateVar(prefix + "P3.X", m_zPlane.p3.x);
+    VariableManager::instance().updateVar(prefix + "P3.Y", m_zPlane.p3.y);
+    VariableManager::instance().updateVar(prefix + "P3.Z", m_zPlane.p3.z);
+    
+    // Save plane equation parameters
+    VariableManager::instance().updateVar(prefix + "A", m_zPlane.a);
+    VariableManager::instance().updateVar(prefix + "B", m_zPlane.b);
+    VariableManager::instance().updateVar(prefix + "C", m_zPlane.c);
+    VariableManager::instance().updateVar(prefix + "D", m_zPlane.d);
+    
+    // Save status flags
+    VariableManager::instance().updateVar(prefix + "IsValid", m_zPlane.isValid);
+    VariableManager::instance().updateVar(prefix + "IsEnabled", m_zPlane.isEnabled);
+    
+    SoftwareLog(QString("Z-Plane: Settings saved - Valid=%1, Enabled=%2")
+               .arg(m_zPlane.isValid ? "true" : "false")
+               .arg(m_zPlane.isEnabled ? "true" : "false"));
 }
 

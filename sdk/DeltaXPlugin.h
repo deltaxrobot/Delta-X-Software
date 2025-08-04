@@ -26,11 +26,11 @@ public slots:
     virtual void ProcessCommand(QString cmd) = 0;
 
 signals:
-//    virtual void EmitCommand(QString cmd) = 0;
-    virtual void CapturedImage(cv::Mat mat) = 0;
-    virtual void StartedCapture() = 0;
-    virtual void RequestCapture() = 0;
-    virtual void RequestConnect(int id) = 0;
+    // ✅ Fixed: Qt signals cannot be virtual - MOC generates these
+    void CapturedImage(cv::Mat mat);
+    void StartedCapture();
+    void RequestCapture();
+    void RequestConnect(int id);
 };
 
 QT_BEGIN_NAMESPACE

@@ -29,7 +29,7 @@ signals:
     void RequestCapture();
     void RequestConnect(int id);
 private:
-    Form* pluginForm;
+    Form* pluginForm = nullptr;  // Initialize to prevent undefined behavior
 
     QString pluginName = "industrialcamera";
     QString pluginTitle = "IndustrialCamera";

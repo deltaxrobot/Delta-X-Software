@@ -598,6 +598,44 @@ private:
      */
     float cloudPointGetImageZ(int index);
 
+    // ========== Z-PLANE LIMITING FUNCTIONS ==========
+    
+    /**
+     * @brief Calculate Z-limit at given X,Y position based on configured plane
+     * @param x X coordinate in mm
+     * @param y Y coordinate in mm
+     * @return Z-limit coordinate in mm (minimum safe Z level)
+     */
+    float zPlaneCalculateZ(float x, float y);
+    
+    /**
+     * @brief Check if Z-plane limiting is enabled
+     * @return true if Z-plane limiting is active, false otherwise
+     */
+    bool zPlaneIsEnabled();
+    
+    /**
+     * @brief Check if a point is below (unsafe) the Z-plane
+     * @param x X coordinate in mm
+     * @param y Y coordinate in mm
+     * @param z Z coordinate in mm
+     * @return true if point is below the limiting plane (unsafe), false if safe
+     */
+    bool zPlaneIsPointBelow(float x, float y, float z);
+    
+    /**
+     * @brief Get the Z-plane equation coefficients
+     * @param a Reference to store coefficient A
+     * @param b Reference to store coefficient B  
+     * @param c Reference to store coefficient C
+     * @param d Reference to store coefficient D
+     * @return true if plane is valid, false otherwise
+     * @note Plane equation: ax + by + cz + d = 0
+     */
+    bool zPlaneGetEquation(float& a, float& b, float& c, float& d);
+    
+    // ========== CLOUD POINT MAPPING FUNCTIONS ==========
+
     /**
      * @brief Get calibration point real X coordinate
      * @param index Point index

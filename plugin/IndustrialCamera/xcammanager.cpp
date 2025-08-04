@@ -28,7 +28,13 @@ QStringList XCamManager::FindBaslerCameraList()
 {
     QStringList baslerDeviceQStringList;
 
-    PylonInitialize();
+    try {
+        PylonInitialize();
+    }
+    catch (const GenericException& e) {
+        qWarning() << "Failed to initialize Pylon:" << e.what();
+        return baslerDeviceQStringList;
+    }
 
     DeviceInfoList_t baslerDeviceInfoList;
     CTlFactory::GetInstance().EnumerateDevices(baslerDeviceInfoList);

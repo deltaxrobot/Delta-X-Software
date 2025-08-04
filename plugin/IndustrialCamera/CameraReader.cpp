@@ -30,29 +30,61 @@ void CameraReader::ShotImage()
 {
     emit StartedCapture();
 
+    // Thread-safe capture with proper scope
     QMutex mux;
-    mux.lock();
-    uint8_t* imageData = IndustryCamera->Capture();
-    mux.unlock();
-    if (imageData == NULL)
+    QMutexLocker locker(&mux);
+    
+    if (!IndustryCamera) {
+        qWarning() << "IndustryCamera is null";
         return;
+    }
+    
+    uint8_t* imageData = IndustryCamera->Capture();
+    if (imageData == nullptr) {
+        qWarning() << "Failed to capture image data";
+        return;
+    }
 
     Height = IndustryCamera->Height();
     Width = IndustryCamera->Width();
+    
+    // Validate dimensions
+    if (Height <= 0 || Width <= 0) {
+        qWarning() << "Invalid image dimensions:" << Width << "x" << Height;
+        return;
+    }
+    
+    // Create OpenCV Mat safely
+    cv::Mat openCvImage;
+    try {
+        openCvImage = cv::Mat(Height, Width, CV_8UC3, imageData).clone();  // Clone immediately for safety
+    } catch (const cv::Exception& e) {
+        qWarning() << "OpenCV error creating Mat:" << e.what();
+        return;
+    }
+    
+    // Release mutex before heavy processing
+    locker.unlock();
 
-    cv::Mat openCvImage = cv::Mat(Height, Width, CV_8UC3, imageData);
-
-    if (ResizeWidth > 0)
-    {
-        ResizeHeight = Height * ((float)ResizeWidth/ Width);
-
-        resize(openCvImage, openCvImage, cv::Size(ResizeWidth, ResizeHeight), cv::INTER_NEAREST);
+    // Process resizing if needed
+    if (ResizeWidth > 0 && !openCvImage.empty()) {
+        ResizeHeight = Height * (static_cast<float>(ResizeWidth) / Width);
+        try {
+            cv::resize(openCvImage, openCvImage, cv::Size(ResizeWidth, ResizeHeight), 0, 0, cv::INTER_NEAREST);
+        } catch (const cv::Exception& e) {
+            qWarning() << "OpenCV error during resize:" << e.what();
+            return;
+        }
     }
 
-    emit CapturedImage(openCvImage.clone());
-    openCvImage.release();
-
-    emit FinishReadingImage(ImageTool::cvMatToQPixmap(openCvImage));
+    // Emit signals with safe data
+    if (!openCvImage.empty()) {
+        emit CapturedImage(openCvImage.clone());
+        
+        // Create QPixmap for display (before releasing openCvImage)
+        QPixmap displayPixmap = ImageTool::cvMatToQPixmap(openCvImage);
+        emit FinishReadingImage(displayPixmap);
+    }
 }
 
 void CameraReader::ScanCameras()

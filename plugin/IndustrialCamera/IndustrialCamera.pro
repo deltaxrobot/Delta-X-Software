@@ -5,6 +5,10 @@ CONFIG += plugin
 
 CONFIG += c++11
 
+# Plugin configuration
+TARGET = IndustrialCameraPlugin
+DESTDIR = ../../plugin
+
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
@@ -19,7 +23,7 @@ SOURCES += \
     xcammanager.cpp
 
 HEADERS += \
-    ../../../DeltaXSoftware/sdk/DeltaXPlugin.h \
+    ../../sdk/DeltaXPlugin.h \
     CameraReader.h \
     ImageUnity.h \
     IndustrialCameraPlugin.h \
@@ -30,16 +34,21 @@ HEADERS += \
     xcammanager.h
 
 INCLUDEPATH += \
-$$PWD\3rd-party\pylon\include \
-$$PWD\3rd-party\pylon\include\pylon \
-$$PWD\3rd-party\mvs\Includes
+    $$PWD/3rd-party/pylon/include \
+    $$PWD/3rd-party/pylon/include/pylon \
+    $$PWD/3rd-party/mvs/Includes
 
-LIBS += -L$$PWD\3rd-party\pylon\lib\x64
-LIBS += $$PWD\3rd-party\mvs\Libraries\win64\MvCameraControl.lib
+LIBS += -L$$PWD/3rd-party/pylon/lib/x64
+LIBS += $$PWD/3rd-party/mvs/Libraries/win64/MvCameraControl.lib
 
-INCLUDEPATH += $$PWD\3rd-party\opencv\build\include
-LIBS += $$PWD\3rd-party\opencv\build\x64\vc15\lib\opencv_world400.lib
-LIBS += $$PWD\3rd-party\opencv\build\x64\vc15\lib\opencv_world400d.lib
+INCLUDEPATH += $$PWD/3rd-party/opencv/build/include
+
+# Use conditional OpenCV libs for debug/release
+CONFIG(debug, debug|release) {
+    LIBS += $$PWD/3rd-party/opencv/build/x64/vc15/lib/opencv_world400d.lib
+} else {
+    LIBS += $$PWD/3rd-party/opencv/build/x64/vc15/lib/opencv_world400.lib
+}
 
 
 DISTFILES += IndustrialCameraPlugin.json
