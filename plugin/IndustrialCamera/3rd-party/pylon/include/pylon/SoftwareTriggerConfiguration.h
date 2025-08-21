@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //  Basler pylon SDK
-//  Copyright (c) 2010-2021 Basler AG
+//  Copyright (c) 2010-2024 Basler AG
 //  http://www.baslerweb.com
 //  Author:  Andreas Gau
 //-----------------------------------------------------------------------------
@@ -43,9 +43,9 @@ namespace Pylon
     {
     public:
         /// Apply software trigger configuration.
-        static void ApplyConfiguration( GENAPI_NAMESPACE::INodeMap& nodemap )
+        static void ApplyConfiguration( GenApi::INodeMap& nodemap )
         {
-            using namespace GENAPI_NAMESPACE;
+            using namespace GenApi;
 
             //Disable compression mode.
             CConfigurationHelper::DisableCompression( nodemap );
@@ -130,6 +130,8 @@ namespace Pylon
             try
             {
                 ApplyConfiguration( camera.GetNodeMap() );
+                // Probe max packet size
+                CConfigurationHelper::ProbePacketSize( camera.GetStreamGrabberNodeMap() );
             }
             catch (const GenericException& e)
             {

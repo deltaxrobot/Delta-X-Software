@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //  Basler pylon SDK
-//  Copyright (c) 2007-2021 Basler AG
+//  Copyright (c) 2007-2024 Basler AG
 //  http://www.baslerweb.com
 //  Author:  AH
 //-----------------------------------------------------------------------------
@@ -262,7 +262,7 @@
 
             \copydetails Pylon::IStreamGrabber::GetNodeMap()
             */
-            GENAPI_NAMESPACE::INodeMap* GetNodeMap()
+            GenApi::INodeMap* GetNodeMap()
             {
                 CheckPtr();
                 return m_pStreamGrabber->GetNodeMap();

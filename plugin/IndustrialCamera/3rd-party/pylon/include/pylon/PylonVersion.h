@@ -2,7 +2,7 @@
 
 //-----------------------------------------------------------------------------
 //  Basler pylon SDK
-//  Copyright (c) 2006-2021 Basler AG
+//  Copyright (c) 2006-2024 Basler AG
 //  http://www.baslerweb.com
 //-----------------------------------------------------------------------------
 /**
@@ -99,7 +99,7 @@
                 VALUE "FileDescription", PYLON_FILE_DESCRIPTION(name) "\0" \
                 VALUE "FileVersion", PYLON_VERSIONSTRING_MAJOR "." PYLON_VERSIONSTRING_MINOR "." PYLON_VERSIONSTRING_SUBMINOR "." PYLON_VERSIONSTRING_BUILD PYLON_DEBUGSTRING "\0" \
                 VALUE "InternalName", #name "\0" \
-                VALUE "LegalCopyright", "Copyright (c) 2006-2021 Basler AG\0" \
+                VALUE "LegalCopyright", "Copyright (c) 2006-2024 Basler AG\0" \
                 VALUE "LegalTrademarks", "\0" \
                 VALUE "OLESelfRegister", "\0" \
                 VALUE "OriginalFilename", PYLON_ORIGINAL_FILENAME(name) \

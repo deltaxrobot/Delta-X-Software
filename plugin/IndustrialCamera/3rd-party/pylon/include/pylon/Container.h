@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //  Basler pylon SDK
-//  Copyright (c) 2006-2021 Basler AG
+//  Copyright (c) 2006-2024 Basler AG
 //  http://www.baslerweb.com
 //  Author:  AH
 //-----------------------------------------------------------------------------
@@ -26,6 +26,7 @@
 #include <pylon/DeviceInfo.h>
 #include <pylon/TlInfo.h>
 #include <pylon/InterfaceInfo.h>
+#include <pylon/StaticDefectPixel.h>
 #include <vector>
 
 
@@ -42,6 +43,7 @@ namespace Pylon
     class PYLONBASE_API TList
     {
     public:
+        typedef T value_type;
         typedef T* pointer;
         typedef const T* const_pointer;
         typedef T& reference;
@@ -179,7 +181,7 @@ namespace Pylon
 
         // Member
         // ---------------------------------------------------------------------------
-    private:
+    protected:
         typedef std::vector<T, std::allocator<T> > vector_t;
         vector_t* _pv;
     };
@@ -222,6 +224,8 @@ namespace Pylon
     class PYLONBASE_API DeviceInfoList : public TList<CDeviceInfo>
     {
     public:
+        typedef typename TList<CDeviceInfo>::value_type value_type;
+
         DeviceInfoList( void );
         explicit DeviceInfoList( size_t uiSize );
         DeviceInfoList( const DeviceInfoList& obj );
@@ -250,6 +254,8 @@ namespace Pylon
     class PYLONBASE_API TlInfoList : public TList<CTlInfo>
     {
     public:
+        typedef typename TList<CTlInfo>::value_type value_type;
+
         TlInfoList( void );
         explicit TlInfoList( size_t uiSize );
         TlInfoList( const TlInfoList& obj );
@@ -280,6 +286,8 @@ namespace Pylon
     class PYLONBASE_API InterfaceInfoList : public TList<CInterfaceInfo>
     {
     public:
+        typedef typename TList<CInterfaceInfo>::value_type value_type;
+
         InterfaceInfoList( void );
         explicit InterfaceInfoList( size_t uiSize );
         InterfaceInfoList( const InterfaceInfoList& obj );
@@ -293,6 +301,40 @@ namespace Pylon
     \copydoc Pylon::InterfaceInfoList
     */
     typedef InterfaceInfoList InterfaceInfoList_t;
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////
+    //
+    //   DefectPixelList
+    //
+    /////////////////////////////////////////////////////////////////////////////////////////
+
+    // ---------------------------------------------------------------------------
+    /*!
+    // \brief STL std::vector like container for Pylon::StaticDefectPixel objects.
+    //
+    */
+    // ---------------------------------------------------------------------------
+    class PYLONBASE_API StaticDefectPixelList : public TList<StaticDefectPixel>
+    {
+    public:
+        typedef typename TList<StaticDefectPixel>::value_type value_type;
+
+        StaticDefectPixelList( void );
+        explicit StaticDefectPixelList( size_t uiSize );
+        StaticDefectPixelList( const StaticDefectPixelList& obj );
+
+        virtual ~StaticDefectPixelList( void );
+
+
+        void sort();
+    };
+
+    /*!
+    \copybrief Pylon::StaticDefectPixelList
+    \copydoc Pylon::StaticDefectPixelList
+    */
+    typedef StaticDefectPixelList StaticDefectPixelList_t;
 
 }
 

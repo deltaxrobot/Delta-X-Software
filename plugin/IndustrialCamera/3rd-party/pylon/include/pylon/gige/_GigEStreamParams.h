@@ -1,7 +1,7 @@
 
 
 //-----------------------------------------------------------------------------
-//  Copyright (c) 2004-2021 Basler AG
+//  Copyright (c) 2004-2024 Basler AG
 //  Section: Vision Components
 //  Project: GenApi
 //-----------------------------------------------------------------------------
@@ -363,6 +363,9 @@ namespace Basler_GigEStreamParams
         GENAPI_NAMESPACE::IInteger& MaximumNumberResendRequests;
 
         //@}
+
+
+        GENAPI_NAMESPACE::IBoolean& UseExtendedIdIfAvailable;
 
 
         //! \name Root - Interface to the GigE specific stream parameters.
@@ -797,6 +800,7 @@ namespace Basler_GigEStreamParams
         , ResendTimeout( *new GENAPI_NAMESPACE::CIntegerRef() )
         , ResendRequestResponseTimeout( *new GENAPI_NAMESPACE::CIntegerRef() )
         , MaximumNumberResendRequests( *new GENAPI_NAMESPACE::CIntegerRef() )
+        , UseExtendedIdIfAvailable( *new GENAPI_NAMESPACE::CBooleanRef() )
         , FrameRetention( *new GENAPI_NAMESPACE::CIntegerRef() )
         , ReceiveThreadPriorityOverride( *new GENAPI_NAMESPACE::CBooleanRef() )
         , ReceiveThreadPriority( *new GENAPI_NAMESPACE::CIntegerRef() )
@@ -834,6 +838,7 @@ namespace Basler_GigEStreamParams
         delete static_cast <GENAPI_NAMESPACE::CIntegerRef*> (&ResendTimeout);
         delete static_cast <GENAPI_NAMESPACE::CIntegerRef*> (&ResendRequestResponseTimeout);
         delete static_cast <GENAPI_NAMESPACE::CIntegerRef*> (&MaximumNumberResendRequests);
+        delete static_cast <GENAPI_NAMESPACE::CBooleanRef*> (&UseExtendedIdIfAvailable);
         delete static_cast <GENAPI_NAMESPACE::CIntegerRef*> (&FrameRetention);
         delete static_cast <GENAPI_NAMESPACE::CBooleanRef*> (&ReceiveThreadPriorityOverride);
         delete static_cast <GENAPI_NAMESPACE::CIntegerRef*> (&ReceiveThreadPriority);
@@ -871,6 +876,7 @@ namespace Basler_GigEStreamParams
         static_cast<GENAPI_NAMESPACE::CIntegerRef*> (&ResendTimeout)->SetReference( _Ptr->GetNode( "ResendTimeout" ) );
         static_cast<GENAPI_NAMESPACE::CIntegerRef*> (&ResendRequestResponseTimeout)->SetReference( _Ptr->GetNode( "ResendRequestResponseTimeout" ) );
         static_cast<GENAPI_NAMESPACE::CIntegerRef*> (&MaximumNumberResendRequests)->SetReference( _Ptr->GetNode( "MaximumNumberResendRequests" ) );
+        static_cast<GENAPI_NAMESPACE::CBooleanRef*> (&UseExtendedIdIfAvailable)->SetReference( _Ptr->GetNode( "UseExtendedIdIfAvailable" ) );
         static_cast<GENAPI_NAMESPACE::CIntegerRef*> (&FrameRetention)->SetReference( _Ptr->GetNode( "FrameRetention" ) );
         static_cast<GENAPI_NAMESPACE::CBooleanRef*> (&ReceiveThreadPriorityOverride)->SetReference( _Ptr->GetNode( "ReceiveThreadPriorityOverride" ) );
         static_cast<GENAPI_NAMESPACE::CIntegerRef*> (&ReceiveThreadPriority)->SetReference( _Ptr->GetNode( "ReceiveThreadPriority" ) );

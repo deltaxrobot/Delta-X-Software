@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 //  Basler pylon SDK
-//  Copyright (c) 2012-2021 Basler AG
+//  Copyright (c) 2012-2024 Basler AG
 //  http://www.baslerweb.com
 //  Author:  Andreas Gau
 //------------------------------------------------------------------------------
@@ -51,14 +51,16 @@ namespace Pylon
         /// Do not confound this enumeration with the Pylon::PixelType enumeration that lists all pixel formats.
         enum EPixelDataType
         {
-            PixelDataType_Unknown,//!< Will be returned, if the pixel data cannot be determined.
-            PixelDataType_Mono,   //!< Pixel data of monochrome images.
-            PixelDataType_YUV,    //!< Pixel data of YUV images.
-            PixelDataType_RGB,    //!< Pixel data of RGB or BGR images.
-            PixelDataType_RGBA,   //!< Pixel data of RGB or BGR images with alpha channel.
-            PixelDataType_BayerR, //!< Pixel data of a red pixel of bayer images.
-            PixelDataType_BayerG, //!< Pixel data of a green pixel of bayer images.
-            PixelDataType_BayerB  //!< Pixel data of a blue pixel of bayer images.
+            PixelDataType_Unknown,      //!< Will be returned, if the pixel data cannot be determined.
+            PixelDataType_Mono,         //!< Pixel data of monochrome images.
+            PixelDataType_YUV,          //!< Pixel data of YUV images.
+            PixelDataType_RGB,          //!< Pixel data of RGB or BGR images.
+            PixelDataType_RGBA,         //!< Pixel data of RGB or BGR images with alpha channel.
+            PixelDataType_BayerR,       //!< Pixel data of a red pixel of bayer images.
+            PixelDataType_BayerG,       //!< Pixel data of a green pixel of bayer images.
+            PixelDataType_BayerB,       //!< Pixel data of a blue pixel of bayer images.
+            PixelDataType_BiColorRG,    //!< Pixel data of a red green bicolor pixel pair.
+            PixelDataType_BiColorBG,    //!< Pixel data of a blue green bicolor pixel pair.
         };
 
         EPixelDataType PixelDataType; ///< The type of pixel data held.
@@ -70,6 +72,20 @@ namespace Pylon
             int BayerR; ///< Pixel data of a red pixel of bayer images.
             int BayerG; ///< Pixel data of a green pixel of bayer images.
             int BayerB; ///< Pixel data of a blue pixel of bayer images.
+
+            struct
+            {
+                int R; ///< Red.
+                int G; ///< Green.
+            }
+            BiColorRG; ///< Pixel data of a red green bicolor pixel pair.
+
+            struct
+            {
+                int B; ///< Blue.
+                int G; ///< Green.
+            }
+            BiColorBG; ///< Pixel data of a blue green bicolor pixel pair.
 
             struct
             {
@@ -121,6 +137,10 @@ namespace Pylon
                     return Data.BayerG == rhs.Data.BayerG;
                 case PixelDataType_BayerB:
                     return Data.BayerB == rhs.Data.BayerB;
+                case PixelDataType_BiColorRG:
+                    return Data.BiColorRG.R == rhs.Data.BiColorRG.R && Data.BiColorRG.G == rhs.Data.BiColorRG.G;
+                case PixelDataType_BiColorBG:
+                    return Data.BiColorBG.B == rhs.Data.BiColorBG.B && Data.BiColorBG.G == rhs.Data.BiColorBG.G;
                 default:
                     PYLON_ASSERT2( false, "Cannot compare SPixelDataStructure. It contains unexpected data." );
             }

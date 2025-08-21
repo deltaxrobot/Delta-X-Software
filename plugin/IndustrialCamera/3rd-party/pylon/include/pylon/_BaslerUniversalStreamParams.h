@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //  Basler pylon SDK
-//  Copyright (c) 2019-2021 Basler AG
+//  Copyright (c) 2019-2024 Basler AG
 //  http://www.baslerweb.com
 //-----------------------------------------------------------------------------
 
@@ -40,13 +40,6 @@ namespace Basler_UniversalStreamParams
         AccessMode_NotInitialized  //!< Access to the device has not been initialized - Applies to: GigE and blaze
     };
 
-    //! Valid values for PixelPerClockCycle
-    enum PixelPerClockCycleEnums
-    {
-        PixelPerClockCycle_One,  //!< During each clock cycle, the device transmits data for one pixel - Applies to: BCON
-        PixelPerClockCycle_Two  //!< During each clock cycle, the device transmits data for two pixels - Applies to: BCON
-    };
-
     //! Valid values for Status
     enum StatusEnums
     {
@@ -70,17 +63,22 @@ namespace Basler_UniversalStreamParams
         StreamType_CL,  //!< The data stream uses the Camera Link transport layer - Applies to: CoaXPress
         StreamType_CLHS,  //!< The data stream uses the Camera Link HS transport layer - Applies to: CoaXPress
         StreamType_CXP,  //!< The data stream uses the CoaXPress transport layer - Applies to: CoaXPress
+        StreamType_CameraLink,  //!< Camera Link - Applies to: CoaXPress
+        StreamType_CameraLinkHS,  //!< Camera Link High Speed - Applies to: CoaXPress
+        StreamType_CoaXPress,  //!< CoaXPress - Applies to: CoaXPress
         StreamType_Custom,  //!< The data stream uses a custom transport layer - Applies to: CoaXPress
         StreamType_GEV,  //!< The data stream uses the GigE Vision transport layer - Applies to: CoaXPress
+        StreamType_GigEVision,  //!< GigE Vision - Applies to: CoaXPress
         StreamType_Mixed,  //!< Different interface modules of the GenTL Producer are of different types - Applies to: CoaXPress
-        StreamType_U3V  //!< The data stream uses the USB3 Vision transport layer - Applies to: CoaXPress
+        StreamType_U3V,  //!< The data stream uses the USB3 Vision transport layer - Applies to: CoaXPress
+        StreamType_USB3Vision  //!< USB3 Vision - Applies to: CoaXPress
     };
 
     //! Valid values for TransmissionType
     enum TransmissionTypeEnums
     {
         TransmissionType_LimitedBroadcast,  //!< The stream data is sent to all devices in the local area network (255 255 255 255) - Applies to: GigE
-        TransmissionType_Multicast,  //!< The stream data is sent to selected devices in the local network   - Applies to: GigE
+        TransmissionType_Multicast,  //!< The stream data is sent to selected devices in the local network - Applies to: GigE
         TransmissionType_SubnetDirectedBroadcast,  //!< The stream data is sent to all devices in the same subnet as the camera - Applies to: GigE
         TransmissionType_Unicast,  //!< The stream data is sent to a single device in the local network - Applies to: GigE and blaze
         TransmissionType_UseCameraConfig  //!< The stream transmission configuration is read from the camera - Applies to: GigE and blaze
@@ -99,7 +97,7 @@ namespace Basler_UniversalStreamParams
     
     
     //**************************************************************************************************
-    // Parameter class CUniversalStreamParams_Params_v6_2_0
+    // Parameter class CUniversalStreamParams_Params_v9_0_0
     //**************************************************************************************************
     
 
@@ -109,7 +107,7 @@ namespace Basler_UniversalStreamParams
     The parameter class is used by the \c Pylon::CBaslerUniversalInstantCamera class.
     The \ref sample_ParametrizeCamera_NativeParameterAccess code sample shows how to access camera parameters via the \c Pylon::CBaslerUniversalInstantCamera class.
     */
-    class PYLONBASE_API CUniversalStreamParams_Params_v6_2_0
+    class PYLONBASE_API CUniversalStreamParams_Params_v9_0_0
     {
     //----------------------------------------------------------------------------------------------------------------
     // Implementation
@@ -120,10 +118,10 @@ namespace Basler_UniversalStreamParams
     //! \cond HIDE_CLASS_METHODS
         
         //! Constructor
-        CUniversalStreamParams_Params_v6_2_0( void );
+        CUniversalStreamParams_Params_v9_0_0( void );
 
         //! Destructor
-        ~CUniversalStreamParams_Params_v6_2_0( void );
+        ~CUniversalStreamParams_Params_v9_0_0( void );
 
         //! Initializes the references
         void _Initialize( GENAPI_NAMESPACE::INodeMap* );
@@ -131,8 +129,8 @@ namespace Basler_UniversalStreamParams
     //! \endcond
 
     private:
-        class CUniversalStreamParams_Params_v6_2_0_Data;
-        CUniversalStreamParams_Params_v6_2_0_Data* m_pCUniversalStreamParams_Params_v6_2_0_Data;
+        class CUniversalStreamParams_Params_v9_0_0_Data;
+        CUniversalStreamParams_Params_v9_0_0_Data* m_pCUniversalStreamParams_Params_v9_0_0_Data;
 
 
     //----------------------------------------------------------------------------------------------------------------
@@ -147,7 +145,7 @@ namespace Basler_UniversalStreamParams
 
             Visibility: Guru
 
-            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=AccessMode" target="_blank">Basler Product Documentation</a> may provide more information.
+            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=AccessMode" target="_blank">feature documentation</a> may provide more information.
         */
         Pylon::IEnumParameterT<AccessModeEnums>& AccessMode;
 
@@ -163,25 +161,9 @@ namespace Basler_UniversalStreamParams
 
             Visibility: Guru
 
-            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=AutoPacketSize" target="_blank">Basler Product Documentation</a> may provide more information.
+            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=AutoPacketSize" target="_blank">feature documentation</a> may provide more information.
         */
         Pylon::IBooleanEx& AutoPacketSize;
-
-        //@}
-
-
-        //! \name Categories: GrabberSettings
-        //@{
-        /*!
-            \brief Clock frequency on the host side in Hertz - Applies to: BCON
-
-            Clock frequency on the host side in Hertz. This parameter is linked with the BconClockFrequency camera parameter. If the camera parameter changes, the host parameter changes accordingly, but not vice versa. The host parameter should not be set to a value different from the camera parameter.
-
-            Visibility: Expert
-
-            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=ClockFrequency" target="_blank">Basler Product Documentation</a> may provide more information.
-        */
-        Pylon::IIntegerEx& ClockFrequency;
 
         //@}
 
@@ -196,7 +178,7 @@ namespace Basler_UniversalStreamParams
 
             Selected by: TransmissionType
 
-            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=DestinationAddr" target="_blank">Basler Product Documentation</a> may provide more information.
+            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=DestinationAddr" target="_blank">feature documentation</a> may provide more information.
         */
         Pylon::IStringEx& DestinationAddr;
 
@@ -214,7 +196,7 @@ namespace Basler_UniversalStreamParams
 
             Selected by: TransmissionType
 
-            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=DestinationPort" target="_blank">Basler Product Documentation</a> may provide more information.
+            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=DestinationPort" target="_blank">feature documentation</a> may provide more information.
         */
         Pylon::IIntegerEx& DestinationPort;
 
@@ -230,9 +212,24 @@ namespace Basler_UniversalStreamParams
 
             Visibility: Expert
 
-            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=EnableResend" target="_blank">Basler Product Documentation</a> may provide more information.
+            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=EnableResend" target="_blank">feature documentation</a> may provide more information.
         */
         Pylon::IBooleanEx& EnableResend;
+
+        //@}
+
+
+        //! \name Categories: Root
+        //@{
+        /*!
+            \brief Firewall traversal interval value in milliseconds  This applies to the stream channel  If set to 0, this feature is disabled - Applies to: GigE
+
+
+            Visibility: Guru
+
+            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=FirewallTraversalInterval" target="_blank">feature documentation</a> may provide more information.
+        */
+        Pylon::IIntegerEx& FirewallTraversalInterval;
 
         //@}
 
@@ -246,25 +243,9 @@ namespace Basler_UniversalStreamParams
 
             Visibility: Guru
 
-            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=FrameRetention" target="_blank">Basler Product Documentation</a> may provide more information.
+            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=FrameRetention" target="_blank">feature documentation</a> may provide more information.
         */
         Pylon::IIntegerEx& FrameRetention;
-
-        //@}
-
-
-        //! \name Categories: GrabberSettings
-        //@{
-        /*!
-            \brief Height of the image ROI on the host side - Applies to: BCON
-
-            Height of the image ROI on the host side. This parameter is linked with the Height camera parameter. If the camera parameter changes, the host parameter changes accordingly, but not vice versa. The host parameter should not be set to a value different from the camera parameter.
-
-            Visibility: Expert
-
-            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=Height" target="_blank">Basler Product Documentation</a> may provide more information.
-        */
-        Pylon::IIntegerEx& Height;
 
         //@}
 
@@ -272,13 +253,13 @@ namespace Basler_UniversalStreamParams
         //! \name Categories: ExtendedStreamControl and Root
         //@{
         /*!
-            \brief Maximum size (in bytes) of a buffer used for grabbing images - Applies to: BCON, GigE, USB and blaze
+            \brief Maximum size (in bytes) of a buffer used for grabbing images - Applies to: GigE, USB and blaze
 
             Maximum size (in bytes) of a buffer used for grabbing images. A grab application must set this parameter before grabbing starts.
 
             Visibility: Expert
 
-            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=MaxBufferSize" target="_blank">Basler Product Documentation</a> may provide more information.
+            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=MaxBufferSize" target="_blank">feature documentation</a> may provide more information.
         */
         Pylon::IIntegerEx& MaxBufferSize;
 
@@ -288,12 +269,12 @@ namespace Basler_UniversalStreamParams
         //! \name Categories: ExtendedStreamControl and Root
         //@{
         /*!
-            \brief Maximum number of buffers that can be used simultaneously for grabbing images - Applies to: BCON, GigE, USB and blaze
+            \brief Maximum number of buffers that can be used simultaneously for grabbing images - Applies to: GigE, USB and blaze
 
 
             Visibility: Expert
 
-            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=MaxNumBuffer" target="_blank">Basler Product Documentation</a> may provide more information.
+            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=MaxNumBuffer" target="_blank">feature documentation</a> may provide more information.
         */
         Pylon::IIntegerEx& MaxNumBuffer;
 
@@ -309,7 +290,7 @@ namespace Basler_UniversalStreamParams
 
             Visibility: Guru
 
-            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=MaxTransferSize" target="_blank">Basler Product Documentation</a> may provide more information.
+            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=MaxTransferSize" target="_blank">feature documentation</a> may provide more information.
         */
         Pylon::IIntegerEx& MaxTransferSize;
 
@@ -325,7 +306,7 @@ namespace Basler_UniversalStreamParams
 
             Visibility: Guru
 
-            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=MaximumNumberResendRequests" target="_blank">Basler Product Documentation</a> may provide more information.
+            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=MaximumNumberResendRequests" target="_blank">feature documentation</a> may provide more information.
         */
         Pylon::IIntegerEx& MaximumNumberResendRequests;
 
@@ -341,7 +322,7 @@ namespace Basler_UniversalStreamParams
 
             Visibility: Guru
 
-            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=NumMaxQueuedUrbs" target="_blank">Basler Product Documentation</a> may provide more information.
+            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=NumMaxQueuedUrbs" target="_blank">feature documentation</a> may provide more information.
         */
         Pylon::IIntegerEx& NumMaxQueuedUrbs;
 
@@ -357,57 +338,41 @@ namespace Basler_UniversalStreamParams
 
             Visibility: Guru
 
-            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=PacketTimeout" target="_blank">Basler Product Documentation</a> may provide more information.
+            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=PacketTimeout" target="_blank">feature documentation</a> may provide more information.
         */
         Pylon::IIntegerEx& PacketTimeout;
 
         //@}
 
 
-        //! \name Categories: BufferHandlingControl and GrabberSettings
+        //! \name Categories: BufferHandlingControl
         //@{
         /*!
-            \brief Size of the payload in bytes - Applies to: BCON and CoaXPress
+            \brief Size of the payload in bytes - Applies to: CoaXPress
 
             Size of the payload in bytes. This is the total number of bytes of the image data payload produced by the frame grabber. This value is computed by the frame grabber implementation. The pylon stream grabber needs to be open to be able to compute the payload size.
 
             Visibility: Expert
 
-            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=PayloadSize" target="_blank">Basler Product Documentation</a> may provide more information.
+            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=PayloadSize" target="_blank">feature documentation</a> may provide more information.
         */
         Pylon::IIntegerEx& PayloadSize;
 
         //@}
 
 
-        //! \name Categories: GrabberSettings
+        //! \name Categories: Root
         //@{
         /*!
-            \brief Pixel format on the host side - Applies to: BCON
+            \brief Determines the largest possible packet size - Applies to: GigE
 
-            Pixel format on the host side. This parameter is linked with the Pixel Format camera parameter. If the camera parameter changes, the host parameter changes accordingly, but not vice versa. The host parameter should not be set to a value different from the camera parameter.
+            Determines the largest possible packet size. Using large packets reduces the overhead for transmitting images. Whether large packets can be transmitted depends on the network hardware used and its configuration.
 
-            Visibility: Expert
+            Visibility: Guru
 
-            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=PixelFormatValue" target="_blank">Basler Product Documentation</a> may provide more information.
+            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=ProbePacketSize" target="_blank">feature documentation</a> may provide more information.
         */
-        Pylon::IIntegerEx& PixelFormatValue;
-
-        //@}
-
-
-        //! \name Categories: GrabberSettings
-        //@{
-        /*!
-            \brief Sets the number of pixels per clock cycle on the host side - Applies to: BCON
-
-            Sets the number of pixels per clock cycle on the host side. This parameter is linked with the Pixels per Clock Cycle camera parameter. If the camera parameter changes, the host parameter changes accordingly, but not vice versa. The host parameter should not be set to a value different from the camera parameter.
-
-            Visibility: Expert
-
-            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=PixelPerClockCycle" target="_blank">Basler Product Documentation</a> may provide more information.
-        */
-        Pylon::IEnumParameterT<PixelPerClockCycleEnums>& PixelPerClockCycle;
+        Pylon::ICommandEx& ProbePacketSize;
 
         //@}
 
@@ -421,7 +386,7 @@ namespace Basler_UniversalStreamParams
 
             Visibility: Guru
 
-            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=ReceiveThreadPriority" target="_blank">Basler Product Documentation</a> may provide more information.
+            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=ReceiveThreadPriority" target="_blank">feature documentation</a> may provide more information.
         */
         Pylon::IIntegerEx& ReceiveThreadPriority;
 
@@ -437,7 +402,7 @@ namespace Basler_UniversalStreamParams
 
             Visibility: Guru
 
-            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=ReceiveThreadPriorityOverride" target="_blank">Basler Product Documentation</a> may provide more information.
+            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=ReceiveThreadPriorityOverride" target="_blank">feature documentation</a> may provide more information.
         */
         Pylon::IBooleanEx& ReceiveThreadPriorityOverride;
 
@@ -453,7 +418,7 @@ namespace Basler_UniversalStreamParams
 
             Visibility: Guru
 
-            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=ReceiveWindowSize" target="_blank">Basler Product Documentation</a> may provide more information.
+            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=ReceiveWindowSize" target="_blank">feature documentation</a> may provide more information.
         */
         Pylon::IIntegerEx& ReceiveWindowSize;
 
@@ -469,7 +434,7 @@ namespace Basler_UniversalStreamParams
 
             Visibility: Guru
 
-            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=ResendRequestBatching" target="_blank">Basler Product Documentation</a> may provide more information.
+            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=ResendRequestBatching" target="_blank">feature documentation</a> may provide more information.
         */
         Pylon::IIntegerEx& ResendRequestBatching;
 
@@ -485,7 +450,7 @@ namespace Basler_UniversalStreamParams
 
             Visibility: Guru
 
-            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=ResendRequestResponseTimeout" target="_blank">Basler Product Documentation</a> may provide more information.
+            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=ResendRequestResponseTimeout" target="_blank">feature documentation</a> may provide more information.
         */
         Pylon::IIntegerEx& ResendRequestResponseTimeout;
 
@@ -501,7 +466,7 @@ namespace Basler_UniversalStreamParams
 
             Visibility: Guru
 
-            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=ResendRequestThreshold" target="_blank">Basler Product Documentation</a> may provide more information.
+            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=ResendRequestThreshold" target="_blank">feature documentation</a> may provide more information.
         */
         Pylon::IIntegerEx& ResendRequestThreshold;
 
@@ -517,7 +482,7 @@ namespace Basler_UniversalStreamParams
 
             Visibility: Guru
 
-            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=ResendTimeout" target="_blank">Basler Product Documentation</a> may provide more information.
+            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=ResendTimeout" target="_blank">feature documentation</a> may provide more information.
         */
         Pylon::IIntegerEx& ResendTimeout;
 
@@ -533,7 +498,7 @@ namespace Basler_UniversalStreamParams
 
             Visibility: Guru
 
-            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=SocketBufferSize" target="_blank">Basler Product Documentation</a> may provide more information.
+            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=SocketBufferSize" target="_blank">feature documentation</a> may provide more information.
         */
         Pylon::IIntegerEx& SocketBufferSize;
 
@@ -548,7 +513,7 @@ namespace Basler_UniversalStreamParams
 
             Visibility: Expert
 
-            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=Statistic_Buffer_Underrun_Count" target="_blank">Basler Product Documentation</a> may provide more information.
+            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=Statistic_Buffer_Underrun_Count" target="_blank">feature documentation</a> may provide more information.
         */
         Pylon::IIntegerEx& Statistic_Buffer_Underrun_Count;
 
@@ -558,13 +523,13 @@ namespace Basler_UniversalStreamParams
         //! \name Categories: Statistic
         //@{
         /*!
-            \brief GigE cameras: Number of buffers with at least one failed packet  A packet is considered failed if its status is not 'success'  Other cameras: Number of buffers that returned with an error status   - Applies to: BCON, GigE, USB and blaze
+            \brief GigE cameras: Number of buffers with at least one failed packet  A packet is considered failed if its status is not 'success'  Other cameras: Number of buffers that returned with an error status   - Applies to: GigE, USB and blaze
 
             GigE cameras: Number of buffers with at least one failed packet. A packet is considered failed if its status is not 'success'. Other cameras: Number of buffers that returned an error. 
 
             Visibility: Expert
 
-            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=Statistic_Failed_Buffer_Count" target="_blank">Basler Product Documentation</a> may provide more information.
+            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=Statistic_Failed_Buffer_Count" target="_blank">feature documentation</a> may provide more information.
         */
         Pylon::IIntegerEx& Statistic_Failed_Buffer_Count;
 
@@ -580,7 +545,7 @@ namespace Basler_UniversalStreamParams
 
             Visibility: Expert
 
-            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=Statistic_Failed_Packet_Count" target="_blank">Basler Product Documentation</a> may provide more information.
+            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=Statistic_Failed_Packet_Count" target="_blank">feature documentation</a> may provide more information.
         */
         Pylon::IIntegerEx& Statistic_Failed_Packet_Count;
 
@@ -590,12 +555,12 @@ namespace Basler_UniversalStreamParams
         //! \name Categories: Statistic
         //@{
         /*!
-            \brief Last grabbed block ID - Applies to: BCON and USB
+            \brief Last grabbed block ID - Applies to: USB
 
 
             Visibility: Expert
 
-            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=Statistic_Last_Block_Id" target="_blank">Basler Product Documentation</a> may provide more information.
+            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=Statistic_Last_Block_Id" target="_blank">feature documentation</a> may provide more information.
         */
         Pylon::IIntegerEx& Statistic_Last_Block_Id;
 
@@ -605,12 +570,12 @@ namespace Basler_UniversalStreamParams
         //! \name Categories: Statistic
         //@{
         /*!
-            \brief Status code of the last failed buffer - Applies to: BCON and USB
+            \brief Status code of the last failed buffer - Applies to: USB
 
 
             Visibility: Expert
 
-            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=Statistic_Last_Failed_Buffer_Status" target="_blank">Basler Product Documentation</a> may provide more information.
+            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=Statistic_Last_Failed_Buffer_Status" target="_blank">feature documentation</a> may provide more information.
         */
         Pylon::IIntegerEx& Statistic_Last_Failed_Buffer_Status;
 
@@ -620,12 +585,12 @@ namespace Basler_UniversalStreamParams
         //! \name Categories: Statistic
         //@{
         /*!
-            \brief Status code of the last failed buffer - Applies to: BCON and USB
+            \brief Status code of the last failed buffer - Applies to: USB
 
 
             Visibility: Expert
 
-            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=Statistic_Last_Failed_Buffer_Status_Text" target="_blank">Basler Product Documentation</a> may provide more information.
+            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=Statistic_Last_Failed_Buffer_Status_Text" target="_blank">feature documentation</a> may provide more information.
         */
         Pylon::IStringEx& Statistic_Last_Failed_Buffer_Status_Text;
 
@@ -635,12 +600,12 @@ namespace Basler_UniversalStreamParams
         //! \name Categories: Statistic
         //@{
         /*!
-            \brief Number of corrupt or lost frames between successfully grabbed images - Applies to: BCON and USB
+            \brief Number of corrupt or lost frames between successfully grabbed images - Applies to: USB
 
 
             Visibility: Expert
 
-            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=Statistic_Missed_Frame_Count" target="_blank">Basler Product Documentation</a> may provide more information.
+            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=Statistic_Missed_Frame_Count" target="_blank">feature documentation</a> may provide more information.
         */
         Pylon::IIntegerEx& Statistic_Missed_Frame_Count;
 
@@ -655,7 +620,7 @@ namespace Basler_UniversalStreamParams
 
             Visibility: Expert
 
-            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=Statistic_Out_Of_Memory_Error_Count" target="_blank">Basler Product Documentation</a> may provide more information.
+            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=Statistic_Out_Of_Memory_Error_Count" target="_blank">feature documentation</a> may provide more information.
         */
         Pylon::IIntegerEx& Statistic_Out_Of_Memory_Error_Count;
 
@@ -670,7 +635,7 @@ namespace Basler_UniversalStreamParams
 
             Visibility: Expert
 
-            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=Statistic_Resend_Packet_Count" target="_blank">Basler Product Documentation</a> may provide more information.
+            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=Statistic_Resend_Packet_Count" target="_blank">feature documentation</a> may provide more information.
         */
         Pylon::IIntegerEx& Statistic_Resend_Packet_Count;
 
@@ -685,7 +650,7 @@ namespace Basler_UniversalStreamParams
 
             Visibility: Expert
 
-            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=Statistic_Resend_Request_Count" target="_blank">Basler Product Documentation</a> may provide more information.
+            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=Statistic_Resend_Request_Count" target="_blank">feature documentation</a> may provide more information.
         */
         Pylon::IIntegerEx& Statistic_Resend_Request_Count;
 
@@ -700,7 +665,7 @@ namespace Basler_UniversalStreamParams
 
             Visibility: Expert
 
-            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=Statistic_Resynchronization_Count" target="_blank">Basler Product Documentation</a> may provide more information.
+            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=Statistic_Resynchronization_Count" target="_blank">feature documentation</a> may provide more information.
         */
         Pylon::IIntegerEx& Statistic_Resynchronization_Count;
 
@@ -710,12 +675,12 @@ namespace Basler_UniversalStreamParams
         //! \name Categories: Statistic
         //@{
         /*!
-            \brief GigE cameras: Number of frames received  Other cameras: Number of buffers processed - Applies to: BCON, GigE, USB and blaze
+            \brief GigE cameras: Number of frames received  Other cameras: Number of buffers processed - Applies to: GigE, USB and blaze
 
 
             Visibility: Expert
 
-            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=Statistic_Total_Buffer_Count" target="_blank">Basler Product Documentation</a> may provide more information.
+            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=Statistic_Total_Buffer_Count" target="_blank">feature documentation</a> may provide more information.
         */
         Pylon::IIntegerEx& Statistic_Total_Buffer_Count;
 
@@ -730,7 +695,7 @@ namespace Basler_UniversalStreamParams
 
             Visibility: Expert
 
-            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=Statistic_Total_Packet_Count" target="_blank">Basler Product Documentation</a> may provide more information.
+            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=Statistic_Total_Packet_Count" target="_blank">feature documentation</a> may provide more information.
         */
         Pylon::IIntegerEx& Statistic_Total_Packet_Count;
 
@@ -745,7 +710,7 @@ namespace Basler_UniversalStreamParams
 
             Visibility: Guru
 
-            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=Status" target="_blank">Basler Product Documentation</a> may provide more information.
+            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=Status" target="_blank">feature documentation</a> may provide more information.
         */
         Pylon::IEnumParameterT<StatusEnums>& Status;
 
@@ -760,7 +725,7 @@ namespace Basler_UniversalStreamParams
 
             Visibility: Expert
 
-            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=StreamAnnounceBufferMinimum" target="_blank">Basler Product Documentation</a> may provide more information.
+            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=StreamAnnounceBufferMinimum" target="_blank">feature documentation</a> may provide more information.
         */
         Pylon::IIntegerEx& StreamAnnounceBufferMinimum;
 
@@ -776,7 +741,7 @@ namespace Basler_UniversalStreamParams
 
             Visibility: Expert
 
-            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=StreamAnnouncedBufferCount" target="_blank">Basler Product Documentation</a> may provide more information.
+            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=StreamAnnouncedBufferCount" target="_blank">feature documentation</a> may provide more information.
         */
         Pylon::IIntegerEx& StreamAnnouncedBufferCount;
 
@@ -791,7 +756,7 @@ namespace Basler_UniversalStreamParams
 
             Visibility: Expert
 
-            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=StreamBufferAlignment" target="_blank">Basler Product Documentation</a> may provide more information.
+            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=StreamBufferAlignment" target="_blank">feature documentation</a> may provide more information.
         */
         Pylon::IIntegerEx& StreamBufferAlignment;
 
@@ -806,7 +771,7 @@ namespace Basler_UniversalStreamParams
 
             Visibility: Beginner
 
-            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=StreamBufferHandlingMode" target="_blank">Basler Product Documentation</a> may provide more information.
+            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=StreamBufferHandlingMode" target="_blank">feature documentation</a> may provide more information.
         */
         Pylon::IEnumParameterT<StreamBufferHandlingModeEnums>& StreamBufferHandlingMode;
 
@@ -822,7 +787,7 @@ namespace Basler_UniversalStreamParams
 
             Visibility: Expert
 
-            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=StreamChunkCountMaximum" target="_blank">Basler Product Documentation</a> may provide more information.
+            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=StreamChunkCountMaximum" target="_blank">feature documentation</a> may provide more information.
         */
         Pylon::IIntegerEx& StreamChunkCountMaximum;
 
@@ -838,7 +803,7 @@ namespace Basler_UniversalStreamParams
 
             Visibility: Expert
 
-            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=StreamDeliveredFrameCount" target="_blank">Basler Product Documentation</a> may provide more information.
+            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=StreamDeliveredFrameCount" target="_blank">feature documentation</a> may provide more information.
         */
         Pylon::IIntegerEx& StreamDeliveredFrameCount;
 
@@ -853,7 +818,7 @@ namespace Basler_UniversalStreamParams
 
             Visibility: Expert
 
-            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=StreamID" target="_blank">Basler Product Documentation</a> may provide more information.
+            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=StreamID" target="_blank">feature documentation</a> may provide more information.
         */
         Pylon::IStringEx& StreamID;
 
@@ -868,7 +833,7 @@ namespace Basler_UniversalStreamParams
 
             Visibility: Expert
 
-            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=StreamInputBufferCount" target="_blank">Basler Product Documentation</a> may provide more information.
+            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=StreamInputBufferCount" target="_blank">feature documentation</a> may provide more information.
         */
         Pylon::IIntegerEx& StreamInputBufferCount;
 
@@ -884,7 +849,7 @@ namespace Basler_UniversalStreamParams
 
             Visibility: Expert
 
-            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=StreamIsGrabbing" target="_blank">Basler Product Documentation</a> may provide more information.
+            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=StreamIsGrabbing" target="_blank">feature documentation</a> may provide more information.
         */
         Pylon::IBooleanEx& StreamIsGrabbing;
 
@@ -900,7 +865,7 @@ namespace Basler_UniversalStreamParams
 
             Visibility: Expert
 
-            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=StreamLostFrameCount" target="_blank">Basler Product Documentation</a> may provide more information.
+            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=StreamLostFrameCount" target="_blank">feature documentation</a> may provide more information.
         */
         Pylon::IIntegerEx& StreamLostFrameCount;
 
@@ -915,7 +880,7 @@ namespace Basler_UniversalStreamParams
 
             Visibility: Expert
 
-            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=StreamOutputBufferCount" target="_blank">Basler Product Documentation</a> may provide more information.
+            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=StreamOutputBufferCount" target="_blank">feature documentation</a> may provide more information.
         */
         Pylon::IIntegerEx& StreamOutputBufferCount;
 
@@ -931,7 +896,7 @@ namespace Basler_UniversalStreamParams
 
             Visibility: Expert
 
-            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=StreamStartedFrameCount" target="_blank">Basler Product Documentation</a> may provide more information.
+            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=StreamStartedFrameCount" target="_blank">feature documentation</a> may provide more information.
         */
         Pylon::IIntegerEx& StreamStartedFrameCount;
 
@@ -946,7 +911,7 @@ namespace Basler_UniversalStreamParams
 
             Visibility: Expert
 
-            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=StreamType" target="_blank">Basler Product Documentation</a> may provide more information.
+            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=StreamType" target="_blank">feature documentation</a> may provide more information.
         */
         Pylon::IEnumParameterT<StreamTypeEnums>& StreamType;
 
@@ -961,7 +926,7 @@ namespace Basler_UniversalStreamParams
 
             Visibility: Guru
 
-            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=TransferLoopThreadPriority" target="_blank">Basler Product Documentation</a> may provide more information.
+            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=TransferLoopThreadPriority" target="_blank">feature documentation</a> may provide more information.
         */
         Pylon::IIntegerEx& TransferLoopThreadPriority;
 
@@ -979,7 +944,7 @@ namespace Basler_UniversalStreamParams
 
             Selecting Parameters: DestinationAddr and DestinationPort
 
-            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=TransmissionType" target="_blank">Basler Product Documentation</a> may provide more information.
+            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=TransmissionType" target="_blank">feature documentation</a> may provide more information.
         */
         Pylon::IEnumParameterT<TransmissionTypeEnums>& TransmissionType;
 
@@ -994,7 +959,7 @@ namespace Basler_UniversalStreamParams
 
             Visibility: Beginner
 
-            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=Type" target="_blank">Basler Product Documentation</a> may provide more information.
+            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=Type" target="_blank">feature documentation</a> may provide more information.
         */
         Pylon::IEnumParameterT<TypeEnums>& Type;
 
@@ -1009,7 +974,7 @@ namespace Basler_UniversalStreamParams
 
             Visibility: Guru
 
-            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=TypeIsSocketDriverAvailable" target="_blank">Basler Product Documentation</a> may provide more information.
+            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=TypeIsSocketDriverAvailable" target="_blank">feature documentation</a> may provide more information.
         */
         Pylon::IIntegerEx& TypeIsSocketDriverAvailable;
 
@@ -1024,7 +989,7 @@ namespace Basler_UniversalStreamParams
 
             Visibility: Guru
 
-            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=TypeIsWindowsFilterDriverAvailable" target="_blank">Basler Product Documentation</a> may provide more information.
+            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=TypeIsWindowsFilterDriverAvailable" target="_blank">feature documentation</a> may provide more information.
         */
         Pylon::IIntegerEx& TypeIsWindowsFilterDriverAvailable;
 
@@ -1039,25 +1004,30 @@ namespace Basler_UniversalStreamParams
 
             Visibility: Guru
 
-            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=TypeIsWindowsIntelPerformanceDriverAvailable" target="_blank">Basler Product Documentation</a> may provide more information.
+            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=TypeIsWindowsIntelPerformanceDriverAvailable" target="_blank">feature documentation</a> may provide more information.
         */
         Pylon::IIntegerEx& TypeIsWindowsIntelPerformanceDriverAvailable;
 
         //@}
 
 
-        //! \name Categories: GrabberSettings
+        //! \name Categories: Root
         //@{
         /*!
-            \brief Width of the image ROI on the host side - Applies to: BCON
+            \brief Use Extended ID if available in the camera and supported by the driver - Applies to: GigE
 
-            Width of the image ROI on the host side. This parameter is linked with the Width camera parameter. If the camera parameter changes, the host parameter changes accordingly, but not vice versa. The host parameter should not be set to a value different from the camera parameter.
+            
+            
+        Enabling this setting will use Extended ID if it is supported by the camera and driver.
+        If it is not supported, it will not be used and this setting has no negative side effects.
+        
+        
 
-            Visibility: Expert
+            Visibility: Guru
 
-            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=Width" target="_blank">Basler Product Documentation</a> may provide more information.
+            The <a href="https://docs.baslerweb.com/?rhcsh=1&rhmapid=UseExtendedIdIfAvailable" target="_blank">feature documentation</a> may provide more information.
         */
-        Pylon::IIntegerEx& Width;
+        Pylon::IBooleanEx& UseExtendedIdIfAvailable;
 
         //@}
 
@@ -1066,12 +1036,56 @@ namespace Basler_UniversalStreamParams
     //! \cond HIDE_CLASS_METHODS
 
         //! not implemented copy constructor
-        CUniversalStreamParams_Params_v6_2_0(CUniversalStreamParams_Params_v6_2_0&);
+        CUniversalStreamParams_Params_v9_0_0(CUniversalStreamParams_Params_v9_0_0&);
 
         //! not implemented assignment operator
-        CUniversalStreamParams_Params_v6_2_0& operator=(CUniversalStreamParams_Params_v6_2_0&);
+        CUniversalStreamParams_Params_v9_0_0& operator=(CUniversalStreamParams_Params_v9_0_0&);
 
     //! \endcond
+    };
+
+
+    //**************************************************************************************************
+    // Parameter class CUniversalStreamParams_Params_v9_1_0
+    //**************************************************************************************************
+    
+
+    /*!
+    \brief A parameter class containing all parameters as members that are available for pylon stream grabbers
+
+    The parameter class is used by the \c Pylon::CBaslerUniversalInstantCamera class.
+    The \ref sample_ParametrizeCamera_NativeParameterAccess code sample shows how to access camera parameters via the \c Pylon::CBaslerUniversalInstantCamera class.
+    */
+    class PYLONBASE_API CUniversalStreamParams_Params_v9_1_0 : public CUniversalStreamParams_Params_v9_0_0
+    {
+    //----------------------------------------------------------------------------------------------------------------
+    // Implementation
+    //----------------------------------------------------------------------------------------------------------------
+    protected:
+    // If you want to show the following methods in the help file
+    // add the string HIDE_CLASS_METHODS to the ENABLED_SECTIONS tag in the doxygen file
+    //! \cond HIDE_CLASS_METHODS
+        
+        //! Constructor
+        CUniversalStreamParams_Params_v9_1_0( void );
+
+        //! Destructor
+        ~CUniversalStreamParams_Params_v9_1_0( void );
+
+        //! Initializes the references
+        void _Initialize( GENAPI_NAMESPACE::INodeMap* );
+
+    //! \endcond
+
+    private:
+        class CUniversalStreamParams_Params_v9_1_0_Data;
+        CUniversalStreamParams_Params_v9_1_0_Data* m_pCUniversalStreamParams_Params_v9_1_0_Data;
+
+
+    //----------------------------------------------------------------------------------------------------------------
+    // References to features
+    //----------------------------------------------------------------------------------------------------------------
+    public:
     };
 
 
@@ -1081,7 +1095,7 @@ namespace Basler_UniversalStreamParams
     The parameter class is used by the \c Pylon::CBaslerUniversalInstantCamera class.
     The \ref sample_ParametrizeCamera_NativeParameterAccess code sample shows how to access camera parameters via the \c Pylon::CBaslerUniversalInstantCamera class.
     */
-    class CUniversalStreamParams_Params : public CUniversalStreamParams_Params_v6_2_0
+    class CUniversalStreamParams_Params : public CUniversalStreamParams_Params_v9_1_0
     {
     //----------------------------------------------------------------------------------------------------------------
     // Implementation
@@ -1104,7 +1118,7 @@ namespace Basler_UniversalStreamParams
         //! Initializes the references
         void _Initialize( GENAPI_NAMESPACE::INodeMap* pNodeMap )
         {
-            CUniversalStreamParams_Params_v6_2_0::_Initialize( pNodeMap );
+            CUniversalStreamParams_Params_v9_1_0::_Initialize( pNodeMap );
         }
         //! \endcond
     };

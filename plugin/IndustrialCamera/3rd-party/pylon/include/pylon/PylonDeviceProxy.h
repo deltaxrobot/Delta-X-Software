@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //  Basler pylon SDK
-//  Copyright (c) 2007-2021 Basler AG
+//  Copyright (c) 2007-2024 Basler AG
 //  http://www.baslerweb.com
 //  Author:  AH
 //-----------------------------------------------------------------------------
@@ -218,7 +218,7 @@
 
             \copydetails Pylon::IPylonDevice::GetNodeMap()
             */
-            GENAPI_NAMESPACE::INodeMap* GetNodeMap( void )
+            GenApi::INodeMap* GetNodeMap( void )
             {
                 CheckDevicePtr();
                 return m_pDevice->GetNodeMap();
@@ -228,7 +228,7 @@
 
             \copydetails Pylon::IPylonDevice::GetTLNodeMap()
             */
-            GENAPI_NAMESPACE::INodeMap* GetTLNodeMap( void )
+            GenApi::INodeMap* GetTLNodeMap( void )
             {
                 CheckDevicePtr();
                 return m_pDevice->GetTLNodeMap();

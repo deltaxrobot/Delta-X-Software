@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 //  Basler pylon SDK
-//  Copyright (c) 2010-2021 Basler AG
+//  Copyright (c) 2010-2024 Basler AG
 //  http://www.baslerweb.com
 //  Author:  Andreas Gau
 //------------------------------------------------------------------------------
@@ -93,7 +93,7 @@ namespace Pylon
         <li> All cameras of the array are destroyed.
         <li> A new set of cameras is created. No %Pylon Devices are attached.
         <li> The camera context values are set to the index of the camera in the array using CInstantCamera::SetCameraContext.
-        </ul>
+        </ul><br>
 
         The index operator can be used to access the individual cameras
         for attaching a %Pylon Device or for configuration.
@@ -293,7 +293,7 @@ namespace Pylon
         <li> If GrabStrategy_UpcomingImage strategy: RetrieveResult is called for a camera. Cameras are processed using a round-robin strategy.
         <li> If GrabStrategy_OneByOne, GrabStrategy_LatestImageOnly or GrabStrategy_LatestImages strategy: Pending images or camera events are retrieved. Cameras are processed using a round-robin strategy.
         <li> If GrabStrategy_OneByOne, GrabStrategy_LatestImageOnly or GrabStrategy_LatestImages strategy: Wait for a grab result if it is not yet available. Camera events are handled.
-        </ul>
+        </ul><br>
 
         The camera array index is assigned to the context value of the instant camera when Initialize() is called.
         This context value is attached to the result when the result is retrieved and can be obtained using the grab result method GrabResultData::GetCameraContext().

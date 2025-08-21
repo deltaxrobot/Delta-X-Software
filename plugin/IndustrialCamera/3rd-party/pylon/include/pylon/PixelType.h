@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //  Basler pylon SDK
-//  Copyright (c) 2006-2021 Basler AG
+//  Copyright (c) 2006-2024 Basler AG
 //  http://www.baslerweb.com
 //  Author:  Hartmut Nebelung, Edgar Katzer, AG
 //-----------------------------------------------------------------------------
@@ -116,8 +116,8 @@ namespace Pylon
         PixelType_YUV422planar = PIXEL_CUSTOMTYPE | PIXEL_COLOR | PIXEL_BIT_COUNT( 16 ) | 0x0042,   //!< 8 bit / channel YUV 422 planar YY YY U  U  V  V
         PixelType_YUV420planar = PIXEL_CUSTOMTYPE | PIXEL_COLOR | PIXEL_BIT_COUNT( 12 ) | 0x0040,   //!< 8 bit / channel YUV 420 planar YY YY U     V
 
-        PixelType_YCbCr422_8_YY_CbCr_Semiplanar = PIXEL_COLOR | PIXEL_BIT_COUNT( 16 ) | 0x0113,   //!< 8 bit / channel YUV 422 semiplanar YY YY UV   UV   also known as PixelType_YUV422_NV16 4:2:2 image with a plane of 8 bit Y samples followed by an interleaved U/V plane
         PixelType_YCbCr420_8_YY_CbCr_Semiplanar = PIXEL_COLOR | PIXEL_BIT_COUNT( 12 ) | 0x0112,   //!< 8 bit / channel YUV 420 semiplanar YY YY UV        also known as PixelType_YUV420_NV12 4:2:0 image with a plane of 8 bit Y samples followed by an interleaved U/V plane
+        PixelType_YCbCr422_8_YY_CbCr_Semiplanar = PIXEL_COLOR | PIXEL_BIT_COUNT( 16 ) | 0x0113,   //!< 8 bit / channel YUV 422 semiplanar YY YY UV   UV   also known as PixelType_YUV422_NV16 4:2:2 image with a plane of 8 bit Y samples followed by an interleaved U/V plane
 
         PixelType_BayerGR12Packed = PIXEL_MONO | PIXEL_BIT_COUNT( 12 ) | 0x002A,  //!< alias PixelFormat_BayerGR12Packed. The memory layouts of PixelType_BayerGR12Packed and PixelType_BayerGR12p are different.
         PixelType_BayerRG12Packed = PIXEL_MONO | PIXEL_BIT_COUNT( 12 ) | 0x002B,  //!< alias PixelFormat_BayerRG12Packed. The memory layouts of PixelType_BayerRG12Packed and PixelType_BayerRG12p are different.
@@ -141,6 +141,18 @@ namespace Pylon
 
         PixelType_RGB12V1packed = PIXEL_COLOR | PIXEL_BIT_COUNT( 36 ) | 0x0034,  //!< alias PixelFormat_RGB12V1Packed
 
+        PixelType_BiColorRGBG8 = PIXEL_COLOR | PIXEL_BIT_COUNT( 2 * 8 ) | 0x00A5,  //!< PFNC Bi-color Red/Green - Blue/Green 8-bit
+        PixelType_BiColorBGRG8 = PIXEL_COLOR | PIXEL_BIT_COUNT( 2 * 8 ) | 0x00A6,  //!< PFNC Bi-color Blue/Green - Red/Green 8-bit
+        PixelType_BiColorRGBG10 = PIXEL_COLOR | PIXEL_BIT_COUNT( 2 * 16 ) | 0x00A7,  //!< PFNC Bi-color Red/Green - Blue/Green 10-bit unpacked
+        PixelType_BiColorRGBG10p = PIXEL_COLOR | PIXEL_BIT_COUNT( 2 * 10 ) | 0x00A8,  //!< PFNC Bi-color Red/Green - Blue/Green 10-bit packed
+        PixelType_BiColorBGRG10 = PIXEL_COLOR | PIXEL_BIT_COUNT( 2 * 16 ) | 0x00A9,  //!< PFNC Bi-color Blue/Green - Red/Green 10-bit unpacked
+        PixelType_BiColorBGRG10p = PIXEL_COLOR | PIXEL_BIT_COUNT( 2 * 10 ) | 0x00AA,  //!< PFNC Bi-color Blue/Green - Red/Green 10-bit packed
+        PixelType_BiColorRGBG12 = PIXEL_COLOR | PIXEL_BIT_COUNT( 2 * 16 ) | 0x00AB,  //!< PFNC Bi-color Red/Green - Blue/Green 12-bit unpacked
+        PixelType_BiColorRGBG12p = PIXEL_COLOR | PIXEL_BIT_COUNT( 2 * 12 ) | 0x00AC,  //!< PFNC Bi-color Red/Green - Blue/Green 12-bit packed
+        PixelType_BiColorBGRG12 = PIXEL_COLOR | PIXEL_BIT_COUNT( 2 * 16 ) | 0x00AD,  //!< PFNC Bi-color Blue/Green - Red/Green 12-bit unpacked
+        PixelType_BiColorBGRG12p = PIXEL_COLOR | PIXEL_BIT_COUNT( 2 * 12 ) | 0x00AE,  //!< PFNC Bi-color Blue/Green - Red/Green 12-bit packed
+
+
         PixelType_Double = PIXEL_CUSTOMTYPE | PIXEL_MONO | PIXEL_BIT_COUNT( 64 ) | 0x100,  //!< alias PixelFormat_Double
 
         // For ToF
@@ -150,8 +162,20 @@ namespace Pylon
         PixelType_Coord3D_C16 = PIXEL_MONO | PIXEL_BIT_COUNT( 16 ) | 0x00B8,      //!< 3D coordinate C 16-bit
         PixelType_Coord3D_ABC32f = PIXEL_COLOR | PIXEL_BIT_COUNT( 96 ) | 0x00C0,  //!< 3D coordinate A-B-C 32-bit floating point
 
-        // Floating point
-        PixelType_Data32f = PIXEL_MONO |  PIXEL_BIT_COUNT( 32 ) | 0x011C,   //!< 32 bit IEC 60559:1989 conform little endian floating point data
+        // For Roboception Stereo Ace producer
+        PixelType_Error8 = PIXEL_CUSTOMTYPE | PIXEL_MONO | PIXEL_BIT_COUNT( 8 ) | 0x0001,       //!< Properitary Error 8-bit
+
+        // General formats
+        PixelType_Data8 = PIXEL_MONO | PIXEL_BIT_COUNT( 8 ) | 0x0116,      //!< 8 bit integer
+        PixelType_Data8s = PIXEL_MONO | PIXEL_BIT_COUNT( 8 ) | 0x0117,     //!< 8 bit integer, signed
+        PixelType_Data16 = PIXEL_MONO | PIXEL_BIT_COUNT( 16 ) | 0x0118,    //!< 16 bit integer
+        PixelType_Data16s = PIXEL_MONO | PIXEL_BIT_COUNT( 16 ) | 0x0119,   //!< 16 bit integer, signed
+        PixelType_Data32 = PIXEL_MONO | PIXEL_BIT_COUNT( 32 ) | 0x011A,    //!< 32 bit integer
+        PixelType_Data32s = PIXEL_MONO | PIXEL_BIT_COUNT( 32 ) | 0x011B,   //!< 32 bit integer, signed
+        PixelType_Data64 = PIXEL_MONO | PIXEL_BIT_COUNT( 64 ) | 0x011D,    //!< 64 bit integer
+        PixelType_Data64s = PIXEL_MONO | PIXEL_BIT_COUNT( 64 ) | 0x011E,   //!< 64 bit integer, signed
+        PixelType_Data32f = PIXEL_MONO | PIXEL_BIT_COUNT( 32 ) | 0x011C,   //!< 32 bit IEC 60559:1989 conform little endian floating point data
+        PixelType_Data64f = PIXEL_MONO | PIXEL_BIT_COUNT( 64 ) | 0x011F,   //!< 64 bit IEC 60559:1989 conform little endian floating point data
     };
 
     /// Returns true if the pixel type is Mono and the pixel values are not byte aligned.
@@ -187,6 +211,42 @@ namespace Pylon
         return false;
     }
 
+    /// Returns true if the pixel type is BiColor.
+    inline bool IsBiColor( EPixelType pixelType )
+    {
+        switch (pixelType)
+        {
+            case PixelType_BiColorRGBG8:
+            case PixelType_BiColorBGRG8:
+            case PixelType_BiColorRGBG10:
+            case PixelType_BiColorBGRG10:
+            case PixelType_BiColorRGBG12:
+            case PixelType_BiColorBGRG12:
+            case PixelType_BiColorRGBG10p:
+            case PixelType_BiColorBGRG10p:
+            case PixelType_BiColorRGBG12p:
+            case PixelType_BiColorBGRG12p:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    /// Returns true if the pixel type is BiColor and the pixel values are not byte aligned.
+    inline bool IsBiColorPacked( EPixelType pixelType )
+    {
+        switch (pixelType)
+        {
+            case PixelType_BiColorRGBG10p:
+            case PixelType_BiColorBGRG10p:
+            case PixelType_BiColorRGBG12p:
+            case PixelType_BiColorBGRG12p:
+                return true;
+            default:
+                return false;
+        }
+    }
+
     /// Returns true if the pixel type is RGB and the pixel values are not byte aligned.
     inline bool IsRGBPacked( EPixelType pixelType )
     {
@@ -207,7 +267,7 @@ namespace Pylon
     /// Returns true if the pixels of the given pixel type are not byte aligned.
     inline bool IsPacked( EPixelType pixelType )
     {
-        return (IsMonoPacked( pixelType ) || IsBayerPacked( pixelType ) || IsRGBPacked( pixelType ) || IsBGRPacked( pixelType ));
+        return (IsMonoPacked( pixelType ) || IsBayerPacked( pixelType ) || IsBiColorPacked( pixelType ) || IsRGBPacked( pixelType ) || IsBGRPacked( pixelType ));
     }
 
     /// Returns true if the pixel type is packed in lsb packed format.
@@ -228,6 +288,10 @@ namespace Pylon
         if (PixelType_BayerGR12p == pixelType)   return true;
         if (PixelType_BayerRG12p == pixelType)   return true;
         if (PixelType_BayerBG12p == pixelType)   return true;
+        if (PixelType_BiColorRGBG10p == pixelType)   return true;
+        if (PixelType_BiColorBGRG10p == pixelType)   return true;
+        if (PixelType_BiColorRGBG12p == pixelType)   return true;
+        if (PixelType_BiColorBGRG12p == pixelType)   return true;
         if (PixelType_Mono12p == pixelType)   return true;
 
         return false;
@@ -278,6 +342,12 @@ namespace Pylon
         return PlaneCount( pixelType ) > 1;
     }
 
+    /// Returns true if pixel type is YUV semiplanar.
+    inline bool IsYUVSemiplanar( EPixelType pixelType )
+    {
+        return ((pixelType == PixelType_YCbCr420_8_YY_CbCr_Semiplanar) || (pixelType == PixelType_YCbCr422_8_YY_CbCr_Semiplanar));
+    }
+
     /// Lists the Bayer color filter types.
     enum EPixelColorFilter
     {
@@ -291,42 +361,79 @@ namespace Pylon
     /// Returns the Bayer color filter type.
     inline EPixelColorFilter GetPixelColorFilter( EPixelType pixelType )
     {
-        if (PixelType_BayerGR8 == pixelType)   return PCF_BayerGR;
-        if (PixelType_BayerRG8 == pixelType)   return PCF_BayerRG;
-        if (PixelType_BayerGB8 == pixelType)   return PCF_BayerGB;
-        if (PixelType_BayerBG8 == pixelType)   return PCF_BayerBG;
+        switch (pixelType)
+        {
+            case PixelType_BayerGR8:
+            case PixelType_BayerGR10:
+            case PixelType_BayerGR12:
+            case PixelType_BayerGR12Packed:
+            case PixelType_BayerGR10p:
+            case PixelType_BayerGR12p:
+            case PixelType_BayerGR16:
+                return PCF_BayerGR;
 
-        if (PixelType_BayerGR10 == pixelType)   return PCF_BayerGR;
-        if (PixelType_BayerRG10 == pixelType)   return PCF_BayerRG;
-        if (PixelType_BayerGB10 == pixelType)   return PCF_BayerGB;
-        if (PixelType_BayerBG10 == pixelType)   return PCF_BayerBG;
+            case PixelType_BayerRG8:
+            case PixelType_BayerRG10:
+            case PixelType_BayerRG12:
+            case PixelType_BayerRG12Packed:
+            case PixelType_BayerRG10p:
+            case PixelType_BayerRG12p:
+            case PixelType_BayerRG16:
+                return PCF_BayerRG;
 
-        if (PixelType_BayerGR12 == pixelType)   return PCF_BayerGR;
-        if (PixelType_BayerRG12 == pixelType)   return PCF_BayerRG;
-        if (PixelType_BayerGB12 == pixelType)   return PCF_BayerGB;
-        if (PixelType_BayerBG12 == pixelType)   return PCF_BayerBG;
+            case PixelType_BayerGB8:
+            case PixelType_BayerGB10:
+            case PixelType_BayerGB12:
+            case PixelType_BayerGB12Packed:
+            case PixelType_BayerGB10p:
+            case PixelType_BayerGB12p:
+            case PixelType_BayerGB16:
+                return PCF_BayerGB;
 
-        if (PixelType_BayerGR12Packed == pixelType)   return PCF_BayerGR;
-        if (PixelType_BayerRG12Packed == pixelType)   return PCF_BayerRG;
-        if (PixelType_BayerGB12Packed == pixelType)   return PCF_BayerGB;
-        if (PixelType_BayerBG12Packed == pixelType)   return PCF_BayerBG;
+            case PixelType_BayerBG8:
+            case PixelType_BayerBG10:
+            case PixelType_BayerBG12:
+            case PixelType_BayerBG12Packed:
+            case PixelType_BayerBG10p:
+            case PixelType_BayerBG12p:
+            case PixelType_BayerBG16:
+                return PCF_BayerBG;
 
-        if (PixelType_BayerGR10p == pixelType)   return PCF_BayerGR;
-        if (PixelType_BayerRG10p == pixelType)   return PCF_BayerRG;
-        if (PixelType_BayerGB10p == pixelType)   return PCF_BayerGB;
-        if (PixelType_BayerBG10p == pixelType)   return PCF_BayerBG;
+            default:
+                return PCF_Undefined;
+        }
+    }
 
-        if (PixelType_BayerGR12p == pixelType)   return PCF_BayerGR;
-        if (PixelType_BayerRG12p == pixelType)   return PCF_BayerRG;
-        if (PixelType_BayerGB12p == pixelType)   return PCF_BayerGB;
-        if (PixelType_BayerBG12p == pixelType)   return PCF_BayerBG;
+    /// Lists the BiColor pixel location types.
+    enum EBiColorLocation
+    {
+        BCL_BiColorRGBG,    //!< red green start pixel
+        BCL_BiColorBGRG,    //!< blue green start pixel
+        BCL_Undefined   //!< undefined pixel location or not applicable
+    };
 
-        if (PixelType_BayerGR16 == pixelType)   return PCF_BayerGR;
-        if (PixelType_BayerRG16 == pixelType)   return PCF_BayerRG;
-        if (PixelType_BayerGB16 == pixelType)   return PCF_BayerGB;
-        if (PixelType_BayerBG16 == pixelType)   return PCF_BayerBG;
+    /// Returns the BiColor pixel location type.
+    inline EBiColorLocation GetBiColorLocation( EPixelType pixelType )
+    {
+        switch (pixelType)
+        {
+            case PixelType_BiColorRGBG8:
+            case PixelType_BiColorRGBG10:
+            case PixelType_BiColorRGBG10p:
+            case PixelType_BiColorRGBG12:
+            case PixelType_BiColorRGBG12p:
+                return BCL_BiColorRGBG;
 
-        return PCF_Undefined;
+            case PixelType_BiColorBGRG8:
+            case PixelType_BiColorBGRG10:
+            case PixelType_BiColorBGRG10p:
+            case PixelType_BiColorBGRG12:
+            case PixelType_BiColorBGRG12p:
+                return BCL_BiColorBGRG;
+
+            default:
+                return BCL_Undefined;
+        }
     }
 
     /*!
@@ -477,8 +584,16 @@ namespace Pylon
     /// Returns true if a given pixel type represents a floating point number.
     inline bool IsFloatingPoint( EPixelType pixelType )
     {
-        bool res = (pixelType == PixelType_Double) || (pixelType == PixelType_Coord3D_ABC32f) || (pixelType == PixelType_Data32f);
-        return res;
+        switch (pixelType)
+        {
+            case PixelType_Double:
+            case PixelType_Coord3D_ABC32f:
+            case PixelType_Data32f:
+            case PixelType_Data64f:
+                return true;
+            default:
+                return false;
+        }
     }
 
     /// Returns the minimum step size expressed in pixels for extracting an AOI.
@@ -625,6 +740,10 @@ namespace Pylon
     <li> source: PixelType_BayerGR12p  imposed: PixelType_Mono12p  target: PixelType_Mono16
     <li> source: PixelType_BayerRG12p  imposed: PixelType_Mono12p  target: PixelType_Mono16
     <li> source: PixelType_BayerBG12p  imposed: PixelType_Mono12p  target: PixelType_Mono16
+    <li> source: PixelType_BiColorRGBG10p  imposed: PixelType_Mono10p  target: PixelType_Mono16
+    <li> source: PixelType_BiColorBGRG10p  imposed: PixelType_Mono10p  target: PixelType_Mono16
+    <li> source: PixelType_BiColorRGBG12p  imposed: PixelType_Mono12p  target: PixelType_Mono16
+    <li> source: PixelType_BiColorBGRG12p  imposed: PixelType_Mono12p  target: PixelType_Mono16
     </ul>
 
     \param[in] pixelTypeSource The source pixel type.
@@ -641,6 +760,7 @@ namespace Pylon
         pixelTypeToImpose = pixelTypeSource;
         pixelTypeTarget = PixelType_Undefined;
 
+        // Mono formats
         if (PixelType_Mono1packed == pixelTypeSource)
         {
             pixelTypeTarget = PixelType_Mono8;
@@ -669,6 +789,8 @@ namespace Pylon
         {
             pixelTypeTarget = PixelType_Mono16;
         }
+
+        //Bayer formats
         else if (PixelType_BayerGB12Packed == pixelTypeSource)
         {
             pixelTypeToImpose = PixelType_Mono12packed;
@@ -730,9 +852,92 @@ namespace Pylon
             pixelTypeTarget = PixelType_Mono16;
         }
 
+        // BiColor formats
+        else if (PixelType_BiColorBGRG10p == pixelTypeSource)
+        {
+            pixelTypeToImpose = PixelType_Mono10p;
+            pixelTypeTarget = PixelType_Mono16;
+        }
+        else if (PixelType_BiColorRGBG10p == pixelTypeSource)
+        {
+            pixelTypeToImpose = PixelType_Mono10p;
+            pixelTypeTarget = PixelType_Mono16;
+        }
+        else if (PixelType_BiColorBGRG12p == pixelTypeSource)
+        {
+            pixelTypeToImpose = PixelType_Mono12p;
+            pixelTypeTarget = PixelType_Mono16;
+        }
+        else if (PixelType_BiColorRGBG12p == pixelTypeSource)
+        {
+            pixelTypeToImpose = PixelType_Mono12p;
+            pixelTypeTarget = PixelType_Mono16;
+        }
+
         return pixelTypeTarget != PixelType_Undefined;
     }
 
+    /*!
+    \brief Returns the pixel types and dimensions needed for conversion from packed to unpacked image formats using the CImageFormatConverter class.
+
+    The following pixel types are supported:
+    <ul>
+    <li> source: PixelType_Mono1packed   target: PixelType_Mono8
+    <li> source: PixelType_Mono2packed   target: PixelType_Mono8
+    <li> source: PixelType_Mono4packed   target: PixelType_Mono8
+    <li> source: PixelType_Mono10packed  target: PixelType_Mono16
+    <li> source: PixelType_Mono10p  target: PixelType_Mono16
+    <li> source: PixelType_Mono12packed  target: PixelType_Mono16
+    <li> source: PixelType_Mono12p  target: PixelType_Mono16
+    <li> source: PixelType_BayerGB12Packed  imposed: PixelType_Mono12packed  target: PixelType_Mono16
+    <li> source: PixelType_BayerGR12Packed  imposed: PixelType_Mono12packed  target: PixelType_Mono16
+    <li> source: PixelType_BayerRG12Packed  imposed: PixelType_Mono12packed  target: PixelType_Mono16
+    <li> source: PixelType_BayerBG12Packed  imposed: PixelType_Mono12packed  target: PixelType_Mono16
+    <li> source: PixelType_BayerGB10p  imposed: PixelType_Mono10p  target: PixelType_Mono16
+    <li> source: PixelType_BayerGR10p  imposed: PixelType_Mono10p  target: PixelType_Mono16
+    <li> source: PixelType_BayerRG10p  imposed: PixelType_Mono10p  target: PixelType_Mono16
+    <li> source: PixelType_BayerBG10p  imposed: PixelType_Mono10p  target: PixelType_Mono16
+    <li> source: PixelType_BayerGB12p  imposed: PixelType_Mono12p  target: PixelType_Mono16
+    <li> source: PixelType_BayerGR12p  imposed: PixelType_Mono12p  target: PixelType_Mono16
+    <li> source: PixelType_BayerRG12p  imposed: PixelType_Mono12p  target: PixelType_Mono16
+    <li> source: PixelType_BayerBG12p  imposed: PixelType_Mono12p  target: PixelType_Mono16
+    <li> source: PixelType_BiColorRGBG10p  imposed: PixelType_Mono10p  target: PixelType_Mono16
+    <li> source: PixelType_BiColorBGRG10p  imposed: PixelType_Mono10p  target: PixelType_Mono16
+    <li> source: PixelType_BiColorRGBG12p  imposed: PixelType_Mono12p  target: PixelType_Mono16
+    <li> source: PixelType_BiColorBGRG12p  imposed: PixelType_Mono12p  target: PixelType_Mono16
+    </ul>
+
+    \param[in] pixelTypeSource The source pixel type.
+    \param[out] pixelTypeToImpose The pixel type that is used for conversion instead of the source pixel type.
+                                  Returns \c pixelTypeSource if changing the source pixel type is not needed.
+                                  Returns PixelType_Undefined if no unpacking is needed.
+    \param[out] pixelTypeTarget The pixel type to which the image pixel data are converted.
+                                Returns PixelType_Undefined if no unpacking is needed.
+    \param[in, out] widthToImpose the width to be used to for conversion when unpacking to Mono16.
+    \param[in, out] heightToImpose the height to be used to for conversion when unpacking to Mono16.
+    \return Returns true if the source \c pixelTypeSource is in packed image format and a conversion is possible.
+    */
+    inline bool GetPixelTypesForUnpacking( EPixelType pixelTypeSource, EPixelType& pixelTypeToImpose, EPixelType& pixelTypeTarget, uint32_t &widthToImpose, uint32_t &heightToImpose )
+    {
+        PYLON_UNUSED( heightToImpose );
+        bool result = GetPixelTypesForUnpacking(pixelTypeSource,pixelTypeToImpose,pixelTypeTarget);
+        if (result == true)
+        {
+            // BiColor formats are 2 packed mono pixels
+            switch (pixelTypeSource)
+            {
+                case PixelType_BiColorBGRG10p:
+                case PixelType_BiColorRGBG10p:
+                case PixelType_BiColorBGRG12p:
+                case PixelType_BiColorRGBG12p:
+                    widthToImpose *= 2;
+                    break;
+                default:
+                    break;
+            }
+        }
+        return result;
+    }
 
     /**
      * @}

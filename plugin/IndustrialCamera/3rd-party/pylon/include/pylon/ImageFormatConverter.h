@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 //  Basler pylon SDK
-//  Copyright (c) 2010-2021 Basler AG
+//  Copyright (c) 2010-2024 Basler AG
 //  http://www.baslerweb.com
 //  Author:  Andreas Gau
 //------------------------------------------------------------------------------
@@ -105,7 +105,7 @@ namespace Pylon
     <li> PixelType_YUV422_YUYV_Packed
     <li> PixelType_YCbCr422_8_YY_CbCr_Semiplanar
     <li> PixelType_YCbCr420_8_YY_CbCr_Semiplanar
-    </ul>
+    </ul><br>
 
     Supported output image formats defined by the pixel type:
 
@@ -121,9 +121,8 @@ namespace Pylon
     <li> PixelType_YUV444planar
     <li> PixelType_YUV422planar
     <li> PixelType_YUV420planar
-    </ul>
-
-
+    </ul><br>
+    
     All input image formats can be converted to all output image formats.
 
     RGB, BGR and Bayer image formats are converted to monochrome formats by using the following formula:
@@ -422,14 +421,14 @@ namespace Pylon
                               );
 
 
-                /*!
-                \brief Returns true if the image format defined by the given pixel type is a supported input format.
+        /*!
+        \brief Returns true if the image format defined by the given pixel type is a supported input format.
 
-                \param[in]   sourcePixelType The pixel type of the source image.
+        \param[in]   sourcePixelType The pixel type of the source image.
 
-                \error
-                    Does not throw C++ exceptions.
-                */
+        \error
+            Does not throw C++ exceptions.
+        */
         static bool IsSupportedInputFormat( EPixelType sourcePixelType );
 
 
@@ -451,7 +450,7 @@ namespace Pylon
         \error
             Does not throw C++ exceptions.
         */
-        virtual GENAPI_NAMESPACE::INodeMap& GetNodeMap();
+        virtual GenApi::INodeMap& GetNodeMap();
 
     private:
         // The converter object can not be copied.
@@ -464,7 +463,7 @@ namespace Pylon
         CImageFormatConverterImpl* m_pImpl;
 
     public:
-        // This class emulates part of the behavior of a GENAPI_NAMESPACE::IEnumerationT<T> interface used for native parameter access.
+        // This class emulates part of the behavior of a GenApi::IEnumerationT<T> interface used for native parameter access.
         // This allows using the EPixelType enumeration.
         class IOutputPixelFormatEnum
         {

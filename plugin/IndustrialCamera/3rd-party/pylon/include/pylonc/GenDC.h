@@ -2,7 +2,7 @@
 // *******************************************************************************
 // GenDC.h
 // GenDC structures and defines header.
-// Version 1.1.0.00
+// Version 1.1.0.05
 //
 //-----------------------------------------------------------------------------
 //  Copyright (c) 2018 by Matrox Electronic Systems Ltd.
@@ -40,22 +40,23 @@
 #ifndef PFNC_H
 #include "PFNC.h"
 #endif
-#include <stddef.h> // size_t
 
 // GenDC standard values:
 // -----------------------------------
 // -----------------------------------
 #define GDC_SIGNATURE               0x43444E47 // "GNDC" Signature (not null terminated)
 #define GDC_VERSION_MAJOR           0x01
-#define GDC_VERSION_MINOR           0x00
+#define GDC_VERSION_MINOR           0x01
 #define GDC_VERSION_SUBMINOR        0x00
 
 // Header Types
 #define GDC_HEADER_TYPE_MASK        0xF000
-#define GDC_GENERIC_HEADER          0x0000
+#define GDC_UNDEFINED_HEADER        0x0000
 #define GDC_CONTAINER_HEADER        0x1000
 #define GDC_COMPONENT_HEADER        0x2000
-#define GDC_PART_HEADER             0x4000 // 0x4000-0x4FFF reserved for sub Part Headers type.
+#define GDC_PART_HEADER_MIN         0x4000 // 0x4000-0x4FFF reserved for sub Part Headers type.
+#define GDC_PART_HEADER_MAX         (GDC_PART_HEADER_MIN + 0x0FFF)
+#define GDC_PART_HEADER             (GDC_PART_HEADER_MIN + 0x0000)
 #define GDC_FLOW_TABLE_HEADER       0x7000
 
 // Component Types (from SFNC)
@@ -66,32 +67,35 @@
 #define GDC_RANGE                   0x04
 #define GDC_REFLECTANCE             0x05
 #define GDC_CONFIDENCE              0x06
-#define GDC_DISPARITY               0x07
-#define GDC_SCATTER                 0x08
+#define GDC_SCATTER                 0x07
+#define GDC_DISPARITY               0x08
 #define GDC_MULTISPECTRAL           0x09
 #define GDC_EXTENDED_COMPONENT      0x8000
-#define GDC_METADATA                GDC_EXTENDED_COMPONENT+0x0001
-#define GDC_CUSTOM_COMPONENT        GDC_EXTENDED_COMPONENT+0x7F00    // + 0x0-0xFE valid
-#define GDC_RESERVED_COMPONENT      GDC_EXTENDED_COMPONENT+0x7FFF
+#define GDC_METADATA                (GDC_EXTENDED_COMPONENT   + 0x0001)
+#define GDC_CUSTOM_COMPONENT_MIN    (GDC_EXTENDED_COMPONENT   + 0x7F00) // + 0x0000-0x00FE valid
+#define GDC_CUSTOM_COMPONENT_MAX    (GDC_CUSTOM_COMPONENT_MIN + 0x00FE)
+#define GDC_CUSTOM_COMPONENT        (GDC_CUSTOM_COMPONENT_MIN + 0x0000)
+#define GDC_RESERVED_COMPONENT      (GDC_EXTENDED_COMPONENT   + 0x7FFF)
 
 // Part types
-#define GDC_GENERIC_PART_TYPE_MASK  GDC_PART_HEADER+0x0F00
-#define GDC_GENERIC_PART_METADATA   GDC_PART_HEADER+0x0000
-#define GDC_GENERIC_PART_1D         GDC_PART_HEADER+0x0100
-#define GDC_GENERIC_PART_2D         GDC_PART_HEADER+0x0200
-#define GDC_GENERIC_PART_CUSTOM     GDC_PART_HEADER+0x0F00
+#define GDC_UNDEFINED_PART          (0x0000)
+#define GDC_GENERIC_PART_TYPE_MASK  (GDC_PART_HEADER + 0x0F00)
+#define GDC_GENERIC_PART_METADATA   (GDC_PART_HEADER + 0x0000)
+#define GDC_GENERIC_PART_1D         (GDC_PART_HEADER + 0x0100)
+#define GDC_GENERIC_PART_2D         (GDC_PART_HEADER + 0x0200)
+#define GDC_GENERIC_PART_CUSTOM     (GDC_PART_HEADER + 0x0F00)
 
-#define GDC_METADATA_GENICAM_CHUNK  GDC_GENERIC_PART_METADATA+0
-#define GDC_METADATA_GENICAM_XML    GDC_GENERIC_PART_METADATA+1
-#define GDC_METADATA_CUSTOM(x)      GDC_GENERIC_PART_METADATA+0xF0+x // + 0x0-0xF valid
-#define GDC_1D                      GDC_GENERIC_PART_1D+0x00
-#define GDC_1D_CUSTOM(x)            GDC_GENERIC_PART_1D+0xF0+x       // + 0x0-0xF valid
-#define GDC_2D                      GDC_GENERIC_PART_2D+0x00
-#define GDC_2D_JPEG                 GDC_GENERIC_PART_2D+0x01
-#define GDC_2D_JPEG2000             GDC_GENERIC_PART_2D+0x02
-#define GDC_2D_H264                 GDC_GENERIC_PART_2D+0x03
-#define GDC_2D_CUSTOM(x)            GDC_GENERIC_PART_2D+0xF0+x       // + 0x0-0xF valid
-#define GDC_CUSTOM(x)               GDC_GENERIC_PART_CUSTOM+x        // + 0x0-0xFE valid
+#define GDC_METADATA_GENICAM_CHUNK  (GDC_GENERIC_PART_METADATA + 0x00)
+#define GDC_METADATA_GENICAM_XML    (GDC_GENERIC_PART_METADATA + 0x01)
+#define GDC_METADATA_CUSTOM(x)      (GDC_GENERIC_PART_METADATA + 0xF0 + (x)) // + 0x0-0xF valid
+#define GDC_1D                      (GDC_GENERIC_PART_1D + 0x00)
+#define GDC_1D_CUSTOM(x)            (GDC_GENERIC_PART_1D + 0xF0 + (x)) // + 0x0-0xF valid
+#define GDC_2D                      (GDC_GENERIC_PART_2D + 0x00)
+#define GDC_2D_JPEG                 (GDC_GENERIC_PART_2D + 0x01)
+#define GDC_2D_JPEG2000             (GDC_GENERIC_PART_2D + 0x02)
+#define GDC_2D_H264                 (GDC_GENERIC_PART_2D + 0x03)
+#define GDC_2D_CUSTOM(x)            (GDC_GENERIC_PART_2D + 0xF0 + (x)) // + 0x0-0xF valid
+#define GDC_CUSTOM(x)               (GDC_GENERIC_PART_CUSTOM + (x)) // + 0x0-0xFE valid
 
 
 // GenDC objects forward declarations:
@@ -117,7 +121,7 @@ enum    GenDCVersionValue : GenDCVersionField   { VersionMajorCurrent    = GDC_V
 enum    GenDCReservedValue                      { ReservedDefaultValue = 0x00 };
 typedef uint16_t GenDCHeaderTypeShared;
 enum    GenDCHeaderType : GenDCHeaderTypeShared { TypeHeaderMask = GDC_HEADER_TYPE_MASK,
-                                                  TypeGeneric    = GDC_GENERIC_HEADER,
+                                                  TypeUndefined  = GDC_UNDEFINED_HEADER,
                                                   TypeContainer  = GDC_CONTAINER_HEADER,
                                                   TypeComponent  = GDC_COMPONENT_HEADER,
                                                   TypePart       = GDC_PART_HEADER,
@@ -166,23 +170,23 @@ typedef struct   uint24_t /* 3 bytes pixel. Ex: RGB8. */
 typedef uint24_t GenDCDataU24;
 
 // GenDC Component typedef and enumerations.
-typedef uint16_t GenDCGroupId;
-typedef uint16_t GenDCSourceId;
-typedef uint16_t GenDCRegionId;
-typedef uint32_t GenDCRegionOffset;
-typedef int64_t  GenDCTimestamp;
-typedef uint64_t GenDCComponentTypeId;
+typedef uint16_t   GenDCGroupId;
+typedef uint16_t   GenDCSourceId;
+typedef uint16_t   GenDCRegionId;
+typedef uint32_t   GenDCRegionOffset;
+typedef int64_t    GenDCTimestamp;
+typedef uint64_t   GenDCComponentTypeId;
 typedef PfncFormat GenDCFormat;
-typedef uint16_t GenDCPartCount;
+typedef uint16_t   GenDCPartCount;
 enum    GenDCComponentType : GenDCComponentTypeId
 {
-    TypeUndefined       = GDC_UNDEFINED_COMPONENT, TypeIntensity         = GDC_INTENSITY,
-    TypeInfrared        = GDC_INFRARED,            TypeUltraviolet       = GDC_ULTRAVIOLET,
-    TypeRange           = GDC_RANGE,               TypeReflectance       = GDC_REFLECTANCE,
-    TypeConfidence      = GDC_CONFIDENCE,          TypeDisparity         = GDC_DISPARITY,
-    TypeScatter         = GDC_SCATTER,             TypeMultispectral     = GDC_MULTISPECTRAL,
-    TypeExtended        = GDC_EXTENDED_COMPONENT,  TypeMetadata          = GDC_METADATA,
-    TypeCustomComponent = GDC_CUSTOM_COMPONENT,    TypeReservedComponent = GDC_RESERVED_COMPONENT
+    TypeUndefinedComponent = GDC_UNDEFINED_COMPONENT, TypeIntensity         = GDC_INTENSITY,
+    TypeInfrared           = GDC_INFRARED,            TypeUltraviolet       = GDC_ULTRAVIOLET,
+    TypeRange              = GDC_RANGE,               TypeReflectance       = GDC_REFLECTANCE,
+    TypeConfidence         = GDC_CONFIDENCE,          TypeDisparity         = GDC_DISPARITY,
+    TypeScatter            = GDC_SCATTER,             TypeMultispectral     = GDC_MULTISPECTRAL,
+    TypeExtended           = GDC_EXTENDED_COMPONENT,  TypeMetadata          = GDC_METADATA,
+    TypeCustomComponent    = GDC_CUSTOM_COMPONENT,    TypeReservedComponent = GDC_RESERVED_COMPONENT
 };
 
 // GenDC Part typedef and enumerations.
@@ -194,12 +198,13 @@ typedef uint16_t GenDCPadding;
 typedef uint64_t GenDCDataSize;
 typedef uint16_t GenDCFlowId;
 typedef uint32_t GenDCFlowCount;
+typedef uint64_t GenDCFlowSize;
 typedef GenDCOffset GenDCFlowOffset;
 enum    GenDCGenericPartType : GenDCHeaderTypeShared
 {
-    TypeGenericPart   = GDC_PART_HEADER,         TypeGenericMetadata = GDC_GENERIC_PART_METADATA,
-    TypeGenericPart1D = GDC_GENERIC_PART_1D,     TypeGenericPart2D   = GDC_GENERIC_PART_2D,
-    TypeGenericCustom = GDC_GENERIC_PART_CUSTOM, TypeGenericPartMask = GDC_GENERIC_PART_TYPE_MASK,
+    TypeUndefinedPart = GDC_UNDEFINED_PART,          TypeGenericPartMetadata = GDC_GENERIC_PART_METADATA,
+    TypeGenericPart1D = GDC_GENERIC_PART_1D,         TypeGenericPart2D   = GDC_GENERIC_PART_2D,
+    TypeGenericPartCustom = GDC_GENERIC_PART_CUSTOM, TypeGenericPartMask = GDC_GENERIC_PART_TYPE_MASK,
 };
 enum    GenDCPartType : GenDCHeaderTypeShared
 {
@@ -207,8 +212,8 @@ enum    GenDCPartType : GenDCHeaderTypeShared
     TypeMetadataCustom       = GDC_METADATA_CUSTOM(0),     Type1D                 = GDC_1D,
     Type1DCustom             = GDC_1D_CUSTOM(0),           Type2D                 = GDC_2D,
     TypeJPEG                 = GDC_2D_JPEG,                TypeJPEG2000           = GDC_2D_JPEG2000,
-    TypeH264                 = GDC_2D_H264,
-    Type2DCustom             = GDC_2D_CUSTOM(0)
+    TypeH264                 = GDC_2D_H264,                Type2DCustom           = GDC_2D_CUSTOM(0),
+    TypeCustomPart           = GDC_CUSTOM(0)
 };
 
 // General utility types and enumerations.
@@ -409,7 +414,7 @@ struct GenDCPartHeader : public GenDCPartHeaderBase // Add no field compared to 
    GenDCPartHeader(GenDCPartHeader &) = delete;
 };
 
-// GenDC 2D Part header base
+// GenDC 2D Part header base 
 //---------------------------
 struct GenDCPartHeader2DBase : public GenDCPartHeader
 {
@@ -450,7 +455,7 @@ struct GenDCInfoTypeSpecificH264
 {
     uint8_t Reserved;
     uint8_t	ProfileIDC;
-    union H264Flags
+    struct H264Flags
     {
         uint8_t CS_set0_flag : 1;
         uint8_t CS_set1_flag : 1;
@@ -559,7 +564,7 @@ struct GenDCFlowTableHeader
 // -------------------------
 struct GenDCFlowTable : GenDCFlowTableHeader
 {
-    uint64_t FlowSize[1]; // Stub array field for easy access using FlowTable.FlowSize[n].
+    GenDCFlowSize FlowSize[1]; // Stub array field for easy access using FlowTable.FlowSize[n].
 };
 
 // Flow table template.
@@ -567,7 +572,7 @@ struct GenDCFlowTable : GenDCFlowTableHeader
 template<GenDCPartCount _FlowCount>
 struct GenDCFlowTableTemplate : GenDCFlowTableHeader
 {
-    uint64_t FlowSize[_FlowCount];
+    GenDCFlowSize FlowSize[_FlowCount];
 };
 
 // Restore packing.

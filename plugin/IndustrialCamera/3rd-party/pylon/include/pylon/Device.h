@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //  Basler pylon SDK
-//  Copyright (c) 2006-2021 Basler AG
+//  Copyright (c) 2006-2024 Basler AG
 //  http://www.baslerweb.com
 //  Author:  Hartmut Nebelung
 //-----------------------------------------------------------------------------
@@ -133,14 +133,14 @@ namespace Pylon
         /**
           \return Pointer to the GenApi node map holding the parameters
           */
-        virtual GENAPI_NAMESPACE::INodeMap* GetNodeMap() = 0;
+        virtual GenApi::INodeMap* GetNodeMap() = 0;
 
         /// Returns the set of camera related transport layer parameters.
         /**
             \return Pointer to the GenApi node holding the transport layer parameter. If
             there are no transport layer parameters for the device, NULL is returned.
             */
-        virtual GENAPI_NAMESPACE::INodeMap* GetTLNodeMap() = 0;
+        virtual GenApi::INodeMap* GetTLNodeMap() = 0;
 
         /** \brief Creates a chunk parser used to update those camera object members
             reflecting the content of additional data chunks appended to the image data.

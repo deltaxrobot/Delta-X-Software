@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //  Basler pylon SDK
-//  Copyright (c) 2007-2021 Basler AG
+//  Copyright (c) 2007-2024 Basler AG
 //  http://www.baslerweb.com
 //  Author:  AH
 //-----------------------------------------------------------------------------
@@ -45,7 +45,7 @@
             /** \brief \copybrief Pylon::CNodeMapProxyT::CNodeMapProxyT(GenApi::INodeMap*)
             \copydetails Pylon::CNodeMapProxyT::CNodeMapProxyT(GenApi::INodeMap*)
             */ \
-            ClassName( GENAPI_NAMESPACE::INodeMap* pNodeMap ) : BaseClass( pNodeMap ) \
+            ClassName( GenApi::INodeMap* pNodeMap ) : BaseClass( pNodeMap ) \
         { \
         } \
             /*@}*/ \
@@ -74,7 +74,7 @@
             CNodeMapProxyT();
 
             //! Creates a CNodeMapProxyT object and attaches it to a pylon node map.
-            CNodeMapProxyT( GENAPI_NAMESPACE::INodeMap* );
+            CNodeMapProxyT( GenApi::INodeMap* );
 
             //! Destructor
             virtual ~CNodeMapProxyT();
@@ -95,26 +95,26 @@
             // \{
 
             //! Attach a pylon node map
-            virtual void Attach( GENAPI_NAMESPACE::INodeMap*, bool replace = false );
+            virtual void Attach( GenApi::INodeMap*, bool replace = false );
 
             //! Checks if a pylon node map is attached
             virtual bool IsAttached() const;
 
             //! Returns the pylon node map interface pointer
-            virtual GENAPI_NAMESPACE::INodeMap* GetNodeMap() const;
+            virtual GenApi::INodeMap* GetNodeMap() const;
 
             // \}
 
 
         public:
             //! \name Partial implementation of the INodeMap interface
-            //! See GENAPI_NAMESPACE::INodeMap for more details
+            //! See GenApi::INodeMap for more details
             // \{
             /** \brief \copybrief GenApi::INodeMap::GetNodes()
 
                 \copydetails GenApi::INodeMap::GetNodes()
             */
-            void GetNodes( GENAPI_NAMESPACE::NodeList_t& Nodes ) const
+            void GetNodes( GenApi::NodeList_t& Nodes ) const
             {
                 CheckNodeMapPtr();
                 return m_pNodeMap->GetNodes( Nodes );
@@ -124,7 +124,7 @@
 
             \copydetails GenApi::INodeMap::GetNode()
             */
-            GENAPI_NAMESPACE::INode* GetNode( const GENICAM_NAMESPACE::gcstring& Name ) const
+            GenApi::INode* GetNode( const GenICam::gcstring& Name ) const
             {
                 CheckNodeMapPtr();
                 return m_pNodeMap->GetNode( Name );
@@ -162,7 +162,7 @@
                 }
             }
 
-            GENAPI_NAMESPACE::INodeMap* m_pNodeMap;
+            GenApi::INodeMap* m_pNodeMap;
         };
 
 
@@ -178,7 +178,7 @@
         }
 
         template<class TParams>
-        inline CNodeMapProxyT<TParams>::CNodeMapProxyT( GENAPI_NAMESPACE::INodeMap* pNodeMap )
+        inline CNodeMapProxyT<TParams>::CNodeMapProxyT( GenApi::INodeMap* pNodeMap )
             : m_pNodeMap( NULL )
         {
             Attach( pNodeMap );
@@ -190,7 +190,7 @@
         }
 
         template<class TParams>
-        inline void CNodeMapProxyT<TParams>::Attach( GENAPI_NAMESPACE::INodeMap* pNodeMap, bool replace )
+        inline void CNodeMapProxyT<TParams>::Attach( GenApi::INodeMap* pNodeMap, bool replace )
         {
             if (IsAttached() && !replace)
             {
@@ -213,7 +213,7 @@
         }
 
         template<class TParams>
-        inline GENAPI_NAMESPACE::INodeMap* CNodeMapProxyT<TParams>::GetNodeMap() const
+        inline GenApi::INodeMap* CNodeMapProxyT<TParams>::GetNodeMap() const
         {
             return m_pNodeMap;
         }

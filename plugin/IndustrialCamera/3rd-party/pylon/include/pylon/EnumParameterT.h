@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 //  Basler pylon SDK
-//  Copyright (c) 2018-2021 Basler AG
+//  Copyright (c) 2018-2024 Basler AG
 //  http://www.baslerweb.com
 //------------------------------------------------------------------------------
 /*!
@@ -83,7 +83,7 @@ namespace Pylon
 
 
         //! Returns the EnumEntry object belonging to the value
-        virtual GENAPI_NAMESPACE::IEnumEntry* GetEntry( const EnumT value ) = 0;
+        virtual GenApi::IEnumEntry* GetEntry( const EnumT value ) = 0;
 
 
         /*!
@@ -135,7 +135,7 @@ namespace Pylon
         {
         }
 
-        CEnumParameterT( GENAPI_NAMESPACE::INode* pNode )
+        CEnumParameterT( GenApi::INode* pNode )
             : CEnumParameter( pNode )
         {
         }
@@ -175,9 +175,9 @@ namespace Pylon
 
 
         // Implements IEnumParameterT<EnumT>
-        virtual GENAPI_NAMESPACE::IEnumEntry* GetEntry( const EnumT value )
+        virtual GenApi::IEnumEntry* GetEntry( const EnumT value )
         {
-            GENAPI_NAMESPACE::IEnumEntry* result = CEnumParameter::GetEntry( GetTable(), static_cast<size_t>(value) );
+            GenApi::IEnumEntry* result = CEnumParameter::GetEntry( GetTable(), static_cast<size_t>(value) );
             return result;
         }
 

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //  Basler pylon SDK
-//  Copyright (c) 2010-2021 Basler AG
+//  Copyright (c) 2010-2024 Basler AG
 //  http://www.baslerweb.com
 //  Author: Hartmut Nebelung
 //-----------------------------------------------------------------------------
@@ -95,13 +95,13 @@ namespace Pylon
         }
 
         /// Apply action trigger configuration to a given camera device node map.
-        static void ApplyConfiguration( GENAPI_NAMESPACE::INodeMap& deviceNodeMap, const ActionParameter& p )
+        static void ApplyConfiguration( GenApi::INodeMap& deviceNodeMap, const ActionParameter& p )
         {
             ApplyConfiguration( deviceNodeMap, p.DeviceKey, p.GroupKey, p.GroupMask );
         }
 
         /// Apply action trigger configuration to a given camera device node map.
-        static void ApplyConfiguration( GENAPI_NAMESPACE::INodeMap& deviceNodeMap, uint32_t DeviceKey, uint32_t GroupKey, uint32_t GroupMask = AllGroupMask )
+        static void ApplyConfiguration( GenApi::INodeMap& deviceNodeMap, uint32_t DeviceKey, uint32_t GroupKey, uint32_t GroupMask = AllGroupMask )
         {
             using namespace GenApi;
 
@@ -216,6 +216,8 @@ namespace Pylon
             try
             {
                 ApplyConfiguration( camera.GetNodeMap(), m_Parameter );
+                // Probe max packet size
+                CConfigurationHelper::ProbePacketSize( camera.GetStreamGrabberNodeMap() );
             }
             catch (const GenericException& e)
             {

@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 //  Basler pylon SDK
-//  Copyright (c) 2018-2021 Basler AG
+//  Copyright (c) 2018-2024 Basler AG
 //  http://www.baslerweb.com
 //------------------------------------------------------------------------------
 /*!
@@ -32,9 +32,9 @@ namespace Pylon
     /*!
     \brief Extends the GenApi::IBoolean interface with convenience methods.
     */
-    interface IBooleanEx : virtual public GENAPI_NAMESPACE::IBoolean, virtual public IValueEx
+    interface IBooleanEx : virtual public GenApi::IBoolean, virtual public IValueEx
     {
-        using GENAPI_NAMESPACE::IBoolean::operator=;
+        using GenApi::IBoolean::operator=;
 
         /*!
         \brief Sets the Boolean value of the parameter if the parameter is writable.
@@ -88,7 +88,7 @@ namespace Pylon
         \error
             Does not throw C++ exceptions.
         */
-        explicit CBooleanParameter( GENAPI_NAMESPACE::INode* pNode );
+        explicit CBooleanParameter( GenApi::INode* pNode );
 
 
         /*!
@@ -99,7 +99,7 @@ namespace Pylon
         \error
             Does not throw C++ exceptions.
         */
-        explicit CBooleanParameter( GENAPI_NAMESPACE::IBoolean* pBoolean );
+        explicit CBooleanParameter( GenApi::IBoolean* pBoolean );
 
 
         /*!
@@ -116,7 +116,7 @@ namespace Pylon
         \error
             The call to GenApi::INodeMap::GetNode can throw C++ exceptions.
         */
-        CBooleanParameter( GENAPI_NAMESPACE::INodeMap* pNodeMap, const char* pName );
+        CBooleanParameter( GenApi::INodeMap* pNodeMap, const char* pName );
 
 
         /*!
@@ -133,7 +133,7 @@ namespace Pylon
         \error
             The call to GenApi::INodeMap::GetNode can throw C++ exceptions.
         */
-        CBooleanParameter( GENAPI_NAMESPACE::INodeMap& nodeMap, const char* pName );
+        CBooleanParameter( GenApi::INodeMap& nodeMap, const char* pName );
 
 
         /*!
@@ -169,7 +169,7 @@ namespace Pylon
         \error
             The call to GenApi::INodeMap::GetNode can throw C++ exceptions.
         */
-        virtual bool Attach( GENAPI_NAMESPACE::INodeMap* pNodeMap, const char* pName );
+        virtual bool Attach( GenApi::INodeMap* pNodeMap, const char* pName );
 
 
         /*!
@@ -187,7 +187,7 @@ namespace Pylon
         \error
             The call to GenApi::INodeMap::GetNode can throw C++ exceptions.
         */
-        virtual bool Attach( GENAPI_NAMESPACE::INodeMap& nodeMap, const char* pName );
+        virtual bool Attach( GenApi::INodeMap& nodeMap, const char* pName );
 
 
         /*!
@@ -203,7 +203,7 @@ namespace Pylon
         \error
             Does not throw C++ exceptions.
         */
-        virtual bool Attach( GENAPI_NAMESPACE::INode* pNode );
+        virtual bool Attach( GenApi::INode* pNode );
 
 
         /*!
@@ -213,7 +213,7 @@ namespace Pylon
         \error
             Does not throw C++ exceptions.
         */
-        virtual bool Attach( GENAPI_NAMESPACE::IBoolean* pBoolean );
+        virtual bool Attach( GenApi::IBoolean* pBoolean );
 
 
         /*!
@@ -242,7 +242,7 @@ namespace Pylon
         \error
             Does not throw C++ exceptions.
         */
-        virtual bool Equals( const GENAPI_NAMESPACE::INode* pNode ) const;
+        virtual bool Equals( const GenApi::INode* pNode ) const;
 
 
         /*!
@@ -252,7 +252,7 @@ namespace Pylon
         \error
             Does not throw C++ exceptions.
         */
-        virtual bool Equals( const GENAPI_NAMESPACE::IBoolean* pBoolean ) const;
+        virtual bool Equals( const GenApi::IBoolean* pBoolean ) const;
 
 
         /*!
@@ -287,7 +287,7 @@ namespace Pylon
         virtual bool GetValueOrDefault( bool defaultValue );
 
     protected:
-        GENAPI_NAMESPACE::IBoolean* m_pFeature;
+        GenApi::IBoolean* m_pFeature;
     };
 }
 #ifdef _MSC_VER

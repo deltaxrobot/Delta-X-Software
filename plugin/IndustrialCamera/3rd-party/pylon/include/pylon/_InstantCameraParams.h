@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //  Basler pylon SDK
-//  Copyright (c) 2010-2021 Basler AG
+//  Copyright (c) 2010-2024 Basler AG
 //  http://www.baslerweb.com
 //-----------------------------------------------------------------------------
 
@@ -31,11 +31,18 @@ namespace Basler_InstantCameraParams
     //**************************************************************************************************
     // Enumerations
     //**************************************************************************************************
+    //! Valid values for BufferHandlingMode
+    enum BufferHandlingModeEnums
+    {
+        BufferHandlingMode_Pool,  //!< Fixed number of buffers - Applies to: InstantCamera
+        BufferHandlingMode_Stream  //!< Unlimited number of buffers - Applies to: InstantCamera
+    };
+
 
     
     
     //**************************************************************************************************
-    // Parameter class CInstantCameraParams_Params_v6_2_0
+    // Parameter class CInstantCameraParams_Params_v9_0_0
     //**************************************************************************************************
     
 
@@ -45,7 +52,7 @@ namespace Basler_InstantCameraParams
     The parameter class is used by the \c Pylon::CInstantCamera class.
     The code sample \ref sample_Grab shows the usage by setting the MaxNumBuffer parameter.
     */
-    class PYLONBASE_API CInstantCameraParams_Params_v6_2_0
+    class PYLONBASE_API CInstantCameraParams_Params_v9_0_0
     {
     //----------------------------------------------------------------------------------------------------------------
     // Implementation
@@ -56,10 +63,10 @@ namespace Basler_InstantCameraParams
     //! \cond HIDE_CLASS_METHODS
         
         //! Constructor
-        CInstantCameraParams_Params_v6_2_0( void );
+        CInstantCameraParams_Params_v9_0_0( void );
 
         //! Destructor
-        ~CInstantCameraParams_Params_v6_2_0( void );
+        ~CInstantCameraParams_Params_v9_0_0( void );
 
         //! Initializes the references
         void _Initialize( GENAPI_NAMESPACE::INodeMap* );
@@ -67,8 +74,8 @@ namespace Basler_InstantCameraParams
     //! \endcond
 
     private:
-        class CInstantCameraParams_Params_v6_2_0_Data;
-        CInstantCameraParams_Params_v6_2_0_Data* m_pCInstantCameraParams_Params_v6_2_0_Data;
+        class CInstantCameraParams_Params_v9_0_0_Data;
+        CInstantCameraParams_Params_v9_0_0_Data* m_pCInstantCameraParams_Params_v9_0_0_Data;
 
 
     //----------------------------------------------------------------------------------------------------------------
@@ -85,6 +92,21 @@ namespace Basler_InstantCameraParams
 
         */
         Pylon::IBooleanEx& AcquisitionStartStopExecutionEnable;
+
+        //@}
+
+
+        //! \name Categories: Root
+        //@{
+        /*!
+            \brief Buffer handling mode - Applies to: InstantCamera
+
+            Determines whether the number of available buffers is limited and when they are allocated.
+
+            Visibility: Expert
+
+        */
+        Pylon::IEnumParameterT<BufferHandlingModeEnums>& BufferHandlingMode;
 
         //@}
 
@@ -369,14 +391,29 @@ namespace Basler_InstantCameraParams
         //@}
 
 
+        //! \name Categories: Root
+        //@{
+        /*!
+            \brief Use Extended ID if available in the camera and supported by the driver - Applies to: InstantCamera
+
+            Enabling this setting will use Extended ID if it is supported by the camera and driver. If it is not supported, it will not be used and this setting has no negative side effects.
+
+            Visibility: Guru
+
+        */
+        Pylon::IBooleanEx& UseExtendedIdIfAvailable;
+
+        //@}
+
+
     private:
     //! \cond HIDE_CLASS_METHODS
 
         //! not implemented copy constructor
-        CInstantCameraParams_Params_v6_2_0(CInstantCameraParams_Params_v6_2_0&);
+        CInstantCameraParams_Params_v9_0_0(CInstantCameraParams_Params_v9_0_0&);
 
         //! not implemented assignment operator
-        CInstantCameraParams_Params_v6_2_0& operator=(CInstantCameraParams_Params_v6_2_0&);
+        CInstantCameraParams_Params_v9_0_0& operator=(CInstantCameraParams_Params_v9_0_0&);
 
     //! \endcond
     };
@@ -388,7 +425,7 @@ namespace Basler_InstantCameraParams
     The parameter class is used by the \c Pylon::CInstantCamera class.
     The code sample \ref sample_Grab shows the usage by setting the MaxNumBuffer parameter.
     */
-    class CInstantCameraParams_Params : public CInstantCameraParams_Params_v6_2_0
+    class CInstantCameraParams_Params : public CInstantCameraParams_Params_v9_0_0
     {
     //----------------------------------------------------------------------------------------------------------------
     // Implementation
@@ -411,7 +448,7 @@ namespace Basler_InstantCameraParams
         //! Initializes the references
         void _Initialize( GENAPI_NAMESPACE::INodeMap* pNodeMap )
         {
-            CInstantCameraParams_Params_v6_2_0::_Initialize( pNodeMap );
+            CInstantCameraParams_Params_v9_0_0::_Initialize( pNodeMap );
         }
         //! \endcond
     };

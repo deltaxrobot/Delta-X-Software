@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 //  Basler pylon SDK
-//  Copyright (c) 2018-2021 Basler AG
+//  Copyright (c) 2018-2024 Basler AG
 //  http://www.baslerweb.com
 //------------------------------------------------------------------------------
 /*!
@@ -47,7 +47,7 @@ namespace Pylon
     /*!
     \brief Extends the GenApi::IValue interface with convenience methods.
     */
-    interface IValueEx : virtual public GENAPI_NAMESPACE::IValue
+    interface IValueEx : virtual public GenApi::IValue
     {
         /*!
         \brief Indicates whether the parameter is readable.
@@ -144,7 +144,7 @@ namespace Pylon
         \error
             Does not throw C++ exceptions.
         */
-        explicit CParameter( GENAPI_NAMESPACE::INode* pNode );
+        explicit CParameter( GenApi::INode* pNode );
 
 
         /*!
@@ -155,7 +155,7 @@ namespace Pylon
         \error
             Does not throw C++ exceptions.
         */
-        explicit CParameter( GENAPI_NAMESPACE::IValue* pValue );
+        explicit CParameter( GenApi::IValue* pValue );
 
 
         /*!
@@ -172,7 +172,7 @@ namespace Pylon
         \error
             The call to GenApi::INodeMap::GetNode can throw C++ exceptions.
         */
-        CParameter( GENAPI_NAMESPACE::INodeMap* pNodeMap, const char* pName );
+        CParameter( GenApi::INodeMap* pNodeMap, const char* pName );
 
 
         /*!
@@ -189,7 +189,7 @@ namespace Pylon
         \error
             The call to GenApi::INodeMap::GetNode can throw C++ exceptions.
         */
-        CParameter( GENAPI_NAMESPACE::INodeMap& nodeMap, const char* pName );
+        CParameter( GenApi::INodeMap& nodeMap, const char* pName );
 
 
         /*!
@@ -225,7 +225,7 @@ namespace Pylon
         \error
             The call to GenApi::INodeMap::GetNode can throw C++ exceptions.
         */
-        virtual bool Attach( GENAPI_NAMESPACE::INodeMap* pNodeMap, const char* pName );
+        virtual bool Attach( GenApi::INodeMap* pNodeMap, const char* pName );
 
 
         /*!
@@ -243,7 +243,7 @@ namespace Pylon
         \error
             The call to GenApi::INodeMap::GetNode can throw C++ exceptions.
         */
-        virtual bool Attach( GENAPI_NAMESPACE::INodeMap& nodeMap, const char* pName );
+        virtual bool Attach( GenApi::INodeMap& nodeMap, const char* pName );
 
 
         /*!
@@ -259,7 +259,7 @@ namespace Pylon
         \error
             Does not throw C++ exceptions.
         */
-        virtual bool Attach( GENAPI_NAMESPACE::INode* pNode );
+        virtual bool Attach( GenApi::INode* pNode );
 
 
         /*!
@@ -269,7 +269,7 @@ namespace Pylon
         \error
             Does not throw C++ exceptions.
         */
-        virtual bool Attach( GENAPI_NAMESPACE::IValue* pValue );
+        virtual bool Attach( GenApi::IValue* pValue );
 
 
         /*!
@@ -298,7 +298,7 @@ namespace Pylon
         \error
             Does not throw C++ exceptions.
         */
-        virtual bool Equals( const GENAPI_NAMESPACE::INode* pNode ) const;
+        virtual bool Equals( const GenApi::INode* pNode ) const;
 
 
         /*!
@@ -308,7 +308,7 @@ namespace Pylon
         \error
             Does not throw C++ exceptions.
         */
-        virtual bool Equals( const GENAPI_NAMESPACE::IValue* pValue ) const;
+        virtual bool Equals( const GenApi::IValue* pValue ) const;
 
 
         /*!
@@ -323,16 +323,16 @@ namespace Pylon
 
 
         // Implements GenApi::IBase
-        virtual GENAPI_NAMESPACE::EAccessMode GetAccessMode() const;
+        virtual GenApi::EAccessMode GetAccessMode() const;
 
         // Implements GenApi::IValue
-        virtual GENAPI_NAMESPACE::INode* GetNode();
+        virtual GenApi::INode* GetNode();
 
         // Implements GenApi::IValue
-        virtual GENICAM_NAMESPACE::gcstring ToString( bool verify = false, bool ignoreCache = false );
+        virtual GenICam::gcstring ToString( bool verify = false, bool ignoreCache = false );
 
         // Implements GenApi::IValue
-        virtual void FromString( const GENICAM_NAMESPACE::gcstring& valueStr, bool verify = true );
+        virtual void FromString( const GenICam::gcstring& valueStr, bool verify = true );
 
         // Implements GenApi::IValue
         virtual bool IsValueCacheValid() const;
@@ -357,7 +357,7 @@ namespace Pylon
         virtual String_t ToStringOrDefault( const String_t& defaultValue );
 
     protected:
-        GENAPI_NAMESPACE::IValue* m_pValue;
+        GenApi::IValue* m_pValue;
     };
 }
 #ifdef _MSC_VER

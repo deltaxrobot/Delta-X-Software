@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //  Basler pylon SDK
-//  Copyright (c) 2010-2021 Basler AG
+//  Copyright (c) 2010-2024 Basler AG
 //  http://www.baslerweb.com
 //  Author:  Andreas Gau
 //-----------------------------------------------------------------------------
@@ -35,7 +35,7 @@ namespace Pylon
         {
         }
 
-        virtual void OnCameraEvent( CInstantCamera& camera, intptr_t userProvidedId, GENAPI_NAMESPACE::INode* pNode )
+        virtual void OnCameraEvent( CInstantCamera& camera, intptr_t userProvidedId, GenApi::INode* pNode )
         {
             PYLON_ASSERT2( dynamic_cast<DeviceSpecificCameraT*>(&camera) != NULL, "Unexpected camera type passed." );
             m_ptr->OnCameraEvent( static_cast<DeviceSpecificCameraT&>(camera), userProvidedId, pNode );

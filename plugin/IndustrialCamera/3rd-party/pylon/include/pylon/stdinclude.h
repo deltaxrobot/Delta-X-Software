@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //  Basler pylon SDK
-//  Copyright (c) 2006-2021 Basler AG
+//  Copyright (c) 2006-2024 Basler AG
 //  http://www.baslerweb.com
 //  Author:  Hartmut Nebelung
 //-----------------------------------------------------------------------------
@@ -97,9 +97,9 @@
 namespace Pylon
 {
     /// Pylon's string definition
-    typedef GENICAM_NAMESPACE::gcstring String_t;
+    typedef GenICam::gcstring String_t;
     /// Pylon's string list definition
-    typedef GENICAM_NAMESPACE::gcstring_vector StringList_t;
+    typedef GenICam::gcstring_vector StringList_t;
 }
 
 #ifdef _MSC_VER

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //  Basler pylon SDK
-//  Copyright (c) 2006-2021 Basler AG
+//  Copyright (c) 2006-2024 Basler AG
 //  http://www.baslerweb.com
 //-----------------------------------------------------------------------------
 /*!
@@ -103,34 +103,14 @@ namespace Pylon
 
     This wrapper method return the handle of the current running thread.
     */
-    inline THREADHANDLE GetCurrentThreadHandle()
-    {
-#if defined(PYLON_WIN_BUILD)
-        return ::GetCurrentThread();
-#elif defined(PYLON_HAS_POSIX_THREADS)
-        return pthread_self();
-#else
-#  error Platform not supported.
-#endif
-    }
+    THREADHANDLE PYLONBASE_API GetCurrentThreadHandle();
 
     /**
     \brief Get current running thread id.
 
     This wrapper method return the id of the current running thread.
     */
-    inline int GetCurrentThreadIdentifier()
-    {
-#if defined(PYLON_WIN_BUILD)
-        return static_cast<int>(::GetCurrentThreadId());
-#elif defined(PYLON_LINUX_BUILD)
-        return static_cast<int>(pthread_self());
-#elif defined(PYLON_HAS_POSIX_THREADS)
-        return reinterpret_cast<long int>(pthread_self());
-#else
-#  error Platform not supported.
-#endif
-    }
+    int PYLONBASE_API GetCurrentThreadIdentifier();
 }
 
 #ifdef _MSC_VER

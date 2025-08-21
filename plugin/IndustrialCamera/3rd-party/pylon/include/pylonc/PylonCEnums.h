@@ -1,6 +1,6 @@
 /*-----------------------------------------------------------------------------
     Basler pylon C SDK
-    Copyright (c) 2012-2021 Basler AG
+    Copyright (c) 2012-2024 Basler AG
     http://www.baslerweb.com
 -----------------------------------------------------------------------------*/
 #ifndef PYLON_ENUMS_H
@@ -148,6 +148,18 @@ typedef enum
     PixelType_BayerBG16 = PIXEL_MONO | PIXEL_BIT_COUNT( 16 ) | 0x0031, /*!< \brief Indicates the Bayer BG 16 pixel format. */
 
     PixelType_RGB12V1packed = PIXEL_COLOR | PIXEL_BIT_COUNT( 36 ) | 0X0034, /*!< \brief Indicates the RGB 12 V1 packed pixel format. */
+
+    /* bi color pixel formats */
+    PixelType_BiColorRGBG8 = PIXEL_COLOR | PIXEL_BIT_COUNT( 2 * 8 ) | 0x00A5,  //!< PFNC Bi-color Red/Green - Blue/Green 8-bit
+    PixelType_BiColorBGRG8 = PIXEL_COLOR | PIXEL_BIT_COUNT( 2 * 8 ) | 0x00A6,  //!< PFNC Bi-color Blue/Green - Red/Green 8-bit
+    PixelType_BiColorRGBG10 = PIXEL_COLOR | PIXEL_BIT_COUNT( 2 * 16 ) | 0x00A7,  //!< PFNC Bi-color Red/Green - Blue/Green 10-bit unpacked
+    PixelType_BiColorRGBG10p = PIXEL_COLOR | PIXEL_BIT_COUNT( 2 * 10 ) | 0x00A8,  //!< PFNC Bi-color Red/Green - Blue/Green 10-bit packed
+    PixelType_BiColorBGRG10 = PIXEL_COLOR | PIXEL_BIT_COUNT( 2 * 16 ) | 0x00A9,  //!< PFNC Bi-color Blue/Green - Red/Green 10-bit unpacked
+    PixelType_BiColorBGRG10p = PIXEL_COLOR | PIXEL_BIT_COUNT( 2 * 10 ) | 0x00AA,  //!< PFNC Bi-color Blue/Green - Red/Green 10-bit packed
+    PixelType_BiColorRGBG12 = PIXEL_COLOR | PIXEL_BIT_COUNT( 2 * 16 ) | 0x00AB,  //!< PFNC Bi-color Red/Green - Blue/Green 12-bit unpacked
+    PixelType_BiColorRGBG12p = PIXEL_COLOR | PIXEL_BIT_COUNT( 2 * 12 ) | 0x00AC,  //!< PFNC Bi-color Red/Green - Blue/Green 12-bit packed
+    PixelType_BiColorBGRG12 = PIXEL_COLOR | PIXEL_BIT_COUNT( 2 * 16 ) | 0x00AD,  //!< PFNC Bi-color Blue/Green - Red/Green 12-bit unpacked
+    PixelType_BiColorBGRG12p = PIXEL_COLOR | PIXEL_BIT_COUNT( 2 * 12 ) | 0x00AE,  //!< PFNC Bi-color Blue/Green - Red/Green 12-bit packed
 
     /* floating point*/
     PixelType_Data32f = PIXEL_MONO | PIXEL_BIT_COUNT( 32 ) | 0x011C, /*!< \brief Indicates the 32 bit floating point pixel format. */

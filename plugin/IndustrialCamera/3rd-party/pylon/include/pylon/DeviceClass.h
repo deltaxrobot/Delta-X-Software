@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //  Basler pylon SDK
-//  Copyright (c) 2008-2021 Basler AG
+//  Copyright (c) 2008-2024 Basler AG
 //  http://www.baslerweb.com
 //  Author:  Thomas Koeller
 //-----------------------------------------------------------------------------
@@ -25,7 +25,6 @@ namespace Pylon
      * @{
      */
     // PYLON_WIN_BUILD only controls whether the DeviceClass is listed in the API reference guide
-    const char* const Basler1394DeviceClass = "Basler1394"; ///< This device class can be used to create the corresponding Transport Layer object or when creating Devices with the Transport Layer Factory.
     const char* const BaslerGigEDeviceClass = "BaslerGigE"; ///< This device class can be used to create the corresponding Transport Layer object or when creating Devices with the Transport Layer Factory.
     const char* const BaslerCamEmuDeviceClass = "BaslerCamEmu"; ///< This device class can be used to create the corresponding Transport Layer object or when creating Devices with the Transport Layer Factory.
     const char* const BaslerIpCamDeviceClass = "BaslerIPCam"; ///< This device class can be used to create the corresponding Transport Layer object or when creating Devices with the Transport Layer Factory.
@@ -35,8 +34,8 @@ namespace Pylon
     const char* const BaslerGenTlU3vDeviceClass = "BaslerGTC/Basler/U3V";
     const char* const BaslerGenTlCxpDeviceClass = "BaslerGTC/Basler/CXP"; ///< This device class can be used to create the corresponding Transport Layer object or when creating Devices with the Transport Layer Factory.
     const char* const BaslerGenTlBlazeDeviceClass = "BaslerGTC/Basler/GenTL_Producer_for_Basler_blaze_101_cameras"; ///< This device class can be used to create the corresponding Transport Layer object or when creating Devices with the Transport Layer Factory.
+    const char* const BaslerGenTlStaDeviceClass = "BaslerGTC/Basler/basler_xw"; ///< This device class can be used to create the corresponding Transport Layer object or when creating Devices with the Transport Layer Factory.
     const char* const BaslerUsbDeviceClass = "BaslerUsb";            ///< This device class can be used to create the corresponding Transport Layer object or when creating Devices with the Transport Layer Factory.
-    const char* const BaslerBconDeviceClass = "BaslerBcon";          ///< This device class can be used to create the corresponding Transport Layer object or when creating Devices with the Transport Layer Factory.
     /**
      * @}
      */

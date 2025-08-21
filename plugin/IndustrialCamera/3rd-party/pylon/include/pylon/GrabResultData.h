@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //  Basler pylon SDK
-//  Copyright (c) 2010-2021 Basler AG
+//  Copyright (c) 2010-2024 Basler AG
 //  http://www.baslerweb.com
 //  Author:  Andreas Gau
 //-----------------------------------------------------------------------------
@@ -102,13 +102,17 @@ namespace Pylon
 
         /// Get the block ID of the grabbed frame (camera device specific).
         /*!
-        \par IEEE 1394 Camera Devices
-        The value of Block ID is always UINT64_MAX.
-
         \par GigE Camera Devices
-        The sequence number starts with 1 and
-        wraps at 65535. The value 0 has a special meaning and indicates
-        that this feature is not supported by the camera.
+        If the Extended ID mode is disabled (default), the sequence number starts with 1
+        and wraps at 65535.
+        If the Extended ID mode is enabled, the sequence number starts with 1
+        and uses the full 64-bit unsigned integer value range.
+
+        A value of 0 indicates that this feature is not supported by the camera.
+        You can configure the Extended ID mode by setting the GevGVSPExtendedIDMode
+        or the BslGevGVSPExtendedIDMode parameter, if available.
+        The Instant Camera class and the pylon GigE stream grabber provide additional parameters
+        for controlling the Extended ID mode.
 
         \par USB Camera Devices
         The sequence number starts with 0 and uses the full 64 Bit range.
@@ -129,13 +133,14 @@ namespace Pylon
         /// Get the stride in bytes.
         /*
             Uses Pylon::ComputeStride to compute the stride from the result data.
+        \param[out] strideBytes  Returns the stride in bytes if it can be computed.
 
-        \return The stride in byte.
+        \return Returns true if the stride can be computed.
 
         \pre The preconditions of Pylon::ComputeStride must be met.
 
         \error
-            Throws an exception if the stride value cannot be computed from the result data.
+            Throws an exception if the preconditions aren't met.
         */
         bool GetStride( size_t& strideBytes ) const;
 
@@ -188,7 +193,7 @@ namespace Pylon
 
         /// Get the reference to the chunk data node map connected to the result.
         /*! An empty node map is returned when the device does not support this feature or when chunks are disabled. */
-        GENAPI_NAMESPACE::INodeMap& GetChunkDataNodeMap() const;
+        GenApi::INodeMap& GetChunkDataNodeMap() const;
 
 
         /// Checks if buffer has a CRC attached. This needs not be activated for the device. See the PayloadCRC16 chunk.

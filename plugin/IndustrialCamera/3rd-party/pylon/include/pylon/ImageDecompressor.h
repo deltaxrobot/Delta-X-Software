@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //  Basler pylon SDK
-//  Copyright (c) 2019-2021 Basler AG
+//  Copyright (c) 2019-2024 Basler AG
 //  http://www.baslerweb.com
 //  Author:  MP
 //-----------------------------------------------------------------------------
@@ -173,7 +173,7 @@ namespace Pylon
         \error
         Throws an exception if no memory can be allocated or no proper compression descriptor can be retrieved from the camera.
         */
-        explicit CImageDecompressor( GENAPI_NAMESPACE::INodeMap& nodeMap );
+        explicit CImageDecompressor( GenApi::INodeMap& nodeMap );
 
         /*!
         \brief Destroys the decompressor instance.
@@ -225,7 +225,7 @@ namespace Pylon
         \threading
         This method is thread-safe.
         */
-        void SetCompressionDescriptor( GENAPI_NAMESPACE::INodeMap& nodeMap );
+        void SetCompressionDescriptor( GenApi::INodeMap& nodeMap );
 
         /*!
         \brief Retrieves the current compression mode from the camera's node map.
@@ -238,7 +238,7 @@ namespace Pylon
         \threading
         This method is thread-safe.
         */
-        static ECompressionMode GetCompressionMode( GENAPI_NAMESPACE::INodeMap& nodeMap );
+        static ECompressionMode GetCompressionMode( GenApi::INodeMap& nodeMap );
 
         /*!
         \brief Gets the currently set compression descriptor.
@@ -279,7 +279,7 @@ namespace Pylon
         \threading
         This method is thread-safe.
         */
-        static void GetCompressionDescriptor( void* pCompressionDescriptor, size_t* pSizeCompressionDescriptor, GENAPI_NAMESPACE::INodeMap& nodeMap );
+        static void GetCompressionDescriptor( void* pCompressionDescriptor, size_t* pSizeCompressionDescriptor, GenApi::INodeMap& nodeMap );
 
         /*!
         \brief Gets compression information about a grab buffer.
@@ -379,7 +379,7 @@ namespace Pylon
         \threading
         This method is thread-safe.
         */
-        static void GetCompressionDescriptorHash( void* pHash, size_t* pSizeHash, GENAPI_NAMESPACE::INodeMap& nodeMap );
+        static void GetCompressionDescriptorHash( void* pHash, size_t* pSizeHash, GenApi::INodeMap& nodeMap );
 
         /*!
         \brief Gets the hash of the compression descriptor that is required for decompressing the grab buffer provided.
@@ -451,7 +451,7 @@ namespace Pylon
         \threading
         This method is thread-safe.
         */
-        static size_t GetImageSizeForDecompression( GENAPI_NAMESPACE::INodeMap& nodeMap );
+        static size_t GetImageSizeForDecompression( GenApi::INodeMap& nodeMap );
 
         /*!
         \brief Decompresses the image of the grab buffer provided.

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //  Basler pylon SDK
-//  Copyright (c) 2006-2021 Basler AG
+//  Copyright (c) 2006-2024 Basler AG
 //  http://www.baslerweb.com
 //  Author:  HN
 //-----------------------------------------------------------------------------
@@ -35,6 +35,9 @@ namespace Pylon
     {
         //! Deliver message
         virtual void DeliverMessage( const uint8_t msg[], uint32_t numBytes ) = 0;
+        virtual ~IEventAdapter()
+        {
+        }
     };
 }
 

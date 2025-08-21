@@ -706,7 +706,7 @@ QToolBox QScrollArea&gt;QWidget&gt;QWidget
               <enum>QTabWidget::Rounded</enum>
              </property>
              <property name="currentIndex">
-              <number>0</number>
+              <number>1</number>
              </property>
              <property name="usesScrollButtons">
               <bool>true</bool>
@@ -1783,7 +1783,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
                   <property name="geometry">
                    <rect>
                     <x>0</x>
-                    <y>0</y>
+                    <y>-1738</y>
                     <width>532</width>
                     <height>2900</height>
                    </rect>
@@ -5705,7 +5705,7 @@ QFrame
                   <property name="geometry">
                    <rect>
                     <x>0</x>
-                    <y>0</y>
+                    <y>-816</y>
                     <width>644</width>
                     <height>3000</height>
                    </rect>
@@ -10334,9 +10334,9 @@ QLabel
                   <property name="geometry">
                    <rect>
                     <x>0</x>
-                    <y>-1468</y>
+                    <y>0</y>
                     <width>625</width>
-                    <height>2538</height>
+                    <height>2546</height>
                    </rect>
                   </property>
                   <property name="minimumSize">

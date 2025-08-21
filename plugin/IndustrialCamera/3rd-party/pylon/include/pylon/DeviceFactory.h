@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //  Basler pylon SDK
-//  Copyright (c) 2006-2021 Basler AG
+//  Copyright (c) 2006-2024 Basler AG
 //  http://www.baslerweb.com
 //  Author:  AH
 //-----------------------------------------------------------------------------
@@ -138,7 +138,7 @@ namespace Pylon
         \param[in]  deviceInfo         Properties to find/identify the camera device to check.
         \param[in]  mode               Used for defining how a device is accessed.
                                        The use of the mode information is transport layer-specific.
-                                       - For \ref Pylon::BaslerBconDeviceClass "BCON", \ref Pylon::BaslerCameraLinkDeviceClass "CameraLink",
+                                       - For \ref Pylon::BaslerCameraLinkDeviceClass "CameraLink",
                                        and \ref Pylon::BaslerUsbDeviceClass "USB" devices, the mode information is ignored.
                                        - For \ref Pylon::BaslerGigEDeviceClass "GigE" devices, the \c Exclusive and \c Control flags are used for defining how a device is accessed. Other mode information is ignored.
                                        - For devices of any type that are accessed via the \ref Pylon::BaslerGenTlDeviceClassPrefix "GenICam GenTL" transport layer, the mode is ignored.

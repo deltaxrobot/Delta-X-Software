@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //  Basler pylon SDK
-//  Copyright (c) 2006-2021 Basler AG
+//  Copyright (c) 2006-2024 Basler AG
 //  http://www.baslerweb.com
 //  Author:  Lutz Koschorreck
 //-----------------------------------------------------------------------------
@@ -90,7 +90,7 @@ namespace Pylon
             \param pAttachStatistics (optional) Pointer to a record taking statistic
             data of the analyzed buffer
          */
-        virtual void AttachBuffer( const void* pBuffer, int64_t BufferLength, GENAPI_NAMESPACE::AttachStatistics_t* pAttachStatistics = NULL ) = 0;
+        virtual void AttachBuffer( const void* pBuffer, int64_t BufferLength, GenApi::AttachStatistics_t* pAttachStatistics = NULL ) = 0;
 
         /// \brief Detaches a buffer from the chunk parser. The buffer will no longer accessed by the chunk parser
         /*!
@@ -136,7 +136,7 @@ namespace Pylon
         /*!
             \return The chunk data node map of the parser
         */
-        virtual GENAPI_NAMESPACE::INodeMap* GetChunkDataNodeMap() = 0;
+        virtual GenApi::INodeMap* GetChunkDataNodeMap() = 0;
 
         /// Makes the object to destroy itself.
         /*!
@@ -157,22 +157,22 @@ namespace Pylon
     public:
         // \name IChunkParser implementation
         // \{
-        void AttachBuffer( const void* pBuffer, int64_t BufferLength, GENAPI_NAMESPACE::AttachStatistics_t* pAttachStatistics = NULL );
+        void AttachBuffer( const void* pBuffer, int64_t BufferLength, GenApi::AttachStatistics_t* pAttachStatistics = NULL );
         void DetachBuffer();
         void UpdateBuffer( const void* pBaseAddress );
-        GENAPI_NAMESPACE::INodeMap* GetChunkDataNodeMap();
+        GenApi::INodeMap* GetChunkDataNodeMap();
         void Destroy();
         // \}
 
     protected:
         /// default constructor - make it protected to prevent this class from instantiation
-        explicit CChunkParser( GENAPI_NAMESPACE::CChunkAdapter* pParser );
+        explicit CChunkParser( GenApi::CChunkAdapter* pParser );
         /// destructor
         virtual ~CChunkParser();
 
     protected:
         /// Pointer to the GenApi workhorse.
-        GENAPI_NAMESPACE::CChunkAdapter* m_pParser;
+        GenApi::CChunkAdapter* m_pParser;
 
         class PYLONBASE_API CBuffer
         {

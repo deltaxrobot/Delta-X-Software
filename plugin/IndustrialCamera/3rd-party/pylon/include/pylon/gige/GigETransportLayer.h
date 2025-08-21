@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //  Basler pylon SDK
-//  Copyright (c) 2008-2021 Basler AG
+//  Copyright (c) 2008-2024 Basler AG
 //  http://www.baslerweb.com
 //  Author:  Thomas Koeller, Hartmut Nebelung
 //-----------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 //  Basler pylon SDK
-//  Copyright (c) 2018-2021 Basler AG
+//  Copyright (c) 2018-2024 Basler AG
 //  http://www.baslerweb.com
 //------------------------------------------------------------------------------
 /*!
@@ -32,9 +32,9 @@ namespace Pylon
     /*!
     \brief Extends the GenApi::IEnumeration interface with convenience methods.
     */
-    interface IEnumerationEx : virtual public GENAPI_NAMESPACE::IEnumeration, virtual public IValueEx
+    interface IEnumerationEx : virtual public GenApi::IEnumeration, virtual public IValueEx
     {
-        using GENAPI_NAMESPACE::IEnumeration::operator=;
+        using GenApi::IEnumeration::operator=;
 
         /*!
         \brief Gets the value of the parameter if the parameter is readable. Otherwise returns the default value.
@@ -147,7 +147,7 @@ namespace Pylon
         \error
              Can throw exceptions.
         */
-        virtual void GetSettableValues( GENAPI_NAMESPACE::StringList_t& values ) = 0;
+        virtual void GetSettableValues( GenApi::StringList_t& values ) = 0;
 
 
         /*!
@@ -159,7 +159,7 @@ namespace Pylon
         \error
              Can throw exceptions.
         */
-        virtual void GetAllValues( GENAPI_NAMESPACE::StringList_t& values ) = 0;
+        virtual void GetAllValues( GenApi::StringList_t& values ) = 0;
 
 
         /*!
@@ -172,7 +172,7 @@ namespace Pylon
         \error
                 Can throw exceptions.
         */
-        virtual CParameter GetEntryByNameAsParameter( const GENICAM_NAMESPACE::gcstring& value ) = 0;
+        virtual CParameter GetEntryByNameAsParameter( const GenICam::gcstring& value ) = 0;
 
 
         /*!
@@ -214,7 +214,7 @@ namespace Pylon
         \error
             Does not throw C++ exceptions.
         */
-        explicit CEnumParameter( GENAPI_NAMESPACE::INode* pNode );
+        explicit CEnumParameter( GenApi::INode* pNode );
 
 
         /*!
@@ -225,7 +225,7 @@ namespace Pylon
         \error
             Does not throw C++ exceptions.
         */
-        explicit CEnumParameter( GENAPI_NAMESPACE::IEnumeration* pEnumeration );
+        explicit CEnumParameter( GenApi::IEnumeration* pEnumeration );
 
 
         /*!
@@ -242,7 +242,7 @@ namespace Pylon
         \error
             The call to GenApi::INodeMap::GetNode can throw C++ exceptions.
         */
-        CEnumParameter( GENAPI_NAMESPACE::INodeMap* pNodeMap, const char* pName );
+        CEnumParameter( GenApi::INodeMap* pNodeMap, const char* pName );
 
 
         /*!
@@ -259,7 +259,7 @@ namespace Pylon
         \error
             The call to GenApi::INodeMap::GetNode can throw C++ exceptions.
         */
-        CEnumParameter( GENAPI_NAMESPACE::INodeMap& nodeMap, const char* pName );
+        CEnumParameter( GenApi::INodeMap& nodeMap, const char* pName );
 
 
         /*!
@@ -295,7 +295,7 @@ namespace Pylon
         \error
             The call to GenApi::INodeMap::GetNode can throw C++ exceptions.
         */
-        virtual bool Attach( GENAPI_NAMESPACE::INodeMap* pNodeMap, const char* pName );
+        virtual bool Attach( GenApi::INodeMap* pNodeMap, const char* pName );
 
 
         /*!
@@ -313,7 +313,7 @@ namespace Pylon
         \error
             The call to GenApi::INodeMap::GetNode can throw C++ exceptions.
         */
-        virtual bool Attach( GENAPI_NAMESPACE::INodeMap& nodeMap, const char* pName );
+        virtual bool Attach( GenApi::INodeMap& nodeMap, const char* pName );
 
 
         /*!
@@ -329,7 +329,7 @@ namespace Pylon
         \error
             Does not throw C++ exceptions.
         */
-        virtual bool Attach( GENAPI_NAMESPACE::INode* pNode );
+        virtual bool Attach( GenApi::INode* pNode );
 
 
         /*!
@@ -339,7 +339,7 @@ namespace Pylon
         \error
             Does not throw C++ exceptions.
         */
-        virtual bool Attach( GENAPI_NAMESPACE::IEnumeration* pEnumeration );
+        virtual bool Attach( GenApi::IEnumeration* pEnumeration );
 
 
         /*!
@@ -368,7 +368,7 @@ namespace Pylon
         \error
             Does not throw C++ exceptions.
         */
-        virtual bool Equals( const GENAPI_NAMESPACE::INode* pNode ) const;
+        virtual bool Equals( const GenApi::INode* pNode ) const;
 
 
         /*!
@@ -378,7 +378,7 @@ namespace Pylon
         \error
             Does not throw C++ exceptions.
         */
-        virtual bool Equals( const GENAPI_NAMESPACE::IEnumeration* pEnumeration ) const;
+        virtual bool Equals( const GenApi::IEnumeration* pEnumeration ) const;
 
 
         /*!
@@ -394,31 +394,31 @@ namespace Pylon
 
 
         // Implements GenApi::IEnumeration
-        virtual void GetSymbolics( GENAPI_NAMESPACE::StringList_t& symbolics );
+        virtual void GetSymbolics( GenApi::StringList_t& symbolics );
 
         // Implements GenApi::IEnumeration
-        virtual void GetEntries( GENAPI_NAMESPACE::NodeList_t& entries );
+        virtual void GetEntries( GenApi::NodeList_t& entries );
 
         // Implements GenApi::IEnumeration
-        virtual GENAPI_NAMESPACE::IEnumeration& operator=( const GENICAM_NAMESPACE::gcstring& valueStr );
+        virtual GenApi::IEnumeration& operator=( const GenICam::gcstring& valueStr );
 
         // Implements GenApi::IEnumeration
         virtual void SetIntValue( int64_t value, bool verify = true );
 
         // Implements GenApi::IEnumeration
-        virtual GENICAM_NAMESPACE::gcstring operator*();
+        virtual GenICam::gcstring operator*();
 
         // Implements GenApi::IEnumeration
         virtual int64_t GetIntValue( bool verify = false, bool ignoreCache = false );
 
         // Implements GenApi::IEnumeration
-        virtual GENAPI_NAMESPACE::IEnumEntry* GetEntryByName( const GENICAM_NAMESPACE::gcstring& symbolic );
+        virtual GenApi::IEnumEntry* GetEntryByName( const GenICam::gcstring& symbolic );
 
         // Implements GenApi::IEnumeration
-        virtual GENAPI_NAMESPACE::IEnumEntry* GetEntry( const int64_t intValue );
+        virtual GenApi::IEnumEntry* GetEntry( const int64_t intValue );
 
         // Implements GenApi::IEnumeration
-        virtual GENAPI_NAMESPACE::IEnumEntry* GetCurrentEntry( bool verify = false, bool ignoreCache = false );
+        virtual GenApi::IEnumEntry* GetCurrentEntry( bool verify = false, bool ignoreCache = false );
 
 
         // Implements IEnumerationEx
@@ -443,13 +443,13 @@ namespace Pylon
         virtual String_t GetValue();
 
         // Implements IEnumerationEx
-        virtual void GetSettableValues( GENAPI_NAMESPACE::StringList_t& values );
+        virtual void GetSettableValues( GenApi::StringList_t& values );
 
         // Implements IEnumerationEx
-        virtual void GetAllValues( GENAPI_NAMESPACE::StringList_t& values );
+        virtual void GetAllValues( GenApi::StringList_t& values );
 
         // Implements IEnumerationEx
-        virtual CParameter GetEntryByNameAsParameter( const GENICAM_NAMESPACE::gcstring& value );
+        virtual CParameter GetEntryByNameAsParameter( const GenICam::gcstring& value );
 
         // Implements IEnumerationEx
         virtual CParameter GetCurrentEntryAsParameter();
@@ -516,12 +516,12 @@ namespace Pylon
     protected:
         void SetValue( const Table_t& table, size_t index, bool verify );
         size_t /*index*/ GetValue( const Table_t& table, bool verify, bool ignoreCache );
-        GENAPI_NAMESPACE::IEnumEntry* GetEntry( const Table_t& table, size_t index );
+        GenApi::IEnumEntry* GetEntry( const Table_t& table, size_t index );
         bool CanSetValue( const Table_t& table, size_t index );
         // End - For using C++ enums instead of strings as enumeration values (native parameter access)
 
     protected:
-        GENAPI_NAMESPACE::IEnumeration* m_pFeature;
+        GenApi::IEnumeration* m_pFeature;
     };
 }
 #ifdef _MSC_VER

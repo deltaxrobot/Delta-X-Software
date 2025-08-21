@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 //  Basler pylon SDK
-//  Copyright (c) 2010-2021 Basler AG
+//  Copyright (c) 2010-2024 Basler AG
 //  http://www.baslerweb.com
 //  Author:  Andreas Gau
 //------------------------------------------------------------------------------
@@ -30,6 +30,12 @@
 #include <pylon/Device.h>
 #include <pylon/SfncVersion.h>
 
+#include <pylon/ECleanup.h>
+#include <pylon/ERegistrationMode.h>
+#include <pylon/ETimeoutHandling.h>
+
+
+
 namespace Pylon
 {
     /// Internal use only.
@@ -49,7 +55,8 @@ namespace Pylon
      * @{
      */
 
-     /// Lists the possible grab strategies.
+
+    /// Lists the possible grab strategies.
     enum EGrabStrategy
     {
         GrabStrategy_OneByOne,        //!< The images are processed in the order of their arrival. This is the default grab strategy.
@@ -73,12 +80,6 @@ namespace Pylon
                                       //!< the pylon Programmer's Guide for more information.
     };
 
-    /// Defines who deletes a passed object if it is not needed anymore.
-    enum ECleanup
-    {
-        Cleanup_None,                 //!< The caller is responsible for deleting the passed object. The object needs to be detached or deregistered before deletion.
-        Cleanup_Delete                //!< The passed object is deleted if it is not needed anymore.
-    };
 
     /// Defines the use of an additional grab loop thread.
     enum EGrabLoop
@@ -87,12 +88,6 @@ namespace Pylon
         GrabLoop_ProvidedByUser           //!< The user code calls RetrieveResult() in a loop to process grabbed images and camera events.
     };
 
-    /// Defines how to register an item.
-    enum ERegistrationMode
-    {
-        RegistrationMode_Append,        //!< The item is appended to the list of registered items.
-        RegistrationMode_ReplaceAll     //!< The item replaces all other registered items.
-    };
 
     /// Defines how to register a camera event handler.
     enum ECameraEventAvailability
@@ -101,12 +96,6 @@ namespace Pylon
         CameraEventAvailability_Optional     //!< The camera event handler is not used if the camera does not support the camera event.
     };
 
-    /// Defines how to handle a timeout for a method.
-    enum ETimeoutHandling
-    {
-        TimeoutHandling_Return,           //!< The method returns on timeout. What data is returned can be found in the documentation of the method.
-        TimeoutHandling_ThrowException    //!< An exception is thrown on timeout.
-    };
 
     /*!
     \class  CInstantCamera
@@ -461,7 +450,7 @@ namespace Pylon
         <li> The image event OnImagesSkipped is fired if grab results have been skipped according to the strategy. The notification of event handlers stops when an event call triggers an exception.
         <li> The image event OnImageGrabbed is fired if a grab result becomes available. The notification of event handlers stops when an event call triggers an exception.
         <li> Stops the grabbing by calling StopGrabbing() if the maximum number of images has been grabbed.
-        </ul>
+        </ul><br>
 
         It needs to be checked whether the grab represented by the grab result has been successful, see CGrabResultData::GrabSucceeded().
 
@@ -812,8 +801,6 @@ namespace Pylon
         If the above mentioned nodes are not available and the 'SoftwareTrigger' node is readable,
         the implementation waits for SoftwareTrigger.IsDone().
 
-        The WaitForFrameTriggerReady method does not work for A600 Firewire cameras.
-
         \param[in]  timeoutMs The timeout in ms for active waiting.
         \param[in]  timeoutHandling  If timeoutHandling equals TimeoutHandling_ThrowException, a timeout exception is thrown on timeout.
         \return True if the camera can execute a frame trigger.
@@ -940,14 +927,14 @@ namespace Pylon
         \threading
             This method is synchronized using the lock provided by GetLock().
         */
-        virtual GENAPI_NAMESPACE::INodeMap& GetNodeMap();
+        virtual GenApi::INodeMap& GetNodeMap();
 
 
         /*!
         \brief Provides access to the transport layer node map of the attached %Pylon device.
         \return Reference to the transport layer node map of the attached %Pylon device
             or the reference to the empty node map if a transport layer node map is not supported.
-            The GENAPI_NAMESPACE::INodeMap::GetNumNodes() method can be used to check whether the node map is empty.
+            The GenApi::INodeMap::GetNumNodes() method can be used to check whether the node map is empty.
 
         \pre A %Pylon device is attached.
 
@@ -957,14 +944,14 @@ namespace Pylon
         \threading
             This method is synchronized using the lock provided by GetLock().
         */
-        virtual GENAPI_NAMESPACE::INodeMap& GetTLNodeMap();
+        virtual GenApi::INodeMap& GetTLNodeMap();
 
 
         /*!
         \brief Provides access to the stream grabber node map of the attached %Pylon device.
         \return Reference to the stream grabber node map of the attached %Pylon device
             or the reference to the empty node map if grabbing is not supported.
-            The GENAPI_NAMESPACE::INodeMap::GetNumNodes() method can be used to check whether the node map is empty.
+            The GenApi::INodeMap::GetNumNodes() method can be used to check whether the node map is empty.
 
         \pre
         <ul>
@@ -978,14 +965,14 @@ namespace Pylon
         \threading
             This method is synchronized using the lock provided by GetLock().
         */
-        virtual GENAPI_NAMESPACE::INodeMap& GetStreamGrabberNodeMap();
+        virtual GenApi::INodeMap& GetStreamGrabberNodeMap();
 
 
         /*!
         \brief Provides access to the event grabber node map of the attached %Pylon device.
         \return Reference to the event grabber node map of the attached %Pylon device
             or a reference to the empty node map if event grabbing is not supported.
-            The GENAPI_NAMESPACE::INodeMap::GetNumNodes() method can be used to check whether the node map is empty.
+            The GenApi::INodeMap::GetNumNodes() method can be used to check whether the node map is empty.
 
         \pre
         <ul>
@@ -999,7 +986,7 @@ namespace Pylon
         \threading
             This method is synchronized using the lock provided by GetLock().
         */
-        virtual GENAPI_NAMESPACE::INodeMap& GetEventGrabberNodeMap();
+        virtual GenApi::INodeMap& GetEventGrabberNodeMap();
 
 
         /*!
@@ -1015,7 +1002,7 @@ namespace Pylon
         \threading
             This method is synchronized using the lock provided by GetLock().
         */
-        virtual GENAPI_NAMESPACE::INodeMap& GetInstantCameraNodeMap();
+        virtual GenApi::INodeMap& GetInstantCameraNodeMap();
 
 
         /*!
@@ -1036,26 +1023,6 @@ namespace Pylon
             This method is synchronized using the lock provided by GetLock().
         */
         virtual void SetBufferFactory( IBufferFactory* pFactory, ECleanup cleanupProcedure = Cleanup_Delete );
-
-
-        /*!
-        \brief Returns true if an IEEE 1394 %Pylon device is attached to the Instant Camera object.
-
-        This method is provided for convenience only. The device type can also be determined as shown in the following example.
-
-        \code
-        #include <pylon/DeviceClass.h>
-        ...
-        if (camera.GetDeviceInfo().GetDeviceClass() == Basler1394DeviceClass)
-        {
-            ...
-        }
-        \endcode
-
-        \threading
-        This method is synchronized using the lock provided by GetLock().
-        */
-        virtual bool Is1394() const;
 
 
         /*!
@@ -1226,7 +1193,7 @@ namespace Pylon
         \threading
             This method is synchronized using the lock provided by GetLock().
         */
-        GENAPI_NAMESPACE::INodeMap& GetEmptyNodeMap();
+        GenApi::INodeMap& GetEmptyNodeMap();
 
 
         // Internal use only. Subject to change without notice.
@@ -1264,25 +1231,6 @@ namespace Pylon
     private:
         // Internal use only. Subject to change without notice.
         CGrabResultData* CreateGrabResultData();
-    public:
-        /*!
-        \brief Returns true if a BCON %Pylon device is attached to the Instant Camera object.
-
-        This method is provided for convenience only. The device type can also be determined as shown in the following example.
-
-        \code
-        #include <pylon/DeviceClass.h>
-        ...
-        if (camera.GetDeviceInfo().GetDeviceClass() == BaslerBconDeviceClass)
-        {
-        ...
-        }
-        \endcode
-
-        \threading
-        This method is synchronized using the lock provided by GetLock().
-        */
-        virtual bool IsBcon() const;
     };
 
     /**

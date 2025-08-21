@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 //  Basler pylon SDK
-//  Copyright (c) 2019-2021 Basler AG
+//  Copyright (c) 2019-2024 Basler AG
 //  http://www.baslerweb.com
 //  Author:  DV
 //------------------------------------------------------------------------------
@@ -235,7 +235,7 @@ namespace Pylon
         \error
             May throw C++ exceptions.
         */
-        virtual GENAPI_NAMESPACE::INodeMap* GetNodeMap()
+        virtual GenApi::INodeMap* GetNodeMap()
         {
             return m_pInterface->GetNodeMap();
         }

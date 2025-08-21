@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //  Basler pylon SDK
-//  Copyright (c) 2006-2021 Basler AG
+//  Copyright (c) 2006-2024 Basler AG
 //  http://www.baslerweb.com
 //  Author:  Hartmut Nebelung, AH
 //-----------------------------------------------------------------------------
@@ -63,7 +63,7 @@ namespace Pylon
         virtual WaitObject& GetWaitObject() const = 0;
         /// Return the associated event grabber parameters
         /*! If no parameters are available, NULL is returned. */
-        virtual GENAPI_NAMESPACE::INodeMap* GetNodeMap() = 0;
+        virtual GenApi::INodeMap* GetNodeMap() = 0;
     };
 
 }

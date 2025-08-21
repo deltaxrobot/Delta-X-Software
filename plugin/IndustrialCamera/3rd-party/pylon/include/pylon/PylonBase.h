@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //  Basler pylon SDK
-//  Copyright (c) 2006-2021 Basler AG
+//  Copyright (c) 2006-2024 Basler AG
 //  http://www.baslerweb.com
 //  Author:  AH
 //-----------------------------------------------------------------------------
@@ -93,7 +93,6 @@ namespace Pylon
         \brief Returns the version number of pylon as string.
         */
     extern "C" PYLONBASE_API const char* CDECL GetPylonVersionString();
-
 
     /**
         \brief Set the value of a property.

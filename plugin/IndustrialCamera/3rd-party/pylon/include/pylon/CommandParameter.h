@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 //  Basler pylon SDK
-//  Copyright (c) 2018-2021 Basler AG
+//  Copyright (c) 2018-2024 Basler AG
 //  http://www.baslerweb.com
 //------------------------------------------------------------------------------
 /*!
@@ -32,9 +32,9 @@ namespace Pylon
     /*!
     \brief Extends the GenApi::ICommand interface with convenience methods.
     */
-    interface ICommandEx : virtual public GENAPI_NAMESPACE::ICommand, virtual public IValueEx
+    interface ICommandEx : virtual public GenApi::ICommand, virtual public IValueEx
     {
-        using GENAPI_NAMESPACE::ICommand::operator=;
+        using GenApi::ICommand::operator=;
 
         /*!
         \brief Executes the command and returns immediately if the parameter is writable.
@@ -74,7 +74,7 @@ namespace Pylon
         \error
             Does not throw C++ exceptions.
         */
-        explicit CCommandParameter( GENAPI_NAMESPACE::INode* pNode );
+        explicit CCommandParameter( GenApi::INode* pNode );
 
 
         /*!
@@ -85,7 +85,7 @@ namespace Pylon
         \error
             Does not throw C++ exceptions.
         */
-        explicit CCommandParameter( GENAPI_NAMESPACE::ICommand* pCommand );
+        explicit CCommandParameter( GenApi::ICommand* pCommand );
 
 
         /*!
@@ -102,7 +102,7 @@ namespace Pylon
         \error
             The call to GenApi::INodeMap::GetNode can throw C++ exceptions.
         */
-        CCommandParameter( GENAPI_NAMESPACE::INodeMap* pNodeMap, const char* pName );
+        CCommandParameter( GenApi::INodeMap* pNodeMap, const char* pName );
 
 
         /*!
@@ -119,7 +119,7 @@ namespace Pylon
         \error
             The call to GenApi::INodeMap::GetNode can throw C++ exceptions.
         */
-        CCommandParameter( GENAPI_NAMESPACE::INodeMap& nodeMap, const char* pName );
+        CCommandParameter( GenApi::INodeMap& nodeMap, const char* pName );
 
 
         /*!
@@ -155,7 +155,7 @@ namespace Pylon
         \error
             The call to GenApi::INodeMap::GetNode can throw C++ exceptions.
         */
-        virtual bool Attach( GENAPI_NAMESPACE::INodeMap* pNodeMap, const char* pName );
+        virtual bool Attach( GenApi::INodeMap* pNodeMap, const char* pName );
 
 
         /*!
@@ -173,7 +173,7 @@ namespace Pylon
         \error
             The call to GenApi::INodeMap::GetNode can throw C++ exceptions.
         */
-        virtual bool Attach( GENAPI_NAMESPACE::INodeMap& nodeMap, const char* pName );
+        virtual bool Attach( GenApi::INodeMap& nodeMap, const char* pName );
 
 
         /*!
@@ -189,7 +189,7 @@ namespace Pylon
         \error
             Does not throw C++ exceptions.
         */
-        virtual bool Attach( GENAPI_NAMESPACE::INode* pNode );
+        virtual bool Attach( GenApi::INode* pNode );
 
 
         /*!
@@ -199,7 +199,7 @@ namespace Pylon
         \error
             Does not throw C++ exceptions.
         */
-        virtual bool Attach( GENAPI_NAMESPACE::ICommand* pCommand );
+        virtual bool Attach( GenApi::ICommand* pCommand );
 
 
         /*!
@@ -228,7 +228,7 @@ namespace Pylon
         \error
             Does not throw C++ exceptions.
         */
-        virtual bool Equals( const GENAPI_NAMESPACE::INode* pNode ) const;
+        virtual bool Equals( const GenApi::INode* pNode ) const;
 
 
         /*!
@@ -238,7 +238,7 @@ namespace Pylon
         \error
             Does not throw C++ exceptions.
         */
-        virtual bool Equals( const GENAPI_NAMESPACE::ICommand* pCommand ) const;
+        virtual bool Equals( const GenApi::ICommand* pCommand ) const;
 
 
         /*!
@@ -267,7 +267,7 @@ namespace Pylon
         virtual bool TryExecute();
 
     protected:
-        GENAPI_NAMESPACE::ICommand* m_pFeature;
+        GenApi::ICommand* m_pFeature;
     };
 }
 #ifdef _MSC_VER

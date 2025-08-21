@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //  Basler pylon SDK
-//  Copyright (c) 2009-2021 Basler AG
+//  Copyright (c) 2009-2024 Basler AG
 //  http://www.baslerweb.com
 //  Author:  JS
 //-----------------------------------------------------------------------------
@@ -30,9 +30,6 @@ namespace Pylon
     This class stores a four-part version number and provides comparison operators.
     If you use the constructor with one parameter, the version info object will be
     initialized with pylon base version numbers.
-
-    You can also call the static getVersionString() method to retrieve
-    a string containing the complete version separated by dots.
     */
     class VersionInfo
     {
@@ -83,13 +80,6 @@ namespace Pylon
         }
 
     public:
-        /// Returns the complete version number as a string.
-        static const char* getVersionString()
-        {
-            return Pylon::GetPylonVersionString();
-        }
-
-
         /// Returns the major version number.
         /// For version 2.1.3.1234 the value 2 would be returned.
         unsigned int getMajor() const

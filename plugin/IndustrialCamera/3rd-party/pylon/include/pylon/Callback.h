@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //  Basler pylon SDK
-//  Copyright (c) 2006-2021 Basler AG
+//  Copyright (c) 2006-2024 Basler AG
 //  http://www.baslerweb.com
 //  Author:  HN, AH
 //-----------------------------------------------------------------------------
@@ -47,7 +47,7 @@ namespace Pylon
     {
     public:
         //! destructor
-        virtual ~Base_Callback1Body<P1>( void )
+        virtual ~Base_Callback1Body( void )
         {
         };
 

@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 //  Basler pylon SDK
-//  Copyright (c) 2011-2021 Basler AG
+//  Copyright (c) 2011-2024 Basler AG
 //  http://www.baslerweb.com
 //  Author:  Andreas Gau
 //------------------------------------------------------------------------------
@@ -105,6 +105,12 @@ namespace Pylon
         If more control over the conversion is required then the CImageFormatConverter class
         can be used to convert the input image before saving it.
 
+        Depending on your operating system, the following file types are supported:        
+        <ul>
+        <li>Windows: BMP, JPG, PNG, TIFF
+        <li>Linux: PNG, TIFF
+        </ul>
+
         \param[in]   imageFileFormat The file format to save the image in.
         \param[in]   filename        Name and path of the image.
         \param[in]   pBuffer    The pointer to the buffer of the image.
@@ -139,6 +145,12 @@ namespace Pylon
 
         If more control over the conversion is required then the CImageFormatConverter class
         can be used to convert the input image before saving it.
+
+        Depending on your operating system, the following file types are supported:        
+        <ul>
+        <li>Windows: BMP, JPG, PNG, TIFF
+        <li>Linux: PNG, TIFF
+        </ul>
 
         \param[in]   imageFileFormat The target file format for the image to save.
         \param[in]   filename        Name and path of the image.
@@ -182,14 +194,14 @@ namespace Pylon
         <li> PixelType_Mono16
         <li> PixelType_RGB8packed
         <li> PixelType_RGB16packed
-        </ul>
+        </ul><br>
 
         Supported formats for BMP, JPEG and PNG:
         <ul>
         <li> PixelType_Mono8
         <li> PixelType_BGR8packed
         <li> PixelType_BGRA8packed
-        </ul>
+        </ul><br>
 
         Supported formats for DNG:
         <ul>
@@ -197,7 +209,7 @@ namespace Pylon
         <li> PixelType_BayerRG*
         <li> PixelType_BayerGB*
         <li> PixelType_BayerBG*
-        </ul>
+        </ul><br>
         With *: 8, 10, 12, 16, 10p, 12p, 12packed
 
         \param[in]   imageFileFormat The target file format for the image to save.
@@ -213,7 +225,12 @@ namespace Pylon
         /*!
         \brief Loads an image from disk.
 
-        The orientation of loaded images is always ImageOrientation_TopDown.
+        The orientation of loaded images is always ImageOrientation_TopDown. Depending on your operating system, 
+        the following file types are supported:        
+        <ul>
+        <li>Windows: BMP, JPG, PNG, TIFF
+        <li>Linux: PNG, TIFF
+        </ul>
 
         \param[in]   filename        Name and path of the image.
         \param[in]   image           The target image object, e.g. a CPylonImage or CPylonBitmapImage object.
@@ -227,8 +244,12 @@ namespace Pylon
         /*!
         \brief Loads an image from memory.
 
-        The orientation of loaded images is always ImageOrientation_TopDown.
-        Currently BMP, JPEG & PNG images are supported.
+        The orientation of loaded images is always ImageOrientation_TopDown. Depending on your operating system, 
+        the following file types are supported:        
+        <ul>
+        <li>Windows: BMP, JPG, PNG, TIFF
+        <li>Linux: PNG, TIFF
+        </ul>
 
         \param[in]   pBuffer         The pointer to the buffer of the source image.
         \param[in]   bufferSizeBytes The size of the buffer of the source image.

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //  Basler pylon SDK
-//  Copyright (c) 2009-2021 Basler AG
+//  Copyright (c) 2009-2024 Basler AG
 //  http://www.baslerweb.com
 //  Author: Italo Anzioso
 //-----------------------------------------------------------------------------
@@ -55,7 +55,7 @@ namespace Pylon
             \error Throws an exception if loading fails.
         */
         static void Load( const String_t& FileName,
-                          GENAPI_NAMESPACE::INodeMap* pNodeMap,
+                          GenApi::INodeMap* pNodeMap,
                           bool validate = true
                           );
 
@@ -71,7 +71,7 @@ namespace Pylon
 
       */
         static void Save( const String_t& FileName,
-                          GENAPI_NAMESPACE::INodeMap* pNodeMap
+                          GenApi::INodeMap* pNodeMap
                           );
         /*!
             \brief Loads the features from the string to the node map.
@@ -84,7 +84,7 @@ namespace Pylon
             \error Throws an exception if loading fails.
             */
         static void LoadFromString( const String_t& Features,
-                                    GENAPI_NAMESPACE::INodeMap* pNodeMap,
+                                    GenApi::INodeMap* pNodeMap,
                                     bool validate = true
                                     );
 
@@ -98,7 +98,7 @@ namespace Pylon
                     \error Throws an exception if saving fails.
                     */
         static void SaveToString( String_t& Features,
-                                  GENAPI_NAMESPACE::INodeMap* pNodeMap
+                                  GenApi::INodeMap* pNodeMap
                                   );
 
     private:

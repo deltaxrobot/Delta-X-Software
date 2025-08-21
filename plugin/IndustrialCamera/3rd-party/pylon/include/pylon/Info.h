@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //  Basler pylon SDK
-//  Copyright (c) 2006-2021 Basler AG
+//  Copyright (c) 2006-2024 Basler AG
 //  http://www.baslerweb.com
 //  Author:  AH
 //-----------------------------------------------------------------------------
@@ -55,10 +55,6 @@ namespace Pylon
         const char* const TLTypeGigE = "GEV";
         ///Value for the USB3 Vision transport layer
         const char* const TLTypeUSB = "U3V";
-        ///Value for the IIDC 1394 transport layer
-        const char* const TLType1394 = "IIDC";
-        ///Value for the BCON transport layer
-        const char* const TLTypeBCON = "BCON";
         ///Value for the Camera Link transport layer
         const char* const TLTypeCL = "CL";
         ///Value for the camera emulator transport layer
@@ -80,7 +76,7 @@ namespace Pylon
         const char* const FullNameKey = "FullName";
         ///Identifies the vendor name of the device.
         const char* const VendorNameKey = "VendorName";
-        ///Identifies the device class device, e.g. Basler1394.
+        ///Identifies the device class device, e.g. BaslerUsb.
         const char* const DeviceClassKey = "DeviceClass";
         ///Identifies the transport layer type.
         const char* const TLTypeKey = "TLType";
@@ -116,7 +112,7 @@ namespace Pylon
         /*!
         \brief Compares CInfoBase objects by device class.
         \param[in]  rhs The right-hand side object of the comparison.
-        \return Returns true according to this rule: USB < GigE < CameraLink < 1394 < GenTL (incl. CXP) < Bcon < unknown device classes < CamEmu.
+        \return Returns true according to this rule: USB < GigE < CameraLink < GenTL (incl. CXP) < unknown device classes < CamEmu.
         \error
         Does not throw C++ exceptions.
         */
@@ -149,7 +145,7 @@ namespace Pylon
         ///Returns true if the above property is available.
         bool IsVendorNameAvailable() const;
 
-        ///Retrieves the device class device, e.g. Basler1394.
+        ///Retrieves the device class device, e.g. BaslerUsb.
         ///This property is identified by Key::DeviceClassKey.
         String_t GetDeviceClass() const;
         ///Sets the above property.

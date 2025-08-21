@@ -1,6 +1,6 @@
 /*-----------------------------------------------------------------------------
     Basler pylon C SDK
-    Copyright (c) 2009-2021 Basler AG
+    Copyright (c) 2009-2024 Basler AG
     http://www.baslerweb.com
     Author: AH, TK
 -----------------------------------------------------------------------------*/
@@ -103,13 +103,18 @@ extern "C" {
         uint64_t PayloadSize;                                       /**< Total payload size, in bytes, pointed to by pBuffer */
         unsigned int ErrorCode;                                     /**< Additional error code in case Status is gst_Failed (optional) */
         uint64_t BlockID;                                           /**< The block ID of the grabbed frame (camera device specific).
-                                                                         \par IEEE 1394 Camera Devices
-                                                                         The value of block ID is always UINT64_MAX.
                                                                          
                                                                          \par GigE Camera Devices
-                                                                         The sequence number starts with 1 and
-                                                                         wraps at 65535. The value 0 has a special meaning and indicates
-                                                                         that this feature is not supported by the camera.
+                                                                         If the Extended ID mode is disabled (default), the sequence number starts with 1
+                                                                         and wraps at 65535.
+                                                                         If the Extended ID mode is enabled, the sequence number starts with 1
+                                                                         and uses the full 64-bit unsigned integer value range.
+
+                                                                         A value of 0 indicates that this feature is not supported by the camera.
+                                                                         You can configure the Extended ID mode by setting the GevGVSPExtendedIDMode
+                                                                         or the BslGevGVSPExtendedIDMode parameter, if available.
+                                                                         The Instant Camera class and the pylon GigE stream grabber provide additional parameters
+                                                                         for controlling the Extended ID mode.
                                                                          
                                                                          \par USB Camera Devices
                                                                          The sequence number starts with 0 and uses the full 64 Bit range.

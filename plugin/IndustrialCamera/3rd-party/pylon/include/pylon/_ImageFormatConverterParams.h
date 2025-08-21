@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //  Basler pylon SDK
-//  Copyright (c) 2010-2021 Basler AG
+//  Copyright (c) 2010-2024 Basler AG
 //  http://www.baslerweb.com
 //-----------------------------------------------------------------------------
 
@@ -67,7 +67,7 @@ namespace Basler_ImageFormatConverterParams
     
     
     //**************************************************************************************************
-    // Parameter class CImageFormatConverterParams_Params_v6_2_0
+    // Parameter class CImageFormatConverterParams_Params_v9_0_0
     //**************************************************************************************************
     
 
@@ -79,7 +79,7 @@ namespace Basler_ImageFormatConverterParams
     Once the format converter is configured it can convert almost all image formats supported by Basler camera devices.
     The \ref sample_Utility_ImageFormatConverter code sample shows the use of the Image Format Converter class.
     */
-    class PYLONBASE_API CImageFormatConverterParams_Params_v6_2_0
+    class PYLONBASE_API CImageFormatConverterParams_Params_v9_0_0
     {
     //----------------------------------------------------------------------------------------------------------------
     // Implementation
@@ -90,10 +90,10 @@ namespace Basler_ImageFormatConverterParams
     //! \cond HIDE_CLASS_METHODS
         
         //! Constructor
-        CImageFormatConverterParams_Params_v6_2_0( void );
+        CImageFormatConverterParams_Params_v9_0_0( void );
 
         //! Destructor
-        ~CImageFormatConverterParams_Params_v6_2_0( void );
+        ~CImageFormatConverterParams_Params_v9_0_0( void );
 
         //! Initializes the references
         void _Initialize( GENAPI_NAMESPACE::INodeMap* );
@@ -101,8 +101,8 @@ namespace Basler_ImageFormatConverterParams
     //! \endcond
 
     private:
-        class CImageFormatConverterParams_Params_v6_2_0_Data;
-        CImageFormatConverterParams_Params_v6_2_0_Data* m_pCImageFormatConverterParams_Params_v6_2_0_Data;
+        class CImageFormatConverterParams_Params_v9_0_0_Data;
+        CImageFormatConverterParams_Params_v9_0_0_Data* m_pCImageFormatConverterParams_Params_v9_0_0_Data;
 
 
     //----------------------------------------------------------------------------------------------------------------
@@ -149,6 +149,21 @@ namespace Basler_ImageFormatConverterParams
 
         */
         Pylon::IEnumParameterT<InconvertibleEdgeHandlingEnums>& InconvertibleEdgeHandling;
+
+        //@}
+
+
+        //! \name Categories: Root
+        //@{
+        /*!
+            \brief Maximum number of threads used for format conversion - Applies to: ImageFormatConverter
+
+            Maximum number of threads used for format conversion. Depending on the image size fewer than the specified number of threads will be used.
+
+            Visibility: Beginner
+
+        */
+        Pylon::IIntegerEx& MaxNumThreads;
 
         //@}
 
@@ -215,10 +230,10 @@ namespace Basler_ImageFormatConverterParams
     //! \cond HIDE_CLASS_METHODS
 
         //! not implemented copy constructor
-        CImageFormatConverterParams_Params_v6_2_0(CImageFormatConverterParams_Params_v6_2_0&);
+        CImageFormatConverterParams_Params_v9_0_0(CImageFormatConverterParams_Params_v9_0_0&);
 
         //! not implemented assignment operator
-        CImageFormatConverterParams_Params_v6_2_0& operator=(CImageFormatConverterParams_Params_v6_2_0&);
+        CImageFormatConverterParams_Params_v9_0_0& operator=(CImageFormatConverterParams_Params_v9_0_0&);
 
     //! \endcond
     };
@@ -232,7 +247,7 @@ namespace Basler_ImageFormatConverterParams
     Once the format converter is configured it can convert almost all image formats supported by Basler camera devices.
     The \ref sample_Utility_ImageFormatConverter code sample shows the use of the Image Format Converter class.
     */
-    class CImageFormatConverterParams_Params : public CImageFormatConverterParams_Params_v6_2_0
+    class CImageFormatConverterParams_Params : public CImageFormatConverterParams_Params_v9_0_0
     {
     //----------------------------------------------------------------------------------------------------------------
     // Implementation
@@ -255,7 +270,7 @@ namespace Basler_ImageFormatConverterParams
         //! Initializes the references
         void _Initialize( GENAPI_NAMESPACE::INodeMap* pNodeMap )
         {
-            CImageFormatConverterParams_Params_v6_2_0::_Initialize( pNodeMap );
+            CImageFormatConverterParams_Params_v9_0_0::_Initialize( pNodeMap );
         }
         //! \endcond
     };

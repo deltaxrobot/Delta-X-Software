@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //  Basler pylon SDK
-//  Copyright (c) 2020-2021 Basler AG
+//  Copyright (c) 2020-2024 Basler AG
 //  http://www.baslerweb.com
 //  Author:  DV, JS
 //-----------------------------------------------------------------------------
@@ -264,5 +264,9 @@ namespace Pylon
         CPylonDataContainerImpl* m_pImpl;
     };
 }
+
+#ifdef _MSC_VER
+#   pragma pack(pop)
+#endif /* _MSC_VER */
 
 #endif // INCLUDED_PYLONDATACONTAINER_H

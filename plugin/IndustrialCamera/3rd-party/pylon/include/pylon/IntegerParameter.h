@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 //  Basler pylon SDK
-//  Copyright (c) 2018-2021 Basler AG
+//  Copyright (c) 2018-2024 Basler AG
 //  http://www.baslerweb.com
 //------------------------------------------------------------------------------
 /*!
@@ -50,11 +50,11 @@ namespace Pylon
     /*!
     \brief Extends the GenApi::IInteger interface with convenience methods.
     */
-    interface IIntegerEx : virtual public GENAPI_NAMESPACE::IInteger, virtual public IValueEx
+    interface IIntegerEx : virtual public GenApi::IInteger, virtual public IValueEx
     {
-        using GENAPI_NAMESPACE::IInteger::operator=;
+        using GenApi::IInteger::operator=;
 
-        using GENAPI_NAMESPACE::IInteger::SetValue;
+        using GenApi::IInteger::SetValue;
 
         /*!
         \brief Sets the value of the parameter if the parameter is writable.
@@ -245,7 +245,7 @@ namespace Pylon
         \error
             Does not throw C++ exceptions.
         */
-        explicit CIntegerParameter( GENAPI_NAMESPACE::INode* pNode );
+        explicit CIntegerParameter( GenApi::INode* pNode );
 
 
         /*!
@@ -256,7 +256,7 @@ namespace Pylon
         \error
             Does not throw C++ exceptions.
         */
-        explicit CIntegerParameter( GENAPI_NAMESPACE::IInteger* pInteger );
+        explicit CIntegerParameter( GenApi::IInteger* pInteger );
 
 
         /*!
@@ -273,7 +273,7 @@ namespace Pylon
         \error
             The call to GenApi::INodeMap::GetNode can throw C++ exceptions.
         */
-        CIntegerParameter( GENAPI_NAMESPACE::INodeMap* pNodeMap, const char* pName );
+        CIntegerParameter( GenApi::INodeMap* pNodeMap, const char* pName );
 
 
         /*!
@@ -290,7 +290,7 @@ namespace Pylon
         \error
             The call to GenApi::INodeMap::GetNode can throw C++ exceptions.
         */
-        CIntegerParameter( GENAPI_NAMESPACE::INodeMap& nodeMap, const char* pName );
+        CIntegerParameter( GenApi::INodeMap& nodeMap, const char* pName );
 
 
         /*!
@@ -326,7 +326,7 @@ namespace Pylon
         \error
             The call to GenApi::INodeMap::GetNode can throw C++ exceptions.
         */
-        virtual bool Attach( GENAPI_NAMESPACE::INodeMap* pNodeMap, const char* pName );
+        virtual bool Attach( GenApi::INodeMap* pNodeMap, const char* pName );
 
 
         /*!
@@ -344,7 +344,7 @@ namespace Pylon
         \error
             The call to GenApi::INodeMap::GetNode can throw C++ exceptions.
         */
-        virtual bool Attach( GENAPI_NAMESPACE::INodeMap& nodeMap, const char* pName );
+        virtual bool Attach( GenApi::INodeMap& nodeMap, const char* pName );
 
 
         /*!
@@ -360,7 +360,7 @@ namespace Pylon
         \error
             Does not throw C++ exceptions.
         */
-        virtual bool Attach( GENAPI_NAMESPACE::INode* pNode );
+        virtual bool Attach( GenApi::INode* pNode );
 
 
         /*!
@@ -370,7 +370,7 @@ namespace Pylon
         \error
             Does not throw C++ exceptions.
         */
-        virtual bool Attach( GENAPI_NAMESPACE::IInteger* pInteger );
+        virtual bool Attach( GenApi::IInteger* pInteger );
 
 
         /*!
@@ -399,7 +399,7 @@ namespace Pylon
         \error
             Does not throw C++ exceptions.
         */
-        virtual bool Equals( const GENAPI_NAMESPACE::INode* pNode ) const;
+        virtual bool Equals( const GenApi::INode* pNode ) const;
 
 
         /*!
@@ -409,7 +409,7 @@ namespace Pylon
         \error
             Does not throw C++ exceptions.
         */
-        virtual bool Equals( const GENAPI_NAMESPACE::IInteger* pInteger ) const;
+        virtual bool Equals( const GenApi::IInteger* pInteger ) const;
 
 
         /*!
@@ -428,7 +428,7 @@ namespace Pylon
         virtual void SetValue( int64_t value, bool verify = true );
 
         // Implements GenApi::IInteger
-        virtual GENAPI_NAMESPACE::IInteger& operator=( int64_t value );
+        virtual GenApi::IInteger& operator=( int64_t value );
 
         // Implements GenApi::IInteger
         virtual int64_t GetValue( bool verify = false, bool ignoreCache = false );
@@ -446,19 +446,19 @@ namespace Pylon
         virtual int64_t GetMax();
 
         // Implements GenApi::IInteger
-        virtual GENAPI_NAMESPACE::EIncMode GetIncMode();
+        virtual GenApi::EIncMode GetIncMode();
 
         // Implements GenApi::IInteger
         virtual int64_t GetInc();
 
         // Implements GenApi::IInteger
-        virtual GENAPI_NAMESPACE::int64_autovector_t GetListOfValidValues( bool bounded = true );
+        virtual GenApi::int64_autovector_t GetListOfValidValues( bool bounded = true );
 
         // Implements GenApi::IInteger
-        virtual GENAPI_NAMESPACE::ERepresentation GetRepresentation();
+        virtual GenApi::ERepresentation GetRepresentation();
 
         // Implements GenApi::IInteger
-        virtual GENICAM_NAMESPACE::gcstring GetUnit();
+        virtual GenICam::gcstring GetUnit();
 
         // Implements GenApi::IInteger
         virtual void ImposeMin( int64_t value );
@@ -501,7 +501,7 @@ namespace Pylon
         virtual bool TrySetToMinimum();
 
     protected:
-        GENAPI_NAMESPACE::IInteger* m_pFeature;
+        GenApi::IInteger* m_pFeature;
     };
 }
 #ifdef _MSC_VER

@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 //  Basler pylon SDK
-//  Copyright (c) 2018-2021 Basler AG
+//  Copyright (c) 2018-2024 Basler AG
 //  http://www.baslerweb.com
 //------------------------------------------------------------------------------
 /*!
@@ -32,9 +32,9 @@ namespace Pylon
     /*!
     \brief Extends the GenApi::IString interface with convenience methods.
     */
-    interface IStringEx : virtual public GENAPI_NAMESPACE::IString, virtual public IValueEx
+    interface IStringEx : virtual public GenApi::IString, virtual public IValueEx
     {
-        using GENAPI_NAMESPACE::IString::operator=;
+        using GenApi::IString::operator=;
 
         /*!
         \brief Sets the value of the parameter if the parameter is writable.
@@ -91,7 +91,7 @@ namespace Pylon
         \error
             Does not throw C++ exceptions.
         */
-        explicit CStringParameter( GENAPI_NAMESPACE::INode* pNode );
+        explicit CStringParameter( GenApi::INode* pNode );
 
 
         /*!
@@ -102,7 +102,7 @@ namespace Pylon
         \error
             Does not throw C++ exceptions.
         */
-        explicit CStringParameter( GENAPI_NAMESPACE::IString* pString );
+        explicit CStringParameter( GenApi::IString* pString );
 
 
         /*!
@@ -119,7 +119,7 @@ namespace Pylon
         \error
             The call to GenApi::INodeMap::GetNode can throw C++ exceptions.
         */
-        CStringParameter( GENAPI_NAMESPACE::INodeMap* pNodeMap, const char* pName );
+        CStringParameter( GenApi::INodeMap* pNodeMap, const char* pName );
 
 
         /*!
@@ -136,7 +136,7 @@ namespace Pylon
         \error
             The call to GenApi::INodeMap::GetNode can throw C++ exceptions.
         */
-        CStringParameter( GENAPI_NAMESPACE::INodeMap& nodeMap, const char* pName );
+        CStringParameter( GenApi::INodeMap& nodeMap, const char* pName );
 
 
         /*!
@@ -172,7 +172,7 @@ namespace Pylon
         \error
             The call to GenApi::INodeMap::GetNode can throw C++ exceptions.
         */
-        virtual bool Attach( GENAPI_NAMESPACE::INodeMap* pNodeMap, const char* pName );
+        virtual bool Attach( GenApi::INodeMap* pNodeMap, const char* pName );
 
 
         /*!
@@ -190,7 +190,7 @@ namespace Pylon
         \error
             The call to GenApi::INodeMap::GetNode can throw C++ exceptions.
         */
-        virtual bool Attach( GENAPI_NAMESPACE::INodeMap& nodeMap, const char* pName );
+        virtual bool Attach( GenApi::INodeMap& nodeMap, const char* pName );
 
 
         /*!
@@ -206,7 +206,7 @@ namespace Pylon
         \error
             Does not throw C++ exceptions.
         */
-        virtual bool Attach( GENAPI_NAMESPACE::INode* pNode );
+        virtual bool Attach( GenApi::INode* pNode );
 
 
         /*!
@@ -216,7 +216,7 @@ namespace Pylon
         \error
             Does not throw C++ exceptions.
         */
-        virtual bool Attach( GENAPI_NAMESPACE::IString* pString );
+        virtual bool Attach( GenApi::IString* pString );
 
 
         /*!
@@ -245,7 +245,7 @@ namespace Pylon
         \error
             Does not throw C++ exceptions.
         */
-        virtual bool Equals( const GENAPI_NAMESPACE::INode* pNode ) const;
+        virtual bool Equals( const GenApi::INode* pNode ) const;
 
 
         /*!
@@ -255,7 +255,7 @@ namespace Pylon
         \error
             Does not throw C++ exceptions.
         */
-        virtual bool Equals( const GENAPI_NAMESPACE::IString* pString ) const;
+        virtual bool Equals( const GenApi::IString* pString ) const;
 
 
         /*!
@@ -271,19 +271,19 @@ namespace Pylon
 
 
         // Implements GenApi::IString
-        virtual void SetValue( const GENICAM_NAMESPACE::gcstring& value, bool verify = true );
+        virtual void SetValue( const GenICam::gcstring& value, bool verify = true );
 
         // Implements GenApi::IString
-        virtual GENAPI_NAMESPACE::IString& operator=( const GENICAM_NAMESPACE::gcstring& value );
+        virtual GenApi::IString& operator=( const GenICam::gcstring& value );
 
         // Implements GenApi::IString
-        virtual GENICAM_NAMESPACE::gcstring GetValue( bool verify = false, bool ignoreCache = false );
+        virtual GenICam::gcstring GetValue( bool verify = false, bool ignoreCache = false );
 
         // Implements GenApi::IString
-        virtual GENICAM_NAMESPACE::gcstring operator()();
+        virtual GenICam::gcstring operator()();
 
         // Implements GenApi::IString
-        virtual GENICAM_NAMESPACE::gcstring operator*();
+        virtual GenICam::gcstring operator*();
 
         // Implements GenApi::IString
         virtual int64_t GetMaxLength();
@@ -296,7 +296,7 @@ namespace Pylon
         virtual String_t GetValueOrDefault( const String_t& defaultValue );
 
     protected:
-        GENAPI_NAMESPACE::IString* m_pFeature;
+        GenApi::IString* m_pFeature;
     };
 }
 #ifdef _MSC_VER

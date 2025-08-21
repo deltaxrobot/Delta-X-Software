@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //  Basler pylon SDK
-//  Copyright (c) 2010-2021 Basler AG
+//  Copyright (c) 2010-2024 Basler AG
 //  http://www.baslerweb.com
 //  Author:  JS
 //-----------------------------------------------------------------------------
@@ -61,7 +61,7 @@ namespace Pylon
         CPixelTypeMapper( void );
 
         /// create and initialize a mapper by using the enum node passed.
-        explicit CPixelTypeMapper( GENAPI_NAMESPACE::IEnumeration* pEnum );
+        explicit CPixelTypeMapper( GenApi::IEnumeration* pEnum );
 
         /// default d'tor
         virtual ~CPixelTypeMapper( void );
@@ -80,12 +80,12 @@ namespace Pylon
 
              Call this function initialize the mapper when using the default c'tor.
         */
-        void SetPixelFormatEnumNode( GENAPI_NAMESPACE::IEnumeration* pEnum );
+        void SetPixelFormatEnumNode( GenApi::IEnumeration* pEnum );
 
     public:
         /*! \brief Converts an enumeration node value to a Pylon::EPixelType enum
 
-            \param nodeValue node value to convert. You can obtain this value by calling GENAPI_NAMESPACE::IEnumeration::GetIntValue.
+            \param nodeValue node value to convert. You can obtain this value by calling GenApi::IEnumeration::GetIntValue.
             \return Returns the Pylon::EPixelType for a given pixelformat enum value defined in the Enum passed in c'tor
 
             Converts a enumeration node value to a Pylon::EPixelType enum.
@@ -95,7 +95,7 @@ namespace Pylon
 
     public:
         /*! \brief Returns a Pylon::EPixelType for a given symbolic name.
-            \param pszSymbolicName pointer to the symbolic name. Note: Symbolic names are case sensitive. You can obtain the symbolic name by calling GENAPI_NAMESPACE::IEnumEntry::GetSymbolic()
+            \param pszSymbolicName pointer to the symbolic name. Note: Symbolic names are case sensitive. You can obtain the symbolic name by calling GenApi::IEnumEntry::GetSymbolic()
             \return Returns the Pylon_PixelType for a given symbolic name.
 
             Static version which does the lookup soley by symbolic string comparison.
@@ -104,7 +104,7 @@ namespace Pylon
         static EPixelType GetPylonPixelTypeByName( const char* pszSymbolicName );
 
         /*! \brief Returns a Pylon::EPixelType for a given symbolic name.
-            \param symbolicName The symbolic name. Note: Symbolic names are case sensitive. You can obtain the symbolic name by calling GENAPI_NAMESPACE::IEnumEntry::GetSymbolic()
+            \param symbolicName The symbolic name. Note: Symbolic names are case sensitive. You can obtain the symbolic name by calling GenApi::IEnumEntry::GetSymbolic()
             \return Returns the Pylon_PixelType for a given symbolic name.
 
             Static version which does the lookup solely by symbolic string comparison.
@@ -144,7 +144,7 @@ namespace Pylon
     When passing the symbolic name of the pixeltype you can use the static version GetPylonPixelTypeByName. This function will do the lookup everytime you call it.
     The non-static member function GetPylonPixelTypeFromPixelFormatEnum uses caching to speed up subsequent calls.
 
-    The template parameter EnumT is the enumeration type from the camera class (typically Basler_GigECamera::PixelFormatEnums for GigE cameras or Basler_IIDC1394CameraParams::PixelFormatEnums for 1394 cameras)
+    The template parameter EnumT is the enumeration type from the camera class (typically Basler_GigECamera::PixelFormatEnums for GigE cameras)
     */
     template <typename EnumT>
     class CCameraPixelTypeMapperT : protected CPixelTypeMapper
@@ -157,7 +157,7 @@ namespace Pylon
         }
 
         /// create a mapper by using the enum node passed.
-        explicit CCameraPixelTypeMapperT( GENAPI_NAMESPACE::IEnumerationT<EnumT>* pEnumT )
+        explicit CCameraPixelTypeMapperT( GenApi::IEnumerationT<EnumT>* pEnumT )
             : m_pEnumT( NULL )
         {
             SetPixelFormatEnumNode( pEnumT );
@@ -186,7 +186,7 @@ namespace Pylon
 
             Call this function initialize the mapper when using the default c'tor.
         */
-        void SetPixelFormatEnumNode( GENAPI_NAMESPACE::IEnumerationT<EnumT>* pEnumT )
+        void SetPixelFormatEnumNode( GenApi::IEnumerationT<EnumT>* pEnumT )
         {
             // remember a reference to the EnumerationT node. Needed for enum->nodeValue lookup
             m_pEnumT = pEnumT;
@@ -205,7 +205,7 @@ namespace Pylon
     public:
         /*! \brief Converts a enumeration node value to a Pylon::EPixelType enum
 
-            \param pixelFormatEnumValue enumeration value to convert. You obtain this value by calling GENAPI_NAMESPACE::IEnumerationT::GetValue.
+            \param pixelFormatEnumValue enumeration value to convert. You obtain this value by calling GenApi::IEnumerationT::GetValue.
             \return Returns the Pylon::EPixelType for a given pixelformat enum value defined in the enum node passed in c'tor
 
             Converts a enumeration node value to a Pylon::EPixelType enum.
@@ -219,7 +219,7 @@ namespace Pylon
             }
 
             EPixelType pt = PixelType_Undefined;
-            GENAPI_NAMESPACE::IEnumEntry* pE = m_pEnumT->GetEntry( pixelFormatEnumValue );
+            GenApi::IEnumEntry* pE = m_pEnumT->GetEntry( pixelFormatEnumValue );
             if (pE != NULL)
             {
                 pt = CPixelTypeMapper::GetPylonPixelTypeFromNodeValue( pE->GetValue() );
@@ -250,7 +250,7 @@ namespace Pylon
         }
 
     private:
-        GENAPI_NAMESPACE::IEnumerationT<EnumT>* m_pEnumT;
+        GenApi::IEnumerationT<EnumT>* m_pEnumT;
     };
 }
 

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //  Basler pylon SDK
-//  Copyright (c) 2006-2021 Basler AG
+//  Copyright (c) 2006-2024 Basler AG
 //  http://www.baslerweb.com
 //  Author:  Hartmut Nebelung, AH
 //-----------------------------------------------------------------------------
@@ -85,21 +85,6 @@ namespace Pylon
         // Internal use only
         const char* const TransferModeKey = "TransferModeKey";
 
-        //1394
-        ///Identifies the name of the device used by the underlying device driver. Internal use only.
-        const char* const InternalNameKey = "InternalName";
-
-        //BCON
-        ///Identifies the name of BCON adapter library including extension without path information.
-        const char* const BconAdapterLibraryNameKey = "BconAdapterLibraryName";
-        ///Identifies the version of the externally provided BCON adapter library. The format is:v{major}.{minor}
-        const char* const BconAdapterLibraryVersionKey = "BconAdapterLibraryVersion";
-        ///Identifies the version of the BCON Adapter API the BCON adapter library has been implemented for. The format is:v{major}.{minor}
-        const char* const BconAdapterLibraryApiVersionKey = "BconAdapterLibraryApiVersion";
-        ///Identifies the version of the BCON Adapter API currently supported by pylon. The format is:v{major}.{minor}
-        const char* const SupportedBconAdapterApiVersionKey = "SupportedBconAdapterApiVersion";
-
-
         //CameraLink
         ///Identifies the ID of the serial port the device is connected to.
         const char* const PortIDKey = "PortID";
@@ -136,15 +121,15 @@ namespace Pylon
         {
         }
 
-             /*!
-             \brief Compares CDeviceInfo objects by device class and serial number.
-             \param[in]  rhs The right-hand side object of the comparison.
-             \return Returns true according to this rule: USB < GigE < CameraLink < 1394 < Bcon < Less than compare of device class text < CamEmu.
-                     CDeviceInfo objects of the same transport layer are compared by serial number. Numeric serial numbers are less than alphanumeric
-                     serial numbers. Two alphanumeric serial numbers return the result of a less than text comparison.
-             \error
-             Does not throw C++ exceptions.
-             */
+        /*!
+            \brief Compares CDeviceInfo objects by device class and serial number.
+            \param[in]  rhs The right-hand side object of the comparison.
+            \return Returns true according to this rule: USB < GigE < CameraLink < GenTL (incl. CXP) < Less than compare of device class text < CamEmu.
+                    CDeviceInfo objects of the same transport layer are compared by serial number. Numeric serial numbers are less than alphanumeric
+                    serial numbers. Two alphanumeric serial numbers return the result of a less than text comparison.
+            \error
+            Does not throw C++ exceptions.
+        */
         bool operator<( const CDeviceInfo& rhs ) const;
 
         /* The underlying implementation does not need to support all the listed properties.
@@ -214,7 +199,7 @@ namespace Pylon
         ///This method overrides a method of a base class returning a reference to CDeviceInfo
         CDeviceInfo& SetVendorName( const String_t& VendorNameValue );
 
-        ///Sets the device class device, e.g. Basler1394.
+        ///Sets the device class device, e.g. BaslerUsb.
         ///This property is identified by Key::DeviceClassKey.
         ///This method overrides a method of a base class returning a reference to CDeviceInfo
         CDeviceInfo& SetDeviceClass( const String_t& DeviceClassValue );
@@ -349,18 +334,18 @@ namespace Pylon
 
         ///Retrieves the manufacturer info.
         ///This property is identified by Key::ManufacturerInfoKey.
-        ///Applies to: Usb and BCON
+        ///Applies to: Usb
         String_t GetManufacturerInfo() const;
         ///Returns true if the above property is available.
-        ///Applies to: Usb and BCON
+        ///Applies to: Usb
         bool IsManufacturerInfoAvailable() const;
 
         ///Retrieves the device index. For internal use only.
         ///This property is identified by Key::DeviceIdxKey.
-        ///Applies to: Usb and BCON
+        ///Applies to: Usb
         String_t GetDeviceIdx() const;
         ///Returns true if the above property is available.
-        ///Applies to: Usb and BCON
+        ///Applies to: Usb
         bool IsDeviceIdxAvailable() const;
 
         ///Retrieves the product ID. For internal use only.
@@ -403,63 +388,6 @@ namespace Pylon
         ///Returns true if the above property is available.
         ///Applies to: Usb
         bool IsTransferModeAvailable() const;
-
-
-        ///Retrieves the name of the device used by the underlying device driver. Internal use only.
-        ///This property is identified by Key::InternalNameKey.
-        ///Applies to: 1394
-        String_t GetInternalName() const;
-        ///Sets the above property.
-        ///Applies to: 1394
-        CDeviceInfo& SetInternalName( const String_t& InternalNameValue );
-        ///Returns true if the above property is available.
-        ///Applies to: 1394
-        bool IsInternalNameAvailable() const;
-
-
-        ///Retrieves the name of BCON adapter library including extension without path information.
-        ///This property is identified by Key::BconAdapterLibraryNameKey.
-        ///Applies to: BCON
-        String_t GetBconAdapterLibraryName() const;
-        ///Sets the above property.
-        ///Applies to: BCON
-        CDeviceInfo& SetBconAdapterLibraryName( const String_t& BconAdapterLibraryNameValue );
-        ///Returns true if the above property is available.
-        ///Applies to: BCON
-        bool IsBconAdapterLibraryNameAvailable() const;
-
-        ///Retrieves the version of the externally provided BCON adapter library. The format is:v{major}.{minor}
-        ///This property is identified by Key::BconAdapterLibraryVersionKey.
-        ///Applies to: BCON
-        String_t GetBconAdapterLibraryVersion() const;
-        ///Sets the above property.
-        ///Applies to: BCON
-        CDeviceInfo& SetBconAdapterLibraryVersion( const String_t& BconAdapterLibraryVersionValue );
-        ///Returns true if the above property is available.
-        ///Applies to: BCON
-        bool IsBconAdapterLibraryVersionAvailable() const;
-
-        ///Retrieves the version of the BCON Adapter API the BCON adapter library has been implemented for. The format is:v{major}.{minor}
-        ///This property is identified by Key::BconAdapterLibraryApiVersionKey.
-        ///Applies to: BCON
-        String_t GetBconAdapterLibraryApiVersion() const;
-        ///Sets the above property.
-        ///Applies to: BCON
-        CDeviceInfo& SetBconAdapterLibraryApiVersion( const String_t& BconAdapterLibraryApiVersionValue );
-        ///Returns true if the above property is available.
-        ///Applies to: BCON
-        bool IsBconAdapterLibraryApiVersionAvailable() const;
-
-        ///Retrieves the version of the BCON Adapter API currently supported by pylon. The format is:v{major}.{minor}
-        ///This property is identified by Key::SupportedBconAdapterApiVersionKey.
-        ///Applies to: BCON
-        String_t GetSupportedBconAdapterApiVersion() const;
-        ///Sets the above property.
-        ///Applies to: BCON
-        CDeviceInfo& SetSupportedBconAdapterApiVersion( const String_t& SupportedBconAdapterApiVersionValue );
-        ///Returns true if the above property is available.
-        ///Applies to: BCON
-        bool IsSupportedBconAdapterApiVersionAvailable() const;
 
 
         ///Retrieves the ID of the serial port the device is connected to.

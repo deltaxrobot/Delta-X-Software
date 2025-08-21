@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //  Basler pylon SDK
-//  Copyright (c) 2009-2021 Basler AG
+//  Copyright (c) 2009-2024 Basler AG
 //  http://www.baslerweb.com
 //  Author: Andreas Gau
 //-----------------------------------------------------------------------------
@@ -97,18 +97,18 @@ namespace Pylon
      */
 
     /// Helper function for getting the SFNC version from the camera device node map.
-    inline VersionInfo GetSfncVersion( GENAPI_NAMESPACE::INodeMap* pNodeMap )
+    inline VersionInfo GetSfncVersion( GenApi::INodeMap* pNodeMap )
     {
         // If pNodeMap is a valid node map.
         if (pNodeMap)
         {
             // Check to see whether node for major version exists.
-            GENAPI_NAMESPACE::CIntegerPtr major = pNodeMap->GetNode( "DeviceSFNCVersionMajor" );
+            GenApi::CIntegerPtr major = pNodeMap->GetNode( "DeviceSFNCVersionMajor" );
             if (major)
             {
                 // Get further version Info.
-                GENAPI_NAMESPACE::CIntegerPtr minor = pNodeMap->GetNode( "DeviceSFNCVersionMinor" );
-                GENAPI_NAMESPACE::CIntegerPtr subminor = pNodeMap->GetNode( "DeviceSFNCVersionSubMinor" );
+                GenApi::CIntegerPtr minor = pNodeMap->GetNode( "DeviceSFNCVersionMinor" );
+                GenApi::CIntegerPtr subminor = pNodeMap->GetNode( "DeviceSFNCVersionSubMinor" );
 
                 if (!IsReadable( major ) || !IsReadable( minor ) || !IsReadable( subminor ))
                 {

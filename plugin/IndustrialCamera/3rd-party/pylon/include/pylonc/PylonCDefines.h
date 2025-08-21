@@ -1,6 +1,6 @@
 /*-----------------------------------------------------------------------------
     Basler pylon C SDK
-    Copyright (c) 2012-2021 Basler AG
+    Copyright (c) 2012-2024 Basler AG
     http://www.baslerweb.com
  ------------------------------------------------------------------------------*/
 #ifndef PylonCDefines_h__
@@ -37,7 +37,7 @@
 #define PYLON_DEVINFO_FULL_NAME_KEY "FullName"                //!< The full name identifying the device.
 #define PYLON_DEVINFO_FRIENDLY_NAME_KEY "FriendlyName"        //!< The human readable name of the device.
 #define PYLON_DEVINFO_VENDOR_NAME_KEY "VendorName"            //!< The vendor name of the device.
-#define PYLON_DEVINFO_DEVICE_CLASS_KEY "DeviceClass"          //!< The device class device, e.g. Basler1394.
+#define PYLON_DEVINFO_DEVICE_CLASS_KEY "DeviceClass"          //!< The device class device, e.g. BaslerUsb.
 #define PYLON_DEVINFO_SERIAL_NUMBER_KEY "SerialNumber"        //!< The serial number if it supported by the underlying implementation
 #define PYLON_DEVINFO_USER_DEFINED_NAME_KEY "UserDefinedName" //!< The user-defined name if present.
 #define PYLON_DEVINFO_MODEL_NAME_KEY "ModelName"              //!< The model name of the device.

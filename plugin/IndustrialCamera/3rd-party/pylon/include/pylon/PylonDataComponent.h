@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //  Basler pylon SDK
-//  Copyright (c) 2020-2021 Basler AG
+//  Copyright (c) 2020-2024 Basler AG
 //  http://www.baslerweb.com
 //  Author:  DV, JS
 //-----------------------------------------------------------------------------
@@ -34,14 +34,22 @@ namespace Pylon
      * \brief Lists the possible component types.
      *
      * Use this value to determine what kind of data is stored in a component.
+     * The values are related to SFNC ComponentIDValue.
      * You can call Pylon::CPylonDataComponent::GetComponentType().
     */
     enum EComponentType
     {
-        ComponentType_Undefined = 0x00,     //!< The component type is not known or hasn't been set.
-        ComponentType_Intensity = 0x01,     //!< Component contains intensity values
-        ComponentType_Range = 0x04,         //!< Component contains range values
-        ComponentType_Confidence = 0x06     //!< Component contains confidence value
+        ComponentType_Undefined = 0x00,                 //!< The component type is not known or hasn't been set.
+        ComponentType_Intensity = 0x01,                 //!< Component contains intensity values.
+        ComponentType_Range = 0x04,                     //!< Component contains range values.
+        ComponentType_Reflectance = 0x05,               //!< Component contains reflectance values.
+        ComponentType_Confidence = 0x06,                //!< Component contains confidence value.
+        ComponentType_Scatter  = 0x07,                  //!< Component contains scatter values.
+        ComponentType_Disparity = 0x08,                 //!< Component contains disparity value.
+        ComponentType_IntensityCombined_STA = 0xFF01,   //!< Component contains the intensity images of the left and the right camera combined. The right image is stacked under the left image.
+        ComponentType_Error_STA = 0xFF02,               //!< Component contains the error map of the acquired disparity image.
+        ComponentType_RawCombined_STA = 0xFF03,         //!< Component contains the unrectified intensity images of the left and the right camera combined. The right image is stacked under the left image.
+        ComponentType_Calibration_STA = 0xFF04,         //!< Component contains the annotated left and right images for calibration.
     };
 
 
@@ -348,5 +356,9 @@ namespace Pylon
     };
 
 } // namespace Pylon
+
+#ifdef _MSC_VER
+#   pragma pack(pop)
+#endif /* _MSC_VER */
 
 #endif // INCLUDED_PYLONDATACOMPONENT_H

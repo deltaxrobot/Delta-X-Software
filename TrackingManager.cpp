@@ -66,25 +66,26 @@ void Tracking::ChangeObjectInfo(QString cmd)
     QStringList paras1 = cmd.split('=');
     QStringList paras2 = paras1.at(0).trimmed().split('.');
 
-
-    int i = paras1.at(1).toInt();
-
     if (paras2.count() >= 3)
     {
         if (paras2.at(2) == "IsPicked")
         {
             QString objName = paras2.at(0) + paras2.at(1);
-
-            int i = VariableManager::instance().getVar(QString("project0.tracking0.") + objName + ".UID").toInt();
+            // Resolve UID by using the current list name and index from the command instead of hardcoded project path
+            QString listName = paras2.at(0);
+            QString indexStr = paras2.at(1);
+            int uidValue = VariableManager::instance().getVar(listName + "." + indexStr + ".UID").toInt();
 
             // Thread-safe update of TrackedObjects
             {
                 QMutexLocker locker(&dataMutex);
-                if (i >= 0 && i < TrackedObjects.size()) {
-                    if (paras1.at(1).trimmed().toLower() == "true")
-                        TrackedObjects[i].isPicked = true;
-                    else
-                        TrackedObjects[i].isPicked = false;
+                QString val = paras1.at(1).trimmed().toLower();
+                bool picked = (val == "true" || val == "1");
+                for (auto &obj : TrackedObjects) {
+                    if (obj.id == uidValue) {
+                        obj.isPicked = picked;
+                        break;
+                    }
                 }
             }
         }
@@ -149,10 +150,12 @@ void Tracking::UpdateTrackedObjectOffsets(QVector3D offset)
 {
     // Create working copy to avoid race conditions
     QVector<ObjectInfo> workingDetectedObjects;
+    QVector<ObjectInfo> workingTrackedObjects;
     
     {
         QMutexLocker locker(&dataMutex);
         workingDetectedObjects = DetectedObjects;
+        workingTrackedObjects = TrackedObjects;
     }
 
     for (auto& detected : workingDetectedObjects) {
@@ -161,7 +164,7 @@ void Tracking::UpdateTrackedObjectOffsets(QVector3D offset)
         detected.center += offset;
         detected.offset = offset;
 
-        for (auto& tracked : TrackedObjects) {
+        for (auto& tracked : workingTrackedObjects) {
             isSame = isSameObject(detected, tracked);
 
             if (isSame == true)
@@ -213,6 +216,9 @@ void Tracking::GetObjectsInArea(QString inAreaListName, float min, float max, bo
         workingTrackedObjects = TrackedObjects;
     }
 
+    // Reset count before populating
+    VariableManager::instance().updateVar(inAreaListName + ".Count", 0);
+
     int index = 0;
     for (auto& tracked : workingTrackedObjects)
     {
@@ -237,9 +243,11 @@ void Tracking::GetObjectsInArea(QString inAreaListName, float min, float max, bo
         VariableManager::instance().updateVar(name + ".IsPicked", tracked.isPicked);
         VariableManager::instance().updateVar(name + ".Type", tracked.type);
         VariableManager::instance().updateVar(name + ".UID", tracked.id);
-        VariableManager::instance().updateVar(inAreaListName + ".Count", index + 1);
         index++;
     }
+
+    // Finalize count once
+    VariableManager::instance().updateVar(inAreaListName + ".Count", index);
 }
 
 void Tracking::updatePositions(double displacement) {
@@ -322,18 +330,16 @@ void Tracking::RemoveTrackedObjects(int id)
 QVector3D Tracking::calculateMoved(float distance)
 {
     // Normalize the VelocityVector to get the direction
-    QVector3D direction = VelocityVector.normalized();
+    QVector3D direction = VelocityVector.length() > 0 ? VelocityVector.normalized() : QVector3D(1, 0, 0);
 
-    // Calculate the effective 3D displacement vector
-    QVector3D effectiveDisplacement = direction * distance;
-
-    return effectiveDisplacement;
+    // Calculate the effective 3D displacement vector (distance already encodes magnitude)
+    return direction * distance;
 }
 
 
 double Tracking::similarity(ObjectInfo &obj1, ObjectInfo &obj2, double displacement) {
-    // Calculate effective 3D displacement based on conveyor 3D velocity
-    QVector3D effectiveDisplacement = VelocityVector * displacement;
+    // Calculate effective 3D displacement based on normalized velocity and scalar displacement
+    QVector3D effectiveDisplacement = calculateMoved(static_cast<float>(displacement));
 
     // Predict new position of obj1 based on effective displacement
     QVector3D predictedCenter = obj1.center + effectiveDisplacement;
@@ -364,9 +370,11 @@ double Tracking::calculateIoU(ObjectInfo &object1, ObjectInfo &object2)
     double box2Area = object2.width * object2.height;
     double unionArea = box1Area + box2Area - overlapArea;
 
-    // 3. Calculate IoU
+    // 3. Calculate IoU with guard
+    if (unionArea <= 0.0) {
+        return 0.0;
+    }
     double iou = overlapArea / unionArea;
-
     return iou;
 }
 
@@ -424,7 +432,18 @@ void TrackingManager::UpdateVariable(QString cmd)
     QStringList paras1 = cmd.split('=');
     QStringList paras2 = paras1.at(0).split('.');
 
-    QMetaObject::invokeMethod(Trackings.at(0), "ChangeObjectInfo", Qt::QueuedConnection, Q_ARG(QString, cmd));
+    // Route to the correct tracking instance based on list name
+    if (paras2.size() >= 1) {
+        QString listName = paras2.at(0);
+        for (int i = 0; i < Trackings.count(); i++)
+        {
+            if (Trackings.at(i)->ListName == listName)
+            {
+                QMetaObject::invokeMethod(Trackings.at(i), "ChangeObjectInfo", Qt::QueuedConnection, Q_ARG(QString, cmd));
+                break;
+            }
+        }
+    }
 
 //    for(int i = 0; i < Trackings.count(); i++)
 //    {
@@ -484,7 +503,10 @@ void TrackingManager::AddObject(QString listName, QList<QStringList> list)
             }
             else if (j == 7)
             {
-                isPicked = paras.at(7).toInt();
+                QString pickedStr = paras.at(7).trimmed().toLower();
+                if (pickedStr == "true" || pickedStr == "1") isPicked = true;
+                else if (pickedStr == "false" || pickedStr == "0") isPicked = false;
+                else isPicked = paras.at(7).toInt();
             }
         }
         
@@ -519,7 +541,7 @@ void TrackingManager::SetEncoderPosition(int id, float value)
     {
         if (Trackings.at(i)->EncoderName.mid(7).toInt() == id)
         {
-//            QMetaObject::invokeMethod(Trackings.at(i), "OnReceivceEncoderPosition", Qt::QueuedConnection, Q_ARG(float, value));
+//            QMetaObject::invokeMethod(Trackings.at(i), "OnReceiveEncoderPosition", Qt::QueuedConnection, Q_ARG(float, value));
             Trackings.at(i)->OnReceivceEncoderPosition(value);
         }
     }

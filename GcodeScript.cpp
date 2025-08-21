@@ -153,6 +153,9 @@ void GcodeScript::ExecuteGcode(QString gcodes, int startMode)
 
     tempGcodeList.clear();
 
+    // Pre-scan to collect all function definitions before execution
+    preprocessGcodeScript();
+
     TransmitNextGcode();
 }
 
@@ -228,7 +231,29 @@ void GcodeScript::TransmitNextGcode()
 
 void GcodeScript::ExecuteFunction(QString functionName, QStringList paras)
 {
+    // Ensure functions are pre-scanned
+    if (functionDefinitions.isEmpty())
+    {
+        preprocessGcodeScript();
+    }
 
+    // Normalize function name for lookup
+    QString normalizedName = functionName;
+    if (normalizedName.startsWith("#"))
+        normalizedName = normalizedName.mid(1);
+    normalizedName = normalizedName.toUpper();
+
+    // If function not found, try to pre-scan again (in case script changed)
+    if (!functionDefinitions.contains(normalizedName))
+    {
+        preprocessGcodeScript();
+    }
+
+    // Call function if exists
+    if (functionDefinitions.contains(normalizedName))
+    {
+        callFunction(normalizedName, paras);
+    }
 }
 
 void GcodeScript::Stop()
@@ -1520,7 +1545,7 @@ bool GcodeScript::findExeGcodeAndTransmit()
                 if (!functionName.isEmpty() && functionName.at(0) == 'P')
                     functionName.remove(0, 1);
 
-                functionName.toLower();
+                functionName = functionName.toLower();
 
                 QStringList paramList;
 
@@ -2594,11 +2619,89 @@ QString GcodeScript::normalizeWhitespace(const QString& line)
     return line;
 }
 
-// Preprocess entire gcode script for maximum optimization
+// Preprocess entire gcode script: collect all FUNCTION definitions for later lookup
 void GcodeScript::preprocessGcodeScript()
 {
-    // Temporarily disabled to fix script execution issues
-    return;
+    functionDefinitions.clear();
+
+    for (int order = 0; order < gcodeList.size(); order++)
+    {
+        QString line = gcodeList[order].trimmed();
+        if (line.isEmpty() || line.startsWith(';'))
+            continue;
+
+        // Strip inline comment
+        int semicolonIdx = line.indexOf(';');
+        if (semicolonIdx != -1)
+            line = line.left(semicolonIdx).trimmed();
+
+        QStringList tokens = line.split(' ', Qt::SkipEmptyParts);
+        if (tokens.isEmpty())
+            continue;
+
+        QString firstToken = tokens[0].toUpper();
+        // Skip line numbers like N10
+        if (firstToken.startsWith("N") && firstToken.length() > 1)
+        {
+            if (tokens.size() > 1)
+                firstToken = tokens[1].toUpper();
+            else
+                continue;
+        }
+
+        if (firstToken == "FUNCTION")
+        {
+            // Derive function name and parameters similarly to handleFUNCTION
+            QString functionName;
+            QStringList parameters;
+
+            // Case 1: FUNCTION functionName or FUNCTION functionName(params)
+            if (tokens.size() >= 2)
+            {
+                functionName = tokens[1];
+            }
+
+            // Case 2: Parameters located elsewhere in the line
+            if (line.contains('('))
+            {
+                int openParen = line.indexOf('(');
+                int closeParen = line.lastIndexOf(')');
+                if (openParen != -1 && closeParen != -1 && closeParen > openParen)
+                {
+                    // If functionName not yet set with parentheses part, extract before '('
+                    if (functionName.isEmpty())
+                    {
+                        // Find token immediately before '('
+                        int nameEnd = openParen;
+                        int nameStart = line.lastIndexOf(' ', nameEnd - 1);
+                        if (nameStart == -1) nameStart = 0; else nameStart += 1;
+                        functionName = line.mid(nameStart, nameEnd - nameStart).trimmed();
+                    }
+
+                    QString paramStr = line.mid(openParen + 1, closeParen - openParen - 1).trimmed();
+                    if (!paramStr.isEmpty())
+                    {
+                        QStringList paramTokens = paramStr.split(',');
+                        for (QString p : paramTokens)
+                        {
+                            p = p.trimmed();
+                            if (p.startsWith('#')) p = p.mid(1);
+                            if (!p.isEmpty()) parameters.append(p);
+                        }
+                    }
+                }
+            }
+
+            if (functionName.startsWith('#')) functionName = functionName.mid(1);
+            functionName = functionName.toUpper();
+
+            if (!functionName.isEmpty())
+            {
+                SimpleFunctionDef newFunction(functionName, parameters, order);
+                functionDefinitions[functionName] = newFunction;
+            }
+        }
+    }
 }
 
 bool GcodeScript::isNotNegative(QString s)
@@ -3309,6 +3412,7 @@ bool GcodeScript::handleFUNCTION(QList<QString> valuePairs, int i)
     
     if (functionName.startsWith("#"))
         functionName = functionName.mid(1);
+    functionName = functionName.toUpper();
     
     // Store function definition
     SimpleFunctionDef newFunction(functionName, parameters, gcodeOrder);
@@ -3330,7 +3434,15 @@ bool GcodeScript::handleFUNCTION(QList<QString> valuePairs, int i)
 
 bool GcodeScript::handleENDFUNCTION(QList<QString> valuePairs, int i)
 {
-    // Simply skip ENDFUNCTION when encountered during function definition
+    // If currently inside a function call (via callFunction), return to caller
+    if (returnFunctionOrder >= 0)
+    {
+        gcodeOrder = returnFunctionPointer[returnFunctionOrder] + 1;
+        returnFunctionOrder--;
+        return false;
+    }
+
+    // Otherwise, we are skipping a function definition in main flow
     gcodeOrder++;
     return false;
 }
@@ -3371,6 +3483,11 @@ bool GcodeScript::handleRETURN(QList<QString> valuePairs, int i)
 
 bool GcodeScript::callFunction(QString functionName, QStringList arguments)
 {
+    // Normalize name for consistent lookup
+    if (functionName.startsWith("#"))
+        functionName = functionName.mid(1);
+    functionName = functionName.toUpper();
+
     // Check if function exists
     if (!functionDefinitions.contains(functionName))
     {
@@ -3422,6 +3539,7 @@ bool GcodeScript::isFunctionCall(QString line)
     {
         functionName = functionName.left(functionName.indexOf('('));
     }
+    functionName = functionName.toUpper();
     
     // Check if it's a function call
     return functionDefinitions.contains(functionName);
@@ -3489,7 +3607,7 @@ QString GcodeScript::parseFunctionCall(QString line, QStringList& arguments)
         }
     }
     
-    return functionName;
+    return functionName.toUpper();
 }
 
 // Missing function implementations

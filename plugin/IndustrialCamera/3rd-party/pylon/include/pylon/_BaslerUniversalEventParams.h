@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //  Basler pylon SDK
-//  Copyright (c) 2019-2021 Basler AG
+//  Copyright (c) 2019-2024 Basler AG
 //  http://www.baslerweb.com
 //-----------------------------------------------------------------------------
 
@@ -42,7 +42,7 @@ namespace Basler_UniversalEventParams
     
     
     //**************************************************************************************************
-    // Parameter class CUniversalEventParams_Params_v6_2_0
+    // Parameter class CUniversalEventParams_Params_v9_0_0
     //**************************************************************************************************
     
 
@@ -52,7 +52,7 @@ namespace Basler_UniversalEventParams
     The parameter class is used by the \c Pylon::CBaslerUniversalInstantCamera class.
     The \ref sample_ParametrizeCamera_NativeParameterAccess code sample shows how to access camera parameters via the \c Pylon::CBaslerUniversalInstantCamera class.
     */
-    class PYLONBASE_API CUniversalEventParams_Params_v6_2_0
+    class PYLONBASE_API CUniversalEventParams_Params_v9_0_0
     {
     //----------------------------------------------------------------------------------------------------------------
     // Implementation
@@ -63,10 +63,10 @@ namespace Basler_UniversalEventParams
     //! \cond HIDE_CLASS_METHODS
         
         //! Constructor
-        CUniversalEventParams_Params_v6_2_0( void );
+        CUniversalEventParams_Params_v9_0_0( void );
 
         //! Destructor
-        ~CUniversalEventParams_Params_v6_2_0( void );
+        ~CUniversalEventParams_Params_v9_0_0( void );
 
         //! Initializes the references
         void _Initialize( GENAPI_NAMESPACE::INodeMap* );
@@ -74,8 +74,8 @@ namespace Basler_UniversalEventParams
     //! \endcond
 
     private:
-        class CUniversalEventParams_Params_v6_2_0_Data;
-        CUniversalEventParams_Params_v6_2_0_Data* m_pCUniversalEventParams_Params_v6_2_0_Data;
+        class CUniversalEventParams_Params_v9_0_0_Data;
+        CUniversalEventParams_Params_v9_0_0_Data* m_pCUniversalEventParams_Params_v9_0_0_Data;
 
 
     //----------------------------------------------------------------------------------------------------------------
@@ -85,9 +85,23 @@ namespace Basler_UniversalEventParams
         //! \name Categories: Root
         //@{
         /*!
+            \brief Firewall traversal interval value in milliseconds  This applies to the event channel  If set to 0, this feature is disabled - Applies to: GigE
+
+
+            Visibility: Guru
+
+        */
+        Pylon::IIntegerEx& FirewallTraversalInterval;
+
+        //@}
+
+
+        //! \name Categories: Root
+        //@{
+        /*!
             \brief Number of buffers to be used - Applies to: GigE and USB
 
-            Number of Buffers that are going to be used receiving events. .
+            Number of Buffers that are going to be used receiving events.
 
             Visibility: Expert
 
@@ -215,12 +229,56 @@ namespace Basler_UniversalEventParams
     //! \cond HIDE_CLASS_METHODS
 
         //! not implemented copy constructor
-        CUniversalEventParams_Params_v6_2_0(CUniversalEventParams_Params_v6_2_0&);
+        CUniversalEventParams_Params_v9_0_0(CUniversalEventParams_Params_v9_0_0&);
 
         //! not implemented assignment operator
-        CUniversalEventParams_Params_v6_2_0& operator=(CUniversalEventParams_Params_v6_2_0&);
+        CUniversalEventParams_Params_v9_0_0& operator=(CUniversalEventParams_Params_v9_0_0&);
 
     //! \endcond
+    };
+
+
+    //**************************************************************************************************
+    // Parameter class CUniversalEventParams_Params_v9_1_0
+    //**************************************************************************************************
+    
+
+    /*!
+    \brief A parameter class containing all parameters as members that are available for pylon event grabbers
+
+    The parameter class is used by the \c Pylon::CBaslerUniversalInstantCamera class.
+    The \ref sample_ParametrizeCamera_NativeParameterAccess code sample shows how to access camera parameters via the \c Pylon::CBaslerUniversalInstantCamera class.
+    */
+    class PYLONBASE_API CUniversalEventParams_Params_v9_1_0 : public CUniversalEventParams_Params_v9_0_0
+    {
+    //----------------------------------------------------------------------------------------------------------------
+    // Implementation
+    //----------------------------------------------------------------------------------------------------------------
+    protected:
+    // If you want to show the following methods in the help file
+    // add the string HIDE_CLASS_METHODS to the ENABLED_SECTIONS tag in the doxygen file
+    //! \cond HIDE_CLASS_METHODS
+        
+        //! Constructor
+        CUniversalEventParams_Params_v9_1_0( void );
+
+        //! Destructor
+        ~CUniversalEventParams_Params_v9_1_0( void );
+
+        //! Initializes the references
+        void _Initialize( GENAPI_NAMESPACE::INodeMap* );
+
+    //! \endcond
+
+    private:
+        class CUniversalEventParams_Params_v9_1_0_Data;
+        CUniversalEventParams_Params_v9_1_0_Data* m_pCUniversalEventParams_Params_v9_1_0_Data;
+
+
+    //----------------------------------------------------------------------------------------------------------------
+    // References to features
+    //----------------------------------------------------------------------------------------------------------------
+    public:
     };
 
 
@@ -230,7 +288,7 @@ namespace Basler_UniversalEventParams
     The parameter class is used by the \c Pylon::CBaslerUniversalInstantCamera class.
     The \ref sample_ParametrizeCamera_NativeParameterAccess code sample shows how to access camera parameters via the \c Pylon::CBaslerUniversalInstantCamera class.
     */
-    class CUniversalEventParams_Params : public CUniversalEventParams_Params_v6_2_0
+    class CUniversalEventParams_Params : public CUniversalEventParams_Params_v9_1_0
     {
     //----------------------------------------------------------------------------------------------------------------
     // Implementation
@@ -253,7 +311,7 @@ namespace Basler_UniversalEventParams
         //! Initializes the references
         void _Initialize( GENAPI_NAMESPACE::INodeMap* pNodeMap )
         {
-            CUniversalEventParams_Params_v6_2_0::_Initialize( pNodeMap );
+            CUniversalEventParams_Params_v9_1_0::_Initialize( pNodeMap );
         }
         //! \endcond
     };

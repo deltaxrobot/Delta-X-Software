@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //  Basler pylon SDK
-//  Copyright (c) 2008-2021 Basler AG
+//  Copyright (c) 2008-2024 Basler AG
 //  http://www.baslerweb.com
 //  Author:  JS
 //-----------------------------------------------------------------------------
@@ -16,6 +16,7 @@
 #include <Base/GCStringVector.h>
 #include <Base/GCException.h>
 
+#include <GenICamFwd.h>
 #include <GenApi/GenApiNamespace.h>
 #include <GenApi/Synch.h>
 
@@ -28,29 +29,29 @@
 namespace Pylon
 {
     /// Pylon's string definition
-    typedef GENICAM_NAMESPACE::gcstring String_t;
+    typedef GenICam::gcstring String_t;
 
     /// Pylon's string list definition
-    typedef GENICAM_NAMESPACE::gcstring_vector StringList_t;
+    typedef GenICam::gcstring_vector StringList_t;
 
     // pull genicam exceptions into the pylon namespace
     // we provide mappings so the user can use the Pylon namespace and don't have to think about
-    // whether to use GenApi or GENICAM_NAMESPACE namespace
+    // whether to use GenApi or GenICam namespace
 
-    using GENICAM_NAMESPACE::GenericException;
-    using GENICAM_NAMESPACE::BadAllocException;
-    using GENICAM_NAMESPACE::InvalidArgumentException;
-    using GENICAM_NAMESPACE::OutOfRangeException;
-    using GENICAM_NAMESPACE::PropertyException;
-    using GENICAM_NAMESPACE::RuntimeException;
-    using GENICAM_NAMESPACE::LogicalErrorException;
-    using GENICAM_NAMESPACE::AccessException;
-    using GENICAM_NAMESPACE::TimeoutException;
-    using GENICAM_NAMESPACE::DynamicCastException;
+    using GenICam::GenericException;
+    using GenICam::BadAllocException;
+    using GenICam::InvalidArgumentException;
+    using GenICam::OutOfRangeException;
+    using GenICam::PropertyException;
+    using GenICam::RuntimeException;
+    using GenICam::LogicalErrorException;
+    using GenICam::AccessException;
+    using GenICam::TimeoutException;
+    using GenICam::DynamicCastException;
 
     // locks
-    using GENAPI_NAMESPACE::CLock;
-    using GENAPI_NAMESPACE::AutoLock;
+    using GenApi::CLock;
+    using GenApi::AutoLock;
 
     // INodeMap, INode etc. are not mapped
 

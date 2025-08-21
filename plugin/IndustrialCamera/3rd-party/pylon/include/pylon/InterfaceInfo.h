@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //  Basler pylon SDK
-//  Copyright (c) 2010-2021 Basler AG
+//  Copyright (c) 2010-2024 Basler AG
 //  http://www.baslerweb.com
 //  Author:  AH
 //-----------------------------------------------------------------------------
@@ -35,9 +35,26 @@ namespace Pylon
     {
     public:
         /*!
+         \brief Creates an empty interface info.
+         \error
+         Does not throw C++ exceptions.
+        */
+        CInterfaceInfo();
+
+        /*!
+        \brief Copy constructor.
+        */
+        CInterfaceInfo( const CInterfaceInfo& );
+
+        /*!
+        \brief Destructor.
+        */
+        ~CInterfaceInfo();
+
+        /*!
         \brief Compares CInterfaceInfo objects by device class and interface ID.
         \param[in]  rhs The right-hand side object of the comparison.
-        \return Returns true according to this rule: USB < GigE < CameraLink < 1394 < Bcon < Less than compare of device class text < CamEmu.
+        \return Returns true according to this rule: USB < GigE < CameraLink < Less than compare of device class text < CamEmu.
                 CInterfaceInfo objects of the same transport layer are compared by interface ID using less than text comparison.
         \error
         Does not throw C++ exceptions.

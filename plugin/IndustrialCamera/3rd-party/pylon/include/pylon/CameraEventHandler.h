@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //  Basler pylon SDK
-//  Copyright (c) 2010-2021 Basler AG
+//  Copyright (c) 2010-2024 Basler AG
 //  http://www.baslerweb.com
 //  Author:  Andreas Gau
 //-----------------------------------------------------------------------------
@@ -51,7 +51,7 @@ namespace Pylon
         \threading
             This method is called outside the lock of the camera object, outside the lock of the node map, and inside the lock of the camera event handler registry.
         */
-        virtual void OnCameraEvent( CInstantCamera& camera, intptr_t userProvidedId, GENAPI_NAMESPACE::INode* pNode )
+        virtual void OnCameraEvent( CInstantCamera& camera, intptr_t userProvidedId, GenApi::INode* pNode )
         {
             PYLON_UNUSED( &camera );
             PYLON_UNUSED( userProvidedId );

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //  Basler pylon SDK
-//  Copyright (c) 2006-2021 Basler AG
+//  Copyright (c) 2006-2024 Basler AG
 //  http://www.baslerweb.com
 //  Author:  AH
 //-----------------------------------------------------------------------------
@@ -40,7 +40,7 @@ namespace Pylon
     \brief The interface of Transport Layer objects
 
     Transport Layer objects are used for enumerating and creating devices accessible
-    by a specific transport layer (like the Pylon1394 or the PylonGigE transport layer).
+    by a specific transport layer (like the PylonUsb or the PylonGigE transport layer).
     */
     interface PUBLIC_INTERFACE ITransportLayer : public IDeviceFactory
     {
@@ -71,7 +71,7 @@ namespace Pylon
 
         \return NULL, if the transport layer doesn't provide parameters, a pointer to the parameter node map otherwise.
         */
-        virtual GENAPI_NAMESPACE::INodeMap* GetNodeMap() = 0;
+        virtual GenApi::INodeMap* GetNodeMap() = 0;
 
 
         /*! \brief Retrieves a list of available interfaces. An interface may represent a frame grabber board, a network card, etc.

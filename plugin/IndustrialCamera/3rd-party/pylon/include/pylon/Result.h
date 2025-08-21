@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //  Basler pylon SDK
-//  Copyright (c) 2006-2021 Basler AG
+//  Copyright (c) 2006-2024 Basler AG
 //  http://www.baslerweb.com
 //  Author:  Hartmut Nebelung
 //-----------------------------------------------------------------------------
@@ -24,6 +24,7 @@
 #include <pylon/PixelType.h>
 #include <pylon/PayloadType.h>
 #include <pylon/ResultImage.h>
+#include <pylon/SharedByteBuffer.h>
 
 #pragma pack(push, PYLON_PACKING)
 
@@ -103,9 +104,17 @@ namespace Pylon
             , m_ErrorCode( 0 )
             , m_ErrorDescription( "" )
             , m_BlockID( GC_UINT64_MAX )
+            , m_HasChunkData( false )
         {
         }
 
+        ///////////////////////////////////////////////////////////////////////
+        //
+        GrabResult(const GrabResult& rhs) = default;
+
+        ///////////////////////////////////////////////////////////////////////
+        //
+        GrabResult& operator=(const GrabResult& rhs) = default;
 
         ///////////////////////////////////////////////////////////////////////
         //
@@ -285,13 +294,17 @@ namespace Pylon
         ///////////////////////////////////////////////////////////////////////
         /// \brief Get the block ID of the grabbed frame (camera device specific).
         ///
-        /// \par IEEE 1394 Camera Devices
-        /// The value of block ID is always UINT64_MAX.
-        ///
         /// \par GigE Camera Devices
-        /// The sequence number starts with 1 and
-        /// wraps at 65535. The value 0 has a special meaning and indicates
-        /// that this feature is not supported by the camera.
+        /// If the Extended ID mode is disabled (default), the sequence number starts with 1
+        /// and wraps at 65535.
+        /// If the Extended ID mode is enabled, the sequence number starts with 1
+        /// and uses the full 64-bit unsigned integer value range.
+        ///
+        /// A value of 0 indicates that this feature is not supported by the camera.
+        /// You can configure the Extended ID mode by setting the GevGVSPExtendedIDMode
+        /// or the BslGevGVSPExtendedIDMode parameter, if available.
+        /// The Instant Camera class and the pylon GigE stream grabber provide additional parameters
+        /// for controlling the Extended ID mode.
         ///
         /// \par USB Camera Devices
         /// The sequence number starts with 0 and uses the full 64 Bit range.
@@ -325,6 +338,15 @@ namespace Pylon
             return m_BufferSize;
         }
 
+
+        ///////////////////////////////////////////////////////////////////////
+        /// Get information if chunk data is present in the buffer returned by Buffer().
+        bool HasChunkData() const
+        {
+            return m_HasChunkData;
+        }
+
+
     protected:
         const void* m_pContext;
         StreamBufferHandle m_hBuffer;
@@ -345,6 +367,9 @@ namespace Pylon
         uint32_t m_ErrorCode;
         String_t m_ErrorDescription;
         uint64_t m_BlockID;
+
+        CSharedByteBuffer m_GenDcDescriptorBuffer;
+        bool m_HasChunkData;
     };
 
 
