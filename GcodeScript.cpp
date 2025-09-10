@@ -2714,6 +2714,19 @@ bool GcodeScript::isNotNegative(QString s)
 
 QString GcodeScript::getValueAsString(QString name)
 {
+    // Prefer function-local variables (simple names only)
+    {
+        QString localKey = name;
+        localKey.replace("#", "");
+        localKey = localKey.trimmed();
+        if (!localKey.contains('.') && !callStack.isEmpty()) {
+            if (callStack.top().locals.contains(localKey)) {
+                QVariant v = callStack.top().locals.value(localKey);
+                emit CatchVariable2(localKey, v);
+                return v.toString();
+            }
+        }
+    }
     // Kiểm tra xem có phải hàm toán học không (có dấu ngoặc đơn)
     if (name.contains('(') && name.contains(')'))
     {
@@ -2776,6 +2789,19 @@ QString GcodeScript::getValueAsString(QString name)
 
 QVariant GcodeScript::getValueAsQVariant(QString key)
 {
+    // Prefer function-local variables (simple names only)
+    {
+        QString localKey = key;
+        localKey.replace("#", "");
+        localKey = localKey.trimmed();
+        if (!localKey.contains('.') && !callStack.isEmpty()) {
+            if (callStack.top().locals.contains(localKey)) {
+                QVariant v = callStack.top().locals.value(localKey);
+                emit CatchVariable2(localKey, v);
+                return v;
+            }
+        }
+    }
     key = key.replace("#", "");
 //    name = name.replace("_", ".");
 
@@ -3561,42 +3587,40 @@ QString GcodeScript::parseFunctionCall(QString line, QStringList& arguments)
 {
     // Parse function call and extract function name and arguments
     arguments.clear();
-    
+
     QStringList tokens = line.split(' ', QString::SkipEmptyParts);
-    
     if (tokens.isEmpty())
         return "";
-    
-    QString functionName = tokens[0].toUpper();
-    
+
+    QString rawToken = tokens[0];
+    QString upperToken = tokens[0].toUpper();
+
     // Skip line numbers
-    if (functionName.startsWith("N") && functionName.length() > 1)
+    if (upperToken.startsWith("N") && upperToken.length() > 1)
     {
-        if (tokens.size() > 1)
-            functionName = tokens[1].toUpper();
-        else
+        if (tokens.size() > 1) {
+            rawToken = tokens[1];
+            upperToken = tokens[1].toUpper();
+        } else {
             return "";
+        }
     }
-    
-    // Check if function name contains parameters
-    if (functionName.contains('('))
+
+    // Case: functionName(args) is in the first token
+    if (upperToken.contains('('))
     {
-        int openParen = functionName.indexOf('(');
-        int closeParen = functionName.lastIndexOf(')');
-        
+        int openParen = rawToken.indexOf('(');
+        int closeParen = rawToken.lastIndexOf(')');
         if (openParen != -1 && closeParen != -1 && closeParen > openParen)
         {
-            QString paramStr = functionName.mid(openParen + 1, closeParen - openParen - 1);
-            functionName = functionName.left(openParen);
-            
+            QString paramStr = rawToken.mid(openParen + 1, closeParen - openParen - 1);
+            QString funcName = upperToken.left(openParen);
             if (!paramStr.trimmed().isEmpty())
             {
                 arguments = paramStr.split(',', QString::SkipEmptyParts);
-                for (QString& arg : arguments)
-                {
-                    arg = arg.trimmed();
-                }
+                for (QString& arg : arguments) { arg = arg.trimmed(); }
             }
+            return funcName.toUpper();
         }
     }
     else if (line.contains('(') && line.contains(')'))
@@ -3604,22 +3628,33 @@ QString GcodeScript::parseFunctionCall(QString line, QStringList& arguments)
         // Parameters in same line: functionName (arg1, arg2, ...)
         int openParen = line.indexOf('(');
         int closeParen = line.lastIndexOf(')');
-        
         if (openParen < closeParen)
         {
             QString paramStr = line.mid(openParen + 1, closeParen - openParen - 1);
             if (!paramStr.trimmed().isEmpty())
             {
                 arguments = paramStr.split(',', QString::SkipEmptyParts);
-                for (QString& arg : arguments)
-                {
-                    arg = arg.trimmed();
-                }
+                for (QString& arg : arguments) { arg = arg.trimmed(); }
             }
+            // Determine function name from left side, skipping optional line number
+            QString leftPart = line.left(openParen).trimmed();
+            QStringList leftTokens = leftPart.split(' ', QString::SkipEmptyParts);
+            QString funcNameUpper;
+            if (!leftTokens.isEmpty()) {
+                QString lastTok = leftTokens.last();
+                if (lastTok.length() > 1 && lastTok.at(0).toUpper() == 'N') {
+                    funcNameUpper = (leftTokens.size() > 1) ? leftTokens[leftTokens.size()-2].toUpper() : lastTok.toUpper();
+                } else {
+                    funcNameUpper = lastTok.toUpper();
+                }
+            } else {
+                funcNameUpper = leftPart.toUpper();
+            }
+            return funcNameUpper;
         }
     }
-    
-    return functionName.toUpper();
+
+    return upperToken.toUpper();
 }
 
 // Missing function implementations
