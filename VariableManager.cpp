@@ -1,6 +1,7 @@
 #include "VariableManager.h"
 #include "qglobal.h"
 #include <QDebug>
+#include <QRegularExpression>
 
 VariableManager &VariableManager::instance()
 {
@@ -25,10 +26,23 @@ void VariableManager::addVar(const QString &key, const QVariant &value)
         return;
     }
     
-    const QString fullKey = getFullKey(key);
+    const QString& fullKey = getCachedFullKey(key);
     std::lock_guard<std::mutex> lock(dataMutex);
     dataMap[fullKey] = value;
     emit varAdded(fullKey, value);
+}
+
+void VariableManager::addVarSilent(const QString &key, const QVariant &value)
+{
+    if (!isValidKey(key)) {
+        qWarning() << "VariableManager: Invalid key provided to addVarSilent:" << key;
+        return;
+    }
+    
+    const QString& fullKey = getCachedFullKey(key);
+    std::lock_guard<std::mutex> lock(dataMutex);
+    dataMap[fullKey] = value;
+    // No signal emission
 }
 
 void VariableManager::updateVar(const QString &key, const QVariant &value)
@@ -38,10 +52,23 @@ void VariableManager::updateVar(const QString &key, const QVariant &value)
         return;
     }
     
-    const QString fullKey = getFullKey(key);
+    const QString& fullKey = getCachedFullKey(key);
     std::lock_guard<std::mutex> lock(dataMutex);
     dataMap[fullKey] = value;
     emit varUpdated(fullKey, value);
+}
+
+void VariableManager::updateVarSilent(const QString &key, const QVariant &value)
+{
+    if (!isValidKey(key)) {
+        qWarning() << "VariableManager: Invalid key provided to updateVarSilent:" << key;
+        return;
+    }
+    
+    const QString& fullKey = getCachedFullKey(key);
+    std::lock_guard<std::mutex> lock(dataMutex);
+    dataMap[fullKey] = value;
+    // No signal emission
 }
 
 QVariant VariableManager::getVar(const QString &key, QVariant defaultValue)
@@ -51,16 +78,23 @@ QVariant VariableManager::getVar(const QString &key, QVariant defaultValue)
         return defaultValue;
     }
     
-    const QString fullKey = getFullKey(key.trimmed().replace("#", ""));
+    const QString& fullKey = getCachedFullKey(key.trimmed().replace("#", ""));
     
-    // First try to get from ObjectInfos
-    QVariant objectValue = getObjectInfoValue(fullKey);
-    if (objectValue.isValid()) {
-        return objectValue;
+    // Optimized flow: Check variable map first (90% of cases)
+    QVariant result = getVariableFromMap(fullKey, QVariant());
+    if (result.isValid()) {
+        return result;
     }
     
-    // Then try to get from variable map
-    return getVariableFromMap(fullKey, defaultValue);
+    // Only check ObjectInfos for keys that likely contain object data
+    if (isLikelyObjectInfoKey(fullKey)) {
+        QVariant objectValue = getObjectInfoValue(fullKey);
+        if (objectValue.isValid()) {
+            return objectValue;
+        }
+    }
+    
+    return defaultValue;
 }
 
 void VariableManager::removeVar(const QString &key)
@@ -70,7 +104,7 @@ void VariableManager::removeVar(const QString &key)
         return;
     }
     
-    const QString fullKey = getFullKey(key);
+    const QString& fullKey = getCachedFullKey(key);
     std::lock_guard<std::mutex> lock(dataMutex);
     
     for (auto it = dataMap.begin(); it != dataMap.end();)
@@ -85,6 +119,22 @@ void VariableManager::removeVar(const QString &key)
             ++it;
         }
     }
+    
+    // Clear cache entries that start with this key
+    {
+        std::lock_guard<std::mutex> cacheLock(keyCacheMutex);
+        for (auto it = keyCache.begin(); it != keyCache.end();)
+        {
+            if (it.value().startsWith(fullKey))
+            {
+                it = keyCache.erase(it);
+            }
+            else
+            {
+                ++it;
+            }
+        }
+    }
 }
 
 bool VariableManager::containsSubKey(const QString &key)
@@ -93,7 +143,7 @@ bool VariableManager::containsSubKey(const QString &key)
         return false;
     }
     
-    const QString fullKey = getFullKey(key);
+    const QString& fullKey = getCachedFullKey(key);
     std::lock_guard<std::mutex> lock(dataMutex);
     for (auto it = dataMap.begin(); it != dataMap.end(); ++it)
     {
@@ -111,7 +161,7 @@ bool VariableManager::containsFullKey(const QString &key)
         return false;
     }
     
-    const QString fullKey = getFullKey(key);
+    const QString& fullKey = getCachedFullKey(key);
     std::lock_guard<std::mutex> lock(dataMutex);
     return (dataMap.find(fullKey) != dataMap.end());
 }
@@ -250,4 +300,34 @@ const QString VariableManager::getFullKey(const QString key) const
     fullKey.replace("#", "");
 
     return fullKey;
+}
+
+// Performance optimization helper methods
+const QString& VariableManager::getCachedFullKey(const QString& key) const
+{
+    std::lock_guard<std::mutex> cacheLock(keyCacheMutex);
+    
+    auto it = keyCache.find(key);
+    if (it != keyCache.end()) {
+        return it.value();
+    }
+    
+    // Cache miss - compute and store
+    QString fullKey = getFullKey(key);
+    keyCache[key] = fullKey;
+    return keyCache[key];
+}
+
+bool VariableManager::isLikelyObjectInfoKey(const QString &fullKey) const
+{
+    // Quick pattern check: ObjectInfo keys typically contain numbers and specific patterns
+    // Example: "project0.Objects.0.X" or "project0.Objects.5"
+    return fullKey.contains("Objects") || 
+           (fullKey.contains('.') && fullKey.contains(QRegularExpression("\\d")));
+}
+
+void VariableManager::clearKeyCache()
+{
+    std::lock_guard<std::mutex> cacheLock(keyCacheMutex);
+    keyCache.clear();
 }

@@ -22,9 +22,11 @@ public:
     void addItemModel(QStandardItemModel* model);
 
     void addVar(const QString &key, const QVariant &value);
+    void addVarSilent(const QString &key, const QVariant &value);
 
     // Set variable
     void updateVar(const QString &key, const QVariant& value);
+    void updateVarSilent(const QString &key, const QVariant& value);
 
     // Get variable
     QVariant getVar(const QString &key, QVariant defaultValue = QVariant());
@@ -56,6 +58,11 @@ private:
     QVariant getVariableFromMap(const QString &fullKey, const QVariant &defaultValue) const;
     bool isValidKey(const QString &key) const;
     const QString getFullKey(const QString key) const;
+    
+    // Performance optimization helpers
+    bool isLikelyObjectInfoKey(const QString &fullKey) const;
+    void clearKeyCache();
+    const QString& getCachedFullKey(const QString& key) const;
 
     VariableManager() : settings("./settings.ini", QSettings::IniFormat)
     {
@@ -67,6 +74,10 @@ private:
     mutable std::mutex objectInfosMutex; // Thread safety for ObjectInfos
     QSettings settings;
     QList<QStandardItemModel*> itemModelList;
+    
+    // Performance optimization caches
+    mutable QHash<QString, QString> keyCache;
+    mutable std::mutex keyCacheMutex;
 };
 
 

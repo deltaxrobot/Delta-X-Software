@@ -1,4 +1,4 @@
-#include "GcodeScript.h"
+﻿#include "GcodeScript.h"
 #include "CloudPointMapper.h"
 #include "VariableManager.h"
 #include "SoftwareManager.h"
@@ -167,6 +167,22 @@ void GcodeScript::GetResponse(QString deviceId, QString response)
 {
     if (checkExclution(response))
         return;
+
+    // Gate progression after homing: wait until Position data is received
+    if (waitForHomePosition && deviceId == transmitDeviceId)
+    {
+        // Heuristic: Position response contains multiple comma-separated values
+        if (response.count(',') >= 2)
+        {
+            // Position received; clear gate and proceed
+            waitForHomePosition = false;
+        }
+        else
+        {
+            // Ignore intermediate responses while waiting for Position
+            return;
+        }
+    }
 
     processResponse(response);
     if (deviceId == transmitDeviceId)
@@ -500,10 +516,10 @@ float GcodeScript::GetResultOfMathFunction(QString expression)
 
     QString functionName = expression.mid(1, p1 - 1);
     QString value = expression.mid(p1 + 1,  p2 - p1 - 1);
-    QString cleanValue = value.replace(" ", "");  // Tạo bản sao để xử lý
+    QString cleanValue = value.replace(" ", "");  // Táº¡o báº£n sao Ä‘á»ƒ xá»­ lÃ½
     QStringList values = cleanValue.split(',');
 
-    // Xử lý trường hợp không có dấu phẩy (hàm 1 tham số hoặc không tham số)
+    // Xá»­ lÃ½ trÆ°á»ng há»£p khÃ´ng cÃ³ dáº¥u pháº©y (hÃ m 1 tham sá»‘ hoáº·c khÃ´ng tham sá»‘)
     if (value.indexOf(',') == -1 && !value.isEmpty())
     {
         values.clear();
@@ -1287,18 +1303,22 @@ bool GcodeScript::findExeGcodeAndTransmit()
             {
                 QString rightExpression = currentLine.mid(currentLine.indexOf('=') + 1).trimmed();
                 
-                // Check if right side is a function call
+                // Try treat right side as a function call first
                 QStringList arguments;
                 QString functionName = parseFunctionCall(rightExpression, arguments);
-                
-                if (!functionName.isEmpty() && functionDefinitions.contains(functionName))
+                if (!functionName.isEmpty())
                 {
-                    // Handle function call with return value assignment
-                    QString varName = currentToken.mid(1); // Remove #
-                    
-                    // Call function with explicit return target
-                    callFunction(functionName, arguments, varName);
-                    return false;
+                    if (!functionDefinitions.contains(functionName))
+                    {
+                        preprocessGcodeScript();
+                    }
+                    if (functionDefinitions.contains(functionName))
+                    {
+                        // Handle function call with return value assignment
+                        QString varName = currentToken.mid(1); // Remove #
+                        callFunction(functionName, arguments, varName);
+                        return false;
+                    }
                 }
                 
                 // Handle regular variable assignment
@@ -1378,23 +1398,23 @@ bool GcodeScript::findExeGcodeAndTransmit()
                                 std::vector<double> matrixArray = matrixVar.value<std::vector<double>>();
                                 if (matrixArray.size() == 9) {
                                     cv::Mat transformMatrix = cv::Mat(matrixArray).reshape(1, 3);
-                                    // Chuyển đổi QPointF thành cv::Point2f
+                                    // Chuyá»ƒn Ä‘á»•i QPointF thÃ nh cv::Point2f
                                     cv::Point2f cvInputPoint(point.x(), point.y());
 
-                                    // Tạo một mảng các điểm đầu vào
+                                    // Táº¡o má»™t máº£ng cÃ¡c Ä‘iá»ƒm Ä‘áº§u vÃ o
                                     std::vector<cv::Point2f> inputPoints;
                                     inputPoints.push_back(cvInputPoint);
 
-                                    // Mảng để lưu trữ các điểm đầu ra
+                                    // Máº£ng Ä‘á»ƒ lÆ°u trá»¯ cÃ¡c Ä‘iá»ƒm Ä‘áº§u ra
                                     std::vector<cv::Point2f> outputPoints;
 
-                                    // Áp dụng phép biến đổi perspective cho các điểm đầu vào
+                                    // Ãp dá»¥ng phÃ©p biáº¿n Ä‘á»•i perspective cho cÃ¡c Ä‘iá»ƒm Ä‘áº§u vÃ o
                                     cv::perspectiveTransform(inputPoints, outputPoints, transformMatrix);
 
-                                    // Lấy điểm đầu ra đã được biến đổi
+                                    // Láº¥y Ä‘iá»ƒm Ä‘áº§u ra Ä‘Ã£ Ä‘Æ°á»£c biáº¿n Ä‘á»•i
                                     cv::Point2f cvOutputPoint = outputPoints[0];
 
-                                    // Chuyển đổi cv::Point2f thành QPointF
+                                    // Chuyá»ƒn Ä‘á»•i cv::Point2f thÃ nh QPointF
                                     QPointF outputPoint(cvOutputPoint.x, cvOutputPoint.y);
 
                                     QString varName = currentToken.mid(1);
@@ -1570,7 +1590,7 @@ bool GcodeScript::findExeGcodeAndTransmit()
                 {                    
                     QString listName = paramList.at(0);
                     QStringList objectInfo;
-                    // Thêm tất cả phần tử từ paramList vào paras trừ phần tử đầu tiên
+                    // ThÃªm táº¥t cáº£ pháº§n tá»­ tá»« paramList vÃ o paras trá»« pháº§n tá»­ Ä‘áº§u tiÃªn
                     objectInfo.append(paramList.mid(1));
                     QList<QStringList> objects;
                     objects.append(objectInfo);
@@ -1856,19 +1876,17 @@ bool GcodeScript::findExeGcodeAndTransmit()
             QString leftPart = parts[0].trimmed();
             QString rightPart = parts[1].trimmed();
             
-            // Check if right part is a function call
-            if (isFunctionCall(rightPart))
+            // Try parse as function call regardless of spacing
+            QStringList arguments;
+            QString functionName = parseFunctionCall(rightPart, arguments);
+            if (!functionName.isEmpty())
             {
-                QStringList arguments;
-                QString functionName = parseFunctionCall(rightPart, arguments);
-                
-                if (!functionName.isEmpty() && functionDefinitions.contains(functionName))
+                if (!functionDefinitions.contains(functionName))
+                    preprocessGcodeScript();
+                if (functionDefinitions.contains(functionName))
                 {
-                    // Determine return target variable name
                     if (leftPart.startsWith("#"))
                         leftPart = leftPart.mid(1);
-                    
-                    // Call function with explicit return target
                     callFunction(functionName, arguments, leftPart);
                     return false;
                 }
@@ -1876,22 +1894,23 @@ bool GcodeScript::findExeGcodeAndTransmit()
         }
     }
     
-    // Check for simple function call
-    if (isFunctionCall(currentLine))
+    // Check for simple function call (standalone)
     {
         QStringList arguments;
         QString functionName = parseFunctionCall(currentLine, arguments);
-        
-        if (!functionName.isEmpty() && functionDefinitions.contains(functionName))
+        if (!functionName.isEmpty())
         {
-            callFunction(functionName, arguments);
-            return false;
-        }
-        else
-        {
-            // Function call failed, skip line
-            gcodeOrder++;
-            return false;
+            if (!functionDefinitions.contains(functionName))
+                preprocessGcodeScript();
+            if (functionDefinitions.contains(functionName))
+            {
+                callFunction(functionName, arguments);
+                return false;
+            }
+            else
+            {
+                // Not a known function: treat as normal line
+            }
         }
     }
 
@@ -2022,7 +2041,7 @@ bool GcodeScript::handleVARIABLE(QList<QString> valuePairs, int i)
     trimmedStr = trimmedStr.replace(" ", "");
     QRegExp rx("\\((-?\\d+(?:\\.\\d+)?),(-?\\d+(?:\\.\\d+)?),?(-?\\d+(?:\\.\\d+)?)?\\)");
 
-    // TODO: chưa gán 2 point với nhau được
+    // TODO: chÆ°a gÃ¡n 2 point vá»›i nhau Ä‘Æ°á»£c
     if (trimmedStr.startsWith("(") && rx.indexIn(trimmedStr) == 0)
     {
         QString x = rx.cap(1);
@@ -2069,6 +2088,13 @@ bool GcodeScript::handleDEFINE_SUBPROGRAM(QList<QString> valuePairs, int i)
 
 bool GcodeScript::handleGCODE(QString transmitGcode)
 {
+    // If homing (G28) is requested, set gate to wait for Position response
+    {
+        QString t = transmitGcode.trimmed().toUpper();
+        if (t.startsWith("G28")) {
+            waitForHomePosition = true;
+        }
+    }
     if (isConveyorGcode(transmitGcode))
     {
         gcodeOrder++;
@@ -2471,14 +2497,14 @@ QString GcodeScript::calculateExpressions(QString expression)
 
         else
         {
-            // Kiểm tra xem có phải hàm toán học không
+            // Kiá»ƒm tra xem cÃ³ pháº£i hÃ m toÃ¡n há»c khÃ´ng
             if (expression.contains('(') && expression.contains(')') && expression.startsWith('#'))
             {
                 // Function calls will be handled at statement level, not in expression evaluation
                 // Just treat unknown functions as variables for now
                 
-                // Nếu không phải user-defined function, kiểm tra built-in math functions
-                float result = GetResultOfMathFunction(expression);
+                // Náº¿u khÃ´ng pháº£i user-defined function, kiá»ƒm tra built-in math functions
+                float result = EvaluateFunctionToFloat(expression);
                 if (result != NULL_NUMBER)
                 {
                     return QString::number(result);
@@ -2760,6 +2786,10 @@ void GcodeScript::preprocessGcodeScript()
             if (tokens.size() >= 2)
             {
                 functionName = tokens[1];
+                // Trim any parameter tail if present in the same token
+                int parIdx = functionName.indexOf('(');
+                if (parIdx != -1)
+                    functionName = functionName.left(parIdx).trimmed();
             }
 
             // Case 2: Parameters located elsewhere in the line
@@ -2826,6 +2856,82 @@ void GcodeScript::preprocessGcodeScript()
     }
 }
 
+// Evaluate built-in math functions and supported helpers with full expression args
+float GcodeScript::EvaluateFunctionToFloat(QString expression)
+{
+    if (expression.isEmpty()) return NULL_NUMBER;
+
+    int p1 = expression.indexOf('(');
+    int p2 = expression.lastIndexOf(')');
+    if (p1 == -1 || p2 == -1 || p2 <= p1) return NULL_NUMBER;
+
+    int nameStart = (expression.at(0) == '#') ? 1 : 0;
+    QString functionName = expression.mid(nameStart, p1 - nameStart);
+    QString argsStr = expression.mid(p1 + 1,  p2 - p1 - 1);
+
+    QStringList values;
+    if (!argsStr.trimmed().isEmpty())
+        values = splitArgsRespectingParens(argsStr);
+    for (int i = 0; i < values.size(); ++i) {
+        values[i] = calculateExpressions(values.at(i).trimmed());
+    }
+    values.append("0");
+    values.append("0");
+
+    QString fname = functionName.toLower();
+    if (fname == "sin") return sin((values[0].toFloat()/180) * M_PI);
+    if (fname == "cos") return cos((values[0].toFloat()/180) * M_PI);
+    if (fname == "tan") return tan((values[0].toFloat()/180) * M_PI);
+    if (fname == "atan") return atan(values[0].toFloat()) * 180 / M_PI;
+    if (fname == "atan2") return atan2(values[0].toFloat(), values.at(1).toFloat()) * 180 / M_PI;
+    if (fname == "sqrt") return sqrt(values[0].toFloat());
+    if (fname == "abs") return fabs(values[0].toFloat());
+    if (fname == "round") return round(values[0].toFloat());
+    if (fname == "floor") return floor(values[0].toFloat());
+    if (fname == "ceil") return ceil(values[0].toFloat());
+    if (fname == "min") return qMin(values[0].toFloat(), values[1].toFloat());
+    if (fname == "max") return qMax(values[0].toFloat(), values[1].toFloat());
+    if (fname == "pow") return pow(values[0].toFloat(), values[1].toFloat());
+    if (fname == "log") return log(values[0].toFloat());
+    if (fname == "log10") return log10(values[0].toFloat());
+    if (fname == "exp") return exp(values[0].toFloat());
+
+    // Cloud mapping helpers: mirror existing GetResultOfMathFunction support
+    if (fname == "cloudpointaddcalibration")
+        return cloudPointAddCalibration(values[0].toFloat(), values[1].toFloat(), values[2].toFloat(), values[3].toFloat(), values[4].toFloat(), values[5].toFloat(), values.size()>6?values[6].toFloat():1.0f, values.size()>7?values[7]:"");
+    if (fname == "cloudpointtransformx")
+        return cloudPointTransformX(values[0].toFloat(), values[1].toFloat(), values[2].toFloat(), values.size()>3?values[3].toInt():1);
+    if (fname == "cloudpointtransformy")
+        return cloudPointTransformY(values[0].toFloat(), values[1].toFloat(), values[2].toFloat(), values.size()>3?values[3].toInt():1);
+    if (fname == "cloudpointtransformz")
+        return cloudPointTransformZ(values[0].toFloat(), values[1].toFloat(), values[2].toFloat(), values.size()>3?values[3].toInt():1);
+    if (fname == "cloudpointgetconfidence")
+        return cloudPointGetConfidence(values[0].toFloat(), values[1].toFloat(), values[2].toFloat(), values.size()>3?values[3].toInt():1);
+    if (fname == "cloudpointgeterror")
+        return cloudPointGetError(values[0].toFloat(), values[1].toFloat(), values[2].toFloat(), values.size()>3?values[3].toInt():1);
+    if (fname == "cloudpointgetcount") return cloudPointGetCount();
+    if (fname == "cloudpointisvalid") return cloudPointIsValid();
+    if (fname == "cloudpointclear") return cloudPointClear();
+    if (fname == "cloudpointbuildgrid") return cloudPointBuildGrid(values.size()>0?values[0].toFloat():10.0f);
+    if (fname == "cloudpointvalidate") return cloudPointValidate(values.size()>0?values[0].toFloat():0.2f);
+    if (fname == "cloudpointsave") return cloudPointSave(values.size()>0?values[0]:"");
+    if (fname == "cloudpointload") return cloudPointLoad(values.size()>0?values[0]:"");
+    if (fname == "cloudpointexport") return cloudPointExport(values.size()>0?values[0]:"CloudMapping");
+    if (fname == "cloudpointimport") return cloudPointImport(values.size()>0?values[0]:"CloudMapping");
+    if (fname == "cloudpointremove") return cloudPointRemove(values[0].toInt());
+    if (fname == "cloudpointupdate") return cloudPointUpdate(values[0].toInt(), values[1].toFloat(), values[2].toFloat(), values[3].toFloat(), values[4].toFloat(), values[5].toFloat(), values[6].toFloat(), values.size()>7?values[7].toFloat():1.0f);
+    if (fname == "cloudpointgetimagex") return cloudPointGetImageX(values[0].toInt());
+    if (fname == "cloudpointgetimagey") return cloudPointGetImageY(values[0].toInt());
+    if (fname == "cloudpointgetimagez") return cloudPointGetImageZ(values[0].toInt());
+    if (fname == "cloudpointgetrealx") return cloudPointGetRealX(values[0].toInt());
+    if (fname == "cloudpointgetrealy") return cloudPointGetRealY(values[0].toInt());
+    if (fname == "cloudpointgetrealz") return cloudPointGetRealZ(values[0].toInt());
+    if (fname == "cloudpointgetpointconfidence") return cloudPointGetPointConfidence(values[0].toInt());
+    if (fname == "cloudpointgetpointerror") return cloudPointGetPointError(values[0].toInt());
+
+    return NULL_NUMBER;
+}
+
 bool GcodeScript::isNotNegative(QString s)
 {
     bool isNumeric = false;
@@ -2849,10 +2955,10 @@ QString GcodeScript::getValueAsString(QString name)
             }
         }
     }
-    // Kiểm tra xem có phải hàm toán học không (có dấu ngoặc đơn)
+    // Kiá»ƒm tra xem cÃ³ pháº£i hÃ m toÃ¡n há»c khÃ´ng (cÃ³ dáº¥u ngoáº·c Ä‘Æ¡n)
     if (name.contains('(') && name.contains(')'))
     {
-        float result = GetResultOfMathFunction(name);
+        float result = EvaluateFunctionToFloat(name);
         if (result != NULL_NUMBER)
         {
             return QString::number(result);
@@ -3020,18 +3126,33 @@ void GcodeScript::processResponse(QString response)
 
 bool GcodeScript::checkExclution(QString response)
 {
-    if (response.contains("Error:Angle"))
-        return true;
-//    else if (response.count(",") > 1)
-//    {
-//        if (!transmitMsg.contains("Position") && !transmitMsg.contains("G28"))
-//            return true;
-//    }
-//    else if (transmitMsg.contains("G28") && response.contains("Ok"))
-//    {
-//        return true;
-//    }
+    // Normalize
+    const QString r = response.trimmed();
 
+    // 1) Ignore empty and echo responses
+    if (r.isEmpty() || r == transmitMsg)
+        return true;
+
+    // 2) If homing gate is active, ignore intermediate responses until Position data arrives
+    if (waitForHomePosition)
+    {
+        // Position response is typically comma-separated values
+        if (r.count(',') < 2)
+            return true; // ignore until Position
+    }
+
+    // 3) Common OK ack should not be excluded
+    if (r.compare("ok", Qt::CaseInsensitive) == 0)
+        return false;
+
+    // 4) Generic error handling: block progression on error messages
+    if (r.contains("error", Qt::CaseInsensitive))
+    {
+        saveVariable("LastError", r);
+        return true; // do not proceed automatically on errors
+    }
+
+    // Default: do not exclude
     return false;
 }
 
@@ -3515,19 +3636,25 @@ bool GcodeScript::handleFUNCTION(QList<QString> valuePairs, int i)
     if (valuePairs.size() <= i + 1)
         return false;
     
-    QString functionName = valuePairs[i + 1];
+    QString functionToken = valuePairs[i + 1];
+    QString functionName = functionToken;
     QStringList parameters;
     
     // Parse parameters from function name if contains parentheses
-    if (functionName.contains('('))
+    if (functionToken.contains('('))
     {
-        int openParen = functionName.indexOf('(');
-        int closeParen = functionName.lastIndexOf(')');
+        int openParen = functionToken.indexOf('(');
+        int closeParen = functionToken.lastIndexOf(')');
         
+        // Always trim name before '('
+        if (openParen != -1)
+        {
+            functionName = functionName.left(openParen);
+        }
+
         if (openParen != -1 && closeParen != -1 && closeParen > openParen)
         {
-            QString paramStr = functionName.mid(openParen + 1, closeParen - openParen - 1);
-            functionName = functionName.left(openParen);
+            QString paramStr = functionToken.mid(openParen + 1, closeParen - openParen - 1);
             
             // Parse parameters
             if (!paramStr.trimmed().isEmpty())
@@ -3647,8 +3774,15 @@ bool GcodeScript::callFunction(QString functionName, QStringList arguments)
 bool GcodeScript::callFunction(QString functionName, QStringList arguments, const QString& retTarget)
 {
     // Normalize name for consistent lookup
+    // Final normalization for function name
     if (functionName.startsWith("#"))
         functionName = functionName.mid(1);
+    // Ensure no trailing parentheses remain due to odd spacing
+    {
+        int parIdx = functionName.indexOf('(');
+        if (parIdx != -1)
+            functionName = functionName.left(parIdx);
+    }
     functionName = functionName.toUpper();
 
     // Check if function exists
@@ -3709,6 +3843,8 @@ bool GcodeScript::isFunctionCall(QString line)
     {
         functionName = functionName.left(functionName.indexOf('('));
     }
+    // Strip optional leading '#'
+    if (functionName.startsWith('#')) functionName = functionName.mid(1);
     functionName = functionName.toUpper();
     
     // Check if it's a function call
@@ -3752,6 +3888,8 @@ QString GcodeScript::parseFunctionCall(QString line, QStringList& arguments)
                 arguments = splitArgsRespectingParens(paramStr);
                 for (QString& arg : arguments) { arg = arg.trimmed(); }
             }
+            // Strip leading '#'
+            if (funcName.startsWith('#')) funcName = funcName.mid(1);
             return funcName.toUpper();
         }
     }
@@ -3782,11 +3920,14 @@ QString GcodeScript::parseFunctionCall(QString line, QStringList& arguments)
             } else {
                 funcNameUpper = leftPart.toUpper();
             }
+            // Strip leading '#'
+            if (funcNameUpper.startsWith('#')) funcNameUpper = funcNameUpper.mid(1);
             return funcNameUpper;
         }
     }
 
-    return upperToken.toUpper();
+    // Not a function call
+    return "";
 }
 
 // Missing function implementations
@@ -3877,6 +4018,7 @@ bool GcodeScript::zPlaneGetEquation(float& a, float& b, float& c, float& d)
     
     return true;
 }
+
 
 
 

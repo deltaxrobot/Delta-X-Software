@@ -314,6 +314,9 @@ private:
     int returnSubProPointer[20];  // Array for subprogram pointers
     bool IsConveyorSync;
     QStringList deviceNames;
+
+    // Execution gating flags
+    bool waitForHomePosition = false;   // After sending G28, wait for Position response before proceeding
     
     // Simple function definition struct
     struct SimpleFunctionDef {
