@@ -115,8 +115,9 @@ void GcodeScript::ExecuteGcode(QString gcodes, int startMode)
     // Clear FOR loop stack when starting new script
     forLoopStack.clear();
     
-    // Clear function definitions and call stacks when starting new script
+    // Clear function and label definitions and call stacks when starting new script
     functionDefinitions.clear();
+    labelDefinitions.clear();
     callStack.clear();
     functionReturnStack.clear();
 
@@ -274,8 +275,9 @@ void GcodeScript::Stop()
     // Clear FOR loop stack on stop
     forLoopStack.clear();
     
-    // Clear function definitions and call stacks on stop
+    // Clear function and label definitions and call stacks on stop
     functionDefinitions.clear();
+    labelDefinitions.clear();
     callStack.clear();
     functionReturnStack.clear();
 }
@@ -1458,22 +1460,29 @@ bool GcodeScript::findExeGcodeAndTransmit()
             return handleGOTO(valuePairs, i);
         }
 
-        // --------------- IF-ELIF-ELSE-ENDIF ---------------------
-        if (currentToken == "IF" && valuePairsSize > (i + 2))
+        // --------------- JUMP (named label) ---------------------
+        if (currentToken == "JUMP" && valuePairsSize > (i + 1))
         {
-            if (valuePairs[i + 2] == "THEN")
-            {
-                return handleIF(valuePairs, i);
-            }
+            return handleJUMP(valuePairs, i);
+        }
+
+        // --------------- LABEL (no-op at runtime) ---------------------
+        if (currentToken == "LABEL")
+        {
+            gcodeOrder++;
+            return false;
+        }
+
+        // --------------- IF-ELIF-ELSE-ENDIF ---------------------
+        if (currentToken == "IF")
+        {
+            return handleIF(valuePairs, i);
         }
         
         // --------------- ELIF ---------------------
-        if (currentToken == "ELIF" && valuePairsSize > (i + 2))
+        if (currentToken == "ELIF")
         {
-            if (valuePairs[i + 2] == "THEN")
-            {
-                return handleELIF(valuePairs, i);
-            }
+            return handleELIF(valuePairs, i);
         }
         
         // --------------- ELSE ---------------------
@@ -1946,12 +1955,24 @@ bool GcodeScript::handleGOTO(QList<QString> valuePairs, int i)
 
 bool GcodeScript::handleIF(QList<QString> valuePairs, int i)
 {
-    // Evaluate condition
-    QString conditionStr = valuePairs[i + 1];
+    // Extract condition between IF and THEN (if present)
+    QString upperLine = currentLine.toUpper();
+    int ifPos = upperLine.indexOf("IF");
+    int thenPos = upperLine.indexOf("THEN", ifPos + 2);
+    QString conditionStr;
+    if (ifPos != -1 && thenPos != -1)
+        conditionStr = currentLine.mid(ifPos + 2, thenPos - (ifPos + 2)).trimmed();
+    else if (ifPos != -1)
+        conditionStr = currentLine.mid(ifPos + 2).trimmed();
+    else
+        conditionStr = valuePairs.size() > i + 1 ? valuePairs[i + 1] : "";
+
     bool conditionResult = (calculateExpressions(conditionStr).toFloat() != 0);
     
     // Check if there's a single-line THEN statement
-    QString statement = currentLine.mid(currentLine.indexOf("THEN") + 5).trimmed();
+    QString statement;
+    if (thenPos != -1)
+        statement = currentLine.mid(thenPos + 4).trimmed();
     
     // Create new IF block state
     IfBlockState newBlock(conditionResult, conditionResult, gcodeOrder);
@@ -2612,6 +2633,85 @@ QString GcodeScript::formatSpaces(QString s)
     return s;
 }
 
+bool GcodeScript::handleJUMP(QList<QString> valuePairs, int i)
+{
+    // Expect: JUMP labelName
+    if (valuePairs.size() <= i + 1)
+        return false;
+
+    QString label = valuePairs[i + 1].trimmed();
+    if (label.startsWith('#')) label = label.mid(1);
+    label = label.toUpper();
+
+    // Ensure labels are preprocessed
+    if (labelDefinitions.isEmpty())
+    {
+        preprocessGcodeScript();
+    }
+
+    if (labelDefinitions.contains(label))
+    {
+        // Jump to the line after the label marker
+        gcodeOrder = labelDefinitions.value(label) + 1;
+        return false;
+    }
+    else
+    {
+        // Try rescanning once more in case script changed
+        preprocessGcodeScript();
+        if (labelDefinitions.contains(label))
+        {
+            gcodeOrder = labelDefinitions.value(label) + 1;
+            return false;
+        }
+        // Label not found: skip line
+        gcodeOrder++;
+        return false;
+    }
+}
+
+// Split a comma-separated argument list while respecting (), [], quotes
+QStringList GcodeScript::splitArgsRespectingParens(const QString& s)
+{
+    QStringList out;
+    QString curr;
+    int depthParen = 0;
+    int depthBracket = 0;
+    bool inQuote = false;
+    QChar quoteChar = '\0';
+
+    for (int i = 0; i < s.size(); ++i) {
+        const QChar ch = s.at(i);
+        if (ch == '"' || ch == '\'') {
+            if (!inQuote) { inQuote = true; quoteChar = ch; }
+            else if (quoteChar == ch) { inQuote = false; quoteChar = '\0'; }
+            curr.append(ch);
+            continue;
+        }
+        if (!inQuote) {
+            if (ch == '(') depthParen++;
+            else if (ch == ')') depthParen = qMax(0, depthParen - 1);
+            else if (ch == '[') depthBracket++;
+            else if (ch == ']') depthBracket = qMax(0, depthBracket - 1);
+            if (ch == ',' && depthParen == 0 && depthBracket == 0) {
+                out.append(curr.trimmed());
+                curr.clear();
+                continue;
+            }
+        }
+        curr.append(ch);
+    }
+    if (!curr.trimmed().isEmpty()) out.append(curr.trimmed());
+    return out;
+}
+
+QString GcodeScript::cleanedVarName(const QString& name) const
+{
+    QString n = name;
+    if (n.startsWith('#')) n = n.mid(1);
+    return n.trimmed();
+}
+
 // Advanced whitespace normalization for better performance and cleaner parsing
 QString GcodeScript::normalizeWhitespace(const QString& line)
 {
@@ -2623,6 +2723,7 @@ QString GcodeScript::normalizeWhitespace(const QString& line)
 void GcodeScript::preprocessGcodeScript()
 {
     functionDefinitions.clear();
+    labelDefinitions.clear();
 
     for (int order = 0; order < gcodeList.size(); order++)
     {
@@ -2681,7 +2782,7 @@ void GcodeScript::preprocessGcodeScript()
                     QString paramStr = line.mid(openParen + 1, closeParen - openParen - 1).trimmed();
                     if (!paramStr.isEmpty())
                     {
-                        QStringList paramTokens = paramStr.split(',');
+                        const QStringList paramTokens = splitArgsRespectingParens(paramStr);
                         for (QString p : paramTokens)
                         {
                             p = p.trimmed();
@@ -2697,8 +2798,29 @@ void GcodeScript::preprocessGcodeScript()
 
             if (!functionName.isEmpty())
             {
-                SimpleFunctionDef newFunction(functionName, parameters, order);
+                // find matching ENDFUNCTION line
+                int endLine = -1;
+                for (int i = order + 1; i < gcodeList.size(); ++i) {
+                    QString l = gcodeList[i].trimmed();
+                    if (l.startsWith(';')) continue;
+                    if (l.contains("ENDFUNCTION")) { endLine = i; break; }
+                }
+                SimpleFunctionDef newFunction(functionName, parameters, order, endLine);
                 functionDefinitions[functionName] = newFunction;
+            }
+        }
+        else if (firstToken == "LABEL")
+        {
+            // LABEL name
+            if (tokens.size() >= 2)
+            {
+                QString name = tokens[1].trimmed();
+                if (name.startsWith('#')) name = name.mid(1);
+                name = name.toUpper();
+                if (!name.isEmpty())
+                {
+                    labelDefinitions[name] = order;
+                }
             }
         }
     }
@@ -2931,12 +3053,23 @@ bool GcodeScript::handleELIF(QList<QString> valuePairs, int i)
         return false;
     }
     
-    // Evaluate ELIF condition
-    QString conditionStr = valuePairs[i + 1];
+    // Evaluate ELIF condition (between ELIF and THEN if present)
+    QString upperLine = currentLine.toUpper();
+    int elifPos = upperLine.indexOf("ELIF");
+    int thenPos = upperLine.indexOf("THEN", elifPos + 4);
+    QString conditionStr;
+    if (elifPos != -1 && thenPos != -1)
+        conditionStr = currentLine.mid(elifPos + 4, thenPos - (elifPos + 4)).trimmed();
+    else if (elifPos != -1)
+        conditionStr = currentLine.mid(elifPos + 4).trimmed();
+    else
+        conditionStr = valuePairs.size() > i + 1 ? valuePairs[i + 1] : "";
     bool conditionResult = (calculateExpressions(conditionStr).toFloat() != 0);
     
-    // Check if there's a single-line THEN statement
-    QString statement = currentLine.mid(currentLine.indexOf("THEN") + 5).trimmed();
+    // Single-line THEN statement extraction
+    QString statement;
+    if (thenPos != -1)
+        statement = currentLine.mid(thenPos + 4).trimmed();
     
     if (!statement.isEmpty())
     {
@@ -3399,7 +3532,7 @@ bool GcodeScript::handleFUNCTION(QList<QString> valuePairs, int i)
             // Parse parameters
             if (!paramStr.trimmed().isEmpty())
             {
-                QStringList paramTokens = paramStr.split(',');
+                const QStringList paramTokens = splitArgsRespectingParens(paramStr);
                 for (QString param : paramTokens)
                 {
                     param = param.trimmed();
@@ -3423,11 +3556,10 @@ bool GcodeScript::handleFUNCTION(QList<QString> valuePairs, int i)
             
             if (!paramStr.trimmed().isEmpty())
             {
-                QStringList paramTokens = paramStr.split(',');
+                const QStringList paramTokens = splitArgsRespectingParens(paramStr);
                 for (QString param : paramTokens)
                 {
                     param = param.trimmed();
-                    // Remove # from parameter name if present
                     if (param.startsWith("#"))
                         param = param.mid(1);
                     parameters.append(param);
@@ -3617,7 +3749,7 @@ QString GcodeScript::parseFunctionCall(QString line, QStringList& arguments)
             QString funcName = upperToken.left(openParen);
             if (!paramStr.trimmed().isEmpty())
             {
-                arguments = paramStr.split(',', QString::SkipEmptyParts);
+                arguments = splitArgsRespectingParens(paramStr);
                 for (QString& arg : arguments) { arg = arg.trimmed(); }
             }
             return funcName.toUpper();
@@ -3633,7 +3765,7 @@ QString GcodeScript::parseFunctionCall(QString line, QStringList& arguments)
             QString paramStr = line.mid(openParen + 1, closeParen - openParen - 1);
             if (!paramStr.trimmed().isEmpty())
             {
-                arguments = paramStr.split(',', QString::SkipEmptyParts);
+                arguments = splitArgsRespectingParens(paramStr);
                 for (QString& arg : arguments) { arg = arg.trimmed(); }
             }
             // Determine function name from left side, skipping optional line number

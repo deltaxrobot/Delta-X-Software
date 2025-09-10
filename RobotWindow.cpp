@@ -3029,9 +3029,8 @@ void RobotWindow::StandardFormatEditor()
     editorText.replace(QRegularExpression("[\\t ]+"), " ");
 
     QList<QString> lines = editorText.split('\n');
-    QList<QString> oldNumbers;
-    QList<QString> newNumbers;
     QList<QString> oldGcodes;
+    QMap<int,int> lineRemap;  // old N -> new N
 
     QString oldNumber = "";
 
@@ -3081,12 +3080,23 @@ void RobotWindow::StandardFormatEditor()
         if (!line.isEmpty() && line[0] == 'N')
         {
             int spacePos = line.indexOf(' ');
-            // Validate spacePos before using it
             if (spacePos > 0 && spacePos < line.length()) {
+                // Pattern: N<number> <rest>
                 QString mS = line.mid(0, spacePos + 1);
-                oldNumber = line.mid(1, spacePos - 1);  // Fix bounds
+                oldNumber = line.mid(1, spacePos - 1);
                 line.replace(mS, "");
-                line = line.trimmed(); // Clean any extra spaces after removing number
+                line = line.trimmed();
+            } else {
+                // Pattern: label-only line like "N123"
+                // Extract digits after 'N' and clear content so we re-number cleanly
+                bool ok = false;
+                int lbl = line.mid(1).toInt(&ok);
+                if (ok) {
+                    oldNumber = QString::number(lbl);
+                    line = ""; // no content after label
+                } else {
+                    oldNumber.clear();
+                }
             }
         }
 
@@ -3109,6 +3119,8 @@ void RobotWindow::StandardFormatEditor()
             {
                 // Skip lines that are only whitespace or special characters
                 QString trimmedCheck = line.trimmed().toUpper();
+                // Detect subprogram declaration like O2000
+                bool isSubprogramLine = QRegularExpression("^O\\d+\\b").match(trimmedCheck).hasMatch();
                 if (!trimmedCheck.isEmpty() && 
                     !trimmedCheck.startsWith("(") &&    // Skip parentheses comments
                     !trimmedCheck.startsWith("%") &&    // Skip program markers
@@ -3118,11 +3130,20 @@ void RobotWindow::StandardFormatEditor()
                     !trimmedCheck.startsWith("ELSE") &&   // Skip ELSE statements  
                     !trimmedCheck.startsWith("ENDIF") &&  // Skip ENDIF statements
                     !trimmedCheck.startsWith("WHILE") &&  // Skip WHILE loops
-                    !trimmedCheck.startsWith("ENDWHILE")) // Skip ENDWHILE statements
+                    !trimmedCheck.startsWith("ENDWHILE") && // Skip ENDWHILE statements
+                    !trimmedCheck.startsWith("FUNCTION") && // Skip FUNCTION declarations
+                    !trimmedCheck.startsWith("ENDFUNCTION") &&
+                    !trimmedCheck.startsWith("RETURN") &&   // Skip RETURN statements
+                    !trimmedCheck.startsWith("LABEL") &&    // Skip LABEL lines from numbering
+                    !isSubprogramLine)
                 {
                     QString numberS = QString("N") + QString::number(i);
-                    newNumbers.push_back(QString::number(i));
-                    oldNumbers.push_back(oldNumber);
+                    // Record mapping only if original had a number
+                    if (!oldNumber.isEmpty()) {
+                        bool ok = false;
+                        int oldN = oldNumber.toInt(&ok);
+                        if (ok) lineRemap.insert(oldN, i);
+                    }
                     line = numberS + " " + line;
                     
                     // Only increment counter for actual G-code lines (not comments)
@@ -3135,7 +3156,9 @@ void RobotWindow::StandardFormatEditor()
                     if (trimmedCheck.startsWith("FOR") || trimmedCheck.startsWith("ENDFOR") ||
                         trimmedCheck.startsWith("IF") || trimmedCheck.startsWith("ELSE") || 
                         trimmedCheck.startsWith("ENDIF") || trimmedCheck.startsWith("WHILE") || 
-                        trimmedCheck.startsWith("ENDWHILE"))
+                        trimmedCheck.startsWith("ENDWHILE") || trimmedCheck.startsWith("FUNCTION") ||
+                        trimmedCheck.startsWith("ENDFUNCTION") || trimmedCheck.startsWith("RETURN") ||
+                        isSubprogramLine)
                     {
                         controlStructureLines++;
                     }
@@ -3150,68 +3173,30 @@ void RobotWindow::StandardFormatEditor()
         editorText += line + "\n";
     }
 
-    int gotoCursor = 0;
-    gotoCursor = editorText.indexOf("GOTO", gotoCursor);
-    
-    // Safe GOTO processing with bounds checking and infinite loop prevention
-    int maxIterations = 1000; // Prevent infinite loops
-    int currentIteration = 0;
-
-    while (gotoCursor > -1 && currentIteration < maxIterations)
-    {
-        currentIteration++;
-        
-        //gotoEnd = editorText.indexOf("\n", gotoCursor);
-        QString gotoIndexS = "";
-        
-        // Safe bounds checking for character extraction
-        int startPos = gotoCursor + 5; // Position after "GOTO "
-        if (startPos >= editorText.length()) {
-            break; // Invalid position, exit loop
+    // Replace GOTO targets using boundary-aware regex
+    QRegularExpression gotoRe("\\bGOTO\\s+(\\d+)");
+    QRegularExpressionMatchIterator it = gotoRe.globalMatch(editorText);
+    QString rebuilt;
+    int lastPos = 0;
+    int gotoReplacements = 0;
+    while (it.hasNext()) {
+        QRegularExpressionMatch m = it.next();
+        int start = m.capturedStart();
+        int end = m.capturedEnd();
+        rebuilt += editorText.mid(lastPos, start - lastPos);
+        QString numStr = m.captured(1);
+        bool ok = false;
+        int oldN = numStr.toInt(&ok);
+        if (ok && lineRemap.contains(oldN)) {
+            rebuilt += QString("GOTO %1").arg(lineRemap.value(oldN));
+            gotoReplacements++;
+        } else {
+            rebuilt += m.captured(0);
         }
-        
-        for (int i = 0; i < 20; i++)
-        {
-            int charPos = startPos + i;
-            if (charPos >= editorText.length()) {
-                break; // Prevent out-of-bounds access
-            }
-            
-            QChar c = editorText.at(charPos);
-            if (c.isDigit())
-                gotoIndexS += c;
-            else
-                break;
-        }
-
-        // Find next GOTO occurrence - safe advancement
-        int nextGoto = editorText.indexOf("GOTO", gotoCursor + 4);
-        if (nextGoto == gotoCursor) {
-            // Same position, force advancement to prevent infinite loop
-            nextGoto = editorText.indexOf("GOTO", gotoCursor + 5);
-        }
-        gotoCursor = nextGoto;
-
-        // Process number replacement only if we found a valid number
-        if (!gotoIndexS.isEmpty())
-        {
-            for (int i = 0; i < oldNumbers.size(); i++)
-            {
-                if (oldNumbers.at(i).toInt() == gotoIndexS.toInt())
-                {
-                    QString old = QString("GOTO ") + gotoIndexS;
-                    QString replace = QString("GOTO ") + newNumbers.at(i);
-                    editorText.replace(old, replace);
-                    break; // Exit inner loop after first match
-                }
-            }
-        }
+        lastPos = end;
     }
-    
-    // Warning if we hit max iterations
-    if (currentIteration >= maxIterations) {
-        QMessageBox::warning(this, "Warning", "G-code formatting reached maximum iterations for GOTO processing. Some GOTO statements may not be updated correctly.");
-    }
+    rebuilt += editorText.mid(lastPos);
+    editorText = rebuilt;
     
     // Provide user feedback about formatting results
     QString formatSummary = QString("G-code formatting completed:\n")
@@ -3219,7 +3204,7 @@ void RobotWindow::StandardFormatEditor()
                           + QString("• G-code lines numbered: %1\n").arg(actualGcodeLines)
                           + QString("• Control structures skipped: %1\n").arg(controlStructureLines)
                           + QString("• Line increment: %1\n").arg(lineIncrement)
-                          + QString("• GOTO processing iterations: %1").arg(currentIteration);
+                          + QString("• GOTO targets updated: %1").arg(gotoReplacements);
     
     // Show summary in status bar or as tooltip (non-blocking)
     if (this->statusBar()) {
@@ -7398,4 +7383,3 @@ void RobotWindow::SaveZPlaneSettings()
                .arg(m_zPlane.isValid ? "true" : "false")
                .arg(m_zPlane.isEnabled ? "true" : "false"));
 }
-

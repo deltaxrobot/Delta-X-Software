@@ -328,6 +328,7 @@ private:
     };
     
     QMap<QString, SimpleFunctionDef> functionDefinitions; // function name -> definition
+    QMap<QString, int> labelDefinitions; // LABEL name -> line index (start of label line)
 
     // Pre-compiled regex patterns for better performance
     static const QRegularExpression m98Regex;
@@ -382,6 +383,7 @@ private:
     bool isFunctionCall(QString line);
     QString parseFunctionCall(QString line, QStringList& arguments);
     bool handleLOCAL(QList<QString> valuePairs, int i);
+    bool handleJUMP(QList<QString> valuePairs, int i);
 
     bool handleVARIABLE(QList<QString> valuePairs, int i);
     bool handleDEFINE_SUBPROGRAM(QList<QString> valuePairs, int i);
