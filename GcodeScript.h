@@ -1,4 +1,4 @@
-#ifndef GCODE_SCRIPT
+﻿#ifndef GCODE_SCRIPT
 #define GCODE_SCRIPT
 
 #include <QObject>
@@ -226,9 +226,6 @@ private:
     // Cache for line numbers for optimized GOTO operations
     QMap<int, int> lineNumberCache;  // lineNumber -> gcodeOrder
     bool lineNumberCacheValid = false;
-
-    // Line number pattern for better performance
-    static const QRegularExpression lineNumberPattern;
     
     // IF block state tracking
     struct IfBlockState {
@@ -304,9 +301,13 @@ private:
     bool breakRequested;                // Flag for BREAK statement
     bool continueRequested;             // Flag for CONTINUE statement
 
-    // Function related variables
-    int returnFunctionPointer[20];
-    int returnFunctionOrder = -1;
+    // Function call stacks
+    struct CallFrame {
+        QMap<QString, QVariant> locals;  // local variables (params + locals)
+        QString retTarget;               // variable name (without #) to assign return value to
+    };
+    QStack<CallFrame> callStack;         // stack for function frames
+    QStack<int> functionReturnStack;     // stack for return addresses
     
     // Variables for program control
     int returnPointerOrder;
@@ -319,10 +320,11 @@ private:
         QString name;
         QStringList parameters;  // Parameter names (without #)
         int startLine;
+        int endLine;             // Inclusive ENDFUNCTION line
         
-        SimpleFunctionDef() : startLine(-1) {}
-        SimpleFunctionDef(QString n, QStringList params, int line) 
-            : name(n), parameters(params), startLine(line) {}
+        SimpleFunctionDef() : startLine(-1), endLine(-1) {}
+        SimpleFunctionDef(QString n, QStringList params, int line, int end = -1) 
+            : name(n), parameters(params), startLine(line), endLine(end) {}
     };
     
     QMap<QString, SimpleFunctionDef> functionDefinitions; // function name -> definition
@@ -343,8 +345,6 @@ private:
     bool handleGOTO_Optimized(int goID);
     QString normalizeWhitespace(const QString& line);
     void preprocessGcodeScript();  // Normalize entire script once
-
-    void processGOTOStatement(const QList<QString>& valuePairs);
 
     float GetResultOfMathFunction(QString expression);
     bool isGlobalVariable(QString name);
@@ -371,39 +371,17 @@ private:
     bool executeForLoopIteration(); // Execute next iteration of FOR loop
     int findEndForLine(int startLine); // Find matching ENDFOR line
     
-    // WHILE loop methods
-    bool handleWHILE(QList<QString> valuePairs, int i);
-    bool handleENDWHILE(QList<QString> valuePairs, int i);
-    void skipToEndWhile();
-    bool executeWhileLoopIteration(); // Execute next iteration of WHILE loop
-    int findEndWhileLine(int startLine); // Find matching ENDWHILE line
-    
-    // SWITCH/CASE methods
-    bool handleSWITCH(QList<QString> valuePairs, int i);
-    bool handleCASE(QList<QString> valuePairs, int i);
-    bool handleDEFAULT(QList<QString> valuePairs, int i);
-    bool handleENDSWITCH(QList<QString> valuePairs, int i);
-    void skipToNextCaseOrEndSwitch();
-    int findEndSwitchLine(int startLine); // Find matching ENDSWITCH line
-    
-    // Loop control methods
-    bool handleBREAK(QList<QString> valuePairs, int i);
-    bool handleCONTINUE(QList<QString> valuePairs, int i);
-    void executeBreak(); // Execute BREAK statement
-    void executeContinue(); // Execute CONTINUE statement
-    
-    // Enhanced condition evaluation with logical operators
-    bool evaluateCondition(QString condition);
-    bool evaluateLogicalExpression(QString expression);
-    QString parseLogicalOperators(QString expression);
+    // Removed unused/undefined WHILE/SWITCH/BREAK/CONTINUE and logical helpers
     
     // Simple function methods
     bool handleFUNCTION(QList<QString> valuePairs, int i);
     bool handleENDFUNCTION(QList<QString> valuePairs, int i);
     bool handleRETURN(QList<QString> valuePairs, int i);
     bool callFunction(QString functionName, QStringList arguments);
+    bool callFunction(QString functionName, QStringList arguments, const QString& retTarget);
     bool isFunctionCall(QString line);
     QString parseFunctionCall(QString line, QStringList& arguments);
+    bool handleLOCAL(QList<QString> valuePairs, int i);
 
     bool handleVARIABLE(QList<QString> valuePairs, int i);
     bool handleDEFINE_SUBPROGRAM(QList<QString> valuePairs, int i);
@@ -416,6 +394,13 @@ private:
     QString getRightWord(QString s, int pos);
     QString deleteSpaces(QString s);
     QString formatSpaces(QString s);
+    
+    // Helpers for functions/expressions
+
+    QStringList splitArgsRespectingParens(const QString& s);
+    QString cleanedVarName(const QString& name) const; // remove leading '#', trim
+    bool evaluatePureFunction(const QString& functionName, const QStringList& arguments, QString& outValue);
+    float EvaluateFunctionToFloat(QString expression);
     bool isNotNegative(QString s);
     QString getValueAsString(QString var);
     QVariant getValueAsQVariant(QString key);
@@ -689,3 +674,5 @@ private:
 };
 
 #endif
+
+

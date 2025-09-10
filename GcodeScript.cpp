@@ -4,6 +4,8 @@
 #include "SoftwareManager.h"
 #include <QStandardPaths>
 #include <QDir>
+#include <QDateTime>
+#include <QDebug>
 
 // Initialize static regex patterns for better performance
 const QRegularExpression GcodeScript::m98Regex("M98\\s+([A-Za-z]+)(?:\\((.*)\\))?", QRegularExpression::OptimizeOnFirstUsageOption);
@@ -113,9 +115,10 @@ void GcodeScript::ExecuteGcode(QString gcodes, int startMode)
     // Clear FOR loop stack when starting new script
     forLoopStack.clear();
     
-    // Clear function definitions when starting new script
+    // Clear function definitions and call stacks when starting new script
     functionDefinitions.clear();
-    returnFunctionOrder = -1;
+    callStack.clear();
+    functionReturnStack.clear();
 
     if (startMode == BEGIN)
     {
@@ -271,9 +274,10 @@ void GcodeScript::Stop()
     // Clear FOR loop stack on stop
     forLoopStack.clear();
     
-    // Clear function definitions on stop
+    // Clear function definitions and call stacks on stop
     functionDefinitions.clear();
-    returnFunctionOrder = -1;
+    callStack.clear();
+    functionReturnStack.clear();
 }
 
 void GcodeScript::ReceivedGcode(QString gcode)
@@ -1290,11 +1294,8 @@ bool GcodeScript::findExeGcodeAndTransmit()
                     // Handle function call with return value assignment
                     QString varName = currentToken.mid(1); // Remove #
                     
-                    // Store variable name for return value assignment
-                    saveVariable(QString("__RETURN_VAR__"), varName);
-                    
-                    // Call function
-                    callFunction(functionName, arguments);
+                    // Call function with explicit return target
+                    callFunction(functionName, arguments, varName);
                     return false;
                 }
                 
@@ -1854,13 +1855,12 @@ bool GcodeScript::findExeGcodeAndTransmit()
                 
                 if (!functionName.isEmpty() && functionDefinitions.contains(functionName))
                 {
-                    // Store variable name for return value
+                    // Determine return target variable name
                     if (leftPart.startsWith("#"))
                         leftPart = leftPart.mid(1);
-                    saveVariable("__RETURN_VAR__", leftPart);
                     
-                    // Call function
-                    callFunction(functionName, arguments);
+                    // Call function with explicit return target
+                    callFunction(functionName, arguments, leftPart);
                     return false;
                 }
             }
@@ -3435,10 +3435,11 @@ bool GcodeScript::handleFUNCTION(QList<QString> valuePairs, int i)
 bool GcodeScript::handleENDFUNCTION(QList<QString> valuePairs, int i)
 {
     // If currently inside a function call (via callFunction), return to caller
-    if (returnFunctionOrder >= 0)
+    if (!functionReturnStack.isEmpty())
     {
-        gcodeOrder = returnFunctionPointer[returnFunctionOrder] + 1;
-        returnFunctionOrder--;
+        int ret = functionReturnStack.pop();
+        if (!callStack.isEmpty()) callStack.pop();
+        gcodeOrder = ret + 1;
         return false;
     }
 
@@ -3456,23 +3457,22 @@ bool GcodeScript::handleRETURN(QList<QString> valuePairs, int i)
         if (!returnExpr.isEmpty())
         {
             QString returnValue = calculateExpressions(returnExpr);
-            saveVariable("__RETURN_VALUE__", returnValue);
-            
-            // Check if there's a variable to assign return value to
-            QString returnVar = getValueAsString("__RETURN_VAR__");
-            if (returnVar != "__RETURN_VAR__" && !returnVar.isEmpty())
-            {
-                saveVariable(returnVar, returnValue);
-                saveVariable(QString("__RETURN_VAR__"), QString("")); // Clear return var
+            // Assign to caller's target variable if any
+            if (!callStack.isEmpty()) {
+                const QString retTarget = callStack.top().retTarget;
+                if (!retTarget.isEmpty()) {
+                    saveVariable(retTarget, returnValue);
+                }
             }
         }
     }
     
-    // Similar to M99 - return to caller
-    if (returnFunctionOrder >= 0)
+    // Return to caller
+    if (!functionReturnStack.isEmpty())
     {
-        gcodeOrder = returnFunctionPointer[returnFunctionOrder] + 1;
-        returnFunctionOrder--;
+        int ret = functionReturnStack.pop();
+        if (!callStack.isEmpty()) callStack.pop();
+        gcodeOrder = ret + 1;
     }
     else
     {
@@ -3483,6 +3483,11 @@ bool GcodeScript::handleRETURN(QList<QString> valuePairs, int i)
 
 bool GcodeScript::callFunction(QString functionName, QStringList arguments)
 {
+    return callFunction(functionName, arguments, QString());
+}
+
+bool GcodeScript::callFunction(QString functionName, QStringList arguments, const QString& retTarget)
+{
     // Normalize name for consistent lookup
     if (functionName.startsWith("#"))
         functionName = functionName.mid(1);
@@ -3491,22 +3496,29 @@ bool GcodeScript::callFunction(QString functionName, QStringList arguments)
     // Check if function exists
     if (!functionDefinitions.contains(functionName))
     {
+        qWarning() << "GScript: call to undefined function" << functionName;
         return false;
     }
     
     SimpleFunctionDef& funcDef = functionDefinitions[functionName];
     
-    // Bind parameters to variables (simple binding)
-    for (int i = 0; i < funcDef.parameters.size() && i < arguments.size(); i++)
-    {
-        QString paramName = funcDef.parameters[i];
-        QString argValue = calculateExpressions(arguments[i]);
-        saveVariable(paramName, argValue);
+    // Create call frame and bind parameters
+    CallFrame frame;
+    frame.retTarget = retTarget;
+    if (arguments.size() != funcDef.parameters.size()) {
+        qWarning() << "GScript: arity mismatch for" << functionName
+                   << "expected" << funcDef.parameters.size() << "got" << arguments.size();
     }
+    const int bindCount = qMin(funcDef.parameters.size(), arguments.size());
+    for (int i = 0; i < bindCount; ++i) {
+        const QString paramName = funcDef.parameters[i];
+        const QString argValue = calculateExpressions(arguments[i]);
+        frame.locals[paramName] = argValue;
+    }
+    callStack.push(frame);
     
-    // Similar to M98 - save return address and jump to function
-    returnFunctionOrder++;
-    returnFunctionPointer[returnFunctionOrder] = gcodeOrder;
+    // Save return address and jump to function
+    functionReturnStack.push(gcodeOrder);
     
     // Jump to function definition (skip FUNCTION line)
     gcodeOrder = funcDef.startLine + 1;
