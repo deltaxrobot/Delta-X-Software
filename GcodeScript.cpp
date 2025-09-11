@@ -2982,24 +2982,47 @@ QString GcodeScript::getValueAsString(QString name)
 
     fullName = fullName.replace(" ", "");
 
-    if (fullName.endsWith(".X", Qt::CaseInsensitive) || fullName.endsWith(".Y", Qt::CaseInsensitive))
+    if (fullName.endsWith(".X", Qt::CaseInsensitive) ||
+        fullName.endsWith(".Y", Qt::CaseInsensitive) ||
+        fullName.endsWith(".Z", Qt::CaseInsensitive))
     {
-        QString pointName = fullName.left(fullName.length() - 2);
-        QVariant pointVar = getValueAsQVariant(pointName);
-        if (pointVar.canConvert<QPointF>())
+        QString baseName = fullName.left(fullName.length() - 2);
+        QVariant var = getValueAsQVariant(baseName);
+
+        // Support QVector3D for .X/.Y/.Z
+        if (var.canConvert<QVector3D>())
         {
-            QPointF point = pointVar.value<QPointF>();
-            emit CatchVariable2(pointName, pointVar);
+            QVector3D v = var.value<QVector3D>();
+            emit CatchVariable2(baseName, var);
 
             if (fullName.endsWith(".X", Qt::CaseInsensitive))
             {
-                return QString::number(point.x());
+                return QString::number(v.x());
             }
-            else
+            if (fullName.endsWith(".Y", Qt::CaseInsensitive))
             {
-                return QString::number(point.y());
+                return QString::number(v.y());
             }
+            // .Z
+            return QString::number(v.z());
+        }
 
+        // Backward-compatible: QPointF supports .X/.Y
+        if (var.canConvert<QPointF>())
+        {
+            QPointF p = var.value<QPointF>();
+            emit CatchVariable2(baseName, var);
+
+            if (fullName.endsWith(".X", Qt::CaseInsensitive))
+            {
+                return QString::number(p.x());
+            }
+            if (fullName.endsWith(".Y", Qt::CaseInsensitive))
+            {
+                return QString::number(p.y());
+            }
+            // .Z on QPointF defaults to 0
+            return QString::number(0.0f);
         }
     }
 
