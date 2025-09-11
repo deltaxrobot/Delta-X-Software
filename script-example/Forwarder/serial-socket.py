@@ -127,9 +127,9 @@ class SocketBridgeServer:
             srv.listen(5)
             srv.settimeout(1.0)
             self._server_socket = srv
-            self.bus.server_status.emit(f"Đã mở socket {self.host}:{self.port}")
+            self.bus.server_status.emit(f"Socket opened on {self.host}:{self.port}")
         except Exception as e:
-            self.bus.server_status.emit(f"Không mở được socket trên cổng {self.port}: {e}")
+            self.bus.server_status.emit(f"Failed to open socket on port {self.port}: {e}")
             self.bus.log.emit(f"Socket error: {e}")
             return
 
@@ -141,17 +141,17 @@ class SocketBridgeServer:
                     continue
                 except OSError:
                     break
-                self.bus.log.emit(f"Client kết nối: {addr}")
+                self.bus.log.emit(f"Client connected: {addr}")
                 with self._clients_lock:
                     self._clients.append(client)
                     self.bus.clients_count.emit(len(self._clients))
                 t = threading.Thread(target=self._handle_client, args=(client, addr), daemon=True)
                 t.start()
             except Exception as e:
-                self.bus.log.emit(f"Lỗi accept: {e}")
+                self.bus.log.emit(f"Accept error: {e}")
                 time.sleep(0.2)
 
-        self.bus.server_status.emit("Socket server đã dừng")
+        self.bus.server_status.emit("Socket server stopped")
 
     def _handle_client(self, client: socket.socket, addr):
         try:
@@ -172,7 +172,7 @@ class SocketBridgeServer:
                     try:
                         self._on_data_from_client(data)
                     except Exception as e:
-                        self.bus.log.emit(f"Ghi serial lỗi: {e}")
+                        self.bus.log.emit(f"Serial write error: {e}")
         finally:
             try:
                 client.close()
@@ -182,7 +182,7 @@ class SocketBridgeServer:
                 if client in self._clients:
                     self._clients.remove(client)
                 self.bus.clients_count.emit(len(self._clients))
-            self.bus.log.emit(f"Client ngắt: {addr}")
+            self.bus.log.emit(f"Client disconnected: {addr}")
 
 
 class SerialBridge:
@@ -238,11 +238,11 @@ class SerialBridge:
             self.bus.log.emit(f"Serial write error: {e}")
 
     def _scan_loop(self):
-        self.bus.serial_status.emit("Đang quét cổng...")
+        self.bus.serial_status.emit("Scanning ports...")
         while not self._stop.is_set():
             ports = list(list_ports.comports())
             if not ports:
-                self.bus.log.emit("Không tìm thấy cổng nào. Chờ 2s...")
+                self.bus.log.emit("No ports found. Waiting 2s...")
                 time.sleep(2.0)
                 continue
             for p in ports:
@@ -251,12 +251,12 @@ class SerialBridge:
                 dev = getattr(p, "device", None) or getattr(p, "name", None) or str(p)
                 if not dev:
                     continue
-                self.bus.log.emit(f"Thử {dev} @ {self.baudrate}")
+                self.bus.log.emit(f"Trying {dev} @ {self.baudrate}")
                 try:
                     if self._probe_port(dev):
                         self.connected_port = dev
                         self.bus.found_port.emit(dev)
-                        self.bus.serial_status.emit(f"Đã kết nối {dev} @ {self.baudrate}")
+                        self.bus.serial_status.emit(f"Connected to {dev} @ {self.baudrate}")
                         self._reader_thread = threading.Thread(target=self._read_loop, name="SerialReader", daemon=True)
                         self._reader_thread.start()
                         # Stay until disconnected or rescan requested
@@ -264,19 +264,19 @@ class SerialBridge:
                             time.sleep(0.2)
                         break
                 except Exception as e:
-                    self.bus.log.emit(f"Lỗi khi thử {dev}: {e}")
+                    self.bus.log.emit(f"Error trying {dev}: {e}")
             if self._stop.is_set():
                 break
             # If not connected, wait and retry
             if not (self._serial and self._serial.is_open):
-                self.bus.serial_status.emit("Chưa tìm thấy thiết bị Delta. Thử lại sau 3s...")
+                self.bus.serial_status.emit("Delta device not found. Retrying in 3s...")
                 time.sleep(3.0)
 
     def _probe_port(self, dev: str) -> bool:
         try:
             ser = Serial(dev, self.baudrate, timeout=0.3, write_timeout=0.3)
         except Exception as e:
-            self.bus.log.emit(f"Không mở được {dev}: {e}")
+            self.bus.log.emit(f"Cannot open {dev}: {e}")
             return False
         try:
             # Give device a moment
@@ -310,7 +310,7 @@ class SerialBridge:
         ser = self._serial
         if not ser or not ser.is_open:
             return
-        self.bus.log.emit("Bắt đầu đọc dữ liệu từ serial...")
+        self.bus.log.emit("Starting to read data from serial...")
         while not self._stop.is_set():
             try:
                 n = ser.in_waiting if hasattr(ser, "in_waiting") else 0
@@ -330,10 +330,10 @@ class SerialBridge:
                         txt = str(preview)
                     self.bus.log.emit(f"Serial → Socket {len(data)}B: {txt}{dots}")
             except (SerialException, OSError) as e:
-                self.bus.log.emit(f"Serial lỗi: {e}. Thử quét lại...")
+                self.bus.log.emit(f"Serial error: {e}. Trying to rescan...")
                 break
             except Exception as e:
-                self.bus.log.emit(f"Lỗi đọc serial: {e}")
+                self.bus.log.emit(f"Serial read error: {e}")
                 time.sleep(0.1)
         # Cleanup and trigger rescan
         try:
@@ -344,7 +344,7 @@ class SerialBridge:
         self._serial = None
         if not self._stop.is_set():
             # trigger rescan quietly
-            self.bus.serial_status.emit("Mất kết nối serial. Đang quét lại...")
+            self.bus.serial_status.emit("Serial connection lost. Rescanning...")
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -365,8 +365,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # Row: status
         row = QtWidgets.QHBoxLayout()
-        self.lbl_serial = QtWidgets.QLabel("Serial: chưa kết nối")
-        self.lbl_server = QtWidgets.QLabel("Socket: chưa mở")
+        self.lbl_serial = QtWidgets.QLabel("Serial: not connected")
+        self.lbl_server = QtWidgets.QLabel("Socket: not opened")
         self.lbl_clients = QtWidgets.QLabel("Clients: 0")
         row.addWidget(self.lbl_serial)
         row.addStretch(1)
@@ -382,7 +382,7 @@ class MainWindow(QtWidgets.QMainWindow):
         for b in [115200, 57600, 38400, 19200, 9600]:
             self.cmb_baud.addItem(str(b), b)
         self.cmb_baud.setCurrentText("115200")
-        self.btn_rescan = QtWidgets.QPushButton("Quét lại")
+        self.btn_rescan = QtWidgets.QPushButton("Rescan")
         self.btn_rescan.clicked.connect(self.on_rescan)
         ctrl.addWidget(self.cmb_baud)
         ctrl.addWidget(self.btn_rescan)
@@ -411,7 +411,7 @@ class MainWindow(QtWidgets.QMainWindow):
     @QtCore.pyqtSlot()
     def on_rescan(self):
         b = int(self.cmb_baud.currentText())
-        self.bus.log.emit(f"Yêu cầu quét lại với baud {b}")
+        self.bus.log.emit(f"Rescan requested with baud {b}")
         self.serial_bridge.rescan(b)
 
     @QtCore.pyqtSlot(str)
@@ -429,7 +429,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     @QtCore.pyqtSlot(str)
     def _set_found_port(self, p: str):
-        self._append_log(f"Đã chọn cổng: {p}")
+        self._append_log(f"Selected port: {p}")
 
     @QtCore.pyqtSlot(int)
     def _set_clients_count(self, n: int):
