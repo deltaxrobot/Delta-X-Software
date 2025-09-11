@@ -5504,8 +5504,26 @@ void RobotWindow::ConnectExternalMCU()
         return;
     }
 
-    QStringList items;
+    // Ask for connection type (COM or WIFI)
+    QStringList connectionItems;
+    connectionItems << "COM" << "WIFI";
+    bool ok = false;
+    QString connectionType = QInputDialog::getItem(this, tr("Connection"), tr("Type:"), connectionItems, 0, false, &ok);
+    if (!ok || connectionType.isEmpty()) return;
 
+    if (connectionType == "WIFI")
+    {
+        bool ok2 = false;
+        QString address = QInputDialog::getText(this, tr("ADDRESS"), tr("IP:PORT"), QLineEdit::Normal, "127.0.0.1:8855", &ok2);
+        if (ok2 && !address.isEmpty())
+        {
+            emit ChangeDeviceState(ui->cbSelectedDevice->currentText(), true, address);
+        }
+        return;
+    }
+
+    // COM path (default behaviour)
+    QStringList items;
     Q_FOREACH(QSerialPortInfo portInfo, QSerialPortInfo::availablePorts())
     {
         QSerialPort serial(portInfo);
@@ -5516,17 +5534,18 @@ void RobotWindow::ConnectExternalMCU()
         }
     }
 
-    bool ok;
-    QString item = QInputDialog::getItem(this, tr("COM Connection"), tr("COM Ports:"), items, 0, false, &ok);
-    QString comName = item.mid(0, item.indexOf(" - "));
-
-    if (ok && !item.isEmpty())
     {
-        bool ok2;
-        QString baudrate = QInputDialog::getText(this, tr("Select Baudrate"), tr("Baudrate:"), QLineEdit::Normal, "115200", &ok2);
-        if (ok2 && !baudrate.isEmpty())
+        bool ok1 = false;
+        QString item = QInputDialog::getItem(this, tr("COM Connection"), tr("COM Ports:"), items, 0, false, &ok1);
+        QString comName = item.mid(0, item.indexOf(" - "));
+        if (ok1 && !item.isEmpty())
         {
-            emit ChangeDeviceState(ui->cbSelectedDevice->currentText(), (ui->pbExternalControllerConnect->text() == "Connect")?true:false, comName);
+            bool ok2;
+            QString baudrate = QInputDialog::getText(this, tr("Select Baudrate"), tr("Baudrate:"), QLineEdit::Normal, "115200", &ok2);
+            if (ok2 && !baudrate.isEmpty())
+            {
+                emit ChangeDeviceState(ui->cbSelectedDevice->currentText(), true, comName);
+            }
         }
     }
 
@@ -5543,6 +5562,9 @@ void RobotWindow::DisplayTextFromExternalMCU(QString text)
     QString lastText = ui->teReceiveFromMCU->toPlainText();
     if (lastText.split('\n').count() > 50)
         lastText = "";
+
+    if (text[text.length() - 1] != '\n')
+        text += '\n';
 
     ui->teReceiveFromMCU->setText(lastText + text);
     ui->teReceiveFromMCU->moveCursor(QTextCursor::End);

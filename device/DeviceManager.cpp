@@ -196,9 +196,14 @@ void DeviceManager::SetDeviceState(QString deviceName, bool isOpen, QString addr
         }
 
         if (isOpen == true)
+        {
+            Devices[id]->SetSerialPortName(address);
             QMetaObject::invokeMethod(Devices[id], "Connect", Qt::QueuedConnection);
+        }
         else
+        {
             QMetaObject::invokeMethod(Devices[id], "Disconnect", Qt::QueuedConnection);
+        }
     }
 
     if (device == "encoder")

@@ -4,6 +4,8 @@
 #include <QObject>
 #include <QSerialPort>
 #include <QSerialPortInfo>
+#include <QTcpSocket>
+#include <QIODevice>
 #include <QMutex>
 #include <QTimer>
 #include <QEventLoop>
@@ -20,6 +22,8 @@ class Device : public QObject
     Q_OBJECT
 
 public:
+    enum class ConnectionType { None, Serial, Socket };
+
     explicit Device(QString COM = "auto", int baudrate = 115200, QString confirm_cmd = "", QString rev_msg = "Ok", bool is_open = true, QObject *parent = nullptr);
     ~Device();
 
@@ -30,6 +34,11 @@ public:
     int ID();
     void SetIDName(QString idName);
     QSerialPort* GetPort();
+    // Optional: set socket endpoint explicitly
+    void SetSocketAddress(const QString& host, int port);
+    ConnectionType connectionType() const { return connType; }
+    // Block or unblock IO device signals (serial or socket)
+    void BlockIODeviceSignals(bool block);
 
     void MoveToThread(QThread* thread);
 
@@ -57,6 +66,7 @@ public slots:
 
 protected:
     QSerialPort* serialPort = nullptr;
+    QTcpSocket* tcpSocket = nullptr;
     QMetaObject::Connection readDataConnection;
     QJsonObject jsonObject;
     QString idName;
@@ -67,6 +77,12 @@ private:
     QString confirmRequest;
     QString confirmResponse;
     QString feedback;
+    // Socket endpoint
+    QString hostName;
+    int tcpPort = 0;
+    ConnectionType connType = ConnectionType::None;
+
+    QIODevice* activeIODevice() const;
 };
 
 #endif // DEVICE_H

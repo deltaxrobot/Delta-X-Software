@@ -199,6 +199,7 @@ class SerialBridge:
         self._scanner_thread: Optional[threading.Thread] = None
         self._socket_server: Optional[SocketBridgeServer] = None
         self.connected_port: Optional[str] = None
+        self._line_buffer: bytes = b""  # Buffer to accumulate data until complete line
 
     def set_socket_server(self, server: SocketBridgeServer):
         self._socket_server = server
@@ -220,6 +221,7 @@ class SerialBridge:
                     pass
         finally:
             self._serial = None
+            self._line_buffer = b""  # Clear buffer on stop
 
     def rescan(self, baudrate: Optional[int] = None):
         if baudrate:
@@ -311,6 +313,8 @@ class SerialBridge:
         if not ser or not ser.is_open:
             return
         self.bus.log.emit("Starting to read data from serial...")
+        self._line_buffer = b""  # Reset buffer for new connection
+        
         while not self._stop.is_set():
             try:
                 n = ser.in_waiting if hasattr(ser, "in_waiting") else 0
@@ -318,23 +322,60 @@ class SerialBridge:
                     data = ser.read(n)
                 else:
                     data = ser.read(1)  # small timeout applies
+                
                 if data:
-                    if self._socket_server:
-                        self._socket_server.broadcast(data)
-                    # Log compactly (limit preview)
-                    preview = data[:32]
-                    dots = "..." if len(data) > 32 else ""
-                    try:
-                        txt = preview.decode(errors="replace")
-                    except Exception:
-                        txt = str(preview)
-                    self.bus.log.emit(f"Serial → Socket {len(data)}B: {txt}{dots}")
+                    # Add new data to buffer
+                    self._line_buffer += data
+                    
+                    # Process complete lines from buffer
+                    while True:
+                        # Find the earliest line ending (handle \r\n, \n, \r)
+                        crlf_pos = self._line_buffer.find(b'\r\n')
+                        lf_pos = self._line_buffer.find(b'\n')
+                        cr_pos = self._line_buffer.find(b'\r')
+                        
+                        # Determine which line ending comes first
+                        line_end = -1
+                        ending_len = 0
+                        
+                        if crlf_pos != -1 and (lf_pos == -1 or crlf_pos <= lf_pos):
+                            # \r\n found and comes before standalone \n
+                            line_end = crlf_pos
+                            ending_len = 2
+                        elif lf_pos != -1:
+                            # Standalone \n found
+                            line_end = lf_pos
+                            ending_len = 1
+                        elif cr_pos != -1:
+                            # Standalone \r found (Mac style)
+                            line_end = cr_pos
+                            ending_len = 1
+                        
+                        if line_end == -1:
+                            break  # No complete line found
+                        
+                        # Extract complete line including line ending
+                        line_data = self._line_buffer[:line_end + ending_len]
+                        self._line_buffer = self._line_buffer[line_end + ending_len:]
+                        
+                        # Send complete line to socket
+                        if self._socket_server:
+                            self._socket_server.broadcast(line_data)
+                        
+                        # Log the complete line
+                        try:
+                            txt = line_data.decode(errors="replace").strip()
+                        except Exception:
+                            txt = str(line_data)
+                        self.bus.log.emit(f"Serial → Socket (line): {txt}")
+                        
             except (SerialException, OSError) as e:
                 self.bus.log.emit(f"Serial error: {e}. Trying to rescan...")
                 break
             except Exception as e:
                 self.bus.log.emit(f"Serial read error: {e}")
                 time.sleep(0.1)
+        
         # Cleanup and trigger rescan
         try:
             if ser and ser.is_open:

@@ -11012,7 +11012,7 @@ public:
         cbImageSource->setCurrentIndex(0);
         cbSendingImageMethod->setCurrentIndex(0);
         tabWidget->setCurrentIndex(0);
-        twDevices->setCurrentIndex(0);
+        twDevices->setCurrentIndex(4);
         pbPump->setDefault(false);
         pbLaser->setDefault(false);
         pbGrip->setDefault(false);
