@@ -694,20 +694,24 @@ CloudPointMapper::CalibrationPoint CloudPointMapper::pointFromJson(const QJsonOb
 
 bool CloudPointMapper::validatePoint(const CalibrationPoint& point) const
 {
-    // Basic validation
-    if (point.imageCoord.isNull() || point.realCoord.isNull()) {
+    // Accept (0,0[,0]) as valid coordinates. Validate finiteness and reasonable ranges instead.
+    auto finite = [](float v) { return qIsFinite(v); };
+    if (!finite(point.imageCoord.x()) || !finite(point.imageCoord.y()) || !finite(point.imageCoord.z())) {
         return false;
     }
-    
-    // Check for reasonable coordinate ranges
-    if (qAbs(point.imageCoord.x()) > 10000 || qAbs(point.imageCoord.y()) > 10000) {
+    if (!finite(point.realCoord.x()) || !finite(point.realCoord.y()) || !finite(point.realCoord.z())) {
         return false;
     }
-    
-    if (qAbs(point.realCoord.x()) > 10000 || qAbs(point.realCoord.y()) > 10000) {
+
+    // Check for reasonable coordinate ranges (expandable per project)
+    auto inRange = [](float v) { return qAbs(v) <= 1000000.0f; };
+    if (!inRange(point.imageCoord.x()) || !inRange(point.imageCoord.y())) {
         return false;
     }
-    
+    if (!inRange(point.realCoord.x()) || !inRange(point.realCoord.y())) {
+        return false;
+    }
+
     return true;
 }
 

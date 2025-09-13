@@ -9,6 +9,7 @@
 #include <string>
 #include <QStandardItemModel>
 #include <QVector3D>
+#include <QTimer>
 #include <UnityTool.h>
 #include <ObjectInfo.h>
 
@@ -36,6 +37,8 @@ public:
     bool containsFullKey(const QString &key);
 
     void saveToQSettings();
+    // Debounced save to avoid blocking UI on frequent calls
+    void scheduleSave(int delayMs = 750);
 
     void loadFromQSettings();
 
@@ -74,6 +77,7 @@ private:
     mutable std::mutex objectInfosMutex; // Thread safety for ObjectInfos
     QSettings settings;
     QList<QStandardItemModel*> itemModelList;
+    QTimer* m_saveTimer = nullptr;
     
     // Performance optimization caches
     mutable QHash<QString, QString> keyCache;

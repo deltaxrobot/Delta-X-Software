@@ -16,6 +16,7 @@
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QThread>
+#include <QString>
 
 class Device : public QObject
 {
@@ -77,6 +78,7 @@ private:
     QString confirmRequest;
     QString confirmResponse;
     QString feedback;
+    QString rxBuffer; // line buffer for partial reads (serial/socket)
     // Socket endpoint
     QString hostName;
     int tcpPort = 0;

@@ -15,11 +15,17 @@ Device::Device(QString COM, int baudrate, QString confirm_cmd, QString rev_msg, 
 
 Device::~Device()
 {
-//    if (serialPort != NULL)
-//        if (serialPort->isOpen())
-//            serialPort->close();
-
-//    delete serialPort;
+    if (tcpSocket) {
+        if (tcpSocket->state() == QAbstractSocket::ConnectedState) {
+            tcpSocket->disconnectFromHost();
+            tcpSocket->waitForDisconnected(100);
+        }
+    }
+    if (serialPort) {
+        if (serialPort->isOpen()) {
+            serialPort->close();
+        }
+    }
 }
 
 void Device::SetSerialPortName(QString name)
@@ -56,7 +62,7 @@ void Device::Connect()
 
     if (looksLikeSocket && !hostName.isEmpty() && tcpPort > 0) {
         if (tcpSocket == nullptr) {
-            tcpSocket = new QTcpSocket();
+            tcpSocket = new QTcpSocket(this);
         }
         if (tcpSocket->state() != QAbstractSocket::ConnectedState) {
             connect(tcpSocket, SIGNAL(readyRead()), this, SLOT(ReadData()));
@@ -81,7 +87,7 @@ void Device::Connect()
     // Serial path (default)
     if (serialPort == nullptr)
     {
-        serialPort = new QSerialPort();
+        serialPort = new QSerialPort(this);
     }
 
     if (serialPort->isOpen())
@@ -218,8 +224,19 @@ void Device::ReadData()
 {
     QIODevice* dev = activeIODevice();
     if (!dev) return;
-    if (dev->bytesAvailable() > 0) {
-        ReadLine();
+    QByteArray chunk = dev->readAll();
+    if (chunk.isEmpty()) return;
+
+    rxBuffer.append(QString::fromLocal8Bit(chunk));
+
+    int idx = -1;
+    while ((idx = rxBuffer.indexOf('\n')) != -1) {
+        QString line = rxBuffer.left(idx);
+        rxBuffer.remove(0, idx + 1);
+        line.replace("\r", "");
+        if (line.isEmpty()) continue;
+        IsGcodeDone = true;
+        emit receivedMsg(idName, line);
     }
 }
 

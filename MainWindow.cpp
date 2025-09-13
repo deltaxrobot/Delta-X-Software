@@ -369,9 +369,9 @@ void MainWindow::SaveProjectToFile()
     if (SoftwareManager::GetInstance()->RunningScriptThreadNumber > 0)
         return;
 
-    VariableManager::instance().saveToQSettings();
+    VariableManager::instance().scheduleSave(750);
 
-    // SaveOperatorSettings();
+    SaveOperatorSettings();
 }
 
 void MainWindow::SelectedTab(QAbstractButton *tabButton)

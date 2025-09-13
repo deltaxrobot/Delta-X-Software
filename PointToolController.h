@@ -52,6 +52,10 @@ public:
      */
     CloudPointToolController* getCloudPointController() const;
 
+    // Enable/disable Cloud Point Mapping integration explicitly
+    void setCloudMappingEnabled(bool enabled) { m_useCloudMapping = enabled; }
+    bool cloudMappingEnabled() const { return m_useCloudMapping; }
+
     /**
      * @brief Handles mapping matrix calculation
      * @return true if calculation succeeded

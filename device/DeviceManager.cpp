@@ -15,36 +15,52 @@ DeviceManager::~DeviceManager()
 {
     for (int i = 0; i < Robots.count(); i++)
     {
-        Robots.at(i)->thread()->quit();
-        Robots.at(i)->thread()->wait();
-        delete Robots.at(i);
+        Robot* obj = Robots.at(i);
+        QMetaObject::invokeMethod(obj, "Disconnect", Qt::BlockingQueuedConnection);
+        QMetaObject::invokeMethod(obj, "deleteLater", Qt::QueuedConnection);
+        QThread* th = obj->thread();
+        th->quit();
+        th->wait();
+        // Thread object was created with parent=this; it will be deleted with DeviceManager
     }
 
     for (int i = 0; i < Sliders.count(); i++)
     {
-        Sliders.at(i)->thread()->quit();
-        Sliders.at(i)->thread()->wait();
-        delete Sliders.at(i);
+        Slider* obj = Sliders.at(i);
+        QMetaObject::invokeMethod(obj, "Disconnect", Qt::BlockingQueuedConnection);
+        QMetaObject::invokeMethod(obj, "deleteLater", Qt::QueuedConnection);
+        QThread* th = obj->thread();
+        th->quit();
+        th->wait();
     }
 
     for (int i = 0; i < Conveyors.count(); i++)
     {
-        Conveyors.at(i)->thread()->quit();
-        Conveyors.at(i)->thread()->wait();
-        delete Conveyors.at(i);
+        Conveyor* obj = Conveyors.at(i);
+        QMetaObject::invokeMethod(obj, "Disconnect", Qt::BlockingQueuedConnection);
+        QMetaObject::invokeMethod(obj, "deleteLater", Qt::QueuedConnection);
+        QThread* th = obj->thread();
+        th->quit();
+        th->wait();
     }
 
     for (int i = 0; i < Encoders.count(); i++)
     {
-        Encoders.at(i)->thread()->quit();
-        Encoders.at(i)->thread()->wait();
-        delete Encoders.at(i);
+        Encoder* obj = Encoders.at(i);
+        QMetaObject::invokeMethod(obj, "Disconnect", Qt::BlockingQueuedConnection);
+        QMetaObject::invokeMethod(obj, "deleteLater", Qt::QueuedConnection);
+        QThread* th = obj->thread();
+        th->quit();
+        th->wait();
     }
     for (int i = 0; i < Devices.count(); i++)
     {
-        Devices.at(i)->thread()->quit();
-        Devices.at(i)->thread()->wait();
-        delete Devices.at(i);
+        Device* obj = Devices.at(i);
+        QMetaObject::invokeMethod(obj, "Disconnect", Qt::BlockingQueuedConnection);
+        QMetaObject::invokeMethod(obj, "deleteLater", Qt::QueuedConnection);
+        QThread* th = obj->thread();
+        th->quit();
+        th->wait();
     }
 }
 
@@ -157,9 +173,14 @@ void DeviceManager::SetDeviceState(QString deviceName, bool isOpen, QString addr
         }
 
         if (isOpen == true)
+        {
+            Robots[id]->SetSerialPortName(address);
             QMetaObject::invokeMethod(Robots[id], "Connect", Qt::QueuedConnection);
+        }
         else
+        {
             QMetaObject::invokeMethod(Robots[id], "Disconnect", Qt::QueuedConnection);
+        }
     }
 
     if (device == "slider")
@@ -170,9 +191,14 @@ void DeviceManager::SetDeviceState(QString deviceName, bool isOpen, QString addr
         }
 
         if (isOpen == true)
+        {
+            Sliders[id]->SetSerialPortName(address);
             QMetaObject::invokeMethod(Sliders[id], "Connect", Qt::QueuedConnection);
+        }
         else
+        {
             QMetaObject::invokeMethod(Sliders[id], "Disconnect", Qt::QueuedConnection);
+        }
     }
 
     if (device == "conveyor")
@@ -183,9 +209,14 @@ void DeviceManager::SetDeviceState(QString deviceName, bool isOpen, QString addr
         }
 
         if (isOpen == true)
+        {
+            Conveyors[id]->SetSerialPortName(address);
             QMetaObject::invokeMethod(Conveyors[id], "Connect", Qt::QueuedConnection);
+        }
         else
+        {
             QMetaObject::invokeMethod(Conveyors[id], "Disconnect", Qt::QueuedConnection);
+        }
     }
 
     if (device == "device")

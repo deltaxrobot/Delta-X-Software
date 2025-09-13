@@ -1,17 +1,17 @@
-﻿#include "RobotWindow.h"
+#include "RobotWindow.h"
 #include "ui_RobotWindow.h"
 #include "ChessboardConfigDialog.h"
 #include "SoftwareManager.h"
 #include "MainWindow.h"
 #include "ModernDialog.h"
 #include "CameraSelectionDialog.h"
-#include "UnityTool.h"  // ✅ For SoftwareLog function
+#include "UnityTool.h"  // ? For SoftwareLog function
 #include <QFile>
 #include <QTextStream>
 #include <QCoreApplication>
-#include <cmath>      // ✅ For Z-plane calculations
-#include <QInputDialog>  // ✅ For test input dialog
-#include <QtMath>      // ✅ For qAbs function
+#include <cmath>      // ? For Z-plane calculations
+#include <QInputDialog>  // ? For test input dialog
+#include <QtMath>      // ? For qAbs function
 
 RobotWindow::RobotWindow(QWidget *parent, QString projectName) :
     QMainWindow(parent),
@@ -80,10 +80,10 @@ RobotWindow::~RobotWindow()
         qDebug() << "Terminating Python process on application close...";
         process->terminate();
         
-        // Đợi process terminate, nếu không thành công thì kill
-        if (!process->waitForFinished(2000)) { // Đợi 2 giây
+        // �?i process terminate, n?u kh�ng th�nh c�ng th� kill
+        if (!process->waitForFinished(2000)) { // �?i 2 gi�y
             process->kill();
-            process->waitForFinished(1000); // Đợi thêm 1 giây cho kill
+            process->waitForFinished(1000); // �?i th�m 1 gi�y cho kill
         }
         
         qDebug() << "Python process terminated";
@@ -92,7 +92,7 @@ RobotWindow::~RobotWindow()
     // Clean up Point Tool Controller
     delete m_pointToolController;
 
-    // ✅ Fix: Cleanup plugins to prevent memory leak
+    // ? Fix: Cleanup plugins to prevent memory leak
     if (pluginList) {
         SoftwareLog(QString("Plugin System: Cleaning up %1 plugins").arg(pluginList->count()));
         for (int i = 0; i < pluginList->count(); i++) {
@@ -117,7 +117,7 @@ void RobotWindow::InitVariables()
 {
     //--------- Register ----------
     qRegisterMetaType< QList<QStringList>>("QList<QStringList>");
-    qRegisterMetaType< QVector<Object> >("QVector<ObjectInfo>");
+    qRegisterMetaType< QVector<ObjectInfo> >("QVector<ObjectInfo>");
     qRegisterMetaType< cv::Mat >("cv::Mat");
     qRegisterMetaType< cv::Size >("cv::Size");
     qRegisterMetaType< Object >("Object");
@@ -126,7 +126,7 @@ void RobotWindow::InitVariables()
     qRegisterMetaType< QVector<Object>* >("QVector<Object>");
     qRegisterMetaType< QVector<QSharedPointer<Object>> >("QVector<QSharedPointer<Object>>");
     qRegisterMetaType< QList<QPolygonF> >("QList<QPolygonF>");
-    qRegisterMetaType< QVector<Object> >("QVector<ObjectInfo>");
+    qRegisterMetaType< QVector<ObjectInfo> >("QVector<ObjectInfo>");
     qRegisterMetaType< QList<int> >("QList<int>");
 
     //---------- Connection -----------
@@ -393,7 +393,7 @@ void RobotWindow::InitSocketConnection()
 {
     // ---------- Server ---------
 
-    // Tìm ip local của máy
+    // T�m ip local c?a m�y
     QString localIP = SocketConnectionManager::printLocalIpAddresses();
     // localhost:8844
     QStringList ipAndPort = ui->leIP->text().split(":");
@@ -752,15 +752,15 @@ void RobotWindow::InitObjectDetectingModule()
     ui->leMaxRadius->setText("100");
 
 
-    // Khai báo và khởi tạo luồng
+    // Khai b�o v� kh?i t?o lu?ng
     QThread* thread = new QThread;
     ImageProcessingInstance->moveToThread(thread);
 
-    // Kết nối để đảm bảo sự sạch sẽ
+    // K?t n?i d? d?m b?o s? s?ch s?
     connect(thread, &QThread::finished, ImageProcessingInstance, &QObject::deleteLater);
-    connect(thread, &QThread::finished, thread, &QObject::deleteLater); // Đảm bảo luồng cũng tự hủy khi kết thúc
+    connect(thread, &QThread::finished, thread, &QObject::deleteLater); // �?m b?o lu?ng cung t? h?y khi k?t th�c
 
-    // Bắt đầu luồng
+    // B?t d?u lu?ng
     thread->start();
 
 //    qDebug() << "Main Thread id: " << QThread::currentThreadId();
@@ -781,13 +781,13 @@ void RobotWindow::InitGcodeEditorModule()
 
     //----- Gcode Editor -----
 
-    // Tạo một QPalette mới từ QPalette hiện tại của textEdit
+    // T?o m?t QPalette m?i t? QPalette hi?n t?i c?a textEdit
     QPalette p = ui->pteGcodeArea->palette();
 
-    // Thiết lập màu cho văn bản
+    // Thi?t l?p m�u cho van b?n
     p.setColor(QPalette::Text, QColor("#888888"));
 
-    // Áp dụng QPalette mới cho textEdit
+    // �p d?ng QPalette m?i cho textEdit
     ui->pteGcodeArea->setPalette(p);
 
     highlighter = new GCodeHighlighter(ui->pteGcodeArea->document());
@@ -808,11 +808,11 @@ void RobotWindow::InitGcodeEditorModule()
     ui->tvGcodeExplorer->setModel(&explorerModel);
     ui->tvGcodeExplorer->setRootIndex(explorerModel.index(openPath));
 
-    ui->tvGcodeExplorer->setHeaderHidden(true); // Hiển thị header
-    ui->tvGcodeExplorer->header()->setSectionResizeMode(0, QHeaderView::Stretch); // Chỉnh độ rộng cột
-    ui->tvGcodeExplorer->header()->setSectionHidden(1, true); // Ẩn cột Size
-    ui->tvGcodeExplorer->header()->setSectionHidden(2, true); // Ẩn cột Type
-    ui->tvGcodeExplorer->header()->setSectionHidden(3, true); // Ẩn cột Type
+    ui->tvGcodeExplorer->setHeaderHidden(true); // Hi?n th? header
+    ui->tvGcodeExplorer->header()->setSectionResizeMode(0, QHeaderView::Stretch); // Ch?nh d? r?ng c?t
+    ui->tvGcodeExplorer->header()->setSectionHidden(1, true); // ?n c?t Size
+    ui->tvGcodeExplorer->header()->setSectionHidden(2, true); // ?n c?t Type
+    ui->tvGcodeExplorer->header()->setSectionHidden(3, true); // ?n c?t Type
 
     QObject::connect(ui->tvGcodeExplorer, &QTreeView::clicked, this, &RobotWindow::LoadGcodeFromFileToEditor);
 
@@ -850,7 +850,7 @@ void RobotWindow::InitGScriptHelp()
         // Simple error message if file not found
         QString errorMessage = QString(
             "<html><body style='font-family: Arial; color: #ff6b6b; text-align: center; padding: 50px;'>"
-            "<h2>⚠️ GScript Documentation Not Found</h2>"
+            "<h2>?? GScript Documentation Not Found</h2>"
             "<p>Could not load: <strong>%1</strong></p>"
             "<p>Please ensure GScript_Documentation.html is in the application directory.</p>"
             "</body></html>"
@@ -874,7 +874,7 @@ void RobotWindow::InitUIController()
 
     connect(ui->tbCopyRobotPosition, &QPushButton::clicked, [=]()
     {
-        // Copy giá trị vào clipboard
+        // Copy gi� tr? v�o clipboard
         QString text = QString("%1, %2, %3, %4, %5, %6").arg(ui->leX->text()).arg(ui->leY->text()).arg(ui->leZ->text()).arg(ui->leW->text()).arg(ui->leU->text()).arg(ui->leV->text());
         QClipboard *clipboard = QApplication::clipboard();
         clipboard->setText(text);
@@ -1088,7 +1088,7 @@ void RobotWindow::InitEvents()
 
     connect(ui->tbCopyTestTrackingPoint, &QPushButton::clicked, [=]()
     {
-        // Copy giá trị vào clipboard
+        // Copy gi� tr? v�o clipboard
         QString text = QString("%1, %2, %3").arg(ui->leTestTrackingPointX->text()).arg(ui->leTestTrackingPointY->text()).arg(ui->leTestTrackingPointZ->text());
         QClipboard *clipboard = QApplication::clipboard();
         clipboard->setText(text);
@@ -1194,7 +1194,7 @@ void RobotWindow::InitEvents()
         std::vector<double> matrixArray;
         matrixArray.assign(m_currentPerspectiveMatrix.begin<double>(), m_currentPerspectiveMatrix.end<double>());
 
-        // Tạo một QVariant từ mảng và lưu trữ ma trận
+        // T?o m?t QVariant t? m?ng v� luu tr? ma tr?n
         QVariant matrixVariant = QVariant::fromValue(matrixArray);
 
         VariableManager::instance().updateVar(prefix + ui->lePointMatrixName->text(), matrixVariant);
@@ -1540,7 +1540,7 @@ void RobotWindow::BackParentExplorer()
 void RobotWindow::CreateNewGcodeFile()
 {
     QString fileName = QInputDialog::getText(this, "Enter the file name you want to create", "Gcode file name:", QLineEdit::Normal, "");
-    // Lấy đường dẫn đến thư mục đang chọn trên dir view
+    // L?y du?ng d?n d?n thu m?c dang ch?n tr�n dir view
 
     if (fileName == "")
         return;
@@ -1566,7 +1566,7 @@ void RobotWindow::SaveGcodeFile(QString fileName, QString content)
             path = fileInfo.absolutePath();
     }
 
-    // Tạo đối tượng QFile để tạo file mới và mở file để viết dữ liệu vào
+    // T?o d?i tu?ng QFile d? t?o file m?i v� m? file d? vi?t d? li?u v�o
     QFile file(path + QString("/") + fileName);
     if (file.open(QIODevice::WriteOnly | QIODevice::Text))
     {
@@ -2112,7 +2112,7 @@ void RobotWindow::LoadPluginSetting(QSettings *setting)
             continue;
         }
         
-        // ✅ Fix: Consistent settings key format
+        // ? Fix: Consistent settings key format
         QString settingKey = plugin->GetName() + "-" + QString::number(i);
         setting->beginGroup(settingKey);
         
@@ -2291,7 +2291,7 @@ void RobotWindow::SavePluginSetting(QSettings *setting)
             continue;
         }
         
-        // ✅ Fix: Consistent settings key format (same as LoadPluginSetting)
+        // ? Fix: Consistent settings key format (same as LoadPluginSetting)
         QString settingKey = plugin->GetName() + "-" + QString::number(i);
         setting->beginGroup(settingKey);
         
@@ -2859,6 +2859,24 @@ void RobotWindow::ConnectRobot()
         return;
     }
 
+    // Choose connection type for Robot
+    {
+        QStringList connectionItems; connectionItems << "Serial" << "Socket";
+        bool ok = false;
+        QString connectionType = QInputDialog::getItem(this, tr("Connection"), tr("Type:"), connectionItems, 0, false, &ok);
+        if (!ok || connectionType.isEmpty()) return;
+        if (connectionType == "Socket")
+        {
+            bool ok2 = false;
+            QString address = QInputDialog::getText(this, tr("Socket Address"), tr("IP:PORT"), QLineEdit::Normal, "127.0.0.1:8855", &ok2);
+            if (ok2 && !address.isEmpty())
+            {
+                emit ChangeDeviceState(ui->cbSelectedRobot->currentText(), true, address);
+            }
+            return;
+        }
+    }
+
     QStringList items;
         bool hasAvailablePorts = false;
 
@@ -2881,7 +2899,7 @@ void RobotWindow::ConnectRobot()
     }
 
     bool ok;
-    QString item = QInputDialog::getItem(this, tr("COM Connection"), tr("COM Ports:"), items, 0, false, &ok);
+    QString item = QInputDialog::getItem(this, tr("Serial Connection"), tr("Serial Ports:"), items, 0, false, &ok);
         
         if (!ok || item.isEmpty())
         {
@@ -3022,10 +3040,10 @@ void RobotWindow::StandardFormatEditor()
     // ---- Number -----
     editorText = ui->pteGcodeArea->toPlainText();
 
-    // Xóa các dòng trống không có kí tự
+    // X�a c�c d�ng tr?ng kh�ng c� k� t?
     editorText.replace(QRegularExpression("(\\n[ \\t]*){3,}"), "\n\n");
 
-    // Gộp các kí tự trống liên tiếp thành một kí tự trống
+    // G?p c�c k� t? tr?ng li�n ti?p th�nh m?t k� t? tr?ng
     editorText.replace(QRegularExpression("[\\t ]+"), " ");
 
     QList<QString> lines = editorText.split('\n');
@@ -3200,11 +3218,11 @@ void RobotWindow::StandardFormatEditor()
     
     // Provide user feedback about formatting results
     QString formatSummary = QString("G-code formatting completed:\n")
-                          + QString("• Total lines processed: %1\n").arg(lines.size())
-                          + QString("• G-code lines numbered: %1\n").arg(actualGcodeLines)
-                          + QString("• Control structures skipped: %1\n").arg(controlStructureLines)
-                          + QString("• Line increment: %1\n").arg(lineIncrement)
-                          + QString("• GOTO targets updated: %1").arg(gotoReplacements);
+                          + QString("� Total lines processed: %1\n").arg(lines.size())
+                          + QString("� G-code lines numbered: %1\n").arg(actualGcodeLines)
+                          + QString("� Control structures skipped: %1\n").arg(controlStructureLines)
+                          + QString("� Line increment: %1\n").arg(lineIncrement)
+                          + QString("� GOTO targets updated: %1").arg(gotoReplacements);
     
     // Show summary in status bar or as tooltip (non-blocking)
     if (this->statusBar()) {
@@ -3400,7 +3418,7 @@ void RobotWindow::SaveProgram()
         inputDialog->setLabelText("Gcode file name:");
         QLineEdit *lineEdit = inputDialog->findChild<QLineEdit *>();
         if (lineEdit) {
-            lineEdit->setFixedWidth(500); // Đặt kiểu dáng cho QLineEdit
+            lineEdit->setFixedWidth(500); // �?t ki?u d�ng cho QLineEdit
         }
 
         if (inputDialog->exec() == QDialog::Accepted) {
@@ -3529,21 +3547,21 @@ void RobotWindow::OnEditorTextChanged()
 
 void RobotWindow::changeFontSize(int index)
 {
-    // Lấy nội dung text từ QComboBox
+    // L?y n?i dung text t? QComboBox
     QString text = ui->cbGScriptEditorZoom->currentText();
 
-    // Loại bỏ dấu % và chuyển thành số nguyên
-    text.chop(1);  // Xóa ký tự '%' cuối cùng
+    // Lo?i b? d?u % v� chuy?n th�nh s? nguy�n
+    text.chop(1);  // X�a k� t? '%' cu?i c�ng
     bool ok;
     int percentage = text.toInt(&ok);
 
-    // Nếu chuyển đổi thành công, tính toán tỷ lệ phần trăm
+    // N?u chuy?n d?i th�nh c�ng, t�nh to�n t? l? ph?n tram
     if (ok) {
         qreal scaleFactor = percentage / 100.0;
         QTextCursor cursor = ui->pteGcodeArea->textCursor();
-        ui->pteGcodeArea->selectAll(); // Chọn toàn bộ văn bản
-        ui->pteGcodeArea->setFontPointSize(baseFontSize * scaleFactor); // Thay đổi kích thước chữ
-        ui->pteGcodeArea->setTextCursor(cursor); // Đặt lại con trỏ văn bản
+        ui->pteGcodeArea->selectAll(); // Ch?n to�n b? van b?n
+        ui->pteGcodeArea->setFontPointSize(baseFontSize * scaleFactor); // Thay d?i k�ch thu?c ch?
+        ui->pteGcodeArea->setTextCursor(cursor); // �?t l?i con tr? van b?n
     }
 }
 
@@ -4101,6 +4119,24 @@ void RobotWindow::ConnectEncoder()
         return;
     }
 
+    // Choose connection type for Encoder
+    {
+        QStringList connectionItems; connectionItems << "Serial" << "Socket";
+        bool ok = false;
+        QString connectionType = QInputDialog::getItem(this, tr("Connection"), tr("Type:"), connectionItems, 0, false, &ok);
+        if (!ok || connectionType.isEmpty()) return;
+        if (connectionType == "Socket")
+        {
+            bool ok2 = false;
+            QString address = QInputDialog::getText(this, tr("Socket Address"), tr("IP:PORT"), QLineEdit::Normal, "127.0.0.1:8855", &ok2);
+            if (ok2 && !address.isEmpty())
+            {
+                emit ChangeDeviceState(ui->cbSelectedEncoder->currentText(), true, address);
+            }
+            return;
+        }
+    }
+
     QStringList items;
 
     Q_FOREACH(QSerialPortInfo portInfo, QSerialPortInfo::availablePorts())
@@ -4114,17 +4150,13 @@ void RobotWindow::ConnectEncoder()
     }
 
     bool ok;
-    QString item = QInputDialog::getItem(this, tr("COM Connection"), tr("COM Ports:"), items, 0, false, &ok);
+    QString item = QInputDialog::getItem(this, tr("Serial Connection"), tr("Serial Ports:"), items, 0, false, &ok);
     QString comName = item.mid(0, item.indexOf(" - "));
-
     if (ok && !item.isEmpty())
     {
-        bool ok2;
+        bool ok2; Q_UNUSED(ok2);
         QString baudrate = QInputDialog::getText(this, tr("Select Baudrate"), tr("Baudrate:"), QLineEdit::Normal, "115200", &ok2);
-        if (ok2 && !baudrate.isEmpty())
-        {
-            emit ChangeDeviceState(ui->cbSelectedEncoder->currentText(), (ui->pbConnectEncoder->text() == "Connect")?true:false, comName);
-        }
+        emit ChangeDeviceState(ui->cbSelectedEncoder->currentText(), true, comName);
     }
 }
 
@@ -4423,7 +4455,7 @@ void RobotWindow::LoadImages()
     {
 //        if (imageName.isEmpty())
 //        {
-//            qDebug() << "Không chọn ảnh";
+//            qDebug() << "Kh�ng ch?n ?nh";
 //            return;
 //        }
 
@@ -4441,7 +4473,7 @@ void RobotWindow::LoadImages()
 
 //        if (qImage.isNull())
 //        {
-//            qDebug() << "Không thể đọc ảnh";
+//            qDebug() << "Kh�ng th? d?c ?nh";
 //            return;
 //        }
 
@@ -4731,7 +4763,7 @@ void RobotWindow::GetMappingPointFromImage(QPointF point)
     QMatrix matrix = ImageProcessingInstance->GetNode("VisibleObjectsNode")->GetMatrix();
     QPointF realPoint = matrix.map(point);
 
-    //Làm tròn realPoint đến 2 chữ số thập phân
+    //L�m tr�n realPoint d?n 2 ch? s? th?p ph�n
     realPoint.setX(((float)((int)(realPoint.x() * 100))) / 100);
     realPoint.setY(((float)((int)(realPoint.y() * 100))) / 100);    
 
@@ -4850,7 +4882,7 @@ void RobotWindow::UnselectToolButtons()
 //            if (counter > 100)
 //                return;
 //            pls.append(poly);
-//            // Tìm tâm của poly
+//            // T�m t�m c?a poly
 //            QPointF center = PointTool::GetCenterOfPolygon(poly);
 //            texts.insert(QString::number(counter - 1), QPointF(center.x(), center.y()));
 //        }
@@ -4939,7 +4971,7 @@ void RobotWindow::SendImageToExternalScript(cv::Mat input)
             int colByte = input.cols*input.channels() * sizeof(uchar);
             for (int i = 0; i < input.rows; i++)
             {
-                char* data = (char*)input.ptr<uchar>(i); //first address of the i-th line
+                char* data = (char*)input.ptr<uchar>(i); //first Socket Address of the i-th line
                 int sedNum = 0;
                 char buf[1024] = { 0 };
 
@@ -4967,8 +4999,21 @@ void RobotWindow::ConnectConveyor()
         return;
     }
 
-    QStringList items;
+    // Choose connection type for Conveyor
+    {
+        QStringList connectionItems; connectionItems << "Serial" << "Socket";
+        bool ok=false; QString connectionType = QInputDialog::getItem(this, tr("Connection"), tr("Type:"), connectionItems, 0, false, &ok);
+        if (!ok || connectionType.isEmpty()) return;
+        if (connectionType == "Socket") {
+            bool ok2=false; QString address = QInputDialog::getText(this, tr("Socket Address"), tr("IP:PORT"), QLineEdit::Normal, "127.0.0.1:8855", &ok2);
+            if (ok2 && !address.isEmpty()) {
+                emit ChangeDeviceState(ui->cbSelectedConveyor->currentText(), true, address);
+            }
+            return;
+        }
+    }
 
+    QStringList items;
     Q_FOREACH(QSerialPortInfo portInfo, QSerialPortInfo::availablePorts())
     {
         QSerialPort serial(portInfo);
@@ -4980,17 +5025,13 @@ void RobotWindow::ConnectConveyor()
     }
 
     bool ok;
-    QString item = QInputDialog::getItem(this, tr("COM Connection"), tr("COM Ports:"), items, 0, false, &ok);
+    QString item = QInputDialog::getItem(this, tr("Serial Connection"), tr("Serial Ports:"), items, 0, false, &ok);
     QString comName = item.mid(0, item.indexOf(" - "));
-
     if (ok && !item.isEmpty())
     {
-        bool ok2;
+        bool ok2; Q_UNUSED(ok2);
         QString baudrate = QInputDialog::getText(this, tr("Select Baudrate"), tr("Baudrate:"), QLineEdit::Normal, "115200", &ok2);
-        if (ok2 && !baudrate.isEmpty())
-        {
-            emit ChangeDeviceState(ui->cbSelectedConveyor->currentText(), (ui->pbConveyorConnect->text() == "Connect")?true:false, comName);
-        }
+        emit ChangeDeviceState(ui->cbSelectedConveyor->currentText(), true, comName);
     }
 }
 
@@ -5216,7 +5257,7 @@ void RobotWindow::SetConveyorAbsolutePosition()
 
 void RobotWindow::TriggedCustomConveyor()
 {
-    QObject *senderObj = sender(); // Lấy đối tượng kích hoạt
+    QObject *senderObj = sender(); // L?y d?i tu?ng k�ch ho?t
 
     if (qobject_cast<QPushButton*>(senderObj) == ui->pbStartCustomConveyor1 || qobject_cast<QLineEdit*>(senderObj) == ui->pbStartCustomConveyor1Command)
     {
@@ -5449,8 +5490,21 @@ void RobotWindow::ConnectSliding()
         return;
     }
 
-    QStringList items;
+    // Choose connection type for Slider
+    {
+        QStringList connectionItems; connectionItems << "Serial" << "Socket";
+        bool ok=false; QString connectionType = QInputDialog::getItem(this, tr("Connection"), tr("Type:"), connectionItems, 0, false, &ok);
+        if (!ok || connectionType.isEmpty()) return;
+        if (connectionType == "Socket") {
+            bool ok2=false; QString address = QInputDialog::getText(this, tr("Socket Address"), tr("IP:PORT"), QLineEdit::Normal, "127.0.0.1:8855", &ok2);
+            if (ok2 && !address.isEmpty()) {
+                emit ChangeDeviceState(ui->cbSelectedSlider->currentText(), true, address);
+            }
+            return;
+        }
+    }
 
+    QStringList items;
     Q_FOREACH(QSerialPortInfo portInfo, QSerialPortInfo::availablePorts())
     {
         QSerialPort serial(portInfo);
@@ -5462,17 +5516,13 @@ void RobotWindow::ConnectSliding()
     }
 
     bool ok;
-    QString item = QInputDialog::getItem(this, tr("COM Connection"), tr("COM Ports:"), items, 0, false, &ok);
+    QString item = QInputDialog::getItem(this, tr("Serial Connection"), tr("Serial Ports:"), items, 0, false, &ok);
     QString comName = item.mid(0, item.indexOf(" - "));
-
     if (ok && !item.isEmpty())
     {
-        bool ok2;
+        bool ok2; Q_UNUSED(ok2);
         QString baudrate = QInputDialog::getText(this, tr("Select Baudrate"), tr("Baudrate:"), QLineEdit::Normal, "115200", &ok2);
-        if (ok2 && !baudrate.isEmpty())
-        {
-            emit ChangeDeviceState(ui->cbSelectedSlider->currentText(), (ui->pbSlidingConnect->text() == "Connect")?true:false, comName);
-        }
+        emit ChangeDeviceState(ui->cbSelectedSlider->currentText(), true, comName);
     }
 }
 
@@ -5506,15 +5556,15 @@ void RobotWindow::ConnectExternalMCU()
 
     // Ask for connection type (COM or WIFI)
     QStringList connectionItems;
-    connectionItems << "COM" << "WIFI";
+    connectionItems << "Serial" << "Socket";
     bool ok = false;
     QString connectionType = QInputDialog::getItem(this, tr("Connection"), tr("Type:"), connectionItems, 0, false, &ok);
     if (!ok || connectionType.isEmpty()) return;
 
-    if (connectionType == "WIFI")
+    if (connectionType == "Socket")
     {
         bool ok2 = false;
-        QString address = QInputDialog::getText(this, tr("ADDRESS"), tr("IP:PORT"), QLineEdit::Normal, "127.0.0.1:8855", &ok2);
+        QString address = QInputDialog::getText(this, tr("Socket Address"), tr("IP:PORT"), QLineEdit::Normal, "127.0.0.1:8855", &ok2);
         if (ok2 && !address.isEmpty())
         {
             emit ChangeDeviceState(ui->cbSelectedDevice->currentText(), true, address);
@@ -5536,7 +5586,7 @@ void RobotWindow::ConnectExternalMCU()
 
     {
         bool ok1 = false;
-        QString item = QInputDialog::getItem(this, tr("COM Connection"), tr("COM Ports:"), items, 0, false, &ok1);
+        QString item = QInputDialog::getItem(this, tr("Serial Connection"), tr("Serial Ports:"), items, 0, false, &ok1);
         QString comName = item.mid(0, item.indexOf(" - "));
         if (ok1 && !item.isEmpty())
         {
@@ -5616,13 +5666,13 @@ void RobotWindow::TerminalTransmit()
 
 void RobotWindow::RunExternalScript()
 {
-    // Kiểm tra button state để quyết định action
+    // Ki?m tra button state d? quy?t d?nh action
     if (ui->pbRunExternalScript->isChecked()) {
-        // Button được check - start Python script
+        // Button du?c check - start Python script
         QString pythonPath = ui->lePythonUrl->text();
         
         if (pythonPath.isEmpty()) {
-            // Không có path, uncheck button
+            // Kh�ng c� path, uncheck button
             ui->pbRunExternalScript->setChecked(false);
             qDebug() << "No Python script path specified";
             return;
@@ -5630,16 +5680,16 @@ void RobotWindow::RunExternalScript()
         
         runPythonFile(pythonPath);
     } else {
-        // Button được uncheck - stop Python script
+        // Button du?c uncheck - stop Python script
         if (process != nullptr && process->state() == QProcess::Running) {
             qDebug() << "Stopping Python script...";
             
             process->terminate();
             
-            // Đợi process terminate, nếu không thành công thì kill
-            if (!process->waitForFinished(3000)) { // Đợi 3 giây
+            // �?i process terminate, n?u kh�ng th�nh c�ng th� kill
+            if (!process->waitForFinished(3000)) { // �?i 3 gi�y
                 process->kill();
-                process->waitForFinished(1000); // Đợi thêm 1 giây cho kill
+                process->waitForFinished(1000); // �?i th�m 1 gi�y cho kill
             }
             
             qDebug() << "Python script stopped";
@@ -5753,10 +5803,10 @@ bool RobotWindow::openConnectionDialog(QSerialPort * comPort, QTcpSocket* socket
 
 	if (ok)
 	{
-		if (connectionType == "WIFI")
+		if (connectionType == "Socket")
 		{
 			bool ok2;
-			QString address = QInputDialog::getText(this, tr("ADDRESS"), tr("IP:PORT"), QLineEdit::Normal, "192.168.1.12:80", &ok2);
+			QString address = QInputDialog::getText(this, tr("Socket Address"), tr("IP:PORT"), QLineEdit::Normal, "192.168.1.12:80", &ok2);
 
 			if (address.indexOf(':') > -1)
 			{
@@ -5787,7 +5837,7 @@ bool RobotWindow::openConnectionDialog(QSerialPort * comPort, QTcpSocket* socket
 			}
 
 			bool ok;
-			QString item = QInputDialog::getItem(this, tr("COM Connection"), tr("COM Ports:"), items, 0, false, &ok);
+			QString item = QInputDialog::getItem(this, tr("Serial Connection"), tr("Serial Ports:"), items, 0, false, &ok);
             QString comName = item.mid(0, item.indexOf(" - "));
 
 			if (ok && !item.isEmpty())
@@ -5950,7 +6000,7 @@ bool RobotWindow::saveImageWithUniqueName(const cv::Mat &image, const QString &d
 
 
   QListWidgetItem* item = new QListWidgetItem(ui->lwImageList);
-  // Tách tên ảnh từ fileName
+  // T�ch t�n ?nh t? fileName
     QString imageName = QFileInfo(fileName).fileName();
   item->setText(imageName);
   item->setData(Qt::UserRole, fileName);
@@ -5989,9 +6039,9 @@ void RobotWindow::onImageItemClicked(QListWidgetItem *item)
 {
     QString imagePath = item->data(Qt::UserRole).toString();
 
-    // Hiển thị ảnh từ imagePath trên cửa sổ ImageLabel, 
-    // khi người dùng chọn một ảnh khác thì ảnh được load vào cửa sổ đó
-    // Khi người dùng tắt thì xóa cửa sổ đó
+    // Hi?n th? ?nh t? imagePath tr�n c?a s? ImageLabel, 
+    // khi ngu?i d�ng ch?n m?t ?nh kh�c th� ?nh du?c load v�o c?a s? d�
+    // Khi ngu?i d�ng t?t th� x�a c?a s? d�
 
 
     if (ImageLabel == NULL)
@@ -6005,9 +6055,9 @@ void RobotWindow::onImageItemClicked(QListWidgetItem *item)
     ImageLabel->hide();
 
     ImageLabel->setPixmap(QPixmap(imagePath));
-    // Chỉnh cửa sổ ImageLabel sao cho vừa với ảnh
+    // Ch?nh c?a s? ImageLabel sao cho v?a v?i ?nh
     ImageLabel->adjustSize();
-    //Hiển thị cửa sổ ImageLabel (QLabel) trên cửa sổ chính
+    //Hi?n th? c?a s? ImageLabel (QLabel) tr�n c?a s? ch�nh
     ImageLabel->show();;
 }
 
@@ -6116,33 +6166,33 @@ int RobotWindow::getIDfromName(QString fullName)
 
 void RobotWindow::runPythonFile(QString filePath)
 {
-    QString pythonExePath = "python"; // đường dẫn tới file python
+    QString pythonExePath = "python"; // du?ng d?n t?i file python
     QStringList arguments;
     arguments << filePath;
     
-    // Trích xuất IP và port từ UI
+    // Tr�ch xu?t IP v� port t? UI
     QStringList ipAndPort = ui->leIP->text().split(":");
     if (ipAndPort.size() >= 2) {
         QString host = ipAndPort.at(0);
         QString port = ipAndPort.at(1);
         
-        // Thêm các tham số cho Python script
+        // Th�m c�c tham s? cho Python script
         arguments << "-ip" << host;
         arguments << "-port" << port;
         
-        // Thêm image source type
+        // Th�m image source type
         if (ui->cbImageSource) {
             QString imageSource = ui->cbImageSource->currentText();
             arguments << "-type" << imageSource;
         }
         
-        // Thêm model path - tự động detect từ project folder hoặc setting
+        // Th�m model path - t? d?ng detect t? project folder ho?c setting
         QString modelPath = getModelPath();
         if (!modelPath.isEmpty()) {
             arguments << "-model" << modelPath;
         }
         
-        // Thêm object dimensions nếu có trong UI
+        // Th�m object dimensions n?u c� trong UI
         if (ui->leWRec && ui->leLRec) {
             QString objectWidth = ui->leWRec->text();
             QString objectHeight = ui->leLRec->text();
@@ -6152,44 +6202,44 @@ void RobotWindow::runPythonFile(QString filePath)
             }
         }
         
-        // Thêm project name
+        // Th�m project name
         arguments << "-project" << ProjectName;
         
         qDebug() << "Running Python script with arguments:" << arguments;
     }
 
-    // Kiểm tra đường dẫn tương đối hay tuyệt đối
+    // Ki?m tra du?ng d?n tuong d?i hay tuy?t d?i
     QFileInfo fileInfo(filePath);
     if (!fileInfo.isAbsolute()) {
         QDir dir(QCoreApplication::applicationDirPath());
         filePath = dir.absoluteFilePath(filePath);
     }
 
-    // Nếu quá trình chạy file python đã tồn tại thì tắt nó
+    // N?u qu� tr�nh ch?y file python d� t?n t?i th� t?t n�
     if (process != nullptr && process->state() == QProcess::Running) {
         process->terminate();
         
-        // Đợi process terminate, nếu không thành công thì kill
-        if (!process->waitForFinished(3000)) { // Đợi 3 giây
+        // �?i process terminate, n?u kh�ng th�nh c�ng th� kill
+        if (!process->waitForFinished(3000)) { // �?i 3 gi�y
             process->kill();
-            process->waitForFinished(1000); // Đợi thêm 1 giây cho kill
+            process->waitForFinished(1000); // �?i th�m 1 gi�y cho kill
         }
         
-        // Cleanup process cũ
+        // Cleanup process cu
         process->deleteLater();
         process = nullptr;
     }
 
-    // Cleanup process cũ nếu nó đã finished
+    // Cleanup process cu n?u n� d� finished
     if (process != nullptr && process->state() == QProcess::NotRunning) {
         process->deleteLater();
         process = nullptr;
     }
 
-    // Tạo quá trình mới để chạy file python
-    process = new QProcess(this); // Set parent để tự động cleanup
+    // T?o qu� tr�nh m?i d? ch?y file python
+    process = new QProcess(this); // Set parent d? t? d?ng cleanup
     
-    // Connect signals để theo dõi process state
+    // Connect signals d? theo d�i process state
     connect(process, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
             [=](int exitCode, QProcess::ExitStatus exitStatus) {
                 qDebug() << "Python script finished with exit code:" << exitCode;
@@ -6212,8 +6262,8 @@ void RobotWindow::runPythonFile(QString filePath)
     
     process->start(pythonExePath, arguments);
     
-    // Kiểm tra xem process có start thành công không
-    if (!process->waitForStarted(5000)) { // Đợi 5 giây
+    // Ki?m tra xem process c� start th�nh c�ng kh�ng
+    if (!process->waitForStarted(5000)) { // �?i 5 gi�y
         qDebug() << "Failed to start Python script:" << process->errorString();
         
         // Update button state
@@ -6230,14 +6280,14 @@ void RobotWindow::runPythonFile(QString filePath)
 
 QString RobotWindow::getModelPath()
 {
-    // 1. Kiểm tra từ setting trước
+    // 1. Ki?m tra t? setting tru?c
     QSettings settings;
     QString savedModelPath = settings.value("ExternalScript/ModelPath", "").toString();
     if (!savedModelPath.isEmpty() && QFile::exists(savedModelPath)) {
         return savedModelPath;
     }
     
-    // 2. Tự động detect từ project folder
+    // 2. T? d?ng detect t? project folder
     QStringList possiblePaths = {
         "models/best.pt",           // Relative to app directory
         "models/yolov8n.pt",        // Common YOLO model
@@ -6257,7 +6307,7 @@ QString RobotWindow::getModelPath()
         }
     }
     
-    // 3. Fallback - return empty hoặc default path
+    // 3. Fallback - return empty ho?c default path
     qDebug() << "No model file found, using default path";
     return "models/best.pt"; // Default fallback
 }
@@ -6479,11 +6529,11 @@ void RobotWindow::ProcessUIEvent()
 
 void RobotWindow::paintEvent(QPaintEvent *event)
 {
-    QMainWindow::paintEvent(event); // Gọi hàm cơ bản
+    QMainWindow::paintEvent(event); // G?i h�m co b?n
 
-//    int elapsed = performanceTimer.elapsed(); // Lấy thời gian đã trôi qua từ lần cuối
-//    qDebug() << "Thời gian giữa hai lần gọi paintEvent:" << elapsed << "milliseconds";
-//    performanceTimer.restart(); // Khởi động lại timer cho lần gọi kế tiếp
+//    int elapsed = performanceTimer.elapsed(); // L?y th?i gian d� tr�i qua t? l?n cu?i
+//    qDebug() << "Th?i gian gi?a hai l?n g?i paintEvent:" << elapsed << "milliseconds";
+//    performanceTimer.restart(); // Kh?i d?ng l?i timer cho l?n g?i k? ti?p
 }
 
 void RobotWindow::SaveDetectingUI()
@@ -6545,7 +6595,7 @@ void RobotWindow::initPlugins(QStringList plugins)
             continue;
         }
 
-        // ✅ Safe UI creation with validation
+        // ? Safe UI creation with validation
         QWidget* pluginUI = nullptr;
         try {
             pluginUI = pluginWidget->GetUI();
@@ -6566,7 +6616,7 @@ void RobotWindow::initPlugins(QStringList plugins)
             continue;
         }
 
-        // ✅ Success - add plugin safely
+        // ? Success - add plugin safely
         QString pluginTitle = pluginWidget->GetTitle();
         if (pluginTitle.isEmpty()) {
             pluginTitle = pluginWidget->GetName(); // Fallback to name
@@ -6575,7 +6625,7 @@ void RobotWindow::initPlugins(QStringList plugins)
         ui->twModule->addTab(pluginUI, pluginTitle);
         pluginList->append(pluginWidget);
         
-        // ✅ Connect plugin signals safely
+        // ? Connect plugin signals safely
         connectPluginSignals(pluginWidget);
         
         successCount++;
@@ -6583,7 +6633,7 @@ void RobotWindow::initPlugins(QStringList plugins)
         SoftwareLog(QString("Successfully loaded plugin: %1").arg(pluginWidget->GetName()));
     }
     
-    // ✅ User feedback
+    // ? User feedback
     if (successCount > 0) {
         qInfo() << QString("Successfully loaded %1 plugins").arg(successCount);
         SoftwareLog(QString("Plugin System: Successfully loaded %1 plugins").arg(successCount));
@@ -6593,7 +6643,7 @@ void RobotWindow::initPlugins(QStringList plugins)
         QString failedList = failedPlugins.join(", ");
         qWarning() << QString("Failed to load plugins: %1").arg(failedList);
         
-        // ✅ Log failed plugins to software debug (no popup)
+        // ? Log failed plugins to software debug (no popup)
         if (failedPlugins.size() > 0) {
             SoftwareLog(QString("Plugin Loading Warning: Failed to load plugins: %1")
                        .arg(failedList));
@@ -6606,7 +6656,7 @@ QList<DeltaXPlugin*> *RobotWindow::getPluginList()
     return pluginList;
 }
 
-// ✅ Safe plugin signal connection
+// ? Safe plugin signal connection
 void RobotWindow::connectPluginSignals(DeltaXPlugin* plugin)
 {
     if (!plugin) {
@@ -6639,7 +6689,7 @@ void RobotWindow::connectPluginSignals(DeltaXPlugin* plugin)
     }
 }
 
-// ✅ Find plugin by name safely
+// ? Find plugin by name safely
 DeltaXPlugin* RobotWindow::findPluginByName(const QString& name)
 {
     if (!pluginList || name.isEmpty()) {
@@ -7160,7 +7210,7 @@ bool RobotWindow::calculateZPlane() {
         double v2y = m_zPlane.p3.y - m_zPlane.p1.y;
         double v2z = m_zPlane.p3.z - m_zPlane.p1.z;
         
-        // Normal vector n = v1 × v2 (cross product)
+        // Normal vector n = v1 � v2 (cross product)
         m_zPlane.a = v1y * v2z - v1z * v2y;
         m_zPlane.b = v1z * v2x - v1x * v2z;
         m_zPlane.c = v1x * v2y - v1y * v2x;
@@ -7405,3 +7455,6 @@ void RobotWindow::SaveZPlaneSettings()
                .arg(m_zPlane.isValid ? "true" : "false")
                .arg(m_zPlane.isEnabled ? "true" : "false"));
 }
+
+
+

@@ -1,8 +1,11 @@
 #include "TrackingManager.h"
+#include <QMetaType>
 
 Tracking::Tracking(QObject *parent)
     : QObject{parent}
 {
+    // Ensure QList/QVector ObjectInfo types are registered for queued connections
+    qRegisterMetaType<QVector<ObjectInfo>>("QVector<ObjectInfo>");
     connect(&VirEncoder, &VirtualEncoder::positionUpdated, this, &Tracking::OnReceivceEncoderPosition);
 
     connect(this, &Tracking::UpdateVar, &VariableManager::instance(), &VariableManager::updateVar);
@@ -59,6 +62,12 @@ void Tracking::OnReceivceEncoderPosition(float value)
         emit UpdateTrackingDone();
         clientWaiting = false;
     }
+}
+
+// Wrapper with correct spelling; delegates to existing implementation
+void Tracking::OnReceiveEncoderPosition(float value)
+{
+    OnReceivceEncoderPosition(value);
 }
 
 void Tracking::ChangeObjectInfo(QString cmd)
@@ -200,9 +209,17 @@ void Tracking::UpdateTrackedObjectOffsets(QVector3D offset)
 //        emit UpdateVar((ListName + ".%1.IsPicked").arg(nextID), detected.isPicked);
 //        emit UpdateVar((ListName + ".%1.Offset").arg(nextID), detected.offset);
 
-        VariableManager::instance().updateVar(ListName + ".Count", nextID);
+        // Defer Count update to reflect actual size after appends
 
     }
+
+    // Update list count to actual tracked size
+    int trackedCount = 0;
+    {
+        QMutexLocker locker(&dataMutex);
+        trackedCount = TrackedObjects.size();
+    }
+    VariableManager::instance().updateVar(ListName + ".Count", trackedCount);
 
 }
 
@@ -262,22 +279,20 @@ void Tracking::updatePositions(double displacement) {
     // Thread-safe update and erase with mutex protection
     {
         QMutexLocker locker(&dataMutex);
+
+        // First, update positions of non-picked objects
+        for (auto &obj : TrackedObjects) {
+            if (!obj.isPicked) {
+                obj.center += effectiveDisplacement;
+            }
+        }
+
+        // Then, remove objects that moved out of bounds
         TrackedObjects.erase(std::remove_if(TrackedObjects.begin(), TrackedObjects.end(),
-            [&](auto& obj) {
-                if (!obj.isPicked) {
-                    obj.center += effectiveDisplacement;
-
-    //                QString xVarName = ListName + "." + QString::number(obj.id) + ".X";
-    //                QString yVarName = ListName + "." + QString::number(obj.id) + ".Y";
-
-                    //TODO: tim cach cap nhat vao bien nhung van dam bao toc do
-    //                emit UpdateVar(xVarName, obj.center.x());
-    //                emit UpdateVar(yVarName, obj.center.y());
-                }
-
-                return obj.center.x() > X_max || obj.center.x() < X_min || obj.center.y() > Y_max || obj.center.y() < Y_min;
-            }),
-            TrackedObjects.end());
+            [&](const auto& obj) {
+                return obj.center.x() > X_max || obj.center.x() < X_min ||
+                       obj.center.y() > Y_max || obj.center.y() < Y_min;
+            }), TrackedObjects.end());
     }
 
 //    for (auto it = TrackedObjects.begin(); it != TrackedObjects.end(); ) {
@@ -416,7 +431,7 @@ void TrackingManager::SaveDetectPosition(int id)
 void TrackingManager::UpdateTracking(int id)
 {
     currentTrackingRequest = id;
-    Trackings.at(id)->clientWaiting = true;
+    QMetaObject::invokeMethod(Trackings.at(id), "SetClientWaiting", Qt::QueuedConnection, Q_ARG(bool, true));
     QMetaObject::invokeMethod(Trackings.at(id), "ReadEncoder", Qt::QueuedConnection);
 }
 
@@ -541,8 +556,8 @@ void TrackingManager::SetEncoderPosition(int id, float value)
     {
         if (Trackings.at(i)->EncoderName.mid(7).toInt() == id)
         {
-//            QMetaObject::invokeMethod(Trackings.at(i), "OnReceiveEncoderPosition", Qt::QueuedConnection, Q_ARG(float, value));
-            Trackings.at(i)->OnReceivceEncoderPosition(value);
+            // Ensure thread-safe cross-thread call to the tracking instance
+            QMetaObject::invokeMethod(Trackings.at(i), "OnReceiveEncoderPosition", Qt::QueuedConnection, Q_ARG(float, value));
         }
     }
 }

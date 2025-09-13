@@ -1427,7 +1427,6 @@ release\moc_Authority.cpp: Authority.h \
 		VariableManager.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QHash \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QStandardItemModel \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QRegularExpression \
 		UnityTool.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QStandardItem \
 		ObjectInfo.h \
@@ -1483,6 +1482,7 @@ release\moc_Authority.cpp: Authority.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QMatrix \
 		PointCalculator.h \
 		PointToolController.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QRegularExpression \
 		InputValidator.h \
 		CloudPointToolController.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QTableWidget \
@@ -3174,8 +3174,6 @@ release\moc_FilterWindow.cpp: FilterWindow.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qicon.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QVector3D \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qvector3d.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QRegularExpression \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qregularexpression.h \
 		UnityTool.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qtextedit.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qabstractscrollarea.h \
@@ -3187,6 +3185,7 @@ release\moc_FilterWindow.cpp: FilterWindow.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QElapsedTimer \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QStandardItem \
 		ObjectInfo.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QMetaType \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QPushButton \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qpushbutton.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qabstractbutton.h \
@@ -3928,7 +3927,6 @@ release\moc_ImageViewer.cpp: ImageViewer.h \
 		VariableManager.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QHash \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QStandardItemModel \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QRegularExpression \
 		ObjectInfo.h \
 		PointTool.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QPolygonF \
@@ -4814,7 +4812,6 @@ release\moc_MainWindow.cpp: MainWindow.h \
 		VariableManager.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QHash \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QStandardItemModel \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QRegularExpression \
 		UnityTool.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QStandardItem \
 		ObjectInfo.h \
@@ -4870,6 +4867,7 @@ release\moc_MainWindow.cpp: MainWindow.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QMatrix \
 		PointCalculator.h \
 		PointToolController.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QRegularExpression \
 		InputValidator.h \
 		CloudPointToolController.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QTableWidget \
@@ -5184,6 +5182,7 @@ release\moc_ImageProcessing.cpp: ImageProcessing.h \
 		ObjectInfo.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QVector3D \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qvector3d.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QMetaType \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QDateTime \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qdatetime.h \
 		VariableManager.h \
@@ -5192,8 +5191,6 @@ release\moc_ImageProcessing.cpp: ImageProcessing.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QVariant \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QHash \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QStandardItemModel \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QRegularExpression \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qregularexpression.h \
 		release\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2019_64\bin\moc.exe
 	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include D:/working/source/Delta-X-Software/release/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -ID:/working/source/Delta-X-Software -ID:/working/source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" ImageProcessing.h -o release\moc_ImageProcessing.cpp
@@ -5271,6 +5268,7 @@ release\moc_ObjectInfoModel.cpp: ObjectInfoModel.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qtgui-config.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QVector \
 		ObjectInfo.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QMetaType \
 		release\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2019_64\bin\moc.exe
 	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include D:/working/source/Delta-X-Software/release/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -ID:/working/source/Delta-X-Software -ID:/working/source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" ObjectInfoModel.h -o release\moc_ObjectInfoModel.cpp
@@ -6679,7 +6677,6 @@ release\moc_ProjectManager.cpp: ProjectManager.h \
 		VariableManager.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QHash \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QStandardItemModel \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QRegularExpression \
 		UnityTool.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QStandardItem \
 		ObjectInfo.h \
@@ -6735,6 +6732,7 @@ release\moc_ProjectManager.cpp: ProjectManager.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QMatrix \
 		PointCalculator.h \
 		PointToolController.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QRegularExpression \
 		InputValidator.h \
 		CloudPointToolController.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QTableWidget \
@@ -7436,7 +7434,6 @@ release\moc_RobotWindow.cpp: RobotWindow.h \
 		VariableManager.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QHash \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QStandardItemModel \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QRegularExpression \
 		UnityTool.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QStandardItem \
 		ObjectInfo.h \
@@ -7493,6 +7490,7 @@ release\moc_RobotWindow.cpp: RobotWindow.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QMatrix \
 		PointCalculator.h \
 		PointToolController.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QRegularExpression \
 		InputValidator.h \
 		CloudPointToolController.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QTableWidget \
@@ -8039,8 +8037,6 @@ release\moc_SocketConnectionManager.cpp: SocketConnectionManager.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qicon.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QVector3D \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qvector3d.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QRegularExpression \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qregularexpression.h \
 		UnityTool.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qlabel.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qtwidgetsglobal.h \
@@ -8071,6 +8067,7 @@ release\moc_SocketConnectionManager.cpp: SocketConnectionManager.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qelapsedtimer.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QStandardItem \
 		ObjectInfo.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QMetaType \
 		3rd-party\opencv\build\include\opencv2\opencv.hpp \
 		3rd-party\opencv\build\include\opencv2\opencv_modules.hpp \
 		3rd-party\opencv\build\include\opencv2\core.hpp \
@@ -8843,7 +8840,6 @@ release\moc_TabDashboard.cpp: TabDashboard.h \
 		VariableManager.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QHash \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QStandardItemModel \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QRegularExpression \
 		UnityTool.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QStandardItem \
 		ObjectInfo.h \
@@ -8899,6 +8895,7 @@ release\moc_TabDashboard.cpp: TabDashboard.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QMatrix \
 		PointCalculator.h \
 		PointToolController.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QRegularExpression \
 		InputValidator.h \
 		CloudPointToolController.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QTableWidget \
@@ -9181,6 +9178,7 @@ release\moc_TaskNode.cpp: TaskNode.h \
 		ObjectInfo.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QVector3D \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qvector3d.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QMetaType \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QThread \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qthread.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qdeadlinetimer.h \
@@ -9192,8 +9190,6 @@ release\moc_TaskNode.cpp: TaskNode.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QVariant \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QHash \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QStandardItemModel \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QRegularExpression \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qregularexpression.h \
 		release\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2019_64\bin\moc.exe
 	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include D:/working/source/Delta-X-Software/release/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -ID:/working/source/Delta-X-Software -ID:/working/source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" TaskNode.h -o release\moc_TaskNode.cpp
@@ -9425,8 +9421,6 @@ release\moc_TrackingManager.cpp: TrackingManager.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qpixmap.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qfont.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qicon.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QRegularExpression \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qregularexpression.h \
 		UnityTool.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qlabel.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qtwidgetsglobal.h \
@@ -9454,6 +9448,7 @@ release\moc_TrackingManager.cpp: TrackingManager.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qpen.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QStandardItem \
 		ObjectInfo.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QMetaType \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QVector \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QMutex \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QMutexLocker \
@@ -9558,8 +9553,6 @@ release\moc_VariableManager.cpp: VariableManager.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qicon.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QVector3D \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qvector3d.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QRegularExpression \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qregularexpression.h \
 		UnityTool.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qlabel.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qtwidgetsglobal.h \
@@ -9590,6 +9583,7 @@ release\moc_VariableManager.cpp: VariableManager.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qelapsedtimer.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QStandardItem \
 		ObjectInfo.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QMetaType \
 		release\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2019_64\bin\moc.exe
 	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include D:/working/source/Delta-X-Software/release/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -ID:/working/source/Delta-X-Software -ID:/working/source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" VariableManager.h -o release\moc_VariableManager.cpp
@@ -9938,13 +9932,11 @@ release\moc_DeviceManager.cpp: device\DeviceManager.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtSerialPort\qserialportglobal.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtSerialPort\QSerialPortInfo \
 		C:\Qt\5.15.2\msvc2019_64\include\QtSerialPort\qserialportinfo.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QMutex \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QTimer \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qtimer.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qbasictimer.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QEventLoop \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qeventloop.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QDebug \
+		C:\Qt\5.15.2\msvc2019_64\include\QtNetwork\QTcpSocket \
+		C:\Qt\5.15.2\msvc2019_64\include\QtNetwork\qtcpsocket.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtNetwork\qtnetworkglobal.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtNetwork\qtnetwork-config.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtNetwork\qabstractsocket.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qdebug.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qhash.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qmap.h \
@@ -9956,6 +9948,14 @@ release\moc_DeviceManager.cpp: device\DeviceManager.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qcontiguouscache.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qsharedpointer.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qsharedpointer_impl.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QIODevice \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QMutex \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QTimer \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qtimer.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qbasictimer.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QEventLoop \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qeventloop.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QDebug \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QTime \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qdatetime.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QElapsedTimer \
@@ -9976,6 +9976,7 @@ release\moc_DeviceManager.cpp: device\DeviceManager.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QThread \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qthread.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qdeadlinetimer.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QString \
 		ScurveInterpolator.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QtMath \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qmath.h \
@@ -10012,7 +10013,6 @@ release\moc_DeviceManager.cpp: device\DeviceManager.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qpixmap.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qfont.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qicon.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QRegularExpression \
 		UnityTool.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qlabel.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qtwidgetsglobal.h \
@@ -10039,6 +10039,7 @@ release\moc_DeviceManager.cpp: device\DeviceManager.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qpen.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QStandardItem \
 		ObjectInfo.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QMetaType \
 		device\slider.h \
 		device\conveyor.h \
 		device\encoder.h \
@@ -10342,13 +10343,11 @@ release\moc_conveyor.cpp: device\conveyor.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtSerialPort\qserialportglobal.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtSerialPort\QSerialPortInfo \
 		C:\Qt\5.15.2\msvc2019_64\include\QtSerialPort\qserialportinfo.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QMutex \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QTimer \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qtimer.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qbasictimer.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QEventLoop \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qeventloop.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QDebug \
+		C:\Qt\5.15.2\msvc2019_64\include\QtNetwork\QTcpSocket \
+		C:\Qt\5.15.2\msvc2019_64\include\QtNetwork\qtcpsocket.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtNetwork\qtnetworkglobal.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtNetwork\qtnetwork-config.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtNetwork\qabstractsocket.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qdebug.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qhash.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qmap.h \
@@ -10360,6 +10359,14 @@ release\moc_conveyor.cpp: device\conveyor.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qcontiguouscache.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qsharedpointer.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qsharedpointer_impl.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QIODevice \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QMutex \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QTimer \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qtimer.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qbasictimer.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QEventLoop \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qeventloop.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QDebug \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QTime \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qdatetime.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QElapsedTimer \
@@ -10380,6 +10387,7 @@ release\moc_conveyor.cpp: device\conveyor.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QThread \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qthread.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qdeadlinetimer.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QString \
 		release\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2019_64\bin\moc.exe
 	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include D:/working/source/Delta-X-Software/release/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -ID:/working/source/Delta-X-Software -ID:/working/source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" device\conveyor.h -o release\moc_conveyor.cpp
@@ -10444,13 +10452,11 @@ release\moc_device.cpp: device\device.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtSerialPort\qserialportglobal.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtSerialPort\QSerialPortInfo \
 		C:\Qt\5.15.2\msvc2019_64\include\QtSerialPort\qserialportinfo.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QMutex \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QTimer \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qtimer.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qbasictimer.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QEventLoop \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qeventloop.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QDebug \
+		C:\Qt\5.15.2\msvc2019_64\include\QtNetwork\QTcpSocket \
+		C:\Qt\5.15.2\msvc2019_64\include\QtNetwork\qtcpsocket.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtNetwork\qtnetworkglobal.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtNetwork\qtnetwork-config.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtNetwork\qabstractsocket.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qdebug.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qhash.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qmap.h \
@@ -10462,6 +10468,14 @@ release\moc_device.cpp: device\device.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qcontiguouscache.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qsharedpointer.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qsharedpointer_impl.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QIODevice \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QMutex \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QTimer \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qtimer.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qbasictimer.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QEventLoop \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qeventloop.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QDebug \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QTime \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qdatetime.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QElapsedTimer \
@@ -10482,6 +10496,7 @@ release\moc_device.cpp: device\device.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QThread \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qthread.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qdeadlinetimer.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QString \
 		release\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2019_64\bin\moc.exe
 	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include D:/working/source/Delta-X-Software/release/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -ID:/working/source/Delta-X-Software -ID:/working/source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" device\device.h -o release\moc_device.cpp
@@ -10547,13 +10562,11 @@ release\moc_encoder.cpp: device\encoder.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtSerialPort\qserialportglobal.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtSerialPort\QSerialPortInfo \
 		C:\Qt\5.15.2\msvc2019_64\include\QtSerialPort\qserialportinfo.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QMutex \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QTimer \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qtimer.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qbasictimer.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QEventLoop \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qeventloop.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QDebug \
+		C:\Qt\5.15.2\msvc2019_64\include\QtNetwork\QTcpSocket \
+		C:\Qt\5.15.2\msvc2019_64\include\QtNetwork\qtcpsocket.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtNetwork\qtnetworkglobal.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtNetwork\qtnetwork-config.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtNetwork\qabstractsocket.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qdebug.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qhash.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qmap.h \
@@ -10565,6 +10578,14 @@ release\moc_encoder.cpp: device\encoder.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qcontiguouscache.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qsharedpointer.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qsharedpointer_impl.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QIODevice \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QMutex \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QTimer \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qtimer.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qbasictimer.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QEventLoop \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qeventloop.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QDebug \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QTime \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qdatetime.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QElapsedTimer \
@@ -10585,6 +10606,7 @@ release\moc_encoder.cpp: device\encoder.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QThread \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qthread.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qdeadlinetimer.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QString \
 		release\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2019_64\bin\moc.exe
 	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include D:/working/source/Delta-X-Software/release/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -ID:/working/source/Delta-X-Software -ID:/working/source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" device\encoder.h -o release\moc_encoder.cpp
@@ -10650,13 +10672,11 @@ release\moc_robot.cpp: device\robot.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtSerialPort\qserialportglobal.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtSerialPort\QSerialPortInfo \
 		C:\Qt\5.15.2\msvc2019_64\include\QtSerialPort\qserialportinfo.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QMutex \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QTimer \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qtimer.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qbasictimer.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QEventLoop \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qeventloop.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QDebug \
+		C:\Qt\5.15.2\msvc2019_64\include\QtNetwork\QTcpSocket \
+		C:\Qt\5.15.2\msvc2019_64\include\QtNetwork\qtcpsocket.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtNetwork\qtnetworkglobal.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtNetwork\qtnetwork-config.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtNetwork\qabstractsocket.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qdebug.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qhash.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qmap.h \
@@ -10668,6 +10688,14 @@ release\moc_robot.cpp: device\robot.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qcontiguouscache.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qsharedpointer.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qsharedpointer_impl.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QIODevice \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QMutex \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QTimer \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qtimer.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qbasictimer.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QEventLoop \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qeventloop.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QDebug \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QTime \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qdatetime.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QElapsedTimer \
@@ -10688,6 +10716,7 @@ release\moc_robot.cpp: device\robot.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QThread \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qthread.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qdeadlinetimer.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QString \
 		ScurveInterpolator.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QtMath \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qmath.h \
@@ -10724,7 +10753,6 @@ release\moc_robot.cpp: device\robot.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qpixmap.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qfont.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qicon.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QRegularExpression \
 		UnityTool.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qlabel.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qtwidgetsglobal.h \
@@ -10751,6 +10779,7 @@ release\moc_robot.cpp: device\robot.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qpen.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QStandardItem \
 		ObjectInfo.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QMetaType \
 		release\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2019_64\bin\moc.exe
 	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include D:/working/source/Delta-X-Software/release/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -ID:/working/source/Delta-X-Software -ID:/working/source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" device\robot.h -o release\moc_robot.cpp
@@ -10816,13 +10845,11 @@ release\moc_slider.cpp: device\slider.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtSerialPort\qserialportglobal.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtSerialPort\QSerialPortInfo \
 		C:\Qt\5.15.2\msvc2019_64\include\QtSerialPort\qserialportinfo.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QMutex \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QTimer \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qtimer.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qbasictimer.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QEventLoop \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qeventloop.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QDebug \
+		C:\Qt\5.15.2\msvc2019_64\include\QtNetwork\QTcpSocket \
+		C:\Qt\5.15.2\msvc2019_64\include\QtNetwork\qtcpsocket.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtNetwork\qtnetworkglobal.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtNetwork\qtnetwork-config.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtNetwork\qabstractsocket.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qdebug.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qhash.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qmap.h \
@@ -10834,6 +10861,14 @@ release\moc_slider.cpp: device\slider.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qcontiguouscache.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qsharedpointer.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qsharedpointer_impl.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QIODevice \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QMutex \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QTimer \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qtimer.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qbasictimer.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QEventLoop \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qeventloop.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QDebug \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QTime \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qdatetime.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QElapsedTimer \
@@ -10854,6 +10889,7 @@ release\moc_slider.cpp: device\slider.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QThread \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qthread.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qdeadlinetimer.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QString \
 		ScurveInterpolator.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QtMath \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qmath.h \
@@ -12810,7 +12846,6 @@ ui_RobotWindow.h: RobotWindow.ui \
 		VariableManager.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QHash \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QStandardItemModel \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QRegularExpression \
 		ObjectInfo.h \
 		PointTool.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QPolygonF \
@@ -13596,7 +13631,6 @@ release\main.obj: main.cpp RobotWindow.h \
 		VariableManager.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QHash \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QStandardItemModel \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QRegularExpression \
 		UnityTool.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QStandardItem \
 		ObjectInfo.h \
@@ -13653,6 +13687,7 @@ release\main.obj: main.cpp RobotWindow.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QMatrix \
 		PointCalculator.h \
 		PointToolController.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QRegularExpression \
 		InputValidator.h \
 		CloudPointToolController.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QTableWidget \
@@ -14484,7 +14519,6 @@ release\Authority.obj: Authority.cpp Authority.h \
 		VariableManager.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QHash \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QStandardItemModel \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QRegularExpression \
 		UnityTool.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QStandardItem \
 		ObjectInfo.h \
@@ -14540,6 +14574,7 @@ release\Authority.obj: Authority.cpp Authority.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QMatrix \
 		PointCalculator.h \
 		PointToolController.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QRegularExpression \
 		InputValidator.h \
 		CloudPointToolController.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QTableWidget \
@@ -14935,7 +14970,6 @@ release\CloudPointMapper.obj: CloudPointMapper.cpp CloudPointMapper.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qpixmap.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qfont.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qicon.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QRegularExpression \
 		UnityTool.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qlabel.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qtwidgetsglobal.h \
@@ -14964,6 +14998,7 @@ release\CloudPointMapper.obj: CloudPointMapper.cpp CloudPointMapper.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qelapsedtimer.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QStandardItem \
 		ObjectInfo.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QMetaType \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QDebug \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QFileDialog \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qfiledialog.h \
@@ -14975,8 +15010,7 @@ release\CloudPointMapper.obj: CloudPointMapper.cpp CloudPointMapper.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QDir \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QDateTime \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QtMath \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qmath.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QMetaType
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qmath.h
 
 release\CloudPointToolController.obj: CloudPointToolController.cpp CloudPointToolController.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QObject \
@@ -15661,7 +15695,6 @@ release\CloudPointToolController.obj: CloudPointToolController.cpp CloudPointToo
 		VariableManager.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QHash \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QStandardItemModel \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QRegularExpression \
 		UnityTool.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QStandardItem \
 		ObjectInfo.h \
@@ -15712,6 +15745,7 @@ release\CloudPointToolController.obj: CloudPointToolController.cpp CloudPointToo
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QMatrix \
 		PointCalculator.h \
 		PointToolController.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QRegularExpression \
 		sdk\DeltaXPlugin.h \
 		3rd-party\opencv\build\include\opencv2\core\core.hpp \
 		SmartDialog.h \
@@ -16602,8 +16636,6 @@ release\FilterWindow.obj: FilterWindow.cpp FilterWindow.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qicon.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QVector3D \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qvector3d.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QRegularExpression \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qregularexpression.h \
 		UnityTool.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qtextedit.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qabstractscrollarea.h \
@@ -16615,6 +16647,7 @@ release\FilterWindow.obj: FilterWindow.cpp FilterWindow.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QElapsedTimer \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QStandardItem \
 		ObjectInfo.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QMetaType \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QPushButton \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qpushbutton.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qabstractbutton.h \
@@ -17095,6 +17128,7 @@ release\GcodeScript.obj: GcodeScript.cpp GcodeScript.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QHash \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QStandardItemModel \
 		ObjectInfo.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QMetaType \
 		SoftwareManager.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QList \
 		ProjectManager.h \
@@ -17185,7 +17219,6 @@ release\GcodeScript.obj: GcodeScript.cpp GcodeScript.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QFlags \
 		C:\Qt\5.15.2\msvc2019_64\include\QtNetwork\QSslPreSharedKeyAuthenticator \
 		C:\Qt\5.15.2\msvc2019_64\include\QtNetwork\qsslpresharedkeyauthenticator.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QMetaType \
 		C:\Qt\5.15.2\msvc2019_64\include\QtNetwork\QNetworkReply \
 		C:\Qt\5.15.2\msvc2019_64\include\QtNetwork\qnetworkreply.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QIODevice \
@@ -17870,6 +17903,7 @@ release\ImageProcessing.obj: ImageProcessing.cpp ImageProcessing.h \
 		ObjectInfo.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QVector3D \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qvector3d.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QMetaType \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QDateTime \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qdatetime.h \
 		VariableManager.h \
@@ -17877,9 +17911,7 @@ release\ImageProcessing.obj: ImageProcessing.cpp ImageProcessing.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qsettings.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QVariant \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QHash \
-		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QStandardItemModel \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QRegularExpression \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qregularexpression.h
+		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QStandardItemModel
 
 release\ImageViewer.obj: ImageViewer.cpp ImageViewer.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QGraphicsView \
@@ -18366,7 +18398,6 @@ release\ImageViewer.obj: ImageViewer.cpp ImageViewer.h \
 		VariableManager.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QHash \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QStandardItemModel \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QRegularExpression \
 		ObjectInfo.h \
 		PointTool.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QPolygonF \
@@ -19246,7 +19277,6 @@ release\MainWindow.obj: MainWindow.cpp MainWindow.h \
 		VariableManager.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QHash \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QStandardItemModel \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QRegularExpression \
 		UnityTool.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QStandardItem \
 		ObjectInfo.h \
@@ -19302,6 +19332,7 @@ release\MainWindow.obj: MainWindow.cpp MainWindow.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QMatrix \
 		PointCalculator.h \
 		PointToolController.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QRegularExpression \
 		InputValidator.h \
 		CloudPointToolController.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QTableWidget \
@@ -21490,7 +21521,6 @@ release\ProjectManager.obj: ProjectManager.cpp ProjectManager.h \
 		VariableManager.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QHash \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QStandardItemModel \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QRegularExpression \
 		UnityTool.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QStandardItem \
 		ObjectInfo.h \
@@ -21546,6 +21576,7 @@ release\ProjectManager.obj: ProjectManager.cpp ProjectManager.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QMatrix \
 		PointCalculator.h \
 		PointToolController.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QRegularExpression \
 		InputValidator.h \
 		CloudPointToolController.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QTableWidget \
@@ -22245,7 +22276,6 @@ release\RobotWindow.obj: RobotWindow.cpp RobotWindow.h \
 		VariableManager.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QHash \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QStandardItemModel \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QRegularExpression \
 		UnityTool.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QStandardItem \
 		ObjectInfo.h \
@@ -22302,6 +22332,7 @@ release\RobotWindow.obj: RobotWindow.cpp RobotWindow.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QMatrix \
 		PointCalculator.h \
 		PointToolController.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QRegularExpression \
 		InputValidator.h \
 		CloudPointToolController.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QTableWidget \
@@ -22908,8 +22939,6 @@ release\SocketConnectionManager.obj: SocketConnectionManager.cpp SocketConnectio
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qicon.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QVector3D \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qvector3d.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QRegularExpression \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qregularexpression.h \
 		UnityTool.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qlabel.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qtwidgetsglobal.h \
@@ -22940,6 +22969,7 @@ release\SocketConnectionManager.obj: SocketConnectionManager.cpp SocketConnectio
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qelapsedtimer.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QStandardItem \
 		ObjectInfo.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QMetaType \
 		3rd-party\opencv\build\include\opencv2\opencv.hpp \
 		3rd-party\opencv\build\include\opencv2\opencv_modules.hpp \
 		3rd-party\opencv\build\include\opencv2\core.hpp \
@@ -23706,7 +23736,6 @@ release\SoftwareManager.obj: SoftwareManager.cpp SoftwareManager.h \
 		VariableManager.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QHash \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QStandardItemModel \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QRegularExpression \
 		UnityTool.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QStandardItem \
 		ObjectInfo.h \
@@ -23762,6 +23791,7 @@ release\SoftwareManager.obj: SoftwareManager.cpp SoftwareManager.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QMatrix \
 		PointCalculator.h \
 		PointToolController.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QRegularExpression \
 		InputValidator.h \
 		CloudPointToolController.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QTableWidget \
@@ -24475,7 +24505,6 @@ release\TabDashboard.obj: TabDashboard.cpp TabDashboard.h \
 		VariableManager.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QHash \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QStandardItemModel \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QRegularExpression \
 		UnityTool.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QStandardItem \
 		ObjectInfo.h \
@@ -24531,6 +24560,7 @@ release\TabDashboard.obj: TabDashboard.cpp TabDashboard.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QMatrix \
 		PointCalculator.h \
 		PointToolController.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QRegularExpression \
 		InputValidator.h \
 		CloudPointToolController.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QTableWidget \
@@ -24810,6 +24840,7 @@ release\TaskNode.obj: TaskNode.cpp TaskNode.h \
 		ObjectInfo.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QVector3D \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qvector3d.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QMetaType \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QThread \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qthread.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qdeadlinetimer.h \
@@ -24820,9 +24851,7 @@ release\TaskNode.obj: TaskNode.cpp TaskNode.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qsettings.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QVariant \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QHash \
-		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QStandardItemModel \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QRegularExpression \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qregularexpression.h
+		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QStandardItemModel
 
 release\TestCode.obj: TestCode.cpp testcode.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QObject \
@@ -25120,8 +25149,6 @@ release\TrackingManager.obj: TrackingManager.cpp TrackingManager.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qpixmap.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qfont.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qicon.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QRegularExpression \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qregularexpression.h \
 		UnityTool.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qlabel.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qtwidgetsglobal.h \
@@ -25149,6 +25176,7 @@ release\TrackingManager.obj: TrackingManager.cpp TrackingManager.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qpen.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QStandardItem \
 		ObjectInfo.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QMetaType \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QVector \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QMutex \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QMutexLocker
@@ -25250,8 +25278,6 @@ release\VariableManager.obj: VariableManager.cpp VariableManager.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qicon.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QVector3D \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qvector3d.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QRegularExpression \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qregularexpression.h \
 		UnityTool.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qlabel.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qtwidgetsglobal.h \
@@ -25282,7 +25308,10 @@ release\VariableManager.obj: VariableManager.cpp VariableManager.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qelapsedtimer.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QStandardItem \
 		ObjectInfo.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QDebug
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QMetaType \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QDebug \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QRegularExpression \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qregularexpression.h
 
 release\VersionManager.obj: VersionManager.cpp VersionManager.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QWidget \
@@ -26718,7 +26747,6 @@ release\UnityTool.obj: UnityTool.cpp UnityTool.h \
 		VariableManager.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QHash \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QStandardItemModel \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QRegularExpression \
 		ObjectInfo.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QFile \
 		DeltaVisualizer.h \
@@ -26773,6 +26801,7 @@ release\UnityTool.obj: UnityTool.cpp UnityTool.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QMatrix \
 		PointCalculator.h \
 		PointToolController.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QRegularExpression \
 		InputValidator.h \
 		CloudPointToolController.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QTableWidget \
@@ -26870,13 +26899,11 @@ release\DeviceManager.obj: device\DeviceManager.cpp device\DeviceManager.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtSerialPort\qserialportglobal.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtSerialPort\QSerialPortInfo \
 		C:\Qt\5.15.2\msvc2019_64\include\QtSerialPort\qserialportinfo.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QMutex \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QTimer \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qtimer.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qbasictimer.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QEventLoop \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qeventloop.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QDebug \
+		C:\Qt\5.15.2\msvc2019_64\include\QtNetwork\QTcpSocket \
+		C:\Qt\5.15.2\msvc2019_64\include\QtNetwork\qtcpsocket.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtNetwork\qtnetworkglobal.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtNetwork\qtnetwork-config.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtNetwork\qabstractsocket.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qdebug.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qhash.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qmap.h \
@@ -26888,6 +26915,14 @@ release\DeviceManager.obj: device\DeviceManager.cpp device\DeviceManager.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qcontiguouscache.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qsharedpointer.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qsharedpointer_impl.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QIODevice \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QMutex \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QTimer \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qtimer.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qbasictimer.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QEventLoop \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qeventloop.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QDebug \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QTime \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qdatetime.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QElapsedTimer \
@@ -26908,6 +26943,7 @@ release\DeviceManager.obj: device\DeviceManager.cpp device\DeviceManager.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QThread \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qthread.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qdeadlinetimer.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QString \
 		ScurveInterpolator.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QtMath \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qmath.h \
@@ -26944,7 +26980,6 @@ release\DeviceManager.obj: device\DeviceManager.cpp device\DeviceManager.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qpixmap.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qfont.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qicon.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QRegularExpression \
 		UnityTool.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qlabel.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qtwidgetsglobal.h \
@@ -26971,6 +27006,7 @@ release\DeviceManager.obj: device\DeviceManager.cpp device\DeviceManager.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qpen.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QStandardItem \
 		ObjectInfo.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QMetaType \
 		device\slider.h \
 		device\conveyor.h \
 		device\encoder.h
@@ -27268,13 +27304,11 @@ release\conveyor.obj: device\conveyor.cpp device\conveyor.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtSerialPort\qserialportglobal.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtSerialPort\QSerialPortInfo \
 		C:\Qt\5.15.2\msvc2019_64\include\QtSerialPort\qserialportinfo.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QMutex \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QTimer \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qtimer.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qbasictimer.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QEventLoop \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qeventloop.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QDebug \
+		C:\Qt\5.15.2\msvc2019_64\include\QtNetwork\QTcpSocket \
+		C:\Qt\5.15.2\msvc2019_64\include\QtNetwork\qtcpsocket.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtNetwork\qtnetworkglobal.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtNetwork\qtnetwork-config.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtNetwork\qabstractsocket.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qdebug.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qhash.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qmap.h \
@@ -27286,6 +27320,14 @@ release\conveyor.obj: device\conveyor.cpp device\conveyor.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qcontiguouscache.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qsharedpointer.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qsharedpointer_impl.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QIODevice \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QMutex \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QTimer \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qtimer.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qbasictimer.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QEventLoop \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qeventloop.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QDebug \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QTime \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qdatetime.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QElapsedTimer \
@@ -27305,7 +27347,8 @@ release\conveyor.obj: device\conveyor.cpp device\conveyor.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qjsonarray.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QThread \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qthread.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qdeadlinetimer.h
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qdeadlinetimer.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QString
 
 release\device.obj: device\device.cpp device\device.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QObject \
@@ -27367,13 +27410,11 @@ release\device.obj: device\device.cpp device\device.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtSerialPort\qserialportglobal.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtSerialPort\QSerialPortInfo \
 		C:\Qt\5.15.2\msvc2019_64\include\QtSerialPort\qserialportinfo.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QMutex \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QTimer \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qtimer.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qbasictimer.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QEventLoop \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qeventloop.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QDebug \
+		C:\Qt\5.15.2\msvc2019_64\include\QtNetwork\QTcpSocket \
+		C:\Qt\5.15.2\msvc2019_64\include\QtNetwork\qtcpsocket.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtNetwork\qtnetworkglobal.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtNetwork\qtnetwork-config.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtNetwork\qabstractsocket.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qdebug.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qhash.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qmap.h \
@@ -27385,6 +27426,14 @@ release\device.obj: device\device.cpp device\device.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qcontiguouscache.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qsharedpointer.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qsharedpointer_impl.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QIODevice \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QMutex \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QTimer \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qtimer.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qbasictimer.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QEventLoop \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qeventloop.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QDebug \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QTime \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qdatetime.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QElapsedTimer \
@@ -27404,7 +27453,8 @@ release\device.obj: device\device.cpp device\device.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qjsonarray.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QThread \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qthread.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qdeadlinetimer.h
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qdeadlinetimer.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QString
 
 release\encoder.obj: device\encoder.cpp device\encoder.h \
 		device\device.h \
@@ -27467,13 +27517,11 @@ release\encoder.obj: device\encoder.cpp device\encoder.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtSerialPort\qserialportglobal.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtSerialPort\QSerialPortInfo \
 		C:\Qt\5.15.2\msvc2019_64\include\QtSerialPort\qserialportinfo.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QMutex \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QTimer \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qtimer.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qbasictimer.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QEventLoop \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qeventloop.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QDebug \
+		C:\Qt\5.15.2\msvc2019_64\include\QtNetwork\QTcpSocket \
+		C:\Qt\5.15.2\msvc2019_64\include\QtNetwork\qtcpsocket.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtNetwork\qtnetworkglobal.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtNetwork\qtnetwork-config.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtNetwork\qabstractsocket.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qdebug.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qhash.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qmap.h \
@@ -27485,6 +27533,14 @@ release\encoder.obj: device\encoder.cpp device\encoder.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qcontiguouscache.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qsharedpointer.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qsharedpointer_impl.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QIODevice \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QMutex \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QTimer \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qtimer.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qbasictimer.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QEventLoop \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qeventloop.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QDebug \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QTime \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qdatetime.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QElapsedTimer \
@@ -27504,7 +27560,8 @@ release\encoder.obj: device\encoder.cpp device\encoder.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qjsonarray.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QThread \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qthread.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qdeadlinetimer.h
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qdeadlinetimer.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QString
 
 release\robot.obj: device\robot.cpp device\robot.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QObject \
@@ -27567,13 +27624,11 @@ release\robot.obj: device\robot.cpp device\robot.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtSerialPort\qserialportglobal.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtSerialPort\QSerialPortInfo \
 		C:\Qt\5.15.2\msvc2019_64\include\QtSerialPort\qserialportinfo.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QMutex \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QTimer \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qtimer.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qbasictimer.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QEventLoop \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qeventloop.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QDebug \
+		C:\Qt\5.15.2\msvc2019_64\include\QtNetwork\QTcpSocket \
+		C:\Qt\5.15.2\msvc2019_64\include\QtNetwork\qtcpsocket.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtNetwork\qtnetworkglobal.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtNetwork\qtnetwork-config.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtNetwork\qabstractsocket.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qdebug.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qhash.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qmap.h \
@@ -27585,6 +27640,14 @@ release\robot.obj: device\robot.cpp device\robot.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qcontiguouscache.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qsharedpointer.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qsharedpointer_impl.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QIODevice \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QMutex \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QTimer \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qtimer.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qbasictimer.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QEventLoop \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qeventloop.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QDebug \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QTime \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qdatetime.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QElapsedTimer \
@@ -27605,6 +27668,7 @@ release\robot.obj: device\robot.cpp device\robot.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QThread \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qthread.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qdeadlinetimer.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QString \
 		ScurveInterpolator.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QtMath \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qmath.h \
@@ -27641,7 +27705,6 @@ release\robot.obj: device\robot.cpp device\robot.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qpixmap.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qfont.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qicon.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QRegularExpression \
 		UnityTool.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qlabel.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qtwidgetsglobal.h \
@@ -27667,7 +27730,8 @@ release\robot.obj: device\robot.cpp device\robot.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qtextformat.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qpen.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QStandardItem \
-		ObjectInfo.h
+		ObjectInfo.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QMetaType
 
 release\slider.obj: device\slider.cpp device\slider.h \
 		device\device.h \
@@ -27730,13 +27794,11 @@ release\slider.obj: device\slider.cpp device\slider.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtSerialPort\qserialportglobal.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtSerialPort\QSerialPortInfo \
 		C:\Qt\5.15.2\msvc2019_64\include\QtSerialPort\qserialportinfo.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QMutex \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QTimer \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qtimer.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qbasictimer.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QEventLoop \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qeventloop.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QDebug \
+		C:\Qt\5.15.2\msvc2019_64\include\QtNetwork\QTcpSocket \
+		C:\Qt\5.15.2\msvc2019_64\include\QtNetwork\qtcpsocket.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtNetwork\qtnetworkglobal.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtNetwork\qtnetwork-config.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtNetwork\qabstractsocket.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qdebug.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qhash.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qmap.h \
@@ -27748,6 +27810,14 @@ release\slider.obj: device\slider.cpp device\slider.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qcontiguouscache.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qsharedpointer.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qsharedpointer_impl.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QIODevice \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QMutex \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QTimer \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qtimer.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qbasictimer.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QEventLoop \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qeventloop.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QDebug \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QTime \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qdatetime.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QElapsedTimer \
@@ -27768,6 +27838,7 @@ release\slider.obj: device\slider.cpp device\slider.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QThread \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qthread.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qdeadlinetimer.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QString \
 		ScurveInterpolator.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QtMath \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qmath.h \

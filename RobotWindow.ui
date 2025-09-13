@@ -706,7 +706,7 @@ QToolBox QScrollArea&gt;QWidget&gt;QWidget
               <enum>QTabWidget::Rounded</enum>
              </property>
              <property name="currentIndex">
-              <number>0</number>
+              <number>2</number>
              </property>
              <property name="usesScrollButtons">
               <bool>true</bool>
@@ -5705,7 +5705,7 @@ QFrame
                   <property name="geometry">
                    <rect>
                     <x>0</x>
-                    <y>0</y>
+                    <y>-542</y>
                     <width>644</width>
                     <height>3000</height>
                    </rect>
@@ -6617,17 +6617,7 @@ padding: 5px;</string>
                             <property name="verticalSpacing">
                              <number>4</number>
                             </property>
-                            <item row="2" column="4">
-                             <widget class="QLabel" name="label_177">
-                              <property name="text">
-                               <string>X</string>
-                              </property>
-                              <property name="alignment">
-                               <set>Qt::AlignCenter</set>
-                              </property>
-                             </widget>
-                            </item>
-                            <item row="12" column="4" colspan="3">
+                            <item row="14" column="4" colspan="3">
                              <widget class="QListWidget" name="lwMappingMatrixList">
                               <property name="sizePolicy">
                                <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
@@ -6655,106 +6645,6 @@ padding: 5px;</string>
                               </property>
                              </widget>
                             </item>
-                            <item row="8" column="3">
-                             <widget class="QLabel" name="label_200">
-                              <property name="font">
-                               <font>
-                                <bold>true</bold>
-                               </font>
-                              </property>
-                              <property name="text">
-                               <string>Destination</string>
-                              </property>
-                              <property name="alignment">
-                               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                              </property>
-                             </widget>
-                            </item>
-                            <item row="3" column="4">
-                             <widget class="QLineEdit" name="leSourcePoint1X"/>
-                            </item>
-                            <item row="0" column="3">
-                             <widget class="QLabel" name="label_165">
-                              <property name="text">
-                               <string>Name</string>
-                              </property>
-                              <property name="alignment">
-                               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                              </property>
-                             </widget>
-                            </item>
-                            <item row="6" column="4" colspan="3">
-                             <widget class="QPushButton" name="pbCalculateMappingMatrixTool">
-                              <property name="minimumSize">
-                               <size>
-                                <width>0</width>
-                                <height>20</height>
-                               </size>
-                              </property>
-                              <property name="text">
-                               <string>Calculate</string>
-                              </property>
-                             </widget>
-                            </item>
-                            <item row="10" column="4">
-                             <widget class="QLineEdit" name="leDestinationPoint2X"/>
-                            </item>
-                            <item row="3" column="7">
-                             <widget class="QToolButton" name="tbPasteSourcePoint1">
-                              <property name="toolTip">
-                               <string>Paste</string>
-                              </property>
-                              <property name="text">
-                               <string/>
-                              </property>
-                              <property name="icon">
-                               <iconset resource="resource.qrc">
-                                <normaloff>:/icon/Paste.png</normaloff>:/icon/Paste.png</iconset>
-                              </property>
-                              <property name="iconSize">
-                               <size>
-                                <width>16</width>
-                                <height>16</height>
-                               </size>
-                              </property>
-                             </widget>
-                            </item>
-                            <item row="10" column="8">
-                             <spacer name="horizontalSpacer_41">
-                              <property name="orientation">
-                               <enum>Qt::Horizontal</enum>
-                              </property>
-                              <property name="sizeHint" stdset="0">
-                               <size>
-                                <width>40</width>
-                                <height>20</height>
-                               </size>
-                              </property>
-                             </spacer>
-                            </item>
-                            <item row="9" column="4">
-                             <widget class="QLineEdit" name="leDestinationPoint1X"/>
-                            </item>
-                            <item row="9" column="3">
-                             <widget class="QLabel" name="label_204">
-                              <property name="text">
-                               <string>Point 1</string>
-                              </property>
-                              <property name="alignment">
-                               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                              </property>
-                             </widget>
-                            </item>
-                            <item row="5" column="3">
-                             <widget class="QLabel" name="label_201">
-                              <property name="text">
-                               <string>Point 2</string>
-                              </property>
-                              <property name="alignment">
-                               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                              </property>
-                             </widget>
-                            </item>
                             <item row="2" column="3">
                              <widget class="QLabel" name="label_166">
                               <property name="font">
@@ -6770,8 +6660,18 @@ padding: 5px;</string>
                               </property>
                              </widget>
                             </item>
-                            <item row="9" column="6">
-                             <widget class="QLineEdit" name="leDestinationPoint1Y"/>
+                            <item row="3" column="4">
+                             <widget class="QLineEdit" name="leSourcePoint1X"/>
+                            </item>
+                            <item row="2" column="6">
+                             <widget class="QLabel" name="label_202">
+                              <property name="text">
+                               <string>Y</string>
+                              </property>
+                              <property name="alignment">
+                               <set>Qt::AlignCenter</set>
+                              </property>
+                             </widget>
                             </item>
                             <item row="9" column="7">
                              <widget class="QToolButton" name="tbPasteDestinationPoint1">
@@ -6793,18 +6693,25 @@ padding: 5px;</string>
                               </property>
                              </widget>
                             </item>
-                            <item row="3" column="6">
-                             <widget class="QLineEdit" name="leSourcePoint1Y"/>
-                            </item>
-                            <item row="3" column="3">
-                             <widget class="QLabel" name="label_203">
+                            <item row="0" column="4" colspan="3">
+                             <widget class="QLineEdit" name="leMatrixName">
                               <property name="text">
-                               <string>Point 1</string>
-                              </property>
-                              <property name="alignment">
-                               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                               <string>#MappingMatrix1</string>
                               </property>
                              </widget>
+                            </item>
+                            <item row="10" column="8">
+                             <spacer name="horizontalSpacer_41">
+                              <property name="orientation">
+                               <enum>Qt::Horizontal</enum>
+                              </property>
+                              <property name="sizeHint" stdset="0">
+                               <size>
+                                <width>40</width>
+                                <height>20</height>
+                               </size>
+                              </property>
+                             </spacer>
                             </item>
                             <item row="5" column="7">
                              <widget class="QToolButton" name="tbPasteSourcePoint2">
@@ -6823,6 +6730,101 @@ padding: 5px;</string>
                                 <width>16</width>
                                 <height>16</height>
                                </size>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="5" column="3">
+                             <widget class="QLabel" name="label_201">
+                              <property name="text">
+                               <string>Point 2</string>
+                              </property>
+                              <property name="alignment">
+                               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="13" column="4" colspan="3">
+                             <widget class="QPushButton" name="pbAddMappingMatrix">
+                              <property name="minimumSize">
+                               <size>
+                                <width>0</width>
+                                <height>20</height>
+                               </size>
+                              </property>
+                              <property name="text">
+                               <string>Add Matrix</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="9" column="6">
+                             <widget class="QLineEdit" name="leDestinationPoint1Y"/>
+                            </item>
+                            <item row="3" column="3">
+                             <widget class="QLabel" name="label_203">
+                              <property name="text">
+                               <string>Point 1</string>
+                              </property>
+                              <property name="alignment">
+                               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="9" column="4">
+                             <widget class="QLineEdit" name="leDestinationPoint1X"/>
+                            </item>
+                            <item row="10" column="4">
+                             <widget class="QLineEdit" name="leDestinationPoint2X"/>
+                            </item>
+                            <item row="0" column="3">
+                             <widget class="QLabel" name="label_165">
+                              <property name="text">
+                               <string>Name</string>
+                              </property>
+                              <property name="alignment">
+                               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="12" column="4">
+                             <widget class="QLabel" name="lbMatrixDisplay">
+                              <property name="text">
+                               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;|m11 , m12, m13 |&lt;/p&gt;&lt;p&gt;|m21, m22, m23 |&lt;/p&gt;&lt;p&gt;|m31, m32, m33 |&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="10" column="6">
+                             <widget class="QLineEdit" name="leDestinationPoint2Y"/>
+                            </item>
+                            <item row="5" column="6">
+                             <widget class="QLineEdit" name="leSourcePoint2Y"/>
+                            </item>
+                            <item row="3" column="7">
+                             <widget class="QToolButton" name="tbPasteSourcePoint1">
+                              <property name="toolTip">
+                               <string>Paste</string>
+                              </property>
+                              <property name="text">
+                               <string/>
+                              </property>
+                              <property name="icon">
+                               <iconset resource="resource.qrc">
+                                <normaloff>:/icon/Paste.png</normaloff>:/icon/Paste.png</iconset>
+                              </property>
+                              <property name="iconSize">
+                               <size>
+                                <width>16</width>
+                                <height>16</height>
+                               </size>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="2" column="4">
+                             <widget class="QLabel" name="label_177">
+                              <property name="text">
+                               <string>X</string>
+                              </property>
+                              <property name="alignment">
+                               <set>Qt::AlignCenter</set>
                               </property>
                              </widget>
                             </item>
@@ -6849,11 +6851,15 @@ padding: 5px;</string>
                             <item row="5" column="4">
                              <widget class="QLineEdit" name="leSourcePoint2X"/>
                             </item>
-                            <item row="5" column="6">
-                             <widget class="QLineEdit" name="leSourcePoint2Y"/>
-                            </item>
-                            <item row="10" column="6">
-                             <widget class="QLineEdit" name="leDestinationPoint2Y"/>
+                            <item row="9" column="3">
+                             <widget class="QLabel" name="label_204">
+                              <property name="text">
+                               <string>Point 1</string>
+                              </property>
+                              <property name="alignment">
+                               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                              </property>
+                             </widget>
                             </item>
                             <item row="10" column="3">
                              <widget class="QLabel" name="label_205">
@@ -6865,32 +6871,26 @@ padding: 5px;</string>
                               </property>
                              </widget>
                             </item>
-                            <item row="2" column="6">
-                             <widget class="QLabel" name="label_202">
+                            <item row="3" column="6">
+                             <widget class="QLineEdit" name="leSourcePoint1Y"/>
+                            </item>
+                            <item row="8" column="3">
+                             <widget class="QLabel" name="label_200">
+                              <property name="font">
+                               <font>
+                                <bold>true</bold>
+                               </font>
+                              </property>
                               <property name="text">
-                               <string>Y</string>
+                               <string>Destination</string>
                               </property>
                               <property name="alignment">
-                               <set>Qt::AlignCenter</set>
+                               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                               </property>
                              </widget>
                             </item>
-                            <item row="7" column="4" colspan="3">
-                             <widget class="QLabel" name="lbMatrixDisplay">
-                              <property name="text">
-                               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;|m11 , m12, m13 |&lt;/p&gt;&lt;p&gt;|m21, m22, m23 |&lt;/p&gt;&lt;p&gt;|m31, m32, m33 |&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                              </property>
-                             </widget>
-                            </item>
-                            <item row="0" column="4" colspan="3">
-                             <widget class="QLineEdit" name="leMatrixName">
-                              <property name="text">
-                               <string>#MappingMatrix1</string>
-                              </property>
-                             </widget>
-                            </item>
-                            <item row="11" column="4" colspan="3">
-                             <widget class="QPushButton" name="pbAddMappingMatrix">
+                            <item row="11" column="4">
+                             <widget class="QPushButton" name="pbCalculateMappingMatrixTool">
                               <property name="minimumSize">
                                <size>
                                 <width>0</width>
@@ -6898,7 +6898,7 @@ padding: 5px;</string>
                                </size>
                               </property>
                               <property name="text">
-                               <string>Add Matrix</string>
+                               <string>Calculate</string>
                               </property>
                              </widget>
                             </item>

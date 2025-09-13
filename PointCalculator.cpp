@@ -218,26 +218,40 @@ bool PointCalculator::validatePointsForTransformation(const QPointF sourcePoints
 
 QTransform PointCalculator::calculateTransform(const QPointF& p1, const QPointF& p2, const QPointF& p1_prime, const QPointF& p2_prime)
 {
-    qreal dx = p1_prime.x() - p1.x();
-    qreal dy = p1_prime.y() - p1.y();
+    // Build affine transform directly via 6 parameters
+    QPointF v1 = p2 - p1;
+    QPointF v2 = p2_prime - p1_prime;
 
-    QPointF vec1 = p2 - p1;
-    QPointF vec2 = p2_prime - p1_prime;
+    qreal angle1 = std::atan2(v1.y(), v1.x());
+    qreal angle2 = std::atan2(v2.y(), v2.x());
+    qreal dtheta = angle2 - angle1;            // radians
 
-    qreal angle1 = std::atan2(vec1.y(), vec1.x());
-    qreal angle2 = std::atan2(vec2.y(), vec2.x());
+    qreal len1 = QLineF(p1, p2).length();
+    qreal len2 = QLineF(p1_prime, p2_prime).length();
+    qreal s = (len1 == 0.0) ? 1.0 : (len2 / len1);
 
-    qreal angle = angle2 - angle1;
-    angle = angle * 180.0 / M_PI;  // Convert to degrees
+    qreal c = s * std::cos(dtheta);
+    qreal si = s * std::sin(dtheta);
 
-    qreal scale = QLineF(p1_prime, p2_prime).length() / QLineF(p1, p2).length();
+    // For affine matrix [[a b dx],[c d dy],[0 0 1]] with rotation+scale then translate,
+    // mapping equations are:
+    // x' =  a*x + b*y + dx
+    // y' =  c*x + d*y + dy
+    // For pure rotation/scale: a=c_theta*s, b=s_theta*s, c=-s_theta*s, d=c_theta*s
+    qreal a =  c;
+    qreal b =  si;
+    qreal cc = -si;
+    qreal d =  c;
 
-    QTransform transform;
-    transform.scale(scale, scale);
-    transform.rotate(angle);
-    transform.translate(dx, dy);
+    // Solve translation so that p1 -> p1'
+    qreal dx = p1_prime.x() - (a * p1.x() + b * p1.y());
+    qreal dy = p1_prime.y() - (cc * p1.x() + d * p1.y());
 
-    return transform;
+    QTransform t;
+    t.setMatrix(a, b, 0,
+                cc, d, 0,
+                dx, dy, 1);
+    return t;
 }
 
 QMatrix PointCalculator::calculateTransformMatrix(const QPointF& p1, const QPointF& p2, const QPointF& p1_prime, const QPointF& p2_prime)

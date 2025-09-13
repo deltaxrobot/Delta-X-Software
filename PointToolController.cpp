@@ -11,7 +11,7 @@ PointToolController::PointToolController(RobotWindow* parent)
     , m_calculator(new PointCalculator())
     , m_cloudPointController(new CloudPointToolController(parent))
     , m_clipboard(QApplication::clipboard())
-    , m_useCloudMapping(true)
+    , m_useCloudMapping(false)
     , m_defaultCloudMappingVariable("CloudMapping")
 {
     // Register cv::Mat as Qt metatype

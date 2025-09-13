@@ -1424,6 +1424,32 @@ bool GcodeScript::findExeGcodeAndTransmit()
                                     return false;
                                 }
                             }
+                            else if (matrixVar.type() == QVariant::String) {
+                                // Try to parse "m11,m12,m21,m22,dx,dy"
+                                QString s = matrixVar.toString().trimmed();
+                                QStringList parts = s.split(',');
+                                if (parts.size() == 6) {
+                                    bool ok[6] = {false,false,false,false,false,false};
+                                    double a = parts[0].toDouble(&ok[0]);
+                                    double b = parts[1].toDouble(&ok[1]);
+                                    double c = parts[2].toDouble(&ok[2]);
+                                    double d = parts[3].toDouble(&ok[3]);
+                                    double tx= parts[4].toDouble(&ok[4]);
+                                    double ty= parts[5].toDouble(&ok[5]);
+                                    if (ok[0]&&ok[1]&&ok[2]&&ok[3]&&ok[4]&&ok[5]) {
+                                        QTransform matrix(a,b,0,
+                                                          c,d,0,
+                                                          tx,ty,1);
+                                        point = matrix.map(point);
+
+                                        QString varName = currentToken.mid(1);
+                                        saveVariable(varName, point);
+
+                                        gcodeOrder++;
+                                        return false;
+                                    }
+                                }
+                            }
                         }
                     }
                 }

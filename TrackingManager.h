@@ -17,6 +17,7 @@
 #include <algorithm>
 #include <QMutex>
 #include <QMutexLocker>
+#include <QMetaType>
 
 class VirtualEncoder : public QObject {
     Q_OBJECT
@@ -92,12 +93,16 @@ signals:
 
 public slots:
     void OnReceivceEncoderPosition(float value);
+    // Alias with correct spelling for clarity; keeps backward compatibility
+    void OnReceiveEncoderPosition(float value);
     void ChangeObjectInfo(QString cmd);
     void GetVirtualEncoderPosition();
     void ReadEncoder();
     void SetEncoderReverse(bool isReverse);
     void SaveCapturePosition();
     void SaveDetectPosition();
+    void SetClientWaiting(bool waiting) { clientWaiting = waiting; }
+    void SetUpdateTestPoint(bool enabled) { IsUpateTestPoint = enabled; }
 
     void UpdateTrackedObjects(QVector<ObjectInfo> detectedObjects, QString objectListName);
     void UpdateTrackedObjectOffsets(QVector3D offset);
