@@ -89,6 +89,7 @@ signals:
     void TestPointUpdated(QVector3D testPointOffset);
     void SendGcodeRequest(QString deviceName, QString gcode);
     void UpdateTrackingDone();
+    void UpdateTrackingDone(int id);
     void UpdateVar(QString name, QVariant value);
 
 public slots:
@@ -148,6 +149,7 @@ public slots:
     void ClearObjects(QString listName);
     void SetEncoderPosition(int id, float value);
     void ReadEncoderWhenSensorActive(int id);
+    void OnDoneUpdateTracking(int id);
     void OnDoneUpdateTracking();
 
 signals:

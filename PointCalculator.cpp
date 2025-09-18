@@ -233,19 +233,19 @@ QTransform PointCalculator::calculateTransform(const QPointF& p1, const QPointF&
     qreal c = s * std::cos(dtheta);
     qreal si = s * std::sin(dtheta);
 
-    // For affine matrix [[a b dx],[c d dy],[0 0 1]] with rotation+scale then translate,
-    // mapping equations are:
-    // x' =  a*x + b*y + dx
-    // y' =  c*x + d*y + dy
-    // For pure rotation/scale: a=c_theta*s, b=s_theta*s, c=-s_theta*s, d=c_theta*s
-    qreal a =  c;
-    qreal b =  si;
+    // QTransform mapping:
+    // x' = m11*x + m21*y + m31
+    // y' = m12*x + m22*y + m32
+    // For rotation+scale (theta, scale s):
+    // m11=c=s*cos(theta), m12=b=s*sin(theta), m21=cc=-s*sin(theta), m22=d=s*cos(theta)
+    qreal a  =  c;
+    qreal b  =  si;
     qreal cc = -si;
-    qreal d =  c;
+    qreal d  =  c;
 
-    // Solve translation so that p1 -> p1'
-    qreal dx = p1_prime.x() - (a * p1.x() + b * p1.y());
-    qreal dy = p1_prime.y() - (cc * p1.x() + d * p1.y());
+    // Solve translation so that p1 -> p1' using QTransform conventions
+    qreal dx = p1_prime.x() - (a  * p1.x() + cc * p1.y());
+    qreal dy = p1_prime.y() - (b  * p1.x() + d  * p1.y());
 
     QTransform t;
     t.setMatrix(a, b, 0,

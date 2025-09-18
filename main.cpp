@@ -46,7 +46,7 @@ void myMessageOutput(QtMsgType type, const QMessageLogContext &context, const QS
 int main(int argc, char *argv[])
 {
     QCoreApplication::addLibraryPath("./");
-    QApplication::setAttribute(Qt::AA_DisableHighDpiScaling);
+    // QApplication::setAttribute(Qt::AA_DisableHighDpiScaling);
 
     QApplication a(argc, argv);
 #ifdef QT_DEBUG

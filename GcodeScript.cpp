@@ -6,9 +6,10 @@
 #include <QDir>
 #include <QDateTime>
 #include <QDebug>
+#include <QTimer>
 
 // Initialize static regex patterns for better performance
-const QRegularExpression GcodeScript::m98Regex("M98\\s+([A-Za-z]+)(?:\\((.*)\\))?", QRegularExpression::OptimizeOnFirstUsageOption);
+const QRegularExpression GcodeScript::m98Regex("M98\\s+([A-Za-z][A-Za-z0-9]*)(?:\\((.*)\\))?", QRegularExpression::OptimizeOnFirstUsageOption);
 const QRegularExpression GcodeScript::objectInAreaRegex("\\(([^)]+)\\)", QRegularExpression::OptimizeOnFirstUsageOption);
 
 // Initialize cloud point mapper member variables
@@ -1347,7 +1348,17 @@ bool GcodeScript::findExeGcodeAndTransmit()
                             QVariant matrixVar = getValueAsQVariant(matrixName);
                             QPointF point;
 
-                            if (!pointName.isEmpty() && pointName[0] == '#')
+                            // Robustly parse Map arguments: support variables and numeric expressions
+                            QStringList args = splitArgsRespectingParens(pointName);
+                            if (args.size() >= 2)
+                            {
+                                // Evaluate each component separately to allow '#var', literals, or expressions
+                                QString xs = calculateExpressions(args[0]).trimmed();
+                                QString ys = calculateExpressions(args[1]).trimmed();
+                                point.setX(xs.toFloat());
+                                point.setY(ys.toFloat());
+                            }
+                            else if (!pointName.isEmpty() && pointName[0] == '#')
                             {
                                 if (pointName.contains("."))
                                 {
@@ -1358,18 +1369,31 @@ bool GcodeScript::findExeGcodeAndTransmit()
                                         point.setX(getValueAsQVariant(pointName + ".X").toFloat());
                                         point.setY(getValueAsQVariant(pointName + ".Y").toFloat());
                                     }
+                                    else
+                                    {
+                                        // Try direct scalar variables
+                                        point.setX(getValueAsQVariant(pointName).toFloat());
+                                        point.setY(0.0);
+                                    }
                                 }
                                 else
                                 {
-                                    point = getValueAsQVariant(pointName).value<QPointF>();
+                                    QVariant pv = getValueAsQVariant(pointName);
+                                    if (pv.canConvert<QPointF>())
+                                        point = pv.value<QPointF>();
+                                    else
+                                    {
+                                        // Fallback: try separate .X/.Y
+                                        point.setX(getValueAsQVariant(pointName + ".X").toFloat());
+                                        point.setY(getValueAsQVariant(pointName + ".Y").toFloat());
+                                    }
                                 }
                             }
                             else if (paras.count() > 1)
                             {
-                                point.setX(paras[0].toFloat());
-                                point.setY(paras[1].toFloat());
+                                point.setX(calculateExpressions(paras[0]).toFloat());
+                                point.setY(calculateExpressions(paras[1]).toFloat());
                             }
-
                             if (matrixVar.canConvert<QTransform>())
                             {
                                 QTransform matrix = matrixVar.value<QTransform>();
@@ -1612,6 +1636,66 @@ bool GcodeScript::findExeGcodeAndTransmit()
                     }
                 }
 
+                // Unified handling: M98 PupdateTracking / PupdateTracking(0)
+                if (functionName.startsWith("updatetracking"))
+                {
+                    int trackingId = 0;
+                    if (!paramList.isEmpty()) {
+                        bool ok=false; int v=paramList.first().toInt(&ok); if (ok) trackingId = v;
+                    } else {
+                        // Support numeric suffix: PupdateTracking0
+                        QRegularExpression rx("^updatetracking(\\d+)$");
+                        QRegularExpressionMatch mm = rx.match(functionName);
+                        if (mm.hasMatch()) trackingId = mm.captured(1).toInt();
+                    }
+
+                    transmitDeviceId = QString("tracking") + QString::number(trackingId);
+                    emit UpdateTrackingRequest(trackingId);
+
+                    // Fail-safe timeout to avoid hanging if no response
+                    const QString expected = transmitDeviceId;
+                    QTimer::singleShot(1500, this, [this, expected]() {
+                        if (!isRunning) return;
+                        if (this->transmitDeviceId == expected) {
+                            this->response = "Timeout";
+                            saveVariable("Response", this->response);
+                            TransmitNextGcode();
+                        }
+                    });
+
+                    gcodeOrder++;
+                    return true;
+                }
+
+                // Unified handling: M98 PcaptureAndDetect / PcaptureAndDetect(0)
+                if (functionName.startsWith("captureanddetect"))
+                {
+                    int trackingId = 0;
+                    if (!paramList.isEmpty()) {
+                        bool ok=false; int v=paramList.first().toInt(&ok); if (ok) trackingId = v;
+                    }
+
+                    // Persist default camera tracking ID for Camera to pick up
+                    saveVariable("Camera.TrackingID", QString::number(trackingId));
+
+                    transmitDeviceId = QString("tracking") + QString::number(trackingId);
+                    emit CaptureAndDetectRequest();
+
+                    // Fail-safe timeout to avoid hanging if no response
+                    const QString expected = transmitDeviceId;
+                    QTimer::singleShot(1500, this, [this, expected]() {
+                        if (!isRunning) return;
+                        if (this->transmitDeviceId == expected) {
+                            this->response = "Timeout";
+                            saveVariable("Response", this->response);
+                            TransmitNextGcode();
+                        }
+                    });
+
+                    gcodeOrder++;
+                    return true;
+                }
+
                 if (functionName == "addobject")
                 {                    
                     QString listName = paramList.at(0);
@@ -1736,6 +1820,16 @@ bool GcodeScript::findExeGcodeAndTransmit()
 
                     transmitDeviceId = QString("tracking") + valueS;
                     emit UpdateTrackingRequest(valueS.toInt());
+                    // Fail-safe timeout to avoid hanging if no response
+                    const QString expected = transmitDeviceId;
+                    QTimer::singleShot(1500, this, [this, expected]() {
+                        if (!isRunning) return;
+                        if (this->transmitDeviceId == expected) {
+                            this->response = "Timeout";
+                            saveVariable("Response", this->response);
+                            TransmitNextGcode();
+                        }
+                    });
 
                     gcodeOrder++;
                     return true;
@@ -1744,8 +1838,31 @@ bool GcodeScript::findExeGcodeAndTransmit()
                 // P_capture_and_detect = Pcaptureanddetect = PcaptureAndDetect
                 if (subProName.contains("captureanddetect") == true)
                 {
-                    transmitDeviceId = QString("tracking0");
+                    // Optional parameter: captureanddetect(n)
+                    int trackingId = 0;
+                    if (subProName.contains("("))
+                    {
+                        int pos1 = subProName.indexOf("(") + 1;
+                        int pos2 = subProName.lastIndexOf(")");
+                        trackingId = subProName.mid(pos1, pos2 - pos1).toInt();
+                    }
+
+                    // Persist default camera tracking ID for Camera to pick up
+                    saveVariable("Camera.TrackingID", QString::number(trackingId));
+
+                    transmitDeviceId = QString("tracking") + QString::number(trackingId);
                     emit CaptureAndDetectRequest();
+
+                    // Fail-safe timeout to avoid hanging if no response
+                    const QString expected = transmitDeviceId;
+                    QTimer::singleShot(1500, this, [this, expected]() {
+                        if (!isRunning) return;
+                        if (this->transmitDeviceId == expected) {
+                            this->response = "Timeout";
+                            saveVariable("Response", this->response);
+                            TransmitNextGcode();
+                        }
+                    });
 
                     gcodeOrder++;
                     return true;

@@ -1783,7 +1783,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
                   <property name="geometry">
                    <rect>
                     <x>0</x>
-                    <y>0</y>
+                    <y>-1821</y>
                     <width>532</width>
                     <height>2900</height>
                    </rect>
@@ -5704,8 +5704,8 @@ QFrame
                  <widget class="QWidget" name="wPointTool">
                   <property name="geometry">
                    <rect>
-                    <x>0</x>
-                    <y>-542</y>
+                    <x>-134</x>
+                    <y>-695</y>
                     <width>644</width>
                     <height>3000</height>
                    </rect>

@@ -1,5 +1,6 @@
-#include "camera.h"
+﻿#include "camera.h"
 #include <vector>
+#include <VariableManager.h>
 
 Camera::Camera(QObject *parent) : QObject(parent)
 {
@@ -99,6 +100,11 @@ void Camera::GeneralCapture()
 
 void Camera::CaptureAndDetect()
 {
+    // Allow external script to select tracking ID via VariableManager
+    QString prefix = VariableManager::instance().Prefix;
+    QString key = prefix.isEmpty() ? QString("Camera.TrackingID") : prefix + ".Camera.TrackingID";
+    int id = VariableManager::instance().getVar(key, trackingThreadId).toInt();
+    trackingThreadId = id;
     GeneralCapture();
 }
 

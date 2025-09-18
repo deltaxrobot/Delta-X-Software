@@ -607,6 +607,7 @@ public slots:
 
 private slots:
     void processBatchUpdates();
+    void ClearDetectObjects();
 };
 
 #endif // ROBOTWINDOW_H

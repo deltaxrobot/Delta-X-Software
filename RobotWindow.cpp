@@ -1,4 +1,4 @@
-#include "RobotWindow.h"
+ï»¿#include "RobotWindow.h"
 #include "ui_RobotWindow.h"
 #include "ChessboardConfigDialog.h"
 #include "SoftwareManager.h"
@@ -80,10 +80,10 @@ RobotWindow::~RobotWindow()
         qDebug() << "Terminating Python process on application close...";
         process->terminate();
         
-        // Ð?i process terminate, n?u không thành công thì kill
-        if (!process->waitForFinished(2000)) { // Ð?i 2 giây
+        // ï¿½?i process terminate, n?u khï¿½ng thï¿½nh cï¿½ng thï¿½ kill
+        if (!process->waitForFinished(2000)) { // ï¿½?i 2 giï¿½y
             process->kill();
-            process->waitForFinished(1000); // Ð?i thêm 1 giây cho kill
+            process->waitForFinished(1000); // ï¿½?i thï¿½m 1 giï¿½y cho kill
         }
         
         qDebug() << "Python process terminated";
@@ -393,7 +393,7 @@ void RobotWindow::InitSocketConnection()
 {
     // ---------- Server ---------
 
-    // Tìm ip local c?a máy
+    // Tï¿½m ip local c?a mï¿½y
     QString localIP = SocketConnectionManager::printLocalIpAddresses();
     // localhost:8844
     QStringList ipAndPort = ui->leIP->text().split(":");
@@ -573,16 +573,7 @@ void RobotWindow::InitObjectDetectingModule()
 
     connect(ui->pbFilterTool, SIGNAL(clicked(bool)), this, SLOT(OpenColorFilterWindow()));
 
-    connect(ui->pbClearDetectObjects, &QPushButton::clicked, [=](bool checked)
-    {
-        int id = ui->cbTrackingThreadForCamera->currentIndex();
-        QMetaObject::invokeMethod(TrackingManagerInstance->Trackings[id], "ClearTrackedObjects", Qt::QueuedConnection);
-        VariableManager::instance().removeVar(ui->leDetectingObjectListName->text());
-
-        QTimer::singleShot(300, [this](){
-            ui->pbCapture->clicked();
-        });
-    });
+    connect(ui->pbClearDetectObjects, &QPushButton::clicked, this, &RobotWindow::ClearDetectObjects);
 
     connect(ui->gvImageViewer, &ImageViewer::selectedNoTool, this, &RobotWindow::UnselectToolButtons);
 
@@ -752,13 +743,13 @@ void RobotWindow::InitObjectDetectingModule()
     ui->leMaxRadius->setText("100");
 
 
-    // Khai báo và kh?i t?o lu?ng
+    // Khai bï¿½o vï¿½ kh?i t?o lu?ng
     QThread* thread = new QThread;
     ImageProcessingInstance->moveToThread(thread);
 
     // K?t n?i d? d?m b?o s? s?ch s?
     connect(thread, &QThread::finished, ImageProcessingInstance, &QObject::deleteLater);
-    connect(thread, &QThread::finished, thread, &QObject::deleteLater); // Ð?m b?o lu?ng cung t? h?y khi k?t thúc
+    connect(thread, &QThread::finished, thread, &QObject::deleteLater); // ï¿½?m b?o lu?ng cung t? h?y khi k?t thï¿½c
 
     // B?t d?u lu?ng
     thread->start();
@@ -784,10 +775,10 @@ void RobotWindow::InitGcodeEditorModule()
     // T?o m?t QPalette m?i t? QPalette hi?n t?i c?a textEdit
     QPalette p = ui->pteGcodeArea->palette();
 
-    // Thi?t l?p màu cho van b?n
+    // Thi?t l?p mï¿½u cho van b?n
     p.setColor(QPalette::Text, QColor("#888888"));
 
-    // Áp d?ng QPalette m?i cho textEdit
+    // ï¿½p d?ng QPalette m?i cho textEdit
     ui->pteGcodeArea->setPalette(p);
 
     highlighter = new GCodeHighlighter(ui->pteGcodeArea->document());
@@ -874,7 +865,7 @@ void RobotWindow::InitUIController()
 
     connect(ui->tbCopyRobotPosition, &QPushButton::clicked, [=]()
     {
-        // Copy giá tr? vào clipboard
+        // Copy giï¿½ tr? vï¿½o clipboard
         QString text = QString("%1, %2, %3, %4, %5, %6").arg(ui->leX->text()).arg(ui->leY->text()).arg(ui->leZ->text()).arg(ui->leW->text()).arg(ui->leU->text()).arg(ui->leV->text());
         QClipboard *clipboard = QApplication::clipboard();
         clipboard->setText(text);
@@ -1088,7 +1079,7 @@ void RobotWindow::InitEvents()
 
     connect(ui->tbCopyTestTrackingPoint, &QPushButton::clicked, [=]()
     {
-        // Copy giá tr? vào clipboard
+        // Copy giï¿½ tr? vï¿½o clipboard
         QString text = QString("%1, %2, %3").arg(ui->leTestTrackingPointX->text()).arg(ui->leTestTrackingPointY->text()).arg(ui->leTestTrackingPointZ->text());
         QClipboard *clipboard = QApplication::clipboard();
         clipboard->setText(text);
@@ -1194,7 +1185,7 @@ void RobotWindow::InitEvents()
         std::vector<double> matrixArray;
         matrixArray.assign(m_currentPerspectiveMatrix.begin<double>(), m_currentPerspectiveMatrix.end<double>());
 
-        // T?o m?t QVariant t? m?ng và luu tr? ma tr?n
+        // T?o m?t QVariant t? m?ng vï¿½ luu tr? ma tr?n
         QVariant matrixVariant = QVariant::fromValue(matrixArray);
 
         VariableManager::instance().updateVar(prefix + ui->lePointMatrixName->text(), matrixVariant);
@@ -1540,7 +1531,7 @@ void RobotWindow::BackParentExplorer()
 void RobotWindow::CreateNewGcodeFile()
 {
     QString fileName = QInputDialog::getText(this, "Enter the file name you want to create", "Gcode file name:", QLineEdit::Normal, "");
-    // L?y du?ng d?n d?n thu m?c dang ch?n trên dir view
+    // L?y du?ng d?n d?n thu m?c dang ch?n trï¿½n dir view
 
     if (fileName == "")
         return;
@@ -1566,7 +1557,7 @@ void RobotWindow::SaveGcodeFile(QString fileName, QString content)
             path = fileInfo.absolutePath();
     }
 
-    // T?o d?i tu?ng QFile d? t?o file m?i và m? file d? vi?t d? li?u vào
+    // T?o d?i tu?ng QFile d? t?o file m?i vï¿½ m? file d? vi?t d? li?u vï¿½o
     QFile file(path + QString("/") + fileName);
     if (file.open(QIODevice::WriteOnly | QIODevice::Text))
     {
@@ -3040,10 +3031,10 @@ void RobotWindow::StandardFormatEditor()
     // ---- Number -----
     editorText = ui->pteGcodeArea->toPlainText();
 
-    // Xóa các dòng tr?ng không có kí t?
+    // Xï¿½a cï¿½c dï¿½ng tr?ng khï¿½ng cï¿½ kï¿½ t?
     editorText.replace(QRegularExpression("(\\n[ \\t]*){3,}"), "\n\n");
 
-    // G?p các kí t? tr?ng liên ti?p thành m?t kí t? tr?ng
+    // G?p cï¿½c kï¿½ t? tr?ng liï¿½n ti?p thï¿½nh m?t kï¿½ t? tr?ng
     editorText.replace(QRegularExpression("[\\t ]+"), " ");
 
     QList<QString> lines = editorText.split('\n');
@@ -3218,11 +3209,11 @@ void RobotWindow::StandardFormatEditor()
     
     // Provide user feedback about formatting results
     QString formatSummary = QString("G-code formatting completed:\n")
-                          + QString("• Total lines processed: %1\n").arg(lines.size())
-                          + QString("• G-code lines numbered: %1\n").arg(actualGcodeLines)
-                          + QString("• Control structures skipped: %1\n").arg(controlStructureLines)
-                          + QString("• Line increment: %1\n").arg(lineIncrement)
-                          + QString("• GOTO targets updated: %1").arg(gotoReplacements);
+                          + QString("ï¿½ Total lines processed: %1\n").arg(lines.size())
+                          + QString("ï¿½ G-code lines numbered: %1\n").arg(actualGcodeLines)
+                          + QString("ï¿½ Control structures skipped: %1\n").arg(controlStructureLines)
+                          + QString("ï¿½ Line increment: %1\n").arg(lineIncrement)
+                          + QString("ï¿½ GOTO targets updated: %1").arg(gotoReplacements);
     
     // Show summary in status bar or as tooltip (non-blocking)
     if (this->statusBar()) {
@@ -3418,7 +3409,7 @@ void RobotWindow::SaveProgram()
         inputDialog->setLabelText("Gcode file name:");
         QLineEdit *lineEdit = inputDialog->findChild<QLineEdit *>();
         if (lineEdit) {
-            lineEdit->setFixedWidth(500); // Ð?t ki?u dáng cho QLineEdit
+            lineEdit->setFixedWidth(500); // ï¿½?t ki?u dï¿½ng cho QLineEdit
         }
 
         if (inputDialog->exec() == QDialog::Accepted) {
@@ -3550,18 +3541,18 @@ void RobotWindow::changeFontSize(int index)
     // L?y n?i dung text t? QComboBox
     QString text = ui->cbGScriptEditorZoom->currentText();
 
-    // Lo?i b? d?u % và chuy?n thành s? nguyên
-    text.chop(1);  // Xóa ký t? '%' cu?i cùng
+    // Lo?i b? d?u % vï¿½ chuy?n thï¿½nh s? nguyï¿½n
+    text.chop(1);  // Xï¿½a kï¿½ t? '%' cu?i cï¿½ng
     bool ok;
     int percentage = text.toInt(&ok);
 
-    // N?u chuy?n d?i thành công, tính toán t? l? ph?n tram
+    // N?u chuy?n d?i thï¿½nh cï¿½ng, tï¿½nh toï¿½n t? l? ph?n tram
     if (ok) {
         qreal scaleFactor = percentage / 100.0;
         QTextCursor cursor = ui->pteGcodeArea->textCursor();
-        ui->pteGcodeArea->selectAll(); // Ch?n toàn b? van b?n
-        ui->pteGcodeArea->setFontPointSize(baseFontSize * scaleFactor); // Thay d?i kích thu?c ch?
-        ui->pteGcodeArea->setTextCursor(cursor); // Ð?t l?i con tr? van b?n
+        ui->pteGcodeArea->selectAll(); // Ch?n toï¿½n b? van b?n
+        ui->pteGcodeArea->setFontPointSize(baseFontSize * scaleFactor); // Thay d?i kï¿½ch thu?c ch?
+        ui->pteGcodeArea->setTextCursor(cursor); // ï¿½?t l?i con tr? van b?n
     }
 }
 
@@ -4455,7 +4446,7 @@ void RobotWindow::LoadImages()
     {
 //        if (imageName.isEmpty())
 //        {
-//            qDebug() << "Không ch?n ?nh";
+//            qDebug() << "Khï¿½ng ch?n ?nh";
 //            return;
 //        }
 
@@ -4473,7 +4464,7 @@ void RobotWindow::LoadImages()
 
 //        if (qImage.isNull())
 //        {
-//            qDebug() << "Không th? d?c ?nh";
+//            qDebug() << "Khï¿½ng th? d?c ?nh";
 //            return;
 //        }
 
@@ -4763,7 +4754,7 @@ void RobotWindow::GetMappingPointFromImage(QPointF point)
     QMatrix matrix = ImageProcessingInstance->GetNode("VisibleObjectsNode")->GetMatrix();
     QPointF realPoint = matrix.map(point);
 
-    //Làm tròn realPoint d?n 2 ch? s? th?p phân
+    //Lï¿½m trï¿½n realPoint d?n 2 ch? s? th?p phï¿½n
     realPoint.setX(((float)((int)(realPoint.x() * 100))) / 100);
     realPoint.setY(((float)((int)(realPoint.y() * 100))) / 100);    
 
@@ -4882,7 +4873,7 @@ void RobotWindow::UnselectToolButtons()
 //            if (counter > 100)
 //                return;
 //            pls.append(poly);
-//            // Tìm tâm c?a poly
+//            // Tï¿½m tï¿½m c?a poly
 //            QPointF center = PointTool::GetCenterOfPolygon(poly);
 //            texts.insert(QString::number(counter - 1), QPointF(center.x(), center.y()));
 //        }
@@ -5257,7 +5248,7 @@ void RobotWindow::SetConveyorAbsolutePosition()
 
 void RobotWindow::TriggedCustomConveyor()
 {
-    QObject *senderObj = sender(); // L?y d?i tu?ng kích ho?t
+    QObject *senderObj = sender(); // L?y d?i tu?ng kï¿½ch ho?t
 
     if (qobject_cast<QPushButton*>(senderObj) == ui->pbStartCustomConveyor1 || qobject_cast<QLineEdit*>(senderObj) == ui->pbStartCustomConveyor1Command)
     {
@@ -5459,6 +5450,17 @@ void RobotWindow::MoveTestTrackingPoint()
     if (m_pointToolController) {
         m_pointToolController->moveTestTrackingPoint();
     }
+}
+
+void RobotWindow::ClearDetectObjects()
+{
+    int id = ui->cbTrackingThreadForCamera->currentIndex();
+    QMetaObject::invokeMethod(TrackingManagerInstance->Trackings[id], "ClearTrackedObjects", Qt::QueuedConnection);
+    VariableManager::instance().removeVar(ui->leDetectingObjectListName->text());
+
+    QTimer::singleShot(300, [this](){
+        ui->pbCapture->clicked();
+    });
 }
 
 void RobotWindow::ProcessProximitySensorValue(int value)
@@ -5672,7 +5674,7 @@ void RobotWindow::RunExternalScript()
         QString pythonPath = ui->lePythonUrl->text();
         
         if (pythonPath.isEmpty()) {
-            // Không có path, uncheck button
+            // Khï¿½ng cï¿½ path, uncheck button
             ui->pbRunExternalScript->setChecked(false);
             qDebug() << "No Python script path specified";
             return;
@@ -5686,10 +5688,10 @@ void RobotWindow::RunExternalScript()
             
             process->terminate();
             
-            // Ð?i process terminate, n?u không thành công thì kill
-            if (!process->waitForFinished(3000)) { // Ð?i 3 giây
+            // ï¿½?i process terminate, n?u khï¿½ng thï¿½nh cï¿½ng thï¿½ kill
+            if (!process->waitForFinished(3000)) { // ï¿½?i 3 giï¿½y
                 process->kill();
-                process->waitForFinished(1000); // Ð?i thêm 1 giây cho kill
+                process->waitForFinished(1000); // ï¿½?i thï¿½m 1 giï¿½y cho kill
             }
             
             qDebug() << "Python script stopped";
@@ -6000,7 +6002,7 @@ bool RobotWindow::saveImageWithUniqueName(const cv::Mat &image, const QString &d
 
 
   QListWidgetItem* item = new QListWidgetItem(ui->lwImageList);
-  // Tách tên ?nh t? fileName
+  // Tï¿½ch tï¿½n ?nh t? fileName
     QString imageName = QFileInfo(fileName).fileName();
   item->setText(imageName);
   item->setData(Qt::UserRole, fileName);
@@ -6039,9 +6041,9 @@ void RobotWindow::onImageItemClicked(QListWidgetItem *item)
 {
     QString imagePath = item->data(Qt::UserRole).toString();
 
-    // Hi?n th? ?nh t? imagePath trên c?a s? ImageLabel, 
-    // khi ngu?i dùng ch?n m?t ?nh khác thì ?nh du?c load vào c?a s? dó
-    // Khi ngu?i dùng t?t thì xóa c?a s? dó
+    // Hi?n th? ?nh t? imagePath trï¿½n c?a s? ImageLabel, 
+    // khi ngu?i dï¿½ng ch?n m?t ?nh khï¿½c thï¿½ ?nh du?c load vï¿½o c?a s? dï¿½
+    // Khi ngu?i dï¿½ng t?t thï¿½ xï¿½a c?a s? dï¿½
 
 
     if (ImageLabel == NULL)
@@ -6057,7 +6059,7 @@ void RobotWindow::onImageItemClicked(QListWidgetItem *item)
     ImageLabel->setPixmap(QPixmap(imagePath));
     // Ch?nh c?a s? ImageLabel sao cho v?a v?i ?nh
     ImageLabel->adjustSize();
-    //Hi?n th? c?a s? ImageLabel (QLabel) trên c?a s? chính
+    //Hi?n th? c?a s? ImageLabel (QLabel) trï¿½n c?a s? chï¿½nh
     ImageLabel->show();;
 }
 
@@ -6170,29 +6172,29 @@ void RobotWindow::runPythonFile(QString filePath)
     QStringList arguments;
     arguments << filePath;
     
-    // Trích xu?t IP và port t? UI
+    // Trï¿½ch xu?t IP vï¿½ port t? UI
     QStringList ipAndPort = ui->leIP->text().split(":");
     if (ipAndPort.size() >= 2) {
         QString host = ipAndPort.at(0);
         QString port = ipAndPort.at(1);
         
-        // Thêm các tham s? cho Python script
+        // Thï¿½m cï¿½c tham s? cho Python script
         arguments << "-ip" << host;
         arguments << "-port" << port;
         
-        // Thêm image source type
+        // Thï¿½m image source type
         if (ui->cbImageSource) {
             QString imageSource = ui->cbImageSource->currentText();
             arguments << "-type" << imageSource;
         }
         
-        // Thêm model path - t? d?ng detect t? project folder ho?c setting
+        // Thï¿½m model path - t? d?ng detect t? project folder ho?c setting
         QString modelPath = getModelPath();
         if (!modelPath.isEmpty()) {
             arguments << "-model" << modelPath;
         }
         
-        // Thêm object dimensions n?u có trong UI
+        // Thï¿½m object dimensions n?u cï¿½ trong UI
         if (ui->leWRec && ui->leLRec) {
             QString objectWidth = ui->leWRec->text();
             QString objectHeight = ui->leLRec->text();
@@ -6202,7 +6204,7 @@ void RobotWindow::runPythonFile(QString filePath)
             }
         }
         
-        // Thêm project name
+        // Thï¿½m project name
         arguments << "-project" << ProjectName;
         
         qDebug() << "Running Python script with arguments:" << arguments;
@@ -6215,14 +6217,14 @@ void RobotWindow::runPythonFile(QString filePath)
         filePath = dir.absoluteFilePath(filePath);
     }
 
-    // N?u quá trình ch?y file python dã t?n t?i thì t?t nó
+    // N?u quï¿½ trï¿½nh ch?y file python dï¿½ t?n t?i thï¿½ t?t nï¿½
     if (process != nullptr && process->state() == QProcess::Running) {
         process->terminate();
         
-        // Ð?i process terminate, n?u không thành công thì kill
-        if (!process->waitForFinished(3000)) { // Ð?i 3 giây
+        // ï¿½?i process terminate, n?u khï¿½ng thï¿½nh cï¿½ng thï¿½ kill
+        if (!process->waitForFinished(3000)) { // ï¿½?i 3 giï¿½y
             process->kill();
-            process->waitForFinished(1000); // Ð?i thêm 1 giây cho kill
+            process->waitForFinished(1000); // ï¿½?i thï¿½m 1 giï¿½y cho kill
         }
         
         // Cleanup process cu
@@ -6230,16 +6232,16 @@ void RobotWindow::runPythonFile(QString filePath)
         process = nullptr;
     }
 
-    // Cleanup process cu n?u nó dã finished
+    // Cleanup process cu n?u nï¿½ dï¿½ finished
     if (process != nullptr && process->state() == QProcess::NotRunning) {
         process->deleteLater();
         process = nullptr;
     }
 
-    // T?o quá trình m?i d? ch?y file python
+    // T?o quï¿½ trï¿½nh m?i d? ch?y file python
     process = new QProcess(this); // Set parent d? t? d?ng cleanup
     
-    // Connect signals d? theo dõi process state
+    // Connect signals d? theo dï¿½i process state
     connect(process, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
             [=](int exitCode, QProcess::ExitStatus exitStatus) {
                 qDebug() << "Python script finished with exit code:" << exitCode;
@@ -6262,8 +6264,8 @@ void RobotWindow::runPythonFile(QString filePath)
     
     process->start(pythonExePath, arguments);
     
-    // Ki?m tra xem process có start thành công không
-    if (!process->waitForStarted(5000)) { // Ð?i 5 giây
+    // Ki?m tra xem process cï¿½ start thï¿½nh cï¿½ng khï¿½ng
+    if (!process->waitForStarted(5000)) { // ï¿½?i 5 giï¿½y
         qDebug() << "Failed to start Python script:" << process->errorString();
         
         // Update button state
@@ -6529,9 +6531,9 @@ void RobotWindow::ProcessUIEvent()
 
 void RobotWindow::paintEvent(QPaintEvent *event)
 {
-    QMainWindow::paintEvent(event); // G?i hàm co b?n
+    QMainWindow::paintEvent(event); // G?i hï¿½m co b?n
 
-//    int elapsed = performanceTimer.elapsed(); // L?y th?i gian dã trôi qua t? l?n cu?i
+//    int elapsed = performanceTimer.elapsed(); // L?y th?i gian dï¿½ trï¿½i qua t? l?n cu?i
 //    qDebug() << "Th?i gian gi?a hai l?n g?i paintEvent:" << elapsed << "milliseconds";
 //    performanceTimer.restart(); // Kh?i d?ng l?i timer cho l?n g?i k? ti?p
 }
@@ -7210,7 +7212,7 @@ bool RobotWindow::calculateZPlane() {
         double v2y = m_zPlane.p3.y - m_zPlane.p1.y;
         double v2z = m_zPlane.p3.z - m_zPlane.p1.z;
         
-        // Normal vector n = v1 × v2 (cross product)
+        // Normal vector n = v1 ï¿½ v2 (cross product)
         m_zPlane.a = v1y * v2z - v1z * v2y;
         m_zPlane.b = v1z * v2x - v1x * v2z;
         m_zPlane.c = v1x * v2y - v1y * v2x;

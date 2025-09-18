@@ -59,6 +59,7 @@ void Tracking::OnReceivceEncoderPosition(float value)
 
     if (clientWaiting == true)
     {
+        emit UpdateTrackingDone(ID);
         emit UpdateTrackingDone();
         clientWaiting = false;
     }
@@ -430,6 +431,12 @@ void TrackingManager::SaveDetectPosition(int id)
 
 void TrackingManager::UpdateTracking(int id)
 {
+    // Bounds check to avoid crash and avoid hanging GScript
+    if (id < 0 || id >= Trackings.count())
+    {
+        emit GotResponse(QString("tracking") + QString::number(id), "Done");
+        return;
+    }
     currentTrackingRequest = id;
     QMetaObject::invokeMethod(Trackings.at(id), "SetClientWaiting", Qt::QueuedConnection, Q_ARG(bool, true));
     QMetaObject::invokeMethod(Trackings.at(id), "ReadEncoder", Qt::QueuedConnection);
@@ -567,9 +574,20 @@ void TrackingManager::ReadEncoderWhenSensorActive(int id)
 
 }
 
+void TrackingManager::OnDoneUpdateTracking(int id)
+{
+    emit GotResponse(QString("tracking") + QString::number(id), "Done");
+}
+
 void TrackingManager::OnDoneUpdateTracking()
 {
-    emit GotResponse(QString("tracking") + QString::number(currentTrackingRequest), "Done");
+    // Derive tracking id from sender to avoid global state races
+    QObject* s = sender();
+    auto tracking = qobject_cast<Tracking*>(s);
+    if (tracking)
+    {
+        emit GotResponse(QString("tracking") + QString::number(tracking->ID), "Done");
+    }
 }
 
 VirtualEncoder::VirtualEncoder(float initialPosition, float velocity, QObject *parent)

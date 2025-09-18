@@ -335,7 +335,7 @@ QString Robot::syncGcode(QString cmd)
 
         QVector3D newPosition = calculateSyncPosition(QVector3D(old_X, old_Y, old_Z), QVector3D(X, Y, Z), sync_vector);
 
-        if (robotModel == "Delta X S")
+        if (robotModel == "Delta X S" || robotModel == "Delta X 3")
         {
             return QString("G01 X%1 Y%2 Z%3 W%4 F%5 A%6 S%7 E%8 J%9").arg(newPosition.x()).arg(newPosition.y()).arg(newPosition.z()).arg(W).arg(F).arg(A).arg(S).arg(E).arg(J);
         }
