@@ -2385,7 +2385,7 @@ public:
         saObjectDetecting->setWidgetResizable(true);
         wObjectDetecting = new QWidget();
         wObjectDetecting->setObjectName(QString::fromUtf8("wObjectDetecting"));
-        wObjectDetecting->setGeometry(QRect(0, -2124, 631, 3500));
+        wObjectDetecting->setGeometry(QRect(0, 0, 631, 3500));
         wObjectDetecting->setMinimumSize(QSize(100, 3500));
         wObjectDetecting->setStyleSheet(QString::fromUtf8("QWidget#wObjectDetecting\n"
 "{	\n"
@@ -4104,9 +4104,9 @@ public:
 
         wConveyorCanvas = new QWidget(fConveyorVisualization);
         wConveyorCanvas->setObjectName(QString::fromUtf8("wConveyorCanvas"));
-        wConveyorCanvas->setMinimumSize(QSize(600, 350));
         sizePolicy3.setHeightForWidth(wConveyorCanvas->sizePolicy().hasHeightForWidth());
         wConveyorCanvas->setSizePolicy(sizePolicy3);
+        wConveyorCanvas->setMinimumSize(QSize(600, 350));
         wConveyorCanvas->setStyleSheet(QString::fromUtf8("background-color: #2A2A2C; border: 1px solid #404040;"));
 
         verticalLayout_ConveyorViz->addWidget(wConveyorCanvas);
@@ -4246,7 +4246,7 @@ public:
         saPointTool->setWidgetResizable(true);
         wPointTool = new QWidget();
         wPointTool->setObjectName(QString::fromUtf8("wPointTool"));
-        wPointTool->setGeometry(QRect(0, 0, 619, 3000));
+        wPointTool->setGeometry(QRect(0, -1011, 619, 3000));
         wPointTool->setMinimumSize(QSize(0, 3000));
         wPointTool->setStyleSheet(QString::fromUtf8("QWidget#wPointTool\n"
 "{	\n"
@@ -11043,7 +11043,7 @@ public:
 
         pbRunServer->setDefault(false);
         pbOpenWebControl->setDefault(false);
-        twModule->setCurrentIndex(1);
+        twModule->setCurrentIndex(2);
         twGcodeEditor->setCurrentIndex(0);
         pbImageMapping->setDefault(false);
         cbImageSource->setCurrentIndex(0);

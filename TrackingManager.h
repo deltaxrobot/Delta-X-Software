@@ -113,6 +113,7 @@ public slots:
     void ClearTrackedObjects();
     void RemoveTrackedObjects(int id);
     void SetObjectPickedByUID(int uid);
+    void AddObjectDirectly(const ObjectInfo& obj);
     QVector<ObjectInfo> getTrackedObjectsCopy() const;
 private:
     QVector3D calculateMoved(float distance);
@@ -150,6 +151,7 @@ public slots:
     void AddObject(QString listName, QList<QStringList> list);
     void ClearObjects(QString listName);
     void SetObjectPickedByUID(QString listName, int uid);
+    void AddObjectToTracking(QString listName, const ObjectInfo& obj);
     void SetEncoderPosition(int id, float value);
     void ReadEncoderWhenSensorActive(int id);
     void OnDoneUpdateTracking(int id);

@@ -1128,7 +1128,7 @@ class Ui_RobotWindow(object):
         self.saObjectDetecting.setWidgetResizable(True)
         self.wObjectDetecting = QWidget()
         self.wObjectDetecting.setObjectName(u"wObjectDetecting")
-        self.wObjectDetecting.setGeometry(QRect(0, -2124, 631, 3500))
+        self.wObjectDetecting.setGeometry(QRect(0, 0, 631, 3500))
         self.wObjectDetecting.setMinimumSize(QSize(100, 3500))
         self.wObjectDetecting.setStyleSheet(u"QWidget#wObjectDetecting\n"
 "{	\n"
@@ -2847,9 +2847,9 @@ class Ui_RobotWindow(object):
 
         self.wConveyorCanvas = QWidget(self.fConveyorVisualization)
         self.wConveyorCanvas.setObjectName(u"wConveyorCanvas")
-        self.wConveyorCanvas.setMinimumSize(QSize(600, 350))
         sizePolicy3.setHeightForWidth(self.wConveyorCanvas.sizePolicy().hasHeightForWidth())
         self.wConveyorCanvas.setSizePolicy(sizePolicy3)
+        self.wConveyorCanvas.setMinimumSize(QSize(600, 350))
         self.wConveyorCanvas.setStyleSheet(u"background-color: #2A2A2C; border: 1px solid #404040;")
 
         self.verticalLayout_ConveyorViz.addWidget(self.wConveyorCanvas)
@@ -2989,7 +2989,7 @@ class Ui_RobotWindow(object):
         self.saPointTool.setWidgetResizable(True)
         self.wPointTool = QWidget()
         self.wPointTool.setObjectName(u"wPointTool")
-        self.wPointTool.setGeometry(QRect(0, 0, 619, 3000))
+        self.wPointTool.setGeometry(QRect(0, -1011, 619, 3000))
         self.wPointTool.setMinimumSize(QSize(0, 3000))
         self.wPointTool.setStyleSheet(u"QWidget#wPointTool\n"
 "{	\n"
@@ -9786,7 +9786,7 @@ class Ui_RobotWindow(object):
 
         self.pbRunServer.setDefault(False)
         self.pbOpenWebControl.setDefault(False)
-        self.twModule.setCurrentIndex(1)
+        self.twModule.setCurrentIndex(2)
         self.twGcodeEditor.setCurrentIndex(0)
         self.pbImageMapping.setDefault(False)
         self.cbImageSource.setCurrentIndex(0)

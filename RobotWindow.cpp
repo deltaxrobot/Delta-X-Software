@@ -1230,12 +1230,11 @@ void RobotWindow::InitEvents()
 
         if (ui->leObjectListName->text() == TrackingManagerInstance->Trackings.at(selectedEncoderID)->ListName)
         {
-            QVector<ObjectInfo> list;
             QVector3D position(x, y, z);
-
-            ObjectInfo object(-1, 0, position, 20, 40, angle);
-            list.append(object);
-            TrackingManagerInstance->Trackings.at(selectedEncoderID)->UpdateTrackedObjects(list, ui->leObjectListName->text());
+            ObjectInfo object(-1, 0, position, 20, 40, angle); // UID will be assigned automatically
+            
+            // Add object directly to TrackedObjects (allows multiple objects)
+            TrackingManagerInstance->AddObjectToTracking(ui->leObjectListName->text(), object);
         }
         else
         {

@@ -4,7 +4,8 @@
 Tracking::Tracking(QObject *parent)
     : QObject{parent}
 {
-    // Ensure QList/QVector ObjectInfo types are registered for queued connections
+    // Ensure ObjectInfo types are registered for queued connections
+    qRegisterMetaType<ObjectInfo>("ObjectInfo");
     qRegisterMetaType<QVector<ObjectInfo>>("QVector<ObjectInfo>");
     connect(&VirEncoder, &VirtualEncoder::positionUpdated, this, &Tracking::OnReceivceEncoderPosition);
 
@@ -353,6 +354,21 @@ void Tracking::SetObjectPickedByUID(int uid)
     }
 }
 
+void Tracking::AddObjectDirectly(const ObjectInfo& obj)
+{
+    QMutexLocker locker(&dataMutex);
+    
+    // Create new object with proper UID
+    ObjectInfo newObj = obj;
+    newObj.uid = nextID++;  // Assign unique ID
+    
+    // Add directly to TrackedObjects
+    TrackedObjects.append(newObj);
+    
+    qDebug() << "Object added directly with UID" << newObj.uid << "at position (" 
+             << newObj.center.x() << "," << newObj.center.y() << "," << newObj.center.z() << ")";
+}
+
 QVector<ObjectInfo> Tracking::getTrackedObjectsCopy() const
 {
     QMutexLocker locker(&dataMutex);
@@ -592,6 +608,18 @@ void TrackingManager::SetObjectPickedByUID(QString listName, int uid)
         if (Trackings.at(i)->ListName == listName)
         {
             QMetaObject::invokeMethod(Trackings.at(i), "SetObjectPickedByUID", Qt::QueuedConnection, Q_ARG(int, uid));
+            break;
+        }
+    }
+}
+
+void TrackingManager::AddObjectToTracking(QString listName, const ObjectInfo& obj)
+{
+    for(int i = 0; i < Trackings.count(); i++)
+    {
+        if (Trackings.at(i)->ListName == listName)
+        {
+            QMetaObject::invokeMethod(Trackings.at(i), "AddObjectDirectly", Qt::QueuedConnection, Q_ARG(ObjectInfo, obj));
             break;
         }
     }
