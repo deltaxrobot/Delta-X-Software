@@ -812,6 +812,31 @@ float GcodeScript::GetResultOfMathFunction(QString expression)
         return cloudPointGetPointError(values[0].toInt());
     }
 
+    // ======== OBJECT MANAGEMENT FUNCTIONS ========
+
+    // Set object picked: #setObjectPicked(index) hoặc #setObjectPicked(listName, index)
+    if (functionName.toLower() == "setobjectpicked")
+    {
+        if (values.size() == 1) {
+            // #setObjectPicked(#PickableObjects.[#i]) - sử dụng resultListName từ context
+            // Tạm thời dùng "PickableObjects" làm default, có thể cần customize
+            return setObjectPickedByIndex("PickableObjects", values[0].toInt());
+        } else if (values.size() >= 2) {
+            // #setObjectPicked("Objects", #PickableObjects.[#i])
+            return setObjectPickedByIndex(values[0], values[1].toInt());
+        }
+        return 0.0f;
+    }
+
+    // Get object index by UID: #getObjectIndex(listName, uid)  
+    if (functionName.toLower() == "getobjectindex")
+    {
+        return getObjectIndex(
+            values.size() > 0 ? values[0] : "Objects",  // listName
+            values.size() > 1 ? values[1].toInt() : -1  // uid
+        );
+    }
+
     return NULL_NUMBER;
 }
 
@@ -4183,6 +4208,58 @@ bool GcodeScript::zPlaneGetEquation(float& a, float& b, float& c, float& d)
     d = static_cast<float>(VariableManager::instance().getVar(prefix + "D", 0.0).toDouble());
     
     return true;
+}
+
+// ======== OBJECT MANAGEMENT FUNCTIONS IMPLEMENTATION ========
+
+float GcodeScript::setObjectPickedByIndex(QString resultListName, int resultIndex)
+{
+    if (resultListName.isEmpty() || resultIndex < 0) {
+        return 0.0f;
+    }
+    
+    // Validate result list
+    QVariant countVar = getValueAsQVariant(resultListName + ".Count");
+    int count = countVar.toInt();
+    if (resultIndex >= count) {
+        return 0.0f;
+    }
+    
+    // Get UID from result list (GetObjectsInArea result)
+    QString uidVarName = resultListName + "." + QString::number(resultIndex) + ".UID";
+    QVariant uidVar = getValueAsQVariant(uidVarName);
+    int uid = uidVar.toInt();
+    
+    if (uid <= 0) {
+        return 0.0f; // Invalid UID
+    }
+    
+    // Send UID-based command for accurate tracking
+    QString cmd = QString("SetObjectPickedByUID=Objects,%1").arg(uid);
+    emit ChangeExternalVariable(cmd);
+    
+    return 1.0f; // Success
+}
+
+float GcodeScript::getObjectIndex(QString listName, int uid)
+{
+    if (listName.isEmpty() || uid < 0) {
+        return -1.0f; // Invalid parameters
+    }
+    
+    QVariant countVar = getValueAsQVariant(listName + ".Count");
+    int count = countVar.toInt();
+    
+    for (int i = 0; i < count; i++) {
+        QString uidVarName = listName + "." + QString::number(i) + ".UID";
+        QVariant objUidVar = getValueAsQVariant(uidVarName);
+        
+        if (objUidVar.toInt() == uid) {
+            return static_cast<float>(i); // Return index
+        }
+    }
+    
+    return -1.0f; // Object not found
 }
 
 

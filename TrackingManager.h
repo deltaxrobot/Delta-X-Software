@@ -112,6 +112,7 @@ public slots:
     void updatePositions(double displacement);
     void ClearTrackedObjects();
     void RemoveTrackedObjects(int id);
+    void SetObjectPickedByUID(int uid);
 private:
     QVector3D calculateMoved(float distance);
     double similarity(ObjectInfo& obj1, ObjectInfo& obj2, double displacement);
@@ -147,6 +148,7 @@ public slots:
     void UpdateVariable(QString cmd);
     void AddObject(QString listName, QList<QStringList> list);
     void ClearObjects(QString listName);
+    void SetObjectPickedByUID(QString listName, int uid);
     void SetEncoderPosition(int id, float value);
     void ReadEncoderWhenSensorActive(int id);
     void OnDoneUpdateTracking(int id);

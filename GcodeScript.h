@@ -668,6 +668,10 @@ private:
      */
     QString cloudPointGetLabel(int index);
 
+    // Object management functions
+    float setObjectPickedByIndex(QString resultListName, int resultIndex);
+    float getObjectIndex(QString listName, int uid);
+
     // Helper methods for cloud point mapping
     CloudPointMapper* getCloudPointMapper();
     void initializeCloudPointMapper();

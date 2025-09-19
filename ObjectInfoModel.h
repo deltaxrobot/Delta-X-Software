@@ -37,7 +37,7 @@ public:
         const ObjectInfo &info = objectInfos.at(index.row());
 
         switch (index.column()) {
-            case 0: return info.id;
+            case 0: return info.uid;
             case 1: return info.type;
             case 2: return info.center.x();
             case 3: return info.center.y();

@@ -92,7 +92,7 @@ void Tracking::ChangeObjectInfo(QString cmd)
                 QString val = paras1.at(1).trimmed().toLower();
                 bool picked = (val == "true" || val == "1");
                 for (auto &obj : TrackedObjects) {
-                    if (obj.id == uidValue) {
+                    if (obj.uid == uidValue) {
                         obj.isPicked = picked;
                         break;
                     }
@@ -260,7 +260,7 @@ void Tracking::GetObjectsInArea(QString inAreaListName, float min, float max, bo
         VariableManager::instance().updateVar(name + ".Y", tracked.center.y());
         VariableManager::instance().updateVar(name + ".IsPicked", tracked.isPicked);
         VariableManager::instance().updateVar(name + ".Type", tracked.type);
-        VariableManager::instance().updateVar(name + ".UID", tracked.id);
+        VariableManager::instance().updateVar(name + ".UID", tracked.uid);
         index++;
     }
 
@@ -281,14 +281,12 @@ void Tracking::updatePositions(double displacement) {
     {
         QMutexLocker locker(&dataMutex);
 
-        // First, update positions of non-picked objects
+        // Update positions of ALL objects (picked and unpicked)
         for (auto &obj : TrackedObjects) {
-            if (!obj.isPicked) {
-                obj.center += effectiveDisplacement;
-            }
+            obj.center += effectiveDisplacement;  // ⭐ TẤT CẢ objects đều di chuyển
         }
 
-        // Then, remove objects that moved out of bounds
+        // Remove objects that moved out of bounds (picked and unpicked)
         TrackedObjects.erase(std::remove_if(TrackedObjects.begin(), TrackedObjects.end(),
             [&](const auto& obj) {
                 return obj.center.x() > X_max || obj.center.x() < X_min ||
@@ -341,6 +339,18 @@ void Tracking::ClearTrackedObjects()
 void Tracking::RemoveTrackedObjects(int id)
 {
 
+}
+
+void Tracking::SetObjectPickedByUID(int uid)
+{
+    QMutexLocker locker(&dataMutex);
+    for (auto &obj : TrackedObjects) {
+        if (obj.uid == uid) {
+            obj.isPicked = true;  // Chỉ đánh dấu picked, không xóa
+            qDebug() << "Object with UID" << uid << "marked as picked - will continue moving with conveyor until out of bounds";
+            break;
+        }
+    }
 }
 
 QVector3D Tracking::calculateMoved(float distance)
@@ -451,6 +461,18 @@ void TrackingManager::GetObjectsInArea(int trackingID, QString inAreaListName, f
 
 void TrackingManager::UpdateVariable(QString cmd)
 {
+    // Handle new UID-based command
+    if (cmd.startsWith("SetObjectPickedByUID=")) {
+        QStringList parts = cmd.split('=')[1].split(',');
+        if (parts.size() >= 2) {
+            QString listName = parts[0];
+            int uid = parts[1].toInt();
+            SetObjectPickedByUID(listName, uid);
+        }
+        return;
+    }
+    
+    // Original implementation
     QStringList paras1 = cmd.split('=');
     QStringList paras2 = paras1.at(0).split('.');
 
@@ -553,6 +575,18 @@ void TrackingManager::ClearObjects(QString listName)
         if (Trackings.at(i)->ListName == listName)
         {
             QMetaObject::invokeMethod(Trackings.at(i), "ClearTrackedObjects", Qt::QueuedConnection);
+        }
+    }
+}
+
+void TrackingManager::SetObjectPickedByUID(QString listName, int uid)
+{
+    for(int i = 0; i < Trackings.count(); i++)
+    {
+        if (Trackings.at(i)->ListName == listName)
+        {
+            QMetaObject::invokeMethod(Trackings.at(i), "SetObjectPickedByUID", Qt::QueuedConnection, Q_ARG(int, uid));
+            break;
         }
     }
 }
