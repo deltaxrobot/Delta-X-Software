@@ -1783,7 +1783,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
                   <property name="geometry">
                    <rect>
                     <x>0</x>
-                    <y>-2407</y>
+                    <y>0</y>
                     <width>631</width>
                     <height>3500</height>
                    </rect>
@@ -6013,7 +6013,7 @@ QPushButton:pressed { background-color: #D84315; }</string>
                   <property name="geometry">
                    <rect>
                     <x>0</x>
-                    <y>-1108</y>
+                    <y>0</y>
                     <width>619</width>
                     <height>3000</height>
                    </rect>
@@ -10602,7 +10602,7 @@ QLabel
               <enum>QTabWidget::North</enum>
              </property>
              <property name="currentIndex">
-              <number>4</number>
+              <number>0</number>
              </property>
              <property name="elideMode">
               <enum>Qt::ElideNone</enum>
@@ -10642,9 +10642,9 @@ QLabel
                   <property name="geometry">
                    <rect>
                     <x>0</x>
-                    <y>0</y>
-                    <width>519</width>
-                    <height>2192</height>
+                    <y>-1121</y>
+                    <width>534</width>
+                    <height>2559</height>
                    </rect>
                   </property>
                   <property name="minimumSize">
@@ -16992,6 +16992,43 @@ QGroupBox
                                        </widget>
                                       </item>
                                       <item>
+                                       <widget class="QPushButton" name="pbResetZPlane">
+                                        <property name="text">
+                                         <string>Reset</string>
+                                        </property>
+                                        <property name="icon">
+                                         <iconset>
+                                          <normaloff>:/icon/icons8_restart_52px.png</normaloff>:/icon/icons8_restart_52px.png</iconset>
+                                        </property>
+                                        <property name="iconSize">
+                                         <size>
+                                          <width>20</width>
+                                          <height>20</height>
+                                         </size>
+                                        </property>
+                                       </widget>
+                                      </item>
+                                      <item>
+                                       <widget class="QPushButton" name="pbAutoCalibrate">
+                                        <property name="toolTip">
+                                         <string>Automatically scan workspace boundaries</string>
+                                        </property>
+                                        <property name="text">
+                                         <string>Auto Scan</string>
+                                        </property>
+                                        <property name="icon">
+                                         <iconset>
+                                          <normaloff>:/icon/icons8_automatic_52px.png</normaloff>:/icon/icons8_automatic_52px.png</iconset>
+                                        </property>
+                                        <property name="iconSize">
+                                         <size>
+                                          <width>20</width>
+                                          <height>20</height>
+                                         </size>
+                                        </property>
+                                       </widget>
+                                      </item>
+                                      <item>
                                        <spacer name="horizontalSpacer_zplane">
                                         <property name="orientation">
                                          <enum>Qt::Horizontal</enum>
@@ -17003,6 +17040,223 @@ QGroupBox
                                          </size>
                                         </property>
                                        </spacer>
+                                      </item>
+                                     </layout>
+                                    </widget>
+                                   </item>
+                                   <item>
+                                    <widget class="QGroupBox" name="gbZPlaneStatus">
+                                     <property name="font">
+                                      <font>
+                                       <pointsize>9</pointsize>
+                                       <bold>true</bold>
+                                      </font>
+                                     </property>
+                                     <property name="title">
+                                      <string>Status &amp; Settings</string>
+                                     </property>
+                                     <layout class="QGridLayout" name="gridLayout_zplane_status">
+                                      <property name="spacing">
+                                       <number>10</number>
+                                      </property>
+                                      <item row="0" column="0">
+                                       <widget class="QLabel" name="lbZPlaneStatus">
+                                        <property name="font">
+                                         <font>
+                                          <bold>false</bold>
+                                         </font>
+                                        </property>
+                                        <property name="text">
+                                         <string>Status:</string>
+                                        </property>
+                                       </widget>
+                                      </item>
+                                      <item row="0" column="1">
+                                       <widget class="QLabel" name="lbZPlaneStatusValue">
+                                        <property name="styleSheet">
+                                         <string notr="true">color: rgb(255, 150, 50);</string>
+                                        </property>
+                                        <property name="text">
+                                         <string>Not Configured</string>
+                                        </property>
+                                       </widget>
+                                      </item>
+                                      <item row="0" column="2">
+                                       <widget class="QLabel" name="lbSafetyMargin">
+                                        <property name="text">
+                                         <string>Safety Margin (mm):</string>
+                                        </property>
+                                       </widget>
+                                      </item>
+                                      <item row="0" column="3">
+                                       <widget class="QLineEdit" name="leSafetyMargin">
+                                        <property name="maximumSize">
+                                         <size>
+                                          <width>60</width>
+                                          <height>16777215</height>
+                                         </size>
+                                        </property>
+                                        <property name="text">
+                                         <string>5.0</string>
+                                        </property>
+                                        <property name="alignment">
+                                         <set>Qt::AlignCenter</set>
+                                        </property>
+                                       </widget>
+                                      </item>
+                                      <item row="1" column="0">
+                                       <widget class="QLabel" name="lbPlaneArea">
+                                        <property name="text">
+                                         <string>Plane Area:</string>
+                                        </property>
+                                       </widget>
+                                      </item>
+                                      <item row="1" column="1">
+                                       <widget class="QLabel" name="lbPlaneAreaValue">
+                                        <property name="styleSheet">
+                                         <string notr="true">color: rgb(150, 200, 255);</string>
+                                        </property>
+                                        <property name="text">
+                                         <string>0.0 mm²</string>
+                                        </property>
+                                       </widget>
+                                      </item>
+                                      <item row="1" column="2">
+                                       <widget class="QCheckBox" name="cbShowWarnings">
+                                        <property name="text">
+                                         <string>Show Warnings</string>
+                                        </property>
+                                        <property name="checked">
+                                         <bool>true</bool>
+                                        </property>
+                                       </widget>
+                                      </item>
+                                      <item row="1" column="3">
+                                       <widget class="QCheckBox" name="cbStrictMode">
+                                        <property name="text">
+                                         <string>Strict Mode</string>
+                                        </property>
+                                        <property name="checked">
+                                         <bool>false</bool>
+                                        </property>
+                                       </widget>
+                                      </item>
+                                     </layout>
+                                    </widget>
+                                   </item>
+                                   <item>
+                                    <widget class="QGroupBox" name="gbZPlaneVisualization">
+                                     <property name="minimumSize">
+                                      <size>
+                                       <width>0</width>
+                                       <height>200</height>
+                                      </size>
+                                     </property>
+                                     <property name="font">
+                                      <font>
+                                       <pointsize>9</pointsize>
+                                       <bold>true</bold>
+                                      </font>
+                                     </property>
+                                     <property name="title">
+                                      <string>Workspace Visualization</string>
+                                     </property>
+                                     <layout class="QVBoxLayout" name="verticalLayout_zplane_viz">
+                                      <property name="spacing">
+                                       <number>5</number>
+                                      </property>
+                                      <item>
+                                       <widget class="QFrame" name="frameZPlaneCanvas">
+                                        <property name="minimumSize">
+                                         <size>
+                                          <width>400</width>
+                                          <height>150</height>
+                                         </size>
+                                        </property>
+                                        <property name="styleSheet">
+                                         <string notr="true">QFrame { border: 1px solid rgb(100, 100, 100); background-color: rgb(40, 40, 40); }</string>
+                                        </property>
+                                        <property name="frameShape">
+                                         <enum>QFrame::StyledPanel</enum>
+                                        </property>
+                                        <property name="frameShadow">
+                                         <enum>QFrame::Raised</enum>
+                                        </property>
+                                       </widget>
+                                      </item>
+                                      <item>
+                                       <widget class="QFrame" name="frameZPlaneControls">
+                                        <layout class="QHBoxLayout" name="horizontalLayout_zplane_viz">
+                                         <property name="spacing">
+                                          <number>10</number>
+                                         </property>
+                                         <item>
+                                          <widget class="QLabel" name="lbViewMode">
+                                           <property name="text">
+                                            <string>View:</string>
+                                           </property>
+                                          </widget>
+                                         </item>
+                                         <item>
+                                          <widget class="QComboBox" name="cbZPlaneViewMode">
+                                           <property name="maximumSize">
+                                            <size>
+                                             <width>100</width>
+                                             <height>16777215</height>
+                                            </size>
+                                           </property>
+                                           <item>
+                                            <property name="text">
+                                             <string>XY Plane</string>
+                                            </property>
+                                           </item>
+                                           <item>
+                                            <property name="text">
+                                             <string>XZ Plane</string>
+                                            </property>
+                                           </item>
+                                           <item>
+                                            <property name="text">
+                                             <string>YZ Plane</string>
+                                            </property>
+                                           </item>
+                                          </widget>
+                                         </item>
+                                         <item>
+                                          <widget class="QCheckBox" name="cbShowSafetyZone">
+                                           <property name="text">
+                                            <string>Show Safety Zone</string>
+                                           </property>
+                                           <property name="checked">
+                                            <bool>true</bool>
+                                           </property>
+                                          </widget>
+                                         </item>
+                                         <item>
+                                          <widget class="QCheckBox" name="cbShowGrid">
+                                           <property name="text">
+                                            <string>Show Grid</string>
+                                           </property>
+                                           <property name="checked">
+                                            <bool>true</bool>
+                                           </property>
+                                          </widget>
+                                         </item>
+                                         <item>
+                                          <spacer name="horizontalSpacer_zplane_viz">
+                                           <property name="orientation">
+                                            <enum>Qt::Horizontal</enum>
+                                           </property>
+                                           <property name="sizeHint" stdset="0">
+                                            <size>
+                                             <width>40</width>
+                                             <height>20</height>
+                                            </size>
+                                           </property>
+                                          </spacer>
+                                         </item>
+                                        </layout>
+                                       </widget>
                                       </item>
                                      </layout>
                                     </widget>

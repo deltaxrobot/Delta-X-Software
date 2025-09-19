@@ -21,6 +21,8 @@ public:
     // Configuration
     void setConveyorBounds(float xMin, float xMax, float yMin, float yMax);
     void setUpdateInterval(int msec = 50); // 20 FPS default
+    void startAnimation();
+    void stopAnimation();
 
 public slots:
     void updateObjects(const QVector<ObjectInfo>& objects);

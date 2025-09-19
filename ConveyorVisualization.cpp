@@ -44,9 +44,19 @@ void ConveyorVisualization::setConveyorBounds(float xMin, float xMax, float yMin
 void ConveyorVisualization::setUpdateInterval(int msec)
 {
     m_updateTimer->setInterval(msec);
+    // Don't auto-start timer - let parent decide when to start
+}
+
+void ConveyorVisualization::startAnimation()
+{
     if (!m_updateTimer->isActive()) {
         m_updateTimer->start();
     }
+}
+
+void ConveyorVisualization::stopAnimation()
+{
+    m_updateTimer->stop();
 }
 
 void ConveyorVisualization::updateObjects(const QVector<ObjectInfo>& objects)

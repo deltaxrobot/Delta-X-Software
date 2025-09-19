@@ -90,7 +90,8 @@ SOURCES += main.cpp\
     testwindow.cpp \
     ModernDialog.cpp \
     CameraSelectionDialog.cpp \
-    ConveyorVisualization.cpp
+    ConveyorVisualization.cpp \
+    ZPlaneVisualization.cpp
 
 HEADERS  += \
     AccountWindow.h \
@@ -151,7 +152,8 @@ HEADERS  += \
     testwindow.h \
     ModernDialog.h \
     CameraSelectionDialog.h \
-    ConveyorVisualization.h
+    ConveyorVisualization.h \
+    ZPlaneVisualization.h
 
 FORMS    += \
     AccountWindow.ui \

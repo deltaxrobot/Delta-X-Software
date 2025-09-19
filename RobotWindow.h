@@ -63,6 +63,7 @@
 #include "device/camera.h"
 #include "TrackingManager.h"
 #include "ConveyorVisualization.h"
+#include "ZPlaneVisualization.h"
 #include "ObjectInfo.h"
 #include "PointTool.h"
 #include "PointCalculator.h"
@@ -112,8 +113,13 @@ struct ZPlane {
     double a, b, c, d;                // Plane equation: ax + by + cz + d = 0
     bool isValid;                     // Whether plane is calculated and valid
     bool isEnabled;                   // Whether Z-limiting is active
+    double safetyMargin;              // Safety margin in mm
+    bool showWarnings;                // Show warning dialogs
+    bool strictMode;                  // Strict mode - block all unsafe movements
+    double planeArea;                 // Calculated plane area
     
-    ZPlane() : a(0), b(0), c(1), d(0), isValid(false), isEnabled(false) {}
+    ZPlane() : a(0), b(0), c(1), d(0), isValid(false), isEnabled(false), 
+               safetyMargin(5.0), showWarnings(true), strictMode(false), planeArea(0.0) {}
     
     // Calculate Z for given X,Y on the plane
     double calculateZ(double x, double y) const {
@@ -121,10 +127,47 @@ struct ZPlane {
         return -(a * x + b * y + d) / c;
     }
     
+    // Calculate Z with safety margin applied
+    double calculateSafeZ(double x, double y) const {
+        if (!isValid) return 0.0;
+        double planeZ = calculateZ(x, y);
+        return planeZ + safetyMargin; // Add safety margin above the plane
+    }
+    
     // Check if point is below the plane (unsafe zone)
     bool isPointBelowPlane(double x, double y, double z) const {
         if (!isValid) return false;
         return (a * x + b * y + c * z + d) < 0;
+    }
+    
+    // Check if point is in safe zone (considering safety margin)
+    bool isPointSafe(double x, double y, double z) const {
+        if (!isValid) return true; // If no plane configured, assume safe
+        double safeZ = calculateSafeZ(x, y);
+        return z >= safeZ;
+    }
+    
+    // Calculate plane area using triangle formed by 3 points
+    double calculatePlaneArea() const {
+        if (!isValid) return 0.0;
+        
+        // Vector v1 = p2 - p1
+        double v1x = p2.x - p1.x;
+        double v1y = p2.y - p1.y;
+        double v1z = p2.z - p1.z;
+        
+        // Vector v2 = p3 - p1
+        double v2x = p3.x - p1.x;
+        double v2y = p3.y - p1.y;
+        double v2z = p3.z - p1.z;
+        
+        // Cross product magnitude / 2 = triangle area
+        double crossX = v1y * v2z - v1z * v2y;
+        double crossY = v1z * v2x - v1x * v2z;
+        double crossZ = v1x * v2y - v1y * v2x;
+        
+        double crossMagnitude = std::sqrt(crossX*crossX + crossY*crossY + crossZ*crossZ);
+        return crossMagnitude / 2.0;
     }
 };
 
@@ -239,6 +282,7 @@ public:
     
     TrackingManager* TrackingManagerInstance;
     ConveyorVisualization* conveyorViz;
+    ZPlaneVisualization* zPlaneViz;
     DrawingExporter* DeltaDrawingExporter;
 	ROS* DeltaXROS;
     
@@ -489,6 +533,10 @@ protected:
     void paintEvent(QPaintEvent *event) override;
 
 private:
+    // ========== ROBOT PARAMETER ACCESS ==========
+    bool isRobotParametersValid() const;
+    RobotPara getSafeRobotParameters() const;
+    
     // ========== PERFORMANCE & TESTING ==========
     void CheckSettingsSpeed();
     void SaveDetectingUI();
@@ -607,6 +655,9 @@ private:
     void scheduleBatchUpdate();
 
 public slots:
+    // ========== UI UPDATE SLOTS ==========
+    void updateCameraInfoDisplay();    // Update camera size and zoom info
+    
     // ========== Z-PLANE LIMITING SLOTS ==========
     void onGetCurrentPositionP1();     // Get current robot position for P1
     void onGetCurrentPositionP2();     // Get current robot position for P2
@@ -614,6 +665,14 @@ public slots:
     void onCalculateZPlane();          // Calculate Z-plane from 3 points
     void onTestZPlane();               // Test Z-plane with current position
     void onZPlaneLimitingToggled(bool enabled); // Enable/disable Z-limiting
+    void onResetZPlane();              // Reset Z-plane configuration
+    void onSafetyMarginChanged();      // Update safety margin
+    void onShowWarningsToggled(bool enabled); // Toggle warning dialogs
+    void onStrictModeToggled(bool enabled);   // Toggle strict mode
+    void updateZPlaneStatus();         // Update status display
+    void updateZPlaneUI();             // Update UI elements
+    void setupZPlaneVisualization();   // Setup Z-plane visualization widget
+    void onAutoCalibrate();            // Auto-calibrate workspace boundaries
 
 private slots:
     void processBatchUpdates();

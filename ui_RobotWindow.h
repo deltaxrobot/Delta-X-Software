@@ -1106,7 +1106,29 @@ public:
     QHBoxLayout *horizontalLayout_zplane_actions;
     QPushButton *pbCalculateZPlane;
     QPushButton *pbTestZPlane;
+    QPushButton *pbResetZPlane;
+    QPushButton *pbAutoCalibrate;
     QSpacerItem *horizontalSpacer_zplane;
+    QGroupBox *gbZPlaneStatus;
+    QGridLayout *gridLayout_zplane_status;
+    QLabel *lbZPlaneStatus;
+    QLabel *lbZPlaneStatusValue;
+    QLabel *lbSafetyMargin;
+    QLineEdit *leSafetyMargin;
+    QLabel *lbPlaneArea;
+    QLabel *lbPlaneAreaValue;
+    QCheckBox *cbShowWarnings;
+    QCheckBox *cbStrictMode;
+    QGroupBox *gbZPlaneVisualization;
+    QVBoxLayout *verticalLayout_zplane_viz;
+    QFrame *frameZPlaneCanvas;
+    QFrame *frameZPlaneControls;
+    QHBoxLayout *horizontalLayout_zplane_viz;
+    QLabel *lbViewMode;
+    QComboBox *cbZPlaneViewMode;
+    QCheckBox *cbShowSafetyZone;
+    QCheckBox *cbShowGrid;
+    QSpacerItem *horizontalSpacer_zplane_viz;
     QSpacerItem *verticalSpacer_workspace;
     QWidget *tGridMapping;
     QSpacerItem *verticalSpacer;
@@ -2405,7 +2427,7 @@ public:
         saObjectDetecting->setWidgetResizable(true);
         wObjectDetecting = new QWidget();
         wObjectDetecting->setObjectName(QString::fromUtf8("wObjectDetecting"));
-        wObjectDetecting->setGeometry(QRect(0, -2407, 631, 3500));
+        wObjectDetecting->setGeometry(QRect(0, 0, 631, 3500));
         wObjectDetecting->setMinimumSize(QSize(100, 3500));
         wObjectDetecting->setStyleSheet(QString::fromUtf8("QWidget#wObjectDetecting\n"
 "{	\n"
@@ -4394,7 +4416,7 @@ public:
         saPointTool->setWidgetResizable(true);
         wPointTool = new QWidget();
         wPointTool->setObjectName(QString::fromUtf8("wPointTool"));
-        wPointTool->setGeometry(QRect(0, -1108, 619, 3000));
+        wPointTool->setGeometry(QRect(0, 0, 619, 3000));
         wPointTool->setMinimumSize(QSize(0, 3000));
         wPointTool->setStyleSheet(QString::fromUtf8("QWidget#wPointTool\n"
 "{	\n"
@@ -6805,7 +6827,7 @@ public:
         scrollArea_2->setWidgetResizable(true);
         wgJoggingScrollWidget = new QWidget();
         wgJoggingScrollWidget->setObjectName(QString::fromUtf8("wgJoggingScrollWidget"));
-        wgJoggingScrollWidget->setGeometry(QRect(0, 0, 519, 2192));
+        wgJoggingScrollWidget->setGeometry(QRect(0, -1121, 534, 2559));
         wgJoggingScrollWidget->setMinimumSize(QSize(0, 2000));
         wgJoggingScrollWidget->setMaximumSize(QSize(16777215, 16777215));
         wgJoggingScrollWidget->setStyleSheet(QString::fromUtf8("QWidget#wgJoggingScrollWidget\n"
@@ -9482,12 +9504,146 @@ public:
 
         horizontalLayout_zplane_actions->addWidget(pbTestZPlane);
 
+        pbResetZPlane = new QPushButton(frameZPlaneActions);
+        pbResetZPlane->setObjectName(QString::fromUtf8("pbResetZPlane"));
+        QIcon icon49;
+        icon49.addFile(QString::fromUtf8(":/icon/icons8_restart_52px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbResetZPlane->setIcon(icon49);
+        pbResetZPlane->setIconSize(QSize(20, 20));
+
+        horizontalLayout_zplane_actions->addWidget(pbResetZPlane);
+
+        pbAutoCalibrate = new QPushButton(frameZPlaneActions);
+        pbAutoCalibrate->setObjectName(QString::fromUtf8("pbAutoCalibrate"));
+        QIcon icon50;
+        icon50.addFile(QString::fromUtf8(":/icon/icons8_automatic_52px.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbAutoCalibrate->setIcon(icon50);
+        pbAutoCalibrate->setIconSize(QSize(20, 20));
+
+        horizontalLayout_zplane_actions->addWidget(pbAutoCalibrate);
+
         horizontalSpacer_zplane = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
         horizontalLayout_zplane_actions->addItem(horizontalSpacer_zplane);
 
 
         verticalLayout_zplane_info->addWidget(frameZPlaneActions);
+
+        gbZPlaneStatus = new QGroupBox(frameZPlaneInfo);
+        gbZPlaneStatus->setObjectName(QString::fromUtf8("gbZPlaneStatus"));
+        gbZPlaneStatus->setFont(font15);
+        gridLayout_zplane_status = new QGridLayout(gbZPlaneStatus);
+        gridLayout_zplane_status->setSpacing(10);
+        gridLayout_zplane_status->setContentsMargins(11, 11, 11, 11);
+        gridLayout_zplane_status->setObjectName(QString::fromUtf8("gridLayout_zplane_status"));
+        lbZPlaneStatus = new QLabel(gbZPlaneStatus);
+        lbZPlaneStatus->setObjectName(QString::fromUtf8("lbZPlaneStatus"));
+        lbZPlaneStatus->setFont(font1);
+
+        gridLayout_zplane_status->addWidget(lbZPlaneStatus, 0, 0, 1, 1);
+
+        lbZPlaneStatusValue = new QLabel(gbZPlaneStatus);
+        lbZPlaneStatusValue->setObjectName(QString::fromUtf8("lbZPlaneStatusValue"));
+        lbZPlaneStatusValue->setStyleSheet(QString::fromUtf8("color: rgb(255, 150, 50);"));
+
+        gridLayout_zplane_status->addWidget(lbZPlaneStatusValue, 0, 1, 1, 1);
+
+        lbSafetyMargin = new QLabel(gbZPlaneStatus);
+        lbSafetyMargin->setObjectName(QString::fromUtf8("lbSafetyMargin"));
+
+        gridLayout_zplane_status->addWidget(lbSafetyMargin, 0, 2, 1, 1);
+
+        leSafetyMargin = new QLineEdit(gbZPlaneStatus);
+        leSafetyMargin->setObjectName(QString::fromUtf8("leSafetyMargin"));
+        leSafetyMargin->setMaximumSize(QSize(60, 16777215));
+        leSafetyMargin->setAlignment(Qt::AlignCenter);
+
+        gridLayout_zplane_status->addWidget(leSafetyMargin, 0, 3, 1, 1);
+
+        lbPlaneArea = new QLabel(gbZPlaneStatus);
+        lbPlaneArea->setObjectName(QString::fromUtf8("lbPlaneArea"));
+
+        gridLayout_zplane_status->addWidget(lbPlaneArea, 1, 0, 1, 1);
+
+        lbPlaneAreaValue = new QLabel(gbZPlaneStatus);
+        lbPlaneAreaValue->setObjectName(QString::fromUtf8("lbPlaneAreaValue"));
+        lbPlaneAreaValue->setStyleSheet(QString::fromUtf8("color: rgb(150, 200, 255);"));
+
+        gridLayout_zplane_status->addWidget(lbPlaneAreaValue, 1, 1, 1, 1);
+
+        cbShowWarnings = new QCheckBox(gbZPlaneStatus);
+        cbShowWarnings->setObjectName(QString::fromUtf8("cbShowWarnings"));
+        cbShowWarnings->setChecked(true);
+
+        gridLayout_zplane_status->addWidget(cbShowWarnings, 1, 2, 1, 1);
+
+        cbStrictMode = new QCheckBox(gbZPlaneStatus);
+        cbStrictMode->setObjectName(QString::fromUtf8("cbStrictMode"));
+        cbStrictMode->setChecked(false);
+
+        gridLayout_zplane_status->addWidget(cbStrictMode, 1, 3, 1, 1);
+
+
+        verticalLayout_zplane_info->addWidget(gbZPlaneStatus);
+
+        gbZPlaneVisualization = new QGroupBox(frameZPlaneInfo);
+        gbZPlaneVisualization->setObjectName(QString::fromUtf8("gbZPlaneVisualization"));
+        gbZPlaneVisualization->setMinimumSize(QSize(0, 200));
+        gbZPlaneVisualization->setFont(font15);
+        verticalLayout_zplane_viz = new QVBoxLayout(gbZPlaneVisualization);
+        verticalLayout_zplane_viz->setSpacing(5);
+        verticalLayout_zplane_viz->setContentsMargins(11, 11, 11, 11);
+        verticalLayout_zplane_viz->setObjectName(QString::fromUtf8("verticalLayout_zplane_viz"));
+        frameZPlaneCanvas = new QFrame(gbZPlaneVisualization);
+        frameZPlaneCanvas->setObjectName(QString::fromUtf8("frameZPlaneCanvas"));
+        frameZPlaneCanvas->setMinimumSize(QSize(400, 150));
+        frameZPlaneCanvas->setStyleSheet(QString::fromUtf8("QFrame { border: 1px solid rgb(100, 100, 100); background-color: rgb(40, 40, 40); }"));
+        frameZPlaneCanvas->setFrameShape(QFrame::StyledPanel);
+        frameZPlaneCanvas->setFrameShadow(QFrame::Raised);
+
+        verticalLayout_zplane_viz->addWidget(frameZPlaneCanvas);
+
+        frameZPlaneControls = new QFrame(gbZPlaneVisualization);
+        frameZPlaneControls->setObjectName(QString::fromUtf8("frameZPlaneControls"));
+        horizontalLayout_zplane_viz = new QHBoxLayout(frameZPlaneControls);
+        horizontalLayout_zplane_viz->setSpacing(10);
+        horizontalLayout_zplane_viz->setContentsMargins(11, 11, 11, 11);
+        horizontalLayout_zplane_viz->setObjectName(QString::fromUtf8("horizontalLayout_zplane_viz"));
+        lbViewMode = new QLabel(frameZPlaneControls);
+        lbViewMode->setObjectName(QString::fromUtf8("lbViewMode"));
+
+        horizontalLayout_zplane_viz->addWidget(lbViewMode);
+
+        cbZPlaneViewMode = new QComboBox(frameZPlaneControls);
+        cbZPlaneViewMode->addItem(QString());
+        cbZPlaneViewMode->addItem(QString());
+        cbZPlaneViewMode->addItem(QString());
+        cbZPlaneViewMode->setObjectName(QString::fromUtf8("cbZPlaneViewMode"));
+        cbZPlaneViewMode->setMaximumSize(QSize(100, 16777215));
+
+        horizontalLayout_zplane_viz->addWidget(cbZPlaneViewMode);
+
+        cbShowSafetyZone = new QCheckBox(frameZPlaneControls);
+        cbShowSafetyZone->setObjectName(QString::fromUtf8("cbShowSafetyZone"));
+        cbShowSafetyZone->setChecked(true);
+
+        horizontalLayout_zplane_viz->addWidget(cbShowSafetyZone);
+
+        cbShowGrid = new QCheckBox(frameZPlaneControls);
+        cbShowGrid->setObjectName(QString::fromUtf8("cbShowGrid"));
+        cbShowGrid->setChecked(true);
+
+        horizontalLayout_zplane_viz->addWidget(cbShowGrid);
+
+        horizontalSpacer_zplane_viz = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        horizontalLayout_zplane_viz->addItem(horizontalSpacer_zplane_viz);
+
+
+        verticalLayout_zplane_viz->addWidget(frameZPlaneControls);
+
+
+        verticalLayout_zplane_info->addWidget(gbZPlaneVisualization);
 
 
         verticalLayout_zplane->addWidget(frameZPlaneInfo);
@@ -10904,9 +11060,9 @@ public:
         QFont font18;
         font18.setPointSize(11);
         pbSlidingHome->setFont(font18);
-        QIcon icon49;
-        icon49.addFile(QString::fromUtf8("icon/icons8-home-32.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbSlidingHome->setIcon(icon49);
+        QIcon icon51;
+        icon51.addFile(QString::fromUtf8("icon/icons8-home-32.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbSlidingHome->setIcon(icon51);
 
         gridLayout_8->addWidget(pbSlidingHome, 1, 1, 1, 1);
 
@@ -10937,9 +11093,9 @@ public:
         pbSlidingDisable->setMinimumSize(QSize(0, 0));
         pbSlidingDisable->setMaximumSize(QSize(200, 40));
         pbSlidingDisable->setFont(font18);
-        QIcon icon50;
-        icon50.addFile(QString::fromUtf8("icon/icons8-sleeping-in-bed-32.png"), QSize(), QIcon::Normal, QIcon::Off);
-        pbSlidingDisable->setIcon(icon50);
+        QIcon icon52;
+        icon52.addFile(QString::fromUtf8("icon/icons8-sleeping-in-bed-32.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pbSlidingDisable->setIcon(icon52);
 
         gridLayout_8->addWidget(pbSlidingDisable, 0, 1, 1, 1);
 
@@ -11197,7 +11353,7 @@ public:
         cbImageSource->setCurrentIndex(0);
         cbSendingImageMethod->setCurrentIndex(0);
         tabWidget->setCurrentIndex(0);
-        twDevices->setCurrentIndex(4);
+        twDevices->setCurrentIndex(0);
         pbPump->setDefault(false);
         pbLaser->setDefault(false);
         pbGrip->setDefault(false);
@@ -12377,6 +12533,28 @@ public:
         lbPlaneEquation->setText(QCoreApplication::translate("RobotWindow", "Plane Equation: Z = 0.000", nullptr));
         pbCalculateZPlane->setText(QCoreApplication::translate("RobotWindow", "Calculate Plane", nullptr));
         pbTestZPlane->setText(QCoreApplication::translate("RobotWindow", "Test Point", nullptr));
+        pbResetZPlane->setText(QCoreApplication::translate("RobotWindow", "Reset", nullptr));
+#if QT_CONFIG(tooltip)
+        pbAutoCalibrate->setToolTip(QCoreApplication::translate("RobotWindow", "Automatically scan workspace boundaries", nullptr));
+#endif // QT_CONFIG(tooltip)
+        pbAutoCalibrate->setText(QCoreApplication::translate("RobotWindow", "Auto Scan", nullptr));
+        gbZPlaneStatus->setTitle(QCoreApplication::translate("RobotWindow", "Status & Settings", nullptr));
+        lbZPlaneStatus->setText(QCoreApplication::translate("RobotWindow", "Status:", nullptr));
+        lbZPlaneStatusValue->setText(QCoreApplication::translate("RobotWindow", "Not Configured", nullptr));
+        lbSafetyMargin->setText(QCoreApplication::translate("RobotWindow", "Safety Margin (mm):", nullptr));
+        leSafetyMargin->setText(QCoreApplication::translate("RobotWindow", "5.0", nullptr));
+        lbPlaneArea->setText(QCoreApplication::translate("RobotWindow", "Plane Area:", nullptr));
+        lbPlaneAreaValue->setText(QCoreApplication::translate("RobotWindow", "0.0 mm\302\262", nullptr));
+        cbShowWarnings->setText(QCoreApplication::translate("RobotWindow", "Show Warnings", nullptr));
+        cbStrictMode->setText(QCoreApplication::translate("RobotWindow", "Strict Mode", nullptr));
+        gbZPlaneVisualization->setTitle(QCoreApplication::translate("RobotWindow", "Workspace Visualization", nullptr));
+        lbViewMode->setText(QCoreApplication::translate("RobotWindow", "View:", nullptr));
+        cbZPlaneViewMode->setItemText(0, QCoreApplication::translate("RobotWindow", "XY Plane", nullptr));
+        cbZPlaneViewMode->setItemText(1, QCoreApplication::translate("RobotWindow", "XZ Plane", nullptr));
+        cbZPlaneViewMode->setItemText(2, QCoreApplication::translate("RobotWindow", "YZ Plane", nullptr));
+
+        cbShowSafetyZone->setText(QCoreApplication::translate("RobotWindow", "Show Safety Zone", nullptr));
+        cbShowGrid->setText(QCoreApplication::translate("RobotWindow", "Show Grid", nullptr));
         twCalibration->setTabText(twCalibration->indexOf(Workspace), QCoreApplication::translate("RobotWindow", "Workspace Limits", nullptr));
         twCalibration->setTabText(twCalibration->indexOf(tGridMapping), QCoreApplication::translate("RobotWindow", "Grid Mapping", nullptr));
         twDevices->setTabText(twDevices->indexOf(tRobot), QCoreApplication::translate("RobotWindow", "Robot", nullptr));

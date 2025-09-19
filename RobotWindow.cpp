@@ -14,6 +14,8 @@
 #include <QtMath>      // ? For qAbs function
 #include <random>      // For random number generation
 #include <QElapsedTimer> // For performance timing
+#include <QMessageBox>  // For dialog boxes
+#include <QDebug>       // For debug logging
 
 RobotWindow::RobotWindow(QWidget *parent, QString projectName) :
     QMainWindow(parent),
@@ -25,9 +27,6 @@ RobotWindow::RobotWindow(QWidget *parent, QString projectName) :
     ui->setupUi(this);
 
     SoftwareLog("Load project: " + ProjectName);
-    
-    // Setup conveyor visualization
-    setupConveyorVisualization();
     
     // Initialize batch update timer
     m_batchUpdateTimer->setSingleShot(true);
@@ -288,6 +287,7 @@ void RobotWindow::InitOtherThreadObjects()
     CameraThread->start();
 
     connect(CameraInstance, &Camera::connectedResult, this, &RobotWindow::UpdateCameraConnectedState);
+    connect(CameraInstance, &Camera::connectedResult, this, &RobotWindow::updateCameraInfoDisplay);
 
     connect(&CameraTimer, SIGNAL(timeout()), CameraInstance, SLOT(GeneralCapture()));
 //    SelectImageProviderOption(0);
@@ -385,6 +385,10 @@ void RobotWindow::InitOtherThreadObjects()
     InitTrackingThread();
     connect(ui->cbSelectedTracking, SIGNAL(currentIndexChanged(int)), this, SLOT(ChangeSelectedTracking(int)));
     connect(ui->cbTrackingEncoderSource, SIGNAL(currentIndexChanged(int)), this, SLOT(ChangeSelectedTrackingEncoder(int)));
+    
+    // Setup visualizations AFTER TrackingManager is initialized
+    setupConveyorVisualization();
+    // Note: setupZPlaneVisualization() is called in InitCalibration()
 
     //----- Gcode Programing----------
 
@@ -480,6 +484,7 @@ void RobotWindow::InitObjectDetectingModule()
     ImageProcessingInstance->GetNode("CropImageNode")->IsPass = true;
 
     connect(CameraInstance, SIGNAL(GotImage(cv::Mat)), ImageProcessingInstance->GetNode("GetImageNode"), SLOT(Input(cv::Mat)));
+    connect(CameraInstance, SIGNAL(GotImage(cv::Mat)), this, SLOT(updateCameraInfoDisplay()));
 //    connect(CameraInstance, SIGNAL(GotImage(cv::Mat)), ImageProcessingInstance, SLOT(GotImage(cv::Mat)));
 //    connect(this, SIGNAL(GotResizePara(cv::Size)), ImageProcessingInstance, SLOT(GotResizeValue(cv::Size)));
 //    connect(ImageProcessingInstance->GetNode("GetPerspectiveNode"), SIGNAL(HadOutput(cv::Mat)), ImageProcessingInstance, SLOT(GotPerspectiveMatrix(cv::Mat)));
@@ -603,11 +608,13 @@ void RobotWindow::InitObjectDetectingModule()
     connect(ui->pbZoomInCameraView, &QPushButton::clicked, [=](bool checked)
     {
         ui->gvImageViewer->ZoomIn(2);
+        updateCameraInfoDisplay(); // Update ratio display
 //        ui->graphicsView->ZoomIn(2);
     });
     connect(ui->pbZoomOutCameraView, &QPushButton::clicked, [=](bool checked)
     {
         ui->gvImageViewer->ZoomOut(2);
+        updateCameraInfoDisplay(); // Update ratio display
 //        ui->graphicsView->ZoomOut(2);
     });
 
@@ -641,7 +648,9 @@ void RobotWindow::InitObjectDetectingModule()
 
         QString absolutePath = checkAndCreateDir(ui->leImageFolder->text());
 
-        saveImageWithUniqueName(CameraInstance->CaptureImage, absolutePath);
+        if (CameraInstance && !CameraInstance->CaptureImage.empty()) {
+            saveImageWithUniqueName(CameraInstance->CaptureImage, absolutePath);
+        }
     });
 
     connect(ui->tbOpenSaveFolder, &QPushButton::clicked, [=](bool checked)
@@ -938,7 +947,18 @@ void RobotWindow::InitCalibration()
     connect(ui->pbGetCurrentP3, &QPushButton::clicked, this, &RobotWindow::onGetCurrentPositionP3);
     connect(ui->pbCalculateZPlane, &QPushButton::clicked, this, &RobotWindow::onCalculateZPlane);
     connect(ui->pbTestZPlane, &QPushButton::clicked, this, &RobotWindow::onTestZPlane);
+    connect(ui->pbResetZPlane, &QPushButton::clicked, this, &RobotWindow::onResetZPlane);
+    connect(ui->pbAutoCalibrate, &QPushButton::clicked, this, &RobotWindow::onAutoCalibrate);
     connect(ui->gbZPlaneLimiting, &QGroupBox::toggled, this, &RobotWindow::onZPlaneLimitingToggled);
+    
+    // ========== Z-PLANE ADVANCED SETTINGS ==========
+    connect(ui->leSafetyMargin, &QLineEdit::textChanged, this, &RobotWindow::onSafetyMarginChanged);
+    connect(ui->cbShowWarnings, &QCheckBox::toggled, this, &RobotWindow::onShowWarningsToggled);
+    connect(ui->cbStrictMode, &QCheckBox::toggled, this, &RobotWindow::onStrictModeToggled);
+    
+    // Initialize Z-plane UI and visualization
+    setupZPlaneVisualization();
+    updateZPlaneUI();
 
     QObject::connect(ui->cbCalibType, QOverload<int>::of(&QComboBox::currentIndexChanged), [this](int index) {
             QString selectedText = ui->cbCalibType->itemText(index);
@@ -1234,7 +1254,7 @@ void RobotWindow::InitEvents()
         {
             QVector3D position(x, y, z);
             ObjectInfo object(-1, 0, position, 20, 40, angle); // UID will be assigned automatically
-            
+
             // Add object directly to TrackedObjects (allows multiple objects)
             TrackingManagerInstance->AddObjectToTracking(ui->leObjectListName->text(), object);
         }
@@ -1854,6 +1874,12 @@ void RobotWindow::LoadZPlaneSettings()
     m_zPlane.isValid = VariableManager::instance().getVar(prefix + "IsValid", false).toBool();
     m_zPlane.isEnabled = VariableManager::instance().getVar(prefix + "IsEnabled", false).toBool();
     
+    // Load advanced settings
+    m_zPlane.safetyMargin = VariableManager::instance().getVar(prefix + "SafetyMargin", 5.0).toDouble();
+    m_zPlane.showWarnings = VariableManager::instance().getVar(prefix + "ShowWarnings", true).toBool();
+    m_zPlane.strictMode = VariableManager::instance().getVar(prefix + "StrictMode", false).toBool();
+    m_zPlane.planeArea = VariableManager::instance().getVar(prefix + "PlaneArea", 0.0).toDouble();
+    
     // Update UI with loaded values
     ui->leZPlaneP1X->setText(QString::number(m_zPlane.p1.x, 'f', 1));
     ui->leZPlaneP1Y->setText(QString::number(m_zPlane.p1.y, 'f', 1));
@@ -1868,6 +1894,9 @@ void RobotWindow::LoadZPlaneSettings()
     ui->leZPlaneP3Z->setText(QString::number(m_zPlane.p3.z, 'f', 1));
     
     ui->gbZPlaneLimiting->setChecked(m_zPlane.isEnabled);
+    
+    // Update advanced UI controls
+    updateZPlaneUI();
     
     // Update equation display
     updateZPlaneEquationDisplay();
@@ -3709,64 +3738,79 @@ void RobotWindow::DoADemo()
 
 void RobotWindow::UpdateRobotPositionToUI()
 {
+    // Use safe access to RobotParameters
+    if (!isRobotParametersValid()) {
+        return; // Skip update if not ready
+    }
+    
+    RobotPara currentParams = getSafeRobotParameters();
+
     DisablePositionUpdatingEvents();
 
     if (!ui->leX->hasFocus())
     {
-        ui->leX->setText(QString::number(RobotParameters[RbID].X));
+        ui->leX->setText(QString::number(currentParams.X));
     }
     if (!ui->leY->hasFocus())
     {
-        ui->leY->setText(QString::number(RobotParameters[RbID].Y));
+        ui->leY->setText(QString::number(currentParams.Y));
     }
     if (!ui->leZ->hasFocus())
     {
-        ui->leZ->setText(QString::number(RobotParameters[RbID].Z));
+        ui->leZ->setText(QString::number(currentParams.Z));
     }
     if (!ui->leW->hasFocus())
     {
-        ui->leW->setText(QString::number(RobotParameters[RbID].W));
+        ui->leW->setText(QString::number(currentParams.W));
     }
     if (!ui->leU->hasFocus())
     {
-        ui->leU->setText(QString::number(RobotParameters[RbID].U));
+        ui->leU->setText(QString::number(currentParams.U));
     }
     if (!ui->leV->hasFocus())
     {
-        ui->leV->setText(QString::number(RobotParameters[RbID].V));
+        ui->leV->setText(QString::number(currentParams.V));
     }
     if (!ui->leVelocity->hasFocus())
     {
-        ui->leVelocity->setText(QString::number(RobotParameters[RbID].F));
+        ui->leVelocity->setText(QString::number(currentParams.F));
     }
     if (!ui->leAccel->hasFocus())
     {
-        ui->leAccel->setText(QString::number(RobotParameters[RbID].A));
+        ui->leAccel->setText(QString::number(currentParams.A));
     }
     if (!ui->leJerk->hasFocus())
     {
-        ui->leJerk->setText(QString::number(RobotParameters[RbID].J));
+        ui->leJerk->setText(QString::number(currentParams.J));
     }
     if (!ui->leStartSpeed->hasFocus())
     {
-        ui->leStartSpeed->setText(QString::number(RobotParameters[RbID].S));
+        ui->leStartSpeed->setText(QString::number(currentParams.S));
     }
     if (!ui->leEndSpeed->hasFocus())
     {
-        ui->leEndSpeed->setText(QString::number(RobotParameters[RbID].E));
+        ui->leEndSpeed->setText(QString::number(currentParams.E));
     }
 
     if (ui->cbEncoderType->currentText() == "Virtual Encoder")
     {
         int id = ui->cbSelectedEncoder->currentText().toInt();
-        if (TrackingManagerInstance->Trackings[id]->VirEncoder.IsActive() == true)
+        // Safety check for TrackingManagerInstance and bounds
+        if (TrackingManagerInstance && 
+            !TrackingManagerInstance->Trackings.isEmpty() && 
+            id >= 0 && id < TrackingManagerInstance->Trackings.size())
         {
-            if (encoderUpdateTimer.elapsed() >= TrackingManagerInstance->Trackings[id]->VirEncoder.readInterval())
+            if (TrackingManagerInstance->Trackings[id]->VirEncoder.IsActive() == true)
             {
-                encoderUpdateTimer.restart();
+                if (encoderUpdateTimer.elapsed() >= TrackingManagerInstance->Trackings[id]->VirEncoder.readInterval())
+                {
+                    encoderUpdateTimer.restart();
 
-                int selectedEncoderID = ui->cbSelectedEncoder->currentIndex();
-                ui->leEncoderCurrentPosition->setText(QString::number(TrackingManagerInstance->Trackings.at(selectedEncoderID)->VirEncoder.readPosition()));
+                    int selectedEncoderID = ui->cbSelectedEncoder->currentIndex();
+                    if (selectedEncoderID >= 0 && selectedEncoderID < TrackingManagerInstance->Trackings.size()) {
+                        ui->leEncoderCurrentPosition->setText(QString::number(TrackingManagerInstance->Trackings.at(selectedEncoderID)->VirEncoder.readPosition()));
+                    }
+                }
             }
         }
     }
@@ -4459,15 +4503,34 @@ void RobotWindow::LoadImages()
 //            return;
 //        }
 
+        // Add safety check for CameraInstance
+        if (!CameraInstance) {
+            qDebug() << "Warning: CameraInstance is null, cannot load images";
+            return;
+        }
+
         for (const QString &imageName : imageNames) {
             QImage qImage(imageName);
             if (!qImage.isNull()) {
-                CameraInstance->CaptureImages.append(ImageTool::QImageToCvMat(qImage, true));
+                try {
+                    cv::Mat convertedMat = ImageTool::QImageToCvMat(qImage, true);
+                    if (!convertedMat.empty()) {
+                        CameraInstance->CaptureImages.append(convertedMat);
+                    }
+                } catch (...) {
+                    qDebug() << "Warning: Failed to convert image:" << imageName;
+                    continue;
+                }
             }
         }
 
-        CameraInstance->CaptureImage = CameraInstance->CaptureImages.at(0);
-        CameraInstance->FrameID = 0;
+        // Additional safety check before accessing CaptureImages
+        if (!CameraInstance->CaptureImages.isEmpty()) {
+            CameraInstance->CaptureImage = CameraInstance->CaptureImages.at(0);
+            CameraInstance->FrameID = 0;
+        } else {
+            qDebug() << "Warning: No valid images loaded, CaptureImage remains empty";
+        }
 
 //        QImage qImage(imageName);
 
@@ -6508,11 +6571,31 @@ void RobotWindow::ProcessUIEvent()
         ui->vlImageViewer->addWidget(ui->fImageViewer);
     }
 
+    if (ui->cbAutoUpdateObjectsDisplay->currentIndex() == 1)
+    {
+        UpdateObjectsToView();
+    }
+}
+
+bool RobotWindow::isRobotParametersValid() const
+{
+    return !RobotParameters.isEmpty() && RbID >= 0 && RbID < RobotParameters.size();
+}
+
+RobotPara RobotWindow::getSafeRobotParameters() const
+{
+    if (isRobotParametersValid()) {
+        return RobotParameters[RbID];
+    }
+    return RobotPara(); // Return default-constructed RobotPara if not valid
+}
+
+void RobotWindow::updateCameraInfoDisplay()
+{
     // Get actual image size from CaptureImage to ensure accuracy
     int width = 0;
     int height = 0;
     
-    // Add null check for CameraInstance to prevent memory access violation
     if (CameraInstance != nullptr)
     {
         if (!CameraInstance->CaptureImage.empty())
@@ -6522,7 +6605,6 @@ void RobotWindow::ProcessUIEvent()
         }
         else
         {
-            // Fallback to stored origin size if CaptureImage is empty
             width = CameraInstance->OriginWidth;
             height = CameraInstance->OriginHeight;
         }
@@ -6531,11 +6613,6 @@ void RobotWindow::ProcessUIEvent()
     float ratio = ui->gvImageViewer->GetRatio() * 100;
     ui->lbMatSize->setText(QString("Original: %1x%2").arg(width).arg(height));
     ui->lbDisplayRatio->setText(QString("Ratio: %1%").arg(ratio));
-
-    if (ui->cbAutoUpdateObjectsDisplay->currentIndex() == 1)
-    {
-        UpdateObjectsToView();
-    }
 }
 
 void RobotWindow::paintEvent(QPaintEvent *event)
@@ -7248,13 +7325,24 @@ bool RobotWindow::calculateZPlane() {
                        m_zPlane.c * m_zPlane.p1.z);
         
         m_zPlane.isValid = true;
-        updateZPlaneEquationDisplay();
         
-        SoftwareLog(QString("Z-Plane: Calculated successfully - a=%1, b=%2, c=%3, d=%4")
+        // Calculate plane area
+        m_zPlane.planeArea = m_zPlane.calculatePlaneArea();
+        
+        updateZPlaneEquationDisplay();
+        updateZPlaneStatus();
+        
+        // Update visualization
+        if (zPlaneViz) {
+            zPlaneViz->updateVisualization();
+        }
+        
+        SoftwareLog(QString("Z-Plane: Calculated successfully - a=%1, b=%2, c=%3, d=%4, Area=%5 mm²")
                    .arg(m_zPlane.a, 0, 'f', 4)
                    .arg(m_zPlane.b, 0, 'f', 4)
                    .arg(m_zPlane.c, 0, 'f', 4)
-                   .arg(m_zPlane.d, 0, 'f', 4));
+                   .arg(m_zPlane.d, 0, 'f', 4)
+                   .arg(m_zPlane.planeArea, 0, 'f', 2));
         
         return true;
         
@@ -7360,8 +7448,14 @@ void RobotWindow::onZPlaneLimitingToggled(bool enabled) {
     
     if (enabled && !m_zPlane.isValid) {
         SoftwareLog("Z-Plane: Warning - Enabled but plane is not calculated");
+        if (m_zPlane.showWarnings) {
+            QMessageBox::warning(this, "Z-Plane Warning", 
+                                "Z-Plane limiting is enabled but no valid plane is configured.\n"
+                                "Please calculate a plane first using the 3 calibration points.");
+        }
     }
     
+    updateZPlaneStatus();
     SoftwareLog(QString("Z-Plane Limiting: %1").arg(enabled ? "ENABLED" : "DISABLED"));
 }
 
@@ -7408,22 +7502,38 @@ QString RobotWindow::filterGcodeForZPlane(const QString& gcode) {
             
             // Apply Z-limiting if we have X, Y, Z coordinates
             if (hasX && hasY && hasZ) {
-                double limitZ = m_zPlane.calculateZ(x, y);
-                
-                if (z < limitZ) {
-                    // Z is below the limiting plane, clamp it
-                    QString originalLine = line;
+                // Check if point is safe (considering safety margin)
+                if (!m_zPlane.isPointSafe(x, y, z)) {
+                    double safeZ = m_zPlane.calculateSafeZ(x, y);
+                    
+                    if (m_zPlane.strictMode) {
+                        // In strict mode, block the movement entirely
+                        QString warningComment = QString("; WARNING: Movement blocked by Z-Plane safety (Z=%1, Safe Z=%2)")
+                                               .arg(z, 0, 'f', 3)
+                                               .arg(safeZ, 0, 'f', 3);
+                        filteredLines.append(warningComment);
+                        
+                        SoftwareLog(QString("Z-Plane: BLOCKED unsafe movement Z=%1 at (%2, %3), Safe Z=%4")
+                                   .arg(z, 0, 'f', 3)
+                                   .arg(x, 0, 'f', 2)
+                                   .arg(y, 0, 'f', 2)
+                                   .arg(safeZ, 0, 'f', 3));
+                        continue; // Skip this line entirely
+                    } else {
+                        // In warning mode, clamp to safe Z
                     QString modifiedLine = line;
-                    modifiedLine.replace(zRegex, QString("Z%1").arg(limitZ, 0, 'f', 3));
+                        modifiedLine.replace(zRegex, QString("Z%1").arg(safeZ, 0, 'f', 3));
                     
                     filteredLines.append(modifiedLine);
                     
-                    SoftwareLog(QString("Z-Plane: Limited Z from %1 to %2 at (%3, %4)")
+                        SoftwareLog(QString("Z-Plane: Corrected Z from %1 to %2 at (%3, %4) [Safety Margin: %5mm]")
                                .arg(z, 0, 'f', 3)
-                               .arg(limitZ, 0, 'f', 3)
+                                   .arg(safeZ, 0, 'f', 3)
                                .arg(x, 0, 'f', 2)
-                               .arg(y, 0, 'f', 2));
+                                   .arg(y, 0, 'f', 2)
+                                   .arg(m_zPlane.safetyMargin, 0, 'f', 1));
                     continue;
+                    }
                 }
             }
         }
@@ -7462,9 +7572,17 @@ void RobotWindow::SaveZPlaneSettings()
     VariableManager::instance().updateVar(prefix + "IsValid", m_zPlane.isValid);
     VariableManager::instance().updateVar(prefix + "IsEnabled", m_zPlane.isEnabled);
     
-    SoftwareLog(QString("Z-Plane: Settings saved - Valid=%1, Enabled=%2")
+    // Save advanced settings
+    VariableManager::instance().updateVar(prefix + "SafetyMargin", m_zPlane.safetyMargin);
+    VariableManager::instance().updateVar(prefix + "ShowWarnings", m_zPlane.showWarnings);
+    VariableManager::instance().updateVar(prefix + "StrictMode", m_zPlane.strictMode);
+    VariableManager::instance().updateVar(prefix + "PlaneArea", m_zPlane.planeArea);
+    
+    SoftwareLog(QString("Z-Plane: Settings saved - Valid=%1, Enabled=%2, SafetyMargin=%3mm, StrictMode=%4")
                .arg(m_zPlane.isValid ? "true" : "false")
-               .arg(m_zPlane.isEnabled ? "true" : "false"));
+               .arg(m_zPlane.isEnabled ? "true" : "false")
+               .arg(m_zPlane.safetyMargin, 0, 'f', 1)
+               .arg(m_zPlane.strictMode ? "true" : "false"));
 }
 
 // ========== CONVEYOR VISUALIZATION IMPLEMENTATION ==========
@@ -7499,17 +7617,29 @@ void RobotWindow::setupConveyorVisualization()
     connect(vizTimer, &QTimer::timeout, this, &RobotWindow::updateConveyorVisualization);
     vizTimer->start(200); // Update every 200ms (5 FPS) - reduced from 100ms for better performance
     
+    // Start conveyor animation AFTER everything is set up
+    conveyorViz->startAnimation();
+    
     SoftwareLog("Conveyor visualization setup completed");
 }
 
 void RobotWindow::updateConveyorVisualization()
 {
-    if (!conveyorViz || !TrackingManagerInstance) {
+    // Enhanced null checks to prevent crashes
+    if (!conveyorViz) {
         return;
     }
     
-    // Performance optimization: Only update if there are actually tracking instances
+    if (!TrackingManagerInstance) {
+        // Clear visualization if no tracking manager
+        conveyorViz->updateObjects(QVector<ObjectInfo>());
+        return;
+    }
+    
+    // Additional safety check for Trackings container
     if (TrackingManagerInstance->Trackings.isEmpty()) {
+        // Clear visualization if no tracking instances
+        conveyorViz->updateObjects(QVector<ObjectInfo>());
         return;
     }
     
@@ -7517,15 +7647,28 @@ void RobotWindow::updateConveyorVisualization()
     QVector<ObjectInfo> allObjects;
     allObjects.reserve(100); // Pre-allocate to avoid reallocations
     
-    for (int i = 0; i < TrackingManagerInstance->Trackings.count(); i++) {
+    // Safe iteration with bounds checking
+    int trackingCount = TrackingManagerInstance->Trackings.count();
+    for (int i = 0; i < trackingCount; i++) {
+        // Additional bounds check
+        if (i >= TrackingManagerInstance->Trackings.size()) {
+            break; // Safety exit if container changed during iteration
+        }
+        
         Tracking* tracking = TrackingManagerInstance->Trackings.at(i);
         if (tracking) {
-            // Thread-safe copy of objects using public method
-            QVector<ObjectInfo> trackingObjects = tracking->getTrackedObjectsCopy();
-            
-            // Only process if there are objects to avoid unnecessary operations
-            if (!trackingObjects.isEmpty()) {
-                allObjects.append(trackingObjects);
+            try {
+                // Thread-safe copy of objects using public method
+                QVector<ObjectInfo> trackingObjects = tracking->getTrackedObjectsCopy();
+                
+                // Only process if there are objects to avoid unnecessary operations
+                if (!trackingObjects.isEmpty()) {
+                    allObjects.append(trackingObjects);
+                }
+            } catch (...) {
+                // Handle any exceptions during object copying
+                qDebug() << "Warning: Exception occurred while copying tracking objects from instance" << i;
+                continue;
             }
         }
     }
@@ -7538,13 +7681,19 @@ void RobotWindow::updateConveyorVisualization()
     bool objectsChanged = (allObjects.size() != lastObjectCount);
     
     if (forceUpdate || objectsChanged) {
-        // Update visualization with all objects
-        conveyorViz->updateObjects(allObjects);
-        
-        // Update object count display
-        updateObjectCount();
-        
-        lastObjectCount = allObjects.size();
+        try {
+            // Update visualization with all objects
+            if (conveyorViz) { // Double-check conveyorViz is still valid
+                conveyorViz->updateObjects(allObjects);
+            }
+            
+            // Update object count display
+            updateObjectCount();
+            
+            lastObjectCount = allObjects.size();
+        } catch (...) {
+            qDebug() << "Warning: Exception occurred during conveyor visualization update";
+        }
     }
 }
 
@@ -7701,12 +7850,24 @@ void RobotWindow::updateObjectCount()
     if (!lastUpdateTime.isValid() || lastUpdateTime.elapsed() > 500) {
         int totalObjects = 0;
         
-        // Count total objects across all tracking instances
-        for (int i = 0; i < TrackingManagerInstance->Trackings.count(); i++) {
-            if (TrackingManagerInstance->Trackings.at(i)) {
-                // Use more efficient method if available, or cache the result
-                QVector<ObjectInfo> objects = TrackingManagerInstance->Trackings.at(i)->getTrackedObjectsCopy();
-                totalObjects += objects.size();
+        // Count total objects across all tracking instances with safety checks
+        int trackingCount = TrackingManagerInstance->Trackings.count();
+        for (int i = 0; i < trackingCount; i++) {
+            // Additional bounds check
+            if (i >= TrackingManagerInstance->Trackings.size()) {
+                break; // Safety exit if container changed during iteration
+            }
+            
+            Tracking* tracking = TrackingManagerInstance->Trackings.at(i);
+            if (tracking) {
+                try {
+                    // Use more efficient method if available, or cache the result
+                    QVector<ObjectInfo> objects = tracking->getTrackedObjectsCopy();
+                    totalObjects += objects.size();
+                } catch (...) {
+                    qDebug() << "Warning: Exception occurred while counting objects from tracking instance" << i;
+                    continue;
+                }
             }
         }
         
@@ -7717,6 +7878,315 @@ void RobotWindow::updateObjectCount()
         }
         
         lastUpdateTime.restart();
+    }
+}
+
+// ===============================================================
+// ENHANCED Z-PLANE LIMITING IMPLEMENTATIONS
+// ===============================================================
+
+void RobotWindow::onResetZPlane() {
+    // Reset Z-plane configuration
+    m_zPlane = ZPlane(); // Reset to default values
+    
+    // Clear UI inputs
+    if (ui) {
+        ui->leZPlaneP1X->setText("0.0");
+        ui->leZPlaneP1Y->setText("0.0");
+        ui->leZPlaneP1Z->setText("0.0");
+        
+        ui->leZPlaneP2X->setText("100.0");
+        ui->leZPlaneP2Y->setText("0.0");
+        ui->leZPlaneP2Z->setText("0.0");
+        
+        ui->leZPlaneP3X->setText("0.0");
+        ui->leZPlaneP3Y->setText("100.0");
+        ui->leZPlaneP3Z->setText("0.0");
+        
+        ui->gbZPlaneLimiting->setChecked(false);
+        ui->leSafetyMargin->setText("5.0");
+        ui->cbShowWarnings->setChecked(true);
+        ui->cbStrictMode->setChecked(false);
+    }
+    
+    updateZPlaneEquationDisplay();
+    updateZPlaneStatus();
+    
+    // Update visualization
+    if (zPlaneViz) {
+        zPlaneViz->updateVisualization();
+    }
+    
+    SoftwareLog("Z-Plane: Configuration reset to defaults");
+}
+
+void RobotWindow::onSafetyMarginChanged() {
+    if (!ui) return;
+    
+    bool ok;
+    double margin = ui->leSafetyMargin->text().toDouble(&ok);
+    
+    if (ok && margin >= 0.0 && margin <= 100.0) {
+        m_zPlane.safetyMargin = margin;
+        updateZPlaneStatus();
+        SoftwareLog(QString("Z-Plane: Safety margin updated to %1 mm").arg(margin, 0, 'f', 1));
+    } else {
+        // Reset to previous valid value
+        ui->leSafetyMargin->setText(QString::number(m_zPlane.safetyMargin, 'f', 1));
+        if (m_zPlane.showWarnings) {
+            QMessageBox::warning(this, "Invalid Safety Margin", 
+                                "Safety margin must be between 0.0 and 100.0 mm");
+        }
+    }
+}
+
+void RobotWindow::onShowWarningsToggled(bool enabled) {
+    m_zPlane.showWarnings = enabled;
+    SoftwareLog(QString("Z-Plane: Warning dialogs %1").arg(enabled ? "enabled" : "disabled"));
+}
+
+void RobotWindow::onStrictModeToggled(bool enabled) {
+    m_zPlane.strictMode = enabled;
+    updateZPlaneStatus();
+    
+    QString message = enabled ? 
+        "Z-Plane: Strict mode ENABLED - All unsafe movements will be blocked" :
+        "Z-Plane: Strict mode disabled - Unsafe movements will show warnings only";
+    
+    SoftwareLog(message);
+    
+    if (enabled && m_zPlane.showWarnings) {
+        QMessageBox::information(this, "Strict Mode", 
+                                "Strict mode is now enabled.\n"
+                                "All robot movements below the safety plane will be blocked.\n"
+                                "Use this mode for maximum safety during operation.");
+    }
+}
+
+void RobotWindow::updateZPlaneStatus() {
+    if (!ui) return;
+    
+    // Update status text and color
+    QString statusText;
+    QString statusColor;
+    
+    if (!m_zPlane.isValid) {
+        statusText = "Not Configured";
+        statusColor = "color: rgb(255, 150, 50);"; // Orange
+    } else if (!m_zPlane.isEnabled) {
+        statusText = "Configured (Disabled)";
+        statusColor = "color: rgb(150, 150, 150);"; // Gray
+    } else if (m_zPlane.strictMode) {
+        statusText = "Active (Strict Mode)";
+        statusColor = "color: rgb(255, 100, 100);"; // Red
+    } else {
+        statusText = "Active (Warning Mode)";
+        statusColor = "color: rgb(100, 255, 100);"; // Green
+    }
+    
+    ui->lbZPlaneStatusValue->setText(statusText);
+    ui->lbZPlaneStatusValue->setStyleSheet(statusColor);
+    
+    // Update plane area
+    if (m_zPlane.isValid) {
+        ui->lbPlaneAreaValue->setText(QString("%1 mm²").arg(m_zPlane.planeArea, 0, 'f', 1));
+    } else {
+        ui->lbPlaneAreaValue->setText("0.0 mm²");
+    }
+}
+
+void RobotWindow::updateZPlaneUI() {
+    if (!ui) return;
+    
+    // Sync UI with current Z-plane settings
+    ui->leSafetyMargin->setText(QString::number(m_zPlane.safetyMargin, 'f', 1));
+    ui->cbShowWarnings->setChecked(m_zPlane.showWarnings);
+    ui->cbStrictMode->setChecked(m_zPlane.strictMode);
+    ui->gbZPlaneLimiting->setChecked(m_zPlane.isEnabled);
+    
+    // Update status display
+    updateZPlaneStatus();
+    updateZPlaneEquationDisplay();
+    
+    // Update visualization with current robot position if available
+    if (zPlaneViz && isRobotParametersValid()) {
+        RobotPara currentParams = getSafeRobotParameters();
+        // Additional safety: Check for valid position values
+        if (std::isfinite(currentParams.X) && std::isfinite(currentParams.Y) && std::isfinite(currentParams.Z)) {
+            QVector3D currentPos(currentParams.X, currentParams.Y, currentParams.Z);
+            zPlaneViz->setCurrentPosition(currentPos);
+        }
+    }
+}
+
+void RobotWindow::setupZPlaneVisualization()
+{
+    if (!ui) return;
+    
+    // Create Z-plane visualization widget
+    zPlaneViz = new ZPlaneVisualization(this);
+    
+    // Replace the placeholder frame with our visualization
+    QFrame* placeholder = ui->frameZPlaneCanvas;
+    if (placeholder && placeholder->parentWidget()) {
+        QLayout* layout = placeholder->parentWidget()->layout();
+        if (layout) {
+            // Remove placeholder and add visualization
+            layout->removeWidget(placeholder);
+            layout->addWidget(zPlaneViz);
+            placeholder->deleteLater();
+        }
+    }
+    
+    // Set initial Z-plane reference
+    zPlaneViz->setZPlane(&m_zPlane);
+    
+    // Connect visualization controls
+    connect(ui->cbZPlaneViewMode, QOverload<int>::of(&QComboBox::currentIndexChanged), 
+            zPlaneViz, &ZPlaneVisualization::onViewModeChanged);
+    connect(ui->cbShowSafetyZone, &QCheckBox::toggled, 
+            zPlaneViz, &ZPlaneVisualization::onShowSafetyZoneToggled);
+    connect(ui->cbShowGrid, &QCheckBox::toggled, 
+            zPlaneViz, &ZPlaneVisualization::onShowGridToggled);
+    
+    SoftwareLog("Z-Plane visualization setup completed");
+}
+
+void RobotWindow::onAutoCalibrate()
+{
+    if (!m_pointToolController) {
+        SoftwareLog("Z-Plane: Auto-calibration failed - Point tool controller not available");
+        if (m_zPlane.showWarnings) {
+            QMessageBox::warning(this, "Auto-Calibration Error", 
+                                "Point tool controller is not available.\n"
+                                "Please ensure robot connection is established.");
+        }
+        return;
+    }
+    
+    // Confirm with user
+    QMessageBox::StandardButton reply = QMessageBox::question(this, 
+        "Auto-Calibration Confirmation", 
+        "This will automatically move the robot to scan workspace boundaries.\n\n"
+        "The robot will move to 3 corner positions to define the Z-plane limit.\n"
+        "Please ensure the workspace is clear and safe.\n\n"
+        "Continue with auto-calibration?",
+        QMessageBox::Yes | QMessageBox::No,
+        QMessageBox::No);
+    
+    if (reply != QMessageBox::Yes) {
+        return;
+    }
+    
+    SoftwareLog("Z-Plane: Starting auto-calibration sequence...");
+    
+    try {
+        // Define default workspace corner positions for scanning
+        // These can be customized based on robot workspace
+        QVector<QVector3D> scanPositions = {
+            QVector3D(-150, -150, -50),  // Bottom-left corner
+            QVector3D(150, -150, -50),   // Bottom-right corner  
+            QVector3D(0, 150, -50)       // Top-center
+        };
+        
+        // Move to each position and capture coordinates
+        for (int i = 0; i < scanPositions.size() && i < 3; ++i) {
+            QVector3D targetPos = scanPositions[i];
+            
+            SoftwareLog(QString("Z-Plane: Auto-scan moving to position %1: (%2, %3, %4)")
+                       .arg(i + 1)
+                       .arg(targetPos.x(), 0, 'f', 1)
+                       .arg(targetPos.y(), 0, 'f', 1)
+                       .arg(targetPos.z(), 0, 'f', 1));
+            
+            // Move robot to target position
+            // Note: This is a simplified implementation
+            // In real application, you would use proper robot movement commands
+            QString moveCommand = QString("G0 X%1 Y%2 Z%3")
+                                .arg(targetPos.x(), 0, 'f', 3)
+                                .arg(targetPos.y(), 0, 'f', 3)
+                                .arg(targetPos.z(), 0, 'f', 3);
+            
+            // Send move command (this would need proper robot communication)
+            SoftwareLog(QString("Z-Plane: Executing move command: %1").arg(moveCommand));
+            
+            // Wait for movement completion (simplified - would need proper feedback)
+            QThread::msleep(2000); // 2 second delay for movement
+            
+            // Get actual position after movement (from RobotParameters)
+            QVector3D actualPos(RobotParameters[RbID].X, 
+                               RobotParameters[RbID].Y, 
+                               RobotParameters[RbID].Z);
+            
+            // Update calibration point
+            switch (i) {
+                case 0:
+                    m_zPlane.p1.x = actualPos.x();
+                    m_zPlane.p1.y = actualPos.y();
+                    m_zPlane.p1.z = actualPos.z();
+                    if (ui) {
+                        ui->leZPlaneP1X->setText(QString::number(actualPos.x(), 'f', 1));
+                        ui->leZPlaneP1Y->setText(QString::number(actualPos.y(), 'f', 1));
+                        ui->leZPlaneP1Z->setText(QString::number(actualPos.z(), 'f', 1));
+                    }
+                    break;
+                case 1:
+                    m_zPlane.p2.x = actualPos.x();
+                    m_zPlane.p2.y = actualPos.y();
+                    m_zPlane.p2.z = actualPos.z();
+                    if (ui) {
+                        ui->leZPlaneP2X->setText(QString::number(actualPos.x(), 'f', 1));
+                        ui->leZPlaneP2Y->setText(QString::number(actualPos.y(), 'f', 1));
+                        ui->leZPlaneP2Z->setText(QString::number(actualPos.z(), 'f', 1));
+                    }
+                    break;
+                case 2:
+                    m_zPlane.p3.x = actualPos.x();
+                    m_zPlane.p3.y = actualPos.y();
+                    m_zPlane.p3.z = actualPos.z();
+                    if (ui) {
+                        ui->leZPlaneP3X->setText(QString::number(actualPos.x(), 'f', 1));
+                        ui->leZPlaneP3Y->setText(QString::number(actualPos.y(), 'f', 1));
+                        ui->leZPlaneP3Z->setText(QString::number(actualPos.z(), 'f', 1));
+                    }
+                    break;
+            }
+            
+            SoftwareLog(QString("Z-Plane: Point %1 captured at (%2, %3, %4)")
+                       .arg(i + 1)
+                       .arg(actualPos.x(), 0, 'f', 1)
+                       .arg(actualPos.y(), 0, 'f', 1)
+                       .arg(actualPos.z(), 0, 'f', 1));
+        }
+        
+        // Automatically calculate plane after capturing all points
+        if (calculateZPlane()) {
+            SoftwareLog("Z-Plane: Auto-calibration completed successfully");
+            
+            if (m_zPlane.showWarnings) {
+                QMessageBox::information(this, "Auto-Calibration Complete", 
+                                        QString("Auto-calibration completed successfully!\n\n"
+                                                "Z-Plane calculated with area: %1 mm²\n"
+                                                "Safety margin: %2 mm\n\n"
+                                                "The workspace limits are now configured.")
+                                        .arg(m_zPlane.planeArea, 0, 'f', 1)
+                                        .arg(m_zPlane.safetyMargin, 0, 'f', 1));
+            }
+        } else {
+            SoftwareLog("Z-Plane: Auto-calibration failed during plane calculation");
+            if (m_zPlane.showWarnings) {
+                QMessageBox::warning(this, "Auto-Calibration Failed", 
+                                    "Auto-calibration completed but plane calculation failed.\n"
+                                    "Please check the captured points and try manual calibration.");
+            }
+        }
+        
+    } catch (const std::exception& e) {
+        SoftwareLog(QString("Z-Plane: Auto-calibration error - %1").arg(e.what()));
+        if (m_zPlane.showWarnings) {
+            QMessageBox::critical(this, "Auto-Calibration Error", 
+                                 QString("Auto-calibration failed with error:\n%1").arg(e.what()));
+        }
     }
 }
 

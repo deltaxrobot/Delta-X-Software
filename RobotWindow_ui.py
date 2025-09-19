@@ -1128,7 +1128,7 @@ class Ui_RobotWindow(object):
         self.saObjectDetecting.setWidgetResizable(True)
         self.wObjectDetecting = QWidget()
         self.wObjectDetecting.setObjectName(u"wObjectDetecting")
-        self.wObjectDetecting.setGeometry(QRect(0, -2407, 631, 3500))
+        self.wObjectDetecting.setGeometry(QRect(0, 0, 631, 3500))
         self.wObjectDetecting.setMinimumSize(QSize(100, 3500))
         self.wObjectDetecting.setStyleSheet(u"QWidget#wObjectDetecting\n"
 "{	\n"
@@ -3117,7 +3117,7 @@ class Ui_RobotWindow(object):
         self.saPointTool.setWidgetResizable(True)
         self.wPointTool = QWidget()
         self.wPointTool.setObjectName(u"wPointTool")
-        self.wPointTool.setGeometry(QRect(0, -1108, 619, 3000))
+        self.wPointTool.setGeometry(QRect(0, 0, 619, 3000))
         self.wPointTool.setMinimumSize(QSize(0, 3000))
         self.wPointTool.setStyleSheet(u"QWidget#wPointTool\n"
 "{	\n"
@@ -5528,7 +5528,7 @@ class Ui_RobotWindow(object):
         self.scrollArea_2.setWidgetResizable(True)
         self.wgJoggingScrollWidget = QWidget()
         self.wgJoggingScrollWidget.setObjectName(u"wgJoggingScrollWidget")
-        self.wgJoggingScrollWidget.setGeometry(QRect(0, 0, 519, 2192))
+        self.wgJoggingScrollWidget.setGeometry(QRect(0, -1121, 534, 2559))
         self.wgJoggingScrollWidget.setMinimumSize(QSize(0, 2000))
         self.wgJoggingScrollWidget.setMaximumSize(QSize(16777215, 16777215))
         self.wgJoggingScrollWidget.setStyleSheet(u"QWidget#wgJoggingScrollWidget\n"
@@ -8205,12 +8205,146 @@ class Ui_RobotWindow(object):
 
         self.horizontalLayout_zplane_actions.addWidget(self.pbTestZPlane)
 
+        self.pbResetZPlane = QPushButton(self.frameZPlaneActions)
+        self.pbResetZPlane.setObjectName(u"pbResetZPlane")
+        icon49 = QIcon()
+        icon49.addFile(u":/icon/icons8_restart_52px.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.pbResetZPlane.setIcon(icon49)
+        self.pbResetZPlane.setIconSize(QSize(20, 20))
+
+        self.horizontalLayout_zplane_actions.addWidget(self.pbResetZPlane)
+
+        self.pbAutoCalibrate = QPushButton(self.frameZPlaneActions)
+        self.pbAutoCalibrate.setObjectName(u"pbAutoCalibrate")
+        icon50 = QIcon()
+        icon50.addFile(u":/icon/icons8_automatic_52px.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.pbAutoCalibrate.setIcon(icon50)
+        self.pbAutoCalibrate.setIconSize(QSize(20, 20))
+
+        self.horizontalLayout_zplane_actions.addWidget(self.pbAutoCalibrate)
+
         self.horizontalSpacer_zplane = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
 
         self.horizontalLayout_zplane_actions.addItem(self.horizontalSpacer_zplane)
 
 
         self.verticalLayout_zplane_info.addWidget(self.frameZPlaneActions)
+
+        self.gbZPlaneStatus = QGroupBox(self.frameZPlaneInfo)
+        self.gbZPlaneStatus.setObjectName(u"gbZPlaneStatus")
+        self.gbZPlaneStatus.setFont(font15)
+        self.gridLayout_zplane_status = QGridLayout(self.gbZPlaneStatus)
+        self.gridLayout_zplane_status.setSpacing(10)
+        self.gridLayout_zplane_status.setContentsMargins(11, 11, 11, 11)
+        self.gridLayout_zplane_status.setObjectName(u"gridLayout_zplane_status")
+        self.lbZPlaneStatus = QLabel(self.gbZPlaneStatus)
+        self.lbZPlaneStatus.setObjectName(u"lbZPlaneStatus")
+        self.lbZPlaneStatus.setFont(font1)
+
+        self.gridLayout_zplane_status.addWidget(self.lbZPlaneStatus, 0, 0, 1, 1)
+
+        self.lbZPlaneStatusValue = QLabel(self.gbZPlaneStatus)
+        self.lbZPlaneStatusValue.setObjectName(u"lbZPlaneStatusValue")
+        self.lbZPlaneStatusValue.setStyleSheet(u"color: rgb(255, 150, 50);")
+
+        self.gridLayout_zplane_status.addWidget(self.lbZPlaneStatusValue, 0, 1, 1, 1)
+
+        self.lbSafetyMargin = QLabel(self.gbZPlaneStatus)
+        self.lbSafetyMargin.setObjectName(u"lbSafetyMargin")
+
+        self.gridLayout_zplane_status.addWidget(self.lbSafetyMargin, 0, 2, 1, 1)
+
+        self.leSafetyMargin = QLineEdit(self.gbZPlaneStatus)
+        self.leSafetyMargin.setObjectName(u"leSafetyMargin")
+        self.leSafetyMargin.setMaximumSize(QSize(60, 16777215))
+        self.leSafetyMargin.setAlignment(Qt.AlignCenter)
+
+        self.gridLayout_zplane_status.addWidget(self.leSafetyMargin, 0, 3, 1, 1)
+
+        self.lbPlaneArea = QLabel(self.gbZPlaneStatus)
+        self.lbPlaneArea.setObjectName(u"lbPlaneArea")
+
+        self.gridLayout_zplane_status.addWidget(self.lbPlaneArea, 1, 0, 1, 1)
+
+        self.lbPlaneAreaValue = QLabel(self.gbZPlaneStatus)
+        self.lbPlaneAreaValue.setObjectName(u"lbPlaneAreaValue")
+        self.lbPlaneAreaValue.setStyleSheet(u"color: rgb(150, 200, 255);")
+
+        self.gridLayout_zplane_status.addWidget(self.lbPlaneAreaValue, 1, 1, 1, 1)
+
+        self.cbShowWarnings = QCheckBox(self.gbZPlaneStatus)
+        self.cbShowWarnings.setObjectName(u"cbShowWarnings")
+        self.cbShowWarnings.setChecked(True)
+
+        self.gridLayout_zplane_status.addWidget(self.cbShowWarnings, 1, 2, 1, 1)
+
+        self.cbStrictMode = QCheckBox(self.gbZPlaneStatus)
+        self.cbStrictMode.setObjectName(u"cbStrictMode")
+        self.cbStrictMode.setChecked(False)
+
+        self.gridLayout_zplane_status.addWidget(self.cbStrictMode, 1, 3, 1, 1)
+
+
+        self.verticalLayout_zplane_info.addWidget(self.gbZPlaneStatus)
+
+        self.gbZPlaneVisualization = QGroupBox(self.frameZPlaneInfo)
+        self.gbZPlaneVisualization.setObjectName(u"gbZPlaneVisualization")
+        self.gbZPlaneVisualization.setMinimumSize(QSize(0, 200))
+        self.gbZPlaneVisualization.setFont(font15)
+        self.verticalLayout_zplane_viz = QVBoxLayout(self.gbZPlaneVisualization)
+        self.verticalLayout_zplane_viz.setSpacing(5)
+        self.verticalLayout_zplane_viz.setContentsMargins(11, 11, 11, 11)
+        self.verticalLayout_zplane_viz.setObjectName(u"verticalLayout_zplane_viz")
+        self.frameZPlaneCanvas = QFrame(self.gbZPlaneVisualization)
+        self.frameZPlaneCanvas.setObjectName(u"frameZPlaneCanvas")
+        self.frameZPlaneCanvas.setMinimumSize(QSize(400, 150))
+        self.frameZPlaneCanvas.setStyleSheet(u"QFrame { border: 1px solid rgb(100, 100, 100); background-color: rgb(40, 40, 40); }")
+        self.frameZPlaneCanvas.setFrameShape(QFrame.StyledPanel)
+        self.frameZPlaneCanvas.setFrameShadow(QFrame.Raised)
+
+        self.verticalLayout_zplane_viz.addWidget(self.frameZPlaneCanvas)
+
+        self.frameZPlaneControls = QFrame(self.gbZPlaneVisualization)
+        self.frameZPlaneControls.setObjectName(u"frameZPlaneControls")
+        self.horizontalLayout_zplane_viz = QHBoxLayout(self.frameZPlaneControls)
+        self.horizontalLayout_zplane_viz.setSpacing(10)
+        self.horizontalLayout_zplane_viz.setContentsMargins(11, 11, 11, 11)
+        self.horizontalLayout_zplane_viz.setObjectName(u"horizontalLayout_zplane_viz")
+        self.lbViewMode = QLabel(self.frameZPlaneControls)
+        self.lbViewMode.setObjectName(u"lbViewMode")
+
+        self.horizontalLayout_zplane_viz.addWidget(self.lbViewMode)
+
+        self.cbZPlaneViewMode = QComboBox(self.frameZPlaneControls)
+        self.cbZPlaneViewMode.addItem("")
+        self.cbZPlaneViewMode.addItem("")
+        self.cbZPlaneViewMode.addItem("")
+        self.cbZPlaneViewMode.setObjectName(u"cbZPlaneViewMode")
+        self.cbZPlaneViewMode.setMaximumSize(QSize(100, 16777215))
+
+        self.horizontalLayout_zplane_viz.addWidget(self.cbZPlaneViewMode)
+
+        self.cbShowSafetyZone = QCheckBox(self.frameZPlaneControls)
+        self.cbShowSafetyZone.setObjectName(u"cbShowSafetyZone")
+        self.cbShowSafetyZone.setChecked(True)
+
+        self.horizontalLayout_zplane_viz.addWidget(self.cbShowSafetyZone)
+
+        self.cbShowGrid = QCheckBox(self.frameZPlaneControls)
+        self.cbShowGrid.setObjectName(u"cbShowGrid")
+        self.cbShowGrid.setChecked(True)
+
+        self.horizontalLayout_zplane_viz.addWidget(self.cbShowGrid)
+
+        self.horizontalSpacer_zplane_viz = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+
+        self.horizontalLayout_zplane_viz.addItem(self.horizontalSpacer_zplane_viz)
+
+
+        self.verticalLayout_zplane_viz.addWidget(self.frameZPlaneControls)
+
+
+        self.verticalLayout_zplane_info.addWidget(self.gbZPlaneVisualization)
 
 
         self.verticalLayout_zplane.addWidget(self.frameZPlaneInfo)
@@ -9627,9 +9761,9 @@ class Ui_RobotWindow(object):
         font18 = QFont()
         font18.setPointSize(11)
         self.pbSlidingHome.setFont(font18)
-        icon49 = QIcon()
-        icon49.addFile(u"icon/icons8-home-32.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.pbSlidingHome.setIcon(icon49)
+        icon51 = QIcon()
+        icon51.addFile(u"icon/icons8-home-32.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.pbSlidingHome.setIcon(icon51)
 
         self.gridLayout_8.addWidget(self.pbSlidingHome, 1, 1, 1, 1)
 
@@ -9660,9 +9794,9 @@ class Ui_RobotWindow(object):
         self.pbSlidingDisable.setMinimumSize(QSize(0, 0))
         self.pbSlidingDisable.setMaximumSize(QSize(200, 40))
         self.pbSlidingDisable.setFont(font18)
-        icon50 = QIcon()
-        icon50.addFile(u"icon/icons8-sleeping-in-bed-32.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.pbSlidingDisable.setIcon(icon50)
+        icon52 = QIcon()
+        icon52.addFile(u"icon/icons8-sleeping-in-bed-32.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.pbSlidingDisable.setIcon(icon52)
 
         self.gridLayout_8.addWidget(self.pbSlidingDisable, 0, 1, 1, 1)
 
@@ -9920,7 +10054,7 @@ class Ui_RobotWindow(object):
         self.cbImageSource.setCurrentIndex(0)
         self.cbSendingImageMethod.setCurrentIndex(0)
         self.tabWidget.setCurrentIndex(0)
-        self.twDevices.setCurrentIndex(4)
+        self.twDevices.setCurrentIndex(0)
         self.pbPump.setDefault(False)
         self.pbLaser.setDefault(False)
         self.pbGrip.setDefault(False)
@@ -11099,6 +11233,28 @@ class Ui_RobotWindow(object):
         self.lbPlaneEquation.setText(QCoreApplication.translate("RobotWindow", u"Plane Equation: Z = 0.000", None))
         self.pbCalculateZPlane.setText(QCoreApplication.translate("RobotWindow", u"Calculate Plane", None))
         self.pbTestZPlane.setText(QCoreApplication.translate("RobotWindow", u"Test Point", None))
+        self.pbResetZPlane.setText(QCoreApplication.translate("RobotWindow", u"Reset", None))
+#if QT_CONFIG(tooltip)
+        self.pbAutoCalibrate.setToolTip(QCoreApplication.translate("RobotWindow", u"Automatically scan workspace boundaries", None))
+#endif // QT_CONFIG(tooltip)
+        self.pbAutoCalibrate.setText(QCoreApplication.translate("RobotWindow", u"Auto Scan", None))
+        self.gbZPlaneStatus.setTitle(QCoreApplication.translate("RobotWindow", u"Status & Settings", None))
+        self.lbZPlaneStatus.setText(QCoreApplication.translate("RobotWindow", u"Status:", None))
+        self.lbZPlaneStatusValue.setText(QCoreApplication.translate("RobotWindow", u"Not Configured", None))
+        self.lbSafetyMargin.setText(QCoreApplication.translate("RobotWindow", u"Safety Margin (mm):", None))
+        self.leSafetyMargin.setText(QCoreApplication.translate("RobotWindow", u"5.0", None))
+        self.lbPlaneArea.setText(QCoreApplication.translate("RobotWindow", u"Plane Area:", None))
+        self.lbPlaneAreaValue.setText(QCoreApplication.translate("RobotWindow", u"0.0 mm\u00b2", None))
+        self.cbShowWarnings.setText(QCoreApplication.translate("RobotWindow", u"Show Warnings", None))
+        self.cbStrictMode.setText(QCoreApplication.translate("RobotWindow", u"Strict Mode", None))
+        self.gbZPlaneVisualization.setTitle(QCoreApplication.translate("RobotWindow", u"Workspace Visualization", None))
+        self.lbViewMode.setText(QCoreApplication.translate("RobotWindow", u"View:", None))
+        self.cbZPlaneViewMode.setItemText(0, QCoreApplication.translate("RobotWindow", u"XY Plane", None))
+        self.cbZPlaneViewMode.setItemText(1, QCoreApplication.translate("RobotWindow", u"XZ Plane", None))
+        self.cbZPlaneViewMode.setItemText(2, QCoreApplication.translate("RobotWindow", u"YZ Plane", None))
+
+        self.cbShowSafetyZone.setText(QCoreApplication.translate("RobotWindow", u"Show Safety Zone", None))
+        self.cbShowGrid.setText(QCoreApplication.translate("RobotWindow", u"Show Grid", None))
         self.twCalibration.setTabText(self.twCalibration.indexOf(self.Workspace), QCoreApplication.translate("RobotWindow", u"Workspace Limits", None))
         self.twCalibration.setTabText(self.twCalibration.indexOf(self.tGridMapping), QCoreApplication.translate("RobotWindow", u"Grid Mapping", None))
         self.twDevices.setTabText(self.twDevices.indexOf(self.tRobot), QCoreApplication.translate("RobotWindow", u"Robot", None))
