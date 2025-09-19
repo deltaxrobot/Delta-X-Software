@@ -12,6 +12,8 @@
 #include <cmath>      // ? For Z-plane calculations
 #include <QInputDialog>  // ? For test input dialog
 #include <QtMath>      // ? For qAbs function
+#include <random>      // For random number generation
+#include <QElapsedTimer> // For performance timing
 
 RobotWindow::RobotWindow(QWidget *parent, QString projectName) :
     QMainWindow(parent),
@@ -1250,6 +1252,11 @@ void RobotWindow::InitEvents()
             VariableManager::instance().updateVar(listName + ".Count", counter + 1);
         }
     });
+
+    // ---- Object Detector Add Object Panel ----
+    connect(ui->pbAddObjectHere, &QPushButton::clicked, this, &RobotWindow::AddObjectAtPosition);
+    connect(ui->pbAddRandomObject, &QPushButton::clicked, this, &RobotWindow::AddRandomObject);
+    connect(ui->pbClearAllObjects, &QPushButton::clicked, this, &RobotWindow::ClearAllTrackedObjects);
 
     // ---- Setting ----
 
@@ -7487,9 +7494,10 @@ void RobotWindow::setupConveyorVisualization()
     conveyorViz->setConveyorDirection(QVector3D(0, 1, 0));  // Positive Y direction
     
     // Setup update timer to refresh visualization periodically
+    // Reduced frequency to minimize performance impact
     QTimer* vizTimer = new QTimer(this);
     connect(vizTimer, &QTimer::timeout, this, &RobotWindow::updateConveyorVisualization);
-    vizTimer->start(100); // Update every 100ms
+    vizTimer->start(200); // Update every 200ms (5 FPS) - reduced from 100ms for better performance
     
     SoftwareLog("Conveyor visualization setup completed");
 }
@@ -7500,22 +7508,216 @@ void RobotWindow::updateConveyorVisualization()
         return;
     }
     
-    // Get objects from all tracking instances
+    // Performance optimization: Only update if there are actually tracking instances
+    if (TrackingManagerInstance->Trackings.isEmpty()) {
+        return;
+    }
+    
+    // Get objects from all tracking instances with minimal copying
     QVector<ObjectInfo> allObjects;
+    allObjects.reserve(100); // Pre-allocate to avoid reallocations
     
     for (int i = 0; i < TrackingManagerInstance->Trackings.count(); i++) {
         Tracking* tracking = TrackingManagerInstance->Trackings.at(i);
         if (tracking) {
             // Thread-safe copy of objects using public method
             QVector<ObjectInfo> trackingObjects = tracking->getTrackedObjectsCopy();
-            for (const auto& obj : trackingObjects) {
-                allObjects.append(obj);
+            
+            // Only process if there are objects to avoid unnecessary operations
+            if (!trackingObjects.isEmpty()) {
+                allObjects.append(trackingObjects);
             }
         }
     }
     
-    // Update visualization with all objects
-    conveyorViz->updateObjects(allObjects);
+    // Only update visualization if objects changed or every few cycles
+    static int updateCounter = 0;
+    static int lastObjectCount = -1;
+    
+    bool forceUpdate = (++updateCounter % 5 == 0); // Force update every 5 cycles (1 second)
+    bool objectsChanged = (allObjects.size() != lastObjectCount);
+    
+    if (forceUpdate || objectsChanged) {
+        // Update visualization with all objects
+        conveyorViz->updateObjects(allObjects);
+        
+        // Update object count display
+        updateObjectCount();
+        
+        lastObjectCount = allObjects.size();
+    }
+}
+
+// ========== OBJECT MANAGEMENT IMPLEMENTATIONS ==========
+
+void RobotWindow::AddObjectAtPosition()
+{
+    SoftwareLog("AddObjectAtPosition() called");
+    
+    // Check if TrackingManager is available
+    if (!TrackingManagerInstance) {
+        SoftwareLog("Error: TrackingManagerInstance is null");
+        return;
+    }
+    
+    if (TrackingManagerInstance->Trackings.isEmpty()) {
+        SoftwareLog("Error: No tracking instances available");
+        return;
+    }
+    
+    // Get input values from the new UI controls
+    float x = ui->leAddObjectX->text().isEmpty() ? 0.0f : ui->leAddObjectX->text().toFloat();
+    float y = ui->leAddObjectY->text().isEmpty() ? 0.0f : ui->leAddObjectY->text().toFloat();
+    float width = ui->leAddObjectWidth->text().toFloat();
+    float height = ui->leAddObjectHeight->text().toFloat();
+    
+    // Validate inputs
+    if (width <= 0) width = 20.0f;
+    if (height <= 0) height = 40.0f;
+    
+    SoftwareLog(QString("Input values: x=%1, y=%2, w=%3, h=%4").arg(x).arg(y).arg(width).arg(height));
+    
+    // Get current tracking instance - use first available if cbSelectedTracking is empty
+    int selectedEncoderID = 0;
+    if (!ui->cbSelectedTracking->currentText().isEmpty()) {
+        selectedEncoderID = ui->cbSelectedTracking->currentText().toInt();
+    }
+    
+    if (selectedEncoderID >= TrackingManagerInstance->Trackings.count()) {
+        SoftwareLog(QString("Warning: Selected tracking ID %1 invalid, using first tracking instance (0)").arg(selectedEncoderID));
+        selectedEncoderID = 0;
+    }
+    
+    // Create object at specified position
+    QVector3D position(x, y, 0); // Z = 0 for 2D tracking
+    
+    // Random angle for variety
+    std::random_device rd;
+    std::default_random_engine generator(rd());
+    std::uniform_int_distribution<int> distribution(-180, 180);
+    int angle = distribution(generator);
+    
+    ObjectInfo object(-1, 0, position, width, height, angle); // UID will be assigned automatically
+    
+    // Add object to tracking instance
+    QString listName = TrackingManagerInstance->Trackings.at(selectedEncoderID)->ListName;
+    SoftwareLog(QString("Adding object to tracking list: %1").arg(listName));
+    
+    TrackingManagerInstance->AddObjectToTracking(listName, object);
+    
+    SoftwareLog(QString("Object added at position (%1, %2) with size %3x%4mm to list '%5'")
+                .arg(x).arg(y).arg(width).arg(height).arg(listName));
+}
+
+void RobotWindow::AddRandomObject()
+{
+    SoftwareLog("AddRandomObject() called - starting random object generation");
+    
+    // Check if TrackingManager is available
+    if (!TrackingManagerInstance) {
+        SoftwareLog("Error: TrackingManagerInstance is null");
+        return;
+    }
+    
+    if (TrackingManagerInstance->Trackings.isEmpty()) {
+        SoftwareLog("Error: No tracking instances available");
+        return;
+    }
+    
+    // Generate random position within conveyor bounds
+    std::random_device rd;  // Better seed
+    std::default_random_engine generator(rd());
+    std::uniform_real_distribution<float> xDist(-200, 200);  // X range
+    std::uniform_real_distribution<float> yDist(-200, 200);  // Y range
+    std::uniform_real_distribution<float> sizeDist(15, 50);  // Size range
+    std::uniform_int_distribution<int> angleDist(-180, 180);
+    
+    float x = xDist(generator);
+    float y = yDist(generator);
+    float width = sizeDist(generator);
+    float height = sizeDist(generator);
+    int angle = angleDist(generator);
+    
+    SoftwareLog(QString("Generated random values: x=%1, y=%2, w=%3, h=%4, angle=%5")
+                .arg(x, 0, 'f', 1).arg(y, 0, 'f', 1).arg(width, 0, 'f', 1).arg(height, 0, 'f', 1).arg(angle));
+    
+    // Update UI fields to show generated values
+    ui->leAddObjectX->setText(QString::number(x, 'f', 1));
+    ui->leAddObjectY->setText(QString::number(y, 'f', 1));
+    ui->leAddObjectWidth->setText(QString::number(width, 'f', 1));
+    ui->leAddObjectHeight->setText(QString::number(height, 'f', 1));
+    
+    // Get current tracking instance - use first available if cbSelectedTracking is empty
+    int selectedEncoderID = 0;
+    if (!ui->cbSelectedTracking->currentText().isEmpty()) {
+        selectedEncoderID = ui->cbSelectedTracking->currentText().toInt();
+    }
+    
+    if (selectedEncoderID >= TrackingManagerInstance->Trackings.count()) {
+        SoftwareLog(QString("Warning: Selected tracking ID %1 invalid, using first tracking instance (0)").arg(selectedEncoderID));
+        selectedEncoderID = 0;
+    }
+    
+    // Create and add object
+    QVector3D position(x, y, 0);
+    ObjectInfo object(-1, 0, position, width, height, angle);
+    
+    QString listName = TrackingManagerInstance->Trackings.at(selectedEncoderID)->ListName;
+    SoftwareLog(QString("Adding object to tracking list: %1").arg(listName));
+    
+    TrackingManagerInstance->AddObjectToTracking(listName, object);
+    
+    SoftwareLog(QString("Random object added at (%1, %2) with size %3x%4mm to list '%5'")
+                .arg(x, 0, 'f', 1).arg(y, 0, 'f', 1).arg(width, 0, 'f', 1).arg(height, 0, 'f', 1).arg(listName));
+}
+
+void RobotWindow::ClearAllTrackedObjects()
+{
+    // Clear objects from all tracking instances
+    for (int i = 0; i < TrackingManagerInstance->Trackings.count(); i++) {
+        QString listName = TrackingManagerInstance->Trackings.at(i)->ListName;
+        TrackingManagerInstance->ClearObjects(listName);
+    }
+    
+    // Clear input fields
+    ui->leAddObjectX->clear();
+    ui->leAddObjectY->clear();
+    
+    SoftwareLog("All tracked objects cleared");
+}
+
+void RobotWindow::updateObjectCount()
+{
+    if (!TrackingManagerInstance || TrackingManagerInstance->Trackings.isEmpty()) {
+        ui->lblObjectCount->setText("Objects: 0");
+        return;
+    }
+    
+    // Performance optimization: Cache object count to avoid frequent expensive operations
+    static int cachedObjectCount = -1;
+    static QElapsedTimer lastUpdateTime;
+    
+    // Only recalculate if enough time has passed (500ms minimum)
+    if (!lastUpdateTime.isValid() || lastUpdateTime.elapsed() > 500) {
+        int totalObjects = 0;
+        
+        // Count total objects across all tracking instances
+        for (int i = 0; i < TrackingManagerInstance->Trackings.count(); i++) {
+            if (TrackingManagerInstance->Trackings.at(i)) {
+                // Use more efficient method if available, or cache the result
+                QVector<ObjectInfo> objects = TrackingManagerInstance->Trackings.at(i)->getTrackedObjectsCopy();
+                totalObjects += objects.size();
+            }
+        }
+        
+        // Only update UI if count actually changed
+        if (totalObjects != cachedObjectCount) {
+            ui->lblObjectCount->setText(QString("Objects: %1").arg(totalObjects));
+            cachedObjectCount = totalObjects;
+        }
+        
+        lastUpdateTime.restart();
+    }
 }
 
 

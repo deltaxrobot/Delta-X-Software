@@ -353,6 +353,26 @@ public:
     QVBoxLayout *verticalLayout_ConveyorViz;
     QLabel *lblConveyorTitle;
     QWidget *wConveyorCanvas;
+    QFrame *fAddObjectPanel;
+    QHBoxLayout *horizontalLayout_AddObject;
+    QGroupBox *gbAddObjectControls;
+    QGridLayout *gridLayout_AddObject;
+    QLabel *lblObjectX;
+    QLineEdit *leAddObjectX;
+    QLabel *lblObjectY;
+    QLineEdit *leAddObjectY;
+    QLabel *lblObjectSize;
+    QLineEdit *leAddObjectWidth;
+    QLabel *lblObjectHeight;
+    QLineEdit *leAddObjectHeight;
+    QGroupBox *gbAddObjectActions;
+    QVBoxLayout *verticalLayout_AddObjectActions;
+    QPushButton *pbAddObjectHere;
+    QPushButton *pbAddRandomObject;
+    QGroupBox *gbObjectManagement;
+    QVBoxLayout *verticalLayout_ObjectManagement;
+    QPushButton *pbClearAllObjects;
+    QLabel *lblObjectCount;
     QFrame *fVisionVariableFrame;
     QVBoxLayout *verticalLayout_35;
     QHBoxLayout *horizontalLayout_25;
@@ -2385,7 +2405,7 @@ public:
         saObjectDetecting->setWidgetResizable(true);
         wObjectDetecting = new QWidget();
         wObjectDetecting->setObjectName(QString::fromUtf8("wObjectDetecting"));
-        wObjectDetecting->setGeometry(QRect(0, 0, 631, 3500));
+        wObjectDetecting->setGeometry(QRect(0, -2407, 631, 3500));
         wObjectDetecting->setMinimumSize(QSize(100, 3500));
         wObjectDetecting->setStyleSheet(QString::fromUtf8("QWidget#wObjectDetecting\n"
 "{	\n"
@@ -4114,6 +4134,134 @@ public:
 
         verticalLayout_34->addWidget(fConveyorVisualization);
 
+        fAddObjectPanel = new QFrame(gbCameraVariable);
+        fAddObjectPanel->setObjectName(QString::fromUtf8("fAddObjectPanel"));
+        fAddObjectPanel->setMinimumSize(QSize(0, 120));
+        fAddObjectPanel->setMaximumSize(QSize(16777215, 120));
+        fAddObjectPanel->setStyleSheet(QString::fromUtf8("QFrame { background-color: #3A3A3C; border: 1px solid #505050; }"));
+        fAddObjectPanel->setFrameShape(QFrame::StyledPanel);
+        fAddObjectPanel->setFrameShadow(QFrame::Raised);
+        horizontalLayout_AddObject = new QHBoxLayout(fAddObjectPanel);
+        horizontalLayout_AddObject->setSpacing(10);
+        horizontalLayout_AddObject->setContentsMargins(11, 11, 11, 11);
+        horizontalLayout_AddObject->setObjectName(QString::fromUtf8("horizontalLayout_AddObject"));
+        horizontalLayout_AddObject->setContentsMargins(10, 10, 10, 10);
+        gbAddObjectControls = new QGroupBox(fAddObjectPanel);
+        gbAddObjectControls->setObjectName(QString::fromUtf8("gbAddObjectControls"));
+        gbAddObjectControls->setStyleSheet(QString::fromUtf8("QGroupBox { font-weight: bold; color: white; font-size: 11px; }"));
+        gridLayout_AddObject = new QGridLayout(gbAddObjectControls);
+        gridLayout_AddObject->setSpacing(8);
+        gridLayout_AddObject->setContentsMargins(11, 11, 11, 11);
+        gridLayout_AddObject->setObjectName(QString::fromUtf8("gridLayout_AddObject"));
+        lblObjectX = new QLabel(gbAddObjectControls);
+        lblObjectX->setObjectName(QString::fromUtf8("lblObjectX"));
+        lblObjectX->setStyleSheet(QString::fromUtf8("color: white;"));
+
+        gridLayout_AddObject->addWidget(lblObjectX, 0, 0, 1, 1);
+
+        leAddObjectX = new QLineEdit(gbAddObjectControls);
+        leAddObjectX->setObjectName(QString::fromUtf8("leAddObjectX"));
+        leAddObjectX->setMaximumSize(QSize(80, 16777215));
+        leAddObjectX->setStyleSheet(QString::fromUtf8("QLineEdit { background-color: #2A2A2C; border: 1px solid #505050; color: white; padding: 3px; }"));
+
+        gridLayout_AddObject->addWidget(leAddObjectX, 0, 1, 1, 1);
+
+        lblObjectY = new QLabel(gbAddObjectControls);
+        lblObjectY->setObjectName(QString::fromUtf8("lblObjectY"));
+        lblObjectY->setStyleSheet(QString::fromUtf8("color: white;"));
+
+        gridLayout_AddObject->addWidget(lblObjectY, 0, 2, 1, 1);
+
+        leAddObjectY = new QLineEdit(gbAddObjectControls);
+        leAddObjectY->setObjectName(QString::fromUtf8("leAddObjectY"));
+        leAddObjectY->setMaximumSize(QSize(80, 16777215));
+        leAddObjectY->setStyleSheet(QString::fromUtf8("QLineEdit { background-color: #2A2A2C; border: 1px solid #505050; color: white; padding: 3px; }"));
+
+        gridLayout_AddObject->addWidget(leAddObjectY, 0, 3, 1, 1);
+
+        lblObjectSize = new QLabel(gbAddObjectControls);
+        lblObjectSize->setObjectName(QString::fromUtf8("lblObjectSize"));
+        lblObjectSize->setStyleSheet(QString::fromUtf8("color: white;"));
+
+        gridLayout_AddObject->addWidget(lblObjectSize, 1, 0, 1, 1);
+
+        leAddObjectWidth = new QLineEdit(gbAddObjectControls);
+        leAddObjectWidth->setObjectName(QString::fromUtf8("leAddObjectWidth"));
+        leAddObjectWidth->setMaximumSize(QSize(80, 16777215));
+        leAddObjectWidth->setStyleSheet(QString::fromUtf8("QLineEdit { background-color: #2A2A2C; border: 1px solid #505050; color: white; padding: 3px; }"));
+
+        gridLayout_AddObject->addWidget(leAddObjectWidth, 1, 1, 1, 1);
+
+        lblObjectHeight = new QLabel(gbAddObjectControls);
+        lblObjectHeight->setObjectName(QString::fromUtf8("lblObjectHeight"));
+        lblObjectHeight->setStyleSheet(QString::fromUtf8("color: white;"));
+
+        gridLayout_AddObject->addWidget(lblObjectHeight, 1, 2, 1, 1);
+
+        leAddObjectHeight = new QLineEdit(gbAddObjectControls);
+        leAddObjectHeight->setObjectName(QString::fromUtf8("leAddObjectHeight"));
+        leAddObjectHeight->setMaximumSize(QSize(80, 16777215));
+        leAddObjectHeight->setStyleSheet(QString::fromUtf8("QLineEdit { background-color: #2A2A2C; border: 1px solid #505050; color: white; padding: 3px; }"));
+
+        gridLayout_AddObject->addWidget(leAddObjectHeight, 1, 3, 1, 1);
+
+
+        horizontalLayout_AddObject->addWidget(gbAddObjectControls);
+
+        gbAddObjectActions = new QGroupBox(fAddObjectPanel);
+        gbAddObjectActions->setObjectName(QString::fromUtf8("gbAddObjectActions"));
+        gbAddObjectActions->setStyleSheet(QString::fromUtf8("QGroupBox { font-weight: bold; color: white; font-size: 11px; }"));
+        verticalLayout_AddObjectActions = new QVBoxLayout(gbAddObjectActions);
+        verticalLayout_AddObjectActions->setSpacing(8);
+        verticalLayout_AddObjectActions->setContentsMargins(11, 11, 11, 11);
+        verticalLayout_AddObjectActions->setObjectName(QString::fromUtf8("verticalLayout_AddObjectActions"));
+        pbAddObjectHere = new QPushButton(gbAddObjectActions);
+        pbAddObjectHere->setObjectName(QString::fromUtf8("pbAddObjectHere"));
+        pbAddObjectHere->setStyleSheet(QString::fromUtf8("QPushButton { background-color: #4CAF50; color: white; border: none; padding: 8px 16px; font-weight: bold; border-radius: 4px; }\n"
+"QPushButton:hover { background-color: #45a049; }\n"
+"QPushButton:pressed { background-color: #3d8b40; }"));
+
+        verticalLayout_AddObjectActions->addWidget(pbAddObjectHere);
+
+        pbAddRandomObject = new QPushButton(gbAddObjectActions);
+        pbAddRandomObject->setObjectName(QString::fromUtf8("pbAddRandomObject"));
+        pbAddRandomObject->setStyleSheet(QString::fromUtf8("QPushButton { background-color: #2196F3; color: white; border: none; padding: 8px 16px; font-weight: bold; border-radius: 4px; }\n"
+"QPushButton:hover { background-color: #1976D2; }\n"
+"QPushButton:pressed { background-color: #1565C0; }"));
+
+        verticalLayout_AddObjectActions->addWidget(pbAddRandomObject);
+
+
+        horizontalLayout_AddObject->addWidget(gbAddObjectActions);
+
+        gbObjectManagement = new QGroupBox(fAddObjectPanel);
+        gbObjectManagement->setObjectName(QString::fromUtf8("gbObjectManagement"));
+        gbObjectManagement->setStyleSheet(QString::fromUtf8("QGroupBox { font-weight: bold; color: white; font-size: 11px; }"));
+        verticalLayout_ObjectManagement = new QVBoxLayout(gbObjectManagement);
+        verticalLayout_ObjectManagement->setSpacing(8);
+        verticalLayout_ObjectManagement->setContentsMargins(11, 11, 11, 11);
+        verticalLayout_ObjectManagement->setObjectName(QString::fromUtf8("verticalLayout_ObjectManagement"));
+        pbClearAllObjects = new QPushButton(gbObjectManagement);
+        pbClearAllObjects->setObjectName(QString::fromUtf8("pbClearAllObjects"));
+        pbClearAllObjects->setStyleSheet(QString::fromUtf8("QPushButton { background-color: #FF5722; color: white; border: none; padding: 8px 16px; font-weight: bold; border-radius: 4px; }\n"
+"QPushButton:hover { background-color: #E64A19; }\n"
+"QPushButton:pressed { background-color: #D84315; }"));
+
+        verticalLayout_ObjectManagement->addWidget(pbClearAllObjects);
+
+        lblObjectCount = new QLabel(gbObjectManagement);
+        lblObjectCount->setObjectName(QString::fromUtf8("lblObjectCount"));
+        lblObjectCount->setStyleSheet(QString::fromUtf8("color: #B0B0B0; font-size: 10px;"));
+        lblObjectCount->setAlignment(Qt::AlignCenter);
+
+        verticalLayout_ObjectManagement->addWidget(lblObjectCount);
+
+
+        horizontalLayout_AddObject->addWidget(gbObjectManagement);
+
+
+        verticalLayout_34->addWidget(fAddObjectPanel);
+
         fVisionVariableFrame = new QFrame(gbCameraVariable);
         fVisionVariableFrame->setObjectName(QString::fromUtf8("fVisionVariableFrame"));
         fVisionVariableFrame->setMinimumSize(QSize(0, 0));
@@ -4246,7 +4394,7 @@ public:
         saPointTool->setWidgetResizable(true);
         wPointTool = new QWidget();
         wPointTool->setObjectName(QString::fromUtf8("wPointTool"));
-        wPointTool->setGeometry(QRect(0, -1011, 619, 3000));
+        wPointTool->setGeometry(QRect(0, -1108, 619, 3000));
         wPointTool->setMinimumSize(QSize(0, 3000));
         wPointTool->setStyleSheet(QString::fromUtf8("QWidget#wPointTool\n"
 "{	\n"
@@ -11043,7 +11191,7 @@ public:
 
         pbRunServer->setDefault(false);
         pbOpenWebControl->setDefault(false);
-        twModule->setCurrentIndex(2);
+        twModule->setCurrentIndex(1);
         twGcodeEditor->setCurrentIndex(0);
         pbImageMapping->setDefault(false);
         cbImageSource->setCurrentIndex(0);
@@ -11452,6 +11600,21 @@ public:
 #endif // QT_CONFIG(statustip)
         pbClearDetectObjects->setText(QCoreApplication::translate("RobotWindow", "Clear Objects", nullptr));
         lblConveyorTitle->setText(QCoreApplication::translate("RobotWindow", "Conveyor Belt Visualization (2D)", nullptr));
+        gbAddObjectControls->setTitle(QCoreApplication::translate("RobotWindow", "Add Test Object", nullptr));
+        lblObjectX->setText(QCoreApplication::translate("RobotWindow", "X (mm):", nullptr));
+        leAddObjectX->setPlaceholderText(QCoreApplication::translate("RobotWindow", "0", nullptr));
+        lblObjectY->setText(QCoreApplication::translate("RobotWindow", "Y (mm):", nullptr));
+        leAddObjectY->setPlaceholderText(QCoreApplication::translate("RobotWindow", "0", nullptr));
+        lblObjectSize->setText(QCoreApplication::translate("RobotWindow", "Size:", nullptr));
+        leAddObjectWidth->setText(QCoreApplication::translate("RobotWindow", "20", nullptr));
+        lblObjectHeight->setText(QCoreApplication::translate("RobotWindow", "\303\227", nullptr));
+        leAddObjectHeight->setText(QCoreApplication::translate("RobotWindow", "40", nullptr));
+        gbAddObjectActions->setTitle(QCoreApplication::translate("RobotWindow", "Actions", nullptr));
+        pbAddObjectHere->setText(QCoreApplication::translate("RobotWindow", "Add Object", nullptr));
+        pbAddRandomObject->setText(QCoreApplication::translate("RobotWindow", "Add Random", nullptr));
+        gbObjectManagement->setTitle(QCoreApplication::translate("RobotWindow", "Management", nullptr));
+        pbClearAllObjects->setText(QCoreApplication::translate("RobotWindow", "Clear All", nullptr));
+        lblObjectCount->setText(QCoreApplication::translate("RobotWindow", "Objects: 0", nullptr));
         label_156->setText(QCoreApplication::translate("RobotWindow", "Min Y", nullptr));
         label_56->setText(QCoreApplication::translate("RobotWindow", "Min X", nullptr));
         label_162->setText(QCoreApplication::translate("RobotWindow", "(mm)", nullptr));

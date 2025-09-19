@@ -25,7 +25,7 @@ ConveyorVisualization::ConveyorVisualization(QWidget *parent)
         update();
     });
     
-    setUpdateInterval(50); // 20 FPS
+    setUpdateInterval(100); // 10 FPS - reduced for better performance
 }
 
 ConveyorVisualization::~ConveyorVisualization()

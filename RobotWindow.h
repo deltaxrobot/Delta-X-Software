@@ -431,6 +431,12 @@ public slots:
     void SaveTrackingManager();
     void setupConveyorVisualization();
     void updateConveyorVisualization();
+    void updateObjectCount();
+
+    // ========== OBJECT MANAGEMENT SLOTS ==========
+    void AddObjectAtPosition();
+    void AddRandomObject();
+    void ClearAllTrackedObjects();
 
     // ========== POINT TOOL SLOTS ==========
     void CalculateMappingMatrixTool();

@@ -1128,7 +1128,7 @@ class Ui_RobotWindow(object):
         self.saObjectDetecting.setWidgetResizable(True)
         self.wObjectDetecting = QWidget()
         self.wObjectDetecting.setObjectName(u"wObjectDetecting")
-        self.wObjectDetecting.setGeometry(QRect(0, 0, 631, 3500))
+        self.wObjectDetecting.setGeometry(QRect(0, -2407, 631, 3500))
         self.wObjectDetecting.setMinimumSize(QSize(100, 3500))
         self.wObjectDetecting.setStyleSheet(u"QWidget#wObjectDetecting\n"
 "{	\n"
@@ -2857,6 +2857,134 @@ class Ui_RobotWindow(object):
 
         self.verticalLayout_34.addWidget(self.fConveyorVisualization)
 
+        self.fAddObjectPanel = QFrame(self.gbCameraVariable)
+        self.fAddObjectPanel.setObjectName(u"fAddObjectPanel")
+        self.fAddObjectPanel.setMinimumSize(QSize(0, 120))
+        self.fAddObjectPanel.setMaximumSize(QSize(16777215, 120))
+        self.fAddObjectPanel.setStyleSheet(u"QFrame { background-color: #3A3A3C; border: 1px solid #505050; }")
+        self.fAddObjectPanel.setFrameShape(QFrame.StyledPanel)
+        self.fAddObjectPanel.setFrameShadow(QFrame.Raised)
+        self.horizontalLayout_AddObject = QHBoxLayout(self.fAddObjectPanel)
+        self.horizontalLayout_AddObject.setSpacing(10)
+        self.horizontalLayout_AddObject.setContentsMargins(11, 11, 11, 11)
+        self.horizontalLayout_AddObject.setObjectName(u"horizontalLayout_AddObject")
+        self.horizontalLayout_AddObject.setContentsMargins(10, 10, 10, 10)
+        self.gbAddObjectControls = QGroupBox(self.fAddObjectPanel)
+        self.gbAddObjectControls.setObjectName(u"gbAddObjectControls")
+        self.gbAddObjectControls.setStyleSheet(u"QGroupBox { font-weight: bold; color: white; font-size: 11px; }")
+        self.gridLayout_AddObject = QGridLayout(self.gbAddObjectControls)
+        self.gridLayout_AddObject.setSpacing(8)
+        self.gridLayout_AddObject.setContentsMargins(11, 11, 11, 11)
+        self.gridLayout_AddObject.setObjectName(u"gridLayout_AddObject")
+        self.lblObjectX = QLabel(self.gbAddObjectControls)
+        self.lblObjectX.setObjectName(u"lblObjectX")
+        self.lblObjectX.setStyleSheet(u"color: white;")
+
+        self.gridLayout_AddObject.addWidget(self.lblObjectX, 0, 0, 1, 1)
+
+        self.leAddObjectX = QLineEdit(self.gbAddObjectControls)
+        self.leAddObjectX.setObjectName(u"leAddObjectX")
+        self.leAddObjectX.setMaximumSize(QSize(80, 16777215))
+        self.leAddObjectX.setStyleSheet(u"QLineEdit { background-color: #2A2A2C; border: 1px solid #505050; color: white; padding: 3px; }")
+
+        self.gridLayout_AddObject.addWidget(self.leAddObjectX, 0, 1, 1, 1)
+
+        self.lblObjectY = QLabel(self.gbAddObjectControls)
+        self.lblObjectY.setObjectName(u"lblObjectY")
+        self.lblObjectY.setStyleSheet(u"color: white;")
+
+        self.gridLayout_AddObject.addWidget(self.lblObjectY, 0, 2, 1, 1)
+
+        self.leAddObjectY = QLineEdit(self.gbAddObjectControls)
+        self.leAddObjectY.setObjectName(u"leAddObjectY")
+        self.leAddObjectY.setMaximumSize(QSize(80, 16777215))
+        self.leAddObjectY.setStyleSheet(u"QLineEdit { background-color: #2A2A2C; border: 1px solid #505050; color: white; padding: 3px; }")
+
+        self.gridLayout_AddObject.addWidget(self.leAddObjectY, 0, 3, 1, 1)
+
+        self.lblObjectSize = QLabel(self.gbAddObjectControls)
+        self.lblObjectSize.setObjectName(u"lblObjectSize")
+        self.lblObjectSize.setStyleSheet(u"color: white;")
+
+        self.gridLayout_AddObject.addWidget(self.lblObjectSize, 1, 0, 1, 1)
+
+        self.leAddObjectWidth = QLineEdit(self.gbAddObjectControls)
+        self.leAddObjectWidth.setObjectName(u"leAddObjectWidth")
+        self.leAddObjectWidth.setMaximumSize(QSize(80, 16777215))
+        self.leAddObjectWidth.setStyleSheet(u"QLineEdit { background-color: #2A2A2C; border: 1px solid #505050; color: white; padding: 3px; }")
+
+        self.gridLayout_AddObject.addWidget(self.leAddObjectWidth, 1, 1, 1, 1)
+
+        self.lblObjectHeight = QLabel(self.gbAddObjectControls)
+        self.lblObjectHeight.setObjectName(u"lblObjectHeight")
+        self.lblObjectHeight.setStyleSheet(u"color: white;")
+
+        self.gridLayout_AddObject.addWidget(self.lblObjectHeight, 1, 2, 1, 1)
+
+        self.leAddObjectHeight = QLineEdit(self.gbAddObjectControls)
+        self.leAddObjectHeight.setObjectName(u"leAddObjectHeight")
+        self.leAddObjectHeight.setMaximumSize(QSize(80, 16777215))
+        self.leAddObjectHeight.setStyleSheet(u"QLineEdit { background-color: #2A2A2C; border: 1px solid #505050; color: white; padding: 3px; }")
+
+        self.gridLayout_AddObject.addWidget(self.leAddObjectHeight, 1, 3, 1, 1)
+
+
+        self.horizontalLayout_AddObject.addWidget(self.gbAddObjectControls)
+
+        self.gbAddObjectActions = QGroupBox(self.fAddObjectPanel)
+        self.gbAddObjectActions.setObjectName(u"gbAddObjectActions")
+        self.gbAddObjectActions.setStyleSheet(u"QGroupBox { font-weight: bold; color: white; font-size: 11px; }")
+        self.verticalLayout_AddObjectActions = QVBoxLayout(self.gbAddObjectActions)
+        self.verticalLayout_AddObjectActions.setSpacing(8)
+        self.verticalLayout_AddObjectActions.setContentsMargins(11, 11, 11, 11)
+        self.verticalLayout_AddObjectActions.setObjectName(u"verticalLayout_AddObjectActions")
+        self.pbAddObjectHere = QPushButton(self.gbAddObjectActions)
+        self.pbAddObjectHere.setObjectName(u"pbAddObjectHere")
+        self.pbAddObjectHere.setStyleSheet(u"QPushButton { background-color: #4CAF50; color: white; border: none; padding: 8px 16px; font-weight: bold; border-radius: 4px; }\n"
+"QPushButton:hover { background-color: #45a049; }\n"
+"QPushButton:pressed { background-color: #3d8b40; }")
+
+        self.verticalLayout_AddObjectActions.addWidget(self.pbAddObjectHere)
+
+        self.pbAddRandomObject = QPushButton(self.gbAddObjectActions)
+        self.pbAddRandomObject.setObjectName(u"pbAddRandomObject")
+        self.pbAddRandomObject.setStyleSheet(u"QPushButton { background-color: #2196F3; color: white; border: none; padding: 8px 16px; font-weight: bold; border-radius: 4px; }\n"
+"QPushButton:hover { background-color: #1976D2; }\n"
+"QPushButton:pressed { background-color: #1565C0; }")
+
+        self.verticalLayout_AddObjectActions.addWidget(self.pbAddRandomObject)
+
+
+        self.horizontalLayout_AddObject.addWidget(self.gbAddObjectActions)
+
+        self.gbObjectManagement = QGroupBox(self.fAddObjectPanel)
+        self.gbObjectManagement.setObjectName(u"gbObjectManagement")
+        self.gbObjectManagement.setStyleSheet(u"QGroupBox { font-weight: bold; color: white; font-size: 11px; }")
+        self.verticalLayout_ObjectManagement = QVBoxLayout(self.gbObjectManagement)
+        self.verticalLayout_ObjectManagement.setSpacing(8)
+        self.verticalLayout_ObjectManagement.setContentsMargins(11, 11, 11, 11)
+        self.verticalLayout_ObjectManagement.setObjectName(u"verticalLayout_ObjectManagement")
+        self.pbClearAllObjects = QPushButton(self.gbObjectManagement)
+        self.pbClearAllObjects.setObjectName(u"pbClearAllObjects")
+        self.pbClearAllObjects.setStyleSheet(u"QPushButton { background-color: #FF5722; color: white; border: none; padding: 8px 16px; font-weight: bold; border-radius: 4px; }\n"
+"QPushButton:hover { background-color: #E64A19; }\n"
+"QPushButton:pressed { background-color: #D84315; }")
+
+        self.verticalLayout_ObjectManagement.addWidget(self.pbClearAllObjects)
+
+        self.lblObjectCount = QLabel(self.gbObjectManagement)
+        self.lblObjectCount.setObjectName(u"lblObjectCount")
+        self.lblObjectCount.setStyleSheet(u"color: #B0B0B0; font-size: 10px;")
+        self.lblObjectCount.setAlignment(Qt.AlignCenter)
+
+        self.verticalLayout_ObjectManagement.addWidget(self.lblObjectCount)
+
+
+        self.horizontalLayout_AddObject.addWidget(self.gbObjectManagement)
+
+
+        self.verticalLayout_34.addWidget(self.fAddObjectPanel)
+
         self.fVisionVariableFrame = QFrame(self.gbCameraVariable)
         self.fVisionVariableFrame.setObjectName(u"fVisionVariableFrame")
         self.fVisionVariableFrame.setMinimumSize(QSize(0, 0))
@@ -2989,7 +3117,7 @@ class Ui_RobotWindow(object):
         self.saPointTool.setWidgetResizable(True)
         self.wPointTool = QWidget()
         self.wPointTool.setObjectName(u"wPointTool")
-        self.wPointTool.setGeometry(QRect(0, -1011, 619, 3000))
+        self.wPointTool.setGeometry(QRect(0, -1108, 619, 3000))
         self.wPointTool.setMinimumSize(QSize(0, 3000))
         self.wPointTool.setStyleSheet(u"QWidget#wPointTool\n"
 "{	\n"
@@ -9786,7 +9914,7 @@ class Ui_RobotWindow(object):
 
         self.pbRunServer.setDefault(False)
         self.pbOpenWebControl.setDefault(False)
-        self.twModule.setCurrentIndex(2)
+        self.twModule.setCurrentIndex(1)
         self.twGcodeEditor.setCurrentIndex(0)
         self.pbImageMapping.setDefault(False)
         self.cbImageSource.setCurrentIndex(0)
@@ -10194,6 +10322,21 @@ class Ui_RobotWindow(object):
 #endif // QT_CONFIG(statustip)
         self.pbClearDetectObjects.setText(QCoreApplication.translate("RobotWindow", u"Clear Objects", None))
         self.lblConveyorTitle.setText(QCoreApplication.translate("RobotWindow", u"Conveyor Belt Visualization (2D)", None))
+        self.gbAddObjectControls.setTitle(QCoreApplication.translate("RobotWindow", u"Add Test Object", None))
+        self.lblObjectX.setText(QCoreApplication.translate("RobotWindow", u"X (mm):", None))
+        self.leAddObjectX.setPlaceholderText(QCoreApplication.translate("RobotWindow", u"0", None))
+        self.lblObjectY.setText(QCoreApplication.translate("RobotWindow", u"Y (mm):", None))
+        self.leAddObjectY.setPlaceholderText(QCoreApplication.translate("RobotWindow", u"0", None))
+        self.lblObjectSize.setText(QCoreApplication.translate("RobotWindow", u"Size:", None))
+        self.leAddObjectWidth.setText(QCoreApplication.translate("RobotWindow", u"20", None))
+        self.lblObjectHeight.setText(QCoreApplication.translate("RobotWindow", u"\u00d7", None))
+        self.leAddObjectHeight.setText(QCoreApplication.translate("RobotWindow", u"40", None))
+        self.gbAddObjectActions.setTitle(QCoreApplication.translate("RobotWindow", u"Actions", None))
+        self.pbAddObjectHere.setText(QCoreApplication.translate("RobotWindow", u"Add Object", None))
+        self.pbAddRandomObject.setText(QCoreApplication.translate("RobotWindow", u"Add Random", None))
+        self.gbObjectManagement.setTitle(QCoreApplication.translate("RobotWindow", u"Management", None))
+        self.pbClearAllObjects.setText(QCoreApplication.translate("RobotWindow", u"Clear All", None))
+        self.lblObjectCount.setText(QCoreApplication.translate("RobotWindow", u"Objects: 0", None))
         self.label_156.setText(QCoreApplication.translate("RobotWindow", u"Min Y", None))
         self.label_56.setText(QCoreApplication.translate("RobotWindow", u"Min X", None))
         self.label_162.setText(QCoreApplication.translate("RobotWindow", u"(mm)", None))
