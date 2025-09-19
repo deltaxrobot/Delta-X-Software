@@ -24,6 +24,9 @@ RobotWindow::RobotWindow(QWidget *parent, QString projectName) :
 
     SoftwareLog("Load project: " + ProjectName);
     
+    // Setup conveyor visualization
+    setupConveyorVisualization();
+    
     // Initialize batch update timer
     m_batchUpdateTimer->setSingleShot(true);
     m_batchUpdateTimer->setInterval(50); // 50ms batching window
@@ -7456,6 +7459,64 @@ void RobotWindow::SaveZPlaneSettings()
     SoftwareLog(QString("Z-Plane: Settings saved - Valid=%1, Enabled=%2")
                .arg(m_zPlane.isValid ? "true" : "false")
                .arg(m_zPlane.isEnabled ? "true" : "false"));
+}
+
+// ========== CONVEYOR VISUALIZATION IMPLEMENTATION ==========
+
+void RobotWindow::setupConveyorVisualization()
+{
+    // Create conveyor visualization widget
+    conveyorViz = new ConveyorVisualization(this);
+    
+    // Replace the placeholder widget in UI
+    QWidget* placeholder = ui->wConveyorCanvas;
+    if (placeholder && placeholder->parentWidget()) {
+        QLayout* layout = placeholder->parentWidget()->layout();
+        if (layout) {
+            // Remove placeholder and add our visualization
+            layout->removeWidget(placeholder);
+            layout->addWidget(conveyorViz);
+            placeholder->deleteLater();
+        }
+    }
+    
+    // Configure visualization bounds with (0,0) at center
+    // X-axis: ±400mm (vertical in real world), Y-axis: ±800mm (horizontal conveyor)
+    conveyorViz->setConveyorBounds(-400, 400, -800, 800);
+    
+    // Set conveyor direction along Y-axis (horizontal movement)
+    conveyorViz->setConveyorDirection(QVector3D(0, 1, 0));  // Positive Y direction
+    
+    // Setup update timer to refresh visualization periodically
+    QTimer* vizTimer = new QTimer(this);
+    connect(vizTimer, &QTimer::timeout, this, &RobotWindow::updateConveyorVisualization);
+    vizTimer->start(100); // Update every 100ms
+    
+    SoftwareLog("Conveyor visualization setup completed");
+}
+
+void RobotWindow::updateConveyorVisualization()
+{
+    if (!conveyorViz || !TrackingManagerInstance) {
+        return;
+    }
+    
+    // Get objects from all tracking instances
+    QVector<ObjectInfo> allObjects;
+    
+    for (int i = 0; i < TrackingManagerInstance->Trackings.count(); i++) {
+        Tracking* tracking = TrackingManagerInstance->Trackings.at(i);
+        if (tracking) {
+            // Thread-safe copy of objects using public method
+            QVector<ObjectInfo> trackingObjects = tracking->getTrackedObjectsCopy();
+            for (const auto& obj : trackingObjects) {
+                allObjects.append(obj);
+            }
+        }
+    }
+    
+    // Update visualization with all objects
+    conveyorViz->updateObjects(allObjects);
 }
 
 

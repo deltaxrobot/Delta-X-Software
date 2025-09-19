@@ -349,6 +349,10 @@ public:
     QPushButton *pbUpdateObjectToView;
     QPushButton *pbClearDetectObjects;
     QTableView *tvObjectTable;
+    QFrame *fConveyorVisualization;
+    QVBoxLayout *verticalLayout_ConveyorViz;
+    QLabel *lblConveyorTitle;
+    QWidget *wConveyorCanvas;
     QFrame *fVisionVariableFrame;
     QVBoxLayout *verticalLayout_35;
     QHBoxLayout *horizontalLayout_25;
@@ -2290,7 +2294,7 @@ public:
         saTermite->setWidgetResizable(true);
         wgTermite = new QWidget();
         wgTermite->setObjectName(QString::fromUtf8("wgTermite"));
-        wgTermite->setGeometry(QRect(0, 0, 326, 225));
+        wgTermite->setGeometry(QRect(0, 0, 478, 238));
         wgTermite->setStyleSheet(QString::fromUtf8("QWidget#wgTermite\n"
 "{\n"
 "	\n"
@@ -2381,8 +2385,8 @@ public:
         saObjectDetecting->setWidgetResizable(true);
         wObjectDetecting = new QWidget();
         wObjectDetecting->setObjectName(QString::fromUtf8("wObjectDetecting"));
-        wObjectDetecting->setGeometry(QRect(0, -1821, 532, 2900));
-        wObjectDetecting->setMinimumSize(QSize(100, 2900));
+        wObjectDetecting->setGeometry(QRect(0, -2124, 631, 3500));
+        wObjectDetecting->setMinimumSize(QSize(100, 3500));
         wObjectDetecting->setStyleSheet(QString::fromUtf8("QWidget#wObjectDetecting\n"
 "{	\n"
 "	background-color: #1E1E20;\n"
@@ -4012,6 +4016,8 @@ public:
 
         gbCameraVariable = new QGroupBox(fObjectDetectingTool);
         gbCameraVariable->setObjectName(QString::fromUtf8("gbCameraVariable"));
+        sizePolicy.setHeightForWidth(gbCameraVariable->sizePolicy().hasHeightForWidth());
+        gbCameraVariable->setSizePolicy(sizePolicy);
         gbCameraVariable->setFont(font7);
         gbCameraVariable->setStyleSheet(QString::fromUtf8("QPushButton\n"
 "{\n"
@@ -4076,6 +4082,37 @@ public:
         tvObjectTable->setMinimumSize(QSize(0, 400));
 
         verticalLayout_34->addWidget(tvObjectTable);
+
+        fConveyorVisualization = new QFrame(gbCameraVariable);
+        fConveyorVisualization->setObjectName(QString::fromUtf8("fConveyorVisualization"));
+        fConveyorVisualization->setMinimumSize(QSize(0, 400));
+        fConveyorVisualization->setMaximumSize(QSize(16777215, 600));
+        fConveyorVisualization->setFrameShape(QFrame::StyledPanel);
+        fConveyorVisualization->setFrameShadow(QFrame::Raised);
+        verticalLayout_ConveyorViz = new QVBoxLayout(fConveyorVisualization);
+        verticalLayout_ConveyorViz->setSpacing(6);
+        verticalLayout_ConveyorViz->setContentsMargins(11, 11, 11, 11);
+        verticalLayout_ConveyorViz->setObjectName(QString::fromUtf8("verticalLayout_ConveyorViz"));
+        lblConveyorTitle = new QLabel(fConveyorVisualization);
+        lblConveyorTitle->setObjectName(QString::fromUtf8("lblConveyorTitle"));
+        sizePolicy9.setHeightForWidth(lblConveyorTitle->sizePolicy().hasHeightForWidth());
+        lblConveyorTitle->setSizePolicy(sizePolicy9);
+        lblConveyorTitle->setStyleSheet(QString::fromUtf8("font-weight: bold; color: white; font-size: 12px;"));
+        lblConveyorTitle->setAlignment(Qt::AlignCenter);
+
+        verticalLayout_ConveyorViz->addWidget(lblConveyorTitle);
+
+        wConveyorCanvas = new QWidget(fConveyorVisualization);
+        wConveyorCanvas->setObjectName(QString::fromUtf8("wConveyorCanvas"));
+        wConveyorCanvas->setMinimumSize(QSize(600, 350));
+        sizePolicy3.setHeightForWidth(wConveyorCanvas->sizePolicy().hasHeightForWidth());
+        wConveyorCanvas->setSizePolicy(sizePolicy3);
+        wConveyorCanvas->setStyleSheet(QString::fromUtf8("background-color: #2A2A2C; border: 1px solid #404040;"));
+
+        verticalLayout_ConveyorViz->addWidget(wConveyorCanvas);
+
+
+        verticalLayout_34->addWidget(fConveyorVisualization);
 
         fVisionVariableFrame = new QFrame(gbCameraVariable);
         fVisionVariableFrame->setObjectName(QString::fromUtf8("fVisionVariableFrame"));
@@ -4209,7 +4246,7 @@ public:
         saPointTool->setWidgetResizable(true);
         wPointTool = new QWidget();
         wPointTool->setObjectName(QString::fromUtf8("wPointTool"));
-        wPointTool->setGeometry(QRect(-134, -695, 644, 3000));
+        wPointTool->setGeometry(QRect(0, 0, 619, 3000));
         wPointTool->setMinimumSize(QSize(0, 3000));
         wPointTool->setStyleSheet(QString::fromUtf8("QWidget#wPointTool\n"
 "{	\n"
@@ -5730,7 +5767,7 @@ public:
         scrollArea_6->setWidgetResizable(true);
         scrollAreaWidgetContents_6 = new QWidget();
         scrollAreaWidgetContents_6->setObjectName(QString::fromUtf8("scrollAreaWidgetContents_6"));
-        scrollAreaWidgetContents_6->setGeometry(QRect(0, 0, 510, 1600));
+        scrollAreaWidgetContents_6->setGeometry(QRect(0, 0, 619, 1600));
         scrollAreaWidgetContents_6->setMinimumSize(QSize(450, 1600));
         scrollAreaWidgetContents_6->setMaximumSize(QSize(16777215, 16777215));
         scrollAreaWidgetContents_6->setStyleSheet(QString::fromUtf8("QWidget[background='container']\n"
@@ -6620,7 +6657,7 @@ public:
         scrollArea_2->setWidgetResizable(true);
         wgJoggingScrollWidget = new QWidget();
         wgJoggingScrollWidget->setObjectName(QString::fromUtf8("wgJoggingScrollWidget"));
-        wgJoggingScrollWidget->setGeometry(QRect(0, 0, 625, 2546));
+        wgJoggingScrollWidget->setGeometry(QRect(0, 0, 519, 2192));
         wgJoggingScrollWidget->setMinimumSize(QSize(0, 2000));
         wgJoggingScrollWidget->setMaximumSize(QSize(16777215, 16777215));
         wgJoggingScrollWidget->setStyleSheet(QString::fromUtf8("QWidget#wgJoggingScrollWidget\n"
@@ -11006,7 +11043,7 @@ public:
 
         pbRunServer->setDefault(false);
         pbOpenWebControl->setDefault(false);
-        twModule->setCurrentIndex(2);
+        twModule->setCurrentIndex(1);
         twGcodeEditor->setCurrentIndex(0);
         pbImageMapping->setDefault(false);
         cbImageSource->setCurrentIndex(0);
@@ -11414,6 +11451,7 @@ public:
         pbClearDetectObjects->setStatusTip(QString());
 #endif // QT_CONFIG(statustip)
         pbClearDetectObjects->setText(QCoreApplication::translate("RobotWindow", "Clear Objects", nullptr));
+        lblConveyorTitle->setText(QCoreApplication::translate("RobotWindow", "Conveyor Belt Visualization (2D)", nullptr));
         label_156->setText(QCoreApplication::translate("RobotWindow", "Min Y", nullptr));
         label_56->setText(QCoreApplication::translate("RobotWindow", "Min X", nullptr));
         label_162->setText(QCoreApplication::translate("RobotWindow", "(mm)", nullptr));

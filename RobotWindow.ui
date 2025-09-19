@@ -706,7 +706,7 @@ QToolBox QScrollArea&gt;QWidget&gt;QWidget
               <enum>QTabWidget::Rounded</enum>
              </property>
              <property name="currentIndex">
-              <number>2</number>
+              <number>1</number>
              </property>
              <property name="usesScrollButtons">
               <bool>true</bool>
@@ -1606,8 +1606,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
                               <rect>
                                <x>0</x>
                                <y>0</y>
-                               <width>326</width>
-                               <height>225</height>
+                               <width>478</width>
+                               <height>238</height>
                               </rect>
                              </property>
                              <property name="styleSheet">
@@ -1783,15 +1783,15 @@ li.checked::marker { content: &quot;\2612&quot;; }
                   <property name="geometry">
                    <rect>
                     <x>0</x>
-                    <y>-1821</y>
-                    <width>532</width>
-                    <height>2900</height>
+                    <y>-2124</y>
+                    <width>631</width>
+                    <height>3500</height>
                    </rect>
                   </property>
                   <property name="minimumSize">
                    <size>
                     <width>100</width>
-                    <height>2900</height>
+                    <height>3500</height>
                    </size>
                   </property>
                   <property name="styleSheet">
@@ -5370,6 +5370,12 @@ QFrame
                        </item>
                        <item>
                         <widget class="QGroupBox" name="gbCameraVariable">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
                          <property name="font">
                           <font>
                            <pointsize>10</pointsize>
@@ -5505,6 +5511,68 @@ QFrame
                               <height>400</height>
                              </size>
                             </property>
+                           </widget>
+                          </item>
+                          <item>
+                           <widget class="QFrame" name="fConveyorVisualization">
+                            <property name="minimumSize">
+                             <size>
+                              <width>0</width>
+                              <height>400</height>
+                             </size>
+                            </property>
+                            <property name="maximumSize">
+                             <size>
+                              <width>16777215</width>
+                              <height>600</height>
+                             </size>
+                            </property>
+                            <property name="frameShape">
+                             <enum>QFrame::StyledPanel</enum>
+                            </property>
+                            <property name="frameShadow">
+                             <enum>QFrame::Raised</enum>
+                            </property>
+                            <layout class="QVBoxLayout" name="verticalLayout_ConveyorViz">
+                             <item>
+                              <widget class="QLabel" name="lblConveyorTitle">
+                               <property name="sizePolicy">
+                                <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+                                 <horstretch>0</horstretch>
+                                 <verstretch>0</verstretch>
+                                </sizepolicy>
+                               </property>
+                               <property name="styleSheet">
+                                <string notr="true">font-weight: bold; color: white; font-size: 12px;</string>
+                               </property>
+                               <property name="text">
+                                <string>Conveyor Belt Visualization (2D)</string>
+                               </property>
+                               <property name="alignment">
+                                <set>Qt::AlignCenter</set>
+                               </property>
+                              </widget>
+                             </item>
+                             <item>
+                              <widget class="QWidget" name="wConveyorCanvas" native="true">
+                               <property name="minimumSize">
+                                <size>
+                                 <width>600</width>
+                                 <height>350</height>
+                                </size>
+                               </property>
+                               <property name="sizePolicy">
+                                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                                 <horstretch>0</horstretch>
+                                 <verstretch>0</verstretch>
+                                </sizepolicy>
+                               </property>
+                               <property name="styleSheet">
+                                <string notr="true">background-color: #2A2A2C; border: 1px solid #404040;</string>
+                               </property>
+                              </widget>
+                             </item>
+                            </layout>
                            </widget>
                           </item>
                           <item>
@@ -5704,9 +5772,9 @@ QFrame
                  <widget class="QWidget" name="wPointTool">
                   <property name="geometry">
                    <rect>
-                    <x>-134</x>
-                    <y>-695</y>
-                    <width>644</width>
+                    <x>0</x>
+                    <y>0</y>
+                    <width>619</width>
                     <height>3000</height>
                    </rect>
                   </property>
@@ -8361,7 +8429,7 @@ QHeaderView::section {
                    <rect>
                     <x>0</x>
                     <y>0</y>
-                    <width>510</width>
+                    <width>619</width>
                     <height>1600</height>
                    </rect>
                   </property>
@@ -10335,8 +10403,8 @@ QLabel
                    <rect>
                     <x>0</x>
                     <y>0</y>
-                    <width>625</width>
-                    <height>2546</height>
+                    <width>519</width>
+                    <height>2192</height>
                    </rect>
                   </property>
                   <property name="minimumSize">

@@ -113,6 +113,7 @@ public slots:
     void ClearTrackedObjects();
     void RemoveTrackedObjects(int id);
     void SetObjectPickedByUID(int uid);
+    QVector<ObjectInfo> getTrackedObjectsCopy() const;
 private:
     QVector3D calculateMoved(float distance);
     double similarity(ObjectInfo& obj1, ObjectInfo& obj2, double displacement);

@@ -353,6 +353,12 @@ void Tracking::SetObjectPickedByUID(int uid)
     }
 }
 
+QVector<ObjectInfo> Tracking::getTrackedObjectsCopy() const
+{
+    QMutexLocker locker(&dataMutex);
+    return TrackedObjects;  // Thread-safe copy
+}
+
 QVector3D Tracking::calculateMoved(float distance)
 {
     // Normalize the VelocityVector to get the direction

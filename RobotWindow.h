@@ -62,6 +62,7 @@
 #include <device/DeviceManager.h>
 #include "device/camera.h"
 #include "TrackingManager.h"
+#include "ConveyorVisualization.h"
 #include "ObjectInfo.h"
 #include "PointTool.h"
 #include "PointCalculator.h"
@@ -237,6 +238,7 @@ public:
     QTimer CameraTimer;
     
     TrackingManager* TrackingManagerInstance;
+    ConveyorVisualization* conveyorViz;
     DrawingExporter* DeltaDrawingExporter;
 	ROS* DeltaXROS;
     
@@ -427,6 +429,8 @@ public slots:
     void ChangeSelectedTracking(int id);
     void ChangeSelectedTrackingEncoder(int id);
     void SaveTrackingManager();
+    void setupConveyorVisualization();
+    void updateConveyorVisualization();
 
     // ========== POINT TOOL SLOTS ==========
     void CalculateMappingMatrixTool();
