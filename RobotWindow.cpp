@@ -649,7 +649,7 @@ void RobotWindow::InitObjectDetectingModule()
         QString absolutePath = checkAndCreateDir(ui->leImageFolder->text());
 
         if (CameraInstance && !CameraInstance->CaptureImage.empty()) {
-            saveImageWithUniqueName(CameraInstance->CaptureImage, absolutePath);
+        saveImageWithUniqueName(CameraInstance->CaptureImage, absolutePath);
         }
     });
 
@@ -1702,6 +1702,12 @@ void RobotWindow::AddScriptThread()
     connect(GcodeScriptThread, SIGNAL(SendGcodeToDevice(QString, QString)), DeviceManagerInstance, SLOT(SendGcode(QString, QString)));
     connect(GcodeScriptThread, &GcodeScript::Finished, [=](){ ui->pbExecuteGcodes->setChecked(false);});
     connect(GcodeScriptThread, SIGNAL(SendGcodeToDevice(QString, QString)), this, SLOT(UpdateGcodeValueToDeviceUI(QString, QString)));
+    
+    // Connect Z-plane filtering
+    connect(GcodeScriptThread, &GcodeScript::RequestZPlaneFiltering, this, &RobotWindow::handleZPlaneFiltering);
+    
+    // Connect log message
+    connect(GcodeScriptThread, &GcodeScript::LogMessage, this, &RobotWindow::handleLogMessage);
 //    connect(GcodeScriptThread, SIGNAL(SaveVariable(QString, QString)), this, SLOT(UpdateVariable(QString, QString)));
 
 //    connect(GcodeScriptThread, SIGNAL(DeleteAllObjects()), this, SLOT(ClearObjectsToVariableTable()));
@@ -3495,6 +3501,7 @@ void RobotWindow::ExecuteProgram()
     currentScript->DefaultSlider = ui->cbSelectedSlider->currentText();
     currentScript->DefaultDevice = ui->cbSelectedDevice->currentText();
 
+    // Z-plane filtering will be applied at individual G-code level in handleGCODE()
     QMetaObject::invokeMethod(currentScript, "ExecuteGcode", Qt::QueuedConnection, Q_ARG(QString, ui->pteGcodeArea->toPlainText()), Q_ARG(int, startMode));
 
 }
@@ -3800,15 +3807,15 @@ void RobotWindow::UpdateRobotPositionToUI()
             !TrackingManagerInstance->Trackings.isEmpty() && 
             id >= 0 && id < TrackingManagerInstance->Trackings.size())
         {
-            if (TrackingManagerInstance->Trackings[id]->VirEncoder.IsActive() == true)
+        if (TrackingManagerInstance->Trackings[id]->VirEncoder.IsActive() == true)
+        {
+            if (encoderUpdateTimer.elapsed() >= TrackingManagerInstance->Trackings[id]->VirEncoder.readInterval())
             {
-                if (encoderUpdateTimer.elapsed() >= TrackingManagerInstance->Trackings[id]->VirEncoder.readInterval())
-                {
-                    encoderUpdateTimer.restart();
+                encoderUpdateTimer.restart();
 
-                    int selectedEncoderID = ui->cbSelectedEncoder->currentIndex();
+                int selectedEncoderID = ui->cbSelectedEncoder->currentIndex();
                     if (selectedEncoderID >= 0 && selectedEncoderID < TrackingManagerInstance->Trackings.size()) {
-                        ui->leEncoderCurrentPosition->setText(QString::number(TrackingManagerInstance->Trackings.at(selectedEncoderID)->VirEncoder.readPosition()));
+                ui->leEncoderCurrentPosition->setText(QString::number(TrackingManagerInstance->Trackings.at(selectedEncoderID)->VirEncoder.readPosition()));
                     }
                 }
             }
@@ -4526,8 +4533,8 @@ void RobotWindow::LoadImages()
 
         // Additional safety check before accessing CaptureImages
         if (!CameraInstance->CaptureImages.isEmpty()) {
-            CameraInstance->CaptureImage = CameraInstance->CaptureImages.at(0);
-            CameraInstance->FrameID = 0;
+        CameraInstance->CaptureImage = CameraInstance->CaptureImages.at(0);
+        CameraInstance->FrameID = 0;
         } else {
             qDebug() << "Warning: No valid images loaded, CaptureImage remains empty";
         }
@@ -6615,6 +6622,19 @@ void RobotWindow::updateCameraInfoDisplay()
     ui->lbDisplayRatio->setText(QString("Ratio: %1%").arg(ratio));
 }
 
+void RobotWindow::handleZPlaneFiltering(QString originalGcode, QString& filteredGcode)
+{
+    // Apply Z-plane filtering to the resolved single G-code line
+    filteredGcode = filterSingleLineForZPlane(originalGcode);
+}
+
+void RobotWindow::handleLogMessage(QString message)
+{
+    // Display log message in software log with GScript prefix
+    QString logEntry = QString("[GScript] %1").arg(message);
+    SoftwareLog(logEntry);
+}
+
 void RobotWindow::paintEvent(QPaintEvent *event)
 {
     QMainWindow::paintEvent(event); // G?i h�m co b?n
@@ -7543,6 +7563,84 @@ QString RobotWindow::filterGcodeForZPlane(const QString& gcode) {
     }
     
     return filteredLines.join('\n');
+}
+
+QString RobotWindow::filterSingleLineForZPlane(const QString& gcodeLine) {
+    if (!m_zPlane.isEnabled || !m_zPlane.isValid) {
+        return gcodeLine; // No filtering needed
+    }
+    
+    QString trimmed = gcodeLine.trimmed().toUpper();
+    
+    // Check for G-code movement commands (G0, G1, G2, G3)
+    if (trimmed.startsWith("G0 ") || trimmed.startsWith("G1 ") ||
+        trimmed.startsWith("G2 ") || trimmed.startsWith("G3 ")) {
+        
+        // Parse coordinates
+        double x = 0, y = 0, z = 0;
+        bool hasX = false, hasY = false, hasZ = false;
+        
+        // Extract X, Y, Z values
+        QRegularExpression xRegex("X([+-]?\\d*\\.?\\d+)");
+        QRegularExpression yRegex("Y([+-]?\\d*\\.?\\d+)");
+        QRegularExpression zRegex("Z([+-]?\\d*\\.?\\d+)");
+        
+        QRegularExpressionMatch xMatch = xRegex.match(trimmed);
+        QRegularExpressionMatch yMatch = yRegex.match(trimmed);
+        QRegularExpressionMatch zMatch = zRegex.match(trimmed);
+        
+        if (xMatch.hasMatch()) {
+            x = xMatch.captured(1).toDouble();
+            hasX = true;
+        }
+        if (yMatch.hasMatch()) {
+            y = yMatch.captured(1).toDouble();
+            hasY = true;
+        }
+        if (zMatch.hasMatch()) {
+            z = zMatch.captured(1).toDouble();
+            hasZ = true;
+        }
+        
+        // Apply Z-limiting if we have X, Y, Z coordinates
+        if (hasX && hasY && hasZ) {
+            // Check if point is safe (considering safety margin)
+            if (!m_zPlane.isPointSafe(x, y, z)) {
+                double safeZ = m_zPlane.calculateSafeZ(x, y);
+                
+                if (m_zPlane.strictMode) {
+                    // In strict mode, block the movement entirely
+                    QString warningComment = QString("; WARNING: Movement blocked by Z-Plane safety (Z=%1, Safe Z=%2)")
+                                           .arg(z, 0, 'f', 3)
+                                           .arg(safeZ, 0, 'f', 3);
+                    
+                    SoftwareLog(QString("Z-Plane: BLOCKED unsafe movement Z=%1 at (%2, %3), Safe Z=%4")
+                               .arg(z, 0, 'f', 3)
+                               .arg(x, 0, 'f', 2)
+                               .arg(y, 0, 'f', 2)
+                               .arg(safeZ, 0, 'f', 3));
+                    
+                    return warningComment; // Return comment instead of original line
+                } else {
+                    // In warning mode, clamp to safe Z
+                    QString modifiedLine = gcodeLine;
+                    modifiedLine.replace(zRegex, QString("Z%1").arg(safeZ, 0, 'f', 3));
+                    
+                    SoftwareLog(QString("Z-Plane: Corrected Z from %1 to %2 at (%3, %4) [Safety Margin: %5mm]")
+                               .arg(z, 0, 'f', 3)
+                               .arg(safeZ, 0, 'f', 3)
+                               .arg(x, 0, 'f', 2)
+                               .arg(y, 0, 'f', 2)
+                               .arg(m_zPlane.safetyMargin, 0, 'f', 1));
+                    
+                    return modifiedLine; // Return modified line
+                }
+            }
+        }
+    }
+    
+    // No modification needed
+    return gcodeLine;
 }
 
 void RobotWindow::SaveZPlaneSettings()

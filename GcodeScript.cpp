@@ -1797,6 +1797,44 @@ bool GcodeScript::findExeGcodeAndTransmit()
                     gcodeOrder++;
                     return false;
                 }
+                
+                if (subProName.startsWith("logmessage"))
+                {
+                    // M98 PlogMessage("Hello World")
+                    // M98 PlogMessage "Hello World"
+                    
+                    QString message;
+                    
+                    // Find the message part
+                    int startIndex = currentLine.indexOf("logmessage", 0, Qt::CaseInsensitive);
+                    if (startIndex != -1) {
+                        QString remaining = currentLine.mid(startIndex + 10).trimmed(); // Skip "logmessage"
+                        
+                        // Handle different formats
+                        if (remaining.startsWith("(") && remaining.endsWith(")")) {
+                            // Format: PlogMessage("message")
+                            message = remaining.mid(1, remaining.length() - 2);
+                        } else if (remaining.startsWith("\"") && remaining.endsWith("\"")) {
+                            // Format: PlogMessage "message"
+                            message = remaining.mid(1, remaining.length() - 2);
+                        } else {
+                            // Format: PlogMessage message
+                            message = remaining;
+                        }
+                    }
+                    
+                    // If we have remaining parameters, append them
+                    if (valuePairs.size() > (i + 2)) {
+                        for (int j = i + 2; j < valuePairs.size(); j++) {
+                            if (!message.isEmpty()) message += " ";
+                            message += valuePairs[j];
+                        }
+                    }
+                    
+                    emit LogMessage(message);
+                    gcodeOrder++;
+                    return false;
+                }
 
                 if (subProName == "syncconveyor")
                 {
@@ -2256,6 +2294,11 @@ bool GcodeScript::handleDEFINE_SUBPROGRAM(QList<QString> valuePairs, int i)
 
 bool GcodeScript::handleGCODE(QString transmitGcode)
 {
+    // Apply Z-plane filtering to resolved G-code
+    QString filteredGcode = transmitGcode;
+    emit RequestZPlaneFiltering(transmitGcode, filteredGcode);
+    transmitGcode = filteredGcode;
+    
     // If homing (G28) is requested, set gate to wait for Position response
     {
         QString t = transmitGcode.trimmed().toUpper();

@@ -70,12 +70,14 @@ signals:
     void PauseCamera();
     void CaptureCamera();
     void ResumeCamera();
+    void LogMessage(QString message);
 
     void UpdateTrackingRequest(int id);
     void GetObjectsRequest(int trackingID, QString inAreaListName, float min, float max, bool isXDirection);
     void CaptureAndDetectRequest();
 
     void SendGcodeToDevice(QString deviceId, QString gcode);
+    void RequestZPlaneFiltering(QString originalGcode, QString& filteredGcode);
 
     void AddObject(QString listName, QList<QStringList> objectsInfo);
     void AddObjectArray(QString listName, QList<QStringList> objectsInfo);
