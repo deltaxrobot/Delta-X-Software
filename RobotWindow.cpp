@@ -1301,14 +1301,20 @@ void RobotWindow::InitEvents()
     connect(ui->pbGetPlaneAPoint, &QPushButton::clicked, [=]()
     {
         pastePointValues(ui->leADrawingPoint);
+        onGetCurrentPositionP1();
+        onCalculateZPlane();
     });
     connect(ui->pbGetPlaneBPoint, &QPushButton::clicked, [=]()
     {
         pastePointValues(ui->leBDrawingPoint);
+        onGetCurrentPositionP2();
+        onCalculateZPlane();
     });
     connect(ui->pbGetPlaneCPoint, &QPushButton::clicked, [=]()
     {
         pastePointValues(ui->leCDrawingPoint);
+        onGetCurrentPositionP3();
+        onCalculateZPlane();
     });
 
 
@@ -1690,6 +1696,7 @@ void RobotWindow::InitScriptThread()
 void RobotWindow::AddScriptThread()
 {
     GcodeScript* GcodeScriptThread = new GcodeScript();
+    GcodeScriptThread->setZPlaneFilterHandler(this);
 
     GcodeScriptThread->ProjectName = ProjectName;
     GcodeScriptThread->ID = QString("thread") + GcodeScripts.count();
@@ -1703,8 +1710,6 @@ void RobotWindow::AddScriptThread()
     connect(GcodeScriptThread, &GcodeScript::Finished, [=](){ ui->pbExecuteGcodes->setChecked(false);});
     connect(GcodeScriptThread, SIGNAL(SendGcodeToDevice(QString, QString)), this, SLOT(UpdateGcodeValueToDeviceUI(QString, QString)));
     
-    // Connect Z-plane filtering
-    connect(GcodeScriptThread, &GcodeScript::RequestZPlaneFiltering, this, &RobotWindow::handleZPlaneFiltering);
     
     // Connect log message
     connect(GcodeScriptThread, &GcodeScript::LogMessage, this, &RobotWindow::handleLogMessage);
@@ -6622,11 +6627,7 @@ void RobotWindow::updateCameraInfoDisplay()
     ui->lbDisplayRatio->setText(QString("Ratio: %1%").arg(ratio));
 }
 
-void RobotWindow::handleZPlaneFiltering(QString originalGcode, QString& filteredGcode)
-{
-    // Apply Z-plane filtering to the resolved single G-code line
-    filteredGcode = filterSingleLineForZPlane(originalGcode);
-}
+
 
 void RobotWindow::handleLogMessage(QString message)
 {
@@ -7486,13 +7487,13 @@ QString RobotWindow::filterGcodeForZPlane(const QString& gcode) {
     
     QStringList lines = gcode.split('\n');
     QStringList filteredLines;
+    static const QRegularExpression movementRegex("^(?:G0\\b|G0?[1-3]\\b)");
     
     for (const QString& line : lines) {
         QString trimmed = line.trimmed().toUpper();
         
         // Check for G-code movement commands (G0, G1, G2, G3)
-        if (trimmed.startsWith("G0 ") || trimmed.startsWith("G1 ") ||
-            trimmed.startsWith("G2 ") || trimmed.startsWith("G3 ")) {
+        if (movementRegex.match(trimmed).hasMatch()) {
             
             // Parse coordinates
             double x = 0, y = 0, z = 0;
@@ -7571,10 +7572,10 @@ QString RobotWindow::filterSingleLineForZPlane(const QString& gcodeLine) {
     }
     
     QString trimmed = gcodeLine.trimmed().toUpper();
+    static const QRegularExpression movementRegex("^(?:G0\\b|G0?[1-3]\\b)");
     
     // Check for G-code movement commands (G0, G1, G2, G3)
-    if (trimmed.startsWith("G0 ") || trimmed.startsWith("G1 ") ||
-        trimmed.startsWith("G2 ") || trimmed.startsWith("G3 ")) {
+    if (movementRegex.match(trimmed).hasMatch()) {
         
         // Parse coordinates
         double x = 0, y = 0, z = 0;

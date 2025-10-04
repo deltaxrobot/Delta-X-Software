@@ -1130,7 +1130,6 @@ public:
     QCheckBox *cbShowGrid;
     QSpacerItem *horizontalSpacer_zplane_viz;
     QSpacerItem *verticalSpacer_workspace;
-    QWidget *tGridMapping;
     QSpacerItem *verticalSpacer;
     QWidget *ConveyorTab;
     QVBoxLayout *verticalLayout_22;
@@ -1334,7 +1333,7 @@ public:
     {
         if (RobotWindow->objectName().isEmpty())
             RobotWindow->setObjectName(QString::fromUtf8("RobotWindow"));
-        RobotWindow->resize(1210, 1178);
+        RobotWindow->resize(1762, 1178);
         QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
@@ -2336,7 +2335,7 @@ public:
         saTermite->setWidgetResizable(true);
         wgTermite = new QWidget();
         wgTermite->setObjectName(QString::fromUtf8("wgTermite"));
-        wgTermite->setGeometry(QRect(0, 0, 478, 238));
+        wgTermite->setGeometry(QRect(0, 0, 632, 225));
         wgTermite->setStyleSheet(QString::fromUtf8("QWidget#wgTermite\n"
 "{\n"
 "	\n"
@@ -2427,8 +2426,8 @@ public:
         saObjectDetecting->setWidgetResizable(true);
         wObjectDetecting = new QWidget();
         wObjectDetecting->setObjectName(QString::fromUtf8("wObjectDetecting"));
-        wObjectDetecting->setGeometry(QRect(0, 0, 631, 3500));
-        wObjectDetecting->setMinimumSize(QSize(100, 3500));
+        wObjectDetecting->setGeometry(QRect(0, 0, 859, 4000));
+        wObjectDetecting->setMinimumSize(QSize(100, 4000));
         wObjectDetecting->setStyleSheet(QString::fromUtf8("QWidget#wObjectDetecting\n"
 "{	\n"
 "	background-color: #1E1E20;\n"
@@ -4159,7 +4158,7 @@ public:
         fAddObjectPanel = new QFrame(gbCameraVariable);
         fAddObjectPanel->setObjectName(QString::fromUtf8("fAddObjectPanel"));
         fAddObjectPanel->setMinimumSize(QSize(0, 120));
-        fAddObjectPanel->setMaximumSize(QSize(16777215, 120));
+        fAddObjectPanel->setMaximumSize(QSize(16777215, 200));
         fAddObjectPanel->setStyleSheet(QString::fromUtf8("QFrame { background-color: #3A3A3C; border: 1px solid #505050; }"));
         fAddObjectPanel->setFrameShape(QFrame::StyledPanel);
         fAddObjectPanel->setFrameShadow(QFrame::Raised);
@@ -4416,7 +4415,7 @@ public:
         saPointTool->setWidgetResizable(true);
         wPointTool = new QWidget();
         wPointTool->setObjectName(QString::fromUtf8("wPointTool"));
-        wPointTool->setGeometry(QRect(0, 0, 619, 3000));
+        wPointTool->setGeometry(QRect(0, 0, 837, 3000));
         wPointTool->setMinimumSize(QSize(0, 3000));
         wPointTool->setStyleSheet(QString::fromUtf8("QWidget#wPointTool\n"
 "{	\n"
@@ -5937,8 +5936,8 @@ public:
         scrollArea_6->setWidgetResizable(true);
         scrollAreaWidgetContents_6 = new QWidget();
         scrollAreaWidgetContents_6->setObjectName(QString::fromUtf8("scrollAreaWidgetContents_6"));
-        scrollAreaWidgetContents_6->setGeometry(QRect(0, 0, 619, 1600));
-        scrollAreaWidgetContents_6->setMinimumSize(QSize(450, 1600));
+        scrollAreaWidgetContents_6->setGeometry(QRect(0, -738, 837, 1800));
+        scrollAreaWidgetContents_6->setMinimumSize(QSize(450, 1800));
         scrollAreaWidgetContents_6->setMaximumSize(QSize(16777215, 16777215));
         scrollAreaWidgetContents_6->setStyleSheet(QString::fromUtf8("QWidget[background='container']\n"
 "{	\n"
@@ -6827,7 +6826,7 @@ public:
         scrollArea_2->setWidgetResizable(true);
         wgJoggingScrollWidget = new QWidget();
         wgJoggingScrollWidget->setObjectName(QString::fromUtf8("wgJoggingScrollWidget"));
-        wgJoggingScrollWidget->setGeometry(QRect(0, -1121, 534, 2559));
+        wgJoggingScrollWidget->setGeometry(QRect(0, -1871, 833, 2955));
         wgJoggingScrollWidget->setMinimumSize(QSize(0, 2000));
         wgJoggingScrollWidget->setMaximumSize(QSize(16777215, 16777215));
         wgJoggingScrollWidget->setStyleSheet(QString::fromUtf8("QWidget#wgJoggingScrollWidget\n"
@@ -9283,6 +9282,7 @@ public:
         gridLayout_5->setHorizontalSpacing(10);
         twCalibration = new QTabWidget(fRobotWorkspacePanel);
         twCalibration->setObjectName(QString::fromUtf8("twCalibration"));
+        twCalibration->setStyleSheet(QString::fromUtf8("background-color: rgb(38, 38, 41);"));
         Workspace = new QWidget();
         Workspace->setObjectName(QString::fromUtf8("Workspace"));
         verticalLayout_workspace = new QVBoxLayout(Workspace);
@@ -9296,6 +9296,7 @@ public:
         font14.setPointSize(10);
         font14.setBold(true);
         gbZPlaneLimiting->setFont(font14);
+        gbZPlaneLimiting->setStyleSheet(QString::fromUtf8("color: rgb(234, 234, 234);"));
         gbZPlaneLimiting->setCheckable(true);
         gbZPlaneLimiting->setChecked(false);
         verticalLayout_zplane = new QVBoxLayout(gbZPlaneLimiting);
@@ -9490,6 +9491,12 @@ public:
         horizontalLayout_zplane_actions->setObjectName(QString::fromUtf8("horizontalLayout_zplane_actions"));
         pbCalculateZPlane = new QPushButton(frameZPlaneActions);
         pbCalculateZPlane->setObjectName(QString::fromUtf8("pbCalculateZPlane"));
+        QSizePolicy sizePolicy23(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
+        sizePolicy23.setHorizontalStretch(0);
+        sizePolicy23.setVerticalStretch(0);
+        sizePolicy23.setHeightForWidth(pbCalculateZPlane->sizePolicy().hasHeightForWidth());
+        pbCalculateZPlane->setSizePolicy(sizePolicy23);
+        pbCalculateZPlane->setMinimumSize(QSize(150, 30));
         pbCalculateZPlane->setIcon(icon25);
         pbCalculateZPlane->setIconSize(QSize(20, 20));
 
@@ -9497,6 +9504,8 @@ public:
 
         pbTestZPlane = new QPushButton(frameZPlaneActions);
         pbTestZPlane->setObjectName(QString::fromUtf8("pbTestZPlane"));
+        sizePolicy23.setHeightForWidth(pbTestZPlane->sizePolicy().hasHeightForWidth());
+        pbTestZPlane->setSizePolicy(sizePolicy23);
         QIcon icon48;
         icon48.addFile(QString::fromUtf8(":/icon/icons8_test_passed_52px.png"), QSize(), QIcon::Normal, QIcon::Off);
         pbTestZPlane->setIcon(icon48);
@@ -9506,6 +9515,8 @@ public:
 
         pbResetZPlane = new QPushButton(frameZPlaneActions);
         pbResetZPlane->setObjectName(QString::fromUtf8("pbResetZPlane"));
+        sizePolicy23.setHeightForWidth(pbResetZPlane->sizePolicy().hasHeightForWidth());
+        pbResetZPlane->setSizePolicy(sizePolicy23);
         QIcon icon49;
         icon49.addFile(QString::fromUtf8(":/icon/icons8_restart_52px.png"), QSize(), QIcon::Normal, QIcon::Off);
         pbResetZPlane->setIcon(icon49);
@@ -9515,6 +9526,8 @@ public:
 
         pbAutoCalibrate = new QPushButton(frameZPlaneActions);
         pbAutoCalibrate->setObjectName(QString::fromUtf8("pbAutoCalibrate"));
+        sizePolicy23.setHeightForWidth(pbAutoCalibrate->sizePolicy().hasHeightForWidth());
+        pbAutoCalibrate->setSizePolicy(sizePolicy23);
         QIcon icon50;
         icon50.addFile(QString::fromUtf8(":/icon/icons8_automatic_52px.png"), QSize(), QIcon::Normal, QIcon::Off);
         pbAutoCalibrate->setIcon(icon50);
@@ -9656,9 +9669,6 @@ public:
         verticalLayout_workspace->addItem(verticalSpacer_workspace);
 
         twCalibration->addTab(Workspace, QString());
-        tGridMapping = new QWidget();
-        tGridMapping->setObjectName(QString::fromUtf8("tGridMapping"));
-        twCalibration->addTab(tGridMapping, QString());
 
         gridLayout_5->addWidget(twCalibration, 0, 0, 1, 1);
 
@@ -10622,11 +10632,11 @@ public:
 
         pbResetEncoder = new QPushButton(frame_44);
         pbResetEncoder->setObjectName(QString::fromUtf8("pbResetEncoder"));
-        QSizePolicy sizePolicy23(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
-        sizePolicy23.setHorizontalStretch(0);
-        sizePolicy23.setVerticalStretch(0);
-        sizePolicy23.setHeightForWidth(pbResetEncoder->sizePolicy().hasHeightForWidth());
-        pbResetEncoder->setSizePolicy(sizePolicy23);
+        QSizePolicy sizePolicy24(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
+        sizePolicy24.setHorizontalStretch(0);
+        sizePolicy24.setVerticalStretch(0);
+        sizePolicy24.setHeightForWidth(pbResetEncoder->sizePolicy().hasHeightForWidth());
+        pbResetEncoder->setSizePolicy(sizePolicy24);
         pbResetEncoder->setMaximumSize(QSize(16777215, 20));
 
         gridLayout_21->addWidget(pbResetEncoder, 3, 4, 1, 1);
@@ -10687,8 +10697,8 @@ public:
 
         pbSetEncoderInterval = new QPushButton(frame_44);
         pbSetEncoderInterval->setObjectName(QString::fromUtf8("pbSetEncoderInterval"));
-        sizePolicy23.setHeightForWidth(pbSetEncoderInterval->sizePolicy().hasHeightForWidth());
-        pbSetEncoderInterval->setSizePolicy(sizePolicy23);
+        sizePolicy24.setHeightForWidth(pbSetEncoderInterval->sizePolicy().hasHeightForWidth());
+        pbSetEncoderInterval->setSizePolicy(sizePolicy24);
         pbSetEncoderInterval->setMaximumSize(QSize(16777215, 20));
 
         gridLayout_21->addWidget(pbSetEncoderInterval, 1, 3, 1, 1);
@@ -10786,8 +10796,8 @@ public:
 
         pbStartScheduledEncoder = new QPushButton(frame_47);
         pbStartScheduledEncoder->setObjectName(QString::fromUtf8("pbStartScheduledEncoder"));
-        sizePolicy23.setHeightForWidth(pbStartScheduledEncoder->sizePolicy().hasHeightForWidth());
-        pbStartScheduledEncoder->setSizePolicy(sizePolicy23);
+        sizePolicy24.setHeightForWidth(pbStartScheduledEncoder->sizePolicy().hasHeightForWidth());
+        pbStartScheduledEncoder->setSizePolicy(sizePolicy24);
 
         horizontalLayout_32->addWidget(pbStartScheduledEncoder);
 
@@ -11050,11 +11060,11 @@ public:
 
         pbSlidingHome = new QPushButton(frame_48);
         pbSlidingHome->setObjectName(QString::fromUtf8("pbSlidingHome"));
-        QSizePolicy sizePolicy24(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
-        sizePolicy24.setHorizontalStretch(0);
-        sizePolicy24.setVerticalStretch(0);
-        sizePolicy24.setHeightForWidth(pbSlidingHome->sizePolicy().hasHeightForWidth());
-        pbSlidingHome->setSizePolicy(sizePolicy24);
+        QSizePolicy sizePolicy25(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
+        sizePolicy25.setHorizontalStretch(0);
+        sizePolicy25.setVerticalStretch(0);
+        sizePolicy25.setHeightForWidth(pbSlidingHome->sizePolicy().hasHeightForWidth());
+        pbSlidingHome->setSizePolicy(sizePolicy25);
         pbSlidingHome->setMinimumSize(QSize(0, 0));
         pbSlidingHome->setMaximumSize(QSize(200, 40));
         QFont font18;
@@ -11088,8 +11098,8 @@ public:
 
         pbSlidingDisable = new QPushButton(frame_48);
         pbSlidingDisable->setObjectName(QString::fromUtf8("pbSlidingDisable"));
-        sizePolicy23.setHeightForWidth(pbSlidingDisable->sizePolicy().hasHeightForWidth());
-        pbSlidingDisable->setSizePolicy(sizePolicy23);
+        sizePolicy24.setHeightForWidth(pbSlidingDisable->sizePolicy().hasHeightForWidth());
+        pbSlidingDisable->setSizePolicy(sizePolicy24);
         pbSlidingDisable->setMinimumSize(QSize(0, 0));
         pbSlidingDisable->setMaximumSize(QSize(200, 40));
         pbSlidingDisable->setFont(font18);
@@ -11347,7 +11357,7 @@ public:
 
         pbRunServer->setDefault(false);
         pbOpenWebControl->setDefault(false);
-        twModule->setCurrentIndex(1);
+        twModule->setCurrentIndex(3);
         twGcodeEditor->setCurrentIndex(0);
         pbImageMapping->setDefault(false);
         cbImageSource->setCurrentIndex(0);
@@ -12556,7 +12566,6 @@ public:
         cbShowSafetyZone->setText(QCoreApplication::translate("RobotWindow", "Show Safety Zone", nullptr));
         cbShowGrid->setText(QCoreApplication::translate("RobotWindow", "Show Grid", nullptr));
         twCalibration->setTabText(twCalibration->indexOf(Workspace), QCoreApplication::translate("RobotWindow", "Workspace Limits", nullptr));
-        twCalibration->setTabText(twCalibration->indexOf(tGridMapping), QCoreApplication::translate("RobotWindow", "Grid Mapping", nullptr));
         twDevices->setTabText(twDevices->indexOf(tRobot), QCoreApplication::translate("RobotWindow", "Robot", nullptr));
         label->setText(QCoreApplication::translate("RobotWindow", "Selected Conveyor", nullptr));
         checkBox->setText(QCoreApplication::translate("RobotWindow", "Auto Scan", nullptr));

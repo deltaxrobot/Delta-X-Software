@@ -7,14 +7,17 @@
 #include <QDateTime>
 #include <QDebug>
 #include <QTimer>
+#include <QMetaObject>
 
 // Initialize static regex patterns for better performance
 const QRegularExpression GcodeScript::m98Regex("M98\\s+([A-Za-z][A-Za-z0-9]*)(?:\\((.*)\\))?", QRegularExpression::OptimizeOnFirstUsageOption);
 const QRegularExpression GcodeScript::objectInAreaRegex("\\(([^)]+)\\)", QRegularExpression::OptimizeOnFirstUsageOption);
 
 // Initialize cloud point mapper member variables
-GcodeScript::GcodeScript()
-    : m_cloudPointMapper(nullptr)
+GcodeScript::GcodeScript(QObject* parent)
+    : QObject(parent)
+    , m_zPlaneFilterHandler(nullptr)
+    , m_cloudPointMapper(nullptr)
     , m_cloudPointMapperInitialized(false)
     , returnPointerOrder(-1)
     , IsConveyorSync(false)
@@ -98,6 +101,11 @@ QString GcodeScript::GetProgramName()
 bool GcodeScript::IsRunning()
 {
     return isRunning;
+}
+
+void GcodeScript::setZPlaneFilterHandler(QObject* handler)
+{
+    m_zPlaneFilterHandler = handler;
 }
 
 void GcodeScript::ExecuteGcode(QString gcodes, int startMode)
@@ -2295,9 +2303,19 @@ bool GcodeScript::handleDEFINE_SUBPROGRAM(QList<QString> valuePairs, int i)
 bool GcodeScript::handleGCODE(QString transmitGcode)
 {
     // Apply Z-plane filtering to resolved G-code
-    QString filteredGcode = transmitGcode;
-    emit RequestZPlaneFiltering(transmitGcode, filteredGcode);
-    transmitGcode = filteredGcode;
+    if (m_zPlaneFilterHandler) {
+        QString filteredGcode;
+        bool invokeOk = QMetaObject::invokeMethod(
+            m_zPlaneFilterHandler.data(),
+            "filterSingleLineForZPlane",
+            Qt::BlockingQueuedConnection,
+            Q_RETURN_ARG(QString, filteredGcode),
+            Q_ARG(QString, transmitGcode));
+        if (invokeOk) {
+            transmitGcode = filteredGcode;
+        }
+    }
+
     
     // If homing (G28) is requested, set gate to wait for Position response
     {

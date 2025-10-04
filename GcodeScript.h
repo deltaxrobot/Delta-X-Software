@@ -15,6 +15,7 @@
 #include <QVariant>
 #include <QRegularExpression>
 #include <QStack>
+#include <QPointer>
 
 // Forward declarations for cloud point mapping
 class CloudPointMapper;
@@ -24,7 +25,7 @@ class GcodeScript : public QObject
 {
     Q_OBJECT
 public:
-    GcodeScript();
+    explicit GcodeScript(QObject* parent = nullptr);
     ~GcodeScript();
 
     enum
@@ -48,6 +49,8 @@ public:
     QString GetProgramPath();
     QString GetProgramName();
     bool IsRunning();
+
+    void setZPlaneFilterHandler(QObject* handler);
 
 public slots:
     void ExecuteGcode(QString gcodes, int position);
@@ -77,7 +80,6 @@ signals:
     void CaptureAndDetectRequest();
 
     void SendGcodeToDevice(QString deviceId, QString gcode);
-    void RequestZPlaneFiltering(QString originalGcode, QString& filteredGcode);
 
     void AddObject(QString listName, QList<QStringList> objectsInfo);
     void AddObjectArray(QString listName, QList<QStringList> objectsInfo);
@@ -212,6 +214,8 @@ private:
     QString programPath;
     QString programName;
     bool isRunning;
+
+    QPointer<QObject> m_zPlaneFilterHandler;
 
     //......... Global values
 

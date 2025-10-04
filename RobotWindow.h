@@ -630,7 +630,7 @@ private:
     bool calculateZPlane();           // Calculate plane from 3 points
     void updateZPlaneEquationDisplay(); // Update UI equation display
     QString filterGcodeForZPlane(const QString& gcode); // Filter G-code for Z-limiting
-    QString filterSingleLineForZPlane(const QString& gcodeLine); // Filter single G-code line
+    Q_INVOKABLE QString filterSingleLineForZPlane(const QString& gcodeLine); // Filter single G-code line
     void LoadZPlaneSettings();        // Load Z-plane settings from variables
     void SaveZPlaneSettings();        // Save Z-plane settings to variables
     
@@ -658,7 +658,6 @@ private:
 public slots:
     // ========== UI UPDATE SLOTS ==========
     void updateCameraInfoDisplay();    // Update camera size and zoom info
-    void handleZPlaneFiltering(QString originalGcode, QString& filteredGcode);  // Handle Z-plane filtering request
     void handleLogMessage(QString message);  // Handle log message from GScript
     
     // ========== Z-PLANE LIMITING SLOTS ==========
@@ -683,3 +682,4 @@ private slots:
 };
 
 #endif // ROBOTWINDOW_H
+
