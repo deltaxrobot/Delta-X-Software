@@ -52,6 +52,7 @@ SOURCES += main.cpp\
     ImageViewer.cpp \
     Layer.cpp \
     MainWindow.cpp \
+    MovementTimeCalculator.cpp \
     Object.cpp \
     ObjectInfo.cpp \
     ObjectVariableTable.cpp \
@@ -111,6 +112,7 @@ HEADERS  += \
     ImageViewer.h \
     Layer.h \
     MainWindow.h \
+    MovementTimeCalculator.h \
     Object.h \
     ImageProcessing.h \
     ObjectInfo.h \

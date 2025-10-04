@@ -6,6 +6,7 @@ Robot::Robot(QString COM, int baudrate, bool is_open, QObject *parent) : Device(
     connect(this, SIGNAL(receivedMsg(QString, QString)), this, SLOT(ProcessResponse(QString, QString)));
     this->scurve_tool = Scurve_Interpolator();
 
+
     StepVector = QVector3D(0, 0, 0);
 
     X = 0;
@@ -320,18 +321,7 @@ QString Robot::syncGcode(QString cmd)
             {
                 J = param.mid(1).toFloat();
             }
-        }
-
-        scurve_tool.setMaxVel(F);
-        scurve_tool.setMaxAcc(A);
-        scurve_tool.setVelStart(S);
-        scurve_tool.setVelEnd(E);
-        scurve_tool.setMaxJerk(J);
-
-//        float new_x, new_y;
-//        std::pair<double, double> new_point = scurve_tool.find_sync_point(old_X, old_Y, old_Z, X, Y, Z, path_vel, path_angle, O);
-//        new_x = round(float(new_point.first) * 100) / 100;
-//        new_y = round(float(new_point.second) * 100) / 100;
+        }        
 
         QVector3D newPosition = calculateSyncPosition(QVector3D(old_X, old_Y, old_Z), QVector3D(X, Y, Z), sync_vector);
 
@@ -339,7 +329,11 @@ QString Robot::syncGcode(QString cmd)
         {
             return QString("G01 X%1 Y%2 Z%3 W%4 F%5 A%6 S%7 E%8 J%9").arg(newPosition.x()).arg(newPosition.y()).arg(newPosition.z()).arg(W).arg(F).arg(A).arg(S).arg(E).arg(J);
         }
-        else if (robotModel == "Delta X 2" || robotModel == "Delta X 1")
+        else if (robotModel == "Delta X 2")
+        {
+            return QString("G01 X%1 Y%2 Z%3").arg(newPosition.x()).arg(newPosition.y()).arg(newPosition.z());
+        }
+        else if (robotModel == "Delta X 1")
         {
             return QString("G01 X%1 Y%2 Z%3").arg(newPosition.x()).arg(newPosition.y()).arg(newPosition.z());
         }
@@ -372,48 +366,27 @@ double Robot::calculateMovingTime(double distance)
 {
     if (robotModel == "Delta X S" || robotModel == "Delta X 3")
     {
+        scurve_tool.setMaxVel(F);
+        scurve_tool.setMaxAcc(A);
+        scurve_tool.setVelStart(S);
+        scurve_tool.setVelEnd(E);
+        scurve_tool.setMaxJerk(J);
         scurve_tool.p_target = distance;
+
         scurve_tool.start();
 
         return scurve_tool.t_target;
     }
     else if (robotModel == "Delta X 2")
     {
-        float t1, t2, t3, t_total;
-        float v_max = F;
-        float a_max = A;
-        float s = distance;
-        float v_start = S;
-        float v_end = S;
+        request.startVelocity = S;     // mm/s
+        request.endVelocity = E;
+        request.commandedVelocity = F; // mm/s
+        request.acceleration = A;     // mm/s^2
+        request.distance = distance;          // mm
 
-        if (v_max > 900)
-            v_max = 900;
-        if (a_max > 3000)
-            a_max = 3000;
-
-        t1 = (v_max - v_start) / a_max;
-        t3 = (v_max - v_end) / a_max;
-        
-        float s1, s3;
-        s1 = s3 = v_start * t1 + 0.5 * a_max * t1 * t1;
-
-        if (s > s1 + s3)
-        {
-            float s2 = s - s1 - s3;
-            t2 = s2 / v_max;
-
-            t_total = t1 + t2 + t3;
-        }
-        else
-        {
-            float vpeak_squared = a_max * s + (v_start*v_start + v_end*v_end) / 2.0;
-            float new_v_max = sqrt(vpeak_squared);
-            float t1 = (new_v_max - v_start) / a_max;
-
-            t_total = t1 * 2;
-        }
-
-        return t_total;
+        double seconds = calculateMovementTime(request);
+        return seconds;
     }
     else
     {

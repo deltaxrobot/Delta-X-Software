@@ -8668,7 +8668,7 @@ QHeaderView::section {
                   <property name="geometry">
                    <rect>
                     <x>0</x>
-                    <y>-738</y>
+                    <y>-534</y>
                     <width>837</width>
                     <height>1800</height>
                    </rect>
@@ -9863,6 +9863,41 @@ QLabel
                          <property name="icon">
                           <iconset resource="resource.qrc">
                            <normaloff>:/icon/Zoom Out_16px.png</normaloff>:/icon/Zoom Out_16px.png</iconset>
+                         </property>
+                         <property name="toolButtonStyle">
+                          <enum>Qt::ToolButtonTextUnderIcon</enum>
+                         </property>
+                         <property name="autoRaise">
+                          <bool>true</bool>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="1" column="3">
+                        <widget class="QToolButton" name="pbEraserAll">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                         <property name="minimumSize">
+                          <size>
+                           <width>0</width>
+                           <height>0</height>
+                          </size>
+                         </property>
+                         <property name="maximumSize">
+                          <size>
+                           <width>70</width>
+                           <height>16777215</height>
+                          </size>
+                         </property>
+                         <property name="text">
+                          <string>Clear All</string>
+                         </property>
+                         <property name="icon">
+                          <iconset resource="resource.qrc">
+                           <normaloff>:/icon/Eraser_16px.png</normaloff>:/icon/Eraser_16px.png</iconset>
                          </property>
                          <property name="toolButtonStyle">
                           <enum>Qt::ToolButtonTextUnderIcon</enum>

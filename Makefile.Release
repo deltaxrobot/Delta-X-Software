@@ -67,6 +67,7 @@ SOURCES       = main.cpp \
 		ImageViewer.cpp \
 		Layer.cpp \
 		MainWindow.cpp \
+		MovementTimeCalculator.cpp \
 		Object.cpp \
 		ObjectInfo.cpp \
 		ObjectVariableTable.cpp \
@@ -122,6 +123,7 @@ SOURCES       = main.cpp \
 		release\moc_ImageViewer.cpp \
 		release\moc_Layer.cpp \
 		release\moc_MainWindow.cpp \
+		release\moc_MovementTimeCalculator.cpp \
 		release\moc_ImageProcessing.cpp \
 		release\moc_ObjectInfoModel.cpp \
 		release\moc_ObjectVariableTable.cpp \
@@ -173,6 +175,7 @@ OBJECTS       = release\main.obj \
 		release\ImageViewer.obj \
 		release\Layer.obj \
 		release\MainWindow.obj \
+		release\MovementTimeCalculator.obj \
 		release\Object.obj \
 		release\ObjectInfo.obj \
 		release\ObjectVariableTable.obj \
@@ -229,6 +232,7 @@ OBJECTS       = release\main.obj \
 		release\moc_ImageViewer.obj \
 		release\moc_Layer.obj \
 		release\moc_MainWindow.obj \
+		release\moc_MovementTimeCalculator.obj \
 		release\moc_ImageProcessing.obj \
 		release\moc_ObjectInfoModel.obj \
 		release\moc_ObjectVariableTable.obj \
@@ -281,6 +285,7 @@ DIST          =  AccountWindow.h \
 		ImageViewer.h \
 		Layer.h \
 		MainWindow.h \
+		MovementTimeCalculator.h \
 		Object.h \
 		ImageProcessing.h \
 		ObjectInfo.h \
@@ -340,6 +345,7 @@ DIST          =  AccountWindow.h \
 		ImageViewer.cpp \
 		Layer.cpp \
 		MainWindow.cpp \
+		MovementTimeCalculator.cpp \
 		Object.cpp \
 		ObjectInfo.cpp \
 		ObjectVariableTable.cpp \
@@ -456,9 +462,10 @@ all: Makefile.Release  release\DeltaRobotSoftware.exe
 
 release\DeltaRobotSoftware.exe: C:\Qt\5.15.2\msvc2019_64\lib\Qt5OpenGL.lib C:\Qt\5.15.2\msvc2019_64\lib\Qt5QuickWidgets.lib C:\Qt\5.15.2\msvc2019_64\lib\Qt5PrintSupport.lib C:\Qt\5.15.2\msvc2019_64\lib\Qt5Svg.lib C:\Qt\5.15.2\msvc2019_64\lib\Qt5Widgets.lib C:\Qt\5.15.2\msvc2019_64\lib\Qt5Quick.lib C:\Qt\5.15.2\msvc2019_64\lib\Qt5Multimedia.lib C:\Qt\5.15.2\msvc2019_64\lib\Qt5Gui.lib C:\Qt\5.15.2\msvc2019_64\lib\Qt5SerialPort.lib C:\Qt\5.15.2\msvc2019_64\lib\Qt5QmlModels.lib C:\Qt\5.15.2\msvc2019_64\lib\Qt5Qml.lib C:\Qt\5.15.2\msvc2019_64\lib\Qt5Network.lib C:\Qt\5.15.2\msvc2019_64\lib\Qt5Concurrent.lib C:\Qt\5.15.2\msvc2019_64\lib\Qt5Core.lib C:\Qt\5.15.2\msvc2019_64\lib\qtmain.lib ui_AccountWindow.h ui_FilterWindow.h ui_MainWindow.h ui_RobotWindow.h ui_GcodeReference.h ui_testwindow.h $(OBJECTS) release\DeltaRobotSoftware_resource.res
 	$(LINKER) $(LFLAGS) /MANIFEST:embed /OUT:$(DESTDIR_TARGET) @<<
-release\main.obj release\AccountWindow.obj release\Authority.obj release\ChessboardConfigDialog.obj release\CloudPointMapper.obj release\CloudPointToolController.obj release\ComDevice.obj release\DrawingExporter.obj release\DrawingWidget.obj release\FilterWindow.obj release\GcodeHighlighter.obj release\GcodeReference.obj release\GcodeScript.obj release\ImageProcessing.obj release\ImageViewer.obj release\Layer.obj release\MainWindow.obj release\Object.obj release\ObjectInfo.obj release\ObjectVariableTable.obj release\Parameter.obj release\PointTool.obj release\PointCalculator.obj release\PointToolController.obj release\InputValidator.obj release\ProjectManager.obj release\RobotWindow.obj release\SettingsManager.obj release\SettingsPanel.obj release\SmartDialog.obj release\SocketConnectionManager.obj release\SoftwareManager.obj release\TabDashboard.obj release\TaskNode.obj release\TestCode.obj release\TextLayer.obj release\TrackingManager.obj release\VariableManager.obj
-release\VersionManager.obj release\codeeditor.obj release\DeltaVisualizer.obj release\UnityTool.obj release\DeviceManager.obj release\camera.obj release\conveyor.obj release\device.obj release\encoder.obj release\robot.obj release\slider.obj release\geisttextedit.obj release\global.obj release\highlighter.obj release\testwindow.obj release\ModernDialog.obj release\CameraSelectionDialog.obj release\ConveyorVisualization.obj release\ZPlaneVisualization.obj release\qrc_resource.obj release\moc_AccountWindow.obj release\moc_Authority.obj release\moc_ChessboardConfigDialog.obj release\moc_CloudPointMapper.obj release\moc_CloudPointToolController.obj release\moc_ComDevice.obj release\moc_DeltaVisualizer.obj release\moc_DrawingExporter.obj release\moc_DrawingWidget.obj release\moc_FilterWindow.obj release\moc_GcodeReference.obj release\moc_GcodeScript.obj release\moc_ImageViewer.obj release\moc_Layer.obj release\moc_MainWindow.obj release\moc_ImageProcessing.obj release\moc_ObjectInfoModel.obj
-release\moc_ObjectVariableTable.obj release\moc_PointTool.obj release\moc_PointToolController.obj release\moc_ProjectManager.obj release\moc_RobotWindow.obj release\moc_SettingsManager.obj release\moc_SettingsPanel.obj release\moc_SmartDialog.obj release\moc_SocketConnectionManager.obj release\moc_TabDashboard.obj release\moc_TaskNode.obj release\moc_TextLayer.obj release\moc_TrackingManager.obj release\moc_VariableManager.obj release\moc_VersionManager.obj release\moc_codeeditor.obj release\moc_DeviceManager.obj release\moc_camera.obj release\moc_conveyor.obj release\moc_device.obj release\moc_encoder.obj release\moc_robot.obj release\moc_slider.obj release\moc_geisttextedit.obj release\moc_global.obj release\moc_highlighter.obj release\moc_DeltaXPlugin.obj release\moc_testwindow.obj release\moc_ModernDialog.obj release\moc_CameraSelectionDialog.obj release\moc_ConveyorVisualization.obj release\moc_ZPlaneVisualization.obj
+release\main.obj release\AccountWindow.obj release\Authority.obj release\ChessboardConfigDialog.obj release\CloudPointMapper.obj release\CloudPointToolController.obj release\ComDevice.obj release\DrawingExporter.obj release\DrawingWidget.obj release\FilterWindow.obj release\GcodeHighlighter.obj release\GcodeReference.obj release\GcodeScript.obj release\ImageProcessing.obj release\ImageViewer.obj release\Layer.obj release\MainWindow.obj release\MovementTimeCalculator.obj release\Object.obj release\ObjectInfo.obj release\ObjectVariableTable.obj release\Parameter.obj release\PointTool.obj release\PointCalculator.obj release\PointToolController.obj release\InputValidator.obj release\ProjectManager.obj release\RobotWindow.obj release\SettingsManager.obj release\SettingsPanel.obj release\SmartDialog.obj release\SocketConnectionManager.obj release\SoftwareManager.obj release\TabDashboard.obj release\TaskNode.obj release\TestCode.obj release\TextLayer.obj release\TrackingManager.obj
+release\VariableManager.obj release\VersionManager.obj release\codeeditor.obj release\DeltaVisualizer.obj release\UnityTool.obj release\DeviceManager.obj release\camera.obj release\conveyor.obj release\device.obj release\encoder.obj release\robot.obj release\slider.obj release\geisttextedit.obj release\global.obj release\highlighter.obj release\testwindow.obj release\ModernDialog.obj release\CameraSelectionDialog.obj release\ConveyorVisualization.obj release\ZPlaneVisualization.obj release\qrc_resource.obj release\moc_AccountWindow.obj release\moc_Authority.obj release\moc_ChessboardConfigDialog.obj release\moc_CloudPointMapper.obj release\moc_CloudPointToolController.obj release\moc_ComDevice.obj release\moc_DeltaVisualizer.obj release\moc_DrawingExporter.obj release\moc_DrawingWidget.obj release\moc_FilterWindow.obj release\moc_GcodeReference.obj release\moc_GcodeScript.obj release\moc_ImageViewer.obj release\moc_Layer.obj release\moc_MainWindow.obj
+release\moc_MovementTimeCalculator.obj release\moc_ImageProcessing.obj release\moc_ObjectInfoModel.obj release\moc_ObjectVariableTable.obj release\moc_PointTool.obj release\moc_PointToolController.obj release\moc_ProjectManager.obj release\moc_RobotWindow.obj release\moc_SettingsManager.obj release\moc_SettingsPanel.obj release\moc_SmartDialog.obj release\moc_SocketConnectionManager.obj release\moc_TabDashboard.obj release\moc_TaskNode.obj release\moc_TextLayer.obj release\moc_TrackingManager.obj release\moc_VariableManager.obj release\moc_VersionManager.obj release\moc_codeeditor.obj release\moc_DeviceManager.obj release\moc_camera.obj release\moc_conveyor.obj release\moc_device.obj release\moc_encoder.obj release\moc_robot.obj release\moc_slider.obj release\moc_geisttextedit.obj release\moc_global.obj release\moc_highlighter.obj release\moc_DeltaXPlugin.obj release\moc_testwindow.obj release\moc_ModernDialog.obj release\moc_CameraSelectionDialog.obj
+release\moc_ConveyorVisualization.obj release\moc_ZPlaneVisualization.obj
 $(LIBS)
 <<
 
@@ -471,11 +478,11 @@ qmake: FORCE
 qmake_all: FORCE
 
 dist:
-	$(ZIP) DeltaRobotSoftware.zip $(SOURCES) $(DIST) DeltaRobotSoftware.pro C:\Qt\5.15.2\msvc2019_64\mkspecs\features\spec_pre.prf C:\Qt\5.15.2\msvc2019_64\mkspecs\common\angle.conf C:\Qt\5.15.2\msvc2019_64\mkspecs\common\windows-desktop.conf C:\Qt\5.15.2\msvc2019_64\mkspecs\features\win32\windows_vulkan_sdk.prf C:\Qt\5.15.2\msvc2019_64\mkspecs\common\windows-vulkan.conf C:\Qt\5.15.2\msvc2019_64\mkspecs\common\msvc-desktop.conf C:\Qt\5.15.2\msvc2019_64\mkspecs\qconfig.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_3danimation.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_3danimation_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_3dcore.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_3dcore_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_3dextras.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_3dextras_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_3dinput.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_3dinput_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_3dlogic.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_3dlogic_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_3dquick.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_3dquick_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_3dquickanimation.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_3dquickanimation_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_3dquickextras.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_3dquickextras_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_3dquickinput.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_3dquickinput_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_3dquickrender.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_3dquickrender_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_3dquickscene2d.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_3dquickscene2d_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_3drender.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_3drender_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_accessibility_support_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_axbase.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_axbase_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_axcontainer.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_axcontainer_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_axserver.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_axserver_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_bluetooth.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_bluetooth_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_bootstrap_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_concurrent.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_concurrent_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_core.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_core_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_dbus.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_dbus_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_designer.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_designer_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_designercomponents_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_devicediscovery_support_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_edid_support_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_egl_support_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_eventdispatcher_support_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_fb_support_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_fontdatabase_support_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_gamepad.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_gamepad_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_gui.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_gui_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_help.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_help_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_location.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_location_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_multimedia.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_multimedia_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_multimediawidgets.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_multimediawidgets_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_network.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_network_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_nfc.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_nfc_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_opengl.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_opengl_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_openglextensions.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_openglextensions_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_packetprotocol_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_platformcompositor_support_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_positioning.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_positioning_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_positioningquick.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_positioningquick_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_printsupport.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_printsupport_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_qml.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_qml_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_qmldebug_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_qmldevtools_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_qmlmodels.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_qmlmodels_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_qmltest.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_qmltest_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_qmlworkerscript.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_qmlworkerscript_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_qtmultimediaquicktools_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_quick.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_quick_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_quickcontrols2.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_quickcontrols2_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_quickparticles_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_quickshapes_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_quicktemplates2.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_quicktemplates2_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_quickwidgets.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_quickwidgets_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_remoteobjects.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_remoteobjects_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_repparser.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_repparser_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_scxml.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_scxml_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_sensors.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_sensors_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_serialbus.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_serialbus_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_serialport.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_serialport_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_sql.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_sql_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_svg.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_svg_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_testlib.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_testlib_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_texttospeech.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_texttospeech_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_theme_support_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_uiplugin.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_uitools.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_uitools_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_vulkan_support_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_webchannel.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_webchannel_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_websockets.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_websockets_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_webview.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_webview_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_widgets.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_widgets_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_windowsuiautomation_support_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_winextras.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_winextras_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_xml.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_xml_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_xmlpatterns.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_xmlpatterns_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_zlib_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\features\qt_functions.prf C:\Qt\5.15.2\msvc2019_64\mkspecs\features\qt_config.prf C:\Qt\5.15.2\msvc2019_64\mkspecs\win32-msvc\qmake.conf C:\Qt\5.15.2\msvc2019_64\mkspecs\features\spec_post.prf .qmake.stash C:\Qt\5.15.2\msvc2019_64\mkspecs\features\exclusive_builds.prf C:\Qt\5.15.2\msvc2019_64\mkspecs\common\msvc-version.conf C:\Qt\5.15.2\msvc2019_64\mkspecs\features\toolchain.prf C:\Qt\5.15.2\msvc2019_64\mkspecs\features\default_pre.prf C:\Qt\5.15.2\msvc2019_64\mkspecs\features\win32\default_pre.prf C:\Qt\5.15.2\msvc2019_64\mkspecs\features\resolve_config.prf C:\Qt\5.15.2\msvc2019_64\mkspecs\features\exclusive_builds_post.prf C:\Qt\5.15.2\msvc2019_64\mkspecs\features\default_post.prf C:\Qt\5.15.2\msvc2019_64\mkspecs\features\build_pass.prf C:\Qt\5.15.2\msvc2019_64\mkspecs\features\qml_debug.prf C:\Qt\5.15.2\msvc2019_64\mkspecs\features\precompile_header.prf C:\Qt\5.15.2\msvc2019_64\mkspecs\features\warn_on.prf C:\Qt\5.15.2\msvc2019_64\mkspecs\features\qt.prf C:\Qt\5.15.2\msvc2019_64\mkspecs\features\resources_functions.prf C:\Qt\5.15.2\msvc2019_64\mkspecs\features\resources.prf C:\Qt\5.15.2\msvc2019_64\mkspecs\features\moc.prf C:\Qt\5.15.2\msvc2019_64\mkspecs\features\win32\opengl.prf C:\Qt\5.15.2\msvc2019_64\mkspecs\features\uic.prf C:\Qt\5.15.2\msvc2019_64\mkspecs\features\qmake_use.prf C:\Qt\5.15.2\msvc2019_64\mkspecs\features\file_copies.prf C:\Qt\5.15.2\msvc2019_64\mkspecs\features\win32\windows.prf C:\Qt\5.15.2\msvc2019_64\mkspecs\features\testcase_targets.prf C:\Qt\5.15.2\msvc2019_64\mkspecs\features\exceptions.prf C:\Qt\5.15.2\msvc2019_64\mkspecs\features\yacc.prf C:\Qt\5.15.2\msvc2019_64\mkspecs\features\lex.prf DeltaRobotSoftware.pro resource.qrc C:\Qt\5.15.2\msvc2019_64\lib\Qt5OpenGL.prl C:\Qt\5.15.2\msvc2019_64\lib\Qt5QuickWidgets.prl C:\Qt\5.15.2\msvc2019_64\lib\Qt5PrintSupport.prl C:\Qt\5.15.2\msvc2019_64\lib\Qt5Svg.prl C:\Qt\5.15.2\msvc2019_64\lib\Qt5Widgets.prl C:\Qt\5.15.2\msvc2019_64\lib\Qt5Quick.prl C:\Qt\5.15.2\msvc2019_64\lib\Qt5Multimedia.prl C:\Qt\5.15.2\msvc2019_64\lib\Qt5Gui.prl C:\Qt\5.15.2\msvc2019_64\lib\Qt5SerialPort.prl C:\Qt\5.15.2\msvc2019_64\lib\Qt5QmlModels.prl C:\Qt\5.15.2\msvc2019_64\lib\Qt5Qml.prl C:\Qt\5.15.2\msvc2019_64\lib\Qt5Network.prl C:\Qt\5.15.2\msvc2019_64\lib\Qt5Concurrent.prl C:\Qt\5.15.2\msvc2019_64\lib\Qt5Core.prl C:\Qt\5.15.2\msvc2019_64\lib\qtmain.prl   resource.qrc C:\Qt\5.15.2\msvc2019_64\mkspecs\features\data\dummy.cpp AccountWindow.h Authority.h ChessboardConfigDialog.h CloudPointMapper.h CloudPointToolController.h ComDevice.h DeltaVisualizer.h DrawingExporter.h DrawingWidget.h FilterWindow.h GcodeHighlighter.h GcodeReference.h GcodeScript.h ImageUnity.h ImageViewer.h Layer.h MainWindow.h Object.h ImageProcessing.h ObjectInfo.h ObjectInfoModel.h ObjectVariableTable.h Parameter.h PointTool.h PointCalculator.h PointToolController.h InputValidator.h ProjectManager.h RobotWindow.h ScurveInterpolator.h SettingsManager.h SettingsPanel.h SmartDialog.h SocketConnectionManager.h SoftwareManager.h TabDashboard.h TaskNode.h TextLayer.h TrackingManager.h VariableManager.h VersionManager.h codeeditor.h device\DeviceManager.h device\camera.h device\conveyor.h device\device.h device\encoder.h device\robot.h device\slider.h geisttextedit.h global.h highlighter.h GcodeReference.h sdk\DeltaXPlugin.h testcode.h testwindow.h ModernDialog.h CameraSelectionDialog.h ConveyorVisualization.h ZPlaneVisualization.h  main.cpp AccountWindow.cpp Authority.cpp ChessboardConfigDialog.cpp CloudPointMapper.cpp CloudPointToolController.cpp ComDevice.cpp DrawingExporter.cpp DrawingWidget.cpp FilterWindow.cpp GcodeHighlighter.cpp GcodeReference.cpp GcodeScript.cpp ImageProcessing.cpp ImageViewer.cpp Layer.cpp MainWindow.cpp Object.cpp ObjectInfo.cpp ObjectVariableTable.cpp Parameter.cpp PointTool.cpp PointCalculator.cpp PointToolController.cpp InputValidator.cpp ProjectManager.cpp RobotWindow.cpp SettingsManager.cpp SettingsPanel.cpp SmartDialog.cpp SocketConnectionManager.cpp SoftwareManager.cpp TabDashboard.cpp TaskNode.cpp TestCode.cpp TextLayer.cpp TrackingManager.cpp VariableManager.cpp VersionManager.cpp codeeditor.cpp DeltaVisualizer.cpp UnityTool.cpp device\DeviceManager.cpp device\camera.cpp device\conveyor.cpp device\device.cpp device\encoder.cpp device\robot.cpp device\slider.cpp geisttextedit.cpp global.cpp highlighter.cpp testwindow.cpp ModernDialog.cpp CameraSelectionDialog.cpp ConveyorVisualization.cpp ZPlaneVisualization.cpp AccountWindow.ui FilterWindow.ui MainWindow.ui RobotWindow.ui GcodeReference.ui testwindow.ui    
+	$(ZIP) DeltaRobotSoftware.zip $(SOURCES) $(DIST) DeltaRobotSoftware.pro C:\Qt\5.15.2\msvc2019_64\mkspecs\features\spec_pre.prf C:\Qt\5.15.2\msvc2019_64\mkspecs\common\angle.conf C:\Qt\5.15.2\msvc2019_64\mkspecs\common\windows-desktop.conf C:\Qt\5.15.2\msvc2019_64\mkspecs\features\win32\windows_vulkan_sdk.prf C:\Qt\5.15.2\msvc2019_64\mkspecs\common\windows-vulkan.conf C:\Qt\5.15.2\msvc2019_64\mkspecs\common\msvc-desktop.conf C:\Qt\5.15.2\msvc2019_64\mkspecs\qconfig.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_3danimation.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_3danimation_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_3dcore.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_3dcore_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_3dextras.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_3dextras_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_3dinput.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_3dinput_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_3dlogic.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_3dlogic_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_3dquick.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_3dquick_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_3dquickanimation.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_3dquickanimation_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_3dquickextras.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_3dquickextras_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_3dquickinput.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_3dquickinput_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_3dquickrender.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_3dquickrender_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_3dquickscene2d.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_3dquickscene2d_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_3drender.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_3drender_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_accessibility_support_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_axbase.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_axbase_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_axcontainer.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_axcontainer_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_axserver.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_axserver_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_bluetooth.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_bluetooth_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_bootstrap_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_concurrent.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_concurrent_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_core.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_core_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_dbus.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_dbus_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_designer.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_designer_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_designercomponents_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_devicediscovery_support_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_edid_support_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_egl_support_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_eventdispatcher_support_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_fb_support_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_fontdatabase_support_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_gamepad.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_gamepad_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_gui.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_gui_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_help.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_help_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_location.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_location_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_multimedia.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_multimedia_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_multimediawidgets.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_multimediawidgets_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_network.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_network_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_nfc.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_nfc_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_opengl.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_opengl_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_openglextensions.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_openglextensions_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_packetprotocol_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_platformcompositor_support_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_positioning.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_positioning_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_positioningquick.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_positioningquick_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_printsupport.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_printsupport_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_qml.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_qml_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_qmldebug_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_qmldevtools_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_qmlmodels.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_qmlmodels_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_qmltest.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_qmltest_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_qmlworkerscript.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_qmlworkerscript_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_qtmultimediaquicktools_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_quick.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_quick_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_quickcontrols2.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_quickcontrols2_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_quickparticles_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_quickshapes_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_quicktemplates2.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_quicktemplates2_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_quickwidgets.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_quickwidgets_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_remoteobjects.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_remoteobjects_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_repparser.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_repparser_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_scxml.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_scxml_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_sensors.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_sensors_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_serialbus.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_serialbus_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_serialport.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_serialport_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_sql.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_sql_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_svg.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_svg_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_testlib.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_testlib_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_texttospeech.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_texttospeech_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_theme_support_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_uiplugin.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_uitools.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_uitools_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_vulkan_support_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_webchannel.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_webchannel_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_websockets.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_websockets_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_webview.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_webview_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_widgets.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_widgets_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_windowsuiautomation_support_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_winextras.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_winextras_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_xml.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_xml_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_xmlpatterns.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_xmlpatterns_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\modules\qt_lib_zlib_private.pri C:\Qt\5.15.2\msvc2019_64\mkspecs\features\qt_functions.prf C:\Qt\5.15.2\msvc2019_64\mkspecs\features\qt_config.prf C:\Qt\5.15.2\msvc2019_64\mkspecs\win32-msvc\qmake.conf C:\Qt\5.15.2\msvc2019_64\mkspecs\features\spec_post.prf .qmake.stash C:\Qt\5.15.2\msvc2019_64\mkspecs\features\exclusive_builds.prf C:\Qt\5.15.2\msvc2019_64\mkspecs\common\msvc-version.conf C:\Qt\5.15.2\msvc2019_64\mkspecs\features\toolchain.prf C:\Qt\5.15.2\msvc2019_64\mkspecs\features\default_pre.prf C:\Qt\5.15.2\msvc2019_64\mkspecs\features\win32\default_pre.prf C:\Qt\5.15.2\msvc2019_64\mkspecs\features\resolve_config.prf C:\Qt\5.15.2\msvc2019_64\mkspecs\features\exclusive_builds_post.prf C:\Qt\5.15.2\msvc2019_64\mkspecs\features\default_post.prf C:\Qt\5.15.2\msvc2019_64\mkspecs\features\build_pass.prf C:\Qt\5.15.2\msvc2019_64\mkspecs\features\qml_debug.prf C:\Qt\5.15.2\msvc2019_64\mkspecs\features\precompile_header.prf C:\Qt\5.15.2\msvc2019_64\mkspecs\features\warn_on.prf C:\Qt\5.15.2\msvc2019_64\mkspecs\features\qt.prf C:\Qt\5.15.2\msvc2019_64\mkspecs\features\resources_functions.prf C:\Qt\5.15.2\msvc2019_64\mkspecs\features\resources.prf C:\Qt\5.15.2\msvc2019_64\mkspecs\features\moc.prf C:\Qt\5.15.2\msvc2019_64\mkspecs\features\win32\opengl.prf C:\Qt\5.15.2\msvc2019_64\mkspecs\features\uic.prf C:\Qt\5.15.2\msvc2019_64\mkspecs\features\qmake_use.prf C:\Qt\5.15.2\msvc2019_64\mkspecs\features\file_copies.prf C:\Qt\5.15.2\msvc2019_64\mkspecs\features\win32\windows.prf C:\Qt\5.15.2\msvc2019_64\mkspecs\features\testcase_targets.prf C:\Qt\5.15.2\msvc2019_64\mkspecs\features\exceptions.prf C:\Qt\5.15.2\msvc2019_64\mkspecs\features\yacc.prf C:\Qt\5.15.2\msvc2019_64\mkspecs\features\lex.prf DeltaRobotSoftware.pro resource.qrc C:\Qt\5.15.2\msvc2019_64\lib\Qt5OpenGL.prl C:\Qt\5.15.2\msvc2019_64\lib\Qt5QuickWidgets.prl C:\Qt\5.15.2\msvc2019_64\lib\Qt5PrintSupport.prl C:\Qt\5.15.2\msvc2019_64\lib\Qt5Svg.prl C:\Qt\5.15.2\msvc2019_64\lib\Qt5Widgets.prl C:\Qt\5.15.2\msvc2019_64\lib\Qt5Quick.prl C:\Qt\5.15.2\msvc2019_64\lib\Qt5Multimedia.prl C:\Qt\5.15.2\msvc2019_64\lib\Qt5Gui.prl C:\Qt\5.15.2\msvc2019_64\lib\Qt5SerialPort.prl C:\Qt\5.15.2\msvc2019_64\lib\Qt5QmlModels.prl C:\Qt\5.15.2\msvc2019_64\lib\Qt5Qml.prl C:\Qt\5.15.2\msvc2019_64\lib\Qt5Network.prl C:\Qt\5.15.2\msvc2019_64\lib\Qt5Concurrent.prl C:\Qt\5.15.2\msvc2019_64\lib\Qt5Core.prl C:\Qt\5.15.2\msvc2019_64\lib\qtmain.prl   resource.qrc C:\Qt\5.15.2\msvc2019_64\mkspecs\features\data\dummy.cpp AccountWindow.h Authority.h ChessboardConfigDialog.h CloudPointMapper.h CloudPointToolController.h ComDevice.h DeltaVisualizer.h DrawingExporter.h DrawingWidget.h FilterWindow.h GcodeHighlighter.h GcodeReference.h GcodeScript.h ImageUnity.h ImageViewer.h Layer.h MainWindow.h MovementTimeCalculator.h Object.h ImageProcessing.h ObjectInfo.h ObjectInfoModel.h ObjectVariableTable.h Parameter.h PointTool.h PointCalculator.h PointToolController.h InputValidator.h ProjectManager.h RobotWindow.h ScurveInterpolator.h SettingsManager.h SettingsPanel.h SmartDialog.h SocketConnectionManager.h SoftwareManager.h TabDashboard.h TaskNode.h TextLayer.h TrackingManager.h VariableManager.h VersionManager.h codeeditor.h device\DeviceManager.h device\camera.h device\conveyor.h device\device.h device\encoder.h device\robot.h device\slider.h geisttextedit.h global.h highlighter.h GcodeReference.h sdk\DeltaXPlugin.h testcode.h testwindow.h ModernDialog.h CameraSelectionDialog.h ConveyorVisualization.h ZPlaneVisualization.h  main.cpp AccountWindow.cpp Authority.cpp ChessboardConfigDialog.cpp CloudPointMapper.cpp CloudPointToolController.cpp ComDevice.cpp DrawingExporter.cpp DrawingWidget.cpp FilterWindow.cpp GcodeHighlighter.cpp GcodeReference.cpp GcodeScript.cpp ImageProcessing.cpp ImageViewer.cpp Layer.cpp MainWindow.cpp MovementTimeCalculator.cpp Object.cpp ObjectInfo.cpp ObjectVariableTable.cpp Parameter.cpp PointTool.cpp PointCalculator.cpp PointToolController.cpp InputValidator.cpp ProjectManager.cpp RobotWindow.cpp SettingsManager.cpp SettingsPanel.cpp SmartDialog.cpp SocketConnectionManager.cpp SoftwareManager.cpp TabDashboard.cpp TaskNode.cpp TestCode.cpp TextLayer.cpp TrackingManager.cpp VariableManager.cpp VersionManager.cpp codeeditor.cpp DeltaVisualizer.cpp UnityTool.cpp device\DeviceManager.cpp device\camera.cpp device\conveyor.cpp device\device.cpp device\encoder.cpp device\robot.cpp device\slider.cpp geisttextedit.cpp global.cpp highlighter.cpp testwindow.cpp ModernDialog.cpp CameraSelectionDialog.cpp ConveyorVisualization.cpp ZPlaneVisualization.cpp AccountWindow.ui FilterWindow.ui MainWindow.ui RobotWindow.ui GcodeReference.ui testwindow.ui    
 
 clean: compiler_clean 
-	-$(DEL_FILE) release\main.obj release\AccountWindow.obj release\Authority.obj release\ChessboardConfigDialog.obj release\CloudPointMapper.obj release\CloudPointToolController.obj release\ComDevice.obj release\DrawingExporter.obj release\DrawingWidget.obj release\FilterWindow.obj release\GcodeHighlighter.obj release\GcodeReference.obj release\GcodeScript.obj release\ImageProcessing.obj release\ImageViewer.obj release\Layer.obj release\MainWindow.obj release\Object.obj release\ObjectInfo.obj release\ObjectVariableTable.obj release\Parameter.obj release\PointTool.obj release\PointCalculator.obj release\PointToolController.obj release\InputValidator.obj release\ProjectManager.obj release\RobotWindow.obj release\SettingsManager.obj release\SettingsPanel.obj release\SmartDialog.obj release\SocketConnectionManager.obj release\SoftwareManager.obj release\TabDashboard.obj release\TaskNode.obj release\TestCode.obj release\TextLayer.obj release\TrackingManager.obj release\VariableManager.obj release\VersionManager.obj release\codeeditor.obj release\DeltaVisualizer.obj release\UnityTool.obj release\DeviceManager.obj release\camera.obj release\conveyor.obj release\device.obj release\encoder.obj release\robot.obj release\slider.obj release\geisttextedit.obj release\global.obj release\highlighter.obj release\testwindow.obj release\ModernDialog.obj release\CameraSelectionDialog.obj release\ConveyorVisualization.obj release\ZPlaneVisualization.obj release\qrc_resource.obj release\moc_AccountWindow.obj release\moc_Authority.obj release\moc_ChessboardConfigDialog.obj release\moc_CloudPointMapper.obj release\moc_CloudPointToolController.obj release\moc_ComDevice.obj release\moc_DeltaVisualizer.obj release\moc_DrawingExporter.obj release\moc_DrawingWidget.obj release\moc_FilterWindow.obj release\moc_GcodeReference.obj release\moc_GcodeScript.obj release\moc_ImageViewer.obj release\moc_Layer.obj release\moc_MainWindow.obj release\moc_ImageProcessing.obj release\moc_ObjectInfoModel.obj release\moc_ObjectVariableTable.obj
-	-$(DEL_FILE) release\moc_PointTool.obj release\moc_PointToolController.obj release\moc_ProjectManager.obj release\moc_RobotWindow.obj release\moc_SettingsManager.obj release\moc_SettingsPanel.obj release\moc_SmartDialog.obj release\moc_SocketConnectionManager.obj release\moc_TabDashboard.obj release\moc_TaskNode.obj release\moc_TextLayer.obj release\moc_TrackingManager.obj release\moc_VariableManager.obj release\moc_VersionManager.obj release\moc_codeeditor.obj release\moc_DeviceManager.obj release\moc_camera.obj release\moc_conveyor.obj release\moc_device.obj release\moc_encoder.obj release\moc_robot.obj release\moc_slider.obj release\moc_geisttextedit.obj release\moc_global.obj release\moc_highlighter.obj release\moc_DeltaXPlugin.obj release\moc_testwindow.obj release\moc_ModernDialog.obj release\moc_CameraSelectionDialog.obj release\moc_ConveyorVisualization.obj release\moc_ZPlaneVisualization.obj
+	-$(DEL_FILE) release\main.obj release\AccountWindow.obj release\Authority.obj release\ChessboardConfigDialog.obj release\CloudPointMapper.obj release\CloudPointToolController.obj release\ComDevice.obj release\DrawingExporter.obj release\DrawingWidget.obj release\FilterWindow.obj release\GcodeHighlighter.obj release\GcodeReference.obj release\GcodeScript.obj release\ImageProcessing.obj release\ImageViewer.obj release\Layer.obj release\MainWindow.obj release\MovementTimeCalculator.obj release\Object.obj release\ObjectInfo.obj release\ObjectVariableTable.obj release\Parameter.obj release\PointTool.obj release\PointCalculator.obj release\PointToolController.obj release\InputValidator.obj release\ProjectManager.obj release\RobotWindow.obj release\SettingsManager.obj release\SettingsPanel.obj release\SmartDialog.obj release\SocketConnectionManager.obj release\SoftwareManager.obj release\TabDashboard.obj release\TaskNode.obj release\TestCode.obj release\TextLayer.obj release\TrackingManager.obj release\VariableManager.obj release\VersionManager.obj release\codeeditor.obj release\DeltaVisualizer.obj release\UnityTool.obj release\DeviceManager.obj release\camera.obj release\conveyor.obj release\device.obj release\encoder.obj release\robot.obj release\slider.obj release\geisttextedit.obj release\global.obj release\highlighter.obj release\testwindow.obj release\ModernDialog.obj release\CameraSelectionDialog.obj release\ConveyorVisualization.obj release\ZPlaneVisualization.obj release\qrc_resource.obj release\moc_AccountWindow.obj release\moc_Authority.obj release\moc_ChessboardConfigDialog.obj release\moc_CloudPointMapper.obj release\moc_CloudPointToolController.obj release\moc_ComDevice.obj release\moc_DeltaVisualizer.obj release\moc_DrawingExporter.obj release\moc_DrawingWidget.obj release\moc_FilterWindow.obj release\moc_GcodeReference.obj release\moc_GcodeScript.obj release\moc_ImageViewer.obj release\moc_Layer.obj release\moc_MainWindow.obj release\moc_MovementTimeCalculator.obj release\moc_ImageProcessing.obj
+	-$(DEL_FILE) release\moc_ObjectInfoModel.obj release\moc_ObjectVariableTable.obj release\moc_PointTool.obj release\moc_PointToolController.obj release\moc_ProjectManager.obj release\moc_RobotWindow.obj release\moc_SettingsManager.obj release\moc_SettingsPanel.obj release\moc_SmartDialog.obj release\moc_SocketConnectionManager.obj release\moc_TabDashboard.obj release\moc_TaskNode.obj release\moc_TextLayer.obj release\moc_TrackingManager.obj release\moc_VariableManager.obj release\moc_VersionManager.obj release\moc_codeeditor.obj release\moc_DeviceManager.obj release\moc_camera.obj release\moc_conveyor.obj release\moc_device.obj release\moc_encoder.obj release\moc_robot.obj release\moc_slider.obj release\moc_geisttextedit.obj release\moc_global.obj release\moc_highlighter.obj release\moc_DeltaXPlugin.obj release\moc_testwindow.obj release\moc_ModernDialog.obj release\moc_CameraSelectionDialog.obj release\moc_ConveyorVisualization.obj release\moc_ZPlaneVisualization.obj
 	-$(DEL_FILE) release\DeltaRobotSoftware_resource.res
 
 distclean: clean 
@@ -656,9 +663,9 @@ compiler_moc_predefs_clean:
 release\moc_predefs.h: C:\Qt\5.15.2\msvc2019_64\mkspecs\features\data\dummy.cpp
 	cl -BxC:\Qt\5.15.2\msvc2019_64\bin\qmake.exe -nologo -Zc:wchar_t -FS -Zc:rvalueCast -Zc:inline -Zc:strictStrings -Zc:throwingNew -O2 -MD -W3 -w34100 -w34189 -w44996 -w44456 -w44457 -w44458 -wd4577 -wd4467 -E C:\Qt\5.15.2\msvc2019_64\mkspecs\features\data\dummy.cpp 2>NUL >release\moc_predefs.h
 
-compiler_moc_header_make_all: release\moc_AccountWindow.cpp release\moc_Authority.cpp release\moc_ChessboardConfigDialog.cpp release\moc_CloudPointMapper.cpp release\moc_CloudPointToolController.cpp release\moc_ComDevice.cpp release\moc_DeltaVisualizer.cpp release\moc_DrawingExporter.cpp release\moc_DrawingWidget.cpp release\moc_FilterWindow.cpp release\moc_GcodeReference.cpp release\moc_GcodeScript.cpp release\moc_ImageViewer.cpp release\moc_Layer.cpp release\moc_MainWindow.cpp release\moc_ImageProcessing.cpp release\moc_ObjectInfoModel.cpp release\moc_ObjectVariableTable.cpp release\moc_PointTool.cpp release\moc_PointToolController.cpp release\moc_ProjectManager.cpp release\moc_RobotWindow.cpp release\moc_SettingsManager.cpp release\moc_SettingsPanel.cpp release\moc_SmartDialog.cpp release\moc_SocketConnectionManager.cpp release\moc_TabDashboard.cpp release\moc_TaskNode.cpp release\moc_TextLayer.cpp release\moc_TrackingManager.cpp release\moc_VariableManager.cpp release\moc_VersionManager.cpp release\moc_codeeditor.cpp release\moc_DeviceManager.cpp release\moc_camera.cpp release\moc_conveyor.cpp release\moc_device.cpp release\moc_encoder.cpp release\moc_robot.cpp release\moc_slider.cpp release\moc_geisttextedit.cpp release\moc_global.cpp release\moc_highlighter.cpp release\moc_GcodeReference.cpp release\moc_DeltaXPlugin.cpp release\moc_testwindow.cpp release\moc_ModernDialog.cpp release\moc_CameraSelectionDialog.cpp release\moc_ConveyorVisualization.cpp release\moc_ZPlaneVisualization.cpp
+compiler_moc_header_make_all: release\moc_AccountWindow.cpp release\moc_Authority.cpp release\moc_ChessboardConfigDialog.cpp release\moc_CloudPointMapper.cpp release\moc_CloudPointToolController.cpp release\moc_ComDevice.cpp release\moc_DeltaVisualizer.cpp release\moc_DrawingExporter.cpp release\moc_DrawingWidget.cpp release\moc_FilterWindow.cpp release\moc_GcodeReference.cpp release\moc_GcodeScript.cpp release\moc_ImageViewer.cpp release\moc_Layer.cpp release\moc_MainWindow.cpp release\moc_MovementTimeCalculator.cpp release\moc_ImageProcessing.cpp release\moc_ObjectInfoModel.cpp release\moc_ObjectVariableTable.cpp release\moc_PointTool.cpp release\moc_PointToolController.cpp release\moc_ProjectManager.cpp release\moc_RobotWindow.cpp release\moc_SettingsManager.cpp release\moc_SettingsPanel.cpp release\moc_SmartDialog.cpp release\moc_SocketConnectionManager.cpp release\moc_TabDashboard.cpp release\moc_TaskNode.cpp release\moc_TextLayer.cpp release\moc_TrackingManager.cpp release\moc_VariableManager.cpp release\moc_VersionManager.cpp release\moc_codeeditor.cpp release\moc_DeviceManager.cpp release\moc_camera.cpp release\moc_conveyor.cpp release\moc_device.cpp release\moc_encoder.cpp release\moc_robot.cpp release\moc_slider.cpp release\moc_geisttextedit.cpp release\moc_global.cpp release\moc_highlighter.cpp release\moc_GcodeReference.cpp release\moc_DeltaXPlugin.cpp release\moc_testwindow.cpp release\moc_ModernDialog.cpp release\moc_CameraSelectionDialog.cpp release\moc_ConveyorVisualization.cpp release\moc_ZPlaneVisualization.cpp
 compiler_moc_header_clean:
-	-$(DEL_FILE) release\moc_AccountWindow.cpp release\moc_Authority.cpp release\moc_ChessboardConfigDialog.cpp release\moc_CloudPointMapper.cpp release\moc_CloudPointToolController.cpp release\moc_ComDevice.cpp release\moc_DeltaVisualizer.cpp release\moc_DrawingExporter.cpp release\moc_DrawingWidget.cpp release\moc_FilterWindow.cpp release\moc_GcodeReference.cpp release\moc_GcodeScript.cpp release\moc_ImageViewer.cpp release\moc_Layer.cpp release\moc_MainWindow.cpp release\moc_ImageProcessing.cpp release\moc_ObjectInfoModel.cpp release\moc_ObjectVariableTable.cpp release\moc_PointTool.cpp release\moc_PointToolController.cpp release\moc_ProjectManager.cpp release\moc_RobotWindow.cpp release\moc_SettingsManager.cpp release\moc_SettingsPanel.cpp release\moc_SmartDialog.cpp release\moc_SocketConnectionManager.cpp release\moc_TabDashboard.cpp release\moc_TaskNode.cpp release\moc_TextLayer.cpp release\moc_TrackingManager.cpp release\moc_VariableManager.cpp release\moc_VersionManager.cpp release\moc_codeeditor.cpp release\moc_DeviceManager.cpp release\moc_camera.cpp release\moc_conveyor.cpp release\moc_device.cpp release\moc_encoder.cpp release\moc_robot.cpp release\moc_slider.cpp release\moc_geisttextedit.cpp release\moc_global.cpp release\moc_highlighter.cpp release\moc_GcodeReference.cpp release\moc_DeltaXPlugin.cpp release\moc_testwindow.cpp release\moc_ModernDialog.cpp release\moc_CameraSelectionDialog.cpp release\moc_ConveyorVisualization.cpp release\moc_ZPlaneVisualization.cpp
+	-$(DEL_FILE) release\moc_AccountWindow.cpp release\moc_Authority.cpp release\moc_ChessboardConfigDialog.cpp release\moc_CloudPointMapper.cpp release\moc_CloudPointToolController.cpp release\moc_ComDevice.cpp release\moc_DeltaVisualizer.cpp release\moc_DrawingExporter.cpp release\moc_DrawingWidget.cpp release\moc_FilterWindow.cpp release\moc_GcodeReference.cpp release\moc_GcodeScript.cpp release\moc_ImageViewer.cpp release\moc_Layer.cpp release\moc_MainWindow.cpp release\moc_MovementTimeCalculator.cpp release\moc_ImageProcessing.cpp release\moc_ObjectInfoModel.cpp release\moc_ObjectVariableTable.cpp release\moc_PointTool.cpp release\moc_PointToolController.cpp release\moc_ProjectManager.cpp release\moc_RobotWindow.cpp release\moc_SettingsManager.cpp release\moc_SettingsPanel.cpp release\moc_SmartDialog.cpp release\moc_SocketConnectionManager.cpp release\moc_TabDashboard.cpp release\moc_TaskNode.cpp release\moc_TextLayer.cpp release\moc_TrackingManager.cpp release\moc_VariableManager.cpp release\moc_VersionManager.cpp release\moc_codeeditor.cpp release\moc_DeviceManager.cpp release\moc_camera.cpp release\moc_conveyor.cpp release\moc_device.cpp release\moc_encoder.cpp release\moc_robot.cpp release\moc_slider.cpp release\moc_geisttextedit.cpp release\moc_global.cpp release\moc_highlighter.cpp release\moc_GcodeReference.cpp release\moc_DeltaXPlugin.cpp release\moc_testwindow.cpp release\moc_ModernDialog.cpp release\moc_CameraSelectionDialog.cpp release\moc_ConveyorVisualization.cpp release\moc_ZPlaneVisualization.cpp
 release\moc_AccountWindow.cpp: AccountWindow.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QMainWindow \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\qmainwindow.h \
@@ -1484,6 +1491,7 @@ release\moc_Authority.cpp: Authority.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QJsonObject \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QJsonArray \
 		ScurveInterpolator.h \
+		MovementTimeCalculator.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QtMath \
 		device\slider.h \
 		device\conveyor.h \
@@ -1533,6 +1541,7 @@ release\moc_Authority.cpp: Authority.h \
 		Parameter.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QFileInfo \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QStack \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QPointer \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QGraphicsView \
 		release\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2019_64\bin\moc.exe
@@ -3499,6 +3508,8 @@ release\moc_GcodeScript.cpp: GcodeScript.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qregularexpression.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QStack \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qstack.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QPointer \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qpointer.h \
 		release\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2019_64\bin\moc.exe
 	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include D:/working/source/Delta-X-Software/release/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -ID:/working/source/Delta-X-Software -ID:/working/source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" GcodeScript.h -o release\moc_GcodeScript.cpp
@@ -4919,6 +4930,7 @@ release\moc_MainWindow.cpp: MainWindow.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QJsonObject \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QJsonArray \
 		ScurveInterpolator.h \
+		MovementTimeCalculator.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QtMath \
 		device\slider.h \
 		device\conveyor.h \
@@ -4967,6 +4979,7 @@ release\moc_MainWindow.cpp: MainWindow.h \
 		Parameter.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QFileInfo \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QStack \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QPointer \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QGraphicsView \
 		VersionManager.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtNetwork\QSslSocket \
@@ -4974,6 +4987,65 @@ release\moc_MainWindow.cpp: MainWindow.h \
 		release\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2019_64\bin\moc.exe
 	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include D:/working/source/Delta-X-Software/release/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -ID:/working/source/Delta-X-Software -ID:/working/source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" MainWindow.h -o release\moc_MainWindow.cpp
+
+release\moc_MovementTimeCalculator.cpp: MovementTimeCalculator.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QObject \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qobject.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qobjectdefs.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qnamespace.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qglobal.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qconfig-bootstrapped.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qconfig.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qtcore-config.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qsystemdetection.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qprocessordetection.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qcompilerdetection.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qtypeinfo.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qsysinfo.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qlogging.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qflags.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qatomic.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qbasicatomic.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qatomic_bootstrap.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qgenericatomic.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qatomic_cxx11.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qatomic_msvc.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qglobalstatic.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qmutex.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qnumeric.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qversiontagging.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qobjectdefs_impl.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qstring.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qchar.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qbytearray.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qrefcount.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qarraydata.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qstringliteral.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qstringalgorithms.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qstringview.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qstringbuilder.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qlist.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qalgorithms.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qiterator.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qhashfunctions.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qpair.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qvector.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qcontainertools_impl.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qpoint.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qbytearraylist.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qstringlist.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qregexp.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qstringmatcher.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qcoreevent.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qscopedpointer.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qmetatype.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qvarlengtharray.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qcontainerfwd.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qobject_impl.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QtGlobal \
+		release\moc_predefs.h \
+		C:\Qt\5.15.2\msvc2019_64\bin\moc.exe
+	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include D:/working/source/Delta-X-Software/release/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -ID:/working/source/Delta-X-Software -ID:/working/source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" MovementTimeCalculator.h -o release\moc_MovementTimeCalculator.cpp
 
 release\moc_ImageProcessing.cpp: ImageProcessing.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QObject \
@@ -6789,6 +6861,7 @@ release\moc_ProjectManager.cpp: ProjectManager.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QJsonObject \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QJsonArray \
 		ScurveInterpolator.h \
+		MovementTimeCalculator.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QtMath \
 		device\slider.h \
 		device\conveyor.h \
@@ -6838,6 +6911,7 @@ release\moc_ProjectManager.cpp: ProjectManager.h \
 		Parameter.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QFileInfo \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QStack \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QPointer \
 		release\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2019_64\bin\moc.exe
 	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include D:/working/source/Delta-X-Software/release/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -ID:/working/source/Delta-X-Software -ID:/working/source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" ProjectManager.h -o release\moc_ProjectManager.cpp
@@ -7551,6 +7625,7 @@ release\moc_RobotWindow.cpp: RobotWindow.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QJsonObject \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QJsonArray \
 		ScurveInterpolator.h \
+		MovementTimeCalculator.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QtMath \
 		device\slider.h \
 		device\conveyor.h \
@@ -7600,6 +7675,7 @@ release\moc_RobotWindow.cpp: RobotWindow.h \
 		Parameter.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QFileInfo \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QStack \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QPointer \
 		release\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2019_64\bin\moc.exe
 	C:\Qt\5.15.2\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include D:/working/source/Delta-X-Software/release/moc_predefs.h -IC:/Qt/5.15.2/msvc2019_64/mkspecs/win32-msvc -ID:/working/source/Delta-X-Software -ID:/working/source/Delta-X-Software/3rd-party/opencv/build/include -IC:/Qt/5.15.2/msvc2019_64/include -IC:/Qt/5.15.2/msvc2019_64/include/QtOpenGL -IC:/Qt/5.15.2/msvc2019_64/include/QtQuickWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtPrintSupport -IC:/Qt/5.15.2/msvc2019_64/include/QtSvg -IC:/Qt/5.15.2/msvc2019_64/include/QtWidgets -IC:/Qt/5.15.2/msvc2019_64/include/QtQuick -IC:/Qt/5.15.2/msvc2019_64/include/QtMultimedia -IC:/Qt/5.15.2/msvc2019_64/include/QtGui -IC:/Qt/5.15.2/msvc2019_64/include/QtANGLE -IC:/Qt/5.15.2/msvc2019_64/include/QtSerialPort -IC:/Qt/5.15.2/msvc2019_64/include/QtQmlModels -IC:/Qt/5.15.2/msvc2019_64/include/QtQml -IC:/Qt/5.15.2/msvc2019_64/include/QtNetwork -IC:/Qt/5.15.2/msvc2019_64/include/QtConcurrent -IC:/Qt/5.15.2/msvc2019_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" RobotWindow.h -o release\moc_RobotWindow.cpp
@@ -8963,6 +9039,7 @@ release\moc_TabDashboard.cpp: TabDashboard.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QJsonObject \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QJsonArray \
 		ScurveInterpolator.h \
+		MovementTimeCalculator.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QtMath \
 		device\slider.h \
 		device\conveyor.h \
@@ -9011,6 +9088,7 @@ release\moc_TabDashboard.cpp: TabDashboard.h \
 		Parameter.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QFileInfo \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QStack \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QPointer \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QGraphicsView \
 		release\moc_predefs.h \
 		C:\Qt\5.15.2\msvc2019_64\bin\moc.exe
@@ -10066,6 +10144,8 @@ release\moc_DeviceManager.cpp: device\DeviceManager.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qdeadlinetimer.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QString \
 		ScurveInterpolator.h \
+		MovementTimeCalculator.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QtGlobal \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QtMath \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qmath.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QVector3D \
@@ -10806,6 +10886,8 @@ release\moc_robot.cpp: device\robot.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qdeadlinetimer.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QString \
 		ScurveInterpolator.h \
+		MovementTimeCalculator.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QtGlobal \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QtMath \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qmath.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QVector3D \
@@ -14049,6 +14131,7 @@ release\main.obj: main.cpp RobotWindow.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QJsonObject \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QJsonArray \
 		ScurveInterpolator.h \
+		MovementTimeCalculator.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QtMath \
 		device\slider.h \
 		device\conveyor.h \
@@ -14098,6 +14181,7 @@ release\main.obj: main.cpp RobotWindow.h \
 		Parameter.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QFileInfo \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QStack \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QPointer \
 		MainWindow.h \
 		TabDashboard.h \
 		Authority.h \
@@ -14974,6 +15058,7 @@ release\Authority.obj: Authority.cpp Authority.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QJsonObject \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QJsonArray \
 		ScurveInterpolator.h \
+		MovementTimeCalculator.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QtMath \
 		device\slider.h \
 		device\conveyor.h \
@@ -15023,6 +15108,7 @@ release\Authority.obj: Authority.cpp Authority.h \
 		Parameter.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QFileInfo \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QStack \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QPointer \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QGraphicsView
 
 release\ChessboardConfigDialog.obj: ChessboardConfigDialog.cpp ChessboardConfigDialog.h \
@@ -16150,6 +16236,7 @@ release\CloudPointToolController.obj: CloudPointToolController.cpp CloudPointToo
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QEventLoop \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QTime \
 		ScurveInterpolator.h \
+		MovementTimeCalculator.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QtMath \
 		device\slider.h \
 		device\conveyor.h \
@@ -16187,6 +16274,7 @@ release\CloudPointToolController.obj: CloudPointToolController.cpp CloudPointToo
 		Parameter.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QFileInfo \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QStack \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QPointer \
 		ui_RobotWindow.h \
 		ImageViewer.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QGraphicsView \
@@ -17519,6 +17607,8 @@ release\GcodeScript.obj: GcodeScript.cpp GcodeScript.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qregularexpression.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QStack \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qstack.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QPointer \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qpointer.h \
 		CloudPointMapper.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QPointF \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QVector \
@@ -17712,7 +17802,6 @@ release\GcodeScript.obj: GcodeScript.cpp GcodeScript.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qimagereader.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\qimageiohandler.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qplugin.h \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qpointer.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qfactoryinterface.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtNetwork\QNetworkAccessManager \
 		C:\Qt\5.15.2\msvc2019_64\include\QtNetwork\qnetworkaccessmanager.h \
@@ -18104,6 +18193,7 @@ release\GcodeScript.obj: GcodeScript.cpp GcodeScript.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QEventLoop \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QTime \
 		ScurveInterpolator.h \
+		MovementTimeCalculator.h \
 		device\slider.h \
 		device\conveyor.h \
 		device\encoder.h \
@@ -19840,6 +19930,7 @@ release\MainWindow.obj: MainWindow.cpp MainWindow.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QJsonObject \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QJsonArray \
 		ScurveInterpolator.h \
+		MovementTimeCalculator.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QtMath \
 		device\slider.h \
 		device\conveyor.h \
@@ -19888,6 +19979,7 @@ release\MainWindow.obj: MainWindow.cpp MainWindow.h \
 		Parameter.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QFileInfo \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QStack \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QPointer \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QGraphicsView \
 		VersionManager.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtNetwork\QSslSocket \
@@ -19907,6 +19999,62 @@ release\MainWindow.obj: MainWindow.cpp MainWindow.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QFontDialog \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QColorDialog \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QSlider
+
+release\MovementTimeCalculator.obj: MovementTimeCalculator.cpp MovementTimeCalculator.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QObject \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qobject.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qobjectdefs.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qnamespace.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qglobal.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qconfig-bootstrapped.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qconfig.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qtcore-config.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qsystemdetection.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qprocessordetection.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qcompilerdetection.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qtypeinfo.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qsysinfo.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qlogging.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qflags.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qatomic.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qbasicatomic.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qatomic_bootstrap.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qgenericatomic.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qatomic_cxx11.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qatomic_msvc.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qglobalstatic.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qmutex.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qnumeric.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qversiontagging.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qobjectdefs_impl.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qstring.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qchar.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qbytearray.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qrefcount.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qarraydata.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qstringliteral.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qstringalgorithms.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qstringview.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qstringbuilder.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qlist.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qalgorithms.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qiterator.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qhashfunctions.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qpair.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qvector.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qcontainertools_impl.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qpoint.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qbytearraylist.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qstringlist.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qregexp.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qstringmatcher.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qcoreevent.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qscopedpointer.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qmetatype.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qvarlengtharray.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qcontainerfwd.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qobject_impl.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QtGlobal
 
 release\Object.obj: Object.cpp 
 
@@ -21231,6 +21379,7 @@ release\PointToolController.obj: PointToolController.cpp PointToolController.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QEventLoop \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QTime \
 		ScurveInterpolator.h \
+		MovementTimeCalculator.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QtMath \
 		device\slider.h \
 		device\conveyor.h \
@@ -21263,6 +21412,7 @@ release\PointToolController.obj: PointToolController.cpp PointToolController.h \
 		Parameter.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QFileInfo \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QStack \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QPointer \
 		ui_RobotWindow.h \
 		ImageViewer.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QGraphicsView \
@@ -22114,6 +22264,7 @@ release\ProjectManager.obj: ProjectManager.cpp ProjectManager.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QJsonObject \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QJsonArray \
 		ScurveInterpolator.h \
+		MovementTimeCalculator.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QtMath \
 		device\slider.h \
 		device\conveyor.h \
@@ -22163,6 +22314,7 @@ release\ProjectManager.obj: ProjectManager.cpp ProjectManager.h \
 		Parameter.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QFileInfo \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QStack \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QPointer \
 		SoftwareManager.h
 
 release\RobotWindow.obj: RobotWindow.cpp RobotWindow.h \
@@ -22874,6 +23026,7 @@ release\RobotWindow.obj: RobotWindow.cpp RobotWindow.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QJsonObject \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QJsonArray \
 		ScurveInterpolator.h \
+		MovementTimeCalculator.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QtMath \
 		device\slider.h \
 		device\conveyor.h \
@@ -22923,6 +23076,7 @@ release\RobotWindow.obj: RobotWindow.cpp RobotWindow.h \
 		Parameter.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QFileInfo \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QStack \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QPointer \
 		ui_RobotWindow.h \
 		ImageViewer.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QGraphicsView \
@@ -24353,6 +24507,7 @@ release\SoftwareManager.obj: SoftwareManager.cpp SoftwareManager.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QJsonObject \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QJsonArray \
 		ScurveInterpolator.h \
+		MovementTimeCalculator.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QtMath \
 		device\slider.h \
 		device\conveyor.h \
@@ -24402,6 +24557,7 @@ release\SoftwareManager.obj: SoftwareManager.cpp SoftwareManager.h \
 		Parameter.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QFileInfo \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QStack \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QPointer \
 		MainWindow.h \
 		TabDashboard.h \
 		Authority.h \
@@ -25126,6 +25282,7 @@ release\TabDashboard.obj: TabDashboard.cpp TabDashboard.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QJsonObject \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QJsonArray \
 		ScurveInterpolator.h \
+		MovementTimeCalculator.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QtMath \
 		device\slider.h \
 		device\conveyor.h \
@@ -25174,6 +25331,7 @@ release\TabDashboard.obj: TabDashboard.cpp TabDashboard.h \
 		Parameter.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QFileInfo \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QStack \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QPointer \
 		C:\Qt\5.15.2\msvc2019_64\include\QtWidgets\QGraphicsView
 
 release\TaskNode.obj: TaskNode.cpp TaskNode.h \
@@ -27394,6 +27552,7 @@ release\UnityTool.obj: UnityTool.cpp UnityTool.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QJsonObject \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QJsonArray \
 		ScurveInterpolator.h \
+		MovementTimeCalculator.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QtMath \
 		device\slider.h \
 		device\conveyor.h \
@@ -27442,7 +27601,8 @@ release\UnityTool.obj: UnityTool.cpp UnityTool.h \
 		GcodeScript.h \
 		Parameter.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QFileInfo \
-		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QStack
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QStack \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QPointer
 
 release\DeviceManager.obj: device\DeviceManager.cpp device\DeviceManager.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QObject \
@@ -27552,6 +27712,8 @@ release\DeviceManager.obj: device\DeviceManager.cpp device\DeviceManager.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qdeadlinetimer.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QString \
 		ScurveInterpolator.h \
+		MovementTimeCalculator.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QtGlobal \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QtMath \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qmath.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QVector3D \
@@ -28304,6 +28466,8 @@ release\robot.obj: device\robot.cpp device\robot.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qdeadlinetimer.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QString \
 		ScurveInterpolator.h \
+		MovementTimeCalculator.h \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QtGlobal \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QtMath \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\qmath.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QVector3D \
@@ -30383,6 +30547,7 @@ release\ZPlaneVisualization.obj: ZPlaneVisualization.cpp ZPlaneVisualization.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QJsonObject \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QJsonArray \
 		ScurveInterpolator.h \
+		MovementTimeCalculator.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QtMath \
 		device\slider.h \
 		device\conveyor.h \
@@ -30430,6 +30595,7 @@ release\ZPlaneVisualization.obj: ZPlaneVisualization.cpp ZPlaneVisualization.h \
 		Parameter.h \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QFileInfo \
 		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QStack \
+		C:\Qt\5.15.2\msvc2019_64\include\QtCore\QPointer \
 		C:\Qt\5.15.2\msvc2019_64\include\QtGui\QResizeEvent
 
 release\qrc_resource.obj: release\qrc_resource.cpp 
@@ -30463,6 +30629,8 @@ release\moc_ImageViewer.obj: release\moc_ImageViewer.cpp
 release\moc_Layer.obj: release\moc_Layer.cpp 
 
 release\moc_MainWindow.obj: release\moc_MainWindow.cpp 
+
+release\moc_MovementTimeCalculator.obj: release\moc_MovementTimeCalculator.cpp 
 
 release\moc_ImageProcessing.obj: release\moc_ImageProcessing.cpp 
 

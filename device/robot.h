@@ -8,10 +8,13 @@
 #include <QtSerialPort/QSerialPort>
 #include <QtSerialPort/QSerialPortInfo>
 #include <ScurveInterpolator.h>
+#include <MovementTimeCalculator.h>
 #include <QtMath>
 #include <QVector3D>
 #include <VariableManager.h>
 #include <QVector3D>
+
+using namespace Delta::Motion;
 
 class Robot : public Device
 {
@@ -50,6 +53,7 @@ private:
     float path_angle;
     QVector3D sync_vector;
     Scurve_Interpolator scurve_tool;
+    MovementRequest request;
 
     float home_X, home_Y, home_Z, home_W, home_U, home_V;
     float old_X, old_Y, old_Z;

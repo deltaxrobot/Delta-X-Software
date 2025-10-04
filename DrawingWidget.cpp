@@ -204,6 +204,11 @@ void DrawingWidget::SelectZoomOutTool()
 	changeToolIconInArea(ZOOM_OUT_ICON);
 }
 
+void DrawingWidget::EraserAll()
+{
+    ClearShape();
+}
+
 void DrawingWidget::SelectLineTool()
 {
 	tool = LINE;

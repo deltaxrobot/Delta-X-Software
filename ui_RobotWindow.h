@@ -701,6 +701,7 @@ public:
     QToolButton *pbDrawArc;
     QToolButton *pbDrawCircle;
     QToolButton *pbZoomOut;
+    QToolButton *pbEraserAll;
     QFrame *frame_6;
     QVBoxLayout *verticalLayout_48;
     QToolButton *pbExportDrawingGcodes;
@@ -5936,7 +5937,7 @@ public:
         scrollArea_6->setWidgetResizable(true);
         scrollAreaWidgetContents_6 = new QWidget();
         scrollAreaWidgetContents_6->setObjectName(QString::fromUtf8("scrollAreaWidgetContents_6"));
-        scrollAreaWidgetContents_6->setGeometry(QRect(0, -738, 837, 1800));
+        scrollAreaWidgetContents_6->setGeometry(QRect(0, -534, 837, 1800));
         scrollAreaWidgetContents_6->setMinimumSize(QSize(450, 1800));
         scrollAreaWidgetContents_6->setMaximumSize(QSize(16777215, 16777215));
         scrollAreaWidgetContents_6->setStyleSheet(QString::fromUtf8("QWidget[background='container']\n"
@@ -6514,6 +6515,18 @@ public:
         pbZoomOut->setAutoRaise(true);
 
         gridLayout_11->addWidget(pbZoomOut, 1, 2, 1, 1);
+
+        pbEraserAll = new QToolButton(scrollAreaWidgetContents_6);
+        pbEraserAll->setObjectName(QString::fromUtf8("pbEraserAll"));
+        sizePolicy19.setHeightForWidth(pbEraserAll->sizePolicy().hasHeightForWidth());
+        pbEraserAll->setSizePolicy(sizePolicy19);
+        pbEraserAll->setMinimumSize(QSize(0, 0));
+        pbEraserAll->setMaximumSize(QSize(70, 16777215));
+        pbEraserAll->setIcon(icon29);
+        pbEraserAll->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+        pbEraserAll->setAutoRaise(true);
+
+        gridLayout_11->addWidget(pbEraserAll, 1, 3, 1, 1);
 
 
         verticalLayout_37->addLayout(gridLayout_11);
@@ -12011,6 +12024,7 @@ public:
         pbDrawArc->setText(QCoreApplication::translate("RobotWindow", "Arc", nullptr));
         pbDrawCircle->setText(QCoreApplication::translate("RobotWindow", "Circle", nullptr));
         pbZoomOut->setText(QCoreApplication::translate("RobotWindow", "Zoom Out", nullptr));
+        pbEraserAll->setText(QCoreApplication::translate("RobotWindow", "Clear All", nullptr));
         pbExportDrawingGcodes->setText(QCoreApplication::translate("RobotWindow", "Export G-code", nullptr));
         cbDrawMethod->setItemText(0, QCoreApplication::translate("RobotWindow", "Line", nullptr));
         cbDrawMethod->setItemText(1, QCoreApplication::translate("RobotWindow", "Dot", nullptr));

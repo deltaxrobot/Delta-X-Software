@@ -1295,26 +1295,27 @@ void RobotWindow::InitEvents()
 	connect(ui->pbDrawArc, SIGNAL(clicked(bool)), ui->lbDrawingArea, SLOT(SelectArcTool()));
 	connect(ui->pbZoomIn, SIGNAL(clicked(bool)), ui->lbDrawingArea, SLOT(SelectZoomInTool()));
 	connect(ui->pbZoomOut, SIGNAL(clicked(bool)), ui->lbDrawingArea, SLOT(SelectZoomOutTool()));
+    connect(ui->pbEraserAll, SIGNAL(clicked(bool)), ui->lbDrawingArea, SLOT(EraserAll()));
 	connect(ui->pbCursor, SIGNAL(clicked(bool)), ui->lbDrawingArea, SLOT(SelectCursor()));
 
     connect(ui->pbExportDrawingGcodes, SIGNAL(clicked(bool)), DeltaDrawingExporter, SLOT(ExportGcodes()));
     connect(ui->pbGetPlaneAPoint, &QPushButton::clicked, [=]()
     {
         pastePointValues(ui->leADrawingPoint);
-        onGetCurrentPositionP1();
-        onCalculateZPlane();
+        // onGetCurrentPositionP1();
+        // onCalculateZPlane();
     });
     connect(ui->pbGetPlaneBPoint, &QPushButton::clicked, [=]()
     {
         pastePointValues(ui->leBDrawingPoint);
-        onGetCurrentPositionP2();
-        onCalculateZPlane();
+        // onGetCurrentPositionP2();
+        // onCalculateZPlane();
     });
     connect(ui->pbGetPlaneCPoint, &QPushButton::clicked, [=]()
     {
         pastePointValues(ui->leCDrawingPoint);
-        onGetCurrentPositionP3();
-        onCalculateZPlane();
+        // onGetCurrentPositionP3();
+        // onCalculateZPlane();
     });
 
 

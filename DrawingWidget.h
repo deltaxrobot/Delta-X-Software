@@ -83,6 +83,7 @@ public:
 public slots:
 	void SelectZoomInTool();
 	void SelectZoomOutTool();
+    void EraserAll();
 	void SelectLineTool();
 	void SelectRectangleTool();
 	void SelectCircleTool();
