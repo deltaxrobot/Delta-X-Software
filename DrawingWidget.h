@@ -4,6 +4,9 @@
 #include <QLineEdit>
 #include <QPainter>
 #include <QPixmap>
+#include <QDebug>
+#include <QShowEvent>
+#include <QResizeEvent>
 #include <QMouseEvent>
 #include <qmath.h>
 #include <qvector4d.h>
@@ -95,6 +98,8 @@ protected:
 	void mouseMoveEvent(QMouseEvent *event);
 	void mouseReleaseEvent(QMouseEvent *event);
 	void paintEvent(QPaintEvent *event);
+	void showEvent(QShowEvent *event) override;
+	void resizeEvent(QResizeEvent *event) override;
 
 private:
     QPixmap topLayer;
@@ -105,5 +110,6 @@ private:
 	QVector<QVector3D> circles;
 	QVector<QVector4D> arcs;
 	Tool tool = CURSOR;
+	bool gridInitialized = false;
 	void changeToolIconInArea(QString filePath);
 };

@@ -8668,7 +8668,7 @@ QHeaderView::section {
                   <property name="geometry">
                    <rect>
                     <x>0</x>
-                    <y>-534</y>
+                    <y>-249</y>
                     <width>837</width>
                     <height>1800</height>
                    </rect>
@@ -8736,22 +8736,7 @@ QGroupBox::title
                         </size>
                        </property>
                        <property name="styleSheet">
-                        <string notr="true">/*QFrame
-{
-	background-color: rgb(255, 255, 255);
-}
-
-QToolButton
-{
-	border: 1px solid rgb(131, 131, 131);
-	border-radius: 5px;
-}
-
-QToolButton::hover
-{
-	border: 1px solid rgb(32, 140, 255);
-	background-color: rgb(217, 240, 255);
-}*/</string>
+                        <string notr="true">background-color: rgb(38, 38, 41);</string>
                        </property>
                        <property name="frameShape">
                         <enum>QFrame::StyledPanel</enum>
@@ -9114,22 +9099,7 @@ QLabel
                         </size>
                        </property>
                        <property name="styleSheet">
-                        <string notr="true">/*QFrame
-{
-	background-color: rgb(255, 255, 255);
-}
-
-QToolButton
-{
-	border: 1px solid rgb(131, 131, 131);
-	border-radius: 5px;
-}
-
-QToolButton::hover
-{
-	border: 1px solid rgb(32, 140, 255);
-	background-color: rgb(217, 240, 255);
-}*/</string>
+                        <string notr="true">background-color: rgb(38, 38, 41);</string>
                        </property>
                        <property name="frameShape">
                         <enum>QFrame::StyledPanel</enum>
@@ -9930,7 +9900,7 @@ QLabel
                         </size>
                        </property>
                        <property name="styleSheet">
-                        <string notr="true"/>
+                        <string notr="true">background-color: rgb(38, 38, 41);</string>
                        </property>
                        <property name="frameShape">
                         <enum>QFrame::StyledPanel</enum>
@@ -10677,9 +10647,9 @@ QLabel
                   <property name="geometry">
                    <rect>
                     <x>0</x>
-                    <y>-1871</y>
+                    <y>0</y>
                     <width>833</width>
-                    <height>2955</height>
+                    <height>2965</height>
                    </rect>
                   </property>
                   <property name="minimumSize">
