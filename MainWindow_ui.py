@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'MainWindow.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.4.1
+## Created by: Qt User Interface Compiler version 6.4.2
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -21,9 +21,8 @@ from PySide6.QtWidgets import (QApplication, QComboBox, QFrame, QGraphicsView,
     QLabel, QLineEdit, QListWidget, QListWidgetItem,
     QMainWindow, QPlainTextEdit, QPushButton, QScrollArea,
     QSizePolicy, QSpacerItem, QStackedWidget, QTabWidget,
-    QTableWidget, QTableWidgetItem, QTextEdit, QToolButton,
-    QTreeView, QTreeWidget, QTreeWidgetItem, QVBoxLayout,
-    QWidget)
+    QTextEdit, QToolButton, QTreeView, QTreeWidget,
+    QTreeWidgetItem, QVBoxLayout, QWidget)
 import resource_rc
 
 class Ui_MainWindow(object):
@@ -83,49 +82,459 @@ class Ui_MainWindow(object):
         self.actionNew.setObjectName(u"actionNew")
         self.centralWidget = QWidget(MainWindow)
         self.centralWidget.setObjectName(u"centralWidget")
-        self.centralWidget.setStyleSheet(u"QWidget#centralWidget\n"
-"{\n"
-"	background-color: rgb(30, 30, 32);\n"
+        self.centralWidget.setStyleSheet(u"/* ===========================================\n"
+"   MAIN APPLICATION STYLES - Delta X Software\n"
+"   =========================================== */\n"
+"\n"
+"/* Global Dark Theme */\n"
+"QWidget#centralWidget {\n"
+"    background-color: rgb(30, 30, 32);\n"
 "}\n"
 "\n"
-"QTabWidget::pane { /* The tab widget frame */\n"
+"\n"
+"\n"
+"/* ===========================================\n"
+"   TAB WIDGET STYLES\n"
+"   =========================================== */\n"
+"QTabWidget::pane {\n"
 "    border: none;\n"
 "}\n"
 "\n"
-"QTabWidget::tab-bar \n"
-"{\n"
-"\n"
-"}\n"
-"\n"
-"QTabBar::tab \n"
-"{\n"
+"QTabBar::tab {\n"
 "    background: #3f3f3f;\n"
-"	color: #f5f5f5;\n"
-"   /* border-radius: 13px;*/\n"
-"	border: 1px solid rgb(90, 90, 90);\n"
+"    color: #f5f5f5;\n"
+"    border: 1px solid rgb(90, 90, 90);\n"
 "    height: 25px;\n"
 "    padding: 0px 10px 2px 10px;\n"
 "}\n"
 "\n"
 "QTabBar::tab:selected {\n"
 "    background: #007cd6;	\n"
-"	color: rgb(255, 255, 255);\n"
-"	/*border-radius: 13px;*/\n"
+"    color: rgb(255, 255, 255);\n"
 "}\n"
 "\n"
 "QTabBar::tab:hover {\n"
 "    background: #6f6f6f;	\n"
-"	color: rgb(255, 255, 255);\n"
-"	/*border-radius: 13px;*/\n"
+"    color: rgb(255, 255, 255);\n"
 "}\n"
 "\n"
-"QTabBar::tab:selected {\n"
-"\n"
+"/* ===========================================\n"
+"   LEFT PANEL NAVIGATION\n"
+"   =========================================== */\n"
+"QWidget#wgLeftPanel {\n"
+"    backgr"
+                        "ound-color: #28282B;\n"
+"    border: 1px solid #565659;\n"
 "}\n"
 "\n"
-"QTabBar::tab:!selected {\n"
+"QWidget#wgLeftPanel QToolButton {\n"
+"    border: 0px;\n"
+"    font-size: 14px;\n"
+"    color: rgb(255, 255, 255);\n"
 "}\n"
-"")
+"\n"
+"QWidget#wgLeftPanel QToolButton:hover {\n"
+"    background-color: #353538;\n"
+"}\n"
+"\n"
+"QWidget#wgLeftPanel QToolButton:pressed {\n"
+"    background-color: #3F3F42;\n"
+"}\n"
+"\n"
+"/* Active/Selected Navigation Button */\n"
+"QToolButton#tbProject {\n"
+"    background-color: #3F3F42;\n"
+"    border-right: 5px solid rgb(24, 70, 139);\n"
+"}\n"
+"\n"
+"/* ===========================================\n"
+"   PAGE SPECIFIC STYLES\n"
+"   =========================================== */\n"
+"/* Variable Page */\n"
+"QWidget#pVariable {\n"
+"    background-color: rgb(40, 40, 43);\n"
+"}\n"
+"\n"
+"QWidget#pVariable QLabel {\n"
+"    color: rgb(255, 255, 255);\n"
+"}\n"
+"\n"
+"/* Market Page */\n"
+"QWidget#pMarket {\n"
+"    background-color: rgb(85, 170, 255);\n"
+"}\n"
+"\n"
+"/* Document Page */\n"
+"QWidget#pDocument {\n"
+"    background"
+                        "-color: rgb(255, 170, 255);\n"
+"}\n"
+"\n"
+"/* Community Page */\n"
+"QWidget#pCommunity {\n"
+"    background-color: rgb(255, 170, 127);\n"
+"}\n"
+"\n"
+"/* Project Page */\n"
+"QWidget#pProject {\n"
+"    alternate-background-color: rgb(255, 235, 15);\n"
+"}\n"
+"\n"
+"/* ===========================================\n"
+"   SETTINGS PAGE STYLES\n"
+"   =========================================== */\n"
+"QWidget#pSetting {\n"
+"    background-color: rgb(30, 30, 32);\n"
+"    color: rgb(255, 255, 255);\n"
+"}\n"
+"\n"
+"QWidget#pSetting QLabel#lbSettingsTitle {\n"
+"    color: rgb(255, 255, 255);\n"
+"    margin-bottom: 10px;\n"
+"}\n"
+"\n"
+"/* Settings Action Buttons Frame */\n"
+"QWidget#pSetting QFrame#frame_3 {\n"
+"    background-color: rgba(255, 255, 255, 0.1);\n"
+"    border-radius: 5px;\n"
+"    padding: 5px;\n"
+"}\n"
+"\n"
+"/* Settings Buttons */\n"
+"QWidget#pSetting QPushButton#pbResetSettings {\n"
+"    background-color: #6C5C99;\n"
+"    border-radius: 5px;\n"
+"    padding: 8px 16px;\n"
+"    color: rgb(255, 255, 255);\n"
+"   "
+                        " font-weight: bold;\n"
+"}\n"
+"\n"
+"QWidget#pSetting QPushButton#pbResetSettings:hover {\n"
+"    background-color: #7D6DAD;\n"
+"    border: 2px solid #FFFFFF;\n"
+"}\n"
+"\n"
+"QWidget#pSetting QPushButton#pbResetSettings:pressed {\n"
+"    background-color: #5B4B88;\n"
+"}\n"
+"\n"
+"QWidget#pSetting QPushButton#pbBackupSettings {\n"
+"    background-color: #4A7C59;\n"
+"    border-radius: 5px;\n"
+"    padding: 8px 16px;\n"
+"    color: rgb(255, 255, 255);\n"
+"    font-weight: bold;\n"
+"}\n"
+"\n"
+"QWidget#pSetting QPushButton#pbBackupSettings:hover {\n"
+"    background-color: #5A8B68;\n"
+"    border: 2px solid #FFFFFF;\n"
+"}\n"
+"\n"
+"QWidget#pSetting QPushButton#pbBackupSettings:pressed {\n"
+"    background-color: #3A6A49;\n"
+"}\n"
+"\n"
+"QWidget#pSetting QPushButton#pbRestoreSettings {\n"
+"    background-color: #B8860B;\n"
+"    border-radius: 5px;\n"
+"    padding: 8px 16px;\n"
+"    color: rgb(255, 255, 255);\n"
+"    font-weight: bold;\n"
+"}\n"
+"\n"
+"QWidget#pSetting QPushButton#pbRestoreSettings:hover {\n"
+"    backgrou"
+                        "nd-color: #DAA520;\n"
+"    border: 2px solid #FFFFFF;\n"
+"}\n"
+"\n"
+"QWidget#pSetting QPushButton#pbRestoreSettings:pressed {\n"
+"    background-color: #996F0B;\n"
+"}\n"
+"\n"
+"QWidget#pSetting QPushButton#pbSaveSetting {\n"
+"    background-color: #007ACC;\n"
+"    border-radius: 5px;\n"
+"    padding: 8px 16px;\n"
+"    color: rgb(255, 255, 255);\n"
+"    font-weight: bold;\n"
+"}\n"
+"\n"
+"QWidget#pSetting QPushButton#pbSaveSetting:hover {\n"
+"    background-color: #1E90FF;\n"
+"    border: 2px solid #FFFFFF;\n"
+"}\n"
+"\n"
+"QWidget#pSetting QPushButton#pbSaveSetting:pressed {\n"
+"    background-color: #005299;\n"
+"}\n"
+"\n"
+"/* Settings Tab Widget */\n"
+"QWidget#pSetting QTabWidget#twSettingsCategories::pane {\n"
+"    border: 1px solid #444444;\n"
+"    border-radius: 5px;\n"
+"}\n"
+"\n"
+"QWidget#pSetting QTabWidget#twSettingsCategories QTabBar::tab {\n"
+"    background: rgb(68, 68, 68);\n"
+"    color: #f5f5f5;\n"
+"    border: 1px solid rgb(90, 90, 90);\n"
+"    height: 30px;\n"
+"    padding: 5px 15px;\n"
+"    margin-r"
+                        "ight: 2px;\n"
+"}\n"
+"\n"
+"QWidget#pSetting QTabWidget#twSettingsCategories QTabBar::tab:selected {\n"
+"    background: #007cd6;\n"
+"    color: rgb(255, 255, 255);\n"
+"}\n"
+"\n"
+"QWidget#pSetting QTabWidget#twSettingsCategories QTabBar::tab:hover {\n"
+"    background: #6f6f6f;\n"
+"    color: rgb(255, 255, 255);\n"
+"}\n"
+"\n"
+"/* Settings Scroll Areas */\n"
+"QWidget#pSetting QScrollArea {\n"
+"    border: none;\n"
+"    background: transparent;\n"
+"}\n"
+"\n"
+"/* Settings Content Widgets - Fix White Background */\n"
+"QWidget#pSetting QScrollArea QWidget {\n"
+"    background-color: rgb(40, 40, 43);\n"
+"    color: rgb(255, 255, 255);\n"
+"}\n"
+"\n"
+"/* Specific Content Widgets */\n"
+"QWidget#swGeneral, QWidget#swDevice, QWidget#swCamera, \n"
+"QWidget#swEditor, QWidget#swAdvanced, QWidget#swAuthority {\n"
+"    background-color: rgb(40, 40, 43);\n"
+"    color: rgb(255, 255, 255);\n"
+"}\n"
+"\n"
+"/* Settings Form Elements */\n"
+"QWidget#pSetting QGroupBox {\n"
+"    background-color: rgba(255, 255, 255, 0.05);\n"
+"    bord"
+                        "er: 1px solid rgba(255, 255, 255, 0.1);\n"
+"    border-radius: 5px;\n"
+"    margin-top: 10px;\n"
+"    padding-top: 10px;\n"
+"    color: rgb(255, 255, 255);\n"
+"}\n"
+"\n"
+"QWidget#pSetting QGroupBox::title {\n"
+"    subcontrol-origin: margin;\n"
+"    left: 10px;\n"
+"    padding: 0 5px 0 5px;\n"
+"    color: rgb(255, 255, 255);\n"
+"    font-weight: bold;\n"
+"}\n"
+"\n"
+"QWidget#pSetting QLabel {\n"
+"    color: rgb(255, 255, 255);\n"
+"    background: transparent;\n"
+"}\n"
+"\n"
+"QWidget#pSetting QLineEdit {\n"
+"    background-color: rgb(60, 60, 65);\n"
+"    border: 1px solid rgb(90, 90, 90);\n"
+"    border-radius: 3px;\n"
+"    padding: 5px;\n"
+"    color: rgb(255, 255, 255);\n"
+"}\n"
+"\n"
+"QWidget#pSetting QLineEdit:focus {\n"
+"    border: 2px solid #007cd6;\n"
+"}\n"
+"\n"
+"QWidget#pSetting QComboBox {\n"
+"    background-color: rgb(60, 60, 65);\n"
+"    border: 1px solid rgb(90, 90, 90);\n"
+"    border-radius: 3px;\n"
+"    padding: 5px;\n"
+"    color: rgb(255, 255, 255);\n"
+"}\n"
+"\n"
+"QWidget#pSetting QComboBox::drop"
+                        "-down {\n"
+"    border: none;\n"
+"    background: rgb(80, 80, 85);\n"
+"}\n"
+"\n"
+"QWidget#pSetting QComboBox::down-arrow {\n"
+"    image: url(:/icon/Arrow Pointing Down_16px.png);\n"
+"}\n"
+"\n"
+"QWidget#pSetting QComboBox QAbstractItemView {\n"
+"    background-color: rgb(60, 60, 65);\n"
+"    border: 1px solid rgb(90, 90, 90);\n"
+"    selection-background-color: #007cd6;\n"
+"    color: rgb(255, 255, 255);\n"
+"}\n"
+"\n"
+"QWidget#pSetting QCheckBox {\n"
+"    color: rgb(255, 255, 255);\n"
+"    background: transparent;\n"
+"}\n"
+"\n"
+"QWidget#pSetting QCheckBox::indicator {\n"
+"    width: 16px;\n"
+"    height: 16px;\n"
+"    border: 1px solid rgb(90, 90, 90);\n"
+"    border-radius: 2px;\n"
+"    background-color: rgb(60, 60, 65);\n"
+"}\n"
+"\n"
+"QWidget#pSetting QCheckBox::indicator:checked {\n"
+"    background-color: #007cd6;\n"
+"    border: 1px solid #007cd6;\n"
+"}\n"
+"\n"
+"QWidget#pSetting QSpinBox {\n"
+"    background-color: rgb(60, 60, 65);\n"
+"    border: 1px solid rgb(90, 90, 90);\n"
+"    border-radius: 3px;\n"
+""
+                        "    padding: 5px;\n"
+"    color: rgb(255, 255, 255);\n"
+"}\n"
+"\n"
+"QWidget#pSetting QSlider::groove:horizontal {\n"
+"    border: 1px solid rgb(90, 90, 90);\n"
+"    height: 8px;\n"
+"    background: rgb(60, 60, 65);\n"
+"    border-radius: 4px;\n"
+"}\n"
+"\n"
+"QWidget#pSetting QSlider::handle:horizontal {\n"
+"    background: #007cd6;\n"
+"    border: 1px solid #007cd6;\n"
+"    width: 18px;\n"
+"    border-radius: 9px;\n"
+"    margin: -5px 0;\n"
+"}\n"
+"\n"
+"QWidget#pSetting QSlider::sub-page:horizontal {\n"
+"    background: #007cd6;\n"
+"    border-radius: 4px;\n"
+"}\n"
+"\n"
+"/* Additional Dark Theme Fixes */\n"
+"QWidget#pSetting QFrame {\n"
+"    background-color: transparent;\n"
+"    border: none;\n"
+"}\n"
+"\n"
+"QWidget#pSetting QWidget {\n"
+"    background-color: rgb(40, 40, 43);\n"
+"    color: rgb(255, 255, 255);\n"
+"}\n"
+"\n"
+"/* Override for specific button groups */\n"
+"QWidget#pSetting QFrame#frame_3 {\n"
+"    background-color: rgba(255, 255, 255, 0.1);\n"
+"    border-radius: 5px;\n"
+"    padding: 5px;\n"
+"}\n"
+""
+                        "\n"
+"/* ===========================================\n"
+"   OPERATOR PAGE STYLES\n"
+"   =========================================== */\n"
+"QWidget#lbOperatorTitile {\n"
+"    padding: 50%;\n"
+"}\n"
+"\n"
+"QWidget#wgOperatorDisplay {\n"
+"    background-color: rgb(0, 170, 255);\n"
+"}\n"
+"\n"
+"QWidget#gvOperatorViewer {\n"
+"    background-color: rgb(238, 238, 238);\n"
+"}\n"
+"\n"
+"/* Operator Control Buttons */\n"
+"QPushButton#pbStartSystem {\n"
+"    background-color: rgb(0, 255, 157);\n"
+"    color: rgb(74, 74, 74);\n"
+"    border: none;\n"
+"}\n"
+"\n"
+"QPushButton#pbStartSystem:hover {\n"
+"    color: rgb(255, 255, 255);\n"
+"}\n"
+"\n"
+"QPushButton#pbStartSystem:pressed {\n"
+"    background-color: rgb(0, 136, 255);\n"
+"    border: 3px solid;\n"
+"}\n"
+"\n"
+"QPushButton#pbStopSystem {\n"
+"    background-color: rgb(255, 76, 76);\n"
+"    color: rgb(74, 74, 74);\n"
+"    border: none;\n"
+"}\n"
+"\n"
+"QPushButton#pbStopSystem:hover {\n"
+"    color: rgb(255, 255, 255);\n"
+"}\n"
+"\n"
+"QPushButton#pbStopSystem:pressed {\n"
+"    "
+                        "background-color: rgb(0, 136, 255);\n"
+"    border: 3px solid;\n"
+"}\n"
+"\n"
+"/* ===========================================\n"
+"   HOME PAGE STYLES\n"
+"   =========================================== */\n"
+"QWidget#pHome QLabel:hover {\n"
+"    color: rgb(0, 102, 255);\n"
+"}\n"
+"\n"
+"/* ===========================================\n"
+"   LOGGING SECTION\n"
+"   =========================================== */\n"
+"QTextEdit#teLoggingBox {\n"
+"    color: #CDCDCD;\n"
+"    border: none;\n"
+"    background-color: #434347;\n"
+"}\n"
+"\n"
+"/* ===========================================\n"
+"   FINAL OVERRIDE FOR SETTINGS WHITE BACKGROUND\n"
+"   =========================================== */\n"
+"QWidget#pSetting * {\n"
+"    background-color: rgb(40, 40, 43);\n"
+"    color: rgb(255, 255, 255);\n"
+"}\n"
+"\n"
+"/* Keep button styles intact */\n"
+"QWidget#pSetting QPushButton#pbResetSettings {\n"
+"    background-color: #6C5C99;\n"
+"    color: rgb(255, 255, 255);\n"
+"}\n"
+"\n"
+"QWidget#pSetting QPushButton#pbBackupSettings {\n"
+" "
+                        "   background-color: #4A7C59;\n"
+"    color: rgb(255, 255, 255);\n"
+"}\n"
+"\n"
+"QWidget#pSetting QPushButton#pbRestoreSettings {\n"
+"    background-color: #B8860B;\n"
+"    color: rgb(255, 255, 255);\n"
+"}\n"
+"\n"
+"QWidget#pSetting QPushButton#pbSaveSetting {\n"
+"    background-color: #007ACC;\n"
+"    color: rgb(255, 255, 255);\n"
+"}")
         self.horizontalLayout = QHBoxLayout(self.centralWidget)
         self.horizontalLayout.setSpacing(0)
         self.horizontalLayout.setContentsMargins(11, 11, 11, 11)
@@ -137,8 +546,7 @@ class Ui_MainWindow(object):
         self.page = QWidget()
         self.page.setObjectName(u"page")
         self.page.setStyleSheet(u"#page\n"
-"{\n"
-"	\n"
+"{	\n"
 "	background-color: rgb(30, 30, 32);\n"
 "}")
         self.horizontalLayout_2 = QHBoxLayout(self.page)
@@ -150,28 +558,6 @@ class Ui_MainWindow(object):
         self.wgLeftPanel.setObjectName(u"wgLeftPanel")
         self.wgLeftPanel.setMinimumSize(QSize(80, 0))
         self.wgLeftPanel.setMaximumSize(QSize(80, 16777215))
-        self.wgLeftPanel.setStyleSheet(u"QWidget#wgLeftPanel\n"
-"{\n"
-"	background-color: #28282B;\n"
-"	border: 1px solid #565659;\n"
-"}\n"
-"\n"
-"QToolButton\n"
-"{\n"
-"	border: 0px;\n"
-"	font-size:14px;\n"
-"	color: rgb(255, 255, 255);\n"
-"}\n"
-"QToolButton:hover\n"
-"{	\n"
-"	\n"
-"	background-color: #353538;\n"
-"}\n"
-"QToolButton::pressed\n"
-"{	\n"
-"	background-color: #3F3F42;\n"
-"}\n"
-"")
         self.verticalLayout = QVBoxLayout(self.wgLeftPanel)
         self.verticalLayout.setSpacing(0)
         self.verticalLayout.setContentsMargins(11, 11, 11, 11)
@@ -236,8 +622,6 @@ class Ui_MainWindow(object):
         sizePolicy1.setHeightForWidth(self.tbProject.sizePolicy().hasHeightForWidth())
         self.tbProject.setSizePolicy(sizePolicy1)
         self.tbProject.setMinimumSize(QSize(80, 0))
-        self.tbProject.setStyleSheet(u"background-color: #3F3F42;\n"
-"border-right: 5px solid rgb(24, 70, 139);")
         icon4 = QIcon()
         icon4.addFile(u":/icon/project_64px.png", QSize(), QIcon.Normal, QIcon.Off)
         self.tbProject.setIcon(icon4)
@@ -361,10 +745,6 @@ class Ui_MainWindow(object):
         self.swPageStack.setLineWidth(1)
         self.pVariable = QWidget()
         self.pVariable.setObjectName(u"pVariable")
-        self.pVariable.setStyleSheet(u"#pVariable\n"
-"{	\n"
-"	background-color: rgb(40, 40, 43);\n"
-"}")
         self.verticalLayout_4 = QVBoxLayout(self.pVariable)
         self.verticalLayout_4.setSpacing(6)
         self.verticalLayout_4.setContentsMargins(11, 11, 11, 11)
@@ -372,10 +752,6 @@ class Ui_MainWindow(object):
         self.fVar = QFrame(self.pVariable)
         self.fVar.setObjectName(u"fVar")
         self.fVar.setMinimumSize(QSize(0, 25))
-        self.fVar.setStyleSheet(u"QLabel\n"
-"{	\n"
-"	color: rgb(255, 255, 255);\n"
-"}")
         self.fVar.setFrameShape(QFrame.StyledPanel)
         self.fVar.setFrameShadow(QFrame.Raised)
         self.horizontalLayout_14 = QHBoxLayout(self.fVar)
@@ -445,7 +821,7 @@ class Ui_MainWindow(object):
         self.scrollArea_2.setWidgetResizable(True)
         self.scrollAreaWidgetContents_2 = QWidget()
         self.scrollAreaWidgetContents_2.setObjectName(u"scrollAreaWidgetContents_2")
-        self.scrollAreaWidgetContents_2.setGeometry(QRect(0, 0, 1099, 614))
+        self.scrollAreaWidgetContents_2.setGeometry(QRect(0, 0, 662, 297))
         self.verticalLayout_10 = QVBoxLayout(self.scrollAreaWidgetContents_2)
         self.verticalLayout_10.setSpacing(6)
         self.verticalLayout_10.setContentsMargins(11, 11, 11, 11)
@@ -456,10 +832,6 @@ class Ui_MainWindow(object):
         font2.setPointSize(20)
         font2.setBold(True)
         self.lbOperatorTitile.setFont(font2)
-        self.lbOperatorTitile.setStyleSheet(u"QLabel\n"
-"{\n"
-"	pading: 50%;\n"
-"}")
         self.lbOperatorTitile.setAlignment(Qt.AlignCenter)
 
         self.verticalLayout_10.addWidget(self.lbOperatorTitile)
@@ -495,23 +867,6 @@ class Ui_MainWindow(object):
         self.pbStartSystem.setSizePolicy(sizePolicy3)
         self.pbStartSystem.setMaximumSize(QSize(200, 100))
         self.pbStartSystem.setFont(font2)
-        self.pbStartSystem.setStyleSheet(u"QPushButton\n"
-"{\n"
-"	background-color: rgb(0, 255, 157);\n"
-"	color: rgb(74, 74, 74);\n"
-"	border: none;\n"
-"}\n"
-"QPushButton:hover\n"
-"{\n"
-"	\n"
-"	color: rgb(255, 255, 255);\n"
-"}\n"
-"QPushButton:pressed\n"
-"{\n"
-"	background-color: rgb(0, 136, 255);\n"
-"	border: 3px solid;\n"
-"}\n"
-"")
 
         self.verticalLayout_9.addWidget(self.pbStartSystem)
 
@@ -521,23 +876,6 @@ class Ui_MainWindow(object):
         self.pbStopSystem.setSizePolicy(sizePolicy3)
         self.pbStopSystem.setMaximumSize(QSize(200, 100))
         self.pbStopSystem.setFont(font2)
-        self.pbStopSystem.setStyleSheet(u"QPushButton\n"
-"{\n"
-"	background-color: rgb(255, 76, 76);\n"
-"	color: rgb(74, 74, 74);\n"
-"	border: none;\n"
-"}\n"
-"QPushButton:hover\n"
-"{\n"
-"	\n"
-"	color: rgb(255, 255, 255);\n"
-"}\n"
-"QPushButton:pressed\n"
-"{\n"
-"	background-color: rgb(0, 136, 255);\n"
-"	border: 3px solid;\n"
-"}\n"
-"")
 
         self.verticalLayout_9.addWidget(self.pbStopSystem)
 
@@ -563,7 +901,6 @@ class Ui_MainWindow(object):
         self.wgOperatorDisplay = QWidget(self.frame_2)
         self.wgOperatorDisplay.setObjectName(u"wgOperatorDisplay")
         self.wgOperatorDisplay.setMinimumSize(QSize(400, 400))
-        self.wgOperatorDisplay.setStyleSheet(u"background-color: rgb(0, 170, 255);")
         self.horizontalLayout_11 = QHBoxLayout(self.wgOperatorDisplay)
         self.horizontalLayout_11.setSpacing(6)
         self.horizontalLayout_11.setContentsMargins(11, 11, 11, 11)
@@ -572,7 +909,6 @@ class Ui_MainWindow(object):
         self.gvOperatorViewer.setObjectName(u"gvOperatorViewer")
         sizePolicy.setHeightForWidth(self.gvOperatorViewer.sizePolicy().hasHeightForWidth())
         self.gvOperatorViewer.setSizePolicy(sizePolicy)
-        self.gvOperatorViewer.setStyleSheet(u"background-color: rgb(238, 238, 238);")
 
         self.horizontalLayout_11.addWidget(self.gvOperatorViewer)
 
@@ -626,10 +962,6 @@ class Ui_MainWindow(object):
         font3 = QFont()
         font3.setBold(True)
         self.groupBox_4.setFont(font3)
-        self.groupBox_4.setStyleSheet(u"QLabel:hover\n"
-"{\n"
-"	color: rgb(0, 102, 255);\n"
-"}")
         self.gridLayout_3 = QGridLayout(self.groupBox_4)
         self.gridLayout_3.setSpacing(6)
         self.gridLayout_3.setContentsMargins(11, 11, 11, 11)
@@ -763,11 +1095,9 @@ class Ui_MainWindow(object):
         self.swPageStack.addWidget(self.pHome)
         self.pMarket = QWidget()
         self.pMarket.setObjectName(u"pMarket")
-        self.pMarket.setStyleSheet(u"background-color: rgb(85, 170, 255);")
         self.swPageStack.addWidget(self.pMarket)
         self.pDocument = QWidget()
         self.pDocument.setObjectName(u"pDocument")
-        self.pDocument.setStyleSheet(u"background-color: rgb(255, 170, 255);")
         self.swPageStack.addWidget(self.pDocument)
         self.pAuthority = QWidget()
         self.pAuthority.setObjectName(u"pAuthority")
@@ -796,7 +1126,7 @@ class Ui_MainWindow(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollAreaWidgetContents = QWidget()
         self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
-        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 1085, 700))
+        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 593, 700))
         self.scrollAreaWidgetContents.setMinimumSize(QSize(0, 700))
         self.verticalLayout_7 = QVBoxLayout(self.scrollAreaWidgetContents)
         self.verticalLayout_7.setSpacing(6)
@@ -1043,15 +1373,23 @@ class Ui_MainWindow(object):
         self.swPageStack.addWidget(self.pAuthority)
         self.pCommunity = QWidget()
         self.pCommunity.setObjectName(u"pCommunity")
-        self.pCommunity.setStyleSheet(u"background-color: rgb(255, 170, 127);")
         self.swPageStack.addWidget(self.pCommunity)
         self.pSetting = QWidget()
         self.pSetting.setObjectName(u"pSetting")
-        self.pSetting.setStyleSheet(u"")
         self.verticalLayout_12 = QVBoxLayout(self.pSetting)
-        self.verticalLayout_12.setSpacing(6)
+        self.verticalLayout_12.setSpacing(5)
         self.verticalLayout_12.setContentsMargins(11, 11, 11, 11)
         self.verticalLayout_12.setObjectName(u"verticalLayout_12")
+        self.verticalLayout_12.setContentsMargins(10, 10, 10, 10)
+        self.lbSettingsTitle = QLabel(self.pSetting)
+        self.lbSettingsTitle.setObjectName(u"lbSettingsTitle")
+        font5 = QFont()
+        font5.setPointSize(16)
+        font5.setBold(True)
+        self.lbSettingsTitle.setFont(font5)
+
+        self.verticalLayout_12.addWidget(self.lbSettingsTitle)
+
         self.frame_3 = QFrame(self.pSetting)
         self.frame_3.setObjectName(u"frame_3")
         self.frame_3.setMinimumSize(QSize(0, 50))
@@ -1061,57 +1399,171 @@ class Ui_MainWindow(object):
         self.horizontalLayout_13.setSpacing(6)
         self.horizontalLayout_13.setContentsMargins(11, 11, 11, 11)
         self.horizontalLayout_13.setObjectName(u"horizontalLayout_13")
+        self.pbResetSettings = QPushButton(self.frame_3)
+        self.pbResetSettings.setObjectName(u"pbResetSettings")
+        self.pbResetSettings.setMinimumSize(QSize(100, 30))
+
+        self.horizontalLayout_13.addWidget(self.pbResetSettings)
+
+        self.pbBackupSettings = QPushButton(self.frame_3)
+        self.pbBackupSettings.setObjectName(u"pbBackupSettings")
+        self.pbBackupSettings.setMinimumSize(QSize(100, 30))
+
+        self.horizontalLayout_13.addWidget(self.pbBackupSettings)
+
+        self.pbRestoreSettings = QPushButton(self.frame_3)
+        self.pbRestoreSettings.setObjectName(u"pbRestoreSettings")
+        self.pbRestoreSettings.setMinimumSize(QSize(100, 30))
+
+        self.horizontalLayout_13.addWidget(self.pbRestoreSettings)
+
         self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
 
         self.horizontalLayout_13.addItem(self.horizontalSpacer)
 
         self.pbSaveSetting = QPushButton(self.frame_3)
         self.pbSaveSetting.setObjectName(u"pbSaveSetting")
-        self.pbSaveSetting.setStyleSheet(u"/* \u00c1p d\u1ee5ng cho m\u1ed9t ph\u1ea7n t\u1eed c\u1ee5 th\u1ec3, v\u00ed d\u1ee5 QPushButton */\n"
-"QPushButton {\n"
-"    background-color: #4A4A4F;\n"
-"    border-radius: 5px;\n"
-"    padding:5px;\n"
-"	color: rgb(208, 208, 209);\n"
-"}\n"
-"\n"
-"QPushButton:hover\n"
-"{\n"
-"	border: 2px solid #FFFFFF;\n"
-"}")
+        self.pbSaveSetting.setMinimumSize(QSize(120, 30))
 
         self.horizontalLayout_13.addWidget(self.pbSaveSetting)
 
 
         self.verticalLayout_12.addWidget(self.frame_3)
 
-        self.twSetting = QTableWidget(self.pSetting)
-        if (self.twSetting.columnCount() < 2):
-            self.twSetting.setColumnCount(2)
-        __qtablewidgetitem = QTableWidgetItem()
-        self.twSetting.setHorizontalHeaderItem(0, __qtablewidgetitem)
-        __qtablewidgetitem1 = QTableWidgetItem()
-        self.twSetting.setHorizontalHeaderItem(1, __qtablewidgetitem1)
-        if (self.twSetting.rowCount() < 1):
-            self.twSetting.setRowCount(1)
-        __qtablewidgetitem2 = QTableWidgetItem()
-        self.twSetting.setVerticalHeaderItem(0, __qtablewidgetitem2)
-        __qtablewidgetitem3 = QTableWidgetItem()
-        self.twSetting.setItem(0, 0, __qtablewidgetitem3)
-        __qtablewidgetitem4 = QTableWidgetItem()
-        self.twSetting.setItem(0, 1, __qtablewidgetitem4)
-        self.twSetting.setObjectName(u"twSetting")
-        self.twSetting.setMaximumSize(QSize(1101, 16777215))
-        self.twSetting.horizontalHeader().setCascadingSectionResizes(True)
-        self.twSetting.horizontalHeader().setDefaultSectionSize(100)
-        self.twSetting.horizontalHeader().setStretchLastSection(True)
+        self.twSettingsCategories = QTabWidget(self.pSetting)
+        self.twSettingsCategories.setObjectName(u"twSettingsCategories")
+        self.tabGeneral = QWidget()
+        self.tabGeneral.setObjectName(u"tabGeneral")
+        self.vlGeneral = QVBoxLayout(self.tabGeneral)
+        self.vlGeneral.setSpacing(6)
+        self.vlGeneral.setContentsMargins(11, 11, 11, 11)
+        self.vlGeneral.setObjectName(u"vlGeneral")
+        self.saGeneral = QScrollArea(self.tabGeneral)
+        self.saGeneral.setObjectName(u"saGeneral")
+        self.saGeneral.setWidgetResizable(True)
+        self.swGeneral = QWidget()
+        self.swGeneral.setObjectName(u"swGeneral")
+        self.swGeneral.setGeometry(QRect(0, 0, 65, 18))
+        self.vlGeneralContent = QVBoxLayout(self.swGeneral)
+        self.vlGeneralContent.setSpacing(6)
+        self.vlGeneralContent.setContentsMargins(11, 11, 11, 11)
+        self.vlGeneralContent.setObjectName(u"vlGeneralContent")
+        self.saGeneral.setWidget(self.swGeneral)
 
-        self.verticalLayout_12.addWidget(self.twSetting)
+        self.vlGeneral.addWidget(self.saGeneral)
+
+        self.twSettingsCategories.addTab(self.tabGeneral, "")
+        self.tabDevice = QWidget()
+        self.tabDevice.setObjectName(u"tabDevice")
+        self.vlDevice = QVBoxLayout(self.tabDevice)
+        self.vlDevice.setSpacing(6)
+        self.vlDevice.setContentsMargins(11, 11, 11, 11)
+        self.vlDevice.setObjectName(u"vlDevice")
+        self.saDevice = QScrollArea(self.tabDevice)
+        self.saDevice.setObjectName(u"saDevice")
+        self.saDevice.setWidgetResizable(True)
+        self.swDevice = QWidget()
+        self.swDevice.setObjectName(u"swDevice")
+        self.swDevice.setGeometry(QRect(0, 0, 65, 18))
+        self.vlDeviceContent = QVBoxLayout(self.swDevice)
+        self.vlDeviceContent.setSpacing(6)
+        self.vlDeviceContent.setContentsMargins(11, 11, 11, 11)
+        self.vlDeviceContent.setObjectName(u"vlDeviceContent")
+        self.saDevice.setWidget(self.swDevice)
+
+        self.vlDevice.addWidget(self.saDevice)
+
+        self.twSettingsCategories.addTab(self.tabDevice, "")
+        self.tabCamera = QWidget()
+        self.tabCamera.setObjectName(u"tabCamera")
+        self.vlCamera = QVBoxLayout(self.tabCamera)
+        self.vlCamera.setSpacing(6)
+        self.vlCamera.setContentsMargins(11, 11, 11, 11)
+        self.vlCamera.setObjectName(u"vlCamera")
+        self.saCamera = QScrollArea(self.tabCamera)
+        self.saCamera.setObjectName(u"saCamera")
+        self.saCamera.setWidgetResizable(True)
+        self.swCamera = QWidget()
+        self.swCamera.setObjectName(u"swCamera")
+        self.swCamera.setGeometry(QRect(0, 0, 65, 18))
+        self.vlCameraContent = QVBoxLayout(self.swCamera)
+        self.vlCameraContent.setSpacing(6)
+        self.vlCameraContent.setContentsMargins(11, 11, 11, 11)
+        self.vlCameraContent.setObjectName(u"vlCameraContent")
+        self.saCamera.setWidget(self.swCamera)
+
+        self.vlCamera.addWidget(self.saCamera)
+
+        self.twSettingsCategories.addTab(self.tabCamera, "")
+        self.tabEditor = QWidget()
+        self.tabEditor.setObjectName(u"tabEditor")
+        self.vlEditor = QVBoxLayout(self.tabEditor)
+        self.vlEditor.setSpacing(6)
+        self.vlEditor.setContentsMargins(11, 11, 11, 11)
+        self.vlEditor.setObjectName(u"vlEditor")
+        self.saEditor = QScrollArea(self.tabEditor)
+        self.saEditor.setObjectName(u"saEditor")
+        self.saEditor.setWidgetResizable(True)
+        self.swEditor = QWidget()
+        self.swEditor.setObjectName(u"swEditor")
+        self.swEditor.setGeometry(QRect(0, 0, 65, 18))
+        self.vlEditorContent = QVBoxLayout(self.swEditor)
+        self.vlEditorContent.setSpacing(6)
+        self.vlEditorContent.setContentsMargins(11, 11, 11, 11)
+        self.vlEditorContent.setObjectName(u"vlEditorContent")
+        self.saEditor.setWidget(self.swEditor)
+
+        self.vlEditor.addWidget(self.saEditor)
+
+        self.twSettingsCategories.addTab(self.tabEditor, "")
+        self.tabAdvanced = QWidget()
+        self.tabAdvanced.setObjectName(u"tabAdvanced")
+        self.vlAdvanced = QVBoxLayout(self.tabAdvanced)
+        self.vlAdvanced.setSpacing(6)
+        self.vlAdvanced.setContentsMargins(11, 11, 11, 11)
+        self.vlAdvanced.setObjectName(u"vlAdvanced")
+        self.saAdvanced = QScrollArea(self.tabAdvanced)
+        self.saAdvanced.setObjectName(u"saAdvanced")
+        self.saAdvanced.setWidgetResizable(True)
+        self.swAdvanced = QWidget()
+        self.swAdvanced.setObjectName(u"swAdvanced")
+        self.swAdvanced.setGeometry(QRect(0, 0, 1073, 462))
+        self.vlAdvancedContent = QVBoxLayout(self.swAdvanced)
+        self.vlAdvancedContent.setSpacing(6)
+        self.vlAdvancedContent.setContentsMargins(11, 11, 11, 11)
+        self.vlAdvancedContent.setObjectName(u"vlAdvancedContent")
+        self.saAdvanced.setWidget(self.swAdvanced)
+
+        self.vlAdvanced.addWidget(self.saAdvanced)
+
+        self.twSettingsCategories.addTab(self.tabAdvanced, "")
+        self.tabAuthority = QWidget()
+        self.tabAuthority.setObjectName(u"tabAuthority")
+        self.vlAuthority = QVBoxLayout(self.tabAuthority)
+        self.vlAuthority.setSpacing(6)
+        self.vlAuthority.setContentsMargins(11, 11, 11, 11)
+        self.vlAuthority.setObjectName(u"vlAuthority")
+        self.saAuthority = QScrollArea(self.tabAuthority)
+        self.saAuthority.setObjectName(u"saAuthority")
+        self.saAuthority.setWidgetResizable(True)
+        self.swAuthority1 = QWidget()
+        self.swAuthority1.setObjectName(u"swAuthority1")
+        self.swAuthority1.setGeometry(QRect(0, 0, 65, 18))
+        self.vlAuthorityContent = QVBoxLayout(self.swAuthority1)
+        self.vlAuthorityContent.setSpacing(6)
+        self.vlAuthorityContent.setContentsMargins(11, 11, 11, 11)
+        self.vlAuthorityContent.setObjectName(u"vlAuthorityContent")
+        self.saAuthority.setWidget(self.swAuthority1)
+
+        self.vlAuthority.addWidget(self.saAuthority)
+
+        self.twSettingsCategories.addTab(self.tabAuthority, "")
+
+        self.verticalLayout_12.addWidget(self.twSettingsCategories)
 
         self.swPageStack.addWidget(self.pSetting)
         self.pProject = QWidget()
         self.pProject.setObjectName(u"pProject")
-        self.pProject.setStyleSheet(u"alternate-background-color: rgb(255, 235, 15);")
         self.verticalLayout_2 = QVBoxLayout(self.pProject)
         self.verticalLayout_2.setSpacing(0)
         self.verticalLayout_2.setContentsMargins(11, 11, 11, 11)
@@ -1122,11 +1574,11 @@ class Ui_MainWindow(object):
         self.twProjectManager.setEnabled(True)
         self.twProjectManager.setMinimumSize(QSize(0, 0))
         self.twProjectManager.setMaximumSize(QSize(16777215, 16777215))
-        font5 = QFont()
-        font5.setPointSize(12)
-        font5.setBold(False)
-        font5.setKerning(True)
-        self.twProjectManager.setFont(font5)
+        font6 = QFont()
+        font6.setPointSize(12)
+        font6.setBold(False)
+        font6.setKerning(True)
+        self.twProjectManager.setFont(font6)
         self.twProjectManager.setStyleSheet(u"")
         self.twProjectManager.setIconSize(QSize(32, 32))
         self.twProjectManager.setElideMode(Qt.ElideNone)
@@ -1168,12 +1620,6 @@ class Ui_MainWindow(object):
         self.teLoggingBox.setSizePolicy(sizePolicy7)
         self.teLoggingBox.setMinimumSize(QSize(0, 0))
         self.teLoggingBox.setMaximumSize(QSize(16777215, 16777215))
-        self.teLoggingBox.setStyleSheet(u"QTextEdit\n"
-"{\n"
-"	color: #CDCDCD;\n"
-"	border: none;\n"
-"	background-color: #434347;\n"
-"}")
 
         self.horizontalLayout_10.addWidget(self.teLoggingBox)
 
@@ -1210,8 +1656,9 @@ class Ui_MainWindow(object):
         self.retranslateUi(MainWindow)
 
         self.stackedWidget.setCurrentIndex(0)
-        self.swPageStack.setCurrentIndex(8)
+        self.swPageStack.setCurrentIndex(0)
         self.swAuthority.setCurrentIndex(0)
+        self.twSettingsCategories.setCurrentIndex(4)
         self.twProjectManager.setCurrentIndex(0)
 
 
@@ -1219,7 +1666,7 @@ class Ui_MainWindow(object):
     # setupUi
 
     def retranslateUi(self, MainWindow):
-        MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"Delta X Software - Version 1.2.7", None))
+        MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"Delta X Software - Version 1.3.0", None))
         self.actionAdd.setText(QCoreApplication.translate("MainWindow", u"Add New", None))
         self.actionRemove.setText(QCoreApplication.translate("MainWindow", u"Remove", None))
         self.actionAbout.setText(QCoreApplication.translate("MainWindow", u"About", None))
@@ -1309,20 +1756,17 @@ class Ui_MainWindow(object):
         self.pbAddOperatorGcodeProgram.setText(QCoreApplication.translate("MainWindow", u"Add", None))
         self.pbDeleteOperatorDisplayWidget.setText(QCoreApplication.translate("MainWindow", u"x", None))
         self.pbDeleteOperatorGcodeProgram.setText(QCoreApplication.translate("MainWindow", u"x", None))
-        self.pbSaveSetting.setText(QCoreApplication.translate("MainWindow", u"Save", None))
-        ___qtablewidgetitem = self.twSetting.horizontalHeaderItem(0)
-        ___qtablewidgetitem.setText(QCoreApplication.translate("MainWindow", u"Name", None));
-        ___qtablewidgetitem1 = self.twSetting.horizontalHeaderItem(1)
-        ___qtablewidgetitem1.setText(QCoreApplication.translate("MainWindow", u"Value", None));
-
-        __sortingEnabled = self.twSetting.isSortingEnabled()
-        self.twSetting.setSortingEnabled(False)
-        ___qtablewidgetitem2 = self.twSetting.item(0, 0)
-        ___qtablewidgetitem2.setText(QCoreApplication.translate("MainWindow", u"Python", None));
-        ___qtablewidgetitem3 = self.twSetting.item(0, 1)
-        ___qtablewidgetitem3.setText(QCoreApplication.translate("MainWindow", u"/lib/Python38/python.exe", None));
-        self.twSetting.setSortingEnabled(__sortingEnabled)
-
+        self.lbSettingsTitle.setText(QCoreApplication.translate("MainWindow", u"Settings", None))
+        self.pbResetSettings.setText(QCoreApplication.translate("MainWindow", u"Reset to Defaults", None))
+        self.pbBackupSettings.setText(QCoreApplication.translate("MainWindow", u"Backup Settings", None))
+        self.pbRestoreSettings.setText(QCoreApplication.translate("MainWindow", u"Restore Settings", None))
+        self.pbSaveSetting.setText(QCoreApplication.translate("MainWindow", u"Save Settings", None))
+        self.twSettingsCategories.setTabText(self.twSettingsCategories.indexOf(self.tabGeneral), QCoreApplication.translate("MainWindow", u"General", None))
+        self.twSettingsCategories.setTabText(self.twSettingsCategories.indexOf(self.tabDevice), QCoreApplication.translate("MainWindow", u"Device", None))
+        self.twSettingsCategories.setTabText(self.twSettingsCategories.indexOf(self.tabCamera), QCoreApplication.translate("MainWindow", u"Camera", None))
+        self.twSettingsCategories.setTabText(self.twSettingsCategories.indexOf(self.tabEditor), QCoreApplication.translate("MainWindow", u"Editor", None))
+        self.twSettingsCategories.setTabText(self.twSettingsCategories.indexOf(self.tabAdvanced), QCoreApplication.translate("MainWindow", u"Advanced", None))
+        self.twSettingsCategories.setTabText(self.twSettingsCategories.indexOf(self.tabAuthority), QCoreApplication.translate("MainWindow", u"Authority", None))
         self.twProjectManager.setTabText(self.twProjectManager.indexOf(self.tabAddNewButton), QCoreApplication.translate("MainWindow", u"+", None))
         self.teLoggingBox.setHtml(QCoreApplication.translate("MainWindow", u"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\n"

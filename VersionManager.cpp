@@ -9,7 +9,7 @@ VersionManager::VersionManager(QWidget *parent) :
 
 void VersionManager::CheckNewVersion(bool isPopUp)
 {
-    QUrl url("https://raw.githubusercontent.com/trungdoanhong/DeltaXSoftware/1.2-Ver/version.json");
+    QUrl url("https://raw.githubusercontent.com/deltaxrobot/Delta-X-Software/master/version.json");
     QNetworkRequest request = QNetworkRequest(url);
     request.setRawHeader("Content-Type", "application/x-www-form-urlencoded");
     HttpManager->get(request);

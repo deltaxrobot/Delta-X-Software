@@ -11359,7 +11359,7 @@ public:
 
     void retranslateUi(QMainWindow *RobotWindow)
     {
-        RobotWindow->setWindowTitle(QCoreApplication::translate("RobotWindow", "Delta X Software - Version 1.2.7", nullptr));
+        RobotWindow->setWindowTitle(QCoreApplication::translate("RobotWindow", "Delta X Software - Version 1.3.0", nullptr));
         actionAdd->setText(QCoreApplication::translate("RobotWindow", "Add New", nullptr));
         actionRemove->setText(QCoreApplication::translate("RobotWindow", "Remove", nullptr));
         actionAbout->setText(QCoreApplication::translate("RobotWindow", "About", nullptr));
