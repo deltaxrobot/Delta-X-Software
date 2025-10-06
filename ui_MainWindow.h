@@ -1887,7 +1887,7 @@ public:
 
     void retranslateUi(QMainWindow *MainWindow)
     {
-        MainWindow->setWindowTitle(QCoreApplication::translate("MainWindow", "Delta X Software - Version 1.2.7", nullptr));
+        MainWindow->setWindowTitle(QCoreApplication::translate("MainWindow", "Delta X Software - Version 1.3.0", nullptr));
         actionAdd->setText(QCoreApplication::translate("MainWindow", "Add New", nullptr));
         actionRemove->setText(QCoreApplication::translate("MainWindow", "Remove", nullptr));
         actionAbout->setText(QCoreApplication::translate("MainWindow", "About", nullptr));

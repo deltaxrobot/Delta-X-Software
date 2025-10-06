@@ -68,7 +68,7 @@ void MainWindow::InitVariables()
     // ---- Check software version ----
 
     DeltaXVersionManager = new VersionManager(this);
-    DeltaXVersionManager->CurrentVersion = "1.2 Beta";
+    DeltaXVersionManager->CurrentVersion = "1.3.0";
     DeltaXVersionManager->SoftwareName = "DeltaXSoftware";
     DeltaXVersionManager->CheckNewVersion(true);
 

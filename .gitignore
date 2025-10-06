@@ -11,3 +11,5 @@ code test
 plugin/build-IndustrialCamera-Desktop_Qt_5_15_2_MSVC2015_64bit-Release/
 /build
 /deployment
+/deploy
+/installer

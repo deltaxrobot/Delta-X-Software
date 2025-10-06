@@ -1,0 +1,372 @@
+2025-10-06 12:14:02,212 - aqt.main - INFO - installer 2748 aqtinstall(aqt) v3.1.7 on Python 3.13.5 [CPython MSC v.1929 64 bit (AMD64)]
+2025-10-06 12:14:02,213 - aqt.helper - DEBUG - helper 2748 Attempt to download checksum at https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/Updates.xml.sha256
+2025-10-06 12:14:05,761 - aqt.helper - DEBUG - helper 29544 Attempt to download checksum at https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtbase-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z.sha256
+2025-10-06 12:14:05,777 - aqt.helper - DEBUG - helper 29468 Attempt to download checksum at https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtactiveqt-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z.sha256
+2025-10-06 12:14:05,786 - aqt.helper - DEBUG - helper 33368 Attempt to download checksum at https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qttranslations-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z.sha256
+2025-10-06 12:14:06,820 - aqt.helper - INFO - helper 29468 Downloading qtactiveqt...
+2025-10-06 12:14:06,822 - aqt.helper - INFO - helper 33368 Downloading qttranslations...
+2025-10-06 12:14:06,820 - aqt.installer - DEBUG - installer 29468 Download URL: https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtactiveqt-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:14:06,823 - aqt.installer - DEBUG - installer 33368 Download URL: https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qttranslations-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:14:06,842 - aqt.helper - INFO - helper 29544 Downloading qtbase...
+2025-10-06 12:14:06,846 - aqt.helper - INFO - helper 30792 Downloading qtsvg...
+2025-10-06 12:14:06,843 - aqt.installer - DEBUG - installer 29544 Download URL: https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtbase-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:14:06,847 - aqt.installer - DEBUG - installer 30792 Download URL: https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtsvg-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:14:07,824 - aqt.helper - DEBUG - helper 33368 Asked to redirect(302) to: https://mirror.ossplanet.net/qtproject/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qttranslations-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:14:07,825 - aqt.helper - INFO - helper 33368 Redirected: mirror.ossplanet.net
+2025-10-06 12:14:07,834 - aqt.helper - DEBUG - helper 29544 Asked to redirect(302) to: https://mirror.ossplanet.net/qtproject/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtbase-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:14:07,834 - aqt.helper - INFO - helper 29544 Redirected: mirror.ossplanet.net
+2025-10-06 12:14:07,849 - aqt.helper - DEBUG - helper 29468 Asked to redirect(302) to: https://mirror.ossplanet.net/qtproject/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtactiveqt-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:14:07,849 - aqt.helper - INFO - helper 29468 Redirected: mirror.ossplanet.net
+2025-10-06 12:14:07,888 - aqt.helper - DEBUG - helper 30792 Asked to redirect(302) to: https://mirror.ossplanet.net/qtproject/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtsvg-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:14:07,888 - aqt.helper - INFO - helper 30792 Redirected: mirror.ossplanet.net
+2025-10-06 12:14:20,328 - aqt.installer - INFO - installer 30792 Finished installation of qtsvg-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z in 14.55478180
+2025-10-06 12:14:20,345 - aqt.helper - DEBUG - helper 30792 Attempt to download checksum at https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtdeclarative-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z.sha256
+2025-10-06 12:14:21,430 - aqt.helper - INFO - helper 30792 Downloading qtdeclarative...
+2025-10-06 12:14:21,430 - aqt.installer - DEBUG - installer 30792 Download URL: https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtdeclarative-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:14:21,868 - aqt.installer - INFO - installer 33368 Finished installation of qttranslations-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z in 16.09890330
+2025-10-06 12:14:21,885 - aqt.helper - DEBUG - helper 33368 Attempt to download checksum at https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtgraphicaleffects-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z.sha256
+2025-10-06 12:14:22,122 - aqt.installer - INFO - installer 29468 Finished installation of qtactiveqt-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z in 16.35583730
+2025-10-06 12:14:22,147 - aqt.helper - DEBUG - helper 29468 Attempt to download checksum at https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtmultimedia-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z.sha256
+2025-10-06 12:14:22,448 - aqt.helper - DEBUG - helper 30792 Asked to redirect(302) to: https://mirror.ossplanet.net/qtproject/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtdeclarative-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:14:22,448 - aqt.helper - INFO - helper 30792 Redirected: mirror.ossplanet.net
+2025-10-06 12:14:22,852 - aqt.helper - INFO - helper 33368 Downloading qtgraphicaleffects...
+2025-10-06 12:14:22,853 - aqt.installer - DEBUG - installer 33368 Download URL: https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtgraphicaleffects-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:14:23,116 - aqt.helper - INFO - helper 29468 Downloading qtmultimedia...
+2025-10-06 12:14:23,116 - aqt.installer - DEBUG - installer 29468 Download URL: https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtmultimedia-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:14:23,863 - aqt.helper - DEBUG - helper 33368 Asked to redirect(302) to: https://mirror.ossplanet.net/qtproject/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtgraphicaleffects-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:14:23,863 - aqt.helper - INFO - helper 33368 Redirected: mirror.ossplanet.net
+2025-10-06 12:14:24,148 - aqt.helper - DEBUG - helper 29468 Asked to redirect(302) to: https://mirror.ossplanet.net/qtproject/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtmultimedia-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:14:24,148 - aqt.helper - INFO - helper 29468 Redirected: mirror.ossplanet.net
+2025-10-06 12:14:24,564 - aqt.installer - INFO - installer 33368 Finished installation of qtgraphicaleffects-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z in 2.68358740
+2025-10-06 12:14:24,580 - aqt.helper - DEBUG - helper 33368 Attempt to download checksum at https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtwinextras-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z.sha256
+2025-10-06 12:14:25,581 - aqt.helper - INFO - helper 33368 Downloading qtwinextras...
+2025-10-06 12:14:25,581 - aqt.installer - DEBUG - installer 33368 Download URL: https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtwinextras-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:14:25,778 - aqt.installer - INFO - installer 29468 Finished installation of qtmultimedia-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z in 3.63866200
+2025-10-06 12:14:25,798 - aqt.helper - DEBUG - helper 29468 Attempt to download checksum at https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qttools-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z.sha256
+2025-10-06 12:14:26,573 - aqt.helper - DEBUG - helper 33368 Asked to redirect(302) to: https://mirror.ossplanet.net/qtproject/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtwinextras-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:14:26,573 - aqt.helper - INFO - helper 33368 Redirected: mirror.ossplanet.net
+2025-10-06 12:14:26,825 - aqt.helper - INFO - helper 29468 Downloading qttools...
+2025-10-06 12:14:26,826 - aqt.installer - DEBUG - installer 29468 Download URL: https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qttools-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:14:27,498 - aqt.installer - INFO - installer 33368 Finished installation of qtwinextras-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z in 2.92110640
+2025-10-06 12:14:27,518 - aqt.helper - DEBUG - helper 33368 Attempt to download checksum at https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtimageformats-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z.sha256
+2025-10-06 12:14:27,844 - aqt.helper - DEBUG - helper 29468 Asked to redirect(302) to: https://mirror.ossplanet.net/qtproject/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qttools-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:14:27,844 - aqt.helper - INFO - helper 29468 Redirected: mirror.ossplanet.net
+2025-10-06 12:14:28,664 - aqt.installer - INFO - installer 30792 Finished installation of qtdeclarative-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z in 8.32605710
+2025-10-06 12:14:28,693 - aqt.helper - DEBUG - helper 30792 Attempt to download checksum at https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtsensors-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z.sha256
+2025-10-06 12:14:29,680 - aqt.helper - INFO - helper 30792 Downloading qtsensors...
+2025-10-06 12:14:29,681 - aqt.installer - DEBUG - installer 30792 Download URL: https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtsensors-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:14:30,727 - aqt.helper - DEBUG - helper 30792 Asked to redirect(302) to: https://mirror.ossplanet.net/qtproject/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtsensors-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:14:30,727 - aqt.helper - INFO - helper 30792 Redirected: mirror.ossplanet.net
+2025-10-06 12:14:31,650 - aqt.installer - INFO - installer 30792 Finished installation of qtsensors-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z in 2.96358680
+2025-10-06 12:14:31,672 - aqt.helper - DEBUG - helper 30792 Attempt to download checksum at https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtwebsockets-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z.sha256
+2025-10-06 12:14:32,700 - aqt.helper - INFO - helper 30792 Downloading qtwebsockets...
+2025-10-06 12:14:32,701 - aqt.installer - DEBUG - installer 30792 Download URL: https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtwebsockets-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:14:33,690 - aqt.helper - DEBUG - helper 30792 Asked to redirect(302) to: https://mirror.ossplanet.net/qtproject/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtwebsockets-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:14:33,690 - aqt.helper - INFO - helper 30792 Redirected: mirror.ossplanet.net
+2025-10-06 12:14:34,972 - aqt.installer - INFO - installer 30792 Finished installation of qtwebsockets-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z in 3.30598690
+2025-10-06 12:14:34,989 - aqt.helper - DEBUG - helper 30792 Attempt to download checksum at https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtwebchannel-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z.sha256
+2025-10-06 12:14:35,965 - aqt.helper - INFO - helper 30792 Downloading qtwebchannel...
+2025-10-06 12:14:35,966 - aqt.installer - DEBUG - installer 30792 Download URL: https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtwebchannel-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:14:36,996 - aqt.helper - DEBUG - helper 30792 Asked to redirect(302) to: https://mirror.ossplanet.net/qtproject/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtwebchannel-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:14:36,996 - aqt.helper - INFO - helper 30792 Redirected: mirror.ossplanet.net
+2025-10-06 12:14:37,514 - aqt.installer - INFO - installer 29544 Finished installation of qtbase-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z in 31.76123270
+2025-10-06 12:14:37,545 - aqt.helper - DEBUG - helper 29544 Attempt to download checksum at https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtconnectivity-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z.sha256
+2025-10-06 12:14:37,951 - aqt.installer - INFO - installer 30792 Finished installation of qtwebchannel-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z in 2.96521400
+2025-10-06 12:14:37,972 - aqt.helper - DEBUG - helper 30792 Attempt to download checksum at https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtlocation-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z.sha256
+2025-10-06 12:14:38,583 - aqt.helper - INFO - helper 29544 Downloading qtconnectivity...
+2025-10-06 12:14:38,583 - aqt.installer - DEBUG - installer 29544 Download URL: https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtconnectivity-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:14:38,945 - aqt.helper - INFO - helper 30792 Downloading qtlocation...
+2025-10-06 12:14:38,945 - aqt.installer - DEBUG - installer 30792 Download URL: https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtlocation-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:14:39,598 - aqt.helper - DEBUG - helper 29544 Asked to redirect(302) to: https://mirror.ossplanet.net/qtproject/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtconnectivity-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:14:39,599 - aqt.helper - INFO - helper 29544 Redirected: mirror.ossplanet.net
+2025-10-06 12:14:39,984 - aqt.helper - DEBUG - helper 30792 Asked to redirect(302) to: https://mirror.ossplanet.net/qtproject/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtlocation-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:14:39,985 - aqt.helper - INFO - helper 30792 Redirected: mirror.ossplanet.net
+2025-10-06 12:14:41,163 - aqt.installer - INFO - installer 29544 Finished installation of qtconnectivity-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z in 3.62672600
+2025-10-06 12:14:41,181 - aqt.helper - DEBUG - helper 29544 Attempt to download checksum at https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtserialport-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z.sha256
+2025-10-06 12:14:41,541 - aqt.installer - INFO - installer 29468 Finished installation of qttools-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z in 15.74668500
+2025-10-06 12:14:41,561 - aqt.helper - DEBUG - helper 29468 Attempt to download checksum at https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtxmlpatterns-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z.sha256
+2025-10-06 12:14:42,181 - aqt.helper - INFO - helper 29544 Downloading qtserialport...
+2025-10-06 12:14:42,181 - aqt.installer - DEBUG - installer 29544 Download URL: https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtserialport-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:14:42,256 - aqt.installer - INFO - installer 30792 Finished installation of qtlocation-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z in 4.29067120
+2025-10-06 12:14:42,279 - aqt.helper - DEBUG - helper 30792 Attempt to download checksum at https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtquickcontrols2-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z.sha256
+2025-10-06 12:14:42,536 - aqt.helper - INFO - helper 29468 Downloading qtxmlpatterns...
+2025-10-06 12:14:42,536 - aqt.installer - DEBUG - installer 29468 Download URL: https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtxmlpatterns-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:14:43,224 - aqt.helper - DEBUG - helper 29544 Asked to redirect(302) to: https://mirror.ossplanet.net/qtproject/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtserialport-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:14:43,224 - aqt.helper - INFO - helper 29544 Redirected: mirror.ossplanet.net
+2025-10-06 12:14:43,327 - aqt.helper - INFO - helper 30792 Downloading qtquickcontrols2...
+2025-10-06 12:14:43,329 - aqt.installer - DEBUG - installer 30792 Download URL: https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtquickcontrols2-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:14:43,504 - aqt.helper - DEBUG - helper 29468 Asked to redirect(302) to: https://mirror.ossplanet.net/qtproject/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtxmlpatterns-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:14:43,504 - aqt.helper - INFO - helper 29468 Redirected: mirror.ossplanet.net
+2025-10-06 12:14:43,928 - aqt.installer - INFO - installer 29544 Finished installation of qtserialport-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z in 2.75093700
+2025-10-06 12:14:43,947 - aqt.helper - DEBUG - helper 29544 Attempt to download checksum at https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtquickcontrols-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z.sha256
+2025-10-06 12:14:44,310 - aqt.helper - DEBUG - helper 30792 Asked to redirect(302) to: https://mirror.ossplanet.net/qtproject/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtquickcontrols2-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:14:44,310 - aqt.helper - INFO - helper 30792 Redirected: mirror.ossplanet.net
+2025-10-06 12:14:44,968 - aqt.helper - INFO - helper 29544 Downloading qtquickcontrols...
+2025-10-06 12:14:44,969 - aqt.installer - DEBUG - installer 29544 Download URL: https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtquickcontrols-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:14:45,956 - aqt.helper - DEBUG - helper 29544 Asked to redirect(302) to: https://mirror.ossplanet.net/qtproject/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtquickcontrols-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:14:45,956 - aqt.helper - INFO - helper 29544 Redirected: mirror.ossplanet.net
+2025-10-06 12:14:46,691 - aqt.installer - INFO - installer 29468 Finished installation of qtxmlpatterns-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z in 5.13562660
+2025-10-06 12:14:46,717 - aqt.helper - DEBUG - helper 29468 Attempt to download checksum at https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtwebview-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z.sha256
+2025-10-06 12:14:47,701 - aqt.helper - INFO - helper 29468 Downloading qtwebview...
+2025-10-06 12:14:47,701 - aqt.installer - DEBUG - installer 29468 Download URL: https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtwebview-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:14:47,727 - aqt.installer - INFO - installer 30792 Finished installation of qtquickcontrols2-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z in 5.45346350
+2025-10-06 12:14:47,749 - aqt.helper - DEBUG - helper 30792 Attempt to download checksum at https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qt3d-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z.sha256
+2025-10-06 12:14:48,702 - aqt.helper - DEBUG - helper 29468 Asked to redirect(302) to: https://mirror.ossplanet.net/qtproject/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtwebview-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:14:48,702 - aqt.helper - INFO - helper 29468 Redirected: mirror.ossplanet.net
+2025-10-06 12:14:48,811 - aqt.helper - INFO - helper 30792 Downloading qt3d...
+2025-10-06 12:14:48,811 - aqt.installer - DEBUG - installer 30792 Download URL: https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qt3d-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:14:49,614 - aqt.installer - INFO - installer 29544 Finished installation of qtquickcontrols-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z in 5.67486570
+2025-10-06 12:14:49,630 - aqt.helper - DEBUG - helper 29544 Attempt to download checksum at https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtscxml-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z.sha256
+2025-10-06 12:14:49,851 - aqt.helper - DEBUG - helper 30792 Asked to redirect(302) to: https://mirror.ossplanet.net/qtproject/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qt3d-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:14:49,851 - aqt.helper - INFO - helper 30792 Redirected: mirror.ossplanet.net
+2025-10-06 12:14:50,553 - aqt.installer - INFO - installer 29468 Finished installation of qtwebview-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z in 3.84087220
+2025-10-06 12:14:50,570 - aqt.helper - DEBUG - helper 29468 Attempt to download checksum at https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtserialbus-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z.sha256
+2025-10-06 12:14:50,690 - aqt.helper - INFO - helper 29544 Downloading qtscxml...
+2025-10-06 12:14:50,690 - aqt.installer - DEBUG - installer 29544 Download URL: https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtscxml-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:14:51,538 - aqt.helper - INFO - helper 29468 Downloading qtserialbus...
+2025-10-06 12:14:51,538 - aqt.installer - DEBUG - installer 29468 Download URL: https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtserialbus-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:14:51,725 - aqt.helper - DEBUG - helper 29544 Asked to redirect(302) to: https://mirror.ossplanet.net/qtproject/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtscxml-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:14:51,725 - aqt.helper - INFO - helper 29544 Redirected: mirror.ossplanet.net
+2025-10-06 12:14:52,519 - aqt.helper - DEBUG - helper 29468 Asked to redirect(302) to: https://mirror.ossplanet.net/qtproject/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtserialbus-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:14:52,519 - aqt.helper - INFO - helper 29468 Redirected: mirror.ossplanet.net
+2025-10-06 12:14:59,516 - aqt.helper - INFO - helper 33368 Downloading qtimageformats...
+2025-10-06 12:14:59,516 - aqt.installer - DEBUG - installer 33368 Download URL: https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtimageformats-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:15:00,521 - aqt.helper - DEBUG - helper 33368 Asked to redirect(302) to: https://mirror.ossplanet.net/qtproject/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtimageformats-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:15:00,521 - aqt.helper - INFO - helper 33368 Redirected: mirror.ossplanet.net
+2025-10-06 12:15:00,947 - aqt.installer - INFO - installer 29544 Finished installation of qtscxml-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z in 11.32087160
+2025-10-06 12:15:00,974 - aqt.helper - DEBUG - helper 29544 Attempt to download checksum at https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtgamepad-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z.sha256
+2025-10-06 12:15:01,038 - aqt.installer - INFO - installer 29468 Finished installation of qtserialbus-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z in 10.47378050
+2025-10-06 12:15:01,064 - aqt.helper - DEBUG - helper 29468 Attempt to download checksum at https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtspeech-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z.sha256
+2025-10-06 12:15:01,695 - aqt.installer - INFO - installer 33368 Finished installation of qtimageformats-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z in 34.18305530
+2025-10-06 12:15:01,727 - aqt.helper - DEBUG - helper 33368 Attempt to download checksum at https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602d3dcompiler_47-x64.7z.sha256
+2025-10-06 12:15:01,973 - aqt.helper - INFO - helper 29544 Downloading qtgamepad...
+2025-10-06 12:15:01,974 - aqt.installer - DEBUG - installer 29544 Download URL: https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtgamepad-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:15:02,096 - aqt.helper - INFO - helper 29468 Downloading qtspeech...
+2025-10-06 12:15:02,096 - aqt.installer - DEBUG - installer 29468 Download URL: https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtspeech-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:15:02,773 - aqt.helper - INFO - helper 33368 Downloading d3dcompiler_47...
+2025-10-06 12:15:02,774 - aqt.installer - DEBUG - installer 33368 Download URL: https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602d3dcompiler_47-x64.7z
+2025-10-06 12:15:03,034 - aqt.helper - DEBUG - helper 29544 Asked to redirect(302) to: https://mirror.ossplanet.net/qtproject/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtgamepad-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:15:03,035 - aqt.helper - INFO - helper 29544 Redirected: mirror.ossplanet.net
+2025-10-06 12:15:03,088 - aqt.helper - DEBUG - helper 29468 Asked to redirect(302) to: https://mirror.ossplanet.net/qtproject/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtspeech-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:15:03,089 - aqt.helper - INFO - helper 29468 Redirected: mirror.ossplanet.net
+2025-10-06 12:15:03,867 - aqt.helper - DEBUG - helper 33368 Asked to redirect(302) to: https://mirror.ossplanet.net/qtproject/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602d3dcompiler_47-x64.7z
+2025-10-06 12:15:03,868 - aqt.helper - INFO - helper 33368 Redirected: mirror.ossplanet.net
+2025-10-06 12:15:09,072 - aqt.installer - INFO - installer 30792 Finished installation of qt3d-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z in 21.32647770
+2025-10-06 12:15:18,554 - aqt.installer - INFO - installer 29468 Finished installation of qtspeech-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z in 17.49633670
+2025-10-06 12:15:18,581 - aqt.helper - DEBUG - helper 29468 Attempt to download checksum at https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtremoteobjects-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z.sha256
+2025-10-06 12:15:18,642 - aqt.installer - INFO - installer 29544 Finished installation of qtgamepad-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z in 17.67595210
+2025-10-06 12:15:18,830 - aqt.installer - INFO - installer 33368 Finished installation of d3dcompiler_47-x64.7z in 17.11297730
+2025-10-06 12:15:18,867 - aqt.helper - DEBUG - helper 33368 Attempt to download checksum at https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602opengl32sw-64-mesa_12_0_rc2.7z.sha256
+2025-10-06 12:15:19,601 - aqt.helper - INFO - helper 29468 Downloading qtremoteobjects...
+2025-10-06 12:15:19,601 - aqt.installer - DEBUG - installer 29468 Download URL: https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtremoteobjects-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:15:19,884 - aqt.helper - INFO - helper 33368 Downloading opengl32sw...
+2025-10-06 12:15:19,885 - aqt.installer - DEBUG - installer 33368 Download URL: https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602opengl32sw-64-mesa_12_0_rc2.7z
+2025-10-06 12:15:20,650 - aqt.helper - DEBUG - helper 29468 Asked to redirect(302) to: https://mirror.ossplanet.net/qtproject/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtremoteobjects-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:15:20,650 - aqt.helper - INFO - helper 29468 Redirected: mirror.ossplanet.net
+2025-10-06 12:15:20,918 - aqt.helper - DEBUG - helper 33368 Asked to redirect(302) to: https://mirror.ossplanet.net/qtproject/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602opengl32sw-64-mesa_12_0_rc2.7z
+2025-10-06 12:15:20,918 - aqt.helper - INFO - helper 33368 Redirected: mirror.ossplanet.net
+2025-10-06 12:15:23,393 - aqt.installer - INFO - installer 29468 Finished installation of qtremoteobjects-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z in 4.82131780
+2025-10-06 12:15:52,917 - aqt.installer - WARNING - installer 2748 Caught ArchiveDownloadError, terminating installer workers
+2025-10-06 12:15:52,942 - aqt.main - ERROR - installer 2748 Download of 5.15.2-0-202011130602opengl32sw-64-mesa_12_0_rc2.7z has error: HTTPSConnectionPool(host='mirror.ossplanet.net', port=443): Read timed out.
+2025-10-06 12:16:00,192 - aqt.main - INFO - installer 32508 aqtinstall(aqt) v3.1.7 on Python 3.13.5 [CPython MSC v.1929 64 bit (AMD64)]
+2025-10-06 12:16:00,194 - aqt.helper - DEBUG - helper 32508 Attempt to download checksum at https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/Updates.xml.sha256
+2025-10-06 12:16:06,278 - aqt.helper - DEBUG - helper 5300 Attempt to download checksum at https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtbase-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z.sha256
+2025-10-06 12:16:06,280 - aqt.helper - DEBUG - helper 5304 Attempt to download checksum at https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtactiveqt-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z.sha256
+2025-10-06 12:16:06,293 - aqt.helper - DEBUG - helper 20976 Attempt to download checksum at https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qttranslations-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z.sha256
+2025-10-06 12:16:06,297 - aqt.helper - DEBUG - helper 3840 Attempt to download checksum at https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtsvg-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z.sha256
+2025-10-06 12:16:07,408 - aqt.helper - INFO - helper 3840 Downloading qtsvg...
+2025-10-06 12:16:07,408 - aqt.helper - INFO - helper 5304 Downloading qtactiveqt...
+2025-10-06 12:16:07,408 - aqt.helper - INFO - helper 5300 Downloading qtbase...
+2025-10-06 12:16:07,408 - aqt.helper - INFO - helper 20976 Downloading qttranslations...
+2025-10-06 12:16:07,409 - aqt.installer - DEBUG - installer 3840 Download URL: https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtsvg-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:16:07,409 - aqt.installer - DEBUG - installer 5304 Download URL: https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtactiveqt-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:16:07,409 - aqt.installer - DEBUG - installer 5300 Download URL: https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtbase-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:16:07,409 - aqt.installer - DEBUG - installer 20976 Download URL: https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qttranslations-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:16:08,411 - aqt.helper - DEBUG - helper 3840 Asked to redirect(302) to: https://mirror.ossplanet.net/qtproject/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtsvg-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:16:08,411 - aqt.helper - INFO - helper 3840 Redirected: mirror.ossplanet.net
+2025-10-06 12:16:08,463 - aqt.helper - DEBUG - helper 5300 Asked to redirect(302) to: https://mirror.ossplanet.net/qtproject/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtbase-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:16:08,463 - aqt.helper - INFO - helper 5300 Redirected: mirror.ossplanet.net
+2025-10-06 12:16:08,467 - aqt.helper - DEBUG - helper 20976 Asked to redirect(302) to: https://mirror.ossplanet.net/qtproject/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qttranslations-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:16:08,467 - aqt.helper - INFO - helper 20976 Redirected: mirror.ossplanet.net
+2025-10-06 12:16:08,473 - aqt.helper - DEBUG - helper 5304 Asked to redirect(302) to: https://mirror.ossplanet.net/qtproject/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtactiveqt-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:16:08,474 - aqt.helper - INFO - helper 5304 Redirected: mirror.ossplanet.net
+2025-10-06 12:16:10,276 - aqt.installer - INFO - installer 3840 Finished installation of qtsvg-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z in 3.99498190
+2025-10-06 12:16:10,316 - aqt.helper - DEBUG - helper 3840 Attempt to download checksum at https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtdeclarative-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z.sha256
+2025-10-06 12:16:11,154 - aqt.installer - INFO - installer 20976 Finished installation of qttranslations-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z in 4.87477740
+2025-10-06 12:16:11,182 - aqt.helper - DEBUG - helper 20976 Attempt to download checksum at https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtgraphicaleffects-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z.sha256
+2025-10-06 12:16:11,350 - aqt.helper - INFO - helper 3840 Downloading qtdeclarative...
+2025-10-06 12:16:11,350 - aqt.installer - DEBUG - installer 3840 Download URL: https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtdeclarative-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:16:11,430 - aqt.installer - INFO - installer 5304 Finished installation of qtactiveqt-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z in 5.16406120
+2025-10-06 12:16:11,456 - aqt.helper - DEBUG - helper 5304 Attempt to download checksum at https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtmultimedia-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z.sha256
+2025-10-06 12:16:12,154 - aqt.helper - INFO - helper 20976 Downloading qtgraphicaleffects...
+2025-10-06 12:16:12,154 - aqt.installer - DEBUG - installer 20976 Download URL: https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtgraphicaleffects-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:16:12,367 - aqt.helper - DEBUG - helper 3840 Asked to redirect(302) to: https://mirror.ossplanet.net/qtproject/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtdeclarative-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:16:12,368 - aqt.helper - INFO - helper 3840 Redirected: mirror.ossplanet.net
+2025-10-06 12:16:12,484 - aqt.helper - INFO - helper 5304 Downloading qtmultimedia...
+2025-10-06 12:16:12,484 - aqt.installer - DEBUG - installer 5304 Download URL: https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtmultimedia-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:16:13,185 - aqt.helper - DEBUG - helper 20976 Asked to redirect(302) to: https://mirror.ossplanet.net/qtproject/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtgraphicaleffects-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:16:13,185 - aqt.helper - INFO - helper 20976 Redirected: mirror.ossplanet.net
+2025-10-06 12:16:13,527 - aqt.helper - DEBUG - helper 5304 Asked to redirect(302) to: https://mirror.ossplanet.net/qtproject/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtmultimedia-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:16:13,527 - aqt.helper - INFO - helper 5304 Redirected: mirror.ossplanet.net
+2025-10-06 12:16:15,461 - aqt.installer - INFO - installer 20976 Finished installation of qtgraphicaleffects-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z in 4.28625860
+2025-10-06 12:16:15,490 - aqt.helper - DEBUG - helper 20976 Attempt to download checksum at https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtwinextras-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z.sha256
+2025-10-06 12:16:16,871 - aqt.installer - INFO - installer 5304 Finished installation of qtmultimedia-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z in 5.42268360
+2025-10-06 12:16:16,901 - aqt.helper - DEBUG - helper 5304 Attempt to download checksum at https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qttools-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z.sha256
+2025-10-06 12:16:17,551 - aqt.helper - INFO - helper 20976 Downloading qtwinextras...
+2025-10-06 12:16:17,552 - aqt.installer - DEBUG - installer 20976 Download URL: https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtwinextras-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:16:17,965 - aqt.helper - INFO - helper 5304 Downloading qttools...
+2025-10-06 12:16:17,965 - aqt.installer - DEBUG - installer 5304 Download URL: https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qttools-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:16:18,584 - aqt.helper - DEBUG - helper 20976 Asked to redirect(302) to: https://mirror.ossplanet.net/qtproject/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtwinextras-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:16:18,584 - aqt.helper - INFO - helper 20976 Redirected: mirror.ossplanet.net
+2025-10-06 12:16:19,012 - aqt.helper - DEBUG - helper 5304 Asked to redirect(302) to: https://mirror.ossplanet.net/qtproject/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qttools-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:16:19,013 - aqt.helper - INFO - helper 5304 Redirected: mirror.ossplanet.net
+2025-10-06 12:16:20,049 - aqt.installer - INFO - installer 20976 Finished installation of qtwinextras-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z in 4.56717590
+2025-10-06 12:16:20,074 - aqt.helper - DEBUG - helper 20976 Attempt to download checksum at https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtimageformats-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z.sha256
+2025-10-06 12:16:21,049 - aqt.helper - INFO - helper 20976 Downloading qtimageformats...
+2025-10-06 12:16:21,049 - aqt.installer - DEBUG - installer 20976 Download URL: https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtimageformats-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:16:22,089 - aqt.helper - DEBUG - helper 20976 Asked to redirect(302) to: https://mirror.ossplanet.net/qtproject/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtimageformats-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:16:22,089 - aqt.helper - INFO - helper 20976 Redirected: mirror.ossplanet.net
+2025-10-06 12:16:22,414 - aqt.installer - INFO - installer 3840 Finished installation of qtdeclarative-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z in 12.11381660
+2025-10-06 12:16:22,447 - aqt.helper - DEBUG - helper 3840 Attempt to download checksum at https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtsensors-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z.sha256
+2025-10-06 12:16:23,466 - aqt.helper - INFO - helper 3840 Downloading qtsensors...
+2025-10-06 12:16:23,467 - aqt.installer - DEBUG - installer 3840 Download URL: https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtsensors-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:16:24,427 - aqt.helper - DEBUG - helper 3840 Asked to redirect(302) to: https://mirror.ossplanet.net/qtproject/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtsensors-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:16:24,427 - aqt.helper - INFO - helper 3840 Redirected: mirror.ossplanet.net
+2025-10-06 12:16:36,186 - aqt.installer - INFO - installer 3840 Finished installation of qtsensors-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z in 13.74815720
+2025-10-06 12:16:36,213 - aqt.helper - DEBUG - helper 3840 Attempt to download checksum at https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtwebsockets-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z.sha256
+2025-10-06 12:16:36,267 - aqt.installer - INFO - installer 20976 Finished installation of qtimageformats-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z in 16.19858880
+2025-10-06 12:16:36,295 - aqt.helper - DEBUG - helper 20976 Attempt to download checksum at https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtwebchannel-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z.sha256
+2025-10-06 12:16:37,247 - aqt.helper - INFO - helper 3840 Downloading qtwebsockets...
+2025-10-06 12:16:37,247 - aqt.installer - DEBUG - installer 3840 Download URL: https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtwebsockets-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:16:37,283 - aqt.helper - INFO - helper 20976 Downloading qtwebchannel...
+2025-10-06 12:16:37,284 - aqt.installer - DEBUG - installer 20976 Download URL: https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtwebchannel-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:16:38,262 - aqt.helper - DEBUG - helper 3840 Asked to redirect(302) to: https://mirror.ossplanet.net/qtproject/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtwebsockets-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:16:38,263 - aqt.helper - INFO - helper 3840 Redirected: mirror.ossplanet.net
+2025-10-06 12:16:38,267 - aqt.helper - DEBUG - helper 20976 Asked to redirect(302) to: https://mirror.ossplanet.net/qtproject/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtwebchannel-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:16:38,267 - aqt.helper - INFO - helper 20976 Redirected: mirror.ossplanet.net
+2025-10-06 12:16:41,128 - aqt.installer - INFO - installer 3840 Finished installation of qtwebsockets-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z in 4.92440080
+2025-10-06 12:16:41,167 - aqt.helper - DEBUG - helper 3840 Attempt to download checksum at https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtserialport-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z.sha256
+2025-10-06 12:16:41,432 - aqt.installer - INFO - installer 20976 Finished installation of qtwebchannel-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z in 5.14607220
+2025-10-06 12:16:41,462 - aqt.helper - DEBUG - helper 20976 Attempt to download checksum at https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtlocation-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z.sha256
+2025-10-06 12:16:42,427 - aqt.helper - INFO - helper 3840 Downloading qtserialport...
+2025-10-06 12:16:42,427 - aqt.installer - DEBUG - installer 3840 Download URL: https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtserialport-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:16:42,734 - aqt.helper - INFO - helper 20976 Downloading qtlocation...
+2025-10-06 12:16:42,735 - aqt.installer - DEBUG - installer 20976 Download URL: https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtlocation-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:16:43,554 - aqt.helper - DEBUG - helper 3840 Asked to redirect(302) to: https://mirror.ossplanet.net/qtproject/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtserialport-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:16:43,555 - aqt.helper - INFO - helper 3840 Redirected: mirror.ossplanet.net
+2025-10-06 12:16:43,822 - aqt.helper - DEBUG - helper 20976 Asked to redirect(302) to: https://mirror.ossplanet.net/qtproject/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtlocation-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:16:43,822 - aqt.helper - INFO - helper 20976 Redirected: mirror.ossplanet.net
+2025-10-06 12:16:44,039 - aqt.installer - INFO - installer 5300 Finished installation of qtbase-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z in 37.77345110
+2025-10-06 12:16:44,068 - aqt.helper - DEBUG - helper 5300 Attempt to download checksum at https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtconnectivity-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z.sha256
+2025-10-06 12:16:44,488 - aqt.installer - INFO - installer 5304 Finished installation of qttools-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z in 27.59515480
+2025-10-06 12:16:44,518 - aqt.helper - DEBUG - helper 5304 Attempt to download checksum at https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtxmlpatterns-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z.sha256
+2025-10-06 12:16:45,202 - aqt.helper - INFO - helper 5300 Downloading qtconnectivity...
+2025-10-06 12:16:45,202 - aqt.installer - DEBUG - installer 5300 Download URL: https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtconnectivity-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:16:45,807 - aqt.helper - INFO - helper 5304 Downloading qtxmlpatterns...
+2025-10-06 12:16:45,808 - aqt.installer - DEBUG - installer 5304 Download URL: https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtxmlpatterns-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:16:46,424 - aqt.helper - DEBUG - helper 5300 Asked to redirect(302) to: https://mirror.ossplanet.net/qtproject/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtconnectivity-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:16:46,424 - aqt.helper - INFO - helper 5300 Redirected: mirror.ossplanet.net
+2025-10-06 12:16:46,943 - aqt.helper - DEBUG - helper 5304 Asked to redirect(302) to: https://mirror.ossplanet.net/qtproject/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtxmlpatterns-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:16:46,944 - aqt.helper - INFO - helper 5304 Redirected: mirror.ossplanet.net
+2025-10-06 12:16:48,702 - aqt.installer - INFO - installer 3840 Finished installation of qtserialport-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z in 7.54423990
+2025-10-06 12:16:48,729 - aqt.helper - DEBUG - helper 3840 Attempt to download checksum at https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtquickcontrols-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z.sha256
+2025-10-06 12:16:49,755 - aqt.helper - INFO - helper 3840 Downloading qtquickcontrols...
+2025-10-06 12:16:49,755 - aqt.installer - DEBUG - installer 3840 Download URL: https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtquickcontrols-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:16:50,024 - aqt.installer - INFO - installer 5300 Finished installation of qtconnectivity-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z in 5.96413760
+2025-10-06 12:16:50,072 - aqt.helper - DEBUG - helper 5300 Attempt to download checksum at https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtquickcontrols2-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z.sha256
+2025-10-06 12:16:50,757 - aqt.helper - DEBUG - helper 3840 Asked to redirect(302) to: https://mirror.ossplanet.net/qtproject/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtquickcontrols-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:16:50,757 - aqt.helper - INFO - helper 3840 Redirected: mirror.ossplanet.net
+2025-10-06 12:16:51,061 - aqt.helper - INFO - helper 5300 Downloading qtquickcontrols2...
+2025-10-06 12:16:51,062 - aqt.installer - DEBUG - installer 5300 Download URL: https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtquickcontrols2-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:16:52,143 - aqt.helper - DEBUG - helper 5300 Asked to redirect(302) to: https://mirror.ossplanet.net/qtproject/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtquickcontrols2-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:16:52,143 - aqt.helper - INFO - helper 5300 Redirected: mirror.ossplanet.net
+2025-10-06 12:16:52,465 - aqt.installer - INFO - installer 3840 Finished installation of qtquickcontrols-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z in 3.74471550
+2025-10-06 12:16:52,494 - aqt.helper - DEBUG - helper 3840 Attempt to download checksum at https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtwebview-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z.sha256
+2025-10-06 12:16:52,796 - aqt.installer - INFO - installer 20976 Finished installation of qtlocation-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z in 11.34410130
+2025-10-06 12:16:52,826 - aqt.helper - DEBUG - helper 20976 Attempt to download checksum at https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtscxml-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z.sha256
+2025-10-06 12:16:52,908 - aqt.installer - INFO - installer 5304 Finished installation of qtxmlpatterns-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z in 8.39713210
+2025-10-06 12:16:52,939 - aqt.helper - DEBUG - helper 5304 Attempt to download checksum at https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtspeech-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z.sha256
+2025-10-06 12:16:53,693 - aqt.helper - INFO - helper 3840 Downloading qtwebview...
+2025-10-06 12:16:53,694 - aqt.installer - DEBUG - installer 3840 Download URL: https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtwebview-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:16:53,999 - aqt.helper - INFO - helper 5304 Downloading qtspeech...
+2025-10-06 12:16:53,999 - aqt.installer - DEBUG - installer 20976 Download URL: https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtscxml-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:16:53,999 - aqt.installer - DEBUG - installer 5304 Download URL: https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtspeech-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:16:54,870 - aqt.helper - DEBUG - helper 3840 Asked to redirect(302) to: https://mirror.ossplanet.net/qtproject/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtwebview-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:16:54,871 - aqt.helper - INFO - helper 3840 Redirected: mirror.ossplanet.net
+2025-10-06 12:16:55,112 - aqt.helper - DEBUG - helper 5304 Asked to redirect(302) to: https://mirror.ossplanet.net/qtproject/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtspeech-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:16:55,113 - aqt.helper - INFO - helper 5304 Redirected: mirror.ossplanet.net
+2025-10-06 12:16:55,116 - aqt.helper - DEBUG - helper 20976 Asked to redirect(302) to: https://mirror.ossplanet.net/qtproject/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtscxml-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:16:55,116 - aqt.helper - INFO - helper 20976 Redirected: mirror.ossplanet.net
+2025-10-06 12:17:06,297 - aqt.installer - INFO - installer 5300 Finished installation of qtquickcontrols2-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z in 16.24024370
+2025-10-06 12:17:06,328 - aqt.helper - DEBUG - helper 5300 Attempt to download checksum at https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qt3d-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z.sha256
+2025-10-06 12:17:07,376 - aqt.helper - INFO - helper 5300 Downloading qt3d...
+2025-10-06 12:17:07,376 - aqt.installer - DEBUG - installer 5300 Download URL: https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qt3d-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:17:07,639 - aqt.installer - INFO - installer 3840 Finished installation of qtwebview-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z in 15.15366340
+2025-10-06 12:17:07,661 - aqt.helper - DEBUG - helper 3840 Attempt to download checksum at https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtserialbus-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z.sha256
+2025-10-06 12:17:07,821 - aqt.installer - INFO - installer 20976 Finished installation of qtscxml-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z in 15.00293980
+2025-10-06 12:17:07,845 - aqt.helper - DEBUG - helper 20976 Attempt to download checksum at https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtgamepad-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z.sha256
+2025-10-06 12:17:07,896 - aqt.installer - INFO - installer 5304 Finished installation of qtspeech-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z in 14.96529740
+2025-10-06 12:17:07,919 - aqt.helper - DEBUG - helper 5304 Attempt to download checksum at https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtremoteobjects-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z.sha256
+2025-10-06 12:17:08,446 - aqt.helper - DEBUG - helper 5300 Asked to redirect(302) to: https://mirror.ossplanet.net/qtproject/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qt3d-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:17:08,447 - aqt.helper - INFO - helper 5300 Redirected: mirror.ossplanet.net
+2025-10-06 12:17:08,674 - aqt.helper - INFO - helper 3840 Downloading qtserialbus...
+2025-10-06 12:17:08,675 - aqt.installer - DEBUG - installer 3840 Download URL: https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtserialbus-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:17:08,947 - aqt.helper - INFO - helper 20976 Downloading qtgamepad...
+2025-10-06 12:17:08,947 - aqt.helper - INFO - helper 5304 Downloading qtremoteobjects...
+2025-10-06 12:17:08,947 - aqt.installer - DEBUG - installer 5304 Download URL: https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtremoteobjects-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:17:08,947 - aqt.installer - DEBUG - installer 20976 Download URL: https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtgamepad-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:17:09,671 - aqt.helper - DEBUG - helper 3840 Asked to redirect(302) to: https://mirror.ossplanet.net/qtproject/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtserialbus-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:17:09,672 - aqt.helper - INFO - helper 3840 Redirected: mirror.ossplanet.net
+2025-10-06 12:17:09,976 - aqt.helper - DEBUG - helper 5304 Asked to redirect(302) to: https://mirror.ossplanet.net/qtproject/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtremoteobjects-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:17:09,977 - aqt.helper - DEBUG - helper 20976 Asked to redirect(302) to: https://mirror.ossplanet.net/qtproject/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602qtgamepad-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z
+2025-10-06 12:17:09,977 - aqt.helper - INFO - helper 5304 Redirected: mirror.ossplanet.net
+2025-10-06 12:17:09,977 - aqt.helper - INFO - helper 20976 Redirected: mirror.ossplanet.net
+2025-10-06 12:17:10,840 - aqt.installer - INFO - installer 3840 Finished installation of qtserialbus-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z in 3.18495330
+2025-10-06 12:17:11,068 - aqt.installer - INFO - installer 5304 Finished installation of qtremoteobjects-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z in 3.15631290
+2025-10-06 12:17:11,101 - aqt.helper - DEBUG - helper 5304 Attempt to download checksum at https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602d3dcompiler_47-x64.7z.sha256
+2025-10-06 12:17:11,150 - aqt.installer - INFO - installer 20976 Finished installation of qtgamepad-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z in 3.31270160
+2025-10-06 12:17:12,163 - aqt.helper - INFO - helper 5304 Downloading d3dcompiler_47...
+2025-10-06 12:17:12,164 - aqt.installer - DEBUG - installer 5304 Download URL: https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602d3dcompiler_47-x64.7z
+2025-10-06 12:17:13,255 - aqt.helper - DEBUG - helper 5304 Asked to redirect(302) to: https://mirror.ossplanet.net/qtproject/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602d3dcompiler_47-x64.7z
+2025-10-06 12:17:13,255 - aqt.helper - INFO - helper 5304 Redirected: mirror.ossplanet.net
+2025-10-06 12:17:14,479 - aqt.installer - INFO - installer 5300 Finished installation of qt3d-Windows-Windows_10-MSVC2019-Windows-Windows_10-X86_64.7z in 8.16245490
+2025-10-06 12:17:17,636 - aqt.installer - INFO - installer 5304 Finished installation of d3dcompiler_47-x64.7z in 6.54446280
+2025-10-06 12:17:17,684 - aqt.helper - DEBUG - helper 5304 Attempt to download checksum at https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602opengl32sw-64-mesa_12_0_rc2.7z.sha256
+2025-10-06 12:17:18,738 - aqt.helper - INFO - helper 5304 Downloading opengl32sw...
+2025-10-06 12:17:18,739 - aqt.installer - DEBUG - installer 5304 Download URL: https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602opengl32sw-64-mesa_12_0_rc2.7z
+2025-10-06 12:17:19,778 - aqt.helper - DEBUG - helper 5304 Asked to redirect(302) to: https://mirror.ossplanet.net/qtproject/online/qtsdkrepository/windows_x86/desktop/qt5_5152/qt.qt5.5152.win64_msvc2019_64/5.15.2-0-202011130602opengl32sw-64-mesa_12_0_rc2.7z
+2025-10-06 12:17:19,778 - aqt.helper - INFO - helper 5304 Redirected: mirror.ossplanet.net
+2025-10-06 12:17:26,135 - aqt.installer - INFO - installer 5304 Finished installation of opengl32sw-64-mesa_12_0_rc2.7z in 8.46738260
+2025-10-06 12:17:26,653 - aqt.updater - INFO - updater 32508 Patching C:\Qt\5.15.2\msvc2019_64\bin\qmake.exe
+2025-10-06 12:17:26,679 - aqt.main - INFO - installer 32508 Finished installation
+2025-10-06 12:17:26,679 - aqt.main - INFO - installer 32508 Time elapsed: 86.48757670 second
+2025-10-06 12:53:12,085 - aqt.helper - DEBUG - helper 25624 Attempt to download checksum at https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/tools_ifw/Updates.xml.sha256
+2025-10-06 12:53:22,421 - aqt.main - INFO - installer 9272 aqtinstall(aqt) v3.1.7 on Python 3.13.5 [CPython MSC v.1929 64 bit (AMD64)]
+2025-10-06 12:53:22,421 - aqt.main - WARNING - installer 9272 Specified target combination "windows tools_ifw 4.7.0" did not exist when this version of aqtinstall was released. This may not install properly, but we will try our best.
+2025-10-06 12:53:22,423 - aqt.helper - DEBUG - helper 9272 Attempt to download checksum at https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/tools_ifw/Updates.xml.sha256
+2025-10-06 12:53:24,685 - aqt.main - ERROR - installer 9272 The package '4.7.0' was not found while parsing XML of package information!
+==============================Suggested follow-up:==============================
+* Please use 'aqt list-tool windows desktop tools_ifw' to show tool variants available.
+2025-10-06 12:53:31,677 - aqt.main - INFO - installer 30872 aqtinstall(aqt) v3.1.7 on Python 3.13.5 [CPython MSC v.1929 64 bit (AMD64)]
+2025-10-06 12:53:31,678 - aqt.main - WARNING - installer 30872 Specified target combination "windows tools_ifw 4.6.1" did not exist when this version of aqtinstall was released. This may not install properly, but we will try our best.
+2025-10-06 12:53:31,680 - aqt.helper - DEBUG - helper 30872 Attempt to download checksum at https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/tools_ifw/Updates.xml.sha256
+2025-10-06 12:53:33,953 - aqt.main - ERROR - installer 30872 The package '4.6.1' was not found while parsing XML of package information!
+==============================Suggested follow-up:==============================
+* Please use 'aqt list-tool windows desktop tools_ifw' to show tool variants available.
+2025-10-06 12:53:41,877 - aqt.main - INFO - installer 10056 aqtinstall(aqt) v3.1.7 on Python 3.13.5 [CPython MSC v.1929 64 bit (AMD64)]
+2025-10-06 12:53:41,878 - aqt.main - WARNING - installer 10056 Specified target combination "windows tools_ifw 4.7" did not exist when this version of aqtinstall was released. This may not install properly, but we will try our best.
+2025-10-06 12:53:41,880 - aqt.helper - DEBUG - helper 10056 Attempt to download checksum at https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/tools_ifw/Updates.xml.sha256
+2025-10-06 12:53:44,240 - aqt.main - ERROR - installer 10056 The package '4.7' was not found while parsing XML of package information!
+==============================Suggested follow-up:==============================
+* Please use 'aqt list-tool windows desktop tools_ifw' to show tool variants available.
+2025-10-06 12:53:54,398 - aqt.main - INFO - installer 30108 aqtinstall(aqt) v3.1.7 on Python 3.13.5 [CPython MSC v.1929 64 bit (AMD64)]
+2025-10-06 12:53:54,399 - aqt.main - WARNING - installer 30108 Specified target combination "windows tools_ifw qt.tools.ifw.47" did not exist when this version of aqtinstall was released. This may not install properly, but we will try our best.
+2025-10-06 12:53:54,402 - aqt.helper - DEBUG - helper 30108 Attempt to download checksum at https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/tools_ifw/Updates.xml.sha256
+2025-10-06 12:53:59,147 - aqt.helper - DEBUG - helper 7740 Attempt to download checksum at https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/tools_ifw/qt.tools.ifw.47/4.7.0-0-202402150941ifw-win-x86.7z.sha256
+2025-10-06 12:54:00,275 - aqt.helper - INFO - helper 7740 Downloading qt.tools.ifw.47...
+2025-10-06 12:54:00,276 - aqt.installer - DEBUG - installer 7740 Download URL: https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/tools_ifw/qt.tools.ifw.47/4.7.0-0-202402150941ifw-win-x86.7z
+2025-10-06 12:54:01,502 - aqt.helper - DEBUG - helper 7740 Asked to redirect(302) to: https://mirror.ossplanet.net/qtproject/online/qtsdkrepository/windows_x86/desktop/tools_ifw/qt.tools.ifw.47/4.7.0-0-202402150941ifw-win-x86.7z
+2025-10-06 12:54:01,505 - aqt.helper - INFO - helper 7740 Redirected: mirror.ossplanet.net
+2025-10-06 12:54:29,149 - aqt.installer - INFO - installer 7740 Finished installation of ifw-win-x86.7z in 30.01393970
+2025-10-06 12:54:29,297 - aqt.main - INFO - installer 30108 Finished installation
+2025-10-06 12:54:29,298 - aqt.main - INFO - installer 30108 Time elapsed: 34.89973090 second
