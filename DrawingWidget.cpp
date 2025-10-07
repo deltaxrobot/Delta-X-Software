@@ -13,29 +13,70 @@ DrawingWidget::~DrawingWidget()
 }
 
 
+void DrawingWidget::showEvent(QShowEvent *event)
+{
+    QLabel::showEvent(event);
+
+    gridInitialized = false;
+    InitGrid();
+}
+
+
+void DrawingWidget::resizeEvent(QResizeEvent *event)
+{
+    QLabel::resizeEvent(event);
+
+    gridInitialized = false;
+    InitGrid();
+}
+
+
 void DrawingWidget::InitGrid()
 {
+    if (width() <= 0 || height() <= 0) {
+        return;
+    }
+
 	int h = height() * (1.0f / PRECISION);
+    if (h <= 0) {
+        return;
+    }
 	QPixmap pi = QPixmap(h, h);
 	pi.fill(QColor(0, 0, 0, 0));
 
-    QString currentPaint = QCoreApplication::applicationDirPath();
+    QPixmap pix(QStringLiteral(":/icon/Circle-limit.png"));
+    QPixmap pix1(QStringLiteral(":/icon/grid-10-pixel.png"));
+    QPixmap pix2(QStringLiteral(":/icon/grid-axis.png"));
 
-    QPixmap pix = QPixmap(currentPaint + "/icon/Circle-limit.png");
-    QPixmap pix1 = QPixmap(currentPaint + "/icon/grid-10-pixel.png");
-    QPixmap pix2 = QPixmap(currentPaint + "/icon/grid-axis.png");
-		
-	QPainter p(&pi);
-	
-	p.begin(this);
-	p.drawPixmap(0, 0, h ,h, pix);
-	p.drawPixmap(0, 0, h, h, pix1);
-	p.drawPixmap(0, 0, h, h, pix2);
-	p.end();
+    if (pix1.isNull()) {
+        qWarning() << "Failed to load grid background from resource; attempting fallback";
+        QString appDir = QCoreApplication::applicationDirPath();
+        pix1 = QPixmap(appDir + "/icon/grid-10-pixel.png");
+    }
+    if (pix2.isNull()) {
+        qWarning() << "Failed to load axis background from resource; attempting fallback";
+        QString appDir = QCoreApplication::applicationDirPath();
+        pix2 = QPixmap(appDir + "/icon/grid-axis.png");
+    }
+
+    QPainter p(&pi);
+
+    p.drawPixmap(0, 0, h ,h, pix);
+    if (!pix1.isNull()) {
+        p.drawPixmap(0, 0, h, h, pix1);
+    } else {
+        qWarning() << "Grid pixmap is null";
+    }
+    if (!pix2.isNull()) {
+        p.drawPixmap(0, 0, h, h, pix2);
+    } else {
+        qWarning() << "Axis pixmap is null";
+    }
 		
 	setPixmap(pi);
 	setScaledContents(true);
 
+    gridInitialized = true;
 	update();
 }
 

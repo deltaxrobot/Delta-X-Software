@@ -5937,7 +5937,7 @@ public:
         scrollArea_6->setWidgetResizable(true);
         scrollAreaWidgetContents_6 = new QWidget();
         scrollAreaWidgetContents_6->setObjectName(QString::fromUtf8("scrollAreaWidgetContents_6"));
-        scrollAreaWidgetContents_6->setGeometry(QRect(0, -534, 837, 1800));
+        scrollAreaWidgetContents_6->setGeometry(QRect(0, -249, 837, 1800));
         scrollAreaWidgetContents_6->setMinimumSize(QSize(450, 1800));
         scrollAreaWidgetContents_6->setMaximumSize(QSize(16777215, 16777215));
         scrollAreaWidgetContents_6->setStyleSheet(QString::fromUtf8("QWidget[background='container']\n"
@@ -5975,22 +5975,7 @@ public:
         frame_4->setSizePolicy(sizePolicy6);
         frame_4->setMinimumSize(QSize(0, 75));
         frame_4->setMaximumSize(QSize(16777215, 16777215));
-        frame_4->setStyleSheet(QString::fromUtf8("/*QFrame\n"
-"{\n"
-"	background-color: rgb(255, 255, 255);\n"
-"}\n"
-"\n"
-"QToolButton\n"
-"{\n"
-"	border: 1px solid rgb(131, 131, 131);\n"
-"	border-radius: 5px;\n"
-"}\n"
-"\n"
-"QToolButton::hover\n"
-"{\n"
-"	border: 1px solid rgb(32, 140, 255);\n"
-"	background-color: rgb(217, 240, 255);\n"
-"}*/"));
+        frame_4->setStyleSheet(QString::fromUtf8("background-color: rgb(38, 38, 41);"));
         frame_4->setFrameShape(QFrame::StyledPanel);
         frame_4->setFrameShadow(QFrame::Raised);
         verticalLayout_21 = new QVBoxLayout(frame_4);
@@ -6156,22 +6141,7 @@ public:
         frame_5->setSizePolicy(sizePolicy3);
         frame_5->setMinimumSize(QSize(0, 75));
         frame_5->setMaximumSize(QSize(16777215, 16777215));
-        frame_5->setStyleSheet(QString::fromUtf8("/*QFrame\n"
-"{\n"
-"	background-color: rgb(255, 255, 255);\n"
-"}\n"
-"\n"
-"QToolButton\n"
-"{\n"
-"	border: 1px solid rgb(131, 131, 131);\n"
-"	border-radius: 5px;\n"
-"}\n"
-"\n"
-"QToolButton::hover\n"
-"{\n"
-"	border: 1px solid rgb(32, 140, 255);\n"
-"	background-color: rgb(217, 240, 255);\n"
-"}*/"));
+        frame_5->setStyleSheet(QString::fromUtf8("background-color: rgb(38, 38, 41);"));
         frame_5->setFrameShape(QFrame::StyledPanel);
         frame_5->setFrameShadow(QFrame::Raised);
         verticalLayout_47 = new QVBoxLayout(frame_5);
@@ -6537,7 +6507,7 @@ public:
         frame_6->setSizePolicy(sizePolicy3);
         frame_6->setMinimumSize(QSize(0, 75));
         frame_6->setMaximumSize(QSize(16777215, 16777215));
-        frame_6->setStyleSheet(QString::fromUtf8(""));
+        frame_6->setStyleSheet(QString::fromUtf8("background-color: rgb(38, 38, 41);"));
         frame_6->setFrameShape(QFrame::StyledPanel);
         frame_6->setFrameShadow(QFrame::Raised);
         verticalLayout_48 = new QVBoxLayout(frame_6);
@@ -6839,7 +6809,7 @@ public:
         scrollArea_2->setWidgetResizable(true);
         wgJoggingScrollWidget = new QWidget();
         wgJoggingScrollWidget->setObjectName(QString::fromUtf8("wgJoggingScrollWidget"));
-        wgJoggingScrollWidget->setGeometry(QRect(0, -1871, 833, 2955));
+        wgJoggingScrollWidget->setGeometry(QRect(0, 0, 833, 2965));
         wgJoggingScrollWidget->setMinimumSize(QSize(0, 2000));
         wgJoggingScrollWidget->setMaximumSize(QSize(16777215, 16777215));
         wgJoggingScrollWidget->setStyleSheet(QString::fromUtf8("QWidget#wgJoggingScrollWidget\n"
