@@ -18,7 +18,6 @@
 #include <QComboBox>
 #include <QCheckBox>
 #include <QTableWidget>
-#include <QTextEdit>
 #include <QProgressBar>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -28,6 +27,7 @@
 #include <QApplication>
 #include <QClipboard>
 #include <QInputDialog> // Added for input dialogs
+#include <QStringList>
 
 CloudPointToolController::CloudPointToolController(RobotWindow* parent)
     : QObject(parent)
@@ -41,7 +41,10 @@ CloudPointToolController::CloudPointToolController(RobotWindow* parent)
     , m_gridResolutionSpinBox(nullptr)
     , m_autoRebuildCheckBox(nullptr)
     , m_validationProgressBar(nullptr)
-    , m_statsTextEdit(nullptr)
+    , m_pointCountLabel(nullptr)
+    , m_avgErrorLabel(nullptr)
+    , m_maxErrorLabel(nullptr)
+    , m_coverageLabel(nullptr)
     , m_testConfidenceEdit(nullptr)
     , m_testErrorEdit(nullptr)
     , m_testImageXEdit(nullptr)
@@ -161,6 +164,14 @@ void CloudPointToolController::initializeUI(QWidget* parentWidget)
     // File operation buttons
     m_saveButton = robotWindow->findChild<QPushButton*>("pbSaveCloudMapping");
     m_loadButton = robotWindow->findChild<QPushButton*>("pbLoadCloudMapping");
+    m_exportButton = robotWindow->findChild<QPushButton*>("pbExportToVariables");
+    m_importButton = robotWindow->findChild<QPushButton*>("pbImportFromVariables");
+    
+    // Stats labels
+    m_pointCountLabel = robotWindow->findChild<QLabel*>("lbPointCount");
+    m_avgErrorLabel = robotWindow->findChild<QLabel*>("lbAvgError");
+    m_maxErrorLabel = robotWindow->findChild<QLabel*>("lbMaxError");
+    m_coverageLabel = robotWindow->findChild<QLabel*>("lbCoverage");
     
     // Find frames (for potential future use)
     QFrame* calibrationFrame = robotWindow->findChild<QFrame*>("frameCloudPointCalibration");
@@ -169,6 +180,23 @@ void CloudPointToolController::initializeUI(QWidget* parentWidget)
     QFrame* statsFrame = robotWindow->findChild<QFrame*>("frameCloudPointStats");
     QFrame* buttonsFrame = robotWindow->findChild<QFrame*>("frameCloudPointButtons");
     QFrame* filesFrame = robotWindow->findChild<QFrame*>("frameCloudPointFiles");
+    
+    // Try to reuse existing validation progress bar or create one programmatically
+    m_validationProgressBar = robotWindow->findChild<QProgressBar*>("pbCloudValidationProgress");
+    if (!m_validationProgressBar && statsFrame) {
+        if (QGridLayout* statsLayout = qobject_cast<QGridLayout*>(statsFrame->layout())) {
+            m_validationProgressBar = new QProgressBar(statsFrame);
+            m_validationProgressBar->setObjectName("pbCloudValidationProgress");
+            m_validationProgressBar->setRange(0, 100);
+            m_validationProgressBar->setValue(0);
+            m_validationProgressBar->setVisible(false);
+            statsLayout->addWidget(m_validationProgressBar, 1, 0, 1, 9);
+        }
+    } else if (m_validationProgressBar) {
+        m_validationProgressBar->setRange(0, 100);
+        m_validationProgressBar->setValue(0);
+        m_validationProgressBar->setVisible(false);
+    }
     
     // Log what we found vs what we expected
     qDebug() << "=== Cloud Point Mapping UI Elements Status ===";
@@ -200,11 +228,25 @@ void CloudPointToolController::initializeUI(QWidget* parentWidget)
              << "/" << (statsFrame != nullptr) << "/" << (buttonsFrame != nullptr) 
              << "/" << (filesFrame != nullptr);
     
-    qDebug() << "Missing Elements (need to be created dynamically or added to .ui):";
-    qDebug() << "  - Input fields for calibration point coordinates (Image X/Y/Z, Real X/Y/Z, Confidence, Label)";
-    qDebug() << "  - Export/Import to VariableManager buttons";
-    qDebug() << "  - Statistics display area";
-    qDebug() << "  - Progress bars for validation";
+    QStringList missingElements;
+    if (!m_updatePointButton) {
+        missingElements << "Calibration point update controls";
+    }
+    if (!m_exportButton || !m_importButton) {
+        missingElements << "VariableManager export/import buttons";
+    }
+    if (!m_pointCountLabel || !m_avgErrorLabel || !m_maxErrorLabel || !m_coverageLabel) {
+        missingElements << "Statistics display labels";
+    }
+    if (!m_validationProgressBar) {
+        missingElements << "Validation progress bar";
+    }
+    if (!missingElements.isEmpty()) {
+        qDebug() << "Missing Elements (need to be created dynamically or added to .ui):";
+        for (const QString& item : missingElements) {
+            qDebug() << "  -" << item;
+        }
+    }
     
     // Connect all signals to existing UI elements
     connectSignals();
@@ -535,6 +577,12 @@ void CloudPointToolController::connectSignals()
     if (m_loadButton) {
         connect(m_loadButton, &QPushButton::clicked, this, &CloudPointToolController::loadMapping);
     }
+    if (m_exportButton) {
+        connect(m_exportButton, &QPushButton::clicked, this, &CloudPointToolController::exportToVariableManager);
+    }
+    if (m_importButton) {
+        connect(m_importButton, &QPushButton::clicked, this, &CloudPointToolController::importFromVariableManager);
+    }
     
     // Settings (exists in UI)
     if (m_interpolationMethodCombo) {
@@ -767,10 +815,12 @@ void CloudPointToolController::validateMapping()
         return;
     }
     
-    // Show progress bar
-    m_validationProgressBar->setVisible(true);
-    m_validationProgressBar->setRange(0, 100);
-    m_validationProgressBar->setValue(0);
+    // Show progress bar if available
+    if (m_validationProgressBar) {
+        m_validationProgressBar->setVisible(true);
+        m_validationProgressBar->setRange(0, 100);
+        m_validationProgressBar->setValue(0);
+    }
     
     // Start validation timer
     m_validationTimer->start();
@@ -780,7 +830,9 @@ void CloudPointToolController::validateMapping()
     
     // Stop timer
     m_validationTimer->stop();
-    m_validationProgressBar->setVisible(false);
+    if (m_validationProgressBar) {
+        m_validationProgressBar->setVisible(false);
+    }
     
     // Update display
     updateStatsDisplay();
@@ -901,10 +953,28 @@ void CloudPointToolController::exportToVariableManager()
         return;
     }
     
-    QString variableName = m_variableNameEdit->text().trimmed();
-    if (variableName.isEmpty()) {
-        variableName = getDefaultVariableName();
-        m_variableNameEdit->setText(variableName);
+    QString variableName;
+    if (m_variableNameEdit) {
+        variableName = m_variableNameEdit->text().trimmed();
+        if (variableName.isEmpty()) {
+            variableName = getDefaultVariableName();
+            m_variableNameEdit->setText(variableName);
+        }
+    } else {
+        bool ok = false;
+        variableName = QInputDialog::getText(
+            m_parent,
+            "Export Cloud Mapping",
+            "Variable name:",
+            QLineEdit::Normal,
+            getDefaultVariableName(),
+            &ok).trimmed();
+        if (!ok) {
+            return;
+        }
+        if (variableName.isEmpty()) {
+            variableName = getDefaultVariableName();
+        }
     }
     
     if (m_mapper->exportToVariableManager(variableName)) {
@@ -916,10 +986,28 @@ void CloudPointToolController::exportToVariableManager()
 
 void CloudPointToolController::importFromVariableManager()
 {
-    QString variableName = m_variableNameEdit->text().trimmed();
-    if (variableName.isEmpty()) {
-        variableName = getDefaultVariableName();
-        m_variableNameEdit->setText(variableName);
+    QString variableName;
+    if (m_variableNameEdit) {
+        variableName = m_variableNameEdit->text().trimmed();
+        if (variableName.isEmpty()) {
+            variableName = getDefaultVariableName();
+            m_variableNameEdit->setText(variableName);
+        }
+    } else {
+        bool ok = false;
+        variableName = QInputDialog::getText(
+            m_parent,
+            "Import Cloud Mapping",
+            "Variable name:",
+            QLineEdit::Normal,
+            getDefaultVariableName(),
+            &ok).trimmed();
+        if (!ok) {
+            return;
+        }
+        if (variableName.isEmpty()) {
+            variableName = getDefaultVariableName();
+        }
     }
     
     if (m_mapper->importFromVariableManager(variableName)) {
@@ -964,34 +1052,30 @@ void CloudPointToolController::updateCalibrationTable()
 void CloudPointToolController::updateStatsDisplay()
 {
     // Check if objects are still valid before updating
-    if (!m_mapper || !m_statsTextEdit) {
+    if (!m_mapper) {
         return;
     }
     
     CloudPointMapper::MappingStats stats = m_mapper->getMappingStats();
     
-    QString statsText;
-    statsText += QString("Points: %1\n").arg(stats.totalPoints);
-    statsText += QString("Average Error: %1 mm\n").arg(stats.averageError, 0, 'f', 2);
-    statsText += QString("Max Error: %1 mm\n").arg(stats.maxError, 0, 'f', 2);
-    statsText += QString("Min Error: %1 mm\n").arg(stats.minError, 0, 'f', 2);
-    statsText += QString("Std Deviation: %1 mm\n").arg(stats.stdDeviation, 0, 'f', 2);
-    statsText += QString("Coverage: %1%\n").arg(stats.coverage, 0, 'f', 1);
-    statsText += QString("Workspace: (%1,%2) to (%3,%4)\n")
-                .arg(stats.workspaceMin.x(), 0, 'f', 1)
-                .arg(stats.workspaceMin.y(), 0, 'f', 1)
-                .arg(stats.workspaceMax.x(), 0, 'f', 1)
-                .arg(stats.workspaceMax.y(), 0, 'f', 1);
-    statsText += QString("Valid: %1").arg(stats.isValid ? "Yes" : "No");
-    
-    m_statsTextEdit->setPlainText(statsText);
+    if (m_pointCountLabel) {
+        m_pointCountLabel->setText(QString::number(stats.totalPoints));
+    }
+    if (m_avgErrorLabel) {
+        m_avgErrorLabel->setText(QString::number(stats.averageError, 'f', 2));
+    }
+    if (m_maxErrorLabel) {
+        m_maxErrorLabel->setText(QString::number(stats.maxError, 'f', 2));
+    }
+    if (m_coverageLabel) {
+        m_coverageLabel->setText(QString::number(stats.coverage, 'f', 1) + QLatin1String("%"));
+    }
 }
 
 void CloudPointToolController::updateButtonStates()
 {
     // Check if objects are still valid before updating
-    if (!m_mapper || !m_calibrationTable || !m_removePointButton || !m_updatePointButton || 
-        !m_clearAllButton || !m_buildGridButton || !m_validateButton) {
+    if (!m_mapper || !m_calibrationTable) {
         return;
     }
     
@@ -999,16 +1083,17 @@ void CloudPointToolController::updateButtonStates()
     bool hasSelection = m_calibrationTable->currentRow() >= 0;
     bool hasEnoughPoints = m_mapper->getPointCount() >= 3;
     
-    m_removePointButton->setEnabled(hasSelection);
-    m_updatePointButton->setEnabled(hasSelection);
-    m_clearAllButton->setEnabled(hasPoints);
-    m_buildGridButton->setEnabled(hasEnoughPoints);
-    m_validateButton->setEnabled(m_mapper->getPointCount() >= 5);
-    m_transformTestButton->setEnabled(hasEnoughPoints);
-    m_saveButton->setEnabled(hasPoints);
-    m_exportButton->setEnabled(hasPoints);
-    m_visualizeButton->setEnabled(hasEnoughPoints);
-    m_statsButton->setEnabled(hasPoints);
+    if (m_removePointButton) m_removePointButton->setEnabled(hasSelection);
+    if (m_updatePointButton) m_updatePointButton->setEnabled(hasSelection);
+    if (m_clearAllButton) m_clearAllButton->setEnabled(hasPoints);
+    if (m_buildGridButton) m_buildGridButton->setEnabled(hasEnoughPoints);
+    if (m_validateButton) m_validateButton->setEnabled(m_mapper->getPointCount() >= 5);
+    if (m_transformTestButton) m_transformTestButton->setEnabled(hasEnoughPoints);
+    if (m_saveButton) m_saveButton->setEnabled(hasPoints);
+    if (m_exportButton) m_exportButton->setEnabled(hasPoints);
+    if (m_importButton) m_importButton->setEnabled(true);
+    if (m_visualizeButton) m_visualizeButton->setEnabled(hasEnoughPoints);
+    if (m_statsButton) m_statsButton->setEnabled(hasPoints);
 }
 
 void CloudPointToolController::clearInputs()

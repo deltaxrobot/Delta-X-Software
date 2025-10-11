@@ -10,7 +10,6 @@
 #include <QSpinBox>
 #include <QDoubleSpinBox>
 #include <QProgressBar>
-#include <QTextEdit>
 #include <QTimer>
 #include <QClipboard>
 #include <QApplication>
@@ -235,7 +234,10 @@ private:
     QSpinBox* m_gridResolutionSpinBox;              ///< Grid resolution input
     QCheckBox* m_autoRebuildCheckBox;               ///< Auto-rebuild checkbox
     QProgressBar* m_validationProgressBar;          ///< Validation progress bar
-    QTextEdit* m_statsTextEdit;                     ///< Statistics display
+    QLabel* m_pointCountLabel;                      ///< Point count display
+    QLabel* m_avgErrorLabel;                        ///< Average error display
+    QLabel* m_maxErrorLabel;                        ///< Maximum error display
+    QLabel* m_coverageLabel;                        ///< Coverage display
     
     // Test result displays
     QLineEdit* m_testConfidenceEdit;                ///< Test confidence display  
