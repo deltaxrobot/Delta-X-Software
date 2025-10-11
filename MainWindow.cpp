@@ -207,7 +207,7 @@ void MainWindow::InitProjectUX()
 
 void MainWindow::InitVisible()
 {
-//    ui->tbSetting->setVisible(false);
+    ui->tbSetting->setVisible(false);
     ui->tbHome->setVisible(false);
     ui->tbCommunity->setVisible(false);
     ui->tbDocument->setVisible(false);
