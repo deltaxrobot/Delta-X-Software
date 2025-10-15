@@ -5937,7 +5937,7 @@ public:
         scrollArea_6->setWidgetResizable(true);
         scrollAreaWidgetContents_6 = new QWidget();
         scrollAreaWidgetContents_6->setObjectName(QString::fromUtf8("scrollAreaWidgetContents_6"));
-        scrollAreaWidgetContents_6->setGeometry(QRect(0, -249, 837, 1800));
+        scrollAreaWidgetContents_6->setGeometry(QRect(0, -607, 837, 1800));
         scrollAreaWidgetContents_6->setMinimumSize(QSize(450, 1800));
         scrollAreaWidgetContents_6->setMaximumSize(QSize(16777215, 16777215));
         scrollAreaWidgetContents_6->setStyleSheet(QString::fromUtf8("QWidget[background='container']\n"

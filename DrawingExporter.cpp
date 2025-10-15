@@ -1,7 +1,14 @@
-#include "DrawingExporter.h"
+﻿#include "DrawingExporter.h"
+
+#include <QMessageBox>
+#include <QtMath>
+#include <algorithm>
+#include <cmath>
 
 DrawingExporter::DrawingExporter(QWidget *parent)
-	: QWidget(parent)
+	: QWidget(parent),
+      originPixmap(nullptr),
+      effectPixmap(nullptr)
 {
 
 }
@@ -23,6 +30,7 @@ void DrawingExporter::SetDrawingParameterPointer(QLabel *imageForDrawing, QLabel
 	lbImageForDrawing->setScaledContents(true);
 
     initEvent();
+    updateDrawingAreaScale();
 }
 
 void DrawingExporter::SetGcodeExportParameterPointer(QLineEdit *safeZHeight, QLineEdit *travelSpeed, QLineEdit *drawingSpeed, QLineEdit *drawingAcceleration)
@@ -38,11 +46,25 @@ void DrawingExporter::SetDrawingPointInPlane(QLineEdit *point1, QLineEdit *point
     lePoint1 = point1;
     lePoint2 = point2;
     lePoint3 = point3;
+
+    if (lePoint1) {
+        connect(lePoint1, &QLineEdit::textChanged, this, &DrawingExporter::HandlePlanePointEdited);
+    }
+    if (lePoint2) {
+        connect(lePoint2, &QLineEdit::textChanged, this, &DrawingExporter::HandlePlanePointEdited);
+    }
+    if (lePoint3) {
+        connect(lePoint3, &QLineEdit::textChanged, this, &DrawingExporter::HandlePlanePointEdited);
+    }
+
+    refreshPlaneMarkers();
 }
 
 void DrawingExporter::SetDrawingAreaWidget(DrawingWidget * drawingWidget)
 {
     drawingArea = drawingWidget;
+    updateDrawingAreaScale();
+    refreshPlaneMarkers();
 }
 
 void DrawingExporter::SetGcodeEditor(QTextEdit *gcodeEditor)
@@ -170,266 +192,348 @@ void DrawingExporter::ConvertSVGToArea(QString fileName)
     // Load file SVG
     svgWidget.load(fileName);
 
-    // Hiển thị widget
+    // Hiá»ƒn thá»‹ widget
     svgWidget.show();
 }
 
 void DrawingExporter::ExportGcodes()
 {
-    // Lấy giá trị từ QLineEdit và phân tích tọa độ
-    QStringList point1 = lePoint1->text().split(",");
-    QStringList point2 = lePoint2->text().split(",");
-    QStringList point3 = lePoint3->text().split(",");
-
-    if (point1.size() < 3 || point2.size() < 3 || point3.size() < 3) {
-        qDebug(nullptr, "Error", "Invalid coordinates for points A, B, or C.");
+    if (!pteGcodeEditor) {
         return;
     }
 
-    float xA = point1[0].toFloat();
-    float yA = point1[1].toFloat();
-    float zA = point1[2].toFloat();
+    updateDrawingAreaScale();
 
-    float xB = point2[0].toFloat();
-    float yB = point2[1].toFloat();
-    float zB = point2[2].toFloat();
+    auto requirePoint = [&](QLineEdit* lineEdit, const QString& label, QVector3D& outPoint) -> bool {
+        if (!lineEdit) {
+            showInputError(tr("Missing input for point %1.").arg(label));
+            return false;
+        }
 
-    float xC = point3[0].toFloat();
-    float yC = point3[1].toFloat();
-    float zC = point3[2].toFloat();
+        QString errorMessage;
+        if (!parsePoint(lineEdit->text(), outPoint, &errorMessage)) {
+            showInputError(tr("Invalid coordinates for point %1: %2").arg(label, errorMessage));
+            return false;
+        }
 
-    // Tính vector pháp tuyến của mặt phẳng
-    QVector3D v1(xB - xA, yB - yA, zB - zA);
-    QVector3D v2(xC - xA, yC - yA, zC - zA);
+        return true;
+    };
+
+    QVector3D pointA;
+    QVector3D pointB;
+    QVector3D pointC;
+
+    if (!requirePoint(lePoint1, QStringLiteral("A"), pointA) ||
+        !requirePoint(lePoint2, QStringLiteral("B"), pointB) ||
+        !requirePoint(lePoint3, QStringLiteral("C"), pointC)) {
+        if (drawingArea) {
+            drawingArea->SetPlaneMarkers({});
+        }
+        return;
+    }
+
+    QVector<QVector3D> planePoints{pointA, pointB, pointC};
+    updatePlaneMarkers(planePoints);
+
+    QVector3D v1 = pointB - pointA;
+    QVector3D v2 = pointC - pointA;
     QVector3D normal = QVector3D::crossProduct(v1, v2);
+
+    if (normal.lengthSquared() < 1e-6f) {
+        showInputError(tr("Points A, B, and C must not be collinear."));
+        return;
+    }
 
     float A = normal.x();
     float B = normal.y();
     float C = normal.z();
-    float D = -(A * xA + B * yA + C * zA);
 
-    // Hàm tính toán giá trị Z trên mặt phẳng
-    auto calculateZ = [&](float x, float y) -> float {
-        if (C == 0.0f) return zA; // Trường hợp mặt phẳng không hợp lệ
+    if (qFuzzyIsNull(C)) {
+        showInputError(tr("Cannot compute Z because the plane normal has zero Z component."));
+        return;
+    }
+
+    float D = -(A * pointA.x() + B * pointA.y() + C * pointA.z());
+
+    auto planeZAt = [&](float x, float y) -> float {
         return -(A * x + B * y + D) / C;
     };
 
-    pteGcodeEditor->setPlainText("");
+    bool ok = false;
 
-    float downZ = leSafeZHeight->text().toFloat();
-    float upZ = downZ + 10;
-    float safeZ = downZ + 50;
-    int travelSpeed = leTravelSpeed->text().toInt();
-    int drawingSpeed = leDrawingSpeed->text().toInt();
-    int drawingAcceleration = leDrawingAcceleration->text().toInt();
+    const float referencePlaneZ = (pointA.z() + pointB.z() + pointC.z()) / 3.0f;
 
-    QString gcodes = "G28\n";
-
-    if (cbDrawingEffector->currentText() == "Laser")
-    {
-        gcodes += ";Select laser head\n";
-        gcodes += "M360 E3\n";
-        gcodes += ";Turn off laser head\n";
-        gcodes += "M03 S0\n";
-    }
-
-    gcodes += QString("G01 F%1\n").arg(travelSpeed);
-    gcodes += QString("G01 Z%1\n").arg(safeZ);
-    gcodes += QString("G01 F%1\n").arg(drawingSpeed);
-    gcodes += QString("M204 A%1\n").arg(drawingAcceleration);
-
-    gcodes += "#OnValue = 255\n";
-    gcodes += QString("#UpZ = %1\n").arg(upZ);
-    gcodes += QString("#DownZ = %1\n").arg(downZ);
-
-    QString zUp = "G01 Z[#UpZ]\n";
-    QString zDown = "G01 Z[#DownZ]\n";
-    QString laserOn = "M03 S[#OnValue]\n";
-    QString laserOff = "M03 S0\n";
-
-    QString startDrawing = zDown;
-    QString finishDrawing = zUp;
-
-    pteGcodeEditor->append(gcodes);
-    gcodes = "";
-
-    if (cbDrawingEffector->currentText() == "Laser")
-    {
-        startDrawing = laserOn;
-        finishDrawing = laserOff;
-    }
-
-    if (drawingArea->Vectors.empty() == false)
-    {
-        foreach(QVector<QPointF> points, drawingArea->Vectors)
-        {
-            gcodes += finishDrawing;
-
-            int index = 0;
-            int begin = 0;
-            int end = points.count() - 1;
-
-            foreach(QPointF point, points)
-            {
-                float curXf = point.x();
-                float curYf = -point.y();
-                float curZf = calculateZ(curXf, curYf); // Tính Z dựa trên mặt phẳng
-
-                gcodes += QString("G01") +
-                          " X" + QString::number(curXf, 'f', 1) +
-                          " Y" + QString::number(curYf, 'f', 1) +
-                          " Z" + QString::number(curZf, 'f', 1) + "\n";
-
-                if (index == begin)
-                {
-                    gcodes += startDrawing;
-                }
-                if (index == end)
-                {
-                    gcodes += finishDrawing;
-                }
-
-                index++;
-            }
-
-            pteGcodeEditor->append(gcodes);
-            gcodes = "";
+    float drawingHeight = referencePlaneZ;
+    if (leSafeZHeight) {
+        drawingHeight = leSafeZHeight->text().toFloat(&ok);
+        if (!ok) {
+            showInputError(tr("Invalid drawing Z height."));
+            return;
         }
     }
 
-    else if (drawingArea->Images.size() > 0)
-    {
+    float drawingOffset = drawingHeight - referencePlaneZ;
+
+    int travelSpeed = 0;
+    if (leTravelSpeed) {
+        travelSpeed = leTravelSpeed->text().toInt(&ok);
+        if (!ok || travelSpeed <= 0) {
+            showInputError(tr("Invalid travel speed."));
+            return;
+        }
+    }
+
+    int drawingSpeed = 0;
+    if (leDrawingSpeed) {
+        drawingSpeed = leDrawingSpeed->text().toInt(&ok);
+        if (!ok || drawingSpeed <= 0) {
+            showInputError(tr("Invalid drawing speed."));
+            return;
+        }
+    }
+
+    int drawingAcceleration = 0;
+    if (leDrawingAcceleration) {
+        drawingAcceleration = leDrawingAcceleration->text().toInt(&ok);
+        if (!ok || drawingAcceleration < 0) {
+            showInputError(tr("Invalid drawing acceleration."));
+            return;
+        }
+    }
+
+    const float liftOffset = std::max(drawingOffset + 10.0f, 5.0f);
+    const float safeOffset = std::max(drawingOffset + 50.0f, 15.0f);
+
+    auto drawingZ = [&](float x, float y) -> float {
+        return planeZAt(x, y) + drawingOffset;
+    };
+
+    auto liftZ = [&](float x, float y) -> float {
+        return planeZAt(x, y) + liftOffset;
+    };
+
+    auto safeZAt = [&](float x, float y) -> float {
+        return planeZAt(x, y) + safeOffset;
+    };
+
+    const bool laserMode = cbDrawingEffector && cbDrawingEffector->currentText() == "Laser";
+
+    QStringList lines;
+    lines << "G28";
+
+    if (laserMode) {
+        lines << ";Select laser head";
+        lines << "M360 E3";
+        lines << ";Ensure laser head is off";
+        lines << "M03 S0";
+        lines << "#OnValue = 255";
+    }
+
+    lines << QString("G01 F%1").arg(travelSpeed);
+
+    const float globalSafeZ = std::max({
+        safeZAt(pointA.x(), pointA.y()),
+        safeZAt(pointB.x(), pointB.y()),
+        safeZAt(pointC.x(), pointC.y())
+    });
+
+    lines << QString("G01 Z%1").arg(globalSafeZ, 0, 'f', 1);
+    lines << QString("G01 F%1").arg(drawingSpeed);
+    lines << QString("M204 A%1").arg(drawingAcceleration);
+
+    auto appendLine = [&](const QString& line) {
+        lines << line;
+    };
+
+    auto formatXYZ = [&](float x, float y, float z) {
+        return QString("G01 X%1 Y%2 Z%3")
+            .arg(x, 0, 'f', 1)
+            .arg(y, 0, 'f', 1)
+            .arg(z, 0, 'f', 1);
+    };
+
+    auto formatZ = [&](float z) {
+        return QString("G01 Z%1").arg(z, 0, 'f', 1);
+    };
+
+    auto formatXY = [&](float x, float y) {
+        return QString("G01 X%1 Y%2")
+            .arg(x, 0, 'f', 1)
+            .arg(y, 0, 'f', 1);
+    };
+
+    auto moveToLift = [&](float x, float y) {
+        appendLine(formatZ(globalSafeZ));
+        appendLine(formatXY(x, y));
+        appendLine(formatZ(liftZ(x, y)));
+        if (laserMode) {
+            appendLine("M03 S0");
+        }
+    };
+
+    auto drawTo = [&](float x, float y, bool firstPoint) {
+        appendLine(formatXYZ(x, y, drawingZ(x, y)));
+        if (firstPoint && laserMode) {
+            appendLine("M03 S[#OnValue]");
+        }
+    };
+
+    auto finishStroke = [&](float x, float y) {
+        if (laserMode) {
+            appendLine("M03 S0");
+        }
+        appendLine(formatZ(liftZ(x, y)));
+    };
+
+    if (!drawingArea) {
+        showInputError(tr("Drawing area is not available."));
+        return;
+    }
+
+    if (!drawingArea->Vectors.isEmpty()) {
+        for (const QVector<QPointF>& path : drawingArea->Vectors) {
+            if (path.isEmpty()) {
+                continue;
+            }
+
+            float startX = path.first().x();
+            float startY = -path.first().y();
+
+            moveToLift(startX, startY);
+
+            bool firstPoint = true;
+            float lastX = startX;
+            float lastY = startY;
+
+            for (const QPointF& point : path) {
+                float x = point.x();
+                float y = -point.y();
+                drawTo(x, y, firstPoint);
+                firstPoint = false;
+                lastX = x;
+                lastY = y;
+            }
+
+            finishStroke(lastX, lastY);
+        }
+    } else if (!drawingArea->Images.isEmpty()) {
         Image lastImage = drawingArea->Images.back();
-        lastImage.LineSpace = leSpace->text().toFloat();
+
+        if (leSpace) {
+            float configuredSpacing = leSpace->text().toFloat(&ok);
+            if (ok && configuredSpacing > 0.0f) {
+                lastImage.LineSpace = configuredSpacing;
+            }
+        }
+
+        if (lastImage.LineSpace <= 0.0f) {
+            lastImage.LineSpace = 1.0f;
+        }
+
         QImage image = lastImage.Pixmap->toImage();
-        int hS = lastImage.Size.y() * (1.0f / lastImage.LineSpace);
+        int targetHeight = static_cast<int>(lastImage.Size.y() * (1.0f / lastImage.LineSpace));
+        if (targetHeight <= 0) {
+            targetHeight = 1;
+        }
+        image = image.scaledToHeight(targetHeight);
 
-        image = image.scaledToHeight(hS);
-
-        QString binaries;
-
-        bool isWhite = true;
-        QString gcode;
-
-        int counter = 0;
-        int realX = 0;
-
-        int offsetX = image.width() / 2;
-        int offsetY = image.height() / 2;
+        const int offsetX = image.width() / 2;
+        const int offsetY = image.height() / 2;
 
         float lastX = (0 - offsetX) * lastImage.LineSpace;
-        float lastY = (0 - offsetY) * lastImage.LineSpace;;
+        float lastY = (0 - offsetY) * lastImage.LineSpace;
 
-        for (int i = 0; i < image.height(); i++)
-        {
-            for (int j = 0; j < image.width(); j++)
-            {
-                realX = j;
+        bool strokeActive = false;
+        float strokeLastX = 0.0f;
+        float strokeLastY = 0.0f;
 
-                if (i % 2 == 1)
-                {
+        const QString drawMethod = cbDrawMethod ? cbDrawMethod->currentText() : QStringLiteral("Line");
+        const QString conversionMode = cbConversion ? cbConversion->currentText() : QStringLiteral("Threshold");
+
+        for (int i = 0; i < image.height(); ++i) {
+            for (int j = 0; j < image.width(); ++j) {
+                int realX = j;
+
+                if (i % 2 == 1) {
                     j = image.width() - 1 - j;
                 }
 
-                QRgb pixelValue = image.pixel(j, i);
+                const QColor colorValue = image.pixelColor(QPoint(j, i));
+                const bool isBlackPixel = (colorValue.red() == 0 &&
+                                           colorValue.green() == 0 &&
+                                           colorValue.blue() == 0 &&
+                                           colorValue.alpha() == 255);
 
-                QColor colorValue = image.pixelColor(QPoint(j, i));
-                int red = colorValue.red();
-                int green = colorValue.green();
-                int blue = colorValue.blue();
-                int alpha = colorValue.alpha();
+                const float xPos = (j - offsetX) * lastImage.LineSpace;
+                const float yPos = -(i - offsetY) * lastImage.LineSpace;
 
-                float xPos = (j - offsetX) * lastImage.LineSpace;
-                float yPos = -(i - offsetY) * lastImage.LineSpace;
+                const float distance = std::sqrt(std::pow(xPos - lastX, 2.0f) + std::pow(yPos - lastY, 2.0f));
 
-                float distance = sqrt(pow(xPos - lastX, 2) + pow(yPos - lastY, 2));
-
-                if (cbConversion->currentText() == "Threshold")
-                {
-                    if (cbDrawMethod->currentText() == "Line")
-                    {
-                        // Black point
-                        if (red == 0 && green == 0 && blue == 0 && alpha == 255)
-                        {
-                            binaries += "0";
-
-                            if (isWhite == true || realX == 0)
-                            {
-                                float zPos = calculateZ(xPos, yPos); // Tính Z dựa trên mặt phẳng
-
-                                gcodes += QString("G01") +
-                                          " X" + QString::number(xPos, 'f', 1) +
-                                          " Y" + QString::number(yPos, 'f', 1) +
-                                          " Z" + QString::number(zPos, 'f', 1) + "\n";
-                                gcodes += startDrawing + "\n";
-                                isWhite = false;
-                            }
+                if (conversionMode == "Threshold" && drawMethod == "Line") {
+                    if (isBlackPixel) {
+                        if (!strokeActive) {
+                            moveToLift(xPos, yPos);
+                            drawTo(xPos, yPos, true);
+                            strokeActive = true;
+                            strokeLastX = xPos;
+                            strokeLastY = yPos;
+                        } else {
+                            drawTo(xPos, yPos, false);
+                            strokeLastX = xPos;
+                            strokeLastY = yPos;
                         }
-                        else
-                        {
-                            binaries += "1";
-
-                            if (isWhite == false)
-                            {                                
-                                float zPos = calculateZ(lastX, yPos); // Tính Z dựa trên mặt phẳng
-
-                                gcodes += QString("G01") +
-                                          " X" + QString::number(lastX, 'f', 1) +
-                                          " Y" + QString::number(yPos, 'f', 1) +
-                                          " Z" + QString::number(zPos, 'f', 1) + "\n";
-                                gcodes += finishDrawing + "\n";
-                                isWhite = true;
-                            }
-                        }
+                    } else if (strokeActive) {
+                        finishStroke(strokeLastX, strokeLastY);
+                        strokeActive = false;
                     }
-                    else if (cbDrawMethod->currentText() == "Dot")
-                    {
-                        if (cbConversion->currentText() == "Gray")
-                        if (distance < lastImage.LineSpace)
-                            continue;
-
-                        // Black point
-                        if (red == 0 && green == 0 && blue == 0 && alpha == 255)
-                        {
-                            float zPos = calculateZ(xPos, yPos); // Tính Z dựa trên mặt phẳng
-                            gcodes += QString("G01") +
-                                      " X" + QString::number(xPos, 'f', 1) +
-                                      " Y" + QString::number(yPos, 'f', 1) +
-                                      " Z" + QString::number(zPos, 'f', 1) + "\n";
-
-                            gcodes += startDrawing + "\n";
-                            gcodes += finishDrawing + "\n";
-                        }
-                    }
-                }
-                else if (cbConversion->currentText() == "Gray")
-                {
-                    if (distance < lastImage.LineSpace)
+                } else if (conversionMode == "Threshold" && drawMethod == "Dot") {
+                    if (distance < lastImage.LineSpace) {
+                        j = realX;
                         continue;
-                    float zPos = calculateZ(xPos, yPos); // Tính Z dựa trên mặt phẳng
-                    gcodes += QString("G01") +
-                              " X" + QString::number(xPos, 'f', 1) +
-                              " Y" + QString::number(yPos, 'f', 1) +
-                              " Z" + QString::number(zPos, 'f', 1) + "\n";
-                    gcodes += "#100 = " + QString::number(colorValue.black()) + "\n";
-                    gcodes += startDrawing + "\n";
+                    }
 
+                    if (isBlackPixel) {
+                        moveToLift(xPos, yPos);
+                        drawTo(xPos, yPos, true);
+                        finishStroke(xPos, yPos);
+                    }
+                } else if (conversionMode == "Gray") {
+                    if (distance < lastImage.LineSpace) {
+                        j = realX;
+                        continue;
+                    }
+
+                    moveToLift(xPos, yPos);
+                    appendLine(QString("#100 = %1").arg(colorValue.black()));
+                    drawTo(xPos, yPos, true);
+                    finishStroke(xPos, yPos);
                 }
 
                 lastX = xPos;
                 lastY = yPos;
-
                 j = realX;
-
-                pteGcodeEditor->append(gcodes);
-                gcodes = "";
             }
-            binaries += "\n";
-        }
-    }
-    pteGcodeEditor->append(finishDrawing + "\n");
-}
 
+            if (strokeActive) {
+                finishStroke(strokeLastX, strokeLastY);
+                strokeActive = false;
+            }
+        }
+    } else {
+        appendLine("; No drawing data available");
+    }
+
+    appendLine(formatZ(globalSafeZ));
+    if (laserMode) {
+        appendLine("M03 S0");
+    }
+
+    QString output = lines.join("\n");
+    if (!output.endsWith('\n')) {
+        output.append('\n');
+    }
+    pteGcodeEditor->setPlainText(output);
+}
 void DrawingExporter::ApplyConversion()
 {
 	if (originPixmap == nullptr)
@@ -583,9 +687,144 @@ void DrawingExporter::ScaleEffectImage()
 
 void DrawingExporter::initEvent()
 {
-    connect(hsDrawingThreshold, SIGNAL(sliderReleased()), this, SLOT(ApplyConversion()));
-	connect(leWidthScale, SIGNAL(textChanged(const QString &)), this, SLOT(ApplyConversion()));
-	connect(leHeightScale, SIGNAL(textChanged(const QString &)), this, SLOT(ApplyConversion()));
-	connect(cbConversion, SIGNAL(currentTextChanged(const QString &)), this, SLOT(ApplyConversion()));
-    connect(cbInverse, SIGNAL(stateChanged(int)), this, SLOT(ApplyConversion()));
+    if (hsDrawingThreshold) {
+        connect(hsDrawingThreshold, &QSlider::sliderReleased, this, &DrawingExporter::ApplyConversion);
+    }
+    if (leWidthScale) {
+        connect(leWidthScale, &QLineEdit::textChanged, this, &DrawingExporter::HandleScaleChanged);
+    }
+    if (leHeightScale) {
+        connect(leHeightScale, &QLineEdit::textChanged, this, &DrawingExporter::HandleScaleChanged);
+    }
+    if (cbConversion) {
+        connect(cbConversion, &QComboBox::currentTextChanged, this, &DrawingExporter::ApplyConversion);
+    }
+    if (cbInverse) {
+        connect(cbInverse, &QCheckBox::stateChanged, this, &DrawingExporter::ApplyConversion);
+    }
 }
+
+void DrawingExporter::HandleScaleChanged(const QString& value)
+{
+    Q_UNUSED(value);
+    updateDrawingAreaScale();
+    ApplyConversion();
+}
+
+void DrawingExporter::HandlePlanePointEdited()
+{
+    refreshPlaneMarkers();
+}
+
+bool DrawingExporter::parsePoint(const QString& text, QVector3D& outPoint, QString* errorMessage) const
+{
+    QString trimmedText = text;
+    if (trimmedText.isEmpty()) {
+        if (errorMessage) {
+            *errorMessage = tr("Value is empty.");
+        }
+        return false;
+    }
+
+    QStringList parts = trimmedText.split(',', Qt::SkipEmptyParts);
+    if (parts.size() != 3) {
+        if (errorMessage) {
+            *errorMessage = tr("Expected three comma-separated values (x,y,z).");
+        }
+        return false;
+    }
+
+    bool okX = false;
+    bool okY = false;
+    bool okZ = false;
+
+    float x = parts[0].trimmed().toFloat(&okX);
+    float y = parts[1].trimmed().toFloat(&okY);
+    float z = parts[2].trimmed().toFloat(&okZ);
+
+    if (!okX || !okY || !okZ) {
+        if (errorMessage) {
+            QStringList invalidTokens;
+            if (!okX) invalidTokens << parts[0].trimmed();
+            if (!okY) invalidTokens << parts[1].trimmed();
+            if (!okZ) invalidTokens << parts[2].trimmed();
+            *errorMessage = tr("Could not convert %1 to numbers.").arg(invalidTokens.join(", "));
+        }
+        return false;
+    }
+
+    outPoint = QVector3D(x, y, z);
+    return true;
+}
+
+void DrawingExporter::showInputError(const QString& message) const
+{
+    QMessageBox::warning(const_cast<DrawingExporter*>(this), tr("Invalid Input"), message);
+}
+
+void DrawingExporter::updateDrawingAreaScale()
+{
+    if (!drawingArea) {
+        return;
+    }
+
+    bool okWidth = false;
+    bool okHeight = false;
+
+    float widthMm = 0.0f;
+    float heightMm = 0.0f;
+
+    if (leWidthScale) {
+        widthMm = leWidthScale->text().toFloat(&okWidth);
+    }
+    if (leHeightScale) {
+        heightMm = leHeightScale->text().toFloat(&okHeight);
+    }
+
+    if (!okWidth && okHeight && drawingArea->height() > 0) {
+        widthMm = heightMm * static_cast<float>(drawingArea->width()) / static_cast<float>(drawingArea->height());
+        okWidth = true;
+    } else if (!okHeight && okWidth && drawingArea->width() > 0) {
+        heightMm = widthMm * static_cast<float>(drawingArea->height()) / static_cast<float>(drawingArea->width());
+        okHeight = true;
+    }
+
+    drawingArea->SetPhysicalSize(okWidth ? widthMm : 0.0f,
+                                 okHeight ? heightMm : 0.0f);
+}
+
+void DrawingExporter::refreshPlaneMarkers()
+{
+    if (!drawingArea) {
+        return;
+    }
+
+    QVector3D pointA;
+    QVector3D pointB;
+    QVector3D pointC;
+
+    if (parsePoint(lePoint1 ? lePoint1->text() : QString(), pointA, nullptr) &&
+        parsePoint(lePoint2 ? lePoint2->text() : QString(), pointB, nullptr) &&
+        parsePoint(lePoint3 ? lePoint3->text() : QString(), pointC, nullptr)) {
+        updatePlaneMarkers({pointA, pointB, pointC});
+    } else {
+        drawingArea->SetPlaneMarkers({});
+    }
+}
+
+void DrawingExporter::updatePlaneMarkers(const QVector<QVector3D>& points)
+{
+    if (!drawingArea) {
+        return;
+    }
+
+    QVector<QPointF> markers;
+    markers.reserve(points.size());
+    for (const QVector3D& point : points) {
+        markers.append(QPointF(point.x(), point.y()));
+    }
+
+    drawingArea->SetPlaneMarkers(markers);
+}
+
+

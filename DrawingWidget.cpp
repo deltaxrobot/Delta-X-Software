@@ -118,6 +118,19 @@ void DrawingWidget::AddImage(int x, int y, int w, int h, QPixmap pix, float spac
 	update();	
 }
 
+void DrawingWidget::SetPhysicalSize(float widthMm, float heightMm)
+{
+    physicalWidthMm = widthMm > 0.0f ? widthMm : 0.0f;
+    physicalHeightMm = heightMm > 0.0f ? heightMm : 0.0f;
+    update();
+}
+
+void DrawingWidget::SetPlaneMarkers(const QVector<QPointF>& markers)
+{
+    planeMarkers = markers;
+    update();
+}
+
 void DrawingWidget::AddLineToStack(QPoint p1, QPoint p2)
 {
 	QLine l;
@@ -367,8 +380,8 @@ void DrawingWidget::mouseReleaseEvent(QMouseEvent * event)
                     
                     // Add line to vectors for G-code export
                     QVector<QPointF> linePoints;
-                    linePoints.append(lines.last().p1());
-                    linePoints.append(lines.last().p2());
+                    linePoints.append(mapToLogical(lines.last().p1()));
+                    linePoints.append(mapToLogical(lines.last().p2()));
                     Vectors.append(linePoints);
                 }
                 break;
@@ -381,11 +394,11 @@ void DrawingWidget::mouseReleaseEvent(QMouseEvent * event)
                     
                     // Add rectangle as connected lines to vectors
                     QVector<QPointF> rectPoints;
-                    rectPoints.append(rect.topLeft());
-                    rectPoints.append(rect.topRight());
-                    rectPoints.append(rect.bottomRight());
-                    rectPoints.append(rect.bottomLeft());
-                    rectPoints.append(rect.topLeft()); // Close the rectangle
+                    rectPoints.append(mapToLogical(rect.topLeft()));
+                    rectPoints.append(mapToLogical(rect.topRight()));
+                    rectPoints.append(mapToLogical(rect.bottomRight()));
+                    rectPoints.append(mapToLogical(rect.bottomLeft()));
+                    rectPoints.append(mapToLogical(rect.topLeft())); // Close the rectangle
                     Vectors.append(rectPoints);
                 }
                 break;
@@ -405,7 +418,7 @@ void DrawingWidget::mouseReleaseEvent(QMouseEvent * event)
                         float angle = (i * 2 * M_PI) / segments;
                         float x = circle.x() + radius * cos(angle);
                         float y = circle.y() + radius * sin(angle);
-                        circlePoints.append(QPointF(x, y));
+                        circlePoints.append(mapToLogical(QPointF(x, y)));
                     }
                     Vectors.append(circlePoints);
                 }
@@ -452,10 +465,69 @@ void DrawingWidget::paintEvent(QPaintEvent * event)
 			painter.drawEllipse(QPoint((int)circle.x(), (int)circle.y()), radius, radius);
 		}
 	}
+
+    if (!planeMarkers.isEmpty()) {
+        painter.save();
+        QPen markerPen(QColor(255, 215, 0), 2);
+        painter.setPen(markerPen);
+
+        for (const QPointF& logicalPoint : planeMarkers) {
+            QPointF widgetPoint = mapToWidget(logicalPoint);
+            painter.drawEllipse(widgetPoint, 5, 5);
+            painter.drawLine(widgetPoint + QPointF(-6, 0), widgetPoint + QPointF(6, 0));
+            painter.drawLine(widgetPoint + QPointF(0, -6), widgetPoint + QPointF(0, 6));
+        }
+
+        painter.restore();
+    }
 }
 
 void DrawingWidget::changeToolIconInArea(QString filePath)
 {
 	QCursor cursorTarget = QCursor(QPixmap(filePath));
 	setCursor(cursorTarget);
+}
+
+QPointF DrawingWidget::mapToLogical(const QPointF& point) const
+{
+    if (width() == 0 || height() == 0) {
+        return QPointF(0, 0);
+    }
+
+    float centerX = width() / 2.0f;
+    float centerY = height() / 2.0f;
+
+    float logicalX = point.x() - centerX;
+    float logicalY = point.y() - centerY;
+
+    if (physicalWidthMm > 0.0f) {
+        logicalX *= (physicalWidthMm / width());
+    }
+    if (physicalHeightMm > 0.0f) {
+        logicalY *= (physicalHeightMm / height());
+    }
+
+    return QPointF(logicalX, logicalY);
+}
+
+QPointF DrawingWidget::mapToWidget(const QPointF& point) const
+{
+    if (width() == 0 || height() == 0) {
+        return QPointF(0, 0);
+    }
+
+    float centerX = width() / 2.0f;
+    float centerY = height() / 2.0f;
+
+    float pixelX = point.x();
+    float pixelY = point.y();
+
+    if (physicalWidthMm > 0.0f) {
+        pixelX *= (width() / physicalWidthMm);
+    }
+    if (physicalHeightMm > 0.0f) {
+        pixelY *= (height() / physicalHeightMm);
+    }
+
+    return QPointF(centerX + pixelX, centerY - pixelY);
 }

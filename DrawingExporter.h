@@ -41,40 +41,49 @@ public slots:
 	void ChangeSize();
 	void ScaleEffectImage();
 
+private slots:
+    void HandleScaleChanged(const QString& value);
+    void HandlePlanePointEdited();
+
 private:
 	void initEvent();
+    bool parsePoint(const QString& text, QVector3D& outPoint, QString* errorMessage = nullptr) const;
+    void showInputError(const QString& message) const;
+    void updateDrawingAreaScale();
+    void refreshPlaneMarkers();
+    void updatePlaneMarkers(const QVector<QVector3D>& points);
 
     QSvgWidget svgWidget;
-    QTextEdit* pteGcodeEditor;
-    QComboBox* cbDrawingEffector;
+    QTextEdit* pteGcodeEditor = nullptr;
+    QComboBox* cbDrawingEffector = nullptr;
 
-    QLineEdit* leSafeZHeight;
-    QLineEdit* leTravelSpeed;
-    QLineEdit* leDrawingSpeed;
-    QLineEdit* leDrawingAcceleration;
+    QLineEdit* leSafeZHeight = nullptr;
+    QLineEdit* leTravelSpeed = nullptr;
+    QLineEdit* leDrawingSpeed = nullptr;
+    QLineEdit* leDrawingAcceleration = nullptr;
 
-    QLineEdit* lePoint1;
-    QLineEdit* lePoint2;
-    QLineEdit* lePoint3;
+    QLineEdit* lePoint1 = nullptr;
+    QLineEdit* lePoint2 = nullptr;
+    QLineEdit* lePoint3 = nullptr;
 
-	QLabel *lbWImage;
-	QLabel *lbHImage;
-	QLineEdit *leHeightScale;
-	QLineEdit *leWidthScale;
-	QLineEdit *leSpace;
-	QLineEdit *leDrawingThreshold;
-	QSlider* hsDrawingThreshold;
-    QCheckBox* cbInverse;
-	QComboBox* cbDrawMethod;
-	QComboBox* cbConversion;
+	QLabel *lbWImage = nullptr;
+	QLabel *lbHImage = nullptr;
+	QLineEdit *leHeightScale = nullptr;
+	QLineEdit *leWidthScale = nullptr;
+	QLineEdit *leSpace = nullptr;
+	QLineEdit *leDrawingThreshold = nullptr;
+	QSlider* hsDrawingThreshold = nullptr;
+    QCheckBox* cbInverse = nullptr;
+	QComboBox* cbDrawMethod = nullptr;
+	QComboBox* cbConversion = nullptr;
 
-	QLabel* lbImageForDrawing;
+	QLabel* lbImageForDrawing = nullptr;
 
 
 
-	QPixmap* originPixmap;
-	QPixmap* effectPixmap;
-	DrawingWidget* drawingArea;
+	QPixmap* originPixmap = nullptr;
+	QPixmap* effectPixmap = nullptr;
+	DrawingWidget* drawingArea = nullptr;
 
 	cv::Mat mat;
 	cv::Mat result;

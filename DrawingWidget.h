@@ -75,6 +75,8 @@ public:
     void AddLineToStack(QPoint p1, QPoint p2);
     void DrawLineFromStack();
 	void AddRectangle(QRect rec);
+    void SetPhysicalSize(float widthMm, float heightMm);
+    void SetPlaneMarkers(const QVector<QPointF>& markers);
 
 	void ClearShape();
 	void ClearImage();
@@ -112,4 +114,10 @@ private:
 	Tool tool = CURSOR;
 	bool gridInitialized = false;
 	void changeToolIconInArea(QString filePath);
+    QPointF mapToLogical(const QPointF& point) const;
+    QPointF mapToWidget(const QPointF& point) const;
+
+    float physicalWidthMm = 0.0f;
+    float physicalHeightMm = 0.0f;
+    QVector<QPointF> planeMarkers;
 };
