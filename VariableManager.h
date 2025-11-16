@@ -67,10 +67,7 @@ private:
     void clearKeyCache();
     const QString& getCachedFullKey(const QString& key) const;
 
-    VariableManager() : settings("./settings.ini", QSettings::IniFormat)
-    {
-
-    }
+    VariableManager();
 //    std::map<QString, QVariant> dataMap;
     QHash<QString, QVariant> dataMap;
     mutable std::mutex dataMutex;

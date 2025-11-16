@@ -5,13 +5,13 @@
     <key>CFBundleDevelopmentRegion</key>
     <string>$(DEVELOPMENT_LANGUAGE)</string>
     <key>CFBundleExecutable</key>
-    <string>Qt-Example</string>
+    <string>DeltaRobotSoftware</string>
     <key>CFBundleIdentifier</key>
-    <string>com.example.qt-example</string>
+    <string>deltaxrobotics.DeltaRobotSoftware</string>
     <key>CFBundleInfoDictionaryVersion</key>
     <string>6.0</string>
     <key>CFBundleName</key>
-    <string>Qt-Example</string>
+    <string>DeltaRobotSoftware</string>
     <key>CFBundlePackageType</key>
     <string>APPL</string>
     <key>CFBundleShortVersionString</key>

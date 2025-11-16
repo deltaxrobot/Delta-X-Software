@@ -47,6 +47,10 @@ int main(int argc, char *argv[])
     QCoreApplication::addLibraryPath("./");
     // QApplication::setAttribute(Qt::AA_DisableHighDpiScaling);
 
+    QCoreApplication::setOrganizationName(QStringLiteral("DeltaXRobotics"));
+    QCoreApplication::setOrganizationDomain(QStringLiteral("deltaxrobotics.com"));
+    QCoreApplication::setApplicationName(QStringLiteral("DeltaRobotSoftware"));
+
     QApplication a(argc, argv);
 #ifdef QT_DEBUG
 

@@ -11,7 +11,42 @@
 #include <QTime>
 #include <QDateTime>
 #include <QRegularExpression>
+#include <QCoreApplication>
+#include <QStandardPaths>
+#include <QDir>
+#include <QFile>
+#include <QFileInfo>
 #include "QtMatrixCompat.h"
+
+namespace {
+QString resolveSettingsFilePath()
+{
+    QString baseDir = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+    if (baseDir.isEmpty())
+        baseDir = QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation);
+    if (baseDir.isEmpty())
+        baseDir = QDir::homePath() + QLatin1String("/.DeltaRobotSoftware");
+
+    QDir dir(baseDir);
+    if (!dir.exists())
+        dir.mkpath(QStringLiteral("."));
+
+    const QString targetPath = dir.filePath(QStringLiteral("settings.ini"));
+
+    // Migrate legacy settings stored beside the executable (if readable)
+    const QString legacyPath = QDir(QCoreApplication::applicationDirPath()).filePath(QStringLiteral("settings.ini"));
+    if (!QFileInfo::exists(targetPath) && QFileInfo::exists(legacyPath)) {
+        QFile::copy(legacyPath, targetPath);
+    }
+
+    return targetPath;
+}
+}
+
+VariableManager::VariableManager()
+    : settings(resolveSettingsFilePath(), QSettings::IniFormat)
+{
+}
 
 VariableManager &VariableManager::instance()
 {
