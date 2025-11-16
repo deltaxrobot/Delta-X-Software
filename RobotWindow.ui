@@ -850,7 +850,7 @@ QRadioButton:disabled {
                   <item>
                    <widget class="QCheckBox" name="cbEditGcodeLock">
                     <property name="sizePolicy">
-                     <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                     <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
                       <horstretch>0</horstretch>
                       <verstretch>0</verstretch>
                      </sizepolicy>
@@ -859,6 +859,12 @@ QRadioButton:disabled {
                      <size>
                       <width>20</width>
                       <height>0</height>
+                     </size>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>80</width>
+                      <height>16777215</height>
                      </size>
                     </property>
                     <property name="font">
@@ -10899,7 +10905,7 @@ QFrame[Func=Title]
                            </property>
                            <property name="minimumSize">
                             <size>
-                             <width>60</width>
+                             <width>80</width>
                              <height>28</height>
                             </size>
                            </property>
@@ -11001,7 +11007,7 @@ QGroupBox
                            </property>
                            <property name="font">
                             <font>
-                             <pointsize>10</pointsize>
+                             <pointsize>13</pointsize>
                             </font>
                            </property>
                            <item>
@@ -11064,7 +11070,7 @@ QGroupBox
                              <widget class="QLabel" name="lbComName">
                               <property name="font">
                                <font>
-                                <pointsize>8</pointsize>
+                                <pointsize>13</pointsize>
                                </font>
                               </property>
                               <property name="styleSheet">
@@ -11080,9 +11086,15 @@ QGroupBox
                          </item>
                          <item>
                           <widget class="QGroupBox" name="groupBox_2">
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                             <horstretch>0</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
                            <property name="minimumSize">
                             <size>
-                             <width>50</width>
+                             <width>80</width>
                              <height>0</height>
                             </size>
                            </property>
@@ -11106,7 +11118,7 @@ QGroupBox
                              <widget class="QLabel" name="lbBaudrate">
                               <property name="font">
                                <font>
-                                <pointsize>8</pointsize>
+                                <pointsize>13</pointsize>
                                </font>
                               </property>
                               <property name="styleSheet">
@@ -11122,6 +11134,18 @@ QGroupBox
                          </item>
                          <item>
                           <widget class="QGroupBox" name="groupBox_3">
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
+                             <horstretch>0</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
+                           <property name="minimumSize">
+                            <size>
+                             <width>120</width>
+                             <height>0</height>
+                            </size>
+                           </property>
                            <property name="title">
                             <string>Model</string>
                            </property>
