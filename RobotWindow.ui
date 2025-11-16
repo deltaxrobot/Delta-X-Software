@@ -637,7 +637,7 @@ QToolButton::pressed
              </property>
              <property name="font">
               <font>
-               <pointsize>11</pointsize>
+               <pointsize>13</pointsize>
                <bold>false</bold>
               </font>
              </property>
@@ -706,7 +706,7 @@ QToolBox QScrollArea&gt;QWidget&gt;QWidget
               <enum>QTabWidget::TabShape::Rounded</enum>
              </property>
              <property name="currentIndex">
-              <number>0</number>
+              <number>3</number>
              </property>
              <property name="usesScrollButtons">
               <bool>true</bool>
@@ -904,7 +904,7 @@ QRadioButton:disabled {
                     </property>
                     <property name="font">
                      <font>
-                      <pointsize>10</pointsize>
+                      <pointsize>13</pointsize>
                      </font>
                     </property>
                     <property name="toolTip">
@@ -10602,7 +10602,7 @@ QLabel
              </property>
              <property name="font">
               <font>
-               <pointsize>11</pointsize>
+               <pointsize>13</pointsize>
                <bold>false</bold>
               </font>
              </property>
@@ -10911,7 +10911,7 @@ QFrame[Func=Title]
                            </property>
                            <property name="font">
                             <font>
-                             <pointsize>10</pointsize>
+                             <pointsize>13</pointsize>
                              <bold>false</bold>
                             </font>
                            </property>
@@ -17477,6 +17477,12 @@ QLabel
                      </item>
                      <item>
                       <widget class="QCheckBox" name="checkBox">
+                       <property name="minimumSize">
+                        <size>
+                         <width>100</width>
+                         <height>0</height>
+                        </size>
+                       </property>
                        <property name="text">
                         <string>Auto Scan</string>
                        </property>
@@ -17504,7 +17510,7 @@ QLabel
                        </property>
                        <property name="font">
                         <font>
-                         <pointsize>10</pointsize>
+                         <pointsize>13</pointsize>
                         </font>
                        </property>
                        <property name="styleSheet">
@@ -19021,6 +19027,12 @@ QLabel
                      </item>
                      <item>
                       <widget class="QCheckBox" name="checkBox_3">
+                       <property name="minimumSize">
+                        <size>
+                         <width>100</width>
+                         <height>0</height>
+                        </size>
+                       </property>
                        <property name="text">
                         <string>Auto Scan</string>
                        </property>
@@ -19048,7 +19060,7 @@ QLabel
                        </property>
                        <property name="font">
                         <font>
-                         <pointsize>10</pointsize>
+                         <pointsize>13</pointsize>
                         </font>
                        </property>
                        <property name="styleSheet">
@@ -19936,6 +19948,12 @@ QLabel
                      </item>
                      <item>
                       <widget class="QCheckBox" name="checkBox_5">
+                       <property name="minimumSize">
+                        <size>
+                         <width>100</width>
+                         <height>0</height>
+                        </size>
+                       </property>
                        <property name="text">
                         <string>Auto Scan</string>
                        </property>
@@ -19963,7 +19981,7 @@ QLabel
                        </property>
                        <property name="font">
                         <font>
-                         <pointsize>10</pointsize>
+                         <pointsize>13</pointsize>
                         </font>
                        </property>
                        <property name="styleSheet">
@@ -20572,6 +20590,12 @@ QLabel
                      </item>
                      <item>
                       <widget class="QCheckBox" name="checkBox_6">
+                       <property name="minimumSize">
+                        <size>
+                         <width>100</width>
+                         <height>0</height>
+                        </size>
+                       </property>
                        <property name="text">
                         <string>Auto Scan</string>
                        </property>
@@ -20599,7 +20623,7 @@ QLabel
                        </property>
                        <property name="font">
                         <font>
-                         <pointsize>10</pointsize>
+                         <pointsize>13</pointsize>
                         </font>
                        </property>
                        <property name="styleSheet">
