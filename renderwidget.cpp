@@ -101,7 +101,8 @@ void RenderWidget::mouseMoveEvent(QMouseEvent *event)
 
 void RenderWidget::wheelEvent(QWheelEvent *event)
 {
-    float speed = event->delta() / 1000.0;
+    const QPoint angle = event->angleDelta();
+    float speed = angle.y() / 1000.0f;
     if (speed >= 0) {
         mScene.mainCamera.move(FORWARD, speed);
     } else {

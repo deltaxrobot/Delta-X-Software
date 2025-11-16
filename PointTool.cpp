@@ -85,7 +85,10 @@ QMatrix PointTool::calculateTransformMatrix(const QPointF &P1, const QPointF &P2
     float translationY = targetPoint1Y - (scaleRotateMatrix.m12() * sourcePoint1X + scaleRotateMatrix.m22() * sourcePoint1Y);
 
     QMatrix matrix;
-    matrix.setMatrix(scaleRotateMatrix.m11(), scaleRotateMatrix.m12(), scaleRotateMatrix.m21(), scaleRotateMatrix.m22(), translationX, translationY);
+    QtMatrixCompat::setMatrix2D(matrix,
+                                scaleRotateMatrix.m11(), scaleRotateMatrix.m12(),
+                                scaleRotateMatrix.m21(), scaleRotateMatrix.m22(),
+                                translationX, translationY);
 
 //    qDebug() << matrix.map(P1);
 

@@ -11,6 +11,7 @@
 #include <QVBoxLayout>
 #include <QDebug>
 #include <QLineEdit>
+#include "QtMatrixCompat.h"
 
 struct MappingFloat
 {

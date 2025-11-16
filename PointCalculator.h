@@ -4,7 +4,7 @@
 #include <QPointF>
 #include <QVector3D>
 #include <QTransform>
-#include <QMatrix>
+#include "QtMatrixCompat.h"
 #include <QPolygonF>
 #include <opencv2/opencv.hpp>
 #include <stdexcept>

@@ -1,4 +1,5 @@
 #include "device.h"
+#include <QRegularExpression>
 
 QElapsedTimer Device::DebugTimer;
 
@@ -280,10 +281,13 @@ bool Device::IsOpen()
 }
 
 int Device::ID()
-{    
-    QString num = idName.right(idName.length() - idName.indexOf(QRegExp("\\d")));
-    int value = num.toInt();
-    return value;
+{
+    QRegularExpression re("\\d+");
+    QRegularExpressionMatch match = re.match(idName);
+    if (match.hasMatch()) {
+        return match.captured(0).toInt();
+    }
+    return 0;
 }
 
 void Device::SetIDName(QString idName)

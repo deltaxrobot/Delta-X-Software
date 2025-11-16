@@ -11,7 +11,9 @@ constexpr double one_sixth = 1.0 / 6;
 #define cubic(x) (x * x * x)
 #define max(a, b) a>b?a:b
 
+#ifndef M_PI
 #define M_PI 3.14159265358979323846
+#endif
 
 // S-Curve interpolator
 class Scurve_Interpolator
@@ -42,7 +44,7 @@ private:
     {
         return seg.a + seg.j * time;
     }
-    static float profile_seg_jrk(profile_segment &seg, double time)
+    static float profile_seg_jrk(profile_segment &seg, double /*time*/)
     {
         return seg.j;
     }

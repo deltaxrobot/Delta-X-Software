@@ -3,6 +3,10 @@
 
 #include <QObject>
 #include <QWidget>
+#include <QTreeWidget>
+#include <QTreeWidgetItem>
+#include <QListWidget>
+#include <QCheckBox>
 #include <SoftwareManager.h>
 #include <ProjectManager.h>
 #include <RobotWindow.h>

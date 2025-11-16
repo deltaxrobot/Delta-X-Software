@@ -1,7 +1,11 @@
 #include "testwindow.h"
 #include <QDebug>
 
-TestWindow::TestWindow(QWidget *parent) : QMainWindow(parent) {
+TestWindow::TestWindow(QWidget *parent)
+    : QMainWindow(parent)
+    , camera(nullptr)
+    , videoSink(nullptr)
+{
     // Khởi tạo camera và ffmpeg
     setupCamera();
     setupFFmpeg();
@@ -15,24 +19,21 @@ TestWindow::~TestWindow() {
         camera->stop();
         delete camera;
     }
-    if (probe) {
-        delete probe;
+    if (videoSink) {
+        delete videoSink;
     }
     ffmpegProcess.close();
 }
 
 void TestWindow::setupCamera() {
     // Khởi tạo camera
-    camera = new QCamera;
-    probe = new QVideoProbe;
+    camera = new QCamera(this);
+    videoSink = new QVideoSink(this);
 
-    // Kết nối probe để bắt frame
-    if (!probe->setSource(camera)) {
-        qCritical() << "Không thể kết nối probe với camera!";
-        return;
-    }
+    captureSession.setCamera(camera);
+    captureSession.setVideoSink(videoSink);
 
-    connect(probe, &QVideoProbe::videoFrameProbed, this, &TestWindow::captureFrame);
+    connect(videoSink, &QVideoSink::videoFrameChanged, this, &TestWindow::captureFrame);
 }
 
 void TestWindow::setupFFmpeg() {
@@ -76,10 +77,13 @@ void TestWindow::captureFrame(const QVideoFrame &frame) {
     }
 
     QVideoFrame cloneFrame(frame);
-    cloneFrame.map(QAbstractVideoBuffer::ReadOnly); // Đảm bảo frame được ánh xạ đúng cách
+    if (!cloneFrame.map(QVideoFrame::ReadOnly)) {
+        qWarning() << "Không thể ánh xạ frame để đọc dữ liệu!";
+        return;
+    }
 
     // Chuyển frame thành QImage
-    QImage::Format imgFormat = QVideoFrame::imageFormatFromPixelFormat(cloneFrame.pixelFormat());
+    QImage::Format imgFormat = QVideoFrameFormat::imageFormatFromPixelFormat(cloneFrame.pixelFormat());
     QImage image((uchar *)cloneFrame.bits(0), cloneFrame.width(), cloneFrame.height(), cloneFrame.bytesPerLine(0), imgFormat);
 
     // Chuyển đổi sang RGB888 nếu cần

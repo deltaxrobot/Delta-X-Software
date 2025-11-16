@@ -20,6 +20,7 @@ class SettingsManager : public QObject
 public:
     // Singleton pattern
     static SettingsManager& instance();
+    static QString defaultPythonPath();
     
     // Settings categories
     enum SettingsCategory {
@@ -39,7 +40,7 @@ public:
         bool autoSaveProject = true;
         int autoSaveInterval = 5000; // milliseconds
         bool checkUpdates = true;
-        QString pythonPath = "/lib/Python38/python.exe";
+        QString pythonPath = SettingsManager::defaultPythonPath();
         int maxRecentFiles = 10;
     };
     
@@ -171,4 +172,4 @@ private:
     static SettingsManager* s_instance;
 };
 
-#endif // SETTINGSMANAGER_H 
+#endif // SETTINGSMANAGER_H

@@ -4,10 +4,19 @@ Delta X Software is a comprehensive control and programming platform for Delta r
 
 ## Prerequisites
 
+### Windows
 - Windows 10/11 64-bit
 - Visual Studio 2019 (MSVC v142) with Desktop development workload
-- Qt 5.15.2 for MSVC 2019 64-bit (`C:\Qt\5.15.2\msvc2019_64`)
+- Qt 5.15.2 for MSVC 2019 64-bit (`C:\Qt\5.15.2\msvc2019_64`). Qt 6.10+ kits (MSVC) are also supported—install the same add-on modules: Qt Serial Port, Qt Multimedia, Qt Svg, and Qt Svg Widgets.
 - CMake 3.16+ (optional, for auxiliary tooling)
+
+### macOS
+- macOS 13 Ventura or newer (Intel or Apple Silicon)
+- Xcode Command Line Tools (`xcode-select --install`)
+- Qt 5.15.2 for macOS (clang_64). When using Homebrew install `qt@5` and export `PATH="/opt/homebrew/opt/qt@5/bin:$PATH"` (use `/usr/local` on Intel Macs). Qt 6.10+ kits (clang_64) are fully supported as well; install the Qt Serial Port, Qt Multimedia, Qt Svg, and Qt Svg Widgets components.
+- OpenCV 4.x (`brew install opencv`). The qmake project auto-detects Homebrew in `/opt/homebrew` and `/usr/local`, or you can run `qmake OPENCV_DIR=/custom/opencv` to point to a different install.
+
+### Common
 - Python 3.10+ (for external scripts and YOLO integration)
 - Git
 
@@ -34,6 +43,32 @@ cd Delta-X-Software
 3. The release binary is produced at `release\DeltaRobotSoftware.exe`.
 
 > **Tip:** You can also build inside Qt Creator. Configure a kit that uses Qt 5.15.2 (MSVC) and the VS2019 compiler, then build the *Release* configuration.
+
+## Build from Source (macOS)
+
+1. Install dependencies with Homebrew (Qt 5 + OpenCV) and ensure the Qt 5 `qmake` is first in `PATH`:
+   ```bash
+   brew install qt@5 opencv
+   export PATH="/opt/homebrew/opt/qt@5/bin:$PATH"   # /usr/local/... on Intel Macs
+   ```
+2. Configure and build with qmake/clang:
+   ```bash
+   qmake DeltaRobotSoftware.pro CONFIG+=release
+   make -j"$(sysctl -n hw.ncpu)"
+   ```
+   If OpenCV lives outside the default Homebrew folders, pass `OPENCV_DIR=/path/to/opencv` to qmake so the project can locate headers and libraries.
+3. The release bundle is produced at `release/DeltaRobotSoftware.app`. Bundle Qt frameworks with `macdeployqt` when you need a redistributable folder:
+   ```bash
+   macdeployqt release/DeltaRobotSoftware.app
+   ```
+
+## Build with Qt 6 Kits
+
+The project now builds with Qt 6.10+ as well as Qt 5.15.2. To use a Qt 6 kit:
+
+1. Install Qt 6 with the **Qt Serial Port**, **Qt Multimedia**, **Qt Svg**, and **Qt Svg Widgets** components. (Qt 5 compatibility modules such as `Qt Core 5 Compatibility` are optional now that the remaining code paths use native Qt 6 APIs.)
+2. In Qt Creator (or the CLI), select the Qt 6 qmake/kit before running `qmake`. All Qt 5/Qt 6 specific differences (QMatrix, QSvgWidget, camera APIs, wheel events) are handled automatically in the source.
+3. Build as usual (`qmake` + `ninja`/`make`). The generated UI headers now come from your active kit, so switching between kits simply requires re-running `qmake` to regenerate them.
 
 ## Running from the Build Tree
 
@@ -96,7 +131,7 @@ The generated `DeltaXSoftwareSetup.exe` checks the VC++ redistributable (using r
    py -3.10 -m venv %LOCALAPPDATA%\DeltaX\py
    %LOCALAPPDATA%\DeltaX\py\Scripts\pip install ultralytics==8.0.200 opencv-python==4.9.0.80 numpy==1.26.4
    ```
-2. In the application, open *Settings > General* and set `pythonPath` to the virtual environment's `python.exe`.
+2. In the application, open *Settings > General* and set `pythonPath` to the interpreter in that environment (`python.exe` on Windows, typically `/usr/bin/python3` or the virtualenv's `bin/python3` on macOS/Linux). The field now defaults to the first `python3` found on your `PATH`.
 3. Verify external scripts (for example `script-example\yolov8_detect.py --headless`) can load the models shipped in `models/`.
 
 ## Troubleshooting

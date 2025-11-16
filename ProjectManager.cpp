@@ -25,8 +25,15 @@ void ProjectManager::InitAddNewTab(QWidget *addNewTab)
     {
         int index = twProjectManager->indexOf(addNewTab);
         QTabBar* tb = twProjectManager->tabBar();
-        tb->tabButton(index, QTabBar::RightSide)->deleteLater();
-        tb->setTabButton(index, QTabBar::RightSide, 0);
+
+        if (index >= 0 && tb != nullptr)
+        {
+            if (QWidget *btn = tb->tabButton(index, QTabBar::RightSide))
+            {
+                btn->deleteLater();
+            }
+            tb->setTabButton(index, QTabBar::RightSide, nullptr);
+        }
     }
 }
 

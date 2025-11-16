@@ -3,8 +3,10 @@
 
 #include <QMainWindow>
 #include <QCamera>
-#include <QVideoProbe>
 #include <QVideoFrame>
+#include <QVideoFrameFormat>
+#include <QMediaCaptureSession>
+#include <QVideoSink>
 #include <QProcess>
 #include <QImage>
 
@@ -17,7 +19,8 @@ public:
 
 private:
     QCamera *camera;          // Camera object
-    QVideoProbe *probe;       // Video probe to capture frames
+    QVideoSink *videoSink;    // Video sink to capture frames
+    QMediaCaptureSession captureSession; // Capture session binding camera and sink
     QProcess ffmpegProcess;   // Process for FFmpeg
 
     void setupCamera();       // Setup camera and probe

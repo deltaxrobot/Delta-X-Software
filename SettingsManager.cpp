@@ -19,6 +19,33 @@ SettingsManager& SettingsManager::instance()
     return *s_instance;
 }
 
+QString SettingsManager::defaultPythonPath()
+{
+    QStringList candidates;
+#ifdef Q_OS_WIN
+    candidates << QStringLiteral("python.exe")
+               << QStringLiteral("python3.exe")
+               << QStringLiteral("py.exe");
+#else
+    candidates << QStringLiteral("python3")
+               << QStringLiteral("/usr/bin/python3")
+               << QStringLiteral("python");
+#endif
+
+    for (const QString& candidate : candidates) {
+        const QString resolved = QStandardPaths::findExecutable(candidate);
+        if (!resolved.isEmpty()) {
+            return resolved;
+        }
+    }
+
+#ifdef Q_OS_WIN
+    return QStringLiteral("python.exe");
+#else
+    return QStringLiteral("/usr/bin/python3");
+#endif
+}
+
 SettingsManager::SettingsManager(QObject* parent)
     : QObject(parent)
     , m_settings(nullptr)
@@ -443,4 +470,4 @@ bool SettingsManager::validateSettings() const
 QStringList SettingsManager::getSettingsErrors() const
 {
     return m_errors;
-} 
+}

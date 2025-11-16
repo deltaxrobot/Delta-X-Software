@@ -43,7 +43,11 @@ int CameraSelectionDialog::getCameraID(QWidget* parent, bool* ok)
 
 void CameraSelectionDialog::loadAvailableCameras()
 {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    m_availableCameras = QMediaDevices::videoInputs();
+#else
     m_availableCameras = QCameraInfo::availableCameras();
+#endif
     m_cameraList->clear();
     
     if (m_availableCameras.isEmpty()) {
@@ -54,7 +58,7 @@ void CameraSelectionDialog::loadAvailableCameras()
     }
     
     for (int i = 0; i < m_availableCameras.size(); ++i) {
-        const QCameraInfo& camera = m_availableCameras[i];
+        const CameraInfoType& camera = m_availableCameras[i];
         
         QListWidgetItem* item = new QListWidgetItem();
         

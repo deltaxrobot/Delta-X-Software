@@ -933,10 +933,17 @@ void SettingsPanel::updateColorButton(QPushButton* button, const QColor& color)
 
 void SettingsPanel::selectPythonPath()
 {
-    QString fileName = QFileDialog::getOpenFileName(nullptr, 
-        "Select Python Executable", 
-        m_lePythonPath ? m_lePythonPath->text() : "", 
-        "Executable Files (*.exe);;All Files (*)");
+    QString filter;
+#ifdef Q_OS_WIN
+    filter = tr("Executables (*.exe *.bat *.cmd);;All Files (*)");
+#else
+    filter = tr("Executables (*.app *.command *.sh *.py python*);;All Files (*)");
+#endif
+
+    QString fileName = QFileDialog::getOpenFileName(nullptr,
+        tr("Select Python Executable"),
+        m_lePythonPath ? m_lePythonPath->text() : "",
+        filter);
     
     if (!fileName.isEmpty() && m_lePythonPath) {
         m_lePythonPath->setText(fileName);
@@ -967,4 +974,4 @@ void SettingsPanel::selectCustomConfigPath()
         m_leCustomConfigPath->setText(fileName);
         onSettingsChanged();
     }
-} 
+}

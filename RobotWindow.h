@@ -6,6 +6,7 @@
 #include <random>
 
 // ========== QT INCLUDES ==========
+#include <QObject>
 #include <QAction>
 #include <QApplication>
 #include <QClipboard>
@@ -33,17 +34,26 @@
 #include <QRandomGenerator>
 #include <QSettings>
 #include <QStackedWidget>
+#include <QFileSystemModel>
+#include <QTreeWidget>
+#include <QTreeWidgetItem>
+#include <QListWidget>
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#include <QtSvgWidgets/QSvgWidget>
+#else
 #include <QSvgWidget>
+#endif
 #include <QTextStream>
 #include <QTimer>
+#include <QTime>
+#include <QElapsedTimer>
 #include <QUrl>
 #include <QUrlQuery>
 #include <QVBoxLayout>
 #include <QVersionNumber>
-#include <QtMultimedia/QCameraInfo>
-#include <QtOpenGL>
 #include <qfiledialog.h>
 #include <qmath.h>
+#include "QtMatrixCompat.h"
 
 // ========== OPENCV INCLUDES ==========
 #include <opencv2/opencv.hpp>
@@ -298,7 +308,7 @@ public:
     QLayout* FullDisplayLayout;
     QLabel* ImageLabel = NULL;
     QStackedWidget* SubWindowStackedWidget;
-    QTime performanceTimer;
+    QElapsedTimer performanceTimer;
     
     QString copiedRobotPos[6];
     QMap<QString, QString> ParseNames;
@@ -682,4 +692,3 @@ private slots:
 };
 
 #endif // ROBOTWINDOW_H
-

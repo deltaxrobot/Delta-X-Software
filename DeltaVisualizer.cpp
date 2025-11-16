@@ -22,12 +22,12 @@ void DeltaVisualizer::MoveToHome()
 	emit FinishMoving();
 }
 
-QSize DeltaVisualizer::minimumSizeHint()
+QSize DeltaVisualizer::minimumSizeHint() const
 {
 	return QSize(50, 50);
 }
 
-QSize DeltaVisualizer::sizeHint()
+QSize DeltaVisualizer::sizeHint() const
 {
 	return QSize(400, 400);
 }
@@ -118,25 +118,33 @@ void DeltaVisualizer::wheelEvent(QWheelEvent *e)
 {
 	int n = 1;
 
-	if (timer.isValid() == false)
+	if (!timer.isValid())
 	{
 		timer.start();
 	}
 	else
 	{
-		n = 200 - timer.elapsed();
+		n = 200 - static_cast<int>(timer.elapsed());
 
 		if (n < 0)
 		{
 			n = 1;
 		}
 
-		n = log2(n) + 1;		
+		n = log2(n) + 1;
 	}
 
-	int delta = e->delta();
-	
-	Z -= (delta / abs(delta)) * n;
+    const int delta = e->angleDelta().y();
+
+    if (delta == 0)
+    {
+        e->ignore();
+        return;
+    }
+
+    const int direction = (delta > 0) ? 1 : -1;
+
+    Z -= direction * n;
 
 	if (Z > ZHome)
 	{
@@ -196,16 +204,12 @@ void DeltaVisualizer::paintEvent(QPaintEvent *event)
 {
     QLabel::paintEvent(event);
 
-    const QPixmap* curPix = this->pixmap();
+    QPixmap curPix = this->pixmap();
 
-    if (curPix == NULL)
+    if (curPix.isNull())
         return;
 
-    QPixmap mPix = *curPix;
-
-    QPainter painter;
-
-    painter.begin(this);
+    QPixmap mPix = curPix;
 
     QPainter tempPainter(&mPix);
 
@@ -223,9 +227,8 @@ void DeltaVisualizer::paintEvent(QPaintEvent *event)
     }
     //
 
+    QPainter painter(this);
     painter.drawPixmap(0, 0, mPix);
-
-    painter.end();
 
     update();
 }

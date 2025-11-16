@@ -1,4 +1,5 @@
 #include "robot.h"
+#include <QRegularExpression>
 
 Robot::Robot(QString COM, int baudrate, bool is_open, QObject *parent) : Device(COM, baudrate, "IsDelta", "YesDelta", is_open, parent)
 {
@@ -238,14 +239,15 @@ bool Robot::checkSetSyncPathCmd(QString cmd)
     // SYNC (1, 2, 1.5)
     // SYNC (X, Y, Z)
 
-    QRegExp rx("\\s*SYNC\\s*\\(([-]?\\d+\\.?\\d*),?\\s*([-]?\\d+\\.?\\d*)\\)|\\s*SYNC\\s*\\(([-]?\\d+\\.?\\d*),?\\s*([-]?\\d+\\.?\\d*),?\\s*([-]?\\d+\\.?\\d*)\\)");
+    QRegularExpression rx("\\s*SYNC\\s*\\(([-]?\\d+\\.?\\d*),?\\s*([-]?\\d+\\.?\\d*)\\)|\\s*SYNC\\s*\\(([-]?\\d+\\.?\\d*),?\\s*([-]?\\d+\\.?\\d*),?\\s*([-]?\\d+\\.?\\d*)\\)");
+    QRegularExpressionMatch match = rx.match(cmd);
 
-    if (!rx.exactMatch(cmd))
+    if (!match.hasMatch())
     {
         return false;
     }
 
-    QStringList list = rx.capturedTexts();
+    QStringList list = match.capturedTexts();
     if (list[1] != "") {
         path_vel = list[1].toFloat();
         path_angle = list[2].toFloat();
@@ -340,12 +342,13 @@ QString Robot::syncGcode(QString cmd)
     }
     else if (cmd.contains("G04"))
     {
-        QRegExp rx("P(\\d+\\.?\\d*)");
+        QRegularExpression rx("P(\\d+\\.?\\d*)");
+        QRegularExpressionMatch dwellMatch = rx.match(cmd);
 
-        if (rx.indexIn(cmd) != -1)
+        if (dwellMatch.hasMatch())
         {
-            QString match = rx.cap(1);
-            float time_ms = match.toInt();
+            QString matchText = dwellMatch.captured(1);
+            float time_ms = matchText.toInt();
 
             float distance;
             float new_x, new_y;
@@ -708,4 +711,3 @@ void Robot::ProcessNextMove()
     QVector3D desPoint = StepVector + QVector3D(X, Y, Z);
     MovePoint(desPoint);
 }
-

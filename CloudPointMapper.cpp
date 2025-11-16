@@ -1,4 +1,5 @@
 #include "CloudPointMapper.h"
+#include <QRandomGenerator>
 #include "VariableManager.h"
 #include <QDebug>
 #include <QJsonDocument>
@@ -358,7 +359,7 @@ CloudPointMapper::MappingStats CloudPointMapper::validateMapping(float validatio
     
     // Simple random selection
     for (int i = 0; i < validationCount; ++i) {
-        int randomIndex = qrand() % m_calibrationPoints.size();
+        int randomIndex = QRandomGenerator::global()->bounded(m_calibrationPoints.size());
         if (!validationIndices.contains(randomIndex)) {
             validationIndices.append(randomIndex);
         }

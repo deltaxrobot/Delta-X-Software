@@ -10,7 +10,7 @@
 #include "Parameter.h"
 #include <QFileInfo>
 #include <QVector3D>
-#include <QMatrix>
+#include "QtMatrixCompat.h"
 #include <QTransform>
 #include <QVariant>
 #include <QRegularExpression>
@@ -689,5 +689,4 @@ private:
 };
 
 #endif
-
 

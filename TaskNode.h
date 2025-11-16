@@ -19,6 +19,7 @@
 #include <QThread>
 #include <QDateTime>
 #include <VariableManager.h>
+#include "QtMatrixCompat.h"
 
 #define RED_COLOR       cv::Scalar(0, 0, 255)
 #define GREEN_COLOR     cv::Scalar(0, 255, 0)

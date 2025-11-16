@@ -1,5 +1,17 @@
 #include "DrawingWidget.h"
 
+namespace {
+inline QPixmap labelPixmap(const QLabel* label)
+{
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    return label->pixmap(Qt::ReturnByValue);
+#else
+    const QPixmap* pix = label->pixmap();
+    return pix ? *pix : QPixmap();
+#endif
+}
+}
+
 DrawingWidget::DrawingWidget(QWidget *parent)
 	: QLabel(parent)
 {
@@ -96,7 +108,11 @@ void DrawingWidget::AddImage(int x, int y, int w, int h, QPixmap pix, float spac
 
 	InitGrid();
 
-	QPixmap currentPix = *pixmap();
+    QPixmap currentPix = labelPixmap(this);
+    if (currentPix.isNull()) {
+        currentPix = QPixmap(size());
+        currentPix.fill(Qt::transparent);
+    }
 	
 	float ratio = (float)currentPix.height() / height();
 	int hS = pix.height() * ratio;
@@ -173,7 +189,7 @@ void DrawingWidget::AddLineToStack(QPoint p1, QPoint p2)
 
 void DrawingWidget::DrawLineFromStack()
 {
-    QPixmap pix = *pixmap();
+    QPixmap pix = labelPixmap(this);
     //cv::Mat matPix = ImageTool::QPixmapToCvMat(pix);
 
     float ratio = (float)pix.height() / height();
@@ -209,7 +225,7 @@ void DrawingWidget::AddRectangle(QRect rec)
 
 	rect = rec;
 
-	QPixmap pix = *pixmap();
+    QPixmap pix = labelPixmap(this);
 
 	QPainter p(&pix);
 

@@ -8,8 +8,16 @@
 #include <QListWidget>
 #include <QPushButton>
 #include <QListWidgetItem>
-#include <QCameraInfo>
 #include <QGraphicsDropShadowEffect>
+
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#include <QCameraDevice>
+#include <QMediaDevices>
+using CameraInfoType = QCameraDevice;
+#else
+#include <QCameraInfo>
+using CameraInfoType = QCameraInfo;
+#endif
 
 class CameraSelectionDialog : public QDialog
 {
@@ -47,7 +55,7 @@ private:
     
     // State
     int m_selectedCameraID;
-    QList<QCameraInfo> m_availableCameras;
+    QList<CameraInfoType> m_availableCameras;
 };
 
 #endif // CAMERASELECTIONDIALOG_H 

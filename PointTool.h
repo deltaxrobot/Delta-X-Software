@@ -1,12 +1,13 @@
 #ifndef POINTTOOL_H
 #define POINTTOOL_H
 
+#include <QObject>
 #include <QTransform>
 #include <QPointF>
 #include <QMatrix4x4>
 #include <cmath>
 #include <QPolygonF>
-#include <QMatrix>
+#include "QtMatrixCompat.h"
 #include <opencv2/opencv.hpp>
 #include <qmath.h>
 

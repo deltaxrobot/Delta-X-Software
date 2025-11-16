@@ -1,6 +1,5 @@
 #include "RobotWindow.h"
 #include "MainWindow.h"
-#include "qdesktopwidget.h"
 #include <QApplication>
 #include "AccountWindow.h"
 #include <QElapsedTimer>
@@ -26,16 +25,16 @@ void myMessageOutput(QtMsgType type, const QMessageLogContext &context, const QS
     QTextStream ts(&outFile);
     switch (type) {
     case QtDebugMsg:
-        ts << "Debug: " << msg << endl;
+        ts << "Debug: " << msg << Qt::endl;
         break;
     case QtWarningMsg:
-        ts << "Warning: " << msg << endl;
+        ts << "Warning: " << msg << Qt::endl;
         break;
     case QtCriticalMsg:
-        ts << "Critical: " << msg << endl;
+        ts << "Critical: " << msg << Qt::endl;
         break;
     case QtFatalMsg:
-        ts << "Fatal: " << msg << endl;
+        ts << "Fatal: " << msg << Qt::endl;
         abort();
     }
 

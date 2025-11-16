@@ -10,6 +10,7 @@
 #include <QPainter>
 #include <QPixmap>
 #include <QMouseEvent>
+#include <QWheelEvent>
 
 #define MOVING_BASE_SIZE 50
 
@@ -23,8 +24,8 @@ public:
 	void InitGrid();
 	void MoveToHome();
 
-	QSize minimumSizeHint();
-	QSize sizeHint();	
+    QSize minimumSizeHint() const override;
+    QSize sizeHint() const override;
 	void SetDivisionComboBox(QComboBox* division);
     void JumpOneStep(float* axis, float step);
 
@@ -78,12 +79,12 @@ signals:
 	void right_arrow();
 
 protected:
-	void mousePressEvent(QMouseEvent *event);
-	void mouseReleaseEvent(QMouseEvent *event);
-	void mouseMoveEvent(QMouseEvent *event);
-	void wheelEvent(QWheelEvent *e);
-	bool eventFilter(QObject *dist, QEvent *event);
-    void paintEvent(QPaintEvent *event);
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
+    void wheelEvent(QWheelEvent *e) override;
+    bool eventFilter(QObject *dist, QEvent *event) override;
+    void paintEvent(QPaintEvent *event) override;
 
 private:
     void setWorkingSize(int width);

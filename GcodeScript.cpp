@@ -8,10 +8,17 @@
 #include <QDebug>
 #include <QTimer>
 #include <QMetaObject>
+#include <QRegularExpression>
 
 // Initialize static regex patterns for better performance
-const QRegularExpression GcodeScript::m98Regex("M98\\s+([A-Za-z][A-Za-z0-9]*)(?:\\((.*)\\))?", QRegularExpression::OptimizeOnFirstUsageOption);
-const QRegularExpression GcodeScript::objectInAreaRegex("\\(([^)]+)\\)", QRegularExpression::OptimizeOnFirstUsageOption);
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+static constexpr QRegularExpression::PatternOptions kRegexOptimizeOption = QRegularExpression::PatternOptions();
+#else
+static constexpr QRegularExpression::PatternOptions kRegexOptimizeOption = QRegularExpression::OptimizeOnFirstUsageOption;
+#endif
+
+const QRegularExpression GcodeScript::m98Regex("M98\\s+([A-Za-z][A-Za-z0-9]*)(?:\\((.*)\\))?", kRegexOptimizeOption);
+const QRegularExpression GcodeScript::objectInAreaRegex("\\(([^)]+)\\)", kRegexOptimizeOption);
 
 // Initialize cloud point mapper member variables
 GcodeScript::GcodeScript(QObject* parent)
@@ -1251,7 +1258,7 @@ QString GcodeScript::cloudPointGetLabel(int index)
 
 bool GcodeScript::isGlobalVariable(QString name)
 {
-    if (name == NULL)
+    if (name.isNull())
         return false;
 
     if (name.length() > 6)
@@ -1663,7 +1670,7 @@ bool GcodeScript::findExeGcodeAndTransmit()
                 QStringList paramList;
 
                 if (!params.isEmpty()) {
-                    paramList = params.split(',', QString::SkipEmptyParts);
+                    paramList = params.split(',', Qt::SkipEmptyParts);
                     for (QString &param : paramList) {
                         param = param.trimmed();
                     }
@@ -2253,14 +2260,15 @@ bool GcodeScript::handleVARIABLE(QList<QString> valuePairs, int i)
     QString trimmedStr = expression;
 
     trimmedStr = trimmedStr.replace(" ", "");
-    QRegExp rx("\\((-?\\d+(?:\\.\\d+)?),(-?\\d+(?:\\.\\d+)?),?(-?\\d+(?:\\.\\d+)?)?\\)");
+    QRegularExpression rx("\\((-?\\d+(?:\\.\\d+)?),(-?\\d+(?:\\.\\d+)?),?(-?\\d+(?:\\.\\d+)?)?\\)");
+    QRegularExpressionMatch match = rx.match(trimmedStr);
 
     // TODO: chÆ°a gÃ¡n 2 point vá»›i nhau Ä‘Æ°á»£c
-    if (trimmedStr.startsWith("(") && rx.indexIn(trimmedStr) == 0)
+    if (trimmedStr.startsWith("(") && match.hasMatch())
     {
-        QString x = rx.cap(1);
-        QString y = rx.cap(2);
-        QString z = rx.cap(3);
+        QString x = match.captured(1);
+        QString y = match.captured(2);
+        QString z = match.captured(3);
 
 //        saveVariable(varName + ".X", calculateExpressions(x));
 //        saveVariable(varName + ".Y", calculateExpressions(y));
@@ -2412,7 +2420,8 @@ QString GcodeScript::calculateExpressions2(QString expression)
 
         for (const QStringList &operatorGroup : {operators.mid(6, 3), operators.mid(9, 2), operators.mid(0, 6), operators.mid(11, 3)}) {
             for (const QString &op : operatorGroup) {
-                int index = expression.indexOf(QRegExp("\\b" + op + "\\b"));
+                QRegularExpression opRegex("\\b" + QRegularExpression::escape(op) + "\\b");
+                int index = expression.indexOf(opRegex);
                 if (index != -1 && (operatorPosition == -1 || index < operatorPosition)) {
                     operatorPosition = index;
                     operatorIndex = operators.indexOf(op);
@@ -2882,7 +2891,7 @@ QString GcodeScript::deleteSpaces(QString s)
 
 QString GcodeScript::formatSpaces(QString s)
 {
-    QRegExp opRegExp("(?<!\\S)(\\+|\\*|\\/|\\%|\\(|\\)|\\^)(?!\\S)");
+    QRegularExpression opRegExp("(?<!\\S)(\\+|\\*|\\/|\\%|\\(|\\)|\\^)(?!\\S)");
     s.replace(opRegExp, " \\1 ");
 
     return s;
@@ -4073,7 +4082,7 @@ bool GcodeScript::callFunction(QString functionName, QStringList arguments, cons
 bool GcodeScript::isFunctionCall(QString line)
 {
     // Check if line contains a function call
-    QStringList tokens = line.split(' ', QString::SkipEmptyParts);
+    QStringList tokens = line.split(' ', Qt::SkipEmptyParts);
     
     if (tokens.isEmpty())
         return false;
@@ -4108,7 +4117,7 @@ QString GcodeScript::parseFunctionCall(QString line, QStringList& arguments)
     // Parse function call and extract function name and arguments
     arguments.clear();
 
-    QStringList tokens = line.split(' ', QString::SkipEmptyParts);
+    QStringList tokens = line.split(' ', Qt::SkipEmptyParts);
     if (tokens.isEmpty())
         return "";
 
@@ -4160,7 +4169,7 @@ QString GcodeScript::parseFunctionCall(QString line, QStringList& arguments)
             }
             // Determine function name from left side, skipping optional line number
             QString leftPart = line.left(openParen).trimmed();
-            QStringList leftTokens = leftPart.split(' ', QString::SkipEmptyParts);
+            QStringList leftTokens = leftPart.split(' ', Qt::SkipEmptyParts);
             QString funcNameUpper;
             if (!leftTokens.isEmpty()) {
                 QString lastTok = leftTokens.last();
@@ -4322,7 +4331,3 @@ float GcodeScript::getObjectIndex(QString listName, int uid)
     
     return -1.0f; // Object not found
 }
-
-
-
-

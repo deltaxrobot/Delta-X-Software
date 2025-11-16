@@ -9,6 +9,7 @@
 #include <QFile>
 #include <QTextStream>
 #include <QCoreApplication>
+#include <QRegularExpression>
 #include <cmath>      // ? For Z-plane calculations
 #include <QInputDialog>  // ? For test input dialog
 #include <QtMath>      // ? For qAbs function
@@ -1700,7 +1701,7 @@ void RobotWindow::AddScriptThread()
     GcodeScriptThread->setZPlaneFilterHandler(this);
 
     GcodeScriptThread->ProjectName = ProjectName;
-    GcodeScriptThread->ID = QString("thread") + GcodeScripts.count();
+    GcodeScriptThread->ID = QString("thread%1").arg(GcodeScripts.count());
     GcodeScriptThread->moveToThread(new QThread(this));
 
     connect(GcodeScriptThread->thread(), SIGNAL(finished()), GcodeScriptThread, SLOT(deleteLater()));
@@ -6247,7 +6248,8 @@ bool RobotWindow::isItemExit(QListWidget *lw, QString item)
 
 int RobotWindow::getIDfromName(QString fullName)
 {
-    QString id = fullName.split(QRegExp("[^\\d]")).last();
+    QStringList idParts = fullName.split(QRegularExpression("[^\\d]+"), Qt::SkipEmptyParts);
+    QString id = idParts.isEmpty() ? QString() : idParts.last();
     return id.toInt();
 }
 
@@ -8289,6 +8291,3 @@ void RobotWindow::onAutoCalibrate()
         }
     }
 }
-
-
-

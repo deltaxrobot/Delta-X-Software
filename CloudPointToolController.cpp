@@ -1,4 +1,5 @@
 #include "CloudPointToolController.h"
+#include <QRegularExpression>
 #include "RobotWindow.h"
 #include "ui_RobotWindow.h"
 #include <QSplitter>
@@ -1308,7 +1309,7 @@ void CloudPointToolController::pasteCoordinates()
     }
     
     // Try to parse clipboard text
-    QStringList parts = clipboardText.split(QRegExp("[,\\s]+"));
+    QStringList parts = clipboardText.split(QRegularExpression("[,\\s]+"), Qt::SkipEmptyParts);
     if (parts.size() >= 6) {
         // Assume format: imageX, imageY, imageZ, realX, realY, realZ
         // m_imageXEdit->setText(parts[0]); // These are now input dialogs

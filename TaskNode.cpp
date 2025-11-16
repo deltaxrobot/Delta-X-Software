@@ -867,7 +867,10 @@ void TaskNode::doMappingMatrixWork()
     float dx = xx1 - (ScaleRotateMatrix.m11() * x1 + ScaleRotateMatrix.m21() * y1);
     float dy = yy1 - (ScaleRotateMatrix.m12() * x1 + ScaleRotateMatrix.m22() * y1);
 
-    outputMatrix.setMatrix(ScaleRotateMatrix.m11(), ScaleRotateMatrix.m12(), ScaleRotateMatrix.m21(), ScaleRotateMatrix.m22(), dx, dy);
+    QtMatrixCompat::setMatrix2D(outputMatrix,
+                                ScaleRotateMatrix.m11(), ScaleRotateMatrix.m12(),
+                                ScaleRotateMatrix.m21(), ScaleRotateMatrix.m22(),
+                                dx, dy);
     QString prefix = ProjectName + "." + "tracking0" + ".";
     QString matrixString = QString("%1,%2,%3,%4,%5,%6")
                                    .arg(outputMatrix.m11())

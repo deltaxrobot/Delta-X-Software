@@ -1,9 +1,9 @@
 #include "PointToolController.h"
+#include <QRegularExpression>
 #include "RobotWindow.h"
 #include "ui_RobotWindow.h"
 #include "VariableManager.h"
 #include <QMessageBox>
-#include <QRegularExpression>
 
 PointToolController::PointToolController(RobotWindow* parent)
     : QObject(parent)
@@ -661,7 +661,7 @@ bool PointToolController::validateAndExtractFloat(QLineEdit* edit, float& value,
 bool PointToolController::parseClipboardPoint(const QString& clipboardText, float& x, float& y, float& z)
 {
     // Try to parse different formats
-    QStringList parts = clipboardText.split(QRegExp("[,\\s]+"));
+    QStringList parts = clipboardText.split(QRegularExpression("[,\\s]+"), Qt::SkipEmptyParts);
     
     if (parts.size() >= 2) {
         bool okX, okY, okZ = true;

@@ -11,6 +11,7 @@
 #include <QTime>
 #include <QDateTime>
 #include <QRegularExpression>
+#include "QtMatrixCompat.h"
 
 VariableManager &VariableManager::instance()
 {
