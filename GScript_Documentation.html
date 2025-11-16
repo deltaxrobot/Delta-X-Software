@@ -124,11 +124,11 @@
 </head>
 <body>
     <div class="container">
-        <h1>ðŸ¤– GScript User Guide</h1>
+        <h1>🤖 GScript User Guide</h1>
         <p><strong>Delta X Software - Automated Robot Programming Language</strong></p>
 
         <div class="toc">
-            <h3>ðŸ“‹ Table of Contents</h3>
+            <h3>📋 Table of Contents</h3>
             <ul>
                 <li><a href="#introduction">1. Introduction to GScript</a></li>
                 <li><a href="#syntax">2. Basic Syntax</a>
@@ -165,24 +165,24 @@
             </ul>
         </div>
 
-        <h2 id="introduction">1. ðŸŒŸ Introduction to GScript</h2>
+        <h2 id="introduction">1. 🌟 Introduction to GScript</h2>
         <p><strong>GScript</strong> is a programming language integrated into Delta X Software, specifically designed to control Delta X robots and automation devices.</p>
 
         <div class="example">
-            <h4>âœ… Main Advantages:</h4>
+            <h4>✅ Main Advantages:</h4>
             <ul>
-                <li>ðŸŽ¯ Easy to learn, simple syntax</li>
-                <li>ðŸ”§ Built-in robot control</li>
-                <li>ðŸ“Š Variable and mathematical expression support</li>
-                <li>ðŸ”„ Subroutines and loops</li>
-                <li>ðŸ“· Integrated image processing</li>
-                <li>ðŸ“ Advanced cloud point mapping</li>
+                <li>🎯 Easy to learn, simple syntax</li>
+                <li>🔧 Built-in robot control</li>
+                <li>📊 Variable and mathematical expression support</li>
+                <li>🔄 Subroutines and loops</li>
+                <li>📷 Integrated image processing</li>
+                <li>📍 Advanced cloud point mapping</li>
             </ul>
         </div>
 
-        <h2 id="syntax">2. ðŸ“ Basic Syntax</h2>
+        <h2 id="syntax">2. 📝 Basic Syntax</h2>
 
-        <h3 id="variables">2.1. ðŸ”¢ Variables</h3>
+        <h3 id="variables">2.1. 🔢 Variables</h3>
         <p>Variables in GScript start with <span class="inline-code">#</span> and can store numbers, strings, points, vectors.</p>
 
         <div class="code-block">; Declare and assign numeric variables
@@ -202,7 +202,7 @@
 #z_pos = #point3d.Z</div>
 
         <div class="warning">
-            <strong>âš ï¸ Note:</strong> Variable names can contain letters, numbers, and underscores. Cannot start with a number.
+            <strong>⚠️ Note:</strong> Variable names can contain letters, numbers, and underscores. Cannot start with a number.
         </div>
 
         <h3 id="label-jump">3.1a. LABEL and JUMP (Named Jump)</h3>
@@ -227,13 +227,13 @@ JUMP WORK
 
 LABEL END
 ; Program end</div>
-        <h3 id="comments">2.2. ðŸ’¬ Comments</h3>
+        <h3 id="comments">2.2. 💬 Comments</h3>
         <p>Use <span class="inline-code">;</span> to add comments to your code:</p>
 
         <div class="code-block">; This is a full line comment
 G01 X100 Y200 ; End of line comment</div>
 
-        <h3 id="expressions">2.3. ðŸ§® Mathematical Expressions</h3>
+        <h3 id="expressions">2.3. 🧮 Mathematical Expressions</h3>
         <p>GScript supports basic and advanced mathematical operations:</p>
 
         <div class="table-container">
@@ -279,7 +279,7 @@ G01 X100 Y200 ; End of line comment</div>
 ; Use in G-code
 G01 X[#position_x] Y[#center_y] Z[#height]</div>
 
-        <h2 id="control-flow">3. ðŸ”„ Control Flow</h2>
+        <h2 id="control-flow">3. 🔄 Control Flow</h2>
 
         <h3 id="goto">3.1. GOTO - Jump to Line</h3>
         <p>The <span class="inline-code">GOTO</span> command allows jumping to another line in the program:</p>
@@ -290,7 +290,7 @@ N15 G01 X[#counter * 10] Y100
 N20 GOTO 10 ; Jump to line N10</div>
 
         <div class="warning">
-            <strong>âš ï¸ Caution:</strong> Using GOTO can create infinite loops. Always have stop conditions.
+            <strong>⚠️ Caution:</strong> Using GOTO can create infinite loops. Always have stop conditions.
         </div>
 
         <h3 id="if-then">3.2. IF...ELIF...ELSE...ENDIF - ConditionalELIF...ELSE...ENDIF - Conditional</h3>
@@ -416,7 +416,7 @@ ELSE
     G28 ; Default action
 ENDIF</div>
 
-        <h3 id="for-loops">3.3. ðŸ”„ FOR...ENDFOR - Loops</h3>
+        <h3 id="for-loops">3.3. 🔄 FOR...ENDFOR - Loops</h3>
         <p>GScript supports two types of FOR loops:</p>
 
         <h4>3.3.1. Numeric FOR loops:</h4>
@@ -488,7 +488,7 @@ FOR #i = 1 TO 10
     M05
 ENDFOR</div>
 
-        <h2 id="subprograms">4. ðŸ”§ Subprograms</h2>
+        <h2 id="subprograms">4. 🔧 Subprograms</h2>
         <p>Use subprograms to reuse code and organize programs better:</p>
 
         <h3>4.1. Define Subprogram</h3>
@@ -555,7 +555,7 @@ ENDIF</div>
             </ul>
         </div>
 
-        <h2 id="math-functions">6. ðŸ“ Mathematical Functions</h2>
+        <h2 id="math-functions">6. 📐 Mathematical Functions</h2>
         <p>GScript provides built-in mathematical functions:</p>
 
         <div class="table-container">
@@ -626,7 +626,7 @@ ENDIF</div>
 G01 X[#x] Y[#y]</div>
         </div>
 
-        <h2 id="device-control">7. ðŸŽ›ï¸ Device Control</h2>
+        <h2 id="device-control">7. 🎛️ Device Control</h2>
 
         <h3>7.1. Robot Control</h3>
         <div class="table-container">
@@ -736,21 +736,21 @@ SELECT device0 ; Select device
 robot0 G01 X100 Y200
 conveyor0 M311 S100</div>
 
-        <h2 id="cloud-point-mapping">8. ðŸ“ Cloud Point Mapping System</h2>
+        <h2 id="cloud-point-mapping">8. 📍 Cloud Point Mapping System</h2>
         <p><strong>Cloud Point Mapping System (CPMS)</strong> is an advanced coordinate mapping system for Delta X robots, supporting coordinate transformation from camera/pixel coordinates to real-world coordinates with high precision.</p>
 
-        <h3 id="cloud-point-intro">8.1. ðŸŒŸ Introduction</h3>
+        <h3 id="cloud-point-intro">8.1. 🌟 Introduction</h3>
         <p>CPMS provides 25+ functions for:</p>
         <ul>
-            <li>ðŸ“Š Managing calibration points (add, remove, update)</li>
-            <li>ðŸŽ¯ Coordinate transformation with 5 interpolation methods</li>
-            <li>ðŸ“ˆ Mapping statistics and validation</li>
-            <li>ðŸ’¾ Save/load mapping configurations</li>
-            <li>ðŸ”„ Integration with VariableManager</li>
+            <li>📊 Managing calibration points (add, remove, update)</li>
+            <li>🎯 Coordinate transformation with 5 interpolation methods</li>
+            <li>📈 Mapping statistics and validation</li>
+            <li>💾 Save/load mapping configurations</li>
+            <li>🔄 Integration with VariableManager</li>
         </ul>
 
         <div class="example">
-            <h4>âœ… Interpolation Methods:</h4>
+            <h4>✅ Interpolation Methods:</h4>
             <ul>
                 <li><strong>0 = Linear:</strong> Fast and simple</li>
                 <li><strong>1 = Bilinear:</strong> Good for grid data (default)</li>
@@ -760,7 +760,7 @@ conveyor0 M311 S100</div>
             </ul>
         </div>
 
-        <h3 id="cloud-point-calibration">8.2. ðŸ”§ Calibration Functions</h3>
+        <h3 id="cloud-point-calibration">8.2. 🔧 Calibration Functions</h3>
         <p>Functions for managing calibration points:</p>
 
         <div class="table-container">
@@ -807,7 +807,7 @@ conveyor0 M311 S100</div>
 ; Remove point
 #cloudPointRemove(#index)</div>
 
-        <h3 id="cloud-point-transformation">8.3. ðŸŽ¯ Coordinate Transformation</h3>
+        <h3 id="cloud-point-transformation">8.3. 🎯 Coordinate Transformation</h3>
         <p>Functions for transforming coordinates from image/pixel to real-world:</p>
 
         <div class="table-container">
@@ -871,7 +871,7 @@ ELSE
     M98 PshowWarning("Low confidence transformation")
 ENDIF</div>
 
-        <h3 id="cloud-point-management">8.4. ðŸ“Š Point Management</h3>
+        <h3 id="cloud-point-management">8.4. 📊 Point Management</h3>
         <p>Functions for managing and querying point information:</p>
 
         <div class="table-container">
@@ -959,7 +959,7 @@ FOR #i = 0 TO #total_points - 1
     ; Note: showInfo function would need to be implemented
 ENDFOR</div>
 
-        <h3 id="cloud-point-statistics">8.5. ðŸ“ˆ Statistics & Validation</h3>
+        <h3 id="cloud-point-statistics">8.5. 📈 Statistics & Validation</h3>
         <p>Functions for statistics and validation of mapping system:</p>
 
         <div class="table-container">
@@ -1016,7 +1016,7 @@ ELSE
     ; Cloud Point Mapping not ready. Add more calibration points.
 ENDIF</div>
 
-        <h3 id="cloud-point-file-ops">8.6. ðŸ’¾ File Operations</h3>
+        <h3 id="cloud-point-file-ops">8.6. 💾 File Operations</h3>
         <p>Functions for save/load and integration with VariableManager:</p>
 
         <div class="table-container">
@@ -1066,7 +1066,7 @@ ENDIF</div>
 ; Import from VariableManager
 #cloudPointImport("CameraMapping_Station1")</div>
 
-        <h3 id="cloud-point-examples">8.7. ðŸŽ¯ Examples</h3>
+        <h3 id="cloud-point-examples">8.7. 🎯 Examples</h3>
         <div class="example">
             <h4>Example 1: Basic Calibration & Transformation</h4>
             <div class="code-block">; === CALIBRATION PHASE ===
@@ -1110,7 +1110,7 @@ ENDIF</div>
         </div>
 
         <div class="warning">
-            <h4>âš ï¸ Important Notes about Cloud Point Mapping:</h4>
+            <h4>⚠️ Important Notes about Cloud Point Mapping:</h4>
             <ul>
                 <li><strong>Minimum Points:</strong> Need at least 3 points for basic mapping, 5+ points for validation</li>
                 <li><strong>Calibration Quality:</strong> Ensure calibration points are evenly distributed in workspace</li>
@@ -1121,7 +1121,7 @@ ENDIF</div>
             </ul>
         </div>
 
-        <h2 id="basic-object-processing">9. ðŸŽ¯ Basic Object Processing</h2>
+        <h2 id="basic-object-processing">9. 🎯 Basic Object Processing</h2>
         <p>GScript provides basic object processing functions for managing objects detected by the vision system.</p>
 
         <h3>9.1. Basic Object Management</h3>
@@ -1205,7 +1205,7 @@ G01 Z-50
 ; Delete processed object
 M98 PdeleteFirstObject</div>
 
-        <h2 id="examples">10. ðŸŽ¯ Practical Examples</h2>
+        <h2 id="examples">10. 🎯 Practical Examples</h2>
 
         <h3>10.1. Basic Pick & Place Program</h3>
         <div class="example">
@@ -1375,7 +1375,7 @@ G28</div>
         </div>
 
         <div class="warning">
-            <h4>âš ï¸ Important Notes:</h4>
+            <h4>⚠️ Important Notes:</h4>
             <ul>
                 <li>Always test programs in safe mode before running</li>
                 <li>Ensure robot is homed before starting</li>
@@ -1386,20 +1386,20 @@ G28</div>
         </div>
 
         <div class="example">
-            <h4>ðŸ’¡ Tips and Tricks:</h4>
+            <h4>💡 Tips and Tricks:</h4>
             <ul>
-                <li>ðŸ”§ Use subprograms and functions to reuse code</li>
-                <li>ðŸ“ Add comments to make code easy to understand</li>
-                <li>ðŸ”¢ Use variables to make code more flexible</li>
-                <li>âš¡ Optimize by reducing unnecessary movements</li>
-                <li>ðŸ§ª Test small parts before assembling</li>
+                <li>🔧 Use subprograms and functions to reuse code</li>
+                <li>📝 Add comments to make code easy to understand</li>
+                <li>🔢 Use variables to make code more flexible</li>
+                <li>⚡ Optimize by reducing unnecessary movements</li>
+                <li>🧪 Test small parts before assembling</li>
             </ul>
         </div>
 
         <hr>
         <footer style="text-align: center; margin-top: 40px; color: #7f8c8d;">
             <p><strong>Delta X Software</strong> - Automation Made Simple<br>
-            Â© 2024 - GScript User Guide</p>
+            © 2024 - GScript User Guide</p>
         </footer>
     </div>
 </body>

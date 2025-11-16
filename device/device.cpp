@@ -109,10 +109,12 @@ void Device::Connect()
                 QThread::msleep(500);
                 serialPort->blockSignals(true);
                 serialPort->write((confirmRequest + "\n").toLocal8Bit());
-                serialPort->waitForReadyRead(500);
+                serialPort->waitForReadyRead(200);
                 QString response = QString(serialPort->readLine());
                 if (response.contains("Init"))
                 {
+                    serialPort->write((confirmRequest + "\n").toLocal8Bit());
+                    serialPort->waitForReadyRead(200);
                     response = QString(serialPort->readLine());
                 }
                 if (response.indexOf(confirmResponse) > -1) {

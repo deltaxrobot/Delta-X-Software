@@ -2,6 +2,7 @@
 #include "RobotWindow.h"
 #include <qlist.h>
 #include <QElapsedTimer>
+#include <QFont>
 
 QTextEdit* DebugLB;
 QTextEdit* teSoftwareLog;
@@ -64,6 +65,20 @@ void SoftwareLog(QString msg, bool isNewLine)
 {
     if (msg == "")
         return;
+
+    if (teSoftwareLog) {
+        static bool s_fontInitialized = false;
+        if (!s_fontInitialized) {
+            QFont logFont = teSoftwareLog->font();
+            if (logFont.pointSize() > 0) {
+                logFont.setPointSize(13);
+            } else {
+                logFont.setPointSizeF(13.0);
+            }
+            teSoftwareLog->setFont(logFont);
+            s_fontInitialized = true;
+        }
+    }
 
     if (teSoftwareLog->document()->blockCount() > 200)
         teSoftwareLog->setText("");
@@ -188,5 +203,3 @@ namespace UnityTool
         }
     }
 }
-
-

@@ -1,4 +1,7 @@
 #include "SocketConnectionManager.h"
+#include <QCoreApplication>
+#include <QDir>
+#include <QFileInfo>
 
 SocketConnectionManager::~SocketConnectionManager()
 {
@@ -27,10 +30,23 @@ QString SocketConnectionManager::printLocalIpAddresses() {
             }
         }
     }
+
+    return QStringLiteral("127.0.0.1");
 }
 
 SocketConnectionManager::SocketConnectionManager(const QString &address, int port, QObject *parent)
     : QObject(parent), hostAddress(address), port(port) {
+
+    if (hostAddress.isEmpty() || hostAddress == "0.0.0.0")
+    {
+        hostAddress = printLocalIpAddresses();
+    }
+    if (hostAddress.isEmpty())
+    {
+        hostAddress = QStringLiteral("127.0.0.1");
+    }
+
+    indexPath = resolveIndexFile(indexPath);
 
     Server = new QTcpServer(this);
     Connect(hostAddress, port);
@@ -54,6 +70,60 @@ bool SocketConnectionManager::Connect(QString address, int port)
     }
 
     return false;
+}
+
+QString SocketConnectionManager::resolveIndexFile(const QString &fileName) const
+{
+    QStringList candidates;
+    QFileInfo providedInfo(fileName);
+
+    const QString resourcePath = QString(":/%1").arg(fileName);
+    QFile resourceFile(resourcePath);
+    if (resourceFile.exists())
+    {
+        qDebug() << "Using web control index file from resources:" << resourcePath;
+        return resourcePath;
+    }
+
+    if (providedInfo.isAbsolute())
+    {
+        candidates << providedInfo.absoluteFilePath();
+    }
+
+    const QString currentDir = providedInfo.isAbsolute()
+            ? providedInfo.absoluteFilePath()
+            : QDir::current().absoluteFilePath(fileName);
+    candidates << currentDir;
+
+    const QString appDir = QCoreApplication::applicationDirPath();
+    candidates << QDir(appDir).absoluteFilePath(fileName);
+    candidates << QDir(appDir + "/../Resources").absoluteFilePath(fileName);
+
+    QDir walker(appDir);
+    for (int i = 0; i < 4; ++i)
+    {
+        candidates << walker.absoluteFilePath(fileName);
+        if (!walker.cdUp())
+            break;
+    }
+
+    for (const QString &path : candidates)
+    {
+        QFileInfo info(path);
+        if (info.exists() && info.isFile())
+        {
+            qDebug() << "Using web control index file at:" << info.absoluteFilePath();
+            return info.absoluteFilePath();
+        }
+    }
+
+    qDebug() << "Web control" << fileName << "not found in common locations, fallback to:" << currentDir;
+    return currentDir;
+}
+
+void SocketConnectionManager::setIndexFileName(const QString &fileName)
+{
+    indexPath = resolveIndexFile(fileName);
 }
 
 void SocketConnectionManager::newClientConnected() {

@@ -25,7 +25,7 @@ public:
     QString ProjectName = "project0";
 
     int imageSendingMethod = 0;
-    QString indexPath = "index.html";
+    QString indexPath = "Jogging.html";
 
     ~SocketConnectionManager();
     bool IsServerOpen();
@@ -34,6 +34,10 @@ public:
 public:
     SocketConnectionManager(const QString& address = "127.0.0.1", int port = 12345, QObject* parent = nullptr);
     bool Connect(QString address = "127.0.0.1", int port = 8844);
+    void setIndexFileName(const QString &fileName);
+
+private:
+    QString resolveIndexFile(const QString &fileName) const;
 
 private slots:
     void newClientConnected();

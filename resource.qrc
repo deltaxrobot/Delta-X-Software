@@ -150,5 +150,7 @@
         <file>icon/Copy.png</file>
         <file>icon/Distance-Threshold.png</file>
         <file>icon/IoU-threshold.png</file>
+        <file>Jogging.html</file>
+        <file>GScript_Documentation.html</file>
     </qresource>
 </RCC>

@@ -411,8 +411,7 @@ void RobotWindow::InitSocketConnection()
 
     ConnectionManager = new SocketConnectionManager(localIP, port.toInt());
     ConnectionManager->ProjectName = ProjectName;
-    QString appDirPath = QCoreApplication::applicationDirPath();
-    ConnectionManager->indexPath = appDirPath + "/Jogging.html";
+    ConnectionManager->setIndexFileName(QStringLiteral("Jogging.html"));
 
     QThread* thread = new QThread(this);
 
@@ -444,16 +443,24 @@ void RobotWindow::InitSocketConnection()
     // Connect Web Control button
     connect(ui->pbOpenWebControl, &QPushButton::clicked, [=]()
     {
-        if (ConnectionManager && ConnectionManager->WebServer->isListening())
+        if (!ConnectionManager)
         {
-            QString webUrl = QString("http://%1:5000").arg(ConnectionManager->hostAddress);
-            QDesktopServices::openUrl(QUrl(webUrl));
-            SoftwareLog("Opening web control at: " + webUrl);
+            QMessageBox::warning(this, "Web Control", "Connection manager is unavailable.");
+            return;
         }
-        else
+
+        if (!ConnectionManager->WebServer->isListening())
         {
-            QMessageBox::warning(this, "Web Control", "Web server is not running. Please start the server first.");
+            if (!ConnectionManager->WebServer->listen(QHostAddress(ConnectionManager->hostAddress), 5000))
+            {
+                QMessageBox::warning(this, "Web Control", "Web server is not running. Please start the server first.");
+                return;
+            }
         }
+
+        QString webUrl = QString("http://%1:5000").arg(ConnectionManager->hostAddress);
+        QDesktopServices::openUrl(QUrl(webUrl));
+        SoftwareLog("Opening web control at: " + webUrl);
     });
 }
 
@@ -838,37 +845,50 @@ void RobotWindow::InitGcodeEditorModule()
 
 void RobotWindow::InitGScriptHelp()
 {
-    // Load GScript documentation HTML file into tbGcodeScriptHelp
-    QString htmlFilePath = QCoreApplication::applicationDirPath() + "/GScript_Documentation.html";
-    
-    // Check if HTML file exists
-    QFile htmlFile(htmlFilePath);
-    if (htmlFile.exists() && htmlFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        // Read HTML content
-        QString htmlContent = htmlFile.readAll();
-        htmlFile.close();
-        
-        // Set the HTML content to QTextBrowser
+    const QStringList docCandidates = {
+        QStringLiteral(":/GScript_Documentation.html"),
+        QCoreApplication::applicationDirPath() + "/GScript_Documentation.html",
+        QDir::current().absoluteFilePath("GScript_Documentation.html")
+    };
+
+    QString htmlContent;
+    QString loadedFrom;
+
+    for (const QString &path : docCandidates)
+    {
+        QFile htmlFile(path);
+        if (htmlFile.exists() && htmlFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
+            htmlContent = QString::fromUtf8(htmlFile.readAll());
+            if (!htmlContent.isEmpty() && htmlContent.at(0) == QChar(0xFEFF)) {
+                htmlContent.remove(0, 1);
+            }
+            htmlFile.close();
+            loadedFrom = path;
+            break;
+        }
+    }
+
+    if (!htmlContent.isEmpty()) {
         ui->tbGcodeScriptHelp->setHtml(htmlContent);
-        
-        SoftwareLog("GScript Help documentation loaded successfully");
+        SoftwareLog("GScript Help documentation loaded from: " + loadedFrom);
     } else {
-        // Simple error message if file not found
         QString errorMessage = QString(
             "<html><body style='font-family: Arial; color: #ff6b6b; text-align: center; padding: 50px;'>"
-            "<h2>?? GScript Documentation Not Found</h2>"
+            "<h2>GScript Documentation Not Found</h2>"
             "<p>Could not load: <strong>%1</strong></p>"
-            "<p>Please ensure GScript_Documentation.html is in the application directory.</p>"
+            "<p>Please ensure GScript_Documentation.html is available in the application folder or resources.</p>"
             "</body></html>"
-        ).arg(htmlFilePath);
-        
+        ).arg(docCandidates.at(1));
+
         ui->tbGcodeScriptHelp->setHtml(errorMessage);
-        SoftwareLog("GScript Help: HTML file not found at " + htmlFilePath);
+        SoftwareLog("GScript Help: HTML file not found in resources or file system.");
     }
-    
-    // Set properties for better display
+
     ui->tbGcodeScriptHelp->setOpenExternalLinks(false);
-    ui->tbGcodeScriptHelp->setSearchPaths(QStringList() << QCoreApplication::applicationDirPath());
+    ui->tbGcodeScriptHelp->setSearchPaths(QStringList()
+                                          << ":/"
+                                          << QCoreApplication::applicationDirPath()
+                                          << QDir::currentPath());
 }
 
 void RobotWindow::InitUIController()
