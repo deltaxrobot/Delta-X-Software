@@ -558,10 +558,6 @@ MainWindow::~MainWindow()
         m_settingsPanel->autoSaveSettings();
     }
     
-    VariableManager::instance().thread()->quit();
-    VariableManager::instance().thread()->wait();
-    delete VariableManager::instance().thread();
-
     delete ui;
 }
 
@@ -938,4 +934,3 @@ void MainWindow::InitVariableTreeView()
     VariableTreeModel.setHeaderData(0, Qt::Horizontal, "Variable keys in hierarchical structure", Qt::ToolTipRole);
     VariableTreeModel.setHeaderData(1, Qt::Horizontal, "Current values of the variables", Qt::ToolTipRole);
 }
-

@@ -66,6 +66,7 @@ private:
     bool isLikelyObjectInfoKey(const QString &fullKey) const;
     void clearKeyCache();
     const QString& getCachedFullKey(const QString& key) const;
+    QVariant normalizeInputValue(const QVariant& value) const;
 
     VariableManager();
 //    std::map<QString, QVariant> dataMap;

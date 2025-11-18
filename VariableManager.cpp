@@ -80,9 +80,10 @@ void VariableManager::addVar(const QString &key, const QVariant &value)
     // Make a copy of the cached full key to avoid dangling reference
     // when purging entries from keyCache below.
     QString fullKey = getCachedFullKey(key);
+    QVariant normalizedValue = normalizeInputValue(value);
     std::lock_guard<std::mutex> lock(dataMutex);
-    dataMap[fullKey] = value;
-    emit varAdded(fullKey, value);
+    dataMap[fullKey] = normalizedValue;
+    emit varAdded(fullKey, normalizedValue);
 }
 
 void VariableManager::addVarSilent(const QString &key, const QVariant &value)
@@ -93,8 +94,9 @@ void VariableManager::addVarSilent(const QString &key, const QVariant &value)
     }
     
     QString fullKey = getCachedFullKey(key);
+    QVariant normalizedValue = normalizeInputValue(value);
     std::lock_guard<std::mutex> lock(dataMutex);
-    dataMap[fullKey] = value;
+    dataMap[fullKey] = normalizedValue;
     // No signal emission
 }
 
@@ -106,9 +108,10 @@ void VariableManager::updateVar(const QString &key, const QVariant &value)
     }
     
     QString fullKey = getCachedFullKey(key);
+    QVariant normalizedValue = normalizeInputValue(value);
     std::lock_guard<std::mutex> lock(dataMutex);
-    dataMap[fullKey] = value;
-    emit varUpdated(fullKey, value);
+    dataMap[fullKey] = normalizedValue;
+    emit varUpdated(fullKey, normalizedValue);
 }
 
 void VariableManager::updateVarSilent(const QString &key, const QVariant &value)
@@ -119,8 +122,9 @@ void VariableManager::updateVarSilent(const QString &key, const QVariant &value)
     }
     
     QString fullKey = getCachedFullKey(key);
+    QVariant normalizedValue = normalizeInputValue(value);
     std::lock_guard<std::mutex> lock(dataMutex);
-    dataMap[fullKey] = value;
+    dataMap[fullKey] = normalizedValue;
     // No signal emission
 }
 
@@ -399,6 +403,7 @@ void VariableManager::loadFromQSettings()
                 }
             }
         }
+        v = normalizeInputValue(v);
         dataMap[key] = v;
         emit varAdded(key, v);
     }
@@ -542,4 +547,43 @@ void VariableManager::clearKeyCache()
 {
     std::lock_guard<std::mutex> cacheLock(keyCacheMutex);
     keyCache.clear();
+}
+
+QVariant VariableManager::normalizeInputValue(const QVariant& value) const
+{
+    if (!value.isValid()) {
+        return value;
+    }
+
+    if (value.type() == QVariant::String) {
+        QString text = value.toString().trimmed();
+        if (text.isEmpty()) {
+            return value;
+        }
+
+        QString trimmed = text;
+        if (trimmed.startsWith('(') && trimmed.endsWith(')') && trimmed.length() > 2) {
+            trimmed = trimmed.mid(1, trimmed.length() - 2);
+        }
+
+        QStringList parts = trimmed.split(QRegularExpression("\\s*,\\s*"), Qt::SkipEmptyParts);
+        if (parts.size() == 2) {
+            bool okX = false, okY = false;
+            double x = parts[0].toDouble(&okX);
+            double y = parts[1].toDouble(&okY);
+            if (okX && okY) {
+                return QVariant::fromValue(QPointF(x, y));
+            }
+        } else if (parts.size() == 3) {
+            bool okX = false, okY = false, okZ = false;
+            double x = parts[0].toDouble(&okX);
+            double y = parts[1].toDouble(&okY);
+            double z = parts[2].toDouble(&okZ);
+            if (okX && okY && okZ) {
+                return QVariant::fromValue(QVector3D(x, y, z));
+            }
+        }
+    }
+
+    return value;
 }

@@ -70,9 +70,7 @@ class DeltaXClient:
 
     def read_var(self):
         name = self.var_entry.get().strip()
-        if not name.startswith("#"):
-            messagebox.showwarning("Input", "Reading requires variable name to start with '#'.")
-            return
+        
         msg = f"{name}\n".encode("utf-8")
         try:
             self.sock.sendall(msg)

@@ -287,8 +287,10 @@ void SocketConnectionManager::readFromClient() {
             }
             else
             {
-                VariableManager::instance().UpdateVarToModel(varName, value);
-                emit variableChanged(varName, value);
+                QString normalizedName = varName;
+                normalizedName.replace("#", "");
+                VariableManager::instance().UpdateVarToModel(normalizedName, value);
+                emit variableChanged(normalizedName, value);
             }
         }
     }
@@ -296,7 +298,7 @@ void SocketConnectionManager::readFromClient() {
     {
         if (data.at(0) == '#')
         {
-            QString value = VariableManager::instance().getVar(QString(data)).toString();
+            QString value = VariableManager::instance().getVar(QString(data).trimmed()).toString();
             senderSocket->write((value + "\n").toUtf8());
         }
     }
@@ -361,8 +363,10 @@ void SocketConnectionManager::processWebPostData(const QString& data)
             }
             else
             {
-                VariableManager::instance().UpdateVarToModel(varName, value);
-                emit variableChanged(varName, value);
+                QString normalizedName = varName;
+                normalizedName.replace("#", "");
+                VariableManager::instance().UpdateVarToModel(normalizedName, value);
+                emit variableChanged(normalizedName, value);
             }
         }
     }
