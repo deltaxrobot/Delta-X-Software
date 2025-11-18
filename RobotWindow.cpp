@@ -17,6 +17,17 @@
 #include <QElapsedTimer> // For performance timing
 #include <QMessageBox>  // For dialog boxes
 #include <QDebug>       // For debug logging
+#include <QFont>
+#include <QVector3D>
+#include <QDialog>
+#include <QLineEdit>
+#include <QDoubleSpinBox>
+#include <QPushButton>
+#include <QGridLayout>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
+#include <QLabel>
+#include <QScrollBar>
 
 RobotWindow::RobotWindow(QWidget *parent, QString projectName) :
     QMainWindow(parent),
@@ -168,6 +179,8 @@ void RobotWindow::InitVariables()
 
     //---- Init pointer --------
     initInputValueLabels();
+    connect(ui->pbAddPositionVariable, &QPushButton::clicked,
+            this, &RobotWindow::openPositionVariableDialog);
 
 #ifdef Q_OS_WIN
     #ifdef JOY_STICK
@@ -182,6 +195,12 @@ void RobotWindow::InitVariables()
 
     // ------- Log and Debug -----
     Debugs.push_back(ui->teDebug);
+    QFont debugFont = ui->teDebug->document()->defaultFont();
+    if (debugFont.pointSize() <= 0)
+        debugFont.setPointSize(11);
+    debugFont.setPointSize(14); // ensure debug console is readable
+    ui->teDebug->document()->setDefaultFont(debugFont);
+    ui->teDebug->setFont(debugFont);
 
     //-------- Jogging -------
 
@@ -1555,8 +1574,9 @@ void RobotWindow::LoadGcode(QString filePath)
         QString fileName = fileInfo.fileName();
         ui->twGcodeEditor->setTabText(0, fileName);
 
-        ui->pbFormat->click();
+
     }
+    StandardFormatEditor();
 }
 
 void RobotWindow::SelectGcodeExplorer()
@@ -1587,7 +1607,14 @@ void RobotWindow::BackParentExplorer()
 
 void RobotWindow::CreateNewGcodeFile()
 {
-    QString fileName = QInputDialog::getText(this, "Enter the file name you want to create", "Gcode file name:", QLineEdit::Normal, "");
+    const QString fileName = QInputDialog::getText(nullptr,
+                                                   tr("Enter the file name you want to create"),
+                                                   tr("Gcode file name:"),
+                                                   QLineEdit::Normal,
+                                                   QString(),
+                                                   nullptr,
+                                                   Qt::Dialog | Qt::MSWindowsFixedSizeDialogHint);
+
     // L?y du?ng d?n d?n thu m?c dang ch?n tr�n dir view
 
     if (fileName == "")
@@ -2383,6 +2410,8 @@ void RobotWindow::InitDefaultValue()
 
     IsGcodeEditorTextChanged = false;
     baseFontSize = ui->cbGScriptEditorZoom->font().pointSize();
+    StandardFormatEditor();
+    ui->cbGScriptEditorZoom->setCurrentIndex(2); // select "100%" and emit currentIndexChanged
 
     ChangeRobotModel(ui->cbRobotModel->currentIndex());
     SelectImageProviderOption(0);
@@ -2925,12 +2954,12 @@ void RobotWindow::ConnectRobot()
     {
         QStringList connectionItems; connectionItems << "Serial" << "Socket";
         bool ok = false;
-        QString connectionType = QInputDialog::getItem(this, tr("Connection"), tr("Type:"), connectionItems, 0, false, &ok);
+        QString connectionType = QInputDialog::getItem(nullptr, tr("Connection"), tr("Type:"), connectionItems, 0, false, &ok, Qt::Dialog | Qt::MSWindowsFixedSizeDialogHint);
         if (!ok || connectionType.isEmpty()) return;
         if (connectionType == "Socket")
         {
             bool ok2 = false;
-            QString address = QInputDialog::getText(this, tr("Socket Address"), tr("IP:PORT"), QLineEdit::Normal, "127.0.0.1:8855", &ok2);
+            QString address = QInputDialog::getText(nullptr, tr("Socket Address"), tr("IP:PORT"), QLineEdit::Normal, "127.0.0.1:8855", &ok2, Qt::Dialog | Qt::MSWindowsFixedSizeDialogHint);
             if (ok2 && !address.isEmpty())
             {
                 emit ChangeDeviceState(ui->cbSelectedRobot->currentText(), true, address);
@@ -2961,7 +2990,7 @@ void RobotWindow::ConnectRobot()
     }
 
     bool ok;
-    QString item = QInputDialog::getItem(this, tr("Serial Connection"), tr("Serial Ports:"), items, 0, false, &ok);
+    QString item = QInputDialog::getItem(nullptr, tr("Serial Connection"), tr("Serial Ports:"), items, 0, false, &ok, Qt::Dialog | Qt::MSWindowsFixedSizeDialogHint);
         
         if (!ok || item.isEmpty())
         {
@@ -2984,7 +3013,7 @@ void RobotWindow::ConnectRobot()
         }
 
         bool ok2;
-        QString baudrate = QInputDialog::getText(this, tr("Select Baudrate"), tr("Baudrate:"), QLineEdit::Normal, "115200", &ok2);
+        QString baudrate = QInputDialog::getText(nullptr, tr("Select Baudrate"), tr("Baudrate:"), QLineEdit::Normal, "115200", &ok2, Qt::Dialog | Qt::MSWindowsFixedSizeDialogHint);
         
         if (!ok2 || baudrate.isEmpty())
         {
@@ -3082,6 +3111,25 @@ void RobotWindow::StandardFormatEditor()
         return;
     }
     
+    auto captureCurrentFont = [this]() {
+        QTextCharFormat fmt = ui->pteGcodeArea->currentCharFormat();
+        QFont font = fmt.font();
+        if (font.pointSizeF() <= 0) {
+            font = ui->pteGcodeArea->font();
+        }
+        if (font.pointSizeF() <= 0) {
+            font = ui->pteGcodeArea->document()->defaultFont();
+        }
+        if (font.pointSizeF() <= 0) {
+            font.setPointSizeF(baseFontSize);
+        }
+        return font;
+    };
+    
+    const QFont preservedFont = captureCurrentFont();
+    QTextCharFormat preservedFormat;
+    preservedFormat.setFont(preservedFont);
+    
     // ---- Clean Rich Text First -----
     // Get plain text to ensure no rich formatting remains
     QString editorText = ui->pteGcodeArea->toPlainText();
@@ -3089,11 +3137,13 @@ void RobotWindow::StandardFormatEditor()
     // Clear the editor completely and set plain text to ensure clean state
     ui->pteGcodeArea->clear();
     ui->pteGcodeArea->setPlainText(editorText);
+    ui->pteGcodeArea->setFont(preservedFont);
+    ui->pteGcodeArea->document()->setDefaultFont(preservedFont);
     
     // Reset text formatting to ensure clean state
     QTextCursor cursor = ui->pteGcodeArea->textCursor();
     cursor.select(QTextCursor::Document);
-    QTextCharFormat format;
+    QTextCharFormat format = preservedFormat;
     format.setForeground(QColor("#DBDBDC")); // Set default text color
     cursor.setCharFormat(format);
     cursor.clearSelection();
@@ -3299,6 +3349,8 @@ void RobotWindow::StandardFormatEditor()
     // Set the formatted text as plain text to ensure clean state
     ui->pteGcodeArea->clear();
     ui->pteGcodeArea->setPlainText(editorText);
+    ui->pteGcodeArea->setFont(preservedFont);
+    ui->pteGcodeArea->document()->setDefaultFont(preservedFont);
 
     // Reset palette to ensure proper text color
     QPalette p = ui->pteGcodeArea->palette();
@@ -3310,6 +3362,7 @@ void RobotWindow::StandardFormatEditor()
     QTextCursor docCursor(doc);
     docCursor.select(QTextCursor::Document);
     QTextCharFormat defaultFormat;
+    defaultFormat.setFont(preservedFont);
     defaultFormat.setForeground(QColor("#DBDBDC"));
     docCursor.setCharFormat(defaultFormat);
     docCursor.clearSelection();
@@ -4201,12 +4254,12 @@ void RobotWindow::ConnectEncoder()
     {
         QStringList connectionItems; connectionItems << "Serial" << "Socket";
         bool ok = false;
-        QString connectionType = QInputDialog::getItem(this, tr("Connection"), tr("Type:"), connectionItems, 0, false, &ok);
+        QString connectionType = QInputDialog::getItem(nullptr, tr("Connection"), tr("Type:"), connectionItems, 0, false, &ok);
         if (!ok || connectionType.isEmpty()) return;
         if (connectionType == "Socket")
         {
             bool ok2 = false;
-            QString address = QInputDialog::getText(this, tr("Socket Address"), tr("IP:PORT"), QLineEdit::Normal, "127.0.0.1:8855", &ok2);
+            QString address = QInputDialog::getText(nullptr, tr("Socket Address"), tr("IP:PORT"), QLineEdit::Normal, "127.0.0.1:8855", &ok2);
             if (ok2 && !address.isEmpty())
             {
                 emit ChangeDeviceState(ui->cbSelectedEncoder->currentText(), true, address);
@@ -4228,12 +4281,12 @@ void RobotWindow::ConnectEncoder()
     }
 
     bool ok;
-    QString item = QInputDialog::getItem(this, tr("Serial Connection"), tr("Serial Ports:"), items, 0, false, &ok);
+    QString item = QInputDialog::getItem(nullptr, tr("Serial Connection"), tr("Serial Ports:"), items, 0, false, &ok);
     QString comName = item.mid(0, item.indexOf(" - "));
     if (ok && !item.isEmpty())
     {
         bool ok2; Q_UNUSED(ok2);
-        QString baudrate = QInputDialog::getText(this, tr("Select Baudrate"), tr("Baudrate:"), QLineEdit::Normal, "115200", &ok2);
+        QString baudrate = QInputDialog::getText(nullptr, tr("Select Baudrate"), tr("Baudrate:"), QLineEdit::Normal, "115200", &ok2);
         emit ChangeDeviceState(ui->cbSelectedEncoder->currentText(), true, comName);
     }
 }
@@ -5099,10 +5152,10 @@ void RobotWindow::ConnectConveyor()
     // Choose connection type for Conveyor
     {
         QStringList connectionItems; connectionItems << "Serial" << "Socket";
-        bool ok=false; QString connectionType = QInputDialog::getItem(this, tr("Connection"), tr("Type:"), connectionItems, 0, false, &ok);
+        bool ok=false; QString connectionType = QInputDialog::getItem(nullptr, tr("Connection"), tr("Type:"), connectionItems, 0, false, &ok);
         if (!ok || connectionType.isEmpty()) return;
         if (connectionType == "Socket") {
-            bool ok2=false; QString address = QInputDialog::getText(this, tr("Socket Address"), tr("IP:PORT"), QLineEdit::Normal, "127.0.0.1:8855", &ok2);
+            bool ok2=false; QString address = QInputDialog::getText(nullptr, tr("Socket Address"), tr("IP:PORT"), QLineEdit::Normal, "127.0.0.1:8855", &ok2);
             if (ok2 && !address.isEmpty()) {
                 emit ChangeDeviceState(ui->cbSelectedConveyor->currentText(), true, address);
             }
@@ -5122,12 +5175,12 @@ void RobotWindow::ConnectConveyor()
     }
 
     bool ok;
-    QString item = QInputDialog::getItem(this, tr("Serial Connection"), tr("Serial Ports:"), items, 0, false, &ok);
+    QString item = QInputDialog::getItem(nullptr, tr("Serial Connection"), tr("Serial Ports:"), items, 0, false, &ok);
     QString comName = item.mid(0, item.indexOf(" - "));
     if (ok && !item.isEmpty())
     {
         bool ok2; Q_UNUSED(ok2);
-        QString baudrate = QInputDialog::getText(this, tr("Select Baudrate"), tr("Baudrate:"), QLineEdit::Normal, "115200", &ok2);
+        QString baudrate = QInputDialog::getText(nullptr, tr("Select Baudrate"), tr("Baudrate:"), QLineEdit::Normal, "115200", &ok2);
         emit ChangeDeviceState(ui->cbSelectedConveyor->currentText(), true, comName);
     }
 }
@@ -5601,10 +5654,10 @@ void RobotWindow::ConnectSliding()
     // Choose connection type for Slider
     {
         QStringList connectionItems; connectionItems << "Serial" << "Socket";
-        bool ok=false; QString connectionType = QInputDialog::getItem(this, tr("Connection"), tr("Type:"), connectionItems, 0, false, &ok);
+        bool ok=false; QString connectionType = QInputDialog::getItem(nullptr, tr("Connection"), tr("Type:"), connectionItems, 0, false, &ok);
         if (!ok || connectionType.isEmpty()) return;
         if (connectionType == "Socket") {
-            bool ok2=false; QString address = QInputDialog::getText(this, tr("Socket Address"), tr("IP:PORT"), QLineEdit::Normal, "127.0.0.1:8855", &ok2);
+            bool ok2=false; QString address = QInputDialog::getText(nullptr, tr("Socket Address"), tr("IP:PORT"), QLineEdit::Normal, "127.0.0.1:8855", &ok2);
             if (ok2 && !address.isEmpty()) {
                 emit ChangeDeviceState(ui->cbSelectedSlider->currentText(), true, address);
             }
@@ -5624,12 +5677,12 @@ void RobotWindow::ConnectSliding()
     }
 
     bool ok;
-    QString item = QInputDialog::getItem(this, tr("Serial Connection"), tr("Serial Ports:"), items, 0, false, &ok);
+    QString item = QInputDialog::getItem(nullptr, tr("Serial Connection"), tr("Serial Ports:"), items, 0, false, &ok);
     QString comName = item.mid(0, item.indexOf(" - "));
     if (ok && !item.isEmpty())
     {
         bool ok2; Q_UNUSED(ok2);
-        QString baudrate = QInputDialog::getText(this, tr("Select Baudrate"), tr("Baudrate:"), QLineEdit::Normal, "115200", &ok2);
+        QString baudrate = QInputDialog::getText(nullptr, tr("Select Baudrate"), tr("Baudrate:"), QLineEdit::Normal, "115200", &ok2);
         emit ChangeDeviceState(ui->cbSelectedSlider->currentText(), true, comName);
     }
 }
@@ -5666,13 +5719,13 @@ void RobotWindow::ConnectExternalMCU()
     QStringList connectionItems;
     connectionItems << "Serial" << "Socket";
     bool ok = false;
-    QString connectionType = QInputDialog::getItem(this, tr("Connection"), tr("Type:"), connectionItems, 0, false, &ok);
+    QString connectionType = QInputDialog::getItem(nullptr, tr("Connection"), tr("Type:"), connectionItems, 0, false, &ok);
     if (!ok || connectionType.isEmpty()) return;
 
     if (connectionType == "Socket")
     {
         bool ok2 = false;
-        QString address = QInputDialog::getText(this, tr("Socket Address"), tr("IP:PORT"), QLineEdit::Normal, "127.0.0.1:8855", &ok2);
+        QString address = QInputDialog::getText(nullptr, tr("Socket Address"), tr("IP:PORT"), QLineEdit::Normal, "127.0.0.1:8855", &ok2);
         if (ok2 && !address.isEmpty())
         {
             emit ChangeDeviceState(ui->cbSelectedDevice->currentText(), true, address);
@@ -5694,12 +5747,12 @@ void RobotWindow::ConnectExternalMCU()
 
     {
         bool ok1 = false;
-        QString item = QInputDialog::getItem(this, tr("Serial Connection"), tr("Serial Ports:"), items, 0, false, &ok1);
+        QString item = QInputDialog::getItem(nullptr, tr("Serial Connection"), tr("Serial Ports:"), items, 0, false, &ok1);
         QString comName = item.mid(0, item.indexOf(" - "));
         if (ok1 && !item.isEmpty())
         {
             bool ok2;
-            QString baudrate = QInputDialog::getText(this, tr("Select Baudrate"), tr("Baudrate:"), QLineEdit::Normal, "115200", &ok2);
+            QString baudrate = QInputDialog::getText(nullptr, tr("Select Baudrate"), tr("Baudrate:"), QLineEdit::Normal, "115200", &ok2);
             if (ok2 && !baudrate.isEmpty())
             {
                 emit ChangeDeviceState(ui->cbSelectedDevice->currentText(), true, comName);
@@ -5907,14 +5960,14 @@ bool RobotWindow::openConnectionDialog(QSerialPort * comPort, QTcpSocket* socket
 	connectionItems.append("WIFI");
 	bool ok;
 
-	QString connectionType = QInputDialog::getItem(this, tr("Connection"), tr("Type:"), connectionItems, 0, false, &ok);
+	QString connectionType = QInputDialog::getItem(nullptr, tr("Connection"), tr("Type:"), connectionItems, 0, false, &ok);
 
 	if (ok)
 	{
 		if (connectionType == "Socket")
 		{
 			bool ok2;
-			QString address = QInputDialog::getText(this, tr("Socket Address"), tr("IP:PORT"), QLineEdit::Normal, "192.168.1.12:80", &ok2);
+			QString address = QInputDialog::getText(nullptr, tr("Socket Address"), tr("IP:PORT"), QLineEdit::Normal, "192.168.1.12:80", &ok2);
 
 			if (address.indexOf(':') > -1)
 			{
@@ -5945,13 +5998,13 @@ bool RobotWindow::openConnectionDialog(QSerialPort * comPort, QTcpSocket* socket
 			}
 
 			bool ok;
-			QString item = QInputDialog::getItem(this, tr("Serial Connection"), tr("Serial Ports:"), items, 0, false, &ok);
+			QString item = QInputDialog::getItem(nullptr, tr("Serial Connection"), tr("Serial Ports:"), items, 0, false, &ok);
             QString comName = item.mid(0, item.indexOf(" - "));
 
 			if (ok && !item.isEmpty())
 			{
 				bool ok2;
-				QString baudrate = QInputDialog::getText(this, tr("Select Baudrate"), tr("Baudrate:"), QLineEdit::Normal, "115200", &ok2);
+				QString baudrate = QInputDialog::getText(nullptr, tr("Select Baudrate"), tr("Baudrate:"), QLineEdit::Normal, "115200", &ok2);
 				if (ok2 && !baudrate.isEmpty())
 				{
                     comPort->setPortName(comName);
@@ -6246,6 +6299,228 @@ void RobotWindow::initInputValueLabels()
     lbInputValues->append(ui->lbA0Value);
     lbInputValues->append(ui->lbA1Value);
     lbInputValues->append(ui->lbAxValue);
+}
+
+void RobotWindow::openPositionVariableDialog()
+{
+    if (!ui) {
+        return;
+    }
+
+    QDialog dialog;
+    dialog.setWindowTitle(tr("Position Variable"));
+    dialog.setModal(true);
+    dialog.setWindowModality(Qt::ApplicationModal);
+
+    QVBoxLayout* mainLayout = new QVBoxLayout(&dialog);
+
+    QLineEdit* nameEdit = new QLineEdit(&dialog);
+    nameEdit->setPlaceholderText("#PickPoint");
+    if (!m_lastPositionVariableName.isEmpty()) {
+        nameEdit->setText(m_lastPositionVariableName);
+    }
+    mainLayout->addWidget(nameEdit);
+
+    auto createSpinBox = [&dialog]() {
+        QDoubleSpinBox* sb = new QDoubleSpinBox(&dialog);
+        sb->setDecimals(3);
+        sb->setRange(-10000.0, 10000.0);
+        sb->setSingleStep(1.0);
+        return sb;
+    };
+
+    QDoubleSpinBox* xSpin = createSpinBox();
+    QDoubleSpinBox* ySpin = createSpinBox();
+    QDoubleSpinBox* zSpin = createSpinBox();
+
+    QGridLayout* coordsLayout = new QGridLayout();
+    coordsLayout->addWidget(new QLabel("X", &dialog), 0, 0);
+    coordsLayout->addWidget(xSpin, 0, 1);
+    coordsLayout->addWidget(new QLabel("Y", &dialog), 1, 0);
+    coordsLayout->addWidget(ySpin, 1, 1);
+    coordsLayout->addWidget(new QLabel("Z", &dialog), 2, 0);
+    coordsLayout->addWidget(zSpin, 2, 1);
+    mainLayout->addLayout(coordsLayout);
+
+    QHBoxLayout* buttonLayout = new QHBoxLayout();
+    QPushButton* useCurrentButton = new QPushButton(tr("Use Current"), &dialog);
+    QPushButton* loadButton = new QPushButton(tr("Load"), &dialog);
+    QPushButton* saveButton = new QPushButton(tr("Save"), &dialog);
+    QPushButton* cancelButton = new QPushButton(tr("Cancel"), &dialog);
+    buttonLayout->addWidget(useCurrentButton);
+    buttonLayout->addWidget(loadButton);
+    buttonLayout->addStretch();
+    buttonLayout->addWidget(saveButton);
+    buttonLayout->addWidget(cancelButton);
+    mainLayout->addLayout(buttonLayout);
+
+    auto captureRobotPosition = [this, xSpin, ySpin, zSpin]() {
+        if (!isRobotParametersValid()) {
+            QMessageBox::warning(this, tr("Robot Position"),
+                                 tr("Robot position is not available yet."));
+            return;
+        }
+        RobotPara params = getSafeRobotParameters();
+        xSpin->setValue(params.X);
+        ySpin->setValue(params.Y);
+        zSpin->setValue(params.Z);
+    };
+
+    auto loadVariable = [this, nameEdit, xSpin, ySpin, zSpin]() {
+        const QString varName = normalizePositionVariableName(nameEdit->text());
+        if (varName.isEmpty()) {
+            QMessageBox::warning(this, tr("Position Variable"),
+                                 tr("Please enter a variable name."));
+            return;
+        }
+        QVariant value = VariableManager::instance().getVar(varName, QVariant());
+        QVector3D vector;
+        if (!tryConvertVariantToVector3D(value, vector)) {
+            QMessageBox::warning(this, tr("Position Variable"),
+                                 tr("Variable \"%1\" is missing or is not a 3D position.").arg(varName));
+            return;
+        }
+        xSpin->setValue(vector.x());
+        ySpin->setValue(vector.y());
+        zSpin->setValue(vector.z());
+    };
+
+    auto saveVariable = [this, &dialog, nameEdit, xSpin, ySpin, zSpin]() {
+        const QString varName = normalizePositionVariableName(nameEdit->text());
+        if (varName.isEmpty()) {
+            QMessageBox::warning(&dialog, tr("Position Variable"),
+                                 tr("Please enter a variable name."));
+            return;
+        }
+        QVector3D vector(xSpin->value(), ySpin->value(), zSpin->value());
+        VariableManager::instance().updateVar(varName, QVariant::fromValue(vector));
+        VariableManager::instance().scheduleSave();
+        insertOrUpdatePositionDeclaration(varName, vector);
+        m_lastPositionVariableName = varName;
+        SoftwareLog(QString("Saved %1 = (%2, %3, %4)")
+                        .arg(varName)
+                        .arg(vector.x(), 0, 'f', 3)
+                        .arg(vector.y(), 0, 'f', 3)
+                        .arg(vector.z(), 0, 'f', 3));
+        dialog.accept();
+    };
+
+    connect(useCurrentButton, &QPushButton::clicked, this, captureRobotPosition);
+    connect(loadButton, &QPushButton::clicked, this, loadVariable);
+    connect(saveButton, &QPushButton::clicked, this, saveVariable);
+    connect(cancelButton, &QPushButton::clicked, &dialog, &QDialog::reject);
+
+    dialog.exec();
+}
+
+QString RobotWindow::normalizePositionVariableName(const QString &rawName) const
+{
+    QString name = rawName;
+    name.replace(" ", "");
+    return name.trimmed();
+}
+
+bool RobotWindow::tryConvertVariantToVector3D(const QVariant &value, QVector3D &out) const
+{
+    if (!value.isValid()) {
+        return false;
+    }
+
+    if (value.canConvert<QVector3D>()) {
+        out = value.value<QVector3D>();
+        return true;
+    }
+
+    if (value.canConvert<QString>()) {
+        QString text = value.toString().trimmed();
+        if (text.isEmpty()) {
+            return false;
+        }
+        const QStringList parts = text.split(QRegularExpression("[,\\s]+"), Qt::SkipEmptyParts);
+        if (parts.size() < 3) {
+            return false;
+        }
+
+        bool okX = false, okY = false, okZ = false;
+        double x = parts[0].toDouble(&okX);
+        double y = parts[1].toDouble(&okY);
+        double z = parts[2].toDouble(&okZ);
+        if (okX && okY && okZ) {
+            out = QVector3D(x, y, z);
+            return true;
+        }
+    }
+
+    return false;
+}
+
+void RobotWindow::insertOrUpdatePositionDeclaration(const QString &varName, const QVector3D &vector)
+{
+    if (!ui || varName.isEmpty()) {
+        return;
+    }
+
+    QString text = ui->pteGcodeArea->toPlainText();
+    QStringList lines = text.split('\n');
+    QString declaration = QString("%1 = (%2, %3, %4)")
+        .arg(varName)
+        .arg(vector.x(), 0, 'f', 3)
+        .arg(vector.y(), 0, 'f', 3)
+        .arg(vector.z(), 0, 'f', 3);
+
+    bool found = false;
+    int insertIndex = 0;
+
+    static const QRegularExpression lineNumberRegex("^N\\d+\\s*",
+                                                    QRegularExpression::CaseInsensitiveOption);
+
+    for (int i = 0; i < lines.size(); ++i) {
+        QString trimmed = lines[i].trimmed();
+        if (trimmed.isEmpty()) {
+            if (insertIndex == i) {
+                insertIndex = i + 1;
+            }
+            continue;
+        }
+        QString numberPrefix;
+        QString content = trimmed;
+        QRegularExpressionMatch match = lineNumberRegex.match(content);
+        if (match.hasMatch()) {
+            int prefixLen = match.capturedLength();
+            numberPrefix = content.left(prefixLen).trimmed();
+            content.remove(0, prefixLen);
+            content = content.trimmed();
+        }
+        if (content.startsWith("#")) {
+            insertIndex = i + 1;
+            if (content.startsWith(varName)) {
+                QString linePrefix = numberPrefix.isEmpty() ? QString() : numberPrefix + " ";
+                lines[i] = linePrefix + declaration;
+                found = true;
+                break;
+            }
+            continue;
+        }
+        break;
+    }
+
+    if (!found) {
+        lines.insert(insertIndex, declaration);
+    }
+
+    QString newText = lines.join("\n");
+    if (newText == text) {
+        return;
+    }
+
+    QScrollBar* vBar = ui->pteGcodeArea->verticalScrollBar();
+    int oldValue = vBar ? vBar->value() : 0;
+
+    ui->pteGcodeArea->setPlainText(newText);
+
+    if (vBar) {
+        vBar->setValue(qMin(oldValue, vBar->maximum()));
+    }
 }
 
 void RobotWindow::plugValue(QLineEdit *le, float value)
@@ -7454,7 +7729,7 @@ void RobotWindow::onTestZPlane() {
     
     // Get test point from user
     bool ok;
-    QString input = QInputDialog::getText(this, "Test Z-Plane", 
+    QString input = QInputDialog::getText(nullptr, "Test Z-Plane", 
                                          "Enter test point (X,Y):", 
                                          QLineEdit::Normal, "0,0", &ok);
     

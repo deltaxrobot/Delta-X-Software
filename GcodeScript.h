@@ -418,6 +418,10 @@ private:
     void updateVariables(QString str);
     void saveVariable(QString name, QString value);
     void saveVariable(QString name, QVariant value);
+    bool tryGenerateMoveShortcut(const QStringList& tokens, QString& outGcode);
+    bool resolvePointReference(const QString& token, QVector3D& outVec) const;
+    bool variantToVector3D(const QVariant& value, QVector3D& outVec) const;
+    bool parseVectorString(const QString& text, QVector3D& outVec) const;
     void processResponse(QString response);
     bool checkExclution(QString response);
 
@@ -689,4 +693,3 @@ private:
 };
 
 #endif
-

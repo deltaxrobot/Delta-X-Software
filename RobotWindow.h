@@ -38,6 +38,7 @@
 #include <QTreeWidget>
 #include <QTreeWidgetItem>
 #include <QListWidget>
+#include <QVector3D>
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 #include <QtSvgWidgets/QSvgWidget>
 #else
@@ -276,6 +277,7 @@ public:
     bool isCameraLoaded = false;  // Track camera state internally
     
     QString ProjectName = "project0";
+    QString m_lastPositionVariableName;
     QString ProjectTitile = "Project 0";
     int DefaultBaudrate = DEFAULT_BAUDRATE;
     
@@ -566,6 +568,7 @@ private:
     void sendGcode(QString prefix, QString para1, QString para2);
     QObject* getObjectByName(QObject* parent, QString name);
     void initInputValueLabels();
+    void openPositionVariableDialog();
     void initObjectTableContextMenu();
     void plugValue(QLineEdit* le, float value);
     bool isItemExit(QListWidget* lw, QString item);
@@ -576,6 +579,9 @@ private:
     void onImageItemClicked(QListWidgetItem* item);
     void pastePointValues(QLineEdit* leX, QLineEdit* leY, QLineEdit* leZ);
     void pastePointValues(QLineEdit* lePoint);
+    QString normalizePositionVariableName(const QString& rawName) const;
+    bool tryConvertVariantToVector3D(const QVariant& value, QVector3D& out) const;
+    void insertOrUpdatePositionDeclaration(const QString& varName, const QVector3D& vector);
     void runPythonFile(QString filePath);
     QString getModelPath();
 

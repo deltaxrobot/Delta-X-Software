@@ -9,6 +9,7 @@
 #include <QTimer>
 #include <QMetaObject>
 #include <QRegularExpression>
+#include <QPointF>
 
 // Initialize static regex patterns for better performance
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
@@ -1323,8 +1324,16 @@ bool GcodeScript::findExeGcodeAndTransmit()
     //-------------- Find macro ------------------------
 
     // Cache string operations for better performance
-    const QStringList valuePairs = currentLine.split(' ', Qt::SkipEmptyParts);
-    const QString transmitGcode = currentLine;
+    QStringList valuePairs = currentLine.split(' ', Qt::SkipEmptyParts);
+    QString transmitGcode = currentLine;
+
+    QString shortcutGcode;
+    if (tryGenerateMoveShortcut(valuePairs, shortcutGcode)) {
+        currentLine = shortcutGcode;
+        valuePairs = currentLine.split(' ', Qt::SkipEmptyParts);
+        transmitGcode = shortcutGcode;
+    }
+
     const int valuePairsSize = valuePairs.size();
 
     for (int i = 0; i < valuePairsSize; i++)
@@ -2974,6 +2983,141 @@ QString GcodeScript::cleanedVarName(const QString& name) const
     QString n = name;
     if (n.startsWith('#')) n = n.mid(1);
     return n.trimmed();
+}
+
+bool GcodeScript::tryGenerateMoveShortcut(const QStringList& tokens, QString& outGcode)
+{
+    if (tokens.isEmpty()) {
+        return false;
+    }
+
+    QString command = tokens[0].trimmed().toUpper();
+    if (command != "MOVE" && command != "MOVETO") {
+        return false;
+    }
+    if (tokens.size() < 2) {
+        return false;
+    }
+
+    QVector3D target;
+    if (!resolvePointReference(tokens[1], target)) {
+        return false;
+    }
+
+    double feedValue = -1.0;
+    for (int i = 2; i < tokens.size(); ++i) {
+        QString token = tokens[i].trimmed();
+        if (token.isEmpty()) {
+            continue;
+        }
+        if (token.startsWith(';')) {
+            break;
+        }
+        if (token.startsWith("F", Qt::CaseInsensitive)) {
+            QString feedExpr = token.mid(1).trimmed();
+            if (feedExpr.isEmpty() && i + 1 < tokens.size()) {
+                feedExpr = tokens[++i].trimmed();
+            }
+            if (!feedExpr.isEmpty()) {
+                feedExpr.remove('[').remove(']');
+                QString evaluated = calculateExpressions(feedExpr);
+                bool ok = false;
+                double value = evaluated.toDouble(&ok);
+                if (ok && value > 0) {
+                    feedValue = value;
+                }
+            }
+        }
+    }
+
+    QString gcode = QString("G01 X%1 Y%2 Z%3")
+                        .arg(target.x(), 0, 'f', 3)
+                        .arg(target.y(), 0, 'f', 3)
+                        .arg(target.z(), 0, 'f', 3);
+    if (feedValue > 0) {
+        gcode += QString(" F%1").arg(feedValue, 0, 'f', 3);
+    }
+
+    outGcode = gcode;
+    return true;
+}
+
+bool GcodeScript::resolvePointReference(const QString& token, QVector3D& outVec) const
+{
+    QString trimmed = token.trimmed();
+    if (trimmed.isEmpty()) {
+        return false;
+    }
+
+    if (trimmed.startsWith('#')) {
+        QString varName = cleanedVarName(trimmed);
+        QVariant value = VariableManager::instance().getVar(varName, QVariant());
+        return variantToVector3D(value, outVec);
+    }
+
+    return parseVectorString(trimmed, outVec);
+}
+
+bool GcodeScript::variantToVector3D(const QVariant& value, QVector3D& outVec) const
+{
+    if (!value.isValid()) {
+        return false;
+    }
+
+    if (value.canConvert<QVector3D>()) {
+        outVec = value.value<QVector3D>();
+        return true;
+    }
+
+    if (value.canConvert<QPointF>()) {
+        QPointF point = value.toPointF();
+        outVec = QVector3D(point.x(), point.y(), 0.0f);
+        return true;
+    }
+
+    if (value.canConvert<QString>()) {
+        return parseVectorString(value.toString(), outVec);
+    }
+
+    if (value.type() == QVariant::List) {
+        QVariantList list = value.toList();
+        if (list.size() >= 3) {
+            bool okX = false, okY = false, okZ = false;
+            double x = list[0].toDouble(&okX);
+            double y = list[1].toDouble(&okY);
+            double z = list[2].toDouble(&okZ);
+            if (okX && okY && okZ) {
+                outVec = QVector3D(x, y, z);
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+bool GcodeScript::parseVectorString(const QString& text, QVector3D& outVec) const
+{
+    QString cleaned = text.trimmed();
+    if (cleaned.startsWith("(") && cleaned.endsWith(")")) {
+        cleaned = cleaned.mid(1, cleaned.length() - 2);
+    }
+
+    QStringList parts = cleaned.split(QRegularExpression("[,\\s]+"), Qt::SkipEmptyParts);
+    if (parts.size() < 3) {
+        return false;
+    }
+
+    bool okX = false, okY = false, okZ = false;
+    double x = parts[0].toDouble(&okX);
+    double y = parts[1].toDouble(&okY);
+    double z = parts[2].toDouble(&okZ);
+    if (okX && okY && okZ) {
+        outVec = QVector3D(x, y, z);
+        return true;
+    }
+
+    return false;
 }
 
 // Advanced whitespace normalization for better performance and cleaner parsing

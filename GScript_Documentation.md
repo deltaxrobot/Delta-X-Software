@@ -335,6 +335,20 @@ G01 X[#x] Y[#y]
 | `G03` | Di chuyển cung ngược chiều kim đồng hồ | `G03 X100 Y100 I50 J0` |
 | `G04` | Tạm dừng (ms) | `G04 P1000` |
 
+#### 6.1.1. Lệnh `MOVE` (shortcut mới)
+
+Lệnh `MOVE` cho phép di chuyển tới biến vị trí 3D mà không cần viết lại `G01`:
+
+```gcode
+#PickPoint = (120, 40, -180)
+#PlacePoint = (260, 120, -150)
+
+MOVE #PickPoint         ; dùng tốc độ mặc định của máy
+MOVE #PlacePoint F1500  ; override feed = 1500
+```
+
+Yêu cầu: biến phải chứa vector 3D (được ghi trong Variable Manager). Nếu biến không hợp lệ, lệnh sẽ bị bỏ qua.
+
 ### 6.2. End Effector Control
 
 | Lệnh | Mô tả | Ví dụ |
@@ -777,6 +791,20 @@ ENDFUNCTION
 ### 8.6. Ví dụ thực tế - Hệ thống hàm cho automation
 
 ```gcode
+; === SHORT MOVE MACRO ===
+#DEFAULT_FEED = 1200
+FUNCTION moveTo(point, optional_feed)
+    IF point.X == NULL OR point.Y == NULL OR point.Z == NULL THEN
+        RETURN 0
+    ENDIF
+    #selected_feed = optional_feed
+    IF #selected_feed == NULL OR #selected_feed <= 0 THEN
+        #selected_feed = #DEFAULT_FEED
+    ENDIF
+    G01 X[point.X] Y[point.Y] Z[point.Z] F[#selected_feed]
+    RETURN 1
+ENDFUNCTION
+
 ; Hàm di chuyển an toàn với kiểm tra giới hạn
 FUNCTION safeMove(target_x, target_y, target_z)
     ; Kiểm tra giới hạn workspace
