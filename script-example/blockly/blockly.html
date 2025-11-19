@@ -1,0 +1,1215 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Delta X Blockly → GScript</title>
+    <script src="https://unpkg.com/blockly/blockly.min.js"></script>
+    <style>
+        :root {
+            color-scheme: light dark;
+            font-family: "Inter", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+            --bg: #0f172a;
+            --panel: #1e293b;
+            --outline: #334155;
+            --accent: #f97316;
+            --text: #e2e8f0;
+            --muted: #94a3b8;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #020617 0%, #0b1120 35%, #1d1f2b 100%);
+            color: var(--text);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        header {
+            padding: 18px 48px;
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            gap: 16px;
+        }
+
+        header h1 {
+            font-size: 1.65rem;
+            margin: 0;
+            color: white;
+        }
+
+        header p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 0.95rem;
+        }
+
+        main {
+            flex: 1;
+            display: flex;
+            gap: 18px;
+            padding: 0 36px 36px;
+            box-sizing: border-box;
+        }
+
+        .workspace-wrapper {
+            flex: 2;
+            backdrop-filter: blur(18px);
+            background: rgba(15, 23, 42, 0.85);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 18px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #blocklyDiv {
+            flex: 1;
+            min-height: 640px;
+        }
+
+        .workspace-header {
+            padding: 18px 24px;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.15);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .workspace-header strong {
+            font-size: 1.1rem;
+        }
+
+        .workspace-header ul {
+            margin: 0;
+            padding-left: 20px;
+            color: var(--muted);
+            font-size: 0.9rem;
+        }
+
+        .output-panel {
+            flex: 1;
+            min-width: 360px;
+            background: rgba(15, 23, 42, 0.85);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 18px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .output-panel textarea {
+            flex: 1;
+            width: 100%;
+            resize: none;
+            border-radius: 12px;
+            border: 1px solid rgba(148, 163, 184, 0.3);
+            background: rgba(2, 6, 23, 0.8);
+            color: var(--text);
+            padding: 14px;
+            font-size: 0.95rem;
+            font-family: "JetBrains Mono", "SFMono-Regular", Consolas, monospace;
+            line-height: 1.4;
+        }
+
+        .button-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        button {
+            border: none;
+            border-radius: 999px;
+            padding: 10px 18px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            background: rgba(15, 23, 42, 0.8);
+            color: var(--text);
+            border: 1px solid rgba(148, 163, 184, 0.35);
+            transition: border 0.2s ease, transform 0.15s ease;
+        }
+
+        button.primary {
+            background: linear-gradient(120deg, #f97316 0%, #facc15 100%);
+            color: #020617;
+            border: none;
+            font-weight: 600;
+        }
+
+        button:hover {
+            border-color: var(--accent);
+            transform: translateY(-1px);
+        }
+
+        .auto-copy-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 8px;
+            font-size: 0.85rem;
+            color: var(--muted);
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .auto-copy-toggle input {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--accent);
+        }
+
+        .copy-status {
+            min-height: 1.2em;
+            font-size: 0.8rem;
+            margin: 4px 0 0;
+            color: var(--muted);
+        }
+
+        .copy-status.success {
+            color: #34d399;
+        }
+
+        .copy-status.error {
+            color: #f87171;
+        }
+
+        .copy-status.info {
+            color: var(--muted);
+        }
+
+        .copy-status.warn {
+            color: #fbbf24;
+        }
+
+        .link-panel {
+            margin-top: 12px;
+            padding: 16px;
+            border-radius: 12px;
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            background: rgba(15, 23, 42, 0.6);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .server-inputs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .server-field {
+            flex: 1;
+            min-width: 140px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            font-size: 0.85rem;
+            color: var(--muted);
+        }
+
+        .server-field input {
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid rgba(148, 163, 184, 0.3);
+            background: rgba(15, 23, 42, 0.6);
+            color: var(--text);
+            font-size: 0.95rem;
+        }
+
+        .send-btn {
+            width: 100%;
+            justify-content: center;
+            text-align: center;
+        }
+
+        @media (max-width: 1100px) {
+            body {
+                min-height: 0;
+            }
+
+            main {
+                flex-direction: column;
+            }
+
+            #blocklyDiv {
+                min-height: 480px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div>
+            <h1>Delta X Blockly → GScript</h1>
+            <p>Kéo thả khối lệnh để tạo chương trình robot và xuất ra GScript tức thì.</p>
+        </div>
+        <p>Ngôn ngữ: GScript · Thư viện: Blockly 10.x</p>
+    </header>
+
+    <main>
+        <section class="workspace-wrapper">
+            <div class="workspace-header">
+                <strong>Hướng dẫn nhanh</strong>
+                <ul>
+                    <li>Nhóm <em>Chương trình</em> chứa các lệnh G/M/SELECT chuẩn của Delta X.</li>
+                    <li>Dùng mục <em>Biến</em> và <em>Hàm</em> (custom menu) của Blockly để quản lý biến #, hàm FUNCTION.</li>
+                    <li>Nhấn “Sinh mã GScript” bất kỳ lúc nào để xem output và tải file .gcode.</li>
+                </ul>
+            </div>
+            <div id="blocklyDiv"></div>
+        </section>
+
+        <section class="output-panel">
+            <div>
+                <strong>Xem trước mã GScript</strong>
+                <p style="margin: 4px 0 0; color: var(--muted); font-size: 0.85rem;">
+                    Mã được cập nhật tự động khi workspace thay đổi.
+                </p>
+            </div>
+            <textarea id="gscriptOutput" spellcheck="false" placeholder="G28&#10;G01 F1000&#10;..."></textarea>
+            <div class="button-row">
+                <button class="primary" onclick="generateCode(true)">Sinh mã GScript</button>
+                <button onclick="copyCode()">Copy</button>
+                <button onclick="downloadCode()">Tải .gcode</button>
+                <button onclick="clearWorkspace()">Xoá workspace</button>
+            </div>
+            <label class="auto-copy-toggle">
+                <input type="checkbox" id="autoCopyToggle">
+                <span>Tự copy vào clipboard khi nhấn “Sinh mã”</span>
+            </label>
+            <p id="copyStatus" class="copy-status"></p>
+            <div class="link-panel">
+                <div>
+                    <strong>Gửi trực tiếp sang Delta X</strong>
+                    <p style="margin: 4px 0 0; color: var(--muted); font-size: 0.8rem;">
+                        Delta X phải bật WebServer (port 5000). Blockly sẽ POST GScript vào Script Editor.
+                    </p>
+                </div>
+                <div class="server-inputs">
+                    <label class="server-field">
+                        Máy chủ
+                        <input type="text" id="deltaHost" placeholder="127.0.0.1">
+                    </label>
+                    <label class="server-field" style="max-width: 120px;">
+                        Port
+                        <input type="number" id="deltaPort" placeholder="5000" min="1" max="65535">
+                    </label>
+                </div>
+                <button class="primary send-btn" onclick="sendToDeltaX()">Gửi sang Script Editor</button>
+                <p id="deltaStatus" class="copy-status"></p>
+            </div>
+        </section>
+    </main>
+
+    <xml id="toolbox" style="display:none">
+        <category name="Chương trình" colour="210">
+            <block type="gscript_comment"></block>
+            <block type="gscript_label">
+                <field name="LINE">10</field>
+            </block>
+            <block type="gscript_goto">
+                <field name="TARGET">10</field>
+            </block>
+            <block type="gscript_select_device">
+                <field name="DEVICE">robot0</field>
+                <field name="DEVICE_TYPE">robot</field>
+            </block>
+            <block type="gscript_raw_gcode"></block>
+        </category>
+
+        <category name="Chuyển động" colour="20">
+            <block type="gscript_motion_linear">
+                <field name="CMD">G01</field>
+            </block>
+            <block type="gscript_move_point"></block>
+            <block type="gscript_wait"></block>
+        </category>
+
+        <category name="Thiết bị & Macro" colour="60">
+            <block type="gscript_device_command">
+                <field name="COMMAND">M03</field>
+            </block>
+            <block type="gscript_macro_call">
+                <field name="MACRO">captureCamera</field>
+            </block>
+        </category>
+
+        <sep></sep>
+
+        <category name="Logic" colour="210">
+            <block type="controls_if"></block>
+            <block type="logic_compare"></block>
+            <block type="logic_operation"></block>
+            <block type="logic_negate"></block>
+            <block type="logic_boolean"></block>
+        </category>
+
+        <category name="Vòng lặp" colour="140">
+            <block type="controls_for">
+                <field name="VAR" id="for_var">i</field>
+                <value name="FROM">
+                    <block type="math_number">
+                        <field name="NUM">0</field>
+                    </block>
+                </value>
+                <value name="TO">
+                    <block type="math_number">
+                        <field name="NUM">5</field>
+                    </block>
+                </value>
+                <value name="BY">
+                    <block type="math_number">
+                        <field name="NUM">1</field>
+                    </block>
+                </value>
+            </block>
+            <block type="controls_repeat_ext">
+                <value name="TIMES">
+                    <block type="math_number">
+                        <field name="NUM">5</field>
+                    </block>
+                </value>
+            </block>
+        </category>
+
+        <category name="Toán học" colour="230">
+            <block type="math_number"></block>
+            <block type="math_arithmetic"></block>
+        </category>
+
+        <category name="Chuỗi" colour="160">
+            <block type="text"></block>
+            <block type="text_join"></block>
+        </category>
+
+        <category name="Biến" custom="VARIABLE"></category>
+        <category name="Hàm" custom="PROCEDURE"></category>
+    </xml>
+
+    <script>
+        const parameterScopes = [];
+
+        const GScriptGenerator = new Blockly.Generator('GScript');
+
+        GScriptGenerator.ORDER_ATOMIC = 0;
+        GScriptGenerator.ORDER_UNARY = 1;
+        GScriptGenerator.ORDER_MULTIPLICATIVE = 2;
+        GScriptGenerator.ORDER_ADDITIVE = 3;
+        GScriptGenerator.ORDER_RELATIONAL = 4;
+        GScriptGenerator.ORDER_LOGICAL = 5;
+        GScriptGenerator.ORDER_NONE = 99;
+        GScriptGenerator.ORDER_FUNCTION_CALL = 1;
+        GScriptGenerator.INDENT = '    ';
+
+        GScriptGenerator.init = function (workspace) {
+            Blockly.Generator.prototype.init.call(this, workspace);
+            this.nameDB_ = new Blockly.Names(this.RESERVED_WORDS_);
+            this.nameDB_.setVariableMap(workspace.getVariableMap());
+            this.nameDB_.reset();
+            parameterScopes.length = 0;
+        };
+
+        GScriptGenerator.finish = function (code) {
+            this.nameDB_ = null;
+            return code.replace(/\n{3,}/g, '\n\n').trim() + '\n';
+        };
+
+        GScriptGenerator.scrub_ = function (block, code) {
+            let commentCode = '';
+            if (!block.outputConnection || !block.outputConnection.targetConnection) {
+                const comment = block.getCommentText();
+                if (comment) {
+                    commentCode += this.prefixLines(comment, '; ') + '\n';
+                }
+                for (const input of block.inputList) {
+                    if (input.connection && input.connection.targetBlock()) {
+                        const nested = this.allNestedComments(input.connection.targetBlock());
+                        if (nested) {
+                            commentCode += this.prefixLines(nested, '; ') + '\n';
+                        }
+                    }
+                }
+            }
+            const nextBlock = block.nextConnection && block.nextConnection.targetBlock();
+            const nextCode = this.blockToCode(nextBlock);
+            return commentCode + code + nextCode;
+        };
+
+        GScriptGenerator.scrubNakedValue = function (line) {
+            return line + '\n';
+        };
+
+        function pushParams(params) {
+            parameterScopes.push(new Set(params));
+        }
+
+        function popParams() {
+            parameterScopes.pop();
+        }
+
+        function isParameter(name) {
+            for (let i = parameterScopes.length - 1; i >= 0; i--) {
+                if (parameterScopes[i].has(name)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        function formatVariable(name) {
+            const trimmed = name.trim();
+            if (trimmed.startsWith('#') || isParameter(trimmed)) {
+                return trimmed;
+            }
+            return `#${trimmed}`;
+        }
+
+        function formatFunctionCall(name) {
+            const trimmed = name.trim();
+            return `#${trimmed}`;
+        }
+
+        function sanitizeExpression(value, fallback = '0') {
+            if (!value) return fallback;
+            return value.replace(/\s+$/, '');
+        }
+
+        function formatAxisValue(value) {
+            const cleaned = sanitizeExpression(value, '').trim();
+            if (!cleaned) {
+                return '';
+            }
+            if (/^\[.*\]$/.test(cleaned)) {
+                return cleaned;
+            }
+            if (/^-?\d+(\.\d+)?$/.test(cleaned)) {
+                return cleaned;
+            }
+            return `[${cleaned}]`;
+        }
+
+        function quoteString(text) {
+            return `"${text.replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`;
+        }
+
+        function getVariableFieldName(block) {
+            const field = block.getField('VAR');
+            if (field && typeof field.getText === 'function') {
+                const text = field.getText();
+                if (text) {
+                    return text;
+                }
+            }
+            return block.getFieldValue('VAR') || 'var';
+        }
+
+        Blockly.defineBlocksWithJsonArray([
+            {
+                "type": "gscript_comment",
+                "message0": "chú thích %1",
+                "args0": [
+                    {
+                        "type": "field_input",
+                        "name": "TEXT",
+                        "text": "Delta X"
+                    }
+                ],
+                "previousStatement": null,
+                "nextStatement": null,
+                "colour": 210,
+                "tooltip": "Sinh ra dòng chú thích bắt đầu bằng dấu ;",
+                "helpUrl": ""
+            },
+            {
+                "type": "gscript_label",
+                "message0": "nhãn dòng N%1",
+                "args0": [
+                    {
+                        "type": "field_number",
+                        "name": "LINE",
+                        "value": 10,
+                        "min": 0
+                    }
+                ],
+                "previousStatement": null,
+                "nextStatement": null,
+                "colour": 210,
+                "tooltip": "Đặt nhãn dòng để dùng cùng GOTO.",
+                "helpUrl": ""
+            },
+            {
+                "type": "gscript_goto",
+                "message0": "GOTO N%1",
+                "args0": [
+                    {
+                        "type": "field_number",
+                        "name": "TARGET",
+                        "value": 10,
+                        "min": 0
+                    }
+                ],
+                "previousStatement": null,
+                "nextStatement": null,
+                "colour": 210,
+                "tooltip": "Nhảy tới nhãn dòng đã định nghĩa.",
+                "helpUrl": ""
+            },
+            {
+                "type": "gscript_select_device",
+                "message0": "SELECT %1 %2",
+                "args0": [
+                    {
+                        "type": "field_dropdown",
+                        "name": "DEVICE_TYPE",
+                        "options": [
+                            ["robot", "robot"],
+                            ["conveyor", "conveyor"],
+                            ["device", "device"],
+                            ["encoder", "encoder"],
+                            ["slider", "slider"]
+                        ]
+                    },
+                    {
+                        "type": "field_input",
+                        "name": "DEVICE",
+                        "text": "robot0"
+                    }
+                ],
+                "previousStatement": null,
+                "nextStatement": null,
+                "colour": 210,
+                "tooltip": "Chọn thiết bị mặc định để nhận lệnh tiếp theo.",
+                "helpUrl": ""
+            },
+            {
+                "type": "gscript_raw_gcode",
+                "message0": "GScript tuỳ ý %1",
+                "args0": [
+                    {
+                        "type": "field_multilinetext",
+                        "name": "CODE",
+                        "text": "G01 X100 Y100"
+                    }
+                ],
+                "previousStatement": null,
+                "nextStatement": null,
+                "colour": 210,
+                "tooltip": "Chèn trực tiếp đoạn GScript/G-code tuỳ biến.",
+                "helpUrl": ""
+            },
+            {
+                "type": "gscript_motion_linear",
+                "message0": "%1 X %2 Y %3 Z %4 W %5 F %6",
+                "args0": [
+                    {
+                        "type": "field_dropdown",
+                        "name": "CMD",
+                        "options": [
+                            ["G01 (dịch chuyển tuyến tính)", "G01"],
+                            ["G00 (chạy nhanh)", "G00"]
+                        ]
+                    },
+                    {
+                        "type": "input_value",
+                        "name": "X"
+                    },
+                    {
+                        "type": "input_value",
+                        "name": "Y"
+                    },
+                    {
+                        "type": "input_value",
+                        "name": "Z"
+                    },
+                    {
+                        "type": "input_value",
+                        "name": "W"
+                    },
+                    {
+                        "type": "input_value",
+                        "name": "F"
+                    }
+                ],
+                "inputsInline": true,
+                "previousStatement": null,
+                "nextStatement": null,
+                "colour": 20,
+                "tooltip": "Sinh lệnh G00/G01 với toạ độ và tốc độ tuỳ chọn.",
+                "helpUrl": ""
+            },
+            {
+                "type": "gscript_move_point",
+                "message0": "MOVE tới %1 tốc độ (tuỳ chọn) %2",
+                "args0": [
+                    {
+                        "type": "input_value",
+                        "name": "POINT"
+                    },
+                    {
+                        "type": "input_value",
+                        "name": "FEED"
+                    }
+                ],
+                "inputsInline": true,
+                "previousStatement": null,
+                "nextStatement": null,
+                "colour": 20,
+                "tooltip": "Di chuyển đến biến vector 3D (#point) với MOVE.",
+                "helpUrl": ""
+            },
+            {
+                "type": "gscript_wait",
+                "message0": "G04 (delay) %1 ms",
+                "args0": [
+                    {
+                        "type": "input_value",
+                        "name": "TIME"
+                    }
+                ],
+                "inputsInline": true,
+                "previousStatement": null,
+                "nextStatement": null,
+                "colour": 20,
+                "tooltip": "Tạm dừng trong một khoảng thời gian (P millisecond).",
+                "helpUrl": ""
+            },
+            {
+                "type": "gscript_device_command",
+                "message0": "M-code %1 tham số %2",
+                "args0": [
+                    {
+                        "type": "field_dropdown",
+                        "name": "COMMAND",
+                        "options": [
+                            ["M03 (bật gripper)", "M03"],
+                            ["M04 (ngược chiều)", "M04"],
+                            ["M05 (tắt gripper)", "M05"],
+                            ["M360 (chọn end effector)", "M360"],
+                            ["M311 (tốc độ conveyor)", "M311"],
+                            ["Tuỳ chỉnh", "CUSTOM"]
+                        ]
+                    },
+                    {
+                        "type": "field_input",
+                        "name": "PARAMS",
+                        "text": ""
+                    }
+                ],
+                "previousStatement": null,
+                "nextStatement": null,
+                "colour": 60,
+                "tooltip": "Gửi lệnh M-code tới thiết bị với tham số tuỳ chọn (ví dụ S100, E1...).",
+                "helpUrl": ""
+            },
+            {
+                "type": "gscript_macro_call",
+                "message0": "Macro camera/vision %1 thêm %2",
+                "args0": [
+                    {
+                        "type": "field_dropdown",
+                        "name": "MACRO",
+                        "options": [
+                            ["captureCamera", "captureCamera"],
+                            ["pauseCamera", "pauseCamera"],
+                            ["resumeCamera", "resumeCamera"],
+                            ["clearObjects", "clearObjects"],
+                            ["delay(ms)", "delay"]
+                        ]
+                    },
+                    {
+                        "type": "field_input",
+                        "name": "EXTRA",
+                        "text": ""
+                    }
+                ],
+                "previousStatement": null,
+                "nextStatement": null,
+                "colour": 60,
+                "tooltip": "Sinh M98 Pxxx tương ứng (ví dụ M98 PcaptureCamera).",
+                "helpUrl": ""
+            }
+        ]);
+
+        GScriptGenerator['gscript_comment'] = function (block) {
+            const text = block.getFieldValue('TEXT').trim();
+            return `; ${text}\n`;
+        };
+
+        GScriptGenerator['gscript_label'] = function (block) {
+            const line = block.getFieldValue('LINE');
+            return `N${line}\n`;
+        };
+
+        GScriptGenerator['gscript_goto'] = function (block) {
+            const target = block.getFieldValue('TARGET');
+            return `GOTO ${target}\n`;
+        };
+
+        GScriptGenerator['gscript_select_device'] = function (block) {
+            const type = block.getFieldValue('DEVICE_TYPE');
+            const rawName = block.getFieldValue('DEVICE').trim();
+            const deviceId = rawName.startsWith(type) ? rawName : `${type}${rawName}`;
+            return `SELECT ${deviceId}\n`;
+        };
+
+        GScriptGenerator['gscript_raw_gcode'] = function (block) {
+            const code = block.getFieldValue('CODE');
+            const lines = code.split('\n').map(line => line.trim()).filter(Boolean);
+            return lines.map(line => `${line}\n`).join('');
+        };
+
+        GScriptGenerator['gscript_motion_linear'] = function (block) {
+            const cmd = block.getFieldValue('CMD');
+            const axes = ['X', 'Y', 'Z', 'W', 'F'];
+            const parts = axes.map(axis => {
+                const val = sanitizeExpression(this.valueToCode(block, axis, this.ORDER_NONE), '');
+                if (!val) return '';
+                if (axis === 'F') {
+                    return ` F${formatAxisValue(val)}`;
+                }
+                return ` ${axis}${formatAxisValue(val)}`;
+            });
+            const code = `${cmd}${parts.join('')}\n`;
+            return code.replace(/\s+\n/, '\n');
+        };
+
+        GScriptGenerator['gscript_move_point'] = function (block) {
+            const target = sanitizeExpression(this.valueToCode(block, 'POINT', this.ORDER_NONE), '#point');
+            const feed = sanitizeExpression(this.valueToCode(block, 'FEED', this.ORDER_NONE), '');
+            let code = `MOVE ${target}`;
+            if (feed) {
+                code += ` F${formatAxisValue(feed)}`;
+            }
+            return code + '\n';
+        };
+
+        GScriptGenerator['gscript_wait'] = function (block) {
+            const value = sanitizeExpression(this.valueToCode(block, 'TIME', this.ORDER_NONE), '0');
+            return `G04 P${formatAxisValue(value)}\n`;
+        };
+
+        GScriptGenerator['gscript_device_command'] = function (block) {
+            const command = block.getFieldValue('COMMAND') === 'CUSTOM'
+                ? block.getFieldValue('PARAMS').split(' ')[0] || 'M00'
+                : block.getFieldValue('COMMAND');
+            let params = block.getFieldValue('PARAMS').trim();
+            if (block.getFieldValue('COMMAND') === 'CUSTOM') {
+                params = block.getFieldValue('PARAMS').split(' ').slice(1).join(' ').trim();
+            }
+            return `${command}${params ? ` ${params}` : ''}\n`;
+        };
+
+        GScriptGenerator['gscript_macro_call'] = function (block) {
+            const macro = block.getFieldValue('MACRO');
+            const extra = block.getFieldValue('EXTRA').trim();
+            if (macro === 'delay') {
+                const val = extra || '1000';
+                return `M98 Pdelay(${val})\n`;
+            }
+            const suffix = extra ? ` ${extra}` : '';
+            return `M98 P${macro}${suffix}\n`;
+        };
+
+        GScriptGenerator['math_number'] = function (block) {
+            const num = Number(block.getFieldValue('NUM'));
+            return [num.toString(), this.ORDER_ATOMIC];
+        };
+
+        GScriptGenerator['text'] = function (block) {
+            const text = block.getFieldValue('TEXT') || '';
+            return [quoteString(text), this.ORDER_ATOMIC];
+        };
+
+        GScriptGenerator['text_join'] = function (block) {
+            const code = [];
+            for (let i = 0; i < block.itemCount_; i++) {
+                let part = this.valueToCode(block, 'ADD' + i, this.ORDER_ADDITIVE);
+                if (!part) part = '""';
+                code.push(part);
+            }
+            if (!code.length) {
+                return ['""', this.ORDER_ATOMIC];
+            }
+            return [code.join(' + '), this.ORDER_ADDITIVE];
+        };
+
+        GScriptGenerator['logic_compare'] = function (block) {
+            const OPERATORS = {
+                'EQ': '==',
+                'NEQ': '!=',
+                'LT': '<',
+                'LTE': '<=',
+                'GT': '>',
+                'GTE': '>='
+            };
+            const operator = OPERATORS[block.getFieldValue('OP')];
+            const order = this.ORDER_RELATIONAL;
+            const argument0 = this.valueToCode(block, 'A', order) || '0';
+            const argument1 = this.valueToCode(block, 'B', order) || '0';
+            const code = `${argument0} ${operator} ${argument1}`;
+            return [code, order];
+        };
+
+        GScriptGenerator['logic_operation'] = function (block) {
+            const operator = block.getFieldValue('OP') === 'AND' ? 'AND' : 'OR';
+            const order = this.ORDER_LOGICAL;
+            let argument0 = this.valueToCode(block, 'A', order);
+            let argument1 = this.valueToCode(block, 'B', order);
+            if (!argument0 && !argument1) {
+                argument0 = 'FALSE';
+                argument1 = 'FALSE';
+            } else {
+                if (!argument0) {
+                    argument0 = operator === 'AND' ? 'TRUE' : 'FALSE';
+                }
+                if (!argument1) {
+                    argument1 = operator === 'AND' ? 'TRUE' : 'FALSE';
+                }
+            }
+            const code = `${argument0} ${operator} ${argument1}`;
+            return [code, order];
+        };
+
+        GScriptGenerator['logic_negate'] = function (block) {
+            const order = this.ORDER_UNARY;
+            const argument = this.valueToCode(block, 'BOOL', order) || 'FALSE';
+            return [`NOT (${argument})`, order];
+        };
+
+        GScriptGenerator['logic_boolean'] = function (block) {
+            return [block.getFieldValue('BOOL') === 'TRUE' ? 'TRUE' : 'FALSE', this.ORDER_ATOMIC];
+        };
+
+        GScriptGenerator['math_arithmetic'] = function (block) {
+            const OPERATORS = {
+                'ADD': [' + ', this.ORDER_ADDITIVE],
+                'MINUS': [' - ', this.ORDER_ADDITIVE],
+                'MULTIPLY': [' * ', this.ORDER_MULTIPLICATIVE],
+                'DIVIDE': [' / ', this.ORDER_MULTIPLICATIVE]
+            };
+            const op = block.getFieldValue('OP');
+            if (op === 'POWER') {
+                const argument0 = this.valueToCode(block, 'A', this.ORDER_NONE) || '0';
+                const argument1 = this.valueToCode(block, 'B', this.ORDER_NONE) || '0';
+                return [`#pow(${argument0}, ${argument1})`, this.ORDER_FUNCTION_CALL];
+            }
+            const [operator, order] = OPERATORS[op];
+            const argument0 = this.valueToCode(block, 'A', order) || '0';
+            const argument1 = this.valueToCode(block, 'B', order) || '0';
+            return [`${argument0}${operator}${argument1}`, order];
+        };
+
+        GScriptGenerator['controls_if'] = function (block) {
+            let n = 0;
+            let code = '';
+            const condition = this.valueToCode(block, 'IF0', this.ORDER_NONE) || 'FALSE';
+            const branch = this.statementToCode(block, 'DO0');
+            code += `IF ${condition} THEN\n${branch}`;
+            for (n = 1; n <= block.elseifCount_; n++) {
+                const cond = this.valueToCode(block, 'IF' + n, this.ORDER_NONE) || 'FALSE';
+                const branchCode = this.statementToCode(block, 'DO' + n);
+                code += `ELIF ${cond} THEN\n${branchCode}`;
+            }
+            if (block.elseCount_) {
+                const elseBranch = this.statementToCode(block, 'ELSE');
+                code += `ELSE\n${elseBranch}`;
+            }
+            code += 'ENDIF\n';
+            return code;
+        };
+
+        GScriptGenerator['controls_repeat_ext'] = function (block) {
+            const repeats = this.valueToCode(block, 'TIMES', this.ORDER_NONE) || '0';
+            const branch = this.statementToCode(block, 'DO');
+            const loopVar = this.nameDB_.getDistinctName('index', Blockly.VARIABLE_CATEGORY_NAME);
+            return `FOR #${loopVar} = 1 TO ${repeats}\n${branch}ENDFOR\n`;
+        };
+
+        GScriptGenerator['controls_for'] = function (block) {
+            const variable0 = formatVariable(getVariableFieldName(block));
+            const start = this.valueToCode(block, 'FROM', this.ORDER_NONE) || '0';
+            const end = this.valueToCode(block, 'TO', this.ORDER_NONE) || '0';
+            const step = this.valueToCode(block, 'BY', this.ORDER_NONE) || '1';
+            const branch = this.statementToCode(block, 'DO');
+            let code = `FOR ${variable0} = ${start} TO ${end}`;
+            if (step !== '1') {
+                code += ` STEP ${step}`;
+            }
+            code += `\n${branch}ENDFOR\n`;
+            return code;
+        };
+
+        GScriptGenerator['variables_set'] = function (block) {
+            const varName = formatVariable(getVariableFieldName(block));
+            const value = this.valueToCode(block, 'VALUE', this.ORDER_NONE) || '0';
+            return `${varName} = ${value}\n`;
+        };
+
+        GScriptGenerator['variables_get'] = function (block) {
+            const varName = formatVariable(getVariableFieldName(block));
+            return [varName, this.ORDER_ATOMIC];
+        };
+
+        GScriptGenerator['procedures_defnoreturn'] = function (block) {
+            const funcName = block.getFieldValue('NAME').trim();
+            const args = block.arguments_;
+            pushParams(args);
+            const branch = this.statementToCode(block, 'STACK');
+            popParams();
+            let code = `FUNCTION ${funcName}(${args.join(', ')})\n${branch}ENDFUNCTION\n`;
+            return code;
+        };
+
+        GScriptGenerator['procedures_defreturn'] = function (block) {
+            const funcName = block.getFieldValue('NAME').trim();
+            const args = block.arguments_;
+            pushParams(args);
+            const branch = this.statementToCode(block, 'STACK');
+            const returnValue = this.valueToCode(block, 'RETURN', this.ORDER_NONE) || '0';
+            popParams();
+            let code = `FUNCTION ${funcName}(${args.join(', ')})\n${branch}${GScriptGenerator.INDENT}RETURN ${returnValue}\nENDFUNCTION\n`;
+            return code;
+        };
+
+        GScriptGenerator['procedures_callnoreturn'] = function (block) {
+            const funcName = formatFunctionCall(block.getFieldValue('NAME'));
+            const args = [];
+            for (let i = 0; i < block.arguments_.length; i++) {
+                args[i] = this.valueToCode(block, 'ARG' + i, this.ORDER_NONE) || '0';
+            }
+            return `${funcName}(${args.join(', ')})\n`;
+        };
+
+        GScriptGenerator['procedures_callreturn'] = function (block) {
+            const funcName = formatFunctionCall(block.getFieldValue('NAME'));
+            const args = [];
+            for (let i = 0; i < block.arguments_.length; i++) {
+                args[i] = this.valueToCode(block, 'ARG' + i, this.ORDER_NONE) || '0';
+            }
+            const code = `${funcName}(${args.join(', ')})`;
+            return [code, this.ORDER_FUNCTION_CALL];
+        };
+
+        GScriptGenerator['procedures_ifreturn'] = function (block) {
+            const condition = this.valueToCode(block, 'CONDITION', this.ORDER_NONE) || 'FALSE';
+            const value = this.valueToCode(block, 'VALUE', this.ORDER_NONE) || '0';
+            return `IF ${condition} THEN\n${this.INDENT}RETURN ${value}\nENDIF\n`;
+        };
+
+        const registeredGeneratorBlocks = [
+            'gscript_comment',
+            'gscript_label',
+            'gscript_goto',
+            'gscript_select_device',
+            'gscript_raw_gcode',
+            'gscript_motion_linear',
+            'gscript_move_point',
+            'gscript_wait',
+            'gscript_device_command',
+            'gscript_macro_call',
+            'math_number',
+            'text',
+            'text_join',
+            'logic_compare',
+            'logic_operation',
+            'logic_negate',
+            'logic_boolean',
+            'math_arithmetic',
+            'controls_if',
+            'controls_repeat_ext',
+            'controls_for',
+            'variables_set',
+            'variables_get',
+            'procedures_defnoreturn',
+            'procedures_defreturn',
+            'procedures_callnoreturn',
+            'procedures_callreturn',
+            'procedures_ifreturn'
+        ];
+
+        registeredGeneratorBlocks.forEach((name) => {
+            if (typeof GScriptGenerator[name] === 'function') {
+                GScriptGenerator.forBlock[name] = function (block) {
+                    return GScriptGenerator[name].call(GScriptGenerator, block);
+                };
+            }
+        });
+
+        const workspace = Blockly.inject('blocklyDiv', {
+            toolbox: document.getElementById('toolbox'),
+            trashcan: true,
+            zoom: {
+                controls: true,
+                wheel: true,
+                startScale: 0.9,
+                maxScale: 2.0,
+                minScale: 0.6
+            },
+            move: {
+                drag: true,
+                wheel: true
+            },
+            grid: {
+                spacing: 32,
+                length: 3,
+                colour: '#475569',
+                snap: false
+            }
+        });
+
+        const outputField = document.getElementById('gscriptOutput');
+        const autoCopyToggle = document.getElementById('autoCopyToggle');
+        const copyStatusEl = document.getElementById('copyStatus');
+        const deltaHostInput = document.getElementById('deltaHost');
+        const deltaPortInput = document.getElementById('deltaPort');
+        const deltaStatusEl = document.getElementById('deltaStatus');
+        const urlParams = new URLSearchParams(window.location.search || '');
+        const queryHost = urlParams.get('host');
+        const queryPort = urlParams.get('port');
+        const autoSendParam = urlParams.get('autosend');
+        const defaultDeltaHost = (queryHost && queryHost.length)
+            ? queryHost
+            : ((window.location.hostname && window.location.hostname.length)
+                ? window.location.hostname
+                : '127.0.0.1');
+        const defaultDeltaPort = (queryPort && queryPort.length) ? queryPort : '5050';
+        const autoSendOnLoad = autoSendParam === '1' || autoSendParam === 'true';
+
+        if (deltaHostInput) {
+            deltaHostInput.value = defaultDeltaHost;
+        }
+        if (deltaPortInput) {
+            deltaPortInput.value = defaultDeltaPort;
+        }
+
+        function setCopyStatus(message = '', state = '') {
+            if (!copyStatusEl) return;
+            copyStatusEl.textContent = message;
+            copyStatusEl.className = `copy-status${state ? ' ' + state : ''}`;
+        }
+
+        function copyToClipboard(code, { reason = 'manual', silent = false } = {}) {
+            if (!code || !code.trim()) {
+                if (!silent) {
+                    setCopyStatus('Không có mã để copy.', 'warn');
+                }
+                return;
+            }
+            if (!(navigator.clipboard && navigator.clipboard.writeText)) {
+                if (!silent) {
+                    setCopyStatus('Trình duyệt không cho phép truy cập clipboard, hãy copy thủ công.', 'error');
+                }
+                return;
+            }
+            navigator.clipboard.writeText(code).then(() => {
+                if (!silent) {
+                    const message = reason === 'auto'
+                        ? 'Đã tự động copy mã vào clipboard.'
+                        : 'Đã copy mã vào clipboard.';
+                    setCopyStatus(message, 'success');
+                }
+            }).catch((err) => {
+                if (!silent) {
+                    setCopyStatus(`Copy thất bại: ${err.message}`, 'error');
+                }
+            });
+        }
+
+        function setDeltaStatus(message = '', state = '') {
+            if (!deltaStatusEl) return;
+            deltaStatusEl.textContent = message;
+            deltaStatusEl.className = `copy-status${state ? ' ' + state : ''}`;
+        }
+
+        async function sendToDeltaX() {
+            const code = (outputField?.value && outputField.value.length)
+                ? outputField.value
+                : generateCode();
+            if (!code.trim()) {
+                setDeltaStatus('Không có mã để gửi.', 'warn');
+                return;
+            }
+            const host = (deltaHostInput?.value || defaultDeltaHost || '127.0.0.1').trim() || '127.0.0.1';
+            const port = (deltaPortInput?.value || defaultDeltaPort || '5050').trim() || defaultDeltaPort || '5050';
+            const targetUrl = `http://${host}:${port}`;
+            setDeltaStatus(`Đang gửi tới ${host}:${port} ...`, 'info');
+            try {
+                const response = await fetch(targetUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: `GScriptEditor=${code}`
+                });
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                setDeltaStatus('Đã gửi script tới Delta X.', 'success');
+            } catch (error) {
+                setDeltaStatus(`Không gửi được: ${error.message}`, 'error');
+            }
+        }
+
+        if (autoSendOnLoad) {
+            window.addEventListener('load', () => {
+                sendToDeltaX();
+            });
+        }
+
+        autoCopyToggle?.addEventListener('change', () => {
+            if (autoCopyToggle.checked) {
+                setCopyStatus('Đang bật chế độ tự copy khi nhấn “Sinh mã”.', 'info');
+            } else {
+                setCopyStatus('Đã tắt chế độ tự copy.', 'info');
+            }
+        });
+
+        function generateCode(shouldAttemptCopy = false) {
+            const code = GScriptGenerator.workspaceToCode(workspace);
+            if (outputField) {
+                outputField.value = code;
+            }
+            if (shouldAttemptCopy && autoCopyToggle?.checked) {
+                copyToClipboard(code, { reason: 'auto' });
+            }
+            return code;
+        }
+
+        function copyCode() {
+            const code = outputField?.value || '';
+            copyToClipboard(code);
+        }
+
+        function downloadCode() {
+            const code = (outputField?.value && outputField.value.trim().length ? outputField.value : '') || generateCode();
+            const blob = new Blob([code], { type: 'text/plain;charset=utf-8' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'program.gcode';
+            link.click();
+            URL.revokeObjectURL(link.href);
+        }
+
+        function clearWorkspace() {
+            workspace.clear();
+            generateCode();
+        }
+
+        workspace.addChangeListener(() => {
+            try {
+                generateCode();
+            } catch (error) {
+                console.error(error);
+            }
+        });
+
+        generateCode();
+    </script>
+</body>
+
+</html>

@@ -7,6 +7,8 @@
 #include "CameraSelectionDialog.h"
 #include "UnityTool.h"  // ? For SoftwareLog function
 #include <QFile>
+#include <QFileInfo>
+#include <QDir>
 #include <QTextStream>
 #include <QCoreApplication>
 #include <QRegularExpression>
@@ -1049,6 +1051,7 @@ void RobotWindow::InitEvents()
 
 
     connect(ui->pbExecuteGcodes, SIGNAL(clicked(bool)), this, SLOT(ExecuteProgram()));
+    connect(ui->pbBlockly, &QToolButton::clicked, this, &RobotWindow::OpenBlocklyEditor);
     connect(ui->pteGcodeArea, SIGNAL(lineClicked(int, QString)), this, SLOT(ExecuteCurrentLine(int, QString)));
     connect(ui->pteGcodeArea, SIGNAL(textChanged()), this, SLOT(OnEditorTextChanged()));
     // ------------ Jogging -----------
@@ -1402,6 +1405,57 @@ void RobotWindow::ExportBlocklyToGcode()
 	{
 		ui->pteGcodeArea->setText(result);
 	});*/
+}
+
+void RobotWindow::OpenBlocklyEditor()
+{
+    if (!ConnectionManager || !ConnectionManager->WebServer) {
+        QMessageBox::warning(this, tr("Web Control"),
+                             tr("Web server chưa sẵn sàng."));
+        return;
+    }
+
+    if (!ConnectionManager->WebServer->isListening()) {
+        if (!ConnectionManager->WebServer->listen(QHostAddress(ConnectionManager->hostAddress), 5000)) {
+            QMessageBox::warning(this, tr("Web Control"),
+                                 tr("Không thể khởi động Web server."));
+            return;
+        }
+    }
+
+    QString host = ConnectionManager->hostAddress;
+    if (host.isEmpty() || host == "0.0.0.0") {
+        host = SocketConnectionManager::printLocalIpAddresses();
+    }
+    if (host.isEmpty()) {
+        host = "127.0.0.1";
+    }
+
+    quint16 webServerPort = ConnectionManager->WebServer->serverPort();
+    if (webServerPort == 0) {
+        webServerPort = 5000;
+    }
+
+    quint16 blocklyPortValue = ConnectionManager->blocklyPort;
+    if (blocklyPortValue == 0) {
+        QMessageBox::warning(this, tr("Web Control"),
+                             tr("Không thể khởi động Blockly server (cổng gửi dữ liệu)."));
+        return;
+    }
+
+    const QString blocklyUrl = QString("http://%1:%2/blockly?host=%3&port=%4")
+            .arg(host)
+            .arg(webServerPort)
+            .arg(host)
+            .arg(blocklyPortValue);
+
+    if (!QDesktopServices::openUrl(QUrl(blocklyUrl))) {
+        QMessageBox::warning(this,
+                             tr("Không thể mở Blockly"),
+                             tr("Không mở được trình duyệt với đường dẫn: %1").arg(blocklyUrl));
+    } else {
+        SoftwareLog(QString("Open Blockly via web server: %1").arg(blocklyUrl));
+    }
 }
 
 void RobotWindow::ExecuteRequestsFromExternal(QString request)
@@ -1782,6 +1836,7 @@ void RobotWindow::AddScriptThread()
     connect(ConnectionManager, &SocketConnectionManager::objectUpdated, TrackingManagerInstance, &TrackingManager::AddObject);
     connect(ConnectionManager, SIGNAL(blobUpdated(QStringList)), ImageProcessingInstance->GetNode("GetObjectsNode"), SLOT(Input(QStringList)));
     connect(ConnectionManager, SIGNAL(gcodeReceived(QString)), GcodeScriptThread, SLOT(ReceivedGcode(QString)));
+    connect(ConnectionManager, &SocketConnectionManager::gscriptEditorReceived, this, &RobotWindow::LoadGscriptFromRemote);
 
 
     connect(TrackingManagerInstance, &TrackingManager::GotResponse, GcodeScriptThread, &GcodeScript::GetResponse);
@@ -1798,6 +1853,16 @@ void RobotWindow::LoadScriptThread()
     int threadId = ui->cbProgramThreadID->currentIndex();
     ui->pteGcodeArea->setPlainText(GcodeScripts.at(threadId)->GetGcodeScript());
     ui->pbExecuteGcodes->setChecked(GcodeScripts.at(threadId)->IsRunning());
+}
+
+void RobotWindow::LoadGscriptFromRemote(QString gcode)
+{
+    if (!ui || !ui->pteGcodeArea)
+        return;
+
+    ui->pteGcodeArea->setPlainText(gcode);
+    ui->pteGcodeArea->moveCursor(QTextCursor::Start);
+    SoftwareLog(QString("Received Blockly script (%1 ký tự) từ WebServer.").arg(gcode.length()));
 }
 
 void RobotWindow::InitTrackingThread()

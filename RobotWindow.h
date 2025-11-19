@@ -384,6 +384,8 @@ public slots:
     void CleanTextFormatting();
     void OpenGcodeReference();
     void ExportBlocklyToGcode();
+    void OpenBlocklyEditor();
+    void LoadGscriptFromRemote(QString gcode);
     void ExecuteRequestsFromExternal(QString request);
     void AddGcodeLine(QString gcode);
     void LoadGcodeFromFileToEditor(const QModelIndex &index);

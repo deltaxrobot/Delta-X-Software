@@ -7,6 +7,7 @@ SocketConnectionManager::~SocketConnectionManager()
 {
     delete Server;
     delete WebServer;
+    delete BlocklyServer;
 }
 
 bool SocketConnectionManager::IsServerOpen()
@@ -55,6 +56,14 @@ SocketConnectionManager::SocketConnectionManager(const QString &address, int por
     bool result = WebServer->listen(QHostAddress(hostAddress), 5000);
     qDebug() << "Create web server: " << result;
     connect(WebServer, &QTcpServer::newConnection, this, &SocketConnectionManager::newWebClientConnected);
+
+    BlocklyServer = new QTcpServer(this);
+    bool blocklyResult = startBlocklyServer(5050);
+    qDebug() << "Create Blockly server:" << blocklyResult << "port" << blocklyPort;
+    if (blocklyResult)
+    {
+        connect(BlocklyServer, &QTcpServer::newConnection, this, &SocketConnectionManager::newBlocklyClientConnected);
+    }
 }
 
 bool SocketConnectionManager::Connect(QString address, int port)
@@ -192,10 +201,31 @@ void SocketConnectionManager::newWebClientConnected()
             socket->disconnectFromHost();
         }
         else {
-            // Handle GET request (serve HTML file)
-            QFile file(indexPath);
+            QString requestLine = request.section("\r\n", 0, 0);
+            QString targetPath = "/";
+            if (requestLine.startsWith("GET")) {
+                const QStringList tokens = requestLine.split(' ');
+                if (tokens.size() >= 2) {
+                    targetPath = tokens.at(1);
+                }
+            }
+            int queryIndex = targetPath.indexOf('?');
+            if (queryIndex != -1) {
+                targetPath = targetPath.left(queryIndex);
+            }
+
+            QString fileToServe = indexPath;
+            if (targetPath.startsWith("/blockly")) {
+                fileToServe = resolveIndexFile(QStringLiteral("script-example/blockly/blockly.html"));
+            }
+
+            QFile file(fileToServe);
             if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-                qDebug() << "Could not open HTML file:" << indexPath;
+                qDebug() << "Could not open HTML file:" << fileToServe;
+                QString response = "HTTP/1.1 404 Not Found\r\nContent-Type: text/plain\r\n\r\nFile not found";
+                socket->write(response.toUtf8());
+                socket->flush();
+                socket->waitForBytesWritten();
                 socket->disconnectFromHost();
                 return;
             }
@@ -203,10 +233,68 @@ void SocketConnectionManager::newWebClientConnected()
             QTextStream in(&file);
             QString htmlContent = in.readAll();
             file.close();
-            
+
             QString response = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n" + htmlContent;
             response.replace("127.0.0.1", hostAddress);
             socket->write(response.toUtf8());
+            socket->flush();
+            socket->waitForBytesWritten();
+            socket->disconnectFromHost();
+        }
+    });
+}
+
+void SocketConnectionManager::newBlocklyClientConnected()
+{
+    QTcpSocket *socket = BlocklyServer->nextPendingConnection();
+    connect(socket, &QTcpSocket::readyRead, [this, socket]() {
+        QByteArray requestData = socket->readAll();
+        QString request = QString::fromUtf8(requestData);
+
+        qDebug() << "Blockly client request:" << request;
+
+        if (request.startsWith("POST")) {
+            int bodyStart = request.indexOf("\r\n\r\n");
+            if (bodyStart != -1) {
+                QString body = request.mid(bodyStart + 4);
+                processWebPostData(body);
+
+                QString httpResponse = "HTTP/1.1 200 OK\r\n";
+                httpResponse += "Content-Type: text/plain\r\n";
+                httpResponse += "Access-Control-Allow-Origin: *\r\n";
+                httpResponse += "Access-Control-Allow-Methods: POST, GET, OPTIONS\r\n";
+                httpResponse += "Access-Control-Allow-Headers: Content-Type\r\n";
+                httpResponse += "Content-Length: 2\r\n";
+                httpResponse += "\r\n";
+                httpResponse += "OK";
+
+                socket->write(httpResponse.toUtf8());
+                socket->flush();
+                socket->waitForBytesWritten();
+            }
+            socket->disconnectFromHost();
+        }
+        else if (request.startsWith("OPTIONS")) {
+            QString httpResponse = "HTTP/1.1 200 OK\r\n";
+            httpResponse += "Access-Control-Allow-Origin: *\r\n";
+            httpResponse += "Access-Control-Allow-Methods: POST, GET, OPTIONS\r\n";
+            httpResponse += "Access-Control-Allow-Headers: Content-Type\r\n";
+            httpResponse += "Content-Length: 0\r\n";
+            httpResponse += "\r\n";
+
+            socket->write(httpResponse.toUtf8());
+            socket->flush();
+            socket->waitForBytesWritten();
+            socket->disconnectFromHost();
+        }
+        else {
+            QString httpResponse = "HTTP/1.1 200 OK\r\n";
+            httpResponse += "Content-Type: text/plain\r\n";
+            httpResponse += "Access-Control-Allow-Origin: *\r\n";
+            httpResponse += "Content-Length: 17\r\n";
+            httpResponse += "\r\n";
+            httpResponse += "Blockly endpoint";
+            socket->write(httpResponse.toUtf8());
             socket->flush();
             socket->waitForBytesWritten();
             socket->disconnectFromHost();
@@ -243,56 +331,11 @@ void SocketConnectionManager::readFromClient() {
         clients.removeOne(senderSocket);
     }
 
-    // Handling variable assignment
-    if (data.contains('=')) {
-        QStringList parts = QString(data).split('=');
-        if (parts.size() == 2) {
-            QString varName = parts[0].trimmed();
-            QString value = parts[1].trimmed();
-
-            // You might need a mapping mechanism to link variable names to actual variables in your program
-
-            // Example:
-            // if(varName == "counter") {
-            //     counter = value.toInt();
-            // }
-            if (varName.contains("Objects"))
-            {
-                QList<QStringList> objects;
-                QStringList objectsString = value.split(";");
-                for (int i = 0; i < objectsString.size(); i++)
-                {
-                    QStringList objectString = objectsString[i].split(",");
-                    
-                    objects.append(objectString);
-                }
-
-                emit objectUpdated(varName, objects);
-            }
-            else if (varName.contains("Blobs") || varName.contains("Object"))
-            {
-                QStringList blobs = value.split(";");
-
-                emit blobUpdated(blobs);
-            }
-            else if (varName.contains("GScript"))
-            {
-                emit gcodeReceived(value);
-            }
-            else if (varName.contains("Event"))
-            {
-                // value = "type,name,action
-                QStringList values = value.split(",");
-                emit eventReceived(values.at(0).trimmed(), values.at(1).trimmed(), values.at(2).trimmed());
-            }
-            else
-            {
-                QString normalizedName = varName;
-                normalizedName.replace("#", "");
-                VariableManager::instance().UpdateVarToModel(normalizedName, value);
-                emit variableChanged(normalizedName, value);
-            }
-        }
+    QString decodedData = QString::fromUtf8(data);
+    QString varName;
+    QString value;
+    if (extractAssignment(decodedData, varName, value)) {
+        handleAssignment(varName, value);
     }
     else if (data.length() >= 2)
     {
@@ -327,48 +370,10 @@ void SocketConnectionManager::processWebPostData(const QString& data)
     qDebug() << "Processing web POST data:" << data;
     
     // Process the POST data using the same logic as readFromClient
-    // Handling variable assignment
-    if (data.contains('=')) {
-        QStringList parts = data.split('=');
-        if (parts.size() == 2) {
-            QString varName = parts[0].trimmed();
-            QString value = parts[1].trimmed();
-
-            if (varName.contains("Objects"))
-            {
-                QList<QStringList> objects;
-                QStringList objectsString = value.split(";");
-                for (int i = 0; i < objectsString.size(); i++)
-                {
-                    QStringList objectString = objectsString[i].split(",");
-                    objects.append(objectString);
-                }
-                emit objectUpdated(varName, objects);
-            }
-            else if (varName.contains("Blobs") || varName.contains("Object"))
-            {
-                QStringList blobs = value.split(";");
-                emit blobUpdated(blobs);
-            }
-            else if (varName.contains("GScript"))
-            {
-                emit gcodeReceived(value);
-            }
-            else if (varName.contains("Event"))
-            {
-                // value = "type,name,action
-                QStringList values = value.split(",");
-                qDebug() << "Emitting eventReceived:" << values;
-                emit eventReceived(values.at(0).trimmed(), values.at(1).trimmed(), values.at(2).trimmed());
-            }
-            else
-            {
-                QString normalizedName = varName;
-                normalizedName.replace("#", "");
-                VariableManager::instance().UpdateVarToModel(normalizedName, value);
-                emit variableChanged(normalizedName, value);
-            }
-        }
+    QString varName;
+    QString value;
+    if (extractAssignment(data, varName, value)) {
+        handleAssignment(varName, value);
     }
     else if (data.length() >= 2)
     {
@@ -447,4 +452,86 @@ void SocketConnectionManager::sendImageToExternalScript(cv::Mat input)
         }
     }
 
+}
+
+bool SocketConnectionManager::extractAssignment(const QString &data, QString &varName, QString &value) const
+{
+    int index = data.indexOf('=');
+    if (index <= 0)
+        return false;
+
+    varName = data.left(index).trimmed();
+    value = data.mid(index + 1);
+    return !varName.isEmpty();
+}
+
+void SocketConnectionManager::handleAssignment(const QString &varName, QString value)
+{
+    QString processedValue = value;
+    if (varName.contains("GScriptEditor"))
+    {
+        processedValue.replace("\r\n", "\n");
+    }
+    else
+    {
+        processedValue = processedValue.trimmed();
+    }
+
+    if (varName.contains("Objects"))
+    {
+        QList<QStringList> objects;
+        QStringList objectsString = processedValue.split(";");
+        for (int i = 0; i < objectsString.size(); i++)
+        {
+            QStringList objectString = objectsString[i].split(",");
+            objects.append(objectString);
+        }
+
+        emit objectUpdated(varName, objects);
+    }
+    else if (varName.contains("Blobs") || varName.contains("Object"))
+    {
+        QStringList blobs = processedValue.split(";");
+        emit blobUpdated(blobs);
+    }
+    else if (varName.contains("GScriptEditor"))
+    {
+        emit gscriptEditorReceived(processedValue);
+    }
+    else if (varName.contains("GScript"))
+    {
+        emit gcodeReceived(processedValue);
+    }
+    else if (varName.contains("Event"))
+    {
+        QStringList values = processedValue.split(",");
+        if (values.size() >= 3)
+        {
+            emit eventReceived(values.at(0).trimmed(), values.at(1).trimmed(), values.at(2).trimmed());
+        }
+    }
+    else
+    {
+        QString normalizedName = varName;
+        normalizedName.replace("#", "");
+        VariableManager::instance().updateVar(normalizedName, processedValue);
+        emit variableChanged(normalizedName, processedValue);
+    }
+}
+
+bool SocketConnectionManager::startBlocklyServer(quint16 startPort)
+{
+    if (!BlocklyServer)
+        return false;
+
+    for (int i = 0; i < 10; ++i) {
+        quint16 tryPort = startPort + i;
+        if (BlocklyServer->listen(QHostAddress(hostAddress), tryPort)) {
+            blocklyPort = tryPort;
+            return true;
+        }
+    }
+
+    blocklyPort = 0;
+    return false;
 }

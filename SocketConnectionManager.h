@@ -16,8 +16,9 @@ class SocketConnectionManager : public QObject
     Q_OBJECT
 
 public:
-    QTcpServer* Server;
-    QTcpServer* WebServer;
+    QTcpServer* Server = nullptr;
+    QTcpServer* WebServer = nullptr;
+    QTcpServer* BlocklyServer = nullptr;
     QList<QTcpSocket*> clients;
     QString hostAddress;
     int port;
@@ -26,6 +27,7 @@ public:
 
     int imageSendingMethod = 0;
     QString indexPath = "Jogging.html";
+    quint16 blocklyPort = 0;
 
     ~SocketConnectionManager();
     bool IsServerOpen();
@@ -38,10 +40,14 @@ public:
 
 private:
     QString resolveIndexFile(const QString &fileName) const;
+    bool extractAssignment(const QString &data, QString &varName, QString &value) const;
+    void handleAssignment(const QString &varName, QString value);
+    bool startBlocklyServer(quint16 startPort = 5050);
 
 private slots:
     void newClientConnected();
     void newWebClientConnected();
+    void newBlocklyClientConnected();
 
     void readFromClient();
     void processWebPostData(const QString& data);
@@ -56,6 +62,7 @@ signals:
     void objectUpdated(QString listName, QList<QStringList> list);
     void blobUpdated(QStringList blobs);
     void gcodeReceived(QString gcode);
+    void gscriptEditorReceived(QString gcode);
     void eventReceived(QString type, QString name, QString action);
 };
 

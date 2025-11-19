@@ -1442,6 +1442,36 @@ QTreeView::header {
                            </spacer>
                           </item>
                           <item>
+                           <widget class="QToolButton" name="pbBlockly">
+                            <property name="toolTip">
+                             <string>Format Gcode Lines</string>
+                            </property>
+                            <property name="styleSheet">
+                             <string notr="true">background-color: rgb(207, 207, 207);
+color: rgb(44, 44, 44);</string>
+                            </property>
+                            <property name="text">
+                             <string>Blockly</string>
+                            </property>
+                            <property name="icon">
+                             <iconset resource="resource.qrc">
+                              <normaloff>:/icon/icons8-blockly-100.png</normaloff>:/icon/icons8-blockly-100.png</iconset>
+                            </property>
+                            <property name="iconSize">
+                             <size>
+                              <width>20</width>
+                              <height>20</height>
+                             </size>
+                            </property>
+                            <property name="toolButtonStyle">
+                             <enum>Qt::ToolButtonStyle::ToolButtonTextBesideIcon</enum>
+                            </property>
+                            <property name="autoRaise">
+                             <bool>true</bool>
+                            </property>
+                           </widget>
+                          </item>
+                          <item>
                            <widget class="QToolButton" name="pbOpenGcodeDocs">
                             <property name="sizePolicy">
                              <sizepolicy hsizetype="Minimum" vsizetype="Minimum">

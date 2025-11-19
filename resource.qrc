@@ -152,5 +152,7 @@
         <file>icon/IoU-threshold.png</file>
         <file>Jogging.html</file>
         <file>GScript_Documentation.html</file>
+        <file>icon/icons8-blockly-100.png</file>
+        <file>script-example/blockly/blockly.html</file>
     </qresource>
 </RCC>

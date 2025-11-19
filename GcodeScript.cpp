@@ -1,4 +1,8 @@
-﻿#include "GcodeScript.h"
+﻿/*
+* GScript - new script language for robot automation
+*/
+
+#include "GcodeScript.h"
 #include "CloudPointMapper.h"
 #include "VariableManager.h"
 #include "SoftwareManager.h"
@@ -3337,7 +3341,7 @@ QString GcodeScript::getValueAsString(QString name)
             }
         }
     }
-    // Kiá»ƒm tra xem cÃ³ pháº£i hÃ m toÃ¡n há»c khÃ´ng (cÃ³ dáº¥u ngoáº·c Ä‘Æ¡n)
+    
     if (name.contains('(') && name.contains(')'))
     {
         float result = EvaluateFunctionToFloat(name);

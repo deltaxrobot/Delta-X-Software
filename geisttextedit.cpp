@@ -1,3 +1,7 @@
+/*
+* GScript - new script language for robot automation
+*/
+
 #include "geisttextedit.h"
 #include <iostream>
 
