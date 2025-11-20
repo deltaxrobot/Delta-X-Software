@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Delta X Blockly → GScript</title>
+    <title>Delta X Blockly -> GScript</title>
     <script src="https://unpkg.com/blockly/blockly.min.js"></script>
     <style>
         :root {
@@ -146,23 +146,6 @@
             transform: translateY(-1px);
         }
 
-        .auto-copy-toggle {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-top: 8px;
-            font-size: 0.85rem;
-            color: var(--muted);
-            cursor: pointer;
-            user-select: none;
-        }
-
-        .auto-copy-toggle input {
-            width: 16px;
-            height: 16px;
-            accent-color: var(--accent);
-        }
-
         .copy-status {
             min-height: 1.2em;
             font-size: 0.8rem;
@@ -228,6 +211,47 @@
             text-align: center;
         }
 
+        .blocklyToolboxDiv {
+            background: #0b1220 !important;
+            color: #f8fafc !important;
+            border-right: 1px solid rgba(148, 163, 184, 0.4) !important;
+            padding-top: 10px !important;
+            padding-bottom: 10px !important;
+        }
+
+        .blocklyToolboxContents,
+        .blocklyToolboxContents .blocklyTreeRow {
+            background: transparent !important;
+        }
+
+        .blocklyTreeRow {
+            border-radius: 16px !important;
+            margin: 6px 8px !important;
+            padding: 6px 12px !important;
+            opacity: 1 !important;
+        }
+
+        .blocklyTreeLabel {
+            color: #f8fafc !important;
+            font-weight: 600 !important;
+            font-size: 0.95rem !important;
+            letter-spacing: 0.2px;
+        }
+
+        .blocklyTreeRow:hover .blocklyTreeLabel,
+        .blocklyTreeRow.blocklyTreeSelected .blocklyTreeLabel {
+            background: rgba(249, 115, 22, 0.35) !important;
+            color: #fff7ed !important;
+        }
+
+        .blocklyToolboxDiv .blocklyTreeIcon {
+            filter: brightness(1.3) !important;
+        }
+
+        .blocklyToolbox{
+            background: #10182a !important;
+        }
+
         @media (max-width: 1100px) {
             body {
                 min-height: 0;
@@ -247,69 +271,47 @@
 <body>
     <header>
         <div>
-            <h1>Delta X Blockly → GScript</h1>
-            <p>Kéo thả khối lệnh để tạo chương trình robot và xuất ra GScript tức thì.</p>
+            <h1>Delta X Blockly -> GScript</h1>
         </div>
-        <p>Ngôn ngữ: GScript · Thư viện: Blockly 10.x</p>
     </header>
 
     <main>
         <section class="workspace-wrapper">
             <div class="workspace-header">
-                <strong>Hướng dẫn nhanh</strong>
-                <ul>
-                    <li>Nhóm <em>Chương trình</em> chứa các lệnh G/M/SELECT chuẩn của Delta X.</li>
-                    <li>Dùng mục <em>Biến</em> và <em>Hàm</em> (custom menu) của Blockly để quản lý biến #, hàm FUNCTION.</li>
-                    <li>Nhấn “Sinh mã GScript” bất kỳ lúc nào để xem output và tải file .gcode.</li>
-                </ul>
             </div>
             <div id="blocklyDiv"></div>
         </section>
 
         <section class="output-panel">
             <div>
-                <strong>Xem trước mã GScript</strong>
-                <p style="margin: 4px 0 0; color: var(--muted); font-size: 0.85rem;">
-                    Mã được cập nhật tự động khi workspace thay đổi.
-                </p>
+                <strong>GScript</strong>
             </div>
             <textarea id="gscriptOutput" spellcheck="false" placeholder="G28&#10;G01 F1000&#10;..."></textarea>
             <div class="button-row">
-                <button class="primary" onclick="generateCode(true)">Sinh mã GScript</button>
                 <button onclick="copyCode()">Copy</button>
-                <button onclick="downloadCode()">Tải .gcode</button>
-                <button onclick="clearWorkspace()">Xoá workspace</button>
+                <button onclick="downloadCode()">Download .gcode</button>
+                <button onclick="clearWorkspace()">Clear workspace</button>
             </div>
-            <label class="auto-copy-toggle">
-                <input type="checkbox" id="autoCopyToggle">
-                <span>Tự copy vào clipboard khi nhấn “Sinh mã”</span>
-            </label>
             <p id="copyStatus" class="copy-status"></p>
             <div class="link-panel">
-                <div>
-                    <strong>Gửi trực tiếp sang Delta X</strong>
-                    <p style="margin: 4px 0 0; color: var(--muted); font-size: 0.8rem;">
-                        Delta X phải bật WebServer (port 5000). Blockly sẽ POST GScript vào Script Editor.
-                    </p>
-                </div>
                 <div class="server-inputs">
                     <label class="server-field">
-                        Máy chủ
+                        Host
                         <input type="text" id="deltaHost" placeholder="127.0.0.1">
                     </label>
                     <label class="server-field" style="max-width: 120px;">
                         Port
-                        <input type="number" id="deltaPort" placeholder="5000" min="1" max="65535">
+                        <input type="number" id="deltaPort" placeholder="5050" min="1" max="65535">
                     </label>
                 </div>
-                <button class="primary send-btn" onclick="sendToDeltaX()">Gửi sang Script Editor</button>
+                <button class="primary send-btn" onclick="sendToDeltaX()">Send to GScript Editor</button>
                 <p id="deltaStatus" class="copy-status"></p>
             </div>
         </section>
     </main>
 
     <xml id="toolbox" style="display:none">
-        <category name="Chương trình" colour="210">
+        <category name="Program" colour="210">
             <block type="gscript_comment"></block>
             <block type="gscript_label">
                 <field name="LINE">10</field>
@@ -324,7 +326,7 @@
             <block type="gscript_raw_gcode"></block>
         </category>
 
-        <category name="Chuyển động" colour="20">
+        <category name="Motion" colour="20">
             <block type="gscript_motion_linear">
                 <field name="CMD">G01</field>
             </block>
@@ -332,7 +334,7 @@
             <block type="gscript_wait"></block>
         </category>
 
-        <category name="Thiết bị & Macro" colour="60">
+        <category name="Devices & Macros" colour="60">
             <block type="gscript_device_command">
                 <field name="COMMAND">M03</field>
             </block>
@@ -351,7 +353,7 @@
             <block type="logic_boolean"></block>
         </category>
 
-        <category name="Vòng lặp" colour="140">
+        <category name="Loops" colour="140">
             <block type="controls_for">
                 <field name="VAR" id="for_var">i</field>
                 <value name="FROM">
@@ -379,18 +381,18 @@
             </block>
         </category>
 
-        <category name="Toán học" colour="230">
+        <category name="Math" colour="230">
             <block type="math_number"></block>
             <block type="math_arithmetic"></block>
         </category>
 
-        <category name="Chuỗi" colour="160">
+        <category name="Text" colour="160">
             <block type="text"></block>
             <block type="text_join"></block>
         </category>
 
-        <category name="Biến" custom="VARIABLE"></category>
-        <category name="Hàm" custom="PROCEDURE"></category>
+        <category name="Variables" custom="VARIABLE"></category>
+        <category name="Functions" custom="PROCEDURE"></category>
     </xml>
 
     <script>
@@ -513,7 +515,7 @@
         Blockly.defineBlocksWithJsonArray([
             {
                 "type": "gscript_comment",
-                "message0": "chú thích %1",
+                "message0": "comment %1",
                 "args0": [
                     {
                         "type": "field_input",
@@ -524,12 +526,12 @@
                 "previousStatement": null,
                 "nextStatement": null,
                 "colour": 210,
-                "tooltip": "Sinh ra dòng chú thích bắt đầu bằng dấu ;",
+                "tooltip": "Insert a comment line that starts with ';'",
                 "helpUrl": ""
             },
             {
                 "type": "gscript_label",
-                "message0": "nhãn dòng N%1",
+                "message0": "label line N%1",
                 "args0": [
                     {
                         "type": "field_number",
@@ -541,7 +543,7 @@
                 "previousStatement": null,
                 "nextStatement": null,
                 "colour": 210,
-                "tooltip": "Đặt nhãn dòng để dùng cùng GOTO.",
+                "tooltip": "Define a line label that can be targeted by GOTO",
                 "helpUrl": ""
             },
             {
@@ -558,7 +560,7 @@
                 "previousStatement": null,
                 "nextStatement": null,
                 "colour": 210,
-                "tooltip": "Nhảy tới nhãn dòng đã định nghĩa.",
+                "tooltip": "Jump to a specific label",
                 "helpUrl": ""
             },
             {
@@ -585,12 +587,12 @@
                 "previousStatement": null,
                 "nextStatement": null,
                 "colour": 210,
-                "tooltip": "Chọn thiết bị mặc định để nhận lệnh tiếp theo.",
+                "tooltip": "Choose which device receives the following commands",
                 "helpUrl": ""
             },
             {
                 "type": "gscript_raw_gcode",
-                "message0": "GScript tuỳ ý %1",
+                "message0": "Custom GScript %1",
                 "args0": [
                     {
                         "type": "field_multilinetext",
@@ -601,7 +603,7 @@
                 "previousStatement": null,
                 "nextStatement": null,
                 "colour": 210,
-                "tooltip": "Chèn trực tiếp đoạn GScript/G-code tuỳ biến.",
+                "tooltip": "Insert arbitrary GScript/G-code lines",
                 "helpUrl": ""
             },
             {
@@ -612,8 +614,8 @@
                         "type": "field_dropdown",
                         "name": "CMD",
                         "options": [
-                            ["G01 (dịch chuyển tuyến tính)", "G01"],
-                            ["G00 (chạy nhanh)", "G00"]
+                            ["G01 (linear move)", "G01"],
+                            ["G00 (rapid move)", "G00"]
                         ]
                     },
                     {
@@ -641,12 +643,12 @@
                 "previousStatement": null,
                 "nextStatement": null,
                 "colour": 20,
-                "tooltip": "Sinh lệnh G00/G01 với toạ độ và tốc độ tuỳ chọn.",
+                "tooltip": "Emit a G00/G01 move with optional coordinates and feed override",
                 "helpUrl": ""
             },
             {
                 "type": "gscript_move_point",
-                "message0": "MOVE tới %1 tốc độ (tuỳ chọn) %2",
+                "message0": "MOVE to %1 optional feed %2",
                 "args0": [
                     {
                         "type": "input_value",
@@ -661,7 +663,7 @@
                 "previousStatement": null,
                 "nextStatement": null,
                 "colour": 20,
-                "tooltip": "Di chuyển đến biến vector 3D (#point) với MOVE.",
+                "tooltip": "Move to a 3D variable (created in the Variable Manager)",
                 "helpUrl": ""
             },
             {
@@ -677,23 +679,23 @@
                 "previousStatement": null,
                 "nextStatement": null,
                 "colour": 20,
-                "tooltip": "Tạm dừng trong một khoảng thời gian (P millisecond).",
+                "tooltip": "Pause for a duration in milliseconds",
                 "helpUrl": ""
             },
             {
                 "type": "gscript_device_command",
-                "message0": "M-code %1 tham số %2",
+                "message0": "M-code %1 params %2",
                 "args0": [
                     {
                         "type": "field_dropdown",
                         "name": "COMMAND",
                         "options": [
-                            ["M03 (bật gripper)", "M03"],
-                            ["M04 (ngược chiều)", "M04"],
-                            ["M05 (tắt gripper)", "M05"],
-                            ["M360 (chọn end effector)", "M360"],
-                            ["M311 (tốc độ conveyor)", "M311"],
-                            ["Tuỳ chỉnh", "CUSTOM"]
+                            ["M03 (enable gripper)", "M03"],
+                            ["M04 (reverse gripper)", "M04"],
+                            ["M05 (disable gripper)", "M05"],
+                            ["M360 (select end effector)", "M360"],
+                            ["M311 (conveyor speed)", "M311"],
+                            ["Custom", "CUSTOM"]
                         ]
                     },
                     {
@@ -705,12 +707,12 @@
                 "previousStatement": null,
                 "nextStatement": null,
                 "colour": 60,
-                "tooltip": "Gửi lệnh M-code tới thiết bị với tham số tuỳ chọn (ví dụ S100, E1...).",
+                "tooltip": "Send an M-code with optional parameters (S100, E1, ...)",
                 "helpUrl": ""
             },
             {
                 "type": "gscript_macro_call",
-                "message0": "Macro camera/vision %1 thêm %2",
+                "message0": "Vision macro %1 extra %2",
                 "args0": [
                     {
                         "type": "field_dropdown",
@@ -732,7 +734,7 @@
                 "previousStatement": null,
                 "nextStatement": null,
                 "colour": 60,
-                "tooltip": "Sinh M98 Pxxx tương ứng (ví dụ M98 PcaptureCamera).",
+                "tooltip": "Emit M98 Px macros (e.g. M98 PcaptureCamera)",
                 "helpUrl": ""
             }
         ]);
@@ -1065,7 +1067,6 @@
         });
 
         const outputField = document.getElementById('gscriptOutput');
-        const autoCopyToggle = document.getElementById('autoCopyToggle');
         const copyStatusEl = document.getElementById('copyStatus');
         const deltaHostInput = document.getElementById('deltaHost');
         const deltaPortInput = document.getElementById('deltaPort');
@@ -1098,26 +1099,26 @@
         function copyToClipboard(code, { reason = 'manual', silent = false } = {}) {
             if (!code || !code.trim()) {
                 if (!silent) {
-                    setCopyStatus('Không có mã để copy.', 'warn');
+                    setCopyStatus('Nothing to copy.', 'warn');
                 }
                 return;
             }
             if (!(navigator.clipboard && navigator.clipboard.writeText)) {
                 if (!silent) {
-                    setCopyStatus('Trình duyệt không cho phép truy cập clipboard, hãy copy thủ công.', 'error');
+                    setCopyStatus('Clipboard access is blocked, please copy manually.', 'error');
                 }
                 return;
             }
             navigator.clipboard.writeText(code).then(() => {
                 if (!silent) {
                     const message = reason === 'auto'
-                        ? 'Đã tự động copy mã vào clipboard.'
-                        : 'Đã copy mã vào clipboard.';
+                        ? 'Code copied to clipboard automatically.'
+                        : 'Code copied to clipboard.';
                     setCopyStatus(message, 'success');
                 }
             }).catch((err) => {
                 if (!silent) {
-                    setCopyStatus(`Copy thất bại: ${err.message}`, 'error');
+                    setCopyStatus(`Copy failed: ${err.message}`, 'error');
                 }
             });
         }
@@ -1133,13 +1134,13 @@
                 ? outputField.value
                 : generateCode();
             if (!code.trim()) {
-                setDeltaStatus('Không có mã để gửi.', 'warn');
+                setDeltaStatus('Nothing to send.', 'warn');
                 return;
             }
             const host = (deltaHostInput?.value || defaultDeltaHost || '127.0.0.1').trim() || '127.0.0.1';
             const port = (deltaPortInput?.value || defaultDeltaPort || '5050').trim() || defaultDeltaPort || '5050';
             const targetUrl = `http://${host}:${port}`;
-            setDeltaStatus(`Đang gửi tới ${host}:${port} ...`, 'info');
+            setDeltaStatus(`Sending to ${host}:${port} ...`, 'info');
             try {
                 const response = await fetch(targetUrl, {
                     method: 'POST',
@@ -1149,9 +1150,9 @@
                 if (!response.ok) {
                     throw new Error(`HTTP ${response.status}`);
                 }
-                setDeltaStatus('Đã gửi script tới Delta X.', 'success');
+                setDeltaStatus('Script sent to Delta X.', 'success');
             } catch (error) {
-                setDeltaStatus(`Không gửi được: ${error.message}`, 'error');
+                setDeltaStatus(`Failed to send: ${error.message}`, 'error');
             }
         }
 
@@ -1161,21 +1162,10 @@
             });
         }
 
-        autoCopyToggle?.addEventListener('change', () => {
-            if (autoCopyToggle.checked) {
-                setCopyStatus('Đang bật chế độ tự copy khi nhấn “Sinh mã”.', 'info');
-            } else {
-                setCopyStatus('Đã tắt chế độ tự copy.', 'info');
-            }
-        });
-
-        function generateCode(shouldAttemptCopy = false) {
+        function generateCode() {
             const code = GScriptGenerator.workspaceToCode(workspace);
             if (outputField) {
                 outputField.value = code;
-            }
-            if (shouldAttemptCopy && autoCopyToggle?.checked) {
-                copyToClipboard(code, { reason: 'auto' });
             }
             return code;
         }
