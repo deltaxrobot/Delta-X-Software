@@ -48,6 +48,7 @@ SocketConnectionManager::SocketConnectionManager(const QString &address, int por
     }
 
     indexPath = resolveIndexFile(indexPath);
+    latestGscript.clear();
 
     Server = new QTcpServer(this);
     Connect(hostAddress, port);
@@ -212,6 +213,22 @@ void SocketConnectionManager::newWebClientConnected()
             int queryIndex = targetPath.indexOf('?');
             if (queryIndex != -1) {
                 targetPath = targetPath.left(queryIndex);
+            }
+
+            if (targetPath == "/gscript") {
+                QString script = latestGscript;
+                QByteArray body = script.toUtf8();
+                QString response = QString("HTTP/1.1 200 OK\r\n"
+                                           "Content-Type: text/plain; charset=utf-8\r\n"
+                                           "Access-Control-Allow-Origin: *\r\n"
+                                           "Content-Length: %1\r\n"
+                                           "\r\n").arg(body.size());
+                socket->write(response.toUtf8());
+                socket->write(body);
+                socket->flush();
+                socket->waitForBytesWritten();
+                socket->disconnectFromHost();
+                return;
             }
 
             QString fileToServe = indexPath;
@@ -454,6 +471,11 @@ void SocketConnectionManager::sendImageToExternalScript(cv::Mat input)
 
 }
 
+void SocketConnectionManager::updateLatestGscript(const QString& script)
+{
+    latestGscript = script;
+}
+
 bool SocketConnectionManager::extractAssignment(const QString &data, QString &varName, QString &value) const
 {
     int index = data.indexOf('=');
@@ -496,6 +518,7 @@ void SocketConnectionManager::handleAssignment(const QString &varName, QString v
     }
     else if (varName.contains("GScriptEditor"))
     {
+        latestGscript = processedValue;
         emit gscriptEditorReceived(processedValue);
     }
     else if (varName.contains("GScript"))

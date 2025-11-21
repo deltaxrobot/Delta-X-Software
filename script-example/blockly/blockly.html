@@ -205,12 +205,6 @@
             font-size: 0.95rem;
         }
 
-        .send-btn {
-            width: 100%;
-            justify-content: center;
-            text-align: center;
-        }
-
         .blocklyToolboxDiv {
             background: #0b1220 !important;
             color: #f8fafc !important;
@@ -294,6 +288,12 @@
             </div>
             <p id="copyStatus" class="copy-status"></p>
             <div class="link-panel">
+                <div>
+                    <strong>Auto-sync</strong>
+                    <p style="margin: 4px 0 0; color: var(--muted); font-size: 0.8rem;">
+                        GScript is pushed to Delta X automatically whenever you change blocks. Adjust the target host/port if needed.
+                    </p>
+                </div>
                 <div class="server-inputs">
                     <label class="server-field">
                         Host
@@ -304,8 +304,7 @@
                         <input type="number" id="deltaPort" placeholder="5050" min="1" max="65535">
                     </label>
                 </div>
-                <button class="primary send-btn" onclick="sendToDeltaX()">Send to GScript Editor</button>
-                <p id="deltaStatus" class="copy-status"></p>
+                <p id="deltaStatus" class="copy-status info">Auto-sync ready.</p>
             </div>
         </section>
     </main>
@@ -1082,13 +1081,30 @@
                 : '127.0.0.1');
         const defaultDeltaPort = (queryPort && queryPort.length) ? queryPort : '5050';
         const autoSendOnLoad = autoSendParam === '1' || autoSendParam === 'true';
+        const SYNC_DELAY = 800;
+        const POLL_INTERVAL = 3000;
+        let syncTimeout = null;
+        let lastSentCode = '';
+        let pendingLocalChange = false;
+        let initialSyncComplete = false;
+        let fetchInProgress = false;
 
         if (deltaHostInput) {
             deltaHostInput.value = defaultDeltaHost;
+            deltaHostInput.addEventListener('change', () => {
+                pendingLocalChange = false;
+                fetchLatestFromDelta(true);
+            });
         }
         if (deltaPortInput) {
             deltaPortInput.value = defaultDeltaPort;
+            deltaPortInput.addEventListener('change', () => {
+                pendingLocalChange = false;
+                fetchLatestFromDelta(true);
+            });
         }
+
+        setDeltaStatus('Auto-sync ready.', 'info');
 
         function setCopyStatus(message = '', state = '') {
             if (!copyStatusEl) return;
@@ -1129,18 +1145,24 @@
             deltaStatusEl.className = `copy-status${state ? ' ' + state : ''}`;
         }
 
-        async function sendToDeltaX() {
+        async function sendToDeltaX(isAuto = false) {
             const code = (outputField?.value && outputField.value.length)
                 ? outputField.value
                 : generateCode();
             if (!code.trim()) {
-                setDeltaStatus('Nothing to send.', 'warn');
+                if (!isAuto) {
+                    setDeltaStatus('Nothing to send.', 'warn');
+                }
                 return;
             }
             const host = (deltaHostInput?.value || defaultDeltaHost || '127.0.0.1').trim() || '127.0.0.1';
             const port = (deltaPortInput?.value || defaultDeltaPort || '5050').trim() || defaultDeltaPort || '5050';
             const targetUrl = `http://${host}:${port}`;
-            setDeltaStatus(`Sending to ${host}:${port} ...`, 'info');
+            if (isAuto) {
+                setDeltaStatus(`Syncing to ${host}:${port} ...`, 'info');
+            } else {
+                setDeltaStatus(`Sending to ${host}:${port} ...`, 'info');
+            }
             try {
                 const response = await fetch(targetUrl, {
                     method: 'POST',
@@ -1150,16 +1172,63 @@
                 if (!response.ok) {
                     throw new Error(`HTTP ${response.status}`);
                 }
-                setDeltaStatus('Script sent to Delta X.', 'success');
+                pendingLocalChange = false;
+                lastSentCode = code;
+                setDeltaStatus(isAuto ? 'Delta X is up to date.' : 'Script sent to Delta X.', 'success');
             } catch (error) {
-                setDeltaStatus(`Failed to send: ${error.message}`, 'error');
+                setDeltaStatus(`Failed to sync: ${error.message}`, 'error');
             }
         }
 
-        if (autoSendOnLoad) {
-            window.addEventListener('load', () => {
-                sendToDeltaX();
-            });
+        function scheduleSync() {
+            pendingLocalChange = true;
+            if (!initialSyncComplete) {
+                return;
+            }
+            if (syncTimeout) {
+                clearTimeout(syncTimeout);
+            }
+            syncTimeout = setTimeout(() => {
+                const currentCode = outputField?.value || '';
+                if (currentCode.trim() && currentCode !== lastSentCode) {
+                    sendToDeltaX(true);
+                }
+            }, SYNC_DELAY);
+        }
+
+        async function fetchLatestFromDelta(force = false) {
+            if (fetchInProgress) return;
+            if (pendingLocalChange && !force) return;
+            fetchInProgress = true;
+            try {
+                const host = (deltaHostInput?.value || defaultDeltaHost || '127.0.0.1').trim() || '127.0.0.1';
+                const port = (deltaPortInput?.value || defaultDeltaPort || '5050').trim() || defaultDeltaPort || '5050';
+                const targetUrl = `http://${host}:${port}/gscript?ts=${Date.now()}`;
+                const response = await fetch(targetUrl);
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                const remoteCode = await response.text();
+                if (remoteCode !== undefined && remoteCode !== null) {
+                    const existing = outputField?.value || '';
+                    if (remoteCode !== existing) {
+                        if (outputField) {
+                            outputField.value = remoteCode;
+                        }
+                        setDeltaStatus('Updated from Delta X.', 'success');
+                    } else if (force) {
+                        setDeltaStatus('Delta X is up to date.', 'info');
+                    }
+                    lastSentCode = remoteCode;
+                    pendingLocalChange = false;
+                }
+            } catch (error) {
+                if (force || !pendingLocalChange) {
+                    setDeltaStatus(`Pull failed: ${error.message}`, 'error');
+                }
+            } finally {
+                fetchInProgress = false;
+            }
         }
 
         function generateCode() {
@@ -1167,6 +1236,7 @@
             if (outputField) {
                 outputField.value = code;
             }
+            scheduleSync();
             return code;
         }
 
@@ -1197,6 +1267,18 @@
                 console.error(error);
             }
         });
+
+        (async () => {
+            await fetchLatestFromDelta(true);
+            initialSyncComplete = true;
+            if (autoSendOnLoad) {
+                scheduleSync();
+            }
+        })();
+
+        setInterval(() => {
+            fetchLatestFromDelta();
+        }, POLL_INTERVAL);
 
         generateCode();
     </script>

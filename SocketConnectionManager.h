@@ -28,6 +28,7 @@ public:
     int imageSendingMethod = 0;
     QString indexPath = "Jogging.html";
     quint16 blocklyPort = 0;
+    QString latestGscript;
 
     ~SocketConnectionManager();
     bool IsServerOpen();
@@ -56,6 +57,7 @@ public slots:
     void sendImageToImageClients(const QImage& image);
     void sendImageToImageClients(cv::Mat);
     void sendImageToExternalScript(cv::Mat input);
+    void updateLatestGscript(const QString& script);
 
 signals:
     void variableChanged(const QString& varName, const QVariant& value);

@@ -3724,6 +3724,11 @@ void RobotWindow::OnEditorTextChanged()
         IsGcodeEditorTextChanged = true;
 
     ChangedCounter++;
+
+    if (ConnectionManager)
+    {
+        ConnectionManager->updateLatestGscript(ui->pteGcodeArea->toPlainText());
+    }
 }
 
 void RobotWindow::changeFontSize(int index)

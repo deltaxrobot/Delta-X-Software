@@ -1,4 +1,8 @@
-﻿#ifndef GCODE_SCRIPT
+﻿/*
+* GScript - new script language for robot automation
+*/
+
+#ifndef GCODE_SCRIPT
 #define GCODE_SCRIPT
 
 #include <QObject>
