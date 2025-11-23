@@ -77,7 +77,7 @@ public:
     QMatrix GetMatrix();
     cv::Mat GetOutputImage();
     cv::Mat GetInputImage();
-    Object& GetInputObject();
+    Object GetInputObject() const;
     QPointF *GetInputPointPointer();
 
     QList<QMetaObject::Connection> InputConnections;

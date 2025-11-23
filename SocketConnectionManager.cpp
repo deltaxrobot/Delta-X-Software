@@ -323,8 +323,6 @@ void SocketConnectionManager::readFromClient() {
     QTcpSocket* senderSocket = static_cast<QTcpSocket*>(sender());
     QByteArray data = senderSocket->readAll();
 
-    qDebug() << "Received data from client: " << data;
-
     if (data.startsWith("ExternalScript\n")) {
         senderSocket->setObjectName("ImageClient");
         return;
@@ -335,6 +333,42 @@ void SocketConnectionManager::readFromClient() {
         QString clientName = QString(data).split("=")[1];
         senderSocket->setObjectName(clientName);
         return;
+    }
+
+    // Nếu là JSON objects: { "type": "objects", "list": [ {..}, ... ] }
+    if (data.trimmed().startsWith("{")) {
+        QJsonParseError err;
+        QJsonDocument doc = QJsonDocument::fromJson(data, &err);
+        if (err.error == QJsonParseError::NoError && doc.isObject()) {
+            QJsonObject obj = doc.object();
+            if (obj.value("type").toString() == "objects" && obj.value("list").isArray()) {
+                QJsonArray arr = obj.value("list").toArray();
+                QList<QStringList> objects;
+                QStringList blobStrings;
+                for (const QJsonValue& v : arr) {
+                    if (!v.isObject()) continue;
+                    QJsonObject o = v.toObject();
+                    int type = o.value("type").toInt();
+                    double x = o.value("x").toDouble();
+                    double y = o.value("y").toDouble();
+                    double w = o.value("w").toDouble();
+                    double h = o.value("h").toDouble();
+                    double angle = o.value("angle").toDouble();
+                    QStringList fields;
+                    fields << QString::number(type)
+                           << QString::number(x)
+                           << QString::number(y)
+                           << QString::number(w)
+                           << QString::number(h)
+                           << QString::number(angle);
+                    objects.append(fields);
+                    blobStrings << fields.join(",");
+                }
+                emit objectUpdated("#Objects", objects);
+                emit blobUpdated(blobStrings);
+                return;
+            }
+        }
     }
 
     // Tìm vị trí của dòng trống giữa headers và body
@@ -413,7 +447,7 @@ void SocketConnectionManager::sendImageToImageClients(cv::Mat mat)
     {
         sendImageToExternalScript(mat);
     }
-    else
+    else if (imageSendingMethod == 1)
     {
         std::vector<uchar> buf;
         cv::imencode(".png", mat, buf);
@@ -426,6 +460,10 @@ void SocketConnectionManager::sendImageToImageClients(cv::Mat mat)
                 client->flush();
             }
         }
+    }
+    else if (imageSendingMethod == 2)
+    {
+        sendImageAsJson(mat);
     }
 }
 
@@ -474,6 +512,40 @@ void SocketConnectionManager::sendImageToExternalScript(cv::Mat input)
 void SocketConnectionManager::updateLatestGscript(const QString& script)
 {
     latestGscript = script;
+}
+
+void SocketConnectionManager::sendImageAsJson(cv::Mat mat)
+{
+    if (mat.empty())
+        return;
+
+    std::vector<uchar> buf;
+    if (!cv::imencode(".jpg", mat, buf))
+        return;
+
+    QByteArray binary(reinterpret_cast<const char*>(buf.data()), static_cast<int>(buf.size()));
+    QByteArray b64 = binary.toBase64();
+
+    QJsonObject obj;
+    obj.insert("type", "image");
+    obj.insert("encoding", "jpg");
+    obj.insert("width", mat.cols);
+    obj.insert("height", mat.rows);
+    obj.insert("channels", mat.channels());
+    obj.insert("payload", QString::fromLatin1(b64));
+
+    QJsonDocument doc(obj);
+    QByteArray json = doc.toJson(QJsonDocument::Compact);
+
+    for (QTcpSocket* client : clients) {
+        if (!client || !client->isOpen())
+            continue;
+        if (client->objectName().contains("ImageClient")) {
+            client->write("ImageJson\n");
+            client->write(json);
+            client->flush();
+        }
+    }
 }
 
 bool SocketConnectionManager::extractAssignment(const QString &data, QString &varName, QString &value) const

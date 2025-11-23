@@ -10,6 +10,7 @@ Tracking::Tracking(QObject *parent)
     connect(&VirEncoder, &VirtualEncoder::positionUpdated, this, &Tracking::OnReceivceEncoderPosition);
 
     connect(this, &Tracking::UpdateVar, &VariableManager::instance(), &VariableManager::updateVar);
+    lastDetectionTimer.invalidate();
 }
 
 void Tracking::UpdateTrackedObjectsPosition(float moved)
@@ -151,6 +152,7 @@ void Tracking::UpdateTrackedObjects(QVector<ObjectInfo> detectedObjects, QString
         QMutexLocker locker(&dataMutex);
         DetectedObjects = detectedObjects;
     }
+    lastDetectionTimer.restart();
     
     SaveDetectPosition();
 //    qDebug() << "Detect: " << QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss.zzz");
@@ -159,68 +161,78 @@ void Tracking::UpdateTrackedObjects(QVector<ObjectInfo> detectedObjects, QString
 
 void Tracking::UpdateTrackedObjectOffsets(QVector3D offset)
 {
-    // Create working copy to avoid race conditions
+    // Create working copy of detections to process outside mutex
     QVector<ObjectInfo> workingDetectedObjects;
-    QVector<ObjectInfo> workingTrackedObjects;
-    
     {
         QMutexLocker locker(&dataMutex);
         workingDetectedObjects = DetectedObjects;
-        workingTrackedObjects = TrackedObjects;
     }
 
-    for (auto& detected : workingDetectedObjects) {
-        bool isSame = false;
-
+    for (auto detected : workingDetectedObjects) {
         detected.center += offset;
         detected.offset = offset;
 
-        for (auto& tracked : workingTrackedObjects) {
-            isSame = isSameObject(detected, tracked);
+        bool updatedExisting = false;
 
-            if (isSame == true)
-                break;
-        }
-
-        if (isSame == true)
-            continue;
-
-        // This is a new object - Thread-safe append
+        // Try to update an existing track in-place
         {
             QMutexLocker locker(&dataMutex);
-            TrackedObjects.append(ObjectInfo(nextID, detected.type, detected.center, detected.width, detected.height, detected.angle));
-            ++nextID;
+            for (auto &tracked : TrackedObjects) {
+                if (isSameObject(detected, tracked)) {
+                    tracked.center = detected.center;
+                    tracked.width = detected.width;
+                    tracked.height = detected.height;
+                    tracked.angle = detected.angle;
+                    tracked.offset = detected.offset;
+                    tracked.isPicked = detected.isPicked;
+                    updatedExisting = true;
+                    break;
+                }
+            }
         }
 
-        //TODO: tim cach cap nhat vao bien nhung van dam bao toc do
-//        VariableManager::instance().updateVar((ListName + ".%1.X").arg(nextID), detected.center.x());
-//        VariableManager::instance().updateVar((ListName + ".%1.Y").arg(nextID), detected.center.y());
-//        VariableManager::instance().updateVar((ListName + ".%1.Z").arg(nextID), detected.center.z());
-//        VariableManager::instance().updateVar((ListName + ".%1.W").arg(nextID), detected.width);
-//        VariableManager::instance().updateVar((ListName + ".%1.L").arg(nextID), detected.height);
-//        VariableManager::instance().updateVar((ListName + ".%1.A").arg(nextID), detected.angle);
-//        VariableManager::instance().updateVar((ListName + ".%1.IsPicked").arg(nextID), detected.isPicked);
-//        VariableManager::instance().updateVar((ListName + ".%1.Offset").arg(nextID), detected.offset);
+        if (updatedExisting)
+            continue;
 
-//        emit UpdateVar((ListName + ".%1.X").arg(nextID), detected.center.x());
-//        emit UpdateVar((ListName + ".%1.Y").arg(nextID), detected.center.y());
-//        emit UpdateVar((ListName + ".%1.Z").arg(nextID), detected.center.z());
-//        emit UpdateVar((ListName + ".%1.W").arg(nextID), detected.width);
-//        emit UpdateVar((ListName + ".%1.L").arg(nextID), detected.height);
-//        emit UpdateVar((ListName + ".%1.A").arg(nextID), detected.angle);
-//        emit UpdateVar((ListName + ".%1.IsPicked").arg(nextID), detected.isPicked);
-//        emit UpdateVar((ListName + ".%1.Offset").arg(nextID), detected.offset);
+        // New track
+        {
+            QMutexLocker locker(&dataMutex);
+            TrackedObjects.append(ObjectInfo(nextID,
+                                             detected.type,
+                                             detected.center,
+                                             detected.width,
+                                             detected.height,
+                                             detected.angle,
+                                             detected.isPicked,
+                                             detected.offset));
+            ++nextID;
+        }
+    }
 
-        // Defer Count update to reflect actual size after appends
+    // Publish tracked objects to VariableManager for external consumers
+    QVector<ObjectInfo> trackedSnapshot;
+    {
+        QMutexLocker locker(&dataMutex);
+        trackedSnapshot = TrackedObjects;
+    }
 
+    for (int i = 0; i < trackedSnapshot.size(); ++i)
+    {
+        const auto& obj = trackedSnapshot.at(i);
+        QString name = ListName + '.' + QString::number(i);
+        VariableManager::instance().updateVar(name + ".X", obj.center.x());
+        VariableManager::instance().updateVar(name + ".Y", obj.center.y());
+        VariableManager::instance().updateVar(name + ".Z", obj.center.z());
+        VariableManager::instance().updateVar(name + ".W", obj.width);
+        VariableManager::instance().updateVar(name + ".L", obj.height);
+        VariableManager::instance().updateVar(name + ".A", obj.angle);
+        VariableManager::instance().updateVar(name + ".UID", obj.uid);
+        VariableManager::instance().updateVar(name + ".IsPicked", obj.isPicked);
+        VariableManager::instance().updateVar(name + ".Offset", obj.offset);
     }
 
     // Update list count to actual tracked size
-    int trackedCount = 0;
-    {
-        QMutexLocker locker(&dataMutex);
-        trackedCount = TrackedObjects.size();
-    }
+    int trackedCount = trackedSnapshot.size();
     VariableManager::instance().updateVar(ListName + ".Count", trackedCount);
 
 }
@@ -270,6 +282,12 @@ void Tracking::GetObjectsInArea(QString inAreaListName, float min, float max, bo
 }
 
 void Tracking::updatePositions(double displacement) {
+    // Avoid drifting objects when no fresh detections
+    if (lastDetectionTimer.isValid() && lastDetectionTimer.elapsed() > detectionStaleTimeoutMs)
+    {
+        return;
+    }
+
     QVector3D effectiveDisplacement = calculateMoved(displacement);
 
     if (IsUpateTestPoint)

@@ -8,10 +8,20 @@ ImageProcessing::ImageProcessing()
 
 ImageProcessing::~ImageProcessing()
 {
-    foreach(TaskNode* node, taskNodeList.values())
+    // Stop task threads cleanly
+    for (QThread* thread : taskThreads)
     {
-        delete node;
+        if (!thread)
+            continue;
+        thread->quit();
+        thread->wait(1000);
     }
+
+    // Delete owned nodes and threads
+    qDeleteAll(taskNodeList);
+    qDeleteAll(taskThreads);
+    taskNodeList.clear();
+    taskThreads.clear();
 }
 
 TaskNode *ImageProcessing::CreateTaskNode(QString name, int type, QString previousTasks)
@@ -22,8 +32,8 @@ TaskNode *ImageProcessing::CreateTaskNode(QString name, int type, QString previo
 
     taskNode->moveToThread(taskThread);
 
-    connect(taskThread, &QThread::finished, taskNode, &QObject::deleteLater);
-    connect(taskThread, &QThread::finished, taskThread, &QObject::deleteLater);
+    // Track threads for explicit cleanup
+    taskThreads.append(taskThread);
 
     taskThread->start();
 

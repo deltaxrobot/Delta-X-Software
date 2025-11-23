@@ -39,6 +39,7 @@
 #include <QTreeWidgetItem>
 #include <QListWidget>
 #include <QVector3D>
+#include <QHash>
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 #include <QtSvgWidgets/QSvgWidget>
 #else
@@ -86,6 +87,7 @@
 #include "ObjectInfoModel.h"
 #include "ImageProcessing.h"
 #include "GcodeScript.h"
+#include "ImagePipelineController.h"
 
 // ========== DEFINES AND CONSTANTS ==========
 #define DEFAULT_BAUDRATE 115200
@@ -610,6 +612,8 @@ private:
     
     // Controllers
     PointToolController* m_pointToolController;
+    ImagePipelineController* m_imagePipelineController = nullptr;
+    QHash<QString, QMatrix> m_mappingMatrices;
     
 #ifdef Q_OS_WIN
     #ifdef JOY_STICK
@@ -693,6 +697,7 @@ public slots:
     void updateZPlaneUI();             // Update UI elements
     void setupZPlaneVisualization();   // Setup Z-plane visualization widget
     void onAutoCalibrate();            // Auto-calibrate workspace boundaries
+    void onMappingMatrixUpdated(QMatrix matrix); // Cache mapping matrix for current detecting
 
 private slots:
     void processBatchUpdates();

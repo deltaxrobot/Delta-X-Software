@@ -118,10 +118,8 @@ cv::Mat TaskNode::GetInputImage()
     return inputMat.clone();
 }
 
-Object& TaskNode::GetInputObject()
+Object TaskNode::GetInputObject() const
 {
-    // Note: Returning reference to member variable is inherently unsafe in multithreaded context
-    // Consider returning a copy instead if thread safety is critical for this method
     QMutexLocker locker(&dataMutex);
     return inputObject;
 }
@@ -818,6 +816,12 @@ void TaskNode::doMappingMatrixWork()
     float xx2 = inputPoly[3].x();
     float yy2 = inputPoly[3].y();
 
+    qDebug() << "[MappingMatrixNode] input points:"
+             << "imgP1" << inputPoly[0]
+             << "imgP2" << inputPoly[1]
+             << "realP1" << inputPoly[2]
+             << "realP2" << inputPoly[3];
+
     if (xx1 == 0 && yy1 == 0 && xx2 == 0 && yy2 == 0)
         return;
 
@@ -871,7 +875,8 @@ void TaskNode::doMappingMatrixWork()
                                 ScaleRotateMatrix.m11(), ScaleRotateMatrix.m12(),
                                 ScaleRotateMatrix.m21(), ScaleRotateMatrix.m22(),
                                 dx, dy);
-    QString prefix = ProjectName + "." + "tracking0" + ".";
+
+    // Debug: log computed mapping matrix values
     QString matrixString = QString("%1,%2,%3,%4,%5,%6")
                                    .arg(outputMatrix.m11())
                                    .arg(outputMatrix.m12())
@@ -879,9 +884,21 @@ void TaskNode::doMappingMatrixWork()
                                    .arg(outputMatrix.m22())
                                    .arg(outputMatrix.dx())
                                    .arg(outputMatrix.dy());
-    VariableManager::instance().updateVar(prefix + "ImageToRealWorldMatrixString", matrixString);
-    VariableManager::instance().updateVar(prefix + "ImageToRealWorldMatrix", outputMatrix);
+    qDebug() << "[MappingMatrixNode]" << ProjectName << "matrix =" << matrixString;
 
+    // Verify mapping on the two calibration points
+    QPointF imgP1(x1, y1);
+    QPointF imgP2(x2, y2);
+    QPointF realP1(xx1, yy1);
+    QPointF realP2(xx2, yy2);
+
+    QPointF mappedP1 = outputMatrix.map(imgP1);
+    QPointF mappedP2 = outputMatrix.map(imgP2);
+
+    qDebug() << "[MappingMatrixNode] P1 mapped =" << mappedP1 << "target =" << realP1
+             << "error =" << (mappedP1 - realP1);
+    qDebug() << "[MappingMatrixNode] P2 mapped =" << mappedP2 << "target =" << realP2
+             << "error =" << (mappedP2 - realP2);
     emit HadOutput(outputMatrix);
 }
 
@@ -1085,14 +1102,29 @@ void TaskNode::doFindCirclesWork()
 
 void TaskNode::doVisibleObjectsWork()
 {
-    outputObjects.clear();
-    QVector<ObjectInfo*> infoObjects;
-    for (int i = 0; i < inputObjects.count(); i++)
+    QVector<Object> workingObjects;
+    QMatrix workingMatrix;
+
     {
-        inputObjects[i].Map(inputMatrix);
-        outputObjects.append(inputObjects[i]);
+        QMutexLocker locker(&dataMutex);
+        workingObjects = inputObjects;
+        workingMatrix = inputMatrix;
     }
-    emit HadOutput(outputObjects);
+
+    QVector<Object> mappedObjects;
+    mappedObjects.reserve(workingObjects.size());
+    for (auto obj : workingObjects)
+    {
+        obj.Map(workingMatrix);
+        mappedObjects.append(obj);
+    }
+
+    {
+        QMutexLocker locker(&dataMutex);
+        outputObjects = mappedObjects;
+    }
+
+    emit HadOutput(mappedObjects);
     emit Done(defaultThreadId);
 }
 

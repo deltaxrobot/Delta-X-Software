@@ -55,6 +55,7 @@ signals:
 private:
     QMap<QString, TaskNode*> taskNodeList;
     QVector<ObjectInfo> objectInfos;
+    QVector<QThread*> taskThreads;
 
     cv::Size resizeValue;
     cv::Mat perspectiveMatrix;

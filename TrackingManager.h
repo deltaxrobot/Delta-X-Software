@@ -74,6 +74,8 @@ public:
     QString ListName = "#Objects";
 
     VirtualEncoder VirEncoder;
+    QElapsedTimer lastDetectionTimer;
+    int detectionStaleTimeoutMs = 2000;
 
     float lastEncoderPositionAtCapture = 0.0;
     float lastEncoderPositionAtMapping = 0.0;

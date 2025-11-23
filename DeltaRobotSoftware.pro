@@ -86,6 +86,7 @@ SOURCES += main.cpp\
     ObjectInfo.cpp \
     ObjectVariableTable.cpp \
     Parameter.cpp \
+    ImagePipelineController.cpp \
     PointTool.cpp \
     PointCalculator.cpp \
     PointToolController.cpp \
@@ -144,6 +145,7 @@ HEADERS  += \
     MovementTimeCalculator.h \
     Object.h \
     ImageProcessing.h \
+    ImagePipelineController.h \
     ObjectInfo.h \
     ObjectInfoModel.h \
     ObjectVariableTable.h \

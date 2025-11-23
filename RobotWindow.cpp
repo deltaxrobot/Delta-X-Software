@@ -512,7 +512,19 @@ void RobotWindow::InitObjectDetectingModule()
     ImageProcessingInstance->GetNode("WarpImageNode")->IsPass = true;
     ImageProcessingInstance->GetNode("CropImageNode")->IsPass = true;
 
-    connect(CameraInstance, SIGNAL(GotImage(cv::Mat)), ImageProcessingInstance->GetNode("GetImageNode"), SLOT(Input(cv::Mat)));
+    // Initialize pipeline controller after nodes are ready
+    m_imagePipelineController = new ImagePipelineController(ImageProcessingInstance, this);
+    connect(m_imagePipelineController, &ImagePipelineController::mappingMatrixUpdated,
+            this, &RobotWindow::onMappingMatrixUpdated);
+    connect(CameraInstance, &Camera::GotImage,
+            m_imagePipelineController, &ImagePipelineController::updateFrameSize);
+
+    if (m_imagePipelineController) {
+        connect(CameraInstance, &Camera::GotImage,
+                m_imagePipelineController, &ImagePipelineController::inputImage);
+    } else {
+        connect(CameraInstance, SIGNAL(GotImage(cv::Mat)), ImageProcessingInstance->GetNode("GetImageNode"), SLOT(Input(cv::Mat)));
+    }
     connect(CameraInstance, SIGNAL(GotImage(cv::Mat)), this, SLOT(updateCameraInfoDisplay()));
 //    connect(CameraInstance, SIGNAL(GotImage(cv::Mat)), ImageProcessingInstance, SLOT(GotImage(cv::Mat)));
 //    connect(this, SIGNAL(GotResizePara(cv::Size)), ImageProcessingInstance, SLOT(GotResizeValue(cv::Size)));
@@ -625,14 +637,19 @@ void RobotWindow::InitObjectDetectingModule()
     connect(ui->leRealityPoint2X, &QLineEdit::returnPressed, this, &RobotWindow::UpdateRealPositionOfCalibPoints);
     connect(ui->leRealityPoint2Y, &QLineEdit::returnPressed, this, &RobotWindow::UpdateRealPositionOfCalibPoints);
 
-    connect(ui->leIoUThreshold, &QLineEdit::returnPressed,
-    [=] (){
-        TrackingManagerInstance->Trackings.at(0)->IoUThreshold = ui->leIoUThreshold->text().toFloat();
-    });
-    connect(ui->leDistanceThreshold, &QLineEdit::returnPressed,
-    [=] (){
-        TrackingManagerInstance->Trackings.at(0)->DistanceThreshold = ui->leDistanceThreshold->text().toFloat();
-    });
+    auto applyThresholdsToCurrentTracking = [=]()
+    {
+        if (!TrackingManagerInstance)
+            return;
+        int index = ui->cbSelectedTracking->currentIndex();
+        if (index < 0 || index >= TrackingManagerInstance->Trackings.count())
+            return;
+        TrackingManagerInstance->Trackings.at(index)->IoUThreshold = ui->leIoUThreshold->text().toFloat();
+        TrackingManagerInstance->Trackings.at(index)->DistanceThreshold = ui->leDistanceThreshold->text().toFloat();
+    };
+
+    connect(ui->leIoUThreshold, &QLineEdit::returnPressed, this, [=](){ applyThresholdsToCurrentTracking(); });
+    connect(ui->leDistanceThreshold, &QLineEdit::returnPressed, this, [=](){ applyThresholdsToCurrentTracking(); });
 
     connect(ui->pbZoomInCameraView, &QPushButton::clicked, [=](bool checked)
     {
@@ -699,23 +716,35 @@ void RobotWindow::InitObjectDetectingModule()
 
     connect(ui->lwImageList, &QListWidget::itemClicked, this, &RobotWindow::onImageItemClicked);
 
-    connect(this, SIGNAL(GotResizePara(cv::Size)), ImageProcessingInstance->GetNode("ResizeImageNode"), SLOT(Input(cv::Size)));
-    connect(ImageProcessingInstance->GetNode("FindChessboardNode"), SIGNAL(HadOutput(QPolygonF)), ui->gvImageViewer, SLOT(SetQuadrangle(QPolygonF)));
-    connect(this, SIGNAL(GotChessboardSize(cv::Size)), ImageProcessingInstance->GetNode("FindChessboardNode"), SLOT(Input(cv::Size)));
-    connect(this, SIGNAL(GotResizeImage(cv::Mat)), ImageProcessingInstance->GetNode("FindChessboardNode"), SLOT(Input(cv::Mat)));
-    connect(this, SIGNAL(GotCalibPoints(QPolygonF)), ImageProcessingInstance->GetNode("MappingMatrixNode"), SLOT(Input(QPolygonF)));
-
-    connect(ui->gvImageViewer, SIGNAL(changedQuadrangle(QPolygonF)), ImageProcessingInstance->GetNode("GetPerspectiveNode"), SLOT(Input(QPolygonF)));
-
-    connect(ui->gvImageViewer, SIGNAL(changedArea(QRectF)), ImageProcessingInstance->GetNode("CropImageNode"), SLOT(Input(QRectF)));
+    if (m_imagePipelineController) {
+        connect(this, SIGNAL(GotResizePara(cv::Size)), m_imagePipelineController, SLOT(inputResize(cv::Size)));
+        connect(this, SIGNAL(GotCalibPoints(QPolygonF)), m_imagePipelineController, SLOT(inputMappingPolygon(QPolygonF)));
+        connect(ui->gvImageViewer, SIGNAL(changedQuadrangle(QPolygonF)), m_imagePipelineController, SLOT(inputPerspectiveQuadrangle(QPolygonF)));
+        connect(ui->gvImageViewer, SIGNAL(changedArea(QRectF)), m_imagePipelineController, SLOT(inputCropArea(QRectF)));
+    }
+    if (m_imagePipelineController) {
+        connect(ImageProcessingInstance->GetNode("FindChessboardNode"), SIGNAL(HadOutput(QPolygonF)), ui->gvImageViewer, SLOT(SetQuadrangle(QPolygonF)));
+        connect(this, SIGNAL(GotChessboardSize(cv::Size)), m_imagePipelineController, SLOT(inputChessboardSize(cv::Size)));
+        connect(this, SIGNAL(GotResizeImage(cv::Mat)), m_imagePipelineController, SLOT(inputChessboardQuadrangle(cv::Mat)));
+    } else {
+        connect(ImageProcessingInstance->GetNode("FindChessboardNode"), SIGNAL(HadOutput(QPolygonF)), ui->gvImageViewer, SLOT(SetQuadrangle(QPolygonF)));
+        connect(this, SIGNAL(GotChessboardSize(cv::Size)), m_imagePipelineController, SLOT(inputChessboardSize(cv::Size)));
+        connect(this, SIGNAL(GotResizeImage(cv::Mat)), m_imagePipelineController, SLOT(inputChessboardQuadrangle(cv::Mat)));
+    }
 
     connect(ui->leImageWidth, &QLineEdit::returnPressed,
     [=] (){
         int newW = ui->leImageWidth->text().toInt();
 
-        QSize imageSize = ImageProcessingInstance->GetNode("GetImageNode")->GetImageSize();
+       int imgW = 0;
+       int imgH = 0;
+       if (m_imagePipelineController) {
+           FrameSnapshot snap = m_imagePipelineController->currentFrameSnapshot();
+           imgW = snap.width;
+           imgH = snap.height;
+       }
 
-        int newH = ImageTool::Map(newW, imageSize.width(), imageSize.height());
+        int newH = ImageTool::Map(newW, imgW, imgH);
 
         ui->leImageHeight->setText(QString::number(newH));
 
@@ -728,9 +757,15 @@ void RobotWindow::InitObjectDetectingModule()
     [=] (){
         int newH = ui->leImageHeight->text().toInt();
 
-        QSize imageSize = ImageProcessingInstance->GetNode("GetImageNode")->GetImageSize();
+       int imgW = 0;
+       int imgH = 0;
+       if (m_imagePipelineController) {
+           FrameSnapshot snap = m_imagePipelineController->currentFrameSnapshot();
+           imgW = snap.width;
+           imgH = snap.height;
+       }
 
-        int newW = ImageTool::Map(newH, imageSize.height(), imageSize.width());
+        int newW = ImageTool::Map(newH, imgH, imgW);
 
         ui->leImageWidth->setText(QString::number(newW));
 
@@ -741,32 +776,32 @@ void RobotWindow::InitObjectDetectingModule()
 
     connect(ui->tbAutoResizeImage, &QToolButton::toggled, [=](bool checked)
     {
-        TaskNode* resizeImageNode = ImageProcessingInstance->GetNode("ResizeImageNode");
-
-        if (checked)
-        {
-            resizeImageNode->IsPass = false;
-        }
-        else
-        {
-            resizeImageNode->IsPass = true;
+        if (m_imagePipelineController) {
+            m_imagePipelineController->configureAutoResize(checked);
+        } else {
+            TaskNode* resizeImageNode = ImageProcessingInstance->GetNode("ResizeImageNode");
+            if (resizeImageNode) {
+                resizeImageNode->IsPass = !checked;
+            }
         }
     });
         
-    connect(ImageProcessingInstance->GetNode("DisplayImageNode"), SIGNAL(HadOutput(QPixmap)), ui->gvImageViewer, SLOT(SetImage(QPixmap)));
+    // Image display handled by pipeline controller
+    if (m_imagePipelineController) {
+        m_imagePipelineController->setDisplayTarget(ui->gvImageViewer);
+    } else {
+        connect(ImageProcessingInstance->GetNode("DisplayImageNode"), SIGNAL(HadOutput(QPixmap)), ui->gvImageViewer, SLOT(SetImage(QPixmap)));
+    }
 
-    connect(ParameterPanel, SIGNAL(ColorFilterValueChanged(QList<int>)), ImageProcessingInstance->GetNode("ColorFilterNode"), SLOT(Input(QList<int>)));
-    connect(ParameterPanel, SIGNAL(BlurSizeChanged(int)), ImageProcessingInstance->GetNode("ColorFilterNode"), SLOT(Input(int)));
-    connect(ParameterPanel, SIGNAL(ColorInverted(bool)), ImageProcessingInstance->GetNode("ColorFilterNode"), SLOT(Input(bool)));
+    connect(ParameterPanel, SIGNAL(ColorFilterValueChanged(QList<int>)), m_imagePipelineController, SLOT(inputColorFilterValues(QList<int>)));
+    connect(ParameterPanel, SIGNAL(BlurSizeChanged(int)), m_imagePipelineController, SLOT(inputColorFilterBlur(int)));
+    connect(ParameterPanel, SIGNAL(ColorInverted(bool)), m_imagePipelineController, SLOT(inputColorFilterInvert(bool)));
 
-    connect(this, SIGNAL(GotObjects(QVector<Object>)), ImageProcessingInstance->GetNode("VisibleObjectsNode"), SLOT(Input(QVector<Object>)));
-
-    connect(this, SIGNAL(GotMappingMatrix(QMatrix)), ImageProcessingInstance->GetNode("VisibleObjectsNode"), SLOT(Input(QMatrix)));
-    connect(this, SIGNAL(GotOjectFilterInfo(Object)), ImageProcessingInstance->GetNode("GetObjectsNode"), SLOT(Input(Object)));
-
-    connect(ImageProcessingInstance->GetNode("GetObjectsNode"), SIGNAL(HadOutput(QList<QPolygonF>)), ui->gvImageViewer, SLOT(DrawObjects(QList<QPolygonF>)));
-    connect(ImageProcessingInstance->GetNode("FindCirclesNode"), SIGNAL(HadOutput(QList<QPolygonF>)), ui->gvImageViewer, SLOT(DrawObjects(QList<QPolygonF>)));
-    connect(ImageProcessingInstance->GetNode("VisibleObjectsNode"), SIGNAL(HadOutput(QVector<Object>)), ImageProcessingInstance, SLOT(GotVisibleObjects(QVector<Object>)));
+    connect(this, SIGNAL(GotObjects(QVector<Object>)), m_imagePipelineController, SLOT(inputVisibleObjects(QVector<Object>)));
+    connect(this, SIGNAL(GotMappingMatrix(QMatrix)), m_imagePipelineController, SLOT(inputMappingPolygon(QPolygonF)));
+    connect(this, SIGNAL(GotOjectFilterInfo(Object)), m_imagePipelineController, SLOT(inputObjectFilter(Object)));
+    m_imagePipelineController->setOverlayTarget(ui->gvImageViewer);
+    // VisibleObjects forwarding handled by controller via pipeline
 
     connect(ui->leDetectingObjectListName, &QLineEdit::returnPressed, this, [=]()
     {
@@ -1901,6 +1936,9 @@ void RobotWindow::AddTrackingThread()
     trackingThread->start();
 
     tracking->ID = TrackingManagerInstance->Trackings.count();
+    // Initialize thresholds from current UI values
+    tracking->IoUThreshold = ui->leIoUThreshold->text().toFloat();
+    tracking->DistanceThreshold = ui->leDistanceThreshold->text().toFloat();
     TrackingManagerInstance->Trackings.append(tracking);
 
     if (tracking->ID > 0)
@@ -1909,6 +1947,16 @@ void RobotWindow::AddTrackingThread()
     }
 
     VariableManager::instance().ObjectInfos.insert(tracking->ListName.mid(1), &tracking->TrackedObjects);
+
+    // Keep detection list name in sync with the currently created tracking
+    if (ui && ui->leDetectingObjectListName)
+    {
+        ui->leDetectingObjectListName->setText(tracking->ListName);
+    }
+    if (ImageProcessingInstance)
+    {
+        ImageProcessingInstance->ObjectsName = tracking->ListName;
+    }
 }
 
 void RobotWindow::LoadTrackingThread()
@@ -2234,6 +2282,17 @@ void RobotWindow::LoadObjectDetectorSetting()
     // }
     ui->cbImageSource->setCurrentText(VariableManager::instance().getVar(prefix + "ImageSource", ui->cbImageSource->currentText()).toString());
 
+    // Push thresholds from UI to current tracking instance
+    if (TrackingManagerInstance)
+    {
+        int idx = ui->cbSelectedTracking->currentIndex();
+        if (idx >= 0 && idx < TrackingManagerInstance->Trackings.count())
+        {
+            TrackingManagerInstance->Trackings.at(idx)->IoUThreshold = ui->leIoUThreshold->text().toFloat();
+            TrackingManagerInstance->Trackings.at(idx)->DistanceThreshold = ui->leDistanceThreshold->text().toFloat();
+        }
+    }
+
 //    ui->leEdgeThreshold->setText(setting->value("EdgeThreshold", ui->leEdgeThreshold->text()).toString());
 //    ui->leCenterThreshold->setText(setting->value("CenterThreshold", ui->leCenterThreshold->text()).toString());
 //    ui->leMinRadius->setText(setting->value("MinRadius", ui->leMinRadius->text()).toString());
@@ -2371,7 +2430,7 @@ void RobotWindow::SaveObjectDetectorSetting(QSettings *setting)
     setting->setValue("ResizeWidth", ui->leImageWidth->text());
     setting->setValue("ResizeHeight", ui->leImageHeight->text());
 
-    Object& obj = ImageProcessingInstance->GetNode("GetObjectsNode")->GetInputObject();
+    Object obj = ImageProcessingInstance->GetNode("GetObjectsNode")->GetInputObject();
 
     setting->setValue("ObjectWidth", obj.Width.Image);
     setting->setValue("ObjectLength", obj.Length.Image);
@@ -4759,8 +4818,38 @@ void RobotWindow::StopCapture()
 
 void RobotWindow::OpenColorFilterWindow()
 {
-    ParameterPanel->SetImage(ImageProcessingInstance->GetNode("ColorFilterNode")->GetInputImage());
+    if (m_imagePipelineController) {
+        connect(m_imagePipelineController, &ImagePipelineController::colorFilterInputReady,
+                ParameterPanel, &FilterWindow::SetImage,
+                Qt::UniqueConnection);
+        m_imagePipelineController->requestColorFilterInput();
+    } else {
+        ParameterPanel->SetImage(ImageProcessingInstance->GetNode("ColorFilterNode")->GetInputImage());
+    }
     ParameterPanel->show();
+}
+
+void RobotWindow::onMappingMatrixUpdated(QMatrix matrix)
+{
+    QString detectingKey = ui->cbSelectedDetecting->currentText();
+    if (detectingKey.isEmpty())
+        detectingKey = "tracking0";
+
+    m_mappingMatrices[detectingKey] = matrix;
+
+    // Persist to VariableManager for external uses
+    QString prefix = ProjectName + "." + detectingKey + ".";
+    VariableManager::instance().updateVar(prefix + "ImageToRealWorldMatrix", matrix);
+    VariableManager::instance().updateVar(prefix + "ImageToRealWorldMatrixString",
+                                          QString("%1,%2,%3,%4,%5,%6")
+                                          .arg(matrix.m11())
+                                          .arg(matrix.m12())
+                                          .arg(matrix.m21())
+                                          .arg(matrix.m22())
+                                          .arg(matrix.dx())
+                                          .arg(matrix.dy()));
+
+    SoftwareLog(QString("Mapping matrix updated for %1").arg(detectingKey));
 }
 
 void RobotWindow::SelectObjectDetectingAlgorithm(int algorithm)
@@ -4770,32 +4859,29 @@ void RobotWindow::SelectObjectDetectingAlgorithm(int algorithm)
     ui->fCirclePanel->setHidden(true);
 
     QString text = ui->cbDetectingAlgorithm->itemText(algorithm);
-    
-    // Disconnect all previous connections
-    disconnect(ImageProcessingInstance->GetNode("CropImageNode"), SIGNAL(HadOutput(cv::Mat)), ConnectionManager, SLOT(sendImageToImageClients(cv::Mat)));
-    disconnect(ImageProcessingInstance->GetNode("ColorFilterNode"), SIGNAL(HadOutput(cv::Mat)), ImageProcessingInstance->GetNode("GetObjectsNode"), SLOT(Input(cv::Mat)));
-    disconnect(ImageProcessingInstance->GetNode("ColorFilterNode"), SIGNAL(HadOutput(cv::Mat)), ImageProcessingInstance->GetNode("FindCirclesNode"), SLOT(Input(cv::Mat)));
 
     QString prefix = ProjectName + "." + ui->cbSelectedDetecting->currentText() + ".";
     VariableManager::instance().updateVar(prefix + "DetectAlgorithm",text);
 
+    if (m_imagePipelineController)
+    {
+        m_imagePipelineController->configureAlgorithm(text, ConnectionManager);
+    }
+
     if (text == "Find Blobs")
     {
         ui->fBlobPanel->setHidden(false);
-        connect(ImageProcessingInstance->GetNode("ColorFilterNode"), SIGNAL(HadOutput(cv::Mat)), ImageProcessingInstance->GetNode("GetObjectsNode"), SLOT(Input(cv::Mat)));
     }
     if (text == "Find Circles")
     {
         ui->fCirclePanel->setHidden(false);
-        connect(ImageProcessingInstance->GetNode("ColorFilterNode"), SIGNAL(HadOutput(cv::Mat)), ImageProcessingInstance->GetNode("FindCirclesNode"), SLOT(Input(cv::Mat)));
-        
+
         // Apply current circle parameters
         UpdateCircleParameters();
     }
     if (text == "External Script")
     {
         ui->fExternalScriptPanel->setHidden(false);
-        connect(ImageProcessingInstance->GetNode("CropImageNode"), SIGNAL(HadOutput(cv::Mat)), ConnectionManager, SLOT(sendImageToImageClients(cv::Mat)));
     }
 }
 
@@ -4980,7 +5066,23 @@ void RobotWindow::GetMappingPointFromImage(QPointF point)
 {
     point.setY(0 - point.y());
 
-    QMatrix matrix = ImageProcessingInstance->GetNode("VisibleObjectsNode")->GetMatrix();
+    QString detectingKey = ui->cbSelectedDetecting->currentText();
+    QMatrix matrix = m_mappingMatrices.value(detectingKey, QMatrix());
+    if ((matrix.isIdentity() || qFuzzyIsNull(matrix.determinant())) && m_imagePipelineController) {
+        matrix = m_imagePipelineController->currentMappingMatrix();
+    }
+
+    // Fallback: load from VariableManager if runtime cache is empty
+    if (matrix.isIdentity() || qFuzzyIsNull(matrix.determinant())) {
+        QString prefix = ProjectName + "." + detectingKey + ".";
+        matrix = VariableManager::instance().getVar(prefix + "ImageToRealWorldMatrix", QMatrix()).value<QMatrix>();
+    }
+
+    // If we do not have a valid mapping matrix, warn and stop
+    if (matrix.isIdentity() || qFuzzyIsNull(matrix.determinant())) {
+        SoftwareLog("Mapping matrix is not available for this detecting. Please calculate calibration matrix first.");
+        return;
+    }
     QPointF realPoint = matrix.map(point);
 
     //L�m tr�n realPoint d?n 2 ch? s? th?p ph�n
@@ -5126,29 +5228,47 @@ void RobotWindow::EditImage(bool isWarp, bool isCropTool)
     TaskNode* cropImageNode = ImageProcessingInstance->GetNode("CropImageNode");
     TaskNode* warpImageNode = ImageProcessingInstance->GetNode("WarpImageNode");
 
+    if (m_imagePipelineController)
+    {
+        m_imagePipelineController->configureWarpCrop(isWarp, isCropTool);
+    }
+    else
+    {
+        // Fallback to previous behaviour if controller is unavailable
+        if (isWarp == false && isCropTool == true)
+        {
+            if (warpImageNode) warpImageNode->IsPass = true;
+            if (cropImageNode) cropImageNode->IsPass = false;
+        }
+        else if (isWarp == true && isCropTool == true)
+        {
+            if (warpImageNode) warpImageNode->IsPass = false;
+            if (cropImageNode) cropImageNode->IsPass = false;
+        }
+        else if (isWarp == false && isCropTool == false)
+        {
+            if (warpImageNode) warpImageNode->IsPass = true;
+            if (cropImageNode) cropImageNode->IsPass = true;
+        }
+        else if (isWarp == true && isCropTool == false)
+        {
+            if (warpImageNode) warpImageNode->IsPass = false;
+            if (cropImageNode) cropImageNode->IsPass = true;
+        }
+    }
+
     if (isWarp == false && isCropTool == true)
     {
-        warpImageNode->IsPass = true;
-        cropImageNode->IsPass = false;
-
         ui->gvImageViewer->SelectNoTool();
-
         ui->gvImageViewer->TurnOnObjects(true);
     }
     else if (isWarp == true && isCropTool == true)
     {
-        warpImageNode->IsPass = false;
-        cropImageNode->IsPass = false;
-
         ui->gvImageViewer->SelectNoTool();
-
         ui->gvImageViewer->TurnOnObjects(true);
     }
     else if (isWarp == false && isCropTool == false)
     {
-        warpImageNode->IsPass = true;
-        cropImageNode->IsPass = true;
-
         UnselectToolButtons();
         ui->gvImageViewer->SelectAreaTool();
 
@@ -5156,9 +5276,6 @@ void RobotWindow::EditImage(bool isWarp, bool isCropTool)
     }
     else if (isWarp == true && isCropTool == false)
     {
-        warpImageNode->IsPass = false;
-        cropImageNode->IsPass = true;
-
         UnselectToolButtons();
         ui->gvImageViewer->SelectAreaTool();
 
@@ -5624,6 +5741,27 @@ void RobotWindow::ChangeSelectedTracking(int id)
     }
 
     LoadTrackingThread();
+
+    // Reflect selected tracking thresholds to UI
+    if (TrackingManagerInstance && id >= 0 && id < TrackingManagerInstance->Trackings.count())
+    {
+        ui->leIoUThreshold->setText(QString::number(TrackingManagerInstance->Trackings.at(id)->IoUThreshold));
+        ui->leDistanceThreshold->setText(QString::number(TrackingManagerInstance->Trackings.at(id)->DistanceThreshold));
+    }
+
+    // Sync detecting list name and image processing target with selected tracking
+    if (TrackingManagerInstance && id >= 0 && id < TrackingManagerInstance->Trackings.count())
+    {
+        const QString listName = TrackingManagerInstance->Trackings.at(id)->ListName;
+        if (ui && ui->leDetectingObjectListName)
+        {
+            ui->leDetectingObjectListName->setText(listName);
+        }
+        if (ImageProcessingInstance)
+        {
+            ImageProcessingInstance->ObjectsName = listName;
+        }
+    }
 }
 
 void RobotWindow::ChangeSelectedTrackingEncoder(int id)

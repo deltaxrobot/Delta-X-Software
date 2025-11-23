@@ -706,7 +706,7 @@ QToolBox QScrollArea&gt;QWidget&gt;QWidget
               <enum>QTabWidget::TabShape::Rounded</enum>
              </property>
              <property name="currentIndex">
-              <number>0</number>
+              <number>1</number>
              </property>
              <property name="usesScrollButtons">
               <bool>true</bool>
@@ -1660,7 +1660,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
                               <rect>
                                <x>0</x>
                                <y>0</y>
-                               <width>510</width>
+                               <width>526</width>
                                <height>213</height>
                               </rect>
                              </property>
@@ -1837,8 +1837,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
                   <property name="geometry">
                    <rect>
                     <x>0</x>
-                    <y>0</y>
-                    <width>812</width>
+                    <y>-239</y>
+                    <width>835</width>
                     <height>4000</height>
                    </rect>
                   </property>
@@ -4873,12 +4873,17 @@ QFrame
                                   </property>
                                   <item>
                                    <property name="text">
-                                    <string>v1</string>
+                                    <string>Raw (external script)</string>
                                    </property>
                                   </item>
                                   <item>
                                    <property name="text">
-                                    <string>v2</string>
+                                    <string>PNG (ImageClient)</string>
+                                   </property>
+                                  </item>
+                                  <item>
+                                   <property name="text">
+                                    <string>JSON+Base64</string>
                                    </property>
                                   </item>
                                  </widget>
@@ -6068,7 +6073,7 @@ QPushButton:pressed { background-color: #D84315; }</string>
                    <rect>
                     <x>0</x>
                     <y>0</y>
-                    <width>772</width>
+                    <width>795</width>
                     <height>3000</height>
                    </rect>
                   </property>
@@ -8723,7 +8728,7 @@ QHeaderView::section {
                    <rect>
                     <x>0</x>
                     <y>0</y>
-                    <width>772</width>
+                    <width>795</width>
                     <height>1800</height>
                    </rect>
                   </property>
@@ -10702,7 +10707,7 @@ QLabel
                    <rect>
                     <x>0</x>
                     <y>0</y>
-                    <width>878</width>
+                    <width>855</width>
                     <height>2958</height>
                    </rect>
                   </property>

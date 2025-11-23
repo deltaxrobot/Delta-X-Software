@@ -23,9 +23,10 @@ inline void setMatrix2D(QMatrix &matrix,
                         qreal dx, qreal dy)
 {
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-    matrix.setMatrix(m11, m12, dx,
-                     m21, m22, dy,
-                     0.0, 0.0, 1.0);
+    // In QTransform (Qt6), translation terms are m31/m32, not m13/m23
+    matrix.setMatrix(m11, m12, 0.0,
+                     m21, m22, 0.0,
+                     dx,  dy,  1.0);
 #else
     matrix.setMatrix(m11, m12, m21, m22, dx, dy);
 #endif

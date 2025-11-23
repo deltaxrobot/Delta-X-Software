@@ -10,6 +10,10 @@
 #include <VariableManager.h>
 #include <opencv2/opencv.hpp>
 #include <QFile>
+#include <QJsonObject>
+#include <QJsonDocument>
+#include <QByteArray>
+#include <QJsonArray>
 
 class SocketConnectionManager : public QObject
 {
@@ -66,6 +70,9 @@ signals:
     void gcodeReceived(QString gcode);
     void gscriptEditorReceived(QString gcode);
     void eventReceived(QString type, QString name, QString action);
+
+private:
+    void sendImageAsJson(cv::Mat mat);
 };
 
 #endif // SOCKETCONNECTIONMANAGER_H
