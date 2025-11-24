@@ -246,6 +246,12 @@
             background: #10182a !important;
         }
 
+        .run-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
         @media (max-width: 1100px) {
             body {
                 min-height: 0;
@@ -304,7 +310,11 @@
                         <input type="number" id="deltaPort" placeholder="5050" min="1" max="65535">
                     </label>
                 </div>
+                <div class="run-row">
+                    <button class="primary" style="flex:1" onclick="triggerRun()">Run GScript</button>
+                </div>
                 <p id="deltaStatus" class="copy-status info">Auto-sync ready.</p>
+                <p id="runStatus" class="copy-status"></p>
             </div>
         </section>
     </main>
@@ -1070,6 +1080,7 @@
         const deltaHostInput = document.getElementById('deltaHost');
         const deltaPortInput = document.getElementById('deltaPort');
         const deltaStatusEl = document.getElementById('deltaStatus');
+        const runStatusEl = document.getElementById('runStatus');
         const urlParams = new URLSearchParams(window.location.search || '');
         const queryHost = urlParams.get('host');
         const queryPort = urlParams.get('port');
@@ -1145,6 +1156,12 @@
             deltaStatusEl.className = `copy-status${state ? ' ' + state : ''}`;
         }
 
+        function setRunStatus(message = '', state = '') {
+            if (!runStatusEl) return;
+            runStatusEl.textContent = message;
+            runStatusEl.className = `copy-status${state ? ' ' + state : ''}`;
+        }
+
         async function sendToDeltaX(isAuto = false) {
             const code = (outputField?.value && outputField.value.length)
                 ? outputField.value
@@ -1177,6 +1194,26 @@
                 setDeltaStatus(isAuto ? 'Delta X is up to date.' : 'Script sent to Delta X.', 'success');
             } catch (error) {
                 setDeltaStatus(`Failed to sync: ${error.message}`, 'error');
+            }
+        }
+
+        async function triggerRun() {
+            const host = (deltaHostInput?.value || defaultDeltaHost || '127.0.0.1').trim() || '127.0.0.1';
+            const port = (deltaPortInput?.value || defaultDeltaPort || '5050').trim() || defaultDeltaPort || '5050';
+            const targetUrl = `http://${host}:${port}`;
+            setRunStatus(`Running via ${host}:${port} ...`, 'info');
+            try {
+                const response = await fetch(targetUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: 'Event=QPushButton,pbExecuteGcodes,click'
+                });
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                setRunStatus('Run command sent.', 'success');
+            } catch (error) {
+                setRunStatus(`Run failed: ${error.message}`, 'error');
             }
         }
 
