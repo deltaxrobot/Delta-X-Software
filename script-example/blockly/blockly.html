@@ -180,6 +180,29 @@
             gap: 12px;
         }
 
+        .program-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding-top: 4px;
+        }
+
+        .program-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .program-row input,
+        .program-row select {
+            padding: 8px 12px;
+            border-radius: 10px;
+            border: 1px solid rgba(148, 163, 184, 0.3);
+            background: rgba(2, 6, 23, 0.8);
+            color: var(--text);
+            min-width: 140px;
+        }
+
         .server-inputs {
             display: flex;
             flex-wrap: wrap;
@@ -315,12 +338,25 @@
                 </div>
                 <p id="deltaStatus" class="copy-status info">Auto-sync ready.</p>
                 <p id="runStatus" class="copy-status"></p>
+                <div class="program-panel">
+                    <div class="program-row">
+                        <input type="text" id="programName" placeholder="Program name">
+                        <select id="programList"></select>
+                    </div>
+                    <div class="program-row">
+                        <button onclick="saveProgram()">Save program</button>
+                        <button onclick="loadSelectedProgram()">Load &amp; push</button>
+                        <button onclick="deleteSelectedProgram()">Delete</button>
+                    </div>
+                    <p id="programStatus" class="copy-status"></p>
+                </div>
             </div>
         </section>
     </main>
 
     <xml id="toolbox" style="display:none">
         <category name="Program" colour="210">
+            <block type="gscript_home"></block>
             <block type="gscript_comment"></block>
             <block type="gscript_label">
                 <field name="LINE">10</field>
@@ -522,6 +558,22 @@
         }
 
         Blockly.defineBlocksWithJsonArray([
+            {
+                "type": "gscript_home",
+                "message0": "home axes %1",
+                "args0": [
+                    {
+                        "type": "field_input",
+                        "name": "AXES",
+                        "text": "XYZ"
+                    }
+                ],
+                "previousStatement": null,
+                "nextStatement": null,
+                "colour": 210,
+                "tooltip": "Home selected axes (G28). Leave blank for all axes.",
+                "helpUrl": ""
+            },
             {
                 "type": "gscript_comment",
                 "message0": "comment %1",
@@ -1014,6 +1066,12 @@
             return `IF ${condition} THEN\n${this.INDENT}RETURN ${value}\nENDIF\n`;
         };
 
+        GScriptGenerator['gscript_home'] = function (block) {
+            const axes = (block.getFieldValue('AXES') || '').trim().toUpperCase();
+            const suffix = axes ? ` ${axes}` : '';
+            return `G28${suffix}\n`;
+        };
+
         const registeredGeneratorBlocks = [
             'gscript_comment',
             'gscript_label',
@@ -1085,6 +1143,9 @@
         const queryHost = urlParams.get('host');
         const queryPort = urlParams.get('port');
         const autoSendParam = urlParams.get('autosend');
+        const programNameInput = document.getElementById('programName');
+        const programList = document.getElementById('programList');
+        const programStatusEl = document.getElementById('programStatus');
         const defaultDeltaHost = (queryHost && queryHost.length)
             ? queryHost
             : ((window.location.hostname && window.location.hostname.length)
@@ -1094,11 +1155,13 @@
         const autoSendOnLoad = autoSendParam === '1' || autoSendParam === 'true';
         const SYNC_DELAY = 800;
         const POLL_INTERVAL = 3000;
+        const PROGRAM_STORAGE_KEY = 'deltaXBlocklyPrograms';
         let syncTimeout = null;
         let lastSentCode = '';
         let pendingLocalChange = false;
         let initialSyncComplete = false;
         let fetchInProgress = false;
+        let programStore = {};
 
         if (deltaHostInput) {
             deltaHostInput.value = defaultDeltaHost;
@@ -1160,6 +1223,157 @@
             if (!runStatusEl) return;
             runStatusEl.textContent = message;
             runStatusEl.className = `copy-status${state ? ' ' + state : ''}`;
+        }
+
+        function setProgramStatus(message = '', state = '') {
+            if (!programStatusEl) return;
+            programStatusEl.textContent = message;
+            programStatusEl.className = `copy-status${state ? ' ' + state : ''}`;
+        }
+
+        function workspaceToXmlText(ws) {
+            try {
+                if (Blockly.Xml && typeof Blockly.Xml.domToText === 'function' && typeof Blockly.Xml.workspaceToDom === 'function') {
+                    return Blockly.Xml.domToText(Blockly.Xml.workspaceToDom(ws));
+                }
+                if (Blockly.utils && Blockly.utils.xml && typeof Blockly.utils.xml.domToText === 'function' && typeof Blockly.utils.xml.workspaceToDom === 'function') {
+                    return Blockly.utils.xml.domToText(Blockly.utils.xml.workspaceToDom(ws));
+                }
+            } catch (e) {
+                console.error('workspaceToXmlText failed', e);
+            }
+            return '';
+        }
+
+        function xmlTextToWorkspace(xmlText, ws) {
+            if (!xmlText || !ws) return false;
+            try {
+                let dom = null;
+                if (Blockly.Xml && typeof Blockly.Xml.textToDom === 'function' && typeof Blockly.Xml.domToWorkspace === 'function') {
+                    dom = Blockly.Xml.textToDom(xmlText);
+                    Blockly.Xml.domToWorkspace(dom, ws);
+                    return true;
+                }
+                if (Blockly.utils && Blockly.utils.xml && typeof Blockly.utils.xml.textToDom === 'function') {
+                    dom = Blockly.utils.xml.textToDom(xmlText);
+                    if (Blockly.Xml && typeof Blockly.Xml.domToWorkspace === 'function') {
+                        Blockly.Xml.domToWorkspace(dom, ws);
+                        return true;
+                    }
+                }
+            } catch (e) {
+                console.error('xmlTextToWorkspace failed', e);
+                return false;
+            }
+            return false;
+        }
+
+        function loadProgramStore() {
+            try {
+                const raw = localStorage.getItem(PROGRAM_STORAGE_KEY);
+                if (!raw) return {};
+                const parsed = JSON.parse(raw);
+                return parsed && typeof parsed === 'object' ? parsed : {};
+            } catch (e) {
+                console.warn('Could not load program store', e);
+                return {};
+            }
+        }
+
+        function persistProgramStore() {
+            try {
+                localStorage.setItem(PROGRAM_STORAGE_KEY, JSON.stringify(programStore));
+            } catch (e) {
+                console.warn('Could not persist program store', e);
+            }
+        }
+
+        function refreshProgramList(selectedName = '') {
+            if (!programList) return;
+            const names = Object.keys(programStore || {}).sort();
+            programList.innerHTML = '';
+            const placeholder = document.createElement('option');
+            placeholder.value = '';
+            placeholder.textContent = names.length ? 'Select program' : 'No saved programs';
+            programList.appendChild(placeholder);
+            names.forEach((name) => {
+                const opt = document.createElement('option');
+                opt.value = name;
+                opt.textContent = name;
+                if (name === selectedName) {
+                    opt.selected = true;
+                }
+                programList.appendChild(opt);
+            });
+        }
+
+        function saveProgram() {
+            const name = (programNameInput?.value || programList?.value || '').trim();
+            if (!name) {
+                setProgramStatus('Enter a program name.', 'warn');
+                return;
+            }
+            try {
+                const xmlText = workspaceToXmlText(workspace);
+                if (!xmlText) {
+                    setProgramStatus('Cannot serialize workspace.', 'error');
+                    return;
+                }
+                const code = generateCode();
+                programStore[name] = {
+                    xml: xmlText,
+                    code,
+                    updatedAt: Date.now()
+                };
+                persistProgramStore();
+                refreshProgramList(name);
+                setProgramStatus(`Saved "${name}".`, 'success');
+            } catch (e) {
+                console.error(e);
+                setProgramStatus('Save failed.', 'error');
+            }
+        }
+
+        function loadProgramByName(name) {
+            if (!name || !programStore[name]) {
+                setProgramStatus('No program selected.', 'warn');
+                return;
+            }
+            try {
+                workspace.clear();
+                const ok = xmlTextToWorkspace(programStore[name].xml, workspace);
+                if (!ok) {
+                    setProgramStatus('Load failed (cannot parse XML).', 'error');
+                    return;
+                }
+                const code = generateCode();
+                if (outputField) {
+                    outputField.value = code;
+                }
+                setProgramStatus(`Loaded "${name}" and updated GScript.`, 'success');
+                // Push to Delta X right after load
+                sendToDeltaX(true);
+            } catch (e) {
+                console.error(e);
+                setProgramStatus('Load failed.', 'error');
+            }
+        }
+
+        function loadSelectedProgram() {
+            const name = programList?.value || '';
+            loadProgramByName(name);
+        }
+
+        function deleteSelectedProgram() {
+            const name = programList?.value || '';
+            if (!name || !programStore[name]) {
+                setProgramStatus('Select a program to delete.', 'warn');
+                return;
+            }
+            delete programStore[name];
+            persistProgramStore();
+            refreshProgramList();
+            setProgramStatus(`Deleted "${name}".`, 'info');
         }
 
         async function sendToDeltaX(isAuto = false) {
@@ -1316,6 +1530,18 @@
         setInterval(() => {
             fetchLatestFromDelta();
         }, POLL_INTERVAL);
+
+        // Initialize program store and UI
+        programStore = loadProgramStore();
+        refreshProgramList();
+        if (programList) {
+            programList.addEventListener('change', () => {
+                const selected = programList.value;
+                if (selected) {
+                    loadProgramByName(selected);
+                }
+            });
+        }
 
         generateCode();
     </script>
