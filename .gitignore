@@ -15,3 +15,4 @@ plugin/build-IndustrialCamera-Desktop_Qt_5_15_2_MSVC2015_64bit-Release/
 /installer
 /ui_*.h
 /.qtcreator/
+/build_cli_qt6_release
