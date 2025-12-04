@@ -6,8 +6,9 @@ Delta X Software is a comprehensive control and programming platform for Delta r
 
 ### Windows
 - Windows 10/11 64-bit
-- Visual Studio 2019 (MSVC v142) with Desktop development workload
-- Qt 5.15.2 for MSVC 2019 64-bit (`C:\Qt\5.15.2\msvc2019_64`). Qt 6.10+ kits (MSVC) are also supported—install the same add-on modules: Qt Serial Port, Qt Multimedia, Qt Svg, and Qt Svg Widgets.
+- Visual Studio 2022 (MSVC v143) **Desktop development with C++** workload (Build Tools 2022 also works)
+- Qt 6.10.1 for MSVC 2022 64-bit (`C:\Qt\6.10.1\msvc2022_64`) with modules: Qt Serial Port, Qt Multimedia, Qt Svg, Qt Svg Widgets.  
+  Qt 5.15.2 MSVC kits still work if you need legacy builds.
 - CMake 3.16+ (optional, for auxiliary tooling)
 
 ### macOS
@@ -31,18 +32,27 @@ git clone https://github.com/yourusername/Delta-X-Software.git
 cd Delta-X-Software
 ```
 
-## Build from Source (Windows)
+## Build from Source (Windows, CLI with Qt 6.10)
 
-1. Open *x64 Native Tools Command Prompt for VS 2019* (or launch from PowerShell via `vcvars64.bat`).
-2. Generate and build the release target with Qt qmake:
+1. Open *x64 Native Tools Command Prompt for VS 2022* (or call `vcvars64.bat` from PowerShell).
+2. Create a clean build folder and run qmake + nmake:
    ```cmd
-   cd "E:\Professional\Developer Role\Project Type\Work\Delta X Software\Delta-X-Software"
-   "C:\Qt\5.15.2\msvc2019_64\bin\qmake.exe" DeltaRobotSoftware.pro -spec win32-msvc CONFIG+=release
-   nmake release
+   cd E:\Working\Source\Delta-X-Software
+   rmdir /s /q build_cli_qt6_release 2>nul
+   mkdir build_cli_qt6_release
+   cd build_cli_qt6_release
+   "C:\Qt\6.10.1\msvc2022_64\bin\qmake.exe" ..\DeltaRobotSoftware.pro -spec win32-msvc CONFIG+=release
+   nmake
    ```
-3. The release binary is produced at `release\DeltaRobotSoftware.exe`.
+3. The release binary is at `build_cli_qt6_release\release\DeltaRobotSoftware.exe`.  
+   To run locally, ensure `C:\Qt\6.10.1\msvc2022_64\bin` and `3rd-party\opencv\build\x64\vc15\bin` are on `PATH`.
 
-> **Tip:** You can also build inside Qt Creator. Configure a kit that uses Qt 5.15.2 (MSVC) and the VS2019 compiler, then build the *Release* configuration.
+## Build with Qt Creator (Windows)
+
+1. Kit: select `Qt 6.10.1 (msvc2022_64)` and MSVC 2022 x64 compiler.  
+2. “Run qmake” (Reconfigure) after switching kits.  
+3. Build the *Release* configuration (Debug is possible but heavier on memory).  
+4. Output lives under the build directory Qt Creator creates (e.g. `build/Desktop_Qt_6_10_1_MSVC2022_64bit-Release/release/DeltaRobotSoftware.exe`).
 
 ## Build from Source (macOS)
 
@@ -62,13 +72,11 @@ cd Delta-X-Software
    macdeployqt release/DeltaRobotSoftware.app
    ```
 
-## Build with Qt 6 Kits
+## Build with Qt 6 Kits (general notes)
 
-The project now builds with Qt 6.10+ as well as Qt 5.15.2. To use a Qt 6 kit:
-
-1. Install Qt 6 with the **Qt Serial Port**, **Qt Multimedia**, **Qt Svg**, and **Qt Svg Widgets** components. (Qt 5 compatibility modules such as `Qt Core 5 Compatibility` are optional now that the remaining code paths use native Qt 6 APIs.)
-2. In Qt Creator (or the CLI), select the Qt 6 qmake/kit before running `qmake`. All Qt 5/Qt 6 specific differences (QMatrix, QSvgWidget, camera APIs, wheel events) are handled automatically in the source.
-3. Build as usual (`qmake` + `ninja`/`make`). The generated UI headers now come from your active kit, so switching between kits simply requires re-running `qmake` to regenerate them.
+- Supported: Qt 6.10+ (MSVC/clang_64). Install modules: Qt Serial Port, Qt Multimedia, Qt Svg, Qt Svg Widgets.  
+- Re-run `qmake` whenever you switch kits (Qt 5 ↔ Qt 6) so UI headers regenerate correctly.  
+- No Qt5Compat dependency is required for the main build; code paths use native Qt 6 APIs.
 
 ## Running from the Build Tree
 
@@ -76,10 +84,10 @@ The debug and release outputs live in `debug/` and `release/`. Running from Qt C
 
 ## Create a Portable Deploy Folder
 
-1. Ensure the release build exists (`release/DeltaRobotSoftware.exe`).
+1. Ensure the release build exists (`release/DeltaRobotSoftware.exe` or `build_cli_qt6_release\release\DeltaRobotSoftware.exe`).
 2. Run `windeployqt` to gather Qt runtime files:
    ```cmd
-   set PATH=C:\Qt\5.15.2\msvc2019_64\bin;%PATH%
+   set PATH=C:\Qt\6.10.1\msvc2022_64\bin;%PATH%
    windeployqt --release --compiler-runtime --dir deploy\DeltaRobotSoftware --qmldir . release\DeltaRobotSoftware.exe
    ```
 3. Copy additional assets into `deploy\DeltaRobotSoftware`:
