@@ -205,7 +205,6 @@ void DeltaVisualizer::paintEvent(QPaintEvent *event)
     QLabel::paintEvent(event);
 
     QPixmap curPix = this->pixmap();
-
     if (curPix.isNull())
         return;
 

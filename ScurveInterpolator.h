@@ -2,15 +2,14 @@
 #define SCURVEINTERPOLATOR_H
 
 #include "math.h"
-#include <iostream>
+#include <algorithm>
 #include <chrono>
+#include <iostream>
 
 constexpr double one_sixth = 1.0 / 6;
 
 #define square(x) (x * x)
 #define cubic(x) (x * x * x)
-#define max(a, b) a>b?a:b
-
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
 #endif
@@ -112,7 +111,7 @@ private:
 
         float p = 0;
 
-        float test_vel_min = max(vel_start, vel_end);
+        float test_vel_min = std::max(vel_start, vel_end);
         float test_vel_max = max_vel;
         float test_vel = test_vel_max; // Start at max vel - probably the solution
         while (test_vel_max - test_vel_min > 1)
@@ -169,8 +168,8 @@ private:
         }
 
         // Adjust the constant velocity section to reach the target position
-        auto t = (p_target - p) / test_vel;
-        segment[3].t = max(t, 0);
+        double t = static_cast<double>((p_target - p) / test_vel);
+        segment[3].t = std::max(t, 0.0);
         calculate_profile();
     }
 

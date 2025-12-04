@@ -1,4 +1,6 @@
 #include "testwindow.h"
+
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 #include <QDebug>
 
 TestWindow::TestWindow(QWidget *parent)
@@ -6,15 +8,13 @@ TestWindow::TestWindow(QWidget *parent)
     , camera(nullptr)
     , videoSink(nullptr)
 {
-    // Khởi tạo camera và ffmpeg
     setupCamera();
     setupFFmpeg();
-
-    // Bắt đầu camera
     camera->start();
 }
 
-TestWindow::~TestWindow() {
+TestWindow::~TestWindow()
+{
     if (camera) {
         camera->stop();
         delete camera;
@@ -25,8 +25,8 @@ TestWindow::~TestWindow() {
     ffmpegProcess.close();
 }
 
-void TestWindow::setupCamera() {
-    // Khởi tạo camera
+void TestWindow::setupCamera()
+{
     camera = new QCamera(this);
     videoSink = new QVideoSink(this);
 
@@ -36,16 +36,16 @@ void TestWindow::setupCamera() {
     connect(videoSink, &QVideoSink::videoFrameChanged, this, &TestWindow::captureFrame);
 }
 
-void TestWindow::setupFFmpeg() {
-    // Cấu hình đường dẫn RTMP
+void TestWindow::setupFFmpeg()
+{
+    // RTMP endpoint
     QString rtmpUrl = "rtmp://13.88.44.47/stream/live";
 
-    // Thông số giả định, bạn có thể thay đổi theo camera
     int width = 640;
     int height = 480;
     int fps = 30;
 
-    // Thiết lập lệnh ffmpeg
+    // ffmpeg command arguments
     QStringList args;
     args << "-y"
          << "-f" << "rawvideo"
@@ -61,38 +61,44 @@ void TestWindow::setupFFmpeg() {
          << "-f" << "flv"
          << rtmpUrl;
 
-    // Khởi chạy ffmpeg
     ffmpegProcess.setProcessChannelMode(QProcess::MergedChannels);
     ffmpegProcess.start("ffmpeg", args);
 
     if (!ffmpegProcess.waitForStarted()) {
-        qCritical() << "Không thể khởi động ffmpeg!";
+        qCritical() << "Cannot start ffmpeg";
     }
 }
 
-void TestWindow::captureFrame(const QVideoFrame &frame) {
+void TestWindow::captureFrame(const QVideoFrame &frame)
+{
     if (!frame.isValid()) {
-        qWarning() << "Frame không hợp lệ!";
+        qWarning() << "Frame invalid";
         return;
     }
 
     QVideoFrame cloneFrame(frame);
     if (!cloneFrame.map(QVideoFrame::ReadOnly)) {
-        qWarning() << "Không thể ánh xạ frame để đọc dữ liệu!";
+        qWarning() << "Cannot map frame for reading";
         return;
     }
 
-    // Chuyển frame thành QImage
     QImage::Format imgFormat = QVideoFrameFormat::imageFormatFromPixelFormat(cloneFrame.pixelFormat());
     QImage image((uchar *)cloneFrame.bits(0), cloneFrame.width(), cloneFrame.height(), cloneFrame.bytesPerLine(0), imgFormat);
 
-    // Chuyển đổi sang RGB888 nếu cần
+    // Convert to RGB888 if needed
     QImage rgbImage = image.convertToFormat(QImage::Format_RGB888);
 
-    // Gửi dữ liệu thô vào ffmpeg qua stdin
     uchar *data = rgbImage.bits();
-    int dataSize = rgbImage.sizeInBytes(); // Thay thế byteCount() bằng sizeInBytes()
+    int dataSize = rgbImage.sizeInBytes();
     ffmpegProcess.write((const char *)data, dataSize);
 
-    cloneFrame.unmap(); // Giải phóng frame
+    cloneFrame.unmap();
 }
+
+#else
+
+// Qt 5 stub implementations to keep the project building without Qt 6 multimedia APIs.
+TestWindow::TestWindow(QWidget *parent) : QMainWindow(parent) {}
+TestWindow::~TestWindow() = default;
+
+#endif // QT_VERSION check
