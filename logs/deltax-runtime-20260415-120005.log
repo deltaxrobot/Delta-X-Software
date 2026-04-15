@@ -1,0 +1,3 @@
+[2026-04-15 12:00:05] Starting DeltaRobotSoftware
+APP_BIN=/Users/trungdoanhong/Developer/Delta-X-Software/build/macos-qt6-release/DeltaRobotSoftware.app/Contents/MacOS/DeltaRobotSoftware
+QT_PLUGIN_PATH=/Users/trungdoanhong/Qt/6.10.1/macos/plugins

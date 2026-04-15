@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui serialport opengl network quickwidgets printsupport multimedia svg concurrent
+QT       += core gui serialport opengl network printsupport multimedia svg concurrent
 
 greaterThan(QT_MAJOR_VERSION, 5) {
     QT += svgwidgets
@@ -30,7 +30,9 @@ win32:msvc* {
 }
 
 macx {
-    QMAKE_INFO_PLIST = Info.plist
+    QMAKE_INFO_PLIST = $$PWD/resources/macos/Info.plist
+    QMAKE_CFLAGS += -include arm_acle.h
+    QMAKE_CXXFLAGS += -include arm_acle.h
 }
 
 windows {
@@ -43,14 +45,20 @@ windows {
 
 linux {
     INCLUDEPATH += /usr/local/include/opencv4
-    LIBS += -L/usr/local/lib -lopencv_core -lopencv_imgcodecs -lopencv_highgui -lopencv_imgproc -lopencv_videoio -lopencv_calib3d
+    LIBS += -L/usr/local/lib -lopencv_core -lopencv_imgcodecs -lopencv_imgproc -lopencv_videoio -lopencv_calib3d
 }
 
 macx {
     isEmpty(OPENCV_DIR) {
-        OPENCV_DIR = /opt/homebrew
-        !exists($$OPENCV_DIR/include/opencv4/opencv2/core.hpp) {
-            OPENCV_DIR = /usr/local
+        OPENCV_CANDIDATES = \
+            /opt/homebrew \
+            /usr/local \
+            $$clean_path($$getenv(HOME))/micromamba/envs/deltax-build
+
+        for(candidate, OPENCV_CANDIDATES) {
+            isEmpty(OPENCV_DIR): exists($$candidate/include/opencv4/opencv2/core.hpp) {
+                OPENCV_DIR = $$candidate
+            }
         }
     }
 
@@ -60,7 +68,8 @@ macx {
     exists($$OPENCV_INCLUDE_DIR/opencv2/core.hpp) {
         message("Linking against OpenCV found at $$OPENCV_DIR")
         INCLUDEPATH += $$OPENCV_INCLUDE_DIR
-        LIBS += -L$$OPENCV_LIB_DIR -lopencv_core -lopencv_imgcodecs -lopencv_highgui -lopencv_imgproc -lopencv_videoio -lopencv_calib3d
+        LIBS += -L$$OPENCV_LIB_DIR -lopencv_core -lopencv_imgcodecs -lopencv_imgproc -lopencv_videoio -lopencv_calib3d
+        QMAKE_RPATHDIR += $$OPENCV_LIB_DIR
     } else {
         message("Warning: OpenCV headers not found under $$OPENCV_DIR. Override OPENCV_DIR when running qmake if OpenCV is installed elsewhere.")
     }
@@ -81,141 +90,27 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = DeltaRobotSoftware
 TEMPLATE = app
 
+INCLUDEPATH += \
+    $$PWD \
+    $$PWD/include \
+    $$PWD/include/device \
+    $$PWD/sdk
 
-SOURCES += main.cpp\
-    AccountWindow.cpp \
-    Authority.cpp \
-    ChessboardConfigDialog.cpp \
-    CloudPointMapper.cpp \
-    CloudPointToolController.cpp \
-    ComDevice.cpp \
-    DrawingExporter.cpp \
-    DrawingWidget.cpp \
-    FilterWindow.cpp \
-    GcodeHighlighter.cpp \
-    GcodeReference.cpp \
-    GcodeScript.cpp \
-    ImageProcessing.cpp \
-    ImageViewer.cpp \
-    Layer.cpp \
-    MainWindow.cpp \
-    MovementTimeCalculator.cpp \
-    Object.cpp \
-    ObjectInfo.cpp \
-    ObjectVariableTable.cpp \
-    Parameter.cpp \
-    ImagePipelineController.cpp \
-    PointTool.cpp \
-    PointCalculator.cpp \
-    PointToolController.cpp \
-    InputValidator.cpp \
-    ProjectManager.cpp \
-    RobotWindow.cpp \
-    SettingsManager.cpp \
-    SettingsPanel.cpp \
-    SmartDialog.cpp \
-    SocketConnectionManager.cpp \
-    SoftwareManager.cpp \
-    TabDashboard.cpp \
-    TaskNode.cpp \
-    TestCode.cpp \
-    TextLayer.cpp \
-    TrackingManager.cpp \
-    VariableManager.cpp \
-    VersionManager.cpp \
-    codeeditor.cpp \
-    DeltaVisualizer.cpp \
-    UnityTool.cpp \
-    device/DeviceManager.cpp \
-    device/camera.cpp \
-    device/conveyor.cpp \
-    device/device.cpp \
-    device/encoder.cpp \
-    device/robot.cpp \
-    device/slider.cpp \
-    geisttextedit.cpp \
-    global.cpp \
-    highlighter.cpp \
-    testwindow.cpp \
-    ModernDialog.cpp \
-    CameraSelectionDialog.cpp \
-    ConveyorVisualization.cpp \
-    ZPlaneVisualization.cpp
+DEPENDPATH += $$INCLUDEPATH
 
-HEADERS  += \
-    AccountWindow.h \
-    Authority.h \
-    ChessboardConfigDialog.h \
-    CloudPointMapper.h \
-    CloudPointToolController.h \
-    ComDevice.h \
-    DeltaVisualizer.h \
-    DrawingExporter.h \
-    DrawingWidget.h \
-    FilterWindow.h \
-    GcodeHighlighter.h \
-    GcodeReference.h \
-    GcodeScript.h \
-    ImageUnity.h \
-    ImageViewer.h \
-    Layer.h \
-    MainWindow.h \
-    MovementTimeCalculator.h \
-    Object.h \
-    ImageProcessing.h \
-    ImagePipelineController.h \
-    ObjectInfo.h \
-    ObjectInfoModel.h \
-    ObjectVariableTable.h \
-    Parameter.h \
-    PointTool.h \
-    PointCalculator.h \
-    PointToolController.h \
-    InputValidator.h \
-    ProjectManager.h \
-    RobotWindow.h \
-    ScurveInterpolator.h \
-    SettingsManager.h \
-    SettingsPanel.h \
-    SmartDialog.h \
-    SocketConnectionManager.h \
-    SoftwareManager.h \
-    TabDashboard.h \
-    TaskNode.h \
-    TextLayer.h \
-    TrackingManager.h \
-    VariableManager.h \
-    VersionManager.h \
-    codeeditor.h \
-    device/DeviceManager.h \
-    device/camera.h \
-    device/conveyor.h \
-    device/device.h \
-    device/encoder.h \
-    device/robot.h \
-    device/slider.h \
-    geisttextedit.h \
-    global.h \
-    highlighter.h \
-    GcodeReference.h \
-    sdk/DeltaXPlugin.h \
-    testcode.h \
-    testwindow.h \
-    ModernDialog.h \
-    CameraSelectionDialog.h \
-    ConveyorVisualization.h \
-    ZPlaneVisualization.h
+SOURCES += \
+    $$files($$PWD/src/*.cpp) \
+    $$files($$PWD/src/device/*.cpp)
 
-FORMS    += \
-    AccountWindow.ui \
-    FilterWindow.ui \
-    MainWindow.ui \
-    RobotWindow.ui \
-    GcodeReference.ui \
-    testwindow.ui
+HEADERS += \
+    $$files($$PWD/include/*.h) \
+    $$files($$PWD/include/device/*.h) \
+    $$files($$PWD/sdk/*.h)
 
-RESOURCES += \
-    resource.qrc
+FORMS += \
+    $$files($$PWD/ui/*.ui)
+
+RESOURCES += $$PWD/resource.qrc
 
 RC_ICONS = delta_x_logo_96x96.ico
 

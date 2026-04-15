@@ -1,8 +1,9 @@
 import cv2
+from pathlib import Path
 from ultralytics import YOLO
 
 # Load the YOLOv8 model
-model = YOLO('yolov8n.pt')
+model = YOLO(str(Path(__file__).resolve().parents[2] / "models" / "yolov8n.pt"))
 
 cap = cv2.VideoCapture(0)
 

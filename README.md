@@ -32,6 +32,15 @@ git clone https://github.com/yourusername/Delta-X-Software.git
 cd Delta-X-Software
 ```
 
+## Project Layout
+
+- `src/`: application implementation files (`.cpp`), including `src/device/` for hardware-specific sources.
+- `include/`: public/internal headers (`.h`), including `include/device/` for device interfaces.
+- `ui/`: Qt Designer forms (`.ui`).
+- `resource.qrc`: central Qt resource manifest used by the forms and application runtime.
+- `resources/`: platform-specific packaging assets such as `resources/macos/Info.plist`.
+- `models/`, `script-example/`, `plugin/`, `docs/`: runtime models, example scripts, plugins, and documentation kept outside the core app tree.
+
 ## Build from Source (Windows, CLI with Qt 6.10)
 
 1. Open *x64 Native Tools Command Prompt for VS 2022* (or call `vcvars64.bat` from PowerShell).
@@ -93,7 +102,7 @@ The debug and release outputs live in `debug/` and `release/`. Running from Qt C
 3. Copy additional assets into `deploy\DeltaRobotSoftware`:
    - `3rd-party/opencv/build/x64/vc15/bin/opencv_world400.dll`
    - `3rd-party/opencv/build/x64/vc15/bin/opencv_ffmpeg400_64.dll`
-   - `customUI.ini`, `GScript_Documentation.html`, `token.txt`, `version.json`
+   - `GScript_Documentation.html`, `token.txt`, `version.json`
    - Entire folders: `models/`, `script-example/`, `plugin/python/`
    - Plugin DLL: `plugin/IndustrialCameraPlugin.dll`
 4. Create an empty `gcode` folder inside the deploy directory (the app expects it).
@@ -141,6 +150,8 @@ The generated `DeltaXSoftwareSetup.exe` checks the VC++ redistributable (using r
    ```
 2. In the application, open *Settings > General* and set `pythonPath` to the interpreter in that environment (`python.exe` on Windows, typically `/usr/bin/python3` or the virtualenv's `bin/python3` on macOS/Linux). The field now defaults to the first `python3` found on your `PATH`.
 3. Verify external scripts (for example `script-example\yolov8_detect.py --headless`) can load the models shipped in `models/`.
+
+Operator UI settings are created on first save in `customUI.ini`; they do not need to be shipped as a repository asset.
 
 ## Troubleshooting
 

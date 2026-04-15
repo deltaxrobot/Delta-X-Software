@@ -1,0 +1,772 @@
+Warning: Populating font family aliases took 37 ms. Replace uses of missing font family "MS Shell Dlg 2" with one that exists to avoid this cost. 
+Warning: QGraphicsScene::addItem: item has already been added to this scene
+Warning: QGraphicsScene::addItem: item has already been added to this scene
+Warning: QGraphicsScene::addItem: item has already been added to this scene
+Warning: QGraphicsScene::addItem: item has already been added to this scene
+Debug: Using web control index file from resources: ":/Jogging.html"
+Debug: Create web server:  true
+Debug: Create Blockly server: true port 5050
+Debug: Using web control index file from resources: ":/Jogging.html"
+Debug: CloudPointMapper initialized with grid resolution: 10
+Debug: CloudPointToolController initialized
+Warning: QObject::connect(CloudPointToolController, PointToolController): signal not found
+Warning: QObject::connect: Incompatible sender/receiver arguments
+        RobotWindow::GotMappingMatrix(QMatrix) --> ImagePipelineController::inputMappingPolygon(QPolygonF)
+Debug: CloudPointMapper initialized with grid resolution: 10
+Debug: Warning: Camera not opened or disconnected
+Debug: === Cloud Point Mapping UI Elements Status ===
+Debug: Settings:
+Debug:   Interpolation combo: true
+Debug:   Grid resolution spinbox: true
+Debug:   Auto rebuild checkbox: true
+Debug: Calibration Management:
+Debug:   Calibration table: true
+Debug:   Add point button: true
+Debug:   Remove point button: true
+Debug:   Clear all button: true
+Debug:   Build grid button: true
+Debug:   Validate button: true
+Debug: Test Transform:
+Debug:   Test input X/Y: true / true
+Debug:   Test output X/Y: true / true
+Debug:   Transform button: true
+Debug:   Confidence/Error displays: true / true
+Debug: File Operations:
+Debug:   Save/Load buttons: true / true
+Debug: Frames:
+Debug:   Settings/Calibration/Test/Stats/Buttons/Files: true / true / true / true / true / true
+Debug: Missing Elements (need to be created dynamically or added to .ui):
+Debug:   - "Calibration point update controls"
+Debug: Connected signals for available UI elements
+Debug: Cloud Point Mapping initialized successfully
+Warning: No QtMultimedia backends found. Only QMediaDevices, QAudioDevice, QSoundEffect, QAudioSink, and QAudioSource are available.
+Warning: Populating font family aliases took 34 ms. Replace uses of missing font family "MS Shell Dlg 2" with one that exists to avoid this cost. 
+Warning: QGraphicsScene::addItem: item has already been added to this scene
+Warning: QGraphicsScene::addItem: item has already been added to this scene
+Warning: QGraphicsScene::addItem: item has already been added to this scene
+Warning: QGraphicsScene::addItem: item has already been added to this scene
+Debug: Using web control index file from resources: ":/Jogging.html"
+Debug: Create web server:  true
+Debug: Create Blockly server: true port 5050
+Debug: Using web control index file from resources: ":/Jogging.html"
+Debug: CloudPointMapper initialized with grid resolution: 10
+Debug: CloudPointToolController initialized
+Warning: QObject::connect(CloudPointToolController, PointToolController): signal not found
+Warning: QObject::connect: Incompatible sender/receiver arguments
+        RobotWindow::GotMappingMatrix(QMatrix) --> ImagePipelineController::inputMappingPolygon(QPolygonF)
+Debug: CloudPointMapper initialized with grid resolution: 10
+Debug: === Cloud Point Mapping UI Elements Status ===
+Debug: Settings:
+Debug:   Interpolation combo: true
+Debug:   Grid resolution spinbox: true
+Debug:   Auto rebuild checkbox: true
+Debug: Calibration Management:
+Debug:   Calibration table: true
+Debug:   Add point button: true
+Debug:   Remove point button: true
+Debug:   Clear all button: true
+Debug:   Build grid button: true
+Debug:   Validate button: true
+Debug: Test Transform:
+Debug:   Test input X/Y: true / true
+Debug:   Test output X/Y: true / true
+Debug:   Transform button: true
+Debug:   Confidence/Error displays: true / true
+Debug: File Operations:
+Debug:   Save/Load buttons: true / true
+Debug: Frames:
+Debug:   Settings/Calibration/Test/Stats/Buttons/Files: true / true / true / true / true / true
+Debug: Missing Elements (need to be created dynamically or added to .ui):
+Debug:   - "Calibration point update controls"
+Debug: Connected signals for available UI elements
+Debug: Cloud Point Mapping initialized successfully
+Warning: No QtMultimedia backends found. Only QMediaDevices, QAudioDevice, QSoundEffect, QAudioSink, and QAudioSource are available.
+Warning: Populating font family aliases took 36 ms. Replace uses of missing font family "MS Shell Dlg 2" with one that exists to avoid this cost. 
+Warning: QGraphicsScene::addItem: item has already been added to this scene
+Warning: QGraphicsScene::addItem: item has already been added to this scene
+Warning: QGraphicsScene::addItem: item has already been added to this scene
+Warning: QGraphicsScene::addItem: item has already been added to this scene
+Debug: Using web control index file from resources: ":/Jogging.html"
+Debug: Create web server:  true
+Debug: Create Blockly server: true port 5050
+Debug: Using web control index file from resources: ":/Jogging.html"
+Debug: CloudPointMapper initialized with grid resolution: 10
+Debug: CloudPointToolController initialized
+Warning: QObject::connect(CloudPointToolController, PointToolController): signal not found
+Warning: QObject::connect: Incompatible sender/receiver arguments
+        RobotWindow::GotMappingMatrix(QMatrix) --> ImagePipelineController::inputMappingPolygon(QPolygonF)
+Debug: CloudPointMapper initialized with grid resolution: 10
+Debug: Warning: Camera not opened or disconnected
+Debug: === Cloud Point Mapping UI Elements Status ===
+Debug: Settings:
+Debug:   Interpolation combo: true
+Debug:   Grid resolution spinbox: true
+Debug:   Auto rebuild checkbox: true
+Debug: Calibration Management:
+Debug:   Calibration table: true
+Debug:   Add point button: true
+Debug:   Remove point button: true
+Debug:   Clear all button: true
+Debug:   Build grid button: true
+Debug:   Validate button: true
+Debug: Test Transform:
+Debug:   Test input X/Y: true / true
+Debug:   Test output X/Y: true / true
+Debug:   Transform button: true
+Debug:   Confidence/Error displays: true / true
+Debug: File Operations:
+Debug:   Save/Load buttons: true / true
+Debug: Frames:
+Debug:   Settings/Calibration/Test/Stats/Buttons/Files: true / true / true / true / true / true
+Debug: Missing Elements (need to be created dynamically or added to .ui):
+Debug:   - "Calibration point update controls"
+Debug: Connected signals for available UI elements
+Debug: Cloud Point Mapping initialized successfully
+Warning: Populating font family aliases took 34 ms. Replace uses of missing font family "MS Shell Dlg 2" with one that exists to avoid this cost. 
+Warning: QGraphicsScene::addItem: item has already been added to this scene
+Warning: QGraphicsScene::addItem: item has already been added to this scene
+Warning: QGraphicsScene::addItem: item has already been added to this scene
+Warning: QGraphicsScene::addItem: item has already been added to this scene
+Debug: Using web control index file from resources: ":/Jogging.html"
+Debug: Create web server:  true
+Debug: Create Blockly server: true port 5050
+Debug: Using web control index file from resources: ":/Jogging.html"
+Debug: CloudPointMapper initialized with grid resolution: 10
+Debug: CloudPointToolController initialized
+Warning: QObject::connect(CloudPointToolController, PointToolController): signal not found
+Warning: QObject::connect: Incompatible sender/receiver arguments
+        RobotWindow::GotMappingMatrix(QMatrix) --> ImagePipelineController::inputMappingPolygon(QPolygonF)
+Debug: CloudPointMapper initialized with grid resolution: 10
+Debug: Warning: Camera not opened or disconnected
+Debug: === Cloud Point Mapping UI Elements Status ===
+Debug: Settings:
+Debug:   Interpolation combo: true
+Debug:   Grid resolution spinbox: true
+Debug:   Auto rebuild checkbox: true
+Debug: Calibration Management:
+Debug:   Calibration table: true
+Debug:   Add point button: true
+Debug:   Remove point button: true
+Debug:   Clear all button: true
+Debug:   Build grid button: true
+Debug:   Validate button: true
+Debug: Test Transform:
+Debug:   Test input X/Y: true / true
+Debug:   Test output X/Y: true / true
+Debug:   Transform button: true
+Debug:   Confidence/Error displays: true / true
+Debug: File Operations:
+Debug:   Save/Load buttons: true / true
+Debug: Frames:
+Debug:   Settings/Calibration/Test/Stats/Buttons/Files: true / true / true / true / true / true
+Debug: Missing Elements (need to be created dynamically or added to .ui):
+Debug:   - "Calibration point update controls"
+Debug: Connected signals for available UI elements
+Debug: Cloud Point Mapping initialized successfully
+Warning: Populating font family aliases took 34 ms. Replace uses of missing font family "Consolas" with one that exists to avoid this cost. 
+Warning: QGraphicsScene::addItem: item has already been added to this scene
+Warning: QGraphicsScene::addItem: item has already been added to this scene
+Warning: QGraphicsScene::addItem: item has already been added to this scene
+Warning: QGraphicsScene::addItem: item has already been added to this scene
+Debug: Using web control index file from resources: ":/Jogging.html"
+Debug: Create web server:  true
+Debug: Create Blockly server: true port 5050
+Debug: Using web control index file from resources: ":/Jogging.html"
+Debug: CloudPointMapper initialized with grid resolution: 10
+Debug: CloudPointToolController initialized
+Warning: QObject::connect(CloudPointToolController, PointToolController): signal not found
+Warning: QObject::connect: Incompatible sender/receiver arguments
+        RobotWindow::GotMappingMatrix(QMatrix) --> ImagePipelineController::inputMappingPolygon(QPolygonF)
+Debug: CloudPointMapper initialized with grid resolution: 10
+Debug: Warning: Camera not opened or disconnected
+Debug: === Cloud Point Mapping UI Elements Status ===
+Debug: Settings:
+Debug:   Interpolation combo: true
+Debug:   Grid resolution spinbox: true
+Debug:   Auto rebuild checkbox: true
+Debug: Calibration Management:
+Debug:   Calibration table: true
+Debug:   Add point button: true
+Debug:   Remove point button: true
+Debug:   Clear all button: true
+Debug:   Build grid button: true
+Debug:   Validate button: true
+Debug: Test Transform:
+Debug:   Test input X/Y: true / true
+Debug:   Test output X/Y: true / true
+Debug:   Transform button: true
+Debug:   Confidence/Error displays: true / true
+Debug: File Operations:
+Debug:   Save/Load buttons: true / true
+Debug: Frames:
+Debug:   Settings/Calibration/Test/Stats/Buttons/Files: true / true / true / true / true / true
+Debug: Missing Elements (need to be created dynamically or added to .ui):
+Debug:   - "Calibration point update controls"
+Debug: Connected signals for available UI elements
+Debug: Cloud Point Mapping initialized successfully
+Debug: Camera permission status before request: Qt::PermissionStatus::Undetermined
+Debug: Camera permission callback status: Qt::PermissionStatus::Denied
+Warning: Populating font family aliases took 38 ms. Replace uses of missing font family "Consolas" with one that exists to avoid this cost. 
+Warning: QGraphicsScene::addItem: item has already been added to this scene
+Warning: QGraphicsScene::addItem: item has already been added to this scene
+Warning: QGraphicsScene::addItem: item has already been added to this scene
+Warning: QGraphicsScene::addItem: item has already been added to this scene
+Warning: Populating font family aliases took 33 ms. Replace uses of missing font family "Consolas" with one that exists to avoid this cost. 
+Debug: Using web control index file from resources: ":/Jogging.html"
+Debug: Create web server:  true
+Debug: Create Blockly server: true port 5050
+Debug: Using web control index file from resources: ":/Jogging.html"
+Debug: CloudPointMapper initialized with grid resolution: 10
+Debug: CloudPointToolController initialized
+Warning: QObject::connect(CloudPointToolController, PointToolController): signal not found
+Warning: QObject::connect: Incompatible sender/receiver arguments
+        RobotWindow::GotMappingMatrix(QMatrix) --> ImagePipelineController::inputMappingPolygon(QPolygonF)
+Debug: CloudPointMapper initialized with grid resolution: 10
+Debug: Warning: Camera not opened or disconnected
+Debug: === Cloud Point Mapping UI Elements Status ===
+Debug: Settings:
+Debug:   Interpolation combo: true
+Debug:   Grid resolution spinbox: true
+Debug:   Auto rebuild checkbox: true
+Debug: Calibration Management:
+Debug:   Calibration table: true
+Debug:   Add point button: true
+Debug:   Remove point button: true
+Debug:   Clear all button: true
+Debug:   Build grid button: true
+Debug:   Validate button: true
+Debug: Test Transform:
+Debug:   Test input X/Y: true / true
+Debug:   Test output X/Y: true / true
+Debug:   Transform button: true
+Debug:   Confidence/Error displays: true / true
+Debug: File Operations:
+Debug:   Save/Load buttons: true / true
+Debug: Frames:
+Debug:   Settings/Calibration/Test/Stats/Buttons/Files: true / true / true / true / true / true
+Debug: Missing Elements (need to be created dynamically or added to .ui):
+Debug:   - "Calibration point update controls"
+Debug: Connected signals for available UI elements
+Debug: Cloud Point Mapping initialized successfully
+Warning: QGraphicsScene::addItem: item has already been added to this scene
+Warning: QGraphicsScene::addItem: item has already been added to this scene
+Warning: QGraphicsScene::addItem: item has already been added to this scene
+Warning: QGraphicsScene::addItem: item has already been added to this scene
+Warning: Populating font family aliases took 36 ms. Replace uses of missing font family "Consolas" with one that exists to avoid this cost. 
+Debug: Using web control index file from resources: ":/Jogging.html"
+Debug: Create web server:  true
+Debug: Create Blockly server: true port 5050
+Debug: Using web control index file from resources: ":/Jogging.html"
+Debug: CloudPointMapper initialized with grid resolution: 10
+Debug: CloudPointToolController initialized
+Warning: QObject::connect(CloudPointToolController, PointToolController): signal not found
+Warning: QObject::connect: Incompatible sender/receiver arguments
+        RobotWindow::GotMappingMatrix(QMatrix) --> ImagePipelineController::inputMappingPolygon(QPolygonF)
+Debug: CloudPointMapper initialized with grid resolution: 10
+Debug: Warning: Camera not opened or disconnected
+Debug: === Cloud Point Mapping UI Elements Status ===
+Debug: Settings:
+Debug:   Interpolation combo: true
+Debug:   Grid resolution spinbox: true
+Debug:   Auto rebuild checkbox: true
+Debug: Calibration Management:
+Debug:   Calibration table: true
+Debug:   Add point button: true
+Debug:   Remove point button: true
+Debug:   Clear all button: true
+Debug:   Build grid button: true
+Debug:   Validate button: true
+Debug: Test Transform:
+Debug:   Test input X/Y: true / true
+Debug:   Test output X/Y: true / true
+Debug:   Transform button: true
+Debug:   Confidence/Error displays: true / true
+Debug: File Operations:
+Debug:   Save/Load buttons: true / true
+Debug: Frames:
+Debug:   Settings/Calibration/Test/Stats/Buttons/Files: true / true / true / true / true / true
+Debug: Missing Elements (need to be created dynamically or added to .ui):
+Debug:   - "Calibration point update controls"
+Debug: Connected signals for available UI elements
+Debug: Cloud Point Mapping initialized successfully
+Warning: QSocketNotifier::Exception is not supported on iOS
+Warning: QSocketNotifier::Exception is not supported on iOS
+Warning: QSocketNotifier::Exception is not supported on iOS
+Warning: QSocketNotifier::Exception is not supported on iOS
+Warning: QSocketNotifier::Exception is not supported on iOS
+Warning: QSocketNotifier::Exception is not supported on iOS
+Warning: QSocketNotifier::Exception is not supported on iOS
+Warning: QSocketNotifier::Exception is not supported on iOS
+Warning: QSocketNotifier::Exception is not supported on iOS
+Warning: QSocketNotifier::Exception is not supported on iOS
+Warning: QSocketNotifier::Exception is not supported on iOS
+Warning: QSocketNotifier::Exception is not supported on iOS
+Warning: QSocketNotifier::Exception is not supported on iOS
+Warning: QSocketNotifier::Exception is not supported on iOS
+Warning: QSocketNotifier::Exception is not supported on iOS
+Warning: QSocketNotifier::Exception is not supported on iOS
+Warning: QGraphicsScene::addItem: item has already been added to this scene
+Warning: QGraphicsScene::addItem: item has already been added to this scene
+Warning: QGraphicsScene::addItem: item has already been added to this scene
+Warning: QGraphicsScene::addItem: item has already been added to this scene
+Warning: Populating font family aliases took 36 ms. Replace uses of missing font family "Consolas" with one that exists to avoid this cost. 
+Debug: Using web control index file from resources: ":/Jogging.html"
+Debug: Create web server:  true
+Debug: Create Blockly server: true port 5050
+Debug: Using web control index file from resources: ":/Jogging.html"
+Debug: CloudPointMapper initialized with grid resolution: 10
+Debug: CloudPointToolController initialized
+Warning: QObject::connect(CloudPointToolController, PointToolController): signal not found
+Warning: QObject::connect: Incompatible sender/receiver arguments
+        RobotWindow::GotMappingMatrix(QMatrix) --> ImagePipelineController::inputMappingPolygon(QPolygonF)
+Debug: CloudPointMapper initialized with grid resolution: 10
+Debug: Warning: Camera not opened or disconnected
+Debug: === Cloud Point Mapping UI Elements Status ===
+Debug: Settings:
+Debug:   Interpolation combo: true
+Debug:   Grid resolution spinbox: true
+Debug:   Auto rebuild checkbox: true
+Debug: Calibration Management:
+Debug:   Calibration table: true
+Debug:   Add point button: true
+Debug:   Remove point button: true
+Debug:   Clear all button: true
+Debug:   Build grid button: true
+Debug:   Validate button: true
+Debug: Test Transform:
+Debug:   Test input X/Y: true / true
+Debug:   Test output X/Y: true / true
+Debug:   Transform button: true
+Debug:   Confidence/Error displays: true / true
+Debug: File Operations:
+Debug:   Save/Load buttons: true / true
+Debug: Frames:
+Debug:   Settings/Calibration/Test/Stats/Buttons/Files: true / true / true / true / true / true
+Debug: Missing Elements (need to be created dynamically or added to .ui):
+Debug:   - "Calibration point update controls"
+Debug: Connected signals for available UI elements
+Debug: Cloud Point Mapping initialized successfully
+Warning: QSocketNotifier::Exception is not supported on iOS
+Warning: QSocketNotifier::Exception is not supported on iOS
+Warning: QSocketNotifier::Exception is not supported on iOS
+Warning: QSocketNotifier::Exception is not supported on iOS
+Warning: QSocketNotifier::Exception is not supported on iOS
+Warning: QSocketNotifier::Exception is not supported on iOS
+Warning: QSocketNotifier::Exception is not supported on iOS
+Warning: QSocketNotifier::Exception is not supported on iOS
+Debug: Web client request: "GET /blockly?host=192.168.1.5&port=5050 HTTP/1.1\r\nHost: 192.168.1.5:5000\r\nConnection: keep-alive\r\nUpgrade-Insecure-Requests: 1\r\nUser-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36\r\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7\r\nAccept-Encoding: gzip, deflate\r\nAccept-Language: en-US,en;q=0.9\r\n\r\n"
+Debug: Using web control index file from resources: ":/script-example/blockly/blockly.html"
+Debug: Blockly client request: "GET /gscript?ts=1776045770029 HTTP/1.1\r\nHost: 192.168.1.5:5050\r\nConnection: keep-alive\r\nUser-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36\r\nAccept: */*\r\nOrigin: http://192.168.1.5:5000\r\nReferer: http://192.168.1.5:5000/\r\nAccept-Encoding: gzip, deflate\r\nAccept-Language: en-US,en;q=0.9\r\n\r\n"
+Debug: Web client request: "GET /favicon.ico HTTP/1.1\r\nHost: 192.168.1.5:5000\r\nConnection: keep-alive\r\nUser-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36\r\nAccept: image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8\r\nReferer: http://192.168.1.5:5000/blockly?host=192.168.1.5&port=5050\r\nAccept-Encoding: gzip, deflate\r\nAccept-Language: en-US,en;q=0.9\r\n\r\n"
+Warning: QGraphicsScene::addItem: item has already been added to this scene
+Warning: QGraphicsScene::addItem: item has already been added to this scene
+Warning: QGraphicsScene::addItem: item has already been added to this scene
+Warning: QGraphicsScene::addItem: item has already been added to this scene
+Warning: Populating font family aliases took 51 ms. Replace uses of missing font family "Consolas" with one that exists to avoid this cost. 
+Debug: Using web control index file from resources: ":/Jogging.html"
+Debug: Create web server:  true
+Debug: Create Blockly server: true port 5050
+Debug: Using web control index file from resources: ":/Jogging.html"
+Debug: CloudPointMapper initialized with grid resolution: 10
+Debug: CloudPointToolController initialized
+Warning: QObject::connect(CloudPointToolController, PointToolController): signal not found
+Warning: QObject::connect: Incompatible sender/receiver arguments
+        RobotWindow::GotMappingMatrix(QMatrix) --> ImagePipelineController::inputMappingPolygon(QPolygonF)
+Debug: CloudPointMapper initialized with grid resolution: 10
+Debug: Warning: Camera not opened or disconnected
+Debug: === Cloud Point Mapping UI Elements Status ===
+Debug: Settings:
+Debug:   Interpolation combo: true
+Debug:   Grid resolution spinbox: true
+Debug:   Auto rebuild checkbox: true
+Debug: Calibration Management:
+Debug:   Calibration table: true
+Debug:   Add point button: true
+Debug:   Remove point button: true
+Debug:   Clear all button: true
+Debug:   Build grid button: true
+Debug:   Validate button: true
+Debug: Test Transform:
+Debug:   Test input X/Y: true / true
+Debug:   Test output X/Y: true / true
+Debug:   Transform button: true
+Debug:   Confidence/Error displays: true / true
+Debug: File Operations:
+Debug:   Save/Load buttons: true / true
+Debug: Frames:
+Debug:   Settings/Calibration/Test/Stats/Buttons/Files: true / true / true / true / true / true
+Debug: Missing Elements (need to be created dynamically or added to .ui):
+Debug:   - "Calibration point update controls"
+Debug: Connected signals for available UI elements
+Debug: Cloud Point Mapping initialized successfully
+Debug: Camera permission status before request: Qt::PermissionStatus::Undetermined
+Debug: Camera permission callback status: Qt::PermissionStatus::Denied
+Warning: QGraphicsScene::addItem: item has already been added to this scene
+Warning: QGraphicsScene::addItem: item has already been added to this scene
+Warning: QGraphicsScene::addItem: item has already been added to this scene
+Warning: QGraphicsScene::addItem: item has already been added to this scene
+Warning: Populating font family aliases took 38 ms. Replace uses of missing font family "Consolas" with one that exists to avoid this cost. 
+Debug: Using web control index file from resources: ":/Jogging.html"
+Debug: Create web server:  true
+Debug: Create Blockly server: true port 5050
+Debug: Using web control index file from resources: ":/Jogging.html"
+Debug: CloudPointMapper initialized with grid resolution: 10
+Debug: CloudPointToolController initialized
+Warning: QObject::connect(CloudPointToolController, PointToolController): signal not found
+Warning: QObject::connect: Incompatible sender/receiver arguments
+        RobotWindow::GotMappingMatrix(QMatrix) --> ImagePipelineController::inputMappingPolygon(QPolygonF)
+Debug: CloudPointMapper initialized with grid resolution: 10
+Debug: Warning: Camera not opened or disconnected
+Debug: === Cloud Point Mapping UI Elements Status ===
+Debug: Settings:
+Debug:   Interpolation combo: true
+Debug:   Grid resolution spinbox: true
+Debug:   Auto rebuild checkbox: true
+Debug: Calibration Management:
+Debug:   Calibration table: true
+Debug:   Add point button: true
+Debug:   Remove point button: true
+Debug:   Clear all button: true
+Debug:   Build grid button: true
+Debug:   Validate button: true
+Debug: Test Transform:
+Debug:   Test input X/Y: true / true
+Debug:   Test output X/Y: true / true
+Debug:   Transform button: true
+Debug:   Confidence/Error displays: true / true
+Debug: File Operations:
+Debug:   Save/Load buttons: true / true
+Debug: Frames:
+Debug:   Settings/Calibration/Test/Stats/Buttons/Files: true / true / true / true / true / true
+Debug: Missing Elements (need to be created dynamically or added to .ui):
+Debug:   - "Calibration point update controls"
+Debug: Connected signals for available UI elements
+Debug: Cloud Point Mapping initialized successfully
+Warning: QGraphicsScene::addItem: item has already been added to this scene
+Warning: QGraphicsScene::addItem: item has already been added to this scene
+Warning: QGraphicsScene::addItem: item has already been added to this scene
+Warning: QGraphicsScene::addItem: item has already been added to this scene
+Warning: Populating font family aliases took 33 ms. Replace uses of missing font family "Consolas" with one that exists to avoid this cost. 
+Debug: Using web control index file from resources: ":/Jogging.html"
+Debug: Create web server:  false
+Debug: Create Blockly server: true port 5051
+Debug: Using web control index file from resources: ":/Jogging.html"
+Debug: CloudPointMapper initialized with grid resolution: 10
+Debug: CloudPointToolController initialized
+Warning: QObject::connect(CloudPointToolController, PointToolController): signal not found
+Warning: QObject::connect: Incompatible sender/receiver arguments
+        RobotWindow::GotMappingMatrix(QMatrix) --> ImagePipelineController::inputMappingPolygon(QPolygonF)
+Debug: CloudPointMapper initialized with grid resolution: 10
+Debug: Warning: Camera not opened or disconnected
+Debug: === Cloud Point Mapping UI Elements Status ===
+Debug: Settings:
+Debug:   Interpolation combo: true
+Debug:   Grid resolution spinbox: true
+Debug:   Auto rebuild checkbox: true
+Debug: Calibration Management:
+Debug:   Calibration table: true
+Debug:   Add point button: true
+Debug:   Remove point button: true
+Debug:   Clear all button: true
+Debug:   Build grid button: true
+Debug:   Validate button: true
+Debug: Test Transform:
+Debug:   Test input X/Y: true / true
+Debug:   Test output X/Y: true / true
+Debug:   Transform button: true
+Debug:   Confidence/Error displays: true / true
+Debug: File Operations:
+Debug:   Save/Load buttons: true / true
+Debug: Frames:
+Debug:   Settings/Calibration/Test/Stats/Buttons/Files: true / true / true / true / true / true
+Debug: Missing Elements (need to be created dynamically or added to .ui):
+Debug:   - "Calibration point update controls"
+Debug: Connected signals for available UI elements
+Debug: Cloud Point Mapping initialized successfully
+Warning: QGraphicsScene::addItem: item has already been added to this scene
+Warning: QGraphicsScene::addItem: item has already been added to this scene
+Warning: QGraphicsScene::addItem: item has already been added to this scene
+Warning: QGraphicsScene::addItem: item has already been added to this scene
+Warning: Populating font family aliases took 37 ms. Replace uses of missing font family "Consolas" with one that exists to avoid this cost. 
+Debug: Using web control index file from resources: ":/Jogging.html"
+Debug: Create web server:  true
+Debug: Create Blockly server: true port 5050
+Debug: Using web control index file from resources: ":/Jogging.html"
+Debug: CloudPointMapper initialized with grid resolution: 10
+Debug: CloudPointToolController initialized
+Warning: QObject::connect(CloudPointToolController, PointToolController): signal not found
+Warning: QObject::connect: Incompatible sender/receiver arguments
+        RobotWindow::GotMappingMatrix(QMatrix) --> ImagePipelineController::inputMappingPolygon(QPolygonF)
+Debug: CloudPointMapper initialized with grid resolution: 10
+Debug: Warning: Camera not opened or disconnected
+Debug: === Cloud Point Mapping UI Elements Status ===
+Debug: Settings:
+Debug:   Interpolation combo: true
+Debug:   Grid resolution spinbox: true
+Debug:   Auto rebuild checkbox: true
+Debug: Calibration Management:
+Debug:   Calibration table: true
+Debug:   Add point button: true
+Debug:   Remove point button: true
+Debug:   Clear all button: true
+Debug:   Build grid button: true
+Debug:   Validate button: true
+Debug: Test Transform:
+Debug:   Test input X/Y: true / true
+Debug:   Test output X/Y: true / true
+Debug:   Transform button: true
+Debug:   Confidence/Error displays: true / true
+Debug: File Operations:
+Debug:   Save/Load buttons: true / true
+Debug: Frames:
+Debug:   Settings/Calibration/Test/Stats/Buttons/Files: true / true / true / true / true / true
+Debug: Missing Elements (need to be created dynamically or added to .ui):
+Debug:   - "Calibration point update controls"
+Debug: Connected signals for available UI elements
+Debug: Cloud Point Mapping initialized successfully
+Warning: QGraphicsScene::addItem: item has already been added to this scene
+Warning: QGraphicsScene::addItem: item has already been added to this scene
+Warning: QGraphicsScene::addItem: item has already been added to this scene
+Warning: QGraphicsScene::addItem: item has already been added to this scene
+Warning: Populating font family aliases took 35 ms. Replace uses of missing font family "Consolas" with one that exists to avoid this cost. 
+Debug: Using web control index file from resources: ":/Jogging.html"
+Debug: Create web server:  true
+Debug: Create Blockly server: true port 5050
+Debug: Using web control index file from resources: ":/Jogging.html"
+Debug: CloudPointMapper initialized with grid resolution: 10
+Debug: CloudPointToolController initialized
+Warning: QObject::connect(CloudPointToolController, PointToolController): signal not found
+Warning: QObject::connect: Incompatible sender/receiver arguments
+        RobotWindow::GotMappingMatrix(QMatrix) --> ImagePipelineController::inputMappingPolygon(QPolygonF)
+Debug: CloudPointMapper initialized with grid resolution: 10
+Debug: Warning: Camera not opened or disconnected
+Debug: === Cloud Point Mapping UI Elements Status ===
+Debug: Settings:
+Debug:   Interpolation combo: true
+Debug:   Grid resolution spinbox: true
+Debug:   Auto rebuild checkbox: true
+Debug: Calibration Management:
+Debug:   Calibration table: true
+Debug:   Add point button: true
+Debug:   Remove point button: true
+Debug:   Clear all button: true
+Debug:   Build grid button: true
+Debug:   Validate button: true
+Debug: Test Transform:
+Debug:   Test input X/Y: true / true
+Debug:   Test output X/Y: true / true
+Debug:   Transform button: true
+Debug:   Confidence/Error displays: true / true
+Debug: File Operations:
+Debug:   Save/Load buttons: true / true
+Debug: Frames:
+Debug:   Settings/Calibration/Test/Stats/Buttons/Files: true / true / true / true / true / true
+Debug: Missing Elements (need to be created dynamically or added to .ui):
+Debug:   - "Calibration point update controls"
+Debug: Connected signals for available UI elements
+Debug: Cloud Point Mapping initialized successfully
+Warning: QGraphicsScene::addItem: item has already been added to this scene
+Warning: QGraphicsScene::addItem: item has already been added to this scene
+Warning: QGraphicsScene::addItem: item has already been added to this scene
+Warning: QGraphicsScene::addItem: item has already been added to this scene
+Warning: Populating font family aliases took 36 ms. Replace uses of missing font family "Consolas" with one that exists to avoid this cost. 
+Debug: Using web control index file from resources: ":/Jogging.html"
+Debug: Create web server:  true
+Debug: Create Blockly server: true port 5050
+Debug: Using web control index file from resources: ":/Jogging.html"
+Debug: CloudPointMapper initialized with grid resolution: 10
+Debug: CloudPointToolController initialized
+Warning: QObject::connect(CloudPointToolController, PointToolController): signal not found
+Warning: QObject::connect: Incompatible sender/receiver arguments
+        RobotWindow::GotMappingMatrix(QMatrix) --> ImagePipelineController::inputMappingPolygon(QPolygonF)
+Debug: CloudPointMapper initialized with grid resolution: 10
+Debug: Warning: Camera not opened or disconnected
+Debug: === Cloud Point Mapping UI Elements Status ===
+Debug: Settings:
+Debug:   Interpolation combo: true
+Debug:   Grid resolution spinbox: true
+Debug:   Auto rebuild checkbox: true
+Debug: Calibration Management:
+Debug:   Calibration table: true
+Debug:   Add point button: true
+Debug:   Remove point button: true
+Debug:   Clear all button: true
+Debug:   Build grid button: true
+Debug:   Validate button: true
+Debug: Test Transform:
+Debug:   Test input X/Y: true / true
+Debug:   Test output X/Y: true / true
+Debug:   Transform button: true
+Debug:   Confidence/Error displays: true / true
+Debug: File Operations:
+Debug:   Save/Load buttons: true / true
+Debug: Frames:
+Debug:   Settings/Calibration/Test/Stats/Buttons/Files: true / true / true / true / true / true
+Debug: Missing Elements (need to be created dynamically or added to .ui):
+Debug:   - "Calibration point update controls"
+Debug: Connected signals for available UI elements
+Debug: Cloud Point Mapping initialized successfully
+Warning: QGraphicsScene::addItem: item has already been added to this scene
+Warning: QGraphicsScene::addItem: item has already been added to this scene
+Warning: QGraphicsScene::addItem: item has already been added to this scene
+Warning: QGraphicsScene::addItem: item has already been added to this scene
+Warning: Populating font family aliases took 41 ms. Replace uses of missing font family "Consolas" with one that exists to avoid this cost. 
+Debug: Using web control index file from resources: ":/Jogging.html"
+Debug: Create web server:  true
+Debug: Create Blockly server: true port 5050
+Debug: Using web control index file from resources: ":/Jogging.html"
+Debug: CloudPointMapper initialized with grid resolution: 10
+Debug: CloudPointToolController initialized
+Warning: QObject::connect(CloudPointToolController, PointToolController): signal not found
+Warning: QObject::connect: Incompatible sender/receiver arguments
+        RobotWindow::GotMappingMatrix(QMatrix) --> ImagePipelineController::inputMappingPolygon(QPolygonF)
+Debug: CloudPointMapper initialized with grid resolution: 10
+Debug: Warning: Camera not opened or disconnected
+Debug: === Cloud Point Mapping UI Elements Status ===
+Debug: Settings:
+Debug:   Interpolation combo: true
+Debug:   Grid resolution spinbox: true
+Debug:   Auto rebuild checkbox: true
+Debug: Calibration Management:
+Debug:   Calibration table: true
+Debug:   Add point button: true
+Debug:   Remove point button: true
+Debug:   Clear all button: true
+Debug:   Build grid button: true
+Debug:   Validate button: true
+Debug: Test Transform:
+Debug:   Test input X/Y: true / true
+Debug:   Test output X/Y: true / true
+Debug:   Transform button: true
+Debug:   Confidence/Error displays: true / true
+Debug: File Operations:
+Debug:   Save/Load buttons: true / true
+Debug: Frames:
+Debug:   Settings/Calibration/Test/Stats/Buttons/Files: true / true / true / true / true / true
+Debug: Missing Elements (need to be created dynamically or added to .ui):
+Debug:   - "Calibration point update controls"
+Debug: Connected signals for available UI elements
+Debug: Cloud Point Mapping initialized successfully
+Warning: QGraphicsScene::addItem: item has already been added to this scene
+Warning: QGraphicsScene::addItem: item has already been added to this scene
+Warning: QGraphicsScene::addItem: item has already been added to this scene
+Warning: QGraphicsScene::addItem: item has already been added to this scene
+Warning: Populating font family aliases took 35 ms. Replace uses of missing font family "Consolas" with one that exists to avoid this cost. 
+Debug: Using web control index file from resources: ":/Jogging.html"
+Debug: Create web server:  true
+Debug: Create Blockly server: true port 5050
+Debug: Using web control index file from resources: ":/Jogging.html"
+Debug: CloudPointMapper initialized with grid resolution: 10
+Debug: CloudPointToolController initialized
+Warning: QObject::connect(CloudPointToolController, PointToolController): signal not found
+Warning: QObject::connect: Incompatible sender/receiver arguments
+        RobotWindow::GotMappingMatrix(QMatrix) --> ImagePipelineController::inputMappingPolygon(QPolygonF)
+Debug: CloudPointMapper initialized with grid resolution: 10
+Debug: Warning: Camera not opened or disconnected
+Debug: === Cloud Point Mapping UI Elements Status ===
+Debug: Settings:
+Debug:   Interpolation combo: true
+Debug:   Grid resolution spinbox: true
+Debug:   Auto rebuild checkbox: true
+Debug: Calibration Management:
+Debug:   Calibration table: true
+Debug:   Add point button: true
+Debug:   Remove point button: true
+Debug:   Clear all button: true
+Debug:   Build grid button: true
+Debug:   Validate button: true
+Debug: Test Transform:
+Debug:   Test input X/Y: true / true
+Debug:   Test output X/Y: true / true
+Debug:   Transform button: true
+Debug:   Confidence/Error displays: true / true
+Debug: File Operations:
+Debug:   Save/Load buttons: true / true
+Debug: Frames:
+Debug:   Settings/Calibration/Test/Stats/Buttons/Files: true / true / true / true / true / true
+Debug: Missing Elements (need to be created dynamically or added to .ui):
+Debug:   - "Calibration point update controls"
+Debug: Connected signals for available UI elements
+Debug: Cloud Point Mapping initialized successfully
+Warning: QGraphicsScene::addItem: item has already been added to this scene
+Warning: QGraphicsScene::addItem: item has already been added to this scene
+Warning: QGraphicsScene::addItem: item has already been added to this scene
+Warning: QGraphicsScene::addItem: item has already been added to this scene
+Warning: Populating font family aliases took 41 ms. Replace uses of missing font family "Consolas" with one that exists to avoid this cost. 
+Debug: Using web control index file from resources: ":/Jogging.html"
+Debug: Create web server:  true
+Debug: Create Blockly server: true port 5050
+Debug: Using web control index file from resources: ":/Jogging.html"
+Debug: CloudPointMapper initialized with grid resolution: 10
+Debug: CloudPointToolController initialized
+Warning: QObject::connect(CloudPointToolController, PointToolController): signal not found
+Warning: QObject::connect: Incompatible sender/receiver arguments
+        RobotWindow::GotMappingMatrix(QMatrix) --> ImagePipelineController::inputMappingPolygon(QPolygonF)
+Debug: CloudPointMapper initialized with grid resolution: 10
+Debug: Warning: Camera not opened or disconnected
+Debug: === Cloud Point Mapping UI Elements Status ===
+Debug: Settings:
+Debug:   Interpolation combo: true
+Debug:   Grid resolution spinbox: true
+Debug:   Auto rebuild checkbox: true
+Debug: Calibration Management:
+Debug:   Calibration table: true
+Debug:   Add point button: true
+Debug:   Remove point button: true
+Debug:   Clear all button: true
+Debug:   Build grid button: true
+Debug:   Validate button: true
+Debug: Test Transform:
+Debug:   Test input X/Y: true / true
+Debug:   Test output X/Y: true / true
+Debug:   Transform button: true
+Debug:   Confidence/Error displays: true / true
+Debug: File Operations:
+Debug:   Save/Load buttons: true / true
+Debug: Frames:
+Debug:   Settings/Calibration/Test/Stats/Buttons/Files: true / true / true / true / true / true
+Debug: Missing Elements (need to be created dynamically or added to .ui):
+Debug:   - "Calibration point update controls"
+Debug: Connected signals for available UI elements
+Debug: Cloud Point Mapping initialized successfully
+Warning: QGraphicsScene::addItem: item has already been added to this scene
+Warning: QGraphicsScene::addItem: item has already been added to this scene
+Warning: QGraphicsScene::addItem: item has already been added to this scene
+Warning: QGraphicsScene::addItem: item has already been added to this scene
+Warning: Populating font family aliases took 40 ms. Replace uses of missing font family "Consolas" with one that exists to avoid this cost. 
+Debug: Using web control index file from resources: ":/Jogging.html"
+Debug: Create web server:  true
+Debug: Create Blockly server: true port 5050
+Debug: Using web control index file from resources: ":/Jogging.html"
+Debug: CloudPointMapper initialized with grid resolution: 10
+Debug: CloudPointToolController initialized
+Warning: QObject::connect(CloudPointToolController, PointToolController): signal not found
+Warning: QObject::connect: Incompatible sender/receiver arguments
+        RobotWindow::GotMappingMatrix(QMatrix) --> ImagePipelineController::inputMappingPolygon(QPolygonF)
+Debug: CloudPointMapper initialized with grid resolution: 10
+Debug: Warning: Camera not opened or disconnected
+Debug: === Cloud Point Mapping UI Elements Status ===
+Debug: Settings:
+Debug:   Interpolation combo: true
+Debug:   Grid resolution spinbox: true
+Debug:   Auto rebuild checkbox: true
+Debug: Calibration Management:
+Debug:   Calibration table: true
+Debug:   Add point button: true
+Debug:   Remove point button: true
+Debug:   Clear all button: true
+Debug:   Build grid button: true
+Debug:   Validate button: true
+Debug: Test Transform:
+Debug:   Test input X/Y: true / true
+Debug:   Test output X/Y: true / true
+Debug:   Transform button: true
+Debug:   Confidence/Error displays: true / true
+Debug: File Operations:
+Debug:   Save/Load buttons: true / true
+Debug: Frames:
+Debug:   Settings/Calibration/Test/Stats/Buttons/Files: true / true / true / true / true / true
+Debug: Missing Elements (need to be created dynamically or added to .ui):
+Debug:   - "Calibration point update controls"
+Debug: Connected signals for available UI elements
+Debug: Cloud Point Mapping initialized successfully

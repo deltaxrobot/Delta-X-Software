@@ -1,0 +1,5 @@
+[2026-04-15 14:32:21] Starting DeltaRobotSoftware
+APP_BUNDLE=/Users/trungdoanhong/Developer/Delta-X-Software/build/macos-qt6-release/DeltaRobotSoftware.app
+APP_BIN=/Users/trungdoanhong/Developer/Delta-X-Software/build/macos-qt6-release/DeltaRobotSoftware.app/Contents/MacOS/DeltaRobotSoftware
+QT_PLUGIN_PATH=/Users/trungdoanhong/Qt/6.10.1/macos/plugins
+[2026-04-15 14:32:23] DeltaRobotSoftware launched with PID 63630

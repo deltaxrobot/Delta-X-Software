@@ -3,6 +3,7 @@ import sys
 import detect_socket
 import time
 import argparse
+from pathlib import Path
 from ultralytics import YOLO
 
 def check_opencv_gui_support():
@@ -52,12 +53,18 @@ def get_objects(image, headless=False):
     # Load the YOLOv8 model
 model = None
 
+
+def default_model_path():
+    script_dir = Path(__file__).resolve().parent
+    repo_root = script_dir.parent
+    return str(repo_root / "models" / "yolov8n.pt")
+
 def main():
     # Parse command-line arguments
     parser = argparse.ArgumentParser(description="YOLOv8 Inference Script")
     parser.add_argument("--host", type=str, default="192.168.56.1", help="IP address of the server")
     parser.add_argument("--port", type=int, default=8844, help="Port number of the server")
-    parser.add_argument("--model-path", type=str, default='yolov8n.pt', help="Path to the YOLOv8 model file")
+    parser.add_argument("--model-path", type=str, default=default_model_path(), help="Path to the YOLOv8 model file")
     parser.add_argument("--headless", action="store_true", help="Run without GUI display")
 
     args = parser.parse_args()
