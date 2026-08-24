@@ -667,9 +667,21 @@ void BlockProgrammingPanel::openProgram()
     QJsonParseError parseError;
     const QJsonDocument document = QJsonDocument::fromJson(file.readAll(), &parseError);
     QString error;
+    QVector<BlockNode> parsedBlocks;
     if (parseError.error != QJsonParseError::NoError || !document.isObject() ||
-        !loadWorkspaceDocument(document.object(), &error)) {
+        !BlockProgram::fromJson(document.object(), &parsedBlocks, &error)) {
         setStatus(error.isEmpty() ? parseError.errorString() : error, true);
+        return;
+    }
+    if (m_workspace->topLevelItemCount() > 0 &&
+        QMessageBox::question(
+            this, tr("Open block program"),
+            tr("Replace the current in-memory workspace with '%1'?")
+                .arg(QFileInfo(path).fileName())) != QMessageBox::Yes) {
+        return;
+    }
+    if (!loadWorkspaceDocument(document.object(), &error)) {
+        setStatus(error, true);
         return;
     }
     m_currentPath = path;

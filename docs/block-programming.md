@@ -56,6 +56,10 @@ Expressions use normal G-Script syntax. For example, enter `#Target.X` for a
 tracked X coordinate, `#Target.Found == 1` for a condition, or `"robot0"` for a
 string literal. The Raw G-Script block always emits a warning because its text
 cannot be structurally checked as a block before host validation.
+Text fields may contain single or double quotes, but not both in the same
+value, because the current G-Script runtime has no escape sequence for a quote
+inside its matching string delimiter. The compiler reports `BP1109` instead of
+emitting ambiguous source.
 
 ## Create a vision-and-pick program
 

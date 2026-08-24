@@ -19,6 +19,7 @@ private slots:
     void serializationRoundTripsNestedPrograms();
     void rejectsInvalidDocumentsAndStructures();
     void validatesProcessValuesAndDeviceIdentifiers();
+    void emitsOnlyRuntimeCompatibleTextLiterals();
     void rawBlocksRequireReview();
 };
 
@@ -138,6 +139,32 @@ void BlockProgrammingTest::validatesProcessValuesAndDeviceIdentifiers()
     QVERIFY(std::any_of(result.diagnostics.cbegin(), result.diagnostics.cend(),
                         [](const BlockDiagnostic& diagnostic) {
         return diagnostic.code == QStringLiteral("BP1108");
+    }));
+}
+
+void BlockProgrammingTest::emitsOnlyRuntimeCompatibleTextLiterals()
+{
+    const CompileResult compatible = BlockProgram::compile({
+        {QStringLiteral("log"),
+         {{QStringLiteral("message"),
+           QStringLiteral("C:\\cell\\job \"A,B\"")}}, {}},
+    });
+    QVERIFY(!compatible.hasErrors());
+    QVERIFY(compatible.script.contains(
+        QStringLiteral("PlogMessage('C:\\cell\\job \"A,B\"')")));
+    QVERIFY(!GScriptAnalyzer::analyze(compatible.script).hasErrors());
+
+    const CompileResult unsupported = BlockProgram::compile({
+        {QStringLiteral("assert"),
+         {{QStringLiteral("condition"), QStringLiteral("0")},
+          {QStringLiteral("message"),
+           QStringLiteral("Robot's \"home\" check failed")}}, {}},
+    });
+    QVERIFY(unsupported.hasErrors());
+    QVERIFY(std::any_of(unsupported.diagnostics.cbegin(),
+                        unsupported.diagnostics.cend(),
+                        [](const BlockDiagnostic& diagnostic) {
+        return diagnostic.code == QStringLiteral("BP1109");
     }));
 }
 

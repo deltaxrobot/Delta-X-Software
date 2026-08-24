@@ -119,13 +119,19 @@ const QVector<BlockDefinition>& catalog()
     return values;
 }
 
-QString quoted(QString value)
+QString quoted(QString value, bool* ok)
 {
-    value.replace('\\', QStringLiteral("\\\\"));
-    value.replace('"', QStringLiteral("\\\""));
     value.replace('\r', QStringLiteral(" "));
-    value.replace('\n', QStringLiteral("\\n"));
-    return QStringLiteral("\"") + value + QStringLiteral("\"");
+    value.replace('\n', QStringLiteral(" "));
+    if (ok)
+        *ok = true;
+    if (!value.contains('"'))
+        return QStringLiteral("\"") + value + QStringLiteral("\"");
+    if (!value.contains('\''))
+        return QStringLiteral("'") + value + QStringLiteral("'");
+    if (ok)
+        *ok = false;
+    return QStringLiteral("\"\"");
 }
 
 QString variableName(QString value)
@@ -223,6 +229,19 @@ void compileSequence(const QVector<BlockNode>& blocks, int depth,
             }
             return value;
         };
+        auto requireText = [&](const QString& key, const QString& label) {
+            bool valid = false;
+            const QString value = quoted(node.fields.value(key).toString(),
+                                         &valid);
+            if (!valid) {
+                diagnostic(
+                    diagnostics, BlockDiagnostic::Severity::Error,
+                    QStringLiteral("BP1109"), path,
+                    QStringLiteral("%1 cannot contain both single and double quotes.")
+                        .arg(label));
+            }
+            return value;
+        };
 
         if (node.type == QStringLiteral("comment")) {
             output.append(lead + QStringLiteral("; ") +
@@ -283,19 +302,19 @@ void compileSequence(const QVector<BlockNode>& blocks, int depth,
         } else if (node.type == QStringLiteral("assert")) {
             output.append(lead + QStringLiteral("M98 Passert(%1, %2)")
                                       .arg(requireExpression("condition", "Condition"),
-                                           quoted(node.fields.value("message").toString())));
+                                           requireText("message", "Fault message")));
         } else if (node.type == QStringLiteral("wait_until")) {
             output.append(lead + QStringLiteral("M98 PwaitUntil(%1, %2, %3, %4)")
                                       .arg(requireExpression("condition", "Condition"))
                                       .arg(requirePositive("timeout", "Timeout"))
                                       .arg(requirePositive("poll", "Poll interval"))
-                                      .arg(quoted(node.fields.value("message").toString())));
+                                      .arg(requireText("message", "Timeout message")));
         } else if (node.type == QStringLiteral("delay")) {
             output.append(lead + QStringLiteral("M98 Pdelay(%1)")
                                       .arg(requirePositive("milliseconds", "Delay", true)));
         } else if (node.type == QStringLiteral("log")) {
             output.append(lead + QStringLiteral("M98 PlogMessage(%1)")
-                                      .arg(quoted(node.fields.value("message").toString())));
+                                      .arg(requireText("message", "Log message")));
         } else if (node.type == QStringLiteral("device_command")) {
             const QString device = expression(node, "device");
             if (!validDevice(device)) {
@@ -306,7 +325,8 @@ void compileSequence(const QVector<BlockNode>& blocks, int depth,
             const QString response = variableName(node.fields.value("response").toString());
             if (response.isEmpty()) {
                 output.append(lead + QStringLiteral("M98 Psend(%1, %2)")
-                                          .arg(device, quoted(node.fields.value("command").toString())));
+                                          .arg(device,
+                                               requireText("command", "Device command")));
             } else {
                 if (!validVariable(response)) {
                     diagnostic(diagnostics, BlockDiagnostic::Severity::Error,
@@ -315,7 +335,7 @@ void compileSequence(const QVector<BlockNode>& blocks, int depth,
                 }
                 output.append(lead + QStringLiteral("M98 Psend(%1, %2, #%3, %4)")
                                           .arg(device,
-                                               quoted(node.fields.value("command").toString()),
+                                               requireText("command", "Device command"),
                                                response)
                                           .arg(requirePositive("timeout", "Timeout")));
             }

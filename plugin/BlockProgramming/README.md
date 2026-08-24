@@ -77,6 +77,8 @@ Other host integrations can invoke this plugin through
 
 The `.dxblocks` format has an explicit `format` identifier and version. Input
 is bounded to 2,000 blocks and 32 nesting levels before compilation.
+Text containing both single and double quotes is rejected because the current
+G-Script runtime does not define an escaped-quote representation.
 
 ## Safety boundary
 
