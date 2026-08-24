@@ -224,6 +224,7 @@ def opencv_config_candidates(root: Path) -> Iterable[Path]:
     if root.name.lower() == "opencvconfig.cmake":
         yield root.parent
     yield root
+    yield root / "lib/cmake/opencv5"
     yield root / "lib/cmake/opencv4"
     yield root / "build"
     yield from root.glob("x64/vc*/lib")
@@ -358,7 +359,7 @@ def collect_dependencies(
 
 def print_doctor(dependencies: list[Dependency]) -> bool:
     print(f"Delta X platform: {platform.system()} {platform.machine()}")
-    print(f"Minimum versions: CMake {version_text(MINIMUM_CMAKE)}, Qt {version_text(MINIMUM_QT)}, OpenCV 4.x")
+    print(f"Minimum versions: CMake {version_text(MINIMUM_CMAKE)}, Qt {version_text(MINIMUM_QT)}, OpenCV 4+")
     print()
     for item in dependencies:
         print(f"[{'OK' if item.available else 'MISSING'}] {item.name}: {item.detail}")

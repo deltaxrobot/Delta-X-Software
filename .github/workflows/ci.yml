@@ -108,7 +108,7 @@ jobs:
 
       - name: Export Homebrew OpenCV discovery
         run: |
-          echo "OpenCV_DIR=$(brew --prefix opencv)/lib/cmake/opencv4" >> "$GITHUB_ENV"
+          echo "OpenCV_DIR=$(brew --prefix opencv)" >> "$GITHUB_ENV"
           echo "PKG_CONFIG_PATH=$(brew --prefix opencv)/lib/pkgconfig:${PKG_CONFIG_PATH:-}" >> "$GITHUB_ENV"
 
       - name: Check, build, and run automated tests
