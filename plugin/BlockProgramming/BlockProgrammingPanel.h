@@ -4,8 +4,10 @@
 #include "BlockProgram.h"
 
 #include <QJsonObject>
+#include <QPointF>
 #include <QWidget>
 
+class BlockCanvas;
 class DeltaXHostContext;
 class QComboBox;
 class QFormLayout;
@@ -41,6 +43,11 @@ private:
     void populatePalette();
     void refreshWorkers();
     void addBlock(const QString& type);
+    void addBlockAt(const QString& type, const QPointF& scenePosition);
+    void moveBlockOnCanvas(QTreeWidgetItem* item,
+                           const QPointF& scenePosition);
+    void selectCanvasBlock(QTreeWidgetItem* item);
+    void refreshCanvas();
     void deleteSelectedBlock();
     void duplicateSelectedBlock();
     void moveSelectedBlock(int offset);
@@ -71,6 +78,7 @@ private:
     DeltaXHostContext* m_context = nullptr;
     QTreeWidget* m_palette = nullptr;
     QTreeWidget* m_workspace = nullptr;
+    BlockCanvas* m_canvas = nullptr;
     QFormLayout* m_properties = nullptr;
     QPlainTextEdit* m_preview = nullptr;
     QTreeWidget* m_diagnostics = nullptr;

@@ -27,7 +27,7 @@ QString BlockProgrammingPlugin::displayName() const
 
 QString BlockProgrammingPlugin::version() const
 {
-    return QStringLiteral("1.0.0");
+    return QString::fromLatin1(PluginVersion);
 }
 
 QStringList BlockProgrammingPlugin::capabilities() const
@@ -84,7 +84,7 @@ bool BlockProgrammingPlugin::start(QString* error)
     QString ignored;
     m_context->reportHealth(
         QStringLiteral("ready"),
-        QStringLiteral("Block editor and G-Script compiler are ready"), {},
+        QStringLiteral("Blockly-style canvas and G-Script compiler are ready"), {},
         &ignored);
     return true;
 }

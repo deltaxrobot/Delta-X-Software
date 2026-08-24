@@ -1,6 +1,8 @@
 set(_deltax_block_programming_sources
     BlockProgram.cpp
     BlockProgram.h
+    BlockCanvas.cpp
+    BlockCanvas.h
     BlockProgrammingPanel.cpp
     BlockProgrammingPanel.h
     BlockProgrammingPlugin.cpp

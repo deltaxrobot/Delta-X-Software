@@ -1,12 +1,13 @@
 # Block Programming plugin
 
-Block Programming is an offline, native Qt plugin that builds validated
-G-Script from structured blocks. It does not load a browser, CDN, JavaScript
-runtime, or remote execution endpoint.
+Block Programming is an offline, native Qt Blockly-style editor that builds
+validated G-Script from connected visual blocks. It does not load a browser,
+CDN, JavaScript runtime, or remote execution endpoint.
 
 The plugin provides:
 
-- a categorized block palette and a colored, drag-and-drop program tree;
+- a searchable toolbox and zoomable, pannable block canvas;
+- puzzle-shaped stack blocks and C-shaped containers with drag-and-drop nesting;
 - nested control-flow blocks for `if`, `else`, `while`, and `repeat`;
 - robot, conveyor, device, vision, tracking, timing, assertion, logging, and
   variable blocks;
@@ -52,9 +53,10 @@ separately.
 2. Select `deltax.block-programming`, open **Permissions...**, and grant
    `gscript.read`, `gscript.edit`, `gscript.run`, and `health.report`.
 3. Restart the application, then open the **Block Programming** module tab.
-4. Select a template or double-click blocks in the palette.
-5. Select a block to edit its properties. Nest blocks by dragging them into a
-   container or with **Indent** and **Outdent**.
+4. Drag blocks from the toolbox onto the canvas, press Enter on a selected
+   toolbox block, or select a starter template.
+5. Connect blocks into a stack. Drop on a C-shaped container to nest, or use
+   **Nest** and **Unnest**. Select a block to edit its properties.
 6. Resolve every error in **Diagnostics** and review **Generated G-Script**.
 7. Choose a G-Script worker. Use **Load into editor** for review without
    starting motion, or **Run** after completing the cell safety checklist.

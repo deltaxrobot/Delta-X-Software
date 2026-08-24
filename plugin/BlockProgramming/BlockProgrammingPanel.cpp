@@ -1,5 +1,6 @@
 #include "BlockProgrammingPanel.h"
 
+#include "BlockCanvas.h"
 #include "DeltaXHostContext.h"
 #include "DeltaXPermissions.h"
 
@@ -8,6 +9,7 @@
 #include <QClipboard>
 #include <QComboBox>
 #include <QDoubleSpinBox>
+#include <QDrag>
 #include <QFile>
 #include <QFileDialog>
 #include <QFileInfo>
@@ -17,11 +19,14 @@
 #include <QGridLayout>
 #include <QHBoxLayout>
 #include <QHeaderView>
+#include <QIcon>
 #include <QJsonDocument>
 #include <QLabel>
 #include <QLineEdit>
 #include <QMessageBox>
+#include <QMimeData>
 #include <QPlainTextEdit>
+#include <QPixmap>
 #include <QPushButton>
 #include <QScrollArea>
 #include <QSpinBox>
@@ -99,6 +104,35 @@ QVector<BlockNode> workspaceNodes(const QTreeWidget* tree)
     }
     return result;
 }
+
+class BlockPaletteTree final : public QTreeWidget
+{
+public:
+    using QTreeWidget::QTreeWidget;
+
+    QStringList mimeTypes() const override
+    {
+        return {QStringLiteral("application/x-deltax-block-type")};
+    }
+
+    QMimeData* mimeData(const QList<QTreeWidgetItem*>& items) const override
+    {
+        auto* mime = new QMimeData;
+        if (items.isEmpty())
+            return mime;
+        const QString type = items.first()->data(0, Qt::UserRole + 1).toString();
+        if (!type.isEmpty()) {
+            mime->setData(QStringLiteral("application/x-deltax-block-type"),
+                          type.toUtf8());
+        }
+        return mime;
+    }
+
+    Qt::DropActions supportedDropActions() const override
+    {
+        return Qt::CopyAction;
+    }
+};
 }
 
 BlockProgrammingPanel::BlockProgrammingPanel(DeltaXHostContext* context,
@@ -209,17 +243,31 @@ void BlockProgrammingPanel::buildUi()
     horizontal->setChildrenCollapsible(false);
     horizontal->setHandleWidth(5);
 
-    auto* paletteGroup = new QGroupBox(tr("Block palette"), horizontal);
+    auto* paletteGroup = new QGroupBox(tr("Toolbox"), horizontal);
     auto* paletteLayout = new QVBoxLayout(paletteGroup);
-    m_palette = new QTreeWidget(paletteGroup);
+    auto* paletteSearch = new QLineEdit(paletteGroup);
+    paletteSearch->setObjectName(QStringLiteral("blockPaletteSearch"));
+    paletteSearch->setPlaceholderText(tr("Search blocks..."));
+    paletteSearch->setClearButtonEnabled(true);
+    paletteLayout->addWidget(paletteSearch);
+    m_palette = new BlockPaletteTree(paletteGroup);
     m_palette->setObjectName(QStringLiteral("blockPalette"));
     m_palette->setStyleSheet(QStringLiteral(
-        "QTreeWidget { background-color: #262629; color: #D0D0D1; "
-        "border: 1px solid #333337; }"));
+        "QTreeWidget { background-color: #202025; color: #e5e7eb; "
+        "border: 1px solid #393942; border-radius: 6px; padding: 3px; }"
+        "QTreeWidget::item { min-height: 28px; border-radius: 4px; "
+        "padding: 2px 5px; }"
+        "QTreeWidget::item:hover { background-color: #34343c; }"
+        "QTreeWidget::item:selected { background-color: #3f3f49; "
+        "color: white; }"));
     m_palette->setHeaderHidden(true);
     m_palette->setRootIsDecorated(true);
+    m_palette->setDragEnabled(true);
+    m_palette->setDragDropMode(QAbstractItemView::DragOnly);
+    m_palette->setDefaultDropAction(Qt::CopyAction);
+    m_palette->setSelectionMode(QAbstractItemView::SingleSelection);
     paletteLayout->addWidget(m_palette);
-    paletteGroup->setMinimumWidth(145);
+    paletteGroup->setMinimumWidth(160);
     horizontal->addWidget(paletteGroup);
 
     auto* right = new QSplitter(Qt::Vertical, horizontal);
@@ -227,19 +275,21 @@ void BlockProgrammingPanel::buildUi()
     right->setChildrenCollapsible(false);
     right->setHandleWidth(5);
 
-    auto* workspaceGroup = new QGroupBox(tr("Program workspace"), right);
+    auto* workspaceGroup = new QGroupBox(tr("Workspace"), right);
     auto* workspaceLayout = new QVBoxLayout(workspaceGroup);
-    auto* editBar = new QGridLayout;
+    auto* editBar = new QHBoxLayout;
     editBar->setContentsMargins(0, 0, 0, 0);
-    editBar->setHorizontalSpacing(4);
-    editBar->setVerticalSpacing(4);
+    editBar->setSpacing(4);
     auto* addButton = new QPushButton(tr("Add"), workspaceGroup);
     auto* duplicateButton = new QPushButton(tr("Clone"), workspaceGroup);
     auto* deleteButton = new QPushButton(tr("Delete"), workspaceGroup);
     auto* upButton = new QPushButton(tr("Up"), workspaceGroup);
     auto* downButton = new QPushButton(tr("Down"), workspaceGroup);
-    auto* indentButton = new QPushButton(tr("Indent"), workspaceGroup);
-    auto* outdentButton = new QPushButton(tr("Outdent"), workspaceGroup);
+    auto* indentButton = new QPushButton(tr("Nest"), workspaceGroup);
+    auto* outdentButton = new QPushButton(tr("Unnest"), workspaceGroup);
+    auto* zoomOutButton = new QPushButton(QStringLiteral("−"), workspaceGroup);
+    auto* zoomInButton = new QPushButton(QStringLiteral("+"), workspaceGroup);
+    auto* fitButton = new QPushButton(tr("Fit"), workspaceGroup);
     addButton->setObjectName(QStringLiteral("blockAddButton"));
     duplicateButton->setObjectName(QStringLiteral("blockDuplicateButton"));
     deleteButton->setObjectName(QStringLiteral("blockDeleteButton"));
@@ -247,39 +297,52 @@ void BlockProgrammingPanel::buildUi()
     downButton->setObjectName(QStringLiteral("blockDownButton"));
     indentButton->setObjectName(QStringLiteral("blockIndentButton"));
     outdentButton->setObjectName(QStringLiteral("blockOutdentButton"));
+    zoomOutButton->setObjectName(QStringLiteral("blockZoomOutButton"));
+    zoomInButton->setObjectName(QStringLiteral("blockZoomInButton"));
+    fitButton->setObjectName(QStringLiteral("blockFitButton"));
     addButton->setToolTip(tr("Add the selected palette block"));
     duplicateButton->setToolTip(
         tr("Duplicate the selected workspace block"));
-    editBar->addWidget(addButton, 0, 0);
-    editBar->addWidget(duplicateButton, 0, 1);
-    editBar->addWidget(deleteButton, 0, 2);
-    editBar->addWidget(upButton, 1, 0);
-    editBar->addWidget(downButton, 1, 1);
-    editBar->addWidget(indentButton, 1, 2);
-    editBar->addWidget(outdentButton, 1, 3);
+    editBar->addWidget(addButton);
+    editBar->addWidget(duplicateButton);
+    editBar->addWidget(deleteButton);
+    editBar->addSpacing(6);
+    editBar->addWidget(upButton);
+    editBar->addWidget(downButton);
+    editBar->addWidget(indentButton);
+    editBar->addWidget(outdentButton);
+    editBar->addStretch(1);
+    editBar->addWidget(zoomOutButton);
+    editBar->addWidget(zoomInButton);
+    editBar->addWidget(fitButton);
     const QList<QPushButton*> editButtons = {
         addButton, duplicateButton, deleteButton, upButton,
-        downButton, indentButton, outdentButton,
+        downButton, indentButton, outdentButton, zoomOutButton,
+        zoomInButton, fitButton,
     };
     for (QPushButton* button : editButtons)
         button->setMinimumHeight(28);
     workspaceLayout->addLayout(editBar);
-    m_workspace = new QTreeWidget(workspaceGroup);
+    auto* canvasHint = new QLabel(
+        tr("Drag blocks from the toolbox • Drop on a container to nest • Ctrl+wheel to zoom"),
+        workspaceGroup);
+    canvasHint->setObjectName(QStringLiteral("blockCanvasHint"));
+    canvasHint->setStyleSheet(QStringLiteral("color: #94a3b8; padding: 0 2px;"));
+    canvasHint->setWordWrap(true);
+    workspaceLayout->addWidget(canvasHint);
+
+    m_canvas = new BlockCanvas(workspaceGroup);
+    m_canvas->setObjectName(QStringLiteral("blockCanvas"));
+    m_canvas->setMinimumHeight(190);
+    m_canvas->setStyleSheet(QStringLiteral(
+        "QGraphicsView#blockCanvas { border: 1px solid #393942; "
+        "border-radius: 7px; background: #17171a; }"));
+    workspaceLayout->addWidget(m_canvas, 1);
+
+    m_workspace = new QTreeWidget(this);
     m_workspace->setObjectName(QStringLiteral("blockWorkspace"));
-    m_workspace->setStyleSheet(QStringLiteral(
-        "QTreeWidget { background-color: #262629; color: #D0D0D1; "
-        "border: 1px solid #333337; }"
-        "QHeaderView::section { background-color: #3F3F3F; color: #F5F5F5; "
-        "border: none; padding: 4px; }"));
-    m_workspace->setHeaderLabel(tr("Blocks (drag to reorder or nest)"));
-    m_workspace->setSelectionMode(QAbstractItemView::SingleSelection);
-    m_workspace->setDragEnabled(true);
-    m_workspace->setAcceptDrops(true);
-    m_workspace->setDropIndicatorShown(true);
-    m_workspace->setDragDropMode(QAbstractItemView::InternalMove);
-    m_workspace->setDefaultDropAction(Qt::MoveAction);
-    m_workspace->setMinimumHeight(150);
-    workspaceLayout->addWidget(m_workspace);
+    m_workspace->setVisible(false);
+    m_canvas->setWorkspaceModel(m_workspace);
     right->addWidget(workspaceGroup);
 
     m_inspectorTabs = new QTabWidget(right);
@@ -359,11 +422,13 @@ void BlockProgrammingPanel::buildUi()
     connect(helpButton, &QPushButton::clicked, this, [this]() {
         QMessageBox::information(
             this, tr("Block Programming Help"),
-            tr("1. Choose a template or double-click palette blocks.\n"
-               "2. Select a block and edit its properties.\n"
-               "3. Drag blocks or use Indent/Outdent to create nesting.\n"
+            tr("1. Drag a block from the toolbox onto the canvas.\n"
+               "2. Connect blocks into a stack; drop on a container to nest.\n"
+               "3. Select a block and edit its properties below the canvas.\n"
                "4. Resolve diagnostics and review the generated G-Script.\n"
                "5. Load into the editor before running on hardware.\n\n"
+               "Use Ctrl+wheel or +/- to zoom, drag empty canvas space to pan, "
+               "and Delete to remove the selected block.\n\n"
                "The complete guide is docs/block-programming.md. Block Programming is not a safety function."));
     });
     connect(m_template, QOverload<int>::of(&QComboBox::activated),
@@ -392,12 +457,61 @@ void BlockProgrammingPanel::buildUi()
             this, &BlockProgrammingPanel::indentSelectedBlock);
     connect(outdentButton, &QPushButton::clicked,
             this, &BlockProgrammingPanel::outdentSelectedBlock);
-    connect(m_palette, &QTreeWidget::itemDoubleClicked, this,
+    connect(zoomOutButton, &QPushButton::clicked,
+            m_canvas, &BlockCanvas::zoomOut);
+    connect(zoomInButton, &QPushButton::clicked,
+            m_canvas, &BlockCanvas::zoomIn);
+    connect(fitButton, &QPushButton::clicked,
+            m_canvas, &BlockCanvas::fitWorkspace);
+    m_canvas->setSelectionHandler(
+        [this](QTreeWidgetItem* item) { selectCanvasBlock(item); });
+    m_canvas->setDropHandler(
+        [this](const QString& type, const QPointF& position) {
+            addBlockAt(type, position);
+        });
+    m_canvas->setMoveHandler(
+        [this](QTreeWidgetItem* item, const QPointF& position) {
+            moveBlockOnCanvas(item, position);
+        });
+    m_canvas->setDeleteHandler([this](QTreeWidgetItem* item) {
+        m_workspace->setCurrentItem(item);
+        deleteSelectedBlock();
+    });
+    connect(m_palette, &QTreeWidget::itemActivated, this,
             [this](QTreeWidgetItem* item) {
                 addBlock(item->data(0, BlockTypeRole).toString());
             });
+    connect(paletteSearch, &QLineEdit::textChanged, this,
+            [this](const QString& value) {
+                const QString query = value.trimmed();
+                for (int categoryIndex = 0;
+                     categoryIndex < m_palette->topLevelItemCount();
+                     ++categoryIndex) {
+                    QTreeWidgetItem* category =
+                        m_palette->topLevelItem(categoryIndex);
+                    bool categoryMatches = query.isEmpty() ||
+                        category->text(0).contains(query, Qt::CaseInsensitive);
+                    bool anyVisible = categoryMatches;
+                    for (int childIndex = 0;
+                         childIndex < category->childCount(); ++childIndex) {
+                        QTreeWidgetItem* child = category->child(childIndex);
+                        const bool matches = query.isEmpty() || categoryMatches ||
+                            child->text(0).contains(query, Qt::CaseInsensitive) ||
+                            child->toolTip(0).contains(query, Qt::CaseInsensitive);
+                        child->setHidden(!matches);
+                        anyVisible = anyVisible || matches;
+                    }
+                    category->setHidden(!anyVisible);
+                    if (!query.isEmpty() && anyVisible)
+                        category->setExpanded(true);
+                }
+            });
     connect(m_workspace, &QTreeWidget::currentItemChanged, this,
-            [this](QTreeWidgetItem* current) { showProperties(current); });
+            [this](QTreeWidgetItem* current) {
+                showProperties(current);
+                if (m_canvas)
+                    m_canvas->selectWorkspaceItem(current);
+            });
     connect(m_workspace->model(), &QAbstractItemModel::rowsInserted,
             this, [this]() { scheduleRefresh(); });
     connect(m_workspace->model(), &QAbstractItemModel::rowsRemoved,
@@ -425,7 +539,10 @@ void BlockProgrammingPanel::populatePalette()
         auto* item = new QTreeWidgetItem(category, {definition.label});
         item->setData(0, BlockTypeRole, definition.id);
         item->setToolTip(0, definition.description);
-        item->setForeground(0, QColor(definition.color));
+        item->setForeground(0, QColor(QStringLiteral("#e5e7eb")));
+        QPixmap swatch(12, 12);
+        swatch.fill(QColor(definition.color));
+        item->setIcon(0, QIcon(swatch));
     }
     m_palette->expandAll();
 }
@@ -484,6 +601,78 @@ void BlockProgrammingPanel::addBlock(const QString& type)
     }
     m_workspace->setCurrentItem(item);
     scheduleRefresh();
+}
+
+void BlockProgrammingPanel::addBlockAt(const QString& type,
+                                       const QPointF& scenePosition)
+{
+    if (!m_canvas || type.isEmpty() || !BlockProgram::definition(type))
+        return;
+    QTreeWidgetItem* target = m_canvas->workspaceItemAt(scenePosition);
+    m_workspace->setCurrentItem(target);
+    addBlock(type);
+}
+
+void BlockProgrammingPanel::moveBlockOnCanvas(
+    QTreeWidgetItem* item, const QPointF& scenePosition)
+{
+    if (!item || !m_canvas || !m_workspace)
+        return;
+
+    QTreeWidgetItem* target = m_canvas->workspaceItemAt(scenePosition, item);
+    if (target == item) {
+        scheduleRefresh();
+        return;
+    }
+    for (QTreeWidgetItem* parent = target; parent; parent = parent->parent()) {
+        if (parent == item) {
+            setStatus(tr("A block cannot be nested inside itself."), true);
+            scheduleRefresh();
+            return;
+        }
+    }
+
+    QTreeWidgetItem* oldParent = item->parent();
+    QTreeWidgetItem* moved = oldParent
+        ? oldParent->takeChild(oldParent->indexOfChild(item))
+        : m_workspace->takeTopLevelItem(
+              m_workspace->indexOfTopLevelItem(item));
+    if (!moved)
+        return;
+
+    if (!target) {
+        m_workspace->addTopLevelItem(moved);
+    } else {
+        const BlockDefinition* targetDefinition = BlockProgram::definition(
+            target->data(0, BlockTypeRole).toString());
+        if (targetDefinition && targetDefinition->container) {
+            target->addChild(moved);
+            target->setExpanded(true);
+        } else if (QTreeWidgetItem* targetParent = target->parent()) {
+            targetParent->insertChild(targetParent->indexOfChild(target) + 1,
+                                      moved);
+        } else {
+            m_workspace->insertTopLevelItem(
+                m_workspace->indexOfTopLevelItem(target) + 1, moved);
+        }
+    }
+    m_workspace->setCurrentItem(moved);
+    scheduleRefresh();
+}
+
+void BlockProgrammingPanel::selectCanvasBlock(QTreeWidgetItem* item)
+{
+    if (!m_workspace)
+        return;
+    m_workspace->setCurrentItem(item);
+    if (m_inspectorTabs)
+        m_inspectorTabs->setCurrentIndex(0);
+}
+
+void BlockProgrammingPanel::refreshCanvas()
+{
+    if (m_canvas)
+        m_canvas->rebuild();
 }
 
 void BlockProgrammingPanel::deleteSelectedBlock()
@@ -672,6 +861,7 @@ void BlockProgrammingPanel::scheduleRefresh()
 
 void BlockProgrammingPanel::refreshPreview()
 {
+    refreshCanvas();
     const CompileResult compiled = BlockProgram::compile(workspaceNodes(m_workspace));
     m_preview->setPlainText(compiled.script);
     QVariantList diagnostics = compiled.diagnosticMaps();

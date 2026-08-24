@@ -8,11 +8,13 @@ INCLUDEPATH += $$PWD/../../sdk
 
 SOURCES += \
     BlockProgram.cpp \
+    BlockCanvas.cpp \
     BlockProgrammingPanel.cpp \
     BlockProgrammingPlugin.cpp
 
 HEADERS += \
     BlockProgram.h \
+    BlockCanvas.h \
     BlockProgrammingPanel.h \
     BlockProgrammingPlugin.h \
     $$PWD/../../sdk/DeltaXCommandProvider.h \

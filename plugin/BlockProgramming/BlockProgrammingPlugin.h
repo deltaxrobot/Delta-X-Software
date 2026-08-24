@@ -22,6 +22,8 @@ class BlockProgrammingPlugin final : public QObject,
                  DeltaXCommandProvider)
 
 public:
+    static constexpr const char* PluginVersion = "1.1.0";
+
     ~BlockProgrammingPlugin() override;
 
     QString id() const override;

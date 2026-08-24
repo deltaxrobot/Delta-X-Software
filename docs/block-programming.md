@@ -1,9 +1,9 @@
 # Block Programming operator guide
 
-The Block Programming plugin lets an operator assemble structured blocks and
-generate standard Delta X G-Script without manually typing every statement. It
-runs entirely inside Delta X Software and remains usable without internet
-access.
+The Block Programming plugin provides a Blockly-style visual canvas for
+assembling connected blocks and generating standard Delta X G-Script without
+manually typing every statement. It runs entirely inside Delta X Software and
+remains usable without internet access.
 
 ## Enable the plugin
 
@@ -30,15 +30,20 @@ The **Block Programming** module contains five working areas:
 
 1. **Template and file bar** creates, opens, saves, or exports a program.
 2. **Worker bar** selects a G-Script worker and exposes Load, Run, and Stop.
-3. **Block palette** groups the available blocks by purpose.
-4. **Program workspace** displays execution order and nesting. Drag blocks or
-   use Up, Down, Indent, and Outdent to change structure.
+3. **Toolbox** searches and groups the available blocks by purpose. Drag a
+   block from here onto the canvas.
+4. **Workspace canvas** displays puzzle-shaped execution stacks and C-shaped
+   containers. Drag blocks to reorder them, drop on a container to nest, or
+   use Up, Down, Nest, and Unnest. Drag empty space to pan and use Ctrl+wheel,
+   +/-, or Fit to control the view.
 5. **Properties and Generated G-Script** edit the selected block and show the
    exact source plus diagnostics.
 
-Double-click a palette block to insert it. When a container such as **If**,
-**While**, or **Repeat** is selected, a new block is inserted inside it.
-Otherwise the block is inserted after the current selection.
+Double-clicking a toolbox block, or pressing Enter on it, is a
+keyboard-friendly alternative to dragging.
+When a container such as **If**, **While**, or **Repeat** is selected, a new
+block is inserted inside it. Otherwise it is inserted after the current block.
+Press Delete to remove the selected block.
 
 ## Available block groups
 

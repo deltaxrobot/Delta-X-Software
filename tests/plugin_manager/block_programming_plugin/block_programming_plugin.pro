@@ -10,11 +10,13 @@ INCLUDEPATH += \
 
 SOURCES += \
     $$PWD/../../../plugin/BlockProgramming/BlockProgram.cpp \
+    $$PWD/../../../plugin/BlockProgramming/BlockCanvas.cpp \
     $$PWD/../../../plugin/BlockProgramming/BlockProgrammingPanel.cpp \
     $$PWD/../../../plugin/BlockProgramming/BlockProgrammingPlugin.cpp
 
 HEADERS += \
     $$PWD/../../../plugin/BlockProgramming/BlockProgram.h \
+    $$PWD/../../../plugin/BlockProgramming/BlockCanvas.h \
     $$PWD/../../../plugin/BlockProgramming/BlockProgrammingPanel.h \
     $$PWD/../../../plugin/BlockProgramming/BlockProgrammingPlugin.h \
     $$PWD/../../../sdk/DeltaXCommandProvider.h \
