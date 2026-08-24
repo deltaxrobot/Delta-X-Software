@@ -28,6 +28,7 @@ TEST_PROJECTS = (
     TestProject("control_plane", "tst_control_plane", "tests/control_plane/control_plane.pro"),
     TestProject("device_state", "tst_device_state", "tests/device_state/device_state.pro"),
     TestProject("gscript_analyzer", "tst_gscript_analyzer", "tests/gscript_analyzer/gscript_analyzer.pro"),
+    TestProject("block_programming", "tst_block_programming", "tests/block_programming/block_programming.pro"),
     TestProject("variable_manager", "tst_variable_manager", "tests/variable_manager/variable_manager.pro"),
     TestProject("tracking_claim", "tst_tracking_claim", "tests/tracking_claim/tracking_claim.pro"),
     TestProject("vision_pipeline", "tst_vision_pipeline", "tests/vision_pipeline/vision_pipeline.pro"),
@@ -362,6 +363,7 @@ def main() -> int:
         if project.name == "plugin_manager":
             test_env["DELTA_X_TEST_PLUGIN_DIR"] = str(build_dir / "plugins-v2")
             test_env["DELTA_X_TEST_PLUGIN_V3_DIR"] = str(build_dir / "plugins-v3")
+            test_env["DELTA_X_BLOCK_PLUGIN_DIR"] = str(build_dir / "plugins-block")
         completed = run(
             [str(executable), "-o", f"{result_file},txt"],
             build_dir,

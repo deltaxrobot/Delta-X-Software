@@ -2779,6 +2779,246 @@ void RobotWindow::closeEvent(QCloseEvent * event)
     }
 }
 
+QVariantList RobotWindow::pluginGScriptWorkers(QString* error) const
+{
+    if (QThread::currentThread() != thread()) {
+        QVariantList result;
+        QString nestedError;
+        const bool invoked = QMetaObject::invokeMethod(
+            const_cast<RobotWindow*>(this),
+            [this, &result, &nestedError]() {
+                result = pluginGScriptWorkers(&nestedError);
+            },
+            Qt::BlockingQueuedConnection);
+        if (!invoked && nestedError.isEmpty())
+            nestedError = QStringLiteral("could not query G-Script workers");
+        if (error)
+            *error = nestedError;
+        return result;
+    }
+
+    auto stateName = [](GcodeScript::ExecutionState state) {
+        switch (state) {
+        case GcodeScript::ExecutionState::Idle: return QStringLiteral("Idle");
+        case GcodeScript::ExecutionState::Validating: return QStringLiteral("Validating");
+        case GcodeScript::ExecutionState::Running: return QStringLiteral("Running");
+        case GcodeScript::ExecutionState::WaitingForDevice: return QStringLiteral("WaitingForDevice");
+        case GcodeScript::ExecutionState::WaitingForTimer: return QStringLiteral("WaitingForTimer");
+        case GcodeScript::ExecutionState::WaitingForCondition: return QStringLiteral("WaitingForCondition");
+        case GcodeScript::ExecutionState::Stopping: return QStringLiteral("Stopping");
+        case GcodeScript::ExecutionState::Completed: return QStringLiteral("Completed");
+        case GcodeScript::ExecutionState::Faulted: return QStringLiteral("Faulted");
+        }
+        return QStringLiteral("Unknown");
+    };
+
+    QVariantList result;
+    for (int index = 0; index < GcodeScripts.size(); ++index) {
+        GcodeScript* worker = GcodeScripts.at(index);
+        if (!worker)
+            continue;
+        const QString source = worker->GetGcodeScript();
+        result.append(QVariantMap{
+            {QStringLiteral("index"), index},
+            {QStringLiteral("id"), worker->ID},
+            {QStringLiteral("state"), stateName(worker->State())},
+            {QStringLiteral("running"), worker->IsRunning()},
+            {QStringLiteral("sourceLength"), source.size()},
+        });
+    }
+    return result;
+}
+
+QVariantList RobotWindow::pluginValidateGScript(const QString& source,
+                                                QString*) const
+{
+    const GScriptAnalysisResult analysis = GScriptAnalyzer::analyze(source);
+    QVariantList result;
+    for (const GScriptDiagnostic& diagnostic : analysis.diagnostics) {
+        result.append(QVariantMap{
+            {QStringLiteral("severity"), diagnostic.severityName()},
+            {QStringLiteral("code"), diagnostic.code},
+            {QStringLiteral("line"), diagnostic.line},
+            {QStringLiteral("column"), diagnostic.column},
+            {QStringLiteral("message"), diagnostic.message},
+            {QStringLiteral("hint"), diagnostic.hint},
+        });
+    }
+    return result;
+}
+
+bool RobotWindow::pluginLoadGScript(int workerIndex, const QString& source,
+                                    QString* error)
+{
+    if (QThread::currentThread() != thread()) {
+        bool result = false;
+        QString nestedError;
+        const bool invoked = QMetaObject::invokeMethod(
+            this,
+            [this, workerIndex, source, &result, &nestedError]() {
+                result = pluginLoadGScript(workerIndex, source, &nestedError);
+            },
+            Qt::BlockingQueuedConnection);
+        if (!invoked && nestedError.isEmpty())
+            nestedError = QStringLiteral("could not access the G-Script editor");
+        if (error)
+            *error = nestedError;
+        return invoked && result;
+    }
+
+    const int selected = ui && ui->cbProgramThreadID
+        ? ui->cbProgramThreadID->currentIndex() : -1;
+    const int index = workerIndex < 0 ? selected : workerIndex;
+    if (index < 0 || index >= GcodeScripts.size()) {
+        if (error)
+            *error = QStringLiteral("G-Script worker index is out of range");
+        return false;
+    }
+    GcodeScript* worker = GcodeScripts.at(index);
+    if (!worker || worker->IsRunning()) {
+        if (error)
+            *error = QStringLiteral("cannot replace a running G-Script worker");
+        return false;
+    }
+    worker->SetGcodeScript(source);
+    if (index == selected && ui && ui->pteGcodeArea) {
+        ui->pteGcodeArea->setPlainText(source);
+        ui->pteGcodeArea->moveCursor(QTextCursor::Start);
+        IsGcodeEditorTextChanged = true;
+        ValidateGScriptNow();
+    }
+    return true;
+}
+
+bool RobotWindow::pluginRunGScript(int workerIndex, const QString& source,
+                                   QString* error)
+{
+    if (QThread::currentThread() != thread()) {
+        bool result = false;
+        QString nestedError;
+        const bool invoked = QMetaObject::invokeMethod(
+            this,
+            [this, workerIndex, source, &result, &nestedError]() {
+                result = pluginRunGScript(workerIndex, source, &nestedError);
+            },
+            Qt::BlockingQueuedConnection);
+        if (!invoked && nestedError.isEmpty())
+            nestedError = QStringLiteral("could not start the G-Script worker");
+        if (error)
+            *error = nestedError;
+        return invoked && result;
+    }
+
+    const GScriptAnalysisResult analysis = GScriptAnalyzer::analyze(source);
+    if (analysis.hasErrors()) {
+        if (error) {
+            *error = QStringLiteral("G-Script validation failed with %1 error(s)")
+                         .arg(analysis.errorCount());
+            if (!analysis.diagnostics.isEmpty())
+                *error += QStringLiteral(": ") + analysis.diagnostics.first().message;
+        }
+        return false;
+    }
+    if (m_cellSupervisor && !m_cellSupervisor->automationAllowed()) {
+        if (error)
+            *error = tr("cannot run while cell is %1")
+                         .arg(m_cellSupervisor->stateName());
+        return false;
+    }
+
+    const int selected = ui && ui->cbProgramThreadID
+        ? ui->cbProgramThreadID->currentIndex() : -1;
+    const int index = workerIndex < 0 ? selected : workerIndex;
+    if (index < 0 || index >= GcodeScripts.size()) {
+        if (error)
+            *error = QStringLiteral("G-Script worker index is out of range");
+        return false;
+    }
+    GcodeScript* worker = GcodeScripts.at(index);
+    if (!worker || worker->IsRunning()) {
+        if (error)
+            *error = QStringLiteral("the selected G-Script worker is already running");
+        return false;
+    }
+
+    if (ui && ui->leZ && ui->pbConnectRobot &&
+        ui->leZ->text().toFloat() > -200 &&
+        ui->pbConnectRobot->text() == QStringLiteral("Disconnect")) {
+        QMessageBox confirmDialog(this);
+        confirmDialog.setIcon(QMessageBox::Warning);
+        confirmDialog.setWindowTitle(tr("Confirm Block Program Run"));
+        confirmDialog.setText(tr("The robot has not returned to Home."));
+        confirmDialog.setInformativeText(
+            tr("Cancel and return the robot to Home, or explicitly continue the generated block program."));
+        QPushButton* cancelButton = confirmDialog.addButton(
+            tr("Cancel Run"), QMessageBox::RejectRole);
+        QPushButton* continueButton = confirmDialog.addButton(
+            tr("Run Anyway"), QMessageBox::AcceptRole);
+        confirmDialog.setDefaultButton(cancelButton);
+        confirmDialog.exec();
+        if (confirmDialog.clickedButton() != continueButton) {
+            if (error)
+                *error = QStringLiteral("operator cancelled the block program run");
+            return false;
+        }
+    }
+
+    worker->SetGcodeScript(source);
+    if (ui) {
+        worker->DefaultRobot = ui->cbSelectedRobot->currentText();
+        worker->DefaultConveyor = ui->cbSelectedConveyor->currentText();
+        worker->DefaultEncoder = ui->cbSelectedEncoder->currentText();
+        worker->DefaultSlider = ui->cbSelectedSlider->currentText();
+        worker->DefaultDevice = ui->cbSelectedDevice->currentText();
+        if (index == selected && ui->pteGcodeArea) {
+            ui->pteGcodeArea->setPlainText(source);
+            ui->pteGcodeArea->moveCursor(QTextCursor::Start);
+            if (ui->pbExecuteGcodes)
+                ui->pbExecuteGcodes->setChecked(true);
+        }
+    }
+    QMetaObject::invokeMethod(
+        worker, "ExecuteGcode", Qt::QueuedConnection,
+        Q_ARG(QString, source), Q_ARG(int, int(GcodeScript::BEGIN)));
+    return true;
+}
+
+bool RobotWindow::pluginStopGScript(int workerIndex, QString* error)
+{
+    if (QThread::currentThread() != thread()) {
+        bool result = false;
+        QString nestedError;
+        const bool invoked = QMetaObject::invokeMethod(
+            this,
+            [this, workerIndex, &result, &nestedError]() {
+                result = pluginStopGScript(workerIndex, &nestedError);
+            },
+            Qt::BlockingQueuedConnection);
+        if (!invoked && nestedError.isEmpty())
+            nestedError = QStringLiteral("could not stop the G-Script worker");
+        if (error)
+            *error = nestedError;
+        return invoked && result;
+    }
+
+    const int selected = ui && ui->cbProgramThreadID
+        ? ui->cbProgramThreadID->currentIndex() : -1;
+    const int index = workerIndex < 0 ? selected : workerIndex;
+    if (index < 0 || index >= GcodeScripts.size()) {
+        if (error)
+            *error = QStringLiteral("G-Script worker index is out of range");
+        return false;
+    }
+    GcodeScript* worker = GcodeScripts.at(index);
+    if (!worker) {
+        if (error)
+            *error = QStringLiteral("G-Script worker is unavailable");
+        return false;
+    }
+    QMetaObject::invokeMethod(worker, "Stop", Qt::QueuedConnection);
+    return true;
+}
+
 void RobotWindow::LoadPlugin()
 {
     if (m_pluginManager)
@@ -3044,6 +3284,24 @@ void RobotWindow::LoadPlugin()
         else
             QMetaObject::invokeMethod(tracking, complete, Qt::BlockingQueuedConnection);
         return result;
+    };
+    hostServices.gscriptWorkers = [this](QString* error) {
+        return pluginGScriptWorkers(error);
+    };
+    hostServices.validateGScript = [this](const QString& source,
+                                          QString* error) {
+        return pluginValidateGScript(source, error);
+    };
+    hostServices.loadGScript = [this](int workerIndex, const QString& source,
+                                      QString* error) {
+        return pluginLoadGScript(workerIndex, source, error);
+    };
+    hostServices.runGScript = [this](int workerIndex, const QString& source,
+                                     QString* error) {
+        return pluginRunGScript(workerIndex, source, error);
+    };
+    hostServices.stopGScript = [this](int workerIndex, QString* error) {
+        return pluginStopGScript(workerIndex, error);
     };
     hostServices.reportHealth = [this](const QString& pluginId,
                                        const QString& state,

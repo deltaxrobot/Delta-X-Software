@@ -13,6 +13,7 @@ Delta X Software is a comprehensive control and programming platform for Delta r
 Contributor entry points: [contribution guide](CONTRIBUTING.md),
 [architecture](docs/architecture.md), [development guide](docs/development.md),
 [cross-platform setup](docs/platform-setup.md), [plugin system](docs/plugin-system.md),
+[block programming](docs/block-programming.md),
 [release process](docs/releasing.md), [security policy](SECURITY.md), and
 [governance](GOVERNANCE.md).
 
@@ -83,6 +84,9 @@ The versioned plugin SDK supports permission-checked host services, dynamic
 G-Script primitives, namespaced devices, tracking/vision access, operator
 panels, and plugin-to-plugin services. Start with the buildable
 [`sdk/examples/inspection-plugin`](sdk/examples/inspection-plugin/README.md).
+The bundled [Block Programming plugin](plugin/BlockProgramming/README.md)
+provides an offline block editor, live G-Script generation, validation, and
+supervised worker controls.
 
 ## Build from Source with CMake
 
@@ -142,7 +146,8 @@ cmake --build --preset developer-release --parallel 2
 ```
 
 The script discovers Qt from `CMakeCache.txt`, runs `windeployqt`, includes the
-OpenCV/MSVC runtime, operator documentation and legal notices, and writes
+OpenCV/MSVC runtime, the Block Programming plugin, operator documentation and
+legal notices, and writes
 `BUILD-METADATA.json` plus `SHA256SUMS.txt`. It refuses to package a dirty source
 tree unless `-AllowDirtySource` is explicitly supplied. Run
 `tools/install-qt-licenses.ps1` once so the checksum-pinned LGPL/GPL texts can

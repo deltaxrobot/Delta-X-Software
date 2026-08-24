@@ -122,6 +122,7 @@ private slots:
     void cleanup();
     void loadsCapabilitiesCommandsAndSettings();
     void activatesV3WithPermissionCheckedExtensions();
+    void loadsBundledBlockProgrammingPlugin();
     void deniesV3ExtensionsWithoutGrants();
     void hostContextRoutesAndEnforcesPermissions();
     void rejectsExtensionCollisions();
@@ -135,12 +136,14 @@ private:
     QString fixtureLibrary() const;
     QString m_fixtureDirectory;
     QString m_v3FixtureDirectory;
+    QString m_blockPluginDirectory;
 };
 
 void PluginManagerTest::initTestCase()
 {
     m_fixtureDirectory = qEnvironmentVariable("DELTA_X_TEST_PLUGIN_DIR");
     m_v3FixtureDirectory = qEnvironmentVariable("DELTA_X_TEST_PLUGIN_V3_DIR");
+    m_blockPluginDirectory = qEnvironmentVariable("DELTA_X_BLOCK_PLUGIN_DIR");
     QVERIFY2(!m_fixtureDirectory.isEmpty(),
              "DELTA_X_TEST_PLUGIN_DIR was not provided by the test runner");
     QVERIFY2(!fixtureLibrary().isEmpty(), "The fake plugin library was not built");
@@ -148,6 +151,10 @@ void PluginManagerTest::initTestCase()
              "DELTA_X_TEST_PLUGIN_V3_DIR was not provided by the test runner");
     QVERIFY2(QDir(m_v3FixtureDirectory).exists(),
              "The v3 fake plugin directory was not built");
+    QVERIFY2(!m_blockPluginDirectory.isEmpty(),
+             "DELTA_X_BLOCK_PLUGIN_DIR was not provided by the test runner");
+    QVERIFY2(QDir(m_blockPluginDirectory).exists(),
+             "The Block Programming plugin directory was not built");
 }
 
 void PluginManagerTest::cleanup()
@@ -319,6 +326,110 @@ void PluginManagerTest::activatesV3WithPermissionCheckedExtensions()
     QVERIFY(!registry.hasGScriptPrimitive(QStringLiteral("fixturemultiply")));
 }
 
+void PluginManagerTest::loadsBundledBlockProgrammingPlugin()
+{
+    bool sourceLoaded = false;
+    bool sourceRun = false;
+    bool workerStopped = false;
+    QString healthState;
+
+    PluginHostServices services;
+    services.projectScope = QStringLiteral("block-plugin-project");
+    services.gscriptWorkers = [](QString*) {
+        return QVariantList{QVariantMap{
+            {QStringLiteral("index"), 0},
+            {QStringLiteral("id"), QStringLiteral("thread0")},
+            {QStringLiteral("state"), QStringLiteral("Idle")},
+            {QStringLiteral("running"), false},
+            {QStringLiteral("sourceLength"), 0},
+        }};
+    };
+    services.validateGScript = [](const QString&, QString*) {
+        return QVariantList{};
+    };
+    services.loadGScript = [&sourceLoaded](int, const QString&, QString*) {
+        sourceLoaded = true;
+        return true;
+    };
+    services.runGScript = [&sourceRun](int, const QString&, QString*) {
+        sourceRun = true;
+        return true;
+    };
+    services.stopGScript = [&workerStopped](int, QString*) {
+        workerStopped = true;
+        return true;
+    };
+    services.reportHealth = [&healthState](const QString&, const QString& state,
+                                            const QString&, const QVariantMap&,
+                                            QString*) {
+        healthState = state;
+        return true;
+    };
+
+    const QSet<QString> permissions = {
+        DeltaXPermissions::GScriptRead,
+        DeltaXPermissions::GScriptEdit,
+        DeltaXPermissions::GScriptRun,
+        DeltaXPermissions::HealthReport,
+    };
+    PluginManager manager;
+    manager.setHostServices(services);
+    manager.setGrantedPermissions(
+        {{QStringLiteral("deltax.block-programming"), permissions}});
+    manager.loadFromDirectories({m_blockPluginDirectory});
+    QCOMPARE(manager.loadedPluginIds(),
+             QStringList{QStringLiteral("deltax.block-programming")});
+
+    QTemporaryDir settingsDirectory;
+    QVERIFY(settingsDirectory.isValid());
+    QSettings settings(settingsDirectory.filePath(QStringLiteral("blocks.ini")),
+                       QSettings::IniFormat);
+    manager.loadSettings(settings, QStringLiteral("block-plugin-project"));
+
+    const PluginDescriptor descriptor = manager.descriptors().first();
+    QVERIFY(descriptor.active);
+    QCOMPARE(descriptor.apiVersion, 3);
+    QCOMPARE(descriptor.grantedPermissions.size(), permissions.size());
+    QCOMPARE(healthState, QStringLiteral("ready"));
+    QVERIFY(manager.panelProvider(descriptor.id));
+    QVERIFY(manager.panelProvider(descriptor.id)->panel());
+
+    QString error;
+    QVariantMap catalog;
+    QVERIFY(manager.executeCommand(descriptor.id, QStringLiteral("catalog"),
+                                   {}, &catalog, &error));
+    QVERIFY(catalog.value(QStringLiteral("blocks")).toList().size() >= 20);
+    QVERIFY(catalog.value(QStringLiteral("templates")).toStringList().contains(
+        QStringLiteral("Robot conveyor pick worker")));
+
+    QVariantMap generated;
+    QVERIFY(manager.executeCommand(
+        descriptor.id, QStringLiteral("template"),
+        {{QStringLiteral("name"),
+          QStringLiteral("Robot conveyor pick worker")}},
+        &generated, &error));
+    QVERIFY(generated.value(QStringLiteral("valid")).toBool());
+    QVERIFY(generated.value(QStringLiteral("script")).toString().contains(
+        QStringLiteral("PclaimObject")));
+
+    QVariantMap recompiled;
+    QVERIFY(manager.executeCommand(
+        descriptor.id, QStringLiteral("compile"),
+        {{QStringLiteral("document"),
+          generated.value(QStringLiteral("document"))}},
+        &recompiled, &error));
+    QVERIFY(recompiled.value(QStringLiteral("valid")).toBool());
+    QCOMPARE(recompiled.value(QStringLiteral("script")),
+             generated.value(QStringLiteral("script")));
+
+    manager.saveSettings(settings, QStringLiteral("block-plugin-project"));
+    QVERIFY(!sourceLoaded);
+    QVERIFY(!sourceRun);
+    QVERIFY(!workerStopped);
+    QVERIFY(manager.shutdown());
+    QCOMPARE(healthState, QStringLiteral("stopped"));
+}
+
 void PluginManagerTest::deniesV3ExtensionsWithoutGrants()
 {
     PluginManager manager;
@@ -361,6 +472,9 @@ void PluginManagerTest::hostContextRoutesAndEnforcesPermissions()
     QString claimedOwner;
     QString releasedOwner;
     QString completedOwner;
+    int loadedWorker = -1;
+    int runningWorker = -1;
+    int stoppedWorker = -1;
     QString reportedHealth;
     QString telemetryMetric;
     QString stopReason;
@@ -416,6 +530,35 @@ void PluginManagerTest::hostContextRoutesAndEnforcesPermissions()
         int, int, const QString& owner, QString*) {
         completed = true;
         completedOwner = owner;
+        return true;
+    };
+    services.gscriptWorkers = [](QString*) {
+        return QVariantList{QVariantMap{
+            {QStringLiteral("index"), 0},
+            {QStringLiteral("id"), QStringLiteral("thread0")},
+        }};
+    };
+    services.validateGScript = [](const QString& source, QString*) {
+        if (source.contains(QStringLiteral("invalid"))) {
+            return QVariantList{QVariantMap{
+                {QStringLiteral("severity"), QStringLiteral("Error")},
+                {QStringLiteral("code"), QStringLiteral("TEST")},
+            }};
+        }
+        return QVariantList{};
+    };
+    services.loadGScript = [&loadedWorker](int worker, const QString&,
+                                           QString*) {
+        loadedWorker = worker;
+        return true;
+    };
+    services.runGScript = [&runningWorker](int worker, const QString&,
+                                           QString*) {
+        runningWorker = worker;
+        return true;
+    };
+    services.stopGScript = [&stoppedWorker](int worker, QString*) {
+        stoppedWorker = worker;
         return true;
     };
     services.reportHealth = [&reportedHealth](
@@ -496,6 +639,20 @@ void PluginManagerTest::hostContextRoutesAndEnforcesPermissions()
     QCOMPARE(releasedOwner, QStringLiteral("plugin/test.context/worker"));
     QCOMPARE(completedOwner, QStringLiteral("plugin/test.context/worker"));
 
+    QCOMPARE(context.gscriptWorkers(&error).first().toMap()
+                 .value(QStringLiteral("id")).toString(),
+             QStringLiteral("thread0"));
+    QVERIFY(context.validateGScript(QStringLiteral("robot0 G28"), &error)
+                .isEmpty());
+    QCOMPARE(context.validateGScript(QStringLiteral("invalid"), &error).size(),
+             1);
+    QVERIFY(context.loadGScript(1, QStringLiteral("robot0 G28"), &error));
+    QVERIFY(context.runGScript(2, QStringLiteral("robot0 G28"), &error));
+    QVERIFY(context.stopGScript(3, &error));
+    QCOMPARE(loadedWorker, 1);
+    QCOMPARE(runningWorker, 2);
+    QCOMPARE(stoppedWorker, 3);
+
     QVariantMap response;
     const QVariantList catalog = context.serviceCatalog(&error);
     QCOMPARE(catalog.size(), 1);
@@ -520,6 +677,17 @@ void PluginManagerTest::hostContextRoutesAndEnforcesPermissions()
 
     PluginHostContext denied(QStringLiteral("test.denied"), requested, {}, services);
     QCOMPARE(denied.readVariable(QStringLiteral("A"), 7).toInt(), 7);
+    QVERIFY(denied.gscriptWorkers(&error).isEmpty());
+    QVERIFY(error.contains(DeltaXPermissions::GScriptRead));
+    QVERIFY(!denied.loadGScript(4, QStringLiteral("robot0 G28"), &error));
+    QVERIFY(error.contains(DeltaXPermissions::GScriptEdit));
+    QVERIFY(!denied.runGScript(4, QStringLiteral("robot0 G28"), &error));
+    QVERIFY(error.contains(DeltaXPermissions::GScriptRun));
+    QVERIFY(!denied.stopGScript(4, &error));
+    QVERIFY(error.contains(DeltaXPermissions::GScriptRun));
+    QCOMPARE(loadedWorker, 1);
+    QCOMPARE(runningWorker, 2);
+    QCOMPARE(stoppedWorker, 3);
     QVERIFY(!denied.requestControlledStop(QStringLiteral("denied"), &error));
     QVERIFY(error.contains(DeltaXPermissions::CellControl));
 }

@@ -47,6 +47,14 @@ public:
                        QString* error = nullptr) override;
     bool completeObject(int trackingId, int uid, const QString& owner,
                         QString* error = nullptr) override;
+    QVariantList gscriptWorkers(QString* error = nullptr) const override;
+    QVariantList validateGScript(const QString& source,
+                                 QString* error = nullptr) const override;
+    bool loadGScript(int workerIndex, const QString& source,
+                     QString* error = nullptr) override;
+    bool runGScript(int workerIndex, const QString& source,
+                    QString* error = nullptr) override;
+    bool stopGScript(int workerIndex, QString* error = nullptr) override;
     QVariantList serviceCatalog(QString* error = nullptr) const override;
     bool invokeService(const QString& serviceId, const QString& method,
                        const QVariantMap& request, QVariantMap* response,

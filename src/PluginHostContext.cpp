@@ -232,6 +232,69 @@ bool PluginHostContext::completeObject(int trackingId, int uid,
         trackingId, uid, scopedOwner(owner), error);
 }
 
+QVariantList PluginHostContext::gscriptWorkers(QString* error) const
+{
+    if (!require(DeltaXPermissions::GScriptRead, error))
+        return {};
+    if (!m_services.gscriptWorkers) {
+        if (error)
+            *error = QStringLiteral("G-Script worker service is unavailable");
+        return {};
+    }
+    return m_services.gscriptWorkers(error);
+}
+
+QVariantList PluginHostContext::validateGScript(const QString& source,
+                                                QString* error) const
+{
+    if (!require(DeltaXPermissions::GScriptRead, error))
+        return {};
+    if (!m_services.validateGScript) {
+        if (error)
+            *error = QStringLiteral("G-Script validation service is unavailable");
+        return {};
+    }
+    return m_services.validateGScript(source, error);
+}
+
+bool PluginHostContext::loadGScript(int workerIndex, const QString& source,
+                                    QString* error)
+{
+    if (!require(DeltaXPermissions::GScriptEdit, error))
+        return false;
+    if (!m_services.loadGScript) {
+        if (error)
+            *error = QStringLiteral("G-Script editor service is unavailable");
+        return false;
+    }
+    return m_services.loadGScript(workerIndex, source, error);
+}
+
+bool PluginHostContext::runGScript(int workerIndex, const QString& source,
+                                   QString* error)
+{
+    if (!require(DeltaXPermissions::GScriptRun, error))
+        return false;
+    if (!m_services.runGScript) {
+        if (error)
+            *error = QStringLiteral("G-Script run service is unavailable");
+        return false;
+    }
+    return m_services.runGScript(workerIndex, source, error);
+}
+
+bool PluginHostContext::stopGScript(int workerIndex, QString* error)
+{
+    if (!require(DeltaXPermissions::GScriptRun, error))
+        return false;
+    if (!m_services.stopGScript) {
+        if (error)
+            *error = QStringLiteral("G-Script stop service is unavailable");
+        return false;
+    }
+    return m_services.stopGScript(workerIndex, error);
+}
+
 QVariantList PluginHostContext::serviceCatalog(QString* error) const
 {
     if (!require(DeltaXPermissions::ServicesConsume, error))

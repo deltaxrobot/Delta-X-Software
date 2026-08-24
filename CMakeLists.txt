@@ -149,6 +149,12 @@ option(DELTA_X_ALLOW_LEGACY_VENDOR_SDKS
     "Allow camera plugin builds against quarantined vendored SDK snapshots" OFF)
 option(DELTA_X_BUILD_REFERENCE_PLUGIN
     "Build the API v3 reference inspection plugin" OFF)
+option(DELTA_X_BUILD_BLOCK_PROGRAMMING_PLUGIN
+    "Build the native block programming plugin" ON)
+
+if(DELTA_X_BUILD_BLOCK_PROGRAMMING_PLUGIN)
+    add_subdirectory(plugin/BlockProgramming)
+endif()
 
 if(DELTA_X_BUILD_REFERENCE_PLUGIN)
     add_subdirectory(sdk/examples/inspection-plugin)

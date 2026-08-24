@@ -6,6 +6,7 @@ param(
     [string]$QtLicenseDirectory,
     [string]$OpenCvRuntimePath,
     [string]$MsVcRuntimeDirectory,
+    [string]$BlockProgrammingPluginPath,
     [string]$IndustrialCameraPluginPath,
     [string]$VendorRuntimeDirectory,
     [switch]$AcknowledgeVendorRuntimeLicense,
@@ -100,6 +101,25 @@ if ([string]::IsNullOrWhiteSpace($OpenCvRuntimePath)) {
 $OpenCvRuntimePath = [IO.Path]::GetFullPath($OpenCvRuntimePath)
 if (-not (Test-Path -LiteralPath $OpenCvRuntimePath -PathType Leaf)) {
     throw "OpenCV runtime was not found. Pass -OpenCvRuntimePath: $OpenCvRuntimePath"
+}
+
+if ([string]::IsNullOrWhiteSpace($BlockProgrammingPluginPath)) {
+    $blockPluginCandidates = @(
+        (Join-Path $BuildDirectory 'plugin\BlockProgrammingPlugin.dll'),
+        (Join-Path $BuildDirectory 'plugin\Release\BlockProgrammingPlugin.dll'),
+        (Join-Path $BuildDirectory 'release\plugin\BlockProgrammingPlugin.dll'),
+        (Join-Path $BuildDirectory 'Release\plugin\BlockProgrammingPlugin.dll')
+    )
+    $BlockProgrammingPluginPath = $blockPluginCandidates |
+        Where-Object { Test-Path -LiteralPath $_ -PathType Leaf } |
+        Select-Object -First 1
+}
+if ([string]::IsNullOrWhiteSpace($BlockProgrammingPluginPath)) {
+    throw 'Block Programming plugin was not found. Build the default CMake target or pass -BlockProgrammingPluginPath.'
+}
+$BlockProgrammingPluginPath = [IO.Path]::GetFullPath($BlockProgrammingPluginPath)
+if (-not (Test-Path -LiteralPath $BlockProgrammingPluginPath -PathType Leaf)) {
+    throw "Block Programming plugin was not found: $BlockProgrammingPluginPath"
 }
 
 if (-not [string]::IsNullOrWhiteSpace($IndustrialCameraPluginPath)) {
@@ -253,12 +273,16 @@ if (Test-Path -LiteralPath $pythonPluginSource -PathType Container) {
     New-Item -ItemType Directory -Path $pluginOutput -Force | Out-Null
     Copy-Item -LiteralPath $pythonPluginSource -Destination $pluginOutput -Recurse
 }
+$pluginOutput = Join-Path $stagingDirectory 'plugin'
+New-Item -ItemType Directory -Path $pluginOutput -Force | Out-Null
+Copy-Item -LiteralPath $BlockProgrammingPluginPath -Destination $pluginOutput
 
 $docsOutput = Join-Path $stagingDirectory 'docs'
 New-Item -ItemType Directory -Path $docsOutput | Out-Null
 $releaseDocs = @(
     'Delta-X-Multi-Robot-Installation-Calibration-Operation-Guide.docx',
     'camera-gige-usb3.md',
+    'block-programming.md',
     'external-vision.md',
     'gscript-runtime.md',
     'gscript-design.md',
@@ -321,6 +345,7 @@ $buildMetadata = [ordered]@{
     sourceDirty = $sourceDirty
     qtLicenseDocuments = @('LGPL-3.0-only.txt', 'GPL-3.0-only.txt')
     msvcRuntimes = $copiedMsVcRuntimes
+    blockProgrammingPluginIncluded = $true
     industrialCameraPluginIncluded = (-not [string]::IsNullOrWhiteSpace($IndustrialCameraPluginPath))
     vendorRuntimes = @($copiedVendorRuntimes)
 }
@@ -342,6 +367,7 @@ Source commit: $gitCommit
 Source dirty: $sourceDirty
 
 The application, Qt runtime, MSVC runtime and OpenCV runtime are included.
+The offline Block Programming plugin and operator guide are included.
 Industrial camera support: $cameraStatus
 
 UVC USB/USB3 cameras use the built-in Webcam backend. Basler pylon and

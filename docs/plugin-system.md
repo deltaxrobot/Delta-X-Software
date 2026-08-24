@@ -105,6 +105,9 @@ the host context.
 | `vision.submit` | Submit correlated conveyor-coordinate detections. |
 | `tracking.read` | Read copy-based tracking snapshots. |
 | `tracking.claim` | Claim, release, or complete tracked objects atomically. |
+| `gscript.read` | List workers and validate G-Script source. |
+| `gscript.edit` | Load validated source into a worker editor. |
+| `gscript.run` | Start or stop a G-Script worker through the supervised host. |
 | `gscript.register` | Register G-Script primitives. |
 | `services.provide` | Register versioned plugin services. |
 | `services.consume` | Invoke services registered by another plugin. |
@@ -116,6 +119,10 @@ Declaring a permission does not grant it. Without a grant, the context returns a
 permission error and related G-Script/device/service extensions are not
 registered. Plugins should degrade gracefully when optional permissions are
 denied.
+
+The bundled [Block Programming plugin](../plugin/BlockProgramming/README.md)
+demonstrates the read/edit/run surface with an offline block editor, generated
+source preview, two-stage validation, and explicit operator confirmation.
 
 ## G-Script primitives
 

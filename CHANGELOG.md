@@ -30,6 +30,9 @@ semantic versioning after the first governed public release.
   dynamic G-Script primitives, namespaced plugin devices, versioned services,
   bounded events, tracking/vision access, permission UI, and a buildable
   reference inspection plugin.
+- Native offline Block Programming plugin with structured drag-and-drop blocks,
+  versioned project files, G-Script generation and validation, starter vision
+  and multi-robot pick templates, and supervised worker load/run/stop controls.
 
 ### Changed
 

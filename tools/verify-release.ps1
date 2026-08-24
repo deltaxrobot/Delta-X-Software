@@ -16,6 +16,7 @@ $requiredFiles = @(
     'BUILD-METADATA.json',
     'DEPLOYMENT.txt',
     'DeltaRobotSoftware.exe',
+    'docs\block-programming.md',
     'docs\camera-gige-usb3.md',
     'docs\Delta-X-Multi-Robot-Installation-Calibration-Operation-Guide.docx',
     'docs\external-vision.md',
@@ -31,6 +32,7 @@ $requiredFiles = @(
     'licenses\LGPL-3.0-only.txt',
     'licenses\Qt-runtime-notice.md',
     'NOTICE',
+    'plugin\BlockProgrammingPlugin.dll',
     'models\README.txt',
     'SHA256SUMS.txt',
     'THIRD_PARTY_NOTICES.md',
@@ -80,6 +82,12 @@ $pluginPath = Join-Path $PackageDirectory 'plugin\IndustrialCameraPlugin.dll'
 $pluginPresent = Test-Path -LiteralPath $pluginPath -PathType Leaf
 if ([bool]$metadata.industrialCameraPluginIncluded -ne $pluginPresent) {
     throw 'Industrial-camera plugin presence does not match BUILD-METADATA.json.'
+}
+$blockPluginPath = Join-Path $PackageDirectory 'plugin\BlockProgrammingPlugin.dll'
+$blockPluginPresent = Test-Path -LiteralPath $blockPluginPath -PathType Leaf
+if (-not $blockPluginPresent -or
+    -not [bool]$metadata.blockProgrammingPluginIncluded) {
+    throw 'The required Block Programming plugin is missing or not declared in BUILD-METADATA.json.'
 }
 
 $declaredVendorRuntimes = @($metadata.vendorRuntimes)

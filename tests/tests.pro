@@ -5,6 +5,7 @@ SUBDIRS += \
     control_plane \
     device_state \
     gscript_analyzer \
+    block_programming \
     variable_manager \
     tracking_claim \
     vision_pipeline \
@@ -19,6 +20,7 @@ SUBDIRS += \
 control_plane.file = $$PWD/control_plane/control_plane.pro
 device_state.file = $$PWD/device_state/device_state.pro
 gscript_analyzer.file = $$PWD/gscript_analyzer/gscript_analyzer.pro
+block_programming.file = $$PWD/block_programming/block_programming.pro
 variable_manager.file = $$PWD/variable_manager/variable_manager.pro
 tracking_claim.file = $$PWD/tracking_claim/tracking_claim.pro
 vision_pipeline.file = $$PWD/vision_pipeline/vision_pipeline.pro

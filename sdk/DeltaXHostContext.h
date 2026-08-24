@@ -62,6 +62,18 @@ public:
                                 const QString& owner,
                                 QString* error = nullptr) = 0;
 
+    // Worker entries contain index, id, state, running and sourceLength.
+    // Diagnostic entries contain severity, code, line, column, message and hint.
+    virtual QVariantList gscriptWorkers(QString* error = nullptr) const = 0;
+    virtual QVariantList validateGScript(const QString& source,
+                                         QString* error = nullptr) const = 0;
+    virtual bool loadGScript(int workerIndex, const QString& source,
+                             QString* error = nullptr) = 0;
+    virtual bool runGScript(int workerIndex, const QString& source,
+                            QString* error = nullptr) = 0;
+    virtual bool stopGScript(int workerIndex,
+                             QString* error = nullptr) = 0;
+
     // Each catalog entry contains id, version, methods and providerPluginId.
     virtual QVariantList serviceCatalog(QString* error = nullptr) const = 0;
     virtual bool invokeService(const QString& serviceId,

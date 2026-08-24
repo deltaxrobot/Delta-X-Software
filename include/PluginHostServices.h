@@ -33,6 +33,12 @@ struct PluginHostServices
     std::function<bool(int, int, const QString&, QString*)> releaseObject;
     std::function<bool(int, int, const QString&, QString*)> completeObject;
 
+    std::function<QVariantList(QString*)> gscriptWorkers;
+    std::function<QVariantList(const QString&, QString*)> validateGScript;
+    std::function<bool(int, const QString&, QString*)> loadGScript;
+    std::function<bool(int, const QString&, QString*)> runGScript;
+    std::function<bool(int, QString*)> stopGScript;
+
     std::function<bool(const QString&, const QString&, const QString&,
                        const QVariantMap&, QString*)>
         reportHealth;

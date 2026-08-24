@@ -19,6 +19,9 @@ inline const QString DevicesProvide = QStringLiteral("devices.provide");
 inline const QString VisionSubmit = QStringLiteral("vision.submit");
 inline const QString TrackingRead = QStringLiteral("tracking.read");
 inline const QString TrackingClaim = QStringLiteral("tracking.claim");
+inline const QString GScriptRead = QStringLiteral("gscript.read");
+inline const QString GScriptEdit = QStringLiteral("gscript.edit");
+inline const QString GScriptRun = QStringLiteral("gscript.run");
 inline const QString GScriptRegister = QStringLiteral("gscript.register");
 inline const QString ServicesProvide = QStringLiteral("services.provide");
 inline const QString ServicesConsume = QStringLiteral("services.consume");
@@ -39,6 +42,9 @@ inline QStringList all()
         VisionSubmit,
         TrackingRead,
         TrackingClaim,
+        GScriptRead,
+        GScriptEdit,
+        GScriptRun,
         GScriptRegister,
         ServicesProvide,
         ServicesConsume,

@@ -551,6 +551,14 @@ private:
     void performControlledCellStop(const QString& reason);
     void updateCellStateUi(CellSupervisor::State state, const QString& stateName,
                            const QString& reason);
+    QVariantList pluginGScriptWorkers(QString* error = nullptr) const;
+    QVariantList pluginValidateGScript(const QString& source,
+                                       QString* error = nullptr) const;
+    bool pluginLoadGScript(int workerIndex, const QString& source,
+                           QString* error = nullptr);
+    bool pluginRunGScript(int workerIndex, const QString& source,
+                          QString* error = nullptr);
+    bool pluginStopGScript(int workerIndex, QString* error = nullptr);
 
     // ========== PRIVATE MEMBER VARIABLES ==========
     
