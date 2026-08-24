@@ -1,3 +1,6 @@
 {
-    "Keys" : [ ]
+    "apiVersion": 1,
+    "pluginVersion": "1.0.0",
+    "name": "industrialcamera",
+    "Keys": []
 }

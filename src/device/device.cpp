@@ -27,10 +27,12 @@ Device::~Device()
             serialPort->close();
         }
     }
+    connectionOpen.store(false, std::memory_order_release);
 }
 
 void Device::SetSerialPortName(QString name)
 {
+    QWriteLocker locker(&stateLock);
     serialPortName = name;
     // Detect and parse optional socket endpoint formatted as "host:port" or "tcp://host:port"
     QString n = name.trimmed();
@@ -64,6 +66,10 @@ void Device::Connect()
     if (looksLikeSocket && !hostName.isEmpty() && tcpPort > 0) {
         if (tcpSocket == nullptr) {
             tcpSocket = new QTcpSocket(this);
+            connect(tcpSocket, &QTcpSocket::disconnected, this, [this]() {
+                connectionOpen.store(false, std::memory_order_release);
+                connType.store(ConnectionType::None, std::memory_order_release);
+            });
         }
         if (tcpSocket->state() != QAbstractSocket::ConnectedState) {
             connect(tcpSocket, SIGNAL(readyRead()), this, SLOT(ReadData()));
@@ -71,6 +77,9 @@ void Device::Connect()
             tcpSocket->waitForConnected(500);
         }
         connType = ConnectionType::Socket;
+        connectionOpen.store(
+            tcpSocket->state() == QAbstractSocket::ConnectedState,
+            std::memory_order_release);
 
         jsonObject["id"] = ID();
         jsonObject["state"] = (tcpSocket->state() == QAbstractSocket::ConnectedState)?"open":"close";
@@ -89,10 +98,20 @@ void Device::Connect()
     if (serialPort == nullptr)
     {
         serialPort = new QSerialPort(this);
+        connect(serialPort, &QSerialPort::errorOccurred, this,
+                [this](QSerialPort::SerialPortError error) {
+            if (error == QSerialPort::ResourceError ||
+                error == QSerialPort::DeviceNotFoundError ||
+                error == QSerialPort::PermissionError) {
+                connectionOpen.store(false, std::memory_order_release);
+            }
+        });
     }
 
-    if (serialPort->isOpen())
+    if (serialPort->isOpen()) {
+        connectionOpen.store(true, std::memory_order_release);
         return;
+    }
 
     if (serialPortName.toLower() == "auto" && confirmRequest != "")
     {
@@ -149,6 +168,7 @@ void Device::Connect()
     }
 
     connType = ConnectionType::Serial;
+    connectionOpen.store(serialPort->isOpen(), std::memory_order_release);
 
     jsonObject["id"] = ID();
     jsonObject["state"] = (serialPort->isOpen())?"open":"close";
@@ -189,6 +209,7 @@ void Device::Disconnect()
         emit infoReady(jsonString);
         connType = ConnectionType::None;
     }
+    connectionOpen.store(false, std::memory_order_release);
 }
 
 void Device::Delay(int msec) {
@@ -263,23 +284,25 @@ QString Device::ReadLine(){
 
 QString Device::GetSerialPortName()
 {
+    QReadLocker locker(&stateLock);
     return serialPortName;
+}
+
+void Device::OpenAtAddress(QString address)
+{
+    SetSerialPortName(address);
+    Connect();
 }
 
 int Device::GetSerialPortBaudrate()
 {
+    QReadLocker locker(&stateLock);
     return baudrate;
 }
 
 bool Device::IsOpen()
 {
-    if (tcpSocket && tcpSocket->state() == QAbstractSocket::ConnectedState)
-        return true;
-    if (serialPort == nullptr)
-    {
-        serialPort = new QSerialPort();
-    }
-    return serialPort->isOpen();
+    return connectionOpen.load(std::memory_order_acquire);
 }
 
 int Device::ID()
@@ -327,6 +350,7 @@ void Device::Run()
 
 void Device::SetSocketAddress(const QString &host, int port)
 {
+    QWriteLocker locker(&stateLock);
     hostName = host;
     tcpPort = port;
 }

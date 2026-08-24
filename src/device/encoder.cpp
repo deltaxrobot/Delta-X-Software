@@ -8,6 +8,21 @@ Encoder::Encoder(QString COM, int baudrate, bool is_open, QObject *parent) : Dev
     jsonObject["device"] = "encoder";
 }
 
+int Encoder::LinkedConveyorId() const
+{
+    return linkedConveyor.load(std::memory_order_acquire);
+}
+
+float Encoder::CurrentPosition() const
+{
+    return position.load(std::memory_order_acquire);
+}
+
+void Encoder::SetLinkedConveyor(int conveyorId)
+{
+    linkedConveyor.store(conveyorId, std::memory_order_release);
+}
+
 void Encoder::ProcessResponse(QString id, QString response)
 {
     if (response.contains("P"))
@@ -22,7 +37,7 @@ void Encoder::ProcessResponse(QString id, QString response)
             value = response.mid(1).toFloat();
         }
 
-        Position = value;
+        position.store(value, std::memory_order_release);
 
         emit GotPosition(ID(), value);
     }

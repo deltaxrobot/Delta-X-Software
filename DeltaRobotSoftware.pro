@@ -31,49 +31,11 @@ win32:msvc* {
 
 macx {
     QMAKE_INFO_PLIST = $$PWD/resources/macos/Info.plist
-    QMAKE_CFLAGS += -include arm_acle.h
-    QMAKE_CXXFLAGS += -include arm_acle.h
 }
 
-windows {
-    INCLUDEPATH += $$PWD/3rd-party/opencv/build/include
-    LIBS += $$PWD/3rd-party/opencv/build/x64/vc15/lib/opencv_world400.lib
-    LIBS += $$PWD/3rd-party/opencv/build/x64/vc15/lib/opencv_world400d.lib
-
-#    include ($$PWD/3rd-party/QJoysticks/QJoysticks.pri)
-}
-
-linux {
-    INCLUDEPATH += /usr/local/include/opencv4
-    LIBS += -L/usr/local/lib -lopencv_core -lopencv_imgcodecs -lopencv_imgproc -lopencv_videoio -lopencv_calib3d
-}
-
-macx {
-    isEmpty(OPENCV_DIR) {
-        OPENCV_CANDIDATES = \
-            /opt/homebrew \
-            /usr/local \
-            $$clean_path($$getenv(HOME))/micromamba/envs/deltax-build
-
-        for(candidate, OPENCV_CANDIDATES) {
-            isEmpty(OPENCV_DIR): exists($$candidate/include/opencv4/opencv2/core.hpp) {
-                OPENCV_DIR = $$candidate
-            }
-        }
-    }
-
-    OPENCV_INCLUDE_DIR = $$OPENCV_DIR/include/opencv4
-    OPENCV_LIB_DIR = $$OPENCV_DIR/lib
-
-    exists($$OPENCV_INCLUDE_DIR/opencv2/core.hpp) {
-        message("Linking against OpenCV found at $$OPENCV_DIR")
-        INCLUDEPATH += $$OPENCV_INCLUDE_DIR
-        LIBS += -L$$OPENCV_LIB_DIR -lopencv_core -lopencv_imgcodecs -lopencv_imgproc -lopencv_videoio -lopencv_calib3d
-        QMAKE_RPATHDIR += $$OPENCV_LIB_DIR
-    } else {
-        message("Warning: OpenCV headers not found under $$OPENCV_DIR. Override OPENCV_DIR when running qmake if OpenCV is installed elsewhere.")
-    }
-}
+DELTA_X_ROOT = $$PWD
+include($$DELTA_X_ROOT/config/version.pri)
+include($$DELTA_X_ROOT/config/opencv.pri)
 
 #unix:!macx
 #{
@@ -114,4 +76,16 @@ RESOURCES += $$PWD/resource.qrc
 
 RC_ICONS = delta_x_logo_96x96.ico
 
-DISTFILES +=
+DISTFILES += \
+    $$PWD/docs/external-vision.md \
+    $$PWD/docs/gscript-design.md \
+    $$PWD/docs/gscript-runtime.md \
+    $$PWD/docs/multi-robot-conveyor-sorting.md \
+    $$PWD/docs/variable-manager.md \
+    $$PWD/script-example/dxv1_client.py \
+    $$PWD/script-example/multi-robot-sorting/00-vision-tracking.gcode \
+    $$PWD/script-example/multi-robot-sorting/10-robot0-type0.gcode \
+    $$PWD/script-example/multi-robot-sorting/11-robot1-type1.gcode \
+    $$PWD/script-example/multi-robot-sorting/README.md \
+    $$PWD/script-example/receive_image_json.py \
+    $$PWD/script-example/yolov8_detect.py

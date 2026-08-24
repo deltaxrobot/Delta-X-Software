@@ -238,6 +238,7 @@ private:
     QLabel* m_avgErrorLabel;                        ///< Average error display
     QLabel* m_maxErrorLabel;                        ///< Maximum error display
     QLabel* m_coverageLabel;                        ///< Coverage display
+    QLabel* m_mappingStatusLabel;                   ///< Validation/ready state display
     
     // Test result displays
     QLineEdit* m_testConfidenceEdit;                ///< Test confidence display  

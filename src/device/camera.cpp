@@ -3,6 +3,24 @@
 #include <VariableManager.h>
 
 namespace {
+bool tryOpenBackend(cv::VideoCapture* capture, int id, int backend,
+                    const char* backendName)
+{
+    try {
+        if (!capture->open(id, backend))
+            return false;
+        capture->set(cv::CAP_PROP_BUFFERSIZE, 1);
+        capture->set(cv::CAP_PROP_CONVERT_RGB, 1);
+        qInfo() << "Opened USB/UVC camera" << id << "using" << backendName;
+        return true;
+    } catch (const cv::Exception& error) {
+        qWarning() << "Cannot open camera" << id << "using" << backendName
+                   << ":" << error.what();
+        capture->release();
+        return false;
+    }
+}
+
 bool tryOpenCameraIndex(cv::VideoCapture *capture, int id)
 {
     if (!capture)
@@ -11,11 +29,23 @@ bool tryOpenCameraIndex(cv::VideoCapture *capture, int id)
     capture->release();
 
 #ifdef Q_OS_MACOS
-    if (capture->open(id, cv::CAP_AVFOUNDATION))
+    if (tryOpenBackend(capture, id, cv::CAP_AVFOUNDATION, "AVFoundation"))
         return true;
 #endif
 
-    return capture->open(id);
+#ifdef Q_OS_WIN
+    // UVC cameras use the same path whether connected through USB 2 or USB 3.
+    // MSMF is preferred for modern high-resolution devices; DirectShow is a
+    // valuable fallback for older drivers and cameras exposing MJPEG modes.
+    if (tryOpenBackend(capture, id, cv::CAP_MSMF, "Media Foundation"))
+        return true;
+    capture->release();
+    if (tryOpenBackend(capture, id, cv::CAP_DSHOW, "DirectShow"))
+        return true;
+    capture->release();
+#endif
+
+    return tryOpenBackend(capture, id, cv::CAP_ANY, "OpenCV auto");
 }
 
 bool openPreferredCameraBackend(cv::VideoCapture *capture, int requestedId, int *openedId)
@@ -56,22 +86,57 @@ bool applyResolution(cv::VideoCapture *capture, int width, int height)
     if (!capture || !capture->isOpened() || width <= 0 || height <= 0)
         return false;
 
-    capture->set(cv::CAP_PROP_FRAME_WIDTH, width);
-    capture->set(cv::CAP_PROP_FRAME_HEIGHT, height);
+    try {
+        capture->set(cv::CAP_PROP_FRAME_WIDTH, width);
+        capture->set(cv::CAP_PROP_FRAME_HEIGHT, height);
 
-    const int actualWidth = capture->get(cv::CAP_PROP_FRAME_WIDTH);
-    const int actualHeight = capture->get(cv::CAP_PROP_FRAME_HEIGHT);
+        int actualWidth = capture->get(cv::CAP_PROP_FRAME_WIDTH);
+        int actualHeight = capture->get(cv::CAP_PROP_FRAME_HEIGHT);
 
-    qDebug() << "Requested resolution:" << width << "x" << height
-             << "actual:" << actualWidth << "x" << actualHeight;
+#ifdef Q_OS_WIN
+        if (qAbs(actualWidth - width) > 10 || qAbs(actualHeight - height) > 10) {
+            // Many USB3 UVC cameras expose their high-resolution modes only as
+            // MJPEG. Retry that format while retaining the raw/YUYV fallback.
+            capture->set(cv::CAP_PROP_FOURCC,
+                         cv::VideoWriter::fourcc('M', 'J', 'P', 'G'));
+            capture->set(cv::CAP_PROP_FRAME_WIDTH, width);
+            capture->set(cv::CAP_PROP_FRAME_HEIGHT, height);
+            actualWidth = capture->get(cv::CAP_PROP_FRAME_WIDTH);
+            actualHeight = capture->get(cv::CAP_PROP_FRAME_HEIGHT);
+        }
+#endif
 
-    return actualWidth > 0 && actualHeight > 0;
+        qDebug() << "Requested resolution:" << width << "x" << height
+                 << "actual:" << actualWidth << "x" << actualHeight;
+
+        return actualWidth > 0 && actualHeight > 0;
+    } catch (const cv::Exception& error) {
+        qWarning() << "Cannot configure USB/UVC resolution:" << error.what();
+        return false;
+    }
 }
 }
 
 Camera::Camera(QObject *parent) : QObject(parent)
 {
     WebcamInstance = new cv::VideoCapture();
+    industrialCaptureTimeout = new QTimer(this);
+    industrialCaptureTimeout->setSingleShot(true);
+    industrialCaptureTimeout->setInterval(3500);
+    connect(industrialCaptureTimeout, &QTimer::timeout, this, [this]() {
+        OnExternalCaptureFailed(QStringLiteral("Industrial camera capture timed out"));
+    });
+    monotonicClock.start();
+    qRegisterMetaType<VisionFrame>("VisionFrame");
+}
+
+Camera::~Camera()
+{
+    if (WebcamInstance) {
+        WebcamInstance->release();
+        delete WebcamInstance;
+        WebcamInstance = nullptr;
+    }
 }
 
 void Camera::OpenCamera(int id, int requestId)
@@ -85,7 +150,13 @@ void Camera::OpenCamera(int id, int requestId)
 
         qDebug() << "Camera opened with resolution:" << Width << "x" << Height;
         qDebug() << "Using camera id:" << openedId;
-        qDebug() << "OpenCV backend:" << QString::fromStdString(WebcamInstance->getBackendName());
+        try {
+            qDebug() << "OpenCV backend:"
+                     << QString::fromStdString(WebcamInstance->getBackendName());
+        } catch (const cv::Exception&) {
+            qDebug() << "OpenCV backend name is unavailable";
+        }
+        Source = QStringLiteral("Webcam");
         emit connectedResult(true, requestId);
     }
     else
@@ -107,7 +178,13 @@ void Camera::OpenCameraWithResolution(int id, int width, int height, int request
 
         qDebug() << "Camera opened with custom resolution:" << Width << "x" << Height;
         qDebug() << "Using camera id:" << openedId;
-        qDebug() << "OpenCV backend:" << QString::fromStdString(WebcamInstance->getBackendName());
+        try {
+            qDebug() << "OpenCV backend:"
+                     << QString::fromStdString(WebcamInstance->getBackendName());
+        } catch (const cv::Exception&) {
+            qDebug() << "OpenCV backend name is unavailable";
+        }
+        Source = QStringLiteral("Webcam");
         emit connectedResult(true, requestId);
     }
     else
@@ -122,55 +199,104 @@ void Camera::GetImageFromExternal(cv::Mat mat)
     if (Source != "Industrial Camera")
         return;
 
-    CaptureImage.release();
-    CaptureImage = mat;
+    if (!industrialCapturePending) {
+        qWarning() << "Ignoring unsolicited industrial-camera frame";
+        return;
+    }
 
-    // Update origin size for industrial camera
-    OriginWidth = CaptureImage.cols;
-    OriginHeight = CaptureImage.rows;
+    const quint64 requestId = pendingIndustrialRequestId;
+    const int trackingId = pendingIndustrialTrackingId;
+    industrialCaptureTimeout->stop();
+    industrialCapturePending = false;
+    pendingIndustrialRequestId = 0;
 
-    emit GotImage(CaptureImage);
+    if (mat.empty()) {
+        failCapture(requestId, trackingId, QStringLiteral("Industrial camera returned an empty frame"));
+        return;
+    }
+
+    publishFrame(mat, requestId, trackingId);
+}
+
+void Camera::OnExternalCaptureFailed(QString reason)
+{
+    if (!industrialCapturePending)
+        return;
+    const quint64 requestId = pendingIndustrialRequestId;
+    const int trackingId = pendingIndustrialTrackingId;
+    industrialCaptureTimeout->stop();
+    industrialCapturePending = false;
+    pendingIndustrialRequestId = 0;
+    failCapture(requestId, trackingId,
+                reason.isEmpty() ? QStringLiteral("Industrial camera capture failed") : reason);
 }
 
 void Camera::GeneralCapture()
 {
-    emit StartedCapture(trackingThreadId);
-//    qDebug() << "Capture: " << QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss.zzz");
-
-    if (Source == "Webcam")
-    {
-        CaptureWebcam();
-    }
-    if (Source == "Images")
-    {
-        if (CaptureImages.count() > 0)
-        {
-            CaptureImage = CaptureImages.at(FrameID);
-            FrameID++;
-            if (CaptureImages.count() <= FrameID)
-                FrameID = 0;
-
-            // Update origin size for image source
-            OriginWidth = CaptureImage.cols;
-            OriginHeight = CaptureImage.rows;
-
-            emit GotImage(CaptureImage);
-        }
-    }
-    else if (Source == "Industrial Camera")
-    {
-        emit RequestCapture();
-    }
+    capture(0, trackingThreadId);
 }
 
-void Camera::CaptureAndDetect()
+void Camera::capture(quint64 requestId, int trackingId)
 {
-    // Allow external script to select tracking ID via VariableManager
-    QString prefix = VariableManager::instance().Prefix;
-    QString key = prefix.isEmpty() ? QString("Camera.TrackingID") : prefix + ".Camera.TrackingID";
-    int id = VariableManager::instance().getVar(key, trackingThreadId).toInt();
-    trackingThreadId = id;
-    GeneralCapture();
+    if (Source == "Webcam" || Source == "Video")
+    {
+        if (!WebcamInstance || !WebcamInstance->isOpened()) {
+            failCapture(requestId, trackingId, QStringLiteral("Webcam is not open"));
+            emit StopCameraRequest();
+            return;
+        }
+
+        cv::Mat frame;
+        try {
+            if (!WebcamInstance->read(frame) || frame.empty()) {
+                failCapture(requestId, trackingId, QStringLiteral("Failed to read a webcam frame"));
+                return;
+            }
+        } catch (const cv::Exception& e) {
+            failCapture(requestId, trackingId,
+                        QStringLiteral("OpenCV capture error: %1").arg(QString::fromUtf8(e.what())));
+            emit StopCameraRequest();
+            return;
+        }
+        publishFrame(frame, requestId, trackingId);
+        return;
+    }
+
+    if (Source == "Images")
+    {
+        if (CaptureImages.isEmpty()) {
+            failCapture(requestId, trackingId, QStringLiteral("No test image is loaded"));
+            return;
+        }
+        if (FrameID < 0 || FrameID >= CaptureImages.count())
+            FrameID = 0;
+        const cv::Mat frame = CaptureImages.at(FrameID).clone();
+        FrameID = (FrameID + 1) % CaptureImages.count();
+        publishFrame(frame, requestId, trackingId);
+        return;
+    }
+
+    if (Source == "Industrial Camera")
+    {
+        if (industrialCapturePending) {
+            failCapture(requestId, trackingId, QStringLiteral("Industrial camera is still processing the previous frame"));
+            return;
+        }
+        industrialCapturePending = true;
+        pendingIndustrialRequestId = requestId;
+        pendingIndustrialTrackingId = trackingId;
+        industrialCaptureTimeout->start();
+        emit RequestCapture();
+        return;
+    }
+
+    failCapture(requestId, trackingId, QStringLiteral("Unsupported camera source: %1").arg(Source));
+}
+
+void Camera::CaptureAndDetect(quint64 requestId, int trackingId)
+{
+    trackingThreadId = trackingId;
+    capture(requestId, trackingId);
 }
 
 void Camera::SetTracking(int id)
@@ -180,48 +306,85 @@ void Camera::SetTracking(int id)
 
 void Camera::CaptureWebcam()
 {
-    // Safety checks
-    if (WebcamInstance == NULL)
-    {
-        qDebug() << "Warning: WebcamInstance is null";
+    capture(0, trackingThreadId);
+}
+
+void Camera::SetSource(QString source)
+{
+    Source = source.trimmed();
+}
+
+void Camera::SetImages(QList<cv::Mat> images)
+{
+    CaptureImages.clear();
+    for (const cv::Mat& image : images) {
+        if (!image.empty())
+            CaptureImages.append(image.clone());
+    }
+    FrameID = CaptureImages.isEmpty() ? -1 : 0;
+    CaptureImage = CaptureImages.isEmpty() ? cv::Mat() : CaptureImages.first().clone();
+    Source = QStringLiteral("Images");
+}
+
+bool Camera::OpenVideoFile(QString path, int requestedWidth, int requestedHeight)
+{
+    if (!WebcamInstance || path.trimmed().isEmpty())
+        return false;
+    WebcamInstance->release();
+    if (!WebcamInstance->open(path.toStdString()))
+        return false;
+    if (requestedWidth > 0)
+        WebcamInstance->set(cv::CAP_PROP_FRAME_WIDTH, requestedWidth);
+    if (requestedHeight > 0)
+        WebcamInstance->set(cv::CAP_PROP_FRAME_HEIGHT, requestedHeight);
+    Width = static_cast<int>(WebcamInstance->get(cv::CAP_PROP_FRAME_WIDTH));
+    Height = static_cast<int>(WebcamInstance->get(cv::CAP_PROP_FRAME_HEIGHT));
+    RunningCamera = -2; // A valid non-device VideoCapture source.
+    Source = QStringLiteral("Video");
+    return true;
+}
+
+void Camera::publishFrame(const cv::Mat& image, quint64 requestId, int trackingId)
+{
+    if (image.empty()) {
+        failCapture(requestId, trackingId, QStringLiteral("Capture produced an empty frame"));
         return;
     }
 
-    if (WebcamInstance->isOpened() == false)
-    {
-        qDebug() << "Warning: Camera not opened or disconnected";
-        emit StopCameraRequest();
-        return;
-    }
+    VisionFrame frame;
+    frame.frameId = nextFrameId++;
+    frame.requestId = requestId;
+    frame.trackingId = trackingId;
+    frame.capturedAtMonotonicNs = monotonicClock.nsecsElapsed();
+    frame.source = Source;
+    frame.image = image.clone();
 
-    // Attempt to read frame with error handling
-    try {
-        if (WebcamInstance->read(CaptureImage))
-        {
-            // Validate captured image
-            if (!CaptureImage.empty() && CaptureImage.cols > 0 && CaptureImage.rows > 0)
-            {
-                OriginWidth = CaptureImage.cols;
-                OriginHeight = CaptureImage.rows;
-                emit GotImage(CaptureImage);
-            }
-            else
-            {
-                qDebug() << "Warning: Captured empty or invalid image";
-            }
-        }
-        else
-        {
-            qDebug() << "Warning: Failed to read frame from camera";
-            // Don't immediately stop, just skip this frame
-        }
-    } catch (const cv::Exception& e) {
-        qDebug() << "OpenCV error in CaptureWebcam:" << e.what();
-        emit StopCameraRequest();
-    } catch (...) {
-        qDebug() << "Unknown error in CaptureWebcam";
-        emit StopCameraRequest();
-    }
+    CaptureImage = frame.image.clone();
+    OriginWidth = frame.image.cols;
+    OriginHeight = frame.image.rows;
+
+    // The blocking receiver creates the matching encoder snapshot before any
+    // detector can observe this exact frame.
+    emit StartedCapture(trackingId, frame.frameId, requestId);
+    emit FrameCaptured(frame);
+    emit GotImage(frame.image);
+}
+
+void Camera::failCapture(quint64 requestId, int trackingId, const QString& reason)
+{
+    qWarning() << "Camera capture failed:" << reason
+               << "tracking" << trackingId << "request" << requestId;
+    emit CaptureFailed(trackingId, requestId, reason);
+}
+
+void Camera::ReleaseCamera()
+{
+    industrialCaptureTimeout->stop();
+    industrialCapturePending = false;
+    pendingIndustrialRequestId = 0;
+    if (WebcamInstance && WebcamInstance->isOpened())
+        WebcamInstance->release();
+    RunningCamera = -1;
 }
 
 bool Camera::configureOpenedCameraResolution()

@@ -14,23 +14,30 @@ XCamBasler::~XCamBasler()
 {
     if (Camera != NULL)
     {
-        Camera->StopGrabbing();
-        Camera->Close();
+        try {
+            if (Camera->IsGrabbing())
+                Camera->StopGrabbing();
+            if (Camera->IsOpen())
+                Camera->Close();
+        } catch (const GenericException& error) {
+            qWarning() << "Basler shutdown failed:" << error.what();
+        } catch (...) {
+            qWarning() << "Basler shutdown failed with an unknown error";
+        }
         delete Camera;
+        Camera = NULL;
     }
-
-    PylonTerminate();
+    if (data)
+        std::free(data);
 }
 
 bool XCamBasler::Connect()
 {
-    Pylon::PylonInitialize();
-
     if (Camera == NULL)
         return false;
-
-    Camera->Open();
-    Camera->MaxNumBuffer = 5;
+    try {
+        Camera->Open();
+        Camera->MaxNumBuffer = 5;
 
     GenApi::INodeMap& nodemap = Camera->GetNodeMap();
     GenApi::CIntegerPtr w = nodemap.GetNode("Width");
@@ -50,7 +57,7 @@ bool XCamBasler::Connect()
         qDebug() << "Exposure Time is not readable.";
     }
 
-    // Đọc thông số Gain
+    // Read the gain parameter.
     GenApi::CFloatPtr gainNode = nodemap.GetNode("Gain");
     if (IsReadable(gainNode))
     {
@@ -62,7 +69,7 @@ bool XCamBasler::Connect()
         qDebug() << "Gain is not readable.";
     }
 
-    // Đọc thông số Gamma
+    // Read the gamma parameter.
     GenApi::CFloatPtr gammaNode = nodemap.GetNode("Gamma");
     if (IsReadable(gammaNode))
     {
@@ -74,13 +81,27 @@ bool XCamBasler::Connect()
         qDebug() << "Gamma is not readable.";
     }
 
-    return true;
+        return true;
+    } catch (const GenericException& error) {
+        qWarning() << "Basler connect failed:" << error.what();
+        return false;
+    }
 }
 
 bool XCamBasler::Disconnect()
 {
-    Camera->Close();
-    return true;
+    if (!Camera)
+        return false;
+    try {
+        if (Camera->IsGrabbing())
+            Camera->StopGrabbing();
+        if (Camera->IsOpen())
+            Camera->Close();
+        return true;
+    } catch (const GenericException& error) {
+        qWarning() << "Basler disconnect failed:" << error.what();
+        return false;
+    }
 }
 
 bool XCamBasler::IsOpen()
@@ -88,7 +109,12 @@ bool XCamBasler::IsOpen()
     if (Camera == NULL)
         return false;
 
-    return Camera->IsOpen();
+    try {
+        return Camera->IsOpen();
+    } catch (const GenericException& error) {
+        qWarning() << "Basler state query failed:" << error.what();
+        return false;
+    }
 }
 
 unsigned char *XCamBasler::Capture()
@@ -96,30 +122,40 @@ unsigned char *XCamBasler::Capture()
     if (Camera == NULL)
             return NULL;
 
-    if (Camera->IsOpen() == false)
+    if (!IsOpen())
         return NULL;
-
-    Pylon::PylonInitialize();
 
     if (data != NULL)
         free(data);
 
-    size_t size = height * width * 3;
+    if (width <= 0 || height <= 0)
+        return NULL;
+    const quint64 byteCount = static_cast<quint64>(height) *
+                              static_cast<quint64>(width) * 3ULL;
+    if (byteCount == 0 || byteCount > 512ULL * 1024ULL * 1024ULL)
+        return NULL;
+    const size_t size = static_cast<size_t>(byteCount);
     data = (unsigned char*)std::malloc(size);
+    if (!data)
+        return NULL;
 
     CImageFormatConverter formatConverter;
     formatConverter.OutputPixelFormat = PixelType_BGR8packed;
 
     CPylonImage pylonImage;
 
-    static CGrabResultPtr ptrGrabResult;
-    Camera->GrabOne(5000, ptrGrabResult);
-
-    if (ptrGrabResult->GrabSucceeded())
-    {
+    CGrabResultPtr ptrGrabResult;
+    try {
+        // Keep the SDK wait below Camera's 3.5 s correlation timeout so the
+        // G-Script receives a concrete capture error before its 5 s deadline.
+        Camera->GrabOne(2500, ptrGrabResult);
+        if (!ptrGrabResult || !ptrGrabResult->GrabSucceeded())
+            return NULL;
         formatConverter.Convert(pylonImage, ptrGrabResult);
-
         memcpy(data, (uint8_t*) pylonImage.GetBuffer(), size);
+    } catch (const GenericException& error) {
+        qWarning() << "Basler capture failed:" << error.what();
+        return NULL;
     }
 
     return data;
@@ -127,20 +163,32 @@ unsigned char *XCamBasler::Capture()
 
 void XCamBasler::SetExposureTime(int value)
 {
-//    GenApi::INodeMap& nodemap = Camera->GetNodeMap();
-//    GenApi::CIntegerPtr ExposureTimeRaw(nodemap.GetNode("ExposureTimeRaw"));
-//    ExposureTimeRaw->SetValue(value);
+    if (!Camera || !IsOpen())
+        return;
+    try {
+        GenApi::CEnumerationPtr exposureAuto(Camera->GetNodeMap().GetNode("ExposureAuto"));
+        if (IsWritable(exposureAuto)) {
+            GenApi::CEnumEntryPtr off = exposureAuto->GetEntryByName("Off");
+            if (IsReadable(off))
+                exposureAuto->SetIntValue(off->GetValue());
+        }
+        GenApi::CFloatPtr exposure(Camera->GetNodeMap().GetNode("ExposureTime"));
+        if (IsWritable(exposure))
+            exposure->SetValue(qBound(exposure->GetMin(), static_cast<double>(value), exposure->GetMax()));
+    } catch (const GenericException& error) {
+        qWarning() << "Basler exposure update failed:" << error.what();
+    }
 }
 
 int XCamBasler::GetExposureTime()
 {
-//    GenApi::INodeMap& nodemap = Camera->GetNodeMap();
-//    GenApi::CIntegerPtr ExposureTimeRaw(nodemap.GetNode("ExposureTimeRaw"));
-
-//    if(ExposureTimeRaw.IsValid())
-//    {
-//        return ExposureTimeRaw->GetValue();
-//    }
-
-    return 0;
+    if (!Camera || !IsOpen())
+        return 0;
+    try {
+        GenApi::CFloatPtr exposure(Camera->GetNodeMap().GetNode("ExposureTime"));
+        return IsReadable(exposure) ? static_cast<int>(exposure->GetValue()) : 0;
+    } catch (const GenericException& error) {
+        qWarning() << "Basler exposure read failed:" << error.what();
+        return 0;
+    }
 }

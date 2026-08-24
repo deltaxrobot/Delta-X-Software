@@ -9,6 +9,7 @@
 #include <string>
 
 #include <QList>
+#include <QLibrary>
 #include "xcam.h"
 #include "xcambasler.h"
 #include "xcamhik.h"
@@ -19,12 +20,17 @@ class XCamManager : public QObject
 {
     Q_OBJECT
 public:
-    XCamManager();
+    explicit XCamManager(QObject* parent = nullptr);
     ~XCamManager();
 
     QStringList FindCameraList();
     QStringList FindBaslerCameraList();
     QStringList FindHIKCameraList();
+
+    bool HasAnyBackend() const;
+    bool IsBaslerBackendAvailable() const;
+    bool IsHikBackendAvailable() const;
+    QString RuntimeStatus() const;
 
     int Height();
     int Width();
@@ -45,6 +51,18 @@ public:
 
 private:
     QString getStringFromUnsignedChar(unsigned char *str);
+    bool loadRuntimeLibraries(const QStringList& libraryNames,
+                              QList<QLibrary*>& loadedLibraries,
+                              QString& errorMessage);
+    void unloadRuntimeLibraries(QList<QLibrary*>& libraries);
+
+    bool pylonInitialized = false;
+    bool pylonRuntimeAvailable = false;
+    bool hikRuntimeAvailable = false;
+    QString pylonRuntimeError;
+    QString hikRuntimeError;
+    QList<QLibrary*> pylonRuntimeLibraries;
+    QList<QLibrary*> hikRuntimeLibraries;
 };
 
 #endif // XCAMMANAGER_H

@@ -6,6 +6,7 @@
 #include <opencv2/opencv.hpp>
 #include <QFile>
 #include <QtDebug>
+#include "sdk/DeltaXVersion.h"
 
 #define NEW_WINDOW
 #define JOY_STICK
@@ -17,7 +18,8 @@ void myMessageOutput(QtMsgType type, const QMessageLogContext &context, const QS
 {
     // Open the log file
     QFile outFile("mylog.txt");
-    outFile.open(QIODevice::WriteOnly | QIODevice::Append);
+    if (!outFile.open(QIODevice::WriteOnly | QIODevice::Append))
+        return;
 
     // Write the message to the log file
     QTextStream ts(&outFile);
@@ -48,6 +50,8 @@ int main(int argc, char *argv[])
     QCoreApplication::setOrganizationName(QStringLiteral("DeltaXRobotics"));
     QCoreApplication::setOrganizationDomain(QStringLiteral("deltaxrobotics.com"));
     QCoreApplication::setApplicationName(QStringLiteral("DeltaRobotSoftware"));
+    QCoreApplication::setApplicationVersion(
+        QString::fromLatin1(DeltaXVersion::Application));
 
     QApplication a(argc, argv);
     QObject::connect(&a, &QGuiApplication::lastWindowClosed, []() {

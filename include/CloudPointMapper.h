@@ -10,6 +10,7 @@
 #include <QJsonObject>
 #include <QJsonDocument>
 #include <QJsonArray>
+#include <QDateTime>
 #include <opencv2/opencv.hpp>
 #include <vector>
 #include <memory>
@@ -35,11 +36,11 @@ public:
     struct CalibrationPoint {
         QVector3D imageCoord;      ///< Image/pixel coordinates (x,y,z)
         QVector3D realCoord;       ///< Real-world coordinates (x,y,z)
-        float confidence;          ///< Confidence level (0.0-1.0)
+        float confidence = 1.0f;   ///< Confidence level (0.0-1.0)
         QDateTime timestamp;       ///< When this point was calibrated
-        float error;              ///< Measured error from validation
+        float error = 0.0f;        ///< Measured error from validation
         QString label;            ///< Optional label for identification
-        bool isKeyPoint;          ///< Whether this is a key calibration point
+        bool isKeyPoint = false;   ///< Whether this is a key calibration point
     };
 
     /**
@@ -57,15 +58,16 @@ public:
      * @brief Mapping statistics and quality metrics
      */
     struct MappingStats {
-        int totalPoints;          ///< Total calibration points
-        float averageError;       ///< Average mapping error (mm)
-        float maxError;           ///< Maximum error found
-        float minError;           ///< Minimum error found
-        float stdDeviation;       ///< Standard deviation of errors
-        float coverage;           ///< Workspace coverage percentage
+        int totalPoints = 0;       ///< Total calibration points
+        float averageError = 0.0f; ///< Average mapping error (mm)
+        float maxError = 0.0f;     ///< Maximum error found
+        float minError = 0.0f;     ///< Minimum error found
+        float stdDeviation = 0.0f; ///< Standard deviation of errors
+        float coverage = 0.0f;     ///< Spatial distribution score (0-100%)
         QVector3D workspaceMin;   ///< Minimum workspace bounds
         QVector3D workspaceMax;   ///< Maximum workspace bounds
-        bool isValid;             ///< Whether mapping is valid for use
+        bool hasBeenValidated = false; ///< Whether leave-one-out validation was run
+        bool isValid = false;      ///< Whether mapping is valid for use
     };
 
     /**
@@ -73,10 +75,10 @@ public:
      */
     enum InterpolationMethod {
         LINEAR = 0,               ///< Linear interpolation
-        CUBIC_SPLINE,            ///< Cubic spline interpolation
-        BILINEAR,                ///< Bilinear interpolation
-        RADIAL_BASIS,            ///< Radial basis function
-        KRIGING                  ///< Kriging interpolation
+        BILINEAR = 1,             ///< Inverse-distance weighting (legacy name)
+        CUBIC_SPLINE = 2,         ///< Reserved; rejected until implemented
+        RADIAL_BASIS = 3,         ///< Thin-plate radial basis interpolation
+        KRIGING = 4               ///< Reserved; rejected until implemented
     };
 
     /**
@@ -84,11 +86,11 @@ public:
      */
     struct MappingResult {
         QVector3D transformedPoint;  ///< Transformed coordinates
-        float confidence;            ///< Transformation confidence
-        float estimatedError;        ///< Estimated error in mm
+        float confidence = 0.0f;     ///< Transformation confidence
+        float estimatedError = 0.0f; ///< Estimated error in mm
         QString errorMessage;        ///< Error description if failed
-        bool isValid;               ///< Whether transformation succeeded
-        InterpolationMethod method; ///< Method used for interpolation
+        bool isValid = false;         ///< Whether transformation succeeded
+        InterpolationMethod method = BILINEAR; ///< Method used for interpolation
     };
 
 public:
@@ -121,8 +123,9 @@ public:
      * @param confidence New confidence level
      * @return true if successful
      */
-    bool updateCalibrationPoint(int index, const QVector3D& imageCoord, 
-                               const QVector3D& realCoord, float confidence = 1.0f);
+    bool updateCalibrationPoint(int index, const QVector3D& imageCoord,
+                               const QVector3D& realCoord, float confidence = 1.0f,
+                               const QString& label = QString());
 
     /**
      * @brief Transform image coordinates to real-world coordinates
@@ -238,6 +241,11 @@ public:
      */
     bool isAutoRebuildEnabled() const;
 
+    void setDefaultInterpolationMethod(InterpolationMethod method);
+    InterpolationMethod defaultInterpolationMethod() const;
+    static bool isMethodSupported(InterpolationMethod method);
+    void setValidationThresholds(float maximumAverageError, float maximumPointError);
+
 signals:
     /**
      * @brief Emitted when mapping is updated
@@ -266,6 +274,8 @@ private:
     float m_gridResolution;                         ///< Grid cells per unit
     bool m_autoRebuild;                            ///< Auto-rebuild grid flag
     InterpolationMethod m_defaultMethod;           ///< Default interpolation method
+    float m_maximumAverageError;                   ///< Validation threshold in real units
+    float m_maximumPointError;                     ///< Validation threshold in real units
     
     // Workspace bounds
     QVector3D m_workspaceMin;                      ///< Minimum workspace bounds
@@ -279,14 +289,30 @@ private:
     void updateWorkspaceBounds();
     void calculateGridDimensions();
     GridCell calculateGridCell(int gridX, int gridY);
-    QVector<int> findNearestPoints(const QVector3D& point, int maxPoints = 4);
+    QVector<int> findNearestPoints(const QVector3D& point, int maxPoints = 8,
+                                   bool reverse = false, int excludedIndex = -1) const;
+    QVector<int> findNearestPointsGlobal(const QVector3D& point, int maxPoints,
+                                         bool reverse, int excludedIndex) const;
     float calculateDistance(const QVector3D& p1, const QVector3D& p2);
-    QVector3D interpolateLinear(const QVector3D& point, const QVector<int>& nearestPoints);
-    QVector3D interpolateBilinear(const QVector3D& point, const QVector<int>& nearestPoints);
-    QVector3D interpolateCubicSpline(const QVector3D& point, const QVector<int>& nearestPoints);
-    QVector3D interpolateRadialBasis(const QVector3D& point, const QVector<int>& nearestPoints);
-    QVector3D interpolateKriging(const QVector3D& point, const QVector<int>& nearestPoints);
+    MappingResult transformInternal(const QVector3D& point, InterpolationMethod method,
+                                    bool reverse, int excludedIndex = -1) const;
+    bool interpolateLocalAffine(const QVector3D& point, const QVector<int>& nearestPoints,
+                                bool reverse, QVector3D& result) const;
+    bool interpolateInverseDistance(const QVector3D& point, const QVector<int>& nearestPoints,
+                                    bool reverse, QVector3D& result) const;
+    bool interpolateRadialBasis(const QVector3D& point, bool reverse, int excludedIndex,
+                                QVector3D& result) const;
+    float calculateCoverage() const;
+    float characteristicSpacing(bool reverse = false, int excludedIndex = -1) const;
     void calculateMappingStatistics();
+    QJsonObject mappingToJson() const;
+    bool parseMappingJson(const QByteArray& data, QVector<CalibrationPoint>& points,
+                          float& resolution, InterpolationMethod& method,
+                          float& maximumAverageError, float& maximumPointError,
+                          QString& error) const;
+    void commitLoadedMapping(const QVector<CalibrationPoint>& points, float resolution,
+                             InterpolationMethod method, float maximumAverageError,
+                             float maximumPointError);
     QJsonObject pointToJson(const CalibrationPoint& point) const;
     CalibrationPoint pointFromJson(const QJsonObject& json) const;
     bool validatePoint(const CalibrationPoint& point) const;
@@ -296,4 +322,4 @@ private:
 
 Q_DECLARE_METATYPE(CloudPointMapper::MappingStats)
 
-#endif // CLOUDPOINTMAPPER_H 
+#endif // CLOUDPOINTMAPPER_H

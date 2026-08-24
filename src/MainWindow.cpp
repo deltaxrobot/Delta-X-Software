@@ -3,6 +3,7 @@
 #include "ui_MainWindow.h"
 #include "SettingsManager.h"
 #include "SettingsPanel.h"
+#include "sdk/DeltaXVersion.h"
 
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -10,6 +11,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    setWindowTitle(tr("Delta X Software - Version %1")
+                       .arg(QString::fromLatin1(DeltaXVersion::Application)));
 
     InitVariables();
 }
@@ -68,7 +71,8 @@ void MainWindow::InitVariables()
     // ---- Check software version ----
 
     DeltaXVersionManager = new VersionManager(this);
-    DeltaXVersionManager->CurrentVersion = "1.3.0";
+    DeltaXVersionManager->CurrentVersion =
+        QString::fromLatin1(DeltaXVersion::Application);
     DeltaXVersionManager->SoftwareName = "DeltaXSoftware";
     DeltaXVersionManager->CheckNewVersion(true);
 
@@ -129,17 +133,12 @@ void MainWindow::InitVariables()
     {
         QString projectName = projectPrefix + QString::number(i);
 
-        VariableManager::instance().Prefix = projectName;
-
         if (VariableManager::instance().containsSubKey(projectName) == true)
         {
             RobotWindow* robotWindow = AddNewProjectAndRobot(i);
         }
         else
         {
-            QString projectName = projectPrefix + QString::number(i - 1);
-
-            VariableManager::instance().Prefix = projectName;
             break;
         }
     }    
@@ -258,14 +257,21 @@ void MainWindow::InitProjectToOperator()
 
 void MainWindow::SaveOperatorSettings()
 {
-    QFile file(QCoreApplication::applicationDirPath() + "/customUI.ini");
+    const QString settingsPath =
+        QCoreApplication::applicationDirPath() + "/customUI.ini";
+    QFile file(settingsPath);
     if (!file.exists())
     {
-        file.open(QIODevice::WriteOnly);
+        if (!file.open(QIODevice::WriteOnly))
+        {
+            qWarning() << "Unable to create operator settings:" << settingsPath
+                       << file.errorString();
+            return;
+        }
         file.close();
     }
 
-    QSettings settings("customUI.ini", QSettings::IniFormat);
+    QSettings settings(settingsPath, QSettings::IniFormat);
     settings.setValue("AdminPassword", ui->leAuthorityPassword->text());
 
     QString widgetList = "";
@@ -370,7 +376,7 @@ void MainWindow::OpenProjectFromFile()
 
 void MainWindow::SaveProjectToFile()
 {
-    if (SoftwareManager::GetInstance()->RunningScriptThreadNumber > 0)
+    if (SoftwareManager::GetInstance()->RunningScriptCount() > 0)
         return;
 
     VariableManager::instance().scheduleSave(750);
@@ -467,13 +473,13 @@ void MainWindow::RemoveVarFromTreeView(const QString &key)
             }
         }
         if (!child) {
-            // Nếu không tìm thấy phần nào của key, thì thoát khỏi hàm
+            // Stop when a key segment cannot be found.
             return;
         }
         parent = child;
     }
 
-    // Tìm và xóa mục cần thiết
+    // Find and remove the requested item.
     for (int i = 0; i < parent->rowCount(); ++i) {
         if (parent->child(i)->text() == parts.last()) {
             parent->removeRow(i);
@@ -535,7 +541,7 @@ void MainWindow::onTreeViewItemClicked(const QModelIndex &index)
         return;
     }
 
-    // Lấy tên của các item cha của item hiện tại và gán lại thành mẫu như sau "item1.item2.item3"
+    // Build the current item's path from parent names: "item1.item2.item3".
     for (QStandardItem *parent = parentItem; parent != nullptr; parent = parent->parent()) {
         key = parent->text() + "." + key;
     }

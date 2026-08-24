@@ -34,6 +34,9 @@ public:
     explicit CameraReader(QObject *parent = nullptr);
     ~CameraReader();
 
+    bool HasAvailableBackend() const;
+    QString BackendStatus() const;
+
     XCamManager* IndustryCamera;
 
     cv::Mat* openCvImage = NULL;
@@ -50,6 +53,7 @@ public slots:
     void ShotImage();
     void ScanCameras();
     void GetResizeImageWidth(int width);
+    void SetExposureTime(int exposureUs);
 
 signals:
     void StartedCapture();
@@ -58,6 +62,10 @@ signals:
     void UpdatedRatio(QString ratio);
     void HadConnectingResult(bool);
     void HadCameraList(QStringList list);
+    void CaptureFailed(QString reason);
+
+private:
+    QMutex captureMutex;
 };
 
 #endif // CAMERAREADER_H

@@ -29,6 +29,92 @@
 #include <QClipboard>
 #include <QInputDialog> // Added for input dialogs
 #include <QStringList>
+#include <QDialog>
+#include <QDialogButtonBox>
+#include <QFormLayout>
+#include <QStatusBar>
+
+namespace
+{
+struct CalibrationPointInput
+{
+    QVector3D image;
+    QVector3D real;
+    float confidence = 1.0f;
+    QString label;
+};
+
+bool editCalibrationPoint(QWidget* parent, const QString& title,
+                          const CloudPointMapper::CalibrationPoint* initial,
+                          CalibrationPointInput& output)
+{
+    QDialog dialog(parent);
+    dialog.setWindowTitle(title);
+    dialog.setMinimumWidth(430);
+    QVBoxLayout* root = new QVBoxLayout(&dialog);
+    QLabel* guidance = new QLabel(
+        QObject::tr("Enter one measured image position and its matching robot/world position. "
+                    "Use points distributed across the whole working area."), &dialog);
+    guidance->setWordWrap(true);
+    root->addWidget(guidance);
+
+    QFormLayout* form = new QFormLayout;
+    auto coordinateEditor = [&dialog]() {
+        QDoubleSpinBox* editor = new QDoubleSpinBox(&dialog);
+        editor->setRange(-1000000.0, 1000000.0);
+        editor->setDecimals(4);
+        editor->setSingleStep(1.0);
+        return editor;
+    };
+    QDoubleSpinBox* imageX = coordinateEditor();
+    QDoubleSpinBox* imageY = coordinateEditor();
+    QDoubleSpinBox* imageZ = coordinateEditor();
+    QDoubleSpinBox* realX = coordinateEditor();
+    QDoubleSpinBox* realY = coordinateEditor();
+    QDoubleSpinBox* realZ = coordinateEditor();
+    QDoubleSpinBox* confidence = new QDoubleSpinBox(&dialog);
+    confidence->setRange(0.0, 1.0);
+    confidence->setDecimals(3);
+    confidence->setSingleStep(0.05);
+    confidence->setValue(1.0);
+    QLineEdit* label = new QLineEdit(&dialog);
+    label->setPlaceholderText(QObject::tr("e.g. top-left, center"));
+
+    if (initial) {
+        imageX->setValue(initial->imageCoord.x());
+        imageY->setValue(initial->imageCoord.y());
+        imageZ->setValue(initial->imageCoord.z());
+        realX->setValue(initial->realCoord.x());
+        realY->setValue(initial->realCoord.y());
+        realZ->setValue(initial->realCoord.z());
+        confidence->setValue(initial->confidence);
+        label->setText(initial->label);
+    }
+    form->addRow(QObject::tr("Image X (px)"), imageX);
+    form->addRow(QObject::tr("Image Y (px)"), imageY);
+    form->addRow(QObject::tr("Image Z"), imageZ);
+    form->addRow(QObject::tr("World X (mm)"), realX);
+    form->addRow(QObject::tr("World Y (mm)"), realY);
+    form->addRow(QObject::tr("World Z (mm)"), realZ);
+    form->addRow(QObject::tr("Measurement confidence"), confidence);
+    form->addRow(QObject::tr("Label"), label);
+    root->addLayout(form);
+
+    QDialogButtonBox* buttons = new QDialogButtonBox(
+        QDialogButtonBox::Ok | QDialogButtonBox::Cancel, &dialog);
+    QObject::connect(buttons, &QDialogButtonBox::accepted, &dialog, &QDialog::accept);
+    QObject::connect(buttons, &QDialogButtonBox::rejected, &dialog, &QDialog::reject);
+    root->addWidget(buttons);
+    if (dialog.exec() != QDialog::Accepted)
+        return false;
+
+    output.image = QVector3D(imageX->value(), imageY->value(), imageZ->value());
+    output.real = QVector3D(realX->value(), realY->value(), realZ->value());
+    output.confidence = static_cast<float>(confidence->value());
+    output.label = label->text().trimmed();
+    return true;
+}
+} // namespace
 
 CloudPointToolController::CloudPointToolController(RobotWindow* parent)
     : QObject(parent)
@@ -46,6 +132,7 @@ CloudPointToolController::CloudPointToolController(RobotWindow* parent)
     , m_avgErrorLabel(nullptr)
     , m_maxErrorLabel(nullptr)
     , m_coverageLabel(nullptr)
+    , m_mappingStatusLabel(nullptr)
     , m_testConfidenceEdit(nullptr)
     , m_testErrorEdit(nullptr)
     , m_testImageXEdit(nullptr)
@@ -130,12 +217,11 @@ void CloudPointToolController::initializeUI(QWidget* parentWidget)
     // Settings elements
     m_interpolationMethodCombo = robotWindow->findChild<QComboBox*>("cbInterpolationMethod");
     if (m_interpolationMethodCombo) {
-        // Populate interpolation method combo if found
-        if (m_interpolationMethodCombo->count() == 0) {
-            m_interpolationMethodCombo->addItems({
-                "Linear", "Bilinear", "Cubic Spline", "Radial Basis Function", "Kriging"
-            });
-        }
+        m_interpolationMethodCombo->clear();
+        setupInterpolationMethodCombo();
+        m_interpolationMethodCombo->setToolTip(
+            tr("Local affine is best for a planar setup; IDW is robust for local distortion; "
+               "thin-plate radial basis is for smooth non-linear distortion."));
     }
     
     m_gridResolutionSpinBox = robotWindow->findChild<QSpinBox*>("sbGridResolution");
@@ -147,6 +233,7 @@ void CloudPointToolController::initializeUI(QWidget* parentWidget)
     // Calibration point management buttons
     m_addPointButton = robotWindow->findChild<QPushButton*>("pbAddCalibrationPoint");
     m_removePointButton = robotWindow->findChild<QPushButton*>("pbRemoveCalibrationPoint");
+    m_updatePointButton = robotWindow->findChild<QPushButton*>("pbUpdateCalibrationPoint");
     m_clearAllButton = robotWindow->findChild<QPushButton*>("pbClearCalibrationPoints");
     m_buildGridButton = robotWindow->findChild<QPushButton*>("pbRebuildMapping");
     m_validateButton = robotWindow->findChild<QPushButton*>("pbValidateMapping");
@@ -173,6 +260,7 @@ void CloudPointToolController::initializeUI(QWidget* parentWidget)
     m_avgErrorLabel = robotWindow->findChild<QLabel*>("lbAvgError");
     m_maxErrorLabel = robotWindow->findChild<QLabel*>("lbMaxError");
     m_coverageLabel = robotWindow->findChild<QLabel*>("lbCoverage");
+    m_mappingStatusLabel = robotWindow->findChild<QLabel*>("lbCloudMappingStatus");
     
     // Find frames (for potential future use)
     QFrame* calibrationFrame = robotWindow->findChild<QFrame*>("frameCloudPointCalibration");
@@ -552,14 +640,14 @@ void CloudPointToolController::setupCalibrationTable()
 
 void CloudPointToolController::setupInterpolationMethodCombo()
 {
-    m_interpolationMethodCombo->addItem("Linear", static_cast<int>(CloudPointMapper::LINEAR));
-    m_interpolationMethodCombo->addItem("Bilinear", static_cast<int>(CloudPointMapper::BILINEAR));
-    m_interpolationMethodCombo->addItem("Cubic Spline", static_cast<int>(CloudPointMapper::CUBIC_SPLINE));
-    m_interpolationMethodCombo->addItem("Radial Basis", static_cast<int>(CloudPointMapper::RADIAL_BASIS));
-    m_interpolationMethodCombo->addItem("Kriging", static_cast<int>(CloudPointMapper::KRIGING));
-    
-    // Set default to Bilinear
-    m_interpolationMethodCombo->setCurrentIndex(1);
+    if (!m_interpolationMethodCombo)
+        return;
+    m_interpolationMethodCombo->addItem(tr("Local affine"), static_cast<int>(CloudPointMapper::LINEAR));
+    m_interpolationMethodCombo->addItem(tr("Inverse distance (IDW)"), static_cast<int>(CloudPointMapper::BILINEAR));
+    m_interpolationMethodCombo->addItem(tr("Thin-plate radial basis"), static_cast<int>(CloudPointMapper::RADIAL_BASIS));
+    const int selected = m_interpolationMethodCombo->findData(
+        static_cast<int>(m_mapper->defaultInterpolationMethod()));
+    m_interpolationMethodCombo->setCurrentIndex(selected >= 0 ? selected : 1);
 }
 
 void CloudPointToolController::connectSignals()
@@ -605,6 +693,9 @@ void CloudPointToolController::connectSignals()
     if (m_removePointButton) {
         connect(m_removePointButton, &QPushButton::clicked, this, &CloudPointToolController::removeCalibrationPoint);
     }
+    if (m_updatePointButton) {
+        connect(m_updatePointButton, &QPushButton::clicked, this, &CloudPointToolController::updateCalibrationPoint);
+    }
     if (m_clearAllButton) {
         connect(m_clearAllButton, &QPushButton::clicked, this, &CloudPointToolController::clearAllPoints);
     }
@@ -648,50 +739,11 @@ void CloudPointToolController::connectSignals()
 
 void CloudPointToolController::addCalibrationPoint()
 {
-    // Use input dialogs since UI file doesn't have input fields for calibration points
-    bool ok;
-    
-    // Get Image coordinates
-    double imageX = QInputDialog::getDouble(m_parent, "Add Calibration Point", 
-                                           "Image X:", 0.0, -9999.0, 9999.0, 2, &ok);
-    if (!ok) return;
-    
-    double imageY = QInputDialog::getDouble(m_parent, "Add Calibration Point", 
-                                           "Image Y:", 0.0, -9999.0, 9999.0, 2, &ok);
-    if (!ok) return;
-    
-    double imageZ = QInputDialog::getDouble(m_parent, "Add Calibration Point", 
-                                           "Image Z:", 0.0, -9999.0, 9999.0, 2, &ok);
-    if (!ok) return;
-    
-    // Get Real coordinates
-    double realX = QInputDialog::getDouble(m_parent, "Add Calibration Point", 
-                                          "Real X:", 0.0, -9999.0, 9999.0, 2, &ok);
-    if (!ok) return;
-    
-    double realY = QInputDialog::getDouble(m_parent, "Add Calibration Point", 
-                                          "Real Y:", 0.0, -9999.0, 9999.0, 2, &ok);
-    if (!ok) return;
-    
-    double realZ = QInputDialog::getDouble(m_parent, "Add Calibration Point", 
-                                          "Real Z:", 0.0, -9999.0, 9999.0, 2, &ok);
-    if (!ok) return;
-    
-    // Get Confidence
-    double confidence = QInputDialog::getDouble(m_parent, "Add Calibration Point", 
-                                               "Confidence (0.0-1.0):", 1.0, 0.0, 1.0, 2, &ok);
-    if (!ok) return;
-    
-    // Get Label (optional)
-    QString label = QInputDialog::getText(m_parent, "Add Calibration Point", 
-                                         "Label (optional):", QLineEdit::Normal, "", &ok);
-    if (!ok) return;
-    
-    // Create calibration point
-    QVector3D imageCoord(imageX, imageY, imageZ);
-    QVector3D realCoord(realX, realY, realZ);
-    
-    int index = m_mapper->addCalibrationPoint(imageCoord, realCoord, confidence, label);
+    CalibrationPointInput input;
+    if (!editCalibrationPoint(m_parent, tr("Add calibration point"), nullptr, input))
+        return;
+    const int index = m_mapper->addCalibrationPoint(
+        input.image, input.real, input.confidence, input.label);
     
     if (index >= 0) {
         updateCalibrationTable();
@@ -726,48 +778,12 @@ void CloudPointToolController::updateCalibrationPoint()
         return;
     }
     
-    // Get current calibration point data
     const CloudPointMapper::CalibrationPoint& currentPoint = m_mapper->getCalibrationPoint(currentRow);
-    
-    // Use input dialogs with current values as defaults
-    bool ok;
-    
-    // Get Image coordinates
-    double imageX = QInputDialog::getDouble(m_parent, "Update Calibration Point", 
-                                           "Image X:", currentPoint.imageCoord.x(), -9999.0, 9999.0, 2, &ok);
-    if (!ok) return;
-    
-    double imageY = QInputDialog::getDouble(m_parent, "Update Calibration Point", 
-                                           "Image Y:", currentPoint.imageCoord.y(), -9999.0, 9999.0, 2, &ok);
-    if (!ok) return;
-    
-    double imageZ = QInputDialog::getDouble(m_parent, "Update Calibration Point", 
-                                           "Image Z:", currentPoint.imageCoord.z(), -9999.0, 9999.0, 2, &ok);
-    if (!ok) return;
-    
-    // Get Real coordinates
-    double realX = QInputDialog::getDouble(m_parent, "Update Calibration Point", 
-                                          "Real X:", currentPoint.realCoord.x(), -9999.0, 9999.0, 2, &ok);
-    if (!ok) return;
-    
-    double realY = QInputDialog::getDouble(m_parent, "Update Calibration Point", 
-                                          "Real Y:", currentPoint.realCoord.y(), -9999.0, 9999.0, 2, &ok);
-    if (!ok) return;
-    
-    double realZ = QInputDialog::getDouble(m_parent, "Update Calibration Point", 
-                                          "Real Z:", currentPoint.realCoord.z(), -9999.0, 9999.0, 2, &ok);
-    if (!ok) return;
-    
-    // Get Confidence
-    double confidence = QInputDialog::getDouble(m_parent, "Update Calibration Point", 
-                                               "Confidence (0.0-1.0):", currentPoint.confidence, 0.0, 1.0, 2, &ok);
-    if (!ok) return;
-    
-    // Create updated calibration point
-    QVector3D imageCoord(imageX, imageY, imageZ);
-    QVector3D realCoord(realX, realY, realZ);
-    
-    if (m_mapper->updateCalibrationPoint(currentRow, imageCoord, realCoord, confidence)) {
+    CalibrationPointInput input;
+    if (!editCalibrationPoint(m_parent, tr("Update calibration point"), &currentPoint, input))
+        return;
+    if (m_mapper->updateCalibrationPoint(currentRow, input.image, input.real,
+                                         input.confidence, input.label)) {
         updateCalibrationTable();
         showSuccess("Updated calibration point");
     } else {
@@ -811,8 +827,8 @@ void CloudPointToolController::buildMappingGrid()
 
 void CloudPointToolController::validateMapping()
 {
-    if (m_mapper->getPointCount() < 5) {
-        showError("Need at least 5 calibration points for validation");
+    if (m_mapper->getPointCount() < 4) {
+        showError("Need at least 4 calibration points for leave-one-out validation");
         return;
     }
     
@@ -870,8 +886,11 @@ void CloudPointToolController::transformTestPoint()
     // Use 0 for Z since we don't have Z input in current UI
     QVector3D testPoint(testX, testY, 0.0f);
     
-    CloudPointMapper::InterpolationMethod method = static_cast<CloudPointMapper::InterpolationMethod>(
-        m_interpolationMethodCombo ? m_interpolationMethodCombo->currentIndex() : 0);
+    const int methodValue = m_interpolationMethodCombo
+        ? m_interpolationMethodCombo->currentData().toInt()
+        : static_cast<int>(CloudPointMapper::BILINEAR);
+    CloudPointMapper::InterpolationMethod method =
+        static_cast<CloudPointMapper::InterpolationMethod>(methodValue);
     
     CloudPointMapper::MappingResult result = m_mapper->transformImageToReal(testPoint, method);
     
@@ -1071,6 +1090,18 @@ void CloudPointToolController::updateStatsDisplay()
     if (m_coverageLabel) {
         m_coverageLabel->setText(QString::number(stats.coverage, 'f', 1) + QLatin1String("%"));
     }
+    if (m_mappingStatusLabel) {
+        if (!stats.hasBeenValidated) {
+            m_mappingStatusLabel->setText(tr("NOT VALIDATED"));
+            m_mappingStatusLabel->setStyleSheet(QStringLiteral("color: rgb(255, 190, 70); font-weight: bold;"));
+        } else if (stats.isValid) {
+            m_mappingStatusLabel->setText(tr("READY"));
+            m_mappingStatusLabel->setStyleSheet(QStringLiteral("color: rgb(80, 220, 120); font-weight: bold;"));
+        } else {
+            m_mappingStatusLabel->setText(tr("FAILED"));
+            m_mappingStatusLabel->setStyleSheet(QStringLiteral("color: rgb(255, 100, 100); font-weight: bold;"));
+        }
+    }
 }
 
 void CloudPointToolController::updateButtonStates()
@@ -1088,7 +1119,7 @@ void CloudPointToolController::updateButtonStates()
     if (m_updatePointButton) m_updatePointButton->setEnabled(hasSelection);
     if (m_clearAllButton) m_clearAllButton->setEnabled(hasPoints);
     if (m_buildGridButton) m_buildGridButton->setEnabled(hasEnoughPoints);
-    if (m_validateButton) m_validateButton->setEnabled(m_mapper->getPointCount() >= 5);
+    if (m_validateButton) m_validateButton->setEnabled(m_mapper->getPointCount() >= 4);
     if (m_transformTestButton) m_transformTestButton->setEnabled(hasEnoughPoints);
     if (m_saveButton) m_saveButton->setEnabled(hasPoints);
     if (m_exportButton) m_exportButton->setEnabled(hasPoints);
@@ -1170,7 +1201,7 @@ void CloudPointToolController::showError(const QString& message)
 void CloudPointToolController::showSuccess(const QString& message)
 {
     if (m_parent) {
-        QMessageBox::information(m_parent, "Cloud Point Mapping", message);
+        m_parent->statusBar()->showMessage(message, 5000);
     }
 }
 
@@ -1260,10 +1291,14 @@ void CloudPointToolController::onTableItemDoubleClicked(QTableWidgetItem* item)
     }
 }
 
-void CloudPointToolController::onInterpolationMethodChanged(int method)
+void CloudPointToolController::onInterpolationMethodChanged(int index)
 {
-    // Update mapper's default method if needed
-    // This is handled during transform operations
+    if (!m_interpolationMethodCombo || index < 0)
+        return;
+    const CloudPointMapper::InterpolationMethod method =
+        static_cast<CloudPointMapper::InterpolationMethod>(
+            m_interpolationMethodCombo->itemData(index).toInt());
+    m_mapper->setDefaultInterpolationMethod(method);
 }
 
 void CloudPointToolController::onGridResolutionChanged(int resolution)

@@ -3,6 +3,7 @@
 
 #include "device.h"
 #include <QObject>
+#include <atomic>
 
 class Conveyor : public Device
 {
@@ -14,7 +15,7 @@ public:
     void SetType(QString type);
     QString GetType();    
 
-    float Position = 0;
+    float CurrentPosition() const;
 
 public slots:
     QString GetInfo();
@@ -25,6 +26,7 @@ signals:
 
 private:
     QString type;
+    std::atomic<float> position{0.0f};
 };
 
 #endif // CONVEYOR_H

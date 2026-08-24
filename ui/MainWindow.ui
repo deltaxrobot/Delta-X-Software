@@ -29,7 +29,7 @@
    </font>
   </property>
   <property name="windowTitle">
-   <string>Delta X Software - Version 1.3.0</string>
+   <string>Delta X Software</string>
   </property>
   <property name="windowIcon">
    <iconset resource="../resource.qrc">
@@ -1573,7 +1573,7 @@ QWidget#pSetting QPushButton#pbSaveSetting {
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_5">
               <item>
-               <widget class="QStackedWidget" name="swAuthority">
+                <widget class="QStackedWidget" name="swAuthorityPages">
                 <property name="currentIndex">
                  <number>0</number>
                 </property>

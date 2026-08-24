@@ -6,6 +6,7 @@
 #include <QString>
 #include <opencv2/core/core.hpp>
 #include <QSettings>
+#include "DeltaXPluginMetadata.h"
 
 //! [0]
 class DeltaXPlugin : public QObject
@@ -31,11 +32,12 @@ signals:
     void StartedCapture();
     void RequestCapture();
     void RequestConnect(int id);
+    void CaptureError(QString reason);
 };
 
 QT_BEGIN_NAMESPACE
 
-#define DeltaXPlugin_iid "org.imwi.deltaxstudio"
+#define DeltaXPlugin_iid DELTA_X_PLUGIN_IID
 
 Q_DECLARE_INTERFACE(DeltaXPlugin, DeltaXPlugin_iid)
 QT_END_NAMESPACE

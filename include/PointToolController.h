@@ -32,7 +32,7 @@ class PointToolController : public QObject
 
 public:
     explicit PointToolController(RobotWindow* parent = nullptr);
-    ~PointToolController() = default;
+    ~PointToolController() override;
 
     /**
      * @brief Sets the parent RobotWindow instance

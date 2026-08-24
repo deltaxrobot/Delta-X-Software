@@ -27,6 +27,10 @@ public:
         QString displayText;
         bool isValid = false;
         QString errorMessage;
+        double rmsError = 0.0;
+        double maxError = 0.0;
+        double scale = 0.0;
+        double rotationRadians = 0.0;
     };
 
     /**
@@ -48,6 +52,9 @@ public:
         QString displayText;
         bool isValid = false;
         QString errorMessage;
+        double rmsError = 0.0;
+        double maxError = 0.0;
+        double conditionNumber = 0.0;
     };
 
     /**

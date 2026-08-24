@@ -15,6 +15,11 @@ Conveyor::~Conveyor()
 
 }
 
+float Conveyor::CurrentPosition() const
+{
+    return position.load(std::memory_order_acquire);
+}
+
 QString Conveyor::GetInfo()
 {
     jsonObject["id_name"] = idName;
@@ -40,7 +45,7 @@ void Conveyor::ProcessResponse(QString idName, QString response)
             id = 0;
         float value = response.mid(3).toFloat();
 
-        Position = value;
+        position.store(value, std::memory_order_release);
 
         emit GotEncoderPosition(id, value);
     }

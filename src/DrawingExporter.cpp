@@ -192,7 +192,7 @@ void DrawingExporter::ConvertSVGToArea(QString fileName)
     // Load file SVG
     svgWidget.load(fileName);
 
-    // Hiá»ƒn thá»‹ widget
+    // Display the widget.
     svgWidget.show();
 }
 

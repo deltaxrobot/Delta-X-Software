@@ -86,7 +86,7 @@ def main():
                 # cv2.imshow("Image", image)
                 # cv2.waitKey(1)
         except ConnectionRefusedError:
-            # Không kết nối được đến server, đợi 5 giây và thử kết nối lại
+            # Wait five seconds before retrying a failed server connection.
             print(f"Connection refused. Retrying in 5 seconds...")
             time.sleep(5)
 

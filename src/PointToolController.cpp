@@ -4,6 +4,9 @@
 #include "ui_RobotWindow.h"
 #include "VariableManager.h"
 #include <QMessageBox>
+#include <QDateTime>
+#include <QStatusBar>
+#include <QtMath>
 
 PointToolController::PointToolController(RobotWindow* parent)
     : QObject(parent)
@@ -22,6 +25,12 @@ PointToolController::PointToolController(RobotWindow* parent)
             this, &PointToolController::onCloudMappingUpdated);
     
     setupCloudMappingIntegration();
+}
+
+PointToolController::~PointToolController()
+{
+    delete m_calculator;
+    m_calculator = nullptr;
 }
 
 void PointToolController::setParent(RobotWindow* parent)
@@ -44,11 +53,11 @@ void PointToolController::initializeUI(QWidget* parentWidget)
     // Initialize cloud point mapping UI
     m_cloudPointController->initializeUI(parentWidget);
     
-    // Don't auto-import during initialization to avoid unnecessary error messages  
-    // User can manually import when needed via UI buttons
-    // if (!importCloudMappingFromVariables(m_defaultCloudMappingVariable)) {
-    //     qDebug() << "No existing cloud mapping found in variables";
-    // }
+    const QString qualifiedName = VariableManager::scopedKey(
+        m_parent ? m_parent->ProjectName : QString(), m_defaultCloudMappingVariable);
+    if (VariableManager::instance().containsFullKey(qualifiedName + QStringLiteral("_mapping"))) {
+        m_useCloudMapping = importCloudMappingFromVariables(m_defaultCloudMappingVariable);
+    }
 }
 
 CloudPointToolController* PointToolController::getCloudPointController() const
@@ -67,19 +76,19 @@ bool PointToolController::calculateMappingMatrix()
     QPointF sourcePoint1, sourcePoint2, targetPoint1, targetPoint2;
     
     // Validate and extract points
-    if (!validateAndExtractPoint2D(m_parent->ui->leSourcePoint1X, m_parent->ui->leSourcePoint1Y, sourcePoint1, "Source Point 1")) {
+    if (!validateAndExtractPoint2D(m_parent->ui->leMappingSourcePoint1X, m_parent->ui->leMappingSourcePoint1Y, sourcePoint1, "Source Point 1")) {
         return false;
     }
     
-    if (!validateAndExtractPoint2D(m_parent->ui->leSourcePoint2X, m_parent->ui->leSourcePoint2Y, sourcePoint2, "Source Point 2")) {
+    if (!validateAndExtractPoint2D(m_parent->ui->leMappingSourcePoint2X, m_parent->ui->leMappingSourcePoint2Y, sourcePoint2, "Source Point 2")) {
         return false;
     }
     
-    if (!validateAndExtractPoint2D(m_parent->ui->leDestinationPoint1X, m_parent->ui->leDestinationPoint1Y, targetPoint1, "Target Point 1")) {
+    if (!validateAndExtractPoint2D(m_parent->ui->leMappingDestinationPoint1X, m_parent->ui->leMappingDestinationPoint1Y, targetPoint1, "Target Point 1")) {
         return false;
     }
     
-    if (!validateAndExtractPoint2D(m_parent->ui->leDestinationPoint2X, m_parent->ui->leDestinationPoint2Y, targetPoint2, "Target Point 2")) {
+    if (!validateAndExtractPoint2D(m_parent->ui->leMappingDestinationPoint2X, m_parent->ui->leMappingDestinationPoint2Y, targetPoint2, "Target Point 2")) {
         return false;
     }
 
@@ -102,38 +111,30 @@ bool PointToolController::calculateMappingMatrix()
     }
 
     // Store in VariableManager
-    VariableManager::instance().updateVar("MappingTransform", QVariant::fromValue(result.transform));
-    VariableManager::instance().updateVar("MappingMatrix", QVariant::fromValue(result.matrix));
+    QHash<QString, QVariant> mappingValues;
+    mappingValues.insert("MappingTransform", QVariant::fromValue(result.transform));
+    mappingValues.insert("MappingMatrix", QVariant::fromValue(result.matrix));
+    const QString detecting = m_parent->ui->cbSelectedDetecting->currentText().isEmpty()
+        ? QStringLiteral("tracking0") : m_parent->ui->cbSelectedDetecting->currentText();
+    const QString qualityPrefix = detecting + QStringLiteral(".Calibration.Mapping.");
+    mappingValues.insert(qualityPrefix + QStringLiteral("IsValid"), true);
+    mappingValues.insert(qualityPrefix + QStringLiteral("Method"), QStringLiteral("Two-point similarity"));
+    mappingValues.insert(qualityPrefix + QStringLiteral("RmsError"), result.rmsError);
+    mappingValues.insert(qualityPrefix + QStringLiteral("MaxError"), result.maxError);
+    mappingValues.insert(qualityPrefix + QStringLiteral("Scale"), result.scale);
+    mappingValues.insert(qualityPrefix + QStringLiteral("RotationDegrees"),
+                         qRadiansToDegrees(result.rotationRadians));
+    mappingValues.insert(qualityPrefix + QStringLiteral("PointCount"), 2);
+    mappingValues.insert(qualityPrefix + QStringLiteral("UpdatedAt"),
+                         QDateTime::currentDateTimeUtc().toString(Qt::ISODateWithMs));
+    VariableManager::instance().updateBatchScoped(m_parent->ProjectName, mappingValues);
 
     // Update display
     updateDisplayLabel(m_parent->ui->lbMatrixDisplay, result.displayText);
     
-    // Also add these points to cloud mapping if enabled
-    if (m_useCloudMapping && m_cloudPointController) {
-        CloudPointMapper* mapper = m_cloudPointController->getMapper();
-        if (mapper) {
-            // Add source point 1
-            mapper->addCalibrationPoint(
-                QVector3D(sourcePoint1.x(), sourcePoint1.y(), 0.0f),
-                QVector3D(targetPoint1.x(), targetPoint1.y(), 0.0f),
-                1.0f,
-                "Matrix Source 1"
-            );
-            
-            // Add source point 2
-            mapper->addCalibrationPoint(
-                QVector3D(sourcePoint2.x(), sourcePoint2.y(), 0.0f),
-                QVector3D(targetPoint2.x(), targetPoint2.y(), 0.0f),
-                1.0f,
-                "Matrix Source 2"
-            );
-            
-            // Export to variables
-            exportCloudMappingToVariables(m_defaultCloudMappingVariable);
-        }
-    }
-    
-    showSuccess("Mapping matrix calculated successfully");
+    showSuccess(QString("Mapping ready: scale %1, rotation %2 deg")
+                    .arg(result.scale, 0, 'f', 6)
+                    .arg(qRadiansToDegrees(result.rotationRadians), 0, 'f', 3));
     return true;
 }
 
@@ -147,18 +148,18 @@ bool PointToolController::calculatePerspectiveMatrix()
     QPointF sourcePoints[4], targetPoints[4];
     
     // Validate and extract 4 source points
-    if (!validateAndExtractPoint2D(m_parent->ui->leSourcePoint1X, m_parent->ui->leSourcePoint1Y, sourcePoints[0], "Source Point 1") ||
-        !validateAndExtractPoint2D(m_parent->ui->leSourcePoint2X, m_parent->ui->leSourcePoint2Y, sourcePoints[1], "Source Point 2") ||
-        !validateAndExtractPoint2D(m_parent->ui->leSourcePoint3X, m_parent->ui->leSourcePoint3Y, sourcePoints[2], "Source Point 3") ||
-        !validateAndExtractPoint2D(m_parent->ui->leSourcePoint4X, m_parent->ui->leSourcePoint4Y, sourcePoints[3], "Source Point 4")) {
+    if (!validateAndExtractPoint2D(m_parent->ui->lePerspectiveSourcePoint1X, m_parent->ui->lePerspectiveSourcePoint1Y, sourcePoints[0], "Source Point 1") ||
+        !validateAndExtractPoint2D(m_parent->ui->lePerspectiveSourcePoint2X, m_parent->ui->lePerspectiveSourcePoint2Y, sourcePoints[1], "Source Point 2") ||
+        !validateAndExtractPoint2D(m_parent->ui->lePerspectiveSourcePoint3X, m_parent->ui->lePerspectiveSourcePoint3Y, sourcePoints[2], "Source Point 3") ||
+        !validateAndExtractPoint2D(m_parent->ui->lePerspectiveSourcePoint4X, m_parent->ui->lePerspectiveSourcePoint4Y, sourcePoints[3], "Source Point 4")) {
         return false;
     }
     
     // Validate and extract 4 target points
-    if (!validateAndExtractPoint2D(m_parent->ui->leDestinationPoint1X, m_parent->ui->leDestinationPoint1Y, targetPoints[0], "Target Point 1") ||
-        !validateAndExtractPoint2D(m_parent->ui->leDestinationPoint2X, m_parent->ui->leDestinationPoint2Y, targetPoints[1], "Target Point 2") ||
-        !validateAndExtractPoint2D(m_parent->ui->leDestinationPoint3X, m_parent->ui->leDestinationPoint3Y, targetPoints[2], "Target Point 3") ||
-        !validateAndExtractPoint2D(m_parent->ui->leDestinationPoint4X, m_parent->ui->leDestinationPoint4Y, targetPoints[3], "Target Point 4")) {
+    if (!validateAndExtractPoint2D(m_parent->ui->lePerspectiveDestinationPoint1X, m_parent->ui->lePerspectiveDestinationPoint1Y, targetPoints[0], "Target Point 1") ||
+        !validateAndExtractPoint2D(m_parent->ui->lePerspectiveDestinationPoint2X, m_parent->ui->lePerspectiveDestinationPoint2Y, targetPoints[1], "Target Point 2") ||
+        !validateAndExtractPoint2D(m_parent->ui->lePerspectiveDestinationPoint3X, m_parent->ui->lePerspectiveDestinationPoint3Y, targetPoints[2], "Target Point 3") ||
+        !validateAndExtractPoint2D(m_parent->ui->lePerspectiveDestinationPoint4X, m_parent->ui->lePerspectiveDestinationPoint4Y, targetPoints[3], "Target Point 4")) {
         return false;
     }
 
@@ -179,39 +180,26 @@ bool PointToolController::calculatePerspectiveMatrix()
     }
 
     // Store in VariableManager
-    VariableManager::instance().updateVar("PerspectiveMatrix", QVariant::fromValue(result.matrix));
-
-    // Create display string for compatibility with old format
-    QString matrixString = QString("m11: %1, m12: %2\nm21: %3, m22: %4\ndx: %5, dy: %6")
-                          .arg(result.qtTransform.m11(), 0, 'f', 6)
-                          .arg(result.qtTransform.m12(), 0, 'f', 6)
-                          .arg(result.qtTransform.m21(), 0, 'f', 6)
-                          .arg(result.qtTransform.m22(), 0, 'f', 6)
-                          .arg(result.qtTransform.dx(), 0, 'f', 6)
-                          .arg(result.qtTransform.dy(), 0, 'f', 6);
+    QHash<QString, QVariant> perspectiveValues;
+    perspectiveValues.insert(QStringLiteral("PerspectiveMatrix"), QVariant::fromValue(result.matrix));
+    perspectiveValues.insert(QStringLiteral("PerspectiveTransform"), QVariant::fromValue(result.qtTransform));
+    const QString detecting = m_parent->ui->cbSelectedDetecting->currentText().isEmpty()
+        ? QStringLiteral("tracking0") : m_parent->ui->cbSelectedDetecting->currentText();
+    const QString qualityPrefix = detecting + QStringLiteral(".Calibration.Perspective.");
+    perspectiveValues.insert(qualityPrefix + QStringLiteral("IsValid"), true);
+    perspectiveValues.insert(qualityPrefix + QStringLiteral("RmsError"), result.rmsError);
+    perspectiveValues.insert(qualityPrefix + QStringLiteral("MaxError"), result.maxError);
+    perspectiveValues.insert(qualityPrefix + QStringLiteral("ConditionNumber"), result.conditionNumber);
+    perspectiveValues.insert(qualityPrefix + QStringLiteral("PointCount"), 4);
+    perspectiveValues.insert(qualityPrefix + QStringLiteral("UpdatedAt"),
+                             QDateTime::currentDateTimeUtc().toString(Qt::ISODateWithMs));
+    VariableManager::instance().updateBatchScoped(m_parent->ProjectName, perspectiveValues);
 
     // Update display
-    updateDisplayLabel(m_parent->ui->lbPointMatrixDisplay, matrixString);
-    
-    // Also add these points to cloud mapping if enabled
-    if (m_useCloudMapping && m_cloudPointController) {
-        CloudPointMapper* mapper = m_cloudPointController->getMapper();
-        if (mapper) {
-            for (int i = 0; i < 4; ++i) {
-                mapper->addCalibrationPoint(
-                    QVector3D(sourcePoints[i].x(), sourcePoints[i].y(), 0.0f),
-                    QVector3D(targetPoints[i].x(), targetPoints[i].y(), 0.0f),
-                    1.0f,
-                    QString("Perspective Point %1").arg(i + 1)
-                );
-            }
-            
-            // Export to variables
-            exportCloudMappingToVariables(m_defaultCloudMappingVariable);
-        }
-    }
-    
-    showSuccess("Perspective matrix calculated successfully");
+    updateDisplayLabel(m_parent->ui->lbPointMatrixDisplay, result.displayText);
+    showSuccess(QString("Perspective mapping ready: RMS %1, condition %2")
+                    .arg(result.rmsError, 0, 'f', 4)
+                    .arg(result.conditionNumber, 0, 'g', 5));
     return true;
 }
 
@@ -251,7 +239,8 @@ bool PointToolController::calculateVector()
     // Store in VariableManager
     QString vectorName = m_parent->ui->leVectorName->text().trimmed();
     if (!vectorName.isEmpty()) {
-        VariableManager::instance().updateVar(vectorName, QVariant::fromValue(result.vector));
+        VariableManager::instance().updateVarScoped(
+            m_parent->ProjectName, vectorName, QVariant::fromValue(result.vector));
     }
 
     // Update UI with results
@@ -278,19 +267,18 @@ bool PointToolController::calculateTestPoint()
         return false;
     }
 
-    QVector3D testPoint3D(testPoint.x(), testPoint.y(), 0.0f);
-    QVector3D resultPoint;
-    
-    // Try cloud mapping first if available
+    const QVector3D testPoint3D(testPoint.x(), testPoint.y(), 0.0f);
+
     if (shouldUseCloudMapping()) {
-        resultPoint = transformPointUsingCloudMapping(testPoint3D);
-        
-        if (!resultPoint.isNull()) {
-            // Update UI with result
-            setFormattedValue(m_parent->ui->leTargetTestPointX, resultPoint.x());
-            setFormattedValue(m_parent->ui->leTargetTestPointY, resultPoint.y());
-            
-            showSuccess("Test point calculated using Cloud Point Mapping");
+        CloudPointMapper* mapper = m_cloudPointController->getMapper();
+        const CloudPointMapper::MappingResult cloudResult = mapper->transformImageToReal(
+            testPoint3D, mapper->defaultInterpolationMethod());
+        if (cloudResult.isValid) {
+            setFormattedValue(m_parent->ui->leTargetTestPointX, cloudResult.transformedPoint.x());
+            setFormattedValue(m_parent->ui->leTargetTestPointY, cloudResult.transformedPoint.y());
+            showSuccess(QString("Cloud mapping test passed (confidence %1, estimated error %2 mm)")
+                            .arg(cloudResult.confidence, 0, 'f', 3)
+                            .arg(cloudResult.estimatedError, 0, 'f', 3));
             return true;
         }
     }
@@ -301,10 +289,15 @@ bool PointToolController::calculateTestPoint()
         return false;
     }
 
-    // Get stored matrix
-    QTransform matrix = getStoredMatrix(matrixName);
-    if (matrix.isIdentity()) {
+    const QVariant storedMatrix = VariableManager::instance().getVarScoped(
+        m_parent->ProjectName, matrixName);
+    if (!storedMatrix.isValid() || !storedMatrix.canConvert<QTransform>()) {
         showError(QString("Matrix '%1' not found. Please calculate a matrix first.").arg(matrixName));
+        return false;
+    }
+    const QTransform matrix = storedMatrix.value<QTransform>();
+    if (qFuzzyIsNull(matrix.determinant())) {
+        showError(QString("Matrix '%1' is singular and cannot be used.").arg(matrixName));
         return false;
     }
 
@@ -393,7 +386,9 @@ bool PointToolController::exportCloudMappingToVariables(const QString& variableN
         return false;
     }
     
-    return mapper->exportToVariableManager(variableName);
+    const QString qualifiedName = VariableManager::scopedKey(
+        m_parent ? m_parent->ProjectName : QString(), variableName);
+    return mapper->exportToVariableManager(qualifiedName);
 }
 
 bool PointToolController::importCloudMappingFromVariables(const QString& variableName)
@@ -407,7 +402,9 @@ bool PointToolController::importCloudMappingFromVariables(const QString& variabl
         return false;
     }
     
-    return mapper->importFromVariableManager(variableName);
+    const QString qualifiedName = VariableManager::scopedKey(
+        m_parent ? m_parent->ProjectName : QString(), variableName);
+    return mapper->importFromVariableManager(qualifiedName);
 }
 
 void PointToolController::updateTestPoint(const QVector3D& testPoint)
@@ -511,8 +508,8 @@ void PointToolController::setCurrentRobotPosition(QLineEdit* xEdit, QLineEdit* y
 
 void PointToolController::setupCloudMappingIntegration()
 {
-    // Set up default cloud mapping settings
-    m_useCloudMapping = true;
+    // Cloud mapping is activated only after a validated profile is loaded.
+    m_useCloudMapping = false;
     m_defaultCloudMappingVariable = "CloudMapping";
     
     // Connect to cloud mapping updates
@@ -538,8 +535,11 @@ QVector3D PointToolController::fallbackToTraditionalMapping(const QVector3D& ima
 
 void PointToolController::onCloudMappingUpdated()
 {
-    // Automatically export to variables when cloud mapping is updated
-    if (m_useCloudMapping && m_cloudPointController) {
+    if (!m_cloudPointController)
+        return;
+    CloudPointMapper* mapper = m_cloudPointController->getMapper();
+    m_useCloudMapping = mapper && mapper->getMappingStats().isValid;
+    if (m_useCloudMapping) {
         exportCloudMappingToVariables(m_defaultCloudMappingVariable);
     }
 }
@@ -555,7 +555,8 @@ QTransform PointToolController::getStoredMatrix(const QString& matrixName)
         return QTransform();
     }
 
-    QVariant var = VariableManager::instance().getVar(matrixName);
+    QVariant var = VariableManager::instance().getVarScoped(
+        m_parent ? m_parent->ProjectName : QString(), matrixName);
     if (var.canConvert<QTransform>()) {
         return var.value<QTransform>();
     }
@@ -566,7 +567,9 @@ QTransform PointToolController::getStoredMatrix(const QString& matrixName)
 void PointToolController::storeMatrix(const QString& matrixName, const QTransform& transform)
 {
     if (!matrixName.isEmpty()) {
-        VariableManager::instance().updateVar(matrixName, QVariant::fromValue(transform));
+        VariableManager::instance().updateVarScoped(
+            m_parent ? m_parent->ProjectName : QString(), matrixName,
+            QVariant::fromValue(transform));
     }
 }
 
@@ -576,7 +579,8 @@ QVector3D PointToolController::getStoredVector(const QString& vectorName)
         return QVector3D();
     }
 
-    QVariant var = VariableManager::instance().getVar(vectorName);
+    QVariant var = VariableManager::instance().getVarScoped(
+        m_parent ? m_parent->ProjectName : QString(), vectorName);
     if (var.canConvert<QVector3D>()) {
         return var.value<QVector3D>();
     }
@@ -587,7 +591,9 @@ QVector3D PointToolController::getStoredVector(const QString& vectorName)
 void PointToolController::storeVector(const QString& vectorName, const QVector3D& vector)
 {
     if (!vectorName.isEmpty()) {
-        VariableManager::instance().updateVar(vectorName, QVariant::fromValue(vector));
+        VariableManager::instance().updateVarScoped(
+            m_parent ? m_parent->ProjectName : QString(), vectorName,
+            QVariant::fromValue(vector));
     }
 }
 
@@ -602,8 +608,8 @@ void PointToolController::showError(const QString& message)
 
 void PointToolController::showSuccess(const QString& message)
 {
-    // For now, we'll skip success messages to avoid too many popups
-    // Could be implemented with a status bar message instead
+    if (m_parent && m_parent->statusBar())
+        m_parent->statusBar()->showMessage(message, 6000);
 }
 
 void PointToolController::updateDisplayLabel(QLabel* label, const QString& text)

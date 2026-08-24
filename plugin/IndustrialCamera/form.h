@@ -45,22 +45,24 @@ public:
     void LoadSettings(QSettings* setting);
     void SaveSettings(QSettings* setting);
     void GetMessageFromOtherModule(QString cmd);
+    bool HasAvailableBackend() const;
+    QString BackendStatus() const;
 
     // ---- Camera variables -----
 
     CameraReader* CameraReaderWork;
 
-    XCamManager IndustryCamera;
-
     QTimer* CameraDisplayUpdatingTimer;
     QElapsedTimer ElapseTimer;
 
     bool IsLastJobDone = true;
+    bool cameraConnected = false;
 
 public slots:
     void GetEventFromUI();
     void GetStateLastJob(bool state);
     void TryToConnectCamera();
+    void StopCapture();
     void GetResultOfCameraConnecting(bool);
     void GetImageToDisplay(QPixmap pixmap);
     void GetCameraList(QStringList list);
@@ -72,6 +74,7 @@ signals:
     void StartedCapture();
     void RequestImage();
     void UpdateResizeWidth(int newWidth);
+    void RequestExposureTime(int exposureUs);
     void RequestCameraList();
 
 private slots:

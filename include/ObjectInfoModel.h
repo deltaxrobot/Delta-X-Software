@@ -26,8 +26,8 @@ public:
 
     int columnCount(const QModelIndex &parent = QModelIndex()) const override {
         Q_UNUSED(parent)
-        // Có 10 cột: id, type, X, Y, Z, width, height, angle, isPicked, offset
-        return 10;
+        // Keep the first 10 legacy columns stable; append detector metadata.
+        return 13;
     }
 
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override {
@@ -47,6 +47,9 @@ public:
             case 7: return info.angle;
             case 8: return info.isPicked;
             case 9: return QString("%1, %2").arg(info.offset.x()).arg(info.offset.y());
+            case 10: return info.confidence;
+            case 11: return info.label;
+            case 12: return info.externalId;
             default: return QVariant();
         }
     }
@@ -66,6 +69,9 @@ public:
             case 7: return QStringLiteral("Angle");
             case 8: return QStringLiteral("Is Picked");
             case 9: return QStringLiteral("Offset");
+            case 10: return QStringLiteral("Confidence");
+            case 11: return QStringLiteral("Label");
+            case 12: return QStringLiteral("External ID");
             default: return QVariant();
         }
     }

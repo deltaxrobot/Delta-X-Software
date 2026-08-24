@@ -50,6 +50,8 @@
 
 #include <QtWidgets>
 #include <QMimeData>
+#include <QCompleter>
+#include <QStringListModel>
 
 #include "codeeditor.h"
 
@@ -65,6 +67,28 @@ CodeEditor::CodeEditor(QWidget *parent) : QTextEdit(parent)
 
     updateLineNumberAreaWidth(0);
     highlightCurrentLine();
+}
+
+void CodeEditor::setCompletionWords(const QStringList& words)
+{
+    QStringList normalized = words;
+    normalized.removeAll(QString());
+    normalized.removeDuplicates();
+    normalized.sort(Qt::CaseInsensitive);
+
+    if (!completionModel) {
+        completionModel = new QStringListModel(this);
+        completer = new QCompleter(completionModel, this);
+        completer->setWidget(this);
+        completer->setCaseSensitivity(Qt::CaseInsensitive);
+        completer->setCompletionMode(QCompleter::PopupCompletion);
+        completer->setFilterMode(Qt::MatchStartsWith);
+        completer->setMaxVisibleItems(14);
+        connect(completer, QOverload<const QString&>::of(&QCompleter::activated),
+                this, &CodeEditor::insertCompletion);
+    }
+    if (completionModel->stringList() != normalized)
+        completionModel->setStringList(normalized);
 }
 
 //![constructor]
@@ -95,6 +119,32 @@ void CodeEditor::setTabWidth(int width)
 {
     QFontMetrics metrics(font());
     setTabStopDistance(width * metrics.horizontalAdvance(' '));
+}
+
+void CodeEditor::setDiagnosticLines(const QHash<int, int>& lines)
+{
+    diagnosticLines = lines;
+    refreshExtraSelections();
+}
+
+void CodeEditor::setExecutionLine(int oneBasedLine)
+{
+    executionLine = oneBasedLine;
+    refreshExtraSelections();
+}
+
+void CodeEditor::goToLine(int oneBasedLine)
+{
+    if (oneBasedLine < 1)
+        return;
+    QTextBlock block = document()->findBlockByNumber(oneBasedLine - 1);
+    if (!block.isValid())
+        return;
+    QTextCursor cursor(block);
+    setTextCursor(cursor);
+    ensureCursorVisible();
+    setFocus();
+    refreshExtraSelections();
 }
 
 //![extraAreaWidth]
@@ -230,10 +280,10 @@ void CodeEditor::indentText()
     }
     else
     {
-        // Chèn một tab vào vị trí của cursor
+        // Insert a tab at the cursor.
         cursor.insertText("\t");
 
-        // Cập nhật cursor của QTextEdit
+        // Update the QTextEdit cursor.
         setTextCursor(cursor);
     }
 }
@@ -264,7 +314,7 @@ void CodeEditor::deleleIndentText()
         int previousPosition = -1;
         while (cursor.position() <= endPos && cursor.position() != previousPosition) {
             previousPosition = cursor.position();
-            // nếu dòng hiện tại có ký tự tab thì xóa ký tự tab đó
+            // Remove a leading tab from the current line when present.
             QTextBlock currentBlock = cursor.block();
             if (currentBlock.isValid() && currentBlock.text().startsWith("\t")) {
                 cursor.deleteChar();
@@ -280,13 +330,13 @@ void CodeEditor::deleleIndentText()
     }
     else
     {
-        // nếu dòng hiện tại có ký tự tab thì xóa ký tự tab đó
+        // Remove a leading tab from the current line when present.
         QTextBlock currentBlock = cursor.block();
         if (currentBlock.isValid() && currentBlock.text().startsWith("\t")) {
             cursor.deletePreviousChar();
         }
 
-        // Cập nhật cursor của QTextEdit
+        // Update the QTextEdit cursor.
         setTextCursor(cursor);
     }
 }
@@ -305,6 +355,31 @@ void CodeEditor::resizeEvent(QResizeEvent *e)
 
 void CodeEditor::keyPressEvent(QKeyEvent *event)
 {
+    if (!event)
+        return;
+
+    if (completer && completer->popup()->isVisible()) {
+        switch (event->key()) {
+        case Qt::Key_Enter:
+        case Qt::Key_Return:
+        case Qt::Key_Escape:
+        case Qt::Key_Tab:
+        case Qt::Key_Backtab:
+            event->ignore();
+            return;
+        default:
+            break;
+        }
+    }
+
+    const bool completionShortcut =
+        event->key() == Qt::Key_Space &&
+        event->modifiers().testFlag(Qt::ControlModifier);
+    if (completionShortcut) {
+        showCompletionPopup(true);
+        return;
+    }
+
     if (event->modifiers() == Qt::ControlModifier && event->key() == Qt::Key_Slash) {
         commentSelectedLines();
     }
@@ -319,6 +394,58 @@ void CodeEditor::keyPressEvent(QKeyEvent *event)
     else {
         QTextEdit::keyPressEvent(event);
     }
+
+    if (textInteractionFlags().testFlag(Qt::TextEditable))
+        showCompletionPopup(false);
+}
+
+QString CodeEditor::completionPrefix() const
+{
+    QTextCursor cursor = textCursor();
+    const QString block = cursor.block().text().left(cursor.positionInBlock());
+    int start = block.size();
+    while (start > 0) {
+        const QChar c = block.at(start - 1);
+        if (!c.isLetterOrNumber() && c != '_' && c != '#' && c != '.')
+            break;
+        --start;
+    }
+    return block.mid(start);
+}
+
+void CodeEditor::insertCompletion(const QString& completion)
+{
+    if (!completer || completer->widget() != this || completion.isEmpty())
+        return;
+    const QString prefix = completionPrefix();
+    QTextCursor cursor = textCursor();
+    cursor.movePosition(QTextCursor::Left, QTextCursor::KeepAnchor, prefix.size());
+    cursor.insertText(completion);
+    setTextCursor(cursor);
+}
+
+void CodeEditor::showCompletionPopup(bool force)
+{
+    if (!completer || !completionModel || completionModel->rowCount() == 0 ||
+        !textInteractionFlags().testFlag(Qt::TextEditable))
+        return;
+    const QString prefix = completionPrefix();
+    if (!force && prefix.size() < 2) {
+        completer->popup()->hide();
+        return;
+    }
+    if (completer->completionPrefix() != prefix) {
+        completer->setCompletionPrefix(prefix);
+        completer->popup()->setCurrentIndex(completer->completionModel()->index(0, 0));
+    }
+    if (completer->completionCount() <= 0) {
+        completer->popup()->hide();
+        return;
+    }
+    QRect popupRect = cursorRect();
+    popupRect.setWidth(qMax(260, completer->popup()->sizeHintForColumn(0)
+                                  + completer->popup()->verticalScrollBar()->sizeHint().width()));
+    completer->complete(popupRect);
 }
 
 void CodeEditor::mousePressEvent(QMouseEvent *event)
@@ -348,6 +475,11 @@ void CodeEditor::mousePressEvent(QMouseEvent *event)
 
 void CodeEditor::highlightCurrentLine()
 {
+    refreshExtraSelections();
+}
+
+void CodeEditor::refreshExtraSelections()
+{
     QList<QTextEdit::ExtraSelection> extraSelections;
 
     QTextCursor cursor = textCursor();
@@ -357,16 +489,41 @@ void CodeEditor::highlightCurrentLine()
         return;
     }
 
-    QTextEdit::ExtraSelection selection;
+    QTextEdit::ExtraSelection currentSelection;
+    currentSelection.format.setBackground(QColor(255, 255, 255, 18));
+    currentSelection.format.setProperty(QTextFormat::FullWidthSelection, true);
+    currentSelection.cursor = cursor;
+    currentSelection.cursor.clearSelection();
+    extraSelections.append(currentSelection);
 
-    QColor lineColor = QColor(QColor("#101010")).lighter(160);
+    for (auto it = diagnosticLines.cbegin(); it != diagnosticLines.cend(); ++it) {
+        const QTextBlock block = document()->findBlockByNumber(it.key() - 1);
+        if (!block.isValid())
+            continue;
+        QTextEdit::ExtraSelection diagnosticSelection;
+        const QColor color = it.value() >= 2
+            ? QColor(220, 70, 70, 55) : QColor(235, 170, 45, 45);
+        diagnosticSelection.format.setBackground(color);
+        diagnosticSelection.format.setUnderlineStyle(QTextCharFormat::WaveUnderline);
+        diagnosticSelection.format.setUnderlineColor(
+            it.value() >= 2 ? QColor("#ff6b6b") : QColor("#f0b24a"));
+        diagnosticSelection.format.setProperty(QTextFormat::FullWidthSelection, true);
+        diagnosticSelection.cursor = QTextCursor(block);
+        diagnosticSelection.cursor.clearSelection();
+        extraSelections.append(diagnosticSelection);
+    }
 
-    selection.format.setBackground(lineColor);
-    selection.format.setProperty(QTextFormat::FullWidthSelection, true);
-
-    selection.cursor = cursor;
-    selection.cursor.clearSelection();
-    extraSelections.append(selection);
+    if (executionLine > 0) {
+        const QTextBlock block = document()->findBlockByNumber(executionLine - 1);
+        if (block.isValid()) {
+            QTextEdit::ExtraSelection executionSelection;
+            executionSelection.format.setBackground(QColor(49, 149, 239, 75));
+            executionSelection.format.setProperty(QTextFormat::FullWidthSelection, true);
+            executionSelection.cursor = QTextCursor(block);
+            executionSelection.cursor.clearSelection();
+            extraSelections.append(executionSelection);
+        }
+    }
 
     setExtraSelections(extraSelections);
 }

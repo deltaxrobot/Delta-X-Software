@@ -17,6 +17,8 @@
 #include <QJsonArray>
 #include <QThread>
 #include <QString>
+#include <QReadWriteLock>
+#include <atomic>
 
 class Device : public QObject
 {
@@ -37,7 +39,10 @@ public:
     QSerialPort* GetPort();
     // Optional: set socket endpoint explicitly
     void SetSocketAddress(const QString& host, int port);
-    ConnectionType connectionType() const { return connType; }
+    ConnectionType connectionType() const
+    {
+        return connType.load(std::memory_order_acquire);
+    }
     // Block or unblock IO device signals (serial or socket)
     void BlockIODeviceSignals(bool block);
 
@@ -55,6 +60,7 @@ signals:
 
 public slots:
     void Run();
+    void OpenAtAddress(QString address);
     void Connect();
     void Disconnect();
 
@@ -82,7 +88,9 @@ private:
     // Socket endpoint
     QString hostName;
     int tcpPort = 0;
-    ConnectionType connType = ConnectionType::None;
+    std::atomic<ConnectionType> connType{ConnectionType::None};
+    std::atomic_bool connectionOpen{false};
+    mutable QReadWriteLock stateLock;
 
     QIODevice* activeIODevice() const;
 };

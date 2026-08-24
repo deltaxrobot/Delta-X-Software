@@ -28,20 +28,23 @@ GCodeHighlighter::GCodeHighlighter(QTextDocument *parent) : QSyntaxHighlighter(p
     QTextCharFormat gotoFormat;
     gotoFormat.setForeground(QColor("#3195EF"));
     gotoFormat.setFontWeight(QFont::Bold);
-    QRegularExpression gotoRegex("\\bGOTO\\b");
+    QRegularExpression gotoRegex("\\b(?:GOTO|JUMP|LABEL|SELECT|SYNC)\\b",
+                                 QRegularExpression::CaseInsensitiveOption);
     rule = {gotoRegex, gotoFormat};
     highlightRules.append(rule);
 
     QTextCharFormat ifthenFormat;
     ifthenFormat.setForeground(QColor("#3195EF"));
     ifthenFormat.setFontWeight(QFont::Bold);
-    QRegularExpression ifRegex("\\bIF\\b|\\bTHEN\\b|\\bELIF\\b|\\bELSE\\b|\\bENDIF\\b|\\bFOR\\b|\\bENDFOR\\b|\\bEACH\\b|\\bIN\\b|\\bTO\\b|\\bSTEP\\b|\\bFUNCTION\\b|\\bENDFUNCTION\\b|\\bRETURN\\b");
+    QRegularExpression ifRegex("\\b(?:IF|THEN|ELIF|ELSE|ENDIF|FOR|ENDFOR|EACH|IN|TO|STEP|FUNCTION|ENDFUNCTION|RETURN|LOCAL)\\b",
+                               QRegularExpression::CaseInsensitiveOption);
     rule = {ifRegex, ifthenFormat};
     highlightRules.append(rule);
 
     QTextCharFormat format;
     format.setFontItalic(true);
-    QRegularExpression pattern("#\\w+");
+    format.setForeground(QColor("#d7a8ff"));
+    QRegularExpression pattern("#[A-Za-z_][A-Za-z0-9_.]*");
     rule = {pattern, format};
     highlightRules.append(rule);
 
@@ -49,6 +52,16 @@ GCodeHighlighter::GCodeHighlighter(QTextDocument *parent) : QSyntaxHighlighter(p
     commentFormat.setForeground(Qt::darkGreen);
     commentFormat.setFontItalic(true);
     highlightRules.append({QRegularExpression(";.*"), commentFormat});
+
+    QTextCharFormat stringFormat;
+    stringFormat.setForeground(QColor("#ce9178"));
+    highlightRules.append({QRegularExpression("\"(?:\\\\.|[^\"\\\\])*\"|'(?:\\\\.|[^'\\\\])*'"), stringFormat});
+
+    QTextCharFormat trackingFormat;
+    trackingFormat.setForeground(QColor("#4ec9b0"));
+    trackingFormat.setFontWeight(QFont::DemiBold);
+    highlightRules.append({QRegularExpression("\\bP(?:captureAndDetect|updateTracking|claimObject|releaseObject|completeObject|clearObjects)\\b",
+                                              QRegularExpression::CaseInsensitiveOption), trackingFormat});
 }
 
 void GCodeHighlighter::highlightBlock(const QString &text)

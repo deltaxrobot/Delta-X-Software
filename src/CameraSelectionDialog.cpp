@@ -3,11 +3,14 @@
 #include <QCoreApplication>
 #include <QDebug>
 #include <QMessageBox>
+#if defined(Q_OS_MACOS) && QT_VERSION >= QT_VERSION_CHECK(6, 5, 0)
 #include <QPermissions>
+#endif
 #include <QScreen>
+#include <opencv2/videoio.hpp>
 
 namespace {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#if defined(Q_OS_MACOS) && QT_VERSION >= QT_VERSION_CHECK(6, 5, 0)
 Qt::PermissionStatus ensureCameraPermission(QWidget *parent)
 {
     auto *app = QCoreApplication::instance();
@@ -59,7 +62,7 @@ CameraSelectionDialog::~CameraSelectionDialog()
 
 int CameraSelectionDialog::getCameraID(QWidget* parent, bool* ok)
 {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#if defined(Q_OS_MACOS) && QT_VERSION >= QT_VERSION_CHECK(6, 5, 0)
     const Qt::PermissionStatus permissionStatus = ensureCameraPermission(parent);
     if (permissionStatus != Qt::PermissionStatus::Granted) {
         if (ok)
@@ -125,28 +128,54 @@ void CameraSelectionDialog::loadAvailableCameras()
 #endif
     qDebug() << "Qt camera enumeration found" << m_availableCameras.size() << "camera(s)";
     
-    if (m_availableCameras.isEmpty()) {
-        m_statusLabel->setText("No cameras found");
-        m_statusLabel->setStyleSheet("color: #ff6b6b;");
-        m_okButton->setEnabled(false);
-        return;
-    }
-    
-    for (int i = 0; i < m_availableCameras.size(); ++i) {
-        const CameraInfoType& camera = m_availableCameras[i];
-        qDebug() << "Qt camera option" << i << ":" << camera.description()
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-                 << camera.id();
+    // The selected ID is consumed by OpenCV, so enumerate verified OpenCV
+    // indices. Qt Multimedia device ordering is not guaranteed to match it.
+    constexpr int maxCameraIndices = 10;
+    for (int i = 0; i < maxCameraIndices; ++i) {
+        cv::VideoCapture probe;
+        bool opened = false;
+        QString backendName;
+        try {
+#ifdef Q_OS_WIN
+            opened = probe.open(i, cv::CAP_MSMF);
+            backendName = opened ? QStringLiteral("Media Foundation") : QString();
+            if (!opened) {
+                probe.release();
+                opened = probe.open(i, cv::CAP_DSHOW);
+                if (opened)
+                    backendName = QStringLiteral("DirectShow");
+            }
 #else
-                 << camera.deviceName();
+            opened = probe.open(i);
+            if (opened)
+                backendName = QStringLiteral("OpenCV");
+#endif
+        } catch (const cv::Exception& error) {
+            qWarning() << "USB/UVC camera probe failed for index" << i
+                       << ":" << error.what();
+            opened = false;
+        }
+        if (!opened)
+            continue;
+        probe.set(cv::CAP_PROP_BUFFERSIZE, 1);
+        probe.release();
+
+        QString description;
+        if (i < m_availableCameras.size())
+            description = m_availableCameras.at(i).description();
+        qDebug() << "Verified OpenCV camera option" << i << ":" << description
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+                 << (i < m_availableCameras.size() ? m_availableCameras.at(i).id() : QByteArray());
+#else
+                 << (i < m_availableCameras.size() ? m_availableCameras.at(i).deviceName() : QString());
 #endif
         
         QListWidgetItem* item = new QListWidgetItem();
         
         // Simple display text
-        QString displayText = QString("Camera %1").arg(i);
-        if (!camera.description().isEmpty()) {
-            displayText += QString(" (%1)").arg(camera.description().left(20));
+        QString displayText = QString("USB/UVC %1").arg(i);
+        if (!description.isEmpty()) {
+            displayText += QString(" (%1)").arg(description.left(20));
         }
         
         item->setText(displayText);
@@ -154,16 +183,28 @@ void CameraSelectionDialog::loadAvailableCameras()
         item->setSizeHint(QSize(0, 28));
         
         // Set tooltip with full camera info
-        item->setToolTip(QString("Camera ID: %1\nDevice: %2").arg(i).arg(camera.description()));
+        item->setToolTip(
+            QString("USB/USB3 UVC camera\nOpenCV ID: %1\nBackend: %2\nDevice: %3")
+                .arg(i)
+                .arg(backendName, description));
         
         m_cameraList->addItem(item);
+    }
+
+    if (m_cameraList->count() == 0) {
+        m_statusLabel->setText("No USB/USB3 UVC camera found");
+        m_statusLabel->setStyleSheet("color: #ff6b6b;");
+        m_okButton->setEnabled(false);
+        return;
     }
     
     // Select first camera by default
     if (m_cameraList->count() > 0) {
         m_cameraList->setCurrentRow(0);
         m_selectedCameraID = 0;
-        m_statusLabel->setText(QString("%1 found").arg(m_availableCameras.size()));
+        m_statusLabel->setText(
+            QString("%1 verified USB/USB3 UVC camera(s)")
+                .arg(m_cameraList->count()));
         m_statusLabel->setStyleSheet("color: #4caf50;");
         m_okButton->setEnabled(true);
     }

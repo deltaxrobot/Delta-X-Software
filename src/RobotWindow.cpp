@@ -4,6 +4,8 @@
 #include "MainWindow.h"
 #include "ModernDialog.h"
 #include "CameraSelectionDialog.h"
+#include "CameraCalibration.h"
+#include "GScriptEditorSupport.h"
 #include "UnityTool.h"  // ? For SoftwareLog function
 #include <QFile>
 #include <QFileInfo>
@@ -29,6 +31,16 @@
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QScrollBar>
+#include <QFormLayout>
+#include <QSpinBox>
+#include <QStandardItemModel>
+#include <QTextBrowser>
+#include <QTabWidget>
+#include <QCheckBox>
+#include <QProcessEnvironment>
+#include <opencv2/calib3d.hpp>
+#include <opencv2/imgproc.hpp>
+#include "sdk/DeltaXVersion.h"
 
 RobotWindow::RobotWindow(QWidget *parent, QString projectName) :
     QMainWindow(parent),
@@ -38,6 +50,11 @@ RobotWindow::RobotWindow(QWidget *parent, QString projectName) :
     m_batchUpdateTimer(new QTimer(this))
 {
     ui->setupUi(this);
+    setWindowTitle(tr("Delta X Software - Version %1")
+                       .arg(QString::fromLatin1(DeltaXVersion::Application)));
+
+    m_deviceCommandBroker = new DeviceCommandBroker(this);
+    m_cellSupervisor = new CellSupervisor(this);
 
     SoftwareLog("Load project: " + ProjectName);
     
@@ -46,15 +63,23 @@ RobotWindow::RobotWindow(QWidget *parent, QString projectName) :
     m_batchUpdateTimer->setInterval(50); // 50ms batching window
     connect(m_batchUpdateTimer, &QTimer::timeout, this, &RobotWindow::processBatchUpdates);
     
-    // Set prefix once for this window
-    m_variableManager->Prefix = ProjectName;
-
     InitVariables();
     InitOtherThreadObjects();
     InitEvents();
 
     LoadSettings();
     InitDefaultValue();
+
+    if (m_imagePipelineController) {
+        QString detectingKey = ui->cbSelectedDetecting->currentText();
+        if (detectingKey.isEmpty())
+            detectingKey = QStringLiteral("tracking0");
+        const QString matrixKey = detectingKey + QStringLiteral(".ImageToRealWorldMatrix");
+        if (VariableManager::instance().containsFullKeyScoped(ProjectName, matrixKey)) {
+            m_imagePipelineController->inputMappingMatrix(
+                VariableManager::instance().getVarScoped(ProjectName, matrixKey).value<QMatrix>());
+        }
+    }
     
     // Initialize Cloud Point Mapping UI after all other objects are ready
     if (m_pointToolController) {
@@ -65,6 +90,17 @@ RobotWindow::RobotWindow(QWidget *parent, QString projectName) :
 RobotWindow::~RobotWindow()
 {
     qDebug() << "RobotWindow::~RobotWindow" << ProjectName;
+
+    // Stop the capture producer before the frame coordinator. StartedCapture
+    // uses a blocking hand-off so a frame cannot overtake its encoder snapshot;
+    // shutting the manager down first could otherwise strand the camera thread.
+    CameraTimer.stop();
+    disconnect(CameraInstance, &Camera::StartedCapture,
+               TrackingManagerInstance, &TrackingManager::SaveCapturePosition);
+    CameraThread->quit();
+    CameraThread->wait();
+    delete CameraThread;
+
     DeviceManagerInstance->thread()->quit();
     DeviceManagerInstance->thread()->wait();
 
@@ -82,10 +118,6 @@ RobotWindow::~RobotWindow()
 
     ImageProcessingInstance->thread()->quit();
     ImageProcessingInstance->thread()->wait();
-
-    CameraThread->quit();
-    CameraThread->wait();
-    delete CameraThread;
 
     for (int i = 0; i < GcodeScripts.count(); i++)
     {
@@ -289,7 +321,6 @@ void RobotWindow::InitOtherThreadObjects()
     connect(this, SIGNAL(ChangeDeviceState(QString,bool,QString)), DeviceManagerInstance, SLOT(SetDeviceState(QString,bool,QString)));
     connect(DeviceManagerInstance, SIGNAL(Log(QString,QString,int)), this, SLOT(UpdateTermite(QString,QString,int)));
     connect(DeviceManagerInstance, SIGNAL(DeviceResponded(QString,QString)), this, SLOT(GetDeviceResponse(QString,QString)));
-    connect(this, SIGNAL(Send(int,QString)), DeviceManagerInstance, SLOT(SendGcode(int,QString)));
 
     for (int i = 0; i < 3; i++)
     {
@@ -301,12 +332,15 @@ void RobotWindow::InitOtherThreadObjects()
 
         //-------- Camera --------
     CameraInstance = new Camera();
+    CameraInstance->ProjectName = ProjectName;
     CameraThread = new QThread(this);
     CameraInstance->moveToThread(CameraThread);
     connect(CameraThread, &QThread::finished, CameraInstance, &QObject::deleteLater);
     connect(CameraInstance, &Camera::StopCameraRequest, this, &RobotWindow::StopCapture);
 
     CameraThread->start();
+
+    InitControlPlane();
 
     connect(CameraInstance, &Camera::connectedResult, this, &RobotWindow::UpdateCameraConnectedState);
     connect(CameraInstance, &Camera::connectedResult, this, [this](bool, int) {
@@ -382,11 +416,20 @@ void RobotWindow::InitOtherThreadObjects()
 
         //-------- Encoder --------
     connect(ui->pbConnectEncoder, SIGNAL(clicked(bool)), this, SLOT(ConnectEncoder()));
+    connect(ui->cbSelectedEncoder, QOverload<int>::of(&QComboBox::currentIndexChanged),
+            this, [this](int id) {
+        QMetaObject::invokeMethod(DeviceManagerInstance, "SetSelectedDevice",
+                                  Qt::QueuedConnection,
+                                  Q_ARG(int, DeviceManager::ENCODER), Q_ARG(int, id));
+    });
 
     connect(ui->pbReadEncoder, SIGNAL(clicked(bool)), this, SLOT(ReadEncoder()));
     connect(ui->pbSetEncoderInterval, SIGNAL(clicked(bool)), this, SLOT(SetEncoderAutoRead()));
     connect(ui->pbResetEncoder, SIGNAL(clicked(bool)), this, SLOT(ResetEncoderPosition()));
     connect(ui->pbSetEncoderVelocity, SIGNAL(clicked(bool)), this, SLOT(SetEncoderVelocity()));
+    if (QPushButton* calibrateEncoderButton = findChild<QPushButton*>(QStringLiteral("pbCalibrateEncoder"))) {
+        connect(calibrateEncoderButton, &QPushButton::clicked, this, &RobotWindow::CalibrateEncoder);
+    }
 
     connect(ui->cbEncoderType, SIGNAL(currentIndexChanged(int)), this, SLOT(ChangeEncoderType(int)));
     connect(ui->cbLinkToConveyorX, SIGNAL(stateChanged(int)), this, SLOT(ChangeConveyorLinkToEncoder(int)));
@@ -396,6 +439,12 @@ void RobotWindow::InitOtherThreadObjects()
     //-------- Slider --------
 
     connect(ui->pbSlidingConnect, SIGNAL(clicked(bool)), this, SLOT(ConnectSliding()));
+    connect(ui->cbSelectedSlider, QOverload<int>::of(&QComboBox::currentIndexChanged),
+            this, [this](int id) {
+        QMetaObject::invokeMethod(DeviceManagerInstance, "SetSelectedDevice",
+                                  Qt::QueuedConnection,
+                                  Q_ARG(int, DeviceManager::SLIDER), Q_ARG(int, id));
+    });
     connect(ui->pbSlidingHome, SIGNAL(clicked(bool)), this, SLOT(GoHomeSliding()));
     connect(ui->pbSlidingDisable, SIGNAL(clicked(bool)), this, SLOT(DisableSliding()));
     connect(ui->leSlidingSpeed, SIGNAL(returnPressed()), this, SLOT(SetSlidingSpeed()));
@@ -403,6 +452,12 @@ void RobotWindow::InitOtherThreadObjects()
 
         //-------- MCU --------
     connect(ui->pbExternalControllerConnect, SIGNAL(clicked(bool)), this, SLOT(ConnectExternalMCU()));
+    connect(ui->cbSelectedDevice, QOverload<int>::of(&QComboBox::currentIndexChanged),
+            this, [this](int id) {
+        QMetaObject::invokeMethod(DeviceManagerInstance, "SetSelectedDevice",
+                                  Qt::QueuedConnection,
+                                  Q_ARG(int, DeviceManager::DEVICE), Q_ARG(int, id));
+    });
     connect(ui->leTransmitToMCU, SIGNAL(returnPressed()), this, SLOT(TransmitTextToExternalMCU()));
 
     //----- Tracking -----
@@ -421,12 +476,229 @@ void RobotWindow::InitOtherThreadObjects()
     LoadPlugin();
 }
 
+void RobotWindow::InitControlPlane()
+{
+    if (!m_deviceCommandBroker || !m_cellSupervisor || !DeviceManagerInstance)
+        return;
+
+    connect(m_deviceCommandBroker, &DeviceCommandBroker::DispatchCommand,
+            DeviceManagerInstance,
+            QOverload<QString, QString>::of(&DeviceManager::SendGcode),
+            Qt::QueuedConnection);
+    connect(DeviceManagerInstance, &DeviceManager::DeviceResponded,
+            m_deviceCommandBroker, &DeviceCommandBroker::HandleDeviceResponse,
+            Qt::QueuedConnection);
+
+    connect(this, &RobotWindow::Send, this,
+            [this](int deviceType, const QString& command) {
+        if (!m_deviceCommandBroker)
+            return;
+        const QString device = selectedDeviceName(deviceType);
+        m_deviceCommandBroker->Submit(QStringLiteral("manual/ui"), device, command,
+                                      DeviceCommandBroker::Origin::Manual, true, 5000);
+    });
+
+    connect(m_cellSupervisor, &CellSupervisor::StateChanged, this,
+            [this](CellSupervisor::State state, const QString& stateName,
+                   const QString& reason) {
+        if (m_deviceCommandBroker)
+            m_deviceCommandBroker->SetCellState(stateName);
+        updateCellStateUi(state, stateName, reason);
+
+        QHash<QString, QVariant> values;
+        values.insert(QStringLiteral("Cell.State"), stateName);
+        values.insert(QStringLiteral("Cell.FaultReason"),
+                      state == CellSupervisor::State::Faulted ? reason : QString());
+        values.insert(QStringLiteral("Cell.UpdatedAt"),
+                      QDateTime::currentDateTimeUtc().toString(Qt::ISODateWithMs));
+        VariableManager::instance().updateBatchScoped(
+            ProjectName, values, VariableManager::Persistence::Runtime);
+    });
+    connect(m_cellSupervisor, &CellSupervisor::ActiveOwnersChanged, this,
+            [this](const QStringList& owners) {
+        QHash<QString, QVariant> values;
+        values.insert(QStringLiteral("Cell.ActiveWorkers"), owners);
+        values.insert(QStringLiteral("Cell.ActiveWorkerCount"), owners.size());
+        VariableManager::instance().updateBatchScoped(
+            ProjectName, values, VariableManager::Persistence::Runtime);
+        if (cellResetButton)
+            cellResetButton->setEnabled(owners.isEmpty() && m_cellSupervisor &&
+                                        m_cellSupervisor->state() == CellSupervisor::State::Faulted);
+    });
+    connect(m_cellSupervisor, &CellSupervisor::ControlledStopRequested,
+            this, &RobotWindow::performControlledCellStop);
+
+    connect(m_deviceCommandBroker, &DeviceCommandBroker::CommandRejected, this,
+            [this](const QString& owner, const QString& device,
+                   const QString& command, const QString& reason) {
+        const QString message = tr("Command rejected [%1 → %2]: %3 (%4)")
+                                    .arg(owner, device, command, reason);
+        SoftwareLog(message);
+        QHash<QString, QVariant> values;
+        values.insert(QStringLiteral("Cell.LastRejectedCommand"), command);
+        values.insert(QStringLiteral("Cell.LastRejectedDevice"), device);
+        values.insert(QStringLiteral("Cell.LastRejectedOwner"), owner);
+        values.insert(QStringLiteral("Cell.LastRejectedReason"), reason);
+        VariableManager::instance().updateBatchScoped(
+            ProjectName, values, VariableManager::Persistence::Runtime);
+    });
+    connect(m_deviceCommandBroker, &DeviceCommandBroker::CommandTimedOut, this,
+            [this](quint64, const QString& owner, const QString& device,
+                   const QString& command) {
+        const QString fault = tr("Command broker timeout [%1 → %2]: %3")
+                                  .arg(owner, device, command);
+        SoftwareLog(fault);
+        if (m_cellSupervisor) {
+            QMetaObject::invokeMethod(m_cellSupervisor,
+                                      [this, fault]() {
+                if (m_cellSupervisor)
+                    m_cellSupervisor->ReportFault(fault);
+            }, Qt::QueuedConnection);
+        }
+    });
+
+    for (int index = 0; index < 3; ++index) {
+        m_deviceCommandBroker->RegisterDevice(QString("robot%1").arg(index));
+        m_deviceCommandBroker->RegisterDevice(QString("conveyor%1").arg(index));
+        m_deviceCommandBroker->RegisterDevice(QString("slider%1").arg(index));
+        m_deviceCommandBroker->RegisterDevice(QString("encoder%1").arg(index));
+        m_deviceCommandBroker->RegisterDevice(QString("device%1").arg(index));
+    }
+
+    m_deviceCommandBroker->SetCellState(m_cellSupervisor->stateName());
+    updateCellStateUi(m_cellSupervisor->state(), m_cellSupervisor->stateName(), QString());
+    QHash<QString, QVariant> initialState;
+    initialState.insert(QStringLiteral("Cell.State"), m_cellSupervisor->stateName());
+    initialState.insert(QStringLiteral("Cell.ActiveWorkerCount"), 0);
+    initialState.insert(QStringLiteral("Cell.FaultReason"), QString());
+    VariableManager::instance().updateBatchScoped(
+        ProjectName, initialState, VariableManager::Persistence::Runtime);
+}
+
+QString RobotWindow::selectedDeviceName(int deviceType) const
+{
+    QString prefix;
+    QComboBox* combo = nullptr;
+    switch (deviceType) {
+    case DeviceManager::ROBOT:
+        prefix = QStringLiteral("robot");
+        combo = ui->cbSelectedRobot;
+        break;
+    case DeviceManager::CONVEYOR:
+        prefix = QStringLiteral("conveyor");
+        combo = ui->cbSelectedConveyor;
+        break;
+    case DeviceManager::ENCODER:
+        prefix = QStringLiteral("encoder");
+        combo = ui->cbSelectedEncoder;
+        break;
+    case DeviceManager::SLIDER:
+        prefix = QStringLiteral("slider");
+        combo = ui->cbSelectedSlider;
+        break;
+    case DeviceManager::DEVICE:
+        prefix = QStringLiteral("device");
+        combo = ui->cbSelectedDevice;
+        break;
+    default:
+        return QString();
+    }
+
+    const QString selected = combo ? combo->currentText().trimmed().toLower() : QString();
+    const QRegularExpression exact(QStringLiteral("^%1\\d+$")
+                                       .arg(QRegularExpression::escape(prefix)),
+                                   QRegularExpression::CaseInsensitiveOption);
+    if (exact.match(selected).hasMatch())
+        return selected;
+    const int index = combo ? qMax(0, combo->currentIndex()) : 0;
+    return prefix + QString::number(index);
+}
+
+bool RobotWindow::submitManualDeviceCommand(const QString& commandLine,
+                                            const QString& owner)
+{
+    if (!m_deviceCommandBroker)
+        return false;
+
+    const QString line = commandLine.trimmed();
+    const int separator = line.indexOf(QRegularExpression(QStringLiteral("\\s")));
+    if (separator <= 0) {
+        SoftwareLog(tr("Manual command rejected: use '<device><index> <G-code>', "
+                       "for example 'conveyor0 M310 100'."));
+        return false;
+    }
+
+    const QString device = line.left(separator).trimmed().toLower();
+    static const QRegularExpression devicePattern(
+        QStringLiteral("^(robot|device|conveyor|slider|encoder)\\d+$"),
+        QRegularExpression::CaseInsensitiveOption);
+    const QString command = line.mid(separator).trimmed();
+    if (!devicePattern.match(device).hasMatch() || command.isEmpty()) {
+        SoftwareLog(tr("Manual command rejected: invalid device-qualified command '%1'.")
+                        .arg(commandLine));
+        return false;
+    }
+
+    m_deviceCommandBroker->RegisterDevice(device);
+    return m_deviceCommandBroker->Submit(owner, device, command,
+                                         DeviceCommandBroker::Origin::Manual,
+                                         true, 5000) != 0;
+}
+
+void RobotWindow::performControlledCellStop(const QString& reason)
+{
+    SoftwareLog(tr("Controlled cell stop: %1").arg(reason));
+    CameraTimer.stop();
+    if (m_deviceCommandBroker)
+        m_deviceCommandBroker->RequestControlledStop(reason);
+
+    for (GcodeScript* script : std::as_const(GcodeScripts)) {
+        if (script && script->IsRunning())
+            QMetaObject::invokeMethod(script, "Stop", Qt::QueuedConnection);
+    }
+}
+
+void RobotWindow::updateCellStateUi(CellSupervisor::State state,
+                                    const QString& stateName,
+                                    const QString& reason)
+{
+    if (cellStateLabel) {
+        QString color = QStringLiteral("#d4d4d4");
+        if (state == CellSupervisor::State::Ready)
+            color = QStringLiteral("#69d18b");
+        else if (state == CellSupervisor::State::AutoRunning)
+            color = QStringLiteral("#73b7ff");
+        else if (state == CellSupervisor::State::Paused ||
+                 state == CellSupervisor::State::Recovering)
+            color = QStringLiteral("#f0b24a");
+        else if (state == CellSupervisor::State::Faulted)
+            color = QStringLiteral("#ff6b6b");
+        cellStateLabel->setStyleSheet(QStringLiteral("color: %1; font-weight: bold;").arg(color));
+        cellStateLabel->setText(reason.isEmpty()
+            ? tr("CELL: %1").arg(stateName.toUpper())
+            : tr("CELL: %1 — %2").arg(stateName.toUpper(), reason));
+        cellStateLabel->setToolTip(reason);
+    }
+    if (cellResetButton) {
+        cellResetButton->setVisible(state == CellSupervisor::State::Faulted);
+        cellResetButton->setEnabled(state == CellSupervisor::State::Faulted &&
+                                    m_cellSupervisor &&
+                                    m_cellSupervisor->activeOwners().isEmpty());
+    }
+}
+
 void RobotWindow::InitSocketConnection()
 {
     // ---------- Server ---------
 
     // T�m ip local c?a m�y
-    QString localIP = SocketConnectionManager::printLocalIpAddresses();
+    QSettings networkSettings;
+    const bool allowLanControl = networkSettings.value(
+        QStringLiteral("Network/AllowLanControl"), false).toBool();
+    QString localIP = allowLanControl
+        ? networkSettings.value(QStringLiteral("Network/ListenAddress"),
+                                SocketConnectionManager::printLocalIpAddresses()).toString()
+        : QStringLiteral("127.0.0.1");
     // localhost:8844
     QStringList ipAndPort = ui->leIP->text().split(":");
     QString port = ipAndPort.at(1);
@@ -444,6 +716,10 @@ void RobotWindow::InitSocketConnection()
     thread->start();
 
     connect(ConnectionManager, &SocketConnectionManager::eventReceived, this, &RobotWindow::ActiveWidgetByName);
+    connect(ConnectionManager, &SocketConnectionManager::remoteControlRejected,
+            this, [this](const QString& operation, const QString& reason) {
+        SoftwareLog(tr("Remote control rejected [%1]: %2").arg(operation, reason));
+    });
 
     if (ConnectionManager->IsServerOpen())
     {
@@ -509,19 +785,43 @@ void RobotWindow::InitObjectDetectingModule()
 
     ImageProcessingInstance->CreateTaskNode("DisplayImageNode", TaskNode::DISPLAY_IMAGE_NODE, "CropImageNode");
 
-    ImageProcessingInstance->GetNode("WarpImageNode")->IsPass = true;
-    ImageProcessingInstance->GetNode("CropImageNode")->IsPass = true;
-
     // Initialize pipeline controller after nodes are ready
     m_imagePipelineController = new ImagePipelineController(ImageProcessingInstance, this);
     connect(m_imagePipelineController, &ImagePipelineController::mappingMatrixUpdated,
             this, &RobotWindow::onMappingMatrixUpdated);
-    connect(CameraInstance, &Camera::GotImage,
-            m_imagePipelineController, &ImagePipelineController::updateFrameSize);
-
+    connect(m_imagePipelineController, &ImagePipelineController::mappingValidityChanged,
+            this, [this](bool valid, const QString& reason) {
+        QString detectingKey = ui->cbSelectedDetecting->currentText();
+        if (detectingKey.isEmpty())
+            detectingKey = QStringLiteral("tracking0");
+        if (!valid) {
+            m_mappingMatrices.remove(detectingKey);
+            VariableManager::instance().updateVarScoped(
+                ProjectName, detectingKey + QStringLiteral(".Calibration.Mapping.IsValid"), false);
+            statusBar()->showMessage(reason, 7000);
+            SoftwareLog(QStringLiteral("Camera mapping invalidated: ") + reason);
+        }
+    });
+    m_imagePipelineController->configureWarpCrop(false, false);
+    CameraCalibration::Profile intrinsicProfile;
+    if (CameraCalibration::loadFromVariables(ProjectName, QStringLiteral("Camera.Intrinsic"),
+                                             intrinsicProfile)) {
+        m_imagePipelineController->setIntrinsicCalibration(intrinsicProfile);
+    }
+    QString initialDetectingKey = ui->cbSelectedDetecting->currentText();
+    if (initialDetectingKey.isEmpty())
+        initialDetectingKey = QStringLiteral("tracking0");
+    const QString initialMatrixKey = initialDetectingKey + QStringLiteral(".ImageToRealWorldMatrix");
+    if (VariableManager::instance().containsFullKeyScoped(ProjectName, initialMatrixKey)) {
+        const QMatrix savedMatrix = VariableManager::instance()
+            .getVarScoped(ProjectName, initialMatrixKey).value<QMatrix>();
+        m_imagePipelineController->inputMappingMatrix(savedMatrix);
+    }
     if (m_imagePipelineController) {
-        connect(CameraInstance, &Camera::GotImage,
-                m_imagePipelineController, &ImagePipelineController::inputImage);
+        connect(CameraInstance, &Camera::FrameCaptured,
+                m_imagePipelineController, &ImagePipelineController::inputFrame);
+        connect(m_imagePipelineController, &ImagePipelineController::externalFrameReady,
+                ConnectionManager, &SocketConnectionManager::sendVisionFrame);
     } else {
         connect(CameraInstance, SIGNAL(GotImage(cv::Mat)), ImageProcessingInstance->GetNode("GetImageNode"), SLOT(Input(cv::Mat)));
     }
@@ -539,11 +839,17 @@ void RobotWindow::InitObjectDetectingModule()
 
     connect(ui->pbLoadCamera, SIGNAL(clicked(bool)), this, SLOT(LoadWebcam()));
     connect(ui->pbLoadTestImage, SIGNAL(clicked(bool)), this, SLOT(LoadImages()));
+    if (QPushButton* intrinsicButton = findChild<QPushButton*>(QStringLiteral("pbIntrinsicCalibration"))) {
+        connect(intrinsicButton, &QPushButton::clicked,
+                this, &RobotWindow::CalibrateCameraIntrinsics);
+    }
     connect(ui->cbDetectingAlgorithm, SIGNAL(currentIndexChanged(int)), this, SLOT(SelectObjectDetectingAlgorithm(int)));
 
     connect(ui->cbSendingImageMethod, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), [=](int index){
         ConnectionManager->imageSendingMethod = index;
     });
+
+    InitExternalVisionUI();
 
     ui->cbDetectingAlgorithm->setCurrentIndex(0);
     SelectObjectDetectingAlgorithm(0);
@@ -606,8 +912,11 @@ void RobotWindow::InitObjectDetectingModule()
         int index = ui->cbSelectedTracking->currentIndex();
         if (index < 0 || index >= TrackingManagerInstance->Trackings.count())
             return;
-        TrackingManagerInstance->Trackings.at(index)->IoUThreshold = ui->leIoUThreshold->text().toFloat();
-        TrackingManagerInstance->Trackings.at(index)->DistanceThreshold = ui->leDistanceThreshold->text().toFloat();
+        QMetaObject::invokeMethod(
+            TrackingManagerInstance->Trackings.at(index),
+            "SetAssociationThresholds", Qt::QueuedConnection,
+            Q_ARG(float, ui->leIoUThreshold->text().toFloat()),
+            Q_ARG(float, ui->leDistanceThreshold->text().toFloat()));
     };
 
     connect(ui->leIoUThreshold, &QLineEdit::returnPressed, this, [=](){ applyThresholdsToCurrentTracking(); });
@@ -626,22 +935,21 @@ void RobotWindow::InitObjectDetectingModule()
 //        ui->graphicsView->ZoomOut(2);
     });
 
-    connect(ui->leLimitMinX, &QLineEdit::returnPressed,
-    [=] (){
-        TrackingManagerInstance->Trackings.at(0)->X_min = ui->leLimitMinX->text().toFloat();
-    });
-    connect(ui->leLimitMaxX, &QLineEdit::returnPressed,
-    [=] (){
-        TrackingManagerInstance->Trackings.at(0)->X_max = ui->leLimitMaxX->text().toFloat();
-    });
-    connect(ui->leLimitMinY, &QLineEdit::returnPressed,
-    [=] (){
-        TrackingManagerInstance->Trackings.at(0)->Y_min = ui->leLimitMinY->text().toFloat();
-    });
-    connect(ui->leLimitMaxY, &QLineEdit::returnPressed,
-    [=] (){
-        TrackingManagerInstance->Trackings.at(0)->Y_max = ui->leLimitMaxY->text().toFloat();
-    });
+    const auto applyTrackingBounds = [this]() {
+        if (!TrackingManagerInstance || TrackingManagerInstance->Trackings.isEmpty())
+            return;
+        QMetaObject::invokeMethod(
+            TrackingManagerInstance->Trackings.at(0),
+            "SetTrackingBounds", Qt::QueuedConnection,
+            Q_ARG(float, ui->leLimitMinX->text().toFloat()),
+            Q_ARG(float, ui->leLimitMaxX->text().toFloat()),
+            Q_ARG(float, ui->leLimitMinY->text().toFloat()),
+            Q_ARG(float, ui->leLimitMaxY->text().toFloat()));
+    };
+    connect(ui->leLimitMinX, &QLineEdit::returnPressed, this, applyTrackingBounds);
+    connect(ui->leLimitMaxX, &QLineEdit::returnPressed, this, applyTrackingBounds);
+    connect(ui->leLimitMinY, &QLineEdit::returnPressed, this, applyTrackingBounds);
+    connect(ui->leLimitMaxY, &QLineEdit::returnPressed, this, applyTrackingBounds);
 
 
     // ---------- Image Provider -------
@@ -733,7 +1041,11 @@ void RobotWindow::InitObjectDetectingModule()
         } else {
             TaskNode* resizeImageNode = ImageProcessingInstance->GetNode("ResizeImageNode");
             if (resizeImageNode) {
-                resizeImageNode->IsPass = !checked;
+                QMetaObject::invokeMethod(resizeImageNode,
+                                          [resizeImageNode, checked]() {
+                                              resizeImageNode->SetPassThrough(!checked);
+                                          },
+                                          Qt::QueuedConnection);
             }
         }
     });
@@ -750,14 +1062,17 @@ void RobotWindow::InitObjectDetectingModule()
     connect(ParameterPanel, SIGNAL(ColorInverted(bool)), m_imagePipelineController, SLOT(inputColorFilterInvert(bool)));
 
     connect(this, SIGNAL(GotObjects(QVector<Object>)), m_imagePipelineController, SLOT(inputVisibleObjects(QVector<Object>)));
-    connect(this, SIGNAL(GotMappingMatrix(QMatrix)), m_imagePipelineController, SLOT(inputMappingPolygon(QPolygonF)));
+    connect(this, &RobotWindow::GotMappingMatrix,
+            m_imagePipelineController, &ImagePipelineController::inputMappingMatrix);
     connect(this, SIGNAL(GotOjectFilterInfo(Object)), m_imagePipelineController, SLOT(inputObjectFilter(Object)));
     m_imagePipelineController->setOverlayTarget(ui->gvImageViewer);
     // VisibleObjects forwarding handled by controller via pipeline
 
     connect(ui->leDetectingObjectListName, &QLineEdit::returnPressed, this, [=]()
     {
-        ImageProcessingInstance->ObjectsName = ui->leDetectingObjectListName->text();
+        QMetaObject::invokeMethod(
+            ImageProcessingInstance, "SetObjectsName", Qt::QueuedConnection,
+            Q_ARG(QString, ui->leDetectingObjectListName->text()));
     });
 
     // ========== CIRCLE DETECTION PARAMETERS ==========
@@ -798,6 +1113,10 @@ void RobotWindow::InitGcodeEditorModule()
 {
     // ------- Script ---------
     InitScriptThread();
+    connect(ConnectionManager, &SocketConnectionManager::gcodeReceived,
+            this, &RobotWindow::DispatchRemoteGScript, Qt::UniqueConnection);
+    connect(ConnectionManager, &SocketConnectionManager::gscriptEditorReceived,
+            this, &RobotWindow::LoadGscriptFromRemote, Qt::UniqueConnection);
     connect(ui->cbProgramThreadID, SIGNAL(currentIndexChanged(int)), this, SLOT(ChangeSelectedEditorThread(int)));
 
     //----- Gcode Editor -----
@@ -814,6 +1133,7 @@ void RobotWindow::InitGcodeEditorModule()
     highlighter = new GCodeHighlighter(ui->pteGcodeArea->document());
 
     ui->pteGcodeArea->setTabWidth(4);
+    InitGScriptWorkspace();
 
     // ------- Gcode Explorer -----
 
@@ -851,24 +1171,718 @@ void RobotWindow::InitGcodeEditorModule()
     InitGScriptHelp();
 }
 
+void RobotWindow::InitExternalVisionUI()
+{
+    ui->cbSendingImageMethod->clear();
+    ui->cbSendingImageMethod->addItem(QStringLiteral("DXV1 JSON + JPEG/Base64 (required)"));
+    ui->cbSendingImageMethod->setEnabled(false);
+    ui->cbSendingImageMethod->setToolTip(
+        tr("External Vision tracking always uses the correlated DXV1 protocol."));
+    ui->pbExternalScriptHelp->setToolTip(tr("Open the External Vision setup and protocol guide"));
+    ui->pbOpenScriptExample->setToolTip(tr("Open the supplied DXV1 Python examples"));
+    ui->pbRunExternalScript->setToolTip(tr("Start or stop the selected Python detector"));
+    ui->pbExternalScriptOpen->setToolTip(tr("Select a Python detector script"));
+
+    if (QGridLayout* layout = qobject_cast<QGridLayout*>(ui->fExternalScriptPanel->layout())) {
+        QLabel* statusTitle = new QLabel(tr("Detector status"), ui->fExternalScriptPanel);
+        externalVisionStatusLabel = new QLabel(ui->fExternalScriptPanel);
+        externalVisionStatusLabel->setWordWrap(true);
+        externalVisionMetricsLabel = new QLabel(ui->fExternalScriptPanel);
+        externalVisionMetricsLabel->setTextInteractionFlags(Qt::TextSelectableByMouse);
+        externalVisionMetricsLabel->setStyleSheet(QStringLiteral("color: rgb(170, 170, 170);"));
+        layout->addWidget(statusTitle, 8, 0);
+        layout->addWidget(externalVisionStatusLabel, 8, 1, 1, 4);
+        layout->addWidget(new QLabel(tr("Activity"), ui->fExternalScriptPanel), 9, 0);
+        layout->addWidget(externalVisionMetricsLabel, 9, 1, 1, 4);
+
+        externalVisionPythonEdit = new QLineEdit(ui->fExternalScriptPanel);
+        externalVisionPythonEdit->setText(
+            QSettings().value(QStringLiteral("ExternalVision/PythonExecutable"),
+                              QStringLiteral("python")).toString());
+        externalVisionPythonEdit->setToolTip(
+            tr("Python executable name or full path used by the Play button"));
+        QPushButton* pythonBrowse = new QPushButton(QStringLiteral("..."),
+                                                    ui->fExternalScriptPanel);
+        pythonBrowse->setMaximumWidth(32);
+        layout->addWidget(new QLabel(tr("Python executable"), ui->fExternalScriptPanel), 10, 0);
+        layout->addWidget(externalVisionPythonEdit, 10, 1, 1, 3);
+        layout->addWidget(pythonBrowse, 10, 4);
+        connect(externalVisionPythonEdit, &QLineEdit::editingFinished, this, [this]() {
+            QSettings().setValue(QStringLiteral("ExternalVision/PythonExecutable"),
+                                 externalVisionPythonEdit->text().trimmed());
+        });
+        connect(pythonBrowse, &QPushButton::clicked, this, [this]() {
+            const QString executable = QFileDialog::getOpenFileName(
+                this, tr("Select Python executable"), QString(),
+#ifdef Q_OS_WIN
+                tr("Executable (*.exe);;All files (*)"));
+#else
+                tr("All files (*)"));
+#endif
+            if (!executable.isEmpty()) {
+                externalVisionPythonEdit->setText(QDir::toNativeSeparators(executable));
+                QSettings().setValue(QStringLiteral("ExternalVision/PythonExecutable"),
+                                     executable);
+            }
+        });
+    }
+
+    const quint16 serverPort = ConnectionManager && ConnectionManager->Server
+        ? ConnectionManager->Server->serverPort() : 0;
+    setExternalVisionStatus(
+        QStringLiteral("NOT CONNECTED"),
+        tr("Listening at %1:%2").arg(ConnectionManager->hostAddress).arg(serverPort),
+        QStringLiteral("#e0a030"));
+    if (externalVisionMetricsLabel)
+        externalVisionMetricsLabel->setText(tr("Frames sent: 0 | Results: 0 | Last latency: --"));
+
+    connect(ConnectionManager, &SocketConnectionManager::externalVisionStatusChanged,
+            this, [this](bool connected, const QString& peer) {
+        if (connected) {
+            setExternalVisionStatus(QStringLiteral("CONNECTED"), peer,
+                                    QStringLiteral("#4caf50"));
+        } else {
+            setExternalVisionStatus(QStringLiteral("NOT CONNECTED"),
+                                    tr("Detector disconnected: %1").arg(peer),
+                                    QStringLiteral("#e0a030"));
+        }
+    });
+    connect(ConnectionManager, &SocketConnectionManager::externalVisionFrameSent,
+            this, [this](quint64 frameId, quint64 requestId, int trackingId, qint64 payloadBytes) {
+        ++externalVisionFramesSent;
+        QHash<QString, QVariant> values;
+        values.insert(QStringLiteral("ExternalVision.FramesSent"),
+                      QVariant::fromValue<qulonglong>(externalVisionFramesSent));
+        values.insert(QStringLiteral("ExternalVision.LastFrameId"),
+                      QVariant::fromValue<qulonglong>(frameId));
+        values.insert(QStringLiteral("ExternalVision.LastRequestId"),
+                      QVariant::fromValue<qulonglong>(requestId));
+        values.insert(QStringLiteral("ExternalVision.LastTrackingId"), trackingId);
+        values.insert(QStringLiteral("ExternalVision.LastPayloadBytes"), payloadBytes);
+        VariableManager::instance().updateBatchScoped(
+            ProjectName, values, VariableManager::Persistence::Runtime);
+        if (externalVisionMetricsLabel) {
+            externalVisionMetricsLabel->setText(
+                tr("Frames sent: %1 | Results: %2 | Last TX: F%3/R%4/T%5 (%6 KB)")
+                    .arg(externalVisionFramesSent).arg(externalVisionResultsReceived)
+                    .arg(frameId).arg(requestId).arg(trackingId)
+                    .arg(payloadBytes / 1024.0, 0, 'f', 1));
+        }
+    });
+    connect(ConnectionManager, &SocketConnectionManager::externalVisionResultReceived,
+            this, [this](quint64 frameId, quint64 requestId, int trackingId,
+                         int objectCount, qint64 latencyMs) {
+        ++externalVisionResultsReceived;
+        QHash<QString, QVariant> values;
+        values.insert(QStringLiteral("ExternalVision.ResultsReceived"),
+                      QVariant::fromValue<qulonglong>(externalVisionResultsReceived));
+        values.insert(QStringLiteral("ExternalVision.LastFrameId"),
+                      QVariant::fromValue<qulonglong>(frameId));
+        values.insert(QStringLiteral("ExternalVision.LastRequestId"),
+                      QVariant::fromValue<qulonglong>(requestId));
+        values.insert(QStringLiteral("ExternalVision.LastTrackingId"), trackingId);
+        values.insert(QStringLiteral("ExternalVision.LastObjectCount"), objectCount);
+        values.insert(QStringLiteral("ExternalVision.LastLatencyMs"), latencyMs);
+        VariableManager::instance().updateBatchScoped(
+            ProjectName, values, VariableManager::Persistence::Runtime);
+        setExternalVisionStatus(
+            QStringLiteral("CONNECTED"),
+            tr("Last result: %1 object(s), frame %2").arg(objectCount).arg(frameId),
+            QStringLiteral("#4caf50"));
+        if (externalVisionMetricsLabel) {
+            const QString latency = latencyMs >= 0 ? tr("%1 ms").arg(latencyMs)
+                                                   : QStringLiteral("--");
+            externalVisionMetricsLabel->setText(
+                tr("Frames sent: %1 | Results: %2 | Last: F%3/R%4/T%5 | Latency: %6")
+                    .arg(externalVisionFramesSent).arg(externalVisionResultsReceived)
+                    .arg(frameId).arg(requestId).arg(trackingId).arg(latency));
+        }
+    });
+    connect(ConnectionManager, &SocketConnectionManager::externalVisionProtocolError,
+            this, [this](const QString& peer, const QString& message) {
+        setExternalVisionStatus(QStringLiteral("PROTOCOL ERROR"),
+                                tr("%1: %2").arg(peer, message),
+                                QStringLiteral("#ef5350"));
+        SoftwareLog(QStringLiteral("External Vision error: %1: %2").arg(peer, message));
+    });
+    if (m_imagePipelineController) {
+        connect(m_imagePipelineController, &ImagePipelineController::externalResponseIgnored,
+                this, [this](quint64 frameId, quint64 requestId, int trackingId,
+                             const QString& reason) {
+            setExternalVisionStatus(
+                QStringLiteral("STALE RESULT IGNORED"),
+                tr("F%1/R%2/T%3: %4").arg(frameId).arg(requestId).arg(trackingId).arg(reason),
+                QStringLiteral("#ff9800"));
+        });
+    }
+
+    connect(ui->lePythonUrl, &QLineEdit::editingFinished, this, [this]() {
+        QString detectingKey = ui->cbSelectedDetecting->currentText();
+        if (detectingKey.isEmpty())
+            detectingKey = QStringLiteral("tracking0");
+        VariableManager::instance().updateVarScoped(
+            ProjectName, detectingKey + QStringLiteral(".ExternalVision.Script"),
+            ui->lePythonUrl->text().trimmed());
+    });
+}
+
+void RobotWindow::setExternalVisionStatus(const QString& state, const QString& detail,
+                                           const QString& color)
+{
+    QHash<QString, QVariant> values;
+    values.insert(QStringLiteral("ExternalVision.State"), state);
+    values.insert(QStringLiteral("ExternalVision.Detail"), detail);
+    values.insert(QStringLiteral("ExternalVision.Connected"), state == QStringLiteral("CONNECTED"));
+    values.insert(QStringLiteral("ExternalVision.UpdatedAt"),
+                  QDateTime::currentDateTimeUtc().toString(Qt::ISODateWithMs));
+    VariableManager::instance().updateBatchScoped(
+        ProjectName, values, VariableManager::Persistence::Runtime);
+
+    if (!externalVisionStatusLabel)
+        return;
+    externalVisionStatusLabel->setText(
+        detail.isEmpty() ? state : QStringLiteral("%1 — %2").arg(state, detail));
+    externalVisionStatusLabel->setStyleSheet(
+        QStringLiteral("color: %1; font-weight: bold;").arg(color));
+}
+
+void RobotWindow::InitGScriptWorkspace()
+{
+    gscriptValidationTimer = new QTimer(this);
+    gscriptValidationTimer->setSingleShot(true);
+    gscriptValidationTimer->setInterval(350);
+    connect(gscriptValidationTimer, &QTimer::timeout,
+            this, &RobotWindow::ValidateGScriptNow);
+
+    gscriptCompletionRefreshTimer = new QTimer(this);
+    gscriptCompletionRefreshTimer->setSingleShot(true);
+    gscriptCompletionRefreshTimer->setInterval(750);
+    connect(gscriptCompletionRefreshTimer, &QTimer::timeout,
+            this, &RobotWindow::RefreshGScriptAssistant);
+
+    QWidget* programTab = ui->twGcodeEditor->widget(0);
+    if (!programTab)
+        return;
+    QVBoxLayout* programLayout = qobject_cast<QVBoxLayout*>(programTab->layout());
+    if (!programLayout)
+        return;
+
+    QFrame* statusBar = new QFrame(programTab);
+    statusBar->setObjectName("gscriptStatusBar");
+    statusBar->setStyleSheet(
+        "QFrame#gscriptStatusBar { background: #252526; border-top: 1px solid #3c3c3c; }"
+        "QLabel { color: #d4d4d4; padding: 2px 6px; }"
+        "QPushButton { padding: 3px 10px; }");
+    QHBoxLayout* statusLayout = new QHBoxLayout(statusBar);
+    statusLayout->setContentsMargins(6, 3, 6, 3);
+    statusLayout->setSpacing(8);
+
+    gscriptStatusLabel = new QLabel(tr("Ready"), statusBar);
+    gscriptStatusLabel->setObjectName("gscriptStatusLabel");
+    cellStateLabel = new QLabel(statusBar);
+    cellStateLabel->setObjectName("cellStateLabel");
+    cellResetButton = new QPushButton(tr("Reset fault"), statusBar);
+    cellResetButton->setObjectName("cellResetButton");
+    cellResetButton->setVisible(false);
+    cellResetButton->setToolTip(
+        tr("Acknowledge a software fault after external safety and hardware conditions are verified"));
+    gscriptSignatureLabel = new QLabel(statusBar);
+    gscriptSignatureLabel->setObjectName("gscriptSignatureLabel");
+    gscriptSignatureLabel->setStyleSheet("color: #9cdcfe;");
+    gscriptSignatureLabel->setMinimumWidth(220);
+    gscriptSignatureLabel->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Preferred);
+    gscriptCursorLabel = new QLabel(tr("Ln 1, Col 1"), statusBar);
+    gscriptTemplateButton = new QPushButton(tr("New from template"), statusBar);
+    gscriptTemplateButton->setToolTip(
+        tr("Generate a validated vision or robot worker skeleton"));
+    gscriptValidateButton = new QPushButton(tr("Validate"), statusBar);
+    gscriptValidateButton->setToolTip(tr("Analyze the program without moving any device"));
+    statusLayout->addWidget(cellStateLabel);
+    statusLayout->addWidget(cellResetButton);
+    statusLayout->addWidget(gscriptStatusLabel, 1);
+    statusLayout->addWidget(gscriptSignatureLabel, 2);
+    statusLayout->addWidget(gscriptCursorLabel);
+    statusLayout->addWidget(gscriptTemplateButton);
+    statusLayout->addWidget(gscriptValidateButton);
+
+    gscriptInspectionTabs = new QTabWidget(programTab);
+    gscriptInspectionTabs->setObjectName("gscriptInspectionTabs");
+    gscriptInspectionTabs->setMaximumHeight(190);
+    gscriptInspectionTabs->setDocumentMode(true);
+
+    QWidget* problemsPage = new QWidget(gscriptInspectionTabs);
+    QVBoxLayout* problemsLayout = new QVBoxLayout(problemsPage);
+    problemsLayout->setContentsMargins(0, 0, 0, 0);
+    gscriptProblemsTable = new QTableWidget(0, 4, problemsPage);
+    gscriptProblemsTable->setObjectName("gscriptProblemsTable");
+    gscriptProblemsTable->setHorizontalHeaderLabels(
+        {tr("Severity"), tr("Line"), tr("Code"), tr("Message")});
+    gscriptProblemsTable->horizontalHeader()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
+    gscriptProblemsTable->horizontalHeader()->setSectionResizeMode(1, QHeaderView::ResizeToContents);
+    gscriptProblemsTable->horizontalHeader()->setSectionResizeMode(2, QHeaderView::ResizeToContents);
+    gscriptProblemsTable->horizontalHeader()->setSectionResizeMode(3, QHeaderView::Stretch);
+    gscriptProblemsTable->verticalHeader()->setVisible(false);
+    gscriptProblemsTable->setSelectionBehavior(QAbstractItemView::SelectRows);
+    gscriptProblemsTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    gscriptProblemsTable->setAlternatingRowColors(true);
+    problemsLayout->addWidget(gscriptProblemsTable);
+    gscriptInspectionTabs->addTab(problemsPage, tr("Problems (0)"));
+
+    QWidget* watchPage = new QWidget(gscriptInspectionTabs);
+    QVBoxLayout* watchLayout = new QVBoxLayout(watchPage);
+    watchLayout->setContentsMargins(0, 0, 0, 0);
+    QHBoxLayout* watchControls = new QHBoxLayout;
+    gscriptWatchEdit = new QLineEdit(watchPage);
+    gscriptWatchEdit->setPlaceholderText(tr("Pin variable, e.g. Tracking.0.State"));
+    QPushButton* addWatchButton = new QPushButton(tr("Add"), watchPage);
+    QPushButton* removeWatchButton = new QPushButton(tr("Remove"), watchPage);
+    watchControls->addWidget(gscriptWatchEdit, 1);
+    watchControls->addWidget(addWatchButton);
+    watchControls->addWidget(removeWatchButton);
+    gscriptWatchTable = new QTableWidget(0, 3, watchPage);
+    gscriptWatchTable->setObjectName("gscriptWatchTable");
+    gscriptWatchTable->setHorizontalHeaderLabels({tr("Variable"), tr("Value"), tr("Type")});
+    gscriptWatchTable->horizontalHeader()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
+    gscriptWatchTable->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
+    gscriptWatchTable->horizontalHeader()->setSectionResizeMode(2, QHeaderView::ResizeToContents);
+    gscriptWatchTable->verticalHeader()->setVisible(false);
+    gscriptWatchTable->setSelectionBehavior(QAbstractItemView::SelectRows);
+    gscriptWatchTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    watchLayout->addLayout(watchControls);
+    watchLayout->addWidget(gscriptWatchTable);
+    gscriptInspectionTabs->addTab(watchPage, tr("Watch"));
+
+    QWidget* threadsPage = new QWidget(gscriptInspectionTabs);
+    QVBoxLayout* threadsLayout = new QVBoxLayout(threadsPage);
+    threadsLayout->setContentsMargins(0, 0, 0, 0);
+    gscriptThreadTable = new QTableWidget(0, 5, threadsPage);
+    gscriptThreadTable->setObjectName("gscriptThreadTable");
+    gscriptThreadTable->setHorizontalHeaderLabels(
+        {tr("Thread"), tr("State"), tr("Line"), tr("Device"), tr("Detail")});
+    for (int column = 0; column < 4; ++column)
+        gscriptThreadTable->horizontalHeader()->setSectionResizeMode(
+            column, QHeaderView::ResizeToContents);
+    gscriptThreadTable->horizontalHeader()->setSectionResizeMode(4, QHeaderView::Stretch);
+    gscriptThreadTable->verticalHeader()->setVisible(false);
+    gscriptThreadTable->setSelectionBehavior(QAbstractItemView::SelectRows);
+    gscriptThreadTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    threadsLayout->addWidget(gscriptThreadTable);
+    gscriptInspectionTabs->addTab(threadsPage, tr("Threads"));
+    connect(gscriptThreadTable, &QTableWidget::cellDoubleClicked,
+            this, [this](int row, int) {
+        if (row >= 0 && row < GcodeScripts.size())
+            ui->cbProgramThreadID->setCurrentIndex(row);
+    });
+
+    programLayout->addWidget(gscriptInspectionTabs);
+    programLayout->addWidget(statusBar);
+
+    connect(gscriptValidateButton, &QPushButton::clicked,
+            this, &RobotWindow::ValidateGScriptNow);
+    connect(cellResetButton, &QPushButton::clicked, this, [this]() {
+        if (!m_cellSupervisor || m_cellSupervisor->state() != CellSupervisor::State::Faulted)
+            return;
+        const QMessageBox::StandardButton answer = QMessageBox::warning(
+            this, tr("Reset software fault"),
+            tr("Confirm that E-stop, guards, robot controllers, conveyor and end effector are safe before resetting the software cell state."),
+            QMessageBox::Reset | QMessageBox::Cancel, QMessageBox::Cancel);
+        if (answer == QMessageBox::Reset)
+            m_cellSupervisor->ResetFault();
+    });
+    connect(gscriptTemplateButton, &QPushButton::clicked,
+            this, &RobotWindow::ShowGScriptTemplateWizard);
+    connect(gscriptProblemsTable, &QTableWidget::cellDoubleClicked,
+            this, [this](int row, int) {
+        if (row >= 0 && row < gscriptDiagnostics.size())
+            ui->pteGcodeArea->goToLine(gscriptDiagnostics.at(row).line);
+    });
+    connect(ui->pteGcodeArea, &QTextEdit::cursorPositionChanged, this, [this]() {
+        const QTextCursor cursor = ui->pteGcodeArea->textCursor();
+        if (gscriptCursorLabel)
+            gscriptCursorLabel->setText(tr("Ln %1, Col %2")
+                .arg(cursor.blockNumber() + 1).arg(cursor.positionInBlock() + 1));
+        if (gscriptSignatureLabel) {
+            const QString signature = GScriptEditorSupport::signatureHelp(
+                cursor.block().text(), cursor.positionInBlock());
+            gscriptSignatureLabel->setText(signature);
+            gscriptSignatureLabel->setToolTip(signature);
+        }
+    });
+    connect(ui->pteGcodeArea, &QTextEdit::textChanged, this, [this]() {
+        if (gscriptCompletionRefreshTimer && !gscriptCompletionRefreshTimer->isActive())
+            gscriptCompletionRefreshTimer->start();
+    });
+
+    auto pinWatch = [this]() {
+        if (!gscriptWatchEdit)
+            return;
+        const QString name = GScriptEditorSupport::normalizeWatchName(gscriptWatchEdit->text());
+        if (name.isEmpty()) {
+            gscriptWatchEdit->setStyleSheet("border: 1px solid #ff6b6b;");
+            return;
+        }
+        gscriptWatchEdit->setStyleSheet(QString());
+        gscriptPinnedWatch.insert(name);
+        gscriptWatchEdit->clear();
+        RefreshGScriptRuntimePanels();
+    };
+    connect(addWatchButton, &QPushButton::clicked, this, pinWatch);
+    connect(gscriptWatchEdit, &QLineEdit::returnPressed, this, pinWatch);
+    connect(removeWatchButton, &QPushButton::clicked, this, [this]() {
+        if (!gscriptWatchTable)
+            return;
+        const auto rows = gscriptWatchTable->selectionModel()->selectedRows();
+        for (const QModelIndex& row : rows) {
+            if (QTableWidgetItem* item = gscriptWatchTable->item(row.row(), 0))
+                gscriptPinnedWatch.remove(item->data(Qt::UserRole).toString());
+        }
+        RefreshGScriptRuntimePanels();
+    });
+
+    VariableManager& variables = VariableManager::instance();
+    auto scheduleCompletionRefresh = [this]() {
+        if (gscriptCompletionRefreshTimer && !gscriptCompletionRefreshTimer->isActive())
+            gscriptCompletionRefreshTimer->start();
+    };
+    connect(&variables, &VariableManager::varAdded, this,
+            [this, scheduleCompletionRefresh](const QString& key, const QVariant&) {
+        if (!gscriptKnownCompletionKeys.contains(key))
+            scheduleCompletionRefresh();
+    });
+    connect(&variables, &VariableManager::varsUpdated, this,
+            [this, scheduleCompletionRefresh](const QHash<QString, QVariant>& values) {
+        for (auto it = values.cbegin(); it != values.cend(); ++it) {
+            if (!gscriptKnownCompletionKeys.contains(it.key())) {
+                scheduleCompletionRefresh();
+                break;
+            }
+        }
+    });
+    connect(&variables, &VariableManager::varsRemoved, this,
+            [scheduleCompletionRefresh](const QStringList&) {
+        scheduleCompletionRefresh();
+    });
+
+    gscriptRuntimeUiTimer = new QTimer(this);
+    gscriptRuntimeUiTimer->setTimerType(Qt::CoarseTimer);
+    gscriptRuntimeUiTimer->setInterval(200);
+    connect(gscriptRuntimeUiTimer, &QTimer::timeout,
+            this, &RobotWindow::RefreshGScriptRuntimePanels);
+    gscriptRuntimeUiTimer->start();
+
+    ui->pbExecuteGcodes->setText(tr("Run"));
+    ui->pbExecuteGcodes->setToolTip(tr("Validate and run the complete program"));
+    ui->cbEditGcodeLock->setText(tr("Safe line run"));
+    ui->cbEditGcodeLock->setToolTip(
+        tr("When enabled, clicking a source line can execute only that line"));
+    if (m_cellSupervisor)
+        updateCellStateUi(m_cellSupervisor->state(), m_cellSupervisor->stateName(),
+                          m_cellSupervisor->faultReason());
+    RefreshGScriptAssistant();
+    RefreshGScriptRuntimePanels();
+    ValidateGScriptNow();
+}
+
+void RobotWindow::RefreshGScriptAssistant()
+{
+    if (!ui || !ui->pteGcodeArea)
+        return;
+
+    QStringList completions = GScriptEditorSupport::builtInCompletions();
+    const QString root = VariableManager::normalizeKey(ProjectName);
+    const QString prefix = root.isEmpty() ? QString() : root + '.';
+    const QStringList variableKeys = VariableManager::instance().keys(ProjectName, true);
+    gscriptKnownCompletionKeys.clear();
+    for (const QString& key : variableKeys)
+        gscriptKnownCompletionKeys.insert(key);
+    int addedVariables = 0;
+    for (const QString& absoluteKey : variableKeys) {
+        QString relative = absoluteKey;
+        if (!prefix.isEmpty() && relative.startsWith(prefix))
+            relative.remove(0, prefix.size());
+        if (relative.isEmpty() || relative.size() > 160)
+            continue;
+        completions.append('#' + relative);
+        if (++addedVariables >= 6000)
+            break;
+    }
+    const QStringList referenced = GScriptEditorSupport::referencedVariables(
+        ui->pteGcodeArea->toPlainText());
+    for (const QString& name : referenced)
+        completions.append('#' + name);
+
+    ui->pteGcodeArea->setCompletionWords(completions);
+}
+
+void RobotWindow::RefreshGScriptRuntimePanels()
+{
+    if (!ui)
+        return;
+
+    VariableManager& variables = VariableManager::instance();
+    if (gscriptWatchTable && ui->pteGcodeArea) {
+        const int documentRevision = ui->pteGcodeArea->document()->revision();
+        if (documentRevision != gscriptWatchDocumentRevision) {
+            gscriptAutomaticWatch = GScriptEditorSupport::referencedVariables(
+                ui->pteGcodeArea->toPlainText());
+            gscriptWatchDocumentRevision = documentRevision;
+        }
+        QSet<QString> watched = gscriptPinnedWatch;
+        for (const QString& name : gscriptAutomaticWatch)
+            watched.insert(name);
+        QStringList names(watched.cbegin(), watched.cend());
+        names.sort(Qt::CaseInsensitive);
+
+        QSet<QString> selectedNames;
+        const auto selectedRows = gscriptWatchTable->selectionModel()->selectedRows();
+        for (const QModelIndex& selectedRow : selectedRows) {
+            if (QTableWidgetItem* item = gscriptWatchTable->item(selectedRow.row(), 0))
+                selectedNames.insert(item->data(Qt::UserRole).toString());
+        }
+
+        gscriptWatchTable->setUpdatesEnabled(false);
+        gscriptWatchTable->setRowCount(names.size());
+        for (int row = 0; row < names.size(); ++row) {
+            const QString& name = names.at(row);
+            const QVariant value = variables.getVarScoped(ProjectName, name);
+            QTableWidgetItem* nameItem = new QTableWidgetItem('#' + name);
+            nameItem->setData(Qt::UserRole, name);
+            if (!gscriptPinnedWatch.contains(name)) {
+                QFont automaticFont = nameItem->font();
+                automaticFont.setItalic(true);
+                nameItem->setFont(automaticFont);
+                nameItem->setToolTip(tr("Automatically watched because the variable appears in the editor"));
+            }
+
+            QString displayValue;
+            QString typeName;
+            if (!value.isValid()) {
+                displayValue = tr("<not published>");
+                typeName = tr("unknown/local");
+            } else {
+                displayValue = value.toString();
+                if (displayValue.isEmpty() && value.userType() != QMetaType::QString) {
+                    QDebug debug(&displayValue);
+                    debug.noquote().nospace() << value;
+                }
+                typeName = QString::fromLatin1(value.typeName() ? value.typeName() : "QVariant");
+            }
+            QTableWidgetItem* valueItem = new QTableWidgetItem(displayValue);
+            valueItem->setToolTip(displayValue);
+            if (!value.isValid())
+                valueItem->setForeground(QColor("#888888"));
+            gscriptWatchTable->setItem(row, 0, nameItem);
+            gscriptWatchTable->setItem(row, 1, valueItem);
+            gscriptWatchTable->setItem(row, 2, new QTableWidgetItem(typeName));
+            if (selectedNames.contains(name))
+                gscriptWatchTable->selectRow(row);
+        }
+        gscriptWatchTable->setUpdatesEnabled(true);
+    }
+
+    if (gscriptThreadTable) {
+        gscriptThreadTable->setUpdatesEnabled(false);
+        gscriptThreadTable->setRowCount(GcodeScripts.size());
+        for (int row = 0; row < GcodeScripts.size(); ++row) {
+            GcodeScript* script = GcodeScripts.at(row);
+            const QString id = script ? script->ID : QString("thread%1").arg(row);
+            const QString runtimePrefix = QString("GScript.%1.").arg(id);
+            QString state = variables.getVarScoped(
+                ProjectName, runtimePrefix + "State").toString();
+            if (state.isEmpty() && script) {
+                const QMetaEnum stateMeta = QMetaEnum::fromType<GcodeScript::ExecutionState>();
+                state = QString::fromLatin1(
+                    stateMeta.valueToKey(static_cast<int>(script->State())));
+            }
+            const QVariant line = variables.getVarScoped(
+                ProjectName, runtimePrefix + "CurrentLine");
+            const QString device = variables.getVarScoped(
+                ProjectName, runtimePrefix + "ActiveDevice").toString();
+            QString detail = variables.getVarScoped(
+                ProjectName, runtimePrefix + "StateMessage").toString();
+            const QString command = variables.getVarScoped(
+                ProjectName, runtimePrefix + "ActiveCommand").toString();
+            const QString error = variables.getVarScoped(
+                ProjectName, runtimePrefix + "LastError").toString();
+            if (state.compare("Faulted", Qt::CaseInsensitive) == 0 && !error.isEmpty())
+                detail = error;
+
+            QTableWidgetItem* stateItem = new QTableWidgetItem(state);
+            if (state == "Running" || state == "Completed")
+                stateItem->setForeground(QColor("#69d18b"));
+            else if (state.startsWith("Waiting"))
+                stateItem->setForeground(QColor("#73b7ff"));
+            else if (state == "Faulted")
+                stateItem->setForeground(QColor("#ff6b6b"));
+            else if (state == "Stopping")
+                stateItem->setForeground(QColor("#f0b24a"));
+
+            QTableWidgetItem* deviceItem = new QTableWidgetItem(device);
+            deviceItem->setToolTip(command);
+            gscriptThreadTable->setItem(row, 0, new QTableWidgetItem(id));
+            gscriptThreadTable->setItem(row, 1, stateItem);
+            gscriptThreadTable->setItem(row, 2,
+                new QTableWidgetItem(line.isValid() ? line.toString() : QStringLiteral("—")));
+            gscriptThreadTable->setItem(row, 3, deviceItem);
+            gscriptThreadTable->setItem(row, 4, new QTableWidgetItem(detail));
+        }
+        gscriptThreadTable->setUpdatesEnabled(true);
+    }
+}
+
+void RobotWindow::ShowGScriptTemplateWizard()
+{
+    if (!ui || !ui->pteGcodeArea)
+        return;
+
+    QDialog dialog(this);
+    dialog.setWindowTitle(tr("New G-Script from template"));
+    dialog.setMinimumWidth(520);
+    QVBoxLayout* root = new QVBoxLayout(&dialog);
+    QLabel* explanation = new QLabel(
+        tr("Generate a safe starting point. Calibration variables, zones, poses and limits must still be verified on the real cell."),
+        &dialog);
+    explanation->setWordWrap(true);
+    root->addWidget(explanation);
+
+    QFormLayout* form = new QFormLayout;
+    QComboBox* role = new QComboBox(&dialog);
+    role->addItems({tr("Vision / tracking worker"), tr("Robot pick worker")});
+    QSpinBox* trackingId = new QSpinBox(&dialog);
+    trackingId->setRange(0, 999);
+    QSpinBox* loopDelay = new QSpinBox(&dialog);
+    loopDelay->setRange(0, 60000);
+    loopDelay->setValue(10);
+    loopDelay->setSuffix(tr(" ms"));
+    QSpinBox* robotId = new QSpinBox(&dialog);
+    robotId->setRange(0, 999);
+    QSpinBox* typeFilter = new QSpinBox(&dialog);
+    typeFilter->setRange(-1, 999999);
+    typeFilter->setSpecialValueText(tr("Any type"));
+    typeFilter->setValue(-1);
+    QDoubleSpinBox* minX = new QDoubleSpinBox(&dialog);
+    QDoubleSpinBox* maxX = new QDoubleSpinBox(&dialog);
+    QDoubleSpinBox* minY = new QDoubleSpinBox(&dialog);
+    QDoubleSpinBox* maxY = new QDoubleSpinBox(&dialog);
+    for (QDoubleSpinBox* spin : {minX, maxX, minY, maxY}) {
+        spin->setRange(-1000000.0, 1000000.0);
+        spin->setDecimals(3);
+        spin->setSuffix(tr(" mm"));
+    }
+    minX->setValue(-180.0);
+    maxX->setValue(180.0);
+    minY->setValue(300.0);
+    maxY->setValue(450.0);
+    QCheckBox* vacuumFeedback = new QCheckBox(tr("Require vacuum confirmation"), &dialog);
+    QLineEdit* vacuumVariable = new QLineEdit(QStringLiteral("Vacuum.R0.OK"), &dialog);
+
+    form->addRow(tr("Template"), role);
+    form->addRow(tr("Tracking ID"), trackingId);
+    form->addRow(tr("Vision loop delay"), loopDelay);
+    form->addRow(tr("Robot ID"), robotId);
+    form->addRow(tr("Object type"), typeFilter);
+    form->addRow(tr("Claim min X"), minX);
+    form->addRow(tr("Claim max X"), maxX);
+    form->addRow(tr("Claim min Y"), minY);
+    form->addRow(tr("Claim max Y"), maxY);
+    form->addRow(QString(), vacuumFeedback);
+    form->addRow(tr("Vacuum variable"), vacuumVariable);
+    root->addLayout(form);
+
+    const QList<QWidget*> robotFields = {
+        robotId, typeFilter, minX, maxX, minY, maxY, vacuumFeedback, vacuumVariable
+    };
+    auto updateRole = [role, loopDelay, robotFields, vacuumFeedback, vacuumVariable]() {
+        const bool robotWorker = role->currentIndex() == 1;
+        loopDelay->setEnabled(!robotWorker);
+        for (QWidget* field : robotFields)
+            field->setEnabled(robotWorker);
+        vacuumVariable->setEnabled(robotWorker && vacuumFeedback->isChecked());
+    };
+    connect(role, QOverload<int>::of(&QComboBox::currentIndexChanged),
+            &dialog, [updateRole](int) { updateRole(); });
+    connect(vacuumFeedback, &QCheckBox::toggled,
+            &dialog, [updateRole](bool) { updateRole(); });
+    connect(robotId, QOverload<int>::of(&QSpinBox::valueChanged),
+            &dialog, [vacuumVariable](int id) {
+        vacuumVariable->setText(QString("Vacuum.R%1.OK").arg(id));
+    });
+    updateRole();
+
+    QDialogButtonBox* buttons = new QDialogButtonBox(
+        QDialogButtonBox::Cancel | QDialogButtonBox::Ok, &dialog);
+    buttons->button(QDialogButtonBox::Ok)->setText(tr("Generate"));
+    connect(buttons, &QDialogButtonBox::accepted, &dialog, &QDialog::accept);
+    connect(buttons, &QDialogButtonBox::rejected, &dialog, &QDialog::reject);
+    root->addWidget(buttons);
+    if (dialog.exec() != QDialog::Accepted)
+        return;
+
+    QString generated;
+    if (role->currentIndex() == 0) {
+        generated = GScriptEditorSupport::visionTemplate(
+            trackingId->value(), loopDelay->value());
+    } else {
+        GScriptRobotTemplateOptions options;
+        options.trackingId = trackingId->value();
+        options.robotId = robotId->value();
+        options.typeFilter = typeFilter->value();
+        options.minX = minX->value();
+        options.maxX = maxX->value();
+        options.minY = minY->value();
+        options.maxY = maxY->value();
+        options.useVacuumFeedback = vacuumFeedback->isChecked();
+        options.vacuumVariable = vacuumVariable->text();
+        generated = GScriptEditorSupport::robotTemplate(options);
+    }
+
+    const QString current = ui->pteGcodeArea->toPlainText();
+    if (!current.trimmed().isEmpty()) {
+        QMessageBox choice(this);
+        choice.setIcon(QMessageBox::Question);
+        choice.setWindowTitle(tr("Insert generated G-Script"));
+        choice.setText(tr("The current editor is not empty."));
+        QPushButton* replaceButton = choice.addButton(tr("Replace editor"), QMessageBox::AcceptRole);
+        QPushButton* appendButton = choice.addButton(tr("Append"), QMessageBox::ActionRole);
+        choice.addButton(QMessageBox::Cancel);
+        choice.setDefaultButton(replaceButton);
+        choice.exec();
+        if (choice.clickedButton() == replaceButton)
+            ui->pteGcodeArea->setPlainText(generated);
+        else if (choice.clickedButton() == appendButton)
+            ui->pteGcodeArea->setPlainText(current.trimmed() + "\n\n" + generated);
+        else
+            return;
+    } else {
+        ui->pteGcodeArea->setPlainText(generated);
+    }
+    ui->pteGcodeArea->moveCursor(QTextCursor::Start);
+    ValidateGScriptNow();
+    RefreshGScriptAssistant();
+    RefreshGScriptRuntimePanels();
+}
+
 void RobotWindow::InitGScriptHelp()
 {
     const QStringList docCandidates = {
+        QStringLiteral(":/docs/gscript-runtime.md"),
+        QCoreApplication::applicationDirPath() + "/docs/gscript-runtime.md",
+        QDir::current().absoluteFilePath("docs/gscript-runtime.md"),
         QStringLiteral(":/GScript_Documentation.html"),
         QCoreApplication::applicationDirPath() + "/GScript_Documentation.html",
         QDir::current().absoluteFilePath("GScript_Documentation.html")
     };
 
-    QString htmlContent;
+    QString documentContent;
     QString loadedFrom;
 
     for (const QString &path : docCandidates)
     {
         QFile htmlFile(path);
         if (htmlFile.exists() && htmlFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
-            htmlContent = QString::fromUtf8(htmlFile.readAll());
-            if (!htmlContent.isEmpty() && htmlContent.at(0) == QChar(0xFEFF)) {
-                htmlContent.remove(0, 1);
+            documentContent = QString::fromUtf8(htmlFile.readAll());
+            if (!documentContent.isEmpty() && documentContent.at(0) == QChar(0xFEFF)) {
+                documentContent.remove(0, 1);
             }
             htmlFile.close();
             loadedFrom = path;
@@ -876,8 +1890,11 @@ void RobotWindow::InitGScriptHelp()
         }
     }
 
-    if (!htmlContent.isEmpty()) {
-        ui->tbGcodeScriptHelp->setHtml(htmlContent);
+    if (!documentContent.isEmpty()) {
+        if (loadedFrom.endsWith(QStringLiteral(".md"), Qt::CaseInsensitive))
+            ui->tbGcodeScriptHelp->setMarkdown(documentContent);
+        else
+            ui->tbGcodeScriptHelp->setHtml(documentContent);
         SoftwareLog("GScript Help documentation loaded from: " + loadedFrom);
     } else {
         QString errorMessage = QString(
@@ -1057,6 +2074,10 @@ void RobotWindow::InitEvents()
 
     connect(ui->pbRunExternalScript, SIGNAL(clicked(bool)), this, SLOT(RunExternalScript()));
     connect(ui->pbExternalScriptOpen, SIGNAL(clicked(bool)), this, SLOT(OpenExternalScriptFolder()));
+    connect(ui->pbExternalScriptHelp, &QPushButton::clicked,
+            this, &RobotWindow::OpenExternalVisionGuide);
+    connect(ui->pbOpenScriptExample, &QPushButton::clicked,
+            this, &RobotWindow::OpenExternalVisionExample);
 
     connect(ui->cbSourceForImageProvider, SIGNAL(currentIndexChanged(int)), this, SLOT(SelectImageProviderOption(int)));
 
@@ -1091,7 +2112,12 @@ void RobotWindow::InitEvents()
 
     connect(ui->tbAutoMove, &QToolButton::toggled, [=](bool checked)
     {
-        TrackingManagerInstance->Trackings.at(0)->IsUpateTestPoint = checked;
+        if (TrackingManagerInstance && !TrackingManagerInstance->Trackings.isEmpty()) {
+            QMetaObject::invokeMethod(
+                TrackingManagerInstance->Trackings.at(0),
+                "SetUpdateTestPoint", Qt::QueuedConnection,
+                Q_ARG(bool, checked));
+        }
     });
 
     connect(ui->pbCalculateMappingMatrixTool, SIGNAL(clicked(bool)), this, SLOT(CalculateMappingMatrixTool()));
@@ -1127,25 +2153,25 @@ void RobotWindow::InitEvents()
     connect(ui->tbPasteSourcePoint1, &QPushButton::clicked, [=]()
     {
         if (m_pointToolController) {
-            m_pointToolController->pastePointValues(ui->leSourcePoint1X, ui->leSourcePoint1Y, nullptr);
+            m_pointToolController->pastePointValues(ui->leMappingSourcePoint1X, ui->leMappingSourcePoint1Y, nullptr);
         }
     });
     connect(ui->tbPasteSourcePoint2, &QPushButton::clicked, [=]()
     {
         if (m_pointToolController) {
-            m_pointToolController->pastePointValues(ui->leSourcePoint2X, ui->leSourcePoint2Y, nullptr);
+            m_pointToolController->pastePointValues(ui->leMappingSourcePoint2X, ui->leMappingSourcePoint2Y, nullptr);
         }
     });
     connect(ui->tbPasteDestinationPoint1, &QPushButton::clicked, [=]()
     {
         if (m_pointToolController) {
-            m_pointToolController->pastePointValues(ui->leDestinationPoint1X, ui->leDestinationPoint1Y, nullptr);
+            m_pointToolController->pastePointValues(ui->leMappingDestinationPoint1X, ui->leMappingDestinationPoint1Y, nullptr);
         }
     });
     connect(ui->tbPasteDestinationPoint2, &QPushButton::clicked, [=]()
     {
         if (m_pointToolController) {
-            m_pointToolController->pastePointValues(ui->leDestinationPoint2X, ui->leDestinationPoint2Y, nullptr);
+            m_pointToolController->pastePointValues(ui->leMappingDestinationPoint2X, ui->leMappingDestinationPoint2Y, nullptr);
         }
     });
 
@@ -1209,7 +2235,10 @@ void RobotWindow::InitEvents()
 
     connect(ui->pbAddVariablePoint, &QPushButton::clicked, [=]()
     {
-        int selectedEncoderID = ui->cbSelectedTracking->currentText().toInt();
+        const int selectedEncoderID = ui->cbSelectedTracking->currentIndex();
+        if (!TrackingManagerInstance || selectedEncoderID < 0 ||
+            selectedEncoderID >= TrackingManagerInstance->Trackings.count())
+            return;
 
         float x = ui->leObjectX->text().isEmpty() ? QRandomGenerator::global()->generate() % 1000 : ui->leObjectX->text().toFloat();
         float y = ui->leObjectY->text().isEmpty() ? QRandomGenerator::global()->generate() % 1000 : ui->leObjectY->text().toFloat();
@@ -1219,7 +2248,8 @@ void RobotWindow::InitEvents()
         std::uniform_int_distribution<int> distribution(-180, 180);
         int angle = distribution(generator);
 
-        if (ui->leObjectListName->text() == TrackingManagerInstance->Trackings.at(selectedEncoderID)->ListName)
+        if (ui->leObjectListName->text() ==
+            TrackingManagerInstance->Trackings.at(selectedEncoderID)->GetListName())
         {
             QVector3D position(x, y, z);
             ObjectInfo object(-1, 0, position, 20, 40, angle); // UID will be assigned automatically
@@ -1230,15 +2260,17 @@ void RobotWindow::InitEvents()
         else
         {
             QString listName = ui->leObjectListName->text();
-            int counter = VariableManager::instance().getVar(listName + ".Count", 0).toInt();
-            VariableManager::instance().updateVar((listName + ".%1.X").arg(counter), x);
-            VariableManager::instance().updateVar((listName + ".%1.Y").arg(counter), y);
-            VariableManager::instance().updateVar((listName + ".%1.Z").arg(counter), z);
-            VariableManager::instance().updateVar((listName + ".%1.W").arg(counter), 20);
-            VariableManager::instance().updateVar((listName + ".%1.L").arg(counter), 40);
-            VariableManager::instance().updateVar((listName + ".%1.A").arg(counter), angle);
-
-            VariableManager::instance().updateVar(listName + ".Count", counter + 1);
+            int counter = VariableManager::instance().getVarScoped(ProjectName, listName + ".Count", 0).toInt();
+            const QString objectName = QString("%1.%2.").arg(listName).arg(counter);
+            QHash<QString, QVariant> values;
+            values.insert(objectName + "X", x);
+            values.insert(objectName + "Y", y);
+            values.insert(objectName + "Z", z);
+            values.insert(objectName + "W", 20);
+            values.insert(objectName + "L", 40);
+            values.insert(objectName + "A", angle);
+            values.insert(listName + ".Count", counter + 1);
+            VariableManager::instance().updateBatchScoped(ProjectName, values);
         }
     });
 
@@ -1331,14 +2363,14 @@ void RobotWindow::OpenBlocklyEditor()
 {
     if (!ConnectionManager || !ConnectionManager->WebServer) {
         QMessageBox::warning(this, tr("Web Control"),
-                             tr("Web server chưa sẵn sàng."));
+                             tr("The web server is not ready."));
         return;
     }
 
     if (!ConnectionManager->WebServer->isListening()) {
         if (!ConnectionManager->WebServer->listen(QHostAddress(ConnectionManager->hostAddress), 5000)) {
             QMessageBox::warning(this, tr("Web Control"),
-                                 tr("Không thể khởi động Web server."));
+                                 tr("The web server could not be started."));
             return;
         }
     }
@@ -1359,7 +2391,7 @@ void RobotWindow::OpenBlocklyEditor()
     quint16 blocklyPortValue = ConnectionManager->blocklyPort;
     if (blocklyPortValue == 0) {
         QMessageBox::warning(this, tr("Web Control"),
-                             tr("Không thể khởi động Blockly server (cổng gửi dữ liệu)."));
+                             tr("The Blockly data server could not be started."));
         return;
     }
 
@@ -1371,8 +2403,8 @@ void RobotWindow::OpenBlocklyEditor()
 
     if (!QDesktopServices::openUrl(QUrl(blocklyUrl))) {
         QMessageBox::warning(this,
-                             tr("Không thể mở Blockly"),
-                             tr("Không mở được trình duyệt với đường dẫn: %1").arg(blocklyUrl));
+                             tr("Unable to Open Blockly"),
+                             tr("The browser could not open this URL: %1").arg(blocklyUrl));
     } else {
         SoftwareLog(QString("Open Blockly via web server: %1").arg(blocklyUrl));
     }
@@ -1503,8 +2535,8 @@ void RobotWindow::ExecuteRequestsFromExternal(QString request)
 
 void RobotWindow::AddGcodeLine(QString gcode)
 {
-    if (gcode[gcode.length() - 1] != "\n")
-        gcode += "\n";
+    if (!gcode.endsWith(QLatin1Char('\n')))
+        gcode += QLatin1Char('\n');
 
     ui->pteGcodeArea->moveCursor (QTextCursor::End);
     ui->pteGcodeArea->insertPlainText(gcode);
@@ -1725,14 +2757,82 @@ void RobotWindow::AddScriptThread()
     GcodeScript* GcodeScriptThread = new GcodeScript();
     GcodeScriptThread->ProjectName = ProjectName;
     GcodeScriptThread->ID = QString("thread%1").arg(GcodeScripts.count());
+    const QString commandOwner = QStringLiteral("gscript/") + GcodeScriptThread->ID;
     GcodeScriptThread->moveToThread(new QThread(this));
 
     connect(GcodeScriptThread->thread(), SIGNAL(finished()), GcodeScriptThread, SLOT(deleteLater()));
-    connect(DeviceManagerInstance, SIGNAL(DeviceResponded(QString, QString)), GcodeScriptThread, SLOT(GetResponse(QString, QString)));
 
     connect(GcodeScriptThread, SIGNAL(Moved(int)), this, SLOT(HighLineCurrentLine(int)));
-    connect(GcodeScriptThread, SIGNAL(SendGcodeToDevice(QString, QString)), DeviceManagerInstance, SLOT(SendGcode(QString, QString)));
-    connect(GcodeScriptThread, &GcodeScript::Finished, [=](){ ui->pbExecuteGcodes->setChecked(false);});
+    connect(GcodeScriptThread, &GcodeScript::SendGcodeToDevice,
+            m_deviceCommandBroker,
+            [this, commandOwner](const QString& device, const QString& command) {
+        if (m_deviceCommandBroker) {
+            m_deviceCommandBroker->Submit(commandOwner, device, command,
+                                          DeviceCommandBroker::Origin::GScript,
+                                          true, 120000);
+        }
+    });
+    connect(m_deviceCommandBroker, &DeviceCommandBroker::ResponseForOwner,
+            GcodeScriptThread,
+            [GcodeScriptThread, commandOwner](const QString& owner,
+                                               const QString& device,
+                                               const QString& response,
+                                               quint64) {
+        if (owner == commandOwner)
+            GcodeScriptThread->GetResponse(device, response);
+    });
+    connect(m_deviceCommandBroker, &DeviceCommandBroker::CommandRejected,
+            GcodeScriptThread,
+            [GcodeScriptThread, commandOwner](const QString& owner,
+                                               const QString& device,
+                                               const QString&,
+                                               const QString& reason) {
+        if (owner == commandOwner)
+            GcodeScriptThread->GetResponse(device, QStringLiteral("error: ") + reason);
+    });
+    connect(GcodeScriptThread, &GcodeScript::Finished,
+            this, [this, GcodeScriptThread, commandOwner]() {
+        if (m_deviceCommandBroker)
+            m_deviceCommandBroker->CancelOwner(commandOwner, QStringLiteral("G-Script finished"));
+        if (m_cellSupervisor)
+            m_cellSupervisor->EndAutomation(commandOwner);
+        const int selected = ui->cbProgramThreadID->currentIndex();
+        if (selected >= 0 && selected < GcodeScripts.size() &&
+            GcodeScripts.at(selected) == GcodeScriptThread)
+            ui->pbExecuteGcodes->setChecked(false);
+    });
+    connect(GcodeScriptThread, &GcodeScript::DiagnosticsReady,
+            this, [this, GcodeScriptThread](const QList<GScriptDiagnostic>& diagnostics) {
+        const int threadId = ui->cbProgramThreadID->currentIndex();
+        if (threadId >= 0 && threadId < GcodeScripts.size() &&
+            GcodeScripts.at(threadId) == GcodeScriptThread)
+            ShowGScriptDiagnostics(diagnostics);
+    });
+    connect(GcodeScriptThread, &GcodeScript::ExecutionStateChanged,
+            this, [this, GcodeScriptThread, commandOwner](GcodeScript::ExecutionState state,
+                                                          const QString& message) {
+        const bool active = state == GcodeScript::ExecutionState::Running ||
+                            state == GcodeScript::ExecutionState::WaitingForDevice ||
+                            state == GcodeScript::ExecutionState::WaitingForTimer ||
+                            state == GcodeScript::ExecutionState::WaitingForCondition ||
+                            state == GcodeScript::ExecutionState::Stopping;
+        if (m_cellSupervisor) {
+            if (state == GcodeScript::ExecutionState::Faulted) {
+                m_cellSupervisor->ReportFault(
+                    message.isEmpty() ? tr("%1 faulted").arg(GcodeScriptThread->ID) : message);
+                m_cellSupervisor->EndAutomation(commandOwner);
+            } else if (active) {
+                if (!m_cellSupervisor->BeginAutomation(commandOwner))
+                    QMetaObject::invokeMethod(GcodeScriptThread, "Stop", Qt::QueuedConnection);
+            } else {
+                m_cellSupervisor->EndAutomation(commandOwner);
+            }
+        }
+        const int threadId = ui->cbProgramThreadID->currentIndex();
+        if (threadId >= 0 && threadId < GcodeScripts.size() &&
+            GcodeScripts.at(threadId) == GcodeScriptThread)
+            UpdateGScriptExecutionState(state, message);
+    });
     connect(GcodeScriptThread, SIGNAL(SendGcodeToDevice(QString, QString)), this, SLOT(UpdateGcodeValueToDeviceUI(QString, QString)));
     
     
@@ -1752,13 +2852,12 @@ void RobotWindow::AddScriptThread()
 
     connect(GcodeScriptThread, &GcodeScript::GetObjectsRequest, TrackingManagerInstance, &TrackingManager::GetObjectsInArea);
     connect(GcodeScriptThread, &GcodeScript::UpdateTrackingRequest, TrackingManagerInstance, &TrackingManager::UpdateTracking);
+    connect(GcodeScriptThread, &GcodeScript::ClaimObjectRequest, TrackingManagerInstance, &TrackingManager::ClaimObject);
+    connect(GcodeScriptThread, &GcodeScript::ReleaseObjectRequest, TrackingManagerInstance, &TrackingManager::ReleaseObject);
+    connect(GcodeScriptThread, &GcodeScript::CompleteObjectRequest, TrackingManagerInstance, &TrackingManager::CompleteObject);
     connect(GcodeScriptThread, &GcodeScript::ChangeExternalVariable, TrackingManagerInstance, &TrackingManager::UpdateVariable);
     connect(GcodeScriptThread, &GcodeScript::AddObject, TrackingManagerInstance, &TrackingManager::AddObject);
     connect(GcodeScriptThread, SIGNAL(DeleteAllObjects(QString)), TrackingManagerInstance, SLOT(ClearObjects(QString)));
-    connect(ConnectionManager, &SocketConnectionManager::objectUpdated, TrackingManagerInstance, &TrackingManager::AddObject);
-    connect(ConnectionManager, SIGNAL(blobUpdated(QStringList)), ImageProcessingInstance->GetNode("GetObjectsNode"), SLOT(Input(QStringList)));
-    connect(ConnectionManager, SIGNAL(gcodeReceived(QString)), GcodeScriptThread, SLOT(ReceivedGcode(QString)));
-    connect(ConnectionManager, &SocketConnectionManager::gscriptEditorReceived, this, &RobotWindow::LoadGscriptFromRemote);
 
 
     connect(TrackingManagerInstance, &TrackingManager::GotResponse, GcodeScriptThread, &GcodeScript::GetResponse);
@@ -1773,8 +2872,12 @@ void RobotWindow::AddScriptThread()
 void RobotWindow::LoadScriptThread()
 {
     int threadId = ui->cbProgramThreadID->currentIndex();
+    if (threadId < 0 || threadId >= GcodeScripts.size())
+        return;
     ui->pteGcodeArea->setPlainText(GcodeScripts.at(threadId)->GetGcodeScript());
     ui->pbExecuteGcodes->setChecked(GcodeScripts.at(threadId)->IsRunning());
+    UpdateGScriptExecutionState(GcodeScripts.at(threadId)->State(), QString());
+    ValidateGScriptNow();
 }
 
 void RobotWindow::LoadGscriptFromRemote(QString gcode)
@@ -1784,12 +2887,32 @@ void RobotWindow::LoadGscriptFromRemote(QString gcode)
 
     ui->pteGcodeArea->setPlainText(gcode);
     ui->pteGcodeArea->moveCursor(QTextCursor::Start);
-    SoftwareLog(QString("Received Blockly script (%1 ký tự) từ WebServer.").arg(gcode.length()));
+    SoftwareLog(QString("Received a Blockly script from the web server (%1 characters).").arg(gcode.length()));
+}
+
+void RobotWindow::DispatchRemoteGScript(QString gcode)
+{
+    const int threadId = ui ? ui->cbProgramThreadID->currentIndex() : -1;
+    if (threadId < 0 || threadId >= GcodeScripts.size()) {
+        SoftwareLog(QStringLiteral("Remote G-Script rejected: no selected worker"));
+        return;
+    }
+    if (m_cellSupervisor && !m_cellSupervisor->automationAllowed()) {
+        SoftwareLog(tr("Remote G-Script rejected while cell is %1")
+                        .arg(m_cellSupervisor->stateName()));
+        return;
+    }
+
+    GcodeScript* target = GcodeScripts.at(threadId);
+    QMetaObject::invokeMethod(target, "ReceivedGcode", Qt::QueuedConnection,
+                              Q_ARG(QString, gcode));
+    SoftwareLog(tr("Remote G-Script routed to %1 only").arg(target->ID));
 }
 
 void RobotWindow::InitTrackingThread()
 {
     TrackingManagerInstance = new TrackingManager();
+    TrackingManagerInstance->ProjectName = ProjectName;
     QThread* thread = new QThread(this);
     TrackingManagerInstance->moveToThread(thread);
     connect(thread, &QThread::finished, TrackingManagerInstance, &QObject::deleteLater);
@@ -1797,61 +2920,147 @@ void RobotWindow::InitTrackingThread()
 
     AddTrackingThread();
 
-    ObjectModel->setObjectInfoList(TrackingManagerInstance->Trackings.at(0)->TrackedObjects);
+    ObjectModel->setObjectInfoList({});
 
-    connect(CameraInstance, SIGNAL(StartedCapture(int)), TrackingManagerInstance, SLOT(SaveCapturePosition(int)));
+    // Frame creation must complete before the camera publishes the image. This
+    // prevents a fast detector from arriving before its encoder capture slot.
+    connect(CameraInstance, &Camera::StartedCapture,
+            TrackingManagerInstance, &TrackingManager::SaveCapturePosition,
+            Qt::BlockingQueuedConnection);
+    connect(CameraInstance, &Camera::CaptureFailed,
+            TrackingManagerInstance, &TrackingManager::OnCaptureFailed);
+    connect(m_imagePipelineController, &ImagePipelineController::detectionsReady,
+            TrackingManagerInstance, &TrackingManager::SubmitDetections);
+    connect(m_imagePipelineController, &ImagePipelineController::frameRejected,
+            TrackingManagerInstance, &TrackingManager::RejectVisionFrame);
     connect(DeviceManagerInstance, &DeviceManager::GotEncoderPosition, TrackingManagerInstance, &TrackingManager::SetEncoderPosition);
+    connect(DeviceManagerInstance, &DeviceManager::GotEncoderPosition,
+            this, &RobotWindow::OnEncoderPositionReceived, Qt::QueuedConnection);
+    connect(ConnectionManager, &SocketConnectionManager::objectUpdated,
+            TrackingManagerInstance, &TrackingManager::AddObject,
+            Qt::UniqueConnection);
+    connect(ConnectionManager, SIGNAL(blobUpdated(QStringList)),
+            ImageProcessingInstance->GetNode("GetObjectsNode"), SLOT(Input(QStringList)),
+            Qt::UniqueConnection);
 }
 
 void RobotWindow::AddTrackingThread()
 {
     Tracking* tracking = new Tracking();
+    tracking->ProjectName = ProjectName;
+    tracking->ID = TrackingManagerInstance->Trackings.count();
+    if (tracking->ID > 0)
+        tracking->ListName = QString("#Objects%1").arg(tracking->ID + 1);
+
+    const QString realtimePrefix = QString("tracking%1.Realtime.").arg(tracking->ID);
+    tracking->publishIntervalMs = qBound(0, VariableManager::instance()
+        .getVarScoped(ProjectName, realtimePrefix + "PublishIntervalMs", 50).toInt(), 5000);
+    tracking->detectionStaleTimeoutMs = qBound(50, VariableManager::instance()
+        .getVarScoped(ProjectName, realtimePrefix + "VisionStaleMs", 2000).toInt(), 120000);
+    tracking->encoderStaleTimeoutMs = qBound(50, VariableManager::instance()
+        .getVarScoped(ProjectName, realtimePrefix + "EncoderStaleMs", 2000).toInt(), 120000);
+    tracking->frameTimeoutMs = qBound(100, VariableManager::instance()
+        .getVarScoped(ProjectName, realtimePrefix + "FrameTimeoutMs", 3000).toInt(), 120000);
+    tracking->maxPendingFrames = qBound(1, VariableManager::instance()
+        .getVarScoped(ProjectName, realtimePrefix + "MaxPendingFrames", 8).toInt(), 1024);
+    tracking->maxPendingEncoderReads = qBound(2, VariableManager::instance()
+        .getVarScoped(ProjectName, realtimePrefix + "MaxPendingEncoderReads", 24).toInt(), 4096);
+
     QThread* trackingThread = new QThread(this);
-    tracking->moveToThread(trackingThread);
+    tracking->MoveToThread(trackingThread);
     connect(tracking->thread(), &QThread::finished, tracking, &QObject::deleteLater);
+    connect(trackingThread, &QThread::started,
+            tracking, &Tracking::StartRealtimeMonitor);
 
 
     connect(ui->pbSaveTrackingManager, &QPushButton::clicked, this, &RobotWindow::SaveTrackingManager);
     connect(ui->cbReverseEncoderValue, SIGNAL(clicked(bool)), tracking, SLOT(SetEncoderReverse(bool)));
 
-    connect(tracking, SIGNAL(SendGcodeRequest(QString, QString)), DeviceManagerInstance, SLOT(SendGcode(QString, QString)));
+    const QString trackingOwner = QString("tracking/%1").arg(tracking->ID);
+    connect(tracking, &Tracking::SendGcodeRequest, m_deviceCommandBroker,
+            [this, trackingOwner](const QString& device, const QString& command) {
+        if (m_deviceCommandBroker) {
+            m_deviceCommandBroker->Submit(trackingOwner, device, command,
+                                          DeviceCommandBroker::Origin::Tracking,
+                                          false, 5000);
+        }
+    });
     connect(tracking, SIGNAL(UpdateTrackingDone()), TrackingManagerInstance, SLOT(OnDoneUpdateTracking()));
+    connect(tracking, &Tracking::DetectionFrameCommitted,
+            TrackingManagerInstance, &TrackingManager::OnDetectionFrameCommitted);
+    connect(tracking, &Tracking::DetectionFrameRejected,
+            TrackingManagerInstance, &TrackingManager::OnDetectionFrameRejected);
+    connect(tracking, &Tracking::SnapshotPublished, this,
+            [this](int id, const QVector<ObjectInfo>& objects) {
+        if (!ui || ui->cbSelectedTracking->currentIndex() != id)
+            return;
 
-    connect(ImageProcessingInstance, SIGNAL(mappedDetectedObjects(QVector<ObjectInfo>, QString)), tracking, SLOT(UpdateTrackedObjects(QVector<ObjectInfo>, QString)));
+        if (ui->cbAutoUpdateObjectsDisplay->currentIndex() == 1)
+            ObjectModel->setObjectInfoList(objects);
+
+        const QString prefix = QString("Tracking.%1.").arg(id);
+        const VariableManager& variables = VariableManager::instance();
+        const QString state = variables.getVarScoped(ProjectName, prefix + "State", "-").toString();
+        const qint64 encoderAge = variables.getVarScoped(ProjectName, prefix + "EncoderAgeMs", -1).toLongLong();
+        const qint64 visionAge = variables.getVarScoped(ProjectName, prefix + "VisionAgeMs", -1).toLongLong();
+        const int pendingFrames = variables.getVarScoped(ProjectName, prefix + "PendingFrames", 0).toInt();
+        const int pendingEncoder = variables.getVarScoped(ProjectName, prefix + "PendingEncoderReads", 0).toInt();
+        const qint64 latency = variables.getVarScoped(ProjectName, prefix + "LastCommitLatencyMs", 0).toLongLong();
+        const QString lastFault = variables.getVarScoped(ProjectName, prefix + "LastFault").toString();
+        ui->lbTrackingRealtimeState->setText(
+            tr("Runtime: %1 | encoder %2 ms | vision %3 ms | frame queue %4 | encoder queue %5 | commit %6 ms%7")
+                .arg(state).arg(encoderAge).arg(visionAge).arg(pendingFrames)
+                .arg(pendingEncoder).arg(latency)
+                .arg(lastFault.isEmpty() ? QString() : tr(" | last fault: %1").arg(lastFault)));
+    }, Qt::QueuedConnection);
+    connect(tracking, &Tracking::VirtualEncoderPositionUpdated,
+            this, &RobotWindow::OnEncoderPositionReceived, Qt::QueuedConnection);
+
     connect(tracking, SIGNAL(TestPointUpdated(QVector3D)), this, SLOT(UpdateTestPoint(QVector3D)));
 
-    trackingThread->start();
-
-    tracking->ID = TrackingManagerInstance->Trackings.count();
     // Initialize thresholds from current UI values
     tracking->IoUThreshold = ui->leIoUThreshold->text().toFloat();
     tracking->DistanceThreshold = ui->leDistanceThreshold->text().toFloat();
     TrackingManagerInstance->Trackings.append(tracking);
-
-    if (tracking->ID > 0)
-    {
-        tracking->ListName = QString("#Objects") + QString::number(tracking->ID + 1);
-    }
-
-    VariableManager::instance().ObjectInfos.insert(tracking->ListName.mid(1), &tracking->TrackedObjects);
+    trackingThread->start();
 
     // Keep detection list name in sync with the currently created tracking
     if (ui && ui->leDetectingObjectListName)
     {
-        ui->leDetectingObjectListName->setText(tracking->ListName);
+        ui->leDetectingObjectListName->setText(tracking->GetListName());
     }
     if (ImageProcessingInstance)
     {
-        ImageProcessingInstance->ObjectsName = tracking->ListName;
+        QMetaObject::invokeMethod(
+            ImageProcessingInstance, "SetObjectsName", Qt::QueuedConnection,
+            Q_ARG(QString, tracking->GetListName()));
     }
 }
 
 void RobotWindow::LoadTrackingThread()
 {
     int id = ui->cbSelectedTracking->currentIndex();
-    ui->leSelectedTrackingObjectList->setText(TrackingManagerInstance->Trackings.at(id)->ListName);
-    ui->cbTrackingEncoderSource->setCurrentText(TrackingManagerInstance->Trackings.at(id)->EncoderName);
-    ui->leVectorName->setText(TrackingManagerInstance->Trackings.at(id)->VectorName);
+    if (!TrackingManagerInstance || id < 0 || id >= TrackingManagerInstance->Trackings.count())
+        return;
+    Tracking* tracking = TrackingManagerInstance->Trackings.at(id);
+    ui->leSelectedTrackingObjectList->setText(tracking->GetListName());
+    ui->cbTrackingEncoderSource->setCurrentText(tracking->GetEncoderName());
+    ui->leVectorName->setText(tracking->GetVectorName());
+
+    const QString prefix = QString("tracking%1.Realtime.").arg(id);
+    VariableManager& variables = VariableManager::instance();
+    ui->sbTrackingPublishInterval->setValue(
+        variables.getVarScoped(ProjectName, prefix + "PublishIntervalMs", 50).toInt());
+    ui->sbTrackingVisionStale->setValue(
+        variables.getVarScoped(ProjectName, prefix + "VisionStaleMs", 2000).toInt());
+    ui->sbTrackingEncoderStale->setValue(
+        variables.getVarScoped(ProjectName, prefix + "EncoderStaleMs", 2000).toInt());
+    ui->sbTrackingFrameTimeout->setValue(
+        variables.getVarScoped(ProjectName, prefix + "FrameTimeoutMs", 3000).toInt());
+    ui->sbTrackingMaxFrames->setValue(
+        variables.getVarScoped(ProjectName, prefix + "MaxPendingFrames", 8).toInt());
+    ui->sbTrackingMaxEncoderReads->setValue(
+        variables.getVarScoped(ProjectName, prefix + "MaxPendingEncoderReads", 24).toInt());
 
 }
 
@@ -2016,6 +3225,13 @@ void RobotWindow::LoadObjectDetectorSetting()
     QString imageSource = VariableManager::instance().getVar(prefix + "ImageSource", "source").toString();
 
     int index = ui->cbSourceForImageProvider->findText(imageSource);
+    if (index < 0 ||
+        (imageSource == QStringLiteral("Industrial Camera") &&
+         !industrialCameraBackendAvailable)) {
+        index = ui->cbSourceForImageProvider->findText(QStringLiteral("Webcam"));
+        imageSource = QStringLiteral("Webcam");
+        UpdateVariable(prefix + QStringLiteral("ImageSource"), imageSource);
+    }
     ui->cbSourceForImageProvider->setCurrentIndex(index);
 
     ui->leCaptureInterval->setText(VariableManager::instance().getVar(prefix + "WebcamInterval", ui->leCaptureInterval->text()).toString());
@@ -2080,7 +3296,11 @@ void RobotWindow::LoadObjectDetectorSetting()
 
     ui->cbDetectingAlgorithm->setCurrentText(VariableManager::instance().getVar(prefix + "DetectAlgorithm", ui->cbDetectingAlgorithm->currentText()).toString());
 
-    //    ui->lePythonUrl->setText(setting->value("ExternalScriptUrl", ui->lePythonUrl->text()).toString());
+    ui->lePythonUrl->setText(
+        VariableManager::instance()
+            .getVar(prefix + QStringLiteral("ExternalVision.Script"),
+                    QStringLiteral("script-example/receive_image_json.py"))
+            .toString());
     
     // Load model path setting (for future UI field)
     // QString savedModelPath = setting->value("ExternalScript/ModelPath", "").toString();
@@ -2095,8 +3315,11 @@ void RobotWindow::LoadObjectDetectorSetting()
         int idx = ui->cbSelectedTracking->currentIndex();
         if (idx >= 0 && idx < TrackingManagerInstance->Trackings.count())
         {
-            TrackingManagerInstance->Trackings.at(idx)->IoUThreshold = ui->leIoUThreshold->text().toFloat();
-            TrackingManagerInstance->Trackings.at(idx)->DistanceThreshold = ui->leDistanceThreshold->text().toFloat();
+            QMetaObject::invokeMethod(
+                TrackingManagerInstance->Trackings.at(idx),
+                "SetAssociationThresholds", Qt::QueuedConnection,
+                Q_ARG(float, ui->leIoUThreshold->text().toFloat()),
+                Q_ARG(float, ui->leDistanceThreshold->text().toFloat()));
         }
     }
 
@@ -2658,6 +3881,24 @@ void RobotWindow::GetDeviceInfo(QString json)
         deviceUpdates["COM.State"] = state;
         batchUpdateVariables(devicePrefix, deviceUpdates);
 
+    QHash<QString, QVariant> runtimeDeviceState;
+    runtimeDeviceState.insert(devicePrefix + QStringLiteral("Connected"), state == QStringLiteral("open"));
+    runtimeDeviceState.insert(devicePrefix + QStringLiteral("State"), state);
+    runtimeDeviceState.insert(devicePrefix + QStringLiteral("LastResponse"), response);
+    runtimeDeviceState.insert(devicePrefix + QStringLiteral("LastCommand"), gcode);
+    runtimeDeviceState.insert(devicePrefix + QStringLiteral("UpdatedAt"),
+                              QDateTime::currentDateTimeUtc().toString(Qt::ISODateWithMs));
+    if (device == QStringLiteral("robot")) {
+        runtimeDeviceState.insert(devicePrefix + QStringLiteral("Position.X"), jsonObject.value("x").toDouble());
+        runtimeDeviceState.insert(devicePrefix + QStringLiteral("Position.Y"), jsonObject.value("y").toDouble());
+        runtimeDeviceState.insert(devicePrefix + QStringLiteral("Position.Z"), jsonObject.value("z").toDouble());
+        runtimeDeviceState.insert(devicePrefix + QStringLiteral("Position.W"), jsonObject.value("w").toDouble());
+        runtimeDeviceState.insert(devicePrefix + QStringLiteral("Position.U"), jsonObject.value("u").toDouble());
+        runtimeDeviceState.insert(devicePrefix + QStringLiteral("Position.V"), jsonObject.value("v").toDouble());
+    }
+    VariableManager::instance().updateBatchScoped(
+        ProjectName, runtimeDeviceState, VariableManager::Persistence::Runtime);
+
     QString prefix = devicePrefix;
 
     if (device == "robot" && id == ui->cbSelectedRobot->currentIndex())
@@ -2771,6 +4012,15 @@ void RobotWindow::GetDeviceResponse(QString idName, QString response)
 {
     UpdateTermite(idName, response, 0);
 
+    QHash<QString, QVariant> responseState;
+    responseState.insert(idName + QStringLiteral(".LastResponse"), response);
+    responseState.insert(idName + QStringLiteral(".LastResponseAt"),
+                         QDateTime::currentDateTimeUtc().toString(Qt::ISODateWithMs));
+    responseState.insert(idName + QStringLiteral(".HasError"),
+                         response.contains(QStringLiteral("error"), Qt::CaseInsensitive));
+    VariableManager::instance().updateBatchScoped(
+        ProjectName, responseState, VariableManager::Persistence::Runtime);
+
     static QTime previousEncoderUITime = QTime::currentTime();
     int timeDiff = previousEncoderUITime.msecsTo(QTime::currentTime());
     if (timeDiff < 500)
@@ -2791,10 +4041,8 @@ void RobotWindow::GetDeviceResponse(QString idName, QString response)
 
             if (getIDfromName(ui->cbSelectedEncoder->currentText()) == id)
             {
-                ui->leEncoderCurrentPosition->setText(QString::number(value));
-                float velocity = (value - encoderLastValue) * 1000/ timeDiff;
-                encoderLastValue = value;
-                ui->leEncoderVelocity->setText(QString::number(velocity));
+                ui->leEncoderCurrentPosition->setText(
+                    QString::number(applyEncoderCalibration(id, value), 'f', 4));
             }
         }
     }
@@ -2819,19 +4067,18 @@ void RobotWindow::GetDeviceResponse(QString idName, QString response)
 
             if (ui->cbSelectedEncoder->currentIndex() == index)
             {
+                const float calibratedValue = applyEncoderCalibration(index, value.toFloat());
                 // ----- Scheduled Encoder ---------
-                if (abs(value.toFloat() - scheduledStartEncoderValue) > ui->leScheduledDistance->text().toFloat() && isScheduledEncoder == true)
+                if (qAbs(calibratedValue - scheduledStartEncoderValue) > ui->leScheduledDistance->text().toFloat() && isScheduledEncoder == true)
                 {
-                    QMetaObject::invokeMethod(DeviceManagerInstance, "GetCommand", Qt::QueuedConnection, Q_ARG(QString, ui->leScheduledGcode->text()));
+                    submitManualDeviceCommand(ui->leScheduledGcode->text(),
+                                              QStringLiteral("manual/scheduled-encoder"));
                     isScheduledEncoder = false;
                     ui->pbStartScheduledEncoder->setText("Start");
                 }
                 // ---------------------------------
 
-                ui->leEncoderCurrentPosition->setText(value);
-                float velocity = (value.toFloat() - encoderLastValue) * 1000 / timeDiff;
-                encoderLastValue = value.toFloat();
-                ui->leEncoderVelocity->setText(QString::number(velocity));
+                ui->leEncoderCurrentPosition->setText(QString::number(calibratedValue, 'f', 4));
             }
         }
     }
@@ -2847,9 +4094,19 @@ void RobotWindow::UpdateObjectsToView()
 {
     for (int i = 0; i < TrackingManagerInstance->Trackings.count();i++)
     {
-        if (ui->leDetectingObjectListName->text() == TrackingManagerInstance->Trackings.at(i)->ListName)
+        if (ui->leDetectingObjectListName->text() ==
+            TrackingManagerInstance->Trackings.at(i)->GetListName())
         {
-            ObjectModel->setObjectInfoList(TrackingManagerInstance->Trackings.at(i)->TrackedObjects);
+            QVector<ObjectInfo> snapshot;
+            Tracking* tracking = TrackingManagerInstance->Trackings.at(i);
+            if (tracking->thread() == QThread::currentThread()) {
+                snapshot = tracking->getTrackedObjectsCopy();
+            } else {
+                QMetaObject::invokeMethod(tracking, "getTrackedObjectsCopy",
+                                          Qt::BlockingQueuedConnection,
+                                          Q_RETURN_ARG(QVector<ObjectInfo>, snapshot));
+            }
+            ObjectModel->setObjectInfoList(snapshot);
         }
     }
 }
@@ -3010,29 +4267,42 @@ void RobotWindow::SelectImageProviderOption(int option)
     UpdateVariable(prefix + "ImageSource", text);
 //    VariableManager::instance().updateVar(prefix + "ImageSource",text);
 
+    QString cameraSource = QStringLiteral("Other");
     if (text == "Webcam")
     {
         ui->fWebcamSource->setHidden(false);
-        CameraInstance->Source = "Webcam";
+        cameraSource = QStringLiteral("Webcam");
     }
     else if (text == "Industrial Camera")
     {
         ui->fWebcamSource->setHidden(true);
-        CameraInstance->Source = "Industrial Camera";
+        if (industrialCameraBackendAvailable) {
+            cameraSource = QStringLiteral("Industrial Camera");
+        } else {
+            cameraSource = QStringLiteral("Unavailable");
+            const QString reason = industrialCameraBackendStatus.isEmpty()
+                ? QStringLiteral("Industrial camera runtime is unavailable")
+                : industrialCameraBackendStatus;
+            SoftwareLog(QStringLiteral("Industrial camera disabled: %1").arg(reason));
+            if (statusBar())
+                statusBar()->showMessage(reason, 8000);
+        }
     }
     else if (text == "Images")
     {
         ui->fImageSource->setHidden(false);
         ui->fWebcamSource->setHidden(true);
-        CameraInstance->Source = "Images";
+        cameraSource = QStringLiteral("Images");
 
     }
     else
     {
         ui->fImageSource->setHidden(true);
         ui->fWebcamSource->setHidden(true);
-        CameraInstance->Source = "Other";
     }
+    QMetaObject::invokeMethod(CameraInstance, [camera = CameraInstance, cameraSource]() {
+        camera->SetSource(cameraSource);
+    }, Qt::QueuedConnection);
 }
 
 void RobotWindow::RunSmartEditor()
@@ -3371,7 +4641,9 @@ void RobotWindow::ChangeSelectedRobot(int id)
         ui->cbSelectedRobot->addItem("+");
     }
 
-    DeviceManagerInstance->SelectedRobotID = id;
+    QMetaObject::invokeMethod(DeviceManagerInstance, "SetSelectedDevice",
+                              Qt::QueuedConnection,
+                              Q_ARG(int, DeviceManager::ROBOT), Q_ARG(int, id));
     RbID = id;
 
     QMetaObject::invokeMethod(DeviceManagerInstance, "RequestDeviceInfo", Qt::QueuedConnection, Q_ARG(int, DeviceManager::ROBOT));
@@ -3418,7 +4690,10 @@ void RobotWindow::ChangeRobotDOF(int id)
 
 void RobotWindow::ChangeRobotModel(int id)
 {
-    DeviceManagerInstance->Robots.at(ui->cbSelectedRobot->currentIndex())->SetRobotModel(ui->cbRobotModel->currentText());
+    QMetaObject::invokeMethod(DeviceManagerInstance, "SetRobotModel",
+                              Qt::QueuedConnection,
+                              Q_ARG(int, ui->cbSelectedRobot->currentIndex()),
+                              Q_ARG(QString, ui->cbRobotModel->currentText()));
 
     if (id == 0 || id == 1)
     {
@@ -3488,12 +4763,44 @@ void RobotWindow::ExecuteProgram()
 //    SaveProgram();
 
     int threadId = ui->cbProgramThreadID->currentIndex();
+    if (threadId < 0 || threadId >= GcodeScripts.size()) {
+        ui->pbExecuteGcodes->setChecked(false);
+        if (gscriptStatusLabel) {
+            gscriptStatusLabel->setStyleSheet("color: #ff6b6b;");
+            gscriptStatusLabel->setText(tr("No GScript thread is available"));
+        }
+        return;
+    }
     GcodeScript* currentScript = GcodeScripts.at(threadId);
 
     if (ui->pbExecuteGcodes->isChecked() == false)
     {
         QMetaObject::invokeMethod(currentScript, "Stop", Qt::QueuedConnection);
 
+        return;
+    }
+
+    if (m_cellSupervisor && !m_cellSupervisor->automationAllowed()) {
+        ui->pbExecuteGcodes->setChecked(false);
+        if (gscriptStatusLabel) {
+            gscriptStatusLabel->setStyleSheet("color: #ff6b6b;");
+            gscriptStatusLabel->setText(
+                tr("Cannot run while cell is %1").arg(m_cellSupervisor->stateName()));
+        }
+        return;
+    }
+
+    const GScriptAnalysisResult analysis = GScriptAnalyzer::analyze(
+        ui->pteGcodeArea->toPlainText());
+    ShowGScriptDiagnostics(analysis.diagnostics);
+    if (analysis.hasErrors())
+    {
+        ui->pbExecuteGcodes->setChecked(false);
+        if (gscriptStatusLabel)
+            gscriptStatusLabel->setText(
+                tr("Cannot run: %1 error(s)").arg(analysis.errorCount()));
+        if (!analysis.diagnostics.isEmpty())
+            ui->pteGcodeArea->goToLine(analysis.diagnostics.first().line);
         return;
     }
 
@@ -3573,12 +4880,23 @@ void RobotWindow::ExecuteSelectPrograms()
 void RobotWindow::ExecuteCurrentLine(int linNumber, QString lineText)
 {
     int threadId = ui->cbProgramThreadID->currentIndex();
+    if (threadId < 0 || threadId >= GcodeScripts.size())
+        return;
     GcodeScript* currentScript = GcodeScripts.at(threadId);
+
+    if (m_cellSupervisor && !m_cellSupervisor->automationAllowed())
+        return;
 
     if (ui->cbEditGcodeLock->isChecked() == false)
 	{
 		return;
 	}
+
+    const GScriptAnalysisResult analysis = GScriptAnalyzer::analyze(lineText);
+    if (analysis.hasErrors()) {
+        ShowGScriptDiagnostics(analysis.diagnostics);
+        return;
+    }
 
     QMetaObject::invokeMethod(currentScript, "ExecuteGcode", Qt::QueuedConnection, Q_ARG(QString, lineText), Q_ARG(int, GcodeScript::BEGIN));
 
@@ -3587,15 +4905,14 @@ void RobotWindow::ExecuteCurrentLine(int linNumber, QString lineText)
 void RobotWindow::HighLineCurrentLine(int pos)
 {
     int threadId = ui->cbProgramThreadID->currentIndex();
+    if (threadId < 0 || threadId >= GcodeScripts.size())
+        return;
     GcodeScript* scriptThread = qobject_cast<GcodeScript*>(sender());
     if (scriptThread != GcodeScripts.at(threadId))
         return;
 
-    QTextCursor textCursor = ui->pteGcodeArea->textCursor();
-    textCursor.movePosition(QTextCursor::Start);
-    textCursor.movePosition(QTextCursor::Down, QTextCursor::MoveAnchor, pos);
-    ui->pteGcodeArea->setTextCursor(textCursor);
-    ui->pteGcodeArea->highlightCurrentLine();
+    ui->pteGcodeArea->setExecutionLine(pos + 1);
+    ui->pteGcodeArea->goToLine(pos + 1);
 }
 
 void RobotWindow::OnEditorTextChanged()
@@ -3605,10 +4922,115 @@ void RobotWindow::OnEditorTextChanged()
 
     ChangedCounter++;
 
+    if (gscriptValidationTimer)
+        gscriptValidationTimer->start();
+
     if (ConnectionManager)
     {
         ConnectionManager->updateLatestGscript(ui->pteGcodeArea->toPlainText());
     }
+}
+
+void RobotWindow::ValidateGScriptNow()
+{
+    const GScriptAnalysisResult analysis = GScriptAnalyzer::analyze(
+        ui->pteGcodeArea->toPlainText());
+    ShowGScriptDiagnostics(analysis.diagnostics);
+    if (!gscriptStatusLabel)
+        return;
+
+    if (analysis.hasErrors()) {
+        gscriptStatusLabel->setStyleSheet("color: #ff6b6b;");
+        gscriptStatusLabel->setText(
+            tr("%1 error(s), %2 warning(s)")
+                .arg(analysis.errorCount()).arg(analysis.warningCount()));
+    } else if (analysis.warningCount() > 0) {
+        gscriptStatusLabel->setStyleSheet("color: #f0b24a;");
+        gscriptStatusLabel->setText(
+            tr("Valid with %1 warning(s)").arg(analysis.warningCount()));
+    } else {
+        gscriptStatusLabel->setStyleSheet("color: #69d18b;");
+        gscriptStatusLabel->setText(
+            tr("Valid · %1 executable line(s)").arg(analysis.executableLineCount));
+    }
+}
+
+void RobotWindow::ShowGScriptDiagnostics(QList<GScriptDiagnostic> diagnostics)
+{
+    gscriptDiagnostics = diagnostics;
+    if (!gscriptProblemsTable)
+        return;
+
+    gscriptProblemsTable->setRowCount(diagnostics.size());
+    QHash<int, int> diagnosticLines;
+    for (int row = 0; row < diagnostics.size(); ++row) {
+        const GScriptDiagnostic& diagnostic = diagnostics.at(row);
+        diagnosticLines[diagnostic.line] = qMax(
+            diagnosticLines.value(diagnostic.line, 0), int(diagnostic.severity));
+        const QColor color = diagnostic.severity == GScriptDiagnostic::Error
+            ? QColor("#ff6b6b")
+            : diagnostic.severity == GScriptDiagnostic::Warning
+                ? QColor("#f0b24a") : QColor("#73b7ff");
+        QTableWidgetItem* severityItem = new QTableWidgetItem(diagnostic.severityName());
+        severityItem->setForeground(color);
+        QTableWidgetItem* messageItem = new QTableWidgetItem(diagnostic.message);
+        messageItem->setToolTip(diagnostic.hint.isEmpty()
+                                    ? diagnostic.message
+                                    : diagnostic.message + "\n" + diagnostic.hint);
+        gscriptProblemsTable->setItem(row, 0, severityItem);
+        gscriptProblemsTable->setItem(row, 1,
+            new QTableWidgetItem(QString::number(diagnostic.line)));
+        gscriptProblemsTable->setItem(row, 2,
+            new QTableWidgetItem(diagnostic.code));
+        gscriptProblemsTable->setItem(row, 3, messageItem);
+    }
+    ui->pteGcodeArea->setDiagnosticLines(diagnosticLines);
+    gscriptProblemsTable->setVisible(true);
+    if (gscriptInspectionTabs) {
+        const int problemTab = gscriptInspectionTabs->indexOf(
+            gscriptProblemsTable->parentWidget());
+        if (problemTab >= 0) {
+            gscriptInspectionTabs->setTabText(
+                problemTab, tr("Problems (%1)").arg(diagnostics.size()));
+            if (!diagnostics.isEmpty() && diagnostics.first().severity == GScriptDiagnostic::Error)
+                gscriptInspectionTabs->setCurrentIndex(problemTab);
+        }
+    }
+}
+
+void RobotWindow::UpdateGScriptExecutionState(GcodeScript::ExecutionState state,
+                                               QString message)
+{
+    if (!gscriptStatusLabel)
+        return;
+    QString stateName;
+    QString color = "#d4d4d4";
+    switch (state) {
+    case GcodeScript::ExecutionState::Validating: stateName = tr("Validating"); break;
+    case GcodeScript::ExecutionState::Running: stateName = tr("Running"); color = "#69d18b"; break;
+    case GcodeScript::ExecutionState::WaitingForDevice: stateName = tr("Waiting"); color = "#73b7ff"; break;
+    case GcodeScript::ExecutionState::WaitingForTimer: stateName = tr("Delay"); color = "#73b7ff"; break;
+    case GcodeScript::ExecutionState::WaitingForCondition: stateName = tr("Waiting condition"); color = "#73b7ff"; break;
+    case GcodeScript::ExecutionState::Stopping: stateName = tr("Stopping"); color = "#f0b24a"; break;
+    case GcodeScript::ExecutionState::Completed: stateName = tr("Completed"); color = "#69d18b"; break;
+    case GcodeScript::ExecutionState::Faulted: stateName = tr("Faulted"); color = "#ff6b6b"; break;
+    default: stateName = tr("Ready"); break;
+    }
+    gscriptStatusLabel->setStyleSheet("color: " + color + ";");
+    gscriptStatusLabel->setText(message.isEmpty() ? stateName
+                                                  : stateName + " · " + message);
+    const bool active = state == GcodeScript::ExecutionState::Running ||
+                        state == GcodeScript::ExecutionState::WaitingForDevice ||
+                        state == GcodeScript::ExecutionState::WaitingForTimer ||
+                        state == GcodeScript::ExecutionState::WaitingForCondition ||
+                        state == GcodeScript::ExecutionState::Stopping;
+    if (active)
+        ui->pteGcodeArea->setReadOnly(true);
+    else
+        ui->pteGcodeArea->setLockState(ui->cbEditGcodeLock->checkState());
+    ui->pbExecuteGcodes->setText(active ? tr("Stop") : tr("Run"));
+    if (!active)
+        ui->pteGcodeArea->setExecutionLine(-1);
 }
 
 void RobotWindow::changeFontSize(int index)
@@ -3827,29 +5249,6 @@ void RobotWindow::UpdateRobotPositionToUI()
     if (!ui->leEndSpeed->hasFocus())
     {
         ui->leEndSpeed->setText(QString::number(currentParams.E));
-    }
-
-    if (ui->cbEncoderType->currentText() == "Virtual Encoder")
-    {
-        int id = ui->cbSelectedEncoder->currentText().toInt();
-        // Safety check for TrackingManagerInstance and bounds
-        if (TrackingManagerInstance && 
-            !TrackingManagerInstance->Trackings.isEmpty() && 
-            id >= 0 && id < TrackingManagerInstance->Trackings.size())
-        {
-        if (TrackingManagerInstance->Trackings[id]->VirEncoder.IsActive() == true)
-        {
-            if (encoderUpdateTimer.elapsed() >= TrackingManagerInstance->Trackings[id]->VirEncoder.readInterval())
-            {
-                encoderUpdateTimer.restart();
-
-                int selectedEncoderID = ui->cbSelectedEncoder->currentIndex();
-                    if (selectedEncoderID >= 0 && selectedEncoderID < TrackingManagerInstance->Trackings.size()) {
-                ui->leEncoderCurrentPosition->setText(QString::number(TrackingManagerInstance->Trackings.at(selectedEncoderID)->VirEncoder.readPosition()));
-                    }
-                }
-            }
-        }
     }
 
     EnablePositionUpdatingEvents();
@@ -4104,7 +5503,7 @@ void RobotWindow::UpdateVariables(QString cmd)
 
 void RobotWindow::RespondVariableValue(QIODevice *s, QString name)
 {
-    QString value = VariableManager::instance().getVar(name).toString() + '\n';
+    QString value = VariableManager::instance().getVarScoped(ProjectName, name).toString() + '\n';
 
     s->write(value.toStdString().c_str(), value.size());
 }
@@ -4187,7 +5586,9 @@ void RobotWindow::ChangeSelectedConveyor(int id)
         ui->cbSelectedConveyor->addItem("+");
     }
 
-    DeviceManagerInstance->SelectedConveyorID = id;
+    QMetaObject::invokeMethod(DeviceManagerInstance, "SetSelectedDevice",
+                              Qt::QueuedConnection,
+                              Q_ARG(int, DeviceManager::CONVEYOR), Q_ARG(int, id));
 
     QMetaObject::invokeMethod(DeviceManagerInstance, "RequestDeviceInfo", Qt::QueuedConnection, Q_ARG(int, DeviceManager::CONVEYOR));
 }
@@ -4275,10 +5676,16 @@ void RobotWindow::SetEncoderAutoRead()
             ui->leEncoderInterval->setText(QString::number(interval));
         }
 
-        if (interval > 0)
-            TrackingManagerInstance->Trackings[id]->VirEncoder.start(interval);
-        else
-            TrackingManagerInstance->Trackings[id]->VirEncoder.stop();
+        if (!TrackingManagerInstance || id < 0 ||
+            id >= TrackingManagerInstance->Trackings.size())
+            return;
+        Tracking* tracking = TrackingManagerInstance->Trackings.at(id);
+        if (interval > 0) {
+            QMetaObject::invokeMethod(tracking, "StartVirtualEncoder", Qt::QueuedConnection,
+                                      Q_ARG(int, interval));
+        } else {
+            QMetaObject::invokeMethod(tracking, "StopVirtualEncoder", Qt::QueuedConnection);
+        }
     }
 }
 
@@ -4301,7 +5708,12 @@ void RobotWindow::ResetEncoderPosition()
     }
     if (ui->cbEncoderType->currentText() == "Virtual Encoder")
     {
-        TrackingManagerInstance->Trackings[selectedEncoderID]->VirEncoder.reset();
+        if (TrackingManagerInstance && selectedEncoderID >= 0 &&
+            selectedEncoderID < TrackingManagerInstance->Trackings.size()) {
+            QMetaObject::invokeMethod(
+                TrackingManagerInstance->Trackings.at(selectedEncoderID),
+                "ResetVirtualEncoder", Qt::QueuedConnection);
+        }
     }
 }
 
@@ -4311,12 +5723,222 @@ void RobotWindow::SetEncoderVelocity()
     UpdateVariable(prefix + "Velocity", ui->leEncoderVelocity->text());
     int selectedEncoderID = ui->cbSelectedEncoder->currentIndex();
 
-    TrackingManagerInstance->Trackings[selectedEncoderID]->VirEncoder.setVelocity(ui->leEncoderVelocity->text().toFloat());
+    if (TrackingManagerInstance && selectedEncoderID >= 0 &&
+        selectedEncoderID < TrackingManagerInstance->Trackings.size()) {
+        QMetaObject::invokeMethod(
+            TrackingManagerInstance->Trackings.at(selectedEncoderID),
+            "SetVirtualEncoderVelocity", Qt::QueuedConnection,
+            Q_ARG(float, ui->leEncoderVelocity->text().toFloat()));
+    }
+}
+
+void RobotWindow::CalibrateEncoder()
+{
+    if (ui->cbSelectedEncoder->currentText() == QStringLiteral("+")) {
+        QMessageBox::warning(this, tr("Encoder calibration"), tr("Select an encoder first."));
+        return;
+    }
+    if (ui->cbEncoderType->currentText() == QStringLiteral("Virtual Encoder")) {
+        QMessageBox::information(this, tr("Encoder calibration"),
+                                 tr("Virtual Encoder already uses millimetres. Set its velocity directly."));
+        return;
+    }
+
+    const int id = getIDfromName(ui->cbSelectedEncoder->currentText());
+    const QString prefix = QStringLiteral("encoder%1.Calibration.").arg(id);
+    const float latestRaw = m_encoderLastRawPositions.value(id, ui->leEncoderCurrentPosition->text().toFloat());
+
+    QDialog dialog(this);
+    dialog.setWindowTitle(tr("Calibrate %1").arg(ui->cbSelectedEncoder->currentText()));
+    dialog.setMinimumWidth(500);
+    QVBoxLayout* root = new QVBoxLayout(&dialog);
+    QLabel* instructions = new QLabel(
+        tr("1. Stop the conveyor and capture Start. 2. Move it a precisely measured distance. "
+           "3. Capture End. The sign is controlled by Reverse direction."), &dialog);
+    instructions->setWordWrap(true);
+    root->addWidget(instructions);
+
+    QFormLayout* form = new QFormLayout;
+    auto rawRow = [&dialog, latestRaw](const QString& buttonText, QDoubleSpinBox*& editor,
+                                       QPushButton*& captureButton) {
+        QWidget* row = new QWidget(&dialog);
+        QHBoxLayout* layout = new QHBoxLayout(row);
+        layout->setContentsMargins(0, 0, 0, 0);
+        editor = new QDoubleSpinBox(row);
+        editor->setRange(-1000000000.0, 1000000000.0);
+        editor->setDecimals(4);
+        editor->setValue(latestRaw);
+        editor->setKeyboardTracking(false);
+        captureButton = new QPushButton(buttonText, row);
+        layout->addWidget(editor, 1);
+        layout->addWidget(captureButton);
+        return row;
+    };
+    QDoubleSpinBox* rawStart = nullptr;
+    QDoubleSpinBox* rawEnd = nullptr;
+    QPushButton* captureStart = nullptr;
+    QPushButton* captureEnd = nullptr;
+    form->addRow(tr("Raw start"), rawRow(tr("Use current"), rawStart, captureStart));
+    form->addRow(tr("Raw end"), rawRow(tr("Use current"), rawEnd, captureEnd));
+
+    QDoubleSpinBox* measuredDistance = new QDoubleSpinBox(&dialog);
+    measuredDistance->setRange(0.001, 1000000.0);
+    measuredDistance->setDecimals(4);
+    measuredDistance->setValue(100.0);
+    measuredDistance->setSuffix(tr(" mm"));
+    measuredDistance->setKeyboardTracking(false);
+    QCheckBox* reverse = new QCheckBox(tr("Reverse direction (raw increase means negative travel)"), &dialog);
+    QLabel* preview = new QLabel(&dialog);
+    preview->setTextInteractionFlags(Qt::TextSelectableByMouse);
+    form->addRow(tr("Measured travel"), measuredDistance);
+    form->addRow(QString(), reverse);
+    form->addRow(tr("Calculated scale"), preview);
+    root->addLayout(form);
+
+    const bool currentValid = VariableManager::instance()
+                                  .getVarScoped(ProjectName, prefix + QStringLiteral("IsValid"), false).toBool();
+    QLabel* currentStatus = new QLabel(
+        currentValid
+            ? tr("Current profile: VALID, scale %1 mm/raw-unit")
+                  .arg(VariableManager::instance()
+                           .getVarScoped(ProjectName, prefix + QStringLiteral("Scale"), 1.0).toDouble(),
+                       0, 'g', 10)
+            : tr("Current profile: NOT CALIBRATED"),
+        &dialog);
+    currentStatus->setStyleSheet(currentValid
+        ? QStringLiteral("color: rgb(80, 220, 120); font-weight: bold;")
+        : QStringLiteral("color: rgb(255, 190, 70); font-weight: bold;"));
+    root->addWidget(currentStatus);
+
+    auto updatePreview = [rawStart, rawEnd, measuredDistance, reverse, preview]() {
+        const double rawDelta = rawEnd->value() - rawStart->value();
+        if (qAbs(rawDelta) <= 1.0e-9) {
+            preview->setText(QObject::tr("Capture two different readings"));
+            preview->setStyleSheet(QStringLiteral("color: rgb(255, 100, 100);"));
+            return;
+        }
+        const double signedDistance = measuredDistance->value() * (reverse->isChecked() ? -1.0 : 1.0);
+        preview->setText(QObject::tr("%1 mm/raw-unit").arg(signedDistance / rawDelta, 0, 'g', 10));
+        preview->setStyleSheet(QStringLiteral("color: rgb(80, 220, 120); font-weight: bold;"));
+    };
+    connect(captureStart, &QPushButton::clicked, this, [this, id, rawStart, updatePreview]() {
+        rawStart->setValue(m_encoderLastRawPositions.value(id, rawStart->value()));
+        updatePreview();
+    });
+    connect(captureEnd, &QPushButton::clicked, this, [this, id, rawEnd, updatePreview]() {
+        rawEnd->setValue(m_encoderLastRawPositions.value(id, rawEnd->value()));
+        updatePreview();
+    });
+    connect(rawStart, QOverload<double>::of(&QDoubleSpinBox::valueChanged), &dialog, updatePreview);
+    connect(rawEnd, QOverload<double>::of(&QDoubleSpinBox::valueChanged), &dialog, updatePreview);
+    connect(measuredDistance, QOverload<double>::of(&QDoubleSpinBox::valueChanged), &dialog, updatePreview);
+    connect(reverse, &QCheckBox::toggled, &dialog, updatePreview);
+    updatePreview();
+
+    QDialogButtonBox* buttons = new QDialogButtonBox(
+        QDialogButtonBox::Save | QDialogButtonBox::Cancel, &dialog);
+    connect(buttons, &QDialogButtonBox::accepted, &dialog, &QDialog::accept);
+    connect(buttons, &QDialogButtonBox::rejected, &dialog, &QDialog::reject);
+    root->addWidget(buttons);
+    if (dialog.exec() != QDialog::Accepted)
+        return;
+
+    const double rawDelta = rawEnd->value() - rawStart->value();
+    if (qAbs(rawDelta) <= 1.0e-9) {
+        QMessageBox::warning(this, tr("Encoder calibration"), tr("Start and end readings must be different."));
+        return;
+    }
+    const double signedDistance = measuredDistance->value() * (reverse->isChecked() ? -1.0 : 1.0);
+    const double scale = signedDistance / rawDelta;
+    if (!qIsFinite(scale) || qFuzzyIsNull(scale)) {
+        QMessageBox::warning(this, tr("Encoder calibration"), tr("Calculated scale is invalid."));
+        return;
+    }
+
+    QHash<QString, QVariant> values;
+    values.insert(prefix + QStringLiteral("SchemaVersion"), 1);
+    values.insert(prefix + QStringLiteral("IsValid"), true);
+    values.insert(prefix + QStringLiteral("Scale"), scale);
+    values.insert(prefix + QStringLiteral("RawReference"), rawStart->value());
+    values.insert(prefix + QStringLiteral("WorldReference"), 0.0);
+    values.insert(prefix + QStringLiteral("RawDelta"), rawDelta);
+    values.insert(prefix + QStringLiteral("MeasuredDistanceMm"), signedDistance);
+    values.insert(prefix + QStringLiteral("EncoderType"), ui->cbEncoderType->currentText());
+    values.insert(prefix + QStringLiteral("UpdatedAt"),
+                  QDateTime::currentDateTimeUtc().toString(Qt::ISODateWithMs));
+    VariableManager::instance().updateBatchScoped(ProjectName, values);
+    QMetaObject::invokeMethod(TrackingManagerInstance, "ReloadEncoderCalibration",
+                              Qt::QueuedConnection, Q_ARG(int, id));
+    statusBar()->showMessage(
+        tr("%1 calibrated: %2 mm/raw-unit").arg(ui->cbSelectedEncoder->currentText())
+            .arg(scale, 0, 'g', 10), 7000);
+    SoftwareLog(tr("Encoder %1 calibration saved (scale=%2 mm/raw-unit)").arg(id).arg(scale, 0, 'g', 10));
+}
+
+float RobotWindow::applyEncoderCalibration(int id, float rawValue) const
+{
+    const QString prefix = QStringLiteral("encoder%1.Calibration.").arg(id);
+    if (!VariableManager::instance()
+             .getVarScoped(ProjectName, prefix + QStringLiteral("IsValid"), false).toBool())
+        return rawValue;
+    const double scale = VariableManager::instance()
+                             .getVarScoped(ProjectName, prefix + QStringLiteral("Scale"), 1.0).toDouble();
+    const double rawReference = VariableManager::instance()
+                                    .getVarScoped(ProjectName, prefix + QStringLiteral("RawReference"), 0.0).toDouble();
+    const double worldReference = VariableManager::instance()
+                                      .getVarScoped(ProjectName, prefix + QStringLiteral("WorldReference"), 0.0).toDouble();
+    const double calibrated = (rawValue - rawReference) * scale + worldReference;
+    return qIsFinite(calibrated) ? static_cast<float>(calibrated) : rawValue;
+}
+
+void RobotWindow::OnEncoderPositionReceived(int id, float rawValue)
+{
+    m_encoderLastRawPositions.insert(id, rawValue);
+    const float calibrated = applyEncoderCalibration(id, rawValue);
+    const qint64 nowMs = QDateTime::currentMSecsSinceEpoch();
+    double velocity = 0.0;
+    if (m_encoderLastSampleEpochMs.contains(id)) {
+        const qint64 elapsedMs = nowMs - m_encoderLastSampleEpochMs.value(id);
+        if (elapsedMs > 0)
+            velocity = (calibrated - m_encoderLastCalibratedPositions.value(id, calibrated))
+                       * 1000.0 / static_cast<double>(elapsedMs);
+    }
+    m_encoderLastSampleEpochMs.insert(id, nowMs);
+    m_encoderLastCalibratedPositions.insert(id, calibrated);
+
+    const QString prefix = QString("Encoder.%1.").arg(id);
+    QHash<QString, QVariant> encoderState;
+    encoderState.insert(prefix + QStringLiteral("RawPosition"), rawValue);
+    encoderState.insert(prefix + QStringLiteral("Position"), calibrated);
+    encoderState.insert(prefix + QStringLiteral("Velocity"), qIsFinite(velocity) ? velocity : 0.0);
+    encoderState.insert(prefix + QStringLiteral("LastUpdateAt"),
+                        QDateTime::currentDateTimeUtc().toString(Qt::ISODateWithMs));
+    encoderState.insert(prefix + QStringLiteral("Fresh"), true);
+    VariableManager::instance().updateBatchScoped(
+        ProjectName, encoderState, VariableManager::Persistence::Runtime);
+
+    if (ui->cbSelectedEncoder->currentText() == QStringLiteral("+") ||
+        getIDfromName(ui->cbSelectedEncoder->currentText()) != id)
+        return;
+    ui->leEncoderCurrentPosition->setText(QString::number(calibrated, 'f', 4));
+    CalculateEncoderVelocity(id, calibrated);
 }
 
 void RobotWindow::CalculateEncoderVelocity(int id, float value)
 {
-
+    Q_UNUSED(id)
+    if (!encoderUpdateTimer.isValid()) {
+        encoderLastValue = value;
+        encoderUpdateTimer.start();
+        return;
+    }
+    const qint64 elapsed = encoderUpdateTimer.restart();
+    if (elapsed <= 0)
+        return;
+    const float velocity = (value - encoderLastValue) * 1000.0f / elapsed;
+    encoderLastValue = value;
+    if (qIsFinite(velocity))
+        ui->leEncoderVelocity->setText(QString::number(velocity, 'f', 3));
 }
 
 void RobotWindow::UpdatePointPositionOnConveyor(QLineEdit *x, QLineEdit *y, float angle, float distance)
@@ -4503,19 +6125,25 @@ void RobotWindow::LoadImages()
 
     if (imageNames.at(0).contains(".avi") || imageNames.at(0).contains(".mp4"))
     {
-        CameraInstance->WebcamInstance->open(imageNames.at(0).toStdString());
-
-        if (!CameraInstance->WebcamInstance->isOpened())
-        {
+        bool opened = false;
+        int actualWidth = 0;
+        int actualHeight = 0;
+        const QString videoPath = imageNames.first();
+        const int requestedWidth = ui->leImageWidth->text().toInt();
+        const int requestedHeight = ui->leImageHeight->text().toInt();
+        QMetaObject::invokeMethod(CameraInstance,
+                                  [camera = CameraInstance, videoPath, requestedWidth,
+                                   requestedHeight, &opened, &actualWidth, &actualHeight]() {
+            opened = camera->OpenVideoFile(videoPath, requestedWidth, requestedHeight);
+            actualWidth = camera->Width;
+            actualHeight = camera->Height;
+        }, Qt::BlockingQueuedConnection);
+        if (!opened) {
+            SoftwareLog(QStringLiteral("Cannot open video file: %1").arg(videoPath));
             return;
         }
-
-        CameraInstance->WebcamInstance->open(imageNames.at(0).toStdString());
-        CameraInstance->WebcamInstance->set(cv::CAP_PROP_FRAME_WIDTH, ui->leImageWidth->text().toInt());
-        CameraInstance->WebcamInstance->set(cv::CAP_PROP_FRAME_HEIGHT, ui->leImageHeight->text().toInt());
-
-        ui->leImageWidth->setText(QString::number((int)CameraInstance->WebcamInstance->get(cv::CAP_PROP_FRAME_WIDTH)));
-        ui->leImageHeight->setText(QString::number((int)CameraInstance->WebcamInstance->get(cv::CAP_PROP_FRAME_HEIGHT)));
+        ui->leImageWidth->setText(QString::number(actualWidth));
+        ui->leImageHeight->setText(QString::number(actualHeight));
 
         CameraTimer.start(ui->leCaptureInterval->text().toInt());
     }
@@ -4533,13 +6161,14 @@ void RobotWindow::LoadImages()
             return;
         }
 
+        QList<cv::Mat> loadedImages;
         for (const QString &imageName : imageNames) {
             QImage qImage(imageName);
             if (!qImage.isNull()) {
                 try {
                     cv::Mat convertedMat = ImageTool::QImageToCvMat(qImage, true);
                     if (!convertedMat.empty()) {
-                        CameraInstance->CaptureImages.append(convertedMat);
+                        loadedImages.append(convertedMat.clone());
                     }
                 } catch (...) {
                     qDebug() << "Warning: Failed to convert image:" << imageName;
@@ -4548,12 +6177,14 @@ void RobotWindow::LoadImages()
             }
         }
 
-        // Additional safety check before accessing CaptureImages
-        if (!CameraInstance->CaptureImages.isEmpty()) {
-        CameraInstance->CaptureImage = CameraInstance->CaptureImages.at(0);
-        CameraInstance->FrameID = 0;
+        if (!loadedImages.isEmpty()) {
+            QMetaObject::invokeMethod(CameraInstance,
+                                      [camera = CameraInstance, loadedImages]() {
+                camera->SetImages(loadedImages);
+            }, Qt::BlockingQueuedConnection);
         } else {
             qDebug() << "Warning: No valid images loaded, CaptureImage remains empty";
+            return;
         }
 
 //        QImage qImage(imageName);
@@ -4586,15 +6217,10 @@ void RobotWindow::StopCapture()
     ui->pbStartAcquisition->setChecked(false);
 
         // Stop different camera types safely
-        if (CameraInstance->Source == "Webcam")
+        if (CameraInstance->Source == "Webcam" || CameraInstance->Source == "Video")
         {
-            // Thread-safe webcam release
-            QMetaObject::invokeMethod(CameraInstance, [this]() {
-                if (CameraInstance->WebcamInstance && CameraInstance->WebcamInstance->isOpened())
-                {
-                    CameraInstance->WebcamInstance->release();
-                }
-            }, Qt::QueuedConnection);
+            QMetaObject::invokeMethod(CameraInstance, "ReleaseCamera",
+                                      Qt::BlockingQueuedConnection);
         }
         else if (CameraInstance->Source == "Industrial Camera")
         {
@@ -4611,6 +6237,14 @@ void RobotWindow::StopCapture()
         CameraInstance->OriginWidth = 0;
         CameraInstance->OriginHeight = 0;
         isCameraLoaded = false;  // Reset internal flag
+
+        QHash<QString, QVariant> cameraState;
+        cameraState.insert(QStringLiteral("Camera.Connected"), false);
+        cameraState.insert(QStringLiteral("Camera.State"), QStringLiteral("STOPPED"));
+        cameraState.insert(QStringLiteral("Camera.UpdatedAt"),
+                           QDateTime::currentDateTimeUtc().toString(Qt::ISODateWithMs));
+        VariableManager::instance().updateBatchScoped(
+            ProjectName, cameraState, VariableManager::Persistence::Runtime);
         
         // Update settings
     QString prefix = ProjectName + "." + ui->cbSelectedDetecting->currentText() + ".";
@@ -4659,6 +6293,8 @@ void RobotWindow::onMappingMatrixUpdated(QMatrix matrix)
                                           .arg(matrix.m22())
                                           .arg(matrix.dx())
                                           .arg(matrix.dy()));
+    VariableManager::instance().updateVar(
+        prefix + QStringLiteral("Calibration.Mapping.IsValid"), true);
 
     SoftwareLog(QString("Mapping matrix updated for %1").arg(detectingKey));
 }
@@ -4713,7 +6349,12 @@ void RobotWindow::UpdateCircleParameters()
     if (maxRadius <= minRadius) maxRadius = minRadius + 50;
 
     // Apply parameters to FindCirclesNode
-    ImageProcessingInstance->GetNode("FindCirclesNode")->Input(edgeThreshold, centerThreshold, minRadius, maxRadius);
+    TaskNode* findCirclesNode = ImageProcessingInstance->GetNode("FindCirclesNode");
+    QMetaObject::invokeMethod(findCirclesNode,
+                              [findCirclesNode, edgeThreshold, centerThreshold, minRadius, maxRadius]() {
+                                  findCirclesNode->Input(edgeThreshold, centerThreshold, minRadius, maxRadius);
+                              },
+                              Qt::QueuedConnection);
     
     // Save parameters to variables
     QString prefix = ProjectName + "." + ui->cbSelectedDetecting->currentText() + ".";
@@ -4752,19 +6393,27 @@ void RobotWindow::GetMappingPointFromImage(QPointF point)
     point.setY(0 - point.y());
 
     QString detectingKey = ui->cbSelectedDetecting->currentText();
-    QMatrix matrix = m_mappingMatrices.value(detectingKey, QMatrix());
-    if ((matrix.isIdentity() || qFuzzyIsNull(matrix.determinant())) && m_imagePipelineController) {
+    QMatrix matrix;
+    bool hasMatrix = m_mappingMatrices.contains(detectingKey);
+    if (hasMatrix)
+        matrix = m_mappingMatrices.value(detectingKey);
+    if (!hasMatrix && m_imagePipelineController && m_imagePipelineController->hasValidMapping()) {
         matrix = m_imagePipelineController->currentMappingMatrix();
+        hasMatrix = true;
     }
 
     // Fallback: load from VariableManager if runtime cache is empty
-    if (matrix.isIdentity() || qFuzzyIsNull(matrix.determinant())) {
-        QString prefix = ProjectName + "." + detectingKey + ".";
-        matrix = VariableManager::instance().getVar(prefix + "ImageToRealWorldMatrix", QMatrix()).value<QMatrix>();
+    const QString scopedMatrixKey = detectingKey + ".ImageToRealWorldMatrix";
+    const bool calibrationMarkedValid = VariableManager::instance().getVarScoped(
+        ProjectName, detectingKey + QStringLiteral(".Calibration.Mapping.IsValid"), false).toBool();
+    if (!hasMatrix && calibrationMarkedValid &&
+        VariableManager::instance().containsFullKeyScoped(ProjectName, scopedMatrixKey)) {
+        matrix = VariableManager::instance().getVarScoped(ProjectName, scopedMatrixKey).value<QMatrix>();
+        hasMatrix = !qFuzzyIsNull(matrix.determinant());
     }
 
     // If we do not have a valid mapping matrix, warn and stop
-    if (matrix.isIdentity() || qFuzzyIsNull(matrix.determinant())) {
+    if (!hasMatrix || qFuzzyIsNull(matrix.determinant())) {
         SoftwareLog("Mapping matrix is not available for this detecting. Please calculate calibration matrix first.");
         return;
     }
@@ -4920,23 +6569,23 @@ void RobotWindow::EditImage(bool isWarp, bool isCropTool)
         // Fallback to previous behaviour if controller is unavailable
         if (isWarp == false && isCropTool == true)
         {
-            if (warpImageNode) warpImageNode->IsPass = true;
-            if (cropImageNode) cropImageNode->IsPass = false;
+            if (warpImageNode) QMetaObject::invokeMethod(warpImageNode, [warpImageNode]() { warpImageNode->SetPassThrough(true); }, Qt::QueuedConnection);
+            if (cropImageNode) QMetaObject::invokeMethod(cropImageNode, [cropImageNode]() { cropImageNode->SetPassThrough(false); }, Qt::QueuedConnection);
         }
         else if (isWarp == true && isCropTool == true)
         {
-            if (warpImageNode) warpImageNode->IsPass = false;
-            if (cropImageNode) cropImageNode->IsPass = false;
+            if (warpImageNode) QMetaObject::invokeMethod(warpImageNode, [warpImageNode]() { warpImageNode->SetPassThrough(false); }, Qt::QueuedConnection);
+            if (cropImageNode) QMetaObject::invokeMethod(cropImageNode, [cropImageNode]() { cropImageNode->SetPassThrough(false); }, Qt::QueuedConnection);
         }
         else if (isWarp == false && isCropTool == false)
         {
-            if (warpImageNode) warpImageNode->IsPass = true;
-            if (cropImageNode) cropImageNode->IsPass = true;
+            if (warpImageNode) QMetaObject::invokeMethod(warpImageNode, [warpImageNode]() { warpImageNode->SetPassThrough(true); }, Qt::QueuedConnection);
+            if (cropImageNode) QMetaObject::invokeMethod(cropImageNode, [cropImageNode]() { cropImageNode->SetPassThrough(true); }, Qt::QueuedConnection);
         }
         else if (isWarp == true && isCropTool == false)
         {
-            if (warpImageNode) warpImageNode->IsPass = false;
-            if (cropImageNode) cropImageNode->IsPass = true;
+            if (warpImageNode) QMetaObject::invokeMethod(warpImageNode, [warpImageNode]() { warpImageNode->SetPassThrough(false); }, Qt::QueuedConnection);
+            if (cropImageNode) QMetaObject::invokeMethod(cropImageNode, [cropImageNode]() { cropImageNode->SetPassThrough(true); }, Qt::QueuedConnection);
         }
     }
 
@@ -5222,7 +6871,12 @@ void RobotWindow::SetConveyorPosition()
         float currentPos = ui->leEncoderCurrentPosition->text().toFloat() + moving;
         ui->leEncoderCurrentPosition->setText(QString::number(currentPos));
 
-        TrackingManagerInstance->Trackings.at(0)->VirEncoder.setPosition(currentPos);
+        if (TrackingManagerInstance && !TrackingManagerInstance->Trackings.isEmpty()) {
+            QMetaObject::invokeMethod(
+                TrackingManagerInstance->Trackings.at(0),
+                "SetVirtualEncoderPosition", Qt::QueuedConnection,
+                Q_ARG(float, currentPos));
+        }
     }
 
     if (ui->cbConveyorType->currentText() == "Desktop Conveyor")
@@ -5268,27 +6922,33 @@ void RobotWindow::TriggedCustomConveyor()
 
     if (qobject_cast<QPushButton*>(senderObj) == ui->pbStartCustomConveyor1 || qobject_cast<QLineEdit*>(senderObj) == ui->pbStartCustomConveyor1Command)
     {
-        QMetaObject::invokeMethod(DeviceManagerInstance, "GetCommand", Qt::QueuedConnection, Q_ARG(QString, ui->pbStartCustomConveyor1Command->text()));
+        submitManualDeviceCommand(ui->pbStartCustomConveyor1Command->text(),
+                                  QStringLiteral("manual/custom-conveyor"));
 
     }
     else if (qobject_cast<QPushButton*>(senderObj) == ui->pbStartCustomConveyor2 || qobject_cast<QLineEdit*>(senderObj) == ui->pbStartCustomConveyor2Command)
     {
-        QMetaObject::invokeMethod(DeviceManagerInstance, "GetCommand", Qt::QueuedConnection, Q_ARG(QString, ui->pbStartCustomConveyor2Command->text()));
+        submitManualDeviceCommand(ui->pbStartCustomConveyor2Command->text(),
+                                  QStringLiteral("manual/custom-conveyor"));
     }
     else if (qobject_cast<QPushButton*>(senderObj) == ui->pbStartCustomConveyor3 || qobject_cast<QLineEdit*>(senderObj) == ui->pbStartCustomConveyor3Command)
     {
-        QMetaObject::invokeMethod(DeviceManagerInstance, "GetCommand", Qt::QueuedConnection, Q_ARG(QString, ui->pbStartCustomConveyor3Command->text()));
+        submitManualDeviceCommand(ui->pbStartCustomConveyor3Command->text(),
+                                  QStringLiteral("manual/custom-conveyor"));
     }
     if (qobject_cast<QPushButton*>(senderObj) == ui->pbStopCustomConveyor1 || qobject_cast<QLineEdit*>(senderObj) == ui->pbStopCustomConveyor1Command)
     {
-        QMetaObject::invokeMethod(DeviceManagerInstance, "GetCommand", Qt::QueuedConnection, Q_ARG(QString, ui->pbStopCustomConveyor1Command->text()));
+        submitManualDeviceCommand(ui->pbStopCustomConveyor1Command->text(),
+                                  QStringLiteral("manual/custom-conveyor"));
 
     } else if (qobject_cast<QPushButton*>(senderObj) == ui->pbStopCustomConveyor2 || qobject_cast<QLineEdit*>(senderObj) == ui->pbStopCustomConveyor2Command)
     {
-        QMetaObject::invokeMethod(DeviceManagerInstance, "GetCommand", Qt::QueuedConnection, Q_ARG(QString, ui->pbStopCustomConveyor2Command->text()));
+        submitManualDeviceCommand(ui->pbStopCustomConveyor2Command->text(),
+                                  QStringLiteral("manual/custom-conveyor"));
     } else if (qobject_cast<QPushButton*>(senderObj) == ui->pbStopCustomConveyor3 || qobject_cast<QLineEdit*>(senderObj) == ui->pbStopCustomConveyor3Command)
     {
-        QMetaObject::invokeMethod(DeviceManagerInstance, "GetCommand", Qt::QueuedConnection, Q_ARG(QString, ui->pbStopCustomConveyor1Command->text()));
+        submitManualDeviceCommand(ui->pbStopCustomConveyor3Command->text(),
+                                  QStringLiteral("manual/custom-conveyor"));
     }
 }
 
@@ -5307,6 +6967,10 @@ void RobotWindow::ChangeEncoderType(int index)
     ui->cbLinkToConveyorX->setHidden(true);
     ui->cbConveyorLinkToEncoder->setHidden(true);
     int selectedEncoderID = ui->cbSelectedEncoder->currentIndex();
+    if (!TrackingManagerInstance || selectedEncoderID < 0 ||
+        selectedEncoderID >= TrackingManagerInstance->Trackings.size())
+        return;
+    Tracking* tracking = TrackingManagerInstance->Trackings.at(selectedEncoderID);
     if (ui->cbEncoderType->currentText() == "X Encoder")
     {
         ui->cbLinkToConveyorX->setHidden(false);
@@ -5314,20 +6978,20 @@ void RobotWindow::ChangeEncoderType(int index)
         ui->pbConnectEncoder->setHidden(false);
         ui->pbSetEncoderVelocity->setHidden(true);
 
-        TrackingManagerInstance->Trackings.at(selectedEncoderID)->EncoderType = "X Encoder";
-        TrackingManagerInstance->Trackings.at(selectedEncoderID)->VirEncoder.stop();
+        QMetaObject::invokeMethod(tracking, "SetEncoderSourceType", Qt::QueuedConnection,
+                                  Q_ARG(QString, QStringLiteral("X Encoder")));
     }
     else if (ui->cbEncoderType->currentText() == "Sub Encoder")
     {
         ui->pbConnectEncoder->setHidden(false);
         ui->pbSetEncoderVelocity->setHidden(true);
-        TrackingManagerInstance->Trackings.at(selectedEncoderID)->EncoderType = "Sub Encoder";
-        TrackingManagerInstance->Trackings.at(selectedEncoderID)->VirEncoder.stop();
+        QMetaObject::invokeMethod(tracking, "SetEncoderSourceType", Qt::QueuedConnection,
+                                  Q_ARG(QString, QStringLiteral("Sub Encoder")));
     }
     else if (ui->cbEncoderType->currentText() == "Virtual Encoder")
     {
-        TrackingManagerInstance->Trackings.at(selectedEncoderID)->EncoderType = "Virtual Encoder";
-        TrackingManagerInstance->Trackings.at(selectedEncoderID)->VirEncoder.start();
+        QMetaObject::invokeMethod(tracking, "SetEncoderSourceType", Qt::QueuedConnection,
+                                  Q_ARG(QString, QStringLiteral("Virtual Encoder")));
         ui->cbLinkToConveyorX->setHidden(false);
         ui->cbConveyorLinkToEncoder->setHidden(false);
         ui->pbSetEncoderVelocity->setHidden(false);
@@ -5342,15 +7006,19 @@ void RobotWindow::ChangeConveyorLinkToEncoder(int state)
     if(state == Qt::Checked)
     {
         int conid = getIDfromName(ui->cbConveyorLinkToEncoder->currentText());
-        int enid = getIDfromName(ui->cbConveyorLinkToEncoder->currentText());
+        int enid = getIDfromName(ui->cbSelectedEncoder->currentText());
 
-        DeviceManagerInstance->Encoders.at(enid)->LinkedConveyor = conid;
+        QMetaObject::invokeMethod(DeviceManagerInstance,
+                                  "SetEncoderLinkedConveyor", Qt::QueuedConnection,
+                                  Q_ARG(int, enid), Q_ARG(int, conid));
         ui->pbConnectEncoder->setHidden(true);
     } else
     {
-        int enid = getIDfromName(ui->cbConveyorLinkToEncoder->currentText());
+        int enid = getIDfromName(ui->cbSelectedEncoder->currentText());
 
-        DeviceManagerInstance->Encoders.at(enid)->LinkedConveyor = -1;
+        QMetaObject::invokeMethod(DeviceManagerInstance,
+                                  "SetEncoderLinkedConveyor", Qt::QueuedConnection,
+                                  Q_ARG(int, enid), Q_ARG(int, -1));
         ui->pbConnectEncoder->setHidden(false);
     }
 }
@@ -5370,20 +7038,29 @@ void RobotWindow::AddDisplayObjectFromExternalScript(QString msg)
 
     foreach(QString objectInfo, objectInfos)
     {
-        if (objectInfo.replace(" ", "").replace("/n", "") == "")
+        if (objectInfo.trimmed().isEmpty())
             continue;
 
         Object object;
 
         QStringList paras = objectInfo.split(",");
-        if (paras.count() >= 5)
+        if (paras.count() >= 6)
         {
-            //QString label = paras[0];
-            object.X.Image = paras[1].toFloat();
-            object.Y.Image = paras[2].toFloat();
-            object.Length.Image = paras[3].toFloat();
-            object.Width.Image = paras[4].toFloat();
-            object.Angle.Image = paras[5].toFloat();
+            bool valuesValid = true;
+            const auto parseFinite = [&valuesValid](const QString& value) {
+                bool ok = false;
+                const float parsed = value.trimmed().toFloat(&ok);
+                valuesValid = valuesValid && ok && std::isfinite(parsed);
+                return parsed;
+            };
+            object.X.Image = parseFinite(paras[1]);
+            object.Y.Image = parseFinite(paras[2]);
+            object.Length.Image = parseFinite(paras[3]);
+            object.Width.Image = parseFinite(paras[4]);
+            object.Angle.Image = parseFinite(paras[5]);
+
+            if (!valuesValid)
+                continue;
 
             object.Type = paras[0];
 
@@ -5415,42 +7092,92 @@ void RobotWindow::ChangeSelectedTracking(int id)
     // Reflect selected tracking thresholds to UI
     if (TrackingManagerInstance && id >= 0 && id < TrackingManagerInstance->Trackings.count())
     {
-        ui->leIoUThreshold->setText(QString::number(TrackingManagerInstance->Trackings.at(id)->IoUThreshold));
-        ui->leDistanceThreshold->setText(QString::number(TrackingManagerInstance->Trackings.at(id)->DistanceThreshold));
+        ui->leIoUThreshold->setText(
+            QString::number(TrackingManagerInstance->Trackings.at(id)->GetIoUThreshold()));
+        ui->leDistanceThreshold->setText(
+            QString::number(TrackingManagerInstance->Trackings.at(id)->GetDistanceThreshold()));
     }
 
     // Sync detecting list name and image processing target with selected tracking
     if (TrackingManagerInstance && id >= 0 && id < TrackingManagerInstance->Trackings.count())
     {
-        const QString listName = TrackingManagerInstance->Trackings.at(id)->ListName;
+        const QString listName = TrackingManagerInstance->Trackings.at(id)->GetListName();
         if (ui && ui->leDetectingObjectListName)
         {
             ui->leDetectingObjectListName->setText(listName);
         }
         if (ImageProcessingInstance)
         {
-            ImageProcessingInstance->ObjectsName = listName;
+            QMetaObject::invokeMethod(
+                ImageProcessingInstance, "SetObjectsName", Qt::QueuedConnection,
+                Q_ARG(QString, listName));
         }
     }
 }
 
 void RobotWindow::ChangeSelectedTrackingEncoder(int id)
 {
-    TrackingManagerInstance->Trackings.at(id)->EncoderName = ui->cbTrackingEncoderSource->currentText();
+    Q_UNUSED(id)
+    const int trackingId = ui->cbSelectedTracking->currentIndex();
+    if (!TrackingManagerInstance || trackingId < 0 ||
+        trackingId >= TrackingManagerInstance->Trackings.count())
+        return;
+    Tracking* tracking = TrackingManagerInstance->Trackings.at(trackingId);
+    const QString encoderName = ui->cbTrackingEncoderSource->currentText();
+    QMetaObject::invokeMethod(tracking, "SetEncoderName", Qt::QueuedConnection,
+                              Q_ARG(QString, encoderName));
 }
 
 void RobotWindow::SaveTrackingManager()
 {
-    int selectedEncoderID = ui->cbSelectedTracking->currentText().toInt();
+    const int selectedEncoderID = ui->cbSelectedTracking->currentIndex();
+    if (!TrackingManagerInstance || selectedEncoderID < 0 ||
+        selectedEncoderID >= TrackingManagerInstance->Trackings.count())
+        return;
 
-    TrackingManagerInstance->Trackings.at(selectedEncoderID)->VelocityVector = VariableManager::instance().getVar(ui->leVelocityVector->text()).value<QVector3D>();
-    TrackingManagerInstance->Trackings.at(selectedEncoderID)->VectorName = ui->leVectorName->text();
+    Tracking* tracking = TrackingManagerInstance->Trackings.at(selectedEncoderID);
+    const QVector3D velocityVector = VariableManager::instance()
+        .getVarScoped(ProjectName, ui->leVelocityVector->text()).value<QVector3D>();
+    const QString vectorName = ui->leVectorName->text();
+    const QString listName = ui->leSelectedTrackingObjectList->text().trimmed();
+    const QString encoderName = ui->cbTrackingEncoderSource->currentText();
+    const int publishMs = ui->sbTrackingPublishInterval->value();
+    const int visionStaleMs = ui->sbTrackingVisionStale->value();
+    const int encoderStaleMs = ui->sbTrackingEncoderStale->value();
+    const int frameTimeoutMs = ui->sbTrackingFrameTimeout->value();
+    const int maxFrames = ui->sbTrackingMaxFrames->value();
+    const int maxEncoderReads = ui->sbTrackingMaxEncoderReads->value();
+
+    QMetaObject::invokeMethod(tracking,
+        [tracking, velocityVector, vectorName, listName, encoderName,
+         publishMs, visionStaleMs, encoderStaleMs, frameTimeoutMs,
+         maxFrames, maxEncoderReads]() {
+            tracking->VelocityVector = velocityVector;
+            tracking->SetVectorName(vectorName);
+            if (!listName.isEmpty())
+                tracking->SetListName(listName);
+            tracking->SetEncoderName(encoderName);
+            tracking->ConfigureRealtime(publishMs, visionStaleMs, encoderStaleMs,
+                                        frameTimeoutMs, maxFrames, maxEncoderReads);
+        }, Qt::QueuedConnection);
+
+    const QString prefix = QString("tracking%1.Realtime.").arg(selectedEncoderID);
+    VariableManager::instance().updateBatchScoped(ProjectName, {
+        {prefix + "PublishIntervalMs", publishMs},
+        {prefix + "VisionStaleMs", visionStaleMs},
+        {prefix + "EncoderStaleMs", encoderStaleMs},
+        {prefix + "FrameTimeoutMs", frameTimeoutMs},
+        {prefix + "MaxPendingFrames", maxFrames},
+        {prefix + "MaxPendingEncoderReads", maxEncoderReads}
+    }, VariableManager::Persistence::Persistent);
+    VariableManager::instance().scheduleSave();
 }
 
 void RobotWindow::CalculateMappingMatrixTool()
 {
     if (m_pointToolController) {
-        m_pointToolController->calculateMappingMatrix();
+        if (m_pointToolController->calculateMappingMatrix())
+            emit GotMappingMatrix(m_currentMappingMatrix);
     }
 }
 
@@ -5459,6 +7186,199 @@ void RobotWindow::CalculatePointMatrixTool()
     if (m_pointToolController) {
         m_pointToolController->calculatePerspectiveMatrix();
     }
+}
+
+void RobotWindow::CalibrateCameraIntrinsics()
+{
+    if (!CameraInstance || !m_imagePipelineController) {
+        QMessageBox::warning(this, tr("Lens calibration"), tr("Camera pipeline is not available."));
+        return;
+    }
+
+    QDialog dialog(this);
+    dialog.setWindowTitle(tr("Camera lens calibration"));
+    dialog.setMinimumWidth(560);
+    QVBoxLayout* root = new QVBoxLayout(&dialog);
+    QLabel* instructions = new QLabel(
+        tr("Use a flat chessboard. Columns and rows are INNER corners, not squares. "
+           "Capture at least 8 diverse views: center, all corners, different distances and tilts."),
+        &dialog);
+    instructions->setWordWrap(true);
+    root->addWidget(instructions);
+
+    QFormLayout* settings = new QFormLayout;
+    QSpinBox* columns = new QSpinBox(&dialog);
+    columns->setRange(3, 30);
+    columns->setValue(9);
+    QSpinBox* rows = new QSpinBox(&dialog);
+    rows->setRange(3, 30);
+    rows->setValue(6);
+    QDoubleSpinBox* squareSize = new QDoubleSpinBox(&dialog);
+    squareSize->setRange(0.001, 1000.0);
+    squareSize->setDecimals(3);
+    squareSize->setValue(25.0);
+    squareSize->setSuffix(tr(" mm"));
+    settings->addRow(tr("Inner corner columns"), columns);
+    settings->addRow(tr("Inner corner rows"), rows);
+    settings->addRow(tr("Square size"), squareSize);
+    root->addLayout(settings);
+
+    QLabel* liveStatus = new QLabel(tr("Waiting for a camera frame..."), &dialog);
+    QLabel* sampleStatus = new QLabel(tr("Accepted samples: 0 / 8 minimum"), &dialog);
+    QLabel* profileStatus = new QLabel(&dialog);
+    CameraCalibration::Profile existingProfile;
+    if (CameraCalibration::loadFromVariables(ProjectName, QStringLiteral("Camera.Intrinsic"),
+                                             existingProfile)) {
+        profileStatus->setText(
+            tr("Current profile: READY — %1x%2, RMS %3 px, %4 samples")
+                .arg(existingProfile.imageSize.width()).arg(existingProfile.imageSize.height())
+                .arg(existingProfile.rmsErrorPx, 0, 'f', 3).arg(existingProfile.sampleCount));
+        profileStatus->setStyleSheet(QStringLiteral("color: rgb(80, 220, 120); font-weight: bold;"));
+    } else {
+        profileStatus->setText(tr("Current profile: NOT CALIBRATED"));
+        profileStatus->setStyleSheet(QStringLiteral("color: rgb(255, 190, 70); font-weight: bold;"));
+    }
+    root->addWidget(liveStatus);
+    root->addWidget(sampleStatus);
+    root->addWidget(profileStatus);
+
+    QHBoxLayout* actions = new QHBoxLayout;
+    QPushButton* capture = new QPushButton(tr("Capture sample"), &dialog);
+    QPushButton* removeLast = new QPushButton(tr("Remove last"), &dialog);
+    QPushButton* clear = new QPushButton(tr("Clear samples"), &dialog);
+    QPushButton* calculate = new QPushButton(tr("Calculate and apply"), &dialog);
+    calculate->setEnabled(false);
+    removeLast->setEnabled(false);
+    clear->setEnabled(false);
+    actions->addWidget(capture);
+    actions->addWidget(removeLast);
+    actions->addWidget(clear);
+    actions->addStretch();
+    actions->addWidget(calculate);
+    root->addLayout(actions);
+
+    QDialogButtonBox* buttons = new QDialogButtonBox(QDialogButtonBox::Cancel, &dialog);
+    connect(buttons, &QDialogButtonBox::rejected, &dialog, &QDialog::reject);
+    root->addWidget(buttons);
+
+    cv::Mat latestFrame;
+    QList<cv::Mat> calibrationImages;
+    QVector<QVector3D> viewDescriptors;
+    const QMetaObject::Connection frameConnection = connect(
+        CameraInstance, &Camera::FrameCaptured, &dialog,
+        [&latestFrame, liveStatus](const VisionFrame& frame) {
+        latestFrame = frame.image.clone();
+        liveStatus->setText(QObject::tr("Live frame: %1 x %2")
+                                .arg(latestFrame.cols).arg(latestFrame.rows));
+        liveStatus->setStyleSheet(QStringLiteral("color: rgb(100, 200, 255);"));
+    });
+    if (!CameraInstance->CaptureImage.empty()) {
+        latestFrame = CameraInstance->CaptureImage.clone();
+        liveStatus->setText(tr("Current frame: %1 x %2").arg(latestFrame.cols).arg(latestFrame.rows));
+    }
+
+    auto refreshSampleState = [=, &calibrationImages]() {
+        sampleStatus->setText(QObject::tr("Accepted samples: %1 / 8 minimum")
+                                  .arg(calibrationImages.size()));
+        const bool hasSamples = !calibrationImages.isEmpty();
+        removeLast->setEnabled(hasSamples);
+        clear->setEnabled(hasSamples);
+        calculate->setEnabled(calibrationImages.size() >= 8);
+        columns->setEnabled(!hasSamples);
+        rows->setEnabled(!hasSamples);
+        squareSize->setEnabled(!hasSamples);
+    };
+
+    connect(capture, &QPushButton::clicked, &dialog,
+            [&, refreshSampleState]() {
+        if (latestFrame.empty()) {
+            QMessageBox::warning(&dialog, tr("Lens calibration"),
+                                 tr("No camera frame is available. Start camera capture first."));
+            return;
+        }
+        cv::Mat gray;
+        if (latestFrame.channels() == 1)
+            gray = latestFrame;
+        else if (latestFrame.channels() == 4)
+            cv::cvtColor(latestFrame, gray, cv::COLOR_BGRA2GRAY);
+        else
+            cv::cvtColor(latestFrame, gray, cv::COLOR_BGR2GRAY);
+        std::vector<cv::Point2f> corners;
+        const cv::Size board(columns->value(), rows->value());
+        const bool found = cv::findChessboardCorners(
+            gray, board, corners,
+            cv::CALIB_CB_ADAPTIVE_THRESH | cv::CALIB_CB_NORMALIZE_IMAGE | cv::CALIB_CB_FAST_CHECK);
+        if (!found) {
+            liveStatus->setText(tr("Chessboard not found — improve lighting/focus and show the full board"));
+            liveStatus->setStyleSheet(QStringLiteral("color: rgb(255, 100, 100); font-weight: bold;"));
+            return;
+        }
+
+        const cv::Rect bounds = cv::boundingRect(corners);
+        const QVector3D descriptor(
+            (bounds.x + bounds.width * 0.5f) / latestFrame.cols,
+            (bounds.y + bounds.height * 0.5f) / latestFrame.rows,
+            static_cast<float>(bounds.area()) / (latestFrame.cols * latestFrame.rows));
+        for (const QVector3D& existing : viewDescriptors) {
+            if ((existing - descriptor).length() < 0.015f) {
+                liveStatus->setText(tr("View is too similar to an existing sample — move or tilt the board"));
+                liveStatus->setStyleSheet(QStringLiteral("color: rgb(255, 190, 70); font-weight: bold;"));
+                return;
+            }
+        }
+        calibrationImages.append(latestFrame.clone());
+        viewDescriptors.append(descriptor);
+        liveStatus->setText(tr("Chessboard accepted (%1 corners)")
+                                .arg(static_cast<qulonglong>(corners.size())));
+        liveStatus->setStyleSheet(QStringLiteral("color: rgb(80, 220, 120); font-weight: bold;"));
+        refreshSampleState();
+    });
+    connect(removeLast, &QPushButton::clicked, &dialog, [&, refreshSampleState]() {
+        if (!calibrationImages.isEmpty()) {
+            calibrationImages.removeLast();
+            viewDescriptors.removeLast();
+            refreshSampleState();
+        }
+    });
+    connect(clear, &QPushButton::clicked, &dialog, [&, refreshSampleState]() {
+        calibrationImages.clear();
+        viewDescriptors.clear();
+        refreshSampleState();
+    });
+    connect(calculate, &QPushButton::clicked, &dialog, [&]() {
+        QApplication::setOverrideCursor(Qt::WaitCursor);
+        const CameraCalibration::Result result = CameraCalibration::calibrate(
+            calibrationImages, QSize(columns->value(), rows->value()), squareSize->value());
+        QApplication::restoreOverrideCursor();
+        if (!result.isValid) {
+            QMessageBox::warning(&dialog, tr("Lens calibration"), result.errorMessage);
+            return;
+        }
+        if (!CameraCalibration::saveToVariables(ProjectName, QStringLiteral("Camera.Intrinsic"),
+                                                result.profile)) {
+            QMessageBox::critical(&dialog, tr("Lens calibration"),
+                                  tr("Calibration succeeded but the profile could not be saved."));
+            return;
+        }
+        m_imagePipelineController->setIntrinsicCalibration(result.profile);
+        VariableManager::instance().updateVarScoped(
+            ProjectName, QStringLiteral("Camera.IntrinsicStatus.IsValid"), true);
+        VariableManager::instance().updateVarScoped(
+            ProjectName, QStringLiteral("Camera.IntrinsicStatus.RmsErrorPx"), result.profile.rmsErrorPx);
+        VariableManager::instance().updateVarScoped(
+            ProjectName, QStringLiteral("Camera.IntrinsicStatus.MaximumViewErrorPx"),
+            result.profile.maximumViewErrorPx);
+        dialog.accept();
+        QMessageBox::information(
+            this, tr("Lens calibration"),
+            tr("Profile applied successfully. RMS: %1 px; worst view: %2 px.\n\n"
+               "Image-to-world mapping is now invalid and must be calibrated again.")
+                .arg(result.profile.rmsErrorPx, 0, 'f', 3)
+                .arg(result.profile.maximumViewErrorPx, 0, 'f', 3));
+    });
+
+    dialog.exec();
+    disconnect(frameConnection);
 }
 
 void RobotWindow::CalculateTestPoint()
@@ -5493,7 +7413,7 @@ void RobotWindow::ClearDetectObjects()
 {
     int id = ui->cbTrackingThreadForCamera->currentIndex();
     QMetaObject::invokeMethod(TrackingManagerInstance->Trackings[id], "ClearTrackedObjects", Qt::QueuedConnection);
-    VariableManager::instance().removeVar(ui->leDetectingObjectListName->text());
+    VariableManager::instance().removeVarScoped(ProjectName, ui->leDetectingObjectListName->text());
 
     QTimer::singleShot(300, [this](){
         ui->pbCapture->clicked();
@@ -5643,7 +7563,7 @@ void RobotWindow::TerminalTransmit()
 
     if (target == "Software")
     {
-        QMetaObject::invokeMethod(DeviceManagerInstance, "GetCommand", Qt::QueuedConnection, Q_ARG(QString, msg));
+        submitManualDeviceCommand(msg, QStringLiteral("manual/terminal"));
     }
 
     if (target == "Robot")
@@ -5690,29 +7610,101 @@ void RobotWindow::RunExternalScript()
         
         runPythonFile(pythonPath);
     } else {
-        // Button du?c uncheck - stop Python script
-        if (process != nullptr && process->state() == QProcess::Running) {
-            qDebug() << "Stopping Python script...";
-            
-            process->terminate();
-            
-            // �?i process terminate, n?u kh�ng th�nh c�ng th� kill
-            if (!process->waitForFinished(3000)) { // �?i 3 gi�y
-                process->kill();
-                process->waitForFinished(1000); // �?i th�m 1 gi�y cho kill
+        QPointer<QProcess> runningProcess(process);
+        if (runningProcess && runningProcess->state() == QProcess::Running) {
+            setExternalVisionStatus(QStringLiteral("STOPPING SCRIPT"), QString(),
+                                    QStringLiteral("#e0a030"));
+            runningProcess->terminate();
+            if (runningProcess && !runningProcess->waitForFinished(3000)) {
+                runningProcess->kill();
+                runningProcess->waitForFinished(1000);
             }
-            
-            qDebug() << "Python script stopped";
         }
     }
 }
 
 void RobotWindow::OpenExternalScriptFolder()
 {
-    QString filePath = ui->lePythonUrl->text();
-    QFileInfo fileInfo(filePath);
-    QString folderPath = fileInfo.absolutePath();
-    QDesktopServices::openUrl(QUrl::fromLocalFile(folderPath));
+    QString current = ui->lePythonUrl->text().trimmed();
+    const QString resolved = resolveExternalVisionFile(current);
+    if (!resolved.isEmpty())
+        current = resolved;
+    const QString selected = QFileDialog::getOpenFileName(
+        this, tr("Select External Vision detector script"),
+        QFileInfo(current).absolutePath(),
+        tr("Python scripts (*.py);;All files (*)"));
+    if (selected.isEmpty())
+        return;
+    ui->lePythonUrl->setText(QDir::toNativeSeparators(selected));
+    QString detectingKey = ui->cbSelectedDetecting->currentText();
+    if (detectingKey.isEmpty())
+        detectingKey = QStringLiteral("tracking0");
+    VariableManager::instance().updateVarScoped(
+        ProjectName, detectingKey + QStringLiteral(".ExternalVision.Script"), selected);
+}
+
+QString RobotWindow::resolveExternalVisionFile(const QString& relativePath) const
+{
+    const QFileInfo provided(relativePath);
+    if (provided.isAbsolute() && provided.exists())
+        return provided.absoluteFilePath();
+
+    const QString appDir = QCoreApplication::applicationDirPath();
+    const QStringList candidates = {
+        QDir::current().absoluteFilePath(relativePath),
+        QDir(appDir).absoluteFilePath(relativePath),
+        QDir(appDir).absoluteFilePath(QStringLiteral("../") + relativePath),
+        QDir(appDir).absoluteFilePath(QStringLiteral("../Resources/") + relativePath),
+        QDir(appDir).absoluteFilePath(QStringLiteral("../../") + relativePath),
+        QDir(appDir).absoluteFilePath(QStringLiteral("../../../") + relativePath)
+    };
+    for (const QString& candidate : candidates) {
+        const QFileInfo info(QDir::cleanPath(candidate));
+        if (info.exists())
+            return info.absoluteFilePath();
+    }
+    return QString();
+}
+
+void RobotWindow::OpenExternalVisionGuide()
+{
+    QFile guide(QStringLiteral(":/docs/external-vision.md"));
+    if (!guide.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        QMessageBox::warning(this, tr("External Vision"),
+                             tr("The embedded External Vision guide is unavailable."));
+        return;
+    }
+
+    QDialog dialog(this);
+    dialog.setWindowTitle(tr("External Vision — Setup and DXV1 protocol"));
+    dialog.resize(920, 720);
+    QVBoxLayout* layout = new QVBoxLayout(&dialog);
+    QTextBrowser* browser = new QTextBrowser(&dialog);
+    browser->setOpenExternalLinks(true);
+    browser->setMarkdown(QString::fromUtf8(guide.readAll()));
+    layout->addWidget(browser);
+
+    QDialogButtonBox* buttons = new QDialogButtonBox(QDialogButtonBox::Close, &dialog);
+    QPushButton* examplesButton = buttons->addButton(tr("Open examples"),
+                                                      QDialogButtonBox::ActionRole);
+    connect(examplesButton, &QPushButton::clicked,
+            this, &RobotWindow::OpenExternalVisionExample);
+    connect(buttons, &QDialogButtonBox::rejected, &dialog, &QDialog::reject);
+    layout->addWidget(buttons);
+    dialog.exec();
+}
+
+void RobotWindow::OpenExternalVisionExample()
+{
+    const QString example = resolveExternalVisionFile(
+        QStringLiteral("script-example/receive_image_json.py"));
+    if (example.isEmpty()) {
+        QMessageBox::warning(
+            this, tr("External Vision"),
+            tr("The DXV1 example folder was not found. Reinstall the script-example component."));
+        return;
+    }
+    QDesktopServices::openUrl(QUrl::fromLocalFile(QFileInfo(example).absolutePath()));
 }
 
 QString RobotWindow::boldKey(QString key, QString htmlText)
@@ -5890,8 +7882,8 @@ void RobotWindow::UpdateTermite(QString device, QString mess, int direction)
     else
         msg = QString("%1 >> %2").arg(device).arg(mess);
 
-    if (msg[msg.length() - 1] != "\n")
-        msg += "\n";
+    if (!msg.endsWith(QLatin1Char('\n')))
+        msg += QLatin1Char('\n');
 
     UpdateTermite(msg);
 }
@@ -5916,6 +7908,17 @@ void RobotWindow::UpdateCameraConnectedState(bool isOpen, int requestId)
 
     isCameraOpenPending = false;
     CameraOpenTimeoutTimer.stop();
+
+    QHash<QString, QVariant> cameraState;
+    cameraState.insert(QStringLiteral("Camera.Connected"), isOpen);
+    cameraState.insert(QStringLiteral("Camera.State"),
+                       isOpen ? QStringLiteral("READY") : QStringLiteral("OPEN_FAILED"));
+    cameraState.insert(QStringLiteral("Camera.Width"), CameraInstance->Width);
+    cameraState.insert(QStringLiteral("Camera.Height"), CameraInstance->Height);
+    cameraState.insert(QStringLiteral("Camera.UpdatedAt"),
+                       QDateTime::currentDateTimeUtc().toString(Qt::ISODateWithMs));
+    VariableManager::instance().updateBatchScoped(
+        ProjectName, cameraState, VariableManager::Persistence::Runtime);
 
     if (isOpen == true)
     {
@@ -5965,6 +7968,14 @@ void RobotWindow::HandleCameraOpenTimeout()
     isCameraLoaded = false;
     CameraInstance->IsCameraPause = false;
     CameraInstance->RunningCamera = -1;
+
+    QHash<QString, QVariant> cameraState;
+    cameraState.insert(QStringLiteral("Camera.Connected"), false);
+    cameraState.insert(QStringLiteral("Camera.State"), QStringLiteral("OPEN_TIMEOUT"));
+    cameraState.insert(QStringLiteral("Camera.UpdatedAt"),
+                       QDateTime::currentDateTimeUtc().toString(Qt::ISODateWithMs));
+    VariableManager::instance().updateBatchScoped(
+        ProjectName, cameraState, VariableManager::Persistence::Runtime);
 
     QString prefix = ProjectName + "." + ui->cbSelectedDetecting->currentText() + ".";
     UpdateVariable(prefix + "IsOpen", false);
@@ -6258,7 +8269,7 @@ void RobotWindow::openPositionVariableDialog()
                                  tr("Please enter a variable name."));
             return;
         }
-        QVariant value = VariableManager::instance().getVar(varName, QVariant());
+        QVariant value = VariableManager::instance().getVarScoped(ProjectName, varName, QVariant());
         QVector3D vector;
         if (!tryConvertVariantToVector3D(value, vector)) {
             QMessageBox::warning(this, tr("Position Variable"),
@@ -6278,7 +8289,7 @@ void RobotWindow::openPositionVariableDialog()
             return;
         }
         QVector3D vector(xSpin->value(), ySpin->value(), zSpin->value());
-        VariableManager::instance().updateVar(varName, QVariant::fromValue(vector));
+        VariableManager::instance().updateVarScoped(ProjectName, varName, QVariant::fromValue(vector));
         VariableManager::instance().scheduleSave();
         insertOrUpdatePositionDeclaration(varName, vector);
         m_lastPositionVariableName = varName;
@@ -6435,116 +8446,106 @@ int RobotWindow::getIDfromName(QString fullName)
 
 void RobotWindow::runPythonFile(QString filePath)
 {
-    QString pythonExePath = "python"; // du?ng d?n t?i file python
-    QStringList arguments;
-    arguments << filePath;
-    
-    // Tr�ch xu?t IP v� port t? UI
-    QStringList ipAndPort = ui->leIP->text().split(":");
-    if (ipAndPort.size() >= 2) {
-        QString host = ipAndPort.at(0);
-        QString port = ipAndPort.at(1);
-        
-        // Th�m c�c tham s? cho Python script
-        arguments << "-ip" << host;
-        arguments << "-port" << port;
-        
-        // Th�m image source type
-        if (ui->cbImageSource) {
-            QString imageSource = ui->cbImageSource->currentText();
-            arguments << "-type" << imageSource;
-        }
-        
-        // Th�m model path - t? d?ng detect t? project folder ho?c setting
-        QString modelPath = getModelPath();
-        if (!modelPath.isEmpty()) {
-            arguments << "-model" << modelPath;
-        }
-        
-        // Th�m object dimensions n?u c� trong UI
-        if (ui->leWRec && ui->leLRec) {
-            QString objectWidth = ui->leWRec->text();
-            QString objectHeight = ui->leLRec->text();
-            if (!objectWidth.isEmpty() && !objectHeight.isEmpty()) {
-                arguments << "-ow" << objectWidth;
-                arguments << "-oh" << objectHeight;
-            }
-        }
-        
-        // Th�m project name
-        arguments << "-project" << ProjectName;
-        
-        qDebug() << "Running Python script with arguments:" << arguments;
+    filePath = filePath.trimmed();
+    if (!QFileInfo(filePath).isAbsolute())
+        filePath = resolveExternalVisionFile(filePath);
+    const QFileInfo fileInfo(filePath);
+    if (filePath.isEmpty() || !fileInfo.isFile()) {
+        ui->pbRunExternalScript->setChecked(false);
+        setExternalVisionStatus(QStringLiteral("SCRIPT NOT FOUND"),
+                                ui->lePythonUrl->text().trimmed(),
+                                QStringLiteral("#ef5350"));
+        QMessageBox::warning(this, tr("External Vision"),
+                             tr("Detector script not found:\n%1")
+                                 .arg(ui->lePythonUrl->text().trimmed()));
+        return;
     }
 
-    // Ki?m tra du?ng d?n tuong d?i hay tuy?t d?i
-    QFileInfo fileInfo(filePath);
-    if (!fileInfo.isAbsolute()) {
-        QDir dir(QCoreApplication::applicationDirPath());
-        filePath = dir.absoluteFilePath(filePath);
-    }
+    const QString pythonExePath = externalVisionPythonEdit
+        ? externalVisionPythonEdit->text().trimmed()
+        : QSettings().value(QStringLiteral("ExternalVision/PythonExecutable"),
+                            QStringLiteral("python")).toString();
+    const QString host = ConnectionManager->hostAddress;
+    const QString port = QString::number(ConnectionManager->Server->serverPort());
+    const QStringList arguments = {
+        fileInfo.absoluteFilePath(),
+        QStringLiteral("--host"), host,
+        QStringLiteral("--port"), port
+    };
 
     // N?u qu� tr�nh ch?y file python d� t?n t?i th� t?t n�
-    if (process != nullptr && process->state() == QProcess::Running) {
-        process->terminate();
-        
-        // �?i process terminate, n?u kh�ng th�nh c�ng th� kill
-        if (!process->waitForFinished(3000)) { // �?i 3 gi�y
-            process->kill();
-            process->waitForFinished(1000); // �?i th�m 1 gi�y cho kill
+    QPointer<QProcess> previousProcess(process);
+    if (previousProcess && previousProcess->state() == QProcess::Running) {
+        previousProcess->terminate();
+        if (previousProcess && !previousProcess->waitForFinished(3000)) {
+            previousProcess->kill();
+            previousProcess->waitForFinished(1000);
         }
-        
-        // Cleanup process cu
-        process->deleteLater();
-        process = nullptr;
     }
 
-    // Cleanup process cu n?u n� d� finished
     if (process != nullptr && process->state() == QProcess::NotRunning) {
         process->deleteLater();
         process = nullptr;
     }
 
-    // T?o qu� tr�nh m?i d? ch?y file python
-    process = new QProcess(this); // Set parent d? t? d?ng cleanup
-    
-    // Connect signals d? theo d�i process state
-    connect(process, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
-            [=](int exitCode, QProcess::ExitStatus exitStatus) {
-                qDebug() << "Python script finished with exit code:" << exitCode;
-                
-                // Update button state if needed
-                if (ui->pbRunExternalScript->isChecked()) {
-                    ui->pbRunExternalScript->setChecked(false);
-                }
-            });
-    
-    connect(process, QOverload<QProcess::ProcessError>::of(&QProcess::errorOccurred),
-            [=](QProcess::ProcessError error) {
-                qDebug() << "Python process error:" << error;
-                
-                // Update button state
-                if (ui->pbRunExternalScript->isChecked()) {
-                    ui->pbRunExternalScript->setChecked(false);
-                }
-            });
-    
-    process->start(pythonExePath, arguments);
-    
-    // Ki?m tra xem process c� start th�nh c�ng kh�ng
-    if (!process->waitForStarted(5000)) { // �?i 5 gi�y
-        qDebug() << "Failed to start Python script:" << process->errorString();
-        
-        // Update button state
-        if (ui->pbRunExternalScript->isChecked()) {
-            ui->pbRunExternalScript->setChecked(false);
+    process = new QProcess(this);
+    QProcess* launchedProcess = process;
+    launchedProcess->setWorkingDirectory(fileInfo.absolutePath());
+    QProcessEnvironment environment = QProcessEnvironment::systemEnvironment();
+    environment.insert(QStringLiteral("DELTAX_PROJECT"), ProjectName);
+    environment.insert(QStringLiteral("DELTAX_IMAGE_SOURCE"), ui->cbImageSource->currentText());
+    environment.insert(QStringLiteral("DELTAX_MODEL_PATH"), getModelPath());
+    environment.insert(QStringLiteral("DELTAX_OBJECT_WIDTH"), ui->leWRec->text());
+    environment.insert(QStringLiteral("DELTAX_OBJECT_HEIGHT"), ui->leLRec->text());
+    launchedProcess->setProcessEnvironment(environment);
+
+    connect(launchedProcess, &QProcess::started, this, [this, fileInfo]() {
+        setExternalVisionStatus(QStringLiteral("SCRIPT RUNNING"), fileInfo.fileName(),
+                                QStringLiteral("#42a5f5"));
+        SoftwareLog(QStringLiteral("External Vision script started: ") +
+                    fileInfo.absoluteFilePath());
+    });
+    connect(launchedProcess, &QProcess::readyReadStandardOutput, this,
+            [launchedProcess]() {
+        const QString output = QString::fromUtf8(launchedProcess->readAllStandardOutput()).trimmed();
+        if (!output.isEmpty())
+            SoftwareLog(QStringLiteral("External Vision: ") + output);
+    });
+    connect(launchedProcess, &QProcess::readyReadStandardError, this,
+            [launchedProcess]() {
+        const QString output = QString::fromUtf8(launchedProcess->readAllStandardError()).trimmed();
+        if (!output.isEmpty())
+            SoftwareLog(QStringLiteral("External Vision stderr: ") + output);
+    });
+    connect(launchedProcess, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
+            this, [this, launchedProcess](int exitCode, QProcess::ExitStatus exitStatus) {
+        const QString detail = tr("Exit code %1 (%2)")
+            .arg(exitCode)
+            .arg(exitStatus == QProcess::NormalExit ? tr("normal") : tr("crashed"));
+        setExternalVisionStatus(QStringLiteral("SCRIPT STOPPED"), detail,
+                                exitCode == 0 ? QStringLiteral("#e0a030")
+                                              : QStringLiteral("#ef5350"));
+        ui->pbRunExternalScript->setChecked(false);
+        if (process == launchedProcess)
+            process = nullptr;
+        launchedProcess->deleteLater();
+    });
+    connect(launchedProcess, &QProcess::errorOccurred, this,
+            [this, launchedProcess](QProcess::ProcessError processError) {
+        setExternalVisionStatus(QStringLiteral("SCRIPT ERROR"),
+                                launchedProcess->errorString(),
+                                QStringLiteral("#ef5350"));
+        ui->pbRunExternalScript->setChecked(false);
+        if (processError == QProcess::FailedToStart) {
+            if (process == launchedProcess)
+                process = nullptr;
+            launchedProcess->deleteLater();
         }
-        
-        process->deleteLater();
-        process = nullptr;
-    } else {
-        qDebug() << "Python script started successfully";
-    }
+    });
+
+    setExternalVisionStatus(QStringLiteral("STARTING SCRIPT"), fileInfo.fileName(),
+                            QStringLiteral("#42a5f5"));
+    launchedProcess->start(pythonExePath, arguments);
 }
 
 QString RobotWindow::getModelPath()
@@ -6867,6 +8868,17 @@ void RobotWindow::initPlugins(QStringList plugins)
         qDebug() << "Loading plugin:" << pluginName;
         
         QPluginLoader loader(file);
+        const QString compatibilityError =
+            DeltaXPluginContract::compatibilityError(loader.metaData());
+        if (!compatibilityError.isEmpty())
+        {
+            const QString error = QString("Plugin '%1' is incompatible: %2")
+                                      .arg(pluginName, compatibilityError);
+            qWarning() << error;
+            failedPlugins << pluginName;
+            continue;
+        }
+
         if (!loader.load())
         {
             QString error = QString("Failed to load plugin '%1': %2")
@@ -6941,6 +8953,66 @@ void RobotWindow::initPlugins(QStringList plugins)
                        .arg(failedList));
         }
     }
+
+    updateIndustrialCameraAvailability();
+}
+
+void RobotWindow::updateIndustrialCameraAvailability()
+{
+    industrialCameraBackendAvailable = false;
+    industrialCameraBackendStatus = QStringLiteral(
+        "GigE/USB3 Vision unavailable: industrial camera plugin is not installed");
+
+    if (industrialCameraPlugin) {
+        const QVariant availableProperty =
+            industrialCameraPlugin->property("cameraBackendAvailable");
+        industrialCameraBackendAvailable = availableProperty.isValid()
+            ? availableProperty.toBool() : true;
+        const QString pluginStatus =
+            industrialCameraPlugin->property("cameraBackendStatus").toString();
+        if (!pluginStatus.isEmpty())
+            industrialCameraBackendStatus = pluginStatus;
+        else if (industrialCameraBackendAvailable)
+            industrialCameraBackendStatus = QStringLiteral(
+                "GigE/USB3 Vision backend is ready");
+    }
+
+    const int industrialIndex =
+        ui->cbSourceForImageProvider->findText(QStringLiteral("Industrial Camera"));
+    const int webcamIndex =
+        ui->cbSourceForImageProvider->findText(QStringLiteral("Webcam"));
+    if (webcamIndex >= 0) {
+        ui->cbSourceForImageProvider->setItemData(
+            webcamIndex,
+            QStringLiteral("USB/USB3 UVC camera via Media Foundation/DirectShow; no vendor SDK required"),
+            Qt::ToolTipRole);
+    }
+    if (industrialIndex >= 0) {
+        ui->cbSourceForImageProvider->setItemData(
+            industrialIndex, industrialCameraBackendStatus, Qt::ToolTipRole);
+        if (auto* model = qobject_cast<QStandardItemModel*>(
+                ui->cbSourceForImageProvider->model())) {
+            if (QStandardItem* item = model->item(industrialIndex))
+                item->setEnabled(industrialCameraBackendAvailable);
+        }
+
+        if (!industrialCameraBackendAvailable &&
+            ui->cbSourceForImageProvider->currentIndex() == industrialIndex) {
+            if (webcamIndex >= 0)
+                ui->cbSourceForImageProvider->setCurrentIndex(webcamIndex);
+        }
+    }
+
+    QHash<QString, QVariant> backendState;
+    backendState.insert(QStringLiteral("Camera.Backends.UvcUsb.Available"), true);
+    backendState.insert(QStringLiteral("Camera.Backends.Industrial.Available"),
+                        industrialCameraBackendAvailable);
+    backendState.insert(QStringLiteral("Camera.Backends.Industrial.Status"),
+                        industrialCameraBackendStatus);
+    VariableManager::instance().updateBatchScoped(ProjectName, backendState);
+
+    SoftwareLog(QStringLiteral("Camera backend: %1")
+                    .arg(industrialCameraBackendStatus));
 }
 
 QList<DeltaXPlugin*> *RobotWindow::getPluginList()
@@ -6966,6 +9038,8 @@ void RobotWindow::connectPluginSignals(DeltaXPlugin* plugin)
             // Connect plugin to camera system
             connect(plugin, &DeltaXPlugin::CapturedImage, 
                     CameraInstance, &Camera::GetImageFromExternal);
+            connect(plugin, &DeltaXPlugin::CaptureError,
+                    CameraInstance, &Camera::OnExternalCaptureFailed);
             connect(CameraInstance, &Camera::RequestCapture, 
                     plugin, &DeltaXPlugin::RequestCapture);
             
@@ -7077,7 +9151,7 @@ QVariant RobotWindow::getVariableOptimized(const QString& key, const QVariant& d
     if (key.isEmpty())
         return defaultValue;
 
-    return m_variableManager->getVar(key, defaultValue);
+    return m_variableManager->getVarScoped(ProjectName, key, defaultValue);
 }
 
 void RobotWindow::scheduleBatchUpdate()
@@ -7091,12 +9165,8 @@ void RobotWindow::processBatchUpdates()
     if (m_pendingUpdates.isEmpty())
         return;
 
-    // Process all pending updates in one batch
-    for (auto it = m_pendingUpdates.begin(); it != m_pendingUpdates.end(); ++it)
-    {
-        m_variableManager->updateVar(it.key(), it.value());
-    }
-
+    // Commit the whole UI/device change with one lock acquisition.
+    m_variableManager->updateBatchScoped(ProjectName, m_pendingUpdates);
     m_pendingUpdates.clear();
 }
 
@@ -7573,12 +9643,9 @@ void RobotWindow::AddObjectAtPosition()
     SoftwareLog(QString("Input values: x=%1, y=%2, w=%3, h=%4").arg(x).arg(y).arg(width).arg(height));
     
     // Get current tracking instance - use first available if cbSelectedTracking is empty
-    int selectedEncoderID = 0;
-    if (!ui->cbSelectedTracking->currentText().isEmpty()) {
-        selectedEncoderID = ui->cbSelectedTracking->currentText().toInt();
-    }
+    int selectedEncoderID = ui->cbSelectedTracking->currentIndex();
     
-    if (selectedEncoderID >= TrackingManagerInstance->Trackings.count()) {
+    if (selectedEncoderID < 0 || selectedEncoderID >= TrackingManagerInstance->Trackings.count()) {
         SoftwareLog(QString("Warning: Selected tracking ID %1 invalid, using first tracking instance (0)").arg(selectedEncoderID));
         selectedEncoderID = 0;
     }
@@ -7595,7 +9662,7 @@ void RobotWindow::AddObjectAtPosition()
     ObjectInfo object(-1, 0, position, width, height, angle); // UID will be assigned automatically
     
     // Add object to tracking instance
-    QString listName = TrackingManagerInstance->Trackings.at(selectedEncoderID)->ListName;
+    QString listName = TrackingManagerInstance->Trackings.at(selectedEncoderID)->GetListName();
     SoftwareLog(QString("Adding object to tracking list: %1").arg(listName));
     
     TrackingManagerInstance->AddObjectToTracking(listName, object);
@@ -7643,12 +9710,9 @@ void RobotWindow::AddRandomObject()
     ui->leAddObjectHeight->setText(QString::number(height, 'f', 1));
     
     // Get current tracking instance - use first available if cbSelectedTracking is empty
-    int selectedEncoderID = 0;
-    if (!ui->cbSelectedTracking->currentText().isEmpty()) {
-        selectedEncoderID = ui->cbSelectedTracking->currentText().toInt();
-    }
+    int selectedEncoderID = ui->cbSelectedTracking->currentIndex();
     
-    if (selectedEncoderID >= TrackingManagerInstance->Trackings.count()) {
+    if (selectedEncoderID < 0 || selectedEncoderID >= TrackingManagerInstance->Trackings.count()) {
         SoftwareLog(QString("Warning: Selected tracking ID %1 invalid, using first tracking instance (0)").arg(selectedEncoderID));
         selectedEncoderID = 0;
     }
@@ -7657,7 +9721,7 @@ void RobotWindow::AddRandomObject()
     QVector3D position(x, y, 0);
     ObjectInfo object(-1, 0, position, width, height, angle);
     
-    QString listName = TrackingManagerInstance->Trackings.at(selectedEncoderID)->ListName;
+    QString listName = TrackingManagerInstance->Trackings.at(selectedEncoderID)->GetListName();
     SoftwareLog(QString("Adding object to tracking list: %1").arg(listName));
     
     TrackingManagerInstance->AddObjectToTracking(listName, object);
@@ -7670,7 +9734,7 @@ void RobotWindow::ClearAllTrackedObjects()
 {
     // Clear objects from all tracking instances
     for (int i = 0; i < TrackingManagerInstance->Trackings.count(); i++) {
-        QString listName = TrackingManagerInstance->Trackings.at(i)->ListName;
+        QString listName = TrackingManagerInstance->Trackings.at(i)->GetListName();
         TrackingManagerInstance->ClearObjects(listName);
     }
     

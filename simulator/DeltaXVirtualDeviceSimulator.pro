@@ -5,8 +5,6 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 CONFIG += c++17
 
 macx {
-    QMAKE_CFLAGS += -include arm_acle.h
-    QMAKE_CXXFLAGS += -include arm_acle.h
     QMAKE_INFO_PLIST = $$PWD/resources/macos/Info.plist
 }
 

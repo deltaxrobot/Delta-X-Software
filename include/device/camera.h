@@ -12,6 +12,10 @@
 #include <QThread>
 #include <QCoreApplication>
 #include <QDebug>
+#include <QElapsedTimer>
+#include <QTimer>
+
+#include "VisionTypes.h"
 
 
 
@@ -20,6 +24,7 @@ class Camera : public QObject
     Q_OBJECT
 public:
     explicit Camera(QObject *parent = nullptr);
+    ~Camera() override;
 
     int RunningCamera = -1;
     bool IsCameraPause = false;
@@ -33,28 +38,45 @@ public:
     int Width = 0;
     int Height = 0;
     QString Source = "Webcam";
+    QString ProjectName = "project0";
     int FrameID = -1;
 
 signals:
-    void StartedCapture(int tracking);
+    void StartedCapture(int tracking, quint64 frameId, quint64 requestId);
+    void FrameCaptured(VisionFrame frame);
     void GotImage(cv::Mat);
     void RequestCapture();
     void StopCameraRequest();
     void connectedResult(bool isOpen, int requestId);
+    void CaptureFailed(int trackingId, quint64 requestId, QString reason);
 
 public slots:
     void OpenCamera(int id, int requestId = 0);
     void OpenCameraWithResolution(int id, int width, int height, int requestId = 0);
     void GetImageFromExternal(cv::Mat mat);
+    void OnExternalCaptureFailed(QString reason);
     void GeneralCapture();
     void CaptureWebcam();
-    void CaptureAndDetect();
+    void CaptureAndDetect(quint64 requestId, int trackingId);
     void SetTracking(int id);
+    void SetSource(QString source);
+    void SetImages(QList<cv::Mat> images);
+    bool OpenVideoFile(QString path, int requestedWidth, int requestedHeight);
+    void ReleaseCamera();
 
  private:
     bool configureOpenedCameraResolution();
     cv::Size GetMaxResolution(cv::VideoCapture* cap);
+    void capture(quint64 requestId, int trackingId);
+    void publishFrame(const cv::Mat& image, quint64 requestId, int trackingId);
+    void failCapture(quint64 requestId, int trackingId, const QString& reason);
     int trackingThreadId = 0;
+    quint64 nextFrameId = 1;
+    bool industrialCapturePending = false;
+    quint64 pendingIndustrialRequestId = 0;
+    int pendingIndustrialTrackingId = 0;
+    QTimer* industrialCaptureTimeout = nullptr;
+    QElapsedTimer monotonicClock;
 };
 
 #endif // CAMERA_H

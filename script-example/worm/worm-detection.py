@@ -114,7 +114,7 @@ def find_center(thres, img):
         # cv2.drawContours(img, contour, -1, (0, 255, 0), 3)
         img = draw_intersection_and_midpoint(img, thres, contour)
 
-    # Hiển thị ảnh
+    # Display the image.
     cv2.imshow('Image with worm contour and center', img)
     # cv2.waitKey(0)
 
@@ -130,10 +130,10 @@ def centroid(contour):
 
 
 def calculate_direction(contour):
-    # Chuyển đổi contour sang mảng numpy và chỉnh lại kích thước của mảng
+    # Convert the contour to a NumPy array and reshape it.
     contour_points = np.array(contour).reshape(-1, 2).astype(np.float32)
     
-    # Tính toán phân tích thành phần chính (PCA)
+    # Calculate principal component analysis (PCA).
     mean, eigenvectors = cv2.PCACompute(contour_points, mean=None)
     
     return eigenvectors[0]
@@ -143,25 +143,25 @@ def find_best_suction_point(image, worm_contours):
     max_score = -np.inf
 
     for contour in worm_contours:
-        # Áp dụng PCA để tìm trục chính của giun
+        # Use PCA to find the worm's principal axis.
         contour_points = np.squeeze(contour)
         pca = PCA(n_components=2)
         pca.fit(contour_points)
 
-        # Tính toán chiều dài giun dựa trên trục chính
+        # Estimate worm length along the principal axis.
         length = np.sqrt(pca.explained_variance_ratio_[0]) * np.sqrt(pca.singular_values_[0])
 
-        # Tìm trung điểm của trục chính
+        # Find the midpoint of the principal axis.
         center = pca.mean_
         direction = pca.components_[0]
         midpoint = center + direction * length / 2
 
-        # Chuyển đổi toạ độ trung điểm từ PCA về không gian ảnh gốc
+        # Convert the PCA midpoint back to image coordinates.
         midpoint_homogeneous = np.append(midpoint, 1)
         inverse_rotation_matrix = np.linalg.inv(rotation_matrix)
         transformed_midpoint = np.dot(inverse_rotation_matrix, midpoint_homogeneous)[:2]
 
-        # Đánh giá điểm này
+        # Evaluate this candidate point.
         score = length
         if score > max_score:
             max_score = score
@@ -174,7 +174,7 @@ def draw_intersection_and_midpoint(image, binary_image, contour):
 
     best_suction_point = find_best_suction_point(image, contour)
 
-    # Đánh dấu điểm hút trên ảnh
+    # Mark the suction point on the image.
     cv2.circle(image, best_suction_point, 5, (0, 255, 0), -1)
 
     return image

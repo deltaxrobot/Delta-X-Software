@@ -169,7 +169,7 @@ def Loop_Event():
                 except:
                     break
         except Exception as e:
-            # In ra lỗi
+            # Report the error.
             print(e)
             traceback.print_exc()
             time.sleep(2)

@@ -10,6 +10,7 @@
 #include <QMap>
 #include <QtMath>
 #include <QMutex>
+#include <QReadWriteLock>
 #include <QElapsedTimer>
 #include "Parameter.h"
 #include <QFileInfo>
@@ -19,6 +20,8 @@
 #include <QVariant>
 #include <QRegularExpression>
 #include <QStack>
+#include <atomic>
+#include "GScriptAnalyzer.h"
 
 // Forward declarations for cloud point mapping
 class CloudPointMapper;
@@ -37,6 +40,19 @@ public:
         CURSOR_POSITION,
     };
 
+    enum class ExecutionState {
+        Idle,
+        Validating,
+        Running,
+        WaitingForDevice,
+        WaitingForTimer,
+        WaitingForCondition,
+        Stopping,
+        Completed,
+        Faulted
+    };
+    Q_ENUM(ExecutionState)
+
     QString ProjectName = "project0";
 
     QString DefaultRobot = "robot0";
@@ -44,6 +60,7 @@ public:
     QString DefaultEncoder = "encoder0";
     QString DefaultSlider = "slider0";
     QString DefaultDevice = "device0";
+    QString ActiveDevice = "robot0";
     QString ID = "thread0";
 
     void SetGcodeScript(QString gcode);
@@ -52,6 +69,8 @@ public:
     QString GetProgramPath();
     QString GetProgramName();
     bool IsRunning();
+    ExecutionState State() const;
+    QList<GScriptDiagnostic> Validate(const QString& source) const;
 
 public slots:
     void ExecuteGcode(QString gcodes, int position);
@@ -75,10 +94,18 @@ signals:
     void CaptureCamera();
     void ResumeCamera();
     void LogMessage(QString message);
+    void DiagnosticsReady(QList<GScriptDiagnostic> diagnostics);
+    void ExecutionStateChanged(GcodeScript::ExecutionState state, QString message);
+    void ExecutionFinished(bool success, QString message);
 
     void UpdateTrackingRequest(int id);
     void GetObjectsRequest(int trackingID, QString inAreaListName, float min, float max, bool isXDirection);
-    void CaptureAndDetectRequest();
+    void CaptureAndDetectRequest(quint64 requestId, int trackingId);
+    void ClaimObjectRequest(int trackingID, QString resultName, QString owner,
+                            float minX, float maxX, float minY, float maxY,
+                            int typeFilter, int leaseMs);
+    void ReleaseObjectRequest(int trackingID, int uid, QString owner);
+    void CompleteObjectRequest(int trackingID, int uid, QString owner);
 
     void SendGcodeToDevice(QString deviceId, QString gcode);
 
@@ -214,7 +241,9 @@ private:
     QString gcodeScript;
     QString programPath;
     QString programName;
-    bool isRunning;
+    mutable QReadWriteLock scriptMetadataLock;
+    std::atomic_bool isRunning;
+    std::atomic<ExecutionState> executionState{ExecutionState::Idle};
 
     //......... Global values
 
@@ -323,6 +352,14 @@ private:
     // Execution gating flags
     bool waitForHomePosition = false;   // After sending G28, wait for Position response before proceeding
     quint64 pendingResponseToken = 0;   // Invalidate device-response timeouts when state changes
+    quint64 expectedVisionRequestId = 0; // Exact camera request accepted by visionN.
+    QString pendingResponseVariable;   // Optional result target for Psend.
+    QString pendingConditionExpression;
+    QString pendingConditionMessage;
+    int pendingConditionTimeoutMs = 0;
+    int pendingConditionPollMs = 20;
+    quint64 pendingConditionToken = 0;
+    QElapsedTimer pendingConditionTimer;
     
     // Simple function definition struct
     struct SimpleFunctionDef {
@@ -381,7 +418,19 @@ private:
     bool executeForLoopIteration(); // Execute next iteration of FOR loop
     int findEndForLine(int startLine); // Find matching ENDFOR line
     
-    // Removed unused/undefined WHILE/SWITCH/BREAK/CONTINUE and logical helpers
+    bool handleWHILE(QList<QString> valuePairs, int i);
+    bool handleENDWHILE(QList<QString> valuePairs, int i);
+    bool handleBREAK();
+    bool handleCONTINUE();
+    int findEndWhileLine(int startLine) const;
+
+    bool handleSWITCH(QList<QString> valuePairs, int i);
+    bool handleCASE(QList<QString> valuePairs, int i);
+    bool handleDEFAULT();
+    bool handleENDSWITCH();
+    int findEndSwitchLine(int startLine) const;
+    int findMatchingSwitchBranch(int startLine, const QString& switchValue,
+                                 bool* matchedCase);
     
     // Simple function methods
     bool handleFUNCTION(QList<QString> valuePairs, int i);
@@ -398,9 +447,18 @@ private:
     bool handleDEFINE_SUBPROGRAM(QList<QString> valuePairs, int i);
     bool handleGCODE(QString transmitGcode);
     void handleSENT_TO_DEVICE(QList<QString> valuePairs, int i);
-    void finishExecution(bool abortActiveMotion, const QString& reason = QString());
+    void setExecutionState(ExecutionState state, const QString& message = QString());
+    void finishExecution(bool abortActiveMotion, const QString& reason = QString(),
+                         bool faulted = false);
     void requestActiveDeviceStop(const QString& deviceId, const QString& msg);
     void startPendingResponseTimeout(const QString& deviceId, const QString& msg, int timeoutMs = 120000);
+    bool beginDeviceRequest(const QString& deviceId, const QString& msg,
+                            int timeoutMs, const QString& responseVariable = QString());
+    void releaseDeviceLease(const QString& deviceId);
+    bool isExplicitDeviceToken(const QString& token) const;
+    void publishExecutionVariable(const QString& name, const QVariant& value);
+    void faultExecution(const QString& message, bool abortActiveMotion = false);
+    void pollPendingCondition();
 
     QString calculateExpressions(QString expression);
     QString calculateExpressions2(QString expression);
@@ -421,6 +479,7 @@ private:
     void updateVariables(QString str);
     void saveVariable(QString name, QString value);
     void saveVariable(QString name, QVariant value);
+    void saveRuntimeVariable(const QString& name, const QVariant& value);
     bool tryGenerateMoveShortcut(const QStringList& tokens, QString& outGcode);
     bool resolvePointReference(const QString& token, QVector3D& outVec) const;
     bool variantToVector3D(const QVariant& value, QVector3D& outVec) const;
@@ -657,6 +716,7 @@ private:
     // Cloud point mapping instance
     CloudPointMapper* m_cloudPointMapper;
     bool m_cloudPointMapperInitialized;
+    QString m_cloudPointMapperProject;
 };
 
 #endif

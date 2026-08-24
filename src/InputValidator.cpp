@@ -2,12 +2,6 @@
 #include <QRegularExpression>
 #include <cmath>
 
-#ifdef _WIN32
-#include <float.h>
-#define isnan _isnan
-#define isinf !_finite
-#endif
-
 bool InputValidator::validateFloat(const QString& text, float& result, const QString& fieldName)
 {
     if (isEmpty(text)) {
@@ -22,7 +16,7 @@ bool InputValidator::validateFloat(const QString& text, float& result, const QSt
     }
     
     // Check for valid numeric range
-    if (isnan(result) || isinf(result)) {
+    if (std::isnan(result) || std::isinf(result)) {
         return false;
     }
     
@@ -112,4 +106,4 @@ void InputValidator::showValidationError(QWidget* parent, const QString& fieldNa
     }
     
     showError(parent, message, "Input Validation Error");
-} 
+}

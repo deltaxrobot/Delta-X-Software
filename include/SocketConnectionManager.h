@@ -14,6 +14,12 @@
 #include <QJsonDocument>
 #include <QByteArray>
 #include <QJsonArray>
+#include <QHash>
+#include <QSet>
+#include <QPointer>
+#include <QElapsedTimer>
+
+#include "VisionTypes.h"
 
 class SocketConnectionManager : public QObject
 {
@@ -61,18 +67,43 @@ public slots:
     void sendImageToImageClients(const QImage& image);
     void sendImageToImageClients(cv::Mat);
     void sendImageToExternalScript(cv::Mat input);
+    void sendVisionFrame(VisionFrame frame);
     void updateLatestGscript(const QString& script);
 
 signals:
     void variableChanged(const QString& varName, const QVariant& value);
     void objectUpdated(QString listName, QList<QStringList> list);
     void blobUpdated(QStringList blobs);
+    void externalDetectionsReceived(VisionDetections detections);
+    void externalVisionStatusChanged(bool connected, QString peer);
+    void externalVisionFrameSent(quint64 frameId, quint64 requestId, int trackingId,
+                                 qint64 payloadBytes);
+    void externalVisionResultReceived(quint64 frameId, quint64 requestId, int trackingId,
+                                      int objectCount, qint64 latencyMs);
+    void externalVisionProtocolError(QString peer, QString message);
+    void externalVisionFrameFailed(int trackingId, quint64 frameId, quint64 requestId,
+                                   QString reason);
+    void remoteControlRejected(QString operation, QString reason);
     void gcodeReceived(QString gcode);
     void gscriptEditorReceived(QString gcode);
     void eventReceived(QString type, QString name, QString action);
 
 private:
     void sendImageAsJson(cv::Mat mat);
+    bool processDetectionJson(QTcpSocket* socket, const QByteArray& json,
+                              bool requireFrameMetadata = false);
+    void processClientPayload(QTcpSocket* socket, QByteArray data);
+    bool writeFramedJson(QTcpSocket* socket, const QJsonObject& object);
+    bool registerExternalVisionClient(QTcpSocket* socket, const QString& protocol);
+    void unregisterExternalVisionClient(QTcpSocket* socket);
+    QString socketPeerName(const QTcpSocket* socket) const;
+    static QString visionFrameKey(quint64 frameId, quint64 requestId, int trackingId);
+    void reportExternalVisionError(QTcpSocket* socket, const QString& message);
+    QHash<QTcpSocket*, QByteArray> clientBuffers;
+    QSet<QTcpSocket*> externalVisionClients;
+    QPointer<QTcpSocket> primaryExternalVisionClient;
+    QElapsedTimer externalVisionClock;
+    QHash<QString, qint64> pendingVisionFrames;
 };
 
 #endif // SOCKETCONNECTIONMANAGER_H

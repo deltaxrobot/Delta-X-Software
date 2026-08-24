@@ -25,11 +25,11 @@ response = True
 gripper = False
 
 def calculate_sphere_coordinates(x, y, radius, sphere_center=(0, 0, 0)):
-    # Kiểm tra xem điểm có nằm ngoài hình cầu hay không. Nếu có thì gán z = sphere_center[2]
+    # Clamp z to the sphere centre when the point is outside the sphere.
     if (x - sphere_center[0]) ** 2 + (y - sphere_center[1]) ** 2 > radius ** 2:
         return x, y, sphere_center[2]
     
-    # Tính toán tọa độ z
+    # Calculate z.
     z = math.sqrt(radius ** 2 - (x - sphere_center[0]) ** 2 - (y - sphere_center[1]) ** 2) + sphere_center[2]
     return x, y, z
 
@@ -64,7 +64,7 @@ def send_init_message():
         print("Error sending message:", e)
 
 def send_joystick_data(axis, value):
-    # Hàm sẽ thoát nên giữa hai lần gọi dưới 0.1s
+    # The function returns quickly, so consecutive calls are less than 0.1 s apart.
     global last_time
     if time.time() - last_time < 0.2:
         return
@@ -135,7 +135,7 @@ def process_joystick_button(button):
         # software_socket.sendall(f"GScript = G01 X{x} Y{y} Z{z}\n".encode())
         pass
 
-    # Lưu x, y, z vào file, nếu file không tồn tại thì tạo mới
+    # Store x, y, and z, creating the file when necessary.
     with open('coordinates.txt', 'w') as f:
         f.write(str(x) + '\n')
         f.write(str(y) + '\n')

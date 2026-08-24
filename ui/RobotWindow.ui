@@ -29,7 +29,7 @@
    </font>
   </property>
   <property name="windowTitle">
-   <string>Delta X Software - Version 1.3.0</string>
+   <string>Delta X Software</string>
   </property>
   <property name="windowIcon">
    <iconset resource="../resource.qrc">
@@ -2093,6 +2093,16 @@ li.checked::marker { content: &quot;\2612&quot;; }
                               </item>
                              </widget>
                             </item>
+                            <item>
+                             <widget class="QPushButton" name="pbIntrinsicCalibration">
+                              <property name="text">
+                               <string>Lens Calibration</string>
+                              </property>
+                              <property name="toolTip">
+                               <string>Calibrate camera intrinsics and lens distortion using a chessboard</string>
+                              </property>
+                             </widget>
+                            </item>
                            </layout>
                           </widget>
                          </item>
@@ -3409,7 +3419,7 @@ QFrame
                               <number>10</number>
                              </property>
                              <item>
-                              <layout class="QHBoxLayout" name="horizontalLayout_29"/>
+                              <layout class="QHBoxLayout" name="horizontalLayoutCalibrationPlaceholder"/>
                              </item>
                              <item>
                               <widget class="QFrame" name="frame_13">
@@ -3826,7 +3836,7 @@ QFrame
                                 <item row="5" column="1">
                                  <widget class="QLabel" name="label_209">
                                   <property name="text">
-                                   <string>v2 byte: &quot;Image\n&quot; + data</string>
+                                    <string>Response: DXV1 &lt;json_length&gt;\n + JSON detections</string>
                                   </property>
                                  </widget>
                                 </item>
@@ -3858,7 +3868,7 @@ QFrame
 }</string>
                                   </property>
                                   <property name="text">
-                                   <string>Open script example</string>
+                                    <string>Open DXV1 examples</string>
                                   </property>
                                  </widget>
                                 </item>
@@ -3890,14 +3900,14 @@ QFrame
                                    </size>
                                   </property>
                                   <property name="text">
-                                   <string>script-example/yolov8_detect.py</string>
+                                    <string>script-example/receive_image_json.py</string>
                                   </property>
                                  </widget>
                                 </item>
                                 <item row="4" column="1">
                                  <widget class="QLabel" name="label_186">
                                   <property name="text">
-                                   <string>v1 byte:  &quot;[width][height][channel][data]&quot;</string>
+                                    <string>DXV1 &lt;json_length&gt;\n + JSON (JPEG/Base64 image)</string>
                                   </property>
                                  </widget>
                                 </item>
@@ -3927,7 +3937,7 @@ QFrame
                                 <item row="7" column="1">
                                  <widget class="QLabel" name="label_224">
                                   <property name="text">
-                                   <string>or string: &quot;#Blobs = [id],[x],[y],[width],[height],[angle];&quot;</string>
+                                    <string>Required correlation: frameId + requestId + trackingId</string>
                                   </property>
                                  </widget>
                                 </item>
@@ -3987,14 +3997,14 @@ QFrame
                                 <item row="1" column="0">
                                  <widget class="QLabel" name="label_145">
                                   <property name="text">
-                                   <string>Python Url</string>
+                                    <string>Detector script</string>
                                   </property>
                                  </widget>
                                 </item>
                                 <item row="6" column="1" colspan="3">
                                  <widget class="QLabel" name="label_187">
                                   <property name="text">
-                                   <string>string: &quot;#Object = [id],[x],[y],[width],[height],[angle];&quot;</string>
+                                    <string>JSON objects: type, x, y, z, w, h, angle; optional confidence, label, externalId</string>
                                   </property>
                                  </widget>
                                 </item>
@@ -5503,6 +5513,95 @@ QGroupBox::title
                               </property>
                              </widget>
                             </item>
+                            <item row="13" column="0">
+                             <widget class="QLabel" name="labelTrackingPublishInterval">
+                              <property name="text">
+                               <string>Publish interval (ms)</string>
+                              </property>
+                              <property name="alignment">
+                               <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="13" column="2">
+                             <widget class="QSpinBox" name="sbTrackingPublishInterval">
+                              <property name="minimum"><number>0</number></property>
+                              <property name="maximum"><number>5000</number></property>
+                              <property name="value"><number>50</number></property>
+                              <property name="specialValueText"><string>Every update</string></property>
+                             </widget>
+                            </item>
+                            <item row="14" column="0">
+                             <widget class="QLabel" name="labelTrackingVisionStale">
+                              <property name="text"><string>Vision stale (ms)</string></property>
+                              <property name="alignment"><set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set></property>
+                             </widget>
+                            </item>
+                            <item row="14" column="2">
+                             <widget class="QSpinBox" name="sbTrackingVisionStale">
+                              <property name="minimum"><number>50</number></property>
+                              <property name="maximum"><number>120000</number></property>
+                              <property name="value"><number>2000</number></property>
+                             </widget>
+                            </item>
+                            <item row="15" column="0">
+                             <widget class="QLabel" name="labelTrackingEncoderStale">
+                              <property name="text"><string>Encoder stale (ms)</string></property>
+                              <property name="alignment"><set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set></property>
+                             </widget>
+                            </item>
+                            <item row="15" column="2">
+                             <widget class="QSpinBox" name="sbTrackingEncoderStale">
+                              <property name="minimum"><number>50</number></property>
+                              <property name="maximum"><number>120000</number></property>
+                              <property name="value"><number>2000</number></property>
+                             </widget>
+                            </item>
+                            <item row="16" column="0">
+                             <widget class="QLabel" name="labelTrackingFrameTimeout">
+                              <property name="text"><string>Frame timeout (ms)</string></property>
+                              <property name="alignment"><set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set></property>
+                             </widget>
+                            </item>
+                            <item row="16" column="2">
+                             <widget class="QSpinBox" name="sbTrackingFrameTimeout">
+                              <property name="minimum"><number>100</number></property>
+                              <property name="maximum"><number>120000</number></property>
+                              <property name="value"><number>3000</number></property>
+                             </widget>
+                            </item>
+                            <item row="17" column="0">
+                             <widget class="QLabel" name="labelTrackingMaxFrames">
+                              <property name="text"><string>Max pending frames</string></property>
+                              <property name="alignment"><set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set></property>
+                             </widget>
+                            </item>
+                            <item row="17" column="2">
+                             <widget class="QSpinBox" name="sbTrackingMaxFrames">
+                              <property name="minimum"><number>1</number></property>
+                              <property name="maximum"><number>1024</number></property>
+                              <property name="value"><number>8</number></property>
+                             </widget>
+                            </item>
+                            <item row="18" column="0">
+                             <widget class="QLabel" name="labelTrackingMaxEncoderReads">
+                              <property name="text"><string>Max encoder queue</string></property>
+                              <property name="alignment"><set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set></property>
+                             </widget>
+                            </item>
+                            <item row="18" column="2">
+                             <widget class="QSpinBox" name="sbTrackingMaxEncoderReads">
+                              <property name="minimum"><number>2</number></property>
+                              <property name="maximum"><number>4096</number></property>
+                              <property name="value"><number>24</number></property>
+                             </widget>
+                            </item>
+                            <item row="19" column="0" colspan="3">
+                             <widget class="QLabel" name="lbTrackingRealtimeState">
+                              <property name="text"><string>Runtime: not started</string></property>
+                              <property name="wordWrap"><bool>true</bool></property>
+                             </widget>
+                            </item>
                             <item row="3" column="0">
                              <widget class="QLabel" name="label_169">
                               <property name="text">
@@ -6182,7 +6281,7 @@ padding: 5px;</string>
                              </widget>
                             </item>
                             <item row="3" column="4">
-                             <widget class="QLineEdit" name="leSourcePoint1X"/>
+                             <widget class="QLineEdit" name="leMappingSourcePoint1X"/>
                             </item>
                             <item row="2" column="6">
                              <widget class="QLabel" name="label_202">
@@ -6278,7 +6377,7 @@ padding: 5px;</string>
                              </widget>
                             </item>
                             <item row="9" column="6">
-                             <widget class="QLineEdit" name="leDestinationPoint1Y"/>
+                             <widget class="QLineEdit" name="leMappingDestinationPoint1Y"/>
                             </item>
                             <item row="3" column="3">
                              <widget class="QLabel" name="label_203">
@@ -6291,10 +6390,10 @@ padding: 5px;</string>
                              </widget>
                             </item>
                             <item row="9" column="4">
-                             <widget class="QLineEdit" name="leDestinationPoint1X"/>
+                             <widget class="QLineEdit" name="leMappingDestinationPoint1X"/>
                             </item>
                             <item row="10" column="4">
-                             <widget class="QLineEdit" name="leDestinationPoint2X"/>
+                             <widget class="QLineEdit" name="leMappingDestinationPoint2X"/>
                             </item>
                             <item row="0" column="3">
                              <widget class="QLabel" name="label_165">
@@ -6314,10 +6413,10 @@ padding: 5px;</string>
                              </widget>
                             </item>
                             <item row="10" column="6">
-                             <widget class="QLineEdit" name="leDestinationPoint2Y"/>
+                             <widget class="QLineEdit" name="leMappingDestinationPoint2Y"/>
                             </item>
                             <item row="5" column="6">
-                             <widget class="QLineEdit" name="leSourcePoint2Y"/>
+                             <widget class="QLineEdit" name="leMappingSourcePoint2Y"/>
                             </item>
                             <item row="3" column="7">
                              <widget class="QToolButton" name="tbPasteSourcePoint1">
@@ -6370,7 +6469,7 @@ padding: 5px;</string>
                              </widget>
                             </item>
                             <item row="5" column="4">
-                             <widget class="QLineEdit" name="leSourcePoint2X"/>
+                             <widget class="QLineEdit" name="leMappingSourcePoint2X"/>
                             </item>
                             <item row="9" column="3">
                              <widget class="QLabel" name="label_204">
@@ -6393,7 +6492,7 @@ padding: 5px;</string>
                              </widget>
                             </item>
                             <item row="3" column="6">
-                             <widget class="QLineEdit" name="leSourcePoint1Y"/>
+                             <widget class="QLineEdit" name="leMappingSourcePoint1Y"/>
                             </item>
                             <item row="8" column="3">
                              <widget class="QLabel" name="label_200">
@@ -6578,7 +6677,7 @@ padding: 5px;</string>
                            </property>
                            <layout class="QGridLayout" name="gridLayout_42">
                             <item row="11" column="5">
-                             <widget class="QLineEdit" name="leDestinationPoint1Y">
+                             <widget class="QLineEdit" name="lePerspectiveDestinationPoint1Y">
                               <property name="alignment">
                                <set>Qt::AlignmentFlag::AlignCenter</set>
                               </property>
@@ -6613,17 +6712,17 @@ padding: 5px;</string>
                              </widget>
                             </item>
                             <item row="4" column="3">
-                             <widget class="QLineEdit" name="leSourcePoint2X"/>
+                             <widget class="QLineEdit" name="lePerspectiveSourcePoint2X"/>
                             </item>
                             <item row="11" column="3">
-                             <widget class="QLineEdit" name="leDestinationPoint1X">
+                             <widget class="QLineEdit" name="lePerspectiveDestinationPoint1X">
                               <property name="alignment">
                                <set>Qt::AlignmentFlag::AlignCenter</set>
                               </property>
                              </widget>
                             </item>
                             <item row="7" column="5">
-                             <widget class="QLineEdit" name="leSourcePoint4Y"/>
+                             <widget class="QLineEdit" name="lePerspectiveSourcePoint4Y"/>
                             </item>
                             <item row="4" column="2">
                              <widget class="QLabel" name="label_217">
@@ -6701,14 +6800,14 @@ padding: 5px;</string>
                              </widget>
                             </item>
                             <item row="12" column="3">
-                             <widget class="QLineEdit" name="leDestinationPoint2X">
+                             <widget class="QLineEdit" name="lePerspectiveDestinationPoint2X">
                               <property name="alignment">
                                <set>Qt::AlignmentFlag::AlignCenter</set>
                               </property>
                              </widget>
                             </item>
                             <item row="13" column="5">
-                             <widget class="QLineEdit" name="leDestinationPoint3Y">
+                             <widget class="QLineEdit" name="lePerspectiveDestinationPoint3Y">
                               <property name="alignment">
                                <set>Qt::AlignmentFlag::AlignCenter</set>
                               </property>
@@ -6729,7 +6828,7 @@ padding: 5px;</string>
                              </widget>
                             </item>
                             <item row="4" column="5">
-                             <widget class="QLineEdit" name="leSourcePoint2Y"/>
+                             <widget class="QLineEdit" name="lePerspectiveSourcePoint2Y"/>
                             </item>
                             <item row="10" column="2">
                              <widget class="QLabel" name="label_207">
@@ -6744,24 +6843,24 @@ padding: 5px;</string>
                              </widget>
                             </item>
                             <item row="12" column="5">
-                             <widget class="QLineEdit" name="leDestinationPoint2Y">
+                             <widget class="QLineEdit" name="lePerspectiveDestinationPoint2Y">
                               <property name="alignment">
                                <set>Qt::AlignmentFlag::AlignCenter</set>
                               </property>
                              </widget>
                             </item>
                             <item row="14" column="3">
-                             <widget class="QLineEdit" name="leDestinationPoint4X">
+                             <widget class="QLineEdit" name="lePerspectiveDestinationPoint4X">
                               <property name="alignment">
                                <set>Qt::AlignmentFlag::AlignCenter</set>
                               </property>
                              </widget>
                             </item>
                             <item row="6" column="5">
-                             <widget class="QLineEdit" name="leSourcePoint3Y"/>
+                             <widget class="QLineEdit" name="lePerspectiveSourcePoint3Y"/>
                             </item>
                             <item row="6" column="3">
-                             <widget class="QLineEdit" name="leSourcePoint3X"/>
+                             <widget class="QLineEdit" name="lePerspectiveSourcePoint3X"/>
                             </item>
                             <item row="7" column="2">
                              <widget class="QLabel" name="label_219">
@@ -6771,14 +6870,14 @@ padding: 5px;</string>
                              </widget>
                             </item>
                             <item row="14" column="5">
-                             <widget class="QLineEdit" name="leDestinationPoint4Y">
+                             <widget class="QLineEdit" name="lePerspectiveDestinationPoint4Y">
                               <property name="alignment">
                                <set>Qt::AlignmentFlag::AlignCenter</set>
                               </property>
                              </widget>
                             </item>
                             <item row="7" column="3">
-                             <widget class="QLineEdit" name="leSourcePoint4X"/>
+                             <widget class="QLineEdit" name="lePerspectiveSourcePoint4X"/>
                             </item>
                             <item row="10" column="3">
                              <widget class="QLabel" name="label_232">
@@ -6814,17 +6913,17 @@ padding: 5px;</string>
                              </widget>
                             </item>
                             <item row="13" column="3">
-                             <widget class="QLineEdit" name="leDestinationPoint3X">
+                             <widget class="QLineEdit" name="lePerspectiveDestinationPoint3X">
                               <property name="alignment">
                                <set>Qt::AlignmentFlag::AlignCenter</set>
                               </property>
                              </widget>
                             </item>
                             <item row="3" column="3">
-                             <widget class="QLineEdit" name="leSourcePoint1X"/>
+                             <widget class="QLineEdit" name="lePerspectiveSourcePoint1X"/>
                             </item>
                             <item row="3" column="5">
-                             <widget class="QLineEdit" name="leSourcePoint1Y"/>
+                             <widget class="QLineEdit" name="lePerspectiveSourcePoint1Y"/>
                             </item>
                             <item row="3" column="2">
                              <widget class="QLabel" name="label_211">
@@ -7219,7 +7318,7 @@ padding: 5px;</string>
                                 </widget>
                                </item>
                                <item row="0" column="5">
-                                <spacer name="horizontalSpacer_57">
+                                <spacer name="horizontalSpacerPointTool57">
                                  <property name="orientation">
                                   <enum>Qt::Orientation::Horizontal</enum>
                                  </property>
@@ -7378,6 +7477,16 @@ QHeaderView::section {
                                    </widget>
                                   </item>
                                   <item>
+                                   <widget class="QPushButton" name="pbUpdateCalibrationPoint">
+                                    <property name="text">
+                                     <string>Update</string>
+                                    </property>
+                                    <property name="toolTip">
+                                     <string>Edit the selected calibration point</string>
+                                    </property>
+                                   </widget>
+                                  </item>
+                                  <item>
                                    <widget class="QPushButton" name="pbRemoveCalibrationPoint">
                                     <property name="text">
                                      <string>Remove</string>
@@ -7446,7 +7555,7 @@ QHeaderView::section {
                                    </widget>
                                   </item>
                                   <item>
-                                   <spacer name="horizontalSpacer_58">
+                                   <spacer name="horizontalSpacerPointTool58">
                                     <property name="orientation">
                                      <enum>Qt::Orientation::Horizontal</enum>
                                     </property>
@@ -7608,7 +7717,7 @@ QHeaderView::section {
                                 </widget>
                                </item>
                                <item row="0" column="8">
-                                <spacer name="horizontalSpacer_59">
+                                <spacer name="horizontalSpacerPointTool59">
                                  <property name="orientation">
                                   <enum>Qt::Orientation::Horizontal</enum>
                                  </property>
@@ -7728,7 +7837,30 @@ QHeaderView::section {
                                 </widget>
                                </item>
                                <item row="0" column="8">
-                                <spacer name="horizontalSpacer_60">
+                                <widget class="QLabel" name="labelCloudMappingStatus">
+                                 <property name="text">
+                                  <string>Status</string>
+                                 </property>
+                                 <property name="alignment">
+                                  <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
+                                 </property>
+                                </widget>
+                               </item>
+                               <item row="0" column="9">
+                                <widget class="QLabel" name="lbCloudMappingStatus">
+                                 <property name="styleSheet">
+                                  <string notr="true">color: rgb(255, 190, 70); font-weight: bold;</string>
+                                 </property>
+                                 <property name="text">
+                                  <string>NOT VALIDATED</string>
+                                 </property>
+                                 <property name="alignment">
+                                  <set>Qt::AlignmentFlag::AlignCenter</set>
+                                 </property>
+                                </widget>
+                               </item>
+                               <item row="0" column="10">
+                                <spacer name="horizontalSpacerPointTool60">
                                  <property name="orientation">
                                   <enum>Qt::Orientation::Horizontal</enum>
                                  </property>
@@ -7824,7 +7956,7 @@ QHeaderView::section {
                                 </widget>
                                </item>
                                <item>
-                                <spacer name="horizontalSpacer_61">
+                                <spacer name="horizontalSpacerPointTool61">
                                  <property name="orientation">
                                   <enum>Qt::Orientation::Horizontal</enum>
                                  </property>
@@ -8098,7 +8230,7 @@ QLabel
                          </widget>
                         </item>
                         <item>
-                         <widget class="QWidget" name="widget" native="true">
+                         <widget class="QWidget" name="widgetPointToolSidePanel" native="true">
                           <property name="maximumSize">
                            <size>
                             <width>100</width>
@@ -9894,7 +10026,7 @@ QFrame
 	background-color: #333337;
 }
 
-/* Áp dụng cho một phần tử cụ thể, ví dụ QPushButton */
+/* Apply this rule to a specific element, for example QPushButton. */
 QPushButton {
     background-color: #4A4A4F;
     border-radius: 5px;
@@ -17874,6 +18006,28 @@ QGroupBox
                          </property>
                         </widget>
                        </item>
+                       <item row="3" column="5">
+                        <widget class="QPushButton" name="pbCalibrateEncoder">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                         <property name="maximumSize">
+                          <size>
+                           <width>16777215</width>
+                           <height>20</height>
+                          </size>
+                         </property>
+                         <property name="text">
+                          <string>Calibrate</string>
+                         </property>
+                         <property name="toolTip">
+                          <string>Calibrate encoder scale from two readings and a measured travel distance</string>
+                         </property>
+                        </widget>
+                       </item>
                        <item row="3" column="2">
                         <widget class="QToolButton" name="tbCopyEncoderPosition">
                          <property name="text">
@@ -19194,7 +19348,7 @@ QGroupBox
                 </widget>
                </item>
                <item>
-                <widget class="QWidget" name="widget" native="true">
+                <widget class="QWidget" name="widgetGScriptEditorActions" native="true">
                  <property name="maximumSize">
                   <size>
                    <width>16777215</width>

@@ -45,6 +45,9 @@ signals:
     void Log(QString device, QString msg, int direction);
 
 public slots:
+    void SetSelectedDevice(int deviceType, int id);
+    void SetRobotModel(int id, QString model);
+    void SetEncoderLinkedConveyor(int encoderId, int conveyorId);
     void AddRobot(QString address);
     void AddConveyor(QString address);
     void AddEncoder(QString address);

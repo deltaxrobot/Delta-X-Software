@@ -9,7 +9,7 @@
 class IndustrialCameraPlugin : public DeltaXPlugin
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.imwi.deltaxstudio" FILE "IndustrialCameraPlugin.json")
+    Q_PLUGIN_METADATA(IID DeltaXPlugin_iid FILE "IndustrialCameraPlugin.json")
     Q_INTERFACES(DeltaXPlugin)
 
     ~IndustrialCameraPlugin();
@@ -22,12 +22,7 @@ class IndustrialCameraPlugin : public DeltaXPlugin
 public slots:
     void ProcessCommand(QString cmd);
     void TranferEmit(QString msg);
-signals:
-    //void EmitCommand(QString cmd);
-    void CapturedImage(cv::Mat mat);
-    void StartedCapture();
-    void RequestCapture();
-    void RequestConnect(int id);
+    void StopCapture();
 private:
     Form* pluginForm = nullptr;  // Initialize to prevent undefined behavior
 

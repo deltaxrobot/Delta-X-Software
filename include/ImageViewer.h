@@ -406,7 +406,7 @@ public:
             whiteLineItems[i]->setZValue(1);
             blackLineItems[i]->setZValue(1.1f);
 
-            // Thêm text items để hiển thị số thứ tự
+            // Add text items that display corner indices.
             whiteTextItems[i] = new QGraphicsSimpleTextItem;
             blackTextItems[i] = new QGraphicsSimpleTextItem;
 
@@ -416,14 +416,14 @@ public:
             whiteTextItems[i]->setZValue(1.2f);
             blackTextItems[i]->setZValue(1.3f);
 
-            // Thiết lập font cho text
+            // Configure the label font.
             QFont font;
             font.setPointSize(12);
             font.setBold(true);
             whiteTextItems[i]->setFont(font);
             blackTextItems[i]->setFont(font);
 
-            // Thiết lập text hiển thị số thứ tự (1-4)
+            // Display corner indices 1 through 4.
             whiteTextItems[i]->setText(QString::number(i + 1));
             blackTextItems[i]->setText(QString::number(i + 1));
         }
@@ -534,7 +534,7 @@ public:
             whiteLineItems[i]->setPen(QPen(Qt::white, value * 2));
             blackLineItems[i]->setPen(QPen(Qt::black, value));
 
-            // Cập nhật kích thước font theo scale
+            // Scale the font with the view.
             QFont font;
             font.setPointSize(qMax(8, (int)(12 * value)));
             font.setBold(true);
@@ -591,21 +591,21 @@ private:
             whiteRectItems[i]->setRect(rects[i]);
             blackRectItems[i]->setRect(rects[i]);
 
-            // Cập nhật vị trí text - đặt ở bên cạnh ô vuông thay vì đè lên
+            // Place labels beside the square instead of over it.
             QPointF textOffset;
             
-            // Đặt text ở 4 vị trí khác nhau cho mỗi góc để tránh đè lên ô vuông
+            // Use a different offset at each corner to avoid overlap.
             switch(i) {
-                case 0: // Góc 1: bên trái
+                case 0: // Corner 1: left
                     textOffset = QPointF(-size/2 - 15, -5);
                     break;
-                case 1: // Góc 2: bên phải  
+                case 1: // Corner 2: right
                     textOffset = QPointF(size/2 + 5, -5);
                     break;
-                case 2: // Góc 3: bên phải
+                case 2: // Corner 3: right
                     textOffset = QPointF(size/2 + 5, -5);
                     break;
-                case 3: // Góc 4: bên trái
+                case 3: // Corner 4: left
                     textOffset = QPointF(-size/2 - 15, -5);
                     break;
             }

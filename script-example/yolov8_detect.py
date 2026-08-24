@@ -1,120 +1,135 @@
-import cv2
-import sys
-import detect_socket
-import time
+#!/usr/bin/env python3
+"""YOLOv8 detector adapter for the correlated Delta X DXV1 protocol."""
+
+from __future__ import annotations
+
 import argparse
+import os
+import sys
+import time
 from pathlib import Path
-from ultralytics import YOLO
 
-def check_opencv_gui_support():
-    """Check if OpenCV has GUI support"""
-    try:
-        # Try to create a dummy window
-        cv2.namedWindow("test", cv2.WINDOW_NORMAL)
-        cv2.destroyWindow("test")
-        return True
-    except cv2.error:
-        return False
+SCRIPT_DIR = Path(__file__).resolve().parent
+if str(SCRIPT_DIR) not in sys.path:
+    sys.path.insert(0, str(SCRIPT_DIR))
 
-def get_objects(image, headless=False):
-    # Run YOLOv8 inference on the frame
-    results = model(image)
-
-    resultString = "#Blobs = "
-
-    img_height, img_width, _ = image.shape
-
-    # View results
-    for r in results:
-        for box in r.boxes.xywhn:
-            id = int(r.boxes.cls[0])
-            x = int(box[0] * img_width)
-            y = int(box[1] * img_height)
-            w = int(box[2] * img_width)
-            h = int(box[3] * img_height)
-            angle = 0
-
-            resultString += str(id) + ',' + str(x) + ',' + str(y)  + ',' + str(w) + ',' + str(h) + ',' + str(angle)  + ";"
-       
-    # Visualize the results on the frame
-    annotated_frame = results[0].plot()
-
-    # Display the annotated frame (only if GUI is available and not headless)
-    if not headless:
-        try:
-            cv2.imshow("YOLOv8 Inference", annotated_frame)
-        except cv2.error as e:
-            print(f"GUI not available: {e}")
-            pass
-
-    return resultString
+from dxv1_client import DeltaXVisionClient, Dxv1ProtocolError, decode_image  # noqa: E402
 
 
-    # Load the YOLOv8 model
-model = None
+def default_model_path() -> str:
+    configured = os.environ.get("DELTAX_MODEL_PATH", "").strip()
+    if configured:
+        return configured
+    return str(SCRIPT_DIR.parent / "models" / "yolov8n.pt")
 
 
-def default_model_path():
-    script_dir = Path(__file__).resolve().parent
-    repo_root = script_dir.parent
-    return str(repo_root / "models" / "yolov8n.pt")
+def parse_args():
+    parser = argparse.ArgumentParser(description="YOLOv8 External Vision adapter for Delta X")
+    parser.add_argument("--host", "-ip", default="127.0.0.1")
+    parser.add_argument("--port", "-port", type=int, default=8844)
+    parser.add_argument("--model-path", "-model", default=default_model_path())
+    parser.add_argument("--confidence", type=float, default=0.25)
+    parser.add_argument("--device", default=None, help="Ultralytics device, e.g. cpu, 0, 0,1")
+    parser.add_argument("--show-preview", action="store_true")
+    parser.add_argument("--retry-seconds", type=float, default=2.0)
+    return parser.parse_args()
 
-def main():
-    # Parse command-line arguments
-    parser = argparse.ArgumentParser(description="YOLOv8 Inference Script")
-    parser.add_argument("--host", type=str, default="192.168.56.1", help="IP address of the server")
-    parser.add_argument("--port", type=int, default=8844, help="Port number of the server")
-    parser.add_argument("--model-path", type=str, default=default_model_path(), help="Path to the YOLOv8 model file")
-    parser.add_argument("--headless", action="store_true", help="Run without GUI display")
 
-    args = parser.parse_args()
+def result_to_detections(results, frame):
+    detections = []
+    detection_index = 0
+    for result in results:
+        boxes = result.boxes
+        if boxes is None:
+            continue
+        xywh_values = boxes.xywh.cpu().tolist()
+        class_values = boxes.cls.cpu().tolist()
+        confidence_values = boxes.conf.cpu().tolist()
+        names = result.names
+        for xywh, class_value, confidence in zip(
+            xywh_values, class_values, confidence_values
+        ):
+            class_id = int(class_value)
+            label = names.get(class_id, str(class_id)) if isinstance(names, dict) else str(class_id)
+            x, y, width, height = (float(value) for value in xywh)
+            detections.append(
+                {
+                    "type": class_id,
+                    "label": str(label),
+                    "confidence": float(confidence),
+                    "externalId": f"{frame['frameId']}:{detection_index}",
+                    "x": x,
+                    "y": y,
+                    "z": 0.0,
+                    "w": width,
+                    "h": height,
+                    "angle": 0.0,
+                }
+            )
+            detection_index += 1
+    return detections
 
-    HOST = args.host
-    PORT = args.port
-    MODEL_PATH = args.model_path
-    HEADLESS = args.headless
 
-    global model
-
-    model = YOLO(MODEL_PATH)
-    
-    # Check OpenCV GUI support
-    gui_available = check_opencv_gui_support()
-    if not gui_available and not HEADLESS:
-        print("Warning: OpenCV GUI not available. Running in headless mode.")
-        HEADLESS = True
-    elif gui_available and not HEADLESS:
-        print("OpenCV GUI support detected. Display windows will be shown.")
-    else:
-        print("Running in headless mode (no display windows).")
+def run_connected(client, model, args):
+    import cv2
 
     while True:
+        frame = client.receive_image()
+        image = decode_image(frame)
+        predict_args = {"conf": args.confidence, "verbose": False}
+        if args.device:
+            predict_args["device"] = args.device
+        results = model.predict(image, **predict_args)
+        detections = result_to_detections(results, frame)
+        client.send_detections(frame, detections, coordinate_space="image")
+        print(
+            f"frame={frame['frameId']} request={frame['requestId']} "
+            f"tracking={frame['trackingId']} objects={len(detections)}",
+            flush=True,
+        )
+
+        if args.show_preview and results:
+            cv2.imshow("Delta X YOLOv8", results[0].plot())
+            if cv2.waitKey(1) & 0xFF == ord("q"):
+                return
+
+
+def main():
+    args = parse_args()
+    if not 0.0 <= args.confidence <= 1.0:
+        raise ValueError("--confidence must be between 0 and 1")
+    try:
+        from ultralytics import YOLO
+    except ImportError as exc:
+        raise RuntimeError(
+            "YOLO adapter dependencies are missing. Install with: "
+            "python -m pip install ultralytics opencv-python numpy"
+        ) from exc
+
+    model_path = Path(args.model_path).expanduser().resolve()
+    if not model_path.is_file():
+        raise FileNotFoundError(f"YOLO model not found: {model_path}")
+    model = YOLO(str(model_path))
+
+    while True:
+        client = DeltaXVisionClient(args.host, args.port)
         try:
-            detect_socket.ConnectToSoftware(HOST, PORT)
-            while True:
-                try:
-                    image = detect_socket.Get_Image2()
-                    result = get_objects(image, HEADLESS)
-                    print(result)
+            client.connect()
+            print(f"DXV1 connected to {args.host}:{args.port}", flush=True)
+            run_connected(client, model, args)
+            return
+        except KeyboardInterrupt:
+            return
+        except (ConnectionError, OSError, Dxv1ProtocolError) as exc:
+            print(f"DXV1 connection lost: {exc}; retrying...", file=sys.stderr, flush=True)
+            time.sleep(max(0.2, args.retry_seconds))
+        finally:
+            client.close()
 
-                    detect_socket.Software_Socket.sendall(result.encode())
-
-                    # Display original image (only if GUI is available and not headless)
-                    if not HEADLESS:
-                        try:
-                            # cv2.imshow("Image", image)
-                            cv2.waitKey(1)
-                        except cv2.error as e:
-                            print(f"GUI not available for original image: {e}")
-                            pass
-                except Exception as e:
-                    print('Error receiving image:', e)
-                    break
-                
-        except ConnectionRefusedError:
-            # Không kết nối được đến server, đợi 5 giây và thử kết nối lại
-            print(f"Connection refused. Retrying in 5 seconds...")
-            time.sleep(5)
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except (RuntimeError, ValueError, FileNotFoundError) as exc:
+        print(f"External Vision stopped: {exc}", file=sys.stderr, flush=True)
+        raise SystemExit(2)

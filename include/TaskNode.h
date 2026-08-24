@@ -83,6 +83,7 @@ public:
     QList<QMetaObject::Connection> InputConnections;
 
 public slots:
+    void SetPassThrough(bool passThrough);
     void Input(cv::Size size);
     void Input(cv::Mat mat);
     void Input2(cv::Mat mat);
