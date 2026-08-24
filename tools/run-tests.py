@@ -198,6 +198,28 @@ def find_opencv_world_version(opencv_dir: Path) -> str | None:
     return None
 
 
+def find_opencv_pkgconfig(environment: dict[str, str]) -> tuple[str, str] | None:
+    """Return the supported Unix OpenCV pkg-config package and version."""
+    pkg_config = shutil.which("pkg-config", path=environment.get("PATH"))
+    if not pkg_config:
+        return None
+    for package in ("opencv5", "opencv4", "opencv"):
+        result = subprocess.run(
+            [pkg_config, "--modversion", package],
+            env=environment,
+            check=False,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+        )
+        version = result.stdout.strip()
+        match = re.match(r"(\d+)", version)
+        if result.returncode == 0 and match and int(match.group(1)) >= 4:
+            return package, version
+    return None
+
+
 def main() -> int:
     args = parse_args()
     repo_root = Path(__file__).resolve().parents[1]
@@ -240,12 +262,28 @@ def main() -> int:
     # it automatically makes an otherwise clean core test run non-reproducible.
     plugin_path = args.plugin_path
 
-    selected = [project for project in TEST_PROJECTS if not args.test or project.name in args.test]
+    selected = [
+        project
+        for project in TEST_PROJECTS
+        if not args.test or project.name in args.test
+    ]
+    opencv_pkgconfig = (
+        find_opencv_pkgconfig(environment) if os.name != "nt" else None
+    )
     build_fingerprint = {
         "platform": sys.platform,
         "qmake": str(qmake),
         "configuration": "release",
-        "opencvDir": str(opencv_dir) if os.name == "nt" else "pkg-config:opencv4",
+        "opencvDir": (
+            str(opencv_dir)
+            if os.name == "nt"
+            else "pkg-config:"
+            + (
+                f"{opencv_pkgconfig[0]}@{opencv_pkgconfig[1]}"
+                if opencv_pkgconfig
+                else "not-found"
+            )
+        ),
         "opencvWorldVersion": opencv_world_version if os.name == "nt" else "",
     }
     build_variant = hashlib.sha256(

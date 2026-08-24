@@ -47,9 +47,13 @@ win32 {
 
 unix {
     CONFIG += link_pkgconfig
-    packagesExist(opencv4) {
+    packagesExist(opencv5) {
+        PKGCONFIG += opencv5
+    } else: packagesExist(opencv4) {
         PKGCONFIG += opencv4
+    } else: packagesExist(opencv >= 4.0.0) {
+        PKGCONFIG += opencv
     } else {
-        error("OpenCV 4 was not found by pkg-config. Install opencv4 or set PKG_CONFIG_PATH.")
+        error("OpenCV 4 or newer was not found by pkg-config. Install OpenCV or set PKG_CONFIG_PATH.")
     }
 }
