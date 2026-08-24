@@ -56,7 +56,8 @@ namespace
 QString visualFoundationStyleSheet()
 {
     return QStringLiteral(R"(
-/* Delta X visual foundation: shared dark controls and readable focus states. */
+/* Delta X visual foundation: shared dark controls and readable focus states.
+   Geometry-sensitive controls such as jogging strips keep local overrides. */
 QWidget#centralWidget { background-color: #1E1E20; color: #E6E6E8; }
 QLabel { color: #D6D6D9; background: transparent; }
 
@@ -74,7 +75,7 @@ QGroupBox::title {
     color: #E6E6E8;
 }
 
-QPushButton, QToolButton {
+QPushButton {
     background-color: #45454B;
     color: #F2F2F3;
     border: 1px solid #5D5D64;
@@ -82,20 +83,20 @@ QPushButton, QToolButton {
     min-height: 22px;
     padding: 3px 8px;
 }
-QPushButton:hover, QToolButton:hover {
+QPushButton:hover {
     background-color: #55555D;
     border-color: #85858E;
 }
-QPushButton:pressed, QToolButton:pressed, QPushButton:checked, QToolButton:checked {
+QPushButton:pressed, QPushButton:checked {
     background-color: #1769AA;
     border-color: #4DA3E6;
 }
-QPushButton:disabled, QToolButton:disabled {
+QPushButton:disabled {
     background-color: #303035;
     color: #85858B;
     border-color: #3C3C42;
 }
-QPushButton:focus, QToolButton:focus, QComboBox:focus, QLineEdit:focus,
+QPushButton:focus, QComboBox:focus, QLineEdit:focus,
 QSpinBox:focus, QDoubleSpinBox:focus, QAbstractItemView:focus {
     border: 1px solid #4DA3E6;
 }
