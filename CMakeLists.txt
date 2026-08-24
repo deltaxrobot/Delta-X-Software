@@ -147,6 +147,12 @@ option(DELTA_X_BUILD_INDUSTRIAL_CAMERA_PLUGIN
     "Build the optional Basler/Hikrobot industrial camera plugin" OFF)
 option(DELTA_X_ALLOW_LEGACY_VENDOR_SDKS
     "Allow camera plugin builds against quarantined vendored SDK snapshots" OFF)
+option(DELTA_X_BUILD_REFERENCE_PLUGIN
+    "Build the API v3 reference inspection plugin" OFF)
+
+if(DELTA_X_BUILD_REFERENCE_PLUGIN)
+    add_subdirectory(sdk/examples/inspection-plugin)
+endif()
 
 if(DELTA_X_BUILD_INDUSTRIAL_CAMERA_PLUGIN)
     if(NOT WIN32)

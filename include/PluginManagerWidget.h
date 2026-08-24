@@ -25,6 +25,7 @@ private slots:
     void openBuiltInDirectory();
     void openUserDirectory();
     void openDocumentation();
+    void configurePermissions();
 
 private:
     QString userPluginDirectory() const;

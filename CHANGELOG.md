@@ -26,6 +26,10 @@ semantic versioning after the first governed public release.
   test builds, and a governed tag-to-release workflow.
 - English-only repository validation covering tracked source, documentation,
   filenames, and visible DOCX content.
+- Plugin API v3 with permission-checked host services, explicit lifecycle,
+  dynamic G-Script primitives, namespaced plugin devices, versioned services,
+  bounded events, tracking/vision access, permission UI, and a buildable
+  reference inspection plugin.
 
 ### Changed
 

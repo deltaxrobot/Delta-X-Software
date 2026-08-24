@@ -64,6 +64,15 @@ Tracking updates its internal pose for every encoder sample, but copies snapshot
 
 Runtime variables under `Tracking.N.*` expose state, pending frame and encoder queues, encoder and vision age, overflow counters, latency, and publication statistics. Persistent settings use `trackingN.Realtime.*`; telemetry under `Tracking.N.*` is never stored in `settings.ini`.
 
+## Plugin variables
+
+Plugin host inventory is runtime-only under `PluginSystem.*`, including loaded
+IDs, diagnostics, registered G-Script primitives, plugin device IDs, and service
+IDs. API v3 health and telemetry use
+`PluginSystem.<plugin-id>.Health.*` and
+`PluginSystem.<plugin-id>.Telemetry.<metric>.*`. A plugin can read or write other
+project variables only after its corresponding permission is granted.
+
 ## Thread-safety contract
 
 - Reads use a read lock, allowing concurrent readers.

@@ -11,10 +11,13 @@
 #include <memory>
 #include <vector>
 
+#include "PluginHostServices.h"
+
 class DeltaXCommandProvider;
 class DeltaXPanelProvider;
 class DeltaXPlugin;
 class DeltaXPluginV2;
+class DeltaXPluginV3;
 
 struct PluginDescriptor
 {
@@ -31,8 +34,12 @@ struct PluginDescriptor
     QString version;
     int apiVersion = 0;
     QStringList capabilities;
+    QStringList requestedPermissions;
+    QStringList grantedPermissions;
+    QStringList missingPermissions;
     QString filePath;
     State state = State::Rejected;
+    bool active = false;
     QString error;
 
     bool hasCapability(const QString& capability) const;
@@ -48,6 +55,9 @@ public:
     ~PluginManager() override;
 
     void setDisabledPluginIds(const QSet<QString>& pluginIds);
+    void setGrantedPermissions(
+        const QHash<QString, QSet<QString>>& grantedPermissions);
+    void setHostServices(const PluginHostServices& services);
     void loadFromDirectories(const QStringList& directories);
     bool shutdown();
 
@@ -56,6 +66,7 @@ public:
     QObject* instance(const QString& pluginId) const;
     DeltaXPlugin* legacyPlugin(const QString& pluginId) const;
     DeltaXPluginV2* pluginV2(const QString& pluginId) const;
+    DeltaXPluginV3* pluginV3(const QString& pluginId) const;
     DeltaXPanelProvider* panelProvider(const QString& pluginId) const;
 
     bool executeCommand(const QString& pluginId,
@@ -84,6 +95,8 @@ private:
     void reject(const PluginDescriptor& descriptor, const QString& error);
 
     QSet<QString> m_disabledPluginIds;
+    QHash<QString, QSet<QString>> m_grantedPermissions;
+    PluginHostServices m_hostServices;
     QVector<PluginDescriptor> m_descriptors;
     std::vector<std::unique_ptr<Entry>> m_entries;
 };

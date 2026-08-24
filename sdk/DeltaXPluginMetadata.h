@@ -8,16 +8,20 @@
 #include <QString>
 #include <QStringList>
 
-// API v1 is retained as a compatibility interface. New plugins should use v2.
+#include "DeltaXPermissions.h"
+
+// API v1/v2 are retained as compatibility interfaces. New plugins use v3.
 #define DELTA_X_PLUGIN_V1_IID "org.imwi.deltaxstudio"
 #define DELTA_X_PLUGIN_V2_IID "org.deltaxrobot.DeltaXPlugin/2.0"
+#define DELTA_X_PLUGIN_V3_IID "org.deltaxrobot.DeltaXPlugin/3.0"
 #define DELTA_X_PLUGIN_IID DELTA_X_PLUGIN_V1_IID
-#define DELTA_X_PLUGIN_API_VERSION 2
+#define DELTA_X_PLUGIN_API_VERSION 3
 
 namespace DeltaXPluginContract
 {
 inline constexpr int SupportedApiVersion = DELTA_X_PLUGIN_API_VERSION;
 inline constexpr int LegacyApiVersion = 1;
+inline constexpr int VersionedApiVersion = 2;
 
 inline QJsonObject pluginMetadata(const QJsonObject& loaderMetadata)
 {
@@ -71,6 +75,21 @@ inline QStringList capabilities(const QJsonObject& loaderMetadata)
     return result;
 }
 
+inline QStringList requestedPermissions(const QJsonObject& loaderMetadata)
+{
+    QStringList result;
+    const QJsonArray values = pluginMetadata(loaderMetadata)
+                                  .value(QStringLiteral("permissions"))
+                                  .toArray();
+    for (const QJsonValue& value : values) {
+        const QString permission = value.toString().trimmed().toLower();
+        if (!permission.isEmpty() && !result.contains(permission))
+            result.append(permission);
+    }
+    result.sort();
+    return result;
+}
+
 inline bool isSemanticVersion(const QString& version)
 {
     static const QRegularExpression expression(
@@ -89,7 +108,8 @@ inline QString compatibilityError(const QJsonObject& loaderMetadata)
             .arg(version)
             .arg(SupportedApiVersion);
     }
-    if (version != LegacyApiVersion && version != SupportedApiVersion) {
+    if (version != LegacyApiVersion && version != VersionedApiVersion &&
+        version != SupportedApiVersion) {
         return QStringLiteral("plugin API v%1 is not supported by this host")
             .arg(version);
     }
@@ -97,16 +117,18 @@ inline QString compatibilityError(const QJsonObject& loaderMetadata)
     const QString iid = loaderMetadata.value(QStringLiteral("IID")).toString();
     const QString expectedIid = version == LegacyApiVersion
         ? QStringLiteral(DELTA_X_PLUGIN_V1_IID)
-        : QStringLiteral(DELTA_X_PLUGIN_V2_IID);
-    if ((version == SupportedApiVersion && iid != expectedIid) ||
+        : version == VersionedApiVersion
+            ? QStringLiteral(DELTA_X_PLUGIN_V2_IID)
+            : QStringLiteral(DELTA_X_PLUGIN_V3_IID);
+    if ((version != LegacyApiVersion && iid != expectedIid) ||
         (version == LegacyApiVersion && !iid.isEmpty() && iid != expectedIid)) {
         return QStringLiteral("unsupported interface '%1'; expected '%2'")
             .arg(iid, expectedIid);
     }
 
-    // V1 metadata was intentionally permissive. V2 makes identity, version and
-    // capabilities explicit so the host can validate before executing code.
-    if (version == SupportedApiVersion) {
+    // V1 metadata was intentionally permissive. V2+ make identity, version and
+    // capabilities explicit; v3 also requires an explicit permission list.
+    if (version == VersionedApiVersion || version == SupportedApiVersion) {
         const QJsonObject metadata = pluginMetadata(loaderMetadata);
         const QString rawId =
             metadata.value(QStringLiteral("name")).toString().trimmed();
@@ -140,8 +162,35 @@ inline QString compatibilityError(const QJsonObject& loaderMetadata)
                 return QStringLiteral("metadata capabilities must be unique");
             uniqueCapabilities.insert(capability);
         }
+
+        if (version == SupportedApiVersion) {
+            const QJsonValue rawPermissions =
+                metadata.value(QStringLiteral("permissions"));
+            if (!rawPermissions.isArray()) {
+                return QStringLiteral(
+                    "metadata field 'permissions' must be an array");
+            }
+            QSet<QString> uniquePermissions;
+            for (const QJsonValue& value : rawPermissions.toArray()) {
+                const QString rawPermission = value.toString().trimmed();
+                const QString permission = rawPermission.toLower();
+                if (!value.isString() || rawPermission != permission ||
+                    !DeltaXPermissions::isKnown(permission)) {
+                    return QStringLiteral(
+                        "metadata permissions must be known lowercase identifiers");
+                }
+                if (uniquePermissions.contains(permission))
+                    return QStringLiteral("metadata permissions must be unique");
+                uniquePermissions.insert(permission);
+            }
+        }
     }
     return {};
+}
+
+inline bool isKnownPermission(const QString& permission)
+{
+    return DeltaXPermissions::isKnown(permission);
 }
 }
 

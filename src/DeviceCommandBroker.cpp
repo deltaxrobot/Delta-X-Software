@@ -173,11 +173,15 @@ void DeviceCommandBroker::dispatchNext(const QString& deviceId)
             continue;
         }
 
+        // Mark the request active before notifying a provider. Native plugin
+        // devices may complete synchronously from CommandDispatched; inserting
+        // afterwards would misclassify that valid response as unsolicited.
+        if (command.waitForResponse)
+            m_activeCommands.insert(device, command);
         emit DispatchCommand(device, command.command);
         emit CommandDispatched(command.requestId, command.owner, device,
                                command.command, command.origin);
         if (command.waitForResponse) {
-            m_activeCommands.insert(device, command);
             emit QueueDepthChanged(device, pendingCommandCount(device));
             return;
         }

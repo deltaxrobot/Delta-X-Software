@@ -12,7 +12,7 @@ UI / Operator tools
         |
 Application controllers and CellSupervisor
         |
-G-Script ---- Tracking ---- Vision pipeline ---- VariableManager
+Plugin HostContext ---- G-Script ---- Tracking ---- Vision pipeline ---- VariableManager
         |          |                |
         +----------+----------------+
                    |
@@ -35,6 +35,9 @@ G-Script ---- Tracking ---- Vision pipeline ---- VariableManager
    persisted unless explicitly classified as configuration.
 6. Camera vendor SDKs remain behind optional plugins and runtime-loaded adapters.
 7. External detectors use framed DXV1 messages with frame/request/tracking IDs.
+8. Plugins use the permission-checked `DeltaXHostContext` and registered
+   extension interfaces. They never receive mutable pointers to application
+   managers or bypass the device broker.
 
 ## Threading model
 

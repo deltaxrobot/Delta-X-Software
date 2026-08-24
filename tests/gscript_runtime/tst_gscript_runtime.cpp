@@ -1,12 +1,47 @@
 #include <QtTest>
 #include <QSignalSpy>
 #include <QTimer>
+#include <algorithm>
 #include <future>
 #include <vector>
 
 #include "GcodeScript.h"
+#include "PluginExtensionRegistry.h"
 #include "SoftwareManager.h"
 #include "VariableManager.h"
+#include "DeltaXGScriptProvider.h"
+
+class RuntimePrimitiveProvider final : public QObject,
+                                       public DeltaXGScriptProvider
+{
+public:
+    QVariantList gscriptPrimitives() const override
+    {
+        return {QVariantMap{
+            {QStringLiteral("name"), QStringLiteral("testruntime")},
+            {QStringLiteral("signature"),
+             QStringLiteral("M98 PtestRuntime(result, left, right)")},
+            {QStringLiteral("description"), QStringLiteral("Runtime test")},
+            {QStringLiteral("minArgs"), 3},
+            {QStringLiteral("maxArgs"), 3},
+            {QStringLiteral("resultArgument"), 0},
+        }};
+    }
+
+    bool executeGScriptPrimitive(const QString& name,
+                                 const QVariantList& arguments,
+                                 QVariant* result, QString* error) override
+    {
+        if (name != QStringLiteral("testruntime") || arguments.size() != 2) {
+            if (error)
+                *error = QStringLiteral("invalid test call");
+            return false;
+        }
+        if (result)
+            *result = arguments.at(0).toDouble() * arguments.at(1).toDouble();
+        return true;
+    }
+};
 
 class GScriptRuntimeTest : public QObject
 {
@@ -25,6 +60,7 @@ private slots:
     void waitUntilObservesRuntimeVariable();
     void waitUntilFaultsOnTimeout();
     void globalScriptCounterIsAtomic();
+    void pluginPrimitiveIsAnalyzedExecutedAndStored();
 
 private:
     const QString scope = QStringLiteral("gscript_runtime_test");
@@ -32,12 +68,47 @@ private:
 
 void GScriptRuntimeTest::init()
 {
+    PluginExtensionRegistry::instance().clearForTests();
     VariableManager::instance().removeVarScoped(scope, QString());
 }
 
 void GScriptRuntimeTest::cleanup()
 {
+    PluginExtensionRegistry::instance().clearForTests();
     VariableManager::instance().removeVarScoped(scope, QString());
+}
+
+void GScriptRuntimeTest::pluginPrimitiveIsAnalyzedExecutedAndStored()
+{
+    RuntimePrimitiveProvider provider;
+    QString error;
+    QVERIFY(PluginExtensionRegistry::instance().registerGScriptProvider(
+        QStringLiteral("test.runtime"), &provider, &provider, &error));
+
+    GcodeScript script;
+    script.ProjectName = scope;
+    script.ID = QStringLiteral("plugin_primitive");
+    const QString source = QStringLiteral(
+        "M98 PtestRuntime(#Product, 6, 7)\n");
+    const QList<GScriptDiagnostic> validDiagnostics = script.Validate(source);
+    QVERIFY(std::none_of(validDiagnostics.cbegin(), validDiagnostics.cend(),
+                         [](const GScriptDiagnostic& diagnostic) {
+        return diagnostic.severity == GScriptDiagnostic::Error;
+    }));
+
+    script.ExecuteGcode(source, GcodeScript::BEGIN);
+    QCOMPARE(script.State(), GcodeScript::ExecutionState::Completed);
+    QCOMPARE(VariableManager::instance()
+                 .getVarScoped(scope, QStringLiteral("Product"))
+                 .toDouble(),
+             42.0);
+
+    const QList<GScriptDiagnostic> invalid = script.Validate(
+        QStringLiteral("M98 PtestRuntime(#Product, 6)\n"));
+    QVERIFY(std::any_of(invalid.cbegin(), invalid.cend(),
+                        [](const GScriptDiagnostic& diagnostic) {
+        return diagnostic.code == QStringLiteral("GS1920");
+    }));
 }
 
 void GScriptRuntimeTest::globalScriptCounterIsAtomic()

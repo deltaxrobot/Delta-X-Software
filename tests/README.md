@@ -19,9 +19,12 @@ status reads never create or touch a serial/socket object from the wrong thread.
 The `plugin_contract` suite validates the versioned SDK metadata independently
 of any vendor camera runtime.
 
-The `plugin_manager` suite builds a real API v2 fixture and verifies discovery,
-capabilities, commands, project-scoped settings, disabled IDs, duplicate
-rejection, missing directories, and unload on every supported operating system.
+The `plugin_manager` suite builds real API v2 and v3 libraries. It verifies
+backward-compatible discovery, permissions, lifecycle, G-Script/device/service
+registration, events, commands, project-scoped settings, disabled IDs,
+duplicate rejection, missing directories, reverse cleanup, and unload on every
+supported operating system. `gscript_runtime` also executes a dynamically
+registered primitive and stores its result in a project variable.
 
 The industrial camera runtime test is executed when a built plugin is available.
 Use `--require-industrial-plugin` in release validation when skipping it must fail.

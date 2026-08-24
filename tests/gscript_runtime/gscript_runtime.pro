@@ -20,12 +20,14 @@ SOURCES += \
     $$PWD/../../src/UnityTool.cpp \
     $$PWD/../../src/GcodeScript.cpp \
     $$PWD/../../src/GScriptAnalyzer.cpp \
+    $$PWD/../../src/PluginExtensionRegistry.cpp \
     $$PWD/../../src/CloudPointMapper.cpp \
     $$PWD/../../src/VariableManager.cpp
 
 HEADERS += \
     $$PWD/../../include/GcodeScript.h \
     $$PWD/../../include/GScriptAnalyzer.h \
+    $$PWD/../../include/PluginExtensionRegistry.h \
     $$PWD/../../include/CloudPointMapper.h \
     $$PWD/../../include/VariableManager.h
 

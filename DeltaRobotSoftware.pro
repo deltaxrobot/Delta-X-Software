@@ -81,6 +81,7 @@ DISTFILES += \
     $$PWD/docs/gscript-design.md \
     $$PWD/docs/gscript-runtime.md \
     $$PWD/docs/multi-robot-conveyor-sorting.md \
+    $$PWD/docs/plugin-system.md \
     $$PWD/docs/variable-manager.md \
     $$PWD/script-example/dxv1_client.py \
     $$PWD/script-example/multi-robot-sorting/00-vision-tracking.gcode \

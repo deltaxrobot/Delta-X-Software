@@ -1,4 +1,5 @@
 #include "GScriptEditorSupport.h"
+#include "PluginExtensionRegistry.h"
 
 #include <QHash>
 #include <QRegularExpression>
@@ -105,6 +106,10 @@ QStringList GScriptEditorSupport::builtInCompletions()
                << QString("device%1").arg(i)
                << QString("tracking%1").arg(i);
     }
+    for (const PluginGScriptPrimitive& primitive :
+         PluginExtensionRegistry::instance().gscriptPrimitives()) {
+        result << QStringLiteral("P") + primitive.name;
+    }
     result.removeDuplicates();
     result.sort(Qt::CaseInsensitive);
     return result;
@@ -146,8 +151,17 @@ QString GScriptEditorSupport::signatureHelp(const QString& line, int cursorColum
         {"stopsyncconveyor", "M98 PstopSyncConveyor(robotId)"}
     };
     const QString signature = signatures.value(selected.captured(1).toLower());
-    if (signature.isEmpty())
+    if (signature.isEmpty()) {
+        const QString dynamicName = selected.captured(1).toLower();
+        for (const PluginGScriptPrimitive& primitive :
+             PluginExtensionRegistry::instance().gscriptPrimitives()) {
+            if (primitive.name == dynamicName)
+                return QStringLiteral("%1 - parameter %2")
+                    .arg(primitive.signature)
+                    .arg(argument);
+        }
         return QString();
+    }
     return QStringLiteral("%1  •  parameter %2").arg(signature).arg(argument);
 }
 

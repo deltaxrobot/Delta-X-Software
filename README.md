@@ -79,6 +79,11 @@ cd Delta-X-Software
 
 Operator documentation is available directly in **G-Script -> Help**. The main commissioning guides are `docs/gscript-runtime.md`, `docs/multi-robot-conveyor-sorting.md`, `docs/camera-gige-usb3.md`, and `docs/external-vision.md`.
 
+The versioned plugin SDK supports permission-checked host services, dynamic
+G-Script primitives, namespaced devices, tracking/vision access, operator
+panels, and plugin-to-plugin services. Start with the buildable
+[`sdk/examples/inspection-plugin`](sdk/examples/inspection-plugin/README.md).
+
 ## Build from Source with CMake
 
 On Windows, open an *x64 Native Tools Command Prompt for VS 2022* and point

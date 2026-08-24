@@ -15,6 +15,7 @@ public:
         Manual,
         GScript,
         Tracking,
+        Plugin,
         Remote,
         Safety
     };

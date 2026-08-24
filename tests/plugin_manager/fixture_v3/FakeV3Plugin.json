@@ -1,0 +1,19 @@
+{
+  "apiVersion": 3,
+  "pluginVersion": "3.0.0",
+  "name": "test.fixture.v3",
+  "capabilities": [
+    "commands",
+    "devices.provider",
+    "gscript.primitives",
+    "services.provider"
+  ],
+  "permissions": [
+    "devices.provide",
+    "events.publish",
+    "gscript.register",
+    "health.report",
+    "services.provide",
+    "variables.write.runtime"
+  ]
+}

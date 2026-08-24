@@ -1,4 +1,5 @@
 #include "GScriptAnalyzer.h"
+#include "PluginExtensionRegistry.h"
 
 #include <algorithm>
 #include <QHash>
@@ -170,7 +171,8 @@ bool isBuiltInM98Target(const QString& rawTarget)
         "pausecamera", "capturecamera", "resumecamera", "logmessage",
         "syncconveyor", "stopsyncconveyor", "sendgcode"
     };
-    if (exactTargets.contains(target))
+    if (exactTargets.contains(target) ||
+        PluginExtensionRegistry::instance().hasGScriptPrimitive(target))
         return true;
 
     // Backward-compatible spellings supported by the runtime.
@@ -545,6 +547,30 @@ GScriptAnalysisResult GScriptAnalyzer::analyze(const QString& source)
                 addDiagnostic(result, GScriptDiagnostic::Error, "GS1915", sourceLine, 1,
                               QString("Vision/tracking command expects at most one argument; found %1.")
                                   .arg(count));
+        }
+
+        if (command == "M98" && m98TargetMatch.hasMatch()) {
+            QString dynamicTarget = m98TargetMatch.captured(1);
+            dynamicTarget.remove('_');
+            dynamicTarget = dynamicTarget.toLower();
+            for (const PluginGScriptPrimitive& primitive :
+                 PluginExtensionRegistry::instance().gscriptPrimitives()) {
+                if (primitive.name != dynamicTarget)
+                    continue;
+                const int count = argumentCount(statement);
+                if (count < primitive.minimumArguments ||
+                    count > primitive.maximumArguments) {
+                    addDiagnostic(
+                        result, GScriptDiagnostic::Error, "GS1920", sourceLine, 1,
+                        QString("Plugin primitive %1 expects %2 to %3 arguments; found %4.")
+                            .arg(primitive.name)
+                            .arg(primitive.minimumArguments)
+                            .arg(primitive.maximumArguments)
+                            .arg(count),
+                        primitive.signature);
+                }
+                break;
+            }
         }
     }
 

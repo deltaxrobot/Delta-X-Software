@@ -21,6 +21,7 @@ quint64 nextVisionRequestId()
 }
 }
 #include "CloudPointMapper.h"
+#include "PluginExtensionRegistry.h"
 #include "VariableManager.h"
 #include "SoftwareManager.h"
 #include <QStandardPaths>
@@ -654,7 +655,10 @@ bool GcodeScript::beginDeviceRequest(const QString& deviceId, const QString& msg
         QStringLiteral("^(robot|conveyor|encoder|slider|device)\\d+$"),
         QRegularExpression::CaseInsensitiveOption);
 
-    if (!devicePattern.match(normalizedDevice).hasMatch() || normalizedMessage.isEmpty()) {
+    const bool pluginDevice =
+        PluginExtensionRegistry::instance().hasDevice(normalizedDevice);
+    if ((!devicePattern.match(normalizedDevice).hasMatch() && !pluginDevice) ||
+        normalizedMessage.isEmpty()) {
         faultExecution(QString("Invalid device request: device='%1', command='%2'.")
                            .arg(deviceId, msg));
         return false;
@@ -704,7 +708,8 @@ bool GcodeScript::isExplicitDeviceToken(const QString& token) const
     static const QRegularExpression devicePattern(
         QStringLiteral("^(robot|conveyor|encoder|slider|device)\\d+$"),
         QRegularExpression::CaseInsensitiveOption);
-    return devicePattern.match(token.trimmed()).hasMatch();
+    return devicePattern.match(token.trimmed()).hasMatch() ||
+           PluginExtensionRegistry::instance().hasDevice(token.trimmed());
 }
 
 void GcodeScript::publishExecutionVariable(const QString& name, const QVariant& value)
@@ -2423,6 +2428,81 @@ bool GcodeScript::findExeGcodeAndTransmit()
                     objects.append(objectInfo);
 
                     emit AddObject(listName, objects);
+                    gcodeOrder++;
+                    return false;
+                }
+
+                PluginExtensionRegistry& extensions =
+                    PluginExtensionRegistry::instance();
+                if (extensions.hasGScriptPrimitive(functionName)) {
+                    PluginGScriptPrimitive descriptor;
+                    for (const PluginGScriptPrimitive& candidate :
+                         extensions.gscriptPrimitives()) {
+                        if (candidate.name == functionName) {
+                            descriptor = candidate;
+                            break;
+                        }
+                    }
+                    if (paramList.size() < descriptor.minimumArguments ||
+                        paramList.size() > descriptor.maximumArguments) {
+                        faultExecution(
+                            QString("Plugin primitive %1 expects %2 to %3 arguments; received %4.")
+                                .arg(functionName)
+                                .arg(descriptor.minimumArguments)
+                                .arg(descriptor.maximumArguments)
+                                .arg(paramList.size()),
+                            true);
+                        return true;
+                    }
+
+                    QString resultVariable;
+                    QVariantList arguments;
+                    for (int argumentIndex = 0;
+                         argumentIndex < paramList.size(); ++argumentIndex) {
+                        const QString raw = paramList.at(argumentIndex).trimmed();
+                        if (argumentIndex == descriptor.resultArgument) {
+                            resultVariable = identifierParameter(raw);
+                            static const QRegularExpression resultVariablePattern(
+                                QStringLiteral("^[A-Za-z_][A-Za-z0-9_.]*$"));
+                            if (!resultVariablePattern.match(resultVariable).hasMatch()) {
+                                faultExecution(
+                                    QString("Plugin primitive %1 requires a result variable at argument %2.")
+                                        .arg(functionName)
+                                        .arg(argumentIndex + 1));
+                                return true;
+                            }
+                            continue;
+                        }
+
+                        if (raw.size() >= 2 &&
+                            ((raw.startsWith('"') && raw.endsWith('"')) ||
+                             (raw.startsWith('\'') && raw.endsWith('\'')))) {
+                            arguments.append(raw.mid(1, raw.size() - 2));
+                        } else if (raw.startsWith('#')) {
+                            arguments.append(getValueAsQVariant(raw));
+                        } else {
+                            bool numeric = false;
+                            const QString evaluated = calculateExpressions(raw).trimmed();
+                            const double number = evaluated.toDouble(&numeric);
+                            arguments.append(numeric ? QVariant(number) : QVariant(raw));
+                        }
+                    }
+
+                    QVariant result;
+                    QString error;
+                    if (!extensions.executeGScriptPrimitive(
+                            functionName, arguments, &result, &error)) {
+                        faultExecution(
+                            QString("Plugin primitive %1 failed: %2")
+                                .arg(functionName,
+                                     error.isEmpty()
+                                         ? QStringLiteral("unknown plugin error")
+                                         : error),
+                            true);
+                        return true;
+                    }
+                    if (!resultVariable.isEmpty())
+                        saveVariable(resultVariable, result);
                     gcodeOrder++;
                     return false;
                 }

@@ -360,7 +360,8 @@ def main() -> int:
         if project.requires_plugin and plugin_path:
             test_env["DELTA_X_INDUSTRIAL_PLUGIN"] = str(plugin_path.resolve())
         if project.name == "plugin_manager":
-            test_env["DELTA_X_TEST_PLUGIN_DIR"] = str(build_dir / "plugins")
+            test_env["DELTA_X_TEST_PLUGIN_DIR"] = str(build_dir / "plugins-v2")
+            test_env["DELTA_X_TEST_PLUGIN_V3_DIR"] = str(build_dir / "plugins-v3")
         completed = run(
             [str(executable), "-o", f"{result_file},txt"],
             build_dir,

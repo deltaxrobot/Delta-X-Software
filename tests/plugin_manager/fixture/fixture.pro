@@ -2,7 +2,7 @@ QT += core widgets
 CONFIG += plugin c++17
 TEMPLATE = lib
 TARGET = DeltaXTestPlugin
-DESTDIR = $$OUT_PWD/../plugins
+DESTDIR = $$OUT_PWD/../plugins-v2
 
 INCLUDEPATH += $$PWD/../../../sdk
 

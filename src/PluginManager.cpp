@@ -1,10 +1,17 @@
 #include "PluginManager.h"
 
+#include "PluginExtensionRegistry.h"
+#include "PluginHostContext.h"
+
 #include "sdk/DeltaXCommandProvider.h"
+#include "sdk/DeltaXDeviceProvider.h"
+#include "sdk/DeltaXGScriptProvider.h"
 #include "sdk/DeltaXPanelProvider.h"
 #include "sdk/DeltaXPlugin.h"
 #include "sdk/DeltaXPluginMetadata.h"
 #include "sdk/DeltaXPluginV2.h"
+#include "sdk/DeltaXPluginV3.h"
+#include "sdk/DeltaXServiceProvider.h"
 
 #include <QDir>
 #include <QFileInfo>
@@ -22,8 +29,15 @@ struct PluginManager::Entry
     QObject* root = nullptr;
     DeltaXPlugin* legacy = nullptr;
     DeltaXPluginV2* modern = nullptr;
+    DeltaXPluginV3* v3 = nullptr;
     DeltaXPanelProvider* panel = nullptr;
     DeltaXCommandProvider* commands = nullptr;
+    DeltaXGScriptProvider* gscript = nullptr;
+    DeltaXDeviceProvider* devices = nullptr;
+    DeltaXServiceProvider* services = nullptr;
+    std::unique_ptr<PluginHostContext> context;
+    bool initialized = false;
+    bool active = false;
 };
 
 bool PluginDescriptor::hasCapability(const QString& capability) const
@@ -66,6 +80,30 @@ void PluginManager::setDisabledPluginIds(const QSet<QString>& pluginIds)
         if (!normalized.isEmpty())
             m_disabledPluginIds.insert(normalized);
     }
+}
+
+void PluginManager::setGrantedPermissions(
+    const QHash<QString, QSet<QString>>& grantedPermissions)
+{
+    m_grantedPermissions.clear();
+    for (auto it = grantedPermissions.cbegin();
+         it != grantedPermissions.cend(); ++it) {
+        const QString pluginId = normalizedId(it.key());
+        if (pluginId.isEmpty())
+            continue;
+        QSet<QString> permissions;
+        for (const QString& value : it.value()) {
+            const QString permission = value.trimmed().toLower();
+            if (DeltaXPluginContract::isKnownPermission(permission))
+                permissions.insert(permission);
+        }
+        m_grantedPermissions.insert(pluginId, permissions);
+    }
+}
+
+void PluginManager::setHostServices(const PluginHostServices& services)
+{
+    m_hostServices = services;
 }
 
 void PluginManager::loadFromDirectories(const QStringList& directories)
@@ -114,6 +152,16 @@ void PluginManager::loadFromDirectories(const QStringList& directories)
             DeltaXPluginContract::pluginVersion(loaderMetadata);
         descriptor.capabilities =
             DeltaXPluginContract::capabilities(loaderMetadata);
+        descriptor.requestedPermissions =
+            DeltaXPluginContract::requestedPermissions(loaderMetadata);
+        const QSet<QString> configuredGrants =
+            m_grantedPermissions.value(descriptor.id);
+        for (const QString& permission : descriptor.requestedPermissions) {
+            if (configuredGrants.contains(permission))
+                descriptor.grantedPermissions.append(permission);
+            else
+                descriptor.missingPermissions.append(permission);
+        }
 
         const QString contractError =
             DeltaXPluginContract::compatibilityError(loaderMetadata);
@@ -149,6 +197,7 @@ void PluginManager::loadFromDirectories(const QStringList& directories)
         QObject* root = loader->instance();
         DeltaXPlugin* legacy = qobject_cast<DeltaXPlugin*>(root);
         DeltaXPluginV2* modern = qobject_cast<DeltaXPluginV2*>(root);
+        DeltaXPluginV3* v3 = qobject_cast<DeltaXPluginV3*>(root);
         if (descriptor.apiVersion == DeltaXPluginContract::LegacyApiVersion &&
             !legacy) {
             const QString error = QStringLiteral(
@@ -157,10 +206,18 @@ void PluginManager::loadFromDirectories(const QStringList& directories)
             reject(descriptor, error);
             continue;
         }
-        if (descriptor.apiVersion == DeltaXPluginContract::SupportedApiVersion &&
+        if (descriptor.apiVersion >= DeltaXPluginContract::VersionedApiVersion &&
             !modern) {
             const QString error = QStringLiteral(
                 "plugin does not implement the DeltaXPluginV2 interface");
+            loader->unload();
+            reject(descriptor, error);
+            continue;
+        }
+        if (descriptor.apiVersion == DeltaXPluginContract::SupportedApiVersion &&
+            !v3) {
+            const QString error = QStringLiteral(
+                "plugin does not implement the DeltaXPluginV3 interface");
             loader->unload();
             reject(descriptor, error);
             continue;
@@ -169,6 +226,12 @@ void PluginManager::loadFromDirectories(const QStringList& directories)
         DeltaXPanelProvider* panel = qobject_cast<DeltaXPanelProvider*>(root);
         DeltaXCommandProvider* commands =
             qobject_cast<DeltaXCommandProvider*>(root);
+        DeltaXGScriptProvider* gscript =
+            qobject_cast<DeltaXGScriptProvider*>(root);
+        DeltaXDeviceProvider* devices =
+            qobject_cast<DeltaXDeviceProvider*>(root);
+        DeltaXServiceProvider* services =
+            qobject_cast<DeltaXServiceProvider*>(root);
 
         QString runtimeError;
         try {
@@ -204,6 +267,42 @@ void PluginManager::loadFromDirectories(const QStringList& directories)
                            !commands) {
                     runtimeError = QStringLiteral(
                         "capability 'commands' requires DeltaXCommandProvider");
+                } else if (descriptor.hasCapability(
+                               QStringLiteral("gscript.primitives")) &&
+                           !gscript) {
+                    runtimeError = QStringLiteral(
+                        "capability 'gscript.primitives' requires DeltaXGScriptProvider");
+                } else if (descriptor.hasCapability(
+                               QStringLiteral("devices.provider")) &&
+                           !devices) {
+                    runtimeError = QStringLiteral(
+                        "capability 'devices.provider' requires DeltaXDeviceProvider");
+                } else if (descriptor.hasCapability(
+                               QStringLiteral("services.provider")) &&
+                           !services) {
+                    runtimeError = QStringLiteral(
+                        "capability 'services.provider' requires DeltaXServiceProvider");
+                }
+                if (runtimeError.isEmpty() && descriptor.apiVersion ==
+                        DeltaXPluginContract::SupportedApiVersion) {
+                    const QHash<QString, QString> capabilityPermissions = {
+                        {QStringLiteral("gscript.primitives"),
+                         QStringLiteral("gscript.register")},
+                        {QStringLiteral("devices.provider"),
+                         QStringLiteral("devices.provide")},
+                        {QStringLiteral("services.provider"),
+                         QStringLiteral("services.provide")},
+                    };
+                    for (auto it = capabilityPermissions.cbegin();
+                         it != capabilityPermissions.cend(); ++it) {
+                        if (descriptor.hasCapability(it.key()) &&
+                            !descriptor.requestedPermissions.contains(it.value())) {
+                            runtimeError = QStringLiteral(
+                                "capability '%1' must request permission '%2'")
+                                               .arg(it.key(), it.value());
+                            break;
+                        }
+                    }
                 }
                 descriptor.displayName = modern->displayName().trimmed();
                 if (descriptor.displayName.isEmpty())
@@ -232,14 +331,20 @@ void PluginManager::loadFromDirectories(const QStringList& directories)
         }
 
         descriptor.state = PluginDescriptor::State::Loaded;
+        descriptor.active = !v3;
         auto entry = std::make_unique<Entry>();
         entry->descriptor = descriptor;
         entry->loader = std::move(loader);
         entry->root = root;
         entry->legacy = legacy;
         entry->modern = modern;
+        entry->v3 = v3;
         entry->panel = panel;
         entry->commands = commands;
+        entry->gscript = gscript;
+        entry->devices = devices;
+        entry->services = services;
+        entry->active = !v3;
         m_entries.push_back(std::move(entry));
         m_descriptors.append(descriptor);
         emit diagnostic(QStringLiteral("Loaded plugin '%1' v%2 (API v%3)")
@@ -256,11 +361,30 @@ bool PluginManager::shutdown()
     bool success = true;
     for (auto it = m_entries.rbegin(); it != m_entries.rend(); ++it) {
         Entry* entry = it->get();
+        if (entry->v3 && entry->initialized) {
+            try {
+                if (entry->active)
+                    entry->v3->stop();
+            } catch (...) {
+                success = false;
+                emit diagnostic(QStringLiteral("Plugin '%1' stop raised an exception")
+                                    .arg(entry->descriptor.id));
+            }
+        }
+        PluginExtensionRegistry::instance().unregisterPlugin(
+            entry->descriptor.id);
+        if (entry->context)
+            entry->context->invalidate();
         entry->root = nullptr;
         entry->legacy = nullptr;
         entry->modern = nullptr;
+        entry->v3 = nullptr;
         entry->panel = nullptr;
         entry->commands = nullptr;
+        entry->gscript = nullptr;
+        entry->devices = nullptr;
+        entry->services = nullptr;
+        entry->context.reset();
 
         const bool unloaded = !entry->loader->isLoaded() || entry->loader->unload();
         for (PluginDescriptor& descriptor : m_descriptors) {
@@ -292,33 +416,51 @@ QVector<PluginDescriptor> PluginManager::descriptors() const
 QStringList PluginManager::loadedPluginIds() const
 {
     QStringList result;
-    for (const auto& entry : m_entries)
-        result.append(entry->descriptor.id);
+    for (const auto& entry : m_entries) {
+        if (entry->descriptor.state == PluginDescriptor::State::Loaded)
+            result.append(entry->descriptor.id);
+    }
     return result;
 }
 
 QObject* PluginManager::instance(const QString& pluginId) const
 {
     Entry* entry = findEntry(pluginId);
-    return entry ? entry->root : nullptr;
+    return entry && entry->descriptor.state == PluginDescriptor::State::Loaded &&
+            (!entry->v3 || entry->active)
+        ? entry->root : nullptr;
 }
 
 DeltaXPlugin* PluginManager::legacyPlugin(const QString& pluginId) const
 {
     Entry* entry = findEntry(pluginId);
-    return entry ? entry->legacy : nullptr;
+    return entry && entry->descriptor.state == PluginDescriptor::State::Loaded &&
+            (!entry->v3 || entry->active)
+        ? entry->legacy : nullptr;
 }
 
 DeltaXPluginV2* PluginManager::pluginV2(const QString& pluginId) const
 {
     Entry* entry = findEntry(pluginId);
-    return entry ? entry->modern : nullptr;
+    return entry && entry->descriptor.state == PluginDescriptor::State::Loaded &&
+            (!entry->v3 || entry->active)
+        ? entry->modern : nullptr;
+}
+
+DeltaXPluginV3* PluginManager::pluginV3(const QString& pluginId) const
+{
+    Entry* entry = findEntry(pluginId);
+    return entry && entry->descriptor.state == PluginDescriptor::State::Loaded &&
+            (!entry->v3 || entry->active)
+        ? entry->v3 : nullptr;
 }
 
 DeltaXPanelProvider* PluginManager::panelProvider(const QString& pluginId) const
 {
     Entry* entry = findEntry(pluginId);
-    return entry ? entry->panel : nullptr;
+    return entry && entry->descriptor.state == PluginDescriptor::State::Loaded &&
+            (!entry->v3 || entry->active)
+        ? entry->panel : nullptr;
 }
 
 bool PluginManager::executeCommand(const QString& pluginId,
@@ -331,6 +473,12 @@ bool PluginManager::executeCommand(const QString& pluginId,
     if (!entry) {
         if (error)
             *error = QStringLiteral("plugin '%1' is not loaded").arg(pluginId);
+        return false;
+    }
+    if (entry->descriptor.state != PluginDescriptor::State::Loaded ||
+        (entry->v3 && !entry->active)) {
+        if (error)
+            *error = QStringLiteral("plugin '%1' is not active").arg(pluginId);
         return false;
     }
 
@@ -369,6 +517,7 @@ void PluginManager::loadSettings(QSettings& settings,
                                  const QString& projectScope)
 {
     for (const auto& entry : m_entries) {
+        QString activationError;
         settings.beginGroup(settingsScope(projectScope, entry->descriptor.id));
         try {
             if (entry->modern)
@@ -376,15 +525,118 @@ void PluginManager::loadSettings(QSettings& settings,
             else if (entry->legacy)
                 entry->legacy->LoadSettings(&settings);
         } catch (const std::exception& exception) {
+            activationError = QString::fromUtf8(exception.what());
             emit diagnostic(QStringLiteral("Could not load settings for '%1': %2")
                                 .arg(entry->descriptor.id,
                                      QString::fromUtf8(exception.what())));
         } catch (...) {
+            activationError = QStringLiteral("settings method raised an unknown exception");
             emit diagnostic(QStringLiteral(
                 "Could not load settings for '%1': unknown exception")
                                 .arg(entry->descriptor.id));
         }
         settings.endGroup();
+
+        if (!entry->v3 || entry->initialized)
+            continue;
+
+        const QSet<QString> grants = m_grantedPermissions.value(
+            entry->descriptor.id);
+        entry->context = std::make_unique<PluginHostContext>(
+            entry->descriptor.id, entry->descriptor.requestedPermissions,
+            grants, m_hostServices);
+        if (activationError.isEmpty()) {
+            try {
+                entry->initialized = entry->v3->initialize(
+                    entry->context.get(), &activationError);
+                if (entry->initialized)
+                    entry->active = entry->v3->start(&activationError);
+            } catch (const std::exception& exception) {
+                activationError = QString::fromUtf8(exception.what());
+                entry->active = false;
+            } catch (...) {
+                activationError = QStringLiteral(
+                    "plugin lifecycle raised an unknown exception");
+                entry->active = false;
+            }
+        }
+
+        if (entry->active &&
+            entry->descriptor.hasCapability(QStringLiteral("gscript.primitives")) &&
+            entry->gscript &&
+            grants.contains(QStringLiteral("gscript.register"))) {
+            entry->active = PluginExtensionRegistry::instance()
+                                .registerGScriptProvider(
+                                    entry->descriptor.id, entry->root,
+                                    entry->gscript, &activationError);
+        }
+        if (entry->active &&
+            entry->descriptor.hasCapability(QStringLiteral("devices.provider")) &&
+            entry->devices &&
+            grants.contains(QStringLiteral("devices.provide"))) {
+            entry->active = PluginExtensionRegistry::instance()
+                                .registerDeviceProvider(
+                                    entry->descriptor.id, entry->root,
+                                    entry->devices, &activationError);
+            if (entry->active && m_hostServices.registerDevice) {
+                try {
+                    PluginExtensionRegistry& registry =
+                        PluginExtensionRegistry::instance();
+                    for (const QString& deviceId : registry.deviceIds()) {
+                        if (registry.ownsDevice(entry->descriptor.id, deviceId))
+                            m_hostServices.registerDevice(deviceId);
+                    }
+                } catch (...) {
+                    activationError = QStringLiteral(
+                        "host device registration failed during activation");
+                    entry->active = false;
+                }
+            }
+        }
+        if (entry->active &&
+            entry->descriptor.hasCapability(QStringLiteral("services.provider")) &&
+            entry->services &&
+            grants.contains(QStringLiteral("services.provide"))) {
+            entry->active = PluginExtensionRegistry::instance()
+                                .registerServiceProvider(
+                                    entry->descriptor.id, entry->root,
+                                    entry->services, &activationError);
+        }
+
+        for (PluginDescriptor& descriptor : m_descriptors) {
+            if (descriptor.filePath != entry->descriptor.filePath)
+                continue;
+            descriptor.active = entry->active;
+            entry->descriptor.active = entry->active;
+            if (!entry->active) {
+                descriptor.state = PluginDescriptor::State::Rejected;
+                entry->descriptor.state = PluginDescriptor::State::Rejected;
+                descriptor.error = activationError.isEmpty()
+                    ? QStringLiteral("plugin failed to activate")
+                    : activationError;
+                entry->descriptor.error = descriptor.error;
+            }
+            break;
+        }
+        if (!entry->active) {
+            PluginExtensionRegistry::instance().unregisterPlugin(
+                entry->descriptor.id);
+            if (entry->initialized) {
+                try {
+                    entry->v3->stop();
+                } catch (...) {
+                }
+            }
+            entry->context->invalidate();
+            emit diagnostic(QStringLiteral("Plugin '%1' activation failed: %2")
+                                .arg(entry->descriptor.id,
+                                     entry->descriptor.error));
+        } else if (!entry->descriptor.missingPermissions.isEmpty()) {
+            emit diagnostic(QStringLiteral(
+                "Plugin '%1' is active with denied permissions: %2")
+                                .arg(entry->descriptor.id,
+                                     entry->descriptor.missingPermissions.join(", ")));
+        }
     }
 }
 

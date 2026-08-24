@@ -8,6 +8,7 @@
 #include "GScriptEditorSupport.h"
 #include "PluginManager.h"
 #include "PluginManagerWidget.h"
+#include "PluginExtensionRegistry.h"
 #include "sdk/DeltaXPanelProvider.h"
 #include "UnityTool.h"  // ? For SoftwareLog function
 #include <QFile>
@@ -23,6 +24,7 @@
 #include <QElapsedTimer> // For performance timing
 #include <QMessageBox>  // For dialog boxes
 #include <QDebug>       // For debug logging
+#include <QDateTime>
 #include <QFont>
 #include <QVector3D>
 #include <QDialog>
@@ -42,6 +44,7 @@
 #include <QCheckBox>
 #include <QProcessEnvironment>
 #include <QStandardPaths>
+#include <QThread>
 #include <opencv2/calib3d.hpp>
 #include <opencv2/imgproc.hpp>
 #include "sdk/DeltaXVersion.h"
@@ -479,9 +482,26 @@ void RobotWindow::InitControlPlane()
         return;
 
     connect(m_deviceCommandBroker, &DeviceCommandBroker::DispatchCommand,
-            DeviceManagerInstance,
-            QOverload<QString, QString>::of(&DeviceManager::SendGcode),
-            Qt::QueuedConnection);
+            this, [this](const QString& deviceId, const QString& command) {
+        if (PluginExtensionRegistry::instance().hasDevice(deviceId))
+            return;
+        QMetaObject::invokeMethod(
+            DeviceManagerInstance, "SendGcode", Qt::QueuedConnection,
+            Q_ARG(QString, deviceId), Q_ARG(QString, command));
+    });
+    connect(m_deviceCommandBroker, &DeviceCommandBroker::CommandDispatched,
+            this, [this](quint64 requestId, const QString&, const QString& deviceId,
+                         const QString& command, DeviceCommandBroker::Origin) {
+        PluginExtensionRegistry& registry = PluginExtensionRegistry::instance();
+        if (!registry.hasDevice(deviceId))
+            return;
+        QString error;
+        if (!registry.dispatchDeviceCommand(deviceId, command, requestId, &error)) {
+            m_deviceCommandBroker->HandleDeviceResponse(
+                deviceId, QStringLiteral("error: plugin device rejected command: %1")
+                              .arg(error));
+        }
+    });
     connect(DeviceManagerInstance, &DeviceManager::DeviceResponded,
             m_deviceCommandBroker, &DeviceCommandBroker::HandleDeviceResponse,
             Qt::QueuedConnection);
@@ -538,6 +558,26 @@ void RobotWindow::InitControlPlane()
         values.insert(QStringLiteral("Cell.LastRejectedReason"), reason);
         VariableManager::instance().updateBatchScoped(
             ProjectName, values, VariableManager::Persistence::Runtime);
+        if (owner.startsWith(QStringLiteral("plugin/"))) {
+            PluginExtensionRegistry::instance().publishEvent(
+                QStringLiteral("host"), QStringLiteral("devices.rejected"),
+                {{QStringLiteral("owner"), owner},
+                 {QStringLiteral("deviceId"), device},
+                 {QStringLiteral("command"), command},
+                 {QStringLiteral("reason"), reason}});
+        }
+    });
+    connect(m_deviceCommandBroker, &DeviceCommandBroker::ResponseForOwner, this,
+            [](const QString& owner, const QString& device,
+               const QString& response, quint64 requestId) {
+        if (!owner.startsWith(QStringLiteral("plugin/")))
+            return;
+        PluginExtensionRegistry::instance().publishEvent(
+            QStringLiteral("host"), QStringLiteral("devices.response"),
+            {{QStringLiteral("owner"), owner},
+             {QStringLiteral("deviceId"), device},
+             {QStringLiteral("response"), response},
+             {QStringLiteral("requestId"), QVariant::fromValue(requestId)}});
     });
     connect(m_deviceCommandBroker, &DeviceCommandBroker::CommandTimedOut, this,
             [this](quint64, const QString& owner, const QString& device,
@@ -545,6 +585,13 @@ void RobotWindow::InitControlPlane()
         const QString fault = tr("Command broker timeout [%1 → %2]: %3")
                                   .arg(owner, device, command);
         SoftwareLog(fault);
+        if (owner.startsWith(QStringLiteral("plugin/"))) {
+            PluginExtensionRegistry::instance().publishEvent(
+                QStringLiteral("host"), QStringLiteral("devices.timeout"),
+                {{QStringLiteral("owner"), owner},
+                 {QStringLiteral("deviceId"), device},
+                 {QStringLiteral("command"), command}});
+        }
         if (m_cellSupervisor) {
             QMetaObject::invokeMethod(m_cellSupervisor,
                                       [this, fault]() {
@@ -2753,6 +2800,306 @@ void RobotWindow::LoadPlugin()
         disabledIds.insert(id);
     m_pluginManager->setDisabledPluginIds(disabledIds);
 
+    QHash<QString, QSet<QString>> grantedPermissions;
+    settings.beginGroup(QStringLiteral("PluginSystem/GrantedPermissions"));
+    for (const QString& pluginId : settings.childKeys()) {
+        QSet<QString> permissions;
+        for (const QString& permission : settings.value(pluginId).toStringList())
+            permissions.insert(permission.trimmed().toLower());
+        grantedPermissions.insert(pluginId.trimmed().toLower(), permissions);
+    }
+    settings.endGroup();
+    m_pluginManager->setGrantedPermissions(grantedPermissions);
+
+    PluginHostServices hostServices;
+    hostServices.projectScope = ProjectName;
+    hostServices.readVariable = [this](const QString& key,
+                                       const QVariant& fallback) {
+        return VariableManager::instance().getVarScoped(ProjectName, key, fallback);
+    };
+    hostServices.writeVariable = [this](const QString& key, const QVariant& value,
+                                        bool persistent, QString* error) {
+        const QString normalized = VariableManager::normalizeKey(key);
+        if (normalized.isEmpty()) {
+            if (error)
+                *error = QStringLiteral("variable key is invalid");
+            return false;
+        }
+        VariableManager::instance().updateVarScoped(
+            ProjectName, normalized, value,
+            persistent ? VariableManager::Persistence::Persistent
+                       : VariableManager::Persistence::Runtime);
+        if (persistent)
+            VariableManager::instance().scheduleSave();
+        return true;
+    };
+    hostServices.removeVariable = [this](const QString& key, QString* error) {
+        const QString normalized = VariableManager::normalizeKey(key);
+        if (normalized.isEmpty()) {
+            if (error)
+                *error = QStringLiteral("variable key is invalid");
+            return false;
+        }
+        VariableManager::instance().removeVarScoped(ProjectName, normalized);
+        return true;
+    };
+    hostServices.submitDeviceCommand =
+        [this](const QString& owner, const QString& deviceId,
+               const QString& command, bool waitForResponse, int timeoutMs,
+               QString* error) {
+        quint64 requestId = 0;
+        auto submit = [this, &requestId, owner, deviceId, command,
+                       waitForResponse, timeoutMs]() {
+            requestId = m_deviceCommandBroker->Submit(
+                owner, deviceId, command, DeviceCommandBroker::Origin::Plugin,
+                waitForResponse, timeoutMs);
+        };
+        if (QThread::currentThread() == m_deviceCommandBroker->thread())
+            submit();
+        else
+            QMetaObject::invokeMethod(m_deviceCommandBroker, submit,
+                                      Qt::BlockingQueuedConnection);
+        if (!requestId && error)
+            *error = QStringLiteral("device command was rejected by the control plane");
+        return requestId;
+    };
+    hostServices.completeDeviceCommand =
+        [this](const QString& deviceId, const QString& response, QString* error) {
+        if (deviceId.trimmed().isEmpty()) {
+            if (error)
+                *error = QStringLiteral("device id is required");
+            return false;
+        }
+        QMetaObject::invokeMethod(
+            m_deviceCommandBroker,
+            [this, deviceId, response]() {
+                m_deviceCommandBroker->HandleDeviceResponse(deviceId, response);
+            },
+            Qt::QueuedConnection);
+        return true;
+    };
+    hostServices.registerDevice = [this](const QString& deviceId) {
+        QMetaObject::invokeMethod(
+            m_deviceCommandBroker,
+            [this, deviceId]() {
+                m_deviceCommandBroker->RegisterDevice(deviceId);
+            },
+            Qt::QueuedConnection);
+    };
+    hostServices.submitDetections = [this](const QVariantMap& frame,
+                                           QString* error) {
+        const int trackingId = frame.value(QStringLiteral("trackingId"), 0).toInt();
+        if (!TrackingManagerInstance || trackingId < 0 ||
+            trackingId >= TrackingManagerInstance->Trackings.size()) {
+            if (error)
+                *error = QStringLiteral("trackingId is out of range");
+            return false;
+        }
+        VisionDetections detections;
+        detections.frameId = frame.value(QStringLiteral("frameId")).toULongLong();
+        detections.requestId = frame.value(QStringLiteral("requestId")).toULongLong();
+        detections.trackingId = trackingId;
+        detections.coordinateSpace =
+            frame.value(QStringLiteral("coordinateSpace"),
+                        QStringLiteral("conveyor")).toString().trimmed().toLower();
+        if (!detections.frameId || detections.coordinateSpace !=
+                QStringLiteral("conveyor")) {
+            if (error)
+                *error = QStringLiteral(
+                    "frameId is required and coordinateSpace must be 'conveyor'");
+            return false;
+        }
+        const QVariantList objects = frame.value(QStringLiteral("objects")).toList();
+        for (const QVariant& value : objects) {
+            const QVariantMap item = value.toMap();
+            bool xOk = false;
+            bool yOk = false;
+            const float x = item.value(QStringLiteral("x")).toFloat(&xOk);
+            const float y = item.value(QStringLiteral("y")).toFloat(&yOk);
+            if (!xOk || !yOk) {
+                if (error)
+                    *error = QStringLiteral("every detection requires numeric x and y");
+                return false;
+            }
+            ObjectInfo object(
+                item.value(QStringLiteral("uid"), 0).toInt(),
+                item.value(QStringLiteral("type"), 0).toInt(),
+                QVector3D(x, y, item.value(QStringLiteral("z"), 0.0).toFloat()),
+                item.value(QStringLiteral("width"), 0.0).toDouble(),
+                item.value(QStringLiteral("height"), 0.0).toDouble(),
+                item.value(QStringLiteral("angle"), 0.0).toDouble(), false,
+                QVector3D(), QString(), 0,
+                qBound(0.0, item.value(QStringLiteral("confidence"), 1.0).toDouble(),
+                       1.0),
+                item.value(QStringLiteral("label")).toString(),
+                item.value(QStringLiteral("externalId")).toString());
+            detections.objects.append(object);
+        }
+        QMetaObject::invokeMethod(
+            TrackingManagerInstance, "SubmitDetections", Qt::QueuedConnection,
+            Q_ARG(VisionDetections, detections));
+        return true;
+    };
+    hostServices.trackingSnapshot = [this](int trackingId, QString* error) {
+        QVariantList result;
+        if (!TrackingManagerInstance || trackingId < 0 ||
+            trackingId >= TrackingManagerInstance->Trackings.size()) {
+            if (error)
+                *error = QStringLiteral("trackingId is out of range");
+            return result;
+        }
+        Tracking* tracking = TrackingManagerInstance->Trackings.at(trackingId);
+        QVector<ObjectInfo> snapshot;
+        auto read = [tracking, &snapshot]() {
+            snapshot = tracking->getTrackedObjectsCopy();
+        };
+        if (QThread::currentThread() == tracking->thread())
+            read();
+        else
+            QMetaObject::invokeMethod(tracking, read, Qt::BlockingQueuedConnection);
+        for (const ObjectInfo& object : snapshot) {
+            result.append(QVariantMap{
+                {QStringLiteral("uid"), object.uid},
+                {QStringLiteral("type"), object.type},
+                {QStringLiteral("x"), object.center.x()},
+                {QStringLiteral("y"), object.center.y()},
+                {QStringLiteral("z"), object.center.z()},
+                {QStringLiteral("width"), object.width},
+                {QStringLiteral("height"), object.height},
+                {QStringLiteral("angle"), object.angle},
+                {QStringLiteral("confidence"), object.confidence},
+                {QStringLiteral("label"), object.label},
+                {QStringLiteral("confirmed"), object.confirmed},
+                {QStringLiteral("claimOwner"), object.claimOwner},
+            });
+        }
+        return result;
+    };
+    hostServices.claimObject = [this](int trackingId, const QVariantMap& request,
+                                      QString* error) {
+        QVariantMap result;
+        if (!TrackingManagerInstance || trackingId < 0 ||
+            trackingId >= TrackingManagerInstance->Trackings.size()) {
+            if (error)
+                *error = QStringLiteral("trackingId is out of range");
+            return result;
+        }
+        const QString owner = request.value(QStringLiteral("owner")).toString().trimmed();
+        if (owner.isEmpty()) {
+            if (error)
+                *error = QStringLiteral("claim owner is required");
+            return result;
+        }
+        Tracking* tracking = TrackingManagerInstance->Trackings.at(trackingId);
+        auto claim = [tracking, request, owner, &result]() {
+            result = tracking->ClaimObject(
+                owner,
+                request.value(QStringLiteral("minX"), -1.0e9).toFloat(),
+                request.value(QStringLiteral("maxX"), 1.0e9).toFloat(),
+                request.value(QStringLiteral("minY"), -1.0e9).toFloat(),
+                request.value(QStringLiteral("maxY"), 1.0e9).toFloat(),
+                request.value(QStringLiteral("type"), -1).toInt(),
+                request.value(QStringLiteral("leaseMs"), 30000).toInt());
+        };
+        if (QThread::currentThread() == tracking->thread())
+            claim();
+        else
+            QMetaObject::invokeMethod(tracking, claim, Qt::BlockingQueuedConnection);
+        return result;
+    };
+    hostServices.releaseObject = [this](int trackingId, int uid,
+                                        const QString& owner, QString* error) {
+        if (!TrackingManagerInstance || trackingId < 0 ||
+            trackingId >= TrackingManagerInstance->Trackings.size()) {
+            if (error)
+                *error = QStringLiteral("trackingId is out of range");
+            return false;
+        }
+        Tracking* tracking = TrackingManagerInstance->Trackings.at(trackingId);
+        bool result = false;
+        auto release = [tracking, uid, owner, &result]() {
+            result = tracking->ReleaseObject(uid, owner);
+        };
+        if (QThread::currentThread() == tracking->thread())
+            release();
+        else
+            QMetaObject::invokeMethod(tracking, release, Qt::BlockingQueuedConnection);
+        return result;
+    };
+    hostServices.completeObject = [this](int trackingId, int uid,
+                                         const QString& owner, QString* error) {
+        if (!TrackingManagerInstance || trackingId < 0 ||
+            trackingId >= TrackingManagerInstance->Trackings.size()) {
+            if (error)
+                *error = QStringLiteral("trackingId is out of range");
+            return false;
+        }
+        Tracking* tracking = TrackingManagerInstance->Trackings.at(trackingId);
+        bool result = false;
+        auto complete = [tracking, uid, owner, &result]() {
+            result = tracking->CompleteObject(uid, owner);
+        };
+        if (QThread::currentThread() == tracking->thread())
+            complete();
+        else
+            QMetaObject::invokeMethod(tracking, complete, Qt::BlockingQueuedConnection);
+        return result;
+    };
+    hostServices.reportHealth = [this](const QString& pluginId,
+                                       const QString& state,
+                                       const QString& message,
+                                       const QVariantMap& details,
+                                       QString*) {
+        VariableManager::instance().updateBatchScoped(
+            ProjectName,
+            {{QStringLiteral("PluginSystem.%1.Health.State").arg(pluginId), state},
+             {QStringLiteral("PluginSystem.%1.Health.Message").arg(pluginId), message},
+             {QStringLiteral("PluginSystem.%1.Health.Details").arg(pluginId), details},
+             {QStringLiteral("PluginSystem.%1.Health.UpdatedAt").arg(pluginId),
+              QDateTime::currentDateTimeUtc().toString(Qt::ISODateWithMs)}},
+            VariableManager::Persistence::Runtime);
+        return true;
+    };
+    hostServices.publishTelemetry = [this](const QString& pluginId,
+                                           const QString& metric,
+                                           const QVariant& value,
+                                           const QVariantMap& attributes,
+                                           QString* error) {
+        const QString normalized = VariableManager::normalizeKey(metric);
+        if (normalized.isEmpty()) {
+            if (error)
+                *error = QStringLiteral("telemetry metric is invalid");
+            return false;
+        }
+        VariableManager::instance().updateBatchScoped(
+            ProjectName,
+            {{QStringLiteral("PluginSystem.%1.Telemetry.%2.Value")
+                  .arg(pluginId, normalized), value},
+             {QStringLiteral("PluginSystem.%1.Telemetry.%2.Attributes")
+                  .arg(pluginId, normalized), attributes}},
+            VariableManager::Persistence::Runtime);
+        return true;
+    };
+    hostServices.requestControlledStop = [this](const QString& reason,
+                                                QString* error) {
+        if (!m_cellSupervisor) {
+            if (error)
+                *error = QStringLiteral("cell supervisor is unavailable");
+            return false;
+        }
+        QMetaObject::invokeMethod(
+            m_cellSupervisor,
+            [this, reason]() { m_cellSupervisor->ReportFault(reason); },
+            Qt::QueuedConnection);
+        return true;
+    };
+    hostServices.log = [](const QString& pluginId, const QString& level,
+                          const QString& message) {
+        SoftwareLog(QStringLiteral("Plugin [%1] %2: %3")
+                        .arg(pluginId, level.trimmed().toUpper(), message));
+    };
+    m_pluginManager->setHostServices(hostServices);
+
     QStringList searchDirectories;
     searchDirectories.append(
         QDir(QApplication::applicationDirPath()).filePath(QStringLiteral("plugin")));
@@ -2773,6 +3120,10 @@ void RobotWindow::LoadPlugin()
             .toStringList());
 
     m_pluginManager->loadFromDirectories(searchDirectories);
+
+    // V3 settings are loaded before initialize/start so plugins never begin
+    // work with stale project configuration.
+    m_pluginManager->loadSettings(settings, ProjectName);
 
     auto* pluginManagerPanel = new PluginManagerWidget(
         m_pluginManager, searchDirectories.constFirst(), ui->twModule);
@@ -2830,8 +3181,6 @@ void RobotWindow::LoadPlugin()
         }
     }
 
-    m_pluginManager->loadSettings(settings, ProjectName);
-
     QHash<QString, QVariant> pluginState;
     pluginState.insert(QStringLiteral("PluginSystem.LoadedCount"), loadedCount);
     pluginState.insert(QStringLiteral("PluginSystem.DisabledCount"), disabledCount);
@@ -2839,7 +3188,20 @@ void RobotWindow::LoadPlugin()
     pluginState.insert(QStringLiteral("PluginSystem.LoadedIds"),
                        m_pluginManager->loadedPluginIds());
     pluginState.insert(QStringLiteral("PluginSystem.Diagnostics"), diagnostics);
-    VariableManager::instance().updateBatchScoped(ProjectName, pluginState);
+    pluginState.insert(QStringLiteral("PluginSystem.GScriptPrimitives"),
+                       [&]() {
+        QStringList names;
+        for (const PluginGScriptPrimitive& primitive :
+             PluginExtensionRegistry::instance().gscriptPrimitives())
+            names.append(primitive.name);
+        return names;
+    }());
+    pluginState.insert(QStringLiteral("PluginSystem.DeviceIds"),
+                       PluginExtensionRegistry::instance().deviceIds());
+    pluginState.insert(QStringLiteral("PluginSystem.ServiceIds"),
+                       PluginExtensionRegistry::instance().serviceIds());
+    VariableManager::instance().updateBatchScoped(
+        ProjectName, pluginState, VariableManager::Persistence::Runtime);
 
     SoftwareLog(QStringLiteral("Plugin System: %1 loaded, %2 rejected")
                     .arg(loadedCount)

@@ -85,7 +85,9 @@ verifier can also be run independently against an extracted artifact:
 
 `VERSION.txt` is the application release source of truth. Keep `version.json`
 aligned; the repository check enforces this. Plugin binary compatibility is
-versioned separately through `apiVersion`; see [`sdk/README.md`](../sdk/README.md).
+versioned separately through `apiVersion`. API v3 is the target for new work;
+v1/v2 remain compatibility surfaces. See [`sdk/README.md`](../sdk/README.md)
+and the [plugin system guide](plugin-system.md).
 
 ## Adding a module
 

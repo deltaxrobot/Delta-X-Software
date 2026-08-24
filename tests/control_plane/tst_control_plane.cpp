@@ -13,7 +13,30 @@ private slots:
     void controlledStopCoversKnownActuators();
     void timeoutCancelsTheDeviceQueue();
     void cellFaultStopsOnceAndRequiresExplicitReset();
+    void synchronousProviderResponseCompletesActiveRequest();
 };
+
+void ControlPlaneTest::synchronousProviderResponseCompletesActiveRequest()
+{
+    DeviceCommandBroker broker;
+    QSignalSpy responses(&broker, &DeviceCommandBroker::ResponseForOwner);
+    connect(&broker, &DeviceCommandBroker::CommandDispatched, &broker,
+            [&broker](quint64, const QString&, const QString& device,
+                      const QString&, DeviceCommandBroker::Origin) {
+        broker.HandleDeviceResponse(device, QStringLiteral("plugin-ok"));
+    });
+
+    const quint64 requestId = broker.Submit(
+        QStringLiteral("plugin/example"), QStringLiteral("example.device0"),
+        QStringLiteral("PING"), DeviceCommandBroker::Origin::Plugin, true, 1000);
+
+    QVERIFY(requestId > 0);
+    QCOMPARE(responses.size(), 1);
+    QCOMPARE(responses.first().at(0).toString(),
+             QStringLiteral("plugin/example"));
+    QCOMPARE(responses.first().at(2).toString(), QStringLiteral("plugin-ok"));
+    QVERIFY(!broker.hasActiveCommand(QStringLiteral("example.device0")));
+}
 
 void ControlPlaneTest::commandsAreSerializedAndResponsesReachOnlyTheirOwner()
 {

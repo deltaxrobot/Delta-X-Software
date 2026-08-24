@@ -6,11 +6,14 @@
 #include <QApplication>
 #include <QCheckBox>
 #include <QDesktopServices>
+#include <QDialog>
+#include <QDialogButtonBox>
 #include <QDir>
 #include <QFileInfo>
 #include <QHeaderView>
 #include <QHBoxLayout>
 #include <QLabel>
+#include <QListWidget>
 #include <QMessageBox>
 #include <QPushButton>
 #include <QSettings>
@@ -52,10 +55,10 @@ PluginManagerWidget::PluginManagerWidget(PluginManager* manager,
     layout->addWidget(m_summaryLabel);
 
     m_table = new QTableWidget(this);
-    m_table->setColumnCount(7);
+    m_table->setColumnCount(8);
     m_table->setHorizontalHeaderLabels(
         {tr("Enabled"), tr("Plugin"), tr("Version"), tr("API"),
-         tr("Capabilities"), tr("State"), tr("Details")});
+         tr("Capabilities"), tr("Permissions"), tr("State"), tr("Details")});
     m_table->setSelectionBehavior(QAbstractItemView::SelectRows);
     m_table->setSelectionMode(QAbstractItemView::SingleSelection);
     m_table->setEditTriggers(QAbstractItemView::NoEditTriggers);
@@ -66,8 +69,9 @@ PluginManagerWidget::PluginManagerWidget(PluginManager* manager,
     m_table->horizontalHeader()->setSectionResizeMode(2, QHeaderView::ResizeToContents);
     m_table->horizontalHeader()->setSectionResizeMode(3, QHeaderView::ResizeToContents);
     m_table->horizontalHeader()->setSectionResizeMode(4, QHeaderView::Stretch);
-    m_table->horizontalHeader()->setSectionResizeMode(5, QHeaderView::ResizeToContents);
-    m_table->horizontalHeader()->setSectionResizeMode(6, QHeaderView::Stretch);
+    m_table->horizontalHeader()->setSectionResizeMode(5, QHeaderView::Stretch);
+    m_table->horizontalHeader()->setSectionResizeMode(6, QHeaderView::ResizeToContents);
+    m_table->horizontalHeader()->setSectionResizeMode(7, QHeaderView::Stretch);
     layout->addWidget(m_table, 1);
 
     auto* controls = new QHBoxLayout;
@@ -82,7 +86,9 @@ PluginManagerWidget::PluginManagerWidget(PluginManager* manager,
     auto* builtInButton = new QPushButton(tr("Open Built-in Folder"), this);
     auto* userButton = new QPushButton(tr("Open User Folder"), this);
     auto* documentationButton = new QPushButton(tr("Documentation"), this);
+    auto* permissionsButton = new QPushButton(tr("Permissions..."), this);
     controls->addStretch();
+    controls->addWidget(permissionsButton);
     controls->addWidget(builtInButton);
     controls->addWidget(userButton);
     controls->addWidget(documentationButton);
@@ -103,6 +109,8 @@ PluginManagerWidget::PluginManagerWidget(PluginManager* manager,
             this, &PluginManagerWidget::openUserDirectory);
     connect(documentationButton, &QPushButton::clicked,
             this, &PluginManagerWidget::openDocumentation);
+    connect(permissionsButton, &QPushButton::clicked,
+            this, &PluginManagerWidget::configurePermissions);
 
     refresh();
 }
@@ -151,8 +159,21 @@ void PluginManagerWidget::refresh()
                        : descriptor.version);
         setText(3, QString::number(descriptor.apiVersion));
         setText(4, descriptor.capabilities.join(QStringLiteral(", ")));
-        setText(5, descriptor.stateName());
-        setText(6, descriptor.error.isEmpty()
+        QString permissionText;
+        if (!descriptor.requestedPermissions.isEmpty()) {
+            permissionText = tr("%1 granted").arg(
+                descriptor.grantedPermissions.size());
+            if (!descriptor.missingPermissions.isEmpty()) {
+                permissionText += tr("; denied: %1")
+                                      .arg(descriptor.missingPermissions.join(", "));
+            }
+        } else {
+            permissionText = descriptor.apiVersion >= 3
+                ? tr("None requested") : tr("Legacy contract");
+        }
+        setText(5, permissionText);
+        setText(6, descriptor.stateName());
+        setText(7, descriptor.error.isEmpty()
                        ? descriptor.filePath
                        : descriptor.error + QStringLiteral(" — ") +
                              descriptor.filePath);
@@ -228,6 +249,86 @@ void PluginManagerWidget::openDocumentation()
         return;
     }
     QDesktopServices::openUrl(QUrl::fromLocalFile(path));
+}
+
+void PluginManagerWidget::configurePermissions()
+{
+    if (!m_manager)
+        return;
+    const int row = m_table->currentRow();
+    if (row < 0 || !m_table->item(row, 0)) {
+        QMessageBox::information(this, tr("Plugin Permissions"),
+                                 tr("Select a plugin first."));
+        return;
+    }
+    const QString pluginId =
+        m_table->item(row, 0)->data(PluginIdRole).toString();
+    PluginDescriptor descriptor;
+    bool found = false;
+    for (const PluginDescriptor& candidate : m_manager->descriptors()) {
+        if (candidate.id == pluginId) {
+            descriptor = candidate;
+            found = true;
+            break;
+        }
+    }
+    if (!found || descriptor.apiVersion < 3) {
+        QMessageBox::information(
+            this, tr("Plugin Permissions"),
+            tr("Only API v3 plugins use host permissions."));
+        return;
+    }
+
+    QDialog dialog(this);
+    dialog.setWindowTitle(tr("Permissions - %1").arg(
+        descriptor.displayName.isEmpty() ? descriptor.id
+                                         : descriptor.displayName));
+    dialog.resize(620, 420);
+    auto* layout = new QVBoxLayout(&dialog);
+    auto* warning = new QLabel(
+        tr("Grant only permissions required for this plugin's documented "
+           "purpose. Native plugins still execute in the application process. "
+           "Permission changes apply after restart."),
+        &dialog);
+    warning->setWordWrap(true);
+    layout->addWidget(warning);
+
+    auto* list = new QListWidget(&dialog);
+    for (const QString& permission : descriptor.requestedPermissions) {
+        auto* item = new QListWidgetItem(permission, list);
+        item->setFlags(item->flags() | Qt::ItemIsUserCheckable);
+        item->setCheckState(descriptor.grantedPermissions.contains(permission)
+                                ? Qt::Checked
+                                : Qt::Unchecked);
+    }
+    if (descriptor.requestedPermissions.isEmpty()) {
+        auto* item = new QListWidgetItem(
+            tr("This plugin requests no permissions."), list);
+        item->setFlags(Qt::NoItemFlags);
+    }
+    layout->addWidget(list, 1);
+
+    auto* buttons = new QDialogButtonBox(
+        QDialogButtonBox::Save | QDialogButtonBox::Cancel, &dialog);
+    connect(buttons, &QDialogButtonBox::accepted, &dialog, &QDialog::accept);
+    connect(buttons, &QDialogButtonBox::rejected, &dialog, &QDialog::reject);
+    layout->addWidget(buttons);
+    if (dialog.exec() != QDialog::Accepted)
+        return;
+
+    QStringList granted;
+    for (int index = 0; index < list->count(); ++index) {
+        QListWidgetItem* item = list->item(index);
+        if (item->checkState() == Qt::Checked)
+            granted.append(item->text());
+    }
+    granted.sort(Qt::CaseInsensitive);
+    QSettings settings;
+    settings.setValue(
+        QStringLiteral("PluginSystem/GrantedPermissions/%1").arg(pluginId),
+        granted);
+    settings.sync();
+    markRestartRequired();
 }
 
 QString PluginManagerWidget::userPluginDirectory() const
