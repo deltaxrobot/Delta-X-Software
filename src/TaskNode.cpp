@@ -605,7 +605,13 @@ void TaskNode::doFindChessboardWork()
 
     if(patternfound)
     {
-        cornerSubPix(outputMat, corners, cv::Size(11, 11), cv::Size(-1, -1), cv::TermCriteria(CV_TERMCRIT_EPS + CV_TERMCRIT_ITER, 30, 0.1));
+        cornerSubPix(outputMat,
+                     corners,
+                     cv::Size(11, 11),
+                     cv::Size(-1, -1),
+                     cv::TermCriteria(cv::TermCriteria::EPS | cv::TermCriteria::MAX_ITER,
+                                      30,
+                                      0.1));
 
         std::vector<cv::Point> points;
 

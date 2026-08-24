@@ -569,7 +569,7 @@ void DrawingExporter::ApplyConversion()
 	if (cbConversion->currentText() == "Gray")
 	{
 		mat = ImageTool::QImageToCvMat(image);
-		cv::cvtColor(mat, mat, CV_BGR2GRAY);
+		cv::cvtColor(mat, mat, cv::COLOR_BGR2GRAY);
 
 		image = ImageTool::cvMatToQImage(mat);
 		image = image.convertToFormat(QImage::Format_ARGB32);
@@ -580,15 +580,15 @@ void DrawingExporter::ApplyConversion()
 		result = mat.clone();
 		result = cv::Scalar(255, 255, 255, 255);
 		
-		cv::cvtColor(mat, mat, CV_BGR2GRAY);
+		cv::cvtColor(mat, mat, cv::COLOR_BGR2GRAY);
 
         if (cbInverse->isChecked())
 		{
-			cv::threshold(mat, mat, thresh, 255, CV_THRESH_BINARY_INV);
+			cv::threshold(mat, mat, thresh, 255, cv::THRESH_BINARY_INV);
 		}
 		else
 		{
-			cv::threshold(mat, mat, thresh, 255, CV_THRESH_BINARY);
+			cv::threshold(mat, mat, thresh, 255, cv::THRESH_BINARY);
 		}
 
 		/*cv::Mat edges;
