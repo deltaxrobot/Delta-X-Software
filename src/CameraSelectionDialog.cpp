@@ -130,8 +130,8 @@ void CameraSelectionDialog::loadAvailableCameras()
     
     // The selected ID is consumed by OpenCV, so enumerate verified OpenCV
     // indices. Qt Multimedia device ordering is not guaranteed to match it.
-    constexpr int maxCameraIndices = 10;
-    for (int i = 0; i < maxCameraIndices; ++i) {
+    constexpr int maxProbeIndices = 10;
+    for (int i = 0; i < maxProbeIndices; ++i) {
         cv::VideoCapture probe;
         bool opened = false;
         QString backendName;
