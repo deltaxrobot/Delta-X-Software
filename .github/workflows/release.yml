@@ -1,0 +1,134 @@
+name: Release
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  windows-release:
+    name: Verify and package Windows x64
+    runs-on: windows-2022
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Set up MSVC
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x64
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: '6.8.3'
+          host: windows
+          target: desktop
+          arch: win64_msvc2022_64
+          modules: qtmultimedia qtserialport qtsvg
+          cache: true
+
+      - name: Restore governed dependency cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            build/dependencies
+            build/downloads
+          key: windows-release-dependencies-${{ hashFiles('config/dependencies.json') }}
+
+      - name: Install verified dependencies and notices
+        shell: pwsh
+        run: |
+          $opencv = & .\tools\install-opencv.ps1
+          $qtLicenses = & .\tools\install-qt-licenses.ps1
+          "DELTA_X_OPENCV_DIR=$($opencv.CMakeDirectory)" | Out-File $env:GITHUB_ENV -Append
+          "DELTA_X_OPENCV_RUNTIME=$($opencv.RuntimePath)" | Out-File $env:GITHUB_ENV -Append
+          "DELTA_X_QT_LICENSES=$($qtLicenses.Directory)" | Out-File $env:GITHUB_ENV -Append
+          "$($opencv.RuntimeDirectory)" | Out-File $env:GITHUB_PATH -Append
+
+      - name: Validate repository and release contract
+        shell: pwsh
+        run: |
+          python tools/check-repository.py
+          if ($env:GITHUB_REF_TYPE -eq 'tag') {
+            python tools/check-release.py --tag $env:GITHUB_REF_NAME
+          } else {
+            python tools/check-release.py
+          }
+
+      - name: Build and run automated tests
+        shell: pwsh
+        env:
+          QT_QPA_PLATFORM: offscreen
+        run: >-
+          python tools/run-tests.py
+          --build-root build-tests-release
+          --opencv-dir "$env:DELTA_X_OPENCV_DIR"
+
+      - name: Configure application
+        shell: pwsh
+        run: >-
+          cmake --preset developer-release
+          -DOpenCV_DIR="$env:DELTA_X_OPENCV_DIR"
+
+      - name: Build application
+        run: cmake --build --preset developer-release --parallel 2
+
+      - name: Create and verify public package
+        id: package
+        shell: pwsh
+        run: |
+          $version = (Get-Content VERSION.txt -Raw).Trim()
+          $packageDirectory = Join-Path $PWD "dist\DeltaRobotSoftware-$version-windows-x64"
+          & .\tools\package-release.ps1 `
+            -BuildDirectory .\build\cmake-release `
+            -OutputDirectory $packageDirectory `
+            -OpenCvRuntimePath $env:DELTA_X_OPENCV_RUNTIME `
+            -QtLicenseDirectory $env:DELTA_X_QT_LICENSES
+          $archive = "$packageDirectory.zip"
+          Compress-Archive -Path "$packageDirectory\*" -DestinationPath $archive -CompressionLevel Optimal
+          $archiveHash = (Get-FileHash -LiteralPath $archive -Algorithm SHA256).Hash.ToLowerInvariant()
+          $hashFile = "$archive.sha256"
+          Set-Content -LiteralPath $hashFile -Encoding ASCII `
+            -Value "$archiveHash  $([IO.Path]::GetFileName($archive))"
+          "archive=$archive" | Out-File $env:GITHUB_OUTPUT -Append
+          "hash-file=$hashFile" | Out-File $env:GITHUB_OUTPUT -Append
+
+      - name: Upload verified package
+        uses: actions/upload-artifact@v4
+        with:
+          name: DeltaRobotSoftware-windows-x64
+          path: |
+            ${{ steps.package.outputs.archive }}
+            ${{ steps.package.outputs.hash-file }}
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Publish tagged GitHub release
+        if: github.ref_type == 'tag'
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $version = (Get-Content VERSION.txt -Raw).Trim()
+          gh release create "$env:GITHUB_REF_NAME" `
+            "${{ steps.package.outputs.archive }}" `
+            "${{ steps.package.outputs.hash-file }}" `
+            --verify-tag `
+            --generate-notes `
+            --title "Delta X Software $version"

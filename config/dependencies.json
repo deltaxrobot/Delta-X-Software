@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "opencv": {
+    "version": "4.11.0",
+    "license": "Apache-2.0",
+    "windows": {
+      "url": "https://github.com/opencv/opencv/releases/download/4.11.0/opencv-4.11.0-windows.exe",
+      "sha256": "7c9d1c0b70db1b1952cc815252fced9a07f51267563cf3eaa1674d734c49b8e4",
+      "worldVersion": "4110"
+    }
+  },
+  "qt": {
+    "ciVersion": "6.8.3",
+    "licenses": [
+      {
+        "name": "LGPL-3.0-only.txt",
+        "url": "https://raw.githubusercontent.com/qt/qtbase/v6.8.3/LICENSES/LGPL-3.0-only.txt",
+        "sha256": "da7eabb7bafdf7d3ae5e9f223aa5bdc1eece45ac569dc21b3b037520b4464768"
+      },
+      {
+        "name": "GPL-3.0-only.txt",
+        "url": "https://raw.githubusercontent.com/qt/qtbase/v6.8.3/LICENSES/GPL-3.0-only.txt",
+        "sha256": "8ceb4b9ee5adedde47b31e975c1d90c73ad27b6b165a1dcd80c7c545eb65b903"
+      }
+    ]
+  }
+}

@@ -1,0 +1,183 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master, develop]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  repository-quality:
+    name: Repository quality
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Validate repository foundation
+        run: python tools/check-repository.py
+
+      - name: Validate Python sources
+        run: python -m compileall -q tools script-example tests/vision_protocol tests/tooling
+
+      - name: Test contributor tooling
+        run: python -m unittest discover -s tests/tooling -p 'test_*.py' -v
+
+      - name: Validate PowerShell sources
+        shell: pwsh
+        run: |
+          $failed = $false
+          Get-ChildItem tools -Filter '*.ps1' | ForEach-Object {
+            $tokens = $null
+            $errors = $null
+            [System.Management.Automation.Language.Parser]::ParseFile(
+              $_.FullName, [ref]$tokens, [ref]$errors) | Out-Null
+            if ($errors.Count -gt 0) {
+              $errors | ForEach-Object { Write-Error "$($_.Extent): $($_.Message)" }
+              $failed = $true
+            }
+          }
+          if ($failed) { exit 1 }
+
+      - name: Reject whitespace errors introduced by this change
+        if: github.event_name == 'pull_request'
+        run: git diff --check ${{ github.event.pull_request.base.sha }}...HEAD
+
+  linux-build-test:
+    name: Qt 6.2 minimum / Ubuntu
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential cmake ninja-build pkg-config libopencv-dev libgl1-mesa-dev \
+            qt6-base-dev qt6-base-dev-tools qt6-multimedia-dev \
+            libqt6serialport6-dev libqt6svg6-dev
+
+      - name: Check, build, and run automated tests
+        env:
+          QT_QPA_PLATFORM: offscreen
+        run: python tools/bootstrap.py all --build-dir build/bootstrap-ci
+
+      - name: Verify the Linux package path
+        env:
+          QT_QPA_PLATFORM: offscreen
+        run: python tools/bootstrap.py package --build-dir build/bootstrap-ci
+
+  macos-build-test:
+    name: Qt 6 / macOS
+    runs-on: macos-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: '6.8.3'
+          host: mac
+          target: desktop
+          arch: clang_64
+          modules: qtmultimedia qtserialport qtsvg
+          cache: true
+
+      - name: Install OpenCV and build tools
+        run: brew install ninja opencv
+
+      - name: Export Homebrew OpenCV discovery
+        run: |
+          echo "OpenCV_DIR=$(brew --prefix opencv)/lib/cmake/opencv4" >> "$GITHUB_ENV"
+          echo "PKG_CONFIG_PATH=$(brew --prefix opencv)/lib/pkgconfig:${PKG_CONFIG_PATH:-}" >> "$GITHUB_ENV"
+
+      - name: Check, build, and run automated tests
+        env:
+          QT_QPA_PLATFORM: offscreen
+        run: python tools/bootstrap.py all --build-dir build/bootstrap-ci
+
+      - name: Verify the macOS package path
+        env:
+          QT_QPA_PLATFORM: offscreen
+        run: python tools/bootstrap.py package --build-dir build/bootstrap-ci
+
+  windows-build-test:
+    name: Qt 6 / Windows
+    runs-on: windows-2022
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Set up MSVC
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x64
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: '6.8.3'
+          host: windows
+          target: desktop
+          arch: win64_msvc2022_64
+          modules: qtmultimedia qtserialport qtsvg
+          cache: true
+
+      - name: Restore pinned OpenCV cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            build/dependencies
+            build/downloads
+          key: windows-opencv-${{ hashFiles('config/dependencies.json') }}
+
+      - name: Install verified OpenCV package
+        shell: pwsh
+        run: |
+          $opencv = & .\tools\install-opencv.ps1
+          "DELTA_X_OPENCV_DIR=$($opencv.CMakeDirectory)" | Out-File $env:GITHUB_ENV -Append
+          "DELTA_X_OPENCV_RUNTIME=$($opencv.RuntimePath)" | Out-File $env:GITHUB_ENV -Append
+          "$($opencv.RuntimeDirectory)" | Out-File $env:GITHUB_PATH -Append
+
+      - name: Check, build, and run automated tests
+        shell: pwsh
+        env:
+          QT_QPA_PLATFORM: offscreen
+        run: >-
+          python tools/bootstrap.py all
+          --build-dir build/bootstrap-ci
+          --opencv-dir "$env:DELTA_X_OPENCV_DIR"
+
+      - name: Upload test diagnostics on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-test-diagnostics
+          path: build-tests/**/test-result.txt
+          if-no-files-found: ignore
+          retention-days: 7

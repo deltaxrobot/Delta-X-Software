@@ -1,0 +1,43 @@
+name: Feature request
+description: Propose a focused capability or architectural improvement
+title: "[Feature]: "
+labels: [enhancement, needs-triage]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem to solve
+      description: Describe the user or integration problem, not only the desired implementation.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - G-Script
+        - Tracking / multi-robot
+        - Camera / vision
+        - Device integration
+        - Calibration
+        - UI / UX
+        - Build / CI
+        - Plugin / SDK
+        - Documentation
+    validations:
+      required: true
+  - type: textarea
+    id: compatibility
+    attributes:
+      label: Compatibility and safety impact
+      description: Include protocol, project-file, firmware, motion, and recovery implications.
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
