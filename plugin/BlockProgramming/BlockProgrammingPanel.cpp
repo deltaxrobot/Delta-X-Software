@@ -14,6 +14,7 @@
 #include <QFontDatabase>
 #include <QFormLayout>
 #include <QGroupBox>
+#include <QGridLayout>
 #include <QHBoxLayout>
 #include <QHeaderView>
 #include <QJsonDocument>
@@ -25,6 +26,7 @@
 #include <QScrollArea>
 #include <QSpinBox>
 #include <QSplitter>
+#include <QTabWidget>
 #include <QTimer>
 #include <QTreeWidget>
 #include <QVBoxLayout>
@@ -48,7 +50,10 @@ void styleBlockItem(QTreeWidgetItem* item)
         return;
     const QColor color(definition->color);
     item->setBackground(0, color);
-    item->setForeground(0, QColor(Qt::white));
+    const int luminance = (299 * color.red() + 587 * color.green() +
+                           114 * color.blue()) / 1000;
+    item->setForeground(0, luminance >= 150 ? QColor(Qt::black)
+                                             : QColor(Qt::white));
     item->setToolTip(0, definition->description);
     QFont font = item->font(0);
     font.setBold(true);
@@ -110,77 +115,162 @@ BlockProgrammingPanel::BlockProgrammingPanel(DeltaXHostContext* context,
 void BlockProgrammingPanel::buildUi()
 {
     auto* root = new QVBoxLayout(this);
-    root->setContentsMargins(8, 8, 8, 8);
+    root->setContentsMargins(6, 6, 6, 6);
     root->setSpacing(6);
 
-    auto* fileBar = new QHBoxLayout;
+    auto* fileBar = new QVBoxLayout;
+    fileBar->setContentsMargins(0, 0, 0, 0);
+    fileBar->setSpacing(4);
     m_template = new QComboBox(this);
+    m_template->setObjectName(QStringLiteral("blockTemplateCombo"));
+    m_template->setSizeAdjustPolicy(
+        QComboBox::AdjustToMinimumContentsLengthWithIcon);
+    m_template->setMinimumContentsLength(12);
+    m_template->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     m_template->addItems(BlockProgram::templateNames());
     auto* newButton = new QPushButton(tr("New"), this);
     auto* openButton = new QPushButton(tr("Open..."), this);
     auto* saveButton = new QPushButton(tr("Save..."), this);
-    auto* exportButton = new QPushButton(tr("Export G-Script..."), this);
-    auto* copyButton = new QPushButton(tr("Copy G-Script"), this);
+    auto* exportButton = new QPushButton(tr("Export..."), this);
+    auto* copyButton = new QPushButton(tr("Copy"), this);
     auto* helpButton = new QPushButton(tr("Help"), this);
-    fileBar->addWidget(new QLabel(tr("Template"), this));
-    fileBar->addWidget(m_template, 1);
-    fileBar->addWidget(newButton);
-    fileBar->addWidget(openButton);
-    fileBar->addWidget(saveButton);
-    fileBar->addWidget(exportButton);
-    fileBar->addWidget(copyButton);
-    fileBar->addWidget(helpButton);
+    newButton->setObjectName(QStringLiteral("blockNewButton"));
+    openButton->setObjectName(QStringLiteral("blockOpenButton"));
+    saveButton->setObjectName(QStringLiteral("blockSaveButton"));
+    exportButton->setObjectName(QStringLiteral("blockExportButton"));
+    copyButton->setObjectName(QStringLiteral("blockCopyButton"));
+    helpButton->setObjectName(QStringLiteral("blockHelpButton"));
+    exportButton->setToolTip(tr("Export the generated G-Script to a file"));
+    copyButton->setToolTip(tr("Copy the generated G-Script to the clipboard"));
+    auto* templateRow = new QHBoxLayout;
+    templateRow->setSpacing(5);
+    templateRow->addWidget(new QLabel(tr("Template"), this));
+    templateRow->addWidget(m_template, 1);
+    templateRow->addWidget(newButton);
+    templateRow->addWidget(openButton);
+    templateRow->addWidget(saveButton);
+    fileBar->addLayout(templateRow);
+    auto* fileActionRow = new QHBoxLayout;
+    fileActionRow->setSpacing(5);
+    fileActionRow->addWidget(exportButton);
+    fileActionRow->addWidget(copyButton);
+    fileActionRow->addWidget(helpButton);
+    fileActionRow->addStretch(1);
+    fileBar->addLayout(fileActionRow);
     root->addLayout(fileBar);
 
-    auto* executionBar = new QHBoxLayout;
+    auto* executionBar = new QVBoxLayout;
+    executionBar->setContentsMargins(0, 0, 0, 0);
+    executionBar->setSpacing(4);
     m_worker = new QComboBox(this);
-    auto* refreshWorkersButton = new QPushButton(tr("Refresh workers"), this);
-    m_loadButton = new QPushButton(tr("Load into editor"), this);
+    m_worker->setObjectName(QStringLiteral("blockWorkerCombo"));
+    m_worker->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    auto* refreshWorkersButton = new QPushButton(tr("Refresh"), this);
+    m_loadButton = new QPushButton(tr("Load editor"), this);
     m_runButton = new QPushButton(tr("Run"), this);
     m_stopButton = new QPushButton(tr("Stop"), this);
+    refreshWorkersButton->setObjectName(QStringLiteral("blockRefreshWorkersButton"));
+    m_loadButton->setObjectName(QStringLiteral("blockLoadButton"));
+    m_runButton->setObjectName(QStringLiteral("blockRunButton"));
+    m_stopButton->setObjectName(QStringLiteral("blockStopButton"));
+    refreshWorkersButton->setToolTip(tr("Refresh available G-Script workers"));
+    m_loadButton->setToolTip(
+        tr("Load the generated program into the selected editor"));
     m_status = new QLabel(tr("Initializing block workspace..."), this);
+    m_status->setObjectName(QStringLiteral("blockStatusLabel"));
+    m_status->setWordWrap(true);
     m_status->setTextInteractionFlags(Qt::TextSelectableByMouse);
-    executionBar->addWidget(new QLabel(tr("G-Script worker"), this));
-    executionBar->addWidget(m_worker);
-    executionBar->addWidget(refreshWorkersButton);
-    executionBar->addSpacing(12);
-    executionBar->addWidget(m_loadButton);
-    executionBar->addWidget(m_runButton);
-    executionBar->addWidget(m_stopButton);
-    executionBar->addWidget(m_status, 1);
+    auto* workerRow = new QHBoxLayout;
+    workerRow->setSpacing(5);
+    workerRow->addWidget(new QLabel(tr("Worker"), this));
+    workerRow->addWidget(m_worker, 1);
+    workerRow->addWidget(refreshWorkersButton);
+    workerRow->addWidget(m_loadButton);
+    executionBar->addLayout(workerRow);
+    auto* runRow = new QHBoxLayout;
+    runRow->setSpacing(5);
+    runRow->addWidget(m_runButton);
+    runRow->addWidget(m_stopButton);
+    runRow->addWidget(m_status, 1);
+    executionBar->addLayout(runRow);
     root->addLayout(executionBar);
 
+    const QList<QPushButton*> commandButtons = {
+        newButton, openButton, saveButton, exportButton, copyButton, helpButton,
+        refreshWorkersButton, m_loadButton, m_runButton, m_stopButton,
+    };
+    for (QPushButton* button : commandButtons)
+        button->setMinimumHeight(28);
+    m_template->setMinimumHeight(28);
+    m_worker->setMinimumHeight(28);
+
     auto* horizontal = new QSplitter(Qt::Horizontal, this);
+    horizontal->setObjectName(QStringLiteral("blockMainSplitter"));
+    horizontal->setChildrenCollapsible(false);
+    horizontal->setHandleWidth(5);
 
     auto* paletteGroup = new QGroupBox(tr("Block palette"), horizontal);
     auto* paletteLayout = new QVBoxLayout(paletteGroup);
     m_palette = new QTreeWidget(paletteGroup);
+    m_palette->setObjectName(QStringLiteral("blockPalette"));
+    m_palette->setStyleSheet(QStringLiteral(
+        "QTreeWidget { background-color: #262629; color: #D0D0D1; "
+        "border: 1px solid #333337; }"));
     m_palette->setHeaderHidden(true);
     m_palette->setRootIsDecorated(true);
     paletteLayout->addWidget(m_palette);
-    paletteGroup->setMinimumWidth(190);
+    paletteGroup->setMinimumWidth(145);
     horizontal->addWidget(paletteGroup);
 
-    auto* workspaceGroup = new QGroupBox(tr("Program workspace"), horizontal);
+    auto* right = new QSplitter(Qt::Vertical, horizontal);
+    right->setObjectName(QStringLiteral("blockEditorSplitter"));
+    right->setChildrenCollapsible(false);
+    right->setHandleWidth(5);
+
+    auto* workspaceGroup = new QGroupBox(tr("Program workspace"), right);
     auto* workspaceLayout = new QVBoxLayout(workspaceGroup);
-    auto* editBar = new QHBoxLayout;
-    auto* addButton = new QPushButton(tr("Add selected"), workspaceGroup);
-    auto* duplicateButton = new QPushButton(tr("Duplicate"), workspaceGroup);
+    auto* editBar = new QGridLayout;
+    editBar->setContentsMargins(0, 0, 0, 0);
+    editBar->setHorizontalSpacing(4);
+    editBar->setVerticalSpacing(4);
+    auto* addButton = new QPushButton(tr("Add"), workspaceGroup);
+    auto* duplicateButton = new QPushButton(tr("Clone"), workspaceGroup);
     auto* deleteButton = new QPushButton(tr("Delete"), workspaceGroup);
     auto* upButton = new QPushButton(tr("Up"), workspaceGroup);
     auto* downButton = new QPushButton(tr("Down"), workspaceGroup);
     auto* indentButton = new QPushButton(tr("Indent"), workspaceGroup);
     auto* outdentButton = new QPushButton(tr("Outdent"), workspaceGroup);
-    editBar->addWidget(addButton);
-    editBar->addWidget(duplicateButton);
-    editBar->addWidget(deleteButton);
-    editBar->addStretch();
-    editBar->addWidget(upButton);
-    editBar->addWidget(downButton);
-    editBar->addWidget(indentButton);
-    editBar->addWidget(outdentButton);
+    addButton->setObjectName(QStringLiteral("blockAddButton"));
+    duplicateButton->setObjectName(QStringLiteral("blockDuplicateButton"));
+    deleteButton->setObjectName(QStringLiteral("blockDeleteButton"));
+    upButton->setObjectName(QStringLiteral("blockUpButton"));
+    downButton->setObjectName(QStringLiteral("blockDownButton"));
+    indentButton->setObjectName(QStringLiteral("blockIndentButton"));
+    outdentButton->setObjectName(QStringLiteral("blockOutdentButton"));
+    addButton->setToolTip(tr("Add the selected palette block"));
+    duplicateButton->setToolTip(
+        tr("Duplicate the selected workspace block"));
+    editBar->addWidget(addButton, 0, 0);
+    editBar->addWidget(duplicateButton, 0, 1);
+    editBar->addWidget(deleteButton, 0, 2);
+    editBar->addWidget(upButton, 1, 0);
+    editBar->addWidget(downButton, 1, 1);
+    editBar->addWidget(indentButton, 1, 2);
+    editBar->addWidget(outdentButton, 1, 3);
+    const QList<QPushButton*> editButtons = {
+        addButton, duplicateButton, deleteButton, upButton,
+        downButton, indentButton, outdentButton,
+    };
+    for (QPushButton* button : editButtons)
+        button->setMinimumHeight(28);
     workspaceLayout->addLayout(editBar);
     m_workspace = new QTreeWidget(workspaceGroup);
+    m_workspace->setObjectName(QStringLiteral("blockWorkspace"));
+    m_workspace->setStyleSheet(QStringLiteral(
+        "QTreeWidget { background-color: #262629; color: #D0D0D1; "
+        "border: 1px solid #333337; }"
+        "QHeaderView::section { background-color: #3F3F3F; color: #F5F5F5; "
+        "border: none; padding: 4px; }"));
     m_workspace->setHeaderLabel(tr("Blocks (drag to reorder or nest)"));
     m_workspace->setSelectionMode(QAbstractItemView::SingleSelection);
     m_workspace->setDragEnabled(true);
@@ -188,42 +278,74 @@ void BlockProgrammingPanel::buildUi()
     m_workspace->setDropIndicatorShown(true);
     m_workspace->setDragDropMode(QAbstractItemView::InternalMove);
     m_workspace->setDefaultDropAction(Qt::MoveAction);
+    m_workspace->setMinimumHeight(150);
     workspaceLayout->addWidget(m_workspace);
-    workspaceGroup->setMinimumWidth(330);
-    horizontal->addWidget(workspaceGroup);
+    right->addWidget(workspaceGroup);
 
-    auto* right = new QSplitter(Qt::Vertical, horizontal);
-    auto* propertiesGroup = new QGroupBox(tr("Block properties"), right);
-    auto* propertiesOuter = new QVBoxLayout(propertiesGroup);
-    auto* propertiesWidget = new QWidget(propertiesGroup);
+    m_inspectorTabs = new QTabWidget(right);
+    m_inspectorTabs->setObjectName(QStringLiteral("blockInspectorTabs"));
+    m_inspectorTabs->setDocumentMode(true);
+
+    auto* propertiesPage = new QWidget(m_inspectorTabs);
+    propertiesPage->setObjectName(QStringLiteral("blockPropertiesPage"));
+    auto* propertiesOuter = new QVBoxLayout(propertiesPage);
+    propertiesOuter->setContentsMargins(4, 4, 4, 4);
+    auto* propertiesWidget = new QWidget(propertiesPage);
+    propertiesWidget->setObjectName(QStringLiteral("blockPropertiesContent"));
     m_properties = new QFormLayout(propertiesWidget);
     m_properties->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
-    auto* propertiesScroll = new QScrollArea(propertiesGroup);
+    m_properties->setRowWrapPolicy(QFormLayout::WrapLongRows);
+    auto* propertiesScroll = new QScrollArea(propertiesPage);
+    propertiesScroll->setObjectName(QStringLiteral("blockPropertiesScroll"));
+    propertiesPage->setStyleSheet(QStringLiteral(
+        "QWidget#blockPropertiesPage, QWidget#blockPropertiesContent, "
+        "QScrollArea#blockPropertiesScroll, "
+        "QScrollArea#blockPropertiesScroll > QWidget > QWidget {"
+        " background-color: #1E1E20; color: #D0D0D1; }"));
     propertiesScroll->setWidgetResizable(true);
     propertiesScroll->setWidget(propertiesWidget);
     propertiesOuter->addWidget(propertiesScroll);
-    right->addWidget(propertiesGroup);
+    m_inspectorTabs->addTab(propertiesPage, tr("Properties"));
 
-    auto* previewGroup = new QGroupBox(tr("Generated G-Script"), right);
-    auto* previewLayout = new QVBoxLayout(previewGroup);
-    m_preview = new QPlainTextEdit(previewGroup);
+    m_preview = new QPlainTextEdit(m_inspectorTabs);
+    m_preview->setObjectName(QStringLiteral("blockPreview"));
+    m_preview->setStyleSheet(QStringLiteral(
+        "QPlainTextEdit { background-color: #262629; color: #D0D0D1; "
+        "border: 1px solid #333337; selection-background-color: #0078D4; "
+        "selection-color: white; }"));
     m_preview->setReadOnly(true);
     m_preview->setLineWrapMode(QPlainTextEdit::NoWrap);
     QFont fixed = QFontDatabase::systemFont(QFontDatabase::FixedFont);
     m_preview->setFont(fixed);
-    previewLayout->addWidget(m_preview);
-    m_diagnostics = new QTreeWidget(previewGroup);
+    m_inspectorTabs->addTab(m_preview, tr("G-Script"));
+
+    m_diagnostics = new QTreeWidget(m_inspectorTabs);
+    m_diagnostics->setObjectName(QStringLiteral("blockDiagnostics"));
+    m_diagnostics->setStyleSheet(QStringLiteral(
+        "QTreeWidget { background-color: #262629; color: #D0D0D1; "
+        "alternate-background-color: #202023; border: 1px solid #333337; }"
+        "QHeaderView::section { background-color: #3F3F3F; color: #F5F5F5; "
+        "border: none; padding: 4px; }"));
     m_diagnostics->setHeaderLabels(
         {tr("Severity"), tr("Code"), tr("Location"), tr("Message")});
     m_diagnostics->setRootIsDecorated(false);
-    m_diagnostics->setMaximumHeight(150);
+    m_diagnostics->setAlternatingRowColors(true);
+    m_diagnostics->header()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
+    m_diagnostics->header()->setSectionResizeMode(1, QHeaderView::ResizeToContents);
+    m_diagnostics->header()->setSectionResizeMode(2, QHeaderView::ResizeToContents);
     m_diagnostics->header()->setSectionResizeMode(3, QHeaderView::Stretch);
-    previewLayout->addWidget(m_diagnostics);
-    right->addWidget(previewGroup);
-    right->setSizes({260, 420});
+    m_inspectorTabs->addTab(m_diagnostics, tr("Diagnostics"));
+    right->addWidget(m_inspectorTabs);
+    right->setStretchFactor(0, 3);
+    right->setStretchFactor(1, 2);
+    right->setSizes({250, 170});
     horizontal->addWidget(right);
-    horizontal->setSizes({210, 390, 520});
+    horizontal->setStretchFactor(0, 0);
+    horizontal->setStretchFactor(1, 1);
+    horizontal->setSizes({190, 355});
     root->addWidget(horizontal, 1);
+
+    showProperties(nullptr);
 
     m_refreshTimer = new QTimer(this);
     m_refreshTimer->setSingleShot(true);
@@ -323,7 +445,7 @@ void BlockProgrammingPanel::refreshWorkers()
             const QVariantMap worker = value.toMap();
             const int comboIndex = m_worker->count();
             m_worker->addItem(
-                QStringLiteral("%1 — %2")
+                QStringLiteral("%1 - %2")
                     .arg(worker.value("id").toString(),
                          worker.value("state").toString()),
                 worker.value("index"));
@@ -464,8 +586,13 @@ void BlockProgrammingPanel::outdentSelectedBlock()
 void BlockProgrammingPanel::showProperties(QTreeWidgetItem* item)
 {
     clearProperties();
-    if (!item)
+    if (!item) {
+        auto* hint = new QLabel(
+            tr("Select a workspace block to edit its properties."), this);
+        hint->setWordWrap(true);
+        m_properties->addRow(hint);
         return;
+    }
     const BlockDefinition* definition = BlockProgram::definition(
         item->data(0, BlockTypeRole).toString());
     if (!definition)
@@ -626,6 +753,7 @@ void BlockProgrammingPanel::newProgram()
         return;
     }
     m_workspace->clear();
+    showProperties(nullptr);
     m_currentPath.clear();
     m_template->setCurrentText(QStringLiteral("Empty"));
     scheduleRefresh();
@@ -645,6 +773,7 @@ void BlockProgrammingPanel::applyTemplate()
         return;
     }
     m_workspace->clear();
+    showProperties(nullptr);
     for (const BlockNode& node : BlockProgram::createTemplate(name))
         m_workspace->addTopLevelItem(nodeToItem(node));
     m_workspace->expandAll();
@@ -826,6 +955,7 @@ bool BlockProgrammingPanel::loadWorkspaceDocument(const QJsonObject& document,
     if (!BlockProgram::fromJson(document, &blocks, error))
         return false;
     m_workspace->clear();
+    showProperties(nullptr);
     for (const BlockNode& node : blocks)
         m_workspace->addTopLevelItem(nodeToItem(node));
     m_workspace->expandAll();

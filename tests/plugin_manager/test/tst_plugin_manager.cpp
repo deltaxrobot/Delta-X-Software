@@ -12,7 +12,9 @@
 #include <QDir>
 #include <QFile>
 #include <QLibrary>
+#include <QTabWidget>
 #include <QTemporaryDir>
+#include <QTreeWidget>
 
 #include <algorithm>
 
@@ -392,7 +394,26 @@ void PluginManagerTest::loadsBundledBlockProgrammingPlugin()
     QCOMPARE(descriptor.grantedPermissions.size(), permissions.size());
     QCOMPARE(healthState, QStringLiteral("ready"));
     QVERIFY(manager.panelProvider(descriptor.id));
-    QVERIFY(manager.panelProvider(descriptor.id)->panel());
+    QWidget* panel = manager.panelProvider(descriptor.id)->panel();
+    QVERIFY(panel);
+    panel->resize(550, 620);
+    panel->show();
+    QCoreApplication::processEvents();
+    auto* palette = panel->findChild<QTreeWidget*>(
+        QStringLiteral("blockPalette"));
+    auto* workspace = panel->findChild<QTreeWidget*>(
+        QStringLiteral("blockWorkspace"));
+    auto* inspector = panel->findChild<QTabWidget*>(
+        QStringLiteral("blockInspectorTabs"));
+    QVERIFY(palette);
+    QVERIFY(workspace);
+    QVERIFY(inspector);
+    QVERIFY2(palette->width() >= 120,
+             "The palette collapsed at the supported narrow module width");
+    QVERIFY2(workspace->width() >= 220,
+             "The workspace collapsed at the supported narrow module width");
+    QVERIFY2(inspector->height() >= 100,
+             "The responsive inspector is not usable at the supported height");
 
     QString error;
     QVariantMap catalog;

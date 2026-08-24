@@ -12,6 +12,7 @@ class QFormLayout;
 class QLabel;
 class QPlainTextEdit;
 class QPushButton;
+class QTabWidget;
 class QTimer;
 class QTreeWidget;
 class QTreeWidgetItem;
@@ -73,6 +74,7 @@ private:
     QFormLayout* m_properties = nullptr;
     QPlainTextEdit* m_preview = nullptr;
     QTreeWidget* m_diagnostics = nullptr;
+    QTabWidget* m_inspectorTabs = nullptr;
     QComboBox* m_template = nullptr;
     QComboBox* m_worker = nullptr;
     QLabel* m_status = nullptr;
