@@ -10,16 +10,17 @@
     }
   },
   "qt": {
-    "ciVersion": "6.11.2",
+    "ciVersion": "6.10.1",
+    "macosCiVersion": "6.11.2",
     "licenses": [
       {
         "name": "LGPL-3.0-only.txt",
-        "url": "https://raw.githubusercontent.com/qt/qtbase/v6.11.2/LICENSES/LGPL-3.0-only.txt",
+        "url": "https://raw.githubusercontent.com/qt/qtbase/v6.10.1/LICENSES/LGPL-3.0-only.txt",
         "sha256": "da7eabb7bafdf7d3ae5e9f223aa5bdc1eece45ac569dc21b3b037520b4464768"
       },
       {
         "name": "GPL-3.0-only.txt",
-        "url": "https://raw.githubusercontent.com/qt/qtbase/v6.11.2/LICENSES/GPL-3.0-only.txt",
+        "url": "https://raw.githubusercontent.com/qt/qtbase/v6.10.1/LICENSES/GPL-3.0-only.txt",
         "sha256": "8ceb4b9ee5adedde47b31e975c1d90c73ad27b6b165a1dcd80c7c545eb65b903"
       }
     ]

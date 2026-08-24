@@ -179,6 +179,9 @@ def main() -> int:
         qt_version = qt.get("ciVersion", "")
         if not re.fullmatch(r"\d+\.\d+\.\d+", qt_version):
             errors.append("pinned Qt CI version must be semantic")
+        macos_qt_version = qt.get("macosCiVersion", "")
+        if not re.fullmatch(r"\d+\.\d+\.\d+", macos_qt_version):
+            errors.append("pinned macOS Qt CI version must be semantic")
         qt_licenses = qt.get("licenses", [])
         expected_qt_licenses = {"LGPL-3.0-only.txt", "GPL-3.0-only.txt"}
         if {item.get("name") for item in qt_licenses} != expected_qt_licenses:

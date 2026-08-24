@@ -71,12 +71,12 @@ and initializes the MSVC environment even from a regular PowerShell window. If
 Qt is elsewhere, use either form:
 
 ```powershell
-$env:QT_ROOT_DIR = 'D:\Qt\6.11.2\msvc2022_64'
+$env:QT_ROOT_DIR = 'D:\Qt\6.10.1\msvc2022_64'
 python tools/bootstrap.py all
 ```
 
 ```powershell
-python tools/bootstrap.py all --qt-root D:\Qt\6.11.2\msvc2022_64
+python tools/bootstrap.py all --qt-root D:\Qt\6.10.1\msvc2022_64
 ```
 
 When OpenCV is absent, a build request runs `tools/install-opencv.ps1`. That

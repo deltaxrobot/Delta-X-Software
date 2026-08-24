@@ -91,7 +91,6 @@ if(MSVC)
 endif()
 
 set_target_properties(DeltaRobotSoftware PROPERTIES
-    VERSION "${PROJECT_VERSION}"
     MACOSX_BUNDLE_BUNDLE_NAME "Delta X Software"
     MACOSX_BUNDLE_GUI_IDENTIFIER "deltaxrobotics.DeltaRobotSoftware"
     MACOSX_BUNDLE_INFO_PLIST "${CMAKE_CURRENT_SOURCE_DIR}/resources/macos/Info.plist"
