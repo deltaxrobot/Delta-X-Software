@@ -493,6 +493,7 @@ signals:
 protected:
     // ========== PROTECTED METHODS ==========
     void paintEvent(QPaintEvent *event) override;
+    void resizeEvent(QResizeEvent *event) override;
 
 private:
     // ========== ROBOT PARAMETER ACCESS ==========
@@ -501,6 +502,7 @@ private:
     
     // ========== PERFORMANCE & TESTING ==========
     void CheckSettingsSpeed();
+    void updateModuleTabLabels();
     void SaveDetectingUI();
 	void interpolateCircle();
 	void makeEffectExample();

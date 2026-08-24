@@ -5,6 +5,10 @@ ImageViewer::ImageViewer(QWidget *parent) :
 {
     ViewerScene = new CustomScene();
     setScene(ViewerScene);
+    const QColor viewerBackground(QStringLiteral("#1E1E20"));
+    ViewerScene->setBackgroundBrush(viewerBackground);
+    setBackgroundBrush(viewerBackground);
+    setFrameShape(QFrame::NoFrame);
 
     ImageItem = new QGraphicsPixmapItem();
     ImageItem->setZValue(-1);

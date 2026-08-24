@@ -41,13 +41,143 @@
 #include <QStandardItemModel>
 #include <QTextBrowser>
 #include <QTabWidget>
+#include <QTabBar>
 #include <QCheckBox>
 #include <QProcessEnvironment>
 #include <QStandardPaths>
 #include <QThread>
+#include <QString>
 #include <opencv2/calib3d.hpp>
 #include <opencv2/imgproc.hpp>
 #include "sdk/DeltaXVersion.h"
+
+namespace
+{
+QString visualFoundationStyleSheet()
+{
+    return QStringLiteral(R"(
+/* Delta X visual foundation: shared dark controls and readable focus states. */
+QWidget#centralWidget { background-color: #1E1E20; color: #E6E6E8; }
+QLabel { color: #D6D6D9; background: transparent; }
+
+QGroupBox {
+    color: #E6E6E8;
+    border: 1px solid #3D3D42;
+    border-radius: 5px;
+    margin-top: 11px;
+    padding: 8px 6px 6px 6px;
+}
+QGroupBox::title {
+    subcontrol-origin: margin;
+    left: 8px;
+    padding: 0 4px;
+    color: #E6E6E8;
+}
+
+QPushButton, QToolButton {
+    background-color: #45454B;
+    color: #F2F2F3;
+    border: 1px solid #5D5D64;
+    border-radius: 4px;
+    min-height: 22px;
+    padding: 3px 8px;
+}
+QPushButton:hover, QToolButton:hover {
+    background-color: #55555D;
+    border-color: #85858E;
+}
+QPushButton:pressed, QToolButton:pressed, QPushButton:checked, QToolButton:checked {
+    background-color: #1769AA;
+    border-color: #4DA3E6;
+}
+QPushButton:disabled, QToolButton:disabled {
+    background-color: #303035;
+    color: #85858B;
+    border-color: #3C3C42;
+}
+QPushButton:focus, QToolButton:focus, QComboBox:focus, QLineEdit:focus,
+QSpinBox:focus, QDoubleSpinBox:focus, QAbstractItemView:focus {
+    border: 1px solid #4DA3E6;
+}
+
+QComboBox, QLineEdit, QSpinBox, QDoubleSpinBox {
+    background-color: #34343A;
+    color: #F0F0F2;
+    border: 1px solid #5A5A61;
+    border-radius: 4px;
+    min-height: 22px;
+    padding: 3px 7px;
+}
+QComboBox { padding-right: 26px; }
+QComboBox::drop-down {
+    width: 22px;
+    border: none;
+}
+QComboBox QAbstractItemView {
+    background-color: #2A2A2F;
+    color: #F0F0F2;
+    border: 1px solid #5A5A61;
+    selection-background-color: #1769AA;
+    selection-color: #FFFFFF;
+}
+
+QPlainTextEdit, QTextEdit, QTextBrowser {
+    background-color: #25252A;
+    color: #E6E6E8;
+    border: 1px solid #3D3D42;
+    border-radius: 4px;
+    padding: 4px;
+    selection-background-color: #1769AA;
+    selection-color: #FFFFFF;
+}
+QTreeWidget, QTableWidget, QListWidget, QTableView, QTreeView, QListView {
+    background-color: #25252A;
+    color: #E6E6E8;
+    alternate-background-color: #2B2B30;
+    border: 1px solid #3D3D42;
+    selection-background-color: #1769AA;
+    selection-color: #FFFFFF;
+}
+QHeaderView::section {
+    background-color: #3A3A40;
+    color: #F0F0F2;
+    border: none;
+    border-right: 1px solid #4B4B52;
+    padding: 4px 6px;
+}
+QGraphicsView {
+    background-color: #1E1E20;
+    border: 1px solid #3D3D42;
+}
+
+QCheckBox { color: #E6E6E8; spacing: 6px; }
+QCheckBox::indicator {
+    width: 16px;
+    height: 16px;
+    border: 1px solid #6A6A72;
+    border-radius: 3px;
+    background-color: #34343A;
+}
+QCheckBox::indicator:checked {
+    background-color: #1769AA;
+    border-color: #4DA3E6;
+}
+
+QScrollArea { border: none; background: transparent; }
+QScrollBar:vertical { background: #25252A; width: 12px; margin: 2px; }
+QScrollBar::handle:vertical { background: #55555D; min-height: 28px; border-radius: 5px; }
+QScrollBar::handle:vertical:hover { background: #71717B; }
+QScrollBar:horizontal { background: #25252A; height: 12px; margin: 2px; }
+QScrollBar::handle:horizontal { background: #55555D; min-width: 28px; border-radius: 5px; }
+QScrollBar::handle:horizontal:hover { background: #71717B; }
+QScrollBar::add-line, QScrollBar::sub-line { background: transparent; border: none; }
+QScrollBar::add-page, QScrollBar::sub-page { background: transparent; }
+
+QSplitter::handle { background-color: #323238; }
+QSplitter::handle:hover { background-color: #1769AA; }
+)");
+}
+}
 
 RobotWindow::RobotWindow(QWidget *parent, QString projectName) :
     QMainWindow(parent),
@@ -57,6 +187,9 @@ RobotWindow::RobotWindow(QWidget *parent, QString projectName) :
     m_batchUpdateTimer(new QTimer(this))
 {
     ui->setupUi(this);
+    setStyleSheet(styleSheet() + visualFoundationStyleSheet());
+    ui->twModule->tabBar()->setUsesScrollButtons(true);
+    updateModuleTabLabels();
     setWindowTitle(tr("Delta X Software - Version %1")
                        .arg(QString::fromLatin1(DeltaXVersion::Application)));
 
@@ -4238,6 +4371,50 @@ void RobotWindow::InitDefaultValue()
     SaveTrackingManager();
 }
 
+void RobotWindow::resizeEvent(QResizeEvent *event)
+{
+    QMainWindow::resizeEvent(event);
+    updateModuleTabLabels();
+}
+
+void RobotWindow::updateModuleTabLabels()
+{
+    if (!ui || !ui->twModule)
+        return;
+
+    const bool compact = ui->twModule->width() < 700;
+    const struct ModuleTabLabel {
+        int index;
+        const char *full;
+        const char *shortLabel;
+    } labels[] = {
+        { 0, "G-Script", "Script" },
+        { 1, "Object Detector", "Vision" },
+        { 2, "Point Tool", "Points" },
+        { 3, "Drawing", "Draw" },
+        { 4, "Plugins", "Plugins" },
+        { 5, "Block Programming", "Blocks" },
+    };
+
+    for (const ModuleTabLabel &label : labels) {
+        if (label.index >= ui->twModule->count())
+            continue;
+
+        const QString fullLabel = QString::fromLatin1(label.full);
+        const QString shortLabel = QString::fromLatin1(label.shortLabel);
+        const QString existingLabel = ui->twModule->tabText(label.index);
+        const QString existingTooltip = ui->twModule->tabToolTip(label.index);
+        if (existingLabel != fullLabel && existingLabel != shortLabel
+            && existingTooltip != fullLabel) {
+            continue;
+        }
+
+        ui->twModule->setTabText(label.index,
+            compact ? shortLabel : fullLabel);
+        ui->twModule->setTabToolTip(label.index, fullLabel);
+    }
+}
+
 void RobotWindow::SetMainStackedWidgetAndPages(QStackedWidget *mainStack, QWidget *mainPage, QWidget *fullDisplayPage, QLayout *fullDisplayLayout)
 {
     this->MainWindowStackedWidget = mainStack;
@@ -4246,6 +4423,7 @@ void RobotWindow::SetMainStackedWidgetAndPages(QStackedWidget *mainStack, QWidge
     this->FullDisplayLayout = fullDisplayLayout;
     connect(ui->twDevices, SIGNAL(tabBarDoubleClicked(int)), this, SLOT(MaximizeTab(int)));
     connect(ui->twModule, SIGNAL(tabBarDoubleClicked(int)), this, SLOT(MaximizeTab(int)));
+    updateModuleTabLabels();
 }
 
 void RobotWindow::SetSubStackedWidget(QStackedWidget *subStackedWidget)
