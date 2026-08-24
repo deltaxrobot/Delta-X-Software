@@ -100,7 +100,7 @@ jobs:
           host: mac
           target: desktop
           arch: clang_64
-          modules: qtmultimedia qtserialport qtsvg
+          modules: qtmultimedia qtserialport
           cache: true
 
       - name: Install OpenCV and build tools
@@ -145,7 +145,7 @@ jobs:
           host: windows
           target: desktop
           arch: win64_msvc2022_64
-          modules: qtmultimedia qtserialport qtsvg
+          modules: qtmultimedia qtserialport
           cache: true
 
       - name: Restore pinned OpenCV cache

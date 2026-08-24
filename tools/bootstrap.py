@@ -319,7 +319,8 @@ def dependency_hint() -> str:
             "'brew install cmake ninja qt opencv python'."
         )
     return (
-        "Ubuntu 22.04+: sudo apt update && sudo apt install build-essential cmake "
+        "Install Qt 6.2+ and the build dependencies on Ubuntu 22.04+: "
+        "sudo apt update && sudo apt install build-essential cmake "
         "ninja-build pkg-config qt6-base-dev qt6-base-dev-tools qt6-multimedia-dev "
         "libqt6serialport6-dev libqt6svg6-dev libopencv-dev libgl1-mesa-dev python3"
     )
