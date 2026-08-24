@@ -2,10 +2,13 @@ x64/
 debug/
 release/
 build/
+build-*/
+build-tests/
 build_cli_qt6_release/
 deploy/
 deployment/
 installer/
+dist/
 
 .qtcreator/
 .qtc_clangd/
@@ -15,6 +18,8 @@ installer/
 *.idx
 *.pro.user*
 .qmake.stash
+compile_commands.json
+.cache/
 Makefile
 Makefile.Debug
 Makefile.Release
@@ -26,14 +31,32 @@ resource_rc.py
 *_plugin_import.cpp
 
 __pycache__/
+.pytest_cache/
 *.pyc
 *.pyo
 
+*.obj
+*.o
+*.pdb
+*.ilk
+*.exp
+*.lib
+*.dll
+*.exe
+
 plugin/IndustrialCamera/build/
 plugin/IndustrialCamera/plugin/
+plugin/IndustrialCamera/3rd-party/pylon/
+plugin/IndustrialCamera/3rd-party/mvs/
+plugin/IndustrialCamera/3rd-party/opencv/
+3rd-party/opencv/
+models/*.pt
 
 mylog.txt
 settings.ini
 customUI.ini
 coordinates.txt
 token.txt
+
+# Separate auxiliary repository; keep local changes out of this project index.
+script-example/calib/smartphone/

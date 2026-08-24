@@ -1,1 +1,0 @@
-implib MvCameraControlBC.lib MvCameraControl.dll
