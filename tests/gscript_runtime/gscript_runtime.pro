@@ -1,4 +1,4 @@
-QT += core gui widgets testlib network serialport opengl printsupport multimedia svg concurrent
+QT += core gui widgets testlib network serialport printsupport multimedia svg concurrent
 greaterThan(QT_MAJOR_VERSION, 5): QT += svgwidgets
 CONFIG += console testcase c++17
 CONFIG -= app_bundle

@@ -22,7 +22,6 @@ find_package(Qt6 6.2 REQUIRED COMPONENTS
     Gui
     Widgets
     SerialPort
-    OpenGL
     Network
     PrintSupport
     Multimedia
@@ -72,7 +71,6 @@ target_link_libraries(DeltaRobotSoftware PRIVATE
     Qt6::Gui
     Qt6::Widgets
     Qt6::SerialPort
-    Qt6::OpenGL
     Qt6::Network
     Qt6::PrintSupport
     Qt6::Multimedia

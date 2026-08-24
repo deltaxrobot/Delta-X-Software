@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui serialport opengl network printsupport multimedia svg concurrent
+QT       += core gui serialport network printsupport multimedia svg concurrent
 
 greaterThan(QT_MAJOR_VERSION, 5) {
     QT += svgwidgets
