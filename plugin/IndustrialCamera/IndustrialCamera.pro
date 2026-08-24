@@ -27,6 +27,9 @@ SOURCES += \
 
 HEADERS += \
     ../../sdk/DeltaXPlugin.h \
+    ../../sdk/DeltaXPluginV2.h \
+    ../../sdk/DeltaXPanelProvider.h \
+    ../../sdk/DeltaXCommandProvider.h \
     CameraReader.h \
     ImageUnity.h \
     IndustrialCameraPlugin.h \

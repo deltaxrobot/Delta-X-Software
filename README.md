@@ -12,7 +12,7 @@ Delta X Software is a comprehensive control and programming platform for Delta r
 
 Contributor entry points: [contribution guide](CONTRIBUTING.md),
 [architecture](docs/architecture.md), [development guide](docs/development.md),
-[cross-platform setup](docs/platform-setup.md),
+[cross-platform setup](docs/platform-setup.md), [plugin system](docs/plugin-system.md),
 [release process](docs/releasing.md), [security policy](SECURITY.md), and
 [governance](GOVERNANCE.md).
 

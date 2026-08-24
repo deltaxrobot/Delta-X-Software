@@ -13,6 +13,7 @@ SUBDIRS += \
     socket_vision_protocol \
     gscript_runtime \
     plugin_contract \
+    plugin_manager \
     industrial_camera_optional_runtime
 
 control_plane.file = $$PWD/control_plane/control_plane.pro
@@ -26,5 +27,6 @@ calibration_core.file = $$PWD/calibration_core/calibration_core.pro
 socket_vision_protocol.file = $$PWD/socket_vision_protocol/socket_vision_protocol.pro
 gscript_runtime.file = $$PWD/gscript_runtime/gscript_runtime.pro
 plugin_contract.file = $$PWD/plugin_contract/plugin_contract.pro
+plugin_manager.file = $$PWD/plugin_manager/plugin_manager.pro
 industrial_camera_optional_runtime.file = \
     $$PWD/industrial_camera_optional_runtime/industrial_camera_optional_runtime.pro

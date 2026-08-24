@@ -115,6 +115,7 @@ class ObjectDetector;
 class GcodeVariable;
 class GcodeScript;
 class SoftwareManager;
+class PluginManager;
 
 namespace Ui {
     class RobotWindow;
@@ -536,9 +537,6 @@ private:
     QString getModelPath();
 
     // ========== PLUGIN PRIVATE METHODS ==========
-    QStringList getPlugins(QString path);
-    void initPlugins(QStringList plugins);
-    QList<DeltaXPlugin*>* getPluginList();
     
     // ✅ New safe plugin management methods
     void connectPluginSignals(DeltaXPlugin* plugin);
@@ -583,8 +581,8 @@ private:
     QProcess *process = nullptr;
 
     // Plugin Management
-    QList<DeltaXPlugin*>* pluginList;
-    DeltaXPlugin* industrialCameraPlugin;
+    PluginManager* m_pluginManager = nullptr;
+    DeltaXPlugin* industrialCameraPlugin = nullptr;
     bool industrialCameraBackendAvailable = false;
     QString industrialCameraBackendStatus;
 

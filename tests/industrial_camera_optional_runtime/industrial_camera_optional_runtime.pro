@@ -11,7 +11,12 @@ DELTA_X_ROOT = $$clean_path($$PWD/../..)
 include($$DELTA_X_ROOT/config/opencv.pri)
 
 SOURCES += tst_industrial_camera_optional_runtime.cpp
-HEADERS += $$PWD/../../sdk/DeltaXPlugin.h
+HEADERS += \
+    $$PWD/../../sdk/DeltaXPlugin.h \
+    $$PWD/../../sdk/DeltaXPluginV2.h \
+    $$PWD/../../sdk/DeltaXPanelProvider.h \
+    $$PWD/../../sdk/DeltaXCommandProvider.h \
+    $$PWD/../../sdk/DeltaXPluginMetadata.h
 
 win32:msvc* {
     QMAKE_CXXFLAGS += /std:c++17 /Zc:__cplusplus

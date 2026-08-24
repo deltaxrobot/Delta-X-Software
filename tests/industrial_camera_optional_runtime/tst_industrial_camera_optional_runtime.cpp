@@ -6,6 +6,10 @@
 #include <QComboBox>
 
 #include "DeltaXPlugin.h"
+#include "DeltaXCommandProvider.h"
+#include "DeltaXPanelProvider.h"
+#include "DeltaXPluginMetadata.h"
+#include "DeltaXPluginV2.h"
 
 class IndustrialCameraOptionalRuntimeTest : public QObject
 {
@@ -24,6 +28,9 @@ void IndustrialCameraOptionalRuntimeTest::pluginLoadsWithoutMakingVendorSdkManda
 
     QVERIFY2(QFileInfo::exists(pluginPath), qPrintable(pluginPath));
     QPluginLoader loader(pluginPath);
+    QVERIFY2(DeltaXPluginContract::compatibilityError(loader.metaData()).isEmpty(),
+             qPrintable(DeltaXPluginContract::compatibilityError(loader.metaData())));
+    QCOMPARE(DeltaXPluginContract::declaredApiVersion(loader.metaData()), 2);
     QVERIFY2(loader.load(), qPrintable(loader.errorString()));
 
     QObject* instance = loader.instance();
@@ -32,8 +39,17 @@ void IndustrialCameraOptionalRuntimeTest::pluginLoadsWithoutMakingVendorSdkManda
     QVERIFY(plugin);
     QCOMPARE(plugin->GetName(), QStringLiteral("industrialcamera"));
 
+    DeltaXPluginV2* pluginV2 = qobject_cast<DeltaXPluginV2*>(instance);
+    QVERIFY(pluginV2);
+    QCOMPARE(pluginV2->id(), QStringLiteral("industrialcamera"));
+    QCOMPARE(pluginV2->version(), QStringLiteral("2.0.0"));
+    QVERIFY(pluginV2->capabilities().contains(QStringLiteral("camera.capture")));
+    QVERIFY(qobject_cast<DeltaXPanelProvider*>(instance));
+    QVERIFY(qobject_cast<DeltaXCommandProvider*>(instance));
+
     QWidget* interfaceWidget = plugin->GetUI();
     QVERIFY(interfaceWidget);
+    QCOMPARE(qobject_cast<DeltaXPanelProvider*>(instance)->panel(), interfaceWidget);
     QVERIFY(plugin->property("cameraBackendAvailable").isValid());
     QVERIFY(!plugin->property("cameraBackendStatus").toString().isEmpty());
 

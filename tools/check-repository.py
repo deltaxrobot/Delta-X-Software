@@ -200,8 +200,13 @@ def main() -> int:
                 encoding="utf-8"
             )
         )
-        if plugin_metadata.get("apiVersion") != 1:
-            errors.append("industrial camera plugin must target plugin API v1")
+        if plugin_metadata.get("apiVersion") != 2:
+            errors.append("industrial camera plugin must target plugin API v2")
+        expected_capabilities = {"camera.capture", "commands", "panel"}
+        if set(plugin_metadata.get("capabilities", [])) != expected_capabilities:
+            errors.append(
+                "industrial camera plugin must declare camera, commands, and panel capabilities"
+            )
     except (OSError, UnicodeDecodeError, json.JSONDecodeError) as exc:
         errors.append(f"invalid JSON configuration: {exc}")
 

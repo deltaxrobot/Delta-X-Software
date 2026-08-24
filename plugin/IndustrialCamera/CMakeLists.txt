@@ -84,6 +84,9 @@ set(_deltax_plugin_sources
     form.ui
     IndustrialCameraPlugin.json
     "${PROJECT_SOURCE_DIR}/sdk/DeltaXPlugin.h"
+    "${PROJECT_SOURCE_DIR}/sdk/DeltaXPluginV2.h"
+    "${PROJECT_SOURCE_DIR}/sdk/DeltaXPanelProvider.h"
+    "${PROJECT_SOURCE_DIR}/sdk/DeltaXCommandProvider.h"
     "${PROJECT_SOURCE_DIR}/sdk/DeltaXPluginMetadata.h"
 )
 

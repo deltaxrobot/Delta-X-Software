@@ -21,6 +21,7 @@ class TestProject:
     target: str
     project: str
     requires_plugin: bool = False
+    executable_subdir: str = ""
 
 
 TEST_PROJECTS = (
@@ -39,6 +40,12 @@ TEST_PROJECTS = (
     ),
     TestProject("gscript_runtime", "tst_gscript_runtime", "tests/gscript_runtime/gscript_runtime.pro"),
     TestProject("plugin_contract", "tst_plugin_contract", "tests/plugin_contract/plugin_contract.pro"),
+    TestProject(
+        "plugin_manager",
+        "tst_plugin_manager",
+        "tests/plugin_manager/plugin_manager.pro",
+        executable_subdir="test",
+    ),
     TestProject(
         "industrial_camera_optional_runtime",
         "tst_industrial_camera_optional_runtime",
@@ -176,10 +183,12 @@ def run(command: list[str], cwd: Path, env: dict[str, str], capture: bool = Fals
     )
 
 
-def test_executable(build_dir: Path, target: str) -> Path:
+def test_executable(build_dir: Path, project: TestProject) -> Path:
+    if project.executable_subdir:
+        build_dir = build_dir / project.executable_subdir
     if os.name == "nt":
-        return build_dir / "release" / f"{target}.exe"
-    return build_dir / target
+        return build_dir / "release" / f"{project.target}.exe"
+    return build_dir / project.target
 
 
 def print_process_output(result: subprocess.CompletedProcess[str]) -> None:
@@ -343,13 +352,15 @@ def main() -> int:
             passed.append(f"{project.name} (built)")
             continue
 
-        executable = test_executable(build_dir, project.target)
+        executable = test_executable(build_dir, project)
         result_file = build_dir / "test-result.txt"
         if result_file.exists():
             result_file.unlink()
         test_env = environment.copy()
         if project.requires_plugin and plugin_path:
             test_env["DELTA_X_INDUSTRIAL_PLUGIN"] = str(plugin_path.resolve())
+        if project.name == "plugin_manager":
+            test_env["DELTA_X_TEST_PLUGIN_DIR"] = str(build_dir / "plugins")
         completed = run(
             [str(executable), "-o", f"{result_file},txt"],
             build_dir,

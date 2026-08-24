@@ -6,6 +6,9 @@
 #include "CameraSelectionDialog.h"
 #include "CameraCalibration.h"
 #include "GScriptEditorSupport.h"
+#include "PluginManager.h"
+#include "PluginManagerWidget.h"
+#include "sdk/DeltaXPanelProvider.h"
 #include "UnityTool.h"  // ? For SoftwareLog function
 #include <QFile>
 #include <QFileInfo>
@@ -38,6 +41,7 @@
 #include <QTabWidget>
 #include <QCheckBox>
 #include <QProcessEnvironment>
+#include <QStandardPaths>
 #include <opencv2/calib3d.hpp>
 #include <opencv2/imgproc.hpp>
 #include "sdk/DeltaXVersion.h"
@@ -142,19 +146,12 @@ RobotWindow::~RobotWindow()
     // Clean up Point Tool Controller
     delete m_pointToolController;
 
-    // ? Fix: Cleanup plugins to prevent memory leak
-    if (pluginList) {
-        SoftwareLog(QString("Plugin System: Cleaning up %1 plugins").arg(pluginList->count()));
-        for (int i = 0; i < pluginList->count(); i++) {
-            DeltaXPlugin* plugin = pluginList->at(i);
-            if (plugin) {
-                qDebug() << "Cleaning up plugin:" << plugin->GetName();
-                SoftwareLog(QString("Cleaned up plugin: %1").arg(plugin->GetName()));
-                delete plugin;
-            }
-        }
-        delete pluginList;
-        pluginList = nullptr;
+    if (m_pluginManager) {
+        QSettings settings;
+        m_pluginManager->saveSettings(settings, ProjectName);
+        SoftwareLog(QStringLiteral("Plugin System: unloading %1 plugins")
+                        .arg(m_pluginManager->loadedPluginIds().size()));
+        m_pluginManager->shutdown();
     }
     
     // Reset plugin pointers
@@ -2737,14 +2734,117 @@ void RobotWindow::closeEvent(QCloseEvent * event)
 
 void RobotWindow::LoadPlugin()
 {
-    pluginList = new QList<DeltaXPlugin*>();
+    if (m_pluginManager)
+        return;
 
-    QDir dir(QApplication::applicationDirPath());
-    dir.cd("plugin");
+    m_pluginManager = new PluginManager(this);
+    connect(m_pluginManager, &PluginManager::diagnostic, this,
+            [](const QString& message) {
+                qInfo().noquote() << "Plugin System:" << message;
+                SoftwareLog(QStringLiteral("Plugin System: ") + message);
+            });
 
-    QStringList plugins = getPlugins(dir.path());
+    QSettings settings;
+    QSet<QString> disabledIds;
+    const QStringList configuredDisabledIds =
+        settings.value(QStringLiteral("PluginSystem/DisabledPluginIds"))
+            .toStringList();
+    for (const QString& id : configuredDisabledIds)
+        disabledIds.insert(id);
+    m_pluginManager->setDisabledPluginIds(disabledIds);
 
-    initPlugins(plugins);
+    QStringList searchDirectories;
+    searchDirectories.append(
+        QDir(QApplication::applicationDirPath()).filePath(QStringLiteral("plugin")));
+#ifdef Q_OS_MACOS
+    searchDirectories.append(QDir(QApplication::applicationDirPath())
+                                 .filePath(QStringLiteral("../PlugIns/deltax")));
+#endif
+    if (settings.value(QStringLiteral("PluginSystem/EnableUserPluginDirectory"),
+                       false)
+            .toBool()) {
+        searchDirectories.append(
+            QDir(QStandardPaths::writableLocation(
+                     QStandardPaths::AppLocalDataLocation))
+                .filePath(QStringLiteral("plugins")));
+    }
+    searchDirectories.append(
+        settings.value(QStringLiteral("PluginSystem/AdditionalDirectories"))
+            .toStringList());
+
+    m_pluginManager->loadFromDirectories(searchDirectories);
+
+    auto* pluginManagerPanel = new PluginManagerWidget(
+        m_pluginManager, searchDirectories.constFirst(), ui->twModule);
+    ui->twModule->addTab(pluginManagerPanel, tr("Plugins"));
+
+    int loadedCount = 0;
+    int disabledCount = 0;
+    int rejectedCount = 0;
+    QStringList diagnostics;
+    const QVector<PluginDescriptor> descriptors = m_pluginManager->descriptors();
+    for (const PluginDescriptor& descriptor : descriptors) {
+        if (descriptor.state == PluginDescriptor::State::Rejected) {
+            ++rejectedCount;
+            diagnostics.append(QStringLiteral("%1: %2")
+                                   .arg(descriptor.id, descriptor.error));
+            continue;
+        }
+        if (descriptor.state == PluginDescriptor::State::Disabled) {
+            ++disabledCount;
+            continue;
+        }
+        if (descriptor.state != PluginDescriptor::State::Loaded)
+            continue;
+
+        ++loadedCount;
+        QWidget* pluginUi = nullptr;
+        try {
+            if (DeltaXPanelProvider* provider =
+                    m_pluginManager->panelProvider(descriptor.id)) {
+                pluginUi = provider->panel();
+            } else if (DeltaXPlugin* legacy =
+                           m_pluginManager->legacyPlugin(descriptor.id)) {
+                pluginUi = legacy->GetUI();
+            }
+        } catch (const std::exception& exception) {
+            diagnostics.append(QStringLiteral("%1 panel: %2")
+                                   .arg(descriptor.id,
+                                        QString::fromUtf8(exception.what())));
+        } catch (...) {
+            diagnostics.append(
+                QStringLiteral("%1 panel: unknown exception").arg(descriptor.id));
+        }
+
+        if (pluginUi) {
+            ui->twModule->addTab(pluginUi, descriptor.displayName);
+        } else if (descriptor.hasCapability(QStringLiteral("panel"))) {
+            diagnostics.append(
+                QStringLiteral("%1: panel provider returned no widget")
+                    .arg(descriptor.id));
+        }
+
+        if (DeltaXPlugin* legacy =
+                m_pluginManager->legacyPlugin(descriptor.id)) {
+            connectPluginSignals(legacy);
+        }
+    }
+
+    m_pluginManager->loadSettings(settings, ProjectName);
+
+    QHash<QString, QVariant> pluginState;
+    pluginState.insert(QStringLiteral("PluginSystem.LoadedCount"), loadedCount);
+    pluginState.insert(QStringLiteral("PluginSystem.DisabledCount"), disabledCount);
+    pluginState.insert(QStringLiteral("PluginSystem.RejectedCount"), rejectedCount);
+    pluginState.insert(QStringLiteral("PluginSystem.LoadedIds"),
+                       m_pluginManager->loadedPluginIds());
+    pluginState.insert(QStringLiteral("PluginSystem.Diagnostics"), diagnostics);
+    VariableManager::instance().updateBatchScoped(ProjectName, pluginState);
+
+    SoftwareLog(QStringLiteral("Plugin System: %1 loaded, %2 rejected")
+                    .arg(loadedCount)
+                    .arg(rejectedCount));
+    updateIndustrialCameraAvailability();
 }
 
 void RobotWindow::InitScriptThread()
@@ -3340,38 +3440,11 @@ void RobotWindow::LoadDrawingSetting(QSettings *setting)
 
 void RobotWindow::LoadPluginSetting(QSettings *setting)
 {
-    if (!setting || !pluginList) {
+    if (!setting || !m_pluginManager) {
         qWarning() << "Cannot load plugin settings: null parameters";
         return;
     }
-    
-    setting->beginGroup("Plugin");
-    
-    for (int i = 0; i < pluginList->count(); i++)
-    {
-        DeltaXPlugin* plugin = pluginList->at(i);
-        if (!plugin) {
-            qWarning() << "Null plugin at index" << i;
-            continue;
-        }
-        
-        // ? Fix: Consistent settings key format
-        QString settingKey = plugin->GetName() + "-" + QString::number(i);
-        setting->beginGroup(settingKey);
-        
-        try {
-            plugin->LoadSettings(setting);
-            qDebug() << "Loaded settings for plugin:" << plugin->GetName();
-        } catch (const std::exception& e) {
-            qWarning() << "Exception loading settings for plugin" << plugin->GetName() << ":" << e.what();
-        } catch (...) {
-            qWarning() << "Unknown exception loading settings for plugin" << plugin->GetName();
-        }
-        
-        setting->endGroup();
-    }
-    
-    setting->endGroup();
+    m_pluginManager->loadSettings(*setting, ProjectName);
 }
 
 void RobotWindow::SaveSettings(QSettings *setting)
@@ -3513,38 +3586,11 @@ void RobotWindow::SaveDrawingSetting(QSettings *setting)
 
 void RobotWindow::SavePluginSetting(QSettings *setting)
 {
-    if (!setting || !pluginList) {
+    if (!setting || !m_pluginManager) {
         qWarning() << "Cannot save plugin settings: null parameters";
         return;
     }
-    
-    setting->beginGroup("Plugin");
-    
-    for (int i = 0; i < pluginList->count(); i++)
-    {
-        DeltaXPlugin* plugin = pluginList->at(i);
-        if (!plugin) {
-            qWarning() << "Null plugin at index" << i;
-            continue;
-        }
-        
-        // ? Fix: Consistent settings key format (same as LoadPluginSetting)
-        QString settingKey = plugin->GetName() + "-" + QString::number(i);
-        setting->beginGroup(settingKey);
-        
-        try {
-            plugin->SaveSettings(setting);
-            qDebug() << "Saved settings for plugin:" << plugin->GetName();
-        } catch (const std::exception& e) {
-            qWarning() << "Exception saving settings for plugin" << plugin->GetName() << ":" << e.what();
-        } catch (...) {
-            qWarning() << "Unknown exception saving settings for plugin" << plugin->GetName();
-        }
-        
-        setting->endGroup();
-    }
-    
-    setting->endGroup();
+    m_pluginManager->saveSettings(*setting, ProjectName);
 }
 
 void RobotWindow::InitDefaultValue()
@@ -8839,124 +8885,6 @@ void RobotWindow::SaveDetectingUI()
     batchUpdateVariables(prefix, updates);
 }
 
-QStringList RobotWindow::getPlugins(QString path)
-{
-    QStringList filter;
-    filter << "*.dll" << "*.so" << "*.dylib";
-    QDir dir(path);
-    QFileInfoList list = dir.entryInfoList(filter);
-    QStringList plugins;
-
-    foreach (QFileInfo file, list) {
-        plugins.append(file.filePath());
-        //Mac - if(!file.isSymLink()) plugins.append(file.filePath());
-    }
-
-    return plugins;
-}
-
-void RobotWindow::initPlugins(QStringList plugins)
-{
-    int successCount = 0;
-    QStringList failedPlugins;
-    
-    foreach (QString file, plugins)
-    {
-        QFileInfo fileInfo(file);
-        QString pluginName = fileInfo.baseName();
-        
-        qDebug() << "Loading plugin:" << pluginName;
-        
-        QPluginLoader loader(file);
-        const QString compatibilityError =
-            DeltaXPluginContract::compatibilityError(loader.metaData());
-        if (!compatibilityError.isEmpty())
-        {
-            const QString error = QString("Plugin '%1' is incompatible: %2")
-                                      .arg(pluginName, compatibilityError);
-            qWarning() << error;
-            failedPlugins << pluginName;
-            continue;
-        }
-
-        if (!loader.load())
-        {
-            QString error = QString("Failed to load plugin '%1': %2")
-                           .arg(pluginName)
-                           .arg(loader.errorString());
-            
-            qWarning() << error;
-            failedPlugins << pluginName;
-            continue;
-        }
-
-        DeltaXPlugin* pluginWidget = qobject_cast<DeltaXPlugin*>(loader.instance());
-        if (!pluginWidget)
-        {
-            QString error = QString("Plugin '%1' does not implement DeltaXPlugin interface").arg(pluginName);
-            qWarning() << error;
-            failedPlugins << pluginName;
-            continue;
-        }
-
-        // ? Safe UI creation with validation
-        QWidget* pluginUI = nullptr;
-        try {
-            pluginUI = pluginWidget->GetUI();
-        } catch (const std::exception& e) {
-            qWarning() << "Exception creating UI for plugin" << pluginWidget->GetName() << ":" << e.what();
-            failedPlugins << pluginWidget->GetName();
-            continue;
-        } catch (...) {
-            qWarning() << "Unknown exception creating UI for plugin" << pluginWidget->GetName();
-            failedPlugins << pluginWidget->GetName();
-            continue;
-        }
-        
-        if (!pluginUI)
-        {
-            qWarning() << "Plugin" << pluginWidget->GetName() << "returned null UI";
-            failedPlugins << pluginWidget->GetName();
-            continue;
-        }
-
-        // ? Success - add plugin safely
-        QString pluginTitle = pluginWidget->GetTitle();
-        if (pluginTitle.isEmpty()) {
-            pluginTitle = pluginWidget->GetName(); // Fallback to name
-        }
-        
-        ui->twModule->addTab(pluginUI, pluginTitle);
-        pluginList->append(pluginWidget);
-        
-        // ? Connect plugin signals safely
-        connectPluginSignals(pluginWidget);
-        
-        successCount++;
-        qInfo() << "Successfully loaded plugin:" << pluginWidget->GetName();
-        SoftwareLog(QString("Successfully loaded plugin: %1").arg(pluginWidget->GetName()));
-    }
-    
-    // ? User feedback
-    if (successCount > 0) {
-        qInfo() << QString("Successfully loaded %1 plugins").arg(successCount);
-        SoftwareLog(QString("Plugin System: Successfully loaded %1 plugins").arg(successCount));
-    }
-    
-    if (!failedPlugins.isEmpty()) {
-        QString failedList = failedPlugins.join(", ");
-        qWarning() << QString("Failed to load plugins: %1").arg(failedList);
-        
-        // ? Log failed plugins to software debug (no popup)
-        if (failedPlugins.size() > 0) {
-            SoftwareLog(QString("Plugin Loading Warning: Failed to load plugins: %1")
-                       .arg(failedList));
-        }
-    }
-
-    updateIndustrialCameraAvailability();
-}
-
 void RobotWindow::updateIndustrialCameraAvailability()
 {
     industrialCameraBackendAvailable = false;
@@ -9015,12 +8943,6 @@ void RobotWindow::updateIndustrialCameraAvailability()
                     .arg(industrialCameraBackendStatus));
 }
 
-QList<DeltaXPlugin*> *RobotWindow::getPluginList()
-{
-    return pluginList;
-}
-
-// ? Safe plugin signal connection
 void RobotWindow::connectPluginSignals(DeltaXPlugin* plugin)
 {
     if (!plugin) {
@@ -9030,9 +8952,24 @@ void RobotWindow::connectPluginSignals(DeltaXPlugin* plugin)
     
     QString pluginName = plugin->GetName();
     qDebug() << "Connecting signals for plugin:" << pluginName;
+
+    bool providesCameraCapture = false;
+    if (m_pluginManager) {
+        const QVector<PluginDescriptor> descriptors =
+            m_pluginManager->descriptors();
+        for (const PluginDescriptor& descriptor : descriptors) {
+            if (m_pluginManager->legacyPlugin(descriptor.id) == plugin &&
+                descriptor.hasCapability(QStringLiteral("camera.capture"))) {
+                providesCameraCapture = true;
+                break;
+            }
+        }
+    }
     
     try {
-        if (pluginName == "industrialcamera") {
+        // The capability drives v2 integration. The name fallback preserves
+        // API v1 industrial-camera binaries that predate capabilities.
+        if (providesCameraCapture || pluginName == "industrialcamera") {
             industrialCameraPlugin = plugin;
             
             // Connect plugin to camera system
@@ -9058,17 +8995,17 @@ void RobotWindow::connectPluginSignals(DeltaXPlugin* plugin)
 // ? Find plugin by name safely
 DeltaXPlugin* RobotWindow::findPluginByName(const QString& name)
 {
-    if (!pluginList || name.isEmpty()) {
+    if (!m_pluginManager || name.isEmpty())
         return nullptr;
-    }
-    
-    for (int i = 0; i < pluginList->count(); i++) {
-        DeltaXPlugin* plugin = pluginList->at(i);
-        if (plugin && plugin->GetName().compare(name, Qt::CaseInsensitive) == 0) {
+    if (DeltaXPlugin* exact = m_pluginManager->legacyPlugin(name))
+        return exact;
+    for (const QString& id : m_pluginManager->loadedPluginIds()) {
+        DeltaXPlugin* plugin = m_pluginManager->legacyPlugin(id);
+        if (plugin &&
+            plugin->GetName().compare(name, Qt::CaseInsensitive) == 0) {
             return plugin;
         }
     }
-    
     return nullptr;
 }
 
