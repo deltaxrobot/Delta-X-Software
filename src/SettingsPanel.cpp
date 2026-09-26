@@ -5,6 +5,7 @@
 #include <QMessageBox>
 #include <QFontDialog>
 #include <QColorDialog>
+#include <cmath>
 
 SettingsPanel::SettingsPanel(QTabWidget* tabWidget, QObject* parent)
     : QObject(parent)
@@ -294,60 +295,22 @@ void SettingsPanel::createCameraSettingsTab()
 
 QWidget* SettingsPanel::createSettingsGroup(const QString& title, QWidget* parent)
 {
-    QGroupBox* groupBox = new QGroupBox(title, parent);
-    groupBox->setStyleSheet(
-        "QGroupBox {"
-        "    font-weight: bold;"
-        "    border: 2px solid #555555;"
-        "    border-radius: 5px;"
-        "    margin-top: 1ex;"
-        "    padding-top: 10px;"
-        "    color: rgb(255, 255, 255);"
-        "}"
-        "QGroupBox::title {"
-        "    subcontrol-origin: margin;"
-        "    left: 10px;"
-        "    padding: 0 5px 0 5px;"
-        "}"
-    );
+    QString displayTitle = title;
+    displayTitle.replace('&', QStringLiteral("&&"));
+    QGroupBox* groupBox = new QGroupBox(displayTitle, parent);
+    groupBox->setProperty("settingsGroup", true);
     return groupBox;
 }
 
 void SettingsPanel::addSettingsRow(QFormLayout* layout, const QString& label, QWidget* control, const QString& tooltip)
 {
     QLabel* labelWidget = new QLabel(label);
-    labelWidget->setStyleSheet("color: rgb(200, 200, 200); font-weight: normal;");
+    labelWidget->setProperty("settingsLabel", true);
     
     if (!tooltip.isEmpty()) {
         labelWidget->setToolTip(tooltip);
         control->setToolTip(tooltip);
     }
-    
-    control->setStyleSheet(
-        "QLineEdit, QSpinBox, QComboBox, QCheckBox {"
-        "    background-color: rgb(60, 60, 62);"
-        "    border: 1px solid rgb(90, 90, 90);"
-        "    border-radius: 3px;"
-        "    padding: 5px;"
-        "    color: rgb(255, 255, 255);"
-        "}"
-        "QLineEdit:focus, QSpinBox:focus, QComboBox:focus {"
-        "    border: 2px solid #007ACC;"
-        "}"
-        "QPushButton {"
-        "    background-color: rgb(70, 70, 72);"
-        "    border: 1px solid rgb(90, 90, 90);"
-        "    border-radius: 3px;"
-        "    padding: 5px 10px;"
-        "    color: rgb(255, 255, 255);"
-        "}"
-        "QPushButton:hover {"
-        "    background-color: rgb(80, 80, 82);"
-        "}"
-        "QPushButton:pressed {"
-        "    background-color: rgb(60, 60, 62);"
-        "}"
-    );
     
     layout->addRow(labelWidget, control);
 }
@@ -371,7 +334,7 @@ void SettingsPanel::createEditorSettingsTab()
     QHBoxLayout* fontSelectLayout = new QHBoxLayout();
     m_pbSelectFont = new QPushButton("Select Font...");
     m_lbFontPreview = new QLabel("Font Preview");
-    m_lbFontPreview->setStyleSheet("color: rgb(200, 200, 200); padding: 5px; border: 1px solid rgb(90, 90, 90);");
+    m_lbFontPreview->setProperty("previewField", true);
     fontSelectLayout->addWidget(m_pbSelectFont);
     fontSelectLayout->addWidget(m_lbFontPreview, 1);
     
@@ -915,6 +878,12 @@ void SettingsPanel::selectColor(QColor& color, QPushButton* button)
 void SettingsPanel::updateColorButton(QPushButton* button, const QColor& color)
 {
     if (button) {
+        const auto linear = [](double channel) {
+            return channel <= 0.04045 ? channel / 12.92 : std::pow((channel + 0.055) / 1.055, 2.4);
+        };
+        const double luminance = 0.2126 * linear(color.redF())
+            + 0.7152 * linear(color.greenF()) + 0.0722 * linear(color.blueF());
+        button->setProperty("colorSwatch", true);
         button->setStyleSheet(QString(
             "QPushButton { "
             "    background-color: %1; "
@@ -924,10 +893,10 @@ void SettingsPanel::updateColorButton(QPushButton* button, const QColor& color)
             "    color: %2; "
             "}"
             "QPushButton:hover { "
-            "    border: 2px solid #007ACC; "
+            "    border: 1px solid #007ACC; "
             "}"
         ).arg(color.name(), 
-             (color.lightness() > 128) ? "black" : "white"));
+             (luminance > 0.179) ? "black" : "white"));
     }
 }
 

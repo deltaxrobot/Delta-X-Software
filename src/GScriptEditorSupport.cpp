@@ -136,6 +136,7 @@ QString GScriptEditorSupport::signatureHelp(const QString& line, int cursorColum
 
     static const QHash<QString, QString> signatures = {
         {"send", "M98 Psend(deviceId, command[, responseVariable[, timeoutMs]])"},
+        {"sendgcode", "M98 PsendGcode(deviceId, command[, responseVariable[, timeoutMs]])"},
         {"assert", "M98 Passert(condition[, message])"},
         {"waituntil", "M98 PwaitUntil(condition, timeoutMs[, pollMs[, message]])"},
         {"updatetracking", "M98 PupdateTracking([trackingId])"},
@@ -147,8 +148,9 @@ QString GScriptEditorSupport::signatureHelp(const QString& line, int cursorColum
         {"addobject", "M98 PaddObject(list, type, x, y, z, width, length, angle)"},
         {"clearobjects", "M98 PclearObjects(list)"},
         {"logmessage", "M98 PlogMessage(message)"},
-        {"syncconveyor", "M98 PsyncConveyor(robotId, vector)"},
-        {"stopsyncconveyor", "M98 PstopSyncConveyor(robotId)"}
+        {"deleteobject", "M98 PdeleteObject(objectIndex)"},
+        {"syncconveyor", "M98 PsyncConveyor (legacy flag; use SYNC robotN (vx, vy, vz))"},
+        {"stopsyncconveyor", "M98 PstopSyncConveyor (legacy flag)"}
     };
     const QString signature = signatures.value(selected.captured(1).toLower());
     if (signature.isEmpty()) {

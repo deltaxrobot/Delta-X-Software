@@ -4,11 +4,15 @@
 #include "MainWindow.h"
 #include "ModernDialog.h"
 #include "CameraSelectionDialog.h"
+#include "PhoneCameraDialog.h"
 #include "CameraCalibration.h"
 #include "GScriptEditorSupport.h"
 #include "PluginManager.h"
 #include "PluginManagerWidget.h"
 #include "PluginExtensionRegistry.h"
+#include "UiTheme.h"
+#include "RobotPanelLayout.h"
+#include "MouseJogDialog.h"
 #include "sdk/DeltaXPanelProvider.h"
 #include "UnityTool.h"  // ? For SoftwareLog function
 #include <QFile>
@@ -18,6 +22,8 @@
 #include <QCoreApplication>
 #include <QRegularExpression>
 #include <cmath>      // ? For Z-plane calculations
+#include <algorithm>
+#include <functional>
 #include <QInputDialog>  // ? For test input dialog
 #include <QtMath>      // ? For qAbs function
 #include <random>      // For random number generation
@@ -37,15 +43,23 @@
 #include <QLabel>
 #include <QScrollBar>
 #include <QFormLayout>
+#include <QGroupBox>
 #include <QSpinBox>
 #include <QStandardItemModel>
 #include <QTextBrowser>
 #include <QTabWidget>
 #include <QTabBar>
+#include <QSplitter>
+#include <QEvent>
 #include <QCheckBox>
+#include <QComboBox>
+#include <QDesktopServices>
+#include <QToolButton>
 #include <QProcessEnvironment>
 #include <QStandardPaths>
 #include <QThread>
+#include <QSignalBlocker>
+#include <QScopeGuard>
 #include <QString>
 #include <opencv2/calib3d.hpp>
 #include <opencv2/imgproc.hpp>
@@ -53,130 +67,16 @@
 
 namespace
 {
-QString visualFoundationStyleSheet()
+int manualCommandTimeoutMs(const QString& deviceId, const QString& command)
 {
-    return QStringLiteral(R"(
-/* Delta X visual foundation: shared dark controls and readable focus states.
-   Geometry-sensitive controls such as jogging strips keep local overrides. */
-QWidget#centralWidget { background-color: #1E1E20; color: #E6E6E8; }
-QLabel { color: #D6D6D9; background: transparent; }
-
-QGroupBox {
-    color: #E6E6E8;
-    border: 1px solid #3D3D42;
-    border-radius: 5px;
-    margin-top: 11px;
-    padding: 8px 6px 6px 6px;
-}
-QGroupBox::title {
-    subcontrol-origin: margin;
-    left: 8px;
-    padding: 0 4px;
-    color: #E6E6E8;
-}
-
-QPushButton {
-    background-color: #45454B;
-    color: #F2F2F3;
-    border: 1px solid #5D5D64;
-    border-radius: 4px;
-    min-height: 22px;
-    padding: 3px 8px;
-}
-QPushButton:hover {
-    background-color: #55555D;
-    border-color: #85858E;
-}
-QPushButton:pressed, QPushButton:checked {
-    background-color: #1769AA;
-    border-color: #4DA3E6;
-}
-QPushButton:disabled {
-    background-color: #303035;
-    color: #85858B;
-    border-color: #3C3C42;
-}
-QPushButton:focus, QComboBox:focus, QLineEdit:focus,
-QSpinBox:focus, QDoubleSpinBox:focus, QAbstractItemView:focus {
-    border: 1px solid #4DA3E6;
-}
-
-QComboBox, QLineEdit, QSpinBox, QDoubleSpinBox {
-    background-color: #34343A;
-    color: #F0F0F2;
-    border: 1px solid #5A5A61;
-    border-radius: 4px;
-    min-height: 22px;
-    padding: 3px 7px;
-}
-QComboBox { padding-right: 26px; }
-QComboBox::drop-down {
-    width: 22px;
-    border: none;
-}
-QComboBox QAbstractItemView {
-    background-color: #2A2A2F;
-    color: #F0F0F2;
-    border: 1px solid #5A5A61;
-    selection-background-color: #1769AA;
-    selection-color: #FFFFFF;
-}
-
-QPlainTextEdit, QTextEdit, QTextBrowser {
-    background-color: #25252A;
-    color: #E6E6E8;
-    border: 1px solid #3D3D42;
-    border-radius: 4px;
-    padding: 4px;
-    selection-background-color: #1769AA;
-    selection-color: #FFFFFF;
-}
-QTreeWidget, QTableWidget, QListWidget, QTableView, QTreeView, QListView {
-    background-color: #25252A;
-    color: #E6E6E8;
-    alternate-background-color: #2B2B30;
-    border: 1px solid #3D3D42;
-    selection-background-color: #1769AA;
-    selection-color: #FFFFFF;
-}
-QHeaderView::section {
-    background-color: #3A3A40;
-    color: #F0F0F2;
-    border: none;
-    border-right: 1px solid #4B4B52;
-    padding: 4px 6px;
-}
-QGraphicsView {
-    background-color: #1E1E20;
-    border: 1px solid #3D3D42;
-}
-
-QCheckBox { color: #E6E6E8; spacing: 6px; }
-QCheckBox::indicator {
-    width: 16px;
-    height: 16px;
-    border: 1px solid #6A6A72;
-    border-radius: 3px;
-    background-color: #34343A;
-}
-QCheckBox::indicator:checked {
-    background-color: #1769AA;
-    border-color: #4DA3E6;
-}
-
-QScrollArea { border: none; background: transparent; }
-QScrollBar:vertical { background: #25252A; width: 12px; margin: 2px; }
-QScrollBar::handle:vertical { background: #55555D; min-height: 28px; border-radius: 5px; }
-QScrollBar::handle:vertical:hover { background: #71717B; }
-QScrollBar:horizontal { background: #25252A; height: 12px; margin: 2px; }
-QScrollBar::handle:horizontal { background: #55555D; min-width: 28px; border-radius: 5px; }
-QScrollBar::handle:horizontal:hover { background: #71717B; }
-QScrollBar::add-line, QScrollBar::sub-line { background: transparent; border: none; }
-QScrollBar::add-page, QScrollBar::sub-page { background: transparent; }
-
-QSplitter::handle { background-color: #323238; }
-QSplitter::handle:hover { background-color: #1769AA; }
-)");
+    const QString opcode = command.simplified()
+                               .section(QLatin1Char(' '), 0, 0)
+                               .toUpper();
+    if (deviceId.startsWith(QStringLiteral("robot")) &&
+        opcode == QStringLiteral("G28")) {
+        return 120000;
+    }
+    return 5000;
 }
 }
 
@@ -188,8 +88,38 @@ RobotWindow::RobotWindow(QWidget *parent, QString projectName) :
     m_batchUpdateTimer(new QTimer(this))
 {
     ui->setupUi(this);
-    setStyleSheet(styleSheet() + visualFoundationStyleSheet());
+    // Shared controls are styled globally by UiTheme. Clear the legacy
+    // Designer presentation rules as well as the window-level stylesheet.
+    // Preserve only domain canvases; jogging uses its own shared-theme rules.
+    const QList<QWidget*> preservedVisualRoots = {
+        ui->wConveyorCanvas,
+        ui->ImageFrame,
+        ui->lbImageForDrawing,
+        ui->lbDrawingArea,
+    };
+    UiTheme::prepareForm(this, preservedVisualRoots);
+    // Only XYZ continuous jogging is implemented. The old rotary placeholders
+    // all carried Shift+W and conflicted with the actual Y+ step shortcut.
+    for (QToolButton* unused : {ui->pbContinuous4Plus, ui->pbContinuous4Sub,
+                               ui->pbContinuous5Plus, ui->pbContinuous5Sub,
+                               ui->pbContinuous6Plus, ui->pbContinuous6Sub}) {
+        unused->setShortcut(QKeySequence());
+        unused->hide();
+    }
+    const QList<QPair<QToolButton*, QString>> holdControls = {
+        {ui->pbContinuousLeft, tr("Hold to jog X− (Left arrow)")},
+        {ui->pbContinuousRight, tr("Hold to jog X+ (Right arrow)")},
+        {ui->pbContinuousForward, tr("Hold to jog Y+ (Up arrow)")},
+        {ui->pbContinuousBackward, tr("Hold to jog Y− (Down arrow)")},
+        {ui->pbContinuousUp, tr("Hold to jog Z+ (Page Up)")},
+        {ui->pbContinuousDown, tr("Hold to jog Z− (Page Down)")},
+    };
+    for (const auto& control : holdControls) {
+        control.first->setToolTip(control.second);
+        control.first->setAccessibleName(control.second);
+    }
     ui->twModule->tabBar()->setUsesScrollButtons(true);
+    setupResponsiveShell();
     updateModuleTabLabels();
     setWindowTitle(tr("Delta X Software - Version %1")
                        .arg(QString::fromLatin1(DeltaXVersion::Application)));
@@ -222,10 +152,52 @@ RobotWindow::RobotWindow(QWidget *parent, QString projectName) :
         }
     }
     
-    // Initialize Cloud Point Mapping UI after all other objects are ready
+    // Initialize interpolated multi-point mapping after all other objects are ready.
     if (m_pointToolController) {
         m_pointToolController->initializeUI(ui->tPointTool);
     }
+    setupProgressiveDisclosure();
+    RobotPanelLayout::setup(*ui);
+    connect(findChild<QPushButton*>(QStringLiteral("pbMouseRobotControl")), &QPushButton::clicked,
+            this, [this]() {
+        if (!m_selectedRobotConnected || !m_deviceCommandBroker ||
+            m_deviceCommandBroker->cellState() != QStringLiteral("Ready")) {
+            QMessageBox::information(this, tr("Mouse control"),
+                                     tr("Connect the selected robot and put the cell in Ready first."));
+            return;
+        }
+        MouseJogDialog dialog(m_deviceCommandBroker, selectedDeviceName(DeviceManager::ROBOT), this);
+        dialog.exec();
+    });
+    const QList<QWidget*> primaryActions = {
+        ui->pbExecuteGcodes, ui->pbSaveGcode, ui->pbRunExternalScript,
+        ui->pbSaveTrackingManager, ui->pbConnectRobot,
+        ui->pbConveyorConnect, ui->pbConnectEncoder, ui->pbSlidingConnect
+    };
+    for (QWidget* action : primaryActions)
+        UiTheme::setControlRole(action, QStringLiteral("primary"));
+
+    const QList<QWidget*> startActions = {
+        ui->pbStartAcquisition, ui->pbStartScheduledEncoder,
+        ui->pbStartCustomConveyor1, ui->pbStartCustomConveyor2,
+        ui->pbStartCustomConveyor3
+    };
+    for (QWidget* action : startActions)
+        UiTheme::setControlRole(action, QStringLiteral("success"));
+
+    const QList<QWidget*> stopOrDestructiveActions = {
+        ui->pbStopConveyor, ui->pbStopCustomConveyor1,
+        ui->pbStopCustomConveyor2, ui->pbStopCustomConveyor3,
+        ui->tbDeleteGcodeFile, ui->pbClearAllObjects,
+        ui->pbClearDetectObjects, ui->pbClearCalibrationPoints
+    };
+    for (QWidget* action : stopOrDestructiveActions)
+        UiTheme::setControlRole(action, QStringLiteral("danger"));
+
+    UiTheme::setControlRole(ui->tbDisableRobot, QStringLiteral("warning"));
+    UiTheme::setControlRole(ui->pbResetEncoder, QStringLiteral("warning"));
+    UiTheme::polishWidgetTree(this);
+    QTimer::singleShot(0, this, &RobotWindow::updateResponsiveLayout);
 }
 
 RobotWindow::~RobotWindow()
@@ -399,6 +371,11 @@ void RobotWindow::InitVariables()
     DeltaDrawingExporter->SetEffector(ui->cbDrawingEffector);
     DeltaDrawingExporter->SetGcodeExportParameterPointer(ui->leSafeZHeight, ui->leTravelSpeed, ui->leDrawingSpeed, ui->leDrawingAcceleration);
     DeltaDrawingExporter->SetDrawingPointInPlane(ui->leADrawingPoint, ui->leBDrawingPoint, ui->leCDrawingPoint);
+    DeltaDrawingExporter->SetupPanel(ui->tDrawing);
+    connect(DeltaDrawingExporter, &DrawingExporter::parametersChanged, this, [this] {
+        VariableManager::instance().updateVarScoped(ProjectName, "Drawing.Parameters",
+                                                    DeltaDrawingExporter->parameters());
+    });
 
     // --------- UI Update -------
 
@@ -422,7 +399,7 @@ void RobotWindow::InitVariables()
     lbLoadingPopup->setMinimumHeight(120);
     lbLoadingPopup->setMinimumWidth(200);
     lbLoadingPopup->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
-    lbLoadingPopup->setStyleSheet("border: 1px solid black;");
+    lbLoadingPopup->setObjectName(QStringLiteral("loadingPopup"));
     CameraOpenTimeoutTimer.setSingleShot(true);
     connect(&CameraOpenTimeoutTimer, &QTimer::timeout, this, &RobotWindow::HandleCameraOpenTimeout);
 
@@ -473,6 +450,20 @@ void RobotWindow::InitOtherThreadObjects()
     connect(CameraInstance, &Camera::StopCameraRequest, this, &RobotWindow::StopCapture);
 
     CameraThread->start();
+
+    if(ui->cbSourceForImageProvider->findText("Phone Camera")<0)
+        ui->cbSourceForImageProvider->addItem("Phone Camera");
+    connect(CameraInstance->phoneServer,&PhoneCameraServer::pairedChanged,this,[this](bool paired){
+        if(!paired && isCameraLoaded && ui->cbSourceForImageProvider->currentText()=="Phone Camera")
+            StopCapture();
+    });
+    connect(CameraInstance->phoneServer,&PhoneCameraServer::frameReady,this,[this](const QImage& image,quint64,int){
+        if(!isCameraLoaded || ui->cbSourceForImageProvider->currentText()!="Phone Camera") return;
+        QHash<QString,QVariant> dimensions;
+        dimensions.insert(QStringLiteral("Camera.Width"),image.width());
+        dimensions.insert(QStringLiteral("Camera.Height"),image.height());
+        VariableManager::instance().updateBatchScoped(ProjectName,dimensions,VariableManager::Persistence::Runtime);
+    });
 
     InitControlPlane();
 
@@ -639,6 +630,9 @@ void RobotWindow::InitControlPlane()
     connect(DeviceManagerInstance, &DeviceManager::DeviceResponded,
             m_deviceCommandBroker, &DeviceCommandBroker::HandleDeviceResponse,
             Qt::QueuedConnection);
+    connect(DeviceManagerInstance, &DeviceManager::DeviceNotAvailable,
+            m_deviceCommandBroker, &DeviceCommandBroker::HandleDeviceUnavailable,
+            Qt::QueuedConnection);
 
     connect(this, &RobotWindow::Send, this,
             [this](int deviceType, const QString& command) {
@@ -646,7 +640,8 @@ void RobotWindow::InitControlPlane()
             return;
         const QString device = selectedDeviceName(deviceType);
         m_deviceCommandBroker->Submit(QStringLiteral("manual/ui"), device, command,
-                                      DeviceCommandBroker::Origin::Manual, true, 5000);
+                                      DeviceCommandBroker::Origin::Manual, true,
+                                      manualCommandTimeoutMs(device, command));
     });
 
     connect(m_cellSupervisor, &CellSupervisor::StateChanged, this,
@@ -655,6 +650,7 @@ void RobotWindow::InitControlPlane()
         if (m_deviceCommandBroker)
             m_deviceCommandBroker->SetCellState(stateName);
         updateCellStateUi(state, stateName, reason);
+        updateHomeAvailability();
 
         QHash<QString, QVariant> values;
         values.insert(QStringLiteral("Cell.State"), stateName);
@@ -745,6 +741,7 @@ void RobotWindow::InitControlPlane()
 
     m_deviceCommandBroker->SetCellState(m_cellSupervisor->stateName());
     updateCellStateUi(m_cellSupervisor->state(), m_cellSupervisor->stateName(), QString());
+    updateHomeAvailability();
     QHash<QString, QVariant> initialState;
     initialState.insert(QStringLiteral("Cell.State"), m_cellSupervisor->stateName());
     initialState.insert(QStringLiteral("Cell.ActiveWorkerCount"), 0);
@@ -792,6 +789,25 @@ QString RobotWindow::selectedDeviceName(int deviceType) const
     return prefix + QString::number(index);
 }
 
+void RobotWindow::updateHomeAvailability()
+{
+    if (!ui || !ui->pbHome)
+        return;
+
+    const bool cellReady = m_cellSupervisor &&
+        m_cellSupervisor->state() == CellSupervisor::State::Ready;
+    ui->pbHome->setEnabled(m_selectedRobotConnected && cellReady);
+
+    if (!m_selectedRobotConnected) {
+        ui->pbHome->setToolTip(tr("Connect the selected robot before homing"));
+    } else if (!cellReady) {
+        ui->pbHome->setToolTip(tr("Homing is unavailable while the cell is %1")
+                                   .arg(m_cellSupervisor->stateName()));
+    } else {
+        ui->pbHome->setToolTip(tr("Home the selected robot"));
+    }
+}
+
 bool RobotWindow::submitManualDeviceCommand(const QString& commandLine,
                                             const QString& owner)
 {
@@ -820,7 +836,8 @@ bool RobotWindow::submitManualDeviceCommand(const QString& commandLine,
     m_deviceCommandBroker->RegisterDevice(device);
     return m_deviceCommandBroker->Submit(owner, device, command,
                                          DeviceCommandBroker::Origin::Manual,
-                                         true, 5000) != 0;
+                                         true,
+                                         manualCommandTimeoutMs(device, command)) != 0;
 }
 
 void RobotWindow::performControlledCellStop(const QString& reason)
@@ -841,17 +858,17 @@ void RobotWindow::updateCellStateUi(CellSupervisor::State state,
                                     const QString& reason)
 {
     if (cellStateLabel) {
-        QString color = QStringLiteral("#d4d4d4");
+        QString statusRole;
         if (state == CellSupervisor::State::Ready)
-            color = QStringLiteral("#69d18b");
+            statusRole = QStringLiteral("success");
         else if (state == CellSupervisor::State::AutoRunning)
-            color = QStringLiteral("#73b7ff");
+            statusRole = QStringLiteral("info");
         else if (state == CellSupervisor::State::Paused ||
                  state == CellSupervisor::State::Recovering)
-            color = QStringLiteral("#f0b24a");
+            statusRole = QStringLiteral("warning");
         else if (state == CellSupervisor::State::Faulted)
-            color = QStringLiteral("#ff6b6b");
-        cellStateLabel->setStyleSheet(QStringLiteral("color: %1; font-weight: bold;").arg(color));
+            statusRole = QStringLiteral("danger");
+        UiTheme::setStatusRole(cellStateLabel, statusRole);
         cellStateLabel->setText(reason.isEmpty()
             ? tr("CELL: %1").arg(stateName.toUpper())
             : tr("CELL: %1 — %2").arg(stateName.toUpper(), reason));
@@ -1134,6 +1151,36 @@ void RobotWindow::InitObjectDetectingModule()
 
     connect(ui->pbCapture, &QPushButton::clicked, CameraInstance, &Camera::GeneralCapture);
     connect(ui->pbStartAcquisition, &QPushButton::clicked, this, &RobotWindow::StartContinuousCapture);
+    connect(ui->leCaptureInterval, &QLineEdit::returnPressed, this, [this]() {
+        bool valid = false;
+        const int interval = ui->leCaptureInterval->text().trimmed().toInt(&valid);
+        if (!valid || interval < 10 || interval > 10000)
+        {
+            SoftwareLog("Capture interval must be between 10 and 10000 ms");
+            statusBar()->showMessage(tr("Enter a capture interval from 10 to 10000 ms."), 5000);
+            ui->leCaptureInterval->selectAll();
+            return;
+        }
+
+        ui->leCaptureInterval->setText(QString::number(interval));
+        const QString prefix = ProjectName + "." +
+                               ui->cbSelectedDetecting->currentText() + ".";
+        UpdateVariable(prefix + "WebcamInterval", interval);
+
+        if (CameraTimer.isActive())
+            CameraTimer.setInterval(interval);
+
+        const double requestedFps = 1000.0 / interval;
+        const QString state = CameraTimer.isActive()
+                                  ? tr("applied now")
+                                  : tr("saved for the next acquisition");
+        const QString message = tr("Capture interval: %1 ms (~%2 FPS), %3.")
+                                    .arg(interval)
+                                    .arg(requestedFps, 0, 'f', 1)
+                                    .arg(state);
+        SoftwareLog(message);
+        statusBar()->showMessage(message, 5000);
+    });
 
     connect(ui->pbSaveImage, &QPushButton::clicked, [=](bool checked)
     {
@@ -1299,14 +1346,10 @@ void RobotWindow::InitGcodeEditorModule()
 
     //----- Gcode Editor -----
 
-    // T?o m?t QPalette m?i t? QPalette hi?n t?i c?a textEdit
-    QPalette p = ui->pteGcodeArea->palette();
 
     // Thi?t l?p m�u cho van b?n
-    p.setColor(QPalette::Text, QColor("#888888"));
 
     // �p d?ng QPalette m?i cho textEdit
-    ui->pteGcodeArea->setPalette(p);
 
     highlighter = new GCodeHighlighter(ui->pteGcodeArea->document());
 
@@ -1367,7 +1410,7 @@ void RobotWindow::InitExternalVisionUI()
         externalVisionStatusLabel->setWordWrap(true);
         externalVisionMetricsLabel = new QLabel(ui->fExternalScriptPanel);
         externalVisionMetricsLabel->setTextInteractionFlags(Qt::TextSelectableByMouse);
-        externalVisionMetricsLabel->setStyleSheet(QStringLiteral("color: rgb(170, 170, 170);"));
+        UiTheme::setStatusRole(externalVisionMetricsLabel, QStringLiteral("muted"));
         layout->addWidget(statusTitle, 8, 0);
         layout->addWidget(externalVisionStatusLabel, 8, 1, 1, 4);
         layout->addWidget(new QLabel(tr("Activity"), ui->fExternalScriptPanel), 9, 0);
@@ -1520,8 +1563,18 @@ void RobotWindow::setExternalVisionStatus(const QString& state, const QString& d
         return;
     externalVisionStatusLabel->setText(
         detail.isEmpty() ? state : QStringLiteral("%1 — %2").arg(state, detail));
-    externalVisionStatusLabel->setStyleSheet(
-        QStringLiteral("color: %1; font-weight: bold;").arg(color));
+    QString statusRole = QStringLiteral("info");
+    const QString normalizedColor = color.toLower();
+    if (normalizedColor.contains(QStringLiteral("4caf50")) ||
+        normalizedColor.contains(QStringLiteral("69d18b")))
+        statusRole = QStringLiteral("success");
+    else if (normalizedColor.contains(QStringLiteral("ff6b6b")) ||
+             normalizedColor.contains(QStringLiteral("f44336")))
+        statusRole = QStringLiteral("danger");
+    else if (normalizedColor.contains(QStringLiteral("e0a030")) ||
+             normalizedColor.contains(QStringLiteral("f0b24a")))
+        statusRole = QStringLiteral("warning");
+    UiTheme::setStatusRole(externalVisionStatusLabel, statusRole);
 }
 
 void RobotWindow::InitGScriptWorkspace()
@@ -1547,13 +1600,10 @@ void RobotWindow::InitGScriptWorkspace()
 
     QFrame* statusBar = new QFrame(programTab);
     statusBar->setObjectName("gscriptStatusBar");
-    statusBar->setStyleSheet(
-        "QFrame#gscriptStatusBar { background: #252526; border-top: 1px solid #3c3c3c; }"
-        "QLabel { color: #d4d4d4; padding: 2px 6px; }"
-        "QPushButton { padding: 3px 10px; }");
-    QHBoxLayout* statusLayout = new QHBoxLayout(statusBar);
+    statusBar->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    QVBoxLayout* statusLayout = new QVBoxLayout(statusBar);
     statusLayout->setContentsMargins(6, 3, 6, 3);
-    statusLayout->setSpacing(8);
+    statusLayout->setSpacing(4);
 
     gscriptStatusLabel = new QLabel(tr("Ready"), statusBar);
     gscriptStatusLabel->setObjectName("gscriptStatusLabel");
@@ -1561,13 +1611,13 @@ void RobotWindow::InitGScriptWorkspace()
     cellStateLabel->setObjectName("cellStateLabel");
     cellResetButton = new QPushButton(tr("Reset fault"), statusBar);
     cellResetButton->setObjectName("cellResetButton");
+    cellResetButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     cellResetButton->setVisible(false);
     cellResetButton->setToolTip(
         tr("Acknowledge a software fault after external safety and hardware conditions are verified"));
     gscriptSignatureLabel = new QLabel(statusBar);
     gscriptSignatureLabel->setObjectName("gscriptSignatureLabel");
-    gscriptSignatureLabel->setStyleSheet("color: #9cdcfe;");
-    gscriptSignatureLabel->setMinimumWidth(220);
+    gscriptSignatureLabel->setMinimumWidth(0);
     gscriptSignatureLabel->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Preferred);
     gscriptCursorLabel = new QLabel(tr("Ln 1, Col 1"), statusBar);
     gscriptTemplateButton = new QPushButton(tr("New from template"), statusBar);
@@ -1575,17 +1625,31 @@ void RobotWindow::InitGScriptWorkspace()
         tr("Generate a validated vision or robot worker skeleton"));
     gscriptValidateButton = new QPushButton(tr("Validate"), statusBar);
     gscriptValidateButton->setToolTip(tr("Analyze the program without moving any device"));
-    statusLayout->addWidget(cellStateLabel);
-    statusLayout->addWidget(cellResetButton);
-    statusLayout->addWidget(gscriptStatusLabel, 1);
-    statusLayout->addWidget(gscriptSignatureLabel, 2);
-    statusLayout->addWidget(gscriptCursorLabel);
-    statusLayout->addWidget(gscriptTemplateButton);
-    statusLayout->addWidget(gscriptValidateButton);
+    gscriptDetailsButton = new QToolButton(statusBar);
+    gscriptDetailsButton->setObjectName("gscriptDetailsButton");
+    gscriptDetailsButton->setText(tr("Details"));
+    gscriptDetailsButton->setCheckable(true);
+    gscriptDetailsButton->setToolTip(tr("Show problems, watched variables, threads and the device console"));
+    gscriptStatusLabel->setWordWrap(true);
+    cellStateLabel->setWordWrap(true);
+    auto* healthRow = new QHBoxLayout;
+    healthRow->addWidget(cellStateLabel, 1);
+    healthRow->addWidget(cellResetButton);
+    statusLayout->addLayout(healthRow);
+    auto* validationRow = new QHBoxLayout;
+    validationRow->addWidget(gscriptStatusLabel, 1);
+    validationRow->addWidget(gscriptCursorLabel);
+    statusLayout->addLayout(validationRow);
+    auto* actionsRow = new QHBoxLayout;
+    actionsRow->addWidget(gscriptSignatureLabel, 1);
+    actionsRow->addWidget(gscriptDetailsButton);
+    actionsRow->addWidget(gscriptTemplateButton);
+    actionsRow->addWidget(gscriptValidateButton);
+    statusLayout->addLayout(actionsRow);
 
     gscriptInspectionTabs = new QTabWidget(programTab);
     gscriptInspectionTabs->setObjectName("gscriptInspectionTabs");
-    gscriptInspectionTabs->setMaximumHeight(190);
+    gscriptInspectionTabs->setMaximumHeight(220);
     gscriptInspectionTabs->setDocumentMode(true);
 
     QWidget* problemsPage = new QWidget(gscriptInspectionTabs);
@@ -1652,8 +1716,29 @@ void RobotWindow::InitGScriptWorkspace()
             ui->cbProgramThreadID->setCurrentIndex(row);
     });
 
+    // Keep inspection tools together instead of permanently compressing the editor.
+    ui->saTermite->takeWidget();
+    ui->label_5->hide();
+    ui->gridLayout_4->setRowStretch(1, 1);
+    gscriptInspectionTabs->addTab(ui->wgTermite, tr("Console"));
+    ui->verticalLayout_3->removeWidget(ui->fTermite);
+    ui->fTermite->hide();
+    ui->verticalLayout_3->setStretch(1, 1);
+    programLayout->setStretch(programLayout->indexOf(ui->pteGcodeArea), 1);
     programLayout->addWidget(gscriptInspectionTabs);
     programLayout->addWidget(statusBar);
+    gscriptInspectionTabs->hide();
+    connect(gscriptDetailsButton, &QToolButton::toggled,
+            gscriptInspectionTabs, &QWidget::setVisible);
+
+    // Source selection fits on the thread toolbar; it does not need a title row.
+    ui->horizontalLayout_120->removeWidget(ui->cbProgramSource);
+    ui->horizontalLayout_114->insertWidget(2, ui->cbProgramSource);
+    ui->cbProgramSource->setToolTip(tr("Program file source"));
+    ui->cbProgramSource->setAccessibleName(tr("Program file source"));
+    ui->robotTitile_18->hide();
+    ui->horizontalLayout_2->setStretch(0, 1);
+    ui->horizontalLayout_2->setStretch(1, 4);
 
     connect(gscriptValidateButton, &QPushButton::clicked,
             this, &RobotWindow::ValidateGScriptNow);
@@ -1696,10 +1781,14 @@ void RobotWindow::InitGScriptWorkspace()
             return;
         const QString name = GScriptEditorSupport::normalizeWatchName(gscriptWatchEdit->text());
         if (name.isEmpty()) {
-            gscriptWatchEdit->setStyleSheet("border: 1px solid #ff6b6b;");
+            gscriptWatchEdit->setProperty("validationState", "error");
+            gscriptWatchEdit->style()->unpolish(gscriptWatchEdit);
+            gscriptWatchEdit->style()->polish(gscriptWatchEdit);
             return;
         }
-        gscriptWatchEdit->setStyleSheet(QString());
+        gscriptWatchEdit->setProperty("validationState", QVariant());
+        gscriptWatchEdit->style()->unpolish(gscriptWatchEdit);
+        gscriptWatchEdit->style()->polish(gscriptWatchEdit);
         gscriptPinnedWatch.insert(name);
         gscriptWatchEdit->clear();
         RefreshGScriptRuntimePanels();
@@ -2089,6 +2178,8 @@ void RobotWindow::InitGScriptHelp()
 
     ui->tbGcodeScriptHelp->setOpenExternalLinks(false);
     ui->tbGcodeScriptHelp->setSearchPaths(QStringList()
+                                          << ":/docs"
+                                          << QCoreApplication::applicationDirPath() + "/docs"
                                           << ":/"
                                           << QCoreApplication::applicationDirPath()
                                           << QDir::currentPath());
@@ -2173,6 +2264,7 @@ void RobotWindow::InitEvents()
 
     connect(ui->pbExecuteGcodes, SIGNAL(clicked(bool)), this, SLOT(ExecuteProgram()));
     connect(ui->pbBlockly, &QToolButton::clicked, this, &RobotWindow::OpenBlocklyEditor);
+    ui->pbBlockly->setVisible(false);
     connect(ui->pteGcodeArea, SIGNAL(lineClicked(int, QString)), this, SLOT(ExecuteCurrentLine(int, QString)));
     connect(ui->pteGcodeArea, SIGNAL(textChanged()), this, SLOT(OnEditorTextChanged()));
     // ------------ Jogging -----------
@@ -2539,53 +2631,14 @@ void RobotWindow::ExportBlocklyToGcode()
 
 void RobotWindow::OpenBlocklyEditor()
 {
-    if (!ConnectionManager || !ConnectionManager->WebServer) {
-        QMessageBox::warning(this, tr("Web Control"),
-                             tr("The web server is not ready."));
+    if (m_programModes && m_programPage && m_programModes->count() > 1) {
+        ui->twModule->setCurrentWidget(m_programPage);
+        m_programModes->setCurrentIndex(1);
         return;
     }
-
-    if (!ConnectionManager->WebServer->isListening()) {
-        if (!ConnectionManager->WebServer->listen(QHostAddress(ConnectionManager->hostAddress), 5000)) {
-            QMessageBox::warning(this, tr("Web Control"),
-                                 tr("The web server could not be started."));
-            return;
-        }
-    }
-
-    QString host = ConnectionManager->hostAddress;
-    if (host.isEmpty() || host == "0.0.0.0") {
-        host = SocketConnectionManager::printLocalIpAddresses();
-    }
-    if (host.isEmpty()) {
-        host = "127.0.0.1";
-    }
-
-    quint16 webServerPort = ConnectionManager->WebServer->serverPort();
-    if (webServerPort == 0) {
-        webServerPort = 5000;
-    }
-
-    quint16 blocklyPortValue = ConnectionManager->blocklyPort;
-    if (blocklyPortValue == 0) {
-        QMessageBox::warning(this, tr("Web Control"),
-                             tr("The Blockly data server could not be started."));
-        return;
-    }
-
-    const QString blocklyUrl = QString("http://%1:%2/blockly?host=%3&port=%4")
-            .arg(host)
-            .arg(webServerPort)
-            .arg(host)
-            .arg(blocklyPortValue);
-
-    if (!QDesktopServices::openUrl(QUrl(blocklyUrl))) {
-        QMessageBox::warning(this,
-                             tr("Unable to Open Blockly"),
-                             tr("The browser could not open this URL: %1").arg(blocklyUrl));
-    } else {
-        SoftwareLog(QString("Open Blockly via web server: %1").arg(blocklyUrl));
-    }
+    QMessageBox::information(
+        this, tr("Block Programming"),
+        tr("Block Programming is experimental and disabled. Enable it in the Plugin Manager, then restart Delta X Software."));
 }
 
 void RobotWindow::ExecuteRequestsFromExternal(QString request)
@@ -2723,19 +2776,22 @@ void RobotWindow::AddGcodeLine(QString gcode)
 
 void RobotWindow::LoadGcodeFromFileToEditor(const QModelIndex &index)
 {
+    const QString filePath = explorerModel.filePath(index);
+    if (!QFileInfo(filePath).isFile())
+        return;
+
     if (ui->pbExecuteGcodes->isChecked() == true)
     {
         ui->pbExecuteGcodes->click();
     }
 
-    if (IsGcodeEditorTextChanged == true)
+    if (hasUnsavedGcodeText())
     {
         SaveProgram();
+        if (hasUnsavedGcodeText())
+            return;
     }
 
-
-
-    QString filePath = explorerModel.filePath(index);
     LoadGcode(filePath);
 }
 
@@ -2761,6 +2817,7 @@ void RobotWindow::LoadGcode(QString filePath)
 
     }
     StandardFormatEditor();
+    markGcodeEditorClean();
 }
 
 void RobotWindow::SelectGcodeExplorer()
@@ -2809,8 +2866,12 @@ void RobotWindow::CreateNewGcodeFile()
     SaveGcodeFile(fileName, content);
 }
 
-void RobotWindow::SaveGcodeFile(QString fileName, QString content)
+QString RobotWindow::SaveGcodeFile(QString fileName, QString content)
 {
+    fileName = fileName.trimmed();
+    if (fileName.isEmpty())
+        return QString();
+
     QModelIndex index = ui->tvGcodeExplorer->currentIndex();
     QString path = explorerModel.filePath(index);
 
@@ -2832,7 +2893,9 @@ void RobotWindow::SaveGcodeFile(QString fileName, QString content)
         QTextStream out(&file);
         out << content;
         file.close();
+        return QFileInfo(file).absoluteFilePath();
     }
+    return QString();
 }
 
 void RobotWindow::RefreshExplorer()
@@ -3018,7 +3081,6 @@ bool RobotWindow::pluginLoadGScript(int workerIndex, const QString& source,
     if (index == selected && ui && ui->pteGcodeArea) {
         ui->pteGcodeArea->setPlainText(source);
         ui->pteGcodeArea->moveCursor(QTextCursor::Start);
-        IsGcodeEditorTextChanged = true;
         ValidateGScriptNow();
     }
     return true;
@@ -3027,13 +3089,100 @@ bool RobotWindow::pluginLoadGScript(int workerIndex, const QString& source,
 bool RobotWindow::pluginRunGScript(int workerIndex, const QString& source,
                                    QString* error)
 {
+    return startGScript(workerIndex, source, error);
+}
+
+bool RobotWindow::requestRobotAutoConnect(QString* error)
+{
+    if (QThread::currentThread() != thread()) {
+        bool result = false;
+        QString nestedError;
+        const bool invoked = QMetaObject::invokeMethod(
+            this, [this, &result, &nestedError]() {
+                result = requestRobotAutoConnect(&nestedError);
+            }, Qt::BlockingQueuedConnection);
+        if (error)
+            *error = invoked ? nestedError : QStringLiteral("could not access the robot connection UI");
+        return invoked && result;
+    }
+    if (!ui || !ui->pbConnectRobot || !ui->cbSelectedRobot) {
+        if (error)
+            *error = QStringLiteral("robot connection controls are unavailable");
+        return false;
+    }
+    if (robotConnected())
+        return true;
+    const QString robotId = ui->cbSelectedRobot->currentText().trimmed();
+    if (robotId.isEmpty()) {
+        if (error)
+            *error = QStringLiteral("no robot is selected");
+        return false;
+    }
+    emit ChangeDeviceState(robotId, true, QStringLiteral("auto"));
+    return true;
+}
+
+bool RobotWindow::resetCellFault(bool operatorConfirmedSafe, QString* error)
+{
+    if (QThread::currentThread() != thread()) {
+        bool result = false;
+        QString nestedError;
+        const bool invoked = QMetaObject::invokeMethod(
+            this, [this, operatorConfirmedSafe, &result, &nestedError]() {
+                result = resetCellFault(operatorConfirmedSafe, &nestedError);
+            }, Qt::BlockingQueuedConnection);
+        if (error)
+            *error = invoked ? nestedError : QStringLiteral("could not access the cell supervisor");
+        return invoked && result;
+    }
+    if (!operatorConfirmedSafe) {
+        if (error)
+            *error = QStringLiteral("reset requires explicit operator safety confirmation");
+        return false;
+    }
+    if (!m_cellSupervisor) {
+        if (error)
+            *error = QStringLiteral("cell supervisor is unavailable");
+        return false;
+    }
+    if (m_cellSupervisor->state() != CellSupervisor::State::Faulted)
+        return true;
+    if (!m_cellSupervisor->activeOwners().isEmpty()) {
+        if (error)
+            *error = QStringLiteral("cannot reset while automation owners are active");
+        return false;
+    }
+    m_cellSupervisor->ResetFault();
+    return m_cellSupervisor->state() == CellSupervisor::State::Recovering ||
+           m_cellSupervisor->state() == CellSupervisor::State::Ready;
+}
+
+QString RobotWindow::cellStateName() const
+{
+    return m_cellSupervisor ? m_cellSupervisor->stateName() : QStringLiteral("Unavailable");
+}
+
+QString RobotWindow::cellFaultReason() const
+{
+    return m_cellSupervisor ? m_cellSupervisor->faultReason() : QString();
+}
+
+bool RobotWindow::robotConnected() const
+{
+    return ui && ui->pbConnectRobot &&
+           ui->pbConnectRobot->text() == QStringLiteral("Disconnect");
+}
+
+bool RobotWindow::startGScript(int workerIndex, const QString& source,
+                              QString* error, bool interactive, bool allowUnhomed)
+{
     if (QThread::currentThread() != thread()) {
         bool result = false;
         QString nestedError;
         const bool invoked = QMetaObject::invokeMethod(
             this,
-            [this, workerIndex, source, &result, &nestedError]() {
-                result = pluginRunGScript(workerIndex, source, &nestedError);
+            [this, workerIndex, source, interactive, allowUnhomed, &result, &nestedError]() {
+                result = startGScript(workerIndex, source, &nestedError, interactive, allowUnhomed);
             },
             Qt::BlockingQueuedConnection);
         if (!invoked && nestedError.isEmpty())
@@ -3069,21 +3218,36 @@ bool RobotWindow::pluginRunGScript(int workerIndex, const QString& source,
         return false;
     }
     GcodeScript* worker = GcodeScripts.at(index);
-    if (!worker || worker->IsRunning()) {
+    if (!worker || worker->IsRunning() || m_pendingGScriptStarts.contains(index)) {
         if (error)
             *error = QStringLiteral("the selected G-Script worker is already running");
         return false;
     }
 
-    if (ui && ui->leZ && ui->pbConnectRobot &&
+    if (!interactive && index == selected && hasUnsavedGcodeText()) {
+        if (error) *error = QStringLiteral("The editor has unsaved changes. Save them or use another thread.");
+        return false;
+    }
+    m_pendingGScriptStarts.insert(index);
+    bool queued = false;
+    const auto releaseReservation = qScopeGuard([this, index, &queued]() {
+        if (!queued) m_pendingGScriptStarts.remove(index);
+    });
+
+    if (!allowUnhomed && ui && ui->leZ && ui->pbConnectRobot &&
         ui->leZ->text().toFloat() > -200 &&
         ui->pbConnectRobot->text() == QStringLiteral("Disconnect")) {
+        if (!interactive) {
+            if (error) *error = QStringLiteral(
+                "The GUI Home check requires confirmation. Home the robot first, or use --allow-unhomed (Run Anyway).");
+            return false;
+        }
         QMessageBox confirmDialog(this);
         confirmDialog.setIcon(QMessageBox::Warning);
-        confirmDialog.setWindowTitle(tr("Confirm Block Program Run"));
+        confirmDialog.setWindowTitle(tr("Confirm Program Run"));
         confirmDialog.setText(tr("The robot has not returned to Home."));
         confirmDialog.setInformativeText(
-            tr("Cancel and return the robot to Home, or explicitly continue the generated block program."));
+            tr("Cancel and return the robot to Home, or explicitly continue the program."));
         QPushButton* cancelButton = confirmDialog.addButton(
             tr("Cancel Run"), QMessageBox::RejectRole);
         QPushButton* continueButton = confirmDialog.addButton(
@@ -3092,12 +3256,14 @@ bool RobotWindow::pluginRunGScript(int workerIndex, const QString& source,
         confirmDialog.exec();
         if (confirmDialog.clickedButton() != continueButton) {
             if (error)
-                *error = QStringLiteral("operator cancelled the block program run");
+                *error = QStringLiteral("operator cancelled the program run");
             return false;
         }
     }
 
     worker->SetGcodeScript(source);
+    if (!interactive)
+        worker->SetProgramPath(QString());
     if (ui) {
         worker->DefaultRobot = ui->cbSelectedRobot->currentText();
         worker->DefaultConveyor = ui->cbSelectedConveyor->currentText();
@@ -3105,16 +3271,23 @@ bool RobotWindow::pluginRunGScript(int workerIndex, const QString& source,
         worker->DefaultSlider = ui->cbSelectedSlider->currentText();
         worker->DefaultDevice = ui->cbSelectedDevice->currentText();
         if (index == selected && ui->pteGcodeArea) {
-            ui->pteGcodeArea->setPlainText(source);
-            ui->pteGcodeArea->moveCursor(QTextCursor::Start);
+            if (ui->pteGcodeArea->toPlainText() != source) {
+                ui->pteGcodeArea->setPlainText(source);
+                ui->pteGcodeArea->moveCursor(QTextCursor::Start);
+            }
+            if (!interactive) {
+                ui->twGcodeEditor->setTabText(0, tr("CLI program"));
+                markGcodeEditorClean();
+            }
             if (ui->pbExecuteGcodes)
                 ui->pbExecuteGcodes->setChecked(true);
         }
     }
-    QMetaObject::invokeMethod(
+    queued = QMetaObject::invokeMethod(
         worker, "ExecuteGcode", Qt::QueuedConnection,
         Q_ARG(QString, source), Q_ARG(int, int(GcodeScript::BEGIN)));
-    return true;
+    if (!queued && error) *error = QStringLiteral("Could not queue G-Script execution");
+    return queued;
 }
 
 bool RobotWindow::pluginStopGScript(int workerIndex, QString* error)
@@ -3173,6 +3346,13 @@ void RobotWindow::LoadPlugin()
     for (const QString& id : configuredDisabledIds)
         disabledIds.insert(id);
     m_pluginManager->setDisabledPluginIds(disabledIds);
+    QSet<QString> enabledIds;
+    const QStringList configuredEnabledIds =
+        settings.value(QStringLiteral("PluginSystem/EnabledPluginIds"))
+            .toStringList();
+    for (const QString& id : configuredEnabledIds)
+        enabledIds.insert(id);
+    m_pluginManager->setEnabledPluginIds(enabledIds);
 
     QHash<QString, QSet<QString>> grantedPermissions;
     settings.beginGroup(QStringLiteral("PluginSystem/GrantedPermissions"));
@@ -3560,7 +3740,11 @@ void RobotWindow::LoadPlugin()
         }
 
         if (pluginUi) {
-            ui->twModule->addTab(pluginUi, descriptor.displayName);
+            UiTheme::polishWidgetTree(pluginUi);
+            if (descriptor.id == QStringLiteral("deltax.block-programming"))
+                integrateBlockProgrammingPanel(pluginUi);
+            else
+                ui->twModule->addTab(pluginUi, descriptor.displayName);
         } else if (descriptor.hasCapability(QStringLiteral("panel"))) {
             diagnostics.append(
                 QStringLiteral("%1: panel provider returned no widget")
@@ -3572,6 +3756,7 @@ void RobotWindow::LoadPlugin()
             connectPluginSignals(legacy);
         }
     }
+    updateModuleTabLabels();
 
     QHash<QString, QVariant> pluginState;
     pluginState.insert(QStringLiteral("PluginSystem.LoadedCount"), loadedCount);
@@ -3646,6 +3831,7 @@ void RobotWindow::AddScriptThread()
     });
     connect(GcodeScriptThread, &GcodeScript::Finished,
             this, [this, GcodeScriptThread, commandOwner]() {
+        m_pendingGScriptStarts.remove(GcodeScripts.indexOf(GcodeScriptThread));
         if (m_deviceCommandBroker)
             m_deviceCommandBroker->CancelOwner(commandOwner, QStringLiteral("G-Script finished"));
         if (m_cellSupervisor)
@@ -3729,6 +3915,7 @@ void RobotWindow::LoadScriptThread()
     if (threadId < 0 || threadId >= GcodeScripts.size())
         return;
     ui->pteGcodeArea->setPlainText(GcodeScripts.at(threadId)->GetGcodeScript());
+    markGcodeEditorClean();
     ui->pbExecuteGcodes->setChecked(GcodeScripts.at(threadId)->IsRunning());
     UpdateGScriptExecutionState(GcodeScripts.at(threadId)->State(), QString());
     ValidateGScriptNow();
@@ -3862,7 +4049,8 @@ void RobotWindow::AddTrackingThread()
         const qint64 latency = variables.getVarScoped(ProjectName, prefix + "LastCommitLatencyMs", 0).toLongLong();
         const QString lastFault = variables.getVarScoped(ProjectName, prefix + "LastFault").toString();
         ui->lbTrackingRealtimeState->setText(
-            tr("Runtime: %1 | encoder %2 ms | vision %3 ms | frame queue %4 | encoder queue %5 | commit %6 ms%7")
+            tr("Tracking status: %1 | encoder age %2 ms | camera age %3 ms | "
+               "queued frames %4 | queued encoder samples %5 | commit latency %6 ms%7")
                 .arg(state).arg(encoderAge).arg(visionAge).arg(pendingFrames)
                 .arg(pendingEncoder).arg(latency)
                 .arg(lastFault.isEmpty() ? QString() : tr(" | last fault: %1").arg(lastFault)));
@@ -3928,7 +4116,8 @@ void RobotWindow::LoadSettings()
 //    LoadTerminalSettings(setting);
 //    LoadGcodeEditorSettings(setting);
     LoadObjectDetectorSetting();
-//    LoadDrawingSetting(setting);
+    DeltaDrawingExporter->restoreParameters(
+        VariableManager::instance().getVarScoped(ProjectName, "Drawing.Parameters").toMap());
 //    LoadPluginSetting(setting);
 }
 
@@ -3978,6 +4167,7 @@ void RobotWindow::LoadRobotSettings()
     int savedModelIndex = VariableManager::instance().getVar(robotPrefix + ".Model", 0).toInt();
     if (savedModelIndex >= 0 && savedModelIndex < ui->cbRobotModel->count())
     {
+        const QSignalBlocker blocker(ui->cbRobotModel);
         ui->cbRobotModel->setCurrentIndex(savedModelIndex);
         // Apply model changes without saving again
         ChangeRobotModel(savedModelIndex);
@@ -3987,9 +4177,8 @@ void RobotWindow::LoadRobotSettings()
     int savedDOFIndex = VariableManager::instance().getVar(robotPrefix + ".DOF", 0).toInt();
     if (savedDOFIndex >= 0 && savedDOFIndex < ui->cbRobotDOF->count())
     {
+        const QSignalBlocker blocker(ui->cbRobotDOF);
         ui->cbRobotDOF->setCurrentIndex(savedDOFIndex);
-        // Apply DOF changes without saving again
-        ChangeRobotDOF(savedDOFIndex);
     }
     
     // Reset flag after loading
@@ -4189,7 +4378,7 @@ void RobotWindow::LoadObjectDetectorSetting()
 
 void RobotWindow::LoadDrawingSetting(QSettings *setting)
 {
-
+    if (setting && DeltaDrawingExporter) DeltaDrawingExporter->LoadSettings(setting);
 }
 
 void RobotWindow::LoadPluginSetting(QSettings *setting)
@@ -4333,9 +4522,7 @@ void RobotWindow::SaveObjectDetectorSetting(QSettings *setting)
 
 void RobotWindow::SaveDrawingSetting(QSettings *setting)
 {
-    setting->beginGroup("Drawing");
-
-    setting->endGroup();
+    if (setting && DeltaDrawingExporter) DeltaDrawingExporter->SaveSettings(setting);
 }
 
 void RobotWindow::SavePluginSetting(QSettings *setting)
@@ -4356,10 +4543,10 @@ void RobotWindow::InitDefaultValue()
     ui->twModule->setCurrentIndex(0);
     ui->twDevices->setCurrentIndex(0);
 
-    IsGcodeEditorTextChanged = false;
     baseFontSize = ui->cbGScriptEditorZoom->font().pointSize();
     StandardFormatEditor();
     ui->cbGScriptEditorZoom->setCurrentIndex(2); // select "100%" and emit currentIndexChanged
+    markGcodeEditorClean();
 
     ChangeRobotModel(ui->cbRobotModel->currentIndex());
     SelectImageProviderOption(0);
@@ -4376,6 +4563,18 @@ void RobotWindow::resizeEvent(QResizeEvent *event)
 {
     QMainWindow::resizeEvent(event);
     updateModuleTabLabels();
+    updateResponsiveLayout();
+}
+
+bool RobotWindow::eventFilter(QObject* watched, QEvent* event)
+{
+    if (ui && watched == ui->splitter_2->handle(1)
+        && event->type() == QEvent::MouseButtonDblClick) {
+        resetWorkspaceSplitter();
+        return true;
+    }
+
+    return QMainWindow::eventFilter(watched, event);
 }
 
 void RobotWindow::updateModuleTabLabels()
@@ -4389,12 +4588,11 @@ void RobotWindow::updateModuleTabLabels()
         const char *full;
         const char *shortLabel;
     } labels[] = {
-        { 0, "G-Script", "Script" },
+        { 0, "Program", "Program" },
         { 1, "Object Detector", "Vision" },
-        { 2, "Point Tool", "Points" },
+        { 2, "Calibration", "Calibrate" },
         { 3, "Drawing", "Draw" },
         { 4, "Plugins", "Plugins" },
-        { 5, "Block Programming", "Blocks" },
     };
 
     for (const ModuleTabLabel &label : labels) {
@@ -4403,17 +4601,774 @@ void RobotWindow::updateModuleTabLabels()
 
         const QString fullLabel = QString::fromLatin1(label.full);
         const QString shortLabel = QString::fromLatin1(label.shortLabel);
-        const QString existingLabel = ui->twModule->tabText(label.index);
-        const QString existingTooltip = ui->twModule->tabToolTip(label.index);
-        if (existingLabel != fullLabel && existingLabel != shortLabel
-            && existingTooltip != fullLabel) {
-            continue;
-        }
-
         ui->twModule->setTabText(label.index,
             compact ? shortLabel : fullLabel);
         ui->twModule->setTabToolTip(label.index, fullLabel);
     }
+}
+
+void RobotWindow::setupResponsiveShell()
+{
+    ui->splitter_2->setChildrenCollapsible(true);
+    ui->splitter_2->setCollapsible(0, true);
+    ui->splitter_2->setCollapsible(1, true);
+    ui->splitter_2->setHandleWidth(10);
+    ui->splitter_2->setStretchFactor(0, 3);
+    ui->splitter_2->setStretchFactor(1, 2);
+    ui->splitter_2->handle(1)->setToolTip(
+        tr("Drag to resize the workspace and device panel. Double-click to reset."));
+    ui->splitter_2->handle(1)->setAccessibleName(tr("Workspace and device panel divider"));
+    ui->splitter_2->handle(1)->installEventFilter(this);
+    connect(ui->splitter_2, &QSplitter::splitterMoved, this,
+            [this](int, int) { updateModuleTabLabels(); });
+
+    auto* corner = new QWidget(ui->twModule);
+    corner->setObjectName(QStringLiteral("workspaceCornerControls"));
+    auto* cornerLayout = new QHBoxLayout(corner);
+    cornerLayout->setContentsMargins(0, 0, 2, 0);
+    cornerLayout->setSpacing(2);
+
+    m_systemBarToggle = new QToolButton(corner);
+    m_systemBarToggle->setObjectName(QStringLiteral("systemBarToggle"));
+    m_systemBarToggle->setAutoRaise(true);
+    m_systemBarToggle->setCheckable(true);
+    m_systemBarToggle->setIcon(QIcon(QStringLiteral(":/icon/settings_64px.png")));
+    m_systemBarToggle->setIconSize(QSize(16, 16));
+    m_systemBarToggle->setProperty("iconOnly", true);
+    m_systemBarToggle->setFixedSize(30, 30);
+    m_systemBarToggle->setAccessibleName(tr("System controls"));
+
+    m_deviceDockToggle = new QToolButton(corner);
+    m_deviceDockToggle->setObjectName(QStringLiteral("deviceDockToggle"));
+    m_deviceDockToggle->setAutoRaise(true);
+    m_deviceDockToggle->setCheckable(true);
+    m_deviceDockToggle->setIcon(
+        QIcon(QStringLiteral(":/icon/icons8_split_vertical_32px.png")));
+    m_deviceDockToggle->setIconSize(QSize(16, 16));
+    m_deviceDockToggle->setProperty("iconOnly", true);
+    m_deviceDockToggle->setFixedSize(30, 30);
+    m_deviceDockToggle->setAccessibleName(tr("Device panel"));
+
+    cornerLayout->addWidget(m_systemBarToggle);
+    cornerLayout->addWidget(m_deviceDockToggle);
+    ui->twModule->setCornerWidget(corner, Qt::TopRightCorner);
+
+    connect(m_systemBarToggle, &QToolButton::clicked, this, [this]() {
+        setSystemBarVisible(ui->SocketFrame->isHidden(), true);
+    });
+    connect(m_deviceDockToggle, &QToolButton::clicked, this, [this]() {
+        setDeviceDockVisible(ui->DeviceTabManagerWidget->isHidden(), true);
+    });
+    connect(ui->twModule, &QTabWidget::currentChanged, this,
+            [this](int) { updateResponsiveLayout(); });
+
+    updateShellToggleState();
+}
+
+void RobotWindow::updateResponsiveLayout()
+{
+    if (!ui || !ui->twModule)
+        return;
+
+    // At laptop-sized widths the work area is more valuable than two permanent
+    // side-by-side control surfaces. Both panels remain one click away.
+    const bool compactWorkspace = width() < 1380;
+    if (!m_deviceDockUserOverride)
+        setDeviceDockVisible(!compactWorkspace);
+    if (!m_systemBarUserOverride)
+        setSystemBarVisible(!compactWorkspace);
+
+    updateShellToggleState();
+}
+
+void RobotWindow::setDeviceDockVisible(bool visible, bool userInitiated)
+{
+    if (userInitiated)
+        m_deviceDockUserOverride = true;
+
+    if (visible == !ui->DeviceTabManagerWidget->isHidden()) {
+        updateShellToggleState();
+        return;
+    }
+
+    if (!visible) {
+        const QList<int> currentSizes = ui->splitter_2->sizes();
+        if (currentSizes.size() == 2 && currentSizes.at(1) > 0)
+            m_splitterSizesBeforeDeviceHide = currentSizes;
+        ui->DeviceTabManagerWidget->hide();
+    } else {
+        ui->DeviceTabManagerWidget->show();
+        if (width() >= 1380 && m_splitterSizesBeforeDeviceHide.size() == 2) {
+            ui->splitter_2->setSizes(m_splitterSizesBeforeDeviceHide);
+        } else {
+            resetWorkspaceSplitter();
+        }
+    }
+    updateModuleTabLabels();
+    updateShellToggleState();
+}
+
+void RobotWindow::resetWorkspaceSplitter()
+{
+    if (!ui || !ui->splitter_2 || ui->DeviceTabManagerWidget->isHidden())
+        return;
+
+    const int available = qMax(0, ui->splitter_2->width() - ui->splitter_2->handleWidth());
+    if (width() < 1380) {
+        // Keep jogging controls practical when the dock is explicitly opened
+        // in a compact window.
+        ui->splitter_2->setSizes({available / 2, available / 2});
+    } else {
+        ui->splitter_2->setSizes({available * 3 / 5, available * 2 / 5});
+    }
+}
+
+void RobotWindow::setSystemBarVisible(bool visible, bool userInitiated)
+{
+    if (userInitiated)
+        m_systemBarUserOverride = true;
+    ui->SocketFrame->setVisible(visible);
+    updateShellToggleState();
+}
+
+void RobotWindow::updateShellToggleState()
+{
+    if (m_systemBarToggle) {
+        const bool visible = !ui->SocketFrame->isHidden();
+        m_systemBarToggle->setChecked(visible);
+        m_systemBarToggle->setToolTip(
+            visible ? tr("Hide system and web controls")
+                    : tr("Show system and web controls"));
+    }
+    if (m_deviceDockToggle) {
+        const bool visible = !ui->DeviceTabManagerWidget->isHidden();
+        m_deviceDockToggle->setChecked(visible);
+        m_deviceDockToggle->setToolTip(
+            visible ? tr("Hide device panel") : tr("Show device panel"));
+    }
+}
+
+void RobotWindow::makeCollapsibleGroup(QGroupBox* group,
+                                       bool initiallyExpanded)
+{
+    if (!group || !group->layout() || group->property("collapsibleReady").toBool())
+        return;
+
+    QList<QPointer<QWidget>> contentWidgets;
+    std::function<void(QLayout*)> collectWidgets =
+        [&](QLayout* layout) {
+            if (!layout)
+                return;
+            for (int index = 0; index < layout->count(); ++index) {
+                QLayoutItem* item = layout->itemAt(index);
+                if (!item)
+                    continue;
+                if (QWidget* widget = item->widget())
+                    contentWidgets.append(widget);
+                else if (QLayout* childLayout = item->layout())
+                    collectWidgets(childLayout);
+            }
+        };
+    collectWidgets(group->layout());
+
+    group->setProperty("collapsibleReady", true);
+    group->setCheckable(true);
+    group->setProperty("collapsibleSection", true);
+    auto applyExpandedState = [contentWidgets](bool expanded) {
+        for (const QPointer<QWidget>& widget : contentWidgets) {
+            if (widget)
+                widget->setVisible(expanded);
+        }
+    };
+    connect(group, &QGroupBox::toggled, this, applyExpandedState);
+    group->setChecked(initiallyExpanded);
+    applyExpandedState(initiallyExpanded);
+}
+
+void RobotWindow::setupPointToolWorkspace()
+{
+    if (!ui || !ui->fPointTool ||
+        ui->fPointTool->property("pointToolWorkspaceReady").toBool()) {
+        return;
+    }
+
+    auto* toolLayout = qobject_cast<QVBoxLayout*>(ui->fPointTool->layout());
+    if (!toolLayout)
+        return;
+
+    ui->fPointTool->setProperty("pointToolWorkspaceReady", true);
+    ui->wPointTool->setMinimumHeight(0);
+    ui->wPointTool->setSizePolicy(QSizePolicy::Expanding,
+                                  QSizePolicy::Preferred);
+    toolLayout->setSpacing(7);
+
+    const QList<QGroupBox*> sections = {
+        ui->gbCameraCalibration_2,
+        ui->gbCameraObject_4,
+        ui->gbCameraCalibration_3,
+        ui->gbCameraObject_3,
+        ui->gbCloudPointMapping,
+        ui->gbCameraObject_2,
+        ui->gbTrackingManager,
+    };
+    for (QGroupBox* section : sections) {
+        if (!section)
+            continue;
+        section->setProperty("pointToolSection", true);
+        toolLayout->removeWidget(section);
+    }
+
+    ui->gbCameraCalibration_2->setTitle(tr("2-Point Similarity Transform"));
+    ui->gbCameraObject_4->setTitle(tr("Apply Transform to Test Point"));
+    ui->gbCameraCalibration_3->setTitle(tr("Scaled Direction Vector"));
+    ui->gbCameraObject_3->setTitle(tr("4-Point Planar Homography"));
+    ui->gbCloudPointMapping->setTitle(
+        tr("Interpolated Multi-Point Mapping"));
+    ui->gbCameraObject_2->setTitle(tr("Position List Editor"));
+    ui->gbTrackingManager->setTitle(tr("Tracking Runtime Configuration"));
+
+    const auto addDescription = [this](QGroupBox* group,
+                                       const QString& description) {
+        auto* layout = group ? qobject_cast<QBoxLayout*>(group->layout()) : nullptr;
+        if (!layout)
+            return;
+        auto* label = new QLabel(description, group);
+        label->setObjectName(group->objectName() + QStringLiteral("Description"));
+        label->setProperty("pointToolRole", "description");
+        label->setWordWrap(true);
+        label->setAccessibleName(tr("Section guidance"));
+        layout->insertWidget(0, label);
+    };
+
+    addDescription(
+        ui->gbCameraCalibration_2,
+        tr("Record two matching camera-image and robot-workspace references. "
+           "The solver estimates translation, rotation, and uniform scale; it "
+           "does not correct perspective distortion."));
+    addDescription(
+        ui->gbCameraObject_4,
+        tr("Apply a saved 2D transform to an independent camera-image point, then "
+           "compare the result with the measured robot position."));
+    addDescription(
+        ui->gbCameraCalibration_3,
+        tr("Calculate end minus start, normalize the direction, then multiply "
+           "it by the requested output magnitude. This is commonly used for the "
+           "conveyor tracking direction."));
+    addDescription(
+        ui->gbCameraObject_3,
+        tr("Solve a planar homography from exactly four non-collinear camera-image "
+           "and robot-workspace reference pairs."));
+    addDescription(
+        ui->gbCloudPointMapping,
+        tr("Interpolate a camera-to-robot mapping from distributed reference pairs. "
+           "Three pairs can build a grid; four or more are required for "
+           "leave-one-out validation."));
+    addDescription(
+        ui->gbCameraObject_2,
+        tr("Append a reusable 3D robot position to a position-list variable. This "
+           "utility does not calculate a camera transform."));
+    addDescription(
+        ui->gbTrackingManager,
+        tr("Bind a tracking instance to its tracked-object list, encoder, and direction "
+           "vector, then configure real-time age, timeout, and queue limits."));
+
+    auto* overview = new QFrame(ui->fPointTool);
+    overview->setObjectName(QStringLiteral("pointToolOverview"));
+    auto* overviewLayout = new QVBoxLayout(overview);
+    overviewLayout->setContentsMargins(14, 12, 14, 12);
+    overviewLayout->setSpacing(9);
+
+    auto* headingRow = new QHBoxLayout;
+    headingRow->setSpacing(10);
+    auto* headingColumn = new QVBoxLayout;
+    headingColumn->setSpacing(3);
+    auto* title = new QLabel(tr("Camera-to-Robot Calibration"), overview);
+    title->setObjectName(QStringLiteral("pointToolTitle"));
+    auto* subtitle = new QLabel(
+        tr("Convert camera-image coordinates into robot-workspace positions, then "
+           "verify the transform before enabling conveyor tracking."),
+        overview);
+    subtitle->setProperty("pointToolRole", "subtitle");
+    subtitle->setWordWrap(true);
+    headingColumn->addWidget(title);
+    headingColumn->addWidget(subtitle);
+    headingRow->addLayout(headingColumn, 1);
+
+    auto* guideButton = new QPushButton(tr("Calibration Guide"), overview);
+    guideButton->setObjectName(QStringLiteral("pointToolGuideButton"));
+    guideButton->setToolTip(tr("Open the camera-to-robot calibration guide"));
+    guideButton->setAccessibleName(tr("Open camera-to-robot calibration guide"));
+    headingRow->addWidget(guideButton, 0, Qt::AlignTop);
+    overviewLayout->addLayout(headingRow);
+
+    auto* coordinateRow = new QHBoxLayout;
+    coordinateRow->setSpacing(7);
+    const QStringList coordinateLabels = {
+        tr("Source frame: Camera image (px)"),
+        tr("Target frame: Robot workspace (mm)"),
+        tr("Verification: Required"),
+    };
+    QLabel* validationChip = nullptr;
+    for (const QString& text : coordinateLabels) {
+        auto* chip = new QLabel(text, overview);
+        chip->setProperty("pointToolRole", "chip");
+        chip->setAlignment(Qt::AlignCenter);
+        coordinateRow->addWidget(chip);
+        if (text == coordinateLabels.constLast())
+            validationChip = chip;
+    }
+    coordinateRow->addStretch(1);
+    overviewLayout->addLayout(coordinateRow);
+
+    auto* steps = new QGridLayout;
+    steps->setHorizontalSpacing(7);
+    steps->setVerticalSpacing(7);
+    const QStringList stepLabels = {
+        tr("1  Select transform model"),
+        tr("2  Record reference pairs"),
+        tr("3  Solve transform"),
+        tr("4  Verify and save"),
+    };
+    for (int index = 0; index < stepLabels.size(); ++index) {
+        auto* step = new QLabel(stepLabels.at(index), overview);
+        step->setProperty("pointToolRole", "step");
+        step->setAlignment(Qt::AlignCenter);
+        steps->addWidget(step, index / 2, index % 2);
+        steps->setColumnStretch(index % 2, 1);
+    }
+    overviewLayout->addLayout(steps);
+
+    auto* methodRow = new QHBoxLayout;
+    methodRow->setSpacing(8);
+    auto* methodLabel = new QLabel(tr("Transform model"), overview);
+    auto* methodSelector = new QComboBox(overview);
+    methodSelector->setObjectName(QStringLiteral("pointToolMethodSelector"));
+    methodSelector->setAccessibleName(tr("Transform model"));
+    methodSelector->addItem(tr("2-Point Similarity Transform"));
+    methodSelector->addItem(tr("4-Point Planar Homography"));
+    methodSelector->addItem(tr("Interpolated Mapping (3+ reference pairs)"));
+    methodSelector->addItem(tr("Scaled Direction Vector (2 robot positions)"));
+    methodSelector->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    auto* openButton = new QPushButton(tr("Open Model"), overview);
+    openButton->setObjectName(QStringLiteral("pointToolOpenButton"));
+    openButton->setAccessibleName(tr("Open selected transform model"));
+    methodRow->addWidget(methodLabel);
+    methodRow->addWidget(methodSelector, 1);
+    methodRow->addWidget(openButton);
+    overviewLayout->addLayout(methodRow);
+
+    auto* methodDescription = new QLabel(overview);
+    methodDescription->setObjectName(QStringLiteral("pointToolMethodDescription"));
+    methodDescription->setProperty("pointToolRole", "subtitle");
+    methodDescription->setWordWrap(true);
+    overviewLayout->addWidget(methodDescription);
+
+    const QStringList methodDescriptions = {
+        tr("Recommended for a flat conveyor when translation, rotation, and uniform "
+           "scale are sufficient. Perspective distortion is not corrected."),
+        tr("Use for a flat conveyor viewed at an angle. All four reference pairs "
+           "must be distinct and non-collinear on the same physical plane."),
+        tr("Use when residual error varies across the workspace. Three pairs can "
+           "build the grid, four can validate it, and six or more distributed "
+           "pairs are recommended for production."),
+        tr("Produces a vector with the requested magnitude from two robot positions. "
+           "It supports tracking but does not replace coordinate calibration."),
+    };
+    const QList<QGroupBox*> methodGroups = {
+        ui->gbCameraCalibration_2,
+        ui->gbCameraObject_3,
+        ui->gbCloudPointMapping,
+        ui->gbCameraCalibration_3,
+    };
+
+    const auto updateMethodDescription =
+        [methodDescription, methodDescriptions](int index) {
+            if (index >= 0 && index < methodDescriptions.size())
+                methodDescription->setText(methodDescriptions.at(index));
+        };
+    connect(methodSelector, qOverload<int>(&QComboBox::currentIndexChanged),
+            this, updateMethodDescription);
+    updateMethodDescription(methodSelector->currentIndex());
+
+    const auto openSection = [this](QGroupBox* section) {
+        if (!section)
+            return;
+        section->setChecked(true);
+        QTimer::singleShot(0, this, [this, section]() {
+            ui->saPointTool->ensureWidgetVisible(section, 16, 16);
+        });
+    };
+    connect(openButton, &QPushButton::clicked, this,
+            [methodSelector, methodGroups, openSection]() {
+                const int index = methodSelector->currentIndex();
+                if (index >= 0 && index < methodGroups.size())
+                    openSection(methodGroups.at(index));
+            });
+
+    connect(guideButton, &QPushButton::clicked, this, [this]() {
+        const QString appDir = QCoreApplication::applicationDirPath();
+        const QStringList candidates = {
+            QDir(appDir).filePath(QStringLiteral("docs/point-tool-calibration.md")),
+            QDir(appDir).filePath(QStringLiteral("../docs/point-tool-calibration.md")),
+            QDir(appDir).filePath(QStringLiteral("../../docs/point-tool-calibration.md")),
+            QDir(appDir).filePath(
+                QStringLiteral("../share/DeltaXSoftware/docs/point-tool-calibration.md")),
+            QDir::current().filePath(QStringLiteral("docs/point-tool-calibration.md")),
+        };
+        for (const QString& candidate : candidates) {
+            const QFileInfo guide(candidate);
+            if (guide.exists() && guide.isFile()) {
+                QDesktopServices::openUrl(QUrl::fromLocalFile(guide.absoluteFilePath()));
+                return;
+            }
+        }
+        QMessageBox::information(
+            this, tr("Calibration Guide"),
+            tr("The local guide was not found. Reinstall the documentation or open "
+               "docs/point-tool-calibration.md from the source repository."));
+    });
+
+    if (validationChip) {
+        connect(ui->pbCalculateTestPoint, &QPushButton::clicked, this,
+                [this, validationChip]() {
+                    QTimer::singleShot(0, this, [this, validationChip]() {
+                        const bool hasResult =
+                            !ui->leTargetTestPointX->text().trimmed().isEmpty() &&
+                            !ui->leTargetTestPointY->text().trimmed().isEmpty();
+                        validationChip->setText(
+                            hasResult ? tr("Verification: Compare result")
+                                      : tr("Verification: Required"));
+                    });
+                });
+    }
+
+    auto* calibrationCategory = new QLabel(
+        tr("COORDINATE TRANSFORMS"), ui->fPointTool);
+    calibrationCategory->setProperty("pointToolRole", "category");
+    auto* supportingCategory = new QLabel(
+        tr("TRACKING AND POSITION UTILITIES"), ui->fPointTool);
+    supportingCategory->setProperty("pointToolRole", "category");
+
+    int insertIndex = 0;
+    toolLayout->insertWidget(insertIndex++, overview);
+    toolLayout->insertWidget(insertIndex++, calibrationCategory);
+    toolLayout->insertWidget(insertIndex++, ui->gbCameraCalibration_2);
+    toolLayout->insertWidget(insertIndex++, ui->gbCameraObject_4);
+    toolLayout->insertWidget(insertIndex++, ui->gbCameraCalibration_3);
+    toolLayout->insertWidget(insertIndex++, ui->gbCameraObject_3);
+    toolLayout->insertWidget(insertIndex++, ui->gbCloudPointMapping);
+    toolLayout->insertWidget(insertIndex++, supportingCategory);
+    toolLayout->insertWidget(insertIndex++, ui->gbCameraObject_2);
+    toolLayout->insertWidget(insertIndex++, ui->gbTrackingManager);
+
+    // Similarity-transform terminology.
+    ui->label_165->setText(tr("Transform variable"));
+    ui->label_166->setText(tr("Camera image (px)"));
+    ui->label_200->setText(tr("Robot workspace (mm)"));
+    ui->label_203->setText(tr("Reference 1"));
+    ui->label_201->setText(tr("Reference 2"));
+    ui->label_204->setText(tr("Reference 1"));
+    ui->label_205->setText(tr("Reference 2"));
+
+    // Homography terminology.
+    ui->label_216->setText(tr("Transform variable"));
+    ui->label_167->setText(tr("Camera image (px)"));
+    ui->label_207->setText(tr("Robot workspace (mm)"));
+    for (QLabel* label : {ui->label_211, ui->label_220})
+        label->setText(tr("Reference 1"));
+    for (QLabel* label : {ui->label_217, ui->label_233})
+        label->setText(tr("Reference 2"));
+    for (QLabel* label : {ui->label_234, ui->label_212})
+        label->setText(tr("Reference 3"));
+    for (QLabel* label : {ui->label_235, ui->label_219})
+        label->setText(tr("Reference 4"));
+
+    // Test-point transformation terminology.
+    ui->label_239->setText(tr("Image X (px)"));
+    ui->label_240->setText(tr("Image Y (px)"));
+    ui->label_223->setText(tr("Apply transform"));
+    ui->label_222->setText(tr("Transform variable"));
+    ui->label_241->setText(QString::fromUtf8("\xE2\x86\x92"));
+    ui->label_221->setText(tr("Robot X (mm)"));
+    ui->label_214->setText(tr("Robot Y (mm)"));
+
+    // Scaled-vector terminology.
+    ui->label_229->setText(tr("Vector variable"));
+    ui->label_213->setText(tr("Start position"));
+    ui->label_231->setText(tr("End position"));
+    ui->label_197->setText(tr("Output magnitude"));
+    ui->pbAnglePoint1->setToolTip(tr("Capture the current robot position as the start"));
+    ui->pbAnglePoint2->setToolTip(tr("Capture the current robot position as the end"));
+    ui->leVectorValue->setToolTip(
+        tr("Length of the output vector after the direction is normalized"));
+
+    // Position-list and tracking-runtime terminology.
+    ui->label_136->setText(tr("Position list variable"));
+    ui->label_137->setText(tr("Robot X (mm)"));
+    ui->label_138->setText(tr("Robot Y (mm)"));
+    ui->label_143->setText(tr("Robot Z (mm)"));
+    ui->label_160->setText(tr("Tracking instance"));
+    ui->label_144->setText(tr("Tracked-object list"));
+    ui->label_164->setText(tr("Encoder source"));
+    ui->label_168->setText(tr("Direction-vector variable"));
+    ui->label_169->setText(tr("Reverse encoder direction"));
+    ui->label_180->setText(tr("Continuously update test position"));
+    ui->label_11->setText(tr("Test X (mm)"));
+    ui->label_230->setText(tr("Test Y (mm)"));
+    ui->label_236->setText(tr("Test Z (mm)"));
+    ui->labelTrackingPublishInterval->setText(tr("Publish period (ms)"));
+    ui->labelTrackingVisionStale->setText(tr("Maximum camera age (ms)"));
+    ui->labelTrackingEncoderStale->setText(tr("Maximum encoder age (ms)"));
+    ui->labelTrackingFrameTimeout->setText(tr("Frame completion timeout (ms)"));
+    ui->labelTrackingMaxFrames->setText(tr("Maximum queued frames"));
+    ui->labelTrackingMaxEncoderReads->setText(
+        tr("Maximum queued encoder samples"));
+    ui->lbTrackingRealtimeState->setText(tr("Tracking status: not started"));
+    ui->pbMoveTestTrackingPoint->setText(tr("Advance test position"));
+    ui->pbMoveTestTrackingPoint->setToolTip(
+        tr("Move the test position by the distance entered on this row"));
+    ui->leMovingValue->setToolTip(tr("Test-position travel distance in millimeters"));
+    ui->tbAutoMove->setToolTip(
+        tr("Continuously refresh the test position from the tracking runtime"));
+    ui->tbAutoMove->setAccessibleName(
+        tr("Toggle continuous test-position updates"));
+    ui->cbReverseEncoderValue->setToolTip(
+        tr("Invert the encoder sign used by this tracking instance"));
+    ui->tbPasteTestTrackingPoint->setText(tr("Paste position"));
+    ui->tbPasteTestTrackingPoint->setToolButtonStyle(
+        Qt::ToolButtonTextBesideIcon);
+    ui->tbPasteTestTrackingPoint->setToolTip(
+        tr("Paste a three-axis robot test position from the clipboard"));
+    ui->tbPasteTestTrackingPoint->setAccessibleName(
+        tr("Paste tracking test position"));
+    ui->tbCopyTestTrackingPoint->setText(tr("Copy position"));
+    ui->tbCopyTestTrackingPoint->setToolButtonStyle(
+        Qt::ToolButtonTextBesideIcon);
+    ui->tbCopyTestTrackingPoint->setToolTip(
+        tr("Copy the tracking test position to the clipboard"));
+    ui->tbCopyTestTrackingPoint->setAccessibleName(
+        tr("Copy tracking test position"));
+
+    // Interpolated multi-point terminology.
+    ui->label_242->setText(tr("Interpolation algorithm"));
+    ui->label_243->setText(tr("Image grid cell size"));
+    ui->sbGridResolution->setSuffix(tr(" px"));
+    ui->cbAutoRebuild->setText(tr("Rebuild grid automatically"));
+    ui->label_244->setText(tr("Camera-to-robot reference pairs"));
+    ui->label_245->setText(tr("Test image X (px)"));
+    ui->label_246->setText(tr("Test image Y (px)"));
+    ui->label_247->setText(tr("Mapped robot X (mm)"));
+    ui->label_248->setText(tr("Mapped robot Y (mm)"));
+    ui->label_249->setText(tr("Confidence score"));
+    ui->label_250->setText(tr("Estimated error (mm)"));
+    ui->label_251->setText(tr("Reference count:"));
+    ui->label_252->setText(tr("Mean residual (mm):"));
+    ui->label_253->setText(tr("Maximum residual (mm):"));
+    ui->label_254->setText(tr("Image-area coverage:"));
+    ui->labelCloudMappingStatus->setText(tr("Validation status:"));
+    ui->lbCloudMappingStatus->setText(tr("Not validated"));
+
+    const QList<QLineEdit*> imageInputs = {
+        ui->leMappingSourcePoint1X, ui->leMappingSourcePoint1Y,
+        ui->leMappingSourcePoint2X, ui->leMappingSourcePoint2Y,
+        ui->lePerspectiveSourcePoint1X, ui->lePerspectiveSourcePoint1Y,
+        ui->lePerspectiveSourcePoint2X, ui->lePerspectiveSourcePoint2Y,
+        ui->lePerspectiveSourcePoint3X, ui->lePerspectiveSourcePoint3Y,
+        ui->lePerspectiveSourcePoint4X, ui->lePerspectiveSourcePoint4Y,
+        ui->leTestPointX, ui->leTestPointY,
+        ui->leCloudTestInputX, ui->leCloudTestInputY,
+    };
+    for (QLineEdit* edit : imageInputs) {
+        if (edit)
+            edit->setToolTip(tr("Camera-image coordinate in pixels"));
+    }
+
+    const QList<QLineEdit*> robotInputs = {
+        ui->leMappingDestinationPoint1X, ui->leMappingDestinationPoint1Y,
+        ui->leMappingDestinationPoint2X, ui->leMappingDestinationPoint2Y,
+        ui->lePerspectiveDestinationPoint1X, ui->lePerspectiveDestinationPoint1Y,
+        ui->lePerspectiveDestinationPoint2X, ui->lePerspectiveDestinationPoint2Y,
+        ui->lePerspectiveDestinationPoint3X, ui->lePerspectiveDestinationPoint3Y,
+        ui->lePerspectiveDestinationPoint4X, ui->lePerspectiveDestinationPoint4Y,
+        ui->leVectorPoint1X, ui->leVectorPoint1Y, ui->leVectorPoint1Z,
+        ui->leVectorPoint2X, ui->leVectorPoint2Y, ui->leVectorPoint2Z,
+        ui->leObjectX, ui->leObjectY, ui->leObjectZ,
+    };
+    for (QLineEdit* edit : robotInputs) {
+        if (edit)
+            edit->setToolTip(tr("Robot-workspace coordinate in millimeters"));
+    }
+
+    ui->leMatrixName->setToolTip(
+        tr("Variable name used to store the solved similarity transform"));
+    ui->lePointMatrixName->setToolTip(
+        tr("Variable name used to store the solved planar homography"));
+    ui->leTestMatrixName->setToolTip(
+        tr("Saved 2D transform variable to apply to the test point"));
+    ui->leObjectListName->setToolTip(
+        tr("Position-list variable that will receive the robot position"));
+    ui->pbAddVariablePoint->setToolTip(
+        tr("Append this robot position to the selected position list"));
+
+    ui->pbCalculateMappingMatrixTool->setText(tr("Solve Similarity Transform"));
+    ui->pbAddMappingMatrix->setText(tr("Save Transform Variable"));
+    ui->pbCalculatePointMatrixTool->setText(tr("Solve Homography"));
+    ui->pbAddPointMatrix->setText(tr("Save Homography Variable"));
+    ui->pbCalVector->setText(tr("Calculate Scaled Vector"));
+    ui->pbAddVector->setText(tr("Save Vector Variable"));
+    ui->pbCalculateTestPoint->setText(tr("Transform Test Point"));
+    ui->pbAddVariablePoint->setText(tr("Append Robot Position"));
+    ui->pbSaveTrackingManager->setText(tr("Apply Tracking Settings"));
+    ui->pbAddCalibrationPoint->setText(tr("Add Pair"));
+    ui->pbUpdateCalibrationPoint->setText(tr("Edit Pair"));
+    ui->pbRemoveCalibrationPoint->setText(tr("Delete Pair"));
+    ui->pbClearCalibrationPoints->setText(tr("Clear Pairs"));
+    ui->pbRebuildMapping->setText(tr("Build Grid"));
+    ui->pbValidateMapping->setText(tr("Cross-Validate"));
+    ui->pbTransformCloudPoint->setText(tr("Map Test Point"));
+    ui->pbSaveCloudMapping->setText(tr("Save Profile"));
+    ui->pbLoadCloudMapping->setText(tr("Load Profile"));
+    ui->pbExportToVariables->setText(tr("Export Variable"));
+    ui->pbImportFromVariables->setText(tr("Import Variable"));
+
+    ui->pbAddCalibrationPoint->setToolTip(
+        tr("Add one measured camera-image and robot-workspace reference pair"));
+    ui->pbUpdateCalibrationPoint->setToolTip(tr("Edit the selected reference pair"));
+    ui->pbRemoveCalibrationPoint->setToolTip(tr("Delete the selected reference pair"));
+    ui->pbClearCalibrationPoints->setToolTip(tr("Delete every reference pair"));
+    ui->pbRebuildMapping->setToolTip(
+        tr("Rebuild the interpolation grid; at least three pairs are required"));
+    ui->pbValidateMapping->setToolTip(
+        tr("Run leave-one-out validation; at least four pairs are required"));
+    ui->pbTransformCloudPoint->setToolTip(
+        tr("Map the test image point into robot-workspace coordinates"));
+    ui->pbSaveCloudMapping->setToolTip(tr("Save the mapping profile as JSON"));
+    ui->pbLoadCloudMapping->setToolTip(tr("Load a mapping profile from JSON"));
+    ui->pbExportToVariables->setToolTip(
+        tr("Export this mapping profile to the project variable store"));
+    ui->pbImportFromVariables->setToolTip(
+        tr("Import a mapping profile from the project variable store"));
+
+    for (QListWidget* list : {ui->lwMappingMatrixList, ui->lwPointMatrixList}) {
+        list->setMinimumHeight(54);
+        list->setMaximumHeight(84);
+    }
+    ui->lwMappingMatrixList->setToolTip(
+        tr("Saved 2-point similarity-transform variables in this project"));
+    ui->lwMappingMatrixList->setAccessibleName(
+        tr("Saved similarity-transform variables"));
+    ui->lwPointMatrixList->setToolTip(
+        tr("Saved 4-point planar-homography variables in this project"));
+    ui->lwPointMatrixList->setAccessibleName(tr("Saved homography variables"));
+
+    // The controller stores eleven fields per reference pair. Configure the
+    // Designer-owned table to match that data model instead of the legacy
+    // eight-column source/target view.
+    ui->tableCalibrationPoints->setColumnCount(11);
+    ui->tableCalibrationPoints->setHorizontalHeaderLabels({
+        tr("#"),
+        tr("Image X (px)"),
+        tr("Image Y (px)"),
+        tr("Image Z"),
+        tr("Robot X (mm)"),
+        tr("Robot Y (mm)"),
+        tr("Robot Z (mm)"),
+        tr("Confidence score"),
+        tr("Reference label"),
+        tr("Residual (mm)"),
+        tr("Captured at"),
+    });
+    ui->tableCalibrationPoints->horizontalHeader()->setStretchLastSection(true);
+    ui->tableCalibrationPoints->setAlternatingRowColors(true);
+    ui->tableCalibrationPoints->setAccessibleName(
+        tr("Camera-to-robot reference pairs"));
+    ui->tableCalibrationPoints->setToolTip(
+        tr("Measured camera-image and robot-workspace pairs used by interpolation"));
+    for (QLabel* preview : {ui->lbMatrixDisplay, ui->lbPointMatrixDisplay}) {
+        preview->setProperty("previewField", true);
+        preview->setTextFormat(Qt::PlainText);
+        preview->setText(QStringLiteral(
+            "| m11  m12  m13 |\n| m21  m22  m23 |\n| m31  m32  m33 |"));
+        preview->setMinimumHeight(58);
+        preview->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+    }
+
+    ui->leMappingSourcePoint1X->setPlaceholderText(tr("X px"));
+    ui->leMappingSourcePoint1Y->setPlaceholderText(tr("Y px"));
+    ui->leMappingSourcePoint2X->setPlaceholderText(tr("X px"));
+    ui->leMappingSourcePoint2Y->setPlaceholderText(tr("Y px"));
+    ui->leMappingDestinationPoint1X->setPlaceholderText(tr("X mm"));
+    ui->leMappingDestinationPoint1Y->setPlaceholderText(tr("Y mm"));
+    ui->leMappingDestinationPoint2X->setPlaceholderText(tr("X mm"));
+    ui->leMappingDestinationPoint2Y->setPlaceholderText(tr("Y mm"));
+    ui->leTestPointX->setPlaceholderText(tr("Image X px"));
+    ui->leTestPointY->setPlaceholderText(tr("Image Y px"));
+    ui->leTargetTestPointX->setPlaceholderText(tr("Robot X mm"));
+    ui->leTargetTestPointY->setPlaceholderText(tr("Robot Y mm"));
+    ui->leCloudTestInputX->setPlaceholderText(tr("Image X px"));
+    ui->leCloudTestInputY->setPlaceholderText(tr("Image Y px"));
+    ui->leCloudTestOutputX->setPlaceholderText(tr("Robot X mm"));
+    ui->leCloudTestOutputY->setPlaceholderText(tr("Robot Y mm"));
+}
+
+void RobotWindow::setupProgressiveDisclosure()
+{
+    // Vision keeps acquisition and the image viewport primary. Detector,
+    // tracking and test data remain available without dominating the page.
+    makeCollapsibleGroup(ui->gbCameraObject, false);
+    makeCollapsibleGroup(ui->gbTracking, false);
+    makeCollapsibleGroup(ui->gbCameraVariable, false);
+    makeCollapsibleGroup(ui->gbObjectManagement, false);
+
+    setupPointToolWorkspace();
+
+    // Calibration starts with a guided workflow. Detailed forms stay available
+    // on demand so a new user is not presented with every calibration method.
+    makeCollapsibleGroup(ui->gbTrackingManager, false);
+    makeCollapsibleGroup(ui->gbCameraCalibration_3, false); // Vector
+    makeCollapsibleGroup(ui->gbCameraCalibration_2, false); // Similarity transform
+    makeCollapsibleGroup(ui->gbCameraObject_2, false);       // Position variables
+    makeCollapsibleGroup(ui->gbCameraObject_3, false);       // Planar homography
+    makeCollapsibleGroup(ui->gbCameraObject_4, false);       // Apply transform
+    makeCollapsibleGroup(ui->gbCloudPointMapping, false);
+
+    // Robot I/O has its own page; banks remain expanded there.
+}
+
+void RobotWindow::integrateBlockProgrammingPanel(QWidget* panel)
+{
+    if (!panel || m_programModes)
+        return;
+
+    QWidget* codePage = ui->tGcodeEditor;
+    int programIndex = ui->twModule->indexOf(codePage);
+    if (programIndex < 0)
+        programIndex = 0;
+    else
+        ui->twModule->removeTab(programIndex);
+
+    m_programPage = new QWidget(ui->twModule);
+    m_programPage->setObjectName(QStringLiteral("programWorkspace"));
+    auto* layout = new QVBoxLayout(m_programPage);
+    layout->setContentsMargins(0, 0, 0, 0);
+    layout->setSpacing(0);
+
+    m_programModes = new QTabWidget(m_programPage);
+    m_programModes->setObjectName(QStringLiteral("programModeTabs"));
+    m_programModes->setDocumentMode(true);
+    m_programModes->addTab(codePage, tr("Code"));
+    m_programModes->addTab(panel, tr("Blocks"));
+    m_programModes->setTabToolTip(0, tr("Edit and run G-Script source"));
+    m_programModes->setTabToolTip(1, tr("Build the same program visually"));
+    layout->addWidget(m_programModes);
+
+    ui->twModule->insertTab(programIndex, m_programPage, tr("Program"));
+    ui->twModule->setCurrentWidget(m_programPage);
+    m_programModes->setCurrentWidget(codePage);
+    ui->pbBlockly->setText(tr("Blocks"));
+    ui->pbBlockly->setToolTip(tr("Open the visual block editor"));
+    ui->pbBlockly->setVisible(true);
+    updateModuleTabLabels();
 }
 
 void RobotWindow::SetMainStackedWidgetAndPages(QStackedWidget *mainStack, QWidget *mainPage, QWidget *fullDisplayPage, QLayout *fullDisplayLayout)
@@ -4748,6 +5703,9 @@ void RobotWindow::GetDeviceInfo(QString json)
 
     if (device == "robot" && id == ui->cbSelectedRobot->currentIndex())
     {
+        m_selectedRobotConnected = state == QStringLiteral("open");
+        updateHomeAvailability();
+
         float x = jsonObject.value("x").toDouble();
         float y = jsonObject.value("y").toDouble();
         float z = jsonObject.value("z").toDouble();
@@ -4784,7 +5742,7 @@ void RobotWindow::GetDeviceInfo(QString json)
 
         ui->lbComName->setText(jsonObject.value("com_name").toString());
 
-        if (gcode.contains("connect"))
+        if (state == QStringLiteral("open") && gcode.contains("connect"))
         {
             emit Send(DeviceManager::ROBOT, "Position");
         }
@@ -5108,15 +6066,22 @@ void RobotWindow::SelectImageProviderOption(int option)
 
     QString text = ui->cbSourceForImageProvider->itemText(option);
 
+    // Release the old source before queuing a source change. In particular a
+    // phone session must not leave acquisition running against a closed server.
+    QString previousSource;
+    QMetaObject::invokeMethod(CameraInstance,[&]{previousSource=CameraInstance->Source;},Qt::BlockingQueuedConnection);
+    if(previousSource!=text && (isCameraLoaded || isCameraOpenPending || CameraTimer.isActive()))
+        StopCapture();
+
     QString prefix = ProjectName + "." + ui->cbSelectedDetecting->currentText() + ".";
     UpdateVariable(prefix + "ImageSource", text);
 //    VariableManager::instance().updateVar(prefix + "ImageSource",text);
 
     QString cameraSource = QStringLiteral("Other");
-    if (text == "Webcam")
+    if (text == "Webcam" || text == "Phone Camera")
     {
         ui->fWebcamSource->setHidden(false);
-        cameraSource = QStringLiteral("Webcam");
+        cameraSource = text;
     }
     else if (text == "Industrial Camera")
     {
@@ -5404,18 +6369,12 @@ void RobotWindow::StandardFormatEditor()
     ui->pteGcodeArea->setFont(preservedFont);
     ui->pteGcodeArea->document()->setDefaultFont(preservedFont);
 
-    // Reset palette to ensure proper text color
-    QPalette p = ui->pteGcodeArea->palette();
-    p.setColor(QPalette::Text, QColor("#DBDBDC"));
-    ui->pteGcodeArea->setPalette(p);
-
     // Reset document formatting completely to ensure syntax highlighter works properly
     QTextDocument* doc = ui->pteGcodeArea->document();
     QTextCursor docCursor(doc);
     docCursor.select(QTextCursor::Document);
     QTextCharFormat defaultFormat;
     defaultFormat.setFont(preservedFont);
-    defaultFormat.setForeground(QColor("#DBDBDC"));
     docCursor.setCharFormat(defaultFormat);
     docCursor.clearSelection();
 
@@ -5439,17 +6398,11 @@ void RobotWindow::CleanTextFormatting()
     ui->pteGcodeArea->clear();
     ui->pteGcodeArea->setPlainText(plainText);
 
-    // Reset palette to default colors
-    QPalette p = ui->pteGcodeArea->palette();
-    p.setColor(QPalette::Text, QColor("#DBDBDC"));
-    ui->pteGcodeArea->setPalette(p);
-    
     // Reset document formatting completely
     QTextDocument* doc = ui->pteGcodeArea->document();
     QTextCursor docCursor(doc);
     docCursor.select(QTextCursor::Document);
     QTextCharFormat defaultFormat;
-    defaultFormat.setForeground(QColor("#DBDBDC"));
     docCursor.setCharFormat(defaultFormat);
     docCursor.clearSelection();
     
@@ -5490,6 +6443,8 @@ void RobotWindow::ChangeSelectedRobot(int id)
                               Qt::QueuedConnection,
                               Q_ARG(int, DeviceManager::ROBOT), Q_ARG(int, id));
     RbID = id;
+    m_selectedRobotConnected = false;
+    updateHomeAvailability();
 
     QMetaObject::invokeMethod(DeviceManagerInstance, "RequestDeviceInfo", Qt::QueuedConnection, Q_ARG(int, DeviceManager::ROBOT));
     
@@ -5499,32 +6454,9 @@ void RobotWindow::ChangeSelectedRobot(int id)
 
 void RobotWindow::ChangeRobotDOF(int id)
 {
-    if (id == 0)
-    {
-        emit Send(DeviceManager::ROBOT, QString("M60 D0"));
-        emit Send(DeviceManager::ROBOT, QString("M61 D0"));
-        emit Send(DeviceManager::ROBOT, QString("M62 D0"));
-    }
-    else if (id == 1)
-    {
-        emit Send(DeviceManager::ROBOT, QString("M60 D1"));
-        emit Send(DeviceManager::ROBOT, QString("M61 D0"));
-        emit Send(DeviceManager::ROBOT, QString("M62 D0"));
-    }
-    else if (id == 2)
-    {
-        emit Send(DeviceManager::ROBOT, QString("M60 D1"));
-        emit Send(DeviceManager::ROBOT, QString("M61 D1"));
-        emit Send(DeviceManager::ROBOT, QString("M62 D0"));
-    }
-    else if (id == 3)
-    {
-        emit Send(DeviceManager::ROBOT, QString("M60 D1"));
-        emit Send(DeviceManager::ROBOT, QString("M61 D1"));
-        emit Send(DeviceManager::ROBOT, QString("M62 D1"));
-    }
-    
-    // Save robot DOF setting to VariableManager (only if not loading)
+    // DOF is a host-side presentation setting. In Delta X 3 firmware,
+    // M60/M61/M62 modify W/U/gripper calibration and persist it. Those
+    // commands must never be emitted when the displayed axis count changes.
     if (!isLoadingSettings)
     {
         int currentRobotId = ui->cbSelectedRobot->currentIndex();
@@ -5577,30 +6509,57 @@ void RobotWindow::ChangeRobotModel(int id)
 
 void RobotWindow::SaveProgram()
 {
-    int threadId = ui->cbProgramThreadID->currentIndex();
-    QString name = GcodeScripts.at(threadId)->GetProgramName();
-    GcodeScripts.at(threadId)->SetGcodeScript(ui->pteGcodeArea->toPlainText());
+    const int threadId = ui->cbProgramThreadID->currentIndex();
+    if (threadId < 0 || threadId >= GcodeScripts.size())
+        return;
+
+    GcodeScript* script = GcodeScripts.at(threadId);
+    const QString content = ui->pteGcodeArea->toPlainText();
+    QString name = script->GetProgramName();
+    script->SetGcodeScript(content);
 
     if (name == "")
     {
-        QInputDialog *inputDialog = new QInputDialog(this);
-        inputDialog->setWindowTitle("Do you want to save program in Gcode Editor?");
+        QInputDialog inputDialog(this);
+        inputDialog.setWindowTitle(tr("Save G-code Program"));
 
-        inputDialog->setInputMode(QInputDialog::TextInput);
-        inputDialog->setLabelText("Gcode file name:");
-        QLineEdit *lineEdit = inputDialog->findChild<QLineEdit *>();
+        inputDialog.setInputMode(QInputDialog::TextInput);
+        inputDialog.setLabelText(tr("G-code file name:"));
+        QLineEdit *lineEdit = inputDialog.findChild<QLineEdit *>();
         if (lineEdit) {
-            lineEdit->setFixedWidth(500); // �?t ki?u d�ng cho QLineEdit
+            lineEdit->setFixedWidth(500);
         }
 
-        if (inputDialog->exec() == QDialog::Accepted) {
-            name = inputDialog->textValue();
-        }
+        if (inputDialog.exec() != QDialog::Accepted)
+            return;
+        name = inputDialog.textValue().trimmed();
+        if (name.isEmpty())
+            return;
 
     }
-    SaveGcodeFile(name, ui->pteGcodeArea->toPlainText());
 
-    IsGcodeEditorTextChanged = false;
+    QString savedPath = script->GetProgramPath();
+    if (!savedPath.isEmpty()) {
+        QFile file(savedPath);
+        if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+            QTextStream out(&file);
+            out << content;
+            file.close();
+        } else {
+            savedPath.clear();
+        }
+    } else {
+        savedPath = SaveGcodeFile(name, content);
+    }
+
+    if (savedPath.isEmpty()) {
+        SoftwareLog(tr("Could not save G-code program '%1'.").arg(name));
+        return;
+    }
+
+    script->SetProgramPath(savedPath);
+    ui->twGcodeEditor->setTabText(0, QFileInfo(savedPath).fileName());
+    markGcodeEditorClean();
 }
 
 void RobotWindow::ExecuteProgram()
@@ -5611,7 +6570,7 @@ void RobotWindow::ExecuteProgram()
     if (threadId < 0 || threadId >= GcodeScripts.size()) {
         ui->pbExecuteGcodes->setChecked(false);
         if (gscriptStatusLabel) {
-            gscriptStatusLabel->setStyleSheet("color: #ff6b6b;");
+            UiTheme::setStatusRole(gscriptStatusLabel, QStringLiteral("danger"));
             gscriptStatusLabel->setText(tr("No GScript thread is available"));
         }
         return;
@@ -5628,7 +6587,7 @@ void RobotWindow::ExecuteProgram()
     if (m_cellSupervisor && !m_cellSupervisor->automationAllowed()) {
         ui->pbExecuteGcodes->setChecked(false);
         if (gscriptStatusLabel) {
-            gscriptStatusLabel->setStyleSheet("color: #ff6b6b;");
+            UiTheme::setStatusRole(gscriptStatusLabel, QStringLiteral("danger"));
             gscriptStatusLabel->setText(
                 tr("Cannot run while cell is %1").arg(m_cellSupervisor->stateName()));
         }
@@ -5649,37 +6608,11 @@ void RobotWindow::ExecuteProgram()
         return;
     }
 
-    if (ui->leZ->text().toFloat() > -200 && ui->pbConnectRobot->text() == "Disconnect")
-    {
-        QMessageBox confirmDialog(this);
-        confirmDialog.setIcon(QMessageBox::Warning);
-        confirmDialog.setWindowTitle(tr("Confirm Program Run"));
-        confirmDialog.setText(tr("The robot has not returned to Home."));
-        confirmDialog.setInformativeText(
-            tr("You can cancel this run and return the robot to Home first, or continue running the program anyway."));
-        QPushButton *cancelButton = confirmDialog.addButton(tr("Cancel Run"), QMessageBox::RejectRole);
-        QPushButton *continueButton = confirmDialog.addButton(tr("Run Anyway"), QMessageBox::AcceptRole);
-        confirmDialog.setDefaultButton(qobject_cast<QPushButton*>(cancelButton));
-        confirmDialog.exec();
-
-        if (confirmDialog.clickedButton() != continueButton)
-        {
-            ui->pbExecuteGcodes->setChecked(false);
-
-            return;
-        }
+    QString error;
+    if (!startGScript(threadId, ui->pteGcodeArea->toPlainText(), &error)) {
+        ui->pbExecuteGcodes->setChecked(false);
+        if (gscriptStatusLabel) gscriptStatusLabel->setText(error);
     }
-
-    int startMode = GcodeScript::BEGIN;
-
-    currentScript->DefaultRobot = ui->cbSelectedRobot->currentText();
-    currentScript->DefaultConveyor = ui->cbSelectedConveyor->currentText();
-    currentScript->DefaultEncoder = ui->cbSelectedEncoder->currentText();
-    currentScript->DefaultSlider = ui->cbSelectedSlider->currentText();
-    currentScript->DefaultDevice = ui->cbSelectedDevice->currentText();
-
-    // Z-plane filtering will be applied at individual G-code level in handleGCODE()
-    QMetaObject::invokeMethod(currentScript, "ExecuteGcode", Qt::QueuedConnection, Q_ARG(QString, ui->pteGcodeArea->toPlainText()), Q_ARG(int, startMode));
 
 }
 
@@ -5728,6 +6661,8 @@ void RobotWindow::ExecuteCurrentLine(int linNumber, QString lineText)
     if (threadId < 0 || threadId >= GcodeScripts.size())
         return;
     GcodeScript* currentScript = GcodeScripts.at(threadId);
+    if (currentScript->IsRunning() || m_pendingGScriptStarts.contains(threadId))
+        return;
 
     if (m_cellSupervisor && !m_cellSupervisor->automationAllowed())
         return;
@@ -5743,6 +6678,7 @@ void RobotWindow::ExecuteCurrentLine(int linNumber, QString lineText)
         return;
     }
 
+    m_pendingGScriptStarts.insert(threadId);
     QMetaObject::invokeMethod(currentScript, "ExecuteGcode", Qt::QueuedConnection, Q_ARG(QString, lineText), Q_ARG(int, GcodeScript::BEGIN));
 
 }
@@ -5762,11 +6698,6 @@ void RobotWindow::HighLineCurrentLine(int pos)
 
 void RobotWindow::OnEditorTextChanged()
 {
-    if (ChangedCounter > 0)
-        IsGcodeEditorTextChanged = true;
-
-    ChangedCounter++;
-
     if (gscriptValidationTimer)
         gscriptValidationTimer->start();
 
@@ -5774,6 +6705,20 @@ void RobotWindow::OnEditorTextChanged()
     {
         ConnectionManager->updateLatestGscript(ui->pteGcodeArea->toPlainText());
     }
+}
+
+bool RobotWindow::hasUnsavedGcodeText() const
+{
+    // QTextDocument::isModified() also becomes true for presentation-only
+    // changes such as editor zoom and character formatting. Compare plain
+    // text at the decision point so a stale signal cannot trigger a prompt.
+    return ui->pteGcodeArea->toPlainText() != m_cleanGcodeText;
+}
+
+void RobotWindow::markGcodeEditorClean()
+{
+    m_cleanGcodeText = ui->pteGcodeArea->toPlainText();
+    ui->pteGcodeArea->document()->setModified(false);
 }
 
 void RobotWindow::ValidateGScriptNow()
@@ -5785,16 +6730,16 @@ void RobotWindow::ValidateGScriptNow()
         return;
 
     if (analysis.hasErrors()) {
-        gscriptStatusLabel->setStyleSheet("color: #ff6b6b;");
+        UiTheme::setStatusRole(gscriptStatusLabel, QStringLiteral("danger"));
         gscriptStatusLabel->setText(
             tr("%1 error(s), %2 warning(s)")
                 .arg(analysis.errorCount()).arg(analysis.warningCount()));
     } else if (analysis.warningCount() > 0) {
-        gscriptStatusLabel->setStyleSheet("color: #f0b24a;");
+        UiTheme::setStatusRole(gscriptStatusLabel, QStringLiteral("warning"));
         gscriptStatusLabel->setText(
             tr("Valid with %1 warning(s)").arg(analysis.warningCount()));
     } else {
-        gscriptStatusLabel->setStyleSheet("color: #69d18b;");
+        UiTheme::setStatusRole(gscriptStatusLabel, QStringLiteral("success"));
         gscriptStatusLabel->setText(
             tr("Valid · %1 executable line(s)").arg(analysis.executableLineCount));
     }
@@ -5837,8 +6782,15 @@ void RobotWindow::ShowGScriptDiagnostics(QList<GScriptDiagnostic> diagnostics)
         if (problemTab >= 0) {
             gscriptInspectionTabs->setTabText(
                 problemTab, tr("Problems (%1)").arg(diagnostics.size()));
-            if (!diagnostics.isEmpty() && diagnostics.first().severity == GScriptDiagnostic::Error)
+            const bool hasErrors = std::any_of(diagnostics.cbegin(), diagnostics.cend(),
+                [](const GScriptDiagnostic& diagnostic) {
+                    return diagnostic.severity == GScriptDiagnostic::Error;
+                });
+            if (hasErrors) {
                 gscriptInspectionTabs->setCurrentIndex(problemTab);
+                if (gscriptDetailsButton)
+                    gscriptDetailsButton->setChecked(true);
+            }
         }
     }
 }
@@ -5849,19 +6801,19 @@ void RobotWindow::UpdateGScriptExecutionState(GcodeScript::ExecutionState state,
     if (!gscriptStatusLabel)
         return;
     QString stateName;
-    QString color = "#d4d4d4";
+    QString statusRole;
     switch (state) {
     case GcodeScript::ExecutionState::Validating: stateName = tr("Validating"); break;
-    case GcodeScript::ExecutionState::Running: stateName = tr("Running"); color = "#69d18b"; break;
-    case GcodeScript::ExecutionState::WaitingForDevice: stateName = tr("Waiting"); color = "#73b7ff"; break;
-    case GcodeScript::ExecutionState::WaitingForTimer: stateName = tr("Delay"); color = "#73b7ff"; break;
-    case GcodeScript::ExecutionState::WaitingForCondition: stateName = tr("Waiting condition"); color = "#73b7ff"; break;
-    case GcodeScript::ExecutionState::Stopping: stateName = tr("Stopping"); color = "#f0b24a"; break;
-    case GcodeScript::ExecutionState::Completed: stateName = tr("Completed"); color = "#69d18b"; break;
-    case GcodeScript::ExecutionState::Faulted: stateName = tr("Faulted"); color = "#ff6b6b"; break;
+    case GcodeScript::ExecutionState::Running: stateName = tr("Running"); statusRole = QStringLiteral("success"); break;
+    case GcodeScript::ExecutionState::WaitingForDevice: stateName = tr("Waiting"); statusRole = QStringLiteral("info"); break;
+    case GcodeScript::ExecutionState::WaitingForTimer: stateName = tr("Delay"); statusRole = QStringLiteral("info"); break;
+    case GcodeScript::ExecutionState::WaitingForCondition: stateName = tr("Waiting condition"); statusRole = QStringLiteral("info"); break;
+    case GcodeScript::ExecutionState::Stopping: stateName = tr("Stopping"); statusRole = QStringLiteral("warning"); break;
+    case GcodeScript::ExecutionState::Completed: stateName = tr("Completed"); statusRole = QStringLiteral("success"); break;
+    case GcodeScript::ExecutionState::Faulted: stateName = tr("Faulted"); statusRole = QStringLiteral("danger"); break;
     default: stateName = tr("Ready"); break;
     }
-    gscriptStatusLabel->setStyleSheet("color: " + color + ";");
+    UiTheme::setStatusRole(gscriptStatusLabel, statusRole);
     gscriptStatusLabel->setText(message.isEmpty() ? stateName
                                                   : stateName + " · " + message);
     const bool active = state == GcodeScript::ExecutionState::Running ||
@@ -6650,21 +7602,20 @@ void RobotWindow::CalibrateEncoder()
                        0, 'g', 10)
             : tr("Current profile: NOT CALIBRATED"),
         &dialog);
-    currentStatus->setStyleSheet(currentValid
-        ? QStringLiteral("color: rgb(80, 220, 120); font-weight: bold;")
-        : QStringLiteral("color: rgb(255, 190, 70); font-weight: bold;"));
+    UiTheme::setStatusRole(currentStatus, currentValid
+        ? QStringLiteral("success") : QStringLiteral("warning"));
     root->addWidget(currentStatus);
 
     auto updatePreview = [rawStart, rawEnd, measuredDistance, reverse, preview]() {
         const double rawDelta = rawEnd->value() - rawStart->value();
         if (qAbs(rawDelta) <= 1.0e-9) {
             preview->setText(QObject::tr("Capture two different readings"));
-            preview->setStyleSheet(QStringLiteral("color: rgb(255, 100, 100);"));
+            UiTheme::setStatusRole(preview, QStringLiteral("danger"));
             return;
         }
         const double signedDistance = measuredDistance->value() * (reverse->isChecked() ? -1.0 : 1.0);
         preview->setText(QObject::tr("%1 mm/raw-unit").arg(signedDistance / rawDelta, 0, 'g', 10));
-        preview->setStyleSheet(QStringLiteral("color: rgb(80, 220, 120); font-weight: bold;"));
+        UiTheme::setStatusRole(preview, QStringLiteral("success"));
     };
     connect(captureStart, &QPushButton::clicked, this, [this, id, rawStart, updatePreview]() {
         rawStart->setValue(m_encoderLastRawPositions.value(id, rawStart->value()));
@@ -6832,7 +7783,8 @@ void RobotWindow::StartContinuousCapture(bool isCheck)
     if (isCheck == true)
     {
             // Check if camera is loaded first
-            if (CameraInstance->RunningCamera == -1 && CameraInstance->Source == "Webcam")
+            if ((CameraInstance->RunningCamera == -1 && CameraInstance->Source == "Webcam") ||
+                (ui->cbSourceForImageProvider->currentText()=="Phone Camera" && !isCameraLoaded))
             {
                 SoftwareLog("Warning: No camera loaded. Please load a camera first.");
                 ui->pbStartAcquisition->setChecked(false);
@@ -6891,6 +7843,15 @@ void RobotWindow::ChangeOutputDisplay(QString outputName)
 
 void RobotWindow::LoadWebcam()
 {
+    if(ui->cbSourceForImageProvider->currentText()=="Phone Camera" && !isCameraLoaded){
+        PhoneCameraDialog dialog(CameraInstance->phoneServer,this);
+        if(dialog.exec()!=QDialog::Accepted){ui->pbLoadCamera->setChecked(false);return;}
+        QMetaObject::invokeMethod(CameraInstance,[camera=CameraInstance]{camera->SetSource("Phone Camera");},Qt::BlockingQueuedConnection);
+        isCameraOpenPending=true;
+        ++cameraOpenRequestId;
+        UpdateCameraConnectedState(true,cameraOpenRequestId);
+        return;
+    }
     // Debug: Log current button state
     SoftwareLog(QString("LoadWebcam called - Button text: '%1', Checked: %2, isCameraLoaded: %3")
                 .arg(ui->pbLoadCamera->text())
@@ -7059,10 +8020,11 @@ void RobotWindow::StopCapture()
         // Update UI state
     ui->lbCameraState->setEnabled(false);
     ui->pbLoadCamera->setText("Load Camera");
+    ui->pbLoadCamera->setChecked(false);
     ui->pbStartAcquisition->setChecked(false);
 
         // Stop different camera types safely
-        if (CameraInstance->Source == "Webcam" || CameraInstance->Source == "Video")
+        if (CameraInstance->Source == "Webcam" || CameraInstance->Source == "Video" || CameraInstance->Source == "Phone Camera")
         {
             QMetaObject::invokeMethod(CameraInstance, "ReleaseCamera",
                                       Qt::BlockingQueuedConnection);
@@ -8078,10 +9040,10 @@ void RobotWindow::CalibrateCameraIntrinsics()
             tr("Current profile: READY — %1x%2, RMS %3 px, %4 samples")
                 .arg(existingProfile.imageSize.width()).arg(existingProfile.imageSize.height())
                 .arg(existingProfile.rmsErrorPx, 0, 'f', 3).arg(existingProfile.sampleCount));
-        profileStatus->setStyleSheet(QStringLiteral("color: rgb(80, 220, 120); font-weight: bold;"));
+        UiTheme::setStatusRole(profileStatus, QStringLiteral("success"));
     } else {
         profileStatus->setText(tr("Current profile: NOT CALIBRATED"));
-        profileStatus->setStyleSheet(QStringLiteral("color: rgb(255, 190, 70); font-weight: bold;"));
+        UiTheme::setStatusRole(profileStatus, QStringLiteral("warning"));
     }
     root->addWidget(liveStatus);
     root->addWidget(sampleStatus);
@@ -8115,7 +9077,7 @@ void RobotWindow::CalibrateCameraIntrinsics()
         latestFrame = frame.image.clone();
         liveStatus->setText(QObject::tr("Live frame: %1 x %2")
                                 .arg(latestFrame.cols).arg(latestFrame.rows));
-        liveStatus->setStyleSheet(QStringLiteral("color: rgb(100, 200, 255);"));
+        UiTheme::setStatusRole(liveStatus, QStringLiteral("info"));
     });
     if (!CameraInstance->CaptureImage.empty()) {
         latestFrame = CameraInstance->CaptureImage.clone();
@@ -8155,7 +9117,7 @@ void RobotWindow::CalibrateCameraIntrinsics()
             cv::CALIB_CB_ADAPTIVE_THRESH | cv::CALIB_CB_NORMALIZE_IMAGE | cv::CALIB_CB_FAST_CHECK);
         if (!found) {
             liveStatus->setText(tr("Chessboard not found — improve lighting/focus and show the full board"));
-            liveStatus->setStyleSheet(QStringLiteral("color: rgb(255, 100, 100); font-weight: bold;"));
+            UiTheme::setStatusRole(liveStatus, QStringLiteral("danger"));
             return;
         }
 
@@ -8167,7 +9129,7 @@ void RobotWindow::CalibrateCameraIntrinsics()
         for (const QVector3D& existing : viewDescriptors) {
             if ((existing - descriptor).length() < 0.015f) {
                 liveStatus->setText(tr("View is too similar to an existing sample — move or tilt the board"));
-                liveStatus->setStyleSheet(QStringLiteral("color: rgb(255, 190, 70); font-weight: bold;"));
+                UiTheme::setStatusRole(liveStatus, QStringLiteral("warning"));
                 return;
             }
         }
@@ -8175,7 +9137,7 @@ void RobotWindow::CalibrateCameraIntrinsics()
         viewDescriptors.append(descriptor);
         liveStatus->setText(tr("Chessboard accepted (%1 corners)")
                                 .arg(static_cast<qulonglong>(corners.size())));
-        liveStatus->setStyleSheet(QStringLiteral("color: rgb(80, 220, 120); font-weight: bold;"));
+        UiTheme::setStatusRole(liveStatus, QStringLiteral("success"));
         refreshSampleState();
     });
     connect(removeLast, &QPushButton::clicked, &dialog, [&, refreshSampleState]() {
@@ -8774,9 +9736,8 @@ void RobotWindow::UpdateCameraConnectedState(bool isOpen, int requestId)
         // ui->leImageWidth->setText(QString::number(CameraInstance->Width));
         // ui->leImageHeight->setText(QString::number(CameraInstance->Height));
 
-        QTimer::singleShot(2000, this, [this]() {
-            ui->leImageWidth->returnPressed();
-        });
+        if(ui->cbSourceForImageProvider->currentText()!="Phone Camera")
+            QTimer::singleShot(2000, this, [this]() { ui->leImageWidth->returnPressed(); });
 
         // Log the resolution being used
         SoftwareLog(QString("Camera resolution set to: %1x%2").arg(CameraInstance->Width).arg(CameraInstance->Height));

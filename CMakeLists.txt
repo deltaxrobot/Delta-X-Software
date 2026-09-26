@@ -80,6 +80,10 @@ target_link_libraries(DeltaRobotSoftware PRIVATE
     DeltaX::OpenCV
 )
 
+if(WIN32)
+    target_link_libraries(DeltaRobotSoftware PRIVATE strmiids ole32 oleaut32 user32)
+endif()
+
 if(MSVC)
     target_compile_options(DeltaRobotSoftware PRIVATE
         /Zc:__cplusplus
@@ -99,6 +103,10 @@ set_target_properties(DeltaRobotSoftware PROPERTIES
 )
 
 include(GNUInstallDirs)
+add_executable(delta-x-cli cli/main.cpp include/CliProtocol.h)
+target_include_directories(delta-x-cli PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/include")
+target_link_libraries(delta-x-cli PRIVATE Qt6::Core Qt6::Network)
+install(TARGETS delta-x-cli RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}")
 install(TARGETS DeltaRobotSoftware
     BUNDLE DESTINATION .
     RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
@@ -123,6 +131,14 @@ install(DIRECTORY docs/
 install(DIRECTORY script-example/multi-robot-sorting/
     DESTINATION "${CMAKE_INSTALL_DATADIR}/DeltaXSoftware/examples/multi-robot-sorting"
 )
+install(FILES script-example/cli-smoke.gcode
+    DESTINATION "${CMAKE_INSTALL_DATADIR}/DeltaXSoftware/examples")
+install(DIRECTORY script-example/gscript-command-tour/
+    DESTINATION "${CMAKE_INSTALL_DATADIR}/DeltaXSoftware/examples/gscript-command-tour")
+install(DIRECTORY script-example/drawing/
+    DESTINATION "${CMAKE_INSTALL_DATADIR}/DeltaXSoftware/examples/drawing")
+install(DIRECTORY script-example/block-programming/
+    DESTINATION "${CMAKE_INSTALL_DATADIR}/DeltaXSoftware/examples/block-programming")
 
 # OpenCV's official Windows package exposes imported libraries but its runtime
 # DLL is not copied by windeployqt. CPack artifacts need it next to the app.
@@ -180,6 +196,12 @@ if(COMMAND qt_generate_deploy_app_script)
         NO_UNSUPPORTED_PLATFORM_ERROR
     )
     install(SCRIPT "${DELTA_X_QT_DEPLOY_SCRIPT}")
+    qt_generate_deploy_app_script(
+        TARGET delta-x-cli
+        OUTPUT_SCRIPT DELTA_X_CLI_DEPLOY_SCRIPT
+        NO_UNSUPPORTED_PLATFORM_ERROR
+    )
+    install(SCRIPT "${DELTA_X_CLI_DEPLOY_SCRIPT}")
 endif()
 
 set(CPACK_PACKAGE_NAME "DeltaXSoftware")

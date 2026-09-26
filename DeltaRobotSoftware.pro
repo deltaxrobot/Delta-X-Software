@@ -5,6 +5,7 @@
 #-------------------------------------------------
 
 QT       += core gui serialport network printsupport multimedia svg concurrent
+win32:LIBS += strmiids.lib ole32.lib oleaut32.lib user32.lib
 
 greaterThan(QT_MAJOR_VERSION, 5) {
     QT += svgwidgets

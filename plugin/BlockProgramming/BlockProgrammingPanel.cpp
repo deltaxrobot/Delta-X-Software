@@ -24,6 +24,7 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QMessageBox>
+#include <QMenu>
 #include <QMimeData>
 #include <QPlainTextEdit>
 #include <QPixmap>
@@ -31,8 +32,10 @@
 #include <QScrollArea>
 #include <QSpinBox>
 #include <QSplitter>
+#include <QStyle>
 #include <QTabWidget>
 #include <QTimer>
+#include <QToolButton>
 #include <QTreeWidget>
 #include <QVBoxLayout>
 
@@ -165,17 +168,20 @@ void BlockProgrammingPanel::buildUi()
     auto* newButton = new QPushButton(tr("New"), this);
     auto* openButton = new QPushButton(tr("Open..."), this);
     auto* saveButton = new QPushButton(tr("Save..."), this);
-    auto* exportButton = new QPushButton(tr("Export..."), this);
-    auto* copyButton = new QPushButton(tr("Copy"), this);
-    auto* helpButton = new QPushButton(tr("Help"), this);
     newButton->setObjectName(QStringLiteral("blockNewButton"));
     openButton->setObjectName(QStringLiteral("blockOpenButton"));
     saveButton->setObjectName(QStringLiteral("blockSaveButton"));
-    exportButton->setObjectName(QStringLiteral("blockExportButton"));
-    copyButton->setObjectName(QStringLiteral("blockCopyButton"));
-    helpButton->setObjectName(QStringLiteral("blockHelpButton"));
-    exportButton->setToolTip(tr("Export the generated G-Script to a file"));
-    copyButton->setToolTip(tr("Copy the generated G-Script to the clipboard"));
+    auto* moreButton = new QToolButton(this);
+    moreButton->setObjectName(QStringLiteral("blockMoreButton"));
+    moreButton->setText(tr("More"));
+    moreButton->setPopupMode(QToolButton::InstantPopup);
+    moreButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+    auto* moreMenu = new QMenu(moreButton);
+    QAction* exportAction = moreMenu->addAction(tr("Export G-Script..."));
+    QAction* copyAction = moreMenu->addAction(tr("Copy G-Script"));
+    moreMenu->addSeparator();
+    QAction* helpAction = moreMenu->addAction(tr("Help"));
+    moreButton->setMenu(moreMenu);
     auto* templateRow = new QHBoxLayout;
     templateRow->setSpacing(5);
     templateRow->addWidget(new QLabel(tr("Template"), this));
@@ -183,14 +189,8 @@ void BlockProgrammingPanel::buildUi()
     templateRow->addWidget(newButton);
     templateRow->addWidget(openButton);
     templateRow->addWidget(saveButton);
+    templateRow->addWidget(moreButton);
     fileBar->addLayout(templateRow);
-    auto* fileActionRow = new QHBoxLayout;
-    fileActionRow->setSpacing(5);
-    fileActionRow->addWidget(exportButton);
-    fileActionRow->addWidget(copyButton);
-    fileActionRow->addWidget(helpButton);
-    fileActionRow->addStretch(1);
-    fileBar->addLayout(fileActionRow);
     root->addLayout(fileBar);
 
     auto* executionBar = new QVBoxLayout;
@@ -230,13 +230,14 @@ void BlockProgrammingPanel::buildUi()
     root->addLayout(executionBar);
 
     const QList<QPushButton*> commandButtons = {
-        newButton, openButton, saveButton, exportButton, copyButton, helpButton,
-        refreshWorkersButton, m_loadButton, m_runButton, m_stopButton,
+        newButton, openButton, saveButton, refreshWorkersButton,
+        m_loadButton, m_runButton, m_stopButton,
     };
     for (QPushButton* button : commandButtons)
         button->setMinimumHeight(28);
     m_template->setMinimumHeight(28);
     m_worker->setMinimumHeight(28);
+    moreButton->setMinimumHeight(28);
 
     auto* horizontal = new QSplitter(Qt::Horizontal, this);
     horizontal->setObjectName(QStringLiteral("blockMainSplitter"));
@@ -253,13 +254,7 @@ void BlockProgrammingPanel::buildUi()
     m_palette = new BlockPaletteTree(paletteGroup);
     m_palette->setObjectName(QStringLiteral("blockPalette"));
     m_palette->setStyleSheet(QStringLiteral(
-        "QTreeWidget { background-color: #202025; color: #e5e7eb; "
-        "border: 1px solid #393942; border-radius: 6px; padding: 3px; }"
-        "QTreeWidget::item { min-height: 28px; border-radius: 4px; "
-        "padding: 2px 5px; }"
-        "QTreeWidget::item:hover { background-color: #34343c; }"
-        "QTreeWidget::item:selected { background-color: #3f3f49; "
-        "color: white; }"));
+        "QTreeWidget::item { min-height: 28px; padding: 2px 5px; }"));
     m_palette->setHeaderHidden(true);
     m_palette->setRootIsDecorated(true);
     m_palette->setDragEnabled(true);
@@ -303,6 +298,36 @@ void BlockProgrammingPanel::buildUi()
     addButton->setToolTip(tr("Add the selected palette block"));
     duplicateButton->setToolTip(
         tr("Duplicate the selected workspace block"));
+    deleteButton->setToolTip(tr("Delete the selected block"));
+    upButton->setToolTip(tr("Move the selected block up"));
+    downButton->setToolTip(tr("Move the selected block down"));
+    indentButton->setToolTip(tr("Nest the selected block"));
+    outdentButton->setToolTip(tr("Move the selected block out one level"));
+    zoomOutButton->setToolTip(tr("Zoom out"));
+    zoomInButton->setToolTip(tr("Zoom in"));
+    fitButton->setToolTip(tr("Fit the whole program in the workspace"));
+
+    const QList<QPair<QPushButton*, QString>> compactActions = {
+        {addButton, QStringLiteral(":/icon/icons8_add_new_52px.png")},
+        {duplicateButton, QStringLiteral(":/icon/Copy_16px.png")},
+        {deleteButton, QStringLiteral(":/icon/Trash_16px.png")},
+        {upButton, QStringLiteral(":/icon/Upward Arrow_16px.png")},
+        {downButton, QStringLiteral(":/icon/Arrow Pointing Down_16px.png")},
+        {indentButton, QStringLiteral(":/icon/Right Arrow_16px.png")},
+        {outdentButton, QStringLiteral(":/icon/Go Back_16px.png")},
+        {zoomOutButton, QStringLiteral(":/icon/Zoom Out_16px.png")},
+        {zoomInButton, QStringLiteral(":/icon/Zoom In_16px.png")},
+        {fitButton, QStringLiteral(":/icon/Full Image_16px.png")},
+    };
+    for (const auto& action : compactActions) {
+        QPushButton* button = action.first;
+        button->setAccessibleName(button->toolTip());
+        button->setIcon(QIcon(action.second));
+        button->setIconSize(QSize(16, 16));
+        button->setText(QString());
+        button->setFixedWidth(30);
+        button->setProperty("iconOnly", true);
+    }
     editBar->addWidget(addButton);
     editBar->addWidget(duplicateButton);
     editBar->addWidget(deleteButton);
@@ -327,7 +352,7 @@ void BlockProgrammingPanel::buildUi()
         tr("Drag blocks from the toolbox • Drop on a container to nest • Ctrl+wheel to zoom"),
         workspaceGroup);
     canvasHint->setObjectName(QStringLiteral("blockCanvasHint"));
-    canvasHint->setStyleSheet(QStringLiteral("color: #94a3b8; padding: 0 2px;"));
+    canvasHint->setProperty("statusRole", "muted");
     canvasHint->setWordWrap(true);
     workspaceLayout->addWidget(canvasHint);
 
@@ -360,11 +385,6 @@ void BlockProgrammingPanel::buildUi()
     m_properties->setRowWrapPolicy(QFormLayout::WrapLongRows);
     auto* propertiesScroll = new QScrollArea(propertiesPage);
     propertiesScroll->setObjectName(QStringLiteral("blockPropertiesScroll"));
-    propertiesPage->setStyleSheet(QStringLiteral(
-        "QWidget#blockPropertiesPage, QWidget#blockPropertiesContent, "
-        "QScrollArea#blockPropertiesScroll, "
-        "QScrollArea#blockPropertiesScroll > QWidget > QWidget {"
-        " background-color: #1E1E20; color: #D0D0D1; }"));
     propertiesScroll->setWidgetResizable(true);
     propertiesScroll->setWidget(propertiesWidget);
     propertiesOuter->addWidget(propertiesScroll);
@@ -372,10 +392,6 @@ void BlockProgrammingPanel::buildUi()
 
     m_preview = new QPlainTextEdit(m_inspectorTabs);
     m_preview->setObjectName(QStringLiteral("blockPreview"));
-    m_preview->setStyleSheet(QStringLiteral(
-        "QPlainTextEdit { background-color: #262629; color: #D0D0D1; "
-        "border: 1px solid #333337; selection-background-color: #0078D4; "
-        "selection-color: white; }"));
     m_preview->setReadOnly(true);
     m_preview->setLineWrapMode(QPlainTextEdit::NoWrap);
     QFont fixed = QFontDatabase::systemFont(QFontDatabase::FixedFont);
@@ -384,11 +400,6 @@ void BlockProgrammingPanel::buildUi()
 
     m_diagnostics = new QTreeWidget(m_inspectorTabs);
     m_diagnostics->setObjectName(QStringLiteral("blockDiagnostics"));
-    m_diagnostics->setStyleSheet(QStringLiteral(
-        "QTreeWidget { background-color: #262629; color: #D0D0D1; "
-        "alternate-background-color: #202023; border: 1px solid #333337; }"
-        "QHeaderView::section { background-color: #3F3F3F; color: #F5F5F5; "
-        "border: none; padding: 4px; }"));
     m_diagnostics->setHeaderLabels(
         {tr("Severity"), tr("Code"), tr("Location"), tr("Message")});
     m_diagnostics->setRootIsDecorated(false);
@@ -417,9 +428,11 @@ void BlockProgrammingPanel::buildUi()
     connect(newButton, &QPushButton::clicked, this, &BlockProgrammingPanel::newProgram);
     connect(openButton, &QPushButton::clicked, this, &BlockProgrammingPanel::openProgram);
     connect(saveButton, &QPushButton::clicked, this, &BlockProgrammingPanel::saveProgram);
-    connect(exportButton, &QPushButton::clicked, this, &BlockProgrammingPanel::exportGScript);
-    connect(copyButton, &QPushButton::clicked, this, &BlockProgrammingPanel::copyGScript);
-    connect(helpButton, &QPushButton::clicked, this, [this]() {
+    connect(exportAction, &QAction::triggered,
+            this, &BlockProgrammingPanel::exportGScript);
+    connect(copyAction, &QAction::triggered,
+            this, &BlockProgrammingPanel::copyGScript);
+    connect(helpAction, &QAction::triggered, this, [this]() {
         QMessageBox::information(
             this, tr("Block Programming Help"),
             tr("1. Drag a block from the toolbox onto the canvas.\n"
@@ -539,7 +552,6 @@ void BlockProgrammingPanel::populatePalette()
         auto* item = new QTreeWidgetItem(category, {definition.label});
         item->setData(0, BlockTypeRole, definition.id);
         item->setToolTip(0, definition.description);
-        item->setForeground(0, QColor(QStringLiteral("#e5e7eb")));
         QPixmap swatch(12, 12);
         swatch.fill(QColor(definition.color));
         item->setIcon(0, QIcon(swatch));
@@ -1106,8 +1118,10 @@ void BlockProgrammingPanel::stopProgram()
 void BlockProgrammingPanel::setStatus(const QString& text, bool error)
 {
     m_status->setText(text);
-    m_status->setStyleSheet(error ? QStringLiteral("color: #ef4444;")
-                                  : QStringLiteral("color: #22c55e;"));
+    m_status->setProperty("statusRole", error ? "danger" : "success");
+    m_status->style()->unpolish(m_status);
+    m_status->style()->polish(m_status);
+    m_status->update();
 }
 
 BlockNode BlockProgrammingPanel::itemToNode(const QTreeWidgetItem* item)

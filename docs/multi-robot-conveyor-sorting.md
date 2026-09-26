@@ -64,8 +64,8 @@ The lifecycle is `TENTATIVE -> CONFIRMED -> CLAIMED -> PICKED`; temporarily miss
 
 1. Fix resolution, focus, exposure, and ROI before collecting points. Any later resize or crop invalidates the matrix.
 2. Use Warp/Perspective to flatten the belt plane when the camera is oblique.
-3. Place measured references in `C`, enter image/real point pairs in Mapping Point Tool, and calculate the matrix.
-4. The two-point mapping supports rotation, scale, and translation. Use Cloud Point Mapping with a grid across the ROI when distortion remains or higher accuracy is required.
+3. Place measured references in `C`, enter camera-image/robot-workspace pairs in **Calibration > 2-Point Similarity Transform**, and solve the transform.
+4. The 2-point similarity transform supports rotation, uniform scale, and translation. Use **Interpolated Multi-Point Mapping** with references across the ROI when residual distortion remains or higher accuracy is required.
 5. Validate with points that were not used to fit, especially near every ROI corner. Record maximum and RMS error.
 
 Internal detection passes through Mapping Matrix Node. An external detector returning pixels must set `"coordinateSpace":"image"`; the same mapping is applied.
@@ -187,7 +187,7 @@ The software provides shared tracking, frame-aware encoder compensation, global 
 
 ## 10. Realtime and vacuum-sensor commissioning
 
-In **Tracking Manager**, start with `Publish interval = 50 ms`, `Vision stale = 2000 ms`, `Encoder stale = 2000 ms`, `Frame timeout = 3000 ms`, `Max pending frames = 8`, and `Max encoder reads = 24`, then click **Apply**. During vision-only operation:
+In **Tracking Runtime Configuration**, start with `Publish period = 50 ms`, `Maximum camera age = 2000 ms`, `Maximum encoder age = 2000 ms`, `Frame completion timeout = 3000 ms`, `Maximum queued frames = 8`, and `Maximum queued encoder samples = 24`, then click **Apply Tracking Settings**. During vision-only operation:
 
 - `Tracking.N.State` remains `READY`;
 - `PendingFrames` and `PendingEncoderReads` regularly return to zero;

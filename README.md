@@ -13,7 +13,7 @@ Delta X Software is a comprehensive control and programming platform for Delta r
 Contributor entry points: [contribution guide](CONTRIBUTING.md),
 [architecture](docs/architecture.md), [development guide](docs/development.md),
 [cross-platform setup](docs/platform-setup.md), [plugin system](docs/plugin-system.md),
-[block programming](docs/block-programming.md),
+[block programming](docs/block-programming.md), [Drawing](docs/drawing.md), [UI style guide](docs/ui-style-guide.md),
 [release process](docs/releasing.md), [security policy](SECURITY.md), and
 [governance](GOVERNANCE.md).
 
@@ -30,6 +30,21 @@ python tools/bootstrap.py run
 The doctor reports missing dependencies and platform-specific installation
 instructions. See the [cross-platform setup guide](docs/platform-setup.md) for
 clean-machine setup, packaging, device permissions, and platform limitations.
+
+Run a G-code file through an open project's connected devices with
+`delta-x-cli run program.gcode --project project0 --thread 0`.
+`delta-x-cli status` lists projects, workers, cell state and robot connection.
+Use `connect-robot` for UI-equivalent auto-connect and `reset-fault --confirm-safe`
+after an operator safety check. See the [CLI guide](docs/cli.md)
+for Windows commands, results, Stop and build instructions.
+
+Learn and test the built-in language with the [G-Script command tour](docs/gscript-command-tour.md):
+software-only examples, isolated device-contract tests, and a read-only robot probe.
+
+Use [Mouse control](docs/mouse-robot-control.md) in the Robot tab to hold-drag X/Y
+and adjust Z with the wheel, with configurable sensitivity. The shared
+[G-code motion engine](docs/gcode-motion-engine.md) provides look-ahead speed
+planning, a two-command transmission window, and an ordered-path API.
 
 ## Prerequisites
 
@@ -78,15 +93,25 @@ cd Delta-X-Software
 - `resources/`: platform-specific packaging assets such as `resources/macos/Info.plist`.
 - `models/`, `script-example/`, `plugin/`, `docs/`: runtime models, example scripts, plugins, and documentation kept outside the core app tree.
 
-Operator documentation is available directly in **G-Script -> Help**. The main commissioning guides are `docs/gscript-runtime.md`, `docs/multi-robot-conveyor-sorting.md`, `docs/camera-gige-usb3.md`, and `docs/external-vision.md`.
+Operator documentation is available directly in **G-Script -> Help** and from the
+relevant workspaces. The main commissioning guides are
+`docs/gscript-runtime.md`, `docs/point-tool-calibration.md`,
+`docs/multi-robot-conveyor-sorting.md`, `docs/camera-gige-usb3.md`,
+[Phone Camera setup](docs/phone-camera.md), and
+`docs/external-vision.md`. The source-derived controller baseline and hardware
+inspection checklist for this firmware snapshot are in the
+[Delta X 3 firmware reference](docs/robot-firmware-delta-x-3.md); other robot
+models require their own branch-specific profiles.
 
 The versioned plugin SDK supports permission-checked host services, dynamic
 G-Script primitives, namespaced devices, tracking/vision access, operator
 panels, and plugin-to-plugin services. Start with the buildable
 [`sdk/examples/inspection-plugin`](sdk/examples/inspection-plugin/README.md).
-The bundled [Block Programming plugin](plugin/BlockProgramming/README.md)
+The bundled, opt-in experimental
+[Block Programming plugin](plugin/BlockProgramming/README.md)
 provides an offline block editor, live G-Script generation, validation, and
-supervised worker controls.
+supervised worker controls. It includes a no-hardware **Software self-test**
+template and matching editable fixture under `script-example/block-programming/`.
 
 ## Build from Source with CMake
 

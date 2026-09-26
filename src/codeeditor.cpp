@@ -490,7 +490,7 @@ void CodeEditor::refreshExtraSelections()
     }
 
     QTextEdit::ExtraSelection currentSelection;
-    currentSelection.format.setBackground(QColor(255, 255, 255, 18));
+    currentSelection.format.setBackground(palette().color(QPalette::AlternateBase));
     currentSelection.format.setProperty(QTextFormat::FullWidthSelection, true);
     currentSelection.cursor = cursor;
     currentSelection.cursor.clearSelection();
@@ -535,7 +535,7 @@ void CodeEditor::refreshExtraSelections()
 void CodeEditor::lineNumberAreaPaintEvent(QPaintEvent *event)
 {
 	/*    QPainter painter(lineNumberArea);
-    painter.fillRect(event->rect(), Qt::lightGray);
+    painter.fillRect(event->rect(), palette().color(QPalette::AlternateBase));
 
 //![extraAreaPaintEvent_0]
 
@@ -550,7 +550,7 @@ void CodeEditor::lineNumberAreaPaintEvent(QPaintEvent *event)
     while (block.isValid() && top <= event->rect().bottom()) {
         if (block.isVisible() && bottom >= event->rect().top()) {
             QString number = QString::number(blockNumber + 1);
-            painter.setPen(Qt::black);
+            painter.setPen(palette().color(QPalette::Text));
             painter.drawText(0, top, lineNumberArea->width(), fontMetrics().height(),
                              Qt::AlignRight, number);
         }

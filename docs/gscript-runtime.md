@@ -2,9 +2,19 @@
 
 This is the canonical guide for new G-Script programs. In Delta X Software, open **G-Script -> Help** to view it inside the application.
 
+For executable examples of the built-in commands, start with the
+[G-Script command tour](gscript-command-tour.md). It separates software-only
+examples, isolated hardware-contract tests, and read-only robot queries.
+
 Commissioning-ready examples are in `script-example/multi-robot-sorting/` in both the source tree and release package. Open `00-vision-tracking`, `10-robot0-type0`, and `11-robot1-type1` in three separate G-Script threads.
 
 ## 1. Scope
+
+The desktop companion `delta-x-cli` uses the same G-Script worker and connected
+devices as Code Run. With Delta X Software open, use
+`delta-x-cli run program.gcode --project project0 --thread 0`. It waits for the
+result and supports Ctrl+C, `status`, `stop RUN_ID`, `--timeout` and `--json`.
+See [Command-line G-Script execution](cli.md) for the complete guide.
 
 G-Script orchestrates robots, conveyors, encoders, cameras, tracking, and I/O devices. Robot firmware remains responsible for motion interpolation. PLC, STO, E-stop, and safety circuits must operate independently of G-Script.
 
@@ -34,9 +44,11 @@ Valid device names are `robotN`, `conveyorN`, `encoderN`, `sliderN`, and `device
 
 - Autocomplete opens after entering a keyword or variable; press `Ctrl+Space` explicitly. Suggestions include control flow, G/M codes, primitives, devices, and variables in the active project.
 - Inside `M98 P...(...)`, the editor displays the primitive signature and active argument.
+- **Details** shows or hides the Problems, Watch, Threads, and Console pane. It is closed initially to leave more room for source code; validation errors open Problems automatically. Software cell faults remain visible outside this pane.
 - **Problems** lists diagnostics; double-click an entry to navigate to the source line.
 - **Watch** automatically follows `#...` variables referenced by source. Use **Pin variable** for telemetry or I/O not present in source. Values come from the current project's `VariableManager` namespace.
 - **Threads** displays state, line, device, and detail for every G-Script thread. Double-click a row to switch editors.
+- **Console** contains the device log, command input, and destination selector. Submitting a command can operate hardware; opening the tab alone does not.
 - **New from template** creates a vision worker or robot pick worker. Generated code still requires real mapping, zone, pose, and machine-limit review.
 
 `Validate`, autocomplete, Watch, and the template wizard never send hardware commands.
@@ -241,14 +253,16 @@ The control server binds only to `127.0.0.1` by default. DXV1 external detection
 
 ## 9. Tracking realtime settings
 
-In **Tracking Manager**, select `trackingN`, configure encoder/list/vector and realtime limits, then click **Apply**:
+In **Tracking Runtime Configuration**, select `trackingN`, configure the encoder,
+tracked-object list, direction-vector variable, and real-time limits, then click
+**Apply Tracking Settings**:
 
-- `Publish interval`: snapshot rate for the UI and `VariableManager`; default 50 ms. Use zero only when every encoder sample must publish.
-- `Vision stale` and `Encoder stale`: maximum input age before health becomes stale.
-- `Frame timeout`: maximum time for one frame to receive capture/detect encoder samples and detections.
-- `Max pending frames` and `Max encoder reads`: backlog limits. New work is rejected with an overflow counter when full.
+- `Publish period`: snapshot period for the UI and `VariableManager`; default 50 ms. Use zero only when every encoder sample must publish.
+- `Maximum camera age` and `Maximum encoder age`: maximum input age before health becomes stale.
+- `Frame completion timeout`: maximum time for one frame to receive capture/detect encoder samples and detections.
+- `Maximum queued frames` and `Maximum queued encoder samples`: backlog limits. New work is rejected with an overflow counter when full.
 
-The UI's **Runtime** line shows health, input age, queue depth, commit latency, and last fault. Persistent settings use `trackingN.Realtime.*`; session telemetry uses `Tracking.N.*`.
+The UI's **Tracking status** line shows health, input age, queue depth, commit latency, and last fault. Persistent settings use `trackingN.Realtime.*`; session telemetry uses `Tracking.N.*`.
 
 Tracking uses separate internal and publication rates. Every encoder sample updates the pose used for claims, so reducing UI publication frequency never makes claim coordinates stale.
 

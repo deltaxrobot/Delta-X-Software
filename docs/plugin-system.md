@@ -32,6 +32,10 @@ through `PluginSystem/AdditionalDirectories`.
 Enable/disable changes and permission changes apply at the next restart.
 Disabled IDs are stored in `PluginSystem/DisabledPluginIds`. Grants are stored
 per stable plugin ID in `PluginSystem/GrantedPermissions/<plugin-id>`.
+Plugins whose metadata declares `"defaultEnabled": false` remain unloaded until
+the user checks them in Plugin Manager; that opt-in is stored in
+`PluginSystem/EnabledPluginIds`. Experimental plugins should also declare
+`"stability": "experimental"` so the UI labels them clearly.
 
 Plugin settings are isolated by project and stable ID under:
 
@@ -121,8 +125,9 @@ registered. Plugins should degrade gracefully when optional permissions are
 denied.
 
 The bundled [Block Programming plugin](../plugin/BlockProgramming/README.md)
-demonstrates the read/edit/run surface with an offline block editor, generated
-source preview, two-stage validation, and explicit operator confirmation.
+is an opt-in experimental example of the read/edit/run surface with an offline
+block editor, generated source preview, two-stage validation, and explicit
+operator confirmation.
 
 ## G-Script primitives
 

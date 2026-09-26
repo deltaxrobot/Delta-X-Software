@@ -700,7 +700,7 @@ def add_cover(doc: Document):
     meta = doc.add_paragraph()
     meta.alignment = WD_ALIGN_PARAGRAPH.CENTER
     meta.paragraph_format.space_after = Pt(5)
-    set_run_font(meta.add_run("Applies to Delta X Software 1.3.0 and the multi-robot tracking platform"), size=10.5, bold=True, color_hex=COLORS["muted"])
+    set_run_font(meta.add_run("Applies to Delta X Software 2.0.0 and the multi-robot tracking platform"), size=10.5, bold=True, color_hex=COLORS["muted"])
     meta2 = doc.add_paragraph()
     meta2.alignment = WD_ALIGN_PARAGRAPH.CENTER
     set_run_font(meta2.add_run("Audience: system integrators, commissioning engineers, and lead operators"), size=9.5, italic=True, color_hex=COLORS["muted"])

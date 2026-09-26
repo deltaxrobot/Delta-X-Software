@@ -25,6 +25,12 @@ class TestProject:
 
 
 TEST_PROJECTS = (
+    TestProject("mouse_jog", "tst_mouse_jog", "tests/mouse_jog/mouse_jog.pro"),
+    TestProject("phone_camera", "tst_phone_camera", "tests/phone_camera/phone_camera.pro"),
+    TestProject("drawing", "tst_drawing", "tests/drawing/drawing.pro"),
+    TestProject("cli_transport", "tst_cli_transport", "tests/cli_transport/cli_transport.pro"),
+    TestProject("cli_integration", "tst_cli_integration", "tests/cli_integration/cli_integration.pro"),
+    TestProject("ui_theme", "tst_ui_theme", "tests/ui_theme/ui_theme.pro"),
     TestProject("control_plane", "tst_control_plane", "tests/control_plane/control_plane.pro"),
     TestProject("device_state", "tst_device_state", "tests/device_state/device_state.pro"),
     TestProject("gscript_analyzer", "tst_gscript_analyzer", "tests/gscript_analyzer/gscript_analyzer.pro"),

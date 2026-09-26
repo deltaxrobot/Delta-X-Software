@@ -26,12 +26,18 @@ public:
     QString cellState() const;
     int pendingCommandCount(const QString& deviceId = QString()) const;
     bool hasActiveCommand(const QString& deviceId) const;
+    bool acquireManualControl(const QString& owner, const QString& deviceId);
+    void releaseManualControl(const QString& owner, const QString& deviceId);
+    // Exclusive motion stream: two G01s, or M205 S0 alone after draining.
+    quint64 SubmitMotion(const QString& owner, const QString& deviceId,
+                         const QString& command, int timeoutMs = 3000);
 
 public slots:
     quint64 Submit(const QString& owner, const QString& deviceId,
                    const QString& command, DeviceCommandBroker::Origin origin,
                    bool waitForResponse = true, int timeoutMs = 120000);
     void HandleDeviceResponse(const QString& deviceId, const QString& response);
+    void HandleDeviceUnavailable(const QString& deviceId, const QString& reason);
     void CancelOwner(const QString& owner, const QString& reason = QString());
     void SetCellState(const QString& state);
     void RegisterDevice(const QString& deviceId);
@@ -69,10 +75,14 @@ private:
     void rejectCommand(const PendingCommand& command, const QString& reason);
     void expireCommands();
     QStringList safeStopCommands(const QString& deviceId) const;
+    void faultMotion(const QString& deviceId, const QString& reason);
 
     QHash<QString, QQueue<PendingCommand>> m_queues;
     QHash<QString, PendingCommand> m_activeCommands;
+    QHash<QString, QQueue<PendingCommand>> m_motionCommands;
+    QSet<QString> m_motionFaults;
     QSet<QString> m_knownDevices;
+    QHash<QString, QString> m_manualControllers;
     QTimer m_timeoutTimer;
     QString m_cellState = QStringLiteral("Ready");
     quint64 m_nextRequestId = 1;

@@ -5,6 +5,8 @@ semantic versioning after the first governed public release.
 
 ## Unreleased
 
+## [2.0.0] - 2026-09-26
+
 ### Added
 
 - Apache-2.0 first-party license, NOTICE, DCO 1.1 contribution certification,
@@ -33,6 +35,9 @@ semantic versioning after the first governed public release.
 - Native offline Block Programming plugin with structured drag-and-drop blocks,
   versioned project files, G-Script generation and validation, starter vision
   and multi-robot pick templates, and supervised worker load/run/stop controls.
+- Adaptive mouse robot control with continuous relative Windows input, XY and Z
+  scaling, bounded velocity prediction, time-based G-code segmentation,
+  just-in-time command refill, braking, and reusable ordered-path planning.
 
 ### Changed
 
@@ -66,4 +71,4 @@ semantic versioning after the first governed public release.
 
 ## Release history
 
-No governed public release has been tagged yet.
+- 2.0.0 is the first governed public-release candidate.

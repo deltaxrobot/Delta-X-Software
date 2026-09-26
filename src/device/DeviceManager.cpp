@@ -389,7 +389,8 @@ void DeviceManager::SendGcode(int deviceType, QString gcode)
             else
             {
                 if (linkedConveyor < 0 || linkedConveyor >= Conveyors.size()) {
-                    emit DeviceNotAvailable(QString("conveyor%1").arg(linkedConveyor));
+                    emit DeviceNotAvailable(QString("conveyor%1").arg(linkedConveyor),
+                                            QStringLiteral("Linked conveyor is not registered"));
                     return;
                 }
                 if (Conveyors[linkedConveyor]->IsOpen() == false)
@@ -429,15 +430,19 @@ void DeviceManager::SendGcode(QString deviceName, QString gcode)
     {
         if (id < Robots.count())
         {
+            if (!Robots[id]->IsOpen()) {
+                emit DeviceNotAvailable(deviceName,
+                                        QStringLiteral("Robot is not connected"));
+                return;
+            }
             QMetaObject::invokeMethod(Robots[id], "SendGcode", Qt::QueuedConnection, Q_ARG(QString, gcode));
 
 //            emit Log(QString("Robot %1").arg(id), gcode, 1);
         }
         else
         {
-            // Delay 100ms
-            QThread::msleep(100);
-            emit DeviceResponded(deviceName, "Ok");
+            emit DeviceNotAvailable(deviceName,
+                                    QStringLiteral("Robot is not registered"));
         }
     }
 
@@ -499,7 +504,8 @@ void DeviceManager::SendGcode(QString deviceName, QString gcode)
             else
             {
                 if (linkedConveyor < 0 || linkedConveyor >= Conveyors.size()) {
-                    emit DeviceNotAvailable(QString("conveyor%1").arg(linkedConveyor));
+                    emit DeviceNotAvailable(QString("conveyor%1").arg(linkedConveyor),
+                                            QStringLiteral("Linked conveyor is not registered"));
                     return;
                 }
                 if (Conveyors[linkedConveyor]->IsOpen() == false)

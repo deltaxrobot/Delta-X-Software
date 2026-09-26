@@ -1,10 +1,12 @@
 #include "FilterWindow.h"
+#include "UiTheme.h"
 #include "ui_FilterWindow.h"
 
 FilterWindow::FilterWindow(QWidget *parent, QString projectName)
     : QDialog(parent), ui(new Ui::FilterWindow)
 {
     ui->setupUi(this);
+    UiTheme::prepareForm(this);
 
     ProjectName = projectName;
 

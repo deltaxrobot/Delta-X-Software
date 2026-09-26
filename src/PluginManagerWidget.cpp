@@ -1,6 +1,7 @@
 #include "PluginManagerWidget.h"
 
 #include "PluginManager.h"
+#include "UiTheme.h"
 
 #include <QAbstractItemView>
 #include <QApplication>
@@ -14,11 +15,14 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QListWidget>
+#include <QMenu>
 #include <QMessageBox>
 #include <QPushButton>
+#include <QResizeEvent>
 #include <QSettings>
 #include <QStandardPaths>
 #include <QTableWidget>
+#include <QToolButton>
 #include <QUrl>
 #include <QVBoxLayout>
 
@@ -43,13 +47,13 @@ PluginManagerWidget::PluginManagerWidget(PluginManager* manager,
     title->setFont(titleFont);
     layout->addWidget(title);
 
-    auto* explanation = new QLabel(
+    m_explanationLabel = new QLabel(
         tr("Only plugins from the built-in directory and explicitly enabled "
            "directories are discovered. Changes to plugin availability apply "
            "after the application restarts."),
         this);
-    explanation->setWordWrap(true);
-    layout->addWidget(explanation);
+    m_explanationLabel->setWordWrap(true);
+    layout->addWidget(m_explanationLabel);
 
     m_summaryLabel = new QLabel(this);
     layout->addWidget(m_summaryLabel);
@@ -83,29 +87,33 @@ PluginManagerWidget::PluginManagerWidget(PluginManager* manager,
             .toBool());
     controls->addWidget(m_enableUserDirectory);
 
-    auto* builtInButton = new QPushButton(tr("Open Built-in Folder"), this);
-    auto* userButton = new QPushButton(tr("Open User Folder"), this);
+    auto* foldersButton = new QToolButton(this);
+    foldersButton->setText(tr("Plugin folders"));
+    foldersButton->setPopupMode(QToolButton::InstantPopup);
+    auto* foldersMenu = new QMenu(foldersButton);
+    QAction* builtInAction = foldersMenu->addAction(tr("Open built-in folder"));
+    QAction* userAction = foldersMenu->addAction(tr("Open user folder"));
+    foldersButton->setMenu(foldersMenu);
     auto* documentationButton = new QPushButton(tr("Documentation"), this);
     auto* permissionsButton = new QPushButton(tr("Permissions..."), this);
     controls->addStretch();
     controls->addWidget(permissionsButton);
-    controls->addWidget(builtInButton);
-    controls->addWidget(userButton);
+    controls->addWidget(foldersButton);
     controls->addWidget(documentationButton);
     layout->addLayout(controls);
 
     m_restartLabel = new QLabel(this);
     m_restartLabel->setWordWrap(true);
-    m_restartLabel->setStyleSheet(QStringLiteral("color: #e6a700;"));
+    UiTheme::setStatusRole(m_restartLabel, QStringLiteral("warning"));
     layout->addWidget(m_restartLabel);
 
     connect(m_table, &QTableWidget::cellChanged,
             this, &PluginManagerWidget::updateDisabledPlugin);
     connect(m_enableUserDirectory, &QCheckBox::toggled,
             this, &PluginManagerWidget::updateUserDirectorySetting);
-    connect(builtInButton, &QPushButton::clicked,
+    connect(builtInAction, &QAction::triggered,
             this, &PluginManagerWidget::openBuiltInDirectory);
-    connect(userButton, &QPushButton::clicked,
+    connect(userAction, &QAction::triggered,
             this, &PluginManagerWidget::openUserDirectory);
     connect(documentationButton, &QPushButton::clicked,
             this, &PluginManagerWidget::openDocumentation);
@@ -113,6 +121,29 @@ PluginManagerWidget::PluginManagerWidget(PluginManager* manager,
             this, &PluginManagerWidget::configurePermissions);
 
     refresh();
+    updateResponsiveColumns();
+}
+
+void PluginManagerWidget::resizeEvent(QResizeEvent* event)
+{
+    QWidget::resizeEvent(event);
+    updateResponsiveColumns();
+}
+
+void PluginManagerWidget::updateResponsiveColumns()
+{
+    if (!m_table)
+        return;
+
+    const bool narrow = width() < 850;
+    const bool veryNarrow = width() < 620;
+    m_table->setColumnHidden(2, veryNarrow); // Version
+    m_table->setColumnHidden(3, veryNarrow); // API
+    m_table->setColumnHidden(4, narrow);     // Capabilities
+    m_table->setColumnHidden(5, narrow);     // Permissions
+    m_table->setColumnHidden(7, narrow);     // Details
+    if (m_explanationLabel)
+        m_explanationLabel->setVisible(!veryNarrow);
 }
 
 void PluginManagerWidget::refresh()
@@ -151,9 +182,11 @@ void PluginManagerWidget::refresh()
             item->setToolTip(value);
             m_table->setItem(row, column, item);
         };
-        setText(1, descriptor.displayName.isEmpty()
-                       ? descriptor.id
-                       : descriptor.displayName);
+        QString pluginName = descriptor.displayName.isEmpty()
+            ? descriptor.id : descriptor.displayName;
+        if (descriptor.experimental)
+            pluginName += tr(" (Experimental)");
+        setText(1, pluginName);
         setText(2, descriptor.version.isEmpty()
                        ? tr("Legacy")
                        : descriptor.version);
@@ -199,20 +232,33 @@ void PluginManagerWidget::updateDisabledPlugin(int row, int column)
         return;
     QSettings settings;
     QSet<QString> disabled;
+    QSet<QString> enabled;
     const QStringList configured =
         settings.value(QStringLiteral("PluginSystem/DisabledPluginIds"))
             .toStringList();
     for (const QString& id : configured)
         disabled.insert(id.trimmed().toLower());
+    const QStringList configuredEnabled =
+        settings.value(QStringLiteral("PluginSystem/EnabledPluginIds"))
+            .toStringList();
+    for (const QString& id : configuredEnabled)
+        enabled.insert(id.trimmed().toLower());
 
-    if (item->checkState() == Qt::Checked)
+    if (item->checkState() == Qt::Checked) {
         disabled.remove(pluginId.toLower());
-    else
+        enabled.insert(pluginId.toLower());
+    } else {
         disabled.insert(pluginId.toLower());
+        enabled.remove(pluginId.toLower());
+    }
 
     QStringList values(disabled.cbegin(), disabled.cend());
     values.sort(Qt::CaseInsensitive);
     settings.setValue(QStringLiteral("PluginSystem/DisabledPluginIds"), values);
+    QStringList enabledValues(enabled.cbegin(), enabled.cend());
+    enabledValues.sort(Qt::CaseInsensitive);
+    settings.setValue(QStringLiteral("PluginSystem/EnabledPluginIds"),
+                      enabledValues);
     settings.sync();
     markRestartRequired();
 }

@@ -40,6 +40,8 @@ struct PluginDescriptor
     QString filePath;
     State state = State::Rejected;
     bool active = false;
+    bool experimental = false;
+    bool defaultEnabled = true;
     QString error;
 
     bool hasCapability(const QString& capability) const;
@@ -55,6 +57,7 @@ public:
     ~PluginManager() override;
 
     void setDisabledPluginIds(const QSet<QString>& pluginIds);
+    void setEnabledPluginIds(const QSet<QString>& pluginIds);
     void setGrantedPermissions(
         const QHash<QString, QSet<QString>>& grantedPermissions);
     void setHostServices(const PluginHostServices& services);
@@ -95,6 +98,7 @@ private:
     void reject(const PluginDescriptor& descriptor, const QString& error);
 
     QSet<QString> m_disabledPluginIds;
+    QSet<QString> m_enabledPluginIds;
     QHash<QString, QSet<QString>> m_grantedPermissions;
     PluginHostServices m_hostServices;
     QVector<PluginDescriptor> m_descriptors;

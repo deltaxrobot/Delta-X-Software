@@ -2,6 +2,7 @@
 #include <QCoreApplication>
 #include <QDir>
 #include <QFileInfo>
+#include <QSettings>
 #include <QtMath>
 #include <cctype>
 #include <cmath>
@@ -127,11 +128,18 @@ SocketConnectionManager::SocketConnectionManager(const QString &address, int por
     connect(WebServer, &QTcpServer::newConnection, this, &SocketConnectionManager::newWebClientConnected);
 
     BlocklyServer = new QTcpServer(this);
-    bool blocklyResult = startBlocklyServer(5050);
-    qDebug() << "Create Blockly server:" << blocklyResult << "port" << blocklyPort;
-    if (blocklyResult)
-    {
-        connect(BlocklyServer, &QTcpServer::newConnection, this, &SocketConnectionManager::newBlocklyClientConnected);
+    const bool legacyBlocklyEnabled = QSettings().value(
+        QStringLiteral("PluginSystem/EnableLegacyBlocklyServer"), false).toBool();
+    if (legacyBlocklyEnabled) {
+        const bool blocklyResult = startBlocklyServer(5050);
+        qDebug() << "Create legacy Blockly server:" << blocklyResult
+                 << "port" << blocklyPort;
+        if (blocklyResult) {
+            connect(BlocklyServer, &QTcpServer::newConnection, this,
+                    &SocketConnectionManager::newBlocklyClientConnected);
+        }
+    } else {
+        qDebug() << "Legacy Blockly server disabled";
     }
 }
 

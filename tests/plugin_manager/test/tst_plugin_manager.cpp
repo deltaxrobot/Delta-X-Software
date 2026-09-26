@@ -11,9 +11,12 @@
 
 #include <QDir>
 #include <QFile>
+#include <QComboBox>
 #include <QGraphicsView>
 #include <QLibrary>
 #include <QLineEdit>
+#include <QPlainTextEdit>
+#include <QPushButton>
 #include <QTabWidget>
 #include <QTemporaryDir>
 #include <QTreeWidget>
@@ -332,6 +335,16 @@ void PluginManagerTest::activatesV3WithPermissionCheckedExtensions()
 
 void PluginManagerTest::loadsBundledBlockProgrammingPlugin()
 {
+    PluginManager disabledByDefault;
+    disabledByDefault.loadFromDirectories({m_blockPluginDirectory});
+    QVERIFY(disabledByDefault.loadedPluginIds().isEmpty());
+    QCOMPARE(disabledByDefault.descriptors().size(), 1);
+    const PluginDescriptor defaultDescriptor =
+        disabledByDefault.descriptors().first();
+    QCOMPARE(defaultDescriptor.state, PluginDescriptor::State::Disabled);
+    QVERIFY(defaultDescriptor.experimental);
+    QVERIFY(!defaultDescriptor.defaultEnabled);
+
     bool sourceLoaded = false;
     bool sourceRun = false;
     bool workerStopped = false;
@@ -377,6 +390,8 @@ void PluginManagerTest::loadsBundledBlockProgrammingPlugin()
         DeltaXPermissions::HealthReport,
     };
     PluginManager manager;
+    manager.setEnabledPluginIds(
+        {QStringLiteral("deltax.block-programming")});
     manager.setHostServices(services);
     manager.setGrantedPermissions(
         {{QStringLiteral("deltax.block-programming"), permissions}});
@@ -393,7 +408,7 @@ void PluginManagerTest::loadsBundledBlockProgrammingPlugin()
     const PluginDescriptor descriptor = manager.descriptors().first();
     QVERIFY(descriptor.active);
     QCOMPARE(descriptor.apiVersion, 3);
-    QCOMPARE(descriptor.version, QStringLiteral("1.1.0"));
+    QCOMPARE(descriptor.version, QStringLiteral("2.0.0"));
     QCOMPARE(descriptor.grantedPermissions.size(), permissions.size());
     QCOMPARE(healthState, QStringLiteral("ready"));
     QVERIFY(manager.panelProvider(descriptor.id));
@@ -430,6 +445,36 @@ void PluginManagerTest::loadsBundledBlockProgrammingPlugin()
     QVERIFY(catalog.value(QStringLiteral("blocks")).toList().size() >= 20);
     QVERIFY(catalog.value(QStringLiteral("templates")).toStringList().contains(
         QStringLiteral("Robot conveyor pick worker")));
+    QVERIFY(catalog.value(QStringLiteral("templates")).toStringList().contains(
+        QStringLiteral("Software self-test")));
+
+    auto* templateCombo = panel->findChild<QComboBox*>(
+        QStringLiteral("blockTemplateCombo"));
+    auto* workspace = panel->findChild<QTreeWidget*>(
+        QStringLiteral("blockWorkspace"));
+    auto* preview = panel->findChild<QPlainTextEdit*>(
+        QStringLiteral("blockPreview"));
+    auto* diagnostics = panel->findChild<QTreeWidget*>(
+        QStringLiteral("blockDiagnostics"));
+    auto* loadButton = panel->findChild<QPushButton*>(
+        QStringLiteral("blockLoadButton"));
+    auto* runButton = panel->findChild<QPushButton*>(
+        QStringLiteral("blockRunButton"));
+    QVERIFY(templateCombo && workspace && preview && diagnostics &&
+            loadButton && runButton);
+    const int selfTestIndex = templateCombo->findText(
+        QStringLiteral("Software self-test"));
+    QVERIFY(selfTestIndex >= 0);
+    templateCombo->setCurrentIndex(selfTestIndex);
+    QVERIFY(QMetaObject::invokeMethod(templateCombo, "activated",
+                                      Qt::DirectConnection,
+                                      Q_ARG(int, selfTestIndex)));
+    QTRY_VERIFY(workspace->topLevelItemCount() > 0);
+    QTRY_VERIFY(preview->toPlainText().contains(
+        QStringLiteral("PASS block programming")));
+    QCOMPARE(diagnostics->topLevelItemCount(), 0);
+    QVERIFY(loadButton->isEnabled());
+    QVERIFY(runButton->isEnabled());
 
     QVariantMap generated;
     QVERIFY(manager.executeCommand(

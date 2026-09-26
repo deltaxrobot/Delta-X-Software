@@ -1,123 +1,56 @@
 #pragma once
-
+#include "DrawingProgram.h"
 #include <QLabel>
-#include <QLineEdit>
-#include <QPainter>
-#include <QPixmap>
-#include <QDebug>
-#include <QShowEvent>
-#include <QResizeEvent>
-#include <QMouseEvent>
-#include <qmath.h>
-#include <qvector4d.h>
-#include <qvector3d.h>
-#include <qvector2d.h>
-#include <qvector.h>
-#include <qplaintextedit.h>
-#include <qcombobox.h>
-
-#include <opencv2/opencv.hpp>
-#include <opencv2/highgui.hpp>
-#include <opencv2/core.hpp>
-#include <opencv2/imgproc.hpp>
-#include <ImageUnity.h>
-
-#include <QDir>
-#include <QCoreApplication>
-#include <cmath>
-
-#ifndef M_PI
-#define M_PI 3.14159265358979323846
-#endif
-
-#define ZOOM_IN_ICON		"icon/Zoom In_16px.png"
-#define ZOOM_OUT_ICON		"icon/Zoom Out_16px.png"
-#define CIRCLE_ICON			"icon/Circle_16px.png"
-#define ARC_ICON			"icon/Circled Notch_16px.png"
-#define RECTANGLE_ICON		"icon/Rectangle_16px.png"
-#define LINE_ICON			"icon/Line_16px.png"
-#define CURSOR_ICON			"icon/Cursor_16px.png"
-
-#define PRECISION			1.0f
-
-enum Tool
-{
-	CURSOR = 0,
-	LINE,
-	RECTANGLE,
-	ARC,
-	CIRCLE,
-	ZOOM_IN,
-	ZOOM_OUT
-};
-
-class Image
-{
-public:
-	QPixmap* Pixmap;
-	QPoint Size;
-	QPoint Position;
-	QString ToolType = "line";
-	QString Conversion = "threshold";
-	float LineSpace = 1;
-};
 
 class DrawingWidget : public QLabel
 {
-	Q_OBJECT
-
+    Q_OBJECT
 public:
-	DrawingWidget(QWidget *parent);
-	~DrawingWidget();
-
-	void InitGrid();
-	void AddImage(int x, int y, int w, int h, QPixmap pix, float space, QString type, QString conversion);
-    void AddLineToStack(QPoint p1, QPoint p2);
-    void DrawLineFromStack();
-	void AddRectangle(QRect rec);
+    explicit DrawingWidget(QWidget* parent = nullptr);
+    const DrawingProgram::Paths& paths() const { return m_paths; }
+    void replacePaths(const DrawingProgram::Paths& paths);
     void SetPhysicalSize(float widthMm, float heightMm);
     void SetPlaneMarkers(const QVector<QPointF>& markers);
-
-	void ClearShape();
-	void ClearImage();
-
-    QVector<QVector<QPointF>> Vectors;
-
-    QVector<Image> Images;
-
-public slots:
-	void SelectZoomInTool();
-	void SelectZoomOutTool();
-    void EraserAll();
-	void SelectLineTool();
-	void SelectRectangleTool();
-	void SelectCircleTool();
-	void SelectArcTool();
-	void SelectCursor();
-
-protected:
-	void mousePressEvent(QMouseEvent *event);
-	void mouseMoveEvent(QMouseEvent *event);
-	void mouseReleaseEvent(QMouseEvent *event);
-	void paintEvent(QPaintEvent *event);
-	void showEvent(QShowEvent *event) override;
-	void resizeEvent(QResizeEvent *event) override;
-
-private:
-    QPixmap topLayer;
-
-	QVector<QLine> lines;
-
-	QVector<QRect> rectangles;
-	QVector<QVector3D> circles;
-	QVector<QVector4D> arcs;
-	Tool tool = CURSOR;
-	bool gridInitialized = false;
-	void changeToolIconInArea(QString filePath);
+    QSizeF physicalSize() const { return m_size; }
     QPointF mapToLogical(const QPointF& point) const;
     QPointF mapToWidget(const QPointF& point) const;
-
-    float physicalWidthMm = 0.0f;
-    float physicalHeightMm = 0.0f;
-    QVector<QPointF> planeMarkers;
+    bool saveDrawing(const QString& path, QString* error) const;
+    bool loadDrawing(const QString& path, QString* error);
+    bool canUndo() const { return !m_undo.isEmpty(); }
+    bool canRedo() const { return !m_redo.isEmpty(); }
+public slots:
+    void SelectZoomInTool();
+    void SelectZoomOutTool();
+    void FitView();
+    void EraserAll();
+    void Undo();
+    void Redo();
+    void SelectLineTool();
+    void SelectRectangleTool();
+    void SelectCircleTool();
+    void SelectArcTool();
+    void SelectCursor();
+signals:
+    void pathsChanged();
+    void physicalSizeChanged();
+protected:
+    void mousePressEvent(QMouseEvent*) override;
+    void mouseMoveEvent(QMouseEvent*) override;
+    void mouseReleaseEvent(QMouseEvent*) override;
+    void keyPressEvent(QKeyEvent*) override;
+    void paintEvent(QPaintEvent*) override;
+private:
+    enum Tool { Pan, Line, Rectangle, Circle, Arc };
+    void select(Tool tool);
+    void cancelGesture();
+    QVector<QPointF> gesturePath(const QPointF& end) const;
+    double scale() const;
+    DrawingProgram::Paths m_paths;
+    QVector<DrawingProgram::Paths> m_undo, m_redo;
+    QVector<QPointF> m_markers, m_preview;
+    QSizeF m_size{100, 100};
+    double m_zoom = 1;
+    QPointF m_pan, m_start, m_last;
+    Tool m_tool = Pan;
+    bool m_dragging = false;
 };

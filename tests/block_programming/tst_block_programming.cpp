@@ -4,6 +4,8 @@
 #include "GScriptAnalyzer.h"
 
 #include <QJsonArray>
+#include <QJsonDocument>
+#include <QFile>
 
 #include <algorithm>
 
@@ -16,6 +18,9 @@ class BlockProgrammingTest : public QObject
 private slots:
     void catalogHasUniqueDefinitionsAndDefaults();
     void templatesCompileToValidGScript();
+    void softwareSelfTestFixtureMatchesTemplate();
+    void robotMotionFixtureCompiles();
+    void robotCycleFixtureCompiles();
     void serializationRoundTripsNestedPrograms();
     void rejectsInvalidDocumentsAndStructures();
     void validatesProcessValuesAndDeviceIdentifiers();
@@ -47,6 +52,10 @@ void BlockProgrammingTest::templatesCompileToValidGScript()
         const CompileResult compiled = BlockProgram::compile(
             BlockProgram::createTemplate(name));
         QVERIFY2(!compiled.hasErrors(), qPrintable(name));
+        if (name == QStringLiteral("Robot conveyor pick worker")) {
+            QVERIFY(compiled.script.contains(QStringLiteral("X[#Target.X]")));
+            QVERIFY(!compiled.script.contains(QStringLiteral("X#Target.X")));
+        }
         const GScriptAnalysisResult analysis =
             GScriptAnalyzer::analyze(compiled.script);
         if (analysis.hasErrors()) {
@@ -60,6 +69,73 @@ void BlockProgrammingTest::templatesCompileToValidGScript()
                              messages.join(QLatin1Char('\n'))));
         }
     }
+}
+
+void BlockProgrammingTest::softwareSelfTestFixtureMatchesTemplate()
+{
+    const QString fixtureRoot = QFINDTESTDATA("../../script-example/block-programming");
+    QVERIFY(!fixtureRoot.isEmpty());
+    QFile documentFile(fixtureRoot + QStringLiteral("/Software Self Test.dxblocks"));
+    QVERIFY(documentFile.open(QIODevice::ReadOnly));
+    QJsonParseError parseError;
+    const QJsonDocument document = QJsonDocument::fromJson(documentFile.readAll(), &parseError);
+    QCOMPARE(parseError.error, QJsonParseError::NoError);
+    QVERIFY(document.isObject());
+    QVector<BlockNode> blocks;
+    QString error;
+    QVERIFY2(BlockProgram::fromJson(document.object(), &blocks, &error), qPrintable(error));
+    QCOMPARE(BlockProgram::toJson(blocks),
+             BlockProgram::toJson(BlockProgram::createTemplate(
+                 QStringLiteral("Software self-test"))));
+    const CompileResult compiled = BlockProgram::compile(blocks);
+    QVERIFY(!compiled.hasErrors());
+    QFile scriptFile(fixtureRoot + QStringLiteral("/Software Self Test.gcode"));
+    QVERIFY(scriptFile.open(QIODevice::ReadOnly));
+    QCOMPARE(compiled.script, QString::fromUtf8(scriptFile.readAll()));
+    QVERIFY(!GScriptAnalyzer::analyze(compiled.script).hasErrors());
+}
+
+void BlockProgrammingTest::robotMotionFixtureCompiles()
+{
+    const QString fixtureRoot = QFINDTESTDATA("../../script-example/block-programming");
+    QVERIFY(!fixtureRoot.isEmpty());
+    QFile documentFile(fixtureRoot + QStringLiteral("/Robot 10mm Z Test.dxblocks"));
+    QVERIFY(documentFile.open(QIODevice::ReadOnly));
+    QJsonParseError parseError;
+    const QJsonDocument document = QJsonDocument::fromJson(documentFile.readAll(), &parseError);
+    QCOMPARE(parseError.error, QJsonParseError::NoError);
+    QVector<BlockNode> blocks;
+    QString error;
+    QVERIFY2(BlockProgram::fromJson(document.object(), &blocks, &error), qPrintable(error));
+    const CompileResult compiled = BlockProgram::compile(blocks);
+    QVERIFY2(!compiled.hasErrors(), qPrintable(error));
+    QFile scriptFile(fixtureRoot + QStringLiteral("/Robot 10mm Z Test.gcode"));
+    QVERIFY(scriptFile.open(QIODevice::ReadOnly));
+    QCOMPARE(compiled.script, QString::fromUtf8(scriptFile.readAll()));
+    QVERIFY(compiled.script.contains(QStringLiteral("Z[#Motion.Start.Z - 10]")));
+    QVERIFY(!GScriptAnalyzer::analyze(compiled.script).hasErrors());
+}
+
+void BlockProgrammingTest::robotCycleFixtureCompiles()
+{
+    const QString fixtureRoot = QFINDTESTDATA("../../script-example/block-programming");
+    QVERIFY(!fixtureRoot.isEmpty());
+    QFile documentFile(fixtureRoot + QStringLiteral("/Delta X 50 Cycle Example.dxblocks"));
+    QVERIFY(documentFile.open(QIODevice::ReadOnly));
+    QJsonParseError parseError;
+    const QJsonDocument document = QJsonDocument::fromJson(documentFile.readAll(), &parseError);
+    QCOMPARE(parseError.error, QJsonParseError::NoError);
+    QVector<BlockNode> blocks;
+    QString error;
+    QVERIFY2(BlockProgram::fromJson(document.object(), &blocks, &error), qPrintable(error));
+    const CompileResult compiled = BlockProgram::compile(blocks);
+    QVERIFY2(!compiled.hasErrors(), qPrintable(error));
+    QFile scriptFile(fixtureRoot + QStringLiteral("/Delta X 50 Cycle Example.gcode"));
+    QVERIFY(scriptFile.open(QIODevice::ReadOnly));
+    QCOMPARE(compiled.script, QString::fromUtf8(scriptFile.readAll()));
+    QVERIFY(compiled.script.contains(QStringLiteral("FOR #BlockLoop1 = 1 TO 50 STEP 1")));
+    QVERIFY(compiled.script.contains(QStringLiteral("F[2000] A[20000]")));
+    QVERIFY(!GScriptAnalyzer::analyze(compiled.script).hasErrors());
 }
 
 void BlockProgrammingTest::serializationRoundTripsNestedPrograms()

@@ -8,7 +8,7 @@ These files are a commissioning baseline for one `#Objects` tracking list, one c
 4. Create three G-Script threads and load `00-vision-tracking.gcode`, `10-robot0-type0.gcode`, and `11-robot1-type1.gcode`.
 5. Dry-run with a raised Z before enabling the end effector or production conveyor.
 
-In **Tracking Manager**, start with `Publish interval = 50 ms`, `Vision stale = 2000 ms`, `Encoder stale = 2000 ms`, `Frame timeout = 3000 ms`, `Max pending frames = 8`, and `Max encoder reads = 24`. The Runtime line must show no overflow, and encoder/vision age must remain below the stale limits before a robot is enabled.
+In **Tracking Runtime Configuration**, start with `Publish period = 50 ms`, `Maximum camera age = 2000 ms`, `Maximum encoder age = 2000 ms`, `Frame completion timeout = 3000 ms`, `Maximum queued frames = 8`, and `Maximum queued encoder samples = 24`. The **Tracking status** line must show no overflow, and encoder/camera age must remain below the stale limits before a robot is enabled.
 
 Both workers use `Passert` to validate Safe Z relative to Pick Z and use `PreleaseObject` when confidence is below the process threshold. Set `R0MinConfidence` and `R1MinConfidence` from a validated model; never remove the release branch.
 

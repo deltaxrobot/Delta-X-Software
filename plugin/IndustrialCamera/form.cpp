@@ -1,5 +1,17 @@
 #include "form.h"
 #include "ui_form.h"
+#include <QStyle>
+
+namespace
+{
+void setStatusRole(QWidget* widget, const char* role)
+{
+    widget->setProperty("statusRole", role);
+    widget->style()->unpolish(widget);
+    widget->style()->polish(widget);
+    widget->update();
+}
+}
 
 Form::Form(QWidget *parent) :
     QWidget(parent),
@@ -10,9 +22,7 @@ Form::Form(QWidget *parent) :
     CameraReaderWork = new CameraReader();
     const bool hasIndustrialBackend = CameraReaderWork->HasAvailableBackend();
     ui->lbBackendStatus->setText(CameraReaderWork->BackendStatus());
-    ui->lbBackendStatus->setStyleSheet(
-        hasIndustrialBackend ? QStringLiteral("color: #66bb6a;")
-                             : QStringLiteral("color: #ffb74d;"));
+    setStatusRole(ui->lbBackendStatus, hasIndustrialBackend ? "success" : "warning");
     ui->pbConnectCamera->setEnabled(false);
     CameraReaderWork->moveToThread(new QThread(this));
     connect(CameraReaderWork->thread(), SIGNAL(finished()), CameraReaderWork, SLOT(deleteLater()));
@@ -139,7 +149,7 @@ void Form::GetResultOfCameraConnecting(bool result)
     {
         ui->lbBackendStatus->setText(
             QStringLiteral("Connection failed. Check camera access, network/USB link and vendor runtime."));
-        ui->lbBackendStatus->setStyleSheet(QStringLiteral("color: #ff6b6b;"));
+        setStatusRole(ui->lbBackendStatus, "danger");
         ui->pbConnectCamera->setText(QStringLiteral("Connect"));
     }
 }
@@ -161,14 +171,14 @@ void Form::GetCameraList(QStringList list)
             QStringLiteral("%1 GigE/USB3 Vision camera(s) found\n%2")
                 .arg(list.size())
                 .arg(BackendStatus()));
-        ui->lbBackendStatus->setStyleSheet(QStringLiteral("color: #66bb6a;"));
+        setStatusRole(ui->lbBackendStatus, "success");
     } else {
         ui->lbBackendStatus->setText(
             HasAvailableBackend()
                 ? QStringLiteral("Runtime ready, but no GigE/USB3 Vision camera was found.\n%1")
                       .arg(BackendStatus())
                 : BackendStatus());
-        ui->lbBackendStatus->setStyleSheet(QStringLiteral("color: #ffb74d;"));
+        setStatusRole(ui->lbBackendStatus, "warning");
     }
 }
 
@@ -187,7 +197,7 @@ void Form::on_pbConnectCamera_clicked()
                 HasAvailableBackend()
                     ? QStringLiteral("No GigE/USB3 Vision camera is available. Refresh after checking the connection.")
                     : BackendStatus());
-            ui->lbBackendStatus->setStyleSheet(QStringLiteral("color: #ffb74d;"));
+            setStatusRole(ui->lbBackendStatus, "warning");
             return;
         }
 

@@ -1,0 +1,16 @@
+{
+  "format": "deltax-block-program",
+  "version": 1,
+  "blocks": [
+    {"type":"comment","fields":{"text":"Software-only self-test: no device commands"},"children":[]},
+    {"type":"set","fields":{"variable":"Blocks.Counter","value":"0"},"children":[]},
+    {"type":"repeat","fields":{"count":"3"},"children":[
+      {"type":"set","fields":{"variable":"Blocks.Counter","value":"#Blocks.Counter + 1"},"children":[]},
+      {"type":"log","fields":{"message":"Block iteration"},"children":[]}
+    ]},
+    {"type":"assert","fields":{"condition":"#Blocks.Counter == 3","message":"Block loop failed"},"children":[]},
+    {"type":"wait_until","fields":{"condition":"#Blocks.Counter == 3","timeout":200,"poll":10,"message":"Block value was not published"},"children":[]},
+    {"type":"delay","fields":{"milliseconds":10},"children":[]},
+    {"type":"log","fields":{"message":"PASS block programming"},"children":[]}
+  ]
+}

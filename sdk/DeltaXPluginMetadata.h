@@ -61,6 +61,31 @@ inline QString pluginVersion(const QJsonObject& loaderMetadata)
         .trimmed();
 }
 
+inline QString pluginDisplayName(const QJsonObject& loaderMetadata)
+{
+    return pluginMetadata(loaderMetadata)
+        .value(QStringLiteral("displayName"))
+        .toString()
+        .trimmed();
+}
+
+inline QString stability(const QJsonObject& loaderMetadata)
+{
+    const QString value = pluginMetadata(loaderMetadata)
+                              .value(QStringLiteral("stability"))
+                              .toString()
+                              .trimmed()
+                              .toLower();
+    return value.isEmpty() ? QStringLiteral("stable") : value;
+}
+
+inline bool defaultEnabled(const QJsonObject& loaderMetadata)
+{
+    const QJsonValue value = pluginMetadata(loaderMetadata)
+                                 .value(QStringLiteral("defaultEnabled"));
+    return value.isUndefined() ? true : value.toBool(true);
+}
+
 inline QStringList capabilities(const QJsonObject& loaderMetadata)
 {
     QStringList result;
@@ -143,6 +168,29 @@ inline QString compatibilityError(const QJsonObject& loaderMetadata)
         if (!isSemanticVersion(ownVersion)) {
             return QStringLiteral(
                 "metadata field 'pluginVersion' must use semantic versioning");
+        }
+        const QJsonValue rawDisplayName =
+            metadata.value(QStringLiteral("displayName"));
+        if (!rawDisplayName.isUndefined() &&
+            (!rawDisplayName.isString() ||
+             rawDisplayName.toString().trimmed().isEmpty())) {
+            return QStringLiteral(
+                "metadata field 'displayName' must be a non-empty string");
+        }
+        const QJsonValue rawStability = metadata.value(QStringLiteral("stability"));
+        if (!rawStability.isUndefined() &&
+            (!rawStability.isString() ||
+             !QSet<QString>{QStringLiteral("stable"), QStringLiteral("beta"),
+                            QStringLiteral("experimental")}
+                  .contains(rawStability.toString().trimmed().toLower()))) {
+            return QStringLiteral(
+                "metadata field 'stability' must be stable, beta, or experimental");
+        }
+        const QJsonValue rawDefaultEnabled =
+            metadata.value(QStringLiteral("defaultEnabled"));
+        if (!rawDefaultEnabled.isUndefined() && !rawDefaultEnabled.isBool()) {
+            return QStringLiteral(
+                "metadata field 'defaultEnabled' must be a boolean");
         }
         const QJsonValue rawCapabilities =
             metadata.value(QStringLiteral("capabilities"));

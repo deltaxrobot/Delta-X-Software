@@ -39,7 +39,7 @@ public:
     QString ProjectName = "project0";
 signals:
     void GotEncoderPosition(int id, float position);
-    void DeviceNotAvailable(QString device);
+    void DeviceNotAvailable(QString device, QString reason);
     void DeviceResponded(QString id, QString response);
     void GotDeviceInfo(QString jsonDeviceInfo);
     void Log(QString device, QString msg, int direction);

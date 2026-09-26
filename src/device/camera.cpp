@@ -119,6 +119,16 @@ bool applyResolution(cv::VideoCapture *capture, int width, int height)
 
 Camera::Camera(QObject *parent) : QObject(parent)
 {
+    phoneServer = new PhoneCameraServer(this);
+    connect(phoneServer,&PhoneCameraServer::frameReady,this,[this](const QImage& image,quint64 request,int tracking){
+        if(Source != "Phone Camera") return;
+        const QImage rgb=image.convertToFormat(QImage::Format_RGB888);
+        cv::Mat view(rgb.height(),rgb.width(),CV_8UC3,const_cast<uchar*>(rgb.constBits()),rgb.bytesPerLine());
+        cv::Mat bgr;cv::cvtColor(view,bgr,cv::COLOR_RGB2BGR);
+        Width=bgr.cols;Height=bgr.rows;
+        publishFrame(bgr,request,tracking);
+    });
+    connect(phoneServer,&PhoneCameraServer::frameFailed,this,[this](quint64 request,int tracking,QString reason){failCapture(request,tracking,reason);});
     WebcamInstance = new cv::VideoCapture();
     industrialCaptureTimeout = new QTimer(this);
     industrialCaptureTimeout->setSingleShot(true);
@@ -238,6 +248,14 @@ void Camera::GeneralCapture()
 
 void Camera::capture(quint64 requestId, int trackingId)
 {
+    if (Source == "Phone Camera") {
+        // Timer-driven preview ticks may be faster than Wi-Fi. Coalesce them;
+        // correlated G-Script requests still receive an explicit busy failure.
+        if(requestId==0 && phoneServer->capturePending()) return;
+        if (!phoneServer->requestFrame(requestId,trackingId))
+            failCapture(requestId,trackingId,"Phone is disconnected or a previous capture is still pending");
+        return;
+    }
     if (Source == "Webcam" || Source == "Video")
     {
         if (!WebcamInstance || !WebcamInstance->isOpened()) {
@@ -311,6 +329,7 @@ void Camera::CaptureWebcam()
 
 void Camera::SetSource(QString source)
 {
+    if(Source == "Phone Camera" && source.trimmed() != Source) phoneServer->stop();
     Source = source.trimmed();
 }
 
@@ -379,6 +398,7 @@ void Camera::failCapture(quint64 requestId, int trackingId, const QString& reaso
 
 void Camera::ReleaseCamera()
 {
+    phoneServer->stop();
     industrialCaptureTimeout->stop();
     industrialCapturePending = false;
     pendingIndustrialRequestId = 0;

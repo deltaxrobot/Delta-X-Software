@@ -1,4 +1,5 @@
 #include "TabDashboard.h"
+#include <QStyle>
 
 TabDashboard::TabDashboard(QWidget *parent) : QWidget(parent)
 {
@@ -18,11 +19,8 @@ void TabDashboard::InitPanel(QWidget *panel, QStackedWidget* pageStack)
 {
     qPanel = panel;
     swPageStack = pageStack;
-}
-
-void TabDashboard::SetSelectedState(QString qss)
-{
-    SelectedStateQSS = qss;
+    if (qPanel)
+        qPanel->setProperty("navigationRail", true);
 }
 
 void TabDashboard::SelectPage()
@@ -63,14 +61,14 @@ void TabDashboard::SelectPage()
 
     for(int i = 0; i < TabPages->length(); i++)
     {
-        // clear selected state for all button
-        TabPages->at(i)->Button->setStyleSheet("");
+        const bool selected = TabPages->at(i)->Button == senderButton;
+        TabPages->at(i)->Button->setProperty("navigationSelected", selected);
+        TabPages->at(i)->Button->style()->unpolish(TabPages->at(i)->Button);
+        TabPages->at(i)->Button->style()->polish(TabPages->at(i)->Button);
 
-        if(TabPages->at(i)->Button == senderButton)
+        if(selected)
         {
             swPageStack->setCurrentWidget(TabPages->at(i)->Page);
-            // Set forcus color for selected button
-            TabPages->at(i)->Button->setStyleSheet(SelectedStateQSS);
 
             emit TabChanged(TabPages->at(i)->Button);
         }

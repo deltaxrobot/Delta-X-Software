@@ -22,6 +22,8 @@ $requiredFiles = @(
     'docs\external-vision.md',
     'docs\gscript-design.md',
     'docs\gscript-runtime.md',
+    'docs\gcode-motion-engine.md',
+    'docs\mouse-robot-control.md',
     'docs\multi-robot-conveyor-sorting.md',
     'docs\variable-manager.md',
     'gcode\README.txt',

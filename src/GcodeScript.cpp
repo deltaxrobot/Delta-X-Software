@@ -19,6 +19,32 @@ quint64 nextVisionRequestId()
 {
     return g_nextVisionRequestId.fetch_add(1, std::memory_order_relaxed);
 }
+
+bool isDeviceFaultResponse(const QString& response)
+{
+    const QString text = response.trimmed();
+    return text.contains(QStringLiteral("error"), Qt::CaseInsensitive) ||
+           text.startsWith(QStringLiteral("Unknown:"), Qt::CaseInsensitive) ||
+           text.startsWith(QStringLiteral("Delta:EStop"), Qt::CaseInsensitive) ||
+           text.compare(QStringLiteral("Delta:Stop"), Qt::CaseInsensitive) == 0 ||
+           text.compare(QStringLiteral("Delta:Pause"), Qt::CaseInsensitive) == 0;
+}
+
+QString stripInlineComment(const QString& input)
+{
+    bool inSingleQuote = false;
+    bool inDoubleQuote = false;
+    for (int i = 0; i < input.size(); ++i) {
+        const QChar character = input.at(i);
+        if (character == '\'' && !inDoubleQuote)
+            inSingleQuote = !inSingleQuote;
+        else if (character == '"' && !inSingleQuote)
+            inDoubleQuote = !inDoubleQuote;
+        else if (character == ';' && !inSingleQuote && !inDoubleQuote)
+            return input.left(i);
+    }
+    return input;
+}
 }
 #include "CloudPointMapper.h"
 #include "PluginExtensionRegistry.h"
@@ -40,7 +66,7 @@ static constexpr QRegularExpression::PatternOptions kRegexOptimizeOption = QRegu
 #endif
 
 const QRegularExpression GcodeScript::m98Regex(
-    "M98\\s+([A-Za-z][A-Za-z0-9]*)(?:\\((.*)\\))?",
+    "M98\\s+([A-Za-z][A-Za-z0-9_]*)(?:\\((.*)\\))?",
     kRegexOptimizeOption | QRegularExpression::CaseInsensitiveOption);
 const QRegularExpression GcodeScript::objectInAreaRegex("\\(([^)]+)\\)", kRegexOptimizeOption);
 
@@ -173,6 +199,12 @@ void GcodeScript::ExecuteGcode(QString gcodes, int startMode)
         emit LogMessage(diagnostic.message);
         return;
     }
+
+    // QTextEdit normalizes line endings, while files received through the CLI
+    // retain Windows CRLF. Normalize once at the runtime boundary so tokens,
+    // labels and subprogram names never contain a trailing carriage return.
+    gcodes.replace(QStringLiteral("\r\n"), QStringLiteral("\n"));
+    gcodes.replace(QLatin1Char('\r'), QLatin1Char('\n'));
 
     setExecutionState(ExecutionState::Validating, "Validating program");
     const GScriptAnalysisResult analysis = GScriptAnalyzer::analyze(gcodes);
@@ -351,7 +383,7 @@ void GcodeScript::GetResponse(QString deviceId, QString response)
         return;
     }
 
-    if (deviceId == transmitDeviceId && response.contains("error", Qt::CaseInsensitive))
+    if (deviceId == transmitDeviceId && isDeviceFaultResponse(response))
     {
         const QString message = QString("Device %1 rejected '%2': %3")
                                     .arg(deviceId, transmitMsg, response.trimmed());
@@ -446,6 +478,14 @@ void GcodeScript::TransmitNextGcode()
 
             isGcode = findExeGcodeAndTransmit();
         }
+
+        // The last instruction may still be awaiting its asynchronous result.
+        // Only its completion callback may finish the program in that case.
+        const ExecutionState state = executionState.load(std::memory_order_acquire);
+        if (!isRunning || state == ExecutionState::WaitingForDevice ||
+            state == ExecutionState::WaitingForTimer ||
+            state == ExecutionState::WaitingForCondition)
+            break;
 
         if (gcodeOrder >= gcodeList.size())
         {
@@ -785,12 +825,10 @@ void GcodeScript::prepareCurrentLine()
 
 bool GcodeScript::shouldSkipLine()
 {
-    if (currentLine.isEmpty() || currentLine.at(0) == ';') {
+    currentLine = stripInlineComment(currentLine).trimmed();
+    if (currentLine.isEmpty()) {
         gcodeOrder++;
         return true;
-    }
-    if(currentLine.contains(";")) {
-        currentLine = currentLine.split(";").at(0);
     }
     return false;
 }
@@ -1435,11 +1473,11 @@ QString GcodeScript::cloudPointGetStats()
     CloudPointMapper::MappingStats stats = mapper->getMappingStats();
     
     QString statsText;
-    statsText += QString("Points: %1, ").arg(stats.totalPoints);
-    statsText += QString("Avg Error: %1mm, ").arg(stats.averageError, 0, 'f', 2);
-    statsText += QString("Max Error: %1mm, ").arg(stats.maxError, 0, 'f', 2);
-    statsText += QString("Coverage: %1%, ").arg(stats.coverage, 0, 'f', 1);
-    statsText += QString("Valid: %1").arg(stats.isValid ? "Yes" : "No");
+    statsText += QString("Reference pairs: %1, ").arg(stats.totalPoints);
+    statsText += QString("Mean residual: %1 mm, ").arg(stats.averageError, 0, 'f', 2);
+    statsText += QString("Maximum residual: %1 mm, ").arg(stats.maxError, 0, 'f', 2);
+    statsText += QString("Image-area coverage: %1%, ").arg(stats.coverage, 0, 'f', 1);
+    statsText += QString("Validation: %1").arg(stats.isValid ? "Passed" : "Not passed");
     
     return statsText;
 }
@@ -2156,7 +2194,7 @@ bool GcodeScript::findExeGcodeAndTransmit()
 
         if (currentCommand == "M98" && valuePairsSize > (i + 1))
         {
-            QRegularExpressionMatch match = m98Regex.match(currentLine.replace('_', ""));
+            QRegularExpressionMatch match = m98Regex.match(currentLine);
 
             if (match.hasMatch()) {
                 QString functionName = match.captured(1);
@@ -2165,6 +2203,9 @@ bool GcodeScript::findExeGcodeAndTransmit()
                 if (!functionName.isEmpty() && functionName.at(0) == 'P')
                     functionName.remove(0, 1);
 
+                // Function names accept legacy underscore aliases (for example
+                // send_gcode), but argument identifiers must remain untouched.
+                functionName.remove('_');
                 functionName = functionName.toLower();
 
                 QStringList paramList;
@@ -2196,8 +2237,9 @@ bool GcodeScript::findExeGcodeAndTransmit()
                         return value.mid(1, value.size() - 2);
                     }
                     if (value.startsWith('#')) {
-                        const QVariant resolved = getValueAsQVariant(value);
-                        return resolved.isValid() ? resolved.toString() : QString();
+                        // Use the expression resolver so vector/point members
+                        // such as #Position.X are printable too.
+                        return calculateExpressions(value).trimmed();
                     }
                     return value;
                 };
@@ -2208,7 +2250,7 @@ bool GcodeScript::findExeGcodeAndTransmit()
                     return ok ? result : fallback;
                 };
 
-                if (functionName == "send")
+                if (functionName == "send" || functionName == "sendgcode")
                 {
                     if (paramList.size() < 2 || paramList.size() > 4) {
                         faultExecution("send requires: deviceId, command[, responseVariable[, timeoutMs]].");
@@ -2429,6 +2471,34 @@ bool GcodeScript::findExeGcodeAndTransmit()
 
                     emit AddObject(listName, objects);
                     gcodeOrder++;
+                    return false;
+                }
+
+                if (functionName == "clearobjects" && currentLine.contains('(')) {
+                    if (paramList.size() != 1) {
+                        faultExecution("clearObjects requires exactly one list name.");
+                        return true;
+                    }
+                    emit DeleteAllObjects(identifierParameter(paramList.first()));
+                    ++gcodeOrder;
+                    return false;
+                }
+                if (functionName == "logmessage" && currentLine.contains('(')) {
+                    if (paramList.size() != 1) {
+                        faultExecution("logMessage requires exactly one message.");
+                        return true;
+                    }
+                    emit LogMessage(textParameter(paramList.first()));
+                    ++gcodeOrder;
+                    return false;
+                }
+                if (functionName == "deleteobject" && currentLine.contains('(')) {
+                    if (paramList.size() != 1) {
+                        faultExecution("deleteObject requires exactly one object index.");
+                        return true;
+                    }
+                    emit DeleteObject(static_cast<int>(numericParameter(paramList.first(), -1)));
+                    ++gcodeOrder;
                     return false;
                 }
 
@@ -3287,253 +3357,91 @@ QString GcodeScript::calculateExpressions2(QString expression)
 
 QString GcodeScript::calculateExpressions(QString expression)
 {
-    expression = expression.replace("  ", " ");
-
-    int loopNumber = 100;
-
-    while (loopNumber--)
-    {
-        int openIndex = expression.lastIndexOf('[');
-
-        int multiplyIndex = expression.indexOf('*');
-        int divideIndex = expression.indexOf('/');
-        int moduloIndex = expression.indexOf('%');
-        int plusIndex = expression.indexOf('+');
-        int subIndex = expression.indexOf("- ");
-
-        int andIndex = expression.indexOf("AND");
-        int orIndex = expression.indexOf("OR");
-        int xorIndex = expression.indexOf("XOR");
-
-        int eqIndex = expression.indexOf("EQ");
-        int neIndex = expression.indexOf("NE");
-        int ltIndex = expression.indexOf("LT");
-        int leIndex = expression.indexOf("LE");
-        int gtIndex = expression.indexOf("GT");
-        int geIndex = expression.indexOf("GE");
-
-        if (eqIndex == -1)
-        {
-            eqIndex = expression.indexOf("==");
-        }
-        if (neIndex == -1)
-        {
-            neIndex = expression.indexOf("!=");
-        }
-        if (ltIndex == -1)
-        {
-            ltIndex = expression.indexOf("<");
-        }
-        if (leIndex == -1)
-        {
-            leIndex = expression.indexOf("<=");
-        }
-        if (gtIndex == -1)
-        {
-            gtIndex = expression.indexOf(">");
-        }
-        if (geIndex == -1)
-        {
-            geIndex = expression.indexOf(">=");
-        }
-        if (andIndex == -1)
-        {
-            andIndex = expression.indexOf("&&");
-        }
-        if (orIndex == -1)
-        {
-            orIndex = expression.indexOf("||");
-        }
-        if (xorIndex == -1)
-        {
-            xorIndex = expression.indexOf("^^");
-        }
-
-        if (openIndex > -1)
-        {
-            int closeIndex = expression.indexOf(']', openIndex);
-            QString subExpression = expression.mid(openIndex + 1, closeIndex - openIndex -1);
-            QString result = calculateExpressions(subExpression);
-
-            subExpression = QString("[") + subExpression + "]";
-
-            expression.replace(subExpression, result);
-
-            continue;
-        }
-        else if ((multiplyIndex > -1 || divideIndex > -1 || moduloIndex > -1 || plusIndex > -1 || subIndex > -1 || andIndex > -1 || orIndex > -1 || xorIndex > -1) && isNotNegative(expression) && !expression.contains('('))
-        {
-            // 3 + 2 * 5 - 4 / 2
-
-            int operaIndex = subIndex;
-
-            operaIndex = (plusIndex > -1) ? plusIndex : operaIndex;
-            operaIndex = (andIndex > -1) ? andIndex : operaIndex;
-            operaIndex = (orIndex > -1) ? orIndex : operaIndex;
-            operaIndex = (xorIndex > -1) ? xorIndex : operaIndex;
-            operaIndex = (multiplyIndex > -1) ? multiplyIndex : operaIndex;
-            operaIndex = (divideIndex > -1) ? divideIndex : operaIndex;
-            operaIndex = (moduloIndex > -1) ? moduloIndex : operaIndex;
-
-            QString value1S = getLeftWord(expression, operaIndex);
-            QString value2S = getRightWord(expression, operaIndex);
-
-            QString value1Val = getValueAsString(value1S);
-            QString value2Val = getValueAsString(value2S);
-
-            float value1 = value1Val.toFloat();
-            float value2 = value2Val.toFloat();
-
-            float result = value1 - value2;
-            QString resultS = QString::number(result);
-
-            QString operaExpression = value1S + " - " + value2S;
-
-            if (multiplyIndex > -1)
-            {
-                result = value1 * value2;
-                resultS = QString::number(result);
-
-                operaExpression = value1S + " * " + value2S;
+    expression = expression.trimmed();
+    // Split on the lowest-precedence top-level operator. Choosing the rightmost
+    // operator at each precedence makes subtraction/division left-associative.
+    // Parentheses, function arguments, quoted strings and brackets stay intact.
+    const QList<QStringList> precedence = {
+        {"OR", "||"}, {"XOR", "^^"}, {"AND", "&&"},
+        {"==", "!=", "<=", ">=", "EQ", "NE", "LE", "GE", "LT", "GT", "<", ">"},
+        {"+", "-"}, {"*", "/", "%"}
+    };
+    for (const auto& operators : precedence) {
+        int depth = 0, split = -1;
+        QChar quote;
+        QString operation;
+        for (int at = 0; at < expression.size(); ++at) {
+            const QChar ch = expression.at(at);
+            if (!quote.isNull()) { if (ch == quote) quote = QChar(); continue; }
+            if (ch == '\'' || ch == '"') { quote = ch; continue; }
+            if (ch == '(' || ch == '[') { ++depth; continue; }
+            if (ch == ')' || ch == ']') { --depth; continue; }
+            if (depth != 0) continue;
+            for (const QString& op : operators) {
+                if (expression.mid(at, op.size()) != op) continue;
+                if (op.at(0).isLetter() &&
+                    (at == 0 || !expression.at(at - 1).isSpace() ||
+                     at + op.size() == expression.size() || !expression.at(at + op.size()).isSpace())) continue;
+                if ((op == "<" || op == ">") && expression.mid(at + 1, 1) == "=") continue;
+                const QString left = expression.left(at).trimmed();
+                if (left.isEmpty()) continue;
+                if ((op == "-" || op == "+") &&
+                    (QString("+-*/%<>=,").contains(left.back()) ||
+                     ((left.back() == 'e' || left.back() == 'E') && left.size() > 1 && left.at(left.size() - 2).isDigit()))) continue;
+                split = at;
+                operation = op;
+                at += op.size() - 1;
+                break;
             }
-            else if (divideIndex > -1)
-            {
-                if (value2 != 0)
-                    result = value1 / value2;
-                else
-                    result = 0;
-                resultS = QString::number(result);
-
-                operaExpression = value1S + " / " + value2S;
-            }
-            else if (moduloIndex > -1)
-            {
-                if (value2 != 0)
-                    result = (int)value1 % (int)value2;
-                else
-                    result = 0;
-                resultS = QString::number(result);
-
-                operaExpression = value1S + " % " + value2S;
-            }
-            else if (plusIndex > -1)
-            {
-                result = value1 + value2;
-                resultS = QString::number(result);
-
-                operaExpression = value1S + " + " + value2S;
-            }
-            else if (andIndex > -1)
-            {
-                result = value1 * value2;
-                result = (result > 0) ? 1 : 0;
-                resultS = QString::number(result);
-
-                operaExpression = value1S + " AND " + value2S;
-            }
-            else if (orIndex > -1)
-            {
-                result = value1 + value2;
-                result = (result > 0) ? 1 : 0;
-                resultS = QString::number(result);
-
-                operaExpression = value1S + " OR " + value2S;
-            }
-
-            if (xorIndex > -1)
-            {
-                value1 = (value1 > 0) ? 1 : 0;
-                value2 = (value2 > 0) ? 1 : 0;
-                result = (value1 != value2) ? 1 : 0;
-
-                resultS = QString::number(result);
-
-                operaExpression = value1S + " XOR " + value2S;
-            }
-
-            expression.replace(operaExpression, QString::number(result));
-
-            continue;
         }
-
-        else if ((eqIndex > -1 || ltIndex > -1 || gtIndex > -1 || neIndex > -1 || leIndex > -1 || geIndex > -1) && !expression.contains('('))
-        {
-            QString value1S;
-            QString opeS;
-            QString value2S;
-
-            float value1;
-            float value2;
-
-            int operatorIndex = eqIndex;
-
-            operatorIndex = (neIndex > -1) ? neIndex : operatorIndex;
-            operatorIndex = (ltIndex > -1) ? ltIndex : operatorIndex;
-            operatorIndex = (leIndex > -1) ? leIndex : operatorIndex;
-            operatorIndex = (gtIndex > -1) ? gtIndex : operatorIndex;
-            operatorIndex = (geIndex > -1) ? geIndex : operatorIndex;
-
-            value1S = getLeftWord(expression, operatorIndex);
-            value2S = getRightWord(expression, operatorIndex);
-
-
-            value1 = getValueAsString(value1S).toFloat();
-
-            value2 = getValueAsString(value2S).toFloat();
-
-
-            int returnValue = -1;
-
-            if (value1S.startsWith("\"") && value1S.endsWith("\""))
-            {
-                returnValue = (eqIndex > -1) ? ((value1S == value2S) ? 1 : 0 ) : returnValue;
-            }
-            else
-            {
-                returnValue = (eqIndex > -1) ? ((value1 == value2) ? 1 : 0 ) : returnValue;
-            }
-
-            returnValue = (neIndex > -1) ? ((value1 != value2) ? 1 : 0) : returnValue;
-            returnValue = (ltIndex > -1) ? ((value1 < value2) ? 1 : 0) : returnValue;
-            returnValue = (leIndex > -1) ? ((value1 <= value2) ? 1 : 0) : returnValue;
-            returnValue = (gtIndex > -1) ? ((value1 > value2) ? 1 : 0) : returnValue;
-            returnValue = (geIndex > -1) ? ((value1 >= value2) ? 1 : 0) : returnValue;
-
-            if (returnValue != -1)
-                return QString::number(returnValue);
-        }
-
-        else
-        {
-            // Check whether the expression is a mathematical function.
-            if (expression.contains('(') && expression.contains(')') && expression.startsWith('#'))
-            {
-                // Function calls will be handled at statement level, not in expression evaluation
-                // Just treat unknown functions as variables for now
-                
-                // Fall back to built-in math functions when it is not user-defined.
-                float result = EvaluateFunctionToFloat(expression);
-                if (result != NULL_NUMBER)
-                {
-                    return QString::number(result);
-                }
-            }
-
-            QString value = getValueAsString(deleteSpaces(expression));
-
-            if (deleteSpaces(expression) == "NULL")
-            {
-                value = "NULL";
-            }
-
-            return value;
-        }
-
-
-        return expression;
+        if (split < 0) continue;
+        QString left = calculateExpressions(expression.left(split));
+        QString right = calculateExpressions(expression.mid(split + operation.size()));
+        const auto unquote = [](QString text) {
+            if (text.size() >= 2 && ((text.front() == '"' && text.back() == '"') ||
+                                    (text.front() == '\'' && text.back() == '\'')))
+                return text.mid(1, text.size() - 2);
+            return text;
+        };
+        left = unquote(left); right = unquote(right);
+        bool leftNumeric = false, rightNumeric = false;
+        const double a = left.toDouble(&leftNumeric), b = right.toDouble(&rightNumeric);
+        const bool equal = leftNumeric && rightNumeric ? a == b : left == right;
+        double result = 0;
+        if (operation == "OR" || operation == "||") result = a != 0 || b != 0;
+        else if (operation == "XOR" || operation == "^^") result = (a != 0) != (b != 0);
+        else if (operation == "AND" || operation == "&&") result = a != 0 && b != 0;
+        else if (operation == "==" || operation == "EQ") result = equal;
+        else if (operation == "!=" || operation == "NE") result = !equal;
+        else if (operation == "<" || operation == "LT") result = a < b;
+        else if (operation == ">" || operation == "GT") result = a > b;
+        else if (operation == "<=" || operation == "LE") result = a <= b;
+        else if (operation == ">=" || operation == "GE") result = a >= b;
+        else if (operation == "+") result = a + b;
+        else if (operation == "-") result = a - b;
+        else if (operation == "*") result = a * b;
+        else if (operation == "/") result = b != 0 ? a / b : 0;
+        else if (operation == "%") result = b != 0 ? std::fmod(a, b) : 0;
+        return QString::number(result, 'g', 12);
     }
-
-    return expression;
+    // Atoms and fully enclosed groups are evaluated after binary operators.
+    if (expression.size() >= 2 &&
+        ((expression.front() == '"' && expression.back() == '"') ||
+         (expression.front() == '\'' && expression.back() == '\'')))
+        return expression.mid(1, expression.size() - 2);
+    if (expression.size() >= 2 &&
+        ((expression.front() == '[' && expression.back() == ']') ||
+         (expression.front() == '(' && expression.back() == ')')))
+        return calculateExpressions(expression.mid(1, expression.size() - 2));
+    if (expression.startsWith('-') || expression.startsWith('+')) {
+        bool numeric = false;
+        expression.toDouble(&numeric);
+        if (!numeric) {
+            const double value = calculateExpressions(expression.mid(1)).toDouble();
+            return QString::number(expression.startsWith('-') ? -value : value, 'g', 12);
+        }
+    }
+    return getValueAsString(expression);
 }
 
 // Performance optimization: Build cache of line numbers for O(1) GOTO lookups
@@ -3900,10 +3808,7 @@ void GcodeScript::preprocessGcodeScript()
         if (line.isEmpty() || line.startsWith(';'))
             continue;
 
-        // Strip inline comment
-        int semicolonIdx = line.indexOf(';');
-        if (semicolonIdx != -1)
-            line = line.left(semicolonIdx).trimmed();
+        line = stripInlineComment(line).trimmed();
 
         QStringList tokens = line.split(' ', Qt::SkipEmptyParts);
         if (tokens.isEmpty())

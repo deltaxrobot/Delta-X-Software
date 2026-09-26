@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Delta X · Phone Camera</title>
+<style>
+:root{color-scheme:dark;font:16px system-ui;background:#18212b;color:#edf3fa}body{max-width:620px;margin:auto;padding:22px}h1{font-size:24px}video{width:100%;max-height:55vh;border-radius:12px;background:#0c1219;object-fit:contain}button,select{font:inherit;padding:13px;border-radius:8px;border:1px solid #647589;background:#263747;color:#fff}button{background:#1678b4;cursor:pointer}button:disabled{opacity:.5}section{display:flex;gap:10px;margin:16px 0;flex-wrap:wrap}p{line-height:1.5}#status{min-height:48px}small{color:#b9c9d8}canvas{display:none}
+</style>
+<h1>Delta X Phone Camera</h1><p id="status" role="status">Tap Start camera, then allow camera access.</p>
+<video id="preview" autoplay playsinline muted></video><canvas id="frame"></canvas>
+<section><select id="facing" aria-label="Camera"><option value="environment">Rear camera</option><option value="user">Front camera</option></select>
+<select id="quality" aria-label="Resolution"><option value="1280">720p</option><option value="1920">1080p</option><option value="640">480p</option></select></section>
+<section><button id="start">Start camera</button><button id="stop" disabled>Stop sharing</button></section>
+<small>Keep this page open and the phone awake. Frames go directly to Delta X on your local network. No audio is captured.</small>
+<script>
+'use strict';
+const token=location.hash.slice(1);history.replaceState(null,'',location.pathname);
+const client=crypto.randomUUID?crypto.randomUUID():Array.from(crypto.getRandomValues(new Uint8Array(24)),x=>x.toString(16).padStart(2,'0')).join('');
+const status=document.querySelector('#status'),video=document.querySelector('#preview'),canvas=document.querySelector('#frame');
+const start=document.querySelector('#start'),stop=document.querySelector('#stop'),facing=document.querySelector('#facing'),quality=document.querySelector('#quality');
+let stream=null,active=false,wake=null,run=0;
+async function api(path,options={}){
+ const controller=new AbortController(),timeout=setTimeout(()=>controller.abort(),4500);
+ let response;
+ try{response=await fetch(path,{...options,cache:'no-store',headers:{'Authorization':'Bearer '+token,'X-Phone-Client':client,...options.headers},signal:controller.signal});}
+ finally{clearTimeout(timeout);}
+ if(!response.ok)throw new Error(response.status===401?'Pairing expired. Scan the new QR in Delta X.':response.status===409?'Session changed or another phone is paired. Reconnect in Delta X.':'Connection error ('+response.status+').');
+ return response;
+}
+async function release(notify=true){
+ active=false;run++;if(stream)stream.getTracks().forEach(t=>t.stop());stream=null;video.srcObject=null;
+ start.disabled=true;stop.disabled=true;facing.disabled=quality.disabled=false;
+ const previousWake=wake;wake=null;if(previousWake)await previousWake.release().catch(()=>{});
+ if(notify)await api('/stop',{method:'POST'}).catch(()=>{});
+ start.disabled=false;
+}
+start.onclick=async()=>{
+ start.disabled=true;stop.disabled=false;const generation=++run;
+ try{
+  if(!token)throw new Error('Open the pairing QR from Delta X. A reloaded page needs a fresh scan.');
+  if(!isSecureContext||!navigator.mediaDevices?.getUserMedia)throw new Error('HTTPS is not trusted. Follow HTTPS Setup in Delta X and trust its certificate on this phone.');
+  const width=Number(quality.value);
+  const acquired=await navigator.mediaDevices.getUserMedia({audio:false,video:{facingMode:{ideal:facing.value},width:{ideal:width},height:{ideal:Math.round(width*9/16)},frameRate:{ideal:15,max:30}}});
+  if(generation!==run){acquired.getTracks().forEach(t=>t.stop());return;}
+  stream=acquired;video.srcObject=stream;await video.play();
+  if(generation!==run)return;
+  await api('/pair',{method:'POST'});
+  if(generation!==run)return;
+  active=true;facing.disabled=quality.disabled=true;
+  status.textContent='Connected. Delta X controls capture and acquisition.';
+  if(navigator.wakeLock){const lock=await navigator.wakeLock.request('screen').catch(()=>null);if(generation!==run){if(lock)await lock.release().catch(()=>{});return;}wake=lock;}
+  while(active&&generation===run){
+   const next=await(await api('/next')).json();
+   if(generation!==run)return;
+   if(next.sequence){
+    if(!video.videoWidth||video.readyState<2)throw new Error('Camera is not producing frames. Tap Start to retry.');
+    const scale=Math.min(1,width/Math.max(video.videoWidth,video.videoHeight),Math.sqrt(2073600/(video.videoWidth*video.videoHeight)));
+    canvas.width=Math.max(1,Math.floor(video.videoWidth*scale));canvas.height=Math.max(1,Math.floor(video.videoHeight*scale));
+    canvas.getContext('2d').drawImage(video,0,0,canvas.width,canvas.height);
+    const jpeg=await new Promise(resolve=>canvas.toBlob(resolve,'image/jpeg',.8));
+    if(generation!==run)return;
+    if(!jpeg)throw new Error('Could not encode camera image.');
+    await api('/frame',{method:'POST',headers:{'Content-Type':'image/jpeg','X-Frame-Sequence':next.sequence},body:jpeg});
+   }
+   await new Promise(resolve=>setTimeout(resolve,80));
+  }
+ }catch(error){if(generation!==run)return;await release();status.textContent=error.name==='NotAllowedError'?'Camera permission was denied. Allow access in browser settings and tap Start.':error.name==='AbortError'?'Connection timed out. Check Wi-Fi and pair again in Delta X.':error.message;}
+};
+stop.onclick=async()=>{await release();status.textContent='Sharing stopped. Use Load Camera in Delta X to pair again.';};
+document.addEventListener('visibilitychange',()=>{if(document.hidden&&(active||stream)){release();status.textContent='Sharing stopped because the page is hidden. Pair again in Delta X.';}});
+addEventListener('pagehide',()=>{if(stream)stream.getTracks().forEach(t=>t.stop());});
+</script></html>

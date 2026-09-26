@@ -1,549 +1,177 @@
 #include "DrawingWidget.h"
+#include <QPainter>
+#include <QMouseEvent>
+#include <QKeyEvent>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonArray>
+#include <QSaveFile>
+#include <QFile>
+#include <algorithm>
+#include <cmath>
 
-namespace {
-inline QPixmap labelPixmap(const QLabel* label)
+DrawingWidget::DrawingWidget(QWidget* parent) : QLabel(parent)
 {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-    return label->pixmap(Qt::ReturnByValue);
-#else
-    const QPixmap* pix = label->pixmap();
-    return pix ? *pix : QPixmap();
-#endif
+    setMinimumSize(240, 240);
+    setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    setFocusPolicy(Qt::StrongFocus);
+    setAccessibleName(tr("Drawing canvas"));
+    select(Pan);
 }
-}
-
-DrawingWidget::DrawingWidget(QWidget *parent)
-	: QLabel(parent)
+double DrawingWidget::scale() const
 {
-    InitGrid();
+    return std::max(0.01, std::min((width() - 36) / m_size.width(), (height() - 36) / m_size.height()) * m_zoom);
 }
-
-
-DrawingWidget::~DrawingWidget()
+QPointF DrawingWidget::mapToLogical(const QPointF& p) const
 {
-
+    const auto d = (p - QPointF(width()/2.0, height()/2.0) - m_pan) / scale();
+    return {d.x(), -d.y()};
 }
-
-
-void DrawingWidget::showEvent(QShowEvent *event)
+QPointF DrawingWidget::mapToWidget(const QPointF& p) const
 {
-    QLabel::showEvent(event);
-
-    gridInitialized = false;
-    InitGrid();
+    return QPointF(width()/2.0, height()/2.0) + m_pan + QPointF(p.x(), -p.y()) * scale();
 }
-
-
-void DrawingWidget::resizeEvent(QResizeEvent *event)
+void DrawingWidget::SetPhysicalSize(float w, float h)
 {
-    QLabel::resizeEvent(event);
-
-    gridInitialized = false;
-    InitGrid();
+    if (!std::isfinite(w) || !std::isfinite(h) || w <= 0 || h <= 0 || w > 100000 || h > 100000) return;
+    if (m_size == QSizeF(w,h)) return;
+    cancelGesture(); m_size = QSizeF(w,h); update(); emit physicalSizeChanged();
 }
-
-
-void DrawingWidget::InitGrid()
+void DrawingWidget::SetPlaneMarkers(const QVector<QPointF>& markers) { m_markers = markers; update(); }
+void DrawingWidget::cancelGesture() { m_dragging = false; m_preview.clear(); update(); }
+void DrawingWidget::replacePaths(const DrawingProgram::Paths& paths)
 {
-    if (width() <= 0 || height() <= 0) {
-        return;
+    cancelGesture();
+    if (m_paths == paths) return;
+    m_undo.append(m_paths);
+    qint64 points = 0;
+    for (const auto& state : m_undo) for (const auto& path : state) points += path.size();
+    while (m_undo.size() > 30 || (points > 1000000 && m_undo.size() > 1)) {
+        for (const auto& path : m_undo.first()) points -= path.size();
+        m_undo.removeFirst();
     }
-
-	int h = height() * (1.0f / PRECISION);
-    if (h <= 0) {
-        return;
-    }
-	QPixmap pi = QPixmap(h, h);
-	pi.fill(QColor(0, 0, 0, 0));
-
-    QPixmap pix(QStringLiteral(":/icon/Circle-limit.png"));
-    QPixmap pix1(QStringLiteral(":/icon/grid-10-pixel.png"));
-    QPixmap pix2(QStringLiteral(":/icon/grid-axis.png"));
-
-    if (pix1.isNull()) {
-        qWarning() << "Failed to load grid background from resource; attempting fallback";
-        QString appDir = QCoreApplication::applicationDirPath();
-        pix1 = QPixmap(appDir + "/icon/grid-10-pixel.png");
-    }
-    if (pix2.isNull()) {
-        qWarning() << "Failed to load axis background from resource; attempting fallback";
-        QString appDir = QCoreApplication::applicationDirPath();
-        pix2 = QPixmap(appDir + "/icon/grid-axis.png");
-    }
-
-    QPainter p(&pi);
-
-    p.drawPixmap(0, 0, h ,h, pix);
-    if (!pix1.isNull()) {
-        p.drawPixmap(0, 0, h, h, pix1);
-    } else {
-        qWarning() << "Grid pixmap is null";
-    }
-    if (!pix2.isNull()) {
-        p.drawPixmap(0, 0, h, h, pix2);
-    } else {
-        qWarning() << "Axis pixmap is null";
-    }
-		
-	setPixmap(pi);
-	setScaledContents(true);
-
-    gridInitialized = true;
-	update();
+    m_redo.clear(); m_paths = paths; update(); emit pathsChanged();
 }
-
-void DrawingWidget::AddImage(int x, int y, int w, int h, QPixmap pix, float space, QString type, QString conversion)
+void DrawingWidget::Undo() { cancelGesture(); if (canUndo()) { m_redo.append(m_paths); m_paths=m_undo.takeLast(); update(); emit pathsChanged(); } }
+void DrawingWidget::Redo() { cancelGesture(); if (canRedo()) { m_undo.append(m_paths); m_paths=m_redo.takeLast(); update(); emit pathsChanged(); } }
+void DrawingWidget::EraserAll() { replacePaths({}); }
+void DrawingWidget::FitView() { cancelGesture(); m_zoom=1; m_pan={}; update(); }
+void DrawingWidget::SelectZoomInTool() { cancelGesture(); m_zoom=std::min(16.0,m_zoom*1.25); update(); }
+void DrawingWidget::SelectZoomOutTool() { cancelGesture(); m_zoom=std::max(0.25,m_zoom/1.25); update(); }
+void DrawingWidget::select(Tool tool) { cancelGesture(); m_tool=tool; setCursor(tool==Pan ? Qt::OpenHandCursor : Qt::CrossCursor); }
+void DrawingWidget::SelectLineTool() { select(Line); }
+void DrawingWidget::SelectRectangleTool() { select(Rectangle); }
+void DrawingWidget::SelectCircleTool() { select(Circle); }
+void DrawingWidget::SelectArcTool() { select(Arc); }
+void DrawingWidget::SelectCursor() { select(Pan); }
+QVector<QPointF> DrawingWidget::gesturePath(const QPointF& end) const
 {
-	Image image;
-	image.Pixmap = new QPixmap(pix);
-	image.Size.setX(w);
-	image.Size.setY(h);
-	image.Position.setX(x);
-	image.Position.setY(y);
-	image.LineSpace = space;
-	image.ToolType = type;
-	image.Conversion = conversion;
-
-    Images.push_back(image);
-
-	InitGrid();
-
-    QPixmap currentPix = labelPixmap(this);
-    if (currentPix.isNull()) {
-        currentPix = QPixmap(size());
-        currentPix.fill(Qt::transparent);
+    if (m_tool==Line) return {m_start,end};
+    if (m_tool==Rectangle) return {m_start,{end.x(),m_start.y()},end,{m_start.x(),end.y()},m_start};
+    const QPointF center = m_tool==Arc ? (m_start+end)/2 : m_start;
+    const double radius = QLineF(center,end).length(), pi=3.14159265358979323846;
+    const double sweep = m_tool==Arc ? pi : 2*pi;
+    const double start = m_tool==Arc ? std::atan2(m_start.y()-center.y(),m_start.x()-center.x()) : 0;
+    const int segments=std::clamp(int(std::ceil(sweep*radius/0.5)),24,4096);
+    QVector<QPointF> points;
+    for (int i=0;i<=segments;++i) {
+        const double a=start+sweep*i/segments;
+        points.append(center+QPointF(radius*std::cos(a),radius*std::sin(a)));
     }
-	
-	float ratio = (float)currentPix.height() / height();
-	int hS = pix.height() * ratio;
-
-	x = x * ratio;
-	y = y * ratio;
-	w = w * ratio;
-	h = h * ratio;
-
-	QPixmap scalePix = pix.scaledToHeight(hS);
-	QPainter p(&currentPix);
-
-	p.begin(this);
-	p.drawPixmap(x, y, w, h, pix);
-	p.end();
-
-	setPixmap(currentPix);
-
-	update();	
+    if (m_tool==Circle) points.last()=points.first();
+    else { points.first()=m_start; points.last()=end; }
+    return points;
 }
-
-void DrawingWidget::SetPhysicalSize(float widthMm, float heightMm)
+void DrawingWidget::mousePressEvent(QMouseEvent* e)
 {
-    physicalWidthMm = widthMm > 0.0f ? widthMm : 0.0f;
-    physicalHeightMm = heightMm > 0.0f ? heightMm : 0.0f;
+    if (e->button()!=Qt::LeftButton) return;
+    setFocus(); m_dragging=true; m_start=mapToLogical(e->pos()); m_last=e->pos();
+}
+void DrawingWidget::mouseMoveEvent(QMouseEvent* e)
+{
+    if (!m_dragging) return;
+    if (m_tool==Pan) { m_pan+=e->pos()-m_last; m_last=e->pos(); }
+    else m_preview=gesturePath(mapToLogical(e->pos()));
     update();
 }
-
-void DrawingWidget::SetPlaneMarkers(const QVector<QPointF>& markers)
+void DrawingWidget::mouseReleaseEvent(QMouseEvent* e)
 {
-    planeMarkers = markers;
-    update();
-}
-
-void DrawingWidget::AddLineToStack(QPoint p1, QPoint p2)
-{
-	QLine l;
-	l.setPoints(p1, p2);       
-
-    if (lines.count() > 0)
-    {
-        QLine lastLine = lines.at(lines.count() - 1);
-
-        if (l.p1() == lastLine.p1() && l.p2() == lastLine.p2())
-            return;
+    if (!m_dragging || e->button()!=Qt::LeftButton) return;
+    const auto end=mapToLogical(e->pos());
+    if (m_tool!=Pan && QLineF(m_start,end).length()>0.01) {
+        auto paths=m_paths; paths.append(gesturePath(end));
+        if (DrawingProgram::validatePaths(paths,nullptr)) replacePaths(paths);
     }
-
-	lines.push_back(l);
-
-//	QPixmap pix = *pixmap();
-//    //cv::Mat matPix = ImageTool::QPixmapToCvMat(pix);
-
-//	float ratio = (float)pix.height() / height();
-
-//	QLine line;
-
-//	int xOffset = height() / 2;
-//	int yOffset = width() / 2;
-
-//	line.setP1(QPoint((p1.x() + xOffset) * ratio, (p1.y() + yOffset) * ratio));
-//	line.setP2(QPoint((p2.x() + xOffset) * ratio, (p2.y() + yOffset) * ratio));
-
-//	QPainter p(&pix);
-
-//	p.begin(this);
-//	p.drawLine(line);
-//	p.end();
-
-//    //matPix = ImageTool::QPixmapToCvMat(pix);
-//	setPixmap(pix);
-
-    //	update();
+    cancelGesture();
 }
-
-void DrawingWidget::DrawLineFromStack()
+void DrawingWidget::keyPressEvent(QKeyEvent* e)
 {
-    QPixmap pix = labelPixmap(this);
-    //cv::Mat matPix = ImageTool::QPixmapToCvMat(pix);
-
-    float ratio = (float)pix.height() / height();
-    int xOffset = height() / 2;
-    int yOffset = width() / 2;
-
-    QPainter p(&pix);
-
-    p.begin(this);
-
-    foreach(QLine l, lines)
-    {
-        QLine line;
-
-
-        line.setP1(QPoint((l.x1() + xOffset) * ratio, (l.y1() + yOffset) * ratio));
-        line.setP2(QPoint((l.x2() + xOffset) * ratio, (l.y2() + yOffset) * ratio));
-
-
-        p.drawLine(line);
+    if (e->matches(QKeySequence::Undo)) Undo();
+    else if (e->matches(QKeySequence::Redo)) Redo();
+    else if (e->key()==Qt::Key_Escape) cancelGesture();
+    else QLabel::keyPressEvent(e);
+}
+void DrawingWidget::paintEvent(QPaintEvent*)
+{
+    QPainter p(this); p.setRenderHint(QPainter::Antialiasing);
+    p.fillRect(rect(),palette().base());
+    const QRectF area(mapToWidget({-m_size.width()/2,m_size.height()/2}),mapToWidget({m_size.width()/2,-m_size.height()/2}));
+    p.setPen(QPen(palette().mid().color(),1));
+    const double step=std::pow(10.0,std::ceil(std::log10(35.0/scale())));
+    const QPointF lo=mapToLogical({0,double(height())}), hi=mapToLogical({double(width()),0});
+    for (double x=std::ceil(lo.x()/step)*step;x<=hi.x();x+=step) p.drawLine(mapToWidget({x,lo.y()}),mapToWidget({x,hi.y()}));
+    for (double y=std::ceil(lo.y()/step)*step;y<=hi.y();y+=step) p.drawLine(mapToWidget({lo.x(),y}),mapToWidget({hi.x(),y}));
+    p.setPen(QPen(palette().text().color(),1,Qt::DashLine)); p.drawRect(area);
+    p.drawLine(mapToWidget({lo.x(),0}),mapToWidget({hi.x(),0}));
+    p.drawLine(mapToWidget({0,lo.y()}),mapToWidget({0,hi.y()}));
+    auto drawPath=[&](const QVector<QPointF>& path) {
+        QPolygonF polygon; for (const auto& point:path) polygon.append(mapToWidget(point));
+        if (polygon.size()==1) p.drawEllipse(polygon.first(),2,2); else p.drawPolyline(polygon);
+    };
+    p.setPen(QPen(palette().highlight().color(),2));
+    for (const auto& path:m_paths) drawPath(path);
+    p.setPen(QPen(palette().text().color(),2,Qt::DashLine)); drawPath(m_preview);
+    for (int i=0;i<m_markers.size();++i) {
+        const auto at=mapToWidget(m_markers[i]); p.drawEllipse(at,4,4);
+        p.drawText(at+QPointF(7,-7),QString(QChar('A'+i)));
     }
-    p.end();
-
-    //matPix = ImageTool::QPixmapToCvMat(pix);
-    setPixmap(pix);
-
-    update();
+    p.setPen(palette().text().color());
+    p.drawText(QRect(8,8,width()-16,24),Qt::AlignLeft,tr("X →   Y ↑   |   Grid %1 mm").arg(step));
 }
-
-void DrawingWidget::AddRectangle(QRect rec)
+bool DrawingWidget::saveDrawing(const QString& fileName, QString* error) const
 {
-	QRect rect;
-
-	rect = rec;
-
-    QPixmap pix = labelPixmap(this);
-
-	QPainter p(&pix);
-
-	p.begin(this);
-	p.drawRect(rect);
-	p.end();
-
-	setPixmap(pix);
-
-	update();
-
-	rectangles.push_back(rect);
+    QJsonArray paths;
+    for (const auto& path:m_paths) { QJsonArray points; for (const auto& p:path) points.append(QJsonArray{p.x(),p.y()}); paths.append(points); }
+    const QJsonDocument doc(QJsonObject{{"format","delta-x-drawing"},{"version",1},{"width",m_size.width()},{"height",m_size.height()},{"paths",paths}});
+    QSaveFile file(fileName);
+    const auto bytes=doc.toJson();
+    if (!file.open(QIODevice::WriteOnly) || file.write(bytes)!=bytes.size() || !file.commit()) { if(error)*error=file.errorString(); return false; }
+    return true;
 }
-
-void DrawingWidget::ClearShape()
+bool DrawingWidget::loadDrawing(const QString& fileName, QString* error)
 {
-	lines.clear();
-	rectangles.clear();
-	circles.clear();
-	arcs.clear();
-	Vectors.clear();
-	update(); // Trigger repaint to clear the display
-}
-
-void DrawingWidget::ClearImage()
-{
-    for (int i = 0; i < Images.size(); i++)
-	{
-        delete Images[i].Pixmap;
-	}
-
-    Images.clear();
-}
-
-void DrawingWidget::SelectZoomInTool()
-{
-	tool = ZOOM_IN;
-
-	changeToolIconInArea(ZOOM_IN_ICON);
-}
-
-void DrawingWidget::SelectZoomOutTool()
-{
-	tool = ZOOM_OUT;
-
-	changeToolIconInArea(ZOOM_OUT_ICON);
-}
-
-void DrawingWidget::EraserAll()
-{
-    ClearShape();
-}
-
-void DrawingWidget::SelectLineTool()
-{
-	tool = LINE;
-	changeToolIconInArea(LINE_ICON);
-}
-
-void DrawingWidget::SelectRectangleTool()
-{
-	tool = RECTANGLE;
-	changeToolIconInArea(RECTANGLE_ICON);
-}
-
-void DrawingWidget::SelectCircleTool()
-{
-	tool = CIRCLE;
-	changeToolIconInArea(CIRCLE_ICON);
-}
-
-void DrawingWidget::SelectArcTool()
-{
-	tool = ARC;
-	changeToolIconInArea(ARC_ICON);
-}
-
-void DrawingWidget::SelectCursor()
-{
-	tool = CURSOR;
-	changeToolIconInArea(CURSOR_ICON);
-}
-
-void DrawingWidget::mousePressEvent(QMouseEvent * event)
-{
-    if (event->button() == Qt::LeftButton) {
-        switch (tool) {
-            case LINE:
-                // Start drawing line
-                if (lines.isEmpty() || lines.last().p2() != QPoint(-1, -1)) {
-                    QLine newLine;
-                    newLine.setP1(event->pos());
-                    newLine.setP2(QPoint(-1, -1)); // Temporary end point
-                    lines.append(newLine);
-                }
-                break;
-                
-            case RECTANGLE:
-                // Start drawing rectangle
-                if (rectangles.isEmpty() || rectangles.last().width() > 0) {
-                    QRect newRect;
-                    newRect.setTopLeft(event->pos());
-                    newRect.setBottomRight(event->pos());
-                    rectangles.append(newRect);
-                }
-                break;
-                
-            case CIRCLE:
-                // Start drawing circle
-                if (circles.isEmpty() || circles.last().z() > 0) {
-                    QVector3D newCircle;
-                    newCircle.setX(event->pos().x());
-                    newCircle.setY(event->pos().y());
-                    newCircle.setZ(0); // Radius will be set in mouse move
-                    circles.append(newCircle);
-                }
-                break;
-                
-            default:
-                break;
+    auto fail=[&](const QString& message) { if(error)*error=message; return false; };
+    QFile file(fileName);
+    if (!file.open(QIODevice::ReadOnly)) return fail(file.errorString());
+    if(file.size()>20000000) return fail(tr("Drawing file exceeds 20 MB."));
+    QJsonParseError parse;
+    const auto doc=QJsonDocument::fromJson(file.readAll(),&parse);
+    const auto obj=doc.object();
+    const double w=obj["width"].toDouble(), h=obj["height"].toDouble();
+    if(parse.error!=QJsonParseError::NoError || obj["format"]!="delta-x-drawing" || obj["version"].toInt()!=1 ||
+       !obj["paths"].isArray() || !std::isfinite(w) || !std::isfinite(h) || w<=0 || h<=0 || w>100000 || h>100000)
+        return fail(tr("Invalid or unsupported Drawing document."));
+    DrawingProgram::Paths paths;
+    for(const auto& path:obj["paths"].toArray()) {
+        if(!path.isArray() || path.toArray().isEmpty()) return fail(tr("Invalid path."));
+        QVector<QPointF> points;
+        for(const auto& point:path.toArray()) {
+            const auto xy=point.toArray();
+            if(xy.size()!=2 || !xy[0].isDouble() || !xy[1].isDouble()) return fail(tr("Invalid point."));
+            points.append({xy[0].toDouble(),xy[1].toDouble()});
         }
+        paths.append(points);
     }
-}
-
-void DrawingWidget::mouseMoveEvent(QMouseEvent * event)
-{
-    switch (tool) {
-        case LINE:
-            // Update current line end point
-            if (!lines.isEmpty() && lines.last().p2() == QPoint(-1, -1)) {
-                lines.last().setP2(event->pos());
-                update(); // Trigger repaint
-            }
-            break;
-            
-        case RECTANGLE:
-            // Update current rectangle
-            if (!rectangles.isEmpty() && rectangles.last().width() == 0) {
-                rectangles.last().setBottomRight(event->pos());
-                update(); // Trigger repaint
-            }
-            break;
-            
-        case CIRCLE:
-            // Update current circle radius
-            if (!circles.isEmpty() && circles.last().z() == 0) {
-                QVector3D& circle = circles.last();
-                float radius = sqrt(pow(event->pos().x() - circle.x(), 2) + 
-                                  pow(event->pos().y() - circle.y(), 2));
-                circle.setZ(radius);
-                update(); // Trigger repaint
-            }
-            break;
-            
-        default:
-            break;
-    }
-}
-
-void DrawingWidget::mouseReleaseEvent(QMouseEvent * event)
-{
-    if (event->button() == Qt::LeftButton) {
-        switch (tool) {
-            case LINE:
-                // Finalize current line
-                if (!lines.isEmpty() && lines.last().p2() == QPoint(-1, -1)) {
-                    lines.last().setP2(event->pos());
-                    
-                    // Add line to vectors for G-code export
-                    QVector<QPointF> linePoints;
-                    linePoints.append(mapToLogical(lines.last().p1()));
-                    linePoints.append(mapToLogical(lines.last().p2()));
-                    Vectors.append(linePoints);
-                }
-                break;
-                
-            case RECTANGLE:
-                // Finalize current rectangle
-                if (!rectangles.isEmpty()) {
-                    QRect& rect = rectangles.last();
-                    rect.setBottomRight(event->pos());
-                    
-                    // Add rectangle as connected lines to vectors
-                    QVector<QPointF> rectPoints;
-                    rectPoints.append(mapToLogical(rect.topLeft()));
-                    rectPoints.append(mapToLogical(rect.topRight()));
-                    rectPoints.append(mapToLogical(rect.bottomRight()));
-                    rectPoints.append(mapToLogical(rect.bottomLeft()));
-                    rectPoints.append(mapToLogical(rect.topLeft())); // Close the rectangle
-                    Vectors.append(rectPoints);
-                }
-                break;
-                
-            case CIRCLE:
-                // Finalize current circle
-                if (!circles.isEmpty()) {
-                    QVector3D& circle = circles.last();
-                    float radius = sqrt(pow(event->pos().x() - circle.x(), 2) + 
-                                      pow(event->pos().y() - circle.y(), 2));
-                    circle.setZ(radius);
-                    
-                    // Add circle as connected points to vectors
-                    QVector<QPointF> circlePoints;
-                    int segments = 36; // 36 segments for smooth circle
-                    for (int i = 0; i <= segments; i++) {
-                        float angle = (i * 2 * M_PI) / segments;
-                        float x = circle.x() + radius * cos(angle);
-                        float y = circle.y() + radius * sin(angle);
-                        circlePoints.append(mapToLogical(QPointF(x, y)));
-                    }
-                    Vectors.append(circlePoints);
-                }
-                break;
-                
-            default:
-                break;
-        }
-        
-        update(); // Final repaint
-    }
-}
-
-void DrawingWidget::paintEvent(QPaintEvent * event)
-{
-	QLabel::paintEvent(event);
-	
-	// Draw all shapes on top of the background
-	QPainter painter(this);
-	painter.setRenderHint(QPainter::Antialiasing);
-	
-	// Set pen for drawing
-	QPen pen(Qt::red, 2);
-	painter.setPen(pen);
-	
-	// Draw lines
-	foreach(const QLine& line, lines) {
-		if (line.p2() != QPoint(-1, -1)) { // Only draw complete lines
-			painter.drawLine(line);
-		}
-	}
-	
-	// Draw rectangles
-	foreach(const QRect& rect, rectangles) {
-		if (rect.width() > 0 && rect.height() > 0) { // Only draw valid rectangles
-			painter.drawRect(rect);
-		}
-	}
-	
-	// Draw circles
-	foreach(const QVector3D& circle, circles) {
-		if (circle.z() > 0) { // Only draw circles with valid radius
-			int radius = (int)circle.z();
-			painter.drawEllipse(QPoint((int)circle.x(), (int)circle.y()), radius, radius);
-		}
-	}
-
-    if (!planeMarkers.isEmpty()) {
-        painter.save();
-        QPen markerPen(QColor(255, 215, 0), 2);
-        painter.setPen(markerPen);
-
-        for (const QPointF& logicalPoint : planeMarkers) {
-            QPointF widgetPoint = mapToWidget(logicalPoint);
-            painter.drawEllipse(widgetPoint, 5, 5);
-            painter.drawLine(widgetPoint + QPointF(-6, 0), widgetPoint + QPointF(6, 0));
-            painter.drawLine(widgetPoint + QPointF(0, -6), widgetPoint + QPointF(0, 6));
-        }
-
-        painter.restore();
-    }
-}
-
-void DrawingWidget::changeToolIconInArea(QString filePath)
-{
-	QCursor cursorTarget = QCursor(QPixmap(filePath));
-	setCursor(cursorTarget);
-}
-
-QPointF DrawingWidget::mapToLogical(const QPointF& point) const
-{
-    if (width() == 0 || height() == 0) {
-        return QPointF(0, 0);
-    }
-
-    float centerX = width() / 2.0f;
-    float centerY = height() / 2.0f;
-
-    float logicalX = point.x() - centerX;
-    float logicalY = point.y() - centerY;
-
-    if (physicalWidthMm > 0.0f) {
-        logicalX *= (physicalWidthMm / width());
-    }
-    if (physicalHeightMm > 0.0f) {
-        logicalY *= (physicalHeightMm / height());
-    }
-
-    return QPointF(logicalX, logicalY);
-}
-
-QPointF DrawingWidget::mapToWidget(const QPointF& point) const
-{
-    if (width() == 0 || height() == 0) {
-        return QPointF(0, 0);
-    }
-
-    float centerX = width() / 2.0f;
-    float centerY = height() / 2.0f;
-
-    float pixelX = point.x();
-    float pixelY = point.y();
-
-    if (physicalWidthMm > 0.0f) {
-        pixelX *= (width() / physicalWidthMm);
-    }
-    if (physicalHeightMm > 0.0f) {
-        pixelY *= (height() / physicalHeightMm);
-    }
-
-    return QPointF(centerX + pixelX, centerY - pixelY);
+    if(!paths.isEmpty() && !DrawingProgram::validatePaths(paths,error)) return false;
+    replacePaths(paths); SetPhysicalSize(w,h); FitView(); return true;
 }

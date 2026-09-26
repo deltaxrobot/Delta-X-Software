@@ -7,9 +7,17 @@ remains usable without internet access.
 
 ## Enable the plugin
 
-The normal CMake build and official packages include the plugin. For a library
-built separately, open **Modules > Plugins > Open Built-in Folder**, copy the
-matching `.dll`, `.so`, or `.dylib` into that folder, and restart.
+Block Programming is an **experimental, opt-in plugin**. It is included in the
+normal CMake build and official packages, but it is disabled and hidden from the
+Program workspace by default. Open **Modules > Plugins**, check
+**Block Programming (Experimental)** in the Enabled column, and restart. The
+Blocks button and Program > Blocks mode appear only while the plugin is enabled.
+The retired browser-based Blockly server is also disabled by default and is not
+required by this native plugin.
+
+For a library built separately, open **Modules > Plugins > Open Built-in
+Folder**, copy the matching `.dll`, `.so`, or `.dylib` into that folder, enable
+it in the list, and restart.
 
 Select `deltax.block-programming`, choose **Permissions...**, and grant:
 
@@ -65,6 +73,16 @@ Text fields may contain single or double quotes, but not both in the same
 value, because the current G-Script runtime has no escape sequence for a quote
 inside its matching string delimiter. The compiler reports `BP1109` instead of
 emitting ambiguous source.
+
+## Run the software self-test
+
+For a safe first check, select **Software self-test**. It exercises variables,
+a nested Repeat block, logging, an assertion, a bounded condition wait and a
+cooperative delay. The generated program contains no device, camera, conveyor,
+robot or output command. A successful run prints `PASS block programming`.
+
+The editable `.dxblocks` fixture and its generated `.gcode` are available in
+`script-example/block-programming/` for regression testing and code review.
 
 ## Create a vision-and-pick program
 

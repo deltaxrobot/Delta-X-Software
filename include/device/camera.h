@@ -16,6 +16,7 @@
 #include <QTimer>
 
 #include "VisionTypes.h"
+#include "PhoneCameraServer.h"
 
 
 
@@ -40,6 +41,7 @@ public:
     QString Source = "Webcam";
     QString ProjectName = "project0";
     int FrameID = -1;
+    PhoneCameraServer* phoneServer = nullptr;
 
 signals:
     void StartedCapture(int tracking, quint64 frameId, quint64 requestId);

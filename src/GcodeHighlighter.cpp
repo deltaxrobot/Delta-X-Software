@@ -1,10 +1,23 @@
 #include "GcodeHighlighter.h"
+#include <QApplication>
+#include <QPalette>
 
 
 GCodeHighlighter::GCodeHighlighter(QTextDocument *parent) : QSyntaxHighlighter(parent)
 {
+    refreshTheme();
+    connect(qApp, &QGuiApplication::paletteChanged, this,
+            [this](const QPalette&) { refreshTheme(); rehighlight(); });
+}
+
+void GCodeHighlighter::refreshTheme()
+{
+    highlightRules.clear();
+    const QPalette palette = QApplication::palette();
+    const bool dark = palette.color(QPalette::Base).lightness() < 128;
+    const QColor keyword = dark ? QColor("#80C4FF") : QColor("#125E99");
     QTextCharFormat gcodeFormat;
-    gcodeFormat.setForeground(QColor("#DBDBDC"));
+    gcodeFormat.setForeground(palette.color(QPalette::Text));
 
 //    gcodeFormat.setBackground(Qt::yellow);
     gcodeFormat.setFontWeight(QFont::Bold);
@@ -13,20 +26,20 @@ GCodeHighlighter::GCodeHighlighter(QTextDocument *parent) : QSyntaxHighlighter(p
     highlightRules.append(rule);
 
     QTextCharFormat mcodeFormat;
-    mcodeFormat.setForeground(QColor("#DBDBDC"));
+    mcodeFormat.setForeground(palette.color(QPalette::Text));
     mcodeFormat.setFontWeight(QFont::Bold);
     QRegularExpression mcodeRegex("[Mm]\\d{1,3}\\b");
     rule = {mcodeRegex, mcodeFormat};
     highlightRules.append(rule);
 
     QTextCharFormat lineNumberFormat;
-    lineNumberFormat.setForeground(QColor(Qt::gray));
+    lineNumberFormat.setForeground(dark ? QColor("#A6B2BF") : QColor("#5D6976"));
     QRegularExpression numberRegex("^N\\d+");
     rule = {numberRegex, lineNumberFormat};
     highlightRules.append(rule);
 
     QTextCharFormat gotoFormat;
-    gotoFormat.setForeground(QColor("#3195EF"));
+    gotoFormat.setForeground(keyword);
     gotoFormat.setFontWeight(QFont::Bold);
     QRegularExpression gotoRegex("\\b(?:GOTO|JUMP|LABEL|SELECT|SYNC)\\b",
                                  QRegularExpression::CaseInsensitiveOption);
@@ -34,7 +47,7 @@ GCodeHighlighter::GCodeHighlighter(QTextDocument *parent) : QSyntaxHighlighter(p
     highlightRules.append(rule);
 
     QTextCharFormat ifthenFormat;
-    ifthenFormat.setForeground(QColor("#3195EF"));
+    ifthenFormat.setForeground(keyword);
     ifthenFormat.setFontWeight(QFont::Bold);
     QRegularExpression ifRegex("\\b(?:IF|THEN|ELIF|ELSE|ENDIF|FOR|ENDFOR|EACH|IN|TO|STEP|FUNCTION|ENDFUNCTION|RETURN|LOCAL)\\b",
                                QRegularExpression::CaseInsensitiveOption);
@@ -43,22 +56,22 @@ GCodeHighlighter::GCodeHighlighter(QTextDocument *parent) : QSyntaxHighlighter(p
 
     QTextCharFormat format;
     format.setFontItalic(true);
-    format.setForeground(QColor("#d7a8ff"));
+    format.setForeground(dark ? QColor("#D7A8FF") : QColor("#7435A8"));
     QRegularExpression pattern("#[A-Za-z_][A-Za-z0-9_.]*");
     rule = {pattern, format};
     highlightRules.append(rule);
 
     QTextCharFormat commentFormat;
-    commentFormat.setForeground(Qt::darkGreen);
+    commentFormat.setForeground(dark ? QColor("#91BC8B") : QColor("#35652F"));
     commentFormat.setFontItalic(true);
     highlightRules.append({QRegularExpression(";.*"), commentFormat});
 
     QTextCharFormat stringFormat;
-    stringFormat.setForeground(QColor("#ce9178"));
+    stringFormat.setForeground(dark ? QColor("#E4AD94") : QColor("#8A4120"));
     highlightRules.append({QRegularExpression("\"(?:\\\\.|[^\"\\\\])*\"|'(?:\\\\.|[^'\\\\])*'"), stringFormat});
 
     QTextCharFormat trackingFormat;
-    trackingFormat.setForeground(QColor("#4ec9b0"));
+    trackingFormat.setForeground(dark ? QColor("#70D6BF") : QColor("#006B58"));
     trackingFormat.setFontWeight(QFont::DemiBold);
     highlightRules.append({QRegularExpression("\\bP(?:captureAndDetect|updateTracking|claimObject|releaseObject|completeObject|clearObjects)\\b",
                                               QRegularExpression::CaseInsensitiveOption), trackingFormat});

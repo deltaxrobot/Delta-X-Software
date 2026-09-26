@@ -82,6 +82,16 @@ void PluginManager::setDisabledPluginIds(const QSet<QString>& pluginIds)
     }
 }
 
+void PluginManager::setEnabledPluginIds(const QSet<QString>& pluginIds)
+{
+    m_enabledPluginIds.clear();
+    for (const QString& id : pluginIds) {
+        const QString normalized = normalizedId(id);
+        if (!normalized.isEmpty())
+            m_enabledPluginIds.insert(normalized);
+    }
+}
+
 void PluginManager::setGrantedPermissions(
     const QHash<QString, QSet<QString>>& grantedPermissions)
 {
@@ -147,9 +157,17 @@ void PluginManager::loadFromDirectories(const QStringList& directories)
             DeltaXPluginContract::pluginId(loaderMetadata));
         if (descriptor.id.isEmpty())
             descriptor.id = fallbackId(filePath);
-        descriptor.displayName = descriptor.id;
+        descriptor.displayName =
+            DeltaXPluginContract::pluginDisplayName(loaderMetadata);
+        if (descriptor.displayName.isEmpty())
+            descriptor.displayName = descriptor.id;
         descriptor.version =
             DeltaXPluginContract::pluginVersion(loaderMetadata);
+        descriptor.experimental =
+            DeltaXPluginContract::stability(loaderMetadata) ==
+            QStringLiteral("experimental");
+        descriptor.defaultEnabled =
+            DeltaXPluginContract::defaultEnabled(loaderMetadata);
         descriptor.capabilities =
             DeltaXPluginContract::capabilities(loaderMetadata);
         descriptor.requestedPermissions =
@@ -180,9 +198,13 @@ void PluginManager::loadFromDirectories(const QStringList& directories)
         }
         claimedIds.insert(descriptor.id);
 
-        if (m_disabledPluginIds.contains(descriptor.id)) {
+        if (m_disabledPluginIds.contains(descriptor.id) ||
+            (!descriptor.defaultEnabled &&
+             !m_enabledPluginIds.contains(descriptor.id))) {
             descriptor.state = PluginDescriptor::State::Disabled;
-            descriptor.error = QStringLiteral("disabled by user settings");
+            descriptor.error = m_disabledPluginIds.contains(descriptor.id)
+                ? QStringLiteral("disabled by user settings")
+                : QStringLiteral("experimental plugin disabled by default");
             m_descriptors.append(descriptor);
             emit diagnostic(QStringLiteral("Plugin '%1' is disabled")
                                 .arg(descriptor.id));

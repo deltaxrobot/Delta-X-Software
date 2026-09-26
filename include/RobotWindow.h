@@ -116,6 +116,8 @@ class GcodeVariable;
 class GcodeScript;
 class SoftwareManager;
 class PluginManager;
+class QGroupBox;
+class QToolButton;
 
 namespace Ui {
     class RobotWindow;
@@ -206,8 +208,7 @@ public:
     
     QList<GcodeScript*> GcodeScripts;
     QTimer* UIEvent;
-    int ChangedCounter = 0;
-    bool IsGcodeEditorTextChanged = false;
+    QString m_cleanGcodeText;
     int baseFontSize;
     
     int RbID = 0;
@@ -267,6 +268,13 @@ public:
 
 public slots:
     // ========== EXTERNAL CONTROL SLOTS ==========
+    bool startGScript(int workerIndex, const QString& source, QString* error,
+                      bool interactive = true, bool allowUnhomed = false);
+    bool requestRobotAutoConnect(QString* error = nullptr);
+    bool resetCellFault(bool operatorConfirmedSafe, QString* error = nullptr);
+    QString cellStateName() const;
+    QString cellFaultReason() const;
+    bool robotConnected() const;
     void ActivateButtonByName(const QString &buttonName);
     void ActiveWidgetByName(QString type, QString name, QString action);
 
@@ -342,7 +350,7 @@ public slots:
     void SelectGcodeExplorer();
     void BackParentExplorer();
     void CreateNewGcodeFile();
-    void SaveGcodeFile(QString fileName, QString content);
+    QString SaveGcodeFile(QString fileName, QString content);
     void RefreshExplorer();
     void DeleteGcodeFile();
     void ChangeSelectedEditorThread(int id);
@@ -494,15 +502,30 @@ protected:
     // ========== PROTECTED METHODS ==========
     void paintEvent(QPaintEvent *event) override;
     void resizeEvent(QResizeEvent *event) override;
+    bool eventFilter(QObject* watched, QEvent* event) override;
 
 private:
+    QSet<int> m_pendingGScriptStarts;
     // ========== ROBOT PARAMETER ACCESS ==========
     bool isRobotParametersValid() const;
     RobotPara getSafeRobotParameters() const;
     
     // ========== PERFORMANCE & TESTING ==========
     void CheckSettingsSpeed();
+    bool hasUnsavedGcodeText() const;
+    void markGcodeEditorClean();
     void updateModuleTabLabels();
+    void updateHomeAvailability();
+    void setupResponsiveShell();
+    void updateResponsiveLayout();
+    void setDeviceDockVisible(bool visible, bool userInitiated = false);
+    void setSystemBarVisible(bool visible, bool userInitiated = false);
+    void updateShellToggleState();
+    void resetWorkspaceSplitter();
+    void makeCollapsibleGroup(QGroupBox* group, bool initiallyExpanded);
+    void setupPointToolWorkspace();
+    void setupProgressiveDisclosure();
+    void integrateBlockProgrammingPanel(QWidget* panel);
     void SaveDetectingUI();
 	void interpolateCircle();
 	void makeEffectExample();
@@ -595,6 +618,16 @@ private:
     DeltaXPlugin* industrialCameraPlugin = nullptr;
     bool industrialCameraBackendAvailable = false;
     QString industrialCameraBackendStatus;
+    bool m_selectedRobotConnected = false;
+
+    // Responsive application shell
+    QToolButton* m_deviceDockToggle = nullptr;
+    QToolButton* m_systemBarToggle = nullptr;
+    QTabWidget* m_programModes = nullptr;
+    QWidget* m_programPage = nullptr;
+    QList<int> m_splitterSizesBeforeDeviceHide;
+    bool m_deviceDockUserOverride = false;
+    bool m_systemBarUserOverride = false;
 
     // Widget Pointers
     QList<QLabel*>* lbInputValues;
@@ -613,6 +646,7 @@ private:
     QTableWidget* gscriptWatchTable = nullptr;
     QTableWidget* gscriptThreadTable = nullptr;
     QTabWidget* gscriptInspectionTabs = nullptr;
+    QToolButton* gscriptDetailsButton = nullptr;
     QLineEdit* gscriptWatchEdit = nullptr;
     QPushButton* gscriptValidateButton = nullptr;
     QPushButton* gscriptTemplateButton = nullptr;

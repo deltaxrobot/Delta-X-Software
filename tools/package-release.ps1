@@ -45,6 +45,10 @@ $executable = $executableCandidates |
 if ([string]::IsNullOrWhiteSpace($executable)) {
     throw "DeltaRobotSoftware.exe was not found below: $BuildDirectory"
 }
+$cliExecutable = Join-Path (Split-Path -Parent $executable) 'delta-x-cli.exe'
+if (-not (Test-Path -LiteralPath $cliExecutable -PathType Leaf)) {
+    throw 'delta-x-cli.exe was not found next to the application. Build the delta-x-cli target first.'
+}
 
 if ([string]::IsNullOrWhiteSpace($QtBinDirectory)) {
     $deployCommand = Get-Command windeployqt.exe -ErrorAction SilentlyContinue
@@ -166,6 +170,7 @@ New-Item -ItemType Directory -Path $stagingDirectory | Out-Null
 
 $packagedExecutable = Join-Path $stagingDirectory 'DeltaRobotSoftware.exe'
 Copy-Item -LiteralPath $executable -Destination $packagedExecutable
+Copy-Item -LiteralPath $cliExecutable -Destination $stagingDirectory
 Copy-Item -LiteralPath $OpenCvRuntimePath -Destination $stagingDirectory
 
 & $deployTool --release --no-translations --no-compiler-runtime `
@@ -251,6 +256,7 @@ Copy-Item -LiteralPath $qtGplPath -Destination $licenseOutput
 $scriptOutput = Join-Path $stagingDirectory 'script-example'
 New-Item -ItemType Directory -Path $scriptOutput | Out-Null
 foreach ($relativePath in @(
+    'script-example\cli-smoke.gcode',
     'script-example\dxv1_client.py',
     'script-example\receive_image_json.py',
     'script-example\yolov8_detect.py'
@@ -266,6 +272,16 @@ if (-not (Test-Path -LiteralPath $sortingExample -PathType Container)) {
     throw "Multi-robot G-Script example not found: $sortingExample"
 }
 Copy-Item -LiteralPath $sortingExample -Destination $scriptOutput -Recurse
+$commandTour = Join-Path $repositoryRoot 'script-example\gscript-command-tour'
+if (-not (Test-Path -LiteralPath $commandTour -PathType Container)) {
+    throw "G-Script command tour not found: $commandTour"
+}
+Copy-Item -LiteralPath $commandTour -Destination $scriptOutput -Recurse
+$blockExample = Join-Path $repositoryRoot 'script-example\block-programming'
+if (-not (Test-Path -LiteralPath $blockExample -PathType Container)) {
+    throw "Block Programming example not found: $blockExample"
+}
+Copy-Item -LiteralPath $blockExample -Destination $scriptOutput -Recurse
 
 $pythonPluginSource = Join-Path $repositoryRoot 'plugin\python'
 if (Test-Path -LiteralPath $pythonPluginSource -PathType Container) {
@@ -280,12 +296,17 @@ Copy-Item -LiteralPath $BlockProgrammingPluginPath -Destination $pluginOutput
 $docsOutput = Join-Path $stagingDirectory 'docs'
 New-Item -ItemType Directory -Path $docsOutput | Out-Null
 $releaseDocs = @(
+    'cli.md',
     'Delta-X-Multi-Robot-Installation-Calibration-Operation-Guide.docx',
     'camera-gige-usb3.md',
+    'phone-camera.md',
     'block-programming.md',
     'external-vision.md',
     'gscript-runtime.md',
+    'gscript-command-tour.md',
     'gscript-design.md',
+    'gcode-motion-engine.md',
+    'mouse-robot-control.md',
     'multi-robot-conveyor-sorting.md',
     'variable-manager.md'
 )
@@ -301,6 +322,8 @@ foreach ($runtimeDirectory in @('gcode', 'models')) {
     New-Item -ItemType Directory -Path (
         Join-Path $stagingDirectory $runtimeDirectory) | Out-Null
 }
+Copy-Item -LiteralPath $commandTour -Destination (Join-Path $stagingDirectory 'gcode\GScript Command Tour') -Recurse
+Copy-Item -LiteralPath $blockExample -Destination (Join-Path $stagingDirectory 'gcode\Block Programming') -Recurse
 Set-Content -LiteralPath (Join-Path $stagingDirectory 'gcode\README.txt') -Encoding UTF8 -Value @'
 Place operator-reviewed G-Script programs in this directory.
 Do not copy machine/customer programs into public release artifacts.

@@ -1,830 +1,442 @@
-﻿#include "DrawingExporter.h"
-
+#include "DrawingExporter.h"
+#include "DrawingVectorImporter.h"
+#include <QFileDialog>
+#include <QImageReader>
+#include <QSvgRenderer>
+#include <QPainter>
 #include <QMessageBox>
-#include <QtMath>
-#include <algorithm>
+#include <QSignalBlocker>
+#include <QFileInfo>
+#include <QToolButton>
+#include <QPushButton>
+#include <QButtonGroup>
+#include <QVBoxLayout>
+#include <QFormLayout>
+#include <QGroupBox>
+#include <QScrollArea>
+#include <QSplitter>
+#include <QDoubleValidator>
+#include <QIntValidator>
+#include <QTextBrowser>
+#include <QDialog>
+#include <QDialogButtonBox>
+#include <opencv2/imgproc.hpp>
 #include <cmath>
 
-DrawingExporter::DrawingExporter(QWidget *parent)
-	: QWidget(parent),
-      originPixmap(nullptr),
-      effectPixmap(nullptr)
+DrawingExporter::DrawingExporter(QWidget* parent) : QWidget(parent) { hide(); }
+void DrawingExporter::SetDrawingParameterPointer(QLabel* preview, QLabel* pw, QLabel* ph,
+    QLineEdit* height, QLineEdit* width, QLineEdit* spacing, QLineEdit* threshold,
+    QSlider* slider, QCheckBox* inverse, QComboBox* method, QComboBox* conversion)
 {
-
-}
-
-void DrawingExporter::SetDrawingParameterPointer(QLabel *imageForDrawing, QLabel * wImage, QLabel * hImage, QLineEdit * heightScale, QLineEdit * widthScale, QLineEdit * space, QLineEdit *drawingThresValue, QSlider* drawingThresSlider, QCheckBox* inverse,QComboBox * drawMethod, QComboBox* conversionTool)
-{
-	lbImageForDrawing = imageForDrawing;
-	lbWImage = wImage;
-	lbHImage = hImage;
-	leHeightScale = heightScale;
-	leWidthScale = widthScale;
-	leSpace = space;
-	leDrawingThreshold = drawingThresValue;
-	hsDrawingThreshold = drawingThresSlider;
-    cbInverse = inverse;
-	cbDrawMethod = drawMethod;
-	cbConversion = conversionTool;
-
-	lbImageForDrawing->setScaledContents(true);
-
-    initEvent();
-    updateDrawingAreaScale();
-}
-
-void DrawingExporter::SetGcodeExportParameterPointer(QLineEdit *safeZHeight, QLineEdit *travelSpeed, QLineEdit *drawingSpeed, QLineEdit *drawingAcceleration)
-{
-    leSafeZHeight = safeZHeight;
-    leTravelSpeed = travelSpeed;
-    leDrawingSpeed = drawingSpeed;
-    leDrawingAcceleration = drawingAcceleration;
-}
-
-void DrawingExporter::SetDrawingPointInPlane(QLineEdit *point1, QLineEdit *point2, QLineEdit *point3)
-{
-    lePoint1 = point1;
-    lePoint2 = point2;
-    lePoint3 = point3;
-
-    if (lePoint1) {
-        connect(lePoint1, &QLineEdit::textChanged, this, &DrawingExporter::HandlePlanePointEdited);
+    m_preview=preview; m_pixelWidth=pw; m_pixelHeight=ph; m_height=height; m_width=width;
+    m_spacing=spacing; m_threshold=threshold; m_slider=slider; m_inverse=inverse;
+    m_method=method; m_conversion=conversion;
+    m_conversion->clear(); m_conversion->addItems({"Threshold","Vectorize"});
+    m_slider->setRange(0,255);
+    m_slider->setValue(m_threshold->text().toInt());
+    m_threshold->setValidator(new QIntValidator(0,255,m_threshold));
+    for(auto* field:{m_width,m_height,m_spacing}) {
+        auto* validator=new QDoubleValidator(0.001,100000,3,field);
+        validator->setLocale(QLocale::c()); validator->setNotation(QDoubleValidator::StandardNotation);
+        field->setValidator(validator);
     }
-    if (lePoint2) {
-        connect(lePoint2, &QLineEdit::textChanged, this, &DrawingExporter::HandlePlanePointEdited);
+    connect(m_slider,&QSlider::valueChanged,this,[this](int value) {
+        m_threshold->setText(QString::number(value));
+    });
+    connect(m_slider,&QSlider::sliderReleased,this,&DrawingExporter::ApplyConversion);
+    connect(m_threshold,&QLineEdit::editingFinished,this,[this] {
+        if(m_threshold->hasAcceptableInput()) { m_slider->setValue(m_threshold->text().toInt()); ApplyConversion(); }
+    });
+    connect(m_width,&QLineEdit::editingFinished,this,&DrawingExporter::updateSize);
+    connect(m_height,&QLineEdit::editingFinished,this,&DrawingExporter::updateSize);
+    connect(m_conversion,&QComboBox::currentTextChanged,this,&DrawingExporter::ApplyConversion);
+    connect(m_inverse,&QCheckBox::toggled,this,&DrawingExporter::ApplyConversion);
+}
+void DrawingExporter::SetGcodeExportParameterPointer(QLineEdit* z,QLineEdit* travel,QLineEdit* draw,QLineEdit* acceleration)
+{
+    m_travelZ=z; m_travelSpeed=travel; m_drawingSpeed=draw; m_acceleration=acceleration;
+    for(auto* field:{z,travel,draw,acceleration}) {
+        auto* validator=new QDoubleValidator(field); validator->setLocale(QLocale::c());
+        validator->setNotation(QDoubleValidator::StandardNotation); field->setValidator(validator);
     }
-    if (lePoint3) {
-        connect(lePoint3, &QLineEdit::textChanged, this, &DrawingExporter::HandlePlanePointEdited);
+    travel->setText("100"); draw->setText("20"); acceleration->setText("500");
+    z->setPlaceholderText(tr("Absolute robot Z"));
+}
+void DrawingExporter::SetDrawingPointInPlane(QLineEdit* a,QLineEdit* b,QLineEdit* c)
+{
+    m_a=a; m_b=b; m_c=c;
+    for(auto* field:{a,b,c}) {
+        field->setPlaceholderText("X, Y, Z");
+        connect(field,&QLineEdit::textChanged,this,&DrawingExporter::refreshMarkers);
     }
-
-    refreshPlaneMarkers();
 }
-
-void DrawingExporter::SetDrawingAreaWidget(DrawingWidget * drawingWidget)
+void DrawingExporter::SetDrawingAreaWidget(DrawingWidget* canvas)
 {
-    drawingArea = drawingWidget;
-    updateDrawingAreaScale();
-    refreshPlaneMarkers();
+    m_canvas=canvas; updateSize();
+    connect(canvas,&DrawingWidget::physicalSizeChanged,this,[this] {
+        m_width->setText(QString::number(m_canvas->physicalSize().width()));
+        m_height->setText(QString::number(m_canvas->physicalSize().height()));
+    });
 }
-
-void DrawingExporter::SetGcodeEditor(QTextEdit *gcodeEditor)
+void DrawingExporter::updateSize()
 {
-    pteGcodeEditor = gcodeEditor;
+    if(m_canvas) m_canvas->SetPhysicalSize(m_width->text().toFloat(),m_height->text().toFloat());
 }
-
-void DrawingExporter::SetEffector(QComboBox *drawingEffector)
+bool DrawingExporter::parsePoint(const QString& text,QVector3D& point) const
 {
-    cbDrawingEffector = drawingEffector;
+    const auto parts=text.split(',',Qt::KeepEmptyParts);
+    if(parts.size()!=3) return false;
+    float values[3];
+    for(int i=0;i<3;++i) {
+        bool ok=false; values[i]=parts[i].trimmed().toFloat(&ok);
+        if(!ok || !std::isfinite(values[i]) || std::abs(values[i])>100000) return false;
+    }
+    point={values[0],values[1],values[2]}; return true;
 }
-
-DrawingExporter::~DrawingExporter()
+void DrawingExporter::refreshMarkers()
 {
+    if(!m_canvas) return;
+    QVector3D a,b,c;
+    if(parsePoint(m_a->text(),a) && parsePoint(m_b->text(),b) && parsePoint(m_c->text(),c))
+        m_canvas->SetPlaneMarkers({{a.x(),a.y()},{b.x(),b.y()},{c.x(),c.y()}});
+    else m_canvas->SetPlaneMarkers({});
 }
-
+void DrawingExporter::showError(const QString& error) { QMessageBox::warning(this,tr("Drawing"),error); }
+bool DrawingExporter::loadImage(const QString& fileName,QString* error)
+{
+    auto fail=[&](const QString& message) { if(error)*error=message; return false; };
+    QImage image;
+    if(QFileInfo(fileName).size()>20000000) return fail(tr("Image file exceeds 20 MB."));
+    if(QFileInfo(fileName).suffix().compare("svg",Qt::CaseInsensitive)==0) {
+        QSvgRenderer svg(fileName);
+        if(!svg.isValid() || svg.defaultSize().isEmpty()) return fail(tr("Invalid SVG image."));
+        const QSize size=svg.defaultSize().scaled(1600,1600,Qt::KeepAspectRatio);
+        image=QImage(size,QImage::Format_ARGB32); image.fill(Qt::white);
+        QPainter painter(&image); svg.render(&painter);
+    } else {
+        QImageReader reader(fileName); reader.setAutoTransform(true);
+        if(!reader.size().isValid() || qint64(reader.size().width())*reader.size().height()>64000000)
+            return fail(tr("Invalid image or image larger than 64 megapixels."));
+        if(reader.size().width()>1600 || reader.size().height()>1600)
+            reader.setScaledSize(reader.size().scaled(1600,1600,Qt::KeepAspectRatio));
+        image=reader.read();
+        if(image.isNull()) return fail(reader.errorString());
+    }
+    if(image.isNull()) return fail(tr("Could not load image."));
+    // Composite transparency onto white; semitransparent antialiased edges remain correct.
+    m_original=QImage(image.size(),QImage::Format_RGB32); m_original.fill(Qt::white);
+    { QPainter painter(&m_original); painter.drawImage(0,0,image); }
+    ApplyConversion(); return true;
+}
 void DrawingExporter::OpenImage()
 {
-	QString imageName;
-    imageName = QFileDialog::getOpenFileName(this, tr("Open Image"), "", tr("Image Files (*.png *.jpg *.bmp *.svg)"));
-
-	if (imageName == "")
-		return;
-
-    if (imageName.contains(".svg"))
-    {
-        ConvertSVGToArea(imageName);
-    }
-    else
-    {
-        originPixmap = new QPixmap(imageName);
-        effectPixmap = new QPixmap(imageName);
-
-        ApplyConversion();
-    }
-
+    const auto file=QFileDialog::getOpenFileName(this,tr("Load Image"),{},tr("Raster images (*.png *.jpg *.jpeg *.bmp)"));
+    if(file.isEmpty()) return;
+    QString error; if(!loadImage(file,&error)) showError(error);
 }
-
-void DrawingExporter::ConvertToDrawingArea()
+bool DrawingExporter::importVectorFile(const QString& fileName,QString* error,QString* notice)
 {
-	if (effectPixmap == nullptr)
-		return;
-
-	drawingArea->ClearShape();
-	drawingArea->ClearImage();
-	drawingArea->InitGrid();
-
-    drawingArea->Vectors.clear();
-
-	if (cbConversion->currentText() == "Vectorize")
-	{
-		std::vector<std::vector<cv::Point> > contoursContainer;
-		findContours(mat, contoursContainer, cv::RETR_TREE, cv::CHAIN_APPROX_SIMPLE);
-
-		cv::Mat matClone = mat.clone();
-		matClone = cv::Scalar(255, 255, 255, 255);
-
-		float ratio = (float)effectPixmap->width() / effectPixmap->height();
-        float hS = leHeightScale->text().toInt();
-        float wS = hS * ratio;
-
-		float scale = (float)hS / mat.rows;
-
-        float xOffset = wS / 2;
-        float yOffset = hS / 2;
-
-		for (int i = 0; i < contoursContainer.size(); i++)
-		{
-			double arclen = cv::arcLength(contoursContainer[i], true);
-            double eps = 0.001f;
-			double epsilon = arclen * eps;
-
-			std::vector<cv::Point> approx;
-			cv::approxPolyDP(contoursContainer[i], approx, epsilon, true);
-
-            QVector<QPointF> points;
-
-			for (int j = 0; j < approx.size() - 1; j++)
-			{
-                float x1 = approx[j].x * scale - xOffset;
-                float y1 = approx[j].y * scale - yOffset;
-                float x2 = approx[j + 1].x * scale - xOffset;
-                float y2 = approx[j + 1].y * scale - yOffset;
-
-                drawingArea->AddLineToStack(QPoint(x1, y1), QPoint(x2, y2));
-
-                points.append(QPointF(x1, y1));
-			}
-
-
-
-			//cv::polylines(matClone, approx, true, cv::Scalar(0, 0, 0, 255));
-
-            float x1 = approx[approx.size() - 1].x * scale - xOffset;
-            float y1 = approx[approx.size() - 1].y * scale - yOffset;
-            float x2 = approx[0].x * scale - xOffset;
-            float y2 = approx[0].y * scale - yOffset;
-
-            points.append(QPointF(x1, y1));
-            points.append(QPointF(x2, y2));
-
-            drawingArea->Vectors.append(points);
-
-            drawingArea->AddLineToStack(QPoint(x1, y1), QPoint(x2, y2));
-		}
-
-        drawingArea->DrawLineFromStack();
-	}
-	else
-	{
-		float ratio = (float)effectPixmap->width() / effectPixmap->height();
-
-		int hS = leHeightScale->text().toInt();
-		int wS = hS * ratio;
-
-		int x = (drawingArea->width() - wS) / 2;
-		int y = (drawingArea->height() - leHeightScale->text().toInt()) / 2;
-
-		drawingArea->AddImage(x, y, wS, hS, *effectPixmap, leSpace->text().toFloat(), cbDrawMethod->currentText(), cbConversion->currentText());
-    }
+    if(!m_canvas) { if(error)*error=tr("Drawing canvas is unavailable."); return false; }
+    DrawingVectorImporter::Result imported;
+    if(!DrawingVectorImporter::importFile(fileName,&imported,error)) return false;
+    m_canvas->replacePaths(imported.paths);
+    m_canvas->SetPhysicalSize(imported.sizeMm.width(),imported.sizeMm.height());
+    m_canvas->FitView();
+    if(notice) *notice=imported.warnings.join('\n');
+    return true;
 }
-
+void DrawingExporter::OpenVector()
+{
+    const auto file=QFileDialog::getOpenFileName(this,tr("Import Vector"),{},tr("Vector drawings (*.svg *.dxf)"));
+    if(file.isEmpty()) return;
+    if(!m_canvas->paths().isEmpty() && QMessageBox::question(this,tr("Import Vector"),
+       tr("Replace the current paths with this vector drawing? You can undo this change."),
+       QMessageBox::Yes|QMessageBox::Cancel,QMessageBox::Cancel)!=QMessageBox::Yes) return;
+    QString error,notice;
+    if(!importVectorFile(file,&error,&notice)) { showError(error); return; }
+    if(!notice.isEmpty()) QMessageBox::information(this,tr("Vector Import"),notice);
+}
 void DrawingExporter::ConvertSVGToArea(QString fileName)
 {
-    // Load file SVG
-    svgWidget.load(fileName);
-
-    // Display the widget.
-    svgWidget.show();
-}
-
-void DrawingExporter::ExportGcodes()
-{
-    if (!pteGcodeEditor) {
-        return;
-    }
-
-    updateDrawingAreaScale();
-
-    auto requirePoint = [&](QLineEdit* lineEdit, const QString& label, QVector3D& outPoint) -> bool {
-        if (!lineEdit) {
-            showInputError(tr("Missing input for point %1.").arg(label));
-            return false;
-        }
-
-        QString errorMessage;
-        if (!parsePoint(lineEdit->text(), outPoint, &errorMessage)) {
-            showInputError(tr("Invalid coordinates for point %1: %2").arg(label, errorMessage));
-            return false;
-        }
-
-        return true;
-    };
-
-    QVector3D pointA;
-    QVector3D pointB;
-    QVector3D pointC;
-
-    if (!requirePoint(lePoint1, QStringLiteral("A"), pointA) ||
-        !requirePoint(lePoint2, QStringLiteral("B"), pointB) ||
-        !requirePoint(lePoint3, QStringLiteral("C"), pointC)) {
-        if (drawingArea) {
-            drawingArea->SetPlaneMarkers({});
-        }
-        return;
-    }
-
-    QVector<QVector3D> planePoints{pointA, pointB, pointC};
-    updatePlaneMarkers(planePoints);
-
-    QVector3D v1 = pointB - pointA;
-    QVector3D v2 = pointC - pointA;
-    QVector3D normal = QVector3D::crossProduct(v1, v2);
-
-    if (normal.lengthSquared() < 1e-6f) {
-        showInputError(tr("Points A, B, and C must not be collinear."));
-        return;
-    }
-
-    float A = normal.x();
-    float B = normal.y();
-    float C = normal.z();
-
-    if (qFuzzyIsNull(C)) {
-        showInputError(tr("Cannot compute Z because the plane normal has zero Z component."));
-        return;
-    }
-
-    float D = -(A * pointA.x() + B * pointA.y() + C * pointA.z());
-
-    auto planeZAt = [&](float x, float y) -> float {
-        return -(A * x + B * y + D) / C;
-    };
-
-    bool ok = false;
-
-    const float referencePlaneZ = (pointA.z() + pointB.z() + pointC.z()) / 3.0f;
-
-    float drawingHeight = referencePlaneZ;
-    if (leSafeZHeight) {
-        drawingHeight = leSafeZHeight->text().toFloat(&ok);
-        if (!ok) {
-            showInputError(tr("Invalid drawing Z height."));
-            return;
-        }
-    }
-
-    float drawingOffset = drawingHeight - referencePlaneZ;
-
-    int travelSpeed = 0;
-    if (leTravelSpeed) {
-        travelSpeed = leTravelSpeed->text().toInt(&ok);
-        if (!ok || travelSpeed <= 0) {
-            showInputError(tr("Invalid travel speed."));
-            return;
-        }
-    }
-
-    int drawingSpeed = 0;
-    if (leDrawingSpeed) {
-        drawingSpeed = leDrawingSpeed->text().toInt(&ok);
-        if (!ok || drawingSpeed <= 0) {
-            showInputError(tr("Invalid drawing speed."));
-            return;
-        }
-    }
-
-    int drawingAcceleration = 0;
-    if (leDrawingAcceleration) {
-        drawingAcceleration = leDrawingAcceleration->text().toInt(&ok);
-        if (!ok || drawingAcceleration < 0) {
-            showInputError(tr("Invalid drawing acceleration."));
-            return;
-        }
-    }
-
-    const float liftOffset = std::max(drawingOffset + 10.0f, 5.0f);
-    const float safeOffset = std::max(drawingOffset + 50.0f, 15.0f);
-
-    auto drawingZ = [&](float x, float y) -> float {
-        return planeZAt(x, y) + drawingOffset;
-    };
-
-    auto liftZ = [&](float x, float y) -> float {
-        return planeZAt(x, y) + liftOffset;
-    };
-
-    auto safeZAt = [&](float x, float y) -> float {
-        return planeZAt(x, y) + safeOffset;
-    };
-
-    const bool laserMode = cbDrawingEffector && cbDrawingEffector->currentText() == "Laser";
-
-    QStringList lines;
-    lines << "G28";
-
-    if (laserMode) {
-        lines << ";Select laser head";
-        lines << "M360 E3";
-        lines << ";Ensure laser head is off";
-        lines << "M03 S0";
-        lines << "#OnValue = 255";
-    }
-
-    lines << QString("G01 F%1").arg(travelSpeed);
-
-    const float globalSafeZ = std::max({
-        safeZAt(pointA.x(), pointA.y()),
-        safeZAt(pointB.x(), pointB.y()),
-        safeZAt(pointC.x(), pointC.y())
-    });
-
-    lines << QString("G01 Z%1").arg(globalSafeZ, 0, 'f', 1);
-    lines << QString("G01 F%1").arg(drawingSpeed);
-    lines << QString("M204 A%1").arg(drawingAcceleration);
-
-    auto appendLine = [&](const QString& line) {
-        lines << line;
-    };
-
-    auto formatXYZ = [&](float x, float y, float z) {
-        return QString("G01 X%1 Y%2 Z%3")
-            .arg(x, 0, 'f', 1)
-            .arg(y, 0, 'f', 1)
-            .arg(z, 0, 'f', 1);
-    };
-
-    auto formatZ = [&](float z) {
-        return QString("G01 Z%1").arg(z, 0, 'f', 1);
-    };
-
-    auto formatXY = [&](float x, float y) {
-        return QString("G01 X%1 Y%2")
-            .arg(x, 0, 'f', 1)
-            .arg(y, 0, 'f', 1);
-    };
-
-    auto moveToLift = [&](float x, float y) {
-        appendLine(formatZ(globalSafeZ));
-        appendLine(formatXY(x, y));
-        appendLine(formatZ(liftZ(x, y)));
-        if (laserMode) {
-            appendLine("M03 S0");
-        }
-    };
-
-    auto drawTo = [&](float x, float y, bool firstPoint) {
-        appendLine(formatXYZ(x, y, drawingZ(x, y)));
-        if (firstPoint && laserMode) {
-            appendLine("M03 S[#OnValue]");
-        }
-    };
-
-    auto finishStroke = [&](float x, float y) {
-        if (laserMode) {
-            appendLine("M03 S0");
-        }
-        appendLine(formatZ(liftZ(x, y)));
-    };
-
-    if (!drawingArea) {
-        showInputError(tr("Drawing area is not available."));
-        return;
-    }
-
-    if (!drawingArea->Vectors.isEmpty()) {
-        for (const QVector<QPointF>& path : drawingArea->Vectors) {
-            if (path.isEmpty()) {
-                continue;
-            }
-
-            float startX = path.first().x();
-            float startY = -path.first().y();
-
-            moveToLift(startX, startY);
-
-            bool firstPoint = true;
-            float lastX = startX;
-            float lastY = startY;
-
-            for (const QPointF& point : path) {
-                float x = point.x();
-                float y = -point.y();
-                drawTo(x, y, firstPoint);
-                firstPoint = false;
-                lastX = x;
-                lastY = y;
-            }
-
-            finishStroke(lastX, lastY);
-        }
-    } else if (!drawingArea->Images.isEmpty()) {
-        Image lastImage = drawingArea->Images.back();
-
-        if (leSpace) {
-            float configuredSpacing = leSpace->text().toFloat(&ok);
-            if (ok && configuredSpacing > 0.0f) {
-                lastImage.LineSpace = configuredSpacing;
-            }
-        }
-
-        if (lastImage.LineSpace <= 0.0f) {
-            lastImage.LineSpace = 1.0f;
-        }
-
-        QImage image = lastImage.Pixmap->toImage();
-        int targetHeight = static_cast<int>(lastImage.Size.y() * (1.0f / lastImage.LineSpace));
-        if (targetHeight <= 0) {
-            targetHeight = 1;
-        }
-        image = image.scaledToHeight(targetHeight);
-
-        const int offsetX = image.width() / 2;
-        const int offsetY = image.height() / 2;
-
-        float lastX = (0 - offsetX) * lastImage.LineSpace;
-        float lastY = (0 - offsetY) * lastImage.LineSpace;
-
-        bool strokeActive = false;
-        float strokeLastX = 0.0f;
-        float strokeLastY = 0.0f;
-
-        const QString drawMethod = cbDrawMethod ? cbDrawMethod->currentText() : QStringLiteral("Line");
-        const QString conversionMode = cbConversion ? cbConversion->currentText() : QStringLiteral("Threshold");
-
-        for (int i = 0; i < image.height(); ++i) {
-            for (int j = 0; j < image.width(); ++j) {
-                int realX = j;
-
-                if (i % 2 == 1) {
-                    j = image.width() - 1 - j;
-                }
-
-                const QColor colorValue = image.pixelColor(QPoint(j, i));
-                const bool isBlackPixel = (colorValue.red() == 0 &&
-                                           colorValue.green() == 0 &&
-                                           colorValue.blue() == 0 &&
-                                           colorValue.alpha() == 255);
-
-                const float xPos = (j - offsetX) * lastImage.LineSpace;
-                const float yPos = -(i - offsetY) * lastImage.LineSpace;
-
-                const float distance = std::sqrt(std::pow(xPos - lastX, 2.0f) + std::pow(yPos - lastY, 2.0f));
-
-                if (conversionMode == "Threshold" && drawMethod == "Line") {
-                    if (isBlackPixel) {
-                        if (!strokeActive) {
-                            moveToLift(xPos, yPos);
-                            drawTo(xPos, yPos, true);
-                            strokeActive = true;
-                            strokeLastX = xPos;
-                            strokeLastY = yPos;
-                        } else {
-                            drawTo(xPos, yPos, false);
-                            strokeLastX = xPos;
-                            strokeLastY = yPos;
-                        }
-                    } else if (strokeActive) {
-                        finishStroke(strokeLastX, strokeLastY);
-                        strokeActive = false;
-                    }
-                } else if (conversionMode == "Threshold" && drawMethod == "Dot") {
-                    if (distance < lastImage.LineSpace) {
-                        j = realX;
-                        continue;
-                    }
-
-                    if (isBlackPixel) {
-                        moveToLift(xPos, yPos);
-                        drawTo(xPos, yPos, true);
-                        finishStroke(xPos, yPos);
-                    }
-                } else if (conversionMode == "Gray") {
-                    if (distance < lastImage.LineSpace) {
-                        j = realX;
-                        continue;
-                    }
-
-                    moveToLift(xPos, yPos);
-                    appendLine(QString("#100 = %1").arg(colorValue.black()));
-                    drawTo(xPos, yPos, true);
-                    finishStroke(xPos, yPos);
-                }
-
-                lastX = xPos;
-                lastY = yPos;
-                j = realX;
-            }
-
-            if (strokeActive) {
-                finishStroke(strokeLastX, strokeLastY);
-                strokeActive = false;
-            }
-        }
-    } else {
-        appendLine("; No drawing data available");
-    }
-
-    appendLine(formatZ(globalSafeZ));
-    if (laserMode) {
-        appendLine("M03 S0");
-    }
-
-    QString output = lines.join("\n");
-    if (!output.endsWith('\n')) {
-        output.append('\n');
-    }
-    pteGcodeEditor->setPlainText(output);
+    QString error; if(!loadImage(fileName,&error)) showError(error);
 }
 void DrawingExporter::ApplyConversion()
 {
-	if (originPixmap == nullptr)
-		return;
-
-	QImage image = originPixmap->toImage();
-	image = image.convertToFormat(QImage::Format_ARGB32);
-
-	int thresh = hsDrawingThreshold->value();
-
-	if (leDrawingThreshold->text().toInt() < 0)
-	{
-		leDrawingThreshold->setText(QString("-") + QString::number(thresh));
-	}
-	else
-	{
-		leDrawingThreshold->setText(QString::number(thresh));
-	}
-
-	// transparent pixel to white pixel
-
-	for (int i = 0; i < image.width(); ++i)
-	{
-		for (int j = 0; j < image.height(); ++j)
-		{
-			QColor color = image.pixelColor(QPoint(i, j));
-
-			if (color.alpha() == 0)
-				image.setPixel(i, j, qRgba(255, 255, 255, 255));
-		}
-	}
-
-	if (cbConversion->currentText() == "Gray")
-	{
-		mat = ImageTool::QImageToCvMat(image);
-		cv::cvtColor(mat, mat, cv::COLOR_BGR2GRAY);
-
-		image = ImageTool::cvMatToQImage(mat);
-		image = image.convertToFormat(QImage::Format_ARGB32);
-	}
-	else if (cbConversion->currentText() == "Vectorize")
-	{
-		mat = ImageTool::QImageToCvMat(image);
-		result = mat.clone();
-		result = cv::Scalar(255, 255, 255, 255);
-		
-		cv::cvtColor(mat, mat, cv::COLOR_BGR2GRAY);
-
-        if (cbInverse->isChecked())
-		{
-			cv::threshold(mat, mat, thresh, 255, cv::THRESH_BINARY_INV);
-		}
-		else
-		{
-			cv::threshold(mat, mat, thresh, 255, cv::THRESH_BINARY);
-		}
-
-		/*cv::Mat edges;
-
-		cv::Canny(mat, edges, 50, 200);*/
-
-		std::vector<std::vector<cv::Point> > contoursContainer;
-		findContours(mat, contoursContainer, cv::RETR_TREE, cv::CHAIN_APPROX_SIMPLE);
-
-		for (int i = 0; i < contoursContainer.size(); i++)
-		{
-			double arclen = cv::arcLength(contoursContainer[i], true);
-			double eps = 0.0005f;
-			double epsilon = arclen * eps;
-
-			std::vector<cv::Point> approx;
-			cv::approxPolyDP(contoursContainer[i], approx, epsilon, true);
-
-			/*for (int j = 0; j < approx.size(); j++)
-			{
-				cv::circle(result, approx[j], 7, cv::Scalar(0, 255, 0, 255), -1);
-			}*/
-			cv::polylines(result, approx, true, cv::Scalar(0, 0, 0, 255));
-		}		
-
-		image = ImageTool::cvMatToQImage(result);
-		image = image.convertToFormat(QImage::Format_ARGB32);
-
-		for (int i = 0; i < image.width(); ++i)
-		{
-			for (int j = 0; j < image.height(); ++j)
-			{
-				QColor color = image.pixelColor(QPoint(i, j));
-
-				if (color.black() == 0)
-                    image.setPixel(i, j, qRgba(255, 255, 255, 255));
-			}
-		}
-	}
-
-	else
-	{
-		for (int i = 0; i < image.width(); ++i)
-		{
-			for (int j = 0; j < image.height(); ++j)
-			{
-				QColor color = image.pixelColor(QPoint(i, j));
-				int grayValue = color.black();
-                int value;
-
-                if (!cbInverse->isChecked())
-                {
-                    value = grayValue > thresh ? 0 : 255;
-                }
-                else
-                {
-                    value = grayValue > thresh ? 255 : 0;
-                }
-
-//				int alpha = 255 - value;
-
-//				if (color.alpha() == 0)
-//				{
-//					value = 255;
-//					alpha = 0;
-//				}
-
-                image.setPixel(i, j, qRgba(value, value, value, 255));
-			}
-		}
-	}
-	
-		
-	*effectPixmap = effectPixmap->fromImage(image);
-
-	float ratio = (float)effectPixmap->width() / effectPixmap->height();
-    int h = lbImageForDrawing->height();
-
-    lbImageForDrawing->setMaximumWidth(h * ratio);
-
-	lbWImage->setText(QString("W: ") + QString::number(originPixmap->width()));
-	lbHImage->setText(QString("H: ") + QString::number(originPixmap->height()));
-
-	lbImageForDrawing->setPixmap(*effectPixmap);
-}
-
-void DrawingExporter::ChangeSize()
-{
-
-}
-
-void DrawingExporter::ScaleEffectImage()
-{
-
-}
-
-void DrawingExporter::initEvent()
-{
-    if (hsDrawingThreshold) {
-        connect(hsDrawingThreshold, &QSlider::sliderReleased, this, &DrawingExporter::ApplyConversion);
-    }
-    if (leWidthScale) {
-        connect(leWidthScale, &QLineEdit::textChanged, this, &DrawingExporter::HandleScaleChanged);
-    }
-    if (leHeightScale) {
-        connect(leHeightScale, &QLineEdit::textChanged, this, &DrawingExporter::HandleScaleChanged);
-    }
-    if (cbConversion) {
-        connect(cbConversion, &QComboBox::currentTextChanged, this, &DrawingExporter::ApplyConversion);
-    }
-    if (cbInverse) {
-        connect(cbInverse, &QCheckBox::stateChanged, this, &DrawingExporter::ApplyConversion);
-    }
-}
-
-void DrawingExporter::HandleScaleChanged(const QString& value)
-{
-    Q_UNUSED(value);
-    updateDrawingAreaScale();
-    ApplyConversion();
-}
-
-void DrawingExporter::HandlePlanePointEdited()
-{
-    refreshPlaneMarkers();
-}
-
-bool DrawingExporter::parsePoint(const QString& text, QVector3D& outPoint, QString* errorMessage) const
-{
-    QString trimmedText = text;
-    if (trimmedText.isEmpty()) {
-        if (errorMessage) {
-            *errorMessage = tr("Value is empty.");
+    if(m_method) m_method->setEnabled(m_conversion->currentIndex()==0);
+    if(m_original.isNull()) return;
+    m_effect=QImage(m_original.size(),QImage::Format_Grayscale8);
+    const int threshold=m_slider->value();
+    for(int y=0;y<m_original.height();++y) {
+        auto* row=m_effect.scanLine(y);
+        for(int x=0;x<m_original.width();++x) {
+            bool black=qGray(m_original.pixel(x,y))<threshold;
+            if(m_inverse->isChecked()) black=!black;
+            row[x]=black ? 0 : 255;
         }
-        return false;
     }
-
-    QStringList parts = trimmedText.split(',', Qt::SkipEmptyParts);
-    if (parts.size() != 3) {
-        if (errorMessage) {
-            *errorMessage = tr("Expected three comma-separated values (x,y,z).");
-        }
-        return false;
-    }
-
-    bool okX = false;
-    bool okY = false;
-    bool okZ = false;
-
-    float x = parts[0].trimmed().toFloat(&okX);
-    float y = parts[1].trimmed().toFloat(&okY);
-    float z = parts[2].trimmed().toFloat(&okZ);
-
-    if (!okX || !okY || !okZ) {
-        if (errorMessage) {
-            QStringList invalidTokens;
-            if (!okX) invalidTokens << parts[0].trimmed();
-            if (!okY) invalidTokens << parts[1].trimmed();
-            if (!okZ) invalidTokens << parts[2].trimmed();
-            *errorMessage = tr("Could not convert %1 to numbers.").arg(invalidTokens.join(", "));
-        }
-        return false;
-    }
-
-    outPoint = QVector3D(x, y, z);
-    return true;
+    m_preview->setPixmap(QPixmap::fromImage(m_effect).scaled(260,150,Qt::KeepAspectRatio,Qt::SmoothTransformation));
+    m_pixelWidth->setText(tr("%1 × %2 px").arg(m_original.width()).arg(m_original.height()));
 }
-
-void DrawingExporter::showInputError(const QString& message) const
+bool DrawingExporter::convertImage(QString* error)
 {
-    QMessageBox::warning(const_cast<DrawingExporter*>(this), tr("Invalid Input"), message);
+    auto fail=[&](const QString& message) { if(error)*error=message; return false; };
+    if(!m_canvas || m_effect.isNull()) return fail(tr("Load an image first."));
+    bool okW=false,okH=false,okS=false;
+    const double w=m_width->text().toDouble(&okW), h=m_height->text().toDouble(&okH), spacing=m_spacing->text().toDouble(&okS);
+    if(!okW || !okH || !okS || !std::isfinite(w) || !std::isfinite(h) || !std::isfinite(spacing) ||
+       w<=0 || h<=0 || w>100000 || h>100000 || spacing<=0)
+        return fail(tr("Enter positive width, height and spacing."));
+    DrawingProgram::Paths paths;
+    if(m_conversion->currentIndex()==1) {
+        try {
+            cv::Mat gray(m_effect.height(),m_effect.width(),CV_8UC1,m_effect.bits(),m_effect.bytesPerLine());
+            cv::Mat ink; cv::bitwise_not(gray,ink);
+            std::vector<std::vector<cv::Point>> contours;
+            cv::findContours(ink,contours,cv::RETR_LIST,cv::CHAIN_APPROX_SIMPLE);
+            for(const auto& contour:contours) {
+                if(contour.size()<3) continue;
+                std::vector<cv::Point> approx;
+                cv::approxPolyDP(contour,approx,0.5,true);
+                if(approx.size()<3) continue;
+                QVector<QPointF> path;
+                for(const auto& p:approx) path.append(QPointF((p.x+0.5)*w/m_effect.width()-w/2,h/2-(p.y+0.5)*h/m_effect.height()));
+                path.append(path.first()); paths.append(path);
+            }
+        } catch(const cv::Exception&) { return fail(tr("Image conversion failed. Try a smaller image.")); }
+        if(!DrawingProgram::validatePaths(paths,error)) return false;
+    } else if(!DrawingProgram::rasterPaths(m_effect,w,h,spacing,m_method->currentText()=="Dot",&paths,error)) return false;
+    m_canvas->replacePaths(paths); updateSize(); m_canvas->FitView(); return true;
 }
-
-void DrawingExporter::updateDrawingAreaScale()
+void DrawingExporter::ConvertToDrawingArea()
 {
-    if (!drawingArea) {
+    if(!m_canvas->paths().isEmpty() && QMessageBox::question(this,tr("Replace Drawing"),
+       tr("Replace the current paths with this image? You can undo this change."),
+       QMessageBox::Yes|QMessageBox::Cancel,QMessageBox::Cancel)!=QMessageBox::Yes) return;
+    QString error; if(!convertImage(&error)) showError(error);
+}
+bool DrawingExporter::generateProgram(QString* output,QString* error) const
+{
+    auto fail=[&](const QString& message) { if(error)*error=message; return false; };
+    if(!m_canvas) return fail(tr("Drawing canvas is unavailable."));
+    DrawingProgram::Settings s;
+    if(!parsePoint(m_a->text(),s.a) || !parsePoint(m_b->text(),s.b) || !parsePoint(m_c->text(),s.c))
+        return fail(tr("Enter valid X, Y, Z coordinates for plane points A, B and C."));
+    bool ok=false;
+    auto read=[&](QLineEdit* field,double& value) { value=field->text().toDouble(&ok); return ok && std::isfinite(value); };
+    if(!read(m_travelZ,s.travelZ) || !read(m_travelSpeed,s.travelSpeed) ||
+       !read(m_drawingSpeed,s.drawingSpeed) || !read(m_acceleration,s.acceleration))
+        return fail(tr("Enter Travel Z, travel speed, drawing speed and acceleration."));
+    s.laser=m_effector && m_effector->currentText()=="Laser";
+    return DrawingProgram::generate(m_canvas->paths(),s,output,error);
+}
+void DrawingExporter::ExportGcodes()
+{
+    QString output,error;
+    if(!generateProgram(&output,&error)) { showError(error); return; }
+    if(!m_editor) return;
+    if(m_editor->isReadOnly()) {
+        showError(tr("The G-code Editor is locked. Stop the running program before replacing it."));
         return;
     }
-
-    bool okWidth = false;
-    bool okHeight = false;
-
-    float widthMm = 0.0f;
-    float heightMm = 0.0f;
-
-    if (leWidthScale) {
-        widthMm = leWidthScale->text().toFloat(&okWidth);
-    }
-    if (leHeightScale) {
-        heightMm = leHeightScale->text().toFloat(&okHeight);
-    }
-
-    if (!okWidth && okHeight && drawingArea->height() > 0) {
-        widthMm = heightMm * static_cast<float>(drawingArea->width()) / static_cast<float>(drawingArea->height());
-        okWidth = true;
-    } else if (!okHeight && okWidth && drawingArea->width() > 0) {
-        heightMm = widthMm * static_cast<float>(drawingArea->height()) / static_cast<float>(drawingArea->width());
-        okHeight = true;
-    }
-
-    drawingArea->SetPhysicalSize(okWidth ? widthMm : 0.0f,
-                                 okHeight ? heightMm : 0.0f);
+    if(m_effector->currentText()=="Laser" && QMessageBox::warning(this,tr("Laser Output"),
+       tr("This program uses M03 S255 for full power and M03 S0 for off. Verify firmware, laser configuration and safety interlocks before running."),
+       QMessageBox::Ok|QMessageBox::Cancel,QMessageBox::Cancel)!=QMessageBox::Ok) return;
+    if(!m_editor->toPlainText().trimmed().isEmpty() && QMessageBox::question(this,tr("Replace G-code"),
+       tr("Replace the G-code Editor contents with the drawing program?"),
+       QMessageBox::Yes|QMessageBox::Cancel,QMessageBox::Cancel)!=QMessageBox::Yes) return;
+    // Keep editor undo history, so an accidental replacement is recoverable.
+    auto cursor=m_editor->textCursor(); cursor.beginEditBlock(); cursor.select(QTextCursor::Document);
+    cursor.insertText(output); cursor.endEditBlock(); m_editor->setTextCursor(cursor);
+    QMessageBox::information(this,tr("Drawing"),tr("G-code is ready in the Program editor. No robot commands were sent."));
 }
 
-void DrawingExporter::refreshPlaneMarkers()
+void DrawingExporter::SaveSettings(QSettings* settings) const
 {
-    if (!drawingArea) {
-        return;
-    }
-
-    QVector3D pointA;
-    QVector3D pointB;
-    QVector3D pointC;
-
-    if (parsePoint(lePoint1 ? lePoint1->text() : QString(), pointA, nullptr) &&
-        parsePoint(lePoint2 ? lePoint2->text() : QString(), pointB, nullptr) &&
-        parsePoint(lePoint3 ? lePoint3->text() : QString(), pointC, nullptr)) {
-        updatePlaneMarkers({pointA, pointB, pointC});
-    } else {
-        drawingArea->SetPlaneMarkers({});
-    }
+    settings->beginGroup("Drawing");
+    settings->setValue("SchemaVersion",2);
+    for(auto* field:{m_width,m_height,m_spacing,m_threshold,m_travelZ,m_travelSpeed,m_drawingSpeed,m_acceleration,m_a,m_b,m_c})
+        settings->setValue(field->objectName(),field->text());
+    for(auto* combo:{m_method,m_conversion,m_effector}) settings->setValue(combo->objectName(),combo->currentText());
+    settings->setValue("Inverse",m_inverse->isChecked());
+    settings->endGroup();
 }
-
-void DrawingExporter::updatePlaneMarkers(const QVector<QVector3D>& points)
+void DrawingExporter::LoadSettings(QSettings* settings)
 {
-    if (!drawingArea) {
-        return;
+    settings->beginGroup("Drawing");
+    if(settings->value("SchemaVersion").toInt()==2) {
+        for(auto* field:{m_width,m_height,m_spacing,m_threshold,m_travelZ,m_travelSpeed,m_drawingSpeed,m_acceleration,m_a,m_b,m_c})
+            field->setText(settings->value(field->objectName(),field->text()).toString());
+        for(auto* combo:{m_method,m_conversion,m_effector}) {
+            const int index=combo->findText(settings->value(combo->objectName(),combo->currentText()).toString());
+            if(index>=0) combo->setCurrentIndex(index);
+        }
+        m_inverse->setChecked(settings->value("Inverse",false).toBool());
+        m_slider->setValue(m_threshold->text().toInt()); updateSize(); refreshMarkers();
     }
-
-    QVector<QPointF> markers;
-    markers.reserve(points.size());
-    for (const QVector3D& point : points) {
-        markers.append(QPointF(point.x(), point.y()));
-    }
-
-    drawingArea->SetPlaneMarkers(markers);
+    settings->endGroup();
 }
 
+QVariantMap DrawingExporter::parameters() const
+{
+    QVariantMap values{{"SchemaVersion",2},{"Inverse",m_inverse->isChecked()}};
+    for(auto* field:{m_width,m_height,m_spacing,m_threshold,m_travelZ,m_travelSpeed,m_drawingSpeed,m_acceleration,m_a,m_b,m_c})
+        values.insert(field->objectName(),field->text());
+    for(auto* combo:{m_method,m_conversion,m_effector}) values.insert(combo->objectName(),combo->currentText());
+    return values;
+}
+void DrawingExporter::restoreParameters(const QVariantMap& values)
+{
+    if(values.value("SchemaVersion").toInt()!=2) return;
+    QSignalBlocker guard(this);
+    for(auto* field:{m_width,m_height,m_spacing,m_threshold,m_travelZ,m_travelSpeed,m_drawingSpeed,m_acceleration,m_a,m_b,m_c})
+        field->setText(values.value(field->objectName(),field->text()).toString());
+    for(auto* combo:{m_method,m_conversion,m_effector}) {
+        const int index=combo->findText(values.value(combo->objectName(),combo->currentText()).toString());
+        if(index>=0) combo->setCurrentIndex(index);
+    }
+    m_inverse->setChecked(values.value("Inverse",false).toBool());
+    m_slider->setValue(m_threshold->text().toInt()); updateSize(); refreshMarkers();
+}
 
+void DrawingExporter::SetupPanel(QWidget* page)
+{
+    // Reuse existing controls and signal identities; retire the unused legacy fields.
+    auto* content=new QWidget(page);
+    auto* root=new QVBoxLayout(content); root->setContentsMargins(8,8,8,8); root->setSpacing(8);
+    auto* toolbar=new QHBoxLayout; toolbar->setSpacing(6);
+    auto adoptButton=[&](const char* name,const QString& text) {
+        auto* button=page->findChild<QToolButton*>(name);
+        button->setParent(content); button->setText(text); button->setToolTip(text);
+        button->setAccessibleName(text); button->setMinimumSize(30,30); button->setMaximumSize(QWIDGETSIZE_MAX,QWIDGETSIZE_MAX);
+        button->setToolButtonStyle(Qt::ToolButtonTextOnly); button->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Fixed);
+        button->setShortcut(QKeySequence()); return button;
+    };
+    auto* group=new QButtonGroup(content); group->setExclusive(true);
+    const QList<QPair<const char*,QString>> tools={{"pbCursor",tr("Pan")},{"pbDrawLine",tr("Line")},
+        {"pbDrawRectangle",tr("Rectangle")},{"pbDrawCircle",tr("Circle")},{"pbDrawArc",tr("Arc")}};
+    for(const auto& tool:tools) {
+        auto* b=adoptButton(tool.first,tool.second); b->setCheckable(true); group->addButton(b); toolbar->addWidget(b);
+        if(tool.first==tools.first().first) b->setChecked(true);
+        if(QString(tool.first)=="pbDrawArc") b->setToolTip(tr("Drag the diameter of a counterclockwise semicircle."));
+    }
+    toolbar->addStretch();
+    root->addLayout(toolbar);
+    auto* actions=new QHBoxLayout; actions->setSpacing(6);
+    auto addAction=[&](const QString& text,auto callback) {
+        auto* b=new QPushButton(text,content); b->setAccessibleName(text); actions->addWidget(b);
+        connect(b,&QPushButton::clicked,this,callback); return b;
+    };
+    auto* undo=addAction(tr("Undo"),[this]{m_canvas->Undo();});
+    auto* redo=addAction(tr("Redo"),[this]{m_canvas->Redo();});
+    actions->addWidget(adoptButton("pbEraserAll",tr("Clear")));
+    auto* zoomOut=adoptButton("pbZoomOut",tr("−"));
+    zoomOut->setToolTip(tr("Zoom out")); zoomOut->setAccessibleName(tr("Zoom out")); actions->addWidget(zoomOut);
+    auto* zoomIn=adoptButton("pbZoomIn",tr("+"));
+    zoomIn->setToolTip(tr("Zoom in")); zoomIn->setAccessibleName(tr("Zoom in")); actions->addWidget(zoomIn);
+    addAction(tr("Fit"),[this]{m_canvas->FitView();});
+    actions->addStretch();
+    root->addLayout(actions);
+    auto* splitter=new QSplitter(Qt::Horizontal,content); splitter->setChildrenCollapsible(false);
+    m_canvas->setParent(splitter); m_canvas->setStyleSheet({}); m_canvas->setMinimumSize(240,240);
+    m_canvas->setMaximumSize(QWIDGETSIZE_MAX,QWIDGETSIZE_MAX); m_canvas->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
+    auto* scroll=new QScrollArea(splitter); scroll->setWidgetResizable(true); scroll->setMinimumWidth(280);
+    auto* settings=new QWidget; auto* forms=new QVBoxLayout(settings); forms->setContentsMargins(8,0,8,0); forms->setSpacing(12);
+    auto section=[&](const QString& name) {
+        auto* box=new QGroupBox(name,settings); auto* form=new QFormLayout(box);
+        form->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
+        form->setRowWrapPolicy(QFormLayout::WrapLongRows); form->setSpacing(8); forms->addWidget(box); return form;
+    };
+    auto field=[&](QWidget* widget) {
+        widget->setParent(settings); widget->setMinimumWidth(0); widget->setMaximumSize(QWIDGETSIZE_MAX,QWIDGETSIZE_MAX);
+        widget->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Fixed); widget->show(); return widget;
+    };
+    auto* image=section(tr("Image"));
+    image->addRow(adoptButton("pbOpenPicture",tr("Load Image…")));
+    m_preview->setParent(settings); m_preview->setScaledContents(false); m_preview->setAlignment(Qt::AlignCenter);
+    m_preview->setMinimumSize(0,150); m_preview->setMaximumSize(QWIDGETSIZE_MAX,150); m_preview->setStyleSheet({});
+    m_preview->setText(tr("No image")); image->addRow(m_preview);
+    m_pixelWidth->setText({}); image->addRow(field(m_pixelWidth));
+    image->addRow(tr("Conversion"),field(m_conversion));
+    auto* threshold=new QWidget(settings); auto* thresholdRow=new QHBoxLayout(threshold); thresholdRow->setContentsMargins(0,0,0,0);
+    thresholdRow->addWidget(field(m_slider)); m_threshold->setMaximumWidth(64); thresholdRow->addWidget(field(m_threshold));
+    image->addRow(tr("Threshold"),threshold);
+    m_inverse->setText(tr("Invert")); image->addRow(field(m_inverse));
+    image->addRow(tr("Raster"),field(m_method)); image->addRow(tr("Spacing (mm)"),field(m_spacing));
+    auto* vector=section(tr("Vector"));
+    auto* importVector=new QPushButton(tr("Import SVG / DXF…"),settings);
+    importVector->setObjectName(QStringLiteral("pbImportVector"));
+    importVector->setAccessibleName(tr("Import vector drawing"));
+    importVector->setToolTip(tr("Import native SVG or ASCII DXF paths without raster conversion."));
+    vector->addRow(field(importVector));
+    connect(importVector,&QPushButton::clicked,this,&DrawingExporter::OpenVector);
+    auto* size=section(tr("Canvas Size"));
+    size->addRow(tr("Width (mm)"),field(m_width)); size->addRow(tr("Height (mm)"),field(m_height));
+    m_width->setToolTip(tr("Canvas width. Raster conversion uses this size; existing paths retain their millimetre coordinates."));
+    m_height->setToolTip(m_width->toolTip());
+    size->addRow(adoptButton("pbPainting",tr("Convert to Paths")));
+    auto* plane=section(tr("Drawing Plane"));
+    const QList<QPair<QLineEdit*,const char*>> points={{m_a,"pbGetPlaneAPoint"},{m_b,"pbGetPlaneBPoint"},{m_c,"pbGetPlaneCPoint"}};
+    for(int i=0;i<points.size();++i) {
+        auto* row=new QWidget(settings); auto* layout=new QHBoxLayout(row); layout->setContentsMargins(0,0,0,0);
+        layout->addWidget(field(points[i].first));
+        auto* paste=page->findChild<QPushButton*>(points[i].second); field(paste);
+        paste->setText(tr("Paste")); paste->setToolTip(tr("Paste copied robot coordinates.")); layout->addWidget(paste);
+        plane->addRow(QString(QChar('A'+i)),row);
+    }
+    auto* motion=section(tr("Tool & Motion"));
+    m_effector->setCurrentText("Pen");
+    motion->addRow(tr("Tool"),field(m_effector)); motion->addRow(tr("Travel Z (mm)"),field(m_travelZ));
+    m_travelZ->setToolTip(tr("Absolute robot Z above every path, within the robot workspace. Drawing Z comes from plane A/B/C."));
+    motion->addRow(tr("Travel (mm/s)"),field(m_travelSpeed));
+    motion->addRow(tr("Drawing (mm/s)"),field(m_drawingSpeed));
+    motion->addRow(tr("Acceleration (mm/s²)"),field(m_acceleration));
+    forms->addStretch(); scroll->setWidget(settings);
+    splitter->setStretchFactor(0,1); splitter->setStretchFactor(1,0); splitter->setSizes({600,310});
+    root->addWidget(splitter,1);
+    auto* files=new QHBoxLayout; files->setSpacing(6);
+    auto fileAction=[&](const QString& text,auto callback) {
+        auto* b=new QPushButton(text,content); files->addWidget(b); connect(b,&QPushButton::clicked,this,callback);
+    };
+    fileAction(tr("Open Drawing…"),[this] {
+        const auto path=QFileDialog::getOpenFileName(this,tr("Open Drawing"),{},tr("Delta X Drawing (*.dxdraw)"));
+        if(path.isEmpty()) return;
+        if(!m_canvas->paths().isEmpty() && QMessageBox::question(this,tr("Open Drawing"),
+            tr("Replace current paths? Unsaved changes can be recovered with Undo."),
+            QMessageBox::Yes|QMessageBox::Cancel,QMessageBox::Cancel)!=QMessageBox::Yes) return;
+        QString error; if(!m_canvas->loadDrawing(path,&error)) showError(error);
+    });
+    fileAction(tr("Save Drawing…"),[this] {
+        QFileDialog dialog(this,tr("Save Drawing"),{},tr("Delta X Drawing (*.dxdraw)"));
+        dialog.setAcceptMode(QFileDialog::AcceptSave);
+        dialog.setDefaultSuffix("dxdraw");
+        if(dialog.exec()!=QDialog::Accepted || dialog.selectedFiles().isEmpty()) return;
+        const auto path=dialog.selectedFiles().first();
+        QString error; if(!m_canvas->saveDrawing(path,&error)) showError(error);
+    });
+    fileAction(tr("Help"),[this] {
+        QDialog dialog(this); dialog.setWindowTitle(tr("Drawing Guide")); dialog.resize(760,620);
+        auto* layout=new QVBoxLayout(&dialog); auto* browser=new QTextBrowser(&dialog);
+        QFile file(":/docs/drawing.md"); if(file.open(QIODevice::ReadOnly)) browser->setMarkdown(QString::fromUtf8(file.readAll()));
+        layout->addWidget(browser); auto* buttons=new QDialogButtonBox(QDialogButtonBox::Close,&dialog);
+        connect(buttons,&QDialogButtonBox::rejected,&dialog,&QDialog::reject); layout->addWidget(buttons); dialog.exec();
+    });
+    files->addStretch();
+    auto* exportButton=adoptButton("pbExportDrawingGcodes",tr("Send to G-code Editor"));
+    exportButton->setProperty("controlRole","primary"); files->addWidget(exportButton);
+    root->addLayout(files);
+    auto updateActions=[this,undo,redo,exportButton] {
+        undo->setEnabled(m_canvas->canUndo()); redo->setEnabled(m_canvas->canRedo());
+        exportButton->setEnabled(!m_canvas->paths().isEmpty());
+    };
+    connect(m_canvas,&DrawingWidget::pathsChanged,this,updateActions); updateActions();
+    const auto oldChildren=page->findChildren<QWidget*>(QString(),Qt::FindDirectChildrenOnly);
+    for(auto* child:oldChildren) if(child!=content) child->hide();
+    delete page->layout();
+    auto* layout=new QVBoxLayout(page); layout->setContentsMargins(0,0,0,0); layout->addWidget(content);
+    content->show();
+    for(auto* edit:{m_width,m_height,m_spacing,m_threshold,m_travelZ,m_travelSpeed,m_drawingSpeed,m_acceleration,m_a,m_b,m_c})
+        connect(edit,&QLineEdit::textChanged,this,&DrawingExporter::parametersChanged);
+    for(auto* combo:{m_method,m_conversion,m_effector})
+        connect(combo,&QComboBox::currentTextChanged,this,&DrawingExporter::parametersChanged);
+    connect(m_inverse,&QCheckBox::toggled,this,&DrawingExporter::parametersChanged);
+}

@@ -14,6 +14,10 @@ private slots:
     void timeoutCancelsTheDeviceQueue();
     void cellFaultStopsOnceAndRequiresExplicitReset();
     void synchronousProviderResponseCompletesActiveRequest();
+    void unavailableDeviceRejectsImmediatelyWithoutTimeout();
+    void robotHomeWaitsForPositionBeforeCompleting();
+    void robotHomeErrorCompletesImmediately_data();
+    void robotHomeErrorCompletesImmediately();
 };
 
 void ControlPlaneTest::synchronousProviderResponseCompletesActiveRequest()
@@ -36,6 +40,96 @@ void ControlPlaneTest::synchronousProviderResponseCompletesActiveRequest()
              QStringLiteral("plugin/example"));
     QCOMPARE(responses.first().at(2).toString(), QStringLiteral("plugin-ok"));
     QVERIFY(!broker.hasActiveCommand(QStringLiteral("example.device0")));
+}
+
+void ControlPlaneTest::unavailableDeviceRejectsImmediatelyWithoutTimeout()
+{
+    DeviceCommandBroker broker;
+    QSignalSpy rejected(&broker, &DeviceCommandBroker::CommandRejected);
+    QSignalSpy responses(&broker, &DeviceCommandBroker::ResponseForOwner);
+    QSignalSpy timedOut(&broker, &DeviceCommandBroker::CommandTimedOut);
+
+    const quint64 requestId = broker.Submit(
+        QStringLiteral("manual/ui"), QStringLiteral("robot0"),
+        QStringLiteral("G28"), DeviceCommandBroker::Origin::Manual, true, 20);
+    QVERIFY(requestId > 0);
+    QVERIFY(broker.hasActiveCommand(QStringLiteral("robot0")));
+
+    broker.HandleDeviceUnavailable(QStringLiteral("robot0"),
+                                   QStringLiteral("Robot is not connected"));
+
+    QCOMPARE(rejected.size(), 1);
+    QCOMPARE(responses.size(), 1);
+    QCOMPARE(timedOut.size(), 0);
+    QVERIFY(!broker.hasActiveCommand(QStringLiteral("robot0")));
+    QVERIFY(responses.first().at(2).toString().contains(
+        QStringLiteral("not connected")));
+    QTest::qWait(80);
+    QCOMPARE(timedOut.size(), 0);
+}
+
+void ControlPlaneTest::robotHomeWaitsForPositionBeforeCompleting()
+{
+    DeviceCommandBroker broker;
+    QSignalSpy dispatched(&broker, &DeviceCommandBroker::CommandDispatched);
+    QSignalSpy responses(&broker, &DeviceCommandBroker::ResponseForOwner);
+    QSignalSpy unsolicited(&broker, &DeviceCommandBroker::UnsolicitedResponse);
+
+    const quint64 homeRequest = broker.Submit(
+        QStringLiteral("gscript/thread0"), QStringLiteral("robot0"),
+        QStringLiteral("G28"), DeviceCommandBroker::Origin::GScript, true, 1000);
+    const quint64 moveRequest = broker.Submit(
+        QStringLiteral("gscript/thread0"), QStringLiteral("robot0"),
+        QStringLiteral("G01 X10"), DeviceCommandBroker::Origin::GScript, true, 1000);
+
+    QVERIFY(homeRequest > 0);
+    QVERIFY(moveRequest > homeRequest);
+    QCOMPARE(dispatched.size(), 1);
+
+    broker.HandleDeviceResponse(QStringLiteral("robot0"), QStringLiteral("Ok"));
+
+    QVERIFY(broker.hasActiveCommand(QStringLiteral("robot0")));
+    QCOMPARE(responses.size(), 0);
+    QCOMPARE(dispatched.size(), 1);
+
+    const QString position = QStringLiteral("0.0,0.0,-291.28,90.0,0.0,0.0");
+    broker.HandleDeviceResponse(QStringLiteral("robot0"), position);
+
+    QCOMPARE(responses.size(), 1);
+    QCOMPARE(responses.first().at(0).toString(), QStringLiteral("gscript/thread0"));
+    QCOMPARE(responses.first().at(2).toString(), position);
+    QCOMPARE(responses.first().at(3).toULongLong(), homeRequest);
+    QCOMPARE(unsolicited.size(), 0);
+    QCOMPARE(dispatched.size(), 2);
+    QCOMPARE(dispatched.at(1).at(3).toString(), QStringLiteral("G01 X10"));
+}
+
+void ControlPlaneTest::robotHomeErrorCompletesImmediately_data()
+{
+    QTest::addColumn<QString>("response");
+    QTest::newRow("generic-error") << QStringLiteral("Error: homing switch not reached");
+    QTest::newRow("firmware-unknown") << QStringLiteral("Unknown:Power lose!");
+    QTest::newRow("emergency-stop") << QStringLiteral("Delta:EStop Pressing!");
+    QTest::newRow("stop") << QStringLiteral("Delta:Stop");
+}
+
+void ControlPlaneTest::robotHomeErrorCompletesImmediately()
+{
+    QFETCH(QString, response);
+    DeviceCommandBroker broker;
+    QSignalSpy responses(&broker, &DeviceCommandBroker::ResponseForOwner);
+
+    const quint64 requestId = broker.Submit(
+        QStringLiteral("gscript/thread0"), QStringLiteral("robot0"),
+        QStringLiteral("G28"), DeviceCommandBroker::Origin::GScript, true, 1000);
+    QVERIFY(requestId > 0);
+
+    broker.HandleDeviceResponse(QStringLiteral("robot0"), response);
+
+    QCOMPARE(responses.size(), 1);
+    QCOMPARE(responses.first().at(2).toString(), response);
+    QCOMPARE(responses.first().at(3).toULongLong(), requestId);
+    QVERIFY(!broker.hasActiveCommand(QStringLiteral("robot0")));
 }
 
 void ControlPlaneTest::commandsAreSerializedAndResponsesReachOnlyTheirOwner()

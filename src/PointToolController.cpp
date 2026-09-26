@@ -20,7 +20,7 @@ PointToolController::PointToolController(RobotWindow* parent)
     // Register cv::Mat as Qt metatype
     qRegisterMetaType<cv::Mat>("cv::Mat");
     
-    // Connect cloud point controller signals
+    // Connect interpolated multi-point mapping controller signals.
     connect(m_cloudPointController, &CloudPointToolController::onMappingUpdated, 
             this, &PointToolController::onCloudMappingUpdated);
     
@@ -46,11 +46,11 @@ void PointToolController::setParent(RobotWindow* parent)
 void PointToolController::initializeUI(QWidget* parentWidget)
 {
     if (!parentWidget || !m_cloudPointController) {
-        showError("Invalid parent widget or cloud point controller");
+        showError("Invalid parent widget or interpolated mapping controller");
         return;
     }
     
-    // Initialize cloud point mapping UI
+    // Initialize the interpolated multi-point mapping UI.
     m_cloudPointController->initializeUI(parentWidget);
     
     const QString qualifiedName = VariableManager::scopedKey(
@@ -76,19 +76,19 @@ bool PointToolController::calculateMappingMatrix()
     QPointF sourcePoint1, sourcePoint2, targetPoint1, targetPoint2;
     
     // Validate and extract points
-    if (!validateAndExtractPoint2D(m_parent->ui->leMappingSourcePoint1X, m_parent->ui->leMappingSourcePoint1Y, sourcePoint1, "Source Point 1")) {
+    if (!validateAndExtractPoint2D(m_parent->ui->leMappingSourcePoint1X, m_parent->ui->leMappingSourcePoint1Y, sourcePoint1, "Camera-image reference 1")) {
         return false;
     }
     
-    if (!validateAndExtractPoint2D(m_parent->ui->leMappingSourcePoint2X, m_parent->ui->leMappingSourcePoint2Y, sourcePoint2, "Source Point 2")) {
+    if (!validateAndExtractPoint2D(m_parent->ui->leMappingSourcePoint2X, m_parent->ui->leMappingSourcePoint2Y, sourcePoint2, "Camera-image reference 2")) {
         return false;
     }
     
-    if (!validateAndExtractPoint2D(m_parent->ui->leMappingDestinationPoint1X, m_parent->ui->leMappingDestinationPoint1Y, targetPoint1, "Target Point 1")) {
+    if (!validateAndExtractPoint2D(m_parent->ui->leMappingDestinationPoint1X, m_parent->ui->leMappingDestinationPoint1Y, targetPoint1, "Robot-workspace reference 1")) {
         return false;
     }
     
-    if (!validateAndExtractPoint2D(m_parent->ui->leMappingDestinationPoint2X, m_parent->ui->leMappingDestinationPoint2Y, targetPoint2, "Target Point 2")) {
+    if (!validateAndExtractPoint2D(m_parent->ui->leMappingDestinationPoint2X, m_parent->ui->leMappingDestinationPoint2Y, targetPoint2, "Robot-workspace reference 2")) {
         return false;
     }
 
@@ -132,7 +132,7 @@ bool PointToolController::calculateMappingMatrix()
     // Update display
     updateDisplayLabel(m_parent->ui->lbMatrixDisplay, result.displayText);
     
-    showSuccess(QString("Mapping ready: scale %1, rotation %2 deg")
+    showSuccess(QString("Similarity transform solved: scale %1, rotation %2 deg")
                     .arg(result.scale, 0, 'f', 6)
                     .arg(qRadiansToDegrees(result.rotationRadians), 0, 'f', 3));
     return true;
@@ -147,19 +147,19 @@ bool PointToolController::calculatePerspectiveMatrix()
 
     QPointF sourcePoints[4], targetPoints[4];
     
-    // Validate and extract 4 source points
-    if (!validateAndExtractPoint2D(m_parent->ui->lePerspectiveSourcePoint1X, m_parent->ui->lePerspectiveSourcePoint1Y, sourcePoints[0], "Source Point 1") ||
-        !validateAndExtractPoint2D(m_parent->ui->lePerspectiveSourcePoint2X, m_parent->ui->lePerspectiveSourcePoint2Y, sourcePoints[1], "Source Point 2") ||
-        !validateAndExtractPoint2D(m_parent->ui->lePerspectiveSourcePoint3X, m_parent->ui->lePerspectiveSourcePoint3Y, sourcePoints[2], "Source Point 3") ||
-        !validateAndExtractPoint2D(m_parent->ui->lePerspectiveSourcePoint4X, m_parent->ui->lePerspectiveSourcePoint4Y, sourcePoints[3], "Source Point 4")) {
+    // Validate and extract four camera-image reference points.
+    if (!validateAndExtractPoint2D(m_parent->ui->lePerspectiveSourcePoint1X, m_parent->ui->lePerspectiveSourcePoint1Y, sourcePoints[0], "Camera-image reference 1") ||
+        !validateAndExtractPoint2D(m_parent->ui->lePerspectiveSourcePoint2X, m_parent->ui->lePerspectiveSourcePoint2Y, sourcePoints[1], "Camera-image reference 2") ||
+        !validateAndExtractPoint2D(m_parent->ui->lePerspectiveSourcePoint3X, m_parent->ui->lePerspectiveSourcePoint3Y, sourcePoints[2], "Camera-image reference 3") ||
+        !validateAndExtractPoint2D(m_parent->ui->lePerspectiveSourcePoint4X, m_parent->ui->lePerspectiveSourcePoint4Y, sourcePoints[3], "Camera-image reference 4")) {
         return false;
     }
     
-    // Validate and extract 4 target points
-    if (!validateAndExtractPoint2D(m_parent->ui->lePerspectiveDestinationPoint1X, m_parent->ui->lePerspectiveDestinationPoint1Y, targetPoints[0], "Target Point 1") ||
-        !validateAndExtractPoint2D(m_parent->ui->lePerspectiveDestinationPoint2X, m_parent->ui->lePerspectiveDestinationPoint2Y, targetPoints[1], "Target Point 2") ||
-        !validateAndExtractPoint2D(m_parent->ui->lePerspectiveDestinationPoint3X, m_parent->ui->lePerspectiveDestinationPoint3Y, targetPoints[2], "Target Point 3") ||
-        !validateAndExtractPoint2D(m_parent->ui->lePerspectiveDestinationPoint4X, m_parent->ui->lePerspectiveDestinationPoint4Y, targetPoints[3], "Target Point 4")) {
+    // Validate and extract four robot-workspace reference points.
+    if (!validateAndExtractPoint2D(m_parent->ui->lePerspectiveDestinationPoint1X, m_parent->ui->lePerspectiveDestinationPoint1Y, targetPoints[0], "Robot-workspace reference 1") ||
+        !validateAndExtractPoint2D(m_parent->ui->lePerspectiveDestinationPoint2X, m_parent->ui->lePerspectiveDestinationPoint2Y, targetPoints[1], "Robot-workspace reference 2") ||
+        !validateAndExtractPoint2D(m_parent->ui->lePerspectiveDestinationPoint3X, m_parent->ui->lePerspectiveDestinationPoint3Y, targetPoints[2], "Robot-workspace reference 3") ||
+        !validateAndExtractPoint2D(m_parent->ui->lePerspectiveDestinationPoint4X, m_parent->ui->lePerspectiveDestinationPoint4Y, targetPoints[3], "Robot-workspace reference 4")) {
         return false;
     }
 
@@ -197,7 +197,7 @@ bool PointToolController::calculatePerspectiveMatrix()
 
     // Update display
     updateDisplayLabel(m_parent->ui->lbPointMatrixDisplay, result.displayText);
-    showSuccess(QString("Perspective mapping ready: RMS %1, condition %2")
+    showSuccess(QString("Planar homography solved: RMS %1, condition %2")
                     .arg(result.rmsError, 0, 'f', 4)
                     .arg(result.conditionNumber, 0, 'g', 5));
     return true;
@@ -214,9 +214,9 @@ bool PointToolController::calculateVector()
     float magnitude;
     
     // Validate and extract points and magnitude
-    if (!validateAndExtractPoint3D(m_parent->ui->leVectorPoint1X, m_parent->ui->leVectorPoint1Y, m_parent->ui->leVectorPoint1Z, point1, "Point 1") ||
-        !validateAndExtractPoint3D(m_parent->ui->leVectorPoint2X, m_parent->ui->leVectorPoint2Y, m_parent->ui->leVectorPoint2Z, point2, "Point 2") ||
-        !validateAndExtractFloat(m_parent->ui->leVectorValue, magnitude, "Vector Magnitude")) {
+    if (!validateAndExtractPoint3D(m_parent->ui->leVectorPoint1X, m_parent->ui->leVectorPoint1Y, m_parent->ui->leVectorPoint1Z, point1, "Start position") ||
+        !validateAndExtractPoint3D(m_parent->ui->leVectorPoint2X, m_parent->ui->leVectorPoint2Y, m_parent->ui->leVectorPoint2Z, point2, "End position") ||
+        !validateAndExtractFloat(m_parent->ui->leVectorValue, magnitude, "Output magnitude")) {
         return false;
     }
 
@@ -248,7 +248,7 @@ bool PointToolController::calculateVector()
     setFormattedValue(m_parent->ui->leVectorY, result.vector.y());
     setFormattedValue(m_parent->ui->leVectorZ, result.vector.z());
     
-    showSuccess("Vector calculated successfully");
+    showSuccess("Scaled direction vector calculated");
     return true;
 }
 
@@ -263,7 +263,7 @@ bool PointToolController::calculateTestPoint()
     QString matrixName = m_parent->ui->leTestMatrixName->text().trimmed();
     QPointF testPoint;
     
-    if (!validateAndExtractPoint2D(m_parent->ui->leTestPointX, m_parent->ui->leTestPointY, testPoint, "Test Point")) {
+    if (!validateAndExtractPoint2D(m_parent->ui->leTestPointX, m_parent->ui->leTestPointY, testPoint, "Camera-image test point")) {
         return false;
     }
 
@@ -276,7 +276,7 @@ bool PointToolController::calculateTestPoint()
         if (cloudResult.isValid) {
             setFormattedValue(m_parent->ui->leTargetTestPointX, cloudResult.transformedPoint.x());
             setFormattedValue(m_parent->ui->leTargetTestPointY, cloudResult.transformedPoint.y());
-            showSuccess(QString("Cloud mapping test passed (confidence %1, estimated error %2 mm)")
+            showSuccess(QString("Interpolated point mapped (confidence %1, estimated error %2 mm)")
                             .arg(cloudResult.confidence, 0, 'f', 3)
                             .arg(cloudResult.estimatedError, 0, 'f', 3));
             return true;
@@ -285,19 +285,19 @@ bool PointToolController::calculateTestPoint()
     
     // Fallback to traditional matrix approach
     if (matrixName.isEmpty()) {
-        showError("Please enter a matrix name or use Cloud Point Mapping");
+        showError("Enter a saved transform variable or build an interpolated mapping");
         return false;
     }
 
     const QVariant storedMatrix = VariableManager::instance().getVarScoped(
         m_parent->ProjectName, matrixName);
     if (!storedMatrix.isValid() || !storedMatrix.canConvert<QTransform>()) {
-        showError(QString("Matrix '%1' not found. Please calculate a matrix first.").arg(matrixName));
+        showError(QString("Transform variable '%1' was not found. Solve and save a transform first.").arg(matrixName));
         return false;
     }
     const QTransform matrix = storedMatrix.value<QTransform>();
     if (qFuzzyIsNull(matrix.determinant())) {
-        showError(QString("Matrix '%1' is singular and cannot be used.").arg(matrixName));
+        showError(QString("Transform variable '%1' is singular and cannot be applied.").arg(matrixName));
         return false;
     }
 
@@ -313,7 +313,7 @@ bool PointToolController::calculateTestPoint()
     setFormattedValue(m_parent->ui->leTargetTestPointX, result.transformedPoint.x());
     setFormattedValue(m_parent->ui->leTargetTestPointY, result.transformedPoint.y());
     
-    showSuccess("Test point calculated successfully");
+    showSuccess("Test point transformed");
     return true;
 }
 
@@ -367,10 +367,10 @@ QString PointToolController::getCloudMappingStats() const
     CloudPointMapper::MappingStats stats = mapper->getMappingStats();
     
     QString statsText;
-    statsText += QString("Points: %1, ").arg(stats.totalPoints);
-    statsText += QString("Avg Error: %1mm, ").arg(stats.averageError, 0, 'f', 2);
-    statsText += QString("Coverage: %1%, ").arg(stats.coverage, 0, 'f', 1);
-    statsText += QString("Valid: %1").arg(stats.isValid ? "Yes" : "No");
+    statsText += QString("Reference pairs: %1, ").arg(stats.totalPoints);
+    statsText += QString("Mean residual: %1 mm, ").arg(stats.averageError, 0, 'f', 2);
+    statsText += QString("Image-area coverage: %1%, ").arg(stats.coverage, 0, 'f', 1);
+    statsText += QString("Validation: %1").arg(stats.isValid ? "Passed" : "Not passed");
     
     return statsText;
 }
@@ -602,7 +602,7 @@ void PointToolController::storeVector(const QString& vectorName, const QVector3D
 void PointToolController::showError(const QString& message)
 {
     if (m_parent) {
-        InputValidator::showError(m_parent, message, "Point Tool Error");
+        InputValidator::showError(m_parent, message, "Calibration Error");
     }
 }
 

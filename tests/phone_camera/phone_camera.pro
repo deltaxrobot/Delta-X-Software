@@ -1,0 +1,9 @@
+QT += core gui network testlib
+CONFIG += console testcase c++17
+CONFIG -= app_bundle
+TEMPLATE = app
+TARGET = tst_phone_camera
+INCLUDEPATH += $$PWD/../../include
+SOURCES += $$PWD/tst_phone_camera.cpp $$PWD/../../src/PhoneCameraServer.cpp
+HEADERS += $$PWD/../../include/PhoneCameraServer.h
+RESOURCES += $$PWD/phone-camera.qrc

@@ -94,11 +94,16 @@ QStringList XCamManager::FindBaslerCameraList()
                 ? QStringLiteral("GigE Vision")
                 : (camera->IsUsb() ? QStringLiteral("USB3 Vision")
                                    : QStringLiteral("Industrial"));
-            baslerDeviceQStringList.append(
-                QStringLiteral("[Basler][%1] %2")
-                    .arg(transport,
-                         QString::fromLocal8Bit(
-                             baslerDeviceInfoList.at(i).GetModelName().c_str())));
+            const auto& info = baslerDeviceInfoList.at(i);
+            QStringList identity{
+                QStringLiteral("Basler %1").arg(QString::fromLocal8Bit(info.GetModelName().c_str())),
+                transport
+            };
+            const QString serial = QString::fromLocal8Bit(info.GetSerialNumber().c_str()).trimmed();
+            const QString userName = QString::fromLocal8Bit(info.GetUserDefinedName().c_str()).trimmed();
+            if (!serial.isEmpty()) identity << QStringLiteral("S/N %1").arg(serial);
+            if (!userName.isEmpty()) identity << QStringLiteral("Name %1").arg(userName);
+            baslerDeviceQStringList.append(identity.join(QStringLiteral("  ·  ")));
             CameraList.append(new XCamBasler(camera));
         }
         catch (const GenericException& error)
@@ -138,17 +143,28 @@ QStringList XCamManager::FindHIKCameraList()
         memcpy(&m_stDevInfo, m_stDevList.pDeviceInfo[i], sizeof(MV_CC_DEVICE_INFO));
 
         QString cameraIDString;
+        QString serialNumber;
+        QString address;
         QString transport;
         if (m_stDevInfo.nTLayerType == MV_GIGE_DEVICE) {
             transport = QStringLiteral("GigE Vision");
             cameraIDString = getStringFromUnsignedChar(m_stDevInfo.SpecialInfo.stGigEInfo.chModelName);
+            serialNumber = getStringFromUnsignedChar(m_stDevInfo.SpecialInfo.stGigEInfo.chSerialNumber);
+            const quint32 ip = m_stDevInfo.SpecialInfo.stGigEInfo.nCurrentIp;
+            address = QStringLiteral("%1.%2.%3.%4")
+                .arg((ip >> 24) & 0xff).arg((ip >> 16) & 0xff)
+                .arg((ip >> 8) & 0xff).arg(ip & 0xff);
         } else {
             transport = QStringLiteral("USB3 Vision");
             cameraIDString = getStringFromUnsignedChar(m_stDevInfo.SpecialInfo.stUsb3VInfo.chModelName);
+            serialNumber = getStringFromUnsignedChar(m_stDevInfo.SpecialInfo.stUsb3VInfo.chSerialNumber);
         }
 
-        HIKCameraDeviceQStringList.append(
-            QStringLiteral("[Hikrobot][%1] %2").arg(transport, cameraIDString));
+        QStringList identity{QStringLiteral("Hikrobot %1").arg(cameraIDString), transport};
+        if (!serialNumber.trimmed().isEmpty())
+            identity << QStringLiteral("S/N %1").arg(serialNumber.trimmed());
+        if (!address.isEmpty()) identity << address;
+        HIKCameraDeviceQStringList.append(identity.join(QStringLiteral("  ·  ")));
 
         void * cameraHandle = NULL;
         if (MV_CC_CreateHandle(&cameraHandle, &m_stDevInfo) == 0 && cameraHandle) {

@@ -3,8 +3,6 @@
 
 ProjectManager::ProjectManager(QWidget* parent) : QWidget(parent)
 {
-    this->setStyleSheet("QPushButton{min-width:60px;min-height:20px;}");
-
     SubProject = new QStackedWidget();
 }
 

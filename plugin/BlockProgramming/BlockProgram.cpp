@@ -343,7 +343,10 @@ void compileSequence(const QVector<BlockNode>& blocks, int depth,
             output.append(lead + requireDevice("robot", "Robot") +
                           QStringLiteral(" G28"));
         } else if (node.type == QStringLiteral("move")) {
-            output.append(lead + QStringLiteral("%1 G01 X%2 Y%3 Z%4 W%5 F%6 A%7")
+            // G-Script resolves variables/arithmetic in G-code parameters only
+            // inside brackets. Always bracket block expressions, including
+            // literals, so generated motion never leaks '#Name' to firmware.
+            output.append(lead + QStringLiteral("%1 G01 X[%2] Y[%3] Z[%4] W[%5] F[%6] A[%7]")
                                       .arg(requireDevice("robot", "Robot"),
                                            requireExpression("x", "X"),
                                            requireExpression("y", "Y"),
@@ -599,12 +602,31 @@ bool BlockProgram::fromJson(const QJsonObject& document,
 
 QStringList BlockProgram::templateNames()
 {
-    return {QStringLiteral("Empty"), QStringLiteral("Vision tracking loop"),
+    return {QStringLiteral("Empty"), QStringLiteral("Software self-test"),
+            QStringLiteral("Vision tracking loop"),
             QStringLiteral("Robot conveyor pick worker")};
 }
 
 QVector<BlockNode> BlockProgram::createTemplate(const QString& name)
 {
+    if (name == QStringLiteral("Software self-test")) {
+        return {
+            makeNode("comment", {{"text", "Software-only self-test: no device commands"}}),
+            makeNode("set", {{"variable", "Blocks.Counter"}, {"value", "0"}}),
+            makeNode("repeat", {{"count", "3"}}, {
+                makeNode("set", {{"variable", "Blocks.Counter"},
+                                 {"value", "#Blocks.Counter + 1"}}),
+                makeNode("log", {{"message", "Block iteration"}}),
+            }),
+            makeNode("assert", {{"condition", "#Blocks.Counter == 3"},
+                                {"message", "Block loop failed"}}),
+            makeNode("wait_until", {{"condition", "#Blocks.Counter == 3"},
+                                    {"timeout", 200}, {"poll", 10},
+                                    {"message", "Block value was not published"}}),
+            makeNode("delay", {{"milliseconds", 10}}),
+            makeNode("log", {{"message", "PASS block programming"}}),
+        };
+    }
     if (name == QStringLiteral("Vision tracking loop")) {
         return {
             makeNode("comment", {{"text", "Continuously capture correlated detections"}}),

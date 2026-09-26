@@ -1,4 +1,5 @@
 #include "ModernDialog.h"
+#include "UiTheme.h"
 #include <QApplication>
 #include <QScreen>
 
@@ -15,7 +16,7 @@ ModernDialog::ModernDialog(QWidget* parent)
     , m_accepted(false)
 {
     setupUI();
-    applyDarkTheme();
+    applyTheme();
     
     // Set dialog properties
     setWindowFlags(Qt::Dialog | Qt::CustomizeWindowHint | Qt::WindowTitleHint);
@@ -165,7 +166,7 @@ void ModernDialog::createTitleBar()
 {
     // Title bar
     QWidget* titleBar = new QWidget();
-    titleBar->setFixedHeight(50);
+    titleBar->setMinimumHeight(50);
     titleBar->setObjectName("titleBar");
     
     QHBoxLayout* titleLayout = new QHBoxLayout(titleBar);
@@ -228,7 +229,7 @@ void ModernDialog::createButtons()
     // Button area
     QWidget* buttonWidget = new QWidget();
     buttonWidget->setObjectName("buttonWidget");
-    buttonWidget->setFixedHeight(60);
+    buttonWidget->setMinimumHeight(60);
     
     QHBoxLayout* buttonLayout = new QHBoxLayout(buttonWidget);
     buttonLayout->setContentsMargins(20, 10, 20, 10);
@@ -239,14 +240,14 @@ void ModernDialog::createButtons()
     // Cancel button
     m_cancelButton = new QPushButton("Cancel");
     m_cancelButton->setObjectName("cancelButton");
-    m_cancelButton->setFixedSize(100, 35);
+    m_cancelButton->setMinimumSize(100, 35);
     connect(m_cancelButton, &QPushButton::clicked, this, &ModernDialog::onCancelClicked);
     buttonLayout->addWidget(m_cancelButton);
     
     // OK button
     m_okButton = new QPushButton("OK");
     m_okButton->setObjectName("okButton");
-    m_okButton->setFixedSize(100, 35);
+    m_okButton->setMinimumSize(100, 35);
     m_okButton->setDefault(true);
     connect(m_okButton, &QPushButton::clicked, this, &ModernDialog::onOkClicked);
     buttonLayout->addWidget(m_okButton);
@@ -254,122 +255,11 @@ void ModernDialog::createButtons()
     m_mainLayout->addWidget(buttonWidget);
 }
 
-void ModernDialog::applyDarkTheme()
+void ModernDialog::applyTheme()
 {
-    setStyleSheet(R"(
-        QDialog {
-            background-color: #2b2b2b;
-            border: 1px solid #404040;
-            border-radius: 8px;
-        }
-        
-        QWidget#titleBar {
-            background-color: #363636;
-            border-top-left-radius: 8px;
-            border-top-right-radius: 8px;
-            border-bottom: 1px solid #404040;
-        }
-        
-        QLabel#titleLabel {
-            color: #ffffff;
-            background: transparent;
-        }
-        
-        QWidget#contentWidget {
-            background-color: #2b2b2b;
-        }
-        
-        QLabel#contentLabel {
-            color: #cccccc;
-            background: transparent;
-        }
-        
-        QListWidget#itemList {
-            background-color: #333333;
-            border: 1px solid #555555;
-            border-radius: 6px;
-            color: #ffffff;
-            selection-background-color: #0078d4;
-            selection-color: #ffffff;
-            alternate-background-color: #3a3a3a;
-            font-size: 11px;
-            padding: 5px;
-        }
-        
-        QListWidget#itemList::item {
-            padding: 8px;
-            border-radius: 4px;
-            margin: 1px;
-        }
-        
-        QListWidget#itemList::item:hover {
-            background-color: #404040;
-        }
-        
-        QListWidget#itemList::item:selected {
-            background-color: #0078d4;
-            color: #ffffff;
-        }
-        
-        QLineEdit#textInput {
-            background-color: #333333;
-            border: 1px solid #555555;
-            border-radius: 6px;
-            color: #ffffff;
-            padding: 8px 12px;
-            font-size: 11px;
-        }
-        
-        QLineEdit#textInput:focus {
-            border: 2px solid #0078d4;
-        }
-        
-        QWidget#buttonWidget {
-            background-color: #363636;
-            border-bottom-left-radius: 8px;
-            border-bottom-right-radius: 8px;
-            border-top: 1px solid #404040;
-        }
-        
-        QPushButton#okButton {
-            background-color: #0078d4;
-            color: #ffffff;
-            border: none;
-            border-radius: 6px;
-            font-weight: bold;
-            font-size: 11px;
-        }
-        
-        QPushButton#okButton:hover {
-            background-color: #106ebe;
-        }
-        
-        QPushButton#okButton:pressed {
-            background-color: #005a9e;
-        }
-        
-        QPushButton#okButton:disabled {
-            background-color: #555555;
-            color: #888888;
-        }
-        
-        QPushButton#cancelButton {
-            background-color: #404040;
-            color: #ffffff;
-            border: 1px solid #666666;
-            border-radius: 6px;
-            font-size: 11px;
-        }
-        
-        QPushButton#cancelButton:hover {
-            background-color: #4a4a4a;
-            border-color: #777777;
-        }
-        
-        QPushButton#cancelButton:pressed {
-            background-color: #353535;
-        }
-    )");
+    setProperty("deltaDialog", true);
+    setStyleSheet(QString());
+    UiTheme::polishWidgetTree(this);
     
     // Add shadow effect
     QGraphicsDropShadowEffect* shadowEffect = new QGraphicsDropShadowEffect();
@@ -377,4 +267,4 @@ void ModernDialog::applyDarkTheme()
     shadowEffect->setColor(QColor(0, 0, 0, 100));
     shadowEffect->setOffset(0, 5);
     setGraphicsEffect(shadowEffect);
-} 
+}

@@ -1,93 +1,55 @@
 #pragma once
-
+#include "DrawingWidget.h"
 #include <QWidget>
-#include <qfiledialog.h>
-#include <qlabel.h>
-#include <qlineedit.h>
-#include <qpixmap.h>
-#include <qcombobox.h>
-#include <qcheckbox.h>
-#include <DrawingWidget.h>
-#include <QSvgWidget>
-
-
-#include <opencv2/opencv.hpp>
-#include <opencv2/highgui.hpp>
-#include <opencv2/core.hpp>
-#include <opencv2/imgproc.hpp>
-#if CV_VERSION_MAJOR >= 5
-#include <opencv2/geometry.hpp>
-#endif
-#include <ImageUnity.h>
+#include <QLineEdit>
+#include <QComboBox>
+#include <QCheckBox>
+#include <QSlider>
+#include <QTextEdit>
+#include <QSettings>
 
 class DrawingExporter : public QWidget
 {
-	Q_OBJECT
-
+    Q_OBJECT
 public:
-	DrawingExporter(QWidget *parent);
-    void SetDrawingParameterPointer(QLabel *ImageForDrawing, QLabel *wImage, QLabel *hImage, QLineEdit *heightScale, QLineEdit *widthScale, QLineEdit *scale, QLineEdit *drawingThresValue, QSlider* drawingThresSlider, QCheckBox* inverse ,QComboBox* drawMethod, QComboBox* conversionTool);
-    void SetGcodeExportParameterPointer(QLineEdit* safeZHeight, QLineEdit* travelSpeed, QLineEdit* drawingSpeed, QLineEdit* drawingAcceleration);
-    void SetDrawingPointInPlane(QLineEdit* point1, QLineEdit* point2, QLineEdit* point3);
-
-    void SetDrawingAreaWidget(DrawingWidget* drawingWidget);
-    void SetGcodeEditor(QTextEdit* gcodeEditor);
-    void SetEffector(QComboBox* drawingEffector);
-    ~DrawingExporter();
-
+    explicit DrawingExporter(QWidget* parent);
+    void SetDrawingParameterPointer(QLabel*, QLabel*, QLabel*, QLineEdit*, QLineEdit*, QLineEdit*, QLineEdit*, QSlider*, QCheckBox*, QComboBox*, QComboBox*);
+    void SetGcodeExportParameterPointer(QLineEdit*, QLineEdit*, QLineEdit*, QLineEdit*);
+    void SetDrawingPointInPlane(QLineEdit*, QLineEdit*, QLineEdit*);
+    void SetDrawingAreaWidget(DrawingWidget*);
+    void SetGcodeEditor(QTextEdit* editor) { m_editor=editor; }
+    void SetEffector(QComboBox* effector) { m_effector=effector; }
+    void SetupPanel(QWidget* page);
+    void LoadSettings(QSettings*);
+    void SaveSettings(QSettings*) const;
+    QVariantMap parameters() const;
+    void restoreParameters(const QVariantMap&);
+    bool loadImage(const QString& fileName, QString* error);
+    bool importVectorFile(const QString& fileName, QString* error, QString* notice = nullptr);
+    bool convertImage(QString* error);
+    bool generateProgram(QString* output, QString* error) const;
 public slots:
-	void OpenImage();
-	void ConvertToDrawingArea();
+    void OpenImage();
+    void OpenVector();
+    void ConvertToDrawingArea();
     void ConvertSVGToArea(QString fileName);
     void ExportGcodes();
-	void ApplyConversion();
-	void ChangeSize();
-	void ScaleEffectImage();
-
-private slots:
-    void HandleScaleChanged(const QString& value);
-    void HandlePlanePointEdited();
-
+    void ApplyConversion();
+signals:
+    void parametersChanged();
 private:
-	void initEvent();
-    bool parsePoint(const QString& text, QVector3D& outPoint, QString* errorMessage = nullptr) const;
-    void showInputError(const QString& message) const;
-    void updateDrawingAreaScale();
-    void refreshPlaneMarkers();
-    void updatePlaneMarkers(const QVector<QVector3D>& points);
-
-    QSvgWidget svgWidget;
-    QTextEdit* pteGcodeEditor = nullptr;
-    QComboBox* cbDrawingEffector = nullptr;
-
-    QLineEdit* leSafeZHeight = nullptr;
-    QLineEdit* leTravelSpeed = nullptr;
-    QLineEdit* leDrawingSpeed = nullptr;
-    QLineEdit* leDrawingAcceleration = nullptr;
-
-    QLineEdit* lePoint1 = nullptr;
-    QLineEdit* lePoint2 = nullptr;
-    QLineEdit* lePoint3 = nullptr;
-
-	QLabel *lbWImage = nullptr;
-	QLabel *lbHImage = nullptr;
-	QLineEdit *leHeightScale = nullptr;
-	QLineEdit *leWidthScale = nullptr;
-	QLineEdit *leSpace = nullptr;
-	QLineEdit *leDrawingThreshold = nullptr;
-	QSlider* hsDrawingThreshold = nullptr;
-    QCheckBox* cbInverse = nullptr;
-	QComboBox* cbDrawMethod = nullptr;
-	QComboBox* cbConversion = nullptr;
-
-	QLabel* lbImageForDrawing = nullptr;
-
-
-
-	QPixmap* originPixmap = nullptr;
-	QPixmap* effectPixmap = nullptr;
-	DrawingWidget* drawingArea = nullptr;
-
-	cv::Mat mat;
-	cv::Mat result;
+    bool parsePoint(const QString&, QVector3D&) const;
+    void updateSize();
+    void refreshMarkers();
+    void showError(const QString&);
+    QImage m_original, m_effect;
+    DrawingWidget* m_canvas=nullptr;
+    QTextEdit* m_editor=nullptr;
+    QLabel *m_preview=nullptr, *m_pixelWidth=nullptr, *m_pixelHeight=nullptr;
+    QLineEdit *m_width=nullptr, *m_height=nullptr, *m_spacing=nullptr, *m_threshold=nullptr;
+    QSlider* m_slider=nullptr;
+    QCheckBox* m_inverse=nullptr;
+    QComboBox *m_method=nullptr, *m_conversion=nullptr, *m_effector=nullptr;
+    QLineEdit *m_travelZ=nullptr, *m_travelSpeed=nullptr, *m_drawingSpeed=nullptr, *m_acceleration=nullptr;
+    QLineEdit *m_a=nullptr, *m_b=nullptr, *m_c=nullptr;
 };
