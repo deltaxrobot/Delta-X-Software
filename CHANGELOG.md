@@ -10,8 +10,8 @@ semantic versioning after the first governed public release.
 - OpenCV 4.5.4 builds use the phone-camera link fallback; QR generation requires
   OpenCV 4.5.5 or newer. OpenCV 5 builds include the geometry module explicitly
   for drawing contour simplification.
-- New-machine clone instructions select the current desktop development branch
-  instead of the historical default branch.
+- The current desktop development history is integrated into `master`, and
+  new-machine setup uses the default clone without a feature-branch override.
 - Live-follow latency tests respect the existing firmware minimum correction
   length and verify stable settling; exact fixed-path checks remain unchanged.
 

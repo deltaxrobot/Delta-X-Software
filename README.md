@@ -79,14 +79,14 @@ Optional runtime SDKs:
 ## Clone the Repository
 
 ```bash
-git clone --branch codex/block-programming-plugin https://github.com/deltaxrobot/Delta-X-Software.git
+git clone https://github.com/deltaxrobot/Delta-X-Software.git
 cd Delta-X-Software
 ```
 
-The current 2.0 development line is `codex/block-programming-plugin` (it contains
-the complete desktop application, not only the block editor). The historical
-`master` branch does not contain these updates. Start with the
-[cross-platform setup guide](docs/platform-setup.md) on a new computer.
+`master` is the default integration branch and contains the current 2.0 desktop
+application. Create a feature branch for new work and submit a pull request to
+`master`. Start with the [cross-platform setup guide](docs/platform-setup.md) on
+a new computer.
 
 ## Project Layout
 

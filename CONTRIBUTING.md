@@ -16,6 +16,10 @@ review and test them accordingly.
 
 ## Development setup
 
+`master` is the default integration branch. Start new work on a feature branch
+from an up-to-date `master`, and target pull requests at `master`. Do not commit
+directly to the integration branch for routine feature development.
+
 Follow the [cross-platform setup guide](docs/platform-setup.md) for Qt, compiler,
 Python, and OpenCV installation. Check a clean machine and build out of source:
 
