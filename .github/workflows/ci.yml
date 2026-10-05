@@ -118,6 +118,11 @@ jobs:
           echo "OpenCV_DIR=$(brew --prefix opencv)" >> "$GITHUB_ENV"
           echo "PKG_CONFIG_PATH=$(brew --prefix opencv)/lib/pkgconfig:${PKG_CONFIG_PATH:-}" >> "$GITHUB_ENV"
 
+      - name: Check motion simulation before the full build
+        env:
+          QT_QPA_PLATFORM: offscreen
+        run: python tools/run-tests.py --test mouse_jog --qt-bin "$QT_ROOT_DIR/bin" --jobs 3
+
       - name: Check, build, and run automated tests
         env:
           QT_QPA_PLATFORM: offscreen

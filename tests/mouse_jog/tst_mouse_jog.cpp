@@ -37,7 +37,7 @@ public:
         connect(&broker, &DeviceCommandBroker::DispatchCommand, this,
             [this](const QString& device, const QString& command) {
                 if (device == "robot1" && command == "M205 S0") {
-                    QTimer::singleShot(1, this, [this]() { this->broker.HandleDeviceResponse("robot1", "Ok"); });
+                    QTimer::singleShot(1, Qt::PreciseTimer, this, [this]() { this->broker.HandleDeviceResponse("robot1", "Ok"); });
                     return;
                 }
                 if (device != "robot1" || !command.startsWith("G01 ")) return;
@@ -59,10 +59,10 @@ public:
     }
     void next() {
         if (queue.isEmpty()) return;
-        QTimer::singleShot(queue.first().second, this, [this]() {
+        QTimer::singleShot(queue.first().second, Qt::PreciseTimer, this, [this]() {
             position = queue.takeFirst().first;
             next();
-            QTimer::singleShot(ackDelayMs, this, [this]() { broker.HandleDeviceResponse("robot1", "Ok"); });
+            QTimer::singleShot(ackDelayMs, Qt::PreciseTimer, this, [this]() { broker.HandleDeviceResponse("robot1", "Ok"); });
         });
     }
     DeviceCommandBroker& broker;
@@ -172,8 +172,20 @@ private slots:
         clock.start();
         double lag = 0;
         int samples = 0;
-        while (clock.elapsed() < 1500) {
-            const double seconds = clock.elapsed() / 1000.0;
+        qint64 previousInputMs = 0, maximumInputGapMs = 0;
+        // Exercise the normal application event loop for both input and device
+        // timers, instead of using repeated qWait polling as the simulation clock.
+        QEventLoop eventLoop;
+        QTimer inputTimer, finishTimer;
+        inputTimer.setTimerType(Qt::PreciseTimer);
+        inputTimer.setInterval(10);
+        finishTimer.setTimerType(Qt::PreciseTimer);
+        finishTimer.setSingleShot(true);
+        connect(&inputTimer, &QTimer::timeout, &eventLoop, [&]() {
+            const auto now = clock.elapsed();
+            maximumInputGapMs = qMax(maximumInputGapMs, now - previousInputMs);
+            previousInputMs = now;
+            const double seconds = now / 1000.0;
             const QVector3D target(float((curved ? 45 : 80) * seconds),
                                    curved ? float(6 * std::sin(4 * seconds)) : 0, 0);
             const auto delta = target - last;
@@ -183,10 +195,16 @@ private slots:
                 lag += (origin + target - robot.position).length();
                 ++samples;
             }
-            QTest::qWait(10);
-        }
+        });
+        connect(&finishTimer, &QTimer::timeout, &eventLoop, &QEventLoop::quit);
+        inputTimer.start();
+        finishTimer.start(1500);
+        eventLoop.exec();
+        inputTimer.stop();
+        QVERIFY(samples > 0);
         qInfo() << "Live tracking mean acknowledged-endpoint lag (mm):" << lag / samples
-                << "commands:" << robot.commands.size();
+                << "commands:" << robot.commands.size() << "samples:" << samples
+                << "maximum input gap (ms):" << maximumInputGapMs;
         QVERIFY2(lag / samples < (curved ? 13.0 : 30.0), "Live following lag regressed toward the fixed-2-mm baseline");
         // Prediction can leave a residue smaller than the controller's minimum
         // move. Require the documented correction resolution, not 0.02 mm that

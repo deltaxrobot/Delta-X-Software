@@ -24,6 +24,8 @@ Live-follow settling is checked against `Limits::minimumLength` (0.201 mm),
 including a stable empty queue after prediction expires. Sub-minimum stationary
 corrections are intentionally not emitted; representable fixed-path endpoints
 retain their stricter position checks.
+The latency scenario uses a normal Qt event loop and precise input/device timers,
+and reports the maximum input sampling gap alongside the measured endpoint lag.
 
 The `phone_camera` suite tests the local HTTPS server with ephemeral credentials:
 pairing authorization, single-phone ownership, correlated JPEG delivery, stale
