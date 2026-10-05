@@ -1,0 +1,9 @@
+Delta Mouse Control
+Copyright 2026 Delta X Software contributors
+
+Derived from first-party Adaptive Follower v2 source in Delta X Software 2.0.0,
+baseline commit e692f07. Python translation and standalone application changes
+are included under the Apache License, Version 2.0.
+
+This distribution contains first-party source and documentation only.
+Third-party dependencies installed separately retain their own licenses.

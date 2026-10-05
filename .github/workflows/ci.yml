@@ -36,6 +36,13 @@ jobs:
       - name: Test contributor tooling
         run: python -m unittest discover -s tests/tooling -p 'test_*.py' -v
 
+      - name: Test standalone motion core without hardware
+        run: |
+          python -m pip install 'pytest>=8,<10'
+          python -m pytest standalone/delta-mouse-control -q
+          python standalone/delta-mouse-control/tools/package_source.py
+          python standalone/delta-mouse-control/tools/verify_bundle.py
+
       - name: Validate PowerShell sources
         shell: pwsh
         run: |

@@ -7,7 +7,8 @@
 #include <QtConcurrentRun>
 #include <QtWidgets>
 #include <opencv2/core/version.hpp>
-#if CV_VERSION_MAJOR > 4 || (CV_VERSION_MAJOR == 4 && CV_VERSION_MINOR >= 5)
+#if CV_VERSION_MAJOR > 4 || (CV_VERSION_MAJOR == 4 && \
+    (CV_VERSION_MINOR > 5 || (CV_VERSION_MINOR == 5 && CV_VERSION_REVISION >= 5)))
 #include <opencv2/objdetect.hpp>
 #endif
 
@@ -289,7 +290,8 @@ PhoneCameraDialog::PhoneCameraDialog(PhoneCameraServer* server, QWidget* parent)
                 copy->setEnabled(true);
                 start->setText(tr("New QR"));
                 setupToggle->setChecked(false);
-#if CV_VERSION_MAJOR > 4 || (CV_VERSION_MAJOR == 4 && CV_VERSION_MINOR >= 5)
+#if CV_VERSION_MAJOR > 4 || (CV_VERSION_MAJOR == 4 && \
+    (CV_VERSION_MINOR > 5 || (CV_VERSION_MINOR == 5 && CV_VERSION_REVISION >= 5)))
                 try
                 {
                     cv::Mat matrix;
@@ -309,7 +311,7 @@ PhoneCameraDialog::PhoneCameraDialog(PhoneCameraServer* server, QWidget* parent)
                     qr->setText(tr("QR unavailable. Open the copied link on your phone."));
                 }
 #else
-        qr->setText(tr("QR needs OpenCV 4.5+. Open the copied link on your phone."));
+                qr->setText(tr("QR needs OpenCV 4.5.5+. Open the copied link on your phone."));
 #endif
             });
     connect(this, &QDialog::rejected, server, &PhoneCameraServer::stop);

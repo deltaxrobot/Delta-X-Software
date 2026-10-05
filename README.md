@@ -79,9 +79,14 @@ Optional runtime SDKs:
 ## Clone the Repository
 
 ```bash
-git clone https://github.com/yourusername/Delta-X-Software.git
+git clone --branch codex/block-programming-plugin https://github.com/deltaxrobot/Delta-X-Software.git
 cd Delta-X-Software
 ```
+
+The current 2.0 development line is `codex/block-programming-plugin` (it contains
+the complete desktop application, not only the block editor). The historical
+`master` branch does not contain these updates. Start with the
+[cross-platform setup guide](docs/platform-setup.md) on a new computer.
 
 ## Project Layout
 
@@ -92,6 +97,7 @@ cd Delta-X-Software
 - `sdk/`: stable plugin interface, metadata contract, and SDK guide.
 - `resources/`: platform-specific packaging assets such as `resources/macos/Info.plist`.
 - `models/`, `script-example/`, `plugin/`, `docs/`: runtime models, example scripts, plugins, and documentation kept outside the core app tree.
+- `standalone/delta-mouse-control/`: optional [Python mouse controller and motion engine](standalone/delta-mouse-control/README.md), independent of the desktop build.
 
 Operator documentation is available directly in **G-Script -> Help** and from the
 relevant workspaces. The main commissioning guides are
@@ -143,7 +149,12 @@ Run qmake from an out-of-source directory, followed by `nmake` on Windows or
 
 ## Running from the Build Tree
 
-The debug and release outputs live in `debug/` and `release/`. Running from Qt Creator is fine for development, but distributing those folders directly will miss Qt/OpenCV runtime libraries. Follow the deploy steps below to package a self-contained build.
+For the bootstrap workflow, run `python tools/bootstrap.py run` (use the same
+`--build-dir` and dependency overrides if you supplied them during the build).
+CMake presets write to `build/cmake-debug/` or `build/cmake-release/`; legacy
+qmake builds use their selected output directory. Running from Qt Creator is
+also supported. Do not distribute a build directory directly: follow the deploy
+steps below to include the required runtime libraries.
 
 ## Run Automated Tests
 

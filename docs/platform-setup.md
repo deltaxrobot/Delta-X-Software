@@ -23,9 +23,20 @@ Android, iOS, and BSD are not supported targets.
 Clone the repository and enter it:
 
 ```bash
-git clone https://github.com/deltaxrobot/Delta-X-Software.git
+git clone --branch codex/block-programming-plugin https://github.com/deltaxrobot/Delta-X-Software.git
 cd Delta-X-Software
 ```
+
+Use this branch for the current 2.0 desktop application; `master` is historical.
+For an existing clone, first commit or back up your local edits, then run
+`git fetch origin` and `git switch --track origin/codex/block-programming-plugin`.
+If that local branch already exists, use `git switch codex/block-programming-plugin`
+followed by `git pull --ff-only`.
+
+The repository contains source, examples, and documentation. Build outputs,
+downloaded SDKs, models, local settings/calibration, and phone-camera private keys
+are deliberately not published. Transfer any required machine-specific data
+separately and recheck calibration before enabling hardware on a new machine.
 
 Inspect the local toolchain without changing the machine:
 

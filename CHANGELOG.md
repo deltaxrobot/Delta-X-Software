@@ -5,6 +5,19 @@ semantic versioning after the first governed public release.
 
 ## Unreleased
 
+### Fixed
+
+- OpenCV 4.5.4 builds use the phone-camera link fallback; QR generation requires
+  OpenCV 4.5.5 or newer. OpenCV 5 builds include the geometry module explicitly
+  for drawing contour simplification.
+- New-machine clone instructions select the current desktop development branch
+  instead of the historical default branch.
+
+### Added
+
+- Standalone Python mouse controller sources, simulator tests, packaging tools,
+  and integration documentation under `standalone/delta-mouse-control/`.
+
 ## [2.0.0] - 2026-09-26
 
 ### Added

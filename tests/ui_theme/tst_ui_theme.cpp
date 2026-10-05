@@ -12,7 +12,8 @@
 #include <QtWidgets>
 #include <cmath>
 #include <opencv2/core/version.hpp>
-#if CV_VERSION_MAJOR > 4 || (CV_VERSION_MAJOR == 4 && CV_VERSION_MINOR >= 5)
+#if CV_VERSION_MAJOR > 4 || (CV_VERSION_MAJOR == 4 && \
+    (CV_VERSION_MINOR > 5 || (CV_VERSION_MINOR == 5 && CV_VERSION_REVISION >= 5)))
 #include <opencv2/objdetect.hpp>
 #endif
 #include "ui_FilterWindow.h"
@@ -200,7 +201,6 @@ class UiThemeTest : public QObject
     }
     void phoneCameraQr()
     {
-#if CV_VERSION_MAJOR > 4 || (CV_VERSION_MAJOR == 4 && CV_VERSION_MINOR >= 5)
         const auto openssl = QStandardPaths::findExecutable("openssl");
         if (openssl.isEmpty() || !QSslSocket::supportsSsl())
             QSKIP("QR pairing integration needs test TLS credentials");
@@ -223,6 +223,8 @@ class UiThemeTest : public QObject
         dialog.show();
         dialog.findChild<QPushButton*>("phoneCameraStart")->click();
         QVERIFY(server.isListening());
+#if CV_VERSION_MAJOR > 4 || (CV_VERSION_MAJOR == 4 && \
+    (CV_VERSION_MINOR > 5 || (CV_VERSION_MINOR == 5 && CV_VERSION_REVISION >= 5)))
         const QImage qr = dialog.findChild<QLabel*>("phoneCameraQr")
                               ->pixmap()
                               .toImage()
@@ -233,13 +235,13 @@ class UiThemeTest : public QObject
         QCOMPARE(QString::fromStdString(cv::QRCodeDetector().detectAndDecode(pixels)),
                  server.pairingUrl());
         snapshot(dialog, "phone-camera-qr");
+#else
+        QVERIFY(dialog.findChild<QLabel*>("phoneCameraQr")->text().contains("copied link"));
+#endif
         dialog.reject();
         QVERIFY(!server.isListening());
         QSettings settings;
         settings.remove("PhoneCamera");
-#else
-        QSKIP("QR encoder needs OpenCV 4.5+");
-#endif
     }
     void syntaxContrastAndThemeSwitch()
     {

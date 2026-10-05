@@ -1,0 +1,6 @@
+include LICENSE NOTICE THIRD_PARTY_NOTICES.md AI_INTEGRATION.md
+include requirements.txt run.py launch.ps1
+recursive-include docs *.md
+recursive-include examples *.py
+recursive-include tests *.py
+recursive-include tools *.py

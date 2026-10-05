@@ -43,7 +43,7 @@ hiding it releases the camera. Stop Camera in Delta X closes the local server.
 
 Each session has a new secret QR link and accepts one phone. A second phone is
 rejected while the first is paired. Copy link is available if QR scanning is
-inconvenient. Do not share the pairing URL. QR rendering needs OpenCV 4.5+;
+inconvenient. Do not share the pairing URL. QR rendering needs OpenCV 4.5.5+;
 older supported builds provide the same pairing URL for manual opening.
 
 No images are stored by this feature. Frames are sent over HTTPS directly to
