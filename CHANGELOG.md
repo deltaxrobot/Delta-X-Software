@@ -12,6 +12,8 @@ semantic versioning after the first governed public release.
   for drawing contour simplification.
 - New-machine clone instructions select the current desktop development branch
   instead of the historical default branch.
+- Live-follow latency tests respect the existing firmware minimum correction
+  length and verify stable settling; exact fixed-path checks remain unchanged.
 
 ### Added
 

@@ -142,6 +142,23 @@ private slots:
         QTest::newRow("straight") << false;
         QTest::newRow("curved") << true;
     }
+    void stationaryFollowerHonorsMinimumCorrection() {
+        const Limits limits;
+        const State start{{10, 20, -300}, {}, 0};
+        QString error;
+        for (const float residual : {-0.2f, -0.1f, -0.02f, 0.02f, 0.1f, 0.2f}) {
+            const auto moves = follow(start, start.position + QVector3D(residual, 0, 0),
+                                      {}, 0, limits, &error);
+            QVERIFY2(error.isEmpty(), qPrintable(error));
+            QVERIFY(moves.isEmpty());
+        }
+        const auto target = start.position + QVector3D(0.25f, 0, 0);
+        const auto moves = follow(start, target, {}, 0, limits, &error);
+        QVERIFY2(error.isEmpty(), qPrintable(error));
+        QVERIFY(!moves.isEmpty());
+        QCOMPARE(moves.last().end, target);
+        QCOMPARE(moves.last().exit, 0);
+    }
     void liveTrackingLatency() {
         QFETCH(bool, curved);
         DeviceCommandBroker broker;
@@ -171,7 +188,22 @@ private slots:
         qInfo() << "Live tracking mean acknowledged-endpoint lag (mm):" << lag / samples
                 << "commands:" << robot.commands.size();
         QVERIFY2(lag / samples < (curved ? 13.0 : 30.0), "Live following lag regressed toward the fixed-2-mm baseline");
-        QTRY_VERIFY_WITH_TIMEOUT((robot.position - origin - last).length() < 0.02f, 6000);
+        // Prediction can leave a residue smaller than the controller's minimum
+        // move. Require the documented correction resolution, not 0.02 mm that
+        // the firmware cannot represent. Exact fixed-path tests remain separate.
+        const auto finalError = [&]() { return (robot.position - origin - last).length(); };
+        QTRY_VERIFY2_WITH_TIMEOUT(finalError() < Limits{}.minimumLength,
+            qPrintable(QString("Final tracking error: %1 mm; ready: %2")
+                .arg(finalError()).arg(control.ready())), 6000);
+        QTRY_COMPARE_WITH_TIMEOUT(broker.pendingCommandCount("robot1"), 0, 2000);
+        QTest::qWait(150); // The prediction window is 80 ms.
+        const auto settled = robot.position;
+        const auto commandCount = robot.commands.size();
+        QTest::qWait(150);
+        QCOMPARE(robot.position, settled);
+        QCOMPARE(robot.commands.size(), commandCount);
+        QVERIFY(finalError() < Limits{}.minimumLength);
+        QVERIFY(control.ready());
         QVERIFY(robot.finite);
         QVERIFY(robot.maxDepth <= 2);
         control.endHold();

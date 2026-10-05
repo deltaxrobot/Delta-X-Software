@@ -20,6 +20,10 @@ timed controller emulator and never moves hardware.
 The live-follower tests measure acknowledged-endpoint lag for moving straight
 and curved targets and check prediction expiry, bounded feed, final settling,
 unsplit terminal braking and release while velocity prediction is active.
+Live-follow settling is checked against `Limits::minimumLength` (0.201 mm),
+including a stable empty queue after prediction expires. Sub-minimum stationary
+corrections are intentionally not emitted; representable fixed-path endpoints
+retain their stricter position checks.
 
 The `phone_camera` suite tests the local HTTPS server with ephemeral credentials:
 pairing authorization, single-phone ownership, correlated JPEG delivery, stale
