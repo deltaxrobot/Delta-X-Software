@@ -64,6 +64,36 @@ DeviceManager::~DeviceManager()
     }
 }
 
+void DeviceManager::SetSelectedDevice(int deviceType, int id)
+{
+    id = qMax(0, id);
+    switch (deviceType) {
+    case ROBOT: SelectedRobotID = id; break;
+    case CONVEYOR: SelectedConveyorID = id; break;
+    case ENCODER: SelectedEncoderID = id; break;
+    case SLIDER: SelectedSliderID = id; break;
+    case DEVICE: SelectedDeviceID = id; break;
+    default: break;
+    }
+}
+
+void DeviceManager::SetRobotModel(int id, QString model)
+{
+    if (id < 0 || id >= Robots.size())
+        return;
+    Robot* robot = Robots.at(id);
+    QMetaObject::invokeMethod(robot, [robot, model]() {
+        robot->SetRobotModel(model);
+    }, Qt::QueuedConnection);
+}
+
+void DeviceManager::SetEncoderLinkedConveyor(int encoderId, int conveyorId)
+{
+    if (encoderId < 0 || encoderId >= Encoders.size())
+        return;
+    Encoders.at(encoderId)->SetLinkedConveyor(conveyorId);
+}
+
 void DeviceManager::AddRobot(QString address="auto")
 {
 //    qDebug() << "Add robot";
@@ -143,7 +173,7 @@ void DeviceManager::AddDevice(QString address)
 //    qDebug() << "Add device";
     Device* device = new Device(address);
     device->ProjectName = ProjectName;
-    device->SetIDName(QString("device") + QString::number(SelectedDeviceID));
+    device->SetIDName(QString("device") + QString::number(Devices.count()));
     Devices.append(device);
 
     QThread* deviceThread = new QThread(this);
@@ -174,8 +204,8 @@ void DeviceManager::SetDeviceState(QString deviceName, bool isOpen, QString addr
 
         if (isOpen == true)
         {
-            Robots[id]->SetSerialPortName(address);
-            QMetaObject::invokeMethod(Robots[id], "Connect", Qt::QueuedConnection);
+            QMetaObject::invokeMethod(Robots[id], "OpenAtAddress", Qt::QueuedConnection,
+                                      Q_ARG(QString, address));
         }
         else
         {
@@ -192,8 +222,8 @@ void DeviceManager::SetDeviceState(QString deviceName, bool isOpen, QString addr
 
         if (isOpen == true)
         {
-            Sliders[id]->SetSerialPortName(address);
-            QMetaObject::invokeMethod(Sliders[id], "Connect", Qt::QueuedConnection);
+            QMetaObject::invokeMethod(Sliders[id], "OpenAtAddress", Qt::QueuedConnection,
+                                      Q_ARG(QString, address));
         }
         else
         {
@@ -210,8 +240,8 @@ void DeviceManager::SetDeviceState(QString deviceName, bool isOpen, QString addr
 
         if (isOpen == true)
         {
-            Conveyors[id]->SetSerialPortName(address);
-            QMetaObject::invokeMethod(Conveyors[id], "Connect", Qt::QueuedConnection);
+            QMetaObject::invokeMethod(Conveyors[id], "OpenAtAddress", Qt::QueuedConnection,
+                                      Q_ARG(QString, address));
         }
         else
         {
@@ -228,8 +258,8 @@ void DeviceManager::SetDeviceState(QString deviceName, bool isOpen, QString addr
 
         if (isOpen == true)
         {
-            Devices[id]->SetSerialPortName(address);
-            QMetaObject::invokeMethod(Devices[id], "Connect", Qt::QueuedConnection);
+            QMetaObject::invokeMethod(Devices[id], "OpenAtAddress", Qt::QueuedConnection,
+                                      Q_ARG(QString, address));
         }
         else
         {
@@ -246,8 +276,8 @@ void DeviceManager::SetDeviceState(QString deviceName, bool isOpen, QString addr
 
         if (isOpen == true)
         {
-            Encoders[id]->SetSerialPortName(address);
-            QMetaObject::invokeMethod(Encoders[id], "Connect", Qt::QueuedConnection);
+            QMetaObject::invokeMethod(Encoders[id], "OpenAtAddress", Qt::QueuedConnection,
+                                      Q_ARG(QString, address));
         }
         else
         {
@@ -340,11 +370,15 @@ void DeviceManager::SendGcode(int deviceType, QString gcode)
     {
         if (Encoders.count() > SelectedEncoderID)
         {
-            if (Encoders[SelectedEncoderID]->LinkedConveyor == -1)
+            const int linkedConveyor =
+                Encoders[SelectedEncoderID]->LinkedConveyorId();
+            if (linkedConveyor == -1)
             {
                 if (Encoders[SelectedEncoderID]->IsOpen() == false)
                 {
-                    emit GotEncoderPosition(SelectedEncoderID, Encoders[SelectedEncoderID]->Position);
+                    emit GotEncoderPosition(
+                        SelectedEncoderID,
+                        Encoders[SelectedEncoderID]->CurrentPosition());
                 }
                 else
                 {
@@ -354,13 +388,21 @@ void DeviceManager::SendGcode(int deviceType, QString gcode)
             }
             else
             {
-                if (Conveyors[Encoders[SelectedEncoderID]->LinkedConveyor]->IsOpen() == false)
+                if (linkedConveyor < 0 || linkedConveyor >= Conveyors.size()) {
+                    emit DeviceNotAvailable(QString("conveyor%1").arg(linkedConveyor),
+                                            QStringLiteral("Linked conveyor is not registered"));
+                    return;
+                }
+                if (Conveyors[linkedConveyor]->IsOpen() == false)
                 {
-                    emit GotEncoderPosition(SelectedEncoderID, Conveyors[Encoders[SelectedEncoderID]->LinkedConveyor]->Position);
+                    emit GotEncoderPosition(
+                        SelectedEncoderID,
+                        Conveyors[linkedConveyor]->CurrentPosition());
                 }
                 else
                 {
-                    QMetaObject::invokeMethod(Conveyors[Encoders[SelectedEncoderID]->LinkedConveyor], "WriteData", Qt::QueuedConnection, Q_ARG(QString, gcode));
+                    QMetaObject::invokeMethod(Conveyors[linkedConveyor], "WriteData",
+                                              Qt::QueuedConnection, Q_ARG(QString, gcode));
                     emit Log(QString("conveyor%1").arg(SelectedEncoderID), gcode, 1);
                 }
             }
@@ -388,15 +430,19 @@ void DeviceManager::SendGcode(QString deviceName, QString gcode)
     {
         if (id < Robots.count())
         {
+            if (!Robots[id]->IsOpen()) {
+                emit DeviceNotAvailable(deviceName,
+                                        QStringLiteral("Robot is not connected"));
+                return;
+            }
             QMetaObject::invokeMethod(Robots[id], "SendGcode", Qt::QueuedConnection, Q_ARG(QString, gcode));
 
 //            emit Log(QString("Robot %1").arg(id), gcode, 1);
         }
         else
         {
-            // Delay 100ms
-            QThread::msleep(100);
-            emit DeviceResponded(deviceName, "Ok");
+            emit DeviceNotAvailable(deviceName,
+                                    QStringLiteral("Robot is not registered"));
         }
     }
 
@@ -426,7 +472,7 @@ void DeviceManager::SendGcode(QString deviceName, QString gcode)
         {
             if (Conveyors[id]->IsOpen() == false)
             {
-                emit GotEncoderPosition(id, Conveyors[id]->Position);
+                emit GotEncoderPosition(id, Conveyors[id]->CurrentPosition());
             }
             else
             {
@@ -441,11 +487,12 @@ void DeviceManager::SendGcode(QString deviceName, QString gcode)
     {
         if (id < Encoders.count())
         {
-            if (Encoders[id]->LinkedConveyor == -1)
+            const int linkedConveyor = Encoders[id]->LinkedConveyorId();
+            if (linkedConveyor == -1)
             {
                 if (Encoders[id]->IsOpen() == false)
                 {
-                    emit GotEncoderPosition(id, Encoders[id]->Position);
+                    emit GotEncoderPosition(id, Encoders[id]->CurrentPosition());
                 }
                 else
                 {
@@ -456,13 +503,19 @@ void DeviceManager::SendGcode(QString deviceName, QString gcode)
             }
             else
             {
-                if (Conveyors[Encoders[id]->LinkedConveyor]->IsOpen() == false)
+                if (linkedConveyor < 0 || linkedConveyor >= Conveyors.size()) {
+                    emit DeviceNotAvailable(QString("conveyor%1").arg(linkedConveyor),
+                                            QStringLiteral("Linked conveyor is not registered"));
+                    return;
+                }
+                if (Conveyors[linkedConveyor]->IsOpen() == false)
                 {
-                    emit GotEncoderPosition(id, Conveyors[Encoders[id]->LinkedConveyor]->Position);
+                    emit GotEncoderPosition(id, Conveyors[linkedConveyor]->CurrentPosition());
                 }
                 else
                 {
-                    QMetaObject::invokeMethod(Conveyors[Encoders[id]->LinkedConveyor], "WriteData", Qt::QueuedConnection, Q_ARG(QString, gcode));
+                    QMetaObject::invokeMethod(Conveyors[linkedConveyor], "WriteData",
+                                              Qt::QueuedConnection, Q_ARG(QString, gcode));
 
                     emit Log(QString("conveyor%1").arg(id), gcode, 1);
                 }

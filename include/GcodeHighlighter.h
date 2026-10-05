@@ -11,6 +11,7 @@ class GCodeHighlighter : public QSyntaxHighlighter
 {
 public:
     GCodeHighlighter(QTextDocument *parent = nullptr);
+    void refreshTheme();
 
 protected:
     void highlightBlock(const QString &text) override;

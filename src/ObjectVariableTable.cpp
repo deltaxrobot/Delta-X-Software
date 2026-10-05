@@ -7,14 +7,14 @@ ObjectVariableTable::ObjectVariableTable(QObject *parent)
     dialog = new QWidget();
     dialog->setWindowTitle("Object Variables");
 
-    // Tạo QGridLayout và đưa nó vào QScrollArea
+    // Create the grid layout and place it in a scroll area.
     QScrollArea *scrollArea = new QScrollArea();
     QGridLayout *gridLayout = new QGridLayout(scrollArea->viewport());
     scrollArea->setWidgetResizable(true);
     scrollArea->setWidget(new QWidget());
     scrollArea->widget()->setLayout(gridLayout);
 
-    // Đưa QScrollArea vào cửa sổ
+    // Add the scroll area to the window.
     QVBoxLayout *layout = new QVBoxLayout(dialog);
     layout->addWidget(scrollArea);
     dialog->setLayout(layout);

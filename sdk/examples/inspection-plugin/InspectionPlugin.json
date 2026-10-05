@@ -1,0 +1,18 @@
+{
+  "apiVersion": 3,
+  "pluginVersion": "1.0.0",
+  "name": "example.inspection",
+  "capabilities": [
+    "commands",
+    "gscript.primitives",
+    "panel",
+    "services.provider"
+  ],
+  "permissions": [
+    "events.publish",
+    "gscript.register",
+    "health.report",
+    "services.provide",
+    "tracking.read"
+  ]
+}

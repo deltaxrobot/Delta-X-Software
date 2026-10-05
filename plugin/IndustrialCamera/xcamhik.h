@@ -19,8 +19,11 @@ public:
     void SetExposureTime(int value);
     int GetExposureTime();
 
-    void* Camera;
+    void* Camera = NULL;
     unsigned char* data = NULL;
+
+private:
+    bool open = false;
 };
 
 #endif // XCAMHIK_H

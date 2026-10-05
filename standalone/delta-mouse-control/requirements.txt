@@ -1,0 +1,3 @@
+# Versions used for desktop verification. The core has no third-party dependencies.
+PySide6==6.9.1
+pyserial==3.5

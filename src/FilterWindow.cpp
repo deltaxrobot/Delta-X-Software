@@ -1,10 +1,12 @@
 #include "FilterWindow.h"
+#include "UiTheme.h"
 #include "ui_FilterWindow.h"
 
-FilterWindow::FilterWindow(QWidget *parent, QString projectName) : QDialog(parent),
-                                              ui(new Ui::FilterWindow)
+FilterWindow::FilterWindow(QWidget *parent, QString projectName)
+    : QDialog(parent), ui(new Ui::FilterWindow)
 {
     ui->setupUi(this);
+    UiTheme::prepareForm(this);
 
     ProjectName = projectName;
 
@@ -16,8 +18,11 @@ FilterWindow::FilterWindow(QWidget *parent, QString projectName) : QDialog(paren
 
 FilterWindow::~FilterWindow()
 {
-    FilterJob->thread()->quit();
-    FilterJob->thread()->wait();
+    if (FilterThread && FilterThread->isRunning()) {
+        FilterThread->quit();
+        FilterThread->wait();
+    }
+    FilterJob = nullptr;
 
     delete ui;
 }
@@ -41,10 +46,11 @@ void FilterWindow::InitVariables()
     lbOriginImage = ui->lbOriginImage;
     lbProcessImage = ui->lbProcessImage;
 
+    FilterThread = new QThread(this);
     FilterJob = new FilterWork();
-    FilterJob->moveToThread(new QThread(this));
-
-    FilterJob->thread()->start();
+    FilterJob->moveToThread(FilterThread);
+    connect(FilterThread, &QThread::finished, FilterJob, &QObject::deleteLater);
+    FilterThread->start();
 }
 
 void FilterWindow::InitEvents()
@@ -62,12 +68,14 @@ void FilterWindow::InitEvents()
 
     connect(this, &FilterWindow::requestFilter, FilterJob, &FilterWork::DoFilter);
 
-    connect(FilterJob->thread(), SIGNAL(finished()), FilterJob->thread(), SLOT(deleteLater()));
-    connect(FilterJob, &FilterWork::FinishedFilter, [=](cv::Mat mat)
+    connect(FilterJob, &FilterWork::FinishedFilter, this, [this](const cv::Mat& mat)
     {
         QPixmap pixmap = ImageTool::cvMatToQPixmap(mat);
         pixmap = pixmap.scaled(lbOriginImage->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
         ui->lbProcessImage->setPixmap(pixmap);
+    });
+    connect(FilterJob, &FilterWork::FilterFailed, this, [](const QString& message) {
+        qWarning() << "Image filter failed:" << message;
     });
 }
 
@@ -80,49 +88,51 @@ void FilterWindow::SaveSetting()
         hsvParas.append(sPara[i]->value());
     }
 
-    QString filterName = QString(".filter%1.").arg(ui->cbObjectType->currentText());
-
-    VariableManager::instance().Prefix = ProjectName;
-
-    VariableManager::instance().updateVar(Prefix + filterName + "hsvV", hsvParas);
-    VariableManager::instance().updateVar(Prefix + filterName + "thresV", ui->hsThreshold->value());
-    VariableManager::instance().updateVar(Prefix + filterName + "blurV", ui->hsBlurSize->value());
-    VariableManager::instance().updateVar(Prefix + filterName + "invert", ui->cbInvert->isChecked());
-    VariableManager::instance().updateVar(Prefix + filterName + "algorithm", FilterJob->CurrentFilter);
+    const QString filterName = QString("%1.filter%2.")
+                                   .arg(Prefix, ui->cbObjectType->currentText());
+    QHash<QString, QVariant> values;
+    values.insert(filterName + "hsvV", hsvParas);
+    values.insert(filterName + "thresV", ui->hsThreshold->value());
+    values.insert(filterName + "blurV", ui->hsBlurSize->value());
+    values.insert(filterName + "invert", ui->cbInvert->isChecked());
+    values.insert(filterName + "algorithm", CurrentFilter);
+    VariableManager::instance().updateBatchScoped(ProjectName, values);
 }
 
 void FilterWindow::LoadSetting()
 {
-    VariableManager::instance().Prefix = ProjectName;
+    const QString filterName = QString("%1.filter%2.")
+                                   .arg(Prefix, ui->cbObjectType->currentText());
+    QList<QVariant> hsvParas = VariableManager::instance()
+                                   .getVarScoped(ProjectName, filterName + "hsvV")
+                                   .toList();
 
-    QString filterName = QString(".filter%1.").arg(ui->cbObjectType->currentText());
-    QList<QVariant> hsvParas = VariableManager::instance().getVar(Prefix + filterName + "hsvV").toList();
-
-    for (int i = 0; i < hsvParas.count(); i++)
+    const int hsvParameterCount = qMin(6, hsvParas.count());
+    for (int i = 0; i < hsvParameterCount; i++)
     {
         sPara[i]->setValue(hsvParas.at(i).toInt());
         lbPara[i]->setText(QString::number(hsvParas.at(i).toInt()));
     }
 
-    ui->hsThreshold->setValue(VariableManager::instance().getVar(Prefix + filterName + "thresV", 100).toInt());
+    ui->hsThreshold->setValue(VariableManager::instance().getVarScoped(ProjectName, filterName + "thresV", 100).toInt());
     ui->lbThreshold->setText(QString::number(ui->hsThreshold->value()));
 
-    ui->hsBlurSize->setValue(VariableManager::instance().getVar(Prefix + filterName + "blurV", 1).toInt());
+    ui->hsBlurSize->setValue(VariableManager::instance().getVarScoped(ProjectName, filterName + "blurV", 1).toInt());
     ui->lbBlurSize->setText(QString::number(ui->hsBlurSize->value()));
 
-    ui->cbInvert->setChecked(VariableManager::instance().getVar(Prefix + filterName + "invert", false).toBool());
+    ui->cbInvert->setChecked(VariableManager::instance().getVarScoped(ProjectName, filterName + "invert", false).toBool());
 
-    FilterJob->CurrentFilter = VariableManager::instance().getVar(Prefix + filterName + "algorithm", FilterJob->CurrentFilter).toInt();
+    CurrentFilter = VariableManager::instance()
+                        .getVarScoped(ProjectName, filterName + "algorithm",
+                                      CurrentFilter)
+                        .toInt();
+    if (CurrentFilter != FilterWork::THRESHOLD && CurrentFilter != FilterWork::HSV)
+        CurrentFilter = FilterWork::THRESHOLD;
 }
 
 void FilterWindow::SetImage(cv::Mat mat)
 {
-    OriginMat.release();
-
-    QMutex mux;
-    mux.lock();
     OriginMat = mat.clone();
-    mux.unlock();
 
     QPixmap pixmap = ImageTool::cvMatToQPixmap(mat);
 
@@ -135,7 +145,7 @@ void FilterWindow::SetImage(cv::Mat mat)
 
 void FilterWindow::RequestValue()
 {
-    if (FilterJob->CurrentFilter == FilterWork::HSV)
+    if (CurrentFilter == FilterWork::HSV)
     {
         emit ui->hsminH->sliderReleased();
     }
@@ -154,6 +164,7 @@ void FilterWindow::ProcessValueFromUI()
 {
     if (sender() == ui->hsThreshold)
     {
+        CurrentFilter = FilterWork::THRESHOLD;
         intParas.clear();
 
         int value = ui->hsThreshold->value();
@@ -162,6 +173,7 @@ void FilterWindow::ProcessValueFromUI()
     }
     else if (sender() != ui->hsBlurSize && sender() != ui->cbInvert)
     {
+        CurrentFilter = FilterWork::HSV;
         intParas.clear();
 
         for (int i = 0; i < 6; i++)

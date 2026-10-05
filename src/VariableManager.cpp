@@ -1,22 +1,28 @@
 #include "VariableManager.h"
-#include "qglobal.h"
-#include <QDebug>
-#include <QSet>
-#include <QJsonDocument>
-#include <QJsonObject>
-#include <QJsonArray>
-#include <QUrl>
-#include <QPointF>
-#include <QDate>
-#include <QTime>
-#include <QDateTime>
-#include <QRegularExpression>
+
+#include <algorithm>
+#include <utility>
 #include <QCoreApplication>
-#include <QStandardPaths>
+#include <QDate>
+#include <QDateTime>
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
+#include <QJsonDocument>
+#include <QJsonArray>
+#include <QMetaObject>
+#include <QPointF>
+#include <QPolygonF>
+#include <QRectF>
+#include <QRegularExpression>
+#include <QStandardPaths>
+#include <QThread>
+#include <QTime>
+#include <QTransform>
+#include <QUrl>
+
 #include "QtMatrixCompat.h"
+#include "UnityTool.h"
 
 namespace {
 QString resolveSettingsFilePath()
@@ -32,558 +38,729 @@ QString resolveSettingsFilePath()
         dir.mkpath(QStringLiteral("."));
 
     const QString targetPath = dir.filePath(QStringLiteral("settings.ini"));
-
-    // Migrate legacy settings stored beside the executable (if readable)
-    const QString legacyPath = QDir(QCoreApplication::applicationDirPath()).filePath(QStringLiteral("settings.ini"));
-    if (!QFileInfo::exists(targetPath) && QFileInfo::exists(legacyPath)) {
+    const QString legacyPath = QDir(QCoreApplication::applicationDirPath())
+                                   .filePath(QStringLiteral("settings.ini"));
+    if (!QFileInfo::exists(targetPath) && QFileInfo::exists(legacyPath))
         QFile::copy(legacyPath, targetPath);
-    }
-
     return targetPath;
 }
-}
 
-VariableManager::VariableManager()
-    : settings(resolveSettingsFilePath(), QSettings::IniFormat)
-{
-}
+const QString kManifestKey = QStringLiteral("__variables/keys");
+const QString kTypePrefix = QStringLiteral("__variable_types/");
 
-VariableManager &VariableManager::instance()
+bool encodeForSettings(const QVariant& input, QVariant& output, QString& typeTag)
 {
-    static VariableManager _instance;
-    if (!_instance.m_saveTimer) {
-        // Lazy init save timer
-        _instance.m_saveTimer = new QTimer(&_instance);
-        _instance.m_saveTimer->setSingleShot(true);
-        QObject::connect(_instance.m_saveTimer, &QTimer::timeout, &_instance, &VariableManager::saveToQSettings);
+    const int typeId = input.metaType().id();
+    switch (typeId) {
+    case QMetaType::Bool:
+    case QMetaType::Int:
+    case QMetaType::UInt:
+    case QMetaType::LongLong:
+    case QMetaType::ULongLong:
+    case QMetaType::Double:
+    case QMetaType::QString:
+    case QMetaType::QByteArray:
+    case QMetaType::QStringList:
+    case QMetaType::QDate:
+    case QMetaType::QTime:
+    case QMetaType::QDateTime:
+        output = input;
+        typeTag = QString::fromLatin1(input.metaType().name());
+        return true;
+    default:
+        break;
     }
-    return _instance;
-}
 
-void VariableManager::addItemModel(QStandardItemModel *model)
-{
-    if (!model) {
-        qWarning() << "VariableManager: Null model provided to addItemModel";
-        return;
+    if (typeId == qMetaTypeId<QVector3D>()) {
+        const QVector3D value = input.value<QVector3D>();
+        output = QStringLiteral("%1,%2,%3")
+                     .arg(value.x(), 0, 'g', 16)
+                     .arg(value.y(), 0, 'g', 16)
+                     .arg(value.z(), 0, 'g', 16);
+        typeTag = QStringLiteral("QVector3D");
+        return true;
     }
-    model->setHorizontalHeaderLabels(QStringList() << "Name" << "Value");    
-    itemModelList.append(model);
-}
-
-void VariableManager::addVar(const QString &key, const QVariant &value)
-{
-    if (!isValidKey(key)) {
-        qWarning() << "VariableManager: Invalid key provided to addVar:" << key;
-        return;
+    if (typeId == qMetaTypeId<QPointF>()) {
+        const QPointF value = input.toPointF();
+        output = QStringLiteral("%1,%2")
+                     .arg(value.x(), 0, 'g', 16)
+                     .arg(value.y(), 0, 'g', 16);
+        typeTag = QStringLiteral("QPointF");
+        return true;
     }
-    
-    // Make a copy of the cached full key to avoid dangling reference
-    // when purging entries from keyCache below.
-    QString fullKey = getCachedFullKey(key);
-    QVariant normalizedValue = normalizeInputValue(value);
-    std::lock_guard<std::mutex> lock(dataMutex);
-    dataMap[fullKey] = normalizedValue;
-    emit varAdded(fullKey, normalizedValue);
-}
-
-void VariableManager::addVarSilent(const QString &key, const QVariant &value)
-{
-    if (!isValidKey(key)) {
-        qWarning() << "VariableManager: Invalid key provided to addVarSilent:" << key;
-        return;
+    if (typeId == qMetaTypeId<QRectF>()) {
+        const QRectF value = input.toRectF();
+        output = QStringLiteral("%1,%2,%3,%4")
+                     .arg(value.x(), 0, 'g', 16)
+                     .arg(value.y(), 0, 'g', 16)
+                     .arg(value.width(), 0, 'g', 16)
+                     .arg(value.height(), 0, 'g', 16);
+        typeTag = QStringLiteral("QRectF");
+        return true;
     }
-    
-    QString fullKey = getCachedFullKey(key);
-    QVariant normalizedValue = normalizeInputValue(value);
-    std::lock_guard<std::mutex> lock(dataMutex);
-    dataMap[fullKey] = normalizedValue;
-    // No signal emission
-}
-
-void VariableManager::updateVar(const QString &key, const QVariant &value)
-{
-    if (!isValidKey(key)) {
-        qWarning() << "VariableManager: Invalid key provided to updateVar:" << key;
-        return;
+    if (typeId == qMetaTypeId<QPolygonF>()) {
+        QJsonArray points;
+        const QPolygonF polygon = input.value<QPolygonF>();
+        for (const QPointF& point : polygon)
+            points.append(QJsonArray{point.x(), point.y()});
+        output = QString::fromUtf8(QJsonDocument(points).toJson(QJsonDocument::Compact));
+        typeTag = QStringLiteral("QPolygonF");
+        return true;
     }
-    
-    QString fullKey = getCachedFullKey(key);
-    QVariant normalizedValue = normalizeInputValue(value);
-    std::lock_guard<std::mutex> lock(dataMutex);
-    dataMap[fullKey] = normalizedValue;
-    emit varUpdated(fullKey, normalizedValue);
-}
-
-void VariableManager::updateVarSilent(const QString &key, const QVariant &value)
-{
-    if (!isValidKey(key)) {
-        qWarning() << "VariableManager: Invalid key provided to updateVarSilent:" << key;
-        return;
+    if (typeId == qMetaTypeId<QTransform>()) {
+        const QTransform value = input.value<QTransform>();
+        output = QStringLiteral("%1,%2,%3,%4,%5,%6")
+                     .arg(value.m11(), 0, 'g', 16)
+                     .arg(value.m12(), 0, 'g', 16)
+                     .arg(value.m21(), 0, 'g', 16)
+                     .arg(value.m22(), 0, 'g', 16)
+                     .arg(value.dx(), 0, 'g', 16)
+                     .arg(value.dy(), 0, 'g', 16);
+        typeTag = QStringLiteral("QTransform");
+        return true;
     }
-    
-    QString fullKey = getCachedFullKey(key);
-    QVariant normalizedValue = normalizeInputValue(value);
-    std::lock_guard<std::mutex> lock(dataMutex);
-    dataMap[fullKey] = normalizedValue;
-    // No signal emission
-}
-
-QVariant VariableManager::getVar(const QString &key, QVariant defaultValue)
-{
-    if (!isValidKey(key)) {
-        qWarning() << "VariableManager: Invalid key provided to getVar:" << key;
-        return defaultValue;
+    if (typeId == qMetaTypeId<QMatrix>()) {
+        const QMatrix value = input.value<QMatrix>();
+        output = QStringLiteral("%1,%2,%3,%4,%5,%6")
+                     .arg(value.m11(), 0, 'g', 16)
+                     .arg(value.m12(), 0, 'g', 16)
+                     .arg(value.m21(), 0, 'g', 16)
+                     .arg(value.m22(), 0, 'g', 16)
+                     .arg(value.dx(), 0, 'g', 16)
+                     .arg(value.dy(), 0, 'g', 16);
+        typeTag = QStringLiteral("QMatrix");
+        return true;
     }
-    
-    QString fullKey = getCachedFullKey(key.trimmed().replace("#", ""));
-    
-    // Optimized flow: Check variable map first (90% of cases)
-    QVariant result = getVariableFromMap(fullKey, QVariant());
-    if (result.isValid()) {
-        return result;
-    }
-    
-    // Only check ObjectInfos for keys that likely contain object data
-    if (isLikelyObjectInfoKey(fullKey)) {
-        QVariant objectValue = getObjectInfoValue(fullKey);
-        if (objectValue.isValid()) {
-            return objectValue;
-        }
-    }
-    
-    return defaultValue;
-}
-
-void VariableManager::removeVar(const QString &key)
-{
-    if (!isValidKey(key)) {
-        qWarning() << "VariableManager: Invalid key provided to removeVar:" << key;
-        return;
-    }
-    
-    QString fullKey = getCachedFullKey(key);
-    std::lock_guard<std::mutex> lock(dataMutex);
-    
-    for (auto it = dataMap.begin(); it != dataMap.end();)
-    {
-        if (it.key().startsWith(fullKey))
-        {
-            emit varRemoved(it.key());
-            it = dataMap.erase(it);
-        }
-        else
-        {
-            ++it;
-        }
-    }
-    
-    // Clear cache entries that start with this key
-    {
-        std::lock_guard<std::mutex> cacheLock(keyCacheMutex);
-        for (auto it = keyCache.begin(); it != keyCache.end();)
-        {
-            if (it.value().startsWith(fullKey))
-            {
-                it = keyCache.erase(it);
-            }
-            else
-            {
-                ++it;
-            }
-        }
-    }
-}
-
-bool VariableManager::containsSubKey(const QString &key)
-{
-    if (!isValidKey(key)) {
-        return false;
-    }
-    
-    QString fullKey = getCachedFullKey(key);
-    std::lock_guard<std::mutex> lock(dataMutex);
-    for (auto it = dataMap.begin(); it != dataMap.end(); ++it)
-    {
-        if (it.key().startsWith(fullKey))
-        {
+    if (typeId == QMetaType::QVariantMap || typeId == QMetaType::QVariantList) {
+        const QJsonDocument document = QJsonDocument::fromVariant(input);
+        if (!document.isNull()) {
+            output = QString::fromUtf8(document.toJson(QJsonDocument::Compact));
+            typeTag = typeId == QMetaType::QVariantMap
+                ? QStringLiteral("QVariantMap") : QStringLiteral("QVariantList");
             return true;
         }
+    }
+    if (typeId == qMetaTypeId<QUrl>()) {
+        output = input.toUrl().toString();
+        typeTag = QStringLiteral("QUrl");
+        return true;
     }
     return false;
 }
 
-bool VariableManager::containsFullKey(const QString &key)
+QVariant decodeLegacyValue(const QVariant& raw)
 {
-    if (!isValidKey(key)) {
-        return false;
+    if (raw.metaType().id() != QMetaType::QString)
+        return raw;
+
+    const QString text = raw.toString().trimmed();
+    if (!text.isEmpty() && (text.front() == '{' || text.front() == '[')) {
+        QJsonParseError error;
+        const QJsonDocument document = QJsonDocument::fromJson(text.toUtf8(), &error);
+        if (error.error == QJsonParseError::NoError && !document.isNull())
+            return document.toVariant();
     }
-    
-    QString fullKey = getCachedFullKey(key);
-    std::lock_guard<std::mutex> lock(dataMutex);
-    return (dataMap.find(fullKey) != dataMap.end());
+
+    const QStringList parts = text.split(',');
+    QVector<double> numbers;
+    numbers.reserve(parts.size());
+    for (const QString& part : parts) {
+        bool ok = false;
+        const double number = part.toDouble(&ok);
+        if (!ok)
+            return raw;
+        numbers.append(number);
+    }
+    if (numbers.size() == 2)
+        return QPointF(numbers[0], numbers[1]);
+    if (numbers.size() == 3)
+        return QVariant::fromValue(QVector3D(numbers[0], numbers[1], numbers[2]));
+    if (numbers.size() == 6)
+        return QVariant::fromValue(QTransform(numbers[0], numbers[1], 0,
+                                              numbers[2], numbers[3], 0,
+                                              numbers[4], numbers[5], 1));
+    return raw;
 }
 
-void VariableManager::saveToQSettings()
+QVariant decodeTypedValue(const QVariant& raw, const QString& typeTag)
 {
-    // Take a snapshot under lock to minimize blocking time for writers
-    QHash<QString, QVariant> snapshot;
-    {
-        std::lock_guard<std::mutex> lock(dataMutex);
-        snapshot = dataMap; // deep copy
+    if (typeTag.isEmpty())
+        return decodeLegacyValue(raw);
+    if (typeTag == QStringLiteral("QString"))
+        return raw.toString();
+    if (typeTag == QStringLiteral("QVector3D")) {
+        const QStringList values = raw.toString().split(',');
+        if (values.size() == 3)
+            return QVariant::fromValue(QVector3D(values[0].toDouble(),
+                                                 values[1].toDouble(),
+                                                 values[2].toDouble()));
     }
-
-    auto toSettingsFriendly = [](const QVariant &in, QVariant &out) -> bool {
-        // Types natively handled well by QSettings (Ini)
-        switch (in.type()) {
-            case QVariant::Bool:
-            case QVariant::Int:
-            case QVariant::UInt:
-            case QVariant::LongLong:
-            case QVariant::ULongLong:
-            case QVariant::Double:
-            case QVariant::String:
-            case QVariant::ByteArray:
-            case QVariant::StringList:
-            case QVariant::Date:
-            case QVariant::Time:
-            case QVariant::DateTime:
-                out = in; return true;
-            default:
-                break;
-        }
-        // Special cases
-        if (in.canConvert<QVector3D>()) {
-            QVector3D v = in.value<QVector3D>();
-            out = QString("%1,%2,%3").arg(v.x()).arg(v.y()).arg(v.z());
-            return true;
-        }
-        if (in.canConvert<QTransform>()) {
-            QTransform t = in.value<QTransform>();
-            // Serialize as m11,m12,m21,m22,dx,dy
-            out = QString("%1,%2,%3,%4,%5,%6")
-                      .arg(t.m11(), 0, 'g', 16)
-                      .arg(t.m12(), 0, 'g', 16)
-                      .arg(t.m21(), 0, 'g', 16)
-                      .arg(t.m22(), 0, 'g', 16)
-                      .arg(t.dx(),  0, 'g', 16)
-                      .arg(t.dy(),  0, 'g', 16);
-            return true;
-        }
-        // QMatrix (legacy) support
-        if (in.userType() == qMetaTypeId<QMatrix>()) {
-            QMatrix m = in.value<QMatrix>();
-            out = QString("%1,%2,%3,%4,%5,%6")
-                      .arg(m.m11(), 0, 'g', 16)
-                      .arg(m.m12(), 0, 'g', 16)
-                      .arg(m.m21(), 0, 'g', 16)
-                      .arg(m.m22(), 0, 'g', 16)
-                      .arg(m.dx(),  0, 'g', 16)
-                      .arg(m.dy(),  0, 'g', 16);
-            return true;
-        }
-        if (in.canConvert<QPointF>()) {
-            QPointF p = in.value<QPointF>();
-            out = QString("%1,%2").arg(p.x()).arg(p.y());
-            return true;
-        }
-        if (in.canConvert<QUrl>()) {
-            out = in.value<QUrl>().toString();
-            return true;
-        }
-        // QVariantMap / QVariantList: serialize to JSON string if possible
-        if (in.type() == QVariant::Map || in.type() == QVariant::List) {
-            QJsonDocument doc = QJsonDocument::fromVariant(in);
-            if (!doc.isNull()) {
-                out = QString::fromUtf8(doc.toJson(QJsonDocument::Compact));
-                return true;
+    if (typeTag == QStringLiteral("QPointF")) {
+        const QStringList values = raw.toString().split(',');
+        if (values.size() == 2)
+            return QPointF(values[0].toDouble(), values[1].toDouble());
+    }
+    if (typeTag == QStringLiteral("QRectF")) {
+        const QStringList values = raw.toString().split(',');
+        if (values.size() == 4)
+            return QRectF(values[0].toDouble(), values[1].toDouble(),
+                          values[2].toDouble(), values[3].toDouble());
+    }
+    if (typeTag == QStringLiteral("QPolygonF")) {
+        QJsonParseError error;
+        const QJsonDocument document = QJsonDocument::fromJson(
+            raw.toString().toUtf8(), &error);
+        if (error.error == QJsonParseError::NoError && document.isArray()) {
+            QPolygonF polygon;
+            for (const QJsonValue& value : document.array()) {
+                const QJsonArray point = value.toArray();
+                if (point.size() == 2)
+                    polygon.append(QPointF(point[0].toDouble(), point[1].toDouble()));
             }
-        }
-        // Fallback: try toString; if empty and not useful, skip
-        QString s = in.toString();
-        if (!s.isEmpty()) { out = s; return true; }
-        return false; // unsupported type (e.g., cv::Mat, QMatrix)
-    };
-
-    // Remove keys that no longer exist and update only changed values
-    const QStringList existingKeys = settings.allKeys();
-    QSet<QString> existingSet = QSet<QString>(existingKeys.begin(), existingKeys.end());
-
-    // Build allowed top-level prefixes from snapshot to avoid removing unrelated sections
-    QSet<QString> allowedPrefixes;
-    for (const QString &k : snapshot.keys()) {
-        QString top = k.section('.', 0, 0);
-        if (!top.isEmpty()) allowedPrefixes.insert(top);
-    }
-
-    // Remove stale keys
-    for (const QString &k : existingSet) {
-        if (!snapshot.contains(k)) {
-            QString top = k.section('.', 0, 0);
-            if (allowedPrefixes.contains(top)) {
-                settings.remove(k);
-            }
+            return polygon;
         }
     }
-
-    // Write only changed/new keys (convert unsupported types safely)
-    for (auto it = snapshot.constBegin(); it != snapshot.constEnd(); ++it) {
-        const QString &k = it.key();
-        const QVariant &v = it.value();
-        QVariant sv;
-        if (!toSettingsFriendly(v, sv)) {
-            qWarning() << "VariableManager: skip saving unsupported QVariant type for key" << k << ", type=" << v.typeName();
-            continue;
-        }
-        QVariant current = settings.value(k, QVariant());
-        if (current != sv) {
-            settings.setValue(k, sv);
-        }
-    }
-
-    settings.sync();
-    if (settings.status() != QSettings::NoError) {
-        qWarning() << "VariableManager: QSettings sync error:" << settings.status();
-    }
-}
-
-void VariableManager::scheduleSave(int delayMs)
-{
-    if (!m_saveTimer) {
-        m_saveTimer = new QTimer(this);
-        m_saveTimer->setSingleShot(true);
-        QObject::connect(m_saveTimer, &QTimer::timeout, this, &VariableManager::saveToQSettings);
-    }
-    m_saveTimer->start(delayMs);
-}
-
-void VariableManager::loadFromQSettings()
-{
-    connect(&instance(), SIGNAL(varUpdated(QString, QVariant)), this, SLOT(UpdateVarToModel(QString, QVariant)));
-    connect(&instance(), SIGNAL(varAdded(QString, QVariant)), this, SLOT(UpdateVarToModel(QString, QVariant)));
-
-    std::lock_guard<std::mutex> lock(dataMutex);
-    QStringList keys = settings.allKeys();
-    for(const QString& key : keys)
-    {
-        QVariant raw = settings.value(key);
-        QVariant v = raw;
-        // Attempt to restore structured types we serialized (JSON / vector formats)
-        if (raw.type() == QVariant::String) {
-            QString s = raw.toString().trimmed();
-            // JSON object/array
-            if ((!s.isEmpty()) && (s.front() == '{' || s.front() == '[')) {
-                QJsonParseError err; QJsonDocument doc = QJsonDocument::fromJson(s.toUtf8(), &err);
-                if (err.error == QJsonParseError::NoError && !doc.isNull()) {
-                    v = doc.toVariant();
-                }
-            } else {
-                // Try "x,y" -> QPointF or "x,y,z" -> QVector3D
-                const QStringList parts = s.split(',');
-                if (parts.size() == 2) {
-                    bool ok1=false, ok2=false; double x=parts[0].toDouble(&ok1), y=parts[1].toDouble(&ok2);
-                    if (ok1 && ok2) { v = QVariant::fromValue(QPointF(x, y)); }
-                } else if (parts.size() == 3) {
-                    bool ok1=false, ok2=false, ok3=false; double x=parts[0].toDouble(&ok1), y=parts[1].toDouble(&ok2), z=parts[2].toDouble(&ok3);
-                    if (ok1 && ok2 && ok3) { v = QVariant::fromValue(QVector3D(x, y, z)); }
-                } else if (parts.size() == 6) {
-                    // Interpret as QTransform serialized: m11,m12,m21,m22,dx,dy
-                    bool ok[6] = {false,false,false,false,false,false};
-                    double a = parts[0].toDouble(&ok[0]);
-                    double b = parts[1].toDouble(&ok[1]);
-                    double c = parts[2].toDouble(&ok[2]);
-                    double d = parts[3].toDouble(&ok[3]);
-                    double tx= parts[4].toDouble(&ok[4]);
-                    double ty= parts[5].toDouble(&ok[5]);
-                    if (ok[0]&&ok[1]&&ok[2]&&ok[3]&&ok[4]&&ok[5]) {
-                        QTransform t(a,b,0,
-                                     c,d,0,
-                                     tx,ty,1);
-                        v = QVariant::fromValue(t);
-                    }
-                }
-            }
-        }
-        v = normalizeInputValue(v);
-        dataMap[key] = v;
-        emit varAdded(key, v);
-    }
-}
-
-QSettings *VariableManager::getSettings()
-{
-    // Do not force-save here to avoid unexpected I/O.
-    return &settings;
-}
-
-void VariableManager::UpdateVarToModel(QString key, QVariant value)
-{
-    for (QStandardItemModel* model : itemModelList)
-    {
-        if (model) {
-            QStandardItem *parent = model->invisibleRootItem();
-            UnityTool::UpdateVarToModel(parent, key, value);
+    if (typeTag == QStringLiteral("QTransform") || typeTag == QStringLiteral("QMatrix")) {
+        const QStringList values = raw.toString().split(',');
+        if (values.size() == 6) {
+            const double m11 = values[0].toDouble();
+            const double m12 = values[1].toDouble();
+            const double m21 = values[2].toDouble();
+            const double m22 = values[3].toDouble();
+            const double dx = values[4].toDouble();
+            const double dy = values[5].toDouble();
+            if (typeTag == QStringLiteral("QMatrix"))
+                return QVariant::fromValue(QMatrix(m11, m12, m21, m22, dx, dy));
+            return QVariant::fromValue(QTransform(m11, m12, 0,
+                                                  m21, m22, 0,
+                                                  dx, dy, 1));
         }
     }
-}
-
-// Private helper methods
-QVariant VariableManager::getObjectInfoValue(const QString &fullKey) const
-{
-    std::lock_guard<std::mutex> lock(objectInfosMutex);
-    
-    QStringList objKeys = ObjectInfos.keys();
-    
-    for (const QString &objKey : objKeys)
-    {
-        if (fullKey.contains(objKey))
-        {
-            auto objectInfo = ObjectInfos[objKey];
-            if (!objectInfo) {
-                continue;
-            }
-            
-            // key = "#project0.Objects.0"
-            QStringList paras = fullKey.split(".");
-            if (paras.size() < 2) {
-                continue;
-            }
-            
-            QString last = paras[paras.size() - 1];
-            
-            // Kiểm tra nếu last là một số nguyên
-            bool isInt = false;
-            int index = last.toInt(&isInt);
-
-            if (isInt && index >= 0 && index < objectInfo->size())
-            {
-                return QPointF(objectInfo->at(index).center.x(), objectInfo->at(index).center.y());
-            }
-
-            // Kiểm tra nếu có property name (X, Y, Type)
-            if (paras.size() >= 3) {
-                QString indexS = paras[paras.size() - 2];
-                index = indexS.toInt(&isInt);
-
-                if (isInt && index >= 0 && index < objectInfo->size())
-                {
-                    const ObjectInfo &obj = objectInfo->at(index);
-                    if (last == "X")
-                    {
-                        return obj.center.x();
-                    }
-                    else if (last == "Y")
-                    {
-                        return obj.center.y();
-                    }
-                    else if (last == "Type")
-                    {
-                        return obj.type;
-                    }
-                }
-            }
-        }
+    if (typeTag == QStringLiteral("QVariantMap") ||
+        typeTag == QStringLiteral("QVariantList")) {
+        QJsonParseError error;
+        const QJsonDocument document = QJsonDocument::fromJson(raw.toString().toUtf8(), &error);
+        if (error.error == QJsonParseError::NoError)
+            return document.toVariant();
     }
-    
-    return QVariant(); // Invalid variant
+    if (typeTag == QStringLiteral("QUrl"))
+        return QUrl(raw.toString());
+    return raw;
+}
 }
 
-QVariant VariableManager::getVariableFromMap(const QString &fullKey, const QVariant &defaultValue) const
+VariableManager::VariableManager(QObject* parent)
+    : QObject(parent),
+      m_settings(resolveSettingsFilePath(), QSettings::IniFormat),
+      m_saveTimer(new QTimer(this))
 {
-    std::lock_guard<std::mutex> lock(dataMutex);
-    auto it = dataMap.find(fullKey);
-    if (it != dataMap.end())
-    {
-        return it.value();
+    qRegisterMetaType<QHash<QString, QVariant>>("QHash<QString,QVariant>");
+    m_saveTimer->setSingleShot(true);
+    connect(m_saveTimer, &QTimer::timeout, this, &VariableManager::saveToQSettings);
+    connect(this, &VariableManager::varAdded,
+            this, &VariableManager::UpdateVarToModel);
+    connect(this, &VariableManager::varUpdated,
+            this, &VariableManager::UpdateVarToModel);
+    connect(this, &VariableManager::varsUpdated,
+            this, &VariableManager::UpdateVarsToModels);
+}
+
+VariableManager& VariableManager::instance()
+{
+    static VariableManager manager;
+    return manager;
+}
+
+QString VariableManager::normalizeKey(const QString& key)
+{
+    QString result = key.trimmed();
+    result.remove('#');
+    result.remove(QRegularExpression(QStringLiteral("\\s+")));
+    while (result.contains(QStringLiteral("..")))
+        result.replace(QStringLiteral(".."), QStringLiteral("."));
+    while (result.startsWith('.'))
+        result.remove(0, 1);
+    while (result.endsWith('.'))
+        result.chop(1);
+    return result;
+}
+
+QString VariableManager::scopedKey(const QString& scope, const QString& key)
+{
+    const QString normalizedScope = normalizeKey(scope);
+    const QString normalizedKey = normalizeKey(key);
+    if (normalizedScope.isEmpty())
+        return normalizedKey;
+    if (normalizedKey.isEmpty() || normalizedKey == normalizedScope)
+        return normalizedScope;
+    if (normalizedKey.startsWith(normalizedScope + '.'))
+        return normalizedKey;
+    return normalizedScope + '.' + normalizedKey;
+}
+
+bool VariableManager::isValidKey(const QString& key)
+{
+    return !normalizeKey(key).isEmpty();
+}
+
+bool VariableManager::isSameOrDescendant(const QString& candidate,
+                                         const QString& root)
+{
+    return candidate == root || candidate.startsWith(root + '.');
+}
+
+void VariableManager::addItemModel(QStandardItemModel* model)
+{
+    if (!model)
+        return;
+    model->setHorizontalHeaderLabels({QStringLiteral("Name"), QStringLiteral("Value")});
+    QWriteLocker locker(&m_modelLock);
+    for (const QPointer<QStandardItemModel>& existing : std::as_const(m_itemModels)) {
+        if (existing == model)
+            return;
     }
-    return defaultValue;
-}
-
-bool VariableManager::isValidKey(const QString &key) const
-{
-    return !key.isEmpty() && !key.trimmed().isEmpty();
-}
-
-const QString VariableManager::getFullKey(const QString key) const
-{
-    QString fullKey = key;
-    // Kiểm tra xe key đã có prefix chưa
-    
-    if (!Prefix.isEmpty())
-    {
-        if (!key.startsWith(Prefix))
-            fullKey = Prefix + "." + key;
-    }
-
-    fullKey.replace("#", "");
-
-    return fullKey;
-}
-
-// Performance optimization helper methods
-const QString& VariableManager::getCachedFullKey(const QString& key) const
-{
-    std::lock_guard<std::mutex> cacheLock(keyCacheMutex);
-    
-    auto it = keyCache.find(key);
-    if (it != keyCache.end()) {
-        return it.value();
-    }
-    
-    // Cache miss - compute and store
-    QString fullKey = getFullKey(key);
-    keyCache[key] = fullKey;
-    return keyCache[key];
-}
-
-bool VariableManager::isLikelyObjectInfoKey(const QString &fullKey) const
-{
-    // Quick pattern check: ObjectInfo keys typically contain numbers and specific patterns
-    // Example: "project0.Objects.0.X" or "project0.Objects.5"
-    return fullKey.contains("Objects") || 
-           (fullKey.contains('.') && fullKey.contains(QRegularExpression("\\d")));
-}
-
-void VariableManager::clearKeyCache()
-{
-    std::lock_guard<std::mutex> cacheLock(keyCacheMutex);
-    keyCache.clear();
+    m_itemModels.append(QPointer<QStandardItemModel>(model));
 }
 
 QVariant VariableManager::normalizeInputValue(const QVariant& value) const
 {
-    if (!value.isValid()) {
+    if (!value.isValid() || value.metaType().id() != QMetaType::QString)
         return value;
-    }
 
-    if (value.type() == QVariant::String) {
-        QString text = value.toString().trimmed();
-        if (text.isEmpty()) {
+    QString text = value.toString().trimmed();
+    if (text.isEmpty())
+        return value;
+    if (text.startsWith('(') && text.endsWith(')') && text.size() > 2)
+        text = text.mid(1, text.size() - 2);
+
+    const QStringList parts = text.split(QRegularExpression(QStringLiteral("\\s*,\\s*")),
+                                         Qt::SkipEmptyParts);
+    QVector<double> numbers;
+    numbers.reserve(parts.size());
+    for (const QString& part : parts) {
+        bool ok = false;
+        const double number = part.toDouble(&ok);
+        if (!ok)
             return value;
-        }
+        numbers.append(number);
+    }
+    if (numbers.size() == 2)
+        return QPointF(numbers[0], numbers[1]);
+    if (numbers.size() == 3)
+        return QVariant::fromValue(QVector3D(numbers[0], numbers[1], numbers[2]));
+    return value;
+}
 
-        QString trimmed = text;
-        if (trimmed.startsWith('(') && trimmed.endsWith(')') && trimmed.length() > 2) {
-            trimmed = trimmed.mid(1, trimmed.length() - 2);
-        }
+void VariableManager::writeOne(const QString& absoluteKey, const QVariant& value,
+                               Persistence persistence, bool notify,
+                               bool addedSignal)
+{
+    const QString key = normalizeKey(absoluteKey);
+    if (!isValidKey(key))
+        return;
+    const QVariant normalizedValue = normalizeInputValue(value);
+    {
+        QWriteLocker locker(&m_dataLock);
+        m_data.insert(key, normalizedValue);
+        if (persistence == Persistence::Runtime)
+            m_runtimeKeys.insert(key);
+        else
+            m_runtimeKeys.remove(key);
+    }
+    if (!notify)
+        return;
+    if (addedSignal)
+        emit varAdded(key, normalizedValue);
+    else
+        emit varUpdated(key, normalizedValue);
+}
 
-        QStringList parts = trimmed.split(QRegularExpression("\\s*,\\s*"), Qt::SkipEmptyParts);
-        if (parts.size() == 2) {
-            bool okX = false, okY = false;
-            double x = parts[0].toDouble(&okX);
-            double y = parts[1].toDouble(&okY);
-            if (okX && okY) {
-                return QVariant::fromValue(QPointF(x, y));
-            }
-        } else if (parts.size() == 3) {
-            bool okX = false, okY = false, okZ = false;
-            double x = parts[0].toDouble(&okX);
-            double y = parts[1].toDouble(&okY);
-            double z = parts[2].toDouble(&okZ);
-            if (okX && okY && okZ) {
-                return QVariant::fromValue(QVector3D(x, y, z));
+void VariableManager::addVar(const QString& key, const QVariant& value)
+{
+    writeOne(key, value, Persistence::Persistent, true, true);
+}
+
+void VariableManager::addVarSilent(const QString& key, const QVariant& value)
+{
+    writeOne(key, value, Persistence::Persistent, false, true);
+}
+
+void VariableManager::updateVar(const QString& key, const QVariant& value)
+{
+    writeOne(key, value, Persistence::Persistent, true, false);
+}
+
+void VariableManager::updateVarSilent(const QString& key, const QVariant& value)
+{
+    writeOne(key, value, Persistence::Persistent, false, false);
+}
+
+void VariableManager::updateVarAbsolute(const QString& key, const QVariant& value)
+{
+    updateVar(key, value);
+}
+
+void VariableManager::updateVarScoped(const QString& scope, const QString& key,
+                                      const QVariant& value,
+                                      Persistence persistence)
+{
+    writeOne(scopedKey(scope, key), value, persistence, true, false);
+}
+
+void VariableManager::updateVarScopedSilent(const QString& scope, const QString& key,
+                                            const QVariant& value,
+                                            Persistence persistence)
+{
+    writeOne(scopedKey(scope, key), value, persistence, false, false);
+}
+
+void VariableManager::updateBatchAbsolute(const QHash<QString, QVariant>& values,
+                                          Persistence persistence, bool notify)
+{
+    QHash<QString, QVariant> normalized;
+    normalized.reserve(values.size());
+    for (auto it = values.cbegin(); it != values.cend(); ++it) {
+        const QString key = normalizeKey(it.key());
+        if (isValidKey(key))
+            normalized.insert(key, normalizeInputValue(it.value()));
+    }
+    if (normalized.isEmpty())
+        return;
+
+    {
+        QWriteLocker locker(&m_dataLock);
+        for (auto it = normalized.cbegin(); it != normalized.cend(); ++it) {
+            m_data.insert(it.key(), it.value());
+            if (persistence == Persistence::Runtime)
+                m_runtimeKeys.insert(it.key());
+            else
+                m_runtimeKeys.remove(it.key());
+        }
+    }
+    if (!notify)
+        return;
+    emit varsUpdated(normalized);
+}
+
+void VariableManager::updateBatchScoped(const QString& scope,
+                                        const QHash<QString, QVariant>& values,
+                                        Persistence persistence, bool notify)
+{
+    QHash<QString, QVariant> qualified;
+    qualified.reserve(values.size());
+    for (auto it = values.cbegin(); it != values.cend(); ++it)
+        qualified.insert(scopedKey(scope, it.key()), it.value());
+    updateBatchAbsolute(qualified, persistence, notify);
+}
+
+QVariant VariableManager::getVar(const QString& absoluteKey,
+                                 QVariant defaultValue) const
+{
+    const QString key = normalizeKey(absoluteKey);
+    if (!isValidKey(key))
+        return defaultValue;
+    {
+        QReadLocker locker(&m_dataLock);
+        const auto it = m_data.constFind(key);
+        if (it != m_data.cend())
+            return it.value();
+    }
+    const QVariant objectValue = getObjectInfoValue(key);
+    return objectValue.isValid() ? objectValue : defaultValue;
+}
+
+QVariant VariableManager::getVarScoped(const QString& scope, const QString& key,
+                                       QVariant defaultValue) const
+{
+    return getVar(scopedKey(scope, key), defaultValue);
+}
+
+void VariableManager::removeVar(const QString& absoluteKey)
+{
+    const QString root = normalizeKey(absoluteKey);
+    if (!isValidKey(root))
+        return;
+    QStringList removed;
+    {
+        QWriteLocker locker(&m_dataLock);
+        for (auto it = m_data.begin(); it != m_data.end();) {
+            if (isSameOrDescendant(it.key(), root)) {
+                removed.append(it.key());
+                m_runtimeKeys.remove(it.key());
+                it = m_data.erase(it);
+            } else {
+                ++it;
             }
         }
     }
+    if (removed.isEmpty())
+        return;
+    emit varsRemoved(removed);
+    for (const QString& key : std::as_const(removed))
+        emit varRemoved(key);
+}
 
-    return value;
+void VariableManager::removeVarScoped(const QString& scope, const QString& key)
+{
+    removeVar(scopedKey(scope, key));
+}
+
+bool VariableManager::containsSubKey(const QString& absoluteKey) const
+{
+    const QString root = normalizeKey(absoluteKey);
+    if (!isValidKey(root))
+        return false;
+    QReadLocker locker(&m_dataLock);
+    for (auto it = m_data.cbegin(); it != m_data.cend(); ++it) {
+        if (isSameOrDescendant(it.key(), root))
+            return true;
+    }
+    return false;
+}
+
+bool VariableManager::containsSubKeyScoped(const QString& scope,
+                                           const QString& key) const
+{
+    return containsSubKey(scopedKey(scope, key));
+}
+
+bool VariableManager::containsFullKey(const QString& absoluteKey) const
+{
+    const QString key = normalizeKey(absoluteKey);
+    QReadLocker locker(&m_dataLock);
+    return m_data.contains(key);
+}
+
+bool VariableManager::containsFullKeyScoped(const QString& scope,
+                                            const QString& key) const
+{
+    return containsFullKey(scopedKey(scope, key));
+}
+
+void VariableManager::updateObjectSnapshot(const QString& scope,
+                                           const QString& listName,
+                                           const QVector<ObjectInfo>& objects)
+{
+    const QString key = scopedKey(scope, listName);
+    if (!isValidKey(key))
+        return;
+    QWriteLocker locker(&m_objectLock);
+    m_objectSnapshots.insert(key, objects);
+}
+
+void VariableManager::removeObjectSnapshot(const QString& scope,
+                                           const QString& listName)
+{
+    QWriteLocker locker(&m_objectLock);
+    m_objectSnapshots.remove(scopedKey(scope, listName));
+}
+
+QVariant VariableManager::getObjectInfoValue(const QString& absoluteKey) const
+{
+    QReadLocker locker(&m_objectLock);
+    QString matchedList;
+    for (auto it = m_objectSnapshots.cbegin(); it != m_objectSnapshots.cend(); ++it) {
+        if (isSameOrDescendant(absoluteKey, it.key()) &&
+            it.key().size() > matchedList.size())
+            matchedList = it.key();
+    }
+    if (matchedList.isEmpty())
+        return QVariant();
+
+    const auto snapshotIt = m_objectSnapshots.constFind(matchedList);
+    if (snapshotIt == m_objectSnapshots.cend())
+        return QVariant();
+    const QVector<ObjectInfo>& objects = snapshotIt.value();
+    QString suffix = absoluteKey.mid(matchedList.size());
+    if (suffix.startsWith('.'))
+        suffix.remove(0, 1);
+    if (suffix.isEmpty())
+        return QVariant();
+
+    const QStringList parts = suffix.split('.');
+    bool ok = false;
+    const int index = parts[0].toInt(&ok);
+    if (!ok || index < 0 || index >= objects.size())
+        return QVariant();
+    const ObjectInfo& object = objects[index];
+    if (parts.size() == 1)
+        return QPointF(object.center.x(), object.center.y());
+
+    const QString property = parts[1];
+    if (property.compare(QStringLiteral("X"), Qt::CaseInsensitive) == 0) return object.center.x();
+    if (property.compare(QStringLiteral("Y"), Qt::CaseInsensitive) == 0) return object.center.y();
+    if (property.compare(QStringLiteral("Z"), Qt::CaseInsensitive) == 0) return object.center.z();
+    if (property.compare(QStringLiteral("W"), Qt::CaseInsensitive) == 0) return object.width;
+    if (property.compare(QStringLiteral("L"), Qt::CaseInsensitive) == 0) return object.height;
+    if (property.compare(QStringLiteral("A"), Qt::CaseInsensitive) == 0) return object.angle;
+    if (property.compare(QStringLiteral("UID"), Qt::CaseInsensitive) == 0) return object.uid;
+    if (property.compare(QStringLiteral("Type"), Qt::CaseInsensitive) == 0) return object.type;
+    if (property.compare(QStringLiteral("IsPicked"), Qt::CaseInsensitive) == 0) return object.isPicked;
+    if (property.compare(QStringLiteral("ClaimOwner"), Qt::CaseInsensitive) == 0) return object.claimOwner;
+    if (property.compare(QStringLiteral("ClaimExpiresAt"), Qt::CaseInsensitive) == 0) return object.claimExpiresAtMs;
+    if (property.compare(QStringLiteral("IsClaimed"), Qt::CaseInsensitive) == 0) return !object.claimOwner.isEmpty();
+    if (property.compare(QStringLiteral("Offset"), Qt::CaseInsensitive) == 0) return object.offset;
+    if (property.compare(QStringLiteral("State"), Qt::CaseInsensitive) == 0) {
+        if (object.isPicked) return QStringLiteral("PICKED");
+        if (!object.claimOwner.isEmpty()) return QStringLiteral("CLAIMED");
+        if (object.missedFrames > 0) return QStringLiteral("LOST");
+        return object.confirmed ? QStringLiteral("CONFIRMED") : QStringLiteral("TENTATIVE");
+    }
+    if (property.compare(QStringLiteral("Confirmed"), Qt::CaseInsensitive) == 0) return object.confirmed;
+    if (property.compare(QStringLiteral("HitCount"), Qt::CaseInsensitive) == 0) return object.hitCount;
+    if (property.compare(QStringLiteral("MissedFrames"), Qt::CaseInsensitive) == 0) return object.missedFrames;
+    if (property.compare(QStringLiteral("LastSeenAt"), Qt::CaseInsensitive) == 0) return object.lastSeenAtMs;
+    return QVariant();
+}
+
+QHash<QString, QVariant> VariableManager::snapshot(bool includeRuntime) const
+{
+    QReadLocker locker(&m_dataLock);
+    if (includeRuntime)
+        return m_data;
+    QHash<QString, QVariant> result;
+    result.reserve(m_data.size() - m_runtimeKeys.size());
+    for (auto it = m_data.cbegin(); it != m_data.cend(); ++it) {
+        if (!m_runtimeKeys.contains(it.key()))
+            result.insert(it.key(), it.value());
+    }
+    return result;
+}
+
+QStringList VariableManager::keys(const QString& scope, bool includeRuntime) const
+{
+    const QString root = normalizeKey(scope);
+    const QHash<QString, QVariant> values = snapshot(includeRuntime);
+    QStringList result;
+    result.reserve(values.size());
+    for (auto it = values.cbegin(); it != values.cend(); ++it) {
+        if (root.isEmpty() || isSameOrDescendant(it.key(), root))
+            result.append(it.key());
+    }
+    result.sort();
+    return result;
+}
+
+void VariableManager::scheduleSave(int delayMs)
+{
+    const int safeDelay = qMax(0, delayMs);
+    if (QThread::currentThread() != thread()) {
+        QMetaObject::invokeMethod(this, [this, safeDelay]() {
+            m_saveTimer->start(safeDelay);
+        }, Qt::QueuedConnection);
+        return;
+    }
+    m_saveTimer->start(safeDelay);
+}
+
+void VariableManager::saveToQSettings()
+{
+    if (QThread::currentThread() != thread()) {
+        QMetaObject::invokeMethod(this, &VariableManager::saveToQSettings,
+                                  Qt::QueuedConnection);
+        return;
+    }
+
+    const QHash<QString, QVariant> persistentValues = snapshot(false);
+    const QStringList oldKeys = m_settings.value(kManifestKey).toStringList();
+    for (const QString& oldKey : oldKeys) {
+        if (!persistentValues.contains(oldKey)) {
+            m_settings.remove(oldKey);
+            m_settings.remove(kTypePrefix + oldKey);
+        }
+    }
+
+    QStringList savedKeys;
+    savedKeys.reserve(persistentValues.size());
+    for (auto it = persistentValues.cbegin(); it != persistentValues.cend(); ++it) {
+        QVariant encoded;
+        QString typeTag;
+        if (!encodeForSettings(it.value(), encoded, typeTag)) {
+            qWarning() << "VariableManager: unsupported persistent type"
+                       << it.key() << it.value().typeName();
+            continue;
+        }
+        if (m_settings.value(it.key()) != encoded)
+            m_settings.setValue(it.key(), encoded);
+        m_settings.setValue(kTypePrefix + it.key(), typeTag);
+        savedKeys.append(it.key());
+    }
+    savedKeys.sort();
+    m_settings.setValue(kManifestKey, savedKeys);
+    m_settings.sync();
+    if (m_settings.status() != QSettings::NoError)
+        qWarning() << "VariableManager: QSettings sync error" << m_settings.status();
+}
+
+void VariableManager::loadFromQSettings()
+{
+    if (QThread::currentThread() != thread()) {
+        QMetaObject::invokeMethod(this, &VariableManager::loadFromQSettings,
+                                  Qt::BlockingQueuedConnection);
+        return;
+    }
+    if (m_loaded)
+        return;
+    m_loaded = true;
+
+    QStringList storedKeys = m_settings.value(kManifestKey).toStringList();
+    if (storedKeys.isEmpty()) {
+        for (const QString& key : m_settings.allKeys()) {
+            if (!key.startsWith(QStringLiteral("__")))
+                storedKeys.append(key);
+        }
+    }
+
+    QHash<QString, QVariant> loaded;
+    for (const QString& rawKey : std::as_const(storedKeys)) {
+        const QString key = normalizeKey(rawKey);
+        if (!isValidKey(key))
+            continue;
+        const QVariant rawValue = m_settings.value(rawKey);
+        const QString typeTag = m_settings.value(kTypePrefix + rawKey).toString();
+        loaded.insert(key, normalizeInputValue(decodeTypedValue(rawValue, typeTag)));
+    }
+    {
+        QWriteLocker locker(&m_dataLock);
+        for (auto it = loaded.cbegin(); it != loaded.cend(); ++it) {
+            m_data.insert(it.key(), it.value());
+            m_runtimeKeys.remove(it.key());
+        }
+    }
+    for (auto it = loaded.cbegin(); it != loaded.cend(); ++it)
+        emit varAdded(it.key(), it.value());
+}
+
+QSettings* VariableManager::getSettings()
+{
+    return &m_settings;
+}
+
+void VariableManager::UpdateVarToModel(QString key, QVariant value)
+{
+    QList<QPointer<QStandardItemModel>> models;
+    {
+        QReadLocker locker(&m_modelLock);
+        models = m_itemModels;
+    }
+    bool hasNull = false;
+    for (const QPointer<QStandardItemModel>& model : std::as_const(models)) {
+        if (!model) {
+            hasNull = true;
+            continue;
+        }
+        UnityTool::UpdateVarToModel(model->invisibleRootItem(), key, value);
+    }
+    if (hasNull) {
+        QWriteLocker locker(&m_modelLock);
+        m_itemModels.erase(std::remove_if(m_itemModels.begin(), m_itemModels.end(),
+            [](const QPointer<QStandardItemModel>& model) { return model.isNull(); }),
+            m_itemModels.end());
+    }
+}
+
+void VariableManager::UpdateVarsToModels(QHash<QString, QVariant> values)
+{
+    for (auto it = values.cbegin(); it != values.cend(); ++it)
+        UpdateVarToModel(it.key(), it.value());
 }

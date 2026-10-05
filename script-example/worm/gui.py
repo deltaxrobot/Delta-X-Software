@@ -18,18 +18,18 @@ class Worker(QObject):
         try:
             self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self.socket.connect((self.host, self.port))
-            print('Đã kết nối tới server')
+            print('Connected to the server')
         except:
-            QMessageBox.warning(self, 'Lỗi', 'Không thể kết nối tới server')
+            QMessageBox.warning(self, 'Error', 'Could not connect to the server')
             sys.exit()
 
         while True:
-            # Nhận thông điệp từ server
+            # Receive a server message.
             data = self.socket.recv(1024).decode()
             self.update_lcd_signal.emit(data)
 
     def send_message(self, message:str):
-        # Gửi thông điệp đến server
+        # Send a message to the server.
         if not message.endswith('\n'):
             message += '\n'
         self.socket.sendall(message.encode())
@@ -69,11 +69,11 @@ class MainWindow(QMainWindow):
         self.thread.start()
 
     def update_lcd(self, data):
-        # Cập nhật dữ liệu lên widget LCD
+        # Update the LCD widget.
         self.lcdCounter.display(data)
 
     def closeEvent(self, event):
-        # Kết thúc thread trước khi đóng chương trình
+        # Stop the thread before closing the application.
         self.thread.quit()
         self.thread.wait()
 

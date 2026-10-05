@@ -85,8 +85,8 @@ void SoftwareLog(QString msg, bool isNewLine)
 
     if (isNewLine == true)
     {
-        if (msg[msg.length() - 1] != "\n")
-            msg += "\n";
+        if (!msg.endsWith(QLatin1Char('\n')))
+            msg += QLatin1Char('\n');
     }
 
     teSoftwareLog->moveCursor (QTextCursor::End);

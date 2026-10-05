@@ -1325,22 +1325,24 @@ G28</div>
 
         <h3>10.4. Using Vision and Tracking</h3>
         <div class="example">
-            <div class="code-block">; Program with vision tracking
-M98 PcaptureCamera ; Capture image
-; Object detection happens automatically
+            <div class="code-block">; Production tracking worker
+SELECT robot0
+LABEL PICK_LOOP
 
-; Get first object in list
-#object_x = #objects.0.X
-#object_y = #objects.0.Y
-#object_angle = #objects.0.A
+; Claim one confirmed object. The result is copied to #Target.
+M98 PclaimObject(0,#Target,robot0,-180,180,300,450,-1,30000)
 
-; Move to object
-G01 X[#object_x] Y[#object_y] W[#object_angle]
-G01 Z-150
-M03
+IF #Target.Found == 1
+    G01 X[#Target.X] Y[#Target.Y] Z-100 F500 SYNC
+    G01 Z-150 F250 SYNC
+    M03
+    ; Complete only after the gripper operation is confirmed.
+    M98 PcompleteObject(0,#Target.UID,robot0)
+    G01 Z-100 F500
+ENDIF
 
-; Delete picked object
-M98 PdeleteFirstObject</div>
+M98 Pdelay(20)
+JUMP PICK_LOOP</div>
         </div>
 
         <h3>10.5. Using Functions</h3>
@@ -1372,6 +1374,22 @@ FOR #i = 1 TO 5
     pickAndPlace(#pick_x, 200, -150, #place_x, 200, -150)
 ENDFOR
 G28</div>
+        </div>
+
+        <h2>11. Validation and Execution Workspace</h2>
+        <p>The editor validates a program while it is being typed and performs the same
+        preflight again inside the runtime. An error prevents all device motion; warnings
+        remain visible but do not block a run.</p>
+        <ul>
+            <li><strong>Validate</strong> analyzes source without sending commands.</li>
+            <li><strong>Problems</strong> lists severity, source line, stable code and message. Double-click a row to navigate.</li>
+            <li><strong>Run/Stop</strong> follows the runtime states Validating, Running, Waiting, Completed and Faulted.</li>
+            <li><strong>Safe line run</strong> locks editing and permits commissioning of one primitive line at a time.</li>
+        </ul>
+        <div class="warning">
+            GScript validation, ownership and response timeout are operational safeguards,
+            not safety-rated functions. Use a safety controller/PLC for E-stop, guards,
+            STO and robot overlap zones.
         </div>
 
         <div class="warning">

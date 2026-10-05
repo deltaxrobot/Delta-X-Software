@@ -238,7 +238,7 @@
          </font>
         </property>
         <property name="text">
-         <string>Qty Sélection</string>
+         <string>Selection Quantity</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>

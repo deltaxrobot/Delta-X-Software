@@ -63,6 +63,7 @@ public:
 
     void CopyFrom(Object obj)
     {
+        Type = obj.Type;
         X = obj.X;
         Y = obj.Y;
         Height = obj.Height;

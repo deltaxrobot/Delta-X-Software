@@ -48,8 +48,8 @@ bool COMDevice::Connect()
 
 void COMDevice::Send(QString msg)
 {
-    if (msg[msg.length() - 1] != "\n")
-        msg += "\n";
+    if (!msg.endsWith(QLatin1Char('\n')))
+        msg += QLatin1Char('\n');
 
     if (COMPort != NULL)
     {

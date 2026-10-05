@@ -39,12 +39,15 @@ public:
     QString ProjectName = "project0";
 signals:
     void GotEncoderPosition(int id, float position);
-    void DeviceNotAvailable(QString device);
+    void DeviceNotAvailable(QString device, QString reason);
     void DeviceResponded(QString id, QString response);
     void GotDeviceInfo(QString jsonDeviceInfo);
     void Log(QString device, QString msg, int direction);
 
 public slots:
+    void SetSelectedDevice(int deviceType, int id);
+    void SetRobotModel(int id, QString model);
+    void SetEncoderLinkedConveyor(int encoderId, int conveyorId);
     void AddRobot(QString address);
     void AddConveyor(QString address);
     void AddEncoder(QString address);

@@ -1,5 +1,7 @@
 #include "TaskNode.h"
+#include "CalibrationMath.h"
 #include <vector>
+#include <cmath>
 
 QElapsedTimer TaskNode::DebugTimer;
 
@@ -55,6 +57,12 @@ TaskNode::~TaskNode()
     inputMat.release();
     inputMat2.release();
     outputMat.release();
+}
+
+void TaskNode::SetPassThrough(bool passThrough)
+{
+    QMutexLocker locker(&dataMutex);
+    IsPass = passThrough;
 }
 
 void TaskNode::SetNextNode(TaskNode *next)
@@ -242,7 +250,10 @@ void TaskNode::Input(QMatrix matrix)
         this->inputMatrix = matrix;
     }
 
-    DoWork();
+    // Updating calibration is configuration, not a new detection event. The
+    // visible-object node runs only when a fresh object vector arrives.
+    if (type != VISIBLE_OBJECTS_NODE)
+        DoWork();
 }
 
 void TaskNode::Input(QPointF point)
@@ -542,27 +553,41 @@ void TaskNode::doGetImageWork()
 
 void TaskNode::doResizeWork()
 {
-    if (inputMat.empty())
+    cv::Mat input;
+    cv::Size requestedSize;
+    bool passThrough = false;
+    {
+        QMutexLocker locker(&dataMutex);
+        input = inputMat.clone();
+        requestedSize = size;
+        passThrough = IsPass;
+    }
+    if (input.empty())
         return;
 
-    if (IsPass == true)
-    {
-        emit HadOutput(inputMat);
+    if (passThrough) {
+        emit HadOutput(input);
         return;
     }
 
-    if (size != cv::Size(0, 0))
-    {
-        size.height = size.width * ((float)inputMat.rows / inputMat.cols);
-
-        cv::resize(inputMat, outputMat, size, cv::INTER_NEAREST);
+    cv::Mat output;
+    try {
+        if (requestedSize.width > 0) {
+            requestedSize.height = qMax(1, qRound(requestedSize.width *
+                                                  (static_cast<double>(input.rows) / input.cols)));
+            cv::resize(input, output, requestedSize, 0, 0, cv::INTER_LINEAR);
+        } else {
+            output = input;
+        }
+    } catch (const cv::Exception& error) {
+        qWarning() << "Resize node failed:" << error.what();
+        return;
     }
-    else
     {
-        outputMat = inputMat.clone();
+        QMutexLocker locker(&dataMutex);
+        outputMat = output;
     }
-
-    emit HadOutput(outputMat);
+    emit HadOutput(output);
 }
 
 void TaskNode::doFindChessboardWork()
@@ -580,7 +605,13 @@ void TaskNode::doFindChessboardWork()
 
     if(patternfound)
     {
-        cornerSubPix(outputMat, corners, cv::Size(11, 11), cv::Size(-1, -1), cv::TermCriteria(CV_TERMCRIT_EPS + CV_TERMCRIT_ITER, 30, 0.1));
+        cornerSubPix(outputMat,
+                     corners,
+                     cv::Size(11, 11),
+                     cv::Size(-1, -1),
+                     cv::TermCriteria(cv::TermCriteria::EPS | cv::TermCriteria::MAX_ITER,
+                                      30,
+                                      0.1));
 
         std::vector<cv::Point> points;
 
@@ -597,10 +628,10 @@ void TaskNode::doFindChessboardWork()
         points.push_back(cv::Point(corners[width * height - 1].x, corners[width * height - 1].y));
         }
 
-        // Sắp xếp 4 điểm theo thứ tự: top-left, top-right, bottom-right, bottom-left
-        // Để đảm bảo điểm số 1 luôn là góc trên-trái
+        // Order the four points consistently around the polygon.
+        // Point 1 must always be the top-left corner.
         
-        // Tìm điểm top-left (x + y nhỏ nhất)
+        // Top-left has the smallest x + y.
         int topLeftIndex = 0;
         float minSum = points[0].x + points[0].y;
         for (int i = 1; i < 4; i++) {
@@ -611,7 +642,7 @@ void TaskNode::doFindChessboardWork()
             }
         }
         
-        // Tìm điểm bottom-right (x + y lớn nhất)
+        // Bottom-right has the largest x + y.
         int bottomRightIndex = 0;
         float maxSum = points[0].x + points[0].y;
         for (int i = 1; i < 4; i++) {
@@ -622,7 +653,7 @@ void TaskNode::doFindChessboardWork()
             }
         }
         
-        // Tìm top-right và bottom-left từ 2 điểm còn lại
+        // Resolve top-right and bottom-left from the remaining points.
         std::vector<int> remainingIndices;
         for (int i = 0; i < 4; i++) {
             if (i != topLeftIndex && i != bottomRightIndex) {
@@ -631,7 +662,7 @@ void TaskNode::doFindChessboardWork()
         }
         
         int topRightIndex, bottomLeftIndex;
-        // Top-right có x lớn hơn, y nhỏ hơn so với bottom-left
+        // Top-right has a larger x and smaller y than bottom-left.
         if (points[remainingIndices[0]].x > points[remainingIndices[1]].x) {
             topRightIndex = remainingIndices[0];
             bottomLeftIndex = remainingIndices[1];
@@ -640,11 +671,11 @@ void TaskNode::doFindChessboardWork()
             bottomLeftIndex = remainingIndices[0];
         }
         
-                 // Gán theo thứ tự chiều kim đồng hồ: top-left, bottom-left, bottom-right, top-right
-         outputPoints[0] = points[topLeftIndex];      // Điểm số 1: top-left
-         outputPoints[1] = points[bottomLeftIndex];   // Điểm số 2: bottom-left  
-         outputPoints[2] = points[bottomRightIndex];  // Điểm số 3: bottom-right
-         outputPoints[3] = points[topRightIndex];     // Điểm số 4: top-right
+                 // Store in clockwise order: top-left, bottom-left, bottom-right, top-right.
+         outputPoints[0] = points[topLeftIndex];      // Point 1: top-left
+         outputPoints[1] = points[bottomLeftIndex];   // Point 2: bottom-left
+         outputPoints[2] = points[bottomRightIndex];  // Point 3: bottom-right
+         outputPoints[3] = points[topRightIndex];     // Point 4: top-right
 
         outputPoly.clear();
 
@@ -713,52 +744,76 @@ void TaskNode::doGetPerspectiveWork()
 
 void TaskNode::doWarpWork()
 {
-    if (IsPass == true)
+    cv::Mat input;
+    cv::Mat transform;
+    bool passThrough = false;
     {
-        emit HadOutput(inputMat);
+        QMutexLocker locker(&dataMutex);
+        input = inputMat.clone();
+        transform = inputMat2.clone();
+        passThrough = IsPass;
+    }
+    if (passThrough) {
+        emit HadOutput(input);
         return;
     }
 
-    if (inputMat.empty() || inputMat2.empty())
-    {
-        outputMat.release();
-        outputMat = inputMat.clone();
-        emit HadOutput(outputMat);
+    if (input.empty() || transform.empty()) {
+        emit HadOutput(input);
         return;
     }
-    else
-    {
-//        qDebug() << "Warp start: " << QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss.zzz");
-        cv::warpPerspective(inputMat, outputMat, inputMat2, inputMat.size(), cv::INTER_NEAREST);
-//        qDebug() << "Warp end: " << QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss.zzz");
-
-        emit HadOutput(outputMat);
+    cv::Mat output;
+    try {
+        cv::warpPerspective(input, output, transform, input.size(), cv::INTER_LINEAR);
+    } catch (const cv::Exception& error) {
+        qWarning() << "Warp node failed:" << error.what();
+        return;
     }
+    {
+        QMutexLocker locker(&dataMutex);
+        outputMat = output;
+    }
+    emit HadOutput(output);
 }
 
 void TaskNode::doCropWork()
 {
-    if (IsPass == true)
+    cv::Mat input;
+    QRectF requestedRect;
+    bool passThrough = false;
     {
-        emit HadOutput(inputMat);
+        QMutexLocker locker(&dataMutex);
+        input = inputMat.clone();
+        requestedRect = inputRect.normalized();
+        passThrough = IsPass;
+    }
+    if (input.empty())
+        return;
+    if (passThrough) {
+        emit HadOutput(input);
         return;
     }
 
-    outputMat.release();
-    outputMat = inputMat.clone();
-
-    if (!(inputRect.topLeft() == QPointF(0, 0) && inputRect.bottomRight() == QPointF(0, 0)))
-    {
-        cv::Rect cropRegion(inputRect.topLeft().x(), inputRect.topLeft().y(), inputRect.width(), inputRect.height());
-        if (cropRegion.x + cropRegion.width < inputMat.cols && cropRegion.y + cropRegion.height < inputMat.rows)
-        {
-            outputMat = outputMat(cropRegion);
-            emit HadOutput(outputMat);
-            return;
+    cv::Mat output = input;
+    if (!requestedRect.isNull() && !requestedRect.isEmpty()) {
+        const int left = qBound(0, qFloor(requestedRect.left()), input.cols);
+        const int top = qBound(0, qFloor(requestedRect.top()), input.rows);
+        const int right = qBound(0, qCeil(requestedRect.right()), input.cols);
+        const int bottom = qBound(0, qCeil(requestedRect.bottom()), input.rows);
+        if (right > left && bottom > top) {
+            try {
+                output = input(cv::Rect(left, top, right - left, bottom - top)).clone();
+            } catch (const cv::Exception& error) {
+                qWarning() << "Crop node failed:" << error.what();
+                return;
+            }
         }
     }
-
-    emit HadOutput(outputMat);
+    {
+        QMutexLocker locker(&dataMutex);
+        outputMat = output;
+    }
+    emit HadOutput(output);
 }
 
 void TaskNode::doDisplayImageWork()
@@ -771,135 +826,106 @@ void TaskNode::doDisplayImageWork()
 
 void TaskNode::doColorFilterWork()
 {
-    if (inputMat.empty())
+    cv::Mat input;
+    QList<int> parameters;
+    int blur = 1;
+    bool inverted = false;
+    {
+        QMutexLocker locker(&dataMutex);
+        input = inputMat.clone();
+        parameters = intParas;
+        blur = intPara;
+        inverted = boolPara;
+    }
+    if (input.empty())
         return;
 
-    if (intParas.count() == 1)
-    {
-        cvtColor(inputMat, outputMat, CV_BGR2GRAY);
+    blur = qBound(1, blur, 99);
+    if ((blur % 2) == 0)
+        ++blur;
 
-        cv::threshold(outputMat, outputMat, intParas[0], 255, CV_THRESH_BINARY);
+    cv::Mat filtered;
+    try {
+
+    if (parameters.count() == 1)
+    {
+        if (input.channels() == 1)
+            filtered = input;
+        else
+            cv::cvtColor(input, filtered,
+                         input.channels() == 4 ? cv::COLOR_BGRA2GRAY : cv::COLOR_BGR2GRAY);
+
+        cv::threshold(filtered, filtered, qBound(0, parameters[0], 255), 255, cv::THRESH_BINARY);
     }
 
-    if (intParas.count() == 6)
+    else if (parameters.count() == 6)
     {
-        cv::cvtColor(inputMat, outputMat, CV_BGR2HSV);
+        cv::Mat bgr;
+        if (input.channels() == 4)
+            cv::cvtColor(input, bgr, cv::COLOR_BGRA2BGR);
+        else if (input.channels() == 1)
+            cv::cvtColor(input, bgr, cv::COLOR_GRAY2BGR);
+        else
+            bgr = input;
+        cv::cvtColor(bgr, filtered, cv::COLOR_BGR2HSV);
 
-        cv::Scalar minScalar(intParas[0], intParas[2], intParas[4]);
-        cv::Scalar maxScalar(intParas[1], intParas[3], intParas[5]);
+        cv::Scalar minScalar(qBound(0, parameters[0], 179), qBound(0, parameters[2], 255), qBound(0, parameters[4], 255));
+        cv::Scalar maxScalar(qBound(0, parameters[1], 179), qBound(0, parameters[3], 255), qBound(0, parameters[5], 255));
 
-        cv::inRange(outputMat, minScalar, maxScalar, outputMat);
+        cv::inRange(filtered, minScalar, maxScalar, filtered);
+    }
+    else {
+        qWarning() << "Color filter requires 1 threshold or 6 HSV parameters";
+        return;
     }
 
-    if (boolPara == true)
+    if (inverted)
     {
-        cv::bitwise_not(outputMat, outputMat);
+        cv::bitwise_not(filtered, filtered);
     }
 
-    cv::medianBlur(outputMat, outputMat, intPara);
+    if (blur > 1)
+        cv::medianBlur(filtered, filtered, blur);
+    } catch (const cv::Exception& error) {
+        qWarning() << "Color filter node failed:" << error.what();
+        return;
+    }
 
-    emit HadOutput(outputMat);
+    {
+        QMutexLocker locker(&dataMutex);
+        outputMat = filtered;
+    }
+    emit HadOutput(filtered);
 }
 
 void TaskNode::doMappingMatrixWork()
 {
-    float x1 = inputPoly[0].x();
-    float y1 = 0 - inputPoly[0].y();
-    float x2 = inputPoly[1].x();
-    float y2 = 0 - inputPoly[1].y();
-
-    if (x1 == 0 && y1 == 0 && x2 == 0 && y2 == 0)
-        return;
-
-    float xx1 = inputPoly[2].x();
-    float yy1 = inputPoly[2].y();
-    float xx2 = inputPoly[3].x();
-    float yy2 = inputPoly[3].y();
-
-    qDebug() << "[MappingMatrixNode] input points:"
-             << "imgP1" << inputPoly[0]
-             << "imgP2" << inputPoly[1]
-             << "realP1" << inputPoly[2]
-             << "realP2" << inputPoly[3];
-
-    if (xx1 == 0 && yy1 == 0 && xx2 == 0 && yy2 == 0)
-        return;
-
-    float a1 = x2 - x1;
-    float b1 = y2 - y1;
-    float a2 = xx2 -xx1;
-    float b2 = yy2 - yy1;
-
-    float n1n2 = a1 * a2 + b1 * b2;
-    float _n1 = qSqrt(qPow(a1, 2) + qPow(b1, 2));
-    float _n2 = qSqrt(qPow(a2, 2) + qPow(b2, 2));
-    float ratio = _n2/_n1;
-
-    float _n1_n2_ = _n1 * _n2;
-
-    float cosTheta = n1n2 / _n1_n2_;
-    //float cosTheta = a2 / _n2;
-    float tanTheta = (a1 * b2 - b1 * a2) / (a1 * a2 + b1 * b2);
-    float theta = qAcos(cosTheta);
-
-    if (cosTheta < 0)
+    QPolygonF points;
     {
-        if (tanTheta > 0)
-        {
-            theta = 0 - theta;
-        }
+        QMutexLocker locker(&dataMutex);
+        points = inputPoly;
     }
-    else
-    {
-        if (tanTheta < 0)
-        {
-            theta = 0 - theta;
-        }
+    if (points.size() < 4) {
+        qWarning() << "Mapping requires two image points and two real-world points";
+        return;
     }
 
-    float angle = 0 - theta * (180 / M_PI);
-
-    QMatrix RotateMatrix(qCos(theta), qSin(theta), -qSin(theta), qCos(theta), 0, 0);
-
-    QMatrix ScaleMatrix(ratio, 0, 0, ratio, 0, 0);
-
-    QMatrix ScaleRotateMatrix = ScaleMatrix * RotateMatrix;
-
-    // x' = m11 * x + m21 * y + dx   --> dx = x' - (m11 * x + m21 * y)
-    // y' = m12 * x + m22 * y + dy   --> dy = y' - (m12 * x + m22 * y)
-
-    float dx = xx1 - (ScaleRotateMatrix.m11() * x1 + ScaleRotateMatrix.m21() * y1);
-    float dy = yy1 - (ScaleRotateMatrix.m12() * x1 + ScaleRotateMatrix.m22() * y1);
-
-    QtMatrixCompat::setMatrix2D(outputMatrix,
-                                ScaleRotateMatrix.m11(), ScaleRotateMatrix.m12(),
-                                ScaleRotateMatrix.m21(), ScaleRotateMatrix.m22(),
-                                dx, dy);
-
-    // Debug: log computed mapping matrix values
-    QString matrixString = QString("%1,%2,%3,%4,%5,%6")
-                                   .arg(outputMatrix.m11())
-                                   .arg(outputMatrix.m12())
-                                   .arg(outputMatrix.m21())
-                                   .arg(outputMatrix.m22())
-                                   .arg(outputMatrix.dx())
-                                   .arg(outputMatrix.dy());
-    qDebug() << "[MappingMatrixNode]" << ProjectName << "matrix =" << matrixString;
-
-    // Verify mapping on the two calibration points
-    QPointF imgP1(x1, y1);
-    QPointF imgP2(x2, y2);
-    QPointF realP1(xx1, yy1);
-    QPointF realP2(xx2, yy2);
-
-    QPointF mappedP1 = outputMatrix.map(imgP1);
-    QPointF mappedP2 = outputMatrix.map(imgP2);
-
-    qDebug() << "[MappingMatrixNode] P1 mapped =" << mappedP1 << "target =" << realP1
-             << "error =" << (mappedP1 - realP1);
-    qDebug() << "[MappingMatrixNode] P2 mapped =" << mappedP2 << "target =" << realP2
-             << "error =" << (mappedP2 - realP2);
-    emit HadOutput(outputMatrix);
+    const QPointF image1(points[0].x(), -points[0].y());
+    const QPointF image2(points[1].x(), -points[1].y());
+    const QPointF real1 = points[2];
+    const QPointF real2 = points[3];
+    const CalibrationMath::SimilarityResult calibration =
+        CalibrationMath::calculateSimilarity(image1, image2, real1, real2);
+    if (!calibration.isValid) {
+        qWarning() << "Mapping calculation failed:" << calibration.errorMessage;
+        return;
+    }
+    const QMatrix result = calibration.matrix;
+    {
+        QMutexLocker locker(&dataMutex);
+        outputMatrix = result;
+    }
+    emit HadOutput(result);
 }
 
 void TaskNode::doGetObjectsWork()
@@ -931,7 +957,7 @@ void TaskNode::doGetObjectsWork()
 
     try {
         std::vector<std::vector<cv::Point> > contoursContainer;
-        findContours(workingMat, contoursContainer, cv::RETR_LIST, cv::CHAIN_APPROX_SIMPLE);
+        findContours(workingMat, contoursContainer, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
 
         const int borderMargin = 5; // Make magic number a named constant
 
@@ -958,6 +984,7 @@ void TaskNode::doGetObjectsWork()
             if (workingInputObject.IsSameType(obj))
             {
                 Object obPointer(rectObject);
+                obPointer.Type = workingInputObject.Type;
                 
                 // Thread-safe append
                 {
@@ -1069,6 +1096,7 @@ void TaskNode::doFindCirclesWork()
             if (workingInputObject.Type.isEmpty() || workingInputObject.IsSameType(obj))
             {
                 Object circleObject(rectObject);
+                circleObject.Type = workingInputObject.Type;
                 
                 // Thread-safe append
                 {

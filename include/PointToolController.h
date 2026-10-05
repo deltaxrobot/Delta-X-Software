@@ -20,11 +20,11 @@ class RobotWindow;
 Q_DECLARE_METATYPE(cv::Mat)
 
 /**
- * @brief Controller class for Point Tool UI operations
+ * @brief Controller for camera-to-robot calibration UI operations
  * 
  * This class manages UI interactions and coordinates between
  * the UI components and business logic, following MVC pattern.
- * Now includes integration with advanced Cloud Point Mapping.
+ * Includes integration with interpolated multi-point mapping.
  */
 class PointToolController : public QObject
 {
@@ -32,7 +32,7 @@ class PointToolController : public QObject
 
 public:
     explicit PointToolController(RobotWindow* parent = nullptr);
-    ~PointToolController() = default;
+    ~PointToolController() override;
 
     /**
      * @brief Sets the parent RobotWindow instance
@@ -41,7 +41,7 @@ public:
     void setParent(RobotWindow* parent);
 
     /**
-     * @brief Initialize Point Tool UI with Cloud Point Mapping
+     * @brief Initialize the calibration UI with interpolated multi-point mapping
      * @param parentWidget Parent widget for UI setup
      */
     void initializeUI(QWidget* parentWidget);
@@ -52,7 +52,7 @@ public:
      */
     CloudPointToolController* getCloudPointController() const;
 
-    // Enable/disable Cloud Point Mapping integration explicitly
+    // Enable/disable interpolated multi-point mapping integration explicitly
     void setCloudMappingEnabled(bool enabled) { m_useCloudMapping = enabled; }
     bool cloudMappingEnabled() const { return m_useCloudMapping; }
 

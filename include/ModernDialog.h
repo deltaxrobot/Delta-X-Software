@@ -45,7 +45,7 @@ private slots:
 
 private:
     void setupUI();
-    void applyDarkTheme();
+    void applyTheme();
     void createTitleBar();
     void createContent();
     void createButtons();
@@ -66,4 +66,4 @@ private:
     bool m_accepted;
 };
 
-#endif // MODERNDIALOG_H 
+#endif // MODERNDIALOG_H

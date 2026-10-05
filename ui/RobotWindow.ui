@@ -29,7 +29,7 @@
    </font>
   </property>
   <property name="windowTitle">
-   <string>Delta X Software - Version 1.3.0</string>
+   <string>Delta X Software</string>
   </property>
   <property name="windowIcon">
    <iconset resource="../resource.qrc">
@@ -516,15 +516,15 @@ QTabWidget::tab-bar
 QTabBar::tab 
 {
     background: #3f3f3f;
-	
 	background-color: rgb(35, 35, 35);
 	color: #f5f5f5;
-   border-radius: 5px;
+	font-size: 11px;
+	border-radius: 4px;
 	border: 1px solid;
-	
 	border-color: rgb(51, 51, 51);
-    height: 25px;
-    padding: 0px 10px 2px 10px;
+	min-height: 24px;
+	padding: 2px 6px;
+	margin-right: 1px;
 }
 
 QTabBar::tab:selected {
@@ -586,13 +586,13 @@ QTabBar::tab:!selected {
          <property name="opaqueResize">
           <bool>false</bool>
          </property>
-         <property name="handleWidth">
-          <number>20</number>
+          <property name="handleWidth">
+           <number>10</number>
          </property>
          <widget class="QWidget" name="ModuleTabManagerWidget" native="true">
           <property name="minimumSize">
            <size>
-            <width>0</width>
+            <width>320</width>
             <height>0</height>
            </size>
           </property>
@@ -725,7 +725,7 @@ QToolBox QScrollArea&gt;QWidget&gt;QWidget
              </property>
              <widget class="QWidget" name="tGcodeEditor">
               <attribute name="title">
-               <string>G-Script</string>
+               <string>Program</string>
               </attribute>
               <layout class="QVBoxLayout" name="verticalLayout">
                <item>
@@ -850,7 +850,7 @@ QRadioButton:disabled {
                   <item>
                    <widget class="QCheckBox" name="cbEditGcodeLock">
                     <property name="sizePolicy">
-                     <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                     <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
                       <horstretch>0</horstretch>
                       <verstretch>0</verstretch>
                      </sizepolicy>
@@ -863,7 +863,7 @@ QRadioButton:disabled {
                     </property>
                     <property name="maximumSize">
                      <size>
-                      <width>80</width>
+                      <width>16777215</width>
                       <height>16777215</height>
                      </size>
                     </property>
@@ -1444,14 +1444,14 @@ QTreeView::header {
                           <item>
                            <widget class="QToolButton" name="pbBlockly">
                             <property name="toolTip">
-                             <string>Format Gcode Lines</string>
+                             <string>Open the visual block editor</string>
                             </property>
                             <property name="styleSheet">
                              <string notr="true">background-color: rgb(207, 207, 207);
 color: rgb(44, 44, 44);</string>
                             </property>
                             <property name="text">
-                             <string>Blockly</string>
+                             <string>Blocks</string>
                             </property>
                             <property name="icon">
                              <iconset resource="../resource.qrc">
@@ -2017,7 +2017,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
                              <widget class="QComboBox" name="cbSourceForImageProvider">
                               <property name="minimumSize">
                                <size>
-                                <width>200</width>
+                                <width>150</width>
                                 <height>0</height>
                                </size>
                               </property>
@@ -2067,7 +2067,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
                              <widget class="QComboBox" name="cbTrackingThreadForCamera">
                               <property name="minimumSize">
                                <size>
-                                <width>100</width>
+                                <width>80</width>
                                 <height>0</height>
                                </size>
                               </property>
@@ -2091,6 +2091,16 @@ li.checked::marker { content: &quot;\2612&quot;; }
                                 <string>+</string>
                                </property>
                               </item>
+                             </widget>
+                            </item>
+                            <item>
+                             <widget class="QPushButton" name="pbIntrinsicCalibration">
+                              <property name="text">
+                               <string>Lens Cal.</string>
+                              </property>
+                              <property name="toolTip">
+                               <string>Calibrate camera intrinsics and lens distortion using a chessboard</string>
+                              </property>
                              </widget>
                             </item>
                            </layout>
@@ -2500,6 +2510,9 @@ li.checked::marker { content: &quot;\2612&quot;; }
                             </item>
                             <item>
                              <widget class="QLineEdit" name="leCaptureInterval">
+                              <property name="toolTip">
+                               <string>Capture interval in milliseconds. Press Enter to apply.</string>
+                              </property>
                               <property name="sizePolicy">
                                <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
                                 <horstretch>0</horstretch>
@@ -3038,15 +3051,15 @@ QFrame
                              <widget class="QFrame" name="frame_17">
                               <property name="minimumSize">
                                <size>
-                                <width>30</width>
+                                <width>150</width>
                                 <height>0</height>
                                </size>
                               </property>
                               <property name="styleSheet">
                                <string notr="true">QPushButton
 {
-	padding-left: 10px;
-	padding-right: 10px;
+	padding-left: 4px;
+	padding-right: 4px;
 }</string>
                               </property>
                               <property name="frameShape">
@@ -3082,7 +3095,7 @@ QFrame
                                  <property name="minimumSize">
                                   <size>
                                    <width>0</width>
-                                   <height>20</height>
+                                   <height>28</height>
                                   </size>
                                  </property>
                                  <property name="toolTip">
@@ -3094,7 +3107,7 @@ QFrame
 }</string>
                                  </property>
                                  <property name="text">
-                                  <string>Transform Image</string>
+                                  <string>Transform</string>
                                  </property>
                                  <property name="icon">
                                   <iconset resource="../resource.qrc">
@@ -3125,7 +3138,7 @@ QFrame
                                  <property name="minimumSize">
                                   <size>
                                    <width>0</width>
-                                   <height>20</height>
+                                   <height>28</height>
                                   </size>
                                  </property>
                                  <property name="toolTip">
@@ -3168,7 +3181,7 @@ QFrame
                                  <property name="minimumSize">
                                   <size>
                                    <width>0</width>
-                                   <height>20</height>
+                                   <height>28</height>
                                   </size>
                                  </property>
                                  <property name="toolTip">
@@ -3180,7 +3193,7 @@ QFrame
 }</string>
                                  </property>
                                  <property name="text">
-                                  <string>Test Calibration Point</string>
+                                  <string>Calibrate</string>
                                  </property>
                                  <property name="icon">
                                   <iconset resource="../resource.qrc">
@@ -3211,14 +3224,14 @@ QFrame
                                  <property name="minimumSize">
                                   <size>
                                    <width>0</width>
-                                   <height>20</height>
+                                   <height>28</height>
                                   </size>
                                  </property>
                                  <property name="toolTip">
                                   <string>Blob Filter</string>
                                  </property>
                                  <property name="text">
-                                  <string>Color Filter Tool</string>
+                                  <string>Filter</string>
                                  </property>
                                  <property name="icon">
                                   <iconset resource="../resource.qrc">
@@ -3246,7 +3259,7 @@ QFrame
                                  <property name="minimumSize">
                                   <size>
                                    <width>0</width>
-                                   <height>20</height>
+                                   <height>28</height>
                                   </size>
                                  </property>
                                  <property name="toolTip">
@@ -3259,7 +3272,7 @@ QFrame
 }</string>
                                  </property>
                                  <property name="text">
-                                  <string>Object Size Tool</string>
+                                  <string>Measure</string>
                                  </property>
                                  <property name="icon">
                                   <iconset resource="../resource.qrc">
@@ -3308,6 +3321,9 @@ QFrame
                                </item>
                                <item>
                                 <widget class="QPushButton" name="pbZoomInCameraView">
+                                 <property name="visible">
+                                  <bool>false</bool>
+                                 </property>
                                  <property name="text">
                                   <string>Zoom In</string>
                                  </property>
@@ -3315,6 +3331,9 @@ QFrame
                                </item>
                                <item>
                                 <widget class="QPushButton" name="pbZoomOutCameraView">
+                                 <property name="visible">
+                                  <bool>false</bool>
+                                 </property>
                                  <property name="text">
                                   <string>Zoom Out</string>
                                  </property>
@@ -3409,7 +3428,7 @@ QFrame
                               <number>10</number>
                              </property>
                              <item>
-                              <layout class="QHBoxLayout" name="horizontalLayout_29"/>
+                              <layout class="QHBoxLayout" name="horizontalLayoutCalibrationPlaceholder"/>
                              </item>
                              <item>
                               <widget class="QFrame" name="frame_13">
@@ -3826,7 +3845,7 @@ QFrame
                                 <item row="5" column="1">
                                  <widget class="QLabel" name="label_209">
                                   <property name="text">
-                                   <string>v2 byte: &quot;Image\n&quot; + data</string>
+                                    <string>Response: DXV1 &lt;json_length&gt;\n + JSON detections</string>
                                   </property>
                                  </widget>
                                 </item>
@@ -3858,7 +3877,7 @@ QFrame
 }</string>
                                   </property>
                                   <property name="text">
-                                   <string>Open script example</string>
+                                    <string>Open DXV1 examples</string>
                                   </property>
                                  </widget>
                                 </item>
@@ -3890,14 +3909,14 @@ QFrame
                                    </size>
                                   </property>
                                   <property name="text">
-                                   <string>script-example/yolov8_detect.py</string>
+                                    <string>script-example/receive_image_json.py</string>
                                   </property>
                                  </widget>
                                 </item>
                                 <item row="4" column="1">
                                  <widget class="QLabel" name="label_186">
                                   <property name="text">
-                                   <string>v1 byte:  &quot;[width][height][channel][data]&quot;</string>
+                                    <string>DXV1 &lt;json_length&gt;\n + JSON (JPEG/Base64 image)</string>
                                   </property>
                                  </widget>
                                 </item>
@@ -3927,7 +3946,7 @@ QFrame
                                 <item row="7" column="1">
                                  <widget class="QLabel" name="label_224">
                                   <property name="text">
-                                   <string>or string: &quot;#Blobs = [id],[x],[y],[width],[height],[angle];&quot;</string>
+                                    <string>Required correlation: frameId + requestId + trackingId</string>
                                   </property>
                                  </widget>
                                 </item>
@@ -3987,14 +4006,14 @@ QFrame
                                 <item row="1" column="0">
                                  <widget class="QLabel" name="label_145">
                                   <property name="text">
-                                   <string>Python Url</string>
+                                    <string>Detector script</string>
                                   </property>
                                  </widget>
                                 </item>
                                 <item row="6" column="1" colspan="3">
                                  <widget class="QLabel" name="label_187">
                                   <property name="text">
-                                   <string>string: &quot;#Object = [id],[x],[y],[width],[height],[angle];&quot;</string>
+                                    <string>JSON objects: type, x, y, z, w, h, angle; optional confidence, label, externalId</string>
                                   </property>
                                  </widget>
                                 </item>
@@ -5211,7 +5230,7 @@ QPushButton:pressed { background-color: #D84315; }</string>
              </widget>
              <widget class="QWidget" name="tPointTool">
               <attribute name="title">
-               <string>Point Tool</string>
+               <string>Calibration</string>
               </attribute>
               <layout class="QVBoxLayout" name="verticalLayout_14">
                <item>
@@ -5234,7 +5253,7 @@ QPushButton:pressed { background-color: #D84315; }</string>
                   <property name="minimumSize">
                    <size>
                     <width>0</width>
-                    <height>3000</height>
+                    <height>0</height>
                    </size>
                   </property>
                   <property name="styleSheet">
@@ -5308,8 +5327,8 @@ QGroupBox::title
                         <property name="styleSheet">
                          <string notr="true"/>
                         </property>
-                        <property name="title">
-                         <string>Tracking Manager</string>
+                       <property name="title">
+                         <string>Tracking Runtime Configuration</string>
                         </property>
                         <property name="checkable">
                          <bool>true</bool>
@@ -5386,7 +5405,7 @@ QGroupBox::title
                             <item row="5" column="0">
                              <widget class="QLabel" name="label_168">
                               <property name="text">
-                               <string>Velocity Vector</string>
+                               <string>Direction-vector variable</string>
                               </property>
                               <property name="alignment">
                                <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
@@ -5408,7 +5427,7 @@ QGroupBox::title
                                </size>
                               </property>
                               <property name="text">
-                               <string>Move (mm)</string>
+                               <string>Advance test position</string>
                               </property>
                              </widget>
                             </item>
@@ -5428,7 +5447,7 @@ QGroupBox::title
                             <item row="10" column="0">
                              <widget class="QLabel" name="label_236">
                               <property name="text">
-                               <string>Z</string>
+                               <string>Test Z (mm)</string>
                               </property>
                               <property name="alignment">
                                <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
@@ -5444,7 +5463,7 @@ QGroupBox::title
                                </size>
                               </property>
                               <property name="text">
-                               <string>Tracking Thread</string>
+                               <string>Tracking instance</string>
                               </property>
                               <property name="alignment">
                                <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
@@ -5466,7 +5485,7 @@ QGroupBox::title
                                </size>
                               </property>
                               <property name="toolTip">
-                               <string>Creat New Editor</string>
+                               <string>Toggle continuous test-position updates</string>
                               </property>
                               <property name="styleSheet">
                                <string notr="true">QToolButton
@@ -5503,10 +5522,99 @@ QGroupBox::title
                               </property>
                              </widget>
                             </item>
+                            <item row="13" column="0">
+                             <widget class="QLabel" name="labelTrackingPublishInterval">
+                              <property name="text">
+                               <string>Publish period (ms)</string>
+                              </property>
+                              <property name="alignment">
+                               <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="13" column="2">
+                             <widget class="QSpinBox" name="sbTrackingPublishInterval">
+                              <property name="minimum"><number>0</number></property>
+                              <property name="maximum"><number>5000</number></property>
+                              <property name="value"><number>50</number></property>
+                              <property name="specialValueText"><string>Every update</string></property>
+                             </widget>
+                            </item>
+                            <item row="14" column="0">
+                             <widget class="QLabel" name="labelTrackingVisionStale">
+                              <property name="text"><string>Maximum camera age (ms)</string></property>
+                              <property name="alignment"><set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set></property>
+                             </widget>
+                            </item>
+                            <item row="14" column="2">
+                             <widget class="QSpinBox" name="sbTrackingVisionStale">
+                              <property name="minimum"><number>50</number></property>
+                              <property name="maximum"><number>120000</number></property>
+                              <property name="value"><number>2000</number></property>
+                             </widget>
+                            </item>
+                            <item row="15" column="0">
+                             <widget class="QLabel" name="labelTrackingEncoderStale">
+                              <property name="text"><string>Maximum encoder age (ms)</string></property>
+                              <property name="alignment"><set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set></property>
+                             </widget>
+                            </item>
+                            <item row="15" column="2">
+                             <widget class="QSpinBox" name="sbTrackingEncoderStale">
+                              <property name="minimum"><number>50</number></property>
+                              <property name="maximum"><number>120000</number></property>
+                              <property name="value"><number>2000</number></property>
+                             </widget>
+                            </item>
+                            <item row="16" column="0">
+                             <widget class="QLabel" name="labelTrackingFrameTimeout">
+                              <property name="text"><string>Frame completion timeout (ms)</string></property>
+                              <property name="alignment"><set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set></property>
+                             </widget>
+                            </item>
+                            <item row="16" column="2">
+                             <widget class="QSpinBox" name="sbTrackingFrameTimeout">
+                              <property name="minimum"><number>100</number></property>
+                              <property name="maximum"><number>120000</number></property>
+                              <property name="value"><number>3000</number></property>
+                             </widget>
+                            </item>
+                            <item row="17" column="0">
+                             <widget class="QLabel" name="labelTrackingMaxFrames">
+                              <property name="text"><string>Maximum queued frames</string></property>
+                              <property name="alignment"><set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set></property>
+                             </widget>
+                            </item>
+                            <item row="17" column="2">
+                             <widget class="QSpinBox" name="sbTrackingMaxFrames">
+                              <property name="minimum"><number>1</number></property>
+                              <property name="maximum"><number>1024</number></property>
+                              <property name="value"><number>8</number></property>
+                             </widget>
+                            </item>
+                            <item row="18" column="0">
+                             <widget class="QLabel" name="labelTrackingMaxEncoderReads">
+                              <property name="text"><string>Maximum queued encoder samples</string></property>
+                              <property name="alignment"><set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set></property>
+                             </widget>
+                            </item>
+                            <item row="18" column="2">
+                             <widget class="QSpinBox" name="sbTrackingMaxEncoderReads">
+                              <property name="minimum"><number>2</number></property>
+                              <property name="maximum"><number>4096</number></property>
+                              <property name="value"><number>24</number></property>
+                             </widget>
+                            </item>
+                            <item row="19" column="0" colspan="3">
+                             <widget class="QLabel" name="lbTrackingRealtimeState">
+                              <property name="text"><string>Tracking status: not started</string></property>
+                              <property name="wordWrap"><bool>true</bool></property>
+                             </widget>
+                            </item>
                             <item row="3" column="0">
                              <widget class="QLabel" name="label_169">
                               <property name="text">
-                               <string>Reverse Value</string>
+                               <string>Reverse encoder direction</string>
                               </property>
                               <property name="alignment">
                                <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
@@ -5516,7 +5624,7 @@ QGroupBox::title
                             <item row="12" column="0">
                              <widget class="QLabel" name="label_180">
                               <property name="text">
-                               <string>Auto Move</string>
+                               <string>Continuously update test position</string>
                               </property>
                               <property name="alignment">
                                <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
@@ -5536,7 +5644,7 @@ QGroupBox::title
                                <enum>Qt::LayoutDirection::LeftToRight</enum>
                               </property>
                               <property name="text">
-                               <string>Y</string>
+                               <string>Test Y (mm)</string>
                               </property>
                               <property name="alignment">
                                <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
@@ -5566,7 +5674,7 @@ QGroupBox::title
                             <item row="1" column="0">
                              <widget class="QLabel" name="label_144">
                               <property name="text">
-                               <string>Object List</string>
+                               <string>Tracked-object list</string>
                               </property>
                               <property name="alignment">
                                <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
@@ -5576,7 +5684,7 @@ QGroupBox::title
                             <item row="2" column="0">
                              <widget class="QLabel" name="label_164">
                               <property name="text">
-                               <string>Encoder</string>
+                               <string>Encoder source</string>
                               </property>
                               <property name="alignment">
                                <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
@@ -5635,7 +5743,7 @@ QGroupBox::title
                                </size>
                               </property>
                               <property name="text">
-                               <string>Apply</string>
+                               <string>Apply Tracking Settings</string>
                               </property>
                              </widget>
                             </item>
@@ -5662,7 +5770,7 @@ QGroupBox::title
                                </size>
                               </property>
                               <property name="text">
-                               <string>Test Tracking Point X</string>
+                               <string>Test X (mm)</string>
                               </property>
                              </widget>
                             </item>
@@ -5678,10 +5786,10 @@ QGroupBox::title
                                <item>
                                 <widget class="QToolButton" name="tbPasteTestTrackingPoint">
                                  <property name="toolTip">
-                                  <string>Paste</string>
+                                  <string>Paste a three-axis robot test position from the clipboard</string>
                                  </property>
                                  <property name="text">
-                                  <string/>
+                                  <string>Paste position</string>
                                  </property>
                                  <property name="icon">
                                   <iconset resource="../resource.qrc">
@@ -5697,8 +5805,11 @@ QGroupBox::title
                                </item>
                                <item>
                                 <widget class="QToolButton" name="tbCopyTestTrackingPoint">
+                                 <property name="toolTip">
+                                  <string>Copy the tracking test position to the clipboard</string>
+                                 </property>
                                  <property name="text">
-                                  <string/>
+                                  <string>Copy position</string>
                                  </property>
                                  <property name="icon">
                                   <iconset resource="../resource.qrc">
@@ -5742,8 +5853,8 @@ QGroupBox::title
                           <bold>false</bold>
                          </font>
                         </property>
-                        <property name="title">
-                         <string>Vector</string>
+                       <property name="title">
+                         <string>Scaled Direction Vector</string>
                         </property>
                         <property name="checkable">
                          <bool>true</bool>
@@ -5773,7 +5884,7 @@ QGroupBox::title
                             <item row="5" column="2">
                              <widget class="QLabel" name="label_197">
                               <property name="text">
-                               <string>Value</string>
+                               <string>Output magnitude</string>
                               </property>
                               <property name="alignment">
                                <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
@@ -5828,7 +5939,7 @@ QGroupBox::title
                             <item row="2" column="2">
                              <widget class="QLabel" name="label_213">
                               <property name="text">
-                               <string>Point 1</string>
+                               <string>Start position</string>
                               </property>
                               <property name="alignment">
                                <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
@@ -5861,7 +5972,7 @@ QGroupBox::title
                             <item row="4" column="2">
                              <widget class="QLabel" name="label_231">
                               <property name="text">
-                               <string>Point 2</string>
+                               <string>End position</string>
                               </property>
                               <property name="alignment">
                                <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
@@ -5902,7 +6013,7 @@ QGroupBox::title
                                </size>
                               </property>
                               <property name="text">
-                               <string>Calculate</string>
+                               <string>Calculate Scaled Vector</string>
                               </property>
                              </widget>
                             </item>
@@ -6029,7 +6140,7 @@ QGroupBox::title
                             <item row="8" column="2">
                              <widget class="QLabel" name="label_229">
                               <property name="text">
-                               <string>Name</string>
+                               <string>Vector variable</string>
                               </property>
                               <property name="alignment">
                                <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
@@ -6051,7 +6162,7 @@ QGroupBox::title
                                </size>
                               </property>
                               <property name="text">
-                               <string>Save</string>
+                               <string>Save Vector Variable</string>
                               </property>
                              </widget>
                             </item>
@@ -6110,8 +6221,8 @@ padding: 5px;</string>
                           <bold>false</bold>
                          </font>
                         </property>
-                        <property name="title">
-                         <string>Mapping Matrix</string>
+                       <property name="title">
+                         <string>2-Point Similarity Transform</string>
                         </property>
                         <property name="checkable">
                          <bool>true</bool>
@@ -6174,7 +6285,7 @@ padding: 5px;</string>
                                </font>
                               </property>
                               <property name="text">
-                               <string>Source</string>
+                               <string>Camera image (px)</string>
                               </property>
                               <property name="alignment">
                                <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
@@ -6182,7 +6293,7 @@ padding: 5px;</string>
                              </widget>
                             </item>
                             <item row="3" column="4">
-                             <widget class="QLineEdit" name="leSourcePoint1X"/>
+                             <widget class="QLineEdit" name="leMappingSourcePoint1X"/>
                             </item>
                             <item row="2" column="6">
                              <widget class="QLabel" name="label_202">
@@ -6257,7 +6368,7 @@ padding: 5px;</string>
                             <item row="5" column="3">
                              <widget class="QLabel" name="label_201">
                               <property name="text">
-                               <string>Point 2</string>
+                               <string>Reference 2</string>
                               </property>
                               <property name="alignment">
                                <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
@@ -6273,17 +6384,17 @@ padding: 5px;</string>
                                </size>
                               </property>
                               <property name="text">
-                               <string>Add Matrix</string>
+                               <string>Save Transform Variable</string>
                               </property>
                              </widget>
                             </item>
                             <item row="9" column="6">
-                             <widget class="QLineEdit" name="leDestinationPoint1Y"/>
+                             <widget class="QLineEdit" name="leMappingDestinationPoint1Y"/>
                             </item>
                             <item row="3" column="3">
                              <widget class="QLabel" name="label_203">
                               <property name="text">
-                               <string>Point 1</string>
+                               <string>Reference 1</string>
                               </property>
                               <property name="alignment">
                                <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
@@ -6291,15 +6402,15 @@ padding: 5px;</string>
                              </widget>
                             </item>
                             <item row="9" column="4">
-                             <widget class="QLineEdit" name="leDestinationPoint1X"/>
+                             <widget class="QLineEdit" name="leMappingDestinationPoint1X"/>
                             </item>
                             <item row="10" column="4">
-                             <widget class="QLineEdit" name="leDestinationPoint2X"/>
+                             <widget class="QLineEdit" name="leMappingDestinationPoint2X"/>
                             </item>
                             <item row="0" column="3">
                              <widget class="QLabel" name="label_165">
                               <property name="text">
-                               <string>Name</string>
+                               <string>Transform variable</string>
                               </property>
                               <property name="alignment">
                                <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
@@ -6314,10 +6425,10 @@ padding: 5px;</string>
                              </widget>
                             </item>
                             <item row="10" column="6">
-                             <widget class="QLineEdit" name="leDestinationPoint2Y"/>
+                             <widget class="QLineEdit" name="leMappingDestinationPoint2Y"/>
                             </item>
                             <item row="5" column="6">
-                             <widget class="QLineEdit" name="leSourcePoint2Y"/>
+                             <widget class="QLineEdit" name="leMappingSourcePoint2Y"/>
                             </item>
                             <item row="3" column="7">
                              <widget class="QToolButton" name="tbPasteSourcePoint1">
@@ -6370,12 +6481,12 @@ padding: 5px;</string>
                              </widget>
                             </item>
                             <item row="5" column="4">
-                             <widget class="QLineEdit" name="leSourcePoint2X"/>
+                             <widget class="QLineEdit" name="leMappingSourcePoint2X"/>
                             </item>
                             <item row="9" column="3">
                              <widget class="QLabel" name="label_204">
                               <property name="text">
-                               <string>Point 1</string>
+                               <string>Reference 1</string>
                               </property>
                               <property name="alignment">
                                <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
@@ -6385,7 +6496,7 @@ padding: 5px;</string>
                             <item row="10" column="3">
                              <widget class="QLabel" name="label_205">
                               <property name="text">
-                               <string>Point 2</string>
+                               <string>Reference 2</string>
                               </property>
                               <property name="alignment">
                                <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
@@ -6393,7 +6504,7 @@ padding: 5px;</string>
                              </widget>
                             </item>
                             <item row="3" column="6">
-                             <widget class="QLineEdit" name="leSourcePoint1Y"/>
+                             <widget class="QLineEdit" name="leMappingSourcePoint1Y"/>
                             </item>
                             <item row="8" column="3">
                              <widget class="QLabel" name="label_200">
@@ -6403,7 +6514,7 @@ padding: 5px;</string>
                                </font>
                               </property>
                               <property name="text">
-                               <string>Destination</string>
+                               <string>Robot workspace (mm)</string>
                               </property>
                               <property name="alignment">
                                <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
@@ -6419,7 +6530,7 @@ padding: 5px;</string>
                                </size>
                               </property>
                               <property name="text">
-                               <string>Calculate</string>
+                               <string>Solve Similarity Transform</string>
                               </property>
                              </widget>
                             </item>
@@ -6437,8 +6548,8 @@ padding: 5px;</string>
                           <bold>false</bold>
                          </font>
                         </property>
-                        <property name="title">
-                         <string>Point Manager</string>
+                       <property name="title">
+                         <string>Position List Editor</string>
                         </property>
                         <property name="checkable">
                          <bool>true</bool>
@@ -6463,9 +6574,9 @@ padding: 5px;</string>
                            </property>
                            <layout class="QHBoxLayout" name="horizontalLayout_5">
                             <item>
-                             <widget class="QLabel" name="label_136">
-                              <property name="text">
-                               <string>Object List</string>
+                            <widget class="QLabel" name="label_136">
+                             <property name="text">
+                              <string>Position list variable</string>
                               </property>
                              </widget>
                             </item>
@@ -6507,7 +6618,7 @@ padding: 5px;</string>
                              <widget class="QLineEdit" name="leObjectZ"/>
                             </item>
                             <item>
-                             <widget class="QPushButton" name="pbAddVariablePoint">
+                            <widget class="QPushButton" name="pbAddVariablePoint">
                               <property name="sizePolicy">
                                <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
                                 <horstretch>0</horstretch>
@@ -6521,7 +6632,7 @@ padding: 5px;</string>
                                </size>
                               </property>
                               <property name="text">
-                               <string>Add Point</string>
+                              <string>Append Robot Position</string>
                               </property>
                              </widget>
                             </item>
@@ -6552,8 +6663,8 @@ padding: 5px;</string>
                           <bold>false</bold>
                          </font>
                         </property>
-                        <property name="title">
-                         <string>Perspective Matrix</string>
+                       <property name="title">
+                         <string>4-Point Planar Homography</string>
                         </property>
                         <property name="checkable">
                          <bool>true</bool>
@@ -6578,7 +6689,7 @@ padding: 5px;</string>
                            </property>
                            <layout class="QGridLayout" name="gridLayout_42">
                             <item row="11" column="5">
-                             <widget class="QLineEdit" name="leDestinationPoint1Y">
+                             <widget class="QLineEdit" name="lePerspectiveDestinationPoint1Y">
                               <property name="alignment">
                                <set>Qt::AlignmentFlag::AlignCenter</set>
                               </property>
@@ -6613,36 +6724,36 @@ padding: 5px;</string>
                              </widget>
                             </item>
                             <item row="4" column="3">
-                             <widget class="QLineEdit" name="leSourcePoint2X"/>
+                             <widget class="QLineEdit" name="lePerspectiveSourcePoint2X"/>
                             </item>
                             <item row="11" column="3">
-                             <widget class="QLineEdit" name="leDestinationPoint1X">
+                             <widget class="QLineEdit" name="lePerspectiveDestinationPoint1X">
                               <property name="alignment">
                                <set>Qt::AlignmentFlag::AlignCenter</set>
                               </property>
                              </widget>
                             </item>
                             <item row="7" column="5">
-                             <widget class="QLineEdit" name="leSourcePoint4Y"/>
+                             <widget class="QLineEdit" name="lePerspectiveSourcePoint4Y"/>
                             </item>
                             <item row="4" column="2">
                              <widget class="QLabel" name="label_217">
                               <property name="text">
-                               <string>Point 2</string>
+                               <string>Reference 2</string>
                               </property>
                              </widget>
                             </item>
                             <item row="13" column="2">
                              <widget class="QLabel" name="label_234">
                               <property name="text">
-                               <string>Point 3</string>
+                               <string>Reference 3</string>
                               </property>
                              </widget>
                             </item>
                             <item row="14" column="2">
                              <widget class="QLabel" name="label_235">
                               <property name="text">
-                               <string>Point 4</string>
+                               <string>Reference 4</string>
                               </property>
                              </widget>
                             </item>
@@ -6655,7 +6766,7 @@ padding: 5px;</string>
                                </size>
                               </property>
                               <property name="text">
-                               <string>Add Matrix</string>
+                               <string>Save Homography Variable</string>
                               </property>
                              </widget>
                             </item>
@@ -6682,33 +6793,33 @@ padding: 5px;</string>
                             <item row="12" column="2">
                              <widget class="QLabel" name="label_233">
                               <property name="text">
-                               <string>Point 2</string>
+                               <string>Reference 2</string>
                               </property>
                              </widget>
                             </item>
                             <item row="11" column="2">
                              <widget class="QLabel" name="label_220">
                               <property name="text">
-                               <string>Point 1</string>
+                               <string>Reference 1</string>
                               </property>
                              </widget>
                             </item>
                             <item row="6" column="2">
                              <widget class="QLabel" name="label_212">
                               <property name="text">
-                               <string>Point 3</string>
+                               <string>Reference 3</string>
                               </property>
                              </widget>
                             </item>
                             <item row="12" column="3">
-                             <widget class="QLineEdit" name="leDestinationPoint2X">
+                             <widget class="QLineEdit" name="lePerspectiveDestinationPoint2X">
                               <property name="alignment">
                                <set>Qt::AlignmentFlag::AlignCenter</set>
                               </property>
                              </widget>
                             </item>
                             <item row="13" column="5">
-                             <widget class="QLineEdit" name="leDestinationPoint3Y">
+                             <widget class="QLineEdit" name="lePerspectiveDestinationPoint3Y">
                               <property name="alignment">
                                <set>Qt::AlignmentFlag::AlignCenter</set>
                               </property>
@@ -6724,12 +6835,12 @@ padding: 5px;</string>
                             <item row="0" column="2">
                              <widget class="QLabel" name="label_216">
                               <property name="text">
-                               <string>Name</string>
+                               <string>Transform variable</string>
                               </property>
                              </widget>
                             </item>
                             <item row="4" column="5">
-                             <widget class="QLineEdit" name="leSourcePoint2Y"/>
+                             <widget class="QLineEdit" name="lePerspectiveSourcePoint2Y"/>
                             </item>
                             <item row="10" column="2">
                              <widget class="QLabel" name="label_207">
@@ -6739,46 +6850,46 @@ padding: 5px;</string>
                                </font>
                               </property>
                               <property name="text">
-                               <string>Destination</string>
+                               <string>Robot workspace (mm)</string>
                               </property>
                              </widget>
                             </item>
                             <item row="12" column="5">
-                             <widget class="QLineEdit" name="leDestinationPoint2Y">
+                             <widget class="QLineEdit" name="lePerspectiveDestinationPoint2Y">
                               <property name="alignment">
                                <set>Qt::AlignmentFlag::AlignCenter</set>
                               </property>
                              </widget>
                             </item>
                             <item row="14" column="3">
-                             <widget class="QLineEdit" name="leDestinationPoint4X">
+                             <widget class="QLineEdit" name="lePerspectiveDestinationPoint4X">
                               <property name="alignment">
                                <set>Qt::AlignmentFlag::AlignCenter</set>
                               </property>
                              </widget>
                             </item>
                             <item row="6" column="5">
-                             <widget class="QLineEdit" name="leSourcePoint3Y"/>
+                             <widget class="QLineEdit" name="lePerspectiveSourcePoint3Y"/>
                             </item>
                             <item row="6" column="3">
-                             <widget class="QLineEdit" name="leSourcePoint3X"/>
+                             <widget class="QLineEdit" name="lePerspectiveSourcePoint3X"/>
                             </item>
                             <item row="7" column="2">
                              <widget class="QLabel" name="label_219">
                               <property name="text">
-                               <string>Point 4</string>
+                               <string>Reference 4</string>
                               </property>
                              </widget>
                             </item>
                             <item row="14" column="5">
-                             <widget class="QLineEdit" name="leDestinationPoint4Y">
+                             <widget class="QLineEdit" name="lePerspectiveDestinationPoint4Y">
                               <property name="alignment">
                                <set>Qt::AlignmentFlag::AlignCenter</set>
                               </property>
                              </widget>
                             </item>
                             <item row="7" column="3">
-                             <widget class="QLineEdit" name="leSourcePoint4X"/>
+                             <widget class="QLineEdit" name="lePerspectiveSourcePoint4X"/>
                             </item>
                             <item row="10" column="3">
                              <widget class="QLabel" name="label_232">
@@ -6799,7 +6910,7 @@ padding: 5px;</string>
                                </size>
                               </property>
                               <property name="text">
-                               <string>Calculate</string>
+                               <string>Solve Homography</string>
                               </property>
                              </widget>
                             </item>
@@ -6814,22 +6925,22 @@ padding: 5px;</string>
                              </widget>
                             </item>
                             <item row="13" column="3">
-                             <widget class="QLineEdit" name="leDestinationPoint3X">
+                             <widget class="QLineEdit" name="lePerspectiveDestinationPoint3X">
                               <property name="alignment">
                                <set>Qt::AlignmentFlag::AlignCenter</set>
                               </property>
                              </widget>
                             </item>
                             <item row="3" column="3">
-                             <widget class="QLineEdit" name="leSourcePoint1X"/>
+                             <widget class="QLineEdit" name="lePerspectiveSourcePoint1X"/>
                             </item>
                             <item row="3" column="5">
-                             <widget class="QLineEdit" name="leSourcePoint1Y"/>
+                             <widget class="QLineEdit" name="lePerspectiveSourcePoint1Y"/>
                             </item>
                             <item row="3" column="2">
                              <widget class="QLabel" name="label_211">
                               <property name="text">
-                               <string>Point 1</string>
+                               <string>Reference 1</string>
                               </property>
                              </widget>
                             </item>
@@ -6841,7 +6952,7 @@ padding: 5px;</string>
                                </font>
                               </property>
                               <property name="text">
-                               <string>Source</string>
+                               <string>Camera image (px)</string>
                               </property>
                              </widget>
                             </item>
@@ -6879,8 +6990,8 @@ padding: 5px;</string>
                           <bold>false</bold>
                          </font>
                         </property>
-                        <property name="title">
-                         <string>Transform Test</string>
+                       <property name="title">
+                         <string>Apply Transform to Test Point</string>
                         </property>
                         <property name="checkable">
                          <bool>true</bool>
@@ -6920,7 +7031,7 @@ padding: 5px;</string>
                             <item row="10" column="0">
                              <widget class="QLabel" name="label_221">
                               <property name="text">
-                               <string>Output Point X</string>
+                               <string>Robot X (mm)</string>
                               </property>
                               <property name="alignment">
                                <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
@@ -6930,7 +7041,7 @@ padding: 5px;</string>
                             <item row="1" column="0">
                              <widget class="QLabel" name="label_239">
                               <property name="text">
-                               <string>Input Point X</string>
+                               <string>Image X (px)</string>
                               </property>
                               <property name="alignment">
                                <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
@@ -6982,7 +7093,7 @@ padding: 5px;</string>
                             <item row="5" column="1">
                              <widget class="QLabel" name="label_223">
                               <property name="text">
-                               <string>Multiply</string>
+                               <string>Apply transform</string>
                               </property>
                               <property name="alignment">
                                <set>Qt::AlignmentFlag::AlignCenter</set>
@@ -7051,7 +7162,7 @@ padding: 5px;</string>
                             <item row="6" column="0">
                              <widget class="QLabel" name="label_222">
                               <property name="text">
-                               <string>Matrix</string>
+                               <string>Transform variable</string>
                               </property>
                               <property name="alignment">
                                <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
@@ -7073,7 +7184,7 @@ padding: 5px;</string>
                                </size>
                               </property>
                               <property name="text">
-                               <string>Calculate</string>
+                               <string>Transform Test Point</string>
                               </property>
                              </widget>
                             </item>
@@ -7091,8 +7202,8 @@ padding: 5px;</string>
                           <bold>false</bold>
                          </font>
                         </property>
-                        <property name="title">
-                         <string>Cloud Point Mapping</string>
+                       <property name="title">
+                         <string>Interpolated Multi-Point Mapping</string>
                         </property>
                         <property name="checkable">
                          <bool>true</bool>
@@ -7188,7 +7299,7 @@ padding: 5px;</string>
                                <item row="0" column="2">
                                 <widget class="QLabel" name="label_243">
                                  <property name="text">
-                                  <string>Grid Resolution</string>
+                                  <string>Image grid cell size (px)</string>
                                  </property>
                                  <property name="alignment">
                                   <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
@@ -7211,7 +7322,7 @@ padding: 5px;</string>
                                <item row="0" column="4">
                                 <widget class="QCheckBox" name="cbAutoRebuild">
                                  <property name="text">
-                                  <string>Auto Rebuild</string>
+                                  <string>Rebuild grid automatically</string>
                                  </property>
                                  <property name="checked">
                                   <bool>true</bool>
@@ -7219,7 +7330,7 @@ padding: 5px;</string>
                                 </widget>
                                </item>
                                <item row="0" column="5">
-                                <spacer name="horizontalSpacer_57">
+                                <spacer name="horizontalSpacerPointTool57">
                                  <property name="orientation">
                                   <enum>Qt::Orientation::Horizontal</enum>
                                  </property>
@@ -7249,7 +7360,7 @@ padding: 5px;</string>
                                <item>
                                 <widget class="QLabel" name="label_244">
                                  <property name="text">
-                                  <string>Calibration Points</string>
+                                  <string>Camera-to-robot reference pairs</string>
                                  </property>
                                  <property name="alignment">
                                   <set>Qt::AlignmentFlag::AlignCenter</set>
@@ -7308,42 +7419,57 @@ QHeaderView::section {
                                  </property>
                                  <column>
                                   <property name="text">
-                                   <string>ID</string>
+                                   <string>#</string>
                                   </property>
                                  </column>
                                  <column>
                                   <property name="text">
-                                   <string>Source X</string>
+                                   <string>Image X (px)</string>
                                   </property>
                                  </column>
                                  <column>
                                   <property name="text">
-                                   <string>Source Y</string>
+                                   <string>Image Y (px)</string>
                                   </property>
                                  </column>
                                  <column>
                                   <property name="text">
-                                   <string>Target X</string>
+                                   <string>Image Z</string>
                                   </property>
                                  </column>
                                  <column>
                                   <property name="text">
-                                   <string>Target Y</string>
+                                   <string>Robot X (mm)</string>
                                   </property>
                                  </column>
                                  <column>
                                   <property name="text">
-                                   <string>Confidence</string>
+                                   <string>Robot Y (mm)</string>
                                   </property>
                                  </column>
                                  <column>
                                   <property name="text">
-                                   <string>Error</string>
+                                   <string>Robot Z (mm)</string>
                                   </property>
                                  </column>
                                  <column>
                                   <property name="text">
-                                   <string>Label</string>
+                                   <string>Confidence score</string>
+                                  </property>
+                                 </column>
+                                 <column>
+                                  <property name="text">
+                                   <string>Reference label</string>
+                                  </property>
+                                 </column>
+                                 <column>
+                                  <property name="text">
+                                   <string>Residual (mm)</string>
+                                  </property>
+                                 </column>
+                                 <column>
+                                  <property name="text">
+                                   <string>Captured at</string>
                                   </property>
                                  </column>
                                 </widget>
@@ -7363,7 +7489,7 @@ QHeaderView::section {
                                   <item>
                                    <widget class="QPushButton" name="pbAddCalibrationPoint">
                                     <property name="text">
-                                     <string>Add Point</string>
+                                     <string>Add Pair</string>
                                     </property>
                                     <property name="icon">
                                      <iconset resource="../resource.qrc">
@@ -7378,9 +7504,19 @@ QHeaderView::section {
                                    </widget>
                                   </item>
                                   <item>
+                                   <widget class="QPushButton" name="pbUpdateCalibrationPoint">
+                                    <property name="text">
+                                     <string>Edit Pair</string>
+                                    </property>
+                                    <property name="toolTip">
+                                     <string>Edit the selected camera-to-robot reference pair</string>
+                                    </property>
+                                   </widget>
+                                  </item>
+                                  <item>
                                    <widget class="QPushButton" name="pbRemoveCalibrationPoint">
                                     <property name="text">
-                                     <string>Remove</string>
+                                     <string>Delete Pair</string>
                                     </property>
                                     <property name="icon">
                                      <iconset resource="../resource.qrc">
@@ -7397,7 +7533,7 @@ QHeaderView::section {
                                   <item>
                                    <widget class="QPushButton" name="pbClearCalibrationPoints">
                                     <property name="text">
-                                     <string>Clear All</string>
+                                     <string>Clear Pairs</string>
                                     </property>
                                     <property name="icon">
                                      <iconset resource="../resource.qrc">
@@ -7414,7 +7550,7 @@ QHeaderView::section {
                                   <item>
                                    <widget class="QPushButton" name="pbRebuildMapping">
                                     <property name="text">
-                                     <string>Rebuild</string>
+                                     <string>Build Grid</string>
                                     </property>
                                     <property name="icon">
                                      <iconset resource="../resource.qrc">
@@ -7431,7 +7567,7 @@ QHeaderView::section {
                                   <item>
                                    <widget class="QPushButton" name="pbValidateMapping">
                                     <property name="text">
-                                     <string>Validate</string>
+                                     <string>Cross-Validate</string>
                                     </property>
                                     <property name="icon">
                                      <iconset resource="../resource.qrc">
@@ -7446,7 +7582,7 @@ QHeaderView::section {
                                    </widget>
                                   </item>
                                   <item>
-                                   <spacer name="horizontalSpacer_58">
+                                   <spacer name="horizontalSpacerPointTool58">
                                     <property name="orientation">
                                      <enum>Qt::Orientation::Horizontal</enum>
                                     </property>
@@ -7479,7 +7615,7 @@ QHeaderView::section {
                                <item row="0" column="0">
                                 <widget class="QLabel" name="label_245">
                                  <property name="text">
-                                  <string>Test Input X</string>
+                                    <string>Test image X (px)</string>
                                  </property>
                                  <property name="alignment">
                                   <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
@@ -7511,9 +7647,9 @@ QHeaderView::section {
                                 </widget>
                                </item>
                                <item row="0" column="4">
-                                <widget class="QPushButton" name="pbTransformCloudPoint">
-                                 <property name="text">
-                                  <string>Transform</string>
+                                   <widget class="QPushButton" name="pbTransformCloudPoint">
+                                    <property name="text">
+                                     <string>Map Test Point</string>
                                  </property>
                                  <property name="icon">
                                   <iconset resource="../resource.qrc">
@@ -7530,7 +7666,7 @@ QHeaderView::section {
                                <item row="1" column="0">
                                 <widget class="QLabel" name="label_247">
                                  <property name="text">
-                                  <string>Output X</string>
+                                    <string>Mapped robot X (mm)</string>
                                  </property>
                                  <property name="alignment">
                                   <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
@@ -7568,9 +7704,9 @@ QHeaderView::section {
                                 </widget>
                                </item>
                                <item row="1" column="4">
-                                <widget class="QLabel" name="label_249">
-                                 <property name="text">
-                                  <string>Confidence</string>
+                                   <widget class="QLabel" name="label_249">
+                                    <property name="text">
+                                     <string>Confidence score</string>
                                  </property>
                                  <property name="alignment">
                                   <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
@@ -7590,7 +7726,7 @@ QHeaderView::section {
                                <item row="1" column="6">
                                 <widget class="QLabel" name="label_250">
                                  <property name="text">
-                                  <string>Error</string>
+                                    <string>Estimated error (mm)</string>
                                  </property>
                                  <property name="alignment">
                                   <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
@@ -7608,7 +7744,7 @@ QHeaderView::section {
                                 </widget>
                                </item>
                                <item row="0" column="8">
-                                <spacer name="horizontalSpacer_59">
+                                <spacer name="horizontalSpacerPointTool59">
                                  <property name="orientation">
                                   <enum>Qt::Orientation::Horizontal</enum>
                                  </property>
@@ -7636,9 +7772,9 @@ QHeaderView::section {
                                 <number>5</number>
                                </property>
                                <item row="0" column="0">
-                                <widget class="QLabel" name="label_251">
-                                 <property name="text">
-                                  <string>Points</string>
+                                   <widget class="QLabel" name="label_251">
+                                    <property name="text">
+                                     <string>Reference count:</string>
                                  </property>
                                  <property name="alignment">
                                   <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
@@ -7659,9 +7795,9 @@ QHeaderView::section {
                                 </widget>
                                </item>
                                <item row="0" column="2">
-                                <widget class="QLabel" name="label_252">
-                                 <property name="text">
-                                  <string>Avg Error</string>
+                                   <widget class="QLabel" name="label_252">
+                                    <property name="text">
+                                     <string>Mean residual (mm):</string>
                                  </property>
                                  <property name="alignment">
                                   <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
@@ -7682,9 +7818,9 @@ QHeaderView::section {
                                 </widget>
                                </item>
                                <item row="0" column="4">
-                                <widget class="QLabel" name="label_253">
-                                 <property name="text">
-                                  <string>Max Error</string>
+                                   <widget class="QLabel" name="label_253">
+                                    <property name="text">
+                                     <string>Maximum residual (mm):</string>
                                  </property>
                                  <property name="alignment">
                                   <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
@@ -7705,9 +7841,9 @@ QHeaderView::section {
                                 </widget>
                                </item>
                                <item row="0" column="6">
-                                <widget class="QLabel" name="label_254">
-                                 <property name="text">
-                                  <string>Coverage</string>
+                                   <widget class="QLabel" name="label_254">
+                                    <property name="text">
+                                     <string>Image-area coverage:</string>
                                  </property>
                                  <property name="alignment">
                                   <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
@@ -7728,7 +7864,30 @@ QHeaderView::section {
                                 </widget>
                                </item>
                                <item row="0" column="8">
-                                <spacer name="horizontalSpacer_60">
+                                   <widget class="QLabel" name="labelCloudMappingStatus">
+                                    <property name="text">
+                                     <string>Validation status:</string>
+                                 </property>
+                                 <property name="alignment">
+                                  <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
+                                 </property>
+                                </widget>
+                               </item>
+                               <item row="0" column="9">
+                                <widget class="QLabel" name="lbCloudMappingStatus">
+                                 <property name="styleSheet">
+                                  <string notr="true">color: rgb(255, 190, 70); font-weight: bold;</string>
+                                 </property>
+                                 <property name="text">
+                                    <string>Not validated</string>
+                                 </property>
+                                 <property name="alignment">
+                                  <set>Qt::AlignmentFlag::AlignCenter</set>
+                                 </property>
+                                </widget>
+                               </item>
+                               <item row="0" column="10">
+                                <spacer name="horizontalSpacerPointTool60">
                                  <property name="orientation">
                                   <enum>Qt::Orientation::Horizontal</enum>
                                  </property>
@@ -7756,9 +7915,9 @@ QHeaderView::section {
                                 <number>5</number>
                                </property>
                                <item>
-                                <widget class="QPushButton" name="pbSaveCloudMapping">
-                                 <property name="text">
-                                  <string>Save</string>
+                                 <widget class="QPushButton" name="pbSaveCloudMapping">
+                                  <property name="text">
+                                   <string>Save Profile</string>
                                  </property>
                                  <property name="icon">
                                   <iconset resource="../resource.qrc">
@@ -7773,9 +7932,9 @@ QHeaderView::section {
                                 </widget>
                                </item>
                                <item>
-                                <widget class="QPushButton" name="pbLoadCloudMapping">
-                                 <property name="text">
-                                  <string>Load</string>
+                                 <widget class="QPushButton" name="pbLoadCloudMapping">
+                                  <property name="text">
+                                   <string>Load Profile</string>
                                  </property>
                                  <property name="icon">
                                   <iconset resource="../resource.qrc">
@@ -7792,7 +7951,7 @@ QHeaderView::section {
                                <item>
                                 <widget class="QPushButton" name="pbExportToVariables">
                                  <property name="text">
-                                  <string>Export to Variables</string>
+                                  <string>Export Variable</string>
                                  </property>
                                  <property name="icon">
                                   <iconset>
@@ -7809,7 +7968,7 @@ QHeaderView::section {
                                <item>
                                 <widget class="QPushButton" name="pbImportFromVariables">
                                  <property name="text">
-                                  <string>Import from Variables</string>
+                                  <string>Import Variable</string>
                                  </property>
                                  <property name="icon">
                                   <iconset>
@@ -7824,7 +7983,7 @@ QHeaderView::section {
                                 </widget>
                                </item>
                                <item>
-                                <spacer name="horizontalSpacer_61">
+                                <spacer name="horizontalSpacerPointTool61">
                                  <property name="orientation">
                                   <enum>Qt::Orientation::Horizontal</enum>
                                  </property>
@@ -7939,13 +8098,13 @@ QGroupBox::title
                        <property name="minimumSize">
                         <size>
                          <width>0</width>
-                         <height>75</height>
+                         <height>44</height>
                         </size>
                        </property>
                        <property name="maximumSize">
                         <size>
                          <width>16777215</width>
-                         <height>16777215</height>
+                         <height>48</height>
                         </size>
                        </property>
                        <property name="styleSheet">
@@ -8014,8 +8173,8 @@ QGroupBox::title
                           </property>
                           <property name="iconSize">
                            <size>
-                            <width>64</width>
-                            <height>64</height>
+                            <width>20</width>
+                            <height>20</height>
                            </size>
                           </property>
                           <property name="toolButtonStyle">
@@ -8098,7 +8257,7 @@ QLabel
                          </widget>
                         </item>
                         <item>
-                         <widget class="QWidget" name="widget" native="true">
+                         <widget class="QWidget" name="widgetPointToolSidePanel" native="true">
                           <property name="maximumSize">
                            <size>
                             <width>100</width>
@@ -8302,13 +8461,13 @@ QLabel
                        <property name="minimumSize">
                         <size>
                          <width>0</width>
-                         <height>75</height>
+                         <height>44</height>
                         </size>
                        </property>
                        <property name="maximumSize">
                         <size>
                          <width>16777215</width>
-                         <height>16777215</height>
+                         <height>48</height>
                         </size>
                        </property>
                        <property name="styleSheet">
@@ -8371,8 +8530,8 @@ QLabel
                           </property>
                           <property name="iconSize">
                            <size>
-                            <width>64</width>
-                            <height>64</height>
+                            <width>20</width>
+                            <height>20</height>
                            </size>
                           </property>
                           <property name="toolButtonStyle">
@@ -9770,13 +9929,13 @@ QLabel
          <widget class="QWidget" name="DeviceTabManagerWidget" native="true">
           <property name="minimumSize">
            <size>
-            <width>0</width>
+            <width>320</width>
             <height>0</height>
            </size>
           </property>
           <property name="maximumSize">
            <size>
-            <width>1100</width>
+            <width>16777215</width>
             <height>16777215</height>
            </size>
           </property>
@@ -9894,7 +10053,7 @@ QFrame
 	background-color: #333337;
 }
 
-/* Áp dụng cho một phần tử cụ thể, ví dụ QPushButton */
+/* Apply this rule to a specific element, for example QPushButton. */
 QPushButton {
     background-color: #4A4A4F;
     border-radius: 5px;
@@ -10221,8 +10380,8 @@ QGroupBox
                         <property name="frameShadow">
                          <enum>QFrame::Shadow::Raised</enum>
                         </property>
-                        <layout class="QHBoxLayout" name="horizontalLayout_41">
-                         <item>
+                        <layout class="QGridLayout" name="robotConnectionLayout">
+                         <item row="0" column="0">
                           <widget class="QComboBox" name="cbSelectedRobot">
                            <property name="sizePolicy">
                             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
@@ -10269,7 +10428,7 @@ QGroupBox
                            </item>
                           </widget>
                          </item>
-                         <item>
+                         <item row="0" column="1">
                           <spacer name="horizontalSpacer_42">
                            <property name="orientation">
                             <enum>Qt::Orientation::Horizontal</enum>
@@ -10282,7 +10441,7 @@ QGroupBox
                            </property>
                           </spacer>
                          </item>
-                         <item>
+                         <item row="0" column="2">
                           <widget class="QGroupBox" name="groupBox">
                            <property name="minimumSize">
                             <size>
@@ -10321,7 +10480,7 @@ QGroupBox
                            </layout>
                           </widget>
                          </item>
-                         <item>
+                         <item row="0" column="3">
                           <widget class="QGroupBox" name="groupBox_2">
                            <property name="sizePolicy">
                             <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
@@ -10369,7 +10528,7 @@ QGroupBox
                            </layout>
                           </widget>
                          </item>
-                         <item>
+                         <item row="1" column="0" colspan="2">
                           <widget class="QGroupBox" name="groupBox_3">
                            <property name="sizePolicy">
                             <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
@@ -10440,7 +10599,7 @@ QGroupBox
                            </layout>
                           </widget>
                          </item>
-                         <item>
+                         <item row="1" column="2" colspan="2">
                           <widget class="QGroupBox" name="groupBox_4">
                            <property name="title">
                             <string>DOF</string>
@@ -10488,7 +10647,7 @@ QGroupBox
                            </layout>
                           </widget>
                          </item>
-                         <item>
+                         <item row="2" column="0" colspan="4">
                           <widget class="QFrame" name="fRobotPosition">
                            <property name="minimumSize">
                             <size>
@@ -16383,7 +16542,7 @@ QPushButton
                      </font>
                     </property>
                     <property name="text">
-                     <string>mm/s2</string>
+                     <string>mm/s</string>
                     </property>
                    </widget>
                   </item>
@@ -17874,6 +18033,28 @@ QGroupBox
                          </property>
                         </widget>
                        </item>
+                       <item row="3" column="5">
+                        <widget class="QPushButton" name="pbCalibrateEncoder">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                         <property name="maximumSize">
+                          <size>
+                           <width>16777215</width>
+                           <height>20</height>
+                          </size>
+                         </property>
+                         <property name="text">
+                          <string>Calibrate</string>
+                         </property>
+                         <property name="toolTip">
+                          <string>Calibrate encoder scale from two readings and a measured travel distance</string>
+                         </property>
+                        </widget>
+                       </item>
                        <item row="3" column="2">
                         <widget class="QToolButton" name="tbCopyEncoderPosition">
                          <property name="text">
@@ -18311,7 +18492,7 @@ QLabel
                      <item>
                       <widget class="QLabel" name="label_15">
                        <property name="text">
-                        <string>Selected Encoder</string>
+                        <string>Selected Slider</string>
                        </property>
                       </widget>
                      </item>
@@ -19194,7 +19375,7 @@ QGroupBox
                 </widget>
                </item>
                <item>
-                <widget class="QWidget" name="widget" native="true">
+                <widget class="QWidget" name="widgetGScriptEditorActions" native="true">
                  <property name="maximumSize">
                   <size>
                    <width>16777215</width>
@@ -19223,7 +19404,17 @@ QGroupBox
                <item>
                 <widget class="QTextEdit" name="teReceiveFromMCU">
                  <property name="styleSheet">
-                  <string notr="true">background-color: rgb(230, 230, 230);</string>
+                  <string notr="true">background-color: #17171A;
+color: #E6E6E8;
+border: 1px solid #45454B;
+border-radius: 4px;
+padding: 6px;</string>
+                 </property>
+                 <property name="readOnly">
+                  <bool>true</bool>
+                 </property>
+                 <property name="placeholderText">
+                  <string>Received device data will appear here.</string>
                  </property>
                 </widget>
                </item>

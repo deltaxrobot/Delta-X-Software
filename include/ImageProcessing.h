@@ -28,6 +28,7 @@
 #include "TaskNode.h"
 #include "ObjectInfo.h"
 #include <QSharedPointer>
+#include <QMutex>
 
 
 class ImageProcessing : public QObject
@@ -41,9 +42,8 @@ public:
     TaskNode *CreateTaskNode(QString name, int type, QString previousTasks = "");
     TaskNode* GetNode(QString name);
 
-    QString ObjectsName = "#Objects";
-
 public slots:
+    void SetObjectsName(QString name);
     void GotVisibleObjects(QVector<Object> objects);
     void GotImage(cv::Mat mat);
     void GotResizeValue(cv::Size size);
@@ -56,6 +56,8 @@ private:
     QMap<QString, TaskNode*> taskNodeList;
     QVector<ObjectInfo> objectInfos;
     QVector<QThread*> taskThreads;
+    QString objectsName = QStringLiteral("#Objects");
+    mutable QMutex configurationMutex;
 
     cv::Size resizeValue;
     cv::Mat perspectiveMatrix;

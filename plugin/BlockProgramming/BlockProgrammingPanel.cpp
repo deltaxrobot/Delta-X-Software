@@ -1,0 +1,1185 @@
+#include "BlockProgrammingPanel.h"
+
+#include "BlockCanvas.h"
+#include "DeltaXHostContext.h"
+#include "DeltaXPermissions.h"
+
+#include <QAbstractItemModel>
+#include <QApplication>
+#include <QClipboard>
+#include <QComboBox>
+#include <QDoubleSpinBox>
+#include <QDrag>
+#include <QFile>
+#include <QFileDialog>
+#include <QFileInfo>
+#include <QFontDatabase>
+#include <QFormLayout>
+#include <QGroupBox>
+#include <QGridLayout>
+#include <QHBoxLayout>
+#include <QHeaderView>
+#include <QIcon>
+#include <QJsonDocument>
+#include <QLabel>
+#include <QLineEdit>
+#include <QMessageBox>
+#include <QMenu>
+#include <QMimeData>
+#include <QPlainTextEdit>
+#include <QPixmap>
+#include <QPushButton>
+#include <QScrollArea>
+#include <QSpinBox>
+#include <QSplitter>
+#include <QStyle>
+#include <QTabWidget>
+#include <QTimer>
+#include <QToolButton>
+#include <QTreeWidget>
+#include <QVBoxLayout>
+
+#include <algorithm>
+#include <functional>
+
+using namespace DeltaXBlockProgramming;
+
+namespace
+{
+void styleBlockItem(QTreeWidgetItem* item)
+{
+    if (!item)
+        return;
+    const BlockNode node{item->data(0, Qt::UserRole + 1).toString(),
+                         item->data(0, Qt::UserRole + 2).toMap(), {}};
+    const BlockDefinition* definition = BlockProgram::definition(node.type);
+    item->setText(0, BlockProgram::summary(node));
+    if (!definition)
+        return;
+    const QColor color(definition->color);
+    item->setBackground(0, color);
+    const int luminance = (299 * color.red() + 587 * color.green() +
+                           114 * color.blue()) / 1000;
+    item->setForeground(0, luminance >= 150 ? QColor(Qt::black)
+                                             : QColor(Qt::white));
+    item->setToolTip(0, definition->description);
+    QFont font = item->font(0);
+    font.setBold(true);
+    item->setFont(0, font);
+}
+
+void deleteLayoutContents(QLayout* layout)
+{
+    if (!layout)
+        return;
+    while (QLayoutItem* item = layout->takeAt(0)) {
+        if (QLayout* childLayout = item->layout())
+            deleteLayoutContents(childLayout);
+        if (QWidget* widget = item->widget())
+            delete widget;
+        delete item;
+    }
+}
+
+QVector<BlockNode> workspaceNodes(const QTreeWidget* tree)
+{
+    QVector<BlockNode> result;
+    if (!tree)
+        return result;
+    for (int index = 0; index < tree->topLevelItemCount(); ++index) {
+        const QTreeWidgetItem* item = tree->topLevelItem(index);
+        BlockNode node{item->data(0, Qt::UserRole + 1).toString(),
+                       item->data(0, Qt::UserRole + 2).toMap(), {}};
+        std::function<void(const QTreeWidgetItem*, BlockNode&)> appendChildren;
+        appendChildren = [&appendChildren](const QTreeWidgetItem* parent,
+                                            BlockNode& parentNode) {
+            for (int childIndex = 0; childIndex < parent->childCount(); ++childIndex) {
+                const QTreeWidgetItem* child = parent->child(childIndex);
+                BlockNode childNode{
+                    child->data(0, Qt::UserRole + 1).toString(),
+                    child->data(0, Qt::UserRole + 2).toMap(), {}};
+                appendChildren(child, childNode);
+                parentNode.children.append(childNode);
+            }
+        };
+        appendChildren(item, node);
+        result.append(node);
+    }
+    return result;
+}
+
+class BlockPaletteTree final : public QTreeWidget
+{
+public:
+    using QTreeWidget::QTreeWidget;
+
+    QStringList mimeTypes() const override
+    {
+        return {QStringLiteral("application/x-deltax-block-type")};
+    }
+
+    QMimeData* mimeData(const QList<QTreeWidgetItem*>& items) const override
+    {
+        auto* mime = new QMimeData;
+        if (items.isEmpty())
+            return mime;
+        const QString type = items.first()->data(0, Qt::UserRole + 1).toString();
+        if (!type.isEmpty()) {
+            mime->setData(QStringLiteral("application/x-deltax-block-type"),
+                          type.toUtf8());
+        }
+        return mime;
+    }
+
+    Qt::DropActions supportedDropActions() const override
+    {
+        return Qt::CopyAction;
+    }
+};
+}
+
+BlockProgrammingPanel::BlockProgrammingPanel(DeltaXHostContext* context,
+                                             QWidget* parent)
+    : QWidget(parent)
+    , m_context(context)
+{
+    buildUi();
+    populatePalette();
+    refreshWorkers();
+    newProgram();
+}
+
+void BlockProgrammingPanel::buildUi()
+{
+    auto* root = new QVBoxLayout(this);
+    root->setContentsMargins(6, 6, 6, 6);
+    root->setSpacing(6);
+
+    auto* fileBar = new QVBoxLayout;
+    fileBar->setContentsMargins(0, 0, 0, 0);
+    fileBar->setSpacing(4);
+    m_template = new QComboBox(this);
+    m_template->setObjectName(QStringLiteral("blockTemplateCombo"));
+    m_template->setSizeAdjustPolicy(
+        QComboBox::AdjustToMinimumContentsLengthWithIcon);
+    m_template->setMinimumContentsLength(12);
+    m_template->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    m_template->addItems(BlockProgram::templateNames());
+    auto* newButton = new QPushButton(tr("New"), this);
+    auto* openButton = new QPushButton(tr("Open..."), this);
+    auto* saveButton = new QPushButton(tr("Save..."), this);
+    newButton->setObjectName(QStringLiteral("blockNewButton"));
+    openButton->setObjectName(QStringLiteral("blockOpenButton"));
+    saveButton->setObjectName(QStringLiteral("blockSaveButton"));
+    auto* moreButton = new QToolButton(this);
+    moreButton->setObjectName(QStringLiteral("blockMoreButton"));
+    moreButton->setText(tr("More"));
+    moreButton->setPopupMode(QToolButton::InstantPopup);
+    moreButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+    auto* moreMenu = new QMenu(moreButton);
+    QAction* exportAction = moreMenu->addAction(tr("Export G-Script..."));
+    QAction* copyAction = moreMenu->addAction(tr("Copy G-Script"));
+    moreMenu->addSeparator();
+    QAction* helpAction = moreMenu->addAction(tr("Help"));
+    moreButton->setMenu(moreMenu);
+    auto* templateRow = new QHBoxLayout;
+    templateRow->setSpacing(5);
+    templateRow->addWidget(new QLabel(tr("Template"), this));
+    templateRow->addWidget(m_template, 1);
+    templateRow->addWidget(newButton);
+    templateRow->addWidget(openButton);
+    templateRow->addWidget(saveButton);
+    templateRow->addWidget(moreButton);
+    fileBar->addLayout(templateRow);
+    root->addLayout(fileBar);
+
+    auto* executionBar = new QVBoxLayout;
+    executionBar->setContentsMargins(0, 0, 0, 0);
+    executionBar->setSpacing(4);
+    m_worker = new QComboBox(this);
+    m_worker->setObjectName(QStringLiteral("blockWorkerCombo"));
+    m_worker->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    auto* refreshWorkersButton = new QPushButton(tr("Refresh"), this);
+    m_loadButton = new QPushButton(tr("Load editor"), this);
+    m_runButton = new QPushButton(tr("Run"), this);
+    m_stopButton = new QPushButton(tr("Stop"), this);
+    refreshWorkersButton->setObjectName(QStringLiteral("blockRefreshWorkersButton"));
+    m_loadButton->setObjectName(QStringLiteral("blockLoadButton"));
+    m_runButton->setObjectName(QStringLiteral("blockRunButton"));
+    m_stopButton->setObjectName(QStringLiteral("blockStopButton"));
+    refreshWorkersButton->setToolTip(tr("Refresh available G-Script workers"));
+    m_loadButton->setToolTip(
+        tr("Load the generated program into the selected editor"));
+    m_status = new QLabel(tr("Initializing block workspace..."), this);
+    m_status->setObjectName(QStringLiteral("blockStatusLabel"));
+    m_status->setWordWrap(true);
+    m_status->setTextInteractionFlags(Qt::TextSelectableByMouse);
+    auto* workerRow = new QHBoxLayout;
+    workerRow->setSpacing(5);
+    workerRow->addWidget(new QLabel(tr("Worker"), this));
+    workerRow->addWidget(m_worker, 1);
+    workerRow->addWidget(refreshWorkersButton);
+    workerRow->addWidget(m_loadButton);
+    executionBar->addLayout(workerRow);
+    auto* runRow = new QHBoxLayout;
+    runRow->setSpacing(5);
+    runRow->addWidget(m_runButton);
+    runRow->addWidget(m_stopButton);
+    runRow->addWidget(m_status, 1);
+    executionBar->addLayout(runRow);
+    root->addLayout(executionBar);
+
+    const QList<QPushButton*> commandButtons = {
+        newButton, openButton, saveButton, refreshWorkersButton,
+        m_loadButton, m_runButton, m_stopButton,
+    };
+    for (QPushButton* button : commandButtons)
+        button->setMinimumHeight(28);
+    m_template->setMinimumHeight(28);
+    m_worker->setMinimumHeight(28);
+    moreButton->setMinimumHeight(28);
+
+    auto* horizontal = new QSplitter(Qt::Horizontal, this);
+    horizontal->setObjectName(QStringLiteral("blockMainSplitter"));
+    horizontal->setChildrenCollapsible(false);
+    horizontal->setHandleWidth(5);
+
+    auto* paletteGroup = new QGroupBox(tr("Toolbox"), horizontal);
+    auto* paletteLayout = new QVBoxLayout(paletteGroup);
+    auto* paletteSearch = new QLineEdit(paletteGroup);
+    paletteSearch->setObjectName(QStringLiteral("blockPaletteSearch"));
+    paletteSearch->setPlaceholderText(tr("Search blocks..."));
+    paletteSearch->setClearButtonEnabled(true);
+    paletteLayout->addWidget(paletteSearch);
+    m_palette = new BlockPaletteTree(paletteGroup);
+    m_palette->setObjectName(QStringLiteral("blockPalette"));
+    m_palette->setStyleSheet(QStringLiteral(
+        "QTreeWidget::item { min-height: 28px; padding: 2px 5px; }"));
+    m_palette->setHeaderHidden(true);
+    m_palette->setRootIsDecorated(true);
+    m_palette->setDragEnabled(true);
+    m_palette->setDragDropMode(QAbstractItemView::DragOnly);
+    m_palette->setDefaultDropAction(Qt::CopyAction);
+    m_palette->setSelectionMode(QAbstractItemView::SingleSelection);
+    paletteLayout->addWidget(m_palette);
+    paletteGroup->setMinimumWidth(160);
+    horizontal->addWidget(paletteGroup);
+
+    auto* right = new QSplitter(Qt::Vertical, horizontal);
+    right->setObjectName(QStringLiteral("blockEditorSplitter"));
+    right->setChildrenCollapsible(false);
+    right->setHandleWidth(5);
+
+    auto* workspaceGroup = new QGroupBox(tr("Workspace"), right);
+    auto* workspaceLayout = new QVBoxLayout(workspaceGroup);
+    auto* editBar = new QHBoxLayout;
+    editBar->setContentsMargins(0, 0, 0, 0);
+    editBar->setSpacing(4);
+    auto* addButton = new QPushButton(tr("Add"), workspaceGroup);
+    auto* duplicateButton = new QPushButton(tr("Clone"), workspaceGroup);
+    auto* deleteButton = new QPushButton(tr("Delete"), workspaceGroup);
+    auto* upButton = new QPushButton(tr("Up"), workspaceGroup);
+    auto* downButton = new QPushButton(tr("Down"), workspaceGroup);
+    auto* indentButton = new QPushButton(tr("Nest"), workspaceGroup);
+    auto* outdentButton = new QPushButton(tr("Unnest"), workspaceGroup);
+    auto* zoomOutButton = new QPushButton(QStringLiteral("−"), workspaceGroup);
+    auto* zoomInButton = new QPushButton(QStringLiteral("+"), workspaceGroup);
+    auto* fitButton = new QPushButton(tr("Fit"), workspaceGroup);
+    addButton->setObjectName(QStringLiteral("blockAddButton"));
+    duplicateButton->setObjectName(QStringLiteral("blockDuplicateButton"));
+    deleteButton->setObjectName(QStringLiteral("blockDeleteButton"));
+    upButton->setObjectName(QStringLiteral("blockUpButton"));
+    downButton->setObjectName(QStringLiteral("blockDownButton"));
+    indentButton->setObjectName(QStringLiteral("blockIndentButton"));
+    outdentButton->setObjectName(QStringLiteral("blockOutdentButton"));
+    zoomOutButton->setObjectName(QStringLiteral("blockZoomOutButton"));
+    zoomInButton->setObjectName(QStringLiteral("blockZoomInButton"));
+    fitButton->setObjectName(QStringLiteral("blockFitButton"));
+    addButton->setToolTip(tr("Add the selected palette block"));
+    duplicateButton->setToolTip(
+        tr("Duplicate the selected workspace block"));
+    deleteButton->setToolTip(tr("Delete the selected block"));
+    upButton->setToolTip(tr("Move the selected block up"));
+    downButton->setToolTip(tr("Move the selected block down"));
+    indentButton->setToolTip(tr("Nest the selected block"));
+    outdentButton->setToolTip(tr("Move the selected block out one level"));
+    zoomOutButton->setToolTip(tr("Zoom out"));
+    zoomInButton->setToolTip(tr("Zoom in"));
+    fitButton->setToolTip(tr("Fit the whole program in the workspace"));
+
+    const QList<QPair<QPushButton*, QString>> compactActions = {
+        {addButton, QStringLiteral(":/icon/icons8_add_new_52px.png")},
+        {duplicateButton, QStringLiteral(":/icon/Copy_16px.png")},
+        {deleteButton, QStringLiteral(":/icon/Trash_16px.png")},
+        {upButton, QStringLiteral(":/icon/Upward Arrow_16px.png")},
+        {downButton, QStringLiteral(":/icon/Arrow Pointing Down_16px.png")},
+        {indentButton, QStringLiteral(":/icon/Right Arrow_16px.png")},
+        {outdentButton, QStringLiteral(":/icon/Go Back_16px.png")},
+        {zoomOutButton, QStringLiteral(":/icon/Zoom Out_16px.png")},
+        {zoomInButton, QStringLiteral(":/icon/Zoom In_16px.png")},
+        {fitButton, QStringLiteral(":/icon/Full Image_16px.png")},
+    };
+    for (const auto& action : compactActions) {
+        QPushButton* button = action.first;
+        button->setAccessibleName(button->toolTip());
+        button->setIcon(QIcon(action.second));
+        button->setIconSize(QSize(16, 16));
+        button->setText(QString());
+        button->setFixedWidth(30);
+        button->setProperty("iconOnly", true);
+    }
+    editBar->addWidget(addButton);
+    editBar->addWidget(duplicateButton);
+    editBar->addWidget(deleteButton);
+    editBar->addSpacing(6);
+    editBar->addWidget(upButton);
+    editBar->addWidget(downButton);
+    editBar->addWidget(indentButton);
+    editBar->addWidget(outdentButton);
+    editBar->addStretch(1);
+    editBar->addWidget(zoomOutButton);
+    editBar->addWidget(zoomInButton);
+    editBar->addWidget(fitButton);
+    const QList<QPushButton*> editButtons = {
+        addButton, duplicateButton, deleteButton, upButton,
+        downButton, indentButton, outdentButton, zoomOutButton,
+        zoomInButton, fitButton,
+    };
+    for (QPushButton* button : editButtons)
+        button->setMinimumHeight(28);
+    workspaceLayout->addLayout(editBar);
+    auto* canvasHint = new QLabel(
+        tr("Drag blocks from the toolbox • Drop on a container to nest • Ctrl+wheel to zoom"),
+        workspaceGroup);
+    canvasHint->setObjectName(QStringLiteral("blockCanvasHint"));
+    canvasHint->setProperty("statusRole", "muted");
+    canvasHint->setWordWrap(true);
+    workspaceLayout->addWidget(canvasHint);
+
+    m_canvas = new BlockCanvas(workspaceGroup);
+    m_canvas->setObjectName(QStringLiteral("blockCanvas"));
+    m_canvas->setMinimumHeight(190);
+    m_canvas->setStyleSheet(QStringLiteral(
+        "QGraphicsView#blockCanvas { border: 1px solid #393942; "
+        "border-radius: 7px; background: #17171a; }"));
+    workspaceLayout->addWidget(m_canvas, 1);
+
+    m_workspace = new QTreeWidget(this);
+    m_workspace->setObjectName(QStringLiteral("blockWorkspace"));
+    m_workspace->setVisible(false);
+    m_canvas->setWorkspaceModel(m_workspace);
+    right->addWidget(workspaceGroup);
+
+    m_inspectorTabs = new QTabWidget(right);
+    m_inspectorTabs->setObjectName(QStringLiteral("blockInspectorTabs"));
+    m_inspectorTabs->setDocumentMode(true);
+
+    auto* propertiesPage = new QWidget(m_inspectorTabs);
+    propertiesPage->setObjectName(QStringLiteral("blockPropertiesPage"));
+    auto* propertiesOuter = new QVBoxLayout(propertiesPage);
+    propertiesOuter->setContentsMargins(4, 4, 4, 4);
+    auto* propertiesWidget = new QWidget(propertiesPage);
+    propertiesWidget->setObjectName(QStringLiteral("blockPropertiesContent"));
+    m_properties = new QFormLayout(propertiesWidget);
+    m_properties->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
+    m_properties->setRowWrapPolicy(QFormLayout::WrapLongRows);
+    auto* propertiesScroll = new QScrollArea(propertiesPage);
+    propertiesScroll->setObjectName(QStringLiteral("blockPropertiesScroll"));
+    propertiesScroll->setWidgetResizable(true);
+    propertiesScroll->setWidget(propertiesWidget);
+    propertiesOuter->addWidget(propertiesScroll);
+    m_inspectorTabs->addTab(propertiesPage, tr("Properties"));
+
+    m_preview = new QPlainTextEdit(m_inspectorTabs);
+    m_preview->setObjectName(QStringLiteral("blockPreview"));
+    m_preview->setReadOnly(true);
+    m_preview->setLineWrapMode(QPlainTextEdit::NoWrap);
+    QFont fixed = QFontDatabase::systemFont(QFontDatabase::FixedFont);
+    m_preview->setFont(fixed);
+    m_inspectorTabs->addTab(m_preview, tr("G-Script"));
+
+    m_diagnostics = new QTreeWidget(m_inspectorTabs);
+    m_diagnostics->setObjectName(QStringLiteral("blockDiagnostics"));
+    m_diagnostics->setHeaderLabels(
+        {tr("Severity"), tr("Code"), tr("Location"), tr("Message")});
+    m_diagnostics->setRootIsDecorated(false);
+    m_diagnostics->setAlternatingRowColors(true);
+    m_diagnostics->header()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
+    m_diagnostics->header()->setSectionResizeMode(1, QHeaderView::ResizeToContents);
+    m_diagnostics->header()->setSectionResizeMode(2, QHeaderView::ResizeToContents);
+    m_diagnostics->header()->setSectionResizeMode(3, QHeaderView::Stretch);
+    m_inspectorTabs->addTab(m_diagnostics, tr("Diagnostics"));
+    right->addWidget(m_inspectorTabs);
+    right->setStretchFactor(0, 3);
+    right->setStretchFactor(1, 2);
+    right->setSizes({250, 170});
+    horizontal->addWidget(right);
+    horizontal->setStretchFactor(0, 0);
+    horizontal->setStretchFactor(1, 1);
+    horizontal->setSizes({190, 355});
+    root->addWidget(horizontal, 1);
+
+    showProperties(nullptr);
+
+    m_refreshTimer = new QTimer(this);
+    m_refreshTimer->setSingleShot(true);
+    m_refreshTimer->setInterval(80);
+
+    connect(newButton, &QPushButton::clicked, this, &BlockProgrammingPanel::newProgram);
+    connect(openButton, &QPushButton::clicked, this, &BlockProgrammingPanel::openProgram);
+    connect(saveButton, &QPushButton::clicked, this, &BlockProgrammingPanel::saveProgram);
+    connect(exportAction, &QAction::triggered,
+            this, &BlockProgrammingPanel::exportGScript);
+    connect(copyAction, &QAction::triggered,
+            this, &BlockProgrammingPanel::copyGScript);
+    connect(helpAction, &QAction::triggered, this, [this]() {
+        QMessageBox::information(
+            this, tr("Block Programming Help"),
+            tr("1. Drag a block from the toolbox onto the canvas.\n"
+               "2. Connect blocks into a stack; drop on a container to nest.\n"
+               "3. Select a block and edit its properties below the canvas.\n"
+               "4. Resolve diagnostics and review the generated G-Script.\n"
+               "5. Load into the editor before running on hardware.\n\n"
+               "Use Ctrl+wheel or +/- to zoom, drag empty canvas space to pan, "
+               "and Delete to remove the selected block.\n\n"
+               "The complete guide is docs/block-programming.md. Block Programming is not a safety function."));
+    });
+    connect(m_template, QOverload<int>::of(&QComboBox::activated),
+            this, &BlockProgrammingPanel::applyTemplate);
+    connect(refreshWorkersButton, &QPushButton::clicked,
+            this, &BlockProgrammingPanel::refreshWorkers);
+    connect(m_worker, QOverload<int>::of(&QComboBox::currentIndexChanged),
+            this, [this]() { scheduleRefresh(); });
+    connect(m_loadButton, &QPushButton::clicked,
+            this, &BlockProgrammingPanel::loadIntoEditor);
+    connect(m_runButton, &QPushButton::clicked,
+            this, &BlockProgrammingPanel::runProgram);
+    connect(m_stopButton, &QPushButton::clicked,
+            this, &BlockProgrammingPanel::stopProgram);
+    connect(addButton, &QPushButton::clicked, this, [this]() {
+        if (QTreeWidgetItem* item = m_palette->currentItem())
+            addBlock(item->data(0, BlockTypeRole).toString());
+    });
+    connect(duplicateButton, &QPushButton::clicked,
+            this, &BlockProgrammingPanel::duplicateSelectedBlock);
+    connect(deleteButton, &QPushButton::clicked,
+            this, &BlockProgrammingPanel::deleteSelectedBlock);
+    connect(upButton, &QPushButton::clicked, this, [this]() { moveSelectedBlock(-1); });
+    connect(downButton, &QPushButton::clicked, this, [this]() { moveSelectedBlock(1); });
+    connect(indentButton, &QPushButton::clicked,
+            this, &BlockProgrammingPanel::indentSelectedBlock);
+    connect(outdentButton, &QPushButton::clicked,
+            this, &BlockProgrammingPanel::outdentSelectedBlock);
+    connect(zoomOutButton, &QPushButton::clicked,
+            m_canvas, &BlockCanvas::zoomOut);
+    connect(zoomInButton, &QPushButton::clicked,
+            m_canvas, &BlockCanvas::zoomIn);
+    connect(fitButton, &QPushButton::clicked,
+            m_canvas, &BlockCanvas::fitWorkspace);
+    m_canvas->setSelectionHandler(
+        [this](QTreeWidgetItem* item) { selectCanvasBlock(item); });
+    m_canvas->setDropHandler(
+        [this](const QString& type, const QPointF& position) {
+            addBlockAt(type, position);
+        });
+    m_canvas->setMoveHandler(
+        [this](QTreeWidgetItem* item, const QPointF& position) {
+            moveBlockOnCanvas(item, position);
+        });
+    m_canvas->setDeleteHandler([this](QTreeWidgetItem* item) {
+        m_workspace->setCurrentItem(item);
+        deleteSelectedBlock();
+    });
+    connect(m_palette, &QTreeWidget::itemActivated, this,
+            [this](QTreeWidgetItem* item) {
+                addBlock(item->data(0, BlockTypeRole).toString());
+            });
+    connect(paletteSearch, &QLineEdit::textChanged, this,
+            [this](const QString& value) {
+                const QString query = value.trimmed();
+                for (int categoryIndex = 0;
+                     categoryIndex < m_palette->topLevelItemCount();
+                     ++categoryIndex) {
+                    QTreeWidgetItem* category =
+                        m_palette->topLevelItem(categoryIndex);
+                    bool categoryMatches = query.isEmpty() ||
+                        category->text(0).contains(query, Qt::CaseInsensitive);
+                    bool anyVisible = categoryMatches;
+                    for (int childIndex = 0;
+                         childIndex < category->childCount(); ++childIndex) {
+                        QTreeWidgetItem* child = category->child(childIndex);
+                        const bool matches = query.isEmpty() || categoryMatches ||
+                            child->text(0).contains(query, Qt::CaseInsensitive) ||
+                            child->toolTip(0).contains(query, Qt::CaseInsensitive);
+                        child->setHidden(!matches);
+                        anyVisible = anyVisible || matches;
+                    }
+                    category->setHidden(!anyVisible);
+                    if (!query.isEmpty() && anyVisible)
+                        category->setExpanded(true);
+                }
+            });
+    connect(m_workspace, &QTreeWidget::currentItemChanged, this,
+            [this](QTreeWidgetItem* current) {
+                showProperties(current);
+                if (m_canvas)
+                    m_canvas->selectWorkspaceItem(current);
+            });
+    connect(m_workspace->model(), &QAbstractItemModel::rowsInserted,
+            this, [this]() { scheduleRefresh(); });
+    connect(m_workspace->model(), &QAbstractItemModel::rowsRemoved,
+            this, [this]() { scheduleRefresh(); });
+    connect(m_workspace->model(), &QAbstractItemModel::rowsMoved,
+            this, [this]() { scheduleRefresh(); });
+    connect(m_refreshTimer, &QTimer::timeout,
+            this, &BlockProgrammingPanel::refreshPreview);
+}
+
+void BlockProgrammingPanel::populatePalette()
+{
+    m_palette->clear();
+    QHash<QString, QTreeWidgetItem*> categories;
+    for (const BlockDefinition& definition : BlockProgram::definitions()) {
+        QTreeWidgetItem* category = categories.value(definition.category);
+        if (!category) {
+            category = new QTreeWidgetItem(m_palette, {definition.category});
+            QFont font = category->font(0);
+            font.setBold(true);
+            category->setFont(0, font);
+            category->setFlags(category->flags() & ~Qt::ItemIsSelectable);
+            categories.insert(definition.category, category);
+        }
+        auto* item = new QTreeWidgetItem(category, {definition.label});
+        item->setData(0, BlockTypeRole, definition.id);
+        item->setToolTip(0, definition.description);
+        QPixmap swatch(12, 12);
+        swatch.fill(QColor(definition.color));
+        item->setIcon(0, QIcon(swatch));
+    }
+    m_palette->expandAll();
+}
+
+void BlockProgrammingPanel::refreshWorkers()
+{
+    const int previous = selectedWorkerIndex();
+    m_worker->clear();
+    QString error;
+    if (!m_context || !m_context->hasPermission(DeltaXPermissions::GScriptRead)) {
+        m_worker->addItem(tr("Permission gscript.read is required"), -1);
+        m_worker->setEnabled(false);
+        setStatus(tr("Grant G-Script permissions under Modules > Plugins."), true);
+    } else {
+        const QVariantList workers = m_context->gscriptWorkers(&error);
+        for (const QVariant& value : workers) {
+            const QVariantMap worker = value.toMap();
+            const int comboIndex = m_worker->count();
+            m_worker->addItem(
+                QStringLiteral("%1 - %2")
+                    .arg(worker.value("id").toString(),
+                         worker.value("state").toString()),
+                worker.value("index"));
+            m_worker->setItemData(comboIndex, worker.value("running"),
+                                  Qt::UserRole + 1);
+        }
+        m_worker->setEnabled(m_worker->count() > 0);
+        if (!error.isEmpty())
+            setStatus(error, true);
+    }
+    setSelectedWorkerIndex(previous);
+    scheduleRefresh();
+}
+
+void BlockProgrammingPanel::addBlock(const QString& type)
+{
+    if (type.isEmpty() || !BlockProgram::definition(type))
+        return;
+    BlockNode node{type, BlockProgram::defaultFields(type), {}};
+    QTreeWidgetItem* item = nodeToItem(node);
+    QTreeWidgetItem* selected = m_workspace->currentItem();
+    if (!selected) {
+        m_workspace->addTopLevelItem(item);
+    } else {
+        const BlockDefinition* selectedDefinition = BlockProgram::definition(
+            selected->data(0, BlockTypeRole).toString());
+        if (selectedDefinition && selectedDefinition->container) {
+            selected->addChild(item);
+            selected->setExpanded(true);
+        } else if (QTreeWidgetItem* parent = selected->parent()) {
+            parent->insertChild(parent->indexOfChild(selected) + 1, item);
+        } else {
+            m_workspace->insertTopLevelItem(
+                m_workspace->indexOfTopLevelItem(selected) + 1, item);
+        }
+    }
+    m_workspace->setCurrentItem(item);
+    scheduleRefresh();
+}
+
+void BlockProgrammingPanel::addBlockAt(const QString& type,
+                                       const QPointF& scenePosition)
+{
+    if (!m_canvas || type.isEmpty() || !BlockProgram::definition(type))
+        return;
+    QTreeWidgetItem* target = m_canvas->workspaceItemAt(scenePosition);
+    m_workspace->setCurrentItem(target);
+    addBlock(type);
+}
+
+void BlockProgrammingPanel::moveBlockOnCanvas(
+    QTreeWidgetItem* item, const QPointF& scenePosition)
+{
+    if (!item || !m_canvas || !m_workspace)
+        return;
+
+    QTreeWidgetItem* target = m_canvas->workspaceItemAt(scenePosition, item);
+    if (target == item) {
+        scheduleRefresh();
+        return;
+    }
+    for (QTreeWidgetItem* parent = target; parent; parent = parent->parent()) {
+        if (parent == item) {
+            setStatus(tr("A block cannot be nested inside itself."), true);
+            scheduleRefresh();
+            return;
+        }
+    }
+
+    QTreeWidgetItem* oldParent = item->parent();
+    QTreeWidgetItem* moved = oldParent
+        ? oldParent->takeChild(oldParent->indexOfChild(item))
+        : m_workspace->takeTopLevelItem(
+              m_workspace->indexOfTopLevelItem(item));
+    if (!moved)
+        return;
+
+    if (!target) {
+        m_workspace->addTopLevelItem(moved);
+    } else {
+        const BlockDefinition* targetDefinition = BlockProgram::definition(
+            target->data(0, BlockTypeRole).toString());
+        if (targetDefinition && targetDefinition->container) {
+            target->addChild(moved);
+            target->setExpanded(true);
+        } else if (QTreeWidgetItem* targetParent = target->parent()) {
+            targetParent->insertChild(targetParent->indexOfChild(target) + 1,
+                                      moved);
+        } else {
+            m_workspace->insertTopLevelItem(
+                m_workspace->indexOfTopLevelItem(target) + 1, moved);
+        }
+    }
+    m_workspace->setCurrentItem(moved);
+    scheduleRefresh();
+}
+
+void BlockProgrammingPanel::selectCanvasBlock(QTreeWidgetItem* item)
+{
+    if (!m_workspace)
+        return;
+    m_workspace->setCurrentItem(item);
+    if (m_inspectorTabs)
+        m_inspectorTabs->setCurrentIndex(0);
+}
+
+void BlockProgrammingPanel::refreshCanvas()
+{
+    if (m_canvas)
+        m_canvas->rebuild();
+}
+
+void BlockProgrammingPanel::deleteSelectedBlock()
+{
+    QTreeWidgetItem* item = m_workspace->currentItem();
+    if (!item)
+        return;
+    if (item->childCount() > 0 &&
+        QMessageBox::question(this, tr("Delete nested block"),
+                              tr("Delete this block and all nested blocks?")) !=
+            QMessageBox::Yes) {
+        return;
+    }
+    delete item;
+    clearProperties();
+    scheduleRefresh();
+}
+
+void BlockProgrammingPanel::duplicateSelectedBlock()
+{
+    QTreeWidgetItem* item = m_workspace->currentItem();
+    if (!item)
+        return;
+    QTreeWidgetItem* copy = item->clone();
+    if (QTreeWidgetItem* parent = item->parent())
+        parent->insertChild(parent->indexOfChild(item) + 1, copy);
+    else
+        m_workspace->insertTopLevelItem(
+            m_workspace->indexOfTopLevelItem(item) + 1, copy);
+    m_workspace->setCurrentItem(copy);
+    scheduleRefresh();
+}
+
+void BlockProgrammingPanel::moveSelectedBlock(int offset)
+{
+    QTreeWidgetItem* item = m_workspace->currentItem();
+    if (!item || offset == 0)
+        return;
+    QTreeWidgetItem* parent = item->parent();
+    const int index = parent ? parent->indexOfChild(item)
+                             : m_workspace->indexOfTopLevelItem(item);
+    const int count = parent ? parent->childCount()
+                             : m_workspace->topLevelItemCount();
+    const int destination = index + offset;
+    if (destination < 0 || destination >= count)
+        return;
+    QTreeWidgetItem* moved = parent ? parent->takeChild(index)
+                                    : m_workspace->takeTopLevelItem(index);
+    if (parent)
+        parent->insertChild(destination, moved);
+    else
+        m_workspace->insertTopLevelItem(destination, moved);
+    m_workspace->setCurrentItem(moved);
+    scheduleRefresh();
+}
+
+void BlockProgrammingPanel::indentSelectedBlock()
+{
+    QTreeWidgetItem* item = m_workspace->currentItem();
+    if (!item)
+        return;
+    QTreeWidgetItem* parent = item->parent();
+    const int index = parent ? parent->indexOfChild(item)
+                             : m_workspace->indexOfTopLevelItem(item);
+    if (index <= 0)
+        return;
+    QTreeWidgetItem* previous = parent ? parent->child(index - 1)
+                                       : m_workspace->topLevelItem(index - 1);
+    const BlockDefinition* definition = BlockProgram::definition(
+        previous->data(0, BlockTypeRole).toString());
+    if (!definition || !definition->container) {
+        setStatus(tr("Indent requires a container block immediately above."), true);
+        return;
+    }
+    QTreeWidgetItem* moved = parent ? parent->takeChild(index)
+                                    : m_workspace->takeTopLevelItem(index);
+    previous->addChild(moved);
+    previous->setExpanded(true);
+    m_workspace->setCurrentItem(moved);
+    scheduleRefresh();
+}
+
+void BlockProgrammingPanel::outdentSelectedBlock()
+{
+    QTreeWidgetItem* item = m_workspace->currentItem();
+    QTreeWidgetItem* parent = item ? item->parent() : nullptr;
+    if (!item || !parent)
+        return;
+    QTreeWidgetItem* grandParent = parent->parent();
+    QTreeWidgetItem* moved = parent->takeChild(parent->indexOfChild(item));
+    if (grandParent)
+        grandParent->insertChild(grandParent->indexOfChild(parent) + 1, moved);
+    else
+        m_workspace->insertTopLevelItem(
+            m_workspace->indexOfTopLevelItem(parent) + 1, moved);
+    m_workspace->setCurrentItem(moved);
+    scheduleRefresh();
+}
+
+void BlockProgrammingPanel::showProperties(QTreeWidgetItem* item)
+{
+    clearProperties();
+    if (!item) {
+        auto* hint = new QLabel(
+            tr("Select a workspace block to edit its properties."), this);
+        hint->setWordWrap(true);
+        m_properties->addRow(hint);
+        return;
+    }
+    const BlockDefinition* definition = BlockProgram::definition(
+        item->data(0, BlockTypeRole).toString());
+    if (!definition)
+        return;
+    auto* description = new QLabel(definition->description, this);
+    description->setWordWrap(true);
+    m_properties->addRow(description);
+
+    for (const FieldDefinition& field : definition->fields) {
+        const QVariantMap currentFields = item->data(0, BlockFieldsRole).toMap();
+        const QVariant current = currentFields.value(field.key, field.defaultValue);
+        auto commit = [this, item, key = field.key](const QVariant& value) {
+            QVariantMap fields = item->data(0, BlockFieldsRole).toMap();
+            fields.insert(key, value);
+            item->setData(0, BlockFieldsRole, fields);
+            updateItemAppearance(item);
+            scheduleRefresh();
+        };
+
+        QWidget* editor = nullptr;
+        if (field.kind == FieldDefinition::Kind::Choice) {
+            auto* choice = new QComboBox(this);
+            choice->setEditable(true);
+            choice->addItems(field.options);
+            choice->setCurrentText(current.toString());
+            connect(choice, &QComboBox::currentTextChanged, this,
+                    [commit](const QString& value) { commit(value); });
+            editor = choice;
+        } else if (field.kind == FieldDefinition::Kind::Integer) {
+            auto* number = new QSpinBox(this);
+            number->setRange(-1000000000, 1000000000);
+            number->setValue(current.toInt());
+            connect(number, QOverload<int>::of(&QSpinBox::valueChanged), this,
+                    [commit](int value) { commit(value); });
+            editor = number;
+        } else if (field.kind == FieldDefinition::Kind::Number) {
+            auto* number = new QDoubleSpinBox(this);
+            number->setRange(-1.0e9, 1.0e9);
+            number->setDecimals(4);
+            number->setValue(current.toDouble());
+            connect(number, QOverload<double>::of(&QDoubleSpinBox::valueChanged),
+                    this, [commit](double value) { commit(value); });
+            editor = number;
+        } else if (field.kind == FieldDefinition::Kind::Multiline) {
+            auto* text = new QPlainTextEdit(this);
+            text->setPlainText(current.toString());
+            text->setMaximumHeight(100);
+            connect(text, &QPlainTextEdit::textChanged, this,
+                    [text, commit]() { commit(text->toPlainText()); });
+            editor = text;
+        } else {
+            auto* text = new QLineEdit(current.toString(), this);
+            connect(text, &QLineEdit::textChanged, this,
+                    [commit](const QString& value) { commit(value); });
+            editor = text;
+        }
+        editor->setToolTip(field.help);
+        m_properties->addRow(field.label, editor);
+    }
+}
+
+void BlockProgrammingPanel::clearProperties()
+{
+    deleteLayoutContents(m_properties);
+}
+
+void BlockProgrammingPanel::updateItemAppearance(QTreeWidgetItem* item)
+{
+    styleBlockItem(item);
+}
+
+void BlockProgrammingPanel::scheduleRefresh()
+{
+    if (m_refreshTimer)
+        m_refreshTimer->start();
+}
+
+void BlockProgrammingPanel::refreshPreview()
+{
+    refreshCanvas();
+    const CompileResult compiled = BlockProgram::compile(workspaceNodes(m_workspace));
+    m_preview->setPlainText(compiled.script);
+    QVariantList diagnostics = compiled.diagnosticMaps();
+    if (!compiled.hasErrors() && m_context &&
+        m_context->hasPermission(DeltaXPermissions::GScriptRead)) {
+        QString error;
+        diagnostics.append(m_context->validateGScript(compiled.script, &error));
+        if (!error.isEmpty()) {
+            diagnostics.append(QVariantMap{
+                {QStringLiteral("severity"), QStringLiteral("Error")},
+                {QStringLiteral("code"), QStringLiteral("BPHOST")},
+                {QStringLiteral("message"), error},
+            });
+        }
+    }
+    showDiagnostics(diagnostics);
+    m_hasErrors = std::any_of(
+        diagnostics.cbegin(), diagnostics.cend(), [](const QVariant& value) {
+            return value.toMap().value(QStringLiteral("severity")).toString()
+                       .compare(QStringLiteral("Error"), Qt::CaseInsensitive) == 0;
+        });
+    const bool canRead = m_context &&
+        m_context->hasPermission(DeltaXPermissions::GScriptRead);
+    const bool canEdit = m_context &&
+        m_context->hasPermission(DeltaXPermissions::GScriptEdit);
+    const bool canRun = m_context &&
+        m_context->hasPermission(DeltaXPermissions::GScriptRun);
+    const bool hasWorker = selectedWorkerIndex() >= 0;
+    const bool workerRunning = hasWorker &&
+        m_worker->currentData(Qt::UserRole + 1).toBool();
+    m_loadButton->setEnabled(!m_hasErrors && canEdit && hasWorker &&
+                             !workerRunning);
+    m_runButton->setEnabled(!m_hasErrors && canRun && hasWorker &&
+                            !workerRunning);
+    m_stopButton->setEnabled(canRun && hasWorker && workerRunning);
+    if (m_hasErrors)
+        setStatus(tr("Fix diagnostics before loading or running."), true);
+    else if (!canRead)
+        setStatus(tr("Grant G-Script permissions under Modules > Plugins."), true);
+    else if (!hasWorker)
+        setStatus(tr("Program is valid, but no G-Script worker is available."), true);
+    else
+        setStatus(tr("Program is valid. Review the generated G-Script before running."));
+}
+
+void BlockProgrammingPanel::showDiagnostics(const QVariantList& diagnostics)
+{
+    m_diagnostics->clear();
+    for (const QVariant& value : diagnostics) {
+        const QVariantMap diagnostic = value.toMap();
+        QString location = diagnostic.value(QStringLiteral("path")).toString();
+        if (location.isEmpty() && diagnostic.contains(QStringLiteral("line"))) {
+            location = QStringLiteral("L%1:C%2")
+                           .arg(diagnostic.value(QStringLiteral("line")).toInt())
+                           .arg(diagnostic.value(QStringLiteral("column")).toInt());
+        }
+        auto* item = new QTreeWidgetItem(m_diagnostics, {
+            diagnostic.value(QStringLiteral("severity")).toString(),
+            diagnostic.value(QStringLiteral("code")).toString(), location,
+            diagnostic.value(QStringLiteral("message")).toString(),
+        });
+        const QString severity = item->text(0).toLower();
+        if (severity == QStringLiteral("error"))
+            item->setForeground(0, QColor(QStringLiteral("#ef4444")));
+        else if (severity == QStringLiteral("warning"))
+            item->setForeground(0, QColor(QStringLiteral("#f59e0b")));
+    }
+    m_diagnostics->resizeColumnToContents(0);
+    m_diagnostics->resizeColumnToContents(1);
+    m_diagnostics->resizeColumnToContents(2);
+}
+
+void BlockProgrammingPanel::newProgram()
+{
+    if (m_workspace->topLevelItemCount() > 0 &&
+        QMessageBox::question(this, tr("New block program"),
+                              tr("Discard the current in-memory workspace?")) !=
+            QMessageBox::Yes) {
+        return;
+    }
+    m_workspace->clear();
+    showProperties(nullptr);
+    m_currentPath.clear();
+    m_template->setCurrentText(QStringLiteral("Empty"));
+    scheduleRefresh();
+}
+
+void BlockProgrammingPanel::applyTemplate()
+{
+    const QString name = m_template->currentText();
+    if (name == QStringLiteral("Empty")) {
+        newProgram();
+        return;
+    }
+    if (m_workspace->topLevelItemCount() > 0 &&
+        QMessageBox::question(this, tr("Load template"),
+                              tr("Replace the current workspace with '%1'?").arg(name)) !=
+            QMessageBox::Yes) {
+        return;
+    }
+    m_workspace->clear();
+    showProperties(nullptr);
+    for (const BlockNode& node : BlockProgram::createTemplate(name))
+        m_workspace->addTopLevelItem(nodeToItem(node));
+    m_workspace->expandAll();
+    m_currentPath.clear();
+    scheduleRefresh();
+}
+
+void BlockProgrammingPanel::openProgram()
+{
+    const QString path = QFileDialog::getOpenFileName(
+        this, tr("Open block program"), m_currentPath,
+        tr("Delta X block programs (*.dxblocks);;JSON files (*.json);;All files (*)"));
+    if (path.isEmpty())
+        return;
+    QFile file(path);
+    if (!file.open(QIODevice::ReadOnly)) {
+        setStatus(tr("Could not open %1").arg(QFileInfo(path).fileName()), true);
+        return;
+    }
+    QJsonParseError parseError;
+    const QJsonDocument document = QJsonDocument::fromJson(file.readAll(), &parseError);
+    QString error;
+    QVector<BlockNode> parsedBlocks;
+    if (parseError.error != QJsonParseError::NoError || !document.isObject() ||
+        !BlockProgram::fromJson(document.object(), &parsedBlocks, &error)) {
+        setStatus(error.isEmpty() ? parseError.errorString() : error, true);
+        return;
+    }
+    if (m_workspace->topLevelItemCount() > 0 &&
+        QMessageBox::question(
+            this, tr("Open block program"),
+            tr("Replace the current in-memory workspace with '%1'?")
+                .arg(QFileInfo(path).fileName())) != QMessageBox::Yes) {
+        return;
+    }
+    if (!loadWorkspaceDocument(document.object(), &error)) {
+        setStatus(error, true);
+        return;
+    }
+    m_currentPath = path;
+    setStatus(tr("Opened %1").arg(QFileInfo(path).fileName()));
+}
+
+void BlockProgrammingPanel::saveProgram()
+{
+    QString path = QFileDialog::getSaveFileName(
+        this, tr("Save block program"), m_currentPath,
+        tr("Delta X block programs (*.dxblocks)"));
+    if (path.isEmpty())
+        return;
+    if (!path.endsWith(QStringLiteral(".dxblocks"), Qt::CaseInsensitive))
+        path += QStringLiteral(".dxblocks");
+    QFile file(path);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
+        setStatus(tr("Could not write %1").arg(QFileInfo(path).fileName()), true);
+        return;
+    }
+    file.write(QJsonDocument(workspaceDocument()).toJson(QJsonDocument::Indented));
+    m_currentPath = path;
+    setStatus(tr("Saved %1").arg(QFileInfo(path).fileName()));
+}
+
+void BlockProgrammingPanel::exportGScript()
+{
+    refreshPreview();
+    if (m_hasErrors)
+        return;
+    QString path = QFileDialog::getSaveFileName(
+        this, tr("Export generated G-Script"), {},
+        tr("G-Script files (*.gcode *.dtgc);;Text files (*.txt)"));
+    if (path.isEmpty())
+        return;
+    QFile file(path);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
+        setStatus(tr("Could not export G-Script."), true);
+        return;
+    }
+    file.write(m_preview->toPlainText().toUtf8());
+    setStatus(tr("Exported %1").arg(QFileInfo(path).fileName()));
+}
+
+void BlockProgrammingPanel::copyGScript()
+{
+    QApplication::clipboard()->setText(m_preview->toPlainText());
+    setStatus(tr("Generated G-Script copied to the clipboard."));
+}
+
+void BlockProgrammingPanel::loadIntoEditor()
+{
+    refreshPreview();
+    if (m_hasErrors || !m_context)
+        return;
+    QString error;
+    if (!m_context->loadGScript(selectedWorkerIndex(), m_preview->toPlainText(),
+                                &error)) {
+        setStatus(error, true);
+        return;
+    }
+    setStatus(tr("Generated G-Script loaded into the selected worker editor."));
+    refreshWorkers();
+}
+
+void BlockProgrammingPanel::runProgram()
+{
+    refreshPreview();
+    if (m_hasErrors || !m_context)
+        return;
+    if (QMessageBox::warning(
+            this, tr("Run generated block program"),
+            tr("This will start real cell automation. Block Programming is not a safety function. "
+               "Verify E-stop, guards, limits, calibration, tool state and the generated G-Script before continuing."),
+            QMessageBox::Cancel | QMessageBox::Yes, QMessageBox::Cancel) !=
+        QMessageBox::Yes) {
+        return;
+    }
+    QString error;
+    if (!m_context->runGScript(selectedWorkerIndex(), m_preview->toPlainText(),
+                               &error)) {
+        setStatus(error, true);
+        return;
+    }
+    m_runButton->setEnabled(false);
+    setStatus(tr("Block program was queued on the selected G-Script worker."));
+    QTimer::singleShot(100, this, &BlockProgrammingPanel::refreshWorkers);
+}
+
+void BlockProgrammingPanel::stopProgram()
+{
+    if (!m_context)
+        return;
+    QString error;
+    if (!m_context->stopGScript(selectedWorkerIndex(), &error)) {
+        setStatus(error, true);
+        return;
+    }
+    setStatus(tr("Stop requested for the selected G-Script worker."));
+    QTimer::singleShot(100, this, &BlockProgrammingPanel::refreshWorkers);
+}
+
+void BlockProgrammingPanel::setStatus(const QString& text, bool error)
+{
+    m_status->setText(text);
+    m_status->setProperty("statusRole", error ? "danger" : "success");
+    m_status->style()->unpolish(m_status);
+    m_status->style()->polish(m_status);
+    m_status->update();
+}
+
+BlockNode BlockProgrammingPanel::itemToNode(const QTreeWidgetItem* item)
+{
+    if (!item)
+        return {};
+    BlockNode node{item->data(0, BlockTypeRole).toString(),
+                   item->data(0, BlockFieldsRole).toMap(), {}};
+    for (int index = 0; index < item->childCount(); ++index)
+        node.children.append(itemToNode(item->child(index)));
+    return node;
+}
+
+QTreeWidgetItem* BlockProgrammingPanel::nodeToItem(const BlockNode& node)
+{
+    auto* item = new QTreeWidgetItem;
+    item->setData(0, BlockTypeRole, node.type);
+    item->setData(0, BlockFieldsRole, node.fields);
+    item->setFlags(item->flags() | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled);
+    styleBlockItem(item);
+    for (const BlockNode& child : node.children)
+        item->addChild(nodeToItem(child));
+    return item;
+}
+
+QJsonObject BlockProgrammingPanel::workspaceDocument() const
+{
+    return BlockProgram::toJson(workspaceNodes(m_workspace));
+}
+
+bool BlockProgrammingPanel::loadWorkspaceDocument(const QJsonObject& document,
+                                                  QString* error)
+{
+    QVector<BlockNode> blocks;
+    if (!BlockProgram::fromJson(document, &blocks, error))
+        return false;
+    m_workspace->clear();
+    showProperties(nullptr);
+    for (const BlockNode& node : blocks)
+        m_workspace->addTopLevelItem(nodeToItem(node));
+    m_workspace->expandAll();
+    scheduleRefresh();
+    return true;
+}
+
+int BlockProgrammingPanel::selectedWorkerIndex() const
+{
+    return m_worker && m_worker->currentIndex() >= 0
+        ? m_worker->currentData().toInt() : -1;
+}
+
+void BlockProgrammingPanel::setSelectedWorkerIndex(int index)
+{
+    if (!m_worker)
+        return;
+    const int found = m_worker->findData(index);
+    if (found >= 0)
+        m_worker->setCurrentIndex(found);
+    else if (m_worker->count() > 0)
+        m_worker->setCurrentIndex(0);
+}

@@ -1,0 +1,67 @@
+name: Bug report
+description: Report a reproducible software or hardware-integration defect
+title: "[Bug]: "
+labels: [bug, needs-triage]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Do not post credentials, customer data, or security exploit details here.
+        Use the private process in SECURITY.md for vulnerabilities.
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: What happened, and what did you expect?
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version or commit
+      placeholder: commit SHA, branch, or release
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - G-Script
+        - Tracking / multi-robot
+        - Camera / vision
+        - Robot / conveyor / encoder / I/O
+        - Calibration
+        - UI / UX
+        - Build / packaging
+        - Plugin / SDK
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Reproduction steps
+      placeholder: Include the smallest safe example and configuration.
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: OS, Qt, compiler, camera SDK, controller firmware, and connection type.
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant logs
+      description: Remove serial numbers, network addresses, credentials, and customer data.
+      render: shell
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Safety confirmation
+      options:
+        - label: I reproduced this with physical motion disabled or under an appropriate machine-safety procedure.
+          required: true

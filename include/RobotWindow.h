@@ -30,14 +30,18 @@
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QPluginLoader>
+#include <QPointer>
 #include <QProcess>
 #include <QRandomGenerator>
 #include <QSettings>
+#include <QSet>
 #include <QStackedWidget>
+#include <QTabWidget>
 #include <QFileSystemModel>
 #include <QTreeWidget>
 #include <QTreeWidgetItem>
 #include <QListWidget>
+#include <QTableWidget>
 #include <QVector3D>
 #include <QHash>
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
@@ -86,7 +90,10 @@
 #include "ObjectInfoModel.h"
 #include "ImageProcessing.h"
 #include "GcodeScript.h"
+#include "GScriptAnalyzer.h"
 #include "ImagePipelineController.h"
+#include "DeviceCommandBroker.h"
+#include "CellSupervisor.h"
 
 // ========== DEFINES AND CONSTANTS ==========
 #define DEFAULT_BAUDRATE 115200
@@ -108,6 +115,9 @@ class ObjectDetector;
 class GcodeVariable;
 class GcodeScript;
 class SoftwareManager;
+class PluginManager;
+class QGroupBox;
+class QToolButton;
 
 namespace Ui {
     class RobotWindow;
@@ -135,8 +145,11 @@ public:
     void InitVariables();
     void InitSocketConnection();
     void InitObjectDetectingModule();
+    void InitExternalVisionUI();
     void InitGcodeEditorModule();
     void InitGScriptHelp();
+    void InitGScriptWorkspace();
+    void InitControlPlane();
     void InitUIController();
     void LoadPlugin();
     void InitScriptThread();
@@ -195,8 +208,7 @@ public:
     
     QList<GcodeScript*> GcodeScripts;
     QTimer* UIEvent;
-    int ChangedCounter = 0;
-    bool IsGcodeEditorTextChanged = false;
+    QString m_cleanGcodeText;
     int baseFontSize;
     
     int RbID = 0;
@@ -256,6 +268,13 @@ public:
 
 public slots:
     // ========== EXTERNAL CONTROL SLOTS ==========
+    bool startGScript(int workerIndex, const QString& source, QString* error,
+                      bool interactive = true, bool allowUnhomed = false);
+    bool requestRobotAutoConnect(QString* error = nullptr);
+    bool resetCellFault(bool operatorConfirmedSafe, QString* error = nullptr);
+    QString cellStateName() const;
+    QString cellFaultReason() const;
+    bool robotConnected() const;
     void ActivateButtonByName(const QString &buttonName);
     void ActiveWidgetByName(QString type, QString name, QString action);
 
@@ -309,6 +328,12 @@ public slots:
     void ExecuteCurrentLine(int, QString);
     void HighLineCurrentLine(int pos);
     void OnEditorTextChanged();
+    void ValidateGScriptNow();
+    void ShowGScriptDiagnostics(QList<GScriptDiagnostic> diagnostics);
+    void UpdateGScriptExecutionState(GcodeScript::ExecutionState state, QString message);
+    void RefreshGScriptAssistant();
+    void RefreshGScriptRuntimePanels();
+    void ShowGScriptTemplateWizard();
     void changeFontSize(int index);
     void RunSmartEditor();
     void StandardFormatEditor();
@@ -317,6 +342,7 @@ public slots:
     void ExportBlocklyToGcode();
     void OpenBlocklyEditor();
     void LoadGscriptFromRemote(QString gcode);
+    void DispatchRemoteGScript(QString gcode);
     void ExecuteRequestsFromExternal(QString request);
     void AddGcodeLine(QString gcode);
     void LoadGcodeFromFileToEditor(const QModelIndex &index);
@@ -324,7 +350,7 @@ public slots:
     void SelectGcodeExplorer();
     void BackParentExplorer();
     void CreateNewGcodeFile();
-    void SaveGcodeFile(QString fileName, QString content);
+    QString SaveGcodeFile(QString fileName, QString content);
     void RefreshExplorer();
     void DeleteGcodeFile();
     void ChangeSelectedEditorThread(int id);
@@ -360,6 +386,8 @@ public slots:
     void SetEncoderAutoRead();
     void ResetEncoderPosition();
     void SetEncoderVelocity();
+    void CalibrateEncoder();
+    void OnEncoderPositionReceived(int id, float rawValue);
     void CalculateEncoderVelocity(int id, float value);
     void ProcessProximitySensorValue(int value);
     void StartScheduledEncoder();
@@ -380,6 +408,8 @@ public slots:
     void TerminalTransmit();
     void RunExternalScript();
     void OpenExternalScriptFolder();
+    void OpenExternalVisionGuide();
+    void OpenExternalVisionExample();
     void UpdateTermite(QString device, QString mess, int direction);
     void UpdateTermite(QString mess);
 
@@ -428,6 +458,7 @@ public slots:
     // ========== POINT TOOL SLOTS ==========
     void CalculateMappingMatrixTool();
     void CalculatePointMatrixTool();
+    void CalibrateCameraIntrinsics();
     void CalculateTestPoint();
     void CalculateVector();
     void UpdateTestPoint(QVector3D testPoint);
@@ -470,14 +501,31 @@ signals:
 protected:
     // ========== PROTECTED METHODS ==========
     void paintEvent(QPaintEvent *event) override;
+    void resizeEvent(QResizeEvent *event) override;
+    bool eventFilter(QObject* watched, QEvent* event) override;
 
 private:
+    QSet<int> m_pendingGScriptStarts;
     // ========== ROBOT PARAMETER ACCESS ==========
     bool isRobotParametersValid() const;
     RobotPara getSafeRobotParameters() const;
     
     // ========== PERFORMANCE & TESTING ==========
     void CheckSettingsSpeed();
+    bool hasUnsavedGcodeText() const;
+    void markGcodeEditorClean();
+    void updateModuleTabLabels();
+    void updateHomeAvailability();
+    void setupResponsiveShell();
+    void updateResponsiveLayout();
+    void setDeviceDockVisible(bool visible, bool userInitiated = false);
+    void setSystemBarVisible(bool visible, bool userInitiated = false);
+    void updateShellToggleState();
+    void resetWorkspaceSplitter();
+    void makeCollapsibleGroup(QGroupBox* group, bool initiallyExpanded);
+    void setupPointToolWorkspace();
+    void setupProgressiveDisclosure();
+    void integrateBlockProgrammingPanel(QWidget* panel);
     void SaveDetectingUI();
 	void interpolateCircle();
 	void makeEffectExample();
@@ -514,13 +562,28 @@ private:
     QString getModelPath();
 
     // ========== PLUGIN PRIVATE METHODS ==========
-    QStringList getPlugins(QString path);
-    void initPlugins(QStringList plugins);
-    QList<DeltaXPlugin*>* getPluginList();
     
     // ✅ New safe plugin management methods
     void connectPluginSignals(DeltaXPlugin* plugin);
     DeltaXPlugin* findPluginByName(const QString& name);
+    void updateIndustrialCameraAvailability();
+    QString resolveExternalVisionFile(const QString& relativePath) const;
+    void setExternalVisionStatus(const QString& state, const QString& detail,
+                                 const QString& color);
+    QString selectedDeviceName(int deviceType) const;
+    bool submitManualDeviceCommand(const QString& commandLine,
+                                   const QString& owner = QStringLiteral("manual/ui"));
+    void performControlledCellStop(const QString& reason);
+    void updateCellStateUi(CellSupervisor::State state, const QString& stateName,
+                           const QString& reason);
+    QVariantList pluginGScriptWorkers(QString* error = nullptr) const;
+    QVariantList pluginValidateGScript(const QString& source,
+                                       QString* error = nullptr) const;
+    bool pluginLoadGScript(int workerIndex, const QString& source,
+                           QString* error = nullptr);
+    bool pluginRunGScript(int workerIndex, const QString& source,
+                          QString* error = nullptr);
+    bool pluginStopGScript(int workerIndex, QString* error = nullptr);
 
     // ========== PRIVATE MEMBER VARIABLES ==========
     
@@ -537,6 +600,8 @@ private:
     // Controllers
     PointToolController* m_pointToolController;
     ImagePipelineController* m_imagePipelineController = nullptr;
+    DeviceCommandBroker* m_deviceCommandBroker = nullptr;
+    CellSupervisor* m_cellSupervisor = nullptr;
     QHash<QString, QMatrix> m_mappingMatrices;
     
 #ifdef Q_OS_WIN
@@ -549,8 +614,20 @@ private:
     QProcess *process = nullptr;
 
     // Plugin Management
-    QList<DeltaXPlugin*>* pluginList;
-    DeltaXPlugin* industrialCameraPlugin;
+    PluginManager* m_pluginManager = nullptr;
+    DeltaXPlugin* industrialCameraPlugin = nullptr;
+    bool industrialCameraBackendAvailable = false;
+    QString industrialCameraBackendStatus;
+    bool m_selectedRobotConnected = false;
+
+    // Responsive application shell
+    QToolButton* m_deviceDockToggle = nullptr;
+    QToolButton* m_systemBarToggle = nullptr;
+    QTabWidget* m_programModes = nullptr;
+    QWidget* m_programPage = nullptr;
+    QList<int> m_splitterSizesBeforeDeviceHide;
+    bool m_deviceDockUserOverride = false;
+    bool m_systemBarUserOverride = false;
 
     // Widget Pointers
     QList<QLabel*>* lbInputValues;
@@ -562,12 +639,43 @@ private:
     // Gcode Editor
     QFileSystemModel explorerModel;
     GCodeHighlighter *highlighter;
+    QTimer* gscriptValidationTimer = nullptr;
+    QLabel* gscriptStatusLabel = nullptr;
+    QLabel* gscriptCursorLabel = nullptr;
+    QTableWidget* gscriptProblemsTable = nullptr;
+    QTableWidget* gscriptWatchTable = nullptr;
+    QTableWidget* gscriptThreadTable = nullptr;
+    QTabWidget* gscriptInspectionTabs = nullptr;
+    QToolButton* gscriptDetailsButton = nullptr;
+    QLineEdit* gscriptWatchEdit = nullptr;
+    QPushButton* gscriptValidateButton = nullptr;
+    QPushButton* gscriptTemplateButton = nullptr;
+    QLabel* gscriptSignatureLabel = nullptr;
+    QLabel* cellStateLabel = nullptr;
+    QPushButton* cellResetButton = nullptr;
+    QTimer* gscriptRuntimeUiTimer = nullptr;
+    QTimer* gscriptCompletionRefreshTimer = nullptr;
+    QSet<QString> gscriptPinnedWatch;
+    QSet<QString> gscriptKnownCompletionKeys;
+    QStringList gscriptAutomaticWatch;
+    int gscriptWatchDocumentRevision = -1;
+    QList<GScriptDiagnostic> gscriptDiagnostics;
+
+    // External Vision/DXV1 status panel
+    QLabel* externalVisionStatusLabel = nullptr;
+    QLabel* externalVisionMetricsLabel = nullptr;
+    QLineEdit* externalVisionPythonEdit = nullptr;
+    quint64 externalVisionFramesSent = 0;
+    quint64 externalVisionResultsReceived = 0;
 
     // Buffer Values
     float encoderLastValue = 0;
     float scheduledStartEncoderValue = 0;
     bool isScheduledEncoder = false;
     QElapsedTimer encoderUpdateTimer;
+    QHash<int, float> m_encoderLastRawPositions;
+    QHash<int, float> m_encoderLastCalibratedPositions;
+    QHash<int, qint64> m_encoderLastSampleEpochMs;
 
     // Optimized Variable Management
     VariableManager* m_variableManager;
@@ -585,6 +693,7 @@ private:
     void updateVariablesOptimized(const QHash<QString, QVariant>& variables);
     void batchUpdateVariables(const QString& prefix, const QHash<QString, QVariant>& variables);
     QVariant getVariableOptimized(const QString& key, const QVariant& defaultValue = QVariant()) const;
+    float applyEncoderCalibration(int id, float rawValue) const;
     
     // Batch processing
     void flushPendingUpdates();

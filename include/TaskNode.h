@@ -6,6 +6,9 @@
 #include <opencv2/highgui.hpp>
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc.hpp>
+#if CV_VERSION_MAJOR >= 5
+#include <opencv2/geometry.hpp>
+#endif
 #include <ImageUnity.h>
 #include <QPixmap>
 #include <QMap>
@@ -83,6 +86,7 @@ public:
     QList<QMetaObject::Connection> InputConnections;
 
 public slots:
+    void SetPassThrough(bool passThrough);
     void Input(cv::Size size);
     void Input(cv::Mat mat);
     void Input2(cv::Mat mat);

@@ -30,9 +30,9 @@
 class RobotWindow;
 
 /**
- * @brief Controller class for Cloud Point Tool UI operations
+ * @brief Controller for interpolated multi-point mapping UI operations
  * 
- * This class manages the advanced cloud point mapping interface,
+ * This class manages the interpolated camera-to-robot mapping interface,
  * providing multi-point calibration and sophisticated interpolation
  * methods for high-precision robot positioning.
  */
@@ -238,6 +238,7 @@ private:
     QLabel* m_avgErrorLabel;                        ///< Average error display
     QLabel* m_maxErrorLabel;                        ///< Maximum error display
     QLabel* m_coverageLabel;                        ///< Coverage display
+    QLabel* m_mappingStatusLabel;                   ///< Validation/ready state display
     
     // Test result displays
     QLineEdit* m_testConfidenceEdit;                ///< Test confidence display  
@@ -327,7 +328,7 @@ private:
     void collectPointsAroundPerimeter(int count);
     
     // Constants
-    static const int COLUMN_COUNT = 8;
+    static const int COLUMN_COUNT = 11;
     static const int COL_INDEX = 0;
     static const int COL_IMAGE_X = 1;
     static const int COL_IMAGE_Y = 2;
@@ -339,7 +340,6 @@ private:
     static const int COL_LABEL = 8;
     static const int COL_ERROR = 9;
     static const int COL_TIMESTAMP = 10;
-    static const int ACTUAL_COLUMN_COUNT = 11;
 };
 
 #endif // CLOUDPOINTTOOLCONTROLLER_H 

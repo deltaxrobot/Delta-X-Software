@@ -1,4 +1,18 @@
 #include "ImageProcessing.h"
+#include <QRegularExpression>
+
+namespace {
+int objectTypeId(const QString& typeName)
+{
+    bool ok = false;
+    const int numeric = typeName.trimmed().toInt(&ok);
+    if (ok)
+        return numeric;
+    const QRegularExpressionMatch match =
+        QRegularExpression(QStringLiteral("(\\d+)\\s*$")).match(typeName);
+    return match.hasMatch() ? match.captured(1).toInt() : 0;
+}
+}
 
 
 ImageProcessing::ImageProcessing()
@@ -8,19 +22,29 @@ ImageProcessing::ImageProcessing()
 
 ImageProcessing::~ImageProcessing()
 {
-    // Stop task threads cleanly
-    for (QThread* thread : taskThreads)
-    {
+    // Destroy every QObject in its owning worker thread before stopping that
+    // event loop. Deleting it later from ImageProcessing's thread violates Qt
+    // affinity and can leave queued cv::Mat deliveries touching freed memory.
+    for (TaskNode* node : taskNodeList) {
+        if (!node)
+            continue;
+        QThread* owner = node->thread();
+        if (owner && owner->isRunning() && owner != QThread::currentThread()) {
+            QMetaObject::invokeMethod(node, [node]() { delete node; },
+                                      Qt::BlockingQueuedConnection);
+        } else {
+            delete node;
+        }
+    }
+    taskNodeList.clear();
+
+    for (QThread* thread : taskThreads) {
         if (!thread)
             continue;
         thread->quit();
         thread->wait(1000);
     }
-
-    // Delete owned nodes and threads
-    qDeleteAll(taskNodeList);
     qDeleteAll(taskThreads);
-    taskNodeList.clear();
     taskThreads.clear();
 }
 
@@ -62,16 +86,32 @@ TaskNode *ImageProcessing::GetNode(QString name)
     return taskNodeList.value(name);
 }
 
+void ImageProcessing::SetObjectsName(QString name)
+{
+    name = name.trimmed();
+    if (name.isEmpty())
+        return;
+    QMutexLocker locker(&configurationMutex);
+    objectsName = name;
+}
+
 void ImageProcessing::GotVisibleObjects(QVector<Object> objects)
 {
     objectInfos.clear();
     for(const Object& visibleObject : objects)
     {
         QVector3D position(visibleObject.X.Real, visibleObject.Y.Real, 0);
-        objectInfos.append(ObjectInfo(-1, visibleObject.Type.toInt(), position, visibleObject.Width.Real, visibleObject.Length.Real, visibleObject.Angle.Real));
+        objectInfos.append(ObjectInfo(-1, objectTypeId(visibleObject.Type), position,
+                                      visibleObject.Width.Real, visibleObject.Length.Real,
+                                      visibleObject.Angle.Real));
     }
 
-    emit mappedDetectedObjects(objectInfos, ObjectsName);
+    QString outputName;
+    {
+        QMutexLocker locker(&configurationMutex);
+        outputName = objectsName;
+    }
+    emit mappedDetectedObjects(objectInfos, outputName);
 }
 
 void ImageProcessing::GotImage(cv::Mat image)

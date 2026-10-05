@@ -1,0 +1,14 @@
+Delta X Software
+Copyright 2018-2026 Doan Hong Trung and Delta X Software contributors
+
+This product includes first-party software developed for the Delta X robotics
+platform and is licensed under the Apache License, Version 2.0.
+
+The Apache-2.0 license applies only to material for which the Delta X Software
+copyright holders and contributors have authority to grant that license.
+Third-party components, vendor SDKs, generated binaries, trained models, names,
+and trademarks remain subject to their respective owners' terms. See
+THIRD_PARTY_NOTICES.md before redistributing a source or binary bundle.
+
+Portions of the code editor example retain copyright notices from The Qt Company
+Ltd. and Digia Plc. Those notices must be preserved.

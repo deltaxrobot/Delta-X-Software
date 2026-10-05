@@ -1,0 +1,24 @@
+{
+  "format": "deltax-block-program",
+  "version": 1,
+  "blocks": [
+    {"type":"comment","fields":{"text":"Delta X 3 adaptation of the 50-cycle subprogram example"},"children":[]},
+    {"type":"home","fields":{"robot":"robot0"},"children":[]},
+    {"type":"device_command","fields":{"device":"robot0","command":"Position","response":"Cycle.Start","timeout":3000},"children":[]},
+    {"type":"assert","fields":{"condition":"#robot0.HOME_Z < -260","message":"Unexpected robot Home Z; canceling cycle test"},"children":[]},
+    {"type":"assert","fields":{"condition":"#robot0.HOME_Z > -330","message":"Home Z lacks clearance for the 100 mm cycle depth"},"children":[]},
+    {"type":"set","fields":{"variable":"Counter","value":"0"},"children":[]},
+    {"type":"repeat","fields":{"count":"50"},"children":[
+      {"type":"set","fields":{"variable":"Counter","value":"#Counter + 1"},"children":[]},
+      {"type":"move","fields":{"robot":"robot0","x":"#robot0.X","y":"#robot0.Y","z":"#robot0.HOME_Z - 80","w":"#robot0.W","speed":"2000","acceleration":"20000"},"children":[]},
+      {"type":"move","fields":{"robot":"robot0","x":"-100","y":"#robot0.Y","z":"#robot0.HOME_Z - 80","w":"#robot0.W","speed":"2000","acceleration":"20000"},"children":[]},
+      {"type":"move","fields":{"robot":"robot0","x":"-100","y":"#robot0.Y","z":"#robot0.HOME_Z - 100","w":"#robot0.W","speed":"2000","acceleration":"20000"},"children":[]},
+      {"type":"move","fields":{"robot":"robot0","x":"-100","y":"#robot0.Y","z":"#robot0.HOME_Z - 80","w":"#robot0.W","speed":"2000","acceleration":"20000"},"children":[]},
+      {"type":"move","fields":{"robot":"robot0","x":"100","y":"#robot0.Y","z":"#robot0.HOME_Z - 80","w":"#robot0.W","speed":"2000","acceleration":"20000"},"children":[]},
+      {"type":"move","fields":{"robot":"robot0","x":"100","y":"#robot0.Y","z":"#robot0.HOME_Z - 100","w":"#robot0.W","speed":"2000","acceleration":"20000"},"children":[]}
+    ]},
+    {"type":"assert","fields":{"condition":"#Counter == 50","message":"Cycle counter did not reach 50"},"children":[]},
+    {"type":"home","fields":{"robot":"robot0"},"children":[]},
+    {"type":"log","fields":{"message":"PASS Delta X 50-cycle block program"},"children":[]}
+  ]
+}

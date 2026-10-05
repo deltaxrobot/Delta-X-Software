@@ -15,7 +15,7 @@ void VersionManager::CheckNewVersion(bool isPopUp)
     HttpManager->get(request);
 
     if (!QSslSocket::supportsSsl()) {
-        qDebug() << "SSL/TLS không được hỗ trợ. Lỗi khởi tạo TLS có thể do thiếu OpenSSL.";
+        qDebug() << "SSL/TLS is unavailable. TLS initialization may have failed because OpenSSL is missing.";
     }
 }
 
@@ -45,7 +45,7 @@ void VersionManager::FinishedRequest(QNetworkReply *reply)
     }
 
     else {
-        qDebug() << "Lỗi khi kiểm tra phiên bản: " << reply->errorString();
+        qDebug() << "Version check failed:" << reply->errorString();
     }
     reply->deleteLater();
 }

@@ -347,6 +347,7 @@ void SettingsManager::resetToDefaults()
 {
     setDefaults();
     saveSettings();
+    emit settingsChanged(QStringLiteral("General"), QStringLiteral("all"));
 }
 
 void SettingsManager::backupSettings(const QString& backupPath)

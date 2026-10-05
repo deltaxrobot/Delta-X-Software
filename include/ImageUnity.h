@@ -13,7 +13,6 @@
 #include <QtGlobal>
 
 #include "opencv2/imgproc/imgproc.hpp"
-#include "opencv2/imgproc/types_c.h"
 
 /*
    Endianness
@@ -36,7 +35,7 @@
    to submit a pull request on the GitHub page.
 */
 #if Q_BYTE_ORDER == Q_BIG_ENDIAN
-           #error Some of QImage's formats are endian-dependant. This file assumes little endian. See comment at top of header.
+           #error "Some QImage formats are endian-dependent; this file requires little endian"
 #endif
 
 namespace ImageTool {

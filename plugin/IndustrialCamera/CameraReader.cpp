@@ -3,17 +3,30 @@
 CameraReader::CameraReader(QObject *parent)
     : QObject{parent}
 {
-    IndustryCamera = new XCamManager();
+    IndustryCamera = new XCamManager(this);
 }
 
 CameraReader::~CameraReader()
 {
-    delete IndustryCamera;
+    // IndustryCamera is a QObject child and is destroyed in this worker thread.
+}
+
+bool CameraReader::HasAvailableBackend() const
+{
+    return IndustryCamera && IndustryCamera->HasAnyBackend();
+}
+
+QString CameraReader::BackendStatus() const
+{
+    return IndustryCamera
+        ? IndustryCamera->RuntimeStatus()
+        : QStringLiteral("Industrial camera manager is unavailable");
 }
 
 void CameraReader::ConnectCamera(int id)
 {
-    bool result = IndustryCamera->ConnectCamera(id);
+    const bool result = IndustryCamera && IndustryCamera->HasAnyBackend() &&
+                        IndustryCamera->ConnectCamera(id);
 
     emit HadConnectingResult(result);
 }
@@ -28,20 +41,20 @@ void CameraReader::DisconnectCamera()
 
 void CameraReader::ShotImage()
 {
-    emit StartedCapture();
-
-    // Thread-safe capture with proper scope
-    QMutex mux;
-    QMutexLocker locker(&mux);
+    QMutexLocker locker(&captureMutex);
     
-    if (!IndustryCamera) {
-        qWarning() << "IndustryCamera is null";
+    if (!IndustryCamera || !IndustryCamera->HasAnyBackend()) {
+        qWarning() << "Industrial camera backend unavailable:" << BackendStatus();
+        emit CaptureFailed(BackendStatus());
         return;
     }
+
+    emit StartedCapture();
     
     uint8_t* imageData = IndustryCamera->Capture();
     if (imageData == nullptr) {
         qWarning() << "Failed to capture image data";
+        emit CaptureFailed("Industrial camera did not return image data");
         return;
     }
 
@@ -51,6 +64,7 @@ void CameraReader::ShotImage()
     // Validate dimensions
     if (Height <= 0 || Width <= 0) {
         qWarning() << "Invalid image dimensions:" << Width << "x" << Height;
+        emit CaptureFailed("Industrial camera returned invalid image dimensions");
         return;
     }
     
@@ -60,6 +74,7 @@ void CameraReader::ShotImage()
         openCvImage = cv::Mat(Height, Width, CV_8UC3, imageData).clone();  // Clone immediately for safety
     } catch (const cv::Exception& e) {
         qWarning() << "OpenCV error creating Mat:" << e.what();
+        emit CaptureFailed(QString("Cannot copy industrial frame: %1").arg(e.what()));
         return;
     }
     
@@ -70,9 +85,10 @@ void CameraReader::ShotImage()
     if (ResizeWidth > 0 && !openCvImage.empty()) {
         ResizeHeight = Height * (static_cast<float>(ResizeWidth) / Width);
         try {
-            cv::resize(openCvImage, openCvImage, cv::Size(ResizeWidth, ResizeHeight), 0, 0, cv::INTER_NEAREST);
+            cv::resize(openCvImage, openCvImage, cv::Size(ResizeWidth, ResizeHeight), 0, 0, cv::INTER_LINEAR);
         } catch (const cv::Exception& e) {
             qWarning() << "OpenCV error during resize:" << e.what();
+            emit CaptureFailed(QString("Cannot resize industrial frame: %1").arg(e.what()));
             return;
         }
     }
@@ -89,10 +105,17 @@ void CameraReader::ShotImage()
 
 void CameraReader::ScanCameras()
 {
-    emit HadCameraList(IndustryCamera->FindCameraList());
+    emit HadCameraList(IndustryCamera ? IndustryCamera->FindCameraList()
+                                     : QStringList());
 }
 
 void CameraReader::GetResizeImageWidth(int width)
 {
     ResizeWidth = width;
+}
+
+void CameraReader::SetExposureTime(int exposureUs)
+{
+    if (IndustryCamera)
+        IndustryCamera->SetExposureTime(exposureUs);
 }

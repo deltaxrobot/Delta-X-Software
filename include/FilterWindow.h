@@ -6,82 +6,15 @@
 #include <qlabel.h>
 #include <QSettings>
 #include <opencv2/opencv.hpp>
+#include <FilterWork.h>
 #include <ImageUnity.h>
 #include <QThread>
-#include <QMutexLocker>
 #include <VariableManager.h>
 #include <QPushButton>
 
 namespace Ui {
 class FilterWindow;
 }
-
-class FilterWork : public QObject
-{
-    Q_OBJECT
-
-public:
-    FilterWork()
-    {
-
-    }
-    ~FilterWork()
-    {
-
-    }
-
-    enum
-    {
-        THRESHOLD = 0,
-        HSV
-    };
-
-    int CurrentFilter = THRESHOLD;
-    QList<int> Paras;
-    bool IsInvert = false;
-    int BlurSize = 1;
-    cv::Mat FilterResult;
-
-public slots:
-    void DoFilter(cv::Mat mat, QList<int> paras, bool isInvert, int blurSize)
-    {
-        Paras = paras;
-
-        if (paras.size() == 1)
-        {
-            CurrentFilter = THRESHOLD;
-
-            cvtColor(mat, mat, CV_BGR2GRAY);
-            cv::threshold(mat, mat, paras.at(0), 255, CV_THRESH_BINARY);
-        }
-        else if (paras.size() == 6)
-        {
-            CurrentFilter = HSV;
-
-            cv::Scalar minScalar(paras.at(0), paras.at(2), paras.at(4));
-            cv::Scalar maxScalar(paras.at(1), paras.at(3), paras.at(5));
-
-            cv::cvtColor(mat, mat, CV_BGR2HSV);
-            cv::inRange(mat, minScalar, maxScalar, mat);
-        }
-
-        IsInvert = isInvert;
-
-        if (isInvert == true)
-        {
-            cv::bitwise_not(mat, mat);
-        }
-
-        BlurSize = blurSize;
-
-        cv::medianBlur(mat, mat, BlurSize);
-
-        emit FinishedFilter(mat);
-    }
-
-signals:
-    void FinishedFilter(cv::Mat);
-};
 
 class FilterWindow : public QDialog
 {
@@ -106,7 +39,8 @@ public:
 	bool IsInvertBinary();
 
     cv::Mat OriginMat;
-    FilterWork* FilterJob;
+    FilterWork* FilterJob = nullptr;
+    QThread* FilterThread = nullptr;
     QString ProjectName = "project0";
 
     QString Prefix = "detect0";
@@ -124,6 +58,8 @@ signals:
 private:
     Ui::FilterWindow *ui;
 
-    QList<int> intParas;};
+    QList<int> intParas;
+    int CurrentFilter = FilterWork::THRESHOLD;
+};
 
 #endif // FILTERWINDOW_H

@@ -1,0 +1,11 @@
+# Legacy binary and user-specific files already tracked by the repository.
+#
+# This is a containment baseline, not an endorsement for redistribution.
+# New entries require an explicit review of provenance, license, necessity,
+# architecture and update/removal strategy. Prefer source or reproducible
+# download instructions over committing generated artifacts.
+3rd-party/QJoysticks/lib/SDL/bin/windows/mingw/SDL2.dll
+3rd-party/QJoysticks/lib/SDL/bin/windows/msvc/x86/SDL2.dll
+3rd-party/QJoysticks/lib/SDL/bin/windows/msvc/x86/SDL2.lib
+3rd-party/QJoysticks/lib/SDL/bin/windows/msvc/x86/SDL2main.lib
+3rd-party/QJoysticks/lib/SDL/bin/windows/msvc/x86/SDL2test.lib

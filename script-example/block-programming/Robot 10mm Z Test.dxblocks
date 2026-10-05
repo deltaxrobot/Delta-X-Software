@@ -1,0 +1,17 @@
+{
+  "format": "deltax-block-program",
+  "version": 1,
+  "blocks": [
+    {"type":"comment","fields":{"text":"Connected robot test: lower Z 10 mm and return"},"children":[]},
+    {"type":"device_command","fields":{"device":"robot0","command":"Position","response":"Motion.Start","timeout":3000},"children":[]},
+    {"type":"log","fields":{"message":"Starting 10 mm downward Z test"},"children":[]},
+    {"type":"assert","fields":{"condition":"#Motion.Start.Z < -295","message":"Start Z is too close to the upper workspace boundary"},"children":[]},
+    {"type":"assert","fields":{"condition":"#Motion.Start.Z > -430","message":"Start Z lacks clearance for a 10 mm downward test"},"children":[]},
+    {"type":"move","fields":{"robot":"robot0","x":"#Motion.Start.X","y":"#Motion.Start.Y","z":"#Motion.Start.Z - 10","w":"#robot0.W","speed":"30","acceleration":"200"},"children":[]},
+    {"type":"delay","fields":{"milliseconds":500},"children":[]},
+    {"type":"move","fields":{"robot":"robot0","x":"#Motion.Start.X","y":"#Motion.Start.Y","z":"#Motion.Start.Z","w":"#robot0.W","speed":"30","acceleration":"200"},"children":[]},
+    {"type":"device_command","fields":{"device":"robot0","command":"Position","response":"Motion.End","timeout":3000},"children":[]},
+    {"type":"assert","fields":{"condition":"#abs(#Motion.End.Z - #Motion.Start.Z) < 1","message":"Robot did not return to the start Z"},"children":[]},
+    {"type":"log","fields":{"message":"PASS robot 10 mm Z test"},"children":[]}
+  ]
+}

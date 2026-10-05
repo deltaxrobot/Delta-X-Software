@@ -932,18 +932,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Điều khiển robot bằng webpage</title>
+    <title>Robot Control Web Page</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
 </head>
 <body>
-  <h1>Điều khiển robot bằng webpage</h1>
-  <button id="btn-left">Di chuyển trái</button>
-  <button id="btn-right">Di chuyển phải</button>
+  <h1>Robot Control Web Page</h1>
+  <button id="btn-left">Move Left</button>
+  <button id="btn-right">Move Right</button>
 
   <script>
   $(document).ready(function() {
     $("#btn-left").click(function() {
-      // Gửi thông điệp "move left" đến server
+      // Send the "move left" message to the server.
       $.ajax({
         url: "http://192.168.1.8:8844",
         method: "POST",
@@ -954,7 +954,7 @@
     });
 
     $("#btn-right").click(function() {
-      // Gửi thông điệp "move right" đến server
+      // Send the "move right" message to the server.
       $.ajax({
         url: "http://192.168.1.8:8844",
         method: "POST",

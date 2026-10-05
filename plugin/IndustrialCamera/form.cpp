@@ -1,13 +1,29 @@
 #include "form.h"
 #include "ui_form.h"
+#include <QStyle>
+
+namespace
+{
+void setStatusRole(QWidget* widget, const char* role)
+{
+    widget->setProperty("statusRole", role);
+    widget->style()->unpolish(widget);
+    widget->style()->polish(widget);
+    widget->update();
+}
+}
 
 Form::Form(QWidget *parent) :
-    QWidget(parent), IndustryCamera(),
+    QWidget(parent),
     ui(new Ui::Form)
 {
     ui->setupUi(this);
 
     CameraReaderWork = new CameraReader();
+    const bool hasIndustrialBackend = CameraReaderWork->HasAvailableBackend();
+    ui->lbBackendStatus->setText(CameraReaderWork->BackendStatus());
+    setStatusRole(ui->lbBackendStatus, hasIndustrialBackend ? "success" : "warning");
+    ui->pbConnectCamera->setEnabled(false);
     CameraReaderWork->moveToThread(new QThread(this));
     connect(CameraReaderWork->thread(), SIGNAL(finished()), CameraReaderWork, SLOT(deleteLater()));
     connect(this, &Form::RequestImage, CameraReaderWork, &CameraReader::ShotImage);
@@ -20,16 +36,29 @@ Form::Form(QWidget *parent) :
     connect(this, &Form::RequestCameraList, CameraReaderWork, &CameraReader::ScanCameras);
     connect(CameraReaderWork, &CameraReader::HadCameraList, this, &Form::GetCameraList);
     connect(this, &Form::UpdateResizeWidth, CameraReaderWork, &CameraReader::GetResizeImageWidth);
+    connect(this, &Form::RequestExposureTime, CameraReaderWork, &CameraReader::SetExposureTime);
 
     CameraReaderWork->thread()->start();
 
-    CameraDisplayUpdatingTimer = new QTimer();
+    CameraDisplayUpdatingTimer = new QTimer(this);
     CameraDisplayUpdatingTimer->setTimerType(Qt::PreciseTimer);
     connect(CameraDisplayUpdatingTimer, SIGNAL(timeout()), this, SLOT(intervalFunction()));
 
     QTimer::singleShot(2000, this, SLOT(on_pbRefresh_clicked()));
 //    emit RequestCameraList();
 
+}
+
+bool Form::HasAvailableBackend() const
+{
+    return CameraReaderWork && CameraReaderWork->HasAvailableBackend();
+}
+
+QString Form::BackendStatus() const
+{
+    return CameraReaderWork
+        ? CameraReaderWork->BackendStatus()
+        : QStringLiteral("Industrial camera backend is unavailable");
 }
 
 Form::~Form()
@@ -64,7 +93,7 @@ void Form::LoadSettings(QSettings *setting)
 
 void Form::SaveSettings(QSettings *setting)
 {
-    bool isOpen = IndustryCamera.IsOpen();
+    bool isOpen = cameraConnected;
     QString cameraName = ui->cbCameraList->currentText();
 
     setting->setValue("IsOpen", isOpen);
@@ -91,7 +120,7 @@ void Form::GetStateLastJob(bool state)
 
 void Form::TryToConnectCamera()
 {
-    for (int i = 0; ui->cbCameraList->count(); i++)
+    for (int i = 0; i < ui->cbCameraList->count(); ++i)
     {
         if (ui->cbCameraList->itemText(i) == cameraName)
         {
@@ -104,6 +133,7 @@ void Form::TryToConnectCamera()
 
 void Form::GetResultOfCameraConnecting(bool result)
 {
+    cameraConnected = result;
     if (result == true)
     {
         ui->lbCameraName->setEnabled(true);
@@ -117,7 +147,10 @@ void Form::GetResultOfCameraConnecting(bool result)
     }
     else
     {
-
+        ui->lbBackendStatus->setText(
+            QStringLiteral("Connection failed. Check camera access, network/USB link and vendor runtime."));
+        setStatusRole(ui->lbBackendStatus, "danger");
+        ui->pbConnectCamera->setText(QStringLiteral("Connect"));
     }
 }
 
@@ -131,6 +164,22 @@ void Form::GetCameraList(QStringList list)
 {
     ui->cbCameraList->clear();
     ui->cbCameraList->addItems(list);
+    const bool hasCamera = !list.isEmpty();
+    ui->pbConnectCamera->setEnabled(hasCamera);
+    if (hasCamera) {
+        ui->lbBackendStatus->setText(
+            QStringLiteral("%1 GigE/USB3 Vision camera(s) found\n%2")
+                .arg(list.size())
+                .arg(BackendStatus()));
+        setStatusRole(ui->lbBackendStatus, "success");
+    } else {
+        ui->lbBackendStatus->setText(
+            HasAvailableBackend()
+                ? QStringLiteral("Runtime ready, but no GigE/USB3 Vision camera was found.\n%1")
+                      .arg(BackendStatus())
+                : BackendStatus());
+        setStatusRole(ui->lbBackendStatus, "warning");
+    }
 }
 
 void Form::on_pbRefresh_clicked()
@@ -144,7 +193,11 @@ void Form::on_pbConnectCamera_clicked()
     {
         if (ui->cbCameraList->count() == 0)
         {
-            QMessageBox::information(this, "Attention", "No camera to connect!");
+            ui->lbBackendStatus->setText(
+                HasAvailableBackend()
+                    ? QStringLiteral("No GigE/USB3 Vision camera is available. Refresh after checking the connection.")
+                    : BackendStatus());
+            setStatusRole(ui->lbBackendStatus, "warning");
             return;
         }
 
@@ -205,7 +258,19 @@ void Form::intervalFunction()
 void Form::on_leExposureTime_returnPressed()
 {
     int exposureTime = ui->leExposureTime->text().toInt();
-    IndustryCamera.SetExposureTime(exposureTime);
+    if (exposureTime > 0)
+        emit RequestExposureTime(exposureTime);
+}
+
+void Form::StopCapture()
+{
+    CameraDisplayUpdatingTimer->stop();
+    cameraConnected = false;
+    emit RequestDisconnectCamera();
+    ui->pbShotVideo->setChecked(false);
+    ui->pbShotVideo->setText("Continious Shot");
+    ui->pbConnectCamera->setText("Connect");
+    ui->cbCameraList->setEnabled(true);
 }
 
 

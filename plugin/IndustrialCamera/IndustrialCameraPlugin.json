@@ -1,3 +1,7 @@
 {
-    "Keys" : [ ]
+    "apiVersion": 2,
+    "pluginVersion": "2.0.0",
+    "name": "industrialcamera",
+    "capabilities": ["camera.capture", "commands", "panel"],
+    "Keys": []
 }

@@ -5,6 +5,10 @@ ImageViewer::ImageViewer(QWidget *parent) :
 {
     ViewerScene = new CustomScene();
     setScene(ViewerScene);
+    const QColor viewerBackground(QStringLiteral("#1E1E20"));
+    ViewerScene->setBackgroundBrush(viewerBackground);
+    setBackgroundBrush(viewerBackground);
+    setFrameShape(QFrame::NoFrame);
 
     ImageItem = new QGraphicsPixmapItem();
     ImageItem->setZValue(-1);
@@ -88,7 +92,7 @@ void ImageViewer::InitParameter()
 
         cQuadangle.SetPolygon(poly);
 
-        VariableManager::instance().updateVar(Prefix + "Quadangle", cQuadangle.GetPolygon());
+        VariableManager::instance().updateVarScoped(ProjectName, Prefix + "Quadangle", cQuadangle.GetPolygon());
 
         emit changedQuadrangle(poly);
     }
@@ -98,7 +102,7 @@ void ImageViewer::InitParameter()
         cArea.SetTopLeft(QPointF(areaOffset, areaOffset));
         cArea.SetBottomRight(QPointF(imgWidth - areaOffset, imgHeight - areaOffset));
 
-        VariableManager::instance().updateVar(Prefix + "Area", cArea.GetValue());
+        VariableManager::instance().updateVarScoped(ProjectName, Prefix + "Area", cArea.GetValue());
 
         emit changedArea(cArea.GetValue());
     }
@@ -107,7 +111,7 @@ void ImageViewer::InitParameter()
     {
         cRect.SetValue(QRectF(200, 200, 30, 15));
 
-        VariableManager::instance().updateVar(Prefix + "Rectangle", cRect.GetValue());
+        VariableManager::instance().updateVarScoped(ProjectName, Prefix + "Rectangle", cRect.GetValue());
 
         emit changedRect(cRect.GetValue());
     }
@@ -118,26 +122,25 @@ void ImageViewer::SaveSetting(QSettings *setting)
     QPointF p1 = cPoint.GetValue();
     QPointF p2 = cPoint2.GetValue();
 
-    VariableManager::instance().Prefix = ProjectName;
-
-    VariableManager::instance().updateVar(Prefix + "Point1", p1);
-    VariableManager::instance().updateVar(Prefix + "Point2", p2);
-    VariableManager::instance().updateVar(Prefix + "Quadangle", cQuadangle.GetPolygon());
-    VariableManager::instance().updateVar(Prefix + "Area", cArea.GetValue());
-    VariableManager::instance().updateVar(Prefix + "Rectangle", cRect.GetValue());
+    QHash<QString, QVariant> values;
+    values.insert(Prefix + "Point1", p1);
+    values.insert(Prefix + "Point2", p2);
+    values.insert(Prefix + "Quadangle", cQuadangle.GetPolygon());
+    values.insert(Prefix + "Area", cArea.GetValue());
+    values.insert(Prefix + "Rectangle", cRect.GetValue());
+    VariableManager::instance().updateBatchScoped(ProjectName, values);
 }
 
 void ImageViewer::LoadSetting(QString prefix = "detect0.")
 {
     Prefix = prefix;
-    VariableManager::instance().Prefix = ProjectName;
 
-    cPoint.SetValue(VariableManager::instance().getVar(prefix + "Point1").toPointF());
-    cPoint2.SetValue(VariableManager::instance().getVar(prefix + "Point2").toPointF());
+    cPoint.SetValue(VariableManager::instance().getVarScoped(ProjectName, prefix + "Point1").toPointF());
+    cPoint2.SetValue(VariableManager::instance().getVarScoped(ProjectName, prefix + "Point2").toPointF());
 
-    cQuadangle.SetPolygon(VariableManager::instance().getVar(prefix + "Quadangle").value<QPolygonF>());
-    cArea.SetValue(VariableManager::instance().getVar(prefix + "Area").toRectF());
-    cRect.SetValue(VariableManager::instance().getVar(prefix + "Rectangle").toRectF());
+    cQuadangle.SetPolygon(VariableManager::instance().getVarScoped(ProjectName, prefix + "Quadangle").value<QPolygonF>());
+    cArea.SetValue(VariableManager::instance().getVarScoped(ProjectName, prefix + "Area").toRectF());
+    cRect.SetValue(VariableManager::instance().getVarScoped(ProjectName, prefix + "Rectangle").toRectF());
 
     emit changedPoints(cPoint.GetValue(), cPoint2.GetValue());
     emit changedQuadrangle(cQuadangle.GetPolygon());
@@ -217,7 +220,7 @@ void ImageViewer::SetQuadrangle(QPolygonF poly)
         }
     }
 
-    VariableManager::instance().updateVar(Prefix + "Quadangle", cQuadangle.GetPolygon());
+    VariableManager::instance().updateVarScoped(ProjectName, Prefix + "Quadangle", cQuadangle.GetPolygon());
 
     SelectQuadrangleTool();
 }
@@ -226,13 +229,13 @@ void ImageViewer::DrawObjects(QList<QPolygonF> polygons) {
     QList<QPolygonF> pls;
     QMap<QString, QPointF> texts;
 
-    int count = qMin(polygons.size(), MAX_DRAWING_OBJECT_NUMBER); // Chỉ xử lý tối đa 100 phần tử
+    int count = qMin(polygons.size(), MAX_DRAWING_OBJECT_NUMBER); // Process at most 100 items.
 
     for(int i = 0; i < count; ++i) {
         const QPolygonF& poly = polygons[i];
         pls.append(poly);
 
-        // Tìm tâm của poly
+        // Find the polygon centre.
         QPointF center = PointTool::GetCenterOfPolygon(poly);
         texts.insert(QString::number(i), QPointF(center.x(), center.y()));
     }
@@ -571,11 +574,9 @@ void ImageViewer::mouseReleaseEvent(QMouseEvent *event)
     QGraphicsView::mouseReleaseEvent(event);
 
     mousePressed = false;
-    VariableManager::instance().Prefix = ProjectName;
-
     if (selectedTool == RECTANGLE_TOOL)
     {
-        VariableManager::instance().updateVar(Prefix + "Rectangle", cRect.GetValue());
+        VariableManager::instance().updateVarScoped(ProjectName, Prefix + "Rectangle", cRect.GetValue());
         emit changedRect(cRect.GetValue());
     }
 
@@ -586,13 +587,13 @@ void ImageViewer::mouseReleaseEvent(QMouseEvent *event)
 
     if (selectedTool == QUADRANGLE_TOOL)
     {
-        VariableManager::instance().updateVar(Prefix + "Quadangle", cQuadangle.GetPolygon());
+        VariableManager::instance().updateVarScoped(ProjectName, Prefix + "Quadangle", cQuadangle.GetPolygon());
         emit changedQuadrangle(cQuadangle.GetPolygon());
     }
 
     if (selectedTool == AREA_TOOL)
     {
-        VariableManager::instance().updateVar(Prefix + "Area", cArea.GetValue());
+        VariableManager::instance().updateVarScoped(ProjectName, Prefix + "Area", cArea.GetValue());
         emit changedArea(cArea.GetValue());
 
 //        SoftwareLog(QString("Crop top left: x = %1, y = %2").arg(cArea.GetValue().topLeft().x()).arg(cArea.GetValue().topLeft().y()));
@@ -726,8 +727,8 @@ void ImageViewer::processPointPressEvent(QPoint mousePos)
             selectedPoint = 0;
         }
 
-        VariableManager::instance().updateVar("Point1", cPoint.GetValue());
-        VariableManager::instance().updateVar("Point2", cPoint2.GetValue());
+        VariableManager::instance().updateVarScoped(ProjectName, Prefix + "Point1", cPoint.GetValue());
+        VariableManager::instance().updateVarScoped(ProjectName, Prefix + "Point2", cPoint2.GetValue());
         emit changedPoints(cPoint.GetValue(), cPoint2.GetValue());
     }
 }

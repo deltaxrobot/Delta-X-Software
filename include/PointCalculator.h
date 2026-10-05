@@ -7,6 +7,9 @@
 #include "QtMatrixCompat.h"
 #include <QPolygonF>
 #include <opencv2/opencv.hpp>
+#if CV_VERSION_MAJOR >= 5
+#include <opencv2/geometry.hpp>
+#endif
 #include <stdexcept>
 
 /**
@@ -27,6 +30,10 @@ public:
         QString displayText;
         bool isValid = false;
         QString errorMessage;
+        double rmsError = 0.0;
+        double maxError = 0.0;
+        double scale = 0.0;
+        double rotationRadians = 0.0;
     };
 
     /**
@@ -48,6 +55,9 @@ public:
         QString displayText;
         bool isValid = false;
         QString errorMessage;
+        double rmsError = 0.0;
+        double maxError = 0.0;
+        double conditionNumber = 0.0;
     };
 
     /**

@@ -1,86 +1,122 @@
 #ifndef VARIABLEMANAGER_H
 #define VARIABLEMANAGER_H
 
-#include <QSettings>
-#include <QVariant>
-//#include <unordered_map>
+#include <QObject>
 #include <QHash>
-#include <mutex>
-#include <string>
+#include <QPointer>
+#include <QReadWriteLock>
+#include <QSet>
+#include <QSettings>
 #include <QStandardItemModel>
-#include <QVector3D>
 #include <QTimer>
-#include <UnityTool.h>
+#include <QVariant>
+#include <QVector>
+#include <QVector3D>
+
 #include <ObjectInfo.h>
 
-class VariableManager : public QObject
+class VariableManager final : public QObject
 {
     Q_OBJECT
 public:
-    // Singleton instance
+    enum class Persistence {
+        Persistent,
+        Runtime
+    };
+    Q_ENUM(Persistence)
+
     static VariableManager& instance();
+
+    // Keys passed to the legacy API are absolute. Project-owned components
+    // must use the scoped API; no mutable global prefix exists anymore.
+    static QString normalizeKey(const QString& key);
+    static QString scopedKey(const QString& scope, const QString& key);
 
     void addItemModel(QStandardItemModel* model);
 
-    void addVar(const QString &key, const QVariant &value);
-    void addVarSilent(const QString &key, const QVariant &value);
+    void addVar(const QString& absoluteKey, const QVariant& value);
+    void addVarSilent(const QString& absoluteKey, const QVariant& value);
+    void updateVar(const QString& absoluteKey, const QVariant& value);
+    void updateVarSilent(const QString& absoluteKey, const QVariant& value);
+    void updateVarAbsolute(const QString& absoluteKey, const QVariant& value);
 
-    // Set variable
-    void updateVar(const QString &key, const QVariant& value);
-    void updateVarSilent(const QString &key, const QVariant& value);
+    void updateVarScoped(const QString& scope, const QString& key,
+                         const QVariant& value,
+                         Persistence persistence = Persistence::Persistent);
+    void updateVarScopedSilent(const QString& scope, const QString& key,
+                               const QVariant& value,
+                               Persistence persistence = Persistence::Persistent);
+    void updateBatchAbsolute(const QHash<QString, QVariant>& values,
+                             Persistence persistence = Persistence::Persistent,
+                             bool notify = true);
+    void updateBatchScoped(const QString& scope,
+                           const QHash<QString, QVariant>& values,
+                           Persistence persistence = Persistence::Persistent,
+                           bool notify = true);
 
-    // Get variable
-    QVariant getVar(const QString &key, QVariant defaultValue = QVariant());
+    QVariant getVar(const QString& absoluteKey,
+                    QVariant defaultValue = QVariant()) const;
+    QVariant getVarScoped(const QString& scope, const QString& key,
+                          QVariant defaultValue = QVariant()) const;
 
-    void removeVar(const QString &key);
-    bool containsSubKey(const QString &key);
-    bool containsFullKey(const QString &key);
+    void removeVar(const QString& absoluteKey);
+    void removeVarScoped(const QString& scope, const QString& key = QString());
+    bool containsSubKey(const QString& absoluteKey) const;
+    bool containsSubKeyScoped(const QString& scope, const QString& key = QString()) const;
+    bool containsFullKey(const QString& absoluteKey) const;
+    bool containsFullKeyScoped(const QString& scope, const QString& key) const;
 
-    void saveToQSettings();
-    // Debounced save to avoid blocking UI on frequent calls
+    // Copy-based object snapshots replace the former raw QVector pointer map.
+    // A reader can never race a tracking writer or dereference a stale pointer.
+    void updateObjectSnapshot(const QString& scope, const QString& listName,
+                              const QVector<ObjectInfo>& objects);
+    void removeObjectSnapshot(const QString& scope, const QString& listName);
+
+    QHash<QString, QVariant> snapshot(bool includeRuntime = true) const;
+    QStringList keys(const QString& scope = QString(),
+                     bool includeRuntime = true) const;
+
     void scheduleSave(int delayMs = 750);
-
-    void loadFromQSettings();
-
-    QSettings *getSettings();
-
-    QString Prefix = "";
-
-    QHash<QString, QVector<ObjectInfo>*> ObjectInfos;
+    QSettings* getSettings();
 
 public slots:
+    void saveToQSettings();
+    void loadFromQSettings();
     void UpdateVarToModel(QString key, QVariant value);
+    void UpdateVarsToModels(QHash<QString, QVariant> values);
+
 signals:
     void varAdded(QString key, QVariant value);
     void varRemoved(QString key);
     void varUpdated(QString key, QVariant value);
+    void varsUpdated(QHash<QString, QVariant> values);
+    void varsRemoved(QStringList keys);
 
 private:
-    // Helper methods for better code organization
-    QVariant getObjectInfoValue(const QString &fullKey) const;
-    QVariant getVariableFromMap(const QString &fullKey, const QVariant &defaultValue) const;
-    bool isValidKey(const QString &key) const;
-    const QString getFullKey(const QString key) const;
-    
-    // Performance optimization helpers
-    bool isLikelyObjectInfoKey(const QString &fullKey) const;
-    void clearKeyCache();
-    const QString& getCachedFullKey(const QString& key) const;
+    explicit VariableManager(QObject* parent = nullptr);
+    Q_DISABLE_COPY_MOVE(VariableManager)
+
+    QVariant getObjectInfoValue(const QString& absoluteKey) const;
     QVariant normalizeInputValue(const QVariant& value) const;
+    void writeOne(const QString& absoluteKey, const QVariant& value,
+                  Persistence persistence, bool notify, bool addedSignal);
+    static bool isSameOrDescendant(const QString& candidate,
+                                   const QString& root);
+    static bool isValidKey(const QString& key);
 
-    VariableManager();
-//    std::map<QString, QVariant> dataMap;
-    QHash<QString, QVariant> dataMap;
-    mutable std::mutex dataMutex;
-    mutable std::mutex objectInfosMutex; // Thread safety for ObjectInfos
-    QSettings settings;
-    QList<QStandardItemModel*> itemModelList;
+    mutable QReadWriteLock m_dataLock;
+    QHash<QString, QVariant> m_data;
+    QSet<QString> m_runtimeKeys;
+
+    mutable QReadWriteLock m_objectLock;
+    QHash<QString, QVector<ObjectInfo>> m_objectSnapshots;
+
+    mutable QReadWriteLock m_modelLock;
+    QList<QPointer<QStandardItemModel>> m_itemModels;
+
+    QSettings m_settings;
     QTimer* m_saveTimer = nullptr;
-    
-    // Performance optimization caches
-    mutable QHash<QString, QString> keyCache;
-    mutable std::mutex keyCacheMutex;
+    bool m_loaded = false;
 };
-
 
 #endif // VARIABLEMANAGER_H

@@ -1,0 +1,18 @@
+{
+  "apiVersion": 3,
+  "pluginVersion": "2.0.0",
+  "name": "deltax.block-programming",
+  "displayName": "Block Programming",
+  "stability": "experimental",
+  "defaultEnabled": false,
+  "capabilities": [
+    "commands",
+    "panel"
+  ],
+  "permissions": [
+    "gscript.edit",
+    "gscript.read",
+    "gscript.run",
+    "health.report"
+  ]
+}

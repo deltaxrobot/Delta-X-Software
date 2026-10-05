@@ -4,11 +4,15 @@
 #include <QTextEdit>
 #include <QTextDocument>
 #include <QObject>
+#include <QHash>
+#include <QStringList>
 
 QT_BEGIN_NAMESPACE
 class QPaintEvent;
 class QResizeEvent;
 class QSize;
+class QCompleter;
+class QStringListModel;
 class QWidget;
 QT_END_NAMESPACE
 
@@ -26,6 +30,10 @@ public:
     void lineNumberAreaPaintEvent(QPaintEvent *event);
     int lineNumberAreaWidth();
     void setTabWidth(int width);
+    void setDiagnosticLines(const QHash<int, int>& lines);
+    void setExecutionLine(int oneBasedLine);
+    void goToLine(int oneBasedLine);
+    void setCompletionWords(const QStringList& words);
 
 protected:
     void resizeEvent(QResizeEvent *event) override;
@@ -41,10 +49,18 @@ public slots:
 
 private:
     QWidget *lineNumberArea;
+    QHash<int, int> diagnosticLines;
+    int executionLine = -1;
+    QCompleter* completer = nullptr;
+    QStringListModel* completionModel = nullptr;
 
     void commentSelectedLines();
     void indentText();
     void deleleIndentText();
+    void refreshExtraSelections();
+    QString completionPrefix() const;
+    void insertCompletion(const QString& completion);
+    void showCompletionPopup(bool force = false);
 
 signals:
     void lineClicked(int lineNumber, QString lineText);

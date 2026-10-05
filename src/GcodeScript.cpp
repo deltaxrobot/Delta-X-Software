@@ -3,7 +3,51 @@
 */
 
 #include "GcodeScript.h"
+#include <atomic>
+#include <QPointer>
+#include <QMutexLocker>
+#include <QReadLocker>
+#include <QWriteLocker>
+#include <QMetaEnum>
+
+namespace {
+std::atomic<quint64> g_nextVisionRequestId{1};
+QMutex g_deviceLeaseMutex;
+QHash<QString, QPointer<GcodeScript>> g_deviceLeases;
+
+quint64 nextVisionRequestId()
+{
+    return g_nextVisionRequestId.fetch_add(1, std::memory_order_relaxed);
+}
+
+bool isDeviceFaultResponse(const QString& response)
+{
+    const QString text = response.trimmed();
+    return text.contains(QStringLiteral("error"), Qt::CaseInsensitive) ||
+           text.startsWith(QStringLiteral("Unknown:"), Qt::CaseInsensitive) ||
+           text.startsWith(QStringLiteral("Delta:EStop"), Qt::CaseInsensitive) ||
+           text.compare(QStringLiteral("Delta:Stop"), Qt::CaseInsensitive) == 0 ||
+           text.compare(QStringLiteral("Delta:Pause"), Qt::CaseInsensitive) == 0;
+}
+
+QString stripInlineComment(const QString& input)
+{
+    bool inSingleQuote = false;
+    bool inDoubleQuote = false;
+    for (int i = 0; i < input.size(); ++i) {
+        const QChar character = input.at(i);
+        if (character == '\'' && !inDoubleQuote)
+            inSingleQuote = !inSingleQuote;
+        else if (character == '"' && !inSingleQuote)
+            inDoubleQuote = !inDoubleQuote;
+        else if (character == ';' && !inSingleQuote && !inDoubleQuote)
+            return input.left(i);
+    }
+    return input;
+}
+}
 #include "CloudPointMapper.h"
+#include "PluginExtensionRegistry.h"
 #include "VariableManager.h"
 #include "SoftwareManager.h"
 #include <QStandardPaths>
@@ -21,17 +65,24 @@ static constexpr QRegularExpression::PatternOptions kRegexOptimizeOption = QRegu
 static constexpr QRegularExpression::PatternOptions kRegexOptimizeOption = QRegularExpression::OptimizeOnFirstUsageOption;
 #endif
 
-const QRegularExpression GcodeScript::m98Regex("M98\\s+([A-Za-z][A-Za-z0-9]*)(?:\\((.*)\\))?", kRegexOptimizeOption);
+const QRegularExpression GcodeScript::m98Regex(
+    "M98\\s+([A-Za-z][A-Za-z0-9_]*)(?:\\((.*)\\))?",
+    kRegexOptimizeOption | QRegularExpression::CaseInsensitiveOption);
 const QRegularExpression GcodeScript::objectInAreaRegex("\\(([^)]+)\\)", kRegexOptimizeOption);
 
 // Initialize cloud point mapper member variables
 GcodeScript::GcodeScript(QObject* parent)
     : QObject(parent)
+    , isRunning(false)
     , m_cloudPointMapper(nullptr)
     , m_cloudPointMapperInitialized(false)
     , returnPointerOrder(-1)
     , IsConveyorSync(false)
 {
+    qRegisterMetaType<GScriptDiagnostic>("GScriptDiagnostic");
+    qRegisterMetaType<QList<GScriptDiagnostic>>("QList<GScriptDiagnostic>");
+    qRegisterMetaType<GcodeScript::ExecutionState>("GcodeScript::ExecutionState");
+
     // Initialize array
     for (int i = 0; i < 20; i++) {
         returnSubProPointer[i] = -1;
@@ -43,6 +94,7 @@ GcodeScript::GcodeScript(QObject* parent)
 
 GcodeScript::~GcodeScript()
 {
+    releaseDeviceLease(transmitDeviceId);
     if (m_cloudPointMapper) {
         delete m_cloudPointMapper;
     }
@@ -67,6 +119,13 @@ CloudPointMapper* GcodeScript::getCloudPointMapper()
     if (!m_cloudPointMapperInitialized) {
         initializeCloudPointMapper();
     }
+    if (m_cloudPointMapper && m_cloudPointMapperProject != ProjectName) {
+        m_cloudPointMapper->clearMapping();
+        m_cloudPointMapperProject = ProjectName;
+        const QString variableName = VariableManager::scopedKey(ProjectName, QStringLiteral("CloudMapping"));
+        if (VariableManager::instance().containsFullKey(variableName + QStringLiteral("_mapping")))
+            m_cloudPointMapper->importFromVariableManager(variableName);
+    }
     return m_cloudPointMapper;
 }
 
@@ -83,16 +142,19 @@ bool GcodeScript::isCloudPointMapperAvailable()
 
 void GcodeScript::SetGcodeScript(QString gcode)
 {
+    QWriteLocker locker(&scriptMetadataLock);
     gcodeScript = gcode;
 }
 
 QString GcodeScript::GetGcodeScript()
 {
+    QReadLocker locker(&scriptMetadataLock);
     return gcodeScript;
 }
 
 void GcodeScript::SetProgramPath(QString path)
 {
+    QWriteLocker locker(&scriptMetadataLock);
     programPath = path;
     QFileInfo fileInfo(programPath);
     programName = fileInfo.fileName();
@@ -100,23 +162,92 @@ void GcodeScript::SetProgramPath(QString path)
 
 QString GcodeScript::GetProgramPath()
 {
+    QReadLocker locker(&scriptMetadataLock);
     return programPath;
 }
 
 QString GcodeScript::GetProgramName()
 {
+    QReadLocker locker(&scriptMetadataLock);
     return programName;
 }
 
 bool GcodeScript::IsRunning()
 {
-    return isRunning;
+    return isRunning.load(std::memory_order_acquire);
+}
+
+GcodeScript::ExecutionState GcodeScript::State() const
+{
+    return executionState.load(std::memory_order_acquire);
+}
+
+QList<GScriptDiagnostic> GcodeScript::Validate(const QString& source) const
+{
+    return GScriptAnalyzer::analyze(source).diagnostics;
 }
 
 void GcodeScript::ExecuteGcode(QString gcodes, int startMode)
 {
+    if (isRunning) {
+        GScriptDiagnostic diagnostic;
+        diagnostic.severity = GScriptDiagnostic::Error;
+        diagnostic.code = "GSR1001";
+        diagnostic.message = "This program thread is already running.";
+        diagnostic.hint = "Stop the active run before starting another program.";
+        emit DiagnosticsReady({diagnostic});
+        emit LogMessage(diagnostic.message);
+        return;
+    }
+
+    // QTextEdit normalizes line endings, while files received through the CLI
+    // retain Windows CRLF. Normalize once at the runtime boundary so tokens,
+    // labels and subprogram names never contain a trailing carriage return.
+    gcodes.replace(QStringLiteral("\r\n"), QStringLiteral("\n"));
+    gcodes.replace(QLatin1Char('\r'), QLatin1Char('\n'));
+
+    setExecutionState(ExecutionState::Validating, "Validating program");
+    const GScriptAnalysisResult analysis = GScriptAnalyzer::analyze(gcodes);
+    emit DiagnosticsReady(analysis.diagnostics);
+    if (analysis.hasErrors()) {
+        QString firstError;
+        for (const GScriptDiagnostic& diagnostic : analysis.diagnostics) {
+            if (diagnostic.severity == GScriptDiagnostic::Error) {
+                firstError = QString("Line %1: %2")
+                                 .arg(diagnostic.line)
+                                 .arg(diagnostic.message);
+                break;
+            }
+        }
+        const QString message = QString("Validation failed: %1 error(s), %2 warning(s).%3")
+                                    .arg(analysis.errorCount())
+                                    .arg(analysis.warningCount())
+                                    .arg(firstError.isEmpty()
+                                             ? QString()
+                                             : QString(" %1").arg(firstError));
+        publishExecutionVariable("Running", false);
+        publishExecutionVariable("Succeeded", false);
+        publishExecutionVariable("LastError", message);
+        publishExecutionVariable("FinishedAt",
+                                 QDateTime::currentDateTimeUtc().toString(Qt::ISODateWithMs));
+        setExecutionState(ExecutionState::Faulted, message);
+        emit LogMessage(message);
+        emit ExecutionFinished(false, message);
+        emit Finished();
+        return;
+    }
+
+    SetGcodeScript(gcodes);
     isRunning = true;
-    SoftwareManager::GetInstance()->RunningScriptThreadNumber++;
+    SoftwareManager::GetInstance()->ScriptStarted();
+    setExecutionState(ExecutionState::Running, "Program running");
+    publishExecutionVariable("Running", true);
+    publishExecutionVariable("Program", GetProgramName());
+    publishExecutionVariable("StartedAt",
+                             QDateTime::currentDateTimeUtc().toString(Qt::ISODateWithMs));
+    publishExecutionVariable("LastError", QString());
+    publishExecutionVariable("Response", QString());
+    publishExecutionVariable("ActiveCondition", QString());
 
     QList<QString> tempGcodeList = gcodes.split('\n');
 
@@ -128,6 +259,14 @@ void GcodeScript::ExecuteGcode(QString gcodes, int startMode)
     transmitDeviceId.clear();
     waitForHomePosition = false;
     pendingResponseToken++;
+    expectedVisionRequestId = 0;
+    pendingResponseVariable.clear();
+    pendingConditionExpression.clear();
+    pendingConditionMessage.clear();
+    pendingConditionTimeoutMs = 0;
+    pendingConditionPollMs = 20;
+    pendingConditionToken = 0;
+    ActiveDevice = DefaultRobot;
     
     // Clear IF block stack when starting new script
     ifBlockStack.clear();
@@ -192,6 +331,66 @@ void GcodeScript::GetResponse(QString deviceId, QString response)
     if (!isRunning)
         return;
 
+    if (deviceId == transmitDeviceId && deviceId.startsWith("vision"))
+    {
+        const QStringList parts = response.split(':');
+        if ((response.startsWith("FrameReady:") || response.startsWith("VisionError:")) &&
+            parts.size() >= 2)
+        {
+            bool ok = false;
+            const quint64 responseRequestId = parts.at(1).toULongLong(&ok);
+            if (!ok || responseRequestId != expectedVisionRequestId)
+                return; // A preview or another script's request may share visionN.
+
+            if (response.startsWith("VisionError:")) {
+                const QString message = QString("Vision request %1 failed: %2")
+                                            .arg(responseRequestId)
+                                            .arg(parts.mid(2).join(':'));
+                saveRuntimeVariable("Response", response);
+                saveRuntimeVariable("LastError", message);
+                emit LogMessage(message);
+                expectedVisionRequestId = 0;
+                finishExecution(true, message, true);
+                return;
+            }
+        }
+        else
+        {
+            return; // Never unblock a vision wait with an uncorrelated response.
+        }
+    }
+
+    if (deviceId == transmitDeviceId && response.startsWith("TrackingFault:"))
+    {
+        saveRuntimeVariable("Response", response);
+        const QString message = QString("Tracking health fault: %1 (%2).")
+                                    .arg(response, deviceId);
+        saveRuntimeVariable("LastError", message);
+        emit LogMessage(message);
+        finishExecution(true, message, true);
+        return;
+    }
+
+    if (deviceId == transmitDeviceId &&
+        (response == "CompleteRejected" || response == "ReleaseRejected"))
+    {
+        saveRuntimeVariable("Response", response);
+        const QString message = QString("Tracking ownership operation failed: %1 (%2).")
+                                    .arg(response, deviceId);
+        saveRuntimeVariable("LastError", message);
+        emit LogMessage(message);
+        finishExecution(true, message, true);
+        return;
+    }
+
+    if (deviceId == transmitDeviceId && isDeviceFaultResponse(response))
+    {
+        const QString message = QString("Device %1 rejected '%2': %3")
+                                    .arg(deviceId, transmitMsg, response.trimmed());
+        faultExecution(message, true);
+        return;
+    }
+
     if (checkExclution(response))
         return;
 
@@ -214,25 +413,36 @@ void GcodeScript::GetResponse(QString deviceId, QString response)
     processResponse(response);
     if (deviceId == transmitDeviceId)
     {
+        // Invalidate the timeout immediately. The next statement may be local
+        // and must not inherit a completed device wait.
+        pendingResponseToken++;
+        expectedVisionRequestId = 0;
         this->response = response;
-        saveVariable("Response", response);
+        saveRuntimeVariable("Response", response);
+        publishExecutionVariable("Response", response);
+        if (!pendingResponseVariable.isEmpty())
+            saveVariable(pendingResponseVariable, response);
+        pendingResponseVariable.clear();
+        releaseDeviceLease(deviceId);
+        setExecutionState(ExecutionState::Running, "Device response received");
         TransmitNextGcode();
     }
 }
 
 void GcodeScript::SendMsgToDevice(QString deviceId, QString msg)
 {
-    transmitDeviceId = deviceId;
-    transmitMsg = msg;
-    pendingResponseToken++;
-    emit SendGcodeToDevice(deviceId, msg);
-    startPendingResponseTimeout(deviceId, msg);
+    beginDeviceRequest(deviceId, msg, 120000);
 }
 
 void GcodeScript::TransmitNextGcode()
 {
     if (!isRunning)
         return;
+
+    const ExecutionState currentState = executionState.load(std::memory_order_acquire);
+    if (currentState == ExecutionState::WaitingForDevice ||
+        currentState == ExecutionState::WaitingForTimer)
+        setExecutionState(ExecutionState::Running, "Program running");
 
     if (gcodeOrder >= gcodeList.size())
     {
@@ -244,6 +454,8 @@ void GcodeScript::TransmitNextGcode()
     while (true)
     {
         currentLine = gcodeList.at(gcodeOrder);
+        publishExecutionVariable("CurrentLine", gcodeOrder + 1);
+        publishExecutionVariable("CurrentSource", currentLine);
         bool isGcode = true;
 
         if (currentLine == "")
@@ -266,6 +478,14 @@ void GcodeScript::TransmitNextGcode()
 
             isGcode = findExeGcodeAndTransmit();
         }
+
+        // The last instruction may still be awaiting its asynchronous result.
+        // Only its completion callback may finish the program in that case.
+        const ExecutionState state = executionState.load(std::memory_order_acquire);
+        if (!isRunning || state == ExecutionState::WaitingForDevice ||
+            state == ExecutionState::WaitingForTimer ||
+            state == ExecutionState::WaitingForCondition)
+            break;
 
         if (gcodeOrder >= gcodeList.size())
         {
@@ -310,10 +530,25 @@ void GcodeScript::ExecuteFunction(QString functionName, QStringList paras)
 
 void GcodeScript::Stop()
 {
+    if (!isRunning) {
+        setExecutionState(ExecutionState::Idle, "Ready");
+        return;
+    }
+    setExecutionState(ExecutionState::Stopping, "Stopping program");
     finishExecution(true, "GScript execution stopped.");
 }
 
-void GcodeScript::finishExecution(bool abortActiveMotion, const QString& reason)
+void GcodeScript::setExecutionState(ExecutionState state, const QString& message)
+{
+    executionState.store(state, std::memory_order_release);
+    const QMetaEnum stateMeta = QMetaEnum::fromType<ExecutionState>();
+    publishExecutionVariable("State", QString::fromLatin1(stateMeta.valueToKey(static_cast<int>(state))));
+    publishExecutionVariable("StateMessage", message);
+    emit ExecutionStateChanged(state, message);
+}
+
+void GcodeScript::finishExecution(bool abortActiveMotion, const QString& reason,
+                                  bool faulted)
 {
     if (!isRunning)
         return;
@@ -323,6 +558,10 @@ void GcodeScript::finishExecution(bool abortActiveMotion, const QString& reason)
 
     isRunning = false;
     pendingResponseToken++;
+    pendingConditionToken = 0;
+    pendingConditionExpression.clear();
+    pendingConditionMessage.clear();
+    expectedVisionRequestId = 0;
     waitForHomePosition = false;
     response.clear();
     transmitMsg.clear();
@@ -330,9 +569,9 @@ void GcodeScript::finishExecution(bool abortActiveMotion, const QString& reason)
 
     if (abortActiveMotion && !activeDeviceId.isEmpty())
         requestActiveDeviceStop(activeDeviceId, activeMsg);
+    releaseDeviceLease(activeDeviceId);
 
-    if (SoftwareManager::GetInstance()->RunningScriptThreadNumber > 0)
-        SoftwareManager::GetInstance()->RunningScriptThreadNumber--;
+    SoftwareManager::GetInstance()->ScriptFinished();
 
     gcodeList.clear();
     gcodeNumberList.clear();
@@ -355,6 +594,22 @@ void GcodeScript::finishExecution(bool abortActiveMotion, const QString& reason)
     if (!reason.isEmpty())
         emit LogMessage(reason);
 
+    const bool userStopped = reason == QStringLiteral("GScript execution stopped.");
+    const bool success = !faulted && !userStopped;
+    publishExecutionVariable("Running", false);
+    publishExecutionVariable("Succeeded", success);
+    publishExecutionVariable("ActiveCondition", QString());
+    publishExecutionVariable("FinishedAt",
+                             QDateTime::currentDateTimeUtc().toString(Qt::ISODateWithMs));
+    if (faulted)
+        setExecutionState(ExecutionState::Faulted, reason);
+    else if (userStopped)
+        setExecutionState(ExecutionState::Idle, reason);
+    else
+        setExecutionState(ExecutionState::Completed,
+                          reason.isEmpty() ? QStringLiteral("Program completed") : reason);
+
+    emit ExecutionFinished(success, reason);
     emit Finished();
 }
 
@@ -405,6 +660,8 @@ void GcodeScript::requestActiveDeviceStop(const QString& deviceId, const QString
 
 void GcodeScript::startPendingResponseTimeout(const QString& deviceId, const QString& msg, int timeoutMs)
 {
+    setExecutionState(ExecutionState::WaitingForDevice,
+                      QString("Waiting for %1").arg(deviceId));
     const quint64 expectedToken = pendingResponseToken;
     QTimer::singleShot(timeoutMs, this, [this, deviceId, msg, expectedToken]() {
         if (!isRunning)
@@ -420,10 +677,132 @@ void GcodeScript::startPendingResponseTimeout(const QString& deviceId, const QSt
             QString("GScript timed out waiting for %1 to respond to '%2'.").arg(deviceId, msg);
 
         response = "Timeout";
-        saveVariable("Response", response);
-        saveVariable("LastError", timeoutMessage);
+        saveRuntimeVariable("Response", response);
+        saveRuntimeVariable("LastError", timeoutMessage);
+        publishExecutionVariable("Response", response);
+        publishExecutionVariable("LastError", timeoutMessage);
         emit LogMessage(timeoutMessage);
-        finishExecution(true, "GScript execution stopped after a device response timeout.");
+        finishExecution(true, "GScript execution stopped after a device response timeout.", true);
+    });
+}
+
+bool GcodeScript::beginDeviceRequest(const QString& deviceId, const QString& msg,
+                                     int timeoutMs, const QString& responseVariable)
+{
+    const QString normalizedDevice = deviceId.trimmed().toLower();
+    const QString normalizedMessage = msg.trimmed();
+    static const QRegularExpression devicePattern(
+        QStringLiteral("^(robot|conveyor|encoder|slider|device)\\d+$"),
+        QRegularExpression::CaseInsensitiveOption);
+
+    const bool pluginDevice =
+        PluginExtensionRegistry::instance().hasDevice(normalizedDevice);
+    if ((!devicePattern.match(normalizedDevice).hasMatch() && !pluginDevice) ||
+        normalizedMessage.isEmpty()) {
+        faultExecution(QString("Invalid device request: device='%1', command='%2'.")
+                           .arg(deviceId, msg));
+        return false;
+    }
+
+    QString busyOwnerId;
+    {
+        QMutexLocker locker(&g_deviceLeaseMutex);
+        const QPointer<GcodeScript> owner = g_deviceLeases.value(normalizedDevice);
+        if (owner && owner != this)
+            busyOwnerId = owner->ID;
+        else
+            g_deviceLeases.insert(normalizedDevice, this);
+    }
+    if (!busyOwnerId.isEmpty()) {
+        faultExecution(QString("Device %1 is busy in G-Script %2.")
+                           .arg(normalizedDevice, busyOwnerId));
+        return false;
+    }
+
+    transmitDeviceId = normalizedDevice;
+    transmitMsg = normalizedMessage;
+    pendingResponseVariable = cleanedVarName(responseVariable);
+    pendingResponseToken++;
+    publishExecutionVariable("ActiveDevice", transmitDeviceId);
+    publishExecutionVariable("ActiveCommand", transmitMsg);
+    setExecutionState(ExecutionState::WaitingForDevice,
+                      QString("Waiting for %1").arg(transmitDeviceId));
+    emit SendGcodeToDevice(transmitDeviceId, transmitMsg);
+    startPendingResponseTimeout(transmitDeviceId, transmitMsg,
+                                qBound(10, timeoutMs, 86400000));
+    return true;
+}
+
+void GcodeScript::releaseDeviceLease(const QString& deviceId)
+{
+    const QString normalizedDevice = deviceId.trimmed().toLower();
+    if (normalizedDevice.isEmpty())
+        return;
+    QMutexLocker locker(&g_deviceLeaseMutex);
+    if (g_deviceLeases.value(normalizedDevice) == this)
+        g_deviceLeases.remove(normalizedDevice);
+}
+
+bool GcodeScript::isExplicitDeviceToken(const QString& token) const
+{
+    static const QRegularExpression devicePattern(
+        QStringLiteral("^(robot|conveyor|encoder|slider|device)\\d+$"),
+        QRegularExpression::CaseInsensitiveOption);
+    return devicePattern.match(token.trimmed()).hasMatch() ||
+           PluginExtensionRegistry::instance().hasDevice(token.trimmed());
+}
+
+void GcodeScript::publishExecutionVariable(const QString& name, const QVariant& value)
+{
+    VariableManager::instance().updateVarScoped(
+        ProjectName, QString("GScript.%1.%2").arg(ID, name), value,
+        VariableManager::Persistence::Runtime);
+}
+
+void GcodeScript::faultExecution(const QString& message, bool abortActiveMotion)
+{
+    saveRuntimeVariable("LastError", message);
+    publishExecutionVariable("LastError", message);
+    finishExecution(abortActiveMotion, message, true);
+}
+
+void GcodeScript::pollPendingCondition()
+{
+    if (!isRunning || pendingConditionToken == 0 ||
+        pendingConditionToken != pendingResponseToken)
+        return;
+
+    bool ok = false;
+    const double value = calculateExpressions(pendingConditionExpression)
+                             .trimmed().toDouble(&ok);
+    if (ok && !qFuzzyIsNull(static_cast<float>(value))) {
+        pendingConditionToken = 0;
+        pendingConditionExpression.clear();
+        pendingConditionMessage.clear();
+        publishExecutionVariable("ActiveCondition", QString());
+        setExecutionState(ExecutionState::Running, QStringLiteral("Program running"));
+        TransmitNextGcode();
+        return;
+    }
+
+    if (pendingConditionTimer.isValid() &&
+        pendingConditionTimer.elapsed() >= pendingConditionTimeoutMs) {
+        const QString message = pendingConditionMessage.isEmpty()
+            ? QString("Condition timed out after %1 ms: %2")
+                  .arg(pendingConditionTimeoutMs)
+                  .arg(pendingConditionExpression)
+            : pendingConditionMessage;
+        pendingConditionToken = 0;
+        publishExecutionVariable("ActiveCondition", QString());
+        faultExecution(message);
+        return;
+    }
+
+    const quint64 expectedToken = pendingConditionToken;
+    QTimer::singleShot(pendingConditionPollMs, this, [this, expectedToken]() {
+        if (pendingConditionToken != expectedToken)
+            return;
+        pollPendingCondition();
     });
 }
 
@@ -446,12 +825,10 @@ void GcodeScript::prepareCurrentLine()
 
 bool GcodeScript::shouldSkipLine()
 {
-    if (currentLine.isEmpty() || currentLine.at(0) == ';') {
+    currentLine = stripInlineComment(currentLine).trimmed();
+    if (currentLine.isEmpty()) {
         gcodeOrder++;
         return true;
-    }
-    if(currentLine.contains(";")) {
-        currentLine = currentLine.split(";").at(0);
     }
     return false;
 }
@@ -645,10 +1022,10 @@ float GcodeScript::GetResultOfMathFunction(QString expression)
 
     QString functionName = expression.mid(1, p1 - 1);
     QString value = expression.mid(p1 + 1,  p2 - p1 - 1);
-    QString cleanValue = value.replace(" ", "");  // Táº¡o báº£n sao Ä‘á»ƒ xá»­ lÃ½
+    QString cleanValue = value.replace(" ", "");  // Create a normalized copy for parsing.
     QStringList values = cleanValue.split(',');
 
-    // Xá»­ lÃ½ trÆ°á»ng há»£p khÃ´ng cÃ³ dáº¥u pháº©y (hÃ m 1 tham sá»‘ hoáº·c khÃ´ng tham sá»‘)
+    // Handle a function with zero or one argument and no comma.
     if (value.indexOf(',') == -1 && !value.isEmpty())
     {
         values.clear();
@@ -942,12 +1319,12 @@ float GcodeScript::GetResultOfMathFunction(QString expression)
 
     // ======== OBJECT MANAGEMENT FUNCTIONS ========
 
-    // Set object picked: #setObjectPicked(index) hoặc #setObjectPicked(listName, index)
+    // Set object picked: #setObjectPicked(index) or #setObjectPicked(listName, index)
     if (functionName.toLower() == "setobjectpicked")
     {
         if (values.size() == 1) {
-            // #setObjectPicked(#PickableObjects.[#i]) - sử dụng resultListName từ context
-            // Tạm thời dùng "PickableObjects" làm default, có thể cần customize
+            // #setObjectPicked(#PickableObjects.[#i]) uses the list name from context.
+            // Keep "PickableObjects" as the compatibility default.
             return setObjectPickedByIndex("PickableObjects", values[0].toInt());
         } else if (values.size() >= 2) {
             // #setObjectPicked("Objects", #PickableObjects.[#i])
@@ -984,7 +1361,8 @@ float GcodeScript::cloudPointAddCalibration(float imageX, float imageY, float im
     
     // Auto-export to variables after adding point
     if (index >= 0) {
-        mapper->exportToVariableManager("CloudMapping");
+        mapper->exportToVariableManager(
+            VariableManager::scopedKey(ProjectName, QStringLiteral("CloudMapping")));
     }
     
     return static_cast<float>(index);
@@ -1095,11 +1473,11 @@ QString GcodeScript::cloudPointGetStats()
     CloudPointMapper::MappingStats stats = mapper->getMappingStats();
     
     QString statsText;
-    statsText += QString("Points: %1, ").arg(stats.totalPoints);
-    statsText += QString("Avg Error: %1mm, ").arg(stats.averageError, 0, 'f', 2);
-    statsText += QString("Max Error: %1mm, ").arg(stats.maxError, 0, 'f', 2);
-    statsText += QString("Coverage: %1%, ").arg(stats.coverage, 0, 'f', 1);
-    statsText += QString("Valid: %1").arg(stats.isValid ? "Yes" : "No");
+    statsText += QString("Reference pairs: %1, ").arg(stats.totalPoints);
+    statsText += QString("Mean residual: %1 mm, ").arg(stats.averageError, 0, 'f', 2);
+    statsText += QString("Maximum residual: %1 mm, ").arg(stats.maxError, 0, 'f', 2);
+    statsText += QString("Image-area coverage: %1%, ").arg(stats.coverage, 0, 'f', 1);
+    statsText += QString("Validation: %1").arg(stats.isValid ? "Passed" : "Not passed");
     
     return statsText;
 }
@@ -1147,7 +1525,8 @@ float GcodeScript::cloudPointBuildGrid(float resolution)
     
     if (success) {
         // Auto-export to variables after building grid
-        mapper->exportToVariableManager("CloudMapping");
+        mapper->exportToVariableManager(
+            VariableManager::scopedKey(ProjectName, QStringLiteral("CloudMapping")));
     }
     
     return success ? 1.0f : 0.0f;
@@ -1197,7 +1576,8 @@ float GcodeScript::cloudPointLoad(QString filename)
     
     if (success) {
         // Auto-export to variables after loading
-        mapper->exportToVariableManager("CloudMapping");
+        mapper->exportToVariableManager(
+            VariableManager::scopedKey(ProjectName, QStringLiteral("CloudMapping")));
     }
     
     return success ? 1.0f : 0.0f;
@@ -1214,7 +1594,8 @@ float GcodeScript::cloudPointExport(QString variableName)
         variableName = "CloudMapping";
     }
     
-    bool success = mapper->exportToVariableManager(variableName);
+    bool success = mapper->exportToVariableManager(
+        VariableManager::scopedKey(ProjectName, variableName));
     return success ? 1.0f : 0.0f;
 }
 
@@ -1229,7 +1610,8 @@ float GcodeScript::cloudPointImport(QString variableName)
         variableName = "CloudMapping";
     }
     
-    bool success = mapper->importFromVariableManager(variableName);
+    bool success = mapper->importFromVariableManager(
+        VariableManager::scopedKey(ProjectName, variableName));
     return success ? 1.0f : 0.0f;
 }
 
@@ -1244,7 +1626,8 @@ float GcodeScript::cloudPointRemove(int index)
     
     if (success) {
         // Auto-export to variables after removing point
-        mapper->exportToVariableManager("CloudMapping");
+        mapper->exportToVariableManager(
+            VariableManager::scopedKey(ProjectName, QStringLiteral("CloudMapping")));
     }
     
     return success ? 1.0f : 0.0f;
@@ -1264,7 +1647,8 @@ float GcodeScript::cloudPointUpdate(int index, float imageX, float imageY, float
     
     if (success) {
         // Auto-export to variables after updating point
-        mapper->exportToVariableManager("CloudMapping");
+        mapper->exportToVariableManager(
+            VariableManager::scopedKey(ProjectName, QStringLiteral("CloudMapping")));
     }
     
     return success ? 1.0f : 0.0f;
@@ -1386,8 +1770,8 @@ bool GcodeScript::isGlobalVariable(QString name)
 bool GcodeScript::isConveyorGcode(QString gcode)
 {
     QString conveyorGcodes = "M310 M311 M312 M313";
-    QString prefix = gcode.mid(0, gcode.indexOf(" "));
-    if (conveyorGcodes.indexOf(prefix) > -1)
+    QString prefix = gcode.trimmed().section(' ', 0, 0).toUpper();
+    if (conveyorGcodes.split(' ').contains(prefix))
         return true;
     return false;
 }
@@ -1395,17 +1779,17 @@ bool GcodeScript::isConveyorGcode(QString gcode)
 bool GcodeScript::isSlidingGcode(QString gcode)
 {
     QString conveyorGcodes = "M320 M321 M322 M323";
-    QString prefix = gcode.mid(0, gcode.indexOf(" "));
-    if (conveyorGcodes.indexOf(prefix) > -1)
+    QString prefix = gcode.trimmed().section(' ', 0, 0).toUpper();
+    if (conveyorGcodes.split(' ').contains(prefix))
         return true;
     return false;
 }
 
 bool GcodeScript::isEncoderGcode(QString gcode)
 {
-    QString encoderGcodes = "M316 M317 M318 M319";
-    QString prefix = gcode.mid(0, gcode.indexOf(" "));
-    if (encoderGcodes.indexOf(prefix) > -1)
+    QString encoderGcodes = "M316 M317 M318 M319 M422";
+    QString prefix = gcode.trimmed().section(' ', 0, 0).toUpper();
+    if (encoderGcodes.split(' ').contains(prefix))
         return true;
     return false;
 }
@@ -1413,8 +1797,8 @@ bool GcodeScript::isEncoderGcode(QString gcode)
 bool GcodeScript::isMovingGcode(QString gcode)
 {
     QString movingGcodes = "G01 G00 G1 G0 G02 G03";
-    QString prefix = gcode.mid(0, gcode.indexOf(" "));
-    if (movingGcodes.indexOf(prefix) > -1)
+    QString prefix = gcode.trimmed().section(' ', 0, 0).toUpper();
+    if (movingGcodes.split(' ').contains(prefix))
         return true;
     return false;
 }
@@ -1448,10 +1832,16 @@ bool GcodeScript::findExeGcodeAndTransmit()
 
     const int valuePairsSize = valuePairs.size();
 
+    if (valuePairsSize > 1 && isExplicitDeviceToken(valuePairs.first())) {
+        handleSENT_TO_DEVICE(valuePairs, 0);
+        return true;
+    }
+
     for (int i = 0; i < valuePairsSize; i++)
     {
         // Skip empty tokens (already handled by Qt::SkipEmptyParts above)
         const QString& currentToken = valuePairs[i];  // Use reference to avoid copy
+        const QString currentCommand = currentToken.toUpper();
 
         //------------ VARIABLE ------------
 
@@ -1583,23 +1973,23 @@ bool GcodeScript::findExeGcodeAndTransmit()
                                 std::vector<double> matrixArray = matrixVar.value<std::vector<double>>();
                                 if (matrixArray.size() == 9) {
                                     cv::Mat transformMatrix = cv::Mat(matrixArray).reshape(1, 3);
-                                    // Chuyá»ƒn Ä‘á»•i QPointF thÃ nh cv::Point2f
+                                    // Convert QPointF to cv::Point2f.
                                     cv::Point2f cvInputPoint(point.x(), point.y());
 
-                                    // Táº¡o má»™t máº£ng cÃ¡c Ä‘iá»ƒm Ä‘áº§u vÃ o
+                                    // Build the input point array.
                                     std::vector<cv::Point2f> inputPoints;
                                     inputPoints.push_back(cvInputPoint);
 
-                                    // Máº£ng Ä‘á»ƒ lÆ°u trá»¯ cÃ¡c Ä‘iá»ƒm Ä‘áº§u ra
+                                    // Allocate the output point array.
                                     std::vector<cv::Point2f> outputPoints;
 
-                                    // Ãp dá»¥ng phÃ©p biáº¿n Ä‘á»•i perspective cho cÃ¡c Ä‘iá»ƒm Ä‘áº§u vÃ o
+                                    // Apply the perspective transformation.
                                     cv::perspectiveTransform(inputPoints, outputPoints, transformMatrix);
 
-                                    // Láº¥y Ä‘iá»ƒm Ä‘áº§u ra Ä‘Ã£ Ä‘Æ°á»£c biáº¿n Ä‘á»•i
+                                    // Retrieve the transformed point.
                                     cv::Point2f cvOutputPoint = outputPoints[0];
 
-                                    // Chuyá»ƒn Ä‘á»•i cv::Point2f thÃ nh QPointF
+                                    // Convert cv::Point2f back to QPointF.
                                     QPointF outputPoint(cvOutputPoint.x, cvOutputPoint.y);
 
                                     QString varName = currentToken.mid(1);
@@ -1686,77 +2076,104 @@ bool GcodeScript::findExeGcodeAndTransmit()
 
         //------------ GOTO -----------
 
-        if (currentToken == "GOTO" && valuePairsSize > (i + 1))
+        if (currentCommand == "GOTO" && valuePairsSize > (i + 1))
         {
             return handleGOTO(valuePairs, i);
         }
 
         // --------------- JUMP (named label) ---------------------
-        if (currentToken == "JUMP" && valuePairsSize > (i + 1))
+        if (currentCommand == "JUMP" && valuePairsSize > (i + 1))
         {
             return handleJUMP(valuePairs, i);
         }
 
         // --------------- LABEL (no-op at runtime) ---------------------
-        if (currentToken == "LABEL")
+        if (currentCommand == "LABEL")
         {
             gcodeOrder++;
             return false;
         }
 
         // --------------- IF-ELIF-ELSE-ENDIF ---------------------
-        if (currentToken == "IF")
+        if (currentCommand == "IF")
         {
             return handleIF(valuePairs, i);
         }
         
         // --------------- ELIF ---------------------
-        if (currentToken == "ELIF")
+        if (currentCommand == "ELIF")
         {
             return handleELIF(valuePairs, i);
         }
         
         // --------------- ELSE ---------------------
-        if (currentToken == "ELSE")
+        if (currentCommand == "ELSE")
         {
             return handleELSE(valuePairs, i);
         }
         
         // --------------- ENDIF ---------------------
-        if (currentToken == "ENDIF")
+        if (currentCommand == "ENDIF")
         {
             return handleENDIF(valuePairs, i);
         }
         
         // --------------- FOR LOOPS ---------------------
-        if (currentToken == "FOR" && valuePairsSize > (i + 1))
+        if (currentCommand == "FOR" && valuePairsSize > (i + 1))
         {
             return handleFOR(valuePairs, i);
         }
         
         // --------------- ENDFOR ---------------------
-        if (currentToken == "ENDFOR")
+        if (currentCommand == "ENDFOR")
         {
             return handleENDFOR(valuePairs, i);
         }
+
+        if (currentCommand == "WHILE")
+            return handleWHILE(valuePairs, i);
+
+        if (currentCommand == "ENDWHILE")
+            return handleENDWHILE(valuePairs, i);
+
+        if (currentCommand == "BREAK")
+            return handleBREAK();
+
+        if (currentCommand == "CONTINUE")
+            return handleCONTINUE();
+
+        if (currentCommand == "SWITCH")
+            return handleSWITCH(valuePairs, i);
+
+        if (currentCommand == "CASE")
+            return handleCASE(valuePairs, i);
+
+        if (currentCommand == "DEFAULT")
+            return handleDEFAULT();
+
+        if (currentCommand == "ENDSWITCH")
+            return handleENDSWITCH();
         
         // --------------- FUNCTION DECLARATION ---------------------
-        if (currentToken == "FUNCTION" && valuePairsSize > (i + 1))
+        if (currentCommand == "FUNCTION" && valuePairsSize > (i + 1))
         {
             return handleFUNCTION(valuePairs, i);
         }
         
         // --------------- ENDFUNCTION ---------------------
-        if (currentToken == "ENDFUNCTION")
+        if (currentCommand == "ENDFUNCTION")
         {
             return handleENDFUNCTION(valuePairs, i);
         }
         
         // --------------- RETURN ---------------------
-        if (currentToken == "RETURN")
+        if (currentCommand == "RETURN")
         {
             return handleRETURN(valuePairs, i);
-        }        
+        }
+
+        if (currentCommand == "LOCAL")
+            return handleLOCAL(valuePairs, i);
 
         // --------------- DEFINE SUBPROGRAM ------
 
@@ -1764,7 +2181,7 @@ bool GcodeScript::findExeGcodeAndTransmit()
         // ....
         // N45 M99
 
-        if (!currentToken.isEmpty() && currentToken[0] == 'O')
+        if (!currentCommand.isEmpty() && currentCommand[0] == 'O')
         {
             return handleDEFINE_SUBPROGRAM(valuePairs, i);
         }
@@ -1775,9 +2192,9 @@ bool GcodeScript::findExeGcodeAndTransmit()
 
 
 
-        if (currentToken == "M98" && valuePairsSize > (i + 1))
+        if (currentCommand == "M98" && valuePairsSize > (i + 1))
         {
-            QRegularExpressionMatch match = m98Regex.match(currentLine.replace('_', ""));
+            QRegularExpressionMatch match = m98Regex.match(currentLine);
 
             if (match.hasMatch()) {
                 QString functionName = match.captured(1);
@@ -1786,15 +2203,117 @@ bool GcodeScript::findExeGcodeAndTransmit()
                 if (!functionName.isEmpty() && functionName.at(0) == 'P')
                     functionName.remove(0, 1);
 
+                // Function names accept legacy underscore aliases (for example
+                // send_gcode), but argument identifiers must remain untouched.
+                functionName.remove('_');
                 functionName = functionName.toLower();
 
                 QStringList paramList;
 
                 if (!params.isEmpty()) {
-                    paramList = params.split(',', Qt::SkipEmptyParts);
+                    paramList = splitArgsRespectingParens(params);
                     for (QString &param : paramList) {
                         param = param.trimmed();
                     }
+                }
+
+                auto identifierParameter = [](QString value) {
+                    value = value.trimmed();
+                    if (value.size() >= 2 &&
+                        ((value.startsWith('"') && value.endsWith('"')) ||
+                         (value.startsWith('\'') && value.endsWith('\'')))) {
+                        value = value.mid(1, value.size() - 2);
+                    }
+                    if (value.startsWith('#'))
+                        value.remove(0, 1);
+                    return value.trimmed();
+                };
+
+                auto textParameter = [this, &identifierParameter](QString value) {
+                    value = value.trimmed();
+                    if (value.size() >= 2 &&
+                        ((value.startsWith('"') && value.endsWith('"')) ||
+                         (value.startsWith('\'') && value.endsWith('\'')))) {
+                        return value.mid(1, value.size() - 2);
+                    }
+                    if (value.startsWith('#')) {
+                        // Use the expression resolver so vector/point members
+                        // such as #Position.X are printable too.
+                        return calculateExpressions(value).trimmed();
+                    }
+                    return value;
+                };
+
+                auto numericParameter = [this](const QString& value, double fallback) {
+                    bool ok = false;
+                    const double result = calculateExpressions(value).trimmed().toDouble(&ok);
+                    return ok ? result : fallback;
+                };
+
+                if (functionName == "send" || functionName == "sendgcode")
+                {
+                    if (paramList.size() < 2 || paramList.size() > 4) {
+                        faultExecution("send requires: deviceId, command[, responseVariable[, timeoutMs]].");
+                        return true;
+                    }
+
+                    const QString deviceId = textParameter(paramList[0]);
+                    const QString command = textParameter(paramList[1]);
+                    const QString responseVariable = paramList.size() > 2
+                        ? identifierParameter(paramList[2]) : QString();
+                    const int timeoutMs = paramList.size() > 3
+                        ? static_cast<int>(numericParameter(paramList[3], 120000)) : 120000;
+                    gcodeOrder++;
+                    beginDeviceRequest(deviceId, command, timeoutMs, responseVariable);
+                    return true;
+                }
+
+                if (functionName == "assert")
+                {
+                    if (paramList.isEmpty() || paramList.size() > 2) {
+                        faultExecution("assert requires: condition[, message].");
+                        return true;
+                    }
+                    const bool passed = !qFuzzyIsNull(
+                        static_cast<float>(numericParameter(paramList[0], 0.0)));
+                    if (!passed) {
+                        const QString message = paramList.size() > 1
+                            ? textParameter(paramList[1]) : QStringLiteral("G-Script assertion failed.");
+                        faultExecution(message.isEmpty()
+                                           ? QStringLiteral("G-Script assertion failed.")
+                                           : message,
+                                       true);
+                        return true;
+                    }
+                    gcodeOrder++;
+                    return false;
+                }
+
+                if (functionName == "waituntil")
+                {
+                    if (paramList.size() < 2 || paramList.size() > 4) {
+                        faultExecution("waitUntil requires: condition, timeoutMs[, pollMs[, message]].");
+                        return true;
+                    }
+
+                    pendingConditionExpression = paramList[0].trimmed();
+                    pendingConditionTimeoutMs = qBound(
+                        1, static_cast<int>(numericParameter(paramList[1], 1000)), 86400000);
+                    pendingConditionPollMs = paramList.size() > 2
+                        ? qBound(5, static_cast<int>(numericParameter(paramList[2], 20)), 1000)
+                        : 20;
+                    pendingConditionMessage = paramList.size() > 3
+                        ? textParameter(paramList[3]) : QString();
+                    pendingConditionToken = ++pendingResponseToken;
+                    pendingConditionTimer.restart();
+                    publishExecutionVariable("ActiveCondition", pendingConditionExpression);
+                    setExecutionState(
+                        ExecutionState::WaitingForCondition,
+                        QString("Waiting for condition (timeout %1 ms)")
+                            .arg(pendingConditionTimeoutMs));
+                    gcodeOrder++;
+                    QTimer::singleShot(0, this, &GcodeScript::pollPendingCondition);
+                    return true;
                 }
 
                 // Unified handling: M98 PupdateTracking / PupdateTracking(0)
@@ -1802,7 +2321,7 @@ bool GcodeScript::findExeGcodeAndTransmit()
                 {
                     int trackingId = 0;
                     if (!paramList.isEmpty()) {
-                        bool ok=false; int v=paramList.first().toInt(&ok); if (ok) trackingId = v;
+                        trackingId = static_cast<int>(numericParameter(paramList.first(), 0));
                     } else {
                         // Support numeric suffix: PupdateTracking0
                         QRegularExpression rx("^updatetracking(\\d+)$");
@@ -1811,18 +2330,10 @@ bool GcodeScript::findExeGcodeAndTransmit()
                     }
 
                     transmitDeviceId = QString("tracking") + QString::number(trackingId);
+                    transmitMsg = "M98 PupdateTracking";
+                    pendingResponseToken++;
                     emit UpdateTrackingRequest(trackingId);
-
-                    // Fail-safe timeout to avoid hanging if no response
-                    const QString expected = transmitDeviceId;
-                    QTimer::singleShot(1500, this, [this, expected]() {
-                        if (!isRunning) return;
-                        if (this->transmitDeviceId == expected) {
-                            this->response = "Timeout";
-                            saveVariable("Response", this->response);
-                            TransmitNextGcode();
-                        }
-                    });
+                    startPendingResponseTimeout(transmitDeviceId, transmitMsg, 1500);
 
                     gcodeOrder++;
                     return true;
@@ -1833,27 +2344,119 @@ bool GcodeScript::findExeGcodeAndTransmit()
                 {
                     int trackingId = 0;
                     if (!paramList.isEmpty()) {
-                        bool ok=false; int v=paramList.first().toInt(&ok); if (ok) trackingId = v;
+                        trackingId = static_cast<int>(numericParameter(paramList.first(), 0));
                     }
 
-                    // Persist default camera tracking ID for Camera to pick up
-                    saveVariable("Camera.TrackingID", QString::number(trackingId));
+                    // Per-run routing state; it must not survive an application restart.
+                    saveRuntimeVariable("Camera.TrackingID", trackingId);
 
-                    transmitDeviceId = QString("tracking") + QString::number(trackingId);
-                    emit CaptureAndDetectRequest();
-
-                    // Fail-safe timeout to avoid hanging if no response
-                    const QString expected = transmitDeviceId;
-                    QTimer::singleShot(1500, this, [this, expected]() {
-                        if (!isRunning) return;
-                        if (this->transmitDeviceId == expected) {
-                            this->response = "Timeout";
-                            saveVariable("Response", this->response);
-                            TransmitNextGcode();
-                        }
-                    });
-
+                    transmitDeviceId = QString("vision") + QString::number(trackingId);
+                    transmitMsg = "M98 PcaptureAndDetect";
+                    pendingResponseToken++;
+                    expectedVisionRequestId = nextVisionRequestId();
+                    emit CaptureAndDetectRequest(expectedVisionRequestId, trackingId);
+                    startPendingResponseTimeout(transmitDeviceId, transmitMsg, 5000);
                     gcodeOrder++;
+                    return true;
+                }
+
+                // M98 PclaimObject(trackingId, resultName, owner,
+                //                      minX, maxX, minY, maxY[, type[, leaseMs]])
+                if (functionName == "claimobject")
+                {
+                    if (paramList.size() < 7) {
+                        emit LogMessage("claimObject requires: trackingId, resultName, owner, minX, maxX, minY, maxY[, type[, leaseMs]].");
+                        finishExecution(true, "Invalid claimObject parameters.", true);
+                        return true;
+                    }
+
+                    const int trackingId = static_cast<int>(numericParameter(paramList[0], 0));
+                    const QString resultName = identifierParameter(paramList[1]);
+                    const QString owner = textParameter(paramList[2]);
+                    const float minX = static_cast<float>(numericParameter(paramList[3], 0));
+                    const float maxX = static_cast<float>(numericParameter(paramList[4], 0));
+                    const float minY = static_cast<float>(numericParameter(paramList[5], 0));
+                    const float maxY = static_cast<float>(numericParameter(paramList[6], 0));
+                    const int typeFilter = paramList.size() > 7
+                        ? static_cast<int>(numericParameter(paramList[7], -1)) : -1;
+                    const int leaseMs = paramList.size() > 8
+                        ? static_cast<int>(numericParameter(paramList[8], 30000)) : 30000;
+
+                    transmitDeviceId = QString("tracking%1:%2").arg(trackingId).arg(owner);
+                    transmitMsg = "M98 PclaimObject";
+                    pendingResponseToken++;
+                    emit ClaimObjectRequest(trackingId, resultName, owner,
+                                            minX, maxX, minY, maxY,
+                                            typeFilter, leaseMs);
+                    startPendingResponseTimeout(transmitDeviceId, transmitMsg, 1500);
+                    gcodeOrder++;
+                    return true;
+                }
+
+                // M98 PreleaseObject(trackingId, uid, owner)
+                if (functionName == "releaseobject")
+                {
+                    if (paramList.size() < 3) {
+                        emit LogMessage("releaseObject requires: trackingId, uid, owner.");
+                        finishExecution(true, "Invalid releaseObject parameters.", true);
+                        return true;
+                    }
+
+                    const int trackingId = static_cast<int>(numericParameter(paramList[0], 0));
+                    const int uid = static_cast<int>(numericParameter(paramList[1], -1));
+                    const QString owner = textParameter(paramList[2]);
+
+                    transmitDeviceId = QString("tracking%1:%2").arg(trackingId).arg(owner);
+                    transmitMsg = "M98 PreleaseObject";
+                    pendingResponseToken++;
+                    emit ReleaseObjectRequest(trackingId, uid, owner);
+                    startPendingResponseTimeout(transmitDeviceId, transmitMsg, 1500);
+                    gcodeOrder++;
+                    return true;
+                }
+
+                // M98 PcompleteObject(trackingId, uid, owner)
+                if (functionName == "completeobject")
+                {
+                    if (paramList.size() < 3) {
+                        emit LogMessage("completeObject requires: trackingId, uid, owner.");
+                        finishExecution(true, "Invalid completeObject parameters.", true);
+                        return true;
+                    }
+
+                    const int trackingId = static_cast<int>(numericParameter(paramList[0], 0));
+                    const int uid = static_cast<int>(numericParameter(paramList[1], -1));
+                    const QString owner = textParameter(paramList[2]);
+
+                    transmitDeviceId = QString("tracking%1:%2").arg(trackingId).arg(owner);
+                    transmitMsg = "M98 PcompleteObject";
+                    pendingResponseToken++;
+                    emit CompleteObjectRequest(trackingId, uid, owner);
+                    startPendingResponseTimeout(transmitDeviceId, transmitMsg, 1500);
+                    gcodeOrder++;
+                    return true;
+                }
+
+                if (functionName == "delay")
+                {
+                    if (paramList.size() != 1) {
+                        emit LogMessage("delay requires exactly one duration in milliseconds.");
+                        finishExecution(true, "Invalid delay parameters.", true);
+                        return true;
+                    }
+
+                    const int delayMs = qBound(
+                        0, static_cast<int>(numericParameter(paramList.first(), 0)), 86400000);
+                    gcodeOrder++;
+                    const quint64 delayToken = ++pendingResponseToken;
+                    setExecutionState(ExecutionState::WaitingForTimer,
+                                      QString("Delay %1 ms").arg(delayMs));
+                    QTimer::singleShot(delayMs, this, [this, delayToken]() {
+                        if (!isRunning || pendingResponseToken != delayToken)
+                            return;
+                        setExecutionState(ExecutionState::Running, "Program running");
+                        TransmitNextGcode();
+                    });
                     return true;
                 }
 
@@ -1861,12 +2464,115 @@ bool GcodeScript::findExeGcodeAndTransmit()
                 {                    
                     QString listName = paramList.at(0);
                     QStringList objectInfo;
-                    // ThÃªm táº¥t cáº£ pháº§n tá»­ tá»« paramList vÃ o paras trá»« pháº§n tá»­ Ä‘áº§u tiÃªn
+                    // Copy all parameters except the list name into the object payload.
                     objectInfo.append(paramList.mid(1));
                     QList<QStringList> objects;
                     objects.append(objectInfo);
 
                     emit AddObject(listName, objects);
+                    gcodeOrder++;
+                    return false;
+                }
+
+                if (functionName == "clearobjects" && currentLine.contains('(')) {
+                    if (paramList.size() != 1) {
+                        faultExecution("clearObjects requires exactly one list name.");
+                        return true;
+                    }
+                    emit DeleteAllObjects(identifierParameter(paramList.first()));
+                    ++gcodeOrder;
+                    return false;
+                }
+                if (functionName == "logmessage" && currentLine.contains('(')) {
+                    if (paramList.size() != 1) {
+                        faultExecution("logMessage requires exactly one message.");
+                        return true;
+                    }
+                    emit LogMessage(textParameter(paramList.first()));
+                    ++gcodeOrder;
+                    return false;
+                }
+                if (functionName == "deleteobject" && currentLine.contains('(')) {
+                    if (paramList.size() != 1) {
+                        faultExecution("deleteObject requires exactly one object index.");
+                        return true;
+                    }
+                    emit DeleteObject(static_cast<int>(numericParameter(paramList.first(), -1)));
+                    ++gcodeOrder;
+                    return false;
+                }
+
+                PluginExtensionRegistry& extensions =
+                    PluginExtensionRegistry::instance();
+                if (extensions.hasGScriptPrimitive(functionName)) {
+                    PluginGScriptPrimitive descriptor;
+                    for (const PluginGScriptPrimitive& candidate :
+                         extensions.gscriptPrimitives()) {
+                        if (candidate.name == functionName) {
+                            descriptor = candidate;
+                            break;
+                        }
+                    }
+                    if (paramList.size() < descriptor.minimumArguments ||
+                        paramList.size() > descriptor.maximumArguments) {
+                        faultExecution(
+                            QString("Plugin primitive %1 expects %2 to %3 arguments; received %4.")
+                                .arg(functionName)
+                                .arg(descriptor.minimumArguments)
+                                .arg(descriptor.maximumArguments)
+                                .arg(paramList.size()),
+                            true);
+                        return true;
+                    }
+
+                    QString resultVariable;
+                    QVariantList arguments;
+                    for (int argumentIndex = 0;
+                         argumentIndex < paramList.size(); ++argumentIndex) {
+                        const QString raw = paramList.at(argumentIndex).trimmed();
+                        if (argumentIndex == descriptor.resultArgument) {
+                            resultVariable = identifierParameter(raw);
+                            static const QRegularExpression resultVariablePattern(
+                                QStringLiteral("^[A-Za-z_][A-Za-z0-9_.]*$"));
+                            if (!resultVariablePattern.match(resultVariable).hasMatch()) {
+                                faultExecution(
+                                    QString("Plugin primitive %1 requires a result variable at argument %2.")
+                                        .arg(functionName)
+                                        .arg(argumentIndex + 1));
+                                return true;
+                            }
+                            continue;
+                        }
+
+                        if (raw.size() >= 2 &&
+                            ((raw.startsWith('"') && raw.endsWith('"')) ||
+                             (raw.startsWith('\'') && raw.endsWith('\'')))) {
+                            arguments.append(raw.mid(1, raw.size() - 2));
+                        } else if (raw.startsWith('#')) {
+                            arguments.append(getValueAsQVariant(raw));
+                        } else {
+                            bool numeric = false;
+                            const QString evaluated = calculateExpressions(raw).trimmed();
+                            const double number = evaluated.toDouble(&numeric);
+                            arguments.append(numeric ? QVariant(number) : QVariant(raw));
+                        }
+                    }
+
+                    QVariant result;
+                    QString error;
+                    if (!extensions.executeGScriptPrimitive(
+                            functionName, arguments, &result, &error)) {
+                        faultExecution(
+                            QString("Plugin primitive %1 failed: %2")
+                                .arg(functionName,
+                                     error.isEmpty()
+                                         ? QStringLiteral("unknown plugin error")
+                                         : error),
+                            true);
+                        return true;
+                    }
+                    if (!resultVariable.isEmpty())
+                        saveVariable(resultVariable, result);
                     gcodeOrder++;
                     return false;
                 }
@@ -1992,10 +2698,18 @@ bool GcodeScript::findExeGcodeAndTransmit()
                     int pos2 = subProName.lastIndexOf(")");
                     QString valueS = subProName.mid(pos1, pos2 - pos1);
 
-                    QThread::msleep(valueS.toULong());
-
+                    const unsigned long delayMs = valueS.toULong();
                     gcodeOrder++;
-                    return false;
+                    const quint64 delayToken = ++pendingResponseToken;
+                    setExecutionState(ExecutionState::WaitingForTimer,
+                                      QString("Delay %1 ms").arg(delayMs));
+                    QTimer::singleShot(delayMs, this, [this, delayToken]() {
+                        if (!isRunning || pendingResponseToken != delayToken)
+                            return;
+                        setExecutionState(ExecutionState::Running, "Program running");
+                        TransmitNextGcode();
+                    });
+                    return true;
                 }
 
                 // P_update_tracking = Pupdatetracking = PupdateTracking = P_updateTracking(0)
@@ -2018,17 +2732,10 @@ bool GcodeScript::findExeGcodeAndTransmit()
                     }
 
                     transmitDeviceId = QString("tracking") + valueS;
+                    transmitMsg = "M98 PupdateTracking";
+                    pendingResponseToken++;
                     emit UpdateTrackingRequest(valueS.toInt());
-                    // Fail-safe timeout to avoid hanging if no response
-                    const QString expected = transmitDeviceId;
-                    QTimer::singleShot(1500, this, [this, expected]() {
-                        if (!isRunning) return;
-                        if (this->transmitDeviceId == expected) {
-                            this->response = "Timeout";
-                            saveVariable("Response", this->response);
-                            TransmitNextGcode();
-                        }
-                    });
+                    startPendingResponseTimeout(transmitDeviceId, transmitMsg, 1500);
 
                     gcodeOrder++;
                     return true;
@@ -2046,22 +2753,15 @@ bool GcodeScript::findExeGcodeAndTransmit()
                         trackingId = subProName.mid(pos1, pos2 - pos1).toInt();
                     }
 
-                    // Persist default camera tracking ID for Camera to pick up
-                    saveVariable("Camera.TrackingID", QString::number(trackingId));
+                    // Per-run routing state; it must not survive an application restart.
+                    saveRuntimeVariable("Camera.TrackingID", trackingId);
 
-                    transmitDeviceId = QString("tracking") + QString::number(trackingId);
-                    emit CaptureAndDetectRequest();
-
-                    // Fail-safe timeout to avoid hanging if no response
-                    const QString expected = transmitDeviceId;
-                    QTimer::singleShot(1500, this, [this, expected]() {
-                        if (!isRunning) return;
-                        if (this->transmitDeviceId == expected) {
-                            this->response = "Timeout";
-                            saveVariable("Response", this->response);
-                            TransmitNextGcode();
-                        }
-                    });
+                    transmitDeviceId = QString("vision") + QString::number(trackingId);
+                    transmitMsg = "M98 PcaptureAndDetect";
+                    pendingResponseToken++;
+                    expectedVisionRequestId = nextVisionRequestId();
+                    emit CaptureAndDetectRequest(expectedVisionRequestId, trackingId);
+                    startPendingResponseTimeout(transmitDeviceId, transmitMsg, 5000);
 
                     gcodeOrder++;
                     return true;
@@ -2076,7 +2776,7 @@ bool GcodeScript::findExeGcodeAndTransmit()
                     QString msg = subProName.mid(pos1, pos2 - pos1);
 
                     pos1 = subProName.indexOf("send") + 4;
-                    pos2 = subProName.indexOf("\(");
+                    pos2 = subProName.indexOf('(');
                     QString deviceName = subProName.mid(pos1, pos2 - pos1);
 
                     SendMsgToDevice(deviceName, msg);
@@ -2093,7 +2793,7 @@ bool GcodeScript::findExeGcodeAndTransmit()
                     QString msg = subProName.mid(pos1, pos2 - pos1);
 
                     pos1 = subProName.indexOf("sendGcode") + 4;
-                    pos2 = subProName.indexOf("\(");
+                    pos2 = subProName.indexOf('(');
                     QString deviceName = subProName.mid(pos1, pos2 - pos1);
 
                     SendMsgToDevice(deviceName, msg);
@@ -2104,8 +2804,17 @@ bool GcodeScript::findExeGcodeAndTransmit()
 
                 for (int order = 0; order < gcodeList.size(); order++)
                 {
-                    if (gcodeList[order].contains(QString("O") + subProName))
+                    QString candidate = gcodeList.at(order).trimmed();
+                    candidate.remove(QRegularExpression("^N\\d+\\s+",
+                        QRegularExpression::CaseInsensitiveOption));
+                    const QString candidateToken = candidate.section(
+                        QRegularExpression("\\s+"), 0, 0).remove('_').toLower();
+                    if (candidateToken == QString("o") + subProName)
                     {
+                        if (returnPointerOrder + 1 >= 20) {
+                            faultExecution("Subprogram call depth exceeds the limit of 20.");
+                            return true;
+                        }
                         returnPointerOrder++;
                         returnSubProPointer[returnPointerOrder] = gcodeOrder;
 
@@ -2116,6 +2825,10 @@ bool GcodeScript::findExeGcodeAndTransmit()
                         return false;
                     }
                 }
+
+                faultExecution(QString("Undefined M98 macro or subprogram: P%1.")
+                                   .arg(subProName), true);
+                return true;
             }
 
             if (!valuePairs[i + 1].isEmpty() && valuePairs[i + 1].at(0) == 'F')
@@ -2124,14 +2837,18 @@ bool GcodeScript::findExeGcodeAndTransmit()
             }
         }
 
-        if (currentToken == "M99")
+        if (currentCommand == "M99")
         {
+            if (returnPointerOrder < 0) {
+                faultExecution("M99 has no active subprogram call.");
+                return true;
+            }
             gcodeOrder = returnSubProPointer[returnPointerOrder] + 1;
             returnPointerOrder--;
             return false;
         }
 
-        if (currentToken == "SYNC")
+        if (currentCommand == "SYNC")
         {
             QString target = valuePairs[i + 1];
             if (target.contains("robot") && valuePairs.count() > i + 2)
@@ -2159,9 +2876,9 @@ bool GcodeScript::findExeGcodeAndTransmit()
             }
         }
 
-        if (currentToken == "SELECT")
+        if (currentCommand == "SELECT")
         {
-            const QString& selectedDevice = valuePairs[i + 1];
+            const QString selectedDevice = valuePairs[i + 1].trimmed().toLower();
             if (selectedDevice.contains("robot"))
                 DefaultRobot = selectedDevice;
             else if (selectedDevice.contains("conveyor"))
@@ -2172,6 +2889,8 @@ bool GcodeScript::findExeGcodeAndTransmit()
                 DefaultSlider = selectedDevice;
             else if (selectedDevice.contains("device"))
                 DefaultDevice = selectedDevice;
+            ActiveDevice = selectedDevice;
+            publishExecutionVariable("SelectedDevice", ActiveDevice);
 
             gcodeOrder++;
 
@@ -2203,9 +2922,8 @@ bool GcodeScript::findExeGcodeAndTransmit()
         }
         else
         {
-            // Function call failed, skip line
-            gcodeOrder++;
-            return false;
+            faultExecution(QString("Undefined function call: %1.").arg(functionName));
+            return true;
         }
     }
 
@@ -2351,7 +3069,8 @@ bool GcodeScript::handleIF(QList<QString> valuePairs, int i)
         }
         else
         {
-            // Look for ELIF, ELSE, or just skip to next line
+            // A single-line IF is complete even when its condition is false.
+            ifBlockStack.pop();
             gcodeOrder++;
             return false;
         }
@@ -2380,11 +3099,20 @@ bool GcodeScript::handleVARIABLE(QList<QString> valuePairs, int i)
     QString expression = currentLine.mid(currentLine.indexOf("=") + 2);
     QString trimmedStr = expression;
 
+    const QString literal = expression.trimmed();
+    if (literal.size() >= 2 &&
+        ((literal.startsWith('"') && literal.endsWith('"')) ||
+         (literal.startsWith('\'') && literal.endsWith('\'')))) {
+        saveVariable(varName, literal.mid(1, literal.size() - 2));
+        gcodeOrder++;
+        return false;
+    }
+
     trimmedStr = trimmedStr.replace(" ", "");
     QRegularExpression rx("\\((-?\\d+(?:\\.\\d+)?),(-?\\d+(?:\\.\\d+)?),?(-?\\d+(?:\\.\\d+)?)?\\)");
     QRegularExpressionMatch match = rx.match(trimmedStr);
 
-    // TODO: chÆ°a gÃ¡n 2 point vá»›i nhau Ä‘Æ°á»£c
+    // TODO: Preserve a consistent link between the two point representations.
     if (trimmedStr.startsWith("(") && match.hasMatch())
     {
         QString x = match.captured(1);
@@ -2460,7 +3188,7 @@ bool GcodeScript::handleGCODE(QString transmitGcode)
     }
     else
     {
-        SendMsgToDevice(DefaultRobot, transmitGcode);
+        SendMsgToDevice(ActiveDevice.isEmpty() ? DefaultRobot : ActiveDevice, transmitGcode);
         gcodeOrder += 1;
         return true;
     }
@@ -2470,9 +3198,13 @@ bool GcodeScript::handleGCODE(QString transmitGcode)
 
 void GcodeScript::handleSENT_TO_DEVICE(QList<QString> valuePairs, int i)
 {
+    if (valuePairs.size() <= i + 1) {
+        faultExecution("Explicit device command requires a command payload.");
+        return;
+    }
     QString msg = valuePairs[i + 1];
 
-    QString deviceName = valuePairs.at(i);
+    QString deviceName = valuePairs.at(i).trimmed().toLower();
     for (int j = i + 2; j < valuePairs.count(); j++)
     {
         msg += QString(" ") + valuePairs[j];
@@ -2488,6 +3220,8 @@ void GcodeScript::handleSENT_TO_DEVICE(QList<QString> valuePairs, int i)
         DefaultSlider = deviceName;
     else if (deviceName.contains("device"))
         DefaultDevice = deviceName;
+
+    ActiveDevice = deviceName;
 
     SendMsgToDevice(deviceName, msg);
 
@@ -2623,253 +3357,91 @@ QString GcodeScript::calculateExpressions2(QString expression)
 
 QString GcodeScript::calculateExpressions(QString expression)
 {
-    expression = expression.replace("  ", " ");
-
-    int loopNumber = 100;
-
-    while (loopNumber--)
-    {
-        int openIndex = expression.lastIndexOf('[');
-
-        int multiplyIndex = expression.indexOf('*');
-        int divideIndex = expression.indexOf('/');
-        int moduloIndex = expression.indexOf('%');
-        int plusIndex = expression.indexOf('+');
-        int subIndex = expression.indexOf("- ");
-
-        int andIndex = expression.indexOf("AND");
-        int orIndex = expression.indexOf("OR");
-        int xorIndex = expression.indexOf("XOR");
-
-        int eqIndex = expression.indexOf("EQ");
-        int neIndex = expression.indexOf("NE");
-        int ltIndex = expression.indexOf("LT");
-        int leIndex = expression.indexOf("LE");
-        int gtIndex = expression.indexOf("GT");
-        int geIndex = expression.indexOf("GE");
-
-        if (eqIndex == -1)
-        {
-            eqIndex = expression.indexOf("==");
-        }
-        if (neIndex == -1)
-        {
-            neIndex = expression.indexOf("!=");
-        }
-        if (ltIndex == -1)
-        {
-            ltIndex = expression.indexOf("<");
-        }
-        if (leIndex == -1)
-        {
-            leIndex = expression.indexOf("<=");
-        }
-        if (gtIndex == -1)
-        {
-            gtIndex = expression.indexOf(">");
-        }
-        if (geIndex == -1)
-        {
-            geIndex = expression.indexOf(">=");
-        }
-        if (andIndex == -1)
-        {
-            andIndex = expression.indexOf("&&");
-        }
-        if (orIndex == -1)
-        {
-            orIndex = expression.indexOf("||");
-        }
-        if (xorIndex == -1)
-        {
-            xorIndex = expression.indexOf("^^");
-        }
-
-        if (openIndex > -1)
-        {
-            int closeIndex = expression.indexOf(']', openIndex);
-            QString subExpression = expression.mid(openIndex + 1, closeIndex - openIndex -1);
-            QString result = calculateExpressions(subExpression);
-
-            subExpression = QString("[") + subExpression + "]";
-
-            expression.replace(subExpression, result);
-
-            continue;
-        }
-        else if ((multiplyIndex > -1 || divideIndex > -1 || moduloIndex > -1 || plusIndex > -1 || subIndex > -1 || andIndex > -1 || orIndex > -1 || xorIndex > -1) && isNotNegative(expression) && !expression.contains('('))
-        {
-            // 3 + 2 * 5 - 4 / 2
-
-            int operaIndex = subIndex;
-
-            operaIndex = (plusIndex > -1) ? plusIndex : operaIndex;
-            operaIndex = (andIndex > -1) ? andIndex : operaIndex;
-            operaIndex = (orIndex > -1) ? orIndex : operaIndex;
-            operaIndex = (xorIndex > -1) ? xorIndex : operaIndex;
-            operaIndex = (multiplyIndex > -1) ? multiplyIndex : operaIndex;
-            operaIndex = (divideIndex > -1) ? divideIndex : operaIndex;
-            operaIndex = (moduloIndex > -1) ? moduloIndex : operaIndex;
-
-            QString value1S = getLeftWord(expression, operaIndex);
-            QString value2S = getRightWord(expression, operaIndex);
-
-            QString value1Val = getValueAsString(value1S);
-            QString value2Val = getValueAsString(value2S);
-
-            float value1 = value1Val.toFloat();
-            float value2 = value2Val.toFloat();
-
-            float result = value1 - value2;
-            QString resultS = QString::number(result);
-
-            QString operaExpression = value1S + " - " + value2S;
-
-            if (multiplyIndex > -1)
-            {
-                result = value1 * value2;
-                resultS = QString::number(result);
-
-                operaExpression = value1S + " * " + value2S;
+    expression = expression.trimmed();
+    // Split on the lowest-precedence top-level operator. Choosing the rightmost
+    // operator at each precedence makes subtraction/division left-associative.
+    // Parentheses, function arguments, quoted strings and brackets stay intact.
+    const QList<QStringList> precedence = {
+        {"OR", "||"}, {"XOR", "^^"}, {"AND", "&&"},
+        {"==", "!=", "<=", ">=", "EQ", "NE", "LE", "GE", "LT", "GT", "<", ">"},
+        {"+", "-"}, {"*", "/", "%"}
+    };
+    for (const auto& operators : precedence) {
+        int depth = 0, split = -1;
+        QChar quote;
+        QString operation;
+        for (int at = 0; at < expression.size(); ++at) {
+            const QChar ch = expression.at(at);
+            if (!quote.isNull()) { if (ch == quote) quote = QChar(); continue; }
+            if (ch == '\'' || ch == '"') { quote = ch; continue; }
+            if (ch == '(' || ch == '[') { ++depth; continue; }
+            if (ch == ')' || ch == ']') { --depth; continue; }
+            if (depth != 0) continue;
+            for (const QString& op : operators) {
+                if (expression.mid(at, op.size()) != op) continue;
+                if (op.at(0).isLetter() &&
+                    (at == 0 || !expression.at(at - 1).isSpace() ||
+                     at + op.size() == expression.size() || !expression.at(at + op.size()).isSpace())) continue;
+                if ((op == "<" || op == ">") && expression.mid(at + 1, 1) == "=") continue;
+                const QString left = expression.left(at).trimmed();
+                if (left.isEmpty()) continue;
+                if ((op == "-" || op == "+") &&
+                    (QString("+-*/%<>=,").contains(left.back()) ||
+                     ((left.back() == 'e' || left.back() == 'E') && left.size() > 1 && left.at(left.size() - 2).isDigit()))) continue;
+                split = at;
+                operation = op;
+                at += op.size() - 1;
+                break;
             }
-            else if (divideIndex > -1)
-            {
-                if (value2 != 0)
-                    result = value1 / value2;
-                else
-                    result = 0;
-                resultS = QString::number(result);
-
-                operaExpression = value1S + " / " + value2S;
-            }
-            else if (moduloIndex > -1)
-            {
-                if (value2 != 0)
-                    result = (int)value1 % (int)value2;
-                else
-                    result = 0;
-                resultS = QString::number(result);
-
-                operaExpression = value1S + " % " + value2S;
-            }
-            else if (plusIndex > -1)
-            {
-                result = value1 + value2;
-                resultS = QString::number(result);
-
-                operaExpression = value1S + " + " + value2S;
-            }
-            else if (andIndex > -1)
-            {
-                result = value1 * value2;
-                result = (result > 0) ? 1 : 0;
-                resultS = QString::number(result);
-
-                operaExpression = value1S + " AND " + value2S;
-            }
-            else if (orIndex > -1)
-            {
-                result = value1 + value2;
-                result = (result > 0) ? 1 : 0;
-                resultS = QString::number(result);
-
-                operaExpression = value1S + " OR " + value2S;
-            }
-
-            if (xorIndex > -1)
-            {
-                value1 = (value1 > 0) ? 1 : 0;
-                value2 = (value2 > 0) ? 1 : 0;
-                result = (value1 != value2) ? 1 : 0;
-
-                resultS = QString::number(result);
-
-                operaExpression = value1S + " XOR " + value2S;
-            }
-
-            expression.replace(operaExpression, QString::number(result));
-
-            continue;
         }
-
-        else if ((eqIndex > -1 || ltIndex > -1 || gtIndex > -1 || neIndex > -1 || leIndex > -1 || geIndex > -1) && !expression.contains('('))
-        {
-            QString value1S;
-            QString opeS;
-            QString value2S;
-
-            float value1;
-            float value2;
-
-            int operatorIndex = eqIndex;
-
-            operatorIndex = (neIndex > -1) ? neIndex : operatorIndex;
-            operatorIndex = (ltIndex > -1) ? ltIndex : operatorIndex;
-            operatorIndex = (leIndex > -1) ? leIndex : operatorIndex;
-            operatorIndex = (gtIndex > -1) ? gtIndex : operatorIndex;
-            operatorIndex = (geIndex > -1) ? geIndex : operatorIndex;
-
-            value1S = getLeftWord(expression, operatorIndex);
-            value2S = getRightWord(expression, operatorIndex);
-
-
-            value1 = getValueAsString(value1S).toFloat();
-
-            value2 = getValueAsString(value2S).toFloat();
-
-
-            int returnValue = -1;
-
-            if (value1S.startsWith("\"") && value1S.endsWith("\""))
-            {
-                returnValue = (eqIndex > -1) ? ((value1S == value2S) ? 1 : 0 ) : returnValue;
-            }
-            else
-            {
-                returnValue = (eqIndex > -1) ? ((value1 == value2) ? 1 : 0 ) : returnValue;
-            }
-
-            returnValue = (neIndex > -1) ? ((value1 != value2) ? 1 : 0) : returnValue;
-            returnValue = (ltIndex > -1) ? ((value1 < value2) ? 1 : 0) : returnValue;
-            returnValue = (leIndex > -1) ? ((value1 <= value2) ? 1 : 0) : returnValue;
-            returnValue = (gtIndex > -1) ? ((value1 > value2) ? 1 : 0) : returnValue;
-            returnValue = (geIndex > -1) ? ((value1 >= value2) ? 1 : 0) : returnValue;
-
-            if (returnValue != -1)
-                return QString::number(returnValue);
-        }
-
-        else
-        {
-            // Kiá»ƒm tra xem cÃ³ pháº£i hÃ m toÃ¡n há»c khÃ´ng
-            if (expression.contains('(') && expression.contains(')') && expression.startsWith('#'))
-            {
-                // Function calls will be handled at statement level, not in expression evaluation
-                // Just treat unknown functions as variables for now
-                
-                // Náº¿u khÃ´ng pháº£i user-defined function, kiá»ƒm tra built-in math functions
-                float result = EvaluateFunctionToFloat(expression);
-                if (result != NULL_NUMBER)
-                {
-                    return QString::number(result);
-                }
-            }
-
-            QString value = getValueAsString(deleteSpaces(expression));
-
-            if (deleteSpaces(expression) == "NULL")
-            {
-                value = "NULL";
-            }
-
-            return value;
-        }
-
-
-        return expression;
+        if (split < 0) continue;
+        QString left = calculateExpressions(expression.left(split));
+        QString right = calculateExpressions(expression.mid(split + operation.size()));
+        const auto unquote = [](QString text) {
+            if (text.size() >= 2 && ((text.front() == '"' && text.back() == '"') ||
+                                    (text.front() == '\'' && text.back() == '\'')))
+                return text.mid(1, text.size() - 2);
+            return text;
+        };
+        left = unquote(left); right = unquote(right);
+        bool leftNumeric = false, rightNumeric = false;
+        const double a = left.toDouble(&leftNumeric), b = right.toDouble(&rightNumeric);
+        const bool equal = leftNumeric && rightNumeric ? a == b : left == right;
+        double result = 0;
+        if (operation == "OR" || operation == "||") result = a != 0 || b != 0;
+        else if (operation == "XOR" || operation == "^^") result = (a != 0) != (b != 0);
+        else if (operation == "AND" || operation == "&&") result = a != 0 && b != 0;
+        else if (operation == "==" || operation == "EQ") result = equal;
+        else if (operation == "!=" || operation == "NE") result = !equal;
+        else if (operation == "<" || operation == "LT") result = a < b;
+        else if (operation == ">" || operation == "GT") result = a > b;
+        else if (operation == "<=" || operation == "LE") result = a <= b;
+        else if (operation == ">=" || operation == "GE") result = a >= b;
+        else if (operation == "+") result = a + b;
+        else if (operation == "-") result = a - b;
+        else if (operation == "*") result = a * b;
+        else if (operation == "/") result = b != 0 ? a / b : 0;
+        else if (operation == "%") result = b != 0 ? std::fmod(a, b) : 0;
+        return QString::number(result, 'g', 12);
     }
-
-    return expression;
+    // Atoms and fully enclosed groups are evaluated after binary operators.
+    if (expression.size() >= 2 &&
+        ((expression.front() == '"' && expression.back() == '"') ||
+         (expression.front() == '\'' && expression.back() == '\'')))
+        return expression.mid(1, expression.size() - 2);
+    if (expression.size() >= 2 &&
+        ((expression.front() == '[' && expression.back() == ']') ||
+         (expression.front() == '(' && expression.back() == ')')))
+        return calculateExpressions(expression.mid(1, expression.size() - 2));
+    if (expression.startsWith('-') || expression.startsWith('+')) {
+        bool numeric = false;
+        expression.toDouble(&numeric);
+        if (!numeric) {
+            const double value = calculateExpressions(expression.mid(1)).toDouble();
+            return QString::number(expression.startsWith('-') ? -value : value, 'g', 12);
+        }
+    }
+    return getValueAsString(expression);
 }
 
 // Performance optimization: Build cache of line numbers for O(1) GOTO lookups
@@ -3148,7 +3720,7 @@ bool GcodeScript::resolvePointReference(const QString& token, QVector3D& outVec)
 
     if (trimmed.startsWith('#')) {
         QString varName = cleanedVarName(trimmed);
-        QVariant value = VariableManager::instance().getVar(varName, QVariant());
+        QVariant value = VariableManager::instance().getVarScoped(ProjectName, varName, QVariant());
         return variantToVector3D(value, outVec);
     }
 
@@ -3236,10 +3808,7 @@ void GcodeScript::preprocessGcodeScript()
         if (line.isEmpty() || line.startsWith(';'))
             continue;
 
-        // Strip inline comment
-        int semicolonIdx = line.indexOf(';');
-        if (semicolonIdx != -1)
-            line = line.left(semicolonIdx).trimmed();
+        line = stripInlineComment(line).trimmed();
 
         QStringList tokens = line.split(' ', Qt::SkipEmptyParts);
         if (tokens.isEmpty())
@@ -3448,17 +4017,6 @@ QString GcodeScript::getValueAsString(QString name)
 
     QString fullName = name;
 
-    QStringList paras = name.split('.');
-
-    if (paras[0] != ProjectName)
-    {
-        VariableManager::instance().Prefix = ProjectName;
-    }
-    else
-    {
-        VariableManager::instance().Prefix = "";
-    }
-
     fullName = fullName.replace(" ", "");
 
     if (fullName.endsWith(".X", Qt::CaseInsensitive) ||
@@ -3505,9 +4063,9 @@ QString GcodeScript::getValueAsString(QString name)
         }
     }
 
-    if (VariableManager::instance().containsFullKey(fullName) == true)
+    if (VariableManager::instance().containsFullKeyScoped(ProjectName, fullName))
     {
-        QVariant var = VariableManager::instance().getVar(fullName);
+        QVariant var = VariableManager::instance().getVarScoped(ProjectName, fullName);
         emit CatchVariable2(name, var);
         return var.toString();
     }
@@ -3537,20 +4095,9 @@ QVariant GcodeScript::getValueAsQVariant(QString key)
 
     QString fullName = key;
 
-    QStringList paras = key.split('.');
-
-    if (paras[0] != ProjectName)
-    {
-        VariableManager::instance().Prefix = ProjectName;
-    }
-    else
-    {
-        VariableManager::instance().Prefix = "";
-    }
-
     fullName = fullName.replace(" ", "");
 
-    return VariableManager::instance().getVar(fullName);
+    return VariableManager::instance().getVarScoped(ProjectName, fullName);
 }
 
 void GcodeScript::updateVariables(QString str)
@@ -3575,38 +4122,36 @@ void GcodeScript::saveVariable(QString name, QString value)
 {
 //    name = name.replace("_", ".");
 
+    name = cleanedVarName(name);
+    if (!name.contains('.') && !callStack.isEmpty() && callStack.top().locals.contains(name)) {
+        callStack.top().locals[name] = value;
+        emit CatchVariable2(name, value);
+        return;
+    }
+
     emit CatchVariable2(name, value);
 
-    QStringList paras = name.split('.');
-
-    if (paras[0] != ProjectName)
-    {
-        VariableManager::instance().Prefix = ProjectName;
-    }
-    else
-    {
-        VariableManager::instance().Prefix = "";
-    }
-
-    VariableManager::instance().addVar(name, value);
+    VariableManager::instance().updateVarScoped(ProjectName, name, value);
 }
 
 void GcodeScript::saveVariable(QString name, QVariant value)
 {
+    name = cleanedVarName(name);
+    if (!name.contains('.') && !callStack.isEmpty() && callStack.top().locals.contains(name)) {
+        callStack.top().locals[name] = value;
+        emit CatchVariable2(name, value);
+        return;
+    }
     emit CatchVariable2(name, value);
 
-    QStringList paras = name.split('.');
+    VariableManager::instance().updateVarScoped(ProjectName, name, value);
+}
 
-    if (paras[0] != ProjectName)
-    {
-        VariableManager::instance().Prefix = ProjectName;
-    }
-    else
-    {
-        VariableManager::instance().Prefix = "";
-    }
-
-    VariableManager::instance().addVar(name, value);
+void GcodeScript::saveRuntimeVariable(const QString& name, const QVariant& value)
+{
+    emit CatchVariable2(name, value);
+    VariableManager::instance().updateVarScoped(
+        ProjectName, name, value, VariableManager::Persistence::Runtime);
 }
 
 void GcodeScript::processResponse(QString response)
@@ -3650,7 +4195,7 @@ bool GcodeScript::checkExclution(QString response)
     // 4) Generic error handling: block progression on error messages
     if (r.contains("error", Qt::CaseInsensitive))
     {
-        saveVariable("LastError", r);
+        saveRuntimeVariable("LastError", r);
         return true; // do not proceed automatically on errors
     }
 
@@ -3885,7 +4430,7 @@ bool GcodeScript::handleFOR(QList<QString> valuePairs, int i)
     }
     
     // Check for numeric FOR syntax: FOR var = start TO end [STEP step]
-    if (valuePairs.size() >= (i + 5))
+    if (valuePairs.size() >= (i + 6))
     {
         QString counterVar = valuePairs[i + 1];
         
@@ -4131,6 +4676,263 @@ void GcodeScript::skipToEndFor()
     }
 }
 
+bool GcodeScript::handleWHILE(QList<QString> valuePairs, int i)
+{
+    Q_UNUSED(valuePairs)
+    Q_UNUSED(i)
+    const QRegularExpressionMatch match = QRegularExpression(
+        "^\\s*WHILE\\s+(.+)$", QRegularExpression::CaseInsensitiveOption).match(currentLine);
+    if (!match.hasMatch()) {
+        faultExecution("WHILE requires a condition.");
+        return true;
+    }
+
+    const int endLine = findEndWhileLine(gcodeOrder);
+    if (endLine < 0) {
+        faultExecution("WHILE has no matching ENDWHILE.");
+        return true;
+    }
+
+    const QString condition = match.captured(1).trimmed();
+    const bool conditionResult = calculateExpressions(condition).toDouble() != 0.0;
+    const bool sameLoop = !whileLoopStack.isEmpty() &&
+                          whileLoopStack.top().startLine == gcodeOrder;
+    if (!conditionResult) {
+        if (sameLoop)
+            whileLoopStack.pop();
+        gcodeOrder = endLine + 1;
+        return false;
+    }
+
+    if (!sameLoop) {
+        WhileLoopState state(condition, gcodeOrder);
+        state.endWhileLine = endLine;
+        whileLoopStack.push(state);
+    } else {
+        whileLoopStack.top().condition = condition;
+        whileLoopStack.top().endWhileLine = endLine;
+    }
+    gcodeOrder++;
+    return false;
+}
+
+bool GcodeScript::handleENDWHILE(QList<QString> valuePairs, int i)
+{
+    Q_UNUSED(valuePairs)
+    Q_UNUSED(i)
+    if (whileLoopStack.isEmpty()) {
+        faultExecution("ENDWHILE has no active WHILE.");
+        return true;
+    }
+    gcodeOrder = whileLoopStack.top().startLine;
+    return false;
+}
+
+int GcodeScript::findEndWhileLine(int startLine) const
+{
+    int depth = 1;
+    for (int lineIndex = startLine + 1; lineIndex < gcodeList.size(); ++lineIndex) {
+        QString statement = gcodeList.at(lineIndex).trimmed();
+        statement.remove(QRegularExpression("^N\\d+\\s+",
+                                            QRegularExpression::CaseInsensitiveOption));
+        const QString command = statement.section(QRegularExpression("\\s+"), 0, 0).toUpper();
+        if (command == "WHILE")
+            ++depth;
+        else if (command == "ENDWHILE" && --depth == 0)
+            return lineIndex;
+    }
+    return -1;
+}
+
+bool GcodeScript::handleBREAK()
+{
+    const int forStart = forLoopStack.isEmpty() ? -1 : forLoopStack.top().startLine;
+    const int whileStart = whileLoopStack.isEmpty() ? -1 : whileLoopStack.top().startLine;
+    if (forStart < 0 && whileStart < 0) {
+        faultExecution("BREAK can only be used inside FOR or WHILE.");
+        return true;
+    }
+
+    if (whileStart > forStart) {
+        const int endLine = whileLoopStack.top().endWhileLine;
+        whileLoopStack.pop();
+        gcodeOrder = endLine + 1;
+    } else {
+        const int endLine = forLoopStack.top().endForLine;
+        forLoopStack.pop();
+        gcodeOrder = endLine + 1;
+    }
+    return false;
+}
+
+bool GcodeScript::handleCONTINUE()
+{
+    const int forStart = forLoopStack.isEmpty() ? -1 : forLoopStack.top().startLine;
+    const int whileStart = whileLoopStack.isEmpty() ? -1 : whileLoopStack.top().startLine;
+    if (forStart < 0 && whileStart < 0) {
+        faultExecution("CONTINUE can only be used inside FOR or WHILE.");
+        return true;
+    }
+
+    gcodeOrder = whileStart > forStart
+        ? whileLoopStack.top().endWhileLine
+        : forLoopStack.top().endForLine;
+    return false;
+}
+
+bool GcodeScript::handleSWITCH(QList<QString> valuePairs, int i)
+{
+    Q_UNUSED(valuePairs)
+    Q_UNUSED(i)
+    const QRegularExpressionMatch match = QRegularExpression(
+        "^\\s*SWITCH\\s+(.+)$", QRegularExpression::CaseInsensitiveOption).match(currentLine);
+    if (!match.hasMatch()) {
+        faultExecution("SWITCH requires a value.");
+        return true;
+    }
+
+    QString expression = match.captured(1).trimmed();
+    QString switchValue;
+    if (expression.size() >= 2 &&
+        ((expression.startsWith('"') && expression.endsWith('"')) ||
+         (expression.startsWith('\'') && expression.endsWith('\''))))
+        switchValue = expression.mid(1, expression.size() - 2);
+    else if (expression.startsWith('#'))
+        switchValue = getValueAsString(expression);
+    else
+        switchValue = calculateExpressions(expression).trimmed();
+
+    const int endLine = findEndSwitchLine(gcodeOrder);
+    if (endLine < 0) {
+        faultExecution("SWITCH has no matching ENDSWITCH.");
+        return true;
+    }
+
+    bool matchedCase = false;
+    const int branchLine = findMatchingSwitchBranch(gcodeOrder, switchValue, &matchedCase);
+    if (branchLine < 0) {
+        gcodeOrder = endLine + 1;
+        return false;
+    }
+
+    SwitchCaseState state(QString(), switchValue, gcodeOrder);
+    state.endSwitchLine = endLine;
+    state.caseMatched = true;
+    state.defaultFound = !matchedCase;
+    switchCaseStack.push(state);
+    gcodeOrder = branchLine + 1;
+    return false;
+}
+
+bool GcodeScript::handleCASE(QList<QString> valuePairs, int i)
+{
+    Q_UNUSED(valuePairs)
+    Q_UNUSED(i)
+    if (switchCaseStack.isEmpty()) {
+        faultExecution("CASE can only be used inside SWITCH.");
+        return true;
+    }
+    const int endLine = switchCaseStack.top().endSwitchLine;
+    switchCaseStack.pop();
+    gcodeOrder = endLine + 1;
+    return false;
+}
+
+bool GcodeScript::handleDEFAULT()
+{
+    if (switchCaseStack.isEmpty()) {
+        faultExecution("DEFAULT can only be used inside SWITCH.");
+        return true;
+    }
+    const int endLine = switchCaseStack.top().endSwitchLine;
+    switchCaseStack.pop();
+    gcodeOrder = endLine + 1;
+    return false;
+}
+
+bool GcodeScript::handleENDSWITCH()
+{
+    if (!switchCaseStack.isEmpty())
+        switchCaseStack.pop();
+    gcodeOrder++;
+    return false;
+}
+
+int GcodeScript::findEndSwitchLine(int startLine) const
+{
+    int depth = 1;
+    for (int lineIndex = startLine + 1; lineIndex < gcodeList.size(); ++lineIndex) {
+        QString statement = gcodeList.at(lineIndex).trimmed();
+        statement.remove(QRegularExpression("^N\\d+\\s+",
+                                            QRegularExpression::CaseInsensitiveOption));
+        const QString command = statement.section(QRegularExpression("\\s+"), 0, 0).toUpper();
+        if (command == "SWITCH")
+            ++depth;
+        else if (command == "ENDSWITCH" && --depth == 0)
+            return lineIndex;
+    }
+    return -1;
+}
+
+int GcodeScript::findMatchingSwitchBranch(int startLine, const QString& switchValue,
+                                          bool* matchedCase)
+{
+    int depth = 1;
+    int defaultLine = -1;
+    for (int lineIndex = startLine + 1; lineIndex < gcodeList.size(); ++lineIndex) {
+        QString statement = gcodeList.at(lineIndex).trimmed();
+        statement.remove(QRegularExpression("^N\\d+\\s+",
+                                            QRegularExpression::CaseInsensitiveOption));
+        const QString command = statement.section(QRegularExpression("\\s+"), 0, 0).toUpper();
+        if (command == "SWITCH") {
+            ++depth;
+            continue;
+        }
+        if (command == "ENDSWITCH") {
+            if (--depth == 0)
+                break;
+            continue;
+        }
+        if (depth != 1)
+            continue;
+        if (command == "DEFAULT") {
+            defaultLine = lineIndex;
+            continue;
+        }
+        if (command != "CASE")
+            continue;
+
+        QString caseExpression = statement.mid(statement.indexOf(QRegularExpression("\\s+"))).trimmed();
+        if (caseExpression.endsWith(':'))
+            caseExpression.chop(1);
+        QString caseValue;
+        if (caseExpression.size() >= 2 &&
+            ((caseExpression.startsWith('"') && caseExpression.endsWith('"')) ||
+             (caseExpression.startsWith('\'') && caseExpression.endsWith('\''))))
+            caseValue = caseExpression.mid(1, caseExpression.size() - 2);
+        else if (caseExpression.startsWith('#'))
+            caseValue = getValueAsString(caseExpression);
+        else
+            caseValue = calculateExpressions(caseExpression).trimmed();
+
+        bool leftOk = false;
+        bool rightOk = false;
+        const double leftNumber = switchValue.toDouble(&leftOk);
+        const double rightNumber = caseValue.toDouble(&rightOk);
+        const bool equal = leftOk && rightOk
+            ? qFuzzyCompare(1.0 + leftNumber, 1.0 + rightNumber)
+            : switchValue == caseValue;
+        if (equal) {
+            if (matchedCase)
+                *matchedCase = true;
+            return lineIndex;
+        }
+    }
+    if (matchedCase)
+        *matchedCase = false;
+    return defaultLine;
+}
+
 // ============== FUNCTION HANDLING METHODS ==============
 
 bool GcodeScript::handleFUNCTION(QList<QString> valuePairs, int i)
@@ -4237,20 +5039,22 @@ bool GcodeScript::handleENDFUNCTION(QList<QString> valuePairs, int i)
 
 bool GcodeScript::handleRETURN(QList<QString> valuePairs, int i)
 {
+    QString returnTarget;
+    QVariant returnValue;
+    bool hasReturnValue = false;
+
     // Handle return value if provided
     if (valuePairs.size() > (i + 1))
     {
-        QString returnExpr = currentLine.mid(currentLine.indexOf("RETURN") + 6).trimmed();
+        const QRegularExpressionMatch returnMatch = QRegularExpression(
+            "\\bRETURN\\b", QRegularExpression::CaseInsensitiveOption).match(currentLine);
+        QString returnExpr = currentLine.mid(returnMatch.capturedEnd()).trimmed();
         if (!returnExpr.isEmpty())
         {
-            QString returnValue = calculateExpressions(returnExpr);
-            // Assign to caller's target variable if any
-            if (!callStack.isEmpty()) {
-                const QString retTarget = callStack.top().retTarget;
-                if (!retTarget.isEmpty()) {
-                    saveVariable(retTarget, returnValue);
-                }
-            }
+            returnValue = calculateExpressions(returnExpr);
+            hasReturnValue = true;
+            if (!callStack.isEmpty())
+                returnTarget = callStack.top().retTarget;
         }
     }
     
@@ -4259,12 +5063,57 @@ bool GcodeScript::handleRETURN(QList<QString> valuePairs, int i)
     {
         int ret = functionReturnStack.pop();
         if (!callStack.isEmpty()) callStack.pop();
+        if (hasReturnValue && !returnTarget.isEmpty())
+            saveVariable(returnTarget, returnValue);
         gcodeOrder = ret + 1;
     }
     else
     {
         gcodeOrder++;
     }
+    return false;
+}
+
+bool GcodeScript::handleLOCAL(QList<QString> valuePairs, int i)
+{
+    Q_UNUSED(valuePairs)
+    Q_UNUSED(i)
+    if (callStack.isEmpty()) {
+        faultExecution("LOCAL can only be used inside a FUNCTION.");
+        return true;
+    }
+
+    const QRegularExpression keyword("\\bLOCAL\\b",
+                                     QRegularExpression::CaseInsensitiveOption);
+    const QRegularExpressionMatch keywordMatch = keyword.match(currentLine);
+    QString declaration = currentLine.mid(keywordMatch.capturedEnd()).trimmed();
+    const int equals = declaration.indexOf('=');
+    const QString name = cleanedVarName(equals >= 0
+                                            ? declaration.left(equals)
+                                            : declaration);
+    if (name.isEmpty() || name.contains('.')) {
+        faultExecution("LOCAL requires a simple variable name.");
+        return true;
+    }
+
+    QVariant value = 0.0;
+    if (equals >= 0) {
+        const QString expression = declaration.mid(equals + 1).trimmed();
+        if (expression.size() >= 2 &&
+            ((expression.startsWith('"') && expression.endsWith('"')) ||
+             (expression.startsWith('\'') && expression.endsWith('\'')))) {
+            value = expression.mid(1, expression.size() - 2);
+        } else if (expression.startsWith('#') &&
+                   !expression.contains(QRegularExpression("[+\\-*/%^<>=]"))) {
+            value = getValueAsQVariant(expression);
+        } else {
+            value = calculateExpressions(expression);
+        }
+    }
+
+    callStack.top().locals.insert(name, value);
+    emit CatchVariable2(name, value);
+    gcodeOrder++;
     return false;
 }
 
@@ -4290,7 +5139,7 @@ bool GcodeScript::callFunction(QString functionName, QStringList arguments, cons
     // Check if function exists
     if (!functionDefinitions.contains(functionName))
     {
-        qWarning() << "GScript: call to undefined function" << functionName;
+        faultExecution(QString("Undefined function: %1.").arg(functionName));
         return false;
     }
     
@@ -4300,8 +5149,11 @@ bool GcodeScript::callFunction(QString functionName, QStringList arguments, cons
     CallFrame frame;
     frame.retTarget = retTarget;
     if (arguments.size() != funcDef.parameters.size()) {
-        qWarning() << "GScript: arity mismatch for" << functionName
-                   << "expected" << funcDef.parameters.size() << "got" << arguments.size();
+        faultExecution(QString("Function %1 expects %2 argument(s), received %3.")
+                           .arg(functionName)
+                           .arg(funcDef.parameters.size())
+                           .arg(arguments.size()));
+        return false;
     }
     const int bindCount = qMin(funcDef.parameters.size(), arguments.size());
     for (int i = 0; i < bindCount; ++i) {

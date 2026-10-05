@@ -3,6 +3,10 @@
 #include "ui_MainWindow.h"
 #include "SettingsManager.h"
 #include "SettingsPanel.h"
+#include "UiTheme.h"
+#include "GScriptCliBridge.h"
+#include "sdk/DeltaXVersion.h"
+#include <QStyle>
 
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -10,8 +14,31 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    // The application theme owns shared widget styling. MainWindow.ui kept its
+    // legacy theme on centralWidget (not on the window), so clear every
+    // Designer-level stylesheet before semantic roles are applied.
+    ui->wgLeftPanel->setProperty("navigationRail", true);
+    UiTheme::prepareForm(this);
+    setWindowTitle(tr("Delta X Software - Version %1")
+                       .arg(QString::fromLatin1(DeltaXVersion::Application)));
+    ui->teLoggingBox->setReadOnly(true);
+    ui->teLoggingBox->setMinimumHeight(0);
+    ui->teLoggingBox->setMaximumHeight(34);
+    ui->tbExpandLoggingBox->setToolTip(tr("Show logs"));
+    ui->tbExpandLoggingBox->setAccessibleName(tr("Toggle application logs"));
 
     InitVariables();
+    new GScriptCliBridge(SoftwareProjectManager, this);
+
+    UiTheme::setControlRole(ui->pbStartSystem, QStringLiteral("success"));
+    UiTheme::setControlRole(ui->pbStopSystem, QStringLiteral("danger"));
+    UiTheme::setControlRole(ui->pbSaveSetting, QStringLiteral("primary"));
+    UiTheme::setControlRole(ui->pbApplyOperator, QStringLiteral("primary"));
+    UiTheme::setControlRole(ui->pbResetSettings, QStringLiteral("danger"));
+    UiTheme::setControlRole(ui->pbRestoreSettings, QStringLiteral("warning"));
+    UiTheme::setControlRole(ui->pbDeleteSelectedVar, QStringLiteral("danger"));
+    UiTheme::setControlRole(ui->tbExpandLoggingBox, QStringLiteral("quiet"));
+    UiTheme::polishWidgetTree(this);
 }
 
 void MainWindow::InitVariables()
@@ -68,7 +95,8 @@ void MainWindow::InitVariables()
     // ---- Check software version ----
 
     DeltaXVersionManager = new VersionManager(this);
-    DeltaXVersionManager->CurrentVersion = "1.3.0";
+    DeltaXVersionManager->CurrentVersion =
+        QString::fromLatin1(DeltaXVersion::Application);
     DeltaXVersionManager->SoftwareName = "DeltaXSoftware";
     DeltaXVersionManager->CheckNewVersion(true);
 
@@ -96,8 +124,6 @@ void MainWindow::InitVariables()
     Dashboard->InitPage(ui->tbDocument, ui->pDocument);
     Dashboard->InitPage(ui->tbCommunity, ui->pCommunity);
     Dashboard->InitPage(ui->tbAuthority, ui->pAuthority);
-    Dashboard->SetSelectedState("background-color: rgb(24, 70, 139);");
-
     connect(Dashboard, &TabDashboard::TabChanged, this, &MainWindow::SelectedTab);
 
     InitVisible();
@@ -129,17 +155,12 @@ void MainWindow::InitVariables()
     {
         QString projectName = projectPrefix + QString::number(i);
 
-        VariableManager::instance().Prefix = projectName;
-
         if (VariableManager::instance().containsSubKey(projectName) == true)
         {
             RobotWindow* robotWindow = AddNewProjectAndRobot(i);
         }
         else
         {
-            QString projectName = projectPrefix + QString::number(i - 1);
-
-            VariableManager::instance().Prefix = projectName;
             break;
         }
     }    
@@ -258,14 +279,21 @@ void MainWindow::InitProjectToOperator()
 
 void MainWindow::SaveOperatorSettings()
 {
-    QFile file(QCoreApplication::applicationDirPath() + "/customUI.ini");
+    const QString settingsPath =
+        QCoreApplication::applicationDirPath() + "/customUI.ini";
+    QFile file(settingsPath);
     if (!file.exists())
     {
-        file.open(QIODevice::WriteOnly);
+        if (!file.open(QIODevice::WriteOnly))
+        {
+            qWarning() << "Unable to create operator settings:" << settingsPath
+                       << file.errorString();
+            return;
+        }
         file.close();
     }
 
-    QSettings settings("customUI.ini", QSettings::IniFormat);
+    QSettings settings(settingsPath, QSettings::IniFormat);
     settings.setValue("AdminPassword", ui->leAuthorityPassword->text());
 
     QString widgetList = "";
@@ -370,7 +398,7 @@ void MainWindow::OpenProjectFromFile()
 
 void MainWindow::SaveProjectToFile()
 {
-    if (SoftwareManager::GetInstance()->RunningScriptThreadNumber > 0)
+    if (SoftwareManager::GetInstance()->RunningScriptCount() > 0)
         return;
 
     VariableManager::instance().scheduleSave(750);
@@ -467,13 +495,13 @@ void MainWindow::RemoveVarFromTreeView(const QString &key)
             }
         }
         if (!child) {
-            // Nếu không tìm thấy phần nào của key, thì thoát khỏi hàm
+            // Stop when a key segment cannot be found.
             return;
         }
         parent = child;
     }
 
-    // Tìm và xóa mục cần thiết
+    // Find and remove the requested item.
     for (int i = 0; i < parent->rowCount(); ++i) {
         if (parent->child(i)->text() == parts.last()) {
             parent->removeRow(i);
@@ -535,7 +563,7 @@ void MainWindow::onTreeViewItemClicked(const QModelIndex &index)
         return;
     }
 
-    // Lấy tên của các item cha của item hiện tại và gán lại thành mẫu như sau "item1.item2.item3"
+    // Build the current item's path from parent names: "item1.item2.item3".
     for (QStandardItem *parent = parentItem; parent != nullptr; parent = parent->parent()) {
         key = parent->text() + "." + key;
     }
@@ -741,10 +769,16 @@ void MainWindow::on_pbDeleteOperatorGcodeProgram_clicked()
 
 void MainWindow::on_tbExpandLoggingBox_clicked()
 {
-    if (ui->teLoggingBox->minimumHeight() == 300)
+    const bool expanded = ui->teLoggingBox->maximumHeight() > 100;
+    if (expanded) {
         ui->teLoggingBox->setMinimumHeight(0);
-    else
+        ui->teLoggingBox->setMaximumHeight(34);
+        ui->tbExpandLoggingBox->setToolTip(tr("Show logs"));
+    } else {
         ui->teLoggingBox->setMinimumHeight(300);
+        ui->teLoggingBox->setMaximumHeight(300);
+        ui->tbExpandLoggingBox->setToolTip(tr("Hide logs"));
+    }
 }
 
 void MainWindow::on_pbUpdateVarDisplay_clicked()
@@ -826,18 +860,15 @@ void MainWindow::SetDefaultPage(PageType pageType)
     }
     
     if (targetButton) {
-        // Clear all button styles first
-        ui->tbHome->setStyleSheet("");
-        ui->tbProject->setStyleSheet("");
-        ui->tbVariable->setStyleSheet("");
-        ui->tbSetting->setStyleSheet("");
-        ui->tbMarket->setStyleSheet("");
-        ui->tbDocument->setStyleSheet("");
-        ui->tbCommunity->setStyleSheet("");
-        ui->tbAuthority->setStyleSheet("");
-        
-        // Apply selected state to target button
-        targetButton->setStyleSheet("background-color: rgb(24, 70, 139);");
+        const QList<QToolButton*> navigationButtons = {
+            ui->tbHome, ui->tbProject, ui->tbVariable, ui->tbSetting,
+            ui->tbMarket, ui->tbDocument, ui->tbCommunity, ui->tbAuthority
+        };
+        for (QToolButton* button : navigationButtons) {
+            button->setProperty("navigationSelected", button == targetButton);
+            button->style()->unpolish(button);
+            button->style()->polish(button);
+        }
     }
 }
 
@@ -863,69 +894,11 @@ void MainWindow::InitVariableTreeView()
     ui->tvVariables->header()->setDefaultSectionSize(200);
     ui->tvVariables->header()->setMinimumSectionSize(100);
     
-    // Style the tree view with improved appearance
-    ui->tvVariables->setStyleSheet(
-        "QTreeView {"
-            "background-color: rgb(40, 40, 43);"
-            "alternate-background-color: rgb(45, 45, 48);"
-            "color: rgb(220, 220, 220);"
-            "border: 1px solid rgb(60, 60, 63);"
-            "gridline-color: rgb(60, 60, 63);"
-            "selection-background-color: rgb(0, 122, 255);"
-            "selection-color: white;"
-            "font-family: 'Consolas', 'Courier New', monospace;"
-            "font-size: 10pt;"
-            "padding: 2px;"
-        "}"
-        "QTreeView::item {"
-            "height: 22px;"
-            "border: none;"
-            "padding: 2px 4px;"
-        "}"
-        "QTreeView::item:hover {"
-            "background-color: rgb(55, 55, 58);"
-        "}"
-        "QTreeView::item:selected {"
-            "background-color: rgb(0, 122, 255);"
-            "color: white;"
-        "}"
-        "QTreeView::branch {"
-            "background: transparent;"
-        "}"
-        "QTreeView::branch:has-children:!has-siblings:closed,"
-        "QTreeView::branch:closed:has-children:has-siblings {"
-            "background: transparent;"
-            "border: none;"
-        "}"
-        "QTreeView::branch:open:has-children:!has-siblings,"
-        "QTreeView::branch:open:has-children:has-siblings {"
-            "background: transparent;"
-            "border: none;"
-        "}"
-        "QTreeView::branch:has-siblings:!adjoins-item {"
-            "background: transparent;"
-            "border: none;"
-        "}"
-        "QTreeView::branch:has-siblings:adjoins-item {"
-            "background: transparent;"
-            "border: none;"
-        "}"
-        "QTreeView::branch:!has-children:!has-siblings:adjoins-item {"
-            "background: transparent;"
-            "border: none;"
-        "}"
-        "QHeaderView::section {"
-            "background-color: rgb(50, 50, 53);"
-            "color: rgb(220, 220, 220);"
-            "border: 1px solid rgb(60, 60, 63);"
-            "padding: 4px 8px;"
-            "font-weight: bold;"
-            "font-size: 10pt;"
-        "}"
-        "QHeaderView::section:hover {"
-            "background-color: rgb(60, 60, 63);"
-        "}"
-    );
+    // Colors and interaction states come from UiTheme. Keep the data-oriented
+    // monospace font local to this tree only.
+    QFont variableFont(QStringLiteral("Consolas"), 10);
+    variableFont.setStyleHint(QFont::Monospace);
+    ui->tvVariables->setFont(variableFont);
     
     // Set default column widths
     ui->tvVariables->setColumnWidth(0, 300);  // Key column

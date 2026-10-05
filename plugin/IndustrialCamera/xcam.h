@@ -17,8 +17,8 @@ public:
     virtual void SetExposureTime(int value) = 0;
     virtual int GetExposureTime() = 0;
 
-    int height;
-    int width;
+    int height = 0;
+    int width = 0;
 };
 
 #endif // XCAM_H

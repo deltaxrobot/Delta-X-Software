@@ -1,5 +1,14 @@
 <RCC>
     <qresource prefix="/">
+        <file>icon/theme/up-light.svg</file>
+        <file>icon/theme/down-light.svg</file>
+        <file>icon/theme/up-dark.svg</file>
+        <file>icon/theme/down-dark.svg</file>
+        <file>icon/theme/right-light.svg</file>
+        <file>icon/theme/right-dark.svg</file>
+        <file>icon/theme/check.svg</file>
+        <file>icon/theme/mixed.svg</file>
+        <file>icon/theme/dot.svg</file>
         <file>icon/Arrow Pointing Down_16px.png</file>
         <file>icon/Below_16px.png</file>
         <file>icon/camera.png</file>
@@ -152,6 +161,13 @@
         <file>icon/IoU-threshold.png</file>
         <file>Jogging.html</file>
         <file>GScript_Documentation.html</file>
+        <file>docs/external-vision.md</file>
+        <file>docs/gscript-runtime.md</file>
+        <file>docs/gscript-command-tour.md</file>
+        <file>docs/cli.md</file>
+        <file>docs/drawing.md</file>
+        <file>docs/phone-camera.md</file>
+        <file alias="phone-camera/index.html">resources/phone-camera/index.html</file>
         <file>icon/icons8-blockly-100.png</file>
         <file>script-example/blockly/blockly.html</file>
     </qresource>

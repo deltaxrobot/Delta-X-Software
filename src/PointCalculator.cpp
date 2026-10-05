@@ -1,4 +1,5 @@
 #include "PointCalculator.h"
+#include "CalibrationMath.h"
 #include <QtMath>
 #include <cmath>
 
@@ -18,9 +19,19 @@ PointCalculator::TransformResult PointCalculator::calculateMappingTransform(cons
             return result;
         }
         
-        // Calculate transformation using both methods
-        result.transform = calculateTransform(sourcePoint1, sourcePoint2, targetPoint1, targetPoint2);
-        result.matrix = calculateTransformMatrix(sourcePoint1, sourcePoint2, targetPoint1, targetPoint2);
+        const CalibrationMath::SimilarityResult calculated = CalibrationMath::calculateSimilarity(
+            sourcePoint1, sourcePoint2, targetPoint1, targetPoint2);
+        if (!calculated.isValid) {
+            result.errorMessage = calculated.errorMessage;
+            return result;
+        }
+
+        result.transform = calculated.transform;
+        result.matrix = calculated.matrix;
+        result.rmsError = calculated.rmsError;
+        result.maxError = calculated.maxError;
+        result.scale = calculated.scale;
+        result.rotationRadians = calculated.rotationRadians;
         
         // Generate display text
         result.displayText = transformToDisplayString(result.transform);
@@ -46,25 +57,31 @@ PointCalculator::MatrixResult PointCalculator::calculatePerspectiveMatrix(const 
             return result;
         }
         
-        // Convert to OpenCV format
-        std::vector<cv::Point2f> srcPoints, dstPoints;
+        QVector<QPointF> srcPoints;
+        QVector<QPointF> dstPoints;
         for (int i = 0; i < 4; ++i) {
-            srcPoints.push_back(cv::Point2f(sourcePoints[i].x(), sourcePoints[i].y()));
-            dstPoints.push_back(cv::Point2f(targetPoints[i].x(), targetPoints[i].y()));
+            srcPoints.append(sourcePoints[i]);
+            dstPoints.append(targetPoints[i]);
         }
-        
-        // Calculate perspective transformation
-        result.matrix = cv::getPerspectiveTransform(srcPoints, dstPoints);
-        
-        // Convert to QTransform for compatibility
-        result.qtTransform = QTransform(
-            result.matrix.at<double>(0, 0), result.matrix.at<double>(0, 1), result.matrix.at<double>(0, 2),
-            result.matrix.at<double>(1, 0), result.matrix.at<double>(1, 1), result.matrix.at<double>(1, 2),
-            result.matrix.at<double>(2, 0), result.matrix.at<double>(2, 1), result.matrix.at<double>(2, 2)
-        );
+
+        const CalibrationMath::HomographyResult calculated =
+            CalibrationMath::calculateHomography(srcPoints, dstPoints);
+        if (!calculated.isValid) {
+            result.errorMessage = calculated.errorMessage;
+            return result;
+        }
+        result.matrix = calculated.matrix;
+        result.qtTransform = calculated.transform;
+        result.rmsError = calculated.rmsError;
+        result.maxError = calculated.maxError;
+        result.conditionNumber = calculated.conditionNumber;
         
         // Generate display text
-        result.displayText = matrixToDisplayString(result.matrix);
+        result.displayText = matrixToDisplayString(result.matrix)
+            + QString("RMS: %1, Max: %2, Condition: %3")
+                  .arg(result.rmsError, 0, 'f', 6)
+                  .arg(result.maxError, 0, 'f', 6)
+                  .arg(result.conditionNumber, 0, 'g', 6);
         
         result.isValid = true;
     }
@@ -202,13 +219,39 @@ bool PointCalculator::validatePointsForTransformation(const QPointF sourcePoints
         return false;
     }
     
-    // Check for duplicate points
+    // Check for finite and duplicate points
     for (int i = 0; i < pointCount - 1; ++i) {
+        if (!qIsFinite(sourcePoints[i].x()) || !qIsFinite(sourcePoints[i].y()) ||
+            !qIsFinite(targetPoints[i].x()) || !qIsFinite(targetPoints[i].y())) {
+            return false;
+        }
         for (int j = i + 1; j < pointCount; ++j) {
             if (sourcePoints[i] == sourcePoints[j] || targetPoints[i] == targetPoints[j]) {
                 return false;
             }
         }
+    }
+
+    const int last = pointCount - 1;
+    if (!qIsFinite(sourcePoints[last].x()) || !qIsFinite(sourcePoints[last].y()) ||
+        !qIsFinite(targetPoints[last].x()) || !qIsFinite(targetPoints[last].y())) {
+        return false;
+    }
+
+    if (pointCount >= 3) {
+        auto hasArea = [pointCount](const QPointF points[]) {
+            for (int i = 1; i < pointCount - 1; ++i) {
+                const QPointF a = points[i] - points[0];
+                for (int j = i + 1; j < pointCount; ++j) {
+                    const QPointF b = points[j] - points[0];
+                    if (qAbs(a.x() * b.y() - a.y() * b.x()) > 1.0e-9)
+                        return true;
+                }
+            }
+            return false;
+        };
+        if (!hasArea(sourcePoints) || !hasArea(targetPoints))
+            return false;
     }
     
     return true;
@@ -218,95 +261,12 @@ bool PointCalculator::validatePointsForTransformation(const QPointF sourcePoints
 
 QTransform PointCalculator::calculateTransform(const QPointF& p1, const QPointF& p2, const QPointF& p1_prime, const QPointF& p2_prime)
 {
-    // Build affine transform directly via 6 parameters
-    QPointF v1 = p2 - p1;
-    QPointF v2 = p2_prime - p1_prime;
-
-    qreal angle1 = std::atan2(v1.y(), v1.x());
-    qreal angle2 = std::atan2(v2.y(), v2.x());
-    qreal dtheta = angle2 - angle1;            // radians
-
-    qreal len1 = QLineF(p1, p2).length();
-    qreal len2 = QLineF(p1_prime, p2_prime).length();
-    qreal s = (len1 == 0.0) ? 1.0 : (len2 / len1);
-
-    qreal c = s * std::cos(dtheta);
-    qreal si = s * std::sin(dtheta);
-
-    // QTransform mapping:
-    // x' = m11*x + m21*y + m31
-    // y' = m12*x + m22*y + m32
-    // For rotation+scale (theta, scale s):
-    // m11=c=s*cos(theta), m12=b=s*sin(theta), m21=cc=-s*sin(theta), m22=d=s*cos(theta)
-    qreal a  =  c;
-    qreal b  =  si;
-    qreal cc = -si;
-    qreal d  =  c;
-
-    // Solve translation so that p1 -> p1' using QTransform conventions
-    qreal dx = p1_prime.x() - (a  * p1.x() + cc * p1.y());
-    qreal dy = p1_prime.y() - (b  * p1.x() + d  * p1.y());
-
-    QTransform t;
-    t.setMatrix(a, b, 0,
-                cc, d, 0,
-                dx, dy, 1);
-    return t;
+    return CalibrationMath::calculateSimilarity(p1, p2, p1_prime, p2_prime).transform;
 }
 
 QMatrix PointCalculator::calculateTransformMatrix(const QPointF& p1, const QPointF& p2, const QPointF& p1_prime, const QPointF& p2_prime)
 {
-    float sourcePoint1X = p1.x();
-    float sourcePoint1Y = p1.y();
-    float sourcePoint2X = p2.x();
-    float sourcePoint2Y = p2.y();
-
-    float targetPoint1X = p1_prime.x();
-    float targetPoint1Y = p1_prime.y();
-    float targetPoint2X = p2_prime.x();
-    float targetPoint2Y = p2_prime.y();
-
-    float sourceVectorX = sourcePoint2X - sourcePoint1X;
-    float sourceVectorY = sourcePoint2Y - sourcePoint1Y;
-    float targetVectorX = targetPoint2X - targetPoint1X;
-    float targetVectorY = targetPoint2Y - targetPoint1Y;
-
-    float dotProduct = sourceVectorX * targetVectorX + sourceVectorY * targetVectorY;
-    float sourceNorm = qSqrt(qPow(sourceVectorX, 2) + qPow(sourceVectorY, 2));
-    float targetNorm = qSqrt(qPow(targetVectorX, 2) + qPow(targetVectorY, 2));
-    float scaleFactor = targetNorm / sourceNorm;
-
-    float normProduct = sourceNorm * targetNorm;
-
-    float cosTheta = dotProduct / normProduct;
-    float tanTheta = (sourceVectorX * targetVectorY - sourceVectorY * targetVectorX) / (sourceVectorX * targetVectorX + sourceVectorY * targetVectorY);
-    float theta = qAcos(cosTheta);
-
-    if (cosTheta < 0) {
-        if (tanTheta > 0) {
-            theta = 0 - theta;
-        }
-    } else {
-        if (tanTheta < 0) {
-            theta = 0 - theta;
-        }
-    }
-
-    QMatrix rotationMatrix(qCos(theta), qSin(theta), -qSin(theta), qCos(theta), 0, 0);
-    QMatrix scaleMatrix(scaleFactor, 0, 0, scaleFactor, 0, 0);
-    QMatrix scaleRotateMatrix = scaleMatrix * rotationMatrix;
-
-    // Calculate translation
-    float translationX = targetPoint1X - (scaleRotateMatrix.m11() * sourcePoint1X + scaleRotateMatrix.m21() * sourcePoint1Y);
-    float translationY = targetPoint1Y - (scaleRotateMatrix.m12() * sourcePoint1X + scaleRotateMatrix.m22() * sourcePoint1Y);
-
-    QMatrix matrix;
-    QtMatrixCompat::setMatrix2D(matrix,
-                                scaleRotateMatrix.m11(), scaleRotateMatrix.m12(),
-                                scaleRotateMatrix.m21(), scaleRotateMatrix.m22(),
-                                translationX, translationY);
-
-    return matrix;
+    return CalibrationMath::calculateSimilarity(p1, p2, p1_prime, p2_prime).matrix;
 }
 
 QString PointCalculator::transformToDisplayString(const QTransform& transform)

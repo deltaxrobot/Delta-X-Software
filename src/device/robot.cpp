@@ -131,12 +131,14 @@ void Robot::ProcessResponse(QString id, QString response) {
                     }
                 }
 
-                VariableManager::instance().addVar(QString("%1.HOME_X").arg(idName), home_X);
-                VariableManager::instance().addVar(QString("%1.HOME_Y").arg(idName), home_Y);
-                VariableManager::instance().addVar(QString("%1.HOME_Z").arg(idName), home_Z);
-                VariableManager::instance().addVar(QString("%1.HOME_W").arg(idName), home_W);
-                VariableManager::instance().addVar(QString("%1.HOME_U").arg(idName), home_U);
-                VariableManager::instance().addVar(QString("%1.HOME_V").arg(idName), home_V);
+                QHash<QString, QVariant> homeValues;
+                homeValues.insert(QString("%1.HOME_X").arg(idName), home_X);
+                homeValues.insert(QString("%1.HOME_Y").arg(idName), home_Y);
+                homeValues.insert(QString("%1.HOME_Z").arg(idName), home_Z);
+                homeValues.insert(QString("%1.HOME_W").arg(idName), home_W);
+                homeValues.insert(QString("%1.HOME_U").arg(idName), home_U);
+                homeValues.insert(QString("%1.HOME_V").arg(idName), home_V);
+                VariableManager::instance().updateBatchScoped(ProjectName, homeValues);
             }
 
             else
@@ -186,8 +188,6 @@ bool Robot::getPara(QString gcode)
     {
         QString para = paras.at(i);
         float value = para.mid(1).toFloat();
-        VariableManager::instance().Prefix = ProjectName;
-
         if (para[0] == 'X')
             X = value;
         else if (para[0] == 'Y')
@@ -254,7 +254,7 @@ bool Robot::checkSetSyncPathCmd(QString cmd)
 
         path_angle = qDegreesToRadians(path_angle);
 
-        // Tính toán tọa độ X và Y
+        // Calculate X and Y coordinates.
         double x = path_vel * qCos(path_angle);
         double y = path_vel * qSin(path_angle);
 
@@ -428,21 +428,21 @@ QVector3D Robot::calculateSyncPosition(QVector3D robotPos, QVector3D objectPos, 
     double t, t_new, distance_initial, distance_new;
     QVector3D estimatedObjectPos;
 
-    // Ước tính khoảng cách ban đầu và thời gian di chuyển
+    // Estimate the initial distance and travel time.
     distance_initial = (objectPos - robotPos).length();
     t = calculateMovingTime(distance_initial);
 
     do {
-        // Cập nhật vị trí mới của vật
+        // Update the object's predicted position.
         estimatedObjectPos = objectPos + beltVelocity * t;
 
-        // Tính khoảng cách mới
+        // Calculate the updated distance.
         distance_new = (estimatedObjectPos - robotPos).length();
 
-        // Cập nhật lại ước tính thời gian
+        // Update the time estimate.
         t_new = calculateMovingTime(distance_new);
 
-        // Kiểm tra điều kiện dừng
+        // Check the termination condition.
         if (std::abs(t_new - t) < tolerance) {
             break;
         }
@@ -489,20 +489,21 @@ QString Robot::GetInfo()
 
 void Robot::saveParaVar()
 {
-    VariableManager::instance().Prefix = ProjectName;
-    VariableManager::instance().addVar(QString("%1.X").arg(idName), X);
-    VariableManager::instance().addVar(QString("%1.Y").arg(idName), Y);
-    VariableManager::instance().addVar(QString("%1.Z").arg(idName), Z);
-    VariableManager::instance().addVar(QString("%1.W").arg(idName), W);
-    VariableManager::instance().addVar(QString("%1.U").arg(idName), U);
-    VariableManager::instance().addVar(QString("%1.V").arg(idName), V);
-    VariableManager::instance().addVar(QString("%1.F").arg(idName), F);
-    VariableManager::instance().addVar(QString("%1.A").arg(idName), A);
-    VariableManager::instance().addVar(QString("%1.J").arg(idName), J);
-    VariableManager::instance().addVar(QString("%1.OLD_X").arg(idName), old_X);
-    VariableManager::instance().addVar(QString("%1.OLD_Y").arg(idName), old_Y);
-    VariableManager::instance().addVar(QString("%1.OLD_Z").arg(idName), old_Z);
-
+    QHash<QString, QVariant> values;
+    values.insert(QString("%1.X").arg(idName), X);
+    values.insert(QString("%1.Y").arg(idName), Y);
+    values.insert(QString("%1.Z").arg(idName), Z);
+    values.insert(QString("%1.W").arg(idName), W);
+    values.insert(QString("%1.U").arg(idName), U);
+    values.insert(QString("%1.V").arg(idName), V);
+    values.insert(QString("%1.F").arg(idName), F);
+    values.insert(QString("%1.A").arg(idName), A);
+    values.insert(QString("%1.J").arg(idName), J);
+    values.insert(QString("%1.OLD_X").arg(idName), old_X);
+    values.insert(QString("%1.OLD_Y").arg(idName), old_Y);
+    values.insert(QString("%1.OLD_Z").arg(idName), old_Z);
+    VariableManager::instance().updateBatchScoped(
+        ProjectName, values, VariableManager::Persistence::Runtime);
 }
 
 QString Robot::SetInput(int pin)
@@ -685,11 +686,11 @@ bool Robot::checkJoggingCmd(QString cmd)
 
     QRegularExpressionMatch match = re.match(cmd);
     if (!match.hasMatch()) {
-        // Không đúng format
+        // The format is invalid.
         return false;
     }
 
-    // Nếu match, chuyển sang số thực
+    // Convert a successful match to a floating-point value.
     float x = match.captured(1).toDouble();
     float y = match.captured(2).toDouble();
     float z = match.captured(3).toDouble();

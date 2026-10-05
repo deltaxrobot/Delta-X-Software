@@ -97,19 +97,19 @@ QMatrix PointTool::calculateTransformMatrix(const QPointF &P1, const QPointF &P2
 
 cv::Mat PointTool::calculateMatrix(const QPolygonF &sourcePolygon, const QPolygonF &destPolygon)
 {
-    // Kiểm tra điều kiện.
+    // Validate the preconditions.
     if (sourcePolygon.size() < 4 || destPolygon.size() < 4) {
         throw std::invalid_argument("Need at least 4 points in both polygons.");
     }
 
-    // Chuyển đổi từ QPolygonF sang std::vector<cv::Point2f>.
+    // Convert QPolygonF to std::vector<cv::Point2f>.
     std::vector<cv::Point2f> srcPoints, dstPoints;
     for (int i = 0; i < sourcePolygon.size() && i < destPolygon.size(); ++i) {
         srcPoints.push_back(cv::Point2f(sourcePolygon[i].x(), sourcePolygon[i].y()));
         dstPoints.push_back(cv::Point2f(destPolygon[i].x(), destPolygon[i].y()));
     }
 
-    // Tính toán ma trận chuyển đổi bằng OpenCV.
+    // Calculate the transformation matrix with OpenCV.
     cv::Mat transformMatrix = cv::getPerspectiveTransform(srcPoints, dstPoints);
 
     return transformMatrix;

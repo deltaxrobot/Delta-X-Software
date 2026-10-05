@@ -26,7 +26,6 @@ public:
 
     void InitPage(QAbstractButton* button, QWidget* page);
     void InitPanel(QWidget* panel, QStackedWidget* pageStack);
-    void SetSelectedState(QString qss);
 
     bool Lock = false;
     QString Pass = "1234";
@@ -43,7 +42,6 @@ private:
     QWidget* qPanel;
     QStackedWidget* swPageStack;
     QList<TabPage*>* TabPages;
-    QString SelectedStateQSS;
 };
 
 #endif // TABDASHBOARD_H
