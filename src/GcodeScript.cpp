@@ -9,6 +9,8 @@
 #include <QReadLocker>
 #include <QWriteLocker>
 #include <QMetaEnum>
+#include <algorithm>
+#include <iterator>
 
 namespace {
 std::atomic<quint64> g_nextVisionRequestId{1};
@@ -44,6 +46,28 @@ QString stripInlineComment(const QString& input)
             return input.left(i);
     }
     return input;
+}
+
+template <typename Transform>
+QString transformUnquotedText(const QString& input, Transform transform,
+                              bool preserveQuoted = true)
+{
+    QString result;
+    int start = 0;
+    for (int at = 0; at < input.size(); ++at) {
+        const QChar quote = input.at(at);
+        if (quote != '\'' && quote != '"')
+            continue;
+        result += transform(input.mid(start, at - start));
+        const int end = input.indexOf(quote, at + 1);
+        if (end < 0)
+            return result + input.mid(at);
+        result += preserveQuoted ? input.mid(at, end - at + 1)
+                                 : QString(end - at + 1, QLatin1Char(' '));
+        at = end;
+        start = end + 1;
+    }
+    return result + transform(input.mid(start));
 }
 }
 #include "CloudPointMapper.h"
@@ -238,6 +262,7 @@ void GcodeScript::ExecuteGcode(QString gcodes, int startMode)
     }
 
     SetGcodeScript(gcodes);
+    ++executionGeneration;
     isRunning = true;
     SoftwareManager::GetInstance()->ScriptStarted();
     setExecutionState(ExecutionState::Running, "Program running");
@@ -283,6 +308,8 @@ void GcodeScript::ExecuteGcode(QString gcodes, int startMode)
     labelDefinitions.clear();
     callStack.clear();
     functionReturnStack.clear();
+    returnPointerOrder = -1;
+    std::fill(std::begin(returnSubProPointer), std::end(returnSubProPointer), -1);
 
     if (startMode == BEGIN)
     {
@@ -451,6 +478,9 @@ void GcodeScript::TransmitNextGcode()
         return;
     }
 
+    QElapsedTimer batchTimer;
+    batchTimer.start();
+    int statementsExecuted = 0;
     while (true)
     {
         currentLine = gcodeList.at(gcodeOrder);
@@ -496,6 +526,18 @@ void GcodeScript::TransmitNextGcode()
 
         if (isGcode == true)
         {
+            break;
+        }
+
+        // Local loops must let queued Stop requests and telemetry reach this
+        // worker. A continuation belongs to this run, never a later restart.
+        if (++statementsExecuted >= 64 || batchTimer.elapsed() >= 5) {
+            const quint64 generation = executionGeneration;
+            QTimer::singleShot(0, this, [this, generation]() {
+                if (isRunning && executionGeneration == generation &&
+                    State() == ExecutionState::Running)
+                    TransmitNextGcode();
+            });
             break;
         }
     }
@@ -557,6 +599,7 @@ void GcodeScript::finishExecution(bool abortActiveMotion, const QString& reason,
     const QString activeMsg = transmitMsg;
 
     isRunning = false;
+    ++executionGeneration;
     pendingResponseToken++;
     pendingConditionToken = 0;
     pendingConditionExpression.clear();
@@ -590,6 +633,8 @@ void GcodeScript::finishExecution(bool abortActiveMotion, const QString& reason,
     labelDefinitions.clear();
     callStack.clear();
     functionReturnStack.clear();
+    returnPointerOrder = -1;
+    std::fill(std::begin(returnSubProPointer), std::end(returnSubProPointer), -1);
 
     if (!reason.isEmpty())
         emit LogMessage(reason);
@@ -813,14 +858,16 @@ void GcodeScript::ReceivedGcode(QString gcode)
 
 void GcodeScript::prepareCurrentLine()
 {
-    // Revert to original simple processing to fix script not running
-    currentLine = currentLine.replace("  ", " ");
-    currentLine = currentLine.replace("\t", "");
-    
-    // Add spaces around operators for proper parsing
-    normalizeOperators();
-    
-    currentLine = formatSpaces(currentLine);
+    // Normalize syntax only: quoted commands, messages and identifiers are data.
+    const QString source = currentLine;
+    currentLine = transformUnquotedText(source, [this](QString fragment) {
+        currentLine = fragment.replace('\t', ' ');
+        // A quoted RHS starts a separate fragment, including compact #Name="...".
+        currentLine.replace(QRegularExpression("(#[A-Za-z0-9_][A-Za-z0-9_.]*)\\s*=(?!=)\\s*"),
+                            QStringLiteral("\\1 = "));
+        normalizeOperators();
+        return formatSpaces(currentLine);
+    });
 }
 
 bool GcodeScript::shouldSkipLine()
@@ -835,27 +882,59 @@ bool GcodeScript::shouldSkipLine()
 
 void GcodeScript::collapseGcodeLine()
 {
-    int openBracIndex = currentLine.indexOf('[');
+    // waitUntil owns its expression and must reevaluate brackets at each poll.
+    const QString syntax = transformUnquotedText(currentLine, [](const QString& text) {
+        return text;
+    }, false);
+    const QRegularExpressionMatch macro = m98Regex.match(syntax);
+    QString macroName = macro.captured(1).remove('_').toLower();
+    if (macroName.startsWith('p'))
+        macroName.remove(0, 1);
+    if (macro.hasMatch() && macroName == QStringLiteral("waituntil"))
+        return;
 
-    while (openBracIndex != -1) {
+    QChar quote;
+    for (int at = 0; at < currentLine.size(); ++at) {
+        const QChar ch = currentLine.at(at);
+        if (!quote.isNull()) {
+            if (ch == quote)
+                quote = QChar();
+            continue;
+        }
+        if (ch == '\'' || ch == '"') {
+            quote = ch;
+            continue;
+        }
+        if (ch != '[')
+            continue;
+        const int openBracIndex = at;
         int closeBracIndex = findClosingBracket(openBracIndex);
+        if (closeBracIndex < 0) {
+            faultExecution("Unclosed bracket in runtime expression.");
+            return;
+        }
         QString expressInBracket = currentLine.mid(openBracIndex, closeBracIndex - openBracIndex + 1);
-        
-        // Normalize operators in the expression before calculating
-        QString normalizedExpression = expressInBracket;
-        normalizeExpressionOperators(normalizedExpression);
-        
-        QString resultInBracket = calculateExpressions(normalizedExpression);
-
-        currentLine.replace(expressInBracket, resultInBracket);
-        openBracIndex = currentLine.indexOf('[');
+        const QString resultInBracket = calculateExpressions(expressInBracket);
+        currentLine.replace(openBracIndex, expressInBracket.size(), resultInBracket);
+        at += resultInBracket.size() - 1;
     }
 }
 
 int GcodeScript::findClosingBracket(int openIndex)
 {
     int subBracNum = 1;
+    QChar quote;
     for (int i = openIndex + 1; i < currentLine.length(); i++) {
+        const QChar ch = currentLine.at(i);
+        if (!quote.isNull()) {
+            if (ch == quote)
+                quote = QChar();
+            continue;
+        }
+        if (ch == '\'' || ch == '"') {
+            quote = ch;
+            continue;
+        }
         if (currentLine.at(i) == '[') subBracNum++;
         if (currentLine.at(i) == ']') {
             subBracNum--;
@@ -1814,6 +1893,8 @@ bool GcodeScript::findExeGcodeAndTransmit()
     
     if (shouldSkipLine()) return false;
     collapseGcodeLine();
+    if (!isRunning)
+        return true;
 
 //    processVARIABLE();
 
@@ -2200,7 +2281,7 @@ bool GcodeScript::findExeGcodeAndTransmit()
                 QString functionName = match.captured(1);
                 QString params = match.captured(2);
 
-                if (!functionName.isEmpty() && functionName.at(0) == 'P')
+                if (!functionName.isEmpty() && functionName.at(0).toUpper() == 'P')
                     functionName.remove(0, 1);
 
                 // Function names accept legacy underscore aliases (for example
@@ -3063,7 +3144,6 @@ bool GcodeScript::handleIF(QList<QString> valuePairs, int i)
         if (conditionResult)
         {
             currentLine = statement;
-            gcodeOrder++; // Move to next line after executing
             ifBlockStack.pop(); // Remove the IF block as it's completed
             return findExeGcodeAndTransmit();
         }
@@ -4247,7 +4327,6 @@ bool GcodeScript::handleELIF(QList<QString> valuePairs, int i)
             currentBlock.conditionMet = true;
             currentBlock.insideBlock = true;
             currentLine = statement;
-            gcodeOrder++;
             return findExeGcodeAndTransmit();
         }
         else
@@ -4295,7 +4374,6 @@ bool GcodeScript::handleELSE(QList<QString> valuePairs, int i)
             currentBlock.conditionMet = true;
             currentBlock.insideBlock = true;
             currentLine = statement;
-            gcodeOrder++;
             return findExeGcodeAndTransmit();
         }
         else
@@ -5027,7 +5105,7 @@ bool GcodeScript::handleENDFUNCTION(QList<QString> valuePairs, int i)
     if (!functionReturnStack.isEmpty())
     {
         int ret = functionReturnStack.pop();
-        if (!callStack.isEmpty()) callStack.pop();
+        unwindFunctionFrame();
         gcodeOrder = ret + 1;
         return false;
     }
@@ -5062,7 +5140,7 @@ bool GcodeScript::handleRETURN(QList<QString> valuePairs, int i)
     if (!functionReturnStack.isEmpty())
     {
         int ret = functionReturnStack.pop();
-        if (!callStack.isEmpty()) callStack.pop();
+        unwindFunctionFrame();
         if (hasReturnValue && !returnTarget.isEmpty())
             saveVariable(returnTarget, returnValue);
         gcodeOrder = ret + 1;
@@ -5148,6 +5226,10 @@ bool GcodeScript::callFunction(QString functionName, QStringList arguments, cons
     // Create call frame and bind parameters
     CallFrame frame;
     frame.retTarget = retTarget;
+    frame.ifDepth = ifBlockStack.size();
+    frame.forDepth = forLoopStack.size();
+    frame.whileDepth = whileLoopStack.size();
+    frame.switchDepth = switchCaseStack.size();
     if (arguments.size() != funcDef.parameters.size()) {
         faultExecution(QString("Function %1 expects %2 argument(s), received %3.")
                            .arg(functionName)
@@ -5170,6 +5252,21 @@ bool GcodeScript::callFunction(QString functionName, QStringList arguments, cons
     gcodeOrder = funcDef.startLine + 1;
     
     return false;
+}
+
+void GcodeScript::unwindFunctionFrame()
+{
+    if (callStack.isEmpty())
+        return;
+    const CallFrame frame = callStack.pop();
+    while (ifBlockStack.size() > frame.ifDepth)
+        ifBlockStack.pop();
+    while (forLoopStack.size() > frame.forDepth)
+        forLoopStack.pop();
+    while (whileLoopStack.size() > frame.whileDepth)
+        whileLoopStack.pop();
+    while (switchCaseStack.size() > frame.switchDepth)
+        switchCaseStack.pop();
 }
 
 bool GcodeScript::isFunctionCall(QString line)

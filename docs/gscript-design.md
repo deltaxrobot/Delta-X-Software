@@ -51,6 +51,19 @@ Idle -> Validating -> Running <-> WaitingForDevice
 
 Every run publishes diagnostics, state, current line, and final result. Running state is atomic because the UI and interpreter live in different threads.
 
+Local statements execute in bounded batches (at most 64 statements or a 5 ms
+batch budget, checked between statements), allowing queued Stop requests and
+telemetry updates to run even inside a local-only loop. Continuations carry a
+monotonic run generation and resume only a `Running` worker from that same run.
+This scheduling budget is not a real-time deadline for an individual statement.
+
+Quoted data is excluded from syntax normalization and bracket substitution.
+`waitUntil` retains its original condition, including square-bracket groups,
+and evaluates it at each poll. Function call frames record the caller's block
+stack depths so both explicit and implicit returns discard callee blocks while
+preserving caller blocks. Both function and legacy subprogram return stacks are
+reset at run boundaries.
+
 ## 3. Language conventions
 
 A line has the following form:
@@ -145,5 +158,8 @@ Before running an example:
 5. Enable the remaining workers and increase speed in controlled steps.
 
 ## 7. Evolution path
+
+The [focused design review](gscript-design-review.md) records the interpreter
+corrections, regression coverage, and remaining scope-transfer limitations.
 
 The analyzer, editor services, and interpreter are separated deliberately. Autocomplete, signature help, Watch, and templates do not modify runtime semantics. The next language-level evolution is a typed AST/IR shared by the interpreter, formatter, and simulator. The current compatibility and preflight layer supports that migration without breaking existing script libraries.

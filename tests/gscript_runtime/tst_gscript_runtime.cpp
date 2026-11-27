@@ -75,6 +75,14 @@ private slots:
     void pluginPrimitiveIsAnalyzedExecutedAndStored();
     void inlineCommentsRespectQuotedSemicolons();
     void macroAliasesDoNotModifyArgumentIdentifiers();
+    void inlineStatementsAdvanceExactlyOnce_data();
+    void inlineStatementsAdvanceExactlyOnce();
+    void quotedPayloadsRemainLiteral();
+    void bracketedWaitUntilReevaluatesCondition_data();
+    void bracketedWaitUntilReevaluatesCondition();
+    void localLoopAllowsQueuedStopAndCleanRestart();
+    void stoppedSubprogramDoesNotLeakReturnAddress();
+    void earlyFunctionReturnRestoresCallerBlocks();
 
 private:
     const QString scope = QStringLiteral("gscript_runtime_test");
@@ -90,6 +98,180 @@ void GScriptRuntimeTest::cleanup()
 {
     PluginExtensionRegistry::instance().clearForTests();
     VariableManager::instance().removeVarScoped(scope, QString());
+}
+
+void GScriptRuntimeTest::inlineStatementsAdvanceExactlyOnce_data()
+{
+    QTest::addColumn<QString>("source");
+    QTest::newRow("assignment") << QStringLiteral(
+        "#X = 0\nIF 1 THEN #X = 1\n#Next = 2\n");
+    QTest::newRow("false-if") << QStringLiteral(
+        "#X = 1\nIF 0 THEN #X = 0\n#Next = 2\n");
+    QTest::newRow("elif") << QStringLiteral(
+        "IF 0\n#X = 0\nELIF 1 THEN #X = 1\n#Next = 2\nENDIF\n");
+    QTest::newRow("else") << QStringLiteral(
+        "IF 0\n#X = 0\nELSE #X = 1\n#Next = 2\nENDIF\n");
+    QTest::newRow("delay") << QStringLiteral(
+        "#X = 1\nIF 1 THEN M98 Pdelay(5)\n#Next = 2\n");
+    QTest::newRow("device") << QStringLiteral(
+        "#X = 1\nIF 1 THEN device0 M42 P1\n#Next = 2\n");
+    QTest::newRow("function-return") << QStringLiteral(
+        "FUNCTION Value()\nRETURN 1\nENDFUNCTION\n"
+        "IF 1 THEN #X = #Value()\n#Next = 2\n");
+    QTest::newRow("legacy-return") << QStringLiteral(
+        "IF 1 THEN M98 P2000\n#Next = 2\nO2000\n#X = 1\nM99\n");
+}
+
+void GScriptRuntimeTest::inlineStatementsAdvanceExactlyOnce()
+{
+    QFETCH(QString, source);
+    QVERIFY(!GScriptAnalyzer::analyze(source).hasErrors());
+    GcodeScript script;
+    script.ProjectName = scope;
+    script.ID = QStringLiteral("inline_statement");
+    connect(&script, &GcodeScript::SendGcodeToDevice, &script,
+            [&script](const QString& device, const QString&) {
+        QTimer::singleShot(0, &script, [&script, device]() {
+            script.GetResponse(device, QStringLiteral("ok"));
+        });
+    });
+    script.ExecuteGcode(source, GcodeScript::BEGIN);
+    QTRY_COMPARE(script.State(), GcodeScript::ExecutionState::Completed);
+    QCOMPARE(VariableManager::instance().getVarScoped(scope, QStringLiteral("X")).toInt(), 1);
+    QCOMPARE(VariableManager::instance().getVarScoped(scope, QStringLiteral("Next")).toInt(), 2);
+}
+
+void GScriptRuntimeTest::quotedPayloadsRemainLiteral()
+{
+    GcodeScript script;
+    script.ProjectName = scope;
+    script.ID = QStringLiteral("literal_payloads");
+    QSignalSpy logs(&script, &GcodeScript::LogMessage);
+    QString sent;
+    connect(&script, &GcodeScript::SendGcodeToDevice, &script,
+            [&script, &sent](const QString& device, const QString& command) {
+        sent = command;
+        QTimer::singleShot(0, &script, [&script, device]() {
+            script.GetResponse(device, QStringLiteral("ok"));
+        });
+    });
+    const QString source = QStringLiteral(
+        "#Message = \"https://host/a+b  c[42]\"\n"
+        "#Compact=\"unchanged / +  value[\"\n"
+        "#Unmatched = 'literal[; text'\n"
+        "M98 PlogMessage(\"[1+2]\")\n"
+        "M98 Psend(device0, \"M42 P1; a/b+c  [42]\", #Reply, 1000)\n"
+        "#Coordinate = [1 + 2]\n");
+    QVERIFY(!GScriptAnalyzer::analyze(source).hasErrors());
+    script.ExecuteGcode(source, GcodeScript::BEGIN);
+    QTRY_COMPARE(script.State(), GcodeScript::ExecutionState::Completed);
+    QCOMPARE(VariableManager::instance().getVarScoped(scope, QStringLiteral("Message")).toString(),
+             QStringLiteral("https://host/a+b  c[42]"));
+    QCOMPARE(VariableManager::instance().getVarScoped(scope, QStringLiteral("Unmatched")).toString(),
+             QStringLiteral("literal[; text"));
+    QCOMPARE(sent, QStringLiteral("M42 P1; a/b+c  [42]"));
+    QCOMPARE(VariableManager::instance().getVarScoped(scope, QStringLiteral("Compact")).toString(),
+             QStringLiteral("unchanged / +  value["));
+    QCOMPARE(VariableManager::instance().getVarScoped(scope, QStringLiteral("Coordinate")).toInt(), 3);
+    QVERIFY(std::any_of(logs.cbegin(), logs.cend(), [](const QList<QVariant>& event) {
+        return event.first().toString() == QStringLiteral("[1+2]");
+    }));
+}
+
+void GScriptRuntimeTest::bracketedWaitUntilReevaluatesCondition_data()
+{
+    QTest::addColumn<QString>("call");
+    QTest::newRow("canonical") << QStringLiteral("M98 PwaitUntil");
+    QTest::newRow("lowercase") << QStringLiteral("m98 pwaituntil");
+    QTest::newRow("underscore-alias") << QStringLiteral("M98 Pwait_until");
+    QTest::newRow("without-prefix") << QStringLiteral("M98 waitUntil");
+}
+
+void GScriptRuntimeTest::bracketedWaitUntilReevaluatesCondition()
+{
+    QFETCH(QString, call);
+    GcodeScript script;
+    script.ProjectName = scope;
+    script.ID = QStringLiteral("bracketed_wait");
+    VariableManager::instance().updateVarScoped(scope, QStringLiteral("Ready"), 0);
+    QTimer::singleShot(20, &script, [this]() {
+        VariableManager::instance().updateVarScoped(scope, QStringLiteral("Ready"), 1);
+    });
+    const QString source = call + QStringLiteral("([#Ready == 1], 500, 5)\n#Done = 1\n");
+    QVERIFY(!GScriptAnalyzer::analyze(source).hasErrors());
+    script.ExecuteGcode(source, GcodeScript::BEGIN);
+    QCOMPARE(script.State(), GcodeScript::ExecutionState::WaitingForCondition);
+    QCOMPARE(VariableManager::instance().getVarScoped(
+                 scope, QStringLiteral("GScript.bracketed_wait.ActiveCondition")).toString(),
+             QStringLiteral("[#Ready == 1]"));
+    QTRY_COMPARE(script.State(), GcodeScript::ExecutionState::Completed);
+    QCOMPARE(VariableManager::instance().getVarScoped(scope, QStringLiteral("Done")).toInt(), 1);
+}
+
+void GScriptRuntimeTest::localLoopAllowsQueuedStopAndCleanRestart()
+{
+    GcodeScript script;
+    script.ProjectName = scope;
+    script.ID = QStringLiteral("local_loop");
+    QSignalSpy finished(&script, &GcodeScript::ExecutionFinished);
+    // Leave an old batch continuation queued, then restart in a timer wait.
+    script.ExecuteGcode(QStringLiteral("LABEL LOOP\nJUMP LOOP\n"), GcodeScript::BEGIN);
+    QVERIFY(script.IsRunning());
+    script.Stop();
+    script.ExecuteGcode(QStringLiteral("M98 Pdelay(30)\n#Restarted = 1\n"), GcodeScript::BEGIN);
+    QTest::qWait(5);
+    QCOMPARE(script.State(), GcodeScript::ExecutionState::WaitingForTimer);
+    QVERIFY(!VariableManager::instance().containsFullKeyScoped(scope, QStringLiteral("Restarted")));
+    QTRY_COMPARE(script.State(), GcodeScript::ExecutionState::Completed);
+    QCOMPARE(finished.count(), 2);
+
+    bool stopped = false;
+    QTimer::singleShot(15, &script, [&script, &stopped]() {
+        script.Stop();
+        stopped = true;
+    });
+    script.ExecuteGcode(QStringLiteral("#Counter = 0\nWHILE 1\n#Counter = #Counter + 1\nENDWHILE\n"),
+                        GcodeScript::BEGIN);
+    QTRY_VERIFY_WITH_TIMEOUT(stopped, 500);
+    QCOMPARE(script.State(), GcodeScript::ExecutionState::Idle);
+    QVERIFY(VariableManager::instance().getVarScoped(scope, QStringLiteral("Counter")).toInt() > 0);
+    QCOMPARE(finished.count(), 3);
+}
+
+void GScriptRuntimeTest::stoppedSubprogramDoesNotLeakReturnAddress()
+{
+    GcodeScript script;
+    script.ProjectName = scope;
+    script.ID = QStringLiteral("legacy_restart");
+    script.ExecuteGcode(QStringLiteral(
+        "M98 P2000\nO2000\nM98 Pdelay(1000)\nM99\n"), GcodeScript::BEGIN);
+    QCOMPARE(script.State(), GcodeScript::ExecutionState::WaitingForTimer);
+    script.Stop();
+    script.ExecuteGcode(QStringLiteral("M99\n#ShouldNotRun = 1\n"), GcodeScript::BEGIN);
+    QCOMPARE(script.State(), GcodeScript::ExecutionState::Faulted);
+    QVERIFY(VariableManager::instance().getVarScoped(
+                scope, QStringLiteral("GScript.legacy_restart.LastError"))
+                .toString().contains(QStringLiteral("no active subprogram")));
+    QVERIFY(!VariableManager::instance().containsFullKeyScoped(scope, QStringLiteral("ShouldNotRun")));
+}
+
+void GScriptRuntimeTest::earlyFunctionReturnRestoresCallerBlocks()
+{
+    GcodeScript script;
+    script.ProjectName = scope;
+    script.ID = QStringLiteral("function_unwind");
+    const QString source = QStringLiteral(
+        "FUNCTION First()\nFOR #j = 1 TO 3\nWHILE 1\nIF 1\n"
+        "SWITCH #j\nCASE 1\nRETURN #j\nENDSWITCH\nENDIF\nENDWHILE\n"
+        "ENDFOR\nENDFUNCTION\n"
+        "#Calls = 0\nFOR #i = 1 TO 2\nIF 1\nWHILE #Calls < #i\n"
+        "SWITCH #i\nCASE 1\n#R = #First()\nDEFAULT\n#R = #First()\nENDSWITCH\n"
+        "#Calls = #Calls + 1\nENDWHILE\nENDIF\nENDFOR\n");
+    QVERIFY(!GScriptAnalyzer::analyze(source).hasErrors());
+    script.ExecuteGcode(source, GcodeScript::BEGIN);
+    QTRY_COMPARE(script.State(), GcodeScript::ExecutionState::Completed);
+    QCOMPARE(VariableManager::instance().getVarScoped(scope, QStringLiteral("Calls")).toInt(), 2);
+    QCOMPARE(VariableManager::instance().getVarScoped(scope, QStringLiteral("R")).toInt(), 1);
 }
 
 void GScriptRuntimeTest::inlineCommentsRespectQuotedSemicolons()

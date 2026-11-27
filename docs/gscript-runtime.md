@@ -85,6 +85,9 @@ M98 PwaitUntil(condition, timeoutMs[, pollMs[, message]])
 
 `PwaitUntil` reevaluates a `VariableManager` expression without blocking the thread. Non-zero is success. `pollMs` defaults to 20 ms and is clamped to 5-1000 ms. Timeout faults the program with the supplied message. Confirm a pick from an actual vacuum sensor:
 
+Square brackets group the condition without freezing it: both
+`#Ready == 1` and `[#Ready == 1]` read the latest value on every poll.
+
 ```gcode
 M03
 M98 PwaitUntil(#Vacuum.R0.OK == 1, 500, 10, "robot0: vacuum timeout")
@@ -102,6 +105,10 @@ Use relative names in G-Script. The application adds the active project namespac
 #PickX = #Target.X
 #Message = "ready"
 ```
+
+Quoted text is literal. Spaces, operators, semicolons, and square brackets
+inside single or double quotes are preserved, including quoted `Psend`
+commands. For example, `#Message="part[42]; ready"` stores that exact text.
 
 Important runtime namespaces include:
 
@@ -148,6 +155,10 @@ ENDFUNCTION
 
 Assigning to a variable that was not declared `LOCAL` still creates or updates a project variable for backward compatibility.
 
+Returning from a function also exits its active `IF`, `FOR`, `WHILE`, and
+`SWITCH` blocks. Blocks belonging to the caller remain active, so an early
+`RETURN` inside a function's loop does not change the caller's loop state.
+
 ## 6. Control flow
 
 ```gcode
@@ -179,6 +190,11 @@ ENDSWITCH
 ```
 
 `SWITCH` does not fall through. After one branch executes, control advances past `ENDSWITCH`. Place `LABEL/JUMP` at outer block boundaries; never jump between scopes inside `IF`, `FOR`, `WHILE`, `SWITCH`, or `FUNCTION`.
+
+A single-line `IF ... THEN statement` executes its statement once and then
+continues at the next source line, unless that statement jumps or calls a
+subprogram. Local-only loops yield periodically to process Stop requests and
+incoming runtime updates; they do not require a delay command for responsiveness.
 
 ## 7. Multi-robot vision and tracking
 
@@ -225,6 +241,10 @@ Never write `IsPicked` directly because that bypasses multi-robot ownership.
 ## 8. Runtime state and fault handling
 
 Runtime states are `Idle`, `Validating`, `Running`, `WaitingForDevice`, `WaitingForTimer`, `WaitingForCondition`, `Completed`, `Faulted`, and `Stopping`.
+
+Stopping or finishing a run clears its function and legacy subprogram return
+stacks. A new run starts independently; `M99` without an active `M98` call faults
+instead of returning into a previous program.
 
 Resolve all **Problems** errors before running. On a fault, inspect:
 

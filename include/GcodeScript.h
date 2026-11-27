@@ -339,9 +339,14 @@ private:
     struct CallFrame {
         QMap<QString, QVariant> locals;  // local variables (params + locals)
         QString retTarget;               // variable name (without #) to assign return value to
+        int ifDepth = 0;
+        int forDepth = 0;
+        int whileDepth = 0;
+        int switchDepth = 0;
     };
     QStack<CallFrame> callStack;         // stack for function frames
     QStack<int> functionReturnStack;     // stack for return addresses
+    void unwindFunctionFrame();
     
     // Variables for program control
     int returnPointerOrder;
@@ -352,6 +357,7 @@ private:
     // Execution gating flags
     bool waitForHomePosition = false;   // After sending G28, wait for Position response before proceeding
     quint64 pendingResponseToken = 0;   // Invalidate device-response timeouts when state changes
+    quint64 executionGeneration = 0;   // Invalidate queued interpreter continuations across runs.
     quint64 expectedVisionRequestId = 0; // Exact camera request accepted by visionN.
     QString pendingResponseVariable;   // Optional result target for Psend.
     QString pendingConditionExpression;
