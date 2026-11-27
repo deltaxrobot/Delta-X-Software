@@ -110,7 +110,7 @@ jobs:
           "hash-file=$hashFile" | Out-File $env:GITHUB_OUTPUT -Append
 
       - name: Upload verified package
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: DeltaRobotSoftware-windows-x64
           path: |
