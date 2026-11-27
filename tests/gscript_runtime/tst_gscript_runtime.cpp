@@ -94,6 +94,11 @@ private slots:
     void correlatedTrackingRejectsStoppedRunResults();
     void synchronousProvidersCompleteWithoutReentryFault();
     void correlatedAreaQueryRejectsStoppedRunSnapshot();
+    void legacyReturnRestoresCallerBlocks_data();
+    void legacyReturnRestoresCallerBlocks();
+    void legacyCallsKeepLoopControlInsideInvocation_data();
+    void legacyCallsKeepLoopControlInsideInvocation();
+    void nestedLegacyReturnsAndDepthLimit();
 
 private:
     const QString scope = QStringLiteral("gscript_runtime_test");
@@ -109,6 +114,111 @@ void GScriptRuntimeTest::cleanup()
 {
     PluginExtensionRegistry::instance().clearForTests();
     VariableManager::instance().removeVarScoped(scope, QString());
+}
+
+void GScriptRuntimeTest::legacyReturnRestoresCallerBlocks_data()
+{
+    QTest::addColumn<QString>("body");
+    QTest::newRow("if") << QStringLiteral("IF 1\nM99\nENDIF\n");
+    QTest::newRow("for") << QStringLiteral("FOR #j = 1 TO 3\nM99\nENDFOR\n");
+    QTest::newRow("while") << QStringLiteral("WHILE 1\nM99\nENDWHILE\n");
+    QTest::newRow("switch") << QStringLiteral("SWITCH 1\nCASE 1\nM99\nENDSWITCH\n");
+    QTest::newRow("mixed") << QStringLiteral(
+        "IF 1\nFOR #j = 1 TO 3\nWHILE 1\nSWITCH #j\nCASE 1\nM99\n"
+        "ENDSWITCH\nENDWHILE\nENDFOR\nENDIF\n");
+}
+
+void GScriptRuntimeTest::legacyReturnRestoresCallerBlocks()
+{
+    QFETCH(QString, body);
+    const QString source = QStringLiteral(
+        "#Calls = 0\nFOR #i = 1 TO 2\nIF 1\nWHILE #Calls < #i\n"
+        "SWITCH #i\nCASE 1\nM98 P2000\nDEFAULT\nM98 P2000\nENDSWITCH\n"
+        "#Calls = #Calls + 1\nENDWHILE\nENDIF\nENDFOR\nGOTO 100\n"
+        "O2000\n%1M99\nN100 #Done = 1\n").arg(body);
+    QVERIFY(!GScriptAnalyzer::analyze(source).hasErrors());
+    GcodeScript script;
+    script.ProjectName = scope;
+    script.ID = "legacy_frame_return";
+    script.ExecuteGcode(source, GcodeScript::BEGIN);
+    QTRY_COMPARE(script.State(), GcodeScript::ExecutionState::Completed);
+    QCOMPARE(VariableManager::instance().getVarScoped(scope, "Calls").toInt(), 2);
+    QCOMPARE(VariableManager::instance().getVarScoped(scope, "Done").toInt(), 1);
+
+    // Preserve the original inline-definition idiom: main flow skips the whole
+    // definition rather than resuming after its first nested early return.
+    const QString inlineDefinition = QStringLiteral(
+        "#Calls = 0\nFOR #i = 1 TO 2\nM98 P2000\nO2000\n%1M99\n"
+        "#Calls = #Calls + 1\nENDFOR\n#Done = 1\n").arg(body);
+    QVERIFY(!GScriptAnalyzer::analyze(inlineDefinition).hasErrors());
+    script.ExecuteGcode(inlineDefinition, GcodeScript::BEGIN);
+    QTRY_COMPARE(script.State(), GcodeScript::ExecutionState::Completed);
+    QCOMPARE(VariableManager::instance().getVarScoped(scope, "Calls").toInt(), 2);
+    QCOMPARE(VariableManager::instance().getVarScoped(scope, "Done").toInt(), 1);
+}
+
+void GScriptRuntimeTest::legacyCallsKeepLoopControlInsideInvocation_data()
+{
+    QTest::addColumn<QString>("control");
+    QTest::newRow("break") << QStringLiteral("BREAK");
+    QTest::newRow("continue") << QStringLiteral("CONTINUE");
+}
+
+void GScriptRuntimeTest::legacyCallsKeepLoopControlInsideInvocation()
+{
+    QFETCH(QString, control);
+    GcodeScript script;
+    script.ProjectName = scope;
+    script.ID = "legacy_loop_boundary";
+    // A legacy definition textually nested inside a loop must not be able to
+    // control that loop after entry through M98.
+    const QString source = QStringLiteral(
+        "FOR #i = 1 TO 2\nM98 P2000\nO2000\n%1\nM99\nENDFOR\n").arg(control);
+    QVERIFY(!GScriptAnalyzer::analyze(source).hasErrors());
+    script.ExecuteGcode(source, GcodeScript::BEGIN);
+    QTRY_COMPARE(script.State(), GcodeScript::ExecutionState::Faulted);
+    const QString error = VariableManager::instance().getVarScoped(
+        scope, "GScript.legacy_loop_boundary.LastError").toString();
+    QVERIFY2(error.contains("requires a loop"), qPrintable(error));
+}
+
+void GScriptRuntimeTest::nestedLegacyReturnsAndDepthLimit()
+{
+    GcodeScript script;
+    script.ProjectName = scope;
+    script.ID = "legacy_nested";
+    const QString source = QStringLiteral(
+        "#Calls = 0\nFOR #i = 1 TO 2\nM98 P2000\n#Calls = #Calls + 1\nENDFOR\nGOTO 100\n"
+        "O2000\nFOR #j = 1 TO 2\nM98 P3000\nM99\nENDFOR\nM99\n"
+        "O3000\nWHILE 1\nIF 1\nM99\nENDIF\nENDWHILE\nM99\nN100 #Done = 1\n");
+    QVERIFY(!GScriptAnalyzer::analyze(source).hasErrors());
+    script.ExecuteGcode(source, GcodeScript::BEGIN);
+    QTRY_COMPARE(script.State(), GcodeScript::ExecutionState::Completed);
+    QCOMPARE(VariableManager::instance().getVarScoped(scope, "Calls").toInt(), 2);
+    script.ExecuteGcode(QStringLiteral("M98 P2000\nO2000\nM98 P2000\nM99\n"), GcodeScript::BEGIN);
+    QTRY_COMPARE(script.State(), GcodeScript::ExecutionState::Faulted);
+    QVERIFY(VariableManager::instance().getVarScoped(scope, "GScript.legacy_nested.LastError")
+                .toString().contains("limit of 20"));
+    // A function entered by a legacy subprogram cannot return that subprogram.
+    const QString crossBoundary = QStringLiteral(
+        "FUNCTION WrongReturn()\nM99\nENDFUNCTION\nM98 P2000\nGOTO 100\n"
+        "O2000\n#Result = #WrongReturn()\nM99\nN100 #ShouldNotRun = 1\n");
+    QVERIFY(!GScriptAnalyzer::analyze(crossBoundary).hasErrors());
+    script.ExecuteGcode(crossBoundary, GcodeScript::BEGIN);
+    QTRY_COMPARE(script.State(), GcodeScript::ExecutionState::Faulted);
+    QVERIFY(VariableManager::instance().getVarScoped(scope, "GScript.legacy_nested.LastError")
+                .toString().contains("function call boundary"));
+    QVERIFY(!VariableManager::instance().containsFullKeyScoped(scope, "ShouldNotRun"));
+
+    const QString crossedLegacyCall = QStringLiteral(
+        "FUNCTION WrongReturn()\nM98 P2000\nO2000\nRETURN 1\nM99\n"
+        "ENDFUNCTION\n#Result = #WrongReturn()\n#ShouldNotRun = 1\n");
+    QVERIFY(!GScriptAnalyzer::analyze(crossedLegacyCall).hasErrors());
+    script.ExecuteGcode(crossedLegacyCall, GcodeScript::BEGIN);
+    QTRY_COMPARE(script.State(), GcodeScript::ExecutionState::Faulted);
+    QVERIFY(VariableManager::instance().getVarScoped(scope, "GScript.legacy_nested.LastError")
+                .toString().contains("subprogram call boundary"));
+    QVERIFY(!VariableManager::instance().containsFullKeyScoped(scope, "ShouldNotRun"));
 }
 
 void GScriptRuntimeTest::mixedLoopTransfersUnwindCrossedBlocks_data()

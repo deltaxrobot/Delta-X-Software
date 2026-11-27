@@ -328,6 +328,7 @@ void GcodeScript::ExecuteGcode(QString gcodes, int startMode)
     functionReturnStack.clear();
     returnPointerOrder = -1;
     std::fill(std::begin(returnSubProPointer), std::end(returnSubProPointer), -1);
+    std::fill(std::begin(subprogramFrames), std::end(subprogramFrames), SubprogramFrame{});
 
     if (startMode == BEGIN)
     {
@@ -711,6 +712,7 @@ void GcodeScript::finishExecution(bool abortActiveMotion, const QString& detail,
     functionReturnStack.clear();
     returnPointerOrder = -1;
     std::fill(std::begin(returnSubProPointer), std::end(returnSubProPointer), -1);
+    std::fill(std::begin(subprogramFrames), std::end(subprogramFrames), SubprogramFrame{});
 
     if (!reason.isEmpty())
         emit LogMessage(reason);
@@ -3045,6 +3047,12 @@ bool GcodeScript::executeCurrentStatement()
                         }
                         returnPointerOrder++;
                         returnSubProPointer[returnPointerOrder] = gcodeOrder;
+                        SubprogramFrame& frame = subprogramFrames[returnPointerOrder];
+                        frame.ifDepth = ifBlockStack.size();
+                        frame.forDepth = forLoopStack.size();
+                        frame.whileDepth = whileLoopStack.size();
+                        frame.switchDepth = switchCaseStack.size();
+                        frame.functionDepth = callStack.size();
 
                         gcodeOrder = order + 1;
 
@@ -3071,7 +3079,22 @@ bool GcodeScript::executeCurrentStatement()
                 faultExecution("M99 has no active subprogram call.");
                 return true;
             }
+            const SubprogramFrame frame = subprogramFrames[returnPointerOrder];
+            if (callStack.size() != frame.functionDepth) {
+                faultExecution("M99 cannot return across a function call boundary.");
+                return true;
+            }
+            while (ifBlockStack.size() > frame.ifDepth)
+                ifBlockStack.pop();
+            while (forLoopStack.size() > frame.forDepth)
+                forLoopStack.pop();
+            while (whileLoopStack.size() > frame.whileDepth)
+                whileLoopStack.pop();
+            while (switchCaseStack.size() > frame.switchDepth)
+                switchCaseStack.pop();
             gcodeOrder = returnSubProPointer[returnPointerOrder] + 1;
+            returnSubProPointer[returnPointerOrder] = -1;
+            subprogramFrames[returnPointerOrder] = SubprogramFrame{};
             returnPointerOrder--;
             return false;
         }
@@ -3373,14 +3396,14 @@ bool GcodeScript::handleVARIABLE(QList<QString> valuePairs, int i)
 
 bool GcodeScript::handleDEFINE_SUBPROGRAM(QList<QString> valuePairs, int i)
 {
-    for (int order = gcodeOrder + 1; order < gcodeList.size(); order++)
-    {
-        if (GScriptSyntax::command(GScriptSyntax::stripComment(gcodeList[order])) == "M99")
-        {
-            gcodeOrder = order + 1;
-            return false;
-        }
+    Q_UNUSED(valuePairs)
+    Q_UNUSED(i)
+    const int endLine = GScriptSyntax::findSubprogramEnd(gcodeList, gcodeOrder);
+    if (endLine < 0) {
+        faultExecution("Subprogram definition requires a top-level standalone M99 terminator.");
+        return true;
     }
+    gcodeOrder = endLine + 1;
     return false;
 }
 
@@ -5038,12 +5061,16 @@ bool GcodeScript::handleCONTINUE()
 
 bool GcodeScript::handleLoopControl(bool isContinue)
 {
-    const int forFloor = callStack.isEmpty() ? 0 : callStack.top().forDepth;
-    const int whileFloor = callStack.isEmpty() ? 0 : callStack.top().whileDepth;
+    int forFloor = callStack.isEmpty() ? 0 : callStack.top().forDepth;
+    int whileFloor = callStack.isEmpty() ? 0 : callStack.top().whileDepth;
+    if (returnPointerOrder >= 0) {
+        forFloor = qMax(forFloor, subprogramFrames[returnPointerOrder].forDepth);
+        whileFloor = qMax(whileFloor, subprogramFrames[returnPointerOrder].whileDepth);
+    }
     const bool hasFor = forLoopStack.size() > forFloor;
     const bool hasWhile = whileLoopStack.size() > whileFloor;
     if (!hasFor && !hasWhile) {
-        faultExecution(QString("%1 requires a loop in the current function.")
+        faultExecution(QString("%1 requires a loop in the current function or subprogram invocation.")
                            .arg(isContinue ? "CONTINUE" : "BREAK"));
         return true;
     }
@@ -5312,6 +5339,10 @@ bool GcodeScript::handleENDFUNCTION(QList<QString> valuePairs, int i)
     // If currently inside a function call (via callFunction), return to caller
     if (!functionReturnStack.isEmpty())
     {
+        if (!callStack.isEmpty() && returnPointerOrder + 1 != callStack.top().subprogramDepth) {
+            faultExecution("ENDFUNCTION cannot return across a subprogram call boundary.");
+            return true;
+        }
         int ret = functionReturnStack.pop();
         unwindFunctionFrame();
         gcodeOrder = ret + 1;
@@ -5347,6 +5378,10 @@ bool GcodeScript::handleRETURN(QList<QString> valuePairs, int i)
     // Return to caller
     if (!functionReturnStack.isEmpty())
     {
+        if (!callStack.isEmpty() && returnPointerOrder + 1 != callStack.top().subprogramDepth) {
+            faultExecution("RETURN cannot return across a subprogram call boundary.");
+            return true;
+        }
         int ret = functionReturnStack.pop();
         unwindFunctionFrame();
         if (hasReturnValue && !returnTarget.isEmpty())
@@ -5436,6 +5471,7 @@ bool GcodeScript::callFunction(QString functionName, QStringList arguments, cons
     frame.retTarget = retTarget;
     frame.functionName = functionName;
     frame.callLine = gcodeOrder + 1;
+    frame.subprogramDepth = returnPointerOrder + 1;
     frame.ifDepth = ifBlockStack.size();
     frame.forDepth = forLoopStack.size();
     frame.whileDepth = whileLoopStack.size();

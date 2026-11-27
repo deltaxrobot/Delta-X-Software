@@ -82,6 +82,28 @@ inline QString effectiveStatement(const QString& input)
     }
 }
 
+inline int findSubprogramEnd(const QStringList& lines, int definitionIndex)
+{
+    QStringList blocks;
+    for (int index = definitionIndex + 1; index < lines.size(); ++index) {
+        const QString statement = withoutLineNumber(stripComment(lines.at(index)));
+        const QString token = command(statement);
+        // O definitions are separate callable regions, not nested declarations.
+        // Never borrow another definition's return to close a missing one.
+        if (QRegularExpression("^O[A-Za-z0-9_]+$", QRegularExpression::CaseInsensitiveOption)
+                .match(token).hasMatch()) return -1;
+        if (token == "M99" && blocks.isEmpty()) return index;
+        if ((token == "IF" && inlineStatement(statement).isEmpty()) ||
+            token == "FOR" || token == "WHILE" || token == "SWITCH" || token == "FUNCTION") {
+            blocks.append(token);
+        } else if (token == "ENDIF" || token == "ENDFOR" || token == "ENDWHILE" ||
+                   token == "ENDSWITCH" || token == "ENDFUNCTION") {
+            if (!blocks.isEmpty()) blocks.removeLast();
+        }
+    }
+    return -1;
+}
+
 inline QStringList splitArguments(const QString& input)
 {
     QStringList result;

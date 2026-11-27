@@ -361,6 +361,7 @@ private:
         int switchDepth = 0;
         QString functionName;
         int callLine = 0;
+        int subprogramDepth = 0;
     };
     QStack<CallFrame> callStack;         // stack for function frames
     QStack<int> functionReturnStack;     // stack for return addresses
@@ -369,6 +370,14 @@ private:
     // Variables for program control
     int returnPointerOrder;
     int returnSubProPointer[20];  // Array for subprogram pointers
+    struct SubprogramFrame {
+        int ifDepth = 0;
+        int forDepth = 0;
+        int whileDepth = 0;
+        int switchDepth = 0;
+        int functionDepth = 0;
+    };
+    SubprogramFrame subprogramFrames[20] = {};
     bool IsConveyorSync;
     QStringList deviceNames;
 

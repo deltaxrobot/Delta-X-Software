@@ -133,6 +133,7 @@ void validateTransferScopes(const QStringList& lines, GScriptAnalysisResult& res
     QHash<QString, int> labels;
     QList<Reference> transfers;
     QString subprogram;
+    int subprogramEnd = -1;
     for (int index = 0; index < lines.size(); ++index) {
         const int line = index + 1;
         int number = -1;
@@ -141,8 +142,10 @@ void validateTransferScopes(const QStringList& lines, GScriptAnalysisResult& res
         const QString cmd = GScriptSyntax::command(statement);
         if (statement.isEmpty()) continue;
         if (QRegularExpression("^O[A-Za-z0-9_]+$", QRegularExpression::CaseInsensitiveOption)
-                .match(cmd).hasMatch())
+                .match(cmd).hasMatch()) {
             subprogram = QString("O:%1").arg(line);
+            subprogramEnd = GScriptSyntax::findSubprogramEnd(lines, index);
+        }
         if (!scopes.isEmpty() &&
             ((scopes.last().type == "IF" && (cmd == "ELIF" || cmd == "ELSE")) ||
              (scopes.last().type == "SWITCH" && (cmd == "CASE" || cmd == "DEFAULT"))))
@@ -170,7 +173,10 @@ void validateTransferScopes(const QStringList& lines, GScriptAnalysisResult& res
                  cmd == "ENDSWITCH" || cmd == "ENDFUNCTION") {
             if (!scopes.isEmpty()) scopes.removeLast();
         }
-        if (cmd == "M99") subprogram.clear();
+        if (index == subprogramEnd) {
+            subprogram.clear();
+            subprogramEnd = -1;
+        }
     }
     for (const Reference& transfer : transfers) {
         const int target = transfer.kind == "LABEL" ? labels.value(transfer.target, -1)
@@ -437,6 +443,10 @@ GScriptAnalysisResult GScriptAnalyzer::analyze(const QString& source)
                               QString("Duplicate subprogram O%1.").arg(name));
             else
                 subprograms.insert(name, sourceLine);
+            if (GScriptSyntax::findSubprogramEnd(lines, index) < 0)
+                addDiagnostic(result, GScriptDiagnostic::Error, "GS1704", sourceLine, 1,
+                              "Subprogram definition has no final top-level M99.",
+                              "Keep an unconditional M99 after all nested blocks; an early conditional M99 does not end the definition.");
         } else if (command == "SELECT") {
             const QRegularExpression devicePattern(
                 "^SELECT\\s+(robot|conveyor|encoder|slider|device)\\d+\\b",

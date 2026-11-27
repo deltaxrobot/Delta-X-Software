@@ -19,7 +19,7 @@ the test fixtures.
 
 | Boundary | Required evidence |
 | --- | --- |
-| Language structure | Invalid scope-crossing jumps fail preflight. BREAK, CONTINUE, and RETURN leave the correct enclosing frames intact. |
+| Language structure | Invalid scope-crossing jumps fail preflight. BREAK, CONTINUE, RETURN, and M99 leave the correct enclosing frames intact. |
 | Expressions and parameters | Invalid input faults with a source location; an invalid command is not dispatched to a default device. |
 | Worker scheduling | A CPU-only infinite loop accepts queued Stop. A restarted delay is not completed by an old continuation or timer. |
 | CLI lifecycle | Run, duplicate-run rejection, Stop, client disconnect, fault reporting, and explicit cell-fault recovery use the real editor/worker composition. |

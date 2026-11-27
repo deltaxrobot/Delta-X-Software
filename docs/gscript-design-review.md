@@ -28,6 +28,7 @@ review and broadens verification to the real worker-thread composition.
 | --- | --- |
 | Jump scopes | The analyzer records conditional branch, loop, function, and legacy subprogram ancestry for labels and numbered targets. JUMP/GOTO across those boundaries fails preflight, including transfers inside inline IF. Same-scope jumps and legacy M98 calls remain supported. |
 | Loop transfers | BREAK/CONTINUE use nesting order within the current function and discard conditional/switch frames crossed by the transfer. Caller loops remain outside the callee's control. |
+| Legacy return frames | M98 records block depths; early M99 restores only the callee's frames. Definition skipping and jump analysis share the matching top-level M99 boundary. Returns cannot cross between active function and legacy subprogram calls. |
 | Shared syntax | `GScriptSyntax.h` supplies quote-aware comments, string masking, inline statement extraction, argument splitting, macro normalization, and immutable built-in primitive signatures/arity to analyzer, editor, and runtime. |
 | Expression faults | Invalid operands, non-finite results, division/modulo by zero, incorrect function arity, and invalid numeric primitive arguments fault the run before its next device command. Undefined-name compatibility is retained for literal reads, not invalid numeric use. |
 | Diagnostics | Runtime failures retain source line/text, command/device, and function/subprogram call context in project-scoped failure telemetry before cleanup. |

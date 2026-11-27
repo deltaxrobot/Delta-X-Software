@@ -179,6 +179,16 @@ Returning from a function also exits its active `IF`, `FOR`, `WHILE`, and
 `SWITCH` blocks. Blocks belonging to the caller remain active, so an early
 `RETURN` inside a function's loop does not change the caller's loop state.
 
+Legacy `M98 P...` subprogram calls use the same block ownership rule: `M99`
+discards the subprogram's active blocks and preserves the caller's blocks.
+`BREAK` and `CONTINUE` cannot control a caller's loop across either a function
+or legacy subprogram call. Legacy subprogram nesting remains limited to 20 calls.
+An early `M99` may appear inside these blocks; the definition still ends with
+its own top-level standalone `M99`. Main flow skips the complete definition,
+including code after an early return. `M99` cannot return an outer subprogram
+from inside a called function, and `RETURN` cannot return an outer function
+from inside a called legacy subprogram.
+
 ## 6. Control flow
 
 ```gcode

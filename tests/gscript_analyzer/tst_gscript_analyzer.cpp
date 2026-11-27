@@ -52,6 +52,9 @@ private slots:
     void primitiveCatalogDrivesValidationAndEditor();
     void rejectsInlineInvalidCommandsAndFunctionLoopEscape();
     void pluginNameStartingWithPIsNormalizedOnce();
+    void subprogramBoundaryIgnoresEarlyReturns();
+    void earlyReturnDoesNotEndSubprogramJumpScope();
+    void requiresFinalTopLevelSubprogramReturn();
 };
 
 void GScriptAnalyzerTest::acceptsStructuredTrackingProgram()
@@ -443,6 +446,43 @@ void GScriptAnalyzerTest::pluginNameStartingWithPIsNormalizedOnce()
     QVERIFY(GScriptAnalyzer::analyze("M98 Pprobe()\n").hasErrors());
     const QString partial = "M98 Pprobe(";
     QVERIFY(GScriptEditorSupport::signatureHelp(partial, partial.size()).startsWith("M98 Pprobe(value)"));
+}
+
+void GScriptAnalyzerTest::subprogramBoundaryIgnoresEarlyReturns()
+{
+    const QString source =
+        "M98 P2000\nO2000\nIF 1 THEN M99\nFOR #i = 1 TO 2\n"
+        "WHILE 1\nIF 1\nSWITCH #i\nCASE 1\nM99\nENDSWITCH\nENDIF\n"
+        "ENDWHILE\nENDFOR\nN100 M99 ; definition boundary\n#Done = 1\n";
+    const QStringList lines = source.split('\n');
+    QCOMPARE(GScriptSyntax::findSubprogramEnd(lines, 1), 13);
+    const auto analysis = GScriptAnalyzer::analyze(source);
+    for (const auto& diagnostic : analysis.diagnostics)
+        QVERIFY2(diagnostic.severity != GScriptDiagnostic::Error, qPrintable(diagnostic.message));
+}
+
+void GScriptAnalyzerTest::earlyReturnDoesNotEndSubprogramJumpScope()
+{
+    const auto analysis = GScriptAnalyzer::analyze(
+        "JUMP INSIDE\nO2000\nIF 1\nM99\nENDIF\nLABEL INSIDE\nM99\n");
+    QVERIFY(std::any_of(analysis.diagnostics.cbegin(), analysis.diagnostics.cend(),
+                       [](const GScriptDiagnostic& value) { return value.code == "GS1603"; }));
+}
+
+void GScriptAnalyzerTest::requiresFinalTopLevelSubprogramReturn()
+{
+    const auto analysis = GScriptAnalyzer::analyze(
+        "M98 P2000\nO2000\nIF 1\nM99\nENDIF\n");
+    QVERIFY(std::any_of(analysis.diagnostics.cbegin(), analysis.diagnostics.cend(),
+                       [](const GScriptDiagnostic& value) { return value.code == "GS1704"; }));
+    const auto nextDefinition = GScriptAnalyzer::analyze(
+        "Omissing\n#X = 1\nOother\nM99\n");
+    QVERIFY(std::any_of(nextDefinition.diagnostics.cbegin(), nextDefinition.diagnostics.cend(),
+                       [](const GScriptDiagnostic& value) {
+                           return value.code == "GS1704" && value.line == 1;
+                       }));
+    QCOMPARE(GScriptSyntax::findSubprogramEnd(
+                 QStringLiteral("Omissing\n#X = 1\nOother\nM99\n").split('\n'), 0), -1);
 }
 
 QTEST_MAIN(GScriptAnalyzerTest)
