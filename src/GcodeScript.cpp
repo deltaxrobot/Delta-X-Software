@@ -962,12 +962,20 @@ bool GcodeScript::shouldSkipLine()
 
 void GcodeScript::collapseGcodeLine()
 {
+    // An inline branch evaluates its condition first; its selected statement
+    // will enter this dispatcher separately with its original brackets intact.
+    if (!GScriptSyntax::inlineStatement(currentLine).isEmpty())
+        return;
     // Canonical primitives evaluate their own arguments; waitUntil also retains
     // its unevaluated condition for subsequent polls and boolean short-circuiting.
     const auto macro = GScriptSyntax::parseMacroCall(currentLine);
     if (macro.valid && (GScriptSyntax::findPrimitive(macro.target) ||
                        PluginExtensionRegistry::instance().hasGScriptPrimitive(macro.target)))
         return;
+
+    const QString command = GScriptSyntax::command(currentLine);
+    const bool devicePayload = isExplicitDeviceToken(command) ||
+        QRegularExpression("^[GM]\\d+$").match(command).hasMatch();
 
     QChar quote;
     for (int at = 0; at < currentLine.size(); ++at) {
@@ -991,6 +999,8 @@ void GcodeScript::collapseGcodeLine()
         }
         QString expressInBracket = currentLine.mid(openBracIndex, closeBracIndex - openBracIndex + 1);
         const QString resultInBracket = calculateExpressions(expressInBracket);
+        if (devicePayload)
+            finiteNumber(resultInBracket, "G-code bracket expression");
         currentLine.replace(openBracIndex, expressInBracket.size(), resultInBracket);
         at += resultInBracket.size() - 1;
     }

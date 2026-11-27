@@ -170,6 +170,8 @@ void GScriptRuntimeTest::invalidExpressionsAndParametersFaultBeforeDevice_data()
     row("overflow-literal", "#X = 1e999");
     row("overflow-product", "#X = 1e300 * 1e300");
     row("undefined-numeric", "#X = #Missing + 1");
+    row("undefined-gcode-coordinate", "robot0 G01 X[#Missing]");
+    row("undefined-inline-gcode-coordinate", "IF 1 THEN robot0 G01 X[#Missing]");
     row("invalid-root", "#X = #sqrt(-1)");
     row("invalid-log", "#X = #log(0)");
     row("builtin-arity", "#X = #atan2(1)");

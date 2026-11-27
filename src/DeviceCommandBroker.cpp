@@ -205,7 +205,7 @@ void DeviceCommandBroker::faultMotion(const QString& device, const QString& reas
     const auto commands = m_motionCommands.take(device);
     for (const auto& command : commands)
         emit ResponseForOwner(command.owner, device, QStringLiteral("error: %1; motion stream locked. "
-            "Stop/reset the controller and restart the software before resuming.").arg(reason), command.requestId);
+            "Stop/reset the controller, then disconnect and reconnect the device before resuming.").arg(reason), command.requestId);
     emit QueueDepthChanged(device, pendingCommandCount(device));
 }
 
