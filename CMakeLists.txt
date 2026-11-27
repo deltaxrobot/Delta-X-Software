@@ -9,6 +9,24 @@ endif()
 
 project(DeltaXSoftware VERSION "${DELTA_X_VERSION}" LANGUAGES CXX)
 
+set(DELTA_X_SOURCE_REVISION "source-export")
+find_package(Git QUIET)
+if(GIT_FOUND AND EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/.git")
+    execute_process(
+        COMMAND "${GIT_EXECUTABLE}" describe --always --dirty --abbrev=12
+        WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+        OUTPUT_VARIABLE _deltax_revision
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+        ERROR_QUIET
+        RESULT_VARIABLE _deltax_git_result
+    )
+    if(_deltax_git_result EQUAL 0 AND
+       _deltax_revision MATCHES "^[A-Za-z0-9._/-]+$")
+        set(DELTA_X_SOURCE_REVISION "${_deltax_revision}")
+    endif()
+endif()
+message(STATUS "Delta X build: ${PROJECT_VERSION} (${DELTA_X_SOURCE_REVISION})")
+
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
@@ -64,6 +82,7 @@ target_include_directories(DeltaRobotSoftware PRIVATE
 
 target_compile_definitions(DeltaRobotSoftware PRIVATE
     DELTA_X_VERSION_STRING="${PROJECT_VERSION}"
+    DELTA_X_SOURCE_REVISION="${DELTA_X_SOURCE_REVISION}"
 )
 
 target_link_libraries(DeltaRobotSoftware PRIVATE
@@ -104,7 +123,11 @@ set_target_properties(DeltaRobotSoftware PROPERTIES
 
 include(GNUInstallDirs)
 add_executable(delta-x-cli cli/main.cpp include/CliProtocol.h)
-target_include_directories(delta-x-cli PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/include")
+target_include_directories(delta-x-cli PRIVATE
+    "${CMAKE_CURRENT_SOURCE_DIR}/include" "${CMAKE_CURRENT_SOURCE_DIR}")
+target_compile_definitions(delta-x-cli PRIVATE
+    DELTA_X_VERSION_STRING="${PROJECT_VERSION}"
+    DELTA_X_SOURCE_REVISION="${DELTA_X_SOURCE_REVISION}")
 target_link_libraries(delta-x-cli PRIVATE Qt6::Core Qt6::Network)
 install(TARGETS delta-x-cli RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}")
 install(TARGETS DeltaRobotSoftware

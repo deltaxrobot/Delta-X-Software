@@ -75,6 +75,7 @@ public:
 public slots:
     void ExecuteGcode(QString gcodes, int position);
     void GetResponse(QString deviceId, QString response);
+    void GetTrackingResponse(quint64 requestId, QString deviceId, QString response, QVariantMap result);
     void SendMsgToDevice(QString deviceId, QString msg);
     void TransmitNextGcode();
     void ExecuteFunction(QString functionName, QStringList paras);
@@ -100,12 +101,20 @@ signals:
 
     void UpdateTrackingRequest(int id);
     void GetObjectsRequest(int trackingID, QString inAreaListName, float min, float max, bool isXDirection);
+    void GetObjectsCorrelatedRequest(quint64 requestId, int trackingID, QString inAreaListName,
+                                     float min, float max, bool isXDirection);
     void CaptureAndDetectRequest(quint64 requestId, int trackingId);
     void ClaimObjectRequest(int trackingID, QString resultName, QString owner,
                             float minX, float maxX, float minY, float maxY,
                             int typeFilter, int leaseMs);
     void ReleaseObjectRequest(int trackingID, int uid, QString owner);
     void CompleteObjectRequest(int trackingID, int uid, QString owner);
+    void UpdateTrackingCorrelatedRequest(quint64 requestId, int trackingID);
+    void ClaimObjectCorrelatedRequest(quint64 requestId, int trackingID, QString resultName, QString owner,
+                                      float minX, float maxX, float minY, float maxY,
+                                      int typeFilter, int leaseMs);
+    void ReleaseObjectCorrelatedRequest(quint64 requestId, int trackingID, int uid, QString owner);
+    void CompleteObjectCorrelatedRequest(quint64 requestId, int trackingID, int uid, QString owner);
 
     void SendGcodeToDevice(QString deviceId, QString gcode);
 
@@ -291,6 +300,9 @@ private:
         int currentIndex;           // Current index for FOREACH
         int startLine;              // Line where FOR starts
         int endForLine;             // Line where ENDFOR is located
+        quint64 nestingOrder = 0;
+        int ifDepth = 0;
+        int switchDepth = 0;
         
         ForLoopState() : type(NUMERIC_FOR), startValue(0), endValue(0), stepValue(1), 
                         currentValue(0), currentIndex(0), startLine(-1), endForLine(-1) {}
@@ -309,6 +321,9 @@ private:
         QString condition;              // Condition expression
         int startLine;                  // Line where WHILE starts
         int endWhileLine;               // Line where ENDWHILE is located
+        quint64 nestingOrder = 0;
+        int ifDepth = 0;
+        int switchDepth = 0;
         
         WhileLoopState() : startLine(-1), endWhileLine(-1) {}
         WhileLoopState(QString cond, int line) : condition(cond), startLine(line), endWhileLine(-1) {}
@@ -334,6 +349,7 @@ private:
     // Loop control flags
     bool breakRequested;                // Flag for BREAK statement
     bool continueRequested;             // Flag for CONTINUE statement
+    quint64 nextLoopNestingOrder = 0;
 
     // Function call stacks
     struct CallFrame {
@@ -343,6 +359,8 @@ private:
         int forDepth = 0;
         int whileDepth = 0;
         int switchDepth = 0;
+        QString functionName;
+        int callLine = 0;
     };
     QStack<CallFrame> callStack;         // stack for function frames
     QStack<int> functionReturnStack;     // stack for return addresses
@@ -359,6 +377,10 @@ private:
     quint64 pendingResponseToken = 0;   // Invalidate device-response timeouts when state changes
     quint64 executionGeneration = 0;   // Invalidate queued interpreter continuations across runs.
     quint64 expectedVisionRequestId = 0; // Exact camera request accepted by visionN.
+    quint64 expectedTrackingRequestId = 0;
+    QString pendingClaimResult;
+    bool requireCorrelatedTrackingResponse = false;
+    bool pendingAreaResult = false;
     QString pendingResponseVariable;   // Optional result target for Psend.
     QString pendingConditionExpression;
     QString pendingConditionMessage;
@@ -382,10 +404,6 @@ private:
     QMap<QString, SimpleFunctionDef> functionDefinitions; // function name -> definition
     QMap<QString, int> labelDefinitions; // LABEL name -> line index (start of label line)
 
-    // Pre-compiled regex patterns for better performance
-    static const QRegularExpression m98Regex;
-    static const QRegularExpression objectInAreaRegex;
-
     void prepareCurrentLine();
     bool shouldSkipLine();
     void collapseGcodeLine();
@@ -407,6 +425,8 @@ private:
     bool isMovingGcode(QString gcode);
 
     bool findExeGcodeAndTransmit();
+    bool executeCurrentStatement();
+    bool handleLoopControl(bool isContinue);
 
     void processVARIABLE();
     QString processFUNCTION(QString funcName, QStringList paras);

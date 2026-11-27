@@ -160,6 +160,7 @@ Before running an example:
 ## 7. Evolution path
 
 The [focused design review](gscript-design-review.md) records the interpreter
-corrections, regression coverage, and remaining scope-transfer limitations.
+corrections, regression coverage, and remaining architectural boundaries. The
+cross-module design record is [issue #11](https://github.com/deltaxrobot/Delta-X-Software/issues/11).
 
 The analyzer, editor services, and interpreter are separated deliberately. Autocomplete, signature help, Watch, and templates do not modify runtime semantics. The next language-level evolution is a typed AST/IR shared by the interpreter, formatter, and simulator. The current compatibility and preflight layer supports that migration without breaking existing script libraries.

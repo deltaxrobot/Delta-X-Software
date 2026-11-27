@@ -11,6 +11,7 @@
 
 #include "GcodeScript.h"
 #include "GScriptAnalyzer.h"
+#include "GScriptSyntax.h"
 #include "PluginExtensionRegistry.h"
 #include "SoftwareManager.h"
 #include "VariableManager.h"
@@ -83,6 +84,16 @@ private slots:
     void localLoopAllowsQueuedStopAndCleanRestart();
     void stoppedSubprogramDoesNotLeakReturnAddress();
     void earlyFunctionReturnRestoresCallerBlocks();
+    void mixedLoopTransfersUnwindCrossedBlocks_data();
+    void mixedLoopTransfersUnwindCrossedBlocks();
+    void invalidExpressionsAndParametersFaultBeforeDevice_data();
+    void invalidExpressionsAndParametersFaultBeforeDevice();
+    void strictMathAndExpressionForRemainCompatible();
+    void runtimeFaultIncludesCallContext();
+    void parenthesizedZeroArgumentPrimitives();
+    void correlatedTrackingRejectsStoppedRunResults();
+    void synchronousProvidersCompleteWithoutReentryFault();
+    void correlatedAreaQueryRejectsStoppedRunSnapshot();
 
 private:
     const QString scope = QStringLiteral("gscript_runtime_test");
@@ -98,6 +109,280 @@ void GScriptRuntimeTest::cleanup()
 {
     PluginExtensionRegistry::instance().clearForTests();
     VariableManager::instance().removeVarScoped(scope, QString());
+}
+
+void GScriptRuntimeTest::mixedLoopTransfersUnwindCrossedBlocks_data()
+{
+    QTest::addColumn<QString>("outerOpen");
+    QTest::addColumn<QString>("outerClose");
+    QTest::addColumn<QString>("innerOpen");
+    QTest::addColumn<QString>("innerClose");
+    QTest::newRow("for-while") << QStringLiteral("FOR #i = 1 TO 3") << QStringLiteral("ENDFOR")
+        << QStringLiteral("WHILE #j < 3\n#j = #j + 1") << QStringLiteral("ENDWHILE");
+    QTest::newRow("while-for") << QStringLiteral("WHILE #Outer < 3") << QStringLiteral("ENDWHILE")
+        << QStringLiteral("FOR #j = 1 TO 3") << QStringLiteral("ENDFOR");
+}
+
+void GScriptRuntimeTest::mixedLoopTransfersUnwindCrossedBlocks()
+{
+    QFETCH(QString, outerOpen);
+    QFETCH(QString, outerClose);
+    QFETCH(QString, innerOpen);
+    QFETCH(QString, innerClose);
+    const QString worker = QStringLiteral(
+        "FUNCTION Work()\nLOCAL #j = 0\n%1\n#Visits = #Visits + 1\n"
+        "SWITCH #j\nCASE 1\nIF 1\nCONTINUE\nENDIF\nDEFAULT\nIF 1\nBREAK\nENDIF\n"
+        "ENDSWITCH\n%2\nRETURN 1\nENDFUNCTION\n").arg(innerOpen, innerClose);
+    const QString source = worker + QStringLiteral(
+        "#Visits = 0\n#Outer = 0\n%1\nIF 1\n#Result = #Work()\n"
+        "#Outer = #Outer + 1\nENDIF\n%2\n#Done = 1\n").arg(outerOpen, outerClose);
+    QVERIFY(!GScriptAnalyzer::analyze(source).hasErrors());
+    GcodeScript script;
+    script.ProjectName = scope;
+    script.ID = "mixed_transfer";
+    script.ExecuteGcode(source, GcodeScript::BEGIN);
+    QTRY_COMPARE(script.State(), GcodeScript::ExecutionState::Completed);
+    QCOMPARE(VariableManager::instance().getVarScoped(scope, "Visits").toInt(), 6);
+    QCOMPARE(VariableManager::instance().getVarScoped(scope, "Outer").toInt(), 3);
+    QCOMPARE(VariableManager::instance().getVarScoped(scope, "Done").toInt(), 1);
+
+    // The same crossed blocks must unwind when both loop kinds are in one frame.
+    const QString nested = QStringLiteral(
+        "#Visits = 0\n#Outer = 0\n%1\n#j = 0\n%2\n#Visits = #Visits + 1\n"
+        "SWITCH #j\nCASE 1\nIF 1\nCONTINUE\nENDIF\nDEFAULT\nIF 1\nBREAK\nENDIF\n"
+        "ENDSWITCH\n%3\n#Outer = #Outer + 1\n%4\n").arg(outerOpen, innerOpen, innerClose, outerClose);
+    script.ExecuteGcode(nested, GcodeScript::BEGIN);
+    QTRY_COMPARE(script.State(), GcodeScript::ExecutionState::Completed);
+    QCOMPARE(VariableManager::instance().getVarScoped(scope, "Visits").toInt(), 6);
+    QCOMPARE(VariableManager::instance().getVarScoped(scope, "Outer").toInt(), 3);
+}
+
+void GScriptRuntimeTest::invalidExpressionsAndParametersFaultBeforeDevice_data()
+{
+    QTest::addColumn<QString>("statement");
+    const auto row = [](const char* name, const char* source) {
+        QTest::newRow(name) << QString::fromLatin1(source);
+    };
+    row("division-zero", "#X = 1 / 0");
+    row("modulo-zero", "#X = 3 % 0");
+    row("missing-operand", "#X = 1 +");
+    row("malformed-literal", "#X = 1.2.3");
+    row("overflow-literal", "#X = 1e999");
+    row("overflow-product", "#X = 1e300 * 1e300");
+    row("undefined-numeric", "#X = #Missing + 1");
+    row("invalid-root", "#X = #sqrt(-1)");
+    row("invalid-log", "#X = #log(0)");
+    row("builtin-arity", "#X = #atan2(1)");
+    row("cloud-arity", "#X = #cloudPointAddCalibration(1)");
+    row("function-unknown", "#X = #notAMathFunction(1)");
+    row("invalid-timeout", "M98 Psend(device0, \"M42 P1\", #Reply, \"bad\")");
+    row("overflow-timeout", "M98 Psend(device0, \"M42 P1\", #Reply, 1e40)");
+    row("negative-delay", "M98 Pdelay(-1)");
+    row("fractional-delay", "M98 Pdelay(0.5)");
+    row("invalid-wait-condition", "M98 PwaitUntil(#Missing, 100, 5)");
+    row("invalid-claim-zone", "M98 PclaimObject(0, #Target, \"r0\", 100, 0, 0, 100)");
+    row("invalid-tracking-id", "M98 PcaptureAndDetect(-1)");
+    row("zero-for-step", "FOR #i = 1 TO 2 STEP 0\nENDFOR");
+    row("invalid-for-step", "FOR #i = 1 TO 2 STEP \"bad\"\nENDFOR");
+    row("macro-arity", "M98 PaddObject()");
+    row("empty-macro-argument", "M98 Psend(device0, \"M42 P1\", #Reply,)");
+    row("missing-area-arguments", "#Area = #GetObjectInArea(0)");
+    row("mismatched-area-axis", "#Area = #GetObjectInArea(0, X_MIN=0, Y_MAX=100)");
+    row("invalid-area-number", "#Area = #GetObjectInArea(0, X_MIN=\"bad\", X_MAX=100)");
+}
+
+void GScriptRuntimeTest::invalidExpressionsAndParametersFaultBeforeDevice()
+{
+    QFETCH(QString, statement);
+    GcodeScript script;
+    script.ProjectName = scope;
+    script.ID = "invalid_expression";
+    QSignalSpy device(&script, &GcodeScript::SendGcodeToDevice);
+    QSignalSpy capture(&script, &GcodeScript::CaptureAndDetectRequest);
+    QSignalSpy claim(&script, &GcodeScript::ClaimObjectRequest);
+    QSignalSpy area(&script, &GcodeScript::GetObjectsRequest);
+    script.ExecuteGcode(statement + "\nrobot0 G01 X100\n#ShouldNotRun = 1\n", GcodeScript::BEGIN);
+    QTRY_COMPARE(script.State(), GcodeScript::ExecutionState::Faulted);
+    QCOMPARE(device.count(), 0);
+    QCOMPARE(capture.count(), 0);
+    QCOMPARE(claim.count(), 0);
+    QCOMPARE(area.count(), 0);
+    QVERIFY(!VariableManager::instance().containsFullKeyScoped(scope, "ShouldNotRun"));
+    QVERIFY(!VariableManager::instance().getVarScoped(
+        scope, "GScript.invalid_expression.LastError").toString().isEmpty());
+}
+
+void GScriptRuntimeTest::strictMathAndExpressionForRemainCompatible()
+{
+    GcodeScript script;
+    script.ProjectName = scope;
+    script.ID = "strict_math";
+    const QString source = QStringLiteral(
+        "#Sum = 0\nFOR #i = 1 + 1 TO 2 * 3 STEP 1 + 1\n#Sum = #Sum + #i\nENDFOR\n"
+        "M98 Passert(#Sum == 12)\nM98 Passert(2 ^ 3 ^ 2 == 512)\nM98 Passert(2 ^ -2 == 0.25)\n"
+        "M98 Passert(1 OR 1 / 0)\nM98 Passert((0 AND 1 / 0) == 0)\n"
+        "#Tag = \"THEN quoted text\"\nIF #Tag == \"THEN quoted text\"\n#Matched = 1\nENDIF\n"
+        "#Literal = #UnknownName\n#Quoted = \"1 / 0\"\n");
+    script.ExecuteGcode(source, GcodeScript::BEGIN);
+    QTRY_COMPARE(script.State(), GcodeScript::ExecutionState::Completed);
+    QCOMPARE(VariableManager::instance().getVarScoped(scope, "Literal").toString(), "UnknownName");
+    QCOMPARE(VariableManager::instance().getVarScoped(scope, "Quoted").toString(), "1 / 0");
+}
+
+void GScriptRuntimeTest::runtimeFaultIncludesCallContext()
+{
+    GcodeScript script;
+    script.ProjectName = scope;
+    script.ID = "fault_context";
+    QSignalSpy diagnostics(&script, &GcodeScript::DiagnosticsReady);
+    const QString source = QStringLiteral(
+        "FUNCTION Fail()\nRETURN 1 / 0\nENDFUNCTION\n"
+        "M98 P2000\nO2000\n#R = #Fail()\nM99\n");
+    script.ExecuteGcode(source, GcodeScript::BEGIN);
+    QTRY_COMPARE(script.State(), GcodeScript::ExecutionState::Faulted);
+    const QString error = VariableManager::instance().getVarScoped(
+        scope, "GScript.fault_context.LastError").toString();
+    QVERIFY2(error.contains("Line 2:"), qPrintable(error));
+    QVERIFY2(error.contains("FAIL") && error.contains("P2000"), qPrintable(error));
+    QCOMPARE(VariableManager::instance().getVarScoped(
+        scope, "GScript.fault_context.Failure.Source").toString(), "RETURN 1 / 0");
+    QVERIFY(!diagnostics.isEmpty());
+    script.ExecuteGcode(QStringLiteral("#Clean = 1\n"), GcodeScript::BEGIN);
+    QTRY_COMPARE(script.State(), GcodeScript::ExecutionState::Completed);
+    QCOMPARE(VariableManager::instance().getVarScoped(
+        scope, "GScript.fault_context.Failure.Line").toInt(), 0);
+    QVERIFY(VariableManager::instance().getVarScoped(
+        scope, "GScript.fault_context.Failure.CallStack").toStringList().isEmpty());
+}
+
+void GScriptRuntimeTest::correlatedTrackingRejectsStoppedRunResults()
+{
+    GcodeScript script;
+    script.ProjectName = scope;
+    script.ID = "tracking_correlation";
+    QList<quint64> requests;
+    QSignalSpy hardware(&script, &GcodeScript::SendGcodeToDevice);
+    connect(&script, &GcodeScript::ClaimObjectCorrelatedRequest, &script,
+            [&requests](quint64 id, int, const QString&, const QString&,
+                        float, float, float, float, int, int) { requests.append(id); });
+    const QString source = QStringLiteral(
+        "M98 PclaimObject(0, #Target, \"robot0\", 0, 100, 0, 100)\n#Done = 1\n");
+    script.ExecuteGcode(source, GcodeScript::BEGIN);
+    QCOMPARE(requests.size(), 1);
+    script.Stop();
+    QCOMPARE(hardware.count(), 0);
+    script.ExecuteGcode(source, GcodeScript::BEGIN);
+    QCOMPARE(requests.size(), 2);
+    QVERIFY(requests[0] != requests[1]);
+    const QVariantMap oldResult{{"Found", true}, {"UID", 100}};
+    script.GetTrackingResponse(requests[0], "tracking0:robot0", "Claimed", oldResult);
+    script.GetResponse("tracking0:robot0", "Claimed");
+    QCOMPARE(script.State(), GcodeScript::ExecutionState::WaitingForDevice);
+    QVERIFY(!VariableManager::instance().containsFullKeyScoped(scope, "Target.UID"));
+    script.GetTrackingResponse(requests[1], "tracking0:robot0", "Claimed",
+                               QVariantMap{{"Found", true}, {"UID", 200}});
+    QTRY_COMPARE(script.State(), GcodeScript::ExecutionState::Completed);
+    QCOMPARE(VariableManager::instance().getVarScoped(scope, "Target.UID").toInt(), 200);
+    QCOMPARE(VariableManager::instance().getVarScoped(scope, "Done").toInt(), 1);
+    script.GetTrackingResponse(requests[0], "tracking0:robot0", "Claimed", oldResult);
+    QCOMPARE(VariableManager::instance().getVarScoped(scope, "Target.UID").toInt(), 200);
+}
+
+void GScriptRuntimeTest::synchronousProvidersCompleteWithoutReentryFault()
+{
+    GcodeScript script;
+    script.ProjectName = scope;
+    script.ID = "synchronous_providers";
+    connect(&script, &GcodeScript::SendGcodeToDevice, &script,
+            [&script](const QString& device, const QString&) { script.GetResponse(device, "ok"); });
+    connect(&script, &GcodeScript::CaptureAndDetectRequest, &script,
+            [&script](quint64 id, int tracking) {
+        script.GetResponse(QString("vision%1").arg(tracking), QString("FrameReady:%1").arg(id));
+    });
+    connect(&script, &GcodeScript::UpdateTrackingCorrelatedRequest, &script,
+            [&script](quint64 id, int tracking) {
+        script.GetTrackingResponse(id, QString("tracking%1").arg(tracking), "ok", {});
+    });
+    connect(&script, &GcodeScript::ClaimObjectCorrelatedRequest, &script,
+            [&script](quint64 id, int tracking, const QString&, const QString& owner,
+                      float, float, float, float, int, int) {
+        script.GetTrackingResponse(id, QString("tracking%1:%2").arg(tracking).arg(owner), "Claimed",
+                                   QVariantMap{{"Found", true}, {"UID", 12}});
+    });
+    connect(&script, &GcodeScript::ReleaseObjectCorrelatedRequest, &script,
+            [&script](quint64 id, int tracking, int, const QString& owner) {
+        script.GetTrackingResponse(id, QString("tracking%1:%2").arg(tracking).arg(owner), "Released", {});
+    });
+    connect(&script, &GcodeScript::CompleteObjectCorrelatedRequest, &script,
+            [&script](quint64 id, int tracking, int, const QString& owner) {
+        script.GetTrackingResponse(id, QString("tracking%1:%2").arg(tracking).arg(owner), "Completed", {});
+    });
+    const QString source = QStringLiteral(
+        "M98 Psend(device0, \"M42 P1\")\nM98 PcaptureAndDetect(0)\nM98 PupdateTracking(0)\n"
+        "M98 PclaimObject(0, #Target, \"robot0\", 0, 100, 0, 100)\n"
+        "M98 PreleaseObject(0, 12, \"robot0\")\nM98 PcompleteObject(0, 12, \"robot0\")\n"
+        "M98 Pdelay(30)\n#Done = 1\n");
+    script.ExecuteGcode(source, GcodeScript::BEGIN);
+    QCOMPARE(script.State(), GcodeScript::ExecutionState::WaitingForTimer);
+    script.GetResponse("tracking0:robot0", "Completed"); // duplicate must not skip the timer
+    script.GetResponse("device0", "I0 V1"); // unrelated reply must not mutate variables
+    QCOMPARE(script.State(), GcodeScript::ExecutionState::WaitingForTimer);
+    QVERIFY(!VariableManager::instance().containsFullKeyScoped(scope, "I0"));
+    QVERIFY(!VariableManager::instance().containsFullKeyScoped(scope, "Done"));
+    QTRY_COMPARE(script.State(), GcodeScript::ExecutionState::Completed);
+    QCOMPARE(VariableManager::instance().getVarScoped(scope, "Done").toInt(), 1);
+}
+
+void GScriptRuntimeTest::parenthesizedZeroArgumentPrimitives()
+{
+    GcodeScript script;
+    script.ProjectName = scope;
+    script.ID = "zero_arity";
+    QSignalSpy pause(&script, &GcodeScript::PauseCamera);
+    QSignalSpy capture(&script, &GcodeScript::CaptureCamera);
+    QSignalSpy resume(&script, &GcodeScript::ResumeCamera);
+    QSignalSpy remove(&script, &GcodeScript::DeleteObject);
+    script.ExecuteGcode(QStringLiteral(
+        "M98 PpauseCamera()\nM98 PcaptureCamera()\nM98 PresumeCamera()\n"
+        "M98 PdeleteFirstObject()\nM98 PsyncConveyor()\nM98 PstopSyncConveyor()\n"), GcodeScript::BEGIN);
+    QTRY_COMPARE(script.State(), GcodeScript::ExecutionState::Completed);
+    QCOMPARE(pause.count(), 1);
+    QCOMPARE(capture.count(), 1);
+    QCOMPARE(resume.count(), 1);
+    QCOMPARE(remove.count(), 1);
+}
+
+void GScriptRuntimeTest::correlatedAreaQueryRejectsStoppedRunSnapshot()
+{
+    GcodeScript script;
+    script.ProjectName = scope;
+    script.ID = "area_correlation";
+    QList<quint64> requests;
+    connect(&script, &GcodeScript::GetObjectsCorrelatedRequest, &script,
+            [&requests](quint64 id, int, const QString&, float, float, bool) {
+        requests.append(id);
+    });
+    const QString source = QStringLiteral("#Area = #GetObjectInArea(0, X_MIN=0, X_MAX=100)\n");
+    script.ExecuteGcode(source, GcodeScript::BEGIN);
+    QCOMPARE(requests.size(), 1);
+    script.Stop();
+    VariableManager::instance().updateVarScoped(scope, "Area.Count", 999);
+    VariableManager::instance().updateVarScoped(scope, "Area.4.UID", 444);
+    script.ExecuteGcode(source, GcodeScript::BEGIN);
+    QCOMPARE(requests.size(), 2);
+    const QVariantMap stale{{"Count", 1}, {"0.UID", 100}};
+    script.GetTrackingResponse(requests[0], "tracking0", "Ok", stale);
+    QCOMPARE(VariableManager::instance().getVarScoped(scope, "Area.Count").toInt(), 999);
+    QCOMPARE(script.State(), GcodeScript::ExecutionState::WaitingForDevice);
+    const QVector<ObjectInfo> objects{ObjectInfo(200, 0, QVector3D(10, 20, 0), 1, 1, 0)};
+    const QVariantMap current{{"Count", 1}, {"0.UID", 200}, {"__Objects", QVariant::fromValue(objects)}};
+    script.GetTrackingResponse(requests[1], "tracking0", "Ok", current);
+    QTRY_COMPARE(script.State(), GcodeScript::ExecutionState::Completed);
+    QCOMPARE(VariableManager::instance().getVarScoped(scope, "Area.Count").toInt(), 1);
+    QCOMPARE(VariableManager::instance().getVarScoped(scope, "Area.0.UID").toInt(), 200);
+    QCOMPARE(VariableManager::instance().getVarScoped(scope, "Area.0.X").toFloat(), 10.0f);
+    QVERIFY(!VariableManager::instance().containsFullKeyScoped(scope, "Area.4.UID"));
+    QVERIFY(!VariableManager::instance().containsFullKeyScoped(scope, "Area.__Objects"));
 }
 
 void GScriptRuntimeTest::inlineStatementsAdvanceExactlyOnce_data()
@@ -120,6 +405,12 @@ void GScriptRuntimeTest::inlineStatementsAdvanceExactlyOnce_data()
         "IF 1 THEN #X = #Value()\n#Next = 2\n");
     QTest::newRow("legacy-return") << QStringLiteral(
         "IF 1 THEN M98 P2000\n#Next = 2\nO2000\n#X = 1\nM99\n");
+    QTest::newRow("lowercase-legacy-return") << QStringLiteral(
+        "if 1 then m98 p2000\n#Next = 2\no2000\n#X = 1\nm99\n");
+    QTest::newRow("unprefixed-legacy-return") << QStringLiteral(
+        "IF 1 THEN M98 2000\n#Next = 2\nO2000\n#X = 1\nM99\n");
+    QTest::newRow("macro-like-subprogram-name") << QStringLiteral(
+        "IF 1 THEN M98 PsendTask\n#Next = 2\nOsendTask\n#X = 1\nM99\n");
 }
 
 void GScriptRuntimeTest::inlineStatementsAdvanceExactlyOnce()
@@ -598,7 +889,7 @@ void GScriptRuntimeTest::windowsLineEndingsResolveSubprograms()
 
     script.ExecuteGcode(source, GcodeScript::BEGIN);
 
-    QCOMPARE(script.State(), GcodeScript::ExecutionState::Completed);
+    QTRY_COMPARE(script.State(), GcodeScript::ExecutionState::Completed);
     QCOMPARE(VariableManager::instance()
                  .getVarScoped(scope, QStringLiteral("Counter")).toInt(), 1);
 }
@@ -675,15 +966,9 @@ void GScriptRuntimeTest::commandTourCoverage()
         QVERIFY2(pattern.match(examples).hasMatch(), qPrintable("Missing function example: " + name));
     }
     QVERIFY(functionCount > 0);
-    QFile analyzer(QFINDTESTDATA("../../src/GScriptAnalyzer.cpp"));
-    QVERIFY(analyzer.open(QIODevice::ReadOnly));
-    const QString analyzerSource = QString::fromUtf8(analyzer.readAll());
-    const auto inventory = QRegularExpression("exactTargets = \\{([^}]+)\\}").match(analyzerSource);
-    QVERIFY(inventory.hasMatch());
-    auto names = QRegularExpression("\"([a-z]+)\"").globalMatch(inventory.captured(1));
     int primitiveCount = 0;
-    while (names.hasNext()) {
-        const auto name = names.next().captured(1);
+    for (const auto& primitive : GScriptSyntax::builtInPrimitives()) {
+        const auto name = primitive.name;
         ++primitiveCount;
         const QRegularExpression pattern("\\bM98\\s+P" + name + "\\b", QRegularExpression::CaseInsensitiveOption);
         QVERIFY2(pattern.match(examples).hasMatch(), qPrintable("Missing primitive example: " + name));

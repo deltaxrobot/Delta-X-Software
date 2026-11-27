@@ -31,6 +31,9 @@ public:
     // Exclusive motion stream: two G01s, or M205 S0 alone after draining.
     quint64 SubmitMotion(const QString& owner, const QString& deviceId,
                          const QString& command, int timeoutMs = 3000);
+    // Call only after closing the old transport and establishing a fresh
+    // session. A cell fault reset or an uncorrelated reply is not sufficient.
+    bool ResetDeviceCommunication(const QString& deviceId);
 
 public slots:
     quint64 Submit(const QString& owner, const QString& deviceId,
@@ -76,11 +79,13 @@ private:
     void expireCommands();
     QStringList safeStopCommands(const QString& deviceId) const;
     void faultMotion(const QString& deviceId, const QString& reason);
+    void quarantineDevice(const QString& deviceId, const QString& reason);
 
     QHash<QString, QQueue<PendingCommand>> m_queues;
     QHash<QString, PendingCommand> m_activeCommands;
     QHash<QString, QQueue<PendingCommand>> m_motionCommands;
     QSet<QString> m_motionFaults;
+    QSet<QString> m_protocolFaults;
     QSet<QString> m_knownDevices;
     QHash<QString, QString> m_manualControllers;
     QTimer m_timeoutTimer;

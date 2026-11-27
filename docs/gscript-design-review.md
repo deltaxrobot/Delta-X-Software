@@ -19,54 +19,43 @@ The batch interval is a cooperative scheduling limit checked between statements,
 not a hard real-time bound. A single expensive statement or synchronous plugin
 callback can still take longer. Firmware continues to perform motion execution.
 
-## Remaining design gaps
+## Follow-up hardening
 
-These findings come from source inspection and need dedicated regression tests
-before implementation. They are not fixed by the corrections above.
+The follow-up addresses the scope and parsing gaps identified during the first
+review and broadens verification to the real worker-thread composition.
 
-### Transfers between lexical scopes
+| Area | Implementation and verification |
+| --- | --- |
+| Jump scopes | The analyzer records conditional branch, loop, function, and legacy subprogram ancestry for labels and numbered targets. JUMP/GOTO across those boundaries fails preflight, including transfers inside inline IF. Same-scope jumps and legacy M98 calls remain supported. |
+| Loop transfers | BREAK/CONTINUE use nesting order within the current function and discard conditional/switch frames crossed by the transfer. Caller loops remain outside the callee's control. |
+| Shared syntax | `GScriptSyntax.h` supplies quote-aware comments, string masking, inline statement extraction, argument splitting, macro normalization, and immutable built-in primitive signatures/arity to analyzer, editor, and runtime. |
+| Expression faults | Invalid operands, non-finite results, division/modulo by zero, incorrect function arity, and invalid numeric primitive arguments fault the run before its next device command. Undefined-name compatibility is retained for literal reads, not invalid numeric use. |
+| Diagnostics | Runtime failures retain source line/text, command/device, and function/subprogram call context in project-scoped failure telemetry before cleanup. |
+| Ambiguous device replies | Interrupted, timed-out, or disconnected response-bearing transactions quarantine the transport. A confirmed fresh transport session is required before ordinary work resumes; late responses and cell Reset alone do not clear ambiguity. |
+| Tracking completion | Correlated tracking operations return a request ID and snapshot to the requesting worker. The worker accepts only the current wait before publishing result variables, so a stopped request cannot overwrite a restarted run's target. Semantic object ownership remains separate from request identity; Stop leaves a claim to expire under its lease. |
+| Real worker threads | Integration fixtures exercise queued Stop/restart, shared project variables with project isolation, camera timer receiver affinity, and provider failures/exceptions through actual QThread workers. |
+| Build identity | `python start.py` builds and opens the current checkout. App titles and CLI build information identify the compiled version and source revision. |
 
-The analyzer resolves label and numbered-line targets but does not consistently
-verify that a jump stays within a valid block scope. For example, a jump can
-enter a FOR body without creating its loop frame:
+See the [acceptance and commissioning checklist](gscript-acceptance-checklist.md)
+for the recovery procedure and physical validation record. Executed test counts
+belong in the matching CI/test logs, not in a permanently fixed checklist.
 
-```gcode
-JUMP INNER
-FOR #i = 1 TO 2
-LABEL INNER
-#Count = 1
-ENDFOR
-```
+## Remaining architectural boundaries
 
-The runtime guide already prohibits scope-crossing jumps. Preflight should also
-enforce that rule by recording block ancestry for each source line and target.
+The common lexical helpers and primitive catalog are not a typed AST or a proof
+that every possible expression is valid at compile time. Data-dependent errors
+still require runtime validation. Further language extensions must use the common
+contracts and add analyzer/runtime agreement tests.
 
-### BREAK and CONTINUE scope cleanup
+Scheduling remains cooperative. A synchronous plugin callback can delay the
+worker until it returns; an execution batch is not a preemptive deadline. Device
+responses without protocol-level sequence numbers require explicit transport
+recovery after ambiguity rather than automatic retry.
 
-Function-return cleanup does not address all nonlocal transfers. A CONTINUE
-inside IF can leave that conditional frame behind on each iteration:
-
-```gcode
-#i = 0
-WHILE #i < 100
-    IF 1
-        #i = #i + 1
-        CONTINUE
-    ENDIF
-ENDWHILE
-```
-
-Loop transfers should unwind the scopes they leave and retain the caller's
-outer scopes. Nested loop types and SWITCH require explicit tests for which
-construct receives BREAK or CONTINUE.
-
-### Shared statement interpretation
-
-The analyzer, editor helpers, and interpreter separately tokenize and normalize
-source text. This permits preflight/runtime disagreements and repeated command
-catalogs. An incremental improvement is a shared quote-aware tokenizer and
-immutable statement description, followed by shared primitive metadata. A full
-language rewrite is not required to address the concrete defects above.
+Shared variable access is thread-safe, but read-modify-write statements across
+workers are not atomic transactions. Tracking claims, not variable assignments,
+provide object ownership. Real encoder alignment, motion compensation, vacuum
+feedback, and pick success still require physical commissioning.
 
 ## Verification boundary
 

@@ -108,6 +108,12 @@ bool DeviceCommandBroker::canSubmit(const PendingCommand& command,
     if (command.origin == Origin::Safety)
         return true;
 
+    if (m_protocolFaults.contains(command.deviceId)) {
+        reason = QStringLiteral("Device response correlation was lost. Stop/reset the controller, "
+                                "then disconnect and reconnect the device before resuming.");
+        return false;
+    }
+
     if (m_motionFaults.contains(command.deviceId) || !m_motionCommands.value(command.deviceId).isEmpty()) {
         reason = QStringLiteral("Device has pending streamed motion or an unresolved stream fault");
         return false;
@@ -147,7 +153,8 @@ bool DeviceCommandBroker::acquireManualControl(const QString& owner, const QStri
 {
     const QString device = normalizeDevice(deviceId);
     if (owner.isEmpty() || device.isEmpty() || m_cellState != QStringLiteral("Ready") ||
-        pendingCommandCount(device) != 0 || m_manualControllers.contains(device) || m_motionFaults.contains(device))
+        pendingCommandCount(device) != 0 || m_manualControllers.contains(device) ||
+        m_motionFaults.contains(device) || m_protocolFaults.contains(device))
         return false;
     m_manualControllers.insert(device, owner);
     return true;
@@ -174,7 +181,8 @@ quint64 DeviceCommandBroker::SubmitMotion(const QString& owner, const QString& d
     const bool resetProfile = command == QStringLiteral("M205 S0") && m_motionCommands.value(device).isEmpty();
     if (!device.startsWith(QStringLiteral("robot")) || owner.isEmpty() ||
         m_manualControllers.value(device) != owner || m_cellState != QStringLiteral("Ready") ||
-        m_motionFaults.contains(device) || m_activeCommands.contains(device) || !m_queues.value(device).isEmpty() ||
+        m_motionFaults.contains(device) || m_protocolFaults.contains(device) ||
+        m_activeCommands.contains(device) || !m_queues.value(device).isEmpty() ||
         m_motionCommands.value(device).size() >= 2 || command.size() > 79 ||
         (!move.match(command).hasMatch() && !resetProfile)) {
         rejectCommand(pending, QStringLiteral("Motion stream is unavailable, full, or the G01 command is invalid"));
@@ -199,6 +207,26 @@ void DeviceCommandBroker::faultMotion(const QString& device, const QString& reas
         emit ResponseForOwner(command.owner, device, QStringLiteral("error: %1; motion stream locked. "
             "Stop/reset the controller and restart the software before resuming.").arg(reason), command.requestId);
     emit QueueDepthChanged(device, pendingCommandCount(device));
+}
+
+bool DeviceCommandBroker::ResetDeviceCommunication(const QString& deviceId)
+{
+    const QString device = normalizeDevice(deviceId);
+    if (device.isEmpty() || pendingCommandCount(device) != 0)
+        return false;
+    m_protocolFaults.remove(device);
+    m_motionFaults.remove(device);
+    return true;
+}
+
+void DeviceCommandBroker::quarantineDevice(const QString& device, const QString& reason)
+{
+    // Mark the transport ambiguous before notifying clients. A direct timeout
+    // or rejection handler may attempt to submit new work synchronously.
+    m_protocolFaults.insert(device);
+    const auto cancelled = m_queues.take(device);
+    for (const auto& command : cancelled)
+        rejectCommand(command, reason);
 }
 
 quint64 DeviceCommandBroker::Submit(const QString& owner, const QString& deviceId,
@@ -246,6 +274,7 @@ quint64 DeviceCommandBroker::Submit(const QString& owner, const QString& deviceI
 void DeviceCommandBroker::submitSafetyCommand(PendingCommand command)
 {
     const QString device = command.deviceId;
+    quarantineDevice(device, QStringLiteral("Cancelled by safety stop"));
     faultMotion(device, QStringLiteral("preempted by safety stop"));
     if (m_activeCommands.contains(device)) {
         const PendingCommand interrupted = m_activeCommands.take(device);
@@ -253,10 +282,6 @@ void DeviceCommandBroker::submitSafetyCommand(PendingCommand command)
                               QStringLiteral("error: command preempted by safety stop"),
                               interrupted.requestId);
     }
-
-    QQueue<PendingCommand>& queue = m_queues[device];
-    while (!queue.isEmpty())
-        rejectCommand(queue.dequeue(), QStringLiteral("Cancelled by safety stop"));
 
     emit DispatchCommand(device, command.command);
     emit CommandDispatched(command.requestId, command.owner, device,
@@ -299,6 +324,10 @@ void DeviceCommandBroker::HandleDeviceResponse(const QString& deviceId,
                                                const QString& response)
 {
     const QString device = normalizeDevice(deviceId);
+    if (m_protocolFaults.contains(device) || m_motionFaults.contains(device)) {
+        emit UnsolicitedResponse(device, response);
+        return;
+    }
     if (!m_motionCommands.value(device).isEmpty()) {
         if (isDeviceErrorResponse(response)) {
             faultMotion(device, response);
@@ -341,6 +370,7 @@ void DeviceCommandBroker::HandleDeviceUnavailable(const QString& deviceId,
     const QString device = normalizeDevice(deviceId);
     const QString rejection = reason.trimmed().isEmpty()
         ? QStringLiteral("Device is not connected") : reason.trimmed();
+    quarantineDevice(device, rejection);
     faultMotion(device, rejection);
     const auto active = m_activeCommands.find(device);
     if (active == m_activeCommands.end())
@@ -353,9 +383,6 @@ void DeviceCommandBroker::HandleDeviceUnavailable(const QString& deviceId,
                           QStringLiteral("error: %1").arg(rejection),
                           failed.requestId);
 
-    QQueue<PendingCommand>& queue = m_queues[device];
-    while (!queue.isEmpty())
-        rejectCommand(queue.dequeue(), rejection);
     emit QueueDepthChanged(device, 0);
 }
 
@@ -374,26 +401,30 @@ void DeviceCommandBroker::CancelOwner(const QString& owner, const QString& reaso
     }
     QStringList affectedDevices;
 
-    for (auto it = m_activeCommands.begin(); it != m_activeCommands.end();) {
-        if (it->owner == normalizedOwner) {
-            affectedDevices.append(it.key());
-            it = m_activeCommands.erase(it);
-        } else {
-            ++it;
-        }
+    const auto activeDevices = m_activeCommands.keys();
+    for (const auto& device : activeDevices) {
+        if (m_activeCommands.value(device).owner != normalizedOwner)
+            continue;
+        m_activeCommands.remove(device);
+        quarantineDevice(device, rejection);
+        affectedDevices.append(device);
     }
 
-    for (auto it = m_queues.begin(); it != m_queues.end(); ++it) {
+    const auto queuedDevices = m_queues.keys();
+    for (const auto& device : queuedDevices) {
+        const auto queued = m_queues.value(device);
         QQueue<PendingCommand> retained;
-        while (!it.value().isEmpty()) {
-            const PendingCommand command = it.value().dequeue();
+        QVector<PendingCommand> cancelled;
+        for (const auto& command : queued) {
             if (command.owner == normalizedOwner)
-                rejectCommand(command, rejection);
+                cancelled.append(command);
             else
                 retained.enqueue(command);
         }
-        it.value() = retained;
-        affectedDevices.append(it.key());
+        m_queues[device] = retained;
+        for (const auto& command : cancelled)
+            rejectCommand(command, rejection);
+        affectedDevices.append(device);
     }
 
     affectedDevices.removeDuplicates();
@@ -438,16 +469,23 @@ void DeviceCommandBroker::RequestControlledStop(const QString& reason)
     const auto motionDevices = m_motionCommands.keys();
     for (const auto& device : motionDevices) faultMotion(device, stopReason);
 
-    for (auto it = m_activeCommands.cbegin(); it != m_activeCommands.cend(); ++it) {
+    const auto activeCommands = m_activeCommands;
+    m_activeCommands.clear();
+    // Stop commands can also produce replies when no request was active.
+    for (const auto& device : m_knownDevices) {
+        if (!safeStopCommands(device).isEmpty() || activeCommands.contains(device))
+            m_protocolFaults.insert(device);
+    }
+    for (auto it = activeCommands.cbegin(); it != activeCommands.cend(); ++it) {
         emit ResponseForOwner(it->owner, it->deviceId,
                               QStringLiteral("error: %1").arg(stopReason),
                               it->requestId);
     }
-    m_activeCommands.clear();
-
-    for (auto it = m_queues.begin(); it != m_queues.end(); ++it) {
-        while (!it.value().isEmpty())
-            rejectCommand(it.value().dequeue(), stopReason);
+    const auto queuedCommands = m_queues;
+    m_queues.clear();
+    for (auto it = queuedCommands.cbegin(); it != queuedCommands.cend(); ++it) {
+        for (const auto& command : it.value())
+            rejectCommand(command, stopReason);
         emit QueueDepthChanged(it.key(), 0);
     }
 
@@ -482,25 +520,19 @@ void DeviceCommandBroker::expireCommands()
             emit CommandTimedOut(command.requestId, command.owner, device, command.command);
         }
     }
-    QStringList expiredDevices;
-    for (auto it = m_activeCommands.begin(); it != m_activeCommands.end();) {
-        if (it->deadlineMs <= now) {
-            const PendingCommand command = it.value();
-            expiredDevices.append(it.key());
-            it = m_activeCommands.erase(it);
-            emit CommandTimedOut(command.requestId, command.owner, command.deviceId,
-                                 command.command);
-            emit ResponseForOwner(command.owner, command.deviceId,
-                                  QStringLiteral("error: command broker timeout"),
-                                  command.requestId);
-        } else {
-            ++it;
-        }
-    }
-    for (const QString& device : expiredDevices) {
-        QQueue<PendingCommand>& queue = m_queues[device];
-        while (!queue.isEmpty())
-            rejectCommand(queue.dequeue(), QStringLiteral("Cancelled after device timeout"));
+    const auto devices = m_activeCommands.keys();
+    for (const QString& device : devices) {
+        const auto active = m_activeCommands.constFind(device);
+        if (active == m_activeCommands.cend() || active->deadlineMs > now)
+            continue;
+        const PendingCommand command = active.value();
+        m_activeCommands.remove(device);
+        quarantineDevice(device, QStringLiteral("Cancelled after device timeout"));
+        emit CommandTimedOut(command.requestId, command.owner, command.deviceId,
+                             command.command);
+        emit ResponseForOwner(command.owner, command.deviceId,
+                              QStringLiteral("error: command broker timeout"),
+                              command.requestId);
         emit QueueDepthChanged(device, 0);
     }
 }

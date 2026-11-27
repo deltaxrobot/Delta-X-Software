@@ -163,6 +163,7 @@
         <file>GScript_Documentation.html</file>
         <file>docs/external-vision.md</file>
         <file>docs/gscript-runtime.md</file>
+        <file>docs/gscript-acceptance-checklist.md</file>
         <file>docs/gscript-command-tour.md</file>
         <file>docs/cli.md</file>
         <file>docs/drawing.md</file>

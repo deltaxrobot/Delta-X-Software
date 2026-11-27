@@ -6,6 +6,12 @@ calibration, camera, tracking and plugins. CLI, Code Run and Block Run share
 launch checks and the `GcodeScript` worker, including command response handling.
 This version is a local desktop companion, not a standalone headless runtime.
 
+From a source checkout, `python start.py` builds and opens the current sources.
+Use the build directory reported by that command for the matching CLI. Run
+`delta-x-cli --version` or `delta-x-cli --build-info` to inspect its compiled
+version/revision without connecting. The application title contains its own
+compiled identity; compare it with the CLI when investigating an old executable.
+
 ## First run
 
 Open Delta X Software and select your project. Open PowerShell in the installed
@@ -39,6 +45,14 @@ end effector, a software cell fault can be acknowledged without clicking the UI:
 The explicit `--confirm-safe` flag is required. This command only resets the
 Delta X Software cell supervisor; it does not clear a hardware E-stop, controller
 alarm or unsafe device state.
+
+After an active command is interrupted, times out, or loses its transport, the
+broker rejects new ordinary commands on that device because a late response
+cannot be safely matched. Reset/stop the controller as appropriate, disconnect
+and establish a fresh device connection, then acknowledge a cell fault if one
+exists. `reset-fault` alone and unsolicited `Ok` replies do not restore response
+correlation. Completed commands and cancelling only queued work do not require
+this recovery.
 
 Try the bundled software-only example first:
 

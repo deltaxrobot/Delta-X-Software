@@ -6,6 +6,10 @@ For executable examples of the built-in commands, start with the
 [G-Script command tour](gscript-command-tour.md). It separates software-only
 examples, isolated hardware-contract tests, and read-only robot queries.
 
+Use the [G-Script acceptance checklist](gscript-acceptance-checklist.md) to
+separate software verification from physical commissioning and verify that
+production integrations use the correlated tracking adapters.
+
 Commissioning-ready examples are in `script-example/multi-robot-sorting/` in both the source tree and release package. Open `00-vision-tracking`, `10-robot0-type0`, and `11-robot1-type1` in three separate G-Script threads.
 
 ## 1. Scope
@@ -77,6 +81,14 @@ While waiting, the thread is in `WaitingForDevice`. A device error or timeout tr
 
 Each physical device processes only one response-bearing command at a time. `DeviceCommandBroker` queues commands from multiple G-Script threads in FIFO order and routes each response to the owning request. Manual and remote motion commands are blocked in AUTO. Safety stop commands have priority and may cancel queued work. Do not bypass the broker with another G-code path.
 
+Explicit numeric arguments must be finite and valid for their field. Durations
+and timeouts are integer milliseconds: delay accepts 0-86400000; device and
+condition timeouts accept 1-86400000. IDs are non-negative integers, type filters
+accept -1 for any type, and claim leases accept 1-86400000 ms. The optional poll
+period must be a positive integer and is then clamped to 5-1000 ms. Invalid
+arguments fault the program before a request is sent; omitted optional arguments
+still use their documented defaults.
+
 ### Closed-loop process waits
 
 ```gcode
@@ -109,6 +121,14 @@ Use relative names in G-Script. The application adds the active project namespac
 Quoted text is literal. Spaces, operators, semicolons, and square brackets
 inside single or double quotes are preserved, including quoted `Psend`
 commands. For example, `#Message="part[42]; ready"` stores that exact text.
+
+Arithmetic requires finite numeric operands. Division/modulo by zero, malformed
+expressions, invalid math-function argument counts, and non-finite results fault
+the run instead of substituting zero. `^` is right-associative exponentiation;
+`AND` and `OR` short-circuit their right operand. String equality and inequality
+remain supported. For compatibility, reading an undefined variable by itself
+returns its name; using that value as a numeric operand or condition faults.
+Initialize variables explicitly before using them in calculations.
 
 Important runtime namespaces include:
 
@@ -196,6 +216,13 @@ continues at the next source line, unless that statement jumps or calls a
 subprogram. Local-only loops yield periodically to process Stop requests and
 incoming runtime updates; they do not require a delay command for responsiveness.
 
+`BREAK` exits the nearest active `FOR` or `WHILE` in the current function;
+`CONTINUE` advances that same loop. Both discard crossed `IF` and `SWITCH`
+frames while preserving blocks surrounding the loop. A function cannot break
+or continue a loop belonging to its caller. Numeric `FOR` bounds and steps may
+be expressions, for example `FOR #i = 1 + 1 TO #Count * 2 STEP 1 + 1`; a zero
+step or a counter that cannot advance within its numeric range faults.
+
 ## 7. Multi-robot vision and tracking
 
 Vision thread:
@@ -238,6 +265,14 @@ M98 PreleaseObject(0, #Target.UID, #Owner)
 
 Never write `IsPicked` directly because that bypasses multi-robot ownership.
 
+The application correlates tracking update, area query, claim, release, and completion
+responses with a unique request ID. A late response from a stopped run cannot
+advance a restarted worker or overwrite its claim-result variables. This
+guarantee applies to the correlated application adapters; integrations using the
+legacy uncorrelated signals should migrate to the correlated API. Stopping a
+worker does not automatically release a physical pick claim: its lease expires
+normally, or an explicitly reviewed recovery procedure releases it.
+
 ## 8. Runtime state and fault handling
 
 Runtime states are `Idle`, `Validating`, `Running`, `WaitingForDevice`, `WaitingForTimer`, `WaitingForCondition`, `Completed`, `Faulted`, and `Stopping`.
@@ -245,6 +280,12 @@ Runtime states are `Idle`, `Validating`, `Running`, `WaitingForDevice`, `Waiting
 Stopping or finishing a run clears its function and legacy subprogram return
 stacks. A new run starts independently; `M99` without an active `M98` call faults
 instead of returning into a previous program.
+
+Runtime faults report the original source line and available device/command
+and function/subprogram call context. The same data is available under
+`GScript.<thread>.Failure.Line`, `.Source`, `.Device`, `.Command`, and
+`.CallStack`, alongside `.LastError`. Starting a new validation/run clears the
+previous failure context, including when the new source fails preflight.
 
 Resolve all **Problems** errors before running. On a fault, inspect:
 

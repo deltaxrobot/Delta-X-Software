@@ -133,9 +133,13 @@ void Tracking::OnReceivceEncoderPosition(float value)
         emit VirtualEncoderPositionUpdated(ID, value);
 
     if (hasCompletedRead && completedRead.notifyClient) {
-        emit UpdateTrackingDone(ID);
-        emit UpdateTrackingDone();
-        clientWaiting = false;
+        if (completedRead.callerRequestId != 0) {
+            emit CorrelatedUpdateTrackingDone(ID, completedRead.callerRequestId, "Done");
+        } else {
+            emit UpdateTrackingDone(ID);
+            emit UpdateTrackingDone();
+            clientWaiting = false;
+        }
     }
 }
 
@@ -194,8 +198,16 @@ void Tracking::ReadEncoder()
     }
 }
 
+void Tracking::ReadEncoderCorrelated(quint64 requestId)
+{
+    if (requestId == 0)
+        return;
+    if (!requestEncoderRead(EncoderReadPurpose::Update, 0, true, requestId))
+        emit CorrelatedUpdateTrackingDone(ID, requestId, "TrackingFault:ENCODER_QUEUE_OVERFLOW");
+}
+
 bool Tracking::requestEncoderRead(EncoderReadPurpose purpose, quint64 frameId,
-                                  bool notifyClient)
+                                  bool notifyClient, quint64 callerRequestId)
 {
     QString encoderType;
     QString encoderName;
@@ -210,6 +222,7 @@ bool Tracking::requestEncoderRead(EncoderReadPurpose purpose, quint64 frameId,
         request.purpose = purpose;
         request.frameId = frameId;
         request.notifyClient = notifyClient;
+        request.callerRequestId = callerRequestId;
         pendingEncoderReads.enqueue(request);
         encoderType = EncoderType;
         encoderName = EncoderName;
@@ -998,6 +1011,19 @@ QString Tracking::trackStateLocked(const ObjectInfo& object) const
 
 void Tracking::GetObjectsInArea(QString inAreaListName, float min, float max, bool isXdirection)
 {
+    QVariantMap result = ObjectsInAreaSnapshot(min, max, isXdirection);
+    const auto selectedObjects = result.take("__Objects").value<QVector<ObjectInfo>>();
+    QHash<QString, QVariant> values;
+    for (auto field = result.cbegin(); field != result.cend(); ++field)
+        values.insert(inAreaListName + '.' + field.key(), field.value());
+    VariableManager& variables = VariableManager::instance();
+    variables.removeVarScoped(ProjectName, inAreaListName);
+    variables.updateObjectSnapshot(ProjectName, inAreaListName, selectedObjects);
+    variables.updateBatchScoped(ProjectName, values, VariableManager::Persistence::Runtime);
+}
+
+QVariantMap Tracking::ObjectsInAreaSnapshot(float min, float max, bool isXdirection)
+{
     // Create working copy to avoid race conditions
     QVector<ObjectInfo> workingTrackedObjects;
     
@@ -1009,7 +1035,7 @@ void Tracking::GetObjectsInArea(QString inAreaListName, float min, float max, bo
     publishTrackedObjectsSnapshot(true);
 
     QVector<ObjectInfo> selectedObjects;
-    QHash<QString, QVariant> values;
+    QVariantMap values;
     int index = 0;
     for (auto& tracked : workingTrackedObjects)
     {
@@ -1031,7 +1057,7 @@ void Tracking::GetObjectsInArea(QString inAreaListName, float min, float max, bo
         if (!tracked.claimOwner.isEmpty())
             continue;
 
-        const QString name = inAreaListName + '.' + QString::number(index) + '.';
+        const QString name = QString::number(index) + '.';
         values.insert(name + "X", tracked.center.x());
         values.insert(name + "Y", tracked.center.y());
         values.insert(name + "Z", tracked.center.z());
@@ -1046,12 +1072,9 @@ void Tracking::GetObjectsInArea(QString inAreaListName, float min, float max, bo
         index++;
     }
 
-    VariableManager& variables = VariableManager::instance();
-    variables.removeVarScoped(ProjectName, inAreaListName);
-    variables.updateObjectSnapshot(ProjectName, inAreaListName, selectedObjects);
-    values.insert(inAreaListName + ".Count", index);
-    variables.updateBatchScoped(ProjectName, values,
-                                VariableManager::Persistence::Runtime);
+    values.insert("Count", index);
+    values.insert("__Objects", QVariant::fromValue(selectedObjects));
+    return values;
 }
 
 void Tracking::updatePositions(double displacement) {
@@ -1568,6 +1591,30 @@ void TrackingManager::GetObjectsInArea(int trackingID, QString inAreaListName, f
     emit GotResponse(QString("tracking") + QString::number(trackingID), "Done");
 }
 
+void TrackingManager::GetObjectsInAreaCorrelated(quint64 requestId, int trackingID,
+                                                 QString inAreaListName, float min, float max, bool isXDirection)
+{
+    Q_UNUSED(inAreaListName)
+    if (trackingID < 0 || trackingID >= Trackings.size()) {
+        emit TrackingResponse(requestId, QString("tracking%1").arg(trackingID), "TrackingFault:TRACKING_NOT_FOUND", {});
+        return;
+    }
+    auto* tracking = Trackings.at(trackingID);
+    QVariantMap result;
+    if (tracking->thread() == QThread::currentThread()) {
+        result = tracking->ObjectsInAreaSnapshot(min, max, isXDirection);
+    } else {
+        const bool invoked = QMetaObject::invokeMethod(tracking, "ObjectsInAreaSnapshot", Qt::BlockingQueuedConnection,
+                                    Q_RETURN_ARG(QVariantMap, result), Q_ARG(float, min), Q_ARG(float, max),
+                                    Q_ARG(bool, isXDirection));
+        if (!invoked) {
+            emit TrackingResponse(requestId, QString("tracking%1").arg(trackingID), "TrackingFault:SNAPSHOT_UNAVAILABLE", {});
+            return;
+        }
+    }
+    emit TrackingResponse(requestId, QString("tracking%1").arg(trackingID), "Done", result);
+}
+
 void TrackingManager::UpdateVariable(QString cmd)
 {
     // Handle new UID-based command
@@ -1756,6 +1803,15 @@ void TrackingManager::ClaimObject(int trackingID, QString resultName, QString ow
                                   float minX, float maxX, float minY, float maxY,
                                   int typeFilter, int leaseMs)
 {
+    const auto result = claimObjectResult(trackingID, owner, minX, maxX, minY, maxY, typeFilter, leaseMs);
+    publishClaimResult(resultName, result);
+    emit GotResponse(QString("tracking%1:%2").arg(trackingID).arg(owner.trimmed()), claimObjectResponse(result));
+}
+
+QVariantMap TrackingManager::claimObjectResult(int trackingID, const QString& owner,
+                                               float minX, float maxX, float minY, float maxY,
+                                               int typeFilter, int leaseMs)
+{
     QVariantMap result;
     result.insert("Found", false);
     result.insert("UID", -1);
@@ -1790,7 +1846,11 @@ void TrackingManager::ClaimObject(int trackingID, QString resultName, QString ow
         }
     }
 
-    publishClaimResult(resultName, result);
+    return result;
+}
+
+QString TrackingManager::claimObjectResponse(const QVariantMap& result)
+{
     QString response = "None";
     if (result.value("Found").toBool()) {
         response = "Claimed";
@@ -1802,41 +1862,80 @@ void TrackingManager::ClaimObject(int trackingID, QString resultName, QString ow
         else if (status != "READY")
             response = "TrackingNotReady:" + status;
     }
-    emit GotResponse(QString("tracking%1:%2").arg(trackingID).arg(owner.trimmed()), response);
+    return response;
 }
 
 void TrackingManager::ReleaseObject(int trackingID, int uid, QString owner)
 {
-    bool released = false;
-    if (trackingID >= 0 && trackingID < Trackings.size()) {
-        Tracking* tracking = Trackings.at(trackingID);
-        if (tracking->thread() == QThread::currentThread()) {
-            released = tracking->ReleaseObject(uid, owner);
-        } else {
-            QMetaObject::invokeMethod(tracking, "ReleaseObject", Qt::BlockingQueuedConnection,
-                                      Q_RETURN_ARG(bool, released),
-                                      Q_ARG(int, uid), Q_ARG(QString, owner));
-        }
-    }
+    const bool released = finishObjectOwnership(trackingID, uid, owner, false);
     emit GotResponse(QString("tracking%1:%2").arg(trackingID).arg(owner.trimmed()),
                      released ? "Released" : "ReleaseRejected");
 }
 
 void TrackingManager::CompleteObject(int trackingID, int uid, QString owner)
 {
+    const bool completed = finishObjectOwnership(trackingID, uid, owner, true);
+    emit GotResponse(QString("tracking%1:%2").arg(trackingID).arg(owner.trimmed()),
+                     completed ? "Completed" : "CompleteRejected");
+}
+
+bool TrackingManager::finishObjectOwnership(int trackingID, int uid, const QString& owner, bool complete)
+{
     bool completed = false;
     if (trackingID >= 0 && trackingID < Trackings.size()) {
         Tracking* tracking = Trackings.at(trackingID);
         if (tracking->thread() == QThread::currentThread()) {
-            completed = tracking->CompleteObject(uid, owner);
+            completed = complete ? tracking->CompleteObject(uid, owner) : tracking->ReleaseObject(uid, owner);
         } else {
-            QMetaObject::invokeMethod(tracking, "CompleteObject", Qt::BlockingQueuedConnection,
+            QMetaObject::invokeMethod(tracking, complete ? "CompleteObject" : "ReleaseObject", Qt::BlockingQueuedConnection,
                                       Q_RETURN_ARG(bool, completed),
                                       Q_ARG(int, uid), Q_ARG(QString, owner));
         }
     }
-    emit GotResponse(QString("tracking%1:%2").arg(trackingID).arg(owner.trimmed()),
-                     completed ? "Completed" : "CompleteRejected");
+    return completed;
+}
+
+void TrackingManager::ClaimObjectCorrelated(quint64 requestId, int trackingID, QString resultName,
+                                            QString owner, float minX, float maxX, float minY, float maxY,
+                                            int typeFilter, int leaseMs)
+{
+    Q_UNUSED(resultName)
+    const auto result = claimObjectResult(trackingID, owner, minX, maxX, minY, maxY, typeFilter, leaseMs);
+    // Only the requesting worker may publish its still-current result target.
+    // A delayed reply from a stopped run cannot overwrite the next run's data.
+    emit TrackingResponse(requestId, QString("tracking%1:%2").arg(trackingID).arg(owner.trimmed()),
+                           claimObjectResponse(result), result);
+}
+
+void TrackingManager::ReleaseObjectCorrelated(quint64 requestId, int trackingID, int uid, QString owner)
+{
+    const bool released = finishObjectOwnership(trackingID, uid, owner, false);
+    emit TrackingResponse(requestId, QString("tracking%1:%2").arg(trackingID).arg(owner.trimmed()),
+                           released ? "Released" : "ReleaseRejected", {});
+}
+
+void TrackingManager::CompleteObjectCorrelated(quint64 requestId, int trackingID, int uid, QString owner)
+{
+    const bool completed = finishObjectOwnership(trackingID, uid, owner, true);
+    emit TrackingResponse(requestId, QString("tracking%1:%2").arg(trackingID).arg(owner.trimmed()),
+                           completed ? "Completed" : "CompleteRejected", {});
+}
+
+void TrackingManager::UpdateTrackingCorrelated(quint64 requestId, int trackingID)
+{
+    if (trackingID < 0 || trackingID >= Trackings.size()) {
+        emit TrackingResponse(requestId, QString("tracking%1").arg(trackingID), "TrackingFault:TRACKING_NOT_FOUND", {});
+        return;
+    }
+    auto* tracking = Trackings.at(trackingID);
+    connect(tracking, &Tracking::CorrelatedUpdateTrackingDone,
+            this, &TrackingManager::OnCorrelatedUpdateTrackingDone, Qt::UniqueConnection);
+    QMetaObject::invokeMethod(tracking, "ReadEncoderCorrelated", Qt::QueuedConnection, Q_ARG(quint64, requestId));
+}
+
+void TrackingManager::OnCorrelatedUpdateTrackingDone(int trackingID, quint64 requestId, QString response)
+{
+    emit TrackingResponse(requestId, QString("tracking%1").arg(trackingID), response, {});
 }
 
 void TrackingManager::SetEncoderPosition(int id, float value)

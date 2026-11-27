@@ -31,7 +31,10 @@ jobs:
         run: python tools/check-repository.py
 
       - name: Validate Python sources
-        run: python -m compileall -q tools script-example tests/vision_protocol tests/tooling
+        run: python -m compileall -q start.py tools script-example tests/vision_protocol tests/tooling
+
+      - name: Verify checkout launcher arguments
+        run: python start.py --help
 
       - name: Test contributor tooling
         run: python -m unittest discover -s tests/tooling -p 'test_*.py' -v
@@ -88,6 +91,9 @@ jobs:
           QT_QPA_PLATFORM: offscreen
         run: python tools/bootstrap.py package --build-dir build/bootstrap-ci
 
+      - name: Record Linux build identity
+        run: ./build/bootstrap-ci/delta-x-cli --build-info
+
   macos-build-test:
     name: Qt 6 / macOS
     runs-on: macos-latest
@@ -132,6 +138,9 @@ jobs:
         env:
           QT_QPA_PLATFORM: offscreen
         run: python tools/bootstrap.py package --build-dir build/bootstrap-ci
+
+      - name: Record macOS build identity
+        run: ./build/bootstrap-ci/delta-x-cli --build-info
 
   windows-build-test:
     name: Qt 6 / Windows
@@ -193,3 +202,7 @@ jobs:
           path: build-tests/**/test-result.txt
           if-no-files-found: ignore
           retention-days: 7
+
+      - name: Record Windows build identity
+        shell: pwsh
+        run: .\build\bootstrap-ci\delta-x-cli.exe --build-info

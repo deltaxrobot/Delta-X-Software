@@ -13,6 +13,9 @@ private slots:
     void detectionRefreshPreservesClaimAndPickedState();
     void nearbyDetectionsKeepDistinctUIDs();
     void managerClaimsAcrossTrackingThreadAndPublishesResult();
+    void correlatedClaimsReturnSnapshotWithoutPublishingTarget();
+    void correlatedEncoderUpdatesKeepRequestIdsAcrossLegacyReplies();
+    void correlatedAreaQueryReturnsSnapshotWithoutPublishingTarget();
     void staleTrackingDoesNotIssueNewClaim();
     void staleEncoderDoesNotIssueNewClaim();
     void newTracksRequireConfirmation();
@@ -162,6 +165,108 @@ void TrackingClaimTest::managerClaimsAcrossTrackingThreadAndPublishesResult()
     QMetaObject::invokeMethod(tracking, "deleteLater", Qt::QueuedConnection);
     trackingThread.quit();
     QVERIFY(trackingThread.wait(2000));
+}
+
+void TrackingClaimTest::correlatedClaimsReturnSnapshotWithoutPublishingTarget()
+{
+    TrackingManager manager;
+    manager.ProjectName = "correlated_claim_project";
+    Tracking tracking;
+    tracking.AddObjectDirectly(ObjectInfo(-1, 9, QVector3D(25, 25, 0), 10, 10, 0));
+    manager.Trackings.append(&tracking);
+    QSignalSpy replies(&manager, &TrackingManager::TrackingResponse);
+    QSignalSpy legacy(&manager, &TrackingManager::GotResponse);
+    VariableManager::instance().updateVarScoped(manager.ProjectName, "Target.UID", 999);
+
+    manager.ClaimObjectCorrelated(501, 0, "Target", "robot0", 0, 50, 0, 50, 9, 5000);
+    QCOMPARE(replies.size(), 1);
+    QCOMPARE(replies.first().at(0).toULongLong(), quint64(501));
+    QCOMPARE(replies.first().at(1).toString(), QString("tracking0:robot0"));
+    QCOMPARE(replies.first().at(2).toString(), QString("Claimed"));
+    const auto result = replies.first().at(3).toMap();
+    QVERIFY(result.value("Found").toBool());
+    QCOMPARE(result.value("ClaimOwner").toString(), QString("robot0"));
+    const int uid = result.value("UID").toInt();
+    QCOMPARE(VariableManager::instance().getVarScoped(manager.ProjectName, "Target.UID").toInt(), 999);
+    QVERIFY(!VariableManager::instance().containsFullKeyScoped(manager.ProjectName, "Target.Found"));
+    QCOMPARE(legacy.size(), 0);
+
+    manager.ReleaseObjectCorrelated(502, 0, uid, "wrong-owner");
+    QCOMPARE(replies.last().at(0).toULongLong(), quint64(502));
+    QCOMPARE(replies.last().at(2).toString(), QString("ReleaseRejected"));
+    manager.ReleaseObjectCorrelated(503, 0, uid, "robot0");
+    QCOMPARE(replies.last().at(2).toString(), QString("Released"));
+    manager.ClaimObjectCorrelated(504, 0, "Target", "robot0", 0, 50, 0, 50, 9, 5000);
+    QCOMPARE(replies.last().at(2).toString(), QString("Claimed"));
+    manager.CompleteObjectCorrelated(505, 0, uid, "robot0");
+    QCOMPARE(replies.last().at(0).toULongLong(), quint64(505));
+    QCOMPARE(replies.last().at(2).toString(), QString("Completed"));
+    QCOMPARE(VariableManager::instance().getVarScoped(manager.ProjectName, "Target.UID").toInt(), 999);
+    QCOMPARE(legacy.size(), 0);
+}
+
+void TrackingClaimTest::correlatedEncoderUpdatesKeepRequestIdsAcrossLegacyReplies()
+{
+    TrackingManager manager;
+    Tracking tracking;
+    tracking.EncoderType = "X Encoder";
+    tracking.ID = 0;
+    manager.Trackings.append(&tracking);
+    connect(&tracking, qOverload<int>(&Tracking::UpdateTrackingDone),
+            &manager, qOverload<int>(&TrackingManager::OnDoneUpdateTracking));
+    QSignalSpy requests(&tracking, &Tracking::SendGcodeRequest);
+    QSignalSpy replies(&manager, &TrackingManager::TrackingResponse);
+    QSignalSpy legacy(&manager, &TrackingManager::GotResponse);
+    tracking.SetClientWaiting(true);
+    tracking.ReadEncoder();
+    manager.UpdateTrackingCorrelated(601, 0);
+    manager.UpdateTrackingCorrelated(602, 0);
+    QTRY_COMPARE(requests.size(), 3);
+    tracking.OnReceiveEncoderPosition(1);
+    QCOMPARE(legacy.size(), 1);
+    QCOMPARE(replies.size(), 0);
+    tracking.OnReceiveEncoderPosition(2);
+    QCOMPARE(replies.size(), 1);
+    QCOMPARE(replies.first().at(0).toULongLong(), quint64(601));
+    tracking.OnReceiveEncoderPosition(3);
+    QCOMPARE(replies.size(), 2);
+    QCOMPARE(replies.last().at(0).toULongLong(), quint64(602));
+    QCOMPARE(replies.last().at(2).toString(), QString("Done"));
+    manager.UpdateTrackingCorrelated(603, 99);
+    QCOMPARE(replies.last().at(0).toULongLong(), quint64(603));
+    QCOMPARE(replies.last().at(2).toString(), QString("TrackingFault:TRACKING_NOT_FOUND"));
+}
+
+void TrackingClaimTest::correlatedAreaQueryReturnsSnapshotWithoutPublishingTarget()
+{
+    TrackingManager manager;
+    manager.ProjectName = "correlated_area_project";
+    Tracking tracking;
+    tracking.ProjectName = manager.ProjectName;
+    tracking.AddObjectDirectly(ObjectInfo(-1, 3, QVector3D(25, 15, 0), 10, 10, 0));
+    tracking.AddObjectDirectly(ObjectInfo(-1, 4, QVector3D(75, 50, 0), 10, 10, 0));
+    manager.Trackings.append(&tracking);
+    QSignalSpy replies(&manager, &TrackingManager::TrackingResponse);
+    QSignalSpy legacy(&manager, &TrackingManager::GotResponse);
+    VariableManager::instance().updateVarScoped(manager.ProjectName, "Area.Count", 999);
+    manager.GetObjectsInAreaCorrelated(701, 0, "Area", 0, 50, true);
+    QCOMPARE(replies.size(), 1);
+    QCOMPARE(replies.first().at(0).toULongLong(), quint64(701));
+    QCOMPARE(replies.first().at(2).toString(), QString("Done"));
+    const auto result = replies.first().at(3).toMap();
+    QCOMPARE(result.value("Count").toInt(), 1);
+    QCOMPARE(result.value("0.Type").toInt(), 3);
+    QCOMPARE(result.value("__Objects").value<QVector<ObjectInfo>>().size(), 1);
+    QCOMPARE(VariableManager::instance().getVarScoped(manager.ProjectName, "Area.Count").toInt(), 999);
+    QVERIFY(!VariableManager::instance().containsFullKeyScoped(manager.ProjectName, "Area.0.UID"));
+    QCOMPARE(legacy.size(), 0);
+
+    // Existing C++ clients retain the legacy publish-on-completion API.
+    tracking.GetObjectsInArea("LegacyArea", 0, 100, true);
+    QCOMPARE(VariableManager::instance().getVarScoped(manager.ProjectName, "LegacyArea.Count").toInt(), 2);
+    tracking.GetObjectsInArea("LegacyArea", 0, 50, true);
+    QCOMPARE(VariableManager::instance().getVarScoped(manager.ProjectName, "LegacyArea.Count").toInt(), 1);
+    QVERIFY(!VariableManager::instance().containsFullKeyScoped(manager.ProjectName, "LegacyArea.1.UID"));
 }
 
 void TrackingClaimTest::virtualEncoderFollowsTrackingThread()

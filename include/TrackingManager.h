@@ -121,6 +121,7 @@ signals:
     void SendGcodeRequest(QString deviceName, QString gcode);
     void UpdateTrackingDone();
     void UpdateTrackingDone(int id);
+    void CorrelatedUpdateTrackingDone(int id, quint64 requestId, QString response);
     void DetectionFrameCommitted(int id, quint64 frameId, quint64 requestId);
     void DetectionFrameRejected(int id, quint64 frameId, quint64 requestId, QString reason);
     void SnapshotPublished(int id, QVector<ObjectInfo> objects);
@@ -133,6 +134,7 @@ public slots:
     void ChangeObjectInfo(QString cmd);
     void GetVirtualEncoderPosition();
     void ReadEncoder();
+    void ReadEncoderCorrelated(quint64 requestId);
     void SetEncoderReverse(bool isReverse);
     void SetAssociationThresholds(float iouThreshold, float distanceThreshold);
     void SetTrackingBounds(float minX, float maxX, float minY, float maxY);
@@ -157,6 +159,7 @@ public slots:
     void UpdateTrackedObjects(QVector<ObjectInfo> detectedObjects, QString objectListName);
     void UpdateTrackedObjectOffsets(QVector3D offset);
     void GetObjectsInArea(QString inAreaListName, float min, float max, bool isXDirection = true);
+    QVariantMap ObjectsInAreaSnapshot(float min, float max, bool isXDirection = true);
 
     void updatePositions(double displacement);
     void ClearTrackedObjects();
@@ -202,6 +205,7 @@ private:
         EncoderReadPurpose purpose = EncoderReadPurpose::Update;
         quint64 frameId = 0;
         bool notifyClient = false;
+        quint64 callerRequestId = 0;
     };
     struct PendingFrame {
         quint64 id = 0;
@@ -242,7 +246,7 @@ private:
     QString lastRealtimeFault;
 
     bool requestEncoderRead(EncoderReadPurpose purpose, quint64 frameId = 0,
-                            bool notifyClient = false);
+                            bool notifyClient = false, quint64 callerRequestId = 0);
     void tryCommitFrames();
     void commitDetectionFrame(PendingFrame frame);
     void associateDetectionsLocked(QVector<ObjectInfo> detectedObjects,
@@ -278,6 +282,8 @@ public slots:
     void SaveDetectPosition(int id);
     void UpdateTracking(int id);
     void GetObjectsInArea(int trackingID, QString inAreaListName, float min, float max, bool isXDirection = true);
+    void GetObjectsInAreaCorrelated(quint64 requestId, int trackingID, QString inAreaListName,
+                                    float min, float max, bool isXDirection = true);
     void UpdateVariable(QString cmd);
     void AddObject(QString listName, QList<QStringList> list);
     void ClearObjects(QString listName);
@@ -290,6 +296,13 @@ public slots:
                      int typeFilter = -1, int leaseMs = 30000);
     void ReleaseObject(int trackingID, int uid, QString owner);
     void CompleteObject(int trackingID, int uid, QString owner);
+    void ClaimObjectCorrelated(quint64 requestId, int trackingID, QString resultName,
+                                QString owner, float minX, float maxX, float minY, float maxY,
+                                int typeFilter = -1, int leaseMs = 30000);
+    void ReleaseObjectCorrelated(quint64 requestId, int trackingID, int uid, QString owner);
+    void CompleteObjectCorrelated(quint64 requestId, int trackingID, int uid, QString owner);
+    void UpdateTrackingCorrelated(quint64 requestId, int trackingID);
+    void OnCorrelatedUpdateTrackingDone(int trackingID, quint64 requestId, QString response);
     void ReadEncoderWhenSensorActive(int id);
     void OnDoneUpdateTracking(int id);
     void OnDoneUpdateTracking();
@@ -301,6 +314,7 @@ public slots:
 
 signals:
     void GotResponse(QString deviceId, QString response);
+    void TrackingResponse(quint64 requestId, QString deviceId, QString response, QVariantMap result);
 
 public:
     QString ProjectName = "project0";
@@ -318,6 +332,11 @@ private:
     QHash<int, EncoderCalibrationProfile> encoderCalibrationProfiles;
     QString qualifyResultName(const QString& resultName) const;
     void publishClaimResult(const QString& resultName, const QVariantMap& result);
+    QVariantMap claimObjectResult(int trackingID, const QString& owner,
+                                  float minX, float maxX, float minY, float maxY,
+                                  int typeFilter, int leaseMs);
+    static QString claimObjectResponse(const QVariantMap& result);
+    bool finishObjectOwnership(int trackingID, int uid, const QString& owner, bool complete);
 
 };
 #endif // TRACKINGMANAGER_H

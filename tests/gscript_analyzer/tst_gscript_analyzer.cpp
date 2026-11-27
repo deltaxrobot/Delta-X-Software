@@ -1,9 +1,28 @@
 #include <QtTest>
 #include <QDir>
 #include <QFile>
+#include <QScopeGuard>
+#include <algorithm>
 
 #include "GScriptAnalyzer.h"
 #include "GScriptEditorSupport.h"
+#include "GScriptSyntax.h"
+#include "PluginExtensionRegistry.h"
+#include "DeltaXGScriptProvider.h"
+
+class AnalyzerPrimitiveProvider final : public QObject, public DeltaXGScriptProvider
+{
+public:
+    QVariantList gscriptPrimitives() const override
+    {
+        return {QVariantMap{{"name", "probe"}, {"signature", "M98 Pprobe(value)"},
+                            {"minArgs", 1}, {"maxArgs", 1}}};
+    }
+    bool executeGScriptPrimitive(const QString&, const QVariantList&, QVariant*, QString*) override
+    {
+        return true;
+    }
+};
 
 class GScriptAnalyzerTest : public QObject
 {
@@ -26,6 +45,13 @@ private slots:
     void editorSupportProvidesCompletionAndSignatureHelp();
     void editorSupportExtractsOnlyCodeVariables();
     void generatedTemplatesPassPreflight();
+    void rejectsScopeCrossingTransfers_data();
+    void rejectsScopeCrossingTransfers();
+    void acceptsSameScopeTransfersAndLegacyCalls();
+    void quotedCommandsAreData();
+    void primitiveCatalogDrivesValidationAndEditor();
+    void rejectsInlineInvalidCommandsAndFunctionLoopEscape();
+    void pluginNameStartingWithPIsNormalizedOnce();
 };
 
 void GScriptAnalyzerTest::acceptsStructuredTrackingProgram()
@@ -291,6 +317,132 @@ void GScriptAnalyzerTest::generatedTemplatesPassPreflight()
     QVERIFY(robot.contains(QStringLiteral("PwaitUntil(#Vacuum.R3.OK")));
     QVERIFY(robot.contains(QStringLiteral("PclaimObject(2")));
     QVERIFY(robot.contains(QStringLiteral(",-100,100,")));
+}
+
+void GScriptAnalyzerTest::rejectsScopeCrossingTransfers_data()
+{
+    QTest::addColumn<QString>("source");
+    QTest::newRow("enter-for") << QStringLiteral(
+        "JUMP INNER\nFOR #i = 1 TO 2\nLABEL INNER\n#Count = 1\nENDFOR\n");
+    QTest::newRow("leave-for") << QStringLiteral(
+        "LABEL OUTER\nFOR #i = 1 TO 2\nJUMP OUTER\nENDFOR\n");
+    QTest::newRow("inline-enter-while") << QStringLiteral(
+        "IF 1 THEN JUMP INNER\nWHILE 1\nLABEL INNER\nBREAK\nENDWHILE\n");
+    QTest::newRow("numbered-inline-enter-function") << QStringLiteral(
+        "N10 IF 1 THEN GOTO 30\nN20 FUNCTION F()\nN30 RETURN 1\nN40 ENDFUNCTION\n");
+    QTest::newRow("leave-function") << QStringLiteral(
+        "LABEL MAIN\nFUNCTION F()\nJUMP MAIN\nENDFUNCTION\n");
+    QTest::newRow("between-if-branches") << QStringLiteral(
+        "IF 1\nJUMP OTHER\nELSE\nLABEL OTHER\nENDIF\n");
+    QTest::newRow("between-switch-cases") << QStringLiteral(
+        "SWITCH 1\nCASE 1\nJUMP OTHER\nCASE 2\nLABEL OTHER\nENDSWITCH\n");
+    QTest::newRow("enter-legacy-subprogram") << QStringLiteral(
+        "N10 GOTO 30\nN20 O2000\nN30 #X = 1\nN40 M99\n");
+    QTest::newRow("leave-legacy-subprogram") << QStringLiteral(
+        "LABEL MAIN\nM98 P2000\nO2000\nJUMP MAIN\nM99\n");
+}
+
+void GScriptAnalyzerTest::rejectsScopeCrossingTransfers()
+{
+    QFETCH(QString, source);
+    const auto analysis = GScriptAnalyzer::analyze(source);
+    QVERIFY(std::any_of(analysis.diagnostics.cbegin(), analysis.diagnostics.cend(),
+                       [](const GScriptDiagnostic& value) { return value.code == "GS1603"; }));
+}
+
+void GScriptAnalyzerTest::acceptsSameScopeTransfersAndLegacyCalls()
+{
+    const QString source =
+        "N10 LABEL OUTER\n"
+        "N20 IF 1 THEN GOTO 10\n"
+        "N30 M98 P2000\n"
+        "N40 O2000\n"
+        "N50 LABEL SUB_LOOP\n"
+        "N60 IF 0 THEN JUMP SUB_LOOP\n"
+        "N70 M99\n"
+        "N80 FOR #i = 1 TO 2\n"
+        "N90 LABEL SAME_LOOP\n"
+        "N100 IF 0 THEN GOTO 90\n"
+        "N110 ENDFOR\n"
+        "N120 FUNCTION F()\n"
+        "N130 LABEL SAME_FUNCTION\n"
+        "N140 IF 0 THEN JUMP SAME_FUNCTION\n"
+        "N150 RETURN 1\n"
+        "N160 ENDFUNCTION\n"
+        "N170 JUMP OUTER\n";
+    const auto analysis = GScriptAnalyzer::analyze(source);
+    for (const auto& diagnostic : analysis.diagnostics)
+        QVERIFY2(diagnostic.severity != GScriptDiagnostic::Error, qPrintable(diagnostic.message));
+}
+
+void GScriptAnalyzerTest::quotedCommandsAreData()
+{
+    const QString source =
+        "#Message = \"M98 Pdelay() M98 Psend() .IsPicked\"\n"
+        "M98 PlogMessage(\"M98 PclaimObject()\")\n"
+        "IF #Tag == \"THEN quoted text\"\n"
+        "#Result = 1\n"
+        "ENDIF\n";
+    const auto analysis = GScriptAnalyzer::analyze(source);
+    QVERIFY(!analysis.hasErrors());
+    QCOMPARE(analysis.warningCount(), 0);
+    const QString quoted = "#Message = \"M98 Pdelay(";
+    QVERIFY(GScriptEditorSupport::signatureHelp(quoted, quoted.size()).isEmpty());
+    const QString line = "M98 PlogMessage(\"M98 Psend(\"";
+    const auto help = GScriptEditorSupport::signatureHelp(line, line.size());
+    QVERIFY(help.contains("PlogMessage"));
+    QVERIFY(!help.contains("Psend"));
+}
+
+void GScriptAnalyzerTest::primitiveCatalogDrivesValidationAndEditor()
+{
+    const auto completions = GScriptEditorSupport::builtInCompletions();
+    for (const auto& primitive : GScriptSyntax::builtInPrimitives()) {
+        QVERIFY(completions.contains(primitive.completion));
+        QStringList arguments;
+        for (int at = 0; at < primitive.minimumArguments; ++at) arguments.append("0");
+        const QString valid = "M98 " + primitive.completion + "(" + arguments.join(',') + ")";
+        const auto analysis = GScriptAnalyzer::analyze(valid);
+        QVERIFY2(!analysis.hasErrors(), qPrintable(valid));
+        const QString partial = "M98 " + primitive.completion + "(";
+        QVERIFY2(GScriptEditorSupport::signatureHelp(partial, partial.size())
+                     .startsWith(primitive.signature), qPrintable(partial));
+        while (arguments.size() <= primitive.maximumArguments) arguments.append("0");
+        const auto invalid = GScriptAnalyzer::analyze(
+            "M98 " + primitive.completion + "(" + arguments.join(',') + ")");
+        QVERIFY2(invalid.hasErrors(), qPrintable(primitive.name));
+    }
+    QVERIFY(GScriptAnalyzer::analyze("m98 p_wait_until(1)\n").hasErrors());
+    QVERIFY(GScriptAnalyzer::analyze("M98 send(robot0,,)\n").hasErrors());
+    QVERIFY(GScriptAnalyzer::analyze("M98 PupdateTracking0(1,2)\n").hasErrors());
+    QVERIFY(!GScriptAnalyzer::analyze("M98 pauseCamera\nM98 PclearObjects LegacyList\n").hasErrors());
+    QCOMPARE(GScriptSyntax::splitArguments("\"a,b\", [1 + 2], max(3, 4)").size(), 3);
+}
+
+void GScriptAnalyzerTest::rejectsInlineInvalidCommandsAndFunctionLoopEscape()
+{
+    QVERIFY(GScriptAnalyzer::analyze("IF 1 THEN JUMP MISSING\n").hasErrors());
+    QVERIFY(GScriptAnalyzer::analyze("IF 1 THEN M98 Punknown()\n").hasErrors());
+    QVERIFY(GScriptAnalyzer::analyze("IF 1 THEN M98 Psend(robot0)\n").hasErrors());
+    QVERIFY(GScriptAnalyzer::analyze("IF 1 THEN SELECT robotX\n").hasErrors());
+    QVERIFY(GScriptAnalyzer::analyze("IF 1 THEN robotX G0 X0\n").hasErrors());
+    QVERIFY(GScriptAnalyzer::analyze("IF 1 THEN CONTINUE\n").hasErrors());
+    QVERIFY(GScriptAnalyzer::analyze(
+        "FOR #i = 1 TO 2\nFUNCTION F()\nBREAK\nENDFUNCTION\nENDFOR\n").hasErrors());
+}
+
+void GScriptAnalyzerTest::pluginNameStartingWithPIsNormalizedOnce()
+{
+    AnalyzerPrimitiveProvider provider;
+    auto& registry = PluginExtensionRegistry::instance();
+    QString error;
+    QVERIFY2(registry.registerGScriptProvider("analyzer-probe", &provider, &provider, &error),
+             qPrintable(error));
+    const auto cleanup = qScopeGuard([&]() { registry.unregisterPlugin("analyzer-probe"); });
+    QVERIFY(!GScriptAnalyzer::analyze("IF 1 THEN M98 Pprobe(1)\n").hasErrors());
+    QVERIFY(GScriptAnalyzer::analyze("M98 Pprobe()\n").hasErrors());
+    const QString partial = "M98 Pprobe(";
+    QVERIFY(GScriptEditorSupport::signatureHelp(partial, partial.size()).startsWith("M98 Pprobe(value)"));
 }
 
 QTEST_MAIN(GScriptAnalyzerTest)

@@ -1,4 +1,5 @@
 #include "GScriptAnalyzer.h"
+#include "GScriptSyntax.h"
 #include "PluginExtensionRegistry.h"
 
 #include <algorithm>
@@ -23,41 +24,17 @@ struct Reference {
 
 QString stripInlineComment(const QString& input)
 {
-    bool inSingleQuote = false;
-    bool inDoubleQuote = false;
-    for (int i = 0; i < input.size(); ++i) {
-        const QChar character = input.at(i);
-        if (character == '\'' && !inDoubleQuote)
-            inSingleQuote = !inSingleQuote;
-        else if (character == '"' && !inSingleQuote)
-            inDoubleQuote = !inDoubleQuote;
-        else if (character == ';' && !inSingleQuote && !inDoubleQuote)
-            return input.left(i);
-    }
-    return input;
+    return GScriptSyntax::stripComment(input);
 }
 
 QString statementWithoutLineNumber(const QString& input, int* lineNumber = nullptr)
 {
-    static const QRegularExpression numberPattern(
-        QStringLiteral("^\\s*N(\\d+)\\b\\s*"),
-        QRegularExpression::CaseInsensitiveOption);
-    const QRegularExpressionMatch match = numberPattern.match(input);
-    if (!match.hasMatch()) {
-        if (lineNumber)
-            *lineNumber = -1;
-        return input.trimmed();
-    }
-    if (lineNumber)
-        *lineNumber = match.captured(1).toInt();
-    return input.mid(match.capturedLength()).trimmed();
+    return GScriptSyntax::withoutLineNumber(input, lineNumber);
 }
 
 QString firstTokenUpper(const QString& statement)
 {
-    const QStringList tokens = statement.split(QRegularExpression("\\s+"),
-                                               Qt::SkipEmptyParts);
-    return tokens.isEmpty() ? QString() : tokens.first().toUpper();
+    return GScriptSyntax::command(statement);
 }
 
 void addDiagnostic(GScriptAnalysisResult& result,
@@ -132,52 +109,78 @@ QString parseNamedTarget(const QString& statement, const QString& command)
     return target.toUpper();
 }
 
-int argumentCount(const QString& statement)
-{
-    const int open = statement.indexOf('(');
-    const int close = statement.lastIndexOf(')');
-    if (open < 0 || close <= open)
-        return 0;
-    const QString arguments = statement.mid(open + 1, close - open - 1).trimmed();
-    if (arguments.isEmpty())
-        return 0;
-
-    int count = 1;
-    int depth = 0;
-    bool inSingleQuote = false;
-    bool inDoubleQuote = false;
-    for (const QChar character : arguments) {
-        if (character == '\'' && !inDoubleQuote) inSingleQuote = !inSingleQuote;
-        else if (character == '"' && !inSingleQuote) inDoubleQuote = !inDoubleQuote;
-        else if (!inSingleQuote && !inDoubleQuote) {
-            if (character == '(' || character == '[') ++depth;
-            else if (character == ')' || character == ']') --depth;
-            else if (character == ',' && depth == 0) ++count;
-        }
-    }
-    return count;
-}
-
 bool isBuiltInM98Target(const QString& rawTarget)
 {
-    QString target = rawTarget;
-    target.remove('_');
-    target = target.toLower();
-
-    static const QSet<QString> exactTargets = {
-        "send", "assert", "waituntil", "updatetracking", "captureanddetect",
-        "claimobject", "releaseobject", "completeobject", "delay",
-        "addobject", "clearobjects", "deletefirstobject", "deleteobject",
-        "pausecamera", "capturecamera", "resumecamera", "logmessage",
-        "syncconveyor", "stopsyncconveyor", "sendgcode"
-    };
-    if (exactTargets.contains(target) ||
+    // MacroCall already removed the optional P prefix exactly once.
+    const QString target = rawTarget;
+    if (GScriptSyntax::findPrimitive(target) ||
         PluginExtensionRegistry::instance().hasGScriptPrimitive(target))
         return true;
 
     // Backward-compatible spellings supported by the runtime.
     return QRegularExpression("^(updatetracking|captureanddetect)\\d+$")
                .match(target).hasMatch();
+}
+
+// Jumps may reuse an existing scope, but cannot manufacture or abandon frames.
+// Legacy O/M99 sections form callable domains; M98 calls are not jumps.
+void validateTransferScopes(const QStringList& lines, GScriptAnalysisResult& result)
+{
+    struct Scope { QString type; int line; int branch = 0; };
+    QVector<Scope> scopes;
+    QHash<int, QStringList> ancestry;
+    QHash<int, int> numbered;
+    QHash<QString, int> labels;
+    QList<Reference> transfers;
+    QString subprogram;
+    for (int index = 0; index < lines.size(); ++index) {
+        const int line = index + 1;
+        int number = -1;
+        const QString statement = GScriptSyntax::withoutLineNumber(
+            GScriptSyntax::stripComment(lines.at(index)), &number);
+        const QString cmd = GScriptSyntax::command(statement);
+        if (statement.isEmpty()) continue;
+        if (QRegularExpression("^O[A-Za-z0-9_]+$", QRegularExpression::CaseInsensitiveOption)
+                .match(cmd).hasMatch())
+            subprogram = QString("O:%1").arg(line);
+        if (!scopes.isEmpty() &&
+            ((scopes.last().type == "IF" && (cmd == "ELIF" || cmd == "ELSE")) ||
+             (scopes.last().type == "SWITCH" && (cmd == "CASE" || cmd == "DEFAULT"))))
+            ++scopes.last().branch;
+        QStringList current;
+        if (!subprogram.isEmpty()) current.append(subprogram);
+        for (const Scope& scope : scopes)
+            current.append(QString("%1:%2:%3").arg(scope.type).arg(scope.line).arg(scope.branch));
+        ancestry.insert(line, current);
+        if (number >= 0) numbered.insert(number, line);
+        if (cmd == "LABEL") labels.insert(parseNamedTarget(statement, "LABEL"), line);
+        const QString executable = GScriptSyntax::effectiveStatement(statement);
+        const QString transfer = GScriptSyntax::command(executable);
+        if (transfer == "JUMP")
+            transfers.append({"LABEL", parseNamedTarget(executable, "JUMP"), line, 1});
+        else if (transfer == "GOTO") {
+            const auto target = QRegularExpression("^GOTO\\s+(\\d+)\\b",
+                                  QRegularExpression::CaseInsensitiveOption).match(executable);
+            if (target.hasMatch()) transfers.append({"LINE", target.captured(1), line, 1});
+        }
+        if ((cmd == "IF" && GScriptSyntax::inlineStatement(statement).isEmpty()) ||
+            cmd == "FOR" || cmd == "WHILE" || cmd == "SWITCH" || cmd == "FUNCTION")
+            scopes.append({cmd, line});
+        else if (cmd == "ENDIF" || cmd == "ENDFOR" || cmd == "ENDWHILE" ||
+                 cmd == "ENDSWITCH" || cmd == "ENDFUNCTION") {
+            if (!scopes.isEmpty()) scopes.removeLast();
+        }
+        if (cmd == "M99") subprogram.clear();
+    }
+    for (const Reference& transfer : transfers) {
+        const int target = transfer.kind == "LABEL" ? labels.value(transfer.target, -1)
+                                                   : numbered.value(transfer.target.toInt(), -1);
+        // Missing targets are diagnosed by the normal reference pass.
+        if (target >= 0 && ancestry.value(transfer.line) != ancestry.value(target))
+            addDiagnostic(result, GScriptDiagnostic::Error, "GS1603", transfer.line, transfer.column,
+                          "Jump crosses a conditional, loop, function, or subprogram scope.",
+                          "Keep JUMP/GOTO in the same block and branch; use BREAK, CONTINUE, RETURN, or M98 for structured transfers.");
+    }
 }
 }
 
@@ -271,17 +274,9 @@ GScriptAnalysisResult GScriptAnalyzer::analyze(const QString& source)
                 addDiagnostic(result, GScriptDiagnostic::Error, "GS1201", sourceLine, 1,
                               "IF has no condition.",
                               "Use IF condition, IF [condition] THEN, or IF condition THEN statement.");
-            const QRegularExpression inlinePattern(
-                "\\bTHEN\\b\\s*(.+)$", QRegularExpression::CaseInsensitiveOption);
-            const QRegularExpressionMatch inlineMatch = inlinePattern.match(statement);
-            if (inlineMatch.hasMatch()) {
-                const QString inlineStatement = inlineMatch.captured(1).trimmed();
-                const QRegularExpression gotoPattern(
-                    "^GOTO\\s+(\\d+)\\b", QRegularExpression::CaseInsensitiveOption);
-                const QRegularExpressionMatch gotoMatch = gotoPattern.match(inlineStatement);
-                if (gotoMatch.hasMatch())
-                    references.append({"LINE", gotoMatch.captured(1), sourceLine,
-                                       int(statement.indexOf(gotoMatch.captured(1)) + 1)});
+            const QString inlineStatement = GScriptSyntax::inlineStatement(statement);
+            if (!inlineStatement.isEmpty()) {
+                // The effective statement below validates inline transfers and macros.
             } else {
                 blocks.push({"IF", sourceLine, false});
             }
@@ -340,8 +335,9 @@ GScriptAnalysisResult GScriptAnalyzer::analyze(const QString& source)
                 blocks.pop();
         } else if (command == "BREAK" || command == "CONTINUE") {
             bool insideLoop = false;
-            for (const BlockEntry& block : blocks) {
-                if (block.type == "FOR" || block.type == "WHILE") {
+            for (auto block = blocks.crbegin(); block != blocks.crend(); ++block) {
+                if (block->type == "FUNCTION") break;
+                if (block->type == "FOR" || block->type == "WHILE") {
                     insideLoop = true;
                     break;
                 }
@@ -393,7 +389,9 @@ GScriptAnalysisResult GScriptAnalyzer::analyze(const QString& source)
             } else {
                 functions.insert(name, sourceLine);
             }
-            if (!blocks.isEmpty() && blocks.top().type == "FUNCTION")
+            if (std::any_of(blocks.cbegin(), blocks.cend(), [](const BlockEntry& block) {
+                    return block.type == "FUNCTION";
+                }))
                 addDiagnostic(result, GScriptDiagnostic::Error, "GS1403", sourceLine, 1,
                               "Nested FUNCTION definitions are not supported.");
             blocks.push({"FUNCTION", sourceLine, false});
@@ -465,31 +463,61 @@ GScriptAnalysisResult GScriptAnalyzer::analyze(const QString& source)
                               "Use LOCAL #name or LOCAL #name = expression.");
         }
 
+        const QString executable = GScriptSyntax::effectiveStatement(statement);
+        const QString executableCommand = GScriptSyntax::command(executable);
+        if (executable != statement && executableCommand == "SELECT" &&
+            !QRegularExpression("^SELECT\\s+(robot|conveyor|encoder|slider|device)\\d+\\b",
+                                QRegularExpression::CaseInsensitiveOption).match(executable).hasMatch())
+            addDiagnostic(result, GScriptDiagnostic::Error, "GS1801", sourceLine, 1,
+                          "SELECT requires a concrete device such as robot0.");
         const QRegularExpression explicitDevicePrefix(
             "^(ROBOT|CONVEYOR|ENCODER|SLIDER|DEVICE)",
             QRegularExpression::CaseInsensitiveOption);
         const QRegularExpression explicitDeviceToken(
             "^(ROBOT|CONVEYOR|ENCODER|SLIDER|DEVICE)\\d+$",
             QRegularExpression::CaseInsensitiveOption);
-        if (explicitDevicePrefix.match(command).hasMatch() &&
-            !explicitDeviceToken.match(command).hasMatch()) {
+        if (explicitDevicePrefix.match(executableCommand).hasMatch() &&
+            !explicitDeviceToken.match(executableCommand).hasMatch()) {
             addDiagnostic(result, GScriptDiagnostic::Error, "GS1802", sourceLine, 1,
-                          QString("Invalid device target '%1'.").arg(command),
+                          QString("Invalid device target '%1'.").arg(executableCommand),
                           "Use a concrete zero-based target such as robot0 or encoder1.");
         }
 
-        const QRegularExpression m98TargetPattern(
-            "^M98\\s+P?([A-Za-z0-9_]+)",
-            QRegularExpression::CaseInsensitiveOption);
-        const QRegularExpressionMatch m98TargetMatch = m98TargetPattern.match(statement);
-        if (command == "M98" && m98TargetMatch.hasMatch()) {
-            QString target = m98TargetMatch.captured(1);
-            target.remove('_');
+        if (executable != statement && executableCommand == "JUMP") {
+            const QString target = parseNamedTarget(executable, "JUMP");
+            if (target.isEmpty())
+                addDiagnostic(result, GScriptDiagnostic::Error, "GS1503", sourceLine, 1,
+                              "JUMP requires a label name.");
+            else
+                references.append({"LABEL", target, sourceLine, 1});
+        } else if (executable != statement && executableCommand == "GOTO") {
+            const auto target = QRegularExpression("^GOTO\\s+(\\d+)\\b",
+                                    QRegularExpression::CaseInsensitiveOption).match(executable);
+            if (target.hasMatch()) references.append({"LINE", target.captured(1), sourceLine, 1});
+            else addDiagnostic(result, GScriptDiagnostic::Error, "GS1601", sourceLine, 1,
+                               "GOTO requires a numeric N target.");
+        } else if (executable != statement &&
+                   (executableCommand == "BREAK" || executableCommand == "CONTINUE")) {
+            bool insideLoop = false;
+            for (auto block = blocks.crbegin(); block != blocks.crend(); ++block) {
+                if (block->type == "FUNCTION") break;
+                if (block->type == "FOR" || block->type == "WHILE") {
+                    insideLoop = true;
+                    break;
+                }
+            }
+            if (!insideLoop)
+                addDiagnostic(result, GScriptDiagnostic::Error, "GS1312", sourceLine, 1,
+                              executableCommand + " can only be used inside FOR or WHILE.");
+        }
+        const GScriptSyntax::MacroCall macro = GScriptSyntax::parseMacroCall(statement);
+        if (macro.valid) {
+            const QString target = macro.target;
             if (!isBuiltInM98Target(target)) {
                 references.append({"SUBPROGRAM", target.toUpper(), sourceLine,
-                                   int(m98TargetMatch.capturedStart(1) + 1)});
+                                   1});
             }
-        } else if (command == "M98") {
+        } else if (executableCommand == "M98") {
             addDiagnostic(result, GScriptDiagnostic::Error, "GS1703", sourceLine, 1,
                           "M98 requires a macro or subprogram target.",
                           "Use M98 Psend(...) or M98 P2000.");
@@ -500,64 +528,30 @@ GScriptAnalysisResult GScriptAnalyzer::analyze(const QString& source)
             if (rhs.isEmpty())
                 addDiagnostic(result, GScriptDiagnostic::Error, "GS1901", sourceLine,
                               statement.indexOf('=') + 1, "Variable assignment has no value.");
-            if (statement.contains(".IsPicked", Qt::CaseInsensitive))
+            if (GScriptSyntax::maskStringsAndComments(statement).contains(".IsPicked", Qt::CaseInsensitive))
                 addDiagnostic(result, GScriptDiagnostic::Warning, "GS2901", sourceLine, 1,
                               "Directly changing IsPicked bypasses ownership semantics.",
                               "Use M98 PcompleteObject(...) after a confirmed pick.");
         }
 
-        const QString lower = statement.toLower();
-        if (lower.contains("m98 pclaimobject")) {
-            const int count = argumentCount(statement);
-            if (count < 7 || count > 9)
-                addDiagnostic(result, GScriptDiagnostic::Error, "GS1910", sourceLine, 1,
-                              QString("claimObject expects 7 to 9 arguments; found %1.").arg(count));
-        } else if (lower.contains("m98 preleaseobject") ||
-                   lower.contains("m98 pcompleteobject")) {
-            const int count = argumentCount(statement);
-            if (count != 3)
-                addDiagnostic(result, GScriptDiagnostic::Error, "GS1911", sourceLine, 1,
-                              QString("Ownership command expects 3 arguments; found %1.").arg(count));
-        } else if (lower.contains("m98 pdelay")) {
-            const int count = argumentCount(statement);
-            if (count != 1)
-                addDiagnostic(result, GScriptDiagnostic::Error, "GS1912", sourceLine, 1,
-                              QString("delay expects one duration; found %1 arguments.").arg(count));
-        } else if (lower.contains("m98 psend")) {
-            const int count = argumentCount(statement);
-            if (count < 2 || count > 4)
-                addDiagnostic(result, GScriptDiagnostic::Error, "GS1913", sourceLine, 1,
-                              QString("send expects 2 to 4 arguments; found %1.").arg(count),
-                              "Use Psend(device, command[, responseVariable[, timeoutMs]])." );
-        } else if (lower.contains("m98 passert")) {
-            const int count = argumentCount(statement);
-            if (count < 1 || count > 2)
-                addDiagnostic(result, GScriptDiagnostic::Error, "GS1914", sourceLine, 1,
-                              QString("assert expects 1 or 2 arguments; found %1.").arg(count));
-        } else if (lower.contains("m98 pwaituntil")) {
-            const int count = argumentCount(statement);
-            if (count < 2 || count > 4)
-                addDiagnostic(result, GScriptDiagnostic::Error, "GS1916", sourceLine, 1,
-                              QString("waitUntil expects 2 to 4 arguments; found %1.").arg(count),
-                              "Use PwaitUntil(condition, timeoutMs[, pollMs[, message]])." );
-        } else if (lower.contains("m98 pcaptureanddetect") ||
-                   lower.contains("m98 pupdatetracking")) {
-            const int count = argumentCount(statement);
-            if (count > 1)
-                addDiagnostic(result, GScriptDiagnostic::Error, "GS1915", sourceLine, 1,
-                              QString("Vision/tracking command expects at most one argument; found %1.")
-                                  .arg(count));
-        }
-
-        if (command == "M98" && m98TargetMatch.hasMatch()) {
-            QString dynamicTarget = m98TargetMatch.captured(1);
-            dynamicTarget.remove('_');
-            dynamicTarget = dynamicTarget.toLower();
+        if (macro.valid) {
+            const int count = macro.arguments.size();
+            if (const auto* primitive = GScriptSyntax::findPrimitive(macro.target)) {
+                const bool legacy = !macro.parenthesized && primitive->legacyBare;
+                const bool emptyArgument = std::any_of(macro.arguments.cbegin(), macro.arguments.cend(),
+                                                       [](const QString& value) { return value.isEmpty(); });
+                if (!legacy && (count < primitive->minimumArguments ||
+                                count > primitive->maximumArguments || emptyArgument))
+                    addDiagnostic(result, GScriptDiagnostic::Error, primitive->diagnosticCode,
+                                  sourceLine, 1,
+                                  QString("%1 expects %2 to %3 non-empty arguments; found %4.")
+                                      .arg(primitive->name).arg(primitive->minimumArguments)
+                                      .arg(primitive->maximumArguments).arg(count), primitive->signature);
+            }
             for (const PluginGScriptPrimitive& primitive :
                  PluginExtensionRegistry::instance().gscriptPrimitives()) {
-                if (primitive.name != dynamicTarget)
+                if (primitive.name != macro.target)
                     continue;
-                const int count = argumentCount(statement);
                 if (count < primitive.minimumArguments ||
                     count > primitive.maximumArguments) {
                     addDiagnostic(
@@ -606,6 +600,7 @@ GScriptAnalysisResult GScriptAnalyzer::analyze(const QString& source)
         }
     }
 
+    validateTransferScopes(lines, result);
     result.functionCount = functions.size();
     result.labelCount = labels.size();
     if (result.executableLineCount == 0)

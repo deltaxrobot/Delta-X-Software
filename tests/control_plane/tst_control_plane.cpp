@@ -18,7 +18,124 @@ private slots:
     void robotHomeWaitsForPositionBeforeCompleting();
     void robotHomeErrorCompletesImmediately_data();
     void robotHomeErrorCompletesImmediately();
+    void ambiguousRepliesCannotCompleteNewWork_data();
+    void ambiguousRepliesCannotCompleteNewWork();
+    void cancellingOnlyQueuedWorkPreservesOtherOwner();
+    void timeoutCannotBeReenteredBeforeQuarantine();
+    void reconnectRecoversStreamWithoutAcceptingLateAcks();
 };
+
+void ControlPlaneTest::ambiguousRepliesCannotCompleteNewWork_data()
+{
+    QTest::addColumn<QString>("interruption");
+    QTest::newRow("owner-stop") << QStringLiteral("cancel");
+    QTest::newRow("timeout") << QStringLiteral("timeout");
+    QTest::newRow("disconnect") << QStringLiteral("disconnect");
+    QTest::newRow("safety-preemption") << QStringLiteral("safety");
+    QTest::newRow("cell-stop") << QStringLiteral("cell");
+}
+
+void ControlPlaneTest::ambiguousRepliesCannotCompleteNewWork()
+{
+    QFETCH(QString, interruption);
+    DeviceCommandBroker broker;
+    QSignalSpy dispatched(&broker, &DeviceCommandBroker::CommandDispatched);
+    QSignalSpy responses(&broker, &DeviceCommandBroker::ResponseForOwner);
+    QSignalSpy timedOut(&broker, &DeviceCommandBroker::CommandTimedOut);
+    QSignalSpy unsolicited(&broker, &DeviceCommandBroker::UnsolicitedResponse);
+    QVERIFY(broker.Submit("gscript/old", "robot0", "G01 X10",
+                          DeviceCommandBroker::Origin::GScript, true, 20) > 0);
+    QVERIFY(broker.Submit("gscript/queued", "robot0", "G01 X20",
+                          DeviceCommandBroker::Origin::GScript, true, 1000) > 0);
+    if (interruption == "cancel") broker.CancelOwner("gscript/old");
+    else if (interruption == "timeout") QTRY_COMPARE_WITH_TIMEOUT(timedOut.size(), 1, 500);
+    else if (interruption == "disconnect") broker.HandleDeviceUnavailable("robot0", "disconnected");
+    else if (interruption == "safety")
+        broker.Submit("manual/ui", "robot0", "M84", DeviceCommandBroker::Origin::Manual, false);
+    else broker.RequestControlledStop("test cell stop");
+
+    // The transport does not echo request IDs: neither an old motion reply nor
+    // a stop acknowledgement may be mistaken for a request from another run.
+    const int dispatchedBefore = dispatched.size();
+    const int responsesBefore = responses.size();
+    QCOMPARE(broker.Submit("gscript/new", "robot0", "G01 X30",
+                           DeviceCommandBroker::Origin::GScript, true, 1000), quint64(0));
+    broker.SetCellState("Faulted");
+    broker.SetCellState("Ready");
+    broker.HandleDeviceResponse("robot0", "Ok");
+    QCOMPARE(dispatched.size(), dispatchedBefore);
+    QCOMPARE(responses.size(), responsesBefore);
+    QCOMPARE(unsolicited.size(), 1);
+    QCOMPARE(broker.pendingCommandCount("robot0"), 0);
+
+    // A verified fresh transport session is the recovery boundary, not merely
+    // returning the cell to Ready or receiving one uncorrelated acknowledgement.
+    QVERIFY(broker.ResetDeviceCommunication("robot0"));
+    const quint64 fresh = broker.Submit("gscript/new", "robot0", "G01 X30",
+                                        DeviceCommandBroker::Origin::GScript, true, 1000);
+    QVERIFY(fresh > 0);
+    QVERIFY(!broker.ResetDeviceCommunication("robot0"));
+    broker.HandleDeviceResponse("robot0", "Ok");
+    QCOMPARE(responses.last().at(0).toString(), QStringLiteral("gscript/new"));
+    QCOMPARE(responses.last().at(3).toULongLong(), fresh);
+}
+
+void ControlPlaneTest::cancellingOnlyQueuedWorkPreservesOtherOwner()
+{
+    DeviceCommandBroker broker;
+    QSignalSpy dispatched(&broker, &DeviceCommandBroker::CommandDispatched);
+    QSignalSpy responses(&broker, &DeviceCommandBroker::ResponseForOwner);
+    QVERIFY(broker.Submit("active", "encoder0", "M317", DeviceCommandBroker::Origin::Tracking) > 0);
+    QVERIFY(broker.Submit("cancelled", "encoder0", "M317", DeviceCommandBroker::Origin::Tracking) > 0);
+    QVERIFY(broker.Submit("retained", "encoder0", "M317", DeviceCommandBroker::Origin::Tracking) > 0);
+    broker.CancelOwner("cancelled");
+    QCOMPARE(dispatched.size(), 1);
+    broker.HandleDeviceResponse("encoder0", "1.25");
+    QCOMPARE(responses.first().at(0).toString(), QStringLiteral("active"));
+    QCOMPARE(dispatched.size(), 2);
+    QCOMPARE(dispatched.last().at(1).toString(), QStringLiteral("retained"));
+    broker.HandleDeviceResponse("encoder0", "2.50");
+    QCOMPARE(responses.last().at(0).toString(), QStringLiteral("retained"));
+}
+
+void ControlPlaneTest::timeoutCannotBeReenteredBeforeQuarantine()
+{
+    DeviceCommandBroker broker;
+    QSignalSpy timedOut(&broker, &DeviceCommandBroker::CommandTimedOut);
+    quint64 submittedFromTimeout = 999;
+    connect(&broker, &DeviceCommandBroker::CommandTimedOut, &broker,
+            [&](quint64, const QString&, const QString&, const QString&) {
+        submittedFromTimeout = broker.Submit("retry", "encoder0", "M317",
+                                             DeviceCommandBroker::Origin::Tracking);
+    });
+    QVERIFY(broker.Submit("old", "encoder0", "M317", DeviceCommandBroker::Origin::Tracking, true, 20) > 0);
+    QTRY_COMPARE_WITH_TIMEOUT(timedOut.size(), 1, 500);
+    QCOMPARE(submittedFromTimeout, quint64(0));
+}
+
+void ControlPlaneTest::reconnectRecoversStreamWithoutAcceptingLateAcks()
+{
+    DeviceCommandBroker broker;
+    QSignalSpy responses(&broker, &DeviceCommandBroker::ResponseForOwner);
+    QSignalSpy unsolicited(&broker, &DeviceCommandBroker::UnsolicitedResponse);
+    QVERIFY(broker.acquireManualControl("mouse/old", "robot0"));
+    QVERIFY(broker.SubmitMotion("mouse/old", "robot0", "G01 X1") > 0);
+    broker.CancelOwner("mouse/old");
+    broker.releaseManualControl("mouse/old", "robot0");
+    QCOMPARE(responses.size(), 1);
+    broker.HandleDeviceResponse("robot0", "Ok");
+    QCOMPARE(responses.size(), 1);
+    QCOMPARE(unsolicited.size(), 1);
+    QVERIFY(!broker.acquireManualControl("mouse/new", "robot0"));
+    QVERIFY(broker.ResetDeviceCommunication("robot0"));
+    QVERIFY(broker.acquireManualControl("mouse/new", "robot0"));
+    const auto fresh = broker.SubmitMotion("mouse/new", "robot0", "G01 X2");
+    QVERIFY(fresh > 0);
+    broker.HandleDeviceResponse("robot0", "Ok");
+    QCOMPARE(responses.size(), 2);
+    QCOMPARE(responses.last().at(0).toString(), QStringLiteral("mouse/new"));
+    QCOMPARE(responses.last().at(3).toULongLong(), fresh);
+}
 
 void ControlPlaneTest::synchronousProviderResponseCompletesActiveRequest()
 {
