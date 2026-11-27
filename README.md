@@ -31,6 +31,14 @@ The doctor reports missing dependencies and platform-specific installation
 instructions. See the [cross-platform setup guide](docs/platform-setup.md) for
 clean-machine setup, packaging, device permissions, and platform limitations.
 
+For daily development, `python start.py` builds and opens this checkout using the
+same bootstrap workflow. It accepts the same Qt, OpenCV, and build-directory
+overrides (for example, `python start.py --qt-root /path/to/Qt/kit`). The window
+title shows the compiled version and source revision; `dirty` indicates tracked
+source edits at configuration time. `delta-x-cli --build-info` prints the CLI's
+compiled identity without connecting to a running application. Avoid launching
+old executables from unrelated build folders when testing current source changes.
+
 Run a G-code file through an open project's connected devices with
 `delta-x-cli run program.gcode --project project0 --thread 0`.
 `delta-x-cli status` lists projects, workers, cell state and robot connection.

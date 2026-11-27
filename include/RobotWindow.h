@@ -601,6 +601,7 @@ private:
     PointToolController* m_pointToolController;
     ImagePipelineController* m_imagePipelineController = nullptr;
     DeviceCommandBroker* m_deviceCommandBroker = nullptr;
+    QSet<QString> m_connectedBrokerTransports;
     CellSupervisor* m_cellSupervisor = nullptr;
     QHash<QString, QMatrix> m_mappingMatrices;
     

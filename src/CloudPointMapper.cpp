@@ -300,7 +300,10 @@ bool CloudPointMapper::interpolateLocalAffine(const QVector3D& point,
     if (!cv::solve(design, targets, coefficients, cv::DECOMP_SVD) || coefficients.rows != 3)
         return false;
 
-    cv::Mat query = (cv::Mat_<double>(1, 3) << point.x(), point.y(), 1.0);
+    cv::Mat query(1, 3, CV_64F);
+    query.at<double>(0, 0) = point.x();
+    query.at<double>(0, 1) = point.y();
+    query.at<double>(0, 2) = 1.0;
     const cv::Mat mapped = query * coefficients;
     result = QVector3D(mapped.at<double>(0, 0), mapped.at<double>(0, 1), mapped.at<double>(0, 2));
     return finiteVector(result);

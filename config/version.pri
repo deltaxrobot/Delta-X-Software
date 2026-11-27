@@ -6,3 +6,7 @@ isEmpty(DELTA_X_VERSION): error("VERSION.txt is missing or empty")
 
 VERSION = $$DELTA_X_VERSION
 DEFINES += DELTA_X_VERSION_STRING=\\\"$$DELTA_X_VERSION\\\"
+
+DELTA_X_SOURCE_REVISION = $$system(git -C $$shell_quote($$DELTA_X_ROOT) describe --always --dirty --abbrev=12)
+isEmpty(DELTA_X_SOURCE_REVISION): DELTA_X_SOURCE_REVISION = source-export
+DEFINES += DELTA_X_SOURCE_REVISION=\\\"$$DELTA_X_SOURCE_REVISION\\\"

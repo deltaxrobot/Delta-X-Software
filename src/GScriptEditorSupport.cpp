@@ -1,4 +1,5 @@
 #include "GScriptEditorSupport.h"
+#include "GScriptSyntax.h"
 #include "PluginExtensionRegistry.h"
 
 #include <QHash>
@@ -8,41 +9,12 @@
 namespace {
 QString uncommentedLine(const QString& line)
 {
-    bool singleQuoted = false;
-    bool doubleQuoted = false;
-    for (int i = 0; i < line.size(); ++i) {
-        const QChar c = line.at(i);
-        if (c == '\'' && !doubleQuoted)
-            singleQuoted = !singleQuoted;
-        else if (c == '"' && !singleQuoted)
-            doubleQuoted = !doubleQuoted;
-        else if (c == ';' && !singleQuoted && !doubleQuoted)
-            return line.left(i);
-    }
-    return line;
+    return GScriptSyntax::stripComment(line);
 }
 
 QString codeWithoutStringsOrComment(const QString& line)
 {
-    QString result;
-    result.reserve(line.size());
-    bool singleQuoted = false;
-    bool doubleQuoted = false;
-    for (int i = 0; i < line.size(); ++i) {
-        const QChar c = line.at(i);
-        if (c == '\'' && !doubleQuoted) {
-            singleQuoted = !singleQuoted;
-            result.append(' ');
-        } else if (c == '"' && !singleQuoted) {
-            doubleQuoted = !doubleQuoted;
-            result.append(' ');
-        } else if (c == ';' && !singleQuoted && !doubleQuoted) {
-            break;
-        } else {
-            result.append(singleQuoted || doubleQuoted ? QChar(' ') : c);
-        }
-    }
-    return result;
+    return GScriptSyntax::maskStringsAndComments(line);
 }
 
 int activeArgument(const QString& text, int openParenthesis)
@@ -90,14 +62,10 @@ QStringList GScriptEditorSupport::builtInCompletions()
         "ENDFOR", "WHILE", "ENDWHILE", "SWITCH", "CASE", "DEFAULT",
         "ENDSWITCH", "BREAK", "CONTINUE", "LABEL", "JUMP", "GOTO",
         "SYNC", "G00", "G01", "G04", "G28", "M03", "M05", "M42",
-        "M84", "M85", "M98", "M204", "M311", "M317",
-        "Psend", "Passert", "PwaitUntil", "PupdateTracking",
-        "PcaptureAndDetect", "PclaimObject", "PreleaseObject",
-        "PcompleteObject", "Pdelay", "PaddObject", "PclearObjects",
-        "PdeleteFirstObject", "PdeleteObject", "PpauseCamera",
-        "PcaptureCamera", "PresumeCamera", "PlogMessage",
-        "PsyncConveyor", "PstopSyncConveyor", "PsendGcode"
+        "M84", "M85", "M98", "M204", "M311", "M317"
     };
+    for (const auto& primitive : GScriptSyntax::builtInPrimitives())
+        result.append(primitive.completion);
     for (int i = 0; i < 8; ++i) {
         result << QString("robot%1").arg(i)
                << QString("conveyor%1").arg(i)
@@ -119,11 +87,11 @@ QString GScriptEditorSupport::signatureHelp(const QString& line, int cursorColum
 {
     const QString beforeCursor = uncommentedLine(line.left(qBound(0, cursorColumn, line.size())));
     static const QRegularExpression callPattern(
-        QStringLiteral("M98\\s+P([A-Za-z_][A-Za-z0-9_]*)\\s*\\("),
+        QStringLiteral("\\bM98\\s+([A-Za-z_][A-Za-z0-9_]*)\\s*\\("),
         QRegularExpression::CaseInsensitiveOption);
 
     QRegularExpressionMatch selected;
-    auto matches = callPattern.globalMatch(beforeCursor);
+    auto matches = callPattern.globalMatch(GScriptSyntax::maskStringsAndComments(beforeCursor));
     while (matches.hasNext())
         selected = matches.next();
     if (!selected.hasMatch())
@@ -134,27 +102,11 @@ QString GScriptEditorSupport::signatureHelp(const QString& line, int cursorColum
     if (argument < 1)
         return QString();
 
-    static const QHash<QString, QString> signatures = {
-        {"send", "M98 Psend(deviceId, command[, responseVariable[, timeoutMs]])"},
-        {"sendgcode", "M98 PsendGcode(deviceId, command[, responseVariable[, timeoutMs]])"},
-        {"assert", "M98 Passert(condition[, message])"},
-        {"waituntil", "M98 PwaitUntil(condition, timeoutMs[, pollMs[, message]])"},
-        {"updatetracking", "M98 PupdateTracking([trackingId])"},
-        {"captureanddetect", "M98 PcaptureAndDetect([trackingId])"},
-        {"claimobject", "M98 PclaimObject(trackingId, result, owner, minX, maxX, minY, maxY, typeFilter, leaseMs)"},
-        {"releaseobject", "M98 PreleaseObject(trackingId, uid, owner)"},
-        {"completeobject", "M98 PcompleteObject(trackingId, uid, owner)"},
-        {"delay", "M98 Pdelay(milliseconds)"},
-        {"addobject", "M98 PaddObject(list, type, x, y, z, width, length, angle)"},
-        {"clearobjects", "M98 PclearObjects(list)"},
-        {"logmessage", "M98 PlogMessage(message)"},
-        {"deleteobject", "M98 PdeleteObject(objectIndex)"},
-        {"syncconveyor", "M98 PsyncConveyor (legacy flag; use SYNC robotN (vx, vy, vz))"},
-        {"stopsyncconveyor", "M98 PstopSyncConveyor (legacy flag)"}
-    };
-    const QString signature = signatures.value(selected.captured(1).toLower());
+    const QString name = GScriptSyntax::normalizeMacroTarget(selected.captured(1));
+    const auto* builtIn = GScriptSyntax::findPrimitive(name);
+    const QString signature = builtIn ? builtIn->signature : QString();
     if (signature.isEmpty()) {
-        const QString dynamicName = selected.captured(1).toLower();
+        const QString dynamicName = name;
         for (const PluginGScriptPrimitive& primitive :
              PluginExtensionRegistry::instance().gscriptPrimitives()) {
             if (primitive.name == dynamicName)

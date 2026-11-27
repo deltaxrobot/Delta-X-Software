@@ -1,4 +1,5 @@
 #include "CliProtocol.h"
+#include "sdk/DeltaXVersion.h"
 #include <QCoreApplication>
 #include <QCommandLineParser>
 #include <QElapsedTimer>
@@ -49,12 +50,15 @@ int main(int argc, char** argv)
 {
     QCoreApplication app(argc, argv);
     QCoreApplication::setApplicationName("delta-x-cli");
+    QCoreApplication::setApplicationVersion(QString::fromLatin1(DeltaXVersion::Application));
     QCommandLineParser parser;
     parser.setApplicationDescription(
         "Run G-code using the open Delta X Software project and its existing device connections.\n"
         "Commands: status | run FILE | stop RUN_ID | connect-robot | reset-fault\n"
         "Run waits for completion. Ctrl+C requests Stop. No automatic replay on connection loss.");
     parser.addHelpOption();
+    parser.addVersionOption();
+    parser.addOption({"build-info", "Print version and source revision as JSON without connecting to the application"});
     parser.addPositionalArgument("command", "status, run, stop, connect-robot, or reset-fault");
     parser.addPositionalArgument("argument", "UTF-8 G-code file, or active CLI run ID", "[argument]");
     parser.addOption({"project", "Open project ID (see status)", "id", "project0"});
@@ -69,6 +73,20 @@ int main(int argc, char** argv)
         output({{"event", "error"}, {"message", parser.errorText()}},
                app.arguments().contains("--json"));
         return 2;
+    }
+    if (parser.isSet("version") || parser.isSet("build-info")) {
+        QTextStream out(stdout);
+        if (parser.isSet("build-info")) {
+            out << CliProtocol::encode({{"application", QCoreApplication::applicationName()},
+                                        {"version", QCoreApplication::applicationVersion()},
+                                        {"revision", QString::fromLatin1(DeltaXVersion::Revision)}});
+        } else {
+            out << QCoreApplication::applicationName() << " "
+                << QCoreApplication::applicationVersion() << " ("
+                << DeltaXVersion::Revision << ")\n";
+        }
+        out.flush();
+        return 0;
     }
     const bool helpRequested = parser.isSet("help") || parser.isSet("help-all");
     if (helpRequested || parser.positionalArguments().isEmpty()) {

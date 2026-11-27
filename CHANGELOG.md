@@ -5,6 +5,24 @@ semantic versioning after the first governed public release.
 
 ## Unreleased
 
+### G-Script hardening
+
+- Correct inline control flow, function and subprogram return state, quoted
+  payload handling, and deferred condition evaluation. Local-only loops yield
+  cooperatively so Stop can be processed.
+- Share lexical helpers and built-in command contracts across analyzer, editor,
+  and runtime. Reject jumps across block/branch/function/subprogram scopes and
+  restore loop scopes on BREAK/CONTINUE.
+- Fault on invalid numeric expressions or primitive arguments and retain source,
+  device, command, and call-stack diagnostics.
+- Quarantine ambiguous device responses after interruption or timeout until a
+  fresh transport session. Correlate tracking completion before publishing a
+  worker's result snapshot; run camera timer operations on the window thread.
+- Add actual worker-thread integration cases and an acceptance checklist that
+  separates software validation from supervised physical commissioning.
+- Add `python start.py`, compiled source revision display, and local CLI
+  `--version` / `--build-info` to identify the checkout being tested.
+
 ### Fixed
 
 - OpenCV 4.5.4 builds use the phone-camera link fallback; QR generation requires

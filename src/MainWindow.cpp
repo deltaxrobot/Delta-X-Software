@@ -19,8 +19,9 @@ MainWindow::MainWindow(QWidget *parent) :
     // Designer-level stylesheet before semantic roles are applied.
     ui->wgLeftPanel->setProperty("navigationRail", true);
     UiTheme::prepareForm(this);
-    setWindowTitle(tr("Delta X Software - Version %1")
-                       .arg(QString::fromLatin1(DeltaXVersion::Application)));
+    setWindowTitle(tr("Delta X Software - Version %1 (%2)")
+                       .arg(QString::fromLatin1(DeltaXVersion::Application),
+                            QString::fromLatin1(DeltaXVersion::Revision)));
     ui->teLoggingBox->setReadOnly(true);
     ui->teLoggingBox->setMinimumHeight(0);
     ui->teLoggingBox->setMaximumHeight(34);

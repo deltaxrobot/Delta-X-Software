@@ -125,10 +125,11 @@ void CalibrationCoreTest::cameraProfileRoundTripsAndUndistorts()
 {
     CameraCalibration::Profile profile;
     profile.isValid = true;
-    profile.cameraMatrix = (cv::Mat_<double>(3, 3) <<
-        800.0, 0.0, 320.0,
-        0.0, 800.0, 240.0,
-        0.0, 0.0, 1.0);
+    profile.cameraMatrix = cv::Mat::eye(3, 3, CV_64F);
+    profile.cameraMatrix.at<double>(0, 0) = 800.0;
+    profile.cameraMatrix.at<double>(1, 1) = 800.0;
+    profile.cameraMatrix.at<double>(0, 2) = 320.0;
+    profile.cameraMatrix.at<double>(1, 2) = 240.0;
     profile.distortionCoefficients = cv::Mat::zeros(1, 8, CV_64F);
     profile.imageSize = QSize(640, 480);
     profile.boardSize = QSize(9, 6);

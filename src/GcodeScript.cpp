@@ -3,14 +3,45 @@
 */
 
 #include "GcodeScript.h"
+#include "GScriptSyntax.h"
 #include <atomic>
 #include <QPointer>
 #include <QMutexLocker>
 #include <QReadLocker>
 #include <QWriteLocker>
 #include <QMetaEnum>
+#include <QMetaMethod>
+#include <algorithm>
+#include <iterator>
+#include <stdexcept>
+#include <limits>
 
 namespace {
+class GScriptEvaluationError final : public std::runtime_error
+{
+public:
+    explicit GScriptEvaluationError(const QString& message)
+        : std::runtime_error(message.toStdString()) {}
+};
+
+double finiteNumber(const QString& value, const QString& context)
+{
+    bool ok = false;
+    const double number = value.trimmed().toDouble(&ok);
+    if (!ok || !std::isfinite(number))
+        throw GScriptEvaluationError(QString("%1 requires a finite number; received '%2'.")
+                                         .arg(context, value));
+    return number;
+}
+
+int boundedInteger(double value, int minimum, int maximum, const QString& context)
+{
+    if (!std::isfinite(value) || std::trunc(value) != value || value < minimum || value > maximum)
+        throw GScriptEvaluationError(QString("%1 requires an integer from %2 to %3.")
+                                         .arg(context).arg(minimum).arg(maximum));
+    return static_cast<int>(value);
+}
+
 std::atomic<quint64> g_nextVisionRequestId{1};
 QMutex g_deviceLeaseMutex;
 QHash<QString, QPointer<GcodeScript>> g_deviceLeases;
@@ -32,18 +63,29 @@ bool isDeviceFaultResponse(const QString& response)
 
 QString stripInlineComment(const QString& input)
 {
-    bool inSingleQuote = false;
-    bool inDoubleQuote = false;
-    for (int i = 0; i < input.size(); ++i) {
-        const QChar character = input.at(i);
-        if (character == '\'' && !inDoubleQuote)
-            inSingleQuote = !inSingleQuote;
-        else if (character == '"' && !inSingleQuote)
-            inDoubleQuote = !inDoubleQuote;
-        else if (character == ';' && !inSingleQuote && !inDoubleQuote)
-            return input.left(i);
+    return GScriptSyntax::stripComment(input);
+}
+
+template <typename Transform>
+QString transformUnquotedText(const QString& input, Transform transform,
+                              bool preserveQuoted = true)
+{
+    QString result;
+    int start = 0;
+    for (int at = 0; at < input.size(); ++at) {
+        const QChar quote = input.at(at);
+        if (quote != '\'' && quote != '"')
+            continue;
+        result += transform(input.mid(start, at - start));
+        const int end = input.indexOf(quote, at + 1);
+        if (end < 0)
+            return result + input.mid(at);
+        result += preserveQuoted ? input.mid(at, end - at + 1)
+                                 : QString(end - at + 1, QLatin1Char(' '));
+        at = end;
+        start = end + 1;
     }
-    return input;
+    return result + transform(input.mid(start));
 }
 }
 #include "CloudPointMapper.h"
@@ -57,18 +99,6 @@ QString stripInlineComment(const QString& input)
 #include <QTimer>
 #include <QRegularExpression>
 #include <QPointF>
-
-// Initialize static regex patterns for better performance
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-static constexpr QRegularExpression::PatternOptions kRegexOptimizeOption = QRegularExpression::PatternOptions();
-#else
-static constexpr QRegularExpression::PatternOptions kRegexOptimizeOption = QRegularExpression::OptimizeOnFirstUsageOption;
-#endif
-
-const QRegularExpression GcodeScript::m98Regex(
-    "M98\\s+([A-Za-z][A-Za-z0-9_]*)(?:\\((.*)\\))?",
-    kRegexOptimizeOption | QRegularExpression::CaseInsensitiveOption);
-const QRegularExpression GcodeScript::objectInAreaRegex("\\(([^)]+)\\)", kRegexOptimizeOption);
 
 // Initialize cloud point mapper member variables
 GcodeScript::GcodeScript(QObject* parent)
@@ -206,6 +236,13 @@ void GcodeScript::ExecuteGcode(QString gcodes, int startMode)
     gcodes.replace(QStringLiteral("\r\n"), QStringLiteral("\n"));
     gcodes.replace(QLatin1Char('\r'), QLatin1Char('\n'));
 
+    publishExecutionVariable("Failure.Line", 0);
+    publishExecutionVariable("Failure.Source", QString());
+    publishExecutionVariable("Failure.Device", QString());
+    publishExecutionVariable("Failure.Command", QString());
+    publishExecutionVariable("Failure.CallStack", QStringList());
+    currentGcodeEditorCursor = 0;
+
     setExecutionState(ExecutionState::Validating, "Validating program");
     const GScriptAnalysisResult analysis = GScriptAnalyzer::analyze(gcodes);
     emit DiagnosticsReady(analysis.diagnostics);
@@ -238,6 +275,7 @@ void GcodeScript::ExecuteGcode(QString gcodes, int startMode)
     }
 
     SetGcodeScript(gcodes);
+    ++executionGeneration;
     isRunning = true;
     SoftwareManager::GetInstance()->ScriptStarted();
     setExecutionState(ExecutionState::Running, "Program running");
@@ -260,6 +298,10 @@ void GcodeScript::ExecuteGcode(QString gcodes, int startMode)
     waitForHomePosition = false;
     pendingResponseToken++;
     expectedVisionRequestId = 0;
+    expectedTrackingRequestId = 0;
+    pendingClaimResult.clear();
+    requireCorrelatedTrackingResponse = false;
+    pendingAreaResult = false;
     pendingResponseVariable.clear();
     pendingConditionExpression.clear();
     pendingConditionMessage.clear();
@@ -277,12 +319,16 @@ void GcodeScript::ExecuteGcode(QString gcodes, int startMode)
     switchCaseStack.clear();
     breakRequested = false;
     continueRequested = false;
+    nextLoopNestingOrder = 0;
     
     // Clear function and label definitions and call stacks when starting new script
     functionDefinitions.clear();
     labelDefinitions.clear();
     callStack.clear();
     functionReturnStack.clear();
+    returnPointerOrder = -1;
+    std::fill(std::begin(returnSubProPointer), std::end(returnSubProPointer), -1);
+    std::fill(std::begin(subprogramFrames), std::end(subprogramFrames), SubprogramFrame{});
 
     if (startMode == BEGIN)
     {
@@ -328,7 +374,8 @@ void GcodeScript::ExecuteGcode(QString gcodes, int startMode)
 
 void GcodeScript::GetResponse(QString deviceId, QString response)
 {
-    if (!isRunning)
+    if (!isRunning || State() != ExecutionState::WaitingForDevice || deviceId != transmitDeviceId ||
+        (requireCorrelatedTrackingResponse && deviceId.startsWith("tracking")))
         return;
 
     if (deviceId == transmitDeviceId && deviceId.startsWith("vision"))
@@ -417,6 +464,10 @@ void GcodeScript::GetResponse(QString deviceId, QString response)
         // and must not inherit a completed device wait.
         pendingResponseToken++;
         expectedVisionRequestId = 0;
+        expectedTrackingRequestId = 0;
+        pendingClaimResult.clear();
+        requireCorrelatedTrackingResponse = false;
+        pendingAreaResult = false;
         this->response = response;
         saveRuntimeVariable("Response", response);
         publishExecutionVariable("Response", response);
@@ -427,6 +478,32 @@ void GcodeScript::GetResponse(QString deviceId, QString response)
         setExecutionState(ExecutionState::Running, "Device response received");
         TransmitNextGcode();
     }
+}
+
+void GcodeScript::GetTrackingResponse(quint64 requestId, QString deviceId,
+                                       QString response, QVariantMap result)
+{
+    if (!isRunning || State() != ExecutionState::WaitingForDevice ||
+        !requireCorrelatedTrackingResponse || requestId == 0 ||
+        requestId != expectedTrackingRequestId || deviceId != transmitDeviceId)
+        return;
+    if (!pendingClaimResult.isEmpty()) {
+        if (pendingAreaResult) {
+            VariableManager::instance().removeVarScoped(ProjectName, pendingClaimResult);
+            VariableManager::instance().updateObjectSnapshot(ProjectName, pendingClaimResult,
+                result.take("__Objects").value<QVector<ObjectInfo>>());
+        }
+        QHash<QString, QVariant> values;
+        for (auto field = result.cbegin(); field != result.cend(); ++field)
+            values.insert(pendingClaimResult + '.' + field.key(), field.value());
+        VariableManager::instance().updateBatchScoped(ProjectName, values,
+                                                       VariableManager::Persistence::Runtime);
+    }
+    expectedTrackingRequestId = 0;
+    pendingClaimResult.clear();
+    requireCorrelatedTrackingResponse = false;
+    pendingAreaResult = false;
+    GetResponse(deviceId, response);
 }
 
 void GcodeScript::SendMsgToDevice(QString deviceId, QString msg)
@@ -451,6 +528,9 @@ void GcodeScript::TransmitNextGcode()
         return;
     }
 
+    QElapsedTimer batchTimer;
+    batchTimer.start();
+    int statementsExecuted = 0;
     while (true)
     {
         currentLine = gcodeList.at(gcodeOrder);
@@ -465,17 +545,7 @@ void GcodeScript::TransmitNextGcode()
         }
         else
         {
-            QStringList tokens = currentLine.split(' ');
-            if (!tokens.isEmpty()) {
-                QString firstPair = tokens.at(0);
-
-                if (!firstPair.isEmpty() && firstPair.at(0) == 'N')
-            {
-                QString line = currentLine;
-                currentLine = line.replace(firstPair + " ", "");
-                }
-            }
-
+            currentLine = GScriptSyntax::withoutLineNumber(currentLine);
             isGcode = findExeGcodeAndTransmit();
         }
 
@@ -496,6 +566,18 @@ void GcodeScript::TransmitNextGcode()
 
         if (isGcode == true)
         {
+            break;
+        }
+
+        // Local loops must let queued Stop requests and telemetry reach this
+        // worker. A continuation belongs to this run, never a later restart.
+        if (++statementsExecuted >= 64 || batchTimer.elapsed() >= 5) {
+            const quint64 generation = executionGeneration;
+            QTimer::singleShot(0, this, [this, generation]() {
+                if (isRunning && executionGeneration == generation &&
+                    State() == ExecutionState::Running)
+                    TransmitNextGcode();
+            });
             break;
         }
     }
@@ -547,7 +629,7 @@ void GcodeScript::setExecutionState(ExecutionState state, const QString& message
     emit ExecutionStateChanged(state, message);
 }
 
-void GcodeScript::finishExecution(bool abortActiveMotion, const QString& reason,
+void GcodeScript::finishExecution(bool abortActiveMotion, const QString& detail,
                                   bool faulted)
 {
     if (!isRunning)
@@ -555,13 +637,51 @@ void GcodeScript::finishExecution(bool abortActiveMotion, const QString& reason,
 
     const QString activeDeviceId = transmitDeviceId;
     const QString activeMsg = transmitMsg;
+    QString reason = detail;
+    if (faulted) {
+        const int sourceLine = currentGcodeEditorCursor + 1;
+        const QString source = sourceLine > 0 && sourceLine <= gcodeList.size()
+            ? gcodeList.at(sourceLine - 1) : currentLine;
+        QStringList context;
+        for (const CallFrame& frame : callStack)
+            context.append(QString("%1 (called at line %2)")
+                               .arg(frame.functionName).arg(frame.callLine));
+        for (int at = 0; at <= returnPointerOrder; ++at) {
+            const int callAt = returnSubProPointer[at];
+            if (callAt >= 0 && callAt < gcodeList.size())
+                context.append(QString("%1 (line %2)").arg(gcodeList.at(callAt)).arg(callAt + 1));
+        }
+        publishExecutionVariable("Failure.Line", sourceLine);
+        publishExecutionVariable("Failure.Source", source);
+        publishExecutionVariable("Failure.Device", activeDeviceId);
+        publishExecutionVariable("Failure.Command", activeMsg);
+        publishExecutionVariable("Failure.CallStack", context);
+        reason = QString("Line %1: %2").arg(sourceLine).arg(detail);
+        if (!activeDeviceId.isEmpty())
+            reason += QString(" Device: %1; command: %2.").arg(activeDeviceId, activeMsg);
+        if (!context.isEmpty())
+            reason += QString(" Call stack: %1.").arg(context.join(" -> "));
+        publishExecutionVariable("LastError", reason);
+        saveRuntimeVariable("LastError", reason);
+        GScriptDiagnostic diagnostic;
+        diagnostic.severity = GScriptDiagnostic::Error;
+        diagnostic.code = QStringLiteral("GSR1002");
+        diagnostic.line = sourceLine;
+        diagnostic.message = reason;
+        emit DiagnosticsReady({diagnostic});
+    }
 
     isRunning = false;
+    ++executionGeneration;
     pendingResponseToken++;
     pendingConditionToken = 0;
     pendingConditionExpression.clear();
     pendingConditionMessage.clear();
     expectedVisionRequestId = 0;
+    expectedTrackingRequestId = 0;
+    pendingClaimResult.clear();
+    requireCorrelatedTrackingResponse = false;
+    pendingAreaResult = false;
     waitForHomePosition = false;
     response.clear();
     transmitMsg.clear();
@@ -590,6 +710,9 @@ void GcodeScript::finishExecution(bool abortActiveMotion, const QString& reason,
     labelDefinitions.clear();
     callStack.clear();
     functionReturnStack.clear();
+    returnPointerOrder = -1;
+    std::fill(std::begin(returnSubProPointer), std::end(returnSubProPointer), -1);
+    std::fill(std::begin(subprogramFrames), std::end(subprogramFrames), SubprogramFrame{});
 
     if (!reason.isEmpty())
         emit LogMessage(reason);
@@ -618,19 +741,19 @@ void GcodeScript::requestActiveDeviceStop(const QString& deviceId, const QString
     const QString normalizedDeviceId = deviceId.trimmed();
     const QString normalizedMsg = msg.trimmed().toUpper();
 
-    if (normalizedDeviceId.contains("robot", Qt::CaseInsensitive))
+    if (QRegularExpression("^robot\\d+$", QRegularExpression::CaseInsensitiveOption).match(normalizedDeviceId).hasMatch())
     {
         emit SendGcodeToDevice(normalizedDeviceId, "M84");
         return;
     }
 
-    if (normalizedDeviceId.contains("slider", Qt::CaseInsensitive))
+    if (QRegularExpression("^slider\\d+$", QRegularExpression::CaseInsensitiveOption).match(normalizedDeviceId).hasMatch())
     {
         emit SendGcodeToDevice(normalizedDeviceId, "M323");
         return;
     }
 
-    if (normalizedDeviceId.contains("conveyor", Qt::CaseInsensitive))
+    if (QRegularExpression("^conveyor\\d+$", QRegularExpression::CaseInsensitiveOption).match(normalizedDeviceId).hasMatch())
     {
         const QRegularExpression channelRegex("C(\\d+)");
         const QRegularExpressionMatch channelMatch = channelRegex.match(normalizedMsg);
@@ -727,9 +850,9 @@ bool GcodeScript::beginDeviceRequest(const QString& deviceId, const QString& msg
     publishExecutionVariable("ActiveCommand", transmitMsg);
     setExecutionState(ExecutionState::WaitingForDevice,
                       QString("Waiting for %1").arg(transmitDeviceId));
-    emit SendGcodeToDevice(transmitDeviceId, transmitMsg);
     startPendingResponseTimeout(transmitDeviceId, transmitMsg,
                                 qBound(10, timeoutMs, 86400000));
+    emit SendGcodeToDevice(transmitDeviceId, transmitMsg);
     return true;
 }
 
@@ -772,10 +895,14 @@ void GcodeScript::pollPendingCondition()
         pendingConditionToken != pendingResponseToken)
         return;
 
-    bool ok = false;
-    const double value = calculateExpressions(pendingConditionExpression)
-                             .trimmed().toDouble(&ok);
-    if (ok && !qFuzzyIsNull(static_cast<float>(value))) {
+    double value;
+    try {
+        value = finiteNumber(calculateExpressions(pendingConditionExpression), "waitUntil condition");
+    } catch (const GScriptEvaluationError& error) {
+        faultExecution(QString::fromUtf8(error.what()));
+        return;
+    }
+    if (value != 0.0) {
         pendingConditionToken = 0;
         pendingConditionExpression.clear();
         pendingConditionMessage.clear();
@@ -813,14 +940,16 @@ void GcodeScript::ReceivedGcode(QString gcode)
 
 void GcodeScript::prepareCurrentLine()
 {
-    // Revert to original simple processing to fix script not running
-    currentLine = currentLine.replace("  ", " ");
-    currentLine = currentLine.replace("\t", "");
-    
-    // Add spaces around operators for proper parsing
-    normalizeOperators();
-    
-    currentLine = formatSpaces(currentLine);
+    // Normalize syntax only: quoted commands, messages and identifiers are data.
+    const QString source = currentLine;
+    currentLine = transformUnquotedText(source, [this](QString fragment) {
+        currentLine = fragment.replace('\t', ' ');
+        // A quoted RHS starts a separate fragment, including compact #Name="...".
+        currentLine.replace(QRegularExpression("(#[A-Za-z0-9_][A-Za-z0-9_.]*)\\s*=(?!=)\\s*"),
+                            QStringLiteral("\\1 = "));
+        normalizeOperators();
+        return formatSpaces(currentLine);
+    });
 }
 
 bool GcodeScript::shouldSkipLine()
@@ -835,27 +964,65 @@ bool GcodeScript::shouldSkipLine()
 
 void GcodeScript::collapseGcodeLine()
 {
-    int openBracIndex = currentLine.indexOf('[');
+    // An inline branch evaluates its condition first; its selected statement
+    // will enter this dispatcher separately with its original brackets intact.
+    if (!GScriptSyntax::inlineStatement(currentLine).isEmpty())
+        return;
+    // Canonical primitives evaluate their own arguments; waitUntil also retains
+    // its unevaluated condition for subsequent polls and boolean short-circuiting.
+    const auto macro = GScriptSyntax::parseMacroCall(currentLine);
+    if (macro.valid && (GScriptSyntax::findPrimitive(macro.target) ||
+                       PluginExtensionRegistry::instance().hasGScriptPrimitive(macro.target)))
+        return;
 
-    while (openBracIndex != -1) {
+    const QString command = GScriptSyntax::command(currentLine);
+    const bool devicePayload = isExplicitDeviceToken(command) ||
+        QRegularExpression("^[GM]\\d+$").match(command).hasMatch();
+
+    QChar quote;
+    for (int at = 0; at < currentLine.size(); ++at) {
+        const QChar ch = currentLine.at(at);
+        if (!quote.isNull()) {
+            if (ch == quote)
+                quote = QChar();
+            continue;
+        }
+        if (ch == '\'' || ch == '"') {
+            quote = ch;
+            continue;
+        }
+        if (ch != '[')
+            continue;
+        const int openBracIndex = at;
         int closeBracIndex = findClosingBracket(openBracIndex);
+        if (closeBracIndex < 0) {
+            faultExecution("Unclosed bracket in runtime expression.");
+            return;
+        }
         QString expressInBracket = currentLine.mid(openBracIndex, closeBracIndex - openBracIndex + 1);
-        
-        // Normalize operators in the expression before calculating
-        QString normalizedExpression = expressInBracket;
-        normalizeExpressionOperators(normalizedExpression);
-        
-        QString resultInBracket = calculateExpressions(normalizedExpression);
-
-        currentLine.replace(expressInBracket, resultInBracket);
-        openBracIndex = currentLine.indexOf('[');
+        const QString resultInBracket = calculateExpressions(expressInBracket);
+        if (devicePayload)
+            finiteNumber(resultInBracket, "G-code bracket expression");
+        currentLine.replace(openBracIndex, expressInBracket.size(), resultInBracket);
+        at += resultInBracket.size() - 1;
     }
 }
 
 int GcodeScript::findClosingBracket(int openIndex)
 {
     int subBracNum = 1;
+    QChar quote;
     for (int i = openIndex + 1; i < currentLine.length(); i++) {
+        const QChar ch = currentLine.at(i);
+        if (!quote.isNull()) {
+            if (ch == quote)
+                quote = QChar();
+            continue;
+        }
+        if (ch == '\'' || ch == '"') {
+            quote = ch;
+            continue;
+        }
         if (currentLine.at(i) == '[') subBracNum++;
         if (currentLine.at(i) == ']') {
             subBracNum--;
@@ -1805,6 +1972,16 @@ bool GcodeScript::isMovingGcode(QString gcode)
 
 bool GcodeScript::findExeGcodeAndTransmit()
 {
+    try {
+        return executeCurrentStatement();
+    } catch (const GScriptEvaluationError& error) {
+        faultExecution(QString::fromUtf8(error.what()), true);
+        return true;
+    }
+}
+
+bool GcodeScript::executeCurrentStatement()
+{
     currentGcodeEditorCursor = gcodeOrder;
 
     if (elapsedTimer.restart() > 50 && gcodeList.count() > 1)
@@ -1814,6 +1991,8 @@ bool GcodeScript::findExeGcodeAndTransmit()
     
     if (shouldSkipLine()) return false;
     collapseGcodeLine();
+    if (!isRunning)
+        return true;
 
 //    processVARIABLE();
 
@@ -2028,37 +2207,46 @@ bool GcodeScript::findExeGcodeAndTransmit()
                         }
                     }
                 }
-                if (rightExpression.contains("#GetObjectInArea"))
+                if (rightExpression.startsWith("#GetObjectInArea", Qt::CaseInsensitive))
                 {
-                    QRegularExpressionMatch match = objectInAreaRegex.match(rightExpression);
-
-                    if (match.hasMatch()) {
-                        QString ref = match.captured(1);
-                        QStringList paras = ref.split(',');
-                        QString trackingID = paras.at(0).trimmed();
-                        QStringList pair1 = paras.at(1).trimmed().split('=');
-                        QStringList pair2 = paras.at(2).trimmed().split('=');
-
-                        QString avaible_list = valuePairs[0];
-
-                        float min = pair1.at(1).toFloat();
-                        float max = pair2.at(1).toFloat();
-
-                        int index = 0;
-
-                        bool isXdirection = false;
-
-                        if (ref.contains("X_MIN") && ref.contains("X_MAX"))
-                        {
-                            isXdirection = true;
-                        }
-
-                        transmitDeviceId = QString("tracking") + trackingID;
-                        emit GetObjectsRequest(trackingID.toInt(), avaible_list, min, max, isXdirection);
-
-                        gcodeOrder++;
-                        return true;
-                    }
+                    const auto area = QRegularExpression("^#GetObjectInArea\\s*\\((.*)\\)$",
+                        QRegularExpression::CaseInsensitiveOption).match(rightExpression);
+                    if (!area.hasMatch())
+                        throw GScriptEvaluationError("Malformed GetObjectInArea call.");
+                    const QStringList args = GScriptSyntax::splitArguments(area.captured(1));
+                    if (args.size() != 3)
+                        throw GScriptEvaluationError("GetObjectInArea requires tracking ID, axis minimum and axis maximum.");
+                    const int trackingId = boundedInteger(finiteNumber(calculateExpressions(args[0]), "Tracking ID"),
+                        0, std::numeric_limits<int>::max(), "Tracking ID");
+                    const auto lower = QRegularExpression("^([XY])_MIN\\s*=\\s*(.+)$",
+                        QRegularExpression::CaseInsensitiveOption).match(args[1]);
+                    const auto upper = QRegularExpression("^([XY])_MAX\\s*=\\s*(.+)$",
+                        QRegularExpression::CaseInsensitiveOption).match(args[2]);
+                    if (!lower.hasMatch() || !upper.hasMatch() ||
+                        lower.captured(1).compare(upper.captured(1), Qt::CaseInsensitive) != 0)
+                        throw GScriptEvaluationError("GetObjectInArea requires matching X_MIN/X_MAX or Y_MIN/Y_MAX bounds.");
+                    const double minimum = finiteNumber(calculateExpressions(lower.captured(2)), "Area minimum");
+                    const double maximum = finiteNumber(calculateExpressions(upper.captured(2)), "Area maximum");
+                    if (minimum > maximum || std::abs(minimum) > std::numeric_limits<float>::max() ||
+                        std::abs(maximum) > std::numeric_limits<float>::max())
+                        throw GScriptEvaluationError("GetObjectInArea bounds are invalid.");
+                    const QString target = currentToken;
+                    const bool isX = lower.captured(1).compare("X", Qt::CaseInsensitive) == 0;
+                    transmitDeviceId = QString("tracking%1").arg(trackingId);
+                    transmitMsg = currentLine;
+                    ++pendingResponseToken;
+                    expectedTrackingRequestId = nextVisionRequestId();
+                    pendingClaimResult = cleanedVarName(target);
+                    pendingAreaResult = true;
+                    requireCorrelatedTrackingResponse = isSignalConnected(
+                        QMetaMethod::fromSignal(&GcodeScript::GetObjectsCorrelatedRequest));
+                    gcodeOrder++;
+                    startPendingResponseTimeout(transmitDeviceId, transmitMsg, 1500);
+                    if (requireCorrelatedTrackingResponse)
+                        emit GetObjectsCorrelatedRequest(expectedTrackingRequestId, trackingId, target, minimum, maximum, isX);
+                    else
+                        emit GetObjectsRequest(trackingId, target, minimum, maximum, isX);
+                    return true;
                 }
                 else
                 {
@@ -2194,26 +2382,17 @@ bool GcodeScript::findExeGcodeAndTransmit()
 
         if (currentCommand == "M98" && valuePairsSize > (i + 1))
         {
-            QRegularExpressionMatch match = m98Regex.match(currentLine);
-
-            if (match.hasMatch()) {
-                QString functionName = match.captured(1);
-                QString params = match.captured(2);
-
-                if (!functionName.isEmpty() && functionName.at(0) == 'P')
-                    functionName.remove(0, 1);
-
-                // Function names accept legacy underscore aliases (for example
-                // send_gcode), but argument identifiers must remain untouched.
-                functionName.remove('_');
-                functionName = functionName.toLower();
-
-                QStringList paramList;
-
-                if (!params.isEmpty()) {
-                    paramList = splitArgsRespectingParens(params);
-                    for (QString &param : paramList) {
-                        param = param.trimmed();
+            const auto call = GScriptSyntax::parseMacroCall(currentLine);
+            if (call.valid) {
+                const QString functionName = call.target;
+                const QStringList paramList = call.arguments;
+                if (const auto* primitive = GScriptSyntax::findPrimitive(functionName)) {
+                    if (call.parenthesized || !primitive->legacyBare) {
+                        if (paramList.size() < primitive->minimumArguments ||
+                            paramList.size() > primitive->maximumArguments)
+                            throw GScriptEvaluationError(QString("%1 expects %2 to %3 arguments; received %4.")
+                                .arg(functionName).arg(primitive->minimumArguments)
+                                .arg(primitive->maximumArguments).arg(paramList.size()));
                     }
                 }
 
@@ -2244,10 +2423,13 @@ bool GcodeScript::findExeGcodeAndTransmit()
                     return value;
                 };
 
-                auto numericParameter = [this](const QString& value, double fallback) {
-                    bool ok = false;
-                    const double result = calculateExpressions(value).trimmed().toDouble(&ok);
-                    return ok ? result : fallback;
+                auto numericParameter = [this](const QString& value, double) {
+                    return finiteNumber(calculateExpressions(value), "Primitive argument");
+                };
+
+                auto integerParameter = [&numericParameter](const QString& value, int minimum,
+                                                            int maximum, const QString& name) {
+                    return boundedInteger(numericParameter(value, 0), minimum, maximum, name);
                 };
 
                 if (functionName == "send" || functionName == "sendgcode")
@@ -2262,7 +2444,7 @@ bool GcodeScript::findExeGcodeAndTransmit()
                     const QString responseVariable = paramList.size() > 2
                         ? identifierParameter(paramList[2]) : QString();
                     const int timeoutMs = paramList.size() > 3
-                        ? static_cast<int>(numericParameter(paramList[3], 120000)) : 120000;
+                        ? integerParameter(paramList[3], 1, 86400000, "Device timeout") : 120000;
                     gcodeOrder++;
                     beginDeviceRequest(deviceId, command, timeoutMs, responseVariable);
                     return true;
@@ -2297,10 +2479,9 @@ bool GcodeScript::findExeGcodeAndTransmit()
                     }
 
                     pendingConditionExpression = paramList[0].trimmed();
-                    pendingConditionTimeoutMs = qBound(
-                        1, static_cast<int>(numericParameter(paramList[1], 1000)), 86400000);
+                    pendingConditionTimeoutMs = integerParameter(paramList[1], 1, 86400000, "waitUntil timeout");
                     pendingConditionPollMs = paramList.size() > 2
-                        ? qBound(5, static_cast<int>(numericParameter(paramList[2], 20)), 1000)
+                        ? qBound(5, integerParameter(paramList[2], 1, 86400000, "waitUntil poll"), 1000)
                         : 20;
                     pendingConditionMessage = paramList.size() > 3
                         ? textParameter(paramList[3]) : QString();
@@ -2317,34 +2498,47 @@ bool GcodeScript::findExeGcodeAndTransmit()
                 }
 
                 // Unified handling: M98 PupdateTracking / PupdateTracking(0)
-                if (functionName.startsWith("updatetracking"))
+                if (GScriptSyntax::findPrimitive(functionName) &&
+                    GScriptSyntax::findPrimitive(functionName)->name == "updatetracking")
                 {
                     int trackingId = 0;
                     if (!paramList.isEmpty()) {
-                        trackingId = static_cast<int>(numericParameter(paramList.first(), 0));
+                        trackingId = integerParameter(paramList.first(), 0, std::numeric_limits<int>::max(), "Tracking ID");
                     } else {
                         // Support numeric suffix: PupdateTracking0
                         QRegularExpression rx("^updatetracking(\\d+)$");
                         QRegularExpressionMatch mm = rx.match(functionName);
-                        if (mm.hasMatch()) trackingId = mm.captured(1).toInt();
+                        if (mm.hasMatch()) trackingId = boundedInteger(finiteNumber(mm.captured(1), "Tracking ID"),
+                            0, std::numeric_limits<int>::max(), "Tracking ID");
                     }
 
                     transmitDeviceId = QString("tracking") + QString::number(trackingId);
                     transmitMsg = "M98 PupdateTracking";
                     pendingResponseToken++;
-                    emit UpdateTrackingRequest(trackingId);
-                    startPendingResponseTimeout(transmitDeviceId, transmitMsg, 1500);
-
+                    expectedTrackingRequestId = nextVisionRequestId();
+                    requireCorrelatedTrackingResponse = isSignalConnected(
+                        QMetaMethod::fromSignal(&GcodeScript::UpdateTrackingCorrelatedRequest));
                     gcodeOrder++;
+                    startPendingResponseTimeout(transmitDeviceId, transmitMsg, 1500);
+                    if (requireCorrelatedTrackingResponse)
+                        emit UpdateTrackingCorrelatedRequest(expectedTrackingRequestId, trackingId);
+                    else
+                        emit UpdateTrackingRequest(trackingId);
                     return true;
                 }
 
                 // Unified handling: M98 PcaptureAndDetect / PcaptureAndDetect(0)
-                if (functionName.startsWith("captureanddetect"))
+                if (GScriptSyntax::findPrimitive(functionName) &&
+                    GScriptSyntax::findPrimitive(functionName)->name == "captureanddetect")
                 {
                     int trackingId = 0;
                     if (!paramList.isEmpty()) {
-                        trackingId = static_cast<int>(numericParameter(paramList.first(), 0));
+                        trackingId = integerParameter(paramList.first(), 0, std::numeric_limits<int>::max(), "Tracking ID");
+                    } else {
+                        const auto suffix = QRegularExpression("^captureanddetect(\\d+)$").match(functionName);
+                        if (suffix.hasMatch())
+                            trackingId = boundedInteger(finiteNumber(suffix.captured(1), "Tracking ID"),
+                                0, std::numeric_limits<int>::max(), "Tracking ID");
                     }
 
                     // Per-run routing state; it must not survive an application restart.
@@ -2354,9 +2548,9 @@ bool GcodeScript::findExeGcodeAndTransmit()
                     transmitMsg = "M98 PcaptureAndDetect";
                     pendingResponseToken++;
                     expectedVisionRequestId = nextVisionRequestId();
-                    emit CaptureAndDetectRequest(expectedVisionRequestId, trackingId);
-                    startPendingResponseTimeout(transmitDeviceId, transmitMsg, 5000);
                     gcodeOrder++;
+                    startPendingResponseTimeout(transmitDeviceId, transmitMsg, 5000);
+                    emit CaptureAndDetectRequest(expectedVisionRequestId, trackingId);
                     return true;
                 }
 
@@ -2370,7 +2564,7 @@ bool GcodeScript::findExeGcodeAndTransmit()
                         return true;
                     }
 
-                    const int trackingId = static_cast<int>(numericParameter(paramList[0], 0));
+                    const int trackingId = integerParameter(paramList[0], 0, std::numeric_limits<int>::max(), "Tracking ID");
                     const QString resultName = identifierParameter(paramList[1]);
                     const QString owner = textParameter(paramList[2]);
                     const float minX = static_cast<float>(numericParameter(paramList[3], 0));
@@ -2378,18 +2572,28 @@ bool GcodeScript::findExeGcodeAndTransmit()
                     const float minY = static_cast<float>(numericParameter(paramList[5], 0));
                     const float maxY = static_cast<float>(numericParameter(paramList[6], 0));
                     const int typeFilter = paramList.size() > 7
-                        ? static_cast<int>(numericParameter(paramList[7], -1)) : -1;
+                        ? integerParameter(paramList[7], -1, std::numeric_limits<int>::max(), "Type filter") : -1;
                     const int leaseMs = paramList.size() > 8
-                        ? static_cast<int>(numericParameter(paramList[8], 30000)) : 30000;
+                        ? integerParameter(paramList[8], 1, 86400000, "Claim lease") : 30000;
+                    if (minX > maxX || minY > maxY || !std::isfinite(minX) || !std::isfinite(maxX) ||
+                        !std::isfinite(minY) || !std::isfinite(maxY) || owner.isEmpty() || resultName.isEmpty())
+                        throw GScriptEvaluationError("Invalid claim bounds, result variable, or owner.");
 
                     transmitDeviceId = QString("tracking%1:%2").arg(trackingId).arg(owner);
                     transmitMsg = "M98 PclaimObject";
                     pendingResponseToken++;
-                    emit ClaimObjectRequest(trackingId, resultName, owner,
-                                            minX, maxX, minY, maxY,
-                                            typeFilter, leaseMs);
-                    startPendingResponseTimeout(transmitDeviceId, transmitMsg, 1500);
+                    expectedTrackingRequestId = nextVisionRequestId();
+                    pendingClaimResult = resultName;
+                    requireCorrelatedTrackingResponse = isSignalConnected(
+                        QMetaMethod::fromSignal(&GcodeScript::ClaimObjectCorrelatedRequest));
                     gcodeOrder++;
+                    startPendingResponseTimeout(transmitDeviceId, transmitMsg, 1500);
+                    if (requireCorrelatedTrackingResponse)
+                        emit ClaimObjectCorrelatedRequest(expectedTrackingRequestId, trackingId, resultName, owner,
+                                                          minX, maxX, minY, maxY, typeFilter, leaseMs);
+                    else
+                        emit ClaimObjectRequest(trackingId, resultName, owner,
+                                                minX, maxX, minY, maxY, typeFilter, leaseMs);
                     return true;
                 }
 
@@ -2402,16 +2606,22 @@ bool GcodeScript::findExeGcodeAndTransmit()
                         return true;
                     }
 
-                    const int trackingId = static_cast<int>(numericParameter(paramList[0], 0));
-                    const int uid = static_cast<int>(numericParameter(paramList[1], -1));
+                    const int trackingId = integerParameter(paramList[0], 0, std::numeric_limits<int>::max(), "Tracking ID");
+                    const int uid = integerParameter(paramList[1], 0, std::numeric_limits<int>::max(), "Object UID");
                     const QString owner = textParameter(paramList[2]);
 
                     transmitDeviceId = QString("tracking%1:%2").arg(trackingId).arg(owner);
                     transmitMsg = "M98 PreleaseObject";
                     pendingResponseToken++;
-                    emit ReleaseObjectRequest(trackingId, uid, owner);
-                    startPendingResponseTimeout(transmitDeviceId, transmitMsg, 1500);
+                    expectedTrackingRequestId = nextVisionRequestId();
+                    requireCorrelatedTrackingResponse = isSignalConnected(
+                        QMetaMethod::fromSignal(&GcodeScript::ReleaseObjectCorrelatedRequest));
                     gcodeOrder++;
+                    startPendingResponseTimeout(transmitDeviceId, transmitMsg, 1500);
+                    if (requireCorrelatedTrackingResponse)
+                        emit ReleaseObjectCorrelatedRequest(expectedTrackingRequestId, trackingId, uid, owner);
+                    else
+                        emit ReleaseObjectRequest(trackingId, uid, owner);
                     return true;
                 }
 
@@ -2424,16 +2634,22 @@ bool GcodeScript::findExeGcodeAndTransmit()
                         return true;
                     }
 
-                    const int trackingId = static_cast<int>(numericParameter(paramList[0], 0));
-                    const int uid = static_cast<int>(numericParameter(paramList[1], -1));
+                    const int trackingId = integerParameter(paramList[0], 0, std::numeric_limits<int>::max(), "Tracking ID");
+                    const int uid = integerParameter(paramList[1], 0, std::numeric_limits<int>::max(), "Object UID");
                     const QString owner = textParameter(paramList[2]);
 
                     transmitDeviceId = QString("tracking%1:%2").arg(trackingId).arg(owner);
                     transmitMsg = "M98 PcompleteObject";
                     pendingResponseToken++;
-                    emit CompleteObjectRequest(trackingId, uid, owner);
-                    startPendingResponseTimeout(transmitDeviceId, transmitMsg, 1500);
+                    expectedTrackingRequestId = nextVisionRequestId();
+                    requireCorrelatedTrackingResponse = isSignalConnected(
+                        QMetaMethod::fromSignal(&GcodeScript::CompleteObjectCorrelatedRequest));
                     gcodeOrder++;
+                    startPendingResponseTimeout(transmitDeviceId, transmitMsg, 1500);
+                    if (requireCorrelatedTrackingResponse)
+                        emit CompleteObjectCorrelatedRequest(expectedTrackingRequestId, trackingId, uid, owner);
+                    else
+                        emit CompleteObjectRequest(trackingId, uid, owner);
                     return true;
                 }
 
@@ -2445,8 +2661,7 @@ bool GcodeScript::findExeGcodeAndTransmit()
                         return true;
                     }
 
-                    const int delayMs = qBound(
-                        0, static_cast<int>(numericParameter(paramList.first(), 0)), 86400000);
+                    const int delayMs = integerParameter(paramList.first(), 0, 86400000, "Delay duration");
                     gcodeOrder++;
                     const quint64 delayToken = ++pendingResponseToken;
                     setExecutionState(ExecutionState::WaitingForTimer,
@@ -2462,15 +2677,31 @@ bool GcodeScript::findExeGcodeAndTransmit()
 
                 if (functionName == "addobject")
                 {                    
-                    QString listName = paramList.at(0);
+                    QString listName = identifierParameter(paramList.at(0));
                     QStringList objectInfo;
-                    // Copy all parameters except the list name into the object payload.
-                    objectInfo.append(paramList.mid(1));
+                    for (int argument = 1; argument < paramList.size(); ++argument) {
+                        const double value = numericParameter(paramList[argument], 0);
+                        if (std::abs(value) > std::numeric_limits<float>::max())
+                            throw GScriptEvaluationError("Object argument exceeds the supported coordinate range.");
+                        objectInfo.append(QString::number(value, 'g', 12));
+                    }
                     QList<QStringList> objects;
                     objects.append(objectInfo);
 
                     emit AddObject(listName, objects);
                     gcodeOrder++;
+                    return false;
+                }
+
+                if (functionName == "pausecamera" || functionName == "capturecamera" ||
+                    functionName == "resumecamera" || functionName == "deletefirstobject" ||
+                    functionName == "syncconveyor" || functionName == "stopsyncconveyor") {
+                    if (functionName == "pausecamera") emit PauseCamera();
+                    else if (functionName == "capturecamera") emit CaptureCamera();
+                    else if (functionName == "resumecamera") emit ResumeCamera();
+                    else if (functionName == "deletefirstobject") emit DeleteObject(0);
+                    else IsConveyorSync = functionName == "syncconveyor";
+                    ++gcodeOrder;
                     return false;
                 }
 
@@ -2497,7 +2728,7 @@ bool GcodeScript::findExeGcodeAndTransmit()
                         faultExecution("deleteObject requires exactly one object index.");
                         return true;
                     }
-                    emit DeleteObject(static_cast<int>(numericParameter(paramList.first(), -1)));
+                    emit DeleteObject(integerParameter(paramList.first(), 0, std::numeric_limits<int>::max(), "Object index"));
                     ++gcodeOrder;
                     return false;
                 }
@@ -2578,10 +2809,9 @@ bool GcodeScript::findExeGcodeAndTransmit()
                 }
             }
 
-            if (!valuePairs[i + 1].isEmpty() && valuePairs[i + 1].at(0) == 'P')
+            if (call.valid)
             {
-                QString subProName = valuePairs[i + 1].mid(1);
-                subProName = subProName.remove("_").toLower();
+                QString subProName = call.target;
 
                 // PclearObjects = P_clear_object = PClearObject = ...
 
@@ -2640,7 +2870,7 @@ bool GcodeScript::findExeGcodeAndTransmit()
                     return false;
                 }
                 
-                if (subProName.startsWith("logmessage"))
+                if (subProName == "logmessage")
                 {
                     // M98 PlogMessage("Hello World")
                     // M98 PlogMessage "Hello World"
@@ -2692,7 +2922,7 @@ bool GcodeScript::findExeGcodeAndTransmit()
                     return false;
                 }
 
-                if (subProName.contains("delay") == true)
+                if (subProName == "delay")
                 {
                     int pos1 = subProName.indexOf("(") + 1;
                     int pos2 = subProName.lastIndexOf(")");
@@ -2713,7 +2943,7 @@ bool GcodeScript::findExeGcodeAndTransmit()
                 }
 
                 // P_update_tracking = Pupdatetracking = PupdateTracking = P_updateTracking(0)
-                if (subProName.contains("updatetracking") == true)
+                if (subProName == "updatetracking")
                 {
                     QString valueS = "0";
                     if (subProName.contains("("))
@@ -2742,7 +2972,7 @@ bool GcodeScript::findExeGcodeAndTransmit()
                 }
 
                 // P_capture_and_detect = Pcaptureanddetect = PcaptureAndDetect
-                if (subProName.contains("captureanddetect") == true)
+                if (subProName == "captureanddetect")
                 {
                     // Optional parameter: captureanddetect(n)
                     int trackingId = 0;
@@ -2769,7 +2999,7 @@ bool GcodeScript::findExeGcodeAndTransmit()
 
                 //QString funcName = "sendExternalMCU";
 
-                if (subProName.contains("send") == true)
+                if (subProName == "send")
                 {
                     int pos1 = subProName.indexOf("\"") + 1;
                     int pos2 = subProName.lastIndexOf("\"");
@@ -2786,7 +3016,7 @@ bool GcodeScript::findExeGcodeAndTransmit()
                 }
 
 
-                if (subProName.contains("sendGcode") == true)
+                if (subProName == "sendgcode")
                 {
                     int pos1 = subProName.indexOf("\"") + 1;
                     int pos2 = subProName.lastIndexOf("\"");
@@ -2817,6 +3047,12 @@ bool GcodeScript::findExeGcodeAndTransmit()
                         }
                         returnPointerOrder++;
                         returnSubProPointer[returnPointerOrder] = gcodeOrder;
+                        SubprogramFrame& frame = subprogramFrames[returnPointerOrder];
+                        frame.ifDepth = ifBlockStack.size();
+                        frame.forDepth = forLoopStack.size();
+                        frame.whileDepth = whileLoopStack.size();
+                        frame.switchDepth = switchCaseStack.size();
+                        frame.functionDepth = callStack.size();
 
                         gcodeOrder = order + 1;
 
@@ -2843,7 +3079,22 @@ bool GcodeScript::findExeGcodeAndTransmit()
                 faultExecution("M99 has no active subprogram call.");
                 return true;
             }
+            const SubprogramFrame frame = subprogramFrames[returnPointerOrder];
+            if (callStack.size() != frame.functionDepth) {
+                faultExecution("M99 cannot return across a function call boundary.");
+                return true;
+            }
+            while (ifBlockStack.size() > frame.ifDepth)
+                ifBlockStack.pop();
+            while (forLoopStack.size() > frame.forDepth)
+                forLoopStack.pop();
+            while (whileLoopStack.size() > frame.whileDepth)
+                whileLoopStack.pop();
+            while (switchCaseStack.size() > frame.switchDepth)
+                switchCaseStack.pop();
             gcodeOrder = returnSubProPointer[returnPointerOrder] + 1;
+            returnSubProPointer[returnPointerOrder] = -1;
+            subprogramFrames[returnPointerOrder] = SubprogramFrame{};
             returnPointerOrder--;
             return false;
         }
@@ -3035,9 +3286,9 @@ bool GcodeScript::handleGOTO(QList<QString> valuePairs, int i)
 bool GcodeScript::handleIF(QList<QString> valuePairs, int i)
 {
     // Extract condition between IF and THEN (if present)
-    QString upperLine = currentLine.toUpper();
+    QString upperLine = GScriptSyntax::maskStringsAndComments(currentLine).toUpper();
     int ifPos = upperLine.indexOf("IF");
-    int thenPos = upperLine.indexOf("THEN", ifPos + 2);
+    int thenPos = QRegularExpression("\\bTHEN\\b").match(upperLine, ifPos + 2).capturedStart();
     QString conditionStr;
     if (ifPos != -1 && thenPos != -1)
         conditionStr = currentLine.mid(ifPos + 2, thenPos - (ifPos + 2)).trimmed();
@@ -3046,7 +3297,7 @@ bool GcodeScript::handleIF(QList<QString> valuePairs, int i)
     else
         conditionStr = valuePairs.size() > i + 1 ? valuePairs[i + 1] : "";
 
-    bool conditionResult = (calculateExpressions(conditionStr).toFloat() != 0);
+    bool conditionResult = finiteNumber(calculateExpressions(conditionStr), "IF condition") != 0;
     
     // Check if there's a single-line THEN statement
     QString statement;
@@ -3063,7 +3314,6 @@ bool GcodeScript::handleIF(QList<QString> valuePairs, int i)
         if (conditionResult)
         {
             currentLine = statement;
-            gcodeOrder++; // Move to next line after executing
             ifBlockStack.pop(); // Remove the IF block as it's completed
             return findExeGcodeAndTransmit();
         }
@@ -3146,14 +3396,14 @@ bool GcodeScript::handleVARIABLE(QList<QString> valuePairs, int i)
 
 bool GcodeScript::handleDEFINE_SUBPROGRAM(QList<QString> valuePairs, int i)
 {
-    for (int order = gcodeOrder + 1; order < gcodeList.size(); order++)
-    {
-        if (gcodeList[order].indexOf("M99") > -1)
-        {
-            gcodeOrder = order + 1;
-            return false;
-        }
+    Q_UNUSED(valuePairs)
+    Q_UNUSED(i)
+    const int endLine = GScriptSyntax::findSubprogramEnd(gcodeList, gcodeOrder);
+    if (endLine < 0) {
+        faultExecution("Subprogram definition requires a top-level standalone M99 terminator.");
+        return true;
     }
+    gcodeOrder = endLine + 1;
     return false;
 }
 
@@ -3358,13 +3608,31 @@ QString GcodeScript::calculateExpressions2(QString expression)
 QString GcodeScript::calculateExpressions(QString expression)
 {
     expression = expression.trimmed();
+    if (expression.isEmpty())
+        throw GScriptEvaluationError("Expression is empty or has a missing operand.");
+    QStack<QChar> delimiters;
+    QChar expressionQuote;
+    for (const QChar ch : expression) {
+        if (!expressionQuote.isNull()) {
+            if (ch == expressionQuote) expressionQuote = QChar();
+            continue;
+        }
+        if (ch == '\'' || ch == '"') { expressionQuote = ch; continue; }
+        if (ch == '(' || ch == '[') delimiters.push(ch);
+        else if (ch == ')' || ch == ']') {
+            if (delimiters.isEmpty() || delimiters.pop() != (ch == ')' ? '(' : '['))
+                throw GScriptEvaluationError("Expression has mismatched delimiters.");
+        }
+    }
+    if (!delimiters.isEmpty() || !expressionQuote.isNull())
+        throw GScriptEvaluationError("Expression has an unclosed delimiter or string.");
     // Split on the lowest-precedence top-level operator. Choosing the rightmost
     // operator at each precedence makes subtraction/division left-associative.
     // Parentheses, function arguments, quoted strings and brackets stay intact.
     const QList<QStringList> precedence = {
         {"OR", "||"}, {"XOR", "^^"}, {"AND", "&&"},
         {"==", "!=", "<=", ">=", "EQ", "NE", "LE", "GE", "LT", "GT", "<", ">"},
-        {"+", "-"}, {"*", "/", "%"}
+        {"+", "-"}, {"*", "/", "%"}, {"^"}
     };
     for (const auto& operators : precedence) {
         int depth = 0, split = -1;
@@ -3378,7 +3646,7 @@ QString GcodeScript::calculateExpressions(QString expression)
             if (ch == ')' || ch == ']') { --depth; continue; }
             if (depth != 0) continue;
             for (const QString& op : operators) {
-                if (expression.mid(at, op.size()) != op) continue;
+                if (expression.mid(at, op.size()).compare(op, Qt::CaseInsensitive) != 0) continue;
                 if (op.at(0).isLetter() &&
                     (at == 0 || !expression.at(at - 1).isSpace() ||
                      at + op.size() == expression.size() || !expression.at(at + op.size()).isSpace())) continue;
@@ -3386,26 +3654,28 @@ QString GcodeScript::calculateExpressions(QString expression)
                 const QString left = expression.left(at).trimmed();
                 if (left.isEmpty()) continue;
                 if ((op == "-" || op == "+") &&
-                    (QString("+-*/%<>=,").contains(left.back()) ||
+                    (QString("+-*/%^<>=,").contains(left.back()) ||
                      ((left.back() == 'e' || left.back() == 'E') && left.size() > 1 && left.at(left.size() - 2).isDigit()))) continue;
                 split = at;
                 operation = op;
                 at += op.size() - 1;
                 break;
             }
+            if (operation == "^") break; // Exponentiation is right-associative.
         }
         if (split < 0) continue;
         QString left = calculateExpressions(expression.left(split));
+        // Boolean guards do not evaluate an unreachable right-hand expression.
+        if ((operation == "OR" || operation == "||") && finiteNumber(left, "OR") != 0)
+            return QStringLiteral("1");
+        if ((operation == "AND" || operation == "&&") && finiteNumber(left, "AND") == 0)
+            return QStringLiteral("0");
         QString right = calculateExpressions(expression.mid(split + operation.size()));
-        const auto unquote = [](QString text) {
-            if (text.size() >= 2 && ((text.front() == '"' && text.back() == '"') ||
-                                    (text.front() == '\'' && text.back() == '\'')))
-                return text.mid(1, text.size() - 2);
-            return text;
-        };
-        left = unquote(left); right = unquote(right);
         bool leftNumeric = false, rightNumeric = false;
         const double a = left.toDouble(&leftNumeric), b = right.toDouble(&rightNumeric);
+        const bool equality = operation == "==" || operation == "EQ" || operation == "!=" || operation == "NE";
+        if (!equality && (!leftNumeric || !rightNumeric || !std::isfinite(a) || !std::isfinite(b)))
+            throw GScriptEvaluationError(QString("Operator %1 requires finite numeric operands.").arg(operation));
         const bool equal = leftNumeric && rightNumeric ? a == b : left == right;
         double result = 0;
         if (operation == "OR" || operation == "||") result = a != 0 || b != 0;
@@ -3420,15 +3690,25 @@ QString GcodeScript::calculateExpressions(QString expression)
         else if (operation == "+") result = a + b;
         else if (operation == "-") result = a - b;
         else if (operation == "*") result = a * b;
-        else if (operation == "/") result = b != 0 ? a / b : 0;
-        else if (operation == "%") result = b != 0 ? std::fmod(a, b) : 0;
+        else if (operation == "/" || operation == "%") {
+            if (b == 0)
+                throw GScriptEvaluationError("Division or modulo by zero.");
+            result = operation == "/" ? a / b : std::fmod(a, b);
+        }
+        else if (operation == "^") result = std::pow(a, b);
+        if (!std::isfinite(result))
+            throw GScriptEvaluationError("Expression produced a non-finite result.");
         return QString::number(result, 'g', 12);
     }
     // Atoms and fully enclosed groups are evaluated after binary operators.
     if (expression.size() >= 2 &&
         ((expression.front() == '"' && expression.back() == '"') ||
          (expression.front() == '\'' && expression.back() == '\'')))
+    {
+        if (expression.indexOf(expression.front(), 1) != expression.size() - 1)
+            throw GScriptEvaluationError("Unexpected text after a string literal.");
         return expression.mid(1, expression.size() - 2);
+    }
     if (expression.size() >= 2 &&
         ((expression.front() == '[' && expression.back() == ']') ||
          (expression.front() == '(' && expression.back() == ')')))
@@ -3437,11 +3717,27 @@ QString GcodeScript::calculateExpressions(QString expression)
         bool numeric = false;
         expression.toDouble(&numeric);
         if (!numeric) {
-            const double value = calculateExpressions(expression.mid(1)).toDouble();
+            const double value = finiteNumber(calculateExpressions(expression.mid(1)), "Unary operator");
             return QString::number(expression.startsWith('-') ? -value : value, 'g', 12);
         }
     }
-    return getValueAsString(expression);
+    bool numeric = false;
+    const double literal = expression.toDouble(&numeric);
+    if (numeric) {
+        if (!std::isfinite(literal))
+            throw GScriptEvaluationError("Numeric literal is not finite.");
+        return expression;
+    }
+    static const QRegularExpression atom("^(?:#[A-Za-z0-9_][A-Za-z0-9_.]*|[A-Za-z_][A-Za-z0-9_.]*)$");
+    static const QRegularExpression function("^#?[A-Za-z_][A-Za-z0-9_]*\\s*\\(.*\\)$");
+    if (!atom.match(expression).hasMatch() && !function.match(expression).hasMatch())
+        throw GScriptEvaluationError(QString("Malformed expression '%1'.").arg(expression));
+    const QString value = getValueAsString(expression);
+    bool valueNumeric = false;
+    const double resolved = value.toDouble(&valueNumeric);
+    if (valueNumeric && !std::isfinite(resolved))
+        throw GScriptEvaluationError("Variable or function resolved to a non-finite value.");
+    return value;
 }
 
 // Performance optimization: Build cache of line numbers for O(1) GOTO lookups
@@ -3615,36 +3911,7 @@ bool GcodeScript::handleJUMP(QList<QString> valuePairs, int i)
 // Split a comma-separated argument list while respecting (), [], quotes
 QStringList GcodeScript::splitArgsRespectingParens(const QString& s)
 {
-    QStringList out;
-    QString curr;
-    int depthParen = 0;
-    int depthBracket = 0;
-    bool inQuote = false;
-    QChar quoteChar = '\0';
-
-    for (int i = 0; i < s.size(); ++i) {
-        const QChar ch = s.at(i);
-        if (ch == '"' || ch == '\'') {
-            if (!inQuote) { inQuote = true; quoteChar = ch; }
-            else if (quoteChar == ch) { inQuote = false; quoteChar = '\0'; }
-            curr.append(ch);
-            continue;
-        }
-        if (!inQuote) {
-            if (ch == '(') depthParen++;
-            else if (ch == ')') depthParen = qMax(0, depthParen - 1);
-            else if (ch == '[') depthBracket++;
-            else if (ch == ']') depthBracket = qMax(0, depthBracket - 1);
-            if (ch == ',' && depthParen == 0 && depthBracket == 0) {
-                out.append(curr.trimmed());
-                curr.clear();
-                continue;
-            }
-        }
-        curr.append(ch);
-    }
-    if (!curr.trimmed().isEmpty()) out.append(curr.trimmed());
-    return out;
+    return GScriptSyntax::splitArguments(s);
 }
 
 QString GcodeScript::cleanedVarName(const QString& name) const
@@ -3881,7 +4148,7 @@ void GcodeScript::preprocessGcodeScript()
                 for (int i = order + 1; i < gcodeList.size(); ++i) {
                     QString l = gcodeList[i].trimmed();
                     if (l.startsWith(';')) continue;
-                    if (l.contains("ENDFUNCTION")) { endLine = i; break; }
+                    if (GScriptSyntax::command(GScriptSyntax::stripComment(l)) == "ENDFUNCTION") { endLine = i; break; }
                 }
                 SimpleFunctionDef newFunction(functionName, parameters, order, endLine);
                 functionDefinitions[functionName] = newFunction;
@@ -3914,19 +4181,53 @@ float GcodeScript::EvaluateFunctionToFloat(QString expression)
     if (p1 == -1 || p2 == -1 || p2 <= p1) return NULL_NUMBER;
 
     int nameStart = (expression.at(0) == '#') ? 1 : 0;
-    QString functionName = expression.mid(nameStart, p1 - nameStart);
+    QString functionName = expression.mid(nameStart, p1 - nameStart).trimmed();
     QString argsStr = expression.mid(p1 + 1,  p2 - p1 - 1);
 
     QStringList values;
     if (!argsStr.trimmed().isEmpty())
         values = splitArgsRespectingParens(argsStr);
-    for (int i = 0; i < values.size(); ++i) {
+    const QString fname = functionName.toLower();
+    static const QHash<QString, QPair<int, int>> arities = {
+        {"sin", {1, 1}}, {"cos", {1, 1}}, {"tan", {1, 1}}, {"atan", {1, 1}},
+        {"atan2", {2, 2}}, {"sqrt", {1, 1}}, {"abs", {1, 1}}, {"round", {1, 1}},
+        {"floor", {1, 1}}, {"ceil", {1, 1}}, {"min", {2, 2}}, {"max", {2, 2}},
+        {"pow", {2, 2}}, {"log", {1, 1}}, {"log10", {1, 1}}, {"exp", {1, 1}},
+        {"cloudpointaddcalibration", {6, 8}}, {"cloudpointtransformx", {3, 4}},
+        {"cloudpointtransformy", {3, 4}}, {"cloudpointtransformz", {3, 4}},
+        {"cloudpointgetconfidence", {3, 4}}, {"cloudpointgeterror", {3, 4}},
+        {"cloudpointgetcount", {0, 0}}, {"cloudpointisvalid", {0, 0}},
+        {"cloudpointclear", {0, 0}}, {"cloudpointbuildgrid", {0, 1}},
+        {"cloudpointvalidate", {0, 1}}, {"cloudpointsave", {0, 1}},
+        {"cloudpointload", {0, 1}}, {"cloudpointexport", {0, 1}},
+        {"cloudpointimport", {0, 1}}, {"cloudpointremove", {1, 1}},
+        {"cloudpointupdate", {7, 8}}, {"cloudpointgetimagex", {1, 1}},
+        {"cloudpointgetimagey", {1, 1}}, {"cloudpointgetimagez", {1, 1}},
+        {"cloudpointgetrealx", {1, 1}}, {"cloudpointgetrealy", {1, 1}},
+        {"cloudpointgetrealz", {1, 1}}, {"cloudpointgetpointconfidence", {1, 1}},
+        {"cloudpointgetpointerror", {1, 1}}
+    };
+    if (!arities.contains(fname))
+        throw GScriptEvaluationError(QString("Unknown expression function '%1'.").arg(functionName));
+    const auto arity = arities.value(fname);
+    if (values.size() < arity.first || values.size() > arity.second)
+        throw GScriptEvaluationError(QString("Function %1 expects %2 to %3 arguments; received %4.")
+                                         .arg(functionName).arg(arity.first).arg(arity.second).arg(values.size()));
+    const int suppliedCount = values.size();
+    for (int i = 0; i < suppliedCount; ++i) {
         values[i] = calculateExpressions(values.at(i).trimmed());
+        const bool textArgument = fname == "cloudpointsave" || fname == "cloudpointload" ||
+            fname == "cloudpointexport" || fname == "cloudpointimport" ||
+            (fname == "cloudpointaddcalibration" && i == 7);
+        if (!textArgument) {
+            const double number = finiteNumber(values[i], functionName);
+            if (std::abs(number) > std::numeric_limits<float>::max())
+                throw GScriptEvaluationError(QString("Argument exceeds the numeric range of %1.").arg(functionName));
+        }
     }
     values.append("0");
     values.append("0");
 
-    QString fname = functionName.toLower();
     if (fname == "sin") return sin((values[0].toFloat()/180) * M_PI);
     if (fname == "cos") return cos((values[0].toFloat()/180) * M_PI);
     if (fname == "tan") return tan((values[0].toFloat()/180) * M_PI);
@@ -3946,28 +4247,28 @@ float GcodeScript::EvaluateFunctionToFloat(QString expression)
 
     // Cloud mapping helpers: mirror existing GetResultOfMathFunction support
     if (fname == "cloudpointaddcalibration")
-        return cloudPointAddCalibration(values[0].toFloat(), values[1].toFloat(), values[2].toFloat(), values[3].toFloat(), values[4].toFloat(), values[5].toFloat(), values.size()>6?values[6].toFloat():1.0f, values.size()>7?values[7]:"");
+        return cloudPointAddCalibration(values[0].toFloat(), values[1].toFloat(), values[2].toFloat(), values[3].toFloat(), values[4].toFloat(), values[5].toFloat(), suppliedCount>6?values[6].toFloat():1.0f, suppliedCount>7?values[7]:"");
     if (fname == "cloudpointtransformx")
-        return cloudPointTransformX(values[0].toFloat(), values[1].toFloat(), values[2].toFloat(), values.size()>3?values[3].toInt():1);
+        return cloudPointTransformX(values[0].toFloat(), values[1].toFloat(), values[2].toFloat(), suppliedCount>3?values[3].toInt():1);
     if (fname == "cloudpointtransformy")
-        return cloudPointTransformY(values[0].toFloat(), values[1].toFloat(), values[2].toFloat(), values.size()>3?values[3].toInt():1);
+        return cloudPointTransformY(values[0].toFloat(), values[1].toFloat(), values[2].toFloat(), suppliedCount>3?values[3].toInt():1);
     if (fname == "cloudpointtransformz")
-        return cloudPointTransformZ(values[0].toFloat(), values[1].toFloat(), values[2].toFloat(), values.size()>3?values[3].toInt():1);
+        return cloudPointTransformZ(values[0].toFloat(), values[1].toFloat(), values[2].toFloat(), suppliedCount>3?values[3].toInt():1);
     if (fname == "cloudpointgetconfidence")
-        return cloudPointGetConfidence(values[0].toFloat(), values[1].toFloat(), values[2].toFloat(), values.size()>3?values[3].toInt():1);
+        return cloudPointGetConfidence(values[0].toFloat(), values[1].toFloat(), values[2].toFloat(), suppliedCount>3?values[3].toInt():1);
     if (fname == "cloudpointgeterror")
-        return cloudPointGetError(values[0].toFloat(), values[1].toFloat(), values[2].toFloat(), values.size()>3?values[3].toInt():1);
+        return cloudPointGetError(values[0].toFloat(), values[1].toFloat(), values[2].toFloat(), suppliedCount>3?values[3].toInt():1);
     if (fname == "cloudpointgetcount") return cloudPointGetCount();
     if (fname == "cloudpointisvalid") return cloudPointIsValid();
     if (fname == "cloudpointclear") return cloudPointClear();
-    if (fname == "cloudpointbuildgrid") return cloudPointBuildGrid(values.size()>0?values[0].toFloat():10.0f);
-    if (fname == "cloudpointvalidate") return cloudPointValidate(values.size()>0?values[0].toFloat():0.2f);
-    if (fname == "cloudpointsave") return cloudPointSave(values.size()>0?values[0]:"");
-    if (fname == "cloudpointload") return cloudPointLoad(values.size()>0?values[0]:"");
-    if (fname == "cloudpointexport") return cloudPointExport(values.size()>0?values[0]:"CloudMapping");
-    if (fname == "cloudpointimport") return cloudPointImport(values.size()>0?values[0]:"CloudMapping");
+    if (fname == "cloudpointbuildgrid") return cloudPointBuildGrid(suppliedCount>0?values[0].toFloat():10.0f);
+    if (fname == "cloudpointvalidate") return cloudPointValidate(suppliedCount>0?values[0].toFloat():0.2f);
+    if (fname == "cloudpointsave") return cloudPointSave(suppliedCount>0?values[0]:"");
+    if (fname == "cloudpointload") return cloudPointLoad(suppliedCount>0?values[0]:"");
+    if (fname == "cloudpointexport") return cloudPointExport(suppliedCount>0?values[0]:"CloudMapping");
+    if (fname == "cloudpointimport") return cloudPointImport(suppliedCount>0?values[0]:"CloudMapping");
     if (fname == "cloudpointremove") return cloudPointRemove(values[0].toInt());
-    if (fname == "cloudpointupdate") return cloudPointUpdate(values[0].toInt(), values[1].toFloat(), values[2].toFloat(), values[3].toFloat(), values[4].toFloat(), values[5].toFloat(), values[6].toFloat(), values.size()>7?values[7].toFloat():1.0f);
+    if (fname == "cloudpointupdate") return cloudPointUpdate(values[0].toInt(), values[1].toFloat(), values[2].toFloat(), values[3].toFloat(), values[4].toFloat(), values[5].toFloat(), values[6].toFloat(), suppliedCount>7?values[7].toFloat():1.0f);
     if (fname == "cloudpointgetimagex") return cloudPointGetImageX(values[0].toInt());
     if (fname == "cloudpointgetimagey") return cloudPointGetImageY(values[0].toInt());
     if (fname == "cloudpointgetimagez") return cloudPointGetImageZ(values[0].toInt());
@@ -4007,6 +4308,8 @@ QString GcodeScript::getValueAsString(QString name)
     if (name.contains('(') && name.contains(')'))
     {
         float result = EvaluateFunctionToFloat(name);
+        if (!std::isfinite(result))
+            throw GScriptEvaluationError(QString("Function produced a non-finite result: %1.").arg(name));
         if (result != NULL_NUMBER)
         {
             return QString::number(result);
@@ -4222,9 +4525,9 @@ bool GcodeScript::handleELIF(QList<QString> valuePairs, int i)
     }
     
     // Evaluate ELIF condition (between ELIF and THEN if present)
-    QString upperLine = currentLine.toUpper();
+    QString upperLine = GScriptSyntax::maskStringsAndComments(currentLine).toUpper();
     int elifPos = upperLine.indexOf("ELIF");
-    int thenPos = upperLine.indexOf("THEN", elifPos + 4);
+    int thenPos = QRegularExpression("\\bTHEN\\b").match(upperLine, elifPos + 4).capturedStart();
     QString conditionStr;
     if (elifPos != -1 && thenPos != -1)
         conditionStr = currentLine.mid(elifPos + 4, thenPos - (elifPos + 4)).trimmed();
@@ -4232,7 +4535,7 @@ bool GcodeScript::handleELIF(QList<QString> valuePairs, int i)
         conditionStr = currentLine.mid(elifPos + 4).trimmed();
     else
         conditionStr = valuePairs.size() > i + 1 ? valuePairs[i + 1] : "";
-    bool conditionResult = (calculateExpressions(conditionStr).toFloat() != 0);
+    bool conditionResult = finiteNumber(calculateExpressions(conditionStr), "ELIF condition") != 0;
     
     // Single-line THEN statement extraction
     QString statement;
@@ -4247,7 +4550,6 @@ bool GcodeScript::handleELIF(QList<QString> valuePairs, int i)
             currentBlock.conditionMet = true;
             currentBlock.insideBlock = true;
             currentLine = statement;
-            gcodeOrder++;
             return findExeGcodeAndTransmit();
         }
         else
@@ -4285,7 +4587,7 @@ bool GcodeScript::handleELSE(QList<QString> valuePairs, int i)
     IfBlockState& currentBlock = ifBlockStack.top();
     
     // Check if there's a single-line ELSE statement
-    QString statement = currentLine.mid(currentLine.indexOf("ELSE") + 4).trimmed();
+    QString statement = GScriptSyntax::inlineStatement(currentLine);
     
     if (!statement.isEmpty())
     {
@@ -4295,7 +4597,6 @@ bool GcodeScript::handleELSE(QList<QString> valuePairs, int i)
             currentBlock.conditionMet = true;
             currentBlock.insideBlock = true;
             currentLine = statement;
-            gcodeOrder++;
             return findExeGcodeAndTransmit();
         }
         else
@@ -4422,6 +4723,9 @@ bool GcodeScript::handleFOR(QList<QString> valuePairs, int i)
             // Create FOREACH loop state
             ForLoopState newLoop(FOREACH_FOR, counterVar, listName, gcodeOrder);
             newLoop.endForLine = endForLine;
+            newLoop.nestingOrder = ++nextLoopNestingOrder;
+            newLoop.ifDepth = ifBlockStack.size();
+            newLoop.switchDepth = switchCaseStack.size();
             forLoopStack.push(newLoop);
             
             // Start first iteration
@@ -4430,37 +4734,31 @@ bool GcodeScript::handleFOR(QList<QString> valuePairs, int i)
     }
     
     // Check for numeric FOR syntax: FOR var = start TO end [STEP step]
-    if (valuePairs.size() >= (i + 6))
+    const auto numericFor = QRegularExpression(
+        "^FOR\\s+(#?[A-Za-z0-9_][A-Za-z0-9_.]*)\\s*=\\s*(.+?)\\s+TO\\s+(.+?)(?:\\s+STEP\\s+(.+))?$",
+        QRegularExpression::CaseInsensitiveOption).match(currentLine);
+    if (numericFor.hasMatch())
     {
-        QString counterVar = valuePairs[i + 1];
+        QString counterVar = numericFor.captured(1);
         
-        if (valuePairs[i + 2] == "=" && valuePairs[i + 4].toUpper() == "TO")
         {
             // Remove # from variable name if present
             if (counterVar.startsWith("#"))
                 counterVar = counterVar.mid(1);
             
-            QString startStr = valuePairs[i + 3];
-            QString endStr = valuePairs[i + 5];
-            QString stepStr = "1"; // Default step
-            
-            // Check for STEP clause
-            if (valuePairs.size() >= (i + 8) && valuePairs[i + 6].toUpper() == "STEP")
-            {
-                stepStr = valuePairs[i + 7];
-            }
+            QString startStr = numericFor.captured(2);
+            QString endStr = numericFor.captured(3);
+            QString stepStr = numericFor.captured(4).isEmpty() ? QStringLiteral("1") : numericFor.captured(4);
             
             // Evaluate expressions
-            float startValue = calculateExpressions(startStr).toFloat();
-            float endValue = calculateExpressions(endStr).toFloat();
-            float stepValue = calculateExpressions(stepStr).toFloat();
+            float startValue = finiteNumber(calculateExpressions(startStr), "FOR start");
+            float endValue = finiteNumber(calculateExpressions(endStr), "FOR limit");
+            float stepValue = finiteNumber(calculateExpressions(stepStr), "FOR step");
             
             // Validate step value
-            if (stepValue == 0)
+            if (stepValue == 0 || !std::isfinite(startValue) || !std::isfinite(endValue) || !std::isfinite(stepValue))
             {
-                // Invalid step - skip this FOR
-                gcodeOrder++;
-                return false;
+                throw GScriptEvaluationError("FOR requires finite bounds and a non-zero finite step.");
             }
             
             // Find ENDFOR line
@@ -4475,6 +4773,9 @@ bool GcodeScript::handleFOR(QList<QString> valuePairs, int i)
             // Create numeric FOR loop state
             ForLoopState newLoop(NUMERIC_FOR, counterVar, startValue, endValue, stepValue, gcodeOrder);
             newLoop.endForLine = endForLine;
+            newLoop.nestingOrder = ++nextLoopNestingOrder;
+            newLoop.ifDepth = ifBlockStack.size();
+            newLoop.switchDepth = switchCaseStack.size();
             forLoopStack.push(newLoop);
             
             // Check if loop should run at least once
@@ -4506,9 +4807,7 @@ bool GcodeScript::handleFOR(QList<QString> valuePairs, int i)
         }
     }
     
-    // Invalid FOR syntax - skip line
-    gcodeOrder++;
-    return false;
+    throw GScriptEvaluationError("Invalid FOR syntax.");
 }
 
 bool GcodeScript::handleENDFOR(QList<QString> valuePairs, int i)
@@ -4525,7 +4824,10 @@ bool GcodeScript::handleENDFOR(QList<QString> valuePairs, int i)
     if (currentLoop.type == NUMERIC_FOR)
     {
         // Update counter for next iteration
-        currentLoop.currentValue += currentLoop.stepValue;
+        const float nextValue = currentLoop.currentValue + currentLoop.stepValue;
+        if (!std::isfinite(nextValue) || nextValue == currentLoop.currentValue)
+            throw GScriptEvaluationError("FOR counter cannot advance within its numeric range.");
+        currentLoop.currentValue = nextValue;
         
         // Check if loop should continue with the updated counter
         bool continueLoop = false;
@@ -4694,7 +4996,7 @@ bool GcodeScript::handleWHILE(QList<QString> valuePairs, int i)
     }
 
     const QString condition = match.captured(1).trimmed();
-    const bool conditionResult = calculateExpressions(condition).toDouble() != 0.0;
+    const bool conditionResult = finiteNumber(calculateExpressions(condition), "WHILE condition") != 0.0;
     const bool sameLoop = !whileLoopStack.isEmpty() &&
                           whileLoopStack.top().startLine == gcodeOrder;
     if (!conditionResult) {
@@ -4707,6 +5009,9 @@ bool GcodeScript::handleWHILE(QList<QString> valuePairs, int i)
     if (!sameLoop) {
         WhileLoopState state(condition, gcodeOrder);
         state.endWhileLine = endLine;
+        state.nestingOrder = ++nextLoopNestingOrder;
+        state.ifDepth = ifBlockStack.size();
+        state.switchDepth = switchCaseStack.size();
         whileLoopStack.push(state);
     } else {
         whileLoopStack.top().condition = condition;
@@ -4746,37 +5051,45 @@ int GcodeScript::findEndWhileLine(int startLine) const
 
 bool GcodeScript::handleBREAK()
 {
-    const int forStart = forLoopStack.isEmpty() ? -1 : forLoopStack.top().startLine;
-    const int whileStart = whileLoopStack.isEmpty() ? -1 : whileLoopStack.top().startLine;
-    if (forStart < 0 && whileStart < 0) {
-        faultExecution("BREAK can only be used inside FOR or WHILE.");
-        return true;
-    }
-
-    if (whileStart > forStart) {
-        const int endLine = whileLoopStack.top().endWhileLine;
-        whileLoopStack.pop();
-        gcodeOrder = endLine + 1;
-    } else {
-        const int endLine = forLoopStack.top().endForLine;
-        forLoopStack.pop();
-        gcodeOrder = endLine + 1;
-    }
-    return false;
+    return handleLoopControl(false);
 }
 
 bool GcodeScript::handleCONTINUE()
 {
-    const int forStart = forLoopStack.isEmpty() ? -1 : forLoopStack.top().startLine;
-    const int whileStart = whileLoopStack.isEmpty() ? -1 : whileLoopStack.top().startLine;
-    if (forStart < 0 && whileStart < 0) {
-        faultExecution("CONTINUE can only be used inside FOR or WHILE.");
+    return handleLoopControl(true);
+}
+
+bool GcodeScript::handleLoopControl(bool isContinue)
+{
+    int forFloor = callStack.isEmpty() ? 0 : callStack.top().forDepth;
+    int whileFloor = callStack.isEmpty() ? 0 : callStack.top().whileDepth;
+    if (returnPointerOrder >= 0) {
+        forFloor = qMax(forFloor, subprogramFrames[returnPointerOrder].forDepth);
+        whileFloor = qMax(whileFloor, subprogramFrames[returnPointerOrder].whileDepth);
+    }
+    const bool hasFor = forLoopStack.size() > forFloor;
+    const bool hasWhile = whileLoopStack.size() > whileFloor;
+    if (!hasFor && !hasWhile) {
+        faultExecution(QString("%1 requires a loop in the current function or subprogram invocation.")
+                           .arg(isContinue ? "CONTINUE" : "BREAK"));
         return true;
     }
-
-    gcodeOrder = whileStart > forStart
-        ? whileLoopStack.top().endWhileLine
-        : forLoopStack.top().endForLine;
+    const bool nearestWhile = hasWhile && (!hasFor ||
+        whileLoopStack.top().nestingOrder > forLoopStack.top().nestingOrder);
+    const int ifDepth = nearestWhile ? whileLoopStack.top().ifDepth : forLoopStack.top().ifDepth;
+    const int switchDepth = nearestWhile ? whileLoopStack.top().switchDepth : forLoopStack.top().switchDepth;
+    while (ifBlockStack.size() > ifDepth)
+        ifBlockStack.pop();
+    while (switchCaseStack.size() > switchDepth)
+        switchCaseStack.pop();
+    const int endLine = nearestWhile ? whileLoopStack.top().endWhileLine : forLoopStack.top().endForLine;
+    if (!isContinue) {
+        if (nearestWhile)
+            whileLoopStack.pop();
+        else
+            forLoopStack.pop();
+    }
+    gcodeOrder = endLine + (isContinue ? 0 : 1);
     return false;
 }
 
@@ -5011,7 +5324,7 @@ bool GcodeScript::handleFUNCTION(QList<QString> valuePairs, int i)
     for (int order = gcodeOrder + 1; order < gcodeList.size(); order++)
     {
         QString line = gcodeList[order];
-        if (line.contains("ENDFUNCTION"))
+        if (GScriptSyntax::command(GScriptSyntax::stripComment(line)) == "ENDFUNCTION")
         {
             gcodeOrder = order + 1;
             return false;
@@ -5026,8 +5339,12 @@ bool GcodeScript::handleENDFUNCTION(QList<QString> valuePairs, int i)
     // If currently inside a function call (via callFunction), return to caller
     if (!functionReturnStack.isEmpty())
     {
+        if (!callStack.isEmpty() && returnPointerOrder + 1 != callStack.top().subprogramDepth) {
+            faultExecution("ENDFUNCTION cannot return across a subprogram call boundary.");
+            return true;
+        }
         int ret = functionReturnStack.pop();
-        if (!callStack.isEmpty()) callStack.pop();
+        unwindFunctionFrame();
         gcodeOrder = ret + 1;
         return false;
     }
@@ -5061,8 +5378,12 @@ bool GcodeScript::handleRETURN(QList<QString> valuePairs, int i)
     // Return to caller
     if (!functionReturnStack.isEmpty())
     {
+        if (!callStack.isEmpty() && returnPointerOrder + 1 != callStack.top().subprogramDepth) {
+            faultExecution("RETURN cannot return across a subprogram call boundary.");
+            return true;
+        }
         int ret = functionReturnStack.pop();
-        if (!callStack.isEmpty()) callStack.pop();
+        unwindFunctionFrame();
         if (hasReturnValue && !returnTarget.isEmpty())
             saveVariable(returnTarget, returnValue);
         gcodeOrder = ret + 1;
@@ -5148,6 +5469,13 @@ bool GcodeScript::callFunction(QString functionName, QStringList arguments, cons
     // Create call frame and bind parameters
     CallFrame frame;
     frame.retTarget = retTarget;
+    frame.functionName = functionName;
+    frame.callLine = gcodeOrder + 1;
+    frame.subprogramDepth = returnPointerOrder + 1;
+    frame.ifDepth = ifBlockStack.size();
+    frame.forDepth = forLoopStack.size();
+    frame.whileDepth = whileLoopStack.size();
+    frame.switchDepth = switchCaseStack.size();
     if (arguments.size() != funcDef.parameters.size()) {
         faultExecution(QString("Function %1 expects %2 argument(s), received %3.")
                            .arg(functionName)
@@ -5170,6 +5498,21 @@ bool GcodeScript::callFunction(QString functionName, QStringList arguments, cons
     gcodeOrder = funcDef.startLine + 1;
     
     return false;
+}
+
+void GcodeScript::unwindFunctionFrame()
+{
+    if (callStack.isEmpty())
+        return;
+    const CallFrame frame = callStack.pop();
+    while (ifBlockStack.size() > frame.ifDepth)
+        ifBlockStack.pop();
+    while (forLoopStack.size() > frame.forDepth)
+        forLoopStack.pop();
+    while (whileLoopStack.size() > frame.whileDepth)
+        whileLoopStack.pop();
+    while (switchCaseStack.size() > frame.switchDepth)
+        switchCaseStack.pop();
 }
 
 bool GcodeScript::isFunctionCall(QString line)

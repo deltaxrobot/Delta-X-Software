@@ -121,8 +121,9 @@ RobotWindow::RobotWindow(QWidget *parent, QString projectName) :
     ui->twModule->tabBar()->setUsesScrollButtons(true);
     setupResponsiveShell();
     updateModuleTabLabels();
-    setWindowTitle(tr("Delta X Software - Version %1")
-                       .arg(QString::fromLatin1(DeltaXVersion::Application)));
+    setWindowTitle(tr("Delta X Software - Version %1 (%2)")
+                       .arg(QString::fromLatin1(DeltaXVersion::Application),
+                            QString::fromLatin1(DeltaXVersion::Revision)));
 
     m_deviceCommandBroker = new DeviceCommandBroker(this);
     m_cellSupervisor = new CellSupervisor(this);
@@ -3885,22 +3886,35 @@ void RobotWindow::AddScriptThread()
 //    connect(GcodeScriptThread, SIGNAL(DeleteAllObjects()), ImageProcessingInstance->GetNode("TrackingObjectsNode"), SLOT(ClearOutput()));
 //    connect(GcodeScriptThread, SIGNAL(DeleteObject(int)), ImageProcessingInstance->GetNode("TrackingObjectsNode"), SLOT(DeleteOutput(int)));
 
-    connect(GcodeScriptThread, &GcodeScript::PauseCamera, [=](){ CameraTimer.stop();});
-    connect(GcodeScriptThread, &GcodeScript::ResumeCamera, [=](){ CameraTimer.start(ui->leCaptureInterval->text().toInt());});
+    connect(GcodeScriptThread, &GcodeScript::PauseCamera, this, [this](){ CameraTimer.stop();});
+    connect(GcodeScriptThread, &GcodeScript::ResumeCamera, this,
+            [this](){ CameraTimer.start(ui->leCaptureInterval->text().toInt());});
     connect(GcodeScriptThread, &GcodeScript::CaptureCamera, CameraInstance, &Camera::GeneralCapture);
     connect(GcodeScriptThread, &GcodeScript::CaptureAndDetectRequest, CameraInstance, &Camera::CaptureAndDetect);
 
     connect(GcodeScriptThread, &GcodeScript::GetObjectsRequest, TrackingManagerInstance, &TrackingManager::GetObjectsInArea);
+    connect(GcodeScriptThread, &GcodeScript::GetObjectsCorrelatedRequest,
+            TrackingManagerInstance, &TrackingManager::GetObjectsInAreaCorrelated);
     connect(GcodeScriptThread, &GcodeScript::UpdateTrackingRequest, TrackingManagerInstance, &TrackingManager::UpdateTracking);
     connect(GcodeScriptThread, &GcodeScript::ClaimObjectRequest, TrackingManagerInstance, &TrackingManager::ClaimObject);
     connect(GcodeScriptThread, &GcodeScript::ReleaseObjectRequest, TrackingManagerInstance, &TrackingManager::ReleaseObject);
     connect(GcodeScriptThread, &GcodeScript::CompleteObjectRequest, TrackingManagerInstance, &TrackingManager::CompleteObject);
+    connect(GcodeScriptThread, &GcodeScript::ClaimObjectCorrelatedRequest,
+            TrackingManagerInstance, &TrackingManager::ClaimObjectCorrelated);
+    connect(GcodeScriptThread, &GcodeScript::ReleaseObjectCorrelatedRequest,
+            TrackingManagerInstance, &TrackingManager::ReleaseObjectCorrelated);
+    connect(GcodeScriptThread, &GcodeScript::CompleteObjectCorrelatedRequest,
+            TrackingManagerInstance, &TrackingManager::CompleteObjectCorrelated);
+    connect(GcodeScriptThread, &GcodeScript::UpdateTrackingCorrelatedRequest,
+            TrackingManagerInstance, &TrackingManager::UpdateTrackingCorrelated);
     connect(GcodeScriptThread, &GcodeScript::ChangeExternalVariable, TrackingManagerInstance, &TrackingManager::UpdateVariable);
     connect(GcodeScriptThread, &GcodeScript::AddObject, TrackingManagerInstance, &TrackingManager::AddObject);
     connect(GcodeScriptThread, SIGNAL(DeleteAllObjects(QString)), TrackingManagerInstance, SLOT(ClearObjects(QString)));
 
 
     connect(TrackingManagerInstance, &TrackingManager::GotResponse, GcodeScriptThread, &GcodeScript::GetResponse);
+    connect(TrackingManagerInstance, &TrackingManager::TrackingResponse,
+            GcodeScriptThread, &GcodeScript::GetTrackingResponse);
 
     GcodeScriptThread->thread()->start();
 
@@ -5674,6 +5688,22 @@ void RobotWindow::GetDeviceInfo(QString json)
     QString state = jsonObject.value("state").toString();
     QString response = jsonObject.value("response").toString();
     QString gcode = jsonObject.value("gcode").toString();
+
+    const QString transportDevice = device.toLower() + QString::number(id);
+    if (state == QStringLiteral("open")) {
+        // GetInfo is also emitted for ordinary position/settings updates. Only
+        // a new transport session can restore response correlation after Stop.
+        if (!m_connectedBrokerTransports.contains(transportDevice)) {
+            if (m_deviceCommandBroker &&
+                m_deviceCommandBroker->ResetDeviceCommunication(transportDevice))
+                m_connectedBrokerTransports.insert(transportDevice);
+        }
+    } else {
+        m_connectedBrokerTransports.remove(transportDevice);
+        if (m_deviceCommandBroker)
+            m_deviceCommandBroker->HandleDeviceUnavailable(
+                transportDevice, QStringLiteral("Device transport disconnected"));
+    }
 
             QString devicePrefix = getDevicePrefix(device, id);
         QHash<QString, QVariant> deviceUpdates;
